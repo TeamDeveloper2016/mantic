@@ -2585,46 +2585,43 @@
 			</select>
 		</unit>
 		<unit id="VistaAlmacenesDto">
-			<select id="row">
+			<select id="lazy">
 				select 
-				 tc_mantic_almacenes.id_almacen as id_key,
-				 tc_mantic_almacenes.clave,
-				 tc_mantic_almacenes.nombre,
-				 tc_mantic_almacenes.descripcion,
-				 tc_mantic_personas.nombres,
-				 tc_mantic_personas.paterno,
-				 tc_mantic_personas.materno,
-				 tc_mantic_domicilios.calle,
-				 tc_mantic_domicilios.numero_exterior,
-				 tc_mantic_domicilios.asentamiento,
-				 tc_mantic_domicilios.codigo_postal,
-				 tc_janal_entidades.descripcion as entidad,
-				 tc_janal_municipios.descripcion as municipio             
-			 from 
-				 tc_mantic_almacenes
-			 inner join
-				 tc_mantic_personas on tc_mantic_personas.id_persona=tc_mantic_almacenes.id_responsable
-			 inner join
-				 tr_mantic_almacen_domicilio on  tr_mantic_almacen_domicilio.id_almacen= tc_mantic_almacenes.id_almacen
-			 inner join
-				tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio = tr_mantic_almacen_domicilio.id_domicilio
-			 inner join
-				 tc_janal_localidades  on tc_mantic_domicilios.id_localidad=tc_janal_localidades.id_localidad
-			 inner join 
-				 tc_janal_municipios on tc_janal_municipios.id_municipio= tc_janal_localidades.id_municipio
-				inner join
-					tc_janal_entidades  on tc_janal_municipios.id_entidad=tc_janal_entidades.id_entidad
-				 where
-					(tc_mantic_almacenes.clave like '%{clave}%' or tc_mantic_almacenes.clave is null)
-				 and
-					 tc_mantic_almacenes.nombre like '%{nombre}%'
-					and 
-						(tc_mantic_almacenes.descripcion  like '%{descripcion}%' or  tc_mantic_almacenes.descripcion is null)
-					and
-						tr_mantic_almacen_domicilio.id_principal={idPrincipal}  
-					and
-							tc_mantic_almacenes.id_empresa={idEmpresa} 
-				 {sortOrder} 
+				  tc_mantic_almacenes.id_almacen as id_key,
+					tc_mantic_empresas.clave as empresa,
+          tc_mantic_empresas.nombre as nombre_empresa,
+				  tc_mantic_almacenes.clave,
+				  tc_mantic_almacenes.nombre,
+				  tc_mantic_almacenes.descripcion,
+				  tc_mantic_personas.nombres,
+				  tc_mantic_personas.paterno,
+				  tc_mantic_personas.materno,
+				  tc_mantic_domicilios.calle,
+				  tc_mantic_domicilios.numero_exterior,
+				  tc_mantic_domicilios.asentamiento,
+				  tc_mantic_domicilios.codigo_postal,
+				  tc_janal_entidades.descripcion as entidad,
+				  tc_janal_municipios.descripcion as municipio             
+			  from 
+				  tc_mantic_almacenes
+			  inner join
+			    tc_mantic_empresas on tc_mantic_empresas.id_empresa=tc_mantic_almacenes.id_empresa
+			  inner join
+			    tc_mantic_personas on tc_mantic_personas.id_persona=tc_mantic_almacenes.id_responsable
+			  inner join
+			    tr_mantic_almacen_domicilio on  tr_mantic_almacen_domicilio.id_almacen= tc_mantic_almacenes.id_almacen
+			  inner join
+			    tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio = tr_mantic_almacen_domicilio.id_domicilio
+			  inner join
+			    tc_janal_localidades on tc_mantic_domicilios.id_localidad=tc_janal_localidades.id_localidad
+			  inner join 
+			    tc_janal_municipios on tc_janal_municipios.id_municipio= tc_janal_localidades.id_municipio
+			  inner join
+			    tc_janal_entidades on tc_janal_municipios.id_entidad=tc_janal_entidades.id_entidad
+			  where
+			    tc_mantic_almacenes.id_empresa in ({sucursales})
+			    and {condicion} 
+			  {sortOrder} 
 			</select>  
 			<select id="almacenesEmpresa">
 				select 

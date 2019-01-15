@@ -11,9 +11,12 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'descripcion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
-        'clave': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
-        'nombre': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}       
+        'idEmpresa' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'clave': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'nombre': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'descripcion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'fechaInicio' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'fechaTermino' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'}
       };
     </script>		
   </ui:define>
@@ -27,25 +30,40 @@
         <div id="collapse-find" class="ui-grid-col-3">
           <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
-            <h:panelGrid styleClass="janal-wid-100">
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
+              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosAlmacenesFiltro.attrs.isMatriz}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosAlmacenesFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                <f:selectItems value="#{manticCatalogosAlmacenesFiltro.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
               <p:outputLabel for="clave" value="Clave:"/>
               <p:inputText id="clave" value="#{manticCatalogosAlmacenesFiltro.attrs.clave}" styleClass="janal-wid-100-txt" /> 
               <p:outputLabel for="nombre" value="Nombre:"/>
               <p:inputText id="nombre" value="#{manticCatalogosAlmacenesFiltro.attrs.nombre}" styleClass="janal-wid-100-txt" />
               <p:outputLabel for="descripcion" value="Descripcion:"/>
               <p:inputText id="descripcion" value="#{manticCatalogosAlmacenesFiltro.attrs.descripcion}" styleClass="janal-wid-100-txt"/>
-            </h:panelGrid>
+              <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-70" styleClass="janal-wid-100" value="#{manticComprasOrdenesFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+              <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-70" styleClass="janal-wid-100" value="#{manticComprasOrdenesFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+            </p:panelGrid>
             <p:separator/>
             <div class="janal-align-right lg-pantalla">
-              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this clave descripcion nombre" actionListener="#{manticCatalogosAlmacenesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{manticCatalogosAlmacenesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
             </div>
 						<div class="janal-align-right xs-pantalla">
- 						  <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.execute();" process="@this clave nombre descripcion" actionListener="#{manticCatalogosAlmacenesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+ 						  <p:commandButton id="buscarIcon" icon="fa fa-filter" accesskey="b"  onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{manticCatalogosAlmacenesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
 					  </div>
           </p:panel>
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosAlmacenesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosAlmacenesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosAlmacenesFiltro.lazyModel.rowCount gt manticCatalogosAlmacenesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosAlmacenesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosAlmacenesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosAlmacenesFiltro.lazyModel.rowCount gt manticCatalogosAlmacenesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
             <f:facet name="header" >
               <div class="lg-pantalla">
                 <p:menuButton   value="Opciones">
@@ -62,32 +80,32 @@
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>												
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.clave}">
+            <p:column class="MarAuto Responsive janal-wid-20" sortBy="#{row.nombreEmpresa}">
+              <f:facet name="header">
+                <h:outputText value="Sucursal"/>
+              </f:facet>
+              <h:outputText value="#{row['nombreEmpresa']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.clave}">
               <f:facet name="header">
                 <h:outputText value="Clave"/>
               </f:facet>
-              <h:outputText value="#{filtro['clave']}"/>
+              <h:outputText value="#{row['clave']}"/>
             </p:column>														
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.nombre}">
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
               </f:facet>
-              <h:outputText value="#{filtro['nombre']}"/>
+              <h:outputText value="#{row['nombre']}"/>
             </p:column>					
-            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.descripcion}">
-              <f:facet name="header">
-                <h:outputText value="Descripcion"/>
-              </f:facet>
-              <h:outputText value="#{filtro['descripcion']}"/>
-            </p:column>	                          			
-            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.calle}">
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.calle}">
               <f:facet name="header">
                 <h:outputText value="Calle"/>
               </f:facet>
-              <h:outputText value="#{filtro['calle']}"/>
+              <h:outputText value="#{row['calle']}"/>
             </p:column>					                                    
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{manticCatalogosAlmacenesFiltro.lazyModel==null?0:manticCatalogosAlmacenesFiltro.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{manticCatalogosAlmacenesFiltro.lazyModel== null? 0: manticCatalogosAlmacenesFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
