@@ -77,11 +77,16 @@
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-12">
 										<p:panelGrid id="datosArticulos" columns="6" layout="grid" styleClass="janal-wid-100" columnClasses=" , , , , ,janal-column-center">
+											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" columnClasses="janal-column-center">
+												<p:outputLabel for="catalogos" value="Busqueda articulos/refacciones"/>
+												<p:selectBooleanCheckbox id="catalogos" value="#{manticTallerDetalle.attrs.catalogos}" title="Buscar articulos y refacciones a la vez" styleClass="filas">
+													<p:ajax event="change" process="@this" update="@this"/>
+												</p:selectBooleanCheckbox>
+											</p:panelGrid>
+											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100"/>																							
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100"/>
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100"/>
-											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100"/>
-											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100"/>
-											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100"/>
+											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100"/>																							
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
   											<p:outputLabel for="descuento" value="% Descuentos:"/>
 												<p:inputText id="descuento" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticTallerDetalle.adminOrden.orden.descuento}">

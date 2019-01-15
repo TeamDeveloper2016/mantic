@@ -4521,6 +4521,36 @@
 				order by
 					nombre
 			</select>
+			<select id="refaccionesPorNombre">
+				select
+					*
+				from 
+					(select
+					  tc_mantic_trabajos.id_trabajo as id_key,
+						tc_mantic_trabajos.id_trabajo,
+						tc_mantic_trabajos.codigo as propio,
+						tc_mantic_trabajos.nombre,
+						tc_mantic_trabajos.descripcion,
+						tc_mantic_trabajos.precio,
+						tc_mantic_trabajos.precio as original,
+						tc_mantic_trabajos.iva,
+						2 as id_redondear,
+						2 as is_articulo,
+						'SERVICIO' as is_tipo
+					from
+						tc_mantic_trabajos
+					inner join 
+						tc_mantic_empresas on tc_mantic_trabajos.id_empresa = tc_mantic_empresas.id_empresa
+					where
+						tc_mantic_trabajos.id_empresa in ({sucursales})
+				  and 
+						(upper(tc_mantic_trabajos.nombre) regexp '.*{codigo}.*'
+				   or
+				    tc_mantic_trabajos.id_trabajo= {idTrabajo}) 
+					) as tc_mantic_dual
+				order by
+					nombre
+			</select>
 			<select id="porLikeNombre">
 				select
 					*
@@ -4637,6 +4667,36 @@
 				    tc_mantic_trabajos.id_trabajo= {idTrabajo}				
 				  ) 
 				) as tc_mantic_dual
+				order by
+					propio
+			</select>			
+			<select id="refaccionesPorCodigo">
+				select
+					*
+				from 
+					(select
+						tc_mantic_trabajos.id_trabajo as id_key,
+						tc_mantic_trabajos.id_trabajo,
+						tc_mantic_trabajos.codigo as propio,
+						tc_mantic_trabajos.nombre,
+						tc_mantic_trabajos.descripcion,
+						tc_mantic_trabajos.precio,
+						tc_mantic_trabajos.precio as original,
+						tc_mantic_trabajos.iva,
+						2 as id_redondear,
+						2 as is_articulo,
+						'SERVICIO' as is_tipo
+					from
+						tc_mantic_trabajos
+					inner join 
+						tc_mantic_empresas on tc_mantic_trabajos.id_empresa = tc_mantic_empresas.id_empresa
+					where
+						tc_mantic_trabajos.id_empresa in ({sucursales})
+						and 
+							(upper(tc_mantic_trabajos.codigo) regexp '.*{codigo}.*'
+						or
+							tc_mantic_trabajos.id_trabajo= {idTrabajo}) 
+					) as tc_mantic_dual
 				order by
 					propio
 			</select>			
