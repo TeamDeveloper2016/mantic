@@ -5153,7 +5153,7 @@
           tc_mantic_articulos on tc_mantic_transferencias.id_articulo = tc_mantic_articulos.id_articulo
         inner join 
 					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
-        inner join 
+        left join 
           tc_mantic_personas on tc_mantic_transferencias.id_solicito = tc_mantic_personas.id_persona
         inner join 
         	tc_mantic_almacenes origen on tc_mantic_transferencias.id_almacen = origen.id_almacen
