@@ -86,7 +86,7 @@ public class Accion extends IBaseAttribute implements Serializable {
           break;
         case MODIFICAR:
         case CONSULTAR:
-          this.transferencia = (Traspases) DaoFactory.getInstance().toEntity(Traspases.class, "TcManticTransferenciasDto", "detalle", this.attrs);
+          this.transferencia= (Traspases) DaoFactory.getInstance().toEntity(Traspases.class, "TcManticTransferenciasDto", "detalle", this.attrs);
           this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
           this.attrs.put("idArticulo", this.transferencia.getIdArticulo());
           this.attrs.put("idAlmacen", this.transferencia.getIdAlmacen());
@@ -175,13 +175,15 @@ public class Accion extends IBaseAttribute implements Serializable {
     Entity destino = null;
     UISelectEntity articulo= null;
 		try {
+      this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("idDestino", this.transferencia.getIdDestino());
       destino = (Entity) DaoFactory.getInstance().toEntity("VistaAlmacenesTransferenciasDto", "articulo", this.attrs);
 			articulo= (UISelectEntity)this.attrs.get("articulo");
       this.attrs.put("destino", destino);
 			Double stock  = articulo!= null? articulo.toDouble("stock"): 0D;
-			Double calculo= 0D;
-			Double maximo = 0D;
+			Double calculo = 0D;
+			Double maximo  = 0D;
+			Double sugerido= 0D;
 			if(destino== null) {
 				TcManticArticulosDto item= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.transferencia.getIdArticulo());
    			calculo= 0D;
@@ -198,7 +200,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 				case 5:
 					this.attrs.put("nuevaExistenciaOrigen", stock- this.transferencia.getCantidad());
 					this.attrs.put("nuevaExistenciaDestino", calculo+ this.transferencia.getCantidad());
-					this.attrs.put("sugerido", maximo- calculo);
+					sugerido= maximo- calculo< 0? 0D: maximo- calculo;
+					this.attrs.put("sugerido", sugerido);
+					if(this.transferencia.getCantidad()== 0D)
+						this.transferencia.setCantidad(sugerido);
 					break;
 				case 3:
 					this.attrs.put("nuevaExistenciaOrigen", stock);

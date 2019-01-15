@@ -10,21 +10,21 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'idEmpresa'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-				'codigos'     : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-        'fechaInicio' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        'fechaTermino': {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'idEmpresa'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'codigos_input': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'fechaInicio'  : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'fechaTermino' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'idTransferenciaEstatus': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
       };
 			
 			fieldsDialog= {
-				'idEstatus' : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoDos'},
-				'justificacion' : {validaciones: 'libre', mascara: 'libre', grupo: 'dialogoDos', formatos: 'cambiar-mayusculas'}
+				'estatusDlg'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoDos'},
+				'justificacion': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogoDos', formatos: 'cambiar-mayusculas'}
 			};
 			
-			function validaJustificacion(){
+			function validaJustificacion() {
 				var ok= janal.partial('dialogoDos');
-				if(ok){
+				if(ok) {
 					PF('dlgEstatus').hide();
 					janal.restore();
 					janal.refresh();
@@ -101,10 +101,10 @@
             </h:panelGrid>
             <p:separator/>
             <div class="janal-align-right lg-pantalla">
-              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doLoad}" update="tabla"/>
+              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" oncomplete="janal.desbloquear();" process="panelBusqueda" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doLoad}" update="tabla"/>
             </div>
 						<div class="janal-align-right xs-pantalla">
- 						  <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doLoad}" update="tabla" />
+ 						  <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" oncomplete="janal.desbloquear();" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doLoad}" update="tabla"/>
 					  </div>
           </p:panel>
         </div>
@@ -186,7 +186,7 @@
     </div>	    		
   </ui:define>
   <ui:param name="componenteBloqueo" value="buscar buscarIcon  tabla"/>
-  <ui:param name="textoConfirmacion" value="¿Está seguro que deseas eliminar la transferencia?" />
+  <ui:param name="textoConfirmacion" value="¿ Está seguro que deseas eliminar la transferencia ?" />
   <ui:param name="accionConfirmacion" value="#{manticCatalogosAlmacenesTransferenciasFiltro}"/>
   <ui:param name="updateComponent" value="tabla"/>
   <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
@@ -203,8 +203,8 @@
 		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onShow="janal.change('formDialogoEstatus', fieldsDialog); janal.refresh();">
 			<h:form id="formDialogoEstatus" prependId="false">
 				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
-					<p:outputLabel for="idTransferenciaEstatus" value="Estatus:"/>												
-					<p:selectOneMenu id="idTransferenciaEstatus" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.idTransferenciaEstatus}" styleClass="janal-wid-100-txt">									
+					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
+					<p:selectOneMenu id="estatusDlg" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.estatus}" styleClass="janal-wid-100-txt">									
 						<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.allEstatusAsigna}"/>					
 					</p:selectOneMenu>
 					<p:outputLabel for="justificacion" value="Justificación:"/>
