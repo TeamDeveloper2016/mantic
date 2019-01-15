@@ -26,6 +26,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.almacenes.transferencias.beans.Traspases;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
 import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.Transaccion;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
@@ -57,6 +58,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
       this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia"));
       this.attrs.put("buscaPorCodigo", false);
+			this.attrs.put("sugerido", 0D);
       doLoad();
 		} // try
 		catch (Exception e) {
@@ -77,7 +79,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 						-1L, // Long idArticulo, 
 						-1L, // Long idSolicito, 
 						JsfBase.getIdUsuario(), // Long idUsuario, 
-						1L, // Long idTransferenciaEstatus, 
+						5L, // Long idTransferenciaEstatus, 
 						0D, // Double cantidad, 
 						"" // String observaciones
 					);
@@ -170,22 +172,35 @@ public class Accion extends IBaseAttribute implements Serializable {
   }
   
   public void doUpdateAlmacenDestino() {
-    Entity destino= null;
+    Entity destino = null;
+    UISelectEntity articulo= null;
 		try {
       this.attrs.put("idDestino", this.transferencia.getIdDestino());
       destino = (Entity) DaoFactory.getInstance().toEntity("VistaAlmacenesTransferenciasDto", "articulo", this.attrs);
+			articulo= (UISelectEntity)this.attrs.get("articulo");
       this.attrs.put("destino", destino);
-			Double stock   = this.attrs.get("articulo")!= null? ((UISelectEntity)this.attrs.get("articulo")).toDouble("stock"): 0D;
-			Double calculo = destino!= null? destino.toDouble("stock"): 0D;
+			Double stock  = articulo!= null? articulo.toDouble("stock"): 0D;
+			Double calculo= 0D;
+			Double maximo = 0D;
+			if(destino== null) {
+				TcManticArticulosDto item= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.transferencia.getIdArticulo());
+   			calculo= 0D;
+			  maximo = item.getMaximo();
+			} // if
+			else {
+   			calculo= destino.toDouble("stock");
+			  maximo = destino.toDouble("maximo");
+			} // else
 			switch(this.transferencia.getIdTransferenciaEstatus().intValue()) {
 				case 1:
 				case 2:
 				case 4:
+				case 5:
 					this.attrs.put("nuevaExistenciaOrigen", stock- this.transferencia.getCantidad());
 					this.attrs.put("nuevaExistenciaDestino", calculo+ this.transferencia.getCantidad());
+					this.attrs.put("sugerido", maximo- calculo);
 					break;
 				case 3:
-				case 5:
 					this.attrs.put("nuevaExistenciaOrigen", stock);
 					this.attrs.put("nuevaExistenciaDestino", calculo);
 					break;
