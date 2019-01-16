@@ -5,8 +5,11 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
@@ -42,6 +45,7 @@ public class Transaccion extends IBaseTnx {
     	this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para transferencia de articulos.");
       TcManticTransferenciasBitacoraDto bitacora = null;
       TcManticAlmacenesArticulosDto origen= null;			
+  		Long consecutivo                    = 0L;
       switch (accion) {
         case AGREGAR:
 					//Afectar el almacen original restando los articulos que fueron extraidos
@@ -74,6 +78,9 @@ public class Transaccion extends IBaseTnx {
 						origen.setStock(Numero.toRedondearSat(origen.getStock()+ this.dto.getCantidad()));
 						regresar= DaoFactory.getInstance().update(sesion, origen).intValue()> 0;
 					} // else
+					consecutivo= this.toSiguiente(sesion);
+					this.dto.setConsecutivo(this.dto.getEjercicio()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
+					this.dto.setOrden(consecutivo);
           regresar= DaoFactory.getInstance().insert(sesion, this.dto).intValue()> 0;
 					bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), JsfBase.getIdUsuario(), this.dto.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
           regresar= DaoFactory.getInstance().insert(sesion, bitacora).intValue()> 0;
@@ -169,7 +176,25 @@ public class Transaccion extends IBaseTnx {
 		} // finally
 		return regresar;
 	}
-	
 
+	private Long toSiguiente(Session sesion) throws Exception {
+		Long regresar= 1L;
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("idEmpresa", this.dto.getIdEmpresa());
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticTransferenciasDto", "siguiente", params, "siguiente");
+			if(next.getData()!= null)
+			  regresar= next.toLong();
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}
 
 }

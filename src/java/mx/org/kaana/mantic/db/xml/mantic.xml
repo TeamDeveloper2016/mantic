@@ -4438,6 +4438,15 @@
           and id_articulo= {idArticulo} 
           and id_solicito= {idSolicito}
       </select>
+      <select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_transferencias
+				where
+				  ejercicio= {ejercicio} 
+				  and id_empresa= {idEmpresa}				
+			</select>		
       <select id="detalle">
         select      
           *
