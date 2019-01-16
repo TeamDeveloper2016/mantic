@@ -75,7 +75,7 @@ public class Transaccion extends IBaseTnx {
 						regresar= DaoFactory.getInstance().update(sesion, origen).intValue()> 0;
 					} // else
           regresar= DaoFactory.getInstance().insert(sesion, this.dto).intValue()> 0;
-					bitacora= new TcManticTransferenciasBitacoraDto(-1L, this.dto.getIdTransferencia(), JsfBase.getIdUsuario(), this.dto.getIdTransferenciaEstatus(), "");
+					bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), JsfBase.getIdUsuario(), this.dto.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
           regresar= DaoFactory.getInstance().insert(sesion, bitacora).intValue()> 0;
           break;
         case MODIFICAR:
@@ -131,7 +131,7 @@ public class Transaccion extends IBaseTnx {
 					    } // else
 							break;
 					} // switch
- 					bitacora= new TcManticTransferenciasBitacoraDto(-1L, this.dto.getIdTransferencia(), JsfBase.getIdUsuario(), this.dto.getIdTransferenciaEstatus(), "");
+ 					bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), JsfBase.getIdUsuario(), this.dto.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
           regresar= DaoFactory.getInstance().insert(sesion, bitacora).intValue()> 0;
           break;
       } // switch

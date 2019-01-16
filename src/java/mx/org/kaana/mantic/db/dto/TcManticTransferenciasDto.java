@@ -1,6 +1,9 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
+import java.sql.Blob;
+import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -10,6 +13,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -18,7 +24,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 /**
  *@company KAANA
  *@project KAJOOL (Control system polls)
- *@date 21/07/2018
+ *@date 10/10/2016
  *@time 11:58:22 PM
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
@@ -28,130 +34,184 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 public class TcManticTransferenciasDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
+  @Column (name="id_solicito")
+  private Long idSolicito;
+  @Column (name="id_transferencia_estatus")
+  private Long idTransferenciaEstatus;
+  @Column (name="id_transferencia_tipo")
+  private Long idTransferenciaTipo;
+  @Column (name="ejercicio")
+  private Long ejercicio;
+  @Column (name="registro")
+  private Timestamp registro;
+  @Column (name="consecutivo")
+  private String consecutivo;
+  @Column (name="id_usuario")
+  private Long idUsuario;
+  @Column (name="id_almacen")
+  private Long idAlmacen;
+  @Column (name="observaciones")
+  private String observaciones;
+  @Column (name="id_destino")
+  private Long idDestino;
+  @Column (name="id_empresa")
+  private Long idEmpresa;
+  @Column (name="cantidad")
+  private Double cantidad;
+  @Column (name="orden")
+  private Long orden;
+  @Column (name="id_articulo")
+  private Long idArticulo;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_transferencia")
   private Long idTransferencia;
-  @Column (name="id_almacen")
-  private Long idAlmacen;
-  @Column (name="id_destino")
-  private Long idDestino;
-  @Column (name="id_articulo")
-  private Long idArticulo;
-  @Column (name="id_solicito")
-  private Long idSolicito;
-  @Column (name="id_usuario")
-  private Long idUsuario;
-  @Column (name="id_transferencia_estatus")
-  private Long idTransferenciaEstatus;
-  @Column (name="cantidad")
-  private Double cantidad;
-  @Column (name="observaciones")
-  private String observaciones;
-  @Column (name="registro")
-  private Timestamp registro;
-  
-  
+
   public TcManticTransferenciasDto() {
     this(new Long(-1L));
   }
 
   public TcManticTransferenciasDto(Long key) {
-    this(new Long(-1L), new Long(-1L), new Long(-1L), new Long(-1L), new Long(-1L), new Long(-1L), new Long(-1L), new Double(-1D), null);
+    this(null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L));
     setKey(key);
   }
 
-  public TcManticTransferenciasDto(Long idTransferencia, Long idAlmacen, Long idDestino, Long idArticulo, Long idSolicito, Long idUsuario, Long idTransferenciaEstatus, Double cantidad, String observaciones) {
-    setIdTransferencia(idTransferencia);
-    setIdAlmacen(idAlmacen);
-    setIdDestino(idDestino);
-    setIdArticulo(idArticulo);
+  public TcManticTransferenciasDto(Long idSolicito, Long idTransferenciaEstatus, Long idTransferenciaTipo, Long ejercicio, String consecutivo, Long idUsuario, Long idAlmacen, String observaciones, Long idDestino, Long idEmpresa, Double cantidad, Long orden, Long idArticulo, Long idTransferencia) {
     setIdSolicito(idSolicito);
-    setIdUsuario(idUsuario);
     setIdTransferenciaEstatus(idTransferenciaEstatus);
-    setCantidad(cantidad);
-    setObservaciones(observaciones);
+    setIdTransferenciaTipo(idTransferenciaTipo);
+    setEjercicio(ejercicio);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setConsecutivo(consecutivo);
+    setIdUsuario(idUsuario);
+    setIdAlmacen(idAlmacen);
+    setObservaciones(observaciones);
+    setIdDestino(idDestino);
+    setIdEmpresa(idEmpresa);
+    setCantidad(cantidad);
+    setOrden(orden);
+    setIdArticulo(idArticulo);
+    setIdTransferencia(idTransferencia);
   }
-  
-  public Long getIdTransferencia() {
-    return idTransferencia;
-  }
-
-  public void setIdTransferencia(Long idTransferencia) {
-    this.idTransferencia = idTransferencia;
-  }
-
-  public Long getIdAlmacen() {
-    return idAlmacen;
-  }
-
-  public void setIdAlmacen(Long idAlmacen) {
-    this.idAlmacen = idAlmacen;
-  }
-
-  public Long getIdDestino() {
-    return idDestino;
-  }
-
-  public void setIdDestino(Long idDestino) {
-    this.idDestino = idDestino;
-  }
-
-  public Long getIdArticulo() {
-    return idArticulo;
-  }
-
-  public void setIdArticulo(Long idArticulo) {
-    this.idArticulo = idArticulo;
+	
+  public void setIdSolicito(Long idSolicito) {
+    this.idSolicito = idSolicito;
   }
 
   public Long getIdSolicito() {
     return idSolicito;
   }
 
-  public void setIdSolicito(Long idSolicito) {
-    this.idSolicito = idSolicito;
-  }
-
-  public Long getIdUsuario() {
-    return idUsuario;
-  }
-
-  public void setIdUsuario(Long idUsuario) {
-    this.idUsuario = idUsuario;
+  public void setIdTransferenciaEstatus(Long idTransferenciaEstatus) {
+    this.idTransferenciaEstatus = idTransferenciaEstatus;
   }
 
   public Long getIdTransferenciaEstatus() {
     return idTransferenciaEstatus;
   }
 
-  public void setIdTransferenciaEstatus(Long idTransferenciaEstatus) {
-    this.idTransferenciaEstatus = idTransferenciaEstatus;
+  public void setIdTransferenciaTipo(Long idTransferenciaTipo) {
+    this.idTransferenciaTipo = idTransferenciaTipo;
   }
 
-  public Double getCantidad() {
-    return cantidad;
+  public Long getIdTransferenciaTipo() {
+    return idTransferenciaTipo;
   }
 
-  public void setCantidad(Double cantidad) {
-    this.cantidad = cantidad;
+  public void setEjercicio(Long ejercicio) {
+    this.ejercicio = ejercicio;
   }
 
-  public String getObservaciones() {
-    return observaciones;
+  public Long getEjercicio() {
+    return ejercicio;
   }
 
-  public void setObservaciones(String observaciones) {
-    this.observaciones = observaciones;
+  public void setRegistro(Timestamp registro) {
+    this.registro = registro;
   }
 
   public Timestamp getRegistro() {
     return registro;
   }
 
-  public void setRegistro(Timestamp registro) {
-    this.registro = registro;
+  public void setConsecutivo(String consecutivo) {
+    this.consecutivo = consecutivo;
+  }
+
+  public String getConsecutivo() {
+    return consecutivo;
+  }
+
+  public void setIdUsuario(Long idUsuario) {
+    this.idUsuario = idUsuario;
+  }
+
+  public Long getIdUsuario() {
+    return idUsuario;
+  }
+
+  public void setIdAlmacen(Long idAlmacen) {
+    this.idAlmacen = idAlmacen;
+  }
+
+  public Long getIdAlmacen() {
+    return idAlmacen;
+  }
+
+  public void setObservaciones(String observaciones) {
+    this.observaciones = observaciones;
+  }
+
+  public String getObservaciones() {
+    return observaciones;
+  }
+
+  public void setIdDestino(Long idDestino) {
+    this.idDestino = idDestino;
+  }
+
+  public Long getIdDestino() {
+    return idDestino;
+  }
+
+  public void setIdEmpresa(Long idEmpresa) {
+    this.idEmpresa = idEmpresa;
+  }
+
+  public Long getIdEmpresa() {
+    return idEmpresa;
+  }
+
+  public void setCantidad(Double cantidad) {
+    this.cantidad = cantidad;
+  }
+
+  public Double getCantidad() {
+    return cantidad;
+  }
+
+  public void setOrden(Long orden) {
+    this.orden = orden;
+  }
+
+  public Long getOrden() {
+    return orden;
+  }
+
+  public void setIdArticulo(Long idArticulo) {
+    this.idArticulo = idArticulo;
+  }
+
+  public Long getIdArticulo() {
+    return idArticulo;
+  }
+
+  public void setIdTransferencia(Long idTransferencia) {
+    this.idTransferencia = idTransferencia;
+  }
+
+  public Long getIdTransferencia() {
+    return idTransferencia;
   }
 
   @Transient
@@ -169,25 +229,35 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getCantidad());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdAlmacen());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdArticulo());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdDestino());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdSolicito());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdTransferencia());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTransferenciaEstatus());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTransferenciaTipo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getEjercicio());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getConsecutivo());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdAlmacen());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getRegistro());
+		regresar.append(getIdDestino());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEmpresa());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCantidad());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getOrden());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdArticulo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTransferencia());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -195,32 +265,28 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
+		regresar.put("idSolicito", getIdSolicito());
+		regresar.put("idTransferenciaEstatus", getIdTransferenciaEstatus());
+		regresar.put("idTransferenciaTipo", getIdTransferenciaTipo());
+		regresar.put("ejercicio", getEjercicio());
+		regresar.put("registro", getRegistro());
+		regresar.put("consecutivo", getConsecutivo());
+		regresar.put("idUsuario", getIdUsuario());
+		regresar.put("idAlmacen", getIdAlmacen());
+		regresar.put("observaciones", getObservaciones());
+		regresar.put("idDestino", getIdDestino());
+		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("cantidad", getCantidad());
-    regresar.put("idAlmacen", getIdAlmacen());
-    regresar.put("idArticulo", getIdArticulo());
-    regresar.put("idDestino", getIdDestino());
-    regresar.put("idSolicito", getIdSolicito());
-    regresar.put("idTransferencia", getIdTransferencia());
-    regresar.put("idTransferenciaEstatus", getIdTransferenciaEstatus());
-    regresar.put("idUsuario", getIdUsuario());
-    regresar.put("observaciones", getObservaciones());
-    regresar.put("registro", getRegistro());
+		regresar.put("orden", getOrden());
+		regresar.put("idArticulo", getIdArticulo());
+		regresar.put("idTransferencia", getIdTransferencia());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getCantidad(),
-      getIdAlmacen(),
-      getIdArticulo(),
-      getIdDestino(),
-      getIdSolicito(),
-      getIdTransferencia(),
-      getIdTransferenciaEstatus(),
-      getIdUsuario(),
-      getObservaciones(),
-      getRegistro()
+    getIdSolicito(), getIdTransferenciaEstatus(), getIdTransferenciaTipo(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getIdAlmacen(), getObservaciones(), getIdDestino(), getIdEmpresa(), getCantidad(), getOrden(), getIdArticulo(), getIdTransferencia()
     };
     return regresar;
   }
@@ -275,7 +341,7 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdTransferencia()!= null ? getIdTransferencia().hashCode() : 0);
+    hash = 67 * hash + (getIdTransferencia() != null ? getIdTransferencia().hashCode() : 0);
     return hash;
   }
 

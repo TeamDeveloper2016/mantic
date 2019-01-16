@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.catalogos.almacenes.transferencias.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,15 +74,20 @@ public class Accion extends IBaseAttribute implements Serializable {
       switch (this.accion) {
         case AGREGAR:
 				 	this.transferencia= new Traspases(
-						-1L, // Long idTransferencia, 
-						-1L, // Long idAlmacen, 
-						-1L, // Long idDestino, 
-						-1L, // Long idArticulo, 
-						-1L, // Long idSolicito, 
-						JsfBase.getIdUsuario(), // Long idUsuario, 
+            null, // Long idSolicito, 
 						5L, // Long idTransferenciaEstatus, 
+						1L, // Long idTransferenciaTipo, 
+						new Long(Calendar.getInstance().get(Calendar.YEAR)), // Long ejercicio, 
+						Calendar.getInstance().get(Calendar.YEAR)+ "00000", // String consecutivo, 
+						JsfBase.getIdUsuario(), // Long idUsuario, 
+						-1L, // Long idAlmacen, 
+						"", // String observaciones, 
+						-1L, // Long idDestino, 
+						JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende(), // Long idEmpresa, 
 						0D, // Double cantidad, 
-						"" // String observaciones
+						1L, // Long orden, 
+						-1L, // Long idArticulo, 
+						-1L // Long idTransferencia					
 					);
           break;
         case MODIFICAR:

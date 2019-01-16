@@ -26,13 +26,13 @@ public class Traspases extends TcManticTransferenciasDto implements Serializable
 		this.ikSolicito= new UISelectEntity(-1L);
 	}
 
-	public Traspases(Long idTransferencia, Long idAlmacen, Long idDestino, Long idArticulo, Long idSolicito, Long idUsuario, Long idTransferenciaEstatus, Double cantidad, String observaciones) {
-		super(idTransferencia, idAlmacen, idDestino, idArticulo, idSolicito, idUsuario, idTransferenciaEstatus, cantidad, observaciones);
+	public Traspases(Long idSolicito, Long idTransferenciaEstatus, Long idTransferenciaTipo, Long ejercicio, String consecutivo, Long idUsuario, Long idAlmacen, String observaciones, Long idDestino, Long idEmpresa, Double cantidad, Long orden, Long idArticulo, Long idTransferencia) {
+		super(idSolicito, idTransferenciaEstatus, idTransferenciaTipo, ejercicio, consecutivo, idUsuario, idAlmacen, observaciones, idDestino, idEmpresa, cantidad, orden, idArticulo, idTransferencia);
 		this.ikAlmacen = new UISelectEntity(-1L);
 		this.ikDestino = new UISelectEntity(-1L);
 		this.ikSolicito= new UISelectEntity(-1L);
 	}
-	
+
 	public UISelectEntity getIkAlmacen() {
 		return ikAlmacen;
 	}

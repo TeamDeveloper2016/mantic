@@ -6,7 +6,97 @@
   <model>    
   </model>
 
-  <dml>	
+  <dml>
+    <unit id="TcManticConfrontasEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_confrontas_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_confrontas_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+		<unit id="TcManticConfrontasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_confrontas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_confrontas
+        where      
+          id_transferencia = {idTransferencia}
+      </select>
+    </unit>			
+    <unit id="TcManticConfrontasDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_confrontas_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_confrontas_detalles
+        where      
+          id_confronta = {idConfronta} and id_articulo = {idArticulo}
+      </select>
+    </unit>		
+    <unit id="TcManticConfrontasBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_confrontas_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_confrontas_bitacora
+        where      
+          id_confronta_bitacora = {idConfrontaBitacora}
+      </select>
+    </unit>		
+	  <unit id="TcManticTransferenciasDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_transferencias_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_transferencias_detalles
+        where      
+          id_articulo = {idArticulo} and id_transferencia = {idTransferencia}
+      </select>
+    </unit>
     <unit id="TcManticMasivasBitacoraDto">
       <select id="row">
         select      
@@ -4381,9 +4471,10 @@
         from      
           tc_mantic_transferencias_bitacora
         where      
-          id_usuario= {idUsuario} and
-          id_transferencia_estatus= {idTransferenciaEstatus} and
-          id_transferencia= {idTransferencia}
+          id_usuario= {idUsuario} 
+          and id_transferencia_estatus= {idTransferenciaEstatus} 
+          and id_transferencia= {idTransferencia}
+				  and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
       </select>
       <select id="todos">
         select      

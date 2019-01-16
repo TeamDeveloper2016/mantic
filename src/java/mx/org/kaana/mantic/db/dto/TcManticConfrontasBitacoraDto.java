@@ -30,60 +30,57 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_mantic_transferencias_bitacora")
-public class TcManticTransferenciasBitacoraDto implements IBaseDto, Serializable {
+@Table(name="tc_mantic_confrontas_bitacora")
+public class TcManticConfrontasBitacoraDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
-  @Id
-  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_transferencia_bitacora")
-  private Long idTransferenciaBitacora;
   @Column (name="justificacion")
   private String justificacion;
+  @Column (name="id_confronta")
+  private Long idConfronta;
   @Column (name="id_usuario")
   private Long idUsuario;
-  @Column (name="id_transporto")
-  private Long idTransporto;
-  @Column (name="id_transferencia_estatus")
-  private Long idTransferenciaEstatus;
-  @Column (name="id_transferencia")
-  private Long idTransferencia;
+  @Column (name="id_confronta_estatus")
+  private Long idConfrontaEstatus;
+  @Id
+  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
+	@Column (name="id_confronta_bitacora")
+  private Long idConfrontaBitacora;
   @Column (name="registro")
   private Timestamp registro;
 
-  public TcManticTransferenciasBitacoraDto() {
+  public TcManticConfrontasBitacoraDto() {
     this(new Long(-1L));
   }
 
-  public TcManticTransferenciasBitacoraDto(Long key) {
-    this(new Long(-1L), null, null, null, null, null);
+  public TcManticConfrontasBitacoraDto(Long key) {
+    this(null, null, null, null, new Long(-1L));
     setKey(key);
   }
 
-  public TcManticTransferenciasBitacoraDto(Long idTransferenciaBitacora, String justificacion, Long idUsuario, Long idTransporto, Long idTransferenciaEstatus, Long idTransferencia) {
-    setIdTransferenciaBitacora(idTransferenciaBitacora);
+  public TcManticConfrontasBitacoraDto(String justificacion, Long idConfronta, Long idUsuario, Long idConfrontaEstatus, Long idConfrontaBitacora) {
     setJustificacion(justificacion);
+    setIdConfronta(idConfronta);
     setIdUsuario(idUsuario);
-    setIdTransporto(idTransporto);
-    setIdTransferenciaEstatus(idTransferenciaEstatus);
-    setIdTransferencia(idTransferencia);
+    setIdConfrontaEstatus(idConfrontaEstatus);
+    setIdConfrontaBitacora(idConfrontaBitacora);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
-  public void setIdTransferenciaBitacora(Long idTransferenciaBitacora) {
-    this.idTransferenciaBitacora = idTransferenciaBitacora;
-  }
-
-  public Long getIdTransferenciaBitacora() {
-    return idTransferenciaBitacora;
-  }
-
   public void setJustificacion(String justificacion) {
     this.justificacion = justificacion;
   }
 
   public String getJustificacion() {
     return justificacion;
+  }
+
+  public void setIdConfronta(Long idConfronta) {
+    this.idConfronta = idConfronta;
+  }
+
+  public Long getIdConfronta() {
+    return idConfronta;
   }
 
   public void setIdUsuario(Long idUsuario) {
@@ -94,28 +91,20 @@ public class TcManticTransferenciasBitacoraDto implements IBaseDto, Serializable
     return idUsuario;
   }
 
-  public void setIdTransporto(Long idTransporto) {
-    this.idTransporto = idTransporto;
+  public void setIdConfrontaEstatus(Long idConfrontaEstatus) {
+    this.idConfrontaEstatus = idConfrontaEstatus;
   }
 
-  public Long getIdTransporto() {
-    return idTransporto;
+  public Long getIdConfrontaEstatus() {
+    return idConfrontaEstatus;
   }
 
-  public void setIdTransferenciaEstatus(Long idTransferenciaEstatus) {
-    this.idTransferenciaEstatus = idTransferenciaEstatus;
+  public void setIdConfrontaBitacora(Long idConfrontaBitacora) {
+    this.idConfrontaBitacora = idConfrontaBitacora;
   }
 
-  public Long getIdTransferenciaEstatus() {
-    return idTransferenciaEstatus;
-  }
-
-  public void setIdTransferencia(Long idTransferencia) {
-    this.idTransferencia = idTransferencia;
-  }
-
-  public Long getIdTransferencia() {
-    return idTransferencia;
+  public Long getIdConfrontaBitacora() {
+    return idConfrontaBitacora;
   }
 
   public void setRegistro(Timestamp registro) {
@@ -129,29 +118,27 @@ public class TcManticTransferenciasBitacoraDto implements IBaseDto, Serializable
   @Transient
   @Override
   public Long getKey() {
-  	return getIdTransferenciaBitacora();
+  	return getIdConfrontaBitacora();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idTransferenciaBitacora = key;
+  	this.idConfrontaBitacora = key;
   }
 
   @Override
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getIdTransferenciaBitacora());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getJustificacion());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdConfronta());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdTransporto());
+		regresar.append(getIdConfrontaEstatus());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdTransferenciaEstatus());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdTransferencia());
+		regresar.append(getIdConfrontaBitacora());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -161,12 +148,11 @@ public class TcManticTransferenciasBitacoraDto implements IBaseDto, Serializable
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("idTransferenciaBitacora", getIdTransferenciaBitacora());
 		regresar.put("justificacion", getJustificacion());
+		regresar.put("idConfronta", getIdConfronta());
 		regresar.put("idUsuario", getIdUsuario());
-		regresar.put("idTransporto", getIdTransporto());
-		regresar.put("idTransferenciaEstatus", getIdTransferenciaEstatus());
-		regresar.put("idTransferencia", getIdTransferencia());
+		regresar.put("idConfrontaEstatus", getIdConfrontaEstatus());
+		regresar.put("idConfrontaBitacora", getIdConfrontaBitacora());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -174,7 +160,7 @@ public class TcManticTransferenciasBitacoraDto implements IBaseDto, Serializable
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdTransferenciaBitacora(), getJustificacion(), getIdUsuario(), getIdTransporto(), getIdTransferenciaEstatus(), getIdTransferencia(), getRegistro()
+    getJustificacion(), getIdConfronta(), getIdUsuario(), getIdConfrontaEstatus(), getIdConfrontaBitacora(), getRegistro()
     };
     return regresar;
   }
@@ -188,8 +174,8 @@ public class TcManticTransferenciasBitacoraDto implements IBaseDto, Serializable
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idTransferenciaBitacora~");
-    regresar.append(getIdTransferenciaBitacora());
+    regresar.append("idConfrontaBitacora~");
+    regresar.append(getIdConfrontaBitacora());
     regresar.append("|");
     return regresar.toString();
   }
@@ -197,18 +183,18 @@ public class TcManticTransferenciasBitacoraDto implements IBaseDto, Serializable
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdTransferenciaBitacora());
+    regresar.append(getIdConfrontaBitacora());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcManticTransferenciasBitacoraDto.class;
+    return TcManticConfrontasBitacoraDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdTransferenciaBitacora()!= null && getIdTransferenciaBitacora()!=-1L;
+  	return getIdConfrontaBitacora()!= null && getIdConfrontaBitacora()!=-1L;
   }
 
   @Override
@@ -219,8 +205,8 @@ public class TcManticTransferenciasBitacoraDto implements IBaseDto, Serializable
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcManticTransferenciasBitacoraDto other = (TcManticTransferenciasBitacoraDto) obj;
-    if (getIdTransferenciaBitacora() != other.idTransferenciaBitacora && (getIdTransferenciaBitacora() == null || !getIdTransferenciaBitacora().equals(other.idTransferenciaBitacora))) {
+    final TcManticConfrontasBitacoraDto other = (TcManticConfrontasBitacoraDto) obj;
+    if (getIdConfrontaBitacora() != other.idConfrontaBitacora && (getIdConfrontaBitacora() == null || !getIdConfrontaBitacora().equals(other.idConfrontaBitacora))) {
       return false;
     }
     return true;
@@ -229,7 +215,7 @@ public class TcManticTransferenciasBitacoraDto implements IBaseDto, Serializable
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdTransferenciaBitacora() != null ? getIdTransferenciaBitacora().hashCode() : 0);
+    hash = 67 * hash + (getIdConfrontaBitacora() != null ? getIdConfrontaBitacora().hashCode() : 0);
     return hash;
   }
 
