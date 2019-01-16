@@ -32,7 +32,7 @@ public class Transaccion extends IBaseTnx {
 
 	public Transaccion(TcManticTransferenciasDto dto, Long idTransferenciaEstatus) {
 		this.dto= dto;
-		if(this.dto.getIdSolicito()< 0L)
+		if(this.dto.getIdSolicito()!= null && this.dto.getIdSolicito()< 0L)
 		  this.dto.setIdSolicito(null);
 		this.idTransferenciaEstatus= idTransferenciaEstatus;
 	}
