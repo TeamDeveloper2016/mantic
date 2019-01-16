@@ -128,7 +128,9 @@ shortcut = {
 				'f9':120,
 				'f10':121,
 				'f11':122,
-				'f12':123
+				'f12':123,
+				
+				'minus': 109
 			}
 	
 			var modifiers = { 
@@ -350,4 +352,15 @@ shortcut.add("Shift+P", function() {
 			$('#contenedorGrupos\\:efectivo_input').focus();
 		}, 1000);						
 	} // if
+});
+
+shortcut.add("minus", function() {
+	janal.console('Shortcut finalizar cobro venta:');	
+	if((PF('wAceptarCompra') && $('#' + PF('wAceptarCompra').id).css('display')!== 'none') || (PF('wAceptarCompraIcon') && $('#' + PF('wAceptarCompraIcon').id).css('display')!== 'none')) {
+	  $('#' + ((PF('wAceptarCompra') && $('#' + PF('wAceptarCompra').id).css('display')!== 'none') ? 'aceptar' : 'aceptarIcon')).click();
+	} // if
+	else if((PF('wAceptarCotizacion') && $('#' + PF('wAceptarCotizacion').id).css('display')!== 'none') || (PF('wAceptarCotizacionIcon') && $('#' + PF('wAceptarCotizacionIcon').id).css('display')!== 'none')) {
+		$('#' + ((PF('wAceptarCotizacion') && $('#' + PF('wAceptarCotizacion').id).css('display')!== 'none') ? 'aceptCotizacion' : 'cotizacionIcon')).focus();
+		$('#' + ((PF('wAceptarCotizacion') && $('#' + PF('wAceptarCotizacion').id).css('display')!== 'none') ? 'aceptCotizacion' : 'cotizacionIcon')).click();
+	} // else if
 });

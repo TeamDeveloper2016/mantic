@@ -146,7 +146,10 @@
 						return $articulos.calculate($(this));
 						break;
 					case $articulos.VK_MINUS:
-						return $articulos.reset($(this));
+						if(!PF('wAceptarCompra'))
+							return $articulos.reset($(this));
+						else
+							return true;
 						break;
 					case $articulos.VK_REST:
 						return $articulos.show($(this));
@@ -218,10 +221,10 @@
 								if(ok) {
 									$articulos.leavePage= true;
 									var txt= $(this).val().trim().length<= 0;
-									if(txt && $('ul.ui-autocomplete-items:visible').length<= 0 && confirm('¿ Esta seguro que desea terminar con la captura ?')) {
+									if(txt && $('ul.ui-autocomplete-items:visible').length<= 0 && !PF('wAceptarCompra') && confirm('¿ Esta seguro di finalizar la captura ?')) {
 										$('#aceptar').click();
 										return false;
-									} // if
+									} // if									
 								} // if
 							} // else
 						} // if
