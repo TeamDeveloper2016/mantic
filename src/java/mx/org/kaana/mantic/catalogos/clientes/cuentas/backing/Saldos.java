@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -332,4 +333,18 @@ public class Saldos extends IBaseFilter implements Serializable {
     }// finally
 		return (List<UISelectEntity>)this.attrs.get("clientes");
 	} // doCompleteCliente			
+	
+	public String doAccion(String accion) {
+		String regresar= "/Paginas/Mantic/Ventas/accion".concat(Constantes.REDIRECIONAR); 
+		try {
+			JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);		
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Clientes/Cuentas/saldos");					
+			JsfBase.setFlashAttribute("idVenta", ((Entity)this.attrs.get("seleccionado")).toLong("idVenta"));			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return regresar;
+  } // doAccion 
 }
