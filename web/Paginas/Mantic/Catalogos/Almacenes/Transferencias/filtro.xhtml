@@ -11,6 +11,7 @@
     <script type="text/javascript">
       Janal.Control.fields = {
         'idEmpresa'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'consecutivo'  : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', grupo: 'general'},
 				'codigos_input': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'fechaInicio'  : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'fechaTermino' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
@@ -67,6 +68,8 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
+              <p:outputLabel for="consecutivo" value="No. transferencia:"/>
+              <p:inputText id="consecutivo" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>              
               <p:outputLabel for="codigos" value="Código ó nombre:"/>
 							<p:autoComplete id="codigos" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.custom}" completeMethod="#{manticCatalogosAlmacenesTransferenciasFiltro.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 								<p:ajax event="itemSelect" process="panelBusqueda" update="tabla" listener="#{manticCatalogosAlmacenesTransferenciasFiltro.doLoad}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
@@ -109,7 +112,7 @@
           </p:panel>
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosAlmacenesTransferenciasFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosAlmacenesTransferenciasFiltro.lazyModel.rowCount gt manticCatalogosAlmacenesTransferenciasFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosAlmacenesTransferenciasFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosAlmacenesTransferenciasFiltro.lazyModel.rowCount gt manticCatalogosAlmacenesTransferenciasFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
             <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >
@@ -132,41 +135,47 @@
                 <p:menuitem icon="fa fa-file-word-o" title="Reporte" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doReporte('TRANSFERENCIAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
               </div>  
             </f:facet>												
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+              <f:facet name="header">
+                <h:outputText value="No. transferencia"/>
+              </f:facet>
+              <h:outputText value="#{row['consecutivo']}"/>
+            </p:column>		
 						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.nombreOrigen}">
 							<f:facet name="header">
 								<h:outputText value="Almacen origen"/>
 							</f:facet>
-							<h:outputText value="#{filtro['nombreOrigen']}"/>
+							<h:outputText value="#{row['nombreOrigen']}"/>
 						</p:column>														
 						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.nombreDestino}">
 							<f:facet name="header">
 								<h:outputText value="Almacen destino"/>
 							</f:facet>
-							<h:outputText value="#{filtro['nombreDestino']}"/>
+							<h:outputText value="#{row['nombreDestino']}"/>
 						</p:column>					
 						<p:column class="anal-column-left MarAuto Responsive" sortBy="#{filtro.nombre}">
 							<f:facet name="header">
 								<h:outputText value="Artículo"/>
 							</f:facet>
-							<h:outputText value="#{filtro['nombre']}" title="Observaciones: #{filtro['observaciones']}"/>
+							<h:outputText value="#{row['nombre']}" title="Observaciones: #{row['observaciones']}"/>
 						</p:column>					
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{filtro.cantidad}">
 							<f:facet name="header">
 								<h:outputText value="Cantidad"/>
 							</f:facet>
-							<h:outputText value="#{filtro['cantidad']}" title="Observaciones: #{filtro['observaciones']}"/>
+							<h:outputText value="#{row['cantidad']}" title="Observaciones: #{row['observaciones']}"/>
 						</p:column>							
             <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.nombreEstatus}">
 							<f:facet name="header">
 								<h:outputText value="Estatus"/>
 							</f:facet>
-							<h:outputText value="#{filtro['nombreEstatus']}" title="Observaciones: #{filtro['observaciones']}"/>
+							<h:outputText value="#{row['nombreEstatus']}" title="Observaciones: #{row['observaciones']}"/>
 						</p:column>	
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.registro}">
 							<f:facet name="header">
 								<h:outputText value="Fecha"/>
 							</f:facet>
-							<h:outputText value="#{filtro['registro']}"/>
+							<h:outputText value="#{row['registro']}"/>
 						</p:column>					
 						<f:facet name="footer">
 							Total [#{manticCatalogosAlmacenesTransferenciasFiltro.lazyModel== null? 0: manticCatalogosAlmacenesTransferenciasFiltro.lazyModel.rowCount}] registros

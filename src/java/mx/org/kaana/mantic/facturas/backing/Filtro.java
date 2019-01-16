@@ -34,7 +34,7 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
-import mx.org.kaana.mantic.catalogos.reportes.reglas.ParametrosComunes;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.JuntarReporte;
 import mx.org.kaana.mantic.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
@@ -43,6 +43,9 @@ import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
+import mx.org.kaana.mantic.facturas.reglas.Transferir;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
@@ -51,6 +54,8 @@ import org.primefaces.event.SelectEvent;
 public class Filtro extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428332L;
+	private static final Log LOG=LogFactory.getLog(Filtro.class);
+	
 	private List<Correo> correos;
 	private List<Correo> selectedCorreos;	
 	private Correo correo;
@@ -288,30 +293,46 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // toFindCliente
 	
 	public void doReporte(String nombre) throws Exception{
-		ParametrosComunes parametrosComunes = null;
+		Parametros comunes = null;
 		Map<String, Object>params    = null;
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
     Entity seleccionado          = null;
-		try{		
-      params= toPrepare();	
+		try {		
+      params= this.toPrepare();	
       seleccionado = ((Entity)this.attrs.get("seleccionado"));
+			//recuperar el sello digital en caso de que la factura ya fue timbrada para que salga de forma correcta el reporte
+			if(seleccionado.toString("idFacturama")!= null && seleccionado.toString("selloSat")== null) {
+				Transferir transferir= null;
+				try {
+          transferir= new Transferir(seleccionado.toString("idFacturama"));
+				  transferir.ejecutar(EAccion.PROCESAR);
+				} // try
+        catch(Exception e) {
+					LOG.warn("La factura ["+ seleccionado.toLong("idFactura")+ "] presento un problema al recuperar el sello digital ["+ seleccionado.toString("idFacturama")+"]");
+          Error.mensaje(e);
+				} // catch
+				finally {
+					transferir= null;
+				} // finally
+			} // if
       //es importante este orden para los grupos en el reporte	
       params.put("sortOrder", "order by tc_mantic_ficticias.id_empresa, tc_mantic_clientes.id_cliente, tc_mantic_ficticias.ejercicio, tc_mantic_ficticias.orden");
       reporteSeleccion= EReportes.valueOf(nombre);
-      if(!reporteSeleccion.equals(EReportes.FACTURAS_FICTICIAS)){
+      if(!reporteSeleccion.equals(EReportes.FACTURAS_FICTICIAS)) {
         params.put("idFicticia", seleccionado.getKey());
-        parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(),-1L, -1L,  seleccionado.toLong("idCliente"));
-      }
+        comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(),-1L, -1L, seleccionado.toLong("idCliente"));
+      } // if
       else
-        parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+        comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.reporte= JsfBase.toReporte();	
-      parametros= parametrosComunes.getParametrosComunes();
+      parametros= comunes.getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
       this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
       this.doVerificarReporte();
+			this.reporte.setPrevisualizar(true);
       this.reporte.doAceptar();			
     } // try
     catch(Exception e) {
@@ -320,7 +341,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch	
   } // doReporte
   
-  public void doReporteFacturas(String nombre) throws Exception{
+  public void doReporteFacturas(String nombre) throws Exception {
 		Map<String, Object>params    = null;
 		EReportes reporteSeleccion   = null;
     List<Definicion> definiciones= null;

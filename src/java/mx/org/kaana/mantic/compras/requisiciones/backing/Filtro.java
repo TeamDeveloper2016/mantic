@@ -30,7 +30,7 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.reportes.reglas.ParametrosComunes;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.compras.requisiciones.beans.RegistroRequisicion;
 import mx.org.kaana.mantic.compras.requisiciones.beans.Requisicion;
 import mx.org.kaana.mantic.compras.requisiciones.reglas.Transaccion;
@@ -179,7 +179,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
 	
 	public void doReporte(String nombre) throws Exception{
-    ParametrosComunes parametrosComunes = null;
+    Parametros comunes = null;
 		Map<String, Object>parametros= null;
     Map<String, Object>params    = null;
 		EReportes reporteSeleccion   = null;
@@ -192,10 +192,10 @@ public class Filtro extends IBaseFilter implements Serializable {
       params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
       params.put("sortOrder", "order by tc_mantic_requisiciones.id_empresa, tc_mantic_requisiciones.ejercicio, tc_mantic_requisiciones.orden");
       reporteSeleccion= EReportes.valueOf(nombre);
-      parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       //this.reporte.clean();
       this.reporte= JsfBase.toReporte();	
-      parametros= parametrosComunes.getParametrosComunes();
+      parametros= comunes.getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
@@ -210,7 +210,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doReporte
   
   public void doImprimirTodos(String nombre) {
-    ParametrosComunes parametrosComunes = null;
+    Parametros comunes = null;
 		Map<String, Object>parametros       = null;
     Map<String, Object>params           = null;
 		EReportes reporteSeleccion          = null;
@@ -231,8 +231,8 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.reporte= JsfBase.toReporte();	
       proveedores = DaoFactory.getInstance().toEntitySet("TcManticRequisicionesProveedoresDto", "proveedores", params);
       for(Entity proveedor:proveedores){
-        parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), -1L, proveedor.getKey(), -1L);
-        parametros= parametrosComunes.getParametrosComunes();
+        comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), -1L, proveedor.getKey(), -1L);
+        parametros= comunes.getComunes();
         parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
         parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
         parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));		

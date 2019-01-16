@@ -478,7 +478,7 @@ public class Transferir extends IBaseTnx {
 
 	private void toUpdateData(Session sesion, CfdiSearchResult cfdi, Cfdi detail, Long idFactura, String path) throws Exception {
 		TcManticFacturasDto factura= (TcManticFacturasDto)DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, idFactura);
-		if(factura!= null && factura.getSelloSat()== null) {
+		if(factura!= null && factura.getSelloSat()== null && factura.getCadenaOriginal()== null) {
 			LOG.warn("Actualizando datos de la factura ["+ cfdi.getFolio()+ "] del cliente ["+ cfdi.getRfc()+ "] porque estaba incompleto el registro !");
 			Complement complement = detail.getComplement();
 			factura.setComentarios("ESTA FACTURA FUE RECUPERADA DE FACTURAMA !");

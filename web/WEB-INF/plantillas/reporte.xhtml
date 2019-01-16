@@ -183,14 +183,13 @@
                 <pe:methodSignature parameters="java.lang.Long"/>
                 <pe:methodParam name="idAyuda"/>
               </pe:remoteCommand>
-							<p:dialog id="dlgPrevisualizar"  widgetVar="dialogoPrevisualizar" header="Vista previa" hideEffect="explode" dynamic="true" width="700" height="700" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false"   >								
-								<!--  <object type="application/pdf" data="#{kajoolTemplateReporte.attrs.reportePrevisualizar}" width="100%" height="92%"  /> -->
-
-							 <!--  <p:graphicImage value="#{kajoolTemplateReporte.attrs.reportePrevisualizar}" width="100%" height="92%" /> -->
-							<iframe  id="framePrevisualizar" src="/IKTAN/Paginas/Reportes/Previsualizar" width="100%" height="92%" />	 
-								<div class="pie-pagina">
-									<p:commandButton process="@none" immediate="true" ajax="true" icon="fa fa-close"  value="Cerrar" oncomplete="PF('dialogoPrevisualizar').hide();" />
-								</div>
+							<p:dialog id="dlgPrevisualizar" widgetVar="dialogoPrevisualizar" header="Vista previa" hideEffect="explode" dynamic="true" showEffect="puff" maximizable="false" minimizable="false" height="550px" width="950px" resizable="false" closeOnEscape="true" closable="true" onShow="$('#janalContenedorPdf').attr('style', '');">	
+								<object id="janalContenedorPdf" type="application/pdf" data="#{kajoolTemplateReporte.attrs.reportePrevisualizar}" height="490px" width="100%" internalinstanceid="5"/> 
+							  <!--p:graphicImage value="#{kajoolTemplateReporte.attrs.reportePrevisualizar}" width="100%" height="92%" /-->
+  						 	<!--iframe id="framePrevisualizar" src="/IKTAN/Paginas/Reportes/Previsualizar" width="100%" height="92%" /-->	 
+							  <div class="pie-pagina janal-column-right">
+  								<p:commandButton process="@none" immediate="true" ajax="true" icon="fa fa-close"  value="Cerrar" oncomplete="PF('dialogoPrevisualizar').hide();" />
+	  						</div>
 							</p:dialog>
             </h:form>
           </div>

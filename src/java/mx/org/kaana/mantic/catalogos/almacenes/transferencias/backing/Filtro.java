@@ -29,7 +29,7 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.reportes.reglas.ParametrosComunes;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
@@ -64,7 +64,7 @@ public class Filtro extends Comun implements Serializable {
   @Override
   public void doLoad() {
     List<Columna> campos      = null;
-		Map<String, Object> params= toPrepare();
+		Map<String, Object> params= this.toPrepare();
     try {
       params.put("sortOrder", "order by tc_mantic_transferencias.registro desc");
       campos = new ArrayList<>();
@@ -94,6 +94,8 @@ public class Filtro extends Comun implements Serializable {
 		StringBuilder sb= new StringBuilder();
 		if(!Cadena.isVacio(this.attrs.get("idTransferencia")) && !this.attrs.get("idTransferencia").toString().equals("-1"))
   		sb.append("(tc_mantic_transferencias.id_transferencia=").append(this.attrs.get("idTransferencia")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
+  		sb.append("(tc_mantic_transferencias.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("idAlmacen")) && !this.attrs.get("idAlmacen").toString().equals("-1"))
   		sb.append("(tc_mantic_transferencias.id_almacen= ").append(this.attrs.get("idAlmacen")).append(" or tc_mantic_transferencias.id_destino= ").append(this.attrs.get("idAlmacen")).append(") and ");
 		UISelectEntity articulo      = (UISelectEntity)this.attrs.get("articulo");
@@ -223,7 +225,7 @@ public class Filtro extends Comun implements Serializable {
   } // doEliminar
   
   public void doReporte(String nombre) throws Exception {
-    ParametrosComunes parametrosComunes = null;
+    Parametros comunes = null;
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
     Entity seleccionado          = null;
@@ -233,9 +235,9 @@ public class Filtro extends Comun implements Serializable {
         this.attrs.put("idKeyTransferencia", seleccionado.getKey());
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
       reporteSeleccion= EReportes.valueOf(nombre);
-      parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.reporte= JsfBase.toReporte();	
-      parametros= parametrosComunes.getParametrosComunes();
+      parametros= comunes.getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			

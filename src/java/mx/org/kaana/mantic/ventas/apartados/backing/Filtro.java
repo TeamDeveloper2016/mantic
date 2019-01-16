@@ -26,7 +26,7 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.reportes.reglas.ParametrosComunes;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticApartadosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticApartadosDto;
@@ -314,7 +314,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 	} // loadCajas
     
     public void doReporte(String nombre) throws Exception{
-    ParametrosComunes parametrosComunes = null;
+    Parametros comunes = null;
 		Map<String, Object>params    = null;
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
@@ -326,12 +326,12 @@ public class Filtro extends IBaseTicket implements Serializable {
       reporteSeleccion= EReportes.valueOf(nombre);
       if(reporteSeleccion.equals(EReportes.APARTADO_DETALLE)){
         params.put("idApartado", seleccionado.toLong("idKey"));
-        parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), -1L, -1L , seleccionado.toLong("idCliente"));
+        comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), -1L, -1L , seleccionado.toLong("idCliente"));
       }
       else
-        parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+        comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.reporte= JsfBase.toReporte();	
-      parametros= parametrosComunes.getParametrosComunes();
+      parametros= comunes.getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			

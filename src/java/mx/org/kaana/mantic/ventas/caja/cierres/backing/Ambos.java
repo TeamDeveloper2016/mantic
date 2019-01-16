@@ -26,7 +26,7 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.reportes.reglas.ParametrosComunes;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticCierresRetirosDto;
@@ -176,15 +176,15 @@ public class Ambos extends IBaseFilter implements Serializable {
   } // doEliminar  
 	
 	public void doReporte(String nombre) throws Exception{
-    ParametrosComunes parametrosComunes = null;
+    Parametros comunes = null;
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
 		try{		
       reporteSeleccion= EReportes.valueOf(nombre);
       if(reporteSeleccion.equals(EReportes.ABONOS_RETIROS))
-        parametrosComunes = new ParametrosComunes((Long)this.attrs.get("idEmpresa"));
+        comunes= new Parametros((Long)this.attrs.get("idEmpresa"));
       this.reporte= JsfBase.toReporte();	
-      parametros= parametrosComunes.getParametrosComunes();
+      parametros= comunes.getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			

@@ -156,7 +156,7 @@ public class Reporte extends BaseReportes implements Serializable{
 			this.loadResourceFileJasper(this.ireporte.getParametros());        
       if(this.nombre.equals("")){
         this.nombre=this.idFormato.toPath().concat(this.fileName.concat(".")).concat(this.idFormato.name().toLowerCase());
-        this.nombre= Cadena.reemplazarCaracter(this.nombre, '/' , File.separatorChar);      
+        this.nombre= Cadena.reemplazarCaracter(this.nombre, '/', File.separatorChar);      
       } // if
 			String sql=Dml.getInstance().getSelect(this.ireporte.getProceso(), this.ireporte.getIdXml(), this.ireporte.getParams());
 			this.ireporte.getParametros().put(Constantes.REPORTE_VERSION, Configuracion.getInstance().getPropiedad("sistema.version"));
@@ -167,24 +167,23 @@ public class Reporte extends BaseReportes implements Serializable{
       source= JsfBase.getRealPath(this.ireporte.getJrxml().concat(".jasper"));
       this.ireporte.getParametros().put(Constantes.REPORTE_SUBREPORTE, source.substring(0, source.lastIndexOf(File.separator)+File.separator.length()));
 			input = SearchFileJar.getInstance().toInputStream(this.ireporte.getJrxml().concat(".jasper"));
-			if (!previsualizar) {
-				if (ireporte instanceof IReporteDataSource) 
-					reporteGenerar=reporteDataSource(source, this.fileName);
-				else 
-					reporteGenerar=reporteConnection(source, this.fileName);
-				if(this.ireporte.getJrxml().startsWith(Constantes.NOMBRE_DE_APLICACION)) 
-					reporteGenerar.procesar(this.idFormato, input);
-				else 
-					reporteGenerar.procesar(this.idFormato);			
-  			if (RequestContext.getCurrentInstance()!= null)
-	  			RequestContext.getCurrentInstance().addCallbackParam("janalOK", true);
-			} // if 
-			else {
+			if (ireporte instanceof IReporteDataSource) 
+				reporteGenerar=reporteDataSource(source, this.fileName);
+			else 
+				reporteGenerar=reporteConnection(source, this.fileName);
+			if(this.ireporte.getJrxml().startsWith(Constantes.NOMBRE_DE_APLICACION)) 
+				reporteGenerar.procesar(this.idFormato, input);
+			else 
+				reporteGenerar.procesar(this.idFormato);			
+			if (RequestContext.getCurrentInstance()!= null)
+				RequestContext.getCurrentInstance().addCallbackParam("janalOK", true);
+			if (previsualizar) {
 				this.ireporte.setParams((Map<String, Object>) ((HashMap)ireporte.getParams()).clone());
-				JsfBase.getSession().setAttribute("ReportePrevisualizar", ireporte);
-				JsfBase.getSession().setAttribute("ReporteFileName", this.fileName);
+				this.attrs.put("reportePrevisualizar", JsfBase.getContext().concat("/").concat(this.getNombre()).concat("?pfdrid_c=true"));
+				this.attrs.put("reporteFileName", this.fileName);
+				RequestContext.getCurrentInstance().update("dlgPrevisualizar");
 				RequestContext.getCurrentInstance().execute("PF('dialogoPrevisualizar').show();");
-			} // else
+			} // if
 		} // try
 		catch (Exception e) {
 			throw e;
