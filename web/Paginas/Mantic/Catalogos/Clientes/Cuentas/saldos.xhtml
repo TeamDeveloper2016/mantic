@@ -174,6 +174,8 @@
 						</f:facet>
 					</p:dataTable>
 					<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">            
+						<p:menuitem id="consultar" action="#{manticCatalogosClientesCuentasSaldos.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar venta" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+						<p:separator/>
             <p:menuitem id="pago" icon="fa fa-money" value="Pago" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doPago}" process="@this tabla" />					
             <p:menuitem id="deuda" icon="fa fa-minus-circle" value="Deuda" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doDeuda}" process="@this tabla"/>					
             <p:separator/>					
