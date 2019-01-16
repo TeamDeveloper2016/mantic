@@ -140,7 +140,7 @@ public class Accion extends IBaseImportar implements Serializable {
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-   			  RequestContext.getCurrentInstance().execute("janal.back(' generó la nota de crédito ', '"+ this.orden.getConsecutivo()+ "');");
+   			  RequestContext.getCurrentInstance().execute("janal.back(' gener\\u00F3 la nota de crédito ', '"+ this.orden.getConsecutivo()+ "');");
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" la nota de credito."), ETipoMensaje.INFORMACION);

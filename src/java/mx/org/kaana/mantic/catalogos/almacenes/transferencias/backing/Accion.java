@@ -298,6 +298,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		try {
 			transaccion= new Transaccion(this.transferencia);
 			if(transaccion.ejecutar(this.accion)) {
+ 			  RequestContext.getCurrentInstance().execute("janal.back(' gener\\u00F3 la transferencia ', '"+ this.transferencia.getConsecutivo()+ "');");
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
 				JsfBase.addMessage("Se registró la transferencia de correcta", ETipoMensaje.INFORMACION);
       } // if
