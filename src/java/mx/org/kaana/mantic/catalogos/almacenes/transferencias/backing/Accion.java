@@ -24,7 +24,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.almacenes.transferencias.beans.Traspases;
+import mx.org.kaana.mantic.catalogos.almacenes.transferencias.beans.Transferencia;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
 import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
@@ -40,7 +40,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   
   private StreamedContent image;
   private EAccion accion;
-  private Traspases transferencia;
+  private Transferencia transferencia;
   
   public StreamedContent getImage() {
 		return image;
@@ -73,7 +73,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
       switch (this.accion) {
         case AGREGAR:
-				 	this.transferencia= new Traspases(
+				 	this.transferencia= new Transferencia(
             null, // Long idSolicito, 
 						5L, // Long idTransferenciaEstatus, 
 						1L, // Long idTransferenciaTipo, 
@@ -92,7 +92,7 @@ public class Accion extends IBaseAttribute implements Serializable {
           break;
         case MODIFICAR:
         case CONSULTAR:
-          this.transferencia= (Traspases) DaoFactory.getInstance().toEntity(Traspases.class, "TcManticTransferenciasDto", "detalle", this.attrs);
+          this.transferencia= (Transferencia) DaoFactory.getInstance().toEntity(Transferencia.class, "TcManticTransferenciasDto", "detalle", this.attrs);
           this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
           this.attrs.put("idArticulo", this.transferencia.getIdArticulo());
           this.attrs.put("idAlmacen", this.transferencia.getIdAlmacen());

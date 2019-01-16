@@ -5146,7 +5146,9 @@
           tc_mantic_transferencias.observaciones,
           tc_mantic_transferencias.id_transferencia_estatus estatus,
           tc_mantic_transferencias_estatus.nombre nombre_estatus,
-          tc_mantic_transferencias_estatus.estatus_asociados
+          tc_mantic_transferencias_estatus.estatus_asociados,
+				  tc_mantic_transferencias_tipos.id_transferencia_tipo,
+				  tc_mantic_transferencias_tipos.nombre as tipo
         from
           tc_mantic_transferencias
         inner join
@@ -5161,6 +5163,8 @@
         	tc_mantic_almacenes origen on tc_mantic_transferencias.id_almacen = origen.id_almacen
         inner join 
         	tc_mantic_almacenes destino on tc_mantic_transferencias.id_destino = destino.id_almacen
+        inner join 
+        	tc_mantic_transferencias_tipos destino on tc_mantic_transferencias.id_transferencia_tipo = tc_mantic_transferencias_tipos.id_transferencia_tipo
 				where 
           tc_mantic_empresas.id_empresa in ({idEmpresa}) 
 				  and {condicion}	
@@ -5306,6 +5310,20 @@
 				order by
 					tc_mantic_personas.rfc			
 			</select>
+      <select id="detalle">
+        select      
+				  tc_mantic_transferencias_detalles.id_transferencia_detalle as id_comodin,
+          tc_mantic_transferencias_detalles.*,
+				  tc_mantic_articulos.precio as valor
+        from      
+          tc_mantic_transferencias_detalles
+        inner join
+          tc_mantic_articulos on tc_mantic_transferencias_detalles.id_articulo= tc_mantic_articulos.id_articulo
+        where      
+          tc_mantic_transferencias_detalles.id_transferencia= {idTransferencia}
+				order by
+				  tc_mantic_transferencias_detalles.registro
+      </select>
     </unit>
 		<unit id="VistaRequisicionesDto">
 			<select id="lazy">

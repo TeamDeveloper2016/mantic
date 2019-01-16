@@ -588,8 +588,8 @@
 						</p:tab>
 						<p:tab title="Ventas perdidas">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-70, janal-wid-100">		
-								<p:outputLabel for="idPerdidoSucursal" value="Sucursal:"/>
-								<p:selectOneMenu id="idPerdidoSucursal" value="#{manticComprasOrdendesAccion.attrs.idPerdidoSucursal}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-98" effect="fade" filter="true" filterMatchMode="contains">
+								<p:outputLabel for="idPedidoSucursal" value="Sucursal:"/>
+								<p:selectOneMenu id="idPedidoSucursal" value="#{manticComprasOrdendesAccion.attrs.idPedidoSucursal}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-98" effect="fade" filter="true" filterMatchMode="contains">
 									<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doLoadPerdidas}" process="@this" update="perdidos"/>
 									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
 									<p:column headerText="Clave">

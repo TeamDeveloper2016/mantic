@@ -117,8 +117,9 @@
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >
               <div class="lg-pantalla">
-                <p:menuButton   value="Opciones">
-                  <p:menuitem  value="Agregar" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                <p:menuButton value="Opciones">
+                  <p:menuitem value="Agregar directa" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                  <p:menuitem value="Agregar normal" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doNormal('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
                   <p:separator/>
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -127,12 +128,13 @@
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:commandButton  value="Agregar" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                <p:commandButton title="Agregar directa" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                <p:commandButton title="Agregar normal" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doNormal('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
                 <p:separator/>
-                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:separator/>
-                <p:menuitem icon="fa fa-file-word-o" title="Reporte" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doReporte('TRANSFERENCIAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                <p:menuitem icon="fa fa-file-word-o" title="Reporte" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doReporte('TRANSFERENCIAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
               </div>  
             </f:facet>												
             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
@@ -141,37 +143,43 @@
               </f:facet>
               <h:outputText value="#{row['consecutivo']}"/>
             </p:column>		
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.nombreOrigen}">
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombreOrigen}">
 							<f:facet name="header">
 								<h:outputText value="Almacen origen"/>
 							</f:facet>
 							<h:outputText value="#{row['nombreOrigen']}"/>
 						</p:column>														
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.nombreDestino}">
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombreDestino}">
 							<f:facet name="header">
 								<h:outputText value="Almacen destino"/>
 							</f:facet>
 							<h:outputText value="#{row['nombreDestino']}"/>
 						</p:column>					
-						<p:column class="anal-column-left MarAuto Responsive" sortBy="#{filtro.nombre}">
+						<p:column class="anal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
 							<f:facet name="header">
 								<h:outputText value="Artículo"/>
 							</f:facet>
 							<h:outputText value="#{row['nombre']}" title="Observaciones: #{row['observaciones']}"/>
 						</p:column>					
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{filtro.cantidad}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{row.cantidad}">
 							<f:facet name="header">
 								<h:outputText value="Cantidad"/>
 							</f:facet>
 							<h:outputText value="#{row['cantidad']}" title="Observaciones: #{row['observaciones']}"/>
 						</p:column>							
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.nombreEstatus}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.nombreEstatus}">
 							<f:facet name="header">
 								<h:outputText value="Estatus"/>
 							</f:facet>
 							<h:outputText value="#{row['nombreEstatus']}" title="Observaciones: #{row['observaciones']}"/>
 						</p:column>	
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.registro}">
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.tipo}">
+							<f:facet name="header">
+								<h:outputText value="Tipo"/>
+							</f:facet>
+							<h:outputText value="#{row['tipo']}"/>
+						</p:column>	
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
 							<f:facet name="header">
 								<h:outputText value="Fecha"/>
 							</f:facet>
