@@ -8,7 +8,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 public class ArticuloFactura implements Serializable, IBaseDto{
 
 	private static final long serialVersionUID = -4697872800407924572L;	
-	private String id;
+	private Long id;
 	private String idFacturama;
 	private String codigo;
 	private String codigoHacienda;
@@ -25,18 +25,18 @@ public class ArticuloFactura implements Serializable, IBaseDto{
 	private double impuestos;
 
 	public ArticuloFactura() {
-		this("-1");
+		this(-1L);
 	}
 	
-	public ArticuloFactura(String id) {
+	public ArticuloFactura(Long id) {
 		this.id = id;
 	}
 
-	public ArticuloFactura(String id, String idFacturama, String codigo, String unidad, String identificador, String nombre, String descripcion, double precio, String codigoHacienda, double iva) {
+	public ArticuloFactura(Long id, String idFacturama, String codigo, String unidad, String identificador, String nombre, String descripcion, double precio, String codigoHacienda, double iva) {
 		this(id, idFacturama, codigo, unidad, identificador, nombre, descripcion, precio, codigoHacienda, iva, 0D, 0D, 0D, 100D);
 	}
 	
-	public ArticuloFactura(String id, String idFacturama, String codigo, String unidad, String identificador, String nombre, String descripcion, double precio, String codigoHacienda, double iva, double cantidad,	double subtotal, double total, double base) {
+	public ArticuloFactura(Long id, String idFacturama, String codigo, String unidad, String identificador, String nombre, String descripcion, double precio, String codigoHacienda, double iva, double cantidad,	double subtotal, double total, double base) {
 		this.id            = id;
 		this.idFacturama   = idFacturama;
 		this.codigo        = codigo;
@@ -54,11 +54,11 @@ public class ArticuloFactura implements Serializable, IBaseDto{
 		this.impuestos     = 0D;
 	}
 
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -202,14 +202,14 @@ public class ArticuloFactura implements Serializable, IBaseDto{
 	@Override
 	public Long getKey() {
 		if(id!= null)
-			return Long.valueOf(id);
+			return id;
 		else
 			return -1L;
 	}
 
 	@Override
 	public void setKey(Long key) {
-		this.id= key.toString();
+		this.id= key;
 	}
 
 	@Override
