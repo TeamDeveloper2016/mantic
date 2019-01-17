@@ -35,8 +35,7 @@ public class Transaccion extends TransaccionFactura{
   private RegistroServicio registroServicio;
   private String messageError;
 	private List<Articulo> articulos;
-	private Long idServicio;
-	private Long idTrabajo;
+	private Long idServicio;	
 
 	public Transaccion(IBaseDto dto) {
 		this.dto = dto;
@@ -46,10 +45,9 @@ public class Transaccion extends TransaccionFactura{
     this.registroServicio = registroServicio;
   }
 
-	public Transaccion(List<Articulo> articulos, Long idServicio, Long idTrabajo) {
+	public Transaccion(List<Articulo> articulos, Long idServicio) {
 		this.articulos = articulos;
-		this.idServicio= idServicio;
-		this.idTrabajo = idTrabajo;
+		this.idServicio= idServicio;		
 	}
 	
 	@Override
@@ -356,8 +354,7 @@ public class Transaccion extends TransaccionFactura{
 			for (Articulo articulo: this.articulos) {
 				if(articulo.isValid()){
 					TcManticServiciosDetallesDto item= articulo.toServicioDetalle();
-					item.setIdServicio(this.idServicio);
-					item.setIdTrabajo(this.idTrabajo);
+					item.setIdServicio(this.idServicio);					
 					item.setIdUsuario(JsfBase.getIdUsuario());
 					if(DaoFactory.getInstance().findIdentically(sesion, TcManticServiciosDetallesDto.class, item.toMap())== null) 
 						DaoFactory.getInstance().insert(sesion, item);
