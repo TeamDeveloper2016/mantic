@@ -1730,7 +1730,7 @@
         from      
           tc_mantic_servicios_detalles
         where      
-          concepto = '{concepto}' and id_servicio_detalle = {idServicioDetalle} and id_servicio = {idServicio}
+          concepto = '{concepto}'
       </select>
       <select id="detalle">
         select      
