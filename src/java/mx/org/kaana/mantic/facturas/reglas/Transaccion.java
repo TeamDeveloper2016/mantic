@@ -146,7 +146,7 @@ public class Transaccion extends IBaseTnx {
 								params.put("comentarios", this.comentarios);								
 								params.put("timbrado", new Timestamp(Calendar.getInstance().getTimeInMillis()));								
 								DaoFactory.getInstance().update(sesion, TcManticFacturasDto.class, factura.getIdFactura(), params);
-								generarTimbradoFactura(sesion, this.orden.getIdFicticia(), factura.getIdFactura().toString(), this.correos);
+								generarTimbradoFactura(sesion, this.orden.getIdFicticia(), factura.getIdFactura(), this.correos);
 							} // 
 						} // if
 						else 
@@ -384,7 +384,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toClientesTipoContacto
 	
-	private void generarTimbradoFactura(Session sesion, Long idFicticia, String idFactura, String correos) throws Exception {
+	private void generarTimbradoFactura(Session sesion, Long idFicticia, Long idFactura, String correos) throws Exception {
 		TransaccionFactura factura= null;
 		CFDIGestor gestor         = null;
 		try {
