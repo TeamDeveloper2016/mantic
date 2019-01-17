@@ -69,6 +69,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
       this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia")== null? -1L: JsfBase.getFlashAttribute("idTransferencia"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
+      this.attrs.put("cantidad", 0D);
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("seleccionado", null);
 			doLoad();
@@ -157,18 +158,18 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 			if(!almacenes.isEmpty()) {
 				List<UISelectEntity> destinos= (List<UISelectEntity>)((ArrayList<UISelectEntity>)almacenes).clone();
+				if(this.accion.equals(EAccion.AGREGAR))
+				  ((Transferencia)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
+				else 
+				  ((Transferencia)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(almacenes.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkAlmacen())));
         this.attrs.put("destinos", destinos);
   			int index = destinos.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkAlmacen());
   			if(index>= 0)
 	  			destinos.remove(index);
-				if(this.accion.equals(EAccion.AGREGAR)) {
-				  ((Transferencia)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
+				if(this.accion.equals(EAccion.AGREGAR))
 				  ((Transferencia)this.getAdminOrden().getOrden()).setIkDestino(destinos.get(0));
-				} // if	
-				else {
-				  ((Transferencia)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(almacenes.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkAlmacen())));
+				else 
 				  ((Transferencia)this.getAdminOrden().getOrden()).setIkDestino(destinos.get(destinos.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino())));
-				} // else	
 			} // if
 			columns.clear();
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
@@ -200,20 +201,8 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Articulos")) {
-			if(this.attrs.get("proveedores")== null) 
-  	  	JsfBase.addMessage("No se selecciono ningun proveedor !", ETipoMensaje.INFORMACION);
-			if(this.attrs.get("articulos")== null) {
-				switch(this.tipoOrden) {
-					case NORMAL:
-						break;
-					case ALMACEN: 
-						this.toLoadArticulos("almacen");
-						break;
-					case PROVEEDOR:
-						this.toLoadArticulos("proveedor");
-						break;
-				} // switch
-			} // if
+			if(this.attrs.get("articulos")== null) 
+				this.toLoadArticulos("almacen");
 		} // if	
 		else 
 			if(event.getTab().getTitle().equals("Faltantes") && this.attrs.get("faltantes")== null) 
@@ -232,8 +221,6 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 			articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaOrdenesComprasDto", idXml, params);
       if(articulos!= null && this.getAdminOrden().getArticulos().isEmpty())
 				for (Articulo articulo : articulos) {
-					//** verificar si este cambio no afecta por lo del idProveedor
-					articulo.toPrepare((Boolean)this.attrs.get("sinIva"), 1D, -1L);
 					this.getAdminOrden().add(articulo);
 				} // for
 		} // try

@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 
-public class ClienteFactura implements Serializable, IBaseDto{
+public class ClienteFactura implements Serializable, IBaseDto {
 
 	private static final long serialVersionUID = -6145604204242433218L;
 	//Cliente

@@ -92,11 +92,11 @@
 						<p:outputLabel value="LA TRANSFERENCIA DE ARTICULOS [#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.consecutivo}] SE AUTOGUARDO A LAS #{manticCatalogosAlmacenesTransferenciasNormal.attrs.autoSave} HRS." style="display: #{empty(manticCatalogosAlmacenesTransferenciasNormal.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-blue"/>
 					</div>
 					<p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{manticCatalogosAlmacenesTransferenciasNormal.doTabChange}" process="@this idAlmacen idDestino" update="faltantes perdidos sinIva" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();"/>
+            <p:ajax event="tabChange" listener="#{manticCatalogosAlmacenesTransferenciasNormal.doTabChange}" process="@this idAlmacen idDestino" update="faltantes perdidos" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();"/>
             <p:tab title="General">							
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-150, janal-wid-100">		
-								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
-								<p:selectOneMenu id="idSucursal" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-100">		
+								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="false"/>
+								<p:selectOneMenu id="idSucursal" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-99" rendered="false" effect="fade" filter="true" filterMatchMode="contains">
 									<p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasNormal.doLoadAlmacenes}" process="@this" update="idAlmacen"/>
 									<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
 									<p:column headerText="Clave">
@@ -132,8 +132,8 @@
 									</p:column>   
 								</p:selectOneMenu>
 								<p:outputLabel for="cantidad" value="Cantidad:"/>
-								<p:inputNumber id="cantidad" inputStyleClass="janal-color-orange janal-column-right" styleClass="janal-wid-100-txt filas" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.cantidad}" converter="javax.faces.Double">
-                <p:outputLabel for="idSolicito" value="Cliente:"/>
+								<p:inputNumber id="cantidad" inputStyleClass="janal-color-orange janal-column-right" styleClass="janal-wid-100-txt filas" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.cantidad}" converter="javax.faces.Double"/>
+                <p:outputLabel for="idSolicito" value="Solicitó:"/>
 								<p:selectOneMenu id="idSolicito" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.ikSolicito}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="contains">
 									<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
 									<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.personas}"  var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{element.paterno} #{element.materno}"/>
@@ -148,6 +148,8 @@
 									</p:column>   
 								</p:selectOneMenu>
               </p:panelGrid>
+							<p:outputLabel for="observaciones" value="Observaciones:"/><br/>
+							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.observaciones}"/>
 						</p:tab>						            						            																																																
 						<p:tab title="Articulos">
 							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
@@ -214,60 +216,41 @@
 													<p:outputLabel value="#{manticCatalogosAlmacenesTransferenciasNormal.doNumericoSat(row['cantidad'])}" styleClass="filas"/>
 													<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" style="display: none"/>
 												</p:column>		
-												<p:column class="costos janal-column-right MarAuto Responsive janal-wid-5" rendered="false">
+												<p:column class="costos janal-column-right MarAuto Responsive janal-wid-7">
 													<f:facet name="header">
-														<h:outputText value="Costo"/>
+														<h:outputText value="Mínimo"/>
 													</f:facet>
-													<p:outputLabel value="#{manticCatalogosAlmacenesTransferenciasNormal.doDecimalSat(row['costo'])}" styleClass="filas"/>
+													<p:outputLabel value="0.0000" styleClass="filas"/>
 												</p:column>	
-												<p:column class="costos janal-column-right MarAuto Responsive janal-wid-7" rendered="false">
+												<p:column class="janal-column-right MarAuto Responsive janal-wid-7">
 													<f:facet name="header">
-														<h:outputText value="Costo real"/>
+														<h:outputText value="Máximo"/>
 													</f:facet>
-													<p:outputLabel value="#{manticCatalogosAlmacenesTransferenciasNormal.doDecimalSat(row['real'])}" styleClass="filas"/>
+													<p:outputLabel value="0.0000" styleClass="filas"/>
 												</p:column>	
-												<p:column class="precios janal-column-right MarAuto Responsive janal-wid-12">
+												<p:column class="janal-column-right MarAuto Responsive janal-wid-7">
 													<f:facet name="header">
-														<h:outputText value="Costo calculado"/>
+														<h:outputText value="Quedarían"/>
 													</f:facet>
-													<div class="ui-grid-row janal-grid-row">
-														<div class="ui-grid-col-12 janal-column-right" style="padding-right: 14px;">
-															<p:outputLabel value="#{row['diferencia']}" escape="false" styleClass="filas"/>
-															<p:outputLabel value="#{manticCatalogosAlmacenesTransferenciasNormal.doDecimalSat(row['calculado'])}" styleClass="filas"/>
-															<p:inputText id="values" value="#{row['valor']}" style="display:none"/>
-															<p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" style="display:none"/>
-														</div>	 
-														<div style="width: 10px; margin-left: -4px; margin-top: 1px;">
-															<h:outputText value="#{row['costoMayorMenor']}" escape="false" styleClass="filas"/>
-														 </div>
-													</div>	
+													<p:outputLabel value="0.0000" styleClass="filas"/>
 												</p:column>		
-												<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+												<p:column class="janal-column-right MarAuto Responsive janal-wid-7">
 													<f:facet name="header">
-														<h:outputText value="% Descuento"/>
+														<h:outputText value="Mínimo"/>
 													</f:facet>
-													<p:outputLabel value="#{row['descuento']}" styleClass="filas"/>
-													<p:inputText id="descuentos" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" style="display: none"/>
+													<p:outputLabel value="0.0000" styleClass="filas"/>
 												</p:column>		
-												<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
+												<p:column class="janal-column-right MarAuto Responsive janal-wid-7">
 													<f:facet name="header">
-														<h:outputText value="% Extra"/>
+														<h:outputText value="Máximo"/>
 													</f:facet>
-													<p:outputLabel value="#{row['extras']}" styleClass="filas"/>
-													<p:inputText id="extras" value="#{row['extras']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" style="display: none"/>
+													<p:outputLabel value="0.0000" styleClass="filas"/>
 												</p:column>		
-												<p:column class="janal-column-right MarAuto Responsive janal-wid-col-50" rendered="false">
+													<p:column class="janal-column-right MarAuto Responsive janal-wid-7">
 													<f:facet name="header">
-														<h:outputText value="IVA"/>
+														<h:outputText value="Quedarían"/>
 													</f:facet>
-													<p:outputLabel value="#{manticCatalogosAlmacenesTransferenciasNormal.doNumericoSat(row['iva'])}" styleClass="filas"/>
-													<h:outputText id="ivas" value="#{row['iva']}" styleClass="janal-wid-100-txt janal-column-right" style="display: none"/>
-												</p:column>		
-												<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
-													<f:facet name="header">
-														<h:outputText value="Precio"/>
-													</f:facet>
-													<p:outputLabel value="#{row['importe$']}" styleClass="filas"/>
+													<p:outputLabel value="0.0000" styleClass="filas"/>
 												</p:column>		
 											</p:dataTable>
 										</p:panelGrid>	
@@ -284,9 +267,6 @@
 									</div>									
 								</div>
 							</div>
-						</p:tab>
-						<p:tab title="Observaciones">
-							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.observaciones}"/>
 						</p:tab>
 						<p:tab title="Faltantes">
 							<p:dataTable id="faltantes" var="row" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.faltantes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
@@ -334,18 +314,6 @@
 										<h:outputText value="Solicitar"/>
 									</f:facet>
 									<h:outputText value="#{row['cantidad']}"/>	
-								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
-									<f:facet name="header">
-										<h:outputText value="Costo"/>
-									</f:facet>
-									<h:outputText value="#{row['costo']}"/>
-								</p:column>		
-								<p:column class="MarAuto Responsive janal-wid-18">
-									<f:facet name="header">
-										<h:outputText value="Solicitado orden de compra"/>
-									</f:facet>
-									<h:outputText value="#{row['consecutivo']} (#{row['estatus']}) {#{row['solicitado']}} [#{row['llegaron']}]" title="Solicitados: {#{row['solicitado']} Surtidos: [#{row['llegaron']}]"/>
 								</p:column>		
 								<p:column style="width:38px; text-align: center">
 									<p:commandButton update="faltantes @(.filas) @(.recalculo)" icon="fa fa-plus" title="Agregar" action="#{manticCatalogosAlmacenesTransferenciasNormal.doFaltanteArticulo}">
