@@ -40,7 +40,7 @@ public class Filtro extends Comun implements Serializable {
 			this.attrs.put("herramienta", "");
 			this.attrs.put("cliente", "");
 			this.attrs.put("consecutivo", "");
-      this.attrs.put("sortOrder", "order by tc_mantic_servicios.herramienta");
+      this.attrs.put("sortOrder", "order by tc_mantic_servicios.registro desc");
       this.attrs.put("idServicio", JsfBase.getFlashAttribute("idServicio"));
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.loadEstatusServicios();
