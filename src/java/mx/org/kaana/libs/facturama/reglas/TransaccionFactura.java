@@ -16,7 +16,6 @@ import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.facturama.models.Client;
 import mx.org.kaana.libs.facturama.models.Product;
 import mx.org.kaana.libs.facturama.models.response.Cfdi;
-import mx.org.kaana.libs.facturama.models.response.CfdiSearchResult;
 import mx.org.kaana.libs.facturama.models.response.Complement;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
@@ -132,7 +131,7 @@ public class TransaccionFactura extends IBaseTnx{
 			CFDIFactory.getInstance().clientRemove(id);
 		} // try
 		catch (Exception e) {			
-			registrarBitacora(sesion, id, e.getMessage());
+			registrarBitacora(sesion, -1L, e.getMessage().concat(" Eliminación cliente facturama : ").concat(id));
 			throw e;
 		} // catch		
 		return regresar;
@@ -173,7 +172,7 @@ public class TransaccionFactura extends IBaseTnx{
 		List<ClienteFactura> clientes = null;
 		List<Client> clientesFacturama= null;
 		Client clientePivote          = null;		
-		String idBitacora             = null;
+		Long idBitacora               = null;
 		String id                     = null;
 		int index                     = -1;
 		try {
@@ -210,11 +209,11 @@ public class TransaccionFactura extends IBaseTnx{
 		return regresar;
 	} // procesarClientes	
 	
-	protected boolean actualizarCliente(Session sesion, String id, String idFacturama) throws Exception{
+	protected boolean actualizarCliente(Session sesion, Long id, String idFacturama) throws Exception{
 		boolean regresar           = false;
 		TcManticClientesDto cliente= null;
 		try {
-			cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, Long.valueOf(id));
+			cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, id);
 			cliente.setIdFacturama(idFacturama);
 			regresar= DaoFactory.getInstance().update(sesion, cliente)>= 1L;
 		} // try
@@ -224,20 +223,20 @@ public class TransaccionFactura extends IBaseTnx{
 		return regresar;
 	} // actualizarCliente
 	
-	protected boolean registrarBitacora(Session sesion, String id, String error) throws Exception{
+	protected boolean registrarBitacora(Session sesion, Long id, String error) throws Exception{
 		return registrarBitacora(sesion, id, error, true);
 	} // registrarBitacora
 	
-	protected boolean registrarBitacora(Session sesion, String id, String error, boolean cliente) throws Exception{		
+	protected boolean registrarBitacora(Session sesion, Long id, String error, boolean cliente) throws Exception{		
 		return registrarBitacora(sesion, id, error, cliente ? REGISTRO_CLIENTE : REGISTRO_ARTICULO);
 	} // actualizarCliente
 	
-	protected boolean registrarBitacora(Session sesion, String id, String error, String proceso) throws Exception{
+	protected boolean registrarBitacora(Session sesion, Long id, String error, String proceso) throws Exception{
 		boolean regresar                     = false;		
 		TcManticFacturamaBitacoraDto bitacora= null;
 		try {
 			bitacora= new TcManticFacturamaBitacoraDto();
-			bitacora.setIdKey(Long.valueOf(id));
+			bitacora.setIdKey(id);
 			bitacora.setProceso(proceso);
 			bitacora.setObservacion(error);
 			bitacora.setCodigo("99");
@@ -278,7 +277,7 @@ public class TransaccionFactura extends IBaseTnx{
 			CFDIFactory.getInstance().productRemove(id);
 		} // try
 		catch (Exception e) {			
-			registrarBitacora(sesion, id, e.getMessage(), false);
+			registrarBitacora(sesion, -1L, e.getMessage().concat(" Eliminacion articulo : ").concat(id), false);
 			throw e;
 		} // catch		
 		return regresar;
@@ -307,9 +306,9 @@ public class TransaccionFactura extends IBaseTnx{
 		List<ArticuloFactura> articulos = null;
 		List<Product> articulosFacturama= null;
 		Product articuloPivote          = null;		
-		String idBitacora               = null;
+		Long idBitacora                 = null;
 		String id                       = null;
-		int index                      = -1;
+		int index                       = -1;
 		try {
 			gestor= new CFDIGestor();
 			articulos= gestor.toAllArticulosFactura(sesion);
@@ -345,11 +344,11 @@ public class TransaccionFactura extends IBaseTnx{
 		return regresar;
 	} // procesarClientes
 	
-	protected boolean actualizarProducto(Session sesion, String id, String idFacturama) throws Exception{
+	protected boolean actualizarProducto(Session sesion, Long id, String idFacturama) throws Exception{
 		boolean regresar            = false;
 		TcManticArticulosDto articulo= null;
 		try {
-			articulo= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, Long.valueOf(id));
+			articulo= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, id);
 			articulo.setIdFacturama(idFacturama);
 			regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
 		} // try
@@ -448,11 +447,11 @@ public class TransaccionFactura extends IBaseTnx{
 		DaoFactory.getInstance().insert(sesion, pdf);
 	}
 	
-	protected boolean actualizarFactura(Session sesion, String id, Cfdi cfdi) throws Exception {
+	protected boolean actualizarFactura(Session sesion, Long id, Cfdi cfdi) throws Exception {
 		boolean regresar           = false;
 		TcManticFacturasDto factura= null;
 		try {
-			factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, Long.valueOf(id));
+			factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, id);
 			factura.setIdFacturama(cfdi.getId());
 			factura.setFolio(cfdi.getFolio());			
 			//factura.setTimbrado(new Timestamp(Fecha.toCalendar(cfdi.getDate().substring(0, 10), cfdi.getDate().substring(11, 19)).getTimeInMillis()));
