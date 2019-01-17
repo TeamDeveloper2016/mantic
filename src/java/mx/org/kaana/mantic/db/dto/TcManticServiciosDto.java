@@ -93,7 +93,7 @@ public class TcManticServiciosDto implements IBaseDto, Serializable {
   }
 
   public TcManticServiciosDto(Long key) {
-    this(null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1L, null, null);
+    this(0D, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, "0", new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1L, null, null);
     setKey(key);
   }
 
