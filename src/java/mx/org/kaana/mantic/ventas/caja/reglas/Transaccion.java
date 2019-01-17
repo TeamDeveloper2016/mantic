@@ -64,7 +64,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 	private Double cierreCaja;
 	private Long idCierreVigente;
 	private String cotizacion;
-	private String idFacturaGeneral;
+	private Long idFacturaGeneral;
 	private Long idVenta;
 	private Long idCliente;
 	
@@ -570,7 +570,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			factura.setCorreos(correos.toString());
 			factura.setObservaciones(this.ventaFinalizada.getObservaciones());
 			regresar= DaoFactory.getInstance().insert(sesion, factura)>= 1L;	
-			this.idFacturaGeneral= factura.getIdFactura().toString();
+			this.idFacturaGeneral= factura.getIdFactura();
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -1005,7 +1005,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		return regresar;
 	} // actualizaInventario
 	
-	private void generarTimbradoFactura(Session sesion, String idFactura){
+	private void generarTimbradoFactura(Session sesion, Long idFactura){
 		TransaccionFactura factura= null;
 		CFDIGestor gestor         = null;
 		try {
