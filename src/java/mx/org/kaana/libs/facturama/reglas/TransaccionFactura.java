@@ -1,8 +1,14 @@
 package mx.org.kaana.libs.facturama.reglas;
 
+import java.io.File;
+import java.io.StringWriter;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatos;
@@ -10,6 +16,8 @@ import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.facturama.models.Client;
 import mx.org.kaana.libs.facturama.models.Product;
 import mx.org.kaana.libs.facturama.models.response.Cfdi;
+import mx.org.kaana.libs.facturama.models.response.CfdiSearchResult;
+import mx.org.kaana.libs.facturama.models.response.Complement;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
@@ -362,6 +370,7 @@ public class TransaccionFactura extends IBaseTnx{
 				Calendar calendar= Fecha.toCalendar(cfdi.getDate().substring(0, 10), cfdi.getDate().substring(11, 19));
 				String path = Configuracion.getInstance().getPropiedadSistemaServidor("facturama")+ calendar.get(Calendar.YEAR)+ "/"+ Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase()+"/"+ this.cliente.getRfc().concat("/");
 				CFDIFactory.getInstance().download(path, this.cliente.getRfc().concat("-").concat(cfdi.getFolio()), cfdi.getId());
+				toUpdateData(sesion, cfdi, Long.valueOf(this.cliente.getIdFactura()), path);
 				insertFiles(sesion, calendar, cfdi, path, this.cliente.getRfc(), Long.valueOf(this.cliente.getIdFactura()));
 			} // if
 			else
@@ -373,6 +382,32 @@ public class TransaccionFactura extends IBaseTnx{
 		} // catch		
 		return regresar;
 	} // generarCfdi
+	
+	private void toUpdateData(Session sesion, Cfdi detail, Long idFactura, String path) throws Exception {
+		TcManticFacturasDto factura= (TcManticFacturasDto)DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, idFactura);
+		if(factura!= null && factura.getSelloSat()== null && factura.getCadenaOriginal()== null) {
+			LOG.warn("Actualizando datos de la factura ["+ detail.getFolio()+ "] del cliente ["+ this.cliente.getRfc()+ "] porque estaba incompleto el registro !");			
+			Complement complement = detail.getComplement();
+			factura.setComentarios("ESTA FACTURA FUE RECUPERADA DE FACTURAMA !");
+			factura.setSelloCfdi(complement.getTaxStamp().getCfdiSign());
+			factura.setSelloSat(complement.getTaxStamp().getSatSign());
+			factura.setCertificadoDigital(detail.getCertNumber());
+			factura.setCertificadoSat(complement.getTaxStamp().getSatCertNumber());
+			factura.setFolioFiscal(complement.getTaxStamp().getUuid());
+			factura.setCadenaOriginal(this.toCadenaOriginal(path.concat(this.cliente.getRfc()).concat("-").concat(detail.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase())));
+			DaoFactory.getInstance().update(sesion, factura);
+		} // if
+	} // toUpdateData
+	
+	private String toCadenaOriginal(String xml) throws Exception {
+		StreamSource source       = new StreamSource(new File(xml));
+		StreamSource stylesource  = new StreamSource(this.getClass().getResourceAsStream("/mx/org/kaana/mantic/libs/factura/cadenaoriginal_3_3.xslt"));
+		TransformerFactory factory= TransformerFactory.newInstance();
+		Transformer transformer   = factory.newTransformer(stylesource);
+		StreamResult result       = new StreamResult(new StringWriter());
+		transformer.transform(source, result);
+		return result.getWriter().toString();
+	} // toCadenaOriginal
 	
 	public void insertFiles(Session sesion, Calendar calendar, Cfdi cfdi, String path, String rfc, Long idFactura) throws Exception {
 	TcManticFacturasArchivosDto xml= new TcManticFacturasArchivosDto(
