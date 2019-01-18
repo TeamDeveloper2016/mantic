@@ -252,8 +252,8 @@ public class RegistroArticulo implements Serializable{
 
 	public void setIdServicio(Boolean idServicio) {
 		this.idServicio = idServicio;
-		if(this.articulo!= null)
-			this.articulo.setIdServicio(idServicio ? 1L : 2L);
+	//	if(this.articulo!= null)
+	//		this.articulo.setIdServicio(idServicio ? 1L : 2L);
 	}
 
 	public Boolean getIdBarras() {
@@ -273,7 +273,7 @@ public class RegistroArticulo implements Serializable{
 			motorBusqueda= new MotorBusqueda(this.idArticulo);
 			this.articulo= motorBusqueda.toArticulo();
 			if(this.articulo!= null){
-				this.idServicio= this.articulo.getIdServicio().equals(1L);
+			//	this.idServicio= this.articulo.getIdServicio().equals(1L);
 				this.idBarras= this.articulo.getIdBarras().equals(1L);
 			} // if
 			this.redondear= this.articulo.getIdRedondear()== 1L;

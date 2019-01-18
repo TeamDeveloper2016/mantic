@@ -502,7 +502,6 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getCodigo(), 
 			this.getCosto(), 
 			this.getDescuento(), 
-			this.getIdComodin().equals(1L) ? null : this.getIdArticulo(), 
 			-1L, 
 			this.getImporte(), 
 			this.getPropio(), 
@@ -513,7 +512,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getNombre(), 
 			this.getSubTotal(), 
 			this.getCantidad().longValue(), 
-			this.getIdComodin().equals(1L) ? this.getIdArticulo() : null
+			this.getIdArticulo()
 		);			
 	}
 

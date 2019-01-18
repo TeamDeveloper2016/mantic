@@ -133,6 +133,12 @@ public class Transaccion extends IBaseTnx {
 				case REFACCIONES:
 					this.toRefacciones(sesion, file);
 					break;
+				case SERVICIOS:
+					this.toServicios(sesion, file);
+					break;
+				case EGRESOS:
+					this.toEgresos(sesion, file);
+					break;
 			} // swtich
       monitoreo.terminar();
 			monitoreo.setProgreso(0L);
@@ -581,121 +587,22 @@ public class Transaccion extends IBaseTnx {
 	
   private Boolean toRefacciones(Session sesion, File archivo) throws Exception {
 		Boolean regresar= false;
-		Workbook workbook= null;
-		Sheet sheet      = null;
-		TcManticMasivasBitacoraDto bitacora= null;
-		try {
-      WorkbookSettings workbookSettings = new WorkbookSettings();
-      workbookSettings.setEncoding("Cp1252");	
-			workbookSettings.setExcelDisplayLanguage("MX");
-      workbookSettings.setExcelRegionalSettings("MX");
-      workbookSettings.setLocale(new Locale("es", "MX"));
-			workbook= Workbook.getWorkbook(archivo, workbookSettings);
-			sheet		= workbook.getSheet(0);
-			if(sheet != null && sheet.getColumns()>= this.categoria.getColumns() && sheet.getRows()>= 2) {
-				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
-				LOG.info("Filas del documento: "+ sheet.getRows());
-				this.errores= 0;
-				int fila    = 0; 
-				for(fila= 1; fila< sheet.getRows(); fila++) {
-					if(sheet.getCell(0, fila)!= null && sheet.getCell(1, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(1, fila).getContents())&& !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
-						String contenido= new String(sheet.getCell(1, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
-						// 0      1          2        3          4    
-						//CODIGO|NOMBRE|HERRAMIENTA|COSTOS NETO|IVA
-						double costo   = Numero.getDouble(sheet.getCell(3, fila).getContents()!= null? sheet.getCell(3, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
-						double iva     = Numero.getDouble(sheet.getCell(4, fila).getContents()!= null? sheet.getCell(4, fila).getContents().replaceAll("[$, ]", ""): "0", 16D);
-						String nombre= new String(contenido.trim().getBytes(ISO_8859_1), UTF_8);
-						if(costo> 0) {
-							String codigo= new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
-							TcManticTrabajosDto trabajo= this.toFindTrabajo(sesion, codigo);
-							if(trabajo!= null) {
-								trabajo.setPrecio(costo);
-								trabajo.setNombre(nombre);
-								trabajo.setDescripcion(nombre);
-								// si trae nulo, blanco o cero se respeta el valor que tiene el campo
-								if(iva!= 0D)
-									trabajo.setIva(iva< 1? iva* 100: iva);
-								if(!Cadena.isVacio(sheet.getCell(2, fila).getContents()))
-									trabajo.setHerramienta(Cadena.isVacio(sheet.getCell(2, fila).getContents())? "": sheet.getCell(2, fila).getContents().toUpperCase().trim());
-								DaoFactory.getInstance().update(sesion, trabajo);
-							} // if
-							else {
-								trabajo= new TcManticTrabajosDto(
-									nombre, // String descripcion, 
-									codigo, // String codigo, 
-									costo, // Double precio, 
-									iva, // Double iva, 
-									JsfBase.getIdUsuario(), // Long idUsuario, 
-									-1L, // Long idTrabajo, 
-									JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), // Long idEmpresa, 
-									1L, // Long idVigente, 
-									nombre, // String nombre, 
-									null, // String sat, 
-									Cadena.isVacio(sheet.getCell(2, fila).getContents())? "": sheet.getCell(2, fila).getContents().toUpperCase().trim() // String herramienta
-								);
-								DaoFactory.getInstance().insert(sesion, trabajo);
-								TcManticMasivasDetallesDto detalle= new TcManticMasivasDetallesDto(
-									sheet.getCell(0, fila).getContents(), // String codigo, 
-									-1L, // Long idMasivaDetalle, 
-									this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
-									"ESTE ARTICULO FUE AGREGADO ["+ sheet.getCell(1, fila).getContents()+ "]" // String observaciones
-								);
-								DaoFactory.getInstance().insert(sesion, detalle);
-								// aqui va el codigo para que se registre en facturama el articulo
-								// **
-								// **
-							} // if
-							JsfBase.getAutentifica().getMonitoreo().incrementar();
-							if(fila% this.categoria.getTuplas()== 0) {
-								if(bitacora== null) {
-								  bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, new Long(fila), 2L);
-  								DaoFactory.getInstance().insert(sesion, bitacora);
-							  } // if
-								else {
-									bitacora.setProcesados(new Long(fila));
-									bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-  								DaoFactory.getInstance().update(sesion, bitacora);
-								} // else
-								this.commit();
-        				this.procesados= fila;
-							} // if
-						} // if
-						else {
-							this.errores++;
-							LOG.warn(fila+ ": ["+ nombre+ "] costo: ["+ costo+ "] ");
-							TcManticMasivasDetallesDto detalle= new TcManticMasivasDetallesDto(
-								sheet.getCell(0, fila).getContents(), // String codigo, 
-								-1L, // Long idMasivaDetalle, 
-								this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
-								"EL COSTO["+ costo+ "], ESTA EN CEROS" // String observaciones
-							);
-							DaoFactory.getInstance().insert(sesion, detalle);
-						} // else	
-    				this.procesados= fila;
-					} // if	
-				} // for
-				if(bitacora== null) {
-					bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);
-  				DaoFactory.getInstance().insert(sesion, bitacora);
-				} // if
-			  else {
-					bitacora.setProcesados(this.masivo.getTuplas());
-					bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-					DaoFactory.getInstance().update(sesion, bitacora);
-				} // if
-				LOG.warn("Cantidad de filas con error son: "+ this.errores);
-				regresar = true;
-			} // if
-		} // try
-		catch (IOException | BiffException e) {
-			throw e;
-		} // catch
-    finally {
-      if(workbook!= null) {
-        workbook.close();
-        workbook = null;
-      } // if
-    } // finally
+		//
+		//
+		return regresar;
+	} // toRefacciones		
+	
+  private Boolean toServicios(Session sesion, File archivo) throws Exception {
+		Boolean regresar= false;
+		//
+		//
+		return regresar;
+	} // toRefacciones		
+	
+  private Boolean toEgresos(Session sesion, File archivo) throws Exception {
+		Boolean regresar= false;
+		//
+		//
 		return regresar;
 	} // toRefacciones		
 	
