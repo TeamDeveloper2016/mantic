@@ -851,6 +851,8 @@ public class Accion extends IBaseVenta implements Serializable {
 		this.pagar= event.getTab().getTitle().equals("Pagar");
 		if(event.getTab().getTitle().equals("Tickets"))
 			doLoadTickets();
+		if(this.pagar)
+			RequestContext.getCurrentInstance().execute("jsArticulos.focusCobro();");
 	}
 
 	public void doAplicarCambioPrecio(){
