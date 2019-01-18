@@ -4585,9 +4585,9 @@
 				  and 
 				  (
 			      (upper(tc_mantic_articulos_codigos.codigo) regexp '.*{codigo}.*' and tc_mantic_articulos_codigos.id_proveedor is null)
-			    or
+			     or
 			      (upper(tc_mantic_articulos_codigos.codigo) regexp '.*{codigo}.*' and tc_mantic_articulos_codigos.id_proveedor = {idProveedor})
-				  or
+				   or
 				    tc_mantic_articulos.id_articulo= {idArticulo}
 				  ) 			
 				order by
