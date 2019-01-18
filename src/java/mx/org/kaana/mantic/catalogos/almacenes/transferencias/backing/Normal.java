@@ -189,10 +189,13 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 
 	public void doUpdateAlmacen() {
-    this.attrs.put("destinos", ((ArrayList<UISelectEntity>)this.attrs.get("almacenes")).clone());
-		int index = ((List<UISelectEntity>)this.attrs.get("destinos")).indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkAlmacen());
+		List<UISelectEntity> destinos= (List<UISelectEntity>)((ArrayList<UISelectEntity>)this.attrs.get("almacenes")).clone();
+    this.attrs.put("destinos", destinos);
+		int index = destinos.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkAlmacen());
 		if(index>= 0)
-      ((List<UISelectEntity>)this.attrs.get("destinos")).remove(index);
+      destinos.remove(index);
+		if(destinos.isEmpty())
+      ((Transferencia)this.getAdminOrden().getOrden()).setIkDestino(destinos.get(0));
 		this.getAdminOrden().getArticulos().clear();
 		this.getAdminOrden().getArticulos().add(new Articulo(-1L));
 		this.getAdminOrden().toCalculate();
@@ -208,7 +211,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
         this.doLoadFaltantes();
 			else 
 			  if(event.getTab().getTitle().equals("Ventas perdidas") && this.attrs.get("perdidos")== null) 
-           this.doLoadPerdidas();
+           this.doLoadPerdidas(((Transferencia)this.getAdminOrden().getOrden()).getIdDestino()== null? -1L: ((Transferencia)this.getAdminOrden().getOrden()).getIdDestino());
 	}
   
 	public void toLoadArticulos(String idXml) {
@@ -219,9 +222,8 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 			params.putAll(((Transferencia)this.getAdminOrden().getOrden()).toMap());
 			articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaOrdenesComprasDto", idXml, params);
       if(articulos!= null && this.getAdminOrden().getArticulos().isEmpty())
-				for (Articulo articulo : articulos) {
+				for (Articulo articulo : articulos) 
 					this.getAdminOrden().add(articulo);
-				} // for
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

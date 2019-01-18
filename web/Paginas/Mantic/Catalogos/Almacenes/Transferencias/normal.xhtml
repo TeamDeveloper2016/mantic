@@ -93,7 +93,7 @@
 					</div>
 					<p:tabView id="contenedorGrupos">
             <p:ajax event="tabChange" listener="#{manticCatalogosAlmacenesTransferenciasNormal.doTabChange}" process="@this idAlmacen idDestino" update="faltantes perdidos" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();"/>
-            <p:tab title="General">							
+            <p:tab title="General">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-100">		
 								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="false"/>
 								<p:selectOneMenu id="idSucursal" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-99" rendered="false" effect="fade" filter="true" filterMatchMode="contains">
@@ -131,8 +131,6 @@
 										<h:outputText value="#{item.nombre}"/>
 									</p:column>   
 								</p:selectOneMenu>
-								<p:outputLabel for="cantidad" value="Cantidad:"/>
-								<p:inputNumber id="cantidad" inputStyleClass="janal-color-orange janal-column-right" styleClass="janal-wid-100-txt filas" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.cantidad}" converter="javax.faces.Double"/>
                 <p:outputLabel for="idSolicito" value="Solicitó:"/>
 								<p:selectOneMenu id="idSolicito" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.ikSolicito}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="contains">
 									<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
@@ -218,37 +216,19 @@
 												</p:column>		
 												<p:column class="costos janal-column-right MarAuto Responsive janal-wid-7">
 													<f:facet name="header">
-														<h:outputText value="Mínimo"/>
+														<h:outputText value="Stock origen"/>
 													</f:facet>
 													<p:outputLabel value="0.0000" styleClass="filas"/>
 												</p:column>	
 												<p:column class="janal-column-right MarAuto Responsive janal-wid-7">
 													<f:facet name="header">
-														<h:outputText value="Máximo"/>
+														<h:outputText value="Stock destino"/>
 													</f:facet>
 													<p:outputLabel value="0.0000" styleClass="filas"/>
 												</p:column>	
 												<p:column class="janal-column-right MarAuto Responsive janal-wid-7">
 													<f:facet name="header">
-														<h:outputText value="Quedarían"/>
-													</f:facet>
-													<p:outputLabel value="0.0000" styleClass="filas"/>
-												</p:column>		
-												<p:column class="janal-column-right MarAuto Responsive janal-wid-7">
-													<f:facet name="header">
-														<h:outputText value="Mínimo"/>
-													</f:facet>
-													<p:outputLabel value="0.0000" styleClass="filas"/>
-												</p:column>		
-												<p:column class="janal-column-right MarAuto Responsive janal-wid-7">
-													<f:facet name="header">
-														<h:outputText value="Máximo"/>
-													</f:facet>
-													<p:outputLabel value="0.0000" styleClass="filas"/>
-												</p:column>		
-													<p:column class="janal-column-right MarAuto Responsive janal-wid-7">
-													<f:facet name="header">
-														<h:outputText value="Quedarían"/>
+														<h:outputText value="Máximo destino"/>
 													</f:facet>
 													<p:outputLabel value="0.0000" styleClass="filas"/>
 												</p:column>		
@@ -266,10 +246,10 @@
 								</div>
 							</div>
 						</p:tab>
-						<p:tab title="Faltantes">
+						<p:tab title="Faltantes destino">
 							<p:dataTable id="faltantes" var="row" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.faltantes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
 								<f:facet name="header">
-									<p:commandButton title="Refrescar articulos faltantes" icon="fa fa-refresh" process="@this" update="faltantes" action="#{manticCatalogosAlmacenesTransferenciasNormal.doLoadFaltantes()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
+									<p:commandButton title="Refrescar articulos faltantes del almacen destino" icon="fa fa-refresh" process="@this" update="faltantes" action="#{manticCatalogosAlmacenesTransferenciasNormal.doLoadFaltantes()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
                 </f:facet>
 								<p:column class="MarAuto Responsive janal-wid-col-20">
 									<f:facet name="header">
@@ -323,22 +303,9 @@
 							</p:dataTable>
 						</p:tab>
 						<p:tab title="Ventas perdidas">
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-70, janal-wid-100">		
-								<p:outputLabel for="idPedidoSucursal" value="Sucursal:"/>
-								<p:selectOneMenu id="idPedidoSucursal" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.idPedidoSucursal}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-98" effect="fade" filter="true" filterMatchMode="contains">
-									<p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasNormal.doLoadPerdidas}" process="@this" update="perdidos"/>
-									<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
-									<p:column headerText="Clave">
-										<h:outputText value="#{item.clave}"/>
-									</p:column>   
-									<p:column headerText="Nombre">
-										<h:outputText value="#{item.nombre}"/>
-									</p:column>   
-								</p:selectOneMenu>
-							</p:panelGrid>
 							<p:dataTable id="perdidos" var="row" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.perdidos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
 								<f:facet name="header">
-									<p:commandButton title="Refrescar articulos de las ventas perdidas" icon="fa fa-refresh" process="@this" update="perdidos" action="#{manticCatalogosAlmacenesTransferenciasNormal.doLoadPerdidas()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
+									<p:commandButton title="Refrescar articulos de las ventas perdidas del almacen destino" icon="fa fa-refresh" process="@this" update="perdidos" action="#{manticCatalogosAlmacenesTransferenciasNormal.doLoadPerdidas()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
                 </f:facet>
 								<p:column class="MarAuto Responsive janal-wid-col-20">
 									<f:facet name="header">
@@ -377,7 +344,7 @@
 									<h:outputText value="#{row['registro']}"/>
 								</p:column>		
 								<p:column style="width:38px; text-align: center">
-									<p:commandButton process="@this" update="perdidos @(.filas) @(.recalculo)" icon="fa fa-plus" title="Agregar el articulo a la orden de compra" action="#{manticCatalogosAlmacenesTransferenciasNormal.doAgregarPerdido}">
+									<p:commandButton process="@this" update="perdidos @(.filas) @(.recalculo)" icon="fa fa-plus" title="Agregar el articulo a la transferencia" action="#{manticCatalogosAlmacenesTransferenciasNormal.doAgregarPerdido}">
 										<f:setPropertyActionListener value="#{row}" target="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.perdido}" />
 									</p:commandButton>
 								</p:column>
