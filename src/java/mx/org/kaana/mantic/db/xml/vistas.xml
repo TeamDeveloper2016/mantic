@@ -4591,7 +4591,7 @@
 				    tc_mantic_articulos.id_articulo= {idArticulo}
 				  ) 			
 				order by
-				  tc_mantic_articulos.nombre			
+				  propio
 			</select>			
 			<select id="refaccionesPorCodigo">
 				select
