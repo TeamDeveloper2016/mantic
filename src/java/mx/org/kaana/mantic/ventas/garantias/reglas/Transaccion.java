@@ -333,7 +333,7 @@ public class Transaccion extends IBaseTnx{
 				} // if
 				else
 					regresar= generarAlmacenArticulo(sesion, articulo.getIdArticulo(), articulo.getCantidad());
-				if(regresar){
+				if(regresar) {
 					articuloVenta= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, articulo.getIdArticulo());
 					articuloVenta.setStock(articuloVenta.getStock() + articulo.getCantidad());
 					if(DaoFactory.getInstance().update(sesion, articuloVenta)>= 1L)
@@ -408,8 +408,8 @@ public class Transaccion extends IBaseTnx{
 			params.put("idArticulo", idArticulo);
 			inventario= (TcManticInventariosDto) DaoFactory.getInstance().toEntity(sesion, TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
 			if(inventario!= null){
-				inventario.setEntradas(inventario.getEntradas() + cantidad);
-				inventario.setStock(inventario.getStock() + cantidad);
+				inventario.setEntradas(inventario.getEntradas()+ cantidad);
+				inventario.setStock(inventario.getStock()+ cantidad);
 				regresar= DaoFactory.getInstance().update(sesion, inventario)>= 1L;
 			} // if
 			else{
@@ -420,8 +420,9 @@ public class Transaccion extends IBaseTnx{
 				inventario.setIdArticulo(idArticulo);
 				inventario.setIdUsuario(JsfBase.getIdUsuario());
 				inventario.setInicial(0D);
-				inventario.setEntradas(0 + cantidad);
-				inventario.setStock(0 + cantidad);
+				inventario.setEntradas(cantidad);
+				inventario.setStock(cantidad);
+				inventario.setIdAutomatico(1L);
 				regresar= DaoFactory.getInstance().insert(sesion, inventario)>= 1L;
 			} // else				
 		} // try
@@ -443,4 +444,5 @@ public class Transaccion extends IBaseTnx{
 		} // catch		
 		return regresar;
 	} // registrarBitacora
+	
 }

@@ -3142,6 +3142,14 @@
 					id_almacen= {idAlmacen}
 					and id_articulo= {idArticulo}
 			</select>
+      <select id="umbral">
+        select      
+          maximo
+        from      
+          tc_mantic_almacenes_articulos
+        where 
+          id_articulo={idArticulo} and id_almacen = {idAlmacen}
+      </select>			
 			<delete id="rows">
         delete from tc_mantic_almacenes_articulos where id_almacen={idAlmacen} 
       </delete>

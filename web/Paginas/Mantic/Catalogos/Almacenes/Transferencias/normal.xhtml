@@ -218,19 +218,19 @@
 													<f:facet name="header">
 														<h:outputText value="Stock origen"/>
 													</f:facet>
-													<p:outputLabel value="0.0000" styleClass="filas"/>
+													<p:outputLabel value="#{row['stock']}" styleClass="filas"/>
 												</p:column>	
 												<p:column class="janal-column-right MarAuto Responsive janal-wid-7">
 													<f:facet name="header">
 														<h:outputText value="Stock destino"/>
 													</f:facet>
-													<p:outputLabel value="0.0000" styleClass="filas"/>
+													<p:outputLabel value="#{row['valor']}" styleClass="filas"/>
 												</p:column>	
 												<p:column class="janal-column-right MarAuto Responsive janal-wid-7">
 													<f:facet name="header">
 														<h:outputText value="Máximo destino"/>
 													</f:facet>
-													<p:outputLabel value="0.0000" styleClass="filas"/>
+													<p:outputLabel value="#{row['costo']}" styleClass="filas"/>
 												</p:column>		
 											</p:dataTable>
 										</p:panelGrid>	
@@ -246,7 +246,7 @@
 								</div>
 							</div>
 						</p:tab>
-						<p:tab title="Faltantes destino">
+						<p:tab title="Faltantes almacen">
 							<p:dataTable id="faltantes" var="row" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.faltantes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
 								<f:facet name="header">
 									<p:commandButton title="Refrescar articulos faltantes del almacen destino" icon="fa fa-refresh" process="@this" update="faltantes" action="#{manticCatalogosAlmacenesTransferenciasNormal.doLoadFaltantes()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
@@ -305,7 +305,7 @@
 						<p:tab title="Ventas perdidas">
 							<p:dataTable id="perdidos" var="row" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.perdidos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
 								<f:facet name="header">
-									<p:commandButton title="Refrescar articulos de las ventas perdidas del almacen destino" icon="fa fa-refresh" process="@this" update="perdidos" action="#{manticCatalogosAlmacenesTransferenciasNormal.doLoadPerdidas()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
+									<p:commandButton title="Refrescar articulos de las ventas perdidas del almacen destino" icon="fa fa-refresh" process="@this" update="perdidos" action="#{manticCatalogosAlmacenesTransferenciasNormal.doLoadFaltantesAlmacenDestino()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
                 </f:facet>
 								<p:column class="MarAuto Responsive janal-wid-col-20">
 									<f:facet name="header">

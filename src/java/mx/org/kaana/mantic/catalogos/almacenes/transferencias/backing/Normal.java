@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -207,15 +208,46 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 				this.toLoadArticulos("almacen");
 		} // if	
 		else 
-			if(event.getTab().getTitle().equals("Faltantes") && this.attrs.get("faltantes")== null) 
+			if(event.getTab().getTitle().equals("Faltantes almacen") && this.attrs.get("faltantes")== null) 
         this.doLoadFaltantes();
 			else 
 			  if(event.getTab().getTitle().equals("Ventas perdidas") && this.attrs.get("perdidos")== null) 
-           this.doLoadPerdidas(((Transferencia)this.getAdminOrden().getOrden()).getIdDestino()== null? -1L: ((Transferencia)this.getAdminOrden().getOrden()).getIdDestino());
+          this.doLoadPerdidas(((Transferencia)this.getAdminOrden().getOrden()).getIdDestino()== null? -1L: ((Transferencia)this.getAdminOrden().getOrden()).getIdDestino());
 	}
-  
+
+	@Override
+	public void doLoadFaltantes() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
+			params.put("idAlmacen", ((Transferencia)this.getAdminOrden().getOrden()).getIdDestino());
+			columns= new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("minimo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("maximo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      this.attrs.put("faltantes", UIEntity.build("VistaAlmacenesTransferenciasDto", "faltantes", params, columns, Constantes.SQL_TODOS_REGISTROS));
+    } // try
+    catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    }// finally
+	}
+	
+	public void doLoadFaltantesAlmacenDestino() {
+    this.doLoadPerdidas(((Transferencia)this.getAdminOrden().getOrden()).getIdDestino()== null? -1L: ((Transferencia)this.getAdminOrden().getOrden()).getIdDestino());
+	}
+	
 	public void toLoadArticulos(String idXml) {
-		List<Articulo> articulos  = null;
+		List<Articulo> articulos = null;
     Map<String, Object> params= new HashMap<>();
 		try {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -265,6 +297,61 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 			Error.mensaje(e);			
 		} // catch				
 	} // doRecoveryArticulo
+	
+	@Override
+  protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
+		Articulo temporal= this.getAdminOrden().getArticulos().get(index);
+		Map<String, Object> params= new HashMap<>();
+		try {
+			if(articulo.size()> 1) {
+				this.doSearchArticulo(articulo.toLong("idArticulo"), index);
+				params.put("idArticulo", articulo.toLong("idArticulo"));
+				params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
+				temporal.setKey(articulo.toLong("idArticulo"));
+				temporal.setIdArticulo(articulo.toLong("idArticulo"));
+				temporal.setIdProveedor(-1L);
+				temporal.setIdRedondear(articulo.toLong("idRedondear"));
+				temporal.setCodigo(articulo.toString("propio"));
+				temporal.setPropio(articulo.toString("propio"));
+				temporal.setNombre(articulo.toString("nombre"));
+				temporal.setOrigen(articulo.toString("origen"));
+				temporal.setPrecio(articulo.toDouble("precio"));				
+				temporal.setIva(articulo.toDouble("iva"));				
+				temporal.setSat("");				
+				temporal.setDescuento("");
+				temporal.setExtras("");				
+				temporal.setUltimo(false);
+				temporal.setSolicitado(false);
+				temporal.setUnidadMedida(articulo.toString("unidadMedida"));
+				// recuperar el stock de articulos en el almacen origen
+				Value origen= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
+				temporal.setStock(origen== null? 0D: origen.toDouble());
+				// recuperar el stock de articulos en el almacen destino
+				params.put("idAlmacen", ((TcManticTransferenciasDto)this.getAdminOrden().getOrden()).getIdDestino());
+				origen= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
+				temporal.setValor(origen== null? 0D: origen.toDouble());
+				origen= (Value)DaoFactory.getInstance().toField("TcManticAlmacenesArticulosDto", "umbral", params, "maximo");
+				temporal.setCosto(origen== null? 0D: origen.toDouble());
+				// calcular el valor sugerido para la cantidad
+				if(temporal.getCantidad()<= 1D && temporal.getStock()> 0D && temporal.getCosto()> 0D) 
+					if((temporal.getCosto()- temporal.getValor())> temporal.getStock())
+						temporal.setCantidad(temporal.getStock()<= 0? 1D: temporal.getStock());
+					else
+						temporal.setCantidad(temporal.getCosto()- temporal.getValor());
+				if(index== this.getAdminOrden().getArticulos().size()- 1) {
+					this.getAdminOrden().getArticulos().add(new Articulo(-1L));
+					RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.getAdminOrden().getArticulos().size()- 1)+ ");");
+				} // if	
+				RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
+				this.getAdminOrden().toCalculate();
+			} // if	
+			else
+				temporal.setNombre("<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
 	
 	@Override
   public void doFindArticulo(Integer index) {

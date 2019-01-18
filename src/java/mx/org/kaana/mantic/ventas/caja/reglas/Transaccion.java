@@ -994,8 +994,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 				inventario.setIdArticulo(idArticulo);
 				inventario.setIdUsuario(JsfBase.getIdUsuario());
 				inventario.setInicial(0D);
-				inventario.setSalidas(0 - cantidad);
-				inventario.setStock(0 - cantidad);
+				inventario.setSalidas(cantidad);
+				inventario.setStock(cantidad);
+				inventario.setIdAutomatico(1L);
 				regresar= DaoFactory.getInstance().insert(sesion, inventario)>= 1L;
 			} // else				
 		} // try
