@@ -16,7 +16,6 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
 import mx.org.kaana.mantic.comun.beans.ArticuloDetalle;
-import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticDevolucionesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticGarantiasDetallesDto;
@@ -24,6 +23,7 @@ import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticRequisicionesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticServiciosDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDetallesDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -526,6 +526,18 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		);
 	}
 	
+  public TcManticTransferenciasDetallesDto toTrasnferenciaDetalle() {
+		return new TcManticTransferenciasDetallesDto(
+			this.getCodigo(), // String propio, 
+			this.getCantidad(), // Double cantidades, 
+			this.getIdComodin(), // Long idTransferenciaDetalle, 
+			this.getCantidad(), // Double cantidad, 
+			this.getIdArticulo(), // Long idArticulo, 
+			this.getIdOrdenDetalle(), // Long idTransferencia, 
+			this.getNombre() // String nombre
+		);
+	}
+
 	@Override
 	public String toString() {
 		return String.valueOf(this.getIdArticulo());

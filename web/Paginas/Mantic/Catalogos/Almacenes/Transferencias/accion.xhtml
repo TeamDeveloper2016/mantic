@@ -84,7 +84,6 @@
 								<p:outputLabel for="idAlmacenDestino" value="Almacen destino:"/>
 								<p:selectOneMenu id="idAlmacenDestino" value="#{manticCatalogosAlmacenesTransferenciasAccion.transferencia.ikDestino}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98 filas" effect="fade" filter="true" filterMatchMode="contains">
 									<p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doUpdateAlmacenDestino}" process="@this" update="@(.filas)" oncomplete="janal.refresh();"/>
-									<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 									<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.destinos}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -106,7 +105,6 @@
 								</p:panelGrid>
 								<p:outputLabel for="idSolicito"  value="Solicitó:"/>
 								<p:selectOneMenu id="idSolicito" value="#{manticCatalogosAlmacenesTransferenciasAccion.transferencia.ikSolicito}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains">
-									<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 									<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.personas}"  var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{element.paterno} #{element.materno}"/>
 									<p:column>
 										<h:outputText value="#{item.nombres}"/>

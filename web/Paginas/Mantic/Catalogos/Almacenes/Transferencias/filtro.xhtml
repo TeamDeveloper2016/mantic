@@ -118,23 +118,23 @@
             <f:facet name="header" >
               <div class="lg-pantalla">
                 <p:menuButton value="Opciones">
-                  <p:menuitem value="Agregar directa" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
-                  <p:menuitem value="Agregar normal" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doNormal('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                  <p:menuitem id="directa" value="Agregar directa" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAccion('ACTIVAR')}" icon="fa fa-plus" onstart="return janal.bloquear()"/>						
+                  <p:menuitem id="normal" value="Agregar normal" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doNormal('AGREGAR')}" icon="fa fa-plus" onstart="return janal.bloquear()"/>						
                   <p:separator/>
-                  <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                  <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:separator/>
                   <p:menuitem icon="fa fa-file-word-o" title="Reporte" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doReporte('TRANSFERENCIAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:commandButton title="Agregar directa" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
-                <p:commandButton title="Agregar normal" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doNormal('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                <p:menuitem title="Agregar directa" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAccion('ACTIVAR')}" icon="fa fa-plus" onstart="return janal.bloquear()"/>						
+                <p:menuitem title="Agregar normal" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doNormal('AGREGAR')}" icon="fa fa-plus" onstart="return janal.bloquear()"/>						
                 <p:separator/>
-                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:menuitem id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:separator/>
-                <p:menuitem icon="fa fa-file-word-o" title="Reporte" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doReporte('TRANSFERENCIAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                <p:menuitem icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doReporte('TRANSFERENCIAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
               </div>  
             </f:facet>												
             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">

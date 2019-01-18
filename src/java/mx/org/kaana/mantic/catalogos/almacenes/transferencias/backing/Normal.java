@@ -1,9 +1,7 @@
 package mx.org.kaana.mantic.catalogos.almacenes.transferencias.backing;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +9,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -28,11 +25,12 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.almacenes.transferencias.beans.Transferencia;
 import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.AdminTransferencias;
-import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
+import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.comun.IBaseStorage;
+import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.context.RequestContext;
@@ -107,7 +105,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
     Transaccion transaccion= null;
     String regresar        = null;
     try {			
-			// transaccion = new Transaccion(((Transferencia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
+			transaccion = new Transaccion((TcManticTransferenciasDto)this.getAdminOrden().getOrden(), this.getAdminOrden().getArticulos(), false);
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {
@@ -196,6 +194,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 		if(index>= 0)
       ((List<UISelectEntity>)this.attrs.get("destinos")).remove(index);
 		this.getAdminOrden().getArticulos().clear();
+		this.getAdminOrden().getArticulos().add(new Articulo(-1L));
 		this.getAdminOrden().toCalculate();
 	}
 
@@ -278,7 +277,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 	public void toSaveRecord() {
     Transaccion transaccion= null;
     try {			
-			//transaccion = new Transaccion(((Transferencia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
+			transaccion = new Transaccion((TcManticTransferenciasDto)this.getAdminOrden().getOrden(), this.getAdminOrden().getArticulos(), false);
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(EAccion.MOVIMIENTOS)) {
    			RequestContext.getCurrentInstance().execute("jsArticulos.back('guard\\u00F3 orden de compra', '"+ ((Transferencia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");

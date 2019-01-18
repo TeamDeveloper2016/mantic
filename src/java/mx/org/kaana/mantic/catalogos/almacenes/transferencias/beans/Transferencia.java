@@ -42,7 +42,7 @@ public class Transferencia extends TcManticTransferenciasDto implements Serializ
 		this.ikEmpresa = new UISelectEntity(idEmpresa);
 		this.ikAlmacen = new UISelectEntity(idAlmacen);
 		this.ikDestino = new UISelectEntity(idDestino);
-		this.ikSolicito= new UISelectEntity(idSolicito);
+		this.ikSolicito= new UISelectEntity(idSolicito== null? -1L: idSolicito);
 	}
 	
 	public UISelectEntity getIkEmpresa() {

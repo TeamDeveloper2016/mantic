@@ -111,9 +111,9 @@ public class Transaccion extends Inventarios implements Serializable {
 				case ELIMINAR:
 					regresar= this.toNotExistsNotas(sesion);
 					if(regresar) {
-						regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticOrdenesDetallesDto.class, params)>= 1L;
-						regresar= regresar && DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
 						this.orden.setIdOrdenEstatus(2L);
+						// regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticOrdenesDetallesDto.class, params)>= 1L;
+						regresar= regresar && DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 						bitacoraOrden= new TcManticOrdenesBitacoraDto(2L, "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
 						regresar= DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L;
 					} // if	
@@ -132,7 +132,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					regresar= DaoFactory.getInstance().delete(sesion, TcManticFaltantesDto.class, this.idFaltante)>= 1L;
 					break;
 				case COMPLEMENTAR: 
-					regresar= agregarContacto(sesion);
+					regresar= this.agregarContacto(sesion);
 					break;
 			} // switch
 			if(!regresar)

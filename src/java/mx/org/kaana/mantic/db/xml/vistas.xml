@@ -5164,7 +5164,7 @@
         inner join 
         	tc_mantic_almacenes destino on tc_mantic_transferencias.id_destino = destino.id_almacen
         inner join 
-        	tc_mantic_transferencias_tipos destino on tc_mantic_transferencias.id_transferencia_tipo = tc_mantic_transferencias_tipos.id_transferencia_tipo
+        	tc_mantic_transferencias_tipos on tc_mantic_transferencias.id_transferencia_tipo = tc_mantic_transferencias_tipos.id_transferencia_tipo
 				where 
           tc_mantic_empresas.id_empresa in ({idEmpresa}) 
 				  and {condicion}	
@@ -5313,6 +5313,7 @@
       <select id="detalle">
         select      
 				  tc_mantic_transferencias_detalles.id_transferencia_detalle as id_comodin,
+				  tc_mantic_transferencias_detalles.id_transferencia as id_orden_detalle,
           tc_mantic_transferencias_detalles.*,
 				  tc_mantic_articulos.precio as valor
         from      

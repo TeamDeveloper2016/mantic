@@ -72,10 +72,10 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
       switch (this.accion) {
-        case AGREGAR:
+        case ACTIVAR:
 				 	this.transferencia= new Transferencia(
             null, // Long idSolicito, 
-						5L, // Long idTransferenciaEstatus, 
+						8L, // Long idTransferenciaEstatus, 
 						1L, // Long idTransferenciaTipo, 
 						new Long(Calendar.getInstance().get(Calendar.YEAR)), // Long ejercicio, 
 						Calendar.getInstance().get(Calendar.YEAR)+ "00000", // String consecutivo, 
@@ -124,11 +124,10 @@ public class Accion extends IBaseAttribute implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       almacenes = (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns);
       this.attrs.put("almacenes", almacenes);
-			if(almacenes!= null && !this.accion.equals(EAccion.AGREGAR)) {
-				this.transferencia.setIkAlmacen(almacenes.get(almacenes.indexOf(new UISelectEntity(this.transferencia.getIdAlmacen()))));
-				this.transferencia.setIkDestino(almacenes.get(almacenes.indexOf(new UISelectEntity(this.transferencia.getIdDestino()))));
+			if(almacenes!= null) {
+		    this.transferencia.setIkAlmacen(almacenes.get(0));
         this.doUpdateAlmacenOrigen();
-			}	// if
+		  } // if	
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
@@ -152,7 +151,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
       List<UISelectEntity> personas= UIEntity.build("VistaAlmacenesTransferenciasDto", "solicito", params, columns);
       this.attrs.put("personas", personas);
-			if(personas!= null && !this.accion.equals(EAccion.AGREGAR)) 
+			if(personas!= null && !this.accion.equals(EAccion.ACTIVAR)) 
 				this.transferencia.setIkSolicito(personas.get(personas.indexOf(new UISelectEntity(this.transferencia.getIdSolicito()))));
     } // try
     catch (Exception e) {
@@ -170,15 +169,20 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doCalculate
   
   public void doUpdateAlmacenOrigen() {
-    this.attrs.put("destinos", ((ArrayList<UISelectEntity>)this.attrs.get("almacenes")).clone());
-		int index = ((List<UISelectEntity>)this.attrs.get("destinos")).indexOf(this.transferencia.getIkAlmacen());
-		if(index>= 0)
-      ((List<UISelectEntity>)this.attrs.get("destinos")).remove(index);
-		this.doUpdateAlmacenDestino();
+		if(this.attrs.get("almacenes")!= null) {
+			List<UISelectEntity> destinos=  (List<UISelectEntity>)((ArrayList<UISelectEntity>)this.attrs.get("almacenes")).clone();
+			int index = destinos.indexOf(this.transferencia.getIkAlmacen());
+			if(index>= 0)
+				destinos.remove(index);
+			if(!destinos.isEmpty())
+				this.transferencia.setIkDestino(destinos.get(0));
+			this.attrs.put("destinos", destinos);
+			this.doUpdateAlmacenDestino();
+		} // if	
   }
   
   public void doUpdateAlmacenDestino() {
-    Entity destino = null;
+    Entity destino         = null;
     UISelectEntity articulo= null;
 		try {
       this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -193,7 +197,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			if(destino== null) {
 				TcManticArticulosDto item= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.transferencia.getIdArticulo());
    			calculo= 0D;
-			  maximo = item.getMaximo();
+			  maximo = item== null? 0D: item.getMaximo();
 			} // if
 			else {
    			calculo= destino.toDouble("stock");
@@ -224,10 +228,10 @@ public class Accion extends IBaseAttribute implements Serializable {
   }
   
   public void doUpdateArticulos() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= new HashMap<>();
+		List<Columna> columns         = null;
+    Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> articulos= null;
-		boolean buscaPorCodigo    = false;
+		boolean buscaPorCodigo        = false;
     try {
 			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));

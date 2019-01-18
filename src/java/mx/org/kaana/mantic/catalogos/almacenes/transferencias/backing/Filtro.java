@@ -192,7 +192,7 @@ public class Filtro extends Comun implements Serializable {
 		Entity seleccionado    = null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			transaccion = new Transaccion((TcManticTransferenciasDto)DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, seleccionado.getKey()), ((UISelectEntity)this.attrs.get("estatus")).getKey());
+			transaccion = new Transaccion((TcManticTransferenciasDto)DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, seleccionado.getKey()), ((UISelectEntity)this.attrs.get("estatus")).getKey(), false);
 			if(transaccion.ejecutar(EAccion.REGISTRAR)) 
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
 			else

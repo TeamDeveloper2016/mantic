@@ -3,6 +3,7 @@ package mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -13,28 +14,46 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
 import org.hibernate.Session;
 
 public class Transaccion extends IBaseTnx {
 
   private TcManticTransferenciasDto dto;
+	private List<Articulo> articulos;
 	private Long idTransferenciaEstatus;
+	private Long idFaltante;
+	private Boolean aplicar;
   private String messageError;
 
-	public Transaccion(TcManticTransferenciasDto dto) {
-		this(dto, 1L);
+	public Transaccion(Long idFaltante) {
+		this(new TcManticTransferenciasDto(-1L));
+		this.idFaltante= idFaltante;
 	}
-
-	public Transaccion(TcManticTransferenciasDto dto, Long idTransferenciaEstatus) {
+	
+	public Transaccion(TcManticTransferenciasDto dto) {
+		this(dto, 1L, false);
+	}
+	
+	public Transaccion(TcManticTransferenciasDto dto, List<Articulo> articulos, boolean aplicar) {
+		this.dto      = dto;
+		this.articulos= articulos;
+		this.aplicar  = aplicar;
+	}
+	
+	public Transaccion(TcManticTransferenciasDto dto, Long idTransferenciaEstatus, boolean aplicar) {
 		this.dto= dto;
 		if(this.dto.getIdSolicito()!= null && this.dto.getIdSolicito()< 0L)
 		  this.dto.setIdSolicito(null);
 		this.idTransferenciaEstatus= idTransferenciaEstatus;
+		this.aplicar= aplicar;
 	}
 
   @Override
@@ -47,7 +66,7 @@ public class Transaccion extends IBaseTnx {
       TcManticAlmacenesArticulosDto origen= null;			
   		Long consecutivo                    = 0L;
       switch (accion) {
-        case AGREGAR:
+        case ACTIVAR:
 					//Afectar el almacen original restando los articulos que fueron extraidos
 					origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(TcManticAlmacenesArticulosDto.class, this.dto.toMap());
 					if(origen== null || origen.getStock()< this.dto.getCantidad())
@@ -85,16 +104,32 @@ public class Transaccion extends IBaseTnx {
 					bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), JsfBase.getIdUsuario(), this.dto.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
           regresar= DaoFactory.getInstance().insert(sesion, bitacora).intValue()> 0;
           break;
+        case AGREGAR:
+					consecutivo= this.toSiguiente(sesion);
+					this.dto.setConsecutivo(this.dto.getEjercicio()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
+					this.dto.setOrden(consecutivo);
+          regresar= DaoFactory.getInstance().insert(sesion, this.dto).intValue()> 0;
+					this.toFillArticulos(sesion);
+					bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), JsfBase.getIdUsuario(), this.dto.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
+          regresar= DaoFactory.getInstance().insert(sesion, bitacora).intValue()> 0;
+					break;
         case MODIFICAR:
           this.dto.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+					this.toFillArticulos(sesion);
           regresar= DaoFactory.getInstance().update(sesion, this.dto).intValue()> 0;
           break;
         case ELIMINAR:
-          if (DaoFactory.getInstance().deleteAll(sesion, TcManticTransferenciasBitacoraDto.class, this.dto.toMap())> -1L) 
-            regresar= DaoFactory.getInstance().delete(sesion, TcManticTransferenciasDto.class, this.dto.getIdTransferencia())>= 1L;
+          //if (DaoFactory.getInstance().deleteAll(sesion, TcManticTransferenciasBitacoraDto.class, this.dto.toMap())> -1L) 
+					this.dto.setIdTransferenciaEstatus(2L);
+          regresar= DaoFactory.getInstance().update(sesion, this.dto)>= 1L;
+					bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), JsfBase.getIdUsuario(), this.dto.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
+          regresar= DaoFactory.getInstance().insert(sesion, bitacora).intValue()> 0;
           break;
+				case DEPURAR:
+					regresar= DaoFactory.getInstance().delete(sesion, TcManticFaltantesDto.class, this.idFaltante)>= 1L;
+					break;
         case REGISTRAR:
-					this.dto.setIdTransferencia(this.idTransferenciaEstatus);
+					this.dto.setIdTransferenciaEstatus(this.idTransferenciaEstatus);
 				  switch(this.idTransferenciaEstatus.intValue()) {
 						case 3: // TRANSITO
 							origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(TcManticAlmacenesArticulosDto.class, this.dto.toMap());
@@ -197,4 +232,19 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	}
 
+	private void toFillArticulos(Session sesion) throws Exception {
+		List<Articulo> todos=(List<Articulo>) DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "VistaAlmacenesTransferenciasDto", "detalle", this.dto.toMap());
+		for (Articulo item: todos) 
+			if (this.articulos.indexOf(item)< 0) 
+				DaoFactory.getInstance().delete(sesion, item.toTrasnferenciaDetalle());
+		for (Articulo articulo: this.articulos) {
+			TcManticTransferenciasDetallesDto item=articulo.toTrasnferenciaDetalle();
+			item.setIdTransferencia(this.dto.getIdTransferencia());
+			if (DaoFactory.getInstance().findIdentically(sesion, TcManticTransferenciasDetallesDto.class, item.toMap())== null) 
+				DaoFactory.getInstance().insert(sesion, item);
+			else 
+				DaoFactory.getInstance().update(sesion, item);
+		} // for
+	}
+	
 }
