@@ -520,6 +520,64 @@
 						break;
 				} // swtich
 			});	
+			$(document).on('keydown', '.key-caja-dialogo-finalizar', function(e) {
+				var key= e.keyCode ? e.keyCode : e.which;
+				janal.console('jsArticulos.cajaDialogoFinalizar');
+				switch(key) {					
+					case $articulos.VK_ENTER:
+						$('#aceptarFinalizar').click();
+						break;
+				} // switch
+			});
+			$(document).on('keydown', '.key-caja-efectivo', function(e) {
+				var key= e.keyCode ? e.keyCode : e.which;
+				janal.console('jsArticulos.cajaEfectivo');
+				switch(key) {					
+					case $articulos.VK_ENTER:
+						$("#contenedorGrupos\\:debito_input").focus();
+						$("#contenedorGrupos\\:debito_input").val('');
+						break;
+				} // switch
+			});
+			$(document).on('keydown', '.key-caja-debito', function(e) {
+				var key= e.keyCode ? e.keyCode : e.which;
+				janal.console('jsArticulos.cajaDebito');
+				switch(key) {					
+					case $articulos.VK_ENTER:
+						$("#contenedorGrupos\\:credito_input").focus();
+						$("#contenedorGrupos\\:credito_input").val('');
+						break;
+				} // switch
+			});
+			$(document).on('keydown', '.key-caja-credito', function(e) {
+				var key= e.keyCode ? e.keyCode : e.which;
+				janal.console('jsArticulos.cajaCredito');
+				switch(key) {					
+					case $articulos.VK_ENTER:
+						$("#contenedorGrupos\\:transferencia_input").focus();
+						$("#contenedorGrupos\\:transferencia_input").val('');
+						break;
+				} // switch
+			});
+			$(document).on('keydown', '.key-caja-transferencia', function(e) {
+				var key= e.keyCode ? e.keyCode : e.which;
+				janal.console('jsArticulos.cajaTransferencia');
+				switch(key) {					
+					case $articulos.VK_ENTER:
+						$("#contenedorGrupos\\:cheque_input").focus();
+						$("#contenedorGrupos\\:cheque_input").val('');
+						break;
+				} // switch
+			});
+			$(document).on('keydown', '.key-caja-cheque', function(e) {
+				var key= e.keyCode ? e.keyCode : e.which;
+				janal.console('jsArticulos.cajaCheque');
+				switch(key) {					
+					case $articulos.VK_ENTER:
+						$("#aceptar").click();												
+						break;
+				} // switch
+			});
 			setTimeout('$articulos.goto()', 1000);
 		},
 		nextOpenTicket: function(focus) {
@@ -1153,6 +1211,7 @@
 		focusCobro: function() {
 			$('#contenedorGrupos\\:efectivo_input').addClass('ui-state-focus');
 			$('#contenedorGrupos\\:efectivo_input').focus();
+			$("#contenedorGrupos\\:efectivo_input").val('');
 		}
 	});
 	
