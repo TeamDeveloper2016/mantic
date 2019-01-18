@@ -54,6 +54,8 @@ public class TcManticEmpresasPagosDto implements IBaseDto, Serializable {
   private Timestamp registro;
 	@Column (name="id_cierre")
   private Long idCierre;
+	@Column (name="id_egreso")
+  private Long idEgreso;
 
   public TcManticEmpresasPagosDto() {
     this(new Long(-1L));
@@ -174,6 +176,14 @@ public class TcManticEmpresasPagosDto implements IBaseDto, Serializable {
 	public void setIdCierre(Long idCierre) {
 		this.idCierre = idCierre;
 	}	
+
+	public Long getIdEgreso() {
+		return idEgreso;
+	}
+
+	public void setIdEgreso(Long idEgreso) {
+		this.idEgreso=idEgreso;
+	}
 	
   @Transient
   @Override
@@ -213,6 +223,8 @@ public class TcManticEmpresasPagosDto implements IBaseDto, Serializable {
 		regresar.append(getRegistro());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdCierre());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEgreso());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -232,13 +244,14 @@ public class TcManticEmpresasPagosDto implements IBaseDto, Serializable {
 		regresar.put("referencia", getReferencia());
 		regresar.put("registro", getRegistro());
 		regresar.put("idCierre", getIdCierre());
+		regresar.put("idEgreso", getIdEgreso());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-			getIdTipoMedioPago(), getIdUsuario(), getIdEmpresaDeuda(), getObservaciones(), getIdEmpresaPago(), getPago(), getIdCreditoNota(), getIdNotaEntrada(), getIdBanco(), getReferencia(), getRegistro(), getIdCierre()
+			getIdTipoMedioPago(), getIdUsuario(), getIdEmpresaDeuda(), getObservaciones(), getIdEmpresaPago(), getPago(), getIdCreditoNota(), getIdNotaEntrada(), getIdBanco(), getReferencia(), getRegistro(), getIdCierre(), getIdEgreso()
     };
     return regresar;
   }

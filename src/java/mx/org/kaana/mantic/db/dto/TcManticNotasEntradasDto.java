@@ -91,7 +91,9 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
   private Double deuda;
   @Column (name="original")
   private Double original;
-
+  @Column (name="id_egreso")
+  private Long idEgreso;
+	
   public TcManticNotasEntradasDto() {
     this(new Long(-1L));
   }
@@ -374,6 +376,14 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
 		this.original=original;
 	}
 
+	public Long getIdEgreso() {
+		return idEgreso;
+	}
+
+	public void setIdEgreso(Long idEgreso) {
+		this.idEgreso=idEgreso;
+	}
+
   @Transient
   @Override
   public Long getKey() {
@@ -448,6 +458,8 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
 		regresar.append(getDeuda());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOriginal());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEgreso());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -485,13 +497,14 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
 		regresar.put("fechaPago", getFechaPago());
 		regresar.put("deuda", getDeuda());
 		regresar.put("original", getOriginal());
+		regresar.put("idEgreso", getIdEgreso());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescuentos(), getIdProveedor(), getIdProveedorPago(), getDescuento(), getIdOrdenCompra(), getIdNotaTipo(), getFechaRecepcion(), getExtras(), getIdNotaEntrada(), getFechaFactura(), getIdNotaEstatus(), getEjercicio(), getRegistro(), getConsecutivo(), getTotal(), getFactura(), getIdUsuario(), getIdAlmacen(), getSubTotal(), getImpuestos(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden(), getExcedentes(), getDiasPlazo(), getFechaPago(), getDeuda(), getOriginal()
+      getDescuentos(), getIdProveedor(), getIdProveedorPago(), getDescuento(), getIdOrdenCompra(), getIdNotaTipo(), getFechaRecepcion(), getExtras(), getIdNotaEntrada(), getFechaFactura(), getIdNotaEstatus(), getEjercicio(), getRegistro(), getConsecutivo(), getTotal(), getFactura(), getIdUsuario(), getIdAlmacen(), getSubTotal(), getImpuestos(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden(), getExcedentes(), getDiasPlazo(), getFechaPago(), getDeuda(), getOriginal(), getIdEgreso()
     };
     return regresar;
   }

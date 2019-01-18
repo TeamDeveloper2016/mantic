@@ -7,6 +7,96 @@
   </model>
 
   <dml>
+    <unit id="TcManticEgresosNotasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_egresos_notas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_egresos_notas
+        where      
+          id_egreso = {idEgreso} and id_egreso_nota = {idEgresoNota} and comentario = '{comentario}'
+      </select>
+    </unit>		
+    <unit id="TcManticEgresosEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_egresos_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_egresos_estatus
+        where      
+          id_egreso_estatus = {idEgresoEstatus} and nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcManticEgresosBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_egresos_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_egresos_bitacora
+        where      
+          id_egreso_bitacora = {idEgresoBitacora}
+      </select>
+    </unit>		
+    <unit id="TcManticEgresosArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_egresos_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_egresos_archivos
+        where      
+          id_egreso = {idEgreso} and id_tipo_archivo = {idTipoArchivo} and nombre = '{nombre}'
+      </select>
+    </unit>		
+	  <unit id="TcManticEgresosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_egresos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_egresos
+        where      
+          descripcion = '{descripcion}' and date_format(fecha, '%Y%m%d')= '{fecha}' and importe = {importe}
+      </select>
+    </unit>
     <unit id="TcManticConfrontasEstatusDto">
       <select id="row">
         select      

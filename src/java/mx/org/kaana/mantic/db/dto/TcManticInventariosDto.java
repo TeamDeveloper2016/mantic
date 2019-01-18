@@ -50,6 +50,8 @@ public class TcManticInventariosDto implements IBaseDto, Serializable {
   private Long ejercicio;
   @Column (name="registro")
   private Timestamp registro;
+  @Column (name="id_automatico")
+  private Long idAutomatico;
 
   public TcManticInventariosDto() {
     this(new Long(-1L));
@@ -61,6 +63,10 @@ public class TcManticInventariosDto implements IBaseDto, Serializable {
   }
 
   public TcManticInventariosDto(Long idUsuario, Long idAlmacen, Double entradas, Long idInventario, Long idArticulo, Double inicial, Double stock, Double salidas, Long ejercicio) {
+		this(idUsuario, idAlmacen, entradas, idInventario, idArticulo, inicial, stock, salidas, ejercicio, 2L);
+	}
+
+	public TcManticInventariosDto(Long idUsuario, Long idAlmacen, Double entradas, Long idInventario, Long idArticulo, Double inicial, Double stock, Double salidas, Long ejercicio, Long idAutomatico) {
     setIdUsuario(idUsuario);
     setIdAlmacen(idAlmacen);
     setEntradas(entradas);
@@ -71,6 +77,7 @@ public class TcManticInventariosDto implements IBaseDto, Serializable {
     setSalidas(salidas);
     setEjercicio(ejercicio);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		this.idAutomatico= idAutomatico;
   }
 	
   public void setIdUsuario(Long idUsuario) {
@@ -153,6 +160,14 @@ public class TcManticInventariosDto implements IBaseDto, Serializable {
     return registro;
   }
 
+	public Long getIdAutomatico() {
+		return idAutomatico;
+	}
+
+	public void setIdAutomatico(Long idAutomatico) {
+		this.idAutomatico=idAutomatico;
+	}
+
   @Transient
   @Override
   public Long getKey() {
@@ -187,6 +202,8 @@ public class TcManticInventariosDto implements IBaseDto, Serializable {
 		regresar.append(getEjercicio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdAutomatico());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -204,13 +221,14 @@ public class TcManticInventariosDto implements IBaseDto, Serializable {
 		regresar.put("salidas", getSalidas());
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
+		regresar.put("idAutomatico", getIdAutomatico());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdUsuario(), getIdAlmacen(), getEntradas(), getIdInventario(), getIdArticulo(), getInicial(), getStock(), getSalidas(), getEjercicio(), getRegistro()
+      getIdUsuario(), getIdAlmacen(), getEntradas(), getIdInventario(), getIdArticulo(), getInicial(), getStock(), getSalidas(), getEjercicio(), getRegistro(), getIdAutomatico()
     };
     return regresar;
   }
