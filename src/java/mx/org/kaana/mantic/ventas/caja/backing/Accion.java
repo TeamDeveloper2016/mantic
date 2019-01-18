@@ -170,8 +170,8 @@ public class Accion extends IBaseVenta implements Serializable {
           break;
         case MODIFICAR:			
         case CONSULTAR:			
-					LOG.warn("Atributes:" + this.attrs.toString());
-          this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", this.attrs)));
+					LOG.warn("Atributes:" + this.attrs.toString());					
+          this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", this.attrs)));					
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
           break;
       } // switch
@@ -673,6 +673,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				rc.execute("jsArticulos.validateCredito();");
 			else
 				rc.execute("jsArticulos.refreshCobroValidate();");
+			rc.execute("ventaFinishedTime();");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
