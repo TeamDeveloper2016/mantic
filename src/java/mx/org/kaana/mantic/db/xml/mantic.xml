@@ -7,6 +7,24 @@
   </model>
 
   <dml>
+    <unit id="TcManticArticulosTiposDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_articulos_tipos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_articulos_tipos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
     <unit id="TcManticEgresosNotasDto">
       <select id="row">
         select      
