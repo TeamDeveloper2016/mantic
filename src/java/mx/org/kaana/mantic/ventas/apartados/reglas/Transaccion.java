@@ -237,7 +237,7 @@ public class Transaccion extends IBaseTnx{
 			params.put("idVenta", this.idVenta);
       IAdminArticulos adminOrden = new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), false);
 			for(Articulo articulo: adminOrden.getArticulos()){
-				params.put(Constantes.SQL_CONDICION, "id_articulo=".concat(articulo.getIdArticulo().toString()));
+				params.put(Constantes.SQL_CONDICION, "id_articulo="+ articulo.getIdArticulo()+ " and id_almacen= "+ adminOrden.getIdAlmacen());
 				almacenArticulo= (TcManticAlmacenesArticulosDto) DaoFactory.getInstance().toEntity(sesion, TcManticAlmacenesArticulosDto.class, "TcManticAlmacenesArticulosDto", "row", params);
 				if(almacenArticulo!= null){
 					almacenArticulo.setStock(almacenArticulo.getStock() + articulo.getCantidad());

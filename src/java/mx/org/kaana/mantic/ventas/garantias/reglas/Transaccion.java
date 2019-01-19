@@ -325,7 +325,7 @@ public class Transaccion extends IBaseTnx{
 		try {			
 			params= new HashMap<>();
 			for(Articulo articulo: this.garantia.getArticulos()){
-				params.put(Constantes.SQL_CONDICION, "id_articulo=".concat(articulo.getIdArticulo().toString()));
+				params.put(Constantes.SQL_CONDICION, "id_articulo="+ articulo.getIdArticulo()+ " and id_almacen="+ this.garantia.getTicketVenta().getIdAlmacen());
 				almacenArticulo= (TcManticAlmacenesArticulosDto) DaoFactory.getInstance().toEntity(sesion, TcManticAlmacenesArticulosDto.class, "TcManticAlmacenesArticulosDto", "row", params);
 				if(almacenArticulo!= null){
 					almacenArticulo.setStock(almacenArticulo.getStock() + articulo.getCantidad());
