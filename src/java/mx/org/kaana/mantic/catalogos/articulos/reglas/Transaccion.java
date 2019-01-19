@@ -1,4 +1,3 @@
-
 package mx.org.kaana.mantic.catalogos.articulos.reglas;
 
 import java.io.File;
@@ -97,7 +96,8 @@ public class Transaccion extends TransaccionFactura {
 											//if(DaoFactory.getInstance().deleteAll(sesion, TcManticImagenesDto.class, params)> -1L){
 											//if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloPresentacionDto.class, params)> -1L){
 												regresar= DaoFactory.getInstance().delete(sesion, TcManticArticulosDto.class, this.articulo.getIdArticulo())>= 1L;
-												eliminarArticuloFacturama(sesion, this.articulo.getArticulo().getIdFacturama());
+												if(this.articulo.getArticulo().getIdArticuloTipo().equals(1L))
+													eliminarArticuloFacturama(sesion, this.articulo.getArticulo().getIdFacturama());
 				}	}	}	}	}	}	}	} // if		
 		} // try
 		catch (Exception e) {			
@@ -106,11 +106,13 @@ public class Transaccion extends TransaccionFactura {
 		return regresar;
 	} // eliminarArticulo
 	
+	@Override
 	public boolean procesarArticulo(Session sesion) throws Exception{
 		boolean regresar         = false;
 		TcManticImagenesDto image= null;
-		Long idArticulo = -1L;
-		Long idImagen   = -1L;
+		Long idArticulo          = -1L;
+		Long idImagen            = -1L;
+		Long idCategoria         = null;
 		try {			
 			if(eliminarRegistros(sesion)){
 				this.messageError= "Error al registrar el articulo.\nVerificar que el articulo no se encuentre registrado.";
@@ -120,12 +122,22 @@ public class Transaccion extends TransaccionFactura {
 				this.articulo.getArticulo().setIdVigente(1L);
 				this.articulo.getArticulo().setStock(0D);
 				this.articulo.getArticulo().setCantidad(1D);
-				if(this.articulo.getArticulo().getMenudeo()== null)
-					this.articulo.getArticulo().setMenudeo(toMenudeo());
-				if(this.articulo.getArticulo().getMedioMayoreo()== null)
-					this.articulo.getArticulo().setMedioMayoreo(toMedioMayoreo());
-				if(this.articulo.getArticulo().getMayoreo()== null)
-					this.articulo.getArticulo().setMayoreo(toMayoreo());
+				this.articulo.getArticulo().setIdArticuloTipo(this.articulo.getIdTipoArticulo());
+				idCategoria= this.articulo.getArticulo().getIdCategoria()!= null && this.articulo.getArticulo().getIdCategoria() < 1L ? null : this.articulo.getArticulo().getIdCategoria();
+				this.articulo.getArticulo().setIdCategoria(idCategoria);
+				if(this.articulo.getIdTipoArticulo().equals(1L)){				
+					if(this.articulo.getArticulo().getMenudeo()== null)
+						this.articulo.getArticulo().setMenudeo(toMenudeo());
+					if(this.articulo.getArticulo().getMedioMayoreo()== null)
+						this.articulo.getArticulo().setMedioMayoreo(toMedioMayoreo());
+					if(this.articulo.getArticulo().getMayoreo()== null)
+						this.articulo.getArticulo().setMayoreo(toMayoreo());
+				} // if
+				else{					
+					this.articulo.getArticulo().setMenudeo(this.articulo.getArticulo().getPrecio());					
+					this.articulo.getArticulo().setMedioMayoreo(this.articulo.getArticulo().getPrecio());					
+					this.articulo.getArticulo().setMayoreo(this.articulo.getArticulo().getPrecio());
+				} // else
 				idArticulo= DaoFactory.getInstance().insert(sesion, this.articulo.getArticulo());
 				if(registraCodigos(sesion, idArticulo)) {
 					if(registraEspecificaciones(sesion, idArticulo)) {
@@ -156,8 +168,8 @@ public class Transaccion extends TransaccionFactura {
 							} 
 						} 
 					} 
-				}
-				if(idArticulo > -1)
+				}				
+				if(idArticulo > -1 && this.articulo.getArticulo().getIdArticuloTipo().equals(1L))
 					registraArticuloFacturama(sesion, idArticulo);
 			} // if
 		} // try
@@ -239,6 +251,7 @@ public class Transaccion extends TransaccionFactura {
 												this.articulo.getArticulo().setMenudeo(toMenudeo());
 												this.articulo.getArticulo().setMedioMayoreo(toMedioMayoreo());
 												this.articulo.getArticulo().setMayoreo(toMayoreo());
+												this.articulo.getArticulo().setIdArticuloTipo(this.articulo.getIdTipoArticulo());
 												regresar= this.articulo.getArticulo().getIdImagen()!= null && !this.articulo.getArticulo().getIdImagen().equals(-1L);
 												if(regresar){				
 													if(DaoFactory.getInstance().update(sesion, loadImage(sesion, this.articulo.getArticulo().getIdImagen(), idArticulo))>= 0L)
@@ -246,7 +259,8 @@ public class Transaccion extends TransaccionFactura {
 												} // if 
 												else
 													regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
-												actualizarArticuloFacturama(sesion, this.articulo.getIdArticulo());
+												if(this.articulo.getArticulo().getIdArticuloTipo().equals(1L))
+													actualizarArticuloFacturama(sesion, this.articulo.getIdArticulo());
 			} } } } } } } } 
 		} // try
 		catch (Exception e) {			
@@ -410,26 +424,30 @@ public class Transaccion extends TransaccionFactura {
 		boolean validate= false;
 		boolean regresar= false;
 		try {
-			for(Descuento descuento: this.articulo.getArticulosDescuentos()){
-				descuento.setIdArticulo(idArticulo);				
-				descuento.setIdUsuario(JsfBase.getIdUsuario());
-				descuento.setVigenciaInicial(new Timestamp(descuento.getVigenciaIni().getTime()));
-				descuento.setVigenciaFinal(new Timestamp(descuento.getVigenciaFin().getTime()));
-				dto= (TcManticArticulosDescuentosDto) descuento;				
-				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) ? ESql.INSERT : descuento.getSqlAccion();
-				switch(sqlAccion){
-					case INSERT:
-						dto.setIdArticuloDescuento(-1L);
-						validate= registrar(sesion, dto);
-						break;
-					case UPDATE:
-						validate= actualizar(sesion, dto);
-						break;
-				} // switch
-				if(validate)
-					count++;
-			} // for		
-			regresar= count== this.articulo.getArticulosDescuentos().size();
+			if(this.articulo.getIdTipoArticulo().equals(1L)){
+				for(Descuento descuento: this.articulo.getArticulosDescuentos()){
+					descuento.setIdArticulo(idArticulo);				
+					descuento.setIdUsuario(JsfBase.getIdUsuario());
+					descuento.setVigenciaInicial(new Timestamp(descuento.getVigenciaIni().getTime()));
+					descuento.setVigenciaFinal(new Timestamp(descuento.getVigenciaFin().getTime()));
+					dto= (TcManticArticulosDescuentosDto) descuento;				
+					sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) ? ESql.INSERT : descuento.getSqlAccion();
+					switch(sqlAccion){
+						case INSERT:
+							dto.setIdArticuloDescuento(-1L);
+							validate= registrar(sesion, dto);
+							break;
+						case UPDATE:
+							validate= actualizar(sesion, dto);
+							break;
+					} // switch
+					if(validate)
+						count++;
+				} // for		
+				regresar= count== this.articulo.getArticulosDescuentos().size();
+			} // if
+			else
+				regresar= true;
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -447,26 +465,30 @@ public class Transaccion extends TransaccionFactura {
 		boolean validate= false;
 		boolean regresar= false;
 		try {
-			for(DescuentoEspecial descuentoEspecial: this.articulo.getClientesDescuentos()){
-				descuentoEspecial.setIdArticulo(idArticulo);				
-				descuentoEspecial.setIdUsuario(JsfBase.getIdUsuario());
-				descuentoEspecial.setVigenciaInicial(new Timestamp(descuentoEspecial.getVigenciaIni().getTime()));
-				descuentoEspecial.setVigenciaFinal(new Timestamp(descuentoEspecial.getVigenciaFin().getTime()));
-				dto= (TrManticArticuloGrupoDescuentoDto) descuentoEspecial;				
-				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) ? ESql.INSERT : descuentoEspecial.getSqlAccion();
-				switch(sqlAccion){
-					case INSERT:
-						dto.setIdArticuloGrupoDescuento(-1L);
-						validate= registrar(sesion, dto);
-						break;
-					case UPDATE:
-						validate= actualizar(sesion, dto);
-						break;
-				} // switch
-				if(validate)
-					count++;
-			} // for		
-			regresar= count== this.articulo.getClientesDescuentos().size();
+			if(this.articulo.getIdTipoArticulo().equals(1L)){
+				for(DescuentoEspecial descuentoEspecial: this.articulo.getClientesDescuentos()){
+					descuentoEspecial.setIdArticulo(idArticulo);				
+					descuentoEspecial.setIdUsuario(JsfBase.getIdUsuario());
+					descuentoEspecial.setVigenciaInicial(new Timestamp(descuentoEspecial.getVigenciaIni().getTime()));
+					descuentoEspecial.setVigenciaFinal(new Timestamp(descuentoEspecial.getVigenciaFin().getTime()));
+					dto= (TrManticArticuloGrupoDescuentoDto) descuentoEspecial;				
+					sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) ? ESql.INSERT : descuentoEspecial.getSqlAccion();
+					switch(sqlAccion){
+						case INSERT:
+							dto.setIdArticuloGrupoDescuento(-1L);
+							validate= registrar(sesion, dto);
+							break;
+						case UPDATE:
+							validate= actualizar(sesion, dto);
+							break;
+					} // switch
+					if(validate)
+						count++;
+				} // for		
+				regresar= count== this.articulo.getClientesDescuentos().size();
+			} // if
+			else
+				regresar= true;
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -484,25 +506,29 @@ public class Transaccion extends TransaccionFactura {
 		boolean validate= false;
 		boolean regresar= false;
 		try {
-			for(PrecioSugerido precioSugerido: this.articulo.getPreciosSugeridos()){
-				precioSugerido.setIdArticulo(idArticulo);				
-				precioSugerido.setIdUsuario(JsfBase.getIdUsuario());				
-				dto= (TrManticArticuloPrecioSugeridoDto) precioSugerido;				
-				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) ? ESql.INSERT : precioSugerido.getSqlAccion();
-				switch(sqlAccion){
-					case INSERT:
-						dto.setIdLeido(2L);
-						dto.setIdArticuloPrecioSugerido(-1L);
-						validate= registrar(sesion, dto);
-						break;
-					case UPDATE:
-						validate= actualizar(sesion, dto);
-						break;
-				} // switch
-				if(validate)
-					count++;
-			} // for		
-			regresar= count== this.articulo.getPreciosSugeridos().size();
+			if(this.articulo.getIdTipoArticulo().equals(1L)){
+				for(PrecioSugerido precioSugerido: this.articulo.getPreciosSugeridos()){
+					precioSugerido.setIdArticulo(idArticulo);				
+					precioSugerido.setIdUsuario(JsfBase.getIdUsuario());				
+					dto= (TrManticArticuloPrecioSugeridoDto) precioSugerido;				
+					sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) ? ESql.INSERT : precioSugerido.getSqlAccion();
+					switch(sqlAccion){
+						case INSERT:
+							dto.setIdLeido(2L);
+							dto.setIdArticuloPrecioSugerido(-1L);
+							validate= registrar(sesion, dto);
+							break;
+						case UPDATE:
+							validate= actualizar(sesion, dto);
+							break;
+					} // switch
+					if(validate)
+						count++;
+				} // for		
+				regresar= count== this.articulo.getPreciosSugeridos().size();
+			} // if
+			else
+				regresar= true;
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -520,24 +546,28 @@ public class Transaccion extends TransaccionFactura {
 		boolean validate= false;
 		boolean regresar= false;
 		try {
-			for(ArticuloProveedor articuloProveedor: this.articulo.getArticulosProveedores()){
-				articuloProveedor.setIdArticulo(idArticulo);				
-				articuloProveedor.setIdUsuario(JsfBase.getIdUsuario());				
-				dto= (TrManticArticuloProveedorDto) articuloProveedor;				
-				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) ? ESql.INSERT : articuloProveedor.getSqlAccion();
-				switch(sqlAccion){
-					case INSERT:
-						dto.setIdArticuloProveedor(-1L);
-						validate= registrar(sesion, dto);
-						break;
-					case UPDATE:
-						validate= actualizar(sesion, dto);
-						break;
-				} // switch
-				if(validate)
-					count++;
-			} // for		
-			regresar= count== this.articulo.getArticulosProveedores().size();
+			if(this.articulo.getIdTipoArticulo().equals(1L)){
+				for(ArticuloProveedor articuloProveedor: this.articulo.getArticulosProveedores()){
+					articuloProveedor.setIdArticulo(idArticulo);				
+					articuloProveedor.setIdUsuario(JsfBase.getIdUsuario());				
+					dto= (TrManticArticuloProveedorDto) articuloProveedor;				
+					sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) ? ESql.INSERT : articuloProveedor.getSqlAccion();
+					switch(sqlAccion){
+						case INSERT:
+							dto.setIdArticuloProveedor(-1L);
+							validate= registrar(sesion, dto);
+							break;
+						case UPDATE:
+							validate= actualizar(sesion, dto);
+							break;
+					} // switch
+					if(validate)
+						count++;
+				} // for		
+				regresar= count== this.articulo.getArticulosProveedores().size();
+			} // if
+			else
+				regresar= true;
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -555,23 +585,27 @@ public class Transaccion extends TransaccionFactura {
 		boolean validate= false;
 		boolean regresar= false;
 		try {
-			for(TipoVenta tipoVenta: this.articulo.getArticulosTiposVenta()){
-				tipoVenta.setIdArticulo(idArticulo);				
-				dto= (TrManticArticuloTipoVentaDto) tipoVenta;				
-				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) ? ESql.INSERT : tipoVenta.getSqlAccion();
-				switch(sqlAccion){
-					case INSERT:
-						dto.setIdArticuloTipoVenta(-1L);
-						validate= registrar(sesion, dto);
-						break;
-					case UPDATE:
-						validate= actualizar(sesion, dto);
-						break;
-				} // switch
-				if(validate)
-					count++;
-			} // for		
-			regresar= count== this.articulo.getArticulosTiposVenta().size();
+			if(this.articulo.getIdTipoArticulo().equals(1L)){
+				for(TipoVenta tipoVenta: this.articulo.getArticulosTiposVenta()){
+					tipoVenta.setIdArticulo(idArticulo);				
+					dto= (TrManticArticuloTipoVentaDto) tipoVenta;				
+					sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) ? ESql.INSERT : tipoVenta.getSqlAccion();
+					switch(sqlAccion){
+						case INSERT:
+							dto.setIdArticuloTipoVenta(-1L);
+							validate= registrar(sesion, dto);
+							break;
+						case UPDATE:
+							validate= actualizar(sesion, dto);
+							break;
+					} // switch
+					if(validate)
+						count++;
+				} // for		
+				regresar= count== this.articulo.getArticulosTiposVenta().size();
+			} // if
+			else
+				regresar= true;
 		} // try
 		catch (Exception e) {			
 			throw e;
