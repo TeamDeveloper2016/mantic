@@ -45,6 +45,7 @@ public class Filtro extends Comun implements Serializable {
     	this.attrs.put("buscaPorCodigo", false);
       this.attrs.put("codigo", "");
       this.attrs.put("nombre", "");
+      this.attrs.put("idTipoArticulo", 1L);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());      
     } // try
     catch (Exception e) {
@@ -80,7 +81,7 @@ public class Filtro extends Comun implements Serializable {
 		String search          = null;
 		StringBuilder condicion= null;
 		try {
-			condicion= new StringBuilder();
+			condicion= new StringBuilder("tc_mantic_articulos.id_articulo_tipo=").append(this.attrs.get("idTipoArticulo")).append(" and ");			
 			if(!Cadena.isVacio(this.attrs.get("codigo")))
 				condicion.append("upper(tc_mantic_articulos_codigos.codigo) like upper('%").append(this.attrs.get("codigo")).append("%') and ");			
 			search= (String) this.attrs.get("nombre");
@@ -122,7 +123,7 @@ public class Filtro extends Comun implements Serializable {
 			options.add(accion.name());
 			options.add(idArticulo.toString());
 			params.put("data", options);
-			RequestContext.getCurrentInstance().openDialog("express");//, getConfigDialogo(), params);
+			RequestContext.getCurrentInstance().openDialog("express");
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -142,23 +143,6 @@ public class Filtro extends Comun implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // onReturnValues
-	
-	private Map<String, Object> getConfigDialogo() throws Exception{
-		Map<String, Object> regresar= null;
-		try {
-			regresar= new HashMap<>();
-			regresar.put("modal", true);
-			regresar.put("draggable", false);
-			regresar.put("closable", false);
-			regresar.put("resizable", false);
-			regresar.put("contentHeight", 380);			
-			regresar.put("contentWidth", 900);						
-		} // try
-		catch (Exception e) {						
-			throw e;
-		} // catch		
-		return regresar;
-	} // getConfigDialogo
 	
   public void doEliminar() {
     Transaccion transaccion = null;
@@ -217,14 +201,14 @@ public class Filtro extends Comun implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     }// finally
-	}	
+	}	// doUpdateArticulos
 
 	public List<UISelectEntity> doCompleteArticulo(String query) {
 		this.attrs.put("existe", null);
 		this.attrs.put("codigo", query);
     this.doUpdateArticulos();		
 		return (List<UISelectEntity>)this.attrs.get("articulos");
-	}	
+	}	// doCompleteArticulo
 
   public void doFindArticulo() {
 		try {
@@ -243,7 +227,7 @@ public class Filtro extends Comun implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
     } // catch   
-	} 
+	} // doFindArticulo
 	
 	public void doPublicarFacturama(){
 		TransaccionFactura transaccion= null;
@@ -268,6 +252,5 @@ public class Filtro extends Comun implements Serializable {
     JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Articulos/filtro");
     JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.ARTICULOS.getId());
     return "/Paginas/Mantic/Catalogos/Masivos/importar".concat(Constantes.REDIRECIONAR);
-	}
-	
+	} // doMasivo	
 }
