@@ -76,6 +76,12 @@ public class Importar extends IBaseImportar implements Serializable {
 					case 4:
 						this.categoria= ECargaMasiva.REFACCIONES;
 						break;
+					case 5:
+						this.categoria= ECargaMasiva.SERVICIOS;
+						break;
+					case 6:
+						this.categoria= ECargaMasiva.EGRESOS;
+						break;
 				} // switch
 			else
 				this.categoria= ECargaMasiva.ARTICULOS;
@@ -106,9 +112,8 @@ public class Importar extends IBaseImportar implements Serializable {
 		this.attrs.put("idTipoMasivo", this.masivo.getIdTipoMasivo());
 		if(event.getTab().getTitle().equals("Archivos")) 
 			this.doLoadArhivos("VistaCargasMasivasDto", "importados", this.attrs);
-	}		
+	} // doTabChange		
 	
-
 	protected void doLoadArhivos(String proceso, String idXml, Map<String, Object> params) {
 		List<Columna> columns= null;
 		try {
@@ -128,7 +133,7 @@ public class Importar extends IBaseImportar implements Serializable {
     finally {
       Methods.clean(columns);
     } // finally
-  } 
+  } // doLoadArhivos
 	
 	public void doFileUpload(FileUploadEvent event) {
 		try {
@@ -190,7 +195,7 @@ public class Importar extends IBaseImportar implements Serializable {
 				(tuplas!= transaccion.getProcesados()? "\\u000D\\u000DOcurrio un error en el proceso de cargar, favor de verificarlo": "")+ "')");
 		} // if	
     return regresar;
-	}	
+	} // doAceptar	
   
   public void doCompleto() {
 		// JsfBase.addMessage("Detalle del mensaje", "Se proceso correctamente el catalogo !.", ETipoMensaje.INFORMACION);		
@@ -205,6 +210,10 @@ public class Importar extends IBaseImportar implements Serializable {
 			case 3: this.categoria= ECargaMasiva.PROVEEDORES;
 				break;
 			case 4: this.categoria= ECargaMasiva.REFACCIONES;
+				break;
+			case 5: this.categoria= ECargaMasiva.SERVICIOS;
+				break;
+			case 6: this.categoria= ECargaMasiva.EGRESOS;
 				break;
 		} // switch
 		if(this.masivo!= null && this.masivo.isValid()) {
@@ -227,18 +236,17 @@ public class Importar extends IBaseImportar implements Serializable {
 				1L
 			);
 		} // if
-	}
+	} // doChangeTipo
 
 	public String doMovimientos() {
 		JsfBase.setFlashAttribute("idMasivaArchivo", ((Entity)this.attrs.get("seleccionado")).getKey());
 		JsfBase.setFlashAttribute("regreso", "importar");
 		return "movimientos".concat(Constantes.REDIRECIONAR);
-	}
+	} // doMovimientos
 	
 	public String doDetalles() {
 		JsfBase.setFlashAttribute("idMasivaArchivo", ((Entity)this.attrs.get("seleccionado")).getKey());
 		JsfBase.setFlashAttribute("regreso", "importar");
 		return "detalles".concat(Constantes.REDIRECIONAR);
-	}
-	
+	} // doDetalles	
 }
