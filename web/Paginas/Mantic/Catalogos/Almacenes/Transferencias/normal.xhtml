@@ -161,7 +161,7 @@
 													</f:facet>
 													<h:outputText value="#{index+ 1}.-"/>
 												</p:column>													
-												<p:column  class="MarAuto Responsive janal-wid-12">
+												<p:column  class="MarAuto Responsive janal-wid-13">
 													<f:facet name="header">
 														<p:selectBooleanCheckbox value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
 															<p:ajax event="change" process="@this" update="@this"/>
@@ -195,9 +195,10 @@
 																</f:facet>
 															</p:autoComplete>												
 														</div>	
-														<div style="width: 10px; margin-left: -5px; margin-top: 1px;">
-															<h:outputText value="#{row['estaSolicitado']}" escape="false" styleClass="filas"/>
-															<h:outputText value="#{row['precioSugerido']}" escape="false" styleClass="filas"/>
+														<div style="width: 15px; margin-left: -5px; margin-top: 1px;">
+															<h:outputText value="#{row['stockExcede']}" escape="false" styleClass="filas"/>
+															<h:outputText value="#{row['noTieneConteoOrigen']}" escape="false" styleClass="filas"/>
+															<h:outputText value="#{row['noTieneConteoDestino']}" escape="false" styleClass="filas"/>
 														</div>
 													</div>	
 												</p:column>		
@@ -214,19 +215,19 @@
 													<p:outputLabel value="#{manticCatalogosAlmacenesTransferenciasNormal.doNumericoSat(row['cantidad'])}" styleClass="filas"/>
 													<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" style="display: none"/>
 												</p:column>		
-												<p:column class="costos janal-column-right MarAuto Responsive janal-wid-7">
+												<p:column class="costos janal-column-right MarAuto Responsive janal-wid-10">
 													<f:facet name="header">
 														<h:outputText value="Stock origen"/>
 													</f:facet>
 													<p:outputLabel value="#{row['stock']}" styleClass="filas"/>
 												</p:column>	
-												<p:column class="janal-column-right MarAuto Responsive janal-wid-7">
+												<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 													<f:facet name="header">
 														<h:outputText value="Stock destino"/>
 													</f:facet>
 													<p:outputLabel value="#{row['valor']}" styleClass="filas"/>
 												</p:column>	
-												<p:column class="janal-column-right MarAuto Responsive janal-wid-7">
+												<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 													<f:facet name="header">
 														<h:outputText value="Máximo destino"/>
 													</f:facet>
@@ -239,7 +240,8 @@
 											<div class="ui-grid-col-12 janal-column-right">
 												<p:inputText id="articulos" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.totales.articulos}" styleClass="recalculo" style="display:none"/>
 												<p:outputLabel for="articulos" value="Articulos:"/>
-												<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.totales.articulos}"/>
+												<p:spacer width="5px"/>
+												<p:outputLabel styleClass="janal-wid-100-txt recalculo janal-color-green janal-font-bold" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.totales.articulos}"/>
 									    </div>	
 										</div>	
 									</div>									

@@ -320,8 +320,6 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 				temporal.setSat("");				
 				temporal.setDescuento("");
 				temporal.setExtras("");				
-				temporal.setUltimo(false);
-				temporal.setSolicitado(false);
 				temporal.setUnidadMedida(articulo.toString("unidadMedida"));
 				// recuperar el stock de articulos en el almacen origen
 				Value origen= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
@@ -337,7 +335,14 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 					if((temporal.getCosto()- temporal.getValor())> temporal.getStock())
 						temporal.setCantidad(temporal.getStock()<= 0? 1D: temporal.getStock());
 					else
-						temporal.setCantidad(temporal.getCosto()- temporal.getValor());
+						if(temporal.getValor()< temporal.getCosto())
+						  temporal.setCantidad(temporal.getCosto()- temporal.getValor());
+				// el stock del almacen destino es superior al maximo permitido en el almacen
+				temporal.setUltimo(temporal.getValor()> temporal.getCosto());
+				// el almacen origen no tiene conteo 
+				temporal.setSolicitado(temporal.getStock()<= 0D);
+				// el almacen destino no tiene conteo
+				temporal.setCostoLibre(temporal.getValor()<= 0D);
 				if(index== this.getAdminOrden().getArticulos().size()- 1) {
 					this.getAdminOrden().getArticulos().add(new Articulo(-1L));
 					RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.getAdminOrden().getArticulos().size()- 1)+ ");");

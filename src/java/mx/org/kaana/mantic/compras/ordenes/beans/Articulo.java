@@ -258,6 +258,21 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(this.ultimo? "": "none").concat("' title='El articulo tiene un precio especial de un proveedor !'></i>");
 	}
 	
+	public String getStockExcede() {
+		String color= "janal-color-red";
+		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(this.ultimo? "": "none").concat("' title='El stock del articulo en el almacen destino supera el limite máximo !'></i>");
+	}
+	
+	public String getNoTieneConteoOrigen() {
+		String color= "janal-color-orange";
+		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(this.solicitado? "": "none").concat("' title='El articulo no tiene un conteo en el almacen origen !'></i>");
+	}
+	
+	public String getNoTieneConteoDestino() {
+		String color= "janal-color-blue";
+		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(this.costoLibre? "": "none").concat("' title='El articulo no tiene un conteo en el almacen destino !'></i>");
+	}
+	
 	public void toPrepare(boolean sinIva, Double tipoDeCambio, Long idProvedores) {
 		this.sinIva      = sinIva;
 		this.tipoDeCambio= tipoDeCambio== 0? 1: tipoDeCambio;
