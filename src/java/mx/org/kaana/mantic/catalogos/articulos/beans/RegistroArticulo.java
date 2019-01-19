@@ -53,7 +53,7 @@ public class RegistroArticulo implements Serializable{
 	private Long countIndice;
 	private List<IBaseDto> deleteList;
 	private Importado importado;
-	private Boolean idServicio;
+	private Long idTipoArticulo;
 	private Boolean idBarras;
 
 	public RegistroArticulo() {
@@ -67,7 +67,7 @@ public class RegistroArticulo implements Serializable{
 				new ArrayList<ArticuloProveedor>(),
 				new ArrayList<TipoVenta>(),
 				-1L, null, false, null, -1L,
-				new ArticuloDimencion(), false, false
+				new ArticuloDimencion(), 1L, false
 				);
 	} // RegistroArticulo
 	
@@ -80,7 +80,7 @@ public class RegistroArticulo implements Serializable{
 		init();		
 	}
 	
-	public RegistroArticulo(Long idArticulo, TcManticArticulosDto articulo, List<ArticuloCodigo> articulosCodigos, List<Especificacion> especificaciones, List<Descuento> articulosDescuentos, List<DescuentoEspecial> clientesDescuentos, List<PrecioSugerido> preciosSugeridos, List<ArticuloProveedor> articulosProveedores, List<TipoVenta> articulosTiposVenta, Long idEmpaque, String obervaciones, boolean redondear, String codigo, Long idProveedor, ArticuloDimencion articuloDimencion, Boolean idServicio, Boolean idBarras) {
+	public RegistroArticulo(Long idArticulo, TcManticArticulosDto articulo, List<ArticuloCodigo> articulosCodigos, List<Especificacion> especificaciones, List<Descuento> articulosDescuentos, List<DescuentoEspecial> clientesDescuentos, List<PrecioSugerido> preciosSugeridos, List<ArticuloProveedor> articulosProveedores, List<TipoVenta> articulosTiposVenta, Long idEmpaque, String obervaciones, boolean redondear, String codigo, Long idProveedor, ArticuloDimencion articuloDimencion, Long idTipoArticulo, Boolean idBarras) {
 		this.idArticulo          = idArticulo;
 		this.articulo            = articulo;
 		this.articulosCodigos    = articulosCodigos;
@@ -98,7 +98,7 @@ public class RegistroArticulo implements Serializable{
 		this.importado           = new Importado();
 		this.articuloDimencion   = articuloDimencion;
 		this.articulo.setSat(Constantes.CODIGO_SAT);
-		this.idServicio          = idServicio;
+		this.idTipoArticulo      = idTipoArticulo;
 		this.idBarras            = idBarras;
 	}
 
@@ -246,15 +246,13 @@ public class RegistroArticulo implements Serializable{
 		this.deleteList = deleteList;
 	}
 
-	public Boolean getIdServicio() {
-		return idServicio;
+	public Long getIdTipoArticulo() {
+		return idTipoArticulo;
 	}
 
-	public void setIdServicio(Boolean idServicio) {
-		this.idServicio = idServicio;
-	//	if(this.articulo!= null)
-	//		this.articulo.setIdServicio(idServicio ? 1L : 2L);
-	}
+	public void setIdTipoArticulo(Long idTipoArticulo) {
+		this.idTipoArticulo = idTipoArticulo;
+	}	
 
 	public Boolean getIdBarras() {
 		return idBarras;
@@ -272,10 +270,8 @@ public class RegistroArticulo implements Serializable{
 		try {
 			motorBusqueda= new MotorBusqueda(this.idArticulo);
 			this.articulo= motorBusqueda.toArticulo();
-			if(this.articulo!= null){
-			//	this.idServicio= this.articulo.getIdServicio().equals(1L);
+			if(this.articulo!= null)			
 				this.idBarras= this.articulo.getIdBarras().equals(1L);
-			} // if
 			this.redondear= this.articulo.getIdRedondear()== 1L;
 			unidadMedida= motorBusqueda.toEmpaqueUnidadMedida(this.articulo.getIdEmpaqueUnidadMedida());
 			this.idEmpaque= unidadMedida.getIdEmpaque();
