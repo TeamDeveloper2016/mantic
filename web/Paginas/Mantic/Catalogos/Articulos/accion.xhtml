@@ -68,8 +68,13 @@
 								<p:outputLabel for="desperdicio" value="Desperdicio:"/>
 								<p:inputNumber id="desperdicio" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.desperdicio}"/>                    																	
 								<p:spacer width="1px"/><p:separator/>
-								<p:outputLabel for="idServicio" value="Es servicio:"/>
-								<p:inputSwitch id="idServicio" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.idServicio}" offLabel="NO" onLabel="SI"/>
+								<p:outputLabel for="idTipoArticulo" value="Tipo articulo:"/>
+								<p:selectOneMenu id="idTipoArticulo" value="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo}" styleClass="janal-wid-100-txt">
+									<p:ajax event="change" onstart="janal.bloquear()" process="@this contenedorGrupos" update="contenedorGrupos" oncomplete="janal.desbloquear();janal.refresh();"/>
+									<f:selectItem itemLabel="ARTICULO" itemValue="1"/>
+									<f:selectItem itemLabel="REFACCIÓN" itemValue="2"/>
+									<f:selectItem itemLabel="SERVICIO" itemValue="3"/>
+								</p:selectOneMenu>								
 								<p:outputLabel for="idBarras" value="Código de barras:"/>
 								<p:inputSwitch id="idBarras" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.idBarras}" offLabel="NO" onLabel="SI"/>
               </p:panelGrid>
@@ -123,7 +128,7 @@
 								</p:dataTable>	
 							</p:panelGrid>	
 						</p:tab>
-            <p:tab id="tabImagen" title="Imagen">								
+            <p:tab id="tabImagen" title="Imagen" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">								
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid">
 								<p:outputLabel id="labelImagen" value="Importar:"/>
 								<p:fileUpload id="imagen" update="importacion nombreImagen tamanioImagen" fileUploadListener="#{manticCatalogosArticulosAccion.registroArticulo.doFileUpload}" uploadLabel="Importar" cancelLabel="Cancelar" label="Seleccionar" mode="advanced" dragDropSupport="false" allowTypes="/(\.|\/)(jpe?g|png)$/" sizeLimit="5242880" invalidSizeMessage="El tamaño maximo permitido es de 5 Megabytes !" invalidFileMessage="Solo se permiten importar archivos con extensión .PNG y .JPG !"/>
@@ -135,7 +140,7 @@
 								<p:outputLabel id="tamanioImagen" value="#{manticCatalogosArticulosAccion.registroArticulo.importado.fileSize}#{manticCatalogosArticulosAccion.registroArticulo.importado.medicion}"/>								
 							</p:panelGrid>
 						</p:tab>
-						<p:tab id="tabDescuentos" title="Descuentos">
+						<p:tab id="tabDescuentos" title="Descuentos" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">
 							<p:panelGrid id="panelTablaDescuentos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:dataTable id="tablaDescuentos" rowIndexVar="index" var="descuento" value="#{manticCatalogosArticulosAccion.registroArticulo.articulosDescuentos}" rows="6" paginator="false" reflow="true" rowKey="#{descuento.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Porcentaje" styleClass="janal-wid-20 porcDesc">		
@@ -158,7 +163,7 @@
 								</p:dataTable>	
 							</p:panelGrid>							
 						</p:tab>
-						<p:tab title="Grupos">
+						<p:tab title="Grupos" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">
 							<p:panelGrid id="panelTablaDescuentosEspeciales" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:dataTable id="tablaDescuentosEspeciales" var="descuentoEspecial" value="#{manticCatalogosArticulosAccion.registroArticulo.clientesDescuentos}" rows="6" paginator="false" reflow="true" rowKey="#{descuentoEspecial.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Grupo">										
@@ -186,7 +191,7 @@
 								</p:dataTable>	
 							</p:panelGrid>								
 						</p:tab>
-						<p:tab title="Categoría">
+						<p:tab title="Categoría" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 								<p:outputLabel for="categoria" value="Categoría:"/>
 								<p:selectOneMenu id="categoria" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.idCategoria}" styleClass="janal-wid-100-txt">									
@@ -194,7 +199,7 @@
 								</p:selectOneMenu>								
 							</p:panelGrid>	
 						</p:tab>
-						<p:tab title="Ofertas">
+						<p:tab title="Ofertas" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">
 							<p:panelGrid id="panelTablaPreciosSugeridos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:dataTable id="tablaPreciosSugeridos" rowIndexVar="index" var="precioSugerido" value="#{manticCatalogosArticulosAccion.registroArticulo.preciosSugeridos}" rows="6" paginator="false" reflow="true" rowKey="#{precioSugerido.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Proveedor">										
@@ -222,7 +227,7 @@
 								</p:dataTable>	
 							</p:panelGrid>		
 						</p:tab>
-						<p:tab title="Proveedores">
+						<p:tab title="Proveedores" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">
 							<p:panelGrid id="panelTablaArticulosProveedores" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:dataTable id="tablaArticulosProveedores" var="articuloProveedor" value="#{manticCatalogosArticulosAccion.registroArticulo.articulosProveedores}" rows="6" paginator="false" reflow="true" rowKey="#{articuloProveedor.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Proveedor">										
@@ -275,7 +280,7 @@
 								</p:dataTable>	
 							</p:panelGrid>
 						</p:tab>
-						<p:tab title="Empaque">
+						<p:tab title="Empaque" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 								<p:outputLabel for="empaque" value="Empaque:"/>
 								<p:selectOneMenu id="empaque" value="#{manticCatalogosArticulosAccion.registroArticulo.idEmpaque}" styleClass="janal-wid-100-txt">
