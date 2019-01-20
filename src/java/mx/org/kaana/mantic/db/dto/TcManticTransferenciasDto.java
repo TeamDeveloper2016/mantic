@@ -56,12 +56,8 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
   private Long idDestino;
   @Column (name="id_empresa")
   private Long idEmpresa;
-  @Column (name="cantidad")
-  private Double cantidad;
   @Column (name="orden")
   private Long orden;
-  @Column (name="id_articulo")
-  private Long idArticulo;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_transferencia")
@@ -72,11 +68,11 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
   }
 
   public TcManticTransferenciasDto(Long key) {
-    this(null, 1L, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L));
+    this(null, 1L, null, null, null, null, null, null, null, null, null, new Long(-1L));
     setKey(key);
   }
 
-  public TcManticTransferenciasDto(Long idSolicito, Long idTransferenciaEstatus, Long idTransferenciaTipo, Long ejercicio, String consecutivo, Long idUsuario, Long idAlmacen, String observaciones, Long idDestino, Long idEmpresa, Double cantidad, Long orden, Long idArticulo, Long idTransferencia) {
+  public TcManticTransferenciasDto(Long idSolicito, Long idTransferenciaEstatus, Long idTransferenciaTipo, Long ejercicio, String consecutivo, Long idUsuario, Long idAlmacen, String observaciones, Long idDestino, Long idEmpresa, Long orden, Long idTransferencia) {
     setIdSolicito(idSolicito);
     setIdTransferenciaEstatus(idTransferenciaEstatus);
     setIdTransferenciaTipo(idTransferenciaTipo);
@@ -88,9 +84,7 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
     setObservaciones(observaciones);
     setIdDestino(idDestino);
     setIdEmpresa(idEmpresa);
-    setCantidad(cantidad);
     setOrden(orden);
-    setIdArticulo(idArticulo);
     setIdTransferencia(idTransferencia);
   }
 	
@@ -182,28 +176,12 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
     return idEmpresa;
   }
 
-  public void setCantidad(Double cantidad) {
-    this.cantidad = cantidad;
-  }
-
-  public Double getCantidad() {
-    return cantidad;
-  }
-
   public void setOrden(Long orden) {
     this.orden = orden;
   }
 
   public Long getOrden() {
     return orden;
-  }
-
-  public void setIdArticulo(Long idArticulo) {
-    this.idArticulo = idArticulo;
-  }
-
-  public Long getIdArticulo() {
-    return idArticulo;
   }
 
   public void setIdTransferencia(Long idTransferencia) {
@@ -251,11 +229,7 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdEmpresa());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getCantidad());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrden());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdArticulo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTransferencia());
     regresar.append("]");
@@ -276,9 +250,7 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idDestino", getIdDestino());
 		regresar.put("idEmpresa", getIdEmpresa());
-		regresar.put("cantidad", getCantidad());
 		regresar.put("orden", getOrden());
-		regresar.put("idArticulo", getIdArticulo());
 		regresar.put("idTransferencia", getIdTransferencia());
   	return regresar;
   }
@@ -286,7 +258,7 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdSolicito(), getIdTransferenciaEstatus(), getIdTransferenciaTipo(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getIdAlmacen(), getObservaciones(), getIdDestino(), getIdEmpresa(), getCantidad(), getOrden(), getIdArticulo(), getIdTransferencia()
+    getIdSolicito(), getIdTransferenciaEstatus(), getIdTransferenciaTipo(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getIdAlmacen(), getObservaciones(), getIdDestino(), getIdEmpresa(), getOrden(), getIdTransferencia()
     };
     return regresar;
   }

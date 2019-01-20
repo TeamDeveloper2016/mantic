@@ -32,8 +32,6 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
-import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
-import mx.org.kaana.mantic.db.dto.TcManticTransferenciasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
 import mx.org.kaana.mantic.enums.EReportes;
 import org.primefaces.context.RequestContext;
@@ -70,8 +68,6 @@ public class Filtro extends Comun implements Serializable {
       campos = new ArrayList<>();
       campos.add(new Columna("nombreOrigen", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("nombreDestino", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
       campos.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
@@ -192,7 +188,7 @@ public class Filtro extends Comun implements Serializable {
 		Entity seleccionado    = null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			transaccion = new Transaccion((TcManticTransferenciasDto)DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, seleccionado.getKey()), ((UISelectEntity)this.attrs.get("estatus")).getKey(), false);
+			transaccion = new Transaccion((TcManticTransferenciasDto)DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, seleccionado.getKey()), ((UISelectEntity)this.attrs.get("estatus")).getKey());
 			if(transaccion.ejecutar(EAccion.REGISTRAR)) 
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
 			else

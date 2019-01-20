@@ -155,18 +155,6 @@
 							</f:facet>
 							<h:outputText value="#{row['nombreDestino']}"/>
 						</p:column>					
-						<p:column class="anal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
-							<f:facet name="header">
-								<h:outputText value="Artículo"/>
-							</f:facet>
-							<h:outputText value="#{row['nombre']}" title="Observaciones: #{row['observaciones']}"/>
-						</p:column>					
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{row.cantidad}">
-							<f:facet name="header">
-								<h:outputText value="Cantidad"/>
-							</f:facet>
-							<h:outputText value="#{row['cantidad']}" title="Observaciones: #{row['observaciones']}"/>
-						</p:column>							
             <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.nombreEstatus}">
 							<f:facet name="header">
 								<h:outputText value="Estatus"/>

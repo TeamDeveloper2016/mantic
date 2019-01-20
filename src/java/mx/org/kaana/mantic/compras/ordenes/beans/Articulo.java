@@ -540,7 +540,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		);
 	}
 	
-  public TcManticTransferenciasDetallesDto toTrasnferenciaDetalle() {
+  public TcManticTransferenciasDetallesDto toTransferenciaDetalle() {
 		return new TcManticTransferenciasDetallesDto(
 			this.getCodigo(), // String propio, 
 			this.getCantidad(), // Double cantidades, 

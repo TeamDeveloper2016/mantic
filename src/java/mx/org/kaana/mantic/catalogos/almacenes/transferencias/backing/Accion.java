@@ -27,6 +27,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.almacenes.transferencias.beans.Transferencia;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
 import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.Transaccion;
+import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
@@ -41,6 +42,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   private StreamedContent image;
   private EAccion accion;
   private Transferencia transferencia;
+  private Articulo detalle;
   
   public StreamedContent getImage() {
 		return image;
@@ -48,6 +50,14 @@ public class Accion extends IBaseAttribute implements Serializable {
   
 	public TcManticTransferenciasDto getTransferencia() {
 		return transferencia;
+	}
+
+	public Articulo getDetalle() {
+		return detalle;
+	}
+
+	public void setDetalle(Articulo detalle) {
+		this.detalle=detalle;
 	}
 
 	@PostConstruct
@@ -84,17 +94,17 @@ public class Accion extends IBaseAttribute implements Serializable {
 						"", // String observaciones, 
 						-1L, // Long idDestino, 
 						JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende(), // Long idEmpresa, 
-						0D, // Double cantidad, 
 						1L, // Long orden, 
-						-1L, // Long idArticulo, 
 						-1L // Long idTransferencia					
 					);
+					this.detalle= new Articulo(-1L);
           break;
         case MODIFICAR:
         case CONSULTAR:
           this.transferencia= (Transferencia) DaoFactory.getInstance().toEntity(Transferencia.class, "TcManticTransferenciasDto", "detalle", this.attrs);
+					this.detalle      = (Articulo)DaoFactory.getInstance().toEntity(Articulo.class, "VistaAlmacenesTransferenciasDto", "detalle", this.attrs);
           this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-          this.attrs.put("idArticulo", this.transferencia.getIdArticulo());
+          this.attrs.put("idArticulo", this.detalle.getIdArticulo());
           this.attrs.put("idAlmacen", this.transferencia.getIdAlmacen());
 					List<UISelectEntity> articulos= (List<UISelectEntity>)UIEntity.build("VistaAlmacenesTransferenciasDto", "porNombre", this.attrs);
 					if(articulos!= null && !articulos.isEmpty()) {
@@ -165,7 +175,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   
   public void doCalculate() {
 		Double stock= this.attrs.get("articulo")!= null? ((UISelectEntity)this.attrs.get("articulo")).toDouble("stock"): 0D;
-    this.attrs.put("nuevaExistenciaOrigen", !this.transferencia.getIdTransferenciaEstatus().equals(3L) || !this.transferencia.getIdTransferenciaEstatus().equals(5L)? stock- this.transferencia.getCantidad(): stock);
+    this.attrs.put("nuevaExistenciaOrigen", !this.transferencia.getIdTransferenciaEstatus().equals(3L) || !this.transferencia.getIdTransferenciaEstatus().equals(5L)? stock- this.detalle.getCantidad(): stock);
   } // doCalculate
   
   public void doUpdateAlmacenOrigen() {
@@ -195,7 +205,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			Double maximo  = 0D;
 			Double sugerido= 0D;
 			if(destino== null) {
-				TcManticArticulosDto item= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.transferencia.getIdArticulo());
+				TcManticArticulosDto item= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.detalle.getIdArticulo());
    			calculo= 0D;
 			  maximo = item== null? 0D: item.getMaximo();
 			} // if
@@ -208,12 +218,12 @@ public class Accion extends IBaseAttribute implements Serializable {
 				case 2:
 				case 4:
 				case 5:
-					this.attrs.put("nuevaExistenciaOrigen", stock- this.transferencia.getCantidad());
-					this.attrs.put("nuevaExistenciaDestino", calculo+ this.transferencia.getCantidad());
+					this.attrs.put("nuevaExistenciaOrigen", stock- this.detalle.getCantidad());
+					this.attrs.put("nuevaExistenciaDestino", calculo+ this.detalle.getCantidad());
 					sugerido= maximo- calculo< 0? 0D: maximo- calculo;
 					this.attrs.put("sugerido", sugerido);
-					if(this.transferencia.getCantidad()== 0D)
-						this.transferencia.setCantidad(sugerido);
+					if(this.detalle.getCantidad()== 0D)
+						this.detalle.setCantidad(sugerido);
 					break;
 				case 3:
 					this.attrs.put("nuevaExistenciaOrigen", stock);
@@ -273,7 +283,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 			seleccion= articulos.get(articulos.indexOf((UISelectEntity)event.getObject()));
 			this.attrs.put("articulo", seleccion);
       this.attrs.put("idArticulo", seleccion.get("idArticulo"));
-			this.transferencia.setIdArticulo(seleccion.toLong("idArticulo"));
+			this.detalle.setIdArticulo(seleccion.toLong("idArticulo"));
+			this.detalle.setPropio(seleccion.toString("propio"));
+			this.detalle.setNombre(seleccion.toString("nombre"));
       this.image= LoadImages.getImage(seleccion.toString("archivo"));
       this.attrs.put("nuevaExistenciaOrigen", 0D);
       this.attrs.put("nuevaExistenciaDestino", 0D);
@@ -297,10 +309,12 @@ public class Accion extends IBaseAttribute implements Serializable {
 	}
 
 	public String doAceptar() {
-		Transaccion transaccion= null;
-    String regresar        = null;
+		Transaccion transaccion = null;
+    String regresar         = null;
+		List<Articulo> articulos= new ArrayList<>();
 		try {
-			transaccion= new Transaccion(this.transferencia);
+			articulos.add(this.detalle);
+			transaccion= new Transaccion(this.transferencia, articulos);
 			if(transaccion.ejecutar(this.accion)) {
  			  RequestContext.getCurrentInstance().execute("janal.back(' gener\\u00F3 la transferencia ', '"+ this.transferencia.getConsecutivo()+ "');");
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
@@ -313,6 +327,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
+		finally {
+			Methods.clean(articulos);
+		} // finally
 		return regresar;
 	} // doAccion
   

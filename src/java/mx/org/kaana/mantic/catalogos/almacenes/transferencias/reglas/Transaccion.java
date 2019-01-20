@@ -19,18 +19,22 @@ import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
+import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
 public class Transaccion extends IBaseTnx {
 
+	private static final Log LOG=LogFactory.getLog(Transaccion.class);
+	
   private TcManticTransferenciasDto dto;
 	private List<Articulo> articulos;
 	private Long idTransferenciaEstatus;
 	private Long idFaltante;
-	private Boolean aplicar;
   private String messageError;
 
 	public Transaccion(Long idFaltante) {
@@ -39,83 +43,43 @@ public class Transaccion extends IBaseTnx {
 	}
 	
 	public Transaccion(TcManticTransferenciasDto dto) {
-		this(dto, 1L, false);
+		this(dto, 1L);
 	}
 	
-	public Transaccion(TcManticTransferenciasDto dto, List<Articulo> articulos, boolean aplicar) {
-		this.dto      = dto;
+	public Transaccion(TcManticTransferenciasDto dto, List<Articulo> articulos) {
+		this(dto, dto.getIdTransferenciaEstatus());
 		this.articulos= articulos;
-		this.aplicar  = aplicar;
 	}
 	
-	public Transaccion(TcManticTransferenciasDto dto, Long idTransferenciaEstatus, boolean aplicar) {
+	public Transaccion(TcManticTransferenciasDto dto, Long idTransferenciaEstatus) {
 		this.dto= dto;
 		if(this.dto.getIdSolicito()!= null && this.dto.getIdSolicito()< 0L)
 		  this.dto.setIdSolicito(null);
 		this.idTransferenciaEstatus= idTransferenciaEstatus;
-		this.aplicar= aplicar;
 	}
 
   @Override
   protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
     boolean regresar= false;
-		Map params      = null;
     try {			
     	this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para transferencia de articulos.");
-      TcManticTransferenciasBitacoraDto bitacora = null;
-      TcManticAlmacenesArticulosDto origen= null;			
-  		Long consecutivo                    = 0L;
+      TcManticTransferenciasBitacoraDto bitacora= null;
+      TcManticAlmacenesArticulosDto origen      = null;			
+  		Long consecutivo                          = 0L;
       switch (accion) {
         case ACTIVAR:
-					//Afectar el almacen original restando los articulos que fueron extraidos
-					origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(TcManticAlmacenesArticulosDto.class, this.dto.toMap());
-					if(origen== null || origen.getStock()< this.dto.getCantidad())
-						throw new Exception("No existen suficientes articulos en el stock del almacen !");
-					else {
-						origen.setStock(Numero.toRedondearSat(origen.getStock()- this.dto.getCantidad()));
-						regresar= DaoFactory.getInstance().update(sesion, origen).intValue()> 0;
-					} // if
-					//Afectar el almacen destino sumando los articulos que fueron agregados
-					params= this.dto.toMap();
-					params.put("idAlmacen", params.get("idDestino"));
-					origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(TcManticAlmacenesArticulosDto.class, params);
-					if(origen== null) {
-						TcManticArticulosDto articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.dto.getIdArticulo());
-						origen= new TcManticAlmacenesArticulosDto(
-							articulo.getMinimo(), // Double minimo, 
-							-1L, // Long idAlmacenArticulo, 
-							JsfBase.getIdUsuario(), // Long idUsuario, 
-							this.dto.getIdDestino(), // Long idAlmacen, 
-							articulo.getMaximo(), // Double maximo, 
-							this.toUbicacion(sesion), // Long idAlmacenUbicacion, 
-							articulo.getIdArticulo(), // Long idArticulo, 
-							this.dto.getCantidad() // Double stock
-						);
-						regresar= DaoFactory.getInstance().insert(sesion, origen).intValue()> 0;
-					} // if	
-					else {
-						origen.setStock(Numero.toRedondearSat(origen.getStock()+ this.dto.getCantidad()));
-						regresar= DaoFactory.getInstance().update(sesion, origen).intValue()> 0;
-					} // else
-					consecutivo= this.toSiguiente(sesion);
-					this.dto.setConsecutivo(this.dto.getEjercicio()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
-					this.dto.setOrden(consecutivo);
-          regresar= DaoFactory.getInstance().insert(sesion, this.dto).intValue()> 0;
-					bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), JsfBase.getIdUsuario(), this.dto.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
-          regresar= DaoFactory.getInstance().insert(sesion, bitacora).intValue()> 0;
-          break;
         case AGREGAR:
 					consecutivo= this.toSiguiente(sesion);
 					this.dto.setConsecutivo(this.dto.getEjercicio()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
 					this.dto.setOrden(consecutivo);
           regresar= DaoFactory.getInstance().insert(sesion, this.dto).intValue()> 0;
-					this.toFillArticulos(sesion);
+					this.toFillArticulos(sesion, accion);
 					bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), JsfBase.getIdUsuario(), this.dto.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
           regresar= DaoFactory.getInstance().insert(sesion, bitacora).intValue()> 0;
 					break;
         case MODIFICAR:
           this.dto.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-					this.toFillArticulos(sesion);
+					this.toFillArticulos(sesion, accion);
           regresar= DaoFactory.getInstance().update(sesion, this.dto).intValue()> 0;
           break;
         case ELIMINAR:
@@ -130,49 +94,8 @@ public class Transaccion extends IBaseTnx {
 					break;
         case REGISTRAR:
 					this.dto.setIdTransferenciaEstatus(this.idTransferenciaEstatus);
-				  switch(this.idTransferenciaEstatus.intValue()) {
-						case 3: // TRANSITO
-							origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(TcManticAlmacenesArticulosDto.class, this.dto.toMap());
-							if(origen== null || origen.getStock()< this.dto.getCantidad())
-								throw new Exception("No existen suficientes articulos en el stock del almacen !");
-							else {
-								origen.setStock(Numero.toRedondearSat(origen.getStock()- this.dto.getCantidad()));
-								regresar= DaoFactory.getInstance().update(sesion, origen).intValue()> 0;
-							} // if
-							break;
-						case 4: // CANCELAR
-							origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(TcManticAlmacenesArticulosDto.class, this.dto.toMap());
-							if(origen== null)
-								throw new Exception("El almacen ya no cuenta con este articulo !");
-							else {
-								origen.setStock(Numero.toRedondearSat(origen.getStock()+ this.dto.getCantidad()));
-								regresar= DaoFactory.getInstance().update(sesion, origen).intValue()> 0;
-							} // if
-							break;
-						case 5: // ENTREGADO
-    					params= this.dto.toMap();
-		    			params.put("idAlmacen", params.get("idDestino"));
-							origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(TcManticAlmacenesArticulosDto.class, params);
-							if(origen== null) {
-  							TcManticArticulosDto articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.dto.getIdArticulo());
-								origen= new TcManticAlmacenesArticulosDto(
-									articulo.getMinimo(), // Double minimo, 
-									-1L, // Long idAlmacenArticulo, 
-									JsfBase.getIdUsuario(), // Long idUsuario, 
-									this.dto.getIdDestino(), // Long idAlmacen, 
-									articulo.getMaximo(), // Double maximo, 
-									this.toUbicacion(sesion), // Long idAlmacenUbicacion, 
-									articulo.getIdArticulo(), // Long idArticulo, 
-									this.dto.getCantidad() // Double stock
-								);
-							  regresar= DaoFactory.getInstance().insert(sesion, origen).intValue()> 0;
-							} // if	
-							else {
-							  origen.setStock(Numero.toRedondearSat(origen.getStock()+ this.dto.getCantidad()));
-							  regresar= DaoFactory.getInstance().update(sesion, origen).intValue()> 0;
-					    } // else
-							break;
-					} // switch
+					this.toFillArticulos(sesion, accion);
+					regresar= DaoFactory.getInstance().update(sesion, origen).intValue()> 0;
  					bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), JsfBase.getIdUsuario(), this.dto.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
           regresar= DaoFactory.getInstance().insert(sesion, bitacora).intValue()> 0;
           break;
@@ -186,13 +109,13 @@ public class Transaccion extends IBaseTnx {
     return regresar;
   } // ejecutar
 
-	private Long toUbicacion(Session sesion) throws Exception {
+	private Long toUbicacion(Session sesion, Long idArticulo) throws Exception {
 		Long regresar= -1L;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
 			params.put("idAlmacen", this.dto.getIdDestino());
-			params.put("idArticulo", this.dto.getIdArticulo());
+			params.put("idArticulo", idArticulo);
 			TcManticAlmacenesArticulosDto ubicacion= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesArticulosDto.class, params, "ubicacion");
 			if(ubicacion== null) {
 				TcManticAlmacenesUbicacionesDto general= (TcManticAlmacenesUbicacionesDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesUbicacionesDto.class, params, "general");
@@ -232,19 +155,136 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	}
 
-	private void toFillArticulos(Session sesion) throws Exception {
+	private void toFillArticulos(Session sesion, EAccion accion) throws Exception {
 		List<Articulo> todos=(List<Articulo>) DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "VistaAlmacenesTransferenciasDto", "detalle", this.dto.toMap());
 		for (Articulo item: todos) 
 			if (this.articulos.indexOf(item)< 0) 
-				DaoFactory.getInstance().delete(sesion, item.toTrasnferenciaDetalle());
+				DaoFactory.getInstance().delete(sesion, item.toTransferenciaDetalle());
 		for (Articulo articulo: this.articulos) {
-			TcManticTransferenciasDetallesDto item=articulo.toTrasnferenciaDetalle();
+			TcManticTransferenciasDetallesDto item=articulo.toTransferenciaDetalle();
 			item.setIdTransferencia(this.dto.getIdTransferencia());
 			if (DaoFactory.getInstance().findIdentically(sesion, TcManticTransferenciasDetallesDto.class, item.toMap())== null) 
 				DaoFactory.getInstance().insert(sesion, item);
 			else 
 				DaoFactory.getInstance().update(sesion, item);
+			if(EAccion.ACTIVAR.equals(accion)) 
+				this.toMovimientos(sesion, item);
+			else
+  			if(EAccion.REGISTRAR.equals(accion)) {
+					TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
+					switch(this.idTransferenciaEstatus.intValue()) {
+						case 3: // TRANSITO
+    					this.toMovimientosAlmacenOrigen(sesion, item, umbrales);
+							break;
+						case 4: // CANCELAR
+    					this.toMovimientosAlmacenOrigen(sesion, item, umbrales);
+							break;
+						case 5: // RECEPCION
+    					this.toMovimientosAlmacenDestino(sesion, item, umbrales);
+							break;
+					} // switch
+				} // if
 		} // for
 	}
 	
+	private void toMovimientos(Session sesion, TcManticTransferenciasDetallesDto articulo) throws Exception {
+		TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
+		this.toMovimientosAlmacenOrigen(sesion, articulo, umbrales);
+		this.toMovimientosAlmacenDestino(sesion, articulo, umbrales);
+	}
+	
+	private void toMovimientosAlmacenOrigen(Session sesion, TcManticTransferenciasDetallesDto articulo, TcManticArticulosDto umbrales) throws Exception {
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			//Afectar el almacen original restando los articulos que fueron extraidos
+			params.put("idAlmacen", this.dto.getIdAlmacen());
+			params.put("idArticulo", articulo.getIdArticulo());
+			TcManticAlmacenesArticulosDto origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(TcManticAlmacenesArticulosDto.class, params);
+			if(origen== null) 
+				origen= this.toCreateAlmacenArticulo(sesion, articulo, this.dto.getIdAlmacen(), umbrales);
+			if(origen.getStock()< articulo.getCantidad())
+ 				LOG.warn("No existen suficientes articulos ["+ articulo.getIdArticulo()+ "] en el stock del almacen origen ["+ this.dto.getIdAlmacen()+ "] stock["+ origen.getStock()+ "] cantidad["+ articulo.getCantidad()+ "] !");
+			if(this.idTransferenciaEstatus.intValue()== 4)
+			  origen.setStock(Numero.toRedondearSat(origen.getStock()+ articulo.getCantidad()));
+			else
+			  origen.setStock(Numero.toRedondearSat(origen.getStock()- articulo.getCantidad()));
+			DaoFactory.getInstance().update(sesion, origen);
+			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
+			if(inventario== null)
+			  this.toCreateInvetario(sesion, articulo, this.dto.getIdAlmacen(), umbrales);
+			else {
+  			if(this.idTransferenciaEstatus.intValue()== 4) {
+	  			inventario.setSalidas(Numero.toRedondearSat(inventario.getSalidas()- articulo.getCantidad()));
+		  		inventario.setStock(Numero.toRedondearSat(inventario.getStock()+ articulo.getCantidad()));
+				} // if
+				else {
+	  			inventario.setSalidas(Numero.toRedondearSat(inventario.getSalidas()+ articulo.getCantidad()));
+		  		inventario.setStock(Numero.toRedondearSat(inventario.getStock()- articulo.getCantidad()));
+				} // if
+  			DaoFactory.getInstance().update(sesion, inventario);
+			} // if
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
+	
+	private void toMovimientosAlmacenDestino(Session sesion, TcManticTransferenciasDetallesDto articulo, TcManticArticulosDto umbrales) throws Exception {
+		Map<String, Object> params= null;
+		try {
+			//Afectar el almacen destino sumando los articulos que fueron agregados
+			params=new HashMap<>();
+			params.put("idAlmacen", this.dto.getIdDestino());
+			TcManticAlmacenesArticulosDto origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(TcManticAlmacenesArticulosDto.class, params);
+			if(origen== null) 
+				origen= this.toCreateAlmacenArticulo(sesion, articulo, this.dto.getIdDestino(), umbrales);
+			origen.setStock(Numero.toRedondearSat(origen.getStock()+ articulo.getCantidad()));
+			DaoFactory.getInstance().update(sesion, origen);
+			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
+			if(inventario== null)
+			  this.toCreateInvetario(sesion, articulo, this.dto.getIdAlmacen(), umbrales);
+			else {
+				inventario.setSalidas(Numero.toRedondearSat(inventario.getSalidas()+ articulo.getCantidad()));
+				inventario.setStock(Numero.toRedondearSat(inventario.getStock()- articulo.getCantidad()));
+  			DaoFactory.getInstance().update(sesion, inventario);
+			} // if
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
+	
+	private TcManticAlmacenesArticulosDto toCreateAlmacenArticulo(Session sesion,  TcManticTransferenciasDetallesDto articulo, Long idAlmacen, TcManticArticulosDto umbrales) throws Exception {
+    TcManticAlmacenesArticulosDto regresar= new TcManticAlmacenesArticulosDto(
+			umbrales.getMinimo(), // Double minimo, 
+			-1L, // Long idAlmacenArticulo, 
+			JsfBase.getIdUsuario(), // Long idUsuario, 
+			idAlmacen, // Long idAlmacen, 
+			umbrales.getMaximo(), // Double maximo, 
+			this.toUbicacion(sesion, articulo.getIdArticulo()), // Long idAlmacenUbicacion, 
+			articulo.getIdArticulo(), // Long idArticulo, 
+			0D // Double stock
+		);
+		DaoFactory.getInstance().insert(sesion, regresar);
+		return regresar;
+	}
+		
+	private TcManticInventariosDto toCreateInvetario(Session sesion,  TcManticTransferenciasDetallesDto articulo, Long idAlmacen, TcManticArticulosDto umbrales) throws Exception {
+    TcManticInventariosDto regresar= new TcManticInventariosDto(
+			JsfBase.getIdUsuario(), // Long idUsuario, 
+			idAlmacen, // Long idAlmacen, 
+			articulo.getCantidad(), // Double entradas, 
+			-1L, // Long idInventario, 
+			articulo.getIdArticulo(), // Long idArticulo, 
+			0D, // Double inicial, 
+			0D, // Double stock, 
+			articulo.getCantidad(), // Double salidas, 
+			new Long(Fecha.getAnioActual()), // Long ejercicio, 
+			1L // Long idAutomatico
+		);
+		DaoFactory.getInstance().insert(sesion, regresar);
+		return regresar;
+	}
+		
 }

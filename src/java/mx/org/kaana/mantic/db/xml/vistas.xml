@@ -1705,7 +1705,9 @@
 				from
 					tc_mantic_transferencias
 				inner join
-					tc_mantic_articulos on tc_mantic_transferencias.id_articulo= tc_mantic_articulos.id_articulo
+					tc_mantic_transferencias_detalles on tc_mantic_transferencias.id_transferencia= tc_mantic_transferencias_detalles.id_transferencia
+				inner join
+					tc_mantic_articulos on tc_mantic_transferencias_detalles.id_articulo= tc_mantic_articulos.id_articulo
 				inner join
 					tc_mantic_almacenes on tc_mantic_transferencias.id_almacen= tc_mantic_almacenes.id_almacen
 				inner join
@@ -5055,12 +5057,6 @@
           origen.clave clave_origen,
           destino.nombre nombre_destino,
           destino.clave clave_destino,
-          tc_mantic_transferencias.id_articulo,
-          tc_mantic_articulos.nombre,
-          concat('(',
-						ifnull((select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1), ''),
-						') ',
-          tc_mantic_articulos.nombre) as nombre_articulo,
           tc_mantic_transferencias.id_solicito,
           concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as solicito,
           tc_mantic_transferencias.id_usuario,
@@ -5076,8 +5072,6 @@
           tc_mantic_transferencias
         inner join
           tc_mantic_transferencias_estatus on tc_mantic_transferencias.id_transferencia_estatus = tc_mantic_transferencias_estatus.id_transferencias_estatus
-        inner join 
-          tc_mantic_articulos on tc_mantic_transferencias.id_articulo = tc_mantic_articulos.id_articulo
         inner join 
 					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
         left join 
@@ -5139,7 +5133,6 @@
 				  tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
 				  tc_mantic_articulos.id_articulo,
 				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and upper(tc_mantic_articulos_codigos.codigo) like '{codigo}%') as propio,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} and upper(tc_mantic_articulos_codigos.codigo) like '{codigo}%') as codigo,
           tc_mantic_articulos.nombre,
 				  tc_mantic_articulos.descripcion,
 				  tc_mantic_articulos.precio,

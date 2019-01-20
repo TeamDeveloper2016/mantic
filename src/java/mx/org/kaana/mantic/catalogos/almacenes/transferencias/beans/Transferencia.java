@@ -1,11 +1,9 @@
 package mx.org.kaana.mantic.catalogos.almacenes.transferencias.beans;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.util.Calendar;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
 
 /**
@@ -34,11 +32,11 @@ public class Transferencia extends TcManticTransferenciasDto implements Serializ
 	}
 	
 	public Transferencia(Long key, Long idTransferenciaTipo) {
-		this(-1L, 1L, idTransferenciaTipo, new Long(Calendar.getInstance().get(Calendar.YEAR)), new Long(Calendar.getInstance().get(Calendar.YEAR))+ "00000", 1L, -1L, "", -1L, JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 0D, 1L, -1L, -1L);
+		this(-1L, 1L, idTransferenciaTipo, new Long(Calendar.getInstance().get(Calendar.YEAR)), new Long(Calendar.getInstance().get(Calendar.YEAR))+ "00000", 1L, -1L, "", -1L, JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 1L, -1L);
 	}
 
-	public Transferencia(Long idSolicito, Long idTransferenciaEstatus, Long idTransferenciaTipo, Long ejercicio, String consecutivo, Long idUsuario, Long idAlmacen, String observaciones, Long idDestino, Long idEmpresa, Double cantidad, Long orden, Long idArticulo, Long idTransferencia) {
-		super(idSolicito, idTransferenciaEstatus, idTransferenciaTipo, ejercicio, consecutivo, idUsuario, idAlmacen, observaciones, idDestino, idEmpresa, cantidad, orden, idArticulo, idTransferencia);
+	public Transferencia(Long idSolicito, Long idTransferenciaEstatus, Long idTransferenciaTipo, Long ejercicio, String consecutivo, Long idUsuario, Long idAlmacen, String observaciones, Long idDestino, Long idEmpresa, Long orden, Long idTransferencia) {
+		super(idSolicito, idTransferenciaEstatus, idTransferenciaTipo, ejercicio, consecutivo, idUsuario, idAlmacen, observaciones, idDestino, idEmpresa, orden, idTransferencia);
 		this.ikEmpresa = new UISelectEntity(idEmpresa);
 		this.ikAlmacen = new UISelectEntity(idAlmacen);
 		this.ikDestino = new UISelectEntity(idDestino);
