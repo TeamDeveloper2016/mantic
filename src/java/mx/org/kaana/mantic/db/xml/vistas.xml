@@ -1162,7 +1162,8 @@
 				  tc_mantic_creditos_estatus.estatus_asociados,
 				  tc_mantic_tipos_creditos_notas.id_tipo_credito_nota,
 				  tc_mantic_tipos_creditos_notas.nombre,
-					tc_mantic_creditos_notas.registro     
+					tc_mantic_creditos_notas.registro,
+					if(tc_mantic_creditos_notas.id_egreso is null, '0', tc_mantic_creditos_notas.id_egreso) id_egreso         
         from
           tc_mantic_creditos_notas         
         inner join
@@ -3209,7 +3210,8 @@
 					tc_mantic_notas_estatus.id_nota_estatus,
 					tc_mantic_notas_estatus.nombre as estatus,
 					tc_mantic_notas_estatus.estatus_asociados,
-					tc_mantic_notas_entradas.registro     
+					tc_mantic_notas_entradas.registro,
+					if(tc_mantic_notas_entradas.id_egreso is null, '0', tc_mantic_notas_entradas.id_egreso) id_egreso         
         from
           tc_mantic_notas_entradas         
         inner join
@@ -4358,7 +4360,8 @@
 					tc_mantic_empresas_pagos.registro,
 					tc_mantic_empresas_pagos.observaciones,
 					tc_mantic_tipos_medios_pagos.clave,
-					tc_mantic_tipos_medios_pagos.nombre
+					tc_mantic_tipos_medios_pagos.nombre,
+					if(tc_mantic_empresas_pagos.id_egreso is null, '0', tc_mantic_empresas_pagos.id_egreso) id_egreso
 				from
 					tc_mantic_empresas_pagos
 				inner join
