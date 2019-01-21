@@ -4551,10 +4551,8 @@
         from      
           tc_mantic_transferencias
         where      
-          id_almacen= {idAlmacen}
-          and id_destino= {idDestino}
-          and id_articulo= {idArticulo} 
-          and id_solicito= {idSolicito}
+          id_empresa= {idEmpresa}
+          and consecutivo= {consecutivo}
       </select>
       <select id="siguiente">
         select
@@ -4580,7 +4578,7 @@
         from      
           tc_mantic_transferencias
         order by
-          tc_mantic_transferencias.id_articulo
+          tc_mantic_transferencias.registro
       </select>
     </unit>
     <unit id="TcManticTransferenciasBitacoraDto">

@@ -542,7 +542,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	
   public TcManticTransferenciasDetallesDto toTransferenciaDetalle() {
 		return new TcManticTransferenciasDetallesDto(
-			this.getCodigo(), // String propio, 
+			this.getPropio(), // String propio, 
 			this.getCantidad(), // Double cantidades, 
 			this.getIdComodin(), // Long idTransferenciaDetalle, 
 			this.getCantidad(), // Double cantidad, 

@@ -1710,7 +1710,7 @@
 					tc_mantic_articulos.nombre,
 					tc_mantic_personas.rfc as clave,
 					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) razon_social,
-					tc_mantic_transferencias.cantidad * -1,
+					tc_mantic_transferencias_detalles.cantidad * -1,
 					tc_mantic_articulos.precio as costo,
 					tc_mantic_transferencias.registro
 				from
@@ -5071,7 +5071,6 @@
           tc_mantic_transferencias.id_solicito,
           concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as solicito,
           tc_mantic_transferencias.id_usuario,
-          tc_mantic_transferencias.cantidad,
           tc_mantic_transferencias.registro,
           tc_mantic_transferencias.observaciones,
           tc_mantic_transferencias.id_transferencia_estatus estatus,
@@ -5084,7 +5083,7 @@
         inner join
           tc_mantic_transferencias_estatus on tc_mantic_transferencias.id_transferencia_estatus = tc_mantic_transferencias_estatus.id_transferencias_estatus
         inner join 
-					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
+					tc_mantic_empresas on tc_mantic_transferencias.id_empresa = tc_mantic_empresas.id_empresa
         left join 
           tc_mantic_personas on tc_mantic_transferencias.id_solicito = tc_mantic_personas.id_persona
         inner join 

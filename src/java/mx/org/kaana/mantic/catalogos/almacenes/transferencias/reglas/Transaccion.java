@@ -236,6 +236,7 @@ public class Transaccion extends IBaseTnx {
 			//Afectar el almacen destino sumando los articulos que fueron agregados
 			params=new HashMap<>();
 			params.put("idAlmacen", this.dto.getIdDestino());
+			params.put("idArticulo", articulo.getIdArticulo());
 			TcManticAlmacenesArticulosDto origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(TcManticAlmacenesArticulosDto.class, params);
 			if(origen== null) 
 				origen= this.toCreateAlmacenArticulo(sesion, articulo, this.dto.getIdDestino(), umbrales);
@@ -243,7 +244,7 @@ public class Transaccion extends IBaseTnx {
 			DaoFactory.getInstance().update(sesion, origen);
 			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
 			if(inventario== null)
-			  this.toCreateInvetario(sesion, articulo, this.dto.getIdAlmacen(), umbrales);
+			  inventario= this.toCreateInvetario(sesion, articulo, this.dto.getIdAlmacen(), umbrales);
 			else {
 				inventario.setSalidas(Numero.toRedondearSat(inventario.getSalidas()+ articulo.getCantidad()));
 				inventario.setStock(Numero.toRedondearSat(inventario.getStock()- articulo.getCantidad()));
@@ -274,10 +275,10 @@ public class Transaccion extends IBaseTnx {
     TcManticInventariosDto regresar= new TcManticInventariosDto(
 			JsfBase.getIdUsuario(), // Long idUsuario, 
 			idAlmacen, // Long idAlmacen, 
-			articulo.getCantidad(), // Double entradas, 
+			0D, // Double entradas, 
 			-1L, // Long idInventario, 
 			articulo.getIdArticulo(), // Long idArticulo, 
-			0D, // Double inicial, 
+			articulo.getCantidad(), // Double inicial, 
 			0D, // Double stock, 
 			articulo.getCantidad(), // Double salidas, 
 			new Long(Fecha.getAnioActual()), // Long ejercicio, 

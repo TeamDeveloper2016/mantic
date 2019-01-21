@@ -294,6 +294,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
+		this.doCalculate();
 	} // doAsignaCliente
   
   public List<UISelectEntity> doCompleteArticulo(String query) {
