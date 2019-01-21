@@ -51,4 +51,16 @@ public class Cuentas extends mx.org.kaana.mantic.egresos.backing.Filtro implemen
 		} // catch		
 		return regresar;
 	} // doDetalle
+	
+	public String doCancelar(){
+		String regresar= null;
+		try {
+			regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		return regresar;
+	} // doCancelar
 }
