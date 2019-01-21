@@ -13,7 +13,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.mantic.egresos.reglas.Transaccion;
 import mx.org.kaana.mantic.enums.ECuentasEgresos;
 
-@Named(value = "manticEgresosFiltroCuentas")
+@Named(value = "manticEgresosCuentas")
 @ViewScoped
 public class Cuentas extends mx.org.kaana.mantic.egresos.backing.Filtro implements Serializable {
 
