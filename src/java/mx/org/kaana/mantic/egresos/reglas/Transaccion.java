@@ -4,11 +4,11 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.db.dto.TcManticCreditosNotasDto;
 import mx.org.kaana.mantic.db.dto.TcManticEgresosNotasDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
+import mx.org.kaana.mantic.enums.ECuentasEgresos;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
@@ -19,7 +19,7 @@ public class Transaccion extends IBaseTnx {
 	private String messageError;
 	private Long idEgreso;
 	private Long idTipoEgreso;
-	private EAccion accionTipoEgreso;
+	private ECuentasEgresos accionTipoEgreso;
 	private String nota;
 
 	public Transaccion(Long idEgreso, String nota) {
@@ -27,10 +27,15 @@ public class Transaccion extends IBaseTnx {
 		this.nota    = nota;
 	}
 
-	public Transaccion(Long idTipoEgreso, EAccion accionTipoEgreso) {
+	public Transaccion(Long idTipoEgreso, ECuentasEgresos accionTipoEgreso) {
+		this(idTipoEgreso, accionTipoEgreso, null);
+	}	
+	
+	public Transaccion(Long idTipoEgreso, ECuentasEgresos accionTipoEgreso, Long idEgreso) {
 		this.idTipoEgreso    = idTipoEgreso;
 		this.accionTipoEgreso= accionTipoEgreso;
-	}	
+		this.idEgreso        = idEgreso;
+	}
 	
 	public String getMessageError() {
 		return messageError;
@@ -47,6 +52,9 @@ public class Transaccion extends IBaseTnx {
 				case ELIMINAR:
 					regresar= procesarDocumento(sesion);
 					break;				
+				case ASIGNAR:
+					regresar= asociarDocumento(sesion);
+					break;
 			} // switch
 			if(!regresar)
         throw new Exception("");
@@ -78,24 +86,55 @@ public class Transaccion extends IBaseTnx {
 		TcManticEgresosNotasDto nota        = null;
 		try {
 			switch(this.accionTipoEgreso){
-				case ACTIVAR:
+				case NOTA_ENTRADA:
 					notaEntrada= (TcManticNotasEntradasDto) DaoFactory.getInstance().findById(sesion, TcManticNotasEntradasDto.class, this.idTipoEgreso);
 					notaEntrada.setIdEgreso(null);
 					regresar= DaoFactory.getInstance().update(sesion, notaEntrada)>= 1L;
 					break;
-				case AGREGAR: 
+				case CREDITO_NOTA: 
 					creditoNota= (TcManticCreditosNotasDto) DaoFactory.getInstance().findById(sesion, TcManticCreditosNotasDto.class, this.idTipoEgreso);
 					creditoNota.setIdEgreso(null);
 					regresar= DaoFactory.getInstance().update(sesion, creditoNota)>= 1L;
 					break;
-				case ASIGNAR: 
+				case EMPRESA_PAGO: 
 					empresaPago= (TcManticEmpresasPagosDto) DaoFactory.getInstance().findById(sesion, TcManticEmpresasPagosDto.class, this.idTipoEgreso);
 					empresaPago.setIdEgreso(null);
 					regresar= DaoFactory.getInstance().update(sesion, empresaPago)>= 1L;
 					break;
-				case BAJAR:
+				case NOTA:
 					regresar= DaoFactory.getInstance().delete(sesion, TcManticEgresosNotasDto.class, this.idTipoEgreso)>= 1L;
 					break;
+			} // switch
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // procesarDocumento
+	
+	private boolean asociarDocumento(Session sesion) throws Exception{
+		boolean regresar                    = false;
+		TcManticNotasEntradasDto notaEntrada= null;
+		TcManticCreditosNotasDto creditoNota= null;
+		TcManticEmpresasPagosDto empresaPago= null;
+		TcManticEgresosNotasDto nota        = null;
+		try {
+			switch(this.accionTipoEgreso){
+				case NOTA_ENTRADA:
+					notaEntrada= (TcManticNotasEntradasDto) DaoFactory.getInstance().findById(sesion, TcManticNotasEntradasDto.class, this.idTipoEgreso);
+					notaEntrada.setIdEgreso(this.idEgreso);
+					regresar= DaoFactory.getInstance().update(sesion, notaEntrada)>= 1L;
+					break;
+				case CREDITO_NOTA: 
+					creditoNota= (TcManticCreditosNotasDto) DaoFactory.getInstance().findById(sesion, TcManticCreditosNotasDto.class, this.idTipoEgreso);
+					creditoNota.setIdEgreso(this.idEgreso);
+					regresar= DaoFactory.getInstance().update(sesion, creditoNota)>= 1L;
+					break;
+				case EMPRESA_PAGO: 
+					empresaPago= (TcManticEmpresasPagosDto) DaoFactory.getInstance().findById(sesion, TcManticEmpresasPagosDto.class, this.idTipoEgreso);
+					empresaPago.setIdEgreso(this.idEgreso);
+					regresar= DaoFactory.getInstance().update(sesion, empresaPago)>= 1L;
+					break;				
 			} // switch
 		} // try
 		catch (Exception e) {			
