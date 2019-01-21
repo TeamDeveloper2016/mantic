@@ -151,9 +151,9 @@
 					<p:selectOneMenu id="estatusDlg" value="#{manticTallerFiltro.attrs.estatusAsigna}" styleClass="janal-wid-100-txt">									
 						<f:selectItems value="#{manticTallerFiltro.attrs.allEstatusAsigna}"/>					
 					</p:selectOneMenu>
-					<p:outputLabel for="justificacion" value="Justificación:"/>
-					<p:inputTextarea id="justificacion" value="#{manticTallerFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
 				</h:panelGrid>
+				<p:outputLabel for="justificacion" value="Justificación:"/><br/>
+				<p:inputTextarea id="justificacion" value="#{manticTallerFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
 					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" action="#{manticTallerFiltro.doActualizarEstatus}" onstart="return validaJustificacion()" oncomplete="janal.desbloquear();"/>

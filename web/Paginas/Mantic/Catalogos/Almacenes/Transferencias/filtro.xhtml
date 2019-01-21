@@ -20,6 +20,7 @@
 			
 			fieldsDialog= {
 				'estatusDlg'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoDos'},
+				'idTransporto' : {validaciones: 'libre', mascara: 'libre', grupo: 'dialogoDos'},
 				'justificacion': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogoDos', formatos: 'cambiar-mayusculas'}
 			};
 			
@@ -179,10 +180,10 @@
 					</p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
 						<p:menuitem id="modificar" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus eq '1'}"/>					
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus eq '1'}"/>
+            <!--p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus eq '1'}"/-->
             <p:menuitem id="consultar" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-            <p:separator rendered="#{fn:contains('|1|3|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>					
-            <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|3|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>					            
+            <p:separator rendered="#{fn:contains('|1|2|3|4|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>					
+            <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|3|4|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>					            
             <p:separator/>			
             <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doReporte('TRANSFERENCIAS_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
 					</p:contextMenu>
@@ -205,16 +206,30 @@
     </h:panelGrid>			
   </ui:define>
 	<ui:define name="dialogos">
-		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onShow="janal.change('formDialogoEstatus', fieldsDialog); janal.refresh();">
+		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onShow="janal.change('formDialogoEstatus', fieldsDialog); janal.refresh();" dynamic="true">
 			<h:form id="formDialogoEstatus" prependId="false">
 				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
-					<p:selectOneMenu id="estatusDlg" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.estatus}" styleClass="janal-wid-100-txt">									
+					<p:selectOneMenu id="estatusDlg" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.estatus}" styleClass="janal-wid-100-txt">
+						<p:ajax event="change" process="@this" update="@(.refrescar)" listener="#{manticCatalogosAlmacenesTransferenciasFiltro.doTransporta}" oncomplete="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.trasito? 'janal.refresh();': ''}"/>
 						<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.allEstatusAsigna}"/>					
 					</p:selectOneMenu>
-					<p:outputLabel for="justificacion" value="Justificación:"/>
-					<p:inputTextarea id="justificacion" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
+					<p:outputLabel for="idTransporto" value="Transporta:" style="display: #{manticCatalogosAlmacenesTransferenciasFiltro.attrs.trasito? '': 'none'}" converter="janal.convertidor.Entity" styleClass="refrescar"/>
+					<p:selectOneMenu id="idTransporto" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.idTransporto}" styleClass="janal-wid-100-txt refrescar" style="display: #{manticCatalogosAlmacenesTransferenciasFiltro.attrs.trasito? '': 'none'}">
+						<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.personas}" var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{element.paterno} #{element.materno}"/>					
+						<p:column>
+							<h:outputText value="#{item.nombres}"/>
+						</p:column>                
+						<p:column>
+							<h:outputText value="#{item.paterno}"/>
+						</p:column>                
+						<p:column>
+							<h:outputText value="#{item.materno}"/>
+						</p:column>                
+					</p:selectOneMenu>
 				</h:panelGrid>
+				<p:outputLabel for="justificacion" value="Justificación:"/><br/>
+				<p:inputTextarea id="justificacion" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
 					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doActualizarEstatus}" onstart="return validaJustificacion()" oncomplete="janal.desbloquear();"/>

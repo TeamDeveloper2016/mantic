@@ -32,6 +32,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.db.dto.TcManticTransferenciasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
 import mx.org.kaana.mantic.enums.EReportes;
 import org.primefaces.context.RequestContext;
@@ -49,6 +50,7 @@ public class Filtro extends Comun implements Serializable {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia"));
+      this.attrs.put("trasito", false);
 			this.toLoadCatalog();
       if(this.attrs.get("idTransferencia")!= null) 
 			  this.doLoad();
@@ -138,6 +140,7 @@ public class Filtro extends Comun implements Serializable {
 			columns.remove(0);
       this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcManticTransferenciasEstatusDto", "row", params, columns));
 			this.attrs.put("idTransferenciasEstatus", new UISelectEntity("-1"));
+			this.loadPersonas();
     } // try
     catch (Exception e) {
       throw e;
@@ -148,6 +151,32 @@ public class Filtro extends Comun implements Serializable {
     }// finally
 	}
 
+  private void loadPersonas() {
+    List<Columna> columns     = null;
+    Map<String, Object> params= null;
+    try {
+      columns= new ArrayList<>();
+      params = new HashMap<>();
+      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
+      List<UISelectEntity> personas= UIEntity.build("VistaAlmacenesTransferenciasDto", "solicito", params, columns);
+      this.attrs.put("personas", personas);
+			if(personas!= null && !personas.isEmpty())
+			  this.attrs.put("idTransporto", personas.get(0));
+		  else	
+			  this.attrs.put("idTransporto", new UISelectEntity(-1L));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch    
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally 
+  }
+	
   public String doAccion(String accion) {
 		String regresar= "accion";
     EAccion eaccion= null;
@@ -189,9 +218,16 @@ public class Filtro extends Comun implements Serializable {
 	public void doActualizarEstatus() {
 		Transaccion transaccion= null;
 		Entity seleccionado    = null;
+		Long idTransporto      = null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			transaccion = new Transaccion((TcManticTransferenciasDto)DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, seleccionado.getKey()), ((UISelectEntity)this.attrs.get("estatus")).getKey());
+			idTransporto  = this.attrs.get("idTransporto")!= null && ((Entity)this.attrs.get("idTransporto")).getKey()> 0L? ((Entity)this.attrs.get("idTransporto")).getKey(): JsfBase.getIdUsuario();
+			TcManticTransferenciasBitacoraDto bitacora= null;
+			if(((String)this.attrs.get("estatus")).equals("3"))
+			  bitacora= new TcManticTransferenciasBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), idTransporto, Long.valueOf((String)this.attrs.get("estatus")), seleccionado.getKey());
+			else
+			  bitacora= new TcManticTransferenciasBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), JsfBase.getIdUsuario(), Long.valueOf((String)this.attrs.get("estatus")), seleccionado.getKey());
+			transaccion = new Transaccion((TcManticTransferenciasDto)DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, seleccionado.getKey()), bitacora);
 			if(transaccion.ejecutar(EAccion.REGISTRAR)) 
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
 			else
@@ -295,7 +331,7 @@ public class Filtro extends Comun implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);
-			String search= new String((String)this.attrs.get("codigo")); 
+			String search= (String)this.attrs.get("codigo"); 
 			if(!Cadena.isVacio(search)) {
   			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();
 				buscaPorCodigo= search.startsWith(".");
@@ -368,4 +404,8 @@ public class Filtro extends Comun implements Serializable {
 		return "normal".concat(Constantes.REDIRECIONAR);
   } 
 
+	public void doTransporta() {
+    this.attrs.put("trasito", this.attrs.get("estatus")!= null && ((String)this.attrs.get("estatus")).equals("3"));
+	}
+	
 }

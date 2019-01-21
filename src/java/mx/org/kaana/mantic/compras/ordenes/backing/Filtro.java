@@ -300,7 +300,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			TcManticOrdenesComprasDto orden= (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, seleccionado.getKey());
-			bitacora    = new TcManticOrdenesBitacoraDto(Long.valueOf(this.attrs.get("estatus").toString()), (String) this.attrs.get("justificacion"), JsfBase.getIdUsuario(), seleccionado.getKey(), -1L, orden.getConsecutivo(), orden.getTotal());
+			bitacora    = new TcManticOrdenesBitacoraDto(Long.valueOf((String)this.attrs.get("estatus")), (String) this.attrs.get("justificacion"), JsfBase.getIdUsuario(), seleccionado.getKey(), -1L, orden.getConsecutivo(), orden.getTotal());
 			transaccion = new Transaccion(orden, bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta.", ETipoMensaje.INFORMACION);

@@ -35,6 +35,7 @@ public class Transaccion extends IBaseTnx {
 	private List<Articulo> articulos;
 	private Long idTransferenciaEstatus;
 	private Long idFaltante;
+  private TcManticTransferenciasBitacoraDto bitacora;
   private String messageError;
 
 	public Transaccion(Long idFaltante) {
@@ -44,6 +45,11 @@ public class Transaccion extends IBaseTnx {
 	
 	public Transaccion(TcManticTransferenciasDto dto) {
 		this(dto, 1L);
+	}
+	
+	public Transaccion(TcManticTransferenciasDto dto, TcManticTransferenciasBitacoraDto bitacora) {
+		this(dto, 1L);
+		this.bitacora= bitacora;
 	}
 	
 	public Transaccion(TcManticTransferenciasDto dto, List<Articulo> articulos) {
@@ -63,7 +69,6 @@ public class Transaccion extends IBaseTnx {
     boolean regresar= false;
     try {			
     	this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para transferencia de articulos.");
-      TcManticTransferenciasBitacoraDto bitacora= null;
       TcManticAlmacenesArticulosDto origen      = null;			
   		Long consecutivo                          = 0L;
       switch (accion) {
@@ -96,7 +101,7 @@ public class Transaccion extends IBaseTnx {
 					this.dto.setIdTransferenciaEstatus(this.idTransferenciaEstatus);
 					this.toFillArticulos(sesion, accion);
 					regresar= DaoFactory.getInstance().update(sesion, origen).intValue()> 0;
- 					bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), JsfBase.getIdUsuario(), this.dto.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
+ 					//bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), JsfBase.getIdUsuario(), this.dto.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
           regresar= DaoFactory.getInstance().insert(sesion, bitacora).intValue()> 0;
           break;
       } // switch
