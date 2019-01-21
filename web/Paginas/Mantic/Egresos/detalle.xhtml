@@ -31,7 +31,7 @@
 					</p:panelGrid>
 					<p:spacer/>					
 					<p:panel header="Notas de entrada" styleClass="janal-wid-99" toggleable="true">		
-						<p:dataTable lazy="true" id="tablaNotasEntrada" widgetVar="kajoolTable" var="filtro" value="#{manticEgresosDetalle.egresosNotasEntradas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticEgresosDetalle.attrs.seleccionado}" selectionMode="single" paginator="#{manticEgresosDetalle.egresosNotasEntradas.size() gt 15}" rowIndexVar="index" reflow="true">																		
+						<p:dataTable  lazy="true" id="tablaNotasEntrada" widgetVar="kajoolTable" var="filtro" value="#{manticEgresosDetalle.egresosNotasEntradas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticEgresosDetalle.attrs.seleccionado}" selectionMode="single" paginator="#{manticEgresosDetalle.egresosNotasEntradas.rowCount gt manticEgresosDetalle.egresosNotasEntradas.pageSize}" rowIndexVar="index" reflow="true">																		
 							<p:column class="MarAuto Responsive janal-wid-13" sortBy="#{filtro.empresa}">
 								<f:facet name="header">
 									<h:outputText value="Sucursal"/>
@@ -80,19 +80,19 @@
 								</f:facet>
 								<h:outputText value="#{filtro['registro']}"/>
 							</p:column>		
-							<p:column style="width:32px;text-align: center">
+							<p:column style="width:40px;text-align: center">
 								<p:commandButton update="tablaNotasEntrada" icon="fa fa-close" title="Eliminar" action="#{manticEgresosDetalle.doEliminarNotaEntrada}">
 								 <f:setPropertyActionListener value="#{filtro}" target="#{manticEgresosDetalle.attrs.notaEntrada}" />
 							 </p:commandButton>
 							</p:column>
 							<f:facet name="footer">
-								<p:outputLabel value="Total [#{manticEgresosDetalle.egresosNotasEntradas.size()==null?0:manticEgresosDetalle.egresosNotasEntradas.size()}] registros"/>
+								<p:outputLabel value="Total [#{manticEgresosDetalle.egresosNotasEntradas==null?0:manticEgresosDetalle.egresosNotasEntradas.rowCount}] registros"/>
 							</f:facet>
 						</p:dataTable>																
 					</p:panel>													
 					<p:spacer height="5px"/>
 					<p:panel header="Creditos notas" styleClass="janal-wid-99" toggleable="true">		
-						<p:dataTable  lazy="true" id="tablaCreditosNotas" widgetVar="kajoolTable" var="filtro" value="#{manticEgresosDetalle.egresosCreditosNotas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticEgresosDetalle.attrs.seleccionado}" selectionMode="single" paginator="#{manticEgresosDetalle.egresosCreditosNotas.size() gt 15}" rowIndexVar="index" reflow="true">																		
+						<p:dataTable  lazy="true" id="tablaCreditosNotas" widgetVar="kajoolTable" var="filtro" value="#{manticEgresosDetalle.egresosCreditosNotas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticEgresosDetalle.attrs.seleccionado}" selectionMode="single" paginator="#{manticEgresosDetalle.egresosCreditosNotas.rowCount gt manticEgresosDetalle.egresosCreditosNotas.pageSize}" rowIndexVar="index" reflow="true">																		
 							<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.empresa}">
 								<f:facet name="header">
 									<h:outputText value="Sucursal"/>
@@ -114,15 +114,9 @@
 							<p:column class="janal-column-center MarAuto Responsive janal-wid-13">
 								<f:facet name="header">
 									<h:outputText value="Consecutivo"/>
-								</f:facet>
-								<p:commandLink action="#{manticEgresosDetalle.doDevolucion}" title="No. devolución" rendered="#{filtro.idTipoCreditoNota eq '1'}">
-									<f:setPropertyActionListener target="#{manticEgresosDetalle.attrs.idDevolucion}" value="#{filtro.idDevolucion}"/>
-									<h:outputText value="#{filtro['devolucion']}"/>
-								</p:commandLink>	
-								<p:commandLink action="#{manticEgresosDetalle.doNotaEntrada}" title="Nota de entrada" rendered="#{filtro.idTipoCreditoNota eq '2'}">
-									<f:setPropertyActionListener target="#{manticEgresosDetalle.attrs.idNotaEntrada}" value="#{filtro.idNotaEntrada}"/>
-									<h:outputText value="#{filtro['notaEntrada']}"/>
-								</p:commandLink>	
+								</f:facet>																	
+								<h:outputText value="#{filtro['devolucion']}" title="No. devolución" rendered="#{filtro.idTipoCreditoNota eq '1'}"/>																									
+								<h:outputText value="#{filtro['notaEntrada']}" title="Nota de entrada" rendered="#{filtro.idTipoCreditoNota eq '2'}"/>								
 								<h:outputText value="#{filtro['proveedor']}" rendered="#{filtro.idTipoCreditoNota eq '3'}"/>
 							</p:column>		
 							<p:column class="MarAuto Responsive janal-wid-13" sortBy="#{filtro.estatus}">
@@ -149,31 +143,31 @@
 								</f:facet>
 								<h:outputText value="#{filtro['registro']}"/>
 							</p:column>	
-							<p:column style="width:32px;text-align: center">
+							<p:column style="width:40px;text-align: center">
 								<p:commandButton update="tablaCreditosNotas" icon="fa fa-close" title="Eliminar" action="#{manticEgresosDetalle.doEliminarCreditoNota}">
 								 <f:setPropertyActionListener value="#{filtro}" target="#{manticEgresosDetalle.attrs.creditoNota}" />
 							 </p:commandButton>
 							</p:column>
 							<f:facet name="footer">
-								<p:outputLabel value="Total [#{manticEgresosDetalle.egresosCreditosNotas.size()==null?0:manticEgresosDetalle.egresosCreditosNotas.size()}] registros"/>
+								<p:outputLabel value="Total [#{manticEgresosDetalle.egresosCreditosNotas==null?0:manticEgresosDetalle.egresosCreditosNotas.rowCount}] registros"/>
 							</f:facet>
 						</p:dataTable>								
 					</p:panel>
 					<p:spacer height="5px"/>		
 					<p:panel header="Empresas pagos" styleClass="janal-wid-99" toggleable="true">		
-						<p:dataTable  lazy="true" id="tablaEmpresasPagos" widgetVar="kajoolTableDetalle" var="filtro" value="#{manticEgresosDetalle.egresosEmpresasPagos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticEgresosDetalle.attrs.detalleSeleccionado}" selectionMode="single" paginator="#{manticEgresosDetalle.egresosEmpresasPagos.size() gt 15}" rowIndexVar="index" reflow="true">								
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.pago}">
-								<f:facet name="header">
-									<h:outputText value="Pago"/>
-								</f:facet>
-								<h:outputText value="#{filtro['pago']}"/>
-							</p:column>														
+						<p:dataTable  lazy="true" id="tablaEmpresasPagos" widgetVar="kajoolTableDetalle" var="filtro" value="#{manticEgresosDetalle.egresosEmpresasPagos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticEgresosDetalle.attrs.detalleSeleccionado}" selectionMode="single" paginator="#{manticEgresosDetalle.egresosEmpresasPagos.rowCount gt manticEgresosDetalle.egresosEmpresasPagos.pageSize}" rowIndexVar="index" reflow="true">								
 							<p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.tipoPago}">
 								<f:facet name="header">
 									<h:outputText value="Tipo pago"/>
 								</f:facet>
 								<h:outputText value="#{filtro['nombre']}"/>
-							</p:column>														
+							</p:column>	
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.pago}">
+								<f:facet name="header">
+									<h:outputText value="Pago"/>
+								</f:facet>
+								<h:outputText value="#{filtro['pago']}"/>
+							</p:column>																																		
 							<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
 								<f:facet name="header">
 									<h:outputText value="Usuario"/>
@@ -192,19 +186,19 @@
 								</f:facet>
 								<h:outputText value="#{filtro['registro']}"/>
 							</p:column>					
-							<p:column style="width:32px;text-align: center">
+							<p:column style="width:40px;text-align: center">
 								<p:commandButton update="tablaEmpresasPagos" icon="fa fa-close" title="Eliminar" action="#{manticEgresosDetalle.doEliminarEmpresaPago}">
 								 <f:setPropertyActionListener value="#{filtro}" target="#{manticEgresosDetalle.attrs.empresaPago}" />
 							 </p:commandButton>
 							</p:column>
 							<f:facet name="footer">
-								<p:outputLabel value="Total [#{manticEgresosDetalle.egresosEmpresasPagos.size()==null?0:manticEgresosDetalle.egresosEmpresasPagos.size()}] registros"/>
+								<p:outputLabel value="Total [#{manticEgresosDetalle.egresosEmpresasPagos==null?0:manticEgresosDetalle.egresosEmpresasPagos.rowCount}] registros"/>
 							</f:facet>
 						</p:dataTable>								
 					</p:panel>
 					<p:spacer/>
 					<p:panel header="Notas" styleClass="janal-wid-99" toggleable="true">		
-						<p:dataTable rowKey="#{filtro.idKey}" lazy="true" id="tablaNotas" widgetVar="kajoolTableDetalle" var="filtro" value="#{manticEgresosDetalle.egresosNotas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticEgresosDetalle.attrs.detalleSeleccionado}" selectionMode="single" paginator="#{manticEgresosDetalle.egresosNotas.size() gt 15}" rowIndexVar="index" reflow="true">								
+						<p:dataTable  lazy="true" id="tablaNotas" widgetVar="kajoolTableDetalle" var="filtro" value="#{manticEgresosDetalle.egresosNotas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticEgresosDetalle.attrs.detalleSeleccionado}" selectionMode="single" paginator="#{manticEgresosDetalle.egresosNotas.rowCount gt manticEgresosDetalle.egresosNotas.pageSize}" rowIndexVar="index" reflow="true">								
 							<p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.comentario}">
 								<f:facet name="header">
 									<h:outputText value="Comentario"/>
@@ -217,13 +211,13 @@
 								</f:facet>
 								<h:outputText value="#{filtro['registro']}"/>
 							</p:column>	
-							<p:column style="width:32px;text-align: center">
+							<p:column style="width:40px;text-align: center">
 								<p:commandButton update="tablaNotas" icon="fa fa-close" title="Eliminar" action="#{manticEgresosDetalle.doEliminarNota}">
 								 <f:setPropertyActionListener value="#{filtro}" target="#{manticEgresosDetalle.attrs.nota}" />
 							 </p:commandButton>
 							</p:column>
 							<f:facet name="footer">
-								<p:outputLabel value="Total [#{manticEgresosDetalle.egresosNotas.size()==null?0:manticEgresosDetalle.egresosNotas.size()}] registros"/>
+								<p:outputLabel value="Total [#{manticEgresosDetalle.egresosNotas==null?0:manticEgresosDetalle.egresosNotas.rowCount}] registros"/>
 							</f:facet>
 						</p:dataTable>
 					</p:panel>	
