@@ -56,6 +56,8 @@ public class TcManticEgresosArchivosDto implements IBaseDto, Serializable {
   private Long mes;
   @Column (name="nombre")
   private String nombre;
+  @Column (name="ruta")
+  private String ruta;
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="registro")
@@ -66,11 +68,11 @@ public class TcManticEgresosArchivosDto implements IBaseDto, Serializable {
   }
 
   public TcManticEgresosArchivosDto(Long key) {
-    this(new Long(-1L), null, null, null, null, null, null, null, null, null, null);
+    this(new Long(-1L), null, null, null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticEgresosArchivosDto(Long idEgresoArchivo, Long idEgreso, Long tamanio, Long idUsuarios, Long idTipoArchivo, Long idPrincipal, String observaciones, String alias, Long mes, String nombre, Long ejercicio) {
+  public TcManticEgresosArchivosDto(Long idEgresoArchivo, Long idEgreso, Long tamanio, Long idUsuarios, Long idTipoArchivo, Long idPrincipal, String observaciones, String alias, Long mes, String nombre, Long ejercicio, String ruta) {
     setIdEgresoArchivo(idEgresoArchivo);
     setIdEgreso(idEgreso);
     setTamanio(tamanio);
@@ -83,6 +85,7 @@ public class TcManticEgresosArchivosDto implements IBaseDto, Serializable {
     setNombre(nombre);
     setEjercicio(ejercicio);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		setRuta(ruta);
   }
 	
   public void setIdEgresoArchivo(Long idEgresoArchivo) {
@@ -181,6 +184,14 @@ public class TcManticEgresosArchivosDto implements IBaseDto, Serializable {
     return registro;
   }
 
+	public String getRuta() {
+		return ruta;
+	}
+
+	public void setRuta(String ruta) {
+		this.ruta = ruta;
+	}	
+
   @Transient
   @Override
   public Long getKey() {
@@ -219,6 +230,8 @@ public class TcManticEgresosArchivosDto implements IBaseDto, Serializable {
 		regresar.append(getEjercicio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRuta());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -238,13 +251,14 @@ public class TcManticEgresosArchivosDto implements IBaseDto, Serializable {
 		regresar.put("nombre", getNombre());
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
+		regresar.put("ruta", getRuta());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdEgresoArchivo(), getIdEgreso(), getTamanio(), getIdUsuarios(), getIdTipoArchivo(), getIdPrincipal(), getObservaciones(), getAlias(), getMes(), getNombre(), getEjercicio(), getRegistro()
+    getIdEgresoArchivo(), getIdEgreso(), getTamanio(), getIdUsuarios(), getIdTipoArchivo(), getIdPrincipal(), getObservaciones(), getAlias(), getMes(), getNombre(), getEjercicio(), getRegistro(), getRuta()
     };
     return regresar;
   }
