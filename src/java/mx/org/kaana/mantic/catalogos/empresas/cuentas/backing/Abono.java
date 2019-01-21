@@ -34,6 +34,7 @@ import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosDto;
+import mx.org.kaana.mantic.enums.ECuentasEgresos;
 import mx.org.kaana.mantic.enums.EEstatusEmpresas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import org.primefaces.context.RequestContext;
@@ -425,4 +426,11 @@ public class Abono extends IBasePagos implements Serializable {
 		} // catch		
 		return regresar.toString();
 	} // toObservacionesReabrir
+	
+	public String doEgreso() {		
+		JsfBase.setFlashAttribute("idCuenta", ((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Empresas/Cuentas/saldos");
+		JsfBase.setFlashAttribute("eCuentaEgreso", ECuentasEgresos.EMPRESA_PAGO);
+		return "/Paginas/Mantic/Egresos/cuentas".concat(Constantes.REDIRECIONAR);
+	} // doEgreso	
 }
