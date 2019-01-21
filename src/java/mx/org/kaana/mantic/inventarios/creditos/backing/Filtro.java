@@ -35,6 +35,7 @@ import mx.org.kaana.mantic.inventarios.creditos.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticCreditosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticCreditosNotasDto;
+import mx.org.kaana.mantic.enums.ECuentasEgresos;
 import mx.org.kaana.mantic.enums.EReportes;
 import org.primefaces.context.RequestContext;
 
@@ -312,5 +313,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return "/Paginas/Mantic/Inventarios/Creditos/accion".concat(Constantes.REDIRECIONAR);
 	}
 
-	
+	public String doEgreso() {		
+		JsfBase.setFlashAttribute("idCuenta", ((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Creditos/filtro");
+		JsfBase.setFlashAttribute("eCuentaEgreso", ECuentasEgresos.CREDITO_NOTA);
+		return "/Paginas/Mantic/Egresos/cuentas".concat(Constantes.REDIRECIONAR);
+	} // doEgreso	
 }
