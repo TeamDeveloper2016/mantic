@@ -6248,7 +6248,120 @@
 					tc_mantic_egresos_estatus on tc_mantic_egresos.id_egreso_estatus = tc_mantic_egresos_estatus.id_egreso_estatus
 				where 
 					{condicion}
-			</select>			
+			</select>		
+			<select id="notasEntradas">
+        select
+					tc_mantic_notas_entradas.id_nota_entrada as id_key,
+					tc_mantic_notas_entradas.id_nota_entrada,
+					tc_mantic_ordenes_compras.id_orden_compra,
+          tc_mantic_notas_entradas.id_almacen,
+          tc_mantic_notas_entradas.id_empresa,
+          tc_mantic_proveedores.id_proveedor,
+					tc_mantic_ordenes_compras.consecutivo as orden_compra,
+					tc_mantic_notas_entradas.consecutivo,
+					tc_mantic_empresas.nombre as empresa,
+					tc_mantic_notas_tipos.nombre as directa,
+					tc_mantic_notas_entradas.id_nota_tipo,
+					tc_mantic_proveedores.razon_social,
+					tc_mantic_notas_entradas.total,
+					tc_mantic_notas_estatus.id_nota_estatus,
+					tc_mantic_notas_estatus.nombre as estatus,
+					tc_mantic_notas_estatus.estatus_asociados,
+					tc_mantic_notas_entradas.registro     
+        from
+          tc_mantic_notas_entradas         
+        inner join
+          tc_mantic_notas_tipos on tc_mantic_notas_entradas.id_nota_tipo= tc_mantic_notas_tipos.id_nota_tipo
+        inner join
+          tc_mantic_empresas on tc_mantic_notas_entradas.id_empresa= tc_mantic_empresas.id_empresa         
+        inner join
+          tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor         
+        inner join
+          tc_mantic_notas_estatus on tc_mantic_notas_entradas.id_nota_estatus= tc_mantic_notas_estatus.id_nota_estatus      
+        left join
+          tc_mantic_ordenes_compras on tc_mantic_notas_entradas.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra     
+        where
+					tc_mantic_notas_entradas.id_egreso= {idEgreso}					
+			</select>	
+			<select id="creditosNotas">
+        select
+					tc_mantic_creditos_notas.id_credito_nota as id_key,
+					tc_mantic_creditos_notas.id_credito_nota,
+					tc_mantic_creditos_notas.id_devolucion,
+					tc_mantic_devoluciones.consecutivo as devolucion,
+				  tc_mantic_notas_entradas.id_nota_entrada,
+					tc_mantic_notas_entradas.consecutivo as nota_entrada,
+          tc_mantic_notas_entradas.id_almacen,
+          tc_mantic_notas_entradas.id_empresa,
+				  tc_mantic_proveedores.id_proveedor,
+					tc_mantic_proveedores.razon_social as proveedor,
+					tc_mantic_creditos_notas.consecutivo,
+					tc_mantic_empresas.clave as empresa,
+				  tc_mantic_empresas.nombre as nombre_empresa,
+					tc_mantic_creditos_notas.folio,
+					tc_mantic_creditos_notas.importe,
+		  		tc_mantic_creditos_estatus.nombre as estatus,
+					tc_mantic_creditos_estatus.id_credito_estatus,
+				  tc_mantic_creditos_estatus.estatus_asociados,
+				  tc_mantic_tipos_creditos_notas.id_tipo_credito_nota,
+				  tc_mantic_tipos_creditos_notas.nombre,
+					tc_mantic_creditos_notas.registro     
+        from
+          tc_mantic_creditos_notas         
+        inner join
+          tc_mantic_tipos_creditos_notas on tc_mantic_creditos_notas.id_tipo_credito_nota=tc_mantic_tipos_creditos_notas.id_tipo_credito_nota      
+        inner join
+          tc_mantic_creditos_estatus on tc_mantic_creditos_notas.id_credito_estatus=tc_mantic_creditos_estatus.id_credito_estatus      
+        inner join
+          tc_mantic_empresas on tc_mantic_creditos_notas.id_empresa= tc_mantic_empresas.id_empresa         
+        left join
+          tc_mantic_devoluciones on tc_mantic_creditos_notas.id_devolucion= tc_mantic_devoluciones.id_devolucion
+        left join
+          tc_mantic_notas_entradas on tc_mantic_creditos_notas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+        left join
+          tc_mantic_proveedores on tc_mantic_creditos_notas.id_proveedor= tc_mantic_proveedores.id_proveedor
+        where
+					tc_mantic_creditos_notas.id_egreso ={idEgreso}					
+			</select> 
+			<select id="empresasPagos">
+				select
+					tc_mantic_empresas_pagos.id_empresa_pago as id_key,
+					tc_mantic_notas_entradas.consecutivo,
+					tc_mantic_empresas_deudas.importe,
+					tc_mantic_empresas_deudas.saldo,
+					tc_mantic_empresas_pagos.pago,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
+					tc_mantic_empresas_pagos.registro,
+					tc_mantic_empresas_pagos.observaciones,
+					tc_mantic_tipos_medios_pagos.clave,
+					tc_mantic_tipos_medios_pagos.nombre
+				from
+					tc_mantic_empresas_pagos
+				inner join
+					tc_mantic_empresas_deudas on tc_mantic_empresas_pagos.id_empresa_deuda= tc_mantic_empresas_deudas.id_empresa_deuda
+				inner join
+					tc_mantic_notas_entradas on tc_mantic_empresas_deudas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+				inner join
+					tc_janal_usuarios on tc_mantic_empresas_pagos.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				inner join 
+					tc_mantic_tipos_medios_pagos on tc_mantic_empresas_pagos.id_tipo_medio_pago = tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+				where
+					tc_mantic_empresas_pagos.id_egreso= {idEgreso}									
+				order by
+					tc_mantic_notas_entradas.consecutivo, 
+					tc_mantic_empresas_deudas.registro desc				
+			</select>
+			<select id="notas">
+				select 
+					tc_mantic_egresos_notas.id_egreso_nota as id_key,
+					tc_mantic_egresos_notas.*
+				from 
+					tc_mantic_egresos_notas
+				where 
+					tc_mantic_egresos_notas.id_egreso= {idEgreso}
+			</select>	
 		</unit>
 	</dml>    
 </process>
