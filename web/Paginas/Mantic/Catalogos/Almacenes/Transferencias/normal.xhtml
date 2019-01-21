@@ -147,7 +147,7 @@
 								</p:selectOneMenu>
               </p:panelGrid>
 							<p:outputLabel for="observaciones" value="Observaciones:"/><br/>
-							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.observaciones}"/>
+							<p:inputTextarea id="observaciones" rows="3" cols="33" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.observaciones}"/>
 						</p:tab>						            						            																																																
 						<p:tab title="Articulos">
 							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
@@ -206,7 +206,7 @@
 													<f:facet name="header">
 														<h:outputText value="Articulo"/>
 													</f:facet>
-													<h:outputText id="nombres" value="[#{row['codigo']}] #{row['nombre']}" title="Código propio: #{row['propio']}  Existencias almacen: #{row['stock']}" escape="false"/>
+													<h:outputText id="nombres" value="[#{row['propio']}] #{row['nombre']}" escape="false"/>
 												</p:column>		
 												<p:column class="cantidades janal-column-right MarAuto Responsive janal-wid-6">
 													<f:facet name="header">

@@ -149,17 +149,20 @@ public class Filtro extends Comun implements Serializable {
 	}
 
   public String doAccion(String accion) {
+		String regresar= "accion";
     EAccion eaccion= null;
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
-			JsfBase.setFlashAttribute("accion", eaccion);		
-			JsfBase.setFlashAttribute("idTransferencia", (eaccion.equals(EAccion.MODIFICAR)||eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
+		  JsfBase.setFlashAttribute("accion", eaccion);		
+			if(((Entity)this.attrs.get("seleccionado")).toLong("idTransferenciaTipo").equals(2L))
+				regresar= "normal";
+			JsfBase.setFlashAttribute("idTransferencia", (eaccion.equals(EAccion.MODIFICAR)||eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).getKey(): -1L);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return "accion".concat(Constantes.REDIRECIONAR);
+		return regresar.concat(Constantes.REDIRECIONAR);
   } // doAccion
   
   public void doLoadEstatus() {

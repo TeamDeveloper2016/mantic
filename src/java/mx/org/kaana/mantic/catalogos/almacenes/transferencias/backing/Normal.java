@@ -110,8 +110,9 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {
- 				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-    			RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 orden de compra', '"+ ((Transferencia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+   			  RequestContext.getCurrentInstance().execute("janal.back(' gener\\u00F3 la transferencia ', '"+ ((Transferencia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+		  		JsfBase.addMessage("Se registró la transferencia de correcta", ETipoMensaje.INFORMACION);
+ 				  regresar = ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
     			JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la transferencia de articulos."), ETipoMensaje.INFORMACION);
@@ -147,11 +148,11 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
       this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
  			List<UISelectEntity> empresas= (List<UISelectEntity>)this.attrs.get("empresas");
 			if(!empresas.isEmpty()) {
-				this.attrs.put("idPedidoSucursal", empresas.get(0));
 				if(this.accion.equals(EAccion.AGREGAR))
   				((Transferencia)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(0));
 			  else
 				  ((Transferencia)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(empresas.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkEmpresa())));
+				this.attrs.put("idPedidoSucursal", ((Transferencia)this.getAdminOrden().getOrden()).getIkEmpresa());
 			} // if	
       this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
@@ -176,7 +177,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
       columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
       List<UISelectEntity> personas= UIEntity.build("VistaAlmacenesTransferenciasDto", "solicito", params, columns);
       this.attrs.put("personas", personas);
-			if(personas!= null && !this.accion.equals(EAccion.AGREGAR)) 
+			if(personas!= null && !this.accion.equals(EAccion.AGREGAR) && ((Transferencia)this.getAdminOrden().getOrden()).getIdSolicito()!= null && ((Transferencia)this.getAdminOrden().getOrden()).getIdSolicito()> 0L) 
 				((Transferencia)this.getAdminOrden().getOrden()).setIkSolicito(personas.get(personas.indexOf(new UISelectEntity(((Transferencia)this.getAdminOrden().getOrden()).getIdSolicito()))));
     } // try
     catch (Exception e) {
