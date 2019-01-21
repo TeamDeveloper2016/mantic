@@ -20,6 +20,7 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticEgresosDto;
 import mx.org.kaana.mantic.egresos.reglas.Transaccion;
+import mx.org.kaana.mantic.enums.ECuentasEgresos;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 
 @Named(value = "manticEgresosDetalle")
@@ -157,7 +158,7 @@ public class Detalle extends IBaseImportar implements Serializable {
 		Entity notaEntrada     = null;
 		try {			
 			notaEntrada= (Entity)this.attrs.get("notaEntrada");			
-			transaccion= new Transaccion(notaEntrada.getKey(), EAccion.ACTIVAR);
+			transaccion= new Transaccion(notaEntrada.getKey(), ECuentasEgresos.NOTA_ENTRADA);
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Se eliminó correctamente el registro", ETipoMensaje.INFORMACION);
 			else
@@ -175,7 +176,7 @@ public class Detalle extends IBaseImportar implements Serializable {
 		Entity creditoNota     = null;
 		try {			
 			creditoNota= (Entity)this.attrs.get("creditoNota");			
-			transaccion= new Transaccion(creditoNota.getKey(), EAccion.AGREGAR);
+			transaccion= new Transaccion(creditoNota.getKey(), ECuentasEgresos.CREDITO_NOTA);
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Se eliminó correctamente el registro", ETipoMensaje.INFORMACION);
 			else
@@ -193,7 +194,7 @@ public class Detalle extends IBaseImportar implements Serializable {
 		Entity empresaPago     = null;
 		try {			
 			empresaPago= (Entity)this.attrs.get("empresaPago");			
-			transaccion= new Transaccion(empresaPago.getKey(), EAccion.ASIGNAR);
+			transaccion= new Transaccion(empresaPago.getKey(), ECuentasEgresos.EMPRESA_PAGO);
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Se eliminó correctamente el registro", ETipoMensaje.INFORMACION);
 			else
@@ -211,7 +212,7 @@ public class Detalle extends IBaseImportar implements Serializable {
 		Entity nota            = null;
 		try {			
 			nota= (Entity)this.attrs.get("nota");			
-			transaccion= new Transaccion(nota.getKey(), EAccion.BAJAR);
+			transaccion= new Transaccion(nota.getKey(), ECuentasEgresos.NOTA);
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Se eliminó correctamente el registro", ETipoMensaje.INFORMACION);
 			else
