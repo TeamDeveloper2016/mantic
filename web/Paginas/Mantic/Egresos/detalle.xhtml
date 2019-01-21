@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Detalle de egreso"/>
+	<ui:define name="librerias">
+		<h:outputStylesheet library="janal" name="css/sh.css"/>
+		<h:outputStylesheet library="janal" name="css/shCore.css"/>
+		<h:outputStylesheet library="janal" name="css/shThemeDefault.css"/>		
+		<script type="text/javascript"></script>
+		<style></style>
+	</ui:define>
+	<ui:define name="contenido">
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:panelGrid id="panelDetalle" columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-5, janal-wid, janal-wid-15, janal-wid-15">
+						<p:outputLabel value="Fecha:"/>						
+						<p:outputLabel value="Descripcion:"/>						
+						<p:outputLabel value="Importe:"/>						
+						<p:outputLabel value="Estatus:"/>
+						<p:inputText value="#{manticEgresosDetalle.attrs.egreso.fecha}" styleClass="janal-wid-100-txt janal-column-center" disabled="true"/>
+						<p:inputText value="#{manticEgresosDetalle.attrs.egreso.descripcion}" styleClass="janal-wid-100-txt" disabled="true"/>
+						<p:inputText value="#{manticEgresosDetalle.attrs.egreso.importe}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>
+						<p:inputText value="#{manticEgresosDetalle.attrs.estatus}" styleClass="janal-wid-100-txt janal-column-left" disabled="true"/>						
+					</p:panelGrid>
+					<p:spacer/>					
+					<p:panel header="Notas de entrada" styleClass="janal-wid-99" toggleable="true">		
+						<p:dataTable lazy="true" id="tablaNotasEntrada" widgetVar="kajoolTable" var="filtro" value="#{manticEgresosDetalle.egresosNotasEntradas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticEgresosDetalle.attrs.seleccionado}" selectionMode="single" paginator="#{manticEgresosDetalle.egresosNotasEntradas.size() gt 15}" rowIndexVar="index" reflow="true">																		
+							<p:column class="MarAuto Responsive janal-wid-13" sortBy="#{filtro.empresa}">
+								<f:facet name="header">
+									<h:outputText value="Sucursal"/>
+								</f:facet>
+								<h:outputText value="#{filtro['empresa']}"/>
+							</p:column>		
+							<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
+								<f:facet name="header">
+									<h:outputText value="Nota entrada"/>
+								</f:facet>
+								<h:outputText value="#{filtro['consecutivo']}"/>
+							</p:column>		
+							<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.ordenCompra}">
+								<f:facet name="header">
+									<h:outputText value="Orden compra"/>
+								</f:facet>										
+								<h:outputText value="#{filtro['ordenCompra']}"/>
+							</p:column>		
+							<p:column class="MarAuto Responsive  janal-wid-10" sortBy="#{filtro.directa}">
+								<f:facet name="header">
+									<h:outputText value="Tipo"/>
+								</f:facet>
+								<h:outputText value="#{filtro['directa']}"/>
+							</p:column>		
+							<p:column class="MarAuto Responsive" sortBy="#{filtro.razonSocial}">
+								<f:facet name="header">
+									<h:outputText value="Proveeedor"/>
+								</f:facet>
+								<h:outputText value="#{filtro['razonSocial']}"/>
+							</p:column>		
+							<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.estatus}">
+								<f:facet name="header">
+									<h:outputText value="Estatus"/>
+								</f:facet>
+								<h:outputText value="#{filtro['estatus']}"/>
+							</p:column>		
+							<p:column class="MarAuto Responsive janal-wid-13 janal-column-right" sortBy="#{filtro.total}">
+								<f:facet name="header">
+									<h:outputText value="Importe"/>
+								</f:facet>
+								<h:outputText value="#{filtro['total']}"/>
+							</p:column>		
+							<p:column class="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{filtro.registro}">
+								<f:facet name="header">
+									<h:outputText value="Fecha"/>
+								</f:facet>
+								<h:outputText value="#{filtro['registro']}"/>
+							</p:column>		
+							<p:column style="width:32px;text-align: center">
+								<p:commandButton update="tablaNotasEntrada" icon="fa fa-close" title="Eliminar" action="#{manticEgresosDetalle.doEliminarNotaEntrada}">
+								 <f:setPropertyActionListener value="#{filtro}" target="#{manticEgresosDetalle.attrs.notaEntrada}" />
+							 </p:commandButton>
+							</p:column>
+							<f:facet name="footer">
+								<p:outputLabel value="Total [#{manticEgresosDetalle.egresosNotasEntradas.size()==null?0:manticEgresosDetalle.egresosNotasEntradas.size()}] registros"/>
+							</f:facet>
+						</p:dataTable>																
+					</p:panel>													
+					<p:spacer height="5px"/>
+					<p:panel header="Creditos notas" styleClass="janal-wid-99" toggleable="true">		
+						<p:dataTable  lazy="true" id="tablaCreditosNotas" widgetVar="kajoolTable" var="filtro" value="#{manticEgresosDetalle.egresosCreditosNotas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticEgresosDetalle.attrs.seleccionado}" selectionMode="single" paginator="#{manticEgresosDetalle.egresosCreditosNotas.size() gt 15}" rowIndexVar="index" reflow="true">																		
+							<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.empresa}">
+								<f:facet name="header">
+									<h:outputText value="Sucursal"/>
+								</f:facet>
+								<h:outputText value="#{filtro['empresa']}"/>
+							</p:column>		
+							<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.consecutivo}">
+								<f:facet name="header">
+									<h:outputText value="Nota crédito"/>
+								</f:facet>
+								<h:outputText value="#{filtro['consecutivo']}"/>
+							</p:column>		
+							<p:column class="MarAuto Responsive janal-wid-13" sortBy="#{filtro.nombre}">
+								<f:facet name="header">
+									<h:outputText value="Nombre"/>
+								</f:facet>
+								<h:outputText value="#{filtro['nombre']}"/>
+							</p:column>		
+							<p:column class="janal-column-center MarAuto Responsive janal-wid-13">
+								<f:facet name="header">
+									<h:outputText value="Consecutivo"/>
+								</f:facet>
+								<p:commandLink action="#{manticEgresosDetalle.doDevolucion}" title="No. devolución" rendered="#{filtro.idTipoCreditoNota eq '1'}">
+									<f:setPropertyActionListener target="#{manticEgresosDetalle.attrs.idDevolucion}" value="#{filtro.idDevolucion}"/>
+									<h:outputText value="#{filtro['devolucion']}"/>
+								</p:commandLink>	
+								<p:commandLink action="#{manticEgresosDetalle.doNotaEntrada}" title="Nota de entrada" rendered="#{filtro.idTipoCreditoNota eq '2'}">
+									<f:setPropertyActionListener target="#{manticEgresosDetalle.attrs.idNotaEntrada}" value="#{filtro.idNotaEntrada}"/>
+									<h:outputText value="#{filtro['notaEntrada']}"/>
+								</p:commandLink>	
+								<h:outputText value="#{filtro['proveedor']}" rendered="#{filtro.idTipoCreditoNota eq '3'}"/>
+							</p:column>		
+							<p:column class="MarAuto Responsive janal-wid-13" sortBy="#{filtro.estatus}">
+								<f:facet name="header">
+									<h:outputText value="Estatus"/>
+								</f:facet>
+								<h:outputText value="#{filtro['estatus']}"/>
+							</p:column>		
+							<p:column class="MarAuto Responsive" sortBy="#{filtro.folio}">
+								<f:facet name="header">
+									<h:outputText value="Folio"/>
+								</f:facet>
+								<h:outputText value="#{filtro['folio']}"/>
+							</p:column>		
+							<p:column class="MarAuto Responsive janal-wid-13 janal-column-right" sortBy="#{filtro.total}">
+								<f:facet name="header">
+									<h:outputText value="Importe"/>
+								</f:facet>
+								<h:outputText value="#{filtro['importe']}"/>
+							</p:column>		
+							<p:column class="MarAuto Responsive janal-wid-13 janal-column-center" sortBy="#{filtro.registro}">
+								<f:facet name="header">
+									<h:outputText value="Fecha"/>
+								</f:facet>
+								<h:outputText value="#{filtro['registro']}"/>
+							</p:column>	
+							<p:column style="width:32px;text-align: center">
+								<p:commandButton update="tablaCreditosNotas" icon="fa fa-close" title="Eliminar" action="#{manticEgresosDetalle.doEliminarCreditoNota}">
+								 <f:setPropertyActionListener value="#{filtro}" target="#{manticEgresosDetalle.attrs.creditoNota}" />
+							 </p:commandButton>
+							</p:column>
+							<f:facet name="footer">
+								<p:outputLabel value="Total [#{manticEgresosDetalle.egresosCreditosNotas.size()==null?0:manticEgresosDetalle.egresosCreditosNotas.size()}] registros"/>
+							</f:facet>
+						</p:dataTable>								
+					</p:panel>
+					<p:spacer height="5px"/>		
+					<p:panel header="Empresas pagos" styleClass="janal-wid-99" toggleable="true">		
+						<p:dataTable  lazy="true" id="tablaEmpresasPagos" widgetVar="kajoolTableDetalle" var="filtro" value="#{manticEgresosDetalle.egresosEmpresasPagos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticEgresosDetalle.attrs.detalleSeleccionado}" selectionMode="single" paginator="#{manticEgresosDetalle.egresosEmpresasPagos.size() gt 15}" rowIndexVar="index" reflow="true">								
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.pago}">
+								<f:facet name="header">
+									<h:outputText value="Pago"/>
+								</f:facet>
+								<h:outputText value="#{filtro['pago']}"/>
+							</p:column>														
+							<p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.tipoPago}">
+								<f:facet name="header">
+									<h:outputText value="Tipo pago"/>
+								</f:facet>
+								<h:outputText value="#{filtro['nombre']}"/>
+							</p:column>														
+							<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
+								<f:facet name="header">
+									<h:outputText value="Usuario"/>
+								</f:facet>
+								<h:outputText value="#{filtro['persona']}"/>
+							</p:column>																							
+							<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.observaciones}">
+								<f:facet name="header">
+									<h:outputText value="Observaciones"/>
+								</f:facet>
+								<h:outputText value="#{filtro['observaciones']}"/>
+							</p:column>																							
+							<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.regitro}">
+								<f:facet name="header">
+									<h:outputText value="Fecha"/>
+								</f:facet>
+								<h:outputText value="#{filtro['registro']}"/>
+							</p:column>					
+							<p:column style="width:32px;text-align: center">
+								<p:commandButton update="tablaEmpresasPagos" icon="fa fa-close" title="Eliminar" action="#{manticEgresosDetalle.doEliminarEmpresaPago}">
+								 <f:setPropertyActionListener value="#{filtro}" target="#{manticEgresosDetalle.attrs.empresaPago}" />
+							 </p:commandButton>
+							</p:column>
+							<f:facet name="footer">
+								<p:outputLabel value="Total [#{manticEgresosDetalle.egresosEmpresasPagos.size()==null?0:manticEgresosDetalle.egresosEmpresasPagos.size()}] registros"/>
+							</f:facet>
+						</p:dataTable>								
+					</p:panel>
+					<p:spacer/>
+					<p:panel header="Notas" styleClass="janal-wid-99" toggleable="true">		
+						<p:dataTable rowKey="#{filtro.idKey}" lazy="true" id="tablaNotas" widgetVar="kajoolTableDetalle" var="filtro" value="#{manticEgresosDetalle.egresosNotas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticEgresosDetalle.attrs.detalleSeleccionado}" selectionMode="single" paginator="#{manticEgresosDetalle.egresosNotas.size() gt 15}" rowIndexVar="index" reflow="true">								
+							<p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.comentario}">
+								<f:facet name="header">
+									<h:outputText value="Comentario"/>
+								</f:facet>
+								<h:outputText value="#{filtro['comentario']}"/>
+							</p:column>																																													
+							<p:column class="janal-column-center MarAuto Responsive janal-wid-5" sortBy="#{filtro.registro}">
+								<f:facet name="header">
+									<h:outputText value="Fecha"/>
+								</f:facet>
+								<h:outputText value="#{filtro['registro']}"/>
+							</p:column>	
+							<p:column style="width:32px;text-align: center">
+								<p:commandButton update="tablaNotas" icon="fa fa-close" title="Eliminar" action="#{manticEgresosDetalle.doEliminarNota}">
+								 <f:setPropertyActionListener value="#{filtro}" target="#{manticEgresosDetalle.attrs.nota}" />
+							 </p:commandButton>
+							</p:column>
+							<f:facet name="footer">
+								<p:outputLabel value="Total [#{manticEgresosDetalle.egresosNotas.size()==null?0:manticEgresosDetalle.egresosNotas.size()}] registros"/>
+							</f:facet>
+						</p:dataTable>
+					</p:panel>	
+				</div>
+			</div>
+		</div>				    
+	</ui:define>	
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" onstart="return janal.execute();" oncomplete="janal.desbloquear()" style="display: none"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticEgresosDetalle.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" onstart="return janal.execute();" oncomplete="janal.desbloquear()" style="display: none"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticEgresosDetalle.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>	
+</ui:composition>
