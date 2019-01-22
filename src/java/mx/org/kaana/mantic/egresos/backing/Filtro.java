@@ -76,7 +76,7 @@ public class Filtro extends Comun implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));			
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));			
 			params.put(Constantes.SQL_CONDICION, toCondicion());			
-      this.lazyModel = new FormatCustomLazy("VistaEgresosDto", "principal", params, columns);
+      this.lazyModel = new FormatCustomLazy("VistaEgresosDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {

@@ -6242,7 +6242,7 @@
 			</select>
 		</unit>
 		<unit id="VistaEgresosDto">
-			<select id="principal">
+			<select id="lazy">
 				select 
 					tc_mantic_egresos.id_egreso as id_key,
 					tc_mantic_egresos.*,
