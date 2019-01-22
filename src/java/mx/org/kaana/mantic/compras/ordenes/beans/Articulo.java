@@ -385,6 +385,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}	
 
 	public TcManticNotasDetallesDto toNotaDetalle() {
+		if(Cadena.isVacio(this.getPropio()))
+		  LOG.warn("El codigo propio esta vacio ["+ this.getNombre()+ "] corresponde a la nota de entrada");
 		return new TcManticNotasDetallesDto(
 			this.getCodigo(), 
 			this.getUnidadMedida(), 
@@ -415,6 +417,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 
 	public TcManticOrdenesDetallesDto toOrdenDetalle() {
+		if(Cadena.isVacio(this.getPropio()))
+		  LOG.warn("El codigo propio esta vacio ["+ this.getNombre()+ "] corresponde a la orden de compra");
 		return new TcManticOrdenesDetallesDto(
 			this.getImporte(),
 			this.getDescuentos(), 
@@ -441,7 +445,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 	
 	public TcManticVentasDetallesDto toVentaDetalle() {
-		//double unitario= Numero.toRedondearSat(this.getCosto()- (this.getCosto()- (this.getCosto()/ (1+(this.getIva()/ 100)))));
+		if(Cadena.isVacio(this.getPropio()))
+		  LOG.warn("El codigo propio esta vacio ["+ this.getNombre()+ "] corresponde al ticket de venta");
 		double unitario= Numero.toRedondearSat(this.getSubTotal()/ this.getCantidad());
 		return new TcManticVentasDetallesDto(
 			this.getDescuentos(),
@@ -486,7 +491,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 	
 	public TcManticFicticiasDetallesDto toFicticiaDetalle() {
-		//double unitario= Numero.toRedondearSat(this.getCosto()- (this.getCosto()- (this.getCosto()/ (1+(this.getIva()/ 100)))));
+		if(Cadena.isVacio(this.getPropio()))
+		  LOG.warn("El codigo propio esta vacio ["+ this.getNombre()+ "] corresponde a la factura ficticia");
 		double unitario= Numero.toRedondearSat(this.getSubTotal()/ this.getCantidad());
 		return new TcManticFicticiasDetallesDto(
 			this.getDescuentos(),
@@ -512,6 +518,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 	
 	public TcManticRequisicionesDetallesDto toRequisicionDetalle() {
+		if(Cadena.isVacio(this.getPropio()))
+		  LOG.warn("El codigo propio esta vacio ["+ this.getNombre()+ "] corresponde a la requisicion");
 		return new TcManticRequisicionesDetallesDto(			
 			-1L, /*idVenta, */
 			this.getPropio(),
@@ -524,6 +532,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 	
 	public TcManticServiciosDetallesDto toServicioDetalle() {
+		if(Cadena.isVacio(this.getPropio()))
+		  LOG.warn("El codigo propio esta vacio ["+ this.getNombre()+ "] corresponde a la orden de servicio");
 		return new TcManticServiciosDetallesDto(
 			this.getCodigo(), 
 			this.getCosto(), 
@@ -552,6 +562,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 	
   public TcManticTransferenciasDetallesDto toTransferenciaDetalle() {
+		if(Cadena.isVacio(this.getPropio()))
+		  LOG.warn("El codigo propio esta vacio ["+ this.getNombre()+ "] corresponde a la transferencia");
 		return new TcManticTransferenciasDetallesDto(
 			this.getPropio(), // String propio, 
 			this.getCantidad(), // Double cantidades, 

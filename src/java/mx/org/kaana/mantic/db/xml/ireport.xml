@@ -116,11 +116,11 @@
           tc_mantic_ordenes_detalles.*,
           concat('(',
             ifnull((select
-                tc_mantic_articulos_codigos.codigo 
+              tc_mantic_articulos_codigos.codigo 
             from
-                tc_mantic_articulos_codigos 
+              tc_mantic_articulos_codigos 
             where
-                tc_mantic_articulos_codigos.id_proveedor= tc_mantic_articulos.id_articulo),
+              tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= tc_mantic_proveedores.id_proveedor),
             ''),
             ' ) ',
             tc_mantic_articulos.nombre) as articulo,
@@ -161,11 +161,11 @@
           tc_mantic_ordenes_detalles.*,
           concat('(',
             ifnull((select
-                tc_mantic_articulos_codigos.codigo 
+              tc_mantic_articulos_codigos.codigo 
             from
-                tc_mantic_articulos_codigos 
+              tc_mantic_articulos_codigos 
             where
-                tc_mantic_articulos_codigos.id_proveedor= tc_mantic_articulos.id_articulo),
+              tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo),
             ''),
             ' ) ',
             tc_mantic_articulos.nombre) as articulo,
@@ -319,11 +319,11 @@
           tc_mantic_ventas_detalles.*,
           concat('(',
           ifnull((select
-              tc_mantic_articulos_codigos.codigo 
+            tc_mantic_articulos_codigos.codigo 
           from
-              tc_mantic_articulos_codigos 
+            tc_mantic_articulos_codigos 
           where
-              tc_mantic_articulos_codigos.id_proveedor= tc_mantic_articulos.id_articulo),
+            tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo),
           ''),
           ' ) ',
           tc_mantic_articulos.nombre) as nombre_articulo,
@@ -367,11 +367,11 @@
 					tc_mantic_notas_entradas.registro registro_nota,
           concat('(',
             ifnull((select
-                tc_mantic_articulos_codigos.codigo 
+              tc_mantic_articulos_codigos.codigo 
             from
-                tc_mantic_articulos_codigos 
+              tc_mantic_articulos_codigos 
             where
-                tc_mantic_articulos_codigos.id_proveedor= tc_mantic_articulos.id_articulo),
+              tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo),
             ''),
             ' ) ',
           tc_mantic_articulos.nombre) as nombre,
@@ -424,11 +424,11 @@
 					tc_mantic_notas_entradas.registro registro_nota,
 					concat('(',
             ifnull((select
-                tc_mantic_articulos_codigos.codigo 
+              tc_mantic_articulos_codigos.codigo 
             from
-                tc_mantic_articulos_codigos 
+              tc_mantic_articulos_codigos 
             where
-                tc_mantic_articulos_codigos.id_proveedor= tc_mantic_articulos.id_articulo),
+              tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo),
             ''),
             ' ) ',
           tc_mantic_articulos.nombre) as nombre,
@@ -483,11 +483,11 @@
 					tc_mantic_notas_detalles.codigo,
           concat('(',
             ifnull((select
-                tc_mantic_articulos_codigos.codigo 
+              tc_mantic_articulos_codigos.codigo 
             from
-                tc_mantic_articulos_codigos 
+              tc_mantic_articulos_codigos 
             where
-                tc_mantic_articulos_codigos.id_proveedor= tc_mantic_articulos.id_articulo),
+              tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo),
             ''),
             ' ) ',
             tc_mantic_articulos.nombre) as nombre,
@@ -684,11 +684,11 @@
           tc_mantic_requisiciones_detalles.propio, 
           concat('(',
           ifnull((select
-              tc_mantic_articulos_codigos.codigo 
+            tc_mantic_articulos_codigos.codigo 
           from
-              tc_mantic_articulos_codigos 
+            tc_mantic_articulos_codigos 
           where
-              tc_mantic_articulos_codigos.id_proveedor= tc_mantic_articulos.id_articulo),
+            tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo),
           ''),
           ' ) ',
           tc_mantic_articulos.nombre) as nombre,
@@ -729,11 +729,11 @@
           tc_mantic_articulos.nombre,
           concat('(',
           ifnull((select
-              tc_mantic_articulos_codigos.codigo 
+            tc_mantic_articulos_codigos.codigo 
           from
-              tc_mantic_articulos_codigos 
+            tc_mantic_articulos_codigos 
           where
-              tc_mantic_articulos_codigos.id_proveedor= tc_mantic_articulos.id_articulo),
+            tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo),
           ''),
           ' ) ',
           tc_mantic_articulos.nombre) as nombre_articulo,
