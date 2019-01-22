@@ -6275,7 +6275,8 @@
 					tc_mantic_notas_estatus.id_nota_estatus,
 					tc_mantic_notas_estatus.nombre as estatus,
 					tc_mantic_notas_estatus.estatus_asociados,
-					tc_mantic_notas_entradas.registro     
+					tc_mantic_notas_entradas.registro,
+					tc_mantic_empresas_pagos.id_empresa_pago
         from
           tc_mantic_notas_entradas  
 				inner join 
@@ -6315,7 +6316,8 @@
 				  tc_mantic_creditos_estatus.estatus_asociados,
 				  tc_mantic_tipos_creditos_notas.id_tipo_credito_nota,
 				  tc_mantic_tipos_creditos_notas.nombre,
-					tc_mantic_creditos_notas.registro     
+					tc_mantic_creditos_notas.registro,
+					tc_mantic_empresas_pagos.id_empresa_pago     
         from
           tc_mantic_creditos_notas         
 				inner join 
