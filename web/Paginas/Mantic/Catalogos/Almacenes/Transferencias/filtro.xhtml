@@ -214,8 +214,8 @@
 						<p:ajax event="change" process="@this" update="@(.refrescar)" listener="#{manticCatalogosAlmacenesTransferenciasFiltro.doTransporta}" oncomplete="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.trasito? 'janal.refresh();': ''}"/>
 						<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.allEstatusAsigna}"/>					
 					</p:selectOneMenu>
-					<p:outputLabel for="idTransporto" value="Transporta:" style="display: #{manticCatalogosAlmacenesTransferenciasFiltro.attrs.trasito? '': 'none'}" converter="janal.convertidor.Entity" styleClass="refrescar"/>
-					<p:selectOneMenu id="idTransporto" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.idTransporto}" styleClass="janal-wid-100-txt refrescar" style="display: #{manticCatalogosAlmacenesTransferenciasFiltro.attrs.trasito? '': 'none'}">
+					<p:outputLabel for="idTransporto" value="Transporta:" style="display: #{manticCatalogosAlmacenesTransferenciasFiltro.attrs.trasito? '': 'none'}" styleClass="refrescar"/>
+					<p:selectOneMenu id="idTransporto" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.idTransporto}" styleClass="janal-wid-100-txt refrescar" converter="janal.convertidor.Entity" style="display: #{manticCatalogosAlmacenesTransferenciasFiltro.attrs.trasito? '': 'none'}">
 						<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.personas}" var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{element.paterno} #{element.materno}"/>					
 						<p:column>
 							<h:outputText value="#{item.nombres}"/>

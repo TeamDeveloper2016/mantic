@@ -49,7 +49,7 @@ public class Transaccion extends IBaseTnx {
 	
 	public Transaccion(TcManticTransferenciasDto dto, TcManticTransferenciasBitacoraDto bitacora) {
 		this(dto, 1L);
-		this.bitacora= bitacora;
+		this.bitacora = bitacora;
 	}
 	
 	public Transaccion(TcManticTransferenciasDto dto, List<Articulo> articulos) {
@@ -98,14 +98,16 @@ public class Transaccion extends IBaseTnx {
 					regresar= DaoFactory.getInstance().delete(sesion, TcManticFaltantesDto.class, this.idFaltante)>= 1L;
 					break;
         case REGISTRAR:
+      		this.articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaAlmacenesTransferenciasDto", "detalle", dto.toMap());
 					this.dto.setIdTransferenciaEstatus(this.idTransferenciaEstatus);
 					this.toFillArticulos(sesion, accion);
 					regresar= DaoFactory.getInstance().update(sesion, origen).intValue()> 0;
  					//bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), JsfBase.getIdUsuario(), this.dto.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
           regresar= DaoFactory.getInstance().insert(sesion, bitacora).intValue()> 0;
-          break;
+          throw new RuntimeException("ERROR PROVACADO INTENCIONALMENTE");
+          // break;
       } // switch
-      if (!regresar) 
+      if(!regresar) 
         throw new Exception("");
     } // try
     catch (Exception e) {
