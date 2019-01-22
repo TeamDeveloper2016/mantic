@@ -25,6 +25,10 @@ public class Cuentas extends mx.org.kaana.mantic.egresos.backing.Filtro implemen
     try {    	      
 			this.attrs.put("idCuenta", JsfBase.getFlashAttribute("idCuenta"));
 			this.attrs.put("eCuentaEgreso", JsfBase.getFlashAttribute("eCuentaEgreso"));			
+			this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa"));     
+      this.attrs.put("idProveedor", JsfBase.getFlashAttribute("idProveedor"));     
+      this.attrs.put("idEmpresaDeuda", JsfBase.getFlashAttribute("idEmpresaDeuda"));     
+      this.attrs.put("retornoPrincipal", JsfBase.getFlashAttribute("retornoPrincipal"));  
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));			
 			super.init();      
     } // try
@@ -43,6 +47,7 @@ public class Cuentas extends mx.org.kaana.mantic.egresos.backing.Filtro implemen
 				JsfBase.addMessage("Asociar egreso", "El egreso se asocio de forma correcta.", ETipoMensaje.INFORMACION);
 			else
 				JsfBase.addMessage("Asociar egreso", "Ocurrio un error al asociar el egreso.", ETipoMensaje.INFORMACION);
+			setFlashValues();
 			regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
@@ -55,6 +60,7 @@ public class Cuentas extends mx.org.kaana.mantic.egresos.backing.Filtro implemen
 	public String doCancelar(){
 		String regresar= null;
 		try {
+			setFlashValues();
 			regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
@@ -63,4 +69,16 @@ public class Cuentas extends mx.org.kaana.mantic.egresos.backing.Filtro implemen
 		} // catch		
 		return regresar;
 	} // doCancelar
+	
+	private void setFlashValues(){
+		try {
+			JsfBase.setFlashAttribute("retorno", this.attrs.get("retornoPrincipal"));
+			JsfBase.setFlashAttribute("iEmpresa", this.attrs.get("idEmpresa"));
+			JsfBase.setFlashAttribute("iProveedor", this.attrs.get("idProveedor"));
+			JsfBase.setFlashAttribute("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // setFlashValues
 }

@@ -437,10 +437,20 @@ public class Abono extends IBasePagos implements Serializable {
 		return regresar.toString();
 	} // toObservacionesReabrir
 	
-	public String doEgreso() {		
-		JsfBase.setFlashAttribute("idCuenta", ((Entity)this.attrs.get("seleccionado")).getKey());
-		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Empresas/Cuentas/saldos");
-		JsfBase.setFlashAttribute("eCuentaEgreso", ECuentasEgresos.EMPRESA_PAGO);
+	public String doEgreso() {				
+		try {															
+			JsfBase.setFlashAttribute("retornoPrincipal", this.attrs.get("retorno"));
+			JsfBase.setFlashAttribute("iEmpresa", this.attrs.get("idEmpresa"));
+			JsfBase.setFlashAttribute("iProveedor", this.attrs.get("idProveedor"));
+			JsfBase.setFlashAttribute("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));
+			JsfBase.setFlashAttribute("idCuenta", ((Entity)this.attrs.get("pagoEgreso")).getKey());
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Empresas/Cuentas/abono");
+			JsfBase.setFlashAttribute("eCuentaEgreso", ECuentasEgresos.EMPRESA_PAGO);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
 		return "/Paginas/Mantic/Egresos/cuentas".concat(Constantes.REDIRECIONAR);
 	} // doEgreso	
 }

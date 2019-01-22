@@ -4361,7 +4361,9 @@
 					tc_mantic_empresas_pagos.observaciones,
 					tc_mantic_tipos_medios_pagos.clave,
 					tc_mantic_tipos_medios_pagos.nombre,
-					if(tc_mantic_empresas_pagos.id_egreso is null, '0', tc_mantic_empresas_pagos.id_egreso) id_egreso
+					if(tc_mantic_empresas_pagos.id_egreso is null, '0', tc_mantic_empresas_pagos.id_egreso) id_egreso,					
+					tc_mantic_empresas_pagos.id_credito_nota,
+					tc_mantic_empresas_pagos.id_nota_entrada
 				from
 					tc_mantic_empresas_pagos
 				inner join
