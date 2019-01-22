@@ -208,9 +208,7 @@
             <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosEntradasFiltro.doReporte('NOTA_ENTRADA_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{fn:contains('|1|3|4|6|7|', manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus)}"/>
             <p:menuitem id="reporteDif" icon="fa fa-file-word-o" value="Reporte diferencias" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosEntradasFiltro.doReporte('NOTA_ENTRADA_DETALLE_D')}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{fn:contains('|1|3|4|6|7|', manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus)}"/>
             <p:separator rendered="#{fn:contains('|1|3|5|6|', manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus)}"/>			
-            <p:menuitem id="importar" icon="fa fa-external-link" value="Importar XML/PDF" onstart="return janal.bloquear()" process="@this tabla" action="#{manticInventariosEntradasFiltro.doImportar}" rendered="#{fn:contains('|1|3|5|6|', manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus)}"/>
-						<p:separator rendered="#{manticInventariosEntradasFiltro.attrs.seleccionado.idEgreso eq '0'}"/>			
-            <p:menuitem id="asociar" icon="fa fa-link" value="Asociar egreso" onstart="return janal.bloquear()" process="@this tabla" action="#{manticInventariosEntradasFiltro.doEgreso}" rendered="#{manticInventariosEntradasFiltro.attrs.seleccionado.idEgreso eq '0'}"/>
+            <p:menuitem id="importar" icon="fa fa-external-link" value="Importar XML/PDF" onstart="return janal.bloquear()" process="@this tabla" action="#{manticInventariosEntradasFiltro.doImportar}" rendered="#{fn:contains('|1|3|5|6|', manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus)}"/>						
           </p:contextMenu>						
         </div>
       </div>
