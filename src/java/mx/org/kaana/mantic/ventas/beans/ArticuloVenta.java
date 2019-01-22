@@ -33,7 +33,11 @@ public class ArticuloVenta extends Articulo {
 	
 	@Override
 	public String getImporte$() {
-		return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getImporte()); 
+		return Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, this.getImporte()); 
+	}
+	
+	public String getImpuestos$() {
+		return Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, this.getImpuestos()); 
 	}
 	
 	@Override
