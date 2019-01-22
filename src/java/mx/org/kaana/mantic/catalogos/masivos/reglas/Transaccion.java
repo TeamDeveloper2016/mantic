@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.catalogos.masivos.reglas;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -624,18 +625,19 @@ public class Transaccion extends IBaseTnx {
 							String codigo= new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 							TcManticArticulosDto refaccion= this.toFindArticulo(sesion, codigo, 2L);
 							if(refaccion!= null) {
-								refaccion.setIdCategoria(null);
-								refaccion.setIdImagen(null);
-								refaccion.setPrecio(costo);
-								refaccion.setMenudeo(costo);
-								refaccion.setMedioMayoreo(costo);
-								refaccion.setMayoreo(costo);
 								// si trae nulo, blanco o cero se respeta el valor que tiene el campo								
 								if(iva!= 0D)
 									refaccion.setIva(iva<1 ? iva*100 : iva);								
+								refaccion.setIdCategoria(null);
+								refaccion.setIdImagen(null);
+								refaccion.setPrecio(Numero.toRedondear(costo- (costo* ((1+ (iva/ 100))- costo))));
+								refaccion.setMenudeo(costo);
+								refaccion.setMedioMayoreo(costo);
+								refaccion.setMayoreo(costo);
 								DaoFactory.getInstance().update(sesion, refaccion);
 							} // if
 							else {
+								iva= iva< 1? iva* 100: iva;
 								refaccion= new TcManticArticulosDto(
 									nombre, // String descripcion, 
 									"0", // String descuentos, 
@@ -644,7 +646,7 @@ public class Transaccion extends IBaseTnx {
 									"0", // String extras, 
 									null, // String metaTag, 
 									nombre, // String nombre, 
-									costo, // Double precio, 
+									Numero.toRedondear(costo- (costo* ((1+ (iva/ 100))- costo))), // Double precio, 
 									iva, // Double iva, 
 									costo, // Double mayoreo, 
 									0D, // Double desperdicio, 
@@ -950,7 +952,7 @@ public class Transaccion extends IBaseTnx {
       } // if
     } // finally
 		return regresar;
-	} // toRefacciones		
+	} // toServicios		
 	
   private Boolean toEgresos(Session sesion, File archivo) throws Exception {
 		Boolean regresar	                 = false;
@@ -987,13 +989,18 @@ public class Transaccion extends IBaseTnx {
 								DaoFactory.getInstance().update(sesion, egreso);
 							} // if
 							else {
+								Long consecutivo= this.toSiguiente(sesion);
 								egreso= new TcManticEgresosDto(
+									Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true), // consecutivo
 									descripcion, // descripcion
 									Fecha.toDateDefault(fecha), // fecha
 									1L, // idEgresoEstatus 
 									-1L, // idEgreso
 									JsfBase.getIdUsuario(), // idUsuario
-									importe // importe
+									JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende(), // idEmpresa
+									consecutivo, // orden
+									importe, // importe
+									new Long(Fecha.getAnioActual()) // ejercicio
 								);
 								DaoFactory.getInstance().insert(sesion, egreso);
 								TcManticMasivasDetallesDto detalle= new TcManticMasivasDetallesDto(
@@ -1055,7 +1062,7 @@ public class Transaccion extends IBaseTnx {
       } // if
     } // finally
 		return regresar;
-	} // toRefacciones		
+	} // toEgresos		
 	
 	private TcManticEgresosDto toFindEgreso(Session sesion, String descripcion) {
 		TcManticEgresosDto regresar= null;
@@ -1440,4 +1447,25 @@ public class Transaccion extends IBaseTnx {
 				file.delete();
 			} // for
 	}	// toDeleteXls 	
+	
+	private Long toSiguiente(Session sesion) throws Exception {
+		Long regresar= 1L;
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticEgresosDto", "siguiente", params, "siguiente");
+			if(next.getData()!= null)
+			  regresar= next.toLong();
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}
+
 }

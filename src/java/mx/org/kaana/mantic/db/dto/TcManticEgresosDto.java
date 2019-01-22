@@ -48,6 +48,8 @@ public class TcManticEgresosDto implements IBaseDto, Serializable {
   private Long idEgreso;
   @Column (name="id_usuario")
   private Long idUsuario;
+  @Column (name="id_empresa")
+  private Long idEmpresa;
   @Column (name="orden")
   private Long orden;
   @Column (name="importe")
@@ -62,17 +64,18 @@ public class TcManticEgresosDto implements IBaseDto, Serializable {
   }
 
   public TcManticEgresosDto(Long key) {
-    this(null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, new Long(-1L), null, null, null, null);
+    this(null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, new Long(-1L), null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticEgresosDto(String consecutivo, String descripcion, Date fecha, Long idEgresoEstatus, Long idEgreso, Long idUsuario, Long orden, Double importe, Long ejercicio) {
+  public TcManticEgresosDto(String consecutivo, String descripcion, Date fecha, Long idEgresoEstatus, Long idEgreso, Long idUsuario, Long idEmpresa, Long orden, Double importe, Long ejercicio) {
     setConsecutivo(consecutivo);
     setDescripcion(descripcion);
     setFecha(fecha);
     setIdEgresoEstatus(idEgresoEstatus);
     setIdEgreso(idEgreso);
     setIdUsuario(idUsuario);
+    setIdEmpresa(idEmpresa);
     setOrden(orden);
     setImporte(importe);
     setEjercicio(ejercicio);
@@ -125,6 +128,14 @@ public class TcManticEgresosDto implements IBaseDto, Serializable {
 
   public Long getIdUsuario() {
     return idUsuario;
+  }
+
+  public void setIdEmpresa(Long idEmpresa) {
+    this.idEmpresa = idEmpresa;
+  }
+
+  public Long getIdEmpresa() {
+    return idEmpresa;
   }
 
   public void setOrden(Long orden) {
@@ -186,6 +197,8 @@ public class TcManticEgresosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEmpresa());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getImporte());
@@ -206,6 +219,7 @@ public class TcManticEgresosDto implements IBaseDto, Serializable {
 		regresar.put("idEgresoEstatus", getIdEgresoEstatus());
 		regresar.put("idEgreso", getIdEgreso());
 		regresar.put("idUsuario", getIdUsuario());
+		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("orden", getOrden());
 		regresar.put("importe", getImporte());
 		regresar.put("ejercicio", getEjercicio());
@@ -216,7 +230,7 @@ public class TcManticEgresosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getConsecutivo(), getDescripcion(), getFecha(), getIdEgresoEstatus(), getIdEgreso(), getIdUsuario(), getOrden(), getImporte(), getEjercicio(), getRegistro()
+    getConsecutivo(), getDescripcion(), getFecha(), getIdEgresoEstatus(), getIdEgreso(), getIdUsuario(), getIdEmpresa(), getOrden(), getImporte(), getEjercicio(), getRegistro()
     };
     return regresar;
   }

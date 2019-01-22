@@ -116,6 +116,15 @@
         where      
           descripcion = '{descripcion}' and date_format(fecha, '%Y%m%d')= '{fecha}' and importe = {importe}
       </select>
+      <select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_egresos
+				where
+				  ejercicio= {ejercicio} 
+				  and id_empresa= {idEmpresa}				
+			</select>		
     </unit>
     <unit id="TcManticConfrontasEstatusDto">
       <select id="row">
