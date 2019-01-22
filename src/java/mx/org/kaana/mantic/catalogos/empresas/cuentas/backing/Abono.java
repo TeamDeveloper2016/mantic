@@ -106,6 +106,7 @@ public class Abono extends IBasePagos implements Serializable {
 			this.attrs.put("deuda", deuda);
 			this.attrs.put("saldoPositivo", Double.valueOf(deuda.toString("saldo")) * -1);
 			this.attrs.put("permitirPago", deuda.toLong("idEmpresaEstatus").equals(EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa()));
+			this.attrs.put("pago", deuda.toDouble("saldo"));
 		} // try
 		catch (Exception e) {
 			throw e;
