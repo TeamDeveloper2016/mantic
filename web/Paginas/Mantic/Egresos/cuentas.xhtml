@@ -57,7 +57,13 @@
 								<p:menuitem icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							</div>	
-						</f:facet>												
+						</f:facet>					
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+							<f:facet name="header">
+								<h:outputText value="Consecutivo"/>
+							</f:facet>
+							<h:outputText value="#{row['consecutivo']}"/>
+						</p:column>														
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.fecha}">
 							<f:facet name="header">
 								<h:outputText value="Fecha"/>
@@ -87,7 +93,7 @@
 								<h:outputText value="Registro"/>
 							</f:facet>
 							<h:outputText value="#{row['registro']}"/>
-						</p:column>																							
+						</p:column>																			
 						<f:facet name="footer">
 							<p:outputLabel value="Total [#{manticEgresosCuentas.lazyModel== null ? 0: manticEgresosCuentas.lazyModel.rowCount}] registros"/>
 						</f:facet>

@@ -158,7 +158,7 @@ public class Detalle extends IBaseImportar implements Serializable {
 		Entity notaEntrada     = null;
 		try {			
 			notaEntrada= (Entity)this.attrs.get("notaEntrada");			
-			transaccion= new Transaccion(notaEntrada.getKey(), ECuentasEgresos.NOTA_ENTRADA);
+			transaccion= new Transaccion(notaEntrada.toLong("idEmpresaPago"), ECuentasEgresos.EMPRESA_PAGO);
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Se eliminó correctamente el registro", ETipoMensaje.INFORMACION);
 			else
@@ -176,7 +176,7 @@ public class Detalle extends IBaseImportar implements Serializable {
 		Entity creditoNota     = null;
 		try {			
 			creditoNota= (Entity)this.attrs.get("creditoNota");			
-			transaccion= new Transaccion(creditoNota.getKey(), ECuentasEgresos.CREDITO_NOTA);
+			transaccion= new Transaccion(creditoNota.toLong("idEmpresaPago"), ECuentasEgresos.EMPRESA_PAGO);
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Se eliminó correctamente el registro", ETipoMensaje.INFORMACION);
 			else
