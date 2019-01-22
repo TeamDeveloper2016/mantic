@@ -5239,7 +5239,7 @@
 					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
 				where
 					tr_mantic_empresa_personal.id_empresa in ({sucursales})
-					and tc_mantic_personas.id_tipo_persona in (1, 2, 6)
+					and tc_mantic_personas.id_tipo_persona in (2, 6)
 				order by
 					tc_mantic_personas.rfc			
 			</select>

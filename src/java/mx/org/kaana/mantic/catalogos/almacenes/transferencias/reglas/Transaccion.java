@@ -48,7 +48,7 @@ public class Transaccion extends IBaseTnx {
 	}
 	
 	public Transaccion(TcManticTransferenciasDto dto, TcManticTransferenciasBitacoraDto bitacora) {
-		this(dto, 1L);
+		this(dto, bitacora.getIdTransferenciaEstatus());
 		this.bitacora = bitacora;
 	}
 	
@@ -79,8 +79,9 @@ public class Transaccion extends IBaseTnx {
 					this.dto.setOrden(consecutivo);
           regresar= DaoFactory.getInstance().insert(sesion, this.dto).intValue()> 0;
 					this.toFillArticulos(sesion, accion);
-					bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), JsfBase.getIdUsuario(), this.dto.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
-          regresar= DaoFactory.getInstance().insert(sesion, bitacora).intValue()> 0;
+					this.bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), JsfBase.getIdUsuario(), this.dto.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
+					if(regresar)
+            regresar= DaoFactory.getInstance().insert(sesion, bitacora).intValue()> 0;
 					break;
         case MODIFICAR:
           this.dto.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
@@ -91,8 +92,9 @@ public class Transaccion extends IBaseTnx {
           //if (DaoFactory.getInstance().deleteAll(sesion, TcManticTransferenciasBitacoraDto.class, this.dto.toMap())> -1L) 
 					this.dto.setIdTransferenciaEstatus(2L);
           regresar= DaoFactory.getInstance().update(sesion, this.dto)>= 1L;
-					bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), JsfBase.getIdUsuario(), this.dto.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
-          regresar= DaoFactory.getInstance().insert(sesion, bitacora).intValue()> 0;
+					this.bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), JsfBase.getIdUsuario(), this.dto.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
+					if(regresar)
+            regresar= DaoFactory.getInstance().insert(sesion, bitacora).intValue()> 0;
           break;
 				case DEPURAR:
 					regresar= DaoFactory.getInstance().delete(sesion, TcManticFaltantesDto.class, this.idFaltante)>= 1L;
@@ -101,11 +103,11 @@ public class Transaccion extends IBaseTnx {
       		this.articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaAlmacenesTransferenciasDto", "detalle", dto.toMap());
 					this.dto.setIdTransferenciaEstatus(this.idTransferenciaEstatus);
 					this.toFillArticulos(sesion, accion);
-					regresar= DaoFactory.getInstance().update(sesion, origen).intValue()> 0;
- 					//bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), JsfBase.getIdUsuario(), this.dto.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
-          regresar= DaoFactory.getInstance().insert(sesion, bitacora).intValue()> 0;
-          throw new RuntimeException("ERROR PROVACADO INTENCIONALMENTE");
-          // break;
+					regresar= DaoFactory.getInstance().update(sesion, this.dto).intValue()> 0;
+					if(regresar)
+            regresar= DaoFactory.getInstance().insert(sesion, this.bitacora).intValue()> 0;
+          // throw new RuntimeException("ERROR PROVACADO INTENCIONALMENTE");
+          break;
       } // switch
       if(!regresar) 
         throw new Exception("");
@@ -212,6 +214,7 @@ public class Transaccion extends IBaseTnx {
 				origen= this.toCreateAlmacenArticulo(sesion, articulo, this.dto.getIdAlmacen(), umbrales);
 			if(origen.getStock()< articulo.getCantidad())
  				LOG.warn("No existen suficientes articulos ["+ articulo.getIdArticulo()+ "] en el stock del almacen origen ["+ this.dto.getIdAlmacen()+ "] stock["+ origen.getStock()+ "] cantidad["+ articulo.getCantidad()+ "] !");
+			// si el estatus es el de cancelar entonces hacer los movimientos inversos al traspaso
 			if(this.idTransferenciaEstatus.intValue()== 4)
 			  origen.setStock(Numero.toRedondearSat(origen.getStock()+ articulo.getCantidad()));
 			else
@@ -219,8 +222,9 @@ public class Transaccion extends IBaseTnx {
 			DaoFactory.getInstance().update(sesion, origen);
 			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
 			if(inventario== null)
-			  this.toCreateInvetario(sesion, articulo, this.dto.getIdAlmacen(), umbrales);
+			  this.toCreateInvetario(sesion, articulo, this.dto.getIdAlmacen());
 			else {
+   			// si el estatus es el de cancelar entonces hacer los movimientos inversos al traspaso
   			if(this.idTransferenciaEstatus.intValue()== 4) {
 	  			inventario.setSalidas(Numero.toRedondearSat(inventario.getSalidas()- articulo.getCantidad()));
 		  		inventario.setStock(Numero.toRedondearSat(inventario.getStock()+ articulo.getCantidad()));
@@ -251,7 +255,7 @@ public class Transaccion extends IBaseTnx {
 			DaoFactory.getInstance().update(sesion, origen);
 			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
 			if(inventario== null)
-			  this.toCreateInvetario(sesion, articulo, this.dto.getIdAlmacen(), umbrales);
+			  this.toCreateInvetario(sesion, articulo, this.dto.getIdAlmacen());
 			else {
 				inventario.setSalidas(Numero.toRedondearSat(inventario.getSalidas()+ articulo.getCantidad()));
 				inventario.setStock(Numero.toRedondearSat(inventario.getStock()- articulo.getCantidad()));
@@ -278,7 +282,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	}
 		
-	private TcManticInventariosDto toCreateInvetario(Session sesion,  TcManticTransferenciasDetallesDto articulo, Long idAlmacen, TcManticArticulosDto umbrales) throws Exception {
+	private TcManticInventariosDto toCreateInvetario(Session sesion,  TcManticTransferenciasDetallesDto articulo, Long idAlmacen) throws Exception {
     TcManticInventariosDto regresar= new TcManticInventariosDto(
 			JsfBase.getIdUsuario(), // Long idUsuario, 
 			idAlmacen, // Long idAlmacen, 

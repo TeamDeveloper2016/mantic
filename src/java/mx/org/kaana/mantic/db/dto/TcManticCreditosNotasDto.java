@@ -65,8 +65,6 @@ public class TcManticCreditosNotasDto implements IBaseDto, Serializable {
   private Date fecha;
   @Column (name="saldo")
   private Double saldo;
-  @Column (name="id_egreso")
-  private Long idEgreso;
 
   public TcManticCreditosNotasDto() {
     this(new Long(-1L));
@@ -233,14 +231,6 @@ public class TcManticCreditosNotasDto implements IBaseDto, Serializable {
 		this.saldo=saldo;
 	}
 
-	public Long getIdEgreso() {
-		return idEgreso;
-	}
-
-	public void setIdEgreso(Long idEgreso) {
-		this.idEgreso=idEgreso;
-	}
-
   @Transient
   @Override
   public Long getKey() {
@@ -289,8 +279,6 @@ public class TcManticCreditosNotasDto implements IBaseDto, Serializable {
 		regresar.append(getFecha());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getSaldo());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdEgreso());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -315,14 +303,13 @@ public class TcManticCreditosNotasDto implements IBaseDto, Serializable {
 		regresar.put("idCreditoNota", getIdCreditoNota());
 		regresar.put("fecha", getFecha());
 		regresar.put("saldo", getSaldo());
-		regresar.put("idEgreso", getIdEgreso());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getIdProveedor(), getIdNotaEntrada(), getImporte(), getEjercicio(), getRegistro(), getConsecutivo(), getIdCreditoEstatus(), getIdTipoCreditoNota(), getIdDevolucion(), getIdUsuario(), getFolio(), getObservaciones(), getIdEmpresa(), getOrden(), getIdCreditoNota(), getFecha(), getSaldo(), getIdEgreso()
+      getIdProveedor(), getIdNotaEntrada(), getImporte(), getEjercicio(), getRegistro(), getConsecutivo(), getIdCreditoEstatus(), getIdTipoCreditoNota(), getIdDevolucion(), getIdUsuario(), getFolio(), getObservaciones(), getIdEmpresa(), getOrden(), getIdCreditoNota(), getFecha(), getSaldo()
     };
     return regresar;
   }
