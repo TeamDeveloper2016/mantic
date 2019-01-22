@@ -83,13 +83,6 @@ public class ArticuloVenta extends Articulo {
 		this.toDiferencia();
 	}
 	
-	private void toRecalculate(double precioUnitario, double porcentajeIva) {
-		this.getImportes().setSubTotal(Numero.toRedondear(this.getCantidad()* precioUnitario));
-		this.getImportes().setIva(Numero.toRedondear((this.getImportes().getSubTotal()* porcentajeIva))- this.getImportes().getSubTotal());
-		this.getImportes().setImporte(Numero.toRedondear(this.getImportes().getSubTotal()+ this.getImportes().getIva()));
-		this.getImportes().setTotal(this.getImportes().getImporte());
-	}
-		
 	private void toCalculateCostoPorCantidad() {
 		TcManticArticulosDto validate= null;
 		try {

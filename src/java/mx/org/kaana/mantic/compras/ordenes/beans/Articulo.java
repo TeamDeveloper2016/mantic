@@ -330,7 +330,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	    this.setIdAplicar(2L);
 	}
 
-	private void toRecalculate(double precioUnitario, double porcentajeIva) {
+	protected void toRecalculate(double precioUnitario, double porcentajeIva) {
+		// Este procedimiento es para ajustar los decimales y los cualculos sean basados en con respecto al precio unitario
 		this.importes.setSubTotal(Numero.toRedondear(this.getCantidad()* precioUnitario));
 		this.importes.setIva(Numero.toRedondear((this.getImportes().getSubTotal()* porcentajeIva))- this.getImportes().getSubTotal());
 		this.importes.setImporte(Numero.toRedondear(this.getImportes().getSubTotal()+ this.getImportes().getIva()));
