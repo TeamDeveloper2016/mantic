@@ -302,9 +302,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	  	this.importes.setIva(Numero.toRedondearSat(this.importes.getSubTotal()- (this.importes.getSubTotal()/ porcentajeIva)));
 	  	this.importes.setSubTotal(Numero.toRedondearSat(this.importes.getSubTotal()- this.importes.getIva()));
 		} // if	
-		else {
+		else 
 	  	this.importes.setIva(Numero.toRedondearSat((this.importes.getSubTotal()* porcentajeIva)- this.importes.getSubTotal()));
-		} // else
 		this.importes.setTotal(Numero.toRedondearSat(this.importes.getSubTotal()+ this.importes.getIva()));
 		
 		// esto es para ajustar los importes quitando el descuento extra que se añade porque no debe de afecta el importe total de la factura
@@ -312,6 +311,10 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.importes.setSubTotal(Numero.toRedondearSat(this.importes.getSubTotal()+ this.importes.getExtra()));
 		this.importes.setTotal(Numero.toRedondearSat(this.importes.getTotal()+ (this.importes.getExtra()* porcentajeIva)));
     // termina aqui los ajustes de los descuentos extras que se asignaron a los articulos 		
+		
+		// verificar si la cantidad tiene decimales entonces realizar el procedimiento de calculo nuevamente tomando como base el precio unitario 
+		if(Numero.toRedondear(this.getCantidad()% 1)!= 0) 
+			this.toRecalculate(Numero.toRedondear(this.importes.getSubTotal()/ this.getCantidad()), porcentajeIva);
 		
 		this.setSubTotal(this.importes.getSubTotal());
 		this.setImpuestos(this.importes.getIva());
@@ -327,6 +330,13 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	    this.setIdAplicar(2L);
 	}
 
+	private void toRecalculate(double precioUnitario, double porcentajeIva) {
+		this.importes.setSubTotal(Numero.toRedondear(this.getCantidad()* precioUnitario));
+		this.importes.setIva(Numero.toRedondear((this.getImportes().getSubTotal()* porcentajeIva))- this.getImportes().getSubTotal());
+		this.importes.setImporte(Numero.toRedondear(this.getImportes().getSubTotal()+ this.getImportes().getIva()));
+		this.importes.setTotal(this.importes.getImporte());
+	}
+	
 	public void toCalculate(boolean sinIva, double tipoDeCambio) {
 		this.sinIva      = sinIva;
 		this.tipoDeCambio= tipoDeCambio== 0? 1: tipoDeCambio;

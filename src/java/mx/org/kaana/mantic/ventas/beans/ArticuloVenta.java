@@ -60,14 +60,17 @@ public class ArticuloVenta extends Articulo {
 		temporal= descuentos.toImporte(this.getExtras());
 		this.getImportes().setExtra(Numero.toRedondearSat(temporal> 0? (this.getImportes().getImporte()- this.getImportes().getSubTotal())- this.getImportes().getDescuento(): 0D));
 
-		if(isSinIva()) {
+		if(this.isSinIva()) {
 	  	this.getImportes().setIva(Numero.toRedondearSat(this.getImportes().getSubTotal()- (this.getImportes().getSubTotal()/porcentajeIva)));
 	  	this.getImportes().setSubTotal(Numero.toRedondearSat(this.getImportes().getSubTotal()- this.getImportes().getIva()));
 		} // if	
-		else {
+		else 
 	  	this.getImportes().setIva(Numero.toRedondearSat((this.getImportes().getSubTotal()* porcentajeIva)- this.getImportes().getSubTotal()));
-		} // else
 		this.getImportes().setTotal(Numero.toRedondearSat(this.getImportes().getSubTotal() + this.getImportes().getIva()));
+		
+		// verificar si la cantidad tiene decimales entonces realizar el procedimiento de calculo nuevamente tomando como base el precio unitario 
+		if(Numero.toRedondear(this.getCantidad()% 1)!= 0) 
+			this.toRecalculate(Numero.toRedondear(this.getImportes().getSubTotal()/ this.getCantidad()), porcentajeIva);
 		this.setSubTotal(this.getImportes().getSubTotal());
 		this.setImpuestos(this.getImportes().getIva());
 		this.setDescuentos(this.getImportes().getDescuento());		
@@ -80,6 +83,13 @@ public class ArticuloVenta extends Articulo {
 		this.toDiferencia();
 	}
 	
+	private void toRecalculate(double precioUnitario, double porcentajeIva) {
+		this.getImportes().setSubTotal(Numero.toRedondear(this.getCantidad()* precioUnitario));
+		this.getImportes().setIva(Numero.toRedondear((this.getImportes().getSubTotal()* porcentajeIva))- this.getImportes().getSubTotal());
+		this.getImportes().setImporte(Numero.toRedondear(this.getImportes().getSubTotal()+ this.getImportes().getIva()));
+		this.getImportes().setTotal(this.getImportes().getImporte());
+	}
+		
 	private void toCalculateCostoPorCantidad() {
 		TcManticArticulosDto validate= null;
 		try {
