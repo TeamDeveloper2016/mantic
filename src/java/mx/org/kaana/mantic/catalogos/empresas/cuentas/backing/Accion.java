@@ -94,6 +94,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			if(JsfBase.getFlashAttribute("accion")== null)
 				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
       this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.COMPLETO: (EAccion)JsfBase.getFlashAttribute("accion");
+      this.attrs.put("idEmpresaDeuda", JsfBase.getFlashAttribute("idEmpresaDeuda")== null? -1L: JsfBase.getFlashAttribute("idEmpresaDeuda"));     
 			this.attrs.put("idOrdenCompra", -1L);
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: JsfBase.getFlashAttribute("idNotaEntrada"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "saldos": JsfBase.getFlashAttribute("retorno"));
@@ -165,6 +166,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.COMPLETO) ? "agregó" : "modificó").concat(" la nota de entrada manual."), ETipoMensaje.INFORMACION);
+    		JsfBase.setFlashAttribute("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));
   			JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
 			} // if
 			else 

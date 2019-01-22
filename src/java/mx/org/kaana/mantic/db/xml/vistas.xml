@@ -4269,10 +4269,8 @@
 					tc_mantic_notas_tipos on tc_mantic_notas_entradas.id_nota_tipo= tc_mantic_notas_tipos.id_nota_tipo
 				where
 					{condicion}								  
-				and 
-					tc_mantic_almacenes.id_empresa in ({idEmpresa})				  
-				and 
-					tc_mantic_notas_entradas.id_empresa in ({idEmpresa})
+				and tc_mantic_almacenes.id_empresa in ({idEmpresa})				  
+				and tc_mantic_notas_entradas.id_empresa in ({idEmpresa})
 				{sortOrder}						
 			</select>		
 			<select id="cuentas">
@@ -4280,8 +4278,10 @@
 					tc_mantic_empresas_deudas.id_empresa_deuda as id_key,
 					tc_mantic_empresas_deudas.id_empresa,
 					tc_mantic_empresas_deudas.id_empresa_estatus,
+				  tc_mantic_notas_entradas.id_nota_entrada,
 					tc_mantic_notas_entradas.consecutivo,
 					tc_mantic_empresas_deudas.importe,
+					tc_mantic_empresas_deudas.saldo as debe,
 					tc_mantic_empresas_deudas.saldo,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
 					tc_mantic_empresas_deudas.limite,
@@ -4468,6 +4468,7 @@
 					tc_mantic_proveedores.id_proveedor as id_key,
 					tc_mantic_proveedores.razon_social,															
 					sum(tc_mantic_empresas_deudas.importe) importe,
+					sum(tc_mantic_empresas_deudas.saldo) debe,
 					sum(tc_mantic_empresas_deudas.saldo) saldo
 				from
 					tc_mantic_proveedores

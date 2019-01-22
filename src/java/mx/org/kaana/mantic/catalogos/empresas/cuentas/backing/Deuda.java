@@ -29,6 +29,7 @@ import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosDto;
 import mx.org.kaana.mantic.enums.EEstatusClientes;
 import mx.org.kaana.mantic.enums.EEstatusEmpresas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.Visibility;
 
@@ -90,6 +91,8 @@ public class Deuda extends IBaseFilter implements Serializable {
   protected void init() {
 		Long idEmpresaInicial= -1L;
     try {			
+			if(JsfBase.getFlashAttribute("idProveedor")== null)
+				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
 			this.seleccionadosSegmento= new ArrayList<>();
       this.attrs.put("sortOrder", "order by	tc_mantic_empresas_deudas.registro desc");
       this.attrs.put("idProveedor", JsfBase.getFlashAttribute("idProveedor"));         
@@ -98,9 +101,13 @@ public class Deuda extends IBaseFilter implements Serializable {
 			this.attrs.put("idEmpresaGeneral", idEmpresaInicial);
 			this.attrs.put("idEmpresaSegmento", idEmpresaInicial);
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
+      this.attrs.put("idEmpresaDeuda", JsfBase.getFlashAttribute("idEmpresaDeuda"));     
 			this.attrs.put("mostrarBancoSegmento", false);
 			this.attrs.put("mostrarBancoGeneral", false);
 			this.attrs.put("mostrarBanco", false);			
+			this.attrs.put("pago", 1D);
+			this.attrs.put("pagoGeneral", 1D);
+			this.attrs.put("pagoSegmento", 1D);
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 				loadSucursales();							
 			doLoadCajas();
@@ -218,12 +225,20 @@ public class Deuda extends IBaseFilter implements Serializable {
 	private void loadProvedorDeuda() throws Exception{
 		Entity deuda             = null;
 		Map<String, Object>params= null;
+    List<Columna> columns    = null;
 		try {
-			params= new HashMap<>();
+			params = new HashMap<>();
+      columns= new ArrayList<>();  
 			params.put("idProveedor", this.attrs.get("idProveedor"));						
 			deuda= (Entity) DaoFactory.getInstance().toEntity("VistaEmpresasDto", "deuda", params);
+			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			columns.add(new Columna("debe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			UIBackingUtilities.toFormatEntity(deuda, columns);
 			this.attrs.put("deuda", deuda);
 			this.attrs.put("saldoPositivo", Double.valueOf(deuda.toString("saldo")) * -1);
+			this.attrs.put("pago", deuda.toDouble("saldo")* -1);
+			this.attrs.put("pagoGeneral", deuda.toDouble("saldo")* -1);
+			this.attrs.put("pagoSegmento", deuda.toDouble("saldo")* -1);
 			doLoad();
 		} // try
 		catch (Exception e) {
@@ -308,10 +323,11 @@ public class Deuda extends IBaseFilter implements Serializable {
 	}
 
 	public String doRegresar() {	  
+		JsfBase.setFlashAttribute("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));
 		return "saldos".concat(Constantes.REDIRECIONAR);
 	} // doRegresar
 	
-	public void doRegistrarPago(){
+	public void doRegistrarPago() {
 		Transaccion transaccion      = null;
 		TcManticEmpresasPagosDto pago= null;
 		boolean tipoPago             = false;
@@ -341,7 +357,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		} // catch				
 	} // doRegistrarPago
 	
-	private boolean validaPago(){
+	private boolean validaPago() {
 		boolean regresar= false;
 		Double pago     = 0D;
 		Double saldo    = 0D;

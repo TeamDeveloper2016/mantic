@@ -14,17 +14,20 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.empresas.cuentas.reglas.Transaccion;
+import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.TabChangeEvent;
 
 @Named(value = "manticCatalogosEmpresasCuentasProrroga")
 @ViewScoped
-public class Prorroga extends IBaseFilter implements Serializable {
+public class Prorroga extends IBaseImportar implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;	
 	private Date prorroga;
@@ -41,9 +44,13 @@ public class Prorroga extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {			
+			if(JsfBase.getFlashAttribute("idEmpresaDeuda")== null)
+				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
       this.attrs.put("sortOrder", "order by	tc_mantic_empresas_deudas.registro desc");
       this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa"));     
       this.attrs.put("idEmpresaDeuda", JsfBase.getFlashAttribute("idEmpresaDeuda"));     
+			this.attrs.put("xml", ""); 
+			this.attrs.put("pdf", ""); 
 			loadTiposPagos();
 			doLoad();
     } // try
@@ -75,10 +82,11 @@ public class Prorroga extends IBaseFilter implements Serializable {
   } // doLoad
 
 	public String doRegresar() {	  
+		JsfBase.setFlashAttribute("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));
 		return "saldos".concat(Constantes.REDIRECIONAR);
 	} // doRegresar		
 
-	private void loadTiposPagos(){
+	private void loadTiposPagos() {
 		List<UISelectEntity> tiposPagos= null;
 		Map<String, Object>params      = null;
 		try {
@@ -93,7 +101,7 @@ public class Prorroga extends IBaseFilter implements Serializable {
 		} // catch		
 	} // loadTiposPagos
 	
-	public String doAceptar(){
+	public String doAceptar() {
 		String regresar        = null;
 		Transaccion transaccion= null;
 		Entity deuda           = null;
@@ -101,8 +109,9 @@ public class Prorroga extends IBaseFilter implements Serializable {
 			if(validaImporte()){
 				deuda= (Entity) this.attrs.get("deuda");
 				transaccion= new Transaccion(deuda, this.prorroga);
-				if(transaccion.ejecutar(EAccion.MODIFICAR)){
+				if(transaccion.ejecutar(EAccion.MODIFICAR)) {
 					JsfBase.addMessage("Modificar cuenta por pagar", "Se realizó la modificación de forma correcta", ETipoMensaje.INFORMACION);
+       		JsfBase.setFlashAttribute("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));
 					regresar= "saldos".concat(Constantes.REDIRECIONAR);
 				} // if
 				else
@@ -118,7 +127,7 @@ public class Prorroga extends IBaseFilter implements Serializable {
 		return regresar;
 	} // doAceptar
 	
-	private boolean validaImporte(){
+	private boolean validaImporte() {
 		boolean regresar= false;
 		Entity deuda    = null;
 		Double importe  = null;
@@ -135,4 +144,23 @@ public class Prorroga extends IBaseFilter implements Serializable {
 		} // catch		
 		return regresar;
 	} // validaImporte
+	
+	public void doTabChange(TabChangeEvent event) {
+		if(event.getTab().getTitle().equals("Archivos")) 
+ 			this.doLoadImportados("VistaNotasEntradasDto", "importados", ((Entity)this.attrs.get("deuda")).toMap());
+	}
+
+		public void doViewDocument() {
+		this.doViewDocument(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas"));
+	}
+
+	public void doViewFile() {
+		this.doViewFile(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas"));
+	}
+	
+  public String doCancelar() {   
+  	JsfBase.setFlashAttribute("idNotaEntrada", ((Entity)this.attrs.get("deuda")).toLong("idNotaEntrada"));
+    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+  } // doCancelar
+	
 }

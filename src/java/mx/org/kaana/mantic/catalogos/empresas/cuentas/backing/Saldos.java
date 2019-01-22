@@ -49,8 +49,11 @@ public class Saldos extends IBaseFilter implements Serializable {
       this.attrs.put("sortOrder", "order by	tc_mantic_empresas_deudas.registro desc");
       this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa")== null? JsfBase.getAutentifica().getEmpresa().getIdEmpresa() : Long.valueOf(JsfBase.getFlashAttribute("idEmpresa").toString()));     
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
+      this.attrs.put("idEmpresaDeuda", JsfBase.getFlashAttribute("idEmpresaDeuda"));     
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 				loadSucursales();
+      if(this.attrs.get("idEmpresaDeuda")!= null) 
+			  this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -74,6 +77,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 			params.put("sortOrder", " order by dias ");
 			this.lazyModel = new FormatCustomLazy("VistaEmpresasDto", "cuentasBusqueda", params, columns);
       UIBackingUtilities.resetDataTable();		
+			this.attrs.put("idEmpresaDeuda", null);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -90,6 +94,8 @@ public class Saldos extends IBaseFilter implements Serializable {
 		StringBuilder sb= new StringBuilder();
 	  UISelectEntity proveedor      = (UISelectEntity)this.attrs.get("proveedor");
 		List<UISelectEntity>provedores= (List<UISelectEntity>)this.attrs.get("proveedores");
+		if(!Cadena.isVacio(this.attrs.get("idEmpresaDeuda")) && !this.attrs.get("idEmpresaDeuda").toString().equals("-1"))
+  		sb.append("(tc_mantic_empresas_deudas.id_empresa_deuda=").append(this.attrs.get("idEmpresaDeuda")).append(") and ");
 		if(provedores!= null && proveedor!= null && provedores.indexOf(proveedor)>= 0) 
 			sb.append("tc_mantic_proveedores.razon_social like '%").append(provedores.get(provedores.indexOf(proveedor)).toString("razonSocial")).append("%' and ");			
 		else if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input")))
@@ -247,6 +253,7 @@ public class Saldos extends IBaseFilter implements Serializable {
     EAccion eaccion= EAccion.valueOf(accion.toUpperCase());
 		try {
 		  JsfBase.setFlashAttribute("accion", eaccion);		
+			JsfBase.setFlashAttribute("idEmpresaDeuda",((Entity)this.attrs.get("seleccionado")).getKey());
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");		
 			JsfBase.setFlashAttribute("idNotaEntrada", -1L);
 		} // try
@@ -262,6 +269,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 		Entity seleccionado= null;
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");
+			JsfBase.setFlashAttribute("idEmpresaDeuda",((Entity)this.attrs.get("seleccionado")).getKey());
 			JsfBase.setFlashAttribute("idProveedor", seleccionado.toString("idProveedor"));
 			regresar= "deuda".concat(Constantes.REDIRECIONAR);
 		} // try

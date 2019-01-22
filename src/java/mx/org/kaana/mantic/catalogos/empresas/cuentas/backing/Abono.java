@@ -78,6 +78,8 @@ public class Abono extends IBasePagos implements Serializable {
   @Override
   protected void init() {
     try {			
+			if(JsfBase.getFlashAttribute("idEmpresaDeuda")== null)
+				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
       this.attrs.put("sortOrder", "order by	tc_mantic_empresas_deudas.registro desc");
       this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa"));     
       this.attrs.put("idProveedor", JsfBase.getFlashAttribute("idProveedor"));     
@@ -98,11 +100,18 @@ public class Abono extends IBasePagos implements Serializable {
 	private void loadProveedorDeuda() throws Exception{
 		Entity deuda             = null;
 		Map<String, Object>params= null;
+    List<Columna> columns    = null;
 		try {
-			params= new HashMap<>();
+			params = new HashMap<>();
+      columns= new ArrayList<>();  
 			params.put("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));			
 			params.put("sortOrder", this.attrs.get("sortOrder"));
 			deuda= (Entity) DaoFactory.getInstance().toEntity("VistaEmpresasDto", "cuentas", params);
+			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
+			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			columns.add(new Columna("debe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			UIBackingUtilities.toFormatEntity(deuda, columns);
+			
 			this.attrs.put("deuda", deuda);
 			this.attrs.put("saldoPositivo", Double.valueOf(deuda.toString("saldo")) * -1);
 			this.attrs.put("permitirPago", deuda.toLong("idEmpresaEstatus").equals(EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa()));
