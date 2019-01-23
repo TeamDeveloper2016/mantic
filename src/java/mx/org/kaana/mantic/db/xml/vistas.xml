@@ -4226,6 +4226,11 @@
 				{sortOrder}
 			</select>
 			<select id="cuentasBusqueda">
+				select 
+					principal.*,
+					(select count(*) from tc_mantic_empresas_pagos where id_empresa_deuda= principal.id_key) as abonos,
+					(select count(*) from tc_mantic_empresas_pagos where id_empresa_deuda= principal.id_key and id_egreso is not null) as abonos_egresos  
+				from (
 				select
 					tc_mantic_empresas_deudas.id_empresa_deuda as id_key,
 					tc_mantic_empresas_deudas.id_empresa,
@@ -4272,6 +4277,7 @@
 				and tc_mantic_almacenes.id_empresa in ({idEmpresa})				  
 				and tc_mantic_notas_entradas.id_empresa in ({idEmpresa})
 				{sortOrder}						
+				) principal
 			</select>		
 			<select id="cuentas">
 				select
@@ -4382,7 +4388,7 @@
 					tc_mantic_notas_entradas.consecutivo, 
 					tc_mantic_empresas_deudas.registro desc				
 			</select>
-			<select id="pagosBusqueda">
+			<select id="pagosBusqueda">				
 				select
 					tc_mantic_empresas_pagos.id_empresa_pago as id_key,
 					tc_mantic_notas_entradas.consecutivo,
@@ -4416,7 +4422,7 @@
 				and tc_mantic_notas_entradas.id_empresa in ({idEmpresa})
 				order by
 					tc_mantic_notas_entradas.consecutivo, 
-					tc_mantic_empresas_deudas.registro desc						
+					tc_mantic_empresas_deudas.registro desc
 			</select>
 			<select id="importados">
 				select
