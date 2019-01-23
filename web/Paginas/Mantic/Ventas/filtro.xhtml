@@ -192,7 +192,7 @@
 					</p:selectOneMenu>
 				</h:panelGrid>
 				<p:outputLabel for="justificacion" value="Justificación:"/><br/>
-				<p:inputTextarea id="justificacion" value="#{manticVentasFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt"/><
+				<p:inputTextarea id="justificacion" value="#{manticVentasFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
 					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" action="#{manticVentasFiltro.doActualizarEstatus}" onstart="return validaJustificacion()" oncomplete="janal.desbloquear();"/>
