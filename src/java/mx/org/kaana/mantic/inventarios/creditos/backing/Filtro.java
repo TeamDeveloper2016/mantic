@@ -45,7 +45,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	private static final long serialVersionUID=1368701967796774746L;
   private Reporte reporte;
 	
-	public void doReporte(String nombre) throws Exception{
+	public void doReporte(String nombre) throws Exception {
     Parametros comunes           = null;
 		Map<String, Object>params    = null;
 		Map<String, Object>parametros= null;
