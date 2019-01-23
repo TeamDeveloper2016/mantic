@@ -252,8 +252,8 @@ $.mask.masks = $.extend($.mask.masks, {
       if (!janal.empty(value))
 				if(value.length=== 5)
           $(element).val(year+ val); 
-			  else
-					$(element).val(year+ val.substring(val.length- 5, val.length)); 
+//			  else
+//					$(element).val(year+ val.substring(val.length- 5, val.length)); 
       return true;
     }, function(params, element) {
       return 'No se logro generar el valor del consecutivo.';
