@@ -391,6 +391,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       this.attrs.put("seleccionado", articulos.get(position));
 	}
 
+	public void doAutoSaveOrden() {
+	  this.toSaveRecord();	
+	}
+	
 	@Override
 	public void toSaveRecord() {
     Transaccion transaccion= null;

@@ -89,6 +89,22 @@ public class Transaccion extends Inventarios implements Serializable {
 			if(this.orden!= null && this.orden.getIdCliente()!= null && this.orden.getIdCliente()< 0)
 				this.orden.setIdCliente(null);
 			switch(accion) {
+				case MOVIMIENTOS:
+					if(this.orden.isValid()) {
+  					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
+	  				this.toFillArticulos(sesion);
+					} // if
+					else {
+						Long consecutivo= this.toSiguiente(sesion);
+						this.orden.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
+						this.orden.setOrden(consecutivo);
+						this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
+						regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
+						this.toFillArticulos(sesion);
+						bitacoraOrden= new TcManticOrdenesBitacoraDto(this.orden.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
+						regresar= DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L;
+					} // else	
+					break;
 				case AGREGAR:
 					Long consecutivo= this.toSiguiente(sesion);
 					this.orden.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
