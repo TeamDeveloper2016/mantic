@@ -51,7 +51,7 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 		this.orden= orden;
 		if(this.orden.isValid()) {
 			if(this.orden.getIdNotaTipo().equals(1L))
-  	    this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "detalle", this.orden.toMap()));
+  	    this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "detalle", this.orden.toMap(), -1L));
 			else	
   	    this.setArticulos(this.toLoadOrdenDetalle());
       this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));

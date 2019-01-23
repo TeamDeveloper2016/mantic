@@ -223,8 +223,10 @@ public class Transaccion extends Inventarios implements Serializable {
 				error.append("[").append(item.getNombre()).append(" - ").append(item.getDiferencia()).append("]</br> ");
 			if(DaoFactory.getInstance().findIdentically(sesion, TcManticNotasDetallesDto.class, item.toMap())== null && (articulo.getCantidad()> 0D || articulo.getCosto()> 0D)) {
 				this.toAffectOrdenDetalle(sesion, articulo);
-				if(item.isValid())
-			    DaoFactory.getInstance().update(sesion, item);
+				if(item.isValid()) {
+					if(articulo.isModificado())
+			      DaoFactory.getInstance().update(sesion, item);
+				} // if	
 				else
 			    DaoFactory.getInstance().insert(sesion, item);
 				// if(this.aplicar)

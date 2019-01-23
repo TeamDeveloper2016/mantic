@@ -282,15 +282,16 @@
 							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-12">
-      							<p:panelGrid id="datosArticulos" columns="6" layout="grid" styleClass="janal-wid-99" columnClasses="janal-wid-col-150, janal-wid-col-120, janal-wid-40">
+      							<p:panelGrid id="datosArticulos" columns="6" layout="grid" styleClass="janal-wid-99" columnClasses="janal-wid-col-180, janal-wid-col-160, janal-wid-40">
 											<p:outputLabel for="sinIva" value="Los precios son &lt;strong&gt;Netos&lt;/strong&gt;:" escape="false"/>
-											<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100">
+											<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-col-40, janal-wid-col-40">
 												<p:inputSwitch id="sinIva" widgetVar="widgetSinIva" value="#{manticInventariosEntradasAccion.attrs.sinIva}" onLabel="SI" offLabel="NO">
 													 <p:ajax event="change" listener="#{manticInventariosEntradasAccion.doUpdateIvaTipoDeCambio}" process="@this" update="@(.filas) @(.recalculo)"/>
 												</p:inputSwitch>
 												<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();" style="float:right;">
 													<f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{null}"/>
 												</p:commandButton>
+                        <p:commandButton process="@form" icon="fa fa-save" title="Guardar nota de entrada" action="#{manticInventariosEntradasAccion.doAutoSaveOrden()}" onstart="return execute(true);" oncomplete="janal.desbloquear()" style="float:right;" update="@(.recalculo)"/>
 											</p:panelGrid>	
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" columnClasses="janal-move-left">
                         <p:commandButton type="button" icon="fa fa-file-pdf-o" onclick="viewDocument();" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento [#{manticInventariosEntradasAccion.pdf.name}]" style="#{(empty manticInventariosEntradasAccion.pdf)? 'display: none': ''}"/>

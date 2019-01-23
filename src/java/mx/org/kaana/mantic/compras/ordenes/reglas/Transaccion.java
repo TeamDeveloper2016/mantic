@@ -174,7 +174,8 @@ public class Transaccion extends Inventarios implements Serializable {
 			if(DaoFactory.getInstance().findIdentically(sesion, TcManticOrdenesDetallesDto.class, item.toMap())== null) 
 		    DaoFactory.getInstance().insert(sesion, item);
 			else
-		    DaoFactory.getInstance().update(sesion, item);
+				if(articulo.isModificado())
+		      DaoFactory.getInstance().update(sesion, item);
 			articulo.setObservacion("ARTICULO SOLICITADO EN LA ORDEN DE COMPRA ".concat(this.orden.getConsecutivo()).concat(" EL DIA ").concat(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, this.orden.getRegistro())));
 			DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, articulo.toMap());
 		} // for

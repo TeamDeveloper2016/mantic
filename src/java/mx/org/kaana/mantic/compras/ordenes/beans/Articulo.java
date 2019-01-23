@@ -55,6 +55,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	private double calculado;
 	private boolean costoLibre;
 	private double cuantos;
+	private boolean modificado;
 
 	public Articulo() {
 		this(-1L);
@@ -93,6 +94,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.calculado   = costo;
 		this.costoLibre  = false;
 		this.cuantos     = cantidad;
+		this.modificado  = false;
 	}
 
 	public UISelectEntity getIdEntity() {
@@ -178,20 +180,15 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	public void setObservacion(String observacion) {
 		this.observacion=observacion;
 	}
+
+	public boolean isModificado() {
+		return modificado;
+	}
+
+	public void setModificado(boolean modificado) {
+		this.modificado=modificado;
+	}
 	
-	public String getImporte$() {
-		return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getImporte());
-	}
-
-	public String getDescuento$() {
-		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, this.getImporte())+ "%";
-	}
-
-	public String getDiferencia() {
-		String color     = this.diferencia< -5? "janal-color-orange": Numero.toRedondear(this.diferencia)> 5? "janal-color-blue": "janal-color-green";
-		return "<span class='".concat(color).concat("' style='float:left;'>[").concat(String.valueOf(Numero.toRedondear(this.diferencia))).concat("%]</span>");
-	}
-
 	public double getReal() {
 		return real;
 	}
@@ -236,6 +233,19 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.costoLibre=costoLibre;
 	}
 	
+	public String getImporte$() {
+		return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getImporte());
+	}
+
+	public String getDescuento$() {
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, this.getImporte())+ "%";
+	}
+
+	public String getDiferencia() {
+		String color     = this.diferencia< -5? "janal-color-orange": Numero.toRedondear(this.diferencia)> 5? "janal-color-blue": "janal-color-green";
+		return "<span class='".concat(color).concat("' style='float:left;'>[").concat(String.valueOf(Numero.toRedondear(this.diferencia))).concat("%]</span>");
+	}
+
 	public String getCostoMayorMenor() {
 		String color     = this.diferencia< -5? "janal-color-orange": this.diferencia> 5? "janal-color-blue": "janal-color-green";
 		boolean display  = this.diferencia!= 0D;

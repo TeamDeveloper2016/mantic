@@ -142,6 +142,8 @@ public abstract class IAdminArticulos implements Serializable {
 	public void toAddArticulo(Integer index) {
 		if(index>= 0 && index< this.articulos.size()) {
 			Articulo articulo= this.articulos.get(index);
+			articulo.toCalculate(this.getIdSinIva().equals(1L), this.getTipoDeCambio());
+			articulo.setModificado(true);
 			this.totales.addArticulo(articulo);
 		} // if
 	}
@@ -151,6 +153,7 @@ public abstract class IAdminArticulos implements Serializable {
 			Articulo articulo= this.articulos.get(index);
 			this.totales.removeArticulo(articulo);
 			articulo.toCalculate(this.getIdSinIva().equals(1L), this.getTipoDeCambio());
+			articulo.setModificado(true);
 			this.totales.addArticulo(articulo);
 		} // if
 		this.totales.removeTotal();
@@ -158,9 +161,14 @@ public abstract class IAdminArticulos implements Serializable {
 	}
 	
 	public void toCalculate() {
+		this.toCalculate(false);
+	}
+	
+	public void toCalculate(boolean modificado) {
 		this.totales.reset();
 		for (Articulo articulo: this.articulos) {
 	    articulo.toCalculate(this.getIdSinIva().equals(1L), this.getTipoDeCambio());
+		  articulo.setModificado(modificado);
 			this.totales.addArticulo(articulo);
 		} // for
 		this.totales.removeTotal();

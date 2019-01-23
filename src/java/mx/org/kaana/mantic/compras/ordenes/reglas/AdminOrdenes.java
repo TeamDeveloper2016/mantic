@@ -32,7 +32,7 @@ public final class AdminOrdenes extends IAdminArticulos  implements Serializable
 	public AdminOrdenes(OrdenCompra orden) throws Exception {
 		this.orden  = orden;
 		if(this.orden.isValid()) {
-  	  this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaOrdenesComprasDto", "detalle", orden.toMap()));
+  	  this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaOrdenesComprasDto", "detalle", orden.toMap(), -1L));
       this.orden.setIkEmpresa(new UISelectEntity(new Entity(this.orden.getIdEmpresa())));
       this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
       this.orden.setIkCliente(new UISelectEntity(new Entity(this.orden.getIdCliente())));
