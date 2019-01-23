@@ -1,4 +1,4 @@
-gfe/*
+/*
  *company KAANA
  *project KAJOOL (Control system polls)
  *date 11/06/2014
