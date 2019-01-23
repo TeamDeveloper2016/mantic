@@ -164,7 +164,7 @@
 				<div class="ui-grid-col-12">
 					<h:outputText id="tabla" value="Solo sirve para la ventana emergente de articulos express" style="display:none"/>					
 					<div class="janal-wid-100-txt janal-column-center janal-font-bold">
-						<p:outputLabel value="LA ORDEN DE COMPRA [#{manticInventariosEntradasAccion.adminOrden.orden.consecutivo}] SE AUTOGUARDO A LAS #{manticInventariosEntradasAccion.attrs.autoSave} HRS." style="display: #{empty(manticInventariosEntradasAccion.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-blue"/>
+						<p:outputLabel value="LA NOTA DE ENTRADA [#{manticComprasOrdendesAccion.adminOrden.orden.consecutivo}] SE (AUTO)GUARDO EL DIA #{manticComprasOrdendesAccion.attrs.autoSave} HRS.&lt;br/&gt;" style="display: #{empty(manticInventariosEntradasAccion.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-orange" escape="false"/>
 					</div>
 					<p:tabView id="contenedorGrupos">
             <p:ajax event="tabChange" listener="#{manticInventariosEntradasAccion.doTabChange}" process="@this idAlmacen idProveedor" update="@(.importado) @(.involucrados)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move(); PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>						
