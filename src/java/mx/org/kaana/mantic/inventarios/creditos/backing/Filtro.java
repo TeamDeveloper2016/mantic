@@ -46,7 +46,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   private Reporte reporte;
 	
 	public void doReporte(String nombre) throws Exception{
-    Parametros comunes = null;
+    Parametros comunes           = null;
 		Map<String, Object>params    = null;
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
