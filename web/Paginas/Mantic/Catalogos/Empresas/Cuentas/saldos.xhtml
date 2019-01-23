@@ -182,6 +182,9 @@
 							</f:facet>
 							<h:outputText value="#{row['dias']}"/>
 						</p:column>
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
+							<h:graphicImage library="janal" name="icon/semaforos/#{row.abonos eq '0' ? 'circulo-gris.png' : (row.abonos eq row.abonosEgresos ? 'circulo-verde.png' : 'circulo-amarillo.png')}" title="#{row.abonos eq '0' ? 'Cuenta sin abonos.' : (row.abonos eq row.abonosEgresos ? 'Cuenta con abonos asignados a egresos.' : 'Cuenta con abonos pendientes de asignar a egresos.')}"/>
+						</p:column>
 						<f:facet name="footer">
 							<div style="display:flow-root;">
 								<div style="float:left;">
