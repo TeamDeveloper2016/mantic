@@ -126,24 +126,6 @@
 				  and id_empresa= {idEmpresa}				
 			</select>		
     </unit>
-    <unit id="TcManticConfrontasEstatusDto">
-      <select id="row">
-        select      
-          *
-        from      
-          tc_mantic_confrontas_estatus
-        where 
-          {condicion} 
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tc_mantic_confrontas_estatus
-        where      
-          nombre = '{nombre}'
-      </select>
-    </unit>
 		<unit id="TcManticConfrontasDto">
       <select id="row">
         select      
@@ -178,24 +160,6 @@
           tc_mantic_confrontas_detalles
         where      
           id_confronta = {idConfronta} and id_articulo = {idArticulo}
-      </select>
-    </unit>		
-    <unit id="TcManticConfrontasBitacoraDto">
-      <select id="row">
-        select      
-          *
-        from      
-          tc_mantic_confrontas_bitacora
-        where 
-          {condicion} 
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tc_mantic_confrontas_bitacora
-        where      
-          id_confronta_bitacora = {idConfrontaBitacora}
       </select>
     </unit>		
 	  <unit id="TcManticTransferenciasDetallesDto">

@@ -4,6 +4,51 @@
 -->
 <process>
 	<dml> 
+    <unit id="VistaConfrontasDto">
+      <select id="lazy">
+        select 
+          tc_mantic_confrontas.id_confronta as id_key,
+          tc_mantic_confrontas.id_confronta,
+          tc_mantic_transferencias.id_transferencia,
+				  tc_mantic_confrontas.consecutivo,
+				  tc_mantic_transferencias.consecutivo as transferencia,
+          tc_mantic_transferencias.id_almacen,
+          tc_mantic_transferencias.id_destino,
+          origen.nombre  nombre_origen,
+          origen.clave clave_origen,
+          destino.nombre nombre_destino,
+          destino.clave clave_destino,
+          tc_mantic_transferencias.id_solicito,
+          concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as solicito,
+          tc_mantic_confrontas.id_usuario,
+          tc_mantic_confrontas.registro,
+          tc_mantic_confrontas.observaciones,
+          tc_mantic_transferencias.id_transferencia_estatus estatus,
+          tc_mantic_transferencias_estatus.nombre nombre_estatus,
+				  tc_mantic_transferencias_tipos.id_transferencia_tipo,
+				  tc_mantic_transferencias_tipos.nombre as tipo
+        from
+          tc_mantic_confrontas
+        inner join
+          tc_mantic_transferencias on tc_mantic_confrontas.id_transferencia= tc_mantic_transferencias.id_transferencia
+        inner join
+          tc_mantic_transferencias_estatus on tc_mantic_transferencias.id_transferencia_estatus = tc_mantic_transferencias_estatus.id_transferencias_estatus
+        inner join 
+					tc_mantic_empresas on tc_mantic_transferencias.id_empresa = tc_mantic_empresas.id_empresa
+        left join 
+          tc_mantic_personas on tc_mantic_transferencias.id_solicito = tc_mantic_personas.id_persona
+        inner join 
+        	tc_mantic_almacenes origen on tc_mantic_transferencias.id_almacen = origen.id_almacen
+        inner join 
+        	tc_mantic_almacenes destino on tc_mantic_transferencias.id_destino = destino.id_almacen
+        inner join 
+        	tc_mantic_transferencias_tipos on tc_mantic_transferencias.id_transferencia_tipo = tc_mantic_transferencias_tipos.id_transferencia_tipo
+				where 
+          tc_mantic_empresas.id_empresa in ({idEmpresa}) 
+				  and {condicion}	
+        {sortOrder}
+      </select>   
+		</unit>
 		<unit id="VistaInventariosDto">
 			<select id="lazy">
 				select

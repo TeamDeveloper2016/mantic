@@ -44,10 +44,6 @@
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
-		<pe:remoteCommand name="recover" process="@this" update="dialogoArtExpress" actionListener="#{manticCatalogosAlmacenesTransferenciasNormal.doRecoverArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); PF('dlgArtExpress').show();">  
-			<pe:methodSignature parameters="java.lang.Integer"/>  
-			<pe:methodParam name="index"/>  
-		</pe:remoteCommand>		
 		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticCatalogosAlmacenesTransferenciasNormal.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
 			<pe:methodSignature parameters="java.lang.String, java.lang.Integer"/>  
 			<pe:methodParam name="codigo"/>  

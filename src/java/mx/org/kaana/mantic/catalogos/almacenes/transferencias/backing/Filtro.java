@@ -200,23 +200,21 @@ public class Filtro extends Comun implements Serializable {
 			Entity seleccionado= (Entity)this.attrs.get("seleccionado");
 			switch(seleccionado.toLong("idTransferenciaEstatus").intValue()) {
 				case 3: // TRANSITO
-				  JsfBase.setFlashAttribute("accion", EAccion.COMPLEMENTAR);
+				  JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
 				  break;
 				case 5: // RECEPCION
-				  JsfBase.setFlashAttribute("accion", EAccion.PROCESAR);
-				  break;
 				case 6: // INCOMPLETA
-				  JsfBase.setFlashAttribute("accion", EAccion.CALCULAR);
+				  JsfBase.setFlashAttribute("accion", EAccion.MODIFICAR);
 				  break;
 			} // switch	
-		  JsfBase.setFlashAttribute("retorno", "filtro");		
+		  JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Almacenes/Transferencias/filtro");		
 			JsfBase.setFlashAttribute("idTransferencia", seleccionado.getKey());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return "recepcion".concat(Constantes.REDIRECIONAR);
+		return "/Paginas/Mantic/Catalogos/Almacenes/Confrontas/accion".concat(Constantes.REDIRECIONAR);
   } // doAccion
   
   public void doLoadEstatus() {
@@ -267,23 +265,6 @@ public class Filtro extends Comun implements Serializable {
 		} // finally
 	}	// doActualizaEstatus
 
-  public void doEliminar() {
-		Transaccion transaccion= null;
-		Entity seleccionado    = null;
-    try {
-			seleccionado= (Entity) this.attrs.get("seleccionado");
-			transaccion= new Transaccion(new TcManticTransferenciasDto(seleccionado.getKey()));
-			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar transferencia", "La transferencia de artículos se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
-			else
-				JsfBase.addMessage("Eliminar transferencia", "Ocurrió un error al eliminar la transferencia de artículos.", ETipoMensaje.ERROR);								
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch		
-  } // doEliminar
-  
   public void doReporte(String nombre) throws Exception {
     Parametros comunes = null;
 		Map<String, Object>parametros= null;

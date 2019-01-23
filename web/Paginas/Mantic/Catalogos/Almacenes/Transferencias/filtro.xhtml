@@ -180,12 +180,11 @@
 					</p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
 						<p:menuitem id="modificar" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus eq '1'}"/>
-            <!--p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus eq '1'}"/-->
             <p:menuitem id="consultar" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
-            <p:separator rendered="#{fn:contains('|1|2|3|4|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>					
-            <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|3|4|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>
+            <p:separator rendered="#{fn:contains('|1|2|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>					
+            <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>
             <p:separator rendered="#{fn:contains('|3|5|6|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>					
-						<p:menuitem id="recibir" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doRecibir()}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|3|5|6|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>
+						<p:menuitem id="recibir" value="Recibir" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doRecibir()}" icon="fa fa-edit" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|3|5|6|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>
             <p:separator/>			
             <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doReporte('TRANSFERENCIAS_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
 					</p:contextMenu>
@@ -194,19 +193,6 @@
     </div>	    		
   </ui:define>
   <ui:param name="componenteBloqueo" value="buscar buscarIcon  tabla"/>
-  <ui:param name="textoConfirmacion" value="¿ Está seguro que deseas eliminar la transferencia ?" />
-  <ui:param name="accionConfirmacion" value="#{manticCatalogosAlmacenesTransferenciasFiltro}"/>
-  <ui:param name="updateComponent" value="tabla"/>
-  <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
-  <ui:param name="renderedConfirmacion" value="true"/>	
-  <ui:define name="detalleConfirmacion">
-    <h:panelGrid columns="2">
-      <p:outputLabel value="Transferencia del artículo: "/>
-      <p:outputLabel value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.nombre}"/>
-      <p:outputLabel value="Cantidad: "/>
-      <p:outputLabel value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.cantidad}"/>
-    </h:panelGrid>			
-  </ui:define>
 	<ui:define name="dialogos">
 		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onShow="janal.change('formDialogoEstatus', fieldsDialog); janal.refresh();" dynamic="true">
 			<h:form id="formDialogoEstatus" prependId="false">

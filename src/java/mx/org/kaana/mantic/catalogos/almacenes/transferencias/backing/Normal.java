@@ -53,8 +53,6 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
   @Override
   protected void init() {		
     try {
-			if(JsfBase.getFlashAttribute("accion")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia")== null? -1L: JsfBase.getFlashAttribute("idTransferencia"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));

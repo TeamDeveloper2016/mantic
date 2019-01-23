@@ -64,9 +64,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 	@Override
 	protected void init() {
 		try {
-      this.accion= (EAccion)JsfBase.getFlashAttribute("accion");
-			if(this.accion== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+      this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.ACTIVAR: (EAccion)JsfBase.getFlashAttribute("accion");
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia"));
       this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("sugerido", 0D);
@@ -335,7 +334,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	} // doAccion
   
   public String doCancelar() {
-		return "filtro";
+		return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
 	} 
 
 }
