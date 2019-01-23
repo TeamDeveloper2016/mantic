@@ -105,7 +105,7 @@ public abstract class IAdminArticulos implements Serializable {
   		params.put("idArticulo", articulo.getIdArticulo());
   		params.put("idProveedor", articulo.getIdProveedor());
 			List<Entity> codigos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaOrdenesComprasDto", "articulo", params);
-			for (Entity codigo : codigos) {
+			for (Entity codigo: codigos) {
 				if(codigo.toInteger("idPrincipal")== 1L)
 					articulo.setPropio(codigo.toString("codigo"));
 				else
@@ -132,32 +132,43 @@ public abstract class IAdminArticulos implements Serializable {
 		return Fecha.getAnioActual()+ Cadena.rellenar(value, 6, '0', true);
 	}	
 		
+	public void toRemoveArticulo(Integer index) {
+		if(index>= 0 && index< this.articulos.size()) {
+			Articulo articulo= this.articulos.get(index);
+			this.totales.removeArticulo(articulo);
+		} // if
+	}
+	
+	public void toAddArticulo(Integer index) {
+		if(index>= 0 && index< this.articulos.size()) {
+			Articulo articulo= this.articulos.get(index);
+			this.totales.addArticulo(articulo);
+		} // if
+	}
+	
+	public void toCalculate(Integer index) {
+		if(index>= 0 && index< this.articulos.size()) {
+			Articulo articulo= this.articulos.get(index);
+			this.totales.removeArticulo(articulo);
+			articulo.toCalculate(this.getIdSinIva().equals(1L), this.getTipoDeCambio());
+			this.totales.addArticulo(articulo);
+		} // if
+		this.totales.removeTotal();
+		this.setAjusteDeuda(this.totales.getTotal());
+	}
+	
 	public void toCalculate() {
 		this.totales.reset();
-		for (Articulo articulo : this.articulos) {
-		  articulo.toCalculate(this.getIdSinIva().equals(1L), this.getTipoDeCambio());
-			this.totales.addImporte(articulo.getImportes().getImporte());
-			this.totales.addDescuento(articulo.getImportes().getDescuento());
-			this.totales.addExtra(articulo.getImportes().getExtra());
-			this.totales.addIva(articulo.getImportes().getIva());
-			this.totales.addSubTotal(articulo.getImportes().getSubTotal());
-			this.totales.addTotal(articulo.getImportes().getTotal());
-			this.totales.addArticulo(articulo.getIdArticulo());
-			this.totales.addUtilidad(articulo.getUtilidad());
-			if(articulo.getIdArticulo()> 0)
-			  this.totales.addCantidad(articulo.getCantidad());
+		for (Articulo articulo: this.articulos) {
+	    articulo.toCalculate(this.getIdSinIva().equals(1L), this.getTipoDeCambio());
+			this.totales.addArticulo(articulo);
 		} // for
-		if(this.totales.getGlobal()> 0D) {
-			if(this.totales.getUtilidad()> this.totales.getGlobal())
-				this.totales.restarTotal(this.totales.getGlobal());
-			else
-				this.totales.setGlobal(0D);
-		} // if		
+		this.totales.removeTotal();
 		this.setAjusteDeuda(this.totales.getTotal());
 	}
 
 	public void toUpdatePorcentajes() {
-		for (Articulo articulo : this.articulos) {
+		for (Articulo articulo: this.articulos) {
 			articulo.setDescuento(this.getDescuento());
 			articulo.setExtras(this.getExtras());
 		} // for
@@ -165,7 +176,7 @@ public abstract class IAdminArticulos implements Serializable {
 	}
 	
 	public void toUpdateDescuento() {
-		for (Articulo articulo : this.articulos) {
+		for (Articulo articulo: this.articulos) {
 			articulo.setDescuento(this.getDescuento());
 		} // for
 		this.toCalculate();
@@ -196,11 +207,8 @@ public abstract class IAdminArticulos implements Serializable {
 
 	public void toCantidad() {
 		this.totales.reset();
-		for (Articulo articulo : this.articulos) {
-			this.totales.addArticulo(articulo.getIdArticulo());
-			if(articulo.getIdArticulo()> 0)
-			  this.totales.addCantidad(articulo.getCantidad());
-		} // for
+		for (Articulo articulo : this.articulos) 
+			this.totales.addArticulo(articulo.getIdArticulo(), articulo.getCantidad());
 	}
 
 	public void toCheckTotales() {

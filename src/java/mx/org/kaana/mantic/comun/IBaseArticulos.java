@@ -97,6 +97,8 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				temporal.setIdRedondear(articulo.toLong("idRedondear"));
 				Value codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "codigo", params, "codigo");
 				temporal.setCodigo(codigo== null? articulo.containsKey("codigo")? articulo.toString("codigo"): "": codigo.toString());
+				if(Cadena.isVacio(articulo.toString("propio")))
+					LOG.warn("El articulo ["+ articulo.toLong("idArticulo")+" ] no tiene codigo asignado '"+ articulo.toString("nombre")+ "'");
 				temporal.setPropio(articulo.toString("propio"));
 				temporal.setNombre(articulo.toString("nombre"));
 				temporal.setOrigen(articulo.toString("origen"));
@@ -115,10 +117,12 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				} // if	
 				if(temporal.getCantidad()< 1D)					
 					temporal.setCantidad(1D);
+				temporal.setCuantos(temporal.getCantidad());
 				temporal.setUltimo(this.attrs.get("ultimo")!= null);
 				temporal.setSolicitado(this.attrs.get("solicitado")!= null);
 				temporal.setUnidadMedida(articulo.toString("unidadMedida"));
 				temporal.setPrecio(articulo.toDouble("precio"));				
+				
 				Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
 				temporal.setStock(stock== null? 0D: stock.toDouble());
 				if(index== this.adminOrden.getArticulos().size()- 1) {
@@ -126,7 +130,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 					RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
 				} // if	
 				RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
-				this.adminOrden.toCalculate();
+				this.adminOrden.toCalculate(index);
 				//if(this instanceof IBaseStorage)
  				//	((IBaseStorage)this).toSaveRecord();
 			} // if	
@@ -138,7 +142,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 		}
 	}
 	
-  protected void toMoveDataArt(Articulo articulo, Integer index) throws Exception {
+  protected void toMoveArticulo(Articulo articulo, Integer index) throws Exception {
 		Articulo temporal               = new Articulo(articulo.getKey());
 		TcManticArticulosDto artTemporal= null;
 		Map<String, Object> params      = new HashMap<>();
@@ -158,8 +162,8 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			temporal.setNombre(articulo.getNombre());
 			eprecioArticulo= EPrecioArticulo.fromNombre(this.precio.toUpperCase());
 			artTemporal= (TcManticArticulosDto) DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
-			if(artTemporal!= null){
-				switch(eprecioArticulo){
+			if(artTemporal!= null) {
+				switch(eprecioArticulo) {
 					case MAYOREO:
 						temporal.setValor(artTemporal.getMayoreo());
 						temporal.setCosto(artTemporal.getMayoreo());
@@ -179,16 +183,17 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			temporal.setDescuento(this.adminOrden.getDescuento());
 			temporal.setExtras(this.adminOrden.getExtras());										
 			temporal.setCantidad(articulo.getCantidad());
+			temporal.setCuantos(temporal.getCantidad());
 			temporal.setUltimo(this.attrs.get("ultimo")!= null);
 			temporal.setSolicitado(this.attrs.get("solicitado")!= null);
 			temporal.setUnidadMedida(articulo.getUnidadMedida());
 			temporal.setPrecio(articulo.getPrecio());				
 			Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
 			temporal.setStock(stock== null? 0D: stock.toDouble());				
-			this.adminOrden.getArticulos().add(this.adminOrden.getArticulos().size()-1, temporal);
+			this.adminOrden.getArticulos().add(this.adminOrden.getArticulos().size()- 1, temporal);
 			RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");				
 			RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
-			this.adminOrden.toCalculate();			
+			this.adminOrden.toAddArticulo(this.adminOrden.getArticulos().size()- 1);			
 		} // try
 		finally {
 			Methods.clean(params);
@@ -252,13 +257,16 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				temporal.setValor(0.0);
 				temporal.setIva(0.0);
 				temporal.setCantidad(0D);
+  			if(!isCantidad)
+	  		  this.adminOrden.toRemoveArticulo(index);
 			} // if
-			else 
+			else {
+  			if(!isCantidad)
+  				this.adminOrden.toRemoveArticulo(index);
   			this.adminOrden.getArticulos().remove(index.intValue());
+			} // 
 			if(isCantidad)
 			  this.adminOrden.toCantidad();
-			else
-			  this.adminOrden.toCalculate();
 			RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
 			//if(this instanceof IBaseStorage)
 			//	((IBaseStorage)this).toSaveRecord();
@@ -274,7 +282,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	}
 
 	public void doCalculate(Integer index) {
-		this.adminOrden.toCalculate();
+		this.adminOrden.toCalculate(index);
 	}	
 
 	public void doUpdatePorcentaje() {

@@ -287,7 +287,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // toMoveData
 	
 	@Override
-	protected void toMoveDataArt(Articulo articulo, Integer index) throws Exception {
+	protected void toMoveArticulo(Articulo articulo, Integer index) throws Exception {
 		UISelectEntity clienteSeleccion= null;		
 		String descuentoPivote         = null;
 		String descuentoVigente        = null;		
@@ -298,14 +298,14 @@ public class Accion extends IBaseVenta implements Serializable {
 				if(descuentoVigente!= null){
 					descuentoPivote= getAdminOrden().getDescuento();
 					getAdminOrden().setDescuento(descuentoVigente);
-					super.toMoveDataArt(articulo, index);			
+					super.toMoveArticulo(articulo, index);			
 					getAdminOrden().setDescuento(descuentoPivote);
 				} // if
 				else
-					super.toMoveDataArt(articulo, index);				
+					super.toMoveArticulo(articulo, index);				
 			} // if
 			else
-				super.toMoveDataArt(articulo, index);	
+				super.toMoveArticulo(articulo, index);	
 			this.attrs.put("descripcion", articulo.getNombre());
 			this.image= LoadImages.getImage(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), articulo.getIdArticulo().toString());
 			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());

@@ -420,10 +420,6 @@
 		</div>		
 	</ui:define>
 	<ui:define name="dialogos">
-		<ui:include src="/Paginas/Mantic/Catalogos/Articulos/express.xhtml">
-			<ui:param name="dialogo" value="articulos"/>
-			<ui:param name="seleccionado" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.seleccionado}"/>
-		</ui:include>
 		<p:dialog id="dialogoDetalleArticulo" widgetVar="dlgDetalleArticulo" header="Articulo [#{manticCatalogosAlmacenesTransferenciasNormal.attrs.detailArticulo.codigo}]" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear(); setTimeout('jsArticulos.goto();', 1000);" width="70%">			
 			<p:tabView id="tabDetalleArticulo">
 				<p:tab title="Generales">

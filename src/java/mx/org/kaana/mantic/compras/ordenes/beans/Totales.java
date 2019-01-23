@@ -130,38 +130,49 @@ public final class Totales implements Serializable {
 		return Numero.toRedondearSat(this.descuento+ this.extra);
 	}
 
-	public void addImporte(double importe) {
-		this.importe+= importe;
-	}
-	
-	public void restarTotal(double importe) {
-		this.total-= importe;
-	}
-	
-	public void addDescuento(double descuento) {
-		this.descuento+= descuento;
-	}
-	
-	public void addExtra(double extra) {
-		this.extra+= extra;
-	}
-	
-	public void addIva(double iva) {
-		this.iva+= iva;
-	}
-	
-	public void addSubTotal(double subTotal) {
-		this.subTotal+= subTotal;
-	}
-	
-	public void addTotal(double total) {
-		this.total+= total;
-	}
-
-	public void addArticulo(Long idArticulo) {
+  public void addArticulo(Long idArticulo, double cantidad) {
 		this.articulos+= idArticulo> 0? 1: 0;
+		if(idArticulo> 0)
+		  this.cantidad+= cantidad;
 	}
-
+	
+	public void addArticulo(Articulo articulo) {
+		this.importe+= articulo.getImportes().getImporte();
+		this.descuento+= articulo.getImportes().getDescuento();
+		this.extra+= articulo.getImportes().getExtra();
+		this.iva+= articulo.getImportes().getIva();
+		this.subTotal+= articulo.getImportes().getSubTotal();
+		this.total+= articulo.getImportes().getTotal();
+		this.utilidad+= articulo.getUtilidad();
+		if(articulo.getIdArticulo()> 0)
+		  this.cantidad+= articulo.getCantidad();
+ 		this.articulos+= articulo.getIdArticulo()> 0? 1: 0;
+	}
+	
+	public void removeArticulo(Articulo articulo) {
+		this.importe-= articulo.getImportes().getImporte();
+		this.descuento-= articulo.getImportes().getDescuento();
+		this.extra-= articulo.getImportes().getExtra();
+		this.iva-= articulo.getImportes().getIva();
+		this.subTotal-= articulo.getImportes().getSubTotal();
+		this.total-= articulo.getImportes().getTotal();
+		this.utilidad-= articulo.getUtilidad();
+		if(articulo.getIdArticulo()> 0) {
+			if(this.cantidad> 0)
+  		  this.cantidad-= articulo.getCuantos();
+	   	if(this.articulos> 0)
+   	  	this.articulos--;
+		} // if
+	}
+	
+	public void removeTotal() {
+		if(this.global> 0D)
+  		if(this.utilidad> this.global)
+    		this.total-= this.global;
+		  else
+			  this.global= 0D;
+	}
+	
 	public String getGlobal$() {
 		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(global));
 	}
@@ -182,10 +193,6 @@ public final class Totales implements Serializable {
 		this.utilidad = utilidad;
 	}
 	
-	public void addUtilidad(Double utilidad) {
-		this.utilidad+= utilidad;
-	}
-
 	public double getCantidad() {
 		return cantidad;
 	}
@@ -194,10 +201,6 @@ public final class Totales implements Serializable {
 		this.cantidad=cantidad;
 	}
 
-	public void addCantidad(double cantidad) {
-		this.cantidad+= cantidad;
-	}
-	
 	public double getImporteDosDecimales() {
 		return Numero.toRedondear(importe);
 	}
@@ -293,10 +296,10 @@ public final class Totales implements Serializable {
 		this.utilidad = 0;
 		this.cantidad = 0;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "Totales{articulos="+articulos+ ", cantidad"+ cantidad+ ", importe="+importe+", iva="+iva+", descuento="+descuento+", extra="+extra+", subTotal="+subTotal+", total="+total+'}';
+		return "Totales{"+"articulos="+articulos+", importe="+importe+", iva="+iva+", sinIva="+sinIva+", descuento="+descuento+", extra="+extra+", subTotal="+subTotal+", total="+total+", utilidad="+utilidad+", global="+global+", cantidad="+cantidad+'}';
 	}
 	
 }

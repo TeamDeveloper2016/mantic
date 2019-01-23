@@ -34,6 +34,8 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 public class TcManticConfrontasDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
+  @Column (name="consecutivo")
+  private String consecutivo;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_confronta")
@@ -44,8 +46,12 @@ public class TcManticConfrontasDto implements IBaseDto, Serializable {
   private String observaciones;
   @Column (name="id_confronta_estatus")
   private Long idConfrontaEstatus;
+  @Column (name="orden")
+  private Long orden;
   @Column (name="id_transferencia")
   private Long idTransferencia;
+  @Column (name="ejercicio")
+  private Long ejercicio;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -54,19 +60,30 @@ public class TcManticConfrontasDto implements IBaseDto, Serializable {
   }
 
   public TcManticConfrontasDto(Long key) {
-    this(new Long(-1L), null, null, null, null);
+    this(null, new Long(-1L), null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticConfrontasDto(Long idConfronta, Long idUsuario, String observaciones, Long idConfrontaEstatus, Long idTransferencia) {
+  public TcManticConfrontasDto(String consecutivo, Long idConfronta, Long idUsuario, String observaciones, Long idConfrontaEstatus, Long orden, Long idTransferencia, Long ejercicio) {
+    setConsecutivo(consecutivo);
     setIdConfronta(idConfronta);
     setIdUsuario(idUsuario);
     setObservaciones(observaciones);
     setIdConfrontaEstatus(idConfrontaEstatus);
+    setOrden(orden);
     setIdTransferencia(idTransferencia);
+    setEjercicio(ejercicio);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
+  public void setConsecutivo(String consecutivo) {
+    this.consecutivo = consecutivo;
+  }
+
+  public String getConsecutivo() {
+    return consecutivo;
+  }
+
   public void setIdConfronta(Long idConfronta) {
     this.idConfronta = idConfronta;
   }
@@ -99,12 +116,28 @@ public class TcManticConfrontasDto implements IBaseDto, Serializable {
     return idConfrontaEstatus;
   }
 
+  public void setOrden(Long orden) {
+    this.orden = orden;
+  }
+
+  public Long getOrden() {
+    return orden;
+  }
+
   public void setIdTransferencia(Long idTransferencia) {
     this.idTransferencia = idTransferencia;
   }
 
   public Long getIdTransferencia() {
     return idTransferencia;
+  }
+
+  public void setEjercicio(Long ejercicio) {
+    this.ejercicio = ejercicio;
+  }
+
+  public Long getEjercicio() {
+    return ejercicio;
   }
 
   public void setRegistro(Timestamp registro) {
@@ -130,6 +163,8 @@ public class TcManticConfrontasDto implements IBaseDto, Serializable {
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
+		regresar.append(getConsecutivo());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdConfronta());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
@@ -138,7 +173,11 @@ public class TcManticConfrontasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdConfrontaEstatus());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getOrden());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTransferencia());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getEjercicio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -148,11 +187,14 @@ public class TcManticConfrontasDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
+		regresar.put("consecutivo", getConsecutivo());
 		regresar.put("idConfronta", getIdConfronta());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idConfrontaEstatus", getIdConfrontaEstatus());
+		regresar.put("orden", getOrden());
 		regresar.put("idTransferencia", getIdTransferencia());
+		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -160,7 +202,7 @@ public class TcManticConfrontasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdConfronta(), getIdUsuario(), getObservaciones(), getIdConfrontaEstatus(), getIdTransferencia(), getRegistro()
+    getConsecutivo(), getIdConfronta(), getIdUsuario(), getObservaciones(), getIdConfrontaEstatus(), getOrden(), getIdTransferencia(), getEjercicio(), getRegistro()
     };
     return regresar;
   }

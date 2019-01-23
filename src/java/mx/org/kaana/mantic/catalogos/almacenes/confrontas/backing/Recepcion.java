@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.catalogos.almacenes.transferencias.backing;
+package mx.org.kaana.mantic.catalogos.almacenes.confrontas.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -37,14 +37,14 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.TabChangeEvent;
 
 
-@Named(value= "manticCatalogosAlmacenesTransferenciasNormal")
+@Named(value= "manticCatalogosAlmacenesConfrontasAccion")
 @ViewScoped
-public class Normal extends IBaseArticulos implements IBaseStorage, Serializable {
+public class Recepcion extends IBaseArticulos implements IBaseStorage, Serializable {
 
-	private static final Log LOG              = LogFactory.getLog(Normal.class);
+	private static final Log LOG              = LogFactory.getLog(Recepcion.class);
   private static final long serialVersionUID= 327393488565639367L;
 	private EAccion accion;
-	
+
 	public String getAgregar() {
 		return this.accion.equals(EAccion.AGREGAR)? "none": "";
 	}
@@ -55,7 +55,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
     try {
 			if(JsfBase.getFlashAttribute("accion")== null)
 				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
-      this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
+      this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.PROCESAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia")== null? -1L: JsfBase.getFlashAttribute("idTransferencia"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
@@ -77,14 +77,13 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
       switch (this.accion) {
         case AGREGAR:											
           this.setAdminOrden(new AdminTransferencias(new Transferencia(-1L, 2L)));
-    			this.attrs.put("sinIva", false);
           break;
         case MODIFICAR:			
         case CONSULTAR:											
           this.setAdminOrden(new AdminTransferencias((Transferencia)DaoFactory.getInstance().toEntity(Transferencia.class, "TcManticTransferenciasDto", "detalle", this.attrs)));
-    			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
           break;
       } // switch
+ 			this.attrs.put("sinIva", false);
 			this.toLoadCatalog();
     } // try
     catch (Exception e) {
@@ -100,17 +99,17 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 			transaccion = new Transaccion((TcManticTransferenciasDto)this.getAdminOrden().getOrden(), this.getAdminOrden().getArticulos());
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(this.accion)) {
-				if(this.accion.equals(EAccion.AGREGAR)) {
-   			  RequestContext.getCurrentInstance().execute("janal.back(' gener\\u00F3 la transferencia ', '"+ ((Transferencia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+				if(this.accion.equals(EAccion.PROCESAR)) {
+   			  RequestContext.getCurrentInstance().execute("janal.back(' gener\\u00F3 la confronta ', '"+ ((Transferencia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 		  		JsfBase.addMessage("Se registró la transferencia de correcta", ETipoMensaje.INFORMACION);
  				  regresar = ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
-    			JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la transferencia de articulos."), ETipoMensaje.INFORMACION);
+    			JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la confronta de articulos."), ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idTransferencia", ((Transferencia)this.getAdminOrden().getOrden()).getIdTransferencia());
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la transferencia de articulos.", ETipoMensaje.ALERTA);      			
+				JsfBase.addMessage("Ocurrió un error al registrar la confronta de articulos.", ETipoMensaje.ALERTA);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -139,28 +138,19 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
       this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
  			List<UISelectEntity> empresas= (List<UISelectEntity>)this.attrs.get("empresas");
 			if(!empresas.isEmpty()) {
-				if(this.accion.equals(EAccion.AGREGAR))
-  				((Transferencia)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(0));
-			  else
-				  ((Transferencia)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(empresas.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkEmpresa())));
+			  ((Transferencia)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(empresas.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkEmpresa())));
 				this.attrs.put("idPedidoSucursal", ((Transferencia)this.getAdminOrden().getOrden()).getIkEmpresa());
 			} // if	
       this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 			if(!almacenes.isEmpty()) {
 				List<UISelectEntity> destinos= (List<UISelectEntity>)((ArrayList<UISelectEntity>)almacenes).clone();
-				if(this.accion.equals(EAccion.AGREGAR))
-				  ((Transferencia)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
-				else 
-				  ((Transferencia)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(almacenes.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkAlmacen())));
+			  ((Transferencia)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(almacenes.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkAlmacen())));
         this.attrs.put("destinos", destinos);
   			int index = destinos.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkAlmacen());
   			if(index>= 0)
 	  			destinos.remove(index);
-				if(this.accion.equals(EAccion.AGREGAR))
-				  ((Transferencia)this.getAdminOrden().getOrden()).setIkDestino(destinos.get(0));
-				else 
-				  ((Transferencia)this.getAdminOrden().getOrden()).setIkDestino(destinos.get(destinos.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino())));
+  		  ((Transferencia)this.getAdminOrden().getOrden()).setIkDestino(destinos.get(destinos.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino())));
 			} // if
 			columns.clear();
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
@@ -196,85 +186,10 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Articulos")) {
-			if(this.attrs.get("articulos")== null) 
-				this.toLoadArticulos("almacen");
+			
 		} // if	
-		else 
-			if(event.getTab().getTitle().equals("Faltantes almacen") && this.attrs.get("faltantes")== null) 
-        this.doLoadFaltantes();
-			else 
-			  if(event.getTab().getTitle().equals("Ventas perdidas") && this.attrs.get("perdidos")== null) 
-          this.doLoadPerdidas(((Transferencia)this.getAdminOrden().getOrden()).getIdDestino()== null? -1L: ((Transferencia)this.getAdminOrden().getOrden()).getIdDestino());
 	}
 
-	@Override
-	public void doLoadFaltantes() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= new HashMap<>();
-    try {
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
-			params.put("idAlmacen", ((Transferencia)this.getAdminOrden().getOrden()).getIdDestino());
-			columns= new ArrayList<>();
-      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-      columns.add(new Columna("minimo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
-      columns.add(new Columna("maximo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
-      this.attrs.put("faltantes", UIEntity.build("VistaAlmacenesTransferenciasDto", "faltantes", params, columns, Constantes.SQL_TODOS_REGISTROS));
-    } // try
-    catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-    } // catch   
-    finally {
-      Methods.clean(params);
-      Methods.clean(columns);
-    }// finally
-	}
-	
-	public void doLoadFaltantesAlmacenDestino() {
-    this.doLoadPerdidas(((Transferencia)this.getAdminOrden().getOrden()).getIdDestino()== null? -1L: ((Transferencia)this.getAdminOrden().getOrden()).getIdDestino());
-	}
-	
-	public void toLoadArticulos(String idXml) {
-		List<Articulo> articulos = null;
-    Map<String, Object> params= new HashMap<>();
-		try {
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			params.putAll(((Transferencia)this.getAdminOrden().getOrden()).toMap());
-			articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaOrdenesComprasDto", idXml, params);
-      if(articulos!= null && this.getAdminOrden().getArticulos().isEmpty())
-				for (Articulo articulo : articulos) 
-					this.getAdminOrden().add(articulo);
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch
-    finally {
-      Methods.clean(params);
-    } // finally
-	}
-
-	public void doEliminarPerdido() {
-		Transaccion transaccion= null;
-		try {
-			UISelectEntity perdido= (UISelectEntity)this.attrs.get("perdidoRemove");   		
-			transaccion= new Transaccion(perdido.getKey());
-			if(transaccion.ejecutar(EAccion.DEPURAR)){
-				List<UISelectEntity> perdidos= (List<UISelectEntity>)this.attrs.get("perdidos");
-				perdidos.remove(perdidos.indexOf(perdido));
-				this.attrs.put("perdidos", perdidos);
-			} // if
-		} // try
-	  catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-    } // catch   
-	}	
-	
 	public void doRecoverArticulo(Integer index) {
 		try {
 			if(index>= 0 && index< this.getAdminOrden().getArticulos().size()) {
@@ -366,8 +281,8 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 			transaccion = new Transaccion((TcManticTransferenciasDto)this.getAdminOrden().getOrden(), this.getAdminOrden().getArticulos());
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(EAccion.MOVIMIENTOS)) {
-   			RequestContext.getCurrentInstance().execute("jsArticulos.back('guard\\u00F3 la transferencia de articulos ', '"+ ((Transferencia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-				this.accion= EAccion.MODIFICAR;
+   			RequestContext.getCurrentInstance().execute("jsArticulos.back('guard\\u00F3 confronta de articulos', '"+ ((Transferencia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+				this.accion= EAccion.PROCESAR;
 				this.getAdminOrden().getArticulos().add(new Articulo(-1L));
 				this.attrs.put("autoSave", Global.format(EFormatoDinamicos.FECHA_HORA, Fecha.getRegistro()));
 			} // if	
@@ -383,29 +298,6 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 		if(isViewException && this.getAdminOrden().getArticulos().size()> 0)
 		  this.toSaveRecord();
     //RequestContext.getCurrentInstance().execute("alert('ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA');");
-	}
-	
-	public void doLoadAlmacenes() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= new HashMap<>();
-    try {
-			columns= new ArrayList<>();
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-			params.put("sucursales", ((Transferencia)this.getAdminOrden().getOrden()).getIdEmpresa());
-      this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
- 			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
-			if(!almacenes.isEmpty()) 
-			  ((Transferencia)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
-   } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-			JsfBase.addMessageError(e);
-    } // catch   
-    finally {
-      Methods.clean(columns);
-      Methods.clean(params);
-    } // finally
 	}
 	
 }

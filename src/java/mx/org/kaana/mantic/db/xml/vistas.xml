@@ -214,6 +214,7 @@
           tc_mantic_servicios_detalles.propio,
           tc_mantic_servicios_detalles.concepto as nombre,
           tc_mantic_servicios_detalles.cantidad,
+          tc_mantic_servicios_detalles.cantidad as cuantos,
           tc_mantic_servicios_detalles.costo,
           tc_mantic_servicios_detalles.descuento,
           tc_mantic_servicios_detalles.iva,
@@ -450,6 +451,7 @@
 				select
 					tc_mantic_ventas_detalles.id_venta_detalle as id_key,
           tc_mantic_ventas_detalles.*,
+          tc_mantic_ventas_detalles.cantidad as cuantos,
 					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
 					tc_mantic_articulos.stock
 				from 
@@ -3004,6 +3006,7 @@
           tc_mantic_notas_detalles.importe,
           tc_mantic_notas_detalles.unidad_medida,
           tc_mantic_devoluciones_detalles.cantidad,
+          tc_mantic_devoluciones_detalles.cantidad as cuantos,
           tc_mantic_devoluciones_detalles.registro
         from      
           tc_mantic_devoluciones_detalles
@@ -3362,6 +3365,7 @@
         select      
 				  tc_mantic_notas_detalles.id_nota_detalle as id_comodin,
           tc_mantic_notas_detalles.*,
+          tc_mantic_notas_detalles.cantidad as cuantos,
 				  if(tc_mantic_ordenes_detalles.costo is null, 0, tc_mantic_ordenes_detalles.costo) as valor
         from      
           tc_mantic_notas_detalles
@@ -4036,6 +4040,7 @@
         select      
 				  tc_mantic_ordenes_detalles.id_orden_detalle as id_comodin,
           tc_mantic_ordenes_detalles.*,
+          tc_mantic_ordenes_detalles.cantidad as cuantos,
 				  tc_mantic_articulos.precio as valor
         from      
           tc_mantic_ordenes_detalles
@@ -5251,6 +5256,7 @@
 				  tc_mantic_transferencias_detalles.id_transferencia_detalle as id_comodin,
 				  tc_mantic_transferencias_detalles.id_transferencia as id_orden_detalle,
           tc_mantic_transferencias_detalles.*,
+          tc_mantic_transferencias_detalles.cantidad as cuantos,
 				  tc_mantic_articulos.precio as valor
         from      
           tc_mantic_transferencias_detalles
@@ -5290,7 +5296,18 @@
 					and tc_mantic_articulos_codigos.id_principal= 1
 				order by
 					tc_mantic_articulos.nombre
-			</select>					
+			</select>		
+      <select id="siguiente">
+        select
+					max(tc_mantic_confrontas.orden)+ 1 as siguiente
+				from 
+					tc_mantic_confrontas
+				inner join
+          tc_mantic_transferencias on tc_mantic_confrontas.id_transferencia = tc_mantic_transferencias.id_transferencias
+				where
+				  tc_mantic_confrontas.ejercicio= {ejercicio} 
+				  and tc_mantic_transferencias.id_empresa= {idEmpresa}				
+			</select>		
     </unit>
 		<unit id="VistaRequisicionesDto">
 			<select id="lazy">
@@ -5511,6 +5528,7 @@
 				select
 					tc_mantic_ventas_detalles.id_venta_detalle as id_comodin,
           tc_mantic_ventas_detalles.*,
+          tc_mantic_ventas_detalles.cantidad as cuantos,
 					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio
 				from 
 					tc_mantic_ventas_detalles 
@@ -5706,6 +5724,7 @@
 					tc_mantic_ficticias_detalles.id_ficticia_detalle as id_key,
 					tc_mantic_ficticias_detalles.id_ficticia_detalle as id_comodin,
           tc_mantic_ficticias_detalles.*,
+          tc_mantic_ficticias_detalles.cantidad as cuantos,
 					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
 				  true as costo_libre
 				from 

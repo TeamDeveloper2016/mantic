@@ -390,25 +390,25 @@ public class Accion extends IBaseArticulos implements Serializable {
 	} // toMoveData
 	
 	@Override
-	protected void toMoveDataArt(Articulo articulo, Integer index) throws Exception {
+	protected void toMoveArticulo(Articulo articulo, Integer index) throws Exception {
 		UISelectEntity clienteSeleccion= null;		
 		String descuentoPivote         = null;
 		String descuentoVigente        = null;		
 		try {
 			clienteSeleccion= (UISelectEntity) this.attrs.get("clienteSeleccion");
-			if(clienteSeleccion!= null && !clienteSeleccion.getKey().equals(-1L)){
+			if(clienteSeleccion!= null && !clienteSeleccion.getKey().equals(-1L)) {
 				descuentoVigente= toDescuentoVigente(articulo.getIdArticulo(), clienteSeleccion.getKey());				
-				if(descuentoVigente!= null){
+				if(descuentoVigente!= null) {
 					descuentoPivote= getAdminOrden().getDescuento();
 					getAdminOrden().setDescuento(descuentoVigente);
-					super.toMoveDataArt(articulo, index);			
+					super.toMoveArticulo(articulo, index);			
 					getAdminOrden().setDescuento(descuentoPivote);
 				} // if
 				else
-					super.toMoveDataArt(articulo, index);				
+					super.toMoveArticulo(articulo, index);				
 			} // if
 			else
-				super.toMoveDataArt(articulo, index);	
+				super.toMoveArticulo(articulo, index);	
 			this.attrs.put("descripcion", articulo.getNombre());
 			this.image= LoadImages.getImage(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), articulo.getIdArticulo().toString());
 			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
@@ -630,15 +630,15 @@ public class Accion extends IBaseArticulos implements Serializable {
 		} // finally
 	} // doAsignaTicketAbierto
 
-	private void generateNewVenta() throws Exception{
+	private void generateNewVenta() throws Exception {
 		IAdminArticulos adminTicketPivote= null;
 		try {
 			adminTicketPivote= getAdminOrden();
 			setAdminOrden(new AdminTickets(new TicketVenta(-1L)));
 			((TicketVenta)getAdminOrden().getOrden()).setIkProveedor(((TicketVenta)adminTicketPivote.getOrden()).getIkCliente());
 			((TicketVenta)getAdminOrden().getOrden()).setIkAlmacen(((TicketVenta)adminTicketPivote.getOrden()).getIkAlmacen());
-			for(Articulo addArticulo : getAdminOrden().getArticulos())
-				toMoveDataArt(addArticulo, -1);			
+			for(Articulo addArticulo: getAdminOrden().getArticulos())
+				this.toMoveArticulo(addArticulo, -1);			
 		} // try
 		catch (Exception e) {			
 			throw e; 

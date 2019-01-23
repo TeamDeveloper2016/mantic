@@ -162,7 +162,7 @@ public class Abono extends IBasePagos implements Serializable {
 		return regresar;
 	} // doRegresar
 	
-	public void doRegistrarPago(){
+	public void doRegistrarPago() {
 		Transaccion transaccion      = null;
 		TcManticEmpresasPagosDto pago= null;
 		boolean tipoPago             = false;
@@ -453,4 +453,5 @@ public class Abono extends IBasePagos implements Serializable {
 		} // catch		
 		return "/Paginas/Mantic/Egresos/cuentas".concat(Constantes.REDIRECIONAR);
 	} // doEgreso	
+	
 }

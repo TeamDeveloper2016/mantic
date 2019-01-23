@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.catalogos.almacenes.transferencias.backing;
+package mx.org.kaana.mantic.catalogos.almacenes.confrontas.backing;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -37,7 +37,7 @@ import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
 import mx.org.kaana.mantic.enums.EReportes;
 import org.primefaces.context.RequestContext;
 
-@Named(value = "manticCatalogosAlmacenesTransferenciasFiltro")
+@Named(value = "manticCatalogosAlmacenesConfrontasFiltro")
 @ViewScoped
 public class Filtro extends Comun implements Serializable {
 

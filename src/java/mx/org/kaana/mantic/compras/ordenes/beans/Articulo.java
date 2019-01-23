@@ -54,6 +54,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	private double real;
 	private double calculado;
 	private boolean costoLibre;
+	private double cuantos;
 
 	public Articulo() {
 		this(-1L);
@@ -91,6 +92,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.real        = costo;
 		this.calculado   = costo;
 		this.costoLibre  = false;
+		this.cuantos     = cantidad;
 	}
 
 	public UISelectEntity getIdEntity() {
@@ -107,6 +109,14 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 
 	public Totales getImportes() {
 		return importes;
+	}
+
+	public double getCuantos() {
+		return cuantos;
+	}
+
+	public void setCuantos(double cuantos) {
+		this.cuantos=cuantos;
 	}
 
 	@Override
@@ -324,6 +334,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.setImporte(Numero.toRedondearSat(this.importes.getTotal()));
 		this.setUtilidad(utilidad);
 		this.toDiferencia();
+		this.setCuantos(this.getCantidad());
 		
 		// esto es para ajustar el campo de aplicar el cambio de precio siempre y cuando la cantidad sea mayor a cero 
 		if(this.getCantidad()== null || this.getCantidad()<= 0)

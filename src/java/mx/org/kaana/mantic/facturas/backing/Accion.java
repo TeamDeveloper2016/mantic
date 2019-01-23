@@ -340,7 +340,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	} // toMoveData
 	
 	@Override
-	protected void toMoveDataArt(Articulo articulo, Integer index) throws Exception {		
+	protected void toMoveArticulo(Articulo articulo, Integer index) throws Exception {		
 		String descuentoPivote = null;
 		String descuentoVigente= null;		
 		try {	
@@ -348,7 +348,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			descuentoVigente= toDescuentoVigente(articulo.getIdArticulo());				
 			if(descuentoVigente!= null)					
 				getAdminOrden().setDescuento(descuentoVigente);																	
-			super.toMoveDataArt(articulo, index);	
+			super.toMoveArticulo(articulo, index);	
 			getAdminOrden().setDescuento(descuentoPivote);
 			this.attrs.put("descripcion", articulo.getNombre());
 			this.image= LoadImages.getImage(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), articulo.getIdArticulo().toString());

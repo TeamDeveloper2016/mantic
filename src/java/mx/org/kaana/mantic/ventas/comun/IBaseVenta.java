@@ -365,7 +365,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			((TicketVenta)getAdminOrden().getOrden()).setIkAlmacen(((TicketVenta)adminTicketPivote.getOrden()).getIkAlmacen());
 			for(Articulo addArticulo : adminTicketPivote.getArticulos()){
 				if(addArticulo.isValid())
-					toMoveDataArt(addArticulo, -1);			
+					this.toMoveArticulo(addArticulo, -1);			
 			}	// for
 		} // try
 		catch (Exception e) {			
