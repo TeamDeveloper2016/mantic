@@ -32,9 +32,13 @@
 				win.document.open();
 				win.document.write('<'+'html'+'><'+'body'+'>');
 				win.document.write(localStorage.getItem('ticket'));		
+				win.document.write('<div style="text-align:center;">');					
+				win.document.write('<div>');					
 				win.document.write('<svg id=\"barcode\">');					
 				win.document.write(document.getElementById("barcode").innerHTML);
 				win.document.write('</svg>');					
+				win.document.write('</div>');					
+				win.document.write('</div>');					
 				win.document.write('<'+'/body'+'><'+'/html'+'>');
 				win.setTimeout(function(){
 					win.document.close();
