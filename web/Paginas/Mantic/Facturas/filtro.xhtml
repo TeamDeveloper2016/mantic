@@ -193,7 +193,7 @@
 						<p:menuitem id="consultar" action="#{manticFacturasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator/>
             <p:menuitem id="modificar" action="#{manticFacturasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|2|', manticFacturasFiltro.attrs.seleccionado.idFicticiaEstatus)}"/>
-            <p:menuitem id="clonar" icon="fa fa-copy" value="Clonar" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>
+            <p:menuitem id="clonar" icon="fa fa-copy" value="Clonar" process="@this tabla" onstart="janal.bloquear();" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>
             <p:separator rendered="#{!(manticFacturasFiltro.attrs.seleccionado.idFicticiaEstatus eq '3')}"/>					
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticFacturasFiltro.attrs.seleccionado.idFicticiaEstatus eq '6')}"/>					            
             <p:separator/>					
@@ -273,7 +273,7 @@
       <p:outputLabel value="No. factura:"/>
       <p:outputLabel value="#{manticFacturasFiltro.attrs.seleccionado.consecutivo}" styleClass="janal-font-bold"/>      
       <p:outputLabel value="Cliente:"/>
-      <p:outputLabel value="#{manticFacturasFiltro.attrs.seleccionado.nombre}" styleClass="janal-font-bold"/>      
+      <p:outputLabel value="#{manticFacturasFiltro.attrs.seleccionado.cliente}" styleClass="janal-font-bold"/>      
       <p:outputLabel value="Importe:"/>
       <p:outputLabel value="#{manticFacturasFiltro.attrs.seleccionado.total}" styleClass="janal-font-bold"/>      
     </h:panelGrid>			

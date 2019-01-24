@@ -424,6 +424,7 @@ public class Transaccion extends IBaseTnx {
 			this.orden.setEjercicio(new Long(Fecha.getAnioActual()));						
 			this.orden.setIdUsuario(JsfBase.getIdUsuario());
 			this.orden.setObservaciones("");
+			this.orden.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 			regresar= DaoFactory.getInstance().insert(sesion, this.orden)> 0L;
 			if(regresar) {
 				TcManticFacturasDto factura= (TcManticFacturasDto)DaoFactory.getInstance().toEntity(TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
@@ -443,6 +444,7 @@ public class Transaccion extends IBaseTnx {
 				factura.setIntentos(0L);
 				factura.setIdUsuario(JsfBase.getIdUsuario());
 				factura.setObservaciones(null);
+				factura.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   			regresar= DaoFactory.getInstance().insert(sesion, factura)> 0L;
 				if(regresar) {
 					regresar= this.registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "");
