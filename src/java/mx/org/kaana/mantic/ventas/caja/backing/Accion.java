@@ -974,7 +974,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		EEstatusVentas estatus= null;
 		try {
 			estatus= EEstatusVentas.fromIdTipoPago(idEstatus);
-			if(estatus.equals(EEstatusVentas.TERMINADA) || estatus.equals(EEstatusVentas.APARTADOS))
+			if(estatus.equals(EEstatusVentas.PAGADA) || estatus.equals(EEstatusVentas.TERMINADA) || estatus.equals(EEstatusVentas.APARTADOS))
 				regresar= ((TicketVenta)(ticket.getOrden())).getTicket();
 			else
 				regresar= ((TicketVenta)(ticket.getOrden())).getCotizacion();
