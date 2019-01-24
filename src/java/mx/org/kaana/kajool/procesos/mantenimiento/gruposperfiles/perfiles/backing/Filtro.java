@@ -41,7 +41,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   protected void init() {
     Long idGrupo  = null;
     try {
-      idGrupo = (Long) JsfUtilities.getFlashAttribute("idGrupo");
+      idGrupo = JsfUtilities.getFlashAttribute("idGrupo")== null? -1L: (Long)JsfUtilities.getFlashAttribute("idGrupo");
       this.attrs.put("idGrupo", idGrupo);
       this.attrs.put("descripcion", "");
       this.attrs.put("grupoDto", DaoFactory.getInstance().findById(TcJanalGruposDto.class, idGrupo));
