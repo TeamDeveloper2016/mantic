@@ -457,7 +457,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
           return parseFloat(janal.cleanToken(value), 10)>= params.cuanto;
     }, function(params, element) {
-      return $(element).val()+ ' es menor al permitido, el valor m\u00EDnimo es '+ params.cuanto+ '.';
+      return janal.parser(element)+ ' el valor ('+ $(element).val()+ ') debe ser menor al permitido, el valor m\u00EDnimo es '+ params.cuanto+ '.';
     });
 
   $.validator.addMethod('requerido', function(value, element, params) {
