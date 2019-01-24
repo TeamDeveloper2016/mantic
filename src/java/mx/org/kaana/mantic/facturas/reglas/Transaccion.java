@@ -109,12 +109,15 @@ public class Transaccion extends IBaseTnx {
 		Long idEstatusFactura      = null;
 		TcManticFacturasDto factura= null;
 		try {
-			idEstatusFactura= EEstatusFicticias.ELABORADA.getIdEstatusFicticia();
+			idEstatusFactura= EEstatusFicticias.ABIERTA.getIdEstatusFicticia();
 			params= new HashMap<>();
 			if(this.orden!= null)
 				params.put("idFicticia", this.orden.getIdFicticia());
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la factura.");
 			switch(accion) {				
+				case COPIAR:
+					regresar= this.toClonarFiciticia(sesion, idEstatusFactura);
+					break;
 				case AGREGAR:
 				case REGISTRAR:	
 				case DESACTIVAR:
@@ -167,7 +170,7 @@ public class Transaccion extends IBaseTnx {
 				case NO_APLICA:
 					params= new HashMap<>();
 					params.put("idFicticia", this.orden.getIdFicticia());
-					if(DaoFactory.getInstance().deleteAll(sesion, TcManticFicticiasBitacoraDto.class, params)>= 0){
+					if(DaoFactory.getInstance().deleteAll(sesion, TcManticFicticiasBitacoraDto.class, params)>= 0) {
 						if(DaoFactory.getInstance().deleteAll(sesion, TcManticFicticiasDetallesDto.class, params)>= 0)
 							regresar= DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
 					} // if					
@@ -188,7 +191,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	}	// ejecutar
 	
-	private boolean registrarFicticia(Session sesion, Long idEstatusFicticia) throws Exception{
+	private boolean registrarFicticia(Session sesion, Long idEstatusFicticia) throws Exception {
 		boolean regresar         = false;
 		Long consecutivo         = -1L;
 		Long idFactura           = -1L;
@@ -206,7 +209,7 @@ public class Transaccion extends IBaseTnx {
 					params.put("idFicticia", this.orden.getIdFicticia());
 					if(DaoFactory.getInstance().update(sesion, TcManticFacturasDto.class, idFactura, params)>= 1L){					
 						regresar= registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "");
-						toFillArticulos(sesion);
+						this.toFillArticulos(sesion);
 					} // if					
 				} // if
 			} // if
@@ -247,17 +250,9 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // actualizarFicticia
 	
-	protected boolean registraBitacora(Session sesion, Long idFicticia, Long idFicticaEstatus, String justificacion) throws Exception{
-		boolean regresar                        = false;
-		TcManticFicticiasBitacoraDto bitFicticia= null;
-		try {
-			bitFicticia= new TcManticFicticiasBitacoraDto(this.orden.getConsecutivo(), justificacion, idFicticaEstatus, JsfBase.getIdUsuario(), idFicticia, -1L, this.orden.getTotal());
-			regresar= DaoFactory.getInstance().insert(sesion, bitFicticia)>= 1L;
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		return regresar;
+	protected boolean registraBitacora(Session sesion, Long idFicticia, Long idFicticaEstatus, String justificacion) throws Exception {
+		TcManticFicticiasBitacoraDto bitFicticia= new TcManticFicticiasBitacoraDto(this.orden.getConsecutivo(), justificacion, idFicticaEstatus, JsfBase.getIdUsuario(), idFicticia, -1L, this.orden.getTotal());
+		return DaoFactory.getInstance().insert(sesion, bitFicticia)>= 1L;
 	} // registrarBitacora
 	
 	private void toFillArticulos(Session sesion) throws Exception {
@@ -266,7 +261,7 @@ public class Transaccion extends IBaseTnx {
 			if(this.articulos.indexOf(item)< 0)
 				DaoFactory.getInstance().delete(sesion, item);
 		for (Articulo articulo: this.articulos) {
-			if(articulo.isValid()){
+			if(articulo.isValid()) {
 				TcManticFicticiasDetallesDto item= articulo.toFicticiaDetalle();
 				item.setIdFicticia(this.orden.getIdFicticia());
 				if(DaoFactory.getInstance().findIdentically(sesion, TcManticFicticiasDetallesDto.class, item.toMap())== null) 
@@ -285,25 +280,6 @@ public class Transaccion extends IBaseTnx {
 			params.put("ejercicio", Fecha.getAnioActual());
 			params.put("idEmpresa", this.orden.getIdEmpresa());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasDto", "siguiente", params, "siguiente");
-			if(next!= null && next.getData()!= null)
-				regresar= next.toLong();
-		} // try
-		catch (Exception e) {
-			throw e;
-		} // catch
-		finally {
-			Methods.clean(params);
-		} // finally
-		return regresar;
-	} // toSiguiente
-	
-	private Long toSiguienteBitacora(Session sesion) throws Exception {
-		Long regresar             = 1L;
-		Map<String, Object> params= null;
-		try {
-			params=new HashMap<>();
-			params.put("idFicticia", this.orden.getIdFicticia());
-			Value next= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasBitacoraDto", "siguiente", params, "siguiente");
 			if(next!= null && next.getData()!= null)
 				regresar= next.toLong();
 		} // try
@@ -431,6 +407,57 @@ public class Transaccion extends IBaseTnx {
 			LOG.warn("Diferencias en los importes de la factura: "+ this.orden.getIdFicticia()+ " verificar situacion, total ["+ sumTotal+ "] detalle["+ sumDetalle+ "]");
 			throw new KajoolBaseException("No se puede timbrar porque el importe total difiere de los importes del detalle de la factura !");	
 		} // if	
+		return regresar;
+	}
+	
+	private boolean toClonarFiciticia(Session sesion, Long idEstatusFicticia) throws Exception { 
+		boolean regresar          = false;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			Long consecutivo= this.toSiguiente(sesion);			
+			params.put("idFicticia", this.orden.getKey());
+			this.orden.setKey(-1L);
+			this.orden.setConsecutivo(Fecha.getAnioActual() + Cadena.rellenar(consecutivo.toString(), 5, '0', true));			
+			this.orden.setOrden(consecutivo);
+			this.orden.setIdFicticiaEstatus(idEstatusFicticia);
+			this.orden.setEjercicio(new Long(Fecha.getAnioActual()));						
+			this.orden.setIdUsuario(JsfBase.getIdUsuario());
+			this.orden.setObservaciones("");
+			regresar= DaoFactory.getInstance().insert(sesion, this.orden)> 0L;
+			if(regresar) {
+				TcManticFacturasDto factura= (TcManticFacturasDto)DaoFactory.getInstance().toEntity(TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
+				factura.setIdFicticia(this.orden.getKey());
+				factura.setIdVenta(null);
+				factura.setCadenaOriginal(null);
+				factura.setCertificacion(null);
+				factura.setCertificadoDigital(null);
+				factura.setCertificadoSat(null);
+				factura.setFolio(null);
+				factura.setFolioFiscal(null);
+				factura.setIdFacturama(null);
+				factura.setSelloCfdi(null);
+				factura.setSelloSat(null);
+				factura.setUltimoIntento(null);
+				factura.setTimbrado(null);
+				factura.setIntentos(0L);
+				factura.setIdUsuario(JsfBase.getIdUsuario());
+				factura.setObservaciones(null);
+  			regresar= DaoFactory.getInstance().insert(sesion, factura)> 0L;
+				if(regresar) {
+					regresar= this.registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "");
+					if(regresar) {
+	      		this.articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticFicticiasDetallesDto", "detalle", params);
+						for (Articulo articulo: this.articulos) 
+							articulo.setIdComodin(-1L);
+				  	this.toFillArticulos(sesion);
+					} // if	
+				} // if	
+			} // if
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
 		return regresar;
 	}
 	

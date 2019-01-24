@@ -44,6 +44,7 @@ import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
 import mx.org.kaana.mantic.facturas.reglas.Transferir;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.context.RequestContext;
@@ -504,4 +505,31 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.selectedCorreos= new ArrayList<>();
 		} // finally
 	}
+	
+	public void doClonar() {
+		Transaccion transaccion = null;
+		Entity seleccionado     = null;
+		TcManticFicticiasDto dto= null;
+		try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");			
+			dto= (TcManticFicticiasDto)DaoFactory.getInstance().findById(TcManticFicticiasDto.class, seleccionado.getKey());
+			if(dto!= null) {
+				TcManticFicticiasDto copia= SerializationUtils.clone(dto);
+				transaccion= new Transaccion(copia);
+				if(transaccion.ejecutar(EAccion.COPIAR)) {
+					RequestContext.getCurrentInstance().execute("janal.back('clon\\u00F3 la factura ', '"+ copia.getConsecutivo()+ "');");
+					JsfBase.addMessage("Clonar", "La factura se ha clonó correctamente.", ETipoMensaje.ERROR);
+				} // if	
+				else
+					JsfBase.addMessage("Clonar", "Ocurrió un error al clonar la factura.", ETipoMensaje.ERROR);								
+			} // if	
+			else
+				JsfBase.addMessage("Clonar", "Ocurrió un error al clonar la factura, por favor intentelo de nuevo.", ETipoMensaje.ERROR);								
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch			
+	}
+	
 }

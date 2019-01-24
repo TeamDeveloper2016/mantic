@@ -192,8 +192,8 @@
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
 						<p:menuitem id="consultar" action="#{manticFacturasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator/>
-            <p:menuitem id="modificar" action="#{manticFacturasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|2|', manticFacturasFiltro.attrs.seleccionado.idFicticiaEstatus)}"/>					
-            <!--p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{!(manticFacturasFiltro.attrs.seleccionado.idFicticiaEstatus eq '3')}"/-->					
+            <p:menuitem id="modificar" action="#{manticFacturasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|2|', manticFacturasFiltro.attrs.seleccionado.idFicticiaEstatus)}"/>
+            <p:menuitem id="clonar" action="#{manticFacturasFiltro.doClonar()}" icon="fa fa-copy" value="Clonar" process="@this tabla" update="tabla" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
             <p:separator rendered="#{!(manticFacturasFiltro.attrs.seleccionado.idFicticiaEstatus eq '3')}"/>					
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticFacturasFiltro.attrs.seleccionado.idFicticiaEstatus eq '6')}"/>					            
             <p:separator/>					
@@ -263,17 +263,4 @@
 		</p:dialog>
 	</ui:define>
   <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
-  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la factura ?" />
-  <ui:param name="accionConfirmacion" value="#{manticFacturasFiltro}"/>
-  <ui:param name="updateComponent" value="tabla"/>
-  <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
-  <ui:param name="renderedConfirmacion" value="true"/>	
-  <ui:define name="detalleConfirmacion">
-    <h:panelGrid columns="2">
-      <p:outputLabel value="No. factura:"/>
-      <p:outputLabel value="#{manticFacturasFiltro.attrs.seleccionado.consecutivo}"/>      
-    </h:panelGrid>			
-		<p:outputLabel value="Justificación:"/>
-    <p:inputTextarea value="#{manticFacturasFiltro.attrs.justificacionEliminar}" styleClass="janal-wid-100-txt" rows="2"/>
-  </ui:define>
 </ui:composition>
