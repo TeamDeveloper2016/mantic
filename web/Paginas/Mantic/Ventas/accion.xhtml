@@ -487,6 +487,18 @@
             </f:facet>
           </p:dataTable>
 				</p:tab>
+				<p:tab title="Ubicación">										
+					<h:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-25, janal-wid-25, janal-wid-25, janal-wid-25">
+						<p:outputLabel value="Piso:" />
+						<p:outputLabel value="Cuarto:" />
+						<p:outputLabel value="Anaquel:" />
+						<p:outputLabel value="Charola:" />
+						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.piso}" styleClass="janal-wid-100-txt" disabled="true"/>											
+						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.cuarto}" styleClass="janal-wid-100-txt" disabled="true"/>					
+						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.anaquel}" styleClass="janal-wid-100-txt" disabled="true"/>																							
+						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.charola}" styleClass="janal-wid-100-txt" disabled="true"/>																																			
+					</h:panelGrid>						
+				</p:tab>
 			</p:tabView>			
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">				
