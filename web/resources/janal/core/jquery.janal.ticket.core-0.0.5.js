@@ -18,8 +18,8 @@
 			localStorage.setItem('noTicket', noTicket);
 			localStorage.setItem('ticket', ticket);				
 			JsBarcode("#barcode", localStorage.getItem('noTicket'), {				
-				width: 1.4,
-				height: 40,
+				width: 2,
+				height: 60,
 				displayValue: false
 			});
 		}, // imprimirTicket
