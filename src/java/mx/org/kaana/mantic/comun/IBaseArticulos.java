@@ -794,8 +794,9 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			if(idArticulo!= null) {
 				params= new HashMap<>();
 				params.put("idArticulo", idArticulo);
+				params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());				
 				columns= new ArrayList<>();
-				this.attrs.put("detailArticulo", DaoFactory.getInstance().toEntity("VistaArticulosDto", "detalle", params));
+				this.attrs.put("detailArticulo", DaoFactory.getInstance().toEntity("VistaArticulosDto", "informativo", params));
 				columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 				columns.add(new Columna("valor", EFormatoDinamicos.MAYUSCULAS));
 				params.put(Constantes.SQL_CONDICION, "id_articulo=" + idArticulo);
