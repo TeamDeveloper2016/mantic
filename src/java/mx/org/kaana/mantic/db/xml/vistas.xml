@@ -1940,7 +1940,48 @@
 				inner join 
 					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
 				inner join 
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida				
+				where 
+					tc_mantic_articulos.id_articulo = {idArticulo}				
+			</select>
+			<select id="informativo">
+				select 
+				  tc_mantic_articulos.id_articulo as id_key,
+					tc_mantic_articulos.id_articulo,
+				  tc_mantic_articulos.nombre,          
+				  tc_mantic_articulos.menudeo,          
+				  tc_mantic_articulos.medio_mayoreo,          
+				  tc_mantic_articulos.limite_medio_mayoreo,          
+				  tc_mantic_articulos.mayoreo,          
+				  tc_mantic_articulos.limite_mayoreo,          
+				  tc_mantic_articulos.stock,       
+				  tc_mantic_articulos.peso_estimado,       
+				  tc_mantic_articulos.precio,       
+				  tc_mantic_articulos.iva,          
+				  tc_mantic_articulos.desperdicio,
+					tc_mantic_articulos_codigos.codigo,
+					tc_mantic_unidades_medidas.nombre unidad_medida,
+					tc_mantic_empaques.nombre empaque,
+					tc_mantic_almacenes_ubicaciones.piso, 
+					tc_mantic_almacenes_ubicaciones.cuarto,
+					tc_mantic_almacenes_ubicaciones.anaquel,
+					tc_mantic_almacenes_ubicaciones.charola
+				from 
+					tc_mantic_articulos
+				inner join
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
+				inner join 
+					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
+				inner join
+					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+				inner join 
+					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+				inner join 
 					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+				left join 
+					tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo = tc_mantic_almacenes_articulos.id_articulo and tc_mantic_almacenes_articulos.id_almacen= {idAlmacen}
+				left join 
+					tc_mantic_almacenes_ubicaciones on tc_mantic_almacenes_articulos.id_almacen_ubicacion = tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion
 				where 
 					tc_mantic_articulos.id_articulo = {idArticulo}				
 			</select>
