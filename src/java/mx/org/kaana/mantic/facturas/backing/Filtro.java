@@ -384,6 +384,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		List<UISelectItem> allEstatus     = null;
 		MotorBusquedaCatalogos motor      = null; 
 		List<ClienteTipoContacto>contactos= null;
+		Correo correoAdd                  = null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			params= new HashMap<>();
@@ -395,8 +396,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 			contactos= motor.toClientesTipoContacto();
 			this.correos= new ArrayList<>();
 			for(ClienteTipoContacto contacto: contactos){
-				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey()))
-					this.correos.add(new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor()));				
+				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())){
+					correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor());
+					this.correos.add(correoAdd);		
+					this.selectedCorreos.add(correoAdd);
+				} // if
 			} // for
 			this.correos.add(new Correo(-1L, ""));
 		} // try
@@ -422,7 +426,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			emails= new StringBuilder("");
 			if(this.selectedCorreos!= null && !this.selectedCorreos.isEmpty()){
 				for(Correo mail: this.selectedCorreos)
-					emails.append(mail.getDescripcion()).append(", ");
+					if(!Cadena.isVacio(mail.getDescripcion()))
+						emails.append(mail.getDescripcion()).append(", ");
 			} // if
 			transaccion= new Transaccion(bitacora, emails.toString(), (String)this.attrs.get("justificacion"));
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
@@ -436,6 +441,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
 		finally {
 			this.attrs.put("justificacion", "");
+			this.selectedCorreos= new ArrayList<>();
 		} // finally
 	}	// doActualizaEstatus
 	
