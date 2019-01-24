@@ -10,7 +10,7 @@
   <ui:param name="titulo" value="Apartados" />
   <ui:define name="librerias">
 		<h:outputScript library="janal" name="barcode/js.barcode.all.min.js"/>
-		<h:outputScript library="janal" name="core/jquery.janal.ticket.core-0.0.1.js"/>
+		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryTicketJs}"/>
     <script type="text/javascript">
       Janal.Control.fields = {        
         'idEmpresa'         : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
