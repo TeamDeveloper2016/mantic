@@ -11,7 +11,6 @@ import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
@@ -31,6 +30,7 @@ import mx.org.kaana.mantic.db.dto.TcManticFicticiasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.enums.EEstatusFicticias;
 import mx.org.kaana.mantic.enums.ETiposContactos;
+import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 import mx.org.kaana.mantic.facturas.beans.Correo;
 import org.apache.log4j.Logger;
 
@@ -42,7 +42,7 @@ import org.apache.log4j.Logger;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Transaccion extends IBaseTnx {
+public class Transaccion extends TransaccionFactura {
 
   private static final Logger LOG    = Logger.getLogger(Transaccion.class);
 	private static final Long TIMBRADA = 3L;
@@ -358,6 +358,7 @@ public class Transaccion extends IBaseTnx {
 		TransaccionFactura factura= null;
 		CFDIGestor gestor         = null;
 		try {
+			actualizarClienteFacturama(sesion, idFicticia);
 			gestor= new CFDIGestor(idFicticia);			
 			factura= new TransaccionFactura();
 			factura.setArticulos(gestor.toDetalleCfdiFicticia(sesion));
@@ -377,6 +378,16 @@ public class Transaccion extends IBaseTnx {
 		} // catch				
 	} // generarTimbradoFactura
 
+	private void actualizarClienteFacturama(Session sesion, Long idFicticia) throws Exception{		
+		CFDIGestor gestor= new CFDIGestor(idFicticia);
+		ClienteFactura cliente= gestor.toClienteFacturaUpdate(sesion);
+		setCliente(cliente);
+		if(cliente.getIdFacturama()!= null)
+			updateCliente(sesion);
+		else
+			super.procesarCliente(sesion);		
+	} // actualizarArticuloFacturama
+	
 	private boolean checkTotal(Session sesion) throws Exception {
 		boolean regresar = false;
 		Double sumTotal  = 0D;
@@ -455,5 +466,4 @@ public class Transaccion extends IBaseTnx {
 		} // finally
 		return regresar;
 	}
-	
 } 
