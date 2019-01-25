@@ -149,7 +149,7 @@
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 							<p:outputLabel for="clientes" value="Buscar cliente:"/>							
 							<p:autoComplete id="clientes" placeholder="RFC o nombre" widgetVar="listadoClientes" var="customCliente" itemLabel="#{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticFacturasAccion.attrs.cliente}" completeMethod="#{manticFacturasAccion.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
-								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticFacturasAccion.doAsignaCliente}" update="cliente contenido" oncomplete="janal.desbloquear();"/>
+								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticFacturasAccion.doAsignaCliente}" update="cliente contenido panelDomicilio" oncomplete="janal.desbloquear();"/>
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
 										<h:outputText value="Clave" />
@@ -173,7 +173,7 @@
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-wid-100-txt" columnClasses="janal-wid-100-txt">
 							<p:outputLabel for="cliente" value="Cliente seleccionado:"/>							
 							<p:selectOneMenu id="cliente" value="#{manticFacturasAccion.attrs.clienteSeleccion}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
-								<p:ajax event="change" process="@this idEmpresa" onstart="return janal.bloquear();" listener="#{manticFacturasAccion.doActualizaPrecioCliente}" oncomplete="janal.desbloquear();" update="tabla clientes"/>
+								<p:ajax event="change" process="@this idEmpresa" onstart="return janal.bloquear();" listener="#{manticFacturasAccion.doActualizaPrecioCliente}" oncomplete="janal.desbloquear();" update="tabla clientes panelDomicilio"/>
 								<f:selectItems value="#{manticFacturasAccion.attrs.clientesSeleccion}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
@@ -187,7 +187,35 @@
 							</p:selectOneMenu>
 						</p:panelGrid>						
 					</p:panelGrid>	
-
+					
+					<p:panelGrid id="panelDomicilio" columns="1" layout="grid" styleClass="janal-wid-100">
+						<p:outputLabel for="domicilio" value="Domicilio:"/>
+						<p:selectOneMenu id="domicilio" value="#{manticFacturasAccion.attrs.domicilio}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">															
+							<f:selectItems value="#{manticFacturasAccion.attrs.domicilios}" var="element" itemValue="#{element}" itemLabel="#{element.calle}, #{element.numeroExterior} - #{element.numeroInterior}, #{element.asentamiento}, #{element.codigoPostal}, #{element.localidad}, #{element.municipio}"/>
+							<p:column headerText="Calle">
+								<h:outputText value="#{item.calle}"/>
+							</p:column>   
+							<p:column headerText="Ext.">
+								<h:outputText value="#{item.numeroExterior}"/>
+							</p:column>   
+							<p:column headerText="Int.">
+								<h:outputText value="#{item.numeroInterior}"/>
+							</p:column>   
+							<p:column headerText="Colonia/Fraccionamiento">
+								<h:outputText value="#{item.asentamiento}"/>
+							</p:column>   
+							<p:column headerText="C.P.">
+								<h:outputText value="#{item.codigoPostal}"/>
+							</p:column>   
+							<p:column headerText="Localidad">
+								<h:outputText value="#{item.localidad}"/>
+							</p:column>   
+							<p:column headerText="Municipio">
+								<h:outputText value="#{item.municipio}"/>
+							</p:column>   
+						</p:selectOneMenu>
+					</p:panelGrid>
+					
 					<h:panelGrid id="panelTiposPagos" columns="5" style="width: 100%">																								
 						<p:outputLabel for="tipoMedioPago" value="Forma de pago:"/>												
 						<p:spacer id="sp1" rendered="#{!manticFacturasAccion.attrs.mostrarBanco}"/>
