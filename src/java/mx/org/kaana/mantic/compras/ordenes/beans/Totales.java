@@ -50,6 +50,10 @@ public final class Totales implements Serializable {
 		return articulos;
 	}
 
+	public int getReales() {
+		return articulos- 1;
+	}
+
 	public void setArticulos(int articulos) {
 		this.articulos=articulos;
 	}
@@ -144,9 +148,13 @@ public final class Totales implements Serializable {
 		this.subTotal+= articulo.getImportes().getSubTotal();
 		this.total+= articulo.getImportes().getTotal();
 		this.utilidad+= articulo.getUtilidad();
-		if(articulo.getIdArticulo()> 0)
-		  this.cantidad+= articulo.getCantidad();
- 		this.articulos+= articulo.getIdArticulo()> 0? 1: 0;
+    this.cantidad+= articulo.getCantidad();
+	  this.articulos+= 1;
+	}
+	
+	public void removeUltimo(Articulo articulo) {
+		articulo.setCuantos(0D);
+	  this.cantidad-= articulo.getCantidad();
 	}
 	
 	public void removeArticulo(Articulo articulo) {
@@ -157,12 +165,8 @@ public final class Totales implements Serializable {
 		this.subTotal-= articulo.getImportes().getSubTotal();
 		this.total-= articulo.getImportes().getTotal();
 		this.utilidad-= articulo.getUtilidad();
-		if(articulo.getIdArticulo()> 0) {
-			if(this.cantidad> 0)
-  		  this.cantidad-= articulo.getCuantos();
-	   	if(this.articulos> 0)
-   	  	this.articulos--;
-		} // if
+	  this.cantidad-= articulo.getCuantos();
+	  this.articulos-= 1;
 	}
 	
 	public void removeTotal() {

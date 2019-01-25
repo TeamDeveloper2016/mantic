@@ -88,7 +88,7 @@
 							</p:panelGrid>	
 						</p:tab>
 						<p:tab title="Articulos">
-							<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticComprasRequisicionesAccion.adminOrden.articulos}" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas">
+							<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticComprasRequisicionesAccion.adminOrden.articulos}" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas" paginator="#{manticComprasRequisicionesAccion.attrs.paginator}" rows="#{manticComprasRequisicionesAccion.rows}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_LOTE}">
 								<p:column class="MarAuto Responsive janal-wid-3">
 									<f:facet name="header">
 										<h:outputText value="No."/>

@@ -344,8 +344,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.setImporte(Numero.toRedondearSat(this.importes.getTotal()));
 		this.setUtilidad(utilidad);
 		this.toDiferencia();
-		this.setCuantos(this.getCantidad());
-		
+	  this.setCuantos(this.getCantidad());
 		// esto es para ajustar el campo de aplicar el cambio de precio siempre y cuando la cantidad sea mayor a cero 
 		if(this.getCantidad()== null || this.getCantidad()<= 0)
 	    this.setIdAplicar(2L);

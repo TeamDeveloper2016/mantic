@@ -22,6 +22,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.pagina.JsfUtilities;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
@@ -31,6 +32,7 @@ import mx.org.kaana.mantic.enums.EPrecioArticulo;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.primefaces.component.datatable.DataTable;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
@@ -54,6 +56,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 
 	public IBaseArticulos() {
 		this("precio");
+		this.attrs.put("paginator", false); 
 		this.attrs.put("filterName", "");
 		this.attrs.put("filterCode", "");
 	}
@@ -117,7 +120,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				} // if	
 				if(temporal.getCantidad()< 1D)					
 					temporal.setCantidad(1D);
-				temporal.setCuantos(temporal.getCantidad());
+				temporal.setCuantos(0D);
 				temporal.setUltimo(this.attrs.get("ultimo")!= null);
 				temporal.setSolicitado(this.attrs.get("solicitado")!= null);
 				temporal.setUnidadMedida(articulo.toString("unidadMedida"));
@@ -127,10 +130,13 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				temporal.setStock(stock== null? 0D: stock.toDouble());
 				if(index== this.adminOrden.getArticulos().size()- 1) {
 					this.adminOrden.getArticulos().add(new Articulo(-1L));
+  				this.adminOrden.toAddUltimo(this.adminOrden.getArticulos().size()- 1);
 					RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
 				} // if	
 				RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
 				this.adminOrden.toCalculate(index);
+				if(this.attrs.get("paginator")== null || !(boolean)this.attrs.get("paginator"))
+				  this.attrs.put("paginator", this.adminOrden.getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
 				//if(this instanceof IBaseStorage)
  				//	((IBaseStorage)this).toSaveRecord();
 			} // if	
@@ -183,17 +189,20 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			temporal.setDescuento(this.adminOrden.getDescuento());
 			temporal.setExtras(this.adminOrden.getExtras());										
 			temporal.setCantidad(articulo.getCantidad());
-			temporal.setCuantos(temporal.getCantidad());
+			temporal.setCuantos(0D);
 			temporal.setUltimo(this.attrs.get("ultimo")!= null);
 			temporal.setSolicitado(this.attrs.get("solicitado")!= null);
 			temporal.setUnidadMedida(articulo.getUnidadMedida());
 			temporal.setPrecio(articulo.getPrecio());				
 			Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
 			temporal.setStock(stock== null? 0D: stock.toDouble());				
-			this.adminOrden.getArticulos().add(this.adminOrden.getArticulos().size()- 1, temporal);
+			this.adminOrden.getArticulos().add(temporal);
+			this.adminOrden.toAddUltimo(this.adminOrden.getArticulos().size()- 1);
 			RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");				
 			RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
-			this.adminOrden.toAddArticulo(this.adminOrden.getArticulos().size()- 1);			
+			this.adminOrden.toAddArticulo(this.adminOrden.getArticulos().size()- 1);		
+			if(this.attrs.get("paginator")== null || !(boolean)this.attrs.get("paginator"))
+  			this.attrs.put("paginator", this.adminOrden.getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
 		} // try
 		finally {
 			Methods.clean(params);
@@ -549,13 +558,16 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				int position= this.getAdminOrden().getArticulos().indexOf(new Articulo(articulo.toLong("idArticulo")));
 				if(articulo.size()> 1 && position>= 0) {
 					if(index!= position)
-						RequestContext.getCurrentInstance().execute("jsArticulos.exists("+ position+ ");");
+						RequestContext.getCurrentInstance().execute("jsArticulos.exists("+ position+ ","+ Constantes.REGISTROS_POR_LOTE+ ","+ (this.attrs.get("paginator")== null? false: this.attrs.get("paginator"))+ ");");
 				} // if	
 				else
 					this.toMoveData(articulo, index);
 			} // else
 			else 
 					this.toMoveData(articulo, index);
+			DataTable dataTable= (DataTable)JsfUtilities.findComponent("contenedorGrupos:tabla");
+			if (dataTable!= null) 
+				dataTable.setRows((boolean)this.attrs.get("paginator") || this.getAdminOrden().getTotales().getArticulos()>  Constantes.REGISTROS_LOTE_TOPE? Constantes.REGISTROS_POR_LOTE: 10000);		
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
@@ -821,5 +833,18 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
   public void doRowDblselect(SelectEvent event) {
 		this.attrs.put("encontrado", new UISelectEntity((Entity)event.getObject()));
 	}	
+	
+	public void doResetDataTable() {
+    DataTable dataTable= (DataTable)JsfUtilities.findComponent("contenedorGrupos:tabla");
+    if (dataTable!= null) {
+			dataTable.reset();
+      dataTable.setFirst(0);		
+      dataTable.setRows((boolean)this.attrs.get("paginator") || this.getAdminOrden().getTotales().getArticulos()>  Constantes.REGISTROS_LOTE_TOPE? Constantes.REGISTROS_POR_LOTE: 10000);		
+		}	// if
+	}
+	
+  public int getRows() {
+	  return (boolean)this.attrs.get("paginator") || this.getAdminOrden().getTotales().getArticulos()>  Constantes.REGISTROS_LOTE_TOPE? Constantes.REGISTROS_POR_LOTE: 10000;
+  }
 	
 }

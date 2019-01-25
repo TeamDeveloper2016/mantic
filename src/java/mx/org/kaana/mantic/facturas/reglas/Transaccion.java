@@ -303,10 +303,7 @@ public class Transaccion extends IBaseTnx {
 			factura.setObservaciones(this.justificacion);
 			regresar= DaoFactory.getInstance().insert(sesion, factura);
 		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		finally{
+		finally {
 			setMessageError("Error al registrar la factura.");
 		} // finally
 		return regresar;
@@ -351,10 +348,7 @@ public class Transaccion extends IBaseTnx {
 			params.put(Constantes.SQL_CONDICION, "id_cliente=" + this.idCliente + " and id_tipo_contacto=" + ETiposContactos.CORREO.getKey());
 			regresar= DaoFactory.getInstance().toEntitySet(ClienteTipoContacto.class, "TrManticClienteTipoContactoDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
-		catch (Exception e) {		
-			throw e;
-		} // catch		
-		finally{
+		finally {
 			Methods.clean(params);
 		} // finally
 		return regresar;
@@ -378,7 +372,6 @@ public class Transaccion extends IBaseTnx {
 			} // catch						
 		} // try
 		catch (Exception e) {			
-			Error.mensaje(e);
 			this.messageError= "";
 			throw e;
 		} // catch				

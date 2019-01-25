@@ -122,9 +122,10 @@ public abstract class IAdminArticulos implements Serializable {
 	}
 	
 	public void remove(Articulo seleccionado) {
-		if(this.articulos.indexOf(seleccionado)>= 0) {
+		int index= this.articulos.indexOf(seleccionado);
+		if(index>= 0) {
+			this.toRemoveArticulo(index);
 		  this.articulos.remove(seleccionado);
-  		this.toCalculate();
 		} // if
 	}
 
@@ -137,6 +138,11 @@ public abstract class IAdminArticulos implements Serializable {
 			Articulo articulo= this.articulos.get(index);
 			this.totales.removeArticulo(articulo);
 		} // if
+	}
+	
+	public void toAddUltimo(Integer index) {
+		this.toAddArticulo(index);
+		this.totales.removeUltimo(this.articulos.get(this.articulos.size()- 1));
 	}
 	
 	public void toAddArticulo(Integer index) {
@@ -171,6 +177,7 @@ public abstract class IAdminArticulos implements Serializable {
 		  articulo.setModificado(modificado);
 			this.totales.addArticulo(articulo);
 		} // for
+		this.totales.removeUltimo(this.articulos.get(this.articulos.size()- 1));
 		this.totales.removeTotal();
 		this.setAjusteDeuda(this.totales.getTotal());
 	}

@@ -48,7 +48,7 @@
 			};			
     	$(document).ready(function() {
 				setTimeout("janal.readingMode('#{manticInventariosEntradasAccion.attrs.nombreAccion}')", 500);
-        jsArticulos= new Janal.Control.Articulos.Core(#{manticInventariosEntradasAccion.adminOrden.articulos.size()});
+        jsArticulos= new Janal.Control.Articulos.Core(#{manticInventariosEntradasAccion.adminOrden.articulos.size()}, 'contenedorGrupos\\:tabla\\:', #{manticComprasOrdendesAccion.attrs.paginator});
 				janal.decimals= 4;
       });
 			
@@ -165,7 +165,7 @@
 				<div class="ui-grid-col-12">
 					<h:outputText id="tabla" value="Solo sirve para la ventana emergente de articulos express" style="display:none"/>					
 					<div class="janal-wid-100-txt janal-column-center janal-font-bold">
-						<p:outputLabel value="LA NOTA DE ENTRADA [#{manticComprasOrdendesAccion.adminOrden.orden.consecutivo}] SE (AUTO)GUARDO EL DIA #{manticComprasOrdendesAccion.attrs.autoSave} HRS.&lt;br/&gt;" style="display: #{empty(manticInventariosEntradasAccion.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-orange" escape="false"/>
+						<p:outputLabel value="LA NOTA DE ENTRADA [#{manticCatalogosArticulosExpress.adminOrden.orden.consecutivo}] SE (AUTO)GUARDO EL DIA #{manticCatalogosArticulosExpress.attrs.autoSave} HRS.&lt;br/&gt;" style="display: #{empty(manticInventariosEntradasAccion.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-orange" escape="false"/>
 					</div>
 					<p:tabView id="contenedorGrupos">
             <p:ajax event="tabChange" listener="#{manticInventariosEntradasAccion.doTabChange}" process="@this idAlmacen idProveedor" update="@(.importado) @(.involucrados)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move(); PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>						
@@ -294,8 +294,16 @@
 												</p:commandButton>
                         <p:commandButton process="@form" icon="fa fa-save" title="Guardar nota de entrada" actionListener="#{manticInventariosEntradasAccion.doAutoSaveOrden()}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()" style="float:right;" update="@(.recalculo)"/>
 											</p:panelGrid>	
-											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" columnClasses="janal-move-left">
+											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" columnClasses="janal-move-left janal-wid-col40, janal-wid-100">
                         <p:commandButton type="button" icon="fa fa-file-pdf-o" onclick="viewDocument();" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento [#{manticInventariosEntradasAccion.pdf.name}]" style="#{(empty manticInventariosEntradasAccion.pdf)? 'display: none': ''}"/>
+												<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+													<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" style="margin-top: -7px;">
+														<p:outputLabel value="Segmentar partidas: " escape="false" styleClass="filas"  style="float: right; display:#{manticCatalogosArticulosExpress.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}"/>
+														<p:inputSwitch id="paginator" widgetVar="widgetPaginator" value="#{manticCatalogosArticulosExpress.attrs.paginator}" onLabel="SI" offLabel="NO" style="display:#{manticCatalogosArticulosExpress.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}" styleClass="filas #{manticCatalogosArticulosExpress.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'disabled': ''}">
+															<p:ajax event="change" process="@this" listener="#{manticCatalogosArticulosExpress.doResetDataTable()}" update="contenedorGrupos:tabla" oncomplete="jsArticulos.skip($(PF('widgetPaginator').input.selector+ ':checked').length=== 1);"/>
+														</p:inputSwitch>			
+													</p:panelGrid>	 
+												</p:panelGrid>													
 											</p:panelGrid>
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 											  <p:outputLabel for="tipoDeCambio" value="Tipo de cambio (#{manticInventariosEntradasAccion.attrs.proveedor.moneda}):" style="display: #{manticInventariosEntradasAccion.attrs.proveedor.idTipoMoneda.toInteger ne 1? '': 'none'}"/>
@@ -317,7 +325,7 @@
 											</p:panelGrid>	 
 										</p:panelGrid>	
 										<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100" >						
-											<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticInventariosEntradasAccion.adminOrden.filtrados}" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas">
+											<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticInventariosEntradasAccion.adminOrden.filtrados}" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas" paginator="#{manticInventariosEntradasAccion.attrs.paginator}" rows="#{manticInventariosEntradasAccion.rows}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_LOTE}">
 												<p:column class="MarAuto Responsive janal-wid-3">
 													<f:facet name="header">
 														<h:outputText value="No."/>
@@ -469,8 +477,8 @@
 										<div class="ui-grid-row janal-grid-row">
 											<div class="ui-grid-col-2 janal-column-center">
 												<p:outputLabel for="articulos" value="Articulos:"/><br/>
-												<p:inputText id="articulos" value="#{manticInventariosEntradasAccion.adminOrden.totales.articulos}" styleClass="recalculo" style="display:none"/>
-												<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticInventariosEntradasAccion.adminOrden.totales.articulos}"/>
+												<p:inputText id="articulos" value="#{manticInventariosEntradasAccion.adminOrden.totales.reales}" styleClass="recalculo" style="display:none"/>
+												<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticInventariosEntradasAccion.adminOrden.totales.reales}"/>
 									    </div>	
 											<div class="ui-grid-col-2 janal-column-center">
   											<p:outputLabel value="IVA:"/><br/>

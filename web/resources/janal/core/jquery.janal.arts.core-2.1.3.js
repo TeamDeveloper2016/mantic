@@ -5,6 +5,7 @@
  *time 11:15:55 PM
  *author Team Developer 2016 <team.developer@kaana.org.mx>
  */
+			
 (function(window) {
 	var jsArticulos;
 	
@@ -12,6 +13,8 @@
 	
 	Janal.Control.Articulos.Core= Class.extend({
 		joker       : 'contenedorGrupos\\:tabla\\:', // Attributes 
+		datacontrol : 'kajoolTable',  
+		datapaginate: 'widgetPaginator',  
 		codes       : '\\:codigos_input', 
 		panels      : 'codigos_panel', 
 		itemtips    : 'codigos_itemtip', 
@@ -35,36 +38,45 @@
 		doneInterval: 10000,
 		continue    : false,
 		leavePage   : true,
+		paginator   : false,
 		VK_ENTER    : 13, 
-		VK_ESC      : 27,
-		VK_ASTERISK : 106,
-		VK_MINUS    : 109,
-		VK_COMA     : 191,
-		VK_OPEN     : 122,
-		VK_CLOSE    : 123,
-		VK_PLUS     : 107,
-		VK_DIV      : 111,
-		VK_POINT    : 110,
-		VK_UP       : 38,
-		VK_DOWN     : 40,
-		VK_REST     : 189,
-		VK_PIPE     : 220,
-		VK_CTRL     : 17,
-		VK_MAYOR    : 226,
-		VK_F7       : 118,
-		VK_F10      : 121,
-	  change      : [13, 27, 106, 107, 110, 111, 188, 121, 189, 191, 220, 222, 226],
-	  control     : [9, 13, 17, 27, 38, 40, 220, 118, 121, 122],
+		VK_FIRST_PAGE: 36, 
+		VK_LAST_PAGE : 35, 
+		VK_PREV_PAGE : 33, 
+		VK_NEXT_PAGE : 34, 
+		VK_ESC       : 27,
+		VK_ASTERISK  : 106,
+		VK_MINUS     : 109,
+		VK_COMA      : 191,
+		VK_OPEN      : 122,
+		VK_CLOSE     : 123,
+		VK_PLUS      : 107,
+		VK_DIV       : 111,
+		VK_POINT     : 110,
+		VK_UP        : 38,
+		VK_DOWN      : 40,
+		VK_REST      : 189,
+		VK_PIPE      : 220,
+		VK_CTRL      : 17,
+		VK_MAYOR     : 226,
+		VK_F7        : 118,
+		VK_F10       : 121,
+		VK_FIN       : 35,
+		VK_PAGINATOR : 19,
+	  change       : [13, 19, 27, 106, 107, 110, 111, 188, 121, 189, 191, 220, 222, 226],
+	  control      : [9, 13, 17, 27, 33, 34, 35, 36, 38, 40, 220, 118, 121, 122],
 		cursor: {
 			top: 1, // el top debera ser elementos que van de 0 a n-1
 			index: 0,
 			tmp: 0
 		},
-		init: function(top, content) { // Constructor
+		init: function(top, content, paginator) { // Constructor
 			$articulos= this;
 			this.cursor.top= top-1;
 			if(typeof(content)!== 'undefined')
 			  this.joker= content;
+			if(typeof(paginator)!== 'undefined')
+			  this.paginator= paginator;
 			this.events();
 		}, // init
 		events: function() {
@@ -291,6 +303,23 @@
 					case $articulos.VK_F7:
 						return $articulos.detail();
 						break;
+					case $articulos.VK_PREV_PAGE:
+						return $articulos.pagePrev();
+						break;
+					case $articulos.VK_NEXT_PAGE:
+						return $articulos.pageNext();
+						break;
+					case $articulos.VK_FIRST_PAGE:
+						return $articulos.pageFirst();
+						break;
+					case $articulos.VK_LAST_PAGE:
+						return $articulos.pageLast();
+						break;
+					case $articulos.VK_PAGINATOR:
+						if(!$(PF($articulos.datapaginate).jqId).hasClass('disabled'))
+						  PF($articulos.datapaginate).toggle();
+						return false;
+						break;
 					default:
 						break;
 				} // switch
@@ -453,12 +482,19 @@
 			janal.console('jsArticulo.get: '+ this.name()+ ' ->'+ $(this.name()).val());
 			return $(this.name())? $(this.name()).val(): '';
 		},
+		visible: function(index) {
+			var id= '#'+ this.joker+ index+ this.codes;
+			return $(id).length> 0;
+		},
 		up: function(jump) {
 			janal.console("jsArticulos.up: "+ this.cursor.index);
-			if(this.cursor.index> 0)
-				this.cursor.index--;
+			if(this.cursor.index> 0) {
+				if(this.visible(this.cursor.index- 1))
+				  this.cursor.index--;
+			} // if	
 			else
-				this.cursor.index= this.cursor.top;
+				if(this.visible(this.cursor.top))
+  				this.cursor.index= this.cursor.top;
 			if(jump)
 			  this.move();
 			return false;
@@ -466,9 +502,11 @@
 		down: function(jump) {
 			janal.console("jsArticulos.down: "+ this.cursor.index+ ' '+ jump);
 			if(this.cursor.index< this.cursor.top)
-				this.cursor.index++;
+				if(this.visible(this.cursor.index+ 1))
+  				this.cursor.index++;
 			else
-				this.cursor.index= 0;
+				if(this.visible(0))
+  				this.cursor.index= 0;
 			if(jump)
   			this.move();
 			return false;
@@ -476,7 +514,37 @@
 		valid: function() {
 			janal.console('jsArticulo.valid: '+ $(this.key()).attr('id'));
 			return $(this.key()) && parseInt($(this.key()).val(), 10)> 0;
-		}, 
+		},
+		pagePrev: function() {
+			if(this.paginator) 
+				if(PF(this.datacontrol).paginator.cfg.page> 0) {
+					PF(this.datacontrol).paginator.setPage(PF(this.datacontrol).paginator.cfg.page- 1);
+					setTimeout('$articulos.cursor.index= PF($articulos.datacontrol).paginator.cfg.page* PF($articulos.datacontrol).paginator.cfg.rows; $articulos.goto();', 1000);
+				} // if
+			return false;
+		},
+		pageNext: function() {
+			if(this.paginator) 
+				if(PF(this.datacontrol).paginator.cfg.page< (PF(this.datacontrol).paginator.cfg.pageCount- 1)) {
+					PF(this.datacontrol).paginator.setPage(PF(this.datacontrol).paginator.cfg.page+ 1);
+					setTimeout('$articulos.cursor.index= PF($articulos.datacontrol).paginator.cfg.page* PF($articulos.datacontrol).paginator.cfg.rows; $articulos.goto();', 1000);
+				} // if
+			return false;
+		},
+		pageFirst: function() {
+			if(this.paginator) {
+				PF(this.datacontrol).paginator.setPage(0);
+				setTimeout('$articulos.cursor.index= 0; $articulos.goto();', 1000);
+			} // if
+			return false;
+		},
+		pageLast: function() {
+			if(this.paginator) {
+				PF(this.datacontrol).paginator.setPage(PF(this.datacontrol).paginator.cfg.pageCount- 1);
+				setTimeout('$articulos.cursor.index= $articulos.cursor.top; $articulos.goto();', 1000);
+			} // if
+			return false;
+		},
 		remove: function() {
 			janal.console('jsArticulo.remove: '+ $(this.lock()).attr('id'));
 			return this.valid() && $(this.lock()) && ($(this.lock()).val().length=== 0 || parseInt($(this.lock()).val(), 10)<= 0);
@@ -593,13 +661,34 @@
 					this.down(true);
 			return false;
 		},
-		exists: function(index) {
+		exists: function(index, top, paginator) {
 			janal.console('jsArticulo.exists: '+ index);
 			this.cursor.tmp= index;
+			if(paginator)
+        PF(this.datacontrol).paginator.setPage(Math.trunc(index/ top));
 			alert('El articulo ya existe en la orden y se encuentra en la fila '+ (index+ 1)+ ',\n la cantidad de articulos solicitados se aumento\n con la cantidad del articulo seleccionado\n por favor verifique y corriga el valor !');
-			setTimeout('$articulos.cursor.index= $articulos.cursor.tmp;$articulos.goto();', 1000);
+			setTimeout('$articulos.cursor.index= $articulos.cursor.tmp; $articulos.goto();', 1000);
 			janal.desbloquear();
  		}, 
+		skip: function(paginator) {
+			this.paginator= paginator;
+			if(paginator) {
+				if(PF(this.datacontrol).paginator.cfg.page!== PF(this.datacontrol).paginator.cfg.pageCount) {
+					PF(this.datacontrol).paginator.setPage(PF(this.datacontrol).paginator.cfg.pageCount- 1);
+    			setTimeout('$articulos.cursor.index= $articulos.cursor.top; $articulos.goto();', 1000);
+				} // if
+			} 	
+			else 
+    	 setTimeout('$articulos.cursor.index= $articulos.cursor.top; $articulos.goto();', 1000); 
+		},
+		control: function(paginator) {
+			this.paginator= paginator;
+			if(paginator)
+				if(PF(this.datacontrol).paginator.cfg.page!== PF(this.datacontrol).paginator.cfg.pageCount) {
+					PF(this.datacontrol).paginator.setPage(PF(this.datacontrol).paginator.cfg.pageCount- 1);
+    			setTimeout('$articulos.cursor.index= $articulos.cursor.top; $articulos.goto();', 1000);
+				} // if
+		},
 		goto: function() {
 			janal.console('jsArticulo.goto: '+ this.name());
 			if($(this.name())) 
@@ -773,7 +862,8 @@
 			    PF('listado').activate();
 			janal.desbloquear();
 		},
-		process: function() {
+		process: function(paginator) {
+			this.paginator= paginator;
 			janal.console('jsArticulos.process: ');
 			janal.refresh();
 			janal.desbloquear(); 
@@ -781,6 +871,7 @@
 			$('div[id$='+ this.panels+ ']').hide();
 			$('div[id$='+ this.itemtips+ ']').hide();
 			$('#source-image').attr('href', $('#icon-image').attr('src'));
+			this.control(paginator);
 		},
 		go: function(focus) {
 			janal.console('jsArticulos.go: ');
@@ -813,5 +904,3 @@
 	
 	console.info('Iktan.Control.Articulos initialized');
 })(window);			
-			
-			
