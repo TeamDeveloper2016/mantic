@@ -97,6 +97,8 @@ public class Filtro extends IBaseFilter implements Serializable {
       if(this.attrs.get("idFicticia")!= null) 
 			  this.doLoad();			
       this.attrs.remove("idFicticia"); 
+			this.correos= new ArrayList<>();
+			this.selectedCorreos= new ArrayList<>();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -395,8 +397,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("estatus", allEstatus.get(0).getValue().toString());
 			motor= new MotorBusqueda(-1L, seleccionado.toLong("idCliente"));
 			contactos= motor.toClientesTipoContacto();
+			LOG.warn("Inicializando listas de correos y seleccionados");
 			this.correos= new ArrayList<>();
 			this.selectedCorreos= new ArrayList<>();
+			LOG.warn("Total de contactos" + contactos.size());
 			for(ClienteTipoContacto contacto: contactos){
 				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())){
 					correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor());
@@ -404,6 +408,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 					this.selectedCorreos.add(correoAdd);
 				} // if
 			} // for
+			LOG.warn("Agregando correo default");
 			this.correos.add(new Correo(-1L, ""));
 		} // try
 		catch (Exception e) {
