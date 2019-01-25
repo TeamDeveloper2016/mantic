@@ -53,6 +53,8 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   private Long idTipoMedioPago;
   @Column (name="id_cliente")
   private Long idCliente;
+  @Column (name="id_cliente_domicilio")
+  private Long idClienteDomicilio;
   @Column (name="descuento")
   private String descuento;
   @Column (name="id_banco")
@@ -87,11 +89,11 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   }
 
   public TcManticFicticiasDto(Long key) {
-    this(null, null, new Long(-1L), null, null, null, null, 1D, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null);
+    this(null, null, new Long(-1L), null, null, null, null, 1D, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null);
     setKey(key);
   }
 
-  public TcManticFicticiasDto(Double descuentos, Long idTipoPago, Long idFicticia, String extras, Double global, Double total, Long idFicticiaEstatus, Double tipoDeCambio, Long orden, Long idTipoMedioPago, Long idCliente, String descuento, Long idBanco, Long ejercicio, String consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Date dia, String referencia) {
+  public TcManticFicticiasDto(Double descuentos, Long idTipoPago, Long idFicticia, String extras, Double global, Double total, Long idFicticiaEstatus, Double tipoDeCambio, Long orden, Long idTipoMedioPago, Long idCliente, Long idClienteDomicilio, String descuento, Long idBanco, Long ejercicio, String consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Date dia, String referencia) {
     setDescuentos(descuentos);
     setIdTipoPago(idTipoPago);
     setIdFicticia(idFicticia);
@@ -205,6 +207,14 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 
   public Long getIdCliente() {
     return idCliente;
+  }
+  
+	public void setIdClienteDomicilio(Long idClienteDomicilio) {
+    this.idClienteDomicilio = idClienteDomicilio;
+  }
+
+  public Long getIdClienteDomicilio() {
+    return idClienteDomicilio;
   }
 
   public void setDescuento(String descuento) {
@@ -356,6 +366,8 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdCliente());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdClienteDomicilio());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDescuento());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdBanco());
@@ -401,6 +413,7 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 		regresar.put("orden", getOrden());
 		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
 		regresar.put("idCliente", getIdCliente());
+		regresar.put("idClienteDomicilio", getIdClienteDomicilio());
 		regresar.put("descuento", getDescuento());
 		regresar.put("idBanco", getIdBanco());
 		regresar.put("ejercicio", getEjercicio());
@@ -421,7 +434,7 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescuentos(), getIdTipoPago(), getIdFicticia(), getExtras(), getGlobal(), getTotal(), getIdFicticiaEstatus(), getTipoDeCambio(), getOrden(), getIdTipoMedioPago(), getIdCliente(), getDescuento(), getIdBanco(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getDia(), getReferencia()
+    getDescuentos(), getIdTipoPago(), getIdFicticia(), getExtras(), getGlobal(), getTotal(), getIdFicticiaEstatus(), getTipoDeCambio(), getOrden(), getIdTipoMedioPago(), getIdCliente(), getIdClienteDomicilio(), getDescuento(), getIdBanco(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getDia(), getReferencia()
     };
     return regresar;
   }

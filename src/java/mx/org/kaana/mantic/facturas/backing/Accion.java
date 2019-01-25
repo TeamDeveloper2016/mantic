@@ -393,7 +393,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		((FacturaFicticia)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
 		((FacturaFicticia)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
 		((FacturaFicticia)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
-		
+		((FacturaFicticia)this.getAdminOrden().getOrden()).setIdClienteDomicilio(((Entity)this.attrs.get("domicilio")).getKey());		
 		if(((FacturaFicticia)this.getAdminOrden().getOrden()).getTipoDeCambio()< 1)
 			((FacturaFicticia)this.getAdminOrden().getOrden()).setTipoDeCambio(1D);
 	} // loadOrdenVenta
@@ -633,18 +633,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("usuarioDescuento", "");
 			this.attrs.put("passwordDescuento", "");
 		} // finally
-	} // doAplicarDescuento
-	
-	public void doGenerateFactura(){
-		Cfdi cfdi= null;
-		try {
-			cfdi= new Cfdi();
-		} // try
-		catch (Exception e) {
-			JsfBase.addMessageError(e);
-			Error.mensaje(e);			
-		} // catch		
-	} // doGenerateFactura
+	} // doAplicarDescuento	
 	
 	public void doUpdateForEmpresa(){
 		try {
@@ -669,12 +658,35 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);			
 			this.attrs.put("clienteDefault", seleccion);			
+			loadDomicilios(seleccion.getKey());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // loadClienteDefault	
+	
+	private void loadDomicilios(Long idCliente) throws Exception{
+		Map<String, Object>params     = null;
+		List<UISelectEntity>domicilios= null;
+		List<Columna>campos           = null;
+		try {
+			params= new HashMap<>();					
+			params.put("idCliente", idCliente);
+			campos= new ArrayList<>();
+			campos.add(new Columna("calle", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("asentamiento", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("localidad", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("municipio", EFormatoDinamicos.MAYUSCULAS));
+			domicilios= UIEntity.build("VistaClientesDto", "domiciliosCliente", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("domicilios", domicilios);
+			if(!domicilios.isEmpty())
+				this.attrs.put("domicilio", UIBackingUtilities.toFirstKeySelectEntity(domicilios));
+		} // try		
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // loadDomicilios
 	
 	@Override
 	public void doAsignaCliente(SelectEvent event) {
@@ -684,6 +696,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
 			seleccion= clientes.get(clientes.indexOf((UISelectEntity)event.getObject()));
 			this.toFindCliente(seleccion);
+			loadDomicilios(seleccion.getKey());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -710,12 +723,14 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		} // catch		
 	} // toFindCliente
 	
+	@Override
 	public List<UISelectEntity> doCompleteCliente(String query) {
 		this.attrs.put("codigoCliente", query);
     this.doUpdateClientes();		
 		return (List<UISelectEntity>)this.attrs.get("clientes");
 	}	// doCompleteCliente
 	
+	@Override
 	public void doUpdateClientes() {
 		List<Columna> columns     = null;
     Map<String, Object> params= null;
@@ -755,6 +770,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			else
 				setPrecio("menudeo");
 			doReCalculatePreciosArticulos(precioVigente, clienteSeleccion.getKey());
+			loadDomicilios(clienteSeleccion.getKey());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

@@ -2910,6 +2910,15 @@
         from      
           tr_mantic_cliente_domicilio
       </select>
+			<select id="principalCliente">
+        select      
+          tr_mantic_cliente_domicilio.id_cliente_domicilio as id_key,
+					tr_mantic_cliente_domicilio.*
+        from      
+          tr_mantic_cliente_domicilio
+				where 
+					tr_mantic_cliente_domicilio.id_cliente={idCliente} and tr_mantic_cliente_domicilio.id_principal=1
+      </select>
 			<delete id="rows">
         delete from tr_mantic_cliente_domicilio where id_cliente={idCliente}
       </delete>

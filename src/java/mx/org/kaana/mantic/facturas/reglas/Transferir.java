@@ -129,6 +129,7 @@ public class Transferir extends IBaseTnx {
 			consecutivo, // Long orden, 
 			1L, // Long idTipoMedioPago, 
 			idCliente, // Long idCliente, 
+			toIdClienteDomicilio(sesion, idCliente),
 			"0", // String descuento, 
 			null, // Long idBanco, 
 			new Long(calendar.get(Calendar.YEAR)), // Long ejercicio, 
@@ -145,6 +146,30 @@ public class Transferir extends IBaseTnx {
 		);
 		return regresar;
 	}
+	
+	private Long toIdClienteDomicilio(Session sesion, Long idCliente) throws Exception{
+		Long regresar                        = null;
+		TrManticClienteDomicilioDto principal= null;
+		Map<String, Object>params            = null;
+		try {
+			params= new HashMap<>();
+			params.put("idCliente", idCliente);
+			principal= (TrManticClienteDomicilioDto) DaoFactory.getInstance().toEntity(sesion, TrManticClienteDomicilioDto.class, "TrManticClienteDomicilioDto", "principalCliente", params);
+			if(principal!= null)
+				regresar= principal.getKey();
+			else{
+				params.clear();
+				params.put(Constantes.SQL_CONDICION, "id_cliente=".concat(idCliente.toString()));
+				principal= (TrManticClienteDomicilioDto) DaoFactory.getInstance().toEntity(sesion, TrManticClienteDomicilioDto.class, "TrManticClienteDomicilioDto", params);
+				if(principal!= null)
+					regresar= principal.getIdClienteDomicilio();
+			} // else
+		} // try		
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toIdClienteDomicilio
 	
 	private TcManticFacturasDto toFactura(CfdiSearchResult cfdi, Cfdi detail, Calendar calendar, Long idFicticia) {
 		Complement complement = detail.getComplement();
