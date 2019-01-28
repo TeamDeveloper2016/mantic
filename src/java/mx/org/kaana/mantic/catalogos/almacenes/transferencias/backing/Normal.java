@@ -394,6 +394,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 			if(!almacenes.isEmpty()) 
 			  ((Transferencia)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
+			this.doUpdateAlmacen();
    } // try
     catch (Exception e) {
       Error.mensaje(e);

@@ -106,7 +106,7 @@
 								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt recalculo" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.consecutivo}" readonly="true" style="display: #{manticCatalogosAlmacenesTransferenciasNormal.agregar}"/>
 								<p:spacer width="1px" style="display: #{manticCatalogosAlmacenesTransferenciasNormal.agregar}"/><p:separator style="display: #{manticCatalogosAlmacenesTransferenciasNormal.agregar}"/>
                 <p:outputLabel for="idAlmacen" value="Almacen origen:"/>
-								<p:selectOneMenu id="idAlmacen" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="contains">
+								<p:selectOneMenu id="idAlmacen" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains">
 									<p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasNormal.doUpdateAlmacen}" process="@this" update="tabla @(.total) @(.recalculo)"/>
 									<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.almacenes}" var="element" itemValue="#{element.key}" itemLabel="#{element.clave} - #{element.nombre}"/>
 									<p:column headerText="Clave">
@@ -117,7 +117,7 @@
 									</p:column>   
 								</p:selectOneMenu>
                 <p:outputLabel for="idDestino" value="Almacen destino:"/>
-								<p:selectOneMenu id="idDestino" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.ikDestino}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="contains">
+								<p:selectOneMenu id="idDestino" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.ikDestino}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt total" effect="fade" filter="true" filterMatchMode="contains">
 									<p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasNormal.doUpdateAlmacen}" process="@this" update="tabla @(.total) @(.recalculo)"/>
 									<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.destinos}" var="element" itemValue="#{element.key}" itemLabel="#{element.clave} - #{element.nombre}"/>
 									<p:column headerText="Clave">
