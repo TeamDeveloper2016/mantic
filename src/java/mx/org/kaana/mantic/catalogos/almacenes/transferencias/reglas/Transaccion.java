@@ -69,8 +69,7 @@ public class Transaccion extends IBaseTnx {
     boolean regresar= false;
     try {			
     	this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para transferencia de articulos.");
-      TcManticAlmacenesArticulosDto origen      = null;			
-  		Long consecutivo                          = 0L;
+  		Long consecutivo= 0L;
       switch (accion) {
         case ACTIVAR:
         case AGREGAR:
@@ -118,12 +117,12 @@ public class Transaccion extends IBaseTnx {
     return regresar;
   } // ejecutar
 
-	private Long toUbicacion(Session sesion, Long idArticulo) throws Exception {
+	private Long toUbicacion(Session sesion, Long idAlmacen, Long idArticulo) throws Exception {
 		Long regresar= -1L;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			params.put("idAlmacen", this.dto.getIdDestino());
+			params.put("idAlmacen", idAlmacen);
 			params.put("idArticulo", idArticulo);
 			TcManticAlmacenesArticulosDto ubicacion= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesArticulosDto.class, params, "ubicacion");
 			if(ubicacion== null) {
@@ -274,7 +273,7 @@ public class Transaccion extends IBaseTnx {
 			JsfBase.getIdUsuario(), // Long idUsuario, 
 			idAlmacen, // Long idAlmacen, 
 			umbrales.getMaximo(), // Double maximo, 
-			this.toUbicacion(sesion, articulo.getIdArticulo()), // Long idAlmacenUbicacion, 
+			this.toUbicacion(sesion, idAlmacen, articulo.getIdArticulo()), // Long idAlmacenUbicacion, 
 			articulo.getIdArticulo(), // Long idArticulo, 
 			0D // Double stock
 		);
