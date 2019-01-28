@@ -294,7 +294,6 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 		Map<String, Object> params= new HashMap<>();
 		try {
 			if(articulo.size()> 1) {
-				this.doSearchArticulo(articulo.toLong("idArticulo"), index);
 				params.put("idArticulo", articulo.toLong("idArticulo"));
 				params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
 				temporal.setKey(articulo.toLong("idArticulo"));

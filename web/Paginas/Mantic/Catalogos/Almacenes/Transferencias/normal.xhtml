@@ -212,7 +212,7 @@
 													<f:facet name="header">
 														<h:outputText value="Articulo"/>
 													</f:facet>
-													<h:outputText id="nombres" value="[#{row['propio']}] #{row['nombre']}" escape="false"/>
+													<h:outputText id="nombres" value="[#{row['propio']}] #{row['nombre']}" escape="false" styleClass="#{empty(row['propio'])? 'janal-color-red janal-font-bold': ''}"/>
 												</p:column>		
 												<p:column class="cantidades janal-column-right MarAuto Responsive janal-wid-6">
 													<f:facet name="header">

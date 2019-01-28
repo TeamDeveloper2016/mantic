@@ -844,7 +844,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	}
 	
   public int getRows() {
-	  return (boolean)this.attrs.get("paginator") || this.getAdminOrden().getTotales().getArticulos()>  Constantes.REGISTROS_LOTE_TOPE? Constantes.REGISTROS_POR_LOTE: 10000;
+	  return this.attrs.get("paginator")== null || this.getAdminOrden()== null || (boolean)this.attrs.get("paginator") || this.getAdminOrden().getTotales().getArticulos()> Constantes.REGISTROS_LOTE_TOPE? 10000: Constantes.REGISTROS_POR_LOTE;
   }
 	
 }
