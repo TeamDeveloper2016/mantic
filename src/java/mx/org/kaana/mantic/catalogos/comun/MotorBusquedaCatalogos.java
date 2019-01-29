@@ -12,6 +12,7 @@ import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
+import org.hibernate.Session;
 
 public abstract class MotorBusquedaCatalogos {
 
@@ -178,6 +179,23 @@ public abstract class MotorBusquedaCatalogos {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_cliente=" + this.idCliente);
 			regresar= DaoFactory.getInstance().toEntitySet(ClienteTipoContacto.class, "TrManticClienteTipoContactoDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toClientesTipoContacto
+	
+	public List<ClienteTipoContacto> toClientesTipoContacto(Session sesion) throws Exception {
+		List<ClienteTipoContacto> regresar= null;
+		Map<String, Object>params    = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_cliente=" + this.idCliente);
+			regresar= DaoFactory.getInstance().toEntitySet(sesion, ClienteTipoContacto.class, "TrManticClienteTipoContactoDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {		
 			throw e;
