@@ -135,26 +135,23 @@ public class Transaccion extends TransaccionFactura {
 						regresar= registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFactura, this.justificacion);					
 					break;
 				case JUSTIFICAR:		
-					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L){
+					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.orden= (TcManticFicticiasDto) DaoFactory.getInstance().findById(sesion, TcManticFicticiasDto.class, this.bitacora.getIdFicticia());
 						this.orden.setIdFicticiaEstatus(this.bitacora.getIdFicticiaEstatus());						
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 						if(this.bitacora.getIdFicticiaEstatus().equals(TIMBRADA) && this.checkTotal(sesion)) {
-							params= new HashMap<>();
 							params.put("idFicticia", this.orden.getIdFicticia());
 							factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
-							if(factura!= null){
-								params= new HashMap<>();
+							if(factura!= null) {
 								params.put("correos", this.correos);
 								params.put("comentarios", this.comentarios);								
 								params.put("timbrado", new Timestamp(Calendar.getInstance().getTimeInMillis()));								
 								DaoFactory.getInstance().update(sesion, TcManticFacturasDto.class, factura.getIdFactura(), params);
-								generarTimbradoFactura(sesion, this.orden.getIdFicticia(), factura.getIdFactura(), this.correos);
+								this.generarTimbradoFactura(sesion, this.orden.getIdFicticia(), factura.getIdFactura(), this.correos);
 							} // 
 						} // if
 						else 
 							if(this.bitacora.getIdFicticiaEstatus().equals(CANCELADA)) {
-								params= new HashMap<>();
 								params.put("idFicticia", this.orden.getIdFicticia());
 								factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
 								if(factura!= null && factura.getIdFacturama()!= null) {
@@ -171,7 +168,6 @@ public class Transaccion extends TransaccionFactura {
 					regresar= actualizarFicticia(sesion, EEstatusFicticias.PAGADA.getIdEstatusFicticia());				
 					break;		
 				case NO_APLICA:
-					params= new HashMap<>();
 					params.put("idFicticia", this.orden.getIdFicticia());
 					if(DaoFactory.getInstance().deleteAll(sesion, TcManticFicticiasBitacoraDto.class, params)>= 0) {
 						if(DaoFactory.getInstance().deleteAll(sesion, TcManticFicticiasDetallesDto.class, params)>= 0)
@@ -189,6 +185,9 @@ public class Transaccion extends TransaccionFactura {
 			Error.mensaje(e);
 			throw new Exception(this.messageError.concat("<br/>")+ e.getMessage());
 		} // catch		
+		finally {
+			Methods.clean(params);
+		} // finally
 		if(this.orden!= null)
 			LOG.info("Se genero de forma correcta la orden: "+ this.orden.getConsecutivo());
 		return regresar;
