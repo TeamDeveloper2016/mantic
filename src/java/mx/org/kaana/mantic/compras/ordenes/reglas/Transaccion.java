@@ -104,6 +104,8 @@ public class Transaccion extends Inventarios implements Serializable {
 						bitacoraOrden= new TcManticOrdenesBitacoraDto(this.orden.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
 						regresar= DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L;
 					} // else	
+      		for (Articulo articulo: this.articulos) 
+						articulo.setModificado(false);
 					break;
 				case AGREGAR:
 					Long consecutivo= this.toSiguiente(sesion);

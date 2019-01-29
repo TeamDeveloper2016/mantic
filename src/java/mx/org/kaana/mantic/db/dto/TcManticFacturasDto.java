@@ -73,6 +73,8 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
 	
   @Column (name="registro")
   private Timestamp registro;
+  @Column (name="cancelada")
+  private Timestamp cancelada;
 
   public TcManticFacturasDto() {
     this(new Long(-1L));
@@ -108,6 +110,7 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
 		this.certificacion= certificacion;
 		this.folioFiscal= folioFiscal;
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		this.cancelada= new Timestamp(Calendar.getInstance().getTimeInMillis());
   }
 	
   public void setIdFactura(Long idFactura) {
@@ -270,6 +273,14 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
     return registro;
   }
 
+	public Timestamp getCancelada() {
+		return cancelada;
+	}
+
+	public void setCancelada(Timestamp cancelada) {
+		this.cancelada=cancelada;
+	}
+
   @Transient
   @Override
   public Long getKey() {
@@ -324,6 +335,8 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
 		regresar.append(getFolioFiscal());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCancelada());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -351,13 +364,14 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
 		regresar.put("certificacion", getCertificacion());
 		regresar.put("folioFiscal", getFolioFiscal());
 		regresar.put("registro", getRegistro());
+		regresar.put("cancelada", getCancelada());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-      getIdFactura(), getUltimoIntento(), getTimbrado(), getIdUsuario(), getIdFicticia(), getFolio(), getIdVenta(), getIntentos(), getCorreos(), getComentarios(), getObservaciones(), getIdFactura(), getCadenaOriginal(), getSelloSat(), getSelloCfdi(), getCertificadoSat(), getCertificadoDigital(), getCertificacion(), getFolioFiscal(), getRegistro()
+      getIdFactura(), getUltimoIntento(), getTimbrado(), getIdUsuario(), getIdFicticia(), getFolio(), getIdVenta(), getIntentos(), getCorreos(), getComentarios(), getObservaciones(), getIdFactura(), getCadenaOriginal(), getSelloSat(), getSelloCfdi(), getCertificadoSat(), getCertificadoDigital(), getCertificacion(), getFolioFiscal(), getRegistro(), getCancelada()
     };
     return regresar;
   }

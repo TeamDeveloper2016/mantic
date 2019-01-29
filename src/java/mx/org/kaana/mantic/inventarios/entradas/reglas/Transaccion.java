@@ -119,6 +119,8 @@ public class Transaccion extends Inventarios implements Serializable {
        	    this.toUpdateDeleteXml(sesion);	
 					} // else	
 					this.toFillArticulos(sesion);
+      		for (Articulo articulo: this.articulos) 
+						articulo.setModificado(false);
 					break;
 				case COMPLETO:
 					consecutivo= this.toSiguiente(sesion);

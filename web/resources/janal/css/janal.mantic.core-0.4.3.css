@@ -266,6 +266,9 @@ div.ui-panelgrid-content {
   box-shadow: none;
   font-size: 20px;
 }
+.janal-text-small {
+	font-size: 10px !important;
+}
 .janal-help-title {
   display: none;
 }

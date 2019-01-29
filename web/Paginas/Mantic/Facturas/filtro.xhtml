@@ -106,7 +106,7 @@
         </div>
 				<p:spacer/>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticFacturasFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticFacturasFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticFacturasFiltro.lazyModel.rowCount gt manticFacturasFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticFacturasFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticFacturasFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticFacturasFiltro.lazyModel.rowCount gt manticFacturasFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
             <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >
@@ -137,53 +137,54 @@
                 <p:menuitem id="facturasPdfIcon" icon="fa fa-file-pdf-o" title="Facturama pdf" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doReporteFacturas('FACTURAS_RESUMEN')}" oncomplete="janal.desbloquear();" update="descargar"/>
               </div>  
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{filtro.nombreEmpresa}">
+            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.nombreEmpresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
-              <h:outputText value="#{filtro['nombreEmpresa']}"/>
+              <h:outputText value="#{row['nombreEmpresa']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{filtro.cliente}">
+            <p:column class="MarAuto Responsive" sortBy="#{row.cliente}">
               <f:facet name="header">
                 <h:outputText value="Cliente"/>
               </f:facet>
-              <h:outputText value="#{filtro['cliente']}"/>
+              <h:outputText value="#{row['cliente']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="No. factura"/>
               </f:facet>
-              <h:outputText value="#{filtro['consecutivo']}"/>
+              <h:outputText value="#{row['consecutivo']}"/>
             </p:column>		            
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.folio}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.folio}">
               <f:facet name="header">
                 <h:outputText value="Folio"/>
               </f:facet>
-              <h:outputText value="#{filtro['folio']}"/>
+              <h:outputText value="#{row['folio']}"/>
             </p:column>		            
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.total}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.total}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
-              <h:outputText value="#{filtro['total']}"/>
+              <h:outputText value="#{row['total']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.estatus}">
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
-              <h:outputText value="#{filtro['estatus']}"/>
+              <h:outputText value="#{row['estatus']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.timbrado}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.timbrado}">
               <f:facet name="header">
                 <h:outputText value="Timbrado"/>
               </f:facet>
-              <h:outputText value="#{filtro['timbrado']}"/>
+              <h:outputText value="#{row['timbrado']}"/><br style="display: #{row['idFicticiaEstatus'] eq '5'? '': 'none'}"/>
+              <h:outputText value="( #{row['cancelada']} )" title="Fecha de cancelación" styleClass="janal-color-red janal-text-small" style="display: #{row['idFicticiaEstatus'] eq '5'? '': 'none'}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.registro}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Registro"/>
               </f:facet>
-              <h:outputText value="#{filtro['registro']}"/>
+              <h:outputText value="#{row['registro']}"/>
             </p:column>		
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticFacturasFiltro.lazyModel==null? 0: manticFacturasFiltro.lazyModel.rowCount}] registros"/>

@@ -4181,7 +4181,7 @@
 				  tc_mantic_faltantes.id_vigente= 1
 				  and tc_mantic_faltantes.id_empresa= {idSucursal}
 				order by
-				   tc_mantic_faltantes.registro
+				   tc_mantic_articulos.nombre
 			</select>
       <select id="detalle">
         select      
@@ -5831,6 +5831,7 @@
 					tc_mantic_facturas.id_facturama,
 					tc_mantic_facturas.sello_sat,
 					tc_mantic_facturas.timbrado,
+					tc_mantic_facturas.cancelada,
 					tc_mantic_facturas.folio,
 					tc_mantic_clientes.razon_social cliente,
 					tc_mantic_clientes.id_cliente

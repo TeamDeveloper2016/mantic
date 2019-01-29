@@ -157,8 +157,11 @@ public class Transaccion extends TransaccionFactura {
 								params= new HashMap<>();
 								params.put("idFicticia", this.orden.getIdFicticia());
 								factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
-								if(factura!= null && factura.getIdFacturama()!= null)
+								if(factura!= null && factura.getIdFacturama()!= null) {
 									CFDIFactory.getInstance().cfdiRemove(factura.getIdFacturama());
+									factura.setCancelada(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+									regresar= DaoFactory.getInstance().update(sesion, factura)>= 0;
+								} // if
 								else
 									throw new Exception("No fue posible cancelar la factura, por favor vuelva a intentarlo !");															
 							} // else if
