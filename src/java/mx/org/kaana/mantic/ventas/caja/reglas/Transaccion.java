@@ -22,6 +22,7 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
+import mx.org.kaana.mantic.catalogos.clientes.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
@@ -235,6 +236,10 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			this.ventaFinalizada.getDetailApartado().setSaldo(this.ventaFinalizada.getTotales().getTotales().getTotal() - this.ventaFinalizada.getTotales().getPago());
 			this.ventaFinalizada.getDetailApartado().setIdApartadoEstatus(1L);
 			this.ventaFinalizada.getDetailApartado().setIdUsuario(JsfBase.getIdUsuario());
+			if(!getOrden().getIdCliente().equals(toClienteDefault(sesion))){
+				this.ventaFinalizada.getDetailApartado().setNombre(this.ventaFinalizada.getCliente().getRazonSocial());
+				this.ventaFinalizada.getDetailApartado().setTelefono(toTelefonoCliente(sesion, this.ventaFinalizada.getCliente().getIdCliente()));
+			} // if
 			calendar= Calendar.getInstance();
 			calendar.add(Calendar.DAY_OF_YEAR, 30);
 			this.ventaFinalizada.getDetailApartado().setVencimiento(new Date(calendar.getTimeInMillis()));
@@ -258,6 +263,22 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		} // 
 		return regresar;
 	} // registrarApartado			
+	
+	private String toTelefonoCliente(Session sesion, Long idCliente) throws Exception{
+		String regresar= null;
+		Boolean inicio = false;
+		MotorBusqueda motor= new MotorBusqueda(idCliente);
+		List<ClienteTipoContacto>contactos= motor.toClientesTipoContacto(sesion);
+		if(!contactos.isEmpty()){
+			for(ClienteTipoContacto contacto: contactos){
+				if(contacto.getIdTipoContacto().equals(ETiposContactos.TELEFONO.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.TELEFONO_CASA.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.TELEFONO_NEGOCIO.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.TELEFONO_PERSONAL.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.TELEFONO_TRABAJO.getKey())){
+					if(!inicio)
+						contacto.getValor();
+				} // if
+			} // for			
+		} // id
+		return regresar;
+	} // toTelefonoCliente
 	
 	public boolean verificarCierreCaja(Session sesion) throws Exception{
 		boolean regresar         = true;
