@@ -26,12 +26,11 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
-import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ContadoresListas;
@@ -136,6 +135,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("activeApartado", false);			
 			this.attrs.put("mostrarApartado", false);			
 			this.attrs.put("apartado", false);			
+			this.attrs.put("tabApartado", false);			
+			this.attrs.put("pagoMinimo", "0");			
 			this.attrs.put("observaciones", "");		
 			this.attrs.put("disabledFacturar", false);
 			this.attrs.put("disabledFacturarSwitch", false);			
@@ -515,6 +516,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
 				doReCalculatePreciosArticulos(seleccion.getKey());			
 			} // if
+			doActiveApartado();
 		} // try
 		catch (Exception e) {	
 			throw e;
@@ -600,18 +602,29 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // doActivarCliente
 	
 	public void doActiveApartado(){
-		boolean apartado= true;
+		boolean apartado               = true;
+		UISelectEntity clienteSeleccion= null;
+		Entity cliente                 = null;
+		MotorBusqueda motor            = null;
 		try {
+			clienteSeleccion= (UISelectEntity) this.attrs.get("clienteSeleccion");
+			motor= new MotorBusqueda(-1L);
+			cliente= motor.toClienteDefault();
 			apartado= (boolean) this.attrs.get("apartado");	
 			if(apartado){
 				this.attrs.put("facturarVenta", !apartado);
 				this.attrs.put("disabledFacturar", apartado);			
-				this.attrs.put("clienteRegistrado", ((Boolean)this.attrs.get("facturarVenta")));
+				this.attrs.put("clienteRegistrado", ((Boolean)this.attrs.get("facturarVenta")));				
+				this.attrs.put("tabApartado", cliente.getKey().equals(clienteSeleccion.getKey()));
+				this.attrs.put("pagoMinimo", Numero.formatear(Numero.NUMERO_CON_DECIMALES, (getAdminOrden().getTotales().getTotal() * Constantes.ANTICIPO)/100));
 			} // if			
-			else
+			else {
 				this.attrs.put("clienteRegistrado", ((Boolean)this.attrs.get("clienteAsignado")));
-			this.attrs.put("disabledFacturarSwitch", apartado);			
-			this.attrs.put("tabIndex", 1);
+				this.attrs.put("tabApartado", false);
+				this.attrs.put("pagoMinimo", "0");
+			} // else
+			this.attrs.put("disabledFacturarSwitch", apartado || cliente.getKey().equals(clienteSeleccion.getKey()));			
+			this.attrs.put("tabIndex", 1);			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -620,8 +633,10 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // doActiveApartado
 	
 	public void doOpenCobro(){
+		UISelectEntity ticketAbierto= null;
 		try {
-			if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
+			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
+			if(ticketAbierto!= null && !ticketAbierto.getKey().equals(-1L) && !this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
 				this.attrs.put("tabIndex", 1);
 				this.pagar= true;
 			} // if
@@ -660,20 +675,16 @@ public class Accion extends IBaseVenta implements Serializable {
 		Boolean credito   = false;
 		Boolean apartado  = false;
 		RequestContext rc = null;
-		Double minApartado= null;
 		try {
 			credito= (Boolean) this.attrs.get("creditoVenta");
 			apartado= (Boolean) this.attrs.get("apartado");
 			rc= RequestContext.getCurrentInstance();
-			if(apartado){
-				minApartado= (getAdminOrden().getTotales().getTotal() * Constantes.ANTICIPO)/100;
-				rc.execute("jsArticulos.validateApartado(" + minApartado + ");");
-			} // if
+			if(apartado)				
+				rc.execute("jsArticulos.validateApartado(" + Numero.formatear(Numero.NUMERO_CON_DECIMALES, (getAdminOrden().getTotales().getTotal() * Constantes.ANTICIPO)/100) + ");");
 			else if(credito)
 				rc.execute("jsArticulos.validateCredito();");
 			else
 				rc.execute("jsArticulos.refreshCobroValidate();");
-			rc.execute("ventaFinishedTime();");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -849,12 +860,13 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // verificaLimiteCaja
 	
 	public void doTabChange(TabChangeEvent event) {
-		this.pagar= event.getTab().getTitle().equals("Pagar");
-		if(event.getTab().getTitle().equals("Tickets"))
+		String title= event.getTab().getTitle();
+		this.pagar= title.equals("Pagar") || title.equals("Apartado");
+		if(title.equals("Tickets"))
 			doLoadTickets();
-		if(this.pagar)
+		if(title.equals("Pagar"))
 			RequestContext.getCurrentInstance().execute("jsArticulos.focusCobro();");
-	}
+	} // doTabChange
 
 	public void doAplicarCambioPrecio(){
 		doAplicarCambioPrecio(-1);
@@ -914,6 +926,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			sb.append("(upper(concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno)) like upper('%").append(this.attrs.get("busquedaTicket")).append("%') or ");					
 			sb.append("upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(this.attrs.get("busquedaTicket")).append("%') or ");					
 			sb.append("upper(tc_mantic_clientes.razon_social) like upper('%").append(this.attrs.get("busquedaTicket")).append("%')").append(" or upper(tc_mantic_clientes.razon_social) like upper('%").append(this.attrs.get("busquedaTicket")).append("%') or ");
+			sb.append("tc_mantic_ventas.ticket like '%").append(this.attrs.get("busquedaTicket")).append("%'").append(" or ");
 			sb.append("(tc_mantic_ventas.consecutivo like '%").append(this.attrs.get("busquedaTicket")).append("%'))");
 			sb.append(" and tc_mantic_ventas.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(")");
 		} // if
