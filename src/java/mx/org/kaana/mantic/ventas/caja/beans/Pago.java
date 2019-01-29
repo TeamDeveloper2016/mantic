@@ -308,7 +308,7 @@ public class Pago implements Serializable{
 	}
 
 	public Double getDifEfectivo() {
-		return getPago().equals(0D) ? 0D : (getEfectivo().equals(0D) ? getTotales().getTotal() - getPago() : getEfectivo());
+		return getPago().equals(0D) ? 0D : getTotales().getTotal() - getPago();
 	}
 
 	public void setDifEfectivo(Double difEfectivo) {
@@ -316,7 +316,7 @@ public class Pago implements Serializable{
 	}
 
 	public Double getDifCredito() {
-		return getPago().equals(0D) ? 0D : (getCredito().equals(0D) ? getTotales().getTotal() - getPago() : getCredito());
+		return getPago().equals(0D) ? 0D : getTotales().getTotal() - getPago();
 	}
 
 	public void setDifCredito(Double difCredito) {
@@ -324,7 +324,7 @@ public class Pago implements Serializable{
 	}
 
 	public Double getDifDebito() {
-		return getPago().equals(0D) ? 0D : (getDebito().equals(0D) ? getTotales().getTotal() - getPago() : getDebito());
+		return getPago().equals(0D) ? 0D : getTotales().getTotal() - getPago();
 	}
 
 	public void setDifDebito(Double difDebito) {
@@ -332,7 +332,7 @@ public class Pago implements Serializable{
 	}
 
 	public Double getDifTransferencia() {
-		return getPago().equals(0D) ? 0D : (getTransferencia().equals(0D) ? getTotales().getTotal() - getPago() : getTransferencia());
+		return getPago().equals(0D) ? 0D : getTotales().getTotal() - getPago();
 	}
 
 	public void setDifTransferencia(Double difTransferencia) {
@@ -340,7 +340,7 @@ public class Pago implements Serializable{
 	}
 
 	public Double getDifCheque() {
-		return getPago().equals(0D) ? 0D : (getCheque().equals(0D) ? getTotales().getTotal() - getPago() : getCheque());
+		return getPago().equals(0D) ? 0D : getTotales().getTotal() - getPago();
 	}
 
 	public void setDifCheque(Double difCheque) {
