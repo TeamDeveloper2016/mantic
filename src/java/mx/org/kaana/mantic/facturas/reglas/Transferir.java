@@ -147,7 +147,7 @@ public class Transferir extends IBaseTnx {
 		return regresar;
 	}
 	
-	private Long toIdClienteDomicilio(Session sesion, Long idCliente) throws Exception{
+	private Long toIdClienteDomicilio(Session sesion, Long idCliente) throws Exception {
 		Long regresar                        = null;
 		TrManticClienteDomicilioDto principal= null;
 		Map<String, Object>params            = null;
@@ -157,12 +157,14 @@ public class Transferir extends IBaseTnx {
 			principal= (TrManticClienteDomicilioDto) DaoFactory.getInstance().toEntity(sesion, TrManticClienteDomicilioDto.class, "TrManticClienteDomicilioDto", "principalCliente", params);
 			if(principal!= null)
 				regresar= principal.getKey();
-			else{
+			else {
 				params.clear();
 				params.put(Constantes.SQL_CONDICION, "id_cliente=".concat(idCliente.toString()));
 				principal= (TrManticClienteDomicilioDto) DaoFactory.getInstance().toEntity(sesion, TrManticClienteDomicilioDto.class, "TrManticClienteDomicilioDto", params);
 				if(principal!= null)
 					regresar= principal.getIdClienteDomicilio();
+			  else
+					regresar= 1L;
 			} // else
 		} // try		
 		finally {

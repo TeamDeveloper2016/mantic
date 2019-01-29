@@ -119,6 +119,7 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     setIdEmpresa(idEmpresa);
     setDia(dia);
     setReferencia(referencia);
+		this.idClienteDomicilio= idClienteDomicilio;
   }
 	
   public void setDescuentos(Double descuentos) {

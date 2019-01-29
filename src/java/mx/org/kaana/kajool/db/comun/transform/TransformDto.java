@@ -27,6 +27,7 @@ public class TransformDto extends Transformer {
     BeanUtilsBean utilsBean= new BeanUtilsBean(new ConvertUtilsBean(), new PropertyUtilsBean());
     for (int x=0; x<data.length; x++) {
       try {
+				if(data[x]!= null)
           utilsBean.setProperty(regresar, fields[x], data[x]);
       } // try
       catch(Exception e) {

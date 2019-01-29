@@ -11,6 +11,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -217,12 +218,16 @@ public class Accion extends IBaseAttribute implements Serializable {
 				case 2:
 				case 4:
 				case 5:
-					this.attrs.put("nuevaExistenciaOrigen", stock- this.detalle.getCantidad());
-					this.attrs.put("nuevaExistenciaDestino", calculo+ this.detalle.getCantidad());
+				case 8:
 					sugerido= maximo- calculo< 0? 0D: maximo- calculo;
 					this.attrs.put("sugerido", sugerido);
-					if(this.detalle.getCantidad()== 0D)
-						this.detalle.setCantidad(sugerido);
+					if(stock> sugerido)
+  					this.detalle.setCantidad(sugerido);
+					else
+					  if(stock< sugerido && stock> 0)
+							this.detalle.setCantidad(stock);
+					this.attrs.put("nuevaExistenciaOrigen", stock- this.detalle.getCantidad());
+					this.attrs.put("nuevaExistenciaDestino", calculo+ this.detalle.getCantidad());
 					break;
 				case 3:
 					this.attrs.put("nuevaExistenciaOrigen", stock);
@@ -260,9 +265,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 				search= "";
   		params.put("codigo", search);
 			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
-        articulos= (List<UISelectEntity>) UIEntity.build("VistaAlmacenesTransferenciasDto", "porCodigo", params, columns, 20L);
+        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L);
 			else
-        articulos= (List<UISelectEntity>) UIEntity.build("VistaAlmacenesTransferenciasDto", "porNombre", params, columns, 20L);
+        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 20L);
       this.attrs.put("articulos", articulos);
 		} // try
 	  catch (Exception e) {
@@ -277,6 +282,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doAsignaArticulo(SelectEvent event) {
 		UISelectEntity seleccion      = null;
 		List<UISelectEntity> articulos= null;
+		Map<String, Object> params    = new HashMap<>();
 		try {
 			articulos= (List<UISelectEntity>) this.attrs.get("articulos");
 			seleccion= articulos.get(articulos.indexOf((UISelectEntity)event.getObject()));
@@ -285,14 +291,28 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.detalle.setIdArticulo(seleccion.toLong("idArticulo"));
 			this.detalle.setPropio(seleccion.toString("propio"));
 			this.detalle.setNombre(seleccion.toString("nombre"));
-      this.image= LoadImages.getImage(seleccion.toString("archivo"));
+      this.image= LoadImages.getImage(seleccion.toString("idArticulo"));
+			params.put("idArticulo", seleccion.toLong("idArticulo"));
+			params.put("idAlmacen", this.transferencia.getIdAlmacen());
+			// recuperar el stock de articulos en el almacen origen
+			Value origen= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
+			seleccion.put("stock", origen== null? new Value("stock", 0D): origen);
+			Entity umbral= (Entity)DaoFactory.getInstance().toEntity("TcManticAlmacenesArticulosDto", "almacenArticulo", params);
+			if(umbral== null) 
+				umbral= (Entity)DaoFactory.getInstance().toEntity("TcManticArticulosDto", "detalle", params);
+  		seleccion.put("minimo", umbral.get("minimo"));
+			seleccion.put("maximo", umbral.get("maximo"));
       this.attrs.put("nuevaExistenciaOrigen", 0D);
       this.attrs.put("nuevaExistenciaDestino", 0D);
+			this.doUpdateAlmacenDestino();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
+		finally {
+			Methods.clean(params);
+		} // finally
 		this.doCalculate();
 	} // doAsignaCliente
   

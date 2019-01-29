@@ -15,7 +15,7 @@
         idAlmacenDestino: {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         idArticulo: {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         idSolicito: {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        quedaran: {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
+        quedaran: {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
         observaciones:{validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
         cantidad: {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'}
 			};
@@ -65,7 +65,7 @@
 								</p:panelGrid>
 								<p:outputLabel for="cantidad" value="Cantidad:"/>
 								<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-wid-col-130 janal-column-right">
-								  <p:inputNumber id="cantidad" inputStyleClass="janal-color-orange janal-column-right" styleClass="janal-wid-100-txt filas" value="#{manticCatalogosAlmacenesTransferenciasAccion.detalle.cantidad}" converter="javax.faces.Double" disabled="#{empty manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo or manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo.stock.toDouble() le 0}">
+								  <p:inputNumber id="cantidad" inputStyleClass="janal-color-orange janal-column-right" styleClass="janal-wid-100-txt filas" value="#{manticCatalogosAlmacenesTransferenciasAccion.detalle.cantidad}" converter="javax.faces.Double" disabled="#{empty manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo}">
 									  <p:ajax event="keyup" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doCalculate}" process="@this" update="@(.filas)" oncomplete="janal.refresh();" />
 								  </p:inputNumber>
 									<p:outputLabel value="Sugerido: #{manticCatalogosAlmacenesTransferenciasAccion.attrs.sugerido}" styleClass="filas"/>
