@@ -633,6 +633,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // doActiveApartado
 	
 	public void doOpenCobro(){
+		mx.org.kaana.mantic.ventas.reglas.Transaccion transaccion= null;
 		UISelectEntity ticketAbierto= null;
 		try {
 			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
@@ -640,6 +641,22 @@ public class Accion extends IBaseVenta implements Serializable {
 				this.attrs.put("tabIndex", 1);
 				this.pagar= true;
 			} // if
+			else if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
+				loadOrdenVenta();				
+				transaccion = new mx.org.kaana.mantic.ventas.reglas.Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
+				this.getAdminOrden().toAdjustArticulos();
+				if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
+					RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 la cuenta ', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");									
+					doLoadTicketAbiertos();
+					this.attrs.put("ajustePreciosCliente", false);			
+					this.attrs.put("ticketAbierto", new UISelectEntity(new Entity(transaccion.getOrden().getIdVenta())));
+					doAsignaTicketAbierto();
+					this.attrs.put("tabIndex", 1);
+					this.pagar= true;
+				} // if
+				else
+					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);
+			} // else if
 			else
 				JsfBase.addMessage("Cobrar venta", "No se ha seleccionado ningun ticket de venta", ETipoMensaje.INFORMACION);
 		} // try
@@ -648,6 +665,17 @@ public class Accion extends IBaseVenta implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doOpenCobro
+	
+	private void loadOrdenVenta() throws Exception {		
+		this.getAdminOrden().toCheckTotales();
+		MotorBusqueda motor= new MotorBusqueda(-1L);
+		((TicketVenta)this.getAdminOrden().getOrden()).setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));
+		((TicketVenta)this.getAdminOrden().getOrden()).setIdCliente(motor.toClienteDefault().getKey());
+		((TicketVenta)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
+		((TicketVenta)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
+		((TicketVenta)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
+		((TicketVenta)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
+	} // loadOrdenVenta
 	
 	private void loadBancos(){
 		List<UISelectEntity> bancos= null;
