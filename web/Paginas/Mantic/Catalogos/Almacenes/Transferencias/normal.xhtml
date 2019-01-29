@@ -311,7 +311,7 @@
 							</p:dataTable>
 						</p:tab>
 						<p:tab title="Ventas perdidas">
-							<p:dataTable id="perdidos" var="row" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.perdidos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
+							<p:dataTable id="perdidos" var="row" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.perdidos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{manticCatalogosAlmacenesTransferenciasNormal.recordCount}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
 								<f:facet name="header">
 									<p:commandButton title="Refrescar articulos de las ventas perdidas del almacen destino" icon="fa fa-refresh" process="@this" update="perdidos" action="#{manticCatalogosAlmacenesTransferenciasNormal.doLoadFaltantesAlmacenDestino()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
                 </f:facet>
