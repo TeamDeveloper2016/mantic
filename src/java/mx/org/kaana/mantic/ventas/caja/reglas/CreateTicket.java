@@ -111,7 +111,7 @@ public class CreateTicket {
 		StringBuilder regresar= null;
 		try {
 			regresar= new StringBuilder();
-			regresar.append("<p style=\"width: 290px;text-align: center;font-family: sans-serif;font-size: 14px;\">").append(toFindDomicilio()).append("</p>");
+			regresar.append("<p style=\"width: 290px;text-align: center;font-family: sans-serif;font-size: 11px;\">").append(toFindDomicilio()).append("</p>");
 		} // try
 		catch (Exception e) {			
 			throw e;  
@@ -141,7 +141,7 @@ public class CreateTicket {
 		try {			
 			regresar= new StringBuilder();
 			descripcionTicket= this.tipoTransaccion.equals("COTIZACIÓN") ? ((TicketVenta)this.ticket.getOrden()).getCotizacion(): ((TicketVenta)this.ticket.getOrden()).getTicket();
-			regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 15px;font-weight: bold\">TICKET No: ").append(this.principal.getClave()).append("-").append(descripcionTicket).append("</p>");
+			regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 15px;font-weight: bold\">TICKET No: ").append(this.principal.getClave()).append("-").append(descripcionTicket).append("<br>");
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -153,7 +153,7 @@ public class CreateTicket {
 		StringBuilder regresar= null;
 		try {
 			regresar= new StringBuilder();
-			regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 13px;font-weight: bold\">").append(this.tipoTransaccion).append("</p>");
+			regresar.append(this.tipoTransaccion).append("<br>");
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -165,7 +165,7 @@ public class CreateTicket {
 		StringBuilder regresar= null;
 		try {
 			regresar= new StringBuilder();
-			regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 13px;\">Fecha:").append(Fecha.formatear(Fecha.FECHA_HORA_CORTA, ((TicketVenta)this.ticket.getOrden()).getRegistro())).append("</p>");
+			regresar.append("Fecha:").append(Fecha.formatear(Fecha.FECHA_HORA_CORTA, ((TicketVenta)this.ticket.getOrden()).getRegistro())).append("</p>");
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -214,7 +214,7 @@ public class CreateTicket {
 					regresar.append(toTable());
 					regresar.append("<tbody>");
 					regresar.append("<tr style=\"border-top: 1px solid black;border-collapse: collapse;\">");
-					regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 80px; max-width: 80px;border-top: 1px solid black;border-collapse: collapse;\">").append(pivote.getNombre().length()> 40 ? pivote.getNombre().substring(0, 40) : pivote.getNombre()).append("</td>");
+					regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 80px; max-width: 80px;border-top: 1px solid black;border-collapse: collapse;\">").append(pivote.getNombre().length()> 36 ? pivote.getNombre().substring(0, 36) : pivote.getNombre()).append("</td>");
 					regresar.append("</tr>");
 					regresar.append("</tbody>");
 					regresar.append(toFinishTable());
@@ -372,7 +372,7 @@ public class CreateTicket {
 			regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 14px;border-top: 1px solid black;border-collapse: collapse;\">");
 			regresar.append("<br/>¡").append(descripcion).append("!");
 			regresar.append("</p>");
-			regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 12px;\">");
+			regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 10px;\">");
 			regresar.append("PARA CUALQUIER ACLARACION, MANTENER SU TICKET");
 			regresar.append("</p>");
 			//regresar.append("<svg id=\"barcode\"></svg>");
