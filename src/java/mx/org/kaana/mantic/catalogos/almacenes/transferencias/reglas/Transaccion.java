@@ -78,7 +78,7 @@ public class Transaccion extends IBaseTnx {
 					this.dto.setOrden(consecutivo);
           regresar= DaoFactory.getInstance().insert(sesion, this.dto).intValue()> 0;
 					this.toFillArticulos(sesion, accion);
-					this.bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), JsfBase.getIdUsuario(), this.dto.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
+					this.bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), null, this.dto.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
 					if(regresar)
             regresar= DaoFactory.getInstance().insert(sesion, bitacora).intValue()> 0;
 					break;
@@ -91,7 +91,7 @@ public class Transaccion extends IBaseTnx {
           //if (DaoFactory.getInstance().deleteAll(sesion, TcManticTransferenciasBitacoraDto.class, this.dto.toMap())> -1L) 
 					this.dto.setIdTransferenciaEstatus(2L);
           regresar= DaoFactory.getInstance().update(sesion, this.dto)>= 1L;
-					this.bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), JsfBase.getIdUsuario(), this.dto.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
+					this.bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), null, this.dto.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
 					if(regresar)
             regresar= DaoFactory.getInstance().insert(sesion, bitacora).intValue()> 0;
           break;

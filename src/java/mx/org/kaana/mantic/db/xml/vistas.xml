@@ -5223,6 +5223,18 @@
       </select>
 		</unit>
     <unit id="VistaAlmacenesTransferenciasDto">
+			<select id="transporto">
+				select
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre
+				from 
+					tc_mantic_transferencias_bitacora
+				inner join
+					tc_mantic_personas on tc_mantic_transferencias_bitacora.id_persona= tc_mantic_personas.id_transporto
+				where
+					tc_mantic_transferencias_bitacora.id_transporto= {idTransporto}
+				order by
+					tc_mantic_transferencias_bitacora.registro desc				
+			</select>		
 			<select id="movimientos">
 				select
 					tc_mantic_transferencias_bitacora.id_transferencia_bitacora as id_key,

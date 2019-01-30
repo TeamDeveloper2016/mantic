@@ -594,6 +594,16 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getNombre() // String nombre
 		);
 	}
+	
+	public UISelectEntity toUISelectEntity() {
+		UISelectEntity regresar= new UISelectEntity(this.getIdArticulo());
+		Map<String, Object> map= this.toMap();
+		for (String key: map.keySet()) {
+  		regresar.put(key, new Value(key, map.get(key)));
+		} // for
+ 		regresar.put("vacio", new Value("vacio", false));
+		return regresar;
+	}
 
 	@Override
 	public String toString() {

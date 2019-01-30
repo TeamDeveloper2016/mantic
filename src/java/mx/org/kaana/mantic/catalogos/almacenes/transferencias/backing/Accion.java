@@ -79,7 +79,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 	} // init
   
   public void doLoad() {
+    Map<String, Object> params= null;
     try {
+ 			params = new HashMap<>();
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
       switch (this.accion) {
         case ACTIVAR:
@@ -106,12 +108,22 @@ public class Accion extends IBaseAttribute implements Serializable {
 					this.detalle      = (Articulo)DaoFactory.getInstance().toEntity(Articulo.class, "VistaAlmacenesTransferenciasDto", "detalle", this.attrs);
           this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
           this.attrs.put("idArticulo", this.detalle.getIdArticulo());
-          this.attrs.put("idAlmacen", this.transferencia.getIdAlmacen());
-					List<UISelectEntity> articulos= (List<UISelectEntity>)UIEntity.build("VistaAlmacenesTransferenciasDto", "porNombre", this.attrs);
-					if(articulos!= null && !articulos.isEmpty()) {
-					  this.attrs.put("articulo", articulos.get(0));
-            this.image= LoadImages.getImage(((UISelectEntity)this.attrs.get("articulo")).toString("idArticulo"));
-					} // if	
+				  UISelectEntity articulo= this.detalle.toUISelectEntity();
+				  this.attrs.put("articulo", articulo);
+          this.image= LoadImages.getImage(this.detalle.getIdArticulo().toString());
+					params.put("idArticulo", this.detalle.getIdArticulo());
+					params.put("idAlmacen", this.transferencia.getIdAlmacen());
+					// recuperar el stock de articulos en el almacen origen
+					Value origen= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
+					articulo.put("stock", origen== null? new Value("stock", 0D): origen);
+					articulo.put("vacio", new Value("vacio", origen== null));
+					Entity umbral= (Entity)DaoFactory.getInstance().toEntity("TcManticAlmacenesArticulosDto", "almacenArticulo", params);
+					if(umbral== null) 
+						umbral= (Entity)DaoFactory.getInstance().toEntity("TcManticArticulosDto", "detalle", params);
+					articulo.put("minimo", umbral.get("minimo"));
+					articulo.put("maximo", umbral.get("maximo"));
+					this.attrs.put("nuevaExistenciaOrigen", 0D);
+					this.attrs.put("nuevaExistenciaDestino", 0D);
           break;
       } // switch      
       this.loadAlmacenes();
@@ -121,6 +133,9 @@ public class Accion extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
+		finally {
+      Methods.clean(params);
+    } // finally
   } // doLoad
   
   private void loadAlmacenes() {
@@ -136,7 +151,10 @@ public class Accion extends IBaseAttribute implements Serializable {
       almacenes = (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns);
       this.attrs.put("almacenes", almacenes);
 			if(almacenes!= null) {
-		    this.transferencia.setIkAlmacen(almacenes.get(0));
+				if(this.accion.equals(EAccion.ACTIVAR))
+		      this.transferencia.setIkAlmacen(almacenes.get(0));
+				else
+		      this.transferencia.setIkAlmacen(almacenes.get(almacenes.indexOf(new UISelectEntity(this.transferencia.getIdAlmacen()))));
         this.doUpdateAlmacenOrigen();
 		  } // if	
 		} // try
@@ -224,15 +242,17 @@ public class Accion extends IBaseAttribute implements Serializable {
 			int index = destinos.indexOf(this.transferencia.getIkAlmacen());
 			if(index>= 0)
 				destinos.remove(index);
-			if(!destinos.isEmpty())
-				this.transferencia.setIkDestino(destinos.get(0));
+			if(!destinos.isEmpty()) 
+				if(this.accion.equals(EAccion.ACTIVAR))
+  				this.transferencia.setIkDestino(destinos.get(0));
+				else
+		      this.transferencia.setIkDestino(destinos.get(destinos.indexOf(new UISelectEntity(this.transferencia.getIdDestino()))));
 			this.attrs.put("destinos", destinos);
 			this.doUpdateAlmacenDestino();
 		} // if	
   }
   
   public void doUpdateAlmacenDestino() {
-    Entity destino         = null;
 		try {
       this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("idDestino", this.transferencia.getIdDestino());

@@ -6,6 +6,9 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
@@ -37,6 +40,22 @@ public class Movimientos extends IBaseFilter implements Serializable {
 		return this.tipo.getTitle();
 	}
 		
+	public boolean getVisible() {
+	  return !ETipoMovimiento.TRANSFERENCIAS.equals(this.tipo);
+	}
+	
+	public String doTransporto(Entity row) {
+		Value regresar= null;
+		try {
+		  regresar= row.toLong("idTransporto")!= null && row.toLong("idTransporto")> 0L? DaoFactory.getInstance().toField("VistaAlmacenesTransferenciasDto", "transporto", row.toMap(), "nombre"): null;
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+      JsfBase.addMessageError(e);
+		} // catch
+		return regresar== null? "": regresar.toString();
+	}
+	
   @PostConstruct
   @Override
   protected void init() {
