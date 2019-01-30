@@ -1047,6 +1047,10 @@ public class Accion extends IBaseVenta implements Serializable {
 							regresar.setCredito(pago.toDouble("importe"));							
 							regresar.setReferenciaCredito(pago.toString("referencia"));							
 							break;
+						case TARJETA_DEBITO:
+							regresar.setDebito(pago.toDouble("importe"));							
+							regresar.setReferenciaDebito(pago.toString("referencia"));							
+							break;
 						case CHEQUE:
 							regresar.setCheque(pago.toDouble("importe"));							
 							regresar.setReferenciaCheque(pago.toString("referencia"));							
