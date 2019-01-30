@@ -750,7 +750,7 @@
         from
           tc_mantic_transferencias
         inner join
-          tc_mantic_transferencias_estatus on tc_mantic_transferencias.id_transferencia_estatus = tc_mantic_transferencias_estatus.id_transferencias_estatus
+          tc_mantic_transferencias_estatus on tc_mantic_transferencias.id_transferencia_estatus = tc_mantic_transferencias_estatus.id_transferencia_estatus
         inner join 
           tc_mantic_articulos on tc_mantic_transferencias.id_articulo = tc_mantic_articulos.id_articulo
         inner join 

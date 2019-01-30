@@ -15,7 +15,7 @@
         idAlmacenDestino: {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         idArticulo: {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         idSolicito: {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        quedaran: {validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'general'},
+        quedaran: {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         observaciones:{validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
         cantidad: {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'}
 			};
@@ -37,7 +37,7 @@
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-99" columnClasses="janal-wid-col-130, janal-wid-100">
 								<p:outputLabel for="idAlmacenOrigen" value="Almacen origen:"/>
 								<p:selectOneMenu id="idAlmacenOrigen" value="#{manticCatalogosAlmacenesTransferenciasAccion.transferencia.ikAlmacen}" var="almacen" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="contains">
-									<p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doUpdateAlmacenOrigen}" process="@this" update="@(.filas)" oncomplete="janal.refresh();"/>
+									<p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doUpdateAlmacenOrigen}" process="@this" update="@(.cantidad) @(.filas)" oncomplete="janal.refresh();"/>
 									<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 									<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.almacenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave} - #{element.nombre}"/>
 									<p:column headerText="Clave">
@@ -50,10 +50,10 @@
 								<p:outputLabel for="idArticulo" value="Artículo:"/>
 								<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-col-20, janal-wid-100">
 									<p:selectBooleanCheckbox value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas" disabled="#{manticCatalogosAlmacenesTransferenciasAccion.transferencia.idAlmacen lt 1}">
-										<p:ajax event="change" process="@this" update="@this"  oncomplete="janal.refresh();" />
+										<p:ajax event="change" process="@this" update="@this" oncomplete="janal.refresh();" />
 									</p:selectBooleanCheckbox>
 									<p:autoComplete id="idArticulo" placeholder="Nombre o codigo" widgetVar="listadoarticulos" var="customArticulos" itemLabel="#{customArticulos.nombre}" inputStyleClass="janal-wid-100-txt key-down-event filas" itemValue="#{customArticulos}" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo}" completeMethod="#{manticCatalogosAlmacenesTransferenciasAccion.doCompleteArticulo}"  converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100" forceSelection="true" readonly="#{manticCatalogosAlmacenesTransferenciasAccion.transferencia.idAlmacen lt 1}">
-										<p:ajax event="itemSelect" process="@this" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doAsignaArticulo}" update="@(.filas) idArticulo imagenArticulo" oncomplete="janal.refresh();"/>
+										<p:ajax event="itemSelect" process="@this" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doAsignaArticulo}" update="@(.cantidad) @(.filas) idArticulo imagenArticulo" oncomplete="janal.refresh();"/>
 										<p:column styleClass="janal-column-center">
 											<!--p:graphicImage value="#{customArticulos.image}" styleClass="janal-logo-mini filas" width="30" cache="false" stream="false"/-->
 											<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="30"/>
@@ -65,15 +65,18 @@
 								</p:panelGrid>
 								<p:outputLabel for="cantidad" value="Cantidad:"/>
 								<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-wid-col-130 janal-column-right">
-								  <p:inputNumber id="cantidad" inputStyleClass="janal-color-orange janal-column-right" styleClass="janal-wid-100-txt filas" value="#{manticCatalogosAlmacenesTransferenciasAccion.detalle.cantidad}" converter="javax.faces.Double" disabled="#{empty manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo}">
+								  <p:inputNumber id="cantidad" inputStyleClass="janal-color-orange janal-column-right" styleClass="janal-wid-100-txt cantidad" value="#{manticCatalogosAlmacenesTransferenciasAccion.detalle.cantidad}" converter="javax.faces.Double" disabled="#{empty manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo}">
 									  <p:ajax event="keyup" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doCalculate}" process="@this" update="@(.filas)" oncomplete="janal.refresh();" />
 								  </p:inputNumber>
 									<p:outputLabel value="Sugerido: #{manticCatalogosAlmacenesTransferenciasAccion.attrs.sugerido}" styleClass="filas"/>
 								</p:panelGrid>	
 								<p:spacer height="1"/>
 								<p:panelGrid layout="grid" columns="4" styleClass="janal-wid-100 filas" columnClasses="janal-wid-25, janal-wid-25, janal-wid-25, janal-wid-25">
-									<p:outputLabel value="Existencia:" for="stockOrigen" />
-									<p:outputLabel for="quedaran" value="Quedarán:"/>
+									<p:outputLabel value="Existencia:" for="stockOrigen"/>
+									<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100 filas" columnClasses="janal-wid-100, janal-wid-col-100">
+										<p:outputLabel for="quedaran" value="Quedarán:"/>
+										<p:outputLabel value="#{manticCatalogosAlmacenesTransferenciasAccion.noTieneConteoOrigen}" escape="false" styleClass="filas"/>
+									</p:panelGrid>
 									<p:outputLabel value="Mínimo:"/>
 									<p:outputLabel value="Máximo:"/>
 									<p:inputText id="stockOrigen" styleClass="janal-wid-100-txt janal-column-right filas" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo== null? 0: manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo.stock}" readonly="true"/>	
@@ -95,7 +98,10 @@
 								<p:spacer height="1"/>
 								<p:panelGrid layout="grid" columns="4" styleClass="janal-wid-100 filas" columnClasses="janal-wid-25, janal-wid-25, janal-wid-25, janal-wid-25">
 									<p:outputLabel value="Existencia:" for="stockDestino" styleClass="janal-column-left"/>
-									<p:outputLabel value="Quedarán:" for="nuevaExistenciaDestino" styleClass="janal-column-left"/>
+									<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100 filas" columnClasses="janal-wid-100, janal-wid-col-100">
+   									 <p:outputLabel value="Quedarán:" for="nuevaExistenciaDestino" styleClass="janal-column-left"/>
+    								 <p:outputLabel value="#{manticCatalogosAlmacenesTransferenciasAccion.noTieneConteoDestino}" escape="false" styleClass="filas"/>
+									</p:panelGrid>
 									<p:outputLabel value="Mínimo:"/>
 									<p:outputLabel value="Máximo:"/>
 									<p:inputText id="stockDestino" styleClass="janal-wid-100-txt janal-column-right key-press-enter filas" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.destino== null? 0: manticCatalogosAlmacenesTransferenciasAccion.attrs.destino.stock}" readonly="true"/>	
@@ -124,7 +130,7 @@
 							</p:inputTextarea>	
 						</p:panelGrid>	
             <p:panel header="Imagen" styleClass="TexAlCenter janal-wid-100-txt" id="imagenArticulo" style="height:100%">
-              <p:graphicImage value="#{manticCatalogosAlmacenesTransferenciasAccion.image}" styleClass="janal-logo-mini" width="135" stream="false"/><br/>
+              <p:graphicImage value="#{manticCatalogosAlmacenesTransferenciasAccion.image}" styleClass="janal-logo-mini" width="245" stream="false"/><br/>
               <p:outputLabel value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.archivo}"/>
             </p:panel>
           </p:panelGrid>

@@ -546,6 +546,5 @@ public class Filtro extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Facturas/filtro");
 		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
 	}
-
 	
 }

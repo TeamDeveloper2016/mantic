@@ -98,6 +98,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 						-1L // Long idTransferencia					
 					);
 					this.detalle= new Articulo(-1L);
+					this.detalle.setCalculado(1D);
           break;
         case MODIFICAR:
         case CONSULTAR:
@@ -109,7 +110,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 					List<UISelectEntity> articulos= (List<UISelectEntity>)UIEntity.build("VistaAlmacenesTransferenciasDto", "porNombre", this.attrs);
 					if(articulos!= null && !articulos.isEmpty()) {
 					  this.attrs.put("articulo", articulos.get(0));
-            this.image= LoadImages.getImage(((UISelectEntity)this.attrs.get("articulo")).toString("archivo"));
+            this.image= LoadImages.getImage(((UISelectEntity)this.attrs.get("articulo")).toString("idArticulo"));
 					} // if	
           break;
       } // switch      
@@ -174,8 +175,47 @@ public class Accion extends IBaseAttribute implements Serializable {
   }
   
   public void doCalculate() {
-		Double stock= this.attrs.get("articulo")!= null? ((UISelectEntity)this.attrs.get("articulo")).toDouble("stock"): 0D;
-    this.attrs.put("nuevaExistenciaOrigen", !this.transferencia.getIdTransferenciaEstatus().equals(3L) || !this.transferencia.getIdTransferenciaEstatus().equals(5L)? stock- this.detalle.getCantidad(): stock);
+		try {
+			UISelectEntity articulo= (UISelectEntity)this.attrs.get("articulo");
+			Entity destino         = (Entity)this.attrs.get("destino");
+			Double stock  = articulo!= null? articulo.toDouble("stock"): 0D;
+			Double calculo = 0D;
+			Double maximo  = 0D;
+			Double sugerido= 0D;
+			if(destino== null) {
+				TcManticArticulosDto item= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.detalle.getIdArticulo());
+				calculo= 0D;
+				maximo = item== null? 0D: item.getMaximo();
+			} // if
+			else {
+				calculo= destino.toDouble("stock");
+				maximo = destino.toDouble("maximo");
+			} // else
+			switch(this.transferencia.getIdTransferenciaEstatus().intValue()) {
+				case 1:
+				case 2:
+				case 4:
+				case 5:
+				case 8:
+					sugerido= maximo- calculo< 0? 0D: maximo- calculo;
+					this.attrs.put("sugerido", sugerido);
+					if(stock> sugerido)
+						this.detalle.setCantidad(sugerido);
+					else
+						if(stock< sugerido && stock> 0)
+							this.detalle.setCantidad(stock);
+					this.attrs.put("nuevaExistenciaOrigen", stock- this.detalle.getCantidad());
+					this.attrs.put("nuevaExistenciaDestino", calculo+ this.detalle.getCantidad());
+					break;
+				case 3:
+					this.attrs.put("nuevaExistenciaOrigen", stock);
+					this.attrs.put("nuevaExistenciaDestino", calculo);
+					break;
+			} // switch
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
   } // doCalculate
   
   public void doUpdateAlmacenOrigen() {
@@ -193,47 +233,11 @@ public class Accion extends IBaseAttribute implements Serializable {
   
   public void doUpdateAlmacenDestino() {
     Entity destino         = null;
-    UISelectEntity articulo= null;
 		try {
       this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("idDestino", this.transferencia.getIdDestino());
-      destino = (Entity) DaoFactory.getInstance().toEntity("VistaAlmacenesTransferenciasDto", "articulo", this.attrs);
-			articulo= (UISelectEntity)this.attrs.get("articulo");
-      this.attrs.put("destino", destino);
-			Double stock  = articulo!= null? articulo.toDouble("stock"): 0D;
-			Double calculo = 0D;
-			Double maximo  = 0D;
-			Double sugerido= 0D;
-			if(destino== null) {
-				TcManticArticulosDto item= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.detalle.getIdArticulo());
-   			calculo= 0D;
-			  maximo = item== null? 0D: item.getMaximo();
-			} // if
-			else {
-   			calculo= destino.toDouble("stock");
-			  maximo = destino.toDouble("maximo");
-			} // else
-			switch(this.transferencia.getIdTransferenciaEstatus().intValue()) {
-				case 1:
-				case 2:
-				case 4:
-				case 5:
-				case 8:
-					sugerido= maximo- calculo< 0? 0D: maximo- calculo;
-					this.attrs.put("sugerido", sugerido);
-					if(stock> sugerido)
-  					this.detalle.setCantidad(sugerido);
-					else
-					  if(stock< sugerido && stock> 0)
-							this.detalle.setCantidad(stock);
-					this.attrs.put("nuevaExistenciaOrigen", stock- this.detalle.getCantidad());
-					this.attrs.put("nuevaExistenciaDestino", calculo+ this.detalle.getCantidad());
-					break;
-				case 3:
-					this.attrs.put("nuevaExistenciaOrigen", stock);
-					this.attrs.put("nuevaExistenciaDestino", calculo);
-					break;
-			} // switch
+      this.attrs.put("destino", (Entity) DaoFactory.getInstance().toEntity("VistaAlmacenesTransferenciasDto", "articulo", this.attrs));
+			this.doCalculate();
     } // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -297,6 +301,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			// recuperar el stock de articulos en el almacen origen
 			Value origen= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
 			seleccion.put("stock", origen== null? new Value("stock", 0D): origen);
+			seleccion.put("vacio", new Value("vacio", origen== null));
 			Entity umbral= (Entity)DaoFactory.getInstance().toEntity("TcManticAlmacenesArticulosDto", "almacenArticulo", params);
 			if(umbral== null) 
 				umbral= (Entity)DaoFactory.getInstance().toEntity("TcManticArticulosDto", "detalle", params);
@@ -356,5 +361,15 @@ public class Accion extends IBaseAttribute implements Serializable {
   public String doCancelar() {
 		return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
 	} 
+
+	public String getNoTieneConteoOrigen() {
+		String color= "janal-color-orange";
+		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(this.attrs.get("articulo")== null || !((UISelectEntity)this.attrs.get("articulo")).toBoolean("vacio")? "none": "").concat("' title='El articulo no tiene un conteo en el almacen origen !'></i>");
+	}
+
+	public String getNoTieneConteoDestino() {
+		String color= "janal-color-blue";
+		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(this.attrs.get("articulo")!= null && this.attrs.get("destino")== null? "": "none").concat("' title='El articulo no tiene un conteo en el almacen destino !'></i>");
+	}
 
 }

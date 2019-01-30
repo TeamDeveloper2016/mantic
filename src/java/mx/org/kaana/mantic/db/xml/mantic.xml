@@ -4599,14 +4599,14 @@
     <unit id="TcManticTransferenciasEstatusDto">
       <select id="row">
         select      
-          tc_mantic_transferencias_estatus.id_transferencias_estatus as id_key,
+          tc_mantic_transferencias_estatus.id_transferencia_estatus as id_key,
 					tc_mantic_transferencias_estatus.*
         from      
           tc_mantic_transferencias_estatus
         where 
           {condicion} 
 				order by 
-					id_transferencias_estatus
+					id_transferencia_estatus
       </select>
       <select id="identically">
         select      

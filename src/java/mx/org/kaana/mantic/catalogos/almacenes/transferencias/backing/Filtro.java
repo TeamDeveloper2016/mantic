@@ -35,6 +35,7 @@ import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
 import mx.org.kaana.mantic.enums.EReportes;
+import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import org.primefaces.context.RequestContext;
 
 @Named(value = "manticCatalogosAlmacenesTransferenciasFiltro")
@@ -224,7 +225,7 @@ public class Filtro extends Comun implements Serializable {
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_transferencias_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
+			params.put(Constantes.SQL_CONDICION, "id_transferencia_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
 			allEstatus= UISelect.build("TcManticTransferenciasEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatusAsigna", allEstatus);
 			this.attrs.put("estatusAsigna", allEstatus.get(0));
@@ -412,6 +413,13 @@ public class Filtro extends Comun implements Serializable {
 
 	public void doTransporta() {
     this.attrs.put("trasito", this.attrs.get("estatus")!= null && ((String)this.attrs.get("estatus")).equals("3"));
+	}
+	
+	public String doMovimientos() {
+		JsfBase.setFlashAttribute("tipo", ETipoMovimiento.TRANSFERENCIAS);
+		JsfBase.setFlashAttribute(ETipoMovimiento.TRANSFERENCIAS.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Catalogos/Almacenes/Transferencias/filtro");
+		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
 	}
 	
 }

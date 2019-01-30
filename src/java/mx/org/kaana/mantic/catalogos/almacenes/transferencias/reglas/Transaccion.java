@@ -221,7 +221,7 @@ public class Transaccion extends IBaseTnx {
 			DaoFactory.getInstance().update(sesion, origen);
 			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
 			if(inventario== null)
-			  this.toCreateInvetario(sesion, articulo, this.dto.getIdAlmacen());
+			  this.toCreateInvetario(sesion, articulo, this.dto.getIdAlmacen(), false);
 			else {
    			// si el estatus es el de cancelar entonces hacer los movimientos inversos al traspaso
   			if(this.idTransferenciaEstatus.intValue()== 4) {
@@ -254,7 +254,7 @@ public class Transaccion extends IBaseTnx {
 			DaoFactory.getInstance().update(sesion, origen);
 			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
 			if(inventario== null)
-			  this.toCreateInvetario(sesion, articulo, this.dto.getIdAlmacen());
+			  this.toCreateInvetario(sesion, articulo, this.dto.getIdDestino(), true);
 			else {
 				inventario.setSalidas(Numero.toRedondearSat(inventario.getSalidas()+ articulo.getCantidad()));
 				inventario.setStock(Numero.toRedondearSat(inventario.getStock()- articulo.getCantidad()));
@@ -281,15 +281,15 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	}
 		
-	private TcManticInventariosDto toCreateInvetario(Session sesion,  TcManticTransferenciasDetallesDto articulo, Long idAlmacen) throws Exception {
+	private TcManticInventariosDto toCreateInvetario(Session sesion,  TcManticTransferenciasDetallesDto articulo, Long idAlmacen, boolean inicial) throws Exception {
     TcManticInventariosDto regresar= new TcManticInventariosDto(
 			JsfBase.getIdUsuario(), // Long idUsuario, 
 			idAlmacen, // Long idAlmacen, 
 			0D, // Double entradas, 
 			-1L, // Long idInventario, 
 			articulo.getIdArticulo(), // Long idArticulo, 
-			articulo.getCantidad(), // Double inicial, 
-			0D, // Double stock, 
+			inicial? articulo.getCantidad(): articulo.getCantidad()* -1D, // Double inicial, 
+			inicial? articulo.getCantidad(): articulo.getCantidad()* -1D, // Double stock, 
 			articulo.getCantidad(), // Double salidas, 
 			new Long(Fecha.getAnioActual()), // Long ejercicio, 
 			1L // Long idAutomatico
