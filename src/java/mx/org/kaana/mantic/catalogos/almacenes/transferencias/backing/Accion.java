@@ -199,7 +199,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				case 8:
 					sugerido= maximo- calculo< 0? 0D: maximo- calculo;
 					this.attrs.put("sugerido", sugerido);
-					if(stock> sugerido)
+					if(stock> sugerido && sugerido> 0D)
 						this.detalle.setCantidad(sugerido);
 					else
 						if(stock< sugerido && stock> 0)
