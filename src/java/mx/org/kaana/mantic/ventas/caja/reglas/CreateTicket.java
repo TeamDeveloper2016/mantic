@@ -117,7 +117,12 @@ public class CreateTicket {
 	
 	private String toFecha(){
 		StringBuilder regresar= new StringBuilder();
-		regresar.append("Fecha:").append(Fecha.formatear(Fecha.FECHA_HORA_CORTA, ((TicketVenta)this.ticket.getOrden()).getRegistro())).append("</p>");		
+		regresar.append("Fecha:").append(Fecha.formatear(Fecha.FECHA_HORA_CORTA, ((TicketVenta)this.ticket.getOrden()).getRegistro()));
+		if(this.tipo.equals("APARTADO")){
+			regresar.append("<br>");		
+			regresar.append("Vencimiento:").append(Fecha.formatear(Fecha.FECHA_HORA_CORTA, ((TicketVenta)this.ticket.getOrden()).getVigencia()));
+		} // if
+		regresar.append("</p>");		
 		return regresar.toString();
 	} // toFecha
 	
@@ -188,6 +193,18 @@ public class CreateTicket {
 		regresar.append("<td style=\"font-family: sans-serif;font-size: 14px;width: 70px;max-width: 70px;word-break: break-all;border-collapse: collapse;text-align: right;font-weight: bold;\">$").append(this.ticket.getTotales().getTotalDosDecimales$()).append("</td>");			
 		regresar.append("</tr>");			
 		regresar.append("<tr style=\"height: 15px;\"><td></td><td></td><td></td><td></td></tr>");	
+		if(this.tipo.equals("APARTADO")){			
+			regresar.append("<tr style=\"border-collapse: collapse;\">");				
+			regresar.append("<td style=\"font-family: sans-serif;font-size: 14px;width: 220px;max-width: 220px;word-break: break-all;border-collapse: collapse;text-align: right;font-weight: bold;\">ABONO:</td>");			
+			regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 70px;max-width: 70px;word-break: break-all;border-collapse: collapse;text-align: right;\">").append("</td>");
+			regresar.append("</tr>");
+		} // if
+		if(!this.tipo.equals("APARTADO") && this.pago.getAbono() > 0){			
+			regresar.append("<tr style=\"border-collapse: collapse;\">");				
+			regresar.append("<td style=\"font-family: sans-serif;font-size: 14px;width: 220px;max-width: 220px;word-break: break-all;border-collapse: collapse;text-align: right;\">ABONO:</td>");			
+			regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 70px;max-width: 70px;word-break: break-all;border-collapse: collapse;text-align: right;\">").append(this.pago.getAbono()).append("</td>");
+			regresar.append("</tr>");
+		} // if
 		if(this.pago.getEfectivo() > 0){			
 			regresar.append("<tr style=\"border-collapse: collapse;\">");				
 			regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 220px;max-width: 220px;word-break: break-all;border-collapse: collapse;text-align: right;\">EFECTIVO:</td>");
@@ -221,7 +238,15 @@ public class CreateTicket {
 		regresar.append("<tr style=\"border-collapse: collapse;\">");
 		regresar.append("<td style=\"font-family: sans-serif;font-size: 14px;width: 220px;max-width: 220px;word-break: break-all;border-collapse: collapse;text-align: right;font-weight: bold;\">CAMBIO:</td>");
 		regresar.append("<td style=\"font-family: sans-serif;font-size: 14px;width: 70px;max-width: 70px;word-break: break-all;border-collapse: collapse;text-align: right;font-weight: bold;\">").append(this.pago.getCambio$()).append("</td>");
-		regresar.append("</tr></tbody></table>");					
+		regresar.append("</tr>");
+		if(this.tipo.equals("APARTADO")){			
+			regresar.append("<tr style=\"height: 15px;\"><td></td><td></td><td></td><td></td></tr>");	
+			regresar.append("<tr style=\"border-collapse: collapse;\">");				
+			regresar.append("<td style=\"font-family: sans-serif;font-size: 14px;width: 220px;max-width: 220px;word-break: break-all;border-collapse: collapse;text-align: right;font-weight: bold;\">RESTANTE:</td>");
+			regresar.append("<td style=\"font-family: sans-serif;font-size: 14px;width: 70px;max-width: 70px;word-break: break-all;border-collapse: collapse;text-align: right;font-weight: bold;\">$").append(Numero.formatear(Numero.NUMERO_CON_DECIMALES, this.pago.getDifEfectivo())).append("</td>");
+			regresar.append("</tr>");
+		} // if
+		regresar.append("</tbody></table>");					
 		return regresar.toString();
 	} // toPagos
 	
@@ -262,7 +287,7 @@ public class CreateTicket {
 	
 	private String toFooter(){
 		StringBuilder regresar= new StringBuilder();
-		String descripcion    = this.tipo.equals("COTIZACIÓN") ? "GRACIAS POR SU PREFERENCIA" : "GRACIAS POR SU COMPRA";			
+		String descripcion= this.tipo.equals("COTIZACIÓN") || this.tipo.equals("APARTADO") ? "GRACIAS POR SU PREFERENCIA" : "GRACIAS POR SU COMPRA";			
 		regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 14px;border-top: 1px solid black;border-collapse: collapse;\">");
 		regresar.append("<br/>¡");
 		regresar.append(descripcion);
