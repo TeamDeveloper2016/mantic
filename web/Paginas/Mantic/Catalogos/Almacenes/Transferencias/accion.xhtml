@@ -53,7 +53,7 @@
 										<p:ajax event="change" process="@this" update="@this" oncomplete="janal.refresh();" />
 									</p:selectBooleanCheckbox>
 									<p:autoComplete id="idArticulo" placeholder="Nombre o codigo" widgetVar="listadoarticulos" var="customArticulos" itemLabel="#{customArticulos.nombre}" inputStyleClass="janal-wid-100-txt key-down-event filas" itemValue="#{customArticulos}" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo}" completeMethod="#{manticCatalogosAlmacenesTransferenciasAccion.doCompleteArticulo}"  converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100" forceSelection="true" readonly="#{manticCatalogosAlmacenesTransferenciasAccion.transferencia.idAlmacen lt 1}">
-										<p:ajax event="itemSelect" process="@this" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doAsignaArticulo}" update="@(.cantidad) @(.filas) idArticulo imagenArticulo" oncomplete="janal.refresh();"/>
+										<p:ajax event="itemSelect" process="@this" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doAsignaArticulo}" update="@(.cantidad) @(.filas) idArticulo panelImage" oncomplete="janal.refresh();"/>
 										<p:column styleClass="janal-column-center">
 											<!--p:graphicImage value="#{customArticulos.image}" styleClass="janal-logo-mini filas" width="30" cache="false" stream="false"/-->
 											<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="30"/>
@@ -129,9 +129,10 @@
 								<p:ajax event="blur" process="@this"/>
 							</p:inputTextarea>	
 						</p:panelGrid>	
-            <p:panel header="Imagen" styleClass="TexAlCenter janal-wid-100-txt" id="imagenArticulo" style="height:100%">
-              <p:graphicImage value="#{manticCatalogosAlmacenesTransferenciasAccion.image}" styleClass="janal-logo-mini" width="245" stream="false"/><br/>
-              <p:outputLabel value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.archivo}"/>
+            <p:panel id="panelImage" header="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo.propio}" styleClass="TexAlCenter janal-wid-100-txt" style="height:100%">
+							<a id="source-image" data-magnify="gallery" data-caption="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo.nombre}" data-group="icon-gallery" href="" title="Click para ver más grande la imagen">
+								<p:graphicImage id="icon-image" value="#{manticCatalogosAlmacenesTransferenciasAccion.image}" styleClass="janal-logo-mini" width="245" stream="false" style="cursor:zoom-in;"/>
+							</a>	
             </p:panel>
           </p:panelGrid>
         </div>

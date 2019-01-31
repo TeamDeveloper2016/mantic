@@ -5229,7 +5229,7 @@
 				from 
 					tc_mantic_transferencias_bitacora
 				inner join
-					tc_mantic_personas on tc_mantic_transferencias_bitacora.id_persona= tc_mantic_personas.id_transporto
+					tc_mantic_personas on tc_mantic_transferencias_bitacora.id_transporto= tc_mantic_personas.id_persona
 				where
 					tc_mantic_transferencias_bitacora.id_transporto= {idTransporto}
 				order by
@@ -5240,6 +5240,7 @@
 					tc_mantic_transferencias_bitacora.id_transferencia_bitacora as id_key,
 					tc_mantic_transferencias.consecutivo,
 				  0 as importe,
+				  tc_mantic_transferencias_bitacora.id_transporto,
 					tc_mantic_transferencias_bitacora.justificacion,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
 				  tc_mantic_transferencias_estatus.nombre as estatus,
