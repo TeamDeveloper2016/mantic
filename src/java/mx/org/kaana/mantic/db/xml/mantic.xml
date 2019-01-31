@@ -98,6 +98,23 @@
         where      
           id_egreso = {idEgreso} and id_tipo_archivo = {idTipoArchivo} and nombre = '{nombre}'
       </select>
+			<select id="listado">
+        select      
+          *
+        from      
+          tc_mantic_egresos_archivos
+        where      
+          ruta = '{ruta}'
+				  and id_principal= 1
+				order by
+				  ruta
+      </select>
+			<update id="rows">
+				update tc_mantic_egresos_archivos set id_principal= 2 where id_tipo_archivo = {idTipoArchivo} and id_egreso = {idEgreso}
+			</update>
+			<delete id="rows">
+				delete from tc_mantic_egresos_archivos where id_egreso = {idEgreso}
+			</delete>
     </unit>		
 	  <unit id="TcManticEgresosDto">
       <select id="row">
