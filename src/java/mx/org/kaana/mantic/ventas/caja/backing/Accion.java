@@ -775,6 +775,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		List<UISelectEntity> cfdis= null;
 		UISelectEntity cfdi       = null;
 		Boolean facturarVenta     = false;
+		Calendar calendar         = null;
 		try {
 			this.getAdminOrden().toCalculate();
 			ticketVenta= (TicketVenta)this.getAdminOrden().getOrden();
@@ -804,6 +805,11 @@ public class Accion extends IBaseVenta implements Serializable {
 			regresar.setArticulos(getAdminOrden().getArticulos());
 			regresar.setIdCaja(Long.valueOf(this.attrs.get("caja").toString()));
 			regresar.setApartado((Boolean) this.attrs.get("apartado"));
+			if(regresar.getApartado()){
+				calendar= Calendar.getInstance();
+				calendar.add(Calendar.DAY_OF_YEAR, 30);
+				regresar.getTicketVenta().setVigencia(new Date(calendar.getTimeInMillis()));
+			} // if
 			regresar.setDetailApartado(this.apartado);
 			regresar.setObservaciones(this.attrs.get("observaciones").toString());
 		} // try
