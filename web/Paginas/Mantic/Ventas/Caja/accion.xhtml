@@ -980,7 +980,7 @@
 					<p:ajax event="keyup" listener="#{manticVentasCajaAccion.doLoadCotizaciones}" process="@this busquedaCotizacion" update="tablaCotizaciones" onstart="return $('#busquedaCotizacion').val().trim().length> 1" oncomplete="jsArticulos.refreshCobroValidate();"/>
 				</p:inputText>
 			</p:panelGrid>							
-			<p:dataTable lazy="true" id="tablaCotizaciones" widgetVar="widgetTablaCotizaciones" var="row" styleClass="janal-row-cotizaciones janal-wid-100" value="#{manticVentasCajaAccion.lazyCotizaciones}" selection="#{manticVentasCajaAccion.attrs.cotizacion}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="270" style="margin-bottom:0" rowStyleClass="#{manticVentasCajaAccion.toColor(row)}">
+			<p:dataTable lazy="true" id="tablaCotizaciones" widgetVar="widgetTablaCotizaciones" var="row" styleClass="janal-row-cotizaciones janal-wid-100" value="#{manticVentasCajaAccion.lazyCotizaciones}" selection="#{manticVentasCajaAccion.attrs.cotizacion}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="270" style="margin-bottom:0" rowStyleClass="#{!manticVentasCajaAccion.toColor(row)}">
 				<p:ajax event="rowDblselect" listener="#{manticVentasCajaAccion.doAsignaCotizacion}" process="@this tablaCotizaciones" update="contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion) @(.janal-abono)" onstart="PF('dlgCotizaciones').hide();" oncomplete="janal.desbloquear();" />	
 				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 					<f:facet name="header">
@@ -1036,7 +1036,7 @@
 					<p:ajax event="keyup" listener="#{manticVentasCajaAccion.doLoadApartados}" process="@this busquedaApartados" update="tablaApartados" onstart="return $('#busquedaApartados').val().trim().length> 1" oncomplete="jsArticulos.refreshCobroValidate();"/>
 				</p:inputText>
 			</p:panelGrid>							
-			<p:dataTable lazy="true" id="tablaApartados" widgetVar="widgetTablaApartados" var="row" styleClass="janal-row-apartados janal-wid-100" value="#{manticVentasCajaAccion.lazyApartados}" selection="#{manticVentasCajaAccion.attrs.apartados}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="270" style="margin-bottom:0" rowStyleClass="#{manticVentasCajaAccion.toColor(row)}">
+			<p:dataTable lazy="true" id="tablaApartados" widgetVar="widgetTablaApartados" var="row" styleClass="janal-row-apartados janal-wid-100" value="#{manticVentasCajaAccion.lazyApartados}" selection="#{manticVentasCajaAccion.attrs.apartados}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="270" style="margin-bottom:0" rowStyleClass="#{!manticVentasCajaAccion.toColor(row)}">
 				<p:ajax event="rowDblselect" listener="#{manticVentasCajaAccion.doAsignaApartado}" process="@this tablaApartados" update="contenedorGrupos @(.janal-abono) aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion)" onstart="PF('dlgApartados').hide();" oncomplete="janal.desbloquear();" />	
 				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 					<f:facet name="header">
