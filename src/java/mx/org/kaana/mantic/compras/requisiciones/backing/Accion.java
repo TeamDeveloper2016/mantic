@@ -224,7 +224,8 @@ public class Accion extends IBaseArticulos implements Serializable {
 				Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
 				temporal.setStock(stock== null? 0D: stock.toDouble());
 				if(index== getAdminOrden().getArticulos().size()- 1) {
-					getAdminOrden().getArticulos().add(new Articulo(-1L));
+					this.getAdminOrden().getArticulos().add(new Articulo(-1L));
+					this.getAdminOrden().toAddUltimo(this.getAdminOrden().getArticulos().size()- 1);
 					RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (getAdminOrden().getArticulos().size()- 1)+ ");");
 				} // if	
 				RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ articulo.toMap()+ "');");				

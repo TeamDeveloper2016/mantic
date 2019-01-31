@@ -30,6 +30,7 @@ import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.Transaccion
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.comun.IBaseStorage;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -170,6 +171,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
       this.attrs.put("personas", personas);
 			if(personas!= null && !this.accion.equals(EAccion.AGREGAR) && ((Transferencia)this.getAdminOrden().getOrden()).getIdSolicito()!= null && ((Transferencia)this.getAdminOrden().getOrden()).getIdSolicito()> 0L) 
 				((Transferencia)this.getAdminOrden().getOrden()).setIkSolicito(personas.get(personas.indexOf(new UISelectEntity(((Transferencia)this.getAdminOrden().getOrden()).getIdSolicito()))));
+			this.doUpdateAlmacenDestino(true);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -192,6 +194,62 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 		this.getAdminOrden().getArticulos().clear();
 		this.getAdminOrden().getArticulos().add(new Articulo(-1L));
 		this.getAdminOrden().toCalculate();
+	}
+	
+	public void doUpdateAlmacenDestino() {
+		this.doUpdateAlmacenDestino(false);
+	}
+	
+	public void doUpdateAlmacenDestino(boolean recuperar) {
+		Map<String, Object> params= null;
+		Value origen              = null;
+		try {
+			params=new HashMap<>();
+			for (Articulo articulo: this.getAdminOrden().getArticulos()) {
+				params.put("idArticulo", articulo.getIdArticulo());
+				if(articulo.getIdArticulo()> 0L) {
+					if(recuperar) {
+					  params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
+					  // recuperar el stock de articulos en el almacen origen
+					  origen= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
+					  articulo.setStock(origen== null? 0D: origen.toDouble());
+					  // el almacen origen no tiene conteo 
+					  articulo.setSolicitado(origen== null);
+					} // if	
+					params.put("idAlmacen", ((TcManticTransferenciasDto)this.getAdminOrden().getOrden()).getIdDestino());
+					// recuperar el stock de articulos en el almacen destino
+					origen= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
+					articulo.setValor(origen== null? 0D: origen.toDouble());
+					// el almacen destino no tiene conteo
+					articulo.setCostoLibre(origen== null);
+					origen= (Value)DaoFactory.getInstance().toField("TcManticAlmacenesArticulosDto", "umbral", params, "maximo");
+					// recuperar el maximo del catalogo de articulos
+					if(origen== null) {
+						TcManticArticulosDto item= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
+						articulo.setCosto(item.getMaximo());
+					} // if
+					else	
+						articulo.setCosto(origen.toDouble());
+					// calcular el valor sugerido para la cantidad
+					if(articulo.getCantidad()<= 1D && articulo.getStock()> 0D && articulo.getCosto()> 0D) 
+						if((articulo.getCosto()- articulo.getValor())> articulo.getStock())
+							articulo.setCantidad(articulo.getStock()<= 0? 1D: articulo.getStock());
+						else
+							if(articulo.getValor()< articulo.getCosto())
+								articulo.setCantidad(articulo.getCosto()- articulo.getValor());
+					// el stock del almacen destino es superior al maximo permitido en el almacen
+					articulo.setUltimo(articulo.getValor()> articulo.getCosto());
+					articulo.setModificado(true);
+				} // if	
+			} // for
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
 	}
 
 	public void doTabChange(TabChangeEvent event) {
@@ -315,12 +373,22 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 				// recuperar el stock de articulos en el almacen origen
 				Value origen= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
 				temporal.setStock(origen== null? 0D: origen.toDouble());
+				// el almacen origen no tiene conteo 
+				temporal.setSolicitado(origen== null);
 				// recuperar el stock de articulos en el almacen destino
 				params.put("idAlmacen", ((TcManticTransferenciasDto)this.getAdminOrden().getOrden()).getIdDestino());
 				origen= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
 				temporal.setValor(origen== null? 0D: origen.toDouble());
+				// el almacen destino no tiene conteo
+				temporal.setCostoLibre(origen== null);
 				origen= (Value)DaoFactory.getInstance().toField("TcManticAlmacenesArticulosDto", "umbral", params, "maximo");
-				temporal.setCosto(origen== null? 0D: origen.toDouble());
+				// recuperar el maximo del catalogo de articulos
+				if(origen== null) {
+					TcManticArticulosDto item= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.toLong("idArticulo"));
+				  temporal.setCosto(item.getMaximo());
+				} // if
+			  else	
+				  temporal.setCosto(origen.toDouble());
 				// calcular el valor sugerido para la cantidad
 				if(temporal.getCantidad()<= 1D && temporal.getStock()> 0D && temporal.getCosto()> 0D) 
 					if((temporal.getCosto()- temporal.getValor())> temporal.getStock())
@@ -330,16 +398,13 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 						  temporal.setCantidad(temporal.getCosto()- temporal.getValor());
 				// el stock del almacen destino es superior al maximo permitido en el almacen
 				temporal.setUltimo(temporal.getValor()> temporal.getCosto());
-				// el almacen origen no tiene conteo 
-				temporal.setSolicitado(temporal.getStock()<= 0D);
-				// el almacen destino no tiene conteo
-				temporal.setCostoLibre(temporal.getValor()<= 0D);
 				if(index== this.getAdminOrden().getArticulos().size()- 1) {
 					this.getAdminOrden().getArticulos().add(new Articulo(-1L));
+					this.getAdminOrden().toAddUltimo(this.getAdminOrden().getArticulos().size()- 1);
 					RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.getAdminOrden().getArticulos().size()- 1)+ ");");
 				} // if	
 				RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
-				this.getAdminOrden().toCalculate();
+				this.getAdminOrden().toCalculate(index);
 			} // if	
 			else
 				temporal.setNombre("<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");

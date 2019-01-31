@@ -53,7 +53,7 @@
 										<p:ajax event="change" process="@this" update="@this" oncomplete="janal.refresh();" />
 									</p:selectBooleanCheckbox>
 									<p:autoComplete id="idArticulo" placeholder="Nombre o codigo" widgetVar="listadoarticulos" var="customArticulos" itemLabel="#{customArticulos.nombre}" inputStyleClass="janal-wid-100-txt key-down-event filas" itemValue="#{customArticulos}" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo}" completeMethod="#{manticCatalogosAlmacenesTransferenciasAccion.doCompleteArticulo}"  converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100" forceSelection="true" readonly="#{manticCatalogosAlmacenesTransferenciasAccion.transferencia.idAlmacen lt 1}">
-										<p:ajax event="itemSelect" process="@this" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doAsignaArticulo}" update="@(.cantidad) @(.filas) idArticulo panelImage" oncomplete="janal.refresh();"/>
+										<p:ajax event="itemSelect" process="@this" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doAsignaArticulo}" update="@(.cantidad) @(.filas) idArticulo panelImage" oncomplete="janal.refresh();$('#source-image').attr('href', $('#icon-image').attr('src'));"/>
 										<p:column styleClass="janal-column-center">
 											<!--p:graphicImage value="#{customArticulos.image}" styleClass="janal-logo-mini filas" width="30" cache="false" stream="false"/-->
 											<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="30"/>

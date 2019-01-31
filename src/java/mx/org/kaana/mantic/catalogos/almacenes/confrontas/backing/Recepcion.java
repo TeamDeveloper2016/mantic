@@ -252,6 +252,7 @@ public class Recepcion extends IBaseArticulos implements IBaseStorage, Serializa
 				temporal.setCostoLibre(temporal.getValor()<= 0D);
 				if(index== this.getAdminOrden().getArticulos().size()- 1) {
 					this.getAdminOrden().getArticulos().add(new Articulo(-1L));
+					this.getAdminOrden().toAddUltimo(this.getAdminOrden().getArticulos().size()- 1);
 					RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.getAdminOrden().getArticulos().size()- 1)+ ");");
 				} // if	
 				RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
