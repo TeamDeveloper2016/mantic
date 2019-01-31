@@ -111,7 +111,7 @@ public class CreateTicket {
 		StringBuilder regresar= null;
 		try {
 			regresar= new StringBuilder();
-			regresar.append("<p style=\"width: 290px;text-align: center;font-family: sans-serif;font-size: 11px;\">").append(toFindDomicilio()).append("</p>");
+			regresar.append("<p style=\"width: 290px;text-align: center;font-family: sans-serif;font-size: 14px;\">").append(toFindDomicilio()).append("</p>");
 		} // try
 		catch (Exception e) {			
 			throw e;  
@@ -127,7 +127,7 @@ public class CreateTicket {
 			params= new HashMap<>();
 			params.put("idEmpresa", this.principal.getIdEmpresa());
 			domicilio= (Entity) DaoFactory.getInstance().toEntity("VistaInformacionEmpresas", "datosEmpresa", params);
-			regresar= domicilio.toString("empresaDireccion").concat(" C.P. ").concat(domicilio.toString("codigoPostal")).concat(" Colonia. ").concat(domicilio.toString("colonia"));
+			regresar= domicilio.toString("empresaDireccion").concat(" C.P. ").concat(domicilio.toString("codigoPostal")).concat("<br> COLONIA. ").concat(domicilio.toString("colonia"));
 		} // try
 		catch (Exception e) {			
 			throw e; 
@@ -214,7 +214,7 @@ public class CreateTicket {
 					regresar.append(toTable());
 					regresar.append("<tbody>");
 					regresar.append("<tr style=\"border-top: 1px solid black;border-collapse: collapse;\">");
-					regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 80px; max-width: 80px;border-top: 1px solid black;border-collapse: collapse;\">").append(pivote.getNombre().length()> 36 ? pivote.getNombre().substring(0, 36) : pivote.getNombre()).append("</td>");
+					regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 80px; max-width: 80px;border-top: 1px solid black;border-collapse: collapse;\">").append(pivote.getNombre().length()> 35 ? pivote.getNombre().substring(0, 35) : pivote.getNombre()).append("</td>");
 					regresar.append("</tr>");
 					regresar.append("</tbody>");
 					regresar.append(toFinishTable());
