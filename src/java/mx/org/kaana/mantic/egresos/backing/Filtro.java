@@ -37,10 +37,16 @@ public class Filtro extends Comun implements Serializable {
   @PostConstruct
   @Override
   protected void init() {
+		Long idEgreso= null;
     try {    	      
       this.attrs.put("descripcion", "");
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());  
 			loadEstatus();
+			idEgreso= (Long) JsfBase.getFlashAttribute("idEgreso");
+			if(idEgreso!= null){				
+				this.attrs.put("idEgreso", idEgreso);
+				doLoad();
+			} // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -94,6 +100,10 @@ public class Filtro extends Comun implements Serializable {
 		StringBuilder condicion= null;
 		try {			
 			condicion= new StringBuilder("");			
+			if(!Cadena.isVacio(this.attrs.get("idEgreso")) && !Long.valueOf(this.attrs.get("idEgreso").toString()).equals(-1L)){
+				condicion.append("tc_mantic_egresos.id_egreso=").append(this.attrs.get("idEgreso")).append(" and ");							
+				this.attrs.put("idEgreso", "");
+			} // if
 			if(!Cadena.isVacio(this.attrs.get("idEstatus")) && !Long.valueOf(this.attrs.get("idEstatus").toString()).equals(-1L))
 				condicion.append("tc_mantic_egresos.id_egreso_estatus=").append(this.attrs.get("idEstatus")).append(" and ");						
 			if(!Cadena.isVacio(this.attrs.get("fecha")))
@@ -163,4 +173,18 @@ public class Filtro extends Comun implements Serializable {
 		} // catch		
 		return regresar;
 	} // doDetalle
+	
+	public String doImportar(){
+		String regresar= null;
+		try {
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Egresos/filtro");		
+			JsfBase.setFlashAttribute("idEgreso",((Entity)this.attrs.get("seleccionado")).getKey());
+			regresar= "importar".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		return regresar;
+	} // doImportar
 }
