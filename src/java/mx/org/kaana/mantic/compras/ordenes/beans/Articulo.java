@@ -16,6 +16,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
 import mx.org.kaana.mantic.comun.beans.ArticuloDetalle;
+import mx.org.kaana.mantic.db.dto.TcManticConfrontasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticDevolucionesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticGarantiasDetallesDto;
@@ -593,6 +594,24 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getIdOrdenDetalle(), // Long idTransferencia, 
 			this.getNombre() // String nombre
 		);
+	}
+	
+  public TcManticConfrontasDetallesDto toConfrontasDetalle() {
+		if(Cadena.isVacio(this.getPropio()))
+		  LOG.warn("El codigo propio esta vacio ["+ this.getNombre()+ "] corresponde a la confronta de articulos");
+		return new TcManticConfrontasDetallesDto(
+      this.getPropio(), // String codigo, 
+			-1L, // Long idConfrontaDetalle, 
+			this.getCantidad(), // Double cantidades, 
+			this.getIdOrdenDetalle(), // Long idConfronta, 
+			this.getIdComodin(), // Long idTransferenciaDetalle, 
+			this.getCantidad(), // Double cantidad, 
+			this.getIdArticulo(), // Long idArticulo, 
+			this.getIdAplicar(), // Long idAplicar, 
+			this.getNombre(), // String nombre, 
+			this.getIdOrdenDetalle()== null? this.getSolicitados(): 0D, // Double declarados, 
+			this.getIdOrdenDetalle()== null? this.getCantidad()- this.getSolicitados(): 0D // Double diferencia
+   	);
 	}
 	
 	public UISelectEntity toUISelectEntity() {

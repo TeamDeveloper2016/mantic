@@ -160,7 +160,15 @@
         where      
           id_transferencia = {idTransferencia}
       </select>
-    </unit>			
+      <select id="detalle">
+        select      
+          *
+        from      
+          tc_mantic_confrontas
+        where 
+          id_confronta= {idConfronta}
+      </select>
+		</unit>			
     <unit id="TcManticConfrontasDetallesDto">
       <select id="row">
         select      

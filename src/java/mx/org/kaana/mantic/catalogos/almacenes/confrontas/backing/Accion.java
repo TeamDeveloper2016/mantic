@@ -24,8 +24,8 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.almacenes.transferencias.beans.Transferencia;
-import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.AdminTransferencias;
+import mx.org.kaana.mantic.catalogos.almacenes.confrontas.beans.Confronta;
+import mx.org.kaana.mantic.catalogos.almacenes.confrontas.reglas.AdminConfronta;
 import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
@@ -39,9 +39,9 @@ import org.primefaces.event.TabChangeEvent;
 
 @Named(value= "manticCatalogosAlmacenesConfrontasAccion")
 @ViewScoped
-public class Recepcion extends IBaseArticulos implements IBaseStorage, Serializable {
+public class Accion extends IBaseArticulos implements IBaseStorage, Serializable {
 
-	private static final Log LOG              = LogFactory.getLog(Recepcion.class);
+	private static final Log LOG              = LogFactory.getLog(Accion.class);
   private static final long serialVersionUID= 327393488565639367L;
 	private EAccion accion;
 
@@ -55,7 +55,7 @@ public class Recepcion extends IBaseArticulos implements IBaseStorage, Serializa
     try {
 			if(JsfBase.getFlashAttribute("accion")== null)
 				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
-      this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.PROCESAR: (EAccion)JsfBase.getFlashAttribute("accion");
+      this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia")== null? -1L: JsfBase.getFlashAttribute("idTransferencia"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
@@ -76,11 +76,11 @@ public class Recepcion extends IBaseArticulos implements IBaseStorage, Serializa
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
       switch (this.accion) {
         case AGREGAR:											
-          this.setAdminOrden(new AdminTransferencias(new Transferencia(-1L, 2L)));
+          this.setAdminOrden(new AdminConfronta(new Confronta(-1L, 2L)));
           break;
         case MODIFICAR:			
         case CONSULTAR:											
-          this.setAdminOrden(new AdminTransferencias((Transferencia)DaoFactory.getInstance().toEntity(Transferencia.class, "TcManticTransferenciasDto", "detalle", this.attrs)));
+          this.setAdminOrden(new AdminConfronta((Confronta)DaoFactory.getInstance().toEntity(Confronta.class, "TcManticConfrontasDto", "detalle", this.attrs)));
           break;
       } // switch
  			this.attrs.put("sinIva", false);
@@ -100,13 +100,13 @@ public class Recepcion extends IBaseArticulos implements IBaseStorage, Serializa
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.PROCESAR)) {
-   			  RequestContext.getCurrentInstance().execute("janal.back(' gener\\u00F3 la confronta ', '"+ ((Transferencia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+   			  RequestContext.getCurrentInstance().execute("janal.back(' gener\\u00F3 la confronta ', '"+ ((Confronta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 		  		JsfBase.addMessage("Se registró la transferencia de correcta", ETipoMensaje.INFORMACION);
  				  regresar = ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
     			JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la confronta de articulos."), ETipoMensaje.INFORMACION);
-  			JsfBase.setFlashAttribute("idTransferencia", ((Transferencia)this.getAdminOrden().getOrden()).getIdTransferencia());
+  			JsfBase.setFlashAttribute("idTransferencia", ((Confronta)this.getAdminOrden().getOrden()).getIdTransferencia());
 			} // if
 			else 
 				JsfBase.addMessage("Ocurrió un error al registrar la confronta de articulos.", ETipoMensaje.ALERTA);      			
@@ -119,7 +119,7 @@ public class Recepcion extends IBaseArticulos implements IBaseStorage, Serializa
   } // doAccion
 
   public String doCancelar() {   
-  	JsfBase.setFlashAttribute("idTransferencia", ((Transferencia)this.getAdminOrden().getOrden()).getIdTransferencia());
+  	JsfBase.setFlashAttribute("idTransferencia", ((Confronta)this.getAdminOrden().getOrden()).getIdTransferencia());
     return (String)this.attrs.get("retorno");
   } // doCancelar
 
@@ -138,19 +138,19 @@ public class Recepcion extends IBaseArticulos implements IBaseStorage, Serializa
       this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
  			List<UISelectEntity> empresas= (List<UISelectEntity>)this.attrs.get("empresas");
 			if(!empresas.isEmpty()) {
-			  ((Transferencia)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(empresas.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkEmpresa())));
-				this.attrs.put("idPedidoSucursal", ((Transferencia)this.getAdminOrden().getOrden()).getIkEmpresa());
+			  ((Confronta)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(empresas.indexOf(((Confronta)this.getAdminOrden().getOrden()).getIkEmpresa())));
+				this.attrs.put("idPedidoSucursal", ((Confronta)this.getAdminOrden().getOrden()).getIkEmpresa());
 			} // if	
       this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 			if(!almacenes.isEmpty()) {
 				List<UISelectEntity> destinos= (List<UISelectEntity>)((ArrayList<UISelectEntity>)almacenes).clone();
-			  ((Transferencia)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(almacenes.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkAlmacen())));
+			  ((Confronta)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(almacenes.indexOf(((Confronta)this.getAdminOrden().getOrden()).getIkAlmacen())));
         this.attrs.put("destinos", destinos);
-  			int index = destinos.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkAlmacen());
+  			int index = destinos.indexOf(((Confronta)this.getAdminOrden().getOrden()).getIkAlmacen());
   			if(index>= 0)
 	  			destinos.remove(index);
-  		  ((Transferencia)this.getAdminOrden().getOrden()).setIkDestino(destinos.get(destinos.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino())));
+  		  ((Confronta)this.getAdminOrden().getOrden()).setIkDestino(destinos.get(destinos.indexOf(((Confronta)this.getAdminOrden().getOrden()).getIkDestino())));
 			} // if
 			columns.clear();
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
@@ -158,8 +158,8 @@ public class Recepcion extends IBaseArticulos implements IBaseStorage, Serializa
       columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
       List<UISelectEntity> personas= UIEntity.build("VistaAlmacenesTransferenciasDto", "solicito", params, columns);
       this.attrs.put("personas", personas);
-			if(personas!= null && !this.accion.equals(EAccion.AGREGAR) && ((Transferencia)this.getAdminOrden().getOrden()).getIdSolicito()!= null && ((Transferencia)this.getAdminOrden().getOrden()).getIdSolicito()> 0L) 
-				((Transferencia)this.getAdminOrden().getOrden()).setIkSolicito(personas.get(personas.indexOf(new UISelectEntity(((Transferencia)this.getAdminOrden().getOrden()).getIdSolicito()))));
+			if(personas!= null && !this.accion.equals(EAccion.AGREGAR) && ((Confronta)this.getAdminOrden().getOrden()).getTransferencia().getIdSolicito()!= null && ((Confronta)this.getAdminOrden().getOrden()).getTransferencia().getIdSolicito()> 0L) 
+				((Confronta)this.getAdminOrden().getOrden()).setIkSolicito(personas.get(personas.indexOf(new UISelectEntity(((Confronta)this.getAdminOrden().getOrden()).getTransferencia().getIdSolicito()))));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -169,19 +169,6 @@ public class Recepcion extends IBaseArticulos implements IBaseStorage, Serializa
       Methods.clean(columns);
       Methods.clean(params);
     } // finally
-	}
-
-	public void doUpdateAlmacen() {
-		List<UISelectEntity> destinos= (List<UISelectEntity>)((ArrayList<UISelectEntity>)this.attrs.get("almacenes")).clone();
-    this.attrs.put("destinos", destinos);
-		int index = destinos.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkAlmacen());
-		if(index>= 0)
-      destinos.remove(index);
-		if(destinos.isEmpty())
-      ((Transferencia)this.getAdminOrden().getOrden()).setIkDestino(destinos.get(0));
-		this.getAdminOrden().getArticulos().clear();
-		this.getAdminOrden().getArticulos().add(new Articulo(-1L));
-		this.getAdminOrden().toCalculate();
 	}
 
 	public void doTabChange(TabChangeEvent event) {
@@ -282,7 +269,7 @@ public class Recepcion extends IBaseArticulos implements IBaseStorage, Serializa
 			transaccion = new Transaccion((TcManticTransferenciasDto)this.getAdminOrden().getOrden(), this.getAdminOrden().getArticulos());
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(EAccion.MOVIMIENTOS)) {
-   			RequestContext.getCurrentInstance().execute("jsArticulos.back('guard\\u00F3 confronta de articulos', '"+ ((Transferencia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+   			RequestContext.getCurrentInstance().execute("jsArticulos.back('guard\\u00F3 confronta de articulos', '"+ ((Confronta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 				this.accion= EAccion.PROCESAR;
 				this.getAdminOrden().getArticulos().add(new Articulo(-1L));
 				this.attrs.put("autoSave", Global.format(EFormatoDinamicos.FECHA_HORA, Fecha.getRegistro()));

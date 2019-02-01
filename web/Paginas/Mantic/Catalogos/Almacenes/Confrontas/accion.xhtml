@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="Recibir articulos de una transferencia en curso"/>
+	<ui:param name="titulo" value="Recibir articulos de una transferencia de articulos en curso"/>
   <ui:param name="janalBackingPage" value="#{manticCatalogosAlmacenesConfrontasAccion}"/>
   <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
 	<ui:define name="librerias">
@@ -44,10 +44,6 @@
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
-		<pe:remoteCommand name="recover" process="@this" update="dialogoArtExpress" actionListener="#{manticCatalogosAlmacenesConfrontasAccion.doRecoverArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); PF('dlgArtExpress').show();">  
-			<pe:methodSignature parameters="java.lang.Integer"/>  
-			<pe:methodParam name="index"/>  
-		</pe:remoteCommand>		
 		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticCatalogosAlmacenesConfrontasAccion.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
 			<pe:methodSignature parameters="java.lang.String, java.lang.Integer"/>  
 			<pe:methodParam name="codigo"/>  
@@ -92,11 +88,11 @@
 						<p:outputLabel value="LA CONFRONTA DE ARTICULOS [#{manticCatalogosAlmacenesConfrontasAccion.adminOrden.orden.consecutivo}] SE AUTOGUARDO A LAS #{manticCatalogosAlmacenesConfrontasAccion.attrs.autoSave} HRS." style="display: #{empty(manticCatalogosAlmacenesConfrontasAccion.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-blue"/>
 					</div>
 					<p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{manticCatalogosAlmacenesConfrontasAccion.doTabChange}" process="@this idAlmacen idDestino" update="faltantes perdidos" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();"/>
+            <p:ajax event="tabChange" listener="#{manticCatalogosAlmacenesConfrontasAccion.doTabChange}" process="@this idAlmacen idDestino" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();"/>
             <p:tab title="General">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-100">		
 								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="false"/>
-								<p:selectOneMenu id="idSucursal" value="#{manticCatalogosAlmacenesConfrontasAccion.adminOrden.orden.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-99" rendered="false" effect="fade" filter="true" filterMatchMode="contains">
+								<p:selectOneMenu id="idSucursal" value="#{manticCatalogosAlmacenesConfrontasAccion.adminOrden.orden.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-99" rendered="false" effect="fade" filter="true" filterMatchMode="contains" disabled="true">
 									<p:ajax event="change" listener="#{manticCatalogosAlmacenesConfrontasAccion.doLoadAlmacenes}" process="@this" update="idAlmacen"/>
 									<f:selectItems value="#{manticCatalogosAlmacenesConfrontasAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
 									<p:column headerText="Clave">
@@ -111,7 +107,6 @@
 								<p:spacer width="1px" style="display: #{manticCatalogosAlmacenesConfrontasAccion.agregar}"/><p:separator style="display: #{manticCatalogosAlmacenesConfrontasAccion.agregar}"/>
                 <p:outputLabel for="idAlmacen" value="Almacen origen:"/>
 								<p:selectOneMenu id="idAlmacen" value="#{manticCatalogosAlmacenesConfrontasAccion.adminOrden.orden.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="contains" disabled="true">
-									<p:ajax event="change" listener="#{manticCatalogosAlmacenesConfrontasAccion.doUpdateAlmacen}" process="@this" update="tabla @(.total) @(.recalculo)"/>
 									<f:selectItems value="#{manticCatalogosAlmacenesConfrontasAccion.attrs.almacenes}" var="element" itemValue="#{element.key}" itemLabel="#{element.clave} - #{element.nombre}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -122,7 +117,6 @@
 								</p:selectOneMenu>
                 <p:outputLabel for="idDestino" value="Almacen destino:"/>
 								<p:selectOneMenu id="idDestino" value="#{manticCatalogosAlmacenesConfrontasAccion.adminOrden.orden.ikDestino}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="contains" disabled="true">
-									<p:ajax event="change" listener="#{manticCatalogosAlmacenesConfrontasAccion.doUpdateAlmacen}" process="@this" update="tabla @(.total) @(.recalculo)"/>
 									<f:selectItems value="#{manticCatalogosAlmacenesConfrontasAccion.attrs.destinos}" var="element" itemValue="#{element.key}" itemLabel="#{element.clave} - #{element.nombre}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -147,7 +141,7 @@
 								</p:selectOneMenu>
               </p:panelGrid>
 							<p:outputLabel for="observaciones" value="Observaciones:"/><br/>
-							<p:inputTextarea id="observaciones" rows="3" cols="33" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlmacenesConfrontasAccion.adminOrden.orden.observaciones}" readonly="true"/>
+							<p:inputTextarea id="observaciones" rows="3" cols="33" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlmacenesConfrontasAccion.adminOrden.orden.observaciones}"/>
 						</p:tab>						            						            																																																
 						<p:tab title="Articulos">
 							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
