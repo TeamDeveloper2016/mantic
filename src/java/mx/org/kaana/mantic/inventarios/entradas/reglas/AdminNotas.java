@@ -158,6 +158,7 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 		} // finally
 		return regresar;
 	}
+	
 	private ArrayList<Articulo> toDefaultOrdenDetalle() throws Exception {
 		ArrayList<Articulo> regresar= new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "diferencia", this.orden.toMap()));
 		Map<String, Object> params=null;

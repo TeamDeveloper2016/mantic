@@ -2,15 +2,20 @@ package mx.org.kaana.mantic.catalogos.almacenes.confrontas.reglas;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.almacenes.confrontas.beans.Confronta;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.comun.IAdminArticulos;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -38,6 +43,7 @@ public final class AdminConfronta extends IAdminArticulos implements Serializabl
   	  this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaConfrontasDto", "diferencia", orden.toMap()));
 			this.orden.setConsecutivo(this.toConsecutivo("0"));
 		} // else	
+		this.toLoadStockArticulos();
 		this.orden.setIkEmpresa(new UISelectEntity(new Entity(this.orden.getTransferencia().getIdAlmacen())));
 		this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getTransferencia().getIdAlmacen())));
 		this.orden.setIkDestino(new UISelectEntity(new Entity(this.orden.getTransferencia().getIdDestino())));
@@ -46,6 +52,44 @@ public final class AdminConfronta extends IAdminArticulos implements Serializabl
 		this.toCalculate();
 	}
 
+	private void toLoadStockArticulos() throws Exception {
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			for (Articulo item: this.getArticulos()) {
+  			params.put("idAlmacen", this.orden.getTransferencia().getIdAlmacen());
+  			params.put("idArticulo", item.getIdArticulo());
+				Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
+				item.setStock(stock== null? 0D: stock.toDouble());
+			  // el almacen origen no tiene conteo 
+			  item.setSolicitado(stock== null);
+  			params.put("idAlmacen", this.orden.getTransferencia().getIdDestino());
+				// recuperar el stock de articulos en el almacen destino
+				stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
+				item.setValor(stock== null? 0D: stock.toDouble());
+				// el almacen destino no tiene conteo
+				item.setCostoLibre(stock== null);
+				stock= (Value)DaoFactory.getInstance().toField("TcManticAlmacenesArticulosDto", "umbral", params, "maximo");
+				// recuperar el maximo del catalogo de articulos
+				if(stock== null) {
+					TcManticArticulosDto articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, item.getIdArticulo());
+					item.setCosto(articulo.getMaximo());
+				} // if
+				else	
+					item.setCosto(stock.toDouble());
+				item.setUltimo(item.getValor()> item.getCosto());
+				item.setModificado(true);				
+			} // for
+		} // try
+		catch (Exception e) {
+			mx.org.kaana.libs.formato.Error.mensaje(e);
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
+	
 	@Override
 	public Long getIdAlmacen() {
 		return this.orden.getTransferencia().getIdAlmacen();
