@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Importar los archivos XML/PDF del egreso correspondiente"/>
+	<ui:define name="librerias">
+		<h:outputStylesheet library="janal" name="css/sh.css"/>
+		<h:outputStylesheet library="janal" name="css/shCore.css"/>
+		<h:outputStylesheet library="janal" name="css/shThemeDefault.css"/>
+		<h:outputScript library="janal" name="js/sh.js"/>
+	  <h:outputScript library="janal" name="js/shCore.js"/>
+	  <h:outputScript library="janal" name="js/shAutoloader.js"/>
+	  <h:outputScript library="janal" name="js/shBrushXml.js"/>
+	  <h:outputScript library="janal" name="js/shBrushCss.js"/>
+		<script type="text/javascript">
+			Janal.Control.fields = {				 				
+				'contenedorGrupos\\:xml': {validaciones: 'requerido', mascara: 'libre', mensaje: 'Adjuntar archivo xml.'},
+				'contenedorGrupos\\:pdf': {validaciones: 'requerido', mascara: 'libre', mensaje: 'Adjuntar archivo pdf.'},				
+				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}
+			};	
+			
+			function start() {
+        PF('statusDialog').show();
+      };
+ 
+      function stop() {
+        PF('statusDialog').hide();
+      };
+			
+			function load() {
+			  SyntaxHighlighter.highlight();	
+			}
+		</script>
+		<style>
+			.janal-upload-frame {
+        border: solid 1px #D1D3D4;
+        margin-bottom: 6px;
+        border-radius: 5px;				
+			}
+			.syntaxhighlighter {
+					overflow-y: auto !important;
+					overflow-x: auto !important;
+					max-height: 470px;
+			}			
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<p:remoteCommand name="viewDocument" actionListener="#{manticEgresosImportar.doViewDocument}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();"/>
+		<p:remoteCommand name="viewFile" actionListener="#{manticEgresosImportar.doViewFile}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();"/>
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+            <p:ajax event="tabChange" listener="#{manticEgresosImportar.doTabChange}" process="@this" update="@(.importado)"/>						
+            <p:tab title="General">							
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
+								<p:outputLabel for="consecutivo" value="No. orden:"/>
+								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticEgresosImportar.egreso.consecutivo}" readonly="true"/>								
+								<p:spacer width="1px"/><p:separator/>																								
+								<p:outputLabel for="fecha" value="Fecha:"/>
+								<p:inputText id="fecha" styleClass="janal-wid-100-txt" value="#{manticEgresosImportar.attrs.fechaRegistro}" readonly="true"/>
+								<p:outputLabel for="descripcion" value="Descripción:"/>
+								<p:inputText id="descripcion" styleClass="janal-wid-100-txt" value="#{manticEgresosImportar.egreso.descripcion}" readonly="true"/>
+								<p:spacer width="1px"/><p:separator/>																
+								<p:outputLabel for="importe" value="Importe:"/>
+								<p:inputText id="importe" styleClass="janal-wid-100-txt janal-column-right" value="$ #{manticEgresosImportar.egreso.importe}" readonly="true"/>
+								<p:outputLabel for="estatus" value="Estatus:"/>
+								<p:inputText id="estatus" styleClass="janal-wid-100-txt" value="#{manticEgresosImportar.attrs.estatus}" readonly="true"/>
+								<p:outputLabel for="ejercicio" value="Ejercicio:"/>
+								<p:inputText id="ejercicio" styleClass="janal-wid-100-txt" value="#{manticEgresosImportar.egreso.ejercicio}" readonly="true"/>								
+              </p:panelGrid>
+						</p:tab>						            						            																																																
+						<p:tab title="Archivos">
+							<p:dataTable id="importados" var="row" value="#{manticEgresosImportar.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
+								<p:column styleClass="janal-wid-col-30" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-col-40 janal-column-center" headerText="Tipo">
+									<h:outputText value="#{row.tipo}"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-15" headerText="Nombre">
+									<h:outputText value="#{row.nombre}"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-25" headerText="Usuario">
+									<h:outputText value="#{row.usuario}"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-15 janal-column-center" headerText="Fecha">
+									<h:outputText value="#{row.registro}"/>
+								</p:column>   
+								<p:column headerText="Observaciones">
+									<h:outputText value="#{row.observaciones}"/>
+								</p:column>   								
+								<p:column style="text-align: center" styleClass="janal-wid-col-38">
+									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" rendered="#{row.idPrincipal.toLong() eq 1}">
+										<p:fileDownload value="#{manticEgresosImportar.doFileDownload(row)}" />
+									</p:commandButton>
+								</p:column>
+								<p:column style="text-align: center" styleClass="janal-wid-col-38">
+									<p:commandLink  actionListener="#{manticEgresosImportar.doViewPdfDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 2}">
+									  <p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button"/>
+									</p:commandLink>	
+									<p:commandLink  actionListener="#{manticEgresosImportar.doViewXmlDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 1}">
+									  <p:commandButton icon="fa fa-eye" title="Ver documento XML" ajax="false" type="button"/>
+									</p:commandLink>	
+								</p:column>
+							</p:dataTable>
+						</p:tab>						            						            																																																
+						<p:tab title="Importar">							
+							<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
+							<p:inputTextarea id="observaciones" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticEgresosImportar.attrs.observaciones}"/>
+							<p:spacer height="5px"/>
+							<p:fileUpload fileUploadListener="#{manticEgresosImportar.doFileUpload}" 
+							  mode="advanced" process="@this observaciones" update="@(.importado)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
+								multiple="false" allowTypes="#{manticEgresosImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
+								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticEgresosImportar.attrs.formatos}"/>
+							<p:inputText id="xml" value="#{manticEgresosImportar.attrs.xml}" styleClass="importado" style="display:none"/>							
+							<p:commandLink value="XML importado: #{manticEgresosImportar.xml.ruta}#{manticEgresosImportar.xml.name}" onclick="viewFile();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento XML" style="#{(empty manticEgresosImportar.xml)? 'display: none': ''}"/>
+							<br/>
+							<p:inputText id="pdf" value="#{manticEgresosImportar.attrs.pdf}" styleClass="importado" style="display:none"/>
+							<p:commandLink value="PDF importado: #{manticEgresosImportar.pdf.ruta}#{manticEgresosImportar.pdf.name}" onclick="viewDocument();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento PDF" style="#{(empty manticEgresosImportar.pdf)? 'display: none': ''}"/>							
+						</p:tab>
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+		<p:dialog modal="true" widgetVar="statusDialog" header="Estatus de la descarga del archivo" draggable="false" closable="false" resizable="false">
+			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
+		</p:dialog>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticEgresosImportar.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticEgresosImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticEgresosImportar.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticEgresosImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+	<ui:define name="dialogos">
+		<h:form prependId="true">
+			<p:dialog id="dialogoPDF" widgetVar="dlgPDF" header="Factura en formato digital" onHide="janal.sendLastFocus();janal.desbloquear();" height="550px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+				<object type="application/pdf" data="#{manticEgresosImportar.attrs.temporal}" height="490px" width="100%" internalinstanceid="5">
+					 Tu navegador no soporta el desplegado de archivos PDF's, por favor da click en el boton de descargar
+				</object>
+  			<hr class="ui-widget-content"/>
+	  		<div class="janal-line-button">
+					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" oncomplete="PF('dlgPDF').hide();"/>
+			  </div>
+			</p:dialog>
+			<p:dialog id="dialogoXML" widgetVar="dlgXML" header="Factura en formato XML" onShow="load();" onHide="janal.desbloquear();" height="550px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+				<pre id="documentXml" class="brush: xml;" style="width: 925px; height: 470px;">
+					<h:outputText value="#{manticEgresosImportar.attrs.temporal}" escape="true"/>
+				</pre>
+  			<hr class="ui-widget-content"/>
+	  		<div class="janal-line-button">
+					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" oncomplete="PF('dlgXML').hide();"/>
+			  </div>
+			</p:dialog>
+		</h:form>
+	</ui:define>
+</ui:composition>
