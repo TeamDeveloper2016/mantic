@@ -1,7 +1,6 @@
 package mx.org.kaana.mantic.catalogos.almacenes.confrontas.reglas;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +8,6 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
-import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.almacenes.confrontas.beans.Confronta;
@@ -29,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
 
 public final class AdminConfronta extends IAdminArticulos implements Serializable {
 
-	private static final long serialVersionUID=-5550539230224591510L;
+	private static final long serialVersionUID=-5550539234221541510L;
 	private static final Log LOG=LogFactory.getLog(AdminConfronta.class);
 
 	private Confronta orden;

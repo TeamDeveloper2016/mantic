@@ -76,7 +76,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
       switch (this.accion) {
         case AGREGAR:											
-          this.setAdminOrden(new AdminConfronta(new Confronta(-1L, 2L)));
+          this.setAdminOrden(new AdminConfronta(new Confronta(-1L, (Long)this.attrs.get("idTransferencia"))));
           break;
         case MODIFICAR:			
         case CONSULTAR:											
@@ -99,7 +99,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			transaccion = new Transaccion((TcManticTransferenciasDto)this.getAdminOrden().getOrden(), this.getAdminOrden().getArticulos());
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(this.accion)) {
-				if(this.accion.equals(EAccion.PROCESAR)) {
+				if(this.accion.equals(EAccion.AGREGAR)) {
    			  RequestContext.getCurrentInstance().execute("janal.back(' gener\\u00F3 la confronta ', '"+ ((Confronta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 		  		JsfBase.addMessage("Se registró la transferencia de correcta", ETipoMensaje.INFORMACION);
  				  regresar = ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
