@@ -199,7 +199,7 @@ public class Filtro extends Comun implements Serializable {
   public String doRecibir() {
 		try {
 			Entity seleccionado= (Entity)this.attrs.get("seleccionado");
-			switch(seleccionado.toLong("idTransferenciaEstatus").intValue()) {
+			switch(seleccionado.toLong("estatus").intValue()) {
 				case 3: // TRANSITO
 				  JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
 				  break;

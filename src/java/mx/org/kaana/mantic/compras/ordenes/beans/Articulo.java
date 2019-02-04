@@ -601,10 +601,10 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		  LOG.warn("El codigo propio esta vacio ["+ this.getNombre()+ "] corresponde a la confronta de articulos");
 		return new TcManticConfrontasDetallesDto(
       this.getPropio(), // String codigo, 
-			-1L, // Long idConfrontaDetalle, 
-			this.getCantidad(), // Double cantidades, 
-			this.getIdOrdenDetalle(), // Long idConfronta, 
-			this.getIdComodin(), // Long idTransferenciaDetalle, 
+			this.getIdComodin(), // Long idConfrontaDetalle, 
+			this.getIdOrdenDetalle()== null? 0D: this.getCantidad()- this.getSolicitados(), // Double cantidades, 
+			-1L, // Long idConfronta, 
+			this.getIdOrdenDetalle(), // Long idTransferenciaDetalle, 
 			this.getCantidad(), // Double cantidad, 
 			this.getIdArticulo(), // Long idArticulo, 
 			this.getIdAplicar(), // Long idAplicar, 

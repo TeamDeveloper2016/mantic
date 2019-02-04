@@ -45,7 +45,8 @@ public final class AdminConfronta extends IAdminArticulos implements Serializabl
 		this.orden.setIkEmpresa(new UISelectEntity(new Entity(this.orden.getTransferencia().getIdAlmacen())));
 		this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getTransferencia().getIdAlmacen())));
 		this.orden.setIkDestino(new UISelectEntity(new Entity(this.orden.getTransferencia().getIdDestino())));
-		this.orden.setIkSolicito(new UISelectEntity(new Entity(this.orden.getTransferencia().getIdSolicito())));
+		if(this.orden.getTransferencia().getIdSolicito()!= null)
+	  	this.orden.setIkSolicito(new UISelectEntity(new Entity(this.orden.getTransferencia().getIdSolicito())));
 		this.getArticulos().add(new Articulo(-1L));
 		this.toCalculate();
 	}

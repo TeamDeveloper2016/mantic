@@ -26,10 +26,12 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.almacenes.confrontas.beans.Confronta;
 import mx.org.kaana.mantic.catalogos.almacenes.confrontas.reglas.AdminConfronta;
-import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.Transaccion;
+import mx.org.kaana.mantic.catalogos.almacenes.confrontas.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.comun.IBaseStorage;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticConfrontasDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,20 +46,34 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	private static final Log LOG              = LogFactory.getLog(Accion.class);
   private static final long serialVersionUID= 327393488565639367L;
 	private EAccion accion;
+	private boolean aplicar;
 
 	public String getAgregar() {
 		return this.accion.equals(EAccion.AGREGAR)? "none": "";
+	}
+	
+	public Boolean getIsAplicar() {
+		Boolean regresar= true;
+		try {
+			regresar= JsfBase.isAdminEncuestaOrAdmin();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		return regresar;
 	}
 	
 	@PostConstruct
   @Override
   protected void init() {		
     try {
+			this.aplicar  =  false;
 			if(JsfBase.getFlashAttribute("accion")== null)
 				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia")== null? -1L: JsfBase.getFlashAttribute("idTransferencia"));
-			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
+			this.attrs.put("retorno", "filtro");
       this.attrs.put("isPesos", false);
       this.attrs.put("cantidad", 0D);
 			this.attrs.put("buscaPorCodigo", false);
@@ -92,11 +108,16 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     } // catch		
   } // doLoad
 
+  public String doAplicar() {  
+		this.aplicar= true;
+		return this.doAceptar();
+	}
+
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
     try {			
-			transaccion = new Transaccion((TcManticTransferenciasDto)this.getAdminOrden().getOrden(), this.getAdminOrden().getArticulos());
+			transaccion = new Transaccion((TcManticConfrontasDto)this.getAdminOrden().getOrden(), this.getAdminOrden().getArticulos());
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {
@@ -218,12 +239,22 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				// recuperar el stock de articulos en el almacen origen
 				Value origen= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
 				temporal.setStock(origen== null? 0D: origen.toDouble());
+				// el almacen origen no tiene conteo 
+				temporal.setSolicitado(origen== null);
 				// recuperar el stock de articulos en el almacen destino
-				params.put("idAlmacen", ((TcManticTransferenciasDto)this.getAdminOrden().getOrden()).getIdDestino());
+				params.put("idAlmacen", ((Confronta)this.getAdminOrden().getOrden()).getIkDestino().getKey());
 				origen= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
 				temporal.setValor(origen== null? 0D: origen.toDouble());
+				// el almacen destino no tiene conteo
+				temporal.setCostoLibre(origen== null);
 				origen= (Value)DaoFactory.getInstance().toField("TcManticAlmacenesArticulosDto", "umbral", params, "maximo");
-				temporal.setCosto(origen== null? 0D: origen.toDouble());
+				// recuperar el maximo del catalogo de articulos
+				if(origen== null) {
+					TcManticArticulosDto item= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.toLong("idArticulo"));
+				  temporal.setCosto(item.getMaximo());
+				} // if
+			  else	
+				  temporal.setCosto(origen.toDouble());
 				// calcular el valor sugerido para la cantidad
 				if(temporal.getCantidad()<= 1D && temporal.getStock()> 0D && temporal.getCosto()> 0D) 
 					if((temporal.getCosto()- temporal.getValor())> temporal.getStock())
@@ -233,10 +264,6 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 						  temporal.setCantidad(temporal.getCosto()- temporal.getValor());
 				// el stock del almacen destino es superior al maximo permitido en el almacen
 				temporal.setUltimo(temporal.getValor()> temporal.getCosto());
-				// el almacen origen no tiene conteo 
-				temporal.setSolicitado(temporal.getStock()<= 0D);
-				// el almacen destino no tiene conteo
-				temporal.setCostoLibre(temporal.getValor()<= 0D);
 				if(index== this.getAdminOrden().getArticulos().size()- 1) {
 					this.getAdminOrden().getArticulos().add(new Articulo(-1L));
 					this.getAdminOrden().toAddUltimo(this.getAdminOrden().getArticulos().size()- 1);
@@ -266,7 +293,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	public void toSaveRecord() {
     Transaccion transaccion= null;
     try {			
-			transaccion = new Transaccion((TcManticTransferenciasDto)this.getAdminOrden().getOrden(), this.getAdminOrden().getArticulos());
+			transaccion = new Transaccion((TcManticConfrontasDto)this.getAdminOrden().getOrden(), this.getAdminOrden().getArticulos());
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(EAccion.MOVIMIENTOS)) {
    			RequestContext.getCurrentInstance().execute("jsArticulos.back('guard\\u00F3 confronta de articulos', '"+ ((Confronta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");

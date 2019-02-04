@@ -63,7 +63,7 @@
         select      
 				  tc_mantic_confrontas_detalles.id_confronta_detalle as id_key,
 				  tc_mantic_confrontas_detalles.id_transferencia_detalle as id_comodin,
-				  tc_mantic_confrontas_detalles.id_confrontas as id_orden_detalle,
+				  tc_mantic_confrontas_detalles.id_confronta as id_orden_detalle,
           tc_mantic_confrontas_detalles.*,
           tc_mantic_confrontas_detalles.cantidad as cuantos,
 				  tc_mantic_articulos.precio as valor
