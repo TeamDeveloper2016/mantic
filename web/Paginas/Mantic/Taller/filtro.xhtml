@@ -46,13 +46,18 @@
               <p:outputLabel for="consecutivo" value="Consecutivo:"/>
               <p:inputText id="consecutivo" value="#{manticTallerFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt" /> 
               <p:outputLabel for="cliente" value="Cliente:"/>
-              <p:inputText id="cliente" value="#{manticTallerFiltro.attrs.cliente}" styleClass="janal-wid-100-txt" />
-              <p:outputLabel for="herramienta" value="Herramienta:"/>
-              <p:inputText id="herramienta" value="#{manticTallerFiltro.attrs.herramienta}" styleClass="janal-wid-100-txt"/>
+              <p:inputText id="cliente" value="#{manticTallerFiltro.attrs.cliente}" styleClass="janal-wid-100-txt" />              
 							<p:outputLabel for="estatus" value="Estatus:"/>
 							<p:selectOneMenu id="estatus" value="#{manticTallerFiltro.attrs.estatus}" styleClass="janal-wid-100-txt">
 								<f:selectItems value="#{manticTallerFiltro.attrs.allEstatus}"/>
 							</p:selectOneMenu>
+							<p:outputLabel for="tipoArticulo" value="Tipo articulo:"/>
+							<p:selectOneMenu id="tipoArticulo" value="#{manticTallerFiltro.attrs.tipoArticulo}" styleClass="janal-wid-100-txt">
+								<p:ajax event="change" process="@this panelBusqueda" update="panelBusqueda" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.refresh();"/>
+								<f:selectItems value="#{manticTallerFiltro.attrs.tiposArticulos}"/>
+							</p:selectOneMenu>							
+							<p:outputLabel for="herramienta" value="Herramienta:" rendered="#{manticTallerFiltro.attrs.tipoArticulo eq '2'}"/>
+              <p:inputText id="herramienta" value="#{manticTallerFiltro.attrs.herramienta}" styleClass="janal-wid-100-txt" rendered="#{manticTallerFiltro.attrs.tipoArticulo eq '2'}"/>
             </h:panelGrid>
             <p:separator/>
             <div class="janal-align-right lg-pantalla">
