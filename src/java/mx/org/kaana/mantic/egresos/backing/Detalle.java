@@ -1,15 +1,31 @@
 package mx.org.kaana.mantic.egresos.backing;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
@@ -17,17 +33,22 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticEgresosDto;
 import mx.org.kaana.mantic.egresos.reglas.Transaccion;
 import mx.org.kaana.mantic.enums.ECuentasEgresos;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @Named(value = "manticEgresosDetalle")
 @ViewScoped
 public class Detalle extends IBaseImportar implements Serializable {
 
-  private static final long serialVersionUID = 8793667741599428879L;
+  private static final long serialVersionUID= 8793667741599428879L;
+	private static final int BUFFER_SIZE      = 6124;	
 	private FormatLazyModel egresosNotasEntradas;
 	private FormatLazyModel egresosCreditosNotas;
 	private FormatLazyModel egresosEmpresasPagos;
@@ -75,6 +96,7 @@ public class Detalle extends IBaseImportar implements Serializable {
 			doLoadCreditosNotas();
 			doLoadEmpresasPagos();
 			doLoadNotas();			
+			doLoadImportados();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -84,6 +106,26 @@ public class Detalle extends IBaseImportar implements Serializable {
     } // finally		
   } // doLoad	
 
+	private void doLoadImportados() {
+		List<Columna> columns= null;
+		try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("ruta", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+		  this.attrs.put("importados", UIEntity.build("VistaEgresosDto", "importados", ((TcManticEgresosDto)this.attrs.get("egreso")).toMap(), columns));
+		} // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+    finally {
+      Methods.clean(columns);
+    }// finally
+  } // doLoadImportados
+	
 	private void doLoadNotasEntradas() throws Exception{
 		List<Columna> campos= null;
 		try {
@@ -224,4 +266,114 @@ public class Detalle extends IBaseImportar implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch			
 	} // doEliminarEmpresaPago
+	
+	@Override
+	public StreamedContent doFileDownload(UISelectEntity file) {
+		StreamedContent regresar= null;
+		try {
+			File reference= new File(file.toString("alias"));
+			if(reference.exists()) {
+				InputStream stream = new FileInputStream(reference);
+				if(file.toLong("idTipoArchivo").equals(1L))
+					regresar= new DefaultStreamedContent(stream, EFormatos.XML.getContent(), file.toString("nombre"));
+				else
+					regresar= new DefaultStreamedContent(stream, EFormatos.PDF.getContent(), file.toString("nombre"));
+			} // if	
+			else {				
+        JsfBase.addMessage("No existe el archivo:"+ file.toString("nombre")+ ", favor de verificarlo.");
+			} // else	
+		} // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+		return regresar;
+	} // doFileDownload  
+
+	@Override
+	public void doViewPdfDocument(UISelectEntity item) {
+		this.toCopyDocument(item.toString("alias"), item.toString("nombre"));
+	} // doViewPdfDocument
+
+	@Override
+	public void doViewXmlDocument(UISelectEntity item) {
+		this.doViewFile(item.toString("alias"));
+	} // doViewXmlDocument	
+	
+	@Override
+	protected void doViewFile(String nameXml) {
+		String regresar   = "";
+		String name       = nameXml;
+    StringBuilder sb  = new StringBuilder("");
+    FileReader in     = null;
+		BufferedReader br = null;
+		try {
+			in= new FileReader(name);
+			br= new BufferedReader(in);
+			String line;
+			while ((line = br.readLine()) != null) {
+  			sb.append(line);
+			} // while
+			regresar= this.prettyFormat(sb.toString().startsWith("<")? sb.toString(): sb.substring(3), 2);
+		} // try
+		catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			try {
+        if(br != null)
+					br.close();
+				if(in != null)
+  				in.close();
+			} // try
+			catch (IOException e) {
+        JsfBase.addMessageError(e);
+			} // catch
+		} // finally
+		this.attrs.put("temporal", regresar);
+	}
+	
+	public String prettyFormat(String input, int indent) throws Exception {
+		Source xmlInput = new StreamSource(new StringReader(input));
+		StringWriter stringWriter = new StringWriter();
+		StreamResult xmlOutput = new StreamResult(stringWriter);
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		transformerFactory.setAttribute("indent-number", indent);
+		Transformer transformer = transformerFactory.newTransformer(); 
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		transformer.transform(xmlInput, xmlOutput);
+		return xmlOutput.getWriter().toString();
+  } // prettyFormat
+	
+	private void toCopyDocument(String alias, String name) {
+		try {
+  	  this.attrs.put("temporal", JsfBase.getContext().concat("/").concat(Constantes.PATH_INVOICE).concat(name).concat("?pfdrid_c=true"));
+  		File source= new File(JsfBase.getRealPath().concat(Constantes.PATH_INVOICE).concat(name));
+			if(!source.exists()) {
+  	  	FileInputStream input= new FileInputStream(new File(alias));
+        this.toWriteFile(source, input);		
+			} // if	
+		} // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+	}	// toCopyDocument
+	
+	private void toWriteFile(File result, InputStream upload) throws Exception {
+		FileOutputStream fos   = new FileOutputStream(result);
+		InputStream inputStream= upload;
+		byte[] buffer          = new byte[BUFFER_SIZE];
+		int bulk;
+		while(true) {
+			bulk= inputStream.read(buffer);
+			if (bulk < 0) 
+				break;        
+			fos.write(buffer, 0, bulk);
+			fos.flush();
+		} // while
+		fos.close();
+		inputStream.close();
+	} // toWriteFile
 }
