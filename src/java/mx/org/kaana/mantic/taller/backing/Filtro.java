@@ -17,12 +17,14 @@ import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticServiciosBitacoraDto;
+import mx.org.kaana.mantic.enums.ETipoArticulo;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import mx.org.kaana.mantic.taller.beans.RegistroServicio;
 import mx.org.kaana.mantic.taller.reglas.Transaccion;
@@ -44,6 +46,7 @@ public class Filtro extends Comun implements Serializable {
       this.attrs.put("idServicio", JsfBase.getFlashAttribute("idServicio"));
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.loadEstatusServicios();
+			loadTiposArticulos();
       if(this.attrs.get("idServicio")!= null) 
 			  this.doLoad();
     } // try
@@ -53,19 +56,38 @@ public class Filtro extends Comun implements Serializable {
     } // catch		
   } // init
 
+	private void loadTiposArticulos(){
+		List<UISelectItem> tiposArticulos= null;
+		StringBuilder tipos              = null;
+		tiposArticulos= new ArrayList<>();
+		tipos= new StringBuilder("");
+		for(ETipoArticulo tipoArticulo: ETipoArticulo.values()){
+			tiposArticulos.add(new UISelectItem(tipoArticulo.getIdTipoArticulo(), tipoArticulo.name()));
+			tipos.append(tipoArticulo.getIdTipoArticulo()).append(",");
+		} // for
+		tiposArticulos.add(0, new UISelectItem(tipos.substring(0, tipos.length()-1), "TODOS"));
+		this.attrs.put("tiposArticulos", tiposArticulos);
+		this.attrs.put("tipoArticulo", UIBackingUtilities.toFirstKeySelectItem(tiposArticulos));
+	} // loadTiposArticulos
+	
   @Override
   public void doLoad() {
-    List<Columna> campos = null;
+    List<Columna> campos     = null;
+		Map<String, Object>params= null;
     try {
-      campos = new ArrayList<>();
+      campos = new ArrayList<>();			
       campos.add(new Columna("herramienta", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("consecutivo", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("marca", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("modelo", EFormatoDinamicos.MAYUSCULAS));      
       campos.add(new Columna("fechaEstimada", EFormatoDinamicos.FECHA_CORTA));      
       campos.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
-      campos.add(new Columna("total", EFormatoDinamicos.NUMERO_CON_DECIMALES));     			
-      this.lazyModel = new FormatCustomLazy("VistaTallerServiciosDto", "principal", this.attrs, campos);
+      campos.add(new Columna("total", EFormatoDinamicos.NUMERO_CON_DECIMALES));     		
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, toPrepare());
+			params.put("idEmpresa", this.attrs.get("idEmpresa"));
+			params.put("sortOrder", this.attrs.get("sortOrder"));
+      this.lazyModel = new FormatCustomLazy("VistaTallerServiciosDto", "principal", params, campos);
       UIBackingUtilities.resetDataTable();
 			this.attrs.put("idServicio", null);
     } // try
@@ -75,9 +97,29 @@ public class Filtro extends Comun implements Serializable {
     } // catch
     finally {
       Methods.clean(campos);
+      Methods.clean(params);
     } // finally		
   } // doLoad
 
+	private String toPrepare(){
+		StringBuilder regresar= null;
+		try {
+			regresar= new StringBuilder("tc_mantic_servicios_estatus.id_servicio_estatus in (");
+			regresar.append(this.attrs.get("estatus")).append(") and ");
+			regresar.append("tc_mantic_articulos.id_articulo_tipo in (").append(this.attrs.get("tipoArticulo")).append(") and ");
+			if(this.attrs.get("consecutivo")!= null && !Cadena.isVacio(this.attrs.get("consecutivo")))
+				regresar.append("tc_mantic_servicios.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%' and ");			
+			if(this.attrs.get("herramienta")!= null && !Cadena.isVacio(this.attrs.get("herramienta")) && this.attrs.get("tipoArticulo").toString().equals(ETipoArticulo.REFACCION.getIdTipoArticulo().toString()))
+				regresar.append("upper(tc_mantic_articulos.descripcion) like upper('%").append(this.attrs.get("herramienta")).append("%') and ");
+			if(this.attrs.get("cliente")!= null && !Cadena.isVacio(this.attrs.get("cliente")))
+				regresar.append("upper(tc_mantic_clientes.razon_social) like upper('%").append(this.attrs.get("cliente")).append("%') and ");			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar.substring(0, regresar.length()-4);
+	} // tiPrepare
+	
   public String doAccion(String accion) {
     EAccion eaccion= null;
 		try {
