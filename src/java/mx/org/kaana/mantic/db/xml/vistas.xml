@@ -5,6 +5,29 @@
 <process>
 	<dml> 
     <unit id="VistaConfrontasDto">
+			<select id="errores">
+        select
+					sum(tc_mantic_errores.total) as total
+				from (    				
+					select
+					  count(*) as total
+					from
+					  tc_mantic_transferencias_detalles
+					where      
+					  tc_mantic_transferencias_detalles.id_transferencia= {idTransferencia}
+					  and tc_mantic_transferencias_detalles.cantidades&lt;&gt; 0
+					union
+					  select 
+						  count(*) as total
+					  from
+						  tc_mantic_confrontas
+					  inner join
+						  tc_mantic_confrontas_detalles on tc_mantic_confrontas.id_confronta= tc_mantic_confrontas_detalles.id_confronta 
+					  where
+					    tc_mantic_confrontas.id_transferencia= {idTransferencia}
+						  and tc_mantic_confrontas_detalles.id_transferencia_detalle is null
+				) as tc_mantic_errores
+			</select>
       <select id="siguiente">
         select
 					max(tc_mantic_confrontas.orden)+ 1 as siguiente
@@ -3522,7 +3545,7 @@
 						  tc_mantic_notas_detalles on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_notas_detalles.id_nota_entrada 
 					  where
 					    tc_mantic_notas_entradas.id_orden_compra= {idOrdenCompra}
-						  and id_orden_detalle is null
+						  and tc_mantic_notas_detalles.id_orden_detalle is null
 				) as tc_mantic_errores
 			</select>
 			<select id="ordenes">

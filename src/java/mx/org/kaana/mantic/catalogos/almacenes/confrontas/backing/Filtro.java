@@ -9,7 +9,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -25,15 +24,10 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
-import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
-import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
-import mx.org.kaana.mantic.db.dto.TcManticTransferenciasBitacoraDto;
-import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
 import mx.org.kaana.mantic.enums.EReportes;
 import org.primefaces.context.RequestContext;
 
@@ -190,6 +184,7 @@ public class Filtro extends Comun implements Serializable {
 		  JsfBase.setFlashAttribute("retorno", "filtro");		
 		  JsfBase.setFlashAttribute("accion", eaccion);		
 			JsfBase.setFlashAttribute("idConfronta", (eaccion.equals(EAccion.MODIFICAR)||eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).getKey(): -1L);
+			JsfBase.setFlashAttribute("idTransferencia", (eaccion.equals(EAccion.MODIFICAR)||eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).toLong("idTransferencia"): -1L);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

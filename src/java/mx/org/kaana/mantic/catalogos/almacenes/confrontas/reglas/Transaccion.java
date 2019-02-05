@@ -1,5 +1,7 @@
 package mx.org.kaana.mantic.catalogos.almacenes.confrontas.reglas;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +51,7 @@ public class Transaccion extends IBaseTnx {
   		Long consecutivo  = 0L;
 			this.transferencia= (TcManticTransferenciasDto)DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, this.dto.getIdTransferencia());
       switch (accion) {
+				case ACTIVAR:
 				case AGREGAR:
 					consecutivo= this.toSiguiente(sesion);
 					this.dto.setConsecutivo(this.dto.getEjercicio()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
@@ -58,12 +61,15 @@ public class Transaccion extends IBaseTnx {
 					this.bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), null, 5L, this.dto.getIdTransferencia());
 					if(regresar)
             regresar= DaoFactory.getInstance().insert(sesion, this.bitacora).intValue()> 0;
-					this.transferencia.setIdTransferenciaEstatus(bitacora.getIdTransferenciaEstatus());
-					if(regresar) 
-            regresar= DaoFactory.getInstance().update(sesion, this.transferencia).intValue()> 0;
+				  this.transferencia.setIdTransferenciaEstatus(3L);
+					this.toCheckOrden(sesion, accion);
           break;
 				case PROCESAR:
 				case MODIFICAR:
+          this.dto.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+					this.toFillArticulos(sesion, accion);
+          regresar= DaoFactory.getInstance().update(sesion, this.dto).intValue()> 0;
+					this.toCheckOrden(sesion, accion);
           break;
       } // switch
       if(!regresar) 
@@ -111,6 +117,7 @@ public class Transaccion extends IBaseTnx {
 			if(!EAccion.AGREGAR.equals(accion)) {
 				TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
 				switch(accion) {
+					case ACTIVAR: // RECIBIR
 					case MODIFICAR: // RECIBIR
 					case PROCESAR: // INCOMPLETA
 						this.toMovimientosAlmacenDestino(sesion, item, umbrales);
@@ -214,5 +221,35 @@ public class Transaccion extends IBaseTnx {
 		} // if
 	}
 
+	private void toCheckOrden(Session sesion, EAccion accion) throws Exception {
+		Map<String, Object> params=null;
+		try {
+			sesion.flush();
+  		params=new HashMap<>();
+			Value errors= DaoFactory.getInstance().toField(sesion, "VistaConfrontasDto", "errores", this.transferencia.toMap(), "total");
+			if(errors.toLong()!= null && errors.toLong()== 0) 
+				if(this.transferencia.getIdTransferenciaEstatus()== 3L || this.transferencia.getIdTransferenciaEstatus()== 5L)
+			    this.transferencia.setIdTransferenciaEstatus(8L); // TERMINADA
+			  else
+			    this.transferencia.setIdTransferenciaEstatus(9L); // ACEPTADA
+			else 
+				if(this.transferencia.getIdTransferenciaEstatus()== 3L && !EAccion.ACTIVAR.equals(accion) && !EAccion.PROCESAR.equals(accion))
+	  			this.transferencia.setIdTransferenciaEstatus(5L); // RECIBIR
+			  else
+  				if((this.transferencia.getIdTransferenciaEstatus()== 3L || this.transferencia.getIdTransferenciaEstatus()== 5L) && (EAccion.ACTIVAR.equals(accion) || EAccion.PROCESAR.equals(accion)))
+    				this.transferencia.setIdTransferenciaEstatus(6L); // INCOMPLETA
+					else
+						if(this.transferencia.getIdTransferenciaEstatus()== 6L)
+							this.transferencia.setIdTransferenciaEstatus(7L); // AUTORIZAR
+			DaoFactory.getInstance().update(sesion, this.transferencia);
+			if(!this.bitacora.getIdTransferenciaEstatus().equals(this.transferencia.getIdTransferenciaEstatus())) {
+				this.bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), null, this.transferencia.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
+				DaoFactory.getInstance().insert(sesion, this.bitacora);
+			} // if
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
 
 }

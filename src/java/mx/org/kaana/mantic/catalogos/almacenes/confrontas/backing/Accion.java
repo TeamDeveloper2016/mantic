@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -32,7 +33,6 @@ import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticConfrontasDto;
-import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.context.RequestContext;
@@ -46,7 +46,6 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	private static final Log LOG              = LogFactory.getLog(Accion.class);
   private static final long serialVersionUID= 327393488565639367L;
 	private EAccion accion;
-	private boolean aplicar;
 
 	public String getAgregar() {
 		return this.accion.equals(EAccion.AGREGAR)? "none": "";
@@ -55,7 +54,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	public Boolean getIsAplicar() {
 		Boolean regresar= true;
 		try {
-			regresar= JsfBase.isAdminEncuestaOrAdmin();
+			regresar= ((Confronta)this.getAdminOrden().getOrden()).getTransferencia().getIdTransferenciaEstatus()== 3L || ((Confronta)this.getAdminOrden().getOrden()).getTransferencia().getIdTransferenciaEstatus()== 5L;
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -68,10 +67,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   @Override
   protected void init() {		
     try {
-			this.aplicar  =  false;
 			if(JsfBase.getFlashAttribute("accion")== null)
 				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
+      this.attrs.put("idConfronta", JsfBase.getFlashAttribute("idConfronta")== null? -1L: JsfBase.getFlashAttribute("idConfronta"));
       this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia")== null? -1L: JsfBase.getFlashAttribute("idTransferencia"));
 			this.attrs.put("retorno", "filtro");
       this.attrs.put("isPesos", false);
@@ -109,7 +108,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   } // doLoad
 
   public String doAplicar() {  
-		this.aplicar= true;
+		this.accion= EAccion.AGREGAR.equals(this.accion)? EAccion.ACTIVAR: EAccion.PROCESAR;
 		return this.doAceptar();
 	}
 
@@ -120,13 +119,13 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			transaccion = new Transaccion((TcManticConfrontasDto)this.getAdminOrden().getOrden(), this.getAdminOrden().getArticulos());
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(this.accion)) {
-				if(this.accion.equals(EAccion.AGREGAR)) {
+				if(this.accion.equals(EAccion.AGREGAR) || this.accion.equals(EAccion.ACTIVAR)) {
    			  RequestContext.getCurrentInstance().execute("janal.back(' gener\\u00F3 la confronta ', '"+ ((Confronta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 		  		JsfBase.addMessage("Se registró la transferencia de correcta", ETipoMensaje.INFORMACION);
  				  regresar = ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
-    			JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la confronta de articulos."), ETipoMensaje.INFORMACION);
+    			JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) || this.accion.equals(EAccion.ACTIVAR)? "agregó" : "modificó").concat(" la confronta de articulos."), ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idTransferencia", ((Confronta)this.getAdminOrden().getOrden()).getIdTransferencia());
 			} // if
 			else 
@@ -137,9 +136,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       JsfBase.addMessageError(e);
     } // catch
     return regresar;
-  } // doAccion
-
+  } 
+	
   public String doCancelar() {   
+  	JsfBase.setFlashAttribute("idConfronta", ((Confronta)this.getAdminOrden().getOrden()).getIdConfronta());
   	JsfBase.setFlashAttribute("idTransferencia", ((Confronta)this.getAdminOrden().getOrden()).getIdTransferencia());
     return (String)this.attrs.get("retorno");
   } // doCancelar
