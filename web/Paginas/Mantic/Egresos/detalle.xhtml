@@ -11,11 +11,41 @@
 	<ui:define name="librerias">
 		<h:outputStylesheet library="janal" name="css/sh.css"/>
 		<h:outputStylesheet library="janal" name="css/shCore.css"/>
-		<h:outputStylesheet library="janal" name="css/shThemeDefault.css"/>		
-		<script type="text/javascript"></script>
-		<style></style>
+		<h:outputStylesheet library="janal" name="css/shThemeDefault.css"/>	
+		<h:outputScript library="janal" name="js/sh.js"/>
+	  <h:outputScript library="janal" name="js/shCore.js"/>
+	  <h:outputScript library="janal" name="js/shAutoloader.js"/>
+	  <h:outputScript library="janal" name="js/shBrushXml.js"/>
+	  <h:outputScript library="janal" name="js/shBrushCss.js"/>
+		<script type="text/javascript">
+			function start() {
+        PF('statusDialog').show();
+      };
+ 
+      function stop() {
+        PF('statusDialog').hide();
+      };
+			
+			function load() {
+			  SyntaxHighlighter.highlight();	
+			}
+		</script>
+		<style>
+			.janal-upload-frame {
+        border: solid 1px #D1D3D4;
+        margin-bottom: 6px;
+        border-radius: 5px;				
+			}
+			.syntaxhighlighter {
+					overflow-y: auto !important;
+					overflow-x: auto !important;
+					max-height: 470px;
+			}	
+		</style>
 	</ui:define>
 	<ui:define name="contenido">
+		<p:remoteCommand name="viewDocument" actionListener="#{manticEgresosDetalle.doViewDocument}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();"/>
+		<p:remoteCommand name="viewFile" actionListener="#{manticEgresosDetalle.doViewFile}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
@@ -29,7 +59,6 @@
 						<p:inputText value="#{manticEgresosDetalle.attrs.egreso.importe}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>
 						<p:inputText value="#{manticEgresosDetalle.attrs.estatus}" styleClass="janal-wid-100-txt janal-column-left" disabled="true"/>						
 					</p:panelGrid>
-					<p:spacer/>					
 					<p:panel header="Notas de entrada" styleClass="janal-wid-99" toggleable="true">		
 						<p:dataTable  lazy="true" id="tablaNotasEntrada" widgetVar="kajoolTableNotasEntrada" var="filtro" value="#{manticEgresosDetalle.egresosNotasEntradas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticEgresosDetalle.egresosNotasEntradas.rowCount gt manticEgresosDetalle.egresosNotasEntradas.pageSize}" rowIndexVar="index" reflow="true">																		
 							<p:column class="MarAuto Responsive janal-wid-13" sortBy="#{filtro.empresa}">
@@ -89,8 +118,7 @@
 								<p:outputLabel value="Total [#{manticEgresosDetalle.egresosNotasEntradas==null?0:manticEgresosDetalle.egresosNotasEntradas.rowCount}] registros"/>
 							</f:facet>
 						</p:dataTable>																
-					</p:panel>													
-					<p:spacer height="5px"/>
+					</p:panel>																		
 					<p:panel header="Creditos notas" styleClass="janal-wid-99" toggleable="true">		
 						<p:dataTable  lazy="true" id="tablaCreditosNotas" widgetVar="kajoolTableCreditosNotas" var="filtro" value="#{manticEgresosDetalle.egresosCreditosNotas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticEgresosDetalle.egresosCreditosNotas.rowCount gt manticEgresosDetalle.egresosCreditosNotas.pageSize}" rowIndexVar="index" reflow="true">																		
 							<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.empresa}">
@@ -152,8 +180,7 @@
 								<p:outputLabel value="Total [#{manticEgresosDetalle.egresosCreditosNotas==null?0:manticEgresosDetalle.egresosCreditosNotas.rowCount}] registros"/>
 							</f:facet>
 						</p:dataTable>								
-					</p:panel>
-					<p:spacer height="5px"/>		
+					</p:panel>						
 					<p:panel header="Empresas pagos" styleClass="janal-wid-99" toggleable="true">		
 						<p:dataTable  lazy="true" id="tablaEmpresasPagos" widgetVar="kajoolTableEmpresasPagos" var="filtro" value="#{manticEgresosDetalle.egresosEmpresasPagos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticEgresosDetalle.egresosEmpresasPagos.rowCount gt manticEgresosDetalle.egresosEmpresasPagos.pageSize}" rowIndexVar="index" reflow="true">								
 							<p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.tipoPago}">
@@ -195,8 +222,7 @@
 								<p:outputLabel value="Total [#{manticEgresosDetalle.egresosEmpresasPagos==null?0:manticEgresosDetalle.egresosEmpresasPagos.rowCount}] registros"/>
 							</f:facet>
 						</p:dataTable>								
-					</p:panel>
-					<p:spacer/>
+					</p:panel>					
 					<p:panel header="Notas" styleClass="janal-wid-99" toggleable="true">		
 						<p:dataTable  lazy="true" id="tablaNotas" widgetVar="kajoolTableNotas" var="filtro" value="#{manticEgresosDetalle.egresosNotas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticEgresosDetalle.egresosNotas.rowCount gt manticEgresosDetalle.egresosNotas.pageSize}" rowIndexVar="index" reflow="true">								
 							<p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.comentario}">
@@ -221,9 +247,47 @@
 							</f:facet>
 						</p:dataTable>
 					</p:panel>	
+					<p:panel header="Archivos" styleClass="janal-wid-99" toggleable="true">		
+						<p:dataTable id="importados" var="row" value="#{manticEgresosDetalle.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
+							<p:column styleClass="janal-wid-col-30" headerText="No.">
+								<h:outputText value="#{index+ 1}.-"/>
+							</p:column>   
+							<p:column styleClass="janal-wid-col-40 janal-column-center" headerText="Tipo">
+								<h:outputText value="#{row.tipo}"/>
+							</p:column>   
+							<p:column styleClass="janal-wid-15" headerText="Nombre">
+								<h:outputText value="#{row.nombre}"/>
+							</p:column>   
+							<p:column styleClass="janal-wid-25" headerText="Usuario">
+								<h:outputText value="#{row.usuario}"/>
+							</p:column>   
+							<p:column styleClass="janal-wid-15 janal-column-center" headerText="Fecha">
+								<h:outputText value="#{row.registro}"/>
+							</p:column>   
+							<p:column headerText="Observaciones">
+								<h:outputText value="#{row.observaciones}"/>
+							</p:column>   								
+							<p:column style="text-align: center" styleClass="janal-wid-col-38">
+								<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" rendered="#{row.idPrincipal.toLong() eq 1}">
+									<p:fileDownload value="#{manticEgresosDetalle.doFileDownload(row)}" />
+								</p:commandButton>
+							</p:column>
+							<p:column style="text-align: center" styleClass="janal-wid-col-38">
+								<p:commandLink  actionListener="#{manticEgresosDetalle.doViewPdfDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 2}">
+									<p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button"/>
+								</p:commandLink>	
+								<p:commandLink  actionListener="#{manticEgresosDetalle.doViewXmlDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 1}">
+									<p:commandButton icon="fa fa-eye" title="Ver documento XML" ajax="false" type="button"/>
+								</p:commandLink>	
+							</p:column>
+						</p:dataTable>
+					</p:panel>	
 				</div>
 			</div>
-		</div>				    
+		</div>	
+		<p:dialog modal="true" widgetVar="statusDialog" header="Estatus de la descarga del archivo" draggable="false" closable="false" resizable="false">
+			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
+		</p:dialog>	
 	</ui:define>	
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
@@ -235,4 +299,26 @@
 			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticEgresosDetalle.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>	
+	<ui:define name="dialogos">
+		<h:form prependId="true">
+			<p:dialog id="dialogoPDF" widgetVar="dlgPDF" header="Factura en formato digital" onHide="janal.sendLastFocus();janal.desbloquear();" height="550px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+				<object type="application/pdf" data="#{manticEgresosDetalle.attrs.temporal}" height="490px" width="100%" internalinstanceid="5">
+					 Tu navegador no soporta el desplegado de archivos PDF's, por favor da click en el boton de descargar
+				</object>
+  			<hr class="ui-widget-content"/>
+	  		<div class="janal-line-button">
+					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" oncomplete="PF('dlgPDF').hide();"/>
+			  </div>
+			</p:dialog>
+			<p:dialog id="dialogoXML" widgetVar="dlgXML" header="Factura en formato XML" onShow="load();" onHide="janal.desbloquear();" height="550px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+				<pre id="documentXml" class="brush: xml;" style="width: 925px; height: 470px;">
+					<h:outputText value="#{manticEgresosDetalle.attrs.temporal}" escape="true"/>
+				</pre>
+  			<hr class="ui-widget-content"/>
+	  		<div class="janal-line-button">
+					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" oncomplete="PF('dlgXML').hide();"/>
+			  </div>
+			</p:dialog>
+		</h:form>
+	</ui:define>
 </ui:composition>
