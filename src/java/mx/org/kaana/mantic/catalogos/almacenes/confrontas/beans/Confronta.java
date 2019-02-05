@@ -41,12 +41,18 @@ public class Confronta extends TcManticConfrontasDto implements Serializable {
 
 	public Confronta(String consecutivo, Long idConfronta, Long idUsuario, String observaciones, Long orden, Long idTransferencia, Long ejercicio) {
 		super(consecutivo, idConfronta, idUsuario, observaciones, orden, idTransferencia, ejercicio);
+		this.init();
+	}
+	
+	public void init() {
 		try {
-			this.transferencia= (TcManticTransferenciasDto)DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, idTransferencia);
-			this.ikEmpresa = new UISelectEntity(this.transferencia.getIdEmpresa());
-			this.ikAlmacen = new UISelectEntity(this.transferencia.getIdAlmacen());
-			this.ikDestino = new UISelectEntity(this.transferencia.getIdDestino());
-			this.ikSolicito= new UISelectEntity(this.transferencia.getIdSolicito()== null? -1L: this.transferencia.getIdSolicito());
+			this.transferencia= (TcManticTransferenciasDto)DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, this.getIdTransferencia());
+			if(this.transferencia!= null) {
+				this.ikEmpresa = new UISelectEntity(this.transferencia.getIdEmpresa());
+				this.ikAlmacen = new UISelectEntity(this.transferencia.getIdAlmacen());
+				this.ikDestino = new UISelectEntity(this.transferencia.getIdDestino());
+				this.ikSolicito= new UISelectEntity(this.transferencia.getIdSolicito()== null? -1L: this.transferencia.getIdSolicito());
+			} // if	
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

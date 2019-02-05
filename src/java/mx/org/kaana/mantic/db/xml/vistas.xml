@@ -5,6 +5,63 @@
 <process>
 	<dml> 
     <unit id="VistaConfrontasDto">
+			<select id="confronta">
+				select
+					tc_mantic_transferencias_detalles.id_transferencia_detalle as id_key,
+				  tc_mantic_transferencias.id_empresa,
+				  tc_mantic_transferencias.consecutivo,
+					tc_mantic_transferencias_detalles.propio,
+					tc_mantic_transferencias_detalles.nombre,
+					tc_mantic_transferencias_detalles.cantidad,
+				  tc_mantic_transferencias_detalles.cantidad as solicitar,
+					tc_mantic_transferencias_detalles.cantidades,
+					tc_mantic_transferencias_detalles.cantidades as unidades,
+				  tc_mantic_transferencias.id_transferencia,
+					tc_mantic_transferencias_detalles.id_articulo,
+				  'janal-color-blue' as color,
+				  0 as porcentaje
+				from
+					tc_mantic_transferencias
+				inner join
+					tc_mantic_transferencias_detalles on tc_mantic_transferencias.id_transferencia= tc_mantic_transferencias_detalles.id_transferencia
+				where  
+  				tc_mantic_transferencias.id_transferencia= {idTransferencia}
+				  and {condicion}
+				{sortOrder}
+			</select>			
+		  <select id="consulta">
+				select
+					tc_mantic_confrontas_detalles.id_confronta_detalle as id_key,
+					tc_mantic_confrontas.consecutivo,
+					tc_mantic_transferencias_detalles.propio,
+					tc_mantic_transferencias_detalles.nombre,
+					tc_mantic_confrontas_detalles.cantidad,
+					tc_mantic_confrontas_detalles.cantidades,
+				  if(tc_mantic_confrontas_detalles.id_transferencia_detalle is null, '*', '') as nuevo,
+  				tc_mantic_confrontas_detalles.declarados,
+  				tc_mantic_confrontas_detalles.diferencia,
+				  tc_mantic_transferencias_estatus.nombre as estatus,
+				  tc_mantic_transferencias_estatus.id_transferencia_estatus,
+				  tc_mantic_confrontas.id_confronta,
+				  tc_mantic_confrontas.id_transferencia,
+				  'janal-color-blue' as color,
+				  0 as porcentaje,
+					tc_mantic_confrontas_detalles.id_articulo
+				from
+					tc_mantic_confrontas
+				inner join 
+				  tc_mantic_transferencias on tc_mantic_confrontas.id_transferencia= tc_mantic_transferencias.id_transferencia
+				inner join
+					tc_mantic_confrontas_detalles on tc_mantic_confrontas.id_confronta= tc_mantic_confrontas_detalles.id_confronta
+				inner join
+				  tc_mantic_transferencias_estatus on tc_mantic_transferencias.id_transferencia_estatus= tc_mantic_transferencias_estatus.id_transferencia_estatus
+				left join
+				  tc_mantic_transferencias_detalles on tc_mantic_confrontas_detalles.id_transferencia_detalle= tc_mantic_transferencias_detalles.id_transferencia_detalle
+				where  
+					tc_mantic_confrontas.id_transferencia= {idTransferencia}	
+				  and {condicion}
+				{sortOrder}
+			</select>			
 			<select id="errores">
         select
 					sum(tc_mantic_errores.total) as total
@@ -16,16 +73,16 @@
 					where      
 					  tc_mantic_transferencias_detalles.id_transferencia= {idTransferencia}
 					  and tc_mantic_transferencias_detalles.cantidades&lt;&gt; 0
-					union
-					  select 
-						  count(*) as total
-					  from
-						  tc_mantic_confrontas
-					  inner join
-						  tc_mantic_confrontas_detalles on tc_mantic_confrontas.id_confronta= tc_mantic_confrontas_detalles.id_confronta 
-					  where
-					    tc_mantic_confrontas.id_transferencia= {idTransferencia}
-						  and tc_mantic_confrontas_detalles.id_transferencia_detalle is null
+				union
+					select 
+						count(*) as total
+					from
+						tc_mantic_confrontas
+					inner join
+						tc_mantic_confrontas_detalles on tc_mantic_confrontas.id_confronta= tc_mantic_confrontas_detalles.id_confronta 
+					where
+						tc_mantic_confrontas.id_transferencia= {idTransferencia}
+						and tc_mantic_confrontas_detalles.id_transferencia_detalle is null
 				) as tc_mantic_errores
 			</select>
       <select id="siguiente">
@@ -118,6 +175,7 @@
 					0 as impuestos, 
 					0 as sub_total, 
 					0 as cantidad, 
+					0 as cuantos, 
 					tc_mantic_transferencias_detalles.cantidades as solicitados, 
 					tc_mantic_transferencias_detalles.id_transferencia_detalle as id_orden_detalle, 
 					tc_mantic_transferencias_detalles.id_articulo, 

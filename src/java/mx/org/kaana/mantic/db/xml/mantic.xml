@@ -167,6 +167,7 @@
           tc_mantic_confrontas
         where 
           id_confronta= {idConfronta}
+				  or id_transferencia= {idTransferencia}
       </select>
 		</unit>			
     <unit id="TcManticConfrontasDetallesDto">

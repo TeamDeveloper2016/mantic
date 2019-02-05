@@ -36,6 +36,7 @@ public final class AdminConfronta extends IAdminArticulos implements Serializabl
 		this.orden= orden;
 		if(this.orden.isValid()) {
   	  this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaConfrontasDto", "detalle", orden.toMap()));
+			this.orden.init();
 		}	// if
 		else {
   	  this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaConfrontasDto", "diferencia", orden.toMap()));
