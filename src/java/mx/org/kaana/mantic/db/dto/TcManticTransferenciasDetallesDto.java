@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -34,8 +28,8 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 public class TcManticTransferenciasDetallesDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
-  @Column (name="propio")
-  private String propio;
+  @Column (name="codigo")
+  private String codigo;
   @Column (name="cantidades")
   private Double cantidades;
   @Id
@@ -62,8 +56,8 @@ public class TcManticTransferenciasDetallesDto implements IBaseDto, Serializable
     setKey(key);
   }
 
-  public TcManticTransferenciasDetallesDto(String propio, Double cantidades, Long idTransferenciaDetalle, Double cantidad, Long idArticulo, Long idTransferencia, String nombre) {
-    setPropio(propio);
+  public TcManticTransferenciasDetallesDto(String codigo, Double cantidades, Long idTransferenciaDetalle, Double cantidad, Long idArticulo, Long idTransferencia, String nombre) {
+    setCodigo(codigo);
     setCantidades(cantidades);
     setIdTransferenciaDetalle(idTransferenciaDetalle);
     setCantidad(cantidad);
@@ -73,12 +67,12 @@ public class TcManticTransferenciasDetallesDto implements IBaseDto, Serializable
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
-  public void setPropio(String propio) {
-    this.propio = propio;
+  public void setCodigo(String codigo) {
+    this.codigo = codigo;
   }
 
-  public String getPropio() {
-    return propio;
+  public String getCodigo() {
+    return codigo;
   }
 
   public void setCantidades(Double cantidades) {
@@ -152,7 +146,7 @@ public class TcManticTransferenciasDetallesDto implements IBaseDto, Serializable
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getPropio());
+		regresar.append(getCodigo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCantidades());
 		regresar.append(Constantes.SEPARADOR);
@@ -174,7 +168,7 @@ public class TcManticTransferenciasDetallesDto implements IBaseDto, Serializable
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("propio", getPropio());
+		regresar.put("codigo", getCodigo());
 		regresar.put("cantidades", getCantidades());
 		regresar.put("idTransferenciaDetalle", getIdTransferenciaDetalle());
 		regresar.put("cantidad", getCantidad());
@@ -188,7 +182,7 @@ public class TcManticTransferenciasDetallesDto implements IBaseDto, Serializable
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getPropio(), getCantidades(), getIdTransferenciaDetalle(), getCantidad(), getIdArticulo(), getIdTransferencia(), getNombre(), getRegistro()
+    getCodigo(), getCantidades(), getIdTransferenciaDetalle(), getCantidad(), getIdArticulo(), getIdTransferencia(), getNombre(), getRegistro()
     };
     return regresar;
   }

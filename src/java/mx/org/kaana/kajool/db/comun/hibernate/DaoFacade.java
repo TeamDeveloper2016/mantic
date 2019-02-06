@@ -329,18 +329,16 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
       transaction.commit();
     } // try
     catch (Exception e) {
-      if (transaction != null) {
+      if (transaction != null) 
         transaction.rollback();
-      }
       throw e;
     } // catch
     finally {
-      if (session != null) {
+      if (session != null) 
         session.close();
-      }
       session = null;
       transaction = null;
-    }
+    } // finally
     return regresar;
   }
 
@@ -354,7 +352,8 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     try {
       setKey(key);
       regresar = (P) super.findById(this.hbmClass);
-    } catch (Exception e) {
+    } // try
+		catch (Exception e) {
       throw e;
     } // catch
     return regresar;
@@ -365,7 +364,8 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     P regresar = null;
     try {
       regresar = findById(session, getKey());
-    } catch (Exception e) {
+    } // try
+		catch (Exception e) {
       throw e;
     } // catch
     return regresar;
@@ -377,7 +377,8 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     try {
       setKey(key);
       regresar = (P) super.findById(session, this.hbmClass);
-    } catch (Exception e) {
+    } // try
+		catch (Exception e) {
       throw e;
     } // catch
     return regresar;
@@ -394,7 +395,8 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     try {
       setKey(key);
       regresar = super.exist(this.hbmClass);
-    } catch (Exception e) {
+    } // try
+		catch (Exception e) {
       throw e;
     } // catch
     return regresar;
@@ -411,7 +413,8 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     try {
       setKey(key);
       regresar = super.exist(session, this.hbmClass);
-    } catch (Exception e) {
+    } // try
+		catch (Exception e) {
       throw e;
     } // catch
     return regresar;
@@ -421,7 +424,7 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     boolean regresar = false;
     try {
       regresar = exist(session, dto.getKey());
-    } // catch
+    } // try
     catch (Exception e) {
       throw e;
     } // cattch
@@ -432,7 +435,7 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     boolean regresar = false;
     try {
       regresar = exist(dto.getKey());
-    } // catch
+    } // try
     catch (Exception e) {
       throw e;
     } // cattch
@@ -443,7 +446,8 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     P regresa = null;
     try {
       regresa = (P) super.findIdentically(this.hbmClass, params);
-    } catch (Exception e) {
+    } // try
+		catch (Exception e) {
       throw e;
     } // catch
     return regresa;
@@ -453,7 +457,8 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     P regresa = null;
     try {
       regresa = (P) super.findIdentically(session, this.hbmClass, params);
-    } catch (Exception e) {
+    } // try
+		catch (Exception e) {
       throw e;
     } // catch
     return regresa;
@@ -464,7 +469,8 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     P regresa = null;
     try {
       regresa = (P) super.findFirst(this.hbmClass, params, Constantes.DML_SELECT);
-    } catch (Exception e) {
+    } // try
+		catch (Exception e) {
       throw e;
     } // catch
     return regresa;
@@ -475,7 +481,8 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     P regresa = null;
     try {
       regresa = (P) super.findFirst(session, this.hbmClass, params, Constantes.DML_SELECT);
-    } catch (Exception e) {
+    } // try
+		catch (Exception e) {
       throw e;
     } // catch
     return regresa;
@@ -486,7 +493,8 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     P regresa = null;
     try {
       regresa = (P) super.findFirst(this.hbmClass, params, idXml);
-    } catch (Exception e) {
+    } // try
+		catch (Exception e) {
       throw e;
     } // catch
     return regresa;
@@ -497,7 +505,8 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     P regresa = null;
     try {
       regresa = (P) super.findFirst(session, this.hbmClass, params, idXml);
-    } catch (Exception e) {
+    } // try
+		catch (Exception e) {
       throw e;
     } // catch
     return regresa;
@@ -508,7 +517,8 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     Long regresa = -1L;
     try {
       regresa = super.deleteAll(params, this.hbmClass);
-    } catch (Exception e) {
+    } // try
+		catch (Exception e) {
       throw e;
     } // catch
     return regresa;
@@ -519,7 +529,8 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     Long regresa = -1L;
     try {
       regresa = super.deleteAll(session, params, this.hbmClass);
-    } catch (Exception e) {
+    } // try
+		catch (Exception e) {
       throw e;
     } // catch
     return regresa;
@@ -530,7 +541,8 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     Long regresa = -1L;
     try {
       regresa = super.updateAll(params, idSeccionXml, this.hbmClass);
-    } catch (Exception e) {
+    } // try
+		catch (Exception e) {
       throw e;
     } // catch
     return regresa;
@@ -541,7 +553,8 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     Long regresa = -1L;
     try {
       regresa = super.updateAll(session, params, idSeccionXml, this.hbmClass);
-    } catch (Exception e) {
+    } // try
+		catch (Exception e) {
       throw e;
     } // catch
     return regresa;
@@ -552,7 +565,8 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     Long regresa = -1L;
     try {
       regresa = super.updateAll(params, this.hbmClass);
-    } catch (Exception e) {
+    }  // try
+		catch (Exception e) {
       throw e;
     } // catch
     return regresa;
@@ -563,7 +577,8 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     Long regresa = -1L;
     try {
       regresa = super.updateAll(session, params, this.hbmClass);
-    } catch (Exception e) {
+    } // try
+		catch (Exception e) {
       throw e;
     } // catch
     return regresa;
@@ -574,7 +589,7 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     PageRecords regresar = null;
     try {
       regresar = super.findPage(this.hbmClass, params, first, records);
-    } // catch 
+    } // try 
     catch (Exception e) {
       throw e;
     } // catch 
@@ -586,7 +601,7 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     PageRecords regresar = null;
     try {
       regresar = super.findPage(session, this.hbmClass, params, first, records);
-    } // catch
+    } // try
     catch (Exception e) {
       throw e;
     } // catch 
@@ -598,7 +613,7 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     Long regresar = null;
     try {
       regresar = super.size(this.hbmClass);
-    } // catch
+    } // try
     catch (Exception e) {
       throw e;
     } // catch
@@ -610,7 +625,7 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     Long regresar = null;
     try {
       regresar = super.size(this.hbmClass, params);
-    } // catch
+    } // try
     catch (Exception e) {
       throw e;
     } // catch
@@ -622,7 +637,7 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     Long regresar = null;
     try {
       regresar = super.size(this.hbmClass, idXml);
-    } // catch
+    } // try
     catch (Exception e) {
       throw e;
     } // catch
@@ -646,7 +661,7 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     Long regresar = null;
     try {
       regresar = super.size(session, this.hbmClass);
-    } // catch
+    } // try
     catch (Exception e) {
       throw e;
     } // catch
@@ -658,7 +673,7 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     Long regresar = null;
     try {
       regresar = super.size(session, this.hbmClass, idXml);
-    } // catch
+    } // try
     catch (Exception e) {
       throw e;
     } // catch
@@ -670,7 +685,7 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     Long regresar = null;
     try {
       regresar = super.size(session, this.hbmClass, params);
-    } // catch
+    } // try
     catch (Exception e) {
       throw e;
     } // catch
@@ -682,7 +697,7 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     Long regresar = null;
     try {
       regresar = super.size(session, this.hbmClass, idXml, params);
-    } // catch
+    } // try
     catch (Exception e) {
       throw e;
     } // catch
@@ -699,7 +714,7 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     List<P> regresar = null;
     try {
       regresar = super.findViewCriteria(this.hbmClass, params, records, idXml);
-    } // catch
+    } // try
     catch (Exception e) {
       throw e;
     } // catch
@@ -711,7 +726,7 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     List<P> regresar = null;
     try {
       regresar = super.findViewCriteria(session, this.hbmClass, params, records, idXml);
-    } // catch
+    } // try
     catch (Exception e) {
       throw e;
     } // catch
@@ -726,7 +741,7 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
       if (dto != null) {
         regresa = dto.getKey();
       }
-    } // catch
+    } // try
     catch (Exception e) {
       throw e;
     } // catch
@@ -741,7 +756,7 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
       if (dto != null) {
         regresa = dto.getKey();
       }
-    } // catch
+    } // try
     catch (Exception e) {
       throw e;
     } // catch
@@ -761,7 +776,7 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
       if (dto != null) {
         regresa = dto.getKey();
       }
-    } // catch
+    } // try
     catch (Exception e) {
       throw e;
     } // catch
@@ -775,8 +790,9 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
       dto = this.findIdentically(session, params);
       if (dto != null) {
         regresa = dto.getKey();
-      }
-    } catch (Exception e) {
+      } // if
+    } // try
+		catch (Exception e) {
       throw e;
     } // catch
     return regresa;
@@ -787,7 +803,8 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     P regresa = null;
     try {
       regresa = (P) super.findIdentically(this.hbmClass, params);
-    } catch (Exception e) {
+    } // try
+		catch (Exception e) {
       throw e;
     } // catch
     return regresa;
@@ -798,7 +815,8 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
     P regresa = null;
     try {
       regresa = (P) super.findIdentically(session, this.hbmClass, params);
-    } catch (Exception e) {
+    } // try
+		catch (Exception e) {
       throw e;
     } // catch
     return regresa;
@@ -812,7 +830,7 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
       dto = this.findIdentically(session, params);
       if (dto != null) {
         regresa = dto.getKey();
-      }
+      } // if
     } // catch
     catch (Exception e) {
       throw e;
@@ -828,7 +846,7 @@ public class DaoFacade<P extends IBaseDto> extends IBaseDao {
       dto = this.findIdentically(params);
       if (dto != null) {
         regresa = dto.getKey();
-      }
+      } // if
     } // catch
     catch (Exception e) {
       throw e;
