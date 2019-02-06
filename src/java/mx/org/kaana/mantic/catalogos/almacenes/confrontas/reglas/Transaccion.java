@@ -121,8 +121,12 @@ public class Transaccion extends IBaseTnx {
 				switch(accion) {
 					case ACTIVAR: // RECIBIR
 					case PROCESAR: // INCOMPLETA
-						if(articulo.getCuantos()- item.getCantidad()!= 0L)
-						  this.toMovimientosAlmacenDestino(sesion, item, umbrales, articulo.getCuantos()- item.getCantidad());
+						if(this.transferencia.getIdTransferenciaEstatus()== 6L) {
+							if(articulo.getInicial()- item.getCantidad()!= 0L)
+						    this.toMovimientosAlmacenDestino(sesion, item, umbrales, articulo.getInicial()- item.getCantidad());
+						} // if	
+						else
+						  this.toMovimientosAlmacenDestino(sesion, item, umbrales, item.getCantidad());
 						break;
 					case DEPURAR: // AUTORIZAR
 						break;
@@ -218,7 +222,7 @@ public class Transaccion extends IBaseTnx {
 	private void toAffectTransferenciaDetalle(Session sesion, Articulo articulo) throws Exception {
 		if(articulo.getIdOrdenDetalle()!= null && articulo.getIdOrdenDetalle()> 0L) {
 			TcManticTransferenciasDetallesDto detalle= (TcManticTransferenciasDetallesDto)DaoFactory.getInstance().findById(sesion, TcManticTransferenciasDetallesDto.class, articulo.getIdOrdenDetalle());
-      detalle.setCantidades(detalle.getCantidades()- articulo.getCantidad());
+      detalle.setCantidades(detalle.getCantidad()- articulo.getCantidad());
 			DaoFactory.getInstance().update(sesion, detalle);
 		} // if
 	}

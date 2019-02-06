@@ -57,6 +57,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	private boolean costoLibre;
 	private double cuantos;
 	private boolean modificado;
+	private double inicial;
 
 	public Articulo() {
 		this(-1L);
@@ -96,6 +97,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.costoLibre  = false;
 		this.cuantos     = cantidad;
 		this.modificado  = false;
+		this.inicial     = cantidad;
 	}
 
 	public UISelectEntity getIdEntity() {
@@ -120,6 +122,14 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 
 	public void setCuantos(double cuantos) {
 		this.cuantos=cuantos;
+	}
+
+	public double getInicial() {
+		return inicial;
+	}
+
+	public void setInicial(double inicial) {
+		this.inicial=inicial;
 	}
 
 	@Override

@@ -107,13 +107,13 @@
             </p:column>
             <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.cantidad}">
               <f:facet name="header">
-                <h:outputText value="Cantidad"/>
+                <h:outputText value="Enviaón"/>
               </f:facet>
               <h:outputText value="#{row['cantidad']}"/>
             </p:column>		
             <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cantidades}">
               <f:facet name="header">
-                <h:outputText value="Cantidad [+/-]"/>
+                <h:outputText value="Diferencias [+/-]"/>
               </f:facet>
               <h:outputText value="#{row['cantidades']}"/>
             </p:column>		
@@ -128,7 +128,7 @@
             </f:facet>
           </p:dataTable>
 					<p:spacer height="3px"/>
-					<p:outputLabel value="Click sobre la fila del articulo para filtrar los registros y comprar contra lo que se recibio en almacen."/>
+					<p:outputLabel value="Click sobre la fila del articulo para filtrar los registros y comprar contra lo que se recibio en el almacen."/>
         </div>
 			</div>
 			<p:spacer height="3px"/>
@@ -181,15 +181,9 @@
             </p:column>		
             <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cantidad}">
               <f:facet name="header">
-                <h:outputText value="Cantidad"/>
+                <h:outputText value="Recibierón"/>
               </f:facet>
               <h:outputText value="#{row['cantidad']}"/>
-            </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.diferencia}">
-              <f:facet name="header">
-                <h:outputText value="Cantidad [+/-]"/>
-              </f:facet>
-              <h:outputText value="#{row['diferencia']}"/>
             </p:column>		
             <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
               <f:facet name="header">
@@ -198,7 +192,7 @@
               <h:outputText value="#{row['estatus']}"/>
             </p:column>		
             <f:facet name="footer">
-							<p:outputLabel value="Las filas en color son articulos no solicitados en la transferencia" style="float: left;"/>
+							<p:outputLabel value="Las filas que estan en color son articulos no solicitados en la transferencia solicitada" style="float: left;"/>
               <p:outputLabel value="Total [#{manticCatalogosAlmacenesTransferenciasDiferencias.lazyNotas==null?0:manticCatalogosAlmacenesTransferenciasDiferencias.lazyNotas.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
