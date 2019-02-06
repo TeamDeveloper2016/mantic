@@ -128,7 +128,7 @@
             </f:facet>
           </p:dataTable>
 					<p:spacer height="3px"/>
-					<p:outputLabel value="Click sobre la fila para filtrar el articulo seleccionado, para verificar su recepción en almacen."/>
+					<p:outputLabel value="Click sobre la fila del articulo para filtrar los registros y comprar contra lo que se recibio en almacen."/>
         </div>
 			</div>
 			<p:spacer height="3px"/>
@@ -139,7 +139,7 @@
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolNotas').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this notas" skipChildren="false"/>
             <f:facet name="header" >
 							<div style="float: left;">
-  							<h:outputText value="Detalle de los articulos de la recepción en almacen"/>
+  							<h:outputText value="Detalle de los articulos que fueron recibidos en el almacen"/>
 							</div>	
               <div class="lg-pantalla">
                 <p:menuButton value="Opciones">

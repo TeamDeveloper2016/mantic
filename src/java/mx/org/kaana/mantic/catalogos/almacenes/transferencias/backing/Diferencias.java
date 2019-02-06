@@ -10,29 +10,21 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
-import mx.org.kaana.kajool.procesos.acceso.beans.Faltante;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.formato.Global;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
-import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
-import mx.org.kaana.mantic.compras.ordenes.reglas.ArticulosLazyLoad;
-import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
-import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
-import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
-import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
@@ -86,7 +78,6 @@ public class Diferencias extends IFilterImportar implements Serializable {
     try {
       columns = new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
       columns.add(new Columna("cantidades", EFormatoDinamicos.NUMERO_CON_DECIMALES));      
@@ -158,7 +149,6 @@ public class Diferencias extends IFilterImportar implements Serializable {
 			params=new HashMap<>();
       columns = new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
       columns.add(new Columna("porcentaje", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
@@ -171,8 +161,8 @@ public class Diferencias extends IFilterImportar implements Serializable {
   			  params.put("idTransferencia", -1L);
 			if((Integer)this.attrs.get("tipoDiferencia")== 3)
   		  params.put(Constantes.SQL_CONDICION, " and tc_mantic_confrontas_detalles.id_transferencia_detalle is null ");
-			params.put("sortOrder", "order by tc_mantic_confrontas.consecutivo, tc_mantic_confrontas_detalles.nombre");
-      this.lazyNotas = new ArticulosLazyLoad("VistaConfrontasDto", "consulta", params, columns);
+			params.put("sortOrder", "order by tc_mantic_confrontas.consecutivo, tc_mantic_transferencias_detalles.nombre");
+      this.lazyNotas = new FormatLazyModel("VistaConfrontasDto", "consulta", params, columns);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -224,7 +214,7 @@ public class Diferencias extends IFilterImportar implements Serializable {
 	} 
 	
 	public String doNotaColor(Entity row) {
-		return row.toString("nuevo").equals("*")? row.toDouble("diferencia")!= 0? "janal-tr-error": "janal-tr-nuevo": "";
+		return row.toString("nuevo").equals("*")? "janal-tr-nuevo": "";
 	} 
 
   public void doChangeArticulos() {

@@ -33,8 +33,8 @@
 				select
 					tc_mantic_confrontas_detalles.id_confronta_detalle as id_key,
 					tc_mantic_confrontas.consecutivo,
-					tc_mantic_transferencias_detalles.propio,
-					tc_mantic_transferencias_detalles.nombre,
+					tc_mantic_confrontas_detalles.codigo as propio,
+					tc_mantic_confrontas_detalles.nombre,
 					tc_mantic_confrontas_detalles.cantidad,
 					tc_mantic_confrontas_detalles.cantidades,
 				  if(tc_mantic_confrontas_detalles.id_transferencia_detalle is null, '*', '') as nuevo,
@@ -59,7 +59,7 @@
 				  tc_mantic_transferencias_detalles on tc_mantic_confrontas_detalles.id_transferencia_detalle= tc_mantic_transferencias_detalles.id_transferencia_detalle
 				where  
 					tc_mantic_confrontas.id_transferencia= {idTransferencia}	
-				  and {condicion}
+				  {condicion}
 				{sortOrder}
 			</select>			
 			<select id="errores">
