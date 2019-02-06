@@ -65,7 +65,7 @@ public class Value implements Serializable, Comparable<Value> {
   }
 
   public String toString(String value) {
-    Object regresar = getData();
+    Object regresar = this.getData();
     return regresar!= null? regresar.toString(): value;
   }
 

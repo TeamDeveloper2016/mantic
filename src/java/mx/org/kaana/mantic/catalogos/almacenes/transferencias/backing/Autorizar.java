@@ -55,7 +55,7 @@ public class Autorizar extends IFilterImportar implements Serializable {
   @Override
   protected void init() {
     try {
-      this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia"));
+      this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia")== null? -1L: JsfBase.getFlashAttribute("idTransferencia"));
       this.orden= (TcManticTransferenciasDto)DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, (Long)JsfBase.getFlashAttribute("idTransferencia"));
 		  this.doLoad();
     } // try
@@ -114,7 +114,7 @@ public class Autorizar extends IFilterImportar implements Serializable {
 	}
 
 	public String doOrdenColor(Entity row) {
-		return !row.toDouble("unidades").equals(0D) && !row.toString("nuevo").equals("*")? "janal-tr-diferencias": row.toString("nuevo").equals("*")? "janal-tr-nuevo": "";
+		return !row.toDouble("cantidades").equals(0D) && !row.toString("nuevo").equals("*")? "janal-tr-diferencias": row.toString("nuevo").equals("*")? "janal-tr-nuevo": "";
 	} 
 	
 }

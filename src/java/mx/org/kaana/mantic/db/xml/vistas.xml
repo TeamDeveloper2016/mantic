@@ -75,17 +75,15 @@
 					tc_mantic_confrontas_detalles.nombre,
 					tc_mantic_confrontas_detalles.cantidad,
 					tc_mantic_confrontas_detalles.cantidades,
-				  tc_mantic_transferencias_detalles.cantidades as unidades,
+				  ifnull(tc_mantic_transferencias_detalles.cantidad, 0) as solicitados,
 				  if(tc_mantic_confrontas_detalles.id_transferencia_detalle is null, '*', '') as nuevo,
-  				tc_mantic_confrontas_detalles.declarados,
   				tc_mantic_confrontas_detalles.diferencia,
 				  tc_mantic_transferencias_estatus.nombre as estatus,
 				  tc_mantic_transferencias_estatus.id_transferencia_estatus,
 				  tc_mantic_confrontas.id_confronta,
 				  tc_mantic_confrontas.id_transferencia,
-				  'janal-color-blue' as color,
-				  0 as porcentaje,
-					tc_mantic_confrontas_detalles.id_articulo
+					tc_mantic_confrontas_detalles.id_articulo,
+				  0 as aplicar
 				from
 					tc_mantic_confrontas
 				inner join 
@@ -186,7 +184,7 @@
           tc_mantic_confrontas_detalles.*,
           tc_mantic_confrontas_detalles.cantidad as cuantos,
           tc_mantic_confrontas_detalles.cantidad as inicial,
-					ifnull(tc_mantic_transferencias_detalles.cantidad, 0) as solicitados, 
+ 					ifnull(tc_mantic_transferencias_detalles.cantidad, 0) as solicitados, 
 				  tc_mantic_articulos.precio as valor
         from      
           tc_mantic_confrontas_detalles
