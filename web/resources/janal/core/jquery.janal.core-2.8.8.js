@@ -1198,7 +1198,7 @@
 			alert(msg);
     }, // alert
     version: function() {
-      return '0.2.8.5';
+      return '0.2.8.8';
     }, // version
     align: function(pixels) {
       try {
@@ -1338,8 +1338,14 @@
 		},
 		parser: function(element) {
 			var name= '';
-			if($(element).attr('id').split(':').length> 2)
-  			$.each($(element).attr('class').split(' '), function(index, value) { if(value.startsWith('janal-name')) { name= value.substring(11).replace(/_/g, ' '); } });
+			if($(element).attr('id').split(':').length> 2) {
+			  if($(element).attr('id').endsWith($janal.INPUT_RESERVE)) {
+					var name= $(element).attr('id').substring(0, $(element).attr('id').indexOf($janal.INPUT_RESERVE));
+					element= $('#'+ name.replace(/:/gi, '\\:'));
+				} // if	
+				if(typeof($(element).attr('class'))!== 'undefined' && $(element).attr('class').length> 0)
+  			  $.each($(element).attr('class').split(' '), function(index, value) { if(value.startsWith('janal-name')) { name= value.substring(11).replace(/_/g, ' '); } });
+			} // if	
 			return name;
 		}
   });

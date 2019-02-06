@@ -96,6 +96,7 @@
 				  tc_mantic_transferencias_detalles on tc_mantic_confrontas_detalles.id_transferencia_detalle= tc_mantic_transferencias_detalles.id_transferencia_detalle
 				where  
 					tc_mantic_confrontas.id_transferencia= {idTransferencia}	
+				  and tc_mantic_confrontas_detalles.diferencia!= 0
 				{sortOrder}
 			</select>						
 			<select id="errores">

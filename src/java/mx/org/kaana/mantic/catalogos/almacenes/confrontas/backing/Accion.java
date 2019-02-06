@@ -62,6 +62,18 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		return regresar;
 	}
 	
+	public Boolean getIsConfirmacion() {
+		Boolean regresar= true;
+		try {
+			regresar= ((Confronta)this.getAdminOrden().getOrden()).getTransferencia().getIdTransferenciaEstatus()== 6L;
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		return regresar;
+	}
+	
 	@PostConstruct
   @Override
   protected void init() {		

@@ -34,6 +34,8 @@
 				$(jsArticulos.amount()).addClass('ignore');
 				$(jsArticulos.price()).addClass('ignore');
 				var ok= janal.execute(lock);
+				if(ok &amp;&amp; #{manticCatalogosAlmacenesConfrontasAccion.isConfirmacion})
+					ok= confirm('Esta seguro que los datos son los correctos ?\nUna vez que se aplique ya no se puede cancelar la transferencia.')
 				if(!ok) {
 					jsArticulos.cursor.index= index;
   				$(jsArticulos.amount()).removeClass('ignore');

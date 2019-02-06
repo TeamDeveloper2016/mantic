@@ -117,4 +117,20 @@ public class Autorizar extends IFilterImportar implements Serializable {
 		return !row.toDouble("cantidades").equals(0D) && !row.toString("nuevo").equals("*")? "janal-tr-diferencias": row.toString("nuevo").equals("*")? "janal-tr-nuevo": "";
 	} 
 	
+	public String doAceptar() {
+		String regresar=null;		
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}	
 }
