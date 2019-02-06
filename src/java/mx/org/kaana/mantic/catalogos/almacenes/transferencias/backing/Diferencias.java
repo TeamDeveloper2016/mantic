@@ -79,7 +79,7 @@ public class Diferencias extends IFilterImportar implements Serializable {
       columns = new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));      
       columns.add(new Columna("cantidades", EFormatoDinamicos.NUMERO_CON_DECIMALES));      
       this.attrs.put("sortOrder", "order by nombre");
 			switch((Integer)this.attrs.get("tipoDiferencia")) {
@@ -121,7 +121,7 @@ public class Diferencias extends IFilterImportar implements Serializable {
 		if(this.attrs.get("idConfronta")== null)
   		return "filtro".concat(Constantes.REDIRECIONAR);
 		else
-  		return "filtro".concat(Constantes.REDIRECIONAR);
+  		return "/Paginas/Mantic/Catalogos/Almacenes/Transferencias/Confrontas/filtro".concat(Constantes.REDIRECIONAR);
 	}
 
 	public String doTransferencia() {
@@ -150,7 +150,7 @@ public class Diferencias extends IFilterImportar implements Serializable {
       columns = new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));      
       columns.add(new Columna("porcentaje", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
 		  params.put(Constantes.SQL_CONDICION, " ");
 			params.put("idTransferencia", this.attrs.get("idTransferencia"));
@@ -210,7 +210,7 @@ public class Diferencias extends IFilterImportar implements Serializable {
 	} // doVerificarReporte		
 	
 	public String doOrdenColor(Entity row) {
-		return !row.toDouble("unidades").equals(0D) || !row.toDouble("valores").equals(0D)? "janal-tr-diferencias": "";
+		return !row.toDouble("unidades").equals(0D)? "janal-tr-diferencias": "";
 	} 
 	
 	public String doNotaColor(Entity row) {

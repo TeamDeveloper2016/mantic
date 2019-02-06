@@ -426,5 +426,10 @@ public class Filtro extends Comun implements Serializable {
 		JsfBase.setFlashAttribute("idTransferencia", ((Entity)this.attrs.get("seleccionado")).getKey());
 		return "diferencias".concat(Constantes.REDIRECIONAR);
 	}	
+
+  public String doAutorizar() {
+		JsfBase.setFlashAttribute("idTransferencia",((Entity)this.attrs.get("seleccionado")).getKey());
+		return "autorizar".concat(Constantes.REDIRECIONAR);
+	}	
 	
 }
