@@ -10,6 +10,7 @@
 					tc_mantic_transferencias_detalles.id_transferencia_detalle as id_key,
 				  tc_mantic_transferencias.id_empresa,
 				  tc_mantic_transferencias.consecutivo,
+					tc_mantic_transferencias_detalles.propio as codigo,
 					tc_mantic_transferencias_detalles.propio,
 					tc_mantic_transferencias_detalles.nombre,
 					tc_mantic_transferencias_detalles.cantidad,
@@ -33,6 +34,7 @@
 				select
 					tc_mantic_confrontas_detalles.id_confronta_detalle as id_key,
 					tc_mantic_confrontas.consecutivo,
+					tc_mantic_confrontas_detalles.codigo,
 					tc_mantic_confrontas_detalles.codigo as propio,
 					tc_mantic_confrontas_detalles.nombre,
 					tc_mantic_confrontas_detalles.cantidad,
@@ -144,6 +146,7 @@
 				  tc_mantic_confrontas_detalles.id_confronta_detalle as id_key,
 				  tc_mantic_confrontas_detalles.id_transferencia_detalle as id_comodin,
 				  tc_mantic_confrontas_detalles.id_confronta as id_orden_detalle,
+				  tc_mantic_confrontas_detalles.codigo as propio,
           tc_mantic_confrontas_detalles.*,
           tc_mantic_confrontas_detalles.cantidad as cuantos,
 				  tc_mantic_articulos.precio as valor
@@ -161,6 +164,7 @@
           1 as sin_iva, 
 					1 as tipo_de_cambio, 
 					tc_mantic_articulos.nombre, 
+					tc_mantic_transferencias_detalles.propio, 
 					tc_mantic_transferencias_detalles.propio as codigo, 
 				  tc_mantic_articulos.sat,
 					0 as costo, 
