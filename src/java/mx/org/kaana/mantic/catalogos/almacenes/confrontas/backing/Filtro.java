@@ -129,7 +129,6 @@ public class Filtro extends Comun implements Serializable {
 			else
 				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
@@ -137,6 +136,7 @@ public class Filtro extends Comun implements Serializable {
       this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
 			this.attrs.put("idAlmacen", new UISelectEntity("-1"));
 			columns.remove(0);
+			params.put(Constantes.SQL_CONDICION, "id_transferencia_estatus>= 3");
       this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcManticTransferenciasEstatusDto", "row", params, columns));
 			this.attrs.put("idTransferenciasEstatus", new UISelectEntity("-1"));
 			this.loadPersonas();
