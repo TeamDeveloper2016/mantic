@@ -6,11 +6,11 @@
                 xmlns:p="http://primefaces.org/ui"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Diferencias de la orden de compra contra sus notas de entrada" />
+  <ui:param name="titulo" value="Diferencias encontradas en la transferencia de articulos contra la recepción de los mismos" />
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-				'justificacion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}
+				'justificacion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'}
 			};	
 			
 			function reload() {
@@ -107,7 +107,7 @@
             </p:column>
             <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.cantidad}">
               <f:facet name="header">
-                <h:outputText value="Enviaón"/>
+                <h:outputText value="Enviaron"/>
               </f:facet>
               <h:outputText value="#{row['cantidad']}"/>
             </p:column>		
@@ -198,8 +198,6 @@
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="notas">
             <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{manticCatalogosAlmacenesTransferenciasDiferencias.doMovimientos}"/>
-						<p:separator rendered="#{fn:contains('|3|5|', manticCatalogosAlmacenesTransferenciasDiferencias.attrs.filtrado.idNotaEstatus)}"/>
-            <p:menuitem id="devoluciones" icon="fa fa-angle-double-right" value="Devoluciones" onstart="return janal.bloquear()" process="@this tabla" action="#{manticCatalogosAlmacenesTransferenciasDiferencias.doDevolucion}" rendered="#{fn:contains('|3|5|', manticCatalogosAlmacenesTransferenciasDiferencias.attrs.filtrado.idNotaEstatus)}"/>
           </p:contextMenu>
         </div>
     </div>		    
