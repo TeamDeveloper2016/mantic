@@ -11,8 +11,8 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'idEmpresa' : {validaciones: 'libre', mascara: 'libre'},
-        'almacen' : {validaciones: 'libre', mascara: 'libre'},
+        'idEmpresa': {validaciones: 'libre', mascara: 'libre'},
+        'almacen': {validaciones: 'libre', mascara: 'libre'},
         'piso': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
         'cuarto': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
         'anaquel': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},        
@@ -74,14 +74,14 @@
             <f:facet name="header" >
               <div class="lg-pantalla">
                 <p:menuButton   value="Opciones">
-                  <p:menuitem  value="Agregar" action="#{manticCatalogosAlmacenesUbicacionesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                  <p:menuitem  value="Articulos" action="#{manticCatalogosAlmacenesUbicacionesFiltro.doArticulos}" icon="fa fa-cube" title="Articulos" onstart="return janal.bloquear()"/>						
                   <p:separator/>
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:commandButton  value="Agregar" action="#{manticCatalogosAlmacenesUbicacionesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                <p:commandButton  value="Articulos" action="#{manticCatalogosAlmacenesUbicacionesFiltro.doArticulos}" icon="fa fa-cube" title="Articulos" onstart="return janal.bloquear()"/>						
                 <p:separator/>
                 <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -120,26 +120,9 @@
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticCatalogosAlmacenesUbicacionesFiltro.lazyModel== null? 0: manticCatalogosAlmacenesUbicacionesFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
-          </p:dataTable>
-          <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="consultar" action="#{manticCatalogosAlmacenesUbicacionesFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-						<p:separator/>
-						<p:menuitem id="modificar" action="#{manticCatalogosAlmacenesUbicacionesFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
-          </p:contextMenu>
+          </p:dataTable>          
         </div>
       </div>
     </div>		           				
-  </ui:define>    
-  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el almacen ?" />
-  <ui:param name="accionConfirmacion" value="#{manticCatalogosAlmacenesUbicacionesFiltro}"/>
-  <ui:param name="updateComponent" value="tabla"/>
-  <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
-  <ui:param name="renderedConfirmacion" value="true"/>	
-  <ui:define name="detalleConfirmacion">
-    <h:panelGrid columns="2">
-      <p:outputLabel value="Alamacen: "/>
-      <p:outputLabel value="#{manticCatalogosAlmacenesUbicacionesFiltro.attrs.seleccionado.nombre}"/>
-    </h:panelGrid>			
-  </ui:define>
+  </ui:define>      
 </ui:composition>
