@@ -1,7 +1,6 @@
 package mx.org.kaana.mantic.catalogos.almacenes.ubicaciones.backing;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,24 +8,18 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
-import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.almacenes.beans.RegistroAlmacen;
-import mx.org.kaana.mantic.catalogos.almacenes.reglas.Transaccion;
 
 @Named(value = "manticCatalogosAlmacenesUbicacionesFiltro")
 @ViewScoped
@@ -150,37 +143,16 @@ public class Filtro extends Comun implements Serializable {
     } // finally
 	} // toLoadAlmacenes
 
-  public String doAccion(String accion) {
-    EAccion eaccion= null;
-		try {
-			eaccion= EAccion.valueOf(accion.toUpperCase());
-			JsfBase.setFlashAttribute("accion", eaccion);		
-			JsfBase.setFlashAttribute("idAlmacen", (eaccion.equals(EAccion.MODIFICAR)||eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
+  public String doArticulos() {
+    String regresar= null;
+		try {			
+			JsfBase.setFlashAttribute("retorno", "filtro");
+			regresar= "articulos".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return "accion".concat(Constantes.REDIRECIONAR);
-  } // doAccion
-
-  public void doEliminar() {
-		Transaccion transaccion = null;
-		Entity seleccionado     = null;
-		RegistroAlmacen registro= null;
-    try {
-			seleccionado= (Entity) this.attrs.get("seleccionado");			
-			registro= new RegistroAlmacen();
-			registro.setIdAlmacen(seleccionado.getKey());
-			transaccion= new Transaccion(registro);
-			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar cliente", "El cliente se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
-			else
-				JsfBase.addMessage("Eliminar cliente", "Ocurrió un error al eliminar el cliente.", ETipoMensaje.ERROR);								
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch		
-  } // doEliminar	
+		return regresar;
+  } // doAccion  
 }
