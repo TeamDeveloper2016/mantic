@@ -2897,9 +2897,12 @@
 					'I' as tipo_cfdi,										
 					tc_mantic_facturas.observaciones,
 					tc_mantic_tipos_medios_pagos.clave medio_pago,
-					tc_mantic_domicilios.codigo_postal
+					tc_mantic_domicilios.codigo_postal,
+					tc_mantic_tipos_pagos.clave metodo_pago
 				from
 					tc_mantic_ficticias
+				inner join
+					tc_mantic_tipos_pagos on tc_mantic_tipos_pagos.id_tipo_pago = tc_mantic_ficticias.id_tipo_pago
 				inner join 
 					tc_mantic_facturas on tc_mantic_ficticias.id_ficticia = tc_mantic_facturas.id_ficticia
 				inner join
