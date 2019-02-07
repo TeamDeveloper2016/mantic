@@ -60,7 +60,7 @@
 										</f:facet>
 										<h:outputText value="#{index+ 1}.-"/>
 									</p:column>													
-									<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.codigo}">
+									<p:column class="MarAuto Responsive janal-wid-10">
 										<f:facet name="header">
 											<h:outputText value="Código"/>
 										</f:facet>
@@ -72,34 +72,34 @@
 										</f:facet>
 										<h:outputText value="#{row['nombre']}"/>
 									</p:column>		
-									<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cantidad}">
+									<p:column class="janal-column-right MarAuto Responsive janal-wid-10 janal-font-bold">
 										<f:facet name="header">
 											<h:outputText value="Recibierón"/>
 										</f:facet>
 										<h:outputText value="#{row['cantidad']}"/>
 									</p:column>		
-									<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.solicitados}">
+									<p:column class="janal-column-right MarAuto Responsive janal-wid-10 janal-font-bold">
 										<f:facet name="header">
 											<h:outputText value="Solicitarón"/>
 										</f:facet>
 										<h:outputText value="#{row['solicitados']}"/>
 									</p:column>		
-									<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+									<p:column class="janal-column-right MarAuto Responsive janal-wid-10 janal-font-bold">
 										<f:facet name="header">
 											<h:outputText value="Diferencia"/>
 										</f:facet>
-										<h:outputText value="#{row['valor']}"/>
+										<h:outputText value="#{row['cuantos']}"/>
 									</p:column>		
 									<p:column class="MarAuto Responsive janal-wid-15 janal-column-center aplicar">
 										<f:facet name="header">
 											<h:outputText value="Aplicar"/>
 										</f:facet>
-										<p:selectOneMenu id="aplicar" value="#{row.idAplicar}" converter="javax.faces.Long" styleClass="janal-wid-100-txt filas janal-name-La_fila_#{index+ 1}">
+										<p:selectOneMenu id="aplicar" value="#{row.idAplicar}" converter="javax.faces.Long" styleClass="janal-wid-90 filas janal-name-La_fila_#{index+ 1}">
 											<f:selectItem itemLabel="SELECCIONE" itemValue="0"/>
 											<f:selectItem itemLabel="IGNORAR CAMBIOS" itemValue="1"/>
-											<f:selectItem itemLabel="RESTAR ORIGEN" itemValue="2" rendered="#{row.observaciones eq '*'}"/>
-											<f:selectItem itemLabel="AFECTAR ORIGEN" itemValue="3" rendered="#{row.valor ne 0 and row.cantidad ne 0}"/>
-											<f:selectItem itemLabel="AFECTAR DESTINO" itemValue="4" rendered="#{row.valor ne 0 and row.cantidad ne 0}"/>
+											<f:selectItem itemLabel="RESTAR ORIGEN" itemValue="2" rendered="#{row.observacion eq '*'}"/>
+											<f:selectItem itemLabel="AFECTAR ORIGEN" itemValue="3" rendered="#{row.cuantos ne 0 and row.cantidad ne 0}"/>
+											<f:selectItem itemLabel="AFECTAR DESTINO" itemValue="4" rendered="#{row.cuantos ne 0 and row.cantidad ne 0}"/>
 											<f:selectItem itemLabel="REGRESAR ORIGEN" itemValue="5" rendered="#{row.cantidad eq 0}"/>
 											<f:selectItem itemLabel="SUMAR DESTINO" itemValue="6" rendered="#{row.cantidad eq 0}"/>
 										</p:selectOneMenu>	

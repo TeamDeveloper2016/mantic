@@ -35,8 +35,8 @@ public final class AdminAutorizacion extends IAdminArticulos implements Serializ
 	public AdminAutorizacion(Confronta orden) throws Exception {
 		this.orden= orden;
  	  this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaConfrontasDto", "autorizar", orden.toMap()));
-		this.orden.init();
-		this.toCalculate();
+		if(this.getArticulos()!= null)
+		  this.getTotales().setArticulos(this.getArticulos().size());
 	}
 
 	@Override

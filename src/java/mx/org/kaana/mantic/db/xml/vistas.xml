@@ -78,7 +78,7 @@
 					tc_mantic_confrontas_detalles.cantidades as inicial,
 				  ifnull(tc_mantic_transferencias_detalles.cantidad, 0) as solicitados,
 				  if(tc_mantic_confrontas_detalles.id_transferencia_detalle is null, '*', '') as observacion,
-  				tc_mantic_confrontas_detalles.diferencia as valor,
+  				tc_mantic_confrontas_detalles.diferencia as cuantos,
 				  tc_mantic_transferencias_estatus.nombre as estatus,
 				  tc_mantic_transferencias_estatus.id_transferencia_estatus,
 				  tc_mantic_confrontas.id_confronta as id_proveedor,
@@ -229,7 +229,8 @@
 					-1 as id_proveedor, 
 					false as ultimo, 
 					false as solicitado, 
-					0 as stock
+					0 as stock,
+				  0 as id_aplicar
         from      
           tc_mantic_transferencias
         inner join      
