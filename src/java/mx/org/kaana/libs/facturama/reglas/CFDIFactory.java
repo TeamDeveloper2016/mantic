@@ -43,10 +43,7 @@ public class CFDIFactory implements Serializable {
   private static final String USER_PU        = "FERRBONANZASANDBOX";
   private static final String PASSWORD_PU    = "zabonan2018sandbox";
   private static final String DESCRIPCION_IVA= "IVA";
-  private static final String CURRENCY       = "MXN";
-  private static final String METODO_PUE     = "PUE";
-  private static final String METODO_PPD     = "PPD";	
-	private static final Boolean PRODUCTION    = false;
+  private static final String CURRENCY       = "MXN";  
 	
 	private FacturamaApi facturama;
 	
@@ -181,8 +178,7 @@ public class CFDIFactory implements Serializable {
 			regresar.setPaymentConditions(Cadena.isVacio(encabezado.getObservaciones()) ? null : encabezado.getObservaciones());
 			regresar.setCfdiType(CfdiType.Ingreso.getValue());
 			regresar.setPaymentForm(encabezado.getMedioPago());
-			//regresar.setPaymentForm("03");
-			regresar.setPaymentMethod(METODO_PUE);
+			regresar.setPaymentMethod(encabezado.getMetodoPago());
 			regresar.setReceiver(toReceiver(encabezado));
 			regresar.setItems(detalleFactura(detalle));
 		} // try
@@ -537,6 +533,5 @@ public class CFDIFactory implements Serializable {
 		LOG.info("total: "+ Numero.toRedondear(56.7322)+ " calculado: "+ Numero.toRedondear(impuestos+ subtotal)+ " ajustado: "+ Numero.toRedondear(impuestos+ subtotal+ diferencia));
 		subtotal+= diferencia;
 		LOG.info("original: "+ Numero.toRedondear(48.9071)+ " diferencia: "+ diferencia+ "  subtotal: "+ subtotal+ " total: "+ Numero.toRedondear(impuestos+ subtotal));
-	}
-	
+	} 	
 }
