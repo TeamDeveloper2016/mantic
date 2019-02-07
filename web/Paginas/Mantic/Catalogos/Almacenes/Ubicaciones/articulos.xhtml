@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Ubicaciones por articulo" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'idEmpresa' : {validaciones: 'libre', mascara: 'libre'},
+        'almacen' : {validaciones: 'libre', mascara: 'libre'},
+        'piso': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'cuarto': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'anaquel': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},        
+        'charola': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}        
+      };
+    </script>		
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="janal-align-right xs-pantalla">
+      <p:commandButton icon="fa fa-search" onstart="janal.togglePanel('panelBusqueda');"/>
+      <p:spacer height="5px"/>		
+    </div>			
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-3">
+          <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
+						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
+              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.isMatriz}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.empresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+								<p:ajax event="change" process="@this panelBusqueda" listener="#{manticCatalogosAlmacenesUbicacionesArticulos.doLoadAlmacenes}" update="panelBusqueda" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()"/>
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                <f:selectItems value="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+              <p:outputLabel for="almacen" value="Almacen:"/>
+              <p:selectOneMenu id="almacen" value="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.almacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="contains">
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                <f:selectItems value="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.almacenes}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>                
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+              <p:outputLabel for="piso" value="Piso:"/>
+              <p:inputText id="piso" value="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.piso}" styleClass="janal-wid-100-txt" /> 
+              <p:outputLabel for="cuarto" value="Cuarto:"/>
+              <p:inputText id="cuarto" value="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.cuarto}" styleClass="janal-wid-100-txt" />
+              <p:outputLabel for="anaquel" value="Anaquel:"/>
+              <p:inputText id="anaquel" value="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.anaquel}" styleClass="janal-wid-100-txt"/>              
+              <p:outputLabel for="charola" value="Charola:"/>
+              <p:inputText id="charola" value="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.charola}" styleClass="janal-wid-100-txt"/>              
+            </p:panelGrid>
+            <p:separator/>
+            <div class="janal-align-right lg-pantalla">
+              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{manticCatalogosAlmacenesUbicacionesArticulos.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+            </div>
+						<div class="janal-align-right xs-pantalla">
+ 						  <p:commandButton id="buscarIcon" icon="fa fa-filter" accesskey="b"  onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{manticCatalogosAlmacenesUbicacionesArticulos.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+					  </div>
+          </p:panel>
+        </div>
+        <div id="collapse-content" class="ui-grid-col-9">
+          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosAlmacenesUbicacionesArticulos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosAlmacenesUbicacionesArticulos.lazyModel.rowCount gt manticCatalogosAlmacenesUbicacionesArticulos.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+            <f:facet name="header" >
+              <div class="lg-pantalla">
+                <p:menuButton   value="Opciones">
+                  <p:menuitem  value="Agregar" action="#{manticCatalogosAlmacenesUbicacionesArticulos.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                  <p:separator/>
+                  <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                </p:menuButton>
+              </div>  
+              <div class="xs-pantalla">              
+                <p:commandButton  value="Agregar" action="#{manticCatalogosAlmacenesUbicacionesArticulos.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                <p:separator/>
+                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+              </div>  
+            </f:facet>												
+            <p:column class="MarAuto Responsive janal-wid-30" sortBy="#{row.nombre}">
+              <f:facet name="header">
+                <h:outputText value="Almacen"/>
+              </f:facet>
+              <h:outputText value="#{row['nombre']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive" sortBy="#{row.piso}">
+              <f:facet name="header">
+                <h:outputText value="Piso"/>
+              </f:facet>
+              <h:outputText value="#{row['piso']}"/>
+            </p:column>														
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.cuarto}">
+              <f:facet name="header">
+                <h:outputText value="Cuarto"/>
+              </f:facet>
+              <h:outputText value="#{row['cuarto']}"/>
+            </p:column>					
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.anaquel}">
+              <f:facet name="header">
+                <h:outputText value="Anaquel"/>
+              </f:facet>
+              <h:outputText value="#{row['anaquel']}"/>
+            </p:column>					                                    
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.charola}">
+              <f:facet name="header">
+                <h:outputText value="Charola"/>
+              </f:facet>
+              <h:outputText value="#{row['charola']}"/>
+            </p:column>					                                    
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticCatalogosAlmacenesUbicacionesArticulos.lazyModel== null? 0: manticCatalogosAlmacenesUbicacionesArticulos.lazyModel.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+          <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+            <p:menuitem id="consultar" action="#{manticCatalogosAlmacenesUbicacionesArticulos.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+						<p:separator/>
+						<p:menuitem id="modificar" action="#{manticCatalogosAlmacenesUbicacionesArticulos.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
+          </p:contextMenu>
+        </div>
+      </div>
+    </div>		           				
+  </ui:define>  
+	<ui:define name="acciones">
+    <div class="lg-pantalla">
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@this contenedorGrupos" onstart="return janal.partial('general', true)" oncomplete="janal.desbloquear()" style="display: none"/>
+      <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosAlmacenesUbicacionesArticulos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+    </div>		
+    <div class="xs-pantalla">
+      <p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@this contenedorGrupos" onstart="return janal.partial('general', true)" oncomplete="janal.desbloquear()" style="display: none"/>
+      <p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosAlmacenesUbicacionesArticulos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+    </div>		
+  </ui:define>  
+</ui:composition>
