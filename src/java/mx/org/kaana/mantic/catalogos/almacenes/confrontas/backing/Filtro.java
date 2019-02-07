@@ -38,6 +38,18 @@ public class Filtro extends Comun implements Serializable {
   private static final long serialVersionUID = 8793667741398428879L;
   private Reporte reporte;
 
+	public Boolean getIsAutorizar() {
+		Boolean regresar= true;
+		try {
+			regresar= this.attrs.get("seleccionado")!= null && ((Entity)this.attrs.get("seleccionado")).toLong("idTransferenciaEstatus")== 7L && JsfBase.isAdminEncuestaOrAdmin();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		return regresar;
+	}
+
   @PostConstruct
   @Override
   protected void init() {

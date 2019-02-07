@@ -169,7 +169,7 @@ public class Transaccion extends IBaseTnx {
 			if (this.articulos.indexOf(item)< 0) 
 				DaoFactory.getInstance().delete(sesion, item.toTransferenciaDetalle());
 		for (Articulo articulo: this.articulos) {
-			TcManticTransferenciasDetallesDto item=articulo.toTransferenciaDetalle();
+			TcManticTransferenciasDetallesDto item= articulo.toTransferenciaDetalle();
 			item.setIdTransferencia(this.dto.getIdTransferencia());
 			if (DaoFactory.getInstance().findIdentically(sesion, TcManticTransferenciasDetallesDto.class, item.toMap())== null) 
 				DaoFactory.getInstance().insert(sesion, item);

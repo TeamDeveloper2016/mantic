@@ -117,9 +117,12 @@
               </f:facet>
               <p:selectOneMenu id="aplicar" rendered="#{row['diferencias'].toDouble() ne 0}" value="#{row.idAplicar}" converter="janal.convertidor.Seleccion" styleClass="janal-wid-100-txt filas janal-name-La_fila_#{index+ 1}">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="0"/>
-								<f:selectItem itemLabel="IGNORAR CAMBIO" itemValue="1"/>
-								<f:selectItem itemLabel="REGRESAR ORIGEN" itemValue="2"/>
-								<f:selectItem itemLabel="ACEPTAR EN DESTINO" itemValue="3"/>
+								<f:selectItem itemLabel="IGNORAR CAMBIOS" itemValue="1"/>
+								<f:selectItem itemLabel="RESTAR ORIGEN" itemValue="2" rendered="#{row.nuevo.toString eq '*'}"/>
+								<f:selectItem itemLabel="AFECTAR ORIGEN" itemValue="3" rendered="#{row.diferencia.toDouble ne 0 and row.cantidad.toDouble ne 0}"/>
+								<f:selectItem itemLabel="AFECTAR DESTINO" itemValue="4" rendered="#{row.diferencia.toDouble ne 0 and row.cantidad.toDouble ne 0}"/>
+								<f:selectItem itemLabel="REGRESAR ORIGEN" itemValue="5" rendered="#{row.cantidad.toDouble eq 0}"/>
+								<f:selectItem itemLabel="SUMAR DESTINO" itemValue="6" rendered="#{row.cantidad.toDouble eq 0}"/>
 							</p:selectOneMenu>	
             </p:column>		
             <f:facet name="footer">

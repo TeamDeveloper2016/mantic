@@ -121,7 +121,7 @@ public class Transaccion extends IBaseTnx {
 				switch(accion) {
 					case ACTIVAR: // RECIBIR
 					case PROCESAR: // INCOMPLETA
-						if(this.transferencia.getIdTransferenciaEstatus()== 6L) {
+						if(this.transferencia.getIdTransferenciaEstatus()== 6L || this.transferencia.getIdTransferenciaEstatus()== 7L) {
 							if(articulo.getInicial()- item.getCantidad()!= 0L)
 						    this.toMovimientosAlmacenDestino(sesion, item, umbrales, articulo.getInicial()- item.getCantidad());
 						} // if	
@@ -231,7 +231,7 @@ public class Transaccion extends IBaseTnx {
 		sesion.flush();
 		Value errors= DaoFactory.getInstance().toField(sesion, "VistaConfrontasDto", "errores", this.transferencia.toMap(), "total");
 		if(errors.toLong()!= null && errors.toLong()== 0) 
-			if(this.transferencia.getIdTransferenciaEstatus()== 3L || this.transferencia.getIdTransferenciaEstatus()== 5L)
+			if(this.transferencia.getIdTransferenciaEstatus()== 3L || this.transferencia.getIdTransferenciaEstatus()== 5L || this.transferencia.getIdTransferenciaEstatus()== 7L)
 				this.transferencia.setIdTransferenciaEstatus(8L); // TERMINADA
 			else
 				this.transferencia.setIdTransferenciaEstatus(9L); // ACEPTADA
