@@ -211,15 +211,10 @@ public class TransaccionFactura extends IBaseTnx{
 	
 	protected boolean actualizarCliente(Session sesion, Long id, String idFacturama) throws Exception{
 		boolean regresar           = false;
-		TcManticClientesDto cliente= null;
-		try {
-			cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, id);
-			cliente.setIdFacturama(idFacturama);
-			regresar= DaoFactory.getInstance().update(sesion, cliente)>= 1L;
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
+		TcManticClientesDto cliente= null;		
+		cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, id);
+		cliente.setIdFacturama(idFacturama);
+		regresar= DaoFactory.getInstance().update(sesion, cliente)>= 1L;		
 		return regresar;
 	} // actualizarCliente
 	
@@ -233,18 +228,13 @@ public class TransaccionFactura extends IBaseTnx{
 	
 	protected boolean registrarBitacora(Session sesion, Long id, String error, String proceso) throws Exception{
 		boolean regresar                     = false;		
-		TcManticFacturamaBitacoraDto bitacora= null;
-		try {
-			bitacora= new TcManticFacturamaBitacoraDto();
-			bitacora.setIdKey(id);
-			bitacora.setProceso(proceso);
-			bitacora.setObservacion(error);
-			bitacora.setCodigo("99");
-			regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
+		TcManticFacturamaBitacoraDto bitacora= null;		
+		bitacora= new TcManticFacturamaBitacoraDto();
+		bitacora.setIdKey(id);
+		bitacora.setProceso(proceso);
+		bitacora.setObservacion(error);
+		bitacora.setCodigo("99");
+		regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;		
 		return regresar;
 	} // actualizarCliente
 	
@@ -346,15 +336,10 @@ public class TransaccionFactura extends IBaseTnx{
 	
 	protected boolean actualizarProducto(Session sesion, Long id, String idFacturama) throws Exception{
 		boolean regresar            = false;
-		TcManticArticulosDto articulo= null;
-		try {
-			articulo= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, id);
-			articulo.setIdFacturama(idFacturama);
-			regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
+		TcManticArticulosDto articulo= null;		
+		articulo= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, id);
+		articulo.setIdFacturama(idFacturama);
+		regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;		
 		return regresar;
 	} // actualizarCliente
 	
@@ -378,7 +363,7 @@ public class TransaccionFactura extends IBaseTnx{
 		catch (Exception e) {
 			this.registrarBitacora(sesion, this.cliente.getId(), e.getMessage(), REGISTRO_CFDI);
 			throw e;
-		} // catch		
+		} // catch
 		return regresar;
 	} // generarCfdi
 	
@@ -450,22 +435,16 @@ public class TransaccionFactura extends IBaseTnx{
 			"" // comentarios
 		);
 		DaoFactory.getInstance().insert(sesion, pdf);
-	}
+	} // insertFiles
 	
 	protected boolean actualizarFactura(Session sesion, Long id, Cfdi cfdi) throws Exception {
 		boolean regresar           = false;
-		TcManticFacturasDto factura= null;
-		try {
-			factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, id);
-			factura.setIdFacturama(cfdi.getId());
-			factura.setFolio(cfdi.getFolio());			
-			//factura.setTimbrado(new Timestamp(Fecha.toCalendar(cfdi.getDate().substring(0, 10), cfdi.getDate().substring(11, 19)).getTimeInMillis()));
-			factura.setTimbrado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-			regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;
-		} // try
-		catch (Exception e) {			
-			Error.mensaje(e);
-		} // catch		
+		TcManticFacturasDto factura= null;		
+		factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, id);
+		factura.setIdFacturama(cfdi.getId());
+		factura.setFolio(cfdi.getFolio());					
+		factura.setTimbrado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;		
 		return regresar;
 	} // actualizarCliente
 }
