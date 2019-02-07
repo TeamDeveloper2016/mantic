@@ -1,35 +1,24 @@
 package mx.org.kaana.mantic.catalogos.almacenes.transferencias.backing;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.kajool.enums.EFormatoDinamicos;
-import mx.org.kaana.kajool.enums.ETipoMensaje;
-import mx.org.kaana.kajool.reglas.comun.Columna;
-import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
-import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
-import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
-import mx.org.kaana.mantic.comun.ParametrosReporte;
-import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
-import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
-import mx.org.kaana.mantic.enums.EReportes;
+import mx.org.kaana.mantic.catalogos.almacenes.confrontas.beans.Confronta;
+import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.AdminAutorizacion;
+import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
-import mx.org.kaana.mantic.libs.pagina.IFilterImportar;
-import org.primefaces.context.RequestContext;
 
 /**
  *@company KAANA
@@ -41,22 +30,20 @@ import org.primefaces.context.RequestContext;
 
 @Named(value = "manticCatalogosAlmacenesTransferenciasAutorizar")
 @ViewScoped
-public class Autorizar extends IFilterImportar implements Serializable {
+public class Autorizar extends IBaseArticulos implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428311L;
 	
-	private TcManticTransferenciasDto orden;
-
-	public TcManticTransferenciasDto getOrden() {
-		return orden;
-	}
+	private EAccion accion;
 	
   @PostConstruct
   @Override
   protected void init() {
     try {
+      this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
+			this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
+      this.attrs.put("idConfronta", JsfBase.getFlashAttribute("idConfronta")== null? -1L: JsfBase.getFlashAttribute("idConfronta"));
       this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia")== null? -1L: JsfBase.getFlashAttribute("idTransferencia"));
-      this.orden= (TcManticTransferenciasDto)DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, (Long)JsfBase.getFlashAttribute("idTransferencia"));
 		  this.doLoad();
     } // try
     catch (Exception e) {
@@ -67,24 +54,17 @@ public class Autorizar extends IFilterImportar implements Serializable {
  
   @Override
   public void doLoad() {
-    List<Columna> columns= null;
     try {
-      columns = new ArrayList<>();
-      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));      
-			this.attrs.put("sortOrder", "order by tc_mantic_confrontas.consecutivo, tc_mantic_transferencias_detalles.nombre");
-      this.lazyModel = new FormatCustomLazy("VistaConfrontasDto", "autorizar", this.attrs, columns);
-      UIBackingUtilities.resetDataTable();
+			this.setAdminOrden(new AdminAutorizacion((Confronta)DaoFactory.getInstance().toEntity(Confronta.class, "TcManticConfrontasDto", "detalle", this.attrs)));
+ 			this.attrs.put("sinIva", false);
+			this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
+			this.doResetDataTable();
 			this.attrs.put("seleccionado", null);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
-    finally {
-      Methods.clean(columns);
-    } // finally		
   } // doLoad
 
 	public String doRegresar() {
@@ -113,8 +93,8 @@ public class Autorizar extends IFilterImportar implements Serializable {
 		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
 	}
 
-	public String doOrdenColor(Entity row) {
-		return !row.toDouble("cantidades").equals(0D) && !row.toString("nuevo").equals("*")? "janal-tr-diferencias": row.toString("nuevo").equals("*")? "janal-tr-nuevo": "";
+	public String doOrdenColor(Articulo row) {
+		return row.getInicial()!= 0D && !row.getObservacion().equals("*")? "janal-tr-diferencias": row.getObservacion().equals("*")? "janal-tr-nuevo": "";
 	} 
 	
 	public String doAceptar() {

@@ -342,12 +342,13 @@ public class Filtro extends Comun implements Serializable {
 	}
 
   public String doDiferencias() {
-		JsfBase.setFlashAttribute("idTransferencia",((Entity)this.attrs.get("seleccionado")).toLong("idTransferencia"));
+		JsfBase.setFlashAttribute("idTransferencia", ((Entity)this.attrs.get("seleccionado")).toLong("idTransferencia"));
 		return "/Paginas/Mantic/Catalogos/Almacenes/Transferencias/diferencias".concat(Constantes.REDIRECIONAR);
 	}	
 	
   public String doAutorizar() {
-		JsfBase.setFlashAttribute("idTransferencia",((Entity)this.attrs.get("seleccionado")).toLong("idTransferencia"));
+		JsfBase.setFlashAttribute("idConfronta", ((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("idTransferencia", ((Entity)this.attrs.get("seleccionado")).toLong("idTransferencia"));
 		return "/Paginas/Mantic/Catalogos/Almacenes/Transferencias/autorizar".concat(Constantes.REDIRECIONAR);
 	}	
 	

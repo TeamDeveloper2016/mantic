@@ -68,22 +68,23 @@
 		  <select id="autorizar">
 				select
 					tc_mantic_confrontas_detalles.id_confronta_detalle as id_key,
+					tc_mantic_confrontas_detalles.id_confronta_detalle as id_comodin,
 					tc_mantic_confrontas.consecutivo,
 					tc_mantic_transferencias.consecutivo as transferencia,
 					tc_mantic_confrontas_detalles.codigo,
 					tc_mantic_confrontas_detalles.codigo as propio,
 					tc_mantic_confrontas_detalles.nombre,
 					tc_mantic_confrontas_detalles.cantidad,
-					tc_mantic_confrontas_detalles.cantidades,
+					tc_mantic_confrontas_detalles.cantidades as inicial,
 				  ifnull(tc_mantic_transferencias_detalles.cantidad, 0) as solicitados,
-				  if(tc_mantic_confrontas_detalles.id_transferencia_detalle is null, '*', '') as nuevo,
-  				tc_mantic_confrontas_detalles.diferencia,
+				  if(tc_mantic_confrontas_detalles.id_transferencia_detalle is null, '*', '') as observacion,
+  				tc_mantic_confrontas_detalles.diferencia as valor,
 				  tc_mantic_transferencias_estatus.nombre as estatus,
 				  tc_mantic_transferencias_estatus.id_transferencia_estatus,
-				  tc_mantic_confrontas.id_confronta,
-				  tc_mantic_confrontas.id_transferencia,
+				  tc_mantic_confrontas.id_confronta as id_proveedor,
+				  tc_mantic_confrontas.id_transferencia as id_orden_detalle,
 					tc_mantic_confrontas_detalles.id_articulo,
-				  0 as aplicar
+				  0 as idAplicar
 				from
 					tc_mantic_confrontas
 				inner join 
@@ -97,7 +98,8 @@
 				where  
 					tc_mantic_confrontas.id_transferencia= {idTransferencia}	
 				  and tc_mantic_confrontas_detalles.diferencia!= 0
-				{sortOrder}
+				order by 
+				  tc_mantic_confrontas.consecutivo, tc_mantic_transferencias_detalles.nombre
 			</select>						
 			<select id="errores">
         select

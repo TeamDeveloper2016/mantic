@@ -291,4 +291,9 @@ public class Express extends IBaseAttribute implements Serializable {
 			} // else	
 		} // if
 	}	
+	
+	public void doUpdateNombre() {
+		this.getRegistroArticulo().getArticulo().setDescripcion(this.getRegistroArticulo().getArticulo().getNombre());
+	}	
+	
 }
