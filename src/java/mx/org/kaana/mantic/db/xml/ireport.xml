@@ -827,9 +827,12 @@
 				  tc_mantic_facturas.certificado_sat,
 				  tc_mantic_facturas.certificado_digital,
 				  tc_mantic_facturas.folio_fiscal,
-				  tc_mantic_facturas.certificacion
+				  tc_mantic_facturas.certificacion,
+					concat(tc_mantic_tipos_pagos.clave, '-', tc_mantic_tipos_pagos.nombre) metodo_pago
 				from 
 					tc_mantic_ficticias
+				inner join
+					tc_mantic_tipos_pagos on tc_mantic_tipos_pagos.id_tipo_pago = tc_mantic_ficticias.id_tipo_pago
 				inner join
 					tc_mantic_facturas on tc_mantic_ficticias.id_ficticia = tc_mantic_facturas.id_ficticia
 				left join
