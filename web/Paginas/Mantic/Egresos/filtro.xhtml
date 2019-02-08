@@ -29,6 +29,14 @@
 				} // if
 				return ok;
 			} // validaJustificacion		
+			
+			function start() {
+        PF('statusDialog').show();
+      };
+ 
+      function stop() {
+        PF('statusDialog').hide();
+      };
 		</script>		
 	</ui:define>
 	<ui:define name="contenido">				
@@ -127,10 +135,17 @@
 						<p:menuitem id="notas" icon="fa fa-copy" process="@this tabla" update="dialogoNotas" value="Notas" onstart="return janal.bloquear()" oncomplete="PF('dlgNotas').show();"/>											
 						<p:separator/>
 						<p:menuitem icon="fa fa-external-link" value="Importar" title="Importar" onstart="return janal.bloquear()" process="@this tabla" action="#{manticEgresosFiltro.doImportar}"/>
+						<p:separator/>
+						<p:menuitem value="Descargar archivos" icon="fa fa-download" ajax="false" process="@this tabla" onclick="if(janal.partial('general')) PrimeFaces.monitorDownload(start, stop); else return false;" title="Descargar archivos de egreso" oncomplete="janal.desbloquear();">
+							<p:fileDownload value="#{manticEgresosFiltro.file}" />
+						</p:menuitem>
 					</p:contextMenu>					
 				</div>
 			</div>
-		</div>		           				
+		</div>	
+		<p:dialog modal="true" widgetVar="statusDialog" header="Estatus de la descarga del archivo" draggable="false" closable="false" resizable="false">
+			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
+		</p:dialog>				
 	</ui:define>    	
 	<ui:define name="dialogos">
 		<p:dialog id="dialogoNotas" widgetVar="dlgNotas" header="Registrar nota" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.change('formDialogoNotas', fieldsDialog);janal.refresh();">

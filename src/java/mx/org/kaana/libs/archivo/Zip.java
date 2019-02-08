@@ -7,10 +7,12 @@
 package mx.org.kaana.libs.archivo;
 
 import java.io.*;
+import java.util.List;
 import mx.org.kaana.libs.formato.Error;
 import java.util.zip.*;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.mantic.egresos.beans.ZipEgreso;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -254,6 +256,48 @@ public class Zip {
       }// for
       out.close();
     }
+    catch (Exception e) {
+      Error.mensaje(e);
+      throw e;
+    }// try
+  }
+	
+  public void compactar(String nombre, List<ZipEgreso> files) throws Exception {
+    try {
+			setNombre(nombre);
+			for(ZipEgreso egreso: files){
+				BufferedInputStream origen = null;
+				File rutaArchivo = new File(egreso.getCarpeta());				
+				if (!(rutaArchivo.exists())) 
+					rutaArchivo.mkdirs();	
+				FileOutputStream destino = new FileOutputStream(getNombre());
+				if (this.debug)
+					LOG.debug("nombre zip: " + getNombre());
+				CheckedOutputStream checksum = new CheckedOutputStream(destino, new Adler32());
+				ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(checksum));
+				byte data[] = new byte[BUFFER];
+				if (this.debug)
+					LOG.debug("Archivos: " + (files!= null? 0: files.size()));
+				for (String name: egreso.getFiles()) {
+					if (this.debug)
+						LOG.debug("Sumando: " + name);
+					FileInputStream fi = new FileInputStream(name);
+					origen = new BufferedInputStream(fi, BUFFER);
+					ZipEntry entry = new ZipEntry(egreso.getCarpeta().substring(egreso.getCarpeta().lastIndexOf("/")+1, egreso.getCarpeta().length()).concat("/").concat(name.substring(name.lastIndexOf("/")+1, name.length())));
+					out.putNextEntry(entry);
+					int count;
+					while ((count = origen.read(data, 0, BUFFER)) != -1) {
+						out.write(data, 0, count);
+					} // while
+					origen.close();
+					if (this.eliminar) {
+						File file= new File(name);
+						file.delete();
+					} // if
+				}// for
+				out.close();
+			} // for
+    } // try
     catch (Exception e) {
       Error.mensaje(e);
       throw e;
