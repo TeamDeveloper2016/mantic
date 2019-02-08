@@ -24,9 +24,15 @@ public class Nombres implements Serializable {
 	}
 
 	public Nombres(String nombre) {
-		this.nombre=nombre;
+		this(nombre, "", "");
 	}
 
+	public Nombres(String nombre, String ruta, String alias) {
+		this.nombre= nombre;
+		this.ruta  = ruta;
+		this.alias = alias;
+	}	
+	
 	public String getNombre() {
 		return nombre;
 	}
@@ -35,6 +41,22 @@ public class Nombres implements Serializable {
 		this.nombre=nombre;
 	}
 
+	public String getRuta() {
+		return ruta;
+	}
+
+	public void setRuta(String ruta) {
+		this.ruta = ruta;
+	}
+
+	public String getAlias() {
+		return alias;
+	}
+
+	public void setAlias(String alias) {
+		this.alias = alias;
+	}	
+	
 	@Override
 	public int hashCode() {
 		int hash=3;
