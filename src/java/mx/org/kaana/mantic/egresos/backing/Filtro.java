@@ -1,5 +1,8 @@
 package mx.org.kaana.mantic.egresos.backing;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -9,24 +12,34 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.archivo.Zip;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
+import mx.org.kaana.mantic.egresos.beans.ZipEgreso;
 import mx.org.kaana.mantic.egresos.reglas.Transaccion;
+import mx.org.kaana.mantic.enums.ECuentasEgresos;
+import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @Named(value = "manticEgresosFiltro")
 @ViewScoped
@@ -187,4 +200,72 @@ public class Filtro extends Comun implements Serializable {
 		} // catch		
 		return regresar;
 	} // doImportar
+	
+	public StreamedContent getFile() {
+		StreamedContent regresar= null;		
+		Entity seleccionado     = null;				
+		try {			
+			seleccionado= (Entity) this.attrs.get("seleccionado");						
+			regresar= this.toZipFile(toAllFiles(seleccionado), seleccionado.toString("descripcion"));
+		} // try 
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch		
+    return regresar;		
+	} // doDescargaArchivos
+	
+	private List<ZipEgreso> toAllFiles(Entity seleccionado) throws Exception{
+		List<ZipEgreso> regresar  = null;
+		List<String> namesFiles   = null;
+		Map<String, Object> params= null;		
+		List<Nombres> list        = null;
+		ZipEgreso pivote          = null;
+		try {			
+			regresar= new ArrayList<>();
+			params= new HashMap<>();
+			params.put("idEgreso", seleccionado.getKey());
+			for(ECuentasEgresos cuentaEgreso: ECuentasEgresos.values()){
+				list= (List<Nombres>)DaoFactory.getInstance().toEntitySet(Nombres.class, "VistaEgresosDto", cuentaEgreso.getIdXml(), params);
+				if(!list.isEmpty()){
+					pivote= new ZipEgreso();
+					pivote.setCarpeta(cuentaEgreso.getTitle());
+					namesFiles= new ArrayList<>();
+					for(Nombres file: list)
+						namesFiles.add(file.getAlias());
+					pivote.setFiles(namesFiles);
+					regresar.add(pivote);
+				} // if
+			} // for
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toAllFiles
+	
+	private StreamedContent toZipFile(List<ZipEgreso> files, String descripcion) {
+		String zipName    = null;		
+		String name       = null;		
+		InputStream stream= null;
+		String temporal   = null;
+		try {
+			temporal= Archivo.toFormatNameFile("EGRESO_").concat(Cadena.reemplazarCaracter(descripcion, ' ', '_').toUpperCase());
+			Zip zip= new Zip();			
+			name= "/".concat(Constantes.RUTA_TEMPORALES).concat(Cadena.letraCapital(EFormatos.ZIP.name()).concat("/").concat(temporal));
+			zipName= name.concat(".").concat(EFormatos.ZIP.name().toLowerCase());
+			zip.setDebug(true);
+			zip.setEliminar(false);
+			for(ZipEgreso zipEgreso: files)
+				zipEgreso.setCarpeta(JsfBase.getRealPath(name).concat("/").concat(zipEgreso.getCarpeta()));
+			zip.compactar(JsfBase.getRealPath(zipName), files);
+  	  stream = new FileInputStream(new File(JsfBase.getRealPath(zipName)));
+		} // try // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+    return new DefaultStreamedContent(stream, EFormatos.ZIP.getContent(), temporal.concat(".").concat(EFormatos.ZIP.name().toLowerCase()));		
+	} // toZipFile
 }
