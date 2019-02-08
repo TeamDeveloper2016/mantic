@@ -1,7 +1,9 @@
 package mx.org.kaana.mantic.catalogos.almacenes.transferencias.backing;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -13,6 +15,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.almacenes.confrontas.beans.Confronta;
 import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.AdminAutorizacion;
@@ -34,12 +37,50 @@ public class Autorizar extends IBaseArticulos implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428311L;
 	
+	private int typeOfCase;
 	private EAccion accion;
+	private static List<UISelectItem> casoUno;
+	private static List<UISelectItem> casoDos;
+	private static List<UISelectItem> casoTres;
+	
+	static {
+		casoUno= new ArrayList<>();
+		casoUno.add(new UISelectItem(0, "SELECCIONE"));
+		casoUno.add(new UISelectItem(1, "IGNORAR CAMBIOS"));
+		casoUno.add(new UISelectItem(2, "RESTAR ORIGEN"));
+		casoDos= new ArrayList<>();
+		casoDos.add(new UISelectItem(0, "SELECCIONE"));
+		casoDos.add(new UISelectItem(1, "IGNORAR CAMBIOS"));
+		casoDos.add(new UISelectItem(3, "AFECTAR ORIGEN"));
+		casoDos.add(new UISelectItem(4, "AFECTAR DESTINO"));
+		casoTres= new ArrayList<>();
+		casoTres.add(new UISelectItem(0, "SELECCIONE"));
+		casoTres.add(new UISelectItem(1, "IGNORAR CAMBIOS"));
+		casoTres.add(new UISelectItem(5, "REGRESAR ORIGEN"));
+		casoTres.add(new UISelectItem(6, "SUMAR DESTINO"));
+	}
+
+	public List<UISelectItem> getItems() {
+		List<UISelectItem> regresar= casoUno;
+		switch(this.typeOfCase) {
+			case 1:
+				regresar= casoUno;
+				break;
+			case 2:
+				regresar= casoDos;
+				break;
+			case 3:
+				regresar= casoTres;
+				break;
+		} // switch
+		return regresar;
+	}
 	
   @PostConstruct
   @Override
   protected void init() {
     try {
+			this.typeOfCase= 1;
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
 			this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
       this.attrs.put("idConfronta", JsfBase.getFlashAttribute("idConfronta")== null? -1L: JsfBase.getFlashAttribute("idConfronta"));
@@ -94,6 +135,7 @@ public class Autorizar extends IBaseArticulos implements Serializable {
 	}
 
 	public String doOrdenColor(Articulo row) {
+		this.doPrepareItems(row);
 		return row.getInicial()!= 0D && !row.getObservacion().equals("*")? "janal-tr-diferencias": row.getObservacion().equals("*")? "janal-tr-nuevo": "";
 	} 
 	
@@ -113,4 +155,15 @@ public class Autorizar extends IBaseArticulos implements Serializable {
 		} // finally
 		return regresar;
 	}	
+	
+	public void doPrepareItems(Articulo row) {
+		if(row.getObservacion().equals("*"))
+			this.typeOfCase= 1;
+		else
+			if(row.getCuantos()!= 0D && row.getCantidad()!= 0D)
+  			this.typeOfCase= 2;
+		  else
+  			this.typeOfCase= 3;
+	}	
+	
 }

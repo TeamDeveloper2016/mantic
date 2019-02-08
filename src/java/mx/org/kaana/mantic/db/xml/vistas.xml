@@ -69,7 +69,7 @@
 				select
 					tc_mantic_confrontas_detalles.id_confronta_detalle as id_key,
 					tc_mantic_confrontas_detalles.id_confronta_detalle as id_comodin,
-					tc_mantic_confrontas.consecutivo,
+					tc_mantic_confrontas.consecutivo as origen,
 					tc_mantic_transferencias.consecutivo as transferencia,
 					tc_mantic_confrontas_detalles.codigo,
 					tc_mantic_confrontas_detalles.codigo as propio,

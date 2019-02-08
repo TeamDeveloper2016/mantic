@@ -53,13 +53,19 @@
 								</div>
 							</div>	
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100" >							
-								<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosAlmacenesTransferenciasAutorizar.adminOrden.articulos}" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas" paginator="#{manticCatalogosAlmacenesTransferenciasAutorizar.attrs.paginator}" rows="#{manticCatalogosAlmacenesTransferenciasAutorizar.rows}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_LOTE}"  rowStyleClass="#{manticCatalogosAlmacenesTransferenciasAutorizar.doOrdenColor(row)}">
+								<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosAlmacenesTransferenciasAutorizar.adminOrden.articulos}" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas" paginator="#{manticCatalogosAlmacenesTransferenciasAutorizar.attrs.paginator}" rows="#{manticCatalogosAlmacenesTransferenciasAutorizar.rows}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_LOTE}" rowStyleClass="#{manticCatalogosAlmacenesTransferenciasAutorizar.doOrdenColor(row)}">
 									<p:column class="MarAuto Responsive janal-wid-3">
 										<f:facet name="header">
 											<h:outputText value="No."/>
 										</f:facet>
 										<h:outputText value="#{index+ 1}.-"/>
 									</p:column>													
+									<p:column class="MarAuto Responsive janal-wid-10">
+										<f:facet name="header">
+											<h:outputText value="No. confronta"/>
+										</f:facet>
+										<h:outputText value="#{row['origen']}"/>
+									</p:column>		
 									<p:column class="MarAuto Responsive janal-wid-10">
 										<f:facet name="header">
 											<h:outputText value="Código"/>
@@ -94,14 +100,8 @@
 										<f:facet name="header">
 											<h:outputText value="Aplicar"/>
 										</f:facet>
-										<p:selectOneMenu id="aplicar" value="#{row.idAplicar}" converter="javax.faces.Long" styleClass="janal-wid-90 filas janal-name-La_fila_#{index+ 1}">
-											<f:selectItem itemLabel="SELECCIONE" itemValue="0"/>
-											<f:selectItem itemLabel="IGNORAR CAMBIOS" itemValue="1"/>
-											<f:selectItem itemLabel="RESTAR ORIGEN" itemValue="2" rendered="#{row.observacion eq '*'}"/>
-											<f:selectItem itemLabel="AFECTAR ORIGEN" itemValue="3" rendered="#{row.cuantos ne 0 and row.cantidad ne 0}"/>
-											<f:selectItem itemLabel="AFECTAR DESTINO" itemValue="4" rendered="#{row.cuantos ne 0 and row.cantidad ne 0}"/>
-											<f:selectItem itemLabel="REGRESAR ORIGEN" itemValue="5" rendered="#{row.cantidad eq 0}"/>
-											<f:selectItem itemLabel="SUMAR DESTINO" itemValue="6" rendered="#{row.cantidad eq 0}"/>
+										<p:selectOneMenu id="aplicar" value="#{row.idAplicar}" converter="javax.faces.Long" styleClass="janal-wid-88 filas janal-name-La_fila_#{index+ 1}">
+											<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasAutorizar.items}" var="item" itemValue="#{item}"/>
 										</p:selectOneMenu>	
 									</p:column>		
  								</p:dataTable>
