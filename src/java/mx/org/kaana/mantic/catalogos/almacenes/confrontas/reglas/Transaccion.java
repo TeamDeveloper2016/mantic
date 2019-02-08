@@ -8,18 +8,14 @@ import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
-import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.ComunInventarios;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
-import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
-import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticConfrontasDto;
-import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticConfrontasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDetallesDto;
@@ -28,15 +24,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
-public class Transaccion extends IBaseTnx {
+public class Transaccion extends ComunInventarios {
 
 	private static final Log LOG= LogFactory.getLog(Transaccion.class);
 
   private TcManticConfrontasDto dto;
   private TcManticTransferenciasDto transferencia;
-	private List<Articulo> articulos;
-  private TcManticTransferenciasBitacoraDto bitacora;
-  private String messageError;
 
 	public Transaccion(TcManticConfrontasDto dto, List<Articulo> articulos) {
 		this.dto= dto;
@@ -73,6 +66,13 @@ public class Transaccion extends IBaseTnx {
             regresar= DaoFactory.getInstance().insert(sesion, this.bitacora).intValue()> 0;
 					this.toCheckOrden(sesion, accion);
           break;
+				case CALCULAR:
+					this.toCheckArticulos(sesion);
+					this.transferencia.setIdTransferenciaEstatus(9L);
+					DaoFactory.getInstance().update(sesion, this.transferencia);
+					this.bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), null, this.transferencia.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
+					DaoFactory.getInstance().insert(sesion, this.bitacora);
+					break;
       } // switch
       if(!regresar) 
         throw new Exception("");
@@ -123,10 +123,10 @@ public class Transaccion extends IBaseTnx {
 					case PROCESAR: // INCOMPLETA
 						if(this.transferencia.getIdTransferenciaEstatus()== 6L || this.transferencia.getIdTransferenciaEstatus()== 7L) {
 							if(articulo.getInicial()- item.getCantidad()!= 0L)
-						    this.toMovimientosAlmacenDestino(sesion, item, umbrales, articulo.getInicial()- item.getCantidad());
+						    this.toMovimientosAlmacenDestino(sesion, this.transferencia.getIdDestino(), articulo, umbrales, articulo.getInicial()- articulo.getCantidad());
 						} // if	
 						else
-						  this.toMovimientosAlmacenDestino(sesion, item, umbrales, item.getCantidad());
+						  this.toMovimientosAlmacenDestino(sesion, this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
 						break;
 					case DEPURAR: // AUTORIZAR
 						break;
@@ -135,90 +135,6 @@ public class Transaccion extends IBaseTnx {
 		} // for
 	}
 
-	private void toMovimientosAlmacenDestino(Session sesion, TcManticConfrontasDetallesDto articulo, TcManticArticulosDto umbrales, Double diferencia) throws Exception {
-		Map<String, Object> params= null;
-		try {
-			//Afectar el almacen destino sumando los articulos que fueron agregados
-			params=new HashMap<>();
-			params.put("idAlmacen", this.transferencia.getIdDestino());
-			params.put("idArticulo", articulo.getIdArticulo());
-			TcManticAlmacenesArticulosDto origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(TcManticAlmacenesArticulosDto.class, params);
-			if(origen== null) 
-				origen= this.toCreateAlmacenArticulo(sesion, articulo, this.transferencia.getIdDestino(), umbrales);
-			origen.setStock(Numero.toRedondearSat(origen.getStock()+ diferencia));
-			DaoFactory.getInstance().update(sesion, origen);
-			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
-			if(inventario== null)
-			  this.toCreateInvetario(sesion, articulo, this.transferencia.getIdDestino(), true);
-			else {
-				inventario.setSalidas(Numero.toRedondearSat(inventario.getSalidas()+ diferencia));
-				inventario.setStock(Numero.toRedondearSat(inventario.getStock()- diferencia));
-  			DaoFactory.getInstance().update(sesion, inventario);
-			} // if
-		} // try
-		finally {
-			Methods.clean(params);
-		} // finally
-	}
-	
-	private TcManticAlmacenesArticulosDto toCreateAlmacenArticulo(Session sesion,  TcManticConfrontasDetallesDto articulo, Long idAlmacen, TcManticArticulosDto umbrales) throws Exception {
-    TcManticAlmacenesArticulosDto regresar= new TcManticAlmacenesArticulosDto(
-			umbrales.getMinimo(), // Double minimo, 
-			-1L, // Long idAlmacenArticulo, 
-			JsfBase.getIdUsuario(), // Long idUsuario, 
-			idAlmacen, // Long idAlmacen, 
-			umbrales.getMaximo(), // Double maximo, 
-			this.toUbicacion(sesion, idAlmacen, articulo.getIdArticulo()), // Long idAlmacenUbicacion, 
-			articulo.getIdArticulo(), // Long idArticulo, 
-			0D // Double stock
-		);
-		DaoFactory.getInstance().insert(sesion, regresar);
-		return regresar;
-	}
-		
-	private TcManticInventariosDto toCreateInvetario(Session sesion,  TcManticConfrontasDetallesDto articulo, Long idAlmacen, boolean inicial) throws Exception {
-    TcManticInventariosDto regresar= new TcManticInventariosDto(
-			JsfBase.getIdUsuario(), // Long idUsuario, 
-			idAlmacen, // Long idAlmacen, 
-			0D, // Double entradas, 
-			-1L, // Long idInventario, 
-			articulo.getIdArticulo(), // Long idArticulo, 
-			inicial? articulo.getCantidad(): articulo.getCantidad()* -1D, // Double inicial, 
-			inicial? articulo.getCantidad(): articulo.getCantidad()* -1D, // Double stock, 
-			articulo.getCantidad(), // Double salidas, 
-			new Long(Fecha.getAnioActual()), // Long ejercicio, 
-			1L // Long idAutomatico
-		);
-		DaoFactory.getInstance().insert(sesion, regresar);
-		return regresar;
-	}
-
-	private Long toUbicacion(Session sesion, Long idAlmacen, Long idArticulo) throws Exception {
-		Long regresar= -1L;
-		Map<String, Object> params= null;
-		try {
-			params=new HashMap<>();
-			params.put("idAlmacen", idAlmacen);
-			params.put("idArticulo", idArticulo);
-			TcManticAlmacenesArticulosDto ubicacion= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesArticulosDto.class, params, "ubicacion");
-			if(ubicacion== null) {
-				TcManticAlmacenesUbicacionesDto general= (TcManticAlmacenesUbicacionesDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesUbicacionesDto.class, params, "general");
-				if(general== null) {
-					general= new TcManticAlmacenesUbicacionesDto("GENERAL", "", "GENERAL", "", "", JsfBase.getAutentifica().getPersona().getIdUsuario(), this.transferencia.getIdDestino(), -1L);
-					DaoFactory.getInstance().insert(sesion, general);
-				} // if	
-				regresar= general.getIdAlmacenUbicacion();
-			} // if		
-		} // try
-		catch (Exception e) {
-			throw e;
-		} // catch
-		finally {
-			Methods.clean(params);
-		} // finally
-		return regresar;
-	}
-	
 	private void toAffectTransferenciaDetalle(Session sesion, Articulo articulo) throws Exception {
 		if(articulo.getIdOrdenDetalle()!= null && articulo.getIdOrdenDetalle()> 0L) {
 			TcManticTransferenciasDetallesDto detalle= (TcManticTransferenciasDetallesDto)DaoFactory.getInstance().findById(sesion, TcManticTransferenciasDetallesDto.class, articulo.getIdOrdenDetalle());
@@ -251,4 +167,34 @@ public class Transaccion extends IBaseTnx {
 		} // if
 	}
 
+	private void toCheckArticulos(Session sesion) throws Exception {
+		for (Articulo articulo: this.articulos) {
+  		TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
+			TcManticConfrontasDetallesDto item= articulo.toConfrontasDetalle();
+			item.setIdConfronta(this.dto.getIdConfronta());
+			double diferencia= articulo.getCantidad();
+			articulo.setCantidad(Math.abs(articulo.getCuantos()));
+			switch(item.getIdAplicar().intValue()) {
+				case 1: // IGNORAR CAMBIOS
+					break;
+				case 2: // RESTAR ORIGEN
+					this.toMovimientosAlmacenOrigen(sesion, this.transferencia.getIdAlmacen(), articulo, umbrales, 4L);
+					break;
+				case 3: // AFECTAR ORIGEN
+					this.toMovimientosAlmacenOrigen(sesion, this.transferencia.getIdAlmacen(), articulo, umbrales, this.transferencia.getIdTransferenciaEstatus());
+					break;
+				case 4: // AFECTAR DESTINO
+					this.toMovimientosAlmacenDestino(sesion, this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
+					break;
+				case 5: // REGRESAR ORIGEN
+					this.toMovimientosAlmacenOrigen(sesion, this.transferencia.getIdAlmacen(), articulo, umbrales, this.transferencia.getIdTransferenciaEstatus());
+					break;
+				case 6: // SUMAR DESTINO
+					this.toMovimientosAlmacenDestino(sesion, this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
+					break;
+			} // switch
+			articulo.setCantidad(diferencia);
+		} // for
+	}
+	
 }

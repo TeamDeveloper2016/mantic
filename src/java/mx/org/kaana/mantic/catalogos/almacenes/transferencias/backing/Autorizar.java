@@ -2,26 +2,27 @@ package mx.org.kaana.mantic.catalogos.almacenes.transferencias.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectItem;
-import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.almacenes.confrontas.beans.Confronta;
+import mx.org.kaana.mantic.catalogos.almacenes.confrontas.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.AdminAutorizacion;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
+import mx.org.kaana.mantic.db.dto.TcManticConfrontasDto;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
+import org.primefaces.context.RequestContext;
 
 /**
  *@company KAANA
@@ -81,7 +82,7 @@ public class Autorizar extends IBaseArticulos implements Serializable {
   protected void init() {
     try {
 			this.typeOfCase= 1;
-      this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
+      this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.CALCULAR: (EAccion)JsfBase.getFlashAttribute("accion");
 			this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
       this.attrs.put("idConfronta", JsfBase.getFlashAttribute("idConfronta")== null? -1L: JsfBase.getFlashAttribute("idConfronta"));
       this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia")== null? -1L: JsfBase.getFlashAttribute("idTransferencia"));
@@ -140,19 +141,21 @@ public class Autorizar extends IBaseArticulos implements Serializable {
 	} 
 	
 	public String doAceptar() {
-		String regresar=null;		
-		Map<String, Object> params=null;
+    Transaccion transaccion   = null;
+		String regresar           = null;		
 		try {
-			params=new HashMap<>();
-			
+			transaccion = new Transaccion((TcManticConfrontasDto)this.getAdminOrden().getOrden(), this.getAdminOrden().getArticulos());
+			if (transaccion.ejecutar(this.accion)) {
+ 			  RequestContext.getCurrentInstance().execute("janal.back(' gener\\u00F3 la confronta ', '"+ ((Confronta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+  			JsfBase.setFlashAttribute("idTransferencia", ((Confronta)this.getAdminOrden().getOrden()).getIdTransferencia());
+  		  regresar = ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+			} // if
+			else 
+				JsfBase.addMessage("Ocurrió un error al autorizar la confronta de articulos.", ETipoMensaje.ALERTA);      			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
-			throw e;
 		} // catch
-		finally {
-			Methods.clean(params);
-		} // finally
 		return regresar;
 	}	
 	

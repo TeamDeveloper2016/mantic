@@ -1,19 +1,12 @@
 package mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.kajool.db.comun.sql.Value;
-import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.almacenes.confrontas.beans.Confronta;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.comun.IAdminArticulos;
-import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

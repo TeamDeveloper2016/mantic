@@ -64,7 +64,10 @@
 										<f:facet name="header">
 											<h:outputText value="No. confronta"/>
 										</f:facet>
-										<h:outputText value="#{row['origen']}"/>
+										<p:commandLink action="#{manticCatalogosAlmacenesTransferenciasAutorizar.doConfronta}">
+											<f:setPropertyActionListener target="#{manticCatalogosAlmacenesTransferenciasAutorizar.attrs.idConfronta}" value="#{row.idConfronta}"/>
+  										<h:outputText value="#{row['origen']}"/>
+										</p:commandLink>											
 									</p:column>		
 									<p:column class="MarAuto Responsive janal-wid-10">
 										<f:facet name="header">
