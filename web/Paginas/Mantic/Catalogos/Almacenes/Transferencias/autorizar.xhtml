@@ -60,12 +60,12 @@
 										</f:facet>
 										<h:outputText value="#{index+ 1}.-"/>
 									</p:column>													
-									<p:column class="MarAuto Responsive janal-wid-10">
+									<p:column class="MarAuto Responsive janal-wid-10 janal-column-center">
 										<f:facet name="header">
 											<h:outputText value="No. confronta"/>
 										</f:facet>
 										<p:commandLink action="#{manticCatalogosAlmacenesTransferenciasAutorizar.doConfronta}">
-											<f:setPropertyActionListener target="#{manticCatalogosAlmacenesTransferenciasAutorizar.attrs.idConfronta}" value="#{row.idConfronta}"/>
+											<f:setPropertyActionListener target="#{manticCatalogosAlmacenesTransferenciasAutorizar.attrs.idConfronta}" value="#{row.idProveedor}"/>
   										<h:outputText value="#{row['origen']}"/>
 										</p:commandLink>											
 									</p:column>		
@@ -103,8 +103,8 @@
 										<f:facet name="header">
 											<h:outputText value="Aplicar"/>
 										</f:facet>
-										<p:selectOneMenu id="aplicar" value="#{row.idAplicar}" converter="javax.faces.Long" styleClass="janal-wid-88 filas janal-name-La_fila_#{index+ 1}">
-											<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasAutorizar.items}" var="item" itemValue="#{item}"/>
+										<p:selectOneMenu id="aplicar" value="#{row.ikAplicar}" converter="janal.convertidor.Entity" styleClass="janal-wid-88 filas janal-name-La_fila_#{index+ 1}">
+											<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasAutorizar.items}" var="element" itemValue="#{element}" itemLabel="#{element.label}"/>
 										</p:selectOneMenu>	
 									</p:column>		
  								</p:dataTable>
@@ -118,7 +118,7 @@
   </ui:define> 
 	<ui:define name="acciones">
     <div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticCatalogosAlmacenesTransferenciasAutorizar.doAceptar}" onstart="return janal.execute(); alert('hola');" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticCatalogosAlmacenesTransferenciasAutorizar.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="regresar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosAlmacenesTransferenciasAutorizar.doRegresar}" immediate="true"/>
 		</div>	
 		<div class="xs-pantalla">

@@ -84,7 +84,7 @@
 				  tc_mantic_confrontas.id_confronta as id_proveedor,
 				  tc_mantic_confrontas.id_transferencia as id_orden_detalle,
 					tc_mantic_confrontas_detalles.id_articulo,
-				  0 as idAplicar
+				  0 as id_aplicar
 				from
 					tc_mantic_confrontas
 				inner join 

@@ -48,7 +48,7 @@ public class Filtro extends Comun implements Serializable {
 	public Boolean getIsAutorizar() {
 		Boolean regresar= true;
 		try {
-			regresar= this.attrs.get("seleccionado")!= null && ((Entity)this.attrs.get("seleccionado")).toLong("idTransferenciaEstatus")== 7L && JsfBase.isAdminEncuestaOrAdmin();
+			regresar= this.attrs.get("seleccionado")!= null && ((Entity)this.attrs.get("seleccionado")).toLong("estatus")== 7L && JsfBase.isAdminEncuestaOrAdmin();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

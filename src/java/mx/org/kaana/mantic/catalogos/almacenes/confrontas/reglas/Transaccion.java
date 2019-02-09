@@ -40,7 +40,7 @@ public class Transaccion extends ComunInventarios {
   protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
     boolean regresar= false;
     try {			
-    	this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para transferencia de articulos.");
+    	this.messageError = "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para transferencia de articulos.");
   		Long consecutivo  = 0L;
 			this.transferencia= (TcManticTransferenciasDto)DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, this.dto.getIdTransferencia());
       switch (accion) {
@@ -174,7 +174,7 @@ public class Transaccion extends ComunInventarios {
 			item.setIdConfronta(this.dto.getIdConfronta());
 			double diferencia= articulo.getCantidad();
 			articulo.setCantidad(Math.abs(articulo.getCuantos()));
-			switch(item.getIdAplicar().intValue()) {
+			switch(articulo.getIdRedondear().intValue()) {
 				case 1: // IGNORAR CAMBIOS
 					break;
 				case 2: // RESTAR ORIGEN

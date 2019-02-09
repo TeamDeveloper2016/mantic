@@ -26,6 +26,11 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
     this.put("idKey", new Value("idKey", key));
   }
 
+  public Entity(Long key, String label) {
+    this.put("idKey", new Value("idKey", key));
+    this.put("label", new Value("label", label));
+  }
+
   public String toField(String name) {
     Value regresar = null;
     if (this.containsKey(name))

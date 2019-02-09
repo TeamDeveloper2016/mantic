@@ -30,7 +30,7 @@ public class EnteroLargo implements Converter{
 			} // try
 			catch (Exception e) {
 				mx.org.kaana.libs.formato.Error.mensaje(e);
-				JsfUtilities.addMessage("El numero entero es iincorrecto", ETipoMensaje.ERROR);
+				JsfUtilities.addMessage("El numero entero es incorrecto", ETipoMensaje.ERROR);
 				throw new ConverterException("El formato del numero entero es incorrecto");
 			} // catch
 		return regresar;
@@ -41,12 +41,12 @@ public class EnteroLargo implements Converter{
 		String regresar= null;
 		if(value!= null)
 			try {
-				regresar= ((Long)value).toString();
+				regresar= String.valueOf(value);
 			} // try
 			catch (Exception e) {
 				mx.org.kaana.libs.formato.Error.mensaje(e);
 				JsfUtilities.addMessage("El numero entero es incorrecto", ETipoMensaje.ERROR);
-				throw new ConverterException("El formato del numero enetero es incorrecto");
+				throw new ConverterException("El formato del numero entero es incorrecto");
 			} // catch
 		return regresar;
 	}

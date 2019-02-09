@@ -7,10 +7,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 
 /**
  *@company KAANA
@@ -55,6 +57,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 	private Double precio;
 	private Double utilidad;	
 	private String origen;	
+	private UISelectEntity ikAplicar;
 
   public ArticuloDetalle() {
     this(new Long(-1L));
@@ -108,6 +111,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		this.descuentoDescripcion= descuentoDescripcion;
 		this.cantidadGarantia= cantidad;
 	  this.origen= origen;
+		this.ikAplicar= new UISelectEntity(new Entity(0L));
 	}
 	
   public void setCodigo(String codigo) {
@@ -453,6 +457,15 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 			this.idAplicar= 2L;
 	}
 
+	public UISelectEntity getIkAplicar() {
+		return ikAplicar;
+	}
+
+	public void setIkAplicar(UISelectEntity ikAplicar) {
+		this.ikAplicar=ikAplicar;
+		if(this.ikAplicar!= null)
+		  this.setIdAplicar(this.ikAplicar.getKey());
+	}
 	public boolean isDisponible() {
 		return disponible;
 	}

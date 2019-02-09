@@ -41,7 +41,7 @@ public class Entero implements Converter{
     String regresar= null;
     if(value!= null)
       try {
-				regresar= ((Integer)value).toString();
+				regresar= String.valueOf(value);
       } // try
       catch (Exception e){
         mx.org.kaana.libs.formato.Error.mensaje(e);

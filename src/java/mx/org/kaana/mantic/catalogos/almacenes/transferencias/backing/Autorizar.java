@@ -14,7 +14,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.catalogos.almacenes.confrontas.beans.Confronta;
 import mx.org.kaana.mantic.catalogos.almacenes.confrontas.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.AdminAutorizacion;
@@ -22,6 +22,8 @@ import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.db.dto.TcManticConfrontasDto;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.primefaces.context.RequestContext;
 
 /**
@@ -37,32 +39,16 @@ import org.primefaces.context.RequestContext;
 public class Autorizar extends IBaseArticulos implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428311L;
+  private static final Log LOG=LogFactory.getLog(Autorizar.class);
 	
 	private int typeOfCase;
 	private EAccion accion;
-	private static List<UISelectItem> casoUno;
-	private static List<UISelectItem> casoDos;
-	private static List<UISelectItem> casoTres;
+	private List<UISelectEntity> casoUno;
+	private List<UISelectEntity> casoDos;
+	private List<UISelectEntity> casoTres;
 	
-	static {
-		casoUno= new ArrayList<>();
-		casoUno.add(new UISelectItem(0, "SELECCIONE"));
-		casoUno.add(new UISelectItem(1, "IGNORAR CAMBIOS"));
-		casoUno.add(new UISelectItem(2, "RESTAR ORIGEN"));
-		casoDos= new ArrayList<>();
-		casoDos.add(new UISelectItem(0, "SELECCIONE"));
-		casoDos.add(new UISelectItem(1, "IGNORAR CAMBIOS"));
-		casoDos.add(new UISelectItem(3, "AFECTAR ORIGEN"));
-		casoDos.add(new UISelectItem(4, "AFECTAR DESTINO"));
-		casoTres= new ArrayList<>();
-		casoTres.add(new UISelectItem(0, "SELECCIONE"));
-		casoTres.add(new UISelectItem(1, "IGNORAR CAMBIOS"));
-		casoTres.add(new UISelectItem(5, "REGRESAR ORIGEN"));
-		casoTres.add(new UISelectItem(6, "SUMAR DESTINO"));
-	}
-
-	public List<UISelectItem> getItems() {
-		List<UISelectItem> regresar= casoUno;
+	public List<UISelectEntity> getItems() {
+		List<UISelectEntity> regresar= casoUno;
 		switch(this.typeOfCase) {
 			case 1:
 				regresar= casoUno;
@@ -81,6 +67,20 @@ public class Autorizar extends IBaseArticulos implements Serializable {
   @Override
   protected void init() {
     try {
+			this.casoUno= new ArrayList<>();
+			this.casoUno.add(new UISelectEntity(new Entity(0L, "SELECCIONE")));
+			this.casoUno.add(new UISelectEntity(new Entity(1L, "IGNORAR CAMBIOS")));
+			this.casoUno.add(new UISelectEntity(new Entity(2L, "RESTAR ORIGEN")));
+			this.casoDos= new ArrayList<>();
+			this.casoDos.add(new UISelectEntity(new Entity(0L, "SELECCIONE")));
+			this.casoDos.add(new UISelectEntity(new Entity(1L, "IGNORAR CAMBIOS"))); 
+			this.casoDos.add(new UISelectEntity(new Entity(2L, "AFECTAR ORIGEN"))); // 3
+			this.casoDos.add(new UISelectEntity(new Entity(3L, "AFECTAR DESTINO"))); // 4
+			this.casoTres= new ArrayList<>();
+			this.casoTres.add(new UISelectEntity(new Entity(0L, "SELECCIONE")));
+			this.casoTres.add(new UISelectEntity(new Entity(1L, "IGNORAR CAMBIOS")));
+			this.casoTres.add(new UISelectEntity(new Entity(2L, "REGRESAR ORIGEN"))); // 5
+			this.casoTres.add(new UISelectEntity(new Entity(3L, "SUMAR DESTINO"))); // 6
 			this.typeOfCase= 1;
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.CALCULAR: (EAccion)JsfBase.getFlashAttribute("accion");
 			this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
@@ -141,11 +141,28 @@ public class Autorizar extends IBaseArticulos implements Serializable {
 	} 
 	
 	public String doAceptar() {
-    Transaccion transaccion   = null;
-		String regresar           = null;		
+    Transaccion transaccion= null;
+		String regresar        = null;		
 		try {
 			transaccion = new Transaccion((TcManticConfrontasDto)this.getAdminOrden().getOrden(), this.getAdminOrden().getArticulos());
-			if (transaccion.ejecutar(this.accion)) {
+			for (Articulo articulo : this.getAdminOrden().getArticulos()) {
+				this.doPrepareItems(articulo);
+  		  articulo.setIdRedondear(articulo.getIdAplicar());
+				switch(this.typeOfCase) {
+					 case 1:
+						 break;
+					 case 2:
+						 if(articulo.getIdAplicar()> 1L)
+						   articulo.setIdRedondear(articulo.getIdAplicar()+ 1L);
+						 break;
+					 case 3:
+						 if(articulo.getIdAplicar()> 1L)
+						   articulo.setIdRedondear(articulo.getIdAplicar()+ 3L);
+						 break;
+				 } // switch				
+//				LOG.info("idAplicar: "+ articulo.getIdAplicar()+ " =>  "+ articulo.getIdRedondear());
+			} // for 
+			if(transaccion.ejecutar(this.accion)) {
  			  RequestContext.getCurrentInstance().execute("janal.back(' gener\\u00F3 la confronta ', '"+ ((Confronta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
   			JsfBase.setFlashAttribute("idTransferencia", ((Confronta)this.getAdminOrden().getOrden()).getIdTransferencia());
   		  regresar = ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);

@@ -10,6 +10,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfUtilities;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.pagina.UISelectItem;
 
 /**
  * @company KAANA
@@ -24,10 +25,10 @@ public class Seleccion implements Converter {
 
   @Override
   public Object getAsObject(FacesContext context, UIComponent component, String value) {
-    Value regresar= null;
+    UISelectItem regresar= null;
     if(value!= null)
       try {
-        regresar= new Value("janal", Cadena.isVacio(value)? 0L: Long.valueOf(value));
+        regresar= new UISelectItem(Long.valueOf(value), "janal");
       } // try
       catch(Exception e) {
         Error.mensaje(e);
@@ -42,7 +43,7 @@ public class Seleccion implements Converter {
     String regresar= null;
     if(value!= null)
       try {
-        regresar= value!= null? value.toString(): "0";
+        regresar= String.valueOf(value);
       } // try
       catch(Exception e) {
         Error.mensaje(e);
