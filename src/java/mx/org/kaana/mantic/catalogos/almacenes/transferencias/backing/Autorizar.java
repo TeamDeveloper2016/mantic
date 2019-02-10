@@ -115,7 +115,7 @@ public class Autorizar extends IBaseArticulos implements Serializable {
 		if(this.attrs.get("idConfronta")== null)
   		return "filtro".concat(Constantes.REDIRECIONAR);
 		else
-  		return "/Paginas/Mantic/Catalogos/Almacenes/Transferencias/Confrontas/filtro".concat(Constantes.REDIRECIONAR);
+  		return "/Paginas/Mantic/Catalogos/Almacenes/Confrontas/filtro".concat(Constantes.REDIRECIONAR);
 	}
 
 	public String doTransferencia() {
