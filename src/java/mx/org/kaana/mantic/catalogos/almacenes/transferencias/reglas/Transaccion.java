@@ -93,7 +93,8 @@ public class Transaccion extends ComunInventarios {
         case REGISTRAR:
       		this.articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaAlmacenesTransferenciasDto", "detalle", dto.toMap());
 					this.dto.setIdTransferenciaEstatus(this.idTransferenciaEstatus);
-					this.toFillArticulos(sesion, accion);
+					if(this.idTransferenciaEstatus!= 1L)
+					  this.toFillArticulos(sesion, accion);
 					regresar= DaoFactory.getInstance().update(sesion, this.dto).intValue()> 0;
 					if(regresar)
             regresar= DaoFactory.getInstance().insert(sesion, this.bitacora).intValue()> 0;

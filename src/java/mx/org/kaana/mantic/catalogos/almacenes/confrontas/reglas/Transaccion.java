@@ -51,7 +51,7 @@ public class Transaccion extends ComunInventarios {
 					this.dto.setOrden(consecutivo);
           regresar= DaoFactory.getInstance().insert(sesion, this.dto).intValue()> 0;
 					this.toFillArticulos(sesion, accion);
-					this.bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), null, 5L, this.dto.getIdTransferencia());
+					this.bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), null, this.transferencia.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
 					if(regresar)
             regresar= DaoFactory.getInstance().insert(sesion, this.bitacora).intValue()> 0;
 					this.toCheckOrden(sesion, accion);

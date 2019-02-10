@@ -63,7 +63,7 @@ public class Filtro extends Comun implements Serializable {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia"));
-      this.attrs.put("trasito", false);
+      this.attrs.put("transito", false);
 			this.toLoadCatalog();
       if(this.attrs.get("idTransferencia")!= null) 
 			  this.doLoad();
@@ -241,6 +241,7 @@ public class Filtro extends Comun implements Serializable {
 			allEstatus= UISelect.build("TcManticTransferenciasEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatusAsigna", allEstatus);
 			this.attrs.put("estatusAsigna", allEstatus.get(0));
+			this.attrs.put("transito", allEstatus.get(0).getValue().equals("3"));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -424,7 +425,7 @@ public class Filtro extends Comun implements Serializable {
   } 
 
 	public void doTransporta() {
-    this.attrs.put("trasito", this.attrs.get("estatus")!= null && ((String)this.attrs.get("estatus")).equals("3"));
+    this.attrs.put("transito", this.attrs.get("estatus")!= null && ((String)this.attrs.get("estatus")).equals("3"));
 	}
 	
 	public String doMovimientos() {

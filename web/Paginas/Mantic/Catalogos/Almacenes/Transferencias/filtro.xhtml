@@ -181,9 +181,10 @@
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
 						<p:menuitem id="modificar" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus eq '1' or manticCatalogosAlmacenesTransferenciasFiltro.isAutorizar}"/>
             <p:menuitem id="consultar" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
+            <p:separator/>					
             <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doMovimientos}"/>
-            <p:separator rendered="#{fn:contains('|1|2|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>					
-            <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>
+            <p:separator rendered="#{fn:contains('|1|2|3|4|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>					
+            <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|3|4|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>
             <p:separator rendered="#{fn:contains('|3|5|6|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>					
 						<p:menuitem id="recibir" value="Recibir" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doRecibir()}" icon="fa fa-edit" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|3|5|6|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>
             <p:separator rendered="#{fn:contains('|5|6|7|9|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>
@@ -204,11 +205,11 @@
 				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
 					<p:selectOneMenu id="estatusDlg" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.estatus}" styleClass="janal-wid-100-txt">
-						<p:ajax event="change" process="@this" update="@(.refrescar)" listener="#{manticCatalogosAlmacenesTransferenciasFiltro.doTransporta}" oncomplete="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.trasito? 'janal.refresh();': ''}"/>
+						<p:ajax event="change" process="@this" update="@(.refrescar)" listener="#{manticCatalogosAlmacenesTransferenciasFiltro.doTransporta}" oncomplete="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.transito? 'janal.refresh();': ''}"/>
 						<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.allEstatusAsigna}"/>					
 					</p:selectOneMenu>
-					<p:outputLabel for="idTransporto" value="Transporta:" style="display: #{manticCatalogosAlmacenesTransferenciasFiltro.attrs.trasito? '': 'none'}" styleClass="refrescar"/>
-					<p:selectOneMenu id="idTransporto" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.idTransporto}" styleClass="janal-wid-100-txt refrescar" converter="janal.convertidor.Entity" style="display: #{manticCatalogosAlmacenesTransferenciasFiltro.attrs.trasito? '': 'none'}">
+					<p:outputLabel for="idTransporto" value="Transporta:" style="display: #{manticCatalogosAlmacenesTransferenciasFiltro.attrs.transito? '': 'none'}" styleClass="refrescar"/>
+					<p:selectOneMenu id="idTransporto" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.idTransporto}" styleClass="janal-wid-100-txt refrescar" converter="janal.convertidor.Entity" style="display: #{manticCatalogosAlmacenesTransferenciasFiltro.attrs.transito? '': 'none'}">
 						<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.personas}" var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{element.paterno} #{element.materno}"/>					
 						<p:column>
 							<h:outputText value="#{item.nombres}"/>

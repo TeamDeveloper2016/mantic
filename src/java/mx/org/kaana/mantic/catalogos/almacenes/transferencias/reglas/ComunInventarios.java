@@ -66,6 +66,21 @@ public abstract class ComunInventarios extends IBaseTnx {
 			//Afectar el almacen original restando los articulos que fueron extraidos
 			params.put("idAlmacen", idAlmacen);
 			params.put("idArticulo", articulo.getIdArticulo());
+			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
+			if(inventario== null)
+			  inventario= this.toCreateInvetario(sesion, articulo, idAlmacen, false);
+			else {
+   			// si el estatus es el de cancelar entonces hacer los movimientos inversos al traspaso
+  			if(idTransferenciaEstatus.intValue()== 4) {
+	  			inventario.setSalidas(Numero.toRedondearSat(inventario.getSalidas()- articulo.getCantidad()));
+		  		inventario.setStock(inventario.getIdAutomatico().equals(1L)? 0D: Numero.toRedondearSat(inventario.getStock()+ articulo.getCantidad()));
+				} // if
+				else {
+	  			inventario.setSalidas(Numero.toRedondearSat(inventario.getSalidas()+ articulo.getCantidad()));
+		  		inventario.setStock(inventario.getIdAutomatico().equals(1L)? 0D: Numero.toRedondearSat(inventario.getStock()- articulo.getCantidad()));
+				} // if
+  			DaoFactory.getInstance().update(sesion, inventario);
+			} // if
 			TcManticAlmacenesArticulosDto origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(TcManticAlmacenesArticulosDto.class, params);
 			if(origen== null) 
 				origen= this.toCreateAlmacenArticulo(sesion, articulo, idAlmacen, umbrales);
@@ -73,25 +88,10 @@ public abstract class ComunInventarios extends IBaseTnx {
  				LOG.warn("No existen suficientes articulos ["+ articulo.getIdArticulo()+ "] en el stock del almacen origen ["+ idAlmacen+ "] stock["+ origen.getStock()+ "] cantidad["+ articulo.getCantidad()+ "] !");
 			// si el estatus es el de cancelar entonces hacer los movimientos inversos al traspaso
 			if(idTransferenciaEstatus.intValue()== 4)
-			  origen.setStock(Numero.toRedondearSat(origen.getStock()+ articulo.getCantidad()));
+			  origen.setStock(inventario.getIdAutomatico().equals(1L)? 0D: Numero.toRedondearSat(origen.getStock()+ articulo.getCantidad()));
 			else
-			  origen.setStock(Numero.toRedondearSat(origen.getStock()- articulo.getCantidad()));
+			  origen.setStock(inventario.getIdAutomatico().equals(1L)? 0D: Numero.toRedondearSat(origen.getStock()- articulo.getCantidad()));
 			DaoFactory.getInstance().update(sesion, origen);
-			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
-			if(inventario== null)
-			  this.toCreateInvetario(sesion, articulo, idAlmacen, false);
-			else {
-   			// si el estatus es el de cancelar entonces hacer los movimientos inversos al traspaso
-  			if(idTransferenciaEstatus.intValue()== 4) {
-	  			inventario.setSalidas(Numero.toRedondearSat(inventario.getSalidas()- articulo.getCantidad()));
-		  		inventario.setStock(Numero.toRedondearSat(inventario.getStock()+ articulo.getCantidad()));
-				} // if
-				else {
-	  			inventario.setSalidas(Numero.toRedondearSat(inventario.getSalidas()+ articulo.getCantidad()));
-		  		inventario.setStock(Numero.toRedondearSat(inventario.getStock()- articulo.getCantidad()));
-				} // if
-  			DaoFactory.getInstance().update(sesion, inventario);
-			} // if
 		} // try
 		finally {
 			Methods.clean(params);
@@ -105,11 +105,6 @@ public abstract class ComunInventarios extends IBaseTnx {
 			params=new HashMap<>();
 			params.put("idAlmacen", idDestino);
 			params.put("idArticulo", articulo.getIdArticulo());
-			TcManticAlmacenesArticulosDto origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(TcManticAlmacenesArticulosDto.class, params);
-			if(origen== null) 
-				origen= this.toCreateAlmacenArticulo(sesion, articulo, idDestino, umbrales);
-			origen.setStock(Numero.toRedondearSat(origen.getStock()+ diferencia));
-			DaoFactory.getInstance().update(sesion, origen);
 			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
 			if(inventario== null)
 			  this.toCreateInvetario(sesion, articulo, idDestino, true);
@@ -118,6 +113,11 @@ public abstract class ComunInventarios extends IBaseTnx {
 				inventario.setStock(Numero.toRedondearSat(inventario.getStock()- diferencia));
   			DaoFactory.getInstance().update(sesion, inventario);
 			} // if
+			TcManticAlmacenesArticulosDto origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(TcManticAlmacenesArticulosDto.class, params);
+			if(origen== null) 
+				origen= this.toCreateAlmacenArticulo(sesion, articulo, idDestino, umbrales);
+			origen.setStock(Numero.toRedondearSat(origen.getStock()+ diferencia));
+			DaoFactory.getInstance().update(sesion, origen);
 		} // try
 		finally {
 			Methods.clean(params);
@@ -147,7 +147,7 @@ public abstract class ComunInventarios extends IBaseTnx {
 			-1L, // Long idInventario, 
 			articulo.getIdArticulo(), // Long idArticulo, 
 			inicial? articulo.getCantidad(): articulo.getCantidad()* -1D, // Double inicial, 
-			inicial? articulo.getCantidad(): articulo.getCantidad()* -1D, // Double stock, 
+			inicial? articulo.getCantidad(): 0D, // articulo.getCantidad()* -1D, // Double stock, 
 			articulo.getCantidad(), // Double salidas, 
 			new Long(Fecha.getAnioActual()), // Long ejercicio, 
 			1L // Long idAutomatico
