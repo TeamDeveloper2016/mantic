@@ -111,7 +111,7 @@ public class Transferir extends IBaseTnx {
 		return regresar;
 	}	// ejecutar
 
-  private TcManticFicticiasDto toFicticia(Session sesion, CfdiSearchResult cfdi, Cfdi detail, Calendar calendar,Long idCliente) throws Exception {
+  private TcManticFicticiasDto toFicticia(Session sesion, CfdiSearchResult cfdi, Cfdi detail, Calendar calendar, Long idCliente, Long idFactura) throws Exception {
 		Long consecutivo= this.toSiguiente(sesion);
 		double taxes    = 0;
 		for (Tax tax: detail.getTaxes()) {
@@ -142,7 +142,8 @@ public class Transferir extends IBaseTnx {
 			(Cadena.isVacio(detail.getObservations())? "": detail.getObservations())+ " ESTA FACTURA FUE RECUPERADA DE FACTURAMA !",  // String observaciones, 
 			JsfBase.getAutentifica()!= null? JsfBase.getAutentifica().getEmpresa().getIdEmpresa(): 1L,  //  Long idEmpresa, 
 			new Date(calendar.getTimeInMillis()),  // Date dia, 
-			detail.getPaymentAccountNumber() //  referencia
+			detail.getPaymentAccountNumber(), //  referencia
+			idFactura // id_factura
 		);
 		return regresar;
 	}
@@ -173,7 +174,7 @@ public class Transferir extends IBaseTnx {
 		return regresar;
 	} // toIdClienteDomicilio
 	
-	private TcManticFacturasDto toFactura(CfdiSearchResult cfdi, Cfdi detail, Calendar calendar, Long idFicticia) {
+	private TcManticFacturasDto toFactura(CfdiSearchResult cfdi, Cfdi detail, Calendar calendar) {
 		Complement complement = detail.getComplement();
 		Calendar certificacion= Fecha.toCalendar(complement.getTaxStamp().getDate().substring(0, 10), complement.getTaxStamp().getDate().substring(11, 19));
 		TcManticFacturasDto regresar= new TcManticFacturasDto(
@@ -181,9 +182,9 @@ public class Transferir extends IBaseTnx {
 			new Date(Calendar.getInstance().getTimeInMillis()), // Date ultimoIntento, 
 			new Timestamp(calendar.getTimeInMillis()), // Timestamp timbrado, 
 			JsfBase.getAutentifica()!= null? JsfBase.getIdUsuario(): 1L, // Long idUsuario, 
-			idFicticia, // Long idFicticia, 
+			null, // Long idFicticia, //**eliminar
 			cfdi.getFolio(), // String folio, 
-			null, // Long idVenta, 
+			null, // Long idVenta, //**eliminar
 			0L, // Long intentos, 
 			cfdi.getEmail(), // String correos, 
 			"ESTA FACTURA FUE RECUPERADA DE FACTURAMA !", // String comentarios, 
@@ -572,12 +573,13 @@ public class Transferir extends IBaseTnx {
 		else {	
 			Long idCliente= this.toCliente(sesion, cfdi.getRfc()); 
 			if(idCliente> 0) {
-				// GENERA EL REGISTRO DETALLADO DE LA FACTURA
-				TcManticFicticiasDto ficticia= this.toFicticia(sesion, cfdi, detail, calendar, idCliente);
-				DaoFactory.getInstance().insert(sesion, ficticia);
 				// GENERA LA FACTURA CON TODOS LOS DATOS FISCALES 
-				TcManticFacturasDto factura= this.toFactura(cfdi, detail, calendar, ficticia.getIdFicticia());
+				TcManticFacturasDto factura= this.toFactura(cfdi, detail, calendar);
+				// GENERA EL REGISTRO DETALLADO DE LA FACTURA
+				TcManticFicticiasDto ficticia= this.toFicticia(sesion, cfdi, detail, calendar, idCliente, factura.getIdFactura());
+				DaoFactory.getInstance().insert(sesion, ficticia);
 				// GENERA LA CADENA ORIGINAL BASA EN EL ARCHIVO XML QUE SE DESCARGO
+				factura.setIdFicticia(ficticia.getIdFicticia()); //**eliminar
 				factura.setCadenaOriginal(this.toCadenaOriginal(path.concat(cfdi.getRfc()).concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase())));
 				DaoFactory.getInstance().insert(sesion, factura);
 				this.toSaveFiles(sesion, cfdi, detail, factura.getIdFactura(), calendar, path);
