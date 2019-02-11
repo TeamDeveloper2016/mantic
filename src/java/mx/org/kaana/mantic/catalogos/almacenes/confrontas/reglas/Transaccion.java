@@ -69,9 +69,10 @@ public class Transaccion extends ComunInventarios {
 				case CALCULAR:
 					this.toCheckArticulos(sesion);
 					this.transferencia.setIdTransferenciaEstatus(9L);
-					DaoFactory.getInstance().update(sesion, this.transferencia);
+					regresar= DaoFactory.getInstance().update(sesion, this.transferencia).intValue()> 0;
 					this.bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), null, this.transferencia.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
-					DaoFactory.getInstance().insert(sesion, this.bitacora);
+					if(regresar)
+					  regresar= DaoFactory.getInstance().insert(sesion, this.bitacora).intValue()> 0;
 					break;
       } // switch
       if(!regresar) 
@@ -187,7 +188,7 @@ public class Transaccion extends ComunInventarios {
 					this.toMovimientosAlmacenDestino(sesion, this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
 					break;
 				case 5: // REGRESAR ORIGEN
-					this.toMovimientosAlmacenOrigen(sesion, this.transferencia.getIdAlmacen(), articulo, umbrales, this.transferencia.getIdTransferenciaEstatus());
+					this.toMovimientosAlmacenOrigen(sesion, this.transferencia.getIdAlmacen(), articulo, umbrales, 4L);
 					break;
 				case 6: // SUMAR DESTINO
 					this.toMovimientosAlmacenDestino(sesion, this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());

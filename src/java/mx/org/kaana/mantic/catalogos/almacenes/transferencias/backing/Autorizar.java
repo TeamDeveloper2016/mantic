@@ -163,8 +163,8 @@ public class Autorizar extends IBaseArticulos implements Serializable {
 //				LOG.info("idAplicar: "+ articulo.getIdAplicar()+ " =>  "+ articulo.getIdRedondear());
 			} // for 
 			if(transaccion.ejecutar(this.accion)) {
- 			  RequestContext.getCurrentInstance().execute("janal.back(' gener\\u00F3 la confronta ', '"+ ((Confronta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-  			JsfBase.setFlashAttribute("idTransferencia", ((Confronta)this.getAdminOrden().getOrden()).getIdTransferencia());
+ 			  RequestContext.getCurrentInstance().execute("janal.back(' autoriz\\u00F3 la confronta ', '"+ ((Confronta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+  			JsfBase.setFlashAttribute("IdConfronta", ((Confronta)this.getAdminOrden().getOrden()).getIdConfronta());
   		  regresar = ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
 			} // if
 			else 
