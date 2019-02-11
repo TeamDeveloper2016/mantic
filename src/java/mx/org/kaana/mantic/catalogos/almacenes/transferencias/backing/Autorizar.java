@@ -85,6 +85,7 @@ public class Autorizar extends IBaseArticulos implements Serializable {
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.CALCULAR: (EAccion)JsfBase.getFlashAttribute("accion");
 			this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
       this.attrs.put("idConfronta", JsfBase.getFlashAttribute("idConfronta")== null? -1L: JsfBase.getFlashAttribute("idConfronta"));
+      this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Mantic/Catalogos/Almacenes/Confrontas/filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia")== null? -1L: JsfBase.getFlashAttribute("idTransferencia"));
 		  this.doLoad();
     } // try
@@ -172,6 +173,7 @@ public class Autorizar extends IBaseArticulos implements Serializable {
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
+      JsfBase.addMessageError(e);
 		} // catch
 		return regresar;
 	}	
