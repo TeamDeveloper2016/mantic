@@ -25,6 +25,5 @@ public class FacturaFicticia extends TcManticFicticiasDto implements Serializabl
 	@Override
 	public Class toHbmClass() {
 		return TcManticFicticiasDto.class;
-	}	
-	
+	}		
 }
