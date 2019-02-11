@@ -6060,37 +6060,9 @@
 			<select id="facturaFicticia">				
         select      
 				  tc_mantic_ficticias.id_ficticia as id_key,
-				  tc_mantic_ficticias.total,
-					tc_mantic_ficticias.tipo_de_cambio,
-					tc_mantic_ficticias.sub_total,
-					tc_mantic_ficticias.registro,
-					tc_mantic_ficticias.referencia,
-					tc_mantic_ficticias.orden,
-					tc_mantic_ficticias.observaciones,
-					tc_mantic_ficticias.impuestos,
-					tc_mantic_ficticias.id_usuario,
-					tc_mantic_ficticias.id_uso_cfdi,
-					tc_mantic_ficticias.id_tipo_pago,
-					tc_mantic_ficticias.id_tipo_medio_pago,
-					tc_mantic_ficticias.id_sin_iva,
-					tc_mantic_ficticias.id_ficticia_estatus,
-					tc_mantic_ficticias.id_ficticia,					
-					tc_mantic_ficticias.id_empresa,
-					tc_mantic_ficticias.id_cliente_domicilio,
-					tc_mantic_ficticias.id_cliente,
-					tc_mantic_ficticias.id_banco,
-					tc_mantic_ficticias.global,
-					tc_mantic_ficticias.extras,
-					tc_mantic_ficticias.ejercicio,
-					tc_mantic_ficticias.dia,
-					tc_mantic_ficticias.descuentos,
-					tc_mantic_ficticias.descuento,
-					tc_mantic_ficticias.consecutivo
-					tc_mantic_facturas.id_factura
+				  tc_mantic_ficticias.*
         from      
-          tc_mantic_ficticias
-				inner join 
-					tc_mantic_facturas on tc_mantic_ficticias.id_ficticia = tc_mantic_facturas.id_ficticia
+          tc_mantic_ficticias				
         where 
           tc_mantic_ficticias.id_ficticia = {idFicticia} 
 			</select>
