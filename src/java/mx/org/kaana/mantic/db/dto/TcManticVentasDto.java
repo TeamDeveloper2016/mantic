@@ -33,6 +33,8 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
   private Double descuentos;
   @Column (name="id_factura")
   private Long idFactura;
+  @Column (name="id_facturar")
+  private Long idFacturar;
   @Column (name="id_credito")
   private Long idCredito;
   @Column (name="extras")
@@ -101,15 +103,15 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
   }
 
   public TcManticVentasDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), 2L);
+    this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), 2L, null);
     setKey(key);
   }
 
-	public TcManticVentasDto(Double descuentos, Long idFactura, Long idCredito, String extras, Double total, Long idAlmacen, Double tipoDeCambio, Long orden, Long idAutorizar, Long idCliente, String descuento, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Long idVenta, Date dia, Long idVentaEstatus) {
-		this(descuentos, idFactura, idCredito, extras, null, null, total, idAlmacen, tipoDeCambio, orden, idAutorizar, idCliente, descuento, ejercicio, consecutivo, idUsuario, impuestos, idUsoCfdi, idSinIva, subTotal, observaciones, idEmpresa, idVenta, dia, idVentaEstatus, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), 2L);
+	public TcManticVentasDto(Double descuentos, Long idFactura, Long idCredito, String extras, Double total, Long idAlmacen, Double tipoDeCambio, Long orden, Long idAutorizar, Long idCliente, String descuento, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Long idVenta, Date dia, Long idVentaEstatus, Long idFacturar) {
+		this(descuentos, idFactura, idCredito, extras, null, null, total, idAlmacen, tipoDeCambio, orden, idAutorizar, idCliente, descuento, ejercicio, consecutivo, idUsuario, impuestos, idUsoCfdi, idSinIva, subTotal, observaciones, idEmpresa, idVenta, dia, idVentaEstatus, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), 2L, idFacturar);
 	}
 	
-  public TcManticVentasDto(Double descuentos, Long idFactura, Long idCredito, String extras, Double global, Double utilidad, Double total, Long idAlmacen, Double tipoDeCambio, Long orden, Long idAutorizar, Long idCliente, String descuento, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Long idVenta, Date dia, Long idVentaEstatus, String cotizacion, String ticket, Long ccotizacion, Long cticket, Date vigencia, Long idManual) {
+  public TcManticVentasDto(Double descuentos, Long idFactura, Long idCredito, String extras, Double global, Double utilidad, Double total, Long idAlmacen, Double tipoDeCambio, Long orden, Long idAutorizar, Long idCliente, String descuento, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Long idVenta, Date dia, Long idVentaEstatus, String cotizacion, String ticket, Long ccotizacion, Long cticket, Date vigencia, Long idManual, Long idFacturar) {
     setDescuentos(descuentos);
     setIdFactura(idFactura);
     setIdCredito(idCredito);
@@ -142,6 +144,7 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		setCcotizacion(ccotizacion);
 		setVigencia(vigencia);
 		setIdManual(idManual);
+		this.idFacturar= idFacturar;
   }
 	
 	public Long getIdManual() {
@@ -167,6 +170,14 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
   public Long getIdFactura() {
     return idFactura;
   }
+
+	public Long getIdFacturar() {
+		return idFacturar;
+	}
+
+	public void setIdFacturar(Long idFacturar) {
+		this.idFacturar=idFacturar;
+	}
 
   public void setIdCredito(Long idCredito) {
     this.idCredito = idCredito;
@@ -478,6 +489,8 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		regresar.append(getVigencia());
 		regresar.append(Constantes.SEPARADOR);		
 		regresar.append(getIdManual());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdFacturar());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -517,13 +530,14 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		regresar.put("ccotizacion", getCcotizacion());
 		regresar.put("vigencia", getVigencia());
 		regresar.put("idManual", getIdManual());
+		regresar.put("idFacturar", getIdFactura());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-			getDescuentos(), getIdFactura(), getIdCredito(), getExtras(), getGlobal(), getUtilidad(), getTotal(), getIdAlmacen(), getTipoDeCambio(), getOrden(), getIdAutorizar(), getIdCliente(), getDescuento(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getIdVenta(), getDia(), getIdVentaEstatus(), getTicket(), getCotizacion(), getTicket(), getCcotizacion(), getVigencia(), getIdManual()
+			getDescuentos(), getIdFactura(), getIdCredito(), getExtras(), getGlobal(), getUtilidad(), getTotal(), getIdAlmacen(), getTipoDeCambio(), getOrden(), getIdAutorizar(), getIdCliente(), getDescuento(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getIdVenta(), getDia(), getIdVentaEstatus(), getTicket(), getCotizacion(), getTicket(), getCcotizacion(), getVigencia(), getIdManual(), getIdFacturar()
     };
     return regresar;
   }

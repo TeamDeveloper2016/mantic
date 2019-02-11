@@ -83,17 +83,19 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   private Date dia;
   @Column (name="referencia")
   private String referencia;
+  @Column (name="idFactura")
+  private Long idFactura;
 
   public TcManticFicticiasDto() {
     this(new Long(-1L));
   }
 
   public TcManticFicticiasDto(Long key) {
-    this(null, null, new Long(-1L), null, null, null, null, 1D, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null);
+    this(null, null, new Long(-1L), null, null, null, null, 1D, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null);
     setKey(key);
   }
 
-  public TcManticFicticiasDto(Double descuentos, Long idTipoPago, Long idFicticia, String extras, Double global, Double total, Long idFicticiaEstatus, Double tipoDeCambio, Long orden, Long idTipoMedioPago, Long idCliente, Long idClienteDomicilio, String descuento, Long idBanco, Long ejercicio, String consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Date dia, String referencia) {
+  public TcManticFicticiasDto(Double descuentos, Long idTipoPago, Long idFicticia, String extras, Double global, Double total, Long idFicticiaEstatus, Double tipoDeCambio, Long orden, Long idTipoMedioPago, Long idCliente, Long idClienteDomicilio, String descuento, Long idBanco, Long ejercicio, String consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Date dia, String referencia, Long idFactura) {
     setDescuentos(descuentos);
     setIdTipoPago(idTipoPago);
     setIdFicticia(idFicticia);
@@ -120,6 +122,7 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     setDia(dia);
     setReferencia(referencia);
 		this.idClienteDomicilio= idClienteDomicilio;
+		this.idFactura= idFactura;
   }
 	
   public void setDescuentos(Double descuentos) {
@@ -330,6 +333,14 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     return referencia;
   }
 
+	public Long getIdFactura() {
+		return idFactura;
+	}
+
+	public void setIdFactura(Long idFactura) {
+		this.idFactura=idFactura;
+	}
+
   @Transient
   @Override
   public Long getKey() {
@@ -396,6 +407,8 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 		regresar.append(getDia());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getReferencia());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdFactura());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -429,13 +442,14 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("dia", getDia());
 		regresar.put("referencia", getReferencia());
+		regresar.put("idFactura", getIdFactura());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescuentos(), getIdTipoPago(), getIdFicticia(), getExtras(), getGlobal(), getTotal(), getIdFicticiaEstatus(), getTipoDeCambio(), getOrden(), getIdTipoMedioPago(), getIdCliente(), getIdClienteDomicilio(), getDescuento(), getIdBanco(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getDia(), getReferencia()
+    getDescuentos(), getIdTipoPago(), getIdFicticia(), getExtras(), getGlobal(), getTotal(), getIdFicticiaEstatus(), getTipoDeCambio(), getOrden(), getIdTipoMedioPago(), getIdCliente(), getIdClienteDomicilio(), getDescuento(), getIdBanco(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getDia(), getReferencia(), getIdFactura()
     };
     return regresar;
   }
