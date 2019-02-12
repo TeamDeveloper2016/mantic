@@ -104,7 +104,7 @@
 						</p:column>   
 						<p:column headerText="Imagen" styleClass="janal-column-center janal-wid-5">
 							<p:commandLink actionListener="#{manticCatalogosArticulosImagenes.doPrepareImage(row.alias, row.nombre)}" process="@this" update="confirmacion" onstart="return janal.bloquear();" oncomplete="PF('dialogoConfirmacion').show();" rendered="#{row.cantidad ne 0}">
-							  <i class="fa fa-fw fa-lg fa-file-image-o janal-color-yellow" style="display: #{row.cantidad eq 0? 'none': ''}" title="El articulo tiene imagen asociada, click para ver la imagen !"/>
+							  <i class="fa fa-fw fa-lg fa-file-image-o janal-color-red" style="display: #{row.cantidad eq 0? 'none': ''}" title="El articulo tiene imagen asociada, click para ver la imagen !"/>
 							</p:commandLink>
 						</p:column>   
 						<p:column headerText="Quitar" styleClass="janal-wid-col-38 janal-column-center">
