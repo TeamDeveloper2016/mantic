@@ -290,10 +290,11 @@ public class Transaccion extends TransaccionFactura {
 				regresar.setRuta(this.articulo.getImportado().getRuta());			
 				String path= Configuracion.getInstance().getPropiedadSistemaServidor("path.image").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat("/");
 				regresar.setAlias(path.concat(regresar.getArchivo()));
-				result= new File(path.concat(this.articulo.getImportado().getName()));			
-				if(result.exists()) {
-					Archivo.copy(path.concat(this.articulo.getImportado().getName()), path.concat(regresar.getNombre()), true);							
-					Archivo.delete(path.concat(this.articulo.getImportado().getName()));
+				result= new File(path.concat(regresar.getNombre()));			
+				if(result.exists()) {					
+					Archivo.copy(path.concat(this.articulo.getImportado().getName()), path.concat(regresar.getNombre()), true);												
+					result= new File(path.concat(this.articulo.getImportado().getName()));
+					result.delete();
 				} // if
 			} // if
 		} // try
