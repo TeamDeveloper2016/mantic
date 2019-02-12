@@ -160,15 +160,7 @@ public class Transaccion extends TransaccionFactura {
 													idImagen= DaoFactory.getInstance().insert(sesion, image);
 													this.articulo.getArticulo().setIdImagen(idImagen);
 													regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
-												} // if												
-			                } 
-										} 
-									}
-								} 
-							} 
-						} 
-					} 
-				}				
+				} } } } } } } }	} // if												
 				if(idArticulo > -1 && this.articulo.getArticulo().getIdArticuloTipo().equals(1L))
 					registraArticuloFacturama(sesion, idArticulo);
 			} // if
