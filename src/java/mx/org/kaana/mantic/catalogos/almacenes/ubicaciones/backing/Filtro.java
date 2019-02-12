@@ -154,5 +154,18 @@ public class Filtro extends Comun implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch
 		return regresar;
-  } // doAccion  
+  } // doArticulos
+  
+	public String doOrganigrama() {
+    String regresar= null;
+		try {			
+			JsfBase.setFlashAttribute("retorno", "filtro");
+			regresar= "organigrama".concat(Constantes.REDIRECIONAR);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return regresar;
+  } // doOrganigrama
 }
