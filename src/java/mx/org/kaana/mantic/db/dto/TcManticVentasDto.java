@@ -530,7 +530,7 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		regresar.put("ccotizacion", getCcotizacion());
 		regresar.put("vigencia", getVigencia());
 		regresar.put("idManual", getIdManual());
-		regresar.put("idFacturar", getIdFactura());
+		regresar.put("idFacturar", getIdFacturar());
   	return regresar;
   }
 
