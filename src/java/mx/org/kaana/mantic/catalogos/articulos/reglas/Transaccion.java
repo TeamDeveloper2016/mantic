@@ -154,12 +154,13 @@ public class Transaccion extends TransaccionFactura {
 											} // if
 											else
 												regresar= true;
-											if(regresar){										
-												image= loadImage(sesion, null, idArticulo);												
-												idImagen= DaoFactory.getInstance().insert(sesion, image);
-												this.articulo.getArticulo().setIdImagen(idImagen);
-												regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
-				} } } } } } }	} // if												
+											if(regresar){					
+												if(!Cadena.isVacio(this.articulo.getImportado().getName())){
+													image= loadImage(sesion, null, idArticulo);												
+													idImagen= DaoFactory.getInstance().insert(sesion, image);
+													this.articulo.getArticulo().setIdImagen(idImagen);
+													regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
+					} } } } } } } }	} // if												
 				if(idArticulo > -1 && this.articulo.getArticulo().getIdArticuloTipo().equals(1L))
 					registraArticuloFacturama(sesion, idArticulo);
 			} // if
