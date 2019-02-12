@@ -2239,6 +2239,25 @@
 				order by
 				  tc_mantic_articulos.nombre
 			</select>
+			<select id="imagen">
+        select 
+				  tc_mantic_articulos.id_articulo as id_key,
+				  tc_mantic_articulos.id_articulo,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+				  tc_mantic_articulos.nombre,
+				  ifnull(tc_mantic_imagenes.id_imagen, 0) as id_imagen,
+				  ifnull(tc_mantic_imagenes.nombre, ' ') as imagen,
+				  ifnull(tc_mantic_imagenes.ruta, ' ') as ruta,
+				  ifnull(tc_mantic_imagenes.archivo, ' ') as archivo
+				from
+				  tc_mantic_articulos
+        left join 
+					tc_mantic_imagenes on tc_mantic_articulos.id_imagen = tc_mantic_imagenes.id_imagen
+				where
+				  tc_mantic_articulos.id_articulo= {idArticulo}
+				order by
+				  tc_mantic_articulos.nombre
+			</select>
 			<select id="facturama">
 				select 
 					tc_mantic_articulos.id_articulo as id,

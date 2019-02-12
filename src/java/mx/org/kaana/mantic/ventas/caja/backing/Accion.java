@@ -667,7 +667,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // doOpenCobro
 	
 	private void loadOrdenVenta() throws Exception {		
-		this.getAdminOrden().toCheckTotales();
+		// this.getAdminOrden().toCheckTotales();
 		MotorBusqueda motor= new MotorBusqueda(-1L);
 		((TicketVenta)this.getAdminOrden().getOrden()).setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));
 		((TicketVenta)this.getAdminOrden().getOrden()).setIdCliente(motor.toClienteDefault().getKey());

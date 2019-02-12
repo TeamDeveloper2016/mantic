@@ -437,7 +437,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 	} // toDescuentoVigente
 	
 	private void loadOrdenVenta() {		
-  	this.getAdminOrden().toCheckTotales();
+  	// this.getAdminOrden().toCheckTotales();
 		UISelectEntity cliente = (UISelectEntity) this.attrs.get("clienteSeleccion");			
 		((TicketVenta)this.getAdminOrden().getOrden()).setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));
 		((TicketVenta)this.getAdminOrden().getOrden()).setIdCliente(cliente.getKey());

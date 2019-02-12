@@ -6,7 +6,7 @@ import java.util.Calendar;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
 
-public class FacturaFicticia extends TcManticFicticiasDto implements Serializable{
+public class FacturaFicticia extends TcManticFicticiasDto implements Serializable {
 
 	private static final long serialVersionUID = -4493162062949623588L;
 	

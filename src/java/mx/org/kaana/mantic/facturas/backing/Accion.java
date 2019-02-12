@@ -378,7 +378,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	} // toDescuentoVigente
 	
 	private void loadOrdenVenta() {
-		this.getAdminOrden().toCheckTotales();
+		// this.getAdminOrden().toCheckTotales();
 		UISelectEntity cliente = (UISelectEntity) this.attrs.get("clienteSeleccion");			
 		((FacturaFicticia)this.getAdminOrden().getOrden()).setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));
 		((FacturaFicticia)this.getAdminOrden().getOrden()).setIdCliente(cliente.getKey());

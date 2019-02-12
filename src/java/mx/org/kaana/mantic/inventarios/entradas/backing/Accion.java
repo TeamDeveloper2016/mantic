@@ -187,7 +187,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     Transaccion transaccion= null;
     String regresar        = null;
     try {			
-			this.getAdminOrden().toCheckTotales();
+			// this.getAdminOrden().toCheckTotales();
 			((NotaEntrada)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuento());
 			((NotaEntrada)this.getAdminOrden().getOrden()).setExcedentes(this.getAdminOrden().getTotales().getExtra());
 			((NotaEntrada)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
