@@ -563,7 +563,7 @@ public class Transferir extends IBaseTnx {
 	
 	private void toProcess(Session sesion, CfdiSearchResult cfdi, Cfdi detail) throws Exception {
 		Calendar calendar= Fecha.toCalendar(cfdi.getDate().substring(0, 10), cfdi.getDate().substring(11, 19));
-		String path = Configuracion.getInstance().getPropiedadSistemaServidor("facturama")+ calendar.get(Calendar.YEAR)+ "/"+ Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase()+"/"+ cfdi.getRfc().concat("/");
+		String path = Configuracion.getInstance().getPropiedadSistemaServidor("facturama").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat("/")+ calendar.get(Calendar.YEAR)+ "/"+ Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase()+"/"+ cfdi.getRfc().concat("/");
 		CFDIFactory.getInstance().download(path, cfdi.getRfc().concat("-").concat(cfdi.getFolio()), cfdi.getId());
 		Long idFactura= this.exists(sesion, cfdi.getId());
 		if(idFactura> 0) {

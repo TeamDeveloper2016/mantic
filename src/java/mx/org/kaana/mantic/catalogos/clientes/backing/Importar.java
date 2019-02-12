@@ -148,7 +148,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 		Long fileSize     = 0L;
 		try {			
       path.append(Configuracion.getInstance().getPropiedadSistemaServidor("clientes"));
-      temp.append(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString().replaceAll(" ", ""));
+      temp.append(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString());
       temp.append("/");
       temp.append(this.cliente.getClave());
       temp.append("/");      
