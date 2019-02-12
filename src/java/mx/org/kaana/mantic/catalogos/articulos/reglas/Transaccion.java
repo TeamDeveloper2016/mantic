@@ -225,6 +225,8 @@ public class Transaccion extends TransaccionFactura {
 	} // toMayoreo
 	
 	private boolean actualizarArticulo(Session sesion) throws Exception{
+		TcManticImagenesDto image                = null;
+		Long idImagen                            = -1L;
 		TcManticArticulosDimencionesDto dimencion= null;
 		boolean regresar= false;
 		Long idArticulo = -1L;
@@ -249,7 +251,13 @@ public class Transaccion extends TransaccionFactura {
 													if(DaoFactory.getInstance().update(sesion, loadImage(sesion, this.articulo.getArticulo().getIdImagen(), idArticulo))>= 0L)
 														regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
 												} // if 
-												else
+												else if(!Cadena.isVacio(this.articulo.getImportado().getName())){
+													image= loadImage(sesion, null, idArticulo);												
+													idImagen= DaoFactory.getInstance().insert(sesion, image);
+													this.articulo.getArticulo().setIdImagen(idImagen);
+													regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
+												}				
+												else							
 													regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
 												if(this.articulo.getArticulo().getIdArticuloTipo().equals(1L))
 													actualizarArticuloFacturama(sesion, this.articulo.getIdArticulo());
