@@ -433,7 +433,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			getOrden().setCticket(consecutivo);			
 			getOrden().setTicket(Fecha.getAnioActual() + Cadena.rellenar(consecutivo.toString(), 5, '0', true));
 			getOrden().setIdVentaEstatus(idEstatusVenta);			
-			getOrden().setIdFactura(this.ventaFinalizada.isFacturar() && validacionEstatus ? SI : NO);
+			getOrden().setIdFacturar(this.ventaFinalizada.isFacturar() && validacionEstatus ? SI : NO);
 			getOrden().setIdCredito(this.ventaFinalizada.isCredito() && validacionEstatus ? SI : NO);
 			if(this.ventaFinalizada.isFacturar() && validacionEstatus){				
 				this.clienteDeault= getOrden().getIdCliente().equals(toClienteDefault(sesion));
@@ -450,13 +450,13 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 				else
 					registraClientesTipoContacto(sesion, getOrden().getIdCliente());				
 			} // if						
-			if(DaoFactory.getInstance().update(sesion, getOrden())>= 1L){
+			if(DaoFactory.getInstance().update(sesion, getOrden())>= 1L){				
 				regresar= registraBitacora(sesion, getOrden().getIdVenta(), idEstatusVenta, "La venta ha sido finalizada.");				
 				params= new HashMap<>();
 				params.put("idVenta", getOrden().getIdVenta());
 				regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticVentasDetallesDto.class, params)>= 1;
 				toFillArticulos(sesion, this.ventaFinalizada.getArticulos());
-			} // if
+			} // if			
 		} // try		
 		finally{
 			Methods.clean(params);
@@ -544,7 +544,10 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			} // if			
 			factura.setCorreos(correos.toString());
 			factura.setObservaciones(this.ventaFinalizada.getObservaciones());
-			regresar= DaoFactory.getInstance().insert(sesion, factura)>= 1L;	
+			if(DaoFactory.getInstance().insert(sesion, factura)>= 1L){	
+				getOrden().setIdFactura(factura.getIdFactura());
+				regresar= DaoFactory.getInstance().update(sesion, getOrden())>= 1L;				
+			} // if
 			this.idFacturaGeneral= factura.getIdFactura();
 		} // try		
 		finally{

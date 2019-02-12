@@ -206,6 +206,7 @@ public class Transaccion extends TransaccionFactura {
 				this.orden.setOrden(consecutivo);
 				this.orden.setIdFicticiaEstatus(idEstatusFicticia);
 				this.orden.setEjercicio(new Long(Fecha.getAnioActual()));						
+				this.orden.setIdFactura(idFactura);
 				if(DaoFactory.getInstance().insert(sesion, this.orden)>= 1L){					
 					params= new HashMap<>();
 					params.put("idFicticia", this.orden.getIdFicticia());
@@ -453,12 +454,15 @@ public class Transaccion extends TransaccionFactura {
 				factura.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   			regresar= DaoFactory.getInstance().insert(sesion, factura)> 0L;
 				if(regresar) {
-					regresar= this.registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "");
-					if(regresar) {
-	      		this.articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticFicticiasDetallesDto", "detalle", params);
-						for (Articulo articulo: this.articulos) 
-							articulo.setIdComodin(-1L);
-				  	this.toFillArticulos(sesion);
+					this.orden.setIdFactura(factura.getIdFactura());
+					if(DaoFactory.getInstance().update(sesion, this.orden)>= 1L){
+						regresar= this.registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "");
+						if(regresar) {
+							this.articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticFicticiasDetallesDto", "detalle", params);
+							for (Articulo articulo: this.articulos) 
+								articulo.setIdComodin(-1L);
+							this.toFillArticulos(sesion);
+						} // if	
 					} // if	
 				} // if	
 			} // if
@@ -467,5 +471,5 @@ public class Transaccion extends TransaccionFactura {
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	}
+	} // toClonarFicticia
 } 

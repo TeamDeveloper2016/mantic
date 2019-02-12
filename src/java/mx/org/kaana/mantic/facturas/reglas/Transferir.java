@@ -111,7 +111,7 @@ public class Transferir extends IBaseTnx {
 		return regresar;
 	}	// ejecutar
 
-  private TcManticFicticiasDto toFicticia(Session sesion, CfdiSearchResult cfdi, Cfdi detail, Calendar calendar, Long idCliente, Long idFactura) throws Exception {
+  private TcManticFicticiasDto toFicticia(Session sesion, CfdiSearchResult cfdi, Cfdi detail, Calendar calendar, Long idCliente) throws Exception {
 		Long consecutivo= this.toSiguiente(sesion);
 		double taxes    = 0;
 		for (Tax tax: detail.getTaxes()) {
@@ -143,7 +143,7 @@ public class Transferir extends IBaseTnx {
 			JsfBase.getAutentifica()!= null? JsfBase.getAutentifica().getEmpresa().getIdEmpresa(): 1L,  //  Long idEmpresa, 
 			new Date(calendar.getTimeInMillis()),  // Date dia, 
 			detail.getPaymentAccountNumber(), //  referencia
-			idFactura // id_factura
+			-1L // id_factura
 		);
 		return regresar;
 	}
@@ -576,12 +576,14 @@ public class Transferir extends IBaseTnx {
 				// GENERA LA FACTURA CON TODOS LOS DATOS FISCALES 
 				TcManticFacturasDto factura= this.toFactura(cfdi, detail, calendar);
 				// GENERA EL REGISTRO DETALLADO DE LA FACTURA
-				TcManticFicticiasDto ficticia= this.toFicticia(sesion, cfdi, detail, calendar, idCliente, factura.getIdFactura());
+				TcManticFicticiasDto ficticia= this.toFicticia(sesion, cfdi, detail, calendar, idCliente);
 				DaoFactory.getInstance().insert(sesion, ficticia);
 				// GENERA LA CADENA ORIGINAL BASA EN EL ARCHIVO XML QUE SE DESCARGO
 				factura.setIdFicticia(ficticia.getIdFicticia()); //**eliminar
 				factura.setCadenaOriginal(this.toCadenaOriginal(path.concat(cfdi.getRfc()).concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase())));
 				DaoFactory.getInstance().insert(sesion, factura);
+				ficticia.setIdFactura(factura.getIdFactura());
+				DaoFactory.getInstance().update(sesion, ficticia);
 				this.toSaveFiles(sesion, cfdi, detail, factura.getIdFactura(), calendar, path);
 				this.toDetail(sesion, ficticia.getIdFicticia(), detail);
 				TcManticFicticiasBitacoraDto bitacora= new TcManticFicticiasBitacoraDto(ficticia.getConsecutivo(), "FACTURA REGISTRADA DE FORMA AUTOMATICA", 3l, 1L, ficticia.getIdFicticia(), -1L, ficticia.getTotal());

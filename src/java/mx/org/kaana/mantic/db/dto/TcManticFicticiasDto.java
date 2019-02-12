@@ -83,7 +83,7 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   private Date dia;
   @Column (name="referencia")
   private String referencia;
-  @Column (name="idFactura")
+  @Column (name="id_factura")
   private Long idFactura;
 
   public TcManticFicticiasDto() {
