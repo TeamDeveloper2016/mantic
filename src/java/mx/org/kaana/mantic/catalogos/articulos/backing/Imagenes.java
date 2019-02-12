@@ -10,8 +10,9 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -24,6 +25,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.CodigoArticulo;
+import mx.org.kaana.mantic.catalogos.articulos.reglas.Replicar;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.context.RequestContext;
@@ -104,9 +106,11 @@ public class Imagenes extends IBaseAttribute implements Serializable {
 				if(this.articulos.indexOf(new CodigoArticulo(articulo.toLong("idArticulo")))< 0 && !this.attrs.get("idPivote").equals(articulo.toLong("idArticulo"))) {
  					CodigoArticulo item= new CodigoArticulo(articulo.toLong("idArticulo"), articulo.toString("propio"), articulo.toString("nombre"));
     			params.put("idArticulo", articulo.toLong("idArticulo"));
-					Value idImagen= (Value)DaoFactory.getInstance().toField("VistaArticulosDto", "imagen", params, "idImagen");
-					if(idImagen!= null && idImagen.toLong()> 0L)
-						item.setCantidad(idImagen.toLong());
+					Entity imagen= (Entity)DaoFactory.getInstance().toEntity("VistaArticulosDto", "imagen", params);
+					if(imagen!= null && !imagen.isEmpty()) {
+						item.setCantidad(imagen.toLong("idImagen"));
+						item.setAlias(imagen.toString("alias"));
+					} // if	
 					else
 						item.setCantidad(10198L);
 					this.attrs.put("idArticulo", articulo.toLong("idArticulo"));
@@ -176,9 +180,16 @@ public class Imagenes extends IBaseAttribute implements Serializable {
 	}	
 
 	public String doAceptar() {
-		String regresar= null;
-    try {			
-			regresar= ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+		String regresar     = null;
+		Replicar transaccion= null;
+    try {		
+			transaccion= new Replicar(this.articulo, this.articulos);
+			if(transaccion.ejecutar(EAccion.PROCESAR)) {
+			  JsfBase.addMessage("Se replicó la imagen de forma correcta !", ETipoMensaje.INFORMACION);
+				this.articulos.clear();
+			} // if	
+			else 
+				JsfBase.addMessage("Ocurrió un error al replicar las imagen.", ETipoMensaje.ALERTA);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -228,11 +239,11 @@ public class Imagenes extends IBaseAttribute implements Serializable {
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 
-	public void doPrepareImage(Long idImagen, String nombre) {
+	public void doPrepareImage(String alias, String nombre) {
 		try {
-			LOG.info("idImagen: "+ idImagen);
+			LOG.info("alias: "+ alias);
 			this.attrs.put("nombre", nombre);
-			this.pivote= LoadImages.getImage(String.valueOf(idImagen));
+			this.pivote= LoadImages.getFile(alias);
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);

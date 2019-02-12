@@ -118,7 +118,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			Calendar calendar= Calendar.getInstance();
 			calendar.setTimeInMillis(fecha);
       path.append(carpeta);
-      temp.append(JsfBase.getAutentifica().getEmpresa().getNombreCorto().replaceAll(" ", ""));
+      temp.append(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString().replaceAll(" ", ""));
       temp.append("/");
       temp.append(Calendar.getInstance().get(Calendar.YEAR));
       temp.append("/");

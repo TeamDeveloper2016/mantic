@@ -266,14 +266,13 @@ public class Transaccion extends TransaccionFactura {
 		Long tipoImagen             = null;
 		String name                 = null;
 		File result                 = null;
-		String genericPath          = null;
 		try {
 			if(idImagen!= null)
 				regresar= (TcManticImagenesDto) DaoFactory.getInstance().findById(sesion, TcManticImagenesDto.class, idImagen);
 			else
 				regresar= new TcManticImagenesDto();
 			name= this.articulo.getImportado().getName();
-			if(!Cadena.isVacio(name)){
+			if(!Cadena.isVacio(name)) {
 				tipoImagen= ETipoImagen.valueOf(name.substring(name.lastIndexOf(".")+1, name.length()).toUpperCase()).getIdTipoImagen();
 				regresar.setNombre(idArticulo.toString().concat(".").concat(name.substring(name.lastIndexOf(".")+1, name.length())));
 				regresar.setIdTipoImagen(tipoImagen);
@@ -281,11 +280,12 @@ public class Transaccion extends TransaccionFactura {
 				regresar.setArchivo(name);
 				regresar.setTamanio(this.articulo.getImportado().getFileSize());
 				regresar.setRuta(this.articulo.getImportado().getRuta());			
-				genericPath= Configuracion.getInstance().getPropiedadSistemaServidor("path.image").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat(File.separator);
-				result= new File(genericPath.concat(this.articulo.getImportado().getName()));			
-				if(result.exists()){
-					Archivo.copy(genericPath.concat(this.articulo.getImportado().getName()), genericPath.concat(regresar.getNombre()), true);							
-					Archivo.delete(genericPath.concat(this.articulo.getImportado().getName()));
+				String path= Configuracion.getInstance().getPropiedadSistemaServidor("path.image").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat(File.separator);
+				regresar.setAlias(path.concat(this.articulo.getImportado().getName()));
+				result= new File(regresar.getAlias());			
+				if(result.exists()) {
+					Archivo.copy(path.concat(this.articulo.getImportado().getName()), path.concat(regresar.getNombre()), true);							
+					Archivo.delete(path.concat(this.articulo.getImportado().getName()));
 				} // if
 			} // if
 		} // try

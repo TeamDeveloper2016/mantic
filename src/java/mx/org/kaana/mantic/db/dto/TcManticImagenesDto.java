@@ -50,6 +50,8 @@ public class TcManticImagenesDto implements IBaseDto, Serializable {
   private Long idTipoImagen;
   @Column (name="nombre")
   private String nombre;
+  @Column (name="alias")
+  private String alias;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -58,11 +60,11 @@ public class TcManticImagenesDto implements IBaseDto, Serializable {
   }
 
   public TcManticImagenesDto(Long key) {
-    this(null, null, null, null, new Long(-1L), null, null);
+    this(null, null, null, null, new Long(-1L), null, null, null);
     setKey(key);
   }
 
-  public TcManticImagenesDto(String archivo, String ruta, Long tamanio, Long idUsuario, Long idImagen, Long idTipoImagen, String nombre) {
+  public TcManticImagenesDto(String archivo, String ruta, Long tamanio, Long idUsuario, Long idImagen, Long idTipoImagen, String nombre, String alias) {
     setArchivo(archivo);
     setRuta(ruta);
     setTamanio(tamanio);
@@ -70,6 +72,7 @@ public class TcManticImagenesDto implements IBaseDto, Serializable {
     setIdImagen(idImagen);
     setIdTipoImagen(idTipoImagen);
     setNombre(nombre);
+		this.alias= alias;
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -129,6 +132,14 @@ public class TcManticImagenesDto implements IBaseDto, Serializable {
     return nombre;
   }
 
+	public String getAlias() {
+		return alias;
+	}
+
+	public void setAlias(String alias) {
+		this.alias=alias;
+	}
+
   public void setRegistro(Timestamp registro) {
     this.registro = registro;
   }
@@ -166,6 +177,8 @@ public class TcManticImagenesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getAlias());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -181,6 +194,7 @@ public class TcManticImagenesDto implements IBaseDto, Serializable {
 		regresar.put("idImagen", getIdImagen());
 		regresar.put("idTipoImagen", getIdTipoImagen());
 		regresar.put("nombre", getNombre());
+		regresar.put("alias", getAlias());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -188,7 +202,7 @@ public class TcManticImagenesDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getArchivo(), getRuta(), getTamanio(), getIdUsuario(), getIdImagen(), getIdTipoImagen(), getNombre(), getRegistro()
+    getArchivo(), getRuta(), getTamanio(), getIdUsuario(), getIdImagen(), getIdTipoImagen(), getNombre(), getAlias(), getRegistro()
     };
     return regresar;
   }

@@ -58,7 +58,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el respaldo de la base de datos.");
 			switch(accion) {
 				case AGREGAR:
-					TcManticRespaldosDto dto= toBackup();
+					TcManticRespaldosDto dto= this.toBackup();
 					if(dto!= null)
 					  regresar= DaoFactory.getInstance().insert(sesion, dto)>= 1L;
 					break;
@@ -132,7 +132,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
    		LOG.info("Compactar archivo: "+ sb.toString().concat(name.toString()).concat(EFormatos.ZIP.name().toLowerCase()));
 			zip.compactar(sb.toString().concat(name.toString()).concat(EFormatos.ZIP.name().toLowerCase()), token, files);
 			File file= new File(zip.getNombre());
-			regresar= new TcManticRespaldosDto(sb.toString().substring(token), file.getTotalSpace(), JsfBase.getIdUsuario(), this.observacion, -1L, zip.getNombre(), name.toString().concat(EFormatos.ZIP.name().toLowerCase()));
+			regresar= new TcManticRespaldosDto(sb.toString().substring(token), file.getTotalSpace(), JsfBase.getAutentifica()== null? 1L: JsfBase.getIdUsuario(), this.observacion, -1L, zip.getNombre(), name.toString().concat(EFormatos.ZIP.name().toLowerCase()));
 			file= new File(files[0]);
 			file.delete();
    		LOG.info("Eliminar archivo: "+ files[0]);

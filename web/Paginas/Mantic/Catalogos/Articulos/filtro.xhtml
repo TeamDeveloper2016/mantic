@@ -153,6 +153,11 @@
 							</f:facet>
 							<h:outputText value="#{row['stock']}"/>
 						</p:column>					
+						<p:column headerText="Imagen" styleClass="janal-column-center janal-wid-5">
+							<p:commandLink actionListener="#{manticCatalogosArticulosFiltro.doPrepareImage(row.alias, row.nombre)}" process="@this" update="dialogoArticulo" onstart="return janal.bloquear();" oncomplete="PF('dlgArticulo').show();" rendered="#{row.idImagen ne 0}">
+							  <i class="fa fa-fw fa-2x fa-file-image-o" style="display: #{row.idImagen eq 0? 'none': ''}" title="El articulo tiene imagen asociada, click para ver la imagen !"/>
+							</p:commandLink>
+						</p:column>   
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idFacturama eq '-1' ? 'circulo-gris.png': 'circulo-verde.png'}" title="Articulo #{row.idFacturama eq '-1' ? 'NO': ''} registrado en facturama"/>
 						</p:column>
@@ -173,12 +178,14 @@
 						<p:menuitem id="clonar" action="#{manticCatalogosArticulosFiltro.doAccion('COPIAR')}" icon="fa fa-copy" ajax="false" value="Clonar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator rendered="#{manticCatalogosArticulosFiltro.attrs.seleccionado.idFacturama eq '-1'}"/>
 						<p:menuitem id="facturama" icon="fa fa-gear" value="Sincronizar" title="Registrar articulo en facturama" onstart="return janal.bloquear()" process="@this tabla" oncomplete="janal.desbloquear()" action="#{manticCatalogosArticulosFiltro.doPublicarFacturama}"/>
+						<p:separator rendered="#{manticCatalogosArticulosFiltro.attrs.seleccionado.idImagen ne 0}"/>
+						<p:menuitem id="replicar" action="#{manticCatalogosArticulosFiltro.doReplicar()}" icon="fa fa-file-picture-o" ajax="false" value="Replicar imagen" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"  rendered="#{manticCatalogosArticulosFiltro.attrs.seleccionado.idImagen ne 0}"/>
 					</p:contextMenu>					
 				</div>
 			</div>
 		</div>		           				
 	</ui:define>    
-	<ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la categoria seleccionada ?" />
+	<ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el articulo seleccionado ?" />
 	<ui:param name="accionConfirmacion" value="#{manticCatalogosArticulosFiltro}"/>
 	<ui:param name="updateComponent" value="tabla"/>
 	<ui:param name="eventoConfirmacion" value="doEliminar"	/>	
@@ -194,5 +201,15 @@
 			<ui:param name="dialogo" value="articulos"/>
 			<ui:param name="seleccionado" value="#{manticCatalogosArticulosFiltro.attrs.seleccionado}"/>
 		</ui:include>
+		<p:dialog id="dialogoArticulo" widgetVar="dlgArticulo" header="Imagen del articulo" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();" width="70%">			
+			<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt janal-colum-center" columnClasses="TexAlCenter">
+				<p:outputLabel value="#{manticCatalogosArticulosImagenes.attrs.nombre}" styleClass="janal-color-orange"/>
+				<p:graphicImage value="#{manticCatalogosArticulosImagenes.image}" styleClass="janal-logo-mini" width="350" height="230" stream="false"/>
+			</p:panelGrid>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">				
+				<p:commandButton icon="fa fa-close" process="@none" accesskey="r" value="Cerrar" onstart="PF('dlgArticulo').hide();" oncomplete="janal.desbloquear();"/>
+			</div>
+		</p:dialog>
 	</ui:define>
 </ui:composition>

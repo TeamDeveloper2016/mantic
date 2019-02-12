@@ -115,7 +115,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			Calendar calendar= Calendar.getInstance();
 			calendar.setTimeInMillis(fechaFactura);
       path.append(carpeta);
-      temp.append(JsfBase.getAutentifica().getEmpresa().getNombreCorto().replaceAll(" ", ""));
+      temp.append(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString().replaceAll(" ", ""));
       temp.append("/");
       temp.append(Calendar.getInstance().get(Calendar.YEAR));
       temp.append("/");

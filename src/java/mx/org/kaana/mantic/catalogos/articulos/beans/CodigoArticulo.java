@@ -22,6 +22,7 @@ public class CodigoArticulo implements IBaseDto, Serializable {
 	private Long idArticulo;
 	private String propio;
 	private String nombre;
+	private String alias;
 	private Long cantidad;
 	private Double tope;
 	private String codigo;
@@ -43,6 +44,7 @@ public class CodigoArticulo implements IBaseDto, Serializable {
 		this.idArticulo=idArticulo;
 		this.propio=propio;
 		this.nombre=nombre;
+		this.alias= "";
 		this.cantidad=cantidad;
 		this.tope=tope;
 		this.codigo=codigo;
@@ -71,6 +73,14 @@ public class CodigoArticulo implements IBaseDto, Serializable {
 
 	public void setNombre(String nombre) {
 		this.nombre=nombre;
+	}
+
+	public String getAlias() {
+		return alias;
+	}
+
+	public void setAlias(String alias) {
+		this.alias=alias;
 	}
 
 	public Long getCantidad() {
@@ -133,7 +143,7 @@ public class CodigoArticulo implements IBaseDto, Serializable {
 
 	@Override
 	public String toString() {
-		return "CodigoArticulo{"+"idArticulo="+idArticulo+", propio="+propio+", nombre="+nombre+", cantidad="+cantidad+", tope="+tope+", codigo="+codigo+", agregado="+agregado+'}';
+		return "CodigoArticulo{"+"idArticulo="+idArticulo+", propio="+propio+", nombre="+nombre+", alias="+alias+", cantidad="+cantidad+", tope="+tope+", codigo="+codigo+", agregado="+agregado+'}';
 	}
 
 	@Override
@@ -151,6 +161,7 @@ public class CodigoArticulo implements IBaseDto, Serializable {
     Map regresar = new HashMap();
 		regresar.put("idArticulo", getIdArticulo());
 		regresar.put("nombre", getNombre());
+		regresar.put("alias", getAlias());
 		regresar.put("propio", getPropio());
 		regresar.put("cantidad", getCantidad());
 		regresar.put("tope", getTope());
@@ -161,8 +172,8 @@ public class CodigoArticulo implements IBaseDto, Serializable {
 
 	@Override
 	public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getNombre(), getIdArticulo(), getCodigo(), getPropio(), getAgregado(), getCantidad(), getTope()
+    Object[] regresar = new Object[] {
+      getNombre(), getAlias(), getIdArticulo(), getCodigo(), getPropio(), getAgregado(), getCantidad(), getTope()
     };
     return regresar;
 	}

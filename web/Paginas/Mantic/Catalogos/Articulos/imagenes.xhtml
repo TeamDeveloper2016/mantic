@@ -34,16 +34,7 @@
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-10">
-					<div class="ui-grid-row janal-grid-row">
-						<div class="ui-grid-col-12">
-							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt">
-								<p:outputLabel value="Código:"/>
-								<p:inputText value="#{manticCatalogosArticulosImagenes.articulo.propio}" styleClass="janal-wid-100-txt janal-color-blue janal-column-right" readonly="true"/>
-								<p:outputLabel value="Nombre:"/>
-								<p:inputText value="#{manticCatalogosArticulosImagenes.articulo.nombre}" styleClass="janal-wid-100-txt" readonly="true"/>
-							</p:panelGrid>	
-						</div>
-					</div>
+					<p:spacer height="10px"/>
 					<div class="ui-grid-row janal-grid-row">
 						<div class="ui-grid-col-1 janal-wid-col-150">
 							<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-80, janal-wid-3">
@@ -74,6 +65,16 @@
 							</p:autoComplete>			
 						</div>
 					</div>
+					<div class="ui-grid-row janal-grid-row">
+						<div class="ui-grid-col-12">
+							<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-10, janal-wid-100-txt">
+								<p:outputLabel value="Código:"/>
+								<p:outputLabel value="Nombre:"/>
+								<p:inputText value="#{manticCatalogosArticulosImagenes.articulo.propio}" styleClass="janal-wid-100-txt janal-color-blue janal-column-right" readonly="true"/>
+								<p:inputText value="#{manticCatalogosArticulosImagenes.articulo.nombre}" styleClass="janal-wid-100-txt" readonly="true"/>
+							</p:panelGrid>	
+						</div>
+					</div>
 				</div>
 				<div class="ui-grid-col-2">
 					<p:panel id="panelImage" header="#{manticCatalogosArticulosImagenes.articulo.propio}" styleClass="TexAlCenter janal-wid-100-txt" style="height:100%">
@@ -102,7 +103,7 @@
 							<h:outputText value="#{row.nombre}"/>
 						</p:column>   
 						<p:column headerText="Imagen" styleClass="janal-column-center janal-wid-5">
-							<p:commandLink actionListener="#{manticCatalogosArticulosImagenes.doPrepareImage(row.cantidad, row.nombre)}" process="@this" update="confirmacion" onstart="return janal.bloquear();" oncomplete="PF('dialogoConfirmacion').show();" rendered="#{row.cantidad ne 0}">
+							<p:commandLink actionListener="#{manticCatalogosArticulosImagenes.doPrepareImage(row.alias, row.nombre)}" process="@this" update="confirmacion" onstart="return janal.bloquear();" oncomplete="PF('dialogoConfirmacion').show();" rendered="#{row.cantidad ne 0}">
 							  <i class="fa fa-fw fa-2x fa-file-image-o" style="display: #{row.cantidad eq 0? 'none': ''}" title="El articulo tiene imagen asociada, click para ver la imagen !"/>
 							</p:commandLink>
 						</p:column>   
@@ -120,21 +121,21 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" onstart="janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" action="#{manticCatalogosArticulosImagenes.doAceptar}" onstart="janal.execute();" oncomplete="janal.desbloquear()" process="@this tabla" update="tabla"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosArticulosImagenes.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" onstart="janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" action="#{manticCatalogosArticulosImagenes.doAceptar}" onstart="janal.execute();" oncomplete="janal.desbloquear()" process="@this tabla" update="tabla"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosArticulosImagenes.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 	</ui:define>
-	<ui:param name="tituloConfirmacion" value="Imagen del articulo" />
+	<ui:param name="tituloConfirmacion" value="Imagen del articulo"/>
   <ui:param name="textoConfirmacion" value="#{manticCatalogosArticulosImagenes.attrs.nombre}"/>
   <ui:param name="renderedConfirmacion" value="false"/>	
-  <ui:param name="updateComponent" value=":datos:tabla"/>	
+  <ui:param name="updateComponent" value="aceptar"/>	
 	<ui:define name="detalleConfirmacion">
-		<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt janal-colum-center" columnClasses="janal-colum-center">
-			<p:graphicImage value="#{manticCatalogosArticulosImagenes.pivote}" styleClass="janal-logo-mini" width="280" height="280" stream="false"/>
+		<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt janal-colum-center" columnClasses="TexAlCenter">
+			<p:graphicImage value="#{manticCatalogosArticulosImagenes.pivote}" styleClass="janal-logo-mini" width="350" height="230" stream="false"/>
 		</p:panelGrid>
   </ui:define>
 </ui:composition>

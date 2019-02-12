@@ -239,4 +239,5 @@ public class MotorBusqueda implements Serializable{
 		} // catch		
 		return regresar;
 	} // toArticuloImagen
+	
 }

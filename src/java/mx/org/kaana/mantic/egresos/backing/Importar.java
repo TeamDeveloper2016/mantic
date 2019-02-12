@@ -139,7 +139,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 			Calendar calendar= Calendar.getInstance();
 			calendar.setTimeInMillis(this.egreso.getRegistro().getTime());
       path.append(Configuracion.getInstance().getPropiedadSistemaServidor("egresos"));
-      temp.append(JsfBase.getAutentifica().getEmpresa().getNombreCorto().replaceAll(" ", ""));
+      temp.append(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString().replaceAll(" ", ""));
       temp.append("/");
       temp.append(Calendar.getInstance().get(Calendar.YEAR));
       temp.append("/");

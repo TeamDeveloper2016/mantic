@@ -24,6 +24,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.RegistroArticulo;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
@@ -31,6 +32,7 @@ import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.StreamedContent;
 
 @Named(value = "manticCatalogosArticulosFiltro")
 @ViewScoped
@@ -38,6 +40,12 @@ public class Filtro extends Comun implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
 
+	private StreamedContent image;
+
+	public StreamedContent getImage() {
+		return image;
+	}
+	
   @PostConstruct
   @Override
   protected void init() {
@@ -253,4 +261,22 @@ public class Filtro extends Comun implements Serializable {
     JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.ARTICULOS.getId());
     return "/Paginas/Mantic/Catalogos/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	} // doMasivo	
+	
+	public void doPrepareImage(String alias, String nombre) {
+		try {
+			this.attrs.put("nombre", nombre);
+			this.image= LoadImages.getFile(alias);
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+	}
+	
+	public String doReplicar() {
+    JsfBase.setFlashAttribute("retorno", "filtro");
+    JsfBase.setFlashAttribute("idPivote", ((Entity)this.attrs.get("seleccionado")).getKey());
+		return "imagenes".concat(Constantes.REDIRECIONAR);
+	} 
+	
 }

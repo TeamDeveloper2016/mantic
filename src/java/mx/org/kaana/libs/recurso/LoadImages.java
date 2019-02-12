@@ -5,8 +5,14 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.List;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.primefaces.model.DefaultStreamedContent;
@@ -22,20 +28,42 @@ import org.primefaces.model.DefaultStreamedContent;
 public final class LoadImages {
 
 	public static DefaultStreamedContent getImage(String project, String name) throws FileNotFoundException {
-		DefaultStreamedContent regresar;
 		File file= toListFile(project, name);
-		regresar= toReturnFile(file);
-		return regresar;
+		return toReturnFile(file);
 	}
 	
 	public static DefaultStreamedContent getImage(String name) throws FileNotFoundException {
-		DefaultStreamedContent regresar;
 		File file= toListFile(name);
-		regresar= toReturnFile(file);
+		return toReturnFile(file);
+	} 
+	
+	public static DefaultStreamedContent getImage(Long idArticulo) throws FileNotFoundException, Exception {
+		DefaultStreamedContent regresar= null;
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+  		Value alias= (Value)DaoFactory.getInstance().toField("VistaArticulosDto", "imagen", params, "alias");
+			if(alias!= null && !Cadena.isVacio(alias.toString()))
+				regresar= getFile(alias.toString());
+		  else
+				regresar= new DefaultStreamedContent(new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/bonanza.svg")), "image/svg+xml");
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
 		return regresar;
 	} 
 	
-	private static DefaultStreamedContent toReturnFile(File file) throws FileNotFoundException{
+	public static DefaultStreamedContent getFile(String name) throws FileNotFoundException {
+		if(Cadena.isVacio(name))
+		  return new DefaultStreamedContent(new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/bonanza.svg")), "image/svg+xml");
+		else {
+		  File file= new File(name);
+		  return file.exists()? new DefaultStreamedContent(new FileInputStream(name), "image/jpg"): new DefaultStreamedContent(new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/bonanza.svg")), "image/svg+xml");
+		} // else	
+	} 
+	
+	private static DefaultStreamedContent toReturnFile(File file) throws FileNotFoundException {
 		DefaultStreamedContent regresar;
 		if(file== null || !file.exists() || file.isDirectory())
 		  regresar= new DefaultStreamedContent(new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/bonanza.svg")), "image/svg+xml");
@@ -63,7 +91,7 @@ public final class LoadImages {
 		return files== null || files.length<= 0? new File(Configuracion.getInstance().getPropiedadSistemaServidor("path.image")+ name+ ".jpg"): files[0];
 	}
 	
-	public static void main(String ... args) throws Exception{
+	public static void main(String ... args) throws Exception {
 		try {
 			LoadImages.getImage("1");
 		} // try
@@ -71,4 +99,5 @@ public final class LoadImages {
 			throw e;
 		} // catch		
 	}
+	
 }
