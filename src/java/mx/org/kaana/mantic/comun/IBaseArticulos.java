@@ -821,7 +821,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
 				this.attrs.put("lazyDescuentos", new FormatLazyModel("TcManticArticulosDescuentosDto", "row", params, columns));
 				UIBackingUtilities.resetDataTable("lazyDescuentos");
-				this.detailImage= LoadImages.getImage(String.valueOf(idArticulo));
+				this.detailImage= LoadImages.getImage(idArticulo);
 			} // if
 		} // try
 		catch (Exception e) {

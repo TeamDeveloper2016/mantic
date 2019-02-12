@@ -73,7 +73,7 @@ public final class UIEntity {
         else
           entity= (Entity) item;
 				try {
-					entity.put("image", new Value("image", LoadImages.getImage(entity.toString("idArticulo"))));
+					entity.put("image", new Value("image", LoadImages.getImage(entity.toLong("idArticulo"))));
 				} // try
 				catch (Exception e) {
 					Error.mensaje(e);					

@@ -173,7 +173,7 @@ public class Conteos extends IBaseFilter implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
 			this.attrs.put("idArticulo", null);
 			if(articulo.size()> 1) {
-				this.image= LoadImages.getImage(articulo.toString("idArticulo"));
+				this.image= LoadImages.getImage(articulo.toLong("idArticulo"));
   			this.attrs.put("idArticulo", articulo.toLong("idArticulo"));
 				Entity solicitado= (Entity)DaoFactory.getInstance().toEntity("VistaKardexDto", "row", this.attrs);
 				if(solicitado!= null) {

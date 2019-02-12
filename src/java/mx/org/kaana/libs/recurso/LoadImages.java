@@ -73,7 +73,7 @@ public final class LoadImages {
 	}
 	
 	private static File toListFile(String project, String name) {
-		File dir = new File(Configuracion.getInstance().getPropiedadSistemaServidor("path.image").concat(project).concat(File.separator));		
+		File dir = new File(Configuracion.getInstance().getPropiedadSistemaServidor("path.image").concat(project).concat("/"));		
 		return toReturnListFile(dir, name);
 	}
 	

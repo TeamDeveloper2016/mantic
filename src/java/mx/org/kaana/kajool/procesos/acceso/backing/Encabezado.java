@@ -152,7 +152,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
 			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 			if(!almacenes.isEmpty())
 				this.attrs.put("idAlmacen", almacenes.get(0));
-			this.image= LoadImages.getImage(entity.toString("idArticulo"));
+			this.image= LoadImages.getImage(entity.toLong("idArticulo"));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

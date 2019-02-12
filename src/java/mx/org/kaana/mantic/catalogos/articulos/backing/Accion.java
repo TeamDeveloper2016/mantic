@@ -74,7 +74,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       switch (eaccion) {
         case AGREGAR:
           this.registroArticulo = new RegistroArticulo();
-					this.image= LoadImages.getImage("-1");
+					this.image= LoadImages.getImage(-1L);
           break;
         case MODIFICAR:
         case CONSULTAR:

@@ -86,7 +86,7 @@ public class Codigos extends IBaseAttribute implements Serializable {
 		this.attrs.put("idArticulo", null);
 		if(articulo.size()> 1) {
 			if(this.articulos.indexOf(new CodigoArticulo(articulo.toLong("idArticulo")))< 0) {
-  			// this.image= LoadImages.getImage(articulo.toString("idArticulo"));
+  			// this.image= LoadImages.getImage(articulo.toLong("idArticulo"));
 				this.attrs.put("idArticulo", articulo.toLong("idArticulo"));
 				this.articulos.add(new CodigoArticulo(articulo.toLong("idArticulo"), articulo.toString("propio"), articulo.toString("nombre")));
 				RequestContext.getCurrentInstance().execute("jsKardex.cursor.top= "+ (this.articulos.size()- 1)+"; jsKardex.callback("+ articulo +");");

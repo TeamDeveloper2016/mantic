@@ -110,7 +110,7 @@ public class Accion extends IBaseAttribute implements Serializable {
           this.attrs.put("idArticulo", this.detalle.getIdArticulo());
 				  UISelectEntity articulo= this.detalle.toUISelectEntity();
 				  this.attrs.put("articulo", articulo);
-          this.image= LoadImages.getImage(this.detalle.getIdArticulo().toString());
+          this.image= LoadImages.getImage(this.detalle.getIdArticulo());
 					params.put("idArticulo", this.detalle.getIdArticulo());
 					params.put("idAlmacen", this.transferencia.getIdAlmacen());
 					// recuperar el stock de articulos en el almacen origen
@@ -315,7 +315,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.detalle.setIdArticulo(seleccion.toLong("idArticulo"));
 			this.detalle.setPropio(seleccion.toString("propio"));
 			this.detalle.setNombre(seleccion.toString("nombre"));
-      this.image= LoadImages.getImage(seleccion.toString("idArticulo"));
+      this.image= LoadImages.getImage(seleccion.toLong("idArticulo"));
 			params.put("idArticulo", seleccion.toLong("idArticulo"));
 			params.put("idAlmacen", this.transferencia.getIdAlmacen());
 			// recuperar el stock de articulos en el almacen origen
