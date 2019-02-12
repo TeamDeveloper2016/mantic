@@ -72,10 +72,12 @@ public class Imagenes extends IBaseAttribute implements Serializable {
 	protected void init() {
   	this.attrs.put("buscaPorCodigo", false);
     this.attrs.put("idPivote", JsfBase.getFlashAttribute("idPivote")== null? 10198L: JsfBase.getFlashAttribute("idPivote"));
+    this.attrs.put("alias", JsfBase.getFlashAttribute("idPivote")== null? 10198L: JsfBase.getFlashAttribute("alias"));
 		this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Mantic/Catalogos/Articulos/filtro": JsfBase.getFlashAttribute("retorno"));
     if(this.attrs.get("idPivote")!= null) 
 			this.doLoad();
 	  this.articulos= new ArrayList<>();
+		this.attrs.put("total", 0);
 	}
 	
 	private void doLoad() {
@@ -85,8 +87,9 @@ public class Imagenes extends IBaseAttribute implements Serializable {
 			columns= new ArrayList<>(); 
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idArticulo", this.attrs.get("idPivote"));
+			params.put("alias", this.attrs.get("alias"));
 			this.articulo= (Entity)DaoFactory.getInstance().toEntity("VistaArticulosDto", "imagen", params);
-			this.image   = LoadImages.getImage(this.articulo.toString("idArticulo"));
+			this.image   = LoadImages.getFile((String)this.attrs.get("alias"));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -126,6 +129,7 @@ public class Imagenes extends IBaseAttribute implements Serializable {
 				this.attrs.put("existe", "<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
 				this.attrs.put("articulo", null);
 			} // if	
+			this.attrs.put("total", this.articulos.size());
 	  } // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -187,6 +191,7 @@ public class Imagenes extends IBaseAttribute implements Serializable {
 			if(transaccion.ejecutar(EAccion.PROCESAR)) {
 			  JsfBase.addMessage("Se replicó la imagen de forma correcta !", ETipoMensaje.INFORMACION);
 				this.articulos.clear();
+  			this.attrs.put("total", this.articulos.size());
 			} // if	
 			else 
 				JsfBase.addMessage("Ocurrió un error al replicar las imagen.", ETipoMensaje.ALERTA);
@@ -232,6 +237,7 @@ public class Imagenes extends IBaseAttribute implements Serializable {
 	public void doEliminar(CodigoArticulo seleccionado) {
 		if(seleccionado!= null) 
 	    this.articulos.remove(seleccionado);
+		this.attrs.put("total", this.articulos.size());
 	}
 
 	public String doCancelar() {   

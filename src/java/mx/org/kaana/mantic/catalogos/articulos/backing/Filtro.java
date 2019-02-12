@@ -276,6 +276,7 @@ public class Filtro extends Comun implements Serializable {
 	public String doReplicar() {
     JsfBase.setFlashAttribute("retorno", "filtro");
     JsfBase.setFlashAttribute("idPivote", ((Entity)this.attrs.get("seleccionado")).getKey());
+    JsfBase.setFlashAttribute("alias", ((Entity)this.attrs.get("seleccionado")).toString("alias"));
 		return "imagenes".concat(Constantes.REDIRECIONAR);
 	} 
 	
