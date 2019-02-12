@@ -75,6 +75,7 @@
               <div class="lg-pantalla">
                 <p:menuButton   value="Opciones">
                   <p:menuitem  value="Articulos" action="#{manticCatalogosAlmacenesUbicacionesFiltro.doArticulos}" icon="fa fa-cube" title="Articulos" onstart="return janal.bloquear()"/>						
+                  <p:menuitem  value="Organigrama" action="#{manticCatalogosAlmacenesUbicacionesFiltro.doOrganigrama}" icon="fa fa-sitemap" title="Organigrama" onstart="return janal.bloquear()"/>						
                   <p:separator/>
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -82,6 +83,7 @@
               </div>  
               <div class="xs-pantalla">              
                 <p:commandButton  value="Articulos" action="#{manticCatalogosAlmacenesUbicacionesFiltro.doArticulos}" icon="fa fa-cube" title="Articulos" onstart="return janal.bloquear()"/>						
+                <p:commandButton  value="Organigrama" action="#{manticCatalogosAlmacenesUbicacionesFiltro.doOrganigrama}" icon="fa fa-sitemap" title="Organigrama" onstart="return janal.bloquear()"/>						
                 <p:separator/>
                 <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
