@@ -39,7 +39,7 @@ public final class LoadImages {
 	
 	public static DefaultStreamedContent getImage(Long idArticulo) throws FileNotFoundException, Exception {
 		DefaultStreamedContent regresar= null;
-		Map<String, Object> params=null;
+		Map<String, Object> params     = null;
 		try {
 			params=new HashMap<>();
 			params.put("idArticulo", idArticulo);
