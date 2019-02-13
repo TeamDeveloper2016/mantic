@@ -211,39 +211,49 @@ public class Transaccion extends Inventarios implements Serializable {
 	}	// ejecutar
 
 	private void toFillArticulos(Session sesion) throws Exception {
-	  StringBuilder error= new StringBuilder();
+	  StringBuilder error = new StringBuilder();
 		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "VistaNotasEntradasDto", "detalle", this.orden.toMap());
-		for (Articulo item: todos) 
-			if(this.articulos.indexOf(item)< 0) {
-				this.toAffectOrdenDetalle(sesion, item);
-				DaoFactory.getInstance().delete(sesion, item);
-			} // if
-		for (Articulo articulo: this.articulos) {
-			TcManticNotasDetallesDto item= articulo.toNotaDetalle();
-			item.setIdNotaEntrada(this.orden.getIdNotaEntrada());
-			if(item.getDiferencia()!= 0)
-				error.append("[").append(item.getNombre()).append(" - ").append(item.getDiferencia()).append("]</br> ");
-			if(DaoFactory.getInstance().findIdentically(sesion, TcManticNotasDetallesDto.class, item.toMap())== null && (articulo.getCantidad()> 0D || articulo.getCosto()> 0D)) {
-				this.toAffectOrdenDetalle(sesion, articulo);
-				if(item.isValid()) {
-					if(articulo.isModificado())
-			      DaoFactory.getInstance().update(sesion, item);
-				} // if	
-				else
-			    DaoFactory.getInstance().insert(sesion, item);
-				// if(this.aplicar)
-				//  this.toAffectAlmacenes(sesion, this.orden.getIdNotaEntrada(), item, articulo);
-	  		articulo.setObservacion("ARTICULO SURTIDO EN LA NOTA DE ENTRADA ".concat(this.orden.getConsecutivo()).concat(" EL DIA ").concat(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, this.orden.getRegistro())));
-   			DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, articulo.toMap());
-			} // if
-		} // for
-		//* APLICAR UNA ALERTA EN CASO DE QUE FALTEN ARTICULOS FISICO CON RESPECTO A LA FACTURA ENTREGADA *//
-		if(error.length()> 0) 
-			DaoFactory.getInstance().insert(sesion, new TcManticAlertasDto(JsfBase.getIdUsuario(), -1L, 1L, "EN LA NOTA DE ENTRADA ["+ this.orden.getConsecutivo()+ 
-				"] EXISTEN ARTICULOS QUE NO FUERON SOLICITADOS, QUE DIFIEREN LA CANTIDAD FISICA DE ARTICULOS CONTRA LA DECLARA EN LA FACTURA ["+ 
-				this.orden.getFactura()+ "] DE ESTE PROVEEDOR "+ 
-				((TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.orden.getIdProveedor())).getRazonSocial()+ " ARTICULOS: </br>"+ error.toString()
-			));
+		Map<String, Object> params= new HashMap<>();
+		try {
+			for (Articulo item: todos) 
+				if(this.articulos.indexOf(item)< 0) {
+					this.toAffectOrdenDetalle(sesion, item);
+					DaoFactory.getInstance().delete(sesion, item);
+				} // if
+			for (Articulo articulo: this.articulos) {
+				TcManticNotasDetallesDto item= articulo.toNotaDetalle();
+				item.setIdNotaEntrada(this.orden.getIdNotaEntrada());
+				if(item.getDiferencia()!= 0)
+					error.append("[").append(item.getNombre()).append(" - ").append(item.getDiferencia()).append("]</br> ");
+				if(DaoFactory.getInstance().findIdentically(sesion, TcManticNotasDetallesDto.class, item.toMap())== null && (articulo.getCantidad()> 0D || articulo.getCosto()> 0D)) {
+					this.toAffectOrdenDetalle(sesion, articulo);
+					if(item.isValid()) {
+						if(articulo.isModificado())
+							DaoFactory.getInstance().update(sesion, item);
+					} // if	
+					else
+						DaoFactory.getInstance().insert(sesion, item);
+					// if(this.aplicar)
+					//  this.toAffectAlmacenes(sesion, this.orden.getIdNotaEntrada(), item, articulo);
+					articulo.setObservacion("ARTICULO SURTIDO EN LA NOTA DE ENTRADA ".concat(this.orden.getConsecutivo()).concat(" EL DIA ").concat(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, this.orden.getRegistro())));
+					params.put("idArticulo", articulo.getIdArticulo());
+					params.put("idEmpresa", this.orden.getIdEmpresa());
+					params.put("observaciones", "ESTE ARTICULO FUE SURTIDO CON NO. NOTA DE ENTRADA "+ this.orden.getConsecutivo()+ " EL DIA "+ Fecha.getHoyExtendido());
+					DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, params);
+				} // if
+			} // for
+			//* APLICAR UNA ALERTA EN CASO DE QUE FALTEN ARTICULOS FISICO CON RESPECTO A LA FACTURA ENTREGADA *//
+			if(error.length()> 0) 
+				DaoFactory.getInstance().insert(sesion, new TcManticAlertasDto(JsfBase.getIdUsuario(), -1L, 1L, "EN LA NOTA DE ENTRADA ["+ this.orden.getConsecutivo()+ 
+					"] EXISTEN ARTICULOS QUE NO FUERON SOLICITADOS, QUE DIFIEREN LA CANTIDAD FISICA DE ARTICULOS CONTRA LA DECLARA EN LA FACTURA ["+ 
+					this.orden.getFactura()+ "] DE ESTE PROVEEDOR "+ 
+					((TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.orden.getIdProveedor())).getRazonSocial()+ " ARTICULOS: </br>"+ error.toString()
+				));
+		} // try
+		finally {
+			Methods.clean(todos);
+			Methods.clean(params);
+		} // finally
 	}
 
 	private void toRemoveOrdenDetalle(Session sesion) throws Exception {

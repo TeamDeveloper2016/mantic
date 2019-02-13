@@ -18,6 +18,7 @@ import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticConfrontasDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticConfrontasDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
 import org.apache.commons.logging.Log;
@@ -105,35 +106,47 @@ public class Transaccion extends ComunInventarios {
 	}
 
 	private void toFillArticulos(Session sesion, EAccion accion) throws Exception {
-		List<Articulo> todos=(List<Articulo>) DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "VistaConfrontasDto", "detalle", this.dto.toMap());
-		for (Articulo item: todos) 
-			if (this.articulos.indexOf(item)< 0) 
-				DaoFactory.getInstance().delete(sesion, item.toConfrontasDetalle());
-		for (Articulo articulo: this.articulos) {
-			TcManticConfrontasDetallesDto item= articulo.toConfrontasDetalle();
-			item.setIdConfronta(this.dto.getIdConfronta());
-			if (DaoFactory.getInstance().findIdentically(sesion, TcManticConfrontasDetallesDto.class, item.toMap())== null) 
-				DaoFactory.getInstance().insert(sesion, item);
-			else 
-				DaoFactory.getInstance().update(sesion, item);
-			this.toAffectTransferenciaDetalle(sesion, articulo);
-			if(!EAccion.AGREGAR.equals(accion)) {
-				TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
-				switch(accion) {
-					case ACTIVAR: // RECIBIR
-					case PROCESAR: // INCOMPLETA
-						if(this.transferencia.getIdTransferenciaEstatus()== 6L || this.transferencia.getIdTransferenciaEstatus()== 7L) {
-							if(articulo.getInicial()- item.getCantidad()!= 0L)
-						    this.toMovimientosAlmacenDestino(sesion, this.transferencia.getIdDestino(), articulo, umbrales, articulo.getInicial()- articulo.getCantidad());
-						} // if	
-						else
-						  this.toMovimientosAlmacenDestino(sesion, this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
-						break;
-					case DEPURAR: // AUTORIZAR
-						break;
-				} // switch
-			} // if
-		} // for
+		Map<String, Object> params= new HashMap<>();
+		List<Articulo> todos      = (List<Articulo>) DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "VistaConfrontasDto", "detalle", this.dto.toMap());
+		try {
+			for (Articulo item: todos) 
+				if (this.articulos.indexOf(item)< 0) 
+					DaoFactory.getInstance().delete(sesion, item.toConfrontasDetalle());
+			for (Articulo articulo: this.articulos) {
+				TcManticConfrontasDetallesDto item= articulo.toConfrontasDetalle();
+				item.setIdConfronta(this.dto.getIdConfronta());
+				if (DaoFactory.getInstance().findIdentically(sesion, TcManticConfrontasDetallesDto.class, item.toMap())== null) 
+					DaoFactory.getInstance().insert(sesion, item);
+				else 
+					DaoFactory.getInstance().update(sesion, item);
+				this.toAffectTransferenciaDetalle(sesion, articulo);
+				if(!EAccion.AGREGAR.equals(accion)) {
+					TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
+					switch(accion) {
+						case ACTIVAR: // RECIBIR
+						case PROCESAR: // INCOMPLETA
+							if(this.transferencia.getIdTransferenciaEstatus()== 6L || this.transferencia.getIdTransferenciaEstatus()== 7L) {
+								if(articulo.getInicial()- item.getCantidad()!= 0L)
+									this.toMovimientosAlmacenDestino(sesion, this.transferencia.getIdDestino(), articulo, umbrales, articulo.getInicial()- articulo.getCantidad());
+							} // if	
+							else
+								this.toMovimientosAlmacenDestino(sesion, this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
+							// QUITAR DE LAS VENTAS PERDIDAS LOS ARTICULOS QUE FUERON YA SURTIDOS EN EL ALMACEN
+							params.put("idArticulo", articulo.getIdArticulo());
+							params.put("idEmpresa", this.transferencia.getIdEmpresa());
+							params.put("observaciones", "ESTE ARTICULO FUE SURTIDO CON NO. CONFRONTA "+ this.dto.getConsecutivo()+ " EL DIA "+ Fecha.getHoyExtendido());
+							DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, params);
+							break;
+						case DEPURAR: // AUTORIZAR
+							break;
+					} // switch
+				} // if
+			} // for
+		} // try
+		finally {
+			Methods.clean(todos);
+			Methods.clean(params);
+		} // finally
 	}
 
 	private void toAffectTransferenciaDetalle(Session sesion, Articulo articulo) throws Exception {
