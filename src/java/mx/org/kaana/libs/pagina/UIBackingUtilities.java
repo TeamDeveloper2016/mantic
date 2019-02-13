@@ -11,13 +11,16 @@ package mx.org.kaana.libs.pagina;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import javax.faces.application.FacesMessage;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.formato.Global;
 
 import org.primefaces.component.datatable.DataTable;
+import org.primefaces.context.RequestContext;
 
 public class UIBackingUtilities {
 
@@ -87,6 +90,30 @@ public class UIBackingUtilities {
 					throw new RuntimeException("No existe la columna "+ column.getName()+ " en la lista de items.");
 			});
 		return entity;
+	}
+	
+	public static void execute(String script) {
+    RequestContext.getCurrentInstance().execute(script);
+	}
+	
+	public static void update(String component) {
+		RequestContext.getCurrentInstance().update(component);
+	}
+	
+	public static void update(Collection<String> component) {
+		RequestContext.getCurrentInstance().update(component);
+	}
+	
+	public static void addCallbackParam(String name, Object params) {
+		RequestContext.getCurrentInstance().addCallbackParam(name, params);
+	}
+	
+	public static void showMessageInDialog(FacesMessage message) {
+	  RequestContext.getCurrentInstance().showMessageInDialog(message);	
+	}
+	
+	public static RequestContext getCurrentInstance() {
+	  return RequestContext.getCurrentInstance();	
 	}
 	
 }

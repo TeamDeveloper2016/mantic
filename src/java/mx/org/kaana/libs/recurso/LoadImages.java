@@ -42,6 +42,7 @@ public final class LoadImages {
 		Map<String, Object> params=null;
 		try {
 			params=new HashMap<>();
+			params.put("idArticulo", idArticulo);
   		Value alias= (Value)DaoFactory.getInstance().toField("VistaArticulosDto", "imagen", params, "alias");
 			if(alias!= null && !Cadena.isVacio(alias.toString()))
 				regresar= getFile(alias.toString());

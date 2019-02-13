@@ -198,5 +198,6 @@ public final class UIEntity {
     
   public static List<UISelectEntity> build(String proceso, Map params, String fields, List<Columna> formato) {
     return build(proceso, Constantes.DML_SELECT, params, formato);
-  } 		
+  } 
+	
 }
