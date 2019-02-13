@@ -170,12 +170,12 @@ public class Accion extends IBaseVenta implements Serializable {
 			transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(eaccion)) {				
-    		RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 la cuenta ', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");									
+    		UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la cuenta ', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");									
 				JsfBase.setFlashAttribute("idVenta", null);
 				JsfBase.setFlashAttribute("accion", null);
 				this.init();
 				doAsignaClienteInicial(3515L);
-				RequestContext.getCurrentInstance().execute("userUpdate();");
+				UIBackingUtilities.execute("userUpdate();");
 			} // if
 			else 
 				JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);      			
@@ -278,7 +278,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("decripcion", articulo.toString("nombre"));
 			this.image= LoadImages.getImage(articulo.toLong("idArticulo"));
 			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
-			RequestContext.getCurrentInstance().update("deudor");
+			UIBackingUtilities.update("deudor");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -309,7 +309,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("descripcion", articulo.getNombre());
 			this.image= LoadImages.getImage(articulo.getIdArticulo());
 			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
-			RequestContext.getCurrentInstance().update("deudor");
+			UIBackingUtilities.update("deudor");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -357,7 +357,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
 				this.getAdminOrden().toAdjustArticulos();
 				if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
-					RequestContext.getCurrentInstance().execute("jsArticulos.back('cerr\\u00F3 la cuenta', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+					UIBackingUtilities.execute("jsArticulos.back('cerr\\u00F3 la cuenta', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 					JsfBase.addMessage("Se guardo la cuenta de venta.", ETipoMensaje.INFORMACION);	
 					init();
 				} // if
@@ -384,7 +384,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			cuenta       = this.attrs.get("cuenta").toString();
 			password     = this.attrs.get("password").toString();						
 			cambioUsuario= new CambioUsuario(cuenta, password);
-			rc= RequestContext.getCurrentInstance();
+			rc= UIBackingUtilities.getCurrentInstance();
 			if(cambioUsuario.validaUsuario()) {
 				this.init();
 			  rc.execute("jsArticulos.disabledLogin();");
@@ -450,7 +450,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			params.put("idUsuario", JsfBase.getIdUsuario());
 			campos.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
 			vendedores= UIEntity.build("VistaTcJanalUsuariosDto", "cambioUsuario", params, campos, Constantes.SQL_TODOS_REGISTROS);
-			rc= RequestContext.getCurrentInstance();
+			rc= UIBackingUtilities.getCurrentInstance();
 			if(!vendedores.isEmpty()) {
 				this.attrs.put("vendedores", vendedores);
 				this.attrs.put("vendedor", UIBackingUtilities.toFirstKeySelectEntity(vendedores));

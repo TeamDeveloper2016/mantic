@@ -21,6 +21,7 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
@@ -34,7 +35,6 @@ import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticConfrontasDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.TabChangeEvent;
 
 
@@ -79,7 +79,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   protected void init() {		
     try {
 			if(JsfBase.getFlashAttribute("accion")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idConfronta", JsfBase.getFlashAttribute("idConfronta")== null? -1L: JsfBase.getFlashAttribute("idConfronta"));
       this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia")== null? -1L: JsfBase.getFlashAttribute("idTransferencia"));
@@ -135,7 +135,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				this.accion= EAccion.PROCESAR;
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR) || this.accion.equals(EAccion.ACTIVAR)) {
-   			  RequestContext.getCurrentInstance().execute("janal.back(' gener\\u00F3 la confronta ', '"+ ((Confronta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+   			  UIBackingUtilities.execute("janal.back(' gener\\u00F3 la confronta ', '"+ ((Confronta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 		  		JsfBase.addMessage("Se registró la transferencia de correcta", ETipoMensaje.INFORMACION);
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
@@ -282,9 +282,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				if(index== this.getAdminOrden().getArticulos().size()- 1) {
 					this.getAdminOrden().getArticulos().add(new Articulo(-1L));
 					this.getAdminOrden().toAddUltimo(this.getAdminOrden().getArticulos().size()- 1);
-					RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.getAdminOrden().getArticulos().size()- 1)+ ");");
+					UIBackingUtilities.execute("jsArticulos.update("+ (this.getAdminOrden().getArticulos().size()- 1)+ ");");
 				} // if	
-				RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
+				UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
 				this.getAdminOrden().toCalculate();
 			} // if	
 			else
@@ -311,7 +311,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			transaccion = new Transaccion((TcManticConfrontasDto)this.getAdminOrden().getOrden(), this.getAdminOrden().getArticulos());
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(EAccion.MOVIMIENTOS)) {
-   			RequestContext.getCurrentInstance().execute("jsArticulos.back('guard\\u00F3 confronta de articulos', '"+ ((Confronta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+   			UIBackingUtilities.execute("jsArticulos.back('guard\\u00F3 confronta de articulos', '"+ ((Confronta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 				this.accion= EAccion.PROCESAR;
 				this.getAdminOrden().getArticulos().add(new Articulo(-1L));
 				this.attrs.put("autoSave", Global.format(EFormatoDinamicos.FECHA_HORA, Fecha.getRegistro()));
@@ -327,7 +327,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		LOG.error("ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA");
 		if(isViewException && this.getAdminOrden().getArticulos().size()> 0)
 		  this.toSaveRecord();
-    //RequestContext.getCurrentInstance().execute("alert('ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA');");
+    //UIBackingUtilities.execute("alert('ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA');");
 	}
 	
 }

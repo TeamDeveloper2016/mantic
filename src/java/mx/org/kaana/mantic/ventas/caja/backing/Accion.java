@@ -201,8 +201,8 @@ public class Accion extends IBaseVenta implements Serializable {
 				transaccion = new Transaccion(ventaFinalizada);
 				if (transaccion.ejecutar(EAccion.REPROCESAR)) {
 					ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago) this.attrs.get("pago"), ventaFinalizada.getApartado() ? "APARTADO" : "VENTA DE MOSTRADOR");
-					RequestContext.getCurrentInstance().execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + ((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).getTicket() + "','" + ticket.toHtml() + "');");
-					RequestContext.getCurrentInstance().execute("jsTicket.clicTicket();");
+					UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + ((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).getTicket() + "','" + ticket.toHtml() + "');");
+					UIBackingUtilities.execute("jsTicket.clicTicket();");
 					JsfBase.addMessage("Se finalizo el pago del ticket de venta.", ETipoMensaje.INFORMACION);
 					this.setAdminOrden(new AdminTickets(new TicketVenta()));
 					this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
@@ -225,8 +225,8 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doVerificaArticulosCotizacion(){
 		try {
 			if(!getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()> 0){
-				RequestContext.getCurrentInstance().execute("janal.bloquear();");
-				RequestContext.getCurrentInstance().execute("PF('dlgCotizacion').show();");
+				UIBackingUtilities.execute("janal.bloquear();");
+				UIBackingUtilities.execute("PF('dlgCotizacion').show();");
 			} // if
 			else{
 				JsfBase.addMessage("Cotización", "No es posible generar una cotización sin articulos", ETipoMensaje.ERROR);
@@ -247,8 +247,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			if (transaccion.ejecutar(EAccion.MODIFICAR)) {
 				((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).setCotizacion(transaccion.getCotizacion());
 				ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago) this.attrs.get("pago"), "COTIZACIÓN");				
-				RequestContext.getCurrentInstance().execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + transaccion.getCotizacion() + "','" + ticket.toHtml() + "');");
-				RequestContext.getCurrentInstance().execute("jsTicket.clicTicket();");
+				UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + transaccion.getCotizacion() + "','" + ticket.toHtml() + "');");
+				UIBackingUtilities.execute("jsTicket.clicTicket();");
 				JsfBase.addMessage("Se finalizo la cotización del ticket.", ETipoMensaje.INFORMACION);								
 				this.setAdminOrden(new AdminTickets(new TicketVenta()));
 				this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
@@ -340,7 +340,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			campos.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
 			params.put(Constantes.SQL_CONDICION, toCondicion(false));
 			this.lazyCuentasAbiertas= new FormatLazyModel("VistaVentasDto", "lazy", params, campos);			
-			RequestContext.getCurrentInstance().execute("PF('dlgOpenTickets').show();");			
+			UIBackingUtilities.execute("PF('dlgOpenTickets').show();");			
 			UIBackingUtilities.resetDataTable("tablaTicketsAbiertos");
 		} // try
 		catch (Exception e) {
@@ -483,7 +483,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				this.attrs.put("creditoCliente", false);				
 			} // else			
 			validaFacturacion();
-			RequestContext.getCurrentInstance().execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
+			UIBackingUtilities.execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
 			this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
 			if(tipo!= null && tipo.equals(EEstatusVentas.APARTADOS.name()))
 				asignaAbonoApartado();
@@ -646,7 +646,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				transaccion = new mx.org.kaana.mantic.ventas.reglas.Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
 				this.getAdminOrden().toAdjustArticulos();
 				if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
-					RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 la cuenta ', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");									
+					UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la cuenta ', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");									
 					doLoadTicketAbiertos();
 					this.attrs.put("ajustePreciosCliente", false);			
 					this.attrs.put("ticketAbierto", new UISelectEntity(new Entity(transaccion.getOrden().getIdVenta())));
@@ -706,7 +706,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		try {
 			credito= (Boolean) this.attrs.get("creditoVenta");
 			apartado= (Boolean) this.attrs.get("apartado");
-			rc= RequestContext.getCurrentInstance();
+			rc= UIBackingUtilities.getCurrentInstance();
 			if(apartado)				
 				rc.execute("jsArticulos.validateApartado(" + Numero.formatear(Numero.NUMERO_CON_DECIMALES, (getAdminOrden().getTotales().getTotal() * Constantes.ANTICIPO)/100) + ");");
 			else if(credito)
@@ -881,8 +881,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			params.put("idCaja", this.attrs.get("caja"));
 			alerta= (Entity) DaoFactory.getInstance().toEntity("VistaCierresCajasDto", "alerta", params);
 			if(alerta!= null){
-				RequestContext.getCurrentInstance().execute("janal.bloquear();");
-				RequestContext.getCurrentInstance().execute("PF('dlgLimiteCaja').show();");
+				UIBackingUtilities.execute("janal.bloquear();");
+				UIBackingUtilities.execute("PF('dlgLimiteCaja').show();");
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -899,7 +899,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		if(title.equals("Tickets"))
 			doLoadTickets();
 		if(title.equals("Pagar"))
-			RequestContext.getCurrentInstance().execute("jsArticulos.focusCobro();");
+			UIBackingUtilities.execute("jsArticulos.focusCobro();");
 	} // doTabChange
 
 	public void doAplicarCambioPrecio(){
@@ -983,8 +983,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			params.put("idVenta", seleccionado.toLong("idVenta"));
 			adminTicket= new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params));			
 			ticket= new CreateTicket(adminTicket, toPago(adminTicket, seleccionado.getKey()), toTipoTransaccion(seleccionado.toLong("idVentaEstatus")));
-			RequestContext.getCurrentInstance().execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + toConsecutivoTicket(seleccionado.toLong("idVentaEstatus"), adminTicket) + "','" + ticket.toHtml() + "');");
-			RequestContext.getCurrentInstance().execute("jsTicket.clicTicket();");
+			UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + toConsecutivoTicket(seleccionado.toLong("idVentaEstatus"), adminTicket) + "','" + ticket.toHtml() + "');");
+			UIBackingUtilities.execute("jsTicket.clicTicket();");
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

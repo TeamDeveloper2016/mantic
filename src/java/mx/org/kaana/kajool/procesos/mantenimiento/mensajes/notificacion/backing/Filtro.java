@@ -34,7 +34,6 @@ import mx.org.kaana.kajool.enums.EMenus;
 import mx.org.kaana.kajool.procesos.mantenimiento.mensajes.notificacion.reglas.Transaccion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.primefaces.context.RequestContext;
 
 @ManagedBean(name="kajoolMantenimientoMensajesNotificacionFiltro")
 @ViewScoped
@@ -104,7 +103,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       else
         encabezadoNuevo="<span id=\"contadorMensajes\" class=\"alertBubble BordRad10 Fs9\">".concat(totalMensajes.toString()).concat("</span>");
       session.setAttribute(EMenus.ENCABEZADO.getVariableSesion(), session.getAttribute(EMenus.ENCABEZADO.getVariableSesion()).toString().replace(encabezadoAnterior, encabezadoNuevo));
-      RequestContext.getCurrentInstance().execute("Sentinel.updateNotifications(".concat(totalMensajes.toString()).concat(")"));
+      UIBackingUtilities.execute("Sentinel.updateNotifications(".concat(totalMensajes.toString()).concat(")"));
     } // try
     catch (Exception e) {
       Error.mensaje(e);

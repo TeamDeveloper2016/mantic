@@ -253,7 +253,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   
   public boolean doVerificarReporte() {
     boolean regresar = false;
-		RequestContext rc= RequestContext.getCurrentInstance();
+		RequestContext rc= UIBackingUtilities.getCurrentInstance();
 		if(this.reporte.getTotal()> 0L){
 			rc.execute("start(" + this.reporte.getTotal() + ")");		
       regresar = true;

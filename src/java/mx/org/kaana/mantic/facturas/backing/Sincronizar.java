@@ -11,8 +11,8 @@ import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.mantic.facturas.reglas.Transferir;
-import org.primefaces.context.RequestContext;
 
 @Named(value= "manticFacturasSincronizar")
 @ViewScoped
@@ -24,7 +24,7 @@ public class Sincronizar extends IBaseAttribute implements Serializable {
 	@Override
 	protected void init() {
 		if(JsfBase.getFlashAttribute("accion")== null)
-			RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+			UIBackingUtilities.execute("janal.isPostBack('cancelar')");
 		try {
 		  this.attrs.put("top", CFDIFactory.getInstance().toCfdisSize());
 		} // try
@@ -47,7 +47,7 @@ public class Sincronizar extends IBaseAttribute implements Serializable {
 				this.attrs.put("total", transferir.getCount());
 				this.attrs.put("clientes", transferir.getClientes());
   			regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
-   			RequestContext.getCurrentInstance().execute("janal.alert('Se transfirieron ["+ transferir.getCount()+ "] facturas del portal de facturama');");
+   			UIBackingUtilities.execute("janal.alert('Se transfirieron ["+ transferir.getCount()+ "] facturas del portal de facturama');");
 			} // if
 			else 
 				JsfBase.addMessage("Ocurrió un error al transferir las facturas.", ETipoMensaje.ERROR);      			
@@ -55,7 +55,7 @@ public class Sincronizar extends IBaseAttribute implements Serializable {
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
- 			RequestContext.getCurrentInstance().execute("cancel();");
+ 			UIBackingUtilities.execute("cancel();");
     } // catch
     return regresar;
   } // doAccion

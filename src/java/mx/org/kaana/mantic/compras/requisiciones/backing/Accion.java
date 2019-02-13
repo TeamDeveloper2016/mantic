@@ -21,6 +21,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -34,7 +35,6 @@ import mx.org.kaana.mantic.compras.requisiciones.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.requisiciones.reglas.AdminTickets;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
-import org.primefaces.context.RequestContext;
 
 @Named(value= "manticComprasRequisicionesAccion")
 @ViewScoped
@@ -116,7 +116,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 				if (transaccion.ejecutar(eaccion)) {
 					regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
 					if(eaccion.equals(EAccion.AGREGAR)) { 				  
-						RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 requisición', '"+ this.registroRequisicion.getRequisicion().getConsecutivo()+ "');");
+						UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 requisición', '"+ this.registroRequisicion.getRequisicion().getConsecutivo()+ "');");
 					} // if	
 					JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la requsicion."), ETipoMensaje.INFORMACION);
 					JsfBase.setFlashAttribute("idRequisicion", this.registroRequisicion.getRequisicion().getIdRequisicion());				
@@ -182,7 +182,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 				} // for					
 				if(getAdminOrden().getArticulos().size()>1){					
 					getAdminOrden().toCalculate();
-					RequestContext.getCurrentInstance().update("@(.filas) @(.recalculo) @(.informacion)");
+					UIBackingUtilities.update("@(.filas) @(.recalculo) @(.informacion)");
 				} // if
 			} // if			
 		} // try
@@ -226,9 +226,9 @@ public class Accion extends IBaseArticulos implements Serializable {
 				if(index== getAdminOrden().getArticulos().size()- 1) {
 					this.getAdminOrden().getArticulos().add(new Articulo(-1L));
 					this.getAdminOrden().toAddUltimo(this.getAdminOrden().getArticulos().size()- 1);
-					RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (getAdminOrden().getArticulos().size()- 1)+ ");");
+					UIBackingUtilities.execute("jsArticulos.update("+ (getAdminOrden().getArticulos().size()- 1)+ ");");
 				} // if	
-				RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ articulo.toMap()+ "');");				
+				UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.toMap()+ "');");				
 				this.getAdminOrden().toCantidad();
 			} // if	
 			else

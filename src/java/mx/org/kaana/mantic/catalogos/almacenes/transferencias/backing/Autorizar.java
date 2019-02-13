@@ -14,6 +14,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.catalogos.almacenes.confrontas.beans.Confronta;
 import mx.org.kaana.mantic.catalogos.almacenes.confrontas.reglas.Transaccion;
@@ -24,7 +25,6 @@ import mx.org.kaana.mantic.db.dto.TcManticConfrontasDto;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.primefaces.context.RequestContext;
 
 /**
  *@company KAANA
@@ -164,7 +164,7 @@ public class Autorizar extends IBaseArticulos implements Serializable {
 //				LOG.info("idAplicar: "+ articulo.getIdAplicar()+ " =>  "+ articulo.getIdRedondear());
 			} // for 
 			if(transaccion.ejecutar(this.accion)) {
- 			  RequestContext.getCurrentInstance().execute("janal.back(' autoriz\\u00F3 la confronta ', '"+ ((Confronta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+ 			  UIBackingUtilities.execute("janal.back(' autoriz\\u00F3 la confronta ', '"+ ((Confronta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
   			JsfBase.setFlashAttribute("IdConfronta", ((Confronta)this.getAdminOrden().getOrden()).getIdConfronta());
   		  regresar = ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
 			} // if

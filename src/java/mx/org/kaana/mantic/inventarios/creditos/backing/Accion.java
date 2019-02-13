@@ -21,6 +21,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -31,7 +32,6 @@ import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 import mx.org.kaana.mantic.inventarios.creditos.beans.NotaCredito;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.StreamedContent;
@@ -88,7 +88,7 @@ public class Accion extends IBaseImportar implements Serializable {
   protected void init() {		
     try {
 			if(JsfBase.getFlashAttribute("accion")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.idTipoCreditoNota= JsfBase.getFlashAttribute("idTipoCreditoNota")== null? -1L: (Long)JsfBase.getFlashAttribute("idTipoCreditoNota");
       this.accion = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idCreditoNota", JsfBase.getFlashAttribute("idCreditoNota")== null? -1L: JsfBase.getFlashAttribute("idCreditoNota"));
@@ -140,7 +140,7 @@ public class Accion extends IBaseImportar implements Serializable {
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-   			  RequestContext.getCurrentInstance().execute("janal.back(' gener\\u00F3 la nota de crédito ', '"+ this.orden.getConsecutivo()+ "');");
+   			  UIBackingUtilities.execute("janal.back(' gener\\u00F3 la nota de crédito ', '"+ this.orden.getConsecutivo()+ "');");
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" la nota de credito."), ETipoMensaje.INFORMACION);

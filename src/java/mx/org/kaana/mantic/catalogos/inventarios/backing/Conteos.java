@@ -182,7 +182,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 					Value ultimo= (Value)DaoFactory.getInstance().toField("TcManticArticulosBitacoraDto", "ultimo", this.attrs, "registro");
 					if(ultimo!= null)
 					  this.attrs.put("ultimo", Global.format(EFormatoDinamicos.FECHA_HORA, ultimo.toTimestamp()));
-					RequestContext.getCurrentInstance().execute("jsKardex.callback("+ solicitado +");");
+					UIBackingUtilities.execute("jsKardex.callback("+ solicitado +");");
 				} // if	
 			} // if
 			else {

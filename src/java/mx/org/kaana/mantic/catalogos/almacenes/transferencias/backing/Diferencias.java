@@ -18,7 +18,6 @@ import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
@@ -200,7 +199,7 @@ public class Diferencias extends IFilterImportar implements Serializable {
 } // doReporte
 	
 	public void doVerificarReporte() {
-		RequestContext rc= RequestContext.getCurrentInstance();
+		RequestContext rc= UIBackingUtilities.getCurrentInstance();
 		if(this.reporte.getTotal()> 0L)
 			rc.execute("start(" + this.reporte.getTotal() + ")");		
 		else{

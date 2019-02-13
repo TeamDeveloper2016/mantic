@@ -370,7 +370,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	public boolean doVerificarReporte() {
     boolean regresar = false;
-		RequestContext rc= RequestContext.getCurrentInstance();
+		RequestContext rc= UIBackingUtilities.getCurrentInstance();
 		if(this.reporte.getTotal()> 0L){
 			rc.execute("start(" + this.reporte.getTotal() + ")");	
       regresar = true;
@@ -525,7 +525,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				TcManticFicticiasDto copia= SerializationUtils.clone(dto);
 				transaccion= new Transaccion(copia);
 				if(transaccion.ejecutar(EAccion.COPIAR)) {
-					RequestContext.getCurrentInstance().execute("janal.back('clon\\u00F3 la factura ', '"+ copia.getConsecutivo()+ "');");
+					UIBackingUtilities.execute("janal.back('clon\\u00F3 la factura ', '"+ copia.getConsecutivo()+ "');");
 					JsfBase.addMessage("Clonar", "La factura se ha clonó correctamente.", ETipoMensaje.ERROR);
 				} // if	
 				else

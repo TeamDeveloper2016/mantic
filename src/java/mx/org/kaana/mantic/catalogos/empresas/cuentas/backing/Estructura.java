@@ -20,6 +20,7 @@ import mx.org.kaana.libs.archivo.Zip;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.empresas.cuentas.beans.TreeCuenta;
 import mx.org.kaana.mantic.catalogos.empresas.cuentas.reglas.MotorBusqueda;
@@ -67,7 +68,7 @@ public class Estructura extends IBaseFilter implements Serializable {
   protected void init() {
     try {			       
 			if(JsfBase.getFlashAttribute("idEmpresaDeuda")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
 			this.files= new ArrayList<>();
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
@@ -172,7 +173,7 @@ public class Estructura extends IBaseFilter implements Serializable {
     TreeCuenta seleccionado= null;
     RequestContext rc     = null;
     try {
-      rc= RequestContext.getCurrentInstance();
+      rc= UIBackingUtilities.getCurrentInstance();
       if(this.node!= null) {
         seleccionado= (TreeCuenta) this.node.getData();
         this.attrs.put("isPrincipal", seleccionado.getPago()!= null);
@@ -198,7 +199,7 @@ public class Estructura extends IBaseFilter implements Serializable {
 		String regresar  = null;
     RequestContext rc= null;
     try {
-      rc= RequestContext.getCurrentInstance();
+      rc= UIBackingUtilities.getCurrentInstance();
       if(this.node!= null){
 				regresar= "abono".concat(Constantes.REDIRECIONAR);
 				JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Empresas/Cuentas/estructura.jsf".concat(Constantes.REDIRECIONAR));				

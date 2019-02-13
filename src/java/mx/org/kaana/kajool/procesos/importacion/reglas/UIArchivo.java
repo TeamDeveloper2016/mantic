@@ -18,9 +18,9 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.procesos.importacion.beans.Importado;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 /**
  *@company KAANA
@@ -188,12 +188,12 @@ public class UIArchivo implements Serializable{
 
    public void doAceptar(){
       this.validar.all(this.archivos) ;
-      RequestContext.getCurrentInstance().execute("validateDialog(".concat(Cadena.getString(regresar, "")).concat(")"));
+      UIBackingUtilities.execute("validateDialog(".concat(Cadena.getString(regresar, "")).concat(")"));
    }
 	
    public void doAceptar(ActionEvent event){
       this.validar.all(this.archivos) ;
-      RequestContext.getCurrentInstance().execute("validateDialog(".concat(Cadena.getString(regresar, "")).concat(")"));
+      UIBackingUtilities.execute("validateDialog(".concat(Cadena.getString(regresar, "")).concat(")"));
    }
 	
 	 public void doLimpiarArchivos(){

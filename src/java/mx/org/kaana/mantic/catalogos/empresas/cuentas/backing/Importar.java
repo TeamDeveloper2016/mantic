@@ -50,11 +50,11 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.DefaultStreamedContent;
@@ -108,7 +108,7 @@ public class Importar extends IBaseAttribute implements Serializable {
   protected void init() {		
     try {
 			if(JsfBase.getFlashAttribute("idEmpresaDeuda")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.idEmpresaDeuda= JsfBase.getFlashAttribute("idEmpresaDeuda")== null? -1L: (Long)JsfBase.getFlashAttribute("idEmpresaDeuda");
 			this.deuda= (TcManticEmpresasDeudasDto)DaoFactory.getInstance().findById(TcManticEmpresasDeudasDto.class, this.idEmpresaDeuda);
 			if(this.deuda!= null) {
@@ -433,7 +433,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 			  this.getPdf().setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
 			transaccion= new Transaccion(this.deuda, this.xml, this.pdf, Long.valueOf(this.attrs.get("pago").toString()));
       if(transaccion.ejecutar(EAccion.REGISTRAR)) {
-      	RequestContext.getCurrentInstance().execute("janal.alert('Se importaron los archivos de forma correcta !');");
+      	UIBackingUtilities.execute("janal.alert('Se importaron los archivos de forma correcta !');");
 				regresar= this.doCancelar();
 			} // if
 		} // try

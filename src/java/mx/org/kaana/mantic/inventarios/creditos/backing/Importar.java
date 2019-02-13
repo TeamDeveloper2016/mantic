@@ -21,13 +21,13 @@ import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.mantic.db.dto.TcManticCreditosNotasDto;
 import mx.org.kaana.mantic.db.dto.TcManticDevolucionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 import mx.org.kaana.mantic.inventarios.creditos.reglas.Importados;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 
@@ -69,7 +69,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		TcManticNotasEntradasDto notaEntrada= null;
     try {
 			if(JsfBase.getFlashAttribute("idCreditoNota")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       idCreditoNota= JsfBase.getFlashAttribute("idCreditoNota")== null? -1L: (Long)JsfBase.getFlashAttribute("idCreditoNota");
 			this.orden= (TcManticCreditosNotasDto)DaoFactory.getInstance().findById(TcManticCreditosNotasDto.class, idCreditoNota);
 			if(this.orden!= null) {
@@ -161,7 +161,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			  this.getPdf().setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
 			Importados importados= new Importados(this.orden, this.getXml(), this.getPdf());
       if(importados.ejecutar(EAccion.AGREGAR)) {
-      	RequestContext.getCurrentInstance().execute("janal.alert('Se importaron los archivos de forma correcta !');");
+      	UIBackingUtilities.execute("janal.alert('Se importaron los archivos de forma correcta !');");
 				regresar= this.doCancelar();
 			} // if
 		} // try

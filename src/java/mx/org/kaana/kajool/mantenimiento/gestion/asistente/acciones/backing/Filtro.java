@@ -57,7 +57,6 @@ import mx.org.kaana.kajool.mantenimiento.gestion.asistente.filtros.beans.Paramet
 import mx.org.kaana.xml.Dml;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -197,7 +196,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			this.attrs.put("autor", "kajool.kaana");
 			this.attrs.put("correo", "team.developer@kaana.org.mx");
 			doActualizarRuta();
-			RequestContext.getCurrentInstance().execute("descargarHide();");
+			UIBackingUtilities.execute("descargarHide();");
     } // try
     catch(Exception e) {
 			JsfUtilities.addMessageError(e);
@@ -395,12 +394,12 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			this.attrs.put("textoTransaccion", generador.getTextoTransaccion());
 			this.attrs.put("textoBean", generador.getTextoBean());
 			this.attrs.put("archivo",Constantes.ARCHIVO_PATRON_SEPARADOR.concat(this.attrs.get("patron").toString()).concat("Accion.").concat(EFormatos.ZIP.name().toLowerCase() ));
-			if (RequestContext.getCurrentInstance()!=null) {
-				RequestContext.getCurrentInstance().update("tab:textoPagina");
-				RequestContext.getCurrentInstance().update("tab:textoBacking");
-				RequestContext.getCurrentInstance().update("tab:textoTransaccion");
-				RequestContext.getCurrentInstance().update("tab:textoBean");
-				RequestContext.getCurrentInstance().execute("descargarShow();");
+			if (UIBackingUtilities.getCurrentInstance()!=null) {
+				UIBackingUtilities.update("tab:textoPagina");
+				UIBackingUtilities.update("tab:textoBacking");
+				UIBackingUtilities.update("tab:textoTransaccion");
+				UIBackingUtilities.update("tab:textoBean");
+				UIBackingUtilities.execute("descargarShow();");
 				JsfUtilities.addMessage("La acción fue generado correctamente.");
 			} // if
 		} // try
@@ -476,10 +475,10 @@ public class Filtro extends IBaseAttribute implements Serializable {
 	public void onTabChange(TabChangeEvent event) {
 		try {
 			if(event.getTab().getTitle().equals("Descargar"))
-				RequestContext.getCurrentInstance().execute("descargar();");
+				UIBackingUtilities.execute("descargar();");
       else {
-				RequestContext.getCurrentInstance().execute("reload('tab:textoPagina','tab:textoBacking','tab:textoTransaccion', 'tab:textoBean');");
-				RequestContext.getCurrentInstance().execute("refrescar();");
+				UIBackingUtilities.execute("reload('tab:textoPagina','tab:textoBacking','tab:textoTransaccion', 'tab:textoBean');");
+				UIBackingUtilities.execute("refrescar();");
 			} // else
 		} // try
 		catch (Exception e) {

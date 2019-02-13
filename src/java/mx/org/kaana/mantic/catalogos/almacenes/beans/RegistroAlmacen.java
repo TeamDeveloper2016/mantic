@@ -649,7 +649,7 @@ public class RegistroAlmacen implements Serializable{
 	public void doActualizarListaUbicaciones(TabChangeEvent event){		
 		try {
 			if(event.getTab().getTitle().equals("Articulos"))
-				RequestContext.getCurrentInstance().execute("widAgregarUbicacion();");
+				UIBackingUtilities.execute("widAgregarUbicacion();");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

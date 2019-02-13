@@ -35,6 +35,7 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -49,7 +50,6 @@ import mx.org.kaana.mantic.libs.factura.beans.Receptor;
 import mx.org.kaana.mantic.libs.factura.reglas.Reader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -469,7 +469,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 		try {
 			proveedor.setRfc(this.emisor.getRfc());
 			if(DaoFactory.getInstance().update(proveedor)>= 1L)
-				RequestContext.getCurrentInstance().execute("janal.alert('Proveedor actualizado de forma correcta, con RFC "+ proveedor.getRfc()+ " !');");
+				UIBackingUtilities.execute("janal.alert('Proveedor actualizado de forma correcta, con RFC "+ proveedor.getRfc()+ " !');");
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

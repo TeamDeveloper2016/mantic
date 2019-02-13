@@ -20,10 +20,10 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.logging.Log; 
 import org.apache.commons.logging.LogFactory;
-import org.primefaces.context.RequestContext;
 
 @ManagedBean(name="kajoolMantenimientoAplicacionFiltro")
 @ViewScoped
@@ -63,7 +63,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
       JsfBase.getUsuariosSitio().clearMessage();
       lockUser.start((String)this.attrs.get("text"), calendar, intervals);                  
       if(lockUser.isActived())
-        RequestContext.getCurrentInstance().execute("show(true);");
+        UIBackingUtilities.execute("show(true);");
       this.attrs.put("active", lockUser.isActived());
       this.attrs.put("activeIntervals", lockUser.isActived()? lockUser.toIntervals().substring(1, lockUser.toIntervals().length()-4).concat(" minutos") : "");
       LOG.info("Se comenzo con el bloqueo de usuarios: "+ JsfBase.toLockUsers().toHourEnd());

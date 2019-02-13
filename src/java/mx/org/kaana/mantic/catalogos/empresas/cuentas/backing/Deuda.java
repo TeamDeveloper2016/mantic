@@ -29,7 +29,6 @@ import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosDto;
 import mx.org.kaana.mantic.enums.EEstatusClientes;
 import mx.org.kaana.mantic.enums.EEstatusEmpresas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.Visibility;
 
@@ -92,7 +91,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		Long idEmpresaInicial= -1L;
     try {			
 			if(JsfBase.getFlashAttribute("idProveedor")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
 			this.seleccionadosSegmento= new ArrayList<>();
       this.attrs.put("sortOrder", "order by	tc_mantic_empresas_deudas.registro desc");
       this.attrs.put("idProveedor", JsfBase.getFlashAttribute("idProveedor"));         

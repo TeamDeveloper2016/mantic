@@ -32,12 +32,12 @@ import mx.org.kaana.kajool.procesos.reportes.beans.Definicion;
 import mx.org.kaana.kajool.seguridad.jarfile.SearchFileJar;
 import mx.org.kaana.kajool.procesos.reportes.reglas.IJuntar;
 import mx.org.kaana.libs.archivo.Zip;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.reportes.scriptlets.JuntarPdfs;
 import mx.org.kaana.xml.Dml;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.primefaces.context.RequestContext;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -110,8 +110,8 @@ public class Juntar extends BaseReportes implements Serializable {
       juntar= new JuntarPdfs(listaPDFs, this.nombre, this.ijuntar.getIntercalar());
       if(juntar.concatenar()) {
         monitoreo.incrementar();
-        if(RequestContext.getCurrentInstance()!= null)
-          RequestContext.getCurrentInstance().addCallbackParam("janalOk", true);
+        if(UIBackingUtilities.getCurrentInstance()!= null)
+          UIBackingUtilities.addCallbackParam("janalOk", true);
       } // if
       else {
         monitoreo.terminar();

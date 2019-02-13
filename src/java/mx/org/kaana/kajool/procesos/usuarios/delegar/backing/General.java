@@ -145,7 +145,7 @@ public class General extends DatosDelega implements Serializable {
       if (actual > 0) {
         this.attrs.put("step", --actual);
       } else {
-        RequestContext.getCurrentInstance().execute("doFiltro();");
+        UIBackingUtilities.execute("doFiltro();");
       }
     } // try
     catch (Exception e) {
@@ -219,7 +219,7 @@ public class General extends DatosDelega implements Serializable {
         //transaccion= new Transaccion(this.persona, idUsuario, this.attrs.get("login").toString(), informe.getContrasenia());			
         proceso = transaccion.ejecutar(EAccion.AGREGAR);
         lanzarMensaje(proceso);
-        RequestContext.getCurrentInstance().execute("doFiltro();");
+        UIBackingUtilities.execute("doFiltro();");
       } // if
       else {
         informe.setContrasenia("");

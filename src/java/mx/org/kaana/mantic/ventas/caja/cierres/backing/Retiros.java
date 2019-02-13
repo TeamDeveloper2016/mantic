@@ -106,7 +106,7 @@ public class Retiros extends IBaseAttribute implements Serializable {
      			JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));
 		    	JsfBase.setFlashAttribute("idCaja", this.attrs.get("idCaja"));
  	        JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));
-    			RequestContext.getCurrentInstance().execute("janal.alert('Se gener\\u00F3 el retiro de efectivo, con consecutivo: "+ retiro.getConsecutivo()+ "');");
+    			UIBackingUtilities.execute("janal.alert('Se gener\\u00F3 el retiro de efectivo, con consecutivo: "+ retiro.getConsecutivo()+ "');");
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR)? "agregó": this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" el retiro de caja."), ETipoMensaje.INFORMACION);

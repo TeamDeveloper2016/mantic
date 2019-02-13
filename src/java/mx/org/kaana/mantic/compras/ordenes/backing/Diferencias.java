@@ -14,7 +14,6 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
-import mx.org.kaana.kajool.procesos.acceso.beans.Faltante;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
@@ -23,7 +22,6 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
-import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.compras.ordenes.reglas.ArticulosLazyLoad;
@@ -138,7 +136,7 @@ public class Diferencias extends IFilterImportar implements Serializable {
 			TcManticOrdenesBitacoraDto bitacora= new TcManticOrdenesBitacoraDto(7L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
 			transaccion = new Transaccion(this.orden, bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
-    		RequestContext.getCurrentInstance().execute("alert('Se aplicarón las diferencias en la orden de compra.');");
+    		UIBackingUtilities.execute("alert('Se aplicarón las diferencias en la orden de compra.');");
 			else {
 				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus.", ETipoMensaje.ERROR);
 				regreso= null;
@@ -257,7 +255,7 @@ public class Diferencias extends IFilterImportar implements Serializable {
 } // doReporte
 	
 	public void doVerificarReporte() {
-		RequestContext rc= RequestContext.getCurrentInstance();
+		RequestContext rc= UIBackingUtilities.getCurrentInstance();
 		if(this.reporte.getTotal()> 0L)
 			rc.execute("start(" + this.reporte.getTotal() + ")");		
 		else{

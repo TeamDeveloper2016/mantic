@@ -7,7 +7,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -18,6 +17,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Variables;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.mantic.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
@@ -28,7 +28,6 @@ import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
-import org.primefaces.context.RequestContext;
 
 /**
  *@company KAANA
@@ -77,7 +76,7 @@ public class Importar extends IBaseImportar implements Serializable {
   protected void init() {		
     try {
 			if(JsfBase.getFlashAttribute("idFactura")== null || JsfBase.getFlashAttribute("idFicticia")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
 			else {
         this.idFactura = JsfBase.getFlashAttribute("idFactura")== null? -1L: (Long)JsfBase.getFlashAttribute("idFactura");
         this.idFicticia= JsfBase.getFlashAttribute("idFicticia")== null? -1L: (Long)JsfBase.getFlashAttribute("idFicticia");

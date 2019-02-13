@@ -21,11 +21,11 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Variables;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
-import org.primefaces.context.RequestContext;
 
 
 @Named(value = "manticComprasPerdidasAccion")
@@ -49,7 +49,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   protected void init() {		
     try {
       if(JsfBase.getFlashAttribute("accion")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
 			this.attrs.put("codigo", "");
 			this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idFaltante", JsfBase.getFlashAttribute("idFaltante")== null? -1L: JsfBase.getFlashAttribute("idFaltante"));
@@ -101,7 +101,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   				this.faltante= new Faltante(JsfBase.getIdUsuario(), -1L, "", 1D, 1L, -1L, this.faltante.getIdEmpresa());
 				} // if	
 			} // else	
-			RequestContext.getCurrentInstance().update("@(.faltantes)");
+			UIBackingUtilities.update("@(.faltantes)");
     } // try
     catch (Exception e) {
       Error.mensaje(e);

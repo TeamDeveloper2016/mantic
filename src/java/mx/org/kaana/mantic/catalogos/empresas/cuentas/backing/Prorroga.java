@@ -22,7 +22,6 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.empresas.cuentas.reglas.Transaccion;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.TabChangeEvent;
 
 @Named(value = "manticCatalogosEmpresasCuentasProrroga")
@@ -45,7 +44,7 @@ public class Prorroga extends IBaseImportar implements Serializable {
   protected void init() {
     try {			
 			if(JsfBase.getFlashAttribute("idEmpresaDeuda")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("sortOrder", "order by	tc_mantic_empresas_deudas.registro desc");
       this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa"));     
       this.attrs.put("idEmpresaDeuda", JsfBase.getFlashAttribute("idEmpresaDeuda"));     

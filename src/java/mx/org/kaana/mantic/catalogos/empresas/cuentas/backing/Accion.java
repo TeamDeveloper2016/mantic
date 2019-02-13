@@ -33,8 +33,8 @@ import mx.org.kaana.mantic.comun.IBaseArticulos;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.kajool.enums.EFormatos;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.StreamedContent;
@@ -92,7 +92,7 @@ public class Accion extends IBaseArticulos implements Serializable {
     try {
 			this.aplicar  =  false;
 			if(JsfBase.getFlashAttribute("accion")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.COMPLETO: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idEmpresaDeuda", JsfBase.getFlashAttribute("idEmpresaDeuda")== null? -1L: JsfBase.getFlashAttribute("idEmpresaDeuda"));     
 			this.attrs.put("idOrdenCompra", -1L);
@@ -160,9 +160,9 @@ public class Accion extends IBaseArticulos implements Serializable {
 				if(this.accion.equals(EAccion.COMPLETO) || this.aplicar) {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
 					if(this.accion.equals(EAccion.COMPLETO))
-    			  RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 la nota de entrada manual', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+    			  UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la nota de entrada manual', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 					else
-   			    RequestContext.getCurrentInstance().execute("jsArticulos.back('aplic\\u00F3 la nota de entrada manual', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+   			    UIBackingUtilities.execute("jsArticulos.back('aplic\\u00F3 la nota de entrada manual', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.COMPLETO) ? "agregó" : "modificó").concat(" la nota de entrada manual."), ETipoMensaje.INFORMACION);
@@ -271,7 +271,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			} // else
 			Entity entity= (Entity)DaoFactory.getInstance().toEntity("TcManticNotasEntradasDto", "folio", params);
 			if(entity!= null && entity.size()> 0) 
-				RequestContext.getCurrentInstance().execute("$('#contenedorGrupos\\\\:factura').val('');janal.show([{summary: 'Error:', detail: 'El folio ["+ ((NotaEntrada)this.getAdminOrden().getOrden()).getFactura()+ "] se registró en la nota de entrada "+ entity.toString("consecutivo")+ ", el dia "+ Global.format(EFormatoDinamicos.FECHA_HORA, entity.toTimestamp("registro"))+ " hrs.'}]);");
+				UIBackingUtilities.execute("$('#contenedorGrupos\\\\:factura').val('');janal.show([{summary: 'Error:', detail: 'El folio ["+ ((NotaEntrada)this.getAdminOrden().getOrden()).getFactura()+ "] se registró en la nota de entrada "+ entity.toString("consecutivo")+ ", el dia "+ Global.format(EFormatoDinamicos.FECHA_HORA, entity.toTimestamp("registro"))+ " hrs.'}]);");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

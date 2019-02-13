@@ -21,8 +21,8 @@ import mx.org.kaana.kajool.procesos.mantenimiento.catalogos.beans.Dinamicos;
 import mx.org.kaana.kajool.procesos.mantenimiento.catalogos.reglas.componentes.KajoolPanelGrid;
 import mx.org.kaana.kajool.procesos.mantenimiento.catalogos.reglas.criterios.Criterio;
 import mx.org.kaana.kajool.procesos.mantenimiento.catalogos.reglas.criterios.ICriterio;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import org.primefaces.component.panelgrid.PanelGrid;
-import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -114,7 +114,7 @@ public class Filtro extends UIBase implements Serializable {
         this.detalles = this.getDinamico().getVerMas();
         this.toCreate(this.grid, this.getCriterios());
         this.toDisplay(this.detalle, this.detalles);
-        RequestContext.getCurrentInstance().addCallbackParam("mascaras", this.getDinamico().toFiltro());
+        UIBackingUtilities.addCallbackParam("mascaras", this.getDinamico().toFiltro());
         this.lazyModel= null;
         Methods.clean(this.columns);
       } // if

@@ -12,9 +12,9 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.mantic.catalogos.iva.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticHistorialIvaDto;
-import org.primefaces.context.RequestContext;
 
 
 @Named(value = "manticCatalogosIvaAccion")
@@ -37,7 +37,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   protected void init() {		
     try {
       if(JsfBase.getFlashAttribute("accion")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("aplicar", false);
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idHistorialIva", JsfBase.getFlashAttribute("idHistorialIva"));
@@ -82,7 +82,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			transaccion = new Transaccion(this.iva, (Boolean)this.attrs.get("aplicar"));
 			if (transaccion.ejecutar(eaccion)) {
 				regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-				RequestContext.getCurrentInstance().execute("janal.alert('Se aplico el IVA al catalogo de articulos');");
+				UIBackingUtilities.execute("janal.alert('Se aplico el IVA al catalogo de articulos');");
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el registro del IVA de forma correcta."), ETipoMensaje.INFORMACION);
 			} // if
 			else 

@@ -53,7 +53,7 @@ public class Fondo extends IBaseAttribute implements Serializable {
   protected void init() {		
     try {
 			if(JsfBase.getFlashAttribute("accion")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.accion = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idCierre", JsfBase.getFlashAttribute("idCierre")== null? -1L: JsfBase.getFlashAttribute("idCierre"));
       this.attrs.put("idCaja", JsfBase.getFlashAttribute("idCaja")== null? -1L: JsfBase.getFlashAttribute("idCaja"));
@@ -95,7 +95,7 @@ public class Fondo extends IBaseAttribute implements Serializable {
 			transaccion = new Cierre((Long)this.attrs.get("idCaja"), (Double)this.attrs.get("disponible"), cierre, null, this.fondos);
 			if (transaccion.ejecutar(this.accion)) {
 				regresar = "filtro".concat(Constantes.REDIRECIONAR);
-				RequestContext.getCurrentInstance().execute("janal.alert('Se gener\\u00F3 correctamente la apertura de caja del consecutivo: "+ cierre.getConsecutivo()+ "');");
+				UIBackingUtilities.execute("janal.alert('Se gener\\u00F3 correctamente la apertura de caja del consecutivo: "+ cierre.getConsecutivo()+ "');");
   			JsfBase.setFlashAttribute("idCierre", this.attrs.get("idCierre"));
 			} // if
 			else 

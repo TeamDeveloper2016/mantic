@@ -163,12 +163,12 @@ public class Accion extends IBaseArticulos implements Serializable {
 			if (transaccion.ejecutar(EAccion.GENERAR)) {
 				if(eaccion.equals(EAccion.AGREGAR)) {
  				  regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
-    			RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 la cotización ', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getCcotizacion()+ "');");
+    			UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la cotización ', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getCcotizacion()+ "');");
 					this.init();
 				} // if	
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la cotización."), ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
-				RequestContext.getCurrentInstance().execute("userUpdate();");
+				UIBackingUtilities.execute("userUpdate();");
 			} // if
 			else 
 				JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);      			
@@ -326,7 +326,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 				} // for					
 				if(getAdminOrden().getArticulos().size()>1){					
 					getAdminOrden().toCalculate();
-					RequestContext.getCurrentInstance().update("@(.filas) @(.recalculo) @(.informacion)");
+					UIBackingUtilities.update("@(.filas) @(.recalculo) @(.informacion)");
 				} // if
 			} // if			
 		} // try
@@ -381,7 +381,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.attrs.put("descripcion", articulo.toString("nombre"));
 			this.image= LoadImages.getImage(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), articulo.toLong("idArticulo").toString());
 			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
-			RequestContext.getCurrentInstance().update("deudor");
+			UIBackingUtilities.update("deudor");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -412,7 +412,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.attrs.put("descripcion", articulo.getNombre());
 			this.image= LoadImages.getImage(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), articulo.getIdArticulo().toString());
 			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
-			RequestContext.getCurrentInstance().update("deudor");
+			UIBackingUtilities.update("deudor");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -455,7 +455,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 				transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
 				this.getAdminOrden().toAdjustArticulos();
 				if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
-					RequestContext.getCurrentInstance().execute("jsArticulos.back('cerr\\u00F3 la cuenta', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');janal.desbloquear();");
+					UIBackingUtilities.execute("jsArticulos.back('cerr\\u00F3 la cuenta', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');janal.desbloquear();");
 					JsfBase.addMessage("Se guardo la cuenta de venta.", ETipoMensaje.INFORMACION);	
 					init();
 				} // if
@@ -479,7 +479,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			cambioUsuario= new CambioUsuario(cuenta, password);
 			if(cambioUsuario.validaUsuario()) {
 				this.init();
-			  RequestContext.getCurrentInstance().execute("jsArticulos.disabledLogin();");
+			  UIBackingUtilities.execute("jsArticulos.disabledLogin();");
 			}	// if
 			else
 				JsfBase.addMessage("Cambio de usuario", "Ocurrió un error al autenticar el usuario seleccionado", ETipoMensaje.ERROR);      																	
@@ -508,11 +508,11 @@ public class Accion extends IBaseArticulos implements Serializable {
 				this.attrs.put("ticketsAbiertos", ticketsAbiertos);
 				if(!ticketsAbiertos.isEmpty())
 					this.attrs.put("ticketAbierto", UIBackingUtilities.toFirstKeySelectItem(ticketsAbiertos));
-				RequestContext.getCurrentInstance().execute("PF('dlgOpenTickets').show();");
+				UIBackingUtilities.execute("PF('dlgOpenTickets').show();");
 			} // if
 			else{
 				JsfBase.addMessage("Cuentas", "Actualmente no hay cuentas abiertas", ETipoMensaje.INFORMACION);
-				RequestContext.getCurrentInstance().execute("janal.desbloquear();");
+				UIBackingUtilities.execute("janal.desbloquear();");
 			} // else
 		} // try
 		catch (Exception e) {
@@ -542,11 +542,11 @@ public class Accion extends IBaseArticulos implements Serializable {
 				this.attrs.put("ticketsAbiertos", ticketsAbiertos);
 				if(!ticketsAbiertos.isEmpty())
 					this.attrs.put("ticketAbierto", UIBackingUtilities.toFirstKeySelectItem(ticketsAbiertos));
-				RequestContext.getCurrentInstance().execute("PF('dlgCotizaciones').show();");
+				UIBackingUtilities.execute("PF('dlgCotizaciones').show();");
 			} // if
 			else{
 				JsfBase.addMessage("Cuentas", "Actualmente no hay cotizaciones abiertas", ETipoMensaje.INFORMACION);
-				RequestContext.getCurrentInstance().execute("janal.desbloquear();");
+				UIBackingUtilities.execute("janal.desbloquear();");
 			} // else
 		} // try
 		catch (Exception e) {
@@ -695,7 +695,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 				columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
 				this.almacenes= new FormatLazyModel("VistaKardexDto", "almacenesDetalle", params, columns);
 				UIBackingUtilities.resetDataTable("almacenes");
-				RequestContext.getCurrentInstance().execute("PF('dlgAlmacenes').show();");				
+				UIBackingUtilities.execute("PF('dlgAlmacenes').show();");				
 			} // if
 		} // try
 		catch (Exception e) {
@@ -720,7 +720,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			params.put("idUsuario", JsfBase.getIdUsuario());
 			campos.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
 			vendedores= UIEntity.build("VistaTcJanalUsuariosDto", "cambioUsuario", params, campos, Constantes.SQL_TODOS_REGISTROS);
-			rc= RequestContext.getCurrentInstance();
+			rc= UIBackingUtilities.getCurrentInstance();
 			if(!vendedores.isEmpty()){
 				this.attrs.put("vendedores", vendedores);
 				this.attrs.put("vendedor", UIBackingUtilities.toFirstKeySelectEntity(vendedores));
@@ -899,7 +899,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 					if(isIndividual){
 						getAdminOrden().getArticulos().get(index).setDescuento(this.attrs.get("descuentoIndividual").toString());
 						if(getAdminOrden().getArticulos().get(index).autorizedDiscount())
-							RequestContext.getCurrentInstance().execute("jsArticulos.divDiscount('".concat(this.attrs.get("descuentoIndividual").toString()).concat("');"));
+							UIBackingUtilities.execute("jsArticulos.divDiscount('".concat(this.attrs.get("descuentoIndividual").toString()).concat("');"));
 						else
 							JsfBase.addMessage("No es posble aplicar el descuento, el descuento es superior a la utilidad", ETipoMensaje.ERROR);
 					} // if

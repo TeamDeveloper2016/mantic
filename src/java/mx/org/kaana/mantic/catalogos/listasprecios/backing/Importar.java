@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
@@ -26,7 +27,6 @@ import mx.org.kaana.mantic.db.dto.TcManticListasPreciosDto;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.catalogos.comun.IBaseImportar;
 import mx.org.kaana.mantic.catalogos.listasprecios.reglas.Transaccion;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 
@@ -137,7 +137,7 @@ public class Importar extends IBaseImportar implements Serializable {
 	public void doFileUpload(FileUploadEvent event) {
 		if("0".equals((String)this.attrs.get("tipo"))) {
 			if(Cadena.isVacio(this.proveedor.getClave()))
-				RequestContext.getCurrentInstance().execute("janal.show([{summary: 'Error:', detail: 'No tiene definido una CLAVE el proveedor, por favor defina una clave.'}]);"); 
+				UIBackingUtilities.execute("janal.show([{summary: 'Error:', detail: 'No tiene definido una CLAVE el proveedor, por favor defina una clave.'}]);"); 
 			else
 		    this.doFileUpload(event, this.lista.getRegistro().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios"), this.proveedor.getClave());
 		} // if	
@@ -147,7 +147,7 @@ public class Importar extends IBaseImportar implements Serializable {
   				this.doFileUpload(event, this.lista.getRegistro().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios"), lista.getNombre());
 			}	// IF
 	    else
-				RequestContext.getCurrentInstance().execute("janal.show([{summary: 'Error:', detail: 'Solo se pueden importar catalogos en formato PDF ["+ event.getFile().getFileName().toUpperCase()+ "].'}]);"); 
+				UIBackingUtilities.execute("janal.show([{summary: 'Error:', detail: 'Solo se pueden importar catalogos en formato PDF ["+ event.getFile().getFileName().toUpperCase()+ "].'}]);"); 
 		this.attrs.put("registros", this.getArticulos().size());
 	} // doFileUpload	
 	
@@ -174,11 +174,11 @@ public class Importar extends IBaseImportar implements Serializable {
 			  this.getPdf().setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
       Transaccion transaccion= new Transaccion(this.lista, this.getArticulos(), this.getXls(), this.getPdf());
       if(transaccion.ejecutar(EAccion.COMPLEMENTAR)) {
-        RequestContext.getCurrentInstance().execute("janal.alert('Se actualizo y se importaron los catalogos de forma correcta !');");
+        UIBackingUtilities.execute("janal.alert('Se actualizo y se importaron los catalogos de forma correcta !');");
         regresar= this.doCancelar();
       } // if
       else
-        RequestContext.getCurrentInstance().execute("janal.alert('Se deben de seleccionar archivo en formato XLS/PDF');");
+        UIBackingUtilities.execute("janal.alert('Se deben de seleccionar archivo en formato XLS/PDF');");
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

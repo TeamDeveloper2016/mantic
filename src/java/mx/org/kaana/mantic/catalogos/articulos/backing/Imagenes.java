@@ -118,7 +118,7 @@ public class Imagenes extends IBaseAttribute implements Serializable {
 						item.setCantidad(10198L);
 					this.attrs.put("idArticulo", articulo.toLong("idArticulo"));
 					this.articulos.add(item);
-					RequestContext.getCurrentInstance().execute("jsKardex.cursor.top= "+ (this.articulos.size()- 1)+"; jsKardex.callback("+ articulo +");");
+					UIBackingUtilities.execute("jsKardex.cursor.top= "+ (this.articulos.size()- 1)+"; jsKardex.callback("+ articulo +");");
 				} // if
 				else {
 					this.attrs.put("existe", "<span class='janal-color-orange'>EL ARTICULO YA ESTA EN LA LISTA DE ARTICULOS</span>");

@@ -21,6 +21,7 @@ import mx.org.kaana.libs.archivo.Zip;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.TreeOrden;
 import mx.org.kaana.mantic.compras.ordenes.reglas.MotorBusqueda;
@@ -68,7 +69,7 @@ public class Estructura extends IBaseFilter implements Serializable {
   protected void init() {
     try {
 			if(JsfBase.getFlashAttribute("idOrdenCompra")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
 			this.files= new ArrayList<>();
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
@@ -174,7 +175,7 @@ public class Estructura extends IBaseFilter implements Serializable {
     TreeOrden seleccionado= null;
     RequestContext rc     = null;
     try {
-      rc= RequestContext.getCurrentInstance();
+      rc= UIBackingUtilities.getCurrentInstance();
       if(this.node!= null) {
         seleccionado= (TreeOrden) this.node.getData();
         this.attrs.put("isPrincipal", seleccionado.getProveedor()!= null);
@@ -201,7 +202,7 @@ public class Estructura extends IBaseFilter implements Serializable {
 		TreeOrden seleccionado= null;
     RequestContext rc     = null;
     try {
-      rc= RequestContext.getCurrentInstance();
+      rc= UIBackingUtilities.getCurrentInstance();
       if(this.node!= null){
 				seleccionado= (TreeOrden) this.node.getData();       
 				switch(seleccionado.getTipo()) {

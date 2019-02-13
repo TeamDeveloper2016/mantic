@@ -43,7 +43,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
-import org.primefaces.context.RequestContext;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.DefaultStreamedContent;
@@ -90,7 +90,7 @@ public class Importar extends IBaseAttribute implements Serializable {
   protected void init() {		
     try {
 			if(JsfBase.getFlashAttribute("idEgreso")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.idEgreso= JsfBase.getFlashAttribute("idEgreso")== null ? -1L : (Long)JsfBase.getFlashAttribute("idEgreso");
 			this.egreso= (TcManticEgresosDto)DaoFactory.getInstance().findById(TcManticEgresosDto.class, this.idEgreso);
 			if(this.egreso!= null) {
@@ -340,7 +340,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 			  this.getPdf().setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
 			transaccion= new Transaccion(this.egreso, this.xml, this.pdf);
       if(transaccion.ejecutar(EAccion.REGISTRAR)) {
-      	RequestContext.getCurrentInstance().execute("janal.alert('Se importaron los archivos de forma correcta !');");
+      	UIBackingUtilities.execute("janal.alert('Se importaron los archivos de forma correcta !');");
 				regresar= this.doCancelar();
 			} // if
 		} // try

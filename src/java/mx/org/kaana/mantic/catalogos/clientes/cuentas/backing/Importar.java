@@ -23,8 +23,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.Transaccion;
@@ -63,7 +63,7 @@ public class Importar extends IBaseImportar implements Serializable {
   protected void init() {		
     try {
 			if(JsfBase.getFlashAttribute("idClienteDeuda")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.idClienteDeuda= JsfBase.getFlashAttribute("idClienteDeuda")== null? -1L: (Long)JsfBase.getFlashAttribute("idClienteDeuda");
 			this.clienteDeuda= (TcManticClientesDeudasDto)DaoFactory.getInstance().findById(TcManticClientesDeudasDto.class, this.idClienteDeuda);
 			if(this.clienteDeuda!= null) {			  
@@ -185,7 +185,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		try {
 			transaccion= new Transaccion(getFile(), this.clienteDeuda, Long.valueOf(this.attrs.get("pago").toString()));
       if(transaccion.ejecutar(EAccion.SUBIR)) {
-      	RequestContext.getCurrentInstance().execute("janal.alert('Se importaron los archivos de forma correcta !');");
+      	UIBackingUtilities.execute("janal.alert('Se importaron los archivos de forma correcta !');");
 				regresar= this.doCancelar();
 			} // if
 		} // try

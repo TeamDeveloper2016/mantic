@@ -17,14 +17,12 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.mantic.catalogos.cajas.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticCajasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresCajasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
 import mx.org.kaana.mantic.ventas.caja.cierres.beans.Denominacion;
-import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Cierre;
-import org.primefaces.context.RequestContext;
 
 @Named(value = "manticCatalogosCajasAccion")
 @ViewScoped
@@ -48,7 +46,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("idCaja", JsfBase.getFlashAttribute("idCaja"));
 			this.attrs.put("activa", false);
       if(JsfBase.getFlashAttribute("accion")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.accion = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());

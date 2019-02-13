@@ -189,7 +189,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			this.attrs.put("autor", "kajool.kaana");
 			this.attrs.put("correo", "team.developer@kaana.org.mx");
 			doActualizarRuta();
-			RequestContext.getCurrentInstance().execute("descargarHide();");
+			UIBackingUtilities.execute("descargarHide();");
 		} // try
 		catch (Exception e) {
 			JsfUtilities.addMessageError(e);
@@ -283,7 +283,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			JsfUtilities.addMessageError(e);
 			Error.mensaje(e);
 		} // catch
-    RequestContext.getCurrentInstance().execute("centrarDialogo();");
+    UIBackingUtilities.execute("centrarDialogo();");
 		return regresar;
 	} // onFlowProcess
 	
@@ -552,11 +552,11 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			this.attrs.put("textoBacking", generador.getTextoBacking());
 			this.attrs.put("textoPagina", generador.getTextoPagina());
 			this.attrs.put("archivo",Constantes.ARCHIVO_PATRON_SEPARADOR.concat(this.attrs.get("patron").toString()).concat("Filtro.").concat(EFormatos.ZIP.name().toLowerCase() ));
-			if (RequestContext.getCurrentInstance()!=null) {
-				RequestContext.getCurrentInstance().update("tab:textoPagina");
-				RequestContext.getCurrentInstance().update("tab:textoBacking");
-				RequestContext.getCurrentInstance().update("tab:VistaPreliminar");
-				RequestContext.getCurrentInstance().execute("descargarShow();");
+			if (UIBackingUtilities.getCurrentInstance()!=null) {
+				UIBackingUtilities.update("tab:textoPagina");
+				UIBackingUtilities.update("tab:textoBacking");
+				UIBackingUtilities.update("tab:VistaPreliminar");
+				UIBackingUtilities.execute("descargarShow();");
 				JsfUtilities.addMessage("El filtro fue generado correctamente.");
 			}
 
@@ -716,10 +716,10 @@ public class Filtro extends IBaseAttribute implements Serializable {
 	public void onTabChange(TabChangeEvent event) {
 		try {
 			if(event.getTab().getTitle().equals("Descargar"))
-				RequestContext.getCurrentInstance().execute("descargar();");
+				UIBackingUtilities.execute("descargar();");
       else {
-				RequestContext.getCurrentInstance().execute("reload('tab:textoPagina','tab:textoBacking');");
-				RequestContext.getCurrentInstance().execute("refrescar();");
+				UIBackingUtilities.execute("reload('tab:textoPagina','tab:textoBacking');");
+				UIBackingUtilities.execute("refrescar();");
 			} // else
 		} // try
 		catch (Exception e) {
@@ -744,15 +744,15 @@ public class Filtro extends IBaseAttribute implements Serializable {
 	
 	public void doGuardarCampoSeleccionado(String nombre){
 		this.attrs.put("campoSeleccionado", nombre);
-    RequestContext.getCurrentInstance().execute("centrarDialogo();");
+    UIBackingUtilities.execute("centrarDialogo();");
 	}
 
   public void doCheckComponente(Campo campos){
     if(campos.getComponente().equals(EComponente.DATE)){
       doGuardarCampoSeleccionado(campos.getNombre());
-      RequestContext.getCurrentInstance().execute("PF('dialogoConverter').show();");
+      UIBackingUtilities.execute("PF('dialogoConverter').show();");
     } // if
     else
-      RequestContext.getCurrentInstance().execute("janal.desbloquear()");
+      UIBackingUtilities.execute("janal.desbloquear()");
   } // doCheckComponente
 }

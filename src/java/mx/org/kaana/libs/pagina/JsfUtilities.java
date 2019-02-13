@@ -22,7 +22,6 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.recurso.Configuracion;
-import org.primefaces.context.RequestContext;
 
 /**
  *@company KAANA
@@ -296,7 +295,7 @@ public class JsfUtilities {
 
   public static void addAlert(String titulo, String descripcion, ETipoMensaje tipoMensaje) {
    FacesMessage alert = new FacesMessage(tipoMensaje.getTipoMensaje(), titulo, descripcion);
-   RequestContext.getCurrentInstance().showMessageInDialog(alert);
+   UIBackingUtilities.showMessageInDialog(alert);
   }
 
   public static void addAlert(String descripcion, ETipoMensaje tipoMensaje) {

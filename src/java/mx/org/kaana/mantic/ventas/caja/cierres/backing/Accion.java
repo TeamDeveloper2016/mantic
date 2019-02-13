@@ -82,7 +82,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   protected void init() {		
     try {
 			if(JsfBase.getFlashAttribute("accion")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.accion = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idCierre", JsfBase.getFlashAttribute("idCierre")== null? -1L: JsfBase.getFlashAttribute("idCierre"));
       this.attrs.put("idCaja", JsfBase.getFlashAttribute("idCaja")== null? -1L: JsfBase.getFlashAttribute("idCaja"));
@@ -147,7 +147,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 					JsfBase.setFlashAttribute("idCaja", this.attrs.get("idCaja"));
 					JsfBase.setFlashAttribute("idCierre", transaccion.getIdApertura());
 					JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));
-    			RequestContext.getCurrentInstance().execute("janal.alert('Se gener\\u00F3 el cierre de caja, con consecutivo: "+ cierre.getConsecutivo()+ "');");
+    			UIBackingUtilities.execute("janal.alert('Se gener\\u00F3 el cierre de caja, con consecutivo: "+ cierre.getConsecutivo()+ "');");
 				} // if	
 				else
     			JsfBase.setFlashAttribute("idCierre", this.attrs.get("idCierre"));

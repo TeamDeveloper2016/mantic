@@ -50,7 +50,7 @@ public class Ambos extends IBaseFilter implements Serializable {
   protected void init() {
     try {
 			if(JsfBase.getFlashAttribute("idCierre")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
 			this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa"));
 			this.attrs.put("sucursales", JsfBase.getFlashAttribute("idEmpresa"));
       this.attrs.put("idCierre", JsfBase.getFlashAttribute("idCierre"));
@@ -72,7 +72,7 @@ public class Ambos extends IBaseFilter implements Serializable {
 		Map<String, Object> params= new HashMap<>();
     try {
 			if(JsfBase.getFlashAttribute("idCierre")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       params.put("idCierre", this.attrs.get("idCierre"));
       params.put("sortOrder", "order by tc_mantic_cierres_retiros.id_abono, tc_mantic_cierres_retiros.consecutivo ");
       columns = new ArrayList<>();
@@ -200,7 +200,7 @@ public class Ambos extends IBaseFilter implements Serializable {
   
   public boolean doVerificarReporte() {
     boolean regresar = false;
-		RequestContext rc= RequestContext.getCurrentInstance();
+		RequestContext rc= UIBackingUtilities.getCurrentInstance();
 		if(this.reporte.getTotal()> 0L){
 			rc.execute("start(" + this.reporte.getTotal() + ")");		
       regresar = true;

@@ -44,10 +44,9 @@ import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.comun.UIBusqueda;
 import org.primefaces.event.TabChangeEvent;
 import mx.org.kaana.kajool.enums.ETipoGeneracion;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jfree.ui.UIUtilities;
-import org.primefaces.context.RequestContext;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -248,12 +247,12 @@ public class TemplateMotorGeneracion extends IBaseAttribute implements Serializa
   public void onTabChange(TabChangeEvent event) {
 		try {
       if(event.getTab().getTitle().equals("Descargar"))
-				RequestContext.getCurrentInstance().execute("descargar();");
+				UIBackingUtilities.execute("descargar();");
       else{
-        RequestContext.getCurrentInstance().update("resultados:resultadoDto");
-        RequestContext.getCurrentInstance().update("resultados:resultadoXml");
-        RequestContext.getCurrentInstance().execute("reload('fuentes:resultados:resultadoDto','fuentes:resultados:resultadoXml');");
-        RequestContext.getCurrentInstance().execute("refrescar();");
+        UIBackingUtilities.update("resultados:resultadoDto");
+        UIBackingUtilities.update("resultados:resultadoXml");
+        UIBackingUtilities.execute("reload('fuentes:resultados:resultadoDto','fuentes:resultados:resultadoXml');");
+        UIBackingUtilities.execute("refrescar();");
       } // else
 		} // try
 		catch (Exception e) {

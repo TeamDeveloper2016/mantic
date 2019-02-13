@@ -12,6 +12,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.almacenes.ubicaciones.beans.OrganigramUbicacion;
 import mx.org.kaana.mantic.catalogos.almacenes.ubicaciones.reglas.MotorBusqueda;
@@ -149,7 +150,7 @@ public class Organigrama extends IBaseFilter implements Serializable {
     OrganigramUbicacion seleccionado= null;
     RequestContext rc     = null;
     try {
-      rc= RequestContext.getCurrentInstance();
+      rc= UIBackingUtilities.getCurrentInstance();
       if(this.node!= null) {
         seleccionado= (OrganigramUbicacion) this.node.getData();        
         this.attrs.put("detalle", seleccionado);        

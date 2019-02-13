@@ -244,7 +244,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(eaccion)) {
 				if(eaccion.equals(EAccion.AGREGAR)) { 				  
-    			RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 la factura ', '"+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+    			UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la factura ', '"+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 					this.init();
 				} // if	
 				if(eaccion.equals(EAccion.MODIFICAR))
@@ -306,7 +306,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 				} // for					
 				if(getAdminOrden().getArticulos().size()>1){					
 					getAdminOrden().toCalculate();
-					RequestContext.getCurrentInstance().update("@(.filas) @(.recalculo) @(.informacion)");
+					UIBackingUtilities.update("@(.filas) @(.recalculo) @(.informacion)");
 				} // if
 			} // if			
 		} // try
@@ -330,7 +330,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("descripcion", articulo.toString("nombre"));
 			this.image= LoadImages.getImage(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), articulo.toLong("idArticulo").toString());
 			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
-			RequestContext.getCurrentInstance().update("deudor");
+			UIBackingUtilities.update("deudor");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -352,7 +352,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("descripcion", articulo.getNombre());
 			this.image= LoadImages.getImage(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), articulo.getIdArticulo().toString());
 			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
-			RequestContext.getCurrentInstance().update("deudor");
+			UIBackingUtilities.update("deudor");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -405,7 +405,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 				transaccion = new Transaccion(((FacturaFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
 				this.getAdminOrden().toAdjustArticulos();
 				if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
-					RequestContext.getCurrentInstance().execute("jsArticulos.back('cerr\\u00F3 la cuenta', '"+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+					UIBackingUtilities.execute("jsArticulos.back('cerr\\u00F3 la cuenta', '"+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 					JsfBase.addMessage("Se guardo la cuenta de venta.", ETipoMensaje.INFORMACION);	
 					init();
 				} // if
@@ -441,7 +441,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 				columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
 				this.almacenes= new FormatLazyModel("VistaKardexDto", "almacenesDetalle", params, columns);
 				UIBackingUtilities.resetDataTable("almacenes");
-				RequestContext.getCurrentInstance().execute("PF('dlgAlmacenes').show();");				
+				UIBackingUtilities.execute("PF('dlgAlmacenes').show();");				
 			} // if
 		} // try
 		catch (Exception e) {
@@ -466,7 +466,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			params.put("idUsuario", JsfBase.getIdUsuario());
 			campos.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
 			vendedores= UIEntity.build("VistaTcJanalUsuariosDto", "cambioUsuario", params, campos, Constantes.SQL_TODOS_REGISTROS);
-			rc= RequestContext.getCurrentInstance();
+			rc= UIBackingUtilities.getCurrentInstance();
 			if(!vendedores.isEmpty()){
 				this.attrs.put("vendedores", vendedores);
 				this.attrs.put("vendedor", UIBackingUtilities.toFirstKeySelectEntity(vendedores));
@@ -601,7 +601,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 					if(isIndividual){
 						getAdminOrden().getArticulos().get(index).setDescuento(this.attrs.get("descuentoIndividual").toString());
 						if(getAdminOrden().getArticulos().get(index).autorizedDiscount())
-							RequestContext.getCurrentInstance().execute("jsArticulos.divDiscount('".concat(this.attrs.get("descuentoIndividual").toString()).concat("');"));
+							UIBackingUtilities.execute("jsArticulos.divDiscount('".concat(this.attrs.get("descuentoIndividual").toString()).concat("');"));
 						else
 							JsfBase.addMessage("No es posble aplicar el descuento, el descuento es superior a la utilidad", ETipoMensaje.ERROR);
 					} // if
@@ -914,7 +914,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			transaccion = new Transaccion(((FacturaFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.attrs.get("observaciones").toString());			
 			if (transaccion.ejecutar(eaccion)){ 
 				if(eaccion.equals(EAccion.AGREGAR))
-					RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 la factura ', '"+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+					UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la factura ', '"+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
   			JsfBase.setFlashAttribute("idFicticia", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia());							
 			} // if
 			else 
@@ -930,6 +930,6 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		LOG.error("ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA");
 		if(isViewException && this.getAdminOrden().getArticulos().size()> 0)
 		  this.toSaveRecord();
-    //RequestContext.getCurrentInstance().execute("alert('ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA');");
+    //UIBackingUtilities.execute("alert('ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA');");
 	} // doGlobalEvent
 }

@@ -131,9 +131,9 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				if(index== this.adminOrden.getArticulos().size()- 1) {
 					this.adminOrden.getArticulos().add(new Articulo(-1L));
   				this.adminOrden.toAddUltimo(this.adminOrden.getArticulos().size()- 1);
-					RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
+					UIBackingUtilities.execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
 				} // if	
-				RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
+				UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
 				this.adminOrden.toCalculate(index);
 				if(this.attrs.get("paginator")== null || !(boolean)this.attrs.get("paginator"))
 				  this.attrs.put("paginator", this.adminOrden.getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
@@ -198,8 +198,8 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			temporal.setStock(stock== null? 0D: stock.toDouble());				
 			this.adminOrden.getArticulos().add(temporal);
 			this.adminOrden.toAddUltimo(this.adminOrden.getArticulos().size()- 1);
-			RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");				
-			RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
+			UIBackingUtilities.execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");				
+			UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
 			this.adminOrden.toAddArticulo(this.adminOrden.getArticulos().size()- 1);		
 			if(this.attrs.get("paginator")== null || !(boolean)this.attrs.get("paginator"))
   			this.attrs.put("paginator", this.adminOrden.getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
@@ -235,7 +235,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				int position= this.getAdminOrden().getArticulos().indexOf(new Articulo(articulo.toLong("idArticulo")));
 				if(articulo.size()> 1 && position>= 0) {
 					if(index!= position)
-						RequestContext.getCurrentInstance().execute("jsArticulos.exists("+ position+ ");");
+						UIBackingUtilities.execute("jsArticulos.exists("+ position+ ");");
 				} // if	
 				else
 					this.toMoveData(articulo, index);
@@ -276,7 +276,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			} // 
 			if(isCantidad)
 			  this.adminOrden.toCantidad();
-			RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
+			UIBackingUtilities.execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
 			//if(this instanceof IBaseStorage)
 			//	((IBaseStorage)this).toSaveRecord();
 		} // try
@@ -558,7 +558,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				int position= this.getAdminOrden().getArticulos().indexOf(new Articulo(articulo.toLong("idArticulo")));
 				if(articulo.size()> 1 && position>= 0) {
 					if(index!= position)
-						RequestContext.getCurrentInstance().execute("jsArticulos.exists("+ position+ ","+ Constantes.REGISTROS_POR_LOTE+ ","+ (this.attrs.get("paginator")== null? false: this.attrs.get("paginator"))+ ");");
+						UIBackingUtilities.execute("jsArticulos.exists("+ position+ ","+ Constantes.REGISTROS_POR_LOTE+ ","+ (this.attrs.get("paginator")== null? false: this.attrs.get("paginator"))+ ");");
 				} // if	
 				else
 					this.toMoveData(articulo, index);
@@ -627,12 +627,12 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			int position= this.getAdminOrden().getArticulos().indexOf(item);
 			if(this.getAdminOrden().getArticulos().size()> 1 && position>= 0) {
 				this.getAdminOrden().getArticulos().get(position).setCantidad(this.getAdminOrden().getArticulos().get(position).getCantidad()+ item.getCantidad());
-				RequestContext.getCurrentInstance().execute("jsArticulos.exists("+ position+ ");");
+				UIBackingUtilities.execute("jsArticulos.exists("+ position+ ");");
 			} // if
 			else {
 				if(this.getAdminOrden().add(item))
-					RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
-				RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ item.toMap()+ "');");
+					UIBackingUtilities.execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
+				UIBackingUtilities.execute("jsArticulos.callback('"+ item.toMap()+ "');");
 			}   // if
 			this.getAdminOrden().toCalculate();
 		} // try
@@ -680,8 +680,8 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				1L
 			);
 			if(this.getAdminOrden().add(item))
-				RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
-			RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ item.toMap()+ "');");
+				UIBackingUtilities.execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
+			UIBackingUtilities.execute("jsArticulos.callback('"+ item.toMap()+ "');");
 		} // try
 		finally {
 			Methods.clean(params);

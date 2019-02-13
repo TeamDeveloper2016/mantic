@@ -28,9 +28,9 @@ import mx.org.kaana.kajool.seguridad.jarfile.SearchFileJar;
 import mx.org.kaana.kajool.procesos.reportes.reglas.IBaseDatasource;
 import mx.org.kaana.kajool.procesos.reportes.reglas.IReporte;
 import mx.org.kaana.kajool.procesos.reportes.reglas.IReporteDataSource;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.primefaces.context.RequestContext;
 import org.primefaces.model.StreamedContent;
 
 @ManagedBean(name = "kajoolReportesGenerar")
@@ -98,8 +98,8 @@ public class Generar extends BaseReportes implements Serializable {
 			} // if
 			else 
 				reporte.procesar(this.idFormato);
-			if (RequestContext.getCurrentInstance()!=null) 
-				RequestContext.getCurrentInstance().addCallbackParam("janalOK", true);
+			if (UIBackingUtilities.getCurrentInstance()!=null) 
+				UIBackingUtilities.addCallbackParam("janalOK", true);
 			monitoreo=JsfBase.getAutentifica().getMonitoreo();
 			monitoreo.comenzar(this.total);
 		} // try

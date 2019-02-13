@@ -21,8 +21,8 @@ import mx.org.kaana.libs.archivo.Texto;
 import mx.org.kaana.libs.archivo.Zip;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
-import org.primefaces.context.RequestContext;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -112,8 +112,8 @@ public class Text implements Serializable{
         index++; 
       } // for 
       if (toZipFile()){
-			  if(RequestContext.getCurrentInstance()!= null)
-          RequestContext.getCurrentInstance().addCallbackParam("janalOk", true);
+			  if(UIBackingUtilities.getCurrentInstance()!= null)
+          UIBackingUtilities.addCallbackParam("janalOk", true);
       } // if
 		} // try
 		catch(Exception e) {

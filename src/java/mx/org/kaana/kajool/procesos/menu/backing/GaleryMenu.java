@@ -46,10 +46,10 @@ import mx.org.kaana.kajool.procesos.beans.InformacionSistema;
 import mx.org.kaana.kajool.procesos.beans.Jobs;
 import mx.org.kaana.kajool.procesos.menu.reglas.Transaccion;
 import mx.org.kaana.kajool.seguridad.quartz.Especial;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Hibernate;
-import org.primefaces.context.RequestContext;
 import org.primefaces.model.chart.MeterGaugeChartModel;
 import org.quartz.JobKey;
 import org.quartz.SchedulerException;
@@ -392,7 +392,7 @@ public class GaleryMenu implements Serializable {
       transaccion.ejecutar(EAccion.AGREGAR);
       JsfBase.addMsgProperties("janal.accion.ok.agregar");
       trJanalBuzonDto= new TrJanalBuzonDto();
-      RequestContext.getCurrentInstance().update("dialogoBuzonSugerencias");
+      UIBackingUtilities.update("dialogoBuzonSugerencias");
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);

@@ -89,7 +89,7 @@ public class Codigos extends IBaseAttribute implements Serializable {
   			// this.image= LoadImages.getImage(articulo.toLong("idArticulo"));
 				this.attrs.put("idArticulo", articulo.toLong("idArticulo"));
 				this.articulos.add(new CodigoArticulo(articulo.toLong("idArticulo"), articulo.toString("propio"), articulo.toString("nombre")));
-				RequestContext.getCurrentInstance().execute("jsKardex.cursor.top= "+ (this.articulos.size()- 1)+"; jsKardex.callback("+ articulo +");");
+				UIBackingUtilities.execute("jsKardex.cursor.top= "+ (this.articulos.size()- 1)+"; jsKardex.callback("+ articulo +");");
 		  } // if
 			else {
 				this.attrs.put("existe", "<span class='janal-color-orange'>EL ARTICULO YA ESTA EN LA LISTA DE ARTICULOS</span>");
@@ -168,7 +168,7 @@ public class Codigos extends IBaseAttribute implements Serializable {
 					if(sucursal.isMatriz())
 						title= sucursal.getTitulo();
 				} // for					
-				RequestContext.getCurrentInstance().execute("printCode('"+code+"','"+title+"');");
+				UIBackingUtilities.execute("printCode('"+code+"','"+title+"');");
 				regresar= ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
 			} // if
 			else

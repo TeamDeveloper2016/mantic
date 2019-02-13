@@ -179,7 +179,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
   				this.faltante= new Faltante(JsfBase.getIdUsuario(), -1L, "", 1D, 1L, -1L, this.faltante.getIdEmpresa());
 				} // if	
 			} // else	
-			RequestContext.getCurrentInstance().update("@(.faltantes)");
+			UIBackingUtilities.update("@(.faltantes)");
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
@@ -280,8 +280,8 @@ public class Encabezado extends IBaseFilter implements Serializable {
 			Entity eliminado= (Entity)this.attrs.get("eliminado");
 			if(DaoFactory.getInstance().delete(TcManticFaltantesDto.class, eliminado.getKey())> 0L)
 				JsfBase.addMessage("Eliminado:", "El articulo fue eliminado de la relación de faltantes. !", ETipoMensaje.INFORMACION);
-			RequestContext.getCurrentInstance().execute("$('#codigosFaltantes').focus();");
-			RequestContext.getCurrentInstance().update("@(.faltantes)");
+			UIBackingUtilities.execute("$('#codigosFaltantes').focus();");
+			UIBackingUtilities.update("@(.faltantes)");
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
@@ -305,7 +305,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
 				} // if	
 			} // for
 		if(regresar== null) {
-			RequestContext.getCurrentInstance().execute("janal.alert('La opci\\u00F3n ["+ opcion+ "] no existe, verifiquelo de favor !')");
+			UIBackingUtilities.execute("janal.alert('La opci\\u00F3n ["+ opcion+ "] no existe, verifiquelo de favor !')");
 		} // if
 		return regresar== null? regresar: regresar.concat(Constantes.REDIRECIONAR);
 	}

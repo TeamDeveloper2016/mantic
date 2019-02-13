@@ -134,7 +134,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
 				this.almacenes= new FormatLazyModel("VistaKardexDto", "almacenesDetalle", params, columns);
 				UIBackingUtilities.resetDataTable("almacenes");
-				RequestContext.getCurrentInstance().execute("PF('dlgAlmacenes').show();");				
+				UIBackingUtilities.execute("PF('dlgAlmacenes').show();");				
 			} // if
 		} // try
 		catch (Exception e) {
@@ -158,7 +158,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			campos.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
 			params.put(Constantes.SQL_CONDICION, toCondicion());
 			this.lazyCuentasAbiertas= new FormatLazyModel("VistaVentasDto", "lazy", params, campos);			
-			RequestContext.getCurrentInstance().execute("PF('dlgOpenTickets').show();");			
+			UIBackingUtilities.execute("PF('dlgOpenTickets').show();");			
 			UIBackingUtilities.resetDataTable("tablaTicketsAbiertos");
 		} // try
 		catch (Exception e) {
@@ -184,7 +184,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			campos.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			campos.add(new Columna("vigencia", EFormatoDinamicos.FECHA_HORA_CORTA));
 			this.lazyCotizaciones= new FormatLazyModel("VistaVentasDto", "lazy", params, campos);			
-			RequestContext.getCurrentInstance().execute("PF('dlgCotizaciones').show();");			
+			UIBackingUtilities.execute("PF('dlgCotizaciones').show();");			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -210,7 +210,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			campos.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			campos.add(new Columna("vigencia", EFormatoDinamicos.FECHA_HORA_CORTA));
 			this.lazyApartados= new FormatLazyModel("VistaVentasDto", "lazyApartados", params, campos);			
-			RequestContext.getCurrentInstance().execute("PF('dlgApartados').show();");			
+			UIBackingUtilities.execute("PF('dlgApartados').show();");			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -298,7 +298,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			this.attrs.put("consecutivo", ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo());
 			toLoadCatalog();
 			doAsignaClienteTicketAbierto();
-			RequestContext.getCurrentInstance().execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
+			UIBackingUtilities.execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -321,7 +321,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				generateNewVenta();    	
 			toLoadCatalog();
 			doAsignaClienteTicketAbierto();
-			RequestContext.getCurrentInstance().execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
+			UIBackingUtilities.execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -345,7 +345,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				generateNewVenta();    				
 			toLoadCatalog();
 			doAsignaClienteTicketAbierto();
-			RequestContext.getCurrentInstance().execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
+			UIBackingUtilities.execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -448,7 +448,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				} // for					
 				if(getAdminOrden().getArticulos().size()>1){					
 					getAdminOrden().toCalculate();
-					RequestContext.getCurrentInstance().update("@(.filas) @(.recalculo) @(.informacion)");
+					UIBackingUtilities.update("@(.filas) @(.recalculo) @(.informacion)");
 				} // if
 			} // if			
 		} // try
@@ -517,7 +517,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 					if(isIndividual){
 						getAdminOrden().getArticulos().get(index).setDescuento(this.attrs.get("descuentoIndividual").toString());
 						if(getAdminOrden().getArticulos().get(index).autorizedDiscount())
-							RequestContext.getCurrentInstance().execute("jsArticulos.divDiscount('".concat(this.attrs.get("descuentoIndividual").toString()).concat("');"));
+							UIBackingUtilities.execute("jsArticulos.divDiscount('".concat(this.attrs.get("descuentoIndividual").toString()).concat("');"));
 						else
 							JsfBase.addMessage("No es posble aplicar el descuento, el descuento es superior a la utilidad", ETipoMensaje.ERROR);
 					} // if
@@ -619,9 +619,9 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				if(index== getAdminOrden().getArticulos().size()- 1) {
 					this.getAdminOrden().getArticulos().add(new ArticuloVenta(-1L, this.costoLibre));
 					this.getAdminOrden().toAddUltimo(this.getAdminOrden().getArticulos().size()- 1);
-					RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (getAdminOrden().getArticulos().size()- 1)+ ");");
+					UIBackingUtilities.execute("jsArticulos.update("+ (getAdminOrden().getArticulos().size()- 1)+ ");");
 				} // if	
-				RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
+				UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
 				getAdminOrden().toCalculate();
 			} // if	
 			else
@@ -746,7 +746,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				int position= this.getAdminOrden().getArticulos().indexOf(new ArticuloVenta(articulo.toLong("idArticulo"), this.costoLibre));
 				if(articulo.size()> 1 && position>= 0) {
 					if(index!= position)
-						RequestContext.getCurrentInstance().execute("jsArticulos.exists("+ position+ ");");
+						UIBackingUtilities.execute("jsArticulos.exists("+ position+ ");");
 				} // if	
 				else
 					this.toMoveData(articulo, index);

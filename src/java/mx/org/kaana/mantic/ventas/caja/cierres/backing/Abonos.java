@@ -107,7 +107,7 @@ public class Abonos extends IBaseAttribute implements Serializable {
      			JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));
 		    	JsfBase.setFlashAttribute("idCaja", this.attrs.get("idCaja"));
  	        JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));
-    			RequestContext.getCurrentInstance().execute("janal.alert('Se gener\\u00F3 el abono de efectivo, con consecutivo: "+ abono.getConsecutivo()+ "');");
+    			UIBackingUtilities.execute("janal.alert('Se gener\\u00F3 el abono de efectivo, con consecutivo: "+ abono.getConsecutivo()+ "');");
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR)? "agregó": this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" el abono de caja."), ETipoMensaje.INFORMACION);

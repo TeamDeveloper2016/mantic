@@ -19,6 +19,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
@@ -27,7 +28,6 @@ import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.inventarios.devoluciones.beans.Devolucion;
 import mx.org.kaana.mantic.inventarios.devoluciones.reglas.AdminDevoluciones;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.TabChangeEvent;
 
 /**
@@ -86,7 +86,7 @@ public class Accion extends IBaseArticulos implements Serializable {
   protected void init() {		
     try {
 			if(JsfBase.getFlashAttribute("accion")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
 			this.aplicar= false;
       this.accion = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idDevolucion", JsfBase.getFlashAttribute("idDevolucion")== null? -1L: JsfBase.getFlashAttribute("idDevolucion"));
@@ -116,7 +116,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.toLoadCatalog();
 			this.doFilterRows();
 			if(this.getAdminOrden().getFiltrados().isEmpty())
-				RequestContext.getCurrentInstance().execute("janal.alert('Ya no existen articulos que devolver asociados a esta nota de entrada !');janal.isPostBack('cancelar')");
+				UIBackingUtilities.execute("janal.alert('Ya no existen articulos que devolver asociados a esta nota de entrada !');janal.isPostBack('cancelar')");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -138,7 +138,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-   			  RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 la devolución ', '"+ ((Devolucion)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+   			  UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la devolución ', '"+ ((Devolucion)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" la devolución de la nota de entrada."), ETipoMensaje.INFORMACION);

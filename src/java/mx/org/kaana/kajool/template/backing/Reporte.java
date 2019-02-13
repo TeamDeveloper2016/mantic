@@ -28,10 +28,10 @@ import mx.org.kaana.libs.archivo.Zip;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reportes.scriptlets.JuntarPdfs;
 import mx.org.kaana.xml.Dml;
-import org.primefaces.context.RequestContext;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -175,14 +175,14 @@ public class Reporte extends BaseReportes implements Serializable{
 				reporteGenerar.procesar(this.idFormato, input);
 			else 
 				reporteGenerar.procesar(this.idFormato);			
-			if (RequestContext.getCurrentInstance()!= null)
-				RequestContext.getCurrentInstance().addCallbackParam("janalOK", true);
+			if (UIBackingUtilities.getCurrentInstance()!= null)
+				UIBackingUtilities.addCallbackParam("janalOK", true);
 			if (previsualizar) {
 				this.ireporte.setParams((Map<String, Object>) ((HashMap)ireporte.getParams()).clone());
 				this.attrs.put("reportePrevisualizar", JsfBase.getContext().concat("/").concat(this.getNombre()).concat("?pfdrid_c=true"));
 				this.attrs.put("reporteFileName", this.fileName);
-				RequestContext.getCurrentInstance().update("dlgPrevisualizar");
-				RequestContext.getCurrentInstance().execute("PF('dialogoPrevisualizar').show();");
+				UIBackingUtilities.update("dlgPrevisualizar");
+				UIBackingUtilities.execute("PF('dialogoPrevisualizar').show();");
 			} // if
 		} // try
 		catch (Exception e) {
@@ -221,8 +221,8 @@ public class Reporte extends BaseReportes implements Serializable{
         else  
           reporteGenerar.procesar(EFormatos.PDF);
         listaPDFs.add(JsfBase.getRealPath(this.nombre));
-  			if (RequestContext.getCurrentInstance()!= null)
-	  			RequestContext.getCurrentInstance().addCallbackParam("janalOK", true);
+  			if (UIBackingUtilities.getCurrentInstance()!= null)
+	  			UIBackingUtilities.addCallbackParam("janalOK", true);
       } // for 
       fileName= Archivo.toFormatNameFile(ijuntar.getNombre());
       this.nombre= JsfBase.getRealPath("/".concat(Constantes.RUTA_TEMPORALES).concat(Cadena.letraCapital(EFormatos.PDF.name())).concat(File.separator).concat(fileName.concat(".")).concat(EFormatos.PDF.name().toLowerCase()));
@@ -253,8 +253,8 @@ public class Reporte extends BaseReportes implements Serializable{
       facturas= DaoFactory.getInstance().toEntitySet(this.ijuntar.getDefiniciones().get(0).getProceso(), this.ijuntar.getDefiniciones().get(0).getIdXml(), this.ijuntar.getDefiniciones().get(0).getParams(),Constantes.SQL_TODOS_REGISTROS);
       for(Entity factura: facturas)
         listaPDFs.add(factura.toString("alias"));
-      if (RequestContext.getCurrentInstance()!= null)
-        RequestContext.getCurrentInstance().addCallbackParam("janalOK", true); 
+      if (UIBackingUtilities.getCurrentInstance()!= null)
+        UIBackingUtilities.addCallbackParam("janalOK", true); 
       fileName= Archivo.toFormatNameFile(ijuntar.getNombre());
       this.nombre= JsfBase.getRealPath("/".concat(Constantes.RUTA_TEMPORALES).concat(Cadena.letraCapital(EFormatos.PDF.name())).concat(File.separator).concat(fileName.concat(".")).concat(EFormatos.PDF.name().toLowerCase()));
       juntar= new JuntarPdfs(listaPDFs, this.nombre, this.ijuntar.getIntercalar());
@@ -270,7 +270,7 @@ public class Reporte extends BaseReportes implements Serializable{
 	@Override
 	public void doCompleto() {
 		JsfBase.addMessage("Detalle del mensaje", "Se generó correctamente el reporte.", ETipoMensaje.INFORMACION);		
-		RequestContext.getCurrentInstance().execute("hideBarra();");
+		UIBackingUtilities.execute("hideBarra();");
 	} // doCompleto
 	
 	

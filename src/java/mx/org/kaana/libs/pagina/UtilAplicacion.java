@@ -274,7 +274,7 @@ public class UtilAplicacion {
   }
 
   public void actualizarContadorMensajes() {
-    RequestContext.getCurrentInstance().execute("Sentinel.updateNotifications(".concat(getContadorMensajes().toString()).concat(");"));
+    UIBackingUtilities.execute("Sentinel.updateNotifications(".concat(getContadorMensajes().toString()).concat(");"));
   }
 
   public Long getContadorMensajes() {

@@ -14,8 +14,8 @@ import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
-import org.primefaces.context.RequestContext;
 
 /**
  * @company KAANA
@@ -65,7 +65,7 @@ public class Alerta extends IBaseAttribute implements Serializable {
 					} // for
 					regresar.append("</tbody></table></div>");
 					if(cajas!= null && !cajas.isEmpty())
-						RequestContext.getCurrentInstance().execute("janal.notificacion();");
+						UIBackingUtilities.execute("janal.notificacion();");
      		} // if	
 		} // try
 		catch (Exception e) {

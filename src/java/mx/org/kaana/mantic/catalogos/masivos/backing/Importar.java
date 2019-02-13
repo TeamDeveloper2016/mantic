@@ -144,7 +144,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
-	  // RequestContext.getCurrentInstance().execute("janal.show([{summary: 'Error:', detail: 'Solo se pueden importar catalogos en formato PDF ["+ event.getFile().getFileName().toUpperCase()+ "].'}]);"); 
+	  // UIBackingUtilities.execute("janal.show([{summary: 'Error:', detail: 'Solo se pueden importar catalogos en formato PDF ["+ event.getFile().getFileName().toUpperCase()+ "].'}]);"); 
 	} // doFileUpload	
 	
 	public void doViewFile() {
@@ -163,7 +163,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		  this.masivo.setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
       transaccion= new Transaccion(this.masivo, this.categoria);
       if(transaccion.ejecutar(EAccion.PROCESAR)) {
-//        RequestContext.getCurrentInstance().execute("janal.alert('Cátalogo procesado de forma correcta ["+ tuplas+ "], registros erroneos ["+ transaccion.getErrores()+ "]';");
+//        UIBackingUtilities.execute("janal.alert('Cátalogo procesado de forma correcta ["+ tuplas+ "], registros erroneos ["+ transaccion.getErrores()+ "]';");
 //				this.setXls(null);
 //				this.attrs.put("xls", ""); 
 //				this.masivo = new TcManticMasivasArchivosDto(
@@ -191,7 +191,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		} // catch
 		if(transaccion!= null) {
 			this.attrs.put("procesados", transaccion.getProcesados());
-			RequestContext.getCurrentInstance().execute("janal.alert('Se termin\\u00F3 de procesar el archivo !\\u000DTotal de registros: "+ tuplas+ "\\u000DRegistros procesados: "+ transaccion.getProcesados()+ 
+			UIBackingUtilities.execute("janal.alert('Se termin\\u00F3 de procesar el archivo !\\u000DTotal de registros: "+ tuplas+ "\\u000DRegistros procesados: "+ transaccion.getProcesados()+ 
 				(tuplas!= transaccion.getProcesados()? "\\u000D\\u000DOcurrio un error en el proceso de cargar, favor de verificarlo": "")+ "')");
 		} // if	
     return regresar;

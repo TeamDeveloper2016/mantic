@@ -97,7 +97,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 					Value ultimo= (Value)DaoFactory.getInstance().toField("TcManticArticulosBitacoraDto", "ultimo", this.attrs, "registro");
 					if(ultimo!= null)
 					  this.attrs.put("ultimo", Global.format(EFormatoDinamicos.FECHA_HORA, ultimo.toTimestamp()));
-					RequestContext.getCurrentInstance().execute("jsKardex.callback("+ solicitado +");");
+					UIBackingUtilities.execute("jsKardex.callback("+ solicitado +");");
       		this.adminKardex= new AdminKardex(
 						articulo.toLong("idArticulo"), 
 						solicitado.toDouble("precio"), 
@@ -208,7 +208,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"),  (Double)this.attrs.get("precio"), this.adminKardex.getTiposVentas());
 			if (transaccion.ejecutar(eaccion)) {
 				JsfBase.addMessage("Se modificaron los precios de tipos de ventas del articulo.", ETipoMensaje.INFORMACION);
-   			RequestContext.getCurrentInstance().execute("jsKardex.callback('"+ this.adminKardex.getTiposVentas()+ "');");
+   			UIBackingUtilities.execute("jsKardex.callback('"+ this.adminKardex.getTiposVentas()+ "');");
 			}	// if
 			else 
 				JsfBase.addMessage("Ocurrió un error al registrar los precios de los tipos de ventas del articulo.", ETipoMensaje.ERROR);      			

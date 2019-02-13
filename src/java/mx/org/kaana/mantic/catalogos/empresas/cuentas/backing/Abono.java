@@ -37,7 +37,6 @@ import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosDto;
 import mx.org.kaana.mantic.enums.ECuentasEgresos;
 import mx.org.kaana.mantic.enums.EEstatusEmpresas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 
 @Named(value = "manticCatalogosEmpresasCuentasAbono")
@@ -79,7 +78,7 @@ public class Abono extends IBasePagos implements Serializable {
   protected void init() {
     try {			
 			if(JsfBase.getFlashAttribute("idEmpresaDeuda")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("sortOrder", "order by	tc_mantic_empresas_deudas.registro desc");
       this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa"));     
       this.attrs.put("idProveedor", JsfBase.getFlashAttribute("idProveedor"));     
@@ -288,7 +287,7 @@ public class Abono extends IBasePagos implements Serializable {
 			empresaDeuda= (TcManticEmpresasDeudasDto)DaoFactory.getInstance().findById(TcManticEmpresasDeudasDto.class, (Long) this.attrs.get("idEmpresaDeuda"));
 			transaccion= new Transaccion(empresaDeuda, getFile(), ((Entity)this.attrs.get("pagoCombo")).getKey());
       if(transaccion.ejecutar(EAccion.SUBIR)) {
-      	RequestContext.getCurrentInstance().execute("janal.alert('Se importaron los archivos de forma correcta !');");				
+      	UIBackingUtilities.execute("janal.alert('Se importaron los archivos de forma correcta !');");				
 			} // if
 		} // try
 		catch (Exception e) {

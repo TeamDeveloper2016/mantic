@@ -223,7 +223,7 @@ public class Ventas extends IBaseTicket implements Serializable {
 	} // doReporte
 	
 	public void doVerificarReporte() {
-		RequestContext rc= RequestContext.getCurrentInstance();
+		RequestContext rc= UIBackingUtilities.getCurrentInstance();
 		if(this.reporte.getTotal()> 0L)
 			rc.execute("start(" + this.reporte.getTotal() + ")");		
 		else{

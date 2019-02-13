@@ -131,7 +131,7 @@ public class Filtro extends Comun implements Serializable {
 			options.add(accion.name());
 			options.add(idArticulo.toString());
 			params.put("data", options);
-			RequestContext.getCurrentInstance().openDialog("express");
+			UIBackingUtilities.getCurrentInstance().openDialog("express");
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

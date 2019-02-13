@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.JsfUtilities;
 import mx.org.kaana.libs.pagina.UIMessage;
 import mx.org.kaana.libs.pagina.UISelectItem;
@@ -13,7 +11,7 @@ import mx.org.kaana.libs.recurso.TcConfiguraciones;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
-import org.primefaces.context.RequestContext;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import org.primefaces.model.DualListModel;
 
 /**
@@ -100,8 +98,8 @@ public class EditMail {
         agenda.add(new UISelectItem(item.toString("nombre"),item.toString("correo")));
 			} //
 			this.attrs.put("contactosDestinoCorreo",new DualListModel<>(agenda,destinatarios));
-			RequestContext.getCurrentInstance().execute("PF('dialogoCorreo').show();");
-		  RequestContext.getCurrentInstance().update("dialogoCorreo");
+			UIBackingUtilities.execute("PF('dialogoCorreo').show();");
+		  UIBackingUtilities.update("dialogoCorreo");
 		} // try
 		catch (Exception e) {
 			JsfUtilities.addMessageError(e);
@@ -123,7 +121,7 @@ public class EditMail {
 					params.put("correo",correo);
 					UIMessage.toMessage("correo_duplicado",params);
 				} // else
-				//RequestContext.getCurrentInstance().update("dialogoCorreo");
+				//UIBackingUtilities.update("dialogoCorreo");
 			} // if
 		} // try
 		catch (Exception e) {

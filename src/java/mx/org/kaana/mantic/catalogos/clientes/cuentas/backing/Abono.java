@@ -239,7 +239,7 @@ public class Abono extends IBasePagos implements Serializable {
 			clienteDeuda= (TcManticClientesDeudasDto)DaoFactory.getInstance().findById(TcManticClientesDeudasDto.class, (Long) this.attrs.get("idClienteDeuda"));
 			transaccion= new Transaccion(getFile(), clienteDeuda, ((Entity)this.attrs.get("pagoCombo")).getKey());
       if(transaccion.ejecutar(EAccion.SUBIR)) {
-      	RequestContext.getCurrentInstance().execute("janal.alert('Se importaron los archivos de forma correcta !');");				
+      	UIBackingUtilities.execute("janal.alert('Se importaron los archivos de forma correcta !');");				
 			} // if
 		} // try
 		catch (Exception e) {

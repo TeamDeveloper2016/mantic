@@ -18,6 +18,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -28,7 +29,6 @@ import mx.org.kaana.mantic.taller.beans.ContactoCliente;
 import mx.org.kaana.mantic.taller.reglas.Transaccion;
 import mx.org.kaana.mantic.taller.beans.RegistroServicio;
 import mx.org.kaana.mantic.taller.reglas.MotorBusqueda;
-import org.primefaces.context.RequestContext;
 
 @Named(value = "manticTallerAccion")
 @ViewScoped
@@ -63,7 +63,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   protected void init() {
     try {
 			if(JsfBase.getFlashAttribute("accion")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idServicio", JsfBase.getFlashAttribute("idServicio"));
 			this.attrs.put("admin", JsfBase.isAdminEncuestaOrAdmin());			

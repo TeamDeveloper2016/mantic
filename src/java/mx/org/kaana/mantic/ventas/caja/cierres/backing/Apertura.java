@@ -55,7 +55,7 @@ public class Apertura extends IBaseAttribute implements Serializable {
   protected void init() {		
     try {
 			if(JsfBase.getFlashAttribute("accion")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.accion = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
@@ -97,7 +97,7 @@ public class Apertura extends IBaseAttribute implements Serializable {
 			transaccion = new Cierre(((UISelectEntity)this.attrs.get("idCaja")).getKey(), (Double)this.attrs.get("disponible"), cierre, null, this.fondos);
 			if (transaccion.ejecutar(this.accion)) {
 			  regresar = "filtro".concat(Constantes.REDIRECIONAR);
-   			RequestContext.getCurrentInstance().execute("janal.alert('Se gener\\u00F3 correctamente la apertura de caja con consecutivo: "+ cierre.getConsecutivo()+ "');");
+   			UIBackingUtilities.execute("janal.alert('Se gener\\u00F3 correctamente la apertura de caja con consecutivo: "+ cierre.getConsecutivo()+ "');");
   			JsfBase.setFlashAttribute("idCierre", this.attrs.get("idCierre"));
 			} // if
 			else 
