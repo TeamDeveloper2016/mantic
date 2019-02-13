@@ -71,7 +71,7 @@ public class Imagenes extends IBaseAttribute implements Serializable {
 	@PostConstruct
 	protected void init() {
   	this.attrs.put("buscaPorCodigo", false);
-    this.attrs.put("idPivote", JsfBase.getFlashAttribute("idPivote")== null? 10198L: JsfBase.getFlashAttribute("idPivote"));
+    this.attrs.put("idPivote", JsfBase.getFlashAttribute("idPivote")== null? -1L: JsfBase.getFlashAttribute("idPivote"));
     this.attrs.put("alias", JsfBase.getFlashAttribute("idPivote")== null? 10198L: JsfBase.getFlashAttribute("alias"));
 		this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Mantic/Catalogos/Articulos/filtro": JsfBase.getFlashAttribute("retorno"));
     if(this.attrs.get("idPivote")!= null) 
@@ -115,7 +115,7 @@ public class Imagenes extends IBaseAttribute implements Serializable {
 						item.setAlias(imagen.toString("alias"));
 					} // if	
 					else
-						item.setCantidad(10198L);
+						item.setCantidad(0L);
 					this.attrs.put("idArticulo", articulo.toLong("idArticulo"));
 					this.articulos.add(item);
 					UIBackingUtilities.execute("jsKardex.cursor.top= "+ (this.articulos.size()- 1)+"; jsKardex.callback("+ articulo +");");
