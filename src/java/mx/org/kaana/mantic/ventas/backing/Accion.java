@@ -276,7 +276,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			else
 				super.toMoveData(articulo, index);	
 			this.attrs.put("decripcion", articulo.toString("nombre"));
-			this.image= LoadImages.getImage(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), articulo.toLong("idArticulo").toString());
+			this.image= LoadImages.getImage(articulo.toLong("idArticulo"));
 			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
 			RequestContext.getCurrentInstance().update("deudor");
 		} // try
@@ -307,7 +307,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			else
 				super.toMoveArticulo(articulo, index);	
 			this.attrs.put("descripcion", articulo.getNombre());
-			this.image= LoadImages.getImage(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), articulo.getIdArticulo().toString());
+			this.image= LoadImages.getImage(articulo.getIdArticulo());
 			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
 			RequestContext.getCurrentInstance().update("deudor");
 		} // try
@@ -489,20 +489,19 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 	} // doLoadSaldos
 	
-	public void doActualizaImage(String idImage, String descripcion) {
-		String idEmpresa= null;
+	public void doActualizaImage(String idImage, String descripcion) {		
 		try {
 			if(!Cadena.isVacio(descripcion))
   			this.attrs.put("descripcion", descripcion);
-			idEmpresa= JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString();
 			if(!idImage.equals("-1")){
-				this.image= LoadImages.getImage(idEmpresa, idImage);
+				this.image= LoadImages.getImage(Long.valueOf(idImage));
 				this.attrs.put("imagePivote", idImage);
 			} // if
 			else if (getAdminOrden().getArticulos().isEmpty() || (getAdminOrden().getArticulos().size()== 1 && getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L)))
-				this.image= LoadImages.getImage(idEmpresa, idImage);
+				this.image= LoadImages.getImage(Long.valueOf(idImage));
 			else
-				this.image= LoadImages.getImage(idEmpresa, this.attrs.get("imagePivote").toString());
+				this.image= LoadImages.getImage(Long.valueOf(this.attrs.get("imagePivote").toString()));
+			this.attrs.put("idArticulo", idImage);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
