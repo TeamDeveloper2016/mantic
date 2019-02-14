@@ -2587,6 +2587,15 @@
 				where
 					tc_mantic_articulos.id_articulo= {idArticulo}			
 			</select>
+			<select id="existe">
+				 select 
+				   count(*) as total 
+				 from
+				   tc_mantic_articulos
+				 where
+				  id_imagen= {idImagen}
+				  and id_articulo!= {idArticulo}
+			</select>	
 			<update id="rows">
 				update 
 				  tc_mantic_articulos
