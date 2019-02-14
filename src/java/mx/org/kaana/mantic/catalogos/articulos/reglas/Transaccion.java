@@ -246,7 +246,7 @@ public class Transaccion extends TransaccionFactura {
 												this.articulo.getArticulo().setMedioMayoreo(toMedioMayoreo());
 												this.articulo.getArticulo().setMayoreo(toMayoreo());
 												this.articulo.getArticulo().setIdArticuloTipo(this.articulo.getIdTipoArticulo());
-												regresar= this.articulo.getArticulo().getIdImagen()!= null && !this.articulo.getArticulo().getIdImagen().equals(-1L);
+												regresar= this.articulo.getArticulo().getIdImagen()!= null && !this.articulo.getArticulo().getIdImagen().equals(-1L) && this.articulo.isImagen();
 												if(regresar){				
 													if(DaoFactory.getInstance().update(sesion, loadImage(sesion, this.articulo.getArticulo().getIdImagen(), idArticulo))>= 0L)
 														regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
@@ -275,26 +275,25 @@ public class Transaccion extends TransaccionFactura {
 		String name                 = null;
 		File result                 = null;
 		try {
-			if(idImagen!= null)
+			if(idImagen!= null && this.articulo.isImagen())
 				regresar= (TcManticImagenesDto) DaoFactory.getInstance().findById(sesion, TcManticImagenesDto.class, idImagen);
 			else
 				regresar= new TcManticImagenesDto();
 			name= this.articulo.getImportado().getName();
 			if(!Cadena.isVacio(name)) {
 				tipoImagen= ETipoImagen.valueOf(name.substring(name.lastIndexOf(".")+1, name.length()).toUpperCase()).getIdTipoImagen();
-				regresar.setNombre(idArticulo.toString().concat(".").concat(name.substring(name.lastIndexOf(".")+1, name.length())));
+				regresar.setNombre(name);				
+				regresar.setArchivo(Archivo.toFormatNameFile(idArticulo.toString().concat(".").concat(name.substring(name.lastIndexOf(".")+1, name.length())), "IMG"));
 				regresar.setIdTipoImagen(tipoImagen);
-				regresar.setIdUsuario(JsfBase.getIdUsuario());
-				regresar.setArchivo(regresar.getNombre());
+				regresar.setIdUsuario(JsfBase.getIdUsuario());				
 				regresar.setTamanio(this.articulo.getImportado().getFileSize());
 				regresar.setRuta(this.articulo.getImportado().getRuta());			
 				String path= Configuracion.getInstance().getPropiedadSistemaServidor("path.image").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat("/");
 				regresar.setAlias(path.concat(regresar.getArchivo()));
 				result= new File(path.concat(regresar.getNombre()));			
-				if(result.exists()) {					
-					Archivo.copy(path.concat(this.articulo.getImportado().getName()), path.concat(regresar.getNombre()), true);												
-					result= new File(path.concat(this.articulo.getImportado().getName()));
-					result.delete();
+				if(result.exists()) {
+					Archivo.copy(path.concat(this.articulo.getImportado().getName()), path.concat(regresar.getArchivo()), true);												
+					new File(path.concat(this.articulo.getImportado().getName())).delete();					
 				} // if
 			} // if
 		} // try
