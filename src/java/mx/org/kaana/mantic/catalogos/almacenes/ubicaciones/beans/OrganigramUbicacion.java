@@ -5,117 +5,48 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
+import mx.org.kaana.mantic.enums.ENivelUbicacion;
 
 public class OrganigramUbicacion implements Serializable, IBaseDto {
 
 	private static final long serialVersionUID=4222652089397624991L;
 
-	private Long idKey;
-	private Long idEmpresa;	
-	private String consecutivo;		
-	private String clave;				
-	private String nombre;					
-	private String persona;		
-	private String almacen;					
-	private boolean ultimoNivel;  
-	private Timestamp registro;		
+	private Long idKey;	
+	private Long idAlmacen;		
+	private String idEmpresa;		
+	private String empresa;				
+	private String almacen;				
+	private String piso;				
+	private String cuarto;						
+	private String anaquel;					
+	private String charola;					
+	private boolean ultimoNivel;  	
+	private ENivelUbicacion nivel;
+	private Timestamp registro;			
 
 	public OrganigramUbicacion() {
 		this(-1L);
-	}
-	
+	} // OrganigramUbicacion
+
 	public OrganigramUbicacion(Long idKey) {
-		this(idKey, false);
-	}	
+		this(idKey, null, -1L, "Organigrama Almacenes", null, null, null, null, null, false, ENivelUbicacion.EMPRESA, new Timestamp(Calendar.getInstance().getTimeInMillis()));
+	}	// OrganigramUbicacion
 	
-	public OrganigramUbicacion(Long idKey, boolean ultimoNivel) {
-		this(idKey, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null, ultimoNivel);
-	}	
-
-	public OrganigramUbicacion(Long idKey, String consecutivo, Long idEmpresa, String persona, Timestamp registro, String almacen, String clave, String nombre, boolean ultimoNivel) {
+	public OrganigramUbicacion(Long idKey, String idEmpresa, Long idAlmacen, String empresa, String almacen, String piso, String cuarto, String anaquel, String charola, boolean ultimoNivel, ENivelUbicacion nivel, Timestamp registro) {
 		this.idKey      = idKey;
-		this.consecutivo= consecutivo;		
-		this.idEmpresa  = idEmpresa;		
-		this.persona    = persona;
-		this.registro   = registro;		
+		this.idEmpresa  = idEmpresa;
+		this.idAlmacen  = idAlmacen;
+		this.empresa    = empresa;
 		this.almacen    = almacen;
-		this.clave      = clave;
-		this.nombre     = nombre;		
+		this.piso       = piso;
+		this.cuarto     = cuarto;
+		this.anaquel    = anaquel;
+		this.charola    = charola;
 		this.ultimoNivel= ultimoNivel;
-	}
-
-	public Long getIdKey() {
-		return idKey;
-	}
-
-	public void setIdKey(Long idKey) {
-		this.idKey = idKey;
-	}
-
-	public String getConsecutivo() {
-		return consecutivo;
-	}
-
-	public void setConsecutivo(String consecutivo) {
-		this.consecutivo = consecutivo;
-	}
-
-	public Long getIdEmpresa() {
-		return idEmpresa;
-	}
-
-	public void setIdEmpresa(Long idEmpresa) {
-		this.idEmpresa = idEmpresa;
-	}
-
-	public String getPersona() {
-		return persona;
-	}
-
-	public void setPersona(String persona) {
-		this.persona = persona;
-	}
-
-	public Timestamp getRegistro() {
-		return registro;
-	}
-
-	public void setRegistro(Timestamp registro) {
-		this.registro = registro;
-	}
-
-	public String getAlmacen() {
-		return almacen;
-	}
-
-	public void setAlmacen(String almacen) {
-		this.almacen = almacen;
-	}
-
-	public String getClave() {
-		return clave;
-	}
-
-	public void setClave(String clave) {
-		this.clave = clave;
-	}
-
-	public String getNombre() {
-		return nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-
-	public boolean isUltimoNivel() {
-		return ultimoNivel;
-	}
-
-	public void setUltimoNivel(boolean ultimoNivel) {
-		this.ultimoNivel = ultimoNivel;
-	}	
-
+		this.nivel      = nivel;
+		this.registro   = registro;
+	}	// OrganigramUbicacion	
+	
 	@Override
 	public Long getKey() {
 		return this.idKey;
@@ -126,6 +57,94 @@ public class OrganigramUbicacion implements Serializable, IBaseDto {
 		this.idKey= key;
 	}
 
+	public String getIdEmpresa() {
+		return idEmpresa;
+	}
+
+	public void setIdEmpresa(String idEmpresa) {
+		this.idEmpresa = idEmpresa;
+	}
+
+	public Long getIdAlmacen() {
+		return idAlmacen;
+	}
+
+	public void setIdAlmacen(Long idAlmacen) {
+		this.idAlmacen = idAlmacen;
+	}
+
+	public String getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(String empresa) {
+		this.empresa = empresa;
+	}
+
+	public String getAlmacen() {
+		return almacen;
+	}
+
+	public void setAlmacen(String almacen) {
+		this.almacen = almacen;
+	}
+
+	public String getPiso() {
+		return piso;
+	}
+
+	public void setPiso(String piso) {
+		this.piso = piso;
+	}
+
+	public String getCuarto() {
+		return cuarto;
+	}
+
+	public void setCuarto(String cuarto) {
+		this.cuarto = cuarto;
+	}
+
+	public String getAnaquel() {
+		return anaquel;
+	}
+
+	public void setAnaquel(String anaquel) {
+		this.anaquel = anaquel;
+	}
+
+	public String getCharola() {
+		return charola;
+	}
+
+	public void setCharola(String charola) {
+		this.charola = charola;
+	}
+
+	public boolean isUltimoNivel() {
+		return ultimoNivel;
+	}
+
+	public void setUltimoNivel(boolean ultimoNivel) {
+		this.ultimoNivel = ultimoNivel;
+	}
+
+	public ENivelUbicacion getNivel() {
+		return nivel;
+	}
+
+	public void setNivel(ENivelUbicacion nivel) {
+		this.nivel = nivel;
+	}
+
+	public Timestamp getRegistro() {
+		return registro;
+	}
+
+	public void setRegistro(Timestamp registro) {
+		this.registro = registro;
+	}	
+	
 	@Override
 	public Map<String, Object> toMap() {
 		return null;
@@ -163,15 +182,6 @@ public class OrganigramUbicacion implements Serializable, IBaseDto {
 
 	@Override
 	public String toString() {
-		return "Mindmap {"
-					+ "idKey="+idKey+", "
-					+ "consecutivo="+consecutivo+", "
-					+ "idEmpresa="+idEmpresa+", "
-					+ "persona="+persona+", "
-					+ "registro="+registro+", "
-					+ "almacen="+almacen+", "
-					+ "clave="+clave+", "
-					+ "nombre="+nombre+", "
-					+ "ultimoNivel="+ultimoNivel+'}';
+		return idKey.toString();
 	} // toString
 }

@@ -158,7 +158,19 @@ public class Articulos extends IBaseArticulos implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch
 		return regresar;
-  } // doAccion  
+  } // doCancelar
+  
+	public String doAsignar() {    
+		String regresar= null;
+		try {						
+			regresar= ((String) this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return regresar;
+  } // doAsignar
 	
 	public String doOrganigrama() {
     String regresar= null;

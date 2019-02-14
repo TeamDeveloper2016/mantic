@@ -52,7 +52,7 @@ public class Organigrama extends IBaseFilter implements Serializable {
     try {			       						
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			this.attrs.put("sortOrder", "order by	tc_mantic_empresas_deudas.registro desc");
+			this.attrs.put("empresaOrganigram", ((boolean)this.attrs.get("isMatriz")) ? JsfBase.getAutentifica().getEmpresa().getDependencias() : this.attrs.get("idEmpresa").toString());
 			this.doLoad();
     } // try
     catch (Exception e) {
@@ -63,12 +63,13 @@ public class Organigrama extends IBaseFilter implements Serializable {
  
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
-		Map<String, Object> params= null;
-		MotorBusqueda busqueda    = null;
+    List<Columna> columns       = null;
+		Map<String, Object> params  = null;		
+		OrganigramUbicacion initNode= null;
     try {      
-			busqueda = new MotorBusqueda(((boolean)this.attrs.get("isMatriz")) ? JsfBase.getAutentifica().getEmpresa().getDependencias() : this.attrs.get("idEmpresa").toString());
-			this.organigram= new DefaultOrganigramNode("principal", busqueda.toParent(), null);
+			initNode= new OrganigramUbicacion(-1L);
+			initNode.setIdEmpresa(this.attrs.get("empresaOrganigram").toString());
+			this.organigram= new DefaultOrganigramNode("principal", initNode, null);						
 			this.organigram.getChildren().add(new DefaultOrganigramNode());      
 			createTree(this.organigram);		
     } // try
@@ -86,7 +87,7 @@ public class Organigrama extends IBaseFilter implements Serializable {
 		MotorBusqueda gestor    = null;
     List<OrganigramNode> childrens= null;        
 		try {
-      gestor= new MotorBusqueda(this.attrs.get("idEmpresaDeuda").toString());
+      gestor= new MotorBusqueda((OrganigramUbicacion)seleccionado.getData());
       childrens= gestor.toChildrens();
       seleccionado.getChildren().clear();
       if(!childrens.isEmpty()){        
@@ -111,7 +112,7 @@ public class Organigrama extends IBaseFilter implements Serializable {
     OrganigramNode seleccionado   = null;     
     try {      
       seleccionado= (OrganigramNode) event.getObject();
-      gestor= new MotorBusqueda(((OrganigramUbicacion) seleccionado.getData()).getKey().toString());
+      gestor= new MotorBusqueda((OrganigramUbicacion) seleccionado.getData());
       childrens= gestor.toChildrens();
       seleccionado.getChildren().clear();
       if(!childrens.isEmpty()){        
@@ -148,7 +149,7 @@ public class Organigrama extends IBaseFilter implements Serializable {
 	
 	public void doConsultarDetalle() {
     OrganigramUbicacion seleccionado= null;
-    RequestContext rc     = null;
+    RequestContext rc               = null;
     try {
       rc= UIBackingUtilities.getCurrentInstance();
       if(this.node!= null) {
@@ -159,7 +160,7 @@ public class Organigrama extends IBaseFilter implements Serializable {
       } // if
       else{
         rc.execute("janal.desbloquear();");        
-        JsfBase.addMessage("Detalle", "Es necesario seleccionar un documento, para mostrar la informacion.", ETipoMensaje.ERROR);
+        JsfBase.addMessage("Detalle", "Es necesario seleccionar una ubicación para mostrar la informacion.", ETipoMensaje.ERROR);
       } // else
     } // try 
     catch (Exception e) {
