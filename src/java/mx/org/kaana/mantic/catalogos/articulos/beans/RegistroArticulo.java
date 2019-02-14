@@ -55,6 +55,7 @@ public class RegistroArticulo implements Serializable{
 	private Importado importado;
 	private Long idTipoArticulo;
 	private Boolean idBarras;
+	private boolean imagen;
 
 	public RegistroArticulo() {
 		this(-1L, 
@@ -67,7 +68,7 @@ public class RegistroArticulo implements Serializable{
 				new ArrayList<ArticuloProveedor>(),
 				new ArrayList<TipoVenta>(),
 				-1L, null, false, null, -1L,
-				new ArticuloDimencion(), 1L, false
+				new ArticuloDimencion(), 1L, false, false
 				);
 	} // RegistroArticulo
 	
@@ -80,7 +81,7 @@ public class RegistroArticulo implements Serializable{
 		init();		
 	}
 	
-	public RegistroArticulo(Long idArticulo, TcManticArticulosDto articulo, List<ArticuloCodigo> articulosCodigos, List<Especificacion> especificaciones, List<Descuento> articulosDescuentos, List<DescuentoEspecial> clientesDescuentos, List<PrecioSugerido> preciosSugeridos, List<ArticuloProveedor> articulosProveedores, List<TipoVenta> articulosTiposVenta, Long idEmpaque, String obervaciones, boolean redondear, String codigo, Long idProveedor, ArticuloDimencion articuloDimencion, Long idTipoArticulo, Boolean idBarras) {
+	public RegistroArticulo(Long idArticulo, TcManticArticulosDto articulo, List<ArticuloCodigo> articulosCodigos, List<Especificacion> especificaciones, List<Descuento> articulosDescuentos, List<DescuentoEspecial> clientesDescuentos, List<PrecioSugerido> preciosSugeridos, List<ArticuloProveedor> articulosProveedores, List<TipoVenta> articulosTiposVenta, Long idEmpaque, String obervaciones, boolean redondear, String codigo, Long idProveedor, ArticuloDimencion articuloDimencion, Long idTipoArticulo, Boolean idBarras, boolean imagen) {
 		this.idArticulo          = idArticulo;
 		this.articulo            = articulo;
 		this.articulosCodigos    = articulosCodigos;
@@ -100,6 +101,7 @@ public class RegistroArticulo implements Serializable{
 		this.articulo.setSat(Constantes.CODIGO_SAT);
 		this.idTipoArticulo      = idTipoArticulo;
 		this.idBarras            = idBarras;
+		this.imagen              = imagen;
 	}
 
 	public Long getIdArticulo() {
@@ -263,7 +265,15 @@ public class RegistroArticulo implements Serializable{
 		if(this.articulo!= null)
 			this.articulo.setIdBarras(idBarras ? 1L : 2L);
 	}
-		
+
+	public boolean isImagen() {
+		return imagen;
+	}
+
+	public void setImagen(boolean imagen) {
+		this.imagen = imagen;
+	}
+	
 	private void init(){
 		MotorBusqueda motorBusqueda                = null;
 		TrManticEmpaqueUnidadMedidaDto unidadMedida= null;
