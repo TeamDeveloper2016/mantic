@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.sql.Blob;
 import java.util.Calendar;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 
@@ -145,7 +146,7 @@ public final class Archivo {
 	
 	public static String toFormatNameFile(String nameFile, String prefijo) {
     StringBuilder regresar = new StringBuilder();
-    regresar.append(prefijo);
+    regresar.append(Cadena.isVacio(prefijo)? Constantes.ARCHIVO_PATRON_NOMBRE: prefijo.toUpperCase());
     regresar.append(Constantes.ARCHIVO_PATRON_SEPARADOR);
     regresar.append(Fecha.formatear("yyyyMMddhhmmssS", Calendar.getInstance().getTime()));
     regresar.append(Constantes.ARCHIVO_PATRON_SEPARADOR);
