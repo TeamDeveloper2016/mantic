@@ -82,7 +82,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         case ACTIVAR:
           idArticulo = (Long)(this.attrs.get("idArticulo"));
           this.registroArticulo = new RegistroArticulo(idArticulo);
-					this.image= LoadImages.getImage(this.registroArticulo.getArticulo().getIdEmpresa().toString(), Cadena.isVacio(this.registroArticulo.getImportado().getName()) ? "" : this.registroArticulo.getImportado().getName().substring(0, this.registroArticulo.getImportado().getName().lastIndexOf(".")));
+					this.image= LoadImages.getImage(idArticulo);
 					this.registroArticulo.setIdTipoArticulo(this.registroArticulo.getArticulo().getIdArticuloTipo());
           break;
       } // switch
