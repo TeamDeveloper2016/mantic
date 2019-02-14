@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                template="/WEB-INF/plantillas/reporte.xhtml">
+  <ui:param name="titulo" value="Seleccionar los tickets que se desean factura de forma conjunta" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'idEmpresa'      : {validaciones: 'libre', mascara: 'libre'},
+				'razonSocial'    : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'consecutivo'    : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo'},
+        'fechaInicio'    : {validaciones: 'fecha', mascara: 'fecha'},
+        'fechaTermino'   : {validaciones: 'fecha', mascara: 'fecha'},
+        'cantidadInicial': {validaciones: 'flotante', mascara: 'libre'},
+        'cantidadFinal'  : {validaciones: 'flotante', mascara: 'libre'},
+				'articulo'       : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
+      };
+    </script>		
+		<style>
+			.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-inputfield {
+				width:225% !important;
+			}
+	  </style>		
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="janal-align-right xs-pantalla">
+      <p:commandButton icon="fa fa-search" onstart="janal.togglePanel('panelBusqueda');"/>
+      <p:spacer height="5px"/>		
+    </div>			
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-3">
+          <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
+						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
+              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticFacturasTickets.attrs.isMatriz}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{manticFacturasTickets.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                <f:selectItems value="#{manticFacturasTickets.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+              <p:outputLabel for="razonSocial" value="Cliente:"/>
+              <p:autoComplete id="razonSocial" placeholder="RFC ó nombre" var="item" itemLabel="#{item.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{item}" value="#{manticFacturasTickets.attrs.cliente}" completeMethod="#{manticFacturasTickets.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
+								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticFacturasTickets.doAsignaCliente}" oncomplete="janal.desbloquear();"/>
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
+										<h:outputText value="Clave" />
+										<h:outputText value="#{item.clave}"/>
+										<h:outputText value="RFC:" />
+										<h:outputText value="#{item.rfc}"/>
+										<h:outputText value="Razón social:"/>
+										<h:outputText value="#{item.razonSocial}"/>												
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
+              <p:outputLabel for="consecutivo" value="No. ticket:"/>
+              <p:inputText id="consecutivo" value="#{manticFacturasTickets.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>               
+              <p:selectOneMenu id="folios" var="item" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="contains">
+								<p:ajax event="itemSelect" process="@this" update="folios" listener="#{manticFacturasTickets.doEliminarItem()}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                <f:selectItems value="#{manticFacturasTickets.attrs.folios}"  var="element" itemValue="#{element}" itemLabel="#{element}"/>
+                <p:column headerText="No. consecutivo">
+                  <h:outputText value="#{item}"/>
+                </p:column>   
+              </p:selectOneMenu>
+							<p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticFacturasTickets.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>              
+							<p:outputLabel for="fechaTermino" value="Fecha termino:"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticFacturasTickets.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>							
+							<p:outputLabel for="articulo" value="Articulo:"/>
+							<p:autoComplete id="articulo" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticInventariosAlmacenesKardex.attrs.articulo}" completeMethod="#{manticInventariosAlmacenesKardex.doCompleteArticulo}" maxResults="10" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this" listener="#{manticFacturasTickets.doAsignaArticulo}" oncomplete="janal.desbloquear();"/>
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+										<f:facet name="header" class="TexAlCenter">
+											<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="30"/>
+										</f:facet>
+										<h:outputText value="Propio:" />
+										<h:outputText value="#{custom.propio}" />
+										<h:outputText value="Nombre:" />
+										<h:outputText value="#{custom.nombre}" />
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>			
+              <p:outputLabel for="cantidadInicial" value="Cantidad mayor ó igual:"/>
+							<p:inputNumber id="cantidadInicial" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticFacturasTickets.attrs.cantidadInicial}" converter="javax.faces.Double"/>
+              <p:outputLabel for="cantidadFinal" value="Cantidad menor ó igual:"/>
+							<p:inputNumber id="cantidadFinal" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticFacturasTickets.attrs.cantidadFinal}" converter="javax.faces.Double"/>
+            </p:panelGrid>
+            <div class="janal-align-right lg-pantalla">
+              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="panelBusqueda" actionListener="#{manticFacturasTickets.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+            </div>
+            <div class="janal-align-right xs-pantalla">
+              <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.execute();" process="panelBusqueda" actionListener="#{manticFacturasTickets.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+            </div>
+          </p:panel>
+        </div>
+				<p:spacer/>
+        <div id="collapse-content" class="ui-grid-col-9">
+          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticFacturasTickets.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticFacturasTickets.attrs.seleccionado}" selectionMode="single" paginator="#{manticFacturasTickets.lazyModel.rowCount gt manticFacturasTickets.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
+            <f:facet name="header" >
+              <div class="lg-pantalla">
+                <p:menuButton value="Opciones">
+                  <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                </p:menuButton>
+              </div>  
+              <div class="xs-pantalla">              
+                <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+              </div>  
+            </f:facet>	            
+            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.nombreEmpresa}">
+              <f:facet name="header">
+                <h:outputText value="Sucursal"/>
+              </f:facet>
+              <h:outputText value="#{row['nombreEmpresa']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive" sortBy="#{row.cliente}">
+              <f:facet name="header">
+                <h:outputText value="Cliente"/>
+              </f:facet>
+              <h:outputText value="#{row['cliente']}"/>
+            </p:column>		
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+              <f:facet name="header">
+                <h:outputText value="No. ticket"/>
+              </f:facet>
+              <h:outputText value="#{row['consecutivo']}"/>
+            </p:column>		            
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.total}">
+              <f:facet name="header">
+                <h:outputText value="Importe"/>
+              </f:facet>
+              <h:outputText value="#{row['total']}"/>
+            </p:column>		
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.folio}">
+              <f:facet name="header">
+                <h:outputText value="Folio"/>
+              </f:facet>
+              <h:outputText value="#{row['folio']}"/>
+            </p:column>		            
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.registro}">
+              <f:facet name="header">
+                <h:outputText value="Fecha emisión"/>
+              </f:facet>
+              <h:outputText value="#{row['registro']}"/>
+            </p:column>		
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticFacturasTickets.lazyModel==null? 0: manticFacturasTickets.lazyModel.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+          <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+            <p:menuitem id="consultar" icon="fa fa-bars" value="Ver detalle" process="@this tabla" onstart="janal.bloquear();" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>
+          </p:contextMenu>
+        </div>
+      </div>
+    </div>		    
+  </ui:define>   
+  <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
+  <ui:param name="tituloConfirmacion" value="Articulos del ticket seleccionado"/>	
+  <ui:param name="renderedConfirmacion" value="false"/>	
+  <ui:define name="detalleConfirmacion">
+		<h:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-col-130, janal-wid-100-txt">
+			<p:outputLabel value="No ticket: "/>
+			<p:outputLabel value="#{manticCatalogosArticulosFiltro.attrs.seleccionado.consecutivo}" styleClass="janal-color-blue"/>
+		</h:panelGrid>			
+    <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{manticFacturasTickets.lazyTicket}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticFacturasTickets.lazyTicket.rowCount gt manticFacturasTickets.lazyTicket.pageSize}" rowIndexVar="index" reflow="true">
+			<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.codigo}">
+				<f:facet name="header">
+					<h:outputText value="Código"/>
+				</f:facet>
+				<h:outputText value="#{row['codigo']}"/>
+			</p:column>		
+			<p:column class="MarAuto Responsive" sortBy="#{row.descripcion}">
+				<f:facet name="header">
+					<h:outputText value="Descripcion"/>
+				</f:facet>
+				<h:outputText value="#{row['descripcion']}"/>
+			</p:column>		
+			<p:column class="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.cantidad}">
+				<f:facet name="header">
+					<h:outputText value="Cantidad"/>
+				</f:facet>
+				<h:outputText value="#{row['cantidad']}"/>
+			</p:column>		
+			<p:column class="MarAuto Responsive janal-wid-13 janal-column-right" sortBy="#{row.importe}">
+				<f:facet name="header">
+					<h:outputText value="Importe"/>
+				</f:facet>
+				<h:outputText value="#{row['importe']}"/>
+			</p:column>		
+			<f:facet name="footer">
+				<p:outputLabel value="Total [#{manticFacturasTickets.lazyTicket== null? 0: manticFacturasTickets.lazyTicket.rowCount}] registros"/>
+			</f:facet>
+		</p:dataTable>	
+  </ui:define>	
+</ui:composition>
