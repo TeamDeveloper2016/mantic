@@ -138,6 +138,8 @@
 								<p:outputLabel id="nombreImagen" value="#{manticCatalogosArticulosAccion.registroArticulo.importado.name}"/>
 								<p:outputLabel value="Tamaño:"/>
 								<p:outputLabel id="tamanioImagen" value="#{manticCatalogosArticulosAccion.registroArticulo.importado.fileSize}#{manticCatalogosArticulosAccion.registroArticulo.importado.medicion}"/>								
+								<p:selectBooleanCheckbox value="#{manticCatalogosArticulosAccion.registroArticulo.imagen}"/>
+								<p:outputLabel value="Respetar todos los articulos que cuentan con esta imagen." styleClass="janal-color-blue"/>								
 							</p:panelGrid>
 						</p:tab>
 						<p:tab id="tabDescuentos" title="Descuentos" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">
