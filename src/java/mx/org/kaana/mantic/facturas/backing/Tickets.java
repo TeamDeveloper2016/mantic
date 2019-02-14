@@ -7,11 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
@@ -35,8 +37,18 @@ public class Tickets extends IBaseFilter implements Serializable {
   private static final long serialVersionUID = 8743667741599428332L;
 	private static final Log LOG= LogFactory.getLog(Tickets.class);
 	
+	private Entity pivote;
+	private List<Entity> acumulado;
 	private List<String> folios;
 	private FormatCustomLazy lazyTicket;
+
+	public Entity getPivote() {
+		return pivote;
+	}
+
+	public List<Entity> getAcumulado() {
+		return acumulado;
+	}
 
 	public List<String> getFolios() {
 		return folios;
@@ -103,7 +115,7 @@ public class Tickets extends IBaseFilter implements Serializable {
 			this.folios.forEach((folio) -> {
 				items.append("'").append(folio).append("', ");
 			}); // for
-  		sb.append("(tc_mantic_ventas.consecutivo in (").append(items.substring(0, items.length()- 2)).append(") and ");
+  		sb.append("(tc_mantic_ventas.consecutivo in (").append(items.substring(0, items.length()- 2)).append(")) and ");
 		} // if	
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
 		  sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");			
@@ -148,6 +160,16 @@ public class Tickets extends IBaseFilter implements Serializable {
       Methods.clean(params);
     }// finally
 	}
+	
+	public void doUpdateCliente(String codigo) {
+    try {
+  		this.doCompleteCliente(codigo);
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+	}	
 	
 	public List<UISelectEntity> doCompleteCliente(String query) {
 		this.attrs.put("codigoCliente", query);
@@ -213,6 +235,16 @@ public class Tickets extends IBaseFilter implements Serializable {
 		} // catch		
 	} // toFindCliente
 
+	public void doUpdateArticulo(String codigo) {
+    try {
+  		this.doCompleteArticulo(codigo);
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+	}	
+	
 	public void doUpdateArticulos() {
 		List<Columna> columns         = null;
     Map<String, Object> params    = new HashMap<>();
@@ -235,7 +267,7 @@ public class Tickets extends IBaseFilter implements Serializable {
 			else
 				search= "WXYZ";
   		params.put("codigo", search);
-			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
+			if(buscaPorCodigo)
         articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 40L);
 			else
         articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 40L);
@@ -271,15 +303,33 @@ public class Tickets extends IBaseFilter implements Serializable {
 		} // catch		
 	} // doAsignaCliente
 	
-  public void doEliminarItem(SelectEvent event){
-    String item= (String)event.getObject();
-		this.folios.remove(item);
+  public void doRemoveConsecutivo(String consecutivo){
+		if(this.folios.contains(consecutivo)) {
+		  this.folios.remove(consecutivo);
+			JsfBase.addMessage("Se eliminó el consecutivo en la lista", ETipoMensaje.INFORMACION);
+		}
+		else
+			JsfBase.addMessage("No existe el consecutivo en la lista !", ETipoMensaje.ALERTA);
   }
 
+  public void doCleanConsecutivo() {
+		this.folios.clear();
+  	JsfBase.addMessage("Se limpio la lista consecutivos", ETipoMensaje.INFORMACION);
+	}	
+
+  public void doAddConsecutivo(String consecutivo) {
+		if(!this.folios.contains(consecutivo)) {
+		  this.folios.add(consecutivo);
+			JsfBase.addMessage("Se agregó el consecutivo en la lista", ETipoMensaje.INFORMACION);
+		}
+		else
+			JsfBase.addMessage("Ya existe el consecutivo en la lista !", ETipoMensaje.ALERTA);
+	}	
+	
 	@Override
 	public void finalize() throws Throwable {
 		super.finalize();
 		Methods.clean(this.folios);
 	}
-	
+
 }

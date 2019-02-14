@@ -250,13 +250,16 @@ $.mask.masks = $.extend($.mask.masks, {
 			for(var x= 0; x< params.cuantos- $.trim(value).length; x++)
 				val= params.cual+ val;
       if (!janal.empty(value))
-				if(value.length=== 5)
+				if(value.length< 5)
           $(element).val(year+ val); 
-			  else {
-    			for(var x= 0; x< params.cuantos- $.trim(val).length; x++)
-		     		val= params.cual+ val;
-					$(element).val(val); 
-				} // else	
+			  else 
+  				if(value.length>= 5) {
+						val= value.substring(4);
+						var count= val.length;
+					  for(var x= 0; x< params.cuantos- count; x++)
+		     		  val= params.cual+ val;
+					  $(element).val(value.substring(0, 4)+ val.substring(0, 5)); 
+					} // if
       return true;
     }, function(params, element) {
       return 'No se logro generar el valor del consecutivo.';

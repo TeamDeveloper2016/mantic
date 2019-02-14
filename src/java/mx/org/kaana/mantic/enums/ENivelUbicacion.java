@@ -28,5 +28,6 @@ public enum ENivelUbicacion {
 	
 	public static ENivelUbicacion fromIdNivel(Long idNivel) {
     return lookup.get(idNivel);
-  } 
+  }
+	
 }

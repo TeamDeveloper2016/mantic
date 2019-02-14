@@ -5,14 +5,16 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
   <ui:param name="titulo" value="Seleccionar los tickets que se desean factura de forma conjunta" />
   <ui:define name="librerias">
+    <h:outputScript library="janal" name="core/jquery.janal.folio.core-0.0.1.js"/>
     <script type="text/javascript">
       Janal.Control.fields = {
         'idEmpresa'      : {validaciones: 'libre', mascara: 'libre'},
 				'razonSocial'    : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-        'consecutivo'    : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo'},
+        'consecutivo'    : {validaciones: 'libre', mascara: 'libre'},
         'fechaInicio'    : {validaciones: 'fecha', mascara: 'fecha'},
         'fechaTermino'   : {validaciones: 'fecha', mascara: 'fecha'},
         'cantidadInicial': {validaciones: 'flotante', mascara: 'libre'},
@@ -27,6 +29,23 @@
 	  </style>		
   </ui:define>
   <ui:define name="contenido">
+		<pe:remoteCommand name="cleanItems" process="@this" update="folios" actionListener="#{manticFacturasTickets.doCleanConsecutivo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();setTimeout(jsTicket.focus(), 500);"/>  
+		<pe:remoteCommand name="addItem" process="@this" update="folios" actionListener="#{manticFacturasTickets.doAddConsecutivo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();setTimeout(jsTicket.focus(), 500);">  
+			<pe:methodSignature parameters="java.lang.String"/>  
+			<pe:methodParam name="codigo"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="removeItem" process="@this" update="folios" actionListener="#{manticFacturasTickets.doRemoveConsecutivo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();setTimeout(jsTicket.focus(), 500);">  
+			<pe:methodSignature parameters="java.lang.String"/>  
+			<pe:methodParam name="codigo"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="clocate" process="@this" update="@(.filas)" actionListener="#{manticFacturasTickets.doUpdateCliente}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.refresh();setTimeout(jsTicket.clocate(), 500);">  
+			<pe:methodSignature parameters="java.lang.String"/>  
+			<pe:methodParam name="codigo"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="alocate" process="@this" update="@(.filas)" actionListener="#{manticFacturasTickets.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.refresh();setTimeout(jsTicket.alocate(), 500);">  
+			<pe:methodSignature parameters="java.lang.String"/>  
+			<pe:methodParam name="codigo"/>  
+		</pe:remoteCommand>		
     <div class="janal-align-right xs-pantalla">
       <p:commandButton icon="fa fa-search" onstart="janal.togglePanel('panelBusqueda');"/>
       <p:spacer height="5px"/>		
@@ -49,7 +68,7 @@
                 </p:column>   
               </p:selectOneMenu>
               <p:outputLabel for="razonSocial" value="Cliente:"/>
-              <p:autoComplete id="razonSocial" placeholder="RFC ó nombre" var="item" itemLabel="#{item.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{item}" value="#{manticFacturasTickets.attrs.cliente}" completeMethod="#{manticFacturasTickets.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
+              <p:autoComplete id="razonSocial" placeholder="RFC ó nombre" var="item" itemLabel="#{item.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-cliente filas" itemValue="#{item}" value="#{manticFacturasTickets.attrs.cliente}" completeMethod="#{manticFacturasTickets.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
 								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticFacturasTickets.doAsignaCliente}" oncomplete="janal.desbloquear();"/>
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
@@ -63,20 +82,16 @@
 								</f:facet>
 							</p:autoComplete>	
               <p:outputLabel for="consecutivo" value="No. ticket:"/>
-              <p:inputText id="consecutivo" value="#{manticFacturasTickets.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>               
-              <p:selectOneMenu id="folios" var="item" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="contains">
-								<p:ajax event="itemSelect" process="@this" update="folios" listener="#{manticFacturasTickets.doEliminarItem()}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
-                <f:selectItems value="#{manticFacturasTickets.attrs.folios}"  var="element" itemValue="#{element}" itemLabel="#{element}"/>
-                <p:column headerText="No. consecutivo">
-                  <h:outputText value="#{item}"/>
-                </p:column>   
+              <p:inputText id="consecutivo" value="#{manticFacturasTickets.attrs.consecutivo}" styleClass="janal-wid-100-txt key-down-consecutivo"/> 
+              <p:selectOneMenu id="folios" var="item" styleClass="janal-wid-96 folios" effect="fade" filter="true" filterMatchMode="contains">
+                <f:selectItems value="#{manticFacturasTickets.folios}"/>
               </p:selectOneMenu>
 							<p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticFacturasTickets.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>              
 							<p:outputLabel for="fechaTermino" value="Fecha termino:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticFacturasTickets.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>							
 							<p:outputLabel for="articulo" value="Articulo:"/>
-							<p:autoComplete id="articulo" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticInventariosAlmacenesKardex.attrs.articulo}" completeMethod="#{manticInventariosAlmacenesKardex.doCompleteArticulo}" maxResults="10" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+							<p:autoComplete id="articulo" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-articulo filas" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticFacturasTickets.attrs.articulo}" completeMethod="#{manticFacturasTickets.doCompleteArticulo}" maxResults="10" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this" listener="#{manticFacturasTickets.doAsignaArticulo}" oncomplete="janal.desbloquear();"/>
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
@@ -120,7 +135,7 @@
                 <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.nombreEmpresa}">
+            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.nombreEmpresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
@@ -132,7 +147,7 @@
               </f:facet>
               <h:outputText value="#{row['cliente']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="No. ticket"/>
               </f:facet>
@@ -150,7 +165,7 @@
               </f:facet>
               <h:outputText value="#{row['folio']}"/>
             </p:column>		            
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.registro}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Fecha emisión"/>
               </f:facet>
