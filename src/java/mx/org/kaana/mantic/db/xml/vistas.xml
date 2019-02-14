@@ -2066,6 +2066,15 @@
 			</select>
 		</unit>
 		<unit id="VistaArticulosDto">
+			<select id="existe">
+				 select 
+				   count(*) as total 
+				 from
+				   tc_mantic_articulos
+				 where
+				  id_imagen= {idImagen}
+				  and id_articulo!= {idArticulo}
+			</select>	
 			<select id="row">
 				select 
 				  tc_mantic_articulos.id_articulo as id_key,
