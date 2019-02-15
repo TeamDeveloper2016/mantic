@@ -175,7 +175,7 @@
 									<h:outputText value="#{row['registro']}"/>
 								</p:column>		
 								<p:column style="width:38px; text-align: center">
-									<p:commandButton process="@this" update="@(.relacionado)" icon="fa fa-plus" title="Agregar ticket" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();" actionListener="#{manticFacturasTickets.doAddTicket(row)}" rendered="#{manticFacturasTickets.doDisponible(row)}">
+									<p:commandButton process="@this" update="@(.relacionado)" icon="fa fa-plus" title="Agregar ticket" onstart="return janal.bloquear()" oncomplete="janal.refresh(); janal.desbloquear();" actionListener="#{manticFacturasTickets.doAddTicket(row)}" rendered="#{manticFacturasTickets.doDisponible(row)}">
 										<f:setPropertyActionListener value="#{row}" target="#{manticFacturasTickets.attrs.ticket}" />
 									</p:commandButton>
 								</p:column>
@@ -264,14 +264,14 @@
 									<h:outputText value="#{row['registro']}"/>
 								</p:column>		
 								<p:column style="width:38px; text-align: center">
-									<p:commandButton process="@this" update="@(.relacionado)" icon="fa fa-minus" title="Eliminar ticket" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();" actionListener="#{manticFacturasTickets.doRemoveTicket(row)}">
+									<p:commandButton process="@this" update="@(.relacionado)" icon="fa fa-minus" title="Eliminar ticket" onstart="return janal.bloquear()" oncomplete="janal.refresh();janal.desbloquear();" actionListener="#{manticFacturasTickets.doRemoveTicket(row)}">
 										<f:setPropertyActionListener value="#{row}" target="#{manticFacturasTickets.attrs.ticket}" />
 									</p:commandButton>
 								</p:column>
 								<f:facet name="footer">
 									<p:outputLabel for="total" value="Importe acumulado: #{manticFacturasTickets.sumaImporte}" style="float: left;" styleClass="janal-color-orange relacionado"/>
 									<p:inputText id="total" value="#{manticFacturasTickets.importe}" style="display: none" styleClass="relacionado"/>
-									<p:outputLabel value="Total [#{manticFacturasTickets.acumulado.size()}] registros"/>
+									<p:outputLabel for="total" value="Total [#{manticFacturasTickets.acumulado.size()}] registros"/>
 								</f:facet>
 							</p:dataTable>
 							<p:contextMenu id="kajoolListadoContextMenu" widgetVar="kajoolListadoContextMenu" for="listado">

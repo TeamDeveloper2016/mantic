@@ -253,6 +253,12 @@ shortcut.add("f10", function() {
 	} // if
 });
 
+shortcut.add("f12", function() {
+	janal.console('Ocultar los datos facturacion:');
+	if($("#janal-contenedor-datos").length> 0) 
+		$("#janal-contenedor-datos").fadeToggle(1000, "linear");
+});
+
 shortcut.add("Shift+C", function() {
 	janal.console('Cambio de precio a articulo:');
 	if(PF('dlgCambioPrecio') && !PF('dlgCambioPrecio').isVisible()) {

@@ -40,14 +40,11 @@
         jsArticulos= new Janal.Control.Articulos.Core(#{manticFacturasFacturar.adminOrden.articulos.size()}, 'tabla\\:', true, true);
 				janal.readingMode('#{manticFacturasFacturar.attrs.nombreAccion}');
 				$(".janal-icon-click").click(function() {
-					if($(this).attr('id')=== 'janal-icon-minus') {
+					if($(this).attr('id')=== 'janal-icon-minus') 
 						$('#janal-icon-plus').show();
-						$("#janal-contenedor-datos" ).fadeOut( "slow", function() {});
-					} // if	
-					else {
+					else 
 						$('#janal-icon-minus').show();
-						$("#janal-contenedor-datos" ).fadeIn( "slow", function() {});
-					} // else	
+          $("#janal-contenedor-datos").fadeToggle(1100, "linear");
 					$(this).hide();
 				});
       });							
@@ -141,7 +138,7 @@
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 ui-panel-titlebar ui-widget-header ui-helper-clearfix ui-corner-all">
-					<span class="ui-panel-title">Mostrar y ocultar los datos de factuación</span>
+					<span class="ui-panel-title">[F12] Mostrar y/o ocultar los datos de facturación</span>
 					<a href="#" id="janal-icon-minus" class="ui-panel-titlebar-icon ui-corner-all ui-state-default janal-icon-click"><span class="ui-icon ui-icon-minusthick"></span></a>
 					<a href="#" id="janal-icon-plus" class="ui-panel-titlebar-icon ui-corner-all ui-state-default janal-icon-click" style="display: none"><span class="ui-icon ui-icon-plusthick"></span></a>
 				</div>	
@@ -163,9 +160,9 @@
 							</p:column>   
 						</p:selectOneMenu>
 					</p:panelGrid>					
-					<p:panelGrid id="panelCliente" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-24, janal-wid-8, janal-wid-70">												
-						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-							<p:outputLabel for="clientes" value="Buscar cliente:"/>							
+					<p:panelGrid id="panelCliente" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="#{manticFacturasFacturar.dimensionsClients}">
+						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" rendered="#{manticFacturasFacturar.showAllClients}">
+							<p:outputLabel for="clientes" value="Buscar cliente:"/>
 							<p:autoComplete id="clientes" placeholder="RFC o nombre" widgetVar="listadoClientes" var="customCliente" itemLabel="#{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticFacturasFacturar.attrs.cliente}" completeMethod="#{manticFacturasFacturar.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
 								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticFacturasFacturar.doAsignaCliente}" update="cliente contenido panelDomicilio" oncomplete="janal.desbloquear();"/>
 								<f:facet name="itemtip">
@@ -180,7 +177,7 @@
 								</f:facet>
 							</p:autoComplete>	
 						</p:panelGrid>	
-						<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center">
+						<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center" rendered="#{manticFacturasFacturar.showAllClients}">
 							<p:spacer width="1"/>
 							<p:spacer width="1"/>
 						  <p:commandButton id="catalogoCliente" title="Agregar / Modificar un cliente" icon="fa fa-users" process="@this" action="#{manticFacturasFacturar.doClientes}" ajax="false" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>

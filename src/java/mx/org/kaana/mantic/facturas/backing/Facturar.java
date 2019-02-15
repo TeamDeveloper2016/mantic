@@ -18,7 +18,6 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.formato.Cifrar;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -28,10 +27,8 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.facturas.reglas.Transaccion;
-import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
-import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
 import mx.org.kaana.mantic.facturas.reglas.AdminFacturas;
@@ -56,7 +53,8 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 	
 	private Entity cliente;
 	private List<Entity> tickets;
-	
+	private List<Long> ventaPublico;
+
 	private SaldoCliente saldoCliente;
 	private StreamedContent image;
 	private FormatLazyModel almacenes;
@@ -84,12 +82,21 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 		return almacenes;
 	}	
 	
+	public boolean getShowAllClients() {
+		return this.ventaPublico.indexOf(this.cliente.toLong("idCliente"))< 0;
+	}
+	
+	public String getDimensionsClients() {
+		return this.getShowAllClients()? "janal-wid-24, janal-wid-8, janal-wid-70": "janal-wid-100-txt";
+	}
+	
 	@PostConstruct
   @Override
   protected void init() {		
     try {
       this.cliente= (Entity)JsfBase.getFlashAttribute("cliente");
       this.tickets= (List<Entity>)JsfBase.getFlashAttribute("tickets");
+			this.ventaPublico= new ArrayList<>();
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("accionInicial", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idFicticia", JsfBase.getFlashAttribute("idFicticia")== null? -1L: JsfBase.getFlashAttribute("idFicticia"));
@@ -111,14 +118,14 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("observaciones", JsfBase.getFlashAttribute("observaciones")== null? "" : JsfBase.getFlashAttribute("observaciones"));
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.isAdminEncuestaOrAdmin());
-			loadClienteDefault();
+			this.loadClienteDefault();
 			if(JsfBase.isAdminEncuestaOrAdmin())
 				loadSucursales();
-			loadBancos();
-			loadCfdis();
-			loadTiposMediosPagos();
-			loadTiposPagos();
-			doLoad();
+			this.loadBancos();
+			this.loadCfdis();
+			this.loadTiposMediosPagos();
+			this.loadTiposPagos();
+			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -623,10 +630,11 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 		} // catch		
 	} // doUpdateForEmpresa	
 	
-	private void loadClienteDefault(){
+	private void loadClienteDefault() {
 		UISelectEntity seleccion              = null;
 		List<UISelectEntity> clientesSeleccion= null;
 		MotorBusqueda motorBusqueda           = null;
+		Map<String, Object> params            = new HashMap<>();
 		try {
 			motorBusqueda= new MotorBusqueda(-1L);
 			seleccion= new UISelectEntity(motorBusqueda.toClienteDefault());
@@ -636,11 +644,24 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("clienteSeleccion", seleccion);			
 			this.attrs.put("clienteDefault", seleccion);			
 			loadDomicilios(seleccion.getKey());
+			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+        params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
+			else
+				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.put("razonSocial", Constantes.VENTA_AL_PUBLICO_GENERAL);
+			List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticClientesDto", "clientes", params);
+			items.forEach((item) -> {
+				this.ventaPublico.add(item.toLong("idCliente"));
+			}); // for
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
+		finally {
+			Methods.clean(params);
+		}
 	} // loadClienteDefault	
 	
 	private void loadDomicilios(Long idCliente) throws Exception{
