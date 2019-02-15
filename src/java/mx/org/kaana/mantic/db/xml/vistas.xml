@@ -6930,5 +6930,171 @@
 					{sortOrder}
 			</select>
 		</unit>
+		<unit id="VistaUbicacionesDto">
+			<select id="ubicacionEmpresa">
+				select 
+					tc_mantic_empresas.id_empresa id_key,
+					tc_mantic_empresas.id_empresa,
+					tc_mantic_empresas.nombre empresa,
+					tc_mantic_empresas.registro
+				from 
+					tc_mantic_almacenes
+				inner join 
+					tc_mantic_empresas on tc_mantic_almacenes.id_empresa = tc_mantic_empresas.id_empresa
+				where 
+					tc_mantic_empresas.id_empresa in ({idEmpresa})
+				group by 
+					tc_mantic_empresas.id_empresa,
+					tc_mantic_empresas.nombre,
+					tc_mantic_empresas.registro
+			</select>			
+			<select id="ubicacionAlmacen">
+				select   
+					tc_mantic_almacenes.id_almacen id_key,
+					tc_mantic_empresas.id_empresa,  
+					tc_mantic_empresas.nombre empresa,
+					tc_mantic_almacenes.id_almacen,
+					tc_mantic_almacenes.nombre almacen,
+					tc_mantic_almacenes.registro
+				from 
+					tc_mantic_almacenes
+				inner join 
+					tc_mantic_empresas on tc_mantic_almacenes.id_empresa = tc_mantic_empresas.id_empresa
+				where 
+					tc_mantic_empresas.id_empresa in ({idEmpresa})
+			</select>
+			<select id="ubicacionPiso">
+				select   
+					tc_mantic_almacenes.id_almacen id_key,
+					tc_mantic_empresas.id_empresa,  
+					tc_mantic_empresas.nombre empresa,
+					tc_mantic_almacenes.id_almacen,
+					tc_mantic_almacenes.nombre almacen,
+					tc_mantic_almacenes_ubicaciones.piso,
+					tc_mantic_almacenes.registro
+				from 
+					tc_mantic_almacenes
+				inner join 
+					tc_mantic_empresas on tc_mantic_almacenes.id_empresa = tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_almacenes_ubicaciones on tc_mantic_almacenes.id_almacen = tc_mantic_almacenes_ubicaciones.id_almacen
+				where 
+					tc_mantic_empresas.id_empresa in ({idEmpresa})
+				and 
+					tc_mantic_almacenes.id_almacen= {idAlmacen} and tc_mantic_almacenes.id_almacen is not null and tc_mantic_almacenes.id_almacen!= ''
+				and 
+					tc_mantic_almacenes_ubicaciones.piso is not null and tc_mantic_almacenes_ubicaciones.piso != ''
+				group by   
+					tc_mantic_empresas.id_empresa,
+					tc_mantic_empresas.nombre,
+					tc_mantic_almacenes_ubicaciones.piso,
+					tc_mantic_empresas.registro
+			</select>
+			<select id="ubicacionCuarto">
+				select   
+					tc_mantic_almacenes.id_almacen id_key,
+					tc_mantic_empresas.id_empresa,  
+					tc_mantic_empresas.nombre empresa,
+					tc_mantic_almacenes.id_almacen,
+					tc_mantic_almacenes.nombre almacen,
+					tc_mantic_almacenes_ubicaciones.piso,
+					tc_mantic_almacenes_ubicaciones.cuarto,
+					tc_mantic_almacenes.registro
+				from 
+					tc_mantic_almacenes
+				inner join 
+					tc_mantic_empresas on tc_mantic_almacenes.id_empresa = tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_almacenes_ubicaciones on tc_mantic_almacenes.id_almacen = tc_mantic_almacenes_ubicaciones.id_almacen
+				where 
+					tc_mantic_empresas.id_empresa in ({idEmpresa})
+				and 
+					tc_mantic_almacenes.id_almacen= {idAlmacen} and tc_mantic_almacenes.id_almacen is not null and tc_mantic_almacenes.id_almacen!= ''
+				and 
+					tc_mantic_almacenes_ubicaciones.piso= '{piso}' and tc_mantic_almacenes_ubicaciones.piso is not null and tc_mantic_almacenes_ubicaciones.piso != ''
+				and 
+					tc_mantic_almacenes_ubicaciones.cuarto is not null and tc_mantic_almacenes_ubicaciones.cuarto != ''
+				group by   
+					tc_mantic_empresas.id_empresa,
+					tc_mantic_empresas.nombre,
+					tc_mantic_almacenes_ubicaciones.piso,
+					tc_mantic_almacenes_ubicaciones.cuarto,
+					tc_mantic_empresas.registro
+			</select>
+			<select id="ubicacionAnaquel">
+				select   
+					tc_mantic_almacenes.id_almacen id_key,
+					tc_mantic_empresas.id_empresa,  
+					tc_mantic_empresas.nombre empresa,
+					tc_mantic_almacenes.id_almacen,
+					tc_mantic_almacenes.nombre almacen,
+					tc_mantic_almacenes_ubicaciones.piso,
+					tc_mantic_almacenes_ubicaciones.cuarto,
+					tc_mantic_almacenes_ubicaciones.anaquel,
+					tc_mantic_almacenes.registro
+				from 
+					tc_mantic_almacenes
+				inner join 
+					tc_mantic_empresas on tc_mantic_almacenes.id_empresa = tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_almacenes_ubicaciones on tc_mantic_almacenes.id_almacen = tc_mantic_almacenes_ubicaciones.id_almacen
+				where 
+					tc_mantic_empresas.id_empresa in ({idEmpresa})
+				and 
+					tc_mantic_almacenes.id_almacen= {idAlmacen} and tc_mantic_almacenes.id_almacen is not null and tc_mantic_almacenes.id_almacen!= ''
+				and 
+					tc_mantic_almacenes_ubicaciones.piso= '{piso}' and tc_mantic_almacenes_ubicaciones.piso is not null and tc_mantic_almacenes_ubicaciones.piso != ''
+				and 
+					tc_mantic_almacenes_ubicaciones.cuarto= '{cuarto}' and tc_mantic_almacenes_ubicaciones.cuarto is not null and tc_mantic_almacenes_ubicaciones.cuarto != ''
+				and 
+					tc_mantic_almacenes_ubicaciones.anaquel is not null and tc_mantic_almacenes_ubicaciones.anaquel != ''
+				group by   
+					tc_mantic_empresas.id_empresa,
+					tc_mantic_empresas.nombre,
+					tc_mantic_almacenes_ubicaciones.piso,
+					tc_mantic_almacenes_ubicaciones.cuarto,
+					tc_mantic_almacenes_ubicaciones.anaquel,
+					tc_mantic_empresas.registro
+			</select>
+			<select id="ubicacionCharola">
+				select   
+					tc_mantic_almacenes.id_almacen id_key,
+					tc_mantic_empresas.id_empresa,  
+					tc_mantic_empresas.nombre empresa,
+					tc_mantic_almacenes.id_almacen,
+					tc_mantic_almacenes.nombre almacen,
+					tc_mantic_almacenes_ubicaciones.piso,
+					tc_mantic_almacenes_ubicaciones.cuarto,
+					tc_mantic_almacenes_ubicaciones.anaquel,
+					tc_mantic_almacenes_ubicaciones.charola,
+					tc_mantic_almacenes.registro
+				from 
+					tc_mantic_almacenes
+				inner join 
+					tc_mantic_empresas on tc_mantic_almacenes.id_empresa = tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_almacenes_ubicaciones on tc_mantic_almacenes.id_almacen = tc_mantic_almacenes_ubicaciones.id_almacen
+				where 
+					tc_mantic_empresas.id_empresa in ({idEmpresa})
+				and 
+					tc_mantic_almacenes.id_almacen= {idAlmacen} and tc_mantic_almacenes.id_almacen is not null and tc_mantic_almacenes.id_almacen!= ''
+				and 
+					tc_mantic_almacenes_ubicaciones.piso= '{piso}' and tc_mantic_almacenes_ubicaciones.piso is not null and tc_mantic_almacenes_ubicaciones.piso != ''
+				and 
+					tc_mantic_almacenes_ubicaciones.cuarto= '{cuarto}' and tc_mantic_almacenes_ubicaciones.cuarto is not null and tc_mantic_almacenes_ubicaciones.cuarto != ''
+				and 
+					tc_mantic_almacenes_ubicaciones.anaquel= '{anaquel}' and tc_mantic_almacenes_ubicaciones.anaquel is not null and tc_mantic_almacenes_ubicaciones.anaquel != ''
+				and 
+					tc_mantic_almacenes_ubicaciones.charola is not null and tc_mantic_almacenes_ubicaciones.charola != ''
+				group by   
+					tc_mantic_empresas.id_empresa,
+					tc_mantic_empresas.nombre,
+					tc_mantic_almacenes_ubicaciones.piso,
+					tc_mantic_almacenes_ubicaciones.cuarto,
+					tc_mantic_almacenes_ubicaciones.anaquel,
+					tc_mantic_almacenes_ubicaciones.charola,
+					tc_mantic_empresas.registro
+			</select>
+		</unit>
 	</dml>    
 </process>
