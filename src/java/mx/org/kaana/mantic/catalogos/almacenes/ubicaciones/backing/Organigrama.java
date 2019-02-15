@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
@@ -16,6 +17,8 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.almacenes.ubicaciones.beans.OrganigramUbicacion;
 import mx.org.kaana.mantic.catalogos.almacenes.ubicaciones.reglas.MotorBusqueda;
+import mx.org.kaana.mantic.catalogos.almacenes.ubicaciones.reglas.Transaccion;
+import mx.org.kaana.mantic.enums.ENivelUbicacion;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.organigram.OrganigramNodeCollapseEvent;
@@ -51,8 +54,9 @@ public class Organigrama extends IBaseFilter implements Serializable {
   protected void init() {
     try {			       						
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());			
 			this.attrs.put("empresaOrganigram", ((boolean)this.attrs.get("isMatriz")) ? JsfBase.getAutentifica().getEmpresa().getDependencias() : this.attrs.get("idEmpresa").toString());
+			this.attrs.put("descripcion", "");
 			this.doLoad();
     } // try
     catch (Exception e) {
@@ -94,9 +98,16 @@ public class Organigrama extends IBaseFilter implements Serializable {
         for(OrganigramNode childNode: childrens){
           if(!((OrganigramUbicacion)childNode.getData()).isUltimoNivel()) 
             childNode.getChildren().add(new DefaultOrganigramNode());
-          childNode.setParent(seleccionado);     
-					seleccionado.setExpanded(true);
-          seleccionado.getChildren().add(childNode);					
+          childNode.setParent(seleccionado);               
+					childNode.setExpanded(true);  
+					childNode.setSelectable(true);  
+          childNode.setCollapsible(false);     
+          childNode.setDraggable(false);     
+          childNode.setDroppable(false);     
+					seleccionado.setExpanded(true);          
+					seleccionado.setSelectable(true);          
+					seleccionado.setCollapsible(false);          
+					createTree(childNode);
         } // for				
       } // if                  
 		} // try
@@ -147,14 +158,14 @@ public class Organigrama extends IBaseFilter implements Serializable {
 		return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
 	} // doCancelar  
 	
-	public void doConsultarDetalle() {
+	public void doAgregar() {
     OrganigramUbicacion seleccionado= null;
     RequestContext rc               = null;
     try {
       rc= UIBackingUtilities.getCurrentInstance();
       if(this.node!= null) {
-        seleccionado= (OrganigramUbicacion) this.node.getData();        
-        this.attrs.put("detalle", seleccionado);        
+        seleccionado= (OrganigramUbicacion) this.node.getData(); 				
+        this.attrs.put("tipo", ENivelUbicacion.fromIdNivel(seleccionado.getNivel().getIdNivelUbicacion()).name().toLowerCase());        
         rc.update("dialogoDetalle");
         rc.execute("PF('dlgDetalle').show();");
       } // if
@@ -171,4 +182,21 @@ public class Organigrama extends IBaseFilter implements Serializable {
       this.node= null;
     } // finally      
   } // doConsultarDetalle		
+	
+	public void doAceptar(){
+		Transaccion transaccion= null;
+		try {
+			transaccion= new Transaccion((OrganigramUbicacion)this.node, this.attrs.get("descripcion").toString());
+			if(transaccion.ejecutar(EAccion.AGREGAR)){
+				JsfBase.addMessage("Se agregó de forma correcta el nivel", ETipoMensaje.INFORMACION);
+				doLoad();
+			} // if
+			else
+				JsfBase.addMessage("Ocurrió un error al agregar el nivel", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doAceptar
 }

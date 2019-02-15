@@ -3,6 +3,7 @@ package mx.org.kaana.mantic.catalogos.almacenes.ubicaciones.beans;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.mantic.enums.ENivelUbicacion;
@@ -29,7 +30,7 @@ public class OrganigramUbicacion implements Serializable, IBaseDto {
 	} // OrganigramUbicacion
 
 	public OrganigramUbicacion(Long idKey) {
-		this(idKey, null, -1L, "Organigrama Almacenes", null, null, null, null, null, false, ENivelUbicacion.EMPRESA, new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		this(idKey, null, -1L, "ALMACENES (ESTRUCTURA)", null, null, null, null, null, false, ENivelUbicacion.EMPRESA, new Timestamp(Calendar.getInstance().getTimeInMillis()));
 	}	// OrganigramUbicacion
 	
 	public OrganigramUbicacion(Long idKey, String idEmpresa, Long idAlmacen, String empresa, String almacen, String piso, String cuarto, String anaquel, String charola, boolean ultimoNivel, ENivelUbicacion nivel, Timestamp registro) {
@@ -147,7 +148,16 @@ public class OrganigramUbicacion implements Serializable, IBaseDto {
 	
 	@Override
 	public Map<String, Object> toMap() {
-		return null;
+		Map regresar = new HashMap();
+		regresar.put("idAlmacen", getIdAlmacen());
+		regresar.put("idEmpresa", getIdEmpresa());
+		regresar.put("empresa", getEmpresa());
+		regresar.put("almacen", getAlmacen());
+		regresar.put("piso", getPiso());
+		regresar.put("cuarto", getCuarto());
+		regresar.put("anaquel", getAnaquel());
+		regresar.put("charola", getCharola());
+  	return regresar;
 	}
 
 	@Override

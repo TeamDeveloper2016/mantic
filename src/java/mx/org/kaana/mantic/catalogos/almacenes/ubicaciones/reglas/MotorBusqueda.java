@@ -8,6 +8,7 @@ import java.util.HashMap;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.mantic.catalogos.almacenes.ubicaciones.beans.OrganigramUbicacion;
+import mx.org.kaana.mantic.enums.ENivelUbicacion;
 import org.primefaces.model.DefaultOrganigramNode;
 import org.primefaces.model.OrganigramNode;
 
@@ -18,38 +19,22 @@ public class MotorBusqueda implements Serializable {
 	
 	public MotorBusqueda(OrganigramUbicacion ubicacion) {
 		this.ubicacion= ubicacion;		
-	} // MotorBusqueda
-	
-	public OrganigramUbicacion toParent() throws Exception {
-		OrganigramUbicacion regresar       = null;
-		Map<String, Object>params= null;
-		try {
-			params= new HashMap<>();
-			params.put("idEmpresa", this.ubicacion.getIdEmpresa());
-			regresar= (OrganigramUbicacion) DaoFactory.getInstance().toEntity(OrganigramUbicacion.class, "VistaUbicacionesDto", "cuentas", params);
-		} // try // try // try // try
-		catch (Exception e) {
-			throw e;
-		} // catch		
-		return regresar;
-	} // toParent
+	} // MotorBusqueda	
 	
 	public List<OrganigramNode> toChildrens() throws Exception {
-		List<OrganigramNode> regresar= null;
-		List<OrganigramUbicacion> nodes     = null;
-		Map<String, Object>params = null;
+		List<OrganigramNode> regresar  = null;
+		List<OrganigramUbicacion> nodes= null;		
 		try {
-			regresar= new ArrayList<>();
-				params= new HashMap<>();
-				params.put("idEmpresa", this.ubicacion.getIdEmpresa());				
-				nodes= DaoFactory.getInstance().toEntitySet(OrganigramUbicacion.class, "VistaUbicacionesDto", "pagosDeuda", params, Constantes.SQL_TODOS_REGISTROS);
-				if(!nodes.isEmpty()){				
-					for(OrganigramUbicacion item: nodes) {						
-						item.setUltimoNivel(true);								
-						regresar.add(new DefaultOrganigramNode("pago", item, null));
-					} // for
-				} // if
-		} // try // try // try // try
+			regresar= new ArrayList<>();						
+			nodes= DaoFactory.getInstance().toEntitySet(OrganigramUbicacion.class, "VistaUbicacionesDto", this.ubicacion.getNivel().getIdXml(), this.ubicacion.toMap(), Constantes.SQL_TODOS_REGISTROS);
+			if(!nodes.isEmpty()){				
+				for(OrganigramUbicacion item: nodes) {							
+					item.setUltimoNivel(this.ubicacion.getNivel().equals(ENivelUbicacion.CHAROLA));								
+					item.setNivel(ENivelUbicacion.fromIdNivel(this.ubicacion.getNivel().getIdNivelUbicacion() + 1L));
+					regresar.add(new DefaultOrganigramNode(ENivelUbicacion.fromIdNivel(this.ubicacion.getNivel().getIdNivelUbicacion()).getType(), item, null));
+				} // for
+			} // if
+		} // try 
 		catch (Exception e) {			
 			throw e;
 		} // catch		
