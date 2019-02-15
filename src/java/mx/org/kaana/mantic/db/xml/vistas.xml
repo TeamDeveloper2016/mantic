@@ -1532,6 +1532,20 @@
 			</select>
 		</unit>
 		<unit id="VistaVentasDto">
+			<select id="tipoMedioPago">
+				select 
+					tr_mantic_venta_medio_pago.id_venta, group_concat(tc_mantic_tipos_medios_pagos.nombre order by tc_mantic_tipos_medios_pagos.nombre asc separator ', ') as medios
+				from 
+					tc_mantic_ventas
+				inner join  
+					tr_mantic_venta_medio_pago on tc_mantic_ventas.id_venta= tr_mantic_venta_medio_pago.id_venta
+				inner join
+					tc_mantic_tipos_medios_pagos on tr_mantic_venta_medio_pago.id_tipo_medio_pago= tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+				where
+					tc_mantic_ventas.id_venta= {idVenta}
+				group by 
+					tr_mantic_venta_medio_pago.id_venta				
+			</select>
 			<select id="tickets">
 				select
 					tc_mantic_ventas.id_venta as id_key,
