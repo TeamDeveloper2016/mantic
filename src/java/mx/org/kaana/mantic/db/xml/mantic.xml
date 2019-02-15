@@ -2901,6 +2901,16 @@
 				order by
 				  razon_social
 			</select>
+			<select id="clientes">
+        select      
+      		id_cliente as id_key,
+          id_cliente
+        from      
+          tc_mantic_clientes
+        where      
+          id_empresa in ({sucursales})
+				  and razon_social like '%{razonSocial}%'
+			</select>
 		</unit>		
 		<unit id="TcManticImagenesDto">
       <select id="row">

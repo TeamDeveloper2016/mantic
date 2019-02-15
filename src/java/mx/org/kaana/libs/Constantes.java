@@ -20,6 +20,7 @@ public final class Constantes {
   public static final String REDIRECIONAR_AMPERSON = "&faces-redirect=true";
   public static final String JAVAX_FACES_RESOURCE = "javax.faces.resource";
   public static final String VERSIONES = "Versiones";
+  public static final String VENTA_AL_PUBLICO_GENERAL = "VENTA PUBLICO EN GENERAL";
 
 	public static final String CODIGO_SAT= "40141700";
 	public static final String CLEAN_SQL= "([(,),',*,!,|,<,>,?,¿,&,%,$,#,;,:,{,},\\[,\\],~,\"])";

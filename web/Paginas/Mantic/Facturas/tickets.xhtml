@@ -9,7 +9,7 @@
                 template="/WEB-INF/plantillas/reporte.xhtml">
   <ui:param name="titulo" value="Seleccionar los tickets que se desean factura de forma conjunta" />
   <ui:define name="librerias">
-    <h:outputScript library="janal" name="core/jquery.janal.folio.core-0.0.1.js"/>
+    <h:outputScript library="janal" name="core/jquery.janal.folio.core-0.0.8.js"/>
     <script type="text/javascript">
       Janal.Control.fields = {
         'idEmpresa'      : {validaciones: 'libre', mascara: 'libre'},
@@ -120,67 +120,159 @@
         </div>
 				<p:spacer/>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticFacturasTickets.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticFacturasTickets.attrs.seleccionado}" selectionMode="single" paginator="#{manticFacturasTickets.lazyModel.rowCount gt manticFacturasTickets.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
-            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
-						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
-            <f:facet name="header" >
-              <div class="lg-pantalla">
-                <p:menuButton value="Opciones">
-                  <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                  <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-                </p:menuButton>
-              </div>  
-              <div class="xs-pantalla">              
-                <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-              </div>  
-            </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.nombreEmpresa}">
-              <f:facet name="header">
-                <h:outputText value="Sucursal"/>
-              </f:facet>
-              <h:outputText value="#{row['nombreEmpresa']}"/>
-            </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{row.cliente}">
-              <f:facet name="header">
-                <h:outputText value="Cliente"/>
-              </f:facet>
-              <h:outputText value="#{row['cliente']}"/>
-            </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.consecutivo}">
-              <f:facet name="header">
-                <h:outputText value="No. ticket"/>
-              </f:facet>
-              <h:outputText value="#{row['consecutivo']}"/>
-            </p:column>		            
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.total}">
-              <f:facet name="header">
-                <h:outputText value="Importe"/>
-              </f:facet>
-              <h:outputText value="#{row['total']}"/>
-            </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.folio}">
-              <f:facet name="header">
-                <h:outputText value="Folio"/>
-              </f:facet>
-              <h:outputText value="#{row['folio']}"/>
-            </p:column>		            
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.registro}">
-              <f:facet name="header">
-                <h:outputText value="Fecha emisión"/>
-              </f:facet>
-              <h:outputText value="#{row['registro']}"/>
-            </p:column>		
-            <f:facet name="footer">
-              <p:outputLabel value="Total [#{manticFacturasTickets.lazyModel==null? 0: manticFacturasTickets.lazyModel.rowCount}] registros"/>
-            </f:facet>
-          </p:dataTable>
-          <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="consultar" icon="fa fa-bars" value="Ver detalle" process="@this tabla" onstart="janal.bloquear();" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>
-          </p:contextMenu>
+          <div class="ui-grid-row janal-grid-row">
+            <div class="ui-grid-col-12">					
+							<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticFacturasTickets.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticFacturasTickets.attrs.seleccionado}" selectionMode="single" paginator="#{manticFacturasTickets.lazyModel.rowCount gt manticFacturasTickets.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+								<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+								<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
+								<f:facet name="header" >
+									<div class="lg-pantalla">
+										<p:menuButton value="Opciones">
+											<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+											<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+										</p:menuButton>
+									</div>  
+									<div class="xs-pantalla">              
+										<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+										<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+									</div>  
+								</f:facet>	            
+								<p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.nombreEmpresa}">
+									<f:facet name="header">
+										<h:outputText value="Sucursal"/>
+									</f:facet>
+									<h:outputText value="#{row['nombreEmpresa']}"/>
+								</p:column>		
+								<p:column class="MarAuto Responsive" sortBy="#{row.cliente}">
+									<f:facet name="header">
+										<h:outputText value="Cliente"/>
+									</f:facet>
+									<h:outputText value="#{row['cliente']}"/>
+								</p:column>		
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.consecutivo}">
+									<f:facet name="header">
+										<h:outputText value="No. ticket"/>
+									</f:facet>
+									<h:outputText value="#{row['consecutivo']}"/>
+								</p:column>		            
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.total}">
+									<f:facet name="header">
+										<h:outputText value="Importe"/>
+									</f:facet>
+									<h:outputText value="#{row['total']}"/>
+								</p:column>		
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.folio}">
+									<f:facet name="header">
+										<h:outputText value="Folio"/>
+									</f:facet>
+									<h:outputText value="#{row['folio']}"/>
+								</p:column>		            
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.registro}">
+									<f:facet name="header">
+										<h:outputText value="Fecha emisión"/>
+									</f:facet>
+									<h:outputText value="#{row['registro']}"/>
+								</p:column>		
+								<p:column style="width:38px; text-align: center">
+									<p:commandButton process="@this" update="@(.relacionado)" icon="fa fa-plus" title="Agregar ticket" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();" actionListener="#{manticFacturasTickets.doAddTicket(row)}" rendered="#{manticFacturasTickets.doDisponible(row)}">
+										<f:setPropertyActionListener value="#{row}" target="#{manticFacturasTickets.attrs.ticket}" />
+									</p:commandButton>
+								</p:column>
+								<f:facet name="footer">
+									<p:outputLabel value="Total [#{manticFacturasTickets.lazyModel== null? 0: manticFacturasTickets.lazyModel.rowCount}] registros"/>
+								</f:facet>
+							</p:dataTable>
+							<p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+								<p:menuitem id="consultar" icon="fa fa-bars" value="Ver detalle" process="@this tabla" onstart="janal.bloquear();" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>
+							</p:contextMenu>
+						</div>
+					</div>	
+          <div class="ui-grid-row janal-grid-row">
+            <div class="ui-grid-col-2">
+							<p:spacer height="10px"/>
+						</div>
+					</div>	
+          <div class="ui-grid-row janal-grid-row">
+            <div class="ui-grid-col-2">
+							<p:outputLabel value="Razón social del cliente:"/>
+						</div>	
+            <div class="ui-grid-col-10">
+							<p:inputText value="#{manticFacturasTickets.pivote.cliente}" styleClass="janal-wid-100-txt janal-color-blue relacionado" readonly="true"/>
+						</div>	
+					</div>	
+          <div class="ui-grid-row janal-grid-row">
+            <div class="ui-grid-col-12">					
+							<p:dataTable id="listado" widgetVar="kajoolListado" var="row" value="#{manticFacturasTickets.acumulado}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticFacturasTickets.attrs.referenciado}" selectionMode="single" paginator="#{manticFacturasTickets.acumulado.size()> 0}" rowIndexVar="index" reflow="true" rowKey="#{row.idKey}" styleClass="relacionado">
+								<p:ajax event="rowSelect" update="kajoolListadoContextMenu" oncomplete="PF('kajoolListado').writeSelections()" process="tabla" skipChildren="false"/>
+								<p:ajax event="contextMenu" update="kajoolListadoContextMenu" oncomplete="PF('kajoolListado').writeSelections();PF('kajoolListadoContextMenu').show(currentEvent);" process="@this listado" skipChildren="false"/>
+								<f:facet name="header" >
+									<div style="float: left;">
+										<h:outputText value="Listado de tickets que han sido seleccionados"/>
+									</div>
+									<div class="lg-pantalla">
+										<p:menuButton value="Opciones">
+											<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'listado')" oncomplete="janal.desbloquear()"/>
+											<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'listado')" oncomplete="janal.desbloquear()"/>
+										</p:menuButton>
+									</div>  
+									<div class="xs-pantalla">              
+										<p:menuitem icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'listado')" oncomplete="janal.desbloquear()"/>
+										<p:menuitem icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'listado')" oncomplete="janal.desbloquear()"/>
+									</div>  
+								</f:facet>	            
+								<p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.nombreEmpresa}">
+									<f:facet name="header">
+										<h:outputText value="Sucursal"/>
+									</f:facet>
+									<h:outputText value="#{row['nombreEmpresa']}"/>
+								</p:column>		
+								<p:column class="MarAuto Responsive" sortBy="#{row.cliente}">
+									<f:facet name="header">
+										<h:outputText value="Cliente"/>
+									</f:facet>
+									<h:outputText value="#{row['cliente']}"/>
+								</p:column>		
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.consecutivo}">
+									<f:facet name="header">
+										<h:outputText value="No. ticket"/>
+									</f:facet>
+									<h:outputText value="#{row['consecutivo']}"/>
+								</p:column>		            
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.total}">
+									<f:facet name="header">
+										<h:outputText value="Importe"/>
+									</f:facet>
+									<h:outputText value="#{row['total']}"/>
+								</p:column>		
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.folio}">
+									<f:facet name="header">
+										<h:outputText value="Folio"/>
+									</f:facet>
+									<h:outputText value="#{row['folio']}"/>
+								</p:column>		            
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.registro}">
+									<f:facet name="header">
+										<h:outputText value="Fecha emisión"/>
+									</f:facet>
+									<h:outputText value="#{row['registro']}"/>
+								</p:column>		
+								<p:column style="width:38px; text-align: center">
+									<p:commandButton process="@this" update="@(.relacionado)" icon="fa fa-minus" title="Eliminar ticket" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();" actionListener="#{manticFacturasTickets.doRemoveTicket(row)}">
+										<f:setPropertyActionListener value="#{row}" target="#{manticFacturasTickets.attrs.ticket}" />
+									</p:commandButton>
+								</p:column>
+								<f:facet name="footer">
+									<p:outputLabel value="Total [#{manticFacturasTickets.acumulado.size()}] registros"/>
+								</f:facet>
+							</p:dataTable>
+							<p:contextMenu id="kajoolListadoContextMenu" widgetVar="kajoolListadoContextMenu" for="tabla">
+								<p:menuitem icon="fa fa-bars" value="Ver detalle" process="@this tabla" onstart="janal.bloquear();" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>
+							</p:contextMenu>
+						</div>
+					</div>						
         </div>
       </div>
-    </div>		    
+    </div>		 
   </ui:define>   
   <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
   <ui:param name="tituloConfirmacion" value="Articulos del ticket seleccionado"/>	
@@ -188,7 +280,7 @@
   <ui:define name="detalleConfirmacion">
 		<h:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-col-130, janal-wid-100-txt">
 			<p:outputLabel value="No ticket: "/>
-			<p:outputLabel value="#{manticCatalogosArticulosFiltro.attrs.seleccionado.consecutivo}" styleClass="janal-color-blue"/>
+			<p:outputLabel value="#{manticFacturasTickets.attrs.seleccionado.consecutivo}" styleClass="janal-color-blue"/>
 		</h:panelGrid>			
     <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{manticFacturasTickets.lazyTicket}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticFacturasTickets.lazyTicket.rowCount gt manticFacturasTickets.lazyTicket.pageSize}" rowIndexVar="index" reflow="true">
 			<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.codigo}">

@@ -71,6 +71,7 @@
 			}); // keydownd	
       $(document).on('keydown', '.key-down-consecutivo', function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
+   			janal.console('jsTicket.keydown: '+ key);
 				switch(key) {
 					case $ticket.VK_ENTER:
 					case $ticket.VK_PLUS:
@@ -79,6 +80,9 @@
 					case $ticket.VK_MINUS:
 					case $ticket.VK_REST:
 						return $ticket.remove($(this));
+						break;
+					default:
+						return (key>=48 && key<=57) || key===8 || key===9 || (key>=36 && key<=39) || key===46;
 						break;
 				} // switch
 			}); // keydownd	
@@ -100,6 +104,7 @@
 		},
 		focus: function() {
  			janal.console('jsTicket.focus: consecutivo');
+			$('#consecutivo').val('');			
 			$('#consecutivo').focus();			
 		},
 		afind: function() {
@@ -112,7 +117,6 @@
 		add: function(item) {
 			console.log('jsTicket.add:'+ $(item).val());
 			var value= $ticket.consecutivo($(item).val().trim());
-			$(item).val(value);
 		  addItem(value);
 			return true;
 		},
@@ -123,8 +127,7 @@
   		  cleanItems();
 			else {
   			var value= $ticket.consecutivo($(item).val().trim());
-  			$(item).val(value);
-				removeItem(value)
+				removeItem(value);
 			} // else	
 			return true;
 		},

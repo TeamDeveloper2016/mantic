@@ -6,10 +6,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
-import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -41,6 +42,8 @@ public class Tickets extends IBaseFilter implements Serializable {
 	private List<Entity> acumulado;
 	private List<String> folios;
 	private FormatCustomLazy lazyTicket;
+	private List<Long> ventaPublico;
+	private StringBuilder idClientes;
 
 	public Entity getPivote() {
 		return pivote;
@@ -64,7 +67,8 @@ public class Tickets extends IBaseFilter implements Serializable {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			this.folios= new ArrayList<>();
+			this.folios   = new ArrayList<>();
+			this.acumulado= new ArrayList<>();
 			this.toLoadCatalog();
     } // try
     catch (Exception e) {
@@ -105,17 +109,21 @@ public class Tickets extends IBaseFilter implements Serializable {
 		else
 		  if(!Cadena.isVacio(JsfBase.getParametro("articulo_input")))
   		  sb.append("(upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(JsfBase.getParametro("articulo_input")).append("%') or upper(tc_mantic_ventas_detalles.codigo) like upper('%").append(JsfBase.getParametro("articulo_input")).append("%')) and ");
-		if(!Cadena.isVacio(this.attrs.get("razonSocial")) && !this.attrs.get("razonSocial").toString().equals("-1"))
-			sb.append("tc_mantic_clientes.id_cliente = ").append(((Entity)this.attrs.get("razonSocial")).getKey()).append(" and ");					
+		if(!Cadena.isVacio(this.attrs.get("cliente"))) {
+			String keys= this.idClientes.toString()+ ((UISelectEntity)this.attrs.get("cliente")).getKey();
+			sb.append("(tc_mantic_clientes.id_cliente in (").append(keys).append(")) and ");		
+		}	// if
 		else
-       if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
-			 	 sb.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");
+      if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) {
+				String keys= this.idClientes.toString()+ -1;
+		  	sb.append("((tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*') or (tc_mantic_clientes.id_cliente in (").append(keys).append("))) and ");
+			} // if
 		if(!this.folios.isEmpty()) {
 			StringBuilder items= new StringBuilder();
 			this.folios.forEach((folio) -> {
 				items.append("'").append(folio).append("', ");
 			}); // for
-  		sb.append("(tc_mantic_ventas.consecutivo in (").append(items.substring(0, items.length()- 2)).append(")) and ");
+  		sb.append("(tc_mantic_ventas.cticket in (").append(items.substring(0, items.length()- 2)).append(")) and ");
 		} // if	
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
 		  sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");			
@@ -136,7 +144,7 @@ public class Tickets extends IBaseFilter implements Serializable {
 		return regresar;		
 	}
 	
-	protected void toLoadCatalog() {
+	protected void toLoadCatalog() throws Exception {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
     try {
@@ -151,10 +159,17 @@ public class Tickets extends IBaseFilter implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
 			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
+			this.ventaPublico= new ArrayList<>();
+			this.idClientes  = new StringBuilder();
+			params.put("razonSocial", Constantes.VENTA_AL_PUBLICO_GENERAL);
+			List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticClientesDto", "clientes", params);
+			items.stream().map((item) -> {
+				this.ventaPublico.add(item.toLong("idCliente"));
+				return item;
+			}).forEachOrdered((item) -> {
+				this.idClientes.append(item.toString("idCliente")).append(", ");
+			}); // for
     } // try
-    catch (Exception e) {
-      throw e;
-    } // catch   
     finally {
       Methods.clean(columns);
       Methods.clean(params);
@@ -181,7 +196,7 @@ public class Tickets extends IBaseFilter implements Serializable {
 		List<Columna> columns     = null;
     Map<String, Object> params= null;
     try {
-			params= new HashMap<>();
+			params = new HashMap<>();
 			columns= new ArrayList<>();
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
@@ -210,7 +225,7 @@ public class Tickets extends IBaseFilter implements Serializable {
 		try {
 			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
 			seleccion= clientes.get(clientes.indexOf((UISelectEntity)event.getObject()));
-			this.toFindCliente(seleccion);
+			this.attrs.put("cliente", seleccion);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -218,23 +233,6 @@ public class Tickets extends IBaseFilter implements Serializable {
 		} // catch		
 	} // doAsignaCliente
 	
-	private void toFindCliente(UISelectEntity seleccion) {
-		List<UISelectEntity> clientesSeleccion= null;
-		MotorBusqueda motorBusqueda           = null;
-		try {
-			clientesSeleccion= new ArrayList<>();
-			clientesSeleccion.add(seleccion);
-			motorBusqueda= new mx.org.kaana.mantic.ventas.reglas.MotorBusqueda(-1L);
-			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
-			this.attrs.put("clientesSeleccion", clientesSeleccion);
-			this.attrs.put("clienteSeleccion", seleccion);			
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch		
-	} // toFindCliente
-
 	public void doUpdateArticulo(String codigo) {
     try {
   		this.doCompleteArticulo(codigo);
@@ -332,4 +330,46 @@ public class Tickets extends IBaseFilter implements Serializable {
 		Methods.clean(this.folios);
 	}
 
+	private boolean checkIdCliente(Entity row) {
+	  boolean regresar= true;
+		for (Entity item: this.acumulado) {
+			regresar= this.ventaPublico.indexOf(item.toLong("idCliente"))>= 0 || Objects.equals(row.toLong("idCliente"), item.toLong("idCliente"));
+			if(!regresar) 
+				break;
+		} // for
+		return regresar;
+	}
+	
+	public void doAddTicket(Entity row) {
+		if(this.acumulado.indexOf(row)< 0 && (this.ventaPublico.indexOf(row.toLong("idCliente"))>= 0 || this.checkIdCliente(row))) {
+		  this.acumulado.add(row);
+			this.findCliente();
+			JsfBase.addMessage("Se agregó el ticket de forma correcta", ETipoMensaje.INFORMACION);
+		} // if	
+		else
+			JsfBase.addMessage("No se agregó el ticket porque ya existe o porque es otro cliente !", ETipoMensaje.ALERTA);
+	}	
+	
+	private void findCliente() {
+		for (Entity item: this.acumulado) {
+			if(this.pivote== null)
+				this.pivote= item;
+		  else	
+			  if(this.ventaPublico.indexOf(item.toLong("idCliente"))< 0)
+				  this.pivote= item;
+		} // for
+	}
+	
+	public void doRemoveTicket(Entity row) {
+		this.acumulado.remove(row);
+		if(this.pivote!= null && Objects.equals(this.pivote.toLong("idCliente"), row.toLong("idCliente")))
+			this.pivote= null;
+		this.findCliente();
+		JsfBase.addMessage("Se eliminó el ticket del listado", ETipoMensaje.INFORMACION);
+	}	
+	
+	public boolean doDisponible(Entity row) {
+		return row.toLong("idFacturar").equals(2L) && (this.ventaPublico.indexOf(row.toLong("idCliente"))>= 0 || this.pivote== null || Objects.equals(this.pivote.toLong("idCliente"), row.toLong("idCliente")));
+	}
+	
 }
