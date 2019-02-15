@@ -144,7 +144,7 @@
 				</div>	
 			</div>	
 			<div class="ui-grid-row janal-grid-row">
-				<div id="janal-contenedor-datos" class="ui-grid-col-12">					
+				<div id="janal-contenedor-datos" class="ui-grid-col-12" style="display: none">					
 					<p:panelGrid id="panelEmpresa" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-90">						
 						<p:outputLabel for="noTicket" value="No. factura:"/>
 						<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticFacturasFacturar.attrs.isMatriz}"/>
@@ -405,12 +405,12 @@
 									<p:graphicImage id="icon-image" cache="false" value="#{manticFacturasFacturar.image}" styleClass="janal-logo-mini filas" width="100" height="80" stream="false"/>
 								</a>	
 								<br/>
-								<p:outputLabel value="img-#{manticFacturasFacturar.attrs.idArticulo}" styleClass="filas"/>
+								<p:outputLabel value="imagen-#{manticFacturasFacturar.attrs.idArticulo}" styleClass="filas"/>
 							</p:panel>
 							<p:spacer height="1px"/>
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-100 janal-column-right">
 								<p:outputLabel for="articulos" value="Articulos:"/>
-								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticFacturasFacturar.adminOrden.totales.articulos}"/>
+								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticFacturasFacturar.adminOrden.totales.articulos- 1}"/>
 								<p:outputLabel value="Descuento:"/>
 								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticFacturasFacturar.adminOrden.totales.descuentoDosDecimales$}"/>
 								<p:outputLabel value="Global:"/>

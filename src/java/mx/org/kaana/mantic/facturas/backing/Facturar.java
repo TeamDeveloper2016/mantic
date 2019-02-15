@@ -83,7 +83,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 	}	
 	
 	public boolean getShowAllClients() {
-		return this.ventaPublico.indexOf(this.cliente.toLong("idCliente"))< 0;
+		return this.ventaPublico.indexOf(this.cliente.toLong("idCliente"))> 0;
 	}
 	
 	public String getDimensionsClients() {
