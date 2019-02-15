@@ -17,10 +17,10 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
-import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -38,12 +38,17 @@ public class Tickets extends IBaseFilter implements Serializable {
   private static final long serialVersionUID = 8743667741599428332L;
 	private static final Log LOG= LogFactory.getLog(Tickets.class);
 	
+	private double importe;
 	private Entity pivote;
 	private List<Entity> acumulado;
 	private List<String> folios;
 	private FormatCustomLazy lazyTicket;
 	private List<Long> ventaPublico;
 	private StringBuilder idClientes;
+
+	public String getImporte() {
+		return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.importe);
+	}
 
 	public Entity getPivote() {
 		return pivote;
@@ -65,6 +70,7 @@ public class Tickets extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {
+			this.importe= 0D;
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.folios   = new ArrayList<>();
@@ -85,7 +91,7 @@ public class Tickets extends IBaseFilter implements Serializable {
       columns = new ArrayList<>();
       columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
       params.put("sortOrder", "order by tc_mantic_ventas.registro desc");
       this.lazyModel = new FormatCustomLazy("VistaVentasDto", "tickets", params, columns);
@@ -123,7 +129,7 @@ public class Tickets extends IBaseFilter implements Serializable {
 			this.folios.forEach((folio) -> {
 				items.append("'").append(folio).append("', ");
 			}); // for
-  		sb.append("(tc_mantic_ventas.cticket in (").append(items.substring(0, items.length()- 2)).append(")) and ");
+  		sb.append("(tc_mantic_ventas.ticket in (").append(items.substring(0, items.length()- 2)).append(")) and ");
 		} // if	
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
 		  sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");			
@@ -304,7 +310,7 @@ public class Tickets extends IBaseFilter implements Serializable {
   public void doRemoveConsecutivo(String consecutivo){
 		if(this.folios.contains(consecutivo)) {
 		  this.folios.remove(consecutivo);
-			JsfBase.addMessage("Se eliminó el consecutivo en la lista", ETipoMensaje.INFORMACION);
+			// JsfBase.addMessage("Se eliminó el consecutivo en la lista", ETipoMensaje.INFORMACION);
 		}
 		else
 			JsfBase.addMessage("No existe el consecutivo en la lista !", ETipoMensaje.ALERTA);
@@ -318,7 +324,7 @@ public class Tickets extends IBaseFilter implements Serializable {
   public void doAddConsecutivo(String consecutivo) {
 		if(!this.folios.contains(consecutivo)) {
 		  this.folios.add(consecutivo);
-			JsfBase.addMessage("Se agregó el consecutivo en la lista", ETipoMensaje.INFORMACION);
+			// JsfBase.addMessage("Se agregó el consecutivo en la lista", ETipoMensaje.INFORMACION);
 		}
 		else
 			JsfBase.addMessage("Ya existe el consecutivo en la lista !", ETipoMensaje.ALERTA);
@@ -342,9 +348,10 @@ public class Tickets extends IBaseFilter implements Serializable {
 	
 	public void doAddTicket(Entity row) {
 		if(this.acumulado.indexOf(row)< 0 && (this.ventaPublico.indexOf(row.toLong("idCliente"))>= 0 || this.checkIdCliente(row))) {
+			this.importe+= row.toDouble("importe");
 		  this.acumulado.add(row);
 			this.findCliente();
-			JsfBase.addMessage("Se agregó el ticket de forma correcta", ETipoMensaje.INFORMACION);
+			// JsfBase.addMessage("Se agregó el ticket de forma correcta", ETipoMensaje.INFORMACION);
 		} // if	
 		else
 			JsfBase.addMessage("No se agregó el ticket porque ya existe o porque es otro cliente !", ETipoMensaje.ALERTA);
@@ -361,6 +368,7 @@ public class Tickets extends IBaseFilter implements Serializable {
 	}
 	
 	public void doRemoveTicket(Entity row) {
+		this.importe-= row.toDouble("importe");
 		this.acumulado.remove(row);
 		if(this.pivote!= null && Objects.equals(this.pivote.toLong("idCliente"), row.toLong("idCliente")))
 			this.pivote= null;
@@ -371,5 +379,48 @@ public class Tickets extends IBaseFilter implements Serializable {
 	public boolean doDisponible(Entity row) {
 		return row.toLong("idFacturar").equals(2L) && (this.ventaPublico.indexOf(row.toLong("idCliente"))>= 0 || this.pivote== null || Objects.equals(this.pivote.toLong("idCliente"), row.toLong("idCliente")));
 	}
+
+  public void loadTicket() {
+    List<Columna> columns     = null;
+		Map<String, Object> params= null;
+    try {
+      columns = new ArrayList<>();
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
+			params=new HashMap<>();
+			params.put("idVenta", ((Entity)this.attrs.get("seleccionado")).getKey());
+			this.lazyTicket= new FormatCustomLazy("TcManticVentasDetallesDto", "detalle", params, columns);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+			Methods.clean(columns);
+		} // finally
+	}	
+	
+	public void doCancelar() {
+		this.importe= 0D;
+	  this.acumulado.clear();	
+		//JsfBase.addMessage("Se limpió la lista de ticket(s) seleccionados.", ETipoMensaje.INFORMACION);
+	}	
+	
+	public String doAceptar() {
+		String regresar= "factura";		
+		try {
+			JsfBase.setFlashAttribute("cliente", this.pivote);
+			JsfBase.setFlashAttribute("tickets", this.acumulado);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		return regresar;
+	}	
 	
 }
