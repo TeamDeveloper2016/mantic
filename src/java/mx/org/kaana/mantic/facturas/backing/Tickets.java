@@ -12,6 +12,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -46,7 +47,15 @@ public class Tickets extends IBaseFilter implements Serializable {
 	private List<Long> ventaPublico;
 	private StringBuilder idClientes;
 
-	public String getImporte() {
+	public double getImporte() {
+		return importe;
+	}
+
+	public void setImporte(double importe) {
+		this.importe=importe;
+	}
+
+	public String getSumaImporte() {
 		return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.importe);
 	}
 
@@ -411,16 +420,24 @@ public class Tickets extends IBaseFilter implements Serializable {
 	}	
 	
 	public String doAceptar() {
-		String regresar= "factura";		
+		String regresar= "facturar";		
 		try {
+			StringBuilder sb= new StringBuilder("TICKETS FACTURDOS EN ESTA FACTURA: ");
+			this.acumulado.forEach((item) -> {
+				sb.append(item.toString("consecutivo")).append(", ");
+			}); // for
 			JsfBase.setFlashAttribute("cliente", this.pivote);
 			JsfBase.setFlashAttribute("tickets", this.acumulado);
+			JsfBase.setFlashAttribute("idCliente", this.pivote.toLong("idCliente"));
+			JsfBase.setFlashAttribute("observaciones", sb.substring(0, sb.length()- 2));
+			JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Facturas/filtro");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
-		return regresar;
+		return regresar.concat(Constantes.REDIRECIONAR);
 	}	
 	
 }

@@ -7,19 +7,20 @@
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Seleccionar los tickets que se desean factura de forma conjunta" />
+  <ui:param name="titulo" value="Seleccionar los tickets que desea facturar de forma conjunta" />
   <ui:define name="librerias">
     <h:outputScript library="janal" name="core/jquery.janal.folio.core-0.0.8.js"/>
     <script type="text/javascript">
       Janal.Control.fields = {
-        'idEmpresa'      : {validaciones: 'libre', mascara: 'libre'},
-				'razonSocial'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-        'consecutivo'    : {validaciones: 'libre', mascara: 'libre'},
-        'fechaInicio'    : {validaciones: 'fecha', mascara: 'fecha'},
-        'fechaTermino'   : {validaciones: 'fecha', mascara: 'fecha'},
-        'cantidadInicial': {validaciones: 'flotante', mascara: 'libre'},
-        'cantidadFinal'  : {validaciones: 'flotante', mascara: 'libre'},
-				'articulo'       : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
+        'idEmpresa'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'razonSocial'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'consecutivo'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'fechaInicio'    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'fechaTermino'   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'cantidadInicial': {validaciones: 'flotante', mascara: 'libre', grupo: 'general'},
+        'cantidadFinal'  : {validaciones: 'flotante', mascara: 'libre', grupo: 'general'},
+				'articulo'       : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'total'          : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'factura', mensaje: 'Se tiene que seleccionar al menos un ticket'}
       };
     </script>		
 		<style>
@@ -111,10 +112,10 @@
 							<p:inputNumber id="cantidadFinal" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticFacturasTickets.attrs.cantidadFinal}" converter="javax.faces.Double"/>
             </p:panelGrid>
             <div class="janal-align-right lg-pantalla">
-              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="panelBusqueda" actionListener="#{manticFacturasTickets.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticFacturasTickets.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
             </div>
             <div class="janal-align-right xs-pantalla">
-              <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.execute();" process="panelBusqueda" actionListener="#{manticFacturasTickets.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+              <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticFacturasTickets.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
             </div>
           </p:panel>
         </div>
@@ -268,7 +269,8 @@
 									</p:commandButton>
 								</p:column>
 								<f:facet name="footer">
-									<p:outputLabel value="Importe acumulado: #{manticFacturasTickets.importe}" style="float: left;" styleClass="relacionado"/>
+									<p:outputLabel for="total" value="Importe acumulado: #{manticFacturasTickets.sumaImporte}" style="float: left;" styleClass="janal-color-orange relacionado"/>
+									<p:inputText id="total" value="#{manticFacturasTickets.importe}" style="display: none" styleClass="relacionado"/>
 									<p:outputLabel value="Total [#{manticFacturasTickets.acumulado.size()}] registros"/>
 								</f:facet>
 							</p:dataTable>
@@ -283,11 +285,11 @@
 		<hr class="ui-widget-content"/>
 		<div class="janal-line-button">				
 			<div class="lg-pantalla">
-				<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticFacturasTickets.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+				<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticFacturasTickets.doAceptar}" onstart="return janal.partial('factura');" oncomplete="janal.desbloquear()"/>
 				<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" update="@(.relacionado)" action="#{manticFacturasTickets.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 			</div>		
 			<div class="xs-pantalla">
-				<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticFacturasTickets.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+				<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticFacturasTickets.doAceptar}" onstart="return janal.partial('factura');" oncomplete="janal.desbloquear()"/>
 				<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" update="@(.relacionado)" action="#{manticFacturasTickets.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 			</div>		
 		</div>

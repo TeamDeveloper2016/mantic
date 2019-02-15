@@ -44,21 +44,24 @@ import org.primefaces.model.StreamedContent;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-@Named(value= "manticFacturasAccion")
+@Named(value= "manticFacturasFacturar")
 @ViewScoped
-public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
+public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 
-	private static final Log LOG               = LogFactory.getLog(Accion.class);  
+	private static final Log LOG               = LogFactory.getLog(Facturar.class);  
   private static final long serialVersionUID = 327393488565639367L;
 	private static final String VENDEDOR_PERFIL= "VENDEDOR DE PISO";
 	private static final String INDIVIDUAL     = "1";
 	private static final Long ESTATUS_ELABORADA= 2L;
 	
+	private Entity cliente;
+	private List<Entity> tickets;
+	
 	private SaldoCliente saldoCliente;
 	private StreamedContent image;
 	private FormatLazyModel almacenes;
 
-	public Accion() {
+	public Facturar() {
 		super("menudeo", true);
 	}
 	
@@ -85,6 +88,8 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
   @Override
   protected void init() {		
     try {
+      this.cliente= (Entity)JsfBase.getFlashAttribute("cliente");
+      this.tickets= (List<Entity>)JsfBase.getFlashAttribute("tickets");
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("accionInicial", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idFicticia", JsfBase.getFlashAttribute("idFicticia")== null? -1L: JsfBase.getFlashAttribute("idFicticia"));
@@ -122,34 +127,17 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
   } // init
 
   public void doLoad() {
-    EAccion eaccion            = null;
-		Long idCliente             = -1L;
-		TcManticFacturasDto factura= null;
+    EAccion eaccion= null;
+		Long idCliente = -1L;
     try {
       eaccion= (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
-      switch (eaccion) {
-        case AGREGAR:											
-          this.setAdminOrden(new AdminFacturas(new FacturaFicticia(-1L)));
-					this.saldoCliente= new SaldoCliente();
-					this.attrs.put("consecutivo", "");		
-					idCliente= Long.valueOf(this.attrs.get("idCliente").toString());
-					if(idCliente!= null && !idCliente.equals(-1L))
-						doAsignaClienteInicial(idCliente);
-          break;
-        case MODIFICAR:			
-        case CONSULTAR:			
-          this.setAdminOrden(new AdminFacturas((FacturaFicticia)DaoFactory.getInstance().toEntity(FacturaFicticia.class, "VistaFicticiasDto", "facturaFicticia", this.attrs)));
-    			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));					
-					this.attrs.put("consecutivo", ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo());	
-					factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(TcManticFacturasDto.class, ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFactura());
-					this.attrs.put("observaciones", factura.getObservaciones());					
-					idCliente= ((FacturaFicticia)getAdminOrden().getOrden()).getIdCliente();
-					if(idCliente!= null && !idCliente.equals(-1L))
-						doAsignaClienteInicial(idCliente);
-					loadCatalogs();					
-          break;
-      } // switch			
+			this.setAdminOrden(new AdminFacturas(new FacturaFicticia(-1L), this.tickets));
+			this.saldoCliente= new SaldoCliente();
+			this.attrs.put("consecutivo", "");		
+			idCliente= (Long)this.attrs.get("idCliente");
+			if(idCliente!= null && !idCliente.equals(-1L))
+				doAsignaClienteInicial(idCliente);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -157,7 +145,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
     } // catch		
   } // doLoad
 
-	private void loadCatalogs(){
+	private void loadCatalogs() {
 		List<UISelectEntity> sucursales     = null;
 		List<UISelectEntity> cfdis          = null;
 		List<UISelectEntity> tiposMedioPagos= null;

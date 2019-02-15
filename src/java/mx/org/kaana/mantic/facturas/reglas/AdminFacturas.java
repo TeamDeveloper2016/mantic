@@ -1,10 +1,14 @@
 package mx.org.kaana.mantic.facturas.reglas;
 
+import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.formato.Variables;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.mantic.comun.IAdminArticulos;
 import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
@@ -48,6 +52,59 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 			this.getArticulos().add(new ArticuloVenta(-1L, true));
 		this.setIdSinIva(1L);
 		LOG.warn("Forzar que todos los precios capturados ya son netos, por lo tanto se les descuenta el IVA");
+		this.toCalculate();
+	}
+	
+	public AdminFacturas(FacturaFicticia orden, List<Entity> tickets) throws Exception {
+		this.orden= orden;		
+		// sacar los idVenta de todos los tickets seleccionados
+		StringBuilder sb= new StringBuilder(tickets== null || tickets.isEmpty()? "-1, ": "");
+		tickets.forEach((item) -> {
+			sb.append(item.toString("idVenta")).append(", ");
+		}); // for
+		// ejecutar la consulta que recupere todo los articulos de todos los tickets orenados por articulo y cantidad
+   	List<ArticuloVenta> articulos= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaFicticiasDto", "masivo", Variables.toMap("idVenta~".concat(sb.substring(0, sb.length()- 2))));
+		// juntar todos los articulos que son iguales sumar la cantidades y los importes y calcular el precio unitario sin considerar ya los descuentos
+		this.setArticulos(new ArrayList<>());
+		ArticuloVenta pivote= null;
+		if(!articulos.isEmpty()) 
+		  for (ArticuloVenta articulo: articulos) {
+				articulo.setDescuento("0");
+				articulo.setExtras("0");
+				articulo.setDescuentos(0D);
+				articulo.setExcedentes(0D);
+				articulo.setPrecio(0D);
+				articulo.setCosto(0D);
+				articulo.setValor(0D);
+				articulo.setCalculado(0D);
+				articulo.setIdAplicar(2L);
+				articulo.setCostoLibre(true);
+				if(pivote== null || !Objects.equal(pivote.getIdArticulo(), articulo.getIdArticulo())) {
+					pivote= articulo;
+          this.getArticulos().add(pivote);
+				} // if	
+				else {
+					pivote.setInicial(pivote.getInicial()+ articulo.getInicial());
+					pivote.setSolicitados(pivote.getCantidad()+ articulo.getCantidad());
+					pivote.setCuantos(pivote.getCuantos()+ articulo.getCuantos());
+					pivote.setCantidad(pivote.getCantidad()+ articulo.getCantidad());
+					pivote.setImpuestos(pivote.getImpuestos()+ articulo.getImpuestos());
+					pivote.setSubTotal(pivote.getSubTotal()+ articulo.getSubTotal());
+					pivote.setImporte(pivote.getImporte()+ articulo.getImporte());
+					pivote.setTotal(pivote.getTotal()+ articulo.getTotal());
+				} // if
+		  } // for
+		// calcular el precio unitario considerando que ya serian precios netos
+		for (ArticuloVenta articulo: articulos) {
+			articulo.setValor(Numero.toRedondearSat(articulo.getImporte()/ articulo.getCantidad()));
+			articulo.setCosto(Numero.toRedondearSat(articulo.getImporte()/ articulo.getCantidad()));
+			articulo.setPrecio(Numero.toRedondearSat(articulo.getImporte()/ articulo.getCantidad()));
+			articulo.setReal(Numero.toRedondearSat(articulo.getImporte()/ articulo.getCantidad()));
+		} // for
+ 		this.orden.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
+		this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+		this.getArticulos().add(new ArticuloVenta(-1L, true));
+		this.setIdSinIva(1L);
 		this.toCalculate();
 	}
 	
