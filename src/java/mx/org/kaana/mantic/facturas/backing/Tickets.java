@@ -443,7 +443,7 @@ public class Tickets extends IBaseFilter implements Serializable {
 	public String doAceptar() {
 		String regresar= "facturar";		
 		try {
-			StringBuilder sb= new StringBuilder("TICKETS FACTURDOS EN ESTA FACTURA: ");
+			StringBuilder sb= new StringBuilder("TICKETS DE ESTA FACTURA: ");
 			this.acumulado.forEach((item) -> {
 				sb.append(item.toString("consecutivo")).append(", ");
 			}); // for
