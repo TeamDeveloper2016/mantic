@@ -83,7 +83,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 	}	
 	
 	public boolean getShowAllClients() {
-		return this.ventaPublico.indexOf(this.cliente.toLong("idCliente"))> 0;
+		return this.ventaPublico.indexOf(this.cliente.toLong("idCliente"))>= 0;
 	}
 	
 	public String getDimensionsClients() {
@@ -152,52 +152,6 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
     } // catch		
   } // doLoad
 
-	private void loadCatalogs() {
-		List<UISelectEntity> sucursales     = null;
-		List<UISelectEntity> cfdis          = null;
-		List<UISelectEntity> tiposMedioPagos= null;
-		List<UISelectEntity> tiposPagos     = null;
-		List<UISelectEntity> bancos         = null;
-		try {
-			if(this.attrs.get("sucursales")!= null){
-				sucursales= (List<UISelectEntity>) this.attrs.get("sucursales");
-				for(Entity sucursal: sucursales){
-					if(sucursal.getKey().equals(((FacturaFicticia)getAdminOrden().getOrden()).getIdEmpresa()))
-						this.attrs.put("idEmpresa", sucursal);
-				} // for
-			} // if
-			cfdis= (List<UISelectEntity>) this.attrs.get("cfdis");
-			for(Entity cfdi: cfdis){
-				if(cfdi.getKey().equals(((FacturaFicticia)getAdminOrden().getOrden()).getIdUsoCfdi()))
-					this.attrs.put("cfdi", cfdi);
-			} // for
-			tiposMedioPagos= (List<UISelectEntity>) this.attrs.get("tiposMedioPagos");
-			for(Entity tiposMedioPago: tiposMedioPagos){
-				if(tiposMedioPago.getKey().equals(((FacturaFicticia)getAdminOrden().getOrden()).getIdTipoMedioPago()))
-					this.attrs.put("tipoMedioPago", tiposMedioPago);
-			} // for			
-			tiposPagos= (List<UISelectEntity>) this.attrs.get("tiposPagos");
-			for(Entity tipoPago: tiposPagos){
-				if(tipoPago.getKey().equals(((FacturaFicticia)getAdminOrden().getOrden()).getIdTipoPago()))
-					this.attrs.put("tipoPago", tipoPago);
-			} // for
-			doValidaTipoPago();
-			if(Boolean.valueOf(this.attrs.get("mostrarBanco").toString())){
-				bancos= (List<UISelectEntity>) this.attrs.get("bancos");
-				for(Entity banco: bancos){
-					if(banco.getKey().equals(((FacturaFicticia)getAdminOrden().getOrden()).getIdBanco()))
-						this.attrs.put("banco", banco);
-				} // for
-				this.attrs.put("referencia", ((FacturaFicticia)getAdminOrden().getOrden()).getReferencia());
-			} // if
-		} // try
-		catch (Exception e) {
-			JsfBase.addMessageError(e);
-			Error.mensaje(e);
-			throw e;
-		} // catch		
-	}
-	
 	public void doAsignaClienteInicial(Long idCliente) {
 		UISelectEntity seleccion              = null;
 		List<UISelectEntity> clientesSeleccion= null;
@@ -931,4 +885,5 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 		  this.toSaveRecord();
     //UIBackingUtilities.execute("alert('ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA');");
 	} // doGlobalEvent
+	
 }

@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="Generar/Modificar/Consultar una facturas"/>
+	<ui:param name="titulo" value="Generar una factura con la union de varios tickets"/>
 	<ui:param name="janalBackingPage" value="#{manticFacturasFacturar}"/>
   <ui:param name="janalEventPage" value="doGlobalEvent"	/>
 	<ui:param name="notIsCaja" value="false" class="javax.faces.Boolean"/>
@@ -299,7 +299,7 @@
 									</f:facet>
 									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>		
-								<p:column  class="MarAuto Responsive janal-wid-13">
+								<p:column class="MarAuto Responsive janal-wid-13" rendered="false">
 									<f:facet name="header">
 										<p:selectBooleanCheckbox value="#{manticFacturasFacturar.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
 											<p:ajax event="change" process="@this" update="@this"/>
@@ -336,11 +336,12 @@
 										</div>	
 									</div>	
 								</p:column>
-								<p:column  class="MarAuto Responsive nombres">
+								<p:column class="MarAuto Responsive nombres">
 									<f:facet name="header">
 										<h:outputText value="Articulo"/>
 									</f:facet>
-									<p:inputText id="nombres" value="#{row['nombre']}" styleClass="janal-wid-100-txt key-event-sat filas"/>
+									<p:inputText id="nombres" value="#{row['nombre']}" styleClass="janal-wid-100-txt key-event-sat filas" style="display: none"/>
+									<p:outputLabel value="#{row['nombre']}" styleClass="janal-wid-100-txt filas"/>
 								</p:column>										
 								<p:column class="MarAuto Responsive janal-wid-8">
 									<f:facet name="header">
@@ -400,17 +401,17 @@
 							<p:inputTextarea id="observaciones" value="#{manticFacturasFacturar.attrs.observaciones}" styleClass="janal-wid-100-txt" rows="2"/>
 						</p:panelGrid>
 						<p:panelGrid id="panelTotales" columns="1" layout="grid" styleClass="janal-wid-99" columnClasses="janal-wid-100">
-							<p:panel header="Imagen" styleClass="TexAlCenter janal-wid-100-txt" style="height:100%">
+							<p:panel header="Imagen" styleClass="TexAlCenter janal-wid-100-txt" style="height:100%" rendered="false">
 								<a id="source-image" data-magnify="gallery" data-caption="#{manticFacturasFacturar.attrs.descripcion}" data-group="icon-image" href="" title="Click para ver más grande la imagen">
 									<p:graphicImage id="icon-image" cache="false" value="#{manticFacturasFacturar.image}" styleClass="janal-logo-mini filas" width="100" height="80" stream="false"/>
 								</a>	
 								<br/>
 								<p:outputLabel value="imagen-#{manticFacturasFacturar.attrs.idArticulo}" styleClass="filas"/>
 							</p:panel>
-							<p:spacer height="1px"/>
+							<p:spacer height="1px" rendered="false"/>
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-100 janal-column-right">
 								<p:outputLabel for="articulos" value="Articulos:"/>
-								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticFacturasFacturar.adminOrden.totales.articulos- 1}"/>
+								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticFacturasFacturar.adminOrden.totales.articulos}"/>
 								<p:outputLabel value="Descuento:"/>
 								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticFacturasFacturar.adminOrden.totales.descuentoDosDecimales$}"/>
 								<p:outputLabel value="Global:"/>

@@ -103,7 +103,7 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 		} // for
  		this.orden.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
 		this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-		this.getArticulos().add(new ArticuloVenta(-1L, true));
+		// this.getArticulos().add(new ArticuloVenta(-1L, true));
 		this.setIdSinIva(1L);
 		this.toCalculate();
 	}
