@@ -32,6 +32,7 @@ import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
 import mx.org.kaana.mantic.facturas.reglas.AdminFacturas;
+import mx.org.kaana.mantic.facturas.reglas.UnirFacturas;
 import mx.org.kaana.mantic.ventas.beans.SaldoCliente;
 import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
 import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
@@ -173,21 +174,14 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 	} // doAsignaCliente	
 	
   public String doAceptar() {  
-    Transaccion transaccion= null;
-    String regresar        = null;
-		EAccion eaccion        = null;		
+    UnirFacturas transaccion= null;
+    String regresar         = null;
     try {			
 			loadOrdenVenta();
-			eaccion= (EAccion) this.attrs.get("accion");						
-			transaccion = new Transaccion(((FacturaFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.attrs.get("observaciones").toString());
+			transaccion = new UnirFacturas(((FacturaFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.attrs.get("observaciones").toString(), this.tickets, this.cliente);
 			this.getAdminOrden().toAdjustArticulos();
-			if (transaccion.ejecutar(eaccion)) {
-				if(eaccion.equals(EAccion.AGREGAR)) { 				  
-    			UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la factura ', '"+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-					this.init();
-				} // if	
-				if(eaccion.equals(EAccion.MODIFICAR))
-				  JsfBase.addMessage("Se modificó la factura con consecutivo ["+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo()+ "].", ETipoMensaje.INFORMACION);
+			if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
+    		UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la factura ', '"+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");					
 				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
   			JsfBase.setFlashAttribute("idFicticia", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia());				
 			} // if
