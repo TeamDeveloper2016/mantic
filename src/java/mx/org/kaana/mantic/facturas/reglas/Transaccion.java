@@ -165,7 +165,7 @@ public class Transaccion extends TransaccionFactura {
 					} // if
 					break;								
 				case REPROCESAR:
-					regresar= actualizarFicticia(sesion, EEstatusFicticias.PAGADA.getIdEstatusFicticia());				
+					regresar= actualizarFicticia(sesion, EEstatusFicticias.TIMBRADA.getIdEstatusFicticia());				
 					break;		
 				case NO_APLICA:
 					params.put("idFicticia", this.orden.getIdFicticia());
