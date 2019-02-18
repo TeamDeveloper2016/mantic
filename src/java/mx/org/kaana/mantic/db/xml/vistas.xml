@@ -6966,6 +6966,10 @@
 		<unit id="VistaUbicacionesDto">
 			<select id="ubicacionEmpresa">
 				select 
+					principal.*,
+					(select count(*) articulos from tc_mantic_almacenes_articulos where id_almacen in (select id_almacen from tc_mantic_almacenes where id_empresa= principal.id_empresa)) articulos
+				from(
+				select 
 					tc_mantic_empresas.id_empresa id_key,
 					tc_mantic_empresas.id_empresa,
 					tc_mantic_empresas.nombre empresa,
@@ -6979,9 +6983,13 @@
 				group by 
 					tc_mantic_empresas.id_empresa,
 					tc_mantic_empresas.nombre,
-					tc_mantic_empresas.registro
+					tc_mantic_empresas.registro) principal
 			</select>			
 			<select id="ubicacionAlmacen">
+				select 
+					principal.*,
+					(select count(*) articulos from tc_mantic_almacenes_articulos where id_almacen= principal.id_key) articulos
+				from(
 				select   
 					tc_mantic_almacenes.id_almacen id_key,
 					tc_mantic_empresas.id_empresa,  
@@ -6992,18 +7000,24 @@
 				from 
 					tc_mantic_almacenes
 				inner join 
-					tc_mantic_empresas on tc_mantic_almacenes.id_empresa = tc_mantic_empresas.id_empresa
+					tc_mantic_empresas on tc_mantic_almacenes.id_empresa = tc_mantic_empresas.id_empresa				
 				where 
-					tc_mantic_empresas.id_empresa in ({idEmpresa})
+					tc_mantic_empresas.id_empresa in ({idEmpresa})) principal
 			</select>
 			<select id="ubicacionPiso">
+				select 
+					principal.*,
+					(select count(*) articulos from tc_mantic_almacenes_articulos where id_almacen_ubicacion= principal.id_almacen_ubicacion) articulos
+				from(
 				select   
 					tc_mantic_almacenes.id_almacen id_key,
 					tc_mantic_empresas.id_empresa,  
 					tc_mantic_empresas.nombre empresa,
+					tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion,
 					tc_mantic_almacenes.id_almacen,
 					tc_mantic_almacenes.nombre almacen,
-					tc_mantic_almacenes_ubicaciones.piso,
+					tc_mantic_almacenes_ubicaciones.descripcion,
+					tc_mantic_almacenes_ubicaciones.piso,					
 					tc_mantic_almacenes.registro
 				from 
 					tc_mantic_almacenes
@@ -7017,21 +7031,33 @@
 					tc_mantic_almacenes.id_almacen= {idAlmacen} and tc_mantic_almacenes.id_almacen is not null and tc_mantic_almacenes.id_almacen!= ''
 				and 
 					tc_mantic_almacenes_ubicaciones.piso is not null and tc_mantic_almacenes_ubicaciones.piso != ''
+				and 
+					tc_mantic_almacenes_ubicaciones.nivel=1
 				group by   
 					tc_mantic_empresas.id_empresa,
 					tc_mantic_empresas.nombre,
-					tc_mantic_almacenes_ubicaciones.piso,
+					tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion,
+					tc_mantic_almacenes_ubicaciones.descripcion,
+					tc_mantic_almacenes_ubicaciones.piso,					
 					tc_mantic_empresas.registro
+				order by 
+					tc_mantic_almacenes_ubicaciones.piso) principal
 			</select>
 			<select id="ubicacionCuarto">
+				select 
+					principal.*,
+					(select count(*) articulos from tc_mantic_almacenes_articulos where id_almacen_ubicacion= principal.id_almacen_ubicacion) articulos
+				from(
 				select   
 					tc_mantic_almacenes.id_almacen id_key,
 					tc_mantic_empresas.id_empresa,  
 					tc_mantic_empresas.nombre empresa,
+					tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion,
 					tc_mantic_almacenes.id_almacen,
 					tc_mantic_almacenes.nombre almacen,
+					tc_mantic_almacenes_ubicaciones.descripcion,
 					tc_mantic_almacenes_ubicaciones.piso,
-					tc_mantic_almacenes_ubicaciones.cuarto,
+					tc_mantic_almacenes_ubicaciones.cuarto,					
 					tc_mantic_almacenes.registro
 				from 
 					tc_mantic_almacenes
@@ -7046,24 +7072,37 @@
 				and 
 					tc_mantic_almacenes_ubicaciones.piso= '{piso}' and tc_mantic_almacenes_ubicaciones.piso is not null and tc_mantic_almacenes_ubicaciones.piso != ''
 				and 
-					tc_mantic_almacenes_ubicaciones.cuarto is not null and tc_mantic_almacenes_ubicaciones.cuarto != ''
+					tc_mantic_almacenes_ubicaciones.cuarto is not null and tc_mantic_almacenes_ubicaciones.cuarto != ''				
+				and 
+					tc_mantic_almacenes_ubicaciones.nivel=2
 				group by   
 					tc_mantic_empresas.id_empresa,
 					tc_mantic_empresas.nombre,
+					tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion,
+					tc_mantic_almacenes_ubicaciones.descripcion,
 					tc_mantic_almacenes_ubicaciones.piso,
-					tc_mantic_almacenes_ubicaciones.cuarto,
+					tc_mantic_almacenes_ubicaciones.cuarto,					
 					tc_mantic_empresas.registro
+				order by
+					tc_mantic_almacenes_ubicaciones.piso,
+					tc_mantic_almacenes_ubicaciones.cuarto) principal
 			</select>
 			<select id="ubicacionAnaquel">
+				select 
+					principal.*,
+					(select count(*) articulos from tc_mantic_almacenes_articulos where id_almacen_ubicacion= principal.id_almacen_ubicacion) articulos
+				from(
 				select   
 					tc_mantic_almacenes.id_almacen id_key,
 					tc_mantic_empresas.id_empresa,  
 					tc_mantic_empresas.nombre empresa,
 					tc_mantic_almacenes.id_almacen,
 					tc_mantic_almacenes.nombre almacen,
+					tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion,
+					tc_mantic_almacenes_ubicaciones.descripcion,
 					tc_mantic_almacenes_ubicaciones.piso,
 					tc_mantic_almacenes_ubicaciones.cuarto,
-					tc_mantic_almacenes_ubicaciones.anaquel,
+					tc_mantic_almacenes_ubicaciones.anaquel,					
 					tc_mantic_almacenes.registro
 				from 
 					tc_mantic_almacenes
@@ -7080,27 +7119,41 @@
 				and 
 					tc_mantic_almacenes_ubicaciones.cuarto= '{cuarto}' and tc_mantic_almacenes_ubicaciones.cuarto is not null and tc_mantic_almacenes_ubicaciones.cuarto != ''
 				and 
-					tc_mantic_almacenes_ubicaciones.anaquel is not null and tc_mantic_almacenes_ubicaciones.anaquel != ''
+					tc_mantic_almacenes_ubicaciones.anaquel is not null and tc_mantic_almacenes_ubicaciones.anaquel != ''				
+				and 
+					tc_mantic_almacenes_ubicaciones.nivel=3
 				group by   
 					tc_mantic_empresas.id_empresa,
 					tc_mantic_empresas.nombre,
+					tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion,
+					tc_mantic_almacenes_ubicaciones.descripcion,
 					tc_mantic_almacenes_ubicaciones.piso,
 					tc_mantic_almacenes_ubicaciones.cuarto,
-					tc_mantic_almacenes_ubicaciones.anaquel,
+					tc_mantic_almacenes_ubicaciones.anaquel,					
 					tc_mantic_empresas.registro
+				order by
+					tc_mantic_almacenes_ubicaciones.piso,
+					tc_mantic_almacenes_ubicaciones.cuarto,
+					tc_mantic_almacenes_ubicaciones.anaquel) principal
 			</select>
 			<select id="ubicacionCharola">
+				select 
+					principal.*,
+					(select count(*) articulos from tc_mantic_almacenes_articulos where id_almacen_ubicacion= principal.id_almacen_ubicacion) articulos
+				from(
 				select   
 					tc_mantic_almacenes.id_almacen id_key,
 					tc_mantic_empresas.id_empresa,  
 					tc_mantic_empresas.nombre empresa,
 					tc_mantic_almacenes.id_almacen,
 					tc_mantic_almacenes.nombre almacen,
+					tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion,
+					tc_mantic_almacenes_ubicaciones.descripcion,
 					tc_mantic_almacenes_ubicaciones.piso,
 					tc_mantic_almacenes_ubicaciones.cuarto,
 					tc_mantic_almacenes_ubicaciones.anaquel,
-					tc_mantic_almacenes_ubicaciones.charola,
-					tc_mantic_almacenes.registro
+					tc_mantic_almacenes_ubicaciones.charola,					
+					tc_mantic_almacenes.registro					
 				from 
 					tc_mantic_almacenes
 				inner join 
@@ -7119,14 +7172,23 @@
 					tc_mantic_almacenes_ubicaciones.anaquel= '{anaquel}' and tc_mantic_almacenes_ubicaciones.anaquel is not null and tc_mantic_almacenes_ubicaciones.anaquel != ''
 				and 
 					tc_mantic_almacenes_ubicaciones.charola is not null and tc_mantic_almacenes_ubicaciones.charola != ''
+				and 
+					tc_mantic_almacenes_ubicaciones.nivel=4
 				group by   
 					tc_mantic_empresas.id_empresa,
 					tc_mantic_empresas.nombre,
+					tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion,
+					tc_mantic_almacenes_ubicaciones.descripcion,
 					tc_mantic_almacenes_ubicaciones.piso,
 					tc_mantic_almacenes_ubicaciones.cuarto,
 					tc_mantic_almacenes_ubicaciones.anaquel,
-					tc_mantic_almacenes_ubicaciones.charola,
+					tc_mantic_almacenes_ubicaciones.charola,					
 					tc_mantic_empresas.registro
+				order by 
+					tc_mantic_almacenes_ubicaciones.piso,
+					tc_mantic_almacenes_ubicaciones.cuarto,
+					tc_mantic_almacenes_ubicaciones.anaquel,
+					tc_mantic_almacenes_ubicaciones.charola) principal
 			</select>
 		</unit>
 	</dml>    
