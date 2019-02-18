@@ -281,7 +281,7 @@ public class Transaccion extends IBaseTnx{
 		for (Articulo articulo: detalleArt) {
 			TcManticGarantiasDetallesDto item= articulo.toGarantiaDetalle();
 			item.setIdGarantia(this.garantiaDto.getIdGarantia());			
-			if(item.getIdProveedor().equals(0L))
+			if(item.getIdProveedor().equals(0L) || item.getIdProveedor().equals(-1L))
 				item.setIdProveedor(null);
 			if(DaoFactory.getInstance().findIdentically(sesion, TcManticGarantiasDetallesDto.class, item.toMap())== null) 
 				DaoFactory.getInstance().insert(sesion, item);
