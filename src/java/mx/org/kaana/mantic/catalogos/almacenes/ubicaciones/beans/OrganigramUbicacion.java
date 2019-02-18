@@ -21,19 +21,22 @@ public class OrganigramUbicacion implements Serializable, IBaseDto {
 	private String cuarto;						
 	private String anaquel;					
 	private String charola;					
+	private String descripcion;					
 	private boolean ultimoNivel;  	
 	private ENivelUbicacion nivel;
 	private Timestamp registro;			
+	private Long articulos;
+	private Long idAlmacenUbicacion;
 
 	public OrganigramUbicacion() {
 		this(-1L);
 	} // OrganigramUbicacion
 
 	public OrganigramUbicacion(Long idKey) {
-		this(idKey, null, -1L, "ALMACENES (ESTRUCTURA)", null, null, null, null, null, false, ENivelUbicacion.EMPRESA, new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		this(idKey, null, -1L, "ALMACENES (ESTRUCTURA)", null, null, null, null, null, false, ENivelUbicacion.EMPRESA, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, 0L, -1L);
 	}	// OrganigramUbicacion
 	
-	public OrganigramUbicacion(Long idKey, String idEmpresa, Long idAlmacen, String empresa, String almacen, String piso, String cuarto, String anaquel, String charola, boolean ultimoNivel, ENivelUbicacion nivel, Timestamp registro) {
+	public OrganigramUbicacion(Long idKey, String idEmpresa, Long idAlmacen, String empresa, String almacen, String piso, String cuarto, String anaquel, String charola, boolean ultimoNivel, ENivelUbicacion nivel, Timestamp registro, String descripcion, Long articulos, Long idAlmacenUbicacion) {
 		this.idKey      = idKey;
 		this.idEmpresa  = idEmpresa;
 		this.idAlmacen  = idAlmacen;
@@ -46,6 +49,9 @@ public class OrganigramUbicacion implements Serializable, IBaseDto {
 		this.ultimoNivel= ultimoNivel;
 		this.nivel      = nivel;
 		this.registro   = registro;
+		this.descripcion= descripcion;
+		this.articulos  = articulos;
+		this.idAlmacenUbicacion= idAlmacenUbicacion;
 	}	// OrganigramUbicacion	
 	
 	@Override
@@ -145,6 +151,30 @@ public class OrganigramUbicacion implements Serializable, IBaseDto {
 	public void setRegistro(Timestamp registro) {
 		this.registro = registro;
 	}	
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}	
+
+	public Long getArticulos() {
+		return articulos;
+	}
+
+	public void setArticulos(Long articulos) {
+		this.articulos = articulos;
+	}	
+
+	public Long getIdAlmacenUbicacion() {
+		return idAlmacenUbicacion;
+	}
+
+	public void setIdAlmacenUbicacion(Long idAlmacenUbicacion) {
+		this.idAlmacenUbicacion = idAlmacenUbicacion;
+	}	
 	
 	@Override
 	public Map<String, Object> toMap() {
@@ -157,6 +187,8 @@ public class OrganigramUbicacion implements Serializable, IBaseDto {
 		regresar.put("cuarto", getCuarto());
 		regresar.put("anaquel", getAnaquel());
 		regresar.put("charola", getCharola());
+		regresar.put("descripcion", getDescripcion());
+		regresar.put("idAlmacenUbicacion", getIdAlmacenUbicacion());
   	return regresar;
 	}
 
