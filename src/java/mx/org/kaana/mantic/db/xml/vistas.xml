@@ -5981,8 +5981,8 @@
           tc_mantic_ventas_detalles.unidad_medida,
           tc_mantic_ventas_detalles.utilidad,
           tc_mantic_ventas_detalles.registro,
-          (tc_mantic_ventas_detalles.cantidad - IF(garantia_cantidad.cantidad IS NULL, 0, garantia_cantidad.cantidad)) AS cantidad,
-          (tc_mantic_ventas_detalles.cantidad - IF(garantia_cantidad.cantidad IS NULL, 0, garantia_cantidad.cantidad)) AS cantidad_garantia,
+          (tc_mantic_ventas_detalles.cantidad - if(garantia_cantidad.cantidad is null, 0, garantia_cantidad.cantidad)) as cantidad,
+          (tc_mantic_ventas_detalles.cantidad - if(garantia_cantidad.cantidad is null, 0, garantia_cantidad.cantidad)) as cantidad_garantia,
 					tr_mantic_articulo_proveedor.id_proveedor,
 					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio
 				from 
@@ -6019,7 +6019,7 @@
 					tc_mantic_ventas_detalles.codigo,
 					tc_mantic_ventas_detalles.precio,
 					tc_mantic_ventas_detalles.costo,
-          (tc_mantic_ventas_detalles.cantidad - IF(tc_mantic_garantias_detalles.cantidad IS NULL, 0, tc_mantic_garantias_detalles.cantidad)) AS cantidad_garantia,					
+          (tc_mantic_ventas_detalles.cantidad - if(tc_mantic_garantias_detalles.cantidad is null, 0, tc_mantic_garantias_detalles.cantidad)) as cantidad_garantia,					
 					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio
 				from 
 					tc_mantic_garantias_detalles
@@ -6036,6 +6036,19 @@
 			</select>
 		</unit>
 		<unit id="VistaFicticiasDto">
+			<select id="devoluciones">
+				select 
+					ifnull(sum(tc_mantic_garantias_detalles.cantidad), 0) as cantidad
+				from 
+					tc_mantic_garantias_detalles
+				inner join 
+					tc_mantic_ventas_detalles on tc_mantic_garantias_detalles.id_venta_detalle = tc_mantic_ventas_detalles.id_venta_detalle
+				inner join  
+					tc_mantic_garantias on tc_mantic_garantias_detalles.id_garantia= tc_mantic_garantias.id_garantia
+				where 
+					tc_mantic_garantias_detalles.id_venta_detalle= {idVentaDetalle}
+					and tc_mantic_garantias.id_garantia_estatus in (3,4,6)
+			</select>
 			<select id="masivo">
 				select
 					tc_mantic_ventas_detalles.id_venta_detalle as id_key,

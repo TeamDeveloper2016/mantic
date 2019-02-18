@@ -7,6 +7,7 @@ import java.util.List;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.formato.Variables;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -69,6 +70,7 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 		ArticuloVenta pivote= null;
 		if(!articulos.isEmpty()) 
 		  for (ArticuloVenta articulo: articulos) {
+				Value devoluciones= (Value)DaoFactory.getInstance().toField("VistaFicticiasDto", "devoluciones", Variables.toMap("idVentaDetalle~"+ articulo.getKey()), "cantidad");
 				articulo.setDescuento("0");
 				articulo.setExtras("0");
 				articulo.setDescuentos(0D);
@@ -77,22 +79,35 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 				articulo.setCosto(0D);
 				articulo.setValor(0D);
 				articulo.setCalculado(0D);
+				articulo.setImpuestos(0D);
+				articulo.setSubTotal(0D);
 				articulo.setIdAplicar(2L);
 				articulo.setCostoLibre(true);
-				if(pivote== null || !Objects.equal(pivote.getIdArticulo(), articulo.getIdArticulo())) {
-					pivote= articulo;
-          this.getArticulos().add(pivote);
+				// Verificar si existe alguna devolución de articulo en el ticket asociado y restarlo
+				if(articulo.getCantidad()- devoluciones.toLong()> 0D) {
+					articulo.setCantidad(articulo.getCantidad()- devoluciones.toLong());
+					if(pivote== null || !Objects.equal(pivote.getIdArticulo(), articulo.getIdArticulo())) {
+						pivote= articulo;
+						this.getArticulos().add(pivote);
+					} // if	
+					else {
+						pivote.setInicial(pivote.getInicial()+ articulo.getInicial());
+						pivote.setSolicitados(pivote.getCantidad()+ articulo.getCantidad());
+						pivote.setCuantos(pivote.getCantidad()+ articulo.getCantidad());
+						pivote.setCantidad(pivote.getCantidad()+ articulo.getCantidad());
+						if(devoluciones.toLong()> 0D) {
+							double cantidad= articulo.getCantidad()- devoluciones.toLong();
+							double unitario= articulo.getImporte()/ cantidad;
+						  pivote.setImporte(Numero.toRedondearSat(pivote.getImporte()+ (unitario* cantidad)));
+						  pivote.setTotal(Numero.toRedondearSat(pivote.getTotal()+ (unitario* cantidad)));
+						} // if
+						else {
+						  pivote.setImporte(pivote.getImporte()+ articulo.getImporte());
+						  pivote.setTotal(pivote.getTotal()+ articulo.getTotal());
+						} // else
+						
+					} // if
 				} // if	
-				else {
-					pivote.setInicial(pivote.getInicial()+ articulo.getInicial());
-					pivote.setSolicitados(pivote.getCantidad()+ articulo.getCantidad());
-					pivote.setCuantos(pivote.getCuantos()+ articulo.getCuantos());
-					pivote.setCantidad(pivote.getCantidad()+ articulo.getCantidad());
-					pivote.setImpuestos(pivote.getImpuestos()+ articulo.getImpuestos());
-					pivote.setSubTotal(pivote.getSubTotal()+ articulo.getSubTotal());
-					pivote.setImporte(pivote.getImporte()+ articulo.getImporte());
-					pivote.setTotal(pivote.getTotal()+ articulo.getTotal());
-				} // if
 		  } // for
 		// calcular el precio unitario considerando que ya serian precios netos
 		for (ArticuloVenta articulo: articulos) {
