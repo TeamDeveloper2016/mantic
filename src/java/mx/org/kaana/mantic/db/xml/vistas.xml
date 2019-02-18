@@ -6945,7 +6945,8 @@
 					tc_mantic_articulos.nombre nombre_articulo,
 					tc_mantic_articulos_codigos.codigo,				  
 					tc_mantic_articulos.descripcion descripcion_articulo,
-					tc_mantic_articulos.id_articulo
+					tc_mantic_articulos.id_articulo,
+					tc_mantic_almacenes_articulos.id_almacen_articulo
 				from 					
 					tc_mantic_articulos 
 				inner join  
@@ -7189,6 +7190,35 @@
 					tc_mantic_almacenes_ubicaciones.cuarto,
 					tc_mantic_almacenes_ubicaciones.anaquel,
 					tc_mantic_almacenes_ubicaciones.charola) principal
+			</select>
+			<select id="ubicacionesNivel">				
+				select   
+					tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion id_key,
+					tc_mantic_almacenes.id_almacen ,
+					tc_mantic_empresas.id_empresa,  
+					tc_mantic_empresas.nombre empresa,					
+					tc_mantic_almacenes.nombre almacen,					
+					tc_mantic_almacenes_ubicaciones.descripcion,
+					if(tc_mantic_almacenes_ubicaciones.piso is null, '', tc_mantic_almacenes_ubicaciones.piso) piso,
+					if(tc_mantic_almacenes_ubicaciones.cuarto is null, '', tc_mantic_almacenes_ubicaciones.cuarto) cuarto,
+					if(tc_mantic_almacenes_ubicaciones.anaquel is null, '', tc_mantic_almacenes_ubicaciones.anaquel) anaquel,
+					if(tc_mantic_almacenes_ubicaciones.charola is null, '', tc_mantic_almacenes_ubicaciones.charola) charola,					
+					tc_mantic_almacenes.registro					
+				from 
+					tc_mantic_almacenes
+				inner join 
+					tc_mantic_empresas on tc_mantic_almacenes.id_empresa = tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_almacenes_ubicaciones on tc_mantic_almacenes.id_almacen = tc_mantic_almacenes_ubicaciones.id_almacen
+				where 					
+					tc_mantic_almacenes.id_empresa in ({sucursales})
+				and 
+					tc_mantic_almacenes_ubicaciones.nivel= {nivel}								
+				order by 
+					tc_mantic_almacenes_ubicaciones.piso,
+					tc_mantic_almacenes_ubicaciones.cuarto,
+					tc_mantic_almacenes_ubicaciones.anaquel,
+					tc_mantic_almacenes_ubicaciones.charola
 			</select>
 		</unit>
 	</dml>    
