@@ -400,8 +400,7 @@ public class Tickets extends IBaseFilter implements Serializable {
 	public void doRemoveTicket(Entity row) {
 		this.importe-= row.toDouble("importe");
 		this.acumulado.remove(row);
-		if(this.pivote!= null && Objects.equals(this.pivote.toLong("idCliente"), row.toLong("idCliente")))
-			this.pivote= null;
+		this.pivote= null;
 		this.findCliente();
 		JsfBase.addMessage("Se eliminó el ticket del listado", ETipoMensaje.INFORMACION);
 	}	
