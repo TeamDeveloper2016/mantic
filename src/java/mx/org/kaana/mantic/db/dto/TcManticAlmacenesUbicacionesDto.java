@@ -54,17 +54,23 @@ public class TcManticAlmacenesUbicacionesDto implements IBaseDto, Serializable {
   private Long idAlmacenUbicacion;
   @Column (name="registro")
   private Timestamp registro;
+	@Column (name="nivel")
+  private Long nivel;
 
   public TcManticAlmacenesUbicacionesDto() {
     this(new Long(-1L));
   }
 
   public TcManticAlmacenesUbicacionesDto(Long key) {
-    this(null, null, null, null, null, null, null, new Long(-1L));
+    this(null, null, null, null, null, null, null, new Long(-1L), -1L);
     setKey(key);
   }
 
   public TcManticAlmacenesUbicacionesDto(String descripcion, String cuarto, String piso, String anaquel, String charola, Long idUsuario, Long idAlmacen, Long idAlmacenUbicacion) {
+		this(descripcion, cuarto, piso, anaquel, charola, idUsuario, idAlmacen, idAlmacenUbicacion, 1L);
+	}
+	
+  public TcManticAlmacenesUbicacionesDto(String descripcion, String cuarto, String piso, String anaquel, String charola, Long idUsuario, Long idAlmacen, Long idAlmacenUbicacion, Long nivel) {
     setDescripcion(descripcion);
     setCuarto(cuarto);
     setPiso(piso);
@@ -74,6 +80,7 @@ public class TcManticAlmacenesUbicacionesDto implements IBaseDto, Serializable {
     setIdAlmacen(idAlmacen);
     setIdAlmacenUbicacion(idAlmacenUbicacion);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		setNivel(nivel);
   }
 	
   public void setDescripcion(String descripcion) {
@@ -148,6 +155,14 @@ public class TcManticAlmacenesUbicacionesDto implements IBaseDto, Serializable {
     return registro;
   }
 
+	public Long getNivel() {
+		return nivel;
+	}
+
+	public void setNivel(Long nivel) {
+		this.nivel = nivel;
+	}
+	
   @Transient
   @Override
   public Long getKey() {
@@ -180,6 +195,8 @@ public class TcManticAlmacenesUbicacionesDto implements IBaseDto, Serializable {
 		regresar.append(getIdAlmacenUbicacion());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getNivel());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -196,13 +213,14 @@ public class TcManticAlmacenesUbicacionesDto implements IBaseDto, Serializable {
 		regresar.put("idAlmacen", getIdAlmacen());
 		regresar.put("idAlmacenUbicacion", getIdAlmacenUbicacion());
 		regresar.put("registro", getRegistro());
+		regresar.put("nivel", getNivel());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getCuarto(), getPiso(), getAnaquel(), getCharola(), getIdUsuario(), getIdAlmacen(), getIdAlmacenUbicacion(), getRegistro()
+    getDescripcion(), getCuarto(), getPiso(), getAnaquel(), getCharola(), getIdUsuario(), getIdAlmacen(), getIdAlmacenUbicacion(), getRegistro(), getNivel()
     };
     return regresar;
   }
