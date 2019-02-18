@@ -26,13 +26,15 @@ public class MotorBusqueda implements Serializable {
 		List<OrganigramUbicacion> nodes= null;		
 		try {
 			regresar= new ArrayList<>();						
-			nodes= DaoFactory.getInstance().toEntitySet(OrganigramUbicacion.class, "VistaUbicacionesDto", this.ubicacion.getNivel().getIdXml(), this.ubicacion.toMap(), Constantes.SQL_TODOS_REGISTROS);
-			if(!nodes.isEmpty()){				
-				for(OrganigramUbicacion item: nodes) {							
-					item.setUltimoNivel(this.ubicacion.getNivel().equals(ENivelUbicacion.CHAROLA));								
-					item.setNivel(ENivelUbicacion.fromIdNivel(this.ubicacion.getNivel().getIdNivelUbicacion() + 1L));
-					regresar.add(new DefaultOrganigramNode(ENivelUbicacion.fromIdNivel(this.ubicacion.getNivel().getIdNivelUbicacion()).getType(), item, null));
-				} // for
+			if(this.ubicacion.getNivel()!= null){
+				nodes= DaoFactory.getInstance().toEntitySet(OrganigramUbicacion.class, "VistaUbicacionesDto", this.ubicacion.getNivel().getIdXml(), this.ubicacion.toMap(), Constantes.SQL_TODOS_REGISTROS);
+				if(!nodes.isEmpty()){				
+					for(OrganigramUbicacion item: nodes) {							
+						item.setUltimoNivel(this.ubicacion.getNivel().equals(ENivelUbicacion.CHAROLA));								
+						item.setNivel(ENivelUbicacion.fromIdNivel(this.ubicacion.getNivel().getIdNivelUbicacion() + 1L));
+						regresar.add(new DefaultOrganigramNode(ENivelUbicacion.fromIdNivel(this.ubicacion.getNivel().getIdNivelUbicacion()).getType(), item, null));
+					} // for
+				} // if
 			} // if
 		} // try 
 		catch (Exception e) {			
