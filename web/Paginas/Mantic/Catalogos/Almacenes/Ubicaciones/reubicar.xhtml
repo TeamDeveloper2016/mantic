@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Ubicar articulo en almacen" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+			Janal.Control.fields = {
+				'nivel'    : {validaciones: 'requerido', mascara: 'libre'},				
+				'ubicacion': {validaciones: 'requerido', mascara: 'libre'}
+			};		
+    </script>		
+		<style>	
+		</style>
+  </ui:define>
+  <ui:define name="contenido">    			
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
+			<div class="ui-grid-row janal-grid-row">								
+				<div id="collapse-content" class="ui-grid-col-12">
+					<p:panelGrid id="panelDetalle" columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-80, janal-wid-20">
+						<p:outputLabel value="Código:"/>						
+						<p:outputLabel value="Articulo:"/>												
+						<p:outputLabel value="Almacen:"/>																							
+						<p:inputText value="#{manticCatalogosAlmacenesUbicacionesReubicar.attrs.articulo.codigo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>
+						<p:inputText value="#{manticCatalogosAlmacenesUbicacionesReubicar.attrs.articulo.nombreArticulo}" styleClass="janal-wid-100-txt" disabled="true"/>						
+						<p:inputText value="#{manticCatalogosAlmacenesUbicacionesReubicar.attrs.articulo.almacen}" styleClass="janal-wid-100-txt" disabled="true"/>					
+					</p:panelGrid>					
+					<p:panelGrid id="panelDetalleDos" columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-30, janal-wid-20, janal-wid-20">												
+						<p:outputLabel value="Piso:"/>			
+						<p:outputLabel value="Cuarto:"/>						
+						<p:outputLabel value="Anaquel:"/>						
+						<p:outputLabel value="Charola:"/>						
+						<p:inputText value="#{manticCatalogosAlmacenesUbicacionesReubicar.attrs.articulo.piso}" styleClass="janal-wid-100-txt" disabled="true"/>		
+						<p:inputText value="#{manticCatalogosAlmacenesUbicacionesReubicar.attrs.articulo.cuarto}" styleClass="janal-wid-100-txt" disabled="true"/>						
+						<p:inputText value="#{manticCatalogosAlmacenesUbicacionesReubicar.attrs.articulo.anaquel}" styleClass="janal-wid-100-txt" disabled="true"/>
+						<p:inputText value="#{manticCatalogosAlmacenesUbicacionesReubicar.attrs.articulo.charola}" styleClass="janal-wid-100-txt" disabled="true"/>
+						<p:spacer/>
+					</p:panelGrid>					
+				</div>
+			</div>
+			<p:separator/>
+			<div class="ui-grid-row janal-grid-row">
+				<div id="collapse-content" class="ui-grid-col-12">					
+					<h:panelGrid id="contenedorGrupos" styleClass="janal-wid-100">
+						<p:outputLabel for="nivel" value="Nivel:" styleClass="janal-wid-100-txt"/>
+						<p:selectOneMenu id="nivel" value="#{manticCatalogosAlmacenesUbicacionesReubicar.attrs.nivel}" styleClass="janal-wid-100-txt">
+							<f:selectItems value="#{manticCatalogosAlmacenesUbicacionesReubicar.attrs.niveles}"/>
+						</p:selectOneMenu>
+						<p:outputLabel for="ubicacion" value="Ubicación:" styleClass="janal-wid-100-txt"/>
+						<p:selectOneMenu id="ubicacion" value="#{manticCatalogosAlmacenesUbicacionesReubicar.attrs.ubicacion}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="contains" styleClass="janal-wid-100-txt">							
+							<f:selectItems value="#{manticCatalogosAlmacenesUbicacionesReubicar.attrs.ubicaciones}" var="element" itemValue="#{element}" itemLabel="Almacen[#{element.almacen== null ? '' : element.almacen}] - Piso[#{element.piso== null ? '' : element.piso}] - Cuarto[#{element.cuarto eq null ? '' : element.cuarto}] - Anaquel[#{element.anaquel== null ? '' : element.anaquel}] - Charola[#{element.charola == null ? '' : element.charola}]"/>                
+							<p:column headerText="Almacen">
+								<h:outputText value="#{item.almacen}"/>
+							</p:column>   
+							<p:column headerText="Piso">
+								<h:outputText value="#{item.piso}"/>
+							</p:column>   
+							<p:column headerText="Cuarto">
+								<h:outputText value="#{item.cuarto}"/>
+							</p:column>   
+							<p:column headerText="Anaquel">
+								<h:outputText value="#{item.anaquel}"/>
+							</p:column>   
+							<p:column headerText="Charola">
+								<h:outputText value="#{item.charola}"/>
+							</p:column> 
+						</p:selectOneMenu>
+					</h:panelGrid>
+				</div>
+			</div>	
+    </div>					
+  </ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this contenedorGrupos" actionListener="#{manticCatalogosAlmacenesUbicacionesReubicar.doAceptar}" update="panelDetalle" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+			<p:commandButton id="regresar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosAlmacenesUbicacionesReubicar.doRegresar}" immediate="true"/>
+		</div>	
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@this contenedorGrupos" actionListener="#{manticCatalogosAlmacenesUbicacionesReubicar.doAceptar}" update="panelDetalle" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosAlmacenesUbicacionesReubicar.doRegresar}" immediate="true"/>
+		</div>	
+	</ui:define>	
+  <ui:param name="componenteBloqueo" value="contenedorGrupos" />	
+</ui:composition>
