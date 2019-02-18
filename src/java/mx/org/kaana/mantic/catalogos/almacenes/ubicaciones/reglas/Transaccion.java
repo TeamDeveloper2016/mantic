@@ -1,10 +1,12 @@
 package mx.org.kaana.mantic.catalogos.almacenes.ubicaciones.reglas;
 
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.mantic.catalogos.almacenes.ubicaciones.beans.OrganigramUbicacion;
+import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
@@ -16,6 +18,7 @@ public class Transaccion extends IBaseTnx {
   private String nombre;	
   private String descripcion;	
   private String message;	
+	private Entity articulo;	
 
 	public Transaccion(OrganigramUbicacion ubicacion) {
 		this(ubicacion, null, null);
@@ -27,9 +30,14 @@ public class Transaccion extends IBaseTnx {
 		this.nombre     = nombre;
 	}	// Transaccion
 
+	public Transaccion(Entity articulo) {
+		this.articulo= articulo;		
+	}	
+	
   @Override
   protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
     boolean regresar = false;
+		TcManticAlmacenesArticulosDto ubicacion= null;
     try {						
       switch (accion) {
         case AGREGAR:
@@ -37,7 +45,24 @@ public class Transaccion extends IBaseTnx {
           break;        
         case ELIMINAR:
           regresar = eliminarUbicacion(sesion);
-          break;        
+          break;       
+				case MODIFICAR:
+					ubicacion= (TcManticAlmacenesArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticAlmacenesArticulosDto.class, this.articulo.toLong("idAlmacenArticulo"));
+					ubicacion.setIdAlmacen(this.articulo.toLong("idAlmacen"));
+					ubicacion.setIdAlmacenUbicacion(this.articulo.toLong("idAlmacenUbicacion"));
+					regresar= DaoFactory.getInstance().update(sesion, ubicacion)>= 1L;
+					break;
+				case ASIGNAR:
+					ubicacion= new TcManticAlmacenesArticulosDto();
+					ubicacion.setIdAlmacen(this.articulo.toLong("idAlmacen"));
+					ubicacion.setIdAlmacenUbicacion(this.articulo.toLong("idAlmacenUbicacion"));
+					ubicacion.setIdArticulo(this.articulo.getKey());
+					ubicacion.setIdUsuario(JsfBase.getIdUsuario());
+					ubicacion.setStock(0D);
+					ubicacion.setMaximo(0D);
+					ubicacion.setMinimo(0D);					
+					regresar= DaoFactory.getInstance().insert(sesion, ubicacion)>= 1L;
+					break;
       } // switch
       if (!regresar) 
         throw new Exception(this.message);
