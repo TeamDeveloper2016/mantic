@@ -18,7 +18,6 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.formato.Cifrar;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -28,7 +27,6 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.facturas.reglas.Transaccion;
-import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
@@ -121,17 +119,18 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
     } // catch		
   } // init
 
+	@Override
   public void doLoad() {
     EAccion eaccion            = null;
 		Long idCliente             = -1L;
 		TcManticFacturasDto factura= null;
+		this.saldoCliente          = new SaldoCliente();
     try {
       eaccion= (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
       switch (eaccion) {
         case AGREGAR:											
           this.setAdminOrden(new AdminFacturas(new FacturaFicticia(-1L)));
-					this.saldoCliente= new SaldoCliente();
 					this.attrs.put("consecutivo", "");		
 					idCliente= Long.valueOf(this.attrs.get("idCliente").toString());
 					if(idCliente!= null && !idCliente.equals(-1L))
@@ -311,12 +310,12 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		String descuentoPivote = null;
 		String descuentoVigente= null;		
 		try {			
-			descuentoPivote= getAdminOrden().getDescuento();
-			descuentoVigente= toDescuentoVigente(articulo.toLong("idArticulo"));				
+			descuentoPivote = this.getAdminOrden().getDescuento();
+			descuentoVigente= this.toDescuentoVigente(articulo.toLong("idArticulo"));				
 			if(descuentoVigente!= null)
-				getAdminOrden().setDescuento(descuentoVigente);					
+				this.getAdminOrden().setDescuento(descuentoVigente);					
 			super.toMoveData(articulo, index);	
-			getAdminOrden().setDescuento(descuentoPivote);
+			this.getAdminOrden().setDescuento(descuentoPivote);
 			this.attrs.put("descripcion", articulo.toString("nombre"));
 			this.image= LoadImages.getImage(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), articulo.toLong("idArticulo").toString());
 			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());

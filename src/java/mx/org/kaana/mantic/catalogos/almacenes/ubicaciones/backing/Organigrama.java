@@ -58,7 +58,9 @@ public class Organigrama extends IBaseFilter implements Serializable {
     try {			       						
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());			
-			this.attrs.put("empresaOrganigram", ((boolean)this.attrs.get("isMatriz")) ? JsfBase.getAutentifica().getEmpresa().getDependencias() : this.attrs.get("idEmpresa").toString());
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")!= null? JsfBase.getFlashAttribute("retorno"): "filtro");			
+			String pivote= ((boolean)this.attrs.get("isMatriz"))? JsfBase.getAutentifica().getEmpresa().getDependencias(): this.attrs.get("idEmpresa").toString();
+			this.attrs.put("empresaOrganigram", JsfBase.getFlashAttribute("retorno")!= null? JsfBase.getFlashAttribute("empresaOrganigram"): pivote);
 			this.attrs.put("descripcion", "");
 			this.doLoad();
     } // try

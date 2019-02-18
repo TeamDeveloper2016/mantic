@@ -34,12 +34,12 @@ public class Articulos extends IBaseArticulos implements Serializable {
     try {
       this.attrs.put("idPrincipal", 1L);			
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa")!= null ? JsfBase.getFlashAttribute("idEmpresa"): JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")!= null ? JsfBase.getFlashAttribute("retorno") : "filtro");
 			this.attrs.put("buscaPorCodigo", false);
 			toLoadEmpresas();
 			doLoadAlmacenes(); 
-			if(JsfBase.getFlashAttribute("idArticulo")!= null){
+			if(JsfBase.getFlashAttribute("idArticulo")!= null) {
 				this.attrs.put("idArticulo", JsfBase.getFlashAttribute("idArticulo"));
 				doLoad();
 				this.attrs.put("idArticulo", null);

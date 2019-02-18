@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.procesos.comun.Comun;
@@ -160,6 +161,7 @@ public class Filtro extends Comun implements Serializable {
     String regresar= null;
 		try {			
 			JsfBase.setFlashAttribute("retorno", "filtro");
+			JsfBase.setFlashAttribute("empresaOrganigram", ((boolean)this.attrs.get("isMatriz"))? JsfBase.getAutentifica().getEmpresa().getDependencias(): this.attrs.get("idEmpresa").toString());
 			regresar= "organigrama".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
@@ -168,4 +170,33 @@ public class Filtro extends Comun implements Serializable {
 		} // catch
 		return regresar;
   } // doOrganigrama
+	
+	public String doOrganigramaIndividual() {
+    String regresar= null;
+		try {			
+			JsfBase.setFlashAttribute("retorno", "filtro");
+			JsfBase.setFlashAttribute("empresaOrganigram", ((Entity)this.attrs.get("seleccionado")).toString("idEmpresa"));
+			regresar= "organigrama".concat(Constantes.REDIRECIONAR);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return regresar;
+  } // doOrganigrama
+
+  public String doArticulosIndividual() {
+    String regresar= null;
+		try {			
+			JsfBase.setFlashAttribute("retorno", "filtro");
+			JsfBase.setFlashAttribute("empresaOrganigram", ((Entity)this.attrs.get("seleccionado")).toString("idEmpresa"));
+			regresar= "articulos".concat(Constantes.REDIRECIONAR);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return regresar;
+  } // doArticulos
+
 }
