@@ -12,7 +12,8 @@
       Janal.Control.fields = {};												
       
 			fieldsDialog = {				
-				'descripcion': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
+				'descripcion': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'},
+				'nombre': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
 			};
 			
 			$(document).ready(function(){
@@ -33,8 +34,18 @@
           case 'agregar':
             agregar();
             break;          
+          case 'eliminar':
+            eliminar();
+            break;          
         } // switch       
-      } // methodExecute			     					
+      } // methodExecute		
+			
+			function validateCaptura(){
+				var ok= janal.partial('dialogo');
+				if(ok)
+					PF('dlgDetalle').hide();
+				return ok;
+			} // validateCaptura
     </script>		
 		<style type="text/css">
 			.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-inputfield{
@@ -42,7 +53,7 @@
 			}						
 			.ui-organigram .ui-organigram-node {
 				width: 150px !important;
-				height: 110px !important;
+				height: 120px !important;
 				min-height: 100px !important;
 				margin: 0 5px !important;
 				padding: 2px !important;
@@ -65,7 +76,7 @@
 				border-width: 0;
 			}
 			.janal-color-icon{
-				color: black !important;
+				color: blue !important;
 			}
       .descripcion-nodo{
         font-size: smaller !important; 
@@ -75,10 +86,11 @@
         font-weight: bold !important;
 				color: blue !important;
       }      
-			.janal-align-right-icon {
+			.janal-align-left-icon {
 				position: relative !important;
-				float: right !important;
-				margin-right: 5px !important;
+				float: left !important;				
+				margin-top: 18px;
+				margin-left: 3px
 			}
 			.ui-outputlabel, table tbody tr td {
 				color: black !important;
@@ -87,6 +99,7 @@
   </ui:define>
   <ui:define name="contenido">  
 		<p:remoteCommand name="agregar" onstart="return janal.bloquear();" process="@this tabla" action="#{manticCatalogosAlmacenesOrganigrama.doAgregar}"/>    
+		<p:remoteCommand name="eliminar" onstart="return janal.bloquear();" process="@this tabla" action="#{manticCatalogosAlmacenesOrganigrama.doDetalleEliminar}"/>    
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">                 
         <div id="collapse-content" class="ui-grid-col-12">
@@ -104,56 +117,62 @@
 						</p:organigramNode>
 						<p:organigramNode type="empresa">
 							<h:panelGrid columns="1" columnClasses="janal-column-center" style="width: 100%; height: 70px;">
-								<h:outputText value="#{node.data.empresa}" class="descripcion-titulo"/>							
-								<h:outputText value="[Empresa]" class="descripcion-nodo"/>							
+								<h:outputText value="#{node.data.empresa}" class="descripcion-titulo" title="#{node.data.descripcion}"/>							
+								<h:outputText value="[Empresa, #{node.data.articulos} articulos]" class="descripcion-nodo"/>							
 							</h:panelGrid>														
 							<p:spacer/>							
 						</p:organigramNode>
 						<p:organigramNode type="almacen">
 							<h:panelGrid columns="1" columnClasses="janal-column-center" style="width: 100%; height: 70px;">
-								<h:outputText value="#{node.data.almacen}" class="descripcion-titulo"/>		
-								<h:outputText value="[Almacen]" class="descripcion-nodo"/>							
+								<h:outputText value="#{node.data.almacen}" class="descripcion-titulo" title="#{node.data.descripcion}"/>		
+								<h:outputText value="[Almacen, #{node.data.articulos} articulos]" class="descripcion-nodo"/>																					
 							</h:panelGrid>								
-							<div id="icons" class="janal-align-right-icon">								
-								<i class="fa fa-plus janal-color-icon" onclick="methodExecute(this, 'agregar');" title="Agregar piso"></i>																
+							<div id="icons" class="janal-align-left-icon">								
+								<i class="fa fa-plus janal-color-icon" onclick="methodExecute(this, 'agregar');" title="Agregar piso"></i>																													
 							</div>  
 							<p:spacer/>							
 						</p:organigramNode>
 						<p:organigramNode type="piso">
 							<h:panelGrid columns="1" columnClasses="janal-column-center" style="width: 100%; height: 70px;">
-								<h:outputText value="#{node.data.piso}" class="descripcion-titulo"/>		
-								<h:outputText value="[Piso]" class="descripcion-nodo"/>							
+								<h:outputText value="#{node.data.piso}" class="descripcion-titulo" title="#{node.data.descripcion}"/>		
+								<h:outputText value="[Piso, #{node.data.articulos} articulos]" class="descripcion-nodo"/>							
 							</h:panelGrid>									
-							<div id="icons" class="janal-align-right-icon">								
+							<div id="icons" class="janal-align-left-icon">								
 								<i class="fa fa-plus janal-color-icon" onclick="methodExecute(this, 'agregar');" title="Agregar cuarto"></i>																
+								<i class="fa fa-close janal-color-icon" onclick="methodExecute(this, 'eliminar');" title="Eliminar piso"></i>
 							</div>  
 							<p:spacer/>							
 						</p:organigramNode>
 						<p:organigramNode type="cuarto">
 							<h:panelGrid columns="1" columnClasses="janal-column-center" style="width: 100%; height: 70px;">
-								<h:outputText value="#{node.data.cuarto}" class="descripcion-titulo"/>							
-								<h:outputText value="[Cuarto]" class="descripcion-nodo"/>							
+								<h:outputText value="#{node.data.cuarto}" class="descripcion-titulo" title="#{node.data.descripcion}"/>							
+								<h:outputText value="[Cuarto, #{node.data.articulos} articulos]" class="descripcion-nodo"/>							
 							</h:panelGrid>
-							<div id="icons" class="janal-align-right-icon">								
+							<div id="icons" class="janal-align-left-icon">								
 								<i class="fa fa-plus janal-color-icon" onclick="methodExecute(this, 'agregar');" title="Agregar anaquel"></i>																
+								<i class="fa fa-close janal-color-icon" onclick="methodExecute(this, 'eliminar');" title="Eliminar cuarto"></i>
 							</div>  
 							<p:spacer/>							
 						</p:organigramNode>
 						<p:organigramNode type="anaquel">
 							<h:panelGrid columns="1" columnClasses="janal-column-center" style="width: 100%; height: 70px;">
-								<h:outputText value="#{node.data.anaquel}" class="descripcion-titulo"/>
-								<h:outputText value="[Anaquel]" class="descripcion-nodo"/>							
+								<h:outputText value="#{node.data.anaquel}" class="descripcion-titulo" title="#{node.data.descripcion}"/>
+								<h:outputText value="[Anaquel, #{node.data.articulos} articulos]" class="descripcion-nodo"/>							
 							</h:panelGrid>							
-							<div id="icons" class="janal-align-right-icon">								
-								<i class="fa fa-plus janal-color-icon" onclick="methodExecute(this, 'agregar');" title="Agregar charola"></i>																
+							<div id="icons" class="janal-align-left-icon">								
+								<i class="fa fa-plus janal-color-icon" onclick="methodExecute(this, 'agregar');" title="Agregar charola"></i>
+								<i class="fa fa-close janal-color-icon" onclick="methodExecute(this, 'eliminar');" title="Eliminar anaquel"></i>
 							</div>  
 							<p:spacer/>							
 						</p:organigramNode>
 						<p:organigramNode type="charola">
 							<h:panelGrid columns="1" columnClasses="janal-column-center" style="width: 100%; height: 70px;">
-								<h:outputText value="#{node.data.charola}" class="descripcion-titulo"/>							
-								<h:outputText value="[Charola]" class="descripcion-nodo"/>							
-							</h:panelGrid>							
+								<h:outputText value="#{node.data.charola}" class="descripcion-titulo" title="#{node.data.descripcion}"/>							
+								<h:outputText value="[Charola, #{node.data.articulos} articulos]" class="descripcion-nodo"/>							
+							</h:panelGrid>
+							<div id="icons" class="janal-align-left-icon">															
+								<i class="fa fa-close janal-color-icon" onclick="methodExecute(this, 'eliminar');" title="Eliminar charola"></i>
+							</div>							
 							<p:spacer/>							
 						</p:organigramNode>											
 					</p:organigram>		   					
@@ -176,18 +195,54 @@
 	</ui:define>
   <ui:param name="componenteBloqueo" value="tabla"/>  	
 	<ui:define name="dialogos">
-		<p:dialog id="dialogoDetalle" widgetVar="dlgDetalle" header="Agregar #{manticCatalogosAlmacenesOrganigrama.attrs.tipo}" closable="true" resizable="false" dynamic="true" closeOnEscape="true" onHide="janal.desbloquear();janal.restore();janal.refresh();" onShow="janal.change('formDialogo', fieldsDialog);janal.refresh();" position="center" width="600px">
+		<p:dialog id="dialogoDetalle" widgetVar="dlgDetalle" header="Agregar #{manticCatalogosAlmacenesOrganigrama.attrs.tipo}" closable="false" resizable="false" dynamic="true" closeOnEscape="true" onShow="janal.change('formDialogo', fieldsDialog);janal.refresh();" position="center" width="600px">
 			<h:form id="formDialogo" prependId="false">
 				<h:panelGrid columns="2" styleClass="janal-col-100" columnClasses="janal-wid-col-130, janal-wid-100">
+					<p:outputLabel for="nombre" value="#{manticCatalogosAlmacenesOrganigrama.attrs.tipoFormat}: " style="font-weight: bold"/>
+					<p:inputText id="nombre" value="#{manticCatalogosAlmacenesOrganigrama.attrs.nombre}" styleClass="janal-wid-100-txt"/>                                
 					<p:outputLabel for="descripcion" value="Descripción: " style="font-weight: bold"/>
 					<p:inputText id="descripcion" value="#{manticCatalogosAlmacenesOrganigrama.attrs.descripcion}" styleClass="janal-wid-100-txt"/>                                
+					<p:spacer/><p:separator/>
+					<p:outputLabel value="Empresa: " style="font-weight: bold" rendered="#{!(empty manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.empresa)}"/>
+					<p:inputText value="#{manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.empresa}" styleClass="janal-wid-100-txt" disabled="true" rendered="#{!(empty manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.empresa)}"/>                                
+					<p:outputLabel value="Almacen: " style="font-weight: bold" rendered="#{!(empty manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.almacen)}"/>
+					<p:inputText value="#{manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.almacen}" styleClass="janal-wid-100-txt" disabled="true" rendered="#{!(empty manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.almacen)}"/>                                
+					<p:outputLabel value="Piso: " style="font-weight: bold" rendered="#{!(empty manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.piso)}"/>
+					<p:inputText value="#{manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.piso}" styleClass="janal-wid-100-txt" disabled="true" rendered="#{!(empty manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.piso)}"/>                                
+					<p:outputLabel value="Cuarto: " style="font-weight: bold" rendered="#{!(empty manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.cuarto)}"/>
+					<p:inputText value="#{manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.cuarto}" styleClass="janal-wid-100-txt" disabled="true" rendered="#{!(empty manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.cuarto)}"/>                                
+					<p:outputLabel value="Anaquel: " style="font-weight: bold" rendered="#{!(empty manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.anaquel)}"/>
+					<p:inputText value="#{manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.anaquel}" styleClass="janal-wid-100-txt" disabled="true" rendered="#{!(empty manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.anaquel)}"/>                                
+					<p:outputLabel value="Charola: " style="font-weight: bold" rendered="#{!(empty manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.charola)}"/>
+					<p:inputText value="#{manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.charola}" styleClass="janal-wid-100-txt" disabled="true" rendered="#{!(empty manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.charola)}"/>                                
 				</h:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-column-right">
-					<p:commandButton id="aceptarNuevo" icon="fa fa-check" value="Aceptar" process="@this dialogoDetalle" onstart="return janal.partial('dialogo');" actionListener="#{manticCatalogosAlmacenesOrganigrama.doAceptar}" oncomplete="PF('dlgDetalle').hide();organigramClear();" update="tabla"/>
-					<p:commandButton id="cancelarNuevo" icon="fa fa-close" value="Cancelar" onstart="PF('dlgDetalle').hide();organigramClear();" oncomplete="organigramClear();" update="tabla"/>
+					<p:commandButton id="aceptarNuevo" icon="fa fa-check" value="Aceptar" process="@this dialogoDetalle" onstart="return validateCaptura();" actionListener="#{manticCatalogosAlmacenesOrganigrama.doAceptar}" oncomplete="janal.desbloquear();organigramClear();janal.restore();janal.refresh();" update="tabla"/>
+					<p:commandButton id="cancelarNuevo" icon="fa fa-close" value="Cancelar" onstart="PF('dlgDetalle').hide();organigramClear();" oncomplete="organigramClear();janal.desbloquear();" update="tabla"/>
 				</div>
 			</h:form>			
+    </p:dialog>
+		<p:dialog id="dialogoEliminar" widgetVar="dlgEliminar" header="Eliminar #{manticCatalogosAlmacenesOrganigrama.attrs.tipo}" closable="false" resizable="false" dynamic="true" closeOnEscape="true" position="center" width="600px">			
+			<h:panelGrid columns="2" styleClass="janal-col-100" columnClasses="janal-wid-col-130, janal-wid-100">				
+				<p:outputLabel value="Empresa: " style="font-weight: bold" rendered="#{!(empty manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.empresa)}"/>
+				<p:inputText value="#{manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.empresa}" styleClass="janal-wid-100-txt" disabled="true" rendered="#{!(empty manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.empresa)}"/>                                
+				<p:outputLabel value="Almacen: " style="font-weight: bold" rendered="#{!(empty manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.almacen)}"/>
+				<p:inputText value="#{manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.almacen}" styleClass="janal-wid-100-txt" disabled="true" rendered="#{!(empty manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.almacen)}"/>                                
+				<p:outputLabel value="Piso: " style="font-weight: bold" rendered="#{!(empty manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.piso)}"/>
+				<p:inputText value="#{manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.piso}" styleClass="janal-wid-100-txt" disabled="true" rendered="#{!(empty manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.piso)}"/>                                
+				<p:outputLabel value="Cuarto: " style="font-weight: bold" rendered="#{!(empty manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.cuarto)}"/>
+				<p:inputText value="#{manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.cuarto}" styleClass="janal-wid-100-txt" disabled="true" rendered="#{!(empty manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.cuarto)}"/>                                
+				<p:outputLabel value="Anaquel: " style="font-weight: bold" rendered="#{!(empty manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.anaquel)}"/>
+				<p:inputText value="#{manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.anaquel}" styleClass="janal-wid-100-txt" disabled="true" rendered="#{!(empty manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.anaquel)}"/>                                
+				<p:outputLabel value="Charola: " style="font-weight: bold" rendered="#{!(empty manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.charola)}"/>
+				<p:inputText value="#{manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.charola}" styleClass="janal-wid-100-txt" disabled="true" rendered="#{!(empty manticCatalogosAlmacenesOrganigrama.attrs.seleccionado.charola)}"/>                                
+			</h:panelGrid>
+			<hr class="ui-widget-content"/>
+			<div class="janal-column-right">
+				<p:commandButton id="aceptarEliminar" icon="fa fa-check" value="Aceptar" process="@this dialogoEliminar" onstart="return PF('dlgEliminar').hide();" actionListener="#{manticCatalogosAlmacenesOrganigrama.doEliminar}" oncomplete="janal.desbloquear();organigramClear();" update="tabla"/>
+				<p:commandButton id="cancelarEliminar" icon="fa fa-close" value="Cancelar" onstart="PF('dlgEliminar').hide();organigramClear();" oncomplete="organigramClear();janal.desbloquear();" update="tabla"/>
+			</div>
     </p:dialog>
 	</ui:define>
 </ui:composition>
