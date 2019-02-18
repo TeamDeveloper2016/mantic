@@ -181,7 +181,7 @@
 									<h:outputText value="#{manticFacturasTickets.getTipoMedioPago(row)}"/>
 								</p:column>		
 								<p:column style="width:38px; text-align: center">
-									<p:commandButton process="@this" update="@(.relacionado)" icon="fa fa-plus" title="Agregar ticket" onstart="return janal.bloquear()" oncomplete="janal.refresh(); janal.desbloquear();" actionListener="#{manticFacturasTickets.doAddTicket(row)}" rendered="#{manticFacturasTickets.doDisponible(row)}">
+									<p:commandButton process="@this tabla" update="@(.relacionado)" icon="fa fa-plus" title="Agregar ticket" onstart="return janal.bloquear()" oncomplete="janal.refresh(); janal.desbloquear();" actionListener="#{manticFacturasTickets.doAddTicket(row)}" rendered="#{manticFacturasTickets.doDisponible(row)}">
 										<f:setPropertyActionListener value="#{row}" target="#{manticFacturasTickets.attrs.ticket}" />
 									</p:commandButton>
 								</p:column>
@@ -200,10 +200,10 @@
 						</div>
 					</div>	
           <div class="ui-grid-row janal-grid-row">
-            <div class="janal-wid-col-150 ui-grid-col-2">
+            <div class="janal-wid-col-150 ui-grid-col-1">
 							<p:outputLabel value="Razón social del cliente:"/>
 						</div>	
-            <div class="ui-grid-col-10">
+            <div class="ui-grid-col-11">
 							<p:inputText value="#{manticFacturasTickets.pivote.cliente}" styleClass="janal-wid-100-txt janal-color-blue relacionado" readonly="true"/>
 						</div>	
 					</div>	
