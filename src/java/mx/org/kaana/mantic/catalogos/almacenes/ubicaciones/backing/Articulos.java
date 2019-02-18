@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
@@ -31,13 +32,18 @@ public class Articulos extends IBaseArticulos implements Serializable {
   @Override
   protected void init() {
     try {
-      this.attrs.put("idPrincipal", 1L);
+      this.attrs.put("idPrincipal", 1L);			
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")!= null ? JsfBase.getFlashAttribute("retorno") : "filtro");
 			this.attrs.put("buscaPorCodigo", false);
 			toLoadEmpresas();
 			doLoadAlmacenes(); 
+			if(JsfBase.getFlashAttribute("idArticulo")!= null){
+				this.attrs.put("idArticulo", JsfBase.getFlashAttribute("idArticulo"));
+				doLoad();
+				this.attrs.put("idArticulo", null);
+			} // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -84,6 +90,8 @@ public class Articulos extends IBaseArticulos implements Serializable {
 		  sb.append("tc_mantic_almacenes.id_almacen=").append(almacen.getKey()).append(" and ");
 		if(articulo!= null && !articulo.getKey().equals(-1L))
 			sb.append("tc_mantic_almacenes_articulos.id_articulo=").append(articulo.getKey()).append(" and ");			
+		else if(this.attrs.get("idArticulo")!= null)
+			sb.append("tc_mantic_articulos.id_articulo=").append(this.attrs.get("idArticulo")).append(" and ");			
 		if(this.attrs.get("piso")!= null && !Cadena.isVacio(this.attrs.get("piso")))
 			sb.append("tc_mantic_almacenes_ubicaciones.piso like '%").append(this.attrs.get("piso")).append("%' and ");			
 		if(this.attrs.get("cuarto")!= null && !Cadena.isVacio(this.attrs.get("cuarto")))
@@ -163,7 +171,8 @@ public class Articulos extends IBaseArticulos implements Serializable {
 	public String doAsignar() {    
 		String regresar= null;
 		try {						
-			regresar= ((String) this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+			JsfBase.setFlashAttribute("idArticulo", ((Entity)this.attrs.get("seleccionado")).getKey());
+			regresar= "reubicar".concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
