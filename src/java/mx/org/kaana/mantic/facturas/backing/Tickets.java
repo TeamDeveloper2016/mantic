@@ -376,6 +376,8 @@ public class Tickets extends IBaseFilter implements Serializable {
 			  if(this.ventaPublico.indexOf(item.toLong("idCliente"))< 0)
 				  this.pivote= item;
 		} // for
+		if(this.pivote!= null && this.ventaPublico.indexOf(this.pivote.toLong("idCliente"))>= 0)
+			this.pivote= null;
 	}
 	
 	public void doRemoveTicket(Entity row) {
