@@ -83,10 +83,14 @@ public class Tickets extends IBaseFilter implements Serializable {
     try {
 			this.importe= 0D;
 			this.folios = new ArrayList<>();
+      this.pivote = (Entity)JsfBase.getFlashAttribute("cliente");
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      this.attrs.put("piovte", JsfBase.getFlashAttribute("cliente"));
       this.acumulado= JsfBase.getFlashAttribute("tickets")!= null? (List<Entity>)JsfBase.getFlashAttribute("tickets"): new ArrayList<>();
+			if(!this.acumulado.isEmpty()) 
+				for (Entity item: this.acumulado) {
+					this.importe+= item.toDouble("importe");
+				} // for
 			this.toLoadCatalog();
     } // try
     catch (Exception e) {
