@@ -531,3 +531,9 @@ strong { font-weight: bolder; }
 .janal-zero-size { visibility: hidden; padding: 0px; margin: 0px; border: 0px; width: 0px; height: 0px; }
 .janal-icons-header { float: left !important; }
 
+.janal-tr-diferencias {	background-color: #ABEBC6 !important; }
+.janal-tr-nuevo { background-color: #FDF5E6 !important; }
+.janal-tr-error { background-color: #FF7F50 !important; }
+
+
+

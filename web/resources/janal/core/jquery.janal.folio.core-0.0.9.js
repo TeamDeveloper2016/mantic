@@ -24,6 +24,7 @@
 		VK_ENTER    : 13, 
 		VK_MINUS    : 109,
 		VK_PLUS     : 107,
+		VK_MAS      : 187,
 		VK_REST     : 189,
 	  change      : [13, 106, 111, 107, 110, 27, 226, 189, 220],
 		control     : [9, 13, 17, 27, 38, 40, 220, 118, 121, 122],			
@@ -75,6 +76,7 @@
 				switch(key) {
 					case $ticket.VK_ENTER:
 					case $ticket.VK_PLUS:
+					case $ticket.VK_MAS:
 						return $ticket.add($(this));
 						break;
 					case $ticket.VK_MINUS:
@@ -82,7 +84,7 @@
 						return $ticket.remove($(this));
 						break;
 					default:
-						return (key>=48 && key<=57) || key===8 || key===9 || (key>=36 && key<=39) || key===46;
+						return (key>=48 && key<=57) || (key>=96 && key<=105) || key===8 || key===9 || (key>=36 && key<=39) || key===46;
 						break;
 				} // switch
 			}); // keydownd	

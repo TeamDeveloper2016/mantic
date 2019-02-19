@@ -29,6 +29,7 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.facturas.reglas.FormatTicket;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.event.SelectEvent;
@@ -76,26 +77,6 @@ public class Tickets extends IBaseFilter implements Serializable {
 		return lazyTicket;
 	}
 	
-	public String getTipoMedioPago(Entity row) {
-		String regresar= null;
-    Map<String, Object> params=null;
-		try {
-			params=new HashMap<>();
-			params.put("idVenta", row.toLong("idVenta"));
-			Value value= (Value)DaoFactory.getInstance().toField("VistaVentasDto", "tipoMedioPago", params, "medios");
-			if(value!= null)
-				regresar= value.toString();
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-      JsfBase.addMessageError(e);
-		} // catch
-		finally {
-			Methods.clean(params);
-		} // finally		
-		return regresar;
-	}
-	
 	@PostConstruct
   @Override
   protected void init() {
@@ -124,7 +105,7 @@ public class Tickets extends IBaseFilter implements Serializable {
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
       params.put("sortOrder", "order by tc_mantic_ventas.registro desc");
-      this.lazyModel = new FormatCustomLazy("VistaVentasDto", "tickets", params, columns);
+      this.lazyModel = new FormatTicket("VistaVentasDto", "tickets", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -406,7 +387,11 @@ public class Tickets extends IBaseFilter implements Serializable {
 	}	
 	
 	public boolean doDisponible(Entity row) {
-		return row.toLong("idFacturar").equals(2L) && (this.ventaPublico.indexOf(row.toLong("idCliente"))>= 0 || this.pivote== null || Objects.equals(this.pivote.toLong("idCliente"), row.toLong("idCliente")));
+		return row.toLong("idFacturar").equals(2L) && row.toDouble("importe")> 0D && (this.ventaPublico.indexOf(row.toLong("idCliente"))>= 0 || this.pivote== null || Objects.equals(this.pivote.toLong("idCliente"), row.toLong("idCliente")));
+	}
+
+	public String doRowColor(Entity row) {
+		return row.toBoolean("devolucion")? "janal-tr-diferencias": "";
 	}
 
   public void loadTicket() {
@@ -422,6 +407,30 @@ public class Tickets extends IBaseFilter implements Serializable {
 			params=new HashMap<>();
 			params.put("idVenta", ((Entity)this.attrs.get("seleccionado")).getKey());
 			this.lazyTicket= new FormatCustomLazy("TcManticVentasDetallesDto", "detalle", params, columns);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+			Methods.clean(columns);
+		} // finally
+	}	
+	
+  public void loadDevolucion() {
+    List<Columna> columns     = null;
+		Map<String, Object> params= null;
+    try {
+      columns = new ArrayList<>();
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
+			params=new HashMap<>();
+			params.put("idVenta", ((Entity)this.attrs.get("seleccionado")).getKey());
+			this.lazyTicket= new FormatCustomLazy("VistaVentasDto", "devoluciones", params, columns);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

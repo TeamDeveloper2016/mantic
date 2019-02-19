@@ -41,7 +41,7 @@ public class TcManticGarantiasDto implements IBaseDto, Serializable {
   @Column (name="registro")
   private Timestamp registro;
   @Column (name="consecutivo")
-  private Long consecutivo;
+  private String consecutivo;
   @Column (name="total")
   private Double total;
   @Column (name="id_usuario")
@@ -68,7 +68,7 @@ public class TcManticGarantiasDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticGarantiasDto(Long idGarantia, Double descuentos, Double utilidad, Long ejercicio, Long consecutivo, Double total, Long idUsuario, Double impuestos, Double subTotal, String observaciones, Long idGarantiaEstatus, Long orden, Long idVenta) {
+  public TcManticGarantiasDto(Long idGarantia, Double descuentos, Double utilidad, Long ejercicio, String consecutivo, Double total, Long idUsuario, Double impuestos, Double subTotal, String observaciones, Long idGarantiaEstatus, Long orden, Long idVenta) {
     setIdGarantia(idGarantia);
     setDescuentos(descuentos);
     setUtilidad(utilidad);
@@ -125,11 +125,11 @@ public class TcManticGarantiasDto implements IBaseDto, Serializable {
     return registro;
   }
 
-  public void setConsecutivo(Long consecutivo) {
+  public void setConsecutivo(String consecutivo) {
     this.consecutivo = consecutivo;
   }
 
-  public Long getConsecutivo() {
+  public String getConsecutivo() {
     return consecutivo;
   }
 

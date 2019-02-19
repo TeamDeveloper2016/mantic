@@ -25,17 +25,6 @@
 					populate();
 			}
 		</script>   
-		<style>
-			.janal-tr-diferencias {
-				background-color: #ABEBC6 !important;
-			}
-			.janal-tr-nuevo {
-				background-color: #FDF5E6 !important;
-			}
-			.janal-tr-error {
-				background-color: #FF7F50 !important;
-			}
-		</style>
 	</ui:define>
   <ui:define name="contenido">
 		<p:remoteCommand name="populate" actionListener="#{manticComprasOrdenesDiferencias.doRowSelectEvent}" update="notas tabla" process="@this"/>

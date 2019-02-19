@@ -9,7 +9,7 @@
                 template="/WEB-INF/plantillas/reporte.xhtml">
   <ui:param name="titulo" value="Seleccionar los tickets que desea facturar de forma conjunta" />
   <ui:define name="librerias">
-    <h:outputScript library="janal" name="core/jquery.janal.folio.core-0.0.8.js"/>
+    <h:outputScript library="janal" name="core/jquery.janal.folio.core-0.0.9.js"/>
     <script type="text/javascript">
       Janal.Control.fields = {
         'idEmpresa'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -83,7 +83,7 @@
 								</f:facet>
 							</p:autoComplete>	
               <p:outputLabel for="consecutivo" value="No. ticket:"/>
-              <p:inputText id="consecutivo" value="#{manticFacturasTickets.attrs.consecutivo}" styleClass="janal-wid-100-txt key-down-consecutivo"/> 
+              <p:inputText id="consecutivo" placeholder="Ejemplo: 1+ ó 1- ó - ó 20181+" value="#{manticFacturasTickets.attrs.consecutivo}" styleClass="janal-wid-100-txt key-down-consecutivo"/> 
               <p:selectOneMenu id="folios" var="item" styleClass="janal-wid-96 folios" effect="fade" filter="true" filterMatchMode="contains">
                 <f:selectItems value="#{manticFacturasTickets.folios}"/>
               </p:selectOneMenu>
@@ -123,7 +123,7 @@
         <div id="collapse-content" class="ui-grid-col-9">
           <div class="ui-grid-row janal-grid-row">
             <div class="ui-grid-col-12">					
-							<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticFacturasTickets.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticFacturasTickets.attrs.seleccionado}" selectionMode="single" paginator="#{manticFacturasTickets.lazyModel.rowCount gt manticFacturasTickets.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+							<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticFacturasTickets.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticFacturasTickets.attrs.seleccionado}" selectionMode="single" paginator="#{manticFacturasTickets.lazyModel.rowCount gt manticFacturasTickets.lazyModel.pageSize}" rowIndexVar="index" reflow="true" rowStyleClass="#{manticFacturasTickets.doRowColor(row)}">
 								<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 								<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 								<f:facet name="header" >
@@ -178,7 +178,7 @@
 									<f:facet name="header">
 										<h:outputText value="Metodo de pago"/>
 									</f:facet>
-									<h:outputText value="#{manticFacturasTickets.getTipoMedioPago(row)}"/>
+									<h:outputText value="#{row['medio']}"/>
 								</p:column>		
 								<p:column style="width:38px; text-align: center">
 									<p:commandButton process="@this" update="tabla @(.relacionado)" icon="fa fa-plus" title="Agregar ticket" onstart="return janal.bloquear()" oncomplete="janal.refresh(); janal.desbloquear();" actionListener="#{manticFacturasTickets.doAddTicket(row)}" rendered="#{manticFacturasTickets.doDisponible(row)}">
@@ -190,7 +190,9 @@
 								</f:facet>
 							</p:dataTable>
 							<p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-								<p:menuitem id="consultar" icon="fa fa-bars" value="Ver detalle ticket" actionListener="#{manticFacturasTickets.loadTicket()}" process="@this tabla" onstart="janal.bloquear();" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>
+								<p:menuitem icon="fa fa-bars" value="Ver detalle ticket" actionListener="#{manticFacturasTickets.loadTicket()}" process="@this tabla" onstart="janal.bloquear();" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>
+								<p:separator rendered="#{manticFacturasTickets.attrs.seleccionado.devolucion}"/>
+								<p:menuitem icon="fa fa-bars" value="Ver devoluciones" actionListener="#{manticFacturasTickets.loadDevolucion()}" process="@this tabla" onstart="janal.bloquear();" oncomplete="PF('dlgDetalle').show();" update="dialogoDetalle" rendered="#{manticFacturasTickets.attrs.seleccionado.devolucion}"/>
 							</p:contextMenu>
 						</div>
 					</div>	
@@ -282,6 +284,8 @@
 							</p:dataTable>
 							<p:contextMenu id="kajoolListadoContextMenu" widgetVar="kajoolListadoContextMenu" for="listado">
 								<p:menuitem icon="fa fa-bars" value="Ver detalle ticket" actionListener="#{manticFacturasTickets.loadTicket()}" process="@this listado" onstart="janal.bloquear();" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>
+								<p:separator rendered="#{manticFacturasTickets.attrs.seleccionado.devolucion}"/>
+								<p:menuitem icon="fa fa-bars" value="Ver devoluciones" actionListener="#{manticFacturasTickets.loadDevolucion()}" process="@this tabla" onstart="janal.bloquear();" oncomplete="PF('dlgDetalle').show();" update="dialogoDetalle" rendered="#{manticFacturasTickets.attrs.seleccionado.devolucion}"/>
 							</p:contextMenu>
 						</div>
 					</div>						
@@ -348,4 +352,55 @@
 			</f:facet>
 		</p:dataTable>	
   </ui:define>	
+	<ui:define name="dialogos">
+		<p:dialog id="dialogoDetalle" widgetVar="dlgDetalle" header="Detalle de la(s) devolucion(es) de articulos" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();" width="70%">			
+			<p:dataTable lazy="true" id="devoluciones" widgetVar="kajoolDevolucion" var="row" value="#{manticFacturasTickets.lazyTicket}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticFacturasTickets.lazyTicket.rowCount gt manticFacturasTickets.lazyTicket.pageSize}" rowIndexVar="index" reflow="true">
+				<p:column class="MarAuto Responsive janal-wid-5">
+					<f:facet name="header">
+						<h:outputText value="No."/>
+					</f:facet>
+					<h:outputText value="#{index+ 1}.-"/>
+				</p:column>													
+				<p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.consecutivo}">
+					<f:facet name="header">
+						<h:outputText value="Consecutivo"/>
+					</f:facet>
+					<h:outputText value="#{row['consecutivo']}"/>
+				</p:column>		
+				<p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.codigo}">
+					<f:facet name="header">
+						<h:outputText value="Código"/>
+					</f:facet>
+					<h:outputText value="#{row['codigo']}"/>
+				</p:column>		
+				<p:column class="MarAuto Responsive" sortBy="#{row.nombre}">
+					<f:facet name="header">
+						<h:outputText value="Descripción"/>
+					</f:facet>
+					<h:outputText value="#{row['nombre']}"/>
+				</p:column>		
+				<p:column class="MarAuto Responsive janal-wid-13 janal-column-right" sortBy="#{row.cantidad}">
+					<f:facet name="header">
+						<h:outputText value="Cantidad"/>
+					</f:facet>
+					<h:outputText value="#{row['cantidad']}"/>
+				</p:column>		
+				<p:column class="MarAuto Responsive janal-wid-15 janal-column-right" sortBy="#{row.importe}">
+					<f:facet name="header">
+						<h:outputText value="Importe"/>
+					</f:facet>
+					<h:outputText value="#{row['importe']}"/>
+				</p:column>		
+				<p:column class="MarAuto Responsive janal-wid-15 janal-column-right" sortBy="#{row.descripcion}">
+					<f:facet name="header">
+						<h:outputText value="Garantia"/>
+					</f:facet>
+					<h:outputText value="#{row['descripcion']}"/>
+				</p:column>		
+				<f:facet name="footer">
+					<p:outputLabel value="Total [#{manticFacturasTickets.lazyTicket== null? 0: manticFacturasTickets.lazyTicket.rowCount}] registros"/>
+				</f:facet>
+			</p:dataTable>	
+		</p:dialog>		
+	</ui:define>
 </ui:composition>

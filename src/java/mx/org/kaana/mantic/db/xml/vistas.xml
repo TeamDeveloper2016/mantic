@@ -1532,6 +1532,31 @@
 			</select>
 		</unit>
 		<unit id="VistaVentasDto">
+			<select id="devoluciones">
+ 				select 
+					tc_mantic_garantias_detalles.id_garantia_detalle as id_key,
+					tc_mantic_garantias.consecutivo,
+					tc_mantic_ventas_detalles.codigo,
+					tc_mantic_ventas_detalles.nombre,
+					tc_mantic_garantias_detalles.cantidad,
+					tc_mantic_garantias_detalles.importe,
+					tc_mantic_garantias_detalles.id_reparacion,
+					tc_janal_booleanos.descripcion
+				from 
+					tc_mantic_garantias
+				inner join 
+				  tc_mantic_garantias_detalles on tc_mantic_garantias.id_garantia= tc_mantic_garantias_detalles.id_garantia
+				inner join 
+				  tc_mantic_ventas_detalles on tc_mantic_garantias_detalles.id_venta_detalle= tc_mantic_ventas_detalles.id_venta_detalle
+				inner join
+				  tc_janal_booleanos on tc_mantic_garantias_detalles.id_reparacion= tc_janal_booleanos.id_booleano
+				where 
+					tc_mantic_garantias.id_venta= {idVenta}
+					and tc_mantic_garantias.id_garantia_estatus in (3,4,6)
+					and tc_mantic_garantias_detalles.cantidad> 0				
+			  order by
+				  tc_mantic_garantias.consecutivo, tc_mantic_ventas_detalles.codigo
+			</select>
 			<select id="tipoMedioPago">
 				select 
 					tr_mantic_venta_medio_pago.id_venta, group_concat(tc_mantic_tipos_medios_pagos.nombre order by tc_mantic_tipos_medios_pagos.nombre asc separator ', ') as medios
@@ -6036,6 +6061,15 @@
 			</select>
 		</unit>
 		<unit id="VistaFicticiasDto">
+			<select id="concentrado">
+ 				select 
+					ifnull(sum(tc_mantic_garantias.total), 0) as cantidad
+				from 
+					tc_mantic_garantias
+				where 
+					tc_mantic_garantias.id_venta= {idVenta}
+					and tc_mantic_garantias.id_garantia_estatus in (3,4,6)
+			</select>
 			<select id="devoluciones">
 				select 
 					ifnull(sum(tc_mantic_garantias_detalles.cantidad), 0) as cantidad

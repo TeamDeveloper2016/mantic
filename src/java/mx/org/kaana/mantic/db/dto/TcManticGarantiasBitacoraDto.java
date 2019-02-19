@@ -37,7 +37,7 @@ public class TcManticGarantiasBitacoraDto implements IBaseDto, Serializable {
   @Column (name="id_garantia")
   private Long idGarantia;
   @Column (name="consecutivo")
-  private Long consecutivo;
+  private String consecutivo;
   @Column (name="justificacion")
   private String justificacion;
   @Column (name="id_usuario")
@@ -62,7 +62,7 @@ public class TcManticGarantiasBitacoraDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticGarantiasBitacoraDto(Long idGarantia, Long consecutivo, String justificacion, Long idUsuario, Long idGarantiaEstatus, Long idGarantiaBitacora, Double importe) {
+  public TcManticGarantiasBitacoraDto(Long idGarantia, String consecutivo, String justificacion, Long idUsuario, Long idGarantiaEstatus, Long idGarantiaBitacora, Double importe) {
     setIdGarantia(idGarantia);
     setConsecutivo(consecutivo);
     setJustificacion(justificacion);
@@ -81,11 +81,11 @@ public class TcManticGarantiasBitacoraDto implements IBaseDto, Serializable {
     return idGarantia;
   }
 
-  public void setConsecutivo(Long consecutivo) {
+  public void setConsecutivo(String consecutivo) {
     this.consecutivo = consecutivo;
   }
 
-  public Long getConsecutivo() {
+  public String getConsecutivo() {
     return consecutivo;
   }
 

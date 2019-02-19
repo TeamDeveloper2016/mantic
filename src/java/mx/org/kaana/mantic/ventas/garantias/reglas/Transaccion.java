@@ -11,6 +11,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
@@ -236,12 +237,12 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // pagarVenta
 	
-	private void loadGarantia(Session sesion, Long idEstatusGarantia) throws Exception{
-		Long consecutivo= -1L;
+	private void loadGarantia(Session sesion, Long idEstatusGarantia) throws Exception {
+		Long consecutivo= 1L;
 		try {
 			this.garantiaDto= new TcManticGarantiasDto();
 			consecutivo= toSiguiente(sesion);			
-			this.garantiaDto.setConsecutivo(consecutivo);			
+			this.garantiaDto.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));			
 			this.garantiaDto.setOrden(consecutivo);			
 			this.garantiaDto.setIdGarantiaEstatus(idEstatusGarantia);
 			this.garantiaDto.setIdVenta(this.garantia.getTicketVenta().getIdVenta());
@@ -436,7 +437,7 @@ public class Transaccion extends IBaseTnx{
 		boolean regresar                     = false;
 		TcManticGarantiasBitacoraDto bitacora= null;
 		try {
-			bitacora= new TcManticGarantiasBitacoraDto(idGarantia, this.garantiaDto.getConsecutivo(),justificacion, JsfBase.getIdUsuario(), idGarantiaEstatus, -1L, this.garantiaDto.getTotal());
+			bitacora= new TcManticGarantiasBitacoraDto(idGarantia, this.garantiaDto.getConsecutivo(), justificacion, JsfBase.getIdUsuario(), idGarantiaEstatus, -1L, this.garantiaDto.getTotal());
 			regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 		} // try
 		catch (Exception e) {			
