@@ -33,7 +33,7 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.isMatriz}"/>
-              <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.empresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+              <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.empresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains" disabled="true">
 								<p:ajax event="change" process="@this panelBusqueda" listener="#{manticCatalogosAlmacenesUbicacionesArticulos.doLoadAlmacenes}" update="panelBusqueda" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()"/>
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
@@ -56,7 +56,7 @@
 								</f:facet>
 							</p:autoComplete>												
               <p:outputLabel for="almacen" value="Almacen:"/>
-              <p:selectOneMenu id="almacen" value="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.almacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="contains">
+              <p:selectOneMenu id="almacen" value="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.almacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="contains" disabled="true">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.almacenes}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>                
                 <p:column headerText="Nombre">
@@ -71,6 +71,12 @@
               <p:inputText id="anaquel" value="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.anaquel}" styleClass="janal-wid-100-txt"/>              
               <p:outputLabel for="charola" value="Charola:"/>
               <p:inputText id="charola" value="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.charola}" styleClass="janal-wid-100-txt"/>              
+							<p:outputLabel for="estatus" value="Estatus articulo:"/>
+              <p:selectOneMenu id="estatus" value="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.estatus}" styleClass="janal-wid-96">
+								<f:selectItem itemLabel="TODOS" itemValue="0"/>                
+								<f:selectItem itemLabel="ARTICULOS ASIGNADOS" itemValue="1"/>                
+								<f:selectItem itemLabel="ARTICULOS SIN ASIGNAR" itemValue="2"/>                
+							</p:selectOneMenu>
             </p:panelGrid>
             <p:separator/>
             <div class="janal-align-right lg-pantalla">
@@ -83,7 +89,9 @@
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
           <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosAlmacenesUbicacionesArticulos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosAlmacenesUbicacionesArticulos.lazyModel.rowCount gt manticCatalogosAlmacenesUbicacionesArticulos.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
-            <f:facet name="header" >
+            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
+						<f:facet name="header" >
               <div class="lg-pantalla">
                 <p:menuButton   value="Opciones">
                   <p:menuitem  value="Organigrama" action="#{manticCatalogosAlmacenesUbicacionesArticulos.doOrganigrama}" icon="fa fa-sitemap" title="Organigrama" onstart="return janal.bloquear()"/>						
@@ -146,7 +154,8 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="asignar" action="#{manticCatalogosAlmacenesUbicacionesArticulos.doAsignar}" icon="fa fa-map-marker" ajax="false" value="Asignar ubicación en almacen" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" />											
+            <p:menuitem id="asignar" action="#{manticCatalogosAlmacenesUbicacionesArticulos.doAsignar}" icon="fa fa-map-marker" ajax="false" value="Asignar ubicación en almacen" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{!manticCatalogosAlmacenesUbicacionesArticulos.asignado}"/>											
+            <p:menuitem id="reasignar" action="#{manticCatalogosAlmacenesUbicacionesArticulos.doReasignar}" icon="fa fa-map-marker" ajax="false" value="Reasignar ubicación en almacen" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{manticCatalogosAlmacenesUbicacionesArticulos.asignado}"/>											
           </p:contextMenu>
         </div>
       </div>
