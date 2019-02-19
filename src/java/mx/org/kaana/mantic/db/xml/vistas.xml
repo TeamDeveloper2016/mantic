@@ -6953,7 +6953,8 @@
 		<unit id="VistaAlmacenesUbicacionesDto">
 			<select id="lazy">
 				select 
-					tc_mantic_almacenes.id_almacen as id_key,
+					tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion as id_key, 
+					tc_mantic_almacenes.id_almacen,
 					tc_mantic_almacenes.id_empresa, 
 					tc_mantic_almacenes.clave,
 					tc_mantic_almacenes.nombre,
