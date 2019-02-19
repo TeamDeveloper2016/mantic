@@ -76,7 +76,7 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 			ArticuloVenta pivote= null;
 			if(!articulos.isEmpty()) 
 				for (ArticuloVenta articulo: articulos) {
-    			params.put("idVentaDetalle", articulo.getKey());
+    			params.put("idVentaDetalle", articulo.getIdComodin());
 					Value devoluciones= (Value)DaoFactory.getInstance().toField("VistaFicticiasDto", "devoluciones", params, "cantidad");
 					articulo.setDescuento("0");
 					articulo.setExtras("0");

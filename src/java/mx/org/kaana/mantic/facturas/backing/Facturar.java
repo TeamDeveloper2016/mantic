@@ -200,6 +200,8 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 		String regresar= null;
 		try {			
 			JsfBase.setFlashAttribute("idFicticia", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia());
+      JsfBase.setFlashAttribute("cliente", this.cliente);
+      JsfBase.setFlashAttribute("tickets", this.tickets);
 			regresar= this.attrs.get("retorno") != null ? (String)this.attrs.get("retorno") : "filtro";
 		} // try
 		catch (Exception e) {
