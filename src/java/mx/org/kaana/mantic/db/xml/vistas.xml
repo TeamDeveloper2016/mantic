@@ -1541,7 +1541,8 @@
 					tc_mantic_garantias_detalles.cantidad,
 					tc_mantic_garantias_detalles.importe,
 					tc_mantic_garantias_detalles.id_reparacion,
-					tc_janal_booleanos.descripcion
+					tc_janal_booleanos.descripcion,
+			  	tc_mantic_garantias_detalles.registro
 				from 
 					tc_mantic_garantias
 				inner join 
