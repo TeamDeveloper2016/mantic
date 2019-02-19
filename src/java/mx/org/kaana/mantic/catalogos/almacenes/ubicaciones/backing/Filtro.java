@@ -34,9 +34,14 @@ public class Filtro extends Comun implements Serializable {
     try {
       this.attrs.put("idPrincipal", 1L);
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());			
 			toLoadEmpresas();
 			doLoadAlmacenes(); 
+			if(JsfBase.getFlashAttribute("idAlmacenUbicacion")!= null){
+				this.attrs.put("idAlmacenUbicacion", JsfBase.getFlashAttribute("idAlmacenUbicacion"));
+				doLoad();
+				this.attrs.put("idAlmacenUbicacion", null);
+			} // if				
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -80,6 +85,8 @@ public class Filtro extends Comun implements Serializable {
 		  regresar.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 		if(!almacen.getKey().equals(-1L))
 		  sb.append("tc_mantic_almacenes.id_almacen=").append(almacen.getKey()).append(" and ");
+		if(this.attrs.get("idAlmacenUbicacion")!= null && !Cadena.isVacio(this.attrs.get("idAlmacenUbicacion")))
+			sb.append("tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion=").append(this.attrs.get("idAlmacenUbicacion")).append(" and ");			
 		if(this.attrs.get("piso")!= null && !Cadena.isVacio(this.attrs.get("piso")))
 			sb.append("tc_mantic_almacenes_ubicaciones.piso like '%").append(this.attrs.get("piso")).append("%' and ");			
 		if(this.attrs.get("cuarto")!= null && !Cadena.isVacio(this.attrs.get("cuarto")))
@@ -142,20 +149,7 @@ public class Filtro extends Comun implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     } // finally
-	} // toLoadAlmacenes
-
-  public String doArticulos() {
-    String regresar= null;
-		try {			
-			JsfBase.setFlashAttribute("retorno", "filtro");
-			regresar= "articulos".concat(Constantes.REDIRECIONAR);			
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch
-		return regresar;
-  } // doArticulos
+	} // toLoadAlmacenes  
   
 	public String doOrganigrama() {
     String regresar= null;
@@ -176,6 +170,7 @@ public class Filtro extends Comun implements Serializable {
 		try {			
 			JsfBase.setFlashAttribute("retorno", "filtro");
 			JsfBase.setFlashAttribute("empresaOrganigram", ((Entity)this.attrs.get("seleccionado")).toString("idEmpresa"));
+			JsfBase.setFlashAttribute("idAlmacenUbicacion", ((Entity)this.attrs.get("seleccionado")).toString("idAlmacenUbicacion"));
 			regresar= "organigrama".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
@@ -190,6 +185,8 @@ public class Filtro extends Comun implements Serializable {
 		try {			
 			JsfBase.setFlashAttribute("retorno", "filtro");
 			JsfBase.setFlashAttribute("empresaOrganigram", ((Entity)this.attrs.get("seleccionado")).toString("idEmpresa"));
+			JsfBase.setFlashAttribute("idAlmacen", ((Entity)this.attrs.get("seleccionado")).toString("idAlmacen"));
+			JsfBase.setFlashAttribute("idAlmacenUbicacion", ((Entity)this.attrs.get("seleccionado")).toString("idAlmacenUbicacion"));
 			regresar= "articulos".concat(Constantes.REDIRECIONAR);			
 		} // try
 		catch (Exception e) {
