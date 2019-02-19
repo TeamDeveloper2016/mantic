@@ -55,10 +55,14 @@ public class Organigrama extends IBaseFilter implements Serializable {
   @PostConstruct
   @Override
   protected void init() {
+		boolean retorno= false;
     try {			       						
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());			
-			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")!= null? JsfBase.getFlashAttribute("retorno"): "filtro");			
+			retorno= JsfBase.getFlashAttribute("retorno")!= null;
+			if(retorno)
+				this.attrs.put("idAlmacenUbicacion", JsfBase.getFlashAttribute("idAlmacenUbicacion"));			
+			this.attrs.put("retorno", retorno ? JsfBase.getFlashAttribute("retorno"): "filtro");			
 			String pivote= ((boolean)this.attrs.get("isMatriz"))? JsfBase.getAutentifica().getEmpresa().getDependencias(): this.attrs.get("idEmpresa").toString();
 			this.attrs.put("empresaOrganigram", JsfBase.getFlashAttribute("retorno")!= null? JsfBase.getFlashAttribute("empresaOrganigram"): pivote);
 			this.attrs.put("descripcion", "");
@@ -163,7 +167,10 @@ public class Organigrama extends IBaseFilter implements Serializable {
   } // onCollapseNode
 	
 	public String doCancelar(){
-		return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+		String retorno= (String)this.attrs.get("retorno");
+		if(retorno.equals("filtro"))
+			JsfBase.setFlashAttribute("idAlmacenUbicacion", this.attrs.get("idAlmacenUbicacion"));
+		return retorno.concat(Constantes.REDIRECIONAR);
 	} // doCancelar  
 	
 	public void doAgregar() {
