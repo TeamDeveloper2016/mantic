@@ -37,6 +37,10 @@ public class Articulos extends IBaseArticulos implements Serializable {
 			this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa")!= null ? JsfBase.getFlashAttribute("idEmpresa"): JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")!= null ? JsfBase.getFlashAttribute("retorno") : "filtro");
 			this.attrs.put("buscaPorCodigo", false);
+			this.attrs.put("idAlmacen", JsfBase.getFlashAttribute("idAlmacen"));
+			this.attrs.put("idAlmacenUbicacion", JsfBase.getFlashAttribute("idAlmacenUbicacion"));
+			this.attrs.put("empresaOrganigram", JsfBase.getFlashAttribute("empresaOrganigram"));
+			this.attrs.put("estatus", "1");
 			toLoadEmpresas();
 			doLoadAlmacenes(); 
 			if(JsfBase.getFlashAttribute("idArticulo")!= null) {
@@ -44,6 +48,8 @@ public class Articulos extends IBaseArticulos implements Serializable {
 				doLoad();
 				this.attrs.put("idArticulo", null);
 			} // if
+			else
+				doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -86,8 +92,12 @@ public class Articulos extends IBaseArticulos implements Serializable {
 		  regresar.put("sucursales", empresa.getKey());
 		else
 		  regresar.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-		if(!almacen.getKey().equals(-1L))
+		if(this.attrs.get("estatus").toString().equals("1"))
 		  sb.append("tc_mantic_almacenes.id_almacen=").append(almacen.getKey()).append(" and ");
+		if(this.attrs.get("estatus").toString().equals("2"))
+		  sb.append("tc_mantic_almacenes.id_almacen is null and ");
+		if(this.attrs.get("estatus").toString().equals("0"))
+		  sb.append("(tc_mantic_almacenes.id_almacen=").append(almacen.getKey()).append(" or tc_mantic_almacenes.id_almacen is null) and ");
 		if(articulo!= null && !articulo.getKey().equals(-1L))
 			sb.append("tc_mantic_almacenes_articulos.id_articulo=").append(articulo.getKey()).append(" and ");			
 		else if(this.attrs.get("idArticulo")!= null)
@@ -100,6 +110,8 @@ public class Articulos extends IBaseArticulos implements Serializable {
 			sb.append("tc_mantic_almacenes_ubicaciones.anaquel like '%").append(this.attrs.get("anaquel")).append("%' and ");			
 		if(this.attrs.get("charola")!= null && !Cadena.isVacio(this.attrs.get("charola")))
 			sb.append("tc_mantic_almacenes_ubicaciones.charola like '%").append(this.attrs.get("charola")).append("%' and ");			
+		/*if(this.attrs.get("estatus").toString().equals(2))
+			sb.append("tc_mantic_almacenes_ubicaciones.charola like '%").append(this.attrs.get("charola")).append("%' and ");			*/
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	
@@ -118,7 +130,7 @@ public class Articulos extends IBaseArticulos implements Serializable {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
-			this.attrs.put("empresa", new UISelectEntity("-1"));
+			this.attrs.put("empresa", new UISelectEntity(this.attrs.get("empresaOrganigram").toString()));
     } // try
     catch (Exception e) {
       throw e;
@@ -142,10 +154,12 @@ public class Articulos extends IBaseArticulos implements Serializable {
 				columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 				columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 				this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
+				this.attrs.put("almacen", new UISelectEntity(this.attrs.get("idAlmacen").toString()));
 			} // if
-			else
+			else{
 				this.attrs.put("almacenes", new ArrayList<>());
-			this.attrs.put("almacen", new UISelectEntity("-1"));
+				this.attrs.put("almacen", new UISelectEntity("-1"));
+			}	// else		
     } // try
     catch (Exception e) {
       throw e;
@@ -158,8 +172,12 @@ public class Articulos extends IBaseArticulos implements Serializable {
 
   public String doCancelar() {    
 		String regresar= null;
-		try {						
-			regresar= ((String) this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+		String retorno = null;
+		try {					
+			retorno= ((String) this.attrs.get("retorno"));
+			if(retorno.equals("filtro"))
+				JsfBase.setFlashAttribute("idAlmacenUbicacion", this.attrs.get("idAlmacenUbicacion"));
+			regresar= retorno.concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -193,4 +211,11 @@ public class Articulos extends IBaseArticulos implements Serializable {
 		} // catch
 		return regresar;
   } // doOrganigrama
+	
+	public boolean getAsignado(){
+		boolean regresar= false;
+		if(((Entity)this.attrs.get("seleccionado"))!= null)
+			regresar= ((Entity)this.attrs.get("seleccionado")).get("idAlmacen").getData()!= null;
+		return regresar;
+	} // getAsignado
 }
