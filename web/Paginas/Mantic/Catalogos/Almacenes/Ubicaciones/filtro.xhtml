@@ -75,16 +75,14 @@
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >
               <div class="lg-pantalla">
-                <p:menuButton value="Opciones">
-                  <p:menuitem value="Articulos" action="#{manticCatalogosAlmacenesUbicacionesFiltro.doArticulos}" icon="fa fa-cube" title="Articulos" onstart="return janal.bloquear()"/>						
+                <p:menuButton value="Opciones">                  
                   <p:menuitem value="Organigrama" action="#{manticCatalogosAlmacenesUbicacionesFiltro.doOrganigrama}" icon="fa fa-sitemap" title="Organigrama" onstart="return janal.bloquear()"/>						
                   <p:separator/>
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                 </p:menuButton>
               </div>  
-              <div class="xs-pantalla">              
-                <p:commandButton  value="Articulos" action="#{manticCatalogosAlmacenesUbicacionesFiltro.doArticulos}" icon="fa fa-cube" title="Articulos" onstart="return janal.bloquear()"/>						
+              <div class="xs-pantalla">                              
                 <p:commandButton  value="Organigrama" action="#{manticCatalogosAlmacenesUbicacionesFiltro.doOrganigrama}" icon="fa fa-sitemap" title="Organigrama" onstart="return janal.bloquear()"/>						
                 <p:separator/>
                 <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -126,9 +124,9 @@
             </f:facet>
           </p:dataTable>          
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="articulos" action="#{manticCatalogosAlmacenesUbicacionesFiltro.doArticulosIndividual()}" icon="fa fa-search" ajax="false" value="Articulos" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem id="articulos" process="@this tabla" action="#{manticCatalogosAlmacenesUbicacionesFiltro.doArticulosIndividual}" icon="fa fa-search" value="Articulos" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator/>
-						<p:menuitem id="ubicacion" action="#{manticCatalogosAlmacenesUbicacionesFiltro.doOrganigramaIndividual()}" icon="fa fa-edit" ajax="false" value="Ubicaciones" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+						<p:menuitem id="ubicacion" process="@this tabla" action="#{manticCatalogosAlmacenesUbicacionesFiltro.doOrganigramaIndividual}" icon="fa fa-edit" value="Ubicaciones" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
           </p:contextMenu>
         </div>
       </div>
