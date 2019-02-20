@@ -994,7 +994,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		return regresar;		
 	} // toPrepare
 	
-	public void doPrintTicket(){
+	public void doPrintTicket() {
 		Entity seleccionado      = null;
 		Map<String, Object>params= null;
 		CreateTicket ticket      = null;
