@@ -78,11 +78,11 @@
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this contenedorGrupos" actionListener="#{manticCatalogosAlmacenesUbicacionesReubicar.doAceptar}" update="panelDetalle panelDetalleDos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
-			<p:commandButton id="regresar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosAlmacenesUbicacionesReubicar.doRegresar}" immediate="true"/>
+			<p:commandButton id="regresar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosAlmacenesUbicacionesReubicar.doRegresar}" immediate="true"/>
 		</div>	
 		<div class="xs-pantalla">
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@this contenedorGrupos" actionListener="#{manticCatalogosAlmacenesUbicacionesReubicar.doAceptar}" update="panelDetalle panelDetalleDos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
-			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosAlmacenesUbicacionesReubicar.doRegresar}" immediate="true"/>
+			<p:commandButton id="regresarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosAlmacenesUbicacionesReubicar.doRegresar}" immediate="true"/>
 		</div>	
 	</ui:define>	
   <ui:param name="componenteBloqueo" value="contenedorGrupos" />	
