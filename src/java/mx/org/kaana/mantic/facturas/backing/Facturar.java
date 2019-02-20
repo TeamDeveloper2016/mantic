@@ -402,7 +402,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			campos.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
 			vendedores= UIEntity.build("VistaTcJanalUsuariosDto", "cambioUsuario", params, campos, Constantes.SQL_TODOS_REGISTROS);
 			rc= UIBackingUtilities.getCurrentInstance();
-			if(!vendedores.isEmpty()){
+			if(!vendedores.isEmpty()) {
 				this.attrs.put("vendedores", vendedores);
 				this.attrs.put("vendedor", UIBackingUtilities.toFirstKeySelectEntity(vendedores));
 				rc.execute("PF('dlgCloseTicket').show();");

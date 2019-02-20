@@ -792,6 +792,12 @@
 										</f:facet>
 										<h:outputText value="#{filtro['estatus']}"/>
 									</p:column>		
+									<p:column class="MarAuto Responsive janal-wid-13">
+										<f:facet name="header">
+											<h:outputText value="Medio pago"/>
+										</f:facet>
+										<h:outputText value="#{manticVentasCajaAccion.doTipoMedioPago(filtro)}"/>
+									</p:column>		
 									<p:column style="width:32px;text-align: center">
 										<p:commandButton icon="ui-icon-print" title="Ticket" action="#{manticVentasCajaAccion.doPrintTicket}">
 											<f:setPropertyActionListener value="#{filtro}" target="#{manticVentasCajaAccion.attrs.seleccionTicket}" />

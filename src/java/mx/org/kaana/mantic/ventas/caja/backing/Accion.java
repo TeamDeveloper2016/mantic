@@ -13,6 +13,7 @@ import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EBooleanos;
@@ -107,6 +108,26 @@ public class Accion extends IBaseVenta implements Serializable {
 		return lazyModelTicket;
 	}	
 	
+  public String getTipoMedioPago(Entity row) {
+		String regresar= null;
+    Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("idVenta", row.toLong("idVenta"));
+			Value value= (Value)DaoFactory.getInstance().toField("VistaVentasDto", "tipoMedioPago", params, "medios");
+			if(value!= null)
+				regresar= value.toString();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+      JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally		
+		return regresar;
+	}
+
 	@PostConstruct
   @Override
   protected void init() {		
@@ -1127,4 +1148,5 @@ public class Accion extends IBaseVenta implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doAsignaApartado
+	
 }
