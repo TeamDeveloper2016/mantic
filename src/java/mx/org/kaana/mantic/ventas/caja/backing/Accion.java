@@ -943,7 +943,8 @@ public class Accion extends IBaseVenta implements Serializable {
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
-      columns.add(new Columna("hora", EFormatoDinamicos.HORA_CORTA));      			
+      columns.add(new Columna("hora", EFormatoDinamicos.HORA_CORTA));     
+			params.put("sortOrder", "order by tc_mantic_ventas.registro desc");
       this.lazyModelTicket = new FormatCustomLazy("VistaConsultasDto", params, columns);
       UIBackingUtilities.resetDataTable("tablaTicket");
 		} // try
