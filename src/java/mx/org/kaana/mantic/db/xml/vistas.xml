@@ -7263,7 +7263,9 @@
 				where 					
 					tc_mantic_almacenes.id_empresa in ({sucursales})
 				and 
-					tc_mantic_almacenes_ubicaciones.nivel= {nivel}								
+					tc_mantic_almacenes_ubicaciones.nivel= {nivel}				
+				and 
+					tc_mantic_almacenes.id_almacen= {idAlmacen}				
 				order by 
 					tc_mantic_almacenes_ubicaciones.piso,
 					tc_mantic_almacenes_ubicaciones.cuarto,

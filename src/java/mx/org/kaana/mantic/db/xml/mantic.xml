@@ -3282,6 +3282,17 @@
 					id_almacen= {idAlmacen}
 				  and piso= 'GENERAL'
 			</select>
+			<select id="dependencia">
+				select
+					tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion as id_key,
+					tc_mantic_almacenes_ubicaciones.*
+				from 
+					tc_mantic_almacenes_ubicaciones
+				where
+					id_almacen= {idAlmacen}
+				  {condicion}
+					and nivel &gt;= {nivel}
+			</select>
 			<delete id="rows">
         delete from tc_mantic_almacenes_ubicaciones where id_almacen={idAlmacen} 
       </delete>
