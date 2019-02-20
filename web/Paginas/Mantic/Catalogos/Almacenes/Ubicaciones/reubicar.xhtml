@@ -21,13 +21,13 @@
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
 			<div class="ui-grid-row janal-grid-row">								
 				<div id="collapse-content" class="ui-grid-col-12">
-					<p:panelGrid id="panelDetalle" columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-80, janal-wid-20">
+					<p:panelGrid id="panelDetalle" columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-50, janal-wid-40">
 						<p:outputLabel value="Código:"/>						
 						<p:outputLabel value="Articulo:"/>												
 						<p:outputLabel value="Almacen:"/>																							
 						<p:inputText value="#{manticCatalogosAlmacenesUbicacionesReubicar.attrs.articulo.codigo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>
 						<p:inputText value="#{manticCatalogosAlmacenesUbicacionesReubicar.attrs.articulo.nombreArticulo}" styleClass="janal-wid-100-txt" disabled="true"/>						
-						<p:inputText value="#{manticCatalogosAlmacenesUbicacionesReubicar.attrs.articulo.almacen}" styleClass="janal-wid-100-txt" disabled="true"/>					
+						<p:inputText value="#{manticCatalogosAlmacenesUbicacionesReubicar.attrs.articulo.nombre}" styleClass="janal-wid-100-txt" disabled="true"/>					
 					</p:panelGrid>					
 					<p:panelGrid id="panelDetalleDos" columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-30, janal-wid-20, janal-wid-20">												
 						<p:outputLabel value="Piso:"/>			
@@ -48,6 +48,7 @@
 					<h:panelGrid id="contenedorGrupos" styleClass="janal-wid-100">
 						<p:outputLabel for="nivel" value="Nivel:" styleClass="janal-wid-100-txt"/>
 						<p:selectOneMenu id="nivel" value="#{manticCatalogosAlmacenesUbicacionesReubicar.attrs.nivel}" styleClass="janal-wid-100-txt">
+							<p:ajax event="change" onstart="janal.bloquear()" process="@this" listener="#{manticCatalogosAlmacenesUbicacionesReubicar.doLoadUbicaciones}" update="ubicacion" oncomplete="janal.desbloquear();"/>
 							<f:selectItems value="#{manticCatalogosAlmacenesUbicacionesReubicar.attrs.niveles}"/>
 						</p:selectOneMenu>
 						<p:outputLabel for="ubicacion" value="Ubicación:" styleClass="janal-wid-100-txt"/>
@@ -76,11 +77,11 @@
   </ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this contenedorGrupos" actionListener="#{manticCatalogosAlmacenesUbicacionesReubicar.doAceptar}" update="panelDetalle" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this contenedorGrupos" actionListener="#{manticCatalogosAlmacenesUbicacionesReubicar.doAceptar}" update="panelDetalle panelDetalleDos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 			<p:commandButton id="regresar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosAlmacenesUbicacionesReubicar.doRegresar}" immediate="true"/>
 		</div>	
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@this contenedorGrupos" actionListener="#{manticCatalogosAlmacenesUbicacionesReubicar.doAceptar}" update="panelDetalle" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@this contenedorGrupos" actionListener="#{manticCatalogosAlmacenesUbicacionesReubicar.doAceptar}" update="panelDetalle panelDetalleDos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosAlmacenesUbicacionesReubicar.doRegresar}" immediate="true"/>
 		</div>	
 	</ui:define>	

@@ -155,7 +155,7 @@
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
             <p:menuitem id="asignar" action="#{manticCatalogosAlmacenesUbicacionesArticulos.doAsignar}" icon="fa fa-map-marker" ajax="false" value="Asignar ubicación en almacen" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{!manticCatalogosAlmacenesUbicacionesArticulos.asignado}"/>											
-            <p:menuitem id="reasignar" action="#{manticCatalogosAlmacenesUbicacionesArticulos.doReasignar}" icon="fa fa-map-marker" ajax="false" value="Reasignar ubicación en almacen" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{manticCatalogosAlmacenesUbicacionesArticulos.asignado}"/>											
+            <p:menuitem id="reasignar" action="#{manticCatalogosAlmacenesUbicacionesArticulos.doAsignar}" icon="fa fa-map-marker" ajax="false" value="Reasignar ubicación en almacen" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{manticCatalogosAlmacenesUbicacionesArticulos.asignado}"/>											
           </p:contextMenu>
         </div>
       </div>

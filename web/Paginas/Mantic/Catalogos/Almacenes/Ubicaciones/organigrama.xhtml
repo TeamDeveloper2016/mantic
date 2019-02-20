@@ -37,6 +37,12 @@
           case 'eliminar':
             eliminar();
             break;          
+          case 'modificar':
+            modificar();
+            break;          
+          case 'consultar':
+            consultar();
+            break;          
         } // switch       
       } // methodExecute		
 			
@@ -98,8 +104,10 @@
 	  </style>		
   </ui:define>
   <ui:define name="contenido">  
-		<p:remoteCommand name="agregar" onstart="return janal.bloquear();" process="@this tabla" action="#{manticCatalogosAlmacenesOrganigrama.doAgregar}"/>    
-		<p:remoteCommand name="eliminar" onstart="return janal.bloquear();" process="@this tabla" action="#{manticCatalogosAlmacenesOrganigrama.doDetalleEliminar}"/>    
+		<p:remoteCommand name="agregar" onstart="return janal.bloquear();" process="@this tabla" actionListener="#{manticCatalogosAlmacenesOrganigrama.doAgregar('agregar')}"/>    
+		<p:remoteCommand name="eliminar" onstart="return janal.bloquear();" process="@this tabla" actionListener="#{manticCatalogosAlmacenesOrganigrama.doDetalleEliminar}"/>    
+		<p:remoteCommand name="consultar" onstart="return janal.bloquear();" process="@this tabla" action="#{manticCatalogosAlmacenesOrganigrama.doConsultar}"/>    
+		<p:remoteCommand name="modificar" onstart="return janal.bloquear();" process="@this tabla" actionListener="#{manticCatalogosAlmacenesOrganigrama.doAgregar('modificar')}"/>    
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">                 
         <div id="collapse-content" class="ui-grid-col-12">
@@ -133,13 +141,15 @@
 							<p:spacer/>							
 						</p:organigramNode>
 						<p:organigramNode type="piso">
-							<h:panelGrid columns="1" columnClasses="janal-column-center" style="width: 100%; height: 70px;">
+							<h:panelGrid columns="1" columnClasses="janal-column-center" style="width: 100%; height: 70px;">								
 								<h:outputText value="#{node.data.piso}" class="descripcion-titulo" title="#{node.data.descripcion}"/>		
 								<h:outputText value="[Piso, #{node.data.articulos} articulos]" class="descripcion-nodo"/>							
 							</h:panelGrid>									
 							<div id="icons" class="janal-align-left-icon">								
 								<i class="fa fa-plus janal-color-icon" onclick="methodExecute(this, 'agregar');" title="Agregar cuarto"></i>																
-								<i class="fa fa-close janal-color-icon" onclick="methodExecute(this, 'eliminar');" title="Eliminar piso"></i>
+								<i class="fa fa-edit janal-color-icon" onclick="methodExecute(this, 'modificar');" title="Modificar cuarto"></i>																
+								<i class="fa fa-remove janal-color-icon" onclick="methodExecute(this, 'eliminar');" title="Eliminar piso"></i>
+								<i class="fa fa-list-alt janal-color-icon" onclick="methodExecute(this, 'consultar');" title="Consultar articulos"></i>
 							</div>  
 							<p:spacer/>							
 						</p:organigramNode>
@@ -150,7 +160,9 @@
 							</h:panelGrid>
 							<div id="icons" class="janal-align-left-icon">								
 								<i class="fa fa-plus janal-color-icon" onclick="methodExecute(this, 'agregar');" title="Agregar anaquel"></i>																
-								<i class="fa fa-close janal-color-icon" onclick="methodExecute(this, 'eliminar');" title="Eliminar cuarto"></i>
+								<i class="fa fa-edit janal-color-icon" onclick="methodExecute(this, 'modificar');" title="Modificar cuarto"></i>																
+								<i class="fa fa-remove janal-color-icon" onclick="methodExecute(this, 'eliminar');" title="Eliminar cuarto"></i>
+								<i class="fa fa-list-alt janal-color-icon" onclick="methodExecute(this, 'consultar');" title="Consultar articulos"></i>
 							</div>  
 							<p:spacer/>							
 						</p:organigramNode>
@@ -161,7 +173,9 @@
 							</h:panelGrid>							
 							<div id="icons" class="janal-align-left-icon">								
 								<i class="fa fa-plus janal-color-icon" onclick="methodExecute(this, 'agregar');" title="Agregar charola"></i>
-								<i class="fa fa-close janal-color-icon" onclick="methodExecute(this, 'eliminar');" title="Eliminar anaquel"></i>
+								<i class="fa fa-edit janal-color-icon" onclick="methodExecute(this, 'modificar');" title="Modificar cuarto"></i>																
+								<i class="fa fa-remove janal-color-icon" onclick="methodExecute(this, 'eliminar');" title="Eliminar anaquel"></i>
+								<i class="fa fa-list-alt janal-color-icon" onclick="methodExecute(this, 'consultar');" title="Consultar articulos"></i>
 							</div>  
 							<p:spacer/>							
 						</p:organigramNode>
@@ -171,7 +185,9 @@
 								<h:outputText value="[Charola, #{node.data.articulos} articulos]" class="descripcion-nodo"/>							
 							</h:panelGrid>
 							<div id="icons" class="janal-align-left-icon">															
-								<i class="fa fa-close janal-color-icon" onclick="methodExecute(this, 'eliminar');" title="Eliminar charola"></i>
+								<i class="fa fa-edit janal-color-icon" onclick="methodExecute(this, 'modificar');" title="Modificar cuarto"></i>																
+								<i class="fa fa-remove janal-color-icon" onclick="methodExecute(this, 'eliminar');" title="Eliminar charola"></i>
+								<i class="fa fa-list-alt janal-color-icon" onclick="methodExecute(this, 'consultar');" title="Consultar articulos"></i>
 							</div>							
 							<p:spacer/>							
 						</p:organigramNode>											
@@ -195,7 +211,7 @@
 	</ui:define>
   <ui:param name="componenteBloqueo" value="tabla"/>  	
 	<ui:define name="dialogos">
-		<p:dialog id="dialogoDetalle" widgetVar="dlgDetalle" header="Agregar #{manticCatalogosAlmacenesOrganigrama.attrs.tipo}" closable="false" resizable="false" dynamic="true" closeOnEscape="true" onShow="janal.change('formDialogo', fieldsDialog);janal.refresh();" position="center" width="600px">
+		<p:dialog id="dialogoDetalle" widgetVar="dlgDetalle" header="#{manticCatalogosAlmacenesOrganigrama.attrs.tituloAccion} #{manticCatalogosAlmacenesOrganigrama.attrs.tipo}" closable="false" resizable="false" dynamic="true" closeOnEscape="true" onShow="janal.change('formDialogo', fieldsDialog);janal.refresh();" position="center" width="600px">
 			<h:form id="formDialogo" prependId="false">
 				<h:panelGrid columns="2" styleClass="janal-col-100" columnClasses="janal-wid-col-130, janal-wid-100">
 					<p:outputLabel for="nombre" value="#{manticCatalogosAlmacenesOrganigrama.attrs.tipoFormat}: " style="font-weight: bold"/>
@@ -218,8 +234,8 @@
 				</h:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-column-right">
-					<p:commandButton id="aceptarNuevo" icon="fa fa-check" value="Aceptar" process="@this dialogoDetalle" onstart="return validateCaptura();" actionListener="#{manticCatalogosAlmacenesOrganigrama.doAceptar}" oncomplete="janal.desbloquear();organigramClear();janal.restore();janal.refresh();" update="tabla"/>
-					<p:commandButton id="cancelarNuevo" icon="fa fa-close" value="Cancelar" onstart="PF('dlgDetalle').hide();organigramClear();" oncomplete="organigramClear();janal.desbloquear();" update="tabla"/>
+					<p:commandButton id="aceptarNuevo" icon="fa fa-check" value="Aceptar" process="@this dialogoDetalle" onstart="return validateCaptura();" actionListener="#{manticCatalogosAlmacenesOrganigrama.doAceptar ( manticCatalogosAlmacenesOrganigrama.attrs.tituloAccion )}" oncomplete="janal.desbloquear();organigramClear();janal.restore();janal.refresh();" update="tabla"/>
+					<p:commandButton id="cancelarNuevo" icon="fa fa-close" value="Cancelar" onstart="PF('dlgDetalle').hide();organigramClear();" oncomplete="janal.restore();janal.refresh();organigramClear();janal.desbloquear();" update="tabla"/>
 				</div>
 			</h:form>			
     </p:dialog>
