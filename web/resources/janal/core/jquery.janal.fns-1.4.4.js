@@ -5,6 +5,18 @@
  *time 06:17:55 PM
  *author Team Developer 2016 <team.developer@kaana.org.mx>
  */
+PrimeFaces.widget.AutoComplete.prototype.alignPanel = function() {
+	var fixedPosition = this.panel.css('position') === 'fixed';
+	var win           = $(window);
+	var positionOffset= fixedPosition? '-'+ win.scrollLeft()+ ' -'+ win.scrollTop(): null;
+	var panelWidth    = null;
+	if(this.cfg.multiple) 
+		panelWidth= this.multiItemContainer.innerWidth()- (this.input.position().left- this.multiItemContainer.position().left);
+	else 
+		panelWidth= this.input.innerWidth();
+	this.panel.css({left: '', top: '', width: panelWidth}).position({my: 'left top', at: 'left bottom', of: this.input, collision: 'none', offset: positionOffset});
+};
+
 PrimeFaces.widget.CustomSticky = PrimeFaces.widget.Sticky.extend({
   init : function(cfg) {
     this._super(cfg);
