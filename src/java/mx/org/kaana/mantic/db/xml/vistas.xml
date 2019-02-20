@@ -6955,6 +6955,10 @@
 		<unit id="VistaAlmacenesUbicacionesDto">
 			<select id="lazy">
 				select 
+				  principal.*,
+					(select count(*) from tc_mantic_almacenes_articulos where id_almacen_ubicacion= principal.id_almacen_ubicacion) as total_articulos
+				from (
+				select 
 					tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion as id_key, 
 					tc_mantic_almacenes.id_almacen,
 					tc_mantic_almacenes.id_empresa, 
@@ -6976,7 +6980,7 @@
 					tc_mantic_almacenes.id_empresa in ({sucursales})
 				and
 					{condicion}
-					{sortOrder}
+					{sortOrder}) principal
 			</select>
 			<select id="lazyArticulo">
 				select 
@@ -6997,7 +7001,8 @@
 					tc_mantic_articulos_codigos.codigo,				  
 					tc_mantic_articulos.descripcion descripcion_articulo,
 					tc_mantic_articulos.id_articulo,
-					tc_mantic_almacenes_articulos.id_almacen_articulo
+					tc_mantic_almacenes_articulos.id_almacen_articulo,
+					tc_mantic_almacenes_articulos.stock
 				from 					
 					tc_mantic_articulos 
 				inner join  
