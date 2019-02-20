@@ -1036,6 +1036,7 @@
 			$('#cuenta').prop('disabled', '').removeClass('ui-state-disabled'); 				
 			$('#cuenta').val('');
 			$('#password').val('');
+			if($('#iktan-slide-menu').length> 0) { $('#iktan-slide-menu').hide(); } 
 			setTimeout("$('#cuenta').focus();", 500);						
 		},			
 		disabledLogin: function() {
@@ -1044,6 +1045,7 @@
 			$('.janal-login-block').attr('style', 'display: ');				
 			$('#cancelar').prop('disabled', '').removeClass('ui-state-disabled'); 
 			$('#cancelarIcon').prop('disabled', '').removeClass('ui-state-disabled');
+			if($('#iktan-slide-menu').length> 0) { $('#iktan-slide-menu').show(); } 
 		},
 		toPassword: function() {
 			$('#password').focus();

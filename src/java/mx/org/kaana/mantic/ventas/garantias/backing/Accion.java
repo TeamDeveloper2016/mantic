@@ -25,6 +25,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
@@ -41,6 +42,7 @@ import mx.org.kaana.mantic.ventas.garantias.beans.Garantia;
 import mx.org.kaana.mantic.ventas.garantias.beans.PagoGarantia;
 import mx.org.kaana.mantic.ventas.garantias.reglas.AdminGarantia;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.StreamedContent;
 
 @Named(value= "manticVentasGarantiasAccion")
 @ViewScoped
@@ -49,26 +51,21 @@ public class Accion extends IBaseVenta implements Serializable {
   private static final long serialVersionUID  = 327393488565639367L;
 	private static final String CLAVE_VENTA_GRAL= "VENTA";	
 	private TicketVenta ticketOriginal;
-	private EOrdenes tipoOrden;		
+	private StreamedContent image;
 	
 	public Accion() {
 		super("menudeo");
 	}
-	
-	public String getTitulo() {
-		return "(".concat(tipoOrden.name()).concat(")");
-	}
 
-	public EOrdenes getTipoOrden() {
-		return tipoOrden;
-	}	  
+	public StreamedContent getImage() {
+		return image;
+	}
 	
 	@PostConstruct
   @Override
   protected void init() {	
 		EAccion accion= null;
     try {
-			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null ? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null ? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null ? -1L: JsfBase.getFlashAttribute("idVenta"));
       this.attrs.put("idGarantia", JsfBase.getFlashAttribute("idGarantia")== null ? -1L: JsfBase.getFlashAttribute("idGarantia"));
@@ -91,6 +88,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("disabledFacturar", false);			
 			this.attrs.put("apartado", false);			
 			this.attrs.put("isEfectivo", true);			
+			this.image= LoadImages.getImage(-1L);
 			if(JsfBase.isAdminEncuestaOrAdmin())
 				loadSucursales();						
 			accion= (EAccion) this.attrs.get("accion");
@@ -278,7 +276,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // finally
 	} // doLoadTicketAbiertos
 	
-	private String toCondicion(){
+	private String toCondicion() {
 		StringBuilder regresar= null;
 		Date fecha            = null;
 		EAccion accion        = null;
@@ -419,7 +417,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 	} // doOpenCobro	
 	
-	public void doVerificaCantidadArticulos(Integer index){
+	public void doVerificaCantidadArticulos(Integer index) {
 		Double cantidad         = 0D;
 		Double cantidadGarantia = 0D;
 		Articulo articuloAltered= null;
@@ -427,20 +425,22 @@ public class Accion extends IBaseVenta implements Serializable {
 			articuloAltered= this.getAdminOrden().getArticulos().get(index);
 			cantidad= articuloAltered.getCantidad();
 			cantidadGarantia= articuloAltered.getCantidadGarantia();			
-			if(!(cantidad<= cantidadGarantia)){
+			if(!(cantidad<= cantidadGarantia)) {
 				this.getAdminOrden().getArticulos().get(index).setCantidad(cantidadGarantia);
 				JsfBase.addMessage("Cantidad de articulos", "La cantidad de articulos capturada no es valida, el maximo es de ".concat(String.valueOf(cantidadGarantia)), ETipoMensaje.ERROR);
 			} // if
+			this.image= LoadImages.getImage(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), String.valueOf(articuloAltered.getIdArticulo()));
+			this.attrs.put("idArticulo", articuloAltered.getIdArticulo());
+			this.attrs.put("descripcion", articuloAltered.getNombre());
 			super.doCalculate(index);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
-			throw e;
 		} // catch				
 	} // doVerificaCantidadArticulos
 	
-	public void doActivarPago(){
+	public void doActivarPago() {
 		String tipoPago= null;				
 		try {					
 			tipoPago= this.attrs.get("tipoPago").toString();

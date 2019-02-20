@@ -820,6 +820,7 @@
 					tc_mantic_cierres.id_cierre as id_key,
 					tc_mantic_empresas.id_empresa,
 					tc_mantic_empresas.clave as empresa,
+				  tc_mantic_empresas.nombre as nombre_empresa,  
 					tc_mantic_cajas.clave as caja,
 					tc_mantic_cajas.id_caja,
 					tc_mantic_cajas.limite,
@@ -6007,7 +6008,7 @@
           tc_mantic_ventas_detalles.unidad_medida,
           tc_mantic_ventas_detalles.utilidad,
           tc_mantic_ventas_detalles.registro,
-          (tc_mantic_ventas_detalles.cantidad - if(garantia_cantidad.cantidad is null, 0, garantia_cantidad.cantidad)) as cantidad,
+          0 as cantidad,
           (tc_mantic_ventas_detalles.cantidad - if(garantia_cantidad.cantidad is null, 0, garantia_cantidad.cantidad)) as cantidad_garantia,
 					tr_mantic_articulo_proveedor.id_proveedor,
 					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio

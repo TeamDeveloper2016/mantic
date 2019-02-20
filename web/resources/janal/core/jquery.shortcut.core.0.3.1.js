@@ -256,6 +256,12 @@ shortcut.add("f10", function() {
 shortcut.add("f12", function() {
 	janal.console('Ocultar los datos facturacion:');
 	if($("#janal-contenedor-datos").length> 0) 
+	  $('#janal-icon-plus').hide();
+	  $('#janal-icon-minus').hide();
+		if($('#janal-contenedor-datos').is(":visible"))
+		 $('#janal-icon-plus').show();
+    else
+		 $('#janal-icon-minus').show();
 		$("#janal-contenedor-datos").fadeToggle(1000, "linear");
 });
 

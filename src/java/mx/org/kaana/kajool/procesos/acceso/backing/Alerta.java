@@ -50,7 +50,7 @@ public class Alerta extends IBaseAttribute implements Serializable {
 					List<Entity> cajas= DaoFactory.getInstance().toEntitySet("VistaCierresCajasDto", "global", params);
 					for (Entity caja : cajas) {
 						regresar.append("<tr><td class=\"janal-column-left janal-color-yellow\">");
-						regresar.append(caja.toString("empresa"));
+						regresar.append(caja.toString("nombreEmpresa"));
 						regresar.append("</td><td class=\"janal-column-left janal-color-yellow janal-wid-10\">");
 						regresar.append(caja.toString("caja"));
 						regresar.append("</td><td class=\"janal-column-right janal-color-yellow janal-wid-13\">");
