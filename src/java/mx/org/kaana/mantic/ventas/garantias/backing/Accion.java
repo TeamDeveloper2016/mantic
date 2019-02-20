@@ -234,7 +234,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // doAsignaCliente
 	
 	@Override
-	public void doLoadTicketAbiertos(){
+	public void doLoadTicketAbiertos() {
 		List<UISelectEntity> ticketsAbiertos= null;
 		Map<String, Object>params           = null;
 		List<Columna> campos                = null;
@@ -380,7 +380,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 	} // doAsignaClienteTicketAbierto
 	
-	private void loadCajas(){
+	private void loadCajas() {
 		List<UISelectEntity> cajas= null;
 		Map<String, Object>params = null;
 		List<Columna> columns     = null;

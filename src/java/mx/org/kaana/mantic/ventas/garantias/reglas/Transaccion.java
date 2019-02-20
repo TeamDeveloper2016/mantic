@@ -44,8 +44,6 @@ public class Transaccion extends IBaseTnx{
 	private String justificacion;
 	private String messageError;
 	private IBaseDto dto;	
-	private boolean isNuevoCierre;
-	private Double cierreCaja;
 	private Long idCierreVigente;
 	
 	public Transaccion(IBaseDto dto) {
@@ -77,8 +75,6 @@ public class Transaccion extends IBaseTnx{
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
 		boolean regresar      = false;
-		this.isNuevoCierre    = false;
-		this.cierreCaja       = 0D;		
 		Long idEstatusGarantia= 1L;
 		try {						
 			switch(accion) {					
@@ -115,14 +111,14 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // ejecutar		
 	
-	private boolean procesarGarantia(Session sesion) throws Exception{
+	private boolean procesarGarantia(Session sesion) throws Exception {
 		boolean regresar= false;
 		try {
-			regresar= generarGarantia(sesion, EEstatusGarantias.ELABORADA.getIdEstatusGarantia());
-			if(regresar){				
-				if(verificarCierreCaja(sesion)){
-					if(registrarPagos(sesion))					
-						regresar= alterarStockArticulos(sesion);
+			regresar= this.generarGarantia(sesion, EEstatusGarantias.ELABORADA.getIdEstatusGarantia());
+			if(regresar) {				
+				if(this.verificarCierreCaja(sesion)){
+					if(this.registrarPagos(sesion))					
+						regresar= this.alterarStockArticulos(sesion);
 				} // if				
 			} // if
 		} // try
@@ -132,7 +128,7 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // procesarVenta				
 	
-	public boolean verificarCierreCaja(Session sesion) throws Exception{
+	public boolean verificarCierreCaja(Session sesion) throws Exception {
 		boolean regresar         = true;
 		Map<String, Object>params= null;
 		TcManticCierresDto cierre= null;
@@ -161,14 +157,12 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // verificarCierreCaja
 	
-	public boolean alterarCierreCaja(Session sesion, Long idTipoMedioPago) throws Exception{
-		boolean regresar               = true;
-		TcManticCajasDto caja          = null;
-		Double limiteCaja              = 0D;		
+	public boolean alterarCierreCaja(Session sesion, Long idTipoMedioPago) throws Exception {
+		boolean regresar     = true;
+		TcManticCajasDto caja= null;
 		try {
 			caja= (TcManticCajasDto) DaoFactory.getInstance().findById(sesion, TcManticCajasDto.class, this.garantia.getIdCaja());
-			limiteCaja= caja.getLimite();
-			toCierreActivo(sesion, idTipoMedioPago);			
+			this.toCierreActivo(sesion, idTipoMedioPago);			
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -176,7 +170,7 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // alterarCierreCaja	
 	
-	private void toCierreActivo(Session sesion, Long idTipoMedioPago) throws Exception{
+	private void toCierreActivo(Session sesion, Long idTipoMedioPago) throws Exception {
 		Map<String, Object>params         = null;
 		TcManticCierresCajasDto cierreCaja= null;
 		try {
@@ -193,7 +187,7 @@ public class Transaccion extends IBaseTnx{
 		} // catch		
 	} // toCierreActivo
 	
-	private TcManticCierresDto toCierreNuevo(Session sesion) throws Exception{
+	private TcManticCierresDto toCierreNuevo(Session sesion) throws Exception {
 		TcManticCierresDto regresar= null;
 		TcManticCierresDto registro= null;
 		Cierre cierreNuevo         = null;
@@ -205,11 +199,8 @@ public class Transaccion extends IBaseTnx{
 			registro.setIdUsuario(JsfBase.getIdUsuario());
 			registro.setObservaciones("Apertura de cierre");								
 			cierreNuevo= new Cierre(this.garantia.getIdCaja(), 0D, registro, new ArrayList<>(), new ArrayList<>());				
-			if(cierreNuevo.toNewCierreCaja(sesion)){
-				this.isNuevoCierre= true;				
-				this.cierreCaja= 0D;
+			if(cierreNuevo.toNewCierreCaja(sesion))
 				regresar= cierreNuevo.getCierre();
-			} // if
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -217,14 +208,14 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // toCierreNuevo		
 	
-	private boolean generarGarantia(Session sesion, Long idEstatusGarantia) throws Exception{
+	private boolean generarGarantia(Session sesion, Long idEstatusGarantia) throws Exception {
 		boolean regresar         = false;
 		Map<String, Object>params= null;		
 		try {							
-			loadGarantia(sesion, idEstatusGarantia);			
+			this.loadGarantia(sesion, idEstatusGarantia);			
 			if(DaoFactory.getInstance().insert(sesion, this.garantiaDto)>= 1L){
-				regresar= registraBitacora(sesion, this.garantiaDto.getIdGarantia(), idEstatusGarantia, "Se generó la garantía de forma correcta.");				
-				toFillArticulos(sesion, this.garantia.getArticulos());
+				regresar= this.registraBitacora(sesion, this.garantiaDto.getIdGarantia(), idEstatusGarantia, "Se generó la garantía de forma correcta.");				
+				this.toFillArticulos(sesion, this.garantia.getArticulos());
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -291,7 +282,7 @@ public class Transaccion extends IBaseTnx{
 		} // for
 	} // toFillArticulos
 	
-	private boolean registrarPagos(Session sesion) throws Exception{
+	private boolean registrarPagos(Session sesion) throws Exception {
 		boolean regresar                 = true;		
 		TrManticGarantiaMedioPagoDto pago= null;
 		try {						
@@ -317,7 +308,7 @@ public class Transaccion extends IBaseTnx{
 		return regresar; 
 	} // registrarPagos	
 	
-	private boolean alterarStockArticulos(Session sesion) throws Exception{
+	private boolean alterarStockArticulos(Session sesion) throws Exception {
 		TcManticAlmacenesArticulosDto almacenArticulo= null;
 		TcManticArticulosDto articuloVenta           = null;		
 		Map<String, Object>params                    = null;
@@ -354,7 +345,7 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // alterarStockArticulos
 	
-	private boolean generarAlmacenArticulo(Session sesion, Long idArticulo, Double cantidad) throws Exception{
+	private boolean generarAlmacenArticulo(Session sesion, Long idArticulo, Double cantidad) throws Exception {
 		boolean regresar                             = false;
 		TcManticAlmacenesArticulosDto almacenArticulo= null;
 		try {
@@ -374,7 +365,7 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // generarAlmacenArticulo
 	
-	private Long toIdAlmacenUbicacion(Session sesion) throws Exception{
+	private Long toIdAlmacenUbicacion(Session sesion) throws Exception {
 		Long regresar                            = -1L;
 		TcManticAlmacenesUbicacionesDto ubicacion= null;
 		Map<String, Object>params                = null;		
@@ -399,7 +390,7 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // toIdAlmacenUbicacion
 	
-	private boolean actualizaInventario(Session sesion, Long idArticulo, Double cantidad) throws Exception{
+	private boolean actualizaInventario(Session sesion, Long idArticulo, Double cantidad) throws Exception {
 		boolean regresar                 = false;
 		TcManticInventariosDto inventario= null;
 		Map<String, Object>params        = null;
@@ -433,7 +424,7 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // actualizaInventario
 	
-	protected boolean registraBitacora(Session sesion, Long idGarantia, Long idGarantiaEstatus, String justificacion) throws Exception{
+	protected boolean registraBitacora(Session sesion, Long idGarantia, Long idGarantiaEstatus, String justificacion) throws Exception {
 		boolean regresar                     = false;
 		TcManticGarantiasBitacoraDto bitacora= null;
 		try {

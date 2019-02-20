@@ -517,7 +517,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getImpuestos(), // impuestos, 
 			this.getSubTotal(), // subTotal, 
 			this.getCantidad(), // cantidad, 
-			2L// idReparacion
+			this.isAplicar()? 1L: 2L // idReparacion
 		);
 	}
 	

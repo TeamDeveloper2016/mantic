@@ -107,7 +107,7 @@
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>												
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.codigo}">
+            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.codigo}">
               <f:facet name="header">
                 <h:outputText value="Código"/>
               </f:facet>
@@ -119,7 +119,7 @@
               </f:facet>
               <h:outputText value="#{row['nombreArticulo']}"/>
             </p:column>		            
-            <p:column class="MarAuto Responsive janal-wid-30" sortBy="#{row.nombre}">
+            <p:column class="MarAuto Responsive janal-wid-30" sortBy="#{row.nombre}" rendered="false">
               <f:facet name="header">
                 <h:outputText value="Almacen"/>
               </f:facet>
@@ -149,13 +149,19 @@
               </f:facet>
               <h:outputText value="#{row['charola']}"/>
             </p:column>					                                    
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.stock}">
+              <f:facet name="header">
+                <h:outputText value="Stock"/>
+              </f:facet>
+              <h:outputText value="#{row['stock']}"/>
+            </p:column>		
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticCatalogosAlmacenesUbicacionesArticulos.lazyModel== null? 0: manticCatalogosAlmacenesUbicacionesArticulos.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="asignar" action="#{manticCatalogosAlmacenesUbicacionesArticulos.doAsignar}" icon="fa fa-map-marker" ajax="false" value="Asignar ubicación en almacen" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{!manticCatalogosAlmacenesUbicacionesArticulos.asignado}"/>											
-            <p:menuitem id="reasignar" action="#{manticCatalogosAlmacenesUbicacionesArticulos.doAsignar}" icon="fa fa-map-marker" ajax="false" value="Reasignar ubicación en almacen" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{manticCatalogosAlmacenesUbicacionesArticulos.asignado}"/>											
+            <p:menuitem id="asignar" action="#{manticCatalogosAlmacenesUbicacionesArticulos.doAsignar}" icon="fa fa-map-marker" ajax="false" value="Asignar ubicación" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{!manticCatalogosAlmacenesUbicacionesArticulos.asignado}"/>											
+            <p:menuitem id="reasignar" action="#{manticCatalogosAlmacenesUbicacionesArticulos.doAsignar}" icon="fa fa-map-marker" ajax="false" value="Reasignar ubicación" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{manticCatalogosAlmacenesUbicacionesArticulos.asignado}"/>											
           </p:contextMenu>
         </div>
       </div>
