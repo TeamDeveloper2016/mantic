@@ -43,6 +43,12 @@ public class Articulos extends IBaseArticulos implements Serializable {
 			this.attrs.put("estatus", "1");
 			toLoadEmpresas();
 			doLoadAlmacenes(); 
+			if(this.attrs.get("retorno").toString().equals("organigrama")){
+				this.attrs.put("piso", JsfBase.getFlashAttribute("piso"));
+				this.attrs.put("cuarto", JsfBase.getFlashAttribute("cuarto"));
+				this.attrs.put("anaquel", JsfBase.getFlashAttribute("anaquel"));
+				this.attrs.put("charola", JsfBase.getFlashAttribute("charola"));
+			} // if
 			if(JsfBase.getFlashAttribute("idArticulo")!= null) {
 				this.attrs.put("idArticulo", JsfBase.getFlashAttribute("idArticulo"));
 				doLoad();
@@ -190,6 +196,9 @@ public class Articulos extends IBaseArticulos implements Serializable {
 		String regresar= null;
 		try {						
 			JsfBase.setFlashAttribute("idArticulo", ((Entity)this.attrs.get("seleccionado")).getKey());
+			JsfBase.setFlashAttribute("idAlmacen", this.attrs.get("idAlmacen"));
+			JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));			
+			JsfBase.setFlashAttribute("idAlmacenUbicacion", this.attrs.get("idAlmacenUbicacion"));
 			regresar= "reubicar".concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {

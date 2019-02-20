@@ -10,6 +10,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Error;
@@ -37,6 +38,10 @@ public class Reubicar extends Comun implements Serializable {
 			if(JsfBase.getFlashAttribute("idArticulo")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");      
       this.attrs.put("idArticulo", JsfBase.getFlashAttribute("idArticulo")); 			
+      this.attrs.put("sucursales", JsfBase.getFlashAttribute("idEmpresa")); 			
+      this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa")); 			
+      this.attrs.put("idAlmacen", JsfBase.getFlashAttribute("idAlmacen")); 
+			this.attrs.put("idAlmacenUbicacion", JsfBase.getFlashAttribute("idAlmacenUbicacion"));			
 			doLoad();
 			loadNiveles();
 			doLoadUbicaciones();
@@ -63,10 +68,9 @@ public class Reubicar extends Comun implements Serializable {
 		} // catch		
 	} // loadNiveles
 	
-	private void doLoadUbicaciones(){
+	public void doLoadUbicaciones(){
 		List<UISelectEntity> ubicaciones= null;
-		try {
-			this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias()); 
+		try {			
 			ubicaciones= UIEntity.build("VistaUbicacionesDto", "ubicacionesNivel", this.attrs);
 			this.attrs.put("ubicaciones", ubicaciones);
 			this.attrs.put("ubicacion", UIBackingUtilities.toFirstKeySelectEntity(ubicaciones));
@@ -101,6 +105,10 @@ public class Reubicar extends Comun implements Serializable {
 	public String doRegresar() {
 		String regresar= null;		
 		JsfBase.setFlashAttribute("idArticulo", this.attrs.get("idArticulo"));		
+		JsfBase.setFlashAttribute("idAlmacen", this.attrs.get("idAlmacen"));		
+		JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));		
+		JsfBase.setFlashAttribute("empresaOrganigram", this.attrs.get("idEmpresa"));
+		JsfBase.setFlashAttribute("idAlmacenUbicacion", this.attrs.get("idAlmacenUbicacion"));
 		regresar=	"articulos".concat(Constantes.REDIRECIONAR);
 		return regresar;
 	} // doRegresar					
@@ -114,15 +122,15 @@ public class Reubicar extends Comun implements Serializable {
 			ubicacion= ((List<UISelectEntity>)this.attrs.get("ubicaciones")).get(((List<UISelectEntity>)this.attrs.get("ubicaciones")).indexOf((UISelectEntity) this.attrs.get("ubicacion")));
 			articulo= (Entity) this.attrs.get("articulo");			
 			articulo.put("idAlmacen", ubicacion.get("idAlmacen"));			
-			articulo.put("idAlmacenUbicacion", ubicacion.get("idAlmacenUbicacion"));			
+			articulo.put("idAlmacenUbicacion", new Value("idAlmacenUbicacion", ubicacion.getKey()));			
 			accion= articulo.get("idAlmacenArticulo").getData()!= null ? EAccion.MODIFICAR : EAccion.ASIGNAR;
 			transaccion= new Transaccion(articulo);
 			if(transaccion.ejecutar(accion)){
-				JsfBase.addAlert("Asignación de ubicación", "Se asigno la ubicación de forma correcta.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Asignación de ubicación", "Se asigno la ubicación de forma correcta.", ETipoMensaje.INFORMACION);
 				doLoad();
 			} // if
 			else
-				JsfBase.addAlert("Asignación de ubicación", "Ocurrio un error al asignar la ubicación.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Asignación de ubicación", "Ocurrio un error al asignar la ubicación.", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

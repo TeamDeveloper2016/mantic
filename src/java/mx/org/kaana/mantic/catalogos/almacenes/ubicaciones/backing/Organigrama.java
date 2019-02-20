@@ -22,8 +22,6 @@ import mx.org.kaana.mantic.catalogos.almacenes.ubicaciones.reglas.Transaccion;
 import mx.org.kaana.mantic.enums.ENivelUbicacion;
 import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
-import org.primefaces.event.SelectEvent;
-import org.primefaces.event.organigram.OrganigramNodeCollapseEvent;
 import org.primefaces.model.DefaultOrganigramNode;
 import org.primefaces.model.OrganigramNode;
 
@@ -129,60 +127,24 @@ public class Organigrama extends IBaseFilter implements Serializable {
 		} // catch		
 	} // createTree
 	
-	public void onNodeExpand(SelectEvent event){     
-    MotorBusqueda gestor          = null;
-    List<OrganigramNode> childrens= null;        
-    OrganigramNode seleccionado   = null;     
-    try {      
-      seleccionado= (OrganigramNode) event.getObject();
-      gestor= new MotorBusqueda((OrganigramUbicacion) seleccionado.getData());
-      childrens= gestor.toChildrens();
-      seleccionado.getChildren().clear();
-      if(!childrens.isEmpty()){        
-        for(OrganigramNode childNode: childrens){
-          if(!((OrganigramUbicacion)childNode.getData()).isUltimoNivel()) 
-            childNode.getChildren().add(new DefaultOrganigramNode());
-          seleccionado.getChildren().add(childNode);
-        } // for
-      } // if                  
-    } // try 
-    catch (Exception e) {
-      JsfBase.addMessageError(e);
-      Error.mensaje(e);      
-    } // catch    
-  } // doExpand  
-	
-	public void onCollapseNode(OrganigramNodeCollapseEvent event){
-    OrganigramNode seleccionado= null;    
-    try {
-      seleccionado= event.getOrganigramNode();
-      seleccionado.getChildren().clear();
-      seleccionado.getChildren().add(new DefaultOrganigramNode());
-      seleccionado.setExpanded(false);      
-    } // try
-    catch (Exception e) {
-      JsfBase.addMessageError(e);
-      Error.mensaje(e);      
-    } // catch    
-  } // onCollapseNode
-	
 	public String doCancelar(){
 		String retorno= (String)this.attrs.get("retorno");
 		if(retorno.equals("filtro"))
 			JsfBase.setFlashAttribute("idAlmacenUbicacion", this.attrs.get("idAlmacenUbicacion"));
-		return retorno.concat(Constantes.REDIRECIONAR);
-	} // doCancelar  
+		return (retorno.equals("organigrama") ? "filtro" : retorno).concat(Constantes.REDIRECIONAR);
+	} // doCancelar
 	
-	public void doAgregar() {
+	public void doAgregar(String accion) {
     OrganigramUbicacion seleccionado= null;
     RequestContext rc               = null;
     try {
       rc= UIBackingUtilities.getCurrentInstance();
       if(this.node!= null) {
         seleccionado= (OrganigramUbicacion) this.node.getData(); 				
-        this.attrs.put("tipo", ENivelUbicacion.fromIdNivel(seleccionado.getNivel().getIdNivelUbicacion()).name().toLowerCase());        
+        this.attrs.put("tipo", ENivelUbicacion.fromIdNivel(accion.equals("agregar") ? seleccionado.getNivel().getIdNivelUbicacion() : seleccionado.getNivel().getIdNivelUbicacion()-1).name().toLowerCase());        
         this.attrs.put("tipoFormat", Cadena.letraCapital(ENivelUbicacion.fromIdNivel(seleccionado.getNivel().getIdNivelUbicacion()).name().toLowerCase()));        
 				this.attrs.put("seleccionado", seleccionado);
+				this.attrs.put("tituloAccion", Cadena.letraCapital(accion));
         rc.update("dialogoDetalle");
         rc.execute("PF('dlgDetalle').show();");
       } // if
@@ -228,16 +190,18 @@ public class Organigrama extends IBaseFilter implements Serializable {
     } // finally      
   } // doConsultarDetalle		
 	
-	public void doAceptar(){
+	public void doAceptar(String accion){
 		Transaccion transaccion= null;
+		EAccion eaccion        = null;
 		try {
+			eaccion= !EAccion.valueOf(accion.toUpperCase()).equals(EAccion.AGREGAR) ? EAccion.MOVIMIENTOS : EAccion.AGREGAR;
 			transaccion= new Transaccion((OrganigramUbicacion)this.attrs.get("seleccionado"), this.attrs.get("descripcion").toString(), this.attrs.get("nombre").toString());
-			if(transaccion.ejecutar(EAccion.AGREGAR)){
-				JsfBase.addMessage("Se agregó de forma correcta el nivel", ETipoMensaje.INFORMACION);
+			if(transaccion.ejecutar(eaccion)){
+				JsfBase.addMessage("Se".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" de forma correcta el nivel"), ETipoMensaje.INFORMACION);
 				doLoad();
 			} // if
 			else
-				JsfBase.addMessage("Ocurrió un error al agregar el nivel", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Ocurrió un error al".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el nivel"), ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -261,4 +225,25 @@ public class Organigrama extends IBaseFilter implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doAceptar
+	
+	public String doConsultar(){
+		String regresar                 = null;
+		OrganigramUbicacion seleccionado= null;
+		try {			
+			seleccionado= (OrganigramUbicacion) this.node.getData();
+			JsfBase.setFlashAttribute("retorno", "organigrama");
+			JsfBase.setFlashAttribute("empresaOrganigram", seleccionado.getIdEmpresa());
+			JsfBase.setFlashAttribute("idAlmacen", seleccionado.getIdAlmacen());
+			JsfBase.setFlashAttribute("piso", seleccionado.getPiso());
+			JsfBase.setFlashAttribute("cuarto", seleccionado.getCuarto());
+			JsfBase.setFlashAttribute("anaquel", seleccionado.getAnaquel());
+			JsfBase.setFlashAttribute("charola", seleccionado.getCharola());
+			regresar= "articulos".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		return regresar;
+	} // doConsultar
 }
