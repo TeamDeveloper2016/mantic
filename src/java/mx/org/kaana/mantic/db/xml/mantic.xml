@@ -1617,6 +1617,19 @@
 				  ejercicio= {ejercicio} 
 				  and id_empresa= {idEmpresa}				
 			</select>		
+			<select id="folio">
+				select
+				  consecutivo, registro
+				from
+				  tc_mantic_creditos_notas
+				where
+				  folio = '{folio}'
+				  and id_proveedor= {idProveedor}
+				  and date_format(registro, '%Y%m%d')&gt;= '{inicio}' and date_format(registro, '%Y%m%d')&lt;= '{termino}'
+					and id_credito_nota&lt;&gt; {idCreditoNota}
+				order by
+				  registro desc				
+			</select>
     </unit>		
     <unit id="TcManticCreditosEstatusDto">
       <select id="row">

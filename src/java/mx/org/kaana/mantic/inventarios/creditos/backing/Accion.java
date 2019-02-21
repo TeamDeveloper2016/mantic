@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.inventarios.creditos.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
@@ -251,6 +253,10 @@ public class Accion extends IBaseImportar implements Serializable {
 
 	public void doFileUpload(FileUploadEvent event) {
 		this.doFileUpload(event, this.orden.getRegistro().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos"), (String)this.attrs.get("carpeta"));
+		if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name())) {
+			this.orden.setFolio(this.getFactura().getFolio());
+			this.doCheckFolio();
+		} // if
 	} // doFileUpload	
 	
 	public void doTabChange(TabChangeEvent event) {
@@ -277,4 +283,33 @@ public class Accion extends IBaseImportar implements Serializable {
 		this.doUpdateRfc(this.proveedor);
 	}
 
+	public void doCheckFolio() {
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("folio", this.orden.getFolio());
+			params.put("idProveedor", this.orden.getIdProveedor());
+			params.put("idCreditoNota", this.orden.getIdCreditoNota());
+			int month= Calendar.getInstance().get(Calendar.MONTH);
+			if(month<= 5) {
+				params.put("inicio", Calendar.getInstance().get(Calendar.YEAR)+ "0101");
+				params.put("termino", Calendar.getInstance().get(Calendar.YEAR)+ "0630");
+			} // if
+			else {
+				params.put("inicio", Calendar.getInstance().get(Calendar.YEAR)+ "0701");
+				params.put("termino", Calendar.getInstance().get(Calendar.YEAR)+ "1231");
+			} // else
+			Entity entity= (Entity)DaoFactory.getInstance().toEntity("TcManticCreditosNotasDto", "folio", params);
+			if(entity!= null && entity.size()> 0) 
+				UIBackingUtilities.execute("$('#contenedorGrupos\\\\:folio').val('');janal.show([{summary: 'Error:', detail: 'El folio ["+ this.orden.getFolio()+ "] se registró en la nota de credito "+ entity.toString("consecutivo")+ ", el dia "+ Global.format(EFormatoDinamicos.FECHA_HORA, entity.toTimestamp("registro"))+ " hrs.'}]);");
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
+	
 }
