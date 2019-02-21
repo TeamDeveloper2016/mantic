@@ -538,7 +538,7 @@ public class RegistroArticulo implements Serializable {
 		try {
 			if (this.importado != null && !Cadena.isVacio(this.importado.getName())) 
 				doCancelar();
-			genericPath= Configuracion.getInstance().getPropiedadSistemaServidor("path.image").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat(File.separator);
+			genericPath= Configuracion.getInstance().getPropiedadSistemaServidor("path.image").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat("/");
 			result= new File(genericPath.concat(nameFile));		
 			filePath= new File(genericPath);
 			if (!filePath.exists())
