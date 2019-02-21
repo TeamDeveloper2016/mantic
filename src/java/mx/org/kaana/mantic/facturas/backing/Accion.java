@@ -304,7 +304,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch		
 	} // doReCalculatePreciosArticulos
-
+	
 	@Override
 	protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
 		String descuentoPivote = null;
@@ -701,9 +701,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			motorBusqueda= new MotorBusqueda(-1L);
 			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
-			this.attrs.put("clienteSeleccion", seleccion);
-			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
-			doReCalculatePreciosArticulos(seleccion.getKey());		
+			this.attrs.put("clienteSeleccion", seleccion);			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -743,21 +741,10 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
     } // finally
 	}	// doUpdateClientes
 	
-	public void doActualizaPrecioCliente(){
-		List<UISelectEntity> clientesSeleccion= null;
-		UISelectEntity clienteSeleccion       = null;
-		boolean precioVigente                 = false;
+	public void doActualizaPrecioCliente(){		
+		UISelectEntity clienteSeleccion= null;		
 		try {
-			clienteSeleccion= (UISelectEntity) this.attrs.get("clienteSeleccion");
-			precioVigente= clienteSeleccion!= null && !clienteSeleccion.getKey().equals(-1L);
-			if(precioVigente){
-				clientesSeleccion= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
-				clienteSeleccion= clientesSeleccion.get(clientesSeleccion.indexOf(clienteSeleccion));
-				setPrecio(Cadena.toBeanNameEspecial(clienteSeleccion.toString("tipoVenta")));				
-			} // if
-			else
-				setPrecio("menudeo");
-			doReCalculatePreciosArticulos(precioVigente, clienteSeleccion.getKey());
+			clienteSeleccion= (UISelectEntity) this.attrs.get("clienteSeleccion");			
 			loadDomicilios(clienteSeleccion.getKey());
 		} // try
 		catch (Exception e) {
