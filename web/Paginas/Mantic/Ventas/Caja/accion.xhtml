@@ -831,9 +831,11 @@
 				<p:outputLabel value="Pago:" styleClass="font-resume-venta-detail janal-color-green"/><p:outputLabel value="$" styleClass="janal-color-green"/>
 				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.pago$}" styleClass="janal-color-green"/>
 				<p:outputLabel value="Efectivo:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
-				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.efectivo}"/>				
-				<p:outputLabel value="T. de credito/debito:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
-				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.credito}"/>
+				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.efectivo}"/>
+				<p:outputLabel value="T. de debito:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
+				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.debito}"/>				
+				<p:outputLabel value="T. de credito:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
+				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.credito}"/>				
 				<p:outputLabel value="Transferencia:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
 				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.transferencia}"/>
 				<p:outputLabel value="Cheque nominativo:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
@@ -847,7 +849,7 @@
 				<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>
-		<p:dialog id="dialogoCotizacion" widgetVar="dlgCotizacion" header="Cotización" resizable="false" closable="false" responsive="true" width="40%">
+		<p:dialog id="dialogoCotizacion" widgetVar="dlgCotizacion" header="Cotización" resizable="false" closable="false" responsive="true" width="40%" closeOnEscape="true" onHide="janal.desbloquear();">
 			<p:outputLabel value="¿ Deseas continuar con la finalización del ticket como una cotización ?"/>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
