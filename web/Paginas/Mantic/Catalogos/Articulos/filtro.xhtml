@@ -170,16 +170,16 @@
 							<f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{manticCatalogosArticulosFiltro.attrs.seleccionado}" />
 						</p:menuitem>	
 						<p:separator/>
-						<p:menuitem id="modificar" action="#{manticCatalogosArticulosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+						<p:menuitem id="modificar" action="#{manticCatalogosArticulosFiltro.doAccion('MODIFICAR')}" process="@this tabla" icon="fa fa-edit" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
 						<p:separator/>
-						<p:menuitem id="consultar" action="#{manticCatalogosArticulosFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+						<p:menuitem id="consultar" action="#{manticCatalogosArticulosFiltro.doAccion('CONSULTAR')}" process="@this tabla" icon="fa fa-search" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator/>
-						<p:menuitem id="clonar" action="#{manticCatalogosArticulosFiltro.doAccion('COPIAR')}" icon="fa fa-copy" ajax="false" value="Clonar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+						<p:menuitem id="clonar" action="#{manticCatalogosArticulosFiltro.doAccion('COPIAR')}" process="@this tabla" icon="fa fa-copy" value="Clonar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator rendered="#{manticCatalogosArticulosFiltro.attrs.seleccionado.idFacturama eq '-1'}"/>
 						<p:menuitem id="facturama" icon="fa fa-gear" value="Sincronizar" title="Registrar articulo en facturama" onstart="return janal.bloquear()" process="@this tabla" oncomplete="janal.desbloquear()" action="#{manticCatalogosArticulosFiltro.doPublicarFacturama}"/>
 						<p:separator rendered="#{manticCatalogosArticulosFiltro.attrs.seleccionado.idImagen.toLong ne 0}"/>
-						<p:menuitem id="replicar" action="#{manticCatalogosArticulosFiltro.doReplicar()}" icon="fa fa-file-picture-o" ajax="false" value="Replicar imagen" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"  rendered="#{manticCatalogosArticulosFiltro.attrs.seleccionado.idImagen.toLong ne 0}"/>
+						<p:menuitem id="replicar" action="#{manticCatalogosArticulosFiltro.doReplicar()}" process="@this tabla" icon="fa fa-file-picture-o" value="Replicar imagen" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosArticulosFiltro.attrs.seleccionado.idImagen.toLong ne 0}"/>
 					</p:contextMenu>					
 				</div>
 			</div>
