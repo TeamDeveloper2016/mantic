@@ -39,7 +39,6 @@ import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.ventas.caja.beans.Pago;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
 
