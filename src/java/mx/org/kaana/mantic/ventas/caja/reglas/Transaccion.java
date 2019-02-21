@@ -435,6 +435,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			getOrden().setIdVentaEstatus(idEstatusVenta);			
 			getOrden().setIdFacturar(this.ventaFinalizada.isFacturar() && validacionEstatus ? SI : NO);
 			getOrden().setIdCredito(this.ventaFinalizada.isCredito() && validacionEstatus ? SI : NO);
+			getOrden().setCobro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 			if(this.ventaFinalizada.isFacturar() && validacionEstatus){				
 				this.clienteDeault= getOrden().getIdCliente().equals(toClienteDefault(sesion));
 				if(this.clienteDeault){
