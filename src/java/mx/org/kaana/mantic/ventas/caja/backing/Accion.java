@@ -108,7 +108,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		return lazyModelTicket;
 	}	
 	
-  public String getTipoMedioPago(Entity row) {
+  public String doTipoMedioPago(Entity row) {
 		String regresar= null;
     Map<String, Object> params=null;
 		try {

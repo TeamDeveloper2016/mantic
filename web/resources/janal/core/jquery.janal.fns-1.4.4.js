@@ -11,10 +11,10 @@ PrimeFaces.widget.AutoComplete.prototype.alignPanel = function() {
 	var positionOffset= fixedPosition? '-'+ win.scrollLeft()+ ' -'+ win.scrollTop(): null;
 	var panelWidth    = null;
 	if(this.cfg.multiple) 
-		panelWidth= this.multiItemContainer.innerWidth()- (this.input.position().left- this.multiItemContainer.position().left);
+		panelWidth= this.multiItemContainer.innerWidth()- (this.input.position().left- this.multiItemContainer.position().left)+ 150;
 	else 
-		panelWidth= this.input.innerWidth();
-	this.panel.css({left: '', top: '', width: panelWidth}).position({my: 'left top', at: 'left bottom', of: this.input, collision: 'none', offset: positionOffset});
+		panelWidth= this.input.innerWidth()+ 150;
+	this.panel.css({left: '', top: '', width: panelWidth, 'z-index': 1}).position({my: 'left top', at: 'left bottom', of: this.input, collision: 'none', offset: positionOffset});
 };
 
 PrimeFaces.widget.CustomSticky = PrimeFaces.widget.Sticky.extend({
