@@ -124,7 +124,7 @@ public class CreateTicket {
 	
 	private String toFecha(){
 		StringBuilder regresar= new StringBuilder();
-		regresar.append("Fecha:").append(Fecha.formatear(Fecha.FECHA_HORA_CORTA, ((TicketVenta)this.ticket.getOrden()).getRegistro()));
+		regresar.append("Fecha:").append(Fecha.formatear(Fecha.FECHA_HORA_CORTA, ((TicketVenta)this.ticket.getOrden()).getCobro()));
 		if(this.tipo.equals("APARTADO")){
 			regresar.append("<br>");		
 			regresar.append("Vencimiento:").append(Fecha.formatear(Fecha.FECHA_HORA_CORTA, ((TicketVenta)this.ticket.getOrden()).getVigencia()));
