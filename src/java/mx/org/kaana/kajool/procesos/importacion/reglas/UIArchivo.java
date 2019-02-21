@@ -32,7 +32,6 @@ import org.primefaces.event.FileUploadEvent;
 public class UIArchivo implements Serializable{
 
   private static final long serialVersionUID=-8690181538652446792L;
-  private static final int BUFFER_SIZE = 6124;
   private static final Log LOG =  LogFactory.getLog(UIArchivo.class);
   private String titulo;
   private String regresar;
@@ -143,7 +142,7 @@ public class UIArchivo implements Serializable{
       if(!(source.exists()))
         source.mkdirs();
       fileOutputStream=new FileOutputStream(result);
-      byte[] buffer=new byte[BUFFER_SIZE];
+      byte[] buffer=new byte[Constantes.BUFFER_SIZE];
       int bulk;
       inputStream=event.getFile().getInputstream();
       while (true) {

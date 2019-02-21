@@ -3,7 +3,6 @@ package mx.org.kaana.mantic.egresos.backing;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +30,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -48,7 +48,6 @@ import org.primefaces.model.StreamedContent;
 public class Detalle extends IBaseImportar implements Serializable {
 
   private static final long serialVersionUID= 8793667741599428879L;
-	private static final int BUFFER_SIZE      = 6124;	
 	private FormatLazyModel egresosNotasEntradas;
 	private FormatLazyModel egresosCreditosNotas;
 	private FormatLazyModel egresosEmpresasPagos;
@@ -352,7 +351,7 @@ public class Detalle extends IBaseImportar implements Serializable {
   		File source= new File(JsfBase.getRealPath().concat(Constantes.PATH_INVOICE).concat(name));
 			if(!source.exists()) {
   	  	FileInputStream input= new FileInputStream(new File(alias));
-        this.toWriteFile(source, input);		
+        Archivo.toWriteFile(source, input);		
 			} // if	
 		} // try
     catch (Exception e) {
@@ -361,19 +360,4 @@ public class Detalle extends IBaseImportar implements Serializable {
     } // catch		
 	}	// toCopyDocument
 	
-	private void toWriteFile(File result, InputStream upload) throws Exception {
-		FileOutputStream fos   = new FileOutputStream(result);
-		InputStream inputStream= upload;
-		byte[] buffer          = new byte[BUFFER_SIZE];
-		int bulk;
-		while(true) {
-			bulk= inputStream.read(buffer);
-			if (bulk < 0) 
-				break;        
-			fos.write(buffer, 0, bulk);
-			fos.flush();
-		} // while
-		fos.close();
-		inputStream.close();
-	} // toWriteFile
 }

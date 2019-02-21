@@ -21,6 +21,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -306,6 +307,7 @@ public class Abono extends IBasePagos implements Serializable {
 	public void doFileUpload(FileUploadEvent event) {
 		StringBuilder path= new StringBuilder();  
 		StringBuilder temp= new StringBuilder();  
+		String nameFile   = Archivo.toFormatNameFile(event.getFile().getFileName().toUpperCase());
     File result       = null;		
 		Long fileSize     = 0L;
 		try {
@@ -324,13 +326,13 @@ public class Abono extends IBasePagos implements Serializable {
 			result= new File(path.toString());		
 			if (!result.exists())
 				result.mkdirs();
-      path.append(event.getFile().getFileName().toUpperCase());
+      path.append(nameFile);
 			result = new File(path.toString());
 			if (result.exists())
 				result.delete();			      
-			this.toWriteFile(result, event.getFile().getInputstream());
+			Archivo.toWriteFile(result, event.getFile().getInputstream());
 			fileSize= event.getFile().getSize();
-			setFile(new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones")));
+			setFile(new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase()));
   		this.attrs.put("file", getFile().getName()); 			
 		} // try
 		catch (Exception e) {

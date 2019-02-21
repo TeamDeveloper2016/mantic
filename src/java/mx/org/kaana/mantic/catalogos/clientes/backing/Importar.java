@@ -3,7 +3,6 @@ package mx.org.kaana.mantic.catalogos.clientes.backing;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,6 +38,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.mantic.db.dto.TcManticClientesArchivosDto;
@@ -63,7 +63,6 @@ public class Importar extends IBaseAttribute implements Serializable {
 
 	private static final Log LOG              = LogFactory.getLog(Importar.class);
   private static final long serialVersionUID= 327353488565639367L;
-	private static final int BUFFER_SIZE      = 6124;	
 	private TcManticClientesDto cliente;
 	private Long idCliente;	
 	private Importado file;	
@@ -144,6 +143,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 	public void doFileUpload(FileUploadEvent event) {
 		StringBuilder path= new StringBuilder();  
 		StringBuilder temp= new StringBuilder();  
+		String nameFile   = Archivo.toFormatNameFile(event.getFile().getFileName().toUpperCase());
     File result       = null;		
 		Long fileSize     = 0L;
 		try {			
@@ -156,13 +156,13 @@ public class Importar extends IBaseAttribute implements Serializable {
 			result= new File(path.toString());		
 			if (!result.exists())
 				result.mkdirs();
-      path.append(event.getFile().getFileName().toUpperCase());
+      path.append(nameFile);
 			result = new File(path.toString());
 			if (result.exists())
 				result.delete();			      
-			this.toWriteFile(result, event.getFile().getInputstream());
+			Archivo.toWriteFile(result, event.getFile().getInputstream());
 			fileSize= event.getFile().getSize();						
-			this.file= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
+			this.file= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase());
   		this.attrs.put("file", this.file.getName()); 			
 		} // try
 		catch (Exception e) {
@@ -172,22 +172,6 @@ public class Importar extends IBaseAttribute implements Serializable {
 			  result.delete();
 		} // catch
 	} // doFileUpload	
-	
-	private void toWriteFile(File result, InputStream upload) throws Exception {
-		FileOutputStream fileOutputStream= new FileOutputStream(result);
-		InputStream inputStream          = upload;
-		byte[] buffer                    = new byte[BUFFER_SIZE];
-		int bulk;
-		while(true) {
-			bulk= inputStream.read(buffer);
-			if (bulk < 0) 
-				break;        
-			fileOutputStream.write(buffer, 0, bulk);
-			fileOutputStream.flush();
-		} // while
-		fileOutputStream.close();
-		inputStream.close();
-	} // toWriteFile
 	
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Archivos")) 
@@ -305,7 +289,7 @@ public class Importar extends IBaseAttribute implements Serializable {
   		File source= new File(JsfBase.getRealPath().concat(Constantes.PATH_INVOICE).concat(name));
 			if(!source.exists()) {
   	  	FileInputStream input= new FileInputStream(new File(alias));
-        this.toWriteFile(source, input);		
+        Archivo.toWriteFile(source, input);		
 			} // if	
 		} // try
     catch (Exception e) {

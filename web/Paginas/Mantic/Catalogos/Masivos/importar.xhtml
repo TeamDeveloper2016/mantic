@@ -45,7 +45,7 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
-		<p:remoteCommand name="viewFile" actionListener="#{manticCatalogosMasivosImportar.doViewFile}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgXLS').show();"/>
+		<p:remoteCommand name="viewFile" actionListener="#{manticCatalogosMasivosImportar.doViewFile}" process="@this" update="@(.viewXLS)" onstart="return janal.bloquear();" oncomplete="PF('dlgXLS').show();"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
@@ -171,7 +171,7 @@
 	</ui:define>
 	<ui:define name="dialogos">
 		<h:form prependId="true">
-      <p:dialog id="dialogoXLS" widgetVar="dlgXLS" header="Catalogo importado en formato XLS" onHide="janal.desbloquear();" height="450px" width="950px" closeOnEscape="true" closable="true" dynamic="true">
+      <p:dialog id="dialogoXLS" widgetVar="dlgXLS" styleClass="viewXLS" header="Catalogo importado en formato XLS" onHide="janal.desbloquear();" height="450px" width="950px" closeOnEscape="true" closable="true" dynamic="true">
 				<pre id="documentXls" class="brush: xls;" style="width: 925px; height: 370px;">
 					<h:outputText value="#{manticCatalogosMasivosImportar.attrs.temporal}" escape="true"/>
 				</pre>

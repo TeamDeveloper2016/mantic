@@ -22,6 +22,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -34,7 +35,6 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
 
@@ -391,7 +391,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
   		File source= new File(JsfBase.getRealPath().concat(Constantes.RUTA_TEMPORALES).concat(name));
 			if(!source.exists()) {
 	  	  FileInputStream input= new FileInputStream(new File(alias));
-        this.toWriteFile(source, input);		
+        Archivo.toWriteFile(source, input);		
 			} // if	
 		} // try
     catch (Exception e) {
@@ -399,26 +399,6 @@ public class Encabezado extends IBaseFilter implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
 	}	// toCopyDocument
-
- private void toWriteFile(File result, InputStream inputStream) throws Exception {
-		FileOutputStream fileOutputStream= new FileOutputStream(result);
-		byte[] buffer                    = new byte[Constantes.BUFFER_SIZE];
-		int bulk;
-		try {
-      while(true) {
-        bulk= inputStream.read(buffer);
-        if (bulk < 0) 
-          break;  
-        fileOutputStream.write(buffer, 0, bulk);
-        fileOutputStream.flush();
-      } // while
-      fileOutputStream.close();
-      inputStream.close();
-		} // try
-		catch (Exception e) {
-			throw e;
-		} // catch
-	} // toWriteFile
 
   public void doCerrar() {
 		try {

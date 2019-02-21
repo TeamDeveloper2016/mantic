@@ -38,7 +38,6 @@ public class Archivo implements Serializable {
 
 
   private static final Log LOG = LogFactory.getLog(Archivo.class);
-  private static final int BUFFER_SIZE = 6124;
 
   private IImportar importar;
   private Importado seleccionado;
@@ -81,11 +80,12 @@ public class Archivo implements Serializable {
 
   public void doFileUpload(FileUploadEvent event) {
     ExternalContext extContext= FacesContext.getCurrentInstance().getExternalContext();
-    File result=new File(extContext.getRealPath(Constantes.RUTA_IMPORTADOS+ event.getFile().getFileName()));
-    LOG.info(extContext.getRealPath(Constantes.RUTA_IMPORTADOS+ event.getFile().getFileName()));
+		String nameFile= mx.org.kaana.libs.archivo.Archivo.toFormatNameFile(event.getFile().getFileName());
+    File result=new File(extContext.getRealPath(Constantes.RUTA_IMPORTADOS+ nameFile));
+    LOG.info(extContext.getRealPath(Constantes.RUTA_IMPORTADOS+ nameFile));
     try {
       FileOutputStream fileOutputStream=new FileOutputStream(result);
-      byte[] buffer=new byte[BUFFER_SIZE];
+      byte[] buffer=new byte[Constantes.BUFFER_SIZE];
       int bulk;
       InputStream inputStream=event.getFile().getInputstream();
       while (true) {
@@ -102,7 +102,7 @@ public class Archivo implements Serializable {
                             (event.getFile().getSize()/1024)+ " Kb\nContenido: " +
                              event.getFile().getContentType()+ "\nEl archivo fue importado con éxito.");
       FacesContext.getCurrentInstance().addMessage(null, msg);
-      Importado importado=  new Importado(event.getFile().getFileName(), event.getFile().getContentType(), EFormatos.FREE, event.getFile().getSize());
+      Importado importado=  new Importado(nameFile, event.getFile().getContentType(), EFormatos.FREE, event.getFile().getSize());
       this.importar.getFiles().add(importado);
       IValidar validate= this.importar.validate();
       validate.single(importado);

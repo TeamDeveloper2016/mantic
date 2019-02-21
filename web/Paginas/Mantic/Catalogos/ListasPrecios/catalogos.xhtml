@@ -49,7 +49,7 @@
               <h:panelGrid columns="1" style="width:100%">
                 <p:graphicImage library="janal" name="img/proveedores/#{row.logotipo}" styleClass="alinear-centro" width="65" height="65"/>
                   <h:outputText value="#{row.razonSocial}" />
-                  <p:commandLink  actionListener="#{manticCatalogosListaPreciosCatalogos.doViewPdfDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();">
+                  <p:commandLink  actionListener="#{manticCatalogosListaPreciosCatalogos.doViewPdfDocument(row)}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();">
 									  <p:commandButton icon="fa fa-eye" title="Ver catálogo" ajax="false" type="button"/>
 									</p:commandLink>	
               </h:panelGrid>
@@ -67,7 +67,7 @@
   </ui:define>    
   <ui:define name="dialogos">
 		<h:form prependId="true">
-      <p:dialog id="dialogoPDF" widgetVar="dlgPDF" header="Listado de productos PDF" onHide="janal.sendLastFocus();janal.desbloquear();" height="470px" dynamic="true" width="650px" resizable="false" closeOnEscape="true" closable="true"  maximizable="true" appendTo="@(body)">
+      <p:dialog id="dialogoPDF" widgetVar="dlgPDF" styleClass="viewPDF" header="Listado de productos PDF" onHide="janal.sendLastFocus();janal.desbloquear();" height="470px" dynamic="true" width="650px" resizable="false" closeOnEscape="true" closable="true"  maximizable="true" appendTo="@(body)">
 				<object type="application/pdf" data="#{manticCatalogosListaPreciosCatalogos.attrs.temporal}" height="400px" width="100%" internalinstanceid="5">
 					 Tu navegador no soporta el desplegado de archivos PDF's, por favor da click en el boton de descargar
 				</object>

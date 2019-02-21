@@ -242,7 +242,7 @@
 							</p:selectBooleanCheckbox>
 						</p:column>		
 						<p:column headerText="PDF" style="text-align: center" styleClass="janal-wid-col-38">
-							<p:commandLink actionListener="#{manticComprasOrdenesDiferencias.doViewPdfDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idPrincipal.toLong() eq 1}">
+							<p:commandLink actionListener="#{manticComprasOrdenesDiferencias.doViewPdfDocument(row)}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idPrincipal.toLong() eq 1}">
 								<p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button"/>
 							</p:commandLink>	
 						</p:column>
@@ -284,7 +284,7 @@
   </ui:define> 
 	<ui:define name="dialogos">
 		<h:form prependId="true">
-			<p:dialog id="dialogoPDF" widgetVar="dlgPDF" header="Factura en formato digital" onHide="janal.sendLastFocus(); janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+			<p:dialog id="dialogoPDF" widgetVar="dlgPDF" styleClass="viewPDF" header="Factura en formato digital" onHide="janal.sendLastFocus(); janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
 				<object type="application/pdf" data="#{manticComprasOrdenesDiferencias.attrs.temporal}" height="390px" width="100%" internalinstanceid="5">
 					 Tu navegador no soporta el desplegado de archivos PDF's, por favor da click en el boton de descargar
 				</object>

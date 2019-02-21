@@ -155,7 +155,7 @@ public class Transaccion extends TransaccionFactura {
 											else
 												regresar= true;
 											if(regresar){					
-												if(!Cadena.isVacio(this.articulo.getImportado().getName())){
+												if(!Cadena.isVacio(this.articulo.getImportado().getName())) {
 													image= loadImage(sesion, null, idArticulo);												
 													idImagen= DaoFactory.getInstance().insert(sesion, image);
 													this.articulo.getArticulo().setIdImagen(idImagen);
@@ -269,7 +269,7 @@ public class Transaccion extends TransaccionFactura {
 		return regresar;
 	} // actualizarArticulo	
 	
-	private TcManticImagenesDto loadImage(Session sesion, Long idImagen, Long idArticulo) throws Exception{
+	private TcManticImagenesDto loadImage(Session sesion, Long idImagen, Long idArticulo) throws Exception {
 		TcManticImagenesDto regresar= null;
 		Long tipoImagen             = null;
 		String name                 = null;
@@ -281,9 +281,9 @@ public class Transaccion extends TransaccionFactura {
 				regresar= new TcManticImagenesDto();
 			name= this.articulo.getImportado().getName();
 			if(!Cadena.isVacio(name)) {
-				tipoImagen= ETipoImagen.valueOf(name.substring(name.lastIndexOf(".")+1, name.length()).toUpperCase()).getIdTipoImagen();
+				tipoImagen= ETipoImagen.valueOf(name.substring(name.lastIndexOf(".")+ 1, name.length()).toUpperCase()).getIdTipoImagen();
 				regresar.setNombre(name);				
-				regresar.setArchivo(Archivo.toFormatNameFile(idArticulo.toString().concat(".").concat(name.substring(name.lastIndexOf(".")+1, name.length())), "IMG"));
+				regresar.setArchivo(Archivo.toFormatNameFile(idArticulo.toString().concat(".").concat(name.substring(name.lastIndexOf(".")+ 1, name.length())), "IMG"));
 				regresar.setIdTipoImagen(tipoImagen);
 				regresar.setIdUsuario(JsfBase.getIdUsuario());				
 				regresar.setTamanio(this.articulo.getImportado().getFileSize());
@@ -301,7 +301,7 @@ public class Transaccion extends TransaccionFactura {
 			throw e;
 		} // catch		
 		finally{
-			this.messageError= "Error al registrar imagen";
+			this.messageError= "Error al registrar imagen del articulo";
 		} // finally
 		return regresar;
 	} // loadImage

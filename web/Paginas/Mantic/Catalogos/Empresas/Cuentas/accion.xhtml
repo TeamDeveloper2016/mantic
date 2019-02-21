@@ -75,7 +75,7 @@
 	</ui:define>
 	<ui:define name="contenido">
 		<p:remoteCommand name="factura" actionListener="#{manticCatalogosEmpresasCuentasAccion.doCheckFolio}" process="@this contenedorGrupos:factura contenedorGrupos:idProveedor" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-		<p:remoteCommand name="viewDocument" actionListener="#{manticCatalogosEmpresasCuentasAccion.doViewDocument}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();"/>
+		<p:remoteCommand name="viewDocument" actionListener="#{manticCatalogosEmpresasCuentasAccion.doViewDocument}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();"/>
 		<p:remoteCommand name="viewFile" actionListener="#{manticCatalogosEmpresasCuentasAccion.doViewFile}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
@@ -210,7 +210,7 @@
 	</ui:define>
 	<ui:define name="dialogos">
 		<h:form prependId="true">
-			<p:dialog id="dialogoPDF" widgetVar="dlgPDF" header="Factura en formato digital" onHide="janal.sendLastFocus();janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+			<p:dialog id="dialogoPDF" widgetVar="dlgPDF" styleClass="viewPDF" header="Factura en formato digital" onHide="janal.sendLastFocus();janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
 				<object type="application/pdf" data="#{manticCatalogosEmpresasCuentasAccion.attrs.temporal}" height="390px" width="100%" internalinstanceid="5">
 					 Tu navegador no soporta el desplegado de archivos PDF's,
 					 <p:commandLink ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" value=" click ">
@@ -223,9 +223,9 @@
 					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" actionListener="#{manticCatalogosEmpresasCuentasAccion.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
 			  </div>
 			</p:dialog>
-			<p:dialog id="dialogoXML" widgetVar="dlgXML" header="Factura en formato XML" onShow="load();" onHide="janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+			<p:dialog id="dialogoXML" widgetVar="dlgXML" styleClass="viewXML" header="Factura en formato XML" onShow="load();" onHide="janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
 				<pre id="documentXml" class="brush: xml;" style="width: 925px; height: 370px;">
-					<h:outputText value="#{manticCatalogosEmpresasCuentasAccion.attrs.temporal}" escape="true"/>
+					<p:outputLabel styleClass="viewXML" value="#{manticCatalogosEmpresasCuentasAccion.attrs.temporal}" escape="true"/>
 				</pre>
   			<hr class="ui-widget-content"/>
 	  		<div class="janal-line-button">

@@ -24,9 +24,8 @@ import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 public abstract class IBasePagos extends mx.org.kaana.mantic.inventarios.comun.IBaseImportar implements Serializable{
 	
 	private static final long serialVersionUID= -3677487238720891767L;
-	protected static final int BUFFER_SIZE    = 6124;	
-
-	protected void initValues() throws Exception{
+	
+	protected void initValues() throws Exception {
 		try {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());			
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());			
@@ -149,19 +148,4 @@ public abstract class IBasePagos extends mx.org.kaana.mantic.inventarios.comun.I
 	
 	public abstract void doLoadFiles();
 	
-	protected void toWriteFile(File result, InputStream upload) throws Exception {
-		FileOutputStream fos= new FileOutputStream(result);
-		InputStream is      = upload;
-		byte[] buffer       = new byte[BUFFER_SIZE];
-		int bulk;
-		while(true) {
-			bulk= is.read(buffer);
-			if (bulk < 0) 
-				break;        
-			fos.write(buffer, 0, bulk);
-			fos.flush();
-		} // while
-		fos.close();
-		is.close();
-	} // toWriteFile
 }

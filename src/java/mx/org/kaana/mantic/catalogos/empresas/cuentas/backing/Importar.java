@@ -3,7 +3,6 @@ package mx.org.kaana.mantic.catalogos.empresas.cuentas.backing;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,6 +47,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -175,6 +175,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 	public void doFileUpload(FileUploadEvent event) {
 		StringBuilder path= new StringBuilder();  
 		StringBuilder temp= new StringBuilder();  
+		String nameFile   = Archivo.toFormatNameFile(event.getFile().getFileName().toUpperCase());
     File result       = null;		
 		Long fileSize     = 0L;
 		try {
@@ -193,20 +194,20 @@ public class Importar extends IBaseAttribute implements Serializable {
 			result= new File(path.toString());		
 			if (!result.exists())
 				result.mkdirs();
-      path.append(event.getFile().getFileName().toUpperCase());
+      path.append(nameFile);
 			result = new File(path.toString());
 			if (result.exists())
 				result.delete();			      
-			this.toWriteFile(result, event.getFile().getInputstream());
+			Archivo.toWriteFile(result, event.getFile().getInputstream());
 			fileSize= event.getFile().getSize();
-			if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name())) {
-			  this.xml= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
+			if(nameFile.endsWith(EFormatos.XML.name())) {
+			  this.xml= new Importado(nameFile, event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase());
 				this.toReadFactura(result);
 				this.attrs.put("xml", this.xml.getName());
 			} //
 			else
-			  if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.PDF.name())) {
-			    this.pdf= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
+			  if(nameFile.endsWith(EFormatos.PDF.name())) {
+			    this.pdf= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase());
   				this.attrs.put("pdf", this.pdf.getName()); 
 				} // if
 		} // try
@@ -218,21 +219,6 @@ public class Importar extends IBaseAttribute implements Serializable {
 		} // catch
 	} // doFileUpload	
 	
-	private void toWriteFile(File result, InputStream inputStream) throws Exception {
-		FileOutputStream fileOutputStream= new FileOutputStream(result);
-		byte[] buffer                    = new byte[Constantes.BUFFER_SIZE];
-		int bulk;
-		while(true) {
-			bulk= inputStream.read(buffer);
-			if (bulk < 0) 
-				break;        
-			fileOutputStream.write(buffer, 0, bulk);
-			fileOutputStream.flush();
-		} // while
-		fileOutputStream.close();
-		inputStream.close();
-	} 
-
 	private void toReadFactura(File file) throws Exception {
     Reader reader            = null;
 		ComprobanteFiscal factura= null;
@@ -414,7 +400,7 @@ public class Importar extends IBaseAttribute implements Serializable {
   		File source= new File(JsfBase.getRealPath(Constantes.PATH_INVOICE).concat(name));
 			if(!source.exists()) {
 	  	  FileInputStream input= new FileInputStream(new File(alias));
-        this.toWriteFile(source, input);		
+        Archivo.toWriteFile(source, input);		
 			} // if	
 		} // try
     catch (Exception e) {

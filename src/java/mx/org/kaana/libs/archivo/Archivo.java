@@ -78,6 +78,18 @@ public final class Archivo {
     } // finally
     return regresar;
   }
+	
+	public static String toNormalizerName(String name) {
+		String regresar= name.toUpperCase();
+		try {
+		  regresar= new String(name.toUpperCase().getBytes(), "UTF-8");
+		} // catch
+		catch(Exception e) {
+			Error.mensaje(e);
+		} // catch
+	  return Cadena.toNormalizer(regresar);	
+	}
+
 
   /**
    * Obtiene el estandar del nombre de los archivos creados en
@@ -88,10 +100,9 @@ public final class Archivo {
   public static String toFormatNameFile(String nameFile) {
     StringBuilder regresar = new StringBuilder();
     regresar.append(Constantes.ARCHIVO_PATRON_NOMBRE);
-    regresar.append(Constantes.ARCHIVO_PATRON_SEPARADOR);
     regresar.append(Fecha.formatear("yyyyMMddhhmmssS", Calendar.getInstance().getTime()));
     regresar.append(Constantes.ARCHIVO_PATRON_SEPARADOR);
-    regresar.append(nameFile);
+    regresar.append(toNormalizerName(nameFile));
     return regresar.toString();
   }
 /**
@@ -153,5 +164,22 @@ public final class Archivo {
     regresar.append(nameFile);
     return regresar.toString();    
   }
+
+	public static void toWriteFile(File result, InputStream upload) throws Exception {
+		FileOutputStream fileOutputStream= new FileOutputStream(result);
+		InputStream inputStream          = upload;
+		byte[] buffer                    = new byte[Constantes.BUFFER_SIZE];
+		int bulk;
+		while(true) {
+			bulk= inputStream.read(buffer);
+			if (bulk < 0) 
+				break;        
+			fileOutputStream.write(buffer, 0, bulk);
+			fileOutputStream.flush();
+		} // while
+		fileOutputStream.close();
+		inputStream.close();
+	} // toWriteFile
+	
 	
 }

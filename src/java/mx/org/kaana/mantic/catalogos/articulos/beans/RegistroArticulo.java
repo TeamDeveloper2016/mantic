@@ -1,8 +1,6 @@
 package mx.org.kaana.mantic.catalogos.articulos.beans;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +11,7 @@ import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -22,10 +21,9 @@ import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TrManticEmpaqueUnidadMedidaDto;
 import org.primefaces.event.FileUploadEvent;
 
-public class RegistroArticulo implements Serializable{
+public class RegistroArticulo implements Serializable {
 
-	private static final long serialVersionUID= 2173243980013765240L;
-	private static final int BUFFER_SIZE      = 6124;
+	private static final long serialVersionUID= 2173143980013765240L;
 	private static final String BYTES         = " Bytes";	
 	private static final String K_BYTES       = " Kb";	
 	
@@ -533,6 +531,7 @@ public class RegistroArticulo implements Serializable{
 	
 	public void doFileUpload(FileUploadEvent event) {
 		String genericPath= null;  
+		String nameFile   = Archivo.toFormatNameFile(event.getFile().getFileName().toUpperCase());
     File result       = null;		
 		Long fileSize     = 0L;
 		File filePath     = null;
@@ -540,16 +539,16 @@ public class RegistroArticulo implements Serializable{
 			if (this.importado != null && !Cadena.isVacio(this.importado.getName())) 
 				doCancelar();
 			genericPath= Configuracion.getInstance().getPropiedadSistemaServidor("path.image").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat(File.separator);
-			result= new File(genericPath.concat(event.getFile().getFileName()));		
+			result= new File(genericPath.concat(nameFile));		
 			filePath= new File(genericPath);
 			if (!filePath.exists())
 				filePath.mkdirs();
 			if (result.exists())
 				result.delete();			      
-			toWriteFile(result, event.getFile().getInputstream());
+			Archivo.toWriteFile(result, event.getFile().getInputstream());
 			fileSize= event.getFile().getSize();
-			this.importado= new Importado(event.getFile().getFileName(), event.getFile().getContentType(), EFormatos.FREE, event.getFile().getSize(), fileSize.equals(0L) ? fileSize : fileSize/1024, event.getFile().equals(0L) ? BYTES : K_BYTES, genericPath, "");      
-			toMessageImage();			
+			this.importado= new Importado(nameFile, event.getFile().getContentType(), EFormatos.FREE, event.getFile().getSize(), fileSize.equals(0L) ? fileSize : fileSize/1024, event.getFile().equals(0L) ? BYTES : K_BYTES, genericPath, "", event.getFile().getFileName());      
+			this.toMessageImage();			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -557,30 +556,7 @@ public class RegistroArticulo implements Serializable{
 		} // catch
 	} // doFileUpload
 	
-	private void toWriteFile(File result, InputStream fileImport) throws Exception{
-		FileOutputStream fileOutputStream= null;
-		InputStream inputStream          = null;
-		try {
-			fileOutputStream= new FileOutputStream(result);
-      byte[] buffer= new byte[BUFFER_SIZE];
-      int bulk;
-      inputStream= fileImport;
-      while (true){
-        bulk= inputStream.read(buffer);
-        if (bulk < 0) 
-          break;        
-        fileOutputStream.write(buffer, 0, bulk);
-        fileOutputStream.flush();
-      } // while
-      fileOutputStream.close();
-      inputStream.close();
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-	} // toWriteFile
-	
-	private void toMessageImage(){
+	private void toMessageImage() {
 		FacesMessage msg= null;
 		String detail   = null;
 		try {
@@ -593,7 +569,7 @@ public class RegistroArticulo implements Serializable{
 		} // catch				     
 	} // toMessageImage
 	
-	private String toDetailMessage(){
+	private String toDetailMessage() {
 		StringBuilder regresar= new StringBuilder();
 		regresar.append("Nombre: ");
 		regresar.append(this.importado.getName());
@@ -629,9 +605,9 @@ public class RegistroArticulo implements Serializable{
 		} // catch		
 	} // doCancelar
 	
-	public void doSeleccionarPrincipal(ArticuloCodigo principal){
+	public void doSeleccionarPrincipal(ArticuloCodigo principal) {
 		try {
-			for(ArticuloCodigo articuloCodigo: this.articulosCodigos){
+			for(ArticuloCodigo articuloCodigo: this.articulosCodigos) {
 				if(!articuloCodigo.equals(principal))
 					articuloCodigo.setIdPrincipal(2L);
 			} // for

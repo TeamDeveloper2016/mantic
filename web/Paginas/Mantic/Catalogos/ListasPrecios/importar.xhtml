@@ -78,8 +78,8 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
-		<p:remoteCommand name="viewDocument" actionListener="#{manticCatalogosListaPreciosImportar.doViewDocument}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();"/>
-		<p:remoteCommand name="viewFile" actionListener="#{manticCatalogosListaPreciosImportar.doViewFile}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgXLS').show();"/>
+		<p:remoteCommand name="viewDocument" actionListener="#{manticCatalogosListaPreciosImportar.doViewDocument}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();"/>
+		<p:remoteCommand name="viewFile" actionListener="#{manticCatalogosListaPreciosImportar.doViewFile}" process="@this" update="@(.viewXLS)" onstart="return janal.bloquear();" oncomplete="PF('dlgXLS').show();"/>
 		<p:remoteCommand name="notificar" process="@this contenedorGrupos:nombre contenedorGrupos:comentarios"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
@@ -154,10 +154,10 @@
 									</p:commandButton>
 								</p:column>
 								<p:column style="text-align: center" styleClass="janal-wid-col-38">
-									<p:commandLink  actionListener="#{manticCatalogosListaPreciosImportar.doViewPdfDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idTipoArchivo.toLong() eq 2 and row.idPrincipal.toLong() eq 1}">
+									<p:commandLink  actionListener="#{manticCatalogosListaPreciosImportar.doViewPdfDocument(row)}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idTipoArchivo.toLong() eq 2 and row.idPrincipal.toLong() eq 1}">
 									  <p:commandButton icon="fa fa-eye" title="Ver documento PDF" ajax="false" type="button"/>
 									</p:commandLink>	
-									<p:commandLink  actionListener="#{manticCatalogosListaPreciosImportar.doViewXlsDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgXLS').show();" rendered="#{row.idTipoArchivo.toLong() eq 8 and row.idPrincipal.toLong() eq 1}">
+									<p:commandLink  actionListener="#{manticCatalogosListaPreciosImportar.doViewXlsDocument(row)}" process="@this" update= "dialogoXLS" onstart="return janal.bloquear();" oncomplete="PF('dlgXLS').show();" rendered="#{row.idTipoArchivo.toLong() eq 8 and row.idPrincipal.toLong() eq 1}">
 									  <p:commandButton icon="fa fa-eye" title="Ver documento XLS" ajax="false" type="button"/>
 									</p:commandLink>	
 								</p:column>
@@ -206,7 +206,7 @@
 	</ui:define>
 	<ui:define name="dialogos">
 		<h:form prependId="true">
-      <p:dialog id="dialogoPDF" widgetVar="dlgPDF" header="Listado de productos PDF" onHide="janal.sendLastFocus();janal.desbloquear();" height="450px" width="650px" resizable="false" closeOnEscape="true" closable="true" dynamic="true" maximizable="true" appendTo="@(body)">
+      <p:dialog id="dialogoPDF" widgetVar="dlgPDF" styleClass="viewPDF" header="Listado de productos PDF" onHide="janal.sendLastFocus();janal.desbloquear();" height="450px" width="650px" resizable="false" closeOnEscape="true" closable="true" dynamic="true" maximizable="true" appendTo="@(body)">
 				<object type="application/pdf" data="#{manticCatalogosListaPreciosImportar.attrs.temporal}" height="90%" width="100%" internalinstanceid="5">
 					 Tu navegador no soporta el desplegado de archivos PDF's, por favor da click en el boton de descargar
 				</object>
@@ -215,7 +215,7 @@
 					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" actionListener="#{manticCatalogosListaPreciosImportar.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
 			  </div>
 			</p:dialog>
-      <p:dialog id="dialogoXLS" widgetVar="dlgXLS" header="Listado de productos en formato XLS" onHide="janal.desbloquear();" height="450px" width="950px" closeOnEscape="true" closable="true" dynamic="true">
+      <p:dialog id="dialogoXLS" widgetVar="dlgXLS" styleClass="viewXLS" header="Listado de productos en formato XLS" onHide="janal.desbloquear();" height="450px" width="950px" closeOnEscape="true" closable="true" dynamic="true">
 				<pre id="documentXls" class="brush: xls;" style="width: 925px; height: 370px;">
 					<h:outputText value="#{manticCatalogosListaPreciosImportar.attrs.temporal}" escape="true"/>
 				</pre>

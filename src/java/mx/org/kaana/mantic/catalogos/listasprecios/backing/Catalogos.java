@@ -2,8 +2,6 @@ package mx.org.kaana.mantic.catalogos.listasprecios.backing;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +11,7 @@ import javax.faces.view.ViewScoped;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
@@ -106,7 +105,7 @@ public class Catalogos extends IBaseAttribute implements Serializable{
   		File source= new File(JsfBase.getRealPath().concat(Constantes.PATH_SHARE).concat(name));
 			if(!source.exists()) {
   	  	FileInputStream input= new FileInputStream(new File(alias));
-        this.toWriteFile(source, input);		
+        Archivo.toWriteFile(source, input);		
 			} // if	
 		} // try
     catch (Exception e) {
@@ -115,26 +114,6 @@ public class Catalogos extends IBaseAttribute implements Serializable{
     } // catch		
 	}	// toCopyDocument
 
- private void toWriteFile(File result, InputStream inputStream) throws Exception{
-		FileOutputStream fileOutputStream= new FileOutputStream(result);
-		byte[] buffer                    = new byte[Constantes.BUFFER_SIZE];
-		int bulk;
-		try {
-      while(true) {
-        bulk= inputStream.read(buffer);
-        if (bulk < 0) 
-          break;  
-        fileOutputStream.write(buffer, 0, bulk);
-        fileOutputStream.flush();
-      } // while
-      fileOutputStream.close();
-      inputStream.close();
-		} // try
-		catch (Exception e) {
-			throw e;
-		} // catch
-	} // toWriteFile
- 
   private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();

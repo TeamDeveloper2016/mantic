@@ -7,6 +7,7 @@ public class Importado implements Serializable {
 
 	private static final long serialVersionUID= 1922005398393887945L;
 	private String name;
+	private String original;
   private String content;
   private EFormatos format;
   private Long size;
@@ -20,6 +21,10 @@ public class Importado implements Serializable {
 	}
 	
   public Importado(String name, String content, EFormatos format, Long size, Long fileSize, String medicion, String ruta, String observaciones) {
+		this(name, content, format, size, fileSize, medicion, ruta, observaciones, name);
+	}
+	
+  public Importado(String name, String content, EFormatos format, Long size, Long fileSize, String medicion, String ruta, String observaciones, String original) {
     this.name    = name;
     this.content = content;
     this.format  = format;
@@ -28,6 +33,7 @@ public class Importado implements Serializable {
 		this.medicion= medicion;
 		this.ruta    = ruta;
 		this.observaciones= observaciones;
+		this.original= original;
   }
 
   public String getName() {
@@ -93,6 +99,14 @@ public class Importado implements Serializable {
 	public void setObservaciones(String observaciones) {
 		this.observaciones=observaciones;
 	}
+
+	public String getOriginal() {
+		return original;
+	}
+
+	public void setOriginal(String original) {
+		this.original=original;
+	}
 	
   @Override
   public int hashCode() {
@@ -116,8 +130,10 @@ public class Importado implements Serializable {
     return true;
   } // equals
 
-  @Override
-  public String toString() {
-    return "Importado{"+"name="+name+", content="+content+", format="+format+", size="+size+", fileSize="+fileSize+", medicion="+medicion+", ruta="+ruta+", observaciones="+observaciones+'}';
-  }	// toString
+	@Override
+	public String toString() {
+		return "Importado{"+"name="+name+", original="+original+", content="+content+", format="+format+", size="+size+", fileSize="+fileSize+", medicion="+medicion+", ruta="+ruta+", observaciones="+observaciones+'}';
+	}
+	
+	
 }
