@@ -94,17 +94,18 @@ public final class Archivo {
   /**
    * Obtiene el estandar del nombre de los archivos creados en
    * @param nameFile Sufijo a concatenar para obtener el nombre del archivo
-   * @return Devuelve el nombre del archivo Ej: xKajool_20150126123324122_nombreArchivo
+   * @return Devuelve el nombre del archivo Ej: K20150126123324122_nombreArchivo
    */
-
   public static String toFormatNameFile(String nameFile) {
     StringBuilder regresar = new StringBuilder();
     regresar.append(Constantes.ARCHIVO_PATRON_NOMBRE);
+    regresar.append(Constantes.ARCHIVO_PATRON_SEPARADOR);
     regresar.append(Fecha.formatear("yyyyMMddhhmmssS", Calendar.getInstance().getTime()));
     regresar.append(Constantes.ARCHIVO_PATRON_SEPARADOR);
     regresar.append(toNormalizerName(nameFile));
     return regresar.toString();
   }
+	
 /**
  * Realiza una copia de un archivo
  * @param source Path completo del archivo que se quiere copiar
