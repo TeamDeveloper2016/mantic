@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="facturaDetalle" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.mantic.facturas.scriplet.FacturaDetalle">
-	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="521"/>
+	<property name="ireport.zoom" value="3.0"/>
+	<property name="ireport.x" value="1475"/>
 	<property name="ireport.y" value="0"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
@@ -132,21 +132,21 @@
 					<textFieldExpression><![CDATA[$F{FOLIO}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement stretchType="RelativeToTallestObject" x="0" y="32" width="154" height="19"/>
+					<reportElement stretchType="RelativeToTallestObject" x="0" y="30" width="154" height="19"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="9" isBold="false"/>
 					</textElement>
 					<text><![CDATA[Fecha/hora emisión:]]></text>
 				</staticText>
 				<textField pattern="dd/MM/yyyy HH.mm.ss" isBlankWhenNull="true">
-					<reportElement x="0" y="51" width="154" height="19"/>
+					<reportElement x="0" y="48" width="154" height="19"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="9" isBold="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{CERTIFICACION}]]></textFieldExpression>
 				</textField>
 				<textField pattern="dd/MM/yyyy HH.mm.ss">
-					<reportElement x="0" y="73" width="154" height="19"/>
+					<reportElement x="0" y="66" width="154" height="19"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="6" isBold="false"/>
 					</textElement>
@@ -170,7 +170,7 @@
 				</textField>
 			</frame>
 			<textField>
-				<reportElement mode="Transparent" x="133" y="0" width="371" height="39"/>
+				<reportElement mode="Transparent" x="133" y="0" width="367" height="39"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.0"/>
@@ -411,65 +411,51 @@
 				</staticText>
 			</frame>
 			<textField pattern="dd/MM/yyyy HH.mm.ss">
-				<reportElement x="504" y="9" width="91" height="8"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+				<reportElement x="500" y="0" width="95" height="10"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="6" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["JOSE ANTONIO DAVALOS PADILLA"]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy HH.mm.ss">
-				<reportElement x="537" y="16" width="58" height="8"/>
+				<reportElement x="528" y="9" width="67" height="10"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="6" isBold="false"/>
-					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA["BBVA BANCOMER"]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy HH.mm.ss">
-				<reportElement x="537" y="30" width="58" height="8"/>
+				<reportElement x="528" y="27" width="67" height="10"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="6" isBold="false"/>
-					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA["012010001324108694"]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy HH.mm.ss">
-				<reportElement x="537" y="23" width="58" height="8"/>
+				<reportElement x="528" y="18" width="67" height="10"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="6" isBold="false"/>
-					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA["0132410869"]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy HH.mm.ss">
-				<reportElement x="504" y="2" width="91" height="8"/>
+				<reportElement x="500" y="9" width="28" height="10"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="6" isBold="true" isItalic="false"/>
-					<paragraph leftIndent="2" rightIndent="2"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Titular:"]]></textFieldExpression>
-			</textField>
-			<textField pattern="dd/MM/yyyy HH.mm.ss">
-				<reportElement x="504" y="16" width="33" height="8"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Arial Narrow" size="6" isBold="true" isItalic="false"/>
-					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Banco:"]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy HH.mm.ss">
-				<reportElement x="504" y="23" width="33" height="8"/>
+				<reportElement x="500" y="18" width="28" height="10"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="6" isBold="true" isItalic="false"/>
-					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Cuenta:"]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy HH.mm.ss">
-				<reportElement x="504" y="30" width="33" height="8"/>
+				<reportElement x="500" y="27" width="28" height="10"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="6" isBold="true" isItalic="false"/>
-					<paragraph leftIndent="2" rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA["CLABE:"]]></textFieldExpression>
 			</textField>
