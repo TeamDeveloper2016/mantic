@@ -140,7 +140,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("sortOrder", "order by tc_mantic_ventas.registro desc");
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
-			this.attrs.put("buscaPorCodigo", false);
+			this.attrs.put("buscaPorCodigo", true);
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("facturarVenta", false);
@@ -994,7 +994,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		return regresar;		
 	} // toPrepare
 	
-	public void doPrintTicket() {
+	public void doPrintTicket(){
 		Entity seleccionado      = null;
 		Map<String, Object>params= null;
 		CreateTicket ticket      = null;
@@ -1147,6 +1147,5 @@ public class Accion extends IBaseVenta implements Serializable {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
-	} // doAsignaApartado
-	
+	} // doAsignaApartado	
 }

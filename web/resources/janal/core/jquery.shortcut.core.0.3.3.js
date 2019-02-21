@@ -355,6 +355,13 @@ shortcut.add("Ctrl+R", function() {
 	} // if
 });
 
+shortcut.add("escape", function() {
+	janal.console('Shortcut para cerrar dialogo finalizar cobro de venta');
+	if(PF('dlgCerrarVenta') && PF('dlgCerrarVenta').isVisible()) {
+		PF('dlgCerrarVenta').hide();
+	} // if
+});
+
 shortcut.add("Shift+P", function() {
 	janal.console('Shortcut cobrar venta:');
 	if(PF('contenedorCaja')) {
