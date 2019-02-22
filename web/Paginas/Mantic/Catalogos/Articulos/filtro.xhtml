@@ -30,8 +30,24 @@
 						<h:panelGrid styleClass="janal-wid-100">
 							<p:outputLabel for="codigo" value="Código:"/>
 							<p:inputText id="codigo" value="#{manticCatalogosArticulosFiltro.attrs.codigo}" styleClass="janal-wid-100-txt"/>              							
-							<p:outputLabel for="nombre" value="Nombre:"/>
-							<p:inputText id="nombre" value="#{manticCatalogosArticulosFiltro.attrs.nombre}" styleClass="janal-wid-100-txt"/>              														
+							<p:outputLabel for="nombre" value="Nombre:"/>							
+							<p:autoComplete id="nombre" var="custom" placeholder="Nombre articulo" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosArticulosFiltro.attrs.nombre}" completeMethod="#{manticCatalogosArticulosFiltro.doCompleteArticuloFiltro}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">									
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+										<f:facet name="header" class="TexAlCenter">
+											<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="30"/>
+										</f:facet>
+										<h:outputText value="Propio:" />
+										<h:outputText value="#{custom.propio}" />
+										<h:outputText value="Nombre:" />
+										<h:outputText value="#{custom.nombre}" />
+										<h:outputText value="IVA:" />
+										<h:outputText value="#{custom.iva}" />
+										<h:outputText value="Costo:" />
+										<h:outputText value="$ #{custom.precio}" />
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
 							<p:outputLabel for="idTipoArticulo" value="Tipo articulo:"/>
 								<p:selectOneMenu id="idTipoArticulo" value="#{manticCatalogosArticulosFiltro.attrs.idTipoArticulo}" styleClass="janal-wid-100-txt">									
 									<f:selectItem itemLabel="ARTICULO" itemValue="1"/>
