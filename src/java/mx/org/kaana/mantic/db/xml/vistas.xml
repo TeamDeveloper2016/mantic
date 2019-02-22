@@ -525,8 +525,7 @@
 				and 
 					{condicion}
 				group by 
-					tc_mantic_ventas.id_venta,
-					tc_mantic_ventas.id_venta,
+					tc_mantic_ventas.id_venta,					
 					tc_mantic_ventas.id_empresa,  
 				  tc_mantic_empresas.clave ,  
 				  tc_mantic_empresas.nombre,  
