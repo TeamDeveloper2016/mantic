@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="facturaDetalle" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.mantic.facturas.scriplet.FacturaDetalle">
 	<property name="ireport.zoom" value="3.0"/>
-	<property name="ireport.x" value="1043"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="182"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -170,7 +170,7 @@
 				</textField>
 			</frame>
 			<textField>
-				<reportElement mode="Transparent" x="133" y="0" width="367" height="39"/>
+				<reportElement mode="Transparent" x="133" y="0" width="463" height="39"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.0"/>
@@ -294,7 +294,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["CONTACTO: "+$P{REPORTE_EMPRESA_CONTACTO}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["CONTACTO: JOSE ANTONIO DAVALOS PADILLA"]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
 				<reportElement x="133" y="72" width="216" height="10"/>
@@ -308,7 +308,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["RFC: "+$P{REPORTE_EMPRESA_RFC}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["RFC:  DAPA580118TK4"]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
 				<reportElement x="133" y="63" width="216" height="10"/>
@@ -410,55 +410,6 @@
 					<text><![CDATA[Extras(%)]]></text>
 				</staticText>
 			</frame>
-			<textField pattern="dd/MM/yyyy HH.mm.ss">
-				<reportElement x="500" y="1" width="95" height="10"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Arial Narrow" size="6" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA["JOSE ANTONIO DAVALOS PADILLA"]]></textFieldExpression>
-			</textField>
-			<textField pattern="dd/MM/yyyy HH.mm.ss">
-				<reportElement x="528" y="10" width="67" height="10"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Arial Narrow" size="6" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA["BBVA BANCOMER"]]></textFieldExpression>
-			</textField>
-			<textField pattern="dd/MM/yyyy HH.mm.ss">
-				<reportElement x="528" y="28" width="67" height="10"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Arial Narrow" size="6" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA["012010001324108694"]]></textFieldExpression>
-			</textField>
-			<textField pattern="dd/MM/yyyy HH.mm.ss">
-				<reportElement x="528" y="19" width="67" height="10"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Arial Narrow" size="6" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA["0132410869"]]></textFieldExpression>
-			</textField>
-			<textField pattern="dd/MM/yyyy HH.mm.ss">
-				<reportElement x="500" y="10" width="28" height="10"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Arial Narrow" size="6" isBold="true" isItalic="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Banco:"]]></textFieldExpression>
-			</textField>
-			<textField pattern="dd/MM/yyyy HH.mm.ss">
-				<reportElement x="500" y="19" width="28" height="10"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Arial Narrow" size="6" isBold="true" isItalic="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Cuenta:"]]></textFieldExpression>
-			</textField>
-			<textField pattern="dd/MM/yyyy HH.mm.ss">
-				<reportElement x="500" y="28" width="28" height="10"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Arial Narrow" size="6" isBold="true" isItalic="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA["CLABE:"]]></textFieldExpression>
-			</textField>
 		</band>
 	</pageHeader>
 	<detail>
