@@ -30,7 +30,6 @@ import mx.org.kaana.mantic.catalogos.articulos.beans.RegistroArticulo;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
 
@@ -52,7 +51,7 @@ public class Filtro extends Comun implements Serializable {
     try {
     	this.attrs.put("buscaPorCodigo", false);
       this.attrs.put("codigo", "");
-      this.attrs.put("nombre", "");
+      //this.attrs.put("nombre", "");
       this.attrs.put("idTipoArticulo", 1L);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());      
     } // try
@@ -86,17 +85,13 @@ public class Filtro extends Comun implements Serializable {
 	
 	private String toCondicion(){
 		String regresar        = null;
-		String search          = null;
 		StringBuilder condicion= null;
 		try {
 			condicion= new StringBuilder("tc_mantic_articulos.id_articulo_tipo=").append(this.attrs.get("idTipoArticulo")).append(" and ");			
 			if(!Cadena.isVacio(this.attrs.get("codigo")))
-				condicion.append("upper(tc_mantic_articulos_codigos.codigo) like upper('%").append(this.attrs.get("codigo")).append("%') and ");			
-			search= (String) this.attrs.get("nombre");
-			if(!Cadena.isVacio(search)) {
-				search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();				
-				condicion.append("upper(tc_mantic_articulos.nombre) regexp upper('.*").append(search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*")).append(".*') and ");						
-			} // if									
+				condicion.append("upper(tc_mantic_articulos_codigos.codigo) like upper('%").append(this.attrs.get("codigo")).append("%') and ");						
+			if(this.attrs.get("nombre")!= null) 
+				condicion.append("tc_mantic_articulos.id_articulo=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");						
 			if(Cadena.isVacio(condicion))
 				regresar= Constantes.SQL_VERDADERO;
 			else
@@ -210,12 +205,49 @@ public class Filtro extends Comun implements Serializable {
       Methods.clean(params);
     }// finally
 	}	// doUpdateArticulos
+	
+	public void doUpdateArticulosFiltro() {
+		List<Columna> columns         = null;
+    Map<String, Object> params    = null;
+		List<UISelectEntity> articulos= null;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			params= new HashMap<>();
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("idProveedor", -1L);
+			String search= (String) this.attrs.get("codigoFiltro"); 
+			if(!Cadena.isVacio(search)) 
+  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*.*");			
+			else
+				search= "WXYZ";
+  		params.put("codigo", search);			        
+      articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombreTipoArticulo", params, columns, 40L);
+      this.attrs.put("articulosFiltro", articulos);
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}	// doUpdateArticulos
 
 	public List<UISelectEntity> doCompleteArticulo(String query) {
 		this.attrs.put("existe", null);
 		this.attrs.put("codigo", query);
     this.doUpdateArticulos();		
 		return (List<UISelectEntity>)this.attrs.get("articulos");
+	}	// doCompleteArticulo
+	
+	public List<UISelectEntity> doCompleteArticuloFiltro(String query) {
+		this.attrs.put("existeFiltro", null);
+		this.attrs.put("codigoFiltro", query);
+    this.doUpdateArticulosFiltro();
+		return (List<UISelectEntity>)this.attrs.get("articulosFiltro");
 	}	// doCompleteArticulo
 
   public void doFindArticulo() {
