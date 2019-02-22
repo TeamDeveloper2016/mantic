@@ -149,6 +149,11 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("clienteAsignado", false);
 			this.attrs.put("tabIndex", 0);
 			this.attrs.put("fecha", new Date(Calendar.getInstance().getTimeInMillis()));
+			this.attrs.put("fechaApartirTicket", new Date(Calendar.getInstance().getTimeInMillis()));
+			this.attrs.put("fechaHastaTicket", new Date(Calendar.getInstance().getTimeInMillis()));
+			this.attrs.put("folioTicket", "");
+			this.attrs.put("importeTicket", "");
+			this.attrs.put("productoTicket", "");
 			this.attrs.put("contador", 0L);
 			this.attrs.put("creditoVenta", false);
 			this.attrs.put("busquedaTicketAbierto", "");
@@ -977,15 +982,21 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	private Map<String, Object> toPrepare(){
 		Map<String, Object> regresar= new HashMap<>();	
-		StringBuilder sb= new StringBuilder();				
-		if(!Cadena.isVacio(this.attrs.get("busquedaTicket")) && !this.attrs.get("busquedaTicket").toString().equals("-1")){
-			sb.append("(upper(concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno)) like upper('%").append(this.attrs.get("busquedaTicket")).append("%') or ");					
-			sb.append("upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(this.attrs.get("busquedaTicket")).append("%') or ");					
-			sb.append("upper(tc_mantic_clientes.razon_social) like upper('%").append(this.attrs.get("busquedaTicket")).append("%')").append(" or upper(tc_mantic_clientes.razon_social) like upper('%").append(this.attrs.get("busquedaTicket")).append("%') or ");
-			sb.append("tc_mantic_ventas.ticket like '%").append(this.attrs.get("busquedaTicket")).append("%'").append(" or ");
-			sb.append("(tc_mantic_ventas.consecutivo like '%").append(this.attrs.get("busquedaTicket")).append("%'))");
-			sb.append(" and tc_mantic_ventas.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(")");
+		StringBuilder sb= new StringBuilder();	
+		Date inicio= (Date) this.attrs.get("fechaApartirTicket");			
+		Date fin= (Date) this.attrs.get("fechaHastaTicket");			
+		sb.append("date_format(tc_mantic_ventas.registro, '%Y%m%d') >= ").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, inicio)).append(" and ");
+		sb.append("date_format(tc_mantic_ventas.registro, '%Y%m%d') <= ").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, fin)).append(" and ");
+		if(this.attrs.get("noTicket")!= null && !Cadena.isVacio(this.attrs.get("noTicket"))){
+			sb.append("tc_mantic_ventas.ticket like '%").append(this.attrs.get("noTicket")).append("%'").append(" and ");
 		} // if
+		if(this.attrs.get("productoTicket")!= null && !Cadena.isVacio(this.attrs.get("productoTicket"))){
+			sb.append("upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(this.attrs.get("productoTicket")).append("%') and ");					
+		} // if
+		if(this.attrs.get("importeTicket")!= null && !Cadena.isVacio(this.attrs.get("importeTicket")) && !this.attrs.get("importeTicket").toString().equals("0.00")){												
+			sb.append("tc_mantic_ventas.total =").append(this.attrs.get("importeTicket")).append(" and ");			
+		} // if
+		sb.append("tc_mantic_ventas.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(")");
 		regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
