@@ -29,6 +29,7 @@ import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
 import mx.org.kaana.mantic.db.dto.TrManticGarantiaMedioPagoDto;
 import mx.org.kaana.mantic.enums.EEstatusGarantias;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
+import mx.org.kaana.mantic.enums.ETiposGarantias;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Cierre;
 import mx.org.kaana.mantic.ventas.garantias.beans.Garantia;
 import org.apache.log4j.Logger;
@@ -39,11 +40,14 @@ public class Transaccion extends IBaseTnx{
 	private static final Logger LOG          = Logger.getLogger(Transaccion.class);
 	private static final String GENERAL      = "GENERAL";
 	private static final String CIERRE_ACTIVO= "1,2";
-	private Garantia garantia;
-	private TcManticGarantiasDto garantiaDto;
+	private List<Articulo> detalleTerminados;
+	private List<Articulo> detalleRecibidos;
+	private TcManticGarantiasDto garantiaDto;	
+	private List<Garantia> garantias;	
+	private Garantia garantia;	
+	private IBaseDto dto;
 	private String justificacion;
-	private String messageError;
-	private IBaseDto dto;	
+	private String messageError;		
 	private Long idCierreVigente;
 	
 	public Transaccion(IBaseDto dto) {
@@ -63,6 +67,10 @@ public class Transaccion extends IBaseTnx{
 		this.garantiaDto  = garantiaDto;
 		this.justificacion= justificacion;
 	} // Transaccion
+
+	public Transaccion(List<Garantia> garantias) {
+		this.garantias = garantias;
+	} // Transaccion		
 	
 	public Long getIdCierreVigente() {
 		return idCierreVigente;
@@ -114,12 +122,15 @@ public class Transaccion extends IBaseTnx{
 	private boolean procesarGarantia(Session sesion) throws Exception {
 		boolean regresar= false;
 		try {
-			regresar= this.generarGarantia(sesion, EEstatusGarantias.ELABORADA.getIdEstatusGarantia());
-			if(regresar) {				
-				if(this.verificarCierreCaja(sesion)){
-					if(this.registrarPagos(sesion))					
-						regresar= this.alterarStockArticulos(sesion);
-				} // if				
+			for(Garantia newGarantia: this.garantias){
+				this.garantia= newGarantia;
+				regresar= this.generarGarantia(sesion, this.garantia.getTipoGarantia().equals(ETiposGarantias.RECIBIDA) ? EEstatusGarantias.RECIBIDA.getIdEstatusGarantia() : EEstatusGarantias.TERMINADA.getIdEstatusGarantia());
+				if(regresar) {				
+					if(this.verificarCierreCaja(sesion)){
+						if(this.registrarPagos(sesion))					
+							regresar= this.alterarStockArticulos(sesion);
+					} // if				
+				} // if
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -435,6 +446,5 @@ public class Transaccion extends IBaseTnx{
 			throw e;
 		} // catch		
 		return regresar;
-	} // registrarBitacora
-	
+	} // registrarBitacora	
 }
