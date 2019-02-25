@@ -86,10 +86,10 @@
 	<field name="CODIGO" class="java.lang.String"/>
 	<field name="NOMBRE" class="java.lang.String"/>
 	<field name="COSTO" class="java.lang.String"/>
-	<field name="ARTICULO_IVA" class="java.lang.String"/>
+	<field name="ARTICULO_IVA" class="java.math.BigDecimal"/>
 	<field name="DESCUENTO" class="java.lang.String"/>
 	<field name="EXTRAS" class="java.lang.String"/>
-	<field name="CANTIDAD" class="java.lang.String"/>
+	<field name="CANTIDAD" class="java.math.BigDecimal"/>
 	<field name="TIPO_MEDIO_PAGO" class="java.lang.String"/>
 	<field name="FOLIO" class="java.lang.String"/>
 	<field name="FOLIO_FISCAL" class="java.lang.String"/>
@@ -446,7 +446,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="9" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{COSTO}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{IMPORTE}.doubleValue()-$F{ARTICULO_IVA}.doubleValue())/$F{CANTIDAD}.doubleValue()]]></textFieldExpression>
 				</textField>
 				<textField pattern="" isBlankWhenNull="true">
 					<reportElement x="115" y="0" width="249" height="14"/>
