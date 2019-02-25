@@ -182,6 +182,10 @@ public abstract class IAdminArticulos implements Serializable {
 		this.setAjusteDeuda(this.totales.getTotal());
 	}
 
+	public void toCalculateGarantia(boolean modificado) {
+		this.toCalculate(modificado);
+	}
+	
 	public void toUpdatePorcentajes() {
 		for (Articulo articulo: this.articulos) {
 			articulo.setDescuento(this.getDescuento());
