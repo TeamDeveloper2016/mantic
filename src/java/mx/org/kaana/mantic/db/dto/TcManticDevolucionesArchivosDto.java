@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -56,6 +50,8 @@ public class TcManticDevolucionesArchivosDto implements IBaseDto, Serializable {
   private String alias;
   @Column (name="nombre")
   private String nombre;
+  @Column (name="archivo")
+  private String archivo;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -64,11 +60,11 @@ public class TcManticDevolucionesArchivosDto implements IBaseDto, Serializable {
   }
 
   public TcManticDevolucionesArchivosDto(Long key) {
-    this(new Long(-1L), null, null, null, null, null, null, null, null, null);
+    this(new Long(-1L), null, null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticDevolucionesArchivosDto(Long idDevolucionArchivo, Long idDevolucion, String ruta, Long tamanio, Long idUsuario, Long idTipoArchivo, Long idPrincipal, String observaciones, String alias, String nombre) {
+  public TcManticDevolucionesArchivosDto(Long idDevolucionArchivo, Long idDevolucion, String ruta, Long tamanio, Long idUsuario, Long idTipoArchivo, Long idPrincipal, String observaciones, String alias, String nombre, String archivo) {
     setIdDevolucionArchivo(idDevolucionArchivo);
     setIdDevolucion(idDevolucion);
     setRuta(ruta);
@@ -80,6 +76,7 @@ public class TcManticDevolucionesArchivosDto implements IBaseDto, Serializable {
     setAlias(alias);
     setNombre(nombre);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		this.archivo= archivo;
   }
 	
   public void setIdDevolucionArchivo(Long idDevolucionArchivo) {
@@ -162,6 +159,14 @@ public class TcManticDevolucionesArchivosDto implements IBaseDto, Serializable {
     return nombre;
   }
 
+	public String getArchivo() {
+		return archivo;
+	}
+
+	public void setArchivo(String archivo) {
+		this.archivo=archivo;
+	}
+
   public void setRegistro(Timestamp registro) {
     this.registro = registro;
   }
@@ -205,6 +210,8 @@ public class TcManticDevolucionesArchivosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getArchivo());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -223,6 +230,7 @@ public class TcManticDevolucionesArchivosDto implements IBaseDto, Serializable {
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("alias", getAlias());
 		regresar.put("nombre", getNombre());
+		regresar.put("archivo", getArchivo());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -230,7 +238,7 @@ public class TcManticDevolucionesArchivosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdDevolucionArchivo(), getIdDevolucion(), getRuta(), getTamanio(), getIdUsuario(), getIdTipoArchivo(), getIdPrincipal(), getObservaciones(), getAlias(), getNombre(), getRegistro()
+    getIdDevolucionArchivo(), getIdDevolucion(), getRuta(), getTamanio(), getIdUsuario(), getIdTipoArchivo(), getIdPrincipal(), getObservaciones(), getAlias(), getNombre(), getArchivo(), getRegistro()
     };
     return regresar;
   }

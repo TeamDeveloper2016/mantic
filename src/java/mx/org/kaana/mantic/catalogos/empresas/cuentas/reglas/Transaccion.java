@@ -284,7 +284,8 @@ public class Transaccion extends IBaseTnx {
 					this.xml.getObservaciones(),
 					this.idPago,																					
 					Configuracion.getInstance().getPropiedadSistemaServidor("pagos").concat(this.xml.getRuta()).concat(this.xml.getName()),
-					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1)					
+					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
+          this.xml.getOriginal()					
 				);
 				TcManticEmpresasArchivosDto exists= (TcManticEmpresasArchivosDto)DaoFactory.getInstance().toEntity(TcManticEmpresasArchivosDto.class, "TcManticEmpresasArchivosDto", "identically", tmp.toMap());
 				File reference= new File(tmp.getAlias());
@@ -311,7 +312,8 @@ public class Transaccion extends IBaseTnx {
 					this.xml.getObservaciones(),
 					this.idPago,																					
 					Configuracion.getInstance().getPropiedadSistemaServidor("pagos").concat(this.xml.getRuta()).concat(this.xml.getName()),
-					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1)					
+					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
+          this.xml.getOriginal()					
 				);
 				TcManticEmpresasArchivosDto exists= (TcManticEmpresasArchivosDto)DaoFactory.getInstance().toEntity(TcManticEmpresasArchivosDto.class, "TcManticEmpresasArchivosDto", "identically", tmp.toMap());
 				File reference= new File(tmp.getAlias());
@@ -619,7 +621,8 @@ public class Transaccion extends IBaseTnx {
 					this.pdf.getObservaciones(),
 					this.idPago,	
 					Configuracion.getInstance().getPropiedadSistemaServidor("pagos").concat(this.pdf.getRuta()).concat(this.pdf.getName()),
-					Long.valueOf(Fecha.getMesActual())					
+					Long.valueOf(Fecha.getMesActual()),
+					this.pdf.getOriginal()
 				);
 				TcManticEmpresasArchivosDto exists= (TcManticEmpresasArchivosDto)DaoFactory.getInstance().toEntity(TcManticEmpresasArchivosDto.class, "TcManticEmpresasArchivosDto", "identically", tmp.toMap());
 				File reference= new File(tmp.getAlias());

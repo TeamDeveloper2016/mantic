@@ -156,7 +156,8 @@ public class Transaccion extends IBaseTnx {
 					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1), //mes
 					this.xml.getName(), //nombre
 					new Long(Calendar.getInstance().get(Calendar.YEAR)), //ejercicio
-					this.xml.getRuta() //ruta										
+					this.xml.getRuta(), //ruta
+					this.xml.getOriginal()
 				);
 				TcManticEgresosArchivosDto exists= (TcManticEgresosArchivosDto)DaoFactory.getInstance().toEntity(TcManticEgresosArchivosDto.class, "TcManticEgresosArchivosDto", "identically", tmp.toMap());
 				File reference= new File(tmp.getAlias());
@@ -183,7 +184,8 @@ public class Transaccion extends IBaseTnx {
 					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1), //mes
 					this.pdf.getName(), //nombre
 					new Long(Calendar.getInstance().get(Calendar.YEAR)), //ejercicio
-					this.pdf.getRuta() //ruta										
+					this.pdf.getRuta(), //ruta										
+					this.pdf.getOriginal()
 				);
 				TcManticEgresosArchivosDto exists= (TcManticEgresosArchivosDto)DaoFactory.getInstance().toEntity(TcManticEgresosArchivosDto.class, "TcManticEgresosArchivosDto", "identically", tmp.toMap());
 				File reference= new File(tmp.getAlias());

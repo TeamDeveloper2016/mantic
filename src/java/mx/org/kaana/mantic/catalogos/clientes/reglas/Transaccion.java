@@ -490,7 +490,8 @@ public class Transaccion extends TransaccionFactura {
 					1L,
 					this.file.getObservaciones(),
 					Configuracion.getInstance().getPropiedadSistemaServidor("clientes").concat(this.file.getRuta()).concat(this.file.getName()),
-					this.file.getName()					
+					this.file.getName(),
+					this.file.getOriginal()
 				);
 				TcManticClientesArchivosDto exists= (TcManticClientesArchivosDto)DaoFactory.getInstance().toEntity(TcManticClientesArchivosDto.class, "TcManticClientesArchivosDto", "identically", tmp.toMap());
 				File reference= new File(tmp.getAlias());

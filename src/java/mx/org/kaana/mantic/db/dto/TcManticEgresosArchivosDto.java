@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -56,6 +50,8 @@ public class TcManticEgresosArchivosDto implements IBaseDto, Serializable {
   private Long mes;
   @Column (name="nombre")
   private String nombre;
+  @Column (name="archivo")
+  private String archivo;
   @Column (name="ruta")
   private String ruta;
   @Column (name="ejercicio")
@@ -68,11 +64,11 @@ public class TcManticEgresosArchivosDto implements IBaseDto, Serializable {
   }
 
   public TcManticEgresosArchivosDto(Long key) {
-    this(new Long(-1L), null, null, null, null, null, null, null, null, null, null, null);
+    this(new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticEgresosArchivosDto(Long idEgresoArchivo, Long idEgreso, Long tamanio, Long idUsuarios, Long idTipoArchivo, Long idPrincipal, String observaciones, String alias, Long mes, String nombre, Long ejercicio, String ruta) {
+  public TcManticEgresosArchivosDto(Long idEgresoArchivo, Long idEgreso, Long tamanio, Long idUsuarios, Long idTipoArchivo, Long idPrincipal, String observaciones, String alias, Long mes, String nombre, Long ejercicio, String ruta, String archivo) {
     setIdEgresoArchivo(idEgresoArchivo);
     setIdEgreso(idEgreso);
     setTamanio(tamanio);
@@ -86,6 +82,7 @@ public class TcManticEgresosArchivosDto implements IBaseDto, Serializable {
     setEjercicio(ejercicio);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 		setRuta(ruta);
+		this.archivo= archivo;
   }
 	
   public void setIdEgresoArchivo(Long idEgresoArchivo) {
@@ -168,6 +165,14 @@ public class TcManticEgresosArchivosDto implements IBaseDto, Serializable {
     return nombre;
   }
 
+	public String getArchivo() {
+		return archivo;
+	}
+
+	public void setArchivo(String archivo) {
+		this.archivo=archivo;
+	}
+
   public void setEjercicio(Long ejercicio) {
     this.ejercicio = ejercicio;
   }
@@ -227,6 +232,8 @@ public class TcManticEgresosArchivosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getArchivo());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getEjercicio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
@@ -249,6 +256,7 @@ public class TcManticEgresosArchivosDto implements IBaseDto, Serializable {
 		regresar.put("alias", getAlias());
 		regresar.put("mes", getMes());
 		regresar.put("nombre", getNombre());
+		regresar.put("archivo", getArchivo());
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
 		regresar.put("ruta", getRuta());
@@ -258,7 +266,7 @@ public class TcManticEgresosArchivosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdEgresoArchivo(), getIdEgreso(), getTamanio(), getIdUsuarios(), getIdTipoArchivo(), getIdPrincipal(), getObservaciones(), getAlias(), getMes(), getNombre(), getEjercicio(), getRegistro(), getRuta()
+      getIdEgresoArchivo(), getIdEgreso(), getTamanio(), getIdUsuarios(), getIdTipoArchivo(), getIdPrincipal(), getObservaciones(), getAlias(), getMes(), getNombre(), getArchivo(), getEjercicio(), getRegistro(), getRuta()
     };
     return regresar;
   }

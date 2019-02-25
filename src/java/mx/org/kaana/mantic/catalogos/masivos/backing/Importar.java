@@ -99,7 +99,8 @@ public class Importar extends IBaseImportar implements Serializable {
 				"", // String observaciones, 
 				null, // String alias, 
 				JsfBase.getAutentifica().getEmpresa().getIdEmpresa(),
-				1L
+				1L,
+				null
 			);
     } // try
     catch (Exception e) {
@@ -160,6 +161,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		Transaccion transaccion= null;
 		long tuplas            = this.masivo.getTuplas();
 		try {
+			this.masivo.setArchivo(this.getXls().getOriginal());
 		  this.masivo.setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
       transaccion= new Transaccion(this.masivo, this.categoria);
       if(transaccion.ejecutar(EAccion.PROCESAR)) {
@@ -233,7 +235,8 @@ public class Importar extends IBaseImportar implements Serializable {
 				null, // String observaciones, 
 				null, // String alias, 
 				JsfBase.getAutentifica().getEmpresa().getIdEmpresa(),
-				1L
+				1L,
+				null
 			);
 		} // if
 	} // doChangeTipo

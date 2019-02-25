@@ -237,7 +237,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					this.xml.getName(),
 					this.xml.getObservaciones(),
 					new Long(Calendar.getInstance().get(Calendar.YEAR)),
-					1L
+					1L,
+					this.xml.getOriginal()
 				);
 				TcManticCreditosArchivosDto exists= (TcManticCreditosArchivosDto)DaoFactory.getInstance().toEntity(TcManticCreditosArchivosDto.class, "TcManticCreditosArchivosDto", "identically", tmp.toMap());
 				File file= new File(tmp.getAlias());
@@ -264,7 +265,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					this.pdf.getName(),
 					this.pdf.getObservaciones(),
 					new Long(Calendar.getInstance().get(Calendar.YEAR)),
-					1L
+					1L,
+					this.pdf.getOriginal()
 				);
 				TcManticCreditosArchivosDto exists= (TcManticCreditosArchivosDto)DaoFactory.getInstance().toEntity(TcManticCreditosArchivosDto.class, "TcManticCreditosArchivosDto", "identically", tmp.toMap());
 				File file= new File(tmp.getAlias());
