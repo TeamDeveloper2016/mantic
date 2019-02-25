@@ -160,12 +160,12 @@
           tc_mantic_ordenes_compras.observaciones,
           tc_mantic_ordenes_detalles.*,
           concat('(',
-            ifnull((select
+            ifnull((select distinct
               tc_mantic_articulos_codigos.codigo 
             from
               tc_mantic_articulos_codigos 
             where
-              tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo),
+              tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor=tc_mantic_ordenes_compras.id_proveedor),
             ''),
             ' ) ',
             tc_mantic_articulos.nombre) as articulo,
