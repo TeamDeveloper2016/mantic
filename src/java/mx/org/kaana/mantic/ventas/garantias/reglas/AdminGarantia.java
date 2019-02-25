@@ -32,6 +32,8 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 	private static final Log LOG              = LogFactory.getLog(AdminGarantia.class);
 
 	private TicketVenta orden;
+	private List<Articulo> articulosTerminada;
+	private List<Articulo> articulosRecibida;
 
 	public AdminGarantia(TicketVenta orden) throws Exception {
 		this(orden, EAccion.AGREGAR);
@@ -50,14 +52,14 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 	}
 	
 	public AdminGarantia(TicketVenta orden, boolean loadDefault, EAccion accion, Long idGarantia) throws Exception {		
-		this.orden  = orden;
+		this.orden= orden;
 		if(this.orden.isValid()) {
 			switch(accion){
 				case CONSULTAR:
 					Map<String, Object>params= new HashMap<>();
 					params.put("idGarantia", idGarantia);
 					this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaTcManticGarantiasArticulosDto", "detalleGarantia", params));
-					break;
+					break;				
 				default:
 					this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaTcManticGarantiasArticulosDto", "detalle", orden.toMap()));
 					validaArticulos();
@@ -131,6 +133,14 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 	public void setDescuento(String descuento){
 		this.orden.setDescuento(descuento);
 	}
+
+	public List<Articulo> getArticulosTerminada() {
+		return articulosTerminada;
+	}
+
+	public List<Articulo> getArticulosRecibida() {
+		return articulosRecibida;
+	}	
 	
 	public void validaArticulos(){
 		List<Articulo>arts= null;
@@ -146,5 +156,45 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 		catch (Exception e) {
 			Error.mensaje(e);			
 		} // catch		
-	} // validaArticulos
+	} // validaArticulos	
+	
+	@Override
+	public void toCalculateGarantia(boolean recibida) {
+		this.articulosRecibida = new ArrayList<>();
+		this.articulosTerminada= new ArrayList<>();
+		if(recibida)
+			toCalculateRecibida();
+		else
+			toCalculateTerminada();
+	} // toCalculte
+	
+	public void toCalculateRecibida() {
+		getTotales().reset();
+		for (Articulo articulo: getArticulos()) {
+			if(articulo.isAplicar()){
+				articulo.toCalculate(this.getIdSinIva().equals(1L), this.getTipoDeCambio());
+				articulo.setModificado(false);
+				getTotales().addArticulo(articulo);
+				this.articulosRecibida.add(articulo);
+			} // if
+		} // for
+		getTotales().removeUltimo(getArticulos().get(getArticulos().size()- 1));
+		getTotales().removeTotal();
+		this.setAjusteDeuda(getTotales().getTotal());
+	} // toCalculte
+	
+	public void toCalculateTerminada() {
+		getTotales().reset();
+		for (Articulo articulo: getArticulos()) {
+			if(!articulo.isAplicar()){
+				articulo.toCalculate(this.getIdSinIva().equals(1L), this.getTipoDeCambio());
+				articulo.setModificado(false);
+				getTotales().addArticulo(articulo);
+				this.articulosTerminada.add(articulo);
+			} // if
+		} // for
+		getTotales().removeUltimo(getArticulos().get(getArticulos().size()- 1));
+		getTotales().removeTotal();
+		this.setAjusteDeuda(getTotales().getTotal());
+	} // toCalculte
 }
