@@ -203,4 +203,18 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		} // catch		
 		return regresar;
 	} // doVerificaVigenciaCotizacion
+	
+	public List<Entity> pagosVenta() throws Exception{
+		List<Entity> regresar     = null;
+		Map<String, Object> params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idVenta", this.idArticulo);
+			regresar= DaoFactory.getInstance().toEntitySet("VistaVentasDto", "pagosVenta", params, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // pagosVenta
 }
