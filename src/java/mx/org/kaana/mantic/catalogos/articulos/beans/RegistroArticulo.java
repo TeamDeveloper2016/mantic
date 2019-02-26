@@ -304,6 +304,7 @@ public class RegistroArticulo implements Serializable {
 			this.preciosSugeridos= motor.toArticulosPreciosSugeridos();
 			if(!this.articulosCodigos.isEmpty())
 				this.observaciones= this.articulosCodigos.get(0).getObservaciones();
+			setImagen(this.articulo.getIdImagen()!= null && !this.articulo.getIdImagen().equals(-1L) && !Cadena.isVacio(this.importado.getName()));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
