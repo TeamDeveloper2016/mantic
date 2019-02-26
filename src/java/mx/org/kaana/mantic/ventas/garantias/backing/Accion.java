@@ -134,8 +134,8 @@ public class Accion extends IBaseVenta implements Serializable {
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
-    try {	
-			transaccion= new Transaccion(loadDetalleGarantia());
+    try {				
+			transaccion= new Transaccion(loadDetalleGarantia(), ((AdminGarantia)this.getAdminOrden()).getArticulosTerminada(), ((AdminGarantia)this.getAdminOrden()).getArticulosRecibida());			
 			if (transaccion.ejecutar(EAccion.REPROCESAR)) {
 				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
 				JsfBase.addMessage("Se finalizo la garantia.", ETipoMensaje.INFORMACION);
@@ -171,7 +171,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				garantia= new Garantia();
 				garantia.setTicketVenta(ticketVenta);			
 				garantia.setTotales((Pago) this.attrs.get("pago"));
-				garantia.setArticulos(tipoGarantia.equals(ETiposGarantias.RECIBIDA) ? ((AdminGarantia)this.getAdminOrden()).getArticulosRecibida() : ((AdminGarantia)this.getAdminOrden()).getArticulosTerminada());
+				garantia.setArticulos(this.getAdminOrden().getArticulos());
 				garantia.setIdCaja(Long.valueOf(this.attrs.get("caja").toString()));
 				garantia.setGarantia(this.ticketOriginal);
 				pagoGarantia= new PagoGarantia();
