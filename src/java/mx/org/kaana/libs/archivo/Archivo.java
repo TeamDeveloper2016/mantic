@@ -132,6 +132,35 @@ public final class Archivo {
       Error.mensaje(e);
     } // catch
   }
+	
+	public static void copyDeleteSource(String source, String target, boolean delete) {
+    InputStream inStream  = null;
+    OutputStream outStream= null;
+		File afile            = null;
+		File bfile            = null;
+    try {
+      afile= new File(source);
+      bfile= new File(target);
+      inStream  = new FileInputStream(afile);
+      outStream = new FileOutputStream(bfile);
+      byte[] buffer=new byte[1024];
+      int length= 0;
+      while ((length= inStream.read(buffer))> 0) {
+        outStream.write(buffer, 0, length);
+      } // while
+      inStream.close();
+      outStream.close();
+			inStream= null;
+			outStream= null;
+    } // try
+    catch (IOException e) {
+      Error.mensaje(e);
+    } // catch
+		finally{
+			if(afile!= null)
+				afile.delete();			
+		} // finally
+  }
 
   /**
    * Realiza una copia de un archivo
@@ -181,6 +210,11 @@ public final class Archivo {
 		fileOutputStream.close();
 		inputStream.close();
 	} // toWriteFile
+	
+	
+	public static void main (String args[]) {
+	  copyDeleteSource("D:\\temporal\\archivos\\imagenes\\1\\IMG_20190225050854446_12168.JPG", "D:\\temporal\\archivos\\imagenes\\1\\IMG_20190225050854446_12168New.JPG", true);
+	}
 	
 	
 }
