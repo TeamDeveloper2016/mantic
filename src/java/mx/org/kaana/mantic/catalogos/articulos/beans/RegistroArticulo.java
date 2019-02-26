@@ -304,7 +304,6 @@ public class RegistroArticulo implements Serializable {
 			this.preciosSugeridos= motor.toArticulosPreciosSugeridos();
 			if(!this.articulosCodigos.isEmpty())
 				this.observaciones= this.articulosCodigos.get(0).getObservaciones();
-			setImagen(this.articulo.getIdImagen()!= null && !this.articulo.getIdImagen().equals(-1L) && !Cadena.isVacio(this.importado.getName()));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -549,7 +548,8 @@ public class RegistroArticulo implements Serializable {
 			Archivo.toWriteFile(result, event.getFile().getInputstream());
 			fileSize= event.getFile().getSize();
 			this.importado= new Importado(nameFile, event.getFile().getContentType(), EFormatos.FREE, event.getFile().getSize(), fileSize.equals(0L) ? fileSize : fileSize/1024, event.getFile().equals(0L) ? BYTES : K_BYTES, genericPath, "", event.getFile().getFileName());      
-			this.toMessageImage();			
+			this.toMessageImage();		
+			this.articulo.setIdImagen(-1L);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
