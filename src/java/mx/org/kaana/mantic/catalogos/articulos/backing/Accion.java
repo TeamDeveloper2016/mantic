@@ -100,6 +100,8 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
       transaccion = new Transaccion(this.registroArticulo);
+			this.image.getStream().close();
+			this.image= null;
       if (transaccion.ejecutar(eaccion)) {
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
         JsfBase.addMessage("Se registro el artículo de forma correcta.", ETipoMensaje.INFORMACION);
