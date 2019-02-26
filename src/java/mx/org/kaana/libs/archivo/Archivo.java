@@ -209,12 +209,5 @@ public final class Archivo {
 		} // while
 		fileOutputStream.close();
 		inputStream.close();
-	} // toWriteFile
-	
-	
-	public static void main (String args[]) {
-	  copyDeleteSource("D:\\temporal\\archivos\\imagenes\\1\\IMG_20190225050854446_12168.JPG", "D:\\temporal\\archivos\\imagenes\\1\\IMG_20190225050854446_12168New.JPG", true);
-	}
-	
-	
+	} // toWriteFile	
 }
