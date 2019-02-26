@@ -68,8 +68,10 @@ public class Transaccion extends IBaseTnx{
 		this.justificacion= justificacion;
 	} // Transaccion
 
-	public Transaccion(List<Garantia> garantias) {
-		this.garantias = garantias;
+	public Transaccion(List<Garantia> garantias, List<Articulo> detalleTerminados, List<Articulo> detalleRecibidos) {
+		this.garantias        = garantias;
+		this.detalleRecibidos = detalleRecibidos;
+		this.detalleTerminados= detalleTerminados;
 	} // Transaccion		
 	
 	public Long getIdCierreVigente() {
