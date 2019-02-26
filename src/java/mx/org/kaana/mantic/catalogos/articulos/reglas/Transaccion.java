@@ -274,9 +274,12 @@ public class Transaccion extends TransaccionFactura {
 		Long tipoImagen             = null;
 		String name                 = null;
 		File result                 = null;
+		String pathPivote           = null;
 		try {
-			if(idImagen!= null && this.articulo.isImagen())
+			if(idImagen!= null && this.articulo.isImagen()){
 				regresar= (TcManticImagenesDto) DaoFactory.getInstance().findById(sesion, TcManticImagenesDto.class, idImagen);
+				pathPivote= regresar.getAlias();
+			} // if
 			else
 				regresar= new TcManticImagenesDto();
 			name= this.articulo.getImportado().getName();
@@ -293,15 +296,25 @@ public class Transaccion extends TransaccionFactura {
 				result= new File(path.concat(regresar.getNombre()));			
 				if(result.exists()) {
 					Archivo.copy(path.concat(this.articulo.getImportado().getName()), path.concat(regresar.getArchivo()), true);												
-					new File(path.concat(this.articulo.getImportado().getName())).delete();					
+					new File(path.concat(this.articulo.getImportado().getName())).delete();
+					if(pathPivote!= null ){
+						result= new File(pathPivote);
+						if(result.exists())
+							result.delete();
+					} // if
 				} // if
+				else{
+					result= new File(pathPivote);			
+					if(result.exists()) 
+						Archivo.copyDeleteSource(pathPivote, path.concat(regresar.getArchivo()), true);									
+				} // else
 			} // if
 		} // try
 		catch (Exception e) {						
 			throw e;
 		} // catch		
 		finally{
-			this.messageError= "Error al registrar imagen del articulo";
+			this.messageError= "Error al registrar imagen del articulo";			
 		} // finally
 		return regresar;
 	} // loadImage
