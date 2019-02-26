@@ -9,29 +9,23 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="Tickets disponibles para garantias"/>	
 	<ui:define name="librerias">    		
-		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryVentasJs}"/>
-		<script type="text/javascript">			
-			Janal.Control.fields = {				 				
-				/*'descuento'        : {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'general'},
-				'ticketsAbiertos'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', mensaje:'Selecciona al menos un ticket abierto.'},				
-				'total'            : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general', mensaje: 'El importe total tiene que ser mayor a 0'}
-				'efectivo'         : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-				'credito'          : {validaciones: 'libre|max-valor({"cuanto": #{manticVentasGarantiasAccion.attrs.pago.limiteCredito}})', mascara: 'libre', grupo: 'general', mensaje:'La suma de los pagos que no son en efectivo sobrepasa al total.'},
-				'referenciaCredito': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Capturar la referencia del credito'},
-				'bancoCredito'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona el banco de tu tarjeta de credito'},								
-				'cheque'           : {validaciones: 'libre|max-valor({"cuanto": #{manticVentasGarantiasAccion.attrs.pago.limiteCheque}})', mascara: 'libre', grupo: 'general', mensaje:'La suma de los pagos que no son en efectivo sobrepasa al total.'},
-				'referenciaCheque' : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Capturar la referencia del cheque'},
-				'bancoCheque'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona el banco de tu cheque'},
-				'pago'             : {validaciones: 'requerido|min-valor({"cuanto":100})', mascara: 'libre', grupo: 'general', mensaje: 'No se a cubierto la totalidad del pago.'},
-				'transferencia'          : {validaciones: 'libre|max-valor({"cuanto": #{manticVentasGarantiasAccion.attrs.pago.limiteTransferencia}})', mascara: 'libre', grupo: 'general', mensaje:'La suma de los pagos que no son en efectivo sobrepasa al total.'},
-				'referenciaTransferencia': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Capturar la referencia del credito'},
-				'bancoTransferencia'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona el banco de tu tarjeta de credito'}				*/
-			};	
-					
-    	$(document).ready(function() {
+		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryVentasJs}"/>				
+		<script type="text/javascript">
+			// <![CDATA[
+			Janal.Control.fields={
+				'descuento'      : {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'general'},			
+				'ticketsAbiertos': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona al menos un ticket abierto.'},				
+				'total'          : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general', mensaje: 'El importe total tiene que ser mayor a 0'}
+			};
+			
+			fieldsDialogPago= {
+				//'referenciaDlg'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'}
+			};
+			
+			$(document).ready(function() {
 				jsArticulos= new Janal.Control.Articulos.Core(#{manticVentasGarantiasAccion.adminOrden.articulos.size()}, 'contenedorGrupos\\:tabla\\:');
 				janal.readingMode('#{manticVentasGarantiasAccion.attrs.nombreAccion}');
-      });																		
+      });
 			
 			function validateGarantia() {
 				var ok= janal.execute();
@@ -46,34 +40,36 @@
 				$('input[id$="cantidades"]').each(function() {
 					sum+= janal.double($(this).val(), 0);
 				});
-				if(sum&lt;= 0)
+				if(sum <= 0){
 					custom.push({summary: 'Articulos:', detail: 'Se tiene que seleccionar por lo menos un articulo o en cantidad colocar un valor mayor a 0'});
+				} // if
 				$('input[id$="garantia_input"]:checked').each(function() {
 					var name= $(this).attr('id');
 					name= '#'+ name.substring(0, name.lastIndexOf(":")+ 1)+ 'cantidades';
 					var cantidad= janal.double($(name.replace(/:/gi, '\\:')).val(), 0);
-					if(cantidad&lt;= 0) {
+					if(cantidad <= 0) {
 						var items= $(this).attr('id').split(':');
   					custom.push({summary: 'La fila '+ (janal.integer(items[2], 0)+ 1)+ ':', detail: 'La cantidad del articulo tiene que ser mayor a 0'});
 					} // if
 				});
-				var ok= janal.partial('general', custom, true);*/
-				var ok= true;
+				var ok= janal.partial('general', custom, true);	*/			
+				var ok= true;				
 				if(ok) {
 					janal.bloquear();					
 					PF('dlgCerrarVenta').show();
 				} // if
 				return ok;
-			} // ventaFinished			
-			
+			} // ventaFinished
+
 			function restoreCursoArt() {
 				setTimeout("jsArticulos.goto();", 1000);						
 			}
 			
 			function descuentoUserFocus() {
 				setTimeout("$('#descuentousr').focus();", 1000);						
-			}
-		</script>   
+			}			
+			// ]]>
+		</script>
 		<style type="text/css">
 			.janal-total-compra {
 				font-size: 30px !important;
@@ -408,33 +404,51 @@
 			<div class="janal-line-button">				
 				<p:commandButton icon="fa fa-close" process="@none" accesskey="r" value="Cerrar" onstart="PF('dlgDetalleArticulo').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
-		</p:dialog>
-		<p:dialog id="dialogoCerrarVenta" widgetVar="dlgCerrarVenta" header="Generar garantia" resizable="false" closable="false" responsive="true" width="40%">					
-			<h:panelGrid columns="3" class="janal-wid-100" columnClasses="janal-wid-75, janal-wid-5 janal-column-center, janal-wid-20 janal-column-right">
-				<p:outputLabel value="Cliente" styleClass="font-resume-venta-detail"/>
-				<p:spacer/><p:spacer/>					
-				<p:outputLabel value="#{manticVentasGarantiasAccion.attrs.nombreCliente}"/>				
-				<p:spacer/><p:spacer/><p:spacer/><p:spacer/><p:spacer/>
-				<p:outputLabel value="Descuento" styleClass="font-resume-venta-detail"/>
-				<p:outputLabel value="$"/>
-				<p:outputLabel value="#{manticVentasGarantiasAccion.attrs.pago.totales.descuentoDosDecimales$}"/>				
-				<p:outputLabel value="Total:" styleClass="font-resume-venta-detail janal-color-orange"/>
-				<p:outputLabel value="$" styleClass="janal-color-orange"/>
-				<p:outputLabel value="#{manticVentasGarantiasAccion.attrs.pago.totales.totalDosDecimales$}" styleClass="janal-color-orange"/>								
-				<p:spacer/><p:spacer/><p:spacer/>			
-				<p:outputLabel value="Tipo de pago:" styleClass="font-resume-venta-detail"/>
-				<p:spacer/><p:spacer/>
-				<c:forEach items="#{manticVentasGarantiasAccion.attrs.pagosVenta}" var="prop" varStatus="index">
-					<p:outputLabel value="#{prop.nombre}"/>
+		</p:dialog>		
+		<p:dialog id="dialogoCerrarVenta" widgetVar="dlgCerrarVenta" header="Generar garantia" resizable="false" closable="false" responsive="true" width="40%">			
+			<!--h:form id="formDialogoCerrar"-->
+				<h:panelGrid columns="3" class="janal-wid-100" columnClasses="janal-wid-75, janal-wid-5 janal-column-center, janal-wid-20 janal-column-right">
+					<p:outputLabel value="Cliente" styleClass="font-resume-venta-detail"/>
+					<p:spacer/><p:spacer/>					
+					<p:outputLabel value="#{manticVentasGarantiasAccion.attrs.nombreCliente}"/>				
+					<p:spacer/><p:spacer/><p:spacer/><p:spacer/><p:spacer/>
+					<p:outputLabel value="Descuento" styleClass="font-resume-venta-detail"/>
 					<p:outputLabel value="$"/>
-					<p:outputLabel value="#{prop.importe}"/>				
-				</c:forEach>					
-			</h:panelGrid>							
-			<hr class="ui-widget-content"/>
-			<div class="janal-line-button">
-				<p:commandButton id="aceptarFinalizar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasGarantiasAccion.doAceptar}" onstart="return validateGarantia();" oncomplete="janal.desbloquear()" update="contenedorGrupos @(.filas) @(.recalculo)" disabled="#{!manticVentasGarantiasAccion.attrs.cobroVenta}"/>
-				<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear();"/>
-			</div>			
+					<p:outputLabel value="#{manticVentasGarantiasAccion.attrs.pago.totales.descuentoDosDecimales$}"/>				
+					<p:outputLabel value="Total:" styleClass="font-resume-venta-detail janal-color-orange"/>
+					<p:outputLabel value="$" styleClass="janal-color-orange"/>
+					<p:outputLabel value="#{manticVentasGarantiasAccion.attrs.pago.totales.totalDosDecimales$}" styleClass="janal-color-orange"/>								
+					<p:spacer/><p:spacer/><p:spacer/>
+				</h:panelGrid>				
+				<h:panelGrid columns="1" styleClass="janal-wid-100">
+					<p:outputLabel for="tipoPago" value="Tipo de pago:"/>
+					<p:selectOneRadio id="tipoPago" value="#{manticVentasGarantiasAccion.attrs.tipoPago}">
+						<p:ajax event="change" listener="#{manticVentasGarantiasAccion.doActivarPago}" process="@this" update="panelDescuentoEspecificacionIndividual"/>
+						<c:forEach items="#{manticVentasGarantiasAccion.attrs.pagosVenta}" var="prop" varStatus="index">
+							<f:selectItem itemLabel="#{prop.nombre}" itemValue="#{prop.idKey}"/>							
+						</c:forEach>																	
+					</p:selectOneRadio>
+				</h:panelGrid>				
+				<h:panelGrid id="panelDescuentoEspecificacionIndividual" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">			
+					<p:outputLabel id="lblBanco" for="bancoDlg" value="Banco:" rendered="#{!manticVentasGarantiasAccion.attrs.isEfectivo}"/>
+					<p:selectOneMenu id="bancoDlg" value="#{manticVentasGarantiasAccion.attrs.banco}" filter="true" filterMatchMode="contains" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity" rendered="#{!manticVentasGarantiasAccion.attrs.isEfectivo}">														
+						<f:selectItems value="#{manticVentasGarantiasAccion.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
+						<p:column headerText="Nombre">
+							<h:outputText value="#{item.nombre}"/>
+						</p:column>   
+						<p:column headerText="Razón social">
+							<h:outputText value="#{item.razonSocial}"/>
+						</p:column>   
+					</p:selectOneMenu>
+					<p:outputLabel id="lblReferencia" for="referenciaDlg" value="Referencia:" rendered="#{!manticVentasGarantiasAccion.attrs.isEfectivo}"/>
+					<p:inputText id="referenciaDlg" value="#{manticVentasGarantiasAccion.attrs.referencia}" styleClass="janal-wid-100-txt" placeholder="Ej. Referencia 4564" rendered="#{!manticVentasGarantiasAccion.attrs.isEfectivo}"/>										
+				</h:panelGrid>							
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton id="aceptarFinalizar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasGarantiasAccion.doAceptar}" onstart="return validateGarantia();" oncomplete="janal.desbloquear()" update="contenedorGrupos @(.filas) @(.recalculo)" disabled="#{!manticVentasGarantiasAccion.attrs.cobroVenta}"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			<!--/h:form-->
 		</p:dialog>	
 	</ui:define>    
 	<ui:define name="acciones">
@@ -443,8 +457,10 @@
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticVentasGarantiasAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@this" styleClass="cotizar janal-text-white" onstart="return ventaFinished();" oncomplete="janal.desbloquear();" update="dialogoCerrarVenta"/>			
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@this" styleClass="cotizar janal-text-white" onstart="return janal.bloquear();" oncomplete="PF('dlgCerrarVenta').show();" update="dialogoCerrarVenta"/>			
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasGarantiasAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 		</div>		
 	</ui:define>		
+	<ui:define name="dialogos">		
+	</ui:define>
 </ui:composition>
