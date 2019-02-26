@@ -251,7 +251,7 @@ public class Transaccion extends TransaccionFactura {
 													if(DaoFactory.getInstance().update(sesion, loadImage(sesion, this.articulo.getArticulo().getIdImagen(), idArticulo))>= 0L)
 														regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
 												} // if 
-												else if(!Cadena.isVacio(this.articulo.getImportado().getName())){
+												else if(!Cadena.isVacio(this.articulo.getImportado().getName()) && (this.articulo.getArticulo().getIdImagen()== null || this.articulo.getArticulo().getIdImagen().equals(-1L))){
 													image= loadImage(sesion, null, idArticulo);												
 													idImagen= DaoFactory.getInstance().insert(sesion, image);
 													this.articulo.getArticulo().setIdImagen(idImagen);
@@ -303,7 +303,7 @@ public class Transaccion extends TransaccionFactura {
 							result.delete();
 					} // if
 				} // if
-				else{
+				else if(pathPivote!= null){					
 					result= new File(pathPivote);			
 					if(result.exists()) 
 						Archivo.copyDeleteSource(pathPivote, path.concat(regresar.getArchivo()), true);									
