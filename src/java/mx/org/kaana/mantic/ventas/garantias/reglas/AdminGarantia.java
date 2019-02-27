@@ -15,6 +15,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.comun.IAdminArticulos;
+import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -32,8 +33,8 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 	private static final Log LOG              = LogFactory.getLog(AdminGarantia.class);
 
 	private TicketVenta orden;
-	private List<Articulo> articulosTerminada;
-	private List<Articulo> articulosRecibida;
+	private List<ArticuloVenta> articulosTerminada;
+	private List<ArticuloVenta> articulosRecibida;
 
 	public AdminGarantia(TicketVenta orden) throws Exception {
 		this(orden, EAccion.AGREGAR);
@@ -52,16 +53,19 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 	}
 	
 	public AdminGarantia(TicketVenta orden, boolean loadDefault, EAccion accion, Long idGarantia) throws Exception {		
+		List<ArticuloVenta> arts= null;
 		this.orden= orden;
 		if(this.orden.isValid()) {
 			switch(accion){
 				case CONSULTAR:
 					Map<String, Object>params= new HashMap<>();
 					params.put("idGarantia", idGarantia);
-					this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaTcManticGarantiasArticulosDto", "detalleGarantia", params));
+					arts= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticGarantiasArticulosDto", "detalleGarantia", params); 
+					this.setArticulos(arts);
 					break;				
 				default:
-					this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaTcManticGarantiasArticulosDto", "detalle", orden.toMap()));
+					arts= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticGarantiasArticulosDto", "detalle", orden.toMap());
+					this.setArticulos(arts);
 					validaArticulos();
 					break;
 			} // switch
@@ -134,24 +138,40 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 		this.orden.setDescuento(descuento);
 	}
 
-	public List<Articulo> getArticulosTerminada() {
+	public List<ArticuloVenta> getArticulosTerminada() {
 		return articulosTerminada;
 	}
 
-	public List<Articulo> getArticulosRecibida() {
+	public List<ArticuloVenta> getArticulosRecibida() {
 		return articulosRecibida;
 	}	
+	
+	@Override
+	public void toCalculate(boolean modificado) {
+		getTotales().reset();
+		for (Articulo articulo: getArticulos()) {
+	    articulo.toCalculate(this.getIdSinIva().equals(1L), this.getTipoDeCambio());
+		  articulo.setModificado(modificado);
+			getTotales().addArticulo(articulo);
+		} // for
+		if(getArticulos().size()> 0)
+			getTotales().removeUltimo(getArticulos().get(getArticulos().size()- 1));
+		getTotales().removeTotal();
+		this.setAjusteDeuda(getTotales().getTotal());
+	} // toCalculate
 	
 	public void validaArticulos(){
 		List<Articulo>arts= null;
 		int count         = 0;
 		try {
-			arts= this.getArticulos();
-			for(Articulo art: arts){
+			arts= new ArrayList<>();
+			arts.addAll(this.getArticulos());
+			for(Articulo art: this.getArticulos()){
 				if(art.getCantidadGarantia().equals(0D))
-					this.getArticulos().remove(count);
+					arts.remove(count);
 				count++;
-			} // for			
+			} // for
+			setArticulos(arts);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);			
@@ -159,23 +179,27 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 	} // validaArticulos	
 	
 	@Override
-	public void toCalculateGarantia(boolean recibida) {
-		this.articulosRecibida = new ArrayList<>();
-		this.articulosTerminada= new ArrayList<>();
-		if(recibida)
+	public void toCalculateGarantia(boolean recibida) {				
+		if(recibida){
+			this.articulosRecibida = new ArrayList<>();
 			toCalculateRecibida();
-		else
+		} // if
+		else{
+			this.articulosTerminada= new ArrayList<>();
 			toCalculateTerminada();
+		} // else
 	} // toCalculte
 	
 	public void toCalculateRecibida() {
+		ArticuloVenta artVenta= null;
 		getTotales().reset();
 		for (Articulo articulo: getArticulos()) {
-			if(articulo.isAplicar()){
-				articulo.toCalculate(this.getIdSinIva().equals(1L), this.getTipoDeCambio());
-				articulo.setModificado(false);
-				getTotales().addArticulo(articulo);
-				this.articulosRecibida.add(articulo);
+			artVenta= (ArticuloVenta) articulo;
+			if(artVenta.isAplicar()){
+				artVenta.toCalculate(true, this.getTipoDeCambio());
+				artVenta.setModificado(false);
+				getTotales().addArticulo(artVenta);
+				this.articulosRecibida.add(artVenta);
 			} // if
 		} // for
 		getTotales().removeUltimo(getArticulos().get(getArticulos().size()- 1));
@@ -184,13 +208,15 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 	} // toCalculte
 	
 	public void toCalculateTerminada() {
+		ArticuloVenta artVenta= null;
 		getTotales().reset();
 		for (Articulo articulo: getArticulos()) {
-			if(!articulo.isAplicar()){
-				articulo.toCalculate(this.getIdSinIva().equals(1L), this.getTipoDeCambio());
-				articulo.setModificado(false);
-				getTotales().addArticulo(articulo);
-				this.articulosTerminada.add(articulo);
+			artVenta= (ArticuloVenta) articulo;
+			if(!artVenta.isAplicar()){
+				artVenta.toCalculate(true, this.getTipoDeCambio());
+				artVenta.setModificado(false);
+				getTotales().addArticulo(artVenta);
+				this.articulosTerminada.add(artVenta);
 			} // if
 		} // for
 		getTotales().removeUltimo(getArticulos().get(getArticulos().size()- 1));
