@@ -165,7 +165,7 @@
 									<p:ajax event="dateSelect" process="@this" listener="#{manticVentasGarantiasAccion.doLoadTicketAbiertos}" update="encabezadoVenta contenedorGrupos:contenido" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 								</p:calendar>								
 								<p:selectOneMenu id="ticketsAbiertos" value="#{manticVentasGarantiasAccion.attrs.ticketAbierto}" styleClass="janal-wid-100-txt" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="contains">
-									<p:ajax event="change" onstart="loadTicketAbiertos();" update="@(.cotizar)" oncomplete="janal.desbloquear();" />
+									<p:ajax event="change" onstart="loadTicketAbiertos();" update="@(.cotizar) encabezadoVenta" oncomplete="janal.desbloquear();" />
 									<f:selectItem itemValue="" itemLabel="SELECCIONE"/> 
 									<f:selectItems value="#{manticVentasGarantiasAccion.attrs.ticketsAbiertos}" var="element" itemValue="#{element}" itemLabel="No.: #{element.consecutivo} - Cliente: #{element.cliente} - Precio: $#{element.precioTotal}"/>
 									<p:column headerText="No.">
@@ -183,7 +183,9 @@
 									<p:column headerText="Estatus">
 										<h:outputText value="#{item.estatus}"/>
 									</p:column>
-								</p:selectOneMenu>																								
+								</p:selectOneMenu>
+								<p:spacer styleClass="cotizar" rendered="#{!manticVentasGarantiasAccion.attrs.isFactura}"/>
+								<p:outputLabel styleClass="cotizar janal-color-red" value="El ticket seleccionado ya se encuentra facturado con el folio: #{manticVentasGarantiasAccion.attrs.factura.folio}" rendered="#{!manticVentasGarantiasAccion.attrs.isFactura}"/>
 							</p:panelGrid>	
 							<p:separator/>
 							<p:panelGrid id="contenido" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-80, janal-wid-20">					
