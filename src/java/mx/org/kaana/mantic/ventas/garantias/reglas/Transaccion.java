@@ -19,7 +19,6 @@ import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
-import mx.org.kaana.mantic.db.dto.TcManticCajasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresCajasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
 import mx.org.kaana.mantic.db.dto.TcManticGarantiasBitacoraDto;
@@ -30,7 +29,9 @@ import mx.org.kaana.mantic.db.dto.TrManticGarantiaMedioPagoDto;
 import mx.org.kaana.mantic.enums.EEstatusGarantias;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.enums.ETiposGarantias;
+import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Cierre;
+import mx.org.kaana.mantic.ventas.garantias.beans.DetalleGarantia;
 import mx.org.kaana.mantic.ventas.garantias.beans.Garantia;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
@@ -39,11 +40,9 @@ public class Transaccion extends IBaseTnx{
 
 	private static final Logger LOG          = Logger.getLogger(Transaccion.class);
 	private static final String GENERAL      = "GENERAL";
-	private static final String CIERRE_ACTIVO= "1,2";
-	private List<Articulo> detalleTerminados;
-	private List<Articulo> detalleRecibidos;
+	private static final String CIERRE_ACTIVO= "1,2";	
 	private TcManticGarantiasDto garantiaDto;	
-	private List<Garantia> garantias;	
+	private DetalleGarantia detalleGarantia;	
 	private Garantia garantia;	
 	private IBaseDto dto;
 	private String justificacion;
@@ -68,11 +67,9 @@ public class Transaccion extends IBaseTnx{
 		this.justificacion= justificacion;
 	} // Transaccion
 
-	public Transaccion(List<Garantia> garantias, List<Articulo> detalleTerminados, List<Articulo> detalleRecibidos) {
-		this.garantias        = garantias;
-		this.detalleRecibidos = detalleRecibidos;
-		this.detalleTerminados= detalleTerminados;
-	} // Transaccion		
+	public Transaccion(DetalleGarantia detalleGarantia) {
+		this.detalleGarantia= detalleGarantia;
+	} // Transaccion	
 	
 	public Long getIdCierreVigente() {
 		return idCierreVigente;
@@ -124,16 +121,16 @@ public class Transaccion extends IBaseTnx{
 	private boolean procesarGarantia(Session sesion) throws Exception {
 		boolean regresar= false;
 		try {
-			for(Garantia newGarantia: this.garantias){
-				this.garantia= newGarantia;
-				regresar= this.generarGarantia(sesion, this.garantia.getTipoGarantia().equals(ETiposGarantias.RECIBIDA) ? EEstatusGarantias.RECIBIDA.getIdEstatusGarantia() : EEstatusGarantias.TERMINADA.getIdEstatusGarantia());
-				if(regresar) {				
-					if(this.verificarCierreCaja(sesion)){
-						if(this.registrarPagos(sesion))					
-							regresar= this.alterarStockArticulos(sesion);
-					} // if				
+			for(Garantia newGarantia: this.detalleGarantia.getGarantias()){
+				if(newGarantia.getArticulosGarantia().size()> 0){
+					this.garantia= newGarantia;
+					this.generarGarantia(sesion, this.garantia.getTipoGarantia().equals(ETiposGarantias.RECIBIDA) ? EEstatusGarantias.RECIBIDA.getIdEstatusGarantia() : EEstatusGarantias.TERMINADA.getIdEstatusGarantia());																
 				} // if
-			} // if
+			} // for
+			if(this.verificarCierreCaja(sesion)){
+				if(this.registrarPagos(sesion))					
+					regresar= this.alterarStockArticulos(sesion);
+			} // if				
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -149,8 +146,8 @@ public class Transaccion extends IBaseTnx{
 		try {
 			params= new HashMap<>();
 			params.put("estatusAbierto", CIERRE_ACTIVO);
-			params.put("idEmpresa", this.garantia.getTicketVenta().getIdEmpresa());
-			params.put("idCaja", this.garantia.getIdCaja());			
+			params.put("idEmpresa", this.detalleGarantia.getTicketVenta().getIdEmpresa());
+			params.put("idCaja", this.detalleGarantia.getIdCaja());			
 			cierre= (TcManticCierresDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresDto.class, "VistaCierresCajasDto", "cierreVigente", params);
 			if(!(cierre!= null && cierre.isValid())){
 				nuevo= toCierreNuevo(sesion);
@@ -169,19 +166,6 @@ public class Transaccion extends IBaseTnx{
 		} // finally
 		return regresar;
 	} // verificarCierreCaja
-	
-	public boolean alterarCierreCaja(Session sesion, Long idTipoMedioPago) throws Exception {
-		boolean regresar     = true;
-		TcManticCajasDto caja= null;
-		try {
-			caja= (TcManticCajasDto) DaoFactory.getInstance().findById(sesion, TcManticCajasDto.class, this.garantia.getIdCaja());
-			this.toCierreActivo(sesion, idTipoMedioPago);			
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		return regresar;
-	} // alterarCierreCaja	
 	
 	private void toCierreActivo(Session sesion, Long idTipoMedioPago) throws Exception {
 		Map<String, Object>params         = null;
@@ -227,8 +211,8 @@ public class Transaccion extends IBaseTnx{
 		try {							
 			this.loadGarantia(sesion, idEstatusGarantia);			
 			if(DaoFactory.getInstance().insert(sesion, this.garantiaDto)>= 1L){
-				regresar= this.registraBitacora(sesion, this.garantiaDto.getIdGarantia(), idEstatusGarantia, "Se generó la garantía de forma correcta.");				
-				this.toFillArticulos(sesion, this.garantia.getArticulos());
+				regresar= this.registraBitacora(sesion, this.garantiaDto.getIdGarantia(), idEstatusGarantia, "Se generó la garantía de forma correcta.");
+				this.toFillArticulos(sesion, this.garantia.getArticulosGarantia());
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -248,11 +232,11 @@ public class Transaccion extends IBaseTnx{
 			consecutivo= toSiguiente(sesion);			
 			this.garantiaDto.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));			
 			this.garantiaDto.setOrden(consecutivo);			
-			this.garantiaDto.setIdGarantiaEstatus(idEstatusGarantia);
-			this.garantiaDto.setIdVenta(this.garantia.getTicketVenta().getIdVenta());
-			this.garantiaDto.setEjercicio(Long.valueOf(Fecha.getAnioActual()));
-			this.garantiaDto.setDescuentos(this.garantia.getTicketVenta().getDescuentos());
+			this.garantiaDto.setIdGarantiaEstatus(idEstatusGarantia);			
+			this.garantiaDto.setEjercicio(Long.valueOf(Fecha.getAnioActual()));			
 			this.garantiaDto.setIdUsuario(JsfBase.getIdUsuario());
+			this.garantiaDto.setIdVenta(this.garantia.getGarantia().getIdVenta());
+			this.garantiaDto.setDescuentos(this.garantia.getTicketVenta().getDescuentos());
 			this.garantiaDto.setImpuestos(this.garantia.getTicketVenta().getImpuestos());
 			this.garantiaDto.setSubTotal(this.garantia.getTicketVenta().getSubTotal());
 			this.garantiaDto.setTotal(this.garantia.getTicketVenta().getTotal());
@@ -282,8 +266,8 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // toSiguiente
 	
-	protected void toFillArticulos(Session sesion, List<Articulo> detalleArt) throws Exception {		
-		for (Articulo articulo: detalleArt) {
+	protected void toFillArticulos(Session sesion, List<ArticuloVenta> detalleArt) throws Exception {		
+		for (ArticuloVenta articulo: detalleArt) {
 			TcManticGarantiasDetallesDto item= articulo.toGarantiaDetalle();
 			item.setIdGarantia(this.garantiaDto.getIdGarantia());			
 			if(item.getIdProveedor()<= 0L)
@@ -300,17 +284,17 @@ public class Transaccion extends IBaseTnx{
 		TrManticGarantiaMedioPagoDto pago= null;
 		try {						
 			pago= new TrManticGarantiaMedioPagoDto();
-			if(this.garantia.getPagoGarantia().getIdTipoPago().equals(ETipoMediosPago.TRANSFERENCIA.getIdTipoMedioPago())){
-				pago.setIdBanco(this.garantia.getPagoGarantia().getIdBanco());
-				pago.setReferencia(this.garantia.getPagoGarantia().getTransferencia());
+			if(this.detalleGarantia.getPagoGarantia().getIdTipoPago().equals(ETipoMediosPago.TRANSFERENCIA.getIdTipoMedioPago())){
+				pago.setIdBanco(this.detalleGarantia.getPagoGarantia().getIdBanco());
+				pago.setReferencia(this.detalleGarantia.getPagoGarantia().getTransferencia());
 			} // if
 			pago.setIdCierre(this.idCierreVigente);
 			pago.setIdGarantia(this.garantiaDto.getIdGarantia());
-			pago.setIdTipoMedioPago(this.garantia.getPagoGarantia().getIdTipoPago());
+			pago.setIdTipoMedioPago(this.detalleGarantia.getPagoGarantia().getIdTipoPago());
 			pago.setIdUsuario(JsfBase.getIdUsuario());
-			pago.setImporte(this.garantia.getGarantia().getTotal());		
+			pago.setImporte(this.detalleGarantia.getTotales().getTotales().getTotal());		
 			DaoFactory.getInstance().insert(sesion, pago);
-			alterarCierreCaja(sesion, this.garantia.getPagoGarantia().getIdTipoPago());				
+			toCierreActivo(sesion, this.detalleGarantia.getPagoGarantia().getIdTipoPago());				
 		} // try 
 		catch (Exception e) {			 
 			throw e; 
