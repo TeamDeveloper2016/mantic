@@ -194,7 +194,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		if(transaccion!= null) {
 			this.attrs.put("procesados", transaccion.getProcesados());
 			UIBackingUtilities.execute("janal.alert('Se termin\\u00F3 de procesar el archivo !\\u000DTotal de registros: "+ tuplas+ "\\u000DRegistros procesados: "+ transaccion.getProcesados()+ 
-				(tuplas!= transaccion.getProcesados()? "\\u000D\\u000DOcurrio un error en el proceso de cargar, favor de verificarlo": "")+ "')");
+				(tuplas!= transaccion.getProcesados()? "\\u000D\\u000DEl total de filas del archivo es diferente al procesado, favor de verificarlo": "")+ "')");
 		} // if	
     return regresar;
 	} // doAceptar	
