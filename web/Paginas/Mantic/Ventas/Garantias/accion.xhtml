@@ -425,7 +425,7 @@
 					<p:selectOneRadio id="tipoPago" value="#{manticVentasGarantiasAccion.attrs.tipoPago}">
 						<p:ajax event="change" listener="#{manticVentasGarantiasAccion.doActivarPago}" process="@this" update="panelDescuentoEspecificacionIndividual"/>
 						<c:forEach items="#{manticVentasGarantiasAccion.attrs.pagosVenta}" var="prop" varStatus="index">
-							<f:selectItem itemLabel="#{prop.nombre}" itemValue="#{prop.idKey}"/>							
+							<f:selectItem itemLabel="#{prop.nombre}" itemValue="#{prop.idTipoMedioPago}"/>							
 						</c:forEach>																	
 					</p:selectOneRadio>
 				</h:panelGrid>				
