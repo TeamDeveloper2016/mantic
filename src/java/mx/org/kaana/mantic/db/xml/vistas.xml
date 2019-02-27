@@ -1660,6 +1660,7 @@
 					tc_mantic_ventas.id_venta as id_key,
 					tc_mantic_ventas.id_venta,
 					tc_mantic_ventas.id_empresa,  
+					tc_mantic_ventas.id_factura,  
 				  tc_mantic_empresas.clave as empresa,  
 				  tc_mantic_empresas.nombre as nombre_empresa,  
 					tc_mantic_ventas.consecutivo,  
