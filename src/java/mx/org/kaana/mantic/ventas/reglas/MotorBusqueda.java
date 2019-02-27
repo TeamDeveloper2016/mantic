@@ -21,21 +21,21 @@ import mx.org.kaana.mantic.enums.ETiposContactos;
 public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializable{
 
 	private static final long serialVersionUID= -1476191556651225342L;		
-	private Long idArticulo;
+	private Long idComodin;
 	
-	public MotorBusqueda(Long idArticulo) {
-		this(idArticulo, null);
+	public MotorBusqueda(Long idComodin) {
+		this(idComodin, null);
 	}	// MotorBusqueda
 
-	public MotorBusqueda(Long idArticulo, Long idCliente) {
+	public MotorBusqueda(Long idComodin, Long idCliente) {
 		super(idCliente);
-		this.idArticulo= idArticulo;
+		this.idComodin= idComodin;
 	}	
 	
 	public TcManticArticulosDto toArticulo() throws Exception {
 		TcManticArticulosDto regresar= null;
 		try {
-			regresar= (TcManticArticulosDto) DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.idArticulo);
+			regresar= (TcManticArticulosDto) DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.idComodin);
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -48,7 +48,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
-			params.put("idArticulo", this.idArticulo);
+			params.put("idArticulo", this.idComodin);
 			params.put("idCliente", this.idCliente);
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
 			regresar= (Entity) DaoFactory.getInstance().toEntity("VistaVentasDto", "descuentoGrupoVigente", params);
@@ -56,6 +56,9 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		catch (Exception e) {			
 			throw e;
 		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
 		return regresar;
 	} // toDescuentoGrupo
 	
@@ -64,12 +67,15 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
-			params.put("idArticulo", this.idArticulo);			
+			params.put("idArticulo", this.idComodin);			
 			regresar= (Entity) DaoFactory.getInstance().toEntity("VistaVentasDto", "descuentoArticuloVigente", params);
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
 		return regresar;
 	} // toDescuentoGrupo
 	
@@ -84,7 +90,10 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		} // try
 		catch (Exception e) {			
 			throw e;
-		} // catch		
+		} // catch	
+		finally{
+			Methods.clean(params);
+		} // finally
 		return regresar;
 	} // toCliente
 	
@@ -93,7 +102,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();			
-			params.put("idArticulo", this.idArticulo);
+			params.put("idArticulo", this.idComodin);
 			regresar= (Entity) DaoFactory.getInstance().toEntity("VistaArticulosDto", "detalle", params);
 		} // try
 		catch (Exception e) {			
@@ -116,6 +125,9 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		catch (Exception e) {			
 			throw e;
 		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
 		return regresar;
 	} // toDeudaCliente		
 	
@@ -209,12 +221,32 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		Map<String, Object> params= null;
 		try {
 			params= new HashMap<>();
-			params.put("idVenta", this.idArticulo);
+			params.put("idVenta", this.idComodin);
 			regresar= DaoFactory.getInstance().toEntitySet("VistaVentasDto", "pagosVenta", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
 		return regresar;
 	} // pagosVenta
+	
+	public Entity toFactura() throws Exception{
+		Entity regresar          = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_factura=" + this.idComodin + " and folio is not null");
+			regresar= (Entity) DaoFactory.getInstance().toEntity("TcManticFacturasDto", "row", params);
+		} // try
+		catch (Exception e) {			
+			throw e; 
+		} // catch		
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toFactura
 }

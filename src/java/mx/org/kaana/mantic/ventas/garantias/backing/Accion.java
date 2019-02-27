@@ -70,6 +70,8 @@ public class Accion extends IBaseVenta implements Serializable {
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null ? -1L: JsfBase.getFlashAttribute("idVenta"));
       this.attrs.put("idGarantia", JsfBase.getFlashAttribute("idGarantia")== null ? -1L: JsfBase.getFlashAttribute("idGarantia"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null ? null : JsfBase.getFlashAttribute("retorno"));
+      this.attrs.put("isFactura", true);
+      this.attrs.put("factura", null);
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
 			this.attrs.put("tipoPago", 1L);
@@ -322,6 +324,8 @@ public class Accion extends IBaseVenta implements Serializable {
 		UISelectEntity ticketAbiertoPivote  = null;
 		List<UISelectEntity> ticketsAbiertos= null;
 		EAccion accion                      = null;
+		MotorBusqueda motor                 = null;
+		Entity factura                      = null;
 		try {
 			accion= (EAccion) this.attrs.get("accion");
 			if(!(accion.equals(EAccion.CONSULTAR)||accion.equals(EAccion.MODIFICAR))){
@@ -345,6 +349,16 @@ public class Accion extends IBaseVenta implements Serializable {
 					this.attrs.put("creditoCliente", ticketAbiertoPivote.toLong("idCredito").equals(1L));
 					if(getAdminOrden().getArticulos().isEmpty())
 						JsfBase.addMessage("Garantia de ticket.", "No hay articulos disponibles para el ticket seleccionado.", ETipoMensaje.INFORMACION);
+					if(ticketAbiertoPivote.get("idFactura").getData()!= null){
+						motor= new MotorBusqueda(ticketAbiertoPivote.toLong("idFactura"));
+						factura= motor.toFactura();
+						if(factura!= null){
+							this.attrs.put("factura", factura);
+							this.attrs.put("isFactura", false);						
+						} // if										
+					} // if										
+					else
+						this.attrs.put("isFactura", true);						
 				} // if
 				else{				
 					this.setAdminOrden(new AdminGarantia(new TicketVenta()));
