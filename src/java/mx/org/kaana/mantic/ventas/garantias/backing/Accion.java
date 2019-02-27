@@ -37,6 +37,7 @@ import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.enums.ETiposGarantias;
 import mx.org.kaana.mantic.ventas.caja.beans.Pago;
 import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
+import mx.org.kaana.mantic.ventas.garantias.beans.DetalleGarantia;
 import mx.org.kaana.mantic.ventas.garantias.beans.Garantia;
 import mx.org.kaana.mantic.ventas.garantias.beans.PagoGarantia;
 import mx.org.kaana.mantic.ventas.garantias.reglas.AdminGarantia;
@@ -135,7 +136,7 @@ public class Accion extends IBaseVenta implements Serializable {
     Transaccion transaccion= null;
     String regresar        = null;
     try {				
-			transaccion= new Transaccion(loadDetalleGarantia(), ((AdminGarantia)this.getAdminOrden()).getArticulosTerminada(), ((AdminGarantia)this.getAdminOrden()).getArticulosRecibida());			
+			transaccion= new Transaccion(loadDetalleGarantia());			
 			if (transaccion.ejecutar(EAccion.REPROCESAR)) {
 				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
 				JsfBase.addMessage("Se finalizo la garantia.", ETipoMensaje.INFORMACION);
@@ -153,14 +154,20 @@ public class Accion extends IBaseVenta implements Serializable {
     return regresar;
   } // doAccion  
 
-	private List<Garantia> loadDetalleGarantia(){
-		List<Garantia> regresar  = null;
+	private DetalleGarantia loadDetalleGarantia() throws Exception{
+		DetalleGarantia regresar = null;
+		List<Garantia> garantias = null;		
 		Garantia garantia        = null;		
 		TicketVenta ticketVenta  = null;		
 		PagoGarantia pagoGarantia= null;
+		List<Articulo>articulos  = null;
 		try {
-			regresar= new ArrayList<>();
-			for(ETiposGarantias tipoGarantia: ETiposGarantias.values()){
+			regresar= new DetalleGarantia();
+			garantias= new ArrayList<>();
+			articulos= this.getAdminOrden().getArticulos();
+			for(ETiposGarantias tipoGarantia: ETiposGarantias.values()){				
+				this.setAdminOrden(new AdminGarantia(new TicketVenta(), true));
+				this.getAdminOrden().setArticulos(articulos);
 				this.getAdminOrden().toCalculateGarantia(tipoGarantia.equals(ETiposGarantias.RECIBIDA));
 				ticketVenta= (TicketVenta)this.getAdminOrden().getOrden();
 				ticketVenta.setTotal(this.getAdminOrden().getTotales().getTotal());
@@ -169,22 +176,24 @@ public class Accion extends IBaseVenta implements Serializable {
 				ticketVenta.setImpuestos(this.getAdminOrden().getTotales().getIva());
 				ticketVenta.setUtilidad(this.getAdminOrden().getTotales().getUtilidad());			
 				garantia= new Garantia();
-				garantia.setTicketVenta(ticketVenta);			
-				garantia.setTotales((Pago) this.attrs.get("pago"));
-				garantia.setArticulos(this.getAdminOrden().getArticulos());
-				garantia.setIdCaja(Long.valueOf(this.attrs.get("caja").toString()));
-				garantia.setGarantia(this.ticketOriginal);
-				pagoGarantia= new PagoGarantia();
-				if(Long.valueOf(this.attrs.get("tipoPago").toString()).equals(1L))
-					pagoGarantia.setIdTipoPago(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());		
-				else{
-					pagoGarantia.setIdTipoPago(ETipoMediosPago.TRANSFERENCIA.getIdTipoMedioPago());
-					pagoGarantia.setTransferencia(this.attrs.get("referencia").toString());
-					pagoGarantia.setIdBanco(Long.valueOf(this.attrs.get("banco").toString()));
-				} // else
-				garantia.setPagoGarantia(pagoGarantia);
-				regresar.add(garantia);
+				garantia.setTicketVenta(ticketVenta);							
+				garantia.setArticulosGarantia(tipoGarantia.equals(ETiposGarantias.RECIBIDA) ? ((AdminGarantia)this.getAdminOrden()).getArticulosRecibida() : ((AdminGarantia)this.getAdminOrden()).getArticulosTerminada());				
+				garantia.setGarantia(this.ticketOriginal);							
+				garantias.add(garantia);
 			} // for			
+			pagoGarantia= new PagoGarantia();
+			if(Long.valueOf(this.attrs.get("tipoPago").toString()).equals(1L))
+				pagoGarantia.setIdTipoPago(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());		
+			else{
+				pagoGarantia.setIdTipoPago(ETipoMediosPago.TRANSFERENCIA.getIdTipoMedioPago());
+				pagoGarantia.setTransferencia(this.attrs.get("referencia").toString());
+				pagoGarantia.setIdBanco(Long.valueOf(this.attrs.get("banco").toString()));
+			} // else
+			regresar.setGarantias(garantias);
+			regresar.setPagoGarantia(pagoGarantia);
+			regresar.setTotales((Pago) this.attrs.get("pago"));			
+			regresar.setIdCaja(Long.valueOf(this.attrs.get("caja").toString()));			
+			regresar.getTicketVenta().setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));			
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -334,6 +343,8 @@ public class Accion extends IBaseVenta implements Serializable {
 					this.attrs.put("cobroVenta", true);				
 					this.attrs.put("tabIndex", 0);
 					this.attrs.put("creditoCliente", ticketAbiertoPivote.toLong("idCredito").equals(1L));
+					if(getAdminOrden().getArticulos().isEmpty())
+						JsfBase.addMessage("Garantia de ticket.", "No hay articulos disponibles para el ticket seleccionado.", ETipoMensaje.INFORMACION);
 				} // if
 				else{				
 					this.setAdminOrden(new AdminGarantia(new TicketVenta()));
@@ -366,6 +377,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			motor= new MotorBusqueda(idVenta);
 			pagosVentas= motor.pagosVenta();
 			this.attrs.put("pagosVenta", pagosVentas);
+			this.attrs.put("tipoPago", pagosVentas.get(0).toLong("idTipoMedioPago"));
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
