@@ -317,6 +317,25 @@ public class Accion extends IBaseVenta implements Serializable {
 		return regresar.toString();
 	} // toCondicion
 	
+	private String toCondicionOpenTicket() {
+		StringBuilder regresar= null;
+		try {
+			regresar= new StringBuilder();																
+			regresar.append(" tc_mantic_ventas.ticket like '%");
+			regresar.append(this.attrs.get("openTicket"));	
+			regresar.append("%'");
+			regresar.append(" and (tc_mantic_ventas.id_venta_estatus=");
+			regresar.append(EEstatusVentas.PAGADA.getIdEstatusVenta());						
+			regresar.append(" or tc_mantic_ventas.id_venta_estatus=");
+			regresar.append(EEstatusVentas.TERMINADA.getIdEstatusVenta());						
+			regresar.append(") ");
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar.toString();
+	} // toCondicion
+	
 	@Override
 	public void doAsignaTicketAbierto(){
 		Map<String, Object>params           = null;
@@ -383,6 +402,78 @@ public class Accion extends IBaseVenta implements Serializable {
 			Methods.clean(params);
 		} // finally
 	} // doAsignaTicketAbierto
+	
+	public void doAsignaOpenTicket(SelectEvent event) {
+		UISelectEntity seleccion    = null;
+		List<UISelectEntity> tickets= null;
+		try {
+			tickets= (List<UISelectEntity>) this.attrs.get("openTickets");
+			seleccion= tickets.get(tickets.indexOf((UISelectEntity)event.getObject()));
+			this.toFindOpenTicket(seleccion);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doAsignaCliente
+	
+  private void toFindOpenTicket(UISelectEntity seleccion) {
+		Map<String, Object>params= null;
+		EAccion accion           = null;
+		MotorBusqueda motor      = null;
+		Entity factura           = null;
+		try {
+			accion= (EAccion) this.attrs.get("accion");
+			if(!(accion.equals(EAccion.CONSULTAR)||accion.equals(EAccion.MODIFICAR))){
+				params= new HashMap<>();
+				params.put("idVenta", seleccion.getKey());
+				setDomicilio(new Domicilio());
+				this.attrs.put("registroCliente", new TcManticClientesDto());
+				if(!seleccion.getKey().equals(-1L)){	
+					this.attrs.put("ticket", (Entity)seleccion);
+					this.setAdminOrden(new AdminGarantia((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), false, EAccion.LISTAR, -1L));
+					loadMediosPago(seleccion.getKey());
+					this.ticketOriginal= (TicketVenta) getAdminOrden().getOrden();
+					this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
+					loadCatalog();
+					doAsignaClienteTicketAbierto();
+					this.attrs.put("pagarVenta", true);
+					this.attrs.put("cobroVenta", true);				
+					this.attrs.put("tabIndex", 0);
+					this.attrs.put("creditoCliente", seleccion.toLong("idCredito").equals(1L));
+					if(getAdminOrden().getArticulos().isEmpty())
+						JsfBase.addMessage("Garantia de ticket.", "No hay articulos disponibles para el ticket seleccionado.", ETipoMensaje.INFORMACION);
+					if(seleccion.get("idFactura").getData()!= null){
+						motor= new MotorBusqueda(seleccion.toLong("idFactura"));
+						factura= motor.toFactura();
+						if(factura!= null){
+							this.attrs.put("factura", factura);
+							this.attrs.put("isFactura", false);						
+						} // if										
+					} // if										
+					else
+						this.attrs.put("isFactura", true);						
+				} // if
+				else{				
+					this.setAdminOrden(new AdminGarantia(new TicketVenta()));
+					this.attrs.put("pagarVenta", false);
+					this.attrs.put("facturarVenta", false);
+					this.attrs.put("cobroVenta", false);
+					this.attrs.put("clienteAsignado", false);
+					this.attrs.put("tabIndex", 0);
+					this.attrs.put("creditoCliente", false);				
+				} // else			
+			} // if
+			else
+				doAsignaClienteTicketAbierto();
+			UIBackingUtilities.execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
+			this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // toFindOpenTicket
 	
 	private void loadMediosPago(Long idVenta){
 		MotorBusqueda motor     = null;
@@ -517,4 +608,33 @@ public class Accion extends IBaseVenta implements Serializable {
 			Methods.clean(params);
 		} // finally
 	} // loadBancos
+	
+	public List<UISelectEntity> doCompleteTicket(String query) {
+		this.attrs.put("openTicket", query);
+    this.doUpdateOpenTickets();
+		return (List<UISelectEntity>)this.attrs.get("openTickets");
+	}	// doCompleteCliente
+	
+	public void doUpdateOpenTickets() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
+    try {
+			params= new HashMap<>();
+			params.put("sortOrder", "");
+			params.put("idEmpresa", this.attrs.get("idEmpresa"));
+			params.put(Constantes.SQL_CONDICION, toCondicionOpenTicket());
+			columns= new ArrayList<>();
+			columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));			
+      this.attrs.put("openTickets", (List<UISelectEntity>) UIEntity.build("VistaVentasDto", "lazy", params, columns, 20L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}	// doUpdateClientes
 }
