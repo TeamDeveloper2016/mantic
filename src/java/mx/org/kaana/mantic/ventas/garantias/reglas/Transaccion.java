@@ -125,12 +125,12 @@ public class Transaccion extends IBaseTnx{
 				if(newGarantia.getArticulosGarantia().size()> 0){
 					this.garantia= newGarantia;
 					this.generarGarantia(sesion, this.garantia.getTipoGarantia().equals(ETiposGarantias.RECIBIDA) ? EEstatusGarantias.RECIBIDA.getIdEstatusGarantia() : EEstatusGarantias.TERMINADA.getIdEstatusGarantia());																
+					if(this.verificarCierreCaja(sesion)){
+						if(this.registrarPagos(sesion, this.garantia.getTicketVenta().getTotal()))					
+							regresar= this.alterarStockArticulos(sesion);
+					} // if				
 				} // if
-			} // for
-			if(this.verificarCierreCaja(sesion)){
-				if(this.registrarPagos(sesion))					
-					regresar= this.alterarStockArticulos(sesion);
-			} // if				
+			} // for			
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -279,20 +279,20 @@ public class Transaccion extends IBaseTnx{
 		} // for
 	} // toFillArticulos
 	
-	private boolean registrarPagos(Session sesion) throws Exception {
+	private boolean registrarPagos(Session sesion, Double total) throws Exception {
 		boolean regresar                 = true;		
 		TrManticGarantiaMedioPagoDto pago= null;
 		try {						
 			pago= new TrManticGarantiaMedioPagoDto();
+			pago.setIdCierre(this.idCierreVigente);
+			pago.setIdGarantia(this.garantiaDto.getIdGarantia());
 			if(this.detalleGarantia.getPagoGarantia().getIdTipoPago().equals(ETipoMediosPago.TRANSFERENCIA.getIdTipoMedioPago())){
 				pago.setIdBanco(this.detalleGarantia.getPagoGarantia().getIdBanco());
 				pago.setReferencia(this.detalleGarantia.getPagoGarantia().getTransferencia());
-			} // if
-			pago.setIdCierre(this.idCierreVigente);
-			pago.setIdGarantia(this.garantiaDto.getIdGarantia());
+			} // if						
 			pago.setIdTipoMedioPago(this.detalleGarantia.getPagoGarantia().getIdTipoPago());
 			pago.setIdUsuario(JsfBase.getIdUsuario());
-			pago.setImporte(this.detalleGarantia.getTotales().getTotales().getTotal());		
+			pago.setImporte(total);		
 			DaoFactory.getInstance().insert(sesion, pago);
 			toCierreActivo(sesion, this.detalleGarantia.getPagoGarantia().getIdTipoPago());				
 		} // try 
