@@ -206,7 +206,7 @@ public class Transaccion extends IBaseTnx{
 			params= new HashMap<>();
 			params.put("idCliente", this.idCliente);
 			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo > 0 and tc_mantic_clientes_deudas.id_cliente_estatus not in(".concat(EEstatusClientes.FINALIZADA.getIdEstatus().toString()).concat(")"));			
-			params.put("sortOrder", "order by tc_mantic_clientes_deudas.registro");
+			params.put("sortOrder", "order by tc_mantic_clientes_deudas.registro desc");
 			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaClientesDto", "cuentas", params);			
 		} // try
 		catch (Exception e) {			

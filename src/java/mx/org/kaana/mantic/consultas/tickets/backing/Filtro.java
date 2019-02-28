@@ -47,7 +47,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     List<Columna> columns     = null;
 		Map<String, Object> params= toPrepare();
     try {
-      params.put("sortOrder", "order by tc_mantic_notas_entradas.id_empresa, tc_mantic_notas_entradas.ejercicio, tc_mantic_notas_entradas.orden");
+      params.put("sortOrder", "order by tc_mantic_notas_entradas.registro desc");
       columns = new ArrayList<>();
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));

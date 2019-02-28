@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -148,7 +149,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      almacenes = (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns);
+      almacenes = (List<UISelectEntity>) UIEntity.seleccione("TcManticAlmacenesDto", "almacenes", params, columns, "clave");
       this.attrs.put("almacenes", almacenes);
 			if(almacenes!= null) {
 				if(this.accion.equals(EAccion.ACTIVAR))
@@ -240,8 +241,18 @@ public class Accion extends IBaseAttribute implements Serializable {
 		if(this.attrs.get("almacenes")!= null) {
 			List<UISelectEntity> destinos=  (List<UISelectEntity>)((ArrayList<UISelectEntity>)this.attrs.get("almacenes")).clone();
 			int index = destinos.indexOf(this.transferencia.getIkAlmacen());
-			if(index>= 0)
+			if(index>= 0) {
+				UISelectEntity origen= destinos.get(index);
 				destinos.remove(index);
+				// eliminar todos los almacenes que no corresponda con la idEmpresa
+				int count= 0;
+				while(count< destinos.size()) {
+          if(Objects.equals(destinos.get(count).toLong("idEmpresa"), origen.toLong("idEmpresa")))
+						count++;
+					else
+						destinos.remove(count);
+				} // while
+			} // if
 			if(!destinos.isEmpty()) 
 				if(this.accion.equals(EAccion.ACTIVAR))
   				this.transferencia.setIkDestino(destinos.get(0));
@@ -288,10 +299,11 @@ public class Accion extends IBaseAttribute implements Serializable {
 			else
 				search= "";
   		params.put("codigo", search);
+  		params.put("idAlmacen", this.transferencia.getIdAlmacen());
 			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
-        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L);
+        articulos= (List<UISelectEntity>) UIEntity.build("VistaAlmacenesTransferenciasDto", "porCodigo", params, columns, 20L);
 			else
-        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 20L);
+        articulos= (List<UISelectEntity>) UIEntity.build("VistaAlmacenesTransferenciasDto", "porNombre", params, columns, 20L);
       this.attrs.put("articulos", articulos);
 		} // try
 	  catch (Exception e) {
@@ -303,33 +315,37 @@ public class Accion extends IBaseAttribute implements Serializable {
       Methods.clean(params);
     }// finally
 	}
+	
   public void doAsignaArticulo(SelectEvent event) {
 		UISelectEntity seleccion      = null;
 		List<UISelectEntity> articulos= null;
 		Map<String, Object> params    = new HashMap<>();
 		try {
 			articulos= (List<UISelectEntity>) this.attrs.get("articulos");
-			seleccion= articulos.get(articulos.indexOf((UISelectEntity)event.getObject()));
-			this.attrs.put("articulo", seleccion);
-      this.attrs.put("idArticulo", seleccion.get("idArticulo"));
-			this.detalle.setIdArticulo(seleccion.toLong("idArticulo"));
-			this.detalle.setPropio(seleccion.toString("propio"));
-			this.detalle.setNombre(seleccion.toString("nombre"));
-      this.image= LoadImages.getImage(seleccion.toLong("idArticulo"));
-			params.put("idArticulo", seleccion.toLong("idArticulo"));
-			params.put("idAlmacen", this.transferencia.getIdAlmacen());
-			// recuperar el stock de articulos en el almacen origen
-			Value origen= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
-			seleccion.put("stock", origen== null? new Value("stock", 0D): origen);
-			seleccion.put("vacio", new Value("vacio", origen== null));
-			Entity umbral= (Entity)DaoFactory.getInstance().toEntity("TcManticAlmacenesArticulosDto", "almacenArticulo", params);
-			if(umbral== null) 
-				umbral= (Entity)DaoFactory.getInstance().toEntity("TcManticArticulosDto", "detalle", params);
-  		seleccion.put("minimo", umbral.get("minimo"));
-			seleccion.put("maximo", umbral.get("maximo"));
-      this.attrs.put("nuevaExistenciaOrigen", 0D);
-      this.attrs.put("nuevaExistenciaDestino", 0D);
-			this.doUpdateAlmacenDestino();
+			int index= articulos.indexOf((UISelectEntity)event.getObject());
+			if(index>= 0) {
+			  seleccion= articulos.get(index);
+				this.attrs.put("articulo", seleccion);
+				this.attrs.put("idArticulo", seleccion.get("idArticulo"));
+				this.detalle.setIdArticulo(seleccion.toLong("idArticulo"));
+				this.detalle.setPropio(seleccion.toString("propio"));
+				this.detalle.setNombre(seleccion.toString("nombre"));
+				this.image= LoadImages.getImage(seleccion.toLong("idArticulo"));
+				params.put("idArticulo", seleccion.toLong("idArticulo"));
+				params.put("idAlmacen", this.transferencia.getIdAlmacen());
+				// recuperar el stock de articulos en el almacen origen
+				Value origen= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
+				seleccion.put("stock", origen== null? new Value("stock", 0D): origen);
+				seleccion.put("vacio", new Value("vacio", origen== null));
+				Entity umbral= (Entity)DaoFactory.getInstance().toEntity("TcManticAlmacenesArticulosDto", "almacenArticulo", params);
+				if(umbral== null) 
+					umbral= (Entity)DaoFactory.getInstance().toEntity("TcManticArticulosDto", "detalle", params);
+				seleccion.put("minimo", umbral.get("minimo"));
+				seleccion.put("maximo", umbral.get("maximo"));
+				this.attrs.put("nuevaExistenciaOrigen", 0D);
+				this.attrs.put("nuevaExistenciaDestino", 0D);
+				this.doUpdateAlmacenDestino();
+			} // if	
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

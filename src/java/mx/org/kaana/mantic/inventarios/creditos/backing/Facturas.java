@@ -60,7 +60,7 @@ public class Facturas extends IBaseFilter implements Serializable {
     List<Columna> columns     = null;
 		Map<String, Object> params= toPrepare();
     try {
-      params.put("sortOrder", "order by tc_mantic_creditos_notas.id_empresa, tc_mantic_creditos_archivos.ejercicio, tc_mantic_creditos_archivos.mes");
+      params.put("sortOrder", "order by tc_mantic_creditos_notas.registro desc");
       columns = new ArrayList<>();
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));

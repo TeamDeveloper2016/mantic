@@ -153,14 +153,14 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // registrarPago
 	
-	private List<Entity> toApartados(Session sesion) throws Exception{
+	private List<Entity> toApartados(Session sesion) throws Exception {
 		List<Entity> regresar    = null;
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
 			params.put("idEmpresa", this.idEmpresa);
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			params.put("sortOrder", "order by registro");
+			params.put("sortOrder", "order by registro desc");
 			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaTcManticApartadosDto", "apartados", params);			
 		} // try
 		finally {			

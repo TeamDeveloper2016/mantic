@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="Detalle de egreso"/>
+	<ui:param name="titulo" value="Detalle de del estado de cuenta de egresos"/>
 	<ui:define name="librerias">
 		<h:outputStylesheet library="janal" name="css/sh.css"/>
 		<h:outputStylesheet library="janal" name="css/shCore.css"/>
@@ -119,7 +119,7 @@
 							</f:facet>
 						</p:dataTable>																
 					</p:panel>																		
-					<p:panel header="Creditos notas" styleClass="janal-wid-99" toggleable="true">		
+					<p:panel header="Notas de credito" styleClass="janal-wid-99" toggleable="true">		
 						<p:dataTable  lazy="true" id="tablaCreditosNotas" widgetVar="kajoolTableCreditosNotas" var="filtro" value="#{manticEgresosDetalle.egresosCreditosNotas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticEgresosDetalle.egresosCreditosNotas.rowCount gt manticEgresosDetalle.egresosCreditosNotas.pageSize}" rowIndexVar="index" reflow="true">																		
 							<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.empresa}">
 								<f:facet name="header">

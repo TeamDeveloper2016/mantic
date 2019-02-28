@@ -30,6 +30,7 @@
 	</ui:define>
 	<ui:define name="contenido">
 		<p:focus context="idAlmacenOrigen"/>
+		<p:defaultCommand target="limpio"/>
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">			
@@ -39,7 +40,6 @@
 								<p:outputLabel for="idAlmacenOrigen" value="Almacen origen:"/>
 								<p:selectOneMenu id="idAlmacenOrigen" tabindex="0" value="#{manticCatalogosAlmacenesTransferenciasAccion.transferencia.ikAlmacen}" var="almacen" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="contains">
 									<p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doUpdateAlmacenOrigen}" process="@this" update="@(.cantidad) @(.filas)" oncomplete="janal.refresh();"/>
-									<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 									<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.almacenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave} - #{element.nombre}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{almacen.clave}"/>
@@ -53,15 +53,18 @@
 									<p:selectBooleanCheckbox value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas" disabled="#{manticCatalogosAlmacenesTransferenciasAccion.transferencia.idAlmacen lt 1}">
 										<p:ajax event="change" process="@this" update="@this" oncomplete="janal.refresh();" />
 									</p:selectBooleanCheckbox>
-									<p:autoComplete id="idArticulo" tabindex="1" placeholder="Nombre o codigo" widgetVar="listadoarticulos" var="customArticulos" itemLabel="#{customArticulos.nombre}" inputStyleClass="janal-wid-100-txt key-down-event filas" itemValue="#{customArticulos}" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo}" completeMethod="#{manticCatalogosAlmacenesTransferenciasAccion.doCompleteArticulo}"  converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100" forceSelection="true" readonly="#{manticCatalogosAlmacenesTransferenciasAccion.transferencia.idAlmacen lt 1}">
+									<p:autoComplete id="idArticulo" tabindex="1" placeholder="Nombre o codigo" widgetVar="listadoarticulos" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-100-txt key-down-event filas" itemValue="#{custom}" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo}" completeMethod="#{manticCatalogosAlmacenesTransferenciasAccion.doCompleteArticulo}"  converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100" forceSelection="true" readonly="#{manticCatalogosAlmacenesTransferenciasAccion.transferencia.idAlmacen lt 1}">
 										<p:ajax event="itemSelect" process="@this" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doAsignaArticulo}" update="@(.cantidad) @(.filas) idArticulo panelImage" oncomplete="janal.refresh();$('#source-image').attr('href', $('#icon-image').attr('src'));"/>
 										<p:column styleClass="janal-column-center">
-											<!--p:graphicImage value="#{customArticulos.image}" styleClass="janal-logo-mini filas" width="30" cache="false" stream="false"/-->
+											<!--p:graphicImage value="#{custom.image}" styleClass="janal-logo-mini filas" width="30" cache="false" stream="false"/-->
 											<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="30"/>
 										</p:column>
-										<p:column>
-											<h:outputText value="#{customArticulos.nombre}" />
+										<p:column headerText="Nombre">
+											<h:outputText value="#{custom.nombre}" />
 										</p:column>
+										<p:column headerText="Stock" styleClass="janal-column-right">
+											<h:outputText value="#{custom.stock}"/>
+										</p:column>   
 									</p:autoComplete>
 								</p:panelGrid>
 								<p:outputLabel for="cantidad" value="Cantidad:"/>
@@ -139,6 +142,7 @@
         </div>
 			</div>
 		</div>
+		<p:commandButton id="limpio" value="" styleClass="janal-zero-size"/>
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
