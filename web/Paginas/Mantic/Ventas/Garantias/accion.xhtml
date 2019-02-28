@@ -13,8 +13,9 @@
 		<script type="text/javascript">
 			// <![CDATA[
 			Janal.Control.fields={
+				'ticket'         : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},			
 				'descuento'      : {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'general'},			
-				'ticketsAbiertos': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona al menos un ticket abierto.'},				
+				//'ticketsAbiertos': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona al menos un ticket abierto.'},				
 				'total'          : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general', mensaje: 'El importe total tiene que ser mayor a 0'}
 			};
 			
@@ -159,7 +160,7 @@
 					</div>
 					<div class="ui-grid-row janal-grid-row">
 						<div class="ui-grid-col-12">					
-							<p:panelGrid id="encabezadoVenta" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-80">						
+							<p:panelGrid id="encabezadoVenta" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-80" style="display: none">						
 								<p:outputLabel for="fecha" value="Fecha:"/>
 								<p:outputLabel value="Tickets:"/>
 								<p:calendar id="fecha" inputStyleClass="janal-wid-70" styleClass="janal-wid-100" value="#{manticVentasGarantiasAccion.attrs.fecha}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario">
@@ -188,6 +189,35 @@
 								<p:spacer styleClass="cotizar" rendered="#{!manticVentasGarantiasAccion.attrs.isFactura}"/>
 								<p:outputLabel styleClass="cotizar janal-color-red" value="El ticket seleccionado ya se encuentra facturado con el folio: #{manticVentasGarantiasAccion.attrs.factura.folio}" rendered="#{!manticVentasGarantiasAccion.attrs.isFactura}"/>
 							</p:panelGrid>	
+							<p:panelGrid id="encabezadoTicket" columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-25, janal-wid-10, janal-wid-25, janal-wid-20">						
+								<p:outputLabel value="Ticket:"/>
+								<p:outputLabel value="Cliente:"/>
+								<p:outputLabel value="Total:"/>
+								<p:outputLabel value="Usuario:"/>
+								<p:outputLabel value="Estatus:"/>																								
+								<p:autoComplete id="ticket" placeholder="Ej. 201800001" widgetVar="listadoTickets" var="customTicket" itemLabel="#{customTicket.ticket}" inputStyleClass="janal-wid-100-txt" itemValue="#{customTicket}" value="#{manticVentasGarantiasAccion.attrs.cliente}" completeMethod="#{manticVentasGarantiasAccion.doCompleteTicket}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
+									<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticVentasGarantiasAccion.doAsignaOpenTicket}" update="@(.cotizar) contenido" oncomplete="janal.desbloquear();"/>
+									<f:facet name="itemtip">
+										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
+											<h:outputText value="No." />
+											<h:outputText value="#{customTicket.consecutivo}"/>
+											<h:outputText value="Cliente:" />
+											<h:outputText value="#{customTicket.cliente}"/>
+											<h:outputText value="Total:" />
+											<h:outputText value="#{customTicket.precioTotal}"/>
+											<h:outputText value="Usuario:"/>
+											<h:outputText value="#{customTicket.nombre}"/>												
+											<h:outputText value="Estatus:"/>
+											<h:outputText value="#{customTicket.estatus}"/>												
+										</h:panelGrid>
+									</f:facet>
+								</p:autoComplete>
+								<p:inputText value="#{manticVentasGarantiasAccion.attrs.ticket.cliente}" styleClass="janal-wid-100-txt cotizar" disabled="true" readonly="true"/>					
+								<p:inputText value="#{manticVentasGarantiasAccion.attrs.ticket.precioTotal}" styleClass="janal-wid-100-txt cotizar" disabled="true" readonly="true"/>					
+								<p:inputText value="#{manticVentasGarantiasAccion.attrs.ticket.nombre}" styleClass="janal-wid-100-txt cotizar" disabled="true" readonly="true"/>					
+								<p:inputText value="#{manticVentasGarantiasAccion.attrs.ticket.estatus}" styleClass="janal-wid-100-txt cotizar" disabled="true" readonly="true"/>					
+							</p:panelGrid>	
+							<p:outputLabel styleClass="cotizar janal-color-red" value="El ticket seleccionado ya se encuentra facturado con el folio: #{manticVentasGarantiasAccion.attrs.factura.folio}" rendered="#{!manticVentasGarantiasAccion.attrs.isFactura}"/>
 							<p:separator/>
 							<p:panelGrid id="contenido" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-80, janal-wid-20">					
 								<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" style="overflow-y: visible" columnClasses="janal-wid-100">					
