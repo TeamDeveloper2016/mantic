@@ -39,7 +39,7 @@
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-99" columnClasses="janal-wid-col-130, janal-wid-100">
 								<p:outputLabel for="idAlmacenOrigen" value="Almacen origen:"/>
 								<p:selectOneMenu id="idAlmacenOrigen" tabindex="0" value="#{manticCatalogosAlmacenesTransferenciasAccion.transferencia.ikAlmacen}" var="almacen" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="contains">
-									<p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doUpdateAlmacenOrigen}" process="@this" update="@(.cantidad) @(.filas)" oncomplete="janal.refresh();"/>
+									<p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doUpdateAlmacenOrigen}" process="@this" update="@(.cantidad) @(.filas)" oncomplete="janal.refresh(); setTimeout(function() {$('#idArticulo_input').focus()}, 1000);"/>
 									<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.almacenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave} - #{element.nombre}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{almacen.clave}"/>
@@ -54,7 +54,7 @@
 										<p:ajax event="change" process="@this" update="@this" oncomplete="janal.refresh();" />
 									</p:selectBooleanCheckbox>
 									<p:autoComplete id="idArticulo" tabindex="1" placeholder="Nombre o codigo" widgetVar="listadoarticulos" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-100-txt key-down-event filas" itemValue="#{custom}" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo}" completeMethod="#{manticCatalogosAlmacenesTransferenciasAccion.doCompleteArticulo}"  converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100" forceSelection="true" readonly="#{manticCatalogosAlmacenesTransferenciasAccion.transferencia.idAlmacen lt 1}">
-										<p:ajax event="itemSelect" process="@this" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doAsignaArticulo}" update="@(.cantidad) @(.filas) idArticulo panelImage" oncomplete="janal.refresh();$('#source-image').attr('href', $('#icon-image').attr('src'));"/>
+										<p:ajax event="itemSelect" process="@this" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doAsignaArticulo}" update="@(.cantidad) @(.filas) idArticulo panelImage" oncomplete="janal.refresh();$('#source-image').attr('href', $('#icon-image').attr('src'));setTimeout(function() {$('#cantidad_input').focus()}, 1000);"/>
 										<p:column styleClass="janal-column-center">
 											<!--p:graphicImage value="#{custom.image}" styleClass="janal-logo-mini filas" width="30" cache="false" stream="false"/-->
 											<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="30"/>
