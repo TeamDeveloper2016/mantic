@@ -54,7 +54,7 @@ public class Filtro extends IBaseTicket implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta"));
-      this.attrs.put("sortOrder", "order by tc_mantic_ventas.id_empresa, tc_mantic_ventas.ejercicio, tc_mantic_ventas.orden");
+      this.attrs.put("sortOrder", "order by tc_mantic_ventas.registro desc");
 			toLoadCatalog();
       if(this.attrs.get("idVenta")!= null) 
 			  this.doLoad();
@@ -70,6 +70,7 @@ public class Filtro extends IBaseTicket implements Serializable {
     List<Columna> columns     = null;
 		Map<String, Object> params= toPrepare();
     try {
+			params.put("sortOrder", this.attrs.get("sortOrder"));
       columns = new ArrayList<>();
       columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
@@ -274,4 +275,20 @@ public class Filtro extends IBaseTicket implements Serializable {
 		} // catch		
 		return regresar;
 	} // doTicketExpress
+	
+	public String doGarantia(){
+		Entity seleccionado= null;
+		try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");
+			JsfBase.setFlashAttribute("idVenta", seleccionado.getKey());
+			JsfBase.setFlashAttribute("registroVenta", seleccionado.toTimestamp("registro"));
+			JsfBase.setFlashAttribute("accionVenta", EAccion.CONSULTAR);
+			JsfBase.setFlashAttribute("retornoVenta", "/Paginas/Mantic/Ventas/filtro");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch
+		return "/Paginas/Mantic/Ventas/Garantias/accion".concat(Constantes.REDIRECIONAR);
+	} // doGrantia
 }
