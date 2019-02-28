@@ -482,7 +482,7 @@ $.mask.masks = $.extend($.mask.masks, {
         switch(element.nodeName.toLowerCase()) {
           case 'select':
             var options = $('option:selected', element);
-            if(options=== '-1')
+            if(options=== '-1' || value=== '-1')
               return false;
             else
               return options.length> 0 && (element.type=== 'select-multiple' || ($.browser.msie && !(options[0].attributes['value'].specified)? options[0].text : options[0].value).length> 0);
