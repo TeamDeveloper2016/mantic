@@ -6894,6 +6894,7 @@
 					tc_mantic_egresos_estatus on tc_mantic_egresos.id_egreso_estatus = tc_mantic_egresos_estatus.id_egreso_estatus
 				where 
 					{condicion}
+				{sortOrder}
 			</select>		
 			<select id="notasEntradas">
         select
@@ -7008,9 +7009,14 @@
 			<select id="notas">
 				select 
 					tc_mantic_egresos_notas.id_egreso_nota as id_key,
-					tc_mantic_egresos_notas.*
+					tc_mantic_egresos_notas.*,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona
 				from 
 					tc_mantic_egresos_notas
+				inner join
+					tc_janal_usuarios on tc_mantic_egresos_notas.id_usuario= tc_janal_usuarios.id_usuario          
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				where 
 					tc_mantic_egresos_notas.id_egreso= {idEgreso}
 			</select>	

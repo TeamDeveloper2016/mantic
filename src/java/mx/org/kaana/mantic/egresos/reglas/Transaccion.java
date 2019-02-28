@@ -18,6 +18,7 @@ import mx.org.kaana.mantic.db.dto.TcManticEgresosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEgresosNotasDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosDto;
 import mx.org.kaana.mantic.enums.ECuentasEgresos;
+import mx.org.kaana.mantic.enums.EEstatusEgresos;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -125,12 +126,18 @@ public class Transaccion extends IBaseTnx {
 	private boolean asociarDocumento(Session sesion) throws Exception{
 		boolean regresar                    = false;		
 		TcManticEmpresasPagosDto empresaPago= null;		
+		TcManticEgresosDto afectado         = null;
 		try {
 			switch(this.accionTipoEgreso){				
 				case EMPRESA_PAGO: 
 					empresaPago= (TcManticEmpresasPagosDto) DaoFactory.getInstance().findById(sesion, TcManticEmpresasPagosDto.class, this.idTipoEgreso);
 					empresaPago.setIdEgreso(this.idEgreso);
 					regresar= DaoFactory.getInstance().update(sesion, empresaPago)>= 1L;
+					afectado= (TcManticEgresosDto) DaoFactory.getInstance().findById(TcManticEgresosDto.class, this.idEgreso);
+					if(afectado.getIdEgresoEstatus().equals(EEstatusEgresos.REGISTRADO.getKey())){
+						afectado.setIdEgresoEstatus(EEstatusEgresos.INCOMPLETO.getKey());
+						DaoFactory.getInstance().update(afectado);
+					} // if
 					break;				
 			} // switch
 		} // try

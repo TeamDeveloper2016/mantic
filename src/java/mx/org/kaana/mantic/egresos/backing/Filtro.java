@@ -31,7 +31,6 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
-import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 import mx.org.kaana.mantic.egresos.beans.ZipEgreso;
@@ -95,6 +94,7 @@ public class Filtro extends Comun implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));			
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));			
 			params.put(Constantes.SQL_CONDICION, toCondicion());			
+			params.put("sortOrder", "order by tc_mantic_egresos.registro desc, consecutivo desc");			
       this.lazyModel = new FormatCustomLazy("VistaEgresosDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
