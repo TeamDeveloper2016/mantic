@@ -195,7 +195,7 @@
 								<p:outputLabel value="Total:"/>
 								<p:outputLabel value="Usuario:"/>
 								<p:outputLabel value="Estatus:"/>																								
-								<p:autoComplete id="ticket" placeholder="Ej. 201800001" widgetVar="listadoTickets" var="customTicket" itemLabel="#{customTicket.ticket}" inputStyleClass="janal-wid-100-txt" itemValue="#{customTicket}" value="#{manticVentasGarantiasAccion.attrs.cliente}" completeMethod="#{manticVentasGarantiasAccion.doCompleteTicket}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
+								<p:autoComplete id="ticket" placeholder="Ej. 201800001" widgetVar="listadoTickets" var="customTicket" itemLabel="#{customTicket.ticket}" inputStyleClass="janal-wid-100-txt janal-column-right" itemValue="#{customTicket}" value="#{manticVentasGarantiasAccion.attrs.cliente}" completeMethod="#{manticVentasGarantiasAccion.doCompleteTicket}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
 									<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticVentasGarantiasAccion.doAsignaOpenTicket}" update="@(.cotizar) contenido" oncomplete="janal.desbloquear();"/>
 									<f:facet name="itemtip">
 										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
@@ -213,7 +213,7 @@
 									</f:facet>
 								</p:autoComplete>
 								<p:inputText value="#{manticVentasGarantiasAccion.attrs.ticket.cliente}" styleClass="janal-wid-100-txt cotizar" disabled="true" readonly="true"/>					
-								<p:inputText value="#{manticVentasGarantiasAccion.attrs.ticket.precioTotal}" styleClass="janal-wid-100-txt cotizar" disabled="true" readonly="true"/>					
+								<p:inputText value="$#{manticVentasGarantiasAccion.attrs.ticket.precioTotal}" styleClass="janal-wid-100-txt cotizar janal-column-right" disabled="true" readonly="true"/>					
 								<p:inputText value="#{manticVentasGarantiasAccion.attrs.ticket.nombre}" styleClass="janal-wid-100-txt cotizar" disabled="true" readonly="true"/>					
 								<p:inputText value="#{manticVentasGarantiasAccion.attrs.ticket.estatus}" styleClass="janal-wid-100-txt cotizar" disabled="true" readonly="true"/>					
 							</p:panelGrid>	
