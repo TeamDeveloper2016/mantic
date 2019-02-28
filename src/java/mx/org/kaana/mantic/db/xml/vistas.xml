@@ -6894,6 +6894,7 @@
 					tc_mantic_egresos_estatus on tc_mantic_egresos.id_egreso_estatus = tc_mantic_egresos_estatus.id_egreso_estatus
 				where 
 					{condicion}
+				{sortOrder}
 			</select>		
 			<select id="notasEntradas">
         select
