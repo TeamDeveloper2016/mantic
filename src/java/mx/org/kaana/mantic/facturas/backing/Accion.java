@@ -123,6 +123,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
   public void doLoad() {
     EAccion eaccion            = null;
 		Long idCliente             = -1L;
+		Long idClienteDomicilio    = -1L;
 		TcManticFacturasDto factura= null;
 		this.saldoCliente          = new SaldoCliente();
     try {
@@ -144,8 +145,13 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 					factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(TcManticFacturasDto.class, ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFactura());
 					this.attrs.put("observaciones", factura.getObservaciones());					
 					idCliente= ((FacturaFicticia)getAdminOrden().getOrden()).getIdCliente();
-					if(idCliente!= null && !idCliente.equals(-1L))
+					if(idCliente!= null && !idCliente.equals(-1L)){
 						doAsignaClienteInicial(idCliente);
+						loadDomicilios(idCliente);
+						idClienteDomicilio= ((FacturaFicticia)getAdminOrden().getOrden()).getIdClienteDomicilio();
+						if(idClienteDomicilio!= null && !idClienteDomicilio.equals(-1L))
+							this.attrs.put("domicilio", new UISelectEntity(idClienteDomicilio));
+					} // if
 					loadCatalogs();					
           break;
       } // switch			
