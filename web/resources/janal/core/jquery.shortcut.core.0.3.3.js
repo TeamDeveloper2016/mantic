@@ -234,19 +234,19 @@ shortcut.add("Alt+C", function() {
 
 shortcut.add("f9", function() {
 	janal.console('Shortcut lista de precios:');
-	if($('#listadoPrecios'))
+	if(janal.session() && $('#listadoPrecios'))
 		$('#listadoPrecios').click();
 });
 
 shortcut.add("f2", function() {
 	janal.console('Shortcut catalogo de lista de precios:');
-	if($('#catalogoPrecios'))
+	if(janal.session() && $('#catalogoPrecios'))
 		$('#catalogoPrecios').click();
 });
 
 shortcut.add("f10", function() {
 	janal.console('Asignación de descuento a articulo:');
-	if(PF('dlgDescuentos') && !PF('dlgDescuentos').isVisible()){
+	if(janal.session() && PF('dlgDescuentos') && !PF('dlgDescuentos').isVisible()){
 		janal.bloquear();
 	  PF('dlgDescuentos').show();				
 		setTimeout("$('#descuentousr').focus();", 1000);						
@@ -267,7 +267,7 @@ shortcut.add("f12", function() {
 
 shortcut.add("Shift+C", function() {
 	janal.console('Cambio de precio a articulo:');
-	if(PF('dlgCambioPrecio') && !PF('dlgCambioPrecio').isVisible()) {
+	if(janal.session() && PF('dlgCambioPrecio') && !PF('dlgCambioPrecio').isVisible()) {
 		janal.bloquear();
 	  PF('dlgCambioPrecio').show();				
 		setTimeout("$('#cambiopreciousr').focus();", 1000);						
@@ -276,31 +276,31 @@ shortcut.add("Shift+C", function() {
 
 shortcut.add("Ctrl+M", function() {
 	janal.console('Shortcut lista de precios de los articulos:');
-	if(PF('dlgListaPrecios') && !PF('dlgListaPrecios').isVisible())
+	if(janal.session() && PF('dlgListaPrecios') && !PF('dlgListaPrecios').isVisible())
 	  PF('dlgListaPrecios').show();
 });
 
 shortcut.add("Ctrl+K", function() {
 	janal.console('Shortcut catalogos de articulos de los proveedores:');
-	if(PF('dlgCatalogoArticulos') && !PF('dlgCatalogoArticulos').isVisible())
+	if(janal.session() && PF('dlgCatalogoArticulos') && !PF('dlgCatalogoArticulos').isVisible())
 	  PF('dlgCatalogoArticulos').show();
 });
 
 shortcut.add("Shift+f9", function() {
 	janal.console('Shortcut registro de faltantes:');
-	if(PF('dlgFaltantes') && !PF('dlgFaltantes').isVisible())
+	if(janal.session() && PF('dlgFaltantes') && !PF('dlgFaltantes').isVisible())
 	  PF('dlgFaltantes').show();
 });
 
 shortcut.add("Shift+f10", function() {
 	janal.console('Shortcut verificador de precios:');
-	if(PF('dlgVerificador') && !PF('dlgVerificador').isVisible())
+	if(janal.session() && PF('dlgVerificador') && !PF('dlgVerificador').isVisible())
 	  PF('dlgVerificador').show();
 });
 
 shortcut.add("Ctrl+P", function() {
 	janal.console('Shortcut tickets abiertos:');
-	if(PF('dlgOpenTickets') && !PF('dlgOpenTickets').isVisible()) {
+	if(janal.session() && PF('dlgOpenTickets') && !PF('dlgOpenTickets').isVisible()) {
 		if(!($('#aceptar').prop("disabled")=== true && $('#cuenta').prop("disabled")=== false)){
 			janal.bloquear();
 			loadTicketAbiertos();
@@ -310,7 +310,7 @@ shortcut.add("Ctrl+P", function() {
 
 shortcut.add("Ctrl+A", function() {
 	janal.console('Shortcut apartados:');
-	if(PF('dlgApartados') && !PF('dlgApartados').isVisible()) {
+	if(janal.session() && PF('dlgApartados') && !PF('dlgApartados').isVisible()) {
 		if(!($('#aceptar').prop("disabled")=== true && $('#cuenta').prop("disabled")=== false)){
 			janal.bloquear();
 			loadApartados();
@@ -320,7 +320,7 @@ shortcut.add("Ctrl+A", function() {
 
 shortcut.add("f4", function() {
 	janal.console('Shortcut cotizaciones:');
-	if(PF('dlgCotizaciones')){
+	if(janal.session() && PF('dlgCotizaciones')) {
 		if(!($('#aceptar').prop("disabled")=== true && $('#cuenta').prop("disabled")=== false)){
 			janal.bloquear();
 			loadCotizaciones();
@@ -330,7 +330,7 @@ shortcut.add("f4", function() {
 
 shortcut.add("Ctrl+U", function() {
 	janal.console('Shortcut cierre ticket:');
-	if(PF('dlgCloseTicket')) {
+	if(janal.session() && PF('dlgCloseTicket')) {
 		janal.bloquear();
 	  userUpdate();
 	} // if
@@ -338,7 +338,7 @@ shortcut.add("Ctrl+U", function() {
 
 shortcut.add("Ctrl+H", function() {
 	janal.console('Shortcut dialogo de ayuda:');
-	if(PF('dlgTeclasAyuda') && !PF('dlgTeclasAyuda').isVisible()) {
+	if(janal.session() && PF('dlgTeclasAyuda') && !PF('dlgTeclasAyuda').isVisible()) {
 		PF('dlgTeclasAyuda').show();
 	} // if
 });
@@ -350,21 +350,21 @@ shortcut.add("Ctrl+L", function() {
 
 shortcut.add("Ctrl+R", function() {
 	janal.console('Shortcut para ejecutar una opción en especifico:');
-	if(PF('dlgEjecutar') && !PF('dlgEjecutar').isVisible()) {
+	if(janal.session() && PF('dlgEjecutar') && !PF('dlgEjecutar').isVisible()) {
 		PF('dlgEjecutar').show();
 	} // if
 });
 
 shortcut.add("escape", function() {
 	janal.console('Shortcut para cerrar dialogo finalizar cobro de venta');
-	if(PF('dlgCerrarVenta') && PF('dlgCerrarVenta').isVisible()) {
+	if(janal.session() && PF('dlgCerrarVenta') && PF('dlgCerrarVenta').isVisible()) {
 		PF('dlgCerrarVenta').hide();
 	} // if
 });
 
 shortcut.add("Shift+P", function() {
 	janal.console('Shortcut cobrar venta:');
-	if(PF('contenedorCaja')) {
+	if(janal.session() && PF('contenedorCaja')) {
 	  cobrarVenta();
 		setTimeout(function(){			
 			$('#contenedorGrupos\\:efectivo_input').addClass('ui-state-focus');
@@ -375,7 +375,7 @@ shortcut.add("Shift+P", function() {
 
 shortcut.add("minus", function() {
 	janal.console('Shortcut finalizar cobro venta:');	
-	if((PF('wAceptarCompra') && $('#' + PF('wAceptarCompra').id).css('display')!== 'none') || (PF('wAceptarCompraIcon') && $('#' + PF('wAceptarCompraIcon').id).css('display')!== 'none')) {
+	if((janal.session() && PF('wAceptarCompra') && $('#' + PF('wAceptarCompra').id).css('display')!== 'none') || (PF('wAceptarCompraIcon') && $('#' + PF('wAceptarCompraIcon').id).css('display')!== 'none')) {
 	  $('#' + ((PF('wAceptarCompra') && $('#' + PF('wAceptarCompra').id).css('display')!== 'none') ? 'aceptar' : 'aceptarIcon')).click();
 	} // if
 	else if((PF('wAceptarCotizacion') && $('#' + PF('wAceptarCotizacion').id).css('display')!== 'none') || (PF('wAceptarCotizacionIcon') && $('#' + PF('wAceptarCotizacionIcon').id).css('display')!== 'none')) {

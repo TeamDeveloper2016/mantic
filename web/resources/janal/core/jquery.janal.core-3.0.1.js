@@ -1198,7 +1198,7 @@
 			alert(msg);
     }, // alert
     version: function() {
-      return '0.2.8.8';
+      return '0.3.0.1';
     }, // version
     align: function(pixels) {
       try {
@@ -1347,6 +1347,9 @@
   			  $.each($(element).attr('class').split(' '), function(index, value) { if(value.startsWith('janal-name')) { name= value.substring(11).replace(/_/g, ' '); } });
 			} // if	
 			return name;
+		},
+		session: function() {
+			return $('#janalAccessControl').length=== 0 || $('#janalAccessControl').val()=== '1';
 		}
   });
   window.Janal= Janal;

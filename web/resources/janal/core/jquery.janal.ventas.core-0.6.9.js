@@ -1026,7 +1026,7 @@
 			  PF('listado').activate();
 			janal.desbloquear();
 		},
-		activeLogin: function(){				
+		activeLogin: function() {	
 			janal.readingMode('CONSULTAR');
 			$('#cancelar').prop('disabled', 'disabled').addClass('ui-state-disabled'); 
 			$('#cancelarIcon').prop('disabled', 'disabled').addClass('ui-state-disabled');
@@ -1036,7 +1036,12 @@
 			$('#cuenta').prop('disabled', '').removeClass('ui-state-disabled'); 				
 			$('#cuenta').val('');
 			$('#password').val('');
-			if($('#iktan-slide-menu').length> 0) { $('#iktan-slide-menu').hide(); } 
+			if($('#iktan-slide-menu').length> 0) { 
+				$('#iktan-slide-menu').hide(); 
+				if($('#janalAccessControl').length> 0) {
+					$('#janalAccessControl').val('0');
+				} // if
+			}  // if
 			setTimeout("$('#cuenta').focus();", 500);						
 		},			
 		disabledLogin: function() {
@@ -1045,7 +1050,12 @@
 			$('.janal-login-block').attr('style', 'display: ');				
 			$('#cancelar').prop('disabled', '').removeClass('ui-state-disabled'); 
 			$('#cancelarIcon').prop('disabled', '').removeClass('ui-state-disabled');
-			if($('#iktan-slide-menu').length> 0) { $('#iktan-slide-menu').show(); } 
+			if($('#iktan-slide-menu').length> 0) { 
+				$('#iktan-slide-menu').show(); 
+				if($('#janalAccessControl').length> 0) {
+					$('#janalAccessControl').val('1');
+				} // if
+			} 
 		},
 		toPassword: function() {
 			$('#password').focus();
@@ -1064,7 +1074,7 @@
 					janal.desbloquear();
 			} // if
 		}, // toPasswordEnter		
-		refreshCobroValidate: function(){
+		refreshCobroValidate: function() {
 			var limiteCredito= parseFloat($('#contenedorGrupos\\:limiteCredito').text());
 			var limiteDebito= parseFloat($('#contenedorGrupos\\:limiteDebito').text());
 			var limiteCheque = parseFloat($('#contenedorGrupos\\:limiteCheque').text());
@@ -1081,7 +1091,7 @@
 			this.refreshTransferencia(transferencia);
 			janal.refresh();
 		}, // refreshCobroValidate		
-		validateApartado: function(minPago){				
+		validateApartado: function(minPago) {
 			this.refreshDebito(0);
 			this.refreshCredito(0);
 			this.refreshCheque(0);
@@ -1092,7 +1102,7 @@
 			janal.fields.transferencia.validaciones= 'libre';
 			janal.refresh();
 		},			
-		validateCredito: function(){							
+		validateCredito: function() {
 			this.refreshDebito(0);
 			this.refreshCredito(0);
 			this.refreshCheque(0);
@@ -1107,7 +1117,7 @@
 			janal.fields.pago.validaciones= 'requerido|min-valor({"cuanto":'+totalVenta+'})';
 			janal.fields.transferencia.validaciones= 'libre|max-valor({"cuanto":'+limiteTransferencia+'})';
 		}, // refreshValidationsPagos
-		refreshFreeValidationsPagos: function(){
+		refreshFreeValidationsPagos: function() {
 			janal.fields.debito.validaciones= 'libre';
 			janal.fields.credito.validaciones= 'libre';
 			janal.fields.cheque.validaciones= 'libre';
