@@ -6916,7 +6916,12 @@
 					tc_mantic_notas_estatus.nombre as estatus,
 					tc_mantic_notas_estatus.estatus_asociados,
 					tc_mantic_notas_entradas.registro,
-					tc_mantic_empresas_pagos.id_empresa_pago
+					tc_mantic_empresas_pagos.id_empresa_pago,
+					tc_mantic_notas_archivos.id_tipo_archivo,
+					tc_mantic_notas_archivos.id_principal,
+					tc_mantic_notas_archivos.alias,
+					tc_mantic_notas_archivos.nombre,
+					tc_mantic_notas_archivos.archivo
         from
           tc_mantic_notas_entradas  
 				inner join 
@@ -6930,7 +6935,9 @@
         inner join
           tc_mantic_notas_estatus on tc_mantic_notas_entradas.id_nota_estatus= tc_mantic_notas_estatus.id_nota_estatus      
         left join
-          tc_mantic_ordenes_compras on tc_mantic_notas_entradas.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra     
+          tc_mantic_ordenes_compras on tc_mantic_notas_entradas.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra 
+				left join
+					tc_mantic_notas_archivos on tc_mantic_notas_entradas.id_nota_entrada = tc_mantic_notas_archivos.id_nota_entrada
         where
 					tc_mantic_empresas_pagos.id_egreso= {idEgreso}					
 			</select>	
@@ -6955,9 +6962,14 @@
 					tc_mantic_creditos_estatus.id_credito_estatus,
 				  tc_mantic_creditos_estatus.estatus_asociados,
 				  tc_mantic_tipos_creditos_notas.id_tipo_credito_nota,
-				  tc_mantic_tipos_creditos_notas.nombre,
+				  tc_mantic_tipos_creditos_notas.nombre nombre_nota,
 					tc_mantic_creditos_notas.registro,
-					tc_mantic_empresas_pagos.id_empresa_pago     
+					tc_mantic_empresas_pagos.id_empresa_pago,
+					tc_mantic_creditos_archivos.id_tipo_archivo,
+					tc_mantic_creditos_archivos.id_principal,
+					tc_mantic_creditos_archivos.alias,
+					tc_mantic_creditos_archivos.nombre,
+					tc_mantic_creditos_archivos.archivo
         from
           tc_mantic_creditos_notas         
 				inner join 
@@ -6974,6 +6986,8 @@
           tc_mantic_notas_entradas on tc_mantic_creditos_notas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
         left join
           tc_mantic_proveedores on tc_mantic_creditos_notas.id_proveedor= tc_mantic_proveedores.id_proveedor
+				left join 
+					tc_mantic_creditos_archivos on tc_mantic_creditos_notas.id_credito_nota = tc_mantic_creditos_archivos.id_credito_nota
         where
 					tc_mantic_empresas_pagos.id_egreso ={idEgreso}					
 			</select> 
@@ -6988,7 +7002,12 @@
 					tc_mantic_empresas_pagos.registro,
 					tc_mantic_empresas_pagos.observaciones,
 					tc_mantic_tipos_medios_pagos.clave,
-					tc_mantic_tipos_medios_pagos.nombre
+					tc_mantic_tipos_medios_pagos.nombre nombre_pago,
+					tc_mantic_empresas_archivos.id_tipo_archivo,
+					tc_mantic_empresas_archivos.id_principal,
+					tc_mantic_empresas_archivos.alias,
+					tc_mantic_empresas_archivos.nombre,
+					tc_mantic_empresas_archivos.archivo
 				from
 					tc_mantic_empresas_pagos
 				inner join
@@ -7001,6 +7020,8 @@
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				inner join 
 					tc_mantic_tipos_medios_pagos on tc_mantic_empresas_pagos.id_tipo_medio_pago = tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+				left join 
+					tc_mantic_empresas_archivos on tc_mantic_empresas_pagos.id_empresa_pago = tc_mantic_empresas_archivos.id_empresa_pago
 				where
 					tc_mantic_empresas_pagos.id_egreso= {idEgreso} and tc_mantic_empresas_pagos.id_credito_nota is null and tc_mantic_empresas_pagos.id_nota_entrada is null
 				order by
