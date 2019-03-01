@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="facturaDetalle" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.mantic.facturas.scriplet.FacturaDetalle">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="288"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="336"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -423,7 +423,7 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$F{EXTRAS}]]></textFieldExpression>
 				</textField>
-				<textField pattern="¤ #,##0.0000" isBlankWhenNull="true">
+				<textField pattern="#,##0.0000" isBlankWhenNull="true">
 					<reportElement x="625" y="0" width="42" height="14">
 						<printWhenExpression><![CDATA[$F{ARTICULO_IVA}!= null]]></printWhenExpression>
 					</reportElement>
@@ -439,7 +439,7 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 				</textField>
-				<textField pattern="¤ #,##0.0000" isBlankWhenNull="true">
+				<textField pattern="#,##0.0000" isBlankWhenNull="true">
 					<reportElement x="421" y="0" width="71" height="14">
 						<printWhenExpression><![CDATA[$F{COSTO}!= null]]></printWhenExpression>
 					</reportElement>
@@ -469,7 +469,7 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$F{CODIGO}]]></textFieldExpression>
 				</textField>
-				<textField pattern="¤ #,##0.0000" isBlankWhenNull="true">
+				<textField pattern="#,##0.0000" isBlankWhenNull="true">
 					<reportElement x="666" y="0" width="84" height="14">
 						<printWhenExpression><![CDATA[$F{IMPORTE}!= null]]></printWhenExpression>
 					</reportElement>
@@ -545,77 +545,77 @@
 				<imageExpression><![CDATA[$V{CODE_QR}]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" x="82" y="22" width="520" height="18"/>
+				<reportElement stretchType="RelativeToTallestObject" x="82" y="22" width="508" height="18"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[OBSERVACIONES:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="604" y="20" width="65" height="18" forecolor="#000000"/>
+				<reportElement x="593" y="20" width="65" height="18" forecolor="#000000"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Descuentos:]]></text>
 			</staticText>
-			<textField pattern="¤ #,##0.0000">
-				<reportElement x="668" y="3" width="84" height="18"/>
+			<textField pattern="#,##0.0000">
+				<reportElement x="659" y="3" width="93" height="18"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{SUB_TOTAL_FINAL}]]></textFieldExpression>
 			</textField>
-			<textField pattern="¤ #,##0.0000">
-				<reportElement x="668" y="20" width="84" height="18"/>
+			<textField pattern="#,##0.0000">
+				<reportElement x="659" y="20" width="93" height="18"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{DESCUENTO_FINAL}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="603" y="54" width="66" height="18" forecolor="#000000"/>
+				<reportElement x="593" y="54" width="66" height="18" forecolor="#000000"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Total:]]></text>
 			</staticText>
-			<textField pattern="¤ #,##0.0000">
-				<reportElement x="668" y="54" width="84" height="18"/>
+			<textField pattern="#,##0.0000">
+				<reportElement x="659" y="54" width="93" height="18"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{TOTAL_FINAL}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["$  " +$F{TOTAL_FINAL}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="603" y="37" width="66" height="18" forecolor="#000000"/>
+				<reportElement x="593" y="37" width="65" height="18" forecolor="#000000"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[IVA:]]></text>
 			</staticText>
 			<textField pattern="">
-				<reportElement x="82" y="4" width="520" height="18"/>
+				<reportElement x="82" y="4" width="508" height="18"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{LETRAS}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="604" y="3" width="65" height="18" forecolor="#000000"/>
+				<reportElement x="593" y="3" width="65" height="18" forecolor="#000000"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Sub Total:]]></text>
 			</staticText>
-			<textField pattern="¤ #,##0.0000">
-				<reportElement x="668" y="37" width="84" height="18"/>
+			<textField pattern="#,##0.0000">
+				<reportElement x="659" y="37" width="93" height="18"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{IMPUESTOS_FINAL}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-				<reportElement positionType="Float" stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" x="82" y="40" width="520" height="33"/>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" x="82" y="40" width="508" height="33"/>
 				<box>
 					<topPen lineWidth="0.0"/>
 					<leftPen lineWidth="0.0"/>
