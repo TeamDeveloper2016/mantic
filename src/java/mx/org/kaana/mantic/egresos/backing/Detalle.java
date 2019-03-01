@@ -80,6 +80,8 @@ public class Detalle extends IBaseImportar implements Serializable {
 			idEstatus= ((TcManticEgresosDto)this.attrs.get("egreso")).getIdEgresoEstatus();
 			this.attrs.put("estatus", idEstatus.equals(1L) ? "REGISTRADO" : (idEstatus.equals(2L) ? "INCOMPLETO" : "COMPLETO"));
       this.attrs.put("idEgreso", idEgreso);  
+			this.attrs.put("skipComponentsXls", "javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton");
+			this.attrs.put("skipComponentsPdf", "org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton");
 			doLoad();
     } // try
     catch (Exception e) {
@@ -268,7 +270,11 @@ public class Detalle extends IBaseImportar implements Serializable {
 	
 	@Override
 	public StreamedContent doFileDownload(UISelectEntity file) {
-		StreamedContent regresar= null;
+		return doFileDownloadEntity((Entity)file);
+	}
+	
+	public StreamedContent doFileDownloadEntity(Entity file) {
+		StreamedContent regresar= null;		
 		try {
 			File reference= new File(file.toString("alias"));
 			if(reference.exists()) {
