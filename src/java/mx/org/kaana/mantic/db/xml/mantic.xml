@@ -4587,6 +4587,9 @@
 				order by
 				  ruta
       </select>
+			<update id="rows">
+				update tc_mantic_empresas_archivos set id_principal= 2 where id_tipo_archivo = {idTipoArchivo} and id_empresa_pago = {idEmpresaPago}
+			</update>
     </unit>
     <unit id="TcManticTransferenciasDto">
       <select id="row">
