@@ -264,18 +264,15 @@ public class Zip {
 	
   public void compactar(String nombre, List<ZipEgreso> files) throws Exception {
     try {
-			setNombre(nombre);
+			setNombre(nombre);			
+			FileOutputStream destino = new FileOutputStream(getNombre());
+			if (this.debug)
+				LOG.debug("nombre zip: " + getNombre());
+			CheckedOutputStream checksum = new CheckedOutputStream(destino, new Adler32());
+			ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(checksum));
+			byte data[] = new byte[BUFFER];
 			for(ZipEgreso egreso: files){
-				BufferedInputStream origen = null;
-				File rutaArchivo = new File(egreso.getCarpeta());				
-				if (!(rutaArchivo.exists())) 
-					rutaArchivo.mkdirs();	
-				FileOutputStream destino = new FileOutputStream(getNombre());
-				if (this.debug)
-					LOG.debug("nombre zip: " + getNombre());
-				CheckedOutputStream checksum = new CheckedOutputStream(destino, new Adler32());
-				ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(checksum));
-				byte data[] = new byte[BUFFER];
+				BufferedInputStream origen = null;				
 				if (this.debug)
 					LOG.debug("Archivos: " + (files!= null? 0: files.size()));
 				for (String name: egreso.getFiles()) {
@@ -294,15 +291,15 @@ public class Zip {
 						File file= new File(name);
 						file.delete();
 					} // if
-				}// for
-				out.close();
-			} // for
+				}// for				
+			} // for			
+			out.close();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       throw e;
-    }// try
-  }
+    }// try		
+  } // compactar
 	
   public void especial(String files[]) throws Exception {
     try {
