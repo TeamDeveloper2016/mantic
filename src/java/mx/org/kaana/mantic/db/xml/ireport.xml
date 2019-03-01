@@ -323,7 +323,7 @@
           from
             tc_mantic_articulos_codigos 
           where
-            tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo),
+            tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal =1),
           ''),
           ' ) ',
           tc_mantic_articulos.nombre) as nombre_articulo,
@@ -371,7 +371,7 @@
             from
               tc_mantic_articulos_codigos 
             where
-              tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo),
+              tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor=tc_mantic_notas_entradas.id_proveedor),
             ''),
             ' ) ',
           tc_mantic_articulos.nombre) as nombre,
@@ -428,7 +428,7 @@
             from
               tc_mantic_articulos_codigos 
             where
-              tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo),
+              tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor=tc_mantic_notas_entradas.id_proveedor),
             ''),
             ' ) ',
           tc_mantic_articulos.nombre) as nombre,
@@ -487,7 +487,7 @@
             from
               tc_mantic_articulos_codigos 
             where
-              tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo),
+              tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo  and tc_mantic_articulos_codigos.id_proveedor=(select id_proveedor from tc_mantic_notas_entradas where tc_mantic_devoluciones.id_nota_entradatc_mantic_devoluciones)),
             ''),
             ' ) ',
             tc_mantic_articulos.nombre) as nombre,
@@ -682,16 +682,7 @@
           tc_mantic_requisiciones.fecha_pedido,
           tc_mantic_requisiciones.fecha_entregada,
           tc_mantic_requisiciones_detalles.propio, 
-          concat('(',
-          ifnull((select
-            tc_mantic_articulos_codigos.codigo 
-          from
-            tc_mantic_articulos_codigos 
-          where
-            tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo),
-          ''),
-          ' ) ',
-          tc_mantic_articulos.nombre) as nombre,
+          tc_mantic_articulos.nombre,
           tc_mantic_requisiciones_detalles.cantidad,
           tc_mantic_requisiciones_detalles.unidad_medida,
           0.0 total_final
@@ -727,16 +718,7 @@
           destino.clave clave_destino,
           tc_mantic_transferencias.id_articulo,
           tc_mantic_articulos.nombre,
-          concat('(',
-          ifnull((select
-            tc_mantic_articulos_codigos.codigo 
-          from
-            tc_mantic_articulos_codigos 
-          where
-            tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo),
-          ''),
-          ' ) ',
-          tc_mantic_articulos.nombre) as nombre_articulo,
+          tc_mantic_articulos.nombre as nombre_articulo,
           tc_mantic_articulos_codigos.codigo,
           tc_mantic_transferencias.id_solicito,
           concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as solicito,
