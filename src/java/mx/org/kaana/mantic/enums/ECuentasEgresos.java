@@ -2,10 +2,10 @@ package mx.org.kaana.mantic.enums;
 
 public enum ECuentasEgresos {
 
-	NOTA_ENTRADA ("filesEgresosNotasEntradas", "NotasEntrada"),
-	CREDITO_NOTA ("filesEgresosCreditosNotas", "CreditosNotas"),
+	NOTA_ENTRADA ("filesEgresosNotasEntradas", "NotasDeEntrada"),
+	CREDITO_NOTA ("filesEgresosCreditosNotas", "NotasDeCredito"),
 	EMPRESA_PAGO ("filesEgresosEmpresasPagos", "EmpresasPagos"),
-	NOTA         ("filesEgresos", "Egresos");
+	NOTA         ("filesEgresos", "OrdenesDePago");
 	
 	private String idXml;
 	private String title;

@@ -20,10 +20,24 @@
 				justificacion: {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
 			};
 			
+			fieldsDialogEstatus= {
+				justificacionEstatus: {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoEstatus', formatos: 'cambiar-mayusculas'}
+			};
+			
 			function validaNota() {
 				var ok= janal.partial('dialogo');
 				if(ok){
 					PF('dlgNotas').hide();
+					janal.restore();
+					janal.refresh();
+				} // if
+				return ok;
+			} // validaNota
+			
+			function validaJustificacion() {
+				var ok= janal.partial('dialogoEstatus');
+				if(ok){
+					PF('dlgEstatus').hide();
 					janal.restore();
 					janal.refresh();
 				} // if
@@ -134,6 +148,8 @@
 						<p:separator/>
 						<p:menuitem id="notas" icon="fa fa-copy" process="@this tabla" update="dialogoNotas" value="Notas" onstart="return janal.bloquear()" oncomplete="PF('dlgNotas').show();"/>											
 						<p:separator/>
+						<p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticEgresosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus"/>					            
+						<p:separator/>
 						<p:menuitem icon="fa fa-external-link" value="Importar" title="Importar" onstart="return janal.bloquear()" process="@this tabla" action="#{manticEgresosFiltro.doImportar}"/>
 						<p:separator/>
 						<p:menuitem value="Descargar archivos" icon="fa fa-download" ajax="false" process="@this tabla" onclick="if(janal.partial('general')) PrimeFaces.monitorDownload(start, stop); else return false;" title="Descargar archivos de egreso" oncomplete="janal.desbloquear();">
@@ -159,6 +175,23 @@
 				<div class="janal-line-button">
 					<p:commandButton icon="fa fa-check" process="@this dialogoNotas" update="tabla" value="Aceptar" actionListener="#{manticEgresosFiltro.doRegistraNota}" onstart="return validaNota();" oncomplete="janal.desbloquear();"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgNotas').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog>
+		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.change('formDialogoEstatus', fieldsDialogEstatus);janal.refresh();">
+			<h:form id="formDialogoEstatus" prependId="false">
+				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
+					<p:selectOneMenu id="estatusDlg" value="#{manticEgresosFiltro.attrs.estatus}" styleClass="janal-wid-100-txt">									
+						<f:selectItems value="#{manticEgresosFiltro.attrs.allEstatus}"/>					
+					</p:selectOneMenu>
+				</h:panelGrid>
+				<p:outputLabel for="justificacionEstatus" value="Justificación:"/><br/>
+				<p:inputTextarea id="justificacionEstatus" value="#{manticEgresosFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" actionListener="#{manticEgresosFiltro.doActualizarEstatus}" onstart="return validaJustificacion()" oncomplete="janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgEstatus').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
 		</p:dialog>

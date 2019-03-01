@@ -14,6 +14,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.reportes.FileSearch;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.db.dto.TcManticEgresosArchivosDto;
+import mx.org.kaana.mantic.db.dto.TcManticEgresosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticEgresosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEgresosNotasDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosDto;
@@ -35,7 +36,12 @@ public class Transaccion extends IBaseTnx {
 	private Importado xml;
 	private Importado pdf;
 	private TcManticEgresosDto egreso;
+	private TcManticEgresosBitacoraDto bitacora;
 
+	public Transaccion(TcManticEgresosBitacoraDto bitacora) {
+		this.bitacora = bitacora;
+	}	
+	
 	public Transaccion(Long idEgreso, String nota) {
 		this.idEgreso= idEgreso;
 		this.nota    = nota;
@@ -78,6 +84,13 @@ public class Transaccion extends IBaseTnx {
 				case REGISTRAR:
 					regresar= true;
 					toUpdateDeleteXml(sesion);
+					break;
+				case MODIFICAR:
+					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L){
+						this.egreso= (TcManticEgresosDto) DaoFactory.getInstance().findById(sesion, TcManticEgresosDto.class, this.bitacora.getIdEgreso());
+						this.egreso.setIdEgresoEstatus(this.bitacora.getIdEgresoEstatus());
+						regresar= DaoFactory.getInstance().update(sesion, this.egreso)>= 1L;
+					} // if
 					break;
 			} // switch
 			if(!regresar)

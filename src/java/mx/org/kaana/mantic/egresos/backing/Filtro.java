@@ -33,6 +33,7 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
+import mx.org.kaana.mantic.db.dto.TcManticEgresosBitacoraDto;
 import mx.org.kaana.mantic.egresos.beans.ZipEgreso;
 import mx.org.kaana.mantic.egresos.reglas.Transaccion;
 import mx.org.kaana.mantic.enums.ECuentasEgresos;
@@ -247,10 +248,11 @@ public class Filtro extends Comun implements Serializable {
 	} // toAllFiles
 	
 	private StreamedContent toZipFile(List<ZipEgreso> files, String descripcion) {
-		String zipName    = null;		
-		String name       = null;		
-		InputStream stream= null;
-		String temporal   = null;
+		String zipName                 = null;		
+		String name                    = null;		
+		InputStream stream             = null;
+		String temporal                = null;
+		DefaultStreamedContent regresar= null;
 		try {
 			temporal= Archivo.toFormatNameFile("EGRESO_").concat(Cadena.reemplazarCaracter(descripcion, ' ', '_').toUpperCase());
 			Zip zip= new Zip();			
@@ -262,10 +264,55 @@ public class Filtro extends Comun implements Serializable {
 				zipEgreso.setCarpeta(JsfBase.getRealPath(name).concat("/").concat(zipEgreso.getCarpeta()));
 			zip.compactar(JsfBase.getRealPath(zipName), files);
   	  stream = new FileInputStream(new File(JsfBase.getRealPath(zipName)));
+			regresar= new DefaultStreamedContent(stream, EFormatos.ZIP.getContent(), temporal.concat(".").concat(EFormatos.ZIP.name().toLowerCase()));		
 		} // try // try
 		catch (Exception e) {
+			JsfBase.addMessageError(e);
 			Error.mensaje(e);
 		} // catch
-    return new DefaultStreamedContent(stream, EFormatos.ZIP.getContent(), temporal.concat(".").concat(EFormatos.ZIP.name().toLowerCase()));		
+    return regresar;
 	} // toZipFile
+	
+	public void doLoadEstatus(){
+		Entity seleccionado          = null;
+		Map<String, Object>params    = null;
+		List<UISelectItem> allEstatus= null;
+		try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_egreso_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
+			allEstatus= UISelect.build("TcManticEgresosEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
+			this.attrs.put("allEstatus", allEstatus);
+			this.attrs.put("estatus", allEstatus.get(0));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // doLoadEstatus
+	
+	public void doActualizarEstatus() {
+		Transaccion transaccion            = null;
+		TcManticEgresosBitacoraDto bitacora= null;
+		Entity seleccionado                = null;
+		try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");			
+			bitacora= new TcManticEgresosBitacoraDto((String)this.attrs.get("justificacion"), Long.valueOf(this.attrs.get("estatus").toString()), seleccionado.getKey(), JsfBase.getIdUsuario(), -1L);
+			transaccion= new Transaccion(bitacora);
+			if(transaccion.ejecutar(EAccion.MODIFICAR))
+				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
+			else
+				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		finally {
+			this.attrs.put("justificacion", "");
+		} // finally
+	}	// doActualizaEstatus
 }
