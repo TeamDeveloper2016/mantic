@@ -284,11 +284,14 @@ public class Filtro extends Comun implements Serializable {
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
     Entity seleccionado          = null;
+    Map<String, Object>params    = null;
 		try {		
+      params= toPrepare();
       seleccionado = ((Entity)this.attrs.get("seleccionado"));
       if(seleccionado != null)
-        this.attrs.put("idKeyTransferencia", seleccionado.getKey());
-      this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
+        params.put("idKeyTransferencia", seleccionado.getKey());
+      params.put("sortOrder", "order by tc_mantic_transferencias.id_almacen, tc_mantic_transferencias.id_destino desc");
+      params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
       reporteSeleccion= EReportes.valueOf(nombre);
       comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.reporte= JsfBase.toReporte();	
@@ -296,7 +299,7 @@ public class Filtro extends Comun implements Serializable {
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
-      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, this.attrs, parametros));		
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
       if(doVerificarReporte())
         this.reporte.doAceptar();			
     } // try
