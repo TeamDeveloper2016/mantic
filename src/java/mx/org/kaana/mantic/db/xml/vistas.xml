@@ -49,7 +49,9 @@
 				  tc_mantic_confrontas.id_transferencia,
 				  'janal-color-blue' as color,
 				  0 as porcentaje,
-					tc_mantic_confrontas_detalles.id_articulo
+					tc_mantic_confrontas_detalles.id_articulo,
+					tc_mantic_transferencias.registro,
+					tc_mantic_transferencias.observaciones
 				from
 					tc_mantic_confrontas
 				inner join 
