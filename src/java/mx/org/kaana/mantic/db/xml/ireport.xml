@@ -709,7 +709,7 @@
         select 
             tc_mantic_transferencias.id_transferencia as id_key,
             tc_mantic_transferencias.id_transferencia,
-            tc_mantic_transferencias.id_transferencia consecutivo,
+            tc_mantic_transferencias.consecutivo,
             tc_mantic_transferencias.id_almacen,
             origen.nombre  nombre_origen,
             origen.clave clave_origen,
