@@ -6105,6 +6105,7 @@
 		<unit id="VistaTcManticVentasDetallesDto">
 			<select id="detalle">
 				select
+					tc_mantic_ventas_detalles.id_venta_detalle as id_key,
 					tc_mantic_ventas_detalles.id_venta_detalle as id_comodin,
           tc_mantic_ventas_detalles.*,
           tc_mantic_ventas_detalles.cantidad as cuantos,
