@@ -11,9 +11,11 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
-				fecha      : {validaciones: 'libre', mascara: 'libre'},
-				descripcion: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				idEstatus  : {validaciones: 'libre', mascara: 'libre'}
+				fecha        : {validaciones: 'libre', mascara: 'libre'},
+				fechaFinal   : {validaciones: 'libre', mascara: 'libre'},
+				descripcion  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				idEstatus    : {validaciones: 'libre', mascara: 'libre'},
+				importeTicket: {validaciones: 'libre', mascara: 'flotante'},
 			};		
 			
 			fieldsDialog= {
@@ -60,10 +62,14 @@
           <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
 						<h:panelGrid styleClass="janal-wid-100">
-							<p:outputLabel for="fecha" value="Fecha:"/>
+							<p:outputLabel for="fecha" value="Fecha inicio:"/>
 							<p:calendar id="fecha" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticEgresosFiltro.attrs.fecha}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>							
+							<p:outputLabel for="fechaFinal" value="Fecha final:"/>
+							<p:calendar id="fechaFinal" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticEgresosFiltro.attrs.fechaFinal}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>							
 							<p:outputLabel for="descripcion" value="Descripción:"/>
-							<p:inputText id="descripcion" value="#{manticEgresosFiltro.attrs.descripcion}" styleClass="janal-wid-100-txt"/>              														
+							<p:inputText id="descripcion" value="#{manticEgresosFiltro.attrs.descripcion}" styleClass="janal-wid-100-txt"/>  
+							<p:outputLabel for="importeTicket" value="Importe:"/>
+							<p:inputText id="importeTicket" styleClass="janal-wid-100-txt janal-column-right" value="#{manticEgresosFiltro.attrs.importeTicket}"/>
 							<p:outputLabel for="idEstatus" value="Estatus:"/>
 							<p:selectOneMenu id="idEstatus" value="#{manticEgresosFiltro.attrs.idEstatus}" styleClass="janal-wid-100-txt">									
 								<f:selectItems value="#{manticEgresosFiltro.attrs.estatus}"/>								
