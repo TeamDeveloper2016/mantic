@@ -11,9 +11,11 @@ import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -21,12 +23,17 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
+import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.enums.EReportes;
+import org.primefaces.context.RequestContext;
 
 @Named(value = "manticCatalogosAlmacenesUbicacionesFiltro")
 @ViewScoped
 public class Filtro extends Comun implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
+  private Reporte reporte;
 
   @PostConstruct
   @Override
@@ -195,5 +202,50 @@ public class Filtro extends Comun implements Serializable {
 		} // catch
 		return regresar;
   } // doArticulos
+  
+  public void doReporte(String nombre) throws Exception {
+    Parametros comunes = null;
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = null;
+    Entity seleccionado          = null;
+    Map<String, Object>params    = null;
+		try {		
+      params= toPrepare();
+      seleccionado = ((Entity)this.attrs.get("seleccionado"));
+      if(seleccionado != null)
+        params.put("idKeyTransferencia", seleccionado.getKey());
+      params.put("sortOrder", "order by tc_mantic_almacenes_ubicaciones.id_almacen, tc_mantic_almacenes_ubicaciones.piso, tc_mantic_almacenes_ubicaciones.cuarto, tc_mantic_almacenes_ubicaciones.anaquel, tc_mantic_almacenes_ubicaciones.charola");
+      params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
+      reporteSeleccion= EReportes.valueOf(nombre);
+      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.reporte= JsfBase.toReporte();	
+      parametros= comunes.getComunes();
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
+      if(doVerificarReporte())
+        this.reporte.doAceptar();			
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+  } // doReporte
+  
+  public boolean doVerificarReporte() {
+    boolean regresar = false;
+		RequestContext rc= UIBackingUtilities.getCurrentInstance();
+		if(this.reporte.getTotal()> 0L){
+			rc.execute("start(" + this.reporte.getTotal() + ")");		
+      regresar = true;
+    }
+		else{
+			rc.execute("generalHide();");		
+			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
+      regresar = false;
+		} // else
+    return regresar;
+	} // doVerificarReporte	
 
 }
