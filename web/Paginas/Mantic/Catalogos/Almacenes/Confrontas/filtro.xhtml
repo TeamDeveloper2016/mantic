@@ -124,14 +124,14 @@
                   <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:separator/>
-                  <p:menuitem icon="fa fa-file-word-o" title="Reporte" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesConfrontasFiltro.doReporte('TRANSFERENCIAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                  <p:menuitem icon="fa fa-file-word-o" title="Reporte confrontas" value="Reporte confrontas" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesConfrontasFiltro.doReporte('CONFTONTAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
                 <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:separator/>
-                <p:menuitem icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesConfrontasFiltro.doReporte('TRANSFERENCIAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                <p:menuitem icon="fa fa-file-word-o" title="Reporte confrontas" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesConfrontasFiltro.doReporte('CONFTONTAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
               </div>  
             </f:facet>												
             <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.consecutivo}">
@@ -193,7 +193,8 @@
             <p:separator rendered="#{fn:contains('|7|', manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.estatus)}"/>			
             <p:menuitem id="autorizar" icon="fa fa-check-square-o" value="Autorizar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();" process="@this tabla" action="#{manticCatalogosAlmacenesConfrontasFiltro.doAutorizar}" rendered="#{fn:contains('|7|', manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.estatus)}"/>
             <p:separator/>			
-            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesConfrontasFiltro.doReporte('TRANSFERENCIAS_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
+            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte transferencias" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesConfrontasFiltro.doReporte('TRANSFERENCIAS_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
+            <p:menuitem id="reporteconfronta" icon="fa fa-file-word-o" value="Reporte confronta" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesConfrontasFiltro.doReporte('CONFTONTAS_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
 					</p:contextMenu>
         </div>
       </div>
