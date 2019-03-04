@@ -97,7 +97,7 @@ public class CreateTicket {
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
-			params.put("idEmpresa", this.principal.getIdEmpresa());
+			params.put("idEmpresa", ((TicketVenta)this.ticket.getOrden()).getIdEmpresa());
 			domicilio= (Entity) DaoFactory.getInstance().toEntity("VistaInformacionEmpresas", "datosEmpresa", params);
 			regresar= domicilio.toString("empresaDireccion").concat(" C.P. ").concat(domicilio.toString("codigoPostal")).concat("<br> COLONIA. ").concat(domicilio.toString("colonia"));
 		} // try
