@@ -56,8 +56,10 @@ public class Filtro extends IBaseTicket implements Serializable {
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta"));
       this.attrs.put("sortOrder", "order by tc_mantic_ventas.registro desc");
 			toLoadCatalog();
-      if(this.attrs.get("idVenta")!= null) 
+      if(this.attrs.get("idVenta")!= null){							
 			  this.doLoad();
+				this.attrs.put("idVenta", null);
+			} // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
