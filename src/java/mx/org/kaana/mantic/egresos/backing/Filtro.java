@@ -122,6 +122,10 @@ public class Filtro extends Comun implements Serializable {
 				condicion.append("tc_mantic_egresos.id_egreso_estatus=").append(this.attrs.get("idEstatus")).append(" and ");						
 			if(!Cadena.isVacio(this.attrs.get("fecha")))
 				condicion.append("(date_format(tc_mantic_egresos.fecha, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fecha"))).append("') and ");	
+			if(!Cadena.isVacio(this.attrs.get("fechaFinal")))
+				condicion.append("(date_format(tc_mantic_egresos.fecha, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaFinal"))).append("') and ");	
+			if(this.attrs.get("importeTicket")!= null && !Cadena.isVacio(this.attrs.get("importeTicket")) && !this.attrs.get("importeTicket").toString().equals("0.00"))
+				condicion.append("tc_mantic_egresos.importe like '%").append(Cadena.eliminaCaracter(this.attrs.get("importeTicket").toString(), ',')).append("%' and ");					
 			search= (String) this.attrs.get("descripcion");
 			if(!Cadena.isVacio(search)) {
 				search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();				
@@ -207,7 +211,7 @@ public class Filtro extends Comun implements Serializable {
 		Entity seleccionado     = null;				
 		try {			
 			seleccionado= (Entity) this.attrs.get("seleccionado");						
-			regresar= this.toZipFile(toAllFiles(seleccionado), seleccionado.toString("descripcion"));
+			regresar= this.toZipFile(toAllFiles(seleccionado), seleccionado.toString("descripcion"), seleccionado.getKey());
 		} // try 
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -247,7 +251,7 @@ public class Filtro extends Comun implements Serializable {
 		return regresar;
 	} // toAllFiles
 	
-	private StreamedContent toZipFile(List<ZipEgreso> files, String descripcion) {
+	private StreamedContent toZipFile(List<ZipEgreso> files, String descripcion, Long idEgreso) {
 		String zipName                 = null;		
 		String name                    = null;		
 		InputStream stream             = null;
@@ -263,6 +267,7 @@ public class Filtro extends Comun implements Serializable {
 			for(ZipEgreso zipEgreso: files)
 				zipEgreso.setCarpeta(JsfBase.getRealPath(name).concat("/").concat(zipEgreso.getCarpeta()));
 			zip.compactar(JsfBase.getRealPath(zipName), files);
+			//zip.compactar(JsfBase.getRealPath(zipName), files, loadNotas(idEgreso));
   	  stream = new FileInputStream(new File(JsfBase.getRealPath(zipName)));
 			regresar= new DefaultStreamedContent(stream, EFormatos.ZIP.getContent(), temporal.concat(".").concat(EFormatos.ZIP.name().toLowerCase()));		
 		} // try // try
@@ -272,6 +277,27 @@ public class Filtro extends Comun implements Serializable {
 		} // catch
     return regresar;
 	} // toZipFile
+	
+	private List<String> loadNotas(Long idEgreso) throws Exception{
+		List<String> regresar    = null;
+		List<Entity> notas       = null;
+		Map<String, Object>params= null;
+		try {
+			regresar= new ArrayList<>();
+			params= new HashMap<>();
+			params.put("idEgreso", idEgreso);
+			notas= DaoFactory.getInstance().toEntitySet("VistaEgresosDto", "notas", params, Constantes.SQL_TODOS_REGISTROS);
+			if(!notas.isEmpty()){
+				regresar.add("Comentario, Registro, Usuario");
+				for(Entity nota: notas)
+					regresar.add(nota.toString("comentario").concat(", ").concat(nota.toString("registro")).concat(", ").concat(nota.toString("persona")));				
+			} // if
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // loadNotas
 	
 	public void doLoadEstatus(){
 		Entity seleccionado          = null;
