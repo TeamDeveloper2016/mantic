@@ -68,9 +68,11 @@ public class Accion extends IBaseVenta implements Serializable {
 	private List<ClienteTipoContacto> clientesTiposContacto;
 	private ClienteTipoContacto clienteTipoContactoSeleccion;
 	private FormatCustomLazy lazyModelTicket;
+	private FormatLazyModel lazyDetalleTicket;
 	private EOrdenes tipoOrden;	
 	private TcManticApartadosDto apartado;
 	private boolean pagar;
+	//private Entity seleccionDetalleTicket;
 	
 	public Accion() {
 		super("menudeo");
@@ -107,6 +109,18 @@ public class Accion extends IBaseVenta implements Serializable {
 	public FormatCustomLazy getLazyModelTicket() {
 		return lazyModelTicket;
 	}	
+
+	public FormatLazyModel getLazyDetalleTicket() {
+		return lazyDetalleTicket;
+	}		
+
+	/*public Entity getSeleccionDetalleTicket() {
+		return seleccionDetalleTicket;
+	}
+
+	public void setSeleccionDetalleTicket(Entity seleccionDetalleTicket) {
+		this.seleccionDetalleTicket = seleccionDetalleTicket;
+	}	*/
 	
   public String doTipoMedioPago(Entity row) {
 		String regresar= null;
@@ -131,6 +145,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	@PostConstruct
   @Override
   protected void init() {		
+		Calendar fechaInicio= null;
     try {
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null ? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null ? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
@@ -149,7 +164,9 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("clienteAsignado", false);
 			this.attrs.put("tabIndex", 0);
 			this.attrs.put("fecha", new Date(Calendar.getInstance().getTimeInMillis()));
-			this.attrs.put("fechaApartirTicket", new Date(Calendar.getInstance().getTimeInMillis()));
+			fechaInicio= Calendar.getInstance();
+			fechaInicio.set(Calendar.DAY_OF_YEAR, fechaInicio.get(Calendar.DAY_OF_YEAR)- 30);
+			this.attrs.put("fechaApartirTicket", new Date(fechaInicio.getTimeInMillis()));
 			this.attrs.put("fechaHastaTicket", new Date(Calendar.getInstance().getTimeInMillis()));
 			this.attrs.put("folioTicket", "");
 			this.attrs.put("importeTicket", "");
@@ -176,6 +193,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			loadCfdis();
 			verificaLimiteCaja();
 			doActivarCliente();
+			loadArt();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -183,6 +201,18 @@ public class Accion extends IBaseVenta implements Serializable {
     } // catch		
   } // init
 
+	private void loadArt(){
+		Entity art= null;
+		try {
+			art= new Entity(-1L);
+			art.put("nombre", new Value("nombre", ""));
+			this.attrs.put("productoTicket", art);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // loadArt
+	
 	@Override
   public void doLoad() {
     EAccion eaccion= null;
@@ -990,11 +1020,11 @@ public class Accion extends IBaseVenta implements Serializable {
 		if(this.attrs.get("noTicket")!= null && !Cadena.isVacio(this.attrs.get("noTicket"))){
 			sb.append("tc_mantic_ventas.ticket like '%").append(this.attrs.get("noTicket")).append("%'").append(" and ");
 		} // if
-		if(this.attrs.get("productoTicket")!= null && !Cadena.isVacio(this.attrs.get("productoTicket"))){
-			sb.append("upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(this.attrs.get("productoTicket")).append("%') and ");					
+		if(this.attrs.get("productoTicket")!= null && !((Entity)this.attrs.get("productoTicket")).getKey().equals(-1L)){
+			sb.append("tc_mantic_ventas_detalles.id_articulo=").append(((Entity)this.attrs.get("productoTicket")).getKey()).append(" and ");					
 		} // if
 		if(this.attrs.get("importeTicket")!= null && !Cadena.isVacio(this.attrs.get("importeTicket")) && !this.attrs.get("importeTicket").toString().equals("0.00")){												
-			sb.append("tc_mantic_ventas.total =").append(this.attrs.get("importeTicket")).append(" and ");			
+			sb.append("tc_mantic_ventas.total like '%").append(Cadena.eliminaCaracter(this.attrs.get("importeTicket").toString(), ',')).append("%' and ");			
 		} // if
 		sb.append("tc_mantic_ventas.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(")");
 		regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -1159,4 +1189,71 @@ public class Accion extends IBaseVenta implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doAsignaApartado	
+	
+	public List<UISelectEntity> doCompleteProductoTicket(String query) {
+		this.attrs.put("codigoProductoTicket", query);
+    this.doUpdateTicketArticulos();		
+		return (List<UISelectEntity>)this.attrs.get("articulosProductoTicket");
+	}
+	
+	public void doUpdateTicketArticulos() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		boolean buscaPorCodigo    = false;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
+  		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
+			String search= (String)this.attrs.get("codigoProductoTicket"); 
+			if(!Cadena.isVacio(search)) {
+				buscaPorCodigo= (((boolean)this.attrs.get("buscaPorCodigo")) && !search.startsWith(".")) || (!((boolean)this.attrs.get("buscaPorCodigo")) && search.startsWith("."));  			
+				if(search.startsWith("."))
+					search= search.trim().substring(1);				
+				search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+			} // if	
+			else
+				search= "WXYZ";
+  		params.put("codigo", search);	
+			if(buscaPorCodigo)        
+        this.attrs.put("articulosProductoTicket", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
+			else
+        this.attrs.put("articulosProductoTicket", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 20L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}
+
+	public void doMostrarDetalleTicket(){
+		Entity seleccionado      = null;
+		Map<String, Object>params= null;
+		List<Columna>campos      = null;
+		try {
+			seleccionado= (Entity) this.attrs.get("seleccionDetalle");									
+			params= new HashMap<>();
+			params.put("idVenta", seleccionado.getKey());
+			campos= new ArrayList<>();
+			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			this.lazyDetalleTicket= new FormatLazyModel("VistaTcManticVentasDetallesDto", "detalle", params, campos);
+			UIBackingUtilities.resetDataTable("tablaDetalleTicket");
+			//this.seleccionDetalleTicket= (Entity) DaoFactory.getInstance().toEntity("TcManticVentasDto", "detalle", params);
+			this.attrs.put("medioPagoDetalleTicket", doTipoMedioPago(seleccionado));						
+			this.attrs.put("seleccionDetalleTicket", seleccionado);						
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+			Methods.clean(campos);
+		} // finally
+	} // doMostrarDetalleTicket
 }
