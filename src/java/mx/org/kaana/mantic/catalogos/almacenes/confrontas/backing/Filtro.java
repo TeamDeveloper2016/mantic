@@ -205,17 +205,23 @@ public class Filtro extends Comun implements Serializable {
 		} // catch
 		return regresar.concat(Constantes.REDIRECIONAR);
   } // doAccion
-
+  
   public void doReporte(String nombre) throws Exception {
     Parametros comunes = null;
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
     Entity seleccionado          = null;
+    Map<String, Object>params    = null;
 		try {		
+      params= toPrepare();
       seleccionado = ((Entity)this.attrs.get("seleccionado"));
-      if(seleccionado != null)
-        this.attrs.put("idKeyTransferencia", seleccionado.getKey());
-      this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
+      if(seleccionado != null){
+        params.put("idTransferencia", seleccionado.getKey());
+        params.put("idKeyTransferencia", seleccionado.getKey());
+        params.put(Constantes.SQL_CONDICION, " ");
+      }  
+      params.put("sortOrder", "order by tc_mantic_confrontas.registro asc");
+      params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
       reporteSeleccion= EReportes.valueOf(nombre);
       comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.reporte= JsfBase.toReporte();	
@@ -223,7 +229,7 @@ public class Filtro extends Comun implements Serializable {
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
-      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, this.attrs, parametros));		
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
       if(doVerificarReporte())
         this.reporte.doAceptar();			
     } // try
