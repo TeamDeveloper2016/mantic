@@ -195,7 +195,7 @@
 								<p:outputLabel value="Total:"/>
 								<p:outputLabel value="Usuario:"/>
 								<p:outputLabel value="Estatus:"/>																								
-								<p:autoComplete id="ticket" placeholder="Ej. 201800001" widgetVar="listadoTickets" var="customTicket" itemLabel="#{customTicket.ticket}" inputStyleClass="janal-wid-100-txt janal-column-right" itemValue="#{customTicket}" value="#{manticVentasGarantiasAccion.attrs.cliente}" completeMethod="#{manticVentasGarantiasAccion.doCompleteTicket}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
+								<p:autoComplete id="ticket" placeholder="Ej. 201800001" widgetVar="listadoTickets" var="customTicket" itemLabel="#{customTicket.ticket}" inputStyleClass="janal-wid-100-txt janal-column-right" itemValue="#{customTicket}" value="#{manticVentasGarantiasAccion.attrs.cliente}" completeMethod="#{manticVentasGarantiasAccion.doCompleteTicket}" converter="janal.convertidor.Entity" minQueryLength="1" maxResults="10" styleClass="janal-wid-100-txt" panelStyleClass="janal-wid-col-200">
 									<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticVentasGarantiasAccion.doAsignaOpenTicket}" update="@(.cotizar) contenido" oncomplete="janal.desbloquear();"/>
 									<f:facet name="itemtip">
 										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
