@@ -63,6 +63,11 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 					arts= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticGarantiasArticulosDto", "detalleGarantia", params); 
 					this.setArticulos(arts);
 					break;				
+				case ASIGNAR:
+					arts= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticGarantiasArticulosDto", "detalleCantidad", orden.toMap());
+					this.setArticulos(arts);
+					validaArticulos();
+					break;
 				default:
 					arts= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticGarantiasArticulosDto", "detalle", orden.toMap());
 					this.setArticulos(arts);
