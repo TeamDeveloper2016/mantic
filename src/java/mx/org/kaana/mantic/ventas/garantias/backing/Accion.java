@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.ventas.garantias.backing;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -73,6 +75,7 @@ public class Accion extends IBaseVenta implements Serializable {
       this.attrs.put("isFactura", true);
       this.attrs.put("factura", null);
       this.attrs.put("isPesos", false);
+      this.attrs.put("mostrarGarantia", false);
 			this.attrs.put("sinIva", false);
 			this.attrs.put("tipoPago", 1L);
 			this.attrs.put("buscaPorCodigo", false);
@@ -92,15 +95,29 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("isEfectivo", true);			
 			this.image= LoadImages.getImage(-1L);
 			if(JsfBase.isAdminEncuestaOrAdmin())
-				loadSucursales();						
-			accion= (EAccion) this.attrs.get("accion");
-			if(accion.equals(EAccion.CONSULTAR)||accion.equals(EAccion.MODIFICAR))
-				doLoad();
-			loadCajas();
-			doLoadTicketAbiertos();						
-			if(accion.equals(EAccion.CONSULTAR)||accion.equals(EAccion.MODIFICAR))
-				doAsignaTicketAbierto();
-			loadBancos();
+				loadSucursales();	
+			if(JsfBase.getFlashAttribute("accionVenta")!= null){								
+				this.attrs.put("mostrarGarantia", true);
+				this.attrs.put("accion", EAccion.AGREGAR);				
+				this.attrs.put("retorno", JsfBase.getFlashAttribute("retornoVenta"));
+				this.attrs.put("fecha", new Date(((Timestamp)JsfBase.getFlashAttribute("registroVenta")).getTime()));
+				doLoad();								
+				this.attrs.put("accion", EAccion.ASIGNAR);				
+				doLoadTicketAbiertos();				
+				doAsignaTicketAbierto();				
+				loadBancos();								
+				this.attrs.put("nombreAccion", Cadena.letraCapital(EAccion.CONSULTAR.name()));							
+			} // if
+			else{
+				accion= (EAccion) this.attrs.get("accion");
+				if(accion.equals(EAccion.CONSULTAR)||accion.equals(EAccion.MODIFICAR))
+					doLoad();
+				loadCajas();
+				doLoadTicketAbiertos();						
+				if(accion.equals(EAccion.CONSULTAR)||accion.equals(EAccion.MODIFICAR))
+					doAsignaTicketAbierto();
+				loadBancos();
+			} // else
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -268,7 +285,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			ticketsAbiertos= UIEntity.build("VistaVentasDto", "lazy", params, campos, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("ticketsAbiertos", ticketsAbiertos);			
 			accion= (EAccion) this.attrs.get("accion");
-			if(accion.equals(EAccion.CONSULTAR)||accion.equals(EAccion.MODIFICAR)){
+			if(accion.equals(EAccion.CONSULTAR)||accion.equals(EAccion.MODIFICAR)||accion.equals(EAccion.ASIGNAR)){
 				this.attrs.put("ticketAbierto", ticketsAbiertos.get(0));
 				this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
 			} // if
@@ -301,7 +318,11 @@ public class Accion extends IBaseVenta implements Serializable {
 			fecha= (Date) this.attrs.get("fecha");
 			regresar= new StringBuilder();													
 			accion= (EAccion) this.attrs.get("accion");
-			if(accion.equals(EAccion.CONSULTAR)||accion.equals(EAccion.MODIFICAR)){
+			if(accion.equals(EAccion.ASIGNAR)){
+				regresar.append(" tc_mantic_ventas.id_venta=");
+				regresar.append(this.attrs.get("idVenta"));
+			} // if
+			else if(accion.equals(EAccion.CONSULTAR)||accion.equals(EAccion.MODIFICAR)){
 				regresar.append(" tc_mantic_ventas.id_venta=");
 				regresar.append(this.getAdminOrden().getOrden().getKey());
 			} // if
@@ -345,6 +366,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		EAccion accion                      = null;
 		MotorBusqueda motor                 = null;
 		Entity factura                      = null;
+		Entity entity                       = null;
 		try {
 			accion= (EAccion) this.attrs.get("accion");
 			if(!(accion.equals(EAccion.CONSULTAR)||accion.equals(EAccion.MODIFICAR))){
@@ -356,8 +378,14 @@ public class Accion extends IBaseVenta implements Serializable {
 				if(!ticketAbierto.getKey().equals(-1L)){
 					ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
 					ticketAbiertoPivote= ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto));
-					this.setAdminOrden(new AdminGarantia((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), false, EAccion.LISTAR, -1L));
+					this.attrs.put("ticket", (Entity)ticketAbiertoPivote);
+					this.setAdminOrden(new AdminGarantia((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), false, EAccion.ASIGNAR, -1L));
 					loadMediosPago(ticketAbierto.getKey());
+					entity= new Entity(-1L);
+					entity.put("ticket", new Value("ticket", ((TicketVenta)this.getAdminOrden().getOrden()).getTicket()));
+					this.attrs.put("cliente", entity);
+					this.attrs.put("idEmpresa", ((TicketVenta)this.getAdminOrden().getOrden()).getIdEmpresa());
+					loadCajas();
 					this.ticketOriginal= (TicketVenta) getAdminOrden().getOrden();
 					this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 					loadCatalog();
