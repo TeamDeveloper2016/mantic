@@ -14,7 +14,9 @@
                 xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/plantillas/salir.xhtml">
   <ui:define name="contenido">	
-    <p:remoteCommand name="janalGlobalAutoRun" action="#{kajoolAccesoInvalidar.clean()}" autoRun="true" />
+    <p:remoteCommand name="janalGlobalAutoRun" action="#{kajoolAccesoInvalidar.clean()}" autoRun="true" oncomplete="$('#limpio').click();"/>
+		<p:defaultCommand target="limpio"/>
+		<p:commandButton id="limpio" action="/indice??faces-redirect=true" styleClass="janal-zero-size"/>
     <div id="login-box" class="Container80 MaxWid500 Fnone MarAuto BordRad10" style="border: transparent;">
       <div class="janal-content-center">
         <div class="Container60 Fnone MarAuto TexAlCenter TabContent">
