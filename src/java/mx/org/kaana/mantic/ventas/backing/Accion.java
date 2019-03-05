@@ -163,7 +163,7 @@ public class Accion extends IBaseVenta implements Serializable {
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
-		EAccion eaccion        = null;		
+		EAccion eaccion        = null;				
     try {			
 			loadOrdenVenta();
 			eaccion= (EAccion) this.attrs.get("accion");						
@@ -172,8 +172,10 @@ public class Accion extends IBaseVenta implements Serializable {
 			if (transaccion.ejecutar(eaccion)) {				
     		UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la cuenta ', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");									
 				JsfBase.setFlashAttribute("idVenta", null);
-				JsfBase.setFlashAttribute("accion", null);
+				JsfBase.setFlashAttribute("accion", null);				
+				this.attrs.put("idEmpresaVenta", this.attrs.get("idEmpresa"));
 				this.init();
+				this.attrs.put("idEmpresa", this.attrs.get("idEmpresaVenta"));
 				doAsignaClienteInicial(3515L);
 				UIBackingUtilities.execute("userUpdate();");
 			} // if
