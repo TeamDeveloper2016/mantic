@@ -64,7 +64,7 @@
 		VK_FIN       : 35,
 		VK_PAGINATOR : 19,
 	  change       : [13, 19, 27, 106, 107, 110, 111, 188, 121, 189, 191, 220, 222, 226],
-	  control      : [9, 13, 17, 27, 33, 34, 35, 36, 38, 40, 220, 118, 121, 122],
+	  teclas        : [9, 13, 17, 27, 33, 34, 35, 36, 38, 40, 220, 118, 121, 122],
 		cursor: {
 			top: 1, // el top debera ser elementos que van de 0 a n-1
 			index: 0,
@@ -103,7 +103,7 @@
 				var key   = e.keyCode ? e.keyCode : e.which;
 				janal.console('jsArticulos.keyup: '+ $(this).attr('id')+ ' key: '+ key);
 				clearTimeout($articulos.typingTimer);
-				if ($(this).val() && $(this).val().trim().length> 0 && $articulos.control.indexOf(key)< 0) 
+				if ($(this).val() && $(this).val().trim().length> 0 && $articulos.teclas.indexOf(key)< 0) 
 					$articulos.typingTimer= setTimeout($articulos.look($(this)), $articulos.doneInterval);
 				return false;
 			});  
@@ -298,7 +298,7 @@
 						} // if
 						break;
 					case $articulos.VK_MAYOR:
-						return $articulos.show($(this));
+						return $articulos.show(this);
 						break;
 					case $articulos.VK_F7:
 						return $articulos.detail();
@@ -337,7 +337,7 @@
 				var key   = e.keyCode ? e.keyCode : e.which;
 				janal.console('jsArticulos.keyup: '+ $(this).attr('id')+ ' key: '+ key);
 				clearTimeout($articulos.typingTimer);
-				if ($(this).val() && $(this).val().trim().length> 0 && $articulos.control.indexOf(key)< 0) 
+				if ($(this).val() && $(this).val().trim().length> 0 && $articulos.teclas.indexOf(key)< 0) 
 					$articulos.typingTimer= setTimeout($articulos.clientes($(this)), $articulos.doneInterval);
 				return false;
 			});  
@@ -762,6 +762,7 @@
 			return false;
 		},
 		show: function(name) {
+			janal.lastReference= name;
 			if(!this.valid()) {
 			  janal.bloquear();
 			  PF('dialogo').show();
@@ -871,6 +872,7 @@
 			$('div[id$='+ this.panels+ ']').hide();
 			$('div[id$='+ this.itemtips+ ']').hide();
 			$('#source-image').attr('href', $('#icon-image').attr('src'));
+			setTimeout('$articulos.goto();', 1000); 
 			this.control(paginator);
 		},
 		go: function(focus) {

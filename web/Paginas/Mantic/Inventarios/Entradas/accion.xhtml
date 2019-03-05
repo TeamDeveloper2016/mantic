@@ -138,7 +138,7 @@
 			<pe:methodParam name="idArticulo"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="replace" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion) @(.importado)" actionListener="#{manticInventariosEntradasAccion.doFindArticulo}" onstart="return janal.bloquear();" oncomplete="janal.reset(); janal.desbloquear();">  
+		<pe:remoteCommand name="replace" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion) @(.importado)" actionListener="#{manticInventariosEntradasAccion.doFindArticulo}" onstart="return janal.bloquear();" oncomplete="jsArticulos.process($(PF('widgetPaginator').input.selector+ ':checked').length=== 1);">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>
@@ -776,7 +776,7 @@
 				</div>
 			</div>
 		</div>		
-		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();" onShow="$('#codigo').val('');clean();" width="900px" height="470px" resizable="false" appendTo="@(body)">
+		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear(); janal.recover();" onShow="$('#codigo').val('');clean();" width="900px" height="470px" resizable="false" appendTo="@(body)">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
 					<p:outputLabel for="codigo" value="Código o nombre:"/>

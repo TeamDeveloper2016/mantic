@@ -4318,6 +4318,7 @@
 				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and (upper(tc_mantic_articulos.nombre) like upper('{codigo}%') or tc_mantic_articulos.id_articulo= {idArticulo})) as propio,
 				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} and (upper(tc_mantic_articulos.nombre) like upper('{codigo}%') or tc_mantic_articulos.id_articulo= {idArticulo})) as codigo,
 				  tc_mantic_articulos.nombre,
+				  ' ' as origen,
 				  tc_mantic_articulos.descripcion,
 				  tc_mantic_articulos.precio,
 				  tc_mantic_articulos.precio as original,

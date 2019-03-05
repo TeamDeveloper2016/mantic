@@ -188,7 +188,7 @@
 		</div>	
 		<p:inputText id="articulos" value="#{manticComprasRequisicionesAccion.adminOrden.totales.articulos}" styleClass="recalculo" style="display:none"/>
     <p:inputText id="total" value="#{manticComprasRequisicionesAccion.adminOrden.totales.total}" styleClass="recalculo" style="display:none"/>
-		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();" onShow="$('#codigo').val('');clean();" width="900px" height="470px" resizable="false" appendTo="@(body)">
+		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear(); janal.recover();" onShow="$('#codigo').val('');clean();" width="900px" height="470px" resizable="false" appendTo="@(body)">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
 					<p:outputLabel for="codigo" value="Código o nombre:"/>

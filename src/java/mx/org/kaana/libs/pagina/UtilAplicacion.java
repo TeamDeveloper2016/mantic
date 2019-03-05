@@ -50,9 +50,9 @@ public class UtilAplicacion {
   private static final String LESS  = "janal.mantic.less.min-2.5.0.js";
   private static final String CSS   = "janal.mantic.core-0.4.5.css";
   private static final String CORE  = "jquery.janal.core-3.0.1.js";
-  private static final String VENTAS= "jquery.janal.ventas.core-0.6.9.js";
+  private static final String VENTAS= "jquery.janal.ventas.core-0.7.0.js";
 	private static final String TICKET= "jquery.janal.ticket.core-0.0.5.js";
-  private static final String CALC  = "jquery.janal.arts.core-2.1.3.js";
+  private static final String CALC  = "jquery.janal.arts.core-2.1.8.js";
   private static final String KARDEX= "jquery.janal.kardex.core-0.4.3.js";
   private static final String DLGS  = "jquery.janal.precio.core-0.3.8.js";
   private static final String FUSION= "jquery.janal.fusion.charts-3.3.1.js";

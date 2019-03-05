@@ -230,7 +230,7 @@
 						} // if
 						break;
 					case $articulos.VK_MAYOR:
-						return $articulos.show($(this));
+						return $articulos.show(this);
 						break;
 					case $articulos.VK_F7:
 						return $articulos.detail();
@@ -934,6 +934,7 @@
 			return false;
 		},
 		show: function(name) {
+			janal.lastReference= name;
 			if(!this.valid()) {
 			  janal.bloquear();
    			PF('dialogo').show();
@@ -1174,13 +1175,13 @@
 		}, // initArrayArt
 		process: function() {
 			janal.console('jsArticulos.process: ');
-			janal.console('jsArticulos.process: ');
 			janal.refresh();
 			janal.desbloquear(); 
 			PF('listado').hide();
 			$('div[id$='+ this.panels+ ']').hide();
 			$('div[id$='+ this.itemtips+ ']').hide();
 			$('#source-image').attr('href', $('#icon-image').attr('src'));
+			setTimeout('$articulos.goto();', 1000); 
 		},
 		clientes: function(name) {
 			console.log('jsArticulo.clientes: '+ $(name).val());

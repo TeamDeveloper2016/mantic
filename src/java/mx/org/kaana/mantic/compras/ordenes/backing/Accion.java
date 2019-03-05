@@ -12,7 +12,6 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -398,9 +397,11 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   public void doFindArticulo(Integer index) {
 		super.doFindArticulo(index);
 		List<UISelectEntity> articulos= (List<UISelectEntity>)this.attrs.get("articulos");
-		int position= articulos.indexOf((UISelectEntity)this.attrs.get("articulo"));
-		if(position>= 0)
-      this.attrs.put("seleccionado", articulos.get(position));
+		if(articulos!= null) {
+		  int position= articulos.indexOf((UISelectEntity)this.attrs.get("articulo"));
+		  if(position>= 0)
+        this.attrs.put("seleccionado", articulos.get(position));
+		} // if	
 	}
 
 	public void doAutoSaveOrden() {

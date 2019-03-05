@@ -539,8 +539,8 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
   public void doFindArticulo(Integer index) {
 		try {
     	List<UISelectEntity> articulos= (List<UISelectEntity>)this.attrs.get("articulos");
-	    UISelectEntity articulo  = (UISelectEntity)this.attrs.get("articulo");
-	    UISelectEntity encontrado= (UISelectEntity)this.attrs.get("encontrado");
+	    UISelectEntity articulo       = (UISelectEntity)this.attrs.get("articulo");
+	    UISelectEntity encontrado     = (UISelectEntity)this.attrs.get("encontrado");
 			if(encontrado!= null) {
 				articulo= encontrado;
 				this.attrs.remove("encontrado");
