@@ -7,10 +7,12 @@
 package mx.org.kaana.libs.archivo;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import mx.org.kaana.libs.formato.Error;
 import java.util.zip.*;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.mantic.egresos.beans.ZipEgreso;
 import org.apache.commons.logging.Log;
@@ -263,8 +265,12 @@ public class Zip {
   }
 	
   public void compactar(String nombre, List<ZipEgreso> files) throws Exception {
+		compactar(nombre, files, new ArrayList<>());
+	} // compactar
+	
+  public void compactar(String nombre, List<ZipEgreso> files, List<String>notas) throws Exception {
     try {
-			setNombre(nombre);			
+			setNombre(nombre);						
 			FileOutputStream destino = new FileOutputStream(getNombre());
 			if (this.debug)
 				LOG.debug("nombre zip: " + getNombre());
@@ -291,8 +297,17 @@ public class Zip {
 						File file= new File(name);
 						file.delete();
 					} // if
-				}// for				
+				}// for								
 			} // for			
+			if(!notas.isEmpty()){				
+				ZipEntry entry= new ZipEntry("Notas".concat(File.separator).concat("Notas.txt"));
+				String cadena = "";
+				out.putNextEntry(entry);
+				for(String line: notas)
+					cadena= cadena.concat(line);									
+				byte[] dataNote = cadena.getBytes();				
+				out.write(dataNote, 0, dataNote.length);					
+			} // if
 			out.close();
     } // try
     catch (Exception e) {
@@ -465,9 +480,9 @@ public class Zip {
       Zip zips = new Zip();
       zips.setDebug(true);
       zips.setEliminar(true);
-      zips.compactar("/home/kajool/Escritorio/prueba.zip",
-                     "/home/kajool/Escritorio", Constantes.ARCHIVO_PATRON_NOMBRE+ "ArchivoPrueba.slk");
+      zips.compactar("/home/kajool/Escritorio/prueba.zip", "/home/kajool/Escritorio", Constantes.ARCHIVO_PATRON_NOMBRE+ "ArchivoPrueba.slk");
       LOG.debug("zipFile.zip archivo generador Ok.");
+			//"E:\Desarrollo\Plataforma\Netbeans\Web\mantic\Mantic24092018\mantic\build\web\Temporal\Zip\K_20190304115526210_EGRESO_TRANSFERENCIA_NO._234243545.zip"			
     }
     catch (Exception e) {
       Error.mensaje(e);
