@@ -299,14 +299,32 @@ public class Zip {
 					} // if
 				}// for								
 			} // for			
-			if(!notas.isEmpty()){				
-				ZipEntry entry= new ZipEntry("Notas".concat(File.separator).concat("Notas.txt"));
+			if(!notas.isEmpty()){
 				String cadena = "";
-				out.putNextEntry(entry);
 				for(String line: notas)
 					cadena= cadena.concat(line);									
-				byte[] dataNote = cadena.getBytes();				
-				out.write(dataNote, 0, dataNote.length);					
+				String namePath= Cadena.reemplazarCaracter(nombre,'/', File.separatorChar);
+				String nameFile= namePath.substring(0, namePath.lastIndexOf(File.separator)+1).concat("notas.txt");
+				FileOutputStream ops= new FileOutputStream(nameFile);
+				BufferedWriter bw= new BufferedWriter(new OutputStreamWriter(ops));
+				for(String line: notas){
+					bw.write(line);
+					bw.newLine();
+				}	// for
+				bw.close();				
+				ops.close();
+				FileInputStream fi = new FileInputStream(nameFile);
+				BufferedInputStream origen = new BufferedInputStream(fi, BUFFER);
+				ZipEntry entry= new ZipEntry("Notas".concat(File.separator).concat("Notas.txt"));				
+				out.putNextEntry(entry);				
+				int count;
+				while ((count = origen.read(data, 0, BUFFER)) != -1) {
+					out.write(data, 0, count);
+				} // while
+				origen.close();
+				File file= new File(nameFile);
+				if(file.exists())
+					file.delete();				
 			} // if
 			out.close();
     } // try
