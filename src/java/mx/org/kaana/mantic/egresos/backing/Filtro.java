@@ -266,8 +266,8 @@ public class Filtro extends Comun implements Serializable {
 			zip.setEliminar(false);
 			for(ZipEgreso zipEgreso: files)
 				zipEgreso.setCarpeta(JsfBase.getRealPath(name).concat("/").concat(zipEgreso.getCarpeta()));
-			zip.compactar(JsfBase.getRealPath(zipName), files);
-			//zip.compactar(JsfBase.getRealPath(zipName), files, loadNotas(idEgreso));
+			//zip.compactar(JsfBase.getRealPath(zipName), files);
+			zip.compactar(JsfBase.getRealPath(zipName), files, loadNotas(idEgreso));
   	  stream = new FileInputStream(new File(JsfBase.getRealPath(zipName)));
 			regresar= new DefaultStreamedContent(stream, EFormatos.ZIP.getContent(), temporal.concat(".").concat(EFormatos.ZIP.name().toLowerCase()));		
 		} // try // try
@@ -288,9 +288,9 @@ public class Filtro extends Comun implements Serializable {
 			params.put("idEgreso", idEgreso);
 			notas= DaoFactory.getInstance().toEntitySet("VistaEgresosDto", "notas", params, Constantes.SQL_TODOS_REGISTROS);
 			if(!notas.isEmpty()){
-				regresar.add("Comentario, Registro, Usuario");
+				regresar.add("Comentario, Registro, Usuario ".concat("\n"));
 				for(Entity nota: notas)
-					regresar.add(nota.toString("comentario").concat(", ").concat(nota.toString("registro")).concat(", ").concat(nota.toString("persona")));				
+					regresar.add(nota.toString("comentario").concat(", ").concat(nota.toString("registro")).concat(", ").concat(nota.toString("persona")).concat("\n"));				
 			} // if
 		} // try
 		catch (Exception e) {			
