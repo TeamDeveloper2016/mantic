@@ -265,8 +265,7 @@ public class Filtro extends Comun implements Serializable {
 			zip.setDebug(true);
 			zip.setEliminar(false);
 			for(ZipEgreso zipEgreso: files)
-				zipEgreso.setCarpeta(JsfBase.getRealPath(name).concat("/").concat(zipEgreso.getCarpeta()));
-			//zip.compactar(JsfBase.getRealPath(zipName), files);
+				zipEgreso.setCarpeta(JsfBase.getRealPath(name).concat("/").concat(zipEgreso.getCarpeta()));			
 			zip.compactar(JsfBase.getRealPath(zipName), files, loadNotas(idEgreso));
   	  stream = new FileInputStream(new File(JsfBase.getRealPath(zipName)));
 			regresar= new DefaultStreamedContent(stream, EFormatos.ZIP.getContent(), temporal.concat(".").concat(EFormatos.ZIP.name().toLowerCase()));		
