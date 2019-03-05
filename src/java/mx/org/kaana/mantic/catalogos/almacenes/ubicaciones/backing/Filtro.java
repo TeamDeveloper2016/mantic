@@ -212,12 +212,16 @@ public class Filtro extends Comun implements Serializable {
 		try {		
       params= toPrepare();
       seleccionado = ((Entity)this.attrs.get("seleccionado"));
-      if(seleccionado != null)
+      if(seleccionado != null){
         params.put("idKeyTransferencia", seleccionado.getKey());
+        comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(),seleccionado.toLong("idAlmacen"),-1L,-1L);
+      }
+      else{
+        comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      }
       params.put("sortOrder", "order by tc_mantic_almacenes_ubicaciones.id_almacen, tc_mantic_almacenes_ubicaciones.piso, tc_mantic_almacenes_ubicaciones.cuarto, tc_mantic_almacenes_ubicaciones.anaquel, tc_mantic_almacenes_ubicaciones.charola");
       params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
       reporteSeleccion= EReportes.valueOf(nombre);
-      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.reporte= JsfBase.toReporte();	
       parametros= comunes.getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
