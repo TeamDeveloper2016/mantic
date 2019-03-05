@@ -14,6 +14,7 @@ public final class Parametros implements Serializable {
   private Map<String, Object> comunes; 
   private Long idEmpresa;
   private Long idAlmacen;
+  private Long idAlmacenDestino;
   private Long idProveedor;
   private Long idCliente;
 
@@ -22,6 +23,17 @@ public final class Parametros implements Serializable {
     setComunes(toDatosEmpresa());
   }
 
+  public Parametros(Long idEmpresa, Long idAlmacen, Long idAlmacenDestino) throws Exception {
+    this.idEmpresa = idEmpresa;
+    this.idAlmacen = idAlmacen;
+    this.idAlmacenDestino = idAlmacenDestino;
+    setComunes(toDatosEmpresa());
+    if(this.idAlmacen != -1L)
+      toComplementarAlmacen(this.idAlmacen, true);
+    if(this.idAlmacenDestino != -1L)
+      toComplementarAlmacen(this.idAlmacenDestino, false);
+  }
+  
   public Parametros(Long idEmpresa, Long idAlmacen, Long idProveedor, Long idCliente) throws Exception {
     this.idEmpresa   = idEmpresa;
     this.idAlmacen   = idAlmacen;
@@ -31,7 +43,7 @@ public final class Parametros implements Serializable {
     if(this.idProveedor != -1L)
       toComplementarProveedor();
     if(this.idAlmacen != -1L)
-      toComplementarAlmacen();
+      toComplementarAlmacen(this.idAlmacen, true);
     if(this.idCliente != -1L)
       toComplementarCliente();
   }
@@ -77,14 +89,15 @@ public final class Parametros implements Serializable {
 		return regresar;		
 	}
   
-  public void toComplementarAlmacen() throws Exception {
+  public void toComplementarAlmacen(Long idKeyAlmacen, boolean isOrigen) throws Exception {
 		Map<String, Object>params   = null;
     Entity datosAlmacen         = null;
 		try {
       params= new HashMap<>();	
-      params.put("idAlmacen", this.idAlmacen);	
+      params.put("idAlmacen", idKeyAlmacen);	
 			datosAlmacen = (Entity) DaoFactory.getInstance().toEntity("VistaInformacionEmpresas", "datosAlmacen", params);
-      if(datosAlmacen != null){
+      if(datosAlmacen != null && isOrigen){
+        this.comunes.put("REPORTE_ALMACEN_CLAVE", datosAlmacen.toString("clave")!=null? datosAlmacen.toString("clave"):" ");
         this.comunes.put("REPORTE_ALMACEN_DIRECCION", datosAlmacen.toString("almacenDireccion")!=null? datosAlmacen.toString("almacenDireccion"):" ");
         this.comunes.put("REPORTE_ALMACEN_COLONIA", datosAlmacen.toString("colonia")!=null? datosAlmacen.toString("colonia"):" ");
         this.comunes.put("REPORTE_ALMACEN_CP", datosAlmacen.toString("codigoPostal")!=null? datosAlmacen.toString("codigoPostal"):" ");
@@ -92,15 +105,25 @@ public final class Parametros implements Serializable {
         this.comunes.put("REPORTE_ALMACEN_TELEFONOS", datosAlmacen.toString("telefonosAlmacen")!=null? datosAlmacen.toString("telefonosAlmacen"):" ");
         this.comunes.put("REPORTE_ALMACEN_EMAILS", datosAlmacen.toString("emailsAlmacen")!=null? datosAlmacen.toString("emailsAlmacen"):" ");
         this.comunes.put("REPORTE_ALMACEN_MUNICIPIO", datosAlmacen.toString("almacenRegion")!=null? datosAlmacen.toString("almacenRegion"):" ");
+      } 
+      else if(datosAlmacen != null && !isOrigen){
+        this.comunes.put("REPORTE_ALMACEN_CLAVE_DESTINO", datosAlmacen.toString("clave")!=null? datosAlmacen.toString("clave"):" ");
+        this.comunes.put("REPORTE_ALMACEN_DIRECCION_DESTINO", datosAlmacen.toString("almacenDireccion")!=null? datosAlmacen.toString("almacenDireccion"):" ");
+        this.comunes.put("REPORTE_ALMACEN_COLONIA_DESTINO", datosAlmacen.toString("colonia")!=null? datosAlmacen.toString("colonia"):" ");
+        this.comunes.put("REPORTE_ALMACEN_CP_DESTINO", datosAlmacen.toString("codigoPostal")!=null? datosAlmacen.toString("codigoPostal"):" ");
+        this.comunes.put("REPORTE_ALMACEN_CONTACTO_DESTINO", datosAlmacen.toString("responsableAlmacen")!=null? datosAlmacen.toString("responsableAlmacen"):" ");
+        this.comunes.put("REPORTE_ALMACEN_TELEFONOS_DESTINO", datosAlmacen.toString("telefonosAlmacen")!=null? datosAlmacen.toString("telefonosAlmacen"):" ");
+        this.comunes.put("REPORTE_ALMACEN_EMAILS_DESTINO", datosAlmacen.toString("emailsAlmacen")!=null? datosAlmacen.toString("emailsAlmacen"):" ");
+        this.comunes.put("REPORTE_ALMACEN_MUNICIPIO_DESTINO", datosAlmacen.toString("almacenRegion")!=null? datosAlmacen.toString("almacenRegion"):" ");
       }
-		} // try // try
+		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch	
     finally {
 			Methods.clean(params);
 		} // finally
-	} // toEmpresa
+	} // toComplementarAlmacen
   
   public void toComplementarProveedor() throws Exception {
 		Map<String, Object>params   = null;
