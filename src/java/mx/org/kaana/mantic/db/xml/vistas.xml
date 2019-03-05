@@ -1529,12 +1529,11 @@
 		</unit>
 		<unit id="VistaVentasDto">
 			<select id="pagosVenta">
-				select 
-					tr_mantic_venta_medio_pago.id_venta_medio_pago as id_key,
+				select 					
+					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago as id_key,
 					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
 					tc_mantic_ventas.id_venta,
-					tc_mantic_tipos_medios_pagos.nombre,
-					tr_mantic_venta_medio_pago.importe  
+					tc_mantic_tipos_medios_pagos.nombre 
 				from 
 					tc_mantic_ventas
 				inner join 
@@ -1543,6 +1542,10 @@
 					tc_mantic_tipos_medios_pagos on tr_mantic_venta_medio_pago.id_tipo_medio_pago = tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
 				where 
 					tc_mantic_ventas.id_venta= {idVenta}
+				group by					
+					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
+					tc_mantic_ventas.id_venta,
+					tc_mantic_tipos_medios_pagos.nombre
 			</select>
 			<select id="devoluciones">
  				select 
@@ -6281,7 +6284,7 @@
 					tc_mantic_ventas_detalles.costo,
           (tc_mantic_ventas_detalles.cantidad - if(tc_mantic_garantias_detalles.cantidad is null, 0, tc_mantic_garantias_detalles.cantidad)) as cantidad_garantia,					
 					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
-				  if(tc_mantic_ventas_detalles.id_reparacion is not null and tc_mantic_ventas_detalles.id_reparacion= 1, true, false) as aplicar 
+				  if(tc_mantic_garantias_detalles.id_reparacion is not null and tc_mantic_garantias_detalles.id_reparacion= 1, true, false) as aplicar 
 				from 
 					tc_mantic_garantias_detalles
 				inner join 
