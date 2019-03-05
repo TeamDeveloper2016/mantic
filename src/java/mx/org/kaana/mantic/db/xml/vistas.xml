@@ -1956,7 +1956,7 @@
 				inner join
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				left join
-					tc_mantic_notas_entradas on tc_mantic_articulos_bitacora.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+					tc_mantic_notas_entradas on tc_mantic_articulos_bitacora.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada and tc_mantic_notas_entradas.id_empresa= {idEmpresa}
 				left join
 				  tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
 				where
@@ -1989,6 +1989,7 @@
 					tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
 				where
 					tc_mantic_articulos.id_articulo= {idArticulo}
+				  and tc_mantic_notas_entradas.id_empresa= {idEmpresa}
 					and date_format(tc_mantic_notas_detalles.registro, '%Y%m%d')&gt;= '{registro}'
 					and tc_mantic_notas_entradas.id_nota_estatus in (3, 5, 6)
 				union all
@@ -2015,6 +2016,7 @@
 					tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
 				where
 					tc_mantic_articulos.id_articulo= {idArticulo}
+					and tc_mantic_ventas.id_empresa= {idEmpresa}
 					and date_format(tc_mantic_ventas_detalles.registro, '%Y%m%d')>= '{registro}'
 					and tc_mantic_ventas.id_venta_estatus in (3, 4, 6, 9)
 				union all
@@ -2045,6 +2047,7 @@
 					tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
 				where
 					tc_mantic_articulos.id_articulo= {idArticulo}
+					and tc_mantic_devoluciones.id_empresa= {idEmpresa}
 					and date_format(tc_mantic_devoluciones_detalles.registro, '%Y%m%d')>= '{registro}'
 					and tc_mantic_devoluciones.id_devolucion_estatus in (3, 4, 5, 6)
 				union all
@@ -2073,8 +2076,40 @@
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				where
 					tc_mantic_articulos.id_articulo= {idArticulo}
+					and tc_mantic_transferencias.id_empresa= {idEmpresa}
 					and date_format(tc_mantic_transferencias.registro, '%Y%m%d')>= '{registro}'
 					and tc_mantic_transferencias.id_transferencia_estatus in (3, 5)
+				union all
+				select
+				  (cast(date_format(now(), '%Y%m%d%H%i%S%s') as unsigned)+ truncate(rand()* 10000, 0)) as id_key,
+					'GARANTIAS' as movimiento,
+					tc_mantic_almacenes.nombre as almacen,
+					tc_mantic_garantias.consecutivo,
+					tc_mantic_articulos.nombre,
+					tc_mantic_clientes.clave,
+					tc_mantic_clientes.razon_social,
+					tc_mantic_garantias_detalles.cantidad,
+					tc_mantic_ventas_detalles.costo,
+					tc_mantic_garantias.registro
+				from
+					tc_mantic_garantias
+				inner join
+					tc_mantic_garantias_detalles on tc_mantic_garantias.id_garantia= tc_mantic_garantias_detalles.id_garantia
+				inner join
+					tc_mantic_ventas on tc_mantic_garantias.id_venta= tc_mantic_ventas.id_venta
+				inner join
+					tc_mantic_ventas_detalles on tc_mantic_garantias_detalles.id_venta_detalle= tc_mantic_ventas_detalles.id_venta_detalle
+				inner join
+					tc_mantic_articulos on tc_mantic_ventas_detalles.id_articulo= tc_mantic_articulos.id_articulo
+				inner join
+					tc_mantic_almacenes on tc_mantic_ventas.id_empresa= tc_mantic_almacenes.id_empresa and tc_mantic_almacenes.id_principal= 1
+				inner join
+					tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
+				where
+					tc_mantic_articulos.id_articulo= {idArticulo}
+					and tc_mantic_ventas.id_empresa= {idEmpresa}
+					and date_format(tc_mantic_garantias_detalles.registro, '%Y%m%d')>= '{registro}'
+					and tc_mantic_garantias.id_garantia_estatus in (3, 4, 5, 6)
 			  order by
 				  registro
 			</select>
@@ -2117,6 +2152,7 @@
           tc_mantic_almacenes_ubicaciones on tc_mantic_almacenes_articulos.id_almacen_ubicacion= tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion
         where      
           tc_mantic_almacenes_articulos.id_articulo = {idArticulo}
+					and tc_mantic_almacenes.id_empresa= {idEmpresa}
 				order by
 				  tc_mantic_almacenes.clave				
 			</select>

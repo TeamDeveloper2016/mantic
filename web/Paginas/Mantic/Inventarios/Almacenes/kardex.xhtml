@@ -93,6 +93,18 @@
 						<div class="janal-column-center">
   						<p:outputLabel value="#{manticInventariosAlmacenesKardex.attrs.articulo.nombre}" styleClass="janal-color-blue"/>
 						</div>
+						<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticInventariosAlmacenesKardex.attrs.isMatriz}" styleClass="janal-wid-100-txt"/>
+						<br/>
+						<p:selectOneMenu id="idEmpresa" value="#{manticInventariosAlmacenesKardex.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+							<p:ajax event="change" listener="#{manticInventariosAlmacenesKardex.doChangeBusquedas}" process="@this" update="@(.paginated)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+							<f:selectItems value="#{manticInventariosAlmacenesKardex.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+							<p:column headerText="Clave">
+								<h:outputText value="#{item.clave}"/>
+							</p:column>   
+							<p:column headerText="Nombre">
+								<h:outputText value="#{item.nombre}"/>
+							</p:column>   
+						</p:selectOneMenu>
 		  		</p:panel>
 				</div>	
 			</div>	

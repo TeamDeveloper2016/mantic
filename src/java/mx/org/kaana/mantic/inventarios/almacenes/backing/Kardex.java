@@ -32,7 +32,6 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.inventarios.almacenes.beans.AdminKardex;
 import mx.org.kaana.mantic.inventarios.almacenes.beans.TiposVentas;
 import mx.org.kaana.mantic.inventarios.almacenes.reglas.Transaccion;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.StreamedContent;
@@ -69,9 +68,39 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	@Override
 	@PostConstruct
 	protected void init() {
+		this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
+		this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
   	this.attrs.put("buscaPorCodigo", false);
 		this.attrs.put("costoMayorMenor", 0);
 		this.adminKardex= new AdminKardex(-1L);
+		this.toLoadCatalog();
+	}
+	
+	private void toLoadCatalog() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			columns= new ArrayList<>();
+			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+        params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
+			else
+				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			List<UISelectEntity> sucursales= (List<UISelectEntity>)UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
+      this.attrs.put("sucursales", sucursales);
+			if(!sucursales.isEmpty())
+			  this.attrs.put("idEmpresa", sucursales.get(0));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
 	}
 	
 	private void updateArticulo(UISelectEntity articulo) throws Exception {
@@ -507,5 +536,13 @@ public class Kardex extends IBaseAttribute implements Serializable {
 		  JsfBase.addMessage("No se ha seleccionado ningun articulo.", ETipoMensaje.ALERTA);
     return null;
 	}
+
+  public void doChangeBusquedas() {
+		if(this.attrs.get("idArticulo")!= null) {
+			this.toLoadAlmacenes();
+			this.toLoadHistorial();
+			this.toLoadMovimientos();
+		} // if	
+	}	
 	
 }
