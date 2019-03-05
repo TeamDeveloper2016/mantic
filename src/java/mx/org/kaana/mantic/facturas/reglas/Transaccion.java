@@ -239,7 +239,7 @@ public class Transaccion extends TransaccionFactura {
 				if(registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "")){
 					params= new HashMap<>();
 					params.put("idFicticia", this.orden.getIdFicticia());
-					regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticFicticiasDetallesDto.class, params)>= 1;
+					regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticFicticiasDetallesDto.class, params)>= 0;
 					toFillArticulos(sesion);
 				} // if
 			} // if
