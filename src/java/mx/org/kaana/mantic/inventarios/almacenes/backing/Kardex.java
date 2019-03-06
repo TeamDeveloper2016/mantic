@@ -544,5 +544,20 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			this.toLoadMovimientos();
 		} // if	
 	}	
+
+	public void doRecoverArticulo(Integer index) {
+		try {
+			if(this.attrs.get("idArticulo")!= null) {
+				this.attrs.put("seleccionado", this.attrs.get("idArticulo"));
+				Object backing= JsfBase.ELAsObject("manticCatalogosArticulosExpress");
+				if(backing!= null)
+					((IBaseAttribute)backing).getAttrs().put("seleccionado", this.attrs.get("seleccionado"));
+			} // if	
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch				
+	} // doRecoveryArticulo
 	
 }

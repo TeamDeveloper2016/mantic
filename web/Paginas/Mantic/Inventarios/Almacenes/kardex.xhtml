@@ -25,7 +25,11 @@
 	</ui:define>
 	<ui:define name="contenido">
 		<p:focus context="codigos"/>
-		<p:defaultCommand target="limpio"/>
+		<p:defaultCommand target="tabla"/>
+		<pe:remoteCommand name="recover" process="@this" update="dialogoArtExpress" actionListener="#{manticInventariosAlmacenesKardex.doRecoverArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); PF('dlgArtExpress').show();">  
+			<pe:methodSignature parameters="java.lang.Integer"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>		
 		<pe:remoteCommand name="locate" process="@this" update="@(.filas) @(.recalculo) @(.inventario)" actionListener="#{manticInventariosAlmacenesKardex.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset();setTimeout(jsKardex.locate(), 500);">  
 			<pe:methodSignature parameters="java.lang.String"/>  
 			<pe:methodParam name="codigo"/>  
@@ -61,24 +65,27 @@
 					</p:panelGrid>	
 				</div>
 				<div class="ui-grid-col-11">
-					<p:autoComplete id="codigos" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticInventariosAlmacenesKardex.attrs.custom}" completeMethod="#{manticInventariosAlmacenesKardex.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
-						<p:ajax event="itemSelect" oncomplete="jsKardex.close();"/>
-						<f:facet name="itemtip">
-							<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
-								<f:facet name="header" class="TexAlCenter">
-									<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="30"/>
-								</f:facet>
-								<h:outputText value="Propio:" />
-								<h:outputText value="#{custom.propio}" />
-								<h:outputText value="Nombre:" />
-								<h:outputText value="#{custom.nombre}" />
-								<h:outputText value="IVA:" />
-								<h:outputText value="#{custom.iva}" />
-								<h:outputText value="Costo:" />
-								<h:outputText value="$ #{custom.precio}" />
-							</h:panelGrid>
-						</f:facet>
-					</p:autoComplete>			
+					<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt, janal-wid-col-40">
+						<p:autoComplete id="codigos" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticInventariosAlmacenesKardex.attrs.custom}" completeMethod="#{manticInventariosAlmacenesKardex.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+							<p:ajax event="itemSelect" oncomplete="jsKardex.close();"/>
+							<f:facet name="itemtip">
+								<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+									<f:facet name="header" class="TexAlCenter">
+										<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="30"/>
+									</f:facet>
+									<h:outputText value="Propio:" />
+									<h:outputText value="#{custom.propio}" />
+									<h:outputText value="Nombre:" />
+									<h:outputText value="#{custom.nombre}" />
+									<h:outputText value="IVA:" />
+									<h:outputText value="#{custom.iva}" />
+									<h:outputText value="Costo:" />
+									<h:outputText value="$ #{custom.precio}" />
+								</h:panelGrid>
+							</f:facet>
+						</p:autoComplete>		
+						<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" oncomplete="recover(0)" style="float:right;"/>
+          </p:panelGrid>					
 				</div>
 			</div>	
 			<div class="ui-grid-row janal-grid-row">
@@ -390,7 +397,7 @@
 				<p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide();"/>
 			</div>
 		</p:dialog>
-		<p:commandButton id="limpio" value="" styleClass="janal-zero-size"/>
+		<p:commandButton id="tabla" value="" styleClass="janal-zero-size"/>
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
@@ -401,5 +408,11 @@
 			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticInventariosAlmacenesKardex.doAceptar}" onstart="return janal.execute(true) &amp;&amp; confirm('Esta seguro que desea guardar los cambios ?');" oncomplete="janal.desbloquear()" styleClass="recalculo"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticInventariosAlmacenesKardex.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" update="contenedorGrupos:tabla @(.filas) @(.recalculo) contenedorGrupos:panelImage"/>
 		</div>		
+	</ui:define>
+	<ui:define name="dialogos">
+		<ui:include src="/Paginas/Mantic/Catalogos/Articulos/express.xhtml">
+			<ui:param name="dialogo" value="articulos"/>
+			<ui:param name="seleccionado" value="#{manticInventariosAlmacenesKardex.attrs.seleccionado}"/>
+		</ui:include>
 	</ui:define>
 </ui:composition>
