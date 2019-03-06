@@ -347,6 +347,12 @@ public class Accion extends IBaseArticulos implements Serializable {
     }// finally
 	} // toLoadCondiciones
 	
+	@Override
+	public void doUpdatePorcentaje() {
+		if(!getAdminOrden().getArticulos().isEmpty())
+			super.doUpdatePorcentaje();
+	} // doUpdatePorcentaje
+	
 	public void doUpdatePlazo() {
 		if(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedorPago()!= null) {
 			List<UISelectEntity> condiciones= (List<UISelectEntity>) this.attrs.get("condiciones");
@@ -373,5 +379,4 @@ public class Accion extends IBaseArticulos implements Serializable {
 	public void doUpdateRfc() {
 		this.doUpdateRfc(this.proveedor);
 	}
-
 }

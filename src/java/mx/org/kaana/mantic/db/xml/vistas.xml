@@ -1233,7 +1233,7 @@
 				inner join
 					tc_mantic_notas_tipos on tc_mantic_notas_entradas.id_nota_tipo= tc_mantic_notas_tipos.id_nota_tipo
         where 
-          tc_mantic_creditos_notas.saldo &gt; 0
+          tc_mantic_creditos_notas.saldo &lt; 0
 				and 
 					tc_mantic_proveedores.id_proveedor= {idProveedor}
 				and 
@@ -4769,7 +4769,7 @@
 				inner join
 					tc_mantic_notas_tipos on tc_mantic_notas_entradas.id_nota_tipo= tc_mantic_notas_tipos.id_nota_tipo
         where 
-          tc_mantic_empresas_deudas.saldo &gt; 0
+          tc_mantic_empresas_deudas.saldo &lt; 0
 				and 
 					tc_mantic_proveedores.id_proveedor= {idProveedor}
 				and 
