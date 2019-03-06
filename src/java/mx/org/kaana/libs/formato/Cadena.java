@@ -31,11 +31,10 @@ public final class Cadena {
     StringBuilder resultado = new StringBuilder(msg);
     int x = 0;
     while (x < resultado.length()) {
-      if (resultado.charAt(x) == caracter) {
+      if (resultado.charAt(x) == caracter)
         resultado.deleteCharAt(x);
-      } else {
+      else 
         x++;
-      }
     } // while
     return resultado.toString();
   }
@@ -1176,4 +1175,10 @@ public static String sinAcentos(String cadena){
 		return java.text.Normalizer.normalize(text, java.text.Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+","");
 	}
 	
+	public static boolean toEqualsString(String source, String target) {
+		source= new String(source.replaceAll(Constantes.CLEAN_STR, "").trim());
+		target= new String(target.replaceAll(Constantes.CLEAN_STR, "").trim());
+		return source.equals(target);
+	}
+
 }

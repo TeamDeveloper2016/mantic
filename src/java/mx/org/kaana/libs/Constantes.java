@@ -24,6 +24,7 @@ public final class Constantes {
 
 	public static final String CODIGO_SAT= "40141700";
 	public static final String CLEAN_SQL= "([(,),',*,!,|,<,>,?,¿,&,%,$,#,;,:,{,},\\[,\\],~,\"])";
+	public static final String CLEAN_STR= "([-,_, ,(,),',*,!,|,<,>,?,¿,&,%,$,#,;,:,{,},\\[,\\],~,\"])";
   public static final String ESPACIO = "&nbsp;";
   public static final String BR = "<br>";
   public static final String EOL = "\r\n";

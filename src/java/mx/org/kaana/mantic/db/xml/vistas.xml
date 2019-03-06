@@ -1976,6 +1976,7 @@
 					tc_mantic_proveedores.razon_social,
 					tc_mantic_notas_detalles.cantidad,
 					tc_mantic_notas_detalles.costo,
+				  ifnull(tc_mantic_almacenes_articulos.stock, 0) as stock,
 					tc_mantic_notas_entradas.registro
 				from
 					tc_mantic_notas_entradas
@@ -1986,7 +1987,9 @@
 				inner join
 					tc_mantic_almacenes on tc_mantic_notas_entradas.id_empresa= tc_mantic_almacenes.id_empresa and tc_mantic_almacenes.id_principal= 1
 				inner join
-					tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
+					tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor,
+				left join
+				  tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo and tc_mantic_almacenes.id_almacen= tc_mantic_almacenes_articulos.id_almacen
 				where
 					tc_mantic_articulos.id_articulo= {idArticulo}
 				  and tc_mantic_notas_entradas.id_empresa= {idEmpresa}
@@ -2003,6 +2006,7 @@
 					tc_mantic_clientes.razon_social,
 					tc_mantic_ventas_detalles.cantidad * -1,
 					tc_mantic_ventas_detalles.costo,
+				  ifnull(tc_mantic_almacenes_articulos.stock, 0) as stock,
 					tc_mantic_ventas.registro
 				from
 					tc_mantic_ventas
@@ -2014,6 +2018,8 @@
 					tc_mantic_almacenes on tc_mantic_ventas.id_empresa= tc_mantic_almacenes.id_empresa and tc_mantic_almacenes.id_principal= 1
 				inner join
 					tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
+				left join
+				  tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo and tc_mantic_almacenes.id_almacen= tc_mantic_almacenes_articulos.id_almacen
 				where
 					tc_mantic_articulos.id_articulo= {idArticulo}
 					and tc_mantic_ventas.id_empresa= {idEmpresa}
@@ -2030,6 +2036,7 @@
 					tc_mantic_proveedores.razon_social,
 					tc_mantic_devoluciones_detalles.cantidad,
 					tc_mantic_notas_detalles.costo,
+				  ifnull(tc_mantic_almacenes_articulos.stock, 0) as stock,
 					tc_mantic_devoluciones.registro
 				from
 					tc_mantic_devoluciones
@@ -2045,6 +2052,8 @@
 					tc_mantic_notas_entradas on tc_mantic_devoluciones.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
 				inner join
 					tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
+				left join
+				  tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo and tc_mantic_almacenes.id_almacen= tc_mantic_almacenes_articulos.id_almacen
 				where
 					tc_mantic_articulos.id_articulo= {idArticulo}
 					and tc_mantic_devoluciones.id_empresa= {idEmpresa}
@@ -2061,6 +2070,7 @@
 					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) razon_social,
 					tc_mantic_transferencias_detalles.cantidad * -1,
 					tc_mantic_articulos.precio as costo,
+				  ifnull(tc_mantic_almacenes_articulos.stock, 0) as stock,
 					tc_mantic_transferencias.registro
 				from
 					tc_mantic_transferencias
@@ -2074,6 +2084,8 @@
 					tc_janal_usuarios on tc_mantic_transferencias.id_usuario= tc_janal_usuarios.id_usuario
 				inner join
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				left join
+				  tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo and tc_mantic_almacenes.id_almacen= tc_mantic_almacenes_articulos.id_almacen
 				where
 					tc_mantic_articulos.id_articulo= {idArticulo}
 					and tc_mantic_transferencias.id_empresa= {idEmpresa}
@@ -2090,6 +2102,7 @@
 					tc_mantic_clientes.razon_social,
 					tc_mantic_garantias_detalles.cantidad,
 					tc_mantic_ventas_detalles.costo,
+				  ifnull(tc_mantic_almacenes_articulos.stock, 0) as stock,
 					tc_mantic_garantias.registro
 				from
 					tc_mantic_garantias
@@ -2105,13 +2118,15 @@
 					tc_mantic_almacenes on tc_mantic_ventas.id_empresa= tc_mantic_almacenes.id_empresa and tc_mantic_almacenes.id_principal= 1
 				inner join
 					tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
+				left join
+				  tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo and tc_mantic_almacenes.id_almacen= tc_mantic_almacenes_articulos.id_almacen
 				where
 					tc_mantic_articulos.id_articulo= {idArticulo}
 					and tc_mantic_ventas.id_empresa= {idEmpresa}
 					and date_format(tc_mantic_garantias_detalles.registro, '%Y%m%d')>= '{registro}'
 					and tc_mantic_garantias.id_garantia_estatus in (3, 4, 5, 6)
 			  order by
-				  registro
+				  registro desc
 			</select>
 			<select id="codigos">
         select      

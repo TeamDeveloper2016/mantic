@@ -146,7 +146,7 @@
 			<pe:methodSignature parameters="java.lang.String"/>  
 			<pe:methodParam name="codigo"/>  
 		</pe:remoteCommand>		
-		<p:remoteCommand name="clean" actionListener="#{manticInventariosEntradasAccion.doCleanArticulos}" process="@this codigo @(.clasico)" update="buscados localizado"/>
+		<p:remoteCommand name="clean" actionListener="#{manticInventariosEntradasAccion.doCleanArticulos}" process="@this codigo @(.clasico)" update="encontrados buscados localizado"/>
 		<pe:remoteCommand name="findout" actionListener="#{manticInventariosEntradasAccion.doFindOutArticulos}" onstart="return PF('buscador').isVisible();" process="@this auxiliar" update="encontrados encontrado">
 			<pe:methodSignature parameters="java.lang.String"/>  
 			<pe:methodParam name="codigo"/>  
@@ -680,7 +680,7 @@
 										</p:column>		
 										<p:column style="width:38px; text-align: center">
 											<p:outputLabel id="descripcion" value="#{row.nombre}" style="display:none"/>
-											<p:commandButton process="@this" icon="fa fa-plus" title="#{row['nombre']}" oncomplete="$('#auxiliar').val($('#contenedorGrupos\\:faltante\\:#{index}\\:descripcion').html());janal.bloquear();PF('buscador').show();">
+											<p:commandButton process="@this" icon="fa fa-plus" title="#{row['nombre']}" onstart="clean(); return true;" oncomplete="$('#auxiliar').val($('#contenedorGrupos\\:faltante\\:#{index}\\:descripcion').html()); janal.bloquear(); PF('buscador').show();">
     										<f:setPropertyActionListener value="#{row}" target="#{manticInventariosEntradasAccion.attrs.faltante}" />
 		    							</p:commandButton>
 										</p:column>

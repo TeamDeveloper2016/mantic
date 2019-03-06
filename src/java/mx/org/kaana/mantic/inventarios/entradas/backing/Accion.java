@@ -393,8 +393,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   			boolean found= false;
 				while (y< disponibles.size()) {
 					disponible= disponibles.get(y);
-					if((faltante.getCodigo()!= null && disponible.getCodigo()!= null && faltante.getCodigo().equals(disponible.getCodigo())) || 
-						(faltante.getNombre()!= null && disponible.getOrigen()!= null && faltante.getNombre().equals(disponible.getOrigen()))) {
+					if((faltante.getCodigo()!= null && disponible.getCodigo()!= null && Cadena.toEqualsString(faltante.getCodigo(), disponible.getCodigo())) || 
+						(faltante.getNombre()!= null && disponible.getOrigen()!= null && Cadena.toEqualsString(faltante.getNombre(), disponible.getOrigen()))) {
 						relacionados++;
 						found= true;
       			faltantes.remove(faltante);
@@ -651,6 +651,12 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			temporal.setDisponible(true);
 		  this.getAdminOrden().toCalculate();
 		} // if
+	}
+	
+	public static void main(String ... args) {
+	  LOG.info("H2-111109".replaceAll(Constantes.CLEAN_STR, ""));	
+	  LOG.info("H2 111109".replaceAll(Constantes.CLEAN_STR, ""));	
+	  LOG.info(Cadena.toEqualsString("H2 111109", "H2-111109"));	
 	}
 	
 }
