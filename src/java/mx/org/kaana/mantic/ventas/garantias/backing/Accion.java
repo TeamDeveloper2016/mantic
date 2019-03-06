@@ -106,10 +106,12 @@ public class Accion extends IBaseVenta implements Serializable {
 				doLoadTicketAbiertos();				
 				doAsignaTicketAbierto();				
 				loadBancos();								
-				this.attrs.put("nombreAccion", Cadena.letraCapital(EAccion.CONSULTAR.name()));							
+				this.attrs.put("nombreAccion", Cadena.letraCapital(EAccion.ASIGNAR.name()));							
 			} // if
-			else{
+			else {
 				accion= (EAccion) this.attrs.get("accion");
+				if(accion.equals(EAccion.CONSULTAR))
+					this.attrs.put("mostrarGarantia", true);
 				if(accion.equals(EAccion.CONSULTAR)||accion.equals(EAccion.MODIFICAR))
 					doLoad();
 				loadCajas();
