@@ -178,8 +178,8 @@
 		<p:dialog id="dialogoPago" widgetVar="dlgPago" header="Registrar pago" resizable="false" closable="false" responsive="true" width="80%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoPago', fieldsDialog);janal.refresh();">
 			<h:form id="formDialogoPago" prependId="false">
 				<h:panelGrid id="panelDialog" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-80">
-					<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosEmpresasCuentasDeuda.attrs.isMatriz}"/>
-					<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosEmpresasCuentasDeuda.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="contains">
+					<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="false"/>
+					<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="false" effect="fade" filter="true" filterMatchMode="contains">
 						<p:ajax event="change" process="@this" listener="#{manticCatalogosEmpresasCuentasDeuda.doLoadCajas}" update="caja"/>
 						<f:selectItems value="#{manticCatalogosEmpresasCuentasDeuda.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
 						<p:column headerText="Clave">
@@ -189,8 +189,8 @@
 							<h:outputText value="#{item.nombre}"/>
 						</p:column>   
 					</p:selectOneMenu>
-					<p:outputLabel for="caja" value="Caja:" />
-					<p:selectOneMenu id="caja" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.caja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains">								
+					<p:outputLabel for="caja" value="Caja:" rendered="false"/>
+					<p:selectOneMenu id="caja" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.caja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains" rendered="false">								
 						<f:selectItems value="#{manticCatalogosEmpresasCuentasDeuda.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 						<p:column headerText="Clave">
 							<h:outputText value="#{item.clave}"/>
@@ -305,8 +305,8 @@
 		<p:dialog id="dialogoPagoGeneral" widgetVar="dlgPagoGeneral" header="Registrar pago sobre la deuda" resizable="false" closable="false" responsive="true" width="70%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoPagoGeneral', fieldsDialogGeneral);janal.refresh();">
 			<h:form id="formDialogoPagoGeneral" prependId="false">
 				<h:panelGrid id="panelDialogoGeneral" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-80">					
-					<p:outputLabel for="idEmpresaGeneral" value="Sucursal:" rendered="#{manticCatalogosEmpresasCuentasDeuda.attrs.isMatriz}"/>
-					<p:selectOneMenu id="idEmpresaGeneral" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.idEmpresaGeneral}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosEmpresasCuentasDeuda.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="contains">
+					<p:outputLabel for="idEmpresaGeneral" value="Sucursal:" rendered="false"/>
+					<p:selectOneMenu id="idEmpresaGeneral" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.idEmpresaGeneral}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="false" effect="fade" filter="true" filterMatchMode="contains">
 						<p:ajax event="change" process="@this" listener="#{manticCatalogosEmpresasCuentasDeuda.doLoadCajasGeneral}" update="cajaGeneral"/>
 						<f:selectItems value="#{manticCatalogosEmpresasCuentasDeuda.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
 						<p:column headerText="Clave">
@@ -316,8 +316,8 @@
 							<h:outputText value="#{item.nombre}"/>
 						</p:column>   
 					</p:selectOneMenu>
-					<p:outputLabel for="cajaGeneral" value="Caja:" />
-					<p:selectOneMenu id="cajaGeneral" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.cajaGeneral}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains">								
+					<p:outputLabel for="cajaGeneral" value="Caja:" rendered="false"/>
+					<p:selectOneMenu id="cajaGeneral" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.cajaGeneral}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains" rendered="false">								
 						<f:selectItems value="#{manticCatalogosEmpresasCuentasDeuda.attrs.cajasGenerales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 						<p:column headerText="Clave">
 							<h:outputText value="#{item.clave}"/>
@@ -401,8 +401,8 @@
 					</p:tab>		
 					<p:tab title="Registro pago">
 						<h:panelGrid id="panelDialogoSegmento" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-80">							
-							<p:outputLabel for="idEmpresaSegmento" value="Sucursal:" rendered="#{manticCatalogosEmpresasCuentasDeuda.attrs.isMatriz}"/>
-							<p:selectOneMenu id="idEmpresaSegmento" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.idEmpresaSegmento}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosEmpresasCuentasDeuda.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="contains">
+							<p:outputLabel for="idEmpresaSegmento" value="Sucursal:" rendered="true"/>
+							<p:selectOneMenu id="idEmpresaSegmento" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.idEmpresaSegmento}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="true" effect="fade" filter="true" filterMatchMode="contains">
 								<p:ajax event="change" process="@this" listener="#{manticCatalogosEmpresasCuentasDeuda.doLoadCajasSegmento}" update="cajaSegmento"/>
 								<f:selectItems value="#{manticCatalogosEmpresasCuentasDeuda.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
 								<p:column headerText="Clave">
@@ -412,8 +412,8 @@
 									<h:outputText value="#{item.nombre}"/>
 								</p:column>   
 							</p:selectOneMenu>
-							<p:outputLabel for="cajaSegmento" value="Caja:" />
-							<p:selectOneMenu id="cajaSegmento" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.cajaSegmento}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains">								
+							<p:outputLabel for="cajaSegmento" value="Caja:" rendered="false"/>
+							<p:selectOneMenu id="cajaSegmento" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.cajaSegmento}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains" rendered="false">								
 								<f:selectItems value="#{manticCatalogosEmpresasCuentasDeuda.attrs.cajasSegmento}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
