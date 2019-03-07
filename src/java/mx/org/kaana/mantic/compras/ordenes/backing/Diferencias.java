@@ -88,8 +88,8 @@ public class Diferencias extends IFilterImportar implements Serializable {
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));      
-      columns.add(new Columna("precio", EFormatoDinamicos.NUMERO_SAT_DECIMALES));      
-      columns.add(new Columna("costoCalculado", EFormatoDinamicos.NUMERO_SAT_DECIMALES));      
+      columns.add(new Columna("precio", EFormatoDinamicos.MILES_SAT_DECIMALES));      
+      columns.add(new Columna("costoCalculado", EFormatoDinamicos.MILES_SAT_DECIMALES));      
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("cantidades", EFormatoDinamicos.NUMERO_CON_DECIMALES));      
       columns.add(new Columna("importes", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
@@ -277,8 +277,8 @@ public class Diferencias extends IFilterImportar implements Serializable {
 	}	
 
 	public String doCostos(Entity row) {
-		String regresar= "<i class='fa fa-fw fa-question-circle janal-color-green' style='float:right;' title='\n\nCosto: "+ Global.format(EFormatoDinamicos.NUMERO_SAT_DECIMALES, row.toDouble("costo"))+ 
-			"\nCosto real: $"+ Global.format(EFormatoDinamicos.NUMERO_SAT_DECIMALES, row.toDouble("costoReal"))+ 
+		String regresar= "<i class='fa fa-fw fa-question-circle janal-color-green' style='float:right;' title='\n\nCosto: "+ Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, row.toDouble("costo"))+ 
+			"\nCosto real: $"+ Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, row.toDouble("costoReal"))+ 
 			"\nCosto calculado: $" + row.toString("costoCalculado")+ 
 			"\n\nDescuento: $" + row.toString("descuento")+ " %"+
 			"\nExtras: " + row.toString("extras")+  " %"+
