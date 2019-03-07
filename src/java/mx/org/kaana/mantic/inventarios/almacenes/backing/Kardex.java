@@ -52,6 +52,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 
 	private AdminKardex adminKardex;
 	private StreamedContent image;
+	private Integer tabPage;
 
 	public AdminKardex getAdminKardex() {
 		return adminKardex;
@@ -68,8 +69,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	@Override
 	@PostConstruct
 	protected void init() {
-		this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-		this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+		this.tabPage= 0;
   	this.attrs.put("buscaPorCodigo", false);
 		this.attrs.put("costoMayorMenor", 0);
 		this.adminKardex= new AdminKardex(-1L);
@@ -77,22 +77,19 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	}
 	
 	private void toLoadCatalog() {
+    List<UISelectEntity> almacenes= null;
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
     try {
 			columns= new ArrayList<>();
-			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
-        params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
-			else
-				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			params = new HashMap<>();
+      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			List<UISelectEntity> sucursales= (List<UISelectEntity>)UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
-      this.attrs.put("sucursales", sucursales);
-			if(!sucursales.isEmpty())
-			  this.attrs.put("idEmpresa", sucursales.get(0));
+      almacenes= (List<UISelectEntity>)UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns);
+      this.attrs.put("depositos", almacenes);
+			if(almacenes!= null) 
+			  this.attrs.put("idAlmacen", almacenes.get(0));
     } // try
     catch (Exception e) {
       throw e;
@@ -334,6 +331,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	private void toLoadAlmacenes() {
 		List<Columna> columns= null;
     try {
+			this.tabPage= 1;
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -355,6 +353,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	private void toLoadHistorial() {
 		List<Columna> columns= null;
     try {
+			this.tabPage= 2;
 			columns= new ArrayList<>();
       columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
@@ -383,6 +382,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	private void toLoadMovimientos() {
 		List<Columna> columns= null;
     try {
+			this.tabPage= 3;
 			columns= new ArrayList<>();
       columns.add(new Columna("almacen", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
@@ -539,9 +539,17 @@ public class Kardex extends IBaseAttribute implements Serializable {
 
   public void doChangeBusquedas() {
 		if(this.attrs.get("idArticulo")!= null) {
-			this.toLoadAlmacenes();
-			this.toLoadHistorial();
-			this.toLoadMovimientos();
+			switch(this.tabPage) {
+				case 1: 
+					this.toLoadAlmacenes();
+					break;
+				case 2: 
+    			this.toLoadHistorial();
+					break;
+				case 3: 
+    			this.toLoadMovimientos();
+					break;
+			} // switch	
 		} // if	
 	}	
 

@@ -1965,6 +1965,7 @@
 				where
 					tc_mantic_articulos_bitacora.id_articulo= {idArticulo}
 				  and date_format(tc_mantic_articulos_bitacora.registro, '%Y%m%d')&gt;= '{registro}'
+					and tc_mantic_notas_entradas.id_almacen= {idAlmacen}
 				order by
 					tc_mantic_articulos_bitacora.registro desc				
 			</select>
@@ -1990,12 +1991,12 @@
 				inner join
 					tc_mantic_almacenes on tc_mantic_notas_entradas.id_empresa= tc_mantic_almacenes.id_empresa and tc_mantic_almacenes.id_principal= 1
 				inner join
-					tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor,
+					tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
 				left join
 				  tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo and tc_mantic_almacenes.id_almacen= tc_mantic_almacenes_articulos.id_almacen
 				where
 					tc_mantic_articulos.id_articulo= {idArticulo}
-				  and tc_mantic_notas_entradas.id_empresa= {idEmpresa}
+				  and tc_mantic_notas_entradas.id_almacen= {idAlmacen}
 					and date_format(tc_mantic_notas_detalles.registro, '%Y%m%d')&gt;= '{registro}'
 					and tc_mantic_notas_entradas.id_nota_estatus in (3, 5, 6)
 				union all
@@ -2025,7 +2026,7 @@
 				  tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo and tc_mantic_almacenes.id_almacen= tc_mantic_almacenes_articulos.id_almacen
 				where
 					tc_mantic_articulos.id_articulo= {idArticulo}
-					and tc_mantic_ventas.id_empresa= {idEmpresa}
+					and tc_mantic_ventas.id_almacen= {idAlmacen}
 					and date_format(tc_mantic_ventas_detalles.registro, '%Y%m%d')>= '{registro}'
 					and tc_mantic_ventas.id_venta_estatus in (3, 4, 6, 9)
 				union all
@@ -2059,7 +2060,7 @@
 				  tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo and tc_mantic_almacenes.id_almacen= tc_mantic_almacenes_articulos.id_almacen
 				where
 					tc_mantic_articulos.id_articulo= {idArticulo}
-					and tc_mantic_devoluciones.id_empresa= {idEmpresa}
+					and tc_mantic_notas_entradas.id_almacen= {idAlmacen}
 					and date_format(tc_mantic_devoluciones_detalles.registro, '%Y%m%d')>= '{registro}'
 					and tc_mantic_devoluciones.id_devolucion_estatus in (3, 4, 5, 6)
 				union all
@@ -2091,9 +2092,9 @@
 				  tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo and tc_mantic_almacenes.id_almacen= tc_mantic_almacenes_articulos.id_almacen
 				where
 					tc_mantic_articulos.id_articulo= {idArticulo}
-					and tc_mantic_transferencias.id_empresa= {idEmpresa}
+					and tc_mantic_transferencias.id_almacen= {idAlmacen}
 					and date_format(tc_mantic_transferencias.registro, '%Y%m%d')>= '{registro}'
-					and tc_mantic_transferencias.id_transferencia_estatus in (3, 5)
+					and tc_mantic_transferencias.id_transferencia_estatus in (3, 5, 6, 7, 8, 9)
 				union all
 				select
 				  (cast(date_format(now(), '%Y%m%d%H%i%S%s') as unsigned)+ truncate(rand()* 10000, 0)) as id_key,
@@ -2125,7 +2126,7 @@
 				  tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo and tc_mantic_almacenes.id_almacen= tc_mantic_almacenes_articulos.id_almacen
 				where
 					tc_mantic_articulos.id_articulo= {idArticulo}
-					and tc_mantic_ventas.id_empresa= {idEmpresa}
+					and tc_mantic_ventas.id_almacen= {idAlmacen}
 					and date_format(tc_mantic_garantias_detalles.registro, '%Y%m%d')>= '{registro}'
 					and tc_mantic_garantias.id_garantia_estatus in (3, 4, 5, 6)
 			  order by
@@ -2170,9 +2171,9 @@
           tc_mantic_almacenes_ubicaciones on tc_mantic_almacenes_articulos.id_almacen_ubicacion= tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion
         where      
           tc_mantic_almacenes_articulos.id_articulo = {idArticulo}
-					and tc_mantic_almacenes.id_empresa= {idEmpresa}
+					and tc_mantic_almacenes_articulos.id_almacen= {idAlmacen}
 				order by
-				  tc_mantic_almacenes.clave				
+				  tc_mantic_almacenes.clave
 			</select>
 			<select id="almacenesDetalle">
         select   
