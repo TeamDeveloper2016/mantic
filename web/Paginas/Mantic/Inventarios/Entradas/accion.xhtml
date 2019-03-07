@@ -45,7 +45,10 @@
 				'auxiliares'                        : {multiple: '$', validaciones: 'libre', mascara: 'codigo', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},				
 				'precios'                           : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general', individual: true},				
 				'cantidades'                        : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general', individual: true}				
-			};			
+			};
+			
+			// $('#contenedorGrupos\\:faltante\\:{index}\\:descripcion').html()
+			
     	$(document).ready(function() {
 				setTimeout("janal.readingMode('#{manticInventariosEntradasAccion.attrs.nombreAccion}')", 500);
         jsArticulos= new Janal.Control.Articulos.Core(#{manticInventariosEntradasAccion.adminOrden.articulos.size()}, 'contenedorGrupos\\:tabla\\:', #{manticInventariosEntradasAccion.attrs.paginator});
@@ -680,7 +683,7 @@
 										</p:column>		
 										<p:column style="width:38px; text-align: center">
 											<p:outputLabel id="descripcion" value="#{row.nombre}" style="display:none"/>
-											<p:commandButton process="@this" icon="fa fa-plus" title="#{row['nombre']}" onstart="clean(); return true;" oncomplete="$('#auxiliar').val($('#contenedorGrupos\\:faltante\\:#{index}\\:descripcion').html()); janal.bloquear(); PF('buscador').show();">
+											<p:commandButton process="@this" icon="fa fa-plus" title="#{row['nombre']}" onstart="clean(); return true;" oncomplete="$('#auxiliar').val(''); janal.bloquear(); PF('buscador').show();">
     										<f:setPropertyActionListener value="#{row}" target="#{manticInventariosEntradasAccion.attrs.faltante}" />
 		    							</p:commandButton>
 										</p:column>

@@ -308,5 +308,27 @@ public class Diferencias extends IFilterImportar implements Serializable {
 			JsfBase.addMessageError(e);
     } // catch   
 	}	
+
+  public void doViewObservaciones(Entity row) {
+    this.attrs.put("seleccionado", row);		
+	}
+	
+  public String doViewPorcentajes(Entity row) {
+		StringBuilder regresar= new StringBuilder();
+		try {
+			List<Entity> items= DaoFactory.getInstance().toEntitySet("VistaOrdenesComprasDto", "porcentajes", row);
+			if(items!= null)
+			  for (Entity item: items) {
+					regresar.append("Nota entrada: ").append(item.toString("consecutivo")).append("<br/>Porcentaje: ").append(this.doDecimalSat(item.toDouble("porcentaje"))).append(" %<br/>Observaciones: ").append(item.toString("observaciones")).append("<br/><br/>");
+				} // for
+			else
+				regresar.append("No tiene ningúna nota de entrada asociada !            ");
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		return regresar.substring(0, regresar.length()- 10);
+	}
 	
 }

@@ -95,14 +95,16 @@
               </f:facet>
               <h:outputText value="#{row['nombre']}" title="Código propio: #{row['propio']}"/>
             </p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.costo}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{row.costo}">
               <f:facet name="header">
                 <h:outputText value="Costo"/>
               </f:facet>
 							<div class="ui-grid-row janal-grid-row">
 								<div class="ui-grid-col-12 janal-column-right" style="padding-right: 14px;">
-									<h:outputLabel value="&lt;span class='#{row['color']}' style='float:left;'&gt;[#{row['porcentaje']}%]&lt;/span&gt;" escape="false"/>
-									<h:outputText value="#{row['precio']}"/>
+									<h:outputLink id="track" value="#">
+									  <h:outputText value="#{row['precio']}"/>
+									</h:outputLink>	
+									<p:tooltip for="track" value="#{manticComprasOrdenesDiferencias.doViewPorcentajes(row)}" trackMouse="true" escape="false"/>
 								</div>	 
 								<div style="width: 10px; margin-left: -4px; margin-top: 1px;">
 									<h:outputText value="#{manticComprasOrdenesDiferencias.doCostos(row)}" escape="false"/>
@@ -246,6 +248,11 @@
 								<p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button"/>
 							</p:commandLink>	
 						</p:column>
+						<p:column headerText="Obs" style="text-align: center" styleClass="janal-wid-col-38">
+							<p:commandLink actionListener="#{manticComprasOrdenesDiferencias.doViewObservaciones(row)}" process="@this" update="@(.viewObservaciones)" onstart="return janal.bloquear();" oncomplete="PF('dlgObservaciones').show();" rendered="#{not empty(row.observaciones.toString())}">
+								<p:commandButton icon="fa fa-comments-o" title="Ver observaciones" ajax="false" type="button"/>
+							</p:commandLink>	
+						</p:column>
             <f:facet name="footer">
 							<p:outputLabel value="Las filas en color son articulos no solicitados, las que estan en color marron presentan diferencia en cantidad con respecto a la factura" style="float: left;"/>
               <p:outputLabel value="Total [#{manticComprasOrdenesDiferencias.lazyNotas==null?0:manticComprasOrdenesDiferencias.lazyNotas.rowCount}] registros"/>
@@ -291,6 +298,16 @@
   			<hr class="ui-widget-content"/>
 	  		<div class="janal-line-button">
 					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" actionListener="#{manticComprasOrdenesDiferencias.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
+			  </div>
+			</p:dialog>
+			<p:dialog id="dialogoObservaciones" widgetVar="dlgObservaciones" styleClass="viewObservaciones" header="Observaciones de la nota de entrada" onHide="janal.sendLastFocus(); janal.desbloquear();" height="270px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+				<h:outputText value="Nota entrada:"/><br/>
+				<p:inputText styleClass="janal-wid-100-txt" value="#{manticComprasOrdenesDiferencias.attrs.seleccionado.consecutivo}" readonly="true"/>
+				<h:outputText value="Observaciones:"/><br/>
+  			<p:inputTextarea rows="6" styleClass="janal-wid-100-txt" value="#{manticComprasOrdenesDiferencias.attrs.seleccionado.observaciones}" readonly="true"/>
+  			<hr class="ui-widget-content"/>
+	  		<div class="janal-line-button">
+					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" actionListener="#{manticComprasOrdenesDiferencias.doCerrar}" oncomplete="PF('dlgObservaciones').hide();"/>
 			  </div>
 			</p:dialog>
 		</h:form>

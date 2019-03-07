@@ -4522,7 +4522,8 @@
 					tc_mantic_notas_detalles.id_articulo,
 				  ifnull(tc_mantic_notas_archivos.id_principal, 2) as id_principal,
 				  tc_mantic_notas_archivos.alias,
-				  tc_mantic_notas_archivos.nombre as archivo
+				  tc_mantic_notas_archivos.nombre as archivo,
+					tc_mantic_notas_entradas.observaciones
 				from
 					tc_mantic_notas_entradas
 				inner join
@@ -4541,6 +4542,7 @@
 			<select id="confronta">
 				select
 					tc_mantic_ordenes_detalles.id_orden_detalle as id_key,
+					tc_mantic_ordenes_detalles.id_orden_detalle,
 				  tc_mantic_ordenes_compras.id_empresa,
 				  tc_mantic_ordenes_compras.consecutivo,
 					tc_mantic_ordenes_detalles.propio,
@@ -4621,6 +4623,22 @@
 				order by
 				  tc_mantic_ordenes_detalles.registro
       </select>
+		  <select id="porcentajes">
+				select
+					tc_mantic_notas_detalles.id_nota_detalle as id_key,
+					tc_mantic_notas_entradas.id_nota_entrada,
+					tc_mantic_notas_entradas.consecutivo,
+				  if(tc_mantic_ordenes_detalles.costo is null, 100, (tc_mantic_notas_detalles.costo_calculado* 100/ tc_mantic_ordenes_detalles.costo_calculado)- 100) as porcentaje,
+					tc_mantic_notas_entradas.observaciones
+				from
+					tc_mantic_notas_entradas
+				inner join
+					tc_mantic_notas_detalles on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_notas_detalles.id_nota_entrada
+				inner join
+				  tc_mantic_ordenes_detalles on tc_mantic_notas_detalles.id_orden_detalle= tc_mantic_ordenes_detalles.id_orden_detalle and tc_mantic_ordenes_detalles.id_orden_detalle= {idOrdenDetalle}
+				where  
+					tc_mantic_notas_entradas.id_orden_compra= {idOrdenCompra}
+			</select>			
 		</unit>
 		<unit id="VistaDomiciliosCatalogosDto">
 			<select id="domicilios">
