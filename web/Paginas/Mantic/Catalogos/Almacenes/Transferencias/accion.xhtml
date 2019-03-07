@@ -20,7 +20,25 @@
         cantidad: {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'}
 			};
       
-      $(document).ready(function(){janal.readingMode('#{manticCatalogosAlmacenesTransferenciasAccion.attrs.nombreAccion}');});		
+      $(document).ready(function(){
+				janal.readingMode('#{manticCatalogosAlmacenesTransferenciasAccion.attrs.nombreAccion}');
+				
+				var VK_MINUS= 109;
+				var VK_REST = 189;
+				$(document).on('keydown', '.janal-key-event', function(e) {
+					var key= e.keyCode ? e.keyCode : e.which;
+					janal.console('jsTransfer.keydown: '+ $(this).attr('id')+ ' key: '+ key);
+					switch(key) {
+						case VK_MINUS:
+						case VK_REST:
+							janal.bloquear();
+							$('#aceptar').click();
+							return false;
+							break;
+					} // switch
+				});					
+				
+			});		
 		</script>        
 		<style>
 			.janal-image-frame {
@@ -69,7 +87,7 @@
 								</p:panelGrid>
 								<p:outputLabel for="cantidad" value="Cantidad:"/>
 								<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-wid-col-130 janal-column-right">
-								  <p:inputNumber id="cantidad" tabindex="2" inputStyleClass="janal-color-orange janal-column-right" styleClass="janal-wid-100-txt cantidad" value="#{manticCatalogosAlmacenesTransferenciasAccion.detalle.cantidad}" converter="javax.faces.Double" disabled="#{empty manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo}">
+								  <p:inputNumber id="cantidad" tabindex="2" inputStyleClass="janal-color-orange janal-column-right" styleClass="janal-wid-100-txt janal-key-event cantidad" value="#{manticCatalogosAlmacenesTransferenciasAccion.detalle.cantidad}" converter="javax.faces.Double" disabled="#{empty manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo}">
 									  <p:ajax event="keyup" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doCalculate}" process="@this" update="@(.filas)" oncomplete="janal.refresh();" />
 								  </p:inputNumber>
 									<p:outputLabel value="Sugerido: #{manticCatalogosAlmacenesTransferenciasAccion.attrs.sugerido}" styleClass="filas"/>
@@ -146,11 +164,11 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticCatalogosAlmacenesTransferenciasAccion.doAceptar}" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@form" action="#{manticCatalogosAlmacenesTransferenciasAccion.doAceptar}" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()"/>
       <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosAlmacenesTransferenciasAccion.doCancelar}" ajax="false"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosAlmacenesTransferenciasAccion.doAceptar}" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" update="@form" action="#{manticCatalogosAlmacenesTransferenciasAccion.doAceptar}" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosAlmacenesTransferenciasAccion.doCancelar}" ajax="false"/>
 		</div>		
 	</ui:define>

@@ -197,7 +197,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		try {
 			UISelectEntity articulo= (UISelectEntity)this.attrs.get("articulo");
 			Entity destino         = (Entity)this.attrs.get("destino");
-			Double stock  = articulo!= null? articulo.toDouble("stock"): 0D;
+			Double stock  = articulo!= null && articulo.containsKey("stock")? articulo.toDouble("stock"): 0D;
 			Double calculo = 0D;
 			Double maximo  = 0D;
 			Double sugerido= 0D;
@@ -378,7 +378,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 			transaccion= new Transaccion(this.transferencia, articulos);
 			if(transaccion.ejecutar(this.accion)) {
  			  UIBackingUtilities.execute("janal.back(' gener\\u00F3 la transferencia ', '"+ this.transferencia.getConsecutivo()+ "');");
-        regresar = "filtro".concat(Constantes.REDIRECIONAR);
+        // regresar = "filtro".concat(Constantes.REDIRECIONAR);
+				this.doLoad();
 				JsfBase.addMessage("Se registró la transferencia de correcta", ETipoMensaje.INFORMACION);
       } // if
 			else
@@ -400,7 +401,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 
 	public String getNoTieneConteoOrigen() {
 		String color= "janal-color-orange";
-		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(this.attrs.get("articulo")== null || !((UISelectEntity)this.attrs.get("articulo")).toBoolean("vacio")? "none": "").concat("' title='El articulo no tiene un conteo en el almacen origen !'></i>");
+		UISelectEntity articulo= (UISelectEntity)this.attrs.get("articulo");
+		if(articulo!= null && !articulo.containsKey("vacio"))
+			articulo.put("vacio", new Value("vacio", true));
+		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(articulo== null || !articulo.toBoolean("vacio")? "none": "").concat("' title='El articulo no tiene un conteo en el almacen origen !'></i>");
 	}
 
 	public String getNoTieneConteoDestino() {
