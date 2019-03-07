@@ -144,8 +144,7 @@ public class Accion extends IBaseVenta implements Serializable {
 
 	@PostConstruct
   @Override
-  protected void init() {		
-		Calendar fechaInicio= null;
+  protected void init() {				
     try {
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null ? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null ? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
@@ -153,7 +152,18 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null ? null : JsfBase.getFlashAttribute("retorno"));
 			LOG.warn("Flash atributes [accion[" + this.attrs.get("accion") + "] idVenta [" + this.attrs.get("idVenta") + "] retorno [" + this.attrs.get("retorno") + "]]");
 			this.attrs.put("sortOrder", "order by tc_mantic_ventas.registro desc");
-      this.attrs.put("isPesos", false);
+      doInitPage();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+  } // init
+
+	public void doInitPage(){
+		Calendar fechaInicio= null;
+		try {
+			this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
 			this.attrs.put("buscaPorCodigo", true);
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
@@ -194,13 +204,13 @@ public class Accion extends IBaseVenta implements Serializable {
 			verificaLimiteCaja();
 			doActivarCliente();
 			loadArt();
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch		
-  } // init
-
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doInitPage
+	
 	private void loadArt(){
 		Entity art= null;
 		try {
