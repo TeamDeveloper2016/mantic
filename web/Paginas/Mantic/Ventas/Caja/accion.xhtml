@@ -172,7 +172,8 @@
 			}
 		</style>
 	</ui:define>
-	<ui:define name="contenido">
+	<ui:define name="contenido">		
+		<pe:remoteCommand name="cleanSelection" onstart="return janal.bloquear();" process="@this" actionListener="#{manticVentasCajaAccion.doInitPage}" update="contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.recalculo) @(.janal-abono) contenedorGrupos:panelPago" oncomplete="janal.desbloquear();jsArticulos.refreshCobroValidate();"/>  			
 		<pe:remoteCommand name="updateCambioPrecio" process="@this" update="panelCambioPrecio cambiopreciousr passwordcambioprecio"/>  			
 		<pe:remoteCommand name="updateDescuentos" process="@this" update="panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd"/>  			
 		<pe:remoteCommand name="applyValidacionesCredito" process="@this contenedorGrupos:creditoCliente" update="contenedorGrupos:panelSumatoria" actionListener="#{manticVentasCajaAccion.doValidaCreditoCliente}" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>  			
