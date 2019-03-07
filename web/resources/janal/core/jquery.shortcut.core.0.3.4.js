@@ -379,7 +379,6 @@ shortcut.add("minus", function() {
 	  $('#' + ((PF('wAceptarCompra') && $('#' + PF('wAceptarCompra').id).css('display')!== 'none') ? 'aceptar' : 'aceptarIcon')).click();
 	} // if
 	else if((PF('wAceptarCotizacion') && $('#' + PF('wAceptarCotizacion').id).css('display')!== 'none') || (PF('wAceptarCotizacionIcon') && $('#' + PF('wAceptarCotizacionIcon').id).css('display')!== 'none')) {
-		$('#' + ((PF('wAceptarCotizacion') && $('#' + PF('wAceptarCotizacion').id).css('display')!== 'none') ? 'aceptCotizacion' : 'cotizacionIcon')).focus();
-		$('#' + ((PF('wAceptarCotizacion') && $('#' + PF('wAceptarCotizacion').id).css('display')!== 'none') ? 'aceptCotizacion' : 'cotizacionIcon')).click();
+		cleanSelection();		
 	} // else if
 });
