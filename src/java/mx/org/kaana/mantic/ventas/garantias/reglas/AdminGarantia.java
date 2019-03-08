@@ -154,7 +154,8 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 	@Override
 	public void toCalculate(boolean modificado) {
 		getTotales().reset();
-		for (Articulo articulo: getArticulos()) {
+		for (Articulo articulo: getArticulos()) {			
+			articulo.setCostoLibre(true);
 	    articulo.toCalculate(this.getIdSinIva().equals(1L), this.getTipoDeCambio());
 		  articulo.setModificado(modificado);
 			getTotales().addArticulo(articulo);
