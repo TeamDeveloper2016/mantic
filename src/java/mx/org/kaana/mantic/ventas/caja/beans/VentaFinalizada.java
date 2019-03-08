@@ -8,7 +8,6 @@ import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticApartadosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
-import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 
 public class VentaFinalizada implements Serializable{
