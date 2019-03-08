@@ -27,6 +27,7 @@ import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticApartadosBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticApartadosDto;
 import mx.org.kaana.mantic.db.dto.TcManticApartadosPagosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticCajasDto;
@@ -192,11 +193,15 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			if(this.ventaFinalizada.isFacturar() && !this.ventaFinalizada.getApartado())
 				regresar= registrarFactura(sesion);
 			if(verificarCierreCaja(sesion)){
-				if(registrarPagos(sesion))					
-					regresar= alterarStockArticulos(sesion);
+				if(registrarPagos(sesion)){					
+					if(!this.ventaFinalizada.getTipoCuenta().equals(EEstatusVentas.APARTADOS.name()))
+						regresar= alterarStockArticulos(sesion);
+				} // if
 			} // if
 			if(this.ventaFinalizada.getApartado())
 				regresar= registrarApartado(sesion);
+			else if(this.ventaFinalizada.getTipoCuenta().equals(EEstatusVentas.APARTADOS.name()))
+				regresar= liquidarApartado(sesion);
 			if(this.ventaFinalizada.isFacturar() && !this.ventaFinalizada.getApartado())
 				generarTimbradoFactura(sesion, this.idFacturaGeneral);
 		} // if		
@@ -697,7 +702,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			regresar= count== pagos.size();
 		} // try		
 		finally{
-			setMessageError("Error al registrar los pagos.");
+			setMessageError("Error al registrar los pagos del apartado.");
 		} // finally
 		return regresar;
 	} // registrarPagos
@@ -728,7 +733,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			regresar.setIdTipoMedioPago(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
 			regresar.setIdUsuario(JsfBase.getIdUsuario());
 			regresar.setIdApartado(idApartado);
-			regresar.setPago(this.ventaFinalizada.getTotales().getEfectivo());
+			regresar.setPago(this.ventaFinalizada.getTotales().getEfectivo() - this.ventaFinalizada.getTotales().getCambio());
 			regresar.setIdCierre(this.idCierreVigente);
 		} // if		
 		return regresar;
@@ -935,5 +940,53 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			Methods.clean(params);
 		} // finally			
 		return regresar;
-	} // actualizarVenta
+	} // actualizarVenta		
+	
+	private boolean liquidarApartado(Session sesion) throws Exception{		
+		List<TcManticApartadosPagosDto> pagos= null;
+		Map<String, Object>params    = null;
+		TcManticApartadosDto apartado= null;
+		Long idApartado = null;
+		Double saldo    = 0D;
+		Double abonado  = 0D;
+		boolean regresar= false;		
+		int count       = 0;
+		try {
+			params= new HashMap<>();
+			params.put("idVenta", getOrden().getIdVenta());
+			apartado= (TcManticApartadosDto) DaoFactory.getInstance().findFirst(sesion, TcManticApartadosDto.class, "detalle", params);
+			idApartado= apartado.getIdApartado();
+			pagos= loadPagosApartado(idApartado);
+			for(TcManticApartadosPagosDto pago: pagos){
+				if(DaoFactory.getInstance().insert(sesion, pago)>= 1L){
+					count++;
+					apartado= (TcManticApartadosDto) DaoFactory.getInstance().findById(sesion, TcManticApartadosDto.class, idApartado);					
+					saldo= apartado.getSaldo() - pago.getPago();
+					abonado= apartado.getAbonado() + pago.getPago();
+					apartado.setSaldo(saldo);
+					apartado.setAbonado(abonado);
+					apartado.setIdApartadoEstatus(saldo <= 0L ? 3L : 2L);
+					if(DaoFactory.getInstance().update(sesion, apartado)>= 1L)          
+						insertarBitacoraApartado(sesion, apartado, abonado);          
+				} // if
+			} // for
+			regresar= count== pagos.size();
+		} // try		
+		finally{
+			setMessageError("Error al registrar los pagos del apartado.");
+		} // finally
+		return regresar;
+	} // registrarPagos
+	
+	private boolean insertarBitacoraApartado(Session sesion, TcManticApartadosDto apartado, Double abonado) throws Exception {
+    boolean regresar= false;    
+		TcManticApartadosBitacoraDto bitacora= new TcManticApartadosBitacoraDto();
+		bitacora.setIdApartado(apartado.getIdApartado());
+		bitacora.setIdApartadoEstatus(apartado.getIdApartadoEstatus());
+		bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		bitacora.setIdUsuario(JsfBase.getIdUsuario());
+		bitacora.setJustificacion("Pago realizado desde el modulo de cajas por la cantidad" + abonado);
+		regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;		
+		return regresar;
+  } // insertarBitacora
 }
