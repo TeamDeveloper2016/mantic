@@ -2,6 +2,8 @@ package mx.org.kaana.kajool.procesos.beans;
 
 import java.util.Date;
 import java.io.Serializable;
+import mx.org.kaana.kajool.procesos.enums.ESemaforos;
+import org.quartz.JobKey;
 /**
  *@company KAANA
  *@project KAJOOL (Control system polls)
@@ -16,16 +18,34 @@ public class Jobs implements Serializable {
 	private String jobGroup;
 	private Date nextFireTime;
 	private Date previousFireTime;
+	private JobKey jobKey;
+	private String semaforo;
+	private String expresion;
+	private String summary;
+	private String server;
 
 	public Jobs() {
 		this("", "", new Date(), new Date());
 	}
 
 	public Jobs(String jobName, String jobGroup, Date nextFireTime, Date previousFireTime) {
+		this(jobName, jobGroup, nextFireTime, previousFireTime, "");
+	}
+	
+	public Jobs(String jobName, String jobGroup, Date nextFireTime, Date previousFireTime, String server) {
+		this(jobName, jobGroup, nextFireTime, previousFireTime, null, ESemaforos.VERDE.getNombre(), null, null, server);
+	}
+	
+	public Jobs(String jobName, String jobGroup, Date nextFireTime, Date previousFireTime, JobKey jobKey, String semaforo, String expresion, String summary, String server) {
 		this.jobName         = jobName;
 		this.jobGroup        = jobGroup;
 		this.nextFireTime    = nextFireTime;
 		this.previousFireTime= previousFireTime;
+		this.jobKey          = jobKey;
+		this.semaforo        = semaforo;
+		this.expresion       = expresion;
+		this.summary         = summary;
+		this.server          = server;
 	}	
 
 	public String getJobName() {
@@ -60,10 +80,48 @@ public class Jobs implements Serializable {
 		this.previousFireTime= previousFireTime;
 	}	
 
+	public JobKey getJobKey() {
+		return jobKey;
+	}
+
+	public void setJobKey(JobKey jobKey) {
+		this.jobKey= jobKey;
+	}	
+
+	public String getSemaforo() {
+		return semaforo;
+	}
+
+	public void setSemaforo(String semaforo) {
+		this.semaforo= semaforo;
+	}		
+
+	public String getExpresion() {
+		return expresion;
+	}
+
+	public void setExpresion(String expresion) {
+		this.expresion= expresion;
+	}	
+
+	public String getSummary() {
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary=summary;
+	}	
+
+	public String getServer() {
+		return server;
+	}
+
+	public void setServer(String server) {
+		this.server = server;
+	}	
+
   @Override
   public String toString() {
     return "Jobs{" + "jobName=" + jobName + ", jobGroup=" + jobGroup + ", nextFireTime=" + nextFireTime + ", previousFireTime=" + previousFireTime + '}';
   }
-
-
 }
