@@ -383,6 +383,14 @@ public final class UIEntity {
     return personalizado(dtos, Collections.EMPTY_LIST, label, descripcion);
   }
   
+	public static List<UISelectEntity> personalizado(String proceso, String id, Map params, Map<Object, String> labels, String name) {
+		return personalizado(proceso, id, params, Collections.EMPTY_LIST, labels, name);
+	}
+	
+	public static List<UISelectEntity> personalizado(String proceso, String id, Map params, List<Columna> formato, Map<Object, String> labels, String name) {
+		return personalizado(proceso, id, params, formato, Constantes.SQL_MAXIMO_REGISTROS, labels, name);
+	}
+	
   public static List<UISelectEntity> personalizado(Class dto, Long records, String label, String descripcion) {
     List<UISelectEntity> regresar= null;
     List<IBaseDto> dtos          = null;
@@ -468,7 +476,52 @@ public final class UIEntity {
   public static List<UISelectEntity> personalizado(String proceso, Map<String, Object> params, String fields, List<Columna> formato, String label, String descripcion) {
     return personalizado(proceso, Constantes.DML_SELECT, params, formato, label, descripcion);
   } 
+	
+	public static List<UISelectEntity> personalizado(String proceso, String id, Map params, List<Columna> formato, Long records, Map<Object, String> labels, String descripcion) {
+    List<UISelectEntity> regresar= null;
+    List<IBaseDto> dtos        = null;
+    try {
+      dtos    = DaoFactory.getInstance().toEntitySet(proceso, id, params, records);   
+      regresar= personalizado(dtos, formato, labels, descripcion);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+    } // catch 
+    finally {
+      Methods.clean(dtos);
+    } // finally  
+    return regresar;
+  }
   
+	public static List<UISelectEntity> personalizado(List<? extends IBaseDto> dtos, List<Columna> formato, Map<Object, String> labels, String descripcion) {
+    List<UISelectEntity> regresar= new ArrayList<>();
+		Entity todos = null;
+		IBaseDto primer = null;
+    if (dtos!= null && dtos.size()>0)  {
+			primer  = dtos.get(0);
+			for(Map.Entry<Object, String> entry : labels.entrySet()) {
+				todos= new Entity();
+				for(String field :((Entity)primer).toMap().keySet()) {									
+					if (field.equals(descripcion)) {
+						todos.put(descripcion, new Value(descripcion, entry.getValue()));
+            todos.put("idKey", new Value("idKey", -1L));
+					} // if
+				} // map
+				regresar.add(new UISelectEntity(todos));
+			} // map		
+			regresar.addAll(build(dtos,formato));				 
+    } // if
+    else{
+      for(Map.Entry<Object, String> entry : labels.entrySet()) {
+        todos= new Entity();
+        todos.put(descripcion, new Value(descripcion, entry.getValue()));
+        todos.put("idKey", new Value("idKey", entry.getKey()));
+        regresar.add(new UISelectEntity(todos));
+      } // for
+    } // else
+    return regresar;
+  }
+	
   public static UISelectEntity buildTodosItem(String name) {
     Entity entity= new Entity();
     entity.put("idKey", new Value("idKey", -1L));
