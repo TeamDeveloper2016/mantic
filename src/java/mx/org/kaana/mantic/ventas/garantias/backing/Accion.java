@@ -260,8 +260,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			clientesSeleccion.add(seleccion);
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
-			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
-			doReCalculatePreciosArticulos(seleccion.getKey());			
+			//setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
+			//doReCalculatePreciosArticulos(seleccion.getKey());			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -536,8 +536,8 @@ public class Accion extends IBaseVenta implements Serializable {
 				clientesSeleccion.add(seleccion);
 				this.attrs.put("clientesSeleccion", clientesSeleccion);
 				this.attrs.put("clienteSeleccion", seleccion);
-				setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
-				doReCalculatePreciosArticulos(seleccion.getKey());			
+				//setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
+				//doReCalculatePreciosArticulos(seleccion.getKey());			
 			} // if
 		} // try
 		catch (Exception e) {	
