@@ -878,6 +878,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			} // if
 			regresar.setDetailApartado(this.apartado);
 			regresar.setObservaciones(this.attrs.get("observaciones").toString());
+			regresar.setTipoCuenta(this.attrs.get("tipo").toString().toUpperCase());
 		} // try
 		catch (Exception e) {			
 			throw e;
