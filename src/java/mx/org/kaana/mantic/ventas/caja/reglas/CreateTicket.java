@@ -10,7 +10,6 @@ import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
-import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.caja.beans.Pago;
 import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
@@ -151,16 +150,14 @@ public class CreateTicket {
 		return regresar.toString();
 	} // toHeaderTable
 	
-	private String toArticulos(){		
-		ArticuloVenta pivote  = null;
+	private String toArticulos(){				
 		StringBuilder regresar= new StringBuilder();			
 		for(Articulo articulo : this.ticket.getArticulos()){
-			if(articulo.isValid()){
-				pivote= (ArticuloVenta) articulo;
+			if(articulo.isValid()){				
 				regresar.append(toTable());
 				regresar.append("<tbody>");
 				regresar.append("<tr style=\"border-top: 1px solid black;border-collapse: collapse;\">");
-				regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 80px; max-width: 80px;border-top: 1px solid black;border-collapse: collapse;\">").append(pivote.getNombre().length()> 35 ? pivote.getNombre().substring(0, 35) : pivote.getNombre()).append("</td>");
+				regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 80px; max-width: 80px;border-top: 1px solid black;border-collapse: collapse;\">").append(articulo.getNombre().length()> 35 ? articulo.getNombre().substring(0, 35) : articulo.getNombre()).append("</td>");
 				regresar.append("</tr>");
 				regresar.append("</tbody>");
 				regresar.append(toFinishTable());
@@ -168,9 +165,9 @@ public class CreateTicket {
 				regresar.append("<tbody>");
 				regresar.append("<tr>");
 				regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 80px;max-width: 80px;\">").append("</td>");
-				regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 35px;max-width: 35px;word-break: break-all;text-align: center\">").append(pivote.getCantidad()).append("</td>");
-				regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 35px;max-width: 45px;word-break: break-all;text-align: right\">").append(Numero.formatear(Numero.NUMERO_CON_DECIMALES, pivote.getPrecio())).append("</td>");
-				regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 55px;max-width: 45px;word-break: break-all;text-align: right\">").append(pivote.getImporte()).append("</td>");
+				regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 35px;max-width: 35px;word-break: break-all;text-align: center\">").append(articulo.getCantidad()).append("</td>");
+				regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 35px;max-width: 45px;word-break: break-all;text-align: right\">").append(Numero.formatear(Numero.NUMERO_CON_DECIMALES, articulo.getPrecio())).append("</td>");
+				regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 55px;max-width: 45px;word-break: break-all;text-align: right\">").append(articulo.getImporte()).append("</td>");
 				regresar.append("</tr>");
 				regresar.append("</tbody>");
 				regresar.append(toFinishTable());
