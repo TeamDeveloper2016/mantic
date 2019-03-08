@@ -27,7 +27,6 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
-import mx.org.kaana.mantic.comun.IAdminArticulos;
 import mx.org.kaana.mantic.comun.IBaseCliente;
 import mx.org.kaana.mantic.db.dto.TcManticApartadosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
@@ -356,16 +355,14 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	} // doAsignaApartado
 	
 	protected void generateNewVenta() throws Exception{
-		IAdminArticulos adminTicketPivote= null;
+		List<ArticuloVenta> articulosPivote= null;
 		try {
-			adminTicketPivote= getAdminOrden();
-			setAdminOrden(new AdminTickets(new TicketVenta(-1L)));
-			((TicketVenta)getAdminOrden().getOrden()).setIkProveedor(((TicketVenta)adminTicketPivote.getOrden()).getIkCliente());
-			((TicketVenta)getAdminOrden().getOrden()).setIkAlmacen(((TicketVenta)adminTicketPivote.getOrden()).getIkAlmacen());
-			for(Articulo addArticulo : adminTicketPivote.getArticulos()){
-				if(addArticulo.isValid())
-					this.toMoveArticulo(addArticulo, -1);			
-			}	// for
+			articulosPivote= new ArrayList<>();
+			for(Articulo vigente: getAdminOrden().getArticulos())				
+				articulosPivote.add((ArticuloVenta)vigente);			
+			getAdminOrden().getArticulos().clear();
+			for(ArticuloVenta addArticulo : articulosPivote)
+				this.toMoveArticulo(addArticulo, -1);			
 		} // try
 		catch (Exception e) {			
 			throw e; 
