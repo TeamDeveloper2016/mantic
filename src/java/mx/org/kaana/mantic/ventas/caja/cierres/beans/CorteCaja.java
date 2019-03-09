@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.pagina.JsfBase;
 
 /**
  *@company KAANA
@@ -40,6 +42,7 @@ public class CorteCaja implements Serializable {
     this.retiros = retiros;
     this.fondoInicial = fondoInicial;
     this.fondoEfectivoFinal = fondoEfectivoFinal;
+    init();		
   }
   
   public Long getIdKey() {
@@ -97,5 +100,23 @@ public class CorteCaja implements Serializable {
   public void setFondoEfectivoFinal(List<Entity> fondoEfectivoFinal) {
     this.fondoEfectivoFinal = fondoEfectivoFinal;
   }
+  
+  private void init(){
+		//CargarCorte corte                = null;
+		try {
+			/*corte= new CargarCorte(this.idKey);
+			this.resumenCorte= corte.toCargaResumen();
+			this.garantias = corte.toGarantias();
+      this.abonos = corte.toAbonos();
+      this.retiros = corte.toRetiros();
+      this.fondoInicial = corte.tofondoInicial();
+      this.fondoEfectivoFinal = corte.toFondoEfectivoFinal();
+      */
+		} // try
+		catch (Exception e) {			
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch		
+	} // init
   
 }
