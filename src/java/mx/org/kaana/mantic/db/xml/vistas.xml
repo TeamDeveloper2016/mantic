@@ -716,48 +716,48 @@
 		</unit>	
 		<unit id="VistaCierresCajasDto">
 			<select id="creditos">
-					select
-						tc_mantic_ventas.id_venta as id_key,
-						tc_mantic_clientes.id_cliente,  
-						tc_mantic_clientes.razon_social as cliente,
-						tc_mantic_ventas.ticket,
-						tc_mantic_ventas.total,
-						tc_mantic_ventas.id_venta_estatus,
-						tc_mantic_ventas.registro,
-						tc_mantic_personas.cuenta,
-						concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as vendedor
-					from 
-						tc_mantic_ventas
-					inner join 
-						tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
-					inner join 
-						tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
-					inner join 
-						tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus=tc_mantic_ventas_estatus.id_venta_estatus
-					inner join 
-						tc_janal_usuarios on tc_mantic_ventas.id_usuario = tc_janal_usuarios.id_usuario
-					inner join				
-						tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona		
-					inner join 
-						tr_mantic_venta_medio_pago on tc_mantic_ventas.id_venta = tr_mantic_venta_medio_pago.id_venta
-					where
-						tc_mantic_ventas.id_empresa in ({idEmpresa})
-						and tr_mantic_venta_medio_pago.id_caja= {idCaja}
-						and tc_mantic_ventas.id_venta_estatus= 4
-						and date_format(tc_mantic_ventas.registro, '%Y%m%d%H%i%S')&gt;= '{vigenciaInicio}'
-				    and date_format(tc_mantic_ventas.registro, '%Y%m%d%H%i%S')&lt;= '{vigenciaFin}'
-					group by
-            tc_mantic_ventas.id_venta,
-						tc_mantic_clientes.id_cliente,  
-						tc_mantic_clientes.razon_social,
-						tc_mantic_ventas.ticket,
-						tc_mantic_ventas.total,
-						tc_mantic_ventas.id_venta_estatus,
-						tc_mantic_ventas.registro,
-						tc_mantic_personas.cuenta,			
-						concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno)
-					order by
-					  tc_mantic_ventas.registro
+				select
+					tc_mantic_ventas.id_venta as id_key,
+					tc_mantic_clientes.id_cliente,  
+					tc_mantic_clientes.razon_social as cliente,
+					tc_mantic_ventas.ticket,
+					tc_mantic_ventas.total,
+					tc_mantic_ventas.id_venta_estatus,
+					tc_mantic_ventas.registro,
+					tc_mantic_personas.cuenta,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as vendedor
+				from 
+					tc_mantic_ventas
+				inner join 
+					tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
+				inner join 
+					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus=tc_mantic_ventas_estatus.id_venta_estatus
+				inner join 
+					tc_janal_usuarios on tc_mantic_ventas.id_usuario = tc_janal_usuarios.id_usuario
+				inner join				
+					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona		
+				inner join 
+					tr_mantic_venta_medio_pago on tc_mantic_ventas.id_venta = tr_mantic_venta_medio_pago.id_venta
+				where
+					tc_mantic_ventas.id_empresa in ({idEmpresa})
+					and tr_mantic_venta_medio_pago.id_cierre= {idCierre}
+					and tc_mantic_ventas.id_venta_estatus= 4
+					and date_format(tc_mantic_ventas.registro, '%Y%m%d%H%i%S')&gt;= '{vigenciaInicio}'
+					and date_format(tc_mantic_ventas.registro, '%Y%m%d%H%i%S')&lt;= '{vigenciaFin}'
+				group by
+					tc_mantic_ventas.id_venta,
+					tc_mantic_clientes.id_cliente,  
+					tc_mantic_clientes.razon_social,
+					tc_mantic_ventas.ticket,
+					tc_mantic_ventas.total,
+					tc_mantic_ventas.id_venta_estatus,
+					tc_mantic_ventas.registro,
+					tc_mantic_personas.cuenta,			
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno)
+				order by
+					tc_mantic_ventas.registro
 			</select>
       <select id="unica">
         select      
@@ -897,6 +897,7 @@
 					tc_mantic_cierres.id_cierre,
 					tc_mantic_empresas.id_empresa,
 					tc_mantic_empresas.clave as empresa,
+				  tc_mantic_empresas.nombre as nombre_empresa,
 					tc_mantic_cajas.clave as caja,
 					tc_mantic_cajas.limite,
 					if(tc_mantic_cierres.id_diferencias= 1, 'SI', 'NO') as diferencias,

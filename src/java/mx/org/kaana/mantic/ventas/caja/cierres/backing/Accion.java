@@ -20,7 +20,6 @@ import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
-import static mx.org.kaana.libs.formato.Fecha.FECHA_HORA_LARGA;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
@@ -33,7 +32,6 @@ import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
 import mx.org.kaana.mantic.ventas.caja.cierres.beans.Denominacion;
 import mx.org.kaana.mantic.ventas.caja.cierres.beans.Importe;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Cierre;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.TabChangeEvent;
 
 /**
