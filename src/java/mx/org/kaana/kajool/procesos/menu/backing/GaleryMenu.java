@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import javax.faces.event.PhaseId;
 import javax.servlet.http.HttpSession;
 import mx.org.kaana.libs.Constantes;
@@ -56,7 +56,7 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.impl.matchers.GroupMatcher;
 
-@ManagedBean(name = "kajoolMenuGaleryMenu")
+@Named(value = "kajoolMenuGaleryMenu")
 @ViewScoped
 public class GaleryMenu implements Serializable {
 
@@ -307,7 +307,7 @@ public class GaleryMenu implements Serializable {
         jobs = new ArrayList<>();
         for (String groupName : Especial.getInstance().getScheduler().getJobGroupNames()) {
           for (JobKey jobKey : Especial.getInstance().getScheduler().getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
-            List<Trigger> triggers = (List<Trigger>) Especial.getInstance().getScheduler().getTriggersOfJob(jobKey);
+            List<Trigger> triggers = (List<Trigger>) Especial.getInstance().getScheduler().getTriggersOfJob(jobKey);											
             jobs.add(new Jobs(jobKey.getName(), jobKey.getGroup(), triggers.get(0).getNextFireTime(), triggers.get(0).getPreviousFireTime()));
           } // for
         } // for				

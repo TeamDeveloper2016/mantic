@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Tareas calendarizadas" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        expresion: {validaciones: 'requerido', mascara:'libre', mensaje: 'Captura la nueva expresión'}
+      };
+    </script>		
+		<style type="text/css">
+      .filaGris {
+        background-color: #c3c3c3 !important;
+        background-image: none !important;
+        color: #000000 !important;
+      }
+    </style>
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="janal-align-right xs-pantalla">
+      <p:commandButton icon="fa fa-search" onstart="janal.togglePanel('panelBusqueda');"/>
+      <p:spacer height="5px"/>		
+    </div>			
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">        
+        <div id="collapse-content" class="ui-grid-col-12">
+					<p:dataTable rowKey="#{row.jobName}" lazy="true" id="tabla" widgetVar="kajoolTable" var="row" rowIndexVar="index" value="#{kajoolMantenimientoUtileriasQuartzFiltro.attrs.listJobs}" paginator="#{kajoolMantenimientoUtileriasQuartzFiltro.attrs.paginator}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="tabla-filtro" selectionMode="single" selection="#{kajoolMantenimientoUtileriasQuartzFiltro.attrs.seleccionado}" rowStyleClass="#{kajoolMantenimientoUtileriasQuartzFiltro.doAplicarEstilo(row.server) ? 'filaGris' : null}">
+            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
+						<f:facet name="header" >							
+              <div class="lg-pantalla">
+                <p:menuButton   value="Opciones">
+                  <p:menuitem id="activar" icon="fa fa-check" value="Activar" onstart="return janal.bloquear()" process="@this" actionListener="#{kajoolMantenimientoUtileriasQuartzFiltro.doActivar}" oncomplete="janal.desbloquear()" update="tabla" rendered="#{kajoolMantenimientoUtileriasQuartzFiltro.mostrarActivar}"/>
+									<p:menuitem id="recargar" icon="fa fa-gear" value="Recargar" onstart="return janal.bloquear()" process="@this" actionListener="#{kajoolMantenimientoUtileriasQuartzFiltro.doLoad}" oncomplete="janal.desbloquear()" update="tabla"/>
+									<p:separator/>
+                  <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                </p:menuButton>
+              </div>  
+              <div class="xs-pantalla">              
+								<p:menuitem id="activarIcon" icon="icono-modificar" value="Activar" onstart="return janal.bloquear()" process="@this" actionListener="#{kajoolMantenimientoUtileriasQuartzFiltro.doActivar}" oncomplete="janal.desbloquear()" update="tabla" rendered="#{kajoolMantenimientoUtileriasQuartzFiltro.mostrarActivar}"/>
+								<p:menuitem id="recargarIcon" icon="icono-procesar" value="Recargar" onstart="return janal.bloquear()" process="@this" actionListener="#{kajoolMantenimientoUtileriasQuartzFiltro.doLoad}" oncomplete="janal.desbloquear()" update="tabla"/>
+								<p:separator/>
+								<p:menuitem id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+              </div>  
+            </f:facet>												
+            <p:columnGroup type="header">
+							<p:row>
+								<p:column rowspan="2" headerText="Grupo"/>
+								<p:column rowspan="2" headerText="Job"/>					
+								<p:column rowspan="2" headerText="Expresión"/>
+								<p:column colspan="2" headerText="Ejecución" style="width: 600px"/>
+								<p:column rowspan="2" headerText="Estatus"/>								
+							</p:row>                        
+							<p:row>					
+								<p:column headerText="Previa" />
+								<p:column headerText="Proxima" />
+							</p:row>
+						</p:columnGroup>      
+						<p:column>
+							<h:outputText value="#{row['jobGroup']}" />
+						</p:column>
+						<p:column>				
+							<h:outputText value="#{row['jobName']}" />
+						</p:column>      
+						<p:column styleClass="janal-column-right">
+							<h:outputText value="#{row['expresion']}" />
+						</p:column>
+						<p:column styleClass="janal-column-center">				
+							<h:outputText value="#{row['previousFireTime']}" />
+						</p:column>
+						<p:column styleClass="janal-column-center">				
+							<h:outputText value="#{row['nextFireTime']}" />
+						</p:column>      
+						<p:column styleClass="janal-column-center">				
+							<p:graphicImage library="janal" name="icon/acciones/#{row['semaforo']}.png" title="#{row['semaforo'] eq 'circulo-verde' ? 'ACTIVO' : 'NO ACTIVO'}"/>
+						</p:column>											
+						<f:facet name="footer"> 
+							 <h:outputText value="Total [#{kajoolMantenimientoUtileriasQuartzFiltro.attrs.size}] registros"/>
+						</f:facet> 
+          </p:dataTable>
+          <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">						
+						<p:menuitem id="procesar" value="Ejecutar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();" process="@this, tabla" icon="fa fa-gear" actionListener="#{kajoolMantenimientoUtileriasQuartzFiltro.doProcesarJob('EJECUTAR')}" update="tabla"/>
+						<p:separator/>
+						<p:menuitem id="activar" value="Activar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();" process="@this, tabla" icon="fa fa-check" actionListener="#{kajoolMantenimientoUtileriasQuartzFiltro.doProcesarJob('ACTIVAR')}" update="tabla"/>
+						<p:menuitem id="pausar" value="Pausar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();" process="@this, tabla" icon="fa fa-close" actionListener="#{kajoolMantenimientoUtileriasQuartzFiltro.doProcesarJob('PAUSAR')}" update="tabla"/>
+						<p:separator/>
+						<p:menuitem id="modificar" value="Expresión" onstart="return janal.bloquear();" oncomplete="PF('dlgExpresion').show();" process="@this, tabla" icon="fa fa-ellipsis-h" update="dialogoExpresion"/>
+					</p:contextMenu>	
+					<p:accordionPanel activeIndex="0" styleClass="tabla-filtro">
+						<p:tab title="Estatus">
+							<h:panelGrid columns="4" cellpadding="8">  
+								<p:graphicImage library="janal" name="icon/acciones/circulo-verde.png" />  
+								<h:outputText value="Activo"/>  
+								<p:graphicImage library="janal" name="icon/acciones/circulo-amarillo.png" />  
+								<h:outputText value="Pausado"/>  						
+							</h:panelGrid>  					
+						</p:tab>
+					</p:accordionPanel>
+					<p:dialog id="dialogoExpresion" widgetVar="dlgExpresion" closable="false" draggable="false" header="Modificar expresión" onHide="janal.desbloquear();" resizable="false">
+						<h:panelGrid columns="2">
+							<p:outputLabel for="job" value="Job:"/>
+							<p:outputLabel id="job" value="#{kajoolMantenimientoUtileriasQuartzFiltro.attrs.jobName}"/>
+							<p:outputLabel for="expresion" value="Expresión:"/>
+							<p:inputText id="expresion" value="#{kajoolMantenimientoUtileriasQuartzFiltro.attrs.expresion}" style="width: 200px"/>
+						</h:panelGrid>
+						<p:spacer height="20px"/>
+						<p:fieldset legend="Detalle">
+							<p:inputTextarea value="#{kajoolMantenimientoUtileriasQuartzFiltro.attrs.summary}" readonly="true" style="width: 400px"/>
+						</p:fieldset>
+						<hr class="ui-widget-content"/>
+						<div class="pie-pagina">
+							<p:commandButton id="acpetar" process="@this, expresion" update="tabla"  value="Aceptar" action="#{kajoolMantenimientoUtileriasQuartzFiltro.doAceptar}" onstart="return janal.execute();"/>
+							<p:commandButton value="Cancelar" oncomplete="PF('dlgExpresion').hide();"/>
+						</div>     
+					</p:dialog>					
+        </div>
+      </div>
+    </div>		           				
+  </ui:define>      
+</ui:composition>

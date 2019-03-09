@@ -28,8 +28,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.recurso.Configuracion;
-import mx.org.kaana.kajool.enums.EExcepciones;
-import mx.org.kaana.kajool.excepciones.KajoolException;
 
 public class Jobs {
 
@@ -60,18 +58,15 @@ public class Jobs {
 						NodeList clase = toJobs(item, CLASS);
 						for (int x = 0; x < clase.getLength(); x++) {
 							Element element = (Element) clase.item(x);
-							if (element.getAttribute("load")== null || (element.getAttribute("load").equals("true")) || (element.getAttribute("load").equals(""))) {								
-								if(evaluaElement(element)){
-									expression= element.getAttribute("expresion");
-									if (expression == null || expression.equals("") ) {
-										if (Especial.getInstance().getTareaServidor() != null && !Especial.getInstance().getTareaServidor().isEmpty())
-											expression=	Especial.getInstance().getTareaServidor().get(0).getExpresion();
-										else
-											throw new KajoolException(EExcepciones.SIN_EXPRESION_QUARTZ);	
-									} // if
-									loadJob( element.getTextContent(),  expression, item.getAttribute("id").concat(element.getAttribute("id")).concat("Cron"),  item.getAttribute("id").concat(element.getAttribute("id")));
-								} // if
+							expression= element.getAttribute("expresion");
+							if(evaluaElement(element)){
+								if (element.getAttribute("load")== null || (element.getAttribute("load").equals("true")) || (element.getAttribute("load").equals(""))) 
+									loadJob(element.getTextContent(),  expression, item.getAttribute("id").concat(element.getAttribute("id")).concat("Cron"),  item.getAttribute("id").concat(element.getAttribute("id")), false);
+								else																				
+									loadJob(element.getTextContent(),  expression, item.getAttribute("id").concat(element.getAttribute("id")).concat("Cron"),  item.getAttribute("id").concat(element.getAttribute("id")), true);
 							} // if
+							else
+								loadJob( element.getTextContent(),  expression, item.getAttribute("id").concat(element.getAttribute("id")).concat("Cron"),  item.getAttribute("id").concat(element.getAttribute("id")), true);							
 						} // for
 					} // if
         } // for y
@@ -95,7 +90,7 @@ public class Jobs {
     return regresar;
   }
 	
-	private void loadJob(String jobClass, String expression,String trigger, String job)  {
+	private void loadJob(String jobClass, String expression,String trigger, String job, boolean sleep)  {
 		JobDetail jobIntegracion      = null;
 		CronTrigger triggerIntegracion= null;	
 		try {			
@@ -103,6 +98,8 @@ public class Jobs {
 			jobIntegracion=JobBuilder.newJob(clase).withIdentity(job, Constantes.NOMBRE_DE_APLICACION).build();
 			triggerIntegracion=TriggerBuilder.newTrigger().withIdentity(trigger, Constantes.NOMBRE_DE_APLICACION).withSchedule(CronScheduleBuilder.cronSchedule(expression)).build();
 			this.scheduler.scheduleJob(jobIntegracion, triggerIntegracion);
+			if(sleep)
+				this.scheduler.pauseJob(jobIntegracion.getKey());
 		} // try
 		catch(Exception e) {
 			LOG.warn(e);
