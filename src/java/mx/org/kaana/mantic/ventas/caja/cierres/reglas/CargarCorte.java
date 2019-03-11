@@ -100,5 +100,16 @@ public class CargarCorte implements Serializable{
 		} // catch		
 		return regresar;
 	} // toFondoEfectivoFinal
+  
+	public List<Entity> toCajerosCierre() throws Exception {
+		List<Entity> regresar= null;
+		try {
+			regresar= DaoFactory.getInstance().toEntitySet("VistaCorteCierreCajaDto", "cajerosCierre", this.attrs, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch		
+		return regresar;
+	} // toCajerosCierre
 	
 }
