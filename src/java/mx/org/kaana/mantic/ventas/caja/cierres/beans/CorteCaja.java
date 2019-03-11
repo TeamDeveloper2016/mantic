@@ -29,16 +29,17 @@ public class CorteCaja implements Serializable {
   private List<Entity> fondoEfectivoFinal;
   private List<Entity> aperturaCaja;
   private List<Entity> cajerosCierre;
+  private List<Entity> diferenciasMediosPagos;
 
   public CorteCaja() {
     this(new Long(-1L),new Long(-1L));
   }
   
   public CorteCaja(Long idCierre, Long idCierreNuevo) {
-    this(idCierre,idCierreNuevo,null,new ArrayList<Entity>(),new ArrayList<Entity>(),new ArrayList<Entity>(),new ArrayList<Entity>(),new ArrayList<Entity>(), new ArrayList<Entity>(), new ArrayList<Entity>());
+    this(idCierre,idCierreNuevo,null,new ArrayList<Entity>(),new ArrayList<Entity>(),new ArrayList<Entity>(),new ArrayList<Entity>(),new ArrayList<Entity>(), new ArrayList<Entity>(), new ArrayList<Entity>(), new ArrayList<Entity>());
   }
 
-  public CorteCaja(Long idCierre, Long idCierreNuevo,Entity resumenCorte, List<Entity> garantias, List<Entity> abonos, List<Entity> retiros, List<Entity> fondoInicial, List<Entity> fondoEfectivoFinal, List<Entity> aperturaCaja, List<Entity> cajerosCierre) {
+  public CorteCaja(Long idCierre, Long idCierreNuevo,Entity resumenCorte, List<Entity> garantias, List<Entity> abonos, List<Entity> retiros, List<Entity> fondoInicial, List<Entity> fondoEfectivoFinal, List<Entity> aperturaCaja, List<Entity> cajerosCierre, List<Entity> diferenciasMediosPagos) {
     this.idCierre = idCierre;
     this.idCierreNuevo = idCierreNuevo;
     this.resumenCorte = resumenCorte;
@@ -49,6 +50,7 @@ public class CorteCaja implements Serializable {
     this.fondoEfectivoFinal = fondoEfectivoFinal;
     this.aperturaCaja = aperturaCaja;
     this.cajerosCierre = cajerosCierre;
+    this.diferenciasMediosPagos = diferenciasMediosPagos;
     init();		
   }
 
@@ -131,6 +133,14 @@ public class CorteCaja implements Serializable {
   public void setAperturaCaja(List<Entity> aperturaCaja) {
     this.aperturaCaja = aperturaCaja;
   }
+
+  public List<Entity> getDiferenciasMediosPagos() {
+    return diferenciasMediosPagos;
+  }
+
+  public void setDiferenciasMediosPagos(List<Entity> diferenciasMediosPagos) {
+    this.diferenciasMediosPagos = diferenciasMediosPagos;
+  }
     
   private void init(){
 		CargarCorte corte                = null;
@@ -144,6 +154,7 @@ public class CorteCaja implements Serializable {
       this.fondoEfectivoFinal = corte.toFondoEfectivoFinal();
       this.aperturaCaja = corte.toAperturaCaja();
       this.cajerosCierre = corte.toCajerosCierre();
+      this.diferenciasMediosPagos = corte.toDiferenciasVsCapturado();
 		} // try
 		catch (Exception e) {			
 			JsfBase.addMessageError(e);
