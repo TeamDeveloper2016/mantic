@@ -29,10 +29,11 @@ public class CargarCorte implements Serializable{
     this.attrs = attrs;
   }
 
-	public CargarCorte(Long idCierre) {
+	public CargarCorte(Long idCierre, Long idCierreNuevo) {
 		this.idCierre = idCierre;
     this.attrs= new HashMap<>();
     this.attrs.put("idCierre", this.idCierre);
+    this.attrs.put("idCierreNuevo", idCierreNuevo);
 	}
 
 	public Entity toCargaResumen() throws Exception {
@@ -111,5 +112,16 @@ public class CargarCorte implements Serializable{
 		} // catch		
 		return regresar;
 	} // toCajerosCierre
+  
+	public List<Entity> toAperturaCaja() throws Exception {
+		List<Entity> regresar= null;
+		try {
+			regresar= DaoFactory.getInstance().toEntitySet("VistaCorteCierreCajaDto", "aperturaCaja", this.attrs, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch		
+		return regresar;
+	} // toAperturaCaja
 	
 }
