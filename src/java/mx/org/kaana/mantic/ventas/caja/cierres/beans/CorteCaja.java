@@ -26,16 +26,17 @@ public class CorteCaja implements Serializable {
   private List<Entity> retiros;
   private List<Entity> fondoInicial;
   private List<Entity> fondoEfectivoFinal;
+  private List<Entity> cajerosCierre;
 
   public CorteCaja() {
     this(new Long(-1L));
   }
   
   public CorteCaja(Long idKey) {
-    this(idKey,null,new ArrayList<Entity>(),new ArrayList<Entity>(),new ArrayList<Entity>(),new ArrayList<Entity>(),new ArrayList<Entity>());
+    this(idKey,null,new ArrayList<Entity>(),new ArrayList<Entity>(),new ArrayList<Entity>(),new ArrayList<Entity>(),new ArrayList<Entity>(), new ArrayList<Entity>());
   }
 
-  public CorteCaja(Long idKey, Entity resumenCorte, List<Entity> garantias, List<Entity> abonos, List<Entity> retiros, List<Entity> fondoInicial, List<Entity> fondoEfectivoFinal) {
+  public CorteCaja(Long idKey, Entity resumenCorte, List<Entity> garantias, List<Entity> abonos, List<Entity> retiros, List<Entity> fondoInicial, List<Entity> fondoEfectivoFinal, List<Entity> cajerosCierre) {
     this.idKey = idKey;
     this.resumenCorte = resumenCorte;
     this.garantias = garantias;
@@ -43,6 +44,7 @@ public class CorteCaja implements Serializable {
     this.retiros = retiros;
     this.fondoInicial = fondoInicial;
     this.fondoEfectivoFinal = fondoEfectivoFinal;
+    this.cajerosCierre = cajerosCierre;
     init();		
   }
   
@@ -101,7 +103,15 @@ public class CorteCaja implements Serializable {
   public void setFondoEfectivoFinal(List<Entity> fondoEfectivoFinal) {
     this.fondoEfectivoFinal = fondoEfectivoFinal;
   }
-  
+
+  public List<Entity> getCajerosCierre() {
+    return cajerosCierre;
+  }
+
+  public void setCajerosCierre(List<Entity> cajerosCierre) {
+    this.cajerosCierre = cajerosCierre;
+  }
+    
   private void init(){
 		CargarCorte corte                = null;
 		try {
@@ -112,6 +122,7 @@ public class CorteCaja implements Serializable {
       this.retiros = corte.toRetiros();
       this.fondoInicial = corte.tofondoInicial();
       this.fondoEfectivoFinal = corte.toFondoEfectivoFinal();
+      this.cajerosCierre = corte.toCajerosCierre();
 		} // try
 		catch (Exception e) {			
 			JsfBase.addMessageError(e);
