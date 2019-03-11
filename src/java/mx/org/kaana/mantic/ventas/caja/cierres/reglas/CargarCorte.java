@@ -123,5 +123,16 @@ public class CargarCorte implements Serializable{
 		} // catch		
 		return regresar;
 	} // toAperturaCaja
+  
+	public List<Entity> toDiferenciasVsCapturado() throws Exception {
+		List<Entity> regresar= null;
+		try {
+			regresar= DaoFactory.getInstance().toEntitySet("VistaCorteCierreCajaDto", "diferenciaVsCapturado", this.attrs, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch		
+		return regresar;
+	} // toDiferenciasVsCapturado
 	
 }
