@@ -7814,8 +7814,10 @@
           tc_mantic_ventas  
         inner join 
           tr_mantic_venta_medio_pago pagos_venta  on tc_mantic_ventas.id_venta = pagos_venta.id_venta
+        inner join 
+        	 tc_mantic_ventas_bitacora on tc_mantic_ventas.id_venta = tc_mantic_ventas_bitacora.id_venta and tc_mantic_ventas_bitacora.id_venta_estatus = 3
         inner join
-            tc_mantic_personas on tc_mantic_ventas.id_usuario = tc_mantic_personas.id_persona
+            tc_mantic_personas on tc_mantic_ventas_bitacora.id_usuario = tc_mantic_personas.id_persona
         where 
           pagos_venta.id_cierre = {idCierre} 
         order by
