@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
@@ -16,6 +17,7 @@ import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
+import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 
 public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializable{
@@ -219,10 +221,17 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 	public List<Entity> pagosVenta() throws Exception{
 		List<Entity> regresar     = null;
 		Map<String, Object> params= null;
+		int count                 = 0;
 		try {
 			params= new HashMap<>();
 			params.put("idVenta", this.idComodin);
 			regresar= DaoFactory.getInstance().toEntitySet("VistaVentasDto", "pagosVenta", params, Constantes.SQL_TODOS_REGISTROS);
+			for(Entity record: regresar){
+				if(record.getKey().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago()))
+					count++;
+			} // for
+			if(count== 0)
+				regresar.add(0, toPagoEfectivo());
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -232,6 +241,20 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		} // finally
 		return regresar;
 	} // pagosVenta
+	
+	private Entity toPagoEfectivo(){
+		Entity regresar= null;
+		try {
+			regresar= new Entity(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
+			regresar.put("idTipoMedioPago", new Value("idTipoMedioPago", ETipoMediosPago.EFECTIVO.getIdTipoMedioPago()));
+			regresar.put("idVenta", new Value("idVenta", this.idComodin));
+			regresar.put("nombre", new Value("nombre", ETipoMediosPago.EFECTIVO.name()));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toPagoEfectivo
 	
 	public Entity toFactura() throws Exception{
 		Entity regresar          = null;

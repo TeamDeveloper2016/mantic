@@ -56,8 +56,10 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("idGarantia", JsfBase.getFlashAttribute("idGarantia"));
       this.attrs.put("sortOrder", "order by tc_mantic_garantias.registro desc");
 			toLoadCatalog();
-      if(this.attrs.get("idGarantia")!= null) 
+      if(this.attrs.get("idGarantia")!= null){
 			  this.doLoad();
+				this.attrs.put("idGarantia", null);
+			} // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
