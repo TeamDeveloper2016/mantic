@@ -411,7 +411,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	public void doUpdateCosto(Double precio, Boolean keep) {
 		double value= ((Entity)this.attrs.get("articulo")).toDouble("value");
 		this.attrs.put("costoMayorMenor", this.getCostoMayorMenor(value, precio));
-		for (TiposVentas item : this.adminKardex.getTiposVentas()) {
+		for (TiposVentas item: this.adminKardex.getTiposVentas()) {
 			switch(item.toEnum()) {
 				case MENUDEO:
 					item.setUtilidad(50D);
