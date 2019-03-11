@@ -222,10 +222,10 @@ public class CreateCorteCaja {
     regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 10px;line-height:0px;\">");
     regresar.append("Folio ingreso ").append(this.corte.getResumenCorte().toString("abonoInicial")).append(" al ").append(this.corte.getResumenCorte().toString("abonoFinal"));		
 		regresar.append("<br>").append("</p>");
+    regresar.append("<br>");
     regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 12px;font-weight: bold;line-height:0px\">");
     regresar.append("Ingresos:");		
     regresar.append("</p>");
-    regresar.append("<br>");
     regresar.append("<p style=\"width: 290px;text-align: left;align-content: center;font-family: sans-serif;font-size: 10px;\">");
     regresar.append("<table style=\"width: 290px;\">");		
     regresar.append("<tbody>");
@@ -257,13 +257,13 @@ public class CreateCorteCaja {
         regresar.append("<table style=\"width: 280px;\">");		
         regresar.append("<tbody>");
         regresar.append("<tr>");
-        regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 88px; max-width: 88px;\">").append(retiro.toString("consecutivo")).append("</td>");
-        regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 96px; max-width: 96px;\">").append(retiro.toString("cuenta")).append("</td>");
-        regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 96px; max-width: 96px;\"> $  ").append(retiro.toString("importe")).append("</td>");
+        regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 68px; max-width: 68px;\">").append(retiro.toString("consecutivo")).append("</td>");
+        regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 106px; max-width: 106px;\">").append(retiro.toString("cuenta")).append("</td>");
+        regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 106px; max-width: 106px;\"> $  ").append(retiro.toString("importe")).append("</td>");
         regresar.append("</tr>");
         regresar.append("<tr style=\"width: 280px;\">");
-        regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 88px; max-width: 88px;\">").append("Concepto:").append("</td>");
-        regresar.append("<td colspan=\"2\" style=\"font-family: sans-serif;font-size: 10px;width: 192px; max-width: 192px; overflow: hidden; text-overflow: ellipsis;\">").append(retiro.toString("concepto")).append("</td>");
+        regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 68px; max-width: 68px;\">").append("Concepto:").append("</td>");
+        regresar.append("<td colspan=\"2\" style=\"font-family: sans-serif;font-size: 10px;width: 212px; max-width: 212px; overflow: hidden; text-overflow: ellipsis;\">").append(retiro.toString("concepto")).append("</td>");
          regresar.append("</tr>");
         regresar.append("</tr>");
         regresar.append("</tbody>");
@@ -294,8 +294,8 @@ public class CreateCorteCaja {
     if(this.corte.getDiferenciasMediosPagos().size()>0){
       for(Entity diferencia : this.corte.getDiferenciasMediosPagos()){
         regresar.append("<tr>");
-        regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\">").append(diferencia.toString("clave")).append("  ").append(diferencia.toString("nombre")).append("</td>");
-         regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\"> $  ").append(diferencia.toString("diferenciaCapturado")).append("</td>");
+        regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 195px; max-width: 195px;\">").append(diferencia.toString("clave")).append("  ").append(diferencia.toString("nombre")).append("</td>");
+         regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 95px; max-width: 95px;\"> $  ").append(diferencia.toString("diferenciaCapturado")).append("</td>");
         regresar.append("</tr>");
       } // for	
     }
