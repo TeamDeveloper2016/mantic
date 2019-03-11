@@ -103,7 +103,7 @@ public class Abonos extends IBaseAttribute implements Serializable {
 			transaccion = new Transaccion((Long)this.attrs.get("idCierre"), abono);
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.ASIGNAR)) {
- 				  regresar = "ambos".concat(Constantes.REDIRECIONAR);
+ 				  regresar = "/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR);
      			JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));
 		    	JsfBase.setFlashAttribute("idCaja", this.attrs.get("idCaja"));
  	        JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));
@@ -147,7 +147,7 @@ public class Abonos extends IBaseAttribute implements Serializable {
     Map<String, Object> params= new HashMap<>();
     try {
 			columns= new ArrayList<>();
-			if(this.attrs.get("idEmpresa")!= null)
+			if(this.attrs.get("idEmpresa")== null)
 				if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 					params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 				else
@@ -169,6 +169,7 @@ public class Abonos extends IBaseAttribute implements Serializable {
 			} // if
 			else
 			  this.attrs.put("idEmpresas", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("sucursales")));
+ 		  this.attrs.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresas")).getKey());
 			this.doLoadCajas();
     } // try
     catch (Exception e) {
@@ -201,6 +202,7 @@ public class Abonos extends IBaseAttribute implements Serializable {
   			this.attrs.put("idCajas", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("cajas")));
 			if(this.attrs.get("idCajas")!= null)
 				this.attrs.put("limite", ((UISelectEntity)this.attrs.get("idCajas")).toDouble("limite"));
+ 		  this.attrs.put("idCaja", ((UISelectEntity)this.attrs.get("idCajas")).getKey());
     } // try
     catch (Exception e) {
       throw e;
