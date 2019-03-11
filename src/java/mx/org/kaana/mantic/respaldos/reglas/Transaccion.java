@@ -3,6 +3,7 @@ package mx.org.kaana.mantic.respaldos.reglas;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Calendar;
+import javax.faces.context.FacesContext;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -132,7 +133,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
    		LOG.info("Compactar archivo: "+ sb.toString().concat(name.toString()).concat(EFormatos.ZIP.name().toLowerCase()));
 			zip.compactar(sb.toString().concat(name.toString()).concat(EFormatos.ZIP.name().toLowerCase()), token, files);
 			File file= new File(zip.getNombre());
-			regresar= new TcManticRespaldosDto(sb.toString().substring(token), file.getTotalSpace(), JsfBase.getAutentifica()== null? 1L: JsfBase.getIdUsuario(), this.observacion, -1L, zip.getNombre(), name.toString().concat(EFormatos.ZIP.name().toLowerCase()));
+			regresar= new TcManticRespaldosDto(sb.toString().substring(token), file.getTotalSpace(), FacesContext.getCurrentInstance()== null || FacesContext.getCurrentInstance().getExternalContext()== null || FacesContext.getCurrentInstance().getExternalContext().getRequest()== null || JsfBase.getAutentifica()== null? 
+				1L: JsfBase.getIdUsuario(), this.observacion, -1L, zip.getNombre(), name.toString().concat(EFormatos.ZIP.name().toLowerCase()));
 			file= new File(files[0]);
 			file.delete();
    		LOG.info("Eliminar archivo: "+ files[0]);
