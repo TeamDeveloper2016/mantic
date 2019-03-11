@@ -7641,7 +7641,7 @@
           from 
             tr_mantic_venta_medio_pago
           inner join 
-            tc_mantic_ventas on tr_mantic_venta_medio_pago.id_venta =  tc_mantic_ventas.id_venta) pagos_ventas on tc_mantic_cierres.id_cierre = pagos_ventas.id_cierre
+            tc_mantic_ventas on tr_mantic_venta_medio_pago.id_venta =  tc_mantic_ventas.id_venta where tr_mantic_venta_medio_pago.id_cierre={idCierre}) pagos_ventas on tc_mantic_cierres.id_cierre = pagos_ventas.id_cierre
         inner join
           tc_mantic_cajas on tc_mantic_cierres_cajas.id_caja= tc_mantic_cajas.id_caja
         inner join
@@ -7663,7 +7663,7 @@
           inner join 
             tc_mantic_ventas ventas_garantias on tc_mantic_garantias.id_venta = ventas_garantias.id_venta
           inner join 
-            tr_mantic_venta_medio_pago pagos_venta  on ventas_garantias.id_venta = pagos_venta.id_venta where tc_mantic_garantias.id_garantia_estatus = 6) devoluciones_garantias on tc_mantic_cierres.id_cierre = devoluciones_garantias.id_cierre
+            tr_mantic_venta_medio_pago pagos_venta  on ventas_garantias.id_venta = pagos_venta.id_venta where tc_mantic_garantias.id_garantia_estatus = 6 and pagos_venta.id_cierre={idCierre}) devoluciones_garantias on tc_mantic_cierres.id_cierre = devoluciones_garantias.id_cierre
         left join (select tc_mantic_cierres_monedas.id_cierre,
                   sum(case when tc_mantic_cierres_monedas.id_efectivo = 2  then tc_mantic_cierres_monedas.importe else 0 end) fondo_inicial,
                   sum(case when tc_mantic_cierres_monedas.id_efectivo = 1  then tc_mantic_cierres_monedas.importe else 0 end) fondo_efectivo_final
@@ -7675,14 +7675,14 @@
                 from
                   tc_mantic_cierres_cajas 
                 inner join
-                  tc_mantic_cierres_retiros on tc_mantic_cierres_cajas.id_cierre_caja= tc_mantic_cierres_retiros.id_cierre_caja where tc_mantic_cierres_retiros.id_abono= 1) abonos on tc_mantic_cierres.id_cierre = abonos.id_cierre
+                  tc_mantic_cierres_retiros on tc_mantic_cierres_cajas.id_cierre_caja= tc_mantic_cierres_retiros.id_cierre_caja where tc_mantic_cierres_retiros.id_abono= 1 and tc_mantic_cierres_cajas.id_cierre={idCierre}) abonos on tc_mantic_cierres.id_cierre = abonos.id_cierre
          left join (select distinct
                   tc_mantic_cierres_cajas.id_cierre,min(tc_mantic_cierres_retiros.consecutivo) retiro_inicial, max(tc_mantic_cierres_retiros.consecutivo) retiro_final, 
                   sum(case when tc_mantic_cierres_retiros.id_abono= 2  then tc_mantic_cierres_retiros.importe else 0 end) resumen_retiros
                 from
                   tc_mantic_cierres_cajas 
                 inner join
-                  tc_mantic_cierres_retiros on tc_mantic_cierres_cajas.id_cierre_caja= tc_mantic_cierres_retiros.id_cierre_caja where tc_mantic_cierres_retiros.id_abono= 2) retiros on tc_mantic_cierres.id_cierre = retiros.id_cierre
+                  tc_mantic_cierres_retiros on tc_mantic_cierres_cajas.id_cierre_caja= tc_mantic_cierres_retiros.id_cierre_caja where tc_mantic_cierres_retiros.id_abono= 2 and tc_mantic_cierres_cajas.id_cierre={idCierre}) retiros on tc_mantic_cierres.id_cierre = retiros.id_cierre
         where
           tc_mantic_cierres.id_cierre = {idCierre}
       </select>
@@ -7708,6 +7708,7 @@
 					tc_mantic_cierres_retiros.consecutivo,
 					tc_mantic_cierres_retiros.id_abono,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
+          tc_mantic_personas.cuenta,
 					tc_mantic_tipos_medios_pagos.nombre as medio,
 				  tc_mantic_cierres_retiros.concepto,
 					tc_mantic_cierres_retiros.importe,
@@ -7741,6 +7742,7 @@
 					tc_mantic_cierres_retiros.consecutivo,
 					tc_mantic_cierres_retiros.id_abono,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
+          tc_mantic_personas.cuenta,
 					tc_mantic_tipos_medios_pagos.nombre as medio,
 				  tc_mantic_cierres_retiros.concepto,
 					tc_mantic_cierres_retiros.importe,
