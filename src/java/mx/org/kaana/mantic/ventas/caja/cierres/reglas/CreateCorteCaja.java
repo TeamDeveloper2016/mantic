@@ -221,6 +221,7 @@ public class CreateCorteCaja {
     regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 12px;font-weight: bold;line-height:0px\">");
     regresar.append("Ingresos:");		
     regresar.append("</p>");
+    regresar.append("<br>")
     regresar.append("<p style=\"width: 290px;text-align: left;align-content: center;font-family: sans-serif;font-size: 10px;\">");
     regresar.append("<table style=\"width: 290px;\">");		
     regresar.append("<tbody>");
