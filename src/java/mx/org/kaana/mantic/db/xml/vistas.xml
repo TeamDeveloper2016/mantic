@@ -7609,8 +7609,12 @@
           pagos_ventas.resumen_credito_credito,
           pagos_ventas.resumen_vales_credito,
           pagos_ventas.resumen_debito_credito, pagos_ventas.resumen_total_credito, 	
-          ifnull(abonos_retiros.resumen_abonos,0)resumen_abonos,
-          ifnull(abonos_retiros.resumen_retiros,0)resumen_retiros,
+          ifnull(abonos.resumen_abonos,0)resumen_abonos,
+          ifnull(abonos.abono_inicial,0)abono_inicial, 
+          ifnull(abonos.abono_final,0)abono_final, 
+          ifnull(retiros.resumen_retiros,0)resumen_retiros,
+          ifnull(retiros.retiro_inicial,0)retiro_inicial, 
+          ifnull(retiros.retiro_final,0)retiro_final, 
           ifnull(cierres_monedas.fondo_inicial,0)fondo_inicial,
           ifnull(cierres_monedas.fondo_efectivo_final,0)fondo_efectivo_final
         from
@@ -7666,15 +7670,21 @@
                 from 
             tc_mantic_cierres_monedas) cierres_monedas on tc_mantic_cierres.id_cierre = cierres_monedas.id_cierre
         left join (select distinct
-                  tc_mantic_cierres_cajas.id_cierre,
-                  sum(case when tc_mantic_cierres_retiros.id_abono= 1  then tc_mantic_cierres_retiros.importe else 0 end) resumen_abonos,
+                  tc_mantic_cierres_cajas.id_cierre,min(tc_mantic_cierres_retiros.consecutivo) abono_inicial, max(tc_mantic_cierres_retiros.consecutivo) abono_final, 
+                  sum(case when tc_mantic_cierres_retiros.id_abono= 1  then tc_mantic_cierres_retiros.importe else 0 end) resumen_abonos
+                from
+                  tc_mantic_cierres_cajas 
+                inner join
+                  tc_mantic_cierres_retiros on tc_mantic_cierres_cajas.id_cierre_caja= tc_mantic_cierres_retiros.id_cierre_caja where tc_mantic_cierres_retiros.id_abono= 1) abonos on tc_mantic_cierres.id_cierre = abonos.id_cierre
+         left join (select distinct
+                  tc_mantic_cierres_cajas.id_cierre,min(tc_mantic_cierres_retiros.consecutivo) retiro_inicial, max(tc_mantic_cierres_retiros.consecutivo) retiro_final, 
                   sum(case when tc_mantic_cierres_retiros.id_abono= 2  then tc_mantic_cierres_retiros.importe else 0 end) resumen_retiros
                 from
                   tc_mantic_cierres_cajas 
                 inner join
-                  tc_mantic_cierres_retiros on tc_mantic_cierres_cajas.id_cierre_caja= tc_mantic_cierres_retiros.id_cierre_caja) abonos_retiros on tc_mantic_cierres.id_cierre = abonos_retiros.id_cierre
+                  tc_mantic_cierres_retiros on tc_mantic_cierres_cajas.id_cierre_caja= tc_mantic_cierres_retiros.id_cierre_caja where tc_mantic_cierres_retiros.id_abono= 2) retiros on tc_mantic_cierres.id_cierre = retiros.id_cierre
         where
-          tc_mantic_cierres.id_cierre = {idCierre} 
+          tc_mantic_cierres.id_cierre = {idCierre}
       </select>
       <select id="garantias">
         select 
@@ -7779,6 +7789,19 @@
 				  tc_mantic_monedas on tc_mantic_cierres_monedas.id_moneda= tc_mantic_monedas.id_moneda 
 				where 
 				  tc_mantic_cierres_monedas.id_cierre= {idCierre} and id_efectivo = 2
+				order by 
+				  tc_mantic_monedas.orden
+      </select>
+      <select id="aperturaCaja">
+        select 
+				  tc_mantic_monedas.nombre, 
+				  tc_mantic_monedas.denominacion, tc_mantic_cierres_monedas.cantidad, tc_mantic_cierres_monedas.importe, tc_mantic_cierres_monedas.id_efectivo
+  			from 
+				  tc_mantic_cierres_monedas 
+				inner join 
+				  tc_mantic_monedas on tc_mantic_cierres_monedas.id_moneda= tc_mantic_monedas.id_moneda 
+				where 
+				  tc_mantic_cierres_monedas.id_cierre= {idCierreNuevo} and id_efectivo = 2
 				order by 
 				  tc_mantic_monedas.orden
       </select>

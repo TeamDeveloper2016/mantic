@@ -19,41 +19,53 @@ import mx.org.kaana.mantic.ventas.caja.cierres.reglas.CargarCorte;
 public class CorteCaja implements Serializable {
   
   private static final long serialVersionUID= 1578963354789632541L;
-	private Long idKey;
+	private Long idCierre;
+	private Long idCierreNuevo;
 	private Entity resumenCorte;
   private List<Entity> garantias;
   private List<Entity> abonos;
   private List<Entity> retiros;
   private List<Entity> fondoInicial;
   private List<Entity> fondoEfectivoFinal;
+  private List<Entity> aperturaCaja;
   private List<Entity> cajerosCierre;
 
   public CorteCaja() {
-    this(new Long(-1L));
+    this(new Long(-1L),new Long(-1L));
   }
   
-  public CorteCaja(Long idKey) {
-    this(idKey,null,new ArrayList<Entity>(),new ArrayList<Entity>(),new ArrayList<Entity>(),new ArrayList<Entity>(),new ArrayList<Entity>(), new ArrayList<Entity>());
+  public CorteCaja(Long idCierre, Long idCierreNuevo) {
+    this(idCierre,idCierreNuevo,null,new ArrayList<Entity>(),new ArrayList<Entity>(),new ArrayList<Entity>(),new ArrayList<Entity>(),new ArrayList<Entity>(), new ArrayList<Entity>(), new ArrayList<Entity>());
   }
 
-  public CorteCaja(Long idKey, Entity resumenCorte, List<Entity> garantias, List<Entity> abonos, List<Entity> retiros, List<Entity> fondoInicial, List<Entity> fondoEfectivoFinal, List<Entity> cajerosCierre) {
-    this.idKey = idKey;
+  public CorteCaja(Long idCierre, Long idCierreNuevo,Entity resumenCorte, List<Entity> garantias, List<Entity> abonos, List<Entity> retiros, List<Entity> fondoInicial, List<Entity> fondoEfectivoFinal, List<Entity> aperturaCaja, List<Entity> cajerosCierre) {
+    this.idCierre = idCierre;
+    this.idCierreNuevo = idCierreNuevo;
     this.resumenCorte = resumenCorte;
     this.garantias = garantias;
     this.abonos = abonos;
     this.retiros = retiros;
     this.fondoInicial = fondoInicial;
     this.fondoEfectivoFinal = fondoEfectivoFinal;
+    this.aperturaCaja = aperturaCaja;
     this.cajerosCierre = cajerosCierre;
     init();		
   }
-  
-  public Long getIdKey() {
-    return idKey;
+
+  public Long getIdCierre() {
+    return idCierre;
   }
 
-  public void setIdKey(Long idKey) {
-    this.idKey = idKey;
+  public void setIdCierre(Long idCierre) {
+    this.idCierre = idCierre;
+  }
+
+  public Long getIdCierreNuevo() {
+    return idCierreNuevo;
+  }
+
+  public void setIdCierreNuevo(Long idCierreNuevo) {
+    this.idCierreNuevo = idCierreNuevo;
   }
 
   public Entity getResumenCorte() {
@@ -111,17 +123,26 @@ public class CorteCaja implements Serializable {
   public void setCajerosCierre(List<Entity> cajerosCierre) {
     this.cajerosCierre = cajerosCierre;
   }
+
+  public List<Entity> getAperturaCaja() {
+    return aperturaCaja;
+  }
+
+  public void setAperturaCaja(List<Entity> aperturaCaja) {
+    this.aperturaCaja = aperturaCaja;
+  }
     
   private void init(){
 		CargarCorte corte                = null;
 		try {
-			corte= new CargarCorte(this.idKey);
+			corte= new CargarCorte(this.idCierre, this.idCierreNuevo);
 			this.resumenCorte= corte.toCargaResumen();
 			this.garantias = corte.toGarantias();
       this.abonos = corte.toAbonos();
       this.retiros = corte.toRetiros();
       this.fondoInicial = corte.tofondoInicial();
       this.fondoEfectivoFinal = corte.toFondoEfectivoFinal();
+      this.aperturaCaja = corte.toAperturaCaja();
       this.cajerosCierre = corte.toCajerosCierre();
 		} // try
 		catch (Exception e) {			
