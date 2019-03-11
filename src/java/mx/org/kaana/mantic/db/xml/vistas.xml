@@ -7582,8 +7582,10 @@
       <select id="resumenCorte">
         select distinct
           tc_mantic_cierres.id_cierre,
+          tc_mantic_cierres.consecutivo,
           tc_mantic_cierres.termino,
           tc_mantic_cierres.registro,
+          tc_mantic_empresas.id_empresa,
           tc_mantic_empresas.clave as empresa,
           tc_mantic_empresas.nombre as nombre_empresa,  
           tc_mantic_cajas.clave as caja,
@@ -7597,6 +7599,7 @@
           pagos_ventas.resumen_efectivo,
           pagos_ventas.resumen_cheque,
           pagos_ventas.resumen_transferencia,
+         (pagos_ventas.resumen_credito+pagos_ventas.resumen_debito) resumen_tarjetas,
           pagos_ventas.resumen_credito,
           pagos_ventas.resumen_vales,
           pagos_ventas.resumen_debito, pagos_ventas.resumen_total, (pagos_ventas.resumen_total-ifnull(devoluciones_garantias.total_garantias,0)) total_sin_devoluciones,
@@ -7617,13 +7620,13 @@
         left join 
           (select distinct
             tr_mantic_venta_medio_pago.id_cierre, 
-            sum(case when tr_mantic_venta_medio_pago.id_tipo_medio_pago = 1 and tc_mantic_ventas.id_credito = 2  then tr_mantic_venta_medio_pago.importe else 0 end) resumen_efectivo,
-            sum(case when tr_mantic_venta_medio_pago.id_tipo_medio_pago = 2 and tc_mantic_ventas.id_credito = 2  then tr_mantic_venta_medio_pago.importe else 0 end) resumen_cheque,
-            sum(case when tr_mantic_venta_medio_pago.id_tipo_medio_pago = 3 and tc_mantic_ventas.id_credito = 2 then tr_mantic_venta_medio_pago.importe else 0 end) resumen_transferencia,
-            sum(case when tr_mantic_venta_medio_pago.id_tipo_medio_pago = 4 and tc_mantic_ventas.id_credito = 2 then tr_mantic_venta_medio_pago.importe else 0 end) resumen_credito,
-            sum(case when tr_mantic_venta_medio_pago.id_tipo_medio_pago = 7 and tc_mantic_ventas.id_credito = 2 then tr_mantic_venta_medio_pago.importe else 0 end) resumen_vales,
-            sum(case when tr_mantic_venta_medio_pago.id_tipo_medio_pago = 18 and tc_mantic_ventas.id_credito = 2 then tr_mantic_venta_medio_pago.importe else 0 end) resumen_debito,
-            sum(case when tr_mantic_venta_medio_pago.id_tipo_medio_pago in (1,2,3,4,7,18) and tc_mantic_ventas.id_credito = 2  then tr_mantic_venta_medio_pago.importe else 0 end) resumen_total,
+            sum(case when tr_mantic_venta_medio_pago.id_tipo_medio_pago = 1 then tr_mantic_venta_medio_pago.importe else 0 end) resumen_efectivo,
+            sum(case when tr_mantic_venta_medio_pago.id_tipo_medio_pago = 2 then tr_mantic_venta_medio_pago.importe else 0 end) resumen_cheque,
+            sum(case when tr_mantic_venta_medio_pago.id_tipo_medio_pago = 3 then tr_mantic_venta_medio_pago.importe else 0 end) resumen_transferencia,
+            sum(case when tr_mantic_venta_medio_pago.id_tipo_medio_pago = 4 then tr_mantic_venta_medio_pago.importe else 0 end) resumen_credito,
+            sum(case when tr_mantic_venta_medio_pago.id_tipo_medio_pago = 7 then tr_mantic_venta_medio_pago.importe else 0 end) resumen_vales,
+            sum(case when tr_mantic_venta_medio_pago.id_tipo_medio_pago = 18 then tr_mantic_venta_medio_pago.importe else 0 end) resumen_debito,
+            sum(case when tr_mantic_venta_medio_pago.id_tipo_medio_pago in (1,2,3,4,7,18) then tr_mantic_venta_medio_pago.importe else 0 end) resumen_total,
             sum(case when tr_mantic_venta_medio_pago.id_tipo_medio_pago = 1 and tc_mantic_ventas.id_credito = 1  then tr_mantic_venta_medio_pago.importe else 0 end) resumen_efectivo_credito,
             sum(case when tr_mantic_venta_medio_pago.id_tipo_medio_pago = 2 and tc_mantic_ventas.id_credito = 1 then tr_mantic_venta_medio_pago.importe else 0 end) resumen_cheque_credito,
             sum(case when tr_mantic_venta_medio_pago.id_tipo_medio_pago = 3 and tc_mantic_ventas.id_credito = 1 then tr_mantic_venta_medio_pago.importe else 0 end) resumen_transferencia_credito,
@@ -7650,7 +7653,7 @@
             pagos_venta.id_cierre, min(tc_mantic_garantias.consecutivo) garantia_inicial, max(tc_mantic_garantias.consecutivo) garantia_final, 
             sum(case when tc_mantic_garantias.total &gt; 0 then tc_mantic_garantias.total else 0 end) total_garantias,
             sum(case when tc_mantic_garantias.sub_total &gt; 0 then tc_mantic_garantias.sub_total else 0 end) sub_total_garantias,
-            sum(case when tc_mantic_garantias.impuestos > &gt; then tc_mantic_garantias.impuestos else 0 end) impuetos_garantias
+            sum(case when tc_mantic_garantias.impuestos &gt; 0 then tc_mantic_garantias.impuestos else 0 end) impuetos_garantias
           from 
             tc_mantic_garantias
           inner join 
@@ -7778,6 +7781,20 @@
 				  tc_mantic_cierres_monedas.id_cierre= {idCierre} and id_efectivo = 2
 				order by 
 				  tc_mantic_monedas.orden
+      </select>
+      <select id="cajerosCierre">
+        select distinct
+          concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) nombre_completo_cajero
+        from 
+          tc_mantic_ventas  
+        inner join 
+          tr_mantic_venta_medio_pago pagos_venta  on tc_mantic_ventas.id_venta = pagos_venta.id_venta
+        inner join
+            tc_mantic_personas on tc_mantic_ventas.id_usuario = tc_mantic_personas.id_persona
+        where 
+          pagos_venta.id_cierre = {idCierre} 
+        order by
+          tc_mantic_ventas.consecutivo
       </select>
 		</unit>
 	</dml>    

@@ -6,13 +6,14 @@ import java.util.List;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.mantic.ventas.caja.cierres.reglas.CargarCorte;
 
 /**
  *@company KAANA
  *@project KAJOOL (Control system polls)
  *@date 9/03/2019
  *@time 01:14:28 AM 
- *@author Six Developer 2016 <sic.developer@kaana.org.mx>
+ *@author Six Developer 2016 <six.developer@kaana.org.mx>
  */
 
 public class CorteCaja implements Serializable {
@@ -25,16 +26,17 @@ public class CorteCaja implements Serializable {
   private List<Entity> retiros;
   private List<Entity> fondoInicial;
   private List<Entity> fondoEfectivoFinal;
+  private List<Entity> cajerosCierre;
 
   public CorteCaja() {
     this(new Long(-1L));
   }
   
   public CorteCaja(Long idKey) {
-    this(new Long(-1L),null,new ArrayList<Entity>(),new ArrayList<Entity>(),new ArrayList<Entity>(),new ArrayList<Entity>(),new ArrayList<Entity>());
+    this(idKey,null,new ArrayList<Entity>(),new ArrayList<Entity>(),new ArrayList<Entity>(),new ArrayList<Entity>(),new ArrayList<Entity>(), new ArrayList<Entity>());
   }
 
-  public CorteCaja(Long idKey, Entity resumenCorte, List<Entity> garantias, List<Entity> abonos, List<Entity> retiros, List<Entity> fondoInicial, List<Entity> fondoEfectivoFinal) {
+  public CorteCaja(Long idKey, Entity resumenCorte, List<Entity> garantias, List<Entity> abonos, List<Entity> retiros, List<Entity> fondoInicial, List<Entity> fondoEfectivoFinal, List<Entity> cajerosCierre) {
     this.idKey = idKey;
     this.resumenCorte = resumenCorte;
     this.garantias = garantias;
@@ -42,6 +44,7 @@ public class CorteCaja implements Serializable {
     this.retiros = retiros;
     this.fondoInicial = fondoInicial;
     this.fondoEfectivoFinal = fondoEfectivoFinal;
+    this.cajerosCierre = cajerosCierre;
     init();		
   }
   
@@ -100,18 +103,26 @@ public class CorteCaja implements Serializable {
   public void setFondoEfectivoFinal(List<Entity> fondoEfectivoFinal) {
     this.fondoEfectivoFinal = fondoEfectivoFinal;
   }
-  
+
+  public List<Entity> getCajerosCierre() {
+    return cajerosCierre;
+  }
+
+  public void setCajerosCierre(List<Entity> cajerosCierre) {
+    this.cajerosCierre = cajerosCierre;
+  }
+    
   private void init(){
-		//CargarCorte corte                = null;
+		CargarCorte corte                = null;
 		try {
-			/*corte= new CargarCorte(this.idKey);
+			corte= new CargarCorte(this.idKey);
 			this.resumenCorte= corte.toCargaResumen();
 			this.garantias = corte.toGarantias();
       this.abonos = corte.toAbonos();
       this.retiros = corte.toRetiros();
       this.fondoInicial = corte.tofondoInicial();
       this.fondoEfectivoFinal = corte.toFondoEfectivoFinal();
-      */
+      this.cajerosCierre = corte.toCajerosCierre();
 		} // try
 		catch (Exception e) {			
 			JsfBase.addMessageError(e);
