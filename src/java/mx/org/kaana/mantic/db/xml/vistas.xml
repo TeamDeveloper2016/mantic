@@ -7782,6 +7782,20 @@
 				order by 
 				  tc_mantic_monedas.orden
       </select>
+      <select id="cajerosCierre">
+        select distinct
+          concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) nombre_completo_cajero
+        from 
+          tc_mantic_ventas  
+        inner join 
+          tr_mantic_venta_medio_pago pagos_venta  on tc_mantic_ventas.id_venta = pagos_venta.id_venta
+        inner join
+            tc_mantic_personas on tc_mantic_ventas.id_usuario = tc_mantic_personas.id_persona
+        where 
+          pagos_venta.id_cierre = {idCierre} 
+        order by
+          tc_mantic_ventas.consecutivo
+      </select>
 		</unit>
 	</dml>    
 </process>
