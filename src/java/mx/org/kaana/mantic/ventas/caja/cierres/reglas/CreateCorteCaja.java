@@ -31,7 +31,11 @@ public class CreateCorteCaja {
 	public Sucursal getPrincipal() {
 		return principal;
 	}
-	
+
+  public CorteCaja getCorte() {
+    return corte;
+  }
+  
 	public String toHtml() throws Exception{
 		StringBuilder sb= new StringBuilder();
 		sb.append(toHeader());
