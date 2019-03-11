@@ -142,6 +142,7 @@ public class Accion extends IBaseVenta implements Serializable {
           this.setAdminOrden(new AdminGarantia((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "VistaTcManticGarantiasArticulosDto", "garantia", this.attrs), eaccion, Long.valueOf(this.attrs.get("idGarantia").toString())));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
     			this.attrs.put("idEmpresa", ((TicketVenta)this.getAdminOrden().getOrden()).getIdEmpresa());
+					loadDatosCliente(((TicketVenta)getAdminOrden().getOrden()).getIdVenta());
           break;
       } // switch
 			this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
@@ -152,6 +153,26 @@ public class Accion extends IBaseVenta implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
   } // doLoad
+	
+	private void loadDatosCliente(Long idVenta) throws Exception{
+		Map<String, Object>params = null;
+		Entity descripcionGarantia= null;
+		Entity entity            = null;
+		try {
+			params= new HashMap<>();
+			params.put("sortOrder", "");
+			params.put("idEmpresa", ((TicketVenta)getAdminOrden().getOrden()).getIdEmpresa());
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_ventas.id_venta=" + idVenta);
+			descripcionGarantia= (Entity) DaoFactory.getInstance().toEntity("VistaVentasDto", "lazy", params);
+			this.attrs.put("ticket", descripcionGarantia);
+			entity= new Entity(-1L);
+			entity.put("ticket", new Value("ticket", ((TicketVenta)this.getAdminOrden().getOrden()).getTicket()));
+			this.attrs.put("cliente", entity);
+		} // try
+		catch (Exception e) {			
+			throw e; 
+		} // catch		
+	} // loadDatosCliente
 	
   public String doAceptar() {  
     Transaccion transaccion= null;

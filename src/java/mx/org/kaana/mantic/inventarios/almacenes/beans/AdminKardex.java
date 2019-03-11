@@ -32,9 +32,9 @@ public class AdminKardex implements Serializable {
 		this.iva       = iva;
 		this.tiposVentas= new ArrayList<>();
 		if(this.idArticulo> 0) {
-			this.add(ETiposVentas.MENUDEO.ordinal(), "MENUDEO", menudeo, limiteMedioMayoreo);
-			this.add(ETiposVentas.MEDIO_MAYOREO.ordinal(), "MEDIO-MAYOREO", medioMayoreo, limiteMayoreo);
-			this.add(ETiposVentas.MAYOREO.ordinal(), "MAYOREO", mayoreo, 0);
+			this.add(ETiposVentas.MENUDEO.ordinal(), "MENUDEO", menudeo, limiteMedioMayoreo, menudeo);
+			this.add(ETiposVentas.MEDIO_MAYOREO.ordinal(), "MEDIO-MAYOREO", medioMayoreo, limiteMayoreo, menudeo);
+			this.add(ETiposVentas.MAYOREO.ordinal(), "MAYOREO", mayoreo, 0, menudeo);
 		} // if	
 	}
 
@@ -66,8 +66,8 @@ public class AdminKardex implements Serializable {
 		return tiposVentas;
 	}
 
-  private void add(Integer index, String nombre, double precio, long limite) {
-		this.tiposVentas.add(new TiposVentas(index, nombre, this.costo, precio, this.iva, limite));
+  private void add(Integer index, String nombre, double precio, long limite, double pivote) {
+		this.tiposVentas.add(new TiposVentas(index, nombre, this.costo, precio, this.iva, limite, pivote));
 	}	
 
 	public void toUpdateUtilidad(Integer index, Double value) {

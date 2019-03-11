@@ -28,13 +28,14 @@ public class TiposVentas implements Serializable {
 	private double importe;
 	private double limite;
 	private double impuesto;
+	private double pivote;
 
 	public TiposVentas(Integer index) {
-		this(index, "", 0D, 0D, 16D, 0L);
+		this(index, "", 0D, 0D, 16D, 0L, 0D);
 	}
 
 	
-	public TiposVentas(Integer index, String nombre, double costo, double precio, double iva, double limite) {
+	public TiposVentas(Integer index, String nombre, double costo, double precio, double iva, double limite, double pivote) {
 		this.index= index;
 		this.nombre=nombre;
 		this.costo=costo;
@@ -44,6 +45,7 @@ public class TiposVentas implements Serializable {
 		this.importe=0D;
 		this.limite=limite;
 		this.impuesto= 0D;
+		this.pivote= pivote;
 		this.toCalculate();
 	}
 
@@ -115,6 +117,14 @@ public class TiposVentas implements Serializable {
 		return impuesto;
 	}
 
+	public double getPivote() {
+		return pivote;
+	}
+
+	public void setPivote(double pivote) {
+		this.pivote=pivote;
+	}
+
 	@Override
 	public int hashCode() {
 		int hash=5;
@@ -142,7 +152,7 @@ public class TiposVentas implements Serializable {
 
 	@Override
 	public String toString() {
-		return "TiposVentas{"+"index="+index+", nombre="+nombre+", costo="+costo+", utilidad="+utilidad+", precio="+precio+", iva="+iva+", importe="+importe+", limite="+limite+", impuesto="+impuesto+'}';
+		return "TiposVentas{"+"index="+index+", nombre="+nombre+", costo="+costo+", utilidad="+utilidad+", precio="+precio+", iva="+iva+", importe="+importe+", limite="+limite+", impuesto="+impuesto+ ", pivote="+pivote+'}';
 	}
 
 	public void toUpdateUtilidad(double utilidadad) {
@@ -155,7 +165,7 @@ public class TiposVentas implements Serializable {
 		//this.utilidad= Numero.toRedondearSat((this.precio*100/(this.costo<= 0? 1: this.costo))- 100);
 	  this.impuesto= Numero.toRedondearSat((this.precio* ((this.iva/100)+ 1))- this.precio);
 		this.importe = Numero.toRedondearSat(this.precio);
-		this.utilidad= Numero.toRedondearSat((this.precio+ this.impuesto)* 100/ (this.importe== 0? 1: this.importe));
+		this.utilidad= Numero.toRedondearSat(((this.costo* ((this.iva/100)+ 1))* 100)/ this.precio);
 	}	
 	
 	public ETiposVentas toEnum() {

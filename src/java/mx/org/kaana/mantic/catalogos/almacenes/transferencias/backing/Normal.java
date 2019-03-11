@@ -258,10 +258,10 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 				this.toLoadArticulos("almacen");
 		} // if	
 		else 
-			if(event.getTab().getTitle().equals("Faltantes almacen") && this.attrs.get("faltantes")== null) 
+			if(event.getTab().getTitle().equals("Faltantes almacen")) 
         this.doLoadFaltantes();
 			else 
-			  if(event.getTab().getTitle().equals("Ventas perdidas") && this.attrs.get("perdidos")== null) 
+			  if(event.getTab().getTitle().equals("Ventas perdidas")) 
           this.doLoadPerdidas(((Transferencia)this.getAdminOrden().getOrden()).getIdDestino()== null? -1L: ((Transferencia)this.getAdminOrden().getOrden()).getIdDestino());
 	}
 
