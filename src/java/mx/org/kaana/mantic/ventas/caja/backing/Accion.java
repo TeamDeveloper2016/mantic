@@ -198,9 +198,10 @@ public class Accion extends IBaseVenta implements Serializable {
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 				loadSucursales();							
 			loadCajas();
-			doLoadTicketAbiertos();			
+			doLoadTicketAbiertos();						
 			loadBancos();
-			loadCfdis();
+			loadCfdis();			
+			loadTiposPagos();
 			verificaLimiteCaja();
 			doActivarCliente();
 			loadArt();
@@ -765,6 +766,24 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // finally
 	} // loadBancos
 	
+	private void loadTiposPagos(){
+		List<UISelectEntity> tiposPagos= null;
+		Map<String, Object>params      = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			tiposPagos= UIEntity.build("TcManticTiposPagosDto", "row", params);
+			this.attrs.put("tiposPagos", tiposPagos);
+			this.attrs.put("tipoPago", UIBackingUtilities.toFirstKeySelectEntity(tiposPagos));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // loadTiposPagos
+	
 	public void doValidaCreditoCliente(){
 		Boolean credito   = false;
 		Boolean apartado  = false;
@@ -851,12 +870,13 @@ public class Accion extends IBaseVenta implements Serializable {
 			ticketVenta.setImpuestos(this.getAdminOrden().getTotales().getIva());
 			ticketVenta.setUtilidad(this.getAdminOrden().getTotales().getUtilidad());
 			facturarVenta= (Boolean) this.attrs.get("facturarVenta");
+			regresar= new VentaFinalizada();
 			if(facturarVenta){
 				cfdis= (List<UISelectEntity>) this.attrs.get("cfdis");
 				cfdi= (UISelectEntity) this.attrs.get("cfdi");
 				ticketVenta.setIdUsoCfdi(cfdis.get(cfdis.indexOf(cfdi)).getKey());
-			} // if
-			regresar= new VentaFinalizada();
+				regresar.setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));				
+			} // if			
 			regresar.setTicketVenta(ticketVenta);
 			for(ClienteTipoContacto record: this.clientesTiposContacto)
 				record.setIdTipoContacto(ETiposContactos.CORREO.getKey());
