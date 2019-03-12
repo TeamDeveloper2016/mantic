@@ -28,12 +28,13 @@ public class VentaFinalizada implements Serializable{
 	private TcManticApartadosDto detailApartado;
 	private String observaciones;
 	private String tipoCuenta;
+	private Long idTipoPago;
 
 	public VentaFinalizada() {
-		this(new TicketVenta(), new ArrayList<ClienteTipoContacto>(), new ClienteTipoContacto(), new ClienteTipoContacto(), new Pago(), new Domicilio(), new TcManticClientesDto(), false, false, new ArrayList<Articulo>(), -1L, false, new TcManticApartadosDto(), "", "");
+		this(new TicketVenta(), new ArrayList<ClienteTipoContacto>(), new ClienteTipoContacto(), new ClienteTipoContacto(), new Pago(), new Domicilio(), new TcManticClientesDto(), false, false, new ArrayList<Articulo>(), -1L, false, new TcManticApartadosDto(), "", "", 1L);
 	}
 	
-	public VentaFinalizada(TicketVenta ticketVenta, List<ClienteTipoContacto> correosContacto, ClienteTipoContacto telefono, ClienteTipoContacto celular, Pago totales, Domicilio domicilio, TcManticClientesDto cliente, Boolean facturar, Boolean credito, List<Articulo> articulos, Long idCaja, Boolean apartado, TcManticApartadosDto detailApartado, String observaciones, String tipoCuenta) {
+	public VentaFinalizada(TicketVenta ticketVenta, List<ClienteTipoContacto> correosContacto, ClienteTipoContacto telefono, ClienteTipoContacto celular, Pago totales, Domicilio domicilio, TcManticClientesDto cliente, Boolean facturar, Boolean credito, List<Articulo> articulos, Long idCaja, Boolean apartado, TcManticApartadosDto detailApartado, String observaciones, String tipoCuenta, Long idTipoPago) {
 		this.ticketVenta    = ticketVenta;
 		this.correosContacto= correosContacto;
 		this.telefono       = telefono;
@@ -48,6 +49,7 @@ public class VentaFinalizada implements Serializable{
 		this.apartado       = apartado;
 		this.detailApartado = detailApartado;
 		this.tipoCuenta     = tipoCuenta;
+		this.idTipoPago     = idTipoPago;
 	}
 
 	public TicketVenta getTicketVenta() {
@@ -169,4 +171,12 @@ public class VentaFinalizada implements Serializable{
 	public void setTipoCuenta(String tipoCuenta) {
 		this.tipoCuenta = tipoCuenta;
 	}
+
+	public Long getIdTipoPago() {
+		return idTipoPago;
+	}
+
+	public void setIdTipoPago(Long idTipoPago) {
+		this.idTipoPago = idTipoPago;
+	}	
 }
