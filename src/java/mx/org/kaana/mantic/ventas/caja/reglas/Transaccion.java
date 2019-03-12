@@ -15,6 +15,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
 import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Cadena;
@@ -71,6 +72,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 	private Long idFacturaGeneral;
 	private Long idVenta;
 	private Long idCliente;
+	private String correosFactura;
 	
 	public Transaccion(IBaseDto dto) {
 		super(new TicketVenta());
@@ -550,7 +552,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 				for(ClienteTipoContacto correo: this.ventaFinalizada.getCorreosContacto())
 					correos.append(correo.getValor()).append(";");
 			} // if			
-			factura.setCorreos(correos.toString());
+			this.correosFactura= correos.toString();
+			factura.setCorreos(this.correosFactura);
 			factura.setObservaciones(this.ventaFinalizada.getObservaciones());
 			if(DaoFactory.getInstance().insert(sesion, factura)>= 1L){	
 				getOrden().setIdFactura(factura.getIdFactura());
@@ -924,6 +927,13 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			factura.setCliente(clienteFactura);
 			factura.getCliente().setIdFactura(idFactura);
 			factura.generarCfdi(sesion);			
+			try {
+				if(!Cadena.isVacio(this.correosFactura))
+					CFDIFactory.getInstance().toSendMail(this.correosFactura, factura.getIdFacturamaRegistro());
+			} // try
+			catch (Exception e) {				
+				Error.mensaje(e);				
+			} // catch	
 		} // try
 		catch (Exception e) {			
 			Error.mensaje(e);
