@@ -22,9 +22,11 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
+import mx.org.kaana.mantic.ventas.caja.cierres.beans.CorteCaja;
 import mx.org.kaana.mantic.ventas.caja.cierres.beans.Denominacion;
 import mx.org.kaana.mantic.ventas.caja.cierres.beans.Importe;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Cierre;
+import mx.org.kaana.mantic.ventas.caja.cierres.reglas.CreateCorteCaja;
 import org.primefaces.context.RequestContext;
 
 /**
@@ -56,6 +58,7 @@ public class Fondo extends IBaseAttribute implements Serializable {
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.accion = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idCierre", JsfBase.getFlashAttribute("idCierre")== null? -1L: JsfBase.getFlashAttribute("idCierre"));
+      this.attrs.put("idCierreAnterior", JsfBase.getFlashAttribute("idCierreAnterior")== null? -1L: JsfBase.getFlashAttribute("idCierreAnterior"));
       this.attrs.put("idCaja", JsfBase.getFlashAttribute("idCaja")== null? -1L: JsfBase.getFlashAttribute("idCaja"));
       this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa")== null? -1L: JsfBase.getFlashAttribute("idEmpresa"));
       this.attrs.put("sucursales", this.attrs.get("idEmpresa"));
@@ -88,13 +91,18 @@ public class Fondo extends IBaseAttribute implements Serializable {
   } // doLoad
 
   public String doAceptar() {  
-    Cierre transaccion= null;
-    String regresar   = null;
+    Cierre transaccion     = null;
+    String regresar        = null;
+    CreateCorteCaja corte  = null;
     try {			
 			TcManticCierresDto cierre= (TcManticCierresDto)DaoFactory.getInstance().findById(TcManticCierresDto.class, (Long)this.attrs.get("idCierre"));
 			transaccion = new Cierre((Long)this.attrs.get("idCaja"), (Double)this.attrs.get("disponible"), cierre, null, this.fondos);
 			if (transaccion.ejecutar(this.accion)) {
-				regresar = "filtro".concat(Constantes.REDIRECIONAR);
+				CorteCaja corteCaja= new CorteCaja(Long.valueOf(this.attrs.get("idCierreAnterior").toString()), cierre.getIdCierre());			
+        corte= new CreateCorteCaja(corteCaja);
+        UIBackingUtilities.execute("jsTicket.imprimirTicket('" + corte.getPrincipal().getClave() + corte.getCorte().getResumenCorte().toString("consecutivo") +"','"  + corte.toHtml() + "');");
+        UIBackingUtilities.execute("jsTicket.clicTicket();");
+        regresar = "filtro".concat(Constantes.REDIRECIONAR);
 				UIBackingUtilities.execute("janal.alert('Se gener\\u00F3 correctamente la apertura de caja del consecutivo: "+ cierre.getConsecutivo()+ "');");
   			JsfBase.setFlashAttribute("idCierre", this.attrs.get("idCierre"));
 			} // if
