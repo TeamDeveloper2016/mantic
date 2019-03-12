@@ -144,6 +144,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 					JsfBase.setFlashAttribute("accion", EAccion.PROCESAR);
 					JsfBase.setFlashAttribute("idCaja", this.attrs.get("idCaja"));
 					JsfBase.setFlashAttribute("idCierre", transaccion.getIdApertura());
+					JsfBase.setFlashAttribute("idCierreAnterior", cierre.getIdCierre());
 					JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));
     			UIBackingUtilities.execute("janal.alert('Se gener\\u00F3 el cierre de caja, con consecutivo: "+ cierre.getConsecutivo()+ "');");
 				} // if	
