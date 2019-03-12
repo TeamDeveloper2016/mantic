@@ -43,8 +43,10 @@ import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.db.dto.TrManticVentaMedioPagoDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
+import mx.org.kaana.mantic.enums.ETipoPago;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.enums.ETiposDomicilios;
+import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 import mx.org.kaana.mantic.ventas.beans.ClienteVenta;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.caja.beans.VentaFinalizada;
@@ -909,14 +911,17 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 	} // actualizaInventario
 	
 	private void generarTimbradoFactura(Session sesion, Long idFactura){
-		TransaccionFactura factura= null;
-		CFDIGestor gestor         = null;
+		TransaccionFactura factura   = null;
+		CFDIGestor gestor            = null;
+		ClienteFactura clienteFactura= null;
 		try {
 			sesion.flush();
 			gestor= new CFDIGestor(this.ventaFinalizada.getTicketVenta().getIdVenta());			
 			factura= new TransaccionFactura();
 			factura.setArticulos(gestor.toDetalleCfdiVentas(sesion));
-			factura.setCliente(gestor.toClienteCfdiVenta(sesion));
+			clienteFactura= gestor.toClienteCfdiVenta(sesion);			
+			clienteFactura.setMetodoPago(ETipoPago.fromIdTipoPago(this.ventaFinalizada.getIdTipoPago()).getClave());
+			factura.setCliente(clienteFactura);
 			factura.getCliente().setIdFactura(idFactura);
 			factura.generarCfdi(sesion);			
 		} // try
