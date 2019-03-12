@@ -345,12 +345,13 @@ public class Accion extends IBaseVenta implements Serializable {
 				regresar.append(" tc_mantic_ventas.id_venta=");
 				regresar.append(this.attrs.get("idVenta"));
 			} // if
-			else if(accion.equals(EAccion.CONSULTAR)||accion.equals(EAccion.MODIFICAR)){
+			else if(accion.equals(EAccion.CONSULTAR) || accion.equals(EAccion.MODIFICAR)){
 				regresar.append(" tc_mantic_ventas.id_venta=");
 				regresar.append(this.getAdminOrden().getOrden().getKey());
 			} // if
 			else {
-				regresar.append(" DATE_FORMAT(tc_mantic_ventas.registro, '%Y%m%d')=".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, fecha)));
+				regresar.append(" DATE_FORMAT(tc_mantic_ventas.registro, '%Y%m%d')=");
+				regresar.append(Fecha.formatear(Fecha.FECHA_ESTANDAR, fecha));
 				regresar.append(" and tc_mantic_ventas.id_venta_estatus=");
 				regresar.append(EEstatusVentas.PAGADA.getIdEstatusVenta());						
 			} // else
@@ -367,18 +368,17 @@ public class Accion extends IBaseVenta implements Serializable {
 			regresar= new StringBuilder();																
 			regresar.append(" tc_mantic_ventas.ticket like '%");
 			regresar.append(this.attrs.get("openTicket"));	
-			regresar.append("%'");
-			regresar.append(" and (tc_mantic_ventas.id_venta_estatus=");
+			regresar.append("%' and (tc_mantic_ventas.id_venta_estatus=");			
 			regresar.append(EEstatusVentas.PAGADA.getIdEstatusVenta());						
 			regresar.append(" or tc_mantic_ventas.id_venta_estatus=");
-			regresar.append(EEstatusVentas.TERMINADA.getIdEstatusVenta());						
+			regresar.append(EEstatusVentas.TERMINADA.getIdEstatusVenta());									
 			regresar.append(") ");
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
 		return regresar.toString();
-	} // toCondicion
+	} // toCondicionOpenTicket
 	
 	@Override
 	public void doAsignaTicketAbierto(){
