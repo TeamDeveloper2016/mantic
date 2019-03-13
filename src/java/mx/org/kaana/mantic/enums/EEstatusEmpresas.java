@@ -7,8 +7,9 @@ import java.util.Map;
 public enum EEstatusEmpresas {
 
   INICIADA    (1L),
-  PARCIALIZADA(2L),
-  LIQUIDADA   (3L);
+  PROGRAMADA  (2L),
+  PARCIALIZADA(3L),
+  LIQUIDADA   (4L);
 
   private Long idEstatusEmpresa;
 	private static final Map<Long, EEstatusEmpresas> lookup= new HashMap<>();
