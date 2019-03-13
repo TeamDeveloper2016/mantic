@@ -12,6 +12,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -252,6 +253,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				this.getAdminOrden().getArticulos().clear();
 				this.getAdminOrden().toCalculate();
 			} // if	
+			else 
+				this.toSearchCodigos();
 			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
 			this.toLoadCondiciones(proveedores.get(proveedores.indexOf((UISelectEntity)((OrdenCompra)this.getAdminOrden().getOrden()).getIkProveedor())));
 		}	
@@ -461,5 +464,25 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       Methods.clean(params);
     } // finally
 	}
+
+  public void toSearchCodigos() {
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("idProveedor", this.getAdminOrden().getIdProveedor());
+			for (Articulo articulo: this.getAdminOrden().getArticulos()) {
+				params.put("idArticulo", articulo.getIdArticulo());
+				Value codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "codigo", params, "codigo");
+				articulo.setCodigo(codigo== null? "": codigo.toString());
+			} // for
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	}	
 	
 }
