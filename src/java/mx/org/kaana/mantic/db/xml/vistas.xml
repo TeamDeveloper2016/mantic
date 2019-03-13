@@ -7653,17 +7653,32 @@
         inner join
           tc_mantic_empresas on tc_mantic_cajas.id_empresa= tc_mantic_empresas.id_empresa
         left join 
-          (select distinct
-            pagos_venta.id_cierre, min(tc_mantic_garantias.consecutivo) garantia_inicial, max(tc_mantic_garantias.consecutivo) garantia_final, 
-            sum(case when tc_mantic_garantias.total &gt; 0 then tc_mantic_garantias.total else 0 end) total_garantias,
-            sum(case when tc_mantic_garantias.sub_total &gt; 0 then tc_mantic_garantias.sub_total else 0 end) sub_total_garantias,
-            sum(case when tc_mantic_garantias.impuestos &gt; 0 then tc_mantic_garantias.impuestos else 0 end) impuetos_garantias
-          from 
-            tc_mantic_garantias
-          inner join 
-            tc_mantic_ventas ventas_garantias on tc_mantic_garantias.id_venta = ventas_garantias.id_venta
-          inner join 
-            tr_mantic_venta_medio_pago pagos_venta  on ventas_garantias.id_venta = pagos_venta.id_venta where tc_mantic_garantias.id_garantia_estatus = 6 and pagos_venta.id_cierre={idCierre}) devoluciones_garantias on tc_mantic_cierres.id_cierre = devoluciones_garantias.id_cierre
+          (select 
+				id_cierre, min(garantias.consecutivo) garantia_inicial, max(garantias.consecutivo) garantia_final, 
+            sum(case when garantias.total &gt; 0 and garantias.id_garantia_estatus = 6  then garantias.total else 0 end) total_garantias,
+            sum(case when garantias.sub_total &gt; 0 and garantias.id_garantia_estatus = 6  then garantias.sub_total else 0 end) sub_total_garantias,
+            sum(case when garantias.impuestos &gt; 0 and garantias.id_garantia_estatus = 6 then garantias.impuestos else 0 end) impuetos_garantias
+			from (select distinct
+         	tc_mantic_garantias.*, pagos_venta.id_cierre
+       	from 
+					tc_mantic_garantias
+				inner join 
+				  tc_mantic_garantias_detalles on tc_mantic_garantias.id_garantia= tc_mantic_garantias_detalles.id_garantia
+				inner join 
+				  tc_mantic_ventas_detalles on tc_mantic_garantias_detalles.id_venta_detalle= tc_mantic_ventas_detalles.id_venta_detalle
+				inner join 
+	          tc_mantic_ventas ventas_garantias on tc_mantic_garantias.id_venta = ventas_garantias.id_venta
+	        inner join 
+	          tr_mantic_venta_medio_pago pagos_venta  on ventas_garantias.id_venta = pagos_venta.id_venta
+	      	inner join
+					tc_mantic_cierres on tc_mantic_cierres.id_cierre= pagos_venta.id_cierre
+				where 
+					pagos_venta.id_cierre = {idCierre} and tc_mantic_garantias.id_garantia_estatus = 6
+					and tc_mantic_garantias_detalles.cantidad &gt; 0	
+					and 
+					(tc_mantic_ventas_detalles.registro between tc_mantic_cierres.registro and tc_mantic_cierres.termino)
+					order by
+				  tc_mantic_garantias.consecutivo, tc_mantic_ventas_detalles.codigo) garantias) devoluciones_garantias on tc_mantic_cierres.id_cierre = devoluciones_garantias.id_cierre
         left join (select tc_mantic_cierres_monedas.id_cierre,
                   sum(case when tc_mantic_cierres_monedas.id_efectivo = 2  then tc_mantic_cierres_monedas.importe else 0 end) fondo_inicial,
                   sum(case when tc_mantic_cierres_monedas.id_efectivo = 1  then tc_mantic_cierres_monedas.importe else 0 end) fondo_efectivo_final
@@ -7687,18 +7702,27 @@
           tc_mantic_cierres.id_cierre = {idCierre}
       </select>
       <select id="garantias">
-        select 
-          tc_mantic_garantias.consecutivo, tc_mantic_garantias.total
-        from 
-          tc_mantic_garantias
-        inner join 
-          tc_mantic_ventas ventas_garantias on tc_mantic_garantias.id_venta = ventas_garantias.id_venta
-        inner join 
-          tr_mantic_venta_medio_pago pagos_venta  on ventas_garantias.id_venta = pagos_venta.id_venta
-        where 
-          pagos_venta.id_cierre = {idCierre} and tc_mantic_garantias.id_garantia_estatus = 6
-        order by
-          tc_mantic_garantias.consecutivo
+        select distinct
+         	tc_mantic_garantias.*, pagos_venta.id_cierre
+       	from 
+					tc_mantic_garantias
+				inner join 
+				  tc_mantic_garantias_detalles on tc_mantic_garantias.id_garantia= tc_mantic_garantias_detalles.id_garantia
+				inner join 
+				  tc_mantic_ventas_detalles on tc_mantic_garantias_detalles.id_venta_detalle= tc_mantic_ventas_detalles.id_venta_detalle
+				inner join 
+	          tc_mantic_ventas ventas_garantias on tc_mantic_garantias.id_venta = ventas_garantias.id_venta
+	        inner join 
+	          tr_mantic_venta_medio_pago pagos_venta  on ventas_garantias.id_venta = pagos_venta.id_venta
+	      	inner join
+					tc_mantic_cierres on tc_mantic_cierres.id_cierre= pagos_venta.id_cierre
+				where 
+					pagos_venta.id_cierre = {idCierre} and tc_mantic_garantias.id_garantia_estatus = 6
+					and tc_mantic_garantias_detalles.cantidad> 0	
+					and 
+					(tc_mantic_ventas_detalles.registro between tc_mantic_cierres.registro and tc_mantic_cierres.termino)
+					order by
+				  tc_mantic_garantias.consecutivo, tc_mantic_ventas_detalles.codigo
       </select>
       <select id="abonosCaja">
         select distinct
@@ -7769,7 +7793,7 @@
 				  tc_mantic_cierres.id_cierre= {idCierre} and tc_mantic_cierres_retiros.id_abono= 2
       </select>
       <select id="efectivoFinal">
-        select 
+        select distinct
 				  tc_mantic_monedas.nombre, 
 				  tc_mantic_monedas.denominacion, tc_mantic_cierres_monedas.cantidad, tc_mantic_cierres_monedas.importe, tc_mantic_cierres_monedas.id_efectivo
   			from 
@@ -7782,7 +7806,7 @@
 				  tc_mantic_monedas.orden
       </select>
       <select id="fondoInicial">
-        select 
+        select distinct
 				  tc_mantic_monedas.nombre, 
 				  tc_mantic_monedas.denominacion, tc_mantic_cierres_monedas.cantidad, tc_mantic_cierres_monedas.importe, tc_mantic_cierres_monedas.id_efectivo
   			from 
@@ -7795,7 +7819,7 @@
 				  tc_mantic_monedas.orden
       </select>
       <select id="aperturaCaja">
-        select 
+        select distinct
 				  tc_mantic_monedas.nombre, 
 				  tc_mantic_monedas.denominacion, tc_mantic_cierres_monedas.cantidad, tc_mantic_cierres_monedas.importe, tc_mantic_cierres_monedas.id_efectivo
   			from 
@@ -7824,7 +7848,7 @@
           tc_mantic_ventas.consecutivo
       </select>
       <select id="diferenciaVsCapturado">
-        select 
+        select distinct 
           tc_mantic_cierres_cajas.*, 
           tc_mantic_tipos_medios_pagos.clave,
           tc_mantic_tipos_medios_pagos.nombre,
