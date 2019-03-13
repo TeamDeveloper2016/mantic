@@ -41,7 +41,7 @@ public class Alerta extends IBaseAttribute implements Serializable {
 			try {
 				params=new HashMap<>();
     		if(JsfBase.isAdminEncuestaOrAdmin()) {
-					regresar.append("<br/><div class=\"\"><table class=\"janal-color-cyan janal-wid-100\"><thead><tr><th class=\"janal-column-center\">Empresa</th><th class=\"janal-column-center\">Caja</th><th class=\"janal-column-center\">Ventas</th><th class=\"janal-column-center\">Saldo</th><th class=\"janal-column-center\">Liimite</th><th class=\"janal-column-center\">Registro</th></tr></thead><tbody>");
+					regresar.append("<br/><div class=\"\"><table class=\"janal-color-cyan janal-wid-100\"><thead><tr><th class=\"janal-column-center\">Empresa</th><th class=\"janal-column-center\">Caja</th><th class=\"janal-column-center\">Ventas</th><th class=\"janal-column-center\">Saldo</th><th class=\"janal-column-center\">Limite</th><th class=\"janal-column-center\">Registro</th></tr></thead><tbody>");
 					if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 						params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 					else

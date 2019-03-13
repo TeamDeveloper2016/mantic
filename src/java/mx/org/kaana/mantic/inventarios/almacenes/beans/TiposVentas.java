@@ -156,16 +156,18 @@ public class TiposVentas implements Serializable {
 	}
 
 	public void toUpdateUtilidad(double utilidadad) {
-		 this.precio= Numero.toRedondearSat(((utilidadad/ 100)+ 1)* this.costo);
+		 this.precio= Numero.toRedondearSat(((utilidadad/ 100)+ 1)* (this.costo* ((this.iva/100)+ 1)));
 		 this.toCalculate();
 	}
 	
   public void toCalculate() {
   	this.precio  = Numero.toRedondearSat(this.precio);
 		//this.utilidad= Numero.toRedondearSat((this.precio*100/(this.costo<= 0? 1: this.costo))- 100);
-	  this.impuesto= Numero.toRedondearSat((this.precio* ((this.iva/100)+ 1))- this.precio);
-		this.importe = Numero.toRedondearSat(this.precio);
-		this.utilidad= Numero.toRedondearSat(((this.costo* ((this.iva/100)+ 1))* 100)/ this.precio);
+	  this.impuesto = Numero.toRedondearSat((this.precio* ((this.iva/100)+ 1))- this.precio);
+		this.importe  = Numero.toRedondearSat(this.precio);
+		double calculo= (this.costo* ((this.iva/100)+ 1));
+		// al precio de neto se le quita el costo+ iva y lo que queda se calcula la utilidad bruta 
+		this.utilidad = Numero.toRedondearSat((this.precio- calculo)* 100/ calculo);
 	}	
 	
 	public ETiposVentas toEnum() {

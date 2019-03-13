@@ -1923,7 +1923,7 @@
 					tc_mantic_articulos.stock,
 					tc_mantic_articulos.minimo,
 					tc_mantic_articulos.maximo,
-				  (((tc_mantic_articulos.precio* (tc_mantic_articulos.iva/ 100+ 1))* 100)/ tc_mantic_articulos.menudeo) as utilidad,
+				  (((tc_mantic_articulos.menudeo- ((tc_mantic_articulos.precio* (tc_mantic_articulos.iva/ 100+ 1))))* 100)/ ((tc_mantic_articulos.precio* (tc_mantic_articulos.iva/ 100+ 1)))) as utilidad,
 					tc_mantic_articulos.sat,
 					if(tc_mantic_articulos.id_vigente= 1, "Si", 'NO') as vigente,
 					tc_mantic_articulos.fecha,
