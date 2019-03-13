@@ -291,13 +291,17 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	public void doVerificaArticulosCotizacion(){
 		try {
-			if(!getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()> 0){
-				UIBackingUtilities.execute("janal.bloquear();");
-				UIBackingUtilities.execute("PF('dlgCotizacion').show();");
+			if(!(this.attrs.get("tipo").toString().equals(EEstatusVentas.APARTADOS.name()) || this.attrs.get("tipo").toString().equals(EEstatusVentas.COTIZACION.name()))){
+				if(!getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()> 0){
+					UIBackingUtilities.execute("janal.bloquear();");
+					UIBackingUtilities.execute("PF('dlgCotizacion').show();");
+				} // if
+				else{
+					JsfBase.addMessage("Cotización", "No es posible generar una cotización sin articulos", ETipoMensaje.ERROR);
+				} // else
 			} // if
-			else{
-				JsfBase.addMessage("Cotización", "No es posible generar una cotización sin articulos", ETipoMensaje.ERROR);
-			} // else
+			else
+				JsfBase.addMessage("Cotización", "No es posible generar una cotización sobre un apartado o una misma cotización", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
