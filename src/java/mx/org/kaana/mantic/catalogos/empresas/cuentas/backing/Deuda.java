@@ -603,7 +603,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 			this.seleccionadosCredito= new ArrayList<>();
 			params= new HashMap<>();
 			params.put("idProveedor", this.attrs.get("idProveedor"));						
-			params.put("idCreditoEstatus", EEstatusEmpresas.PARCIALIZADA.getIdEstatusEmpresa());																	
+			params.put("idCreditoEstatus", EEstatusEmpresas.PARCIALIZADA.getIdEstatusEmpresa() + "," + EEstatusEmpresas.PROGRAMADA.getIdEstatusEmpresa());																	
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
