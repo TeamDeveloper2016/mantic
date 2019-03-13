@@ -32,6 +32,8 @@ import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
+import mx.org.kaana.mantic.ventas.caja.cierres.beans.CorteCaja;
+import mx.org.kaana.mantic.ventas.caja.cierres.reglas.CreateCorteCaja;
 import org.primefaces.context.RequestContext;
 
 @Named(value = "manticVentasCajaCierresFiltro")
@@ -59,7 +61,10 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idCierre", JsfBase.getFlashAttribute("idCierre"));
+      this.attrs.put("idCierreAnterior", JsfBase.getFlashAttribute("idCierreAnterior"));
 			toLoadCatalog();
+      if(this.attrs.get("idCierreAnterior")!= null && this.attrs.get("idCierre")!= null) 
+			  doPrintCorte();
       if(this.attrs.get("idCierre")!= null) 
 			  this.doLoad();
     } // try
@@ -344,5 +349,19 @@ public class Filtro extends IBaseFilter implements Serializable {
 	public String toColor(Entity row) {
 		return row.toDouble("efectivo")> row.toDouble("limite")? "janal-tr-orange": "";
 	} 
+  
+  public void doPrintCorte() {  
+    CreateCorteCaja corte  = null;
+    try {			
+      CorteCaja corteCaja= new CorteCaja(Long.valueOf(this.attrs.get("idCierreAnterior").toString()), Long.valueOf(this.attrs.get("idCierre").toString()));			
+      corte= new CreateCorteCaja(corteCaja);
+      UIBackingUtilities.execute("jsTicket.imprimirTicket('" + corte.getPrincipal().getClave() + corte.getCorte().getResumenCorte().toString("consecutivo") +"','"  + corte.toHtml() + "');");
+      UIBackingUtilities.execute("jsTicket.clicTicket();");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+  } // doAccion
 
 }
