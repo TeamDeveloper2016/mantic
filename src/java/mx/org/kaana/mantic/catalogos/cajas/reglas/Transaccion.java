@@ -15,6 +15,8 @@ import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Cierre;
 import org.hibernate.Session;
 
 public class Transaccion extends Cierre {
+
+	private static final long serialVersionUID=-2683257979185702406L;
 	
   private TcManticCajasDto caja;
   private String messageError;

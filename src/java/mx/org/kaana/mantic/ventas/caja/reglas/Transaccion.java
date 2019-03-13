@@ -386,8 +386,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 					abono= this.ventaFinalizada.getTotales().getVales();
 					break;
 			} // switch			
-			cierreCaja.setAcumulado(cierreCaja.getAcumulado() + abono);			
-			cierreCaja.setSaldo(cierreCaja.getDisponible() + cierreCaja.getAcumulado());
+			cierreCaja.setAcumulado(cierreCaja.getAcumulado()+ abono);			
+			cierreCaja.setSaldo(cierreCaja.getDisponible()+ cierreCaja.getAcumulado());
 			DaoFactory.getInstance().update(sesion, cierreCaja);		
 		} // try
 		finally{
@@ -395,7 +395,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		} // finally
 	} // toCierreActivo
 	
-	private TcManticCierresDto toCierreNuevo(Session sesion) throws Exception{
+	private TcManticCierresDto toCierreNuevo(Session sesion) throws Exception { 
 		TcManticCierresDto regresar= null;
 		TcManticCierresDto registro= null;
 		Cierre cierreNuevo         = null;		

@@ -175,8 +175,8 @@ public class Transaccion extends IBaseTnx{
 			params.put("idCierre", this.idCierreVigente);
 			params.put("medioPago", idTipoMedioPago);
 			cierreCaja= (TcManticCierresCajasDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresCajasDto.class, "TcManticCierresCajasDto", "cajaMedioPago", params);			
-			cierreCaja.setAcumulado(cierreCaja.getAcumulado() - this.garantia.getTotales().getPago());			
-			cierreCaja.setSaldo(cierreCaja.getDisponible() + cierreCaja.getAcumulado());
+			cierreCaja.setAcumulado(cierreCaja.getAcumulado()- this.garantia.getTotales().getPago());			
+			cierreCaja.setSaldo(cierreCaja.getDisponible()+ cierreCaja.getAcumulado());
 			DaoFactory.getInstance().update(sesion, cierreCaja);
 		} // try
 		catch (Exception e) {			
