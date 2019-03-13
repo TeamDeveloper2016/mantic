@@ -194,9 +194,9 @@ public class CreateCorteCaja {
       regresar.append("<br>");
     }
     regresar.append("<br>");
-    regresar.append("<table style=\"width: 290px;\">");		
-    regresar.append("<tbody>");
     if(this.corte.getGarantias().size()>0){
+      regresar.append("<table style=\"width: 290px;\">");		
+      regresar.append("<tbody>");
       for(Entity garantia : this.corte.getGarantias()){
         regresar.append("<tr>");
         regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 98px; max-width: 98px;\">").append(garantia.toString("consecutivo")).append("</td>");
@@ -204,10 +204,10 @@ public class CreateCorteCaja {
         regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 96px; max-width: 96px;\"> $  ").append(garantia.toString("total")).append("</td>");
         regresar.append("</tr>");
       } // for	
+      regresar.append("</tbody>");
+      regresar.append("</table>");
+      regresar.append("</p>");
     }
-    regresar.append("</tbody>");
-    regresar.append("</table>");
-    regresar.append("</p>");
     return regresar.toString();
 	} // toDevolucionesGarantias
   
@@ -223,13 +223,15 @@ public class CreateCorteCaja {
     regresar.append("Folio ingreso ").append(this.corte.getResumenCorte().toString("abonoInicial")).append(" al ").append(this.corte.getResumenCorte().toString("abonoFinal"));		
 		regresar.append("<br>").append("</p>");
     regresar.append("<br>");
-    regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 12px;font-weight: bold;line-height:0px\">");
-    regresar.append("Ingresos:");		
-    regresar.append("</p>");
-    regresar.append("<p style=\"width: 290px;text-align: left;align-content: center;font-family: sans-serif;font-size: 10px;\">");
-    regresar.append("<table style=\"width: 290px;\">");		
-    regresar.append("<tbody>");
     if(this.corte.getAbonos().size()>0){
+      regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 12px;font-weight: bold;line-height:0px\">");
+      regresar.append("Ingresos:");		
+      regresar.append("</p>");
+    }
+    if(this.corte.getAbonos().size()>0){
+      regresar.append("<p style=\"width: 290px;text-align: left;align-content: center;font-family: sans-serif;font-size: 10px;\">");
+      regresar.append("<table style=\"width: 290px;\">");		
+      regresar.append("<tbody>");
       for(Entity abono : this.corte.getAbonos()){
         regresar.append("<tr>");
         regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 98px; max-width: 98px;\">").append(abono.toString("consecutivo")).append("</td>");
@@ -237,21 +239,18 @@ public class CreateCorteCaja {
         regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 96px; max-width: 96px;\"> $  ").append(abono.toString("importe")).append("</td>");
         regresar.append("</tr>");
       } // for	
+      regresar.append("</tbody>");
+      regresar.append("</table>");
+      regresar.append("</p>");
     }
-    else{
-      regresar.append("<tr>");
-      regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 290px; max-width: 290px;\">").append("No existen abonos").append("</td>");
-      regresar.append("</tr>");
-    }
-    regresar.append("</tbody>");
-    regresar.append("</table>");
-    regresar.append("</p>");
-    regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 12px;font-weight: bold;line-height:0px\">");
-    regresar.append("Retiros:");		
-    regresar.append("</p>");
-    regresar.append("<p style=\"width: 290px;text-align: left;align-content: center;font-family: sans-serif;font-size: 10px;\">");
-    regresar.append("<table style=\"width: 290px;\" cellpadding=\" 0\" cellspacing=\"0\" WORD-BREAK:BREAK-ALL>");		
     if(this.corte.getRetiros().size()>0){
+      regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 12px;font-weight: bold;line-height:0px\">");
+      regresar.append("Retiros:");		
+      regresar.append("</p>");
+    }
+    if(this.corte.getRetiros().size()>0){
+      regresar.append("<p style=\"width: 290px;text-align: left;align-content: center;font-family: sans-serif;font-size: 10px;\">");
+      regresar.append("<table style=\"width: 290px;\" cellpadding=\" 0\" cellspacing=\"0\" WORD-BREAK:BREAK-ALL>");		
       for(Entity retiro : this.corte.getRetiros()){
         regresar.append("<tr>");
         regresar.append("<table style=\"width: 280px;\">");		
@@ -263,22 +262,22 @@ public class CreateCorteCaja {
         regresar.append("</tr>");
         regresar.append("<tr style=\"width: 280px;\">");
         regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 68px; max-width: 68px;\">").append("Concepto:").append("</td>");
-        regresar.append("<td colspan=\"2\" style=\"font-family: sans-serif;font-size: 10px;width: 212px; max-width: 212px; overflow: hidden; text-overflow: ellipsis;\">").append(retiro.toString("concepto")).append("</td>");
-         regresar.append("</tr>");
+        regresar.append("<td colspan=\"2\" style=\"font-family: sans-serif;font-size: 9px;width: 212px; max-width: 212px;\">");
+        regresar.append("<p align=\"justify\">");
+        regresar.append(retiro.toString("concepto"));
+        regresar.append("</p>");
+        regresar.append("</td>");
+        regresar.append("<td>").append("</td>");
+        regresar.append("</tr>");
         regresar.append("</tr>");
         regresar.append("</tbody>");
         regresar.append("</table>");
         regresar.append("</tr>");
       } // for	
+      regresar.append("</tbody>");
+      regresar.append("</table>");
+      regresar.append("</p>");
     }
-    else{
-      regresar.append("<tr>");
-      regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 290px; max-width: 290px;\">").append("No existen retiros").append("</td>");
-      regresar.append("</tr>");
-    }
-    regresar.append("</tbody>");
-    regresar.append("</table>");
-    regresar.append("</p>");
     return regresar.toString();
 	} // toRetirosIngresos
   
