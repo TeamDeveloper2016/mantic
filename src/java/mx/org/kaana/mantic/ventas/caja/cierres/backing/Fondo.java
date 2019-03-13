@@ -27,7 +27,6 @@ import mx.org.kaana.mantic.ventas.caja.cierres.beans.Denominacion;
 import mx.org.kaana.mantic.ventas.caja.cierres.beans.Importe;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Cierre;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.CreateCorteCaja;
-import org.primefaces.context.RequestContext;
 
 /**
  *@company KAANA
@@ -105,6 +104,7 @@ public class Fondo extends IBaseAttribute implements Serializable {
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
 				UIBackingUtilities.execute("janal.alert('Se gener\\u00F3 correctamente la apertura de caja del consecutivo: "+ cierre.getConsecutivo()+ "');");
   			JsfBase.setFlashAttribute("idCierre", this.attrs.get("idCierre"));
+  			JsfBase.setFlashAttribute("idCierreAnterior", this.attrs.get("idCierreAnterior"));
 			} // if
 			else 
 				JsfBase.addMessage("Ocurrió un error al realizar el registro de fonde de caja.", ETipoMensaje.ERROR);      			
