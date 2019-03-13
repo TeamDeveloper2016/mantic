@@ -180,7 +180,10 @@ public class Accion extends IBaseVenta implements Serializable {
     try {				
 			transaccion= new Transaccion(loadDetalleGarantia());			
 			if (transaccion.ejecutar(EAccion.REPROCESAR)) {
-				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
+				if(JsfBase.isCajero())
+					regresar= "/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR);
+				else
+					regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
 				JsfBase.addMessage("Se finalizo la garantia.", ETipoMensaje.INFORMACION);
 				this.setAdminOrden(new AdminGarantia(new TicketVenta()));
 				this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
