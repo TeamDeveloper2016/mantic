@@ -7,6 +7,42 @@
   </model>
 
   <dml>
+    <unit id="TcManticMovimientosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_movimientos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_movimientos
+        where      
+          id_movimiento = {idMovimiento}
+      </select>
+    </unit>	
+    <unit id="TcManticTiposMovimientosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_movimientos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_movimientos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>			
     <unit id="TcManticArticulosTiposDto">
       <select id="row">
         select      

@@ -65,10 +65,13 @@ public class Transaccion extends IBaseTnx implements Serializable  {
   					bitacora= new TcManticCierresBitacoraDto("RETIRO DE EFECTIVO", -1L, this.idCierre, JsfBase.getIdUsuario(), 2L);
 					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 					caja= (TcManticCierresCajasDto)DaoFactory.getInstance().findFirst(TcManticCierresCajasDto.class, "caja", bitacora.toMap());
-					if(this.retiro.getIdAbono().equals(1L))
+					if(this.retiro.getIdAbono().equals(1L)) {
   					caja.setSaldo(Numero.toRedondearSat(caja.getSaldo()+ Math.abs(this.retiro.getImporte())));
+						caja.setAcumulado(Numero.toRedondearSat(caja.getAcumulado()+ Math.abs(this.retiro.getImporte())));
+					} // if	
 					else {
   					caja.setSaldo(Numero.toRedondearSat(caja.getSaldo()- Math.abs(this.retiro.getImporte())));
+						caja.setAcumulado(Numero.toRedondearSat(caja.getAcumulado()- Math.abs(this.retiro.getImporte())));
   					this.retiro.setImporte(this.retiro.getImporte()* -1L);
 					} // else
 					regresar= DaoFactory.getInstance().update(sesion, caja)>= 1L;
@@ -114,10 +117,14 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 					  bitacora= new TcManticCierresBitacoraDto("RETIRO DE EFECTIVO CANCELADO POR "+ JsfBase.getAutentifica().getCredenciales().getCuenta(), -1L, this.idCierre, JsfBase.getIdUsuario(), 2L);
 					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 					caja= (TcManticCierresCajasDto)DaoFactory.getInstance().findFirst(TcManticCierresCajasDto.class, "caja", bitacora.toMap());
-					if(this.retiro.getIdAbono().equals(1L))
+					if(this.retiro.getIdAbono().equals(1L)) {
   					caja.setSaldo(Numero.toRedondearSat(caja.getSaldo()- Math.abs(this.retiro.getImporte())));
-					else
+						caja.setAcumulado(Numero.toRedondearSat(caja.getAcumulado()- Math.abs(this.retiro.getImporte())));
+					} // if	
+					else {
   					caja.setSaldo(Numero.toRedondearSat(caja.getSaldo()+ Math.abs(this.retiro.getImporte())));
+						caja.setAcumulado(Numero.toRedondearSat(caja.getAcumulado()+ Math.abs(this.retiro.getImporte())));
+					} // else	
 					regresar= DaoFactory.getInstance().update(sesion, caja)>= 1L;
 					this.toCheckCajaAlerta(sesion, caja);
 					break;
