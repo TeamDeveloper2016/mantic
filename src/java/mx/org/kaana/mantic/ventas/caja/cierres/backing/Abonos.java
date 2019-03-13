@@ -26,7 +26,6 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticCierresRetirosDto;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Transaccion;
-import org.primefaces.context.RequestContext;
 
 /**
  *@company KAANA
@@ -103,7 +102,10 @@ public class Abonos extends IBaseAttribute implements Serializable {
 			transaccion = new Transaccion((Long)this.attrs.get("idCierre"), abono);
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.ASIGNAR)) {
- 				  regresar = "/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR);
+					if(JsfBase.isCajero())
+ 				    regresar = "/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR);
+ 				  else
+					  regresar = "ambos".concat(Constantes.REDIRECIONAR);
      			JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));
 		    	JsfBase.setFlashAttribute("idCaja", this.attrs.get("idCaja"));
  	        JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));

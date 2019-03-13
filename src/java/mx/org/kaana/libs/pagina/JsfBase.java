@@ -24,6 +24,7 @@ public class JsfBase extends JsfUtilities {
   private static final String ADMIN  = "ADMINISTRADOR";
   private static final String ADMINS = "ADMINISTRADORDEENCUESTA";
   private static final String GERENTE= "GERENTE";
+  private static final String CAJERO= "CAJERO";
 
   public static Autentifica getAutentifica() {
     return (Autentifica) getSession().getAttribute(Constantes.ATRIBUTO_AUTENTIFICA);
@@ -49,6 +50,17 @@ public class JsfBase extends JsfUtilities {
     boolean regresar = false;
     try {
       regresar = Cadena.eliminaCaracter(getAutentifica().getPersona().getDescripcionPerfil(), ' ').toUpperCase().equals(GERENTE);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    return regresar;
+  } // isAdminEncuesta
+
+  public static boolean isCajero() throws Exception {
+    boolean regresar = false;
+    try {
+      regresar = Cadena.eliminaCaracter(getAutentifica().getPersona().getDescripcionPerfil(), ' ').toUpperCase().equals(CAJERO);
     } // try
     catch (Exception e) {
       throw e;

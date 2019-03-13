@@ -102,7 +102,10 @@ public class Retiros extends IBaseAttribute implements Serializable {
 			transaccion = new Transaccion((Long)this.attrs.get("idCierre"), retiro);
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {
- 				  regresar = "/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR);
+					if(JsfBase.isCajero())
+ 				    regresar = "/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR);
+ 				  else
+					  regresar = "ambos".concat(Constantes.REDIRECIONAR);
      			JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));
 		    	JsfBase.setFlashAttribute("idCaja", this.attrs.get("idCaja"));
  	        JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));
