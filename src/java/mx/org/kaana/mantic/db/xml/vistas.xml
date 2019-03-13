@@ -1238,7 +1238,7 @@
 				and 
 					tc_mantic_proveedores.id_proveedor= {idProveedor}
 				and 
-					tc_mantic_creditos_notas.id_credito_estatus= {idCreditoEstatus}
+					tc_mantic_creditos_notas.id_credito_estatus in ({idCreditoEstatus})
 				order by 
 					tc_mantic_creditos_notas.registro desc
 			</select>
@@ -4793,7 +4793,7 @@
 				and 
 					tc_mantic_proveedores.id_proveedor= {idProveedor}
 				and 
-					tc_mantic_empresas_deudas.id_empresa_estatus= {idEmpresaEstatus}
+					tc_mantic_empresas_deudas.id_empresa_estatus in ({idEmpresaEstatus})
 				order by 
 					tc_mantic_notas_entradas.registro desc
 			</select>
