@@ -1,10 +1,14 @@
 package mx.org.kaana.mantic.ventas.caja.cierres.reglas;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.procesos.acceso.beans.Sucursal;
+import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
@@ -151,27 +155,27 @@ public class CreateCorteCaja {
     regresar.append("<tbody>");
     regresar.append("<tr>");
     regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\">").append("Efectivo: ").append("</td>");
-    regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\"> $  ").append(this.corte.getResumenCorte().toString("resumenEfectivo")).append("</td>");
+    regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\">").append(formato(this.corte.getResumenCorte().toString("resumenEfectivo"))).append("</td>");
     regresar.append("</tr>");
     regresar.append("<tr>");
     regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\">").append("T. Crédito/debito: ").append("</td>");
-    regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\"> $  ").append(this.corte.getResumenCorte().toString("resumenTarjetas")).append("</td>");
+    regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\">").append(formato(this.corte.getResumenCorte().toString("resumenTarjetas"))).append("</td>");
     regresar.append("</tr>");
     regresar.append("<tr>");
     regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\">").append("Crédito: ").append("</td>");
-    regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\"> $  ").append(this.corte.getResumenCorte().toString("resumenTotalCredito")).append("</td>");
+    regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\">").append(formato(this.corte.getResumenCorte().toString("resumenTotalCredito"))).append("</td>");
     regresar.append("</tr>");
     regresar.append("<tr>");
     regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\">").append("Transferencia Bancaria: ").append("</td>");
-    regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\"> $  ").append(this.corte.getResumenCorte().toString("resumenTransferencia")).append("</td>");
+    regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\">").append(formato(this.corte.getResumenCorte().toString("resumenTransferencia"))).append("</td>");
     regresar.append("</tr>");
     regresar.append("<tr>");
     regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\">").append("Devoluciones: ").append("</td>");
-    regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\"> $  -").append(this.corte.getResumenCorte().toString("totalGarantias")).append("</td>");
+    regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\"> -").append(formato(this.corte.getResumenCorte().toString("totalGarantias"))).append("</td>");
     regresar.append("</tr>");
     regresar.append("<tr>");
     regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\">").append("Total: ").append("</td>");
-    regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\"> $  ").append(Numero.formatear(Numero.MONEDA_SAT_DECIMALES, Numero.getDouble(this.corte.getResumenCorte().toString("totalSinDevoluciones")))).append("</td>");
+    regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\"> ").append(formato(this.corte.getResumenCorte().toString("totalSinDevoluciones"))).append("</td>");
     regresar.append("</tr>");
     regresar.append("</tbody>");
     regresar.append(toFinishTable());
@@ -203,7 +207,7 @@ public class CreateCorteCaja {
         regresar.append("<tr>");
         regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 98px; max-width: 98px;\">").append(garantia.toString("consecutivo")).append("</td>");
         regresar.append("<td align=\"center\" style=\"font-family: sans-serif;font-size: 10px;width: 96px; max-width: 96px;\">").append(" por ").append("</td>");
-        regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 96px; max-width: 96px;\"> $  ").append(garantia.toString("total")).append("</td>");
+        regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 96px; max-width: 96px;\">").append(formato(garantia.toString("total"))).append("</td>");
         regresar.append("</tr>");
       } // for	
       regresar.append("</tbody>");
@@ -238,7 +242,7 @@ public class CreateCorteCaja {
         regresar.append("<tr>");
         regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 98px; max-width: 98px;\">").append(abono.toString("consecutivo")).append("</td>");
         regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 96px; max-width: 96px;\">").append(abono.toString("cuenta")).append("</td>");
-        regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 96px; max-width: 96px;\"> $  ").append(abono.toString("importe")).append("</td>");
+        regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 96px; max-width: 96px;\">").append(formato(abono.toString("importe"))).append("</td>");
         regresar.append("</tr>");
       } // for	
       regresar.append("</tbody>");
@@ -260,7 +264,7 @@ public class CreateCorteCaja {
         regresar.append("<tr>");
         regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 68px; max-width: 68px;\">").append(retiro.toString("consecutivo")).append("</td>");
         regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 111px; max-width: 111px;\">").append(retiro.toString("cuenta")).append("</td>");
-        regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 111px; max-width: 111px;\"> $  ").append(retiro.toString("importe")).append("</td>");
+        regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 111px; max-width: 111px;\">").append(formato(retiro.toString("importe"))).append("</td>");
         regresar.append("</tr>");
         regresar.append("<tr style=\"width: 290px;\">");
         regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 68px; max-width: 68px;\">").append("Concepto:").append("</td>");
@@ -296,7 +300,7 @@ public class CreateCorteCaja {
       for(Entity diferencia : this.corte.getDiferenciasMediosPagos()){
         regresar.append("<tr>");
         regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 195px; max-width: 195px;\">").append(diferencia.toString("clave")).append("  ").append(diferencia.toString("nombre")).append("</td>");
-         regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 95px; max-width: 95px;\"> $  ").append(diferencia.toString("diferenciaCapturado")).append("</td>");
+         regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 95px; max-width: 95px;\">").append(formato(diferencia.toString("diferenciaCapturado"))).append("</td>");
         regresar.append("</tr>");
       } // for	
     }
@@ -323,9 +327,9 @@ public class CreateCorteCaja {
     if(this.corte.getAperturaCaja().size()>0){
       for(Entity apertura : this.corte.getAperturaCaja()){
         regresar.append("<tr>");
-        regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 98px;\"> $ ").append(apertura.toString("denominacion")).append("</td>");
+        regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 98px;\">").append(formato(apertura.toString("denominacion"))).append("</td>");
         regresar.append("<td align=\"center\" style=\"font-family: sans-serif;font-size: 10px;width: 96px; max-width: 96px;\">").append(apertura.toString("cantidad")).append("</td>");
-        regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 96px; max-width: 96px;\"> $  ").append(apertura.toString("importe")).append("</td>");
+        regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 96px; max-width: 96px;\">").append(formato(apertura.toString("importe"))).append("</td>");
         regresar.append("</tr>");
       } // for	
     }
@@ -904,4 +908,13 @@ public class CreateCorteCaja {
 		regresar.append("f8Bugqi2QAuI/oAAAAASUVORK5CYII=");		
 		return regresar.toString();
 	} // toImage
+  
+  public String formato(String value) {
+    String regresar = "";
+    if (value != null) {
+      regresar = value.toString();
+      regresar = Numero.formatear(Numero.MONEDA_SAT_DECIMALES, Numero.getDouble(regresar));  
+    } // if	
+    return regresar;
+  }
 }
