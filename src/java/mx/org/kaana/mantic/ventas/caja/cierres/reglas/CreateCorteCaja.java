@@ -5,6 +5,7 @@ import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.procesos.acceso.beans.Sucursal;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.ventas.caja.cierres.beans.CorteCaja;
@@ -110,7 +111,8 @@ public class CreateCorteCaja {
     regresar.append("<br>");		
     regresar.append("Folio:").append(this.corte.getResumenCorte().toString("consecutivo"));
     regresar.append("<br>");		
-    regresar.append("Cajero:");
+    regresar.append("Cajero(s):");
+    regresar.append("<br>");	
     regresar.append(toCajerosCierre());
 		regresar.append("</p>");		
     return regresar.toString();
@@ -169,7 +171,7 @@ public class CreateCorteCaja {
     regresar.append("</tr>");
     regresar.append("<tr>");
     regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\">").append("Total: ").append("</td>");
-    regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\"> $  ").append(this.corte.getResumenCorte().toString("resumenTotal")).append("</td>");
+    regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\"> $  ").append(Numero.formatear(Numero.MONEDA_SAT_DECIMALES, Numero.getDouble(this.corte.getResumenCorte().toString("totalSinDevoluciones")))).append("</td>");
     regresar.append("</tr>");
     regresar.append("</tbody>");
     regresar.append(toFinishTable());
@@ -253,16 +255,16 @@ public class CreateCorteCaja {
       regresar.append("<table style=\"width: 290px;\" cellpadding=\" 0\" cellspacing=\"0\" WORD-BREAK:BREAK-ALL>");		
       for(Entity retiro : this.corte.getRetiros()){
         regresar.append("<tr>");
-        regresar.append("<table style=\"width: 280px;\">");		
+        regresar.append("<table style=\"width: 290px;\">");		
         regresar.append("<tbody>");
         regresar.append("<tr>");
         regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 68px; max-width: 68px;\">").append(retiro.toString("consecutivo")).append("</td>");
-        regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 106px; max-width: 106px;\">").append(retiro.toString("cuenta")).append("</td>");
-        regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 106px; max-width: 106px;\"> $  ").append(retiro.toString("importe")).append("</td>");
+        regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 111px; max-width: 111px;\">").append(retiro.toString("cuenta")).append("</td>");
+        regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 111px; max-width: 111px;\"> $  ").append(retiro.toString("importe")).append("</td>");
         regresar.append("</tr>");
-        regresar.append("<tr style=\"width: 280px;\">");
+        regresar.append("<tr style=\"width: 290px;\">");
         regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 68px; max-width: 68px;\">").append("Concepto:").append("</td>");
-        regresar.append("<td colspan=\"2\" style=\"font-family: sans-serif;font-size: 9px;width: 212px; max-width: 212px;\">");
+        regresar.append("<td colspan=\"2\" style=\"font-family: sans-serif;font-size: 9px;width: 222px; max-width: 222px;\">");
         regresar.append("<p align=\"justify\">");
         regresar.append(retiro.toString("concepto"));
         regresar.append("</p>");
