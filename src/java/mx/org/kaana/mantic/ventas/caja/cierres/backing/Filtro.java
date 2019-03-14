@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -351,9 +352,25 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} 
   
   public void doPrintCorte() {  
-    CreateCorteCaja corte  = null;
-    try {			
-      CorteCaja corteCaja= new CorteCaja(Long.valueOf(this.attrs.get("idCierreAnterior").toString()), Long.valueOf(this.attrs.get("idCierre").toString()));			
+    CreateCorteCaja corte      = null;
+    Long idCierre              = -1L;
+    Long idCierreNuevo         = -1L;
+    Map<String, Object> params = null;
+    Entity seleccionado        = null;
+    try {		
+      if(this.attrs.get("seleccionado")!=null){
+        seleccionado = (Entity)this.attrs.get("seleccionado");
+        idCierre =  seleccionado.toLong("idCierre");
+        params = new HashMap<>();
+        params.put("idCaja", seleccionado.toLong("idCaja"));
+        params.put("orden", seleccionado.toLong("orden"));
+        idCierreNuevo = ((Entity)DaoFactory.getInstance().toEntity("VistaCierresCajasDto", "cierrePosterior", params)).toLong("idCierre");
+      }
+      else{
+        idCierre = Long.valueOf(this.attrs.get("idCierreAnterior").toString());//por que viene de regreso de fondo
+        idCierreNuevo = Long.valueOf(this.attrs.get("idCierre").toString());
+      }
+      CorteCaja corteCaja= new CorteCaja(idCierre, idCierreNuevo);			
       corte= new CreateCorteCaja(corteCaja);
       UIBackingUtilities.execute("jsTicket.imprimirTicket('" + corte.getPrincipal().getClave() + corte.getCorte().getResumenCorte().toString("consecutivo") +"','"  + corte.toHtml() + "');");
       UIBackingUtilities.execute("jsTicket.clicTicket();");
@@ -362,6 +379,9 @@ public class Filtro extends IBaseFilter implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
+    finally {
+			Methods.clean(params);
+		} // finally
   } // doAccion
 
 }
