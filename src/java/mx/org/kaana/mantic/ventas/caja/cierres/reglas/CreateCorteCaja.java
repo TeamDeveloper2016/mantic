@@ -167,11 +167,11 @@ public class CreateCorteCaja {
     regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\">").append(formato(this.corte.getResumenCorte().toString("resumenTarjetas"))).append("</td>");
     regresar.append("</tr>");
     regresar.append("<tr>");
-    regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\">").append("Crédito: ").append("</td>");
+    regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\">").append("Ventas a crédito: ").append("</td>");
     regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\">").append(formato(this.corte.getResumenCorte().toString("resumenTotalCredito"))).append("</td>");
     regresar.append("</tr>");
     regresar.append("<tr>");
-    regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\">").append("Transferencia Bancaria: ").append("</td>");
+    regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\">").append("Transferencia bancaria: ").append("</td>");
     regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\">").append(formato(this.corte.getResumenCorte().toString("resumenTransferencia"))).append("</td>");
     regresar.append("</tr>");
     regresar.append("<tr>");
