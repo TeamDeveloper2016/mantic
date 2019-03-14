@@ -6,11 +6,13 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
+import mx.org.kaana.mantic.db.dto.TcManticMovimientosDto;
 import org.hibernate.Session;
 
 public class Transaccion extends IBaseTnx {
@@ -52,6 +54,7 @@ public class Transaccion extends IBaseTnx {
 
 	private void toAffectAlmacenes(Session sesion) throws Exception {
 		Map<String, Object> params= null;
+		double stock              = this.articulo.getInicial();
 		try {
 			params=new HashMap<>();
 			this.almacen.setStock(this.articulo.getInicial());
@@ -71,6 +74,22 @@ public class Transaccion extends IBaseTnx {
 					DaoFactory.getInstance().insert(sesion, this.almacen);
 				} // if		
 			} // else	
+			
+			// generar un registro en la bitacora de movimientos de los articulos 
+			TcManticMovimientosDto movimiento= new TcManticMovimientosDto(
+			  "", // String consecutivo, 
+				6L, // Long idTipoMovimiento, 
+				JsfBase.getIdUsuario(), // Long idUsuario, 
+				this.almacen.getIdAlmacen(), // Long idAlmacen, 
+				-1L, // Long idMovimiento, 
+				stock, // Double cantidad, 
+				articulo.getIdArticulo(), // Long idArticulo, 
+				stock, // Double stock, 
+				Numero.toRedondearSat(stock), // Double calculo
+				null
+		  );
+			DaoFactory.getInstance().insert(sesion, movimiento);
+			
 		} // try
 		catch (Exception e) {
 			throw e;
