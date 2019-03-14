@@ -13,6 +13,7 @@ import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
@@ -25,6 +26,7 @@ import mx.org.kaana.mantic.db.dto.TcManticGarantiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticGarantiasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticGarantiasDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
+import mx.org.kaana.mantic.db.dto.TcManticMovimientosDto;
 import mx.org.kaana.mantic.db.dto.TrManticGarantiaMedioPagoDto;
 import mx.org.kaana.mantic.enums.EEstatusGarantias;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
@@ -311,17 +313,24 @@ public class Transaccion extends IBaseTnx{
 		Map<String, Object>params                    = null;
 		boolean regresar                             = false;
 		int count                                    = 0; 
+		boolean existeAlmacen                        = false;
+		Double stock                                 = 0D;
 		try {			
 			params= new HashMap<>();
 			for(Articulo articulo: this.garantia.getArticulos()){
+				existeAlmacen= false;
+				stock= 0D;
 				params.put(Constantes.SQL_CONDICION, "id_articulo="+ articulo.getIdArticulo()+ " and id_almacen="+ this.garantia.getTicketVenta().getIdAlmacen());
 				almacenArticulo= (TcManticAlmacenesArticulosDto) DaoFactory.getInstance().toEntity(sesion, TcManticAlmacenesArticulosDto.class, "TcManticAlmacenesArticulosDto", "row", params);
 				if(almacenArticulo!= null){
+					existeAlmacen= true;
 					almacenArticulo.setStock(almacenArticulo.getStock() + articulo.getCantidad());
 					regresar= DaoFactory.getInstance().update(sesion, almacenArticulo)>= 1L;
 				} // if
 				else
 					regresar= generarAlmacenArticulo(sesion, articulo.getIdArticulo(), articulo.getCantidad());
+				stock= existeAlmacen ? almacenArticulo.getStock() : (0 - articulo.getCantidad());
+				registrarMovimiento(sesion, this.garantia.getTicketVenta().getIdAlmacen(), articulo.getCantidad(), articulo.getIdArticulo(), stock);
 				if(regresar) {
 					articuloVenta= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, articulo.getIdArticulo());
 					articuloVenta.setStock(articuloVenta.getStock() + articulo.getCantidad());
@@ -341,6 +350,23 @@ public class Transaccion extends IBaseTnx{
 		} // finally
 		return regresar;
 	} // alterarStockArticulos
+	
+	private void registrarMovimiento(Session sesion, Long idAlmacen, Double cantidad, Long idArticulo, Double stock) throws Exception{
+		Double calculo= Numero.toRedondearSat(stock + cantidad) ;
+		TcManticMovimientosDto movimiento= new TcManticMovimientosDto(
+			  this.garantiaDto.getConsecutivo(), // String consecutivo, 
+				5L,                     // Long idTipoMovimiento, 
+				JsfBase.getIdUsuario(), // Long idUsuario, 
+				idAlmacen,              // Long idAlmacen, 
+				-1L,                    // Long idMovimiento, 
+				cantidad,               // Double cantidad, 
+				idArticulo,             // Long idArticulo, 
+				stock,                  // Double stock, 
+				calculo,                // Double calculo
+				null
+		  );
+			DaoFactory.getInstance().insert(sesion, movimiento); 
+	} // registrarMovimiento
 	
 	private boolean generarAlmacenArticulo(Session sesion, Long idArticulo, Double cantidad) throws Exception {
 		boolean regresar                             = false;
