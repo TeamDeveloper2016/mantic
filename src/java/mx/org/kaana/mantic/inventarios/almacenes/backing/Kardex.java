@@ -569,5 +569,68 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);			
 		} // catch				
 	} // doRecoveryArticulo
+
+	private Long toFindIdKey(String consecutivo, String proceso, String idXml) {
+		Long regresar= -1L;
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("consecutivo", consecutivo);
+			Entity entity= (Entity)DaoFactory.getInstance().toEntity(proceso, idXml, params);
+			if(entity!= null && !entity.isEmpty())
+				regresar= entity.getKey();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}
+		
+	public String doMoveSection() {
+		String regresar= null;
+		UISelectEntity consecutivo= (UISelectEntity)this.attrs.get("consecutivo");
+		switch(consecutivo.toLong("idTipoMovimiento").intValue()) {
+			case 1: // ENTRADAS
+				Long idNotaEntrada= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticNotasEntradasDto", "consecutivo");
+    		JsfBase.setFlashAttribute("idNotaEntrada", idNotaEntrada);
+    		JsfBase.setFlashAttribute("idOrdenCompra", this.toFindIdKey(String.valueOf(idNotaEntrada), "TcManticNotasEntradasDto", "orden"));
+				regresar= "/Paginas/Mantic/Inventarios/Entradas/accion?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs".concat(Constantes.REDIRECIONAR_AMPERSON);
+				break;
+			case 2: // VENTAS
+				Long idVenta= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticVentasDto", "consecutivo");
+    		JsfBase.setFlashAttribute("idVenta", idVenta);
+    		JsfBase.setFlashAttribute("idCliente", this.toFindIdKey(String.valueOf(idVenta), "TcManticVentasDto", "cliente"));
+				regresar= "/Paginas/Mantic/Ventas/accion".concat(Constantes.REDIRECIONAR);
+				break;
+			case 3: // DEVOLUCIONES
+				Long idDevolucion= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticDevolucionesDto", "consecutivo");
+    		JsfBase.setFlashAttribute("idDevolucion", idDevolucion);
+    		JsfBase.setFlashAttribute("idNotaEntrada", this.toFindIdKey(String.valueOf(idDevolucion), "TcManticDevolucionesDto", "nota"));
+				regresar= "/Paginas/Mantic/Inventarios/Devoluciones/accion".concat(Constantes.REDIRECIONAR);
+				break;
+			case 4: // TRASPASOS
+    		JsfBase.setFlashAttribute("idTransferencia", this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticTransferenciasDto", "consecutivo"));
+				regresar= "/Paginas/Mantic/Catalogos/Almacenes/Transferencias/normal".concat(Constantes.REDIRECIONAR);
+				break;
+			case 5: // GARANTIAS
+				Long idGarantia= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticGarantiasDto", "consecutivo");
+    		JsfBase.setFlashAttribute("idGarantia", idGarantia);
+    		JsfBase.setFlashAttribute("idVenta", this.toFindIdKey(String.valueOf(idGarantia), "TcManticGarantiasDto", "venta"));
+				regresar= "/Paginas/Mantic/Ventas/Garantias/accion".concat(Constantes.REDIRECIONAR);
+				break;
+			case 6: // CONTEOS
+    		JsfBase.setFlashAttribute("idArticulo", consecutivo.toLong("idArticulo"));
+    		JsfBase.setFlashAttribute("codigo", consecutivo.toString("propio"));
+				regresar= "/Paginas/Mantic/Catalogos/Inventarios/conteos".concat(Constantes.REDIRECIONAR);
+				break;
+		} // switch
+ 		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Almacenes/kardex");
+ 		JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);
+		return regresar;
+	}
 	
 }

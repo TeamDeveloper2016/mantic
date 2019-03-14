@@ -328,7 +328,10 @@
 									<h:outputText value="#{item.concepto}"/>
 								</p:column>   
 								<p:column headerText="Consecutivo" styleClass="janal-wid-8">
-									<h:outputText value="#{item.consecutivo}"/>
+									<p:commandLink action="#{manticInventariosAlmacenesKardex.doMoveSection}">
+										<f:setPropertyActionListener target="#{manticInventariosAlmacenesKardex.attrs.consecutivo}" value="#{item}"/>
+										<h:outputText value="#{item.consecutivo}"/>
+									</p:commandLink>
 								</p:column>   
 								<p:column headerText="Almacen">
 									<h:outputText value="#{item.almacen}"/>

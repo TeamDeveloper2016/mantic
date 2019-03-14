@@ -29,7 +29,6 @@ import mx.org.kaana.mantic.db.dto.TcManticDevolucionesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticDevolucionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
 import mx.org.kaana.mantic.db.dto.TcManticMovimientosDto;
-import mx.org.kaana.mantic.db.dto.TcManticNotasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import org.apache.log4j.Logger;

@@ -830,6 +830,22 @@
         where 
           id_garantia = {idGarantia} 
       </select>
+      <select id="consecutivo">
+        select      
+				  tc_mantic_garantias.id_garantia as id_key
+        from      
+          tc_mantic_garantias
+        where      
+          consecutivo = '{consecutivo}'
+      </select>
+      <select id="venta">
+        select      
+				  tc_mantic_garantias.id_venta as id_key
+        from      
+          tc_mantic_garantias
+        where      
+          id_garantia = {consecutivo}
+      </select>
     </unit>
     <unit id="TcManticGarantiasBitacoraDto">
       <select id="row">
@@ -1737,6 +1753,22 @@
           tc_mantic_devoluciones
         where 
           id_devolucion = {idDevolucion}
+      </select>
+      <select id="consecutivo">
+        select      
+				  tc_mantic_devoluciones.id_devolucion as id_key
+        from      
+          tc_mantic_devoluciones
+        where      
+          consecutivo = '{consecutivo}'
+      </select>
+      <select id="nota">
+        select      
+				  tc_mantic_devoluciones.id_nota_entrada as id_key
+        from      
+          tc_mantic_devoluciones
+        where      
+          id_devolucion = {consecutivo}
       </select>
     </unit>		
     <unit id="TcManticDevolucionesBitacoraDto">
@@ -4052,6 +4084,22 @@
 				  ejercicio= {ejercicio} 				  
 				  and id_empresa= {idEmpresa}				
 			</select>			
+      <select id="consecutivo">
+        select      
+				  tc_mantic_ventas.id_venta as id_key
+        from      
+          tc_mantic_ventas
+        where      
+          consecutivo = '{consecutivo}'
+      </select>
+      <select id="cliente">
+        select      
+				  tc_mantic_notas_entradas.id_cliente as id_key
+        from      
+          tc_mantic_ventas
+        where      
+          id_venta = {consecutivo}
+      </select>			
 			<update id="rows">
 				update 
 				  tc_mantic_ventas 
@@ -4191,6 +4239,22 @@
 				order by
 				  registro desc				
 			</select>
+      <select id="consecutivo">
+        select      
+				  tc_mantic_notas_entradas.id_nota_entrada as id_key
+        from      
+          tc_mantic_notas_entradas
+        where      
+          consecutivo = '{consecutivo}'
+      </select>
+      <select id="orden">
+        select      
+				  tc_mantic_notas_entradas.id_orden_compra as id_key
+        from      
+          tc_mantic_notas_entradas
+        where      
+          id_nota_entrada = {consecutivo}
+      </select>
     </unit>
     <unit id="TcManticOrdenesDetallesDto">
       <select id="row">
@@ -4670,6 +4734,14 @@
           tc_mantic_transferencias
         order by
           tc_mantic_transferencias.registro
+      </select>
+      <select id="consecutivo">
+        select      
+				  tc_mantic_transferencias.id_transferencia as id_key
+        from      
+          tc_mantic_transferencias
+        where      
+          consecutivo = '{consecutivo}'
       </select>
     </unit>
     <unit id="TcManticTransferenciasBitacoraDto">
