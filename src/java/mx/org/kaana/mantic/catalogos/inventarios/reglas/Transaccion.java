@@ -77,7 +77,7 @@ public class Transaccion extends IBaseTnx {
 			
 			// generar un registro en la bitacora de movimientos de los articulos 
 			TcManticMovimientosDto movimiento= new TcManticMovimientosDto(
-			  "", // String consecutivo, 
+			  "VER", // String consecutivo, 
 				6L, // Long idTipoMovimiento, 
 				JsfBase.getIdUsuario(), // Long idUsuario, 
 				this.almacen.getIdAlmacen(), // Long idAlmacen, 

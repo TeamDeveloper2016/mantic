@@ -598,28 +598,33 @@ public class Kardex extends IBaseAttribute implements Serializable {
 				Long idNotaEntrada= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticNotasEntradasDto", "consecutivo");
     		JsfBase.setFlashAttribute("idNotaEntrada", idNotaEntrada);
     		JsfBase.setFlashAttribute("idOrdenCompra", this.toFindIdKey(String.valueOf(idNotaEntrada), "TcManticNotasEntradasDto", "orden"));
+    		JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);
 				regresar= "/Paginas/Mantic/Inventarios/Entradas/accion?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs".concat(Constantes.REDIRECIONAR_AMPERSON);
 				break;
 			case 2: // VENTAS
 				Long idVenta= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticVentasDto", "consecutivo");
     		JsfBase.setFlashAttribute("idVenta", idVenta);
     		JsfBase.setFlashAttribute("idCliente", this.toFindIdKey(String.valueOf(idVenta), "TcManticVentasDto", "cliente"));
+    		JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);
 				regresar= "/Paginas/Mantic/Ventas/accion".concat(Constantes.REDIRECIONAR);
 				break;
 			case 3: // DEVOLUCIONES
 				Long idDevolucion= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticDevolucionesDto", "consecutivo");
     		JsfBase.setFlashAttribute("idDevolucion", idDevolucion);
     		JsfBase.setFlashAttribute("idNotaEntrada", this.toFindIdKey(String.valueOf(idDevolucion), "TcManticDevolucionesDto", "nota"));
+    		JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);
 				regresar= "/Paginas/Mantic/Inventarios/Devoluciones/accion".concat(Constantes.REDIRECIONAR);
 				break;
 			case 4: // TRASPASOS
     		JsfBase.setFlashAttribute("idTransferencia", this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticTransferenciasDto", "consecutivo"));
+    		JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);
 				regresar= "/Paginas/Mantic/Catalogos/Almacenes/Transferencias/normal".concat(Constantes.REDIRECIONAR);
 				break;
 			case 5: // GARANTIAS
 				Long idGarantia= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticGarantiasDto", "consecutivo");
     		JsfBase.setFlashAttribute("idGarantia", idGarantia);
     		JsfBase.setFlashAttribute("idVenta", this.toFindIdKey(String.valueOf(idGarantia), "TcManticGarantiasDto", "venta"));
+    		JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);
 				regresar= "/Paginas/Mantic/Ventas/Garantias/accion".concat(Constantes.REDIRECIONAR);
 				break;
 			case 6: // CONTEOS
@@ -629,7 +634,6 @@ public class Kardex extends IBaseAttribute implements Serializable {
 				break;
 		} // switch
  		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Almacenes/kardex");
- 		JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);
 		return regresar;
 	}
 	
