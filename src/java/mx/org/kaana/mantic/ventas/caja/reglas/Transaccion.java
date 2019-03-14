@@ -809,24 +809,23 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		Map<String, Object>params                    = null;
 		boolean regresar                             = false;
 		int count                                    = 0; 
-		boolean existeAlmacen                        = false;
 		Double stock                                 = 0D;
 		try {			
 			params= new HashMap<>();
 			for(Articulo articulo: this.ventaFinalizada.getArticulos()){
-				existeAlmacen= false;
 				stock= 0D;
 				if(articulo.isValid()){
 					params.put(Constantes.SQL_CONDICION, "id_articulo="+ articulo.getIdArticulo()+ " and id_almacen="+ this.ventaFinalizada.getTicketVenta().getIdAlmacen());
 					almacenArticulo= (TcManticAlmacenesArticulosDto) DaoFactory.getInstance().toEntity(sesion, TcManticAlmacenesArticulosDto.class, "TcManticAlmacenesArticulosDto", "row", params);
 					if(almacenArticulo!= null) {
-						existeAlmacen= true;
+						stock= almacenArticulo.getStock();
 						almacenArticulo.setStock(almacenArticulo.getStock() - articulo.getCantidad());
 						regresar= DaoFactory.getInstance().update(sesion, almacenArticulo)>= 1L;
 					} // if
-					else
+					else{
+						stock= 0D;
 						regresar= generarAlmacenArticulo(sesion, articulo.getIdArticulo(), articulo.getCantidad());
-					stock= existeAlmacen ? almacenArticulo.getStock() : (0 - articulo.getCantidad());
+					} // else					
 					registrarMovimiento(sesion, this.ventaFinalizada.getTicketVenta().getIdAlmacen(), articulo.getCantidad(), articulo.getIdArticulo(), stock);
 					if(regresar) {
 						articuloVenta= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, articulo.getIdArticulo());
