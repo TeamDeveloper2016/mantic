@@ -355,19 +355,19 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	private void toCheckOrden(Session sesion) throws Exception {
 		try {
 			sesion.flush();
-			TcManticNotasEntradasDto notaEntrada= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(sesion, TcManticNotasEntradasDto.class, this.orden.getIdNotaEntrada());
+			TcManticDevolucionesDto devolucion =(TcManticDevolucionesDto)DaoFactory.getInstance().findById(sesion, TcManticDevolucionesDto.class, this.orden.getIdDevolucion());
 			Value errors= DaoFactory.getInstance().toField(sesion, "TcManticNotasDetallesDto", "errores", this.orden.toMap(), "total");
 			if(errors.toLong()!= null && errors.toLong()== 0)
-				notaEntrada.setIdNotaEstatus(6L); // SALDADA
+				devolucion.setIdDevolucionEstatus(6L); // SALDADA
 			else {
 				errors= DaoFactory.getInstance().toField(sesion, "TcManticNotasDetallesDto", "iguales", this.orden.toMap(), "total");
   			if(errors.toLong()!= null && errors.toLong()> 0)
-				  notaEntrada.setIdNotaEstatus(5L); // PARCIALIZADA
+				  devolucion.setIdDevolucionEstatus(4L); // PARCIALIZADA
 			  else
-				  notaEntrada.setIdNotaEstatus(3L); // TERMINADA
+				  devolucion.setIdDevolucionEstatus(5L); // TERMINADA
 			} // if	
-			DaoFactory.getInstance().update(sesion, notaEntrada);
-			TcManticNotasBitacoraDto estatus= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), notaEntrada.getIdNotaEntrada(), notaEntrada.getIdNotaEstatus(), notaEntrada.getConsecutivo(), this.orden.getTotal());
+			DaoFactory.getInstance().update(sesion, devolucion);
+			TcManticDevolucionesBitacoraDto estatus= new TcManticDevolucionesBitacoraDto(devolucion.getIdDevolucionEstatus(), "", JsfBase.getIdUsuario(), devolucion.getIdDevolucion(), -1L, devolucion.getConsecutivo(), this.orden.getTotal());
 			DaoFactory.getInstance().insert(sesion, estatus);
 		} // try
 		catch (Exception e) {
