@@ -106,18 +106,23 @@ public class CreateCorteCaja {
 		regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 12px;font-weight: bold\">");
 		regresar.append("CORTE EN CAJA");	
     regresar.append("</p>");
-    regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 10px;font-weight: bold\">");
-    regresar.append("Fecha de apertura:").append(this.corte.getResumenCorte().toString("registro"));
+    regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 10px;\">");
+    regresar.append("<b>Fecha de apertura:</b>").append(this.corte.getResumenCorte().toString("registro"));
     regresar.append("<br>");	
-		regresar.append("Fecha de corte:").append(this.corte.getResumenCorte().toString("termino"));
+		regresar.append("<b>Fecha de corte:</b>").append(this.corte.getResumenCorte().toString("termino"));
 		regresar.append("<br>");		
+		regresar.append("<b>");		
 		regresar.append(this.corte.getResumenCorte().toString("caja"));
+    regresar.append("</b>");		
     regresar.append("<br>");		
-    regresar.append("Folio:").append(this.corte.getResumenCorte().toString("consecutivo"));
-    regresar.append("<br>");		
-    regresar.append("Cajero(s):");
+    regresar.append("<b>Folio:</b>").append(this.corte.getResumenCorte().toString("consecutivo"));
+    regresar.append("<br>");
+    regresar.append("</p>");
+    regresar.append("<p style=\"width: 290px;text-align: left;align-content: center;font-family: sans-serif;font-size: 10px;\">");
+    regresar.append("<b>Cajero(s):</b>");
     regresar.append("<br>");	
     regresar.append(toCajerosCierre());
+    regresar.append("<br>");
 		regresar.append("</p>");		
     return regresar.toString();
 	} // toCorteCaja
@@ -134,8 +139,8 @@ public class CreateCorteCaja {
   private String toFoliosTicketDevoluciones() throws Exception{
 		StringBuilder regresar= new StringBuilder();
 		regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 10px;\">");
-    regresar.append("Tickets del ").append(this.corte.getResumenCorte().toString("ticketInicial")).append(" al ").append(this.corte.getResumenCorte().toString("ticketFinal")).append("<br>");		
-    regresar.append("Devoluciones del ").append(this.corte.getResumenCorte().toString("garantiaInicial")).append(" al ").append(this.corte.getResumenCorte().toString("garantiaFinal")).append("</p>");		
+    regresar.append("<b>Tickets del </b>").append(this.corte.getResumenCorte().toString("ticketInicial")).append("<b> al </b>").append(this.corte.getResumenCorte().toString("ticketFinal")).append("<br>");		
+    regresar.append("<b>Devoluciones del </b>").append(this.corte.getResumenCorte().toString("garantiaInicial")).append("<b> al </b>").append(this.corte.getResumenCorte().toString("garantiaFinal")).append("</p>");		
     regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 12px;font-weight: bold\">");
 		regresar.append("Resumen:");
 		regresar.append("<br>");	
@@ -256,7 +261,7 @@ public class CreateCorteCaja {
     }
     if(this.corte.getRetiros().size()>0){
       regresar.append("<p style=\"width: 290px;text-align: left;align-content: center;font-family: sans-serif;font-size: 10px;\">");
-      regresar.append("<table style=\"width: 290px;\" cellpadding=\" 0\" cellspacing=\"0\" WORD-BREAK:BREAK-ALL>");		
+      regresar.append("<table style=\"width: 290px;\">");		
       for(Entity retiro : this.corte.getRetiros()){
         regresar.append("<tr>");
         regresar.append("<table style=\"width: 290px;\">");		
@@ -273,7 +278,6 @@ public class CreateCorteCaja {
         regresar.append(retiro.toString("concepto"));
         regresar.append("</p>");
         regresar.append("</td>");
-        regresar.append("<td>").append("</td>");
         regresar.append("</tr>");
         regresar.append("</tr>");
         regresar.append("</tbody>");
