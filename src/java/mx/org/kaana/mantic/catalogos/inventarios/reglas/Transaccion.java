@@ -82,9 +82,9 @@ public class Transaccion extends IBaseTnx {
 				JsfBase.getIdUsuario(), // Long idUsuario, 
 				this.almacen.getIdAlmacen(), // Long idAlmacen, 
 				-1L, // Long idMovimiento, 
-				stock, // Double cantidad, 
+				0D, // Double cantidad, 
 				articulo.getIdArticulo(), // Long idArticulo, 
-				0D, // Double stock, 
+				stock, // Double stock, 
 				Numero.toRedondearSat(stock), // Double calculo
 				null // String observaciones
 		  );
