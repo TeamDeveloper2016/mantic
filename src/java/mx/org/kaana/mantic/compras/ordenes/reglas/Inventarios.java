@@ -22,6 +22,7 @@ import mx.org.kaana.mantic.db.dto.TcManticArticulosCodigosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
+import mx.org.kaana.mantic.db.dto.TcManticMovimientosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
@@ -47,10 +48,11 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 		this.idProveedor= idProveedor;
 	}
 	
-	protected void toAffectAlmacenes(Session sesion, Long idNotaEntrada, TcManticNotasDetallesDto item, Articulo codigos) throws Exception {
+	protected void toAffectAlmacenes(Session sesion, String consecutivo, Long idNotaEntrada, TcManticNotasDetallesDto item, Articulo codigos) throws Exception {
 		Map<String, Object> params= null;
+		double stock= 0D;
 		try {
-			params=new HashMap<>();
+			params= new HashMap<>();
 			params.put("idAlmacen", this.idAlmacen);
 			params.put("idArticulo", item.getIdArticulo());
 			params.put("idProveedor", this.idProveedor);
@@ -66,9 +68,25 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 				DaoFactory.getInstance().insert(sesion, articulo);
 		  } // if
 			else { 
+				stock= ubicacion.getStock();
 				ubicacion.setStock(ubicacion.getStock()+ item.getCantidad());
 				DaoFactory.getInstance().update(sesion, ubicacion);
 			} // if
+
+			// generar un registro en la bitacora de movimientos de los articulos 
+			TcManticMovimientosDto entrada= new TcManticMovimientosDto(
+			  consecutivo, // String consecutivo, 
+				1L, // Long idTipoMovimiento, 
+				JsfBase.getIdUsuario(), // Long idUsuario, 
+				this.idAlmacen, // Long idAlmacen, 
+				-1L, // Long idMovimiento, 
+				item.getCantidad(), // Double cantidad, 
+				item.getIdArticulo(), // Long idArticulo, 
+				stock, // Double stock, 
+				Numero.toRedondearSat(stock+ item.getCantidad()), // Double calculo
+				null // String observaciones
+		  );
+			DaoFactory.getInstance().insert(sesion, entrada);
 			
 			// registar el cambio de precios en la bitacora de articulo 
 			TcManticArticulosDto global= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, item.getIdArticulo());
@@ -145,7 +163,7 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
     		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "VistaNotasEntradasDto", "detalle", nota.toMap());
 				for (Articulo articulo: todos) {
 					TcManticNotasDetallesDto item= articulo.toNotaDetalle();
-    		  this.toAffectAlmacenes(sesion, nota.getIdNotaEntrada(), item, articulo);
+    		  this.toAffectAlmacenes(sesion, nota.getConsecutivo(), nota.getIdNotaEntrada(), item, articulo);
 				} // for
 			} // if	
 		} // for

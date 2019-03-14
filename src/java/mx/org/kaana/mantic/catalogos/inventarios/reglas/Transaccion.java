@@ -84,9 +84,9 @@ public class Transaccion extends IBaseTnx {
 				-1L, // Long idMovimiento, 
 				stock, // Double cantidad, 
 				articulo.getIdArticulo(), // Long idArticulo, 
-				stock, // Double stock, 
+				0D, // Double stock, 
 				Numero.toRedondearSat(stock), // Double calculo
-				null
+				null // String observaciones
 		  );
 			DaoFactory.getInstance().insert(sesion, movimiento);
 			

@@ -386,9 +386,11 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			columns= new ArrayList<>();
       columns.add(new Columna("almacen", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
+      columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
+      columns.add(new Columna("calculo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
 			Periodo periodo= new Periodo();
 			periodo.addMeses(-6);

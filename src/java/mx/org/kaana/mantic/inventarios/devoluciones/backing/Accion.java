@@ -44,14 +44,9 @@ public class Accion extends IBaseArticulos implements Serializable {
 
   private static final long serialVersionUID = 327393488565639361L;
 
-	private FormatLazyModel lazyModel;
 	private FormatLazyModel lazyArticulos;
 	private EAccion accion;
 	private boolean aplicar;
-
-	public FormatLazyModel getLazyModel() {
-		return lazyModel;
-	}
 
 	public FormatLazyModel getLazyArticulos() {
 		return lazyArticulos;
@@ -100,6 +95,7 @@ public class Accion extends IBaseArticulos implements Serializable {
     } // catch		
   } // init
 
+	@Override
   public void doLoad() {
     try {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));

@@ -28,6 +28,7 @@ import mx.org.kaana.mantic.db.dto.TcManticDevolucionesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticDevolucionesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticDevolucionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
+import mx.org.kaana.mantic.db.dto.TcManticMovimientosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
@@ -169,7 +170,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		for (Articulo item: todos) 
 			if(this.articulos.indexOf(item)< 0) {
 				this.toCancelOrdenDetalle(sesion, item);
-				this.toCancelAlmacenes(sesion, this.orden.getIdNotaEntrada(), item, nota.getIdAlmacen());
+				this.toCancelAlmacenes(sesion, this.orden.getConsecutivo(), this.orden.getIdNotaEntrada(), item, nota.getIdAlmacen());
 				DaoFactory.getInstance().delete(sesion, item);
 			} // if
 		for (Articulo articulo: this.articulos) {
@@ -182,7 +183,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 						DaoFactory.getInstance().update(sesion, item);
 					else
 						DaoFactory.getInstance().insert(sesion, item);
-					this.toAffectAlmacenes(sesion, this.orden.getIdNotaEntrada(), articulo, nota.getIdAlmacen());
+					this.toAffectAlmacenes(sesion, this.orden.getConsecutivo(), this.orden.getIdNotaEntrada(), articulo, nota.getIdAlmacen());
 				} // if
 		  } // if
 		} // for
@@ -212,18 +213,20 @@ public class Transaccion extends IBaseTnx implements Serializable {
 				TcManticNotasDetallesDto detalle= (TcManticNotasDetallesDto)DaoFactory.getInstance().findById(sesion, TcManticNotasDetallesDto.class, articulo.getIdOrdenDetalle());
 				detalle.setCantidades(detalle.getCantidades()+ articulo.getCantidad());
 				DaoFactory.getInstance().update(sesion, detalle);
-				this.toCancelAlmacenes(sesion, this.orden.getIdNotaEntrada(), articulo, nota.getIdAlmacen());
+				this.toCancelAlmacenes(sesion, this.orden.getConsecutivo(), this.orden.getIdNotaEntrada(), articulo, nota.getIdAlmacen());
 			} // if
 		} // for
 	}
 	
-	protected void toCancelAlmacenes(Session sesion, Long idNotaEntrada, Articulo item, Long idAlmacen) throws Exception {
+	protected void toCancelAlmacenes(Session sesion, String consecutivo, Long idNotaEntrada, Articulo item, Long idAlmacen) throws Exception {
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
 			params.put("idArticulo", item.getIdArticulo());
 			params.put("idAlmacen", idAlmacen);
 			params.put("idNotaEntrada", idNotaEntrada);
+			
+			double stock= 0D;
 			// registar el stock de los articulos en la bitacora de articulo 
 			TcManticArticulosDto global= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, item.getIdArticulo());
 			// afectar el inventario general de articulos dentro del almacen
@@ -238,6 +241,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			// afectar el almacen de articulos proque se cancelo la devolucion
 			TcManticAlmacenesArticulosDto ubicacion= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesArticulosDto.class,  params, "ubicacion");
 			if(ubicacion!= null) {
+				stock= ubicacion.getStock();
 				ubicacion.setStock(ubicacion.getStock()+ item.getCantidad());
 				DaoFactory.getInstance().update(sesion, ubicacion);
 			} // if
@@ -246,6 +250,22 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			} // else
 			global.setStock(global.getStock()+ item.getCantidad());
 			DaoFactory.getInstance().update(sesion, global);
+			
+			// generar un registro en la bitacora de movimientos de los articulos 
+			TcManticMovimientosDto entrada= new TcManticMovimientosDto(
+			  consecutivo, // String consecutivo, 
+				3L, // Long idTipoMovimiento, 
+				JsfBase.getIdUsuario(), // Long idUsuario, 
+				idAlmacen, // Long idAlmacen, 
+				-1L, // Long idMovimiento, 
+				item.getCantidad(), // Double cantidad, 
+				item.getIdArticulo(), // Long idArticulo, 
+				stock, // Double stock, 
+				Numero.toRedondearSat(stock+ item.getCantidad()), // Double calculo
+				"SE CANCELO LA DEVOLUCIÓN DEL ARTICULO" // String observaciones
+		  );
+			DaoFactory.getInstance().insert(sesion, entrada);
+
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -255,7 +275,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		} // finally
 	}
 	
-	protected void toAffectAlmacenes(Session sesion, Long idNotaEntrada, Articulo item, Long idAlmacen) throws Exception {
+	protected void toAffectAlmacenes(Session sesion, String consecutivo, Long idNotaEntrada, Articulo item, Long idAlmacen) throws Exception {
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
@@ -276,9 +296,11 @@ public class Transaccion extends IBaseTnx implements Serializable {
 				DaoFactory.getInstance().update(sesion, inventario);
 			} // else
 			
+			double stock= 0D;
 			// afectar el almacen de articulos con las devoluciones realizadas
 			TcManticAlmacenesArticulosDto ubicacion= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesArticulosDto.class,  params, "ubicacion");
 			if(ubicacion!= null) {
+				stock= ubicacion.getStock();
 				ubicacion.setStock(ubicacion.getStock()- item.getCantidad());
 				DaoFactory.getInstance().update(sesion, ubicacion);
 			} // if
@@ -305,6 +327,22 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			} // if
 			global.setStock(global.getStock()- item.getCantidad());
 			DaoFactory.getInstance().update(sesion, global);
+			
+			// generar un registro en la bitacora de movimientos de los articulos 
+			TcManticMovimientosDto entrada= new TcManticMovimientosDto(
+			  consecutivo, // String consecutivo, 
+				3L, // Long idTipoMovimiento, 
+				JsfBase.getIdUsuario(), // Long idUsuario, 
+				idAlmacen, // Long idAlmacen, 
+				-1L, // Long idMovimiento, 
+				item.getCantidad()* -1, // Double cantidad, 
+				item.getIdArticulo(), // Long idArticulo, 
+				stock, // Double stock, 
+				Numero.toRedondearSat(stock- item.getCantidad()), // Double calculo
+				null // String observaciones
+		  );
+			DaoFactory.getInstance().insert(sesion, entrada);
+
 		} // try
 		catch (Exception e) {
 			throw e;

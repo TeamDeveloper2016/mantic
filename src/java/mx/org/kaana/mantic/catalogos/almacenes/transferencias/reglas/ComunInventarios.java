@@ -99,7 +99,7 @@ public abstract class ComunInventarios extends IBaseTnx {
 				articulo.getIdArticulo(), // Long idArticulo, 
 				origen.getStock(), // Double stock, 
 				Numero.toRedondearSat(origen.getStock()- articulo.getCantidad()), // Double calculo
-				null
+				null // String observaciones
 		  );
 			if(idTransferenciaEstatus.intValue()== 4) {
         movimiento.setCantidad(articulo.getCantidad());
@@ -149,7 +149,7 @@ public abstract class ComunInventarios extends IBaseTnx {
 				articulo.getIdArticulo(), // Long idArticulo, 
 				origen.getStock(), // Double stock, 
 				Numero.toRedondearSat(origen.getStock()+ diferencia), // Double calculo
-				null
+				null // String observaciones
 		  );
 			DaoFactory.getInstance().insert(sesion, movimiento);
 

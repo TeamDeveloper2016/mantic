@@ -325,28 +325,28 @@
 									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>   
 								<p:column headerText="Tipo" styleClass="janal-wid-10">
-									<h:outputText value="#{item.movimiento}"/>
+									<h:outputText value="#{item.concepto}"/>
 								</p:column>   
-								<p:column headerText="Consecutivo" styleClass="janal-wid-10">
+								<p:column headerText="Consecutivo" styleClass="janal-wid-8">
 									<h:outputText value="#{item.consecutivo}"/>
 								</p:column>   
 								<p:column headerText="Almacen">
 									<h:outputText value="#{item.almacen}"/>
 								</p:column>   
-								<p:column headerText="Proveedor" styleClass="janal-wid-18">
-									<h:outputText value="#{item.razonSocial}" title="Clave: #{item.clave}"/>
-								</p:column>   
 								<p:column headerText="Cantidad" styleClass="janal-wid-8 janal-column-right">
 									<h:outputText value="#{item.cantidad}"/>
 								</p:column>   
-								<p:column headerText="Stock" styleClass="janal-wid-8 janal-column-right">
+								<p:column headerText="Stock anterior" styleClass="janal-wid-8 janal-column-right">
 									<h:outputText value="#{item.stock}"/>
 								</p:column>   
-								<p:column headerText="Costo" styleClass="janal-wid-8 janal-column-right">
-									<h:outputText value="#{item.costo}"/>
+								<p:column headerText="Stock nuevo" styleClass="janal-wid-8 janal-column-right">
+									<h:outputText value="#{item.calculo}"/>
 								</p:column>   
 								<p:column headerText="Fecha" styleClass="janal-wid-13 janal-column-center">
 									<h:outputText value="#{item.registro}"/>
+								</p:column>   
+								<p:column headerText="Usuario" styleClass="janal-wid-20 janal-column-center">
+									<h:outputText value="#{item.usuario}"/>
 								</p:column>   
               </p:dataTable>
 						</p:tab>

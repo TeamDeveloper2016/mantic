@@ -33,7 +33,6 @@ import mx.org.kaana.mantic.catalogos.inventarios.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
 

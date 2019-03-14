@@ -343,7 +343,7 @@ public class Transaccion extends Inventarios implements Serializable {
 		for (Articulo articulo: this.articulos) {
 			TcManticNotasDetallesDto item= articulo.toNotaDetalle();
 			item.setIdNotaEntrada(this.orden.getIdNotaEntrada());
-		  this.toAffectAlmacenes(sesion, this.orden.getIdNotaEntrada(), item, articulo);
+		  this.toAffectAlmacenes(sesion, this.orden.getConsecutivo(), this.orden.getIdNotaEntrada(), item, articulo);
 		} // for
 		this.orden.setIdNotaEstatus(3L);
 		DaoFactory.getInstance().update(sesion, this.orden);
