@@ -412,4 +412,19 @@ public class Accion extends IBaseAttribute implements Serializable {
 		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(this.attrs.get("articulo")!= null && this.attrs.get("destino")== null? "": "none").concat("' title='El articulo no tiene un conteo en el almacen destino !'></i>");
 	}
 
+	public void doRecoverArticulo(Integer index) {
+		try {
+			if(this.attrs.get("articulo")!= null) {
+				this.attrs.put("seleccionado", this.attrs.get("articulo"));
+				Object backing= JsfBase.ELAsObject("manticCatalogosArticulosExpress");
+				if(backing!= null)
+					((IBaseAttribute)backing).getAttrs().put("seleccionado", this.attrs.get("seleccionado"));
+			} // if	
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch				
+	} // doRecoveryArticulo
+
 }

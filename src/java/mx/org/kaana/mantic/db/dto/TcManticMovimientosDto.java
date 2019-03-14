@@ -54,6 +54,8 @@ public class TcManticMovimientosDto implements IBaseDto, Serializable {
   private Double stock;
   @Column (name="calculo")
   private Double calculo;
+  @Column (name="observaciones")
+  private String observaciones;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -62,11 +64,11 @@ public class TcManticMovimientosDto implements IBaseDto, Serializable {
   }
 
   public TcManticMovimientosDto(Long key) {
-    this(null, null, null, null, new Long(-1L), null, null, null, null);
+    this(null, null, null, null, new Long(-1L), null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticMovimientosDto(String consecutivo, Long idTipoMovimiento, Long idUsuario, Long idAlmacen, Long idMovimiento, Double cantidad, Long idArticulo, Double stock, Double calculo) {
+  public TcManticMovimientosDto(String consecutivo, Long idTipoMovimiento, Long idUsuario, Long idAlmacen, Long idMovimiento, Double cantidad, Long idArticulo, Double stock, Double calculo, String observaciones) {
     setConsecutivo(consecutivo);
     setIdTipoMovimiento(idTipoMovimiento);
     setIdUsuario(idUsuario);
@@ -77,6 +79,7 @@ public class TcManticMovimientosDto implements IBaseDto, Serializable {
     setStock(stock);
     setCalculo(calculo);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		this.observaciones= observaciones;
   }
 	
   public void setConsecutivo(String consecutivo) {
@@ -159,6 +162,14 @@ public class TcManticMovimientosDto implements IBaseDto, Serializable {
     return registro;
   }
 
+	public String getObservaciones() {
+		return observaciones;
+	}
+
+	public void setObservaciones(String observaciones) {
+		this.observaciones=observaciones;
+	}
+
   @Transient
   @Override
   public Long getKey() {
@@ -193,6 +204,8 @@ public class TcManticMovimientosDto implements IBaseDto, Serializable {
 		regresar.append(getCalculo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getObservaciones());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -210,13 +223,14 @@ public class TcManticMovimientosDto implements IBaseDto, Serializable {
 		regresar.put("stock", getStock());
 		regresar.put("calculo", getCalculo());
 		regresar.put("registro", getRegistro());
+		regresar.put("observaciones", getObservaciones());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getConsecutivo(), getIdTipoMovimiento(), getIdUsuario(), getIdAlmacen(), getIdMovimiento(), getCantidad(), getIdArticulo(), getStock(), getCalculo(), getRegistro()
+    getConsecutivo(), getIdTipoMovimiento(), getIdUsuario(), getIdAlmacen(), getIdMovimiento(), getCantidad(), getIdArticulo(), getStock(), getCalculo(), getObservaciones(), getRegistro()
     };
     return regresar;
   }

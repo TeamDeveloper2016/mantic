@@ -143,19 +143,19 @@ public class Transaccion extends ComunInventarios {
 			else 
 				DaoFactory.getInstance().update(sesion, item);
 			if(EAccion.ACTIVAR.equals(accion)) 
-				this.toMovimientos(sesion, this.dto.getIdAlmacen(), this.dto.getIdDestino(), articulo, this.idTransferenciaEstatus);
+				this.toMovimientos(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), this.dto.getIdDestino(), articulo, this.idTransferenciaEstatus);
 			else
   			if(EAccion.REGISTRAR.equals(accion)) {
 					TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
 					switch(this.idTransferenciaEstatus.intValue()) {
 						case 3: // TRANSITO
-    					this.toMovimientosAlmacenOrigen(sesion, this.dto.getIdAlmacen(), articulo, umbrales, this.idTransferenciaEstatus);
+    					this.toMovimientosAlmacenOrigen(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), articulo, umbrales, this.idTransferenciaEstatus);
 							break;
 						case 4: // CANCELAR
-    					this.toMovimientosAlmacenOrigen(sesion, this.dto.getIdAlmacen(), articulo, umbrales, this.idTransferenciaEstatus);
+    					this.toMovimientosAlmacenOrigen(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), articulo, umbrales, this.idTransferenciaEstatus);
 							break;
 						case 5: // RECEPCION
-    					this.toMovimientosAlmacenDestino(sesion, this.dto.getIdDestino(), articulo, umbrales, articulo.getCantidad());
+    					this.toMovimientosAlmacenDestino(sesion, this.dto.getConsecutivo(), this.dto.getIdDestino(), articulo, umbrales, articulo.getCantidad());
 							break;
 					} // switch
 				} // if
