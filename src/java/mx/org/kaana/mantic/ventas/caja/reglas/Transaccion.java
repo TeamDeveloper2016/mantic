@@ -20,6 +20,7 @@ import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
 import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
@@ -38,6 +39,7 @@ import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
+import mx.org.kaana.mantic.db.dto.TcManticMovimientosDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
@@ -807,18 +809,25 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		Map<String, Object>params                    = null;
 		boolean regresar                             = false;
 		int count                                    = 0; 
+		boolean existeAlmacen                        = false;
+		Double stock                                 = 0D;
 		try {			
 			params= new HashMap<>();
 			for(Articulo articulo: this.ventaFinalizada.getArticulos()){
+				existeAlmacen= false;
+				stock= 0D;
 				if(articulo.isValid()){
 					params.put(Constantes.SQL_CONDICION, "id_articulo="+ articulo.getIdArticulo()+ " and id_almacen="+ this.ventaFinalizada.getTicketVenta().getIdAlmacen());
 					almacenArticulo= (TcManticAlmacenesArticulosDto) DaoFactory.getInstance().toEntity(sesion, TcManticAlmacenesArticulosDto.class, "TcManticAlmacenesArticulosDto", "row", params);
 					if(almacenArticulo!= null) {
+						existeAlmacen= true;
 						almacenArticulo.setStock(almacenArticulo.getStock() - articulo.getCantidad());
 						regresar= DaoFactory.getInstance().update(sesion, almacenArticulo)>= 1L;
 					} // if
 					else
 						regresar= generarAlmacenArticulo(sesion, articulo.getIdArticulo(), articulo.getCantidad());
+					stock= existeAlmacen ? almacenArticulo.getStock() : (0 - articulo.getCantidad());
+					registrarMovimiento(sesion, this.ventaFinalizada.getTicketVenta().getIdAlmacen(), articulo.getCantidad(), articulo.getIdArticulo(), stock);
 					if(regresar) {
 						articuloVenta= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, articulo.getIdArticulo());
 						articuloVenta.setStock(articuloVenta.getStock() - articulo.getCantidad());
@@ -838,6 +847,23 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		} // finally
 		return regresar;
 	} // alterarStockArticulos
+	
+	private void registrarMovimiento(Session sesion, Long idAlmacen, Double cantidad, Long idArticulo, Double stock) throws Exception{
+		Double calculo= Numero.toRedondearSat(stock - cantidad) ;
+		TcManticMovimientosDto movimiento= new TcManticMovimientosDto(
+			  getOrden().getTicket(), // String consecutivo, 
+				2L,                     // Long idTipoMovimiento, 
+				JsfBase.getIdUsuario(), // Long idUsuario, 
+				idAlmacen,              // Long idAlmacen, 
+				-1L,                    // Long idMovimiento, 
+				cantidad,               // Double cantidad, 
+				idArticulo,             // Long idArticulo, 
+				stock,                  // Double stock, 
+				calculo,                // Double calculo
+				null
+		  );
+			DaoFactory.getInstance().insert(sesion, movimiento); 
+	} // registrarMovimiento
 	
 	private boolean generarAlmacenArticulo(Session sesion, Long idArticulo, Double cantidad) throws Exception{
 		boolean regresar                             = false;
