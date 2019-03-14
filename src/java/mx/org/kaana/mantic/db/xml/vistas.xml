@@ -7633,24 +7633,27 @@
           tc_mantic_cajas.clave as caja,
           concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) nombre_completo_cajero,
           tc_mantic_cajas.id_caja,
-          tc_mantic_cajas.limite, min(tc_mantic_ventas.cticket) ticket_inicial,  max(tc_mantic_ventas.cticket) ticket_final, 
+          tc_mantic_cajas.limite, ifnull(min(tc_mantic_ventas.cticket),0) ticket_inicial,  ifnull(max(tc_mantic_ventas.cticket),0) ticket_final, 
           ifnull(devoluciones_garantias.garantia_inicial,0) garantia_inicial, ifnull(devoluciones_garantias.garantia_final,0)garantia_final, 
           ifnull(devoluciones_garantias.total_garantias,0)total_garantias,
           ifnull(devoluciones_garantias.sub_total_garantias,0)sub_total_garantias,
           ifnull(devoluciones_garantias.impuetos_garantias,0)impuetos_garantias,
-          pagos_ventas.resumen_efectivo,
-          pagos_ventas.resumen_cheque,
-          pagos_ventas.resumen_transferencia,
-         (pagos_ventas.resumen_credito+pagos_ventas.resumen_debito) resumen_tarjetas,
-          pagos_ventas.resumen_credito,
-          pagos_ventas.resumen_vales,
-          pagos_ventas.resumen_debito, pagos_ventas.resumen_total, (pagos_ventas.resumen_total-ifnull(devoluciones_garantias.total_garantias,0)) total_sin_devoluciones,
-          pagos_ventas.resumen_efectivo_credito,
-          pagos_ventas.resumen_cheque_credito,
-          pagos_ventas.resumen_transferencia_credito,
-          pagos_ventas.resumen_credito_credito,
-          pagos_ventas.resumen_vales_credito,
-          pagos_ventas.resumen_debito_credito, pagos_ventas.resumen_total_credito, 	
+          ifnull(pagos_ventas.resumen_efectivo,0) resumen_efectivo,
+          ifnull(pagos_ventas.resumen_cheque,0) resumen_cheque,
+          ifnull(pagos_ventas.resumen_transferencia,0) resumen_transferencia,
+          ifnull((pagos_ventas.resumen_credito+pagos_ventas.resumen_debito),0) resumen_tarjetas,
+          ifnull(pagos_ventas.resumen_credito,0)resumen_credito,
+          ifnull(pagos_ventas.resumen_vales,0)resumen_vales,
+          ifnull(pagos_ventas.resumen_debito,0)resumen_debito, 
+          ifnull(pagos_ventas.resumen_total,0)resumen_total, 
+          (ifnull(pagos_ventas.resumen_total,0)-ifnull(devoluciones_garantias.total_garantias,0))  total_sin_devoluciones,
+          ifnull(pagos_ventas.resumen_efectivo_credito,0)resumen_efectivo_credito,
+          ifnull(pagos_ventas.resumen_cheque_credito,0)resumen_cheque_credito,
+          ifnull(pagos_ventas.resumen_transferencia_credito,0)resumen_transferencia_credito,
+          ifnull(pagos_ventas.resumen_credito_credito,0)resumen_credito_credito,
+          ifnull(pagos_ventas.resumen_vales_credito,0)resumen_vales_credito,
+          ifnull(pagos_ventas.resumen_debito_credito,0)resumen_debito_credito, 
+          ifnull(pagos_ventas.resumen_total_credito,0) resumen_total_credito, 	
           ifnull(abonos.resumen_abonos,0)resumen_abonos,
           ifnull(abonos.abono_inicial,0)abono_inicial, 
           ifnull(abonos.abono_final,0)abono_final, 
@@ -7688,7 +7691,7 @@
           tc_mantic_cajas on tc_mantic_cierres_cajas.id_caja= tc_mantic_cajas.id_caja
         inner join
           tc_mantic_personas on tc_mantic_cajas.id_usuario = tc_mantic_personas.id_persona 
-        inner join 
+        left join 
           tr_mantic_venta_medio_pago  on tc_mantic_cierres_cajas.id_cierre= tr_mantic_venta_medio_pago.id_cierre
         left join 
           tc_mantic_ventas on tr_mantic_venta_medio_pago.id_venta = tc_mantic_ventas.id_venta and tc_mantic_ventas.id_venta_estatus in (3,6)
