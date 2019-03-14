@@ -16,7 +16,6 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
@@ -129,7 +128,7 @@ public class Transaccion extends IBaseTnx{
 					this.generarGarantia(sesion, this.garantia.getTipoGarantia().equals(ETiposGarantias.RECIBIDA) ? EEstatusGarantias.RECIBIDA.getIdEstatusGarantia() : EEstatusGarantias.TERMINADA.getIdEstatusGarantia());																
 					if(this.verificarCierreCaja(sesion)){
 						if(this.registrarPagos(sesion, this.garantia.getTicketVenta().getTotal()))					
-							regresar= this.alterarStockArticulos(sesion);
+							regresar= this.alterarStockArticulos(sesion, newGarantia.getArticulosGarantia());
 					} // if				
 				} // if
 			} // for			
@@ -307,7 +306,7 @@ public class Transaccion extends IBaseTnx{
 		return regresar; 
 	} // registrarPagos	
 	
-	private boolean alterarStockArticulos(Session sesion) throws Exception {
+	private boolean alterarStockArticulos(Session sesion, List<ArticuloVenta> arts) throws Exception {
 		TcManticAlmacenesArticulosDto almacenArticulo= null;
 		TcManticArticulosDto articuloVenta           = null;		
 		Map<String, Object>params                    = null;
@@ -316,7 +315,7 @@ public class Transaccion extends IBaseTnx{
 		Double stock                                 = 0D;
 		try {			
 			params= new HashMap<>();
-			for(Articulo articulo: this.garantia.getArticulos()){
+			for(ArticuloVenta articulo: arts){
 				stock= 0D;
 				params.put(Constantes.SQL_CONDICION, "id_articulo="+ articulo.getIdArticulo()+ " and id_almacen="+ this.garantia.getTicketVenta().getIdAlmacen());
 				almacenArticulo= (TcManticAlmacenesArticulosDto) DaoFactory.getInstance().toEntity(sesion, TcManticAlmacenesArticulosDto.class, "TcManticAlmacenesArticulosDto", "row", params);
@@ -339,7 +338,7 @@ public class Transaccion extends IBaseTnx{
 				if(regresar)
 					count++;
 			} // for		
-			regresar= count== this.garantia.getArticulos().size();			
+			regresar= count== arts.size();			
 		} // try
 		catch (Exception e) {			
 			throw e;		
