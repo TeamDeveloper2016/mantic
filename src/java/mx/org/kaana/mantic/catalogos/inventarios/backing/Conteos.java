@@ -73,7 +73,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 			this.articulo= new TcManticAlmacenesArticulosDto();
 			this.loadAlmacenes();
 			if(this.attrs.get("xcodigo")!= null) {
-				this.doCompleteArticulo((String)this.attrs.get("codigo"));
+				this.doCompleteArticulo((String)this.attrs.get("xcodigo"));
 				List<UISelectEntity> articulos= (List<UISelectEntity>)this.attrs.get("articulos");
 				if(articulos!= null && !articulos.isEmpty()) {
 				  this.attrs.put("custom", articulos.get(0));
