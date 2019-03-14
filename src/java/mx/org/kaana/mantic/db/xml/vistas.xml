@@ -911,7 +911,7 @@
 					tc_mantic_cierres.observaciones,
 					tc_mantic_cierres.registro,
 					tc_mantic_cierres.id_cierre_estatus,
-					tc_mantic_cajas.id_caja
+					tc_mantic_cajas.id_caja,tc_mantic_cierres.orden
 				from
 					tc_mantic_cierres
 				inner join
@@ -1197,6 +1197,18 @@
 				order by 
 				  tc_mantic_monedas.orden
 			</select>
+      <select id="cierrePosterior">
+        select distinct 
+          tc_mantic_cierres.id_cierre as id_key,tc_mantic_cierres.* 
+        from 
+          tc_mantic_cierres_cajas 
+        inner join 
+          tc_mantic_cierres on tc_mantic_cierres_cajas.id_cierre = tc_mantic_cierres.id_cierre 
+        where 
+          tc_mantic_cierres_cajas.id_caja = {idCaja} and tc_mantic_cierres.orden &gt; {orden} 
+        order by 
+          tc_mantic_cierres.orden asc
+      </select>
 		</unit>
 		<unit id="VistaCreditosNotasDto">
 			<select id="saldoFavorCreditos">
