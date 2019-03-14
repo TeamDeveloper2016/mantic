@@ -74,6 +74,14 @@ public class Kardex extends IBaseAttribute implements Serializable {
 		this.attrs.put("costoMayorMenor", 0);
 		this.adminKardex= new AdminKardex(-1L);
 		this.toLoadCatalog();
+		if(JsfBase.getFlashAttribute("xcodigo")!= null) {
+			this.doCompleteArticulo((String)JsfBase.getFlashAttribute("xcodigo"));
+			List<UISelectEntity> articulos= (List<UISelectEntity>)this.attrs.get("articulos");
+			if(articulos!= null && !articulos.isEmpty()) {
+				this.attrs.put("custom", articulos.get(0));
+				this.doFindArticulo();
+			} // if	
+		} // if	
 	}
 	
 	private void toLoadCatalog() {
@@ -629,10 +637,10 @@ public class Kardex extends IBaseAttribute implements Serializable {
 				break;
 			case 6: // CONTEOS
     		JsfBase.setFlashAttribute("idArticulo", consecutivo.toLong("idArticulo"));
-    		JsfBase.setFlashAttribute("codigo", consecutivo.toString("propio"));
 				regresar= "/Paginas/Mantic/Catalogos/Inventarios/conteos".concat(Constantes.REDIRECIONAR);
 				break;
 		} // switch
+ 		JsfBase.setFlashAttribute("xcodigo", consecutivo.toString("propio"));
  		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Almacenes/kardex");
 		return regresar;
 	}

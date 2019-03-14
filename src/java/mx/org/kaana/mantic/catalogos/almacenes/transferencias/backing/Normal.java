@@ -54,6 +54,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
   @Override
   protected void init() {		
     try {
+			this.attrs.put("xcodigo", JsfBase.getFlashAttribute("xcodigo"));	
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia")== null? -1L: JsfBase.getFlashAttribute("idTransferencia"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
@@ -122,6 +123,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idTransferencia", ((Transferencia)this.getAdminOrden().getOrden()).getIdTransferencia());
+		JsfBase.setFlashAttribute("xcodigo", this.attrs.get("xcodigo"));	
     return (String)this.attrs.get("retorno");
   } // doCancelar
 

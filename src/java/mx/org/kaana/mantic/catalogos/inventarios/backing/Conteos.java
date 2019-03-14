@@ -66,12 +66,14 @@ public class Conteos extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {			
+			this.attrs.put("xcodigo", JsfBase.getFlashAttribute("xcodigo"));	
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());	
     	this.attrs.put("buscaPorCodigo", false);
 			this.articulo= new TcManticAlmacenesArticulosDto();
 			this.loadAlmacenes();
-			if(JsfBase.getFlashAttribute("codigo")!= null) {
-				this.doCompleteArticulo((String)JsfBase.getFlashAttribute("codigo"));
+			if(this.attrs.get("xcodigo")!= null) {
+				this.doCompleteArticulo((String)this.attrs.get("codigo"));
 				List<UISelectEntity> articulos= (List<UISelectEntity>)this.attrs.get("articulos");
 				if(articulos!= null && !articulos.isEmpty()) {
 				  this.attrs.put("custom", articulos.get(0));
@@ -410,5 +412,10 @@ public class Conteos extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);
     } // catch   
 	} 
+
+  public String doCancelar() {   
+		JsfBase.setFlashAttribute("xcodigo", this.attrs.get("xcodigo"));	
+    return this.attrs.get("retorno")!= null? ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR): null;
+  } // doCancelar
 	
 }

@@ -68,6 +68,7 @@ public class Accion extends IBaseVenta implements Serializable {
   protected void init() {	
 		EAccion accion= null;
     try {
+			this.attrs.put("xcodigo", JsfBase.getFlashAttribute("xcodigo"));	
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null ? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null ? -1L: JsfBase.getFlashAttribute("idVenta"));
       this.attrs.put("idGarantia", JsfBase.getFlashAttribute("idGarantia")== null ? -1L: JsfBase.getFlashAttribute("idGarantia"));

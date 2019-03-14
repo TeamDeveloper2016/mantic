@@ -115,6 +115,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   protected void init() {		
     try {
 			this.aplicar  =  false;
+			this.attrs.put("xcodigo", JsfBase.getFlashAttribute("xcodigo"));	
 			if(JsfBase.getFlashAttribute("accion")== null && JsfBase.getParametro("zOyOxDwIvGuCt")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null || JsfBase.getFlashAttribute("idOrdenCompra")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
@@ -227,6 +228,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
+		JsfBase.setFlashAttribute("xcodigo", this.attrs.get("xcodigo"));	
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 

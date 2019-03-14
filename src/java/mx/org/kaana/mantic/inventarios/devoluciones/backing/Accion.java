@@ -80,6 +80,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 	@PostConstruct
   protected void init() {		
     try {
+			this.attrs.put("xcodigo", JsfBase.getFlashAttribute("xcodigo"));	
 			if(JsfBase.getFlashAttribute("accion")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
 			this.aplicar= false;
@@ -157,7 +158,8 @@ public class Accion extends IBaseArticulos implements Serializable {
 
   public String doCancelar() {   
 	  JsfBase.setFlashAttribute("idDevolucion", ((Devolucion)this.getAdminOrden().getOrden()).getIdDevolucion());
-    return this.attrs.get("retorno")== null? "filtro": (String)this.attrs.get("retorno");
+		JsfBase.setFlashAttribute("xcodigo", this.attrs.get("xcodigo"));	
+     return this.attrs.get("retorno")== null? "filtro": (String)this.attrs.get("retorno");
   } // doCancelar
 
 	private void toLoadCatalog() {

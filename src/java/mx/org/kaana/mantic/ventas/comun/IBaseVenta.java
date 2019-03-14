@@ -92,6 +92,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 
 	public String doCancelar() {   
   	JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
+		JsfBase.setFlashAttribute("xcodigo", this.attrs.get("xcodigo"));	
     return this.attrs.get("retorno") != null ? (String)this.attrs.get("retorno") : "filtro";
   } // doCancelar
 	

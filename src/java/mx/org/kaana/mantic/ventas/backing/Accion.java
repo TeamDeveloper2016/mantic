@@ -69,6 +69,7 @@ public class Accion extends IBaseVenta implements Serializable {
   protected void init() {		
 		boolean isMatriz= false;
     try {
+			this.attrs.put("xcodigo", JsfBase.getFlashAttribute("xcodigo"));	
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
 			this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null? -1L: JsfBase.getFlashAttribute("idVenta"));
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null ? EAccion.AGREGAR : (this.attrs.get("idVenta") != null && !Long.valueOf(this.attrs.get("idVenta").toString()).equals(-1L) ? JsfBase.getFlashAttribute("accion") : EAccion.AGREGAR));      
