@@ -95,7 +95,6 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					bitacoraNota= new TcManticDevolucionesBitacoraDto(this.orden.getIdDevolucionEstatus(), "", this.orden.getIdDevolucion(), JsfBase.getIdUsuario(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
 					this.toFillArticulos(sesion);
-					this.toCheckOrden(sesion);
 					break;				
 				case MODIFICAR:
   				if(this.aplicar) {
@@ -106,7 +105,6 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 					this.toRemoveOrdenDetalle(sesion);
 					this.toFillArticulos(sesion);
-					this.toCheckOrden(sesion);
 					break;
 				case ELIMINAR:
 					this.toRemoveOrdenDetalle(sesion);
@@ -115,7 +113,6 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					this.orden.setIdDevolucionEstatus(2L);
 					bitacoraNota= new TcManticDevolucionesBitacoraDto(this.orden.getIdDevolucionEstatus(), "", this.orden.getIdDevolucion(), JsfBase.getIdUsuario(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
-					this.toCheckOrden(sesion);
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
@@ -128,7 +125,6 @@ public class Transaccion extends IBaseTnx implements Serializable {
 							this.orden.setIdDevolucionEstatus(2L);
 							bitacoraNota= new TcManticDevolucionesBitacoraDto(this.orden.getIdDevolucionEstatus(), "", this.orden.getIdDevolucion(), JsfBase.getIdUsuario(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
 							regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
-              this.toCheckOrden(sesion);
 						} // if	
 					} // if
 					break;
@@ -351,28 +347,5 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			Methods.clean(params);
 		} // finally
 	}	
-	
-	private void toCheckOrden(Session sesion) throws Exception {
-		try {
-			sesion.flush();
-			TcManticDevolucionesDto devolucion =(TcManticDevolucionesDto)DaoFactory.getInstance().findById(sesion, TcManticDevolucionesDto.class, this.orden.getIdDevolucion());
-			Value errors= DaoFactory.getInstance().toField(sesion, "TcManticNotasDetallesDto", "errores", this.orden.toMap(), "total");
-			if(errors.toLong()!= null && errors.toLong()== 0)
-				devolucion.setIdDevolucionEstatus(6L); // SALDADA
-			else {
-				errors= DaoFactory.getInstance().toField(sesion, "TcManticNotasDetallesDto", "iguales", this.orden.toMap(), "total");
-  			if(errors.toLong()!= null && errors.toLong()> 0)
-				  devolucion.setIdDevolucionEstatus(4L); // PARCIALIZADA
-			  else
-				  devolucion.setIdDevolucionEstatus(5L); // TERMINADA
-			} // if	
-			DaoFactory.getInstance().update(sesion, devolucion);
-			TcManticDevolucionesBitacoraDto estatus= new TcManticDevolucionesBitacoraDto(devolucion.getIdDevolucionEstatus(), "", JsfBase.getIdUsuario(), devolucion.getIdDevolucion(), -1L, devolucion.getConsecutivo(), this.orden.getTotal());
-			DaoFactory.getInstance().insert(sesion, estatus);
-		} // try
-		catch (Exception e) {
-			throw e;
-		} // catch
-	} 
 	
 } 
