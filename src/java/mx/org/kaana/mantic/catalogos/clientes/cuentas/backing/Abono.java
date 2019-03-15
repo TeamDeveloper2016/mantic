@@ -72,6 +72,7 @@ public class Abono extends IBasePagos implements Serializable {
 			deuda= (Entity) DaoFactory.getInstance().toEntity("VistaClientesDto", "cuentas", params);
 			this.attrs.put("permitirPago", deuda.toLong("idClienteEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus()));
 			this.attrs.put("deuda", deuda);
+			this.attrs.put("pago", deuda.toDouble("saldo"));			
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -90,9 +91,9 @@ public class Abono extends IBasePagos implements Serializable {
 			params.put("idClienteDeuda", this.attrs.get("idClienteDeuda"));			
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-			columns.add(new Columna("pago", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			columns.add(new Columna("pago", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
 			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
 			this.lazyModel = new FormatCustomLazy("VistaClientesDto", "pagosDeuda", params, columns);
       UIBackingUtilities.resetDataTable();		

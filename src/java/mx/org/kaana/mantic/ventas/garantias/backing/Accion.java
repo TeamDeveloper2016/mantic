@@ -224,7 +224,8 @@ public class Accion extends IBaseVenta implements Serializable {
 				garantia= new Garantia();
 				garantia.setTicketVenta(ticketVenta);							
 				garantia.setArticulosGarantia(tipoGarantia.equals(ETiposGarantias.RECIBIDA) ? ((AdminGarantia)this.getAdminOrden()).getArticulosRecibida() : ((AdminGarantia)this.getAdminOrden()).getArticulosTerminada());				
-				garantia.setGarantia(this.ticketOriginal);							
+				garantia.setGarantia(this.ticketOriginal);			
+				garantia.setIdEfectivo(tipoGarantia.getIdTipoGarantia().intValue());
 				garantias.add(garantia);
 			} // for			
 			pagoGarantia= new PagoGarantia();

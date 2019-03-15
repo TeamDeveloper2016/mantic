@@ -118,7 +118,7 @@
 							<h:outputText value="#{filtro['registro']}"/>
 						</p:column>		
 						<p:rowExpansion> 
-							<p:dataTable  lazy="true" id="tablaDetalle" widgetVar="kajoolTableDetalle" var="filtro" value="#{manticCatalogosClientesCuentasDeuda.detallePagos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosClientesCuentasDeuda.attrs.detalleSeleccionado}" selectionMode="single" paginator="#{manticCatalogosClientesCuentasDeuda.detallePagos.rowCount gt manticCatalogosClientesCuentasDeuda.detallePagos.pageSize}" rowIndexVar="index" reflow="true">								
+							<p:dataTable  lazy="true" id="tablaDetalle" widgetVar="kajoolTableDetalle" var="filtro" value="#{manticCatalogosClientesCuentasDeuda.detallePagos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticCatalogosClientesCuentasDeuda.detallePagos.rowCount gt manticCatalogosClientesCuentasDeuda.detallePagos.pageSize}" rowIndexVar="index" reflow="true">								
 								<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.pago}">
 									<f:facet name="header">
 										<h:outputText value="Pago"/>
@@ -159,7 +159,7 @@
 						</f:facet>
 					</p:dataTable>	
 					<p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">            
-            <p:menuitem id="pagoVenta" process="@this tabla" icon="fa fa-money" value="Pago sobre venta" onstart="return janal.bloquear();" oncomplete="PF('dlgPago').show();" disabled="#{manticCatalogosClientesCuentasDeuda.attrs.seleccionado.idClienteEstatus eq '3'}"/>					            
+            <p:menuitem id="pagoVenta" process="@this tabla" icon="fa fa-money" value="Pago sobre venta" onstart="return janal.bloquear();" actionListener="#{manticCatalogosClientesCuentasDeuda.doActualizaPago}" update="dialogoPago" oncomplete="PF('dlgPago').show();" disabled="#{manticCatalogosClientesCuentasDeuda.attrs.seleccionado.idClienteEstatus eq '3'}"/>					            
           </p:contextMenu>
 				</div>
 			</div>	
@@ -203,7 +203,7 @@
 						</p:column>   
 					</p:selectOneMenu>
 					<p:outputLabel for="pago" value="Pago: $"/>
-					<p:inputNumber id="pago" value="#{manticCatalogosClientesCuentasDeuda.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right"/>
+					<p:inputNumber id="pago" value="#{manticCatalogosClientesCuentasDeuda.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" decimalPlaces="4"/>
 					<p:outputLabel for="saldar" value="Saldar deuda: "/>
 					<p:selectOneRadio id="saldar" value="#{manticCatalogosClientesCuentasDeuda.attrs.saldar}">
 						<f:selectItem itemLabel="SI" itemValue="1"/>
@@ -270,7 +270,7 @@
 						</p:column>   
 					</p:selectOneMenu>
 					<p:outputLabel for="pagoGeneral" value="Pago: $"/>
-					<p:inputNumber id="pagoGeneral" value="#{manticCatalogosClientesCuentasDeuda.attrs.pagoGeneral}" inputStyleClass="janal-wid-100-txt janal-column-right"/>
+					<p:inputNumber id="pagoGeneral" value="#{manticCatalogosClientesCuentasDeuda.attrs.pagoGeneral}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" decimalPlaces="4"/>
 					<p:outputLabel for="saldarGeneral" value="Saldar deuda: "/>
 					<p:selectOneRadio id="saldarGeneral" value="#{manticCatalogosClientesCuentasDeuda.attrs.saldarGeneral}">
 						<f:selectItem itemLabel="SI" itemValue="1"/>
@@ -371,7 +371,7 @@
 								</p:column>   
 							</p:selectOneMenu>
 							<p:outputLabel for="pagoSegmento" value="Pago: $"/>							
-							<p:inputNumber id="pagoSegmento" value="#{manticCatalogosClientesCuentasDeuda.attrs.pagoSegmento}" inputStyleClass="janal-wid-100-txt janal-column-right"/>
+							<p:inputNumber id="pagoSegmento" value="#{manticCatalogosClientesCuentasDeuda.attrs.pagoSegmento}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" decimalPlaces="4"/>
 							<p:outputLabel for="saldarSegmento" value="Saldar deuda: "/>
 							<p:selectOneRadio id="saldarSegmento" value="#{manticCatalogosClientesCuentasDeuda.attrs.saldarSegmento}">
 								<f:selectItem itemLabel="SI" itemValue="1"/>
