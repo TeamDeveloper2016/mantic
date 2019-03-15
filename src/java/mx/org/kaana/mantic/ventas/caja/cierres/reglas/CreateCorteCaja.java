@@ -1,14 +1,10 @@
 package mx.org.kaana.mantic.ventas.caja.cierres.reglas;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.procesos.acceso.beans.Sucursal;
-import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
@@ -51,6 +47,7 @@ public class CreateCorteCaja {
 		sb.append(toDevolucionesGarantias());
 		sb.append(toRetirosIngresos());
 		sb.append(toDiferenciasVsCapturado());
+		sb.append(toFondoInicial());
 		sb.append(toFondoApertura());
 		sb.append("</div>");	
 		return sb.toString();
@@ -319,16 +316,40 @@ public class CreateCorteCaja {
     return regresar.toString();
 	} // toDiferenciasVsCapturado
   
+  private String toFondoInicial() throws Exception{
+		StringBuilder regresar= new StringBuilder();
+    if(this.corte.getFondoInicial().size()>0){
+      regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 12px;font-weight: bold;line-height:0px\">");
+      regresar.append("Fondo inicial:");
+      regresar.append("</p>");
+      regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 10px;line-height:0px;\">");
+      regresar.append("<br>").append("<br>");
+      regresar.append("<table style=\"width: 290px;\">");		
+      regresar.append("<tbody>");
+      for(Entity fondo : this.corte.getFondoInicial()){
+        regresar.append("<tr>");
+        regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 98px;\">").append(formato(fondo.toString("denominacion"))).append("</td>");
+        regresar.append("<td align=\"center\" style=\"font-family: sans-serif;font-size: 10px;width: 96px; max-width: 96px;\">").append(fondo.toString("cantidad")).append("</td>");
+        regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 96px; max-width: 96px;\">").append(formato(fondo.toString("importe"))).append("</td>");
+        regresar.append("</tr>");
+      } // for	
+    }
+    regresar.append("</tbody>");
+    regresar.append("</table>");
+    regresar.append("</p>");
+    return regresar.toString();
+	} // toFondoInicial
+  
   private String toFondoApertura() throws Exception{
 		StringBuilder regresar= new StringBuilder();
-    regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 12px;font-weight: bold;line-height:0px\">");
-		regresar.append("Apertura de caja:");
-		regresar.append("</p>");
-    regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 10px;line-height:0px;\">");
-		regresar.append("<br>").append("<br>");
-    regresar.append("<table style=\"width: 290px;\">");		
-    regresar.append("<tbody>");
     if(this.corte.getAperturaCaja().size()>0){
+      regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 12px;font-weight: bold;line-height:0px\">");
+      regresar.append("Apertura de caja:");
+      regresar.append("</p>");
+      regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 10px;line-height:0px;\">");
+      regresar.append("<br>").append("<br>");
+      regresar.append("<table style=\"width: 290px;\">");		
+      regresar.append("<tbody>");
       for(Entity apertura : this.corte.getAperturaCaja()){
         regresar.append("<tr>");
         regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 98px;\">").append(formato(apertura.toString("denominacion"))).append("</td>");
@@ -336,11 +357,6 @@ public class CreateCorteCaja {
         regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 96px; max-width: 96px;\">").append(formato(apertura.toString("importe"))).append("</td>");
         regresar.append("</tr>");
       } // for	
-    }
-    else{
-      regresar.append("<tr>");
-      regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 290px; max-width: 290px;\">").append("No se dejó fondo de apertura").append("</td>");
-      regresar.append("</tr>");
     }
     regresar.append("</tbody>");
     regresar.append("</table>");

@@ -125,7 +125,7 @@ public class Transaccion extends IBaseTnx{
 			for(Garantia newGarantia: this.detalleGarantia.getGarantias()){
 				if(newGarantia.getArticulosGarantia().size()> 0){
 					this.garantia= newGarantia;
-					this.generarGarantia(sesion, this.garantia.getTipoGarantia().equals(ETiposGarantias.RECIBIDA) ? EEstatusGarantias.RECIBIDA.getIdEstatusGarantia() : EEstatusGarantias.TERMINADA.getIdEstatusGarantia());																
+					this.generarGarantia(sesion, this.garantia.getIdEfectivo().equals(Constantes.SI) ? EEstatusGarantias.TERMINADA.getIdEstatusGarantia() : EEstatusGarantias.RECIBIDA.getIdEstatusGarantia());																
 					if(this.verificarCierreCaja(sesion)){
 						if(this.registrarPagos(sesion, this.garantia.getTicketVenta().getTotal()))					
 							regresar= this.alterarStockArticulos(sesion, newGarantia.getArticulosGarantia());
@@ -241,7 +241,8 @@ public class Transaccion extends IBaseTnx{
 			this.garantiaDto.setImpuestos(this.garantia.getTicketVenta().getImpuestos());
 			this.garantiaDto.setSubTotal(this.garantia.getTicketVenta().getSubTotal());
 			this.garantiaDto.setTotal(this.garantia.getTicketVenta().getTotal());
-			this.garantiaDto.setUtilidad(this.garantia.getTicketVenta().getUtilidad());			
+			this.garantiaDto.setUtilidad(this.garantia.getTicketVenta().getUtilidad());		
+			this.garantiaDto.setIdEfectivo(Long.valueOf(this.garantia.getIdEfectivo()));
 		} // try
 		catch (Exception e) {
 			throw e;
