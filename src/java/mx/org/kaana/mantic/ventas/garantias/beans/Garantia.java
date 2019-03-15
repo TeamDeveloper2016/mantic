@@ -3,6 +3,7 @@ package mx.org.kaana.mantic.ventas.garantias.beans;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.mantic.enums.ETiposGarantias;
 import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
@@ -14,6 +15,7 @@ public class Garantia extends VentaFinalizada implements Serializable {
 	private TicketVenta garantia;	
 	private ETiposGarantias tipoGarantia;
 	private List<ArticuloVenta> articulosGarantia;
+	private Integer idEfectivo;
 	
 	public Garantia() {
 		this(new TicketVenta(), ETiposGarantias.RECIBIDA);
@@ -24,10 +26,15 @@ public class Garantia extends VentaFinalizada implements Serializable {
 	}
 	
 	public Garantia(TicketVenta garantia, ETiposGarantias tipoGarantia, List<ArticuloVenta> articulosGarantia) {
+		this(garantia, tipoGarantia, articulosGarantia, Constantes.SI);
+	}
+	
+	public Garantia(TicketVenta garantia, ETiposGarantias tipoGarantia, List<ArticuloVenta> articulosGarantia, Integer idEfectivo) {
 		super();
 		this.garantia         = garantia;
 		this.tipoGarantia     = tipoGarantia;
 		this.articulosGarantia= articulosGarantia;
+		this.idEfectivo       = idEfectivo;
 	}
 
 	public TicketVenta getGarantia() {
@@ -53,4 +60,12 @@ public class Garantia extends VentaFinalizada implements Serializable {
 	public void setArticulosGarantia(List<ArticuloVenta> articulosGarantia) {
 		this.articulosGarantia = articulosGarantia;
 	}
+
+	public Integer getIdEfectivo() {
+		return idEfectivo;
+	}
+
+	public void setIdEfectivo(Integer idEfectivo) {
+		this.idEfectivo = idEfectivo;
+	}	
 }
