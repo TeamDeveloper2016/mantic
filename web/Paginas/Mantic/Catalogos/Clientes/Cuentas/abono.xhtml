@@ -238,7 +238,7 @@
 						</p:column>   
 					</p:selectOneMenu>
 					<p:outputLabel for="pago" value="Pago: $"/>
-					<p:inputNumber id="pago" value="#{manticCatalogosClientesCuentasAbono.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right" />
+					<p:inputNumber id="pago" value="#{manticCatalogosClientesCuentasAbono.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right" decimalPlaces="4"/>
 					<p:outputLabel for="saldar" value="Saldar deuda: "/>
 					<p:selectOneRadio id="saldar" value="#{manticCatalogosClientesCuentasAbono.attrs.saldar}">
 						<f:selectItem itemLabel="SI" itemValue="1"/>
