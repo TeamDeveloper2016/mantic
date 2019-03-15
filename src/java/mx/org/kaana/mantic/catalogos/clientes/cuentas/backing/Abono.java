@@ -72,6 +72,7 @@ public class Abono extends IBasePagos implements Serializable {
 			deuda= (Entity) DaoFactory.getInstance().toEntity("VistaClientesDto", "cuentas", params);
 			this.attrs.put("permitirPago", deuda.toLong("idClienteEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus()));
 			this.attrs.put("deuda", deuda);
+			this.attrs.put("pago", deuda.toDouble("saldo"));			
 		} // try
 		catch (Exception e) {
 			throw e;
