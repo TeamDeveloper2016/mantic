@@ -58,17 +58,19 @@ public class TcManticGarantiasDto implements IBaseDto, Serializable {
   private Long orden;
   @Column (name="id_venta")
   private Long idVenta;
+  @Column (name="id_efectivo")
+  private Long idEfectivo;
 
   public TcManticGarantiasDto() {
     this(new Long(-1L));
   }
 
   public TcManticGarantiasDto(Long key) {
-    this(new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null);
+    this(new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, 1L);
     setKey(key);
   }
 
-  public TcManticGarantiasDto(Long idGarantia, Double descuentos, Double utilidad, Long ejercicio, String consecutivo, Double total, Long idUsuario, Double impuestos, Double subTotal, String observaciones, Long idGarantiaEstatus, Long orden, Long idVenta) {
+  public TcManticGarantiasDto(Long idGarantia, Double descuentos, Double utilidad, Long ejercicio, String consecutivo, Double total, Long idUsuario, Double impuestos, Double subTotal, String observaciones, Long idGarantiaEstatus, Long orden, Long idVenta, Long idEfectivo) {
     setIdGarantia(idGarantia);
     setDescuentos(descuentos);
     setUtilidad(utilidad);
@@ -83,6 +85,7 @@ public class TcManticGarantiasDto implements IBaseDto, Serializable {
     setIdGarantiaEstatus(idGarantiaEstatus);
     setOrden(orden);
     setIdVenta(idVenta);
+		this.idEfectivo= idEfectivo;
   }
 	
   public void setIdGarantia(Long idGarantia) {
@@ -197,6 +200,14 @@ public class TcManticGarantiasDto implements IBaseDto, Serializable {
     return idVenta;
   }
 
+	public Long getIdEfectivo() {
+		return idEfectivo;
+	}
+
+	public void setIdEfectivo(Long idEfectivo) {
+		this.idEfectivo=idEfectivo;
+	}
+
   @Transient
   @Override
   public Long getKey() {
@@ -239,6 +250,8 @@ public class TcManticGarantiasDto implements IBaseDto, Serializable {
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdVenta());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEfectivo());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -260,13 +273,14 @@ public class TcManticGarantiasDto implements IBaseDto, Serializable {
 		regresar.put("idGarantiaEstatus", getIdGarantiaEstatus());
 		regresar.put("orden", getOrden());
 		regresar.put("idVenta", getIdVenta());
+		regresar.put("idEfectivo", getIdEfectivo());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdGarantia(), getDescuentos(), getUtilidad(), getEjercicio(), getRegistro(), getConsecutivo(), getTotal(), getIdUsuario(), getImpuestos(), getSubTotal(), getObservaciones(), getIdGarantiaEstatus(), getOrden(), getIdVenta()
+    getIdGarantia(), getDescuentos(), getUtilidad(), getEjercicio(), getRegistro(), getConsecutivo(), getTotal(), getIdUsuario(), getImpuestos(), getSubTotal(), getObservaciones(), getIdGarantiaEstatus(), getOrden(), getIdVenta(), getIdEfectivo()
     };
     return regresar;
   }
