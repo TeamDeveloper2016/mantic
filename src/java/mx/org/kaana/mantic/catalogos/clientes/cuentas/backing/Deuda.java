@@ -196,9 +196,9 @@ public class Deuda extends IBaseFilter implements Serializable {
 			params.put("idCliente", this.attrs.get("idCliente"));						
 			deuda= (Entity) DaoFactory.getInstance().toEntity("VistaClientesDto", "deuda", params);
 			this.attrs.put("deuda", deuda);
-			this.attrs.put("pago", deuda.toDouble("saldo")* -1);
-			this.attrs.put("pagoGeneral", deuda.toDouble("saldo")* -1);
-			this.attrs.put("pagoSegmento", deuda.toDouble("saldo")* -1);
+			this.attrs.put("pago", deuda.toDouble("saldo"));
+			this.attrs.put("pagoGeneral", deuda.toDouble("saldo"));
+			this.attrs.put("pagoSegmento", deuda.toDouble("saldo"));
 			doLoad();
 		} // try
 		catch (Exception e) {
@@ -535,7 +535,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		Entity seleccionado= null;
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");
-			this.attrs.put("pago", (seleccionado.toDouble("saldo") * -1));
+			this.attrs.put("pago", seleccionado.toDouble("saldo"));
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
