@@ -22,7 +22,6 @@ import mx.org.kaana.mantic.db.dto.TcManticCreditosNotasDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosDto;
-import mx.org.kaana.mantic.enums.EEstatusClientes;
 import mx.org.kaana.mantic.enums.EEstatusEmpresas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
@@ -435,18 +434,18 @@ public class Transaccion extends IBaseTnx {
 						saldo= this.pago.getPago() - saldoDeuda;						
 						this.pago.setPago(saldo);
 						abono= 0D;
-						idEstatus= EEstatusClientes.FINALIZADA.getIdEstatus();
+						idEstatus= EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa();
 					} // if
 					else{						
 						pagoParcial= this.pago.getPago();
 						saldo= 0D;
 						abono= saldoDeuda - this.pago.getPago();
-						idEstatus= this.saldar ? EEstatusClientes.FINALIZADA.getIdEstatus() : (saldoDeuda.equals(this.pago.getPago()) ? EEstatusClientes.FINALIZADA.getIdEstatus() : EEstatusClientes.PARCIALIZADA.getIdEstatus());
+						idEstatus= this.saldar ? EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa() : (saldoDeuda.equals(this.pago.getPago()) ? EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa() : EEstatusEmpresas.PARCIALIZADA.getIdEstatusEmpresa());
 					} /// else
 					if(registrarPago(sesion, recordDeuda.getKey(), pagoParcial)){
 						params= new HashMap<>();
 						params.put("saldo", (abono * -1D));
-						params.put("idClienteEstatus", idEstatus);
+						params.put("idEmpresaEstatus", idEstatus);
 						DaoFactory.getInstance().update(sesion, TcManticEmpresasDeudasDto.class, recordDeuda.getKey(), params);
 					}	// if				
 				} // if
@@ -483,18 +482,18 @@ public class Transaccion extends IBaseTnx {
 								saldo= this.pago.getPago() - saldoDeuda;						
 								this.pago.setPago(saldo);
 								abono= 0D;
-								idEstatus= EEstatusClientes.FINALIZADA.getIdEstatus();
+								idEstatus= EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa();
 							} // if
 							else{						
 								pagoParcial= this.pago.getPago();
 								saldo= 0D;
 								abono= saldoDeuda - this.pago.getPago();
-								idEstatus= this.saldar ? EEstatusClientes.FINALIZADA.getIdEstatus() : (saldoDeuda.equals(this.pago.getPago()) ? EEstatusClientes.FINALIZADA.getIdEstatus() : EEstatusClientes.PARCIALIZADA.getIdEstatus());
+								idEstatus= this.saldar ? EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa() : (saldoDeuda.equals(this.pago.getPago()) ? EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa() : EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa());
 							} /// else
 							if(registrarPago(sesion, deuda.getKey(), pagoParcial)){
 								params= new HashMap<>();
 								params.put("saldo", (abono * -1D));
-								params.put("idClienteEstatus", idEstatus);
+								params.put("idEmpresaEstatus", idEstatus);
 								DaoFactory.getInstance().update(sesion, TcManticEmpresasDeudasDto.class, deuda.getKey(), params);
 							}	// if				
 						} // if
@@ -502,7 +501,7 @@ public class Transaccion extends IBaseTnx {
 							if(registrarPago(sesion, deuda.getKey(), 0D)){
 								params= new HashMap<>();
 								params.put("saldo", 0);
-								params.put("idClienteEstatus", EEstatusClientes.FINALIZADA.getIdEstatus());
+								params.put("idEmpresaEstatus", EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa());
 								DaoFactory.getInstance().update(sesion, TcManticEmpresasDeudasDto.class, deuda.getKey(), params);
 							}	// if				
 						}
@@ -550,7 +549,7 @@ public class Transaccion extends IBaseTnx {
 		try {
 			params= new HashMap<>();
 			params.put("idProveedor", this.idProveedor);
-			params.put(Constantes.SQL_CONDICION, " tc_mantic_empresas_deudas.saldo < 0 and tc_mantic_empresas_deudas.id_empresa_estatus not in(".concat(EEstatusClientes.FINALIZADA.getIdEstatus().toString()).concat(")"));			
+			params.put(Constantes.SQL_CONDICION, " tc_mantic_empresas_deudas.saldo < 0 and tc_mantic_empresas_deudas.id_empresa_estatus not in(".concat(EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa().toString()).concat(")"));			
 			params.put("sortOrder", "order by tc_mantic_empresas_deudas.registro desc");
 			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaEmpresasDto", "cuentasProveedor", params);			
 		} // try
