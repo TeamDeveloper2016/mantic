@@ -246,8 +246,13 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			if(!almacenes.isEmpty() && this.accion.equals(EAccion.AGREGAR)) 
 				if(((NotaEntrada)this.getAdminOrden().getOrden()).getIdAlmacen()== null)
 				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
-			  else
-					((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(almacenes.indexOf(new UISelectEntity(((NotaEntrada)this.getAdminOrden().getOrden()).getIdAlmacen()))));
+				else {
+					int index= almacenes.indexOf(new UISelectEntity(((NotaEntrada)this.getAdminOrden().getOrden()).getIdAlmacen()));
+					if(index>= 0)
+					  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(index));
+					else
+  				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
+				} // else	
       columns.remove(0);
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("proveedores", UIEntity.build("VistaOrdenesComprasDto", "moneda", params, columns));

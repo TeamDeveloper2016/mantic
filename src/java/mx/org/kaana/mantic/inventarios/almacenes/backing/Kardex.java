@@ -19,6 +19,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.formato.Periodo;
@@ -86,8 +87,8 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	
 	private void toLoadCatalog() {
     List<UISelectEntity> almacenes= null;
-		List<Columna> columns     = null;
-    Map<String, Object> params= new HashMap<>();
+		List<Columna> columns         = null;
+    Map<String, Object> params    = new HashMap<>();
     try {
 			columns= new ArrayList<>();
 			params = new HashMap<>();
@@ -401,8 +402,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
       columns.add(new Columna("calculo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
 			Periodo periodo= new Periodo();
-			periodo.addMeses(-6);
+			periodo.addMeses(-12);
 			this.attrs.put("registro", periodo.toString());
+			this.attrs.put("periodo", Fecha.formatear(Fecha.FECHA_NOMBRE_DIA, periodo.toString()));
       this.attrs.put("movimientos", (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "movimientos", this.attrs, columns));
 		} // try
 	  catch (Exception e) {

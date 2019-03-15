@@ -123,7 +123,7 @@
                 <p:outputLabel for="idAlmacen" value="Almacen:"/>
 								<p:selectOneMenu id="idAlmacen" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="contains">
 									<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doUpdateAlmacen}" process="@this" update="tabla @(.total) @(.recalculo)"/>
-									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.almacenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave}"/>
+									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.almacenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave} - #{element.nombre}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   

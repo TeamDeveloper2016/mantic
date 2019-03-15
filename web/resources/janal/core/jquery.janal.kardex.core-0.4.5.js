@@ -52,11 +52,17 @@
  			janal.console('jsKardex.events');
 	    $(document).on('keydown', '.janal-key-kardex', function(e) {
 				var key= e.keyCode? e.keyCode: e.which;
-				janal.console('jsPrecios.keydown: '+ key);
+				janal.console('jsKardex.keydown: '+ key);
 				switch(key) {
-					case $precios.VK_TAB:
-					case $precios.VK_ENTER:
-						janal.console('jsPrecios.keydown: '+ $(this).attr('id'));
+					case $kardex.VK_MINUS:
+					case $kardex.VK_REST:
+						janal.bloquear();
+						$('#contenedorGrupos\\:agregarInventario').click();
+						return false;
+						break;
+					case $kardex.VK_TAB:
+					case $kardex.VK_ENTER:
+						janal.console('jsKardex.keydown: '+ $(this).attr('id'));
 						if('codigos_input'=== $(this).attr('id'))
               $('#contenedorGrupos\\:inicial').focus();								
 						if('contenedorGrupos:inicial'=== $(this).attr('id'))
