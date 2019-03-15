@@ -26,7 +26,6 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.empresas.cuentas.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosDto;
-import mx.org.kaana.mantic.enums.EEstatusClientes;
 import mx.org.kaana.mantic.enums.EEstatusEmpresas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import org.primefaces.event.ToggleEvent;
@@ -230,8 +229,8 @@ public class Deuda extends IBaseFilter implements Serializable {
       columns= new ArrayList<>();  
 			params.put("idProveedor", this.attrs.get("idProveedor"));						
 			deuda= (Entity) DaoFactory.getInstance().toEntity("VistaEmpresasDto", "deuda", params);
-			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-			columns.add(new Columna("debe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			columns.add(new Columna("debe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
 			UIBackingUtilities.toFormatEntity(deuda, columns);
 			this.attrs.put("deuda", deuda);
 			this.attrs.put("saldoPositivo", Double.valueOf(deuda.toString("saldo")) * -1);
@@ -261,8 +260,8 @@ public class Deuda extends IBaseFilter implements Serializable {
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
-			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
 			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));
 			this.lazyModel = new FormatCustomLazy("VistaEmpresasDto", "cuentasProveedor", params, columns);			
@@ -284,7 +283,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		int count= 0;
 		try {
 			for(Entity cuenta: cuentas){
-				if(!(cuenta.toLong("idEmpresaEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus())))
+				if(!(cuenta.toLong("idEmpresaEstatus").equals(EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa())))
 					count++;
 			} // for
 			this.attrs.put("activePagoGeneral", count > 0);
@@ -304,7 +303,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 			params= new HashMap<>();
 			params.put("idProveedor", this.attrs.get("idProveedor"));						
 			params.put("sortOrder", this.attrs.get("sortOrder"));			
-			params.put(Constantes.SQL_CONDICION, " tc_mantic_empresas_deudas.saldo < 0 and tc_mantic_empresas_deudas.id_empresa_estatus not in(".concat(EEstatusClientes.FINALIZADA.getIdEstatus().toString()).concat(")"));			
+			params.put(Constantes.SQL_CONDICION, " tc_mantic_empresas_deudas.saldo < 0 and tc_mantic_empresas_deudas.id_empresa_estatus not in(".concat(EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa().toString()).concat(")"));			
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
@@ -364,7 +363,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		try {
 			pago= Double.valueOf(this.attrs.get("pago").toString());
 			deuda= (Entity) this.attrs.get("seleccionado");
-			if(pago > 0D && !deuda.toLong("idEmpresaEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus())){				
+			if(pago > 0D && !deuda.toLong("idEmpresaEstatus").equals(EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa())){				
 				saldo= Double.valueOf(deuda.toString("saldo"));
 				regresar= pago<= (saldo * -1);
 			} // if
@@ -395,9 +394,9 @@ public class Deuda extends IBaseFilter implements Serializable {
 			params.put("idEmpresaDeuda", ((Entity)this.attrs.get("registroSeleccionado")).getKey());			
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-			columns.add(new Columna("pago", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			columns.add(new Columna("pago", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
 			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
 			this.detallePagos = new FormatCustomLazy("VistaEmpresasDto", "pagosDeuda", params, columns);
@@ -563,7 +562,10 @@ public class Deuda extends IBaseFilter implements Serializable {
 	} // doValidaTipoPagoSegmento
 	
 	public void doLoadCuentasAFavor(){
+		Entity seleccionado= null;		
 		try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");
+			this.attrs.put("pago", (seleccionado.toDouble("saldo") * -1));
 			doLoadNotasEntradas();
 			doLoadNotasCredito();
 		} // try
@@ -584,8 +586,8 @@ public class Deuda extends IBaseFilter implements Serializable {
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
-			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
 			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));						
 			this.notasEntradaFavor= new FormatLazyModel("VistaEmpresasDto", "saldoFavorEntradas", params, columns);      
@@ -607,8 +609,8 @@ public class Deuda extends IBaseFilter implements Serializable {
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
-			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
 			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));						
 			this.notasCreditoFavor= new FormatLazyModel("VistaCreditosNotasDto", "saldoFavorCreditos", params, columns);      
