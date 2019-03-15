@@ -196,6 +196,9 @@ public class Deuda extends IBaseFilter implements Serializable {
 			params.put("idCliente", this.attrs.get("idCliente"));						
 			deuda= (Entity) DaoFactory.getInstance().toEntity("VistaClientesDto", "deuda", params);
 			this.attrs.put("deuda", deuda);
+			this.attrs.put("pago", deuda.toDouble("saldo")* -1);
+			this.attrs.put("pagoGeneral", deuda.toDouble("saldo")* -1);
+			this.attrs.put("pagoSegmento", deuda.toDouble("saldo")* -1);
 			doLoad();
 		} // try
 		catch (Exception e) {
@@ -219,8 +222,8 @@ public class Deuda extends IBaseFilter implements Serializable {
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
-			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
 			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
 			this.lazyModel = new FormatCustomLazy("VistaClientesDto", "cuentas", params, columns);			
@@ -269,8 +272,8 @@ public class Deuda extends IBaseFilter implements Serializable {
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
-			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
 			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));						
 			this.pagosSegmento= new FormatLazyModel("VistaClientesDto", "cuentas", params, columns);      
@@ -357,9 +360,9 @@ public class Deuda extends IBaseFilter implements Serializable {
 			params.put("idClienteDeuda", ((Entity)this.attrs.get("registroSeleccionado")).getKey());			
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-			columns.add(new Columna("pago", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			columns.add(new Columna("pago", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
 			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
 			this.detallePagos = new FormatCustomLazy("VistaClientesDto", "pagosDeuda", params, columns);
@@ -527,4 +530,16 @@ public class Deuda extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doValidaTipoPagoSegmento
+	
+	public void doActualizaPago(){
+		Entity seleccionado= null;
+		try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");
+			this.attrs.put("pago", (seleccionado.toDouble("saldo") * -1));
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doActualizaPago
 }
