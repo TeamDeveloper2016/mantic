@@ -2915,8 +2915,7 @@
 				where
 					tc_mantic_clientes_deudas.id_cliente_deuda= {idClienteDeuda}									
 				order by
-					tc_mantic_ventas.consecutivo, 
-					tc_mantic_clientes_deudas.registro desc						
+					tc_mantic_clientes_pagos.registro desc				
 			</select>
 			<select id="pagosBusqueda">
 				select
@@ -5035,8 +5034,7 @@
 				where
 					tc_mantic_empresas_deudas.id_empresa_deuda= {idEmpresaDeuda}									
 				order by
-					tc_mantic_notas_entradas.consecutivo, 
-					tc_mantic_empresas_deudas.registro desc				
+					tc_mantic_empresas_pagos desc					
 			</select>
 			<select id="pagosBusqueda">				
 				select
