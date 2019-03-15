@@ -108,8 +108,8 @@ public class Abono extends IBasePagos implements Serializable {
 			params.put("sortOrder", this.attrs.get("sortOrder"));
 			deuda= (Entity) DaoFactory.getInstance().toEntity("VistaEmpresasDto", "cuentas", params);
 			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
-			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-			columns.add(new Columna("debe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			columns.add(new Columna("debe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
 			UIBackingUtilities.toFormatEntity(deuda, columns);
 			
 			this.attrs.put("deuda", deuda);
@@ -134,9 +134,9 @@ public class Abono extends IBasePagos implements Serializable {
 			params.put("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));			
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-			columns.add(new Columna("pago", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			columns.add(new Columna("pago", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
 			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
 			this.lazyModel = new FormatCustomLazy("VistaEmpresasDto", "pagosDeuda", params, columns);
       UIBackingUtilities.resetDataTable();		
@@ -368,8 +368,8 @@ public class Abono extends IBasePagos implements Serializable {
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
-			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
 			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));						
 			this.notasEntradaFavor= new FormatLazyModel("VistaEmpresasDto", "saldoFavorEntradas", params, columns);      
@@ -390,8 +390,8 @@ public class Abono extends IBasePagos implements Serializable {
 			params.put("idCreditoEstatus", EEstatusEmpresas.PARCIALIZADA.getIdEstatusEmpresa() + "," + EEstatusEmpresas.PROGRAMADA.getIdEstatusEmpresa());																	
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
 			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));						
 			this.notasCreditoFavor= new FormatLazyModel("VistaCreditosNotasDto", "saldoFavorCreditos", params, columns);      
