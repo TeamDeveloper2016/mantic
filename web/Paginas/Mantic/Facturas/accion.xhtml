@@ -314,7 +314,7 @@
 										<div class="ui-grid-col-12">
 											<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
                       <p:inputText id="locks" value="0" style="display:none"/>
-											<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticFacturasAccion.attrs.articulo}" completeMethod="#{manticFacturasAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10">
+											<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticFacturasAccion.attrs.articulo}" completeMethod="#{manticFacturasAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="3" maxResults="10">
 												<p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
 												<p:ajax event="focus" process="@this" listener="#{manticFacturasAccion.doActualizaImage(row['idArticulo'], row['nombre'])}" update="panelTotales" onstart="return jsArticulos.valid();" oncomplete="$('#source-image').attr('href', $('#icon-image').attr('src'));"/>
 												<f:facet name="itemtip">
@@ -410,7 +410,7 @@
 							<p:spacer height="1px"/>
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-100 janal-column-right">
 								<p:outputLabel for="articulos" value="Articulos:"/>
-								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticFacturasAccion.adminOrden.totales.articulos}"/>
+								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticFacturasAccion.adminOrden.totales.reales}"/>
 								<p:outputLabel value="Descuento:"/>
 								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticFacturasAccion.adminOrden.totales.descuentoDosDecimales$}"/>
 								<p:outputLabel value="Global:"/>

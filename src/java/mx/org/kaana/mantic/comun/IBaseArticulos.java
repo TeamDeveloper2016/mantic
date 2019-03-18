@@ -814,7 +814,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				UIBackingUtilities.resetDataTable("lazyEspecificaciones");
 				columns.clear();
 				columns.add(new Columna("porcentaje", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-				columns.add(new Columna("vigenciaIncial", EFormatoDinamicos.FECHA_HORA_CORTA));
+				columns.add(new Columna("vigenciaInicial", EFormatoDinamicos.FECHA_HORA_CORTA));
 				columns.add(new Columna("vigenciaFinal", EFormatoDinamicos.FECHA_HORA_CORTA));
 				columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
 				this.attrs.put("lazyDescuentos", new FormatLazyModel("TcManticArticulosDescuentosDto", "row", params, columns));
