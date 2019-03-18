@@ -79,6 +79,28 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // init
   
+	private void toInitTransferencia() {
+		this.accion= EAccion.ACTIVAR;
+    this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
+		this.transferencia= new Transferencia(
+			null, // Long idSolicito, 
+			8L, // Long idTransferenciaEstatus, 
+			1L, // Long idTransferenciaTipo, 
+			new Long(Calendar.getInstance().get(Calendar.YEAR)), // Long ejercicio, 
+			Calendar.getInstance().get(Calendar.YEAR)+ "00000", // String consecutivo, 
+			JsfBase.getIdUsuario(), // Long idUsuario, 
+			-1L, // Long idAlmacen, 
+			"", // String observaciones, 
+			-1L, // Long idDestino, 
+			JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende(), // Long idEmpresa, 
+			1L, // Long orden, 
+			-1L // Long idTransferencia					
+		);
+		this.detalle= new Articulo(-1L);
+		this.detalle.setCalculado(1D);
+		
+	}
+	
   public void doLoad() {
     Map<String, Object> params= null;
     try {
@@ -86,45 +108,38 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
       switch (this.accion) {
         case ACTIVAR:
-				 	this.transferencia= new Transferencia(
-            null, // Long idSolicito, 
-						8L, // Long idTransferenciaEstatus, 
-						1L, // Long idTransferenciaTipo, 
-						new Long(Calendar.getInstance().get(Calendar.YEAR)), // Long ejercicio, 
-						Calendar.getInstance().get(Calendar.YEAR)+ "00000", // String consecutivo, 
-						JsfBase.getIdUsuario(), // Long idUsuario, 
-						-1L, // Long idAlmacen, 
-						"", // String observaciones, 
-						-1L, // Long idDestino, 
-						JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende(), // Long idEmpresa, 
-						1L, // Long orden, 
-						-1L // Long idTransferencia					
-					);
-					this.detalle= new Articulo(-1L);
-					this.detalle.setCalculado(1D);
+				 	this.toInitTransferencia();
           break;
         case MODIFICAR:
         case CONSULTAR:
           this.transferencia= (Transferencia) DaoFactory.getInstance().toEntity(Transferencia.class, "TcManticTransferenciasDto", "detalle", this.attrs);
-					this.detalle      = (Articulo)DaoFactory.getInstance().toEntity(Articulo.class, "VistaAlmacenesTransferenciasDto", "detalle", this.attrs);
-          this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-          this.attrs.put("idArticulo", this.detalle.getIdArticulo());
-				  UISelectEntity articulo= this.detalle.toUISelectEntity();
-				  this.attrs.put("articulo", articulo);
-          this.image= LoadImages.getImage(this.detalle.getIdArticulo());
-					params.put("idArticulo", this.detalle.getIdArticulo());
-					params.put("idAlmacen", this.transferencia.getIdAlmacen());
-					// recuperar el stock de articulos en el almacen origen
-					Value origen= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
-					articulo.put("stock", origen== null? new Value("stock", 0D): origen);
-					articulo.put("vacio", new Value("vacio", origen== null));
-					Entity umbral= (Entity)DaoFactory.getInstance().toEntity("TcManticAlmacenesArticulosDto", "almacenArticulo", params);
-					if(umbral== null) 
-						umbral= (Entity)DaoFactory.getInstance().toEntity("TcManticArticulosDto", "detalle", params);
-					articulo.put("minimo", umbral.get("minimo"));
-					articulo.put("maximo", umbral.get("maximo"));
-					this.attrs.put("nuevaExistenciaOrigen", 0D);
-					this.attrs.put("nuevaExistenciaDestino", 0D);
+					if(this.transferencia!= null) {
+						this.detalle    = (Articulo)DaoFactory.getInstance().toEntity(Articulo.class, "VistaAlmacenesTransferenciasDto", "detalle", this.attrs);
+  					if(this.detalle!= null) {
+							this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+							this.attrs.put("idArticulo", this.detalle.getIdArticulo());
+							UISelectEntity articulo= this.detalle.toUISelectEntity();
+							this.attrs.put("articulo", articulo);
+							this.image= LoadImages.getImage(this.detalle.getIdArticulo());
+							params.put("idArticulo", this.detalle.getIdArticulo());
+							params.put("idAlmacen", this.transferencia.getIdAlmacen());
+							// recuperar el stock de articulos en el almacen origen
+							Value origen= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
+							articulo.put("stock", origen== null? new Value("stock", 0D): origen);
+							articulo.put("vacio", new Value("vacio", origen== null));
+							Entity umbral= (Entity)DaoFactory.getInstance().toEntity("TcManticAlmacenesArticulosDto", "almacenArticulo", params);
+							if(umbral== null) 
+								umbral= (Entity)DaoFactory.getInstance().toEntity("TcManticArticulosDto", "detalle", params);
+							articulo.put("minimo", umbral.get("minimo"));
+							articulo.put("maximo", umbral.get("maximo"));
+							this.attrs.put("nuevaExistenciaOrigen", 0D);
+							this.attrs.put("nuevaExistenciaDestino", 0D);
+						} // if
+						else
+							this.toInitTransferencia();
+					} // if
+					else
+  				 	this.toInitTransferencia();
           break;
       } // switch      
       this.loadAlmacenes();

@@ -5796,7 +5796,7 @@
 				  tc_mantic_articulos.iva,
 				  tc_mantic_articulos.id_redondear,
 				  tc_mantic_unidades_medidas.nombre unidad_medida,
-          ifnull(tc_mantic_almacenes_articulos.stock, 0) as stock
+          ifnull(tc_mantic_almacenes_articulos.stock, 0) as stock,
 				  true as vacio
 				from 
 					tc_mantic_articulos
