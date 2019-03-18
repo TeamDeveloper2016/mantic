@@ -25,6 +25,11 @@
 					populate();
 			}
 		</script>   
+		<style>
+      .ui-widget-content a {	
+				color: inherit;
+			}
+	  </style>		
 	</ui:define>
   <ui:define name="contenido">
 		<p:remoteCommand name="populate" actionListener="#{manticComprasOrdenesDiferencias.doRowSelectEvent}" update="notas tabla" process="@this"/>
