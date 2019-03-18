@@ -145,11 +145,12 @@ public final class Totales implements Serializable {
 		this.descuento+= articulo.getImportes().getDescuento();
 		this.extra+= articulo.getImportes().getExtra();
 		this.iva+= articulo.getImportes().getIva();
-		this.subTotal+= articulo.getImportes().getSubTotal();
+		this.subTotal+= articulo.getImportes().getSubTotal();		
 		this.total+= articulo.getImportes().getTotal();
 		this.utilidad+= articulo.getUtilidad();
     this.cantidad+= articulo.getCantidad();
-	  this.articulos+= 1;
+		if(articulo.isValid())
+			this.articulos+= 1;
 	}
 	
 	public void removeUltimo(Articulo articulo) {
