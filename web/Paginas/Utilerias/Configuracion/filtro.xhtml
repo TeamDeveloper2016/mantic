@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 19/03/2019
+ time 15:25:20 AM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Recargar los archivos de configuración de la aplicación"/>
+  <ui:define name="librerias">		
+    <script type="text/javascript">			
+		</script>
+  </ui:define>
+  <ui:define name="contenido">		
+		<p:panelGrid id="tabla" columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-col-150, janal-wid-100-txt">
+			<p:outputLabel value="Consultas .XML:"/>
+			<p:inputSwitch value="#{kajoolUtileriasConfiguracionFiltro.xml}">
+				<p:ajax listener="#{kajoolUtileriasConfiguracionFiltro.doXml()}" update="@form" process="@this" />
+			</p:inputSwitch>
+			<p:spacer height="1px"/>
+			<p:spacer height="1px"/>
+			<p:outputLabel value="Archivo .properties:"/>
+			<p:inputSwitch value="#{kajoolUtileriasConfiguracionFiltro.properties}">
+				<p:ajax listener="#{kajoolUtileriasConfiguracionFiltro.doProperties()}" update="@form" process="@this" />
+			</p:inputSwitch>
+		</p:panelGrid>
+  </ui:define>
+	<ui:param name="componenteBloqueo" value="tabla"/>
+</ui:composition>
