@@ -4540,6 +4540,17 @@
 				where 
 					id_cliente= {idCliente} and id_cliente_estatus in (1, 2)
 			</select>
+			<select id="deudaVenta">
+				select      
+					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
+          tc_mantic_clientes_deudas.*
+        from      
+          tc_mantic_clientes_deudas
+        where 
+          id_venta= {idVenta} 
+				and 
+					id_cliente= {idCliente}
+			</select>
     </unit>
     <unit id="TcManticClientesPagosDto">
       <select id="row">
