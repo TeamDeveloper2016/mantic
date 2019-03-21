@@ -7776,7 +7776,7 @@
 					tc_mantic_cierres on tc_mantic_cierres.id_cierre= pagos_venta.id_cierre
 				where 
 					pagos_venta.id_cierre = {idCierre} and tc_mantic_garantias.id_garantia_estatus = 6
-					and tc_mantic_garantias_detalles.cantidad> 0	
+					and tc_mantic_garantias_detalles.cantidad> 0	and tc_mantic_garantias.id_efectivo = 2
 					and 
 					(tc_mantic_ventas_detalles.registro between tc_mantic_cierres.registro and tc_mantic_cierres.termino)
 					order by
