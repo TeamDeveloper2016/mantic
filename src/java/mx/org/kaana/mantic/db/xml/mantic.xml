@@ -4540,6 +4540,16 @@
 				where 
 					id_cliente= {idCliente} and id_cliente_estatus in (1, 2)
 			</select>
+      <select id="saldoClienteExcluirVenta">
+				select 
+					case when sum(saldo) is null then 0 else sum(saldo) end as saldo 
+				from 
+					tc_mantic_clientes_deudas 
+				where 
+					id_cliente= {idCliente} and id_cliente_estatus in (1, 2)
+				and 
+					id_venta not in ({idVenta})
+			</select>
 			<select id="deudaVenta">
 				select      
 					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
