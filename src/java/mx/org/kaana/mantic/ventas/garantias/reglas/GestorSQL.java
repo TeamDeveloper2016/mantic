@@ -39,4 +39,25 @@ public class GestorSQL implements Serializable{
 		} // finally
 		return regresar;
 	} // toDeudaVenta	
+	
+	public double toSaldoCliente() throws Exception{
+		double regresar          = 0D;
+		Map<String, Object>params= null;
+		Entity saldo             = null;
+		try {
+			params= new HashMap<>();
+			params.put("idCliente", this.idCliente);
+			params.put("idVenta", this.idVenta);
+			saldo= (Entity) DaoFactory.getInstance().toEntity("TcManticClientesDeudasDto", "saldoClienteExcluirVenta", params);
+			if(saldo!= null)
+				regresar= saldo.toDouble("saldo");
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toSaldoCliente
 }
