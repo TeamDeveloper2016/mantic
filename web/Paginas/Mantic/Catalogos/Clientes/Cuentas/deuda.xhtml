@@ -12,21 +12,21 @@
       Janal.Control.fields = {};
 			
 			fieldsDialog ={
-				'pago'         : {validaciones: 'requerido|menor({"cuanto": #{manticCatalogosClientesCuentasDeuda.attrs.deuda.saldo}})', mascara: 'libre', grupo: 'dialogo'},
+				'pago'         : {validaciones: 'requerido|menor-igual({"cuanto": #{manticCatalogosClientesCuentasDeuda.attrs.deuda.saldo}})', mascara: 'libre', grupo: 'dialogo'},
 				'referencia'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
         'tipoPago'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
         'observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
 			};
 			
 			fieldsDialogGeneral ={
-				'pagoGeneral'         : {validaciones: 'requerido|menor({"cuanto": #{manticCatalogosClientesCuentasDeuda.attrs.deuda.saldo}})', mascara: 'libre', grupo: 'dialogoGeneral'},
+				'pagoGeneral'         : {validaciones: 'requerido|menor-igual({"cuanto": #{manticCatalogosClientesCuentasDeuda.attrs.deuda.saldo}})', mascara: 'libre', grupo: 'dialogoGeneral'},
 				'referenciaGeneral'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoGeneral'},
         'tipoPagoGeneral'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoGeneral'},
         'observacionesGeneral': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogoGeneral', formatos: 'cambiar-mayusculas'}
 			};
 			
 			fieldsDialogSegmento ={
-				'pagoSegmento'         : {validaciones: 'requerido|menor({"cuanto": #{manticCatalogosClientesCuentasDeuda.attrs.deuda.saldo}})', mascara: 'libre', grupo: 'dialogoSegmento'},
+				'pagoSegmento'         : {validaciones: 'requerido|menor-igual({"cuanto": #{manticCatalogosClientesCuentasDeuda.attrs.deuda.saldo}})', mascara: 'libre', grupo: 'dialogoSegmento'},
 				'referenciaSegmento'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoSegmento'},
         'tipoPagoSegmento'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoSegmento'},
         'observacionesSegmento': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogoSegmento', formatos: 'cambiar-mayusculas'}
