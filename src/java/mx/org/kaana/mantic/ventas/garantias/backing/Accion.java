@@ -19,9 +19,11 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -34,6 +36,7 @@ import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.garantias.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
+import mx.org.kaana.mantic.enums.EEstatusClientes;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.enums.ETiposGarantias;
@@ -43,6 +46,8 @@ import mx.org.kaana.mantic.ventas.garantias.beans.DetalleGarantia;
 import mx.org.kaana.mantic.ventas.garantias.beans.Garantia;
 import mx.org.kaana.mantic.ventas.garantias.beans.PagoGarantia;
 import mx.org.kaana.mantic.ventas.garantias.reglas.AdminGarantia;
+import mx.org.kaana.mantic.ventas.garantias.reglas.GestorSQL;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
 
@@ -52,6 +57,7 @@ public class Accion extends IBaseVenta implements Serializable {
 
   private static final long serialVersionUID  = 327393488565639367L;
 	private static final String CLAVE_VENTA_GRAL= "VENTA";	
+	private FormatLazyModel detalleDeudaCliente;
 	private TicketVenta ticketOriginal;
 	private StreamedContent image;
 	
@@ -62,6 +68,10 @@ public class Accion extends IBaseVenta implements Serializable {
 	public StreamedContent getImage() {
 		return image;
 	}
+
+	public FormatLazyModel getDetalleDeudaCliente() {
+		return detalleDeudaCliente;
+	}	
 	
 	@PostConstruct
   @Override
@@ -79,6 +89,7 @@ public class Accion extends IBaseVenta implements Serializable {
       this.attrs.put("mostrarGarantia", false);
 			this.attrs.put("sinIva", false);
 			this.attrs.put("tipoPago", 1L);
+			this.attrs.put("mostrarDevolucion", false);
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
@@ -94,6 +105,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("disabledFacturar", false);			
 			this.attrs.put("apartado", false);			
 			this.attrs.put("isEfectivo", true);			
+			this.attrs.put("tipoVenta", 1L);			
+			this.attrs.put("tipoDevolucion", 1L);			
 			this.image= LoadImages.getImage(-1L);
 			if(JsfBase.isAdminEncuestaOrAdmin())
 				loadSucursales();	
@@ -175,6 +188,146 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 	} // loadDatosCliente
 	
+	public void doValidarDevolucion(){
+		RequestContext rc     = null;
+		String tipoVenta      = null;
+		boolean lanzadoDialogo= true;
+		try {
+			tipoVenta= this.attrs.get("tipoVenta").toString();
+			if(tipoVenta.equals("1"))
+				lanzadoDialogo= verificarDevolucionCredito();
+			if(lanzadoDialogo){
+				rc= RequestContext.getCurrentInstance();
+				rc.execute("ventaFinished(".concat(tipoVenta).concat(");"));
+				rc.update("dialogoCerrarVenta");
+			} // else
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doValidarDevolucion
+	
+	private boolean verificarDevolucionCredito() throws Exception{
+		boolean regresar          = true;
+		GestorSQL gestor          = null;
+		Entity deuda              = null;
+		boolean devolucionCompleta= false;
+		boolean importeEquals     = false;
+		Double saldoCliente       = 0D;
+		Double saldoVenta         = 0D;
+		Double diferencia         = 0D;
+		Double diferenciaVenta    = 0D;
+		try {
+			this.attrs.put("mostrarDevolucion", false);
+			gestor= new GestorSQL(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta(), ((UISelectEntity) this.attrs.get("clienteSeleccion")).getKey());
+			deuda= gestor.toDeudaVenta();
+			saldoVenta= deuda.toDouble("saldo");
+			devolucionCompleta= toDevolucionCompleta();
+			importeEquals= deuda.toDouble("importe").equals(saldoVenta);
+			if(importeEquals && devolucionCompleta){
+				this.attrs.put("messageDialog", "No hay saldo a favor. La deuda sera saldada.");
+				this.attrs.put("accionCredito", EAccion.COMPLETO);
+			} // if
+			else if(!importeEquals && devolucionCompleta){				
+				saldoCliente= gestor.toSaldoCliente();
+				diferenciaVenta= deuda.toDouble("importe") - saldoVenta;
+				if(saldoCliente < diferenciaVenta){
+					this.attrs.put("mostrarDevolucion", true);
+					this.attrs.put("messageDialog", "La devolución es por la cantidad de: $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, (diferenciaVenta-saldoCliente)) + ", el resto se abonara a las cuentas pendientes. Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
+					this.attrs.put("accionCredito", EAccion.AGREGAR);
+					toDetalleDeudaCliente();
+				} // if
+				else{
+					this.attrs.put("messageDialog", "No hay saldo a favor. La deuda sera saldada y los pagos realizados seran abonados a las cuentas pendientes. Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
+					this.attrs.put("accionCredito", EAccion.ASIGNAR);
+					toDetalleDeudaCliente();
+				} // else
+			} // else if
+			else if(importeEquals && !devolucionCompleta){
+				this.attrs.put("messageDialog", "Se actualizara el monto del saldo de la deuda.");
+				this.attrs.put("accionCredito", EAccion.MODIFICAR);
+			} // else if
+			else if(!importeEquals && !devolucionCompleta){
+				diferencia= saldoVenta - getAdminOrden().getTotales().getTotal();				
+				saldoCliente= gestor.toSaldoCliente();
+				diferenciaVenta= deuda.toDouble("importe") - saldoVenta;
+				if(saldoVenta < getAdminOrden().getTotales().getTotal()){
+					if(diferencia < 0){
+						this.attrs.put("mostrarDevolucion", true);
+						this.attrs.put("messageDialog", "La devolución es por la cantidad de: $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, (diferencia*-1)) + ", el resto se abonara a las cuentas pendientes. Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
+						this.attrs.put("accionCredito", EAccion.PROCESAR);
+						toDetalleDeudaCliente();
+					} // if
+					else{
+						this.attrs.put("messageDialog", "No hay saldo a favor. Los abonos se utilizaran para cubrir la deuda de los articulos vigentes. Saldo pendiente $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferencia) + ". Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
+						this.attrs.put("accionCredito", EAccion.CALCULAR);
+						toDetalleDeudaCliente();
+					} // else
+				} // else
+				else if(saldoCliente < diferencia){
+					this.attrs.put("mostrarDevolucion", true);
+					this.attrs.put("messageDialog", "La devolución es por la cantidad de: $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, (diferencia - saldoCliente)) + ", el resto se abonara a las cuentas pendientes." + " Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
+					this.attrs.put("accionCredito", EAccion.ACTIVAR);
+					toDetalleDeudaCliente();
+				} // else					
+				else{
+					diferenciaVenta= deuda.toDouble("importe") - saldoVenta;
+					this.attrs.put("messageDialog", "No hay saldo a favor. La deuda sera saldada y los pagos realizados seran abonados a las cuentas pendientes. Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
+					this.attrs.put("accionCredito", EAccion.JUSTIFICAR);
+					toDetalleDeudaCliente();
+				} // else
+			} // else if
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch				
+		return regresar;
+	} // verificarDevolucionCredito
+	
+	public void toDetalleDeudaCliente(){
+		Map<String, Object>params= null;
+		List<Columna>columns     = null;
+		try {
+			params= new HashMap<>();
+			params.put("idCliente", ((UISelectEntity) this.attrs.get("clienteSeleccion")).getKey());									
+			params.put("sortOrder", "order by	tc_mantic_clientes_deudas.registro desc");			
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes_deudas.id_cliente_estatus in (".concat(EEstatusClientes.INICIADA.getIdEstatus().toString()).concat(",").concat(EEstatusClientes.PARCIALIZADA.getIdEstatus().toString()).concat(")"));			
+			columns= new ArrayList<>();
+			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
+			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			this.detalleDeudaCliente= new FormatLazyModel("VistaClientesDto", "cuentas", params, columns);
+			UIBackingUtilities.resetDataTable("detalleDeudaCliente");
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	}	// toDetalleDeudaCliente
+	
+	private boolean toDevolucionCompleta(){
+		boolean regresar= false;
+		int count       = 0;
+		try {
+			for(Articulo art: this.getAdminOrden().getArticulos()){
+				if(!art.getCantidad().equals(0D) && art.getCantidad().equals(art.getCantidadGarantia()))
+					count++;
+			} // for
+			regresar= count== this.getAdminOrden().getArticulos().size();
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toDevolucionCompleta
+	
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
@@ -207,8 +360,12 @@ public class Accion extends IBaseVenta implements Serializable {
 		TicketVenta ticketVenta  = null;		
 		PagoGarantia pagoGarantia= null;
 		List<Articulo>articulos  = null;
+		UISelectEntity cliente   = null;
 		try {
 			regresar= new DetalleGarantia();
+			regresar.setIdVenta(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
+			cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");
+			regresar.setIdCliente(cliente.getKey());
 			garantias= new ArrayList<>();
 			articulos= this.getAdminOrden().getArticulos();
 			for(ETiposGarantias tipoGarantia: ETiposGarantias.values()){				
@@ -229,13 +386,18 @@ public class Accion extends IBaseVenta implements Serializable {
 				garantias.add(garantia);
 			} // for			
 			pagoGarantia= new PagoGarantia();
-			if(Long.valueOf(this.attrs.get("tipoPago").toString()).equals(1L))
-				pagoGarantia.setIdTipoPago(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());		
-			else{
-				pagoGarantia.setIdTipoPago(ETipoMediosPago.TRANSFERENCIA.getIdTipoMedioPago());
-				pagoGarantia.setTransferencia(this.attrs.get("referencia").toString());
-				pagoGarantia.setIdBanco(Long.valueOf(this.attrs.get("banco").toString()));
-			} // else
+			pagoGarantia.setIdTipoVenta(Long.valueOf(this.attrs.get("tipoVenta").toString()));
+			if(Long.valueOf(this.attrs.get("tipoVenta").toString()).equals(2L)){				
+				if(Long.valueOf(this.attrs.get("tipoPago").toString()).equals(1L))
+					pagoGarantia.setIdTipoPago(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());		
+				else{
+					pagoGarantia.setIdTipoPago(ETipoMediosPago.fromIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString())).getIdTipoMedioPago());
+					pagoGarantia.setTransferencia(this.attrs.get("referencia").toString());
+					pagoGarantia.setIdBanco(Long.valueOf(this.attrs.get("banco").toString()));
+				} // else
+			} // if
+			else
+				pagoGarantia.setTipoDevolucion(Long.valueOf(this.attrs.get("tipoDevolucion").toString()));
 			regresar.setGarantias(garantias);
 			regresar.setPagoGarantia(pagoGarantia);
 			regresar.setTotales((Pago) this.attrs.get("pago"));			
@@ -285,9 +447,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
-			this.attrs.put("clienteSeleccion", seleccion);
-			//setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
-			//doReCalculatePreciosArticulos(seleccion.getKey());			
+			this.attrs.put("clienteSeleccion", seleccion);			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -377,6 +537,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			regresar.append(EEstatusVentas.PAGADA.getIdEstatusVenta());						
 			regresar.append(" or tc_mantic_ventas.id_venta_estatus=");
 			regresar.append(EEstatusVentas.TERMINADA.getIdEstatusVenta());									
+			regresar.append(" or tc_mantic_ventas.id_venta_estatus=");
+			regresar.append(EEstatusVentas.CREDITO.getIdEstatusVenta());									
 			regresar.append(") ");
 		} // try
 		catch (Exception e) {			
@@ -490,6 +652,8 @@ public class Accion extends IBaseVenta implements Serializable {
 					this.setAdminOrden(new AdminGarantia((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), false, EAccion.LISTAR, -1L));
 					loadMediosPago(seleccion.getKey());
 					this.ticketOriginal= (TicketVenta) getAdminOrden().getOrden();
+					this.attrs.put("tipoVenta", this.ticketOriginal.getIdVentaEstatus().equals(EEstatusVentas.CREDITO.getIdEstatusVenta()) ? 1L : 2L);
+					this.attrs.put("mostrarGarantia", this.ticketOriginal.getIdVentaEstatus().equals(EEstatusVentas.CREDITO.getIdEstatusVenta()));
 					this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 					loadCatalog();
 					doAsignaClienteTicketAbierto();
@@ -561,9 +725,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				clientesSeleccion= new ArrayList<>();
 				clientesSeleccion.add(seleccion);
 				this.attrs.put("clientesSeleccion", clientesSeleccion);
-				this.attrs.put("clienteSeleccion", seleccion);
-				//setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
-				//doReCalculatePreciosArticulos(seleccion.getKey());			
+				this.attrs.put("clienteSeleccion", seleccion);				
 			} // if
 		} // try
 		catch (Exception e) {	
