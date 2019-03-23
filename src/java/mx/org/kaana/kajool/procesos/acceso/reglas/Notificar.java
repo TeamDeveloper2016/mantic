@@ -1,6 +1,7 @@
 package mx.org.kaana.kajool.procesos.acceso.reglas;
 
 import java.io.File;
+import java.io.Serializable;
 import mx.org.kaana.libs.correo.Correo;
 import mx.org.kaana.libs.pagina.JsfBase;
 import org.apache.commons.codec.binary.Base64;
@@ -14,7 +15,10 @@ import org.apache.commons.io.FileUtils;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Notificar {
+public class Notificar implements Serializable {
+
+	private static final long serialVersionUID=-335441183083019643L;
+	
   private String remitente;
   private String destinatario;
   private String asunto;
@@ -23,7 +27,7 @@ public class Notificar {
   public Notificar() {
   }
 
-  public Notificar(String remitente, String destinatario,String asunto,String url) {
+  public Notificar(String remitente, String destinatario, String asunto, String url) {
     this.remitente = remitente;
     this.destinatario = destinatario;
     this.asunto = asunto;
@@ -62,12 +66,12 @@ public class Notificar {
     this.url = url;
   }
 
-  public void enviarCorreo() throws Exception{
-    Correo correo=new Correo(this.remitente,this.destinatario,this.asunto);
-    correo.setContenido(plantillaContenido());
+  public void enviar() throws Exception {
+    Correo correo= new Correo(this.remitente, this.destinatario, this.asunto);
+    correo.setContenido(contenido());
     correo.enviar();
   }
-  private StringBuilder plantillaContenido() throws Exception{
+  private StringBuilder contenido() throws Exception {
     //String proyecto      = null;
     StringBuilder regresar = null;
     //String nombre        = null;
@@ -76,10 +80,10 @@ public class Notificar {
     String logoJanal       = null;
     String logoKajool      = null;
 
-    archivoImagen = new File (JsfBase.getApplication().getRealPath("/resources/janal/img/sistema/logo-janal.png"));
+    archivoImagen = new File (JsfBase.getApplication().getRealPath("/resources/janal/img/sistema/logo-sedesol.png"));
     encodedBytes = Base64.encodeBase64(FileUtils.readFileToByteArray(archivoImagen));
     logoJanal = new String(encodedBytes);
-    archivoImagen = new File (JsfBase.getApplication().getRealPath("/resources/janal/img/sistema/logo-kaana.png"));
+    archivoImagen = new File (JsfBase.getApplication().getRealPath("/resources/janal/img/sistema/logo.png"));
     encodedBytes = Base64.encodeBase64(FileUtils.readFileToByteArray(archivoImagen));
     logoKajool = new String(encodedBytes);
     regresar= new StringBuilder();
@@ -139,5 +143,10 @@ public class Notificar {
     regresar.append("</body></html>");
     return regresar;
   }
+
+	public static void main(String ... args) throws Exception {
+		Notificar notificar= new Notificar("compras@ferreteriabonanza.com", "jimenez76@yahoo.com", "demostracion", "https://ferreteriabonanza.com/");
+		notificar.enviar();
+	}
 
 }

@@ -44,7 +44,7 @@ public class TcConfiguraciones {
   }
 
 
-  private void init(){
+  private void init() {
     List<TcJanalConfiguracionesDto> listTcConfiguracionesDto= null;		
     try {
       listTcConfiguracionesDto= DaoFactory.getInstance().findAll(TcJanalConfiguracionesDto.class, Constantes.SQL_TODOS_REGISTROS);

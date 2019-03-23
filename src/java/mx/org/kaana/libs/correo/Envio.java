@@ -116,10 +116,12 @@ public class Envio implements Serializable {
       properties = new Properties();
       //properties.put("mail.smtp.host", "10.1.8.102");
       //properties.put("mail.smtp.host", "10.1.32.15");
+      //properties.put("mail.smtp.host", "mail.ferreteriabonanza.com");
       properties.put("mail.smtp.host", "mail.ferreteriabonanza.com");
+			properties.put("mail.smtp.localhost", "www.ferreteriabonanza.com");
       properties.put("mail.transport.protocol", "smtp");
       properties.put("mail.smtp.auth", "true");
-      properties.put("mail.smtp.port","26");			
+      properties.put("mail.smtp.port", "465");			
 			session = Session.getInstance(properties, this.autenticar);            
       mimemessage = new MimeMessage(session);
       internetaddressDe = new InternetAddress(de);

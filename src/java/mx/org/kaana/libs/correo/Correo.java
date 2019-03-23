@@ -1,6 +1,7 @@
 package mx.org.kaana.libs.correo;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
 import java.util.List;
 import javax.mail.Authenticator;
 import mx.org.kaana.kajool.enums.EFormatos;
@@ -8,7 +9,9 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 
 
-public class Correo {
+public class Correo implements Serializable {
+
+	private static final long serialVersionUID=-2482664376517548312L;
 
   private String remitente;
   private String destinatario;
@@ -32,7 +35,7 @@ public class Correo {
   }
   
   public Correo (Authenticator autenticar, String remitente, String destinatario, String asunto) {
-    this (autenticar,remitente,destinatario,"",asunto);    
+    this (autenticar, remitente, destinatario, "", asunto);    
   }  
   
   public Correo (Authenticator autenticar, String remitente,  String destinatario, String conCopia, String asunto) {
@@ -55,7 +58,7 @@ public class Correo {
     try {
       envio= new Envio(this.autenticar);
       encodingMessage= new String(this.getContenido().toString().getBytes(), encoding);
-      envio.asuntoMensaje(this.getRemitente(), this.getDestinatario(), "",null ,this.getAsunto(), encodingMessage, null, true);
+      envio.asuntoMensaje(this.getRemitente(), this.getDestinatario(), "", null, this.getAsunto(), encodingMessage, null, true);
     } // try
     catch (Exception e) {      
       Error.mensaje(e);      
@@ -113,4 +116,5 @@ public class Correo {
   public StringBuilder getContenido() {
     return contenido;
   }
+	
 }

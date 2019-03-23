@@ -13,11 +13,13 @@ public class SMTPAuthenticator extends javax.mail.Authenticator {
 
   private static final Log LOG= LogFactory.getLog(SMTPAuthenticator.class);
 
+	@Override
   public PasswordAuthentication getPasswordAuthentication() {
     Encriptar encriptado = new Encriptar();
-    String username = "KAANA\\".concat(TcConfiguraciones.getInstance().getPropiedad("correo.user"));
-    String password = encriptado.desencriptar(TcConfiguraciones.getInstance().getPropiedad("correo.pass"),
-                                          Encriptar._CLAVE);
+    //String username = "KAANA\\".concat(TcConfiguraciones.getInstance().getPropiedad("correo.user"));
+    //String password = encriptado.desencriptar(TcConfiguraciones.getInstance().getPropiedad("correo.pass"), Encriptar._CLAVE);
+    String username = TcConfiguraciones.getInstance().getPropiedad("correo.user");
+    String password = TcConfiguraciones.getInstance().getPropiedad("correo.pass");
     LOG.error("usuario : " + username + "  password : " + password);
     return new PasswordAuthentication(username, password);
   }

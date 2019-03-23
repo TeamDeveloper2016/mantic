@@ -13,4 +13,5 @@ public class CorreoVentas extends javax.mail.Authenticator {
     String password     = encriptado.desencriptar(TcConfiguraciones.getInstance().getPropiedad("correo.mantic.ventas.pass"), Encriptar._CLAVE);    
     return new PasswordAuthentication(cuenta, password);
 	} // getPasswordAuthentication
+	
 }

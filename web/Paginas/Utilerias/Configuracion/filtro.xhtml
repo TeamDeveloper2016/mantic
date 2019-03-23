@@ -30,6 +30,12 @@
 			<p:inputSwitch value="#{kajoolUtileriasConfiguracionFiltro.properties}">
 				<p:ajax listener="#{kajoolUtileriasConfiguracionFiltro.doProperties()}" update="@form" process="@this" />
 			</p:inputSwitch>
+			<p:spacer height="1px"/>
+			<p:spacer height="1px"/>
+			<p:outputLabel value="Notificar correo:"/>
+			<p:inputSwitch value="#{kajoolUtileriasConfiguracionFiltro.correo}">
+				<p:ajax listener="#{kajoolUtileriasConfiguracionFiltro.doNotificar()}" update="@form" process="@this" />
+			</p:inputSwitch>
 		</p:panelGrid>
   </ui:define>
 	<ui:param name="componenteBloqueo" value="tabla"/>

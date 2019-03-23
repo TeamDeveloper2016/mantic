@@ -13,6 +13,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.procesos.acceso.reglas.Notificar;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -30,6 +31,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 	
 	private Boolean xml;
 	private Boolean properties;
+	private Boolean correo;
 
 	public Boolean getXml() {
 		return xml;
@@ -47,12 +49,21 @@ public class Filtro extends IBaseAttribute implements Serializable {
 		this.properties=properties;
 	}
 
+	public Boolean getCorreo() {
+		return correo;
+	}
+
+	public void setCorreo(Boolean correo) {
+		this.correo=correo;
+	}
+
   @PostConstruct
 	@Override
 	protected void init() {
     try {
   		this.xml= Boolean.FALSE;
   		this.properties= Boolean.FALSE;
+  		this.correo= Boolean.FALSE;
     } // try
     catch(Exception e) {
 			JsfBase.addMessageError(e);
@@ -72,6 +83,20 @@ public class Filtro extends IBaseAttribute implements Serializable {
 		LOG.info("Se recargo el archivo de configuracion PROPIEDADES de forma exitosa");
 		this.properties= Boolean.TRUE;
 		JsfBase.addMessage("Se recargó el archivo de configuración con éxito.", ETipoMensaje.INFORMACION);
+	}	
+	
+  public void doNotificar() {
+		try {
+  		Notificar notificar= new Notificar("compras@ferreteriabonanza.com", "jimenez76@yahoo.com", "demostracion", "https://ferreteriabonanza.com/");
+	  	notificar.enviar();
+	  	LOG.info("Se envio el correo de forma exitosa");
+		  this.correo= Boolean.TRUE;
+		  JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
+		} // try
+		catch(Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
 	}	
 	
 }

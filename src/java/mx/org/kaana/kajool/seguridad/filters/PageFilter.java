@@ -170,10 +170,10 @@ public class PageFilter extends HttpServlet implements Filter {
             setHeaders(response);
             autentifica.setPaginaActual(pagina);
             filterChain.doFilter(request, response);
-            processMessage(lockUsers, autentifica, request.getServletContext(), session, response);
+            this.processMessage(lockUsers, autentifica, request.getServletContext(), session, response);
           } // if
           else 
-            redireccionar((HttpServletResponse) response, contexto.concat(paginaBloqueo));
+            this.redireccionar((HttpServletResponse) response, contexto.concat(paginaBloqueo));
         } // if
         else {
           redireccionar((HttpServletResponse) response, contexto.concat(paginaBloqueo));
