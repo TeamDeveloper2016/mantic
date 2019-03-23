@@ -24,6 +24,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import static mx.org.kaana.libs.pagina.JsfUtilities.getApplication;
+import mx.org.kaana.libs.recurso.Configuracion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -115,13 +116,13 @@ public class Envio implements Serializable {
     try {
       properties = new Properties();
       //properties.put("mail.smtp.host", "10.1.8.102");
-      //properties.put("mail.smtp.host", "10.1.32.15");
-      //properties.put("mail.smtp.host", "mail.ferreteriabonanza.com");
-      properties.put("mail.smtp.host", "mail.ferreteriabonanza.com");
-			properties.put("mail.smtp.localhost", "www.ferreteriabonanza.com");
+			//properties.put("mail.smtp.localhost", Configuracion.getInstance().getPropiedadServidor("domain.mail.server"));
+      //properties.put("mail.smtp.starttls.enable", "true");
+      //properties.put("mail.smtp.port", "465");			
+      properties.put("mail.smtp.host", Configuracion.getInstance().getPropiedadServidor("mail.smtp.server"));
       properties.put("mail.transport.protocol", "smtp");
       properties.put("mail.smtp.auth", "true");
-      properties.put("mail.smtp.port", "465");			
+      properties.put("mail.smtp.port", "26");			
 			session = Session.getInstance(properties, this.autenticar);            
       mimemessage = new MimeMessage(session);
       internetaddressDe = new InternetAddress(de);

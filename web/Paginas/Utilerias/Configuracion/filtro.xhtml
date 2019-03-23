@@ -22,19 +22,19 @@
 		<p:panelGrid id="tabla" columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-col-150, janal-wid-100-txt">
 			<p:outputLabel value="Consultas .XML:"/>
 			<p:inputSwitch value="#{kajoolUtileriasConfiguracionFiltro.xml}">
-				<p:ajax listener="#{kajoolUtileriasConfiguracionFiltro.doXml()}" update="@form" process="@this" />
+				<p:ajax listener="#{kajoolUtileriasConfiguracionFiltro.doXml()}" update="@form" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 			</p:inputSwitch>
 			<p:spacer height="1px"/>
 			<p:spacer height="1px"/>
 			<p:outputLabel value="Archivo .properties:"/>
 			<p:inputSwitch value="#{kajoolUtileriasConfiguracionFiltro.properties}">
-				<p:ajax listener="#{kajoolUtileriasConfiguracionFiltro.doProperties()}" update="@form" process="@this" />
+				<p:ajax listener="#{kajoolUtileriasConfiguracionFiltro.doProperties()}" update="@form" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" />
 			</p:inputSwitch>
 			<p:spacer height="1px"/>
 			<p:spacer height="1px"/>
 			<p:outputLabel value="Notificar correo:"/>
 			<p:inputSwitch value="#{kajoolUtileriasConfiguracionFiltro.correo}">
-				<p:ajax listener="#{kajoolUtileriasConfiguracionFiltro.doNotificar()}" update="@form" process="@this" />
+				<p:ajax listener="#{kajoolUtileriasConfiguracionFiltro.doNotificar()}" update="@form" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 			</p:inputSwitch>
 		</p:panelGrid>
   </ui:define>
