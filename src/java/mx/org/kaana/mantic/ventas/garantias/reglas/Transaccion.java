@@ -1,11 +1,14 @@
 package mx.org.kaana.mantic.ventas.garantias.reglas;
 
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -21,15 +24,18 @@ import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresCajasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesPagosDto;
 import mx.org.kaana.mantic.db.dto.TcManticGarantiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticGarantiasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticGarantiasDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
 import mx.org.kaana.mantic.db.dto.TcManticMovimientosDto;
 import mx.org.kaana.mantic.db.dto.TrManticGarantiaMedioPagoDto;
+import mx.org.kaana.mantic.enums.EEstatusClientes;
 import mx.org.kaana.mantic.enums.EEstatusGarantias;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
-import mx.org.kaana.mantic.enums.ETiposGarantias;
 import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Cierre;
 import mx.org.kaana.mantic.ventas.garantias.beans.DetalleGarantia;
@@ -49,6 +55,7 @@ public class Transaccion extends IBaseTnx{
 	private String justificacion;
 	private String messageError;		
 	private Long idCierreVigente;
+	private Double pagoPivote;
 	
 	public Transaccion(IBaseDto dto) {
 		this(null, dto);
@@ -59,13 +66,15 @@ public class Transaccion extends IBaseTnx{
 	} // Transaccion
 
 	public Transaccion(Garantia garantia, IBaseDto dto) {
-		this.garantia= garantia;		
-		this.dto= dto;
+		this.garantia  = garantia;		
+		this.dto       = dto;
+		this.pagoPivote= 0D;
 	}	// Transaccion	
 
 	public Transaccion(TcManticGarantiasDto garantiaDto, String justificacion) {
 		this.garantiaDto  = garantiaDto;
 		this.justificacion= justificacion;
+		this.pagoPivote   = 0D;
 	} // Transaccion
 
 	public Transaccion(DetalleGarantia detalleGarantia) {
@@ -121,14 +130,22 @@ public class Transaccion extends IBaseTnx{
 	
 	private boolean procesarGarantia(Session sesion) throws Exception {
 		boolean regresar= false;
+		Long idEstatus  = -1L;		
 		try {
 			for(Garantia newGarantia: this.detalleGarantia.getGarantias()){
 				if(newGarantia.getArticulosGarantia().size()> 0){
 					this.garantia= newGarantia;
-					this.generarGarantia(sesion, this.garantia.getIdEfectivo().equals(Constantes.SI) ? EEstatusGarantias.TERMINADA.getIdEstatusGarantia() : EEstatusGarantias.RECIBIDA.getIdEstatusGarantia());																
+					idEstatus= this.detalleGarantia.getPagoGarantia().getIdTipoVenta().equals(1L) ? EEstatusGarantias.TERMINADA.getIdEstatusGarantia() : this.garantia.getIdEfectivo().equals(Constantes.SI) ? EEstatusGarantias.TERMINADA.getIdEstatusGarantia() : EEstatusGarantias.RECIBIDA.getIdEstatusGarantia();
+					this.generarGarantia(sesion, idEstatus);
 					if(this.verificarCierreCaja(sesion)){
-						if(this.registrarPagos(sesion, this.garantia.getTicketVenta().getTotal()))					
-							regresar= this.alterarStockArticulos(sesion, newGarantia.getArticulosGarantia());
+						if(this.detalleGarantia.getPagoGarantia().getIdTipoVenta().equals(1L)){
+							if(this.registrarPagosCredito(sesion, this.garantia.getTicketVenta().getTotal()))					
+								regresar= this.alterarStockArticulos(sesion, newGarantia.getArticulosGarantia());
+						} // if
+						else{
+							if(this.registrarPagos(sesion, this.garantia.getTicketVenta().getTotal()))					
+								regresar= this.alterarStockArticulos(sesion, newGarantia.getArticulosGarantia());
+						} // else
 					} // if				
 				} // if
 			} // for			
@@ -307,6 +324,144 @@ public class Transaccion extends IBaseTnx{
 		return regresar; 
 	} // registrarPagos	
 	
+	private boolean registrarPagosCredito(Session sesion, Double total) throws Exception {
+		boolean regresar                 = true;		
+		TrManticGarantiaMedioPagoDto pago= null;
+		List<Entity> deudas              = null;
+		try {						
+			if(this.detalleGarantia.getPagoGarantia().getTipoDevolucion().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){
+				pago= new TrManticGarantiaMedioPagoDto();
+				pago.setIdCierre(this.idCierreVigente);
+				pago.setIdGarantia(this.garantiaDto.getIdGarantia());				
+				pago.setIdTipoMedioPago(this.detalleGarantia.getPagoGarantia().getTipoDevolucion());
+				pago.setIdUsuario(JsfBase.getIdUsuario());
+				pago.setImporte(total);		
+				DaoFactory.getInstance().insert(sesion, pago);
+				toCierreActivo(sesion, this.detalleGarantia.getPagoGarantia().getIdTipoPago());				
+			} // if
+			else{
+				deudas= toDeudas(sesion);
+				if(deudas.isEmpty())
+					registrarDeuda(sesion, total);
+				else
+					procesarPagoGeneral(sesion, total);
+			} // else
+		} // try 
+		catch (Exception e) {			 
+			throw e; 
+		} // catch		
+		finally {
+			this.messageError= "Error al registrar los pagos.";
+		} // finally
+		return regresar; 
+	} // registrarPagos	
+	
+	private boolean procesarPagoGeneral(Session sesion, Double pago) throws Exception{		
+		boolean regresar         = true;
+		List<Entity> deudas      = null;		
+		Map<String, Object>params= null;
+		Double saldo             = 1D;
+		Double saldoDeuda        = 0D;				
+		Double pagoParcial       = 0D;				
+		Double abono             = 0D;		
+		Long idEstatus           = -1L;
+		try {
+			deudas= toDeudas(sesion);
+			this.pagoPivote= pago;
+			for(Entity deuda: deudas){
+				if(saldo > 0){					
+					saldoDeuda= Double.valueOf(deuda.toString("saldo"));
+					if(saldoDeuda < this.pagoPivote){
+						pagoParcial= saldoDeuda;
+						saldo= this.pagoPivote - saldoDeuda;						
+						this.pagoPivote= saldo;
+						abono= 0D;
+						idEstatus= EEstatusClientes.FINALIZADA.getIdEstatus();
+					} // if
+					else{						
+						pagoParcial= this.pagoPivote;
+						saldo= 0D;
+						abono= saldoDeuda - this.pagoPivote;
+						idEstatus= false ? EEstatusClientes.FINALIZADA.getIdEstatus() : (saldoDeuda.equals(this.pagoPivote) ? EEstatusClientes.FINALIZADA.getIdEstatus() : EEstatusClientes.PARCIALIZADA.getIdEstatus());
+					} /// else
+					if(registrarPago(sesion, deuda.getKey(), pagoParcial)){
+						params= new HashMap<>();
+						params.put("saldo", abono);
+						params.put("idClienteEstatus", idEstatus);
+						DaoFactory.getInstance().update(sesion, TcManticClientesDeudasDto.class, deuda.getKey(), params);
+					}	// if				
+				} // if
+			} // for
+		} // try
+		catch (Exception e) {			
+			throw e; 
+		} // catch		
+		finally{
+			this.messageError= "Error al registrar el pago";
+			Methods.clean(params);			
+		} // finally
+		return regresar;
+	} // procesarPagoGeneral
+	
+	protected void registrarDeuda(Session sesion, Double importe) throws Exception{
+		TcManticClientesDeudasDto deuda= null;		
+		deuda= new TcManticClientesDeudasDto();
+		deuda.setIdVenta(this.detalleGarantia.getIdVenta());
+		deuda.setIdCliente(this.detalleGarantia.getIdCliente());
+		deuda.setIdUsuario(JsfBase.getIdUsuario());
+		deuda.setImporte(importe);
+		deuda.setSaldo(importe);
+		deuda.setLimite(toLimiteCredito(sesion));
+		deuda.setIdClienteEstatus(1L);
+		DaoFactory.getInstance().insert(sesion, deuda);		
+	} // registrarDeuda
+	
+	public Date toLimiteCredito(Session sesion) throws Exception{
+		TcManticClientesDto cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, this.detalleGarantia.getIdCliente());
+		Long addDias= cliente.getPlazoDias();			
+		Calendar calendar= Calendar.getInstance();
+		Date regresar= new Date(calendar.getTimeInMillis());			
+		calendar.setTime(regresar);
+		calendar.add(Calendar.DAY_OF_YEAR, addDias.intValue());
+		regresar= new Date(calendar.getTimeInMillis());		
+		return regresar;
+	} // toLimiteCredito
+	
+		private List<Entity> toDeudas(Session sesion) throws Exception{
+		List<Entity> regresar    = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idCliente", this.detalleGarantia.getIdCliente());
+			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo > 0 and tc_mantic_clientes_deudas.id_cliente_estatus not in(".concat(EEstatusClientes.FINALIZADA.getIdEstatus().toString()).concat(")"));			
+			params.put("sortOrder", "order by tc_mantic_clientes_deudas.registro desc");
+			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaClientesDto", "cuentas", params);			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toDeudas	
+	
+	private boolean registrarPago(Session sesion, Long idClienteDeuda, Double pagoParcial) throws Exception{
+		TcManticClientesPagosDto registroPago= null;
+		boolean regresar                     = false;
+		try {
+			registroPago= new TcManticClientesPagosDto();
+			registroPago.setIdClienteDeuda(idClienteDeuda);
+			registroPago.setIdUsuario(JsfBase.getIdUsuario());
+			registroPago.setObservaciones("Pago aplicado a la deuda general del cliente como saldo a favor de una devolucion. Pago general por $".concat(pagoParcial.toString()));
+			registroPago.setPago(pagoParcial);
+			registroPago.setIdTipoMedioPago(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
+			registroPago.setIdCierre(this.idCierreVigente);				
+			regresar= DaoFactory.getInstance().insert(sesion, registroPago)>= 1L;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // registrarPago
+		
 	private boolean alterarStockArticulos(Session sesion, List<ArticuloVenta> arts) throws Exception {
 		TcManticAlmacenesArticulosDto almacenArticulo= null;
 		TcManticArticulosDto articuloVenta           = null;		
