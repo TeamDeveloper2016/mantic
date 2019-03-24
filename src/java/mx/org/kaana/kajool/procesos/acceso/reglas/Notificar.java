@@ -80,7 +80,7 @@ public class Notificar implements Serializable {
     String logoJanal       = null;
     String logoKajool      = null;
 
-    archivoImagen = new File (JsfBase.getApplication().getRealPath("/resources/janal/img/sistema/logo-sedesol.png"));
+    archivoImagen = new File (JsfBase.getApplication().getRealPath("/resources/janal/img/sistema/logo.png"));
     encodedBytes = Base64.encodeBase64(FileUtils.readFileToByteArray(archivoImagen));
     logoJanal = new String(encodedBytes);
     archivoImagen = new File (JsfBase.getApplication().getRealPath("/resources/janal/img/sistema/logo.png"));
@@ -89,14 +89,14 @@ public class Notificar implements Serializable {
     regresar= new StringBuilder();
     regresar.append("<html><title><head></head></title><body>");
     regresar.append("<table  align=\"center\">");
-    regresar.append("<th>");
-    regresar.append("<td style=\"text-align: center\">");
+    regresar.append("<tr>");
+    regresar.append("<th style=\"text-align: center\">");
     regresar.append("<strong> Confirmaci&oacute;n de cambio de contrase&ntilde;a</strong>");
-    regresar.append("</td>");
     regresar.append("</th>");
+    regresar.append("</tr>");
     regresar.append("</table>");
-    regresar.append("</br>");
-    regresar.append("</br>");
+    regresar.append("<br/>");
+    regresar.append("<br/>");
     regresar.append("<table align=\"center\">");
     regresar.append("<tr>");
     regresar.append("<td>");
@@ -135,7 +135,7 @@ public class Notificar implements Serializable {
     regresar.append("Administrador KAJOOL");
     regresar.append("</td></tr>");
     regresar.append("<tr><td>");
-    regresar.append("<img alt=\"Icono SEP\" width=\"277\" height=\"80\" src=\"data:image/png;base64,");
+    regresar.append("<img alt=\"Ferreteria Bonanza\" width=\"277\" height=\"80\" src=\"data:image/png;base64,");
     regresar.append(logoJanal);
     regresar.append("\" /> </td> ");
     regresar.append("\" />");

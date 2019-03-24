@@ -209,6 +209,7 @@ public class Envio implements Serializable {
         mimemessage.setContent(multipart);
       } // if
       Transport.send(mimemessage);
+			LOG.info("Correo enviado: "+ para);
     }
     catch (Exception e) {
         Error.mensaje(e);
