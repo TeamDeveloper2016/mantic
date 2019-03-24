@@ -225,6 +225,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			saldoVenta= deuda.toDouble("saldo");
 			devolucionCompleta= toDevolucionCompleta();
 			importeEquals= deuda.toDouble("importe").equals(saldoVenta);
+			this.attrs.put("pagoCredito", 0D);
+			this.attrs.put("devolucionCredito", 0D);
 			if(importeEquals && devolucionCompleta){
 				this.attrs.put("messageDialog", "No hay saldo a favor. La deuda sera saldada.");
 				this.attrs.put("accionCredito", EAccion.COMPLETO);
@@ -236,47 +238,53 @@ public class Accion extends IBaseVenta implements Serializable {
 					this.attrs.put("mostrarDevolucion", true);
 					this.attrs.put("messageDialog", "La devolución es por la cantidad de: $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, (diferenciaVenta-saldoCliente)) + ", el resto se abonara a las cuentas pendientes. Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
 					this.attrs.put("accionCredito", EAccion.AGREGAR);
+					this.attrs.put("pagoCredito", diferenciaVenta);
+					this.attrs.put("devolucionCredito", (diferenciaVenta-saldoCliente));
 					toDetalleDeudaCliente();
 				} // if
 				else{
 					this.attrs.put("messageDialog", "No hay saldo a favor. La deuda sera saldada y los pagos realizados seran abonados a las cuentas pendientes. Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
 					this.attrs.put("accionCredito", EAccion.ASIGNAR);
+					this.attrs.put("pagoCredito", diferenciaVenta);
 					toDetalleDeudaCliente();
 				} // else
 			} // else if
 			else if(importeEquals && !devolucionCompleta){
 				this.attrs.put("messageDialog", "Se actualizara el monto del saldo de la deuda.");
 				this.attrs.put("accionCredito", EAccion.MODIFICAR);
+				this.attrs.put("pagoCredito", deuda.toDouble("importe") - getAdminOrden().getTotales().getTotal());				
 			} // else if
 			else if(!importeEquals && !devolucionCompleta){
 				diferencia= saldoVenta - getAdminOrden().getTotales().getTotal();				
 				saldoCliente= gestor.toSaldoCliente();
 				diferenciaVenta= deuda.toDouble("importe") - saldoVenta;
-				if(saldoVenta < getAdminOrden().getTotales().getTotal()){
-					if(diferencia < 0){
-						this.attrs.put("mostrarDevolucion", true);
-						this.attrs.put("messageDialog", "La devolución es por la cantidad de: $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, (diferencia*-1)) + ", el resto se abonara a las cuentas pendientes. Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
-						this.attrs.put("accionCredito", EAccion.PROCESAR);
-						toDetalleDeudaCliente();
-					} // if
-					else{
-						this.attrs.put("messageDialog", "No hay saldo a favor. Los abonos se utilizaran para cubrir la deuda de los articulos vigentes. Saldo pendiente $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferencia) + ". Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
-						this.attrs.put("accionCredito", EAccion.CALCULAR);
-						toDetalleDeudaCliente();
-					} // else
-				} // else
-				else if(saldoCliente < diferencia){
+				if(diferencia < 0 && saldoCliente <= 0){
 					this.attrs.put("mostrarDevolucion", true);
-					this.attrs.put("messageDialog", "La devolución es por la cantidad de: $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, (diferencia - saldoCliente)) + ", el resto se abonara a las cuentas pendientes." + " Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
+					this.attrs.put("messageDialog", "La devolución es por la cantidad de: $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, (diferencia*-1)) + ". Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
+					this.attrs.put("accionCredito", EAccion.PROCESAR);											
+					this.attrs.put("devolucionCredito", diferencia);
+					toDetalleDeudaCliente();
+				} // if					
+				else if(diferencia < 0  && saldoCliente > 0 && saldoCliente < (diferencia*-1)){
+					this.attrs.put("mostrarDevolucion", true);
+					this.attrs.put("messageDialog", "La devolución es por la cantidad de: $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, ((diferencia*-1) - saldoCliente)) + ", el resto se abonara a las cuentas pendientes." + " Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
 					this.attrs.put("accionCredito", EAccion.ACTIVAR);
+					this.attrs.put("pagoCredito", saldoCliente);
+					this.attrs.put("devolucionCredito", ((diferencia*-1) - saldoCliente));
 					toDetalleDeudaCliente();
 				} // else					
-				else{
-					diferenciaVenta= deuda.toDouble("importe") - saldoVenta;
+				else if(diferencia < 0  && saldoCliente > 0 && saldoCliente > (diferencia*-1)){
 					this.attrs.put("messageDialog", "No hay saldo a favor. La deuda sera saldada y los pagos realizados seran abonados a las cuentas pendientes. Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
 					this.attrs.put("accionCredito", EAccion.JUSTIFICAR);
+					this.attrs.put("pagoCredito", (diferencia*-1));
 					toDetalleDeudaCliente();
-				} // else
+				} // else					
+				else if (diferencia > 0 ){
+					this.attrs.put("messageDialog", "No hay saldo a favor. Los abonos se utilizaran para cubrir la deuda de los articulos vigentes. Saldo pendiente $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferencia) + ". Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
+					this.attrs.put("accionCredito", EAccion.CALCULAR);
+					this.attrs.put("pagoCredito", diferenciaVenta);
+					toDetalleDeudaCliente();
+				} // else				
 			} // else if
 		} // try
 		catch (Exception e) {			
@@ -402,7 +410,10 @@ public class Accion extends IBaseVenta implements Serializable {
 			regresar.setPagoGarantia(pagoGarantia);
 			regresar.setTotales((Pago) this.attrs.get("pago"));			
 			regresar.setIdCaja(Long.valueOf(this.attrs.get("caja").toString()));			
-			regresar.getTicketVenta().setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));			
+			regresar.getTicketVenta().setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));
+			regresar.setAccionCredito((EAccion) this.attrs.get("accionCredito"));
+			regresar.setPagoCredito((Double) this.attrs.get("pagoCredito"));
+			regresar.setDevolucionCredito((Double) this.attrs.get("devolucionCredito"));
 		} // try
 		catch (Exception e) {			
 			throw e;
