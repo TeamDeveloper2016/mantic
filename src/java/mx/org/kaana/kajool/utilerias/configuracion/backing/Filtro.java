@@ -107,7 +107,8 @@ public class Filtro extends IBaseAttribute implements Serializable {
 //	
   public void doNotificar() {
 		Map<String, Object> params= new HashMap<>();
-		String[] correos= {"jimenez76@yahoo.com", "claudio.alvarez@inegi.org.mx", "suani.vazquez@inegi.org.mx", "miguelangel.martinez@inegi.org.mx"};
+		//String[] correos= {"jimenez76@yahoo.com", "claudio.alvarez@inegi.org.mx", "suani.vazquez@inegi.org.mx", "miguelangel.martinez@inegi.org.mx"};
+		String[] correos= {"jimenez76@yahoo.com", "alejandro.jimenez@inegi.org.mx"};
 		try {
 	    File image     = new File(JsfBase.getApplication().getRealPath(ECorreos.NOTIFICACION.getImages().concat("invitacion.png")));
       byte[]  encoded= Base64.encodeBase64(FileUtils.readFileToByteArray(image));

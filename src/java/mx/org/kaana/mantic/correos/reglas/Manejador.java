@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.correos.reglas;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -9,6 +10,8 @@ import mx.org.kaana.libs.correo.Correo;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.mantic.correos.enums.ECorreos;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *@company KAANA
@@ -18,7 +21,10 @@ import mx.org.kaana.mantic.correos.enums.ECorreos;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Manejador {
+public class Manejador implements Serializable {
+
+	private static final long serialVersionUID=4190795152468978106L;
+	private static final Log LOG=LogFactory.getLog(Manejador.class);
 
   private ECorreos type;
 	private String from;
@@ -27,6 +33,10 @@ public class Manejador {
 	private Map<String, Object> params;
 	private List<String> files;
 
+	public Manejador(ECorreos type, String subject, Map<String, Object> params) {
+		this(type, "", subject, params);
+	}
+	
 	public Manejador(ECorreos type, String to, String subject, Map<String, Object> params) {
 		this(type, Configuracion.getInstance().getPropiedadServidor("mail.user.default"), to, subject, params);
 	}
@@ -43,31 +53,27 @@ public class Manejador {
 		return from;
 	}
 
-	public void setFrom(String from) {
-		this.from=from;
-	}
-
-	public String getTo() {
-		return to;
-	}
-
 	public void setTo(String to) {
 		this.to=to;
-	}
-
-	public Map<String, Object> getParams() {
-		return params;
 	}
 
 	public void setParams(Map<String, Object> params) {
 		this.params=params;
 	}
 	
+	public void send(String to, Map<String, Object> params) throws Exception {
+		this.setTo(to);
+		this.setParams(params);
+		this.send();
+	}
+	
 	public void send() throws Exception {
 		BufferedReader input= new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(this.type.getTemplate())));
 		String html= input.lines().collect(Collectors.joining());
 		StringBuilder content= new StringBuilder(Cadena.replaceParams(html, this.params));
-    Correo correo= new Correo(this.to, this.from, this.subject);
+		LOG.info("----------------------------------------------------------------------------------------");
+		LOG.info(content.toString());
+    Correo correo= new Correo(this.from, this.to, this.subject);
     correo.setContenido(content);
     correo.enviar();
 	}
