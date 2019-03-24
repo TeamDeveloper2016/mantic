@@ -14,12 +14,14 @@ public class DetalleGarantia extends VentaFinalizada implements Serializable {
 	private Long idVenta;
 	private Long idCliente;
 	private EAccion accionCredito;
+	private Double pagoCredito;
+	private Double devolucionCredito;
 	
 	public DetalleGarantia() {
-		this(new ArrayList<Garantia>(), new PagoGarantia(), null, null, EAccion.COMPLETO);
+		this(new ArrayList<Garantia>(), new PagoGarantia(), null, null, EAccion.COMPLETO, 0D, 0D);
 	}
 
-	public DetalleGarantia(List<Garantia> garantias, PagoGarantia pagoGarantia, Long idVenta, Long idCliente, EAccion accionCredito) {
+	public DetalleGarantia(List<Garantia> garantias, PagoGarantia pagoGarantia, Long idVenta, Long idCliente, EAccion accionCredito, Double pagoCredito, Double devolucionCredito) {
 		super();
 		this.garantias    = garantias;
 		this.pagoGarantia = pagoGarantia;		
@@ -66,5 +68,21 @@ public class DetalleGarantia extends VentaFinalizada implements Serializable {
 
 	public void setAccionCredito(EAccion accionCredito) {
 		this.accionCredito = accionCredito;
+	}	
+
+	public Double getPagoCredito() {
+		return pagoCredito;
+	}
+
+	public void setPagoCredito(Double pagoCredito) {
+		this.pagoCredito = pagoCredito;
+	}
+
+	public Double getDevolucionCredito() {
+		return devolucionCredito;
+	}
+
+	public void setDevolucionCredito(Double devolucionCredito) {
+		this.devolucionCredito = devolucionCredito;
 	}	
 }
