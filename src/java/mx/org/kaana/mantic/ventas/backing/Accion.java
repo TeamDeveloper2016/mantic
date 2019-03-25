@@ -259,6 +259,13 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // doActualizaPrecioCliente
 
 	@Override
+	public void doCalculate(Integer index) {
+		super.doCalculate(index);
+		this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
+		UIBackingUtilities.update("deudor");
+	}	// doCalculate
+	
+	@Override
 	protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
 		UISelectEntity clienteSeleccion= null;		
 		String descuentoPivote         = null;
@@ -472,25 +479,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			Methods.clean(params);
 			Methods.clean(campos);
 		} // finally
-	} // doLoadUsers
-	
-	private void doLoadSaldos(Long idCliente) throws Exception{
-		Entity cliente     = null;
-		MotorBusqueda motor= null;
-		this.saldoCliente  = null;
-		try {
-			motor= new MotorBusqueda(null, idCliente);
-			cliente= motor.toCliente();
-			this.saldoCliente= new SaldoCliente();
-			this.saldoCliente.setIdCliente(idCliente);
-			this.saldoCliente.setTotalCredito(cliente.toDouble("limiteCredito"));
-			this.saldoCliente.setTotalDeuda(motor.toDeudaCliente());
-			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-	} // doLoadSaldos
+	} // doLoadUsers	
 	
 	public void doActualizaImage(String idImage, String descripcion) {		
 		try {
