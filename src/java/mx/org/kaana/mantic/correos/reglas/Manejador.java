@@ -10,6 +10,7 @@ import mx.org.kaana.libs.correo.Correo;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.mantic.correos.enums.ECorreos;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -76,6 +77,11 @@ public class Manejador implements Serializable {
     Correo correo= new Correo(this.from, this.to, this.subject);
     correo.setContenido(content);
     correo.enviar();
+	}
+	
+	public static void main(String ... args) {
+		String info= StringEscapeUtils.escapeHtml4("Alejandro Jiménez García");
+	  LOG.info(info);	
 	}
 	
 }

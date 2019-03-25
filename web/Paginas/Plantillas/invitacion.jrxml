@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="invitacion" pageWidth="1182" pageHeight="1182" columnWidth="1182" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" scriptletClass="mx.org.inegi.libs.reportes.scriptlets.BarraProgreso">
+	<property name="ireport.zoom" value="0.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="REPORTE_VERSION" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["0.0.0.0"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORTE_REGISTROS" class="java.lang.Integer" isForPrompting="false">
+		<defaultValueExpression><![CDATA[-1]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORTE_SQL" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORTE_IMAGENES" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["D:/Desarrollo/Plataforma/Netbeans/Mantic/web/resources/janal/img/correo/"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORTE_TITULOS" class="java.lang.Long" isForPrompting="false"/>
+	<queryString language="SQL">
+		<![CDATA[$P!{REPORTE_SQL}]]>
+	</queryString>
+	<field name="GRUPO" class="java.lang.String"/>
+	<field name="CAMPO_1" class="java.lang.String"/>
+	<variable name="CONTADOR" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[new Integer(0)]]></variableExpression>
+	</variable>
+	<group name="Grupo">
+		<groupExpression><![CDATA[$F{GRUPO}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band height="1182" splitType="Stretch">
+			<image hAlign="Center" vAlign="Top">
+				<reportElement x="0" y="0" width="1182" height="1182"/>
+				<imageExpression><![CDATA[$P{REPORTE_IMAGENES}+"invitacion.png"]]></imageExpression>
+			</image>
+		</band>
+	</background>
+	<pageHeader>
+		<band splitType="Stretch">
+			<printWhenExpression><![CDATA[new Boolean($P{REPORTE_TITULOS}.intValue() ==0)]]></printWhenExpression>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="1182" splitType="Stretch">
+			<staticText>
+				<reportElement x="186" y="431" width="660" height="48" forecolor="#9DC517"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="30" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Alejandro Jiménez García]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="186" y="479" width="660" height="48" forecolor="#71706F"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Procurador de justicia del estado de Aguascalientes]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch">
+			<printWhenExpression><![CDATA[new Boolean($P{REPORTE_TITULOS}.intValue() ==0)]]></printWhenExpression>
+		</band>
+	</pageFooter>
+</jasperReport>

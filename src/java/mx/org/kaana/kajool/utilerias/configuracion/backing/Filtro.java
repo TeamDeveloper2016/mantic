@@ -25,6 +25,7 @@ import mx.org.kaana.mantic.correos.reglas.Manejador;
 import mx.org.kaana.xml.Dml;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -108,20 +109,21 @@ public class Filtro extends IBaseAttribute implements Serializable {
   public void doNotificar() {
 		Map<String, Object> params= new HashMap<>();
 		//String[] correos= {"jimenez76@yahoo.com", "claudio.alvarez@inegi.org.mx", "suani.vazquez@inegi.org.mx", "miguelangel.martinez@inegi.org.mx"};
-		String[] correos= {"jimenez76@yahoo.com", "alejandro.jimenez@inegi.org.mx"};
+		String[] correos= {"alejandro.jimenez@inegi.org.mx", "jimenez76@yahoo.com"};
 		try {
 	    File image     = new File(JsfBase.getApplication().getRealPath(ECorreos.NOTIFICACION.getImages().concat("invitacion.png")));
       byte[]  encoded= Base64.encodeBase64(FileUtils.readFileToByteArray(image));
 			params.put("header", "...");
 			params.put("footer", "...");
-			params.put("empresa", "Instituto Nacional de Estadistica y Geografía");
-			params.put("invitado", "Alejandro Jiménez García");
-			params.put("puesto", "Subsecretario de Obras Públicas");
+			params.put("empresa", StringEscapeUtils.escapeHtml4("Instituto Nacional de Estadistica y Geografía"));
+			params.put("invitado", StringEscapeUtils.escapeHtml4("Alejandro Jiménez García"));
+			params.put("puesto", StringEscapeUtils.escapeHtml4("Subsecretario de Obras Públicas"));
 			params.put("correo", "fegem@inegi.org.mx");
       params.put("background", new String(encoded));
- 	  	Manejador notificar= new Manejador(ECorreos.NOTIFICACION, "fegem@inegi.org.mx", "jimenez76@yahoo.com", "Invitación al evento de FEGEMS", params);
-			for (String correo: correos) {
-				notificar.setTo(correo);
+ 	  	Manejador notificar= new Manejador(ECorreos.NOTIFICACION, "fegem@inegi.org.mx", "alejandro.jimenez@inegi.org.mx", "Invitación al evento de FEGEMS", params);
+			for (String item: correos) {
+				notificar.setTo(item);
+  	  	LOG.info("Enviando correo a la cuenta: "+ item);
 	    	notificar.send();
 			} // for
 		  this.correo= Boolean.TRUE;

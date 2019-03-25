@@ -147,14 +147,14 @@ public class Envio implements Serializable {
       if (internetaddressCc.length>0)
         mimemessage.addRecipients(javax.mail.Message.RecipientType.BCC,internetaddressCc);
       mimemessage.setSubject(asunto);
-      if (anexo== null){
-        if (textoHTML){           
-					if(rutasInLine!=null){
+      if (anexo== null) {
+        if (textoHTML) {           
+					if(rutasInLine!= null) {
 						mbp1 = new MimeBodyPart(); //MimeBodyPart
-            mbp1.setContent(Cadena.toCharSet(contenido),"text/html");
+            mbp1.setContent(Cadena.toCharSet(contenido), "text/html");
 						multipart = new MimeMultipart(); //Multipart
 						multipart.addBodyPart(mbp1);						
-						for(String item:rutasInLine){                   
+						for(String item: rutasInLine) {                   
               mbp1 = new MimeBodyPart();
               ds = new FileDataSource(new File(item.split("¬")[0]));
               mbp1.setDataHandler(new DataHandler(ds));
@@ -167,10 +167,10 @@ public class Envio implements Serializable {
 					} //if rutasInLine
 					else
 						mimemessage.setContent(Cadena.toCharSet(contenido), "text/html");
-				}
+				} // if
         else 
           mimemessage.setText(contenido);
-      }
+      } // if
       else {
         path = getApplication().getRealPath(Constantes.PROPIEDAD_TEMPORALES);
         //Crear lista de adjuntos
@@ -183,29 +183,18 @@ public class Envio implements Serializable {
           LOG.error(" ruta archivo :" + path.concat(Constantes.SEPARADOR.concat(file)));
           listaArchivos.add(adj);
         } // for      
-        
-         LOG.error("contenido mensaje :" + contenido);
-        
+        LOG.error("contenido mensaje :" + contenido);
         mbp1= new MimeBodyPart();
         if (textoHTML) 
           mbp1.setContent(Cadena.toCharSet(contenido), "text/html");
         else 
           mbp1.setText(contenido);
-          
-        /*mbp2= new MimeBodyPart();
-        ds =  new ByteArrayDataSource(anexo.toByteArray(), formato, adjunto);
-        mbp2.setDataHandler(new DataHandler(ds));
-        mbp2.setFileName(ds.getName());
-        multipart.addBodyPart(mbp2);
-        */
-       
         multipart = new MimeMultipart();
         multipart.addBodyPart(mbp1);
-        
         //Agregar lista de adjuntos
-        for(BodyPart bp : listaArchivos) {
+        for(BodyPart bp: listaArchivos) {
           multipart.addBodyPart(bp);
-        }        
+        } // for        
         mimemessage.setContent(multipart);
       } // if
       Transport.send(mimemessage);
