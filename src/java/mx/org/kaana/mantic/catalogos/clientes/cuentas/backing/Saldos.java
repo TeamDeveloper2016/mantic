@@ -65,6 +65,10 @@ public class Saldos extends IBaseFilter implements Serializable {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 				loadSucursales();
+			if(!this.idCliente.equals(-1L)){
+				doLoad();
+				this.idCliente= -1L;
+			} // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
