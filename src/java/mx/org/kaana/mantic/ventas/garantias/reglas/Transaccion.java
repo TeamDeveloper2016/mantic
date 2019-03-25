@@ -562,7 +562,7 @@ public class Transaccion extends IBaseTnx{
 						idEstatus= saldoDeuda<= this.pagoPivote ? EEstatusClientes.FINALIZADA.getIdEstatus() : EEstatusClientes.PARCIALIZADA.getIdEstatus();
 					} /// else
 					if(!efectivo){
-						idEstatus= abono < 0 ? EEstatusClientes.PARCIALIZADA.getIdEstatus() : EEstatusClientes.FINALIZADA.getIdEstatus();
+						idEstatus= (abono * -1) > 0 ? EEstatusClientes.PARCIALIZADA.getIdEstatus() : idEstatus;
 					} // if
 					if(registrarPago(sesion, deuda.getKey(), pagoParcial)){
 						params= new HashMap<>();
