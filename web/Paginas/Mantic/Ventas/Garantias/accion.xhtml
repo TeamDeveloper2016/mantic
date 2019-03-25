@@ -550,6 +550,7 @@
 				<h:panelGrid columns="1">
 					<p:spacer/>
 				</h:panelGrid>
+				<p:outputLabel value="Deudas pendientes." styleClass="font-resume-venta-detail"/>
 				<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticVentasGarantiasAccion.detalleDeudaCliente}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticVentasGarantiasAccion.attrs.seleccionadoDetalle}" selectionMode="single" paginator="#{manticVentasGarantiasAccion.detalleDeudaCliente.rowCount gt manticVentasGarantiasAccion.detalleDeudaCliente.pageSize}" rowIndexVar="index" reflow="true">										
 					<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.consecutivo}">
 						<f:facet name="header">
