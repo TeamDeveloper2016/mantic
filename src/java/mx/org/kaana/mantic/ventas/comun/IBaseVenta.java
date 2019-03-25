@@ -88,8 +88,8 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 
 	public boolean isCostoLibre() {
 		return costoLibre;
-	}
-
+	}	
+	
 	public String doCancelar() {   
   	JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
 		JsfBase.setFlashAttribute("xcodigo", this.attrs.get("xcodigo"));	
@@ -455,7 +455,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		} // catch		
 	} // doReCalculatePreciosArticulos
 	
-	private void doLoadSaldos(Long idCliente) throws Exception{
+	protected void doLoadSaldos(Long idCliente) throws Exception{
 		Entity cliente     = null;
 		MotorBusqueda motor= null;
 		this.saldoCliente  = null;
