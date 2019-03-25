@@ -33,8 +33,10 @@
 			
 			function validateGarantia() {
 				var ok= janal.execute();
-				if(ok)
+				if(ok){
 					PF('dlgCerrarVenta').hide();
+					PF('dlgCerrarVentaCredito').hide();
+				} // if
 				return ok;
 			} // validateGarantia
 			
