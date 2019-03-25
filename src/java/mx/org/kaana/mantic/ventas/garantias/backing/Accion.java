@@ -239,14 +239,12 @@ public class Accion extends IBaseVenta implements Serializable {
 					this.attrs.put("messageDialog", "La devolución es por la cantidad de: $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, (diferenciaVenta-saldoCliente)) + ", el resto se abonara a las cuentas pendientes. Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
 					this.attrs.put("accionCredito", EAccion.AGREGAR);
 					this.attrs.put("pagoCredito", diferenciaVenta);
-					this.attrs.put("devolucionCredito", (diferenciaVenta-saldoCliente));
-					toDetalleDeudaCliente();
+					this.attrs.put("devolucionCredito", (diferenciaVenta-saldoCliente));					
 				} // if
 				else{
 					this.attrs.put("messageDialog", "No hay saldo a favor. La deuda sera saldada y los pagos realizados seran abonados a las cuentas pendientes. Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
 					this.attrs.put("accionCredito", EAccion.ASIGNAR);
 					this.attrs.put("pagoCredito", diferenciaVenta);
-					toDetalleDeudaCliente();
 				} // else
 			} // else if
 			else if(importeEquals && !devolucionCompleta){
@@ -263,7 +261,6 @@ public class Accion extends IBaseVenta implements Serializable {
 					this.attrs.put("messageDialog", "La devolución es por la cantidad de: $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, (diferencia*-1)) + ". Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
 					this.attrs.put("accionCredito", EAccion.PROCESAR);											
 					this.attrs.put("devolucionCredito", diferencia);
-					toDetalleDeudaCliente();
 				} // if					
 				else if(diferencia < 0  && saldoCliente > 0 && saldoCliente < (diferencia*-1)){
 					this.attrs.put("mostrarDevolucion", true);
@@ -271,21 +268,19 @@ public class Accion extends IBaseVenta implements Serializable {
 					this.attrs.put("accionCredito", EAccion.ACTIVAR);
 					this.attrs.put("pagoCredito", saldoCliente);
 					this.attrs.put("devolucionCredito", ((diferencia*-1) - saldoCliente));
-					toDetalleDeudaCliente();
 				} // else					
 				else if(diferencia < 0  && saldoCliente > 0 && saldoCliente > (diferencia*-1)){
 					this.attrs.put("messageDialog", "No hay saldo a favor. La deuda sera saldada y los pagos realizados seran abonados a las cuentas pendientes. Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
 					this.attrs.put("accionCredito", EAccion.JUSTIFICAR);
 					this.attrs.put("pagoCredito", (diferencia*-1));
-					toDetalleDeudaCliente();
 				} // else					
 				else if (diferencia > 0 ){
 					this.attrs.put("messageDialog", "No hay saldo a favor. Los abonos se utilizaran para cubrir la deuda de los articulos vigentes. Saldo pendiente $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferencia) + ". Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
 					this.attrs.put("accionCredito", EAccion.CALCULAR);
 					this.attrs.put("pagoCredito", diferenciaVenta);
-					toDetalleDeudaCliente();
 				} // else				
 			} // else if
+			toDetalleDeudaCliente();
 		} // try
 		catch (Exception e) {			
 			throw e;
