@@ -36,6 +36,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ContadoresListas;
 import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
+import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.caja.reglas.Transaccion;
@@ -205,6 +206,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			verificaLimiteCaja();
 			doActivarCliente();
 			loadArt();
+			doLoadSaldos(-1L);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -240,7 +242,7 @@ public class Accion extends IBaseVenta implements Serializable {
         case CONSULTAR:			
 					LOG.warn("Atributes:" + this.attrs.toString());					
           this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", this.attrs)));					
-    			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
+    			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));					
           break;
       } // switch
 			this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
@@ -252,7 +254,28 @@ public class Accion extends IBaseVenta implements Serializable {
     } // catch		
   } // doLoad
 	
-  public String doAceptar() {  
+	@Override
+	public void doCalculate(Integer index) {
+		super.doCalculate(index);
+		this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
+		UIBackingUtilities.update("deudor");
+	}	// doCalculate
+
+	@Override
+	protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
+		super.toMoveData(articulo, index); 
+		this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
+		UIBackingUtilities.update("deudor");
+	} // toMoveData
+
+	@Override
+	protected void toMoveArticulo(Articulo articulo, Integer index) throws Exception {
+		super.toMoveArticulo(articulo, index);
+		this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
+		UIBackingUtilities.update("deudor");
+	} // toMoveArticulo
+	
+  public void doAceptar() {  
     Transaccion transaccion        = null;
     String regresar                = null;
 		Boolean validarCredito         = true;
@@ -286,7 +309,6 @@ public class Accion extends IBaseVenta implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
-    return regresar;
   } // doAccion
 	
 	public void doVerificaArticulosCotizacion(){
@@ -556,6 +578,10 @@ public class Accion extends IBaseVenta implements Serializable {
 			validaFacturacion();
 			UIBackingUtilities.execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
 			this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
+			doLoadSaldos(((TicketVenta)this.getAdminOrden().getOrden()).getIdCliente());
+			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
+			UIBackingUtilities.update("deudor");
+			UIBackingUtilities.update("deudorPago");
 			if(tipo!= null && tipo.equals(EEstatusVentas.APARTADOS.name()))
 				asignaAbonoApartado();
 			doActivarCliente();
