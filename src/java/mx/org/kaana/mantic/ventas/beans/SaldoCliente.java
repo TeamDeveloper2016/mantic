@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.ventas.beans;
 
 import java.io.Serializable;
+import mx.org.kaana.libs.formato.Numero;
 
 public class SaldoCliente implements Serializable{
 
@@ -67,6 +68,6 @@ public class SaldoCliente implements Serializable{
 	} // isDeudor
 	
 	public String getMensaje(){
-		return isDeudor() ? "EL CLIENTE YA SOBRE PASO SU LIMITE DE CREDITO. LIMITE DE CREDITO $" + this.totalCredito + " . TOTAL DEUDAS $" + this.totalDeuda + " ." : "";
+		return isDeudor() ? "EL CLIENTE YA SOBRE PASO SU LIMITE DE CREDITO. LIMITE DE CREDITO $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, this.totalCredito) + " . TOTAL DEUDAS $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, this.totalDeuda) + " ." : "";
 	}
 }
