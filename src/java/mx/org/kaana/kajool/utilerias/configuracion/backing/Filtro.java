@@ -118,8 +118,10 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			params.put("invitado", "Alejandro Jiménez García");
 			params.put("puesto", "Subsecretario de Obras Públicas");
 			params.put("correo", "fegem@inegi.org.mx");
-			params.put("background", files.get(0).getId());
- 	  	IBaseAttachment notificar= new IBaseAttachment(ECorreos.NOTIFICACION, "fegem@inegi.org.mx", "alejandro.jimenez@inegi.org.mx", "Invitación al evento de FEGEMS", params, files);
+			for (Attachment item: files) {
+  			params.put(item.getId(), item.getId());
+			} // for
+ 	  	IBaseAttachment notificar= new IBaseAttachment(ECorreos.NOTIFICACION, "fegem@inegi.org.mx", "Invitación al evento de FEGEMS", params, files);
 			for (String item: correos) {
   	  	LOG.info("Enviando correo a la cuenta: "+ item);
 	    	notificar.sendTo(item);

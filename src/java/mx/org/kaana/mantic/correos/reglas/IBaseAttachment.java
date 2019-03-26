@@ -36,6 +36,10 @@ public class IBaseAttachment extends IBaseMail implements Serializable {
 		this(type, Configuracion.getInstance().getPropiedadServidor("mail.user.default"), Configuracion.getInstance().getPropiedadServidor("mail.user.default"), subject, params, Collections.EMPTY_LIST);
 	}
 	
+	public IBaseAttachment(ECorreos type, String from, String subject, Map<String, Object> params, List<Attachment> files) {
+	  this(type, from, from, subject, params, files);
+	}
+	
 	public IBaseAttachment(ECorreos type, String from, String to, String subject, Map<String, Object> params, List<Attachment> files) {
 	  this(type, from, to, null, subject, params, files);
 	}
@@ -50,7 +54,7 @@ public class IBaseAttachment extends IBaseMail implements Serializable {
 		this.params=params;
 	}
 	
-	public void send(String to, Map<String, Object> params) throws Exception {
+	public void sendTo(String to, Map<String, Object> params) throws Exception {
 		this.setTo(to);
 		this.setParams(params);
 		this.send();
