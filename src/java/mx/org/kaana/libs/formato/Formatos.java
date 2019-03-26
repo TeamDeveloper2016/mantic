@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 
 public class Formatos {
@@ -41,6 +42,14 @@ public class Formatos {
     return getSentencia("null", nullable, priority);
   }
 
+  public String getSentencia(boolean nullable) {
+    return getSentencia(nullable, "");
+  }
+
+  public String getSentencia() {
+    return getSentencia(false);
+  }
+
   public String getSentencia(String cadenaNull, boolean nullable, String ... priority) {
     StringTokenizer resultado = new StringTokenizer(getCodigos(), "{}", true);
     String token    = null;
@@ -71,15 +80,6 @@ public class Formatos {
     } // while
 		resultado= null;
     return sentencia.toString();
-  }
-
-
-  public String getSentencia(boolean nullable) {
-    return getSentencia(nullable, "");
-  }
-
-  public String getSentencia() {
-    return getSentencia(false);
   }
 
   public String getSentenciaJeks() {
@@ -148,4 +148,40 @@ public class Formatos {
 		this.variables= null;
   }
 
+  public String getSentenciaHtml(String ... priority) {
+		return this.getSentenciaHtml("null", true, "");
+	}
+	
+  public String getSentenciaHtml(String cadenaNull, boolean nullable, String ... priority) {
+    StringTokenizer resultado = new StringTokenizer(getCodigos(), "{}", true);
+    String token    = null;
+    Object valor    = null;
+    if(priority== null)
+      priority= new String[] {""};
+    StringBuilder sentencia= new StringBuilder();
+    while (resultado.hasMoreTokens()) {
+      token = resultado.nextToken();
+      if (token.equals("{")) {
+        token= resultado.nextToken();
+        for(String item: priority) {
+          valor= getVariables().get(item.concat(token));
+          if (valor!= null)
+            break;
+        } // for
+        if (valor!= null)
+          sentencia.append(StringEscapeUtils.escapeHtml4(valor.toString()));
+        else
+          if(nullable)
+            sentencia.append("{").append(token).append("}");
+          else
+            sentencia.append(cadenaNull);
+        token = resultado.nextToken();
+      } // if
+      else
+        sentencia.append(token);
+    } // while
+		resultado= null;
+    return sentencia.toString();
+  }
+	
 }

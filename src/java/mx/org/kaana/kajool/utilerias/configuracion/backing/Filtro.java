@@ -8,9 +8,10 @@ package mx.org.kaana.kajool.utilerias.configuracion.backing;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -20,12 +21,10 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.mantic.correos.beans.Attachment;
 import mx.org.kaana.mantic.correos.enums.ECorreos;
-import mx.org.kaana.mantic.correos.reglas.Manejador;
+import mx.org.kaana.mantic.correos.reglas.IBaseAttachment;
 import mx.org.kaana.xml.Dml;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -109,27 +108,26 @@ public class Filtro extends IBaseAttribute implements Serializable {
   public void doNotificar() {
 		Map<String, Object> params= new HashMap<>();
 		//String[] correos= {"jimenez76@yahoo.com", "claudio.alvarez@inegi.org.mx", "suani.vazquez@inegi.org.mx", "miguelangel.martinez@inegi.org.mx"};
-		String[] correos= {"alejandro.jimenez@inegi.org.mx", "jimenez76@yahoo.com"};
+		String[] correos      = {"alejandro.jimenez@inegi.org.mx", "jimenez76@yahoo.com"};
+		List<Attachment> files= new ArrayList<>(); 
 		try {
-	    File image     = new File(JsfBase.getApplication().getRealPath(ECorreos.NOTIFICACION.getImages().concat("invitacion.png")));
-      byte[]  encoded= Base64.encodeBase64(FileUtils.readFileToByteArray(image));
+			files.add(new Attachment(ECorreos.NOTIFICACION.getImages().concat("invitacion.jpg"), Boolean.TRUE));
 			params.put("header", "...");
 			params.put("footer", "...");
-			params.put("empresa", StringEscapeUtils.escapeHtml4("Instituto Nacional de Estadistica y Geografía"));
-			params.put("invitado", StringEscapeUtils.escapeHtml4("Alejandro Jiménez García"));
-			params.put("puesto", StringEscapeUtils.escapeHtml4("Subsecretario de Obras Públicas"));
+			params.put("empresa", "Instituto Nacional de Estadistica y Geografía");
+			params.put("invitado", "Alejandro Jiménez García");
+			params.put("puesto", "Subsecretario de Obras Públicas");
 			params.put("correo", "fegem@inegi.org.mx");
-      params.put("background", new String(encoded));
- 	  	Manejador notificar= new Manejador(ECorreos.NOTIFICACION, "fegem@inegi.org.mx", "alejandro.jimenez@inegi.org.mx", "Invitación al evento de FEGEMS", params);
+			params.put("background", files.get(0).getId());
+ 	  	IBaseAttachment notificar= new IBaseAttachment(ECorreos.NOTIFICACION, "fegem@inegi.org.mx", "alejandro.jimenez@inegi.org.mx", "Invitación al evento de FEGEMS", params, files);
 			for (String item: correos) {
-				notificar.setTo(item);
   	  	LOG.info("Enviando correo a la cuenta: "+ item);
-	    	notificar.send();
+	    	notificar.sendTo(item);
 			} // for
 		  this.correo= Boolean.TRUE;
 	  	LOG.info("Se envio el correo de forma exitosa");
 		  JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
-		} // try
+		} // try // try
 		catch(Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);

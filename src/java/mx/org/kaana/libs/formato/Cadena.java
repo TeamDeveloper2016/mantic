@@ -253,6 +253,11 @@ public final class Cadena {
     return formatos.getSentencia();
   }
 
+  public static String replaceHtml(String sql, Map params) {
+    Formatos formatos = new Formatos(sql, params);
+    return formatos.getSentenciaHtml();
+  }
+
   /**
    * Reemplaza los parametros a una cadena select * from tc_tops_datos where id_tipo_dato = {idTipoDato}
    *
