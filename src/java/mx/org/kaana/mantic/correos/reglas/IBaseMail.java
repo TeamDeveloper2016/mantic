@@ -120,22 +120,27 @@ public class IBaseMail implements Serializable {
 			if(this.copies!= null)
         message.addRecipients(javax.mail.Message.RecipientType.BCC, this.toPrepare(this.copies));
       message.setSubject(this.subject);
-			message.setContent(Cadena.toCharSet(content), "text/html");
 			if(this.files!= null && !this.files.isEmpty()) {
-				body = new MimeBodyPart(); //MimeBodyPart
 				multipart = new MimeMultipart(); //Multipart
 				multipart.addBodyPart(body);						
 				for(Attachment item: this.files) {                   
-					body= new MimeBodyPart();
-					ds  = new FileDataSource(item.getFile());
-					body.setDataHandler(new DataHandler(ds));
-					body.setFileName(item.getName());
-					body.setDisposition(MimeBodyPart.INLINE);
-					body.setHeader("Content-ID", item.getId());
-					multipart.addBodyPart(body);               
+					if(item.getCid()) {
+						body= new MimeBodyPart();
+						ds  = new FileDataSource(item.getFile());
+						body.setDataHandler(new DataHandler(ds));
+						body.setFileName(item.getName());
+						body.setDisposition(MimeBodyPart.INLINE);
+						body.setHeader("Content-ID", item.getId());
+						multipart.addBodyPart(body);               
+				    body = new MimeBodyPart(); //MimeBodyPart
+  			    body.setContent(Cadena.toCharSet(content), "text/html");
+						multipart.addBodyPart(body);
+					} // if
 				} // for rutas                           
 				message.setContent(multipart);   
       } // if
+			else
+  			message.setContent(Cadena.toCharSet(content), "text/html");
       Transport.send(message);
 			LOG.info("Correo enviado al buzon de: "+ this.to);
 		} // try
