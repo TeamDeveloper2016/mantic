@@ -467,6 +467,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		Map<String, Object>params           = null;
 		List<Columna> campos                = null;
 		EAccion accion                      = null;
+		Entity entity                       = null;
 		try {
 			loadCajas();
 			params= new HashMap<>();
@@ -487,6 +488,11 @@ public class Accion extends IBaseVenta implements Serializable {
 				this.attrs.put("ticketAbierto", new UISelectEntity("-1"));
 				this.setAdminOrden(new AdminGarantia(new TicketVenta()));
 				this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
+				toFindOpenTicket(new UISelectEntity("-1"));
+				entity= new Entity(-1L);
+				entity.put("ticket", new Value("ticket", ""));
+				this.attrs.put("cliente", entity);
+				this.attrs.put("ticket", new Entity(-1L));
 			} // else
 			this.attrs.put("pagarVenta", false);
 			this.attrs.put("facturarVenta", false);
