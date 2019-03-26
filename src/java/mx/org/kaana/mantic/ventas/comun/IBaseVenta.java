@@ -459,14 +459,16 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		Entity cliente     = null;
 		MotorBusqueda motor= null;
 		this.saldoCliente  = null;
-		try {
-			motor= new MotorBusqueda(null, idCliente);
-			cliente= motor.toCliente();
+		try {			
 			this.saldoCliente= new SaldoCliente();
-			this.saldoCliente.setIdCliente(idCliente);
-			this.saldoCliente.setTotalCredito(cliente.toDouble("limiteCredito"));
-			this.saldoCliente.setTotalDeuda(motor.toDeudaCliente());
-			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
+			if(!idCliente.equals(-1L)){
+				motor= new MotorBusqueda(null, idCliente);
+				cliente= motor.toCliente();			
+				this.saldoCliente.setIdCliente(idCliente);
+				this.saldoCliente.setTotalCredito(cliente.toDouble("limiteCredito"));
+				this.saldoCliente.setTotalDeuda(motor.toDeudaCliente());
+				this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
+			} // if
 		} // try
 		catch (Exception e) {			
 			throw e;
