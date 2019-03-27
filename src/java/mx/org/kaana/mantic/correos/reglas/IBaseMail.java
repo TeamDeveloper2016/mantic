@@ -159,7 +159,7 @@ public class IBaseMail implements Serializable {
 
   public static void main(String ... args) throws AddressException {
 		InternetAddress internetAddress = new InternetAddress("xyz@yahoo.com");
-    internetAddress.validate();
+    // internetAddress.validate();
 		LOG.info("ok.");
 	}	
 	
