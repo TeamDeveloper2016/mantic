@@ -22,6 +22,14 @@
 				'contenedorGrupos\\:tabla\\:1\\:limites': {validaciones: 'requerido|flotante|mayor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:0\\\\:limites"})', mascara: 'libre', formatos: 'precio', grupo: 'calculos'}
 			};	
 		</script>   
+		<style type="text/css">
+				.ui-treetable table {
+					table-layout: fixed
+				}
+				.janal-letter-capitalized {
+          text-transform: uppercase;
+        }
+		</style>		
 	</ui:define>
 	<ui:define name="contenido">
 		<p:focus context="codigos"/>
@@ -100,7 +108,6 @@
 						<div class="janal-column-center">
   						<p:outputLabel value="#{manticInventariosAlmacenesKardex.attrs.articulo.nombre}" styleClass="janal-color-blue"/>
 						</div>
-						<br/>
 						<p:outputLabel for="idAlmacen" value="Seleccione el almacen:"/>
 						<br/>
 						<p:selectOneMenu id="idAlmacen" tabindex="0" value="#{manticInventariosAlmacenesKardex.attrs.idAlmacen}" var="almacen" converter="janal.convertidor.Entity" styleClass="janal-wid-99 almacen" effect="fade" filter="true" filterMatchMode="contains">
@@ -353,6 +360,25 @@
 								</p:column>   
               </p:dataTable>
 							<p:outputLabel value="Los movimientos son del #{manticInventariosAlmacenesKardex.attrs.periodo} al dia de hoy." styleClass="paginated filas"/>
+						</p:tab>
+						<p:tab title="Ubicaciones">
+							<p:outputLabel value="Articulo se encuentra en esta ubicación [ #{manticInventariosAlmacenesKardex.attrs.posicion['ubicacion']} ] con un stock de [ #{manticInventariosAlmacenesKardex.attrs.posicion['stock']} ]" styleClass="paginated filas"/>
+							<p:treeTable value="#{manticInventariosAlmacenesKardex.ubicaciones}" var="charola" nodeVar="node" styleClass="paginated filas">
+								<p:column headerText="Nivel" styleClass="janal-wid-20">
+									<h:outputText value="#{node.type}" styleClass="janal-letter-capitalized"/>
+								</p:column>
+								<p:column headerText="Ubicación" styleClass="janal-wid-30">
+ 									<h:outputText value="#{charola[node.type]}" />
+								</p:column>
+								<p:column headerText="Descripción">
+									<h:outputText value="#{charola.descripcion}" />
+								</p:column>
+								<p:column styleClass="janal-wid-col-38">
+									<p:commandButton process="@this" update="@(.paginated) @(.filas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" title="Asignar ubicación" icon="fa fa-fire" action="#{manticInventariosAlmacenesKardex.doAssignUbicacion}" rendered="#{node.type eq 'charola'}">
+										<f:setPropertyActionListener value="#{charola}" target="#{manticInventariosAlmacenesKardex.attrs.charola}" />
+									</p:commandButton>
+								</p:column>
+							</p:treeTable>							
 						</p:tab>
 					</p:tabView>
 				</div>

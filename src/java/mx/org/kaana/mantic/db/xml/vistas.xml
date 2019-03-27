@@ -2208,6 +2208,7 @@
 			<select id="almacenes">
         select      
           tc_mantic_almacenes_articulos.id_almacen_articulo as id_key,
+				  tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion,
 				  tc_mantic_almacenes.id_almacen,
           tc_mantic_almacenes.clave,
           tc_mantic_almacenes.nombre,
@@ -2227,11 +2228,30 @@
           tc_mantic_almacenes_articulos.id_articulo = {idArticulo}
 					and tc_mantic_almacenes_articulos.id_almacen= {idAlmacen}
 				order by
-				  tc_mantic_almacenes.clave
+				  tc_mantic_almacenes.clave, tc_mantic_almacenes_ubicaciones.piso, tc_mantic_almacenes_ubicaciones.cuarto, tc_mantic_almacenes_ubicaciones.anaquel, tc_mantic_almacenes_ubicaciones.charola
+			</select>
+			<select id="ubicaciones">
+        select      
+					tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion as id_key,
+					tc_mantic_almacenes.id_almacen,
+					tc_mantic_almacenes.clave,
+					tc_mantic_almacenes.nombre as almacen,
+          tc_mantic_almacenes_ubicaciones.piso,  
+				  if(tc_mantic_almacenes_ubicaciones.cuarto is null, '', tc_mantic_almacenes_ubicaciones.cuarto) as cuarto, 
+				  if(tc_mantic_almacenes_ubicaciones.anaquel is null, '', tc_mantic_almacenes_ubicaciones.anaquel) as anaquel, 
+				  if(tc_mantic_almacenes_ubicaciones.charola is null, '', tc_mantic_almacenes_ubicaciones.charola) as charola
+				from
+				  tc_mantic_almacenes_ubicaciones 
+				inner join
+					tc_mantic_almacenes on tc_mantic_almacenes.id_almacen= tc_mantic_almacenes_ubicaciones.id_almacen     
+				where
+					tc_mantic_almacenes_ubicaciones.id_almacen= {idAlmacen}  
+				order by
+				  tc_mantic_almacenes.clave, tc_mantic_almacenes_ubicaciones.piso, tc_mantic_almacenes_ubicaciones.cuarto, tc_mantic_almacenes_ubicaciones.anaquel, tc_mantic_almacenes_ubicaciones.charola
 			</select>
 			<select id="almacenesDetalle">
         select   
-					almacenes.id_almacen AS id_key,
+					almacenes.id_almacen as id_key,
           id_almacen_articulo,
 					almacenes.*,   
 					id_articulo,

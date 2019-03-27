@@ -30,12 +30,18 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.inventarios.almacenes.beans.AdminKardex;
 import mx.org.kaana.mantic.inventarios.almacenes.beans.TiposVentas;
 import mx.org.kaana.mantic.inventarios.almacenes.reglas.Transaccion;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
+import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.TreeNode;
 
 /**
  *@company KAANA
@@ -50,10 +56,12 @@ import org.primefaces.model.StreamedContent;
 public class Kardex extends IBaseAttribute implements Serializable {
 
 	private static final long serialVersionUID=-6770709196941718388L;
+	private static final Log LOG=LogFactory.getLog(Kardex.class);
 
 	private AdminKardex adminKardex;
 	private StreamedContent image;
 	private Integer tabPage;
+	private TreeNode ubicaciones;
 
 	public AdminKardex getAdminKardex() {
 		return adminKardex;
@@ -65,6 +73,10 @@ public class Kardex extends IBaseAttribute implements Serializable {
 
 	public StreamedContent getImage() {
 		return image;
+	}
+
+	public TreeNode getUbicaciones() {
+		return ubicaciones;
 	}
 	
 	@Override
@@ -83,6 +95,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 				this.doFindArticulo();
 			} // if	
 		} // if	
+		this.ubicaciones= new DefaultTreeNode("idKey", new UISelectEntity(-1L), null);	
 	}
 	
 	private void toLoadCatalog() {
@@ -267,6 +280,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
 				else	
 					if(event.getTab().getTitle().equals("Movimientos") && this.attrs.get("idArticulo")!= null) 
 						this.toLoadMovimientos();
+		      else
+					  if(event.getTab().getTitle().equals("Ubicaciones") && this.attrs.get("idArticulo")!= null) 
+						  this.toLoadUbicaciones();
 	}
 
   public void doFindArticulo() {
@@ -561,6 +577,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
 				case 3: 
     			this.toLoadMovimientos();
 					break;
+				case 4: 
+    			this.toLoadUbicaciones();
+					break;
 			} // switch	
 		} // if	
 	}	
@@ -646,5 +665,132 @@ public class Kardex extends IBaseAttribute implements Serializable {
  		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Almacenes/kardex");
 		return regresar;
 	}
+
+	private int toLoadAnaqueles(int count, TreeNode root, String anaquel, List<UISelectEntity> list) {
+		int regresar   = count;
+		TreeNode pivote= null;
+		if(Cadena.isVacio(anaquel))
+			regresar++;
+		else
+			while(regresar< list.size() && anaquel.equals(list.get(regresar).toString("anaquel"))) {
+				if(pivote== null)
+					pivote= new DefaultTreeNode("anaquel", list.get(regresar), root);
+				if(!Cadena.isVacio(list.get(regresar).toString("charola")))
+					new DefaultTreeNode("charola", list.get(regresar), pivote);
+				regresar++;
+			} // while
+		return regresar;
+	}
 	
+	private int toLoadCuartos(int count, TreeNode root, String cuarto, List<UISelectEntity> list) {
+		int regresar   = count;
+		TreeNode pivote= null;
+		if(Cadena.isVacio(cuarto))
+			regresar++;
+		else
+			while(regresar< list.size() && cuarto.equals(list.get(regresar).toString("cuarto"))) {
+				pivote  = new DefaultTreeNode("cuarto", list.get(regresar), root);
+				regresar= this.toLoadAnaqueles(regresar, pivote, list.get(regresar).toString("anaquel"), list);
+			} // while
+		return regresar;
+	}
+	
+	private void toLoadTreeAlmacen(TreeNode root, String piso, List<UISelectEntity> list) {
+		int count      = 0;
+		TreeNode pivote= null;
+		while(count< list.size()) {
+			while(count< list.size() && piso.equals(list.get(count).toString("piso"))) {
+				pivote= new DefaultTreeNode("piso", list.get(count), root);
+				count = this.toLoadCuartos(count, pivote, list.get(count).toString("cuarto"), list);
+				if(count< list.size())
+				  piso= list.get(count).toString("piso");
+			} // while
+		} // while
+	}
+	
+  public void toLoadUbicaciones() {
+		List<Columna> columns= null;
+    try {
+			this.tabPage= 4;
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("almacen", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("piso", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cuarto", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("anaquel", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("charola", EFormatoDinamicos.MAYUSCULAS));
+			List<UISelectEntity> list= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "ubicaciones", this.attrs, columns);
+			if(list!= null && !list.isEmpty()) {
+				UISelectEntity pivote= list.get(0);
+        this.ubicaciones= new DefaultTreeNode(pivote, null);	
+				this.toLoadTreeAlmacen(this.ubicaciones, pivote.toString("piso"), list);
+			} // for
+			this.toLoadPosicion();
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+		finally {
+      Methods.clean(columns);
+    }// finally		 
+	}	
+	
+	public void doAssignUbicacion() {
+		LOG.info("idUbicacion: "+ this.attrs.get("charola"));
+		try {
+			if(this.attrs.get("posicion")!= null) {
+				TcManticAlmacenesArticulosDto articulo= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findById(TcManticAlmacenesArticulosDto.class, ((UISelectEntity)this.attrs.get("posicion")).getKey());
+				if(articulo!= null) {
+					articulo.setIdAlmacenUbicacion(((UISelectEntity)this.attrs.get("charola")).getKey());
+					if(DaoFactory.getInstance().update(articulo)> 0L)
+						JsfBase.addMessage("Aviso", "Se cambió con éxito la ubicación del articulo !", ETipoMensaje.INFORMACION);
+				} // if
+			} // if
+			else {
+				TcManticArticulosDto global= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, (Long)this.attrs.get("idArticulo"));
+				TcManticAlmacenesArticulosDto articulo= new TcManticAlmacenesArticulosDto(
+					global.getMinimo(), //Double minimo, 
+					-1L, // Long idAlmacenArticulo, 
+					JsfBase.getIdUsuario(), // Long idUsuario, 
+					((UISelectEntity)this.attrs.get("idAlmacen")).getKey(), // Long idAlmacen, 
+					global.getMaximo(), // Double maximo, 
+					((UISelectEntity)this.attrs.get("charola")).getKey(), // Long idAlmacenUbicacion, 
+					(Long)this.attrs.get("idArticulo"), // Long idArticulo, 
+					0D // Double stock
+				);
+				if(DaoFactory.getInstance().insert(articulo)> 0L)
+  				JsfBase.addMessage("Aviso", "Se agregó con éxito la ubicación del articulo !", ETipoMensaje.INFORMACION);
+				this.toLoadPosicion();
+			} // if
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+	}
+	
+	private void toLoadPosicion() {
+		List<Columna> columns= null;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("minimo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("maximo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+			List<UISelectEntity> items= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "almacenes", this.attrs, columns);
+			if(items!= null && !items.isEmpty())
+        this.attrs.put("posicion", items.get(0));
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+		finally {
+      Methods.clean(columns);
+    }// finally
+	}
+
 }
