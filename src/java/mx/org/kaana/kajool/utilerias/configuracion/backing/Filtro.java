@@ -144,24 +144,25 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			params.put("header", "...");
 			params.put("footer", "...");
 			params.put("empresa", "Instituto Nacional de Estadistica y Geografía");
-			params.put("invitado", "Alejandro Jiménez García");
+			params.put("invitado", "M.C. Alejandro Jiménez García");
 			params.put("puesto", "Subsecretario de Obras Públicas");
 			params.put("correo", "fegem@inegi.org.mx");
 			for (String item: correos) {
-				String image   = this.toWriteInvitacion((String)params.get("invitado"), (String)params.get("invitado"));
+				String image   = this.toWriteInvitacion((String)params.get("invitado"), (String)params.get("puesto"));
 				Attachment user= new Attachment(image, Boolean.TRUE);
 				try {
-					LOG.info("Generando invitaicon personalizada: "+ image);
+					LOG.info("Generando invitacion personalizada: "+ image);
 					params.put("invitacion", user.getId());
 					files.add(user);
 					IBaseAttachment notificar= new IBaseAttachment(ECorreos.NOTIFICACION, "fegem@inegi.org.mx", item, "Invitación al evento de FEGEMS", params, files);
 					LOG.info("Enviando correo a la cuenta: "+ item);
 					notificar.send();
+					files.remove(user);
 				} // try
 				finally {
 				  if(user.getFile().exists()) {
    	  	    LOG.info("Eliminando archivo temporal: "+ user.getAbsolute());
-				    user.getFile().delete();
+				    // user.getFile().delete();
 				  } // if	
 				} // finally	
 			} // for

@@ -1,5 +1,8 @@
 package mx.org.kaana.mantic.correos.reglas;
 
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -157,9 +160,17 @@ public class IBaseMail implements Serializable {
     } // finally
   } 
 
-  public static void main(String ... args) throws AddressException {
-		InternetAddress internetAddress = new InternetAddress("xyz@yahoo.com");
-    // internetAddress.validate();
+  public static void main(String ... args) throws AddressException, UnirestException {
+		// https://www.emailverifierapp.com/email-verification-api-for-developers/sample-codes/#java
+		// API User Name: jimenez7616336
+		String email= "jimenez76%40yahoo.com";
+		String token= "8c2de22f7ea516f59ee8fad67f60e4e0164d8166";
+		HttpResponse<String> response = Unirest.post("https://api.evasrv.com/email_verification/")
+		.header("cache-control", "no-cache")
+		.header("content-type", "application/x-www-form-urlencoded")
+		.body("email="+ email+ "&user_API_token="+ token+ "&free=true&disposable=true&did_you_mean=true&role=true&bad=true&ev_score=true")
+		.asString();
+		LOG.info(response.getBody());
 		LOG.info("ok.");
 	}	
 	

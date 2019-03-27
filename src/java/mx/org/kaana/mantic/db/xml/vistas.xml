@@ -4270,6 +4270,7 @@
           tc_mantic_tipos_monedas on tc_mantic_proveedores.id_tipo_moneda= tc_mantic_tipos_monedas.id_tipo_moneda
         where      
           tc_mantic_notas_detalles.id_articulo= {idArticulo}
+				  and tc_mantic_notas_entradas.id_almacen= {idAlmacen}
           and tc_mantic_notas_entradas.id_nota_estatus in (3,5)
         order by
           tc_mantic_notas_detalles.registro desc				

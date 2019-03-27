@@ -7,12 +7,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import mx.org.kaana.libs.correo.Correo;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.mantic.correos.beans.Attachment;
 import mx.org.kaana.mantic.correos.enums.ECorreos;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -72,11 +70,6 @@ public class IBaseAttachment extends IBaseMail implements Serializable {
 		LOG.info("----------------------------------------------------------------------------------------");
 		LOG.info(content.toString());
     this.send(content.toString());
-	}
-	
-	public static void main(String ... args) {
-		String info= StringEscapeUtils.escapeHtml4("Alejandro Jiménez García");
-	  LOG.info(info);	
 	}
 	
 }
