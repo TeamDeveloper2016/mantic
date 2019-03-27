@@ -329,8 +329,6 @@ public class Conteos extends IBaseFilter implements Serializable {
 			TcManticInventariosDto vigente= (TcManticInventariosDto)this.attrs.get("vigente");
 			vigente.setIdUsuario(JsfBase.getIdUsuario());
 			vigente.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-			if(this.attrs.get("idAlmacenUbicacion")!= null && ((UISelectEntity)this.attrs.get("idAlmacenUbicacion")).getKey()> 0L)
-			  this.articulo.setIdAlmacenUbicacion(((UISelectEntity)this.attrs.get("idAlmacenUbicacion")).getKey());
 			transaccion= new Transaccion(vigente, this.articulo);
 			if(transaccion.ejecutar(vigente.isValid()? EAccion.MODIFICAR: EAccion.AGREGAR)) {
 				JsfBase.addMessage("Inventarios", "Se agregó/modificó de forma correcta el inventario", ETipoMensaje.INFORMACION);
@@ -452,5 +450,10 @@ public class Conteos extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("xcodigo", this.attrs.get("xcodigo"));	
     return this.attrs.get("retorno")!= null? ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR): null;
   } // doCancelar
+
+  public void doChangeUbicacion() {
+		if(this.articulo!= null && this.attrs.get("idAlmacenUbicacion")!= null && ((UISelectEntity)this.attrs.get("idAlmacenUbicacion")).getKey()> 0L)
+			this.articulo.setIdAlmacenUbicacion(((UISelectEntity)this.attrs.get("idAlmacenUbicacion")).getKey());
+	} 
 	
 }
