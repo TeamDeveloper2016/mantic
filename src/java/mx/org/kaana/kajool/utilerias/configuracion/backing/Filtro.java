@@ -8,15 +8,25 @@ package mx.org.kaana.kajool.utilerias.configuracion.backing;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
+import javax.imageio.ImageIO;
 import javax.inject.Named;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -105,26 +115,55 @@ public class Filtro extends IBaseAttribute implements Serializable {
 //		} // catch
 //	}	
 //	
+	private String toWriteInvitacion(String nombre, String puesto) throws MalformedURLException, IOException, IOException {
+		String regresar= Constantes.RUTA_TEMPORALES.concat(Archivo.toFormatNameFile("fegems")).concat(".jpg");
+		final BufferedImage image = ImageIO.read(new File(JsfBase.getRealPath(ECorreos.NOTIFICACION.getImages().concat("invitacion.jpg"))));
+   	Graphics g = image.getGraphics();
+    g.setColor(new Color(157, 197, 23));
+		final int width= 895;
+    g.setFont(g.getFont().deriveFont(33f));
+    g.drawString(nombre, (int)(width/2)- (int)(g.getFontMetrics().stringWidth(nombre)/2), 450);
+    g.setColor(new Color(113, 112, 111));
+    g.setFont(g.getFont().deriveFont(20f));
+    g.drawString(puesto, (int)(width/ 2)- (int)(g.getFontMetrics().stringWidth(puesto)/ 2), 480);
+    g.dispose();	
+		ImageIO.write(image, "jpg", new File(JsfBase.getRealPath(regresar)));
+		return regresar;
+	}
+	
   public void doNotificar() {
 		Map<String, Object> params= new HashMap<>();
 		//String[] correos= {"jimenez76@yahoo.com", "claudio.alvarez@inegi.org.mx", "suani.vazquez@inegi.org.mx", "miguelangel.martinez@inegi.org.mx"};
+		// files.add(new Attachment(ECorreos.NOTIFICACION.getImages().concat("invitacion.jpg"), Boolean.TRUE));
+		// for (Attachment item: files) {
+		//	 params.put(item.getId(), item.getId());
+		// } // for
 		String[] correos      = {"alejandro.jimenez@inegi.org.mx", "jimenez76@yahoo.com"};
 		List<Attachment> files= new ArrayList<>(); 
 		try {
-			files.add(new Attachment(ECorreos.NOTIFICACION.getImages().concat("invitacion.jpg"), Boolean.TRUE));
 			params.put("header", "...");
 			params.put("footer", "...");
 			params.put("empresa", "Instituto Nacional de Estadistica y Geografía");
 			params.put("invitado", "Alejandro Jiménez García");
 			params.put("puesto", "Subsecretario de Obras Públicas");
 			params.put("correo", "fegem@inegi.org.mx");
-			for (Attachment item: files) {
-  			params.put(item.getId(), item.getId());
-			} // for
- 	  	IBaseAttachment notificar= new IBaseAttachment(ECorreos.NOTIFICACION, "fegem@inegi.org.mx", "Invitación al evento de FEGEMS", params, files);
 			for (String item: correos) {
-  	  	LOG.info("Enviando correo a la cuenta: "+ item);
-	    	notificar.sendTo(item);
+				String image   = this.toWriteInvitacion((String)params.get("invitado"), (String)params.get("invitado"));
+				Attachment user= new Attachment(image, Boolean.TRUE);
+				try {
+					LOG.info("Generando invitaicon personalizada: "+ image);
+					params.put("invitacion", user.getId());
+					files.add(user);
+					IBaseAttachment notificar= new IBaseAttachment(ECorreos.NOTIFICACION, "fegem@inegi.org.mx", item, "Invitación al evento de FEGEMS", params, files);
+					LOG.info("Enviando correo a la cuenta: "+ item);
+					notificar.send();
+				} // try
+				finally {
+				  if(user.getFile().exists()) {
+   	  	    LOG.info("Eliminando archivo temporal: "+ user.getAbsolute());
+				    user.getFile().delete();
+				  } // if	
+				} // finally	
 			} // for
 		  this.correo= Boolean.TRUE;
 	  	LOG.info("Se envio el correo de forma exitosa");
@@ -135,5 +174,20 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch
 	}	
+	
+	public static void main(String ... args) throws MalformedURLException, IOException, IOException {
+		final BufferedImage image = ImageIO.read(new URL("https://bonanza.jvmhost.net/MANTIC/resources/janal/img/correo/invitacion.jpg"));
+   	Graphics g = image.getGraphics();
+    g.setColor(new Color(157, 197, 23));
+		final int width= 895;
+    g.setFont(g.getFont().deriveFont(33f));
+    g.drawString("Mto. Alejandro Jiménez García", (int)(width/2)- (int)(g.getFontMetrics().stringWidth("Mto. Alejandro Jiménez García")/2), 450);
+    g.setColor(new Color(113, 112, 111));
+    g.setFont(g.getFont().deriveFont(20f));
+    g.drawString("Subprocurador de eventos especiales dentro del territorio", (int)(width/ 2)- (int)(g.getFontMetrics().stringWidth("Subprocurador de eventos especiales dentro del territorio")/ 2), 480);
+    g.dispose();	
+		ImageIO.write(image, "jpg", new File("d:/test.png"));
+		LOG.info("Ok");
+	}
 	
 }

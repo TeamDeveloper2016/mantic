@@ -68,6 +68,10 @@ public class Attachment implements Serializable {
 	public Boolean getCid() {
 		return cid;
 	}
+
+	public String getAbsolute() {
+		return absolute;
+	}
 	
 	private void init(Boolean cid) {
 		this.file= new File(this.absolute);

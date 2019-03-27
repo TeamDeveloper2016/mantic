@@ -1,6 +1,5 @@
 package mx.org.kaana.mantic.correos.reglas;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -20,7 +19,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.correo.SMTPAuthenticator;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -122,7 +120,6 @@ public class IBaseMail implements Serializable {
       message.setSubject(this.subject);
 			if(this.files!= null && !this.files.isEmpty()) {
 				multipart = new MimeMultipart(); //Multipart
-				multipart.addBodyPart(body);						
 				for(Attachment item: this.files) {                   
 					if(item.getCid()) {
 						body= new MimeBodyPart();
@@ -159,5 +156,11 @@ public class IBaseMail implements Serializable {
         multipart = null;      
     } // finally
   } 
+
+  public static void main(String ... args) throws AddressException {
+		InternetAddress internetAddress = new InternetAddress("xyz@yahoo.com");
+    internetAddress.validate();
+		LOG.info("ok.");
+	}	
 	
 }
