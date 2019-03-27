@@ -71,7 +71,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia"));
       this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("sugerido", 0D);
-      doLoad();
+      this.doLoad();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

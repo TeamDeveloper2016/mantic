@@ -24,7 +24,7 @@
 			
     	$(document).ready(function() {
 				setTimeout("janal.readingMode('#{manticCatalogosAlmacenesConfrontasAccion.attrs.nombreAccion}')", 500);
-        jsArticulos= new Janal.Control.Articulos.Core(#{manticCatalogosAlmacenesConfrontasAccion.adminOrden.articulos.size()});
+        jsArticulos= new Janal.Control.Articulos.Core(#{manticCatalogosAlmacenesConfrontasAccion.adminOrden.filtrados.size()});
 				janal.decimals= 4;
       });
 			
@@ -46,6 +46,7 @@
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
+    <p:remoteCommand name="filterRows" actionListener="#{manticCatalogosAlmacenesConfrontasAccion.doFilterRows}" update="contenedorGrupos:tabla" process="@this @(.key-filter-event)" onstart="return janal.bloquear();" oncomplete="jsArticulos.invalidate(#{manticCatalogosAlmacenesConfrontasAccion.adminOrden.filtrados.size()- 1});"/>		
 		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticCatalogosAlmacenesConfrontasAccion.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
 			<pe:methodSignature parameters="java.lang.String, java.lang.Integer"/>  
 			<pe:methodParam name="codigo"/>  
@@ -163,7 +164,7 @@
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-12">
 										<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100" >							
-											<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosAlmacenesConfrontasAccion.adminOrden.articulos}" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas" paginator="#{manticCatalogosAlmacenesConfrontasAccion.attrs.paginator}" rows="#{manticCatalogosAlmacenesConfrontasAccion.rows}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_LOTE}">
+											<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosAlmacenesConfrontasAccion.adminOrden.filtrados}" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas" paginator="#{manticCatalogosAlmacenesConfrontasAccion.attrs.paginator}" rows="#{manticCatalogosAlmacenesConfrontasAccion.rows}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_LOTE}">
 												<p:column class="MarAuto Responsive janal-wid-3">
 													<f:facet name="header">
 														<h:outputText value="No."/>
@@ -180,6 +181,7 @@
 														<pe:tooltip for="@(.janal-help-9)" showEvent="click">
 															<h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(9)}" styleClass="Fs15" escape="false"/>
 														</pe:tooltip>
+                            <p:inputText id="filterCode" value="#{manticCatalogosAlmacenesConfrontasAccion.attrs.filterCode}" styleClass="janal-wid-70 key-filter-event"/>														
 													</f:facet>
 													<div class="ui-grid-row janal-grid-row">
 														<div class="ui-grid-col-12" style="padding-right: 14px;">
@@ -214,6 +216,7 @@
 												<p:column  class="MarAuto Responsive">
 													<f:facet name="header">
 														<h:outputText value="Articulo"/>
+														<p:inputText id="filterName" value="#{manticCatalogosAlmacenesConfrontasAccion.attrs.filterName}" styleClass="janal-wid-100-txt key-filter-event"/>
 													</f:facet>
 													<h:outputText id="nombres" value="[#{row['propio']}] #{row['nombre']}" escape="false"/>
 												</p:column>		

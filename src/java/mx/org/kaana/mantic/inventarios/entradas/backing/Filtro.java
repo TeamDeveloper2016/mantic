@@ -113,7 +113,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				else
 					regresar= regresar.concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
 				Long idOrdenCompra= -1L;
-				if(((Entity)this.attrs.get("seleccionado")).toLong("idOrdenCompra")!= null)
+				if(this.attrs.get("seleccionado")!= null && ((Entity)this.attrs.get("seleccionado")).toLong("idOrdenCompra")!= null)
 				  idOrdenCompra= ((Entity)this.attrs.get("seleccionado")).toLong("idOrdenCompra");
   			JsfBase.setFlashAttribute("idOrdenCompra", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) || ((Entity)this.attrs.get("seleccionado")).toLong("idNotaTipo").equals(2L)? idOrdenCompra: -1L);
 			} // else	

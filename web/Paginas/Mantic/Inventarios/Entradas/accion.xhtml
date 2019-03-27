@@ -51,7 +51,7 @@
 			
     	$(document).ready(function() {
 				setTimeout("janal.readingMode('#{manticInventariosEntradasAccion.attrs.nombreAccion}')", 500);
-        jsArticulos= new Janal.Control.Articulos.Core(#{manticInventariosEntradasAccion.adminOrden.articulos.size()}, 'contenedorGrupos\\:tabla\\:', #{manticInventariosEntradasAccion.attrs.paginator});
+        jsArticulos= new Janal.Control.Articulos.Core(#{manticInventariosEntradasAccion.adminOrden.filtrados.size()}, 'contenedorGrupos\\:tabla\\:', #{manticInventariosEntradasAccion.attrs.paginator});
 				janal.decimals= 4;
       });
 			
