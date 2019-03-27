@@ -11,6 +11,7 @@
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryKardexJs}"/>
     <script type="text/javascript">
 			Janal.Control.fields = {				
+				'almacen': {validaciones: 'requerido', mascara: 'libre'},
 				'inicial': {validaciones: 'requerido|flotante', mascara: 'libre'},
 				'minimo' : {validaciones: 'flotante', mascara: 'libre'},
 				'maximo' : {validaciones: 'flotante', mascara: 'libre'}
@@ -105,6 +106,22 @@
 									<p:inputNumber id="minimo" inputStyleClass="janal-wid-96 janal-column-right" value="#{manticCatalogosInventariosConteos.articulo.minimo}" styleClass="filas"/>                    
 									<p:outputLabel for="maximo" value="Stock máximo:"/>
 									<p:inputNumber id="maximo" inputStyleClass="janal-wid-96 janal-column-right" value="#{manticCatalogosInventariosConteos.articulo.maximo}" styleClass="filas"/>                    
+									<p:outputLabel for="idAlmacenUbicacion" value="Ubicaciones:"/>
+									<p:selectOneMenu id="idAlmacenUbicacion" tabindex="0" value="#{manticCatalogosInventariosConteos.attrs.idAlmacenUbicacion}" var="ubicacion" converter="janal.convertidor.Entity" styleClass="janal-wid-96 almacen" effect="fade" filter="true" filterMatchMode="contains" >
+										<f:selectItems value="#{manticCatalogosInventariosConteos.attrs.ubicaciones}" var="element" itemValue="#{element.key}" itemLabel="#{element.piso} - #{element.cuarto} - #{element.anaquel} - #{element.charola}"/>
+										<p:column headerText="Piso">
+											<h:outputText value="#{ubicacion.piso}"/>
+										</p:column>   
+										<p:column headerText="Cuarto">
+											<h:outputText value="#{ubicacion.cuarto}"/>
+										</p:column>   
+										<p:column headerText="Anaquel">
+											<h:outputText value="#{ubicacion.anaquel}"/>
+										</p:column>   
+										<p:column headerText="Cuarto">
+											<h:outputText value="#{ubicacion.charola}"/>
+										</p:column>   
+									</p:selectOneMenu>
 								</p:panelGrid>	
 								<p:panel id="panelImage" header="#{manticCatalogosInventariosConteos.attrs.articulo.propio}" styleClass="TexAlCenter janal-wid-100-txt" style="height:98%">
 									<a id="source-image" data-magnify="gallery" data-caption="#{manticCatalogosInventariosConteos.attrs.articulo.nombre}" data-group="icon-gallery" href="" title="Click para ver más grande la imagen">

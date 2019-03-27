@@ -374,7 +374,7 @@
 									<h:outputText value="#{charola.descripcion}" />
 								</p:column>
 								<p:column styleClass="janal-wid-col-38">
-									<p:commandButton process="@this" update="@(.paginated) @(.filas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" title="Asignar ubicación" icon="fa fa-fire" action="#{manticInventariosAlmacenesKardex.doAssignUbicacion}" rendered="#{node.type eq 'charola'}">
+									<p:commandButton process="@this" update="@(.paginated) @(.filas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" title="Asignar ubicación" icon="fa fa-fire" action="#{manticInventariosAlmacenesKardex.doAssignUbicacion}">
 										<f:setPropertyActionListener value="#{charola}" target="#{manticInventariosAlmacenesKardex.attrs.charola}" />
 									</p:commandButton>
 								</p:column>

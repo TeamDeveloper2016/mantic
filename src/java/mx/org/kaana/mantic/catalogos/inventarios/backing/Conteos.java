@@ -80,6 +80,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 				  this.doFindArticulo();
 				} // if	
 			} // if	
+			this.toLoadUbicaciones();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -169,7 +170,30 @@ public class Conteos extends IBaseFilter implements Serializable {
 			Methods.clean(params);
 		} // finally
 	} // loadAlmacenes
-	
+
+  public void toLoadUbicaciones() {
+		List<Columna> columns= null;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("almacen", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("piso", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cuarto", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("anaquel", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("charola", EFormatoDinamicos.MAYUSCULAS));
+			if(this.attrs.get("almacen")!= null)
+			  this.attrs.put("idAlmacen", ((Entity)this.attrs.get("almacen")).getKey());			
+			this.attrs.put("ubicaciones", UIEntity.seleccione("VistaKardexDto", "ubicaciones", this.attrs, columns, "piso"));
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+		finally {
+      Methods.clean(columns);
+    }// finally		 
+	}	
+
 	private void updateArticulo(UISelectEntity articulo) throws Exception {
 		List<Columna> columns= null;
     try {

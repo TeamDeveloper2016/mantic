@@ -761,8 +761,8 @@ public class Kardex extends IBaseAttribute implements Serializable {
 				);
 				if(DaoFactory.getInstance().insert(articulo)> 0L)
   				JsfBase.addMessage("Aviso", "Se agregó con éxito la ubicación del articulo !", ETipoMensaje.INFORMACION);
-				this.toLoadPosicion();
 			} // if
+			this.toLoadPosicion();
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
