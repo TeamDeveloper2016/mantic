@@ -447,4 +447,16 @@ public class TransaccionFactura extends IBaseTnx{
 		regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;		
 		return regresar;
 	} // actualizarCliente
+	
+	protected void actualizarSaldoCatalogoCliente(Session sesion, Long idCliente, Double cantidad, boolean sumar) throws Exception{
+		TcManticClientesDto cliente= null;
+		try {
+			cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, idCliente);
+			cliente.setSaldo(sumar ? (cliente.getSaldo() + cantidad) : (cliente.getSaldo() - cantidad));
+			DaoFactory.getInstance().update(sesion, cliente);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // actualizarSaldoCatalogoCliente
 }
