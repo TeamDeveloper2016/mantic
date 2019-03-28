@@ -13,7 +13,8 @@
 		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryVentasJs}"/>
 		<h:outputScript library="janal" name="barcode/js.barcode.all.min.js"/>		
 		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryTicketJs}"/>
-		<script type="text/javascript">			
+		<script type="text/javascript">		
+		// <![CDATA[	
 			Janal.Control.fields = {				 				
 				'valor': {multiple: '$', validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor del correo electronico'},
 				
@@ -141,6 +142,22 @@
 			function aceptarFinalizarFocus(){				
 				setTimeout("$('#aceptarFinalizar').focus();", 1000);
 			}
+						
+			function markedDays(date) {				
+				var minDays= [1,2,3,4,5,6,7,8,9];
+				var disabledDays = $('#contenedorGrupos\\:days').val();
+				var arrayDays = disabledDays.split(',');
+				var m = date.getMonth(), d = date.getDate(), y = date.getFullYear();
+				for (i = 0; i < arrayDays.length; i++) {
+					m= $.inArray(m, minDays) !== -1 ? ('0'+ (m+1)) : m;
+					d= $.inArray(d, minDays) !== -1 ? ('0'+ d) : d;
+					if($.inArray((y + m + d), arrayDays) != -1) {
+						return [true, 'janal-color-calendar'];
+					} // if
+				} // for
+				return [true];
+			}
+		// ]]>
 		</script>   
 		<style type="text/css">
 			.janal-color-diferencia {
@@ -170,6 +187,9 @@
 			}
 			.janal-tr-yellow {
 				background-color: yellow !important;
+			}
+			.janal-color-calendar{
+				border: solid 1px orange !important
 			}
 		</style>
 	</ui:define>
@@ -266,11 +286,12 @@
 					<div class="ui-grid-row janal-grid-row">
 						<div class="ui-grid-col-12">					
 							<p:panelGrid id="encabezadoVenta" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-80">						
+								<h:inputHidden id="days" value="#{manticVentasCajaAccion.attrs.days}"/><h:inputHidden/>
 								<p:outputLabel for="fecha" value="Fecha:"/>
 								<p:outputLabel value="Cuentas abiertas:"/>
-								<p:calendar id="fecha" inputStyleClass="janal-wid-70" styleClass="janal-wid-100" value="#{manticVentasCajaAccion.attrs.fecha}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario">
+								<p:calendar id="fecha" inputStyleClass="janal-wid-70" styleClass="janal-wid-100" value="#{manticVentasCajaAccion.attrs.fecha}" mindate="#{manticVentasCajaAccion.attrs.fechaInicial}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario" beforeShowDay="markedDays">
 									<p:ajax event="dateSelect" process="@this" listener="#{manticVentasCajaAccion.doLoadTicketAbiertos}" update="encabezadoVenta contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.janal-abono)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
-								</p:calendar>								
+								</p:calendar>																
 								<p:selectOneMenu id="ticketsAbiertos" value="#{manticVentasCajaAccion.attrs.ticketAbierto}" styleClass="janal-wid-100-txt cambio-cliente" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="contains">
 									<p:ajax event="change" process="@this contenedorGrupos" onstart="return janal.bloquear();" listener="#{manticVentasCajaAccion.doAsignaTicketAbierto}" update="contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.janal-abono)" oncomplete="janal.desbloquear();jsArticulos.refreshCobroValidate();" />
 									<f:selectItem itemValue="" itemLabel="SELECCIONE"/> 
