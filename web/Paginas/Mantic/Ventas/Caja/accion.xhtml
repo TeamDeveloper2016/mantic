@@ -151,7 +151,7 @@
 				for (i = 0; i < arrayDays.length; i++) {
 					m= $.inArray(m, minDays) !== -1 ? ('0'+ (m+1)) : m;
 					d= $.inArray(d, minDays) !== -1 ? ('0'+ d) : d;
-					if($.inArray((y + m + d), arrayDays) != -1) {
+					if($.inArray((y + m + d), arrayDays) !== -1) {
 						return [true, 'janal-color-calendar'];
 					} // if
 				} // for
@@ -189,7 +189,7 @@
 				background-color: yellow !important;
 			}
 			.janal-color-calendar{
-				border: solid 1px orange !important
+				border: solid 2px orange !important
 			}
 		</style>
 	</ui:define>
