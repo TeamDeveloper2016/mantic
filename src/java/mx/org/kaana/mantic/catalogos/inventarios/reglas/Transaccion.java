@@ -33,14 +33,18 @@ public class Transaccion extends IBaseTnx {
 		try {
 			switch(accion) {
 				case AGREGAR:
-					this.toAffectAlmacenes(sesion);
+					this.toAffectAlmacenes(sesion, accion);
 					this.articulo.setStock(this.articulo.getInicial());
           regresar = DaoFactory.getInstance().insert(sesion, this.articulo)> 0L;
           break;        
 				case MODIFICAR:
-					this.toAffectAlmacenes(sesion);
+					this.toAffectAlmacenes(sesion, accion);
 					this.articulo.setStock(this.articulo.getInicial());
           regresar = DaoFactory.getInstance().update(sesion, this.articulo)> 0L;
+          break;        
+				case PROCESAR:
+					this.toAffectAlmacenes(sesion, accion);
+					regresar= true;
           break;        
 			} // switch
 			if (!regresar) 
@@ -52,7 +56,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} 
 
-	private void toAffectAlmacenes(Session sesion) throws Exception {
+	private void toAffectAlmacenes(Session sesion, EAccion accion) throws Exception {
 		Map<String, Object> params= null;
 		double stock              = this.articulo.getInicial();
 		try {
@@ -75,21 +79,22 @@ public class Transaccion extends IBaseTnx {
 				} // if		
 			} // else	
 			
-			// generar un registro en la bitacora de movimientos de los articulos 
-			TcManticMovimientosDto movimiento= new TcManticMovimientosDto(
-			  "VER", // String consecutivo, 
-				6L, // Long idTipoMovimiento, 
-				JsfBase.getIdUsuario(), // Long idUsuario, 
-				this.almacen.getIdAlmacen(), // Long idAlmacen, 
-				-1L, // Long idMovimiento, 
-				0D, // Double cantidad, 
-				articulo.getIdArticulo(), // Long idArticulo, 
-				stock, // Double stock, 
-				Numero.toRedondearSat(stock), // Double calculo
-				null // String observaciones
-		  );
-			DaoFactory.getInstance().insert(sesion, movimiento);
-			
+			if(!accion.equals(EAccion.PROCESAR)) {
+				// generar un registro en la bitacora de movimientos de los articulos 
+				TcManticMovimientosDto movimiento= new TcManticMovimientosDto(
+					"VER", // String consecutivo, 
+					6L, // Long idTipoMovimiento, 
+					JsfBase.getIdUsuario(), // Long idUsuario, 
+					this.almacen.getIdAlmacen(), // Long idAlmacen, 
+					-1L, // Long idMovimiento, 
+					0D, // Double cantidad, 
+					articulo.getIdArticulo(), // Long idArticulo, 
+					stock, // Double stock, 
+					Numero.toRedondearSat(stock), // Double calculo
+					null // String observaciones
+				);
+				DaoFactory.getInstance().insert(sesion, movimiento);
+			} // if
 		} // try
 		catch (Exception e) {
 			throw e;

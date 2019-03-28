@@ -13,8 +13,8 @@
 			Janal.Control.fields = {				
 				'almacen': {validaciones: 'requerido', mascara: 'libre'},
 				'inicial': {validaciones: 'requerido|flotante', mascara: 'libre'},
-				'minimo' : {validaciones: 'flotante', mascara: 'libre'},
-				'maximo' : {validaciones: 'flotante', mascara: 'libre'}
+				'minimo' : {validaciones: 'flotante|menor-a({"cual": "maximo"})', mascara: 'libre'},
+				'maximo' : {validaciones: 'flotante|mayor-a({"cual": "minimo"})', mascara: 'libre'}
 			};
     </script>		
   </ui:define>
@@ -32,26 +32,6 @@
 		</pe:remoteCommand>		
 		<p:remoteCommand name="clean" actionListener="#{manticCatalogosInventariosConteos.doCleanArticulos}" process="@this clave" update="buscados localizado"/>
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
-			<div class="ui-grid-row janal-grid-row">									
-				<div class="ui-grid-col-12">					
-					<p:panelGrid id="panelAlmacen" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-60, janal-wid-100">
-						<p:outputLabel for="almacen" value="Almacen:"/>
-						<p:selectOneMenu id="almacen" value="#{manticCatalogosInventariosConteos.attrs.almacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade">
-							<p:ajax event="change" onstart="janal.bloquear();" process="@this almacen" listener="#{manticCatalogosInventariosConteos.doLoad}" update="contenedorGrupos" oncomplete="janal.desbloquear();"/>
-							<f:selectItems value="#{manticCatalogosInventariosConteos.attrs.almacenes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
-							<p:column headerText="Sucursal">
-								<h:outputText value="#{item.sucursal}"/>
-							</p:column>   
-							<p:column headerText="Clave">
-								<h:outputText value="#{item.clave}"/>
-							</p:column>   
-							<p:column headerText="Almacen">
-								<h:outputText value="#{item.nombre}"/>
-							</p:column>   														
-						</p:selectOneMenu>						
-					</p:panelGrid>					
-				</div>
-			</div>
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-1 janal-wid-col-150">
 					<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-80, janal-wid-3">
@@ -82,6 +62,32 @@
 					</p:autoComplete>			
 				</div>
 			</div>				
+			<div class="ui-grid-row janal-grid-row">									
+				<div class="ui-grid-col-12">					
+  				<p:panel header="Código: [#{manticCatalogosInventariosConteos.attrs.articulo.propio}]" styleClass="filas">
+						<div class="janal-column-center">
+  						<p:outputLabel value="#{manticCatalogosInventariosConteos.attrs.articulo.nombre}" styleClass="janal-color-blue"/>
+						</div>
+						<p:panelGrid id="panelAlmacen" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-60, janal-wid-100">
+							<p:outputLabel for="almacen" value="Almacen:"/>
+							<p:selectOneMenu id="almacen" value="#{manticCatalogosInventariosConteos.attrs.almacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade">
+								<p:ajax event="change" onstart="janal.bloquear();" process="@this almacen" listener="#{manticCatalogosInventariosConteos.doLoad}" update="contenedorGrupos" oncomplete="janal.desbloquear();"/>
+								<f:selectItems value="#{manticCatalogosInventariosConteos.attrs.almacenes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+								<p:column headerText="Sucursal">
+									<h:outputText value="#{item.sucursal}"/>
+								</p:column>   
+								<p:column headerText="Clave">
+									<h:outputText value="#{item.clave}"/>
+								</p:column>   
+								<p:column headerText="Almacen">
+									<h:outputText value="#{item.nombre}"/>
+								</p:column>   														
+							</p:selectOneMenu>						
+						</p:panelGrid>					
+					</p:panel>	
+				</div>
+			</div>
+			<p:spacer height="2px"/>
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-center">
 					<p:outputLabel value="#{manticCatalogosInventariosConteos.attrs.existe}" styleClass="filas" escape="false"/>
@@ -98,7 +104,7 @@
 									<p:outputLabel for="inicial" value="Inicial:"/>
   								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-98" columnClasses="janal-wid-100, janal-wid-col-38">
 										<p:inputNumber id="inicial" inputStyleClass="janal-wid-98 janal-column-right janal-key-kardex janal-color-orange" value="#{manticCatalogosInventariosConteos.attrs.vigente.inicial}" styleClass="filas" readonly="#{manticCatalogosInventariosConteos.habilitar}"/>	
-										<p:commandButton id="agregarInventario" process="@this @(.filas)" update="tabla" icon="fa fa-cart-plus" title="Agregar/Actualizar inventario" style="float:right;" styleClass="janal-key-kardex filas" action="#{manticCatalogosInventariosConteos.doAceptar}" disabled="#{manticCatalogosInventariosConteos.habilitar}" onstart="janal.execute();" oncomplete="$('#codigos_input').focus(); janal.desbloquear();"/>
+										<p:commandButton id="agregarInventario" process="@this @(.filas)" update="tabla" icon="fa fa-cart-plus" title="Agregar/Actualizar inventario" style="float:right;" styleClass="janal-key-kardex filas" action="#{manticCatalogosInventariosConteos.doConteo}" disabled="#{manticCatalogosInventariosConteos.habilitar}" onstart="return janal.execute();" oncomplete="$('#codigos_input').focus(); janal.desbloquear();"/>
 									</p:panelGrid>
   							  <p:outputLabel value="Fecha:"/>
   								<p:inputText value="#{manticCatalogosInventariosConteos.doRegistro(manticCatalogosInventariosConteos.attrs.vigente.registro)}" styleClass="janal-wid-96 filas" readonly="true"/>
@@ -196,13 +202,15 @@
 				</div>
 			</div>	
     </div>
-    <hr class="ui-widget-content" style="display: #{empty manticCatalogosInventariosConteos.attrs.xcodigo? 'none': ''}"/>
-    <div class="janal-line-button" style="display: #{empty manticCatalogosInventariosConteos.attrs.xcodigo? 'none': ''}">
+    <hr class="ui-widget-content"/>
+    <div class="janal-line-button">
 			<div class="lg-pantalla">
+  			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticCatalogosInventariosConteos.doAceptar}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" disabled="#{manticCatalogosInventariosConteos.habilitar}" styleClass="filas"/>
 				<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosInventariosConteos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true" style="display: #{empty manticCatalogosInventariosConteos.attrs.xcodigo? 'none': ''}"/>
 			</div>		
 			<div class="xs-pantalla">
-				<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosInventariosConteos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true" style="display: #{empty manticCatalogosInventariosConteos.attrs.xcodigo? 'none': ''}"/>
+				<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosInventariosConteos.doAceptar}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" disabled="#{manticCatalogosInventariosConteos.habilitar}" styleClass="filas"/>
+	  		<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosInventariosConteos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true" style="display: #{empty manticCatalogosInventariosConteos.attrs.xcodigo? 'none': ''}"/>
 			</div>		
 		</div>	
 		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();$('#codigos').focus();" onShow="$('#clave').val('');clean();" width="900px" height="470px" resizable="false" appendTo="@(body)">

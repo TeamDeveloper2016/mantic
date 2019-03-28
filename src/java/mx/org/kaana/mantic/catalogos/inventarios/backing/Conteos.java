@@ -323,7 +323,7 @@ public class Conteos extends IBaseFilter implements Serializable {
     } // finally
 	}
 	
-	public void doAceptar() {
+	public void doConteo() {
 		Transaccion transaccion= null;
 		try {
 			TcManticInventariosDto vigente= (TcManticInventariosDto)this.attrs.get("vigente");
@@ -331,6 +331,26 @@ public class Conteos extends IBaseFilter implements Serializable {
 			vigente.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 			transaccion= new Transaccion(vigente, this.articulo);
 			if(transaccion.ejecutar(vigente.isValid()? EAccion.MODIFICAR: EAccion.AGREGAR)) {
+				JsfBase.addMessage("Inventarios", "Se agregó/modificó de forma correcta el inventario", ETipoMensaje.INFORMACION);
+				this.doLoad();
+			} // if	
+			else
+				JsfBase.addMessage("Inventarios", "Ocurrió un error al agregar el inventario", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	}
+	
+	public void doAceptar() {
+		Transaccion transaccion= null;
+		try {
+			TcManticInventariosDto vigente= (TcManticInventariosDto)this.attrs.get("vigente");
+			vigente.setIdUsuario(JsfBase.getIdUsuario());
+			vigente.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			transaccion= new Transaccion(vigente, this.articulo);
+			if(transaccion.ejecutar(EAccion.PROCESAR)) {
 				JsfBase.addMessage("Inventarios", "Se agregó/modificó de forma correcta el inventario", ETipoMensaje.INFORMACION);
 				this.doLoad();
 			} // if	

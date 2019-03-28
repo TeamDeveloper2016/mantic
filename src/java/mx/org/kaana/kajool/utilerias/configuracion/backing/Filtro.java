@@ -120,7 +120,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 		final BufferedImage image = ImageIO.read(new File(JsfBase.getRealPath(ECorreos.NOTIFICACION.getImages().concat("invitacion.jpg"))));
    	Graphics g = image.getGraphics();
     g.setColor(new Color(157, 197, 23));
-		final int width= 895;
+		final int width= 693;
     g.setFont(g.getFont().deriveFont(33f));
     g.drawString(nombre, (int)(width/2)- (int)(g.getFontMetrics().stringWidth(nombre)/2), 450);
     g.setColor(new Color(113, 112, 111));
