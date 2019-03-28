@@ -174,7 +174,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("cobroVenta", false);
 			this.attrs.put("clienteAsignado", false);
 			this.attrs.put("tabIndex", 0);
-			this.attrs.put("fecha", new Date(Calendar.getInstance().getTimeInMillis()));
+			loadRangoFechas();			
 			fechaInicio= Calendar.getInstance();
 			fechaInicio.set(Calendar.DAY_OF_YEAR, fechaInicio.get(Calendar.DAY_OF_YEAR)- 30);
 			this.attrs.put("fechaApartirTicket", new Date(fechaInicio.getTimeInMillis()));
@@ -213,6 +213,29 @@ public class Accion extends IBaseVenta implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doInitPage
+	
+	private void loadRangoFechas() throws Exception{
+		List<Entity> fechas      = null;
+		Map<String, Object>params= null;
+		String days              = "";
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, toCondicionEstatus(true));
+			params.put("idEmpresa", this.attrs.get("idEmpresa"));			
+			fechas= DaoFactory.getInstance().toEntitySet("VistaVentasDto", "fechasTicketsAbiertos", params);			
+			this.attrs.put("fechaInicial", fechas.isEmpty() ? new Date(Calendar.getInstance().getTimeInMillis()) : new Date(fechas.get(0).toTimestamp("registro").getTime()));			
+			this.attrs.put("fecha", new Date(Calendar.getInstance().getTimeInMillis()));			
+			if(!fechas.isEmpty()){
+				for(Entity day: fechas){
+					days= days.concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, day.toTimestamp("registro"))).concat(",");
+				} // for				
+			} // if
+			this.attrs.put("days", days);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // toRangoFechasTickets
 	
 	private void loadArt(){
 		Entity art= null;
@@ -277,7 +300,6 @@ public class Accion extends IBaseVenta implements Serializable {
 	
   public void doAceptar() {  
     Transaccion transaccion        = null;
-    String regresar                = null;
 		Boolean validarCredito         = true;
 		Boolean creditoVenta           = null;
 		CreateTicket ticket            = null;
@@ -451,6 +473,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		Map<String, Object>params           = null;
 		List<Columna> campos                = null;
 		try {
+			loadRangoFechas();
 			loadCajas();
 			params= new HashMap<>();
 			params.put("sortOrder", "");
@@ -488,23 +511,29 @@ public class Accion extends IBaseVenta implements Serializable {
 			fecha= (Date) this.attrs.get("fecha");
 			regresar= new StringBuilder();
 			regresar.append(" date_format (tc_mantic_ventas.registro, '%Y%m%d')=".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, fecha)));
-			regresar.append(" and tc_mantic_ventas.id_venta_estatus in (");
-			regresar.append(EEstatusVentas.ELABORADA.getIdEstatusVenta());									
-			regresar.append(" , ");
-			regresar.append(EEstatusVentas.ABIERTA.getIdEstatusVenta());									
-			if(all){
-				regresar.append(" , ");
-				regresar.append(EEstatusVentas.APARTADOS.getIdEstatusVenta());									
-				regresar.append(" , ");
-				regresar.append(EEstatusVentas.COTIZACION.getIdEstatusVenta());									
-			} // if
-			regresar.append(")");
+			regresar.append(toCondicionEstatus(all));
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
 		return regresar.toString();
 	} // toCondicion	
+	
+	private String toCondicionEstatus(boolean all){
+		StringBuilder regresar= new StringBuilder("");
+		regresar.append(" and tc_mantic_ventas.id_venta_estatus in (");
+		regresar.append(EEstatusVentas.ELABORADA.getIdEstatusVenta());									
+		regresar.append(" , ");
+		regresar.append(EEstatusVentas.ABIERTA.getIdEstatusVenta());									
+		if(all){
+			regresar.append(" , ");
+			regresar.append(EEstatusVentas.APARTADOS.getIdEstatusVenta());									
+			regresar.append(" , ");
+			regresar.append(EEstatusVentas.COTIZACION.getIdEstatusVenta());									
+		} // if
+		regresar.append(")");
+		return regresar.toString();
+	} // toCOndicionEstatus
 	
 	public void doAsignaTicketAbiertoDirecto(){
 		try {
