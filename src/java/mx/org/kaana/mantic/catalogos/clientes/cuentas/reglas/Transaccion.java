@@ -7,8 +7,8 @@ import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
@@ -25,7 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
-public class Transaccion extends IBaseTnx{
+public class Transaccion extends TransaccionFactura{
 
 	private static final Log LOG=LogFactory.getLog(Transaccion.class);
 	
@@ -71,19 +71,19 @@ public class Transaccion extends IBaseTnx{
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
-		boolean regresar = false;
+		boolean regresar= false;
     try {			
 			if(this.pago!= null)
 				this.pagoGeneral= this.pago.getPago();
       switch (accion) {
         case AGREGAR:					
-						regresar = procesarPago(sesion);
+						regresar= procesarPago(sesion);
           break;       
         case PROCESAR:					
-						regresar = procesarPagoGeneral(sesion);
+						regresar= procesarPagoGeneral(sesion);
           break;       
 				case COMPLEMENTAR: 
-					regresar = procesarPagoSegmento(sesion);
+					regresar= procesarPagoSegmento(sesion);
 					break;
 				case SUBIR:
 					regresar= true;
@@ -116,8 +116,9 @@ public class Transaccion extends IBaseTnx{
 					deuda.setSaldo(saldo);
 					deuda.setIdClienteEstatus(saldo.equals(0D) || this.saldar ? EEstatusClientes.FINALIZADA.getIdEstatus() : EEstatusClientes.PARCIALIZADA.getIdEstatus());
 					regresar= DaoFactory.getInstance().update(sesion, deuda)>= 1L;
+					actualizarSaldoCatalogoCliente(sesion, deuda.getIdCliente(), this.pago.getPago(), false);
 				} // if
-			}
+			} // if
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -160,6 +161,7 @@ public class Transaccion extends IBaseTnx{
 						params.put("saldo", abono);
 						params.put("idClienteEstatus", idEstatus);
 						DaoFactory.getInstance().update(sesion, TcManticClientesDeudasDto.class, deuda.getKey(), params);
+						actualizarSaldoCatalogoCliente(sesion, this.idCliente, pagoParcial, false);
 					}	// if				
 				} // if
 			} // for
@@ -270,6 +272,7 @@ public class Transaccion extends IBaseTnx{
 								params.put("saldo", abono);
 								params.put("idClienteEstatus", idEstatus);
 								DaoFactory.getInstance().update(sesion, TcManticClientesDeudasDto.class, deuda.getKey(), params);
+								actualizarSaldoCatalogoCliente(sesion, this.idCliente, pagoParcial, false);
 							}	// if				
 						} // if
 						else if (this.saldar){
@@ -279,7 +282,7 @@ public class Transaccion extends IBaseTnx{
 								params.put("idClienteEstatus", EEstatusClientes.FINALIZADA.getIdEstatus());
 								DaoFactory.getInstance().update(sesion, TcManticClientesDeudasDto.class, deuda.getKey(), params);
 							}	// if				
-						}
+						} // else if
 					} // if
 				} // for
 			} // for
