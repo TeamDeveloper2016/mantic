@@ -675,11 +675,12 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		if(this.ventaFinalizada.isCredito()){
 			totalCredito= this.ventaFinalizada.getTotales().getTotales().getTotal() - (this.ventaFinalizada.getTotales().getPago() - this.ventaFinalizada.getTotales().getCambio());
 			if(totalCredito > 0D){					
-				registrarDeuda(sesion, totalCredito);					
+				registrarDeuda(sesion, totalCredito);	
+				actualizarSaldoCatalogoCliente(sesion, getOrden().getIdCliente(), totalCredito, true);
 			} // if
 		} // if		
 		return regresar;
-	} // toPagoCredito
+	} // toPagoCredito		
 	
 	private TrManticVentaMedioPagoDto toPagoCheque(){
 		TrManticVentaMedioPagoDto regresar= null;		
