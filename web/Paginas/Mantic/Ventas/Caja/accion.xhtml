@@ -478,13 +478,15 @@
 									<p:ajax process="@this" update="contenedorGrupos:panelSumatoria" onstart="janal.bloquear();" oncomplete="applyValidacionesCredito();" />
 								</p:inputSwitch>
 								
-								<p:outputLabel for="tipoPago" value="Método de pago:" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>												
+								<p:outputLabel for="tipoPago" value="Método de pago:" rendered="false"/>												
+								<p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
 								<p:outputLabel for="cfdi" value="Uso del CFDI:" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
 								<p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
 								<p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
 								<p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
 								<p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
-								<p:selectOneMenu id="tipoPago" value="#{manticVentasCajaAccion.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}">					
+								<p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
+								<p:selectOneMenu id="tipoPago" value="#{manticVentasCajaAccion.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains" rendered="false">
 									<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 									<f:selectItems value="#{manticVentasCajaAccion.attrs.tiposPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
 									<p:column headerText="Clave">
