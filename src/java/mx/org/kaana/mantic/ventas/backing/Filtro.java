@@ -54,7 +54,7 @@ public class Filtro extends IBaseTicket implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta"));
-      this.attrs.put("sortOrder", "order by tc_mantic_ventas.registro");
+      this.attrs.put("sortOrder", "order by tc_mantic_ventas.registro desc");
 			toLoadCatalog();
       if(this.attrs.get("idVenta")!= null){							
 			  this.doLoad();
