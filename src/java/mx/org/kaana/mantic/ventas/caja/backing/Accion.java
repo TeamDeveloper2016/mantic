@@ -174,7 +174,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("cobroVenta", false);
 			this.attrs.put("clienteAsignado", false);
 			this.attrs.put("tabIndex", 0);
-			loadRangoFechas();			
+			loadRangoFechas(true);			
 			fechaInicio= Calendar.getInstance();
 			fechaInicio.set(Calendar.DAY_OF_YEAR, fechaInicio.get(Calendar.DAY_OF_YEAR)- 30);
 			this.attrs.put("fechaApartirTicket", new Date(fechaInicio.getTimeInMillis()));
@@ -214,7 +214,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 	} // doInitPage
 	
-	private void loadRangoFechas() throws Exception{
+	private void loadRangoFechas(boolean init) throws Exception{
 		List<Entity> fechas      = null;
 		Map<String, Object>params= null;
 		String days              = "";
@@ -223,8 +223,10 @@ public class Accion extends IBaseVenta implements Serializable {
 			params.put(Constantes.SQL_CONDICION, toCondicionEstatus(true));
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));			
 			fechas= DaoFactory.getInstance().toEntitySet("VistaVentasDto", "fechasTicketsAbiertos", params);			
-			this.attrs.put("fechaInicial", fechas.isEmpty() ? new Date(Calendar.getInstance().getTimeInMillis()) : new Date(fechas.get(0).toTimestamp("registro").getTime()));			
-			this.attrs.put("fecha", new Date(Calendar.getInstance().getTimeInMillis()));			
+			if(init){
+				this.attrs.put("fechaInicial", fechas.isEmpty() ? new Date(Calendar.getInstance().getTimeInMillis()) : new Date(fechas.get(0).toTimestamp("registro").getTime()));			
+				this.attrs.put("fecha", new Date(Calendar.getInstance().getTimeInMillis()));			
+			} // if
 			if(!fechas.isEmpty()){
 				for(Entity day: fechas){
 					days= days.concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, day.toTimestamp("registro"))).concat(",");
@@ -473,7 +475,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		Map<String, Object>params           = null;
 		List<Columna> campos                = null;
 		try {
-			loadRangoFechas();
+			loadRangoFechas(false);
 			loadCajas();
 			params= new HashMap<>();
 			params.put("sortOrder", "");
