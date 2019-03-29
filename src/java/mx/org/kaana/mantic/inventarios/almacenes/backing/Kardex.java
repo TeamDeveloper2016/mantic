@@ -166,6 +166,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			this.toInventario();
 			this.toLoadCodigos();
 			this.toLoadAlmacenes();
+			this.toLoadMovimientos();
 		} // try
 		finally {
       Methods.clean(columns);

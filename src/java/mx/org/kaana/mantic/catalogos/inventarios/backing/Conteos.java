@@ -71,7 +71,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());	
     	this.attrs.put("buscaPorCodigo", false);
 			this.articulo= new TcManticAlmacenesArticulosDto();
-			this.loadAlmacenes();
+			this.toLoadAlmacenes();
 			if(this.attrs.get("xcodigo")!= null) {
 				this.doCompleteArticulo((String)this.attrs.get("xcodigo"));
 				List<UISelectEntity> articulos= (List<UISelectEntity>)this.attrs.get("articulos");
@@ -117,35 +117,7 @@ public class Conteos extends IBaseFilter implements Serializable {
       this.attrs.put("vigente", vigente);
       this.lazyModel = new FormatCustomLazy("VistaInventariosDto", this.attrs, columns);
       UIBackingUtilities.resetDataTable();
-			this.articulo= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().toEntity(TcManticAlmacenesArticulosDto.class, "TcManticAlmacenesArticulosDto", "almacenArticulo", this.attrs);
-			if(this.articulo== null) {
-				TcManticArticulosDto item= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.attrs.get("idArticulo")== null? -1L: (Long)this.attrs.get("idArticulo"));
-				if(item!= null)
-					this.articulo= new TcManticAlmacenesArticulosDto(
-						item.getMinimo(), // Long minimo, 
-						-1L, // Long idAlmacenArticulo, 
-						JsfBase.getIdUsuario(), // Long idUsuario, 
-						(Long)this.attrs.get("idAlmacen"), // Long idAlmacen,
-						item.getMaximo(), // Long maximo, 
-						-1L, // Long idAlmacenUbicacion, 
-						(Long)this.attrs.get("idArticulo"), // Long idArticulo, 
-						0D // Double stock
-						);
-				else
-    			this.articulo= new TcManticAlmacenesArticulosDto();
-			} // if	
-			else {
-				List<UISelectEntity> ubicaciones= (List<UISelectEntity>)this.attrs.get("ubicaciones");
-				if(ubicaciones!= null && !ubicaciones.isEmpty()) {
-					int index= ubicaciones.indexOf(new UISelectEntity(this.articulo.getIdAlmacenUbicacion()));
-					if(index>= 0)
-  				  this.attrs.put("idAlmacenUbicacion", ubicaciones.get(index));
-					else
-  				  this.attrs.put("idAlmacenUbicacion", ubicaciones.get(0));
-				} // if
-				if(!vigente.isValid())
-					vigente.setInicial(articulo.getStock());
-			} // if
+			this.toLoadAlmacenArticulo();
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
@@ -156,7 +128,42 @@ public class Conteos extends IBaseFilter implements Serializable {
     } // finally
   } // doLoad	
 	
-	private void loadAlmacenes() {
+	private void toLoadAlmacenArticulo() throws Exception {
+		List<UISelectEntity> ubicaciones= (List<UISelectEntity>)this.attrs.get("ubicaciones");
+    TcManticInventariosDto vigente  = (TcManticInventariosDto)this.attrs.get("vigente");
+		this.articulo= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().toEntity(TcManticAlmacenesArticulosDto.class, "TcManticAlmacenesArticulosDto", "almacenArticulo", this.attrs);
+		if(this.articulo== null) {
+			TcManticArticulosDto item= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.attrs.get("idArticulo")== null? -1L: (Long)this.attrs.get("idArticulo"));
+			if(item!= null)
+				this.articulo= new TcManticAlmacenesArticulosDto(
+					item.getMinimo(), // Long minimo, 
+					-1L, // Long idAlmacenArticulo, 
+					JsfBase.getIdUsuario(), // Long idUsuario, 
+					(Long)this.attrs.get("idAlmacen"), // Long idAlmacen,
+					item.getMaximo(), // Long maximo, 
+					-1L, // Long idAlmacenUbicacion, 
+					(Long)this.attrs.get("idArticulo"), // Long idArticulo, 
+					0D // Double stock
+					);
+			else
+				this.articulo= new TcManticAlmacenesArticulosDto();
+			if(ubicaciones!= null && !ubicaciones.isEmpty()) 
+  			this.attrs.put("idAlmacenUbicacion", ubicaciones.get(0));
+		} // if	
+		else {
+			if(ubicaciones!= null && !ubicaciones.isEmpty()) {
+				int index= ubicaciones.indexOf(new UISelectEntity(this.articulo.getIdAlmacenUbicacion()));
+				if(index>= 0)
+					this.attrs.put("idAlmacenUbicacion", ubicaciones.get(index));
+				else
+					this.attrs.put("idAlmacenUbicacion", ubicaciones.get(0));
+			} // if
+			if(!vigente.isValid())
+				vigente.setInicial(this.articulo.getStock());
+		} // if
+	}
+	
+	private void toLoadAlmacenes() {
 		List<UISelectEntity> almacenes= null;
 		Map<String, Object> params    = null;
 		List<Columna> columns         = null;
@@ -192,7 +199,13 @@ public class Conteos extends IBaseFilter implements Serializable {
       columns.add(new Columna("charola", EFormatoDinamicos.MAYUSCULAS));
 			if(this.attrs.get("almacen")!= null)
 			  this.attrs.put("idAlmacen", ((Entity)this.attrs.get("almacen")).getKey());			
-			this.attrs.put("ubicaciones", UIEntity.seleccione("VistaKardexDto", "ubicaciones", this.attrs, columns, "piso"));
+			List<UISelectEntity> ubicaciones= UIEntity.seleccione("VistaKardexDto", "ubicaciones", this.attrs, columns, "piso");
+			if(ubicaciones!= null && !ubicaciones.isEmpty() && this.articulo!= null && this.articulo.getIdAlmacenUbicacion()!= null) {
+				int index= ubicaciones.indexOf(new UISelectEntity(this.articulo.getIdAlmacenUbicacion()));
+				if(index>= 0)
+					this.attrs.put("idAlmacenUbicacion", ubicaciones.get(index));
+			} // if
+			this.attrs.put("ubicaciones", ubicaciones);
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
@@ -241,8 +254,8 @@ public class Conteos extends IBaseFilter implements Serializable {
 	public void doUpdateArticulo(String codigo) {
     try {
   		List<UISelectEntity> articulos= this.doCompleteArticulo(codigo);
-			UISelectEntity articulo= UIBackingUtilities.toFirstKeySelectEntity(articulos);
-			this.updateArticulo(articulo);
+			UISelectEntity item= UIBackingUtilities.toFirstKeySelectEntity(articulos);
+			this.updateArticulo(item);
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
