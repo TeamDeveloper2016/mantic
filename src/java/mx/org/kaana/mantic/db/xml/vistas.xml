@@ -4237,10 +4237,10 @@
 					tc_mantic_articulos
 				inner join
 					tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo
-				inner join 
-				  tc_mantic_inventarios on tc_mantic_articulos.id_articulo= tc_mantic_inventarios.id_articulo and tc_mantic_inventarios.id_almacen= {idAlmacen} and tc_mantic_inventarios.id_automatico= 2
 				inner join
 					tc_mantic_almacenes on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_almacenes.id_almacen
+				inner join 
+				  tc_mantic_inventarios on tc_mantic_articulos.id_articulo= tc_mantic_inventarios.id_articulo and tc_mantic_inventarios.id_almacen= {idAlmacen} and tc_mantic_inventarios.id_automatico= 2
 				inner join
 					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo
 				left join	
