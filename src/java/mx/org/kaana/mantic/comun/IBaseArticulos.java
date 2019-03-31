@@ -716,18 +716,23 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
     try {
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
-			params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
-			params.put("idProveedor", this.getAdminOrden().getIdProveedor());
-			columns= new ArrayList<>();
-      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-      columns.add(new Columna("minimo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
-      columns.add(new Columna("maximo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
-      this.attrs.put("faltantes", UIEntity.build("VistaOrdenesComprasDto", "faltantes", params, columns, Constantes.SQL_TODOS_REGISTROS));
+			UISelectEntity before   = (UISelectEntity)this.attrs.get("before");
+			UISelectEntity idAlmacen= (UISelectEntity)this.attrs.get("idAlmacen");
+			if(before== null || idAlmacen== null || !before.getKey().equals(idAlmacen.getKey())) {
+				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
+				params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
+				params.put("idProveedor", this.getAdminOrden().getIdProveedor());
+				columns= new ArrayList<>();
+				columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+				columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+				columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
+				columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+				columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+				columns.add(new Columna("minimo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+				columns.add(new Columna("maximo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+				this.attrs.put("faltantes", UIEntity.build("VistaOrdenesComprasDto", "faltantes", params, columns, Constantes.SQL_TODOS_REGISTROS));
+			  this.attrs.put("before", this.attrs.get("idAlmacen"));
+			} // 
     } // try
     catch (Exception e) {
 			Error.mensaje(e);
