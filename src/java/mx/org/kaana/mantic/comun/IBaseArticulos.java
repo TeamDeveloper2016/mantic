@@ -716,9 +716,9 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
     try {
-			UISelectEntity before   = (UISelectEntity)this.attrs.get("before");
-			UISelectEntity idAlmacen= (UISelectEntity)this.attrs.get("idAlmacen");
-			if(before== null || idAlmacen== null || !before.getKey().equals(idAlmacen.getKey())) {
+			Long before   = (Long)this.attrs.get("before");
+			Long idAlmacen= this.getAdminOrden().getIdAlmacen();
+			if(before== null || idAlmacen== null || !before.equals(idAlmacen)) {
 				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
 				params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
 				params.put("idProveedor", this.getAdminOrden().getIdProveedor());
