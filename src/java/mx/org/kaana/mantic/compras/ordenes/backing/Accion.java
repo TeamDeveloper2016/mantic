@@ -99,6 +99,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
 			this.doResetDataTable();
 			this.toLoadCatalog();
+			this.attrs.put("before", this.getAdminOrden().getIdAlmacen());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -290,10 +291,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			} // if
 		} // if	
 		else 
-			if(event.getTab().getTitle().equals("Faltantes") && this.attrs.get("faltantes")== null) 
+			if(event.getTab().getTitle().equals("Faltantes")) 
         this.doLoadFaltantes();
 			else 
-			  if(event.getTab().getTitle().equals("Ventas perdidas") && this.attrs.get("perdidos")== null) 
+			  if(event.getTab().getTitle().equals("Ventas perdidas")) 
            this.doLoadPerdidas();
 	}
   

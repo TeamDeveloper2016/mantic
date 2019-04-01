@@ -1092,15 +1092,20 @@
 			this.refreshTransferencia(transferencia);
 			janal.refresh();
 		}, // refreshCobroValidate		
-		validateApartado: function(minPago) {
-			this.refreshDebito(0);
-			this.refreshCredito(0);
-			this.refreshCheque(0);
-			this.refreshTransferencia(0);
-			janal.fields.credito.validaciones= 'libre';
-			janal.fields.cheque.validaciones= 'libre';
-			janal.fields.pago.validaciones= 'requerido|min-valor({"cuanto":'+minPago+'})';
-			janal.fields.transferencia.validaciones= 'libre';
+		validateApartado: function(minPago) {			
+			var limiteCredito= parseFloat($('#contenedorGrupos\\:limiteCredito').text());
+			var limiteDebito= parseFloat($('#contenedorGrupos\\:limiteDebito').text());
+			var limiteCheque= parseFloat($('#contenedorGrupos\\:limiteCheque').text());
+			var limiteTransferencia= parseFloat($('#contenedorGrupos\\:limiteTransferencia').text());
+			var credito= parseFloat($('#contenedorGrupos\\:credito_input').val());
+			var debito= parseFloat($('#contenedorGrupos\\:debito_input').val());
+			var cheque = parseFloat($('#contenedorGrupos\\:cheque_input').val());
+			var transferencia = parseFloat($('#contenedorGrupos\\:transferencia_input').val());
+			this.refreshValidationsPagos(limiteCredito, limiteDebito, limiteCheque, minPago, limiteTransferencia);
+			this.refreshDebito(debito);
+			this.refreshCredito(credito);
+			this.refreshCheque(cheque);
+			this.refreshTransferencia(transferencia);			
 			janal.refresh();
 		},			
 		validateCredito: function() {
