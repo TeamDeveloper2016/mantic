@@ -66,6 +66,7 @@ public class Bienvenida extends Comun implements Serializable {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idUsuario", JsfBase.getIdUsuario());
       this.attrs.put("codigo", "");
+      this.attrs.put("almacen", "");
       this.attrs.put("expresion", "");
       this.attrs.put("sortOrder", "");
       this.lazyModel = new FormatLazyModel("VistaArticulosDto", "row", this.attrs, campos);
