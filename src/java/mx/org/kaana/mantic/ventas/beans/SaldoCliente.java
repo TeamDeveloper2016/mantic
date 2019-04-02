@@ -68,6 +68,6 @@ public class SaldoCliente implements Serializable{
 	} // isDeudor
 	
 	public String getMensaje(){
-		return isDeudor() ? "EL CLIENTE YA SOBRE PASO SU LIMITE DE CREDITO. LIMITE DE CREDITO $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, this.totalCredito) + " . TOTAL DEUDAS $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, this.totalDeuda) + " ." : "";
+		return isDeudor() ? "CRÉDITO SUPERADO Y/O PLAZO VENCIDO. CONSULTAR CON CRÉDITO Y COBRANZA" : "";
 	}
 }
