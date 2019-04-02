@@ -65,16 +65,10 @@ public class Filtro extends Comun implements Serializable {
   @Override
   public void doLoad() {
     List<Columna> columns     = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= this.toPrepare();
     try {
       columns = new ArrayList<>();
-			params= new HashMap<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-		  if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
-			  params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
-			else
-			  params.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
-			params.put("condicion", this.toPrepare());			
       this.lazyModel = new FormatCustomLazy("VistaArticulosDto", "row", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
@@ -114,9 +108,9 @@ public class Filtro extends Comun implements Serializable {
     }// finally
 	}
 
-	private String toPrepare() {
-		String regresar = null;
-		StringBuilder sb= null;
+	private Map<String, Object> toPrepare() {
+		Map<String, Object> regresar= new HashMap<>();
+		StringBuilder sb            = null;
 		try {
 			sb= new StringBuilder("tc_mantic_articulos.id_articulo_tipo=").append(this.attrs.get("idTipoArticulo")).append(" and ");			
 			if(!Cadena.isVacio(this.attrs.get("codigo")))
@@ -124,11 +118,17 @@ public class Filtro extends Comun implements Serializable {
 			if(this.attrs.get("nombre")!= null) 
 				sb.append("tc_mantic_articulos.id_articulo=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");						
 		  if(!Cadena.isVacio(this.attrs.get("idAlmacen")) && !this.attrs.get("idAlmacen").toString().equals("-1"))
-  		  sb.append("(tc_mantic_almacenes_articulos.id_almacen= ").append(this.attrs.get("idAlmacen")).append(") and ");
-			if(Cadena.isVacio(sb.toString()))
-				regresar= Constantes.SQL_VERDADERO;
+  		  regresar.put("almacen", " and (tc_mantic_almacenes_articulos.id_almacen= "+ ((UISelectEntity)this.attrs.get("idAlmacen")).getKey()+ ")");
 			else
-				regresar= sb.substring(0, sb.length()- 4);
+  		  regresar.put("almacen", " ");
+			if(Cadena.isVacio(sb.toString()))
+				regresar.put("condicion", Constantes.SQL_VERDADERO);
+			else
+			  regresar.put("condicion", sb.substring(0, sb.length()- 4));			
+		  if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+			  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
+			else
+			  regresar.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
 		} // try
 		catch (Exception e) {			
 			throw e;
