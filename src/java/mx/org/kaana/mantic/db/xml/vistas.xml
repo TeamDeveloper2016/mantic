@@ -2402,7 +2402,7 @@
 				left join
 					tc_mantic_imagenes on tc_mantic_articulos.id_imagen = tc_mantic_imagenes.id_imagen
 				left join
-				  tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo and {almacen}
+				  tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo {almacen}
 				inner join
 					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
 				inner join 
