@@ -108,8 +108,10 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("tipoVenta", 1L);			
 			this.attrs.put("tipoDevolucion", 1L);			
 			this.image= LoadImages.getImage(-1L);
-			if(JsfBase.isAdminEncuestaOrAdmin())
+			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 				loadSucursales();	
+			else
+				loadSucursalesPerfil();
 			if(JsfBase.getFlashAttribute("accionVenta")!= null){								
 				this.attrs.put("mostrarGarantia", true);
 				this.attrs.put("accion", EAccion.AGREGAR);				

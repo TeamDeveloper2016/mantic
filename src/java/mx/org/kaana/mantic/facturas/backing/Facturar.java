@@ -122,6 +122,8 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			this.loadClienteDefault();
 			if(JsfBase.isAdminEncuestaOrAdmin())
 				loadSucursales();
+			else
+				loadSucursalesPerfil();
 			this.loadBancos();
 			this.loadCfdis();
 			this.loadTiposMediosPagos();
