@@ -116,6 +116,26 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		} // catch		
 	} // loadSucursales
 	
+	protected void loadSucursalesPerfil(){
+		List<UISelectEntity> sucursales= null;
+		Map<String, Object>params      = null;
+		List<Columna> columns          = null;
+		try {
+			columns= new ArrayList<>();
+			params= new HashMap<>();
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			sucursales=(List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
+			this.attrs.put("sucursales", sucursales);
+			this.attrs.put("idEmpresa", sucursales.get(0));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+	} // loadSucursales
+	
 	public void doAlmacenesArticulo(Long idArticulo, Integer index) {
 		Map<String, Object>params= null;
 		List<Columna>columns     = null;
