@@ -129,6 +129,7 @@ public class Tablero extends Comun implements Serializable {
     try {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idUsuario", JsfBase.getIdUsuario());
+      this.attrs.put("almacen", "");
       this.attrs.put("codigo", "");
       this.attrs.put("expresion", "");
       this.attrs.put("sortOrder", "order by tc_mantic_articulos.stock asc");      
