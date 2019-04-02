@@ -2390,17 +2390,19 @@
 				  tc_mantic_articulos.menudeo,
 				  tc_mantic_articulos.medio_mayoreo,
 				  tc_mantic_articulos.mayoreo,
-				  tc_mantic_articulos.stock,
 				  tc_mantic_articulos.iva,
 				  tc_mantic_articulos.desperdicio,
 					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and {condicion}) as propio,
 				  if(tc_mantic_articulos.id_facturama is null, -1, tc_mantic_articulos.id_facturama) id_facturama,
 				  ifnull(tc_mantic_articulos.id_imagen, 0) as id_imagen,
+				  sum(ifnull(tc_mantic_almacenes_articulos.stock, 0)) as stock,
 				  ifnull(tc_mantic_imagenes.alias, ' ') as alias
 				from 
 					tc_mantic_articulos
 				left join
 					tc_mantic_imagenes on tc_mantic_articulos.id_imagen = tc_mantic_imagenes.id_imagen
+				left join
+				  tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo
 				inner join
 					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
 				inner join 
@@ -2419,7 +2421,6 @@
 				  tc_mantic_articulos.menudeo,          
 				  tc_mantic_articulos.medio_mayoreo,          
 				  tc_mantic_articulos.mayoreo,          
-				  tc_mantic_articulos.stock,          
 				  tc_mantic_articulos.iva,          
 				  tc_mantic_articulos.desperdicio          
 				{sortOrder}
