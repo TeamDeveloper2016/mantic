@@ -40,6 +40,7 @@ import mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticVentasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
+import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import mx.org.kaana.mantic.enums.ETiposContactos;
@@ -93,6 +94,8 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta"));
+      this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
+      this.attrs.put("regreso", JsfBase.getFlashAttribute("regreso")!= null ? JsfBase.getFlashAttribute("regreso") : true);
 			this.toLoadCatalog();
       if(this.attrs.get("idVenta")!= null) 
 			  this.doLoad();			
@@ -152,14 +155,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 	protected Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
-		UISelectEntity estatus= (UISelectEntity) this.attrs.get("idVentaEstatus");
 		if(!Cadena.isVacio(this.attrs.get("articulo")))
   		sb.append("(upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(this.attrs.get("articulo")).append("%')) and ");
 		if(!Cadena.isVacio(this.attrs.get("razonSocial")) && !this.attrs.get("razonSocial").toString().equals("-1"))
 			sb.append("tc_mantic_clientes.id_cliente = ").append(((Entity)this.attrs.get("razonSocial")).getKey()).append(" and ");					
-		else
-       if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
-			 	 sb.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");
+		else if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
+			sb.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");
 		if(!Cadena.isVacio(this.attrs.get("idVenta")) && !this.attrs.get("idVenta").toString().equals("-1"))
   		sb.append("(tc_mantic_ventas.id_venta=").append(this.attrs.get("idVenta")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
@@ -170,8 +171,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		  sb.append("((date_format(tc_mantic_facturas.timbrado, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') or (date_format(tc_mantic_facturas.cancelada, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("')) and ");			
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
 		  sb.append("((date_format(tc_mantic_facturas.timbrado, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') or (date_format(tc_mantic_facturas.cancelada, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("')) and ");			
-		if(estatus!= null && !estatus.getKey().equals(-1L))
-  		sb.append("(tc_mantic_ventas.id_venta_estatus= ").append(estatus.getKey()).append(") and ");
+  	sb.append("(tc_mantic_ventas.id_venta_estatus= ").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
@@ -201,6 +201,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("limiteCredito", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
 			columns.remove(0);
 			columns.remove(1);
+			params.put(Constantes.SQL_CONDICION, "id_venta_estatus in (" + EEstatusVentas.PAGADA.getIdEstatusVenta() + ")");
       this.attrs.put("estatusFiltro", (List<UISelectEntity>) UIEntity.build("TcManticVentasEstatusDto", "row", params, columns));
 			this.attrs.put("idVentaEstatus", new UISelectEntity("-1"));
     } // try
@@ -499,5 +500,19 @@ public class Filtro extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute(ETipoMovimiento.FACTURAS_FICTICIAS.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
 		JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Facturas/filtro");
 		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
-	} 	
+	} // doMovimientos
+
+  public String doCancelar(){
+		String regresar= null;
+		try {
+			JsfBase.setFlashAttribute("regreso", null);
+			regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+			throw e;
+		} // catch
+		return regresar;
+	} // doCancelar
 }
