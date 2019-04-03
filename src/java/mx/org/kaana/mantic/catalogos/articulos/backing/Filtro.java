@@ -1,5 +1,16 @@
 package mx.org.kaana.mantic.catalogos.articulos.backing;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageConfig;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.itextpdf.text.pdf.qrcode.ErrorCorrectionLevel;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
+import javax.imageio.ImageIO;
 import javax.inject.Named;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
@@ -370,4 +382,37 @@ public class Filtro extends Comun implements Serializable {
     } // finally
 	}
 
+	public enum Colors {
+		BLUE(0xFF40BAD0), RED(0xFFE91C43), PURPLE(0xFF8A4F9E), ORANGE(0xFFF4B13D), WHITE(0xFFFFFFFF), BLACK(0xFF000000);
+
+		private final int argb;
+
+		Colors(final int argb) {
+			this.argb=argb;
+		}
+
+		public int getArgb() {
+			return argb;
+		}
+	}
+
+	private static MatrixToImageConfig getMatrixConfig() {
+		// ARGB Colors
+		// Check Colors ENUM
+		return new MatrixToImageConfig(Colors.WHITE.getArgb(), Colors.BLACK.getArgb());
+	}
+
+	public static void main(String ... args) throws WriterException, IOException {
+    Map<EncodeHintType, Object> hints = new HashMap<>();
+    hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
+    hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);	  
+    hints.put(EncodeHintType.MARGIN, 3);	
+		QRCodeWriter writer  = new QRCodeWriter();
+		BitMatrix bitMatrix  = writer.encode("Alejandro Jiménez García", BarcodeFormat.QR_CODE, 200, 200, hints);
+		// Load QR image
+		BufferedImage qrImage= MatrixToImageWriter.toBufferedImage(bitMatrix, getMatrixConfig());
+		File outputfile = new File("d:/codigo-qr.jpg");
+		ImageIO.write(qrImage, "jpg", outputfile);
+	}
+	
 }
