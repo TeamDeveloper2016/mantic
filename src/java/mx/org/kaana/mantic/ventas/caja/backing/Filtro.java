@@ -34,6 +34,7 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
   protected void init() {
     try {
       super.init();
+			this.attrs.put("factura", null);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -145,4 +146,21 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 		} // catch		
 		return regresar.toString();
 	} // toEstatusCaja
+	
+  public String doIrFacturas(){
+		Entity factura = null;
+		String regresar= null;
+		try {
+			factura= (Entity) this.attrs.get("factura");
+			JsfBase.setFlashAttribute("idVenta", factura.getKey());
+			JsfBase.setFlashAttribute("regreso", false);			
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Ventas/Caja/filtro");			
+			regresar= "/Paginas/Mantic/Ventas/Facturas/filtro".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		return regresar;
+	} // doIrFacturas
 }
