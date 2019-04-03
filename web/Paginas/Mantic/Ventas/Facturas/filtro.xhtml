@@ -171,19 +171,21 @@
               <p:outputLabel value="Total [#{manticVentasFacturasFiltro.lazyModel==null? 0: manticVentasFacturasFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
-          <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">            
-            <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasFacturasFiltro.doMovimientos}"/>
-            <p:separator/>					
-            <p:menuitem id="timbrar" icon="fa fa-check" value="Timbrar" onstart="return janal.bloquear()" process="@this tabla" rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '0'}"/>					            
-            <p:menuitem id="reenviar" icon="fa fa-mail-forward" value="Reenviar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasFacturasFiltro.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>					            
-            <p:separator rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>					
-						<p:menuitem id="ticket" icon="fa fa-file-text-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasFacturasFiltro.doReporte('FACTURAS_FICTICIAS_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>			
-            <p:separator rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>			
+          <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">                        
             <p:menuitem id="importar" icon="fa fa-external-link" value="Ver XML/PDF" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasFacturasFiltro.doImportar}" rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>
           </p:contextMenu>
         </div>
       </div>
-    </div>		    
+    </div>		 
+		<hr class="ui-widget-content" style="#{!manticVentasFacturasFiltro.attrs.regresar ? '': 'display:none'}"/>
+		<div class="janal-line-button">
+			<div class="lg-pantalla">			
+				<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticVentasFacturasFiltro.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true" rendered="#{!manticVentasFacturasFiltro.attrs.regreso}"/>						
+			</div>	
+			<div class="xs-pantalla">			
+				<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasFacturasFiltro.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true" rendered="#{!manticVentasFacturasFiltro.attrs.regreso}"/>						
+			</div>	
+		</div>
   </ui:define>   
 	<ui:define name="dialogos">		
 		<p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Reenviar factura" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
