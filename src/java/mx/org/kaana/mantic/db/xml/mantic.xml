@@ -3808,7 +3808,7 @@
         from      
           tc_mantic_tipos_medios_pagos
         where      
-          id_cobro_caja= 1
+          id_cobro_caja= 1 or id_tipo_medio_pago= {intermediario}
 				order by
 				  clave
       </select>

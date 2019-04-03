@@ -6,12 +6,13 @@ import java.util.Map;
 
 public enum ETipoMediosPago {
 
-  EFECTIVO       (1L),
-  CHEQUE         (2L),
-  TRANSFERENCIA  (3L),
-  TARJETA_CREDITO(4L),
-  VALES_DESPENSA (7L),
-  TARJETA_DEBITO (18L);
+  EFECTIVO           (1L),
+  CHEQUE             (2L),
+  TRANSFERENCIA      (3L),
+  TARJETA_CREDITO    (4L),
+  VALES_DESPENSA     (7L),
+  TARJETA_DEBITO     (18L),
+	INTERMEDIARIO_PAGOS(21L);
 
   private Long idTipoMedioPago;
 	private static final Map<Long, ETipoMediosPago> lookup= new HashMap<>();

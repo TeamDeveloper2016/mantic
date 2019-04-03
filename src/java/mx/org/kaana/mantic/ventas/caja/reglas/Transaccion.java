@@ -387,6 +387,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 				case VALES_DESPENSA:
 					abono= this.ventaFinalizada.getTotales().getVales();
 					break;
+				case INTERMEDIARIO_PAGOS:
+					abono= this.ventaFinalizada.getTotales().getTotales().getTotal() - (this.ventaFinalizada.getTotales().getPago() - this.ventaFinalizada.getTotales().getCambio());
+					break;
 			} // switch			
 			cierreCaja.setAcumulado(cierreCaja.getAcumulado()+ abono);			
 			cierreCaja.setSaldo(cierreCaja.getDisponible()+ cierreCaja.getAcumulado());
@@ -607,7 +610,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		pago= toPagoCheque();
 		if(pago!= null)
 			regresar.add(pago);
-		toPagoCredito(sesion);							
+		pago= toPagoCredito(sesion);
+		if(pago!= null)
+			regresar.add(pago);		
 		return regresar;
 	} // loadPagos
 	
@@ -677,6 +682,12 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			if(totalCredito > 0D){					
 				registrarDeuda(sesion, totalCredito);	
 				actualizarSaldoCatalogoCliente(sesion, getOrden().getIdCliente(), totalCredito, true);
+				regresar= new TrManticVentaMedioPagoDto();
+				regresar.setIdTipoMedioPago(ETipoMediosPago.INTERMEDIARIO_PAGOS.getIdTipoMedioPago());
+				regresar.setIdUsuario(JsfBase.getIdUsuario());
+				regresar.setIdVenta(getOrden().getIdVenta());
+				regresar.setImporte(totalCredito);								
+				regresar.setIdCierre(this.idCierreVigente);
 			} // if
 		} // if		
 		return regresar;

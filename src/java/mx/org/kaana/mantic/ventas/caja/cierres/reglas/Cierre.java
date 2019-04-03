@@ -22,6 +22,7 @@ import mx.org.kaana.mantic.db.dto.TcManticCierresBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresCajasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
 import mx.org.kaana.mantic.db.dto.TcManticTiposMediosPagosDto;
+import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.ventas.caja.cierres.beans.Denominacion;
 import mx.org.kaana.mantic.ventas.caja.cierres.beans.Importe;
 import org.apache.log4j.Logger;
@@ -121,8 +122,9 @@ public class Cierre extends IBaseTnx implements Serializable  {
 						Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true), -1L, 2L, JsfBase.getIdUsuario(), 1L, "", consecutivo, new Long(Fecha.getAnioActual()), new Timestamp(Calendar.getInstance().getTimeInMillis())
 					);
 					regresar= DaoFactory.getInstance().insert(sesion, apertura)>= 1L;
-					this.idApertura= apertura.getIdCierre();
-					all= (List<TcManticTiposMediosPagosDto>)DaoFactory.getInstance().findViewCriteria(TcManticTiposMediosPagosDto.class, Collections.EMPTY_MAP, "caja");
+					this.idApertura= apertura.getIdCierre();					
+					params.put("intermediario", ETipoMediosPago.INTERMEDIARIO_PAGOS.getIdTipoMedioPago());
+					all= (List<TcManticTiposMediosPagosDto>)DaoFactory.getInstance().findViewCriteria(TcManticTiposMediosPagosDto.class, params, "caja");
 					for (TcManticTiposMediosPagosDto medio : all) {
 						if(medio.getIdTipoMedioPago().equals(1L))
 						  registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), apertura.getIdCierre(), 0D, this.idCaja, -1L, this.inicial, new Date(Calendar.getInstance().getTimeInMillis()), 0D, this.inicial);
@@ -143,7 +145,7 @@ public class Cierre extends IBaseTnx implements Serializable  {
 					break;
 				case PROCESAR:
 					params.put("idCaja", this.idCaja);
-					params.put("idCierre", this.cierre.getIdCierre());
+					params.put("idCierre", this.cierre.getIdCierre());					
 					TcManticCierresCajasDto efectivo= (TcManticCierresCajasDto)DaoFactory.getInstance().findFirst(sesion, TcManticCierresCajasDto.class, "caja", params);
 					if(efectivo!= null) {
 						if(efectivo.getAcumulado()== 0) {
@@ -243,7 +245,9 @@ public class Cierre extends IBaseTnx implements Serializable  {
       this.cierre.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
       this.cierre.setOrden(consecutivo);
       regresar= DaoFactory.getInstance().insert(sesion, this.cierre)>= 1L;
-      all= (List<TcManticTiposMediosPagosDto>)DaoFactory.getInstance().findViewCriteria(TcManticTiposMediosPagosDto.class, Collections.EMPTY_MAP, "caja");
+			Map<String, Object> params= new HashMap<>();
+			params.put("intermediario", ETipoMediosPago.INTERMEDIARIO_PAGOS.getIdTipoMedioPago());
+      all= (List<TcManticTiposMediosPagosDto>)DaoFactory.getInstance().findViewCriteria(TcManticTiposMediosPagosDto.class, params, "caja");
       for (TcManticTiposMediosPagosDto medio : all) {
         if(medio.getIdTipoMedioPago().equals(1L))
           registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), this.cierre.getIdCierre(), 0D, this.idCaja, -1L, this.inicial, new Date(Calendar.getInstance().getTimeInMillis()), 0D, this.inicial);
@@ -321,12 +325,14 @@ public class Cierre extends IBaseTnx implements Serializable  {
 	}  
 	
   public boolean toNewCierreCaja(Session sesion) throws Exception {
-		TcManticCierresCajasDto registro= null; 
+		TcManticCierresCajasDto registro= null; 		
 		Long consecutivo= this.toSiguiente(sesion);
 		this.cierre.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
 		this.cierre.setOrden(consecutivo);
 		DaoFactory.getInstance().insert(sesion, this.cierre);
-		List<TcManticTiposMediosPagosDto> all= (List<TcManticTiposMediosPagosDto>)DaoFactory.getInstance().findViewCriteria(TcManticTiposMediosPagosDto.class, Collections.EMPTY_MAP, "caja");
+		Map<String, Object>params= new HashMap<>();
+		params.put("intermediario", ETipoMediosPago.INTERMEDIARIO_PAGOS.getIdTipoMedioPago());
+		List<TcManticTiposMediosPagosDto> all= (List<TcManticTiposMediosPagosDto>)DaoFactory.getInstance().findViewCriteria(TcManticTiposMediosPagosDto.class, params, "caja");
 		for (TcManticTiposMediosPagosDto medio : all) {
 			if(medio.getIdTipoMedioPago().equals(1L))
 				registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), this.cierre.getIdCierre(), 0D, this.idCaja, -1L, this.inicial, new Date(Calendar.getInstance().getTimeInMillis()), 0D, this.inicial);
