@@ -63,8 +63,8 @@ public class Indice extends IBaseFilter implements Serializable {
   }
 
   public String doIngresar() {
-    String regresar = null;
-    Acceso acceso = null;  
+    String regresar= null;
+    Acceso acceso  = null;  
     try {     
       acceso = new Acceso(getCliente());
       acceso.valida();

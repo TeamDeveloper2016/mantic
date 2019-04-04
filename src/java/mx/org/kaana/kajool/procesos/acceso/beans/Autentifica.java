@@ -374,7 +374,8 @@ public class Autentifica implements Serializable {
   } // updateEmpleado
 
   public String redirectMenu() throws Exception {
-    return redirectMenu(this.persona.getIdMenu()).concat(Constantes.REDIRECIONAR);
+		String regresar= this.redirectMenu(this.persona.getIdMenu());
+    return Cadena.isVacio(regresar)? "/Paginas/Contenedor/bienvenida.jsf".concat(Constantes.REDIRECIONAR): regresar.concat(Constantes.REDIRECIONAR);
   } // toRedirectMenu
 
   public String redirectMenu(Long idMenu) throws Exception {
@@ -383,7 +384,7 @@ public class Autentifica implements Serializable {
     try {
       regresar = this.redirect.getPath();
       if (!this.redirect.equals(EPaginasPrivilegios.PERFILES)) {
-        if (idMenu != null) {
+        if (idMenu!= null) {
           privilegios = new Privilegios();
           regresar = privilegios.toPaginaMenu(idMenu);
         } // if					

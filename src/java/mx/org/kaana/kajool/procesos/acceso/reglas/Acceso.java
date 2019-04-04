@@ -54,6 +54,7 @@ public class Acceso implements Serializable {
         transaccion = new Transaccion();
         transaccion.ejecutar(EAccion.AGREGAR);
         this.cliente.setTemaActivo( temaActivo != null ? temaActivo : Constantes.TEMA_INICIAL);        
+				// ** verificar si no recupera pagaina default colocar una y mandar al log que no existe esa opcion del menu asociada al perfil
         regresar =  JsfBase.getAutentifica().redirectMenu();
       } // else    
     } // try
