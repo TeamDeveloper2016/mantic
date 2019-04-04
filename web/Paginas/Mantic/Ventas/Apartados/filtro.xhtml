@@ -124,31 +124,31 @@
 							</f:facet>
 							<h:outputText value="#{filtro['persona']}"/>
 						</p:column>								
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.estatus}">
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{filtro.estatus}">
 							<f:facet name="header">
 								<h:outputText value="Estatus"/>
 							</f:facet>
 							<h:outputText value="#{filtro['estatus']}"/>
 						</p:column>								
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.importe}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.importe}">
 							<f:facet name="header">
 								<h:outputText value="Importe"/>
 							</f:facet>
 							<h:outputText value="#{filtro['importe']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.abonado}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.abonado}">
 							<f:facet name="header">
 								<h:outputText value="Abonado"/>
 							</f:facet>
 							<h:outputText value="#{filtro['abonado']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.saldo}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.saldo}">
 							<f:facet name="header">
 								<h:outputText value="Saldo"/>
 							</f:facet>
 							<h:outputText value="#{filtro['saldo']}"/>
 						</p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.regitro}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{filtro.regitro}">
 							<f:facet name="header">
 								<h:outputText value="Fecha"/>
 							</f:facet>
@@ -169,7 +169,7 @@
             <p:menuitem id="cancelar" icon="fa fa-calendar-times-o" value="Cancelar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasApartados.doLoadEstatus('CANCELADO')}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|5|6|', manticVentasApartados.attrs.seleccionado.idApartadoEstatus)}"/>					            
             <p:menuitem id="olvidado" icon="fa fa-frown-o" value="Marcar como olvidado" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasApartados.doLoadEstatus('OLVIDADO')}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{(fn:contains('|1|2|6|', manticVentasApartados.attrs.seleccionado.idApartadoEstatus)) and (manticVentasApartados.attrs.seleccionado.dias.toInteger() gt 29)}"/>					            
             <p:menuitem id="aplazar" icon="fa fa-calendar-plus-o" value="Aplazar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasApartados.doLoadEstatus('APLAZADA')}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|5|', manticVentasApartados.attrs.seleccionado.idApartadoEstatus) and (manticVentasApartados.attrs.seleccionado.dias.toInteger() gt 29)}"/>					            
-            <p:separator/>					
+            <p:separator rendered="#{fn:contains('|1|2|5|6|', manticVentasApartados.attrs.seleccionado.idApartadoEstatus)}"/>					
             <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasApartados.doReporte('APARTADO_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
 						<p:separator rendered="#{(manticVentasApartados.attrs.seleccionado.idVentaEstatus eq '3') or (manticVentasApartados.attrs.seleccionado.idVentaEstatus eq '7') or (manticVentasApartados.attrs.seleccionado.idVentaEstatus eq '9')}"/>					
 						<p:menuitem id="ticket" icon="fa fa-file-text-o" value="Ticket" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasApartados.doTicket}" oncomplete="janal.desbloquear();jsTicket.clicTicket();" update="tabla" rendered="#{(manticVentasApartados.attrs.seleccionado.idVentaEstatus eq '3') or (manticVentasApartados.attrs.seleccionado.idVentaEstatus eq '7') or (manticVentasApartados.attrs.seleccionado.idVentaEstatus eq '9')}"/>
