@@ -3,6 +3,7 @@ package mx.org.kaana.mantic.ventas.cotizacion.backing;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -310,5 +311,21 @@ public class Filtro extends IBaseTicket implements Serializable {
 		} // else
     return regresar;
 	} // doVerificarReporte	
+  
+  public String doCobrar(String accion) {
+    EAccion eaccion= null;
+		try {
+			eaccion= EAccion.valueOf(accion.toUpperCase());
+			JsfBase.setFlashAttribute("accion", eaccion);		
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Ventas/Cotizacion/filtro");		
+			JsfBase.setFlashAttribute("idVenta", ((Entity)this.attrs.get("seleccionado")).getKey());
+      JsfBase.setFlashAttribute("fechaRegistro", new Date(Fecha.getFechaCalendar( ((Entity)this.attrs.get("seleccionado")).toString("registro")).getTimeInMillis()));	
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return "/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR);
+  } // doAccion     
   
 }
