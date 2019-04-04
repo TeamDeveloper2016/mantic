@@ -1003,8 +1003,12 @@ public class Accion extends IBaseVenta implements Serializable {
 		try {
 			motor= new MotorBusqueda(null);
 			venta= motor.toVenta(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
-			if(!EBooleanos.SI.getIdBooleano().equals(venta.getIdAutorizar())){
-				pago= (Pago) this.attrs.get("pago");				
+			pago= (Pago) this.attrs.get("pago");				
+			if(pago.getCambio() > 0 || pago.getPago() >= getAdminOrden().getTotales().getTotal()){
+				this.attrs.put("mensajeErrorCredito", "La venta no puede efectuarse a credito, el pago capturado cubre el total de la venta.");
+				regresar= false;
+			} // if
+			else if(!EBooleanos.SI.getIdBooleano().equals(venta.getIdAutorizar())){								
 				totalCredito= getAdminOrden().getTotales().getTotal() - (pago.getPago() - pago.getCambio());
 				clientes= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
 				cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");

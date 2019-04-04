@@ -155,7 +155,12 @@
                 <h:outputText value="Fecha"/>
               </f:facet>
               <h:outputText value="#{filtro['registro']}"/>
-            </p:column>		
+            </p:column>
+						<p:column headerText="Factura" style="width:50px; text-align:center" exportable="false">
+							<p:commandButton update="tabla" icon="fa fa-file-text" title="Consultar factura" action="#{manticVentasCajaFiltro.doIrFacturas}" rendered="#{filtro.folio eq '1'}">
+							 <f:setPropertyActionListener value="#{filtro}" target="#{manticVentasCajaFiltro.attrs.factura}" />
+							</p:commandButton>
+						</p:column>
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticVentasCajaFiltro.lazyModel==null?0:manticVentasCajaFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>

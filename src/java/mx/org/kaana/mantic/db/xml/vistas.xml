@@ -6695,7 +6695,10 @@
 		</unit>		
     <unit id="VistaTcManticApartadosDto">
       <select id="apartados">
-        select * from(
+        select 
+					apartados.*,
+					concat(nombre, ' ', paterno, ' ', materno) as cliente
+				from(
           select
             tc_mantic_apartados.id_apartado as id_key,
             tc_mantic_ventas.consecutivo,
@@ -6704,7 +6707,9 @@
             tc_mantic_ventas.id_empresa,
             tc_mantic_ventas.id_cliente,
             tc_mantic_apartados.vencimiento,
-            concat(tc_mantic_apartados.nombre, ' ', tc_mantic_apartados.paterno, ' ', tc_mantic_apartados.materno) as cliente,
+						if(tc_mantic_apartados.nombre is null, ' ' , tc_mantic_apartados.nombre) nombre,
+						if(tc_mantic_apartados.paterno is null, ' ' , tc_mantic_apartados.paterno) paterno,
+						if(tc_mantic_apartados.materno is null, ' ' , tc_mantic_apartados.materno) materno,						
             concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
             tc_mantic_apartados.abonado,
             tc_mantic_apartados.registro,
