@@ -150,6 +150,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null ? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null ? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null ? -1L: JsfBase.getFlashAttribute("idVenta"));
+      this.attrs.put("fechaRegistro", JsfBase.getFlashAttribute("fechaRegistro")== null ? -1L: JsfBase.getFlashAttribute("fechaRegistro"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null ? null : JsfBase.getFlashAttribute("retorno"));
 			LOG.warn("Flash atributes [accion[" + this.attrs.get("accion") + "] idVenta [" + this.attrs.get("idVenta") + "] retorno [" + this.attrs.get("retorno") + "]]");
 			this.attrs.put("sortOrder", "order by tc_mantic_ventas.registro desc");
@@ -199,6 +200,9 @@ public class Accion extends IBaseVenta implements Serializable {
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 				loadSucursales();							
 			loadCajas();
+      if(Long.valueOf(this.attrs.get("idVenta").toString()) != -1L){
+        this.attrs.put("fecha",this.attrs.get("fechaRegistro"));
+      }
 			doLoadTicketAbiertos();						
 			loadBancos();
 			loadCfdis();			
@@ -207,6 +211,10 @@ public class Accion extends IBaseVenta implements Serializable {
 			doActivarCliente();
 			loadArt();
 			doLoadSaldos(-1L);
+      if(Long.valueOf(this.attrs.get("idVenta").toString()) != -1L){
+        this.attrs.put("ticketAbierto",new UISelectEntity(new Entity(Long.valueOf(this.attrs.get("idVenta").toString()))));
+        doAsignaTicketAbierto();
+      }
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
