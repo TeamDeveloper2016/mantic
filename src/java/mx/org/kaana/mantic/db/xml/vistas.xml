@@ -5483,9 +5483,9 @@
 					tc_mantic_clientes on tc_mantic_servicios.id_cliente = tc_mantic_clientes.id_cliente
 				inner join 
 					tc_mantic_servicios_estatus on tc_mantic_servicios.id_servicio_estatus = tc_mantic_servicios_estatus.id_servicio_estatus
-				inner join 
+				left join 
 					tc_mantic_servicios_detalles on tc_mantic_servicios.id_servicio = tc_mantic_servicios_detalles.id_servicio
-				inner join 
+				left join 
 					tc_mantic_articulos on tc_mantic_servicios_detalles.id_articulo = tc_mantic_articulos.id_articulo
 				where 
 					tc_mantic_servicios.id_empresa={idEmpresa}
