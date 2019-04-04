@@ -111,20 +111,20 @@ public class Transaccion extends TransaccionFactura {
 			idEstatusFactura= EEstatusVentas.ABIERTA.getIdEstatusVenta();
 			params= new HashMap<>();
 			if(this.orden!= null)
-				params.put("idFicticia", this.orden.getIdVenta());
+				params.put("idVenta", this.orden.getIdVenta());
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la factura.");
 			switch(accion) {				
 				case COPIAR:
-					regresar= this.toClonarFiciticia(sesion, idEstatusFactura);
+					regresar= this.toClonarVenta(sesion, idEstatusFactura);
 					break;
 				case AGREGAR:
 				case REGISTRAR:	
 				case DESACTIVAR:
 					idEstatusFactura= accion.equals(EAccion.AGREGAR) ? EEstatusVentas.ABIERTA.getIdEstatusVenta() : (accion.equals(EAccion.DESACTIVAR) ? this.orden.getIdVentaEstatus() : idEstatusFactura);
-					regresar= this.orden.getIdVenta()!= null && !this.orden.getIdVenta().equals(-1L) ? actualizarFicticia(sesion, idEstatusFactura) : registrarFicticia(sesion, idEstatusFactura);					
+					regresar= this.orden.getIdVenta()!= null && !this.orden.getIdVenta().equals(-1L) ? actualizarVenta(sesion, idEstatusFactura) : registrarVenta(sesion, idEstatusFactura);					
 					break;
 				case MODIFICAR:
-					regresar= actualizarFicticia(sesion, EEstatusVentas.ABIERTA.getIdEstatusVenta());					
+					regresar= actualizarVenta(sesion, EEstatusVentas.ABIERTA.getIdEstatusVenta());					
 					break;				
 				case ELIMINAR:
 					idEstatusFactura= EEstatusVentas.CANCELADA.getIdEstatusVenta();
@@ -139,7 +139,7 @@ public class Transaccion extends TransaccionFactura {
 						this.orden.setIdVentaEstatus(this.bitacora.getIdVentaEstatus());						
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 						if(this.bitacora.getIdVentaEstatus().equals(TIMBRADA) && this.checkTotal(sesion)) {
-							params.put("idFicticia", this.orden.getIdVenta());
+							params.put("idVenta", this.orden.getIdVenta());
 							factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
 							if(factura!= null) {
 								params.put("correos", this.correos);
@@ -151,7 +151,7 @@ public class Transaccion extends TransaccionFactura {
 						} // if
 						else 
 							if(this.bitacora.getIdVentaEstatus().equals(CANCELADA)) {
-								params.put("idFicticia", this.orden.getIdVenta());
+								params.put("idVenta", this.orden.getIdVenta());
 								factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
 								if(factura!= null && factura.getIdFacturama()!= null) {
 									CFDIFactory.getInstance().cfdiRemove(factura.getIdFacturama());
@@ -164,10 +164,10 @@ public class Transaccion extends TransaccionFactura {
 					} // if
 					break;								
 				case REPROCESAR:
-					//regresar= actualizarFicticia(sesion, EEstatusVentas.TIMBRADA.getIdEstatusVenta());				
+					//regresar= actualizarVenta(sesion, EEstatusVentas.TIMBRADA.getIdEstatusVenta());				
 					break;		
 				case NO_APLICA:
-					params.put("idFicticia", this.orden.getIdVenta());
+					params.put("idVenta", this.orden.getIdVenta());
 					if(DaoFactory.getInstance().deleteAll(sesion, TcManticVentasBitacoraDto.class, params)>= 0) {
 						if(DaoFactory.getInstance().deleteAll(sesion, TcManticVentasDetallesDto.class, params)>= 0)
 							regresar= DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
@@ -192,7 +192,7 @@ public class Transaccion extends TransaccionFactura {
 		return regresar;
 	}	// ejecutar
 	
-	private boolean registrarFicticia(Session sesion, Long idEstatusFicticia) throws Exception {
+	private boolean registrarVenta(Session sesion, Long idEstatusVenta) throws Exception {
 		boolean regresar         = false;
 		Long consecutivo         = -1L;
 		Long idFactura           = -1L;
@@ -203,14 +203,14 @@ public class Transaccion extends TransaccionFactura {
 				consecutivo= this.toSiguiente(sesion);			
 				this.orden.setConsecutivo(consecutivo);			
 				this.orden.setOrden(consecutivo);
-				this.orden.setIdVentaEstatus(idEstatusFicticia);
+				this.orden.setIdVentaEstatus(idEstatusVenta);
 				this.orden.setEjercicio(new Long(Fecha.getAnioActual()));						
 				this.orden.setIdFactura(idFactura);
 				if(DaoFactory.getInstance().insert(sesion, this.orden)>= 1L){					
 					params= new HashMap<>();
-					params.put("idFicticia", this.orden.getIdVenta());
+					params.put("idVenta", this.orden.getIdVenta());
 					if(DaoFactory.getInstance().update(sesion, TcManticFacturasDto.class, idFactura, params)>= 1L){					
-						regresar= registraBitacora(sesion, this.orden.getIdVenta(), idEstatusFicticia, "");
+						regresar= registraBitacora(sesion, this.orden.getIdVenta(), idEstatusVenta, "");
 						this.toFillArticulos(sesion);
 					} // if					
 				} // if
@@ -220,24 +220,24 @@ public class Transaccion extends TransaccionFactura {
 			throw e;
 		} // catch				
 		return regresar;
-	} // registrarFicticia
+	} // registrarVenta
 	
-	private boolean actualizarFicticia(Session sesion, Long idEstatusFicticia) throws Exception{
+	private boolean actualizarVenta(Session sesion, Long idEstatusVenta) throws Exception{
 		boolean regresar           = false;
 		Map<String, Object>params  = null;
 		TcManticFacturasDto factura=null;
 		try {						
-			this.orden.setIdVentaEstatus(idEstatusFicticia);						
+			this.orden.setIdVentaEstatus(idEstatusVenta);						
 			regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 			params= new HashMap<>();
-			params.put("idFicticia", this.orden.getIdVenta());
+			params.put("idVenta", this.orden.getIdVenta());
 			factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
 			factura.setIdVenta(null);
 			factura.setObservaciones(this.justificacion);
 			if(DaoFactory.getInstance().update(sesion, factura)>= 1L){
-				if(registraBitacora(sesion, this.orden.getIdVenta(), idEstatusFicticia, "")){
+				if(registraBitacora(sesion, this.orden.getIdVenta(), idEstatusVenta, "")){
 					params= new HashMap<>();
-					params.put("idFicticia", this.orden.getIdVenta());
+					params.put("idVenta", this.orden.getIdVenta());
 					regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticVentasDetallesDto.class, params)>= 0;
 					toFillArticulos(sesion);
 				} // if
@@ -250,11 +250,11 @@ public class Transaccion extends TransaccionFactura {
 			Methods.clean(params);
 		} // finally			
 		return regresar;
-	} // actualizarFicticia
+	} // actualizarVenta
 	
-	protected boolean registraBitacora(Session sesion, Long idFicticia, Long idFicticaEstatus, String justificacion) throws Exception {
-		TcManticVentasBitacoraDto bitFicticia= new TcManticVentasBitacoraDto(this.orden.getConsecutivo(), justificacion, idFicticaEstatus, JsfBase.getIdUsuario(), idFicticia, -1L, this.orden.getTotal());
-		return DaoFactory.getInstance().insert(sesion, bitFicticia)>= 1L;
+	protected boolean registraBitacora(Session sesion, Long idVenta, Long idVentaEstatus, String justificacion) throws Exception {
+		TcManticVentasBitacoraDto bitVenta= new TcManticVentasBitacoraDto(this.orden.getConsecutivo(), justificacion, idVentaEstatus, JsfBase.getIdUsuario(), idVenta, -1L, this.orden.getTotal());
+		return DaoFactory.getInstance().insert(sesion, bitVenta)>= 1L;
 	} // registrarBitacora
 	
 	private void toFillArticulos(Session sesion) throws Exception {
@@ -354,15 +354,15 @@ public class Transaccion extends TransaccionFactura {
 		return regresar;
 	} // toClientesTipoContacto
 	
-	private void generarTimbradoFactura(Session sesion, Long idFicticia, Long idFactura, String correos) throws Exception {
+	private void generarTimbradoFactura(Session sesion, Long idVenta, Long idFactura, String correos) throws Exception {
 		TransaccionFactura factura= null;
 		CFDIGestor gestor         = null;
 		try {
-			actualizarClienteFacturama(sesion, idFicticia);
-			gestor= new CFDIGestor(idFicticia);			
+			actualizarClienteFacturama(sesion, idVenta);
+			gestor= new CFDIGestor(idVenta);			
 			factura= new TransaccionFactura();
-			factura.setArticulos(gestor.toDetalleCfdiFicticia(sesion));
-			factura.setCliente(gestor.toClienteCfdiFicticia(sesion));
+			factura.setArticulos(gestor.toDetalleCfdiVentas(sesion));
+			factura.setCliente(gestor.toClienteCfdiVenta(sesion));
 			factura.getCliente().setIdFactura(idFactura);
 			factura.generarCfdi(sesion);	
 			try {
@@ -378,8 +378,8 @@ public class Transaccion extends TransaccionFactura {
 		} // catch				
 	} // generarTimbradoFactura
 
-	private void actualizarClienteFacturama(Session sesion, Long idFicticia) throws Exception{		
-		CFDIGestor gestor= new CFDIGestor(idFicticia);
+	private void actualizarClienteFacturama(Session sesion, Long idVenta) throws Exception{		
+		CFDIGestor gestor= new CFDIGestor(idVenta);
 		ClienteFactura cliente= gestor.toClienteFacturaUpdate(sesion);
 		setCliente(cliente);
 		if(cliente.getIdFacturama()!= null)
@@ -395,7 +395,7 @@ public class Transaccion extends TransaccionFactura {
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			params.put("idFicticia", this.orden.getIdVenta());
+			params.put("idVenta", this.orden.getIdVenta());
 			Value detalle= DaoFactory.getInstance().toField(sesion, "TcManticVentasDetallesDto", "total", params, "total");
 			if(detalle!= null && detalle.getData()!= null)
 				sumDetalle= detalle.toDouble();
@@ -414,17 +414,17 @@ public class Transaccion extends TransaccionFactura {
 		return regresar;
 	}
 	
-	private boolean toClonarFiciticia(Session sesion, Long idEstatusFicticia) throws Exception { 
+	private boolean toClonarVenta(Session sesion, Long idEstatusVenta) throws Exception { 
 		boolean regresar          = false;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
 			Long consecutivo= this.toSiguiente(sesion);			
-			params.put("idFicticia", this.orden.getKey());
+			params.put("idVenta", this.orden.getKey());
 			this.orden.setKey(-1L);
 			this.orden.setConsecutivo(consecutivo);			
 			this.orden.setOrden(consecutivo);
-			this.orden.setIdVentaEstatus(idEstatusFicticia);
+			this.orden.setIdVentaEstatus(idEstatusVenta);
 			this.orden.setEjercicio(new Long(Fecha.getAnioActual()));						
 			this.orden.setIdUsuario(JsfBase.getIdUsuario());
 			this.orden.setObservaciones("");
@@ -453,7 +453,7 @@ public class Transaccion extends TransaccionFactura {
 				if(regresar) {
 					this.orden.setIdFactura(factura.getIdFactura());
 					if(DaoFactory.getInstance().update(sesion, this.orden)>= 1L){
-						regresar= this.registraBitacora(sesion, this.orden.getIdVenta(), idEstatusFicticia, "");
+						regresar= this.registraBitacora(sesion, this.orden.getIdVenta(), idEstatusVenta, "");
 						if(regresar) {
 							this.articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticVentasDetallesDto", "detalle", params);
 							for (Articulo articulo: this.articulos) 
@@ -468,5 +468,5 @@ public class Transaccion extends TransaccionFactura {
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toClonarFicticia
+	} // toClonarVenta
 } 
