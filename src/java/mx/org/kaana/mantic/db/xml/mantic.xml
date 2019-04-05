@@ -4111,6 +4111,14 @@
 				  tc_mantic_ventas.id_empresa= {idEmpresa} 
 				  and tr_mantic_venta_medio_pago.id_caja= {idCaja}
 			</update>
+			<select id="total">
+				select
+					truncate(sum(tc_mantic_ventas.total), 1) as total
+				from 
+					tc_mantic_ventas
+				where  
+					id_venta = {idVenta}
+			</select>
     </unit>
     <unit id="TcManticVentasDetallesDto">
       <select id="row">
@@ -4154,6 +4162,14 @@
 			<delete id="rows">
 				delete from tc_mantic_ventas_detalles where id_venta= {idVenta}
 			</delete>
+			<select id="total">
+				select
+					truncate(sum(tc_mantic_ventas_detalles.importe), 1) as total
+				from 
+					tc_mantic_ventas_detalles 
+				where  
+					id_venta = {idVenta}
+			</select>
     </unit>
 	  <unit id="TcManticVentasBitacoraDto">
       <select id="row">
@@ -4623,6 +4639,15 @@
           tc_mantic_facturas
         where      
           id_ficticia = {idFicticia}
+			</select>
+			<select id="detalleFactura">
+				select      
+					tc_mantic_facturas.id_factura as id_key,
+          tc_mantic_facturas.*
+        from      
+          tc_mantic_facturas
+        where      
+          id_factura = {idFactura}
 			</select>
 			<select id="facturama">
 				select      
