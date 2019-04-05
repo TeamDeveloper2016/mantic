@@ -80,6 +80,34 @@ public class CFDIGestor implements Serializable{
 		return regresar;
 	} // toClienteFactura
 	
+	public ClienteFactura toClienteFacturaUpdateVenta(Long idClientedomicilio) throws Exception{
+		ClienteFactura regresar  = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_cliente=" + this.idComodin + " and tr_mantic_cliente_domicilio.id_cliente_domicilio=" + idClientedomicilio);
+			regresar= (ClienteFactura) DaoFactory.getInstance().toEntity(ClienteFactura.class, "VistaClientesDto", "facturamaDomicilioVenta", params);
+		} // try		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toClienteFactura
+	
+	public ClienteFactura toClienteFacturaUpdateVenta(Session sesion, Long idClientedomicilio) throws Exception{
+		ClienteFactura regresar  = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_cliente=" + this.idComodin + " and tr_mantic_cliente_domicilio.id_cliente_domicilio=" + idClientedomicilio);
+			regresar= (ClienteFactura) DaoFactory.getInstance().toEntity(sesion, ClienteFactura.class, "VistaClientesDto", "facturamaDomicilioVenta", params);
+		} // try		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toClienteFactura
+	
 	public ClienteFactura toClienteCfdiVenta() throws Exception{
 		ClienteFactura regresar  = null;
 		Map<String, Object>params= null;
