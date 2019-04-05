@@ -9,7 +9,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -38,14 +37,14 @@ import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.JuntarReporte;
 import mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
-import mx.org.kaana.mantic.db.dto.TcManticVentasBitacoraDto;
-import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
+import mx.org.kaana.mantic.enums.EEstatusFicticias;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
 import mx.org.kaana.mantic.facturas.reglas.Transferir;
+import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.context.RequestContext;
@@ -159,7 +158,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Entity seleccionado     = null;
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
-			transaccion= new Transaccion(new TcManticVentasDto(seleccionado.getKey()), this.attrs.get("justificacionEliminar").toString());
+			transaccion= new Transaccion(new TicketVenta(seleccionado.getKey()), this.attrs.get("justificacionEliminar").toString());
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Eliminar", "La factura se ha eliminado correctamente.", ETipoMensaje.ERROR);
 			else
@@ -423,23 +422,24 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // doLoadEstatus
 	
 	public void doActualizarEstatus() {
-		Transaccion transaccion           = null;
-		TcManticVentasDto orden           = null;
-		TcManticVentasBitacoraDto bitacora= null;
-		Entity seleccionado               = null;
-		StringBuilder emails              = null;
+		Transaccion transaccion= null;
+		Entity seleccionado    = null;
+		StringBuilder emails   = null;
+		TicketVenta ticketVenta= null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			orden= (TcManticVentasDto)DaoFactory.getInstance().findById(TcManticVentasDto.class, seleccionado.getKey());
-			bitacora= new TcManticVentasBitacoraDto(orden.getConsecutivo(), (String)this.attrs.get("justificacion"), Long.valueOf(this.attrs.get("estatus").toString()), JsfBase.getIdUsuario(), seleccionado.getKey(), -1L, orden.getTotal());
 			emails= new StringBuilder("");
 			if(this.selectedCorreos!= null && !this.selectedCorreos.isEmpty()){
 				for(Correo mail: this.selectedCorreos)
 					if(!Cadena.isVacio(mail.getDescripcion()))
 						emails.append(mail.getDescripcion()).append(", ");
 			} // if
-			transaccion= new Transaccion(bitacora, emails.toString(), (String)this.attrs.get("justificacion"));
-			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
+			ticketVenta= new TicketVenta();
+			ticketVenta.setKey(seleccionado.getKey());
+			ticketVenta.setIdFactura(seleccionado.toLong("idFactura"));
+			ticketVenta.setCorreos(emails.toString());
+			transaccion= new Transaccion(ticketVenta, EEstatusFicticias.CANCELADA.getIdEstatusFicticia(), (String)this.attrs.get("justificacion"));
+			if(transaccion.ejecutar(EAccion.MODIFICAR))
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
 			else
 				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
