@@ -106,7 +106,7 @@ public class Filtro extends Comun implements Serializable {
 		try {
 			regresar= new StringBuilder("tc_mantic_servicios_estatus.id_servicio_estatus in (");
 			regresar.append(this.attrs.get("estatus")).append(") and ");
-			regresar.append("tc_mantic_articulos.id_articulo_tipo in (").append(this.attrs.get("tipoArticulo")).append(") and ");
+			regresar.append("(tc_mantic_articulos.id_articulo_tipo in (").append(this.attrs.get("tipoArticulo")).append(") or tc_mantic_articulos.id_articulo_tipo is null) and ");
 			if(this.attrs.get("consecutivo")!= null && !Cadena.isVacio(this.attrs.get("consecutivo")))
 				regresar.append("tc_mantic_servicios.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%' and ");			
 			if(this.attrs.get("herramienta")!= null && !Cadena.isVacio(this.attrs.get("herramienta")) && this.attrs.get("tipoArticulo").toString().equals(ETipoArticulo.REFACCION.getIdTipoArticulo().toString()))
