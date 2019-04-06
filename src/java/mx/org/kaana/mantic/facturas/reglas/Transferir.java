@@ -43,6 +43,7 @@ import mx.org.kaana.mantic.db.dto.TcManticFicticiasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteDomicilioDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
+import mx.org.kaana.mantic.enums.EEstatusFacturas;
 import org.apache.log4j.Logger;
 
 /**
@@ -196,7 +197,8 @@ public class Transferir extends IBaseTnx {
 			complement.getTaxStamp().getSatCertNumber(), // String certificadoSat
 			detail.getCertNumber(), // String certificadoDigital
 			new Timestamp(certificacion.getTimeInMillis()), // Timestamp certificacion
-			complement.getTaxStamp().getUuid()
+			complement.getTaxStamp().getUuid(),
+			EEstatusFacturas.TIMBRADA.getIdEstatusFactura()
 		);
 		return regresar;
 	}
