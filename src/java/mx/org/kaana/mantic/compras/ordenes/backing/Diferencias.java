@@ -317,7 +317,7 @@ public class Diferencias extends IFilterImportar implements Serializable {
 		StringBuilder regresar= new StringBuilder();
 		try {
 			List<Entity> items= DaoFactory.getInstance().toEntitySet("VistaOrdenesComprasDto", "porcentajes", row);
-			if(items!= null)
+			if(items!= null && !items.isEmpty())
 			  for (Entity item: items) {
 					regresar.append("Nota entrada: ").append(item.toString("consecutivo")).append("<br/>Porcentaje: ").append(this.doDecimalSat(item.toDouble("porcentaje"))).append(" %<br/>Observaciones: ").append(item.toString("observaciones")).append("<br/><br/>");
 				} // for
