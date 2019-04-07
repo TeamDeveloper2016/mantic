@@ -4917,5 +4917,23 @@
           id_persona_archivo = {idPersonaArchivo} and id_persona = {idPersona} and ruta = '{ruta}' and id_tipo_archivo = {idTipoArchivo} and nombre = '{nombre}' and registro = {registro}
       </select>
     </unit>
+		<unit id="TcManticFacturasBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_facturas_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_facturas_bitacora
+        where      
+          id_factura_bitacora = {idFacturaBitacora}
+      </select>
+		</unit>
   </dml>    
 </process>
