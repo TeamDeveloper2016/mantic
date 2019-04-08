@@ -29,6 +29,7 @@ import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
+import mx.org.kaana.mantic.enums.EEstatusFacturas;
 import mx.org.kaana.mantic.enums.EEstatusFicticias;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
@@ -95,7 +96,9 @@ public class UnirFacturas extends TransaccionFactura {
 									params.put("correos", correos);
 									params.put("comentarios", this.justificacion);								
 									params.put("timbrado", new Timestamp(Calendar.getInstance().getTimeInMillis()));								
+									params.put("idFacturaEstatus", EEstatusFacturas.TIMBRADA.getIdEstatusFactura());								
 									DaoFactory.getInstance().update(sesion, TcManticFacturasDto.class, this.orden.getIdFactura(), params);
+									registrarBitacoraFactura(sesion, this.orden.getIdFactura(), EEstatusFacturas.TIMBRADA.getIdEstatusFactura(), this.justificacion);
 									this.generarTimbradoFactura(sesion, this.orden.getIdFicticia(), this.orden.getIdFactura(), correos);
 								} // if						
 							} // if						
@@ -200,7 +203,9 @@ public class UnirFacturas extends TransaccionFactura {
 			factura.setIntentos(0L);
 			factura.setCorreos("");
 			factura.setObservaciones(this.justificacion);
+			factura.setIdFacturaEstatus(EEstatusFacturas.REGISTRADA.getIdEstatusFactura());
 			regresar= DaoFactory.getInstance().insert(sesion, factura);
+			registrarBitacoraFactura(sesion, factura.getIdFactura(), EEstatusFacturas.REGISTRADA.getIdEstatusFactura(), this.justificacion);
 		} // try
 		finally{
 			this.messageError= "Error al registrar la factura.";
