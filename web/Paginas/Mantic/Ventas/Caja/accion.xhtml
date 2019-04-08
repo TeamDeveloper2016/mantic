@@ -476,24 +476,13 @@
 									<p:ajax process="@this" update="contenedorGrupos:panelSumatoria" onstart="janal.bloquear();" oncomplete="applyValidacionesCredito();" />
 								</p:inputSwitch>
 								
-								<p:outputLabel for="tipoPago" value="Método de pago:" rendered="false"/>												
-								<p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
 								<p:outputLabel for="cfdi" value="Uso del CFDI:" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
+								<p:outputLabel for="domicilioFactura" value="Domicilio:" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
+								<p:outputLabel for="tipoPago" value="Método de pago:" rendered="false"/>												
+								<p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>								
 								<p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
 								<p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
 								<p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
-								<p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
-								<p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
-								<p:selectOneMenu id="tipoPago" value="#{manticVentasCajaAccion.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains" rendered="false">
-									<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
-									<f:selectItems value="#{manticVentasCajaAccion.attrs.tiposPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
-									<p:column headerText="Clave">
-										<h:outputText value="#{item.clave}"/>
-									</p:column>   
-									<p:column headerText="Nombre">
-										<h:outputText value="#{item.nombre}"/>
-									</p:column>   
-								</p:selectOneMenu>
 								<p:selectOneMenu id="cfdi" value="#{manticVentasCajaAccion.attrs.cfdi}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}">
 									<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 									<f:selectItems value="#{manticVentasCajaAccion.attrs.cfdis}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
@@ -504,6 +493,40 @@
 										<h:outputText value="#{item.nombre}"/>
 									</p:column>   										
 								</p:selectOneMenu>
+								<p:selectOneMenu id="domicilioFactura" value="#{manticVentasCajaAccion.attrs.domicilioFactura}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}">															
+									<f:selectItems value="#{manticVentasCajaAccion.attrs.domiciliosFactura}" var="element" itemValue="#{element}" itemLabel="#{element.calle}, #{element.numeroExterior} - #{element.numeroInterior}, #{element.asentamiento}, #{element.codigoPostal}, #{element.localidad}, #{element.municipio}"/>
+									<p:column headerText="Calle">
+										<h:outputText value="#{item.calle}"/>
+									</p:column>   
+									<p:column headerText="Ext.">
+										<h:outputText value="#{item.numeroExterior}"/>
+									</p:column>   
+									<p:column headerText="Int.">
+										<h:outputText value="#{item.numeroInterior}"/>
+									</p:column>   
+									<p:column headerText="Colonia/Fraccionamiento">
+										<h:outputText value="#{item.asentamiento}"/>
+									</p:column>   
+									<p:column headerText="C.P.">
+										<h:outputText value="#{item.codigoPostal}"/>
+									</p:column>   
+									<p:column headerText="Localidad">
+										<h:outputText value="#{item.localidad}"/>
+									</p:column>   
+									<p:column headerText="Municipio">
+										<h:outputText value="#{item.municipio}"/>
+									</p:column>   
+								</p:selectOneMenu>
+								<p:selectOneMenu id="tipoPago" value="#{manticVentasCajaAccion.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains" rendered="false">
+									<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
+									<f:selectItems value="#{manticVentasCajaAccion.attrs.tiposPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+									<p:column headerText="Clave">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.nombre}"/>
+									</p:column>   
+								</p:selectOneMenu>								
 							</p:panelGrid>			
 							<p:panelGrid id="deudorPago" columns="1" layout="grid" styleClass="janal-wid-100 janal-column-center" columnClasses="janal-wid-100" style="display: #{manticVentasCajaAccion.saldoCliente.deudor} ? 'none' : ''">
 								<p:outputLabel value="#{manticVentasCajaAccion.saldoCliente.mensaje}" styleClass="janal-column-center janal-color-orange" style="font-weight: bold !important"/>
@@ -643,7 +666,7 @@
 							</p:fieldset>
 							<p:fieldset id="fieldDomicilios" legend="Domicilio">								
 								<p:panelGrid id="panelDetalleDomicilio" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100, janal-wid-5">
-									<p:outputLabel for="domicilio" value="Domicilio:"/>
+									<p:outputLabel for="domicilio" value="Domicilio principal:"/>
 									<p:selectOneMenu id="domicilio" value="#{manticVentasCajaAccion.domicilio.domicilio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}">									
 										<p:ajax event="change" listener="#{manticVentasCajaAccion.doLoadAtributos}" process="@this domicilio panelDetalleDomicilio" update="entidad municipio localidad codigoPostal calle exterior interior asentamiento entreCalle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>										
 										<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
