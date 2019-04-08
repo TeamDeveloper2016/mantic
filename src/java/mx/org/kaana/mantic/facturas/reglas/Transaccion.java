@@ -236,7 +236,7 @@ public class Transaccion extends TransaccionFactura {
 			factura.setIdVenta(null);
 			factura.setObservaciones(this.justificacion);
 			if(DaoFactory.getInstance().update(sesion, factura)>= 1L){
-				if(registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "")){
+				if(registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "")) {
 					params= new HashMap<>();
 					params.put("idFicticia", this.orden.getIdFicticia());
 					regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticFicticiasDetallesDto.class, params)>= 0;

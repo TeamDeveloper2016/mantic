@@ -57,7 +57,7 @@ public class CFDIGestor implements Serializable{
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "tc_mantic_ficticias.id_ficticia=" + this.idComodin);
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_ventas.id_venta=" + this.idComodin);
 			regresar= (ClienteFactura) DaoFactory.getInstance().toEntity(ClienteFactura.class, "VistaClientesDto", "facturamaDomicilio", params);
 		} // try		
 		finally{
@@ -71,7 +71,7 @@ public class CFDIGestor implements Serializable{
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "tc_mantic_ficticias.id_ficticia=" + this.idComodin);
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_ventas.id_venta=" + this.idComodin);
 			regresar= (ClienteFactura) DaoFactory.getInstance().toEntity(sesion, ClienteFactura.class, "VistaClientesDto", "facturamaDomicilio", params);
 		} // try		
 		finally{
@@ -141,7 +141,7 @@ public class CFDIGestor implements Serializable{
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "tc_mantic_ficticias.id_ficticia=" + this.idComodin);
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_ventas.id_venta=" + this.idComodin);
 			regresar= (ClienteFactura) DaoFactory.getInstance().toEntity(ClienteFactura.class, "VistaClientesDto", "cfdiFicticia", params);
 		} // try		
 		finally{
@@ -155,7 +155,7 @@ public class CFDIGestor implements Serializable{
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "tc_mantic_ficticias.id_ficticia=" + this.idComodin);
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_ventas.id_venta=" + this.idComodin);
 			regresar= (ClienteFactura) DaoFactory.getInstance().toEntity(sesion, ClienteFactura.class, "VistaClientesDto", "cfdiFicticia", params);
 		} // try		
 		finally{
@@ -281,7 +281,7 @@ public class CFDIGestor implements Serializable{
 		Map<String, Object>params     = null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "tc_mantic_ficticias_detalles.id_ficticia=" + this.idComodin);
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_ventas_detalles.id_venta=" + this.idComodin);
 			regresar= DaoFactory.getInstance().toEntitySet(ArticuloFactura.class, "VistaArticulosDto", "detalleCfdi", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try		
 		finally{
@@ -295,7 +295,7 @@ public class CFDIGestor implements Serializable{
 		Map<String, Object>params     = null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "tc_mantic_ficticias_detalles.id_ficticia=" + this.idComodin);
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_ventas_detalles.id_venta=" + this.idComodin);
 			regresar= DaoFactory.getInstance().toEntitySet(sesion, ArticuloFactura.class, "VistaArticulosDto", "detalleCfdi", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try		
 		finally{

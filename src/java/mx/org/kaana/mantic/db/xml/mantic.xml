@@ -511,22 +511,23 @@
 		<unit id="TcManticFicticiasEstatusDto">
       <select id="row">
         select      
-				  tc_mantic_ficticias_estatus.id_ficticia_estatus as id_key,
-          tc_mantic_ficticias_estatus.*
+				  tc_mantic_ventas_estatus.id_venta_estatus as id_key,
+          tc_mantic_ventas_estatus.*
         from      
-          tc_mantic_ficticias_estatus
+          tc_mantic_ventas_estatus
         where 
+				  id_tipo_venta= 1 and 
           {condicion} 
 				order by 
-				  id_ficticia_estatus
+				  id_venta_estatus
       </select>
       <select id="identically">
         select      
           *
         from      
-          tc_mantic_ficticias_estatus
+          tc_mantic_ventas_estatus
         where      
-          nombre = '{nombre}' and id_ficticia_estatus = {idFicticiaEstatus}
+          nombre = '{nombre}' and id_venta_estatus = {idFicticiaEstatus}
       </select>
     </unit>		
 		<unit id="TcManticFicticiasDetallesDto">
@@ -534,7 +535,7 @@
         select      
           *
         from      
-          tc_mantic_ficticias_detalles
+          tc_mantic_ventas_detalles
         where 
           {condicion} 
       </select>
@@ -542,31 +543,31 @@
         select      
           *
         from      
-          tc_mantic_ficticias_detalles
+          tc_mantic_ventas_detalles
         where      
-          id_ficticia = {idFicticia} and id_articulo = {idArticulo} and id_ficticia_detalle = {idFicticiaDetalle}
+          id_venta = {idFicticia} and id_articulo = {idArticulo} and id_venta_detalle = {idFicticiaDetalle}
       </select>
 			<select id="detalle">
         select      
-				  tc_mantic_ficticias_detalles.id_ficticia_detalle as id_comodin,
-          tc_mantic_ficticias_detalles.*
+				  tc_mantic_ventas_detalles.id_venta_detalle as id_comodin,
+          tc_mantic_ventas_detalles.*
         from      
-          tc_mantic_ficticias_detalles
+          tc_mantic_ventas_detalles
         where      
-          id_ficticia = {idFicticia}
+          id_venta = {idFicticia}
 				order by
-				  tc_mantic_ficticias_detalles.registro
+				  tc_mantic_ventas_detalles.registro
       </select>
 			<select id="total">
 				select
-					truncate(sum(tc_mantic_ficticias_detalles.importe), 1) as total
+					truncate(sum(tc_mantic_ventas_detalles.importe), 1) as total
 				from 
-					tc_mantic_ficticias_detalles 
+					tc_mantic_ventas_detalles 
 				where  
-					id_ficticia = {idFicticia}
+					id_venta = {idFicticia}
 			</select>
 			<delete id="rows">
-				delete from tc_mantic_ficticias_detalles where id_ficticia= {idFicticia}
+				delete from tc_mantic_ventas_detalles where id_venta= {idFicticia}
 			</delete>
     </unit>
 		<unit id="TcManticFicticiasBitacoraDto">
@@ -574,7 +575,7 @@
         select      
           *
         from      
-          tc_mantic_ficticias_bitacora
+          tc_mantic_ventas_bitacora
         where 
           {condicion} 
       </select>
@@ -582,17 +583,17 @@
         select      
           *
         from      
-          tc_mantic_ficticias_bitacora
+          tc_mantic_ventas_bitacora
         where      
-          id_ficticia_estatus = {idFicticiaEstatus} and id_ficticia = {idFicticia} and id_ficticia_bitacora = {idFicticiaBitacora}
+          id_venta_estatus = {idFicticiaEstatus} and id_venta = {idFicticia} and id_venta_bitacora = {idFicticiaBitacora}
       </select>
 			<select id="siguiente">
         select
 					max(consecutivo)+ 1 as siguiente
 				from 
-					tc_mantic_ficticias_bitacora
+					tc_mantic_ventas_bitacora
 				where				  
-				  id_ficticia= {idFicticia}				
+				  id_venta= {idFicticia}				
 			</select>			
     </unit>
 		<unit id="TcManticFicticiasDto">
@@ -600,7 +601,7 @@
         select      
           *
         from      
-          tc_mantic_ficticias
+          tc_mantic_ventas
         where 
           {condicion} 
       </select>
@@ -608,34 +609,34 @@
         select      
           *
         from      
-          tc_mantic_ficticias
+          tc_mantic_ventas
         where      
-          consecutivo = {consecutivo} and id_ficticia = {idFicticia} and id_empresa = {idEmpresa} and dia = {dia}
+          consecutivo = {consecutivo} and id_venta = {idFicticia} and id_empresa = {idEmpresa} and dia = {dia}
       </select>
 			<select id="detalle">
         select      
 				  *
         from      
-          tc_mantic_ficticias
+          tc_mantic_ventas
         where 
-          id_ficticia = {idFicticia} 
+          id_venta = {idFicticia} 
       </select>
 			<select id="siguiente">
         select
 					max(orden)+ 1 as siguiente
 				from 
-					tc_mantic_ficticias
+					tc_mantic_ventas
 				where
 				  ejercicio= {ejercicio} 
 				  and id_empresa= {idEmpresa}				
 			</select>			
 			<select id="total">
 				select
-					truncate(sum(tc_mantic_ficticias.total), 1) as total
+					truncate(sum(tc_mantic_ventas.total), 1) as total
 				from 
-					tc_mantic_ficticias
+					tc_mantic_ventas
 				where  
-					id_ficticia = {idFicticia}
+					id_venta = {idFicticia}
 			</select>
     </unit>
     <unit id="TcManticCierresMonedasDto">
@@ -4365,6 +4366,7 @@
         from      
           tc_mantic_ventas_estatus
         where 
+				  id_tipo_venta= 2 and 
           {condicion} 
 				order by 
 				  id_venta_estatus
@@ -4638,7 +4640,7 @@
         from      
           tc_mantic_facturas
         where      
-          id_ficticia = {idFicticia}
+          id_venta = {idFicticia}
 			</select>
 			<select id="detalleFactura">
 				select      

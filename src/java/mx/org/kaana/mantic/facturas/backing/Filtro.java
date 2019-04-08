@@ -119,7 +119,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
       columns.add(new Columna("timbrado", EFormatoDinamicos.FECHA_CORTA));   
       columns.add(new Columna("cancelada", EFormatoDinamicos.FECHA_CORTA));   
-      params.put("sortOrder", "order by tc_mantic_ficticias.registro desc");
+      params.put("sortOrder", "order by tc_mantic_ventas.registro desc");
       this.lazyModel = new FormatCustomLazy("VistaFicticiasDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
@@ -174,16 +174,16 @@ public class Filtro extends IBaseFilter implements Serializable {
 		StringBuilder sb= new StringBuilder();
 		UISelectEntity estatus= (UISelectEntity) this.attrs.get("idFicticiaEstatus");
 		if(!Cadena.isVacio(this.attrs.get("articulo")))
-  		sb.append("(upper(tc_mantic_ficticias_detalles.nombre) like upper('%").append(this.attrs.get("articulo")).append("%')) and ");
+  		sb.append("(upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(this.attrs.get("articulo")).append("%')) and ");
 		if(!Cadena.isVacio(this.attrs.get("razonSocial")) && !this.attrs.get("razonSocial").toString().equals("-1"))
 			sb.append("tc_mantic_clientes.id_cliente = ").append(((Entity)this.attrs.get("razonSocial")).getKey()).append(" and ");					
 		else
        if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
 			 	 sb.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");
 		if(!Cadena.isVacio(this.attrs.get("idFicticia")) && !this.attrs.get("idFicticia").toString().equals("-1"))
-  		sb.append("(tc_mantic_ficticias.id_ficticia=").append(this.attrs.get("idFicticia")).append(") and ");
+  		sb.append("(tc_mantic_ventas.id_venta=").append(this.attrs.get("idFicticia")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
-  		sb.append("(tc_mantic_ficticias.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
+  		sb.append("(tc_mantic_ventas.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("folio")))
   		sb.append("(tc_mantic_facturas.folio like '%").append(this.attrs.get("folio")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
@@ -191,7 +191,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
 		  sb.append("((date_format(tc_mantic_facturas.timbrado, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') or (date_format(tc_mantic_facturas.cancelada, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("')) and ");			
 		if(estatus!= null && !estatus.getKey().equals(-1L))
-  		sb.append("(tc_mantic_ficticias.id_ficticia_estatus= ").append(estatus.getKey()).append(") and ");
+  		sb.append("(tc_mantic_ventas.id_venta_estatus= ").append(estatus.getKey()).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
@@ -322,7 +322,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				} // finally
 			} // if
       //es importante este orden para los grupos en el reporte	
-      params.put("sortOrder", "order by tc_mantic_ficticias.id_empresa, tc_mantic_clientes.id_cliente, tc_mantic_ficticias.ejercicio, tc_mantic_ficticias.orden");
+      params.put("sortOrder", "order by tc_mantic_ventas.id_empresa, tc_mantic_clientes.id_cliente, tc_mantic_ventas.ejercicio, tc_mantic_ventas.orden");
       reporteSeleccion= EReportes.valueOf(nombre);
       if(!reporteSeleccion.equals(EReportes.FACTURAS_FICTICIAS)) {
         params.put("idFicticia", seleccionado.getKey());
@@ -354,7 +354,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       params= this.toPrepare();	
       //es importante este orden para los grupos en el reporte	
       definiciones = new ArrayList<>();
-      params.put("sortOrder", "order by tc_mantic_ficticias.id_empresa, tc_mantic_clientes.id_cliente, tc_mantic_ficticias.ejercicio, tc_mantic_ficticias.orden");
+      params.put("sortOrder", "order by tc_mantic_ventas.id_empresa, tc_mantic_clientes.id_cliente, tc_mantic_ventas.ejercicio, tc_mantic_ventas.orden");
       reporteSeleccion= EReportes.valueOf(nombre);
       this.reporte= JsfBase.toReporte();	
       definiciones.add(new Definicion((Map<String, Object>) ((HashMap) params).clone(), params, reporteSeleccion.getProceso(), reporteSeleccion.getIdXml(), reporteSeleccion.getJrxml()));
@@ -393,7 +393,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_ficticia_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
+			params.put(Constantes.SQL_CONDICION, "id_venta_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
 			allEstatus= UISelect.build("TcManticFicticiasEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
 			this.attrs.put("estatus", allEstatus.get(0).getValue().toString());

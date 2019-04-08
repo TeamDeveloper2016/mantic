@@ -6,10 +6,10 @@ import java.util.Map;
 
 public enum EEstatusFicticias {
   
-  ABIERTA   (2L),
-  TIMBRADA  (3L),
-  ELIMINADA (4L),
-  CANCELADA (5L);
+  ABIERTA   (11L),
+  TIMBRADA  (12L),
+  ELIMINADA (13L),
+  CANCELADA (14L);
 
   private Long idEstatusFicticia;
 	private static final Map<Long, EEstatusFicticias> lookup= new HashMap<>();

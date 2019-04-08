@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -30,7 +24,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_mantic_ficticias_detalles")
+@Table(name="tc_mantic_ventas_detalles")
 public class TcManticFicticiasDetallesDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
@@ -58,7 +52,7 @@ public class TcManticFicticiasDetallesDto implements IBaseDto, Serializable {
   private Double importe;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_ficticia_detalle")
+	@Column (name="id_venta_detalle")
   private Long idFicticiaDetalle;
   @Column (name="registro")
   private Timestamp registro;

@@ -236,7 +236,7 @@ public class Transaccion extends TransaccionFactura {
 		return regresar;
 	} // registrarVenta
 	
-	private boolean actualizarVenta(Session sesion, Long idEstatusVenta) throws Exception{
+	private boolean actualizarVenta(Session sesion, Long idEstatusVenta) throws Exception {
 		boolean regresar         = false;
 		Map<String, Object>params= null;
 		try {						
@@ -244,7 +244,7 @@ public class Transaccion extends TransaccionFactura {
 			if(this.orden.getIdCliente()< 0)
 				this.orden.setIdCliente(toClienteDefault(sesion));
 			regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-			if(registraBitacora(sesion, this.orden.getIdVenta(), idEstatusVenta, "")){
+			if(registraBitacora(sesion, this.orden.getIdVenta(), idEstatusVenta, "")) {
 				params= new HashMap<>();
 				params.put("idVenta", this.orden.getIdVenta());
 				regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticVentasDetallesDto.class, params)>= 1;
