@@ -165,7 +165,7 @@ public class Importar extends IBaseImportar implements Serializable {
 					emails.append(mail.getDescripcion()).append(", ");
 			} // if
 			String idFacturama= ((TcManticFacturasDto)this.attrs.get("factura")).getIdFacturama();
-			if(false && emails.length()> 0 && !Cadena.isVacio(idFacturama))
+			if(!Cadena.isVacio(idFacturama) && emails.length()> 0)
   	    CFDIFactory.getInstance().toSendMail(emails.substring(0, emails.length()- 2), idFacturama);
 		} // try
 		catch (Exception e) {
