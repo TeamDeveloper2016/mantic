@@ -169,7 +169,9 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 					idCliente= ((TicketVenta)getAdminOrden().getOrden()).getIdCliente();
 					if(idCliente!= null && !idCliente.equals(-1L)){
 						doAsignaClienteInicial(idCliente);
-						loadDomicilios(idCliente);						
+						loadDomicilios(idCliente);	
+						if(((TicketVenta)getAdminOrden().getOrden()).getIdClienteDomicilio()!= null && !((TicketVenta)getAdminOrden().getOrden()).getIdClienteDomicilio().equals(-1L))
+							this.attrs.put("domicilio", new UISelectEntity(((TicketVenta)getAdminOrden().getOrden()).getIdClienteDomicilio()));
 					} // if
 					loadSucursales();
 					loadCatalogs();					
