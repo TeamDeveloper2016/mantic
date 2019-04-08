@@ -110,7 +110,7 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
   private Long idBanco;
   @Column (name="referencia")
   private String referencia;
-	@Column (name="id_tipo_tenta")
+	@Column (name="id_tipo_venta")
   private Long idTipoVenta;
 
   public TcManticVentasDto() {
