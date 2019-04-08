@@ -473,6 +473,46 @@
 				order by
 				  tc_mantic_servicios_detalles.registro
       </select>
+			<select id="articulosDetalle">
+         select      				  
+          tc_mantic_servicios_detalles.id_servicio_detalle AS id_key,
+          tc_mantic_servicios_detalles.id_servicio_detalle,
+          tc_mantic_servicios_detalles.id_servicio,
+          tc_mantic_servicios_detalles.id_articulo,
+          tc_mantic_servicios_detalles.codigo,
+          tc_mantic_servicios_detalles.concepto,
+          tc_mantic_servicios_detalles.cantidad,
+          tc_mantic_servicios_detalles.costo,
+          tc_mantic_servicios_detalles.descuento,
+          tc_mantic_servicios_detalles.iva,
+          tc_mantic_servicios_detalles.impuestos,
+          tc_mantic_servicios_detalles.sub_total,
+          tc_mantic_servicios_detalles.importe,
+          tc_mantic_servicios_detalles.id_usuario,
+          tc_mantic_servicios_detalles.registro,
+          tc_mantic_servicios_detalles.concepto as nombre,
+          tc_mantic_servicios_detalles.cantidad as cuantos,
+          tc_mantic_servicios_detalles.cantidad as inicial,
+          tc_mantic_articulos.precio,
+          tc_mantic_articulos.sat,
+          tc_mantic_unidades_medidas.nombre unidad_medida,
+          (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+          tc_mantic_articulos.stock
+        from      
+          tc_mantic_servicios_detalles		
+        inner join
+					tc_mantic_articulos on tc_mantic_servicios_detalles.id_articulo = tc_mantic_articulos.id_articulo			
+        inner join
+					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+				inner join 
+					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+				inner join 
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+        where      
+          tc_mantic_servicios_detalles.id_servicio = {idServicio}
+				order by
+				  tc_mantic_servicios_detalles.registro
+      </select>
 		</unit>
 		<unit id="VistaConsultasDto">
 			<select id="lazy">
@@ -5506,13 +5546,7 @@
 				select * from (
 				select  
 					tc_mantic_servicios.id_servicio as id_key,
-					tc_mantic_servicios.consecutivo,
-					tc_mantic_servicios.herramienta,
-					tc_mantic_servicios.marca,
-					tc_mantic_servicios.modelo,
-					tc_mantic_servicios.total,
-					tc_mantic_servicios.registro,
-					tc_mantic_servicios.fecha_estimada,
+					tc_mantic_servicios.*,
           tc_mantic_clientes.razon_social, 
 					tc_mantic_servicios_estatus.nombre estatus,
 					tc_mantic_servicios_estatus.estatus_asociados
