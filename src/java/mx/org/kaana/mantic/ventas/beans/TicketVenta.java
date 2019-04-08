@@ -19,12 +19,7 @@ public class TicketVenta extends TcManticVentasDto implements Serializable {
 	private static final long serialVersionUID=3088884892456452488L;
 	
 	private UISelectEntity ikAlmacen;
-	private UISelectEntity ikCliente;	
-	private Long idTipoPago;
-	private Long idTipoMedioPago;
-	private Long idBanco;
-	private String referencia;
-	private Long idClienteDomicilio;
+	private UISelectEntity ikCliente;		
 	private String correos;
 	
 	public TicketVenta() {
@@ -62,47 +57,7 @@ public class TicketVenta extends TcManticVentasDto implements Serializable {
 	@Override
 	public Class toHbmClass() {
 		return TcManticVentasDto.class;
-	}	
-
-	public Long getIdTipoPago() {
-		return idTipoPago;
-	}
-
-	public void setIdTipoPago(Long idTipoPago) {
-		this.idTipoPago = idTipoPago;
-	}
-
-	public Long getIdTipoMedioPago() {
-		return idTipoMedioPago;
-	}
-
-	public void setIdTipoMedioPago(Long idTipoMedioPago) {
-		this.idTipoMedioPago = idTipoMedioPago;
-	}
-
-	public Long getIdBanco() {
-		return idBanco;
-	}
-
-	public void setIdBanco(Long idBanco) {
-		this.idBanco = idBanco;
-	}
-
-	public String getReferencia() {
-		return referencia;
-	}
-
-	public void setReferencia(String referencia) {
-		this.referencia = referencia;
-	}
-
-	public Long getIdClienteDomicilio() {
-		return idClienteDomicilio;
-	}
-
-	public void setIdClienteDomicilio(Long idClienteDomicilio) {
-		this.idClienteDomicilio = idClienteDomicilio;
-	}
+	}		
 
 	public String getCorreos() {
 		return correos;

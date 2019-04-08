@@ -45,8 +45,8 @@ import org.apache.log4j.Logger;
 public class Transaccion extends TransaccionFactura {
 
   private static final Logger LOG    = Logger.getLogger(Transaccion.class);
-	private static final Long TIMBRADA = 3L;
-	private static final Long CANCELADA= 5L;
+	private static final Long TIMBRADA = 12L;
+	private static final Long CANCELADA= 14L;
 	private TcManticFicticiasBitacoraDto bitacora;
 	private TcManticFicticiasDto orden;	
 	private List<Articulo> articulos;

@@ -26,7 +26,9 @@ import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturamaBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasArchivosDto;
+import mx.org.kaana.mantic.db.dto.TcManticFacturasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
+import mx.org.kaana.mantic.enums.EEstatusFacturas;
 import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 import org.apache.commons.logging.Log;
@@ -350,9 +352,9 @@ public class TransaccionFactura extends IBaseTnx{
 			cfdi= CFDIFactory.getInstance().createCfdi(this.cliente, this.articulos);
 			if(isCorrectId(cfdi.getId())) {
 				this.idFacturamaRegistro= cfdi.getId();
-				regresar= this.actualizarFactura(sesion, this.cliente.getIdFactura(), cfdi);
-				Calendar calendar= Fecha.toCalendar(cfdi.getDate().substring(0, 10), cfdi.getDate().substring(11, 19));
-				String path = Configuracion.getInstance().getPropiedadSistemaServidor("facturama").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat("/")+ calendar.get(Calendar.YEAR)+ "/"+ Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase()+"/"+ this.cliente.getRfc().concat("/");
+				Calendar calendar= Fecha.toCalendar(cfdi.getDate().substring(0, 10), cfdi.getDate().substring(11, 19));				
+				String path = Configuracion.getInstance().getPropiedadSistemaServidor("facturama").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat("/")+ calendar.get(Calendar.YEAR)+ "/"+ Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase()+"/"+ this.cliente.getRfc().concat("/");				
+				regresar= this.actualizarFactura(sesion, this.cliente.getIdFactura(), cfdi, path);				
 				CFDIFactory.getInstance().download(path, this.cliente.getRfc().concat("-").concat(cfdi.getFolio()), cfdi.getId());
 				this.toUpdateData(sesion, cfdi, this.cliente.getIdFactura(), path);
 				this.insertFiles(sesion, calendar, cfdi, path, this.cliente.getRfc(), this.cliente.getIdFactura());
@@ -372,6 +374,7 @@ public class TransaccionFactura extends IBaseTnx{
 		try {
 			if(factura!= null && factura.getSelloSat()== null && factura.getCadenaOriginal()== null) {
 				LOG.warn("Actualizando datos de la factura ["+ detail.getFolio()+ "] del cliente ["+ this.cliente.getRfc()+ "] porque estaba incompleto el registro !");			
+				registrarBitacoraFactura(sesion, idFactura, EEstatusFacturas.TIMBRADA.getIdEstatusFactura(), "ESTA FACTURA FUE RECUPERADA DE FACTURAMA.");
 				Complement complement = detail.getComplement();
 				factura.setComentarios("ESTA FACTURA FUE RECUPERADA DE FACTURAMA !");
 				factura.setSelloCfdi(complement.getTaxStamp().getCfdiSign());
@@ -380,6 +383,7 @@ public class TransaccionFactura extends IBaseTnx{
 				factura.setCertificadoSat(complement.getTaxStamp().getSatCertNumber());
 				factura.setFolioFiscal(complement.getTaxStamp().getUuid());
 				factura.setCadenaOriginal(this.toCadenaOriginal(path.concat(this.cliente.getRfc()).concat("-").concat(detail.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase())));
+				factura.setIdFacturaEstatus(EEstatusFacturas.TIMBRADA.getIdEstatusFactura());
 				DaoFactory.getInstance().update(sesion, factura);
 			} // if
 		} // try
@@ -435,18 +439,44 @@ public class TransaccionFactura extends IBaseTnx{
 			"" // comentarios
 		);
 		DaoFactory.getInstance().insert(sesion, pdf);
-	} // insertFiles
+	} // insertFiles	
 	
-	protected boolean actualizarFactura(Session sesion, Long id, Cfdi cfdi) throws Exception {
+	protected boolean actualizarFactura(Session sesion, Long id, Cfdi cfdi, String path) throws Exception {
 		boolean regresar           = false;
 		TcManticFacturasDto factura= null;		
 		factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, id);
+		registrarBitacoraFactura(sesion, id, EEstatusFacturas.TIMBRADA.getIdEstatusFactura(), "Timbrado de factura.");
+		Complement complement = cfdi.getComplement();
 		factura.setIdFacturama(cfdi.getId());
 		factura.setFolio(cfdi.getFolio());					
 		factura.setTimbrado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		factura.setSelloCfdi(complement.getTaxStamp().getCfdiSign());
+		factura.setSelloSat(complement.getTaxStamp().getSatSign());
+		factura.setCertificadoDigital(cfdi.getCertNumber());
+		factura.setCertificadoSat(complement.getTaxStamp().getSatCertNumber());
+		factura.setFolioFiscal(complement.getTaxStamp().getUuid());
+		factura.setCadenaOriginal(this.toCadenaOriginal(path.concat(this.cliente.getRfc()).concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase())));
+		factura.setIdFacturaEstatus(EEstatusFacturas.TIMBRADA.getIdEstatusFactura());
 		regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;		
 		return regresar;
-	} // actualizarCliente
+	} // actualizarFactura
+	
+	protected boolean registrarBitacoraFactura(Session sesion, Long idFactura, Long idFacturaEstatus, String justificacion) throws Exception{
+		boolean regresar= false;
+		TcManticFacturasBitacoraDto bitacora= null;
+		try {
+			bitacora= new TcManticFacturasBitacoraDto();
+			bitacora.setIdFactura(idFactura);
+			bitacora.setIdFacturaEstatus(idFacturaEstatus);
+			bitacora.setIdUsuario(JsfBase.getIdUsuario());
+			bitacora.setJustificacion(justificacion);
+			regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // registrarBitacoraFactura
 	
 	protected void actualizarSaldoCatalogoCliente(Session sesion, Long idCliente, Double cantidad, boolean sumar) throws Exception{
 		TcManticClientesDto cliente= null;

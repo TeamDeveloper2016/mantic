@@ -44,6 +44,7 @@ import mx.org.kaana.mantic.db.dto.TcManticVentasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.db.dto.TrManticVentaMedioPagoDto;
+import mx.org.kaana.mantic.enums.EEstatusFacturas;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.enums.ETipoPago;
@@ -560,7 +561,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			this.correosFactura= correos.toString();
 			factura.setCorreos(this.correosFactura);
 			factura.setObservaciones(this.ventaFinalizada.getObservaciones());
+			factura.setIdFacturaEstatus(EEstatusFacturas.REGISTRADA.getIdEstatusFactura());
 			if(DaoFactory.getInstance().insert(sesion, factura)>= 1L){	
+				registrarBitacoraFactura(sesion, factura.getIdFactura(), EEstatusFacturas.REGISTRADA.getIdEstatusFactura(), this.ventaFinalizada.getObservaciones());
 				getOrden().setIdFactura(factura.getIdFactura());
 				regresar= DaoFactory.getInstance().update(sesion, getOrden())>= 1L;				
 			} // if
@@ -956,6 +959,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		ClienteFactura clienteFactura= null;
 		try {
 			sesion.flush();
+			actualizarClienteFacturama(sesion, this.ventaFinalizada.getTicketVenta().getIdCliente());
 			gestor= new CFDIGestor(this.ventaFinalizada.getTicketVenta().getIdVenta());			
 			factura= new TransaccionFactura();
 			factura.setArticulos(gestor.toDetalleCfdiVentas(sesion));
@@ -976,6 +980,16 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			Error.mensaje(e);
 		} // catch				
 	} // generarTimbradoFactura
+	
+	private void actualizarClienteFacturama(Session sesion, Long idCliente) throws Exception{		
+		CFDIGestor gestor= new CFDIGestor(idCliente);
+		ClienteFactura cliente= gestor.toClienteFacturaUpdateVenta(sesion, this.ventaFinalizada.getTicketVenta().getIdClienteDomicilio());
+		setCliente(cliente);
+		if(cliente.getIdFacturama()!= null)
+			updateCliente(sesion);
+		else
+			super.procesarCliente(sesion);		
+	} // actualizarArticuloFacturama
 	
 	private boolean actualizarVenta(Session sesion, Long idEstatusVenta) throws Exception{
 		boolean regresar             = false;
