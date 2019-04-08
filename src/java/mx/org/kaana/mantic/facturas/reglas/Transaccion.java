@@ -28,6 +28,7 @@ import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
+import mx.org.kaana.mantic.enums.EEstatusFacturas;
 import mx.org.kaana.mantic.enums.EEstatusFicticias;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
@@ -106,33 +107,33 @@ public class Transaccion extends TransaccionFactura {
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar           = false;
 		Map<String, Object> params = null;
-		Long idEstatusFactura      = null;
+		Long idEstatusFicticia     = null;
 		TcManticFacturasDto factura= null;
 		try {
-			idEstatusFactura= EEstatusFicticias.ABIERTA.getIdEstatusFicticia();
+			idEstatusFicticia= EEstatusFicticias.ABIERTA.getIdEstatusFicticia();
 			params= new HashMap<>();
 			if(this.orden!= null)
 				params.put("idFicticia", this.orden.getIdFicticia());
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la factura.");
 			switch(accion) {				
 				case COPIAR:
-					regresar= this.toClonarFiciticia(sesion, idEstatusFactura);
+					regresar= this.toClonarFiciticia(sesion, idEstatusFicticia);
 					break;
 				case AGREGAR:
 				case REGISTRAR:	
 				case DESACTIVAR:
-					idEstatusFactura= accion.equals(EAccion.AGREGAR) ? EEstatusFicticias.ABIERTA.getIdEstatusFicticia() : (accion.equals(EAccion.DESACTIVAR) ? this.orden.getIdFicticiaEstatus() : idEstatusFactura);
-					regresar= this.orden.getIdFicticia()!= null && !this.orden.getIdFicticia().equals(-1L) ? actualizarFicticia(sesion, idEstatusFactura) : registrarFicticia(sesion, idEstatusFactura);					
+					idEstatusFicticia= accion.equals(EAccion.AGREGAR) ? EEstatusFicticias.ABIERTA.getIdEstatusFicticia() : (accion.equals(EAccion.DESACTIVAR) ? this.orden.getIdFicticiaEstatus() : idEstatusFicticia);
+					regresar= this.orden.getIdFicticia()!= null && !this.orden.getIdFicticia().equals(-1L) ? actualizarFicticia(sesion, idEstatusFicticia, EEstatusFacturas.REGISTRADA.getIdEstatusFactura()) : registrarFicticia(sesion, idEstatusFicticia);					
 					break;
 				case MODIFICAR:
-					regresar= actualizarFicticia(sesion, EEstatusFicticias.ABIERTA.getIdEstatusFicticia());					
+					regresar= actualizarFicticia(sesion, EEstatusFicticias.ABIERTA.getIdEstatusFicticia(), EEstatusFacturas.REGISTRADA.getIdEstatusFactura());					
 					break;				
 				case ELIMINAR:
-					idEstatusFactura= EEstatusFicticias.CANCELADA.getIdEstatusFicticia();
+					idEstatusFicticia= EEstatusFicticias.CANCELADA.getIdEstatusFicticia();
 					this.orden= (TcManticFicticiasDto) DaoFactory.getInstance().findById(sesion, TcManticFicticiasDto.class, this.orden.getIdFicticia());
-					this.orden.setIdFicticiaEstatus(idEstatusFactura);					
+					this.orden.setIdFicticiaEstatus(idEstatusFicticia);					
 					if(DaoFactory.getInstance().update(sesion, this.orden)>= 1L)
-						regresar= registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFactura, this.justificacion);					
+						regresar= registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, this.justificacion);					
 					break;
 				case JUSTIFICAR:		
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
@@ -146,7 +147,9 @@ public class Transaccion extends TransaccionFactura {
 								params.put("correos", this.correos);
 								params.put("comentarios", this.comentarios);								
 								params.put("timbrado", new Timestamp(Calendar.getInstance().getTimeInMillis()));								
+								params.put("idFacturaEstatus", EEstatusFacturas.TIMBRADA.getIdEstatusFactura());								
 								DaoFactory.getInstance().update(sesion, TcManticFacturasDto.class, factura.getIdFactura(), params);
+								registrarBitacoraFactura(sesion, factura.getIdFactura(), EEstatusFacturas.TIMBRADA.getIdEstatusFactura(), "Timbrado de factura ficticia.");
 								this.generarTimbradoFactura(sesion, this.orden.getIdFicticia(), factura.getIdFactura(), this.correos);
 							} // 
 						} // if
@@ -157,7 +160,9 @@ public class Transaccion extends TransaccionFactura {
 								if(factura!= null && factura.getIdFacturama()!= null) {
 									CFDIFactory.getInstance().cfdiRemove(factura.getIdFacturama());
 									factura.setCancelada(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+									factura.setIdFacturaEstatus(EEstatusFacturas.CANCELADA.getIdEstatusFactura());								
 									regresar= DaoFactory.getInstance().update(sesion, factura)>= 0;
+									registrarBitacoraFactura(sesion, factura.getIdFactura(), EEstatusFacturas.CANCELADA.getIdEstatusFactura(), "Cancelación de factura ficticia.");
 								} // if
 								else
 									throw new Exception("No fue posible cancelar la factura, por favor vuelva a intentarlo !");															
@@ -165,7 +170,7 @@ public class Transaccion extends TransaccionFactura {
 					} // if
 					break;								
 				case REPROCESAR:
-					regresar= actualizarFicticia(sesion, EEstatusFicticias.TIMBRADA.getIdEstatusFicticia());				
+					regresar= actualizarFicticia(sesion, EEstatusFicticias.TIMBRADA.getIdEstatusFicticia(), EEstatusFacturas.TIMBRADA.getIdEstatusFactura());				
 					break;		
 				case NO_APLICA:
 					params.put("idFicticia", this.orden.getIdFicticia());
@@ -223,7 +228,7 @@ public class Transaccion extends TransaccionFactura {
 		return regresar;
 	} // registrarFicticia
 	
-	private boolean actualizarFicticia(Session sesion, Long idEstatusFicticia) throws Exception{
+	private boolean actualizarFicticia(Session sesion, Long idEstatusFicticia, Long idEstatusFactura) throws Exception{
 		boolean regresar           = false;
 		Map<String, Object>params  = null;
 		TcManticFacturasDto factura=null;
@@ -235,7 +240,9 @@ public class Transaccion extends TransaccionFactura {
 			factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
 			factura.setIdVenta(null);
 			factura.setObservaciones(this.justificacion);
+			factura.setIdFacturaEstatus(idEstatusFactura);
 			if(DaoFactory.getInstance().update(sesion, factura)>= 1L){
+				registrarBitacoraFactura(sesion, factura.getIdFactura(), idEstatusFicticia, this.justificacion);
 				if(registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "")){
 					params= new HashMap<>();
 					params.put("idFicticia", this.orden.getIdFicticia());
@@ -304,7 +311,9 @@ public class Transaccion extends TransaccionFactura {
 			factura.setIntentos(0L);
 			factura.setCorreos("");
 			factura.setObservaciones(this.justificacion);
+			factura.setIdFacturaEstatus(EEstatusFacturas.REGISTRADA.getIdEstatusFactura());
 			regresar= DaoFactory.getInstance().insert(sesion, factura);
+			registrarBitacoraFactura(sesion, factura.getIdFactura(), EEstatusFacturas.REGISTRADA.getIdEstatusFactura(), this.justificacion);
 		} // try
 		finally {
 			setMessageError("Error al registrar la factura.");
@@ -452,7 +461,9 @@ public class Transaccion extends TransaccionFactura {
 				factura.setIdUsuario(JsfBase.getIdUsuario());
 				factura.setObservaciones(null);
 				factura.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+				factura.setIdFacturaEstatus(EEstatusFacturas.REGISTRADA.getIdEstatusFactura());
   			regresar= DaoFactory.getInstance().insert(sesion, factura)> 0L;
+				registrarBitacoraFactura(sesion, factura.getIdFactura(), EEstatusFacturas.REGISTRADA.getIdEstatusFactura(), "Clonacion de factura ficticia.");
 				if(regresar) {
 					this.orden.setIdFactura(factura.getIdFactura());
 					if(DaoFactory.getInstance().update(sesion, this.orden)>= 1L){
