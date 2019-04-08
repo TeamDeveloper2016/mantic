@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.taller.backing;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +9,9 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -18,16 +21,20 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelect;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticServiciosBitacoraDto;
 import mx.org.kaana.mantic.enums.ETipoArticulo;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import mx.org.kaana.mantic.taller.beans.RegistroServicio;
 import mx.org.kaana.mantic.taller.reglas.Transaccion;
+import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 
 @Named(value = "manticTallerFiltro")
 @ViewScoped
@@ -239,5 +246,114 @@ public class Filtro extends Comun implements Serializable {
 		JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Taller/filtro");
 		return "/Paginas/Mantic/Taller/detalle".concat(Constantes.REDIRECIONAR);
 	}
+  
+  public String doPagarServicio() {  
+    mx.org.kaana.mantic.ventas.reglas.Transaccion transaccion= null;
+    TicketVenta ticketVenta = new TicketVenta();
+    Entity seleccionado = null;
+    List<Articulo> articulos = null;
+    String regresar = "/Paginas/Mantic/Taller/filtro";
+    Map<String, Object> params= null;
+    try {			
+			params=new HashMap<>();
+      seleccionado = ((Entity)this.attrs.get("seleccionado"));
+      ticketVenta.setIdEmpresa(seleccionado.toLong("idEmpresa"));
+      params.put("idEmpresa",seleccionado.toLong("idEmpresa"));
+      ticketVenta.setIdCliente(seleccionado.toLong("idCliente"));
+      Value value= DaoFactory.getInstance().toField("TcManticAlmacenesDto", "almacen", params, "idAlmacen");
+		  if(value.getData()!= null)
+        ticketVenta.setIdAlmacen(value.toLong());
+      ticketVenta.setIdUsuario(JsfBase.getIdUsuario());
+      ticketVenta.setDescuentos(seleccionado.toDouble("descuentos"));
+      ticketVenta.setImpuestos(seleccionado.toDouble("impuestos") != null? seleccionado.toDouble("impuestos"): 0.0D);
+      ticketVenta.setSubTotal(seleccionado.toDouble("subTotal") != null?seleccionado.toDouble("subTotal"):0.0D);
+      ticketVenta.setTotal(seleccionado.toDouble("total") != null?seleccionado.toDouble("total"):0.0D);
+      articulos = toListArticulos(seleccionado, ticketVenta);
+			transaccion = new mx.org.kaana.mantic.ventas.reglas.Transaccion(ticketVenta,articulos);
+			if (transaccion.ejecutar(EAccion.AGREGAR)) {
+        doEstatusCaja(seleccionado, transaccion.getOrden().getIdVenta());
+        JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
+        JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Taller/filtro");		
+        JsfBase.setFlashAttribute("idVenta", transaccion.getOrden().getIdVenta());
+        JsfBase.setFlashAttribute("fechaRegistro", new Date(Fecha.getFechaCalendar( seleccionado.toString("registro")).getTimeInMillis()));	
+        regresar="/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR);
+			} // if
+			else {
+				JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);  
+      }
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+			Methods.clean(params);
+		} // finally
+    return  regresar;
+  } 
+  
+  public List<Articulo> toListArticulos(Entity seleccionado, TicketVenta venta) throws Exception {
+		Long idOrdenDetalle= new Long((int)(Math.random()*10000));
+		Map<String, Object> params= null;
+    List<Articulo> articulos = new ArrayList();
+    List<Entity> articulosServicio = null;
+		try {
+			params=new HashMap<>();
+			params.put("idServicio", seleccionado.getKey());
+			articulosServicio= DaoFactory.getInstance().toEntitySet("VistaServiciosDetallesDto", "articulosDetalle", params);
+      for(Entity articuloServicio: articulosServicio){
+        Articulo item= new Articulo(
+				false,
+				venta.getTipoDeCambio(),
+				articuloServicio.toString("nombre"), 
+				articuloServicio.toString("codigo")== null? "": articuloServicio.toString("codigo"),
+				articuloServicio.toDouble("costo"),
+				articuloServicio.toString("descuento")== null? "": articuloServicio.toString("descuento"),
+				-1L,
+				venta.getExtras(), 
+				articuloServicio.toDouble("importe"),
+				articuloServicio.toString("propio"),
+				articuloServicio.toDouble("iva"), 
+				articuloServicio.toDouble("impuestos"), 
+				articuloServicio.toDouble("subTotal"), 
+				articuloServicio.toDouble("cantidad"), 
+				-1* idOrdenDetalle, 
+				articuloServicio.toLong("idArticulo"), 
+				0D,
+				-1L,
+				false,//this.attrs.get("ultimo")!= null,
+				false,//this.attrs.get("solicitado")!= null,
+				articuloServicio.toDouble("stock")== null? 0D: articuloServicio.toDouble("stock"),
+				0D,
+				articuloServicio.toString("sat"),
+				articuloServicio.toString("unidadMedida"),
+				1L
+        );
+        articulos.add(item);
+      }
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+    return articulos;
+	}
+  
+  public void doEstatusCaja(Entity seleccionado, Long idVenta){
+		Transaccion transaccion              = null;
+		TcManticServiciosBitacoraDto bitacora= null;
+		try {
+			bitacora= new TcManticServiciosBitacoraDto();
+			bitacora.setIdServicio(seleccionado.getKey());
+			bitacora.setIdServicioEstatus(8L);
+			bitacora.setSeguimiento("SE AGREGÓ LA VENTA CON ID: "+ idVenta);
+			bitacora.setIdUsuario(JsfBase.getIdUsuario());
+			transaccion= new Transaccion(bitacora);
+			transaccion.ejecutar(EAccion.JUSTIFICAR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	}	// doEstatusCaja
 	
 }
