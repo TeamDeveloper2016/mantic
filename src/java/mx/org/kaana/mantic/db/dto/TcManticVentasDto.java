@@ -27,8 +27,9 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 @Entity
 @Table(name="tc_mantic_ventas")
 public class TcManticVentasDto implements IBaseDto, Serializable {
-		
-  private static final long serialVersionUID=1L;
+
+	private static final long serialVersionUID=3391576865327806322L;
+	
   @Column (name="descuentos")
   private Double descuentos;
   @Column (name="id_factura")
