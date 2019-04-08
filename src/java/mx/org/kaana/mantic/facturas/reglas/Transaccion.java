@@ -242,7 +242,7 @@ public class Transaccion extends TransaccionFactura {
 			factura.setObservaciones(this.justificacion);
 			factura.setIdFacturaEstatus(idEstatusFactura);
 			if(DaoFactory.getInstance().update(sesion, factura)>= 1L){
-				registrarBitacoraFactura(sesion, factura.getIdFactura(), idEstatusFicticia, this.justificacion);
+				registrarBitacoraFactura(sesion, factura.getIdFactura(), idEstatusFactura, this.justificacion);
 				if(registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "")){
 					params= new HashMap<>();
 					params.put("idFicticia", this.orden.getIdFicticia());
