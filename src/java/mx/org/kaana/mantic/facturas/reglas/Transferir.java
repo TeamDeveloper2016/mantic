@@ -37,6 +37,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasArchivosDto;
+import mx.org.kaana.mantic.db.dto.TcManticFacturasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDetallesDto;
@@ -202,6 +203,23 @@ public class Transferir extends IBaseTnx {
 		);
 		return regresar;
 	}
+	
+	protected boolean registrarBitacoraFactura(Session sesion, Long idFactura, Long idFacturaEstatus, String justificacion) throws Exception{
+		boolean regresar= false;
+		TcManticFacturasBitacoraDto bitacora= null;
+		try {
+			bitacora= new TcManticFacturasBitacoraDto();
+			bitacora.setIdFactura(idFactura);
+			bitacora.setIdFacturaEstatus(idFacturaEstatus);
+			bitacora.setIdUsuario(JsfBase.getIdUsuario());
+			bitacora.setJustificacion(justificacion);
+			regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // registrarBitacoraFactura
 	
 	private Long toFindEntidad(Session sesion, String entidad) throws Exception {
 		Long regresar= -1L;
@@ -518,7 +536,9 @@ public class Transferir extends IBaseTnx {
 			factura.setCertificadoSat(complement.getTaxStamp().getSatCertNumber());
 			factura.setFolioFiscal(complement.getTaxStamp().getUuid());
 			factura.setCadenaOriginal(this.toCadenaOriginal(path.concat(cfdi.getRfc()).concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase())));
+			factura.setIdFacturaEstatus(EEstatusFacturas.TIMBRADA.getIdEstatusFactura());
 			DaoFactory.getInstance().update(sesion, factura);
+			registrarBitacoraFactura(sesion, idFactura, EEstatusFacturas.TIMBRADA.getIdEstatusFactura(), factura.getComentarios());
 		} // if
 	}
 	
@@ -580,6 +600,7 @@ public class Transferir extends IBaseTnx {
 				// GENERA LA CADENA ORIGINAL BASA EN EL ARCHIVO XML QUE SE DESCARGO
 				factura.setCadenaOriginal(this.toCadenaOriginal(path.concat(cfdi.getRfc()).concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase())));
 				DaoFactory.getInstance().insert(sesion, factura);
+				registrarBitacoraFactura(sesion, factura.getIdFactura(), factura.getIdFacturaEstatus(), factura.getComentarios());
 				// GENERA EL REGISTRO DETALLADO DE LA FACTURA
 				TcManticFicticiasDto ficticia= this.toFicticia(sesion, cfdi, detail, calendar, idCliente, factura.getIdFactura());
 				DaoFactory.getInstance().insert(sesion, ficticia);
