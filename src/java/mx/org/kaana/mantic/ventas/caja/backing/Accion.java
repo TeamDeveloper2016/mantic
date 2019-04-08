@@ -698,6 +698,7 @@ public class Accion extends IBaseVenta implements Serializable {
 					this.attrs.put("telefono", motor.toTelefonoCliente());
 					this.attrs.put("celular", motor.toCelularCliente());					
 					this.attrs.put("clienteRegistrado", true);
+					loadDomiciliosFactura(seleccionado.getKey());
 				} // if
 				else{
 					setDomicilio(new Domicilio());
@@ -944,7 +945,8 @@ public class Accion extends IBaseVenta implements Serializable {
 				cfdis= (List<UISelectEntity>) this.attrs.get("cfdis");
 				cfdi= (UISelectEntity) this.attrs.get("cfdi");
 				ticketVenta.setIdUsoCfdi(cfdis.get(cfdis.indexOf(cfdi)).getKey());
-				regresar.setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));				
+				regresar.setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));		
+				ticketVenta.setIdClienteDomicilio(((Entity)this.attrs.get("domicilioFactura")).getKey());		
 			} // if			
 			regresar.setTicketVenta(ticketVenta);
 			for(ClienteTipoContacto record: this.clientesTiposContacto)
@@ -1360,4 +1362,26 @@ public class Accion extends IBaseVenta implements Serializable {
 			Methods.clean(campos);
 		} // finally
 	} // doMostrarDetalleTicket
+	
+	private void loadDomiciliosFactura(Long idCliente) throws Exception{
+		Map<String, Object>params     = null;
+		List<UISelectEntity>domicilios= null;
+		List<Columna>campos           = null;
+		try {
+			params= new HashMap<>();					
+			params.put("idCliente", idCliente);
+			campos= new ArrayList<>();
+			campos.add(new Columna("calle", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("asentamiento", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("localidad", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("municipio", EFormatoDinamicos.MAYUSCULAS));
+			domicilios= UIEntity.build("VistaClientesDto", "domiciliosCliente", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("domiciliosFactura", domicilios);
+			if(!domicilios.isEmpty())
+				this.attrs.put("domicilioFactura", UIBackingUtilities.toFirstKeySelectEntity(domicilios));
+		} // try		
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // loadDomicilios
 }
