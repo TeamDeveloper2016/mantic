@@ -114,7 +114,7 @@ public class Transferir extends IBaseTnx {
 	}	// ejecutar
 
   private TcManticFicticiasDto toFicticia(Session sesion, CfdiSearchResult cfdi, Cfdi detail, Calendar calendar, Long idCliente, Long idFactura) throws Exception {
-		Long consecutivo= this.toSiguiente(sesion);
+		Long consecutivo= this.toSiguiente(sesion, calendar);
 		Long cuenta     = this.toCuenta(sesion, calendar);
 		double taxes    = 0;
 		for (Tax tax: detail.getTaxes()) {
@@ -612,17 +612,17 @@ public class Transferir extends IBaseTnx {
 				this.toDetail(sesion, ficticia.getIdFicticia(), detail);
 				TcManticFicticiasBitacoraDto bitacora= new TcManticFicticiasBitacoraDto(ficticia.getConsecutivo(), "FACTURA REGISTRADA DE FORMA AUTOMATICA", 3l, 1L, ficticia.getIdFicticia(), -1L, ficticia.getTotal());
 				DaoFactory.getInstance().insert(sesion, bitacora);
-				sesion.flush();
+				// sesion.flush();
 			} // if
 		} // if
 	}
 	
-	private Long toSiguiente(Session sesion) throws Exception {
+	private Long toSiguiente(Session sesion, Calendar dia) throws Exception {
 		Long regresar             = 1L;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("ejercicio", new Long(dia.get(Calendar.YEAR)));
 			params.put("idEmpresa", JsfBase.getAutentifica()!= null? JsfBase.getAutentifica().getEmpresa().getIdEmpresa(): 1L);
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasDto", "siguiente", params, "siguiente");
 			if(next!= null && next.getData()!= null)
