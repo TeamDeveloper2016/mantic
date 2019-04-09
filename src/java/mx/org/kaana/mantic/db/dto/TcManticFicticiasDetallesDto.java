@@ -36,7 +36,7 @@ public class TcManticFicticiasDetallesDto implements IBaseDto, Serializable {
   private String unidadMedida;
   @Column (name="costo")
   private Double costo;
-  @Column (name="id_ficticia")
+  @Column (name="id_venta")
   private Long idFicticia;
   @Column (name="descuento")
   private String descuento;
@@ -143,6 +143,14 @@ public class TcManticFicticiasDetallesDto implements IBaseDto, Serializable {
     return idFicticia;
   }
 
+  public void setIdVenta(Long idFicticia) {
+    this.idFicticia = idFicticia;
+  }
+
+  public Long getIdVenta() {
+    return idFicticia;
+  }
+
   public void setDescuento(String descuento) {
     this.descuento = descuento;
   }
@@ -196,6 +204,14 @@ public class TcManticFicticiasDetallesDto implements IBaseDto, Serializable {
   }
 
   public Long getIdFicticiaDetalle() {
+    return idFicticiaDetalle;
+  }
+
+  public void setIdVentaDetalle(Long idFicticiaDetalle) {
+    this.idFicticiaDetalle = idFicticiaDetalle;
+  }
+
+  public Long getIdVentaDetalle() {
     return idFicticiaDetalle;
   }
 

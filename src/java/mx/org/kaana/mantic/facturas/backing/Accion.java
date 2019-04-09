@@ -139,7 +139,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
           break;
         case MODIFICAR:			
         case CONSULTAR:			
-          this.setAdminOrden(new AdminFacturas((FacturaFicticia)DaoFactory.getInstance().toEntity(FacturaFicticia.class, "VistaFicticiasDto", "facturaFicticia", this.attrs)));
+          this.setAdminOrden(new AdminFacturas((FacturaFicticia)DaoFactory.getInstance().toEntity(FacturaFicticia.class, "VistaFicticiasDto", "ficticia", this.attrs)));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));					
 					this.attrs.put("consecutivo", ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo());	
 					factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(TcManticFacturasDto.class, ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFactura());
@@ -239,11 +239,11 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(eaccion)) {
 				if(eaccion.equals(EAccion.AGREGAR)) { 				  
-    			UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la factura ', '"+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+    			UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la factura ', '"+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getTicket()+ "');");
 					this.init();
 				} // if	
 				if(eaccion.equals(EAccion.MODIFICAR))
-				  JsfBase.addMessage("Se modificó la factura con consecutivo ["+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo()+ "].", ETipoMensaje.INFORMACION);
+				  JsfBase.addMessage("Se modificó la factura con consecutivo ["+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getTicket()+ "].", ETipoMensaje.INFORMACION);
 				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
   			JsfBase.setFlashAttribute("idFicticia", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia());				
 			} // if
@@ -387,12 +387,13 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		((FacturaFicticia)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
 		((FacturaFicticia)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
 		((FacturaFicticia)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
+		((FacturaFicticia)this.getAdminOrden().getOrden()).setUtilidad(this.getAdminOrden().getTotales().getUtilidad());
 		((FacturaFicticia)this.getAdminOrden().getOrden()).setIdClienteDomicilio(((Entity)this.attrs.get("domicilio")).getKey());		
 		if(((FacturaFicticia)this.getAdminOrden().getOrden()).getTipoDeCambio()< 1)
 			((FacturaFicticia)this.getAdminOrden().getOrden()).setTipoDeCambio(1D);
 	} // loadOrdenVenta
 	
-	public void doCerrarTicket(){		
+	public void doCerrarTicket() {		
 		Transaccion transaccion= null;
     try {								
 			if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
@@ -603,7 +604,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 					else{		
 						global= Double.valueOf(this.attrs.get("descuentoGlobal").toString());
 						getAdminOrden().toCalculate();
-						if(global < getAdminOrden().getTotales().getUtilidad()){
+						if(global < getAdminOrden().getTotales().getUtilidad()) {
 							getAdminOrden().getTotales().setGlobal(global);							
 							getAdminOrden().toCalculate();
 						} // if

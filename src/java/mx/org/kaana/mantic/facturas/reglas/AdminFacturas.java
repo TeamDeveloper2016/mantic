@@ -54,15 +54,28 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 		if(loadDefault)
 			this.getArticulos().add(new ArticuloVenta(-1L, true));
 		this.setIdSinIva(1L);
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+      params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+ 			Value value= DaoFactory.getInstance().toField("TcManticAlmacenesDto", "almacen", params, "idAlmacen");
+    	if(value.getData()!= null)
+				this.orden.setIdAlmacen(value.toLong());
+			else
+				this.orden.setIdAlmacen(1L);
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
 		LOG.warn("Forzar que todos los precios capturados ya son netos, por lo tanto se les descuenta el IVA");
 		this.toCalculate();
 	}
 	
 	public AdminFacturas(FacturaFicticia orden, List<Entity> tickets) throws Exception {
-		this.orden= orden;		
-		Map<String, Object> params=null;
+		this.orden                = orden;		
+		Map<String, Object> params= null;
 		try {
-			params=new HashMap<>();
+			params= new HashMap<>();
 			// sacar los idVenta de todos los tickets seleccionados
 			StringBuilder sb= new StringBuilder(tickets== null || tickets.isEmpty()? "-1, ": "");
 			tickets.forEach((item) -> {
@@ -127,6 +140,12 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 			this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			// this.getArticulos().add(new ArticuloVenta(-1L, true));
 			this.setIdSinIva(1L);
+      params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+ 			Value value= DaoFactory.getInstance().toField("TcManticAlmacenesDto", "almacen", params, "idAlmacen");
+    	if(value.getData()!= null)
+				this.orden.setIdAlmacen(value.toLong());
+			else
+				this.orden.setIdAlmacen(1L);
 			this.toCalculate();
 		} // try
 		finally {
@@ -181,6 +200,7 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 
 	@Override
 	public Long getIdAlmacen() {
-		return -1L;
+		return this.orden.getIdAlmacen();
 	}
+	
 }

@@ -43,7 +43,7 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   private Double global;
   @Column (name="total")
   private Double total;
-  @Column (name="id_ficticia_estatus")
+  @Column (name="id_venta_estatus")
   private Long idFicticiaEstatus;
   @Column (name="tipo_de_cambio")
   private Double tipoDeCambio;
@@ -87,13 +87,23 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   private Long idFactura;
   @Column (name="id_tipo_venta")
   private Long idTipoVenta;
+  @Column (name="id_almacen")
+  private Long idAlmacen;
+  @Column (name="id_facturar")
+  private Long idFacturar;
+  @Column (name="ticket")
+  private String ticket;
+  @Column (name="cticket")
+  private Long cticket;
+  @Column (name="utilidad")
+  private Double utilidad;
 
   public TcManticFicticiasDto() {
     this(new Long(-1L));
   }
 
   public TcManticFicticiasDto(Long key) {
-    this(null, null, new Long(-1L), null, null, null, null, 1D, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null);
+    this(null, null, new Long(-1L), "0", null, null, null, 1D, null, null, null, null, "0", null, null, null, null, null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null);
     setKey(key);
   }
 
@@ -128,8 +138,13 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     setDia(dia);
     setReferencia(referencia);
 		this.idClienteDomicilio= idClienteDomicilio;
-		this.idFactura= idFactura;
+		this.idFactura  = idFactura;
 		this.idTipoVenta= idTipoVenta;
+		this.idAlmacen  = 1L;
+		this.idFacturar = 1L;
+		this.ticket     = consecutivo;
+		this.cticket    = orden;
+		this.utilidad   = 0D;
   }
 	
   public void setDescuentos(Double descuentos) {
@@ -153,6 +168,14 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   }
 
   public Long getIdFicticia() {
+    return idFicticia;
+  }
+
+  public void setIdVenta(Long idFicticia) {
+    this.idFicticia = idFicticia;
+  }
+
+  public Long getIdVenta() {
     return idFicticia;
   }
 
@@ -356,6 +379,46 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 		this.idTipoVenta=idTipoVenta;
 	}
 
+	public Long getIdAlmacen() {
+		return idAlmacen;
+	}
+
+	public void setIdAlmacen(Long idAlmacen) {
+		this.idAlmacen=idAlmacen;
+	}
+
+	public Long getIdFacturar() {
+		return idFacturar;
+	}
+
+	public void setIdFacturar(Long idFacturar) {
+		this.idFacturar=idFacturar;
+	}
+
+	public String getTicket() {
+		return ticket;
+	}
+
+	public void setTicket(String ticket) {
+		this.ticket=ticket;
+	}
+
+	public Long getCticket() {
+		return cticket;
+	}
+
+	public void setCticket(Long cticket) {
+		this.cticket=cticket;
+	}
+
+	public Double getUtilidad() {
+		return utilidad;
+	}
+
+	public void setUtilidad(Double utilidad) {
+		this.utilidad=utilidad;
+	}
+
   @Transient
   @Override
   public Long getKey() {
@@ -426,6 +489,16 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 		regresar.append(getIdFactura());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTipoVenta());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdAlmacen());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdFacturar());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getTicket());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCticket());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getUtilidad());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -461,13 +534,18 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 		regresar.put("referencia", getReferencia());
 		regresar.put("idFactura", getIdFactura());
 		regresar.put("idTipoVenta", getIdTipoVenta());
+		regresar.put("idAlmacen", getIdAlmacen());
+		regresar.put("idFacturar", getIdFacturar());
+		regresar.put("ticket", getTicket());
+		regresar.put("cticket", getCticket());
+		regresar.put("utilidad", getUtilidad());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getDescuentos(), getIdTipoPago(), getIdFicticia(), getExtras(), getGlobal(), getTotal(), getIdFicticiaEstatus(), getTipoDeCambio(), getOrden(), getIdTipoMedioPago(), getIdCliente(), getIdClienteDomicilio(), getDescuento(), getIdBanco(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getDia(), getReferencia(), getIdFactura(), getIdTipoVenta()
+      getDescuentos(), getIdTipoPago(), getIdFicticia(), getExtras(), getGlobal(), getTotal(), getIdFicticiaEstatus(), getTipoDeCambio(), getOrden(), getIdTipoMedioPago(), getIdCliente(), getIdClienteDomicilio(), getDescuento(), getIdBanco(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getDia(), getReferencia(), getIdFactura(), getIdTipoVenta(), getIdAlmacen(), getIdFacturar(), getTicket(), getCticket(), getUtilidad()
     };
     return regresar;
   }

@@ -15,7 +15,7 @@ public class FacturaFicticia extends TcManticFicticiasDto implements Serializabl
 	}
 
 	public FacturaFicticia(Long key) {
-		this(0D, null, -1L, key, "", 0D, 0D, 1L, 1D, -1L, -1L, -1L, -1L, "", null, Long.valueOf(Fecha.getAnioActual()), "", -1L, 0D, 2L, 2L, 0D, "", -1L, new Date(Calendar.getInstance().getTimeInMillis()), "");
+		this(0D, null, -1L, key, "0", 0D, 0D, 1L, 1D, -1L, -1L, -1L, -1L, "0", null, Long.valueOf(Fecha.getAnioActual()), "", -1L, 0D, 2L, 2L, 0D, "", -1L, new Date(Calendar.getInstance().getTimeInMillis()), "");
 	}
 	
 	public FacturaFicticia(Double descuentos, Long idFactura, Long idTipoPago, Long idFicticia, String extras, Double global, Double total, Long idFicticiaEstatus, Double tipoDeCambio, Long orden, Long idTipoMedioPago, Long idCliente, Long idClienteDomicilio, String descuento, Long idBanco, Long ejercicio, String consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Date dia, String referencia) {		

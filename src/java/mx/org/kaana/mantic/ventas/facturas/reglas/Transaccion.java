@@ -113,7 +113,7 @@ public class Transaccion extends TransaccionFactura {
 						this.messageError= "Ocurrio un error al cancelar la factura.";
 						params= new HashMap<>();
 						params.put("idFactura", this.orden.getIdFactura());
-						factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalleFactura", params);
+						factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
 						if(factura!= null && factura.getIdFacturama()!= null) {
 							CFDIFactory.getInstance().cfdiRemove(factura.getIdFacturama());
 							factura.setCancelada(new Timestamp(Calendar.getInstance().getTimeInMillis()));

@@ -49,6 +49,8 @@ public class FacturaDetalle extends BarraProgreso implements Serializable{
 			BigDecimal it=((BigDecimal)this.getFieldValue("TOTAL_FINAL"));
 			params.put("IMPORTE_TOTAL", Numero.redondearSat(it.doubleValue()));
 			String sd=((String)this.getFieldValue("SELLO_SAT"));
+			if(sd== null)
+				sd= "www.ferreteriabonanza.com";
 			params.put("SELLO_DIGITAL", sd.substring(sd.length()- 8, sd.length()));
 			codigoQR= Cadena.replaceParams(this.QR_HACIENDA_TOKEN, this.params);
       matrix = writer.encode(codigoQR, BarcodeFormat.QR_CODE, 400, 400, hints);

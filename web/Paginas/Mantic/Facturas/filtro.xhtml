@@ -65,7 +65,6 @@
               </p:selectOneMenu>
               <p:outputLabel for="consecutivo" value="No. factura:"/>
               <p:inputText id="consecutivo" value="#{manticFacturasFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>               
-              <p:outputLabel for="folio" value="Folio:"/>
               <p:inputText id="folio" value="#{manticFacturasFiltro.attrs.folio}" styleClass="janal-wid-100-txt"/>               
               <p:outputLabel for="razonSocial" value="Cliente:"/>
               <p:autoComplete id="razonSocial" placeholder="RFC o nombre" widgetVar="listadoClientes" var="customCliente" itemLabel="#{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticFacturasFiltro.attrs.cliente}" completeMethod="#{manticFacturasFiltro.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
@@ -149,11 +148,11 @@
               </f:facet>
               <h:outputText value="#{row['cliente']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.ticket}">
               <f:facet name="header">
                 <h:outputText value="No. factura"/>
               </f:facet>
-              <h:outputText value="#{row['consecutivo']}"/>
+              <h:outputText value="#{row['ticket']}"/>
             </p:column>		            
             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.folio}">
               <f:facet name="header">
@@ -272,7 +271,7 @@
   <ui:define name="detalleConfirmacion">
     <h:panelGrid columns="2">
       <p:outputLabel value="No. factura:"/>
-      <p:outputLabel value="#{manticFacturasFiltro.attrs.seleccionado.consecutivo}" styleClass="janal-font-bold"/>      
+      <p:outputLabel value="#{manticFacturasFiltro.attrs.seleccionado.ticket}" styleClass="janal-font-bold"/>      
       <p:outputLabel value="Cliente:"/>
       <p:outputLabel value="#{manticFacturasFiltro.attrs.seleccionado.cliente}" styleClass="janal-font-bold"/>      
       <p:outputLabel value="Importe:"/>

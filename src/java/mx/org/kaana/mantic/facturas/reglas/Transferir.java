@@ -184,9 +184,7 @@ public class Transferir extends IBaseTnx {
 			new Date(Calendar.getInstance().getTimeInMillis()), // Date ultimoIntento, 
 			new Timestamp(calendar.getTimeInMillis()), // Timestamp timbrado, 
 			JsfBase.getAutentifica()!= null? JsfBase.getIdUsuario(): 1L, // Long idUsuario, 
-			null, // Long idFicticia, //**eliminar
 			cfdi.getFolio(), // String folio, 
-			null, // Long idVenta, //**eliminar
 			0L, // Long intentos, 
 			cfdi.getEmail(), // String correos, 
 			"ESTA FACTURA FUE RECUPERADA DE FACTURAMA !", // String comentarios, 

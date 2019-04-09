@@ -183,7 +183,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("idFicticia")) && !this.attrs.get("idFicticia").toString().equals("-1"))
   		sb.append("(tc_mantic_ventas.id_venta=").append(this.attrs.get("idFicticia")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
-  		sb.append("(tc_mantic_ventas.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
+  		sb.append("(tc_mantic_ventas.ticket like '%").append(this.attrs.get("consecutivo")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("folio")))
   		sb.append("(tc_mantic_facturas.folio like '%").append(this.attrs.get("folio")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))

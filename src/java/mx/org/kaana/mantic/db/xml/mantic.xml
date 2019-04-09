@@ -611,7 +611,7 @@
         from      
           tc_mantic_ventas
         where      
-          consecutivo = {consecutivo} and id_venta = {idFicticia} and id_empresa = {idEmpresa} and dia = {dia}
+          consecutivo = {consecutivo} and id_venta = {idFicticia} and id_empresa = {idEmpresa} and date_format(dia, '%Y%m%d') = '{dia}'
       </select>
 			<select id="detalle">
         select      
@@ -623,12 +623,22 @@
       </select>
 			<select id="siguiente">
         select
+					max(cticket)+ 1 as siguiente
+				from 
+					tc_mantic_ventas
+				where
+				  id_empresa= {idEmpresa}
+				  and ejercicio= {ejercicio} 
+			</select>			
+			<select id="cuenta">
+        select
 					max(orden)+ 1 as siguiente
 				from 
 					tc_mantic_ventas
 				where
-				  ejercicio= {ejercicio} 
-				  and id_empresa= {idEmpresa}				
+				  id_empresa= {idEmpresa}
+				  and ejercicio= {ejercicio} 
+				  and date_format(dia, '%Y%m%d')= '{dia}'
 			</select>			
 			<select id="total">
 				select
@@ -4047,7 +4057,7 @@
         from      
           tc_mantic_ventas
         where      
-          consecutivo = {consecutivo} and id_empresa = {idEmpresa} and dia = {dia} and id_venta = {idVenta}
+          consecutivo = {consecutivo} and id_empresa = {idEmpresa} and date_format(dia, '%Y%m%d')= '{dia}' and id_venta = {idVenta}
       </select>
       <select id="detalle">
         select      
@@ -4631,18 +4641,9 @@
         from      
           tc_mantic_facturas
         where      
-          id_factura = {idFactura} and id_venta = {idVenta}
+          id_factura = {idFactura}
       </select>
 			<select id="detalle">
-				select      
-					tc_mantic_facturas.id_factura as id_key,
-          tc_mantic_facturas.*
-        from      
-          tc_mantic_facturas
-        where      
-          id_venta = {idFicticia}
-			</select>
-			<select id="detalleFactura">
 				select      
 					tc_mantic_facturas.id_factura as id_key,
           tc_mantic_facturas.*

@@ -40,7 +40,7 @@ public class TcManticFicticiasBitacoraDto implements IBaseDto, Serializable {
   private Long idFicticia;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_ficticia_bitacora")
+	@Column (name="id_venta_bitacora")
   private Long idFicticiaBitacora;
   @Column (name="importe")
   private Double importe;
@@ -107,11 +107,27 @@ public class TcManticFicticiasBitacoraDto implements IBaseDto, Serializable {
     return idFicticia;
   }
 
+  public void setIdVenta(Long idFicticia) {
+    this.idFicticia = idFicticia;
+  }
+
+  public Long getIdVenta() {
+    return idFicticia;
+  }
+
   public void setIdFicticiaBitacora(Long idFicticiaBitacora) {
     this.idFicticiaBitacora = idFicticiaBitacora;
   }
 
   public Long getIdFicticiaBitacora() {
+    return idFicticiaBitacora;
+  }
+
+  public void setIdVentaBitacora(Long idFicticiaBitacora) {
+    this.idFicticiaBitacora = idFicticiaBitacora;
+  }
+
+  public Long getIdVentaBitacora() {
     return idFicticiaBitacora;
   }
 

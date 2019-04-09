@@ -58,7 +58,7 @@ import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Cierre;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
-public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
+public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 
 	private static final Logger LOG          = Logger.getLogger(Transaccion.class);
 	private static final String GENERAL      = "GENERAL";
@@ -223,7 +223,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		Calendar calendar                    = null;
 		try {
 			this.ventaFinalizada.getDetailApartado().setIdVenta(this.ventaFinalizada.getTicketVenta().getIdVenta());
-			consecutivo= toSiguienteApartado(sesion);
+			consecutivo= this.toSiguienteApartado(sesion);
 			this.ventaFinalizada.getDetailApartado().setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
 			this.ventaFinalizada.getDetailApartado().setOrden(consecutivo);
 			this.ventaFinalizada.getDetailApartado().setEjercicio(Long.valueOf(Fecha.getAnioActual()));
@@ -550,7 +550,6 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		StringBuilder correos      = null;
 		try {			
 			factura= new TcManticFacturasDto();
-			factura.setIdVenta(getOrden().getIdVenta());
 			factura.setIdUsuario(JsfBase.getIdUsuario());
 			factura.setIntentos(0L);
 			correos= new StringBuilder("");

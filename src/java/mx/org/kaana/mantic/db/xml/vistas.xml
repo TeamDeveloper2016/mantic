@@ -6574,6 +6574,39 @@
 			</select>
 		</unit>
 		<unit id="VistaFicticiasDto">
+			<select id="factura">
+				select      
+					tc_mantic_facturas.id_factura as id_key,
+          tc_mantic_facturas.*
+        from      
+          tc_mantic_facturas
+				inner join 
+				  tc_mantic_ventas on tc_mantic_facturas.id_factura= tc_mantic_ventas.id_factura
+        where      
+          tc_mantic_ventas.id_venta = {idVenta}
+			</select>
+			<select id="movimientos">
+				select
+					tc_mantic_ventas_bitacora.id_venta_bitacora as id_key,
+					tc_mantic_ventas_bitacora.consecutivo,
+					tc_mantic_ventas_bitacora.importe,
+					tc_mantic_ventas_bitacora.justificacion,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+				  tc_mantic_ventas_estatus.nombre as estatus,
+					tc_mantic_ventas_bitacora.registro
+				from 
+					tc_mantic_ventas_bitacora
+				inner join
+					tc_mantic_ventas_estatus on tc_mantic_ventas_bitacora.id_venta_estatus= tc_mantic_ventas_estatus.id_venta_estatus
+				inner join
+					tc_janal_usuarios on tc_mantic_ventas_bitacora.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+					tc_mantic_ventas_bitacora.id_venta= {idFicticia}
+				order by
+					tc_mantic_ventas_bitacora.registro desc				
+			</select>	
 			<select id="concentrado">
  				select 
 					ifnull(sum(tc_mantic_garantias.total), 0) as cantidad
@@ -6644,10 +6677,11 @@
 			<select id="lazy">
         select
 					tc_mantic_ventas.id_venta as id_key,
-					tc_mantic_ventas.id_empresa,  
-				  tc_mantic_empresas.clave as empresa,  
-				  tc_mantic_empresas.nombre as nombre_empresa,  
-					tc_mantic_ventas.consecutivo,  													
+					tc_mantic_ventas.id_empresa,
+				  tc_mantic_empresas.clave as empresa,
+				  tc_mantic_empresas.nombre as nombre_empresa,
+					tc_mantic_ventas.consecutivo,
+					tc_mantic_ventas.ticket,
 					tc_mantic_ventas.total,
 					tc_mantic_ventas.sub_total,
 					tc_mantic_ventas.impuestos as iva,
@@ -6725,7 +6759,7 @@
 				order by
 					tc_mantic_ventas_detalles.registro
 			</select>
-			<select id="facturaFicticia">				
+			<select id="ficticia">				
         select      
 				  tc_mantic_ventas.id_venta as id_key,
 				  tc_mantic_ventas.*

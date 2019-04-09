@@ -39,14 +39,10 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
   private Timestamp timbrado;
   @Column (name="id_usuario")
   private Long idUsuario;
-  @Column (name="id_ficticia")
-  private Long idFicticia;
   @Column (name="id_factura_estatus")
   private Long idFacturaEstatus;
   @Column (name="folio")
   private String folio;
-  @Column (name="id_venta")
-  private Long idVenta;
   @Column (name="intentos")
   private Long intentos;
   @Column (name="correos")
@@ -83,22 +79,20 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
   }
 
   public TcManticFacturasDto(Long key) {
-    this(new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null, null, null);
+    this(new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticFacturasDto(Long idFactura, Date ultimoIntento, Timestamp timbrado, Long idUsuario, Long idFicticia, String folio, Long idVenta, Long intentos, String correos, String comentarios, String observaciones, String idFacturama) {
-    this(new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, 1L);
+  public TcManticFacturasDto(Long idFactura, Date ultimoIntento, Timestamp timbrado, Long idUsuario, String folio, Long intentos, String correos, String comentarios, String observaciones, String idFacturama) {
+    this(new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), timbrado, idUsuario, folio, intentos, correos, comentarios, observaciones, idFacturama, null, null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, 1L);
 	}
 	
-  public TcManticFacturasDto(Long idFactura, Date ultimoIntento, Timestamp timbrado, Long idUsuario, Long idFicticia, String folio, Long idVenta, Long intentos, String correos, String comentarios, String observaciones, String idFacturama, String cadenaOriginal, String selloSat, String selloCfdi, String certificadoSat, String certificadoDigital, Timestamp certificacion, String folioFiscal, Long idFacturaEstatus) {
+  public TcManticFacturasDto(Long idFactura, Date ultimoIntento, Timestamp timbrado, Long idUsuario, String folio, Long intentos, String correos, String comentarios, String observaciones, String idFacturama, String cadenaOriginal, String selloSat, String selloCfdi, String certificadoSat, String certificadoDigital, Timestamp certificacion, String folioFiscal, Long idFacturaEstatus) {
     setIdFactura(idFactura);
     setUltimoIntento(ultimoIntento);
     setTimbrado(timbrado);
     setIdUsuario(idUsuario);
-    setIdFicticia(idFicticia);
     setFolio(folio);
-    setIdVenta(idVenta);
     setIntentos(intentos);
 		this.correos= correos;
 		this.comentarios= comentarios;
@@ -148,28 +142,12 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
     return idUsuario;
   }
 
-  public void setIdFicticia(Long idFicticia) {
-    this.idFicticia = idFicticia;
-  }
-
-  public Long getIdFicticia() {
-    return idFicticia;
-  }
-
   public void setFolio(String folio) {
     this.folio = folio;
   }
 
   public String getFolio() {
     return folio;
-  }
-
-  public void setIdVenta(Long idVenta) {
-    this.idVenta = idVenta;
-  }
-
-  public Long getIdVenta() {
-    return idVenta;
   }
 
   public void setIntentos(Long intentos) {
@@ -315,11 +293,7 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdFicticia());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getFolio());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdVenta());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIntentos());
 		regresar.append(Constantes.SEPARADOR);
@@ -361,9 +335,7 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
 		regresar.put("ultimoIntento", getUltimoIntento());
 		regresar.put("timbrado", getTimbrado());
 		regresar.put("idUsuario", getIdUsuario());
-		regresar.put("idFicticia", getIdFicticia());
 		regresar.put("folio", getFolio());
-		regresar.put("idVenta", getIdVenta());
 		regresar.put("intentos", getIntentos());
 		regresar.put("correos", getCorreos());
 		regresar.put("comentarios", getComentarios());
@@ -385,7 +357,7 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-      getIdFactura(), getUltimoIntento(), getTimbrado(), getIdUsuario(), getIdFicticia(), getFolio(), getIdVenta(), getIntentos(), getCorreos(), getComentarios(), getObservaciones(), getIdFactura(), getCadenaOriginal(), getSelloSat(), getSelloCfdi(), getCertificadoSat(), getCertificadoDigital(), getCertificacion(), getFolioFiscal(), getRegistro(), getCancelada(), getIdFacturaEstatus()
+      getIdFactura(), getUltimoIntento(), getTimbrado(), getIdUsuario(), getFolio(), getIntentos(), getCorreos(), getComentarios(), getObservaciones(), getIdFactura(), getCadenaOriginal(), getSelloSat(), getSelloCfdi(), getCertificadoSat(), getCertificadoDigital(), getCertificacion(), getFolioFiscal(), getRegistro(), getCancelada(), getIdFacturaEstatus()
     };
     return regresar;
   }
