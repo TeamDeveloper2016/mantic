@@ -307,7 +307,7 @@ public class Transaccion extends TransaccionFactura {
 			params.put("ejercicio", Fecha.getAnioActual());
 			params.put("dia", Fecha.getHoyEstandar());
 			params.put("idEmpresa", this.orden.getIdEmpresa());
-			Value next= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasDto", "siguiente", params, "siguiente");
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasDto", "cuenta", params, "siguiente");
 			if(next!= null && next.getData()!= null)
 				regresar= next.toLong();
 		} // try
