@@ -352,9 +352,9 @@ public class TransaccionFactura extends IBaseTnx{
 			cfdi= CFDIFactory.getInstance().createCfdi(this.cliente, this.articulos);
 			if(isCorrectId(cfdi.getId())) {
 				this.idFacturamaRegistro= cfdi.getId();
+				regresar= this.actualizarFactura(sesion, this.cliente.getIdFactura(), cfdi);
 				Calendar calendar= Fecha.toCalendar(cfdi.getDate().substring(0, 10), cfdi.getDate().substring(11, 19));				
 				String path = Configuracion.getInstance().getPropiedadSistemaServidor("facturama").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat("/")+ calendar.get(Calendar.YEAR)+ "/"+ Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase()+"/"+ this.cliente.getRfc().concat("/");				
-				regresar= this.actualizarFactura(sesion, this.cliente.getIdFactura(), cfdi, path);				
 				CFDIFactory.getInstance().download(path, this.cliente.getRfc().concat("-").concat(cfdi.getFolio()), cfdi.getId());
 				this.toUpdateData(sesion, cfdi, this.cliente.getIdFactura(), path);
 				this.insertFiles(sesion, calendar, cfdi, path, this.cliente.getRfc(), this.cliente.getIdFactura());
@@ -441,22 +441,14 @@ public class TransaccionFactura extends IBaseTnx{
 		DaoFactory.getInstance().insert(sesion, pdf);
 	} // insertFiles	
 	
-	protected boolean actualizarFactura(Session sesion, Long id, Cfdi cfdi, String path) throws Exception {
+	protected boolean actualizarFactura(Session sesion, Long id, Cfdi cfdi) throws Exception {
 		boolean regresar           = false;
 		TcManticFacturasDto factura= null;		
 		factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, id);
-		registrarBitacoraFactura(sesion, id, EEstatusFacturas.TIMBRADA.getIdEstatusFactura(), "Timbrado de factura.");
-		Complement complement = cfdi.getComplement();
+		registrarBitacoraFactura(sesion, id, EEstatusFacturas.TIMBRADA.getIdEstatusFactura(), "Timbrado de factura.");		
 		factura.setIdFacturama(cfdi.getId());
 		factura.setFolio(cfdi.getFolio());					
 		factura.setTimbrado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-		factura.setSelloCfdi(complement.getTaxStamp().getCfdiSign());
-		factura.setSelloSat(complement.getTaxStamp().getSatSign());
-		factura.setCertificadoDigital(cfdi.getCertNumber());
-		factura.setCertificadoSat(complement.getTaxStamp().getSatCertNumber());
-		factura.setFolioFiscal(complement.getTaxStamp().getUuid());
-		factura.setCadenaOriginal(this.toCadenaOriginal(path.concat(this.cliente.getRfc()).concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase())));
-		factura.setIdFacturaEstatus(EEstatusFacturas.TIMBRADA.getIdEstatusFactura());
 		regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;		
 		return regresar;
 	} // actualizarFactura
