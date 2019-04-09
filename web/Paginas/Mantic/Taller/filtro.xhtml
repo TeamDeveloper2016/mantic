@@ -143,6 +143,8 @@
             <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticTallerFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticTallerFiltro.attrs.seleccionado.estatus eq '6')}"/>					            
 						<p:separator/>
             <p:menuitem icon="fa fa-twitch" value="Refacciones" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();" process="@this tabla" action="#{manticTallerFiltro.doRefacciones}"/> 
+            <p:separator rendered="#{(manticTallerFiltro.attrs.seleccionado.idServicioEstatus eq '6')}"/>					
+            <p:menuitem value="Pagar" action="#{manticTallerFiltro.doPagarServicio()}" icon="fa fa-money" title="Pagar" onstart="return janal.bloquear()" rendered="#{(manticTallerFiltro.attrs.seleccionado.idServicioEstatus eq '6')}"/>
           </p:contextMenu>
         </div>
       </div>
