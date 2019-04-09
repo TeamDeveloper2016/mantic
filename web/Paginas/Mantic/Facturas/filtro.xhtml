@@ -17,7 +17,7 @@
         'fechaTermino'     : {validaciones: 'fecha',  mascara: 'fecha', grupo: 'general'},
 				'articulo'         : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
 				'razonSocial'      : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
-        'idFicticiaEstatus': {validaciones: 'libre',  mascara: 'libre', grupo: 'general'}        
+        'idVentaEstatus': {validaciones: 'libre',  mascara: 'libre', grupo: 'general'}        
       };
 			
 			fieldsDialog= {
@@ -86,8 +86,8 @@
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticFacturasFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>              
 							<p:outputLabel for="fechaTermino" value="Fecha termino:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticFacturasFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>							
-              <p:outputLabel for="idFicticiaEstatus" value="Estatus:"/>
-              <p:selectOneMenu id="idFicticiaEstatus" value="#{manticFacturasFiltro.attrs.idFicticiaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="contains">
+              <p:outputLabel for="idVentaEstatus" value="Estatus:"/>
+              <p:selectOneMenu id="idVentaEstatus" value="#{manticFacturasFiltro.attrs.idFicticiaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticFacturasFiltro.attrs.estatusFiltro}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">
@@ -176,8 +176,8 @@
               <f:facet name="header">
                 <h:outputText value="Timbrado"/>
               </f:facet>
-              <h:outputText value="#{row['timbrado']}"/><br style="display: #{row['idFicticiaEstatus'] eq '5'? '': 'none'}"/>
-              <h:outputText value="( #{row['cancelada']} )" title="Fecha de cancelación" styleClass="janal-color-red janal-text-small" style="display: #{row['idFicticiaEstatus'] eq '5'? '': 'none'}"/>
+              <h:outputText value="#{row['timbrado']}"/><br style="display: #{row['idVentaEstatus'] eq '5'? '': 'none'}"/>
+              <h:outputText value="( #{row['cancelada']} )" title="Fecha de cancelación" styleClass="janal-color-red janal-text-small" style="display: #{row['idVentaEstatus'] eq '5'? '': 'none'}"/>
             </p:column>		
             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.registro}">
               <f:facet name="header">
@@ -190,18 +190,18 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="modificar" action="#{manticFacturasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|11|', manticFacturasFiltro.attrs.seleccionado.idFicticiaEstatus)}"/>
+            <p:menuitem id="modificar" action="#{manticFacturasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|11|', manticFacturasFiltro.attrs.seleccionado.idVentaEstatus)}"/>
 						<p:menuitem id="consultar" action="#{manticFacturasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{manticFacturasFiltro.doMovimientos}"/>
             <p:menuitem id="clonar" icon="fa fa-copy" value="Clonar" process="@this tabla" onstart="janal.bloquear();" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>
-            <p:separator rendered="#{!(manticFacturasFiltro.attrs.seleccionado.idFicticiaEstatus eq '12')}"/>					
-            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticFacturasFiltro.attrs.seleccionado.idFicticiaEstatus eq '12')}"/>					            
+            <p:separator rendered="#{!(manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '12')}"/>					
+            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '12')}"/>					            
             <p:separator/>					
-            <p:menuitem id="reenviar" icon="fa fa-mail-forward" value="Reenviar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="#{manticFacturasFiltro.attrs.seleccionado.idFicticiaEstatus eq '12'}"/>					            
-            <p:separator rendered="#{manticFacturasFiltro.attrs.seleccionado.idFicticiaEstatus eq '12'}"/>					
+            <p:menuitem id="reenviar" icon="fa fa-mail-forward" value="Reenviar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="#{manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '12'}"/>					            
+            <p:separator rendered="#{manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '12'}"/>					
 						<p:menuitem id="ticket" icon="fa fa-file-text-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doReporte('FACTURAS_FICTICIAS_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>			
-            <p:separator rendered="#{fn:contains('|12|13|', manticFacturasFiltro.attrs.seleccionado.idFicticiaEstatus)}"/>			
-            <p:menuitem id="importar" icon="fa fa-external-link" value="Ver XML/PDF" onstart="return janal.bloquear()" process="@this tabla" action="#{manticFacturasFiltro.doImportar}" rendered="#{fn:contains('|12|13|', manticFacturasFiltro.attrs.seleccionado.idFicticiaEstatus)}"/>
+            <p:separator rendered="#{fn:contains('|12|13|', manticFacturasFiltro.attrs.seleccionado.idVentaEstatus)}"/>			
+            <p:menuitem id="importar" icon="fa fa-external-link" value="Ver XML/PDF" onstart="return janal.bloquear()" process="@this tabla" action="#{manticFacturasFiltro.doImportar}" rendered="#{fn:contains('|12|13|', manticFacturasFiltro.attrs.seleccionado.idVentaEstatus)}"/>
           </p:contextMenu>
         </div>
       </div>
