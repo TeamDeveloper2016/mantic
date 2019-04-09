@@ -320,7 +320,7 @@ public class Transaccion extends TransaccionFactura {
 		return regresar;
 	} // toCuenta
 	
-	private Long registrarFactura(Session sesion) throws Exception{
+	private Long registrarFactura(Session sesion) throws Exception {
 		Long regresar              = -1L;
 		TcManticFacturasDto factura= null;
 		try {			

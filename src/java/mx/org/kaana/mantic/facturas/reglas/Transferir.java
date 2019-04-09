@@ -115,6 +115,7 @@ public class Transferir extends IBaseTnx {
 
   private TcManticFicticiasDto toFicticia(Session sesion, CfdiSearchResult cfdi, Cfdi detail, Calendar calendar, Long idCliente, Long idFactura) throws Exception {
 		Long consecutivo= this.toSiguiente(sesion);
+		Long cuenta     = this.toCuenta(sesion, calendar);
 		double taxes    = 0;
 		for (Tax tax: detail.getTaxes()) {
 			taxes+= tax.getTotal();
@@ -128,14 +129,14 @@ public class Transferir extends IBaseTnx {
 			cfdi.getTotal(), // Double total, 
 			3L, // Long idFicticiaEstatus, 
 			detail.getExchangeRate(), // Double tipoDeCambio, 
-			consecutivo, // Long orden, 
+			cuenta, // Long orden, 
 			1L, // Long idTipoMedioPago, 
 			idCliente, // Long idCliente, 
 			toIdClienteDomicilio(sesion, idCliente),
 			"0", // String descuento, 
 			null, // Long idBanco, 
 			new Long(calendar.get(Calendar.YEAR)), // Long ejercicio, 
-			Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true),  // Long consecutivo, 
+			String.valueOf(cuenta),// String consecutivo, 
 			JsfBase.getAutentifica()!= null? JsfBase.getIdUsuario(): 1L, //  Long idUsuario, 
 			taxes, // Double impuestos, 
 			1L,  // Long idUsoCfdi, 
@@ -147,6 +148,11 @@ public class Transferir extends IBaseTnx {
 			detail.getPaymentAccountNumber(), //  referencia
 			idFactura // id_factura
 		);
+		regresar.setTicket(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
+		regresar.setCticket(consecutivo);
+		regresar.setIdFacturar(1L);
+		LOG.info("----------------------------------------------");
+		LOG.info("CONSECUTIVO:"+ cuenta+ " TICKET"+ consecutivo);
 		return regresar;
 	}
 	
@@ -606,6 +612,7 @@ public class Transferir extends IBaseTnx {
 				this.toDetail(sesion, ficticia.getIdFicticia(), detail);
 				TcManticFicticiasBitacoraDto bitacora= new TcManticFicticiasBitacoraDto(ficticia.getConsecutivo(), "FACTURA REGISTRADA DE FORMA AUTOMATICA", 3l, 1L, ficticia.getIdFicticia(), -1L, ficticia.getTotal());
 				DaoFactory.getInstance().insert(sesion, bitacora);
+				sesion.flush();
 			} // if
 		} // if
 	}
@@ -630,4 +637,25 @@ public class Transferir extends IBaseTnx {
 		return regresar;
 	} // toSiguiente
 
+	private Long toCuenta(Session sesion, Calendar dia) throws Exception {
+		Long regresar             = 1L;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("ejercicio", new Long(dia.get(Calendar.YEAR)));
+			params.put("dia", Fecha.formatear(Fecha.FECHA_ESTANDAR, dia));
+			params.put("idEmpresa", JsfBase.getAutentifica()!= null? JsfBase.getAutentifica().getEmpresa().getIdEmpresa(): 1L);
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasDto", "cuenta", params, "siguiente");
+			if(next!= null && next.getData()!= null)
+				regresar= next.toLong();
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toCuenta
+	
 } 
