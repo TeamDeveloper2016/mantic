@@ -539,6 +539,7 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 		regresar.put("ticket", getTicket());
 		regresar.put("cticket", getCticket());
 		regresar.put("utilidad", getUtilidad());
+		regresar.put("idVenta", getIdVenta());
   	return regresar;
   }
 
