@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.facturas.reglas;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -447,11 +448,15 @@ public class Transaccion extends TransaccionFactura {
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
+			Long cuenta     = this.toCuenta(sesion);			
 			Long consecutivo= this.toSiguiente(sesion);			
 			params.put("idVenta", this.orden.getKey());
 			this.orden.setKey(-1L);
-			this.orden.setConsecutivo(Fecha.getAnioActual() + Cadena.rellenar(consecutivo.toString(), 5, '0', true));			
-			this.orden.setOrden(consecutivo);
+			this.orden.setDia(new Date(Calendar.getInstance().getTimeInMillis()));
+			this.orden.setConsecutivo(String.valueOf(cuenta));			
+			this.orden.setOrden(cuenta);
+			this.orden.setTicket(Fecha.getAnioActual() + Cadena.rellenar(consecutivo.toString(), 5, '0', true));			
+			this.orden.setCticket(consecutivo);
 			this.orden.setIdFicticiaEstatus(idEstatusFicticia);
 			this.orden.setEjercicio(new Long(Fecha.getAnioActual()));						
 			this.orden.setIdUsuario(JsfBase.getIdUsuario());
@@ -460,6 +465,7 @@ public class Transaccion extends TransaccionFactura {
 			regresar= DaoFactory.getInstance().insert(sesion, this.orden)> 0L;
 			if(regresar) {
 				TcManticFacturasDto factura= (TcManticFacturasDto)DaoFactory.getInstance().toEntity(TcManticFacturasDto.class, "VistaFicticiasDto", "factura", params);
+				factura.setIdFactura(-1L);
 				factura.setCadenaOriginal(null);
 				factura.setCertificacion(null);
 				factura.setCertificadoDigital(null);

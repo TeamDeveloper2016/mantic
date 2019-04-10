@@ -120,6 +120,7 @@ public class Transferir extends IBaseTnx {
 		for (Tax tax: detail.getTaxes()) {
 			taxes+= tax.getTotal();
 		} // for
+		Long year= new Long(calendar.get(Calendar.YEAR));
 		TcManticFicticiasDto regresar= new TcManticFicticiasDto(
 			detail.getDiscount(), // Double descuentos, 
 			1L, // Long idTipoPago, 
@@ -135,7 +136,7 @@ public class Transferir extends IBaseTnx {
 			toIdClienteDomicilio(sesion, idCliente),
 			"0", // String descuento, 
 			null, // Long idBanco, 
-			new Long(calendar.get(Calendar.YEAR)), // Long ejercicio, 
+			year, // Long ejercicio, 
 			String.valueOf(cuenta),// String consecutivo, 
 			JsfBase.getAutentifica()!= null? JsfBase.getIdUsuario(): 1L, //  Long idUsuario, 
 			taxes, // Double impuestos, 
@@ -148,7 +149,7 @@ public class Transferir extends IBaseTnx {
 			detail.getPaymentAccountNumber(), //  referencia
 			idFactura // id_factura
 		);
-		regresar.setTicket(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
+		regresar.setTicket(year+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
 		regresar.setCticket(consecutivo);
 		regresar.setIdFacturar(1L);
 		LOG.info("----------------------------------------------");

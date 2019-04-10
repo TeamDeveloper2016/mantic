@@ -554,7 +554,7 @@
         from      
           tc_mantic_ventas_detalles
         where      
-          id_venta = {idFicticia}
+          id_venta = {idVenta}
 				order by
 				  tc_mantic_ventas_detalles.registro
       </select>
@@ -611,7 +611,7 @@
         from      
           tc_mantic_ventas
         where      
-          consecutivo = {consecutivo} and id_empresa = {idEmpresa} and date_format(dia, '%Y-%m-%d') = '{dia}'
+          consecutivo = '{consecutivo}' and id_empresa = {idEmpresa} and date_format(dia, '%Y-%m-%d') = '{dia}'
       </select>
 			<select id="detalle">
         select      
@@ -823,7 +823,7 @@
         from      
           tc_mantic_garantias
         where      
-          consecutivo = {consecutivo} and id_venta = {idVenta}
+          consecutivo = '{consecutivo}' and id_venta = {idVenta}
       </select>
 			<select id="siguiente">
         select
@@ -855,7 +855,7 @@
         from      
           tc_mantic_garantias
         where      
-          id_garantia = {consecutivo}
+          id_garantia = '{consecutivo}'
       </select>
     </unit>
     <unit id="TcManticGarantiasBitacoraDto">
@@ -1779,7 +1779,7 @@
         from      
           tc_mantic_devoluciones
         where      
-          id_devolucion = {consecutivo}
+          id_devolucion = '{consecutivo}'
       </select>
     </unit>		
     <unit id="TcManticDevolucionesBitacoraDto">
@@ -1867,7 +1867,7 @@
         from      
           tc_mantic_servicios
         where      
-          consecutivo = {consecutivo} and id_cliente = {idCliente} and id_empresa = {idEmpresa}
+          consecutivo = ¿{consecutivo}' and id_cliente = {idCliente} and id_empresa = {idEmpresa}
       </select>
 			<select id="siguiente">
         select
@@ -4057,7 +4057,7 @@
         from      
           tc_mantic_ventas
         where      
-          consecutivo = {consecutivo} and id_empresa = {idEmpresa} and date_format(dia, '%Y%m%d')= '{dia}' and id_venta = {idVenta}
+          consecutivo = ¿{consecutivo}' and id_empresa = {idEmpresa} and date_format(dia, '%Y-%m-%d')= '{dia}'
       </select>
       <select id="detalle">
         select      
@@ -4109,7 +4109,7 @@
         from      
           tc_mantic_ventas
         where      
-          id_venta = {consecutivo}
+          id_venta = '{consecutivo}'
       </select>			
 			<update id="rows">
 				update 
@@ -4280,7 +4280,7 @@
         from      
           tc_mantic_notas_entradas
         where      
-          id_nota_entrada = {consecutivo}
+          id_nota_entrada = '{consecutivo}'
       </select>
     </unit>
     <unit id="TcManticOrdenesDetallesDto">
@@ -4756,7 +4756,7 @@
           tc_mantic_transferencias
         where      
           id_empresa= {idEmpresa}
-          and consecutivo= {consecutivo}
+          and consecutivo= '{consecutivo}'
       </select>
       <select id="siguiente">
         select
