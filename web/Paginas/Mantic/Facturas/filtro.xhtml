@@ -218,9 +218,9 @@
 					</p:selectOneMenu>
 				</h:panelGrid>
 				<h:panelGrid id="salida" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
-				<p:outputLabel for="justificacion" value="#{manticFacturasFiltro.attrs.estatus eq '3'? 'Comentarios': 'Justificación'}:"/>
+				<p:outputLabel for="justificacion" value="#{manticFacturasFiltro.attrs.estatus eq '12'? 'Comentarios': 'Justificación'}:"/>
 				<p:inputTextarea id="justificacion" value="#{manticFacturasFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt" rows="1"/>
-				<p:dataTable id="tablaCorreos" var="row" value="#{manticFacturasFiltro.correos}" selection="#{manticFacturasFiltro.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0" rendered="#{manticFacturasFiltro.attrs.estatus eq '3'}">
+				<p:dataTable id="tablaCorreos" var="row" value="#{manticFacturasFiltro.correos}" selection="#{manticFacturasFiltro.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0" rendered="#{manticFacturasFiltro.attrs.estatus eq '12'}">
 					<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
 					<p:column headerText="Correos disponibles del cliente" styleClass="descripcion tablaCorreos_selection">
 						<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
