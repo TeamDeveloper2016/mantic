@@ -43,8 +43,11 @@ import org.primefaces.event.SelectEvent;
 
 public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 
-	private static final long serialVersionUID= 4853975930464243369L;
-	protected static final String INDIVIDUAL  = "1";
+	private static final long serialVersionUID = 4853975930464243369L;
+	protected static final String INDIVIDUAL   = "1";
+	protected static final String GLOBAL       = "0";	
+	protected static final String MEDIO_MAYOREO= "2";	
+	protected static final String MAYOREO      = "3";	
 	protected FormatLazyModel lazyCuentasAbiertas;
 	protected FormatLazyModel lazyCotizaciones;
 	protected FormatLazyModel lazyApartados;
@@ -522,6 +525,9 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	
 	public void doAplicarDescuento(Integer index){
 		Boolean isIndividual       = false;
+		Boolean isGlobal           = false;
+		Boolean isMedioMayoreo     = false;
+		Boolean isMayoreo          = false;
 		CambioUsuario cambioUsuario= null;
 		String cuenta              = null;
 		String contrasenia         = null;
@@ -533,6 +539,9 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				cambioUsuario= new CambioUsuario(cuenta, contrasenia);
 				if(cambioUsuario.validaPrivilegiosDescuentos()){
 					isIndividual= Boolean.valueOf(this.attrs.get("isIndividual").toString());
+					isGlobal= Boolean.valueOf(this.attrs.get("isGlobal").toString());
+					isMedioMayoreo= Boolean.valueOf(this.attrs.get("isMedioMayoreo").toString());
+					isMayoreo= Boolean.valueOf(this.attrs.get("isMayoreo").toString());
 					if(isIndividual){
 						getAdminOrden().getArticulos().get(index).setDescuento(this.attrs.get("descuentoIndividual").toString());
 						if(getAdminOrden().getArticulos().get(index).autorizedDiscount())
@@ -540,7 +549,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 						else
 							JsfBase.addMessage("No es posble aplicar el descuento, el descuento es superior a la utilidad", ETipoMensaje.ERROR);
 					} // if
-					else{		
+					else if (isGlobal){		
 						global= Double.valueOf(this.attrs.get("descuentoGlobal").toString());
 						getAdminOrden().toCalculate();
 						if(global < getAdminOrden().getTotales().getUtilidad()){
@@ -549,7 +558,14 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 						} // if
 						else
 							JsfBase.addMessage("No es posble aplicar el descuento, el descuento es superior a la utilidad", ETipoMensaje.ERROR);
-					} // else
+					} // else if
+					else if (isMedioMayoreo){
+						setPrecio("medioMayoreo");
+						//getAdminOrden().getArticulos().get(index).setDescuento(this.attrs.get("descuentoIndividual").toString());
+					} // else if
+					else if (isMayoreo){
+						setPrecio("mayoreo");
+					} // else if
 				} // if
 				else
 					JsfBase.addMessage("El usuario no tiene privilegios o el usuario y la contraseña son incorrectos", ETipoMensaje.ERROR);
@@ -588,7 +604,10 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		try {
 			tipoDescuento= this.attrs.get("tipoDescuento").toString();
 			this.attrs.put("isIndividual", tipoDescuento.equals(INDIVIDUAL));
-			this.attrs.put(tipoDescuento.equals(INDIVIDUAL) ? "descuentoGlobal" : "descuentoIndividual", 0);
+			this.attrs.put("isGlobal", tipoDescuento.equals(GLOBAL));
+			this.attrs.put("isMedioMayoreo", tipoDescuento.equals(MEDIO_MAYOREO));
+			this.attrs.put("isMayoreo", tipoDescuento.equals(MAYOREO));
+			this.attrs.put(tipoDescuento.equals(INDIVIDUAL)  ? "descuentoGlobal" : "descuentoIndividual", 0);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -629,6 +648,8 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				} // if	
 				if(temporal.getCantidad()< 1D)					
 					temporal.setCantidad(1D);
+				temporal.setDescripcionPrecio(getPrecio());
+				temporal.setMenudeo(articulo.toDouble("menudeo"));
 				temporal.setUltimo(this.attrs.get("ultimo")!= null);
 				temporal.setSolicitado(this.attrs.get("solicitado")!= null);
 				temporal.setUnidadMedida(articulo.toString("unidadMedida"));
