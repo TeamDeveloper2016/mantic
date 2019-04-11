@@ -138,11 +138,11 @@ public class ArticuloVenta extends Articulo {
 	}	// toDiferencia	
 
 	public String getDetallePrecio() {
-		String regresar= "";
-		boolean display= (!Cadena.isVacio(getDescuentos()) && !getDescuentos().equals(0D)) || (!Cadena.isVacio(getDescuento()) && !getDescuento().equals("0"));			
+		String regresar = "";
+		boolean display = (!Cadena.isVacio(getDescuentos()) && !getDescuentos().equals(0D)) || (!Cadena.isVacio(getDescuento()) && !getDescuento().equals("0"));			
 		if(this.getDescripcionPrecio()!= null || display) {
-			String color     = "janal-color-blue";
-			boolean precio   = false;			
+			String color  = "janal-color-blue";
+			boolean precio= false;			
 			switch(this.getDescripcionPrecio()) {
 				case "medioMayoreo":
 					color   = "janal-color-orange";
@@ -182,5 +182,6 @@ public class ArticuloVenta extends Articulo {
 
 	public void setMenudeo(Double menudeo) {
 		this.menudeo= menudeo;
-	}	
+	}
+	
 }
