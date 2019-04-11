@@ -13,7 +13,9 @@ import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 public class ArticuloVenta extends Articulo {
 	
 	private static final long serialVersionUID = -7272868284456340705L;
-
+	private String descripcionPrecio;
+	private Double menudeo;
+	
 	public ArticuloVenta() {
 		this(-1L);
 	}
@@ -96,13 +98,19 @@ public class ArticuloVenta extends Articulo {
 					if(this.getDescuentos()> 0D)
 						this.setCosto(validate.getMenudeo());
 					else {
-						if (this.getCantidad()>= validate.getLimiteMayoreo())
+						if (this.getCantidad()>= validate.getLimiteMayoreo()){
 							this.setCosto(validate.getMayoreo());
+							setDescripcionPrecio("mayoreo");
+						} // if
 						else 
-  						if(this.getCantidad()>= validate.getLimiteMedioMayoreo() && this.getCantidad()< validate.getLimiteMayoreo())
+  						if(this.getCantidad()>= validate.getLimiteMedioMayoreo() && this.getCantidad()< validate.getLimiteMayoreo()){
 	  						this.setCosto(validate.getMedioMayoreo());
-							else
+								setDescripcionPrecio("medioMayoreo");
+							} // if
+							else{
 								this.setCosto(validate.getMenudeo());
+								setDescripcionPrecio("menudeo");
+							} // else
 					} // else						
 				} // if	
 			} // if
@@ -128,4 +136,44 @@ public class ArticuloVenta extends Articulo {
 		value= Numero.toRedondearSat((value== 0? this.getCosto(): value)- this.getValor()); 
   	setDiferencia(this.getValor()== 0? 0: Numero.toRedondearSat(value* 100/ this.getValor()));
 	}	// toDiferencia	
+
+	public String getDetallePrecio() {
+		String regresar="";
+		if(getDescripcionPrecio()!= null){
+			String color     = "janal-color-blue";
+			boolean display  = (!Cadena.isVacio(getDescuentos()) && !getDescuentos().equals(0D)) || (!Cadena.isVacio(getDescuento()) && !getDescuento().equals("0"));			
+			switch(getDescripcionPrecio()){			
+				case "medioMayoreo":
+					color= "janal-color-orange";
+					display= true;
+					break;
+				case "mayoreo":
+					color= "janal-color-green";
+					display= true;
+					break;
+			} // switch
+			regresar= "<i class='fa fa-fw fa-question-circle ".concat(color)
+								.concat("' style='float:right; display:").concat(display? "": "none").concat("' title='")
+								.concat("Costo: ").concat(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getMenudeo()))
+								.concat("\nCosto calculado: ").concat(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getCosto()))
+								.concat("'></i>");
+		} // if
+		return regresar;
+	} // getDetallePrecio
+	
+	public String getDescripcionPrecio() {
+		return descripcionPrecio;
+	}
+
+	public void setDescripcionPrecio(String descripcionPrecio) {
+		this.descripcionPrecio= descripcionPrecio;
+	}	
+
+	public Double getMenudeo() {
+		return menudeo;
+	}
+
+	public void setMenudeo(Double menudeo) {
+		this.menudeo= menudeo;
+	}	
 }
