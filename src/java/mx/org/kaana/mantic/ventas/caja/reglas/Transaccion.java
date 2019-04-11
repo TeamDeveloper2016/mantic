@@ -429,7 +429,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			params.put("ejercicio", Fecha.getAnioActual());			
 			siguiente= (Entity) DaoFactory.getInstance().toEntity(sesion, "TcManticApartadosDto", "siguiente", params);
 			if(siguiente!= null)
-			  regresar= siguiente.get("siguiente")!= null ? siguiente.toLong("siguiente") : 1L;
+			  regresar= siguiente.get("siguiente").getData()!= null ? siguiente.toLong("siguiente") : 1L;
 		} // try		
 		finally {
 			Methods.clean(params);
