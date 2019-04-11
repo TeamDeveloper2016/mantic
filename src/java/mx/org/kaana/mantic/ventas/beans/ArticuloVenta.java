@@ -138,24 +138,28 @@ public class ArticuloVenta extends Articulo {
 	}	// toDiferencia	
 
 	public String getDetallePrecio() {
-		String regresar="";
-		if(getDescripcionPrecio()!= null){
+		String regresar= "";
+		if(this.getDescripcionPrecio()!= null) {
 			String color     = "janal-color-blue";
 			boolean display  = (!Cadena.isVacio(getDescuentos()) && !getDescuentos().equals(0D)) || (!Cadena.isVacio(getDescuento()) && !getDescuento().equals("0"));			
-			switch(getDescripcionPrecio()){			
+			boolean precio   = false;			
+			switch(this.getDescripcionPrecio()) {
 				case "medioMayoreo":
-					color= "janal-color-orange";
-					display= true;
+					color   = "janal-color-orange";
+					precio  = true;
+					regresar= "Medio mayoreo";
 					break;
 				case "mayoreo":
-					color= "janal-color-green";
-					display= true;
+					color   = "janal-color-green";
+					precio  = true;
+					regresar= "Mayoreo";
 					break;
 			} // switch
 			regresar= "<i class='fa fa-fw fa-question-circle ".concat(color)
-								.concat("' style='float:right; display:").concat(display? "": "none").concat("' title='")
-								.concat("Costo: ").concat(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getMenudeo()))
-								.concat("\nCosto calculado: ").concat(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getCosto()))
+								.concat("' style='float:right; display:").concat(precio || display? "": "none").concat("' title='")
+								.concat("Menudeo: ").concat(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getMenudeo()))
+								.concat("\n").concat(regresar).concat(": ").concat(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getCosto()))
+				        .concat(display? "\nDescuento: "+ this.getDescuento()+ ", "+ this.getDescuentos(): "")
 								.concat("'></i>");
 		} // if
 		return regresar;
