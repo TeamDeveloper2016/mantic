@@ -139,9 +139,9 @@ public class ArticuloVenta extends Articulo {
 
 	public String getDetallePrecio() {
 		String regresar= "";
-		if(this.getDescripcionPrecio()!= null) {
+		boolean display= (!Cadena.isVacio(getDescuentos()) && !getDescuentos().equals(0D)) || (!Cadena.isVacio(getDescuento()) && !getDescuento().equals("0"));			
+		if(this.getDescripcionPrecio()!= null || display) {
 			String color     = "janal-color-blue";
-			boolean display  = (!Cadena.isVacio(getDescuentos()) && !getDescuentos().equals(0D)) || (!Cadena.isVacio(getDescuento()) && !getDescuento().equals("0"));			
 			boolean precio   = false;			
 			switch(this.getDescripcionPrecio()) {
 				case "medioMayoreo":
@@ -154,11 +154,14 @@ public class ArticuloVenta extends Articulo {
 					precio  = true;
 					regresar= "Mayoreo";
 					break;
+				default:
+					regresar= "Menudeo";
+					break;
 			} // switch
 			regresar= "<i class='fa fa-fw fa-question-circle ".concat(color)
 								.concat("' style='float:right; display:").concat(precio || display? "": "none").concat("' title='")
 								.concat("Menudeo: ").concat(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getMenudeo()))
-								.concat("\n").concat(regresar).concat(": ").concat(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getCosto()))
+								.concat(this.getDescripcionPrecio()!= null? "\n"+ regresar+": "+ Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getCosto()): "")
 				        .concat(display? "\nDescuento: "+ this.getDescuento()+ ", "+ this.getDescuentos(): "")
 								.concat("'></i>");
 		} // if
