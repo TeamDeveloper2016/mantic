@@ -7213,7 +7213,7 @@
 			</select>
 			<select id="articulosMasUtilidad">
 				select
-					id_key, articulo, total, ((total * 100)/(select sum(utilidad) from tc_mantic_ventas where tc_mantic_ventas.id_venta_estatus in (3,4,9) and {condicionGeneral})) porcentaje
+					id_key, articulo, total, ((total * 100)/(select sum(utilidad) from tc_mantic_ventas where tc_mantic_ventas.id_tipo_venta= 2 and tc_mantic_ventas.id_venta_estatus in (3,4,9) and {condicionGeneral})) porcentaje
 				from(
 				select
 					id_key, articulo, sum(utilidad) total
@@ -7229,7 +7229,9 @@
 					inner join 
 						tc_mantic_articulos on tc_mantic_ventas_detalles.id_articulo = tc_mantic_articulos.id_articulo
 					where
-						{condicionGeneral}) principal
+				    tc_mantic_ventas.id_tipo_venta= 2 and 
+						{condicionGeneral}
+				) principal
 				group by 
 					id_key, articulo
 				order by 

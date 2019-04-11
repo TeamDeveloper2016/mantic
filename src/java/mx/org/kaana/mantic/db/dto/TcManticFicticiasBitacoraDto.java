@@ -26,8 +26,9 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 @Entity
 @Table(name="tc_mantic_ventas_bitacora")
 public class TcManticFicticiasBitacoraDto implements IBaseDto, Serializable {
+
+	private static final long serialVersionUID=-1495517599059966946L;
 		
-  private static final long serialVersionUID=1L;
   @Column (name="consecutivo")
   private String consecutivo;
   @Column (name="justificacion")
@@ -191,6 +192,8 @@ public class TcManticFicticiasBitacoraDto implements IBaseDto, Serializable {
 		regresar.put("idFicticia", getIdFicticia());
 		regresar.put("idFicticiaBitacora", getIdFicticiaBitacora());
 		regresar.put("importe", getImporte());
+		regresar.put("idVenta", getIdVenta());
+		regresar.put("idVentaBitacora", getIdVentaBitacora());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }

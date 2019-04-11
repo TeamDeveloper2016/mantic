@@ -6,7 +6,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/filtro.xhtml">
-  <ui:param name="titulo" value="Catalogo de empresas" />
+  <ui:param name="titulo" value="Catalogo de servicios y refacciones para el taller" />
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
@@ -55,7 +55,7 @@
                 <p:menuButton   value="Opciones">
                   <p:menuitem  value="Agregar" action="#{manticCatalogosTrabajosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
 									<p:separator/>
-									<p:menuitem icon="fa fa-history" value="Lote" title="Carga masiva" action="#{manticCatalogosTrabajosFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
+									<p:menuitem icon="fa fa-history" value="Importar" title="Carga masiva" action="#{manticCatalogosTrabajosFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
                   <p:separator/>
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>

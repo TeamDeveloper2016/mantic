@@ -77,7 +77,7 @@
                 <p:menuButton   value="Opciones">
                   <p:menuitem  value="Agregar" action="#{manticCatalogosProveedoresFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
 									<p:separator/>
-									<p:menuitem icon="fa fa-history" value="Lote" title="Carga masiva" action="#{manticCatalogosProveedoresFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
+									<p:menuitem icon="fa fa-history" value="Importar" title="Carga masiva" action="#{manticCatalogosProveedoresFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
                   <p:separator/>
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
