@@ -49,6 +49,7 @@ public class Abonos extends IBaseAttribute implements Serializable {
   protected void init() {		
     try {
       this.accion = EAccion.ASIGNAR;
+			this.attrs.put("retorno", JsfBase.getParametro("zwkl")== null || "0".equals(JsfBase.getParametro("zwkl"))? "ambos": "/Paginas/Mantic/Ventas/Caja/accion");
       this.attrs.put("idCierre", JsfBase.getFlashAttribute("idCierre")== null? -1L: JsfBase.getFlashAttribute("idCierre"));
 			this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa"));
 			this.attrs.put("idCaja", JsfBase.getFlashAttribute("idCaja"));
@@ -141,7 +142,7 @@ public class Abonos extends IBaseAttribute implements Serializable {
   		JsfBase.setFlashAttribute("idCaja", this.attrs.get("idCaja"));
 		if(this.caja!= null)
     	JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));
-    return "ambos".concat(Constantes.REDIRECIONAR);
+    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } 
 	
 	private void toLoadEmpresas() {

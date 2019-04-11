@@ -50,6 +50,7 @@ public class Retiros extends IBaseAttribute implements Serializable {
   protected void init() {		
     try {
       this.accion = EAccion.AGREGAR;
+			this.attrs.put("retorno", JsfBase.getParametro("zwkl")== null || "0".equals(JsfBase.getParametro("zwkl"))? "ambos": "/Paginas/Mantic/Ventas/Caja/accion");
       this.attrs.put("idCierre", JsfBase.getFlashAttribute("idCierre")== null? -1L: JsfBase.getFlashAttribute("idCierre"));
 			this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa"));
 			this.attrs.put("idCaja", JsfBase.getFlashAttribute("idCaja"));
@@ -79,6 +80,11 @@ public class Retiros extends IBaseAttribute implements Serializable {
 				this.caja= (Entity)DaoFactory.getInstance().toEntity("VistaCierresCajasDto", "caja", this.attrs);
 				this.toLoadEmpresas();
 			} // if
+			if(this.caja== null) {
+				this.caja= new Entity(-1L);
+				this.caja.put("saldo", new Value("saldo", 0D));
+				this.caja.put("idCierreEstatus", new Value("idCierreEstatus", -1L));
+			} // 
       this.attrs.put("caja", this.caja);
 			Entity retiros= (Entity)DaoFactory.getInstance().toEntity("VistaCierresCajasDto", "ambos", this.attrs);
       this.attrs.put("retiros", retiros!= null && retiros.get("retiros").getData()!= null? retiros.toDouble("retiros"): 0D);
@@ -143,7 +149,7 @@ public class Retiros extends IBaseAttribute implements Serializable {
     	JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));
 		if(this.caja!= null)
     	JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));
-    return "ambos".concat(Constantes.REDIRECIONAR);
+    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } 
 	
 	private void toLoadEmpresas() {
