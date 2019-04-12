@@ -53,7 +53,6 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	private static final Log LOG               = LogFactory.getLog(Accion.class);  
   private static final long serialVersionUID = 327393488565639367L;
 	private static final String VENDEDOR_PERFIL= "VENDEDOR DE PISO";
-	private static final String INDIVIDUAL     = "1";
 	
 	private SaldoCliente saldoCliente;
 	private StreamedContent image;
@@ -124,6 +123,8 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("descuentoIndividual", 0);
 			this.attrs.put("descuentoGlobal", 0);
 			this.attrs.put("tipoDescuento", INDIVIDUAL);
+			this.attrs.put("decuentoAutorizadoActivo", false);
+			this.attrs.put("tipoDecuentoAutorizadoActivo", MENUDEO);
 			this.attrs.put("descripcion", "Imagen no disponible");
 			this.attrs.put("mostrarBanco", false);
 			this.image= LoadImages.getImage(-1L);
