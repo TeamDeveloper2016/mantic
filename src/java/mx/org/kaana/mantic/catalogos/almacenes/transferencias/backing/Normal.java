@@ -62,6 +62,8 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
       this.attrs.put("cantidad", 0D);
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("seleccionado", null);
+			if(this.accion!= EAccion.AGREGAR && (Long)this.attrs.get("idTransferencia")<= 0) 
+				this.accion= EAccion.AGREGAR;
 			doLoad();
     } // try
     catch (Exception e) {
