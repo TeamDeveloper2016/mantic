@@ -195,7 +195,13 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("observaciones", "");		
 			this.attrs.put("disabledFacturar", false);
 			this.attrs.put("disabledFacturarSwitch", false);			
-			this.attrs.put("ajustePreciosCliente", true);			
+			this.attrs.put("ajustePreciosCliente", true);		
+			this.attrs.put("isIndividual", true);
+			this.attrs.put("descuentoIndividual", 0);
+			this.attrs.put("descuentoGlobal", 0);
+			this.attrs.put("tipoDescuento", INDIVIDUAL);
+			this.attrs.put("decuentoAutorizadoActivo", false);
+			this.attrs.put("tipoDecuentoAutorizadoActivo", MENUDEO);
 			this.apartado= new TcManticApartadosDto();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 				loadSucursales();							
