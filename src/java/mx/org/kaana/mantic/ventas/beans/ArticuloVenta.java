@@ -15,6 +15,7 @@ public class ArticuloVenta extends Articulo {
 	private static final long serialVersionUID = -7272868284456340705L;
 	private String descripcionPrecio;
 	private Double menudeo;
+	private boolean descuentoActivo;
 	
 	public ArticuloVenta() {
 		this(-1L);
@@ -26,6 +27,7 @@ public class ArticuloVenta extends Articulo {
 	
 	public ArticuloVenta(Long key, boolean costoLibre) {
 		super(key, costoLibre);
+		this.descuentoActivo= false;
 	}
 
 	@Override
@@ -92,27 +94,29 @@ public class ArticuloVenta extends Articulo {
 	private void toCalculateCostoPorCantidad() {
 		TcManticArticulosDto validate= null;
 		try {
-			if(!this.isCostoLibre()) {
-			  validate= (TcManticArticulosDto) DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.getIdArticulo());
-				if(validate!= null) {
-					if(this.getDescuentos()> 0D)
-						this.setCosto(validate.getMenudeo());
-					else {
-						if (this.getCantidad()>= validate.getLimiteMayoreo()){
-							this.setCosto(validate.getMayoreo());
-							setDescripcionPrecio("mayoreo");
-						} // if
-						else 
-  						if(this.getCantidad()>= validate.getLimiteMedioMayoreo() && this.getCantidad()< validate.getLimiteMayoreo()){
-	  						this.setCosto(validate.getMedioMayoreo());
-								setDescripcionPrecio("medioMayoreo");
+			if(!this.isDescuentoActivo()){
+				if(!this.isCostoLibre()) {
+					validate= (TcManticArticulosDto) DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.getIdArticulo());
+					if(validate!= null) {
+						if(this.getDescuentos()> 0D)
+							this.setCosto(validate.getMenudeo());
+						else {
+							if (this.getCantidad()>= validate.getLimiteMayoreo()){
+								this.setCosto(validate.getMayoreo());
+								setDescripcionPrecio("mayoreo");
 							} // if
-							else{
-								this.setCosto(validate.getMenudeo());
-								setDescripcionPrecio("menudeo");
-							} // else
-					} // else						
-				} // if	
+							else 
+								if(this.getCantidad()>= validate.getLimiteMedioMayoreo() && this.getCantidad()< validate.getLimiteMayoreo()){
+									this.setCosto(validate.getMedioMayoreo());
+									setDescripcionPrecio("medioMayoreo");
+								} // if
+								else{
+									this.setCosto(validate.getMenudeo());
+									setDescripcionPrecio("menudeo");
+								} // else
+						} // else						
+					} // if	
+				} // if
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -183,5 +187,12 @@ public class ArticuloVenta extends Articulo {
 	public void setMenudeo(Double menudeo) {
 		this.menudeo= menudeo;
 	}
-	
+
+	public boolean isDescuentoActivo() {
+		return descuentoActivo;
+	}
+
+	public void setDescuentoActivo(boolean descuentoActivo) {
+		this.descuentoActivo = descuentoActivo;
+	}
 }
