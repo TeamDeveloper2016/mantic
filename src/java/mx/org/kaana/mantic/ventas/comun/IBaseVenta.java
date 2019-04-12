@@ -48,6 +48,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	protected static final String GLOBAL       = "0";	
 	protected static final String MEDIO_MAYOREO= "2";	
 	protected static final String MAYOREO      = "3";	
+	protected static final String MENUDEO      = "4";	
 	protected FormatLazyModel lazyCuentasAbiertas;
 	protected FormatLazyModel lazyCotizaciones;
 	protected FormatLazyModel lazyApartados;
@@ -538,11 +539,14 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				contrasenia= this.attrs.get("passwordDescuento").toString();
 				cambioUsuario= new CambioUsuario(cuenta, contrasenia);
 				if(cambioUsuario.validaPrivilegiosDescuentos()){
+					this.attrs.put("decuentoAutorizadoActivo", true);				
+					((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescuentoActivo(true);
 					isIndividual= Boolean.valueOf(this.attrs.get("isIndividual").toString());
 					isGlobal= Boolean.valueOf(this.attrs.get("isGlobal").toString());
 					isMedioMayoreo= Boolean.valueOf(this.attrs.get("isMedioMayoreo").toString());
 					isMayoreo= Boolean.valueOf(this.attrs.get("isMayoreo").toString());
 					if(isIndividual){
+						this.attrs.put("tipoDecuentoAutorizadoActivo", INDIVIDUAL);
 						getAdminOrden().getArticulos().get(index).setDescuento(this.attrs.get("descuentoIndividual").toString());
 						if(getAdminOrden().getArticulos().get(index).autorizedDiscount())
 							UIBackingUtilities.execute("jsArticulos.divDiscount('".concat(this.attrs.get("descuentoIndividual").toString()).concat("');"));
@@ -550,6 +554,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 							JsfBase.addMessage("No es posble aplicar el descuento, el descuento es superior a la utilidad", ETipoMensaje.ERROR);
 					} // if
 					else if (isGlobal){		
+						this.attrs.put("tipoDecuentoAutorizadoActivo", GLOBAL);
 						global= Double.valueOf(this.attrs.get("descuentoGlobal").toString());
 						getAdminOrden().toCalculate();
 						if(global < getAdminOrden().getTotales().getUtilidad()){
@@ -560,12 +565,28 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 							JsfBase.addMessage("No es posble aplicar el descuento, el descuento es superior a la utilidad", ETipoMensaje.ERROR);
 					} // else if
 					else if (isMedioMayoreo){
+						this.attrs.put("tipoDecuentoAutorizadoActivo", MEDIO_MAYOREO);
 						setPrecio("medioMayoreo");
-						//getAdminOrden().getArticulos().get(index).setDescuento(this.attrs.get("descuentoIndividual").toString());
+						getAdminOrden().getArticulos().get(index).setCosto(getAdminOrden().getArticulos().get(index).toEntity().toDouble("medioMayoreo"));
+						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescripcionPrecio("medioMayoreo");
+						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).toCalculate();
 					} // else if
 					else if (isMayoreo){
+						this.attrs.put("tipoDecuentoAutorizadoActivo", MAYOREO);
 						setPrecio("mayoreo");
+						getAdminOrden().getArticulos().get(index).setCosto(getAdminOrden().getArticulos().get(index).toEntity().toDouble("mayoreo"));
+						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescripcionPrecio("mayoreo");
+						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).toCalculate();
 					} // else if
+					else{
+						this.attrs.put("decuentoAutorizadoActivo", false);					
+						this.attrs.put("tipoDecuentoAutorizadoActivo", MENUDEO);
+						setPrecio("menudeo");
+						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescuentoActivo(false);
+						getAdminOrden().getArticulos().get(index).setCosto(getAdminOrden().getArticulos().get(index).toEntity().toDouble("menudeo"));
+						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescripcionPrecio("menudeo");
+						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).toCalculate();
+					} // else
 				} // if
 				else
 					JsfBase.addMessage("El usuario no tiene privilegios o el usuario y la contraseña son incorrectos", ETipoMensaje.ERROR);
@@ -576,10 +597,8 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 		finally{			
-			this.attrs.put("isIndividual", true);
 			this.attrs.put("descuentoIndividual", 0);
 			this.attrs.put("descuentoGlobal", 0);
-			this.attrs.put("tipoDescuento", INDIVIDUAL);
 			this.attrs.put("usuarioDescuento", "");
 			this.attrs.put("passwordDescuento", "");
 		} // finally
@@ -650,6 +669,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 					temporal.setCantidad(1D);
 				temporal.setDescripcionPrecio(getPrecio());
 				temporal.setMenudeo(articulo.toDouble("menudeo"));
+				temporal.setDescuentoActivo(Boolean.valueOf(this.attrs.get("decuentoAutorizadoActivo").toString()));
 				temporal.setUltimo(this.attrs.get("ultimo")!= null);
 				temporal.setSolicitado(this.attrs.get("solicitado")!= null);
 				temporal.setUnidadMedida(articulo.toString("unidadMedida"));
