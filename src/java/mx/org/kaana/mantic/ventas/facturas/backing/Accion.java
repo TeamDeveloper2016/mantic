@@ -232,15 +232,20 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
     Transaccion transaccion= null;
     String regresar        = null;
     try {				
-			loadOrdenVenta();
-			transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), EEstatusFicticias.TIMBRADA.getIdEstatusFicticia(), this.attrs.get("observaciones").toString());
-			if (transaccion.ejecutar(EAccion.MODIFICAR)) {								
-				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
-  			JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());				
-				JsfBase.addMessage("Se generó la factura de forma correcta.", ETipoMensaje.INFORMACION);      			
-			} // if
-			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la factura.", ETipoMensaje.ERROR);      			
+			this.loadOrdenVenta();
+			UISelectEntity cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");
+			if(cliente.toString("RAZON_SOCIAL")==null || cliente.toString("RAZON_SOCIAL").equals(Constantes.VENTA_AL_PUBLICO_GENERAL))
+				JsfBase.addMessage("No se puede generar una factura para VENTA AL PUBLICO EN GENERAL, por favor cambie el cliente.", ETipoMensaje.ALERTA);   
+			else {
+				transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), EEstatusFicticias.TIMBRADA.getIdEstatusFicticia(), (String)this.attrs.get("observaciones"));
+				if (transaccion.ejecutar(EAccion.MODIFICAR)) {								
+					regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
+					JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());				
+					JsfBase.addMessage("Se generó la factura de forma correcta.", ETipoMensaje.INFORMACION);      			
+				} // if
+				else 
+					JsfBase.addMessage("Ocurrió un error al registrar la factura.", ETipoMensaje.ERROR);   
+		  } // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
