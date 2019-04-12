@@ -555,7 +555,7 @@
 				<p:commandButton icon="fa fa-check" process="@form" value="Aceptar" onstart="PF('dlgCloseTicket').hide();" action="#{manticVentasAccion.doCerrarTicket}" oncomplete="janal.desbloquear();"/>
 				<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('dlgCloseTicket').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
-		</p:dialog>			
+		</p:dialog>				
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="ui-grid ui-grid-responsive janal-wid-100" style="overflow-y:hidden;">
@@ -635,10 +635,11 @@
 					<p:password id="descuentopswrd" value="#{manticVentasAccion.attrs.passwordDescuento}" styleClass="janal-wid-100-txt" autocomplete="new-password"/>									
 					<p:separator/>
 					<p:outputLabel for="tipoDescuento" value="Tipo de descuento:"/>
-					<p:selectOneRadio id="tipoDescuento" value="#{manticVentasAccion.attrs.tipoDescuento}">
+					<p:selectOneRadio id="tipoDescuento" widgetVar="tipoDescuento" value="#{manticVentasAccion.attrs.tipoDescuento}">
 						<p:ajax event="change" listener="#{manticVentasAccion.doActivarDescuento}" process="@this" update="panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal"/>
 						<f:selectItem itemLabel="Individual" itemValue="1"/>
 						<f:selectItem itemLabel="Global" itemValue="0"/>
+						<f:selectItem itemLabel="Menudeo" itemValue="4"/>						
 						<f:selectItem itemLabel="Medio mayoreo" itemValue="2"/>
 						<f:selectItem itemLabel="Mayoreo" itemValue="3"/>
 					</p:selectOneRadio>
