@@ -85,7 +85,7 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 			this.orden.setIdAlmacen(JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
 		} // else	
 		if(loadDefault && !accion.equals(EAccion.CONSULTAR))
-			this.getArticulos().add(new Articulo(-1L));
+			this.getArticulos().add(new ArticuloVenta(-1L));
 		this.toCalculate();
 	}
 
