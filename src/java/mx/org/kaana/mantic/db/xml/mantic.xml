@@ -1867,7 +1867,7 @@
         from      
           tc_mantic_servicios
         where      
-          consecutivo = ¿{consecutivo}' and id_cliente = {idCliente} and id_empresa = {idEmpresa}
+          consecutivo = '{consecutivo}' and id_cliente = {idCliente} and id_empresa = {idEmpresa}
       </select>
 			<select id="siguiente">
         select
@@ -4057,7 +4057,7 @@
         from      
           tc_mantic_ventas
         where      
-          consecutivo = ¿{consecutivo}' and id_empresa = {idEmpresa} and date_format(dia, '%Y-%m-%d')= '{dia}'
+          consecutivo = '{consecutivo}' and id_empresa = {idEmpresa} and date_format(dia, '%Y-%m-%d')= '{dia}'
       </select>
       <select id="detalle">
         select      
