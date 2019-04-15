@@ -224,7 +224,7 @@ public class Transaccion extends Inventarios implements Serializable {
 				TcManticNotasDetallesDto item= articulo.toNotaDetalle();
 				item.setIdNotaEntrada(this.orden.getIdNotaEntrada());
 				if(item.getDiferencia()!= 0)
-					error.append("[").append(item.getNombre()).append(" - ").append(item.getDiferencia()).append("]</br> ");
+					error.append("[").append(item.getNombre()!= null && item.getNombre().length()> 20? item.getNombre().substring(0, 20): item.getNombre()).append(" - ").append(item.getDiferencia()).append("]</br> ");
 				if(DaoFactory.getInstance().findIdentically(sesion, TcManticNotasDetallesDto.class, item.toMap())== null && (articulo.getCantidad()> 0D || articulo.getCosto()> 0D)) {
 					this.toAffectOrdenDetalle(sesion, articulo);
 					if(item.isValid()) {
@@ -248,7 +248,7 @@ public class Transaccion extends Inventarios implements Serializable {
 				DaoFactory.getInstance().insert(sesion, new TcManticAlertasDto(JsfBase.getIdUsuario(), -1L, 1L, "EN LA NOTA DE ENTRADA ["+ this.orden.getConsecutivo()+ 
 					"] EXISTEN ARTICULOS QUE NO FUERON SOLICITADOS, QUE DIFIEREN LA CANTIDAD FISICA DE ARTICULOS CONTRA LA DECLARA EN LA FACTURA ["+ 
 					this.orden.getFactura()+ "] DE ESTE PROVEEDOR "+ 
-					((TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.orden.getIdProveedor())).getRazonSocial()+ " ARTICULOS: </br>"+ error.toString()
+					((TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.orden.getIdProveedor())).getRazonSocial()+ " ARTICULOS: </br>"+ (error.length()> 500? error.substring(0, 500): error.toString())
 				));
 		} // try
 		finally {
