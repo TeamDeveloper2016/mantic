@@ -170,7 +170,7 @@ public class Accion extends IBaseVenta implements Serializable {
     } // catch		
   } // doLoad
 	
-	private void loadDatosCliente(Long idVenta) throws Exception{
+	protected void loadDatosCliente(Long idVenta) throws Exception{
 		Map<String, Object>params = null;
 		Entity descripcionGarantia= null;
 		Entity entity            = null;
@@ -418,7 +418,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		return regresar;
 	} // loadVentaFinalizada
 	
-	private void loadCatalog() {
+	protected void loadCatalog() {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
     try {
