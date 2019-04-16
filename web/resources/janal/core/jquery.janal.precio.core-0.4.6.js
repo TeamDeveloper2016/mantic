@@ -228,11 +228,13 @@
 							return false;
 						break;
 					default:
-						var event = jQuery.Event("keydown");
-						event.keyCode= key;
-						event.which= key;
-						$('#verificadorValue').trigger(event);
+						if(key>= 32)
+					    $('#verificadorValue').val($('#verificadorValue').val()+ String.fromCharCode(key));
 					  $('#verificadorValue').focus();
+						var event = jQuery.Event("keyup");
+						event.keyCode= key;
+						event.which  = key;
+						$('#verificadorValue').trigger(event);
 						return false;
 					  break;
 				} // swtich
