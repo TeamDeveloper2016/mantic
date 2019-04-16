@@ -1024,7 +1024,7 @@
 					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
 					tc_mantic_clientes_pagos.id_cliente_pago consecutivo,
 					tc_mantic_ventas.ticket,
-					tc_mantic_facturas.folio factura,
+					null as factura,
 					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , 'SALDADA', 'ADEUDOS') tipo_deuda,
 					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , '1', '2') grupo_a,
 					tc_mantic_clientes_deudas.id_cliente_deuda grupo_b,
@@ -1061,7 +1061,7 @@
 					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
 					tc_mantic_garantias.consecutivo,
 					tc_mantic_ventas.ticket,
-					tc_mantic_facturas.folio factura,
+					null as factura,
 					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , 'SALDADA', 'ADEUDOS') tipo_deuda,
 					if(tc_mantic_clientes_estatus.id_cliente_estatus =3 , '1', '2') grupo_a,
 					tc_mantic_clientes_deudas.id_cliente_deuda grupo_b,
@@ -1086,7 +1086,7 @@
 				left join
 					tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
 				left join 
-					tc_mantic_garantias on tc_mantic_ventas.id_venta = tc_mantic_garantias.id_venta
+					tc_mantic_garantias on tc_mantic_ventas.id_venta = tc_mantic_garantias.id_venta and tc_mantic_garantias.id_garantia_estatus=6
 				left join
 					tc_janal_usuarios usuarios_garantia on tc_mantic_garantias.id_usuario= usuarios_garantia.id_usuario
 				left join
