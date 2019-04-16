@@ -1055,7 +1055,7 @@
 				left join
 					tc_mantic_personas persona_pago on usuarios_pago.id_persona= persona_pago.id_persona
 				where
-					tc_mantic_clientes_deudas.id_cliente= {idCliente} and tc_mantic_clientes_estatus.id_cliente_estatus not in (3)) abonos
+					tc_mantic_clientes_deudas.id_cliente= {idCliente} and tc_mantic_clientes_estatus.id_cliente_estatus not in (3) and tc_mantic_clientes_pagos.id_cliente_pago is not null) abonos
 				union all
 				select * from (select distinct
 					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
@@ -1092,7 +1092,7 @@
 				left join
 					tc_mantic_personas persona_garantia on usuarios_garantia.id_persona= persona_garantia.id_persona
 				where
-					tc_mantic_clientes_deudas.id_cliente= {idCliente} and tc_mantic_clientes_estatus.id_cliente_estatus not in (3)) garantias
+					tc_mantic_clientes_deudas.id_cliente= {idCliente} and tc_mantic_clientes_estatus.id_cliente_estatus not in (3) and tc_mantic_garantias.consecutivo is not null) garantias
 				order by grupo_a,grupo_b,grupo_c, registro
 			</select>	
      </unit>
