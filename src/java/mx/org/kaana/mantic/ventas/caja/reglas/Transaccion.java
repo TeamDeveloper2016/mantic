@@ -555,9 +555,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			correos= new StringBuilder("");
 			if(!this.ventaFinalizada.getCorreosContacto().isEmpty()){				
 				for(ClienteTipoContacto correo: this.ventaFinalizada.getCorreosContacto())
-					correos.append(correo.getValor()).append(";");
-			} // if			
-			this.correosFactura= correos.toString();
+					correos.append(correo.getValor()).append(", ");
+			} // if						
+			this.correosFactura= correos.length()> 0 ? correos.substring(0, correos.length()-2) : correos.toString();			
 			factura.setCorreos(this.correosFactura);
 			factura.setObservaciones(this.ventaFinalizada.getObservaciones());
 			factura.setIdFacturaEstatus(EEstatusFacturas.REGISTRADA.getIdEstatusFactura());
