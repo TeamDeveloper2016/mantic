@@ -148,7 +148,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
       columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
 			params=new HashMap<>();
 			params.put("idArticulo", entity.toLong("idArticulo"));
-			this.attrs.put("almacenes", UIEntity.build("VistaKardexDto", "almacenes", params, columns));
+			this.attrs.put("almacenes", UIEntity.build("VistaKardexDto", "localizado", params, columns));
 			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 			if(!almacenes.isEmpty())
 				this.attrs.put("idAlmacen", almacenes.get(0));

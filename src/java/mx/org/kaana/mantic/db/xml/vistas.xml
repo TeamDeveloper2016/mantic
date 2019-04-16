@@ -2354,6 +2354,30 @@
 				order by
 				  tc_mantic_almacenes.clave, tc_mantic_almacenes_ubicaciones.piso, tc_mantic_almacenes_ubicaciones.cuarto, tc_mantic_almacenes_ubicaciones.anaquel, tc_mantic_almacenes_ubicaciones.charola
 			</select>
+			<select id="localizado">
+        select      
+          tc_mantic_almacenes_articulos.id_almacen_articulo as id_key,
+				  tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion,
+				  tc_mantic_almacenes.id_almacen,
+          tc_mantic_almacenes.clave,
+          tc_mantic_almacenes.nombre,
+          tc_mantic_almacenes_articulos.id_articulo,
+          tc_mantic_almacenes_articulos.stock,
+          tc_mantic_almacenes_articulos.minimo,
+          tc_mantic_almacenes_articulos.maximo,
+          concat(tc_mantic_almacenes_ubicaciones.piso, '=> ', if(tc_mantic_almacenes_ubicaciones.cuarto is null, '', tc_mantic_almacenes_ubicaciones.cuarto), '=> ', if(tc_mantic_almacenes_ubicaciones.anaquel is null, '', tc_mantic_almacenes_ubicaciones.anaquel), '=> ', if(tc_mantic_almacenes_ubicaciones.charola is null, '', tc_mantic_almacenes_ubicaciones.charola)) as ubicacion,
+          tc_mantic_almacenes.registro
+				from      
+          tc_mantic_almacenes_articulos
+        inner join 
+          tc_mantic_almacenes on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_almacenes.id_almacen
+        inner join 
+          tc_mantic_almacenes_ubicaciones on tc_mantic_almacenes_articulos.id_almacen_ubicacion= tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion
+        where      
+          tc_mantic_almacenes_articulos.id_articulo = {idArticulo}
+				order by
+				  tc_mantic_almacenes.clave, tc_mantic_almacenes_ubicaciones.piso, tc_mantic_almacenes_ubicaciones.cuarto, tc_mantic_almacenes_ubicaciones.anaquel, tc_mantic_almacenes_ubicaciones.charola
+			</select>
 			<select id="ubicaciones">
         select      
 					tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion as id_key,
