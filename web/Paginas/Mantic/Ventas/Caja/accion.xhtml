@@ -413,7 +413,9 @@
 									<p:inputTextarea id="observacionesFactura" value="#{manticVentasCajaAccion.attrs.observaciones}" styleClass="janal-wid-100-txt" rows="2"/>
 								</p:panelGrid>
 								<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" columnClasses="janal-wid-100">
-									<p:outputLabel value="#{manticVentasCajaAccion.attrs.tipo}" styleClass="janal-color-black janal-total-compra"/>									
+								  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100 janal-column-center">
+									  <p:outputLabel value="#{manticVentasCajaAccion.attrs.tipo}" styleClass="janal-color-black janal-total-compra"/>	
+									</p:panelGrid>
 									<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-100 janal-column-right">										
 										<p:outputLabel for="articulos" value="Articulos:"/>
 										<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaAccion.adminOrden.totales.articulos}"/>
@@ -627,30 +629,34 @@
 									</p:selectOneMenu>
 									<p:inputText id="referenciaCheque" value="#{manticVentasCajaAccion.attrs.pago.referenciaCheque}" styleClass="janal-wid-100-txt" placeholder="Ej. Referencia 4564"/>																																				
 								</p:panelGrid>								
-								<p:panelGrid id="panelSumatoria" columns="2" layout="grid" styleClass="janal-wid-100 janal-line-button" columnClasses="janal-wid-40 janal-column-left, janal-wid-60 janal-column-right">																	
-									<p:outputLabel value="#{manticVentasCajaAccion.attrs.tipo}" styleClass="janal-color-black janal-total-compra"/><p:spacer/>
-									<p:outputLabel value="Pago minimo:" styleClass="janal-total-compra-minus janal-color-orange" rendered="#{manticVentasCajaAccion.attrs.apartado}"/>
-									<p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra-minus janal-color-orange" value="$ #{manticVentasCajaAccion.attrs.pagoMinimo}" rendered="#{manticVentasCajaAccion.attrs.apartado}"/>
-									<p:outputLabel for="articulos" value="Articulos:"/>
-									<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaAccion.attrs.pago.totales.articulos}"/>
-									<p:outputLabel value="Descuento:"/>
-									<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaAccion.attrs.pago.totales.descuentoDosDecimales$}"/>
-									<p:outputLabel value="Subtotal:"/> 
-									<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaAccion.attrs.pago.totales.subTotalDosDecimales$}"/>
-									<p:outputLabel value="IVA:"/>
-									<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaAccion.attrs.pago.totales.ivaDosDecimales$}"/>
-									<p:outputLabel for="total" value="Total:" styleClass="janal-total-compra janal-color-orange"/>
-									<p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange" value="$ #{manticVentasCajaAccion.attrs.pago.totales.totalDosDecimales$}"/>
-									<p:outputLabel value="Pago:"/>
-									<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="$ #{manticVentasCajaAccion.attrs.pago.pago$}"/>
-									<p:outputLabel for="articulos" value="Cambio:" styleClass="janal-color-blue janal-total-compra "/>
-									<p:outputLabel styleClass="janal-wid-100-txt recalculo janal-color-blue janal-total-compra" value="$ #{manticVentasCajaAccion.attrs.pago.cambio$}"/>
-									<p:outputLabel id="limiteCredito" value="#{manticVentasCajaAccion.attrs.pago.limiteCredito}" style="display: none"/>
-									<p:outputLabel id="limiteDebito" value="#{manticVentasCajaAccion.attrs.pago.limiteDebito}" style="display: none"/>
-									<p:outputLabel id="limiteCheque" value="#{manticVentasCajaAccion.attrs.pago.limiteCheque}" style="display: none"/>
-									<p:outputLabel id="limiteTransferencia" value="#{manticVentasCajaAccion.attrs.pago.limiteTransferencia}" style="display: none"/>
-									<p:outputLabel id="totalVenta" styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange" value="#{manticVentasCajaAccion.attrs.pago.totales.totalDosDecimales}" style="display: none"/>
-									<p:inputText id="pago" value="#{manticVentasCajaAccion.attrs.pago.pago$}" style="display: none"/>
+								<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">																	
+								  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100 janal-column-center">
+									  <p:outputLabel value="#{manticVentasCajaAccion.attrs.tipo}" styleClass="janal-color-black janal-total-compra"/>	
+									</p:panelGrid>
+									<p:panelGrid id="panelSumatoria" columns="2" layout="grid" styleClass="janal-wid-100 janal-line-button" columnClasses="janal-wid-40 janal-column-left, janal-wid-60 janal-column-right">																	
+										<p:outputLabel value="Pago minimo:" styleClass="janal-total-compra-minus janal-color-orange" rendered="#{manticVentasCajaAccion.attrs.apartado}"/>
+										<p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra-minus janal-color-orange" value="$ #{manticVentasCajaAccion.attrs.pagoMinimo}" rendered="#{manticVentasCajaAccion.attrs.apartado}"/>
+										<p:outputLabel for="articulos" value="Articulos:"/>
+										<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaAccion.attrs.pago.totales.articulos}"/>
+										<p:outputLabel value="Descuento:"/>
+										<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaAccion.attrs.pago.totales.descuentoDosDecimales$}"/>
+										<p:outputLabel value="Subtotal:"/> 
+										<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaAccion.attrs.pago.totales.subTotalDosDecimales$}"/>
+										<p:outputLabel value="IVA:"/>
+										<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaAccion.attrs.pago.totales.ivaDosDecimales$}"/>
+										<p:outputLabel for="total" value="Total:" styleClass="janal-total-compra janal-color-orange"/>
+										<p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange" value="$ #{manticVentasCajaAccion.attrs.pago.totales.totalDosDecimales$}"/>
+										<p:outputLabel value="Pago:"/>
+										<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="$ #{manticVentasCajaAccion.attrs.pago.pago$}"/>
+										<p:outputLabel for="articulos" value="Cambio:" styleClass="janal-color-blue janal-total-compra "/>
+										<p:outputLabel styleClass="janal-wid-100-txt recalculo janal-color-blue janal-total-compra" value="$ #{manticVentasCajaAccion.attrs.pago.cambio$}"/>
+										<p:outputLabel id="limiteCredito" value="#{manticVentasCajaAccion.attrs.pago.limiteCredito}" style="display: none"/>
+										<p:outputLabel id="limiteDebito" value="#{manticVentasCajaAccion.attrs.pago.limiteDebito}" style="display: none"/>
+										<p:outputLabel id="limiteCheque" value="#{manticVentasCajaAccion.attrs.pago.limiteCheque}" style="display: none"/>
+										<p:outputLabel id="limiteTransferencia" value="#{manticVentasCajaAccion.attrs.pago.limiteTransferencia}" style="display: none"/>
+										<p:outputLabel id="totalVenta" styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange" value="#{manticVentasCajaAccion.attrs.pago.totales.totalDosDecimales}" style="display: none"/>
+										<p:inputText id="pago" value="#{manticVentasCajaAccion.attrs.pago.pago$}" style="display: none"/>
+									</p:panelGrid>
 								</p:panelGrid>
 							</p:panelGrid>
 						</div>
