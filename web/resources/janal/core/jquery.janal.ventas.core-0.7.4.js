@@ -1076,15 +1076,15 @@
 			} // if
 		}, // toPasswordEnter		
 		refreshCobroValidate: function() {
-			var limiteCredito= parseFloat($('#contenedorGrupos\\:limiteCredito').text());
-			var limiteDebito= parseFloat($('#contenedorGrupos\\:limiteDebito').text());
-			var limiteCheque = parseFloat($('#contenedorGrupos\\:limiteCheque').text());
-			var limiteTransferencia = parseFloat($('#contenedorGrupos\\:limiteTransferencia').text());
-			var credito= parseFloat($('#contenedorGrupos\\:credito_input').val());
-			var debito= parseFloat($('#contenedorGrupos\\:debito_input').val());
-			var cheque = parseFloat($('#contenedorGrupos\\:cheque_input').val());
-			var transferencia = parseFloat($('#contenedorGrupos\\:transferencia_input').val());
-			var totalVenta = parseFloat($('#contenedorGrupos\\:totalVenta').text());
+			var limiteCredito= parseFloat(parseFloat($('#contenedorGrupos\\:limiteCredito').text()).toFixed(2));
+			var limiteDebito= parseFloat(parseFloat($('#contenedorGrupos\\:limiteDebito').text()).toFixed(2));
+			var limiteCheque = parseFloat(parseFloat($('#contenedorGrupos\\:limiteCheque').text()).toFixed(2));
+			var limiteTransferencia = parseFloat(parseFloat($('#contenedorGrupos\\:limiteTransferencia').text()).toFixed(2));
+			var credito= parseFloat(parseFloat($('#contenedorGrupos\\:credito_input').val()).toFixed(2));
+			var debito= parseFloat(parseFloat($('#contenedorGrupos\\:debito_input').val()).toFixed(2));
+			var cheque = parseFloat(parseFloat($('#contenedorGrupos\\:cheque_input').val()).toFixed(2));
+			var transferencia = parseFloat(parseFloat($('#contenedorGrupos\\:transferencia_input').val()).toFixed(2));
+			var totalVenta = parseFloat(parseFloat($('#contenedorGrupos\\:totalVenta').text()).toFixed(2));
 			this.refreshValidationsPagos(limiteCredito, limiteDebito, limiteCheque, totalVenta, limiteTransferencia);
 			this.refreshDebito(debito);
 			this.refreshCredito(credito);
@@ -1093,14 +1093,14 @@
 			janal.refresh();
 		}, // refreshCobroValidate		
 		validateApartado: function(minPago) {			
-			var limiteCredito= parseFloat($('#contenedorGrupos\\:limiteCredito').text());
-			var limiteDebito= parseFloat($('#contenedorGrupos\\:limiteDebito').text());
-			var limiteCheque= parseFloat($('#contenedorGrupos\\:limiteCheque').text());
-			var limiteTransferencia= parseFloat($('#contenedorGrupos\\:limiteTransferencia').text());
-			var credito= parseFloat($('#contenedorGrupos\\:credito_input').val());
-			var debito= parseFloat($('#contenedorGrupos\\:debito_input').val());
-			var cheque = parseFloat($('#contenedorGrupos\\:cheque_input').val());
-			var transferencia = parseFloat($('#contenedorGrupos\\:transferencia_input').val());
+			var limiteCredito= parseFloat(parseFloat($('#contenedorGrupos\\:limiteCredito').text()).toFixed(2));
+			var limiteDebito= parseFloat(parseFloat($('#contenedorGrupos\\:limiteDebito').text()).toFixed(2));
+			var limiteCheque= parseFloat(parseFloat($('#contenedorGrupos\\:limiteCheque').text()).toFixed(2));
+			var limiteTransferencia= parseFloat(parseFloat($('#contenedorGrupos\\:limiteTransferencia').text()).toFixed(2));
+			var credito= parseFloat(parseFloat($('#contenedorGrupos\\:credito_input').val()).toFixed(2));
+			var debito= parseFloat(parseFloat($('#contenedorGrupos\\:debito_input').val()).toFixed(2));
+			var cheque = parseFloat(parseFloat($('#contenedorGrupos\\:cheque_input').val()).toFixed(2));
+			var transferencia = parseFloat(parseFloat($('#contenedorGrupos\\:transferencia_input').val()).toFixed(2));
 			this.refreshValidationsPagos(limiteCredito, limiteDebito, limiteCheque, minPago, limiteTransferencia);
 			this.refreshDebito(debito);
 			this.refreshCredito(credito);
