@@ -190,6 +190,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 		  sb.append("((date_format(tc_mantic_facturas.timbrado, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') or (date_format(tc_mantic_facturas.cancelada, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("')) and ");			
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
 		  sb.append("((date_format(tc_mantic_facturas.timbrado, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') or (date_format(tc_mantic_facturas.cancelada, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("')) and ");			
+		if(!Cadena.isVacio(this.attrs.get("montoInicio")))
+		  sb.append("(tc_mantic_ventas.total>= ").append((Double)this.attrs.get("montoInicio")).append(") and ");			
+		if(!Cadena.isVacio(this.attrs.get("montoTermino")))
+		  sb.append("(tc_mantic_ventas.total<= ").append((Double)this.attrs.get("montoTermino")).append(") and ");			
 		if(estatus!= null && !estatus.getKey().equals(-1L))
   		sb.append("(tc_mantic_ventas.id_venta_estatus= ").append(estatus.getKey()).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
@@ -547,4 +551,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
 	}
 	
+	public void doMontoUpdate() {
+	  if(this.attrs.get("montoInicio")!= null && this.attrs.get("montoTermino")== null)
+			this.attrs.put("montoTermino", this.attrs.get("montoInicio"));
+	  if(this.attrs.get("montoTermino")!= null && this.attrs.get("montoInicio")== null)
+			this.attrs.put("montoInicio", this.attrs.get("montoTermino"));
+	}
+		
 }

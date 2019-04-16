@@ -15,6 +15,8 @@
         'consecutivo'   : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'consecutivo'},
         'fechaInicio'   : {validaciones: 'fecha',  mascara: 'fecha', grupo: 'general'},
         'fechaTermino'  : {validaciones: 'fecha',  mascara: 'fecha', grupo: 'general'},
+        'montoInicio'   : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
+        'montoTermino'  : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
 				'articulo'      : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
 				'razonSocial'   : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'idVentaEstatus': {validaciones: 'libre',  mascara: 'libre', grupo: 'general'}        
@@ -86,6 +88,14 @@
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticVentasFacturasFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>              
 							<p:outputLabel for="fechaTermino" value="Fecha termino:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticVentasFacturasFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>							
+							<p:outputLabel for="montoInicio" value="Monto inicio:"/>
+							<p:inputText id="montoInicio" styleClass="janal-wid-100-txt" value="#{manticVentasFacturasFiltro.attrs.montoInicio}" converter="javax.faces.Double">
+								<p:ajax event="blur" listener="#{manticVentasFacturasFiltro.doMontoUpdate}" process="@this" update="montoTermino"/>
+							</p:inputText>	
+							<p:outputLabel for="montoTermino" value="Monto termino:"/>
+							<p:inputText id="montoTermino" styleClass="janal-wid-100-txt" value="#{manticVentasFacturasFiltro.attrs.montoTermino}" converter="javax.faces.Double">							
+								<p:ajax event="blur" listener="#{manticVentasFacturasFiltro.doMontoUpdate}" process="@this" update="montoInicio"/>
+							</p:inputText>	
               <p:outputLabel for="idVentaEstatus" value="Estatus:"/>
               <p:selectOneMenu id="idVentaEstatus" value="#{manticVentasFacturasFiltro.attrs.idVentaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
@@ -183,9 +193,9 @@
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">                        
 						<p:menuitem id="timbrar" icon="fa fa-check" value="Timbrar" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasFacturasFiltro.doAccion('MODIFICAR')}" rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '0'}"/>					            
-            <p:separator rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '0'}"/>					            
+            <p:separator rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado ne '0'}"/>					            
 						<p:menuitem id="estatus" icon="fa fa-close" value="Cancelar" onstart="return janal.bloquear()" process="@this tabla"  oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado ne '0'}"/>					            
-						<p:separator rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado ne '0'}"/>
+						<p:separator rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>
 						<!--p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasFacturasFiltro.doMovimientos}"/-->            
             <p:menuitem id="reenviar" icon="fa fa-mail-forward" value="Reenviar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasFacturasFiltro.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>					                        
 						<!--p:menuitem id="ticket" icon="fa fa-file-text-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasFacturasFiltro.doReporte('FACTURAS_FICTICIAS_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/-->			

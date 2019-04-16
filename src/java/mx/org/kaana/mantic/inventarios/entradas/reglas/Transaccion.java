@@ -244,12 +244,13 @@ public class Transaccion extends Inventarios implements Serializable {
 				} // if
 			} // for
 			//* APLICAR UNA ALERTA EN CASO DE QUE FALTEN ARTICULOS FISICO CON RESPECTO A LA FACTURA ENTREGADA *//
-			if(error.length()> 0) 
-				DaoFactory.getInstance().insert(sesion, new TcManticAlertasDto(JsfBase.getIdUsuario(), -1L, 1L, "EN LA NOTA DE ENTRADA ["+ this.orden.getConsecutivo()+ 
-					"] EXISTEN ARTICULOS QUE NO FUERON SOLICITADOS, QUE DIFIEREN LA CANTIDAD FISICA DE ARTICULOS CONTRA LA DECLARA EN LA FACTURA ["+ 
-					this.orden.getFactura()+ "] DE ESTE PROVEEDOR "+ 
-					((TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.orden.getIdProveedor())).getRazonSocial()+ " ARTICULOS: </br>"+ (error.length()> 500? error.substring(0, 500): error.toString())
-				));
+			// ESTO YA NO APLICA POR EL PROCESO DE LAS DIFERENCIAS DE ARTICULOS
+//			if(error.length()> 0) 
+//				DaoFactory.getInstance().insert(sesion, new TcManticAlertasDto(JsfBase.getIdUsuario(), -1L, 1L, "EN LA NOTA DE ENTRADA ["+ this.orden.getConsecutivo()+ 
+//					"] EXISTEN ARTICULOS QUE NO FUERON SOLICITADOS, QUE DIFIEREN LA CANTIDAD FISICA DE ARTICULOS CONTRA LA DECLARA EN LA FACTURA ["+ 
+//					this.orden.getFactura()+ "] DE ESTE PROVEEDOR "+ 
+//					((TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.orden.getIdProveedor())).getRazonSocial()+ " ARTICULOS: </br>"+ (error.length()> 500? error.substring(0, 500): error.toString())
+//				));
 		} // try
 		finally {
 			Methods.clean(todos);
