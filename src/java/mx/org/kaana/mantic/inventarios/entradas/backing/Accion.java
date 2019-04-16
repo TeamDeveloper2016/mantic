@@ -304,6 +304,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			this.attrs.put("proveedor", temporal);
 			this.toLoadCondiciones(proveedores.get(proveedores.indexOf((UISelectEntity)((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor())));
 			this.doCalculateFechaPago();
+			this.toCheckProveedor(true);
 		}	
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -337,7 +338,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedorPago(condiciones.get(0));
 				else {
 					Entity entity= new UISelectEntity(new Entity(((NotaEntrada)this.getAdminOrden().getOrden()).getIdProveedorPago()));
-				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedorPago(condiciones.get(condiciones.indexOf(entity)));
+					if(condiciones.indexOf(entity)>= 0)
+				    ((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedorPago(condiciones.get(condiciones.indexOf(entity)));
+ 					else
+  				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedorPago(condiciones.get(0));
 				} // if	
 				((NotaEntrada)this.getAdminOrden().getOrden()).setDiasPlazo(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedorPago().toLong("plazo")+ 1);
         ((NotaEntrada)this.getAdminOrden().getOrden()).setDescuento(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedorPago().toString("descuento"));
@@ -364,6 +368,11 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Importar") && this.attrs.get("faltantes")== null)
 			this.doLoadFiles("TcManticNotasArchivosDto", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada(), "idNotaEntrada", (boolean)this.attrs.get("sinIva"), this.getAdminOrden().getTipoDeCambio());
+	  else
+  		if(event.getTab().getTitle().equals("Articulos")) {
+				UIBackingUtilities.update("contenedorGrupos:sinIva");
+				UIBackingUtilities.update("contenedorGrupos:paginator");
+			} // if
 	}
 	
 	public void doFileUpload(FileUploadEvent event) {
@@ -427,6 +436,50 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
     } // catch   
+		this.attrs.put("relacionados", relacionados);
+		this.toCheckProveedor(checkItems);
+	}
+	
+	private void toCheckProveedor(boolean checkItems) {
+		Articulo faltante= null;
+		int relacionados = this.attrs.get("relacionados")== null? 0: (int)this.attrs.get("relacionados");
+		Map<String, Object> params=null;
+		try {
+			params= new HashMap<>();
+			params.put("idProveedor", this.getAdminOrden().getIdProveedor());
+		  List<Articulo> faltantes= (List<Articulo>)this.attrs.get("faltantes");
+			int x= 0;
+			while(faltantes!= null && x< faltantes.size()) {
+				faltante= faltantes.get(x);
+  			params.put("codigo", faltante.getCodigo());
+				List<UISelectEntity> disponibles= UIEntity.build("VistaNotasEntradasDto", "proveedor", params, Collections.EMPTY_LIST); 
+				if(disponibles!= null && !disponibles.isEmpty()) {
+					relacionados++;
+					faltantes.remove(faltante);
+					if(checkItems) {
+						disponibles.get(0).put("sat", new Value("sat", faltante.getSat()));
+						disponibles.get(0).put("codigo", new Value("codigo", faltante.getCodigo()));
+						disponibles.get(0).put("costo", new Value("costo", faltante.getCosto()));
+						disponibles.get(0).put("cantidad", new Value("cantidad", faltante.getCantidad()));
+						disponibles.get(0).put("descuento", new Value("descuento", faltante.getDescuento()));
+						disponibles.get(0).put("iva", new Value("iva", faltante.getIva()));
+						disponibles.get(0).put("unidadMedida", new Value("unidadMedida", faltante.getUnidadMedida()!= null? faltante.getUnidadMedida().toUpperCase(): ""));
+						disponibles.get(0).put("origen", new Value("origen", faltante.getNombre()));
+						this.attrs.put("encontrado", disponibles.get(0));
+						this.doFindArticulo(this.getAdminOrden().getArticulos().size()- 1);
+					} // if
+				} // if	
+				else
+					x++;
+			} // while
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch
+		finally {
+			Methods.clean(params);
+		} // finally
 		this.attrs.put("relacionados", relacionados);
 	}
 	

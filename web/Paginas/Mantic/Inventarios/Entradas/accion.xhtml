@@ -289,8 +289,8 @@
       							<p:panelGrid id="datosArticulos" columns="6" layout="grid" styleClass="janal-wid-99" columnClasses="janal-wid-col-180, janal-wid-col-160, janal-wid-40">
 											<p:outputLabel for="sinIva" value="Los precios son &lt;strong&gt;Netos&lt;/strong&gt;:" escape="false"/>
 											<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-col-40, janal-wid-col-40">
-												<p:inputSwitch id="sinIva" widgetVar="widgetSinIva" value="#{manticInventariosEntradasAccion.attrs.sinIva}" onLabel="SI" offLabel="NO">
-													 <p:ajax event="change" listener="#{manticInventariosEntradasAccion.doUpdateIvaTipoDeCambio}" process="@this" update="@(.filas) @(.recalculo)"/>
+												<p:inputSwitch id="sinIva" widgetVar="widgetSinIva" value="#{manticInventariosEntradasAccion.attrs.sinIva}" onLabel="SI" offLabel="NO" styleClass="filas">
+													 <p:ajax event="change" listener="#{manticInventariosEntradasAccion.doUpdateIvaTipoDeCambio()}" process="@this" update="@(.filas) @(.recalculo)"/>
 												</p:inputSwitch>
 												<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();" style="float:right;">
 													<f:setPropertyActionListener target="#{manticInventariosEntradasAccion.attrs.seleccionado}" value="#{null}"/>
@@ -300,9 +300,9 @@
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 												<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" style="margin-top: -7px;" columnClasses="janal-move-left janal-wid-col40, janal-wid-100-txt, janal-wid-col40">
                           <p:commandButton type="button" icon="fa fa-file-pdf-o" onclick="viewDocument();" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento [#{manticInventariosEntradasAccion.pdf.name}]" style="#{(empty manticInventariosEntradasAccion.pdf)? 'display: none': ''}"/>
-													<p:outputLabel value="Segmentar partidas: " escape="false" styleClass="filas"  style="float: right; display:#{manticInventariosEntradasAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}"/>
-													<p:inputSwitch id="paginator" widgetVar="widgetPaginator" value="#{manticInventariosEntradasAccion.attrs.paginator}" onLabel="SI" offLabel="NO" style="display:#{manticInventariosEntradasAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}" styleClass="filas #{manticInventariosEntradasAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'disabled': ''}">
-														<p:ajax event="change" process="@this" listener="#{manticInventariosEntradasAccion.doResetDataTable()}" update="contenedorGrupos:tabla" oncomplete="jsArticulos.skip($(PF('widgetPaginator').input.selector+ ':checked').length=== 1);"/>
+													<p:outputLabel value="Segmentar partidas: " escape="false" styleClass="filas" style="float: right; display:#{manticInventariosEntradasAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}"/>
+													<p:inputSwitch id="paginator" widgetVar="widgetPaginator" value="#{manticInventariosEntradasAccion.attrs.paginator}" onLabel="SI" offLabel="NO" style="display:#{manticInventariosEntradasAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}" styleClass="filas">
+														<p:ajax event="change" process="@this" listener="#{manticInventariosEntradasAccion.doResetDataTable()}" update="contenedorGrupos:tabla @(.filas)" oncomplete="jsArticulos.skip($(PF('widgetPaginator').input.selector+ ':checked').length=== 1);"/>
 													</p:inputSwitch>			
 												</p:panelGrid>	 
 											</p:panelGrid>

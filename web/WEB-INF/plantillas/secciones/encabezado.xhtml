@@ -154,7 +154,7 @@
 				<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 					<p:outputLabel for="verificadorValue" value="C&oacute;digo o nombre articulo:"/>
 					<p:inputText id="verificadorValue" styleClass="janal-key-verificador janal-wid-100-txt" value="#{kajoolEncabezado.attrs.buscarPor}">   
-						<p:ajax event="keyup" listener="#{kajoolEncabezado.doChange}" process="@this verificadorBuscarPor" update="verificadorPrecio verificadorTabla" onstart="return $('#verificadorValue').val().trim().length> 1"/>
+						<p:ajax event="keyup" listener="#{kajoolEncabezado.doChange}" process="@this verificadorBuscarPor" update="verificadorPrecio verificadorTabla" onstart="return $('#verificadorValue').val().trim().length> 1;"/>
 					</p:inputText>
 				</p:panelGrid>	
 				<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-right">
