@@ -79,6 +79,34 @@
 						break;
 				} // swtich
 			});	
+	    $(document).on('keydown', '.janal-event-verificador', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('jsPrecios.keydown: '+ key);
+				switch(key) {
+					case $precios.VK_UP:	
+					case $precios.VK_DOWN:	
+						return $precios.hide();
+					  break;
+					case $precios.VK_ESC:
+            PF('dlgVerificador').hide();
+					  break;
+					case $precios.VK_F7:
+					case $precios.VK_ENTER:
+						if($('#verificadorPrecio').is(":hidden"))
+						  return $precios.show();
+						else 
+							return false;
+						break;
+					case $precios.VK_PAGE_NEXT:
+						$('#verificadorTabla_paginator_top > a.ui-paginator-next').click();
+						return setTimeout($precios.next(false), 1000);
+						break;
+					case $precios.VK_PAGE_PREV:
+						$('#verificadorTabla_paginator_top > a.ui-paginator-prev').click();
+						return setTimeout($precios.next(false), 1000);
+						break;
+				} // swtich
+			});	
 	    $(document).on('keydown', '.janal-key-lista', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
 				janal.console('jsPrecios.keydown: '+ key);
@@ -169,10 +197,6 @@
 				var key   = e.keyCode ? e.keyCode : e.which;
 				janal.console('jsPrecios.keydown: '+ $(this).attr('id')+ ' key: '+ key);
 				switch(key) {
-					case $precios.VK_TAB:
-					  $('#verificadorValue').focus();
-						return false;
-					  break;
 					case $precios.VK_ESC:
             PF('dlgVerificador').hide();
 						break;
@@ -203,6 +227,14 @@
 						else
 							return false;
 						break;
+					default:
+						var event = jQuery.Event("keydown");
+						event.keyCode= key;
+						event.which= key;
+						$('#verificadorValue').trigger(event);
+					  $('#verificadorValue').focus();
+						return false;
+					  break;
 				} // swtich
 			});	
 	    $(document).on('keydown', '.janal-row-faltantes', function(e) {
