@@ -349,8 +349,10 @@ public class Accion extends IBaseVenta implements Serializable {
     } // catch
   } // doAccion
 	
-	public void doVerificaArticulosCotizacion(){
+	public void doVerificaArticulosCotizacion() {
 		try {
+			if(this.attrs.get("tipo")== null)
+				this.attrs.put("tipo", EEstatusVentas.COTIZACION);
 			if(!(this.attrs.get("tipo").toString().equals(EEstatusVentas.APARTADOS.name()) || this.attrs.get("tipo").toString().equals(EEstatusVentas.COTIZACION.name()))){
 				if(!getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()> 0){
 					UIBackingUtilities.execute("janal.bloquear();");
@@ -974,7 +976,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				regresar.getTicketVenta().setVigencia(new Date(calendar.getTimeInMillis()));
 			} // if
 			regresar.setDetailApartado(this.apartado);
-			regresar.setObservaciones(this.attrs.get("observaciones").toString());
+			regresar.setObservaciones((String)this.attrs.get("observaciones"));
 			regresar.setTipoCuenta(this.attrs.get("tipo").toString().toUpperCase());
 		} // try
 		catch (Exception e) {			
