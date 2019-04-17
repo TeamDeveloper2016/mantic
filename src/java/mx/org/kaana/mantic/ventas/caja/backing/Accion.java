@@ -229,6 +229,24 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 	} // doInitPage
 	
+	public void doCleanCaptura(){
+		RequestContext rc= null;
+		try {
+			rc= RequestContext.getCurrentInstance();
+			if(!this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0)
+				rc.execute("validaAccionCaptura();");
+			else{
+				doInitPage();
+				rc.execute("janal.desbloquear();jsArticulos.refreshCobroValidate();");
+			} // else
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+			throw e;
+		} // catch		
+	} // doCleanCaptura
+	
 	private void loadRangoFechas(boolean init) throws Exception{
 		List<Entity> fechas      = null;
 		Map<String, Object>params= null;
