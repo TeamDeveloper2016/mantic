@@ -101,6 +101,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("descripcion", "Imagen no disponible");
 			this.attrs.put("mostrarBanco", false);
 			this.attrs.put("decuentoAutorizadoActivo", false);
+			this.attrs.put("tipoDecuentoAutorizadoActivo", MENUDEO);
 			this.image= LoadImages.getImage(-1L);
 			this.attrs.put("observaciones", JsfBase.getFlashAttribute("observaciones")== null? "" : JsfBase.getFlashAttribute("observaciones"));
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
