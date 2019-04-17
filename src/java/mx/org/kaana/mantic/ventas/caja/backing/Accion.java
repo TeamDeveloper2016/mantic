@@ -48,6 +48,7 @@ import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.enums.ETiposContactos;
+import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 import mx.org.kaana.mantic.ventas.caja.beans.Pago;
 import mx.org.kaana.mantic.ventas.caja.beans.VentaFinalizada;
 import mx.org.kaana.mantic.ventas.caja.reglas.CreateTicket;
@@ -783,8 +784,14 @@ public class Accion extends IBaseVenta implements Serializable {
 		try {
 			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
 			if(ticketAbierto!= null && !ticketAbierto.getKey().equals(-1L) && !this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
-				this.attrs.put("tabIndex", 1);
-				this.pagar= true;
+				loadOrdenVenta();				
+				transaccion = new mx.org.kaana.mantic.ventas.reglas.Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
+				this.getAdminOrden().toAdjustArticulos();
+				if (transaccion.ejecutar(EAccion.REGISTRAR)) {
+					this.attrs.put("tabIndex", 1);
+					this.pagar= true;
+					this.getAdminOrden().getArticulos().add(new ArticuloVenta(-1L));
+				} // if				
 			} // if
 			else if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
 				loadOrdenVenta();				
