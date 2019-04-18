@@ -107,6 +107,10 @@ public class Transaccion extends TransaccionFactura {
 		return orden;
 	}	
 
+	public void setOrden(TcManticVentasDto orden) {
+		this.orden = orden;
+	}	
+	
 	public void setClienteVenta(ClienteVenta clienteVenta) {
 		this.clienteVenta = clienteVenta;
 	}	
@@ -196,6 +200,10 @@ public class Transaccion extends TransaccionFactura {
 						if(regresar && !this.aplicar)
 							registrarDeuda(sesion, this.orden.getTotal());
 					} // if					
+					break;
+				case MOVIMIENTOS:
+					idEstatusVenta= EEstatusVentas.ABIERTA.getIdEstatusVenta();
+					regresar= this.orden.getIdVenta()!= null && !this.orden.getIdVenta().equals(-1L) ? actualizarVenta(sesion, idEstatusVenta) : registrarVenta(sesion, idEstatusVenta);					
 					break;
 			} // switch
 			if(!regresar)
