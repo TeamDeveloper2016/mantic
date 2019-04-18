@@ -369,20 +369,26 @@ public class Accion extends IBaseVenta implements Serializable {
   } // doAccion
 	
 	public void doVerificaArticulosCotizacion() {
+		UISelectEntity ticketAbierto= null;
+		boolean confirmacion        = false;
+		String mensaje              = null;
 		try {
-			if(this.attrs.get("tipo")== null)
-				this.attrs.put("tipo", EEstatusVentas.COTIZACION);
-			if(!(this.attrs.get("tipo").toString().equals(EEstatusVentas.APARTADOS.name()) || this.attrs.get("tipo").toString().equals(EEstatusVentas.COTIZACION.name()))){
-				if(!getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()> 0){
-					UIBackingUtilities.execute("janal.bloquear();");
-					UIBackingUtilities.execute("PF('dlgCotizacion').show();");
-				} // if
-				else{
-					JsfBase.addMessage("Cotización", "No es posible generar una cotización sin articulos", ETipoMensaje.ERROR);
-				} // else
+			mensaje= "No es posible generar una cotización sin articulos";
+			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
+			if(this.attrs.get("tipo")!= null){				
+				if(!(this.attrs.get("tipo").toString().equals(EEstatusVentas.APARTADOS.name()) || this.attrs.get("tipo").toString().equals(EEstatusVentas.COTIZACION.name())))
+					confirmacion= !getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()> 0;									
+				else
+					mensaje= "No es posible generar una cotización sobre un apartado o una misma cotización";
 			} // if
 			else
-				JsfBase.addMessage("Cotización", "No es posible generar una cotización sobre un apartado o una misma cotización", ETipoMensaje.ERROR);
+				confirmacion= ticketAbierto== null && !this.getAdminOrden().getArticulos().isEmpty() && this.getAdminOrden().getTotales().getTotal() > 0D;			
+			if(confirmacion){
+				UIBackingUtilities.execute("janal.bloquear();");
+				UIBackingUtilities.execute("PF('dlgCotizacion').show();");
+			} //if
+			else
+				JsfBase.addMessage("Cotización", mensaje, ETipoMensaje.ERROR);					
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -391,12 +397,24 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // doVerificaArticulosCotizacion
  	
   public String doAceptarCotizacion() {	  
-    Transaccion transaccion= null;
-    String regresar        = null;
-		CreateTicket ticket    = null;
-    try {							
-			transaccion = new Transaccion((TicketVenta)this.getAdminOrden().getOrden());
-			if (transaccion.ejecutar(EAccion.MODIFICAR)) {
+		UISelectEntity ticketAbierto= null;
+    Transaccion transaccion     = null;
+    String regresar             = null;
+		CreateTicket ticket         = null;
+		boolean confirmacion        = false;
+    try {	
+			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
+			if(ticketAbierto== null && !this.getAdminOrden().getArticulos().isEmpty() && this.getAdminOrden().getTotales().getTotal() > 0D){
+				loadOrdenVenta();				
+				transaccion= new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
+				this.getAdminOrden().toAdjustArticulos();
+				confirmacion= transaccion.ejecutar(EAccion.MOVIMIENTOS);				
+			} // if
+			else{
+				transaccion = new Transaccion((TicketVenta)this.getAdminOrden().getOrden());
+				confirmacion= transaccion.ejecutar(EAccion.MODIFICAR);				
+			} // else
+			if(confirmacion){
 				((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).setCotizacion(transaccion.getCotizacion());
 				ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago) this.attrs.get("pago"), "COTIZACIÓN");				
 				UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + transaccion.getCotizacion() + "','" + ticket.toHtml() + "');");
@@ -407,7 +425,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				this.attrs.put("clienteSeleccion", null);
 				init();
 			} // if
-			else 
+			else
 				JsfBase.addMessage("Ocurrió un error al generar la cotización.", ETipoMensaje.ERROR);			     			
     } // try
     catch (Exception e) {
