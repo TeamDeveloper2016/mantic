@@ -77,6 +77,10 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	private Long idCliente;
 	private String correosFactura;
 	
+	public Transaccion(IBaseDto orden, List<Articulo> articulos) {
+		super((TcManticVentasDto)orden, articulos);		
+	} // Transaccion
+	
 	public Transaccion(IBaseDto dto) {
 		super(new TicketVenta());
 		this.dto= dto;
@@ -128,6 +132,11 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 				case AGREGAR:
 					idEstatusVenta= EEstatusVentas.ABIERTA.getIdEstatusVenta();
 					regresar= actualizarVenta(sesion, idEstatusVenta);					
+					break;
+				case MOVIMIENTOS:					
+					super.ejecutar(sesion, accion);
+					this.dto= getOrden();
+					regresar= procesaCotizacion(sesion);					
 					break;
 			} // switch
 			if(!regresar)
