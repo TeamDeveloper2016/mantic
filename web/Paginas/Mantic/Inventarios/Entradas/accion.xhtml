@@ -198,7 +198,7 @@
 								<p:outputLabel for="fechaFactura" value="Fecha factura:"/>
 								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-94" styleClass="janal-wid-100 involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 								<p:outputLabel for="fechaRecepcion" value="Fecha recepción:"/>
-								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-94" styleClass="janal-wid-99" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 								<p:outputLabel for="diasPlazo" value="Dias plazo:"/>
 								<p:inputNumber id="diasPlazo" inputStyleClass="janal-wid-100-txt janal-column-right" styleClass="involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.diasPlazo}" decimalPlaces="0">
 									<p:ajax event="keyup" listener="#{manticInventariosEntradasAccion.doCalculateFechaPago}" process="@this" update="fechaPago"/>
@@ -206,7 +206,7 @@
 								<p:outputLabel for="deuda" value="Deuda:"/>
 								<p:inputText id="deuda" styleClass="recalculo janal-wid-100-txt janal-column-right" value="#{manticInventariosEntradasAccion.adminOrden.orden.deuda}"/>
 								<p:outputLabel for="fechaPago" value="Fecha de pago:"/>
-								<p:calendar id="fechaPago" inputStyleClass="janal-wid-94" styleClass="janal-wid-99 involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaPago}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario">
+								<p:calendar id="fechaPago" inputStyleClass="janal-wid-94" styleClass="janal-wid-100 involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaPago}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario">
 									<p:ajax event="dateSelect" listener="#{manticInventariosEntradasAccion.doCalculatePagoFecha}" process="@this" update="diasPlazo"/>
 								</p:calendar>
 								<p:spacer width="1px"/><p:separator/>
@@ -224,8 +224,8 @@
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="idProveedor" value="Proveedor:"/>
 								<p:selectOneMenu id="idProveedor" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="contains" disabled="#{not manticInventariosEntradasAccion.isDirecta}">
-									<p:ajax event="change" listener="#{manticInventariosEntradasAccion.doUpdateProveedor}" update="idProveedorPago diasPlazo fechaPago datosArticulos tabla @(.recalculo)" process="@form" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-									<f:selectItems value="#{manticInventariosEntradasAccion.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
+									<p:ajax event="change" listener="#{manticInventariosEntradasAccion.doUpdateProveedor}" update="idProveedorPago diasPlazo fechaPago datosProveedor datosArticulos tabla @(.recalculo)" process="@form" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+									<f:selectItems value="#{manticInventariosEntradasAccion.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   

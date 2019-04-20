@@ -105,7 +105,11 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				temporal.setNombre(articulo.toString("nombre"));
 				temporal.setOrigen(articulo.toString("origen"));
 				temporal.setValor(articulo.toDouble(this.precio));
-				temporal.setCosto(articulo.toDouble(this.precio));
+				// SI VIENE DE IMPORTAR EL ARTICULO DE UN XML ENTONCES CONSIDERAR EL COSTO DE LA FACTURA CON RESPECTO AL DEL CATALOGOD E ARTICULOS
+				if(articulo.containsKey("costo")) 
+  				temporal.setCosto(articulo.toDouble("costo"));
+			  else
+				  temporal.setCosto(articulo.toDouble(this.precio));
 				temporal.setIva(articulo.toDouble("iva"));				
 				temporal.setSat(articulo.get("sat").getData()!= null ? articulo.toString("sat") : "");				
 				temporal.setDescuento(this.adminOrden.getDescuento());

@@ -241,6 +241,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			this.receptor= this.factura.getReceptor();
 			for (Concepto concepto: this.factura.getConceptos()) {
 				int index= this.existsItem(faltantes, concepto);
+				// double descuento= Numero.toRedondearSat(Double.parseDouble(concepto.getDescuento()!= null? concepto.getDescuento(): "0"));
 				if(index>= 0) {
 					Articulo item= faltantes.get(index);
 					item.setCantidad(item.getCantidad()+ Double.parseDouble(concepto.getCantidad()));
@@ -248,34 +249,33 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 					item.setSubTotal(item.getSubTotal()+ Double.parseDouble(concepto.getTraslado().getBase()));
 				} // if
 				else 
-					//this(sinIva, tipoDeCambio, nombre, codigo, costo, descuento, idOrdenCompra, extras, importe, propio, iva, totalImpuesto, subTotal, cantidad, idOrdenDetalle, idArticulo, totalDescuentos, idProveedor, ultimo, solicitado, stock, excedentes, sat, unidadMedida);
 					faltantes.add(new Articulo(
-						sinIva,
-						tipoDeCambio,
-						concepto.getDescripcion(),
-						concepto.getNoIdentificacion(),
-						Numero.toRedondearSat(Double.parseDouble(concepto.getTraslado().getBase())/ Double.parseDouble(concepto.getCantidad())), // Double.parseDouble(concepto.getValorUnitario()),
-						"", // concepto.getDescuento(),
-						-1L,
-						"",
-						0D,
-						"",
-						Double.parseDouble(concepto.getTraslado().getTasaCuota())* 100,
-						0D,
-						Numero.toRedondearSat(Double.parseDouble(concepto.getTraslado().getBase())),
-						Double.parseDouble(concepto.getCantidad()),
-						-1L,
-						new Random().nextLong(),
-						0D,
-						-1L,
-						false,
-						false,
-						0D,
-						0D,
-						concepto.getClaveProdServ(),
-						concepto.getUnidad(),
-						2L,
-						concepto.getDescripcion()
+						sinIva, // sinIva
+						tipoDeCambio, // tipoDeCambio
+						concepto.getDescripcion(), // nombre
+						concepto.getNoIdentificacion(), // codigo
+						Numero.toRedondearSat((Double.parseDouble(concepto.getTraslado().getBase()))/ Double.parseDouble(concepto.getCantidad())), // costo
+						"", // descuento,
+						-1L, // idOrdenCompra
+						"", // extras
+						0D, // importe
+						"", // propio
+						Double.parseDouble(concepto.getTraslado().getTasaCuota())* 100, // iva
+						0D, // totalImpuesto 
+						Numero.toRedondearSat(Double.parseDouble(concepto.getTraslado().getBase())), // subTotal
+						Double.parseDouble(concepto.getCantidad()), // cantidad
+						-1L, // idOrdenDetalle 
+						new Random().nextLong(), // idArticulo 
+						0D, // totalDescuentos
+						-1L, // idProveedor
+						false, // ultimo
+						false, // solicitado
+						0D, // stock
+						0D, // excedentes
+						concepto.getClaveProdServ(), // sat
+						concepto.getUnidad(), // unidadMedida
+						2L, // idAplicar
+						concepto.getDescripcion() // origen
 					));
 			} // for
 			Collections.sort(faltantes);

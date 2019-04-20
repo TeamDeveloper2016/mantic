@@ -241,7 +241,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			params.put("idOrdenCompra", this.attrs.get("idOrdenCompra"));
-      this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
+      this.attrs.put("almacenes", UIEntity.seleccione("TcManticAlmacenesDto", "almacenes", params, columns, "clave"));
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 			if(!almacenes.isEmpty() && this.accion.equals(EAccion.AGREGAR)) 
 				if(((NotaEntrada)this.getAdminOrden().getOrden()).getIdAlmacen()== null)
@@ -255,7 +255,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				} // else	
       columns.remove(0);
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("proveedores", UIEntity.build("VistaOrdenesComprasDto", "moneda", params, columns));
+      this.attrs.put("proveedores", UIEntity.seleccione("VistaOrdenesComprasDto", "moneda", params, columns, "razonSocial"));
 			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
 			int index= 0;
 			if(!proveedores.isEmpty()) {
@@ -269,7 +269,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				temporal.put("fechaEstimada", new Value("fechaEstimada", Global.format(EFormatoDinamicos.FECHA_CORTA, this.toCalculateFechaEstimada(this.fechaEstimada, temporal.toInteger("idTipoDia"), temporal.toInteger("dias")))));
 		    this.attrs.put("proveedor", temporal);
 			  this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, ((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor().getKey());
-  			this.toLoadCondiciones(new UISelectEntity(new Entity(this.proveedor.getIdProveedor())));
+  			if(this.proveedor!= null) 
+  				this.toLoadCondiciones(new UISelectEntity(new Entity(this.proveedor.getIdProveedor())));
 				if(this.accion.equals(EAccion.AGREGAR))
 					this.doCalculateFechaPago();
 			} // if	
@@ -303,7 +304,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			temporal.put("fechaEstimada", new Value("fechaEstimada", this.toCalculateFechaEstimada(this.fechaEstimada, temporal.toInteger("idTipoDia"), temporal.toInteger("dias"))));
 			this.attrs.put("proveedor", temporal);
 			this.toLoadCondiciones(proveedores.get(proveedores.indexOf((UISelectEntity)((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor())));
-			this.doCalculateFechaPago();
+			this.doUpdatePlazo();
+			// this.doCalculateFechaPago();
 			this.toCheckProveedor(true);
 		}	
 	  catch (Exception e) {
@@ -648,10 +650,18 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   public void doUpdatePlazo() {
 		if(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedorPago()!= null) {
 			List<UISelectEntity> condiciones= (List<UISelectEntity>) this.attrs.get("condiciones");
-      ((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedorPago(condiciones.get(condiciones.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedorPago())));
-			((NotaEntrada)this.getAdminOrden().getOrden()).setDiasPlazo(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedorPago().toLong("plazo")+ 1);
-      this.doCalculateFechaPago();		
-      ((NotaEntrada)this.getAdminOrden().getOrden()).setDescuento(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedorPago().toString("descuento"));
+			int index= condiciones.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedorPago());
+			if(index>= 0) {
+        ((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedorPago(condiciones.get(index));
+		  	((NotaEntrada)this.getAdminOrden().getOrden()).setDiasPlazo(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedorPago().toLong("plazo")+ 1);
+        this.doCalculateFechaPago();		
+        ((NotaEntrada)this.getAdminOrden().getOrden()).setDescuento(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedorPago().toString("descuento"));
+			} // if
+			else {
+        ((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedorPago(null);
+		  	((NotaEntrada)this.getAdminOrden().getOrden()).setDiasPlazo(0L);
+        ((NotaEntrada)this.getAdminOrden().getOrden()).setDescuento("0");
+			} // else
 			this.doUpdatePorcentaje();
 		}
 	}	
