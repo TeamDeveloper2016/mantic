@@ -82,6 +82,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	private void toInitTransferencia() {
 		this.accion= EAccion.ACTIVAR;
     this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
+		Transferencia backup= this.transferencia;
 		this.transferencia= new Transferencia(
 			null, // Long idSolicito, 
 			8L, // Long idTransferenciaEstatus, 
@@ -96,9 +97,19 @@ public class Accion extends IBaseAttribute implements Serializable {
 			1L, // Long orden, 
 			-1L // Long idTransferencia					
 		);
+		if(backup!= null) {
+		  this.transferencia.setIdAlmacen(backup.getIdAlmacen());
+		  this.transferencia.setIkAlmacen(backup.getIkAlmacen());
+		  this.transferencia.setIdDestino(backup.getIdDestino());
+		  this.transferencia.setIkDestino(backup.getIkDestino());
+		} // if
 		this.detalle= new Articulo(-1L);
 		this.detalle.setCalculado(1D);
-		
+  	this.attrs.put("sugerido", 0D);
+		this.attrs.put("nuevaExistenciaOrigen", 0D);
+		this.attrs.put("nuevaExistenciaDestino", 0D);
+		this.attrs.put("nuevaExistenciaOrigen", 0D);
+		this.attrs.put("nuevaExistenciaDestino", 0D);
 	}
 	
   public void doLoad() {
@@ -141,8 +152,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 					else
   				 	this.toInitTransferencia();
           break;
-      } // switch      
-      this.loadAlmacenes();
+      } // switch    
+			if(this.transferencia.getIdAlmacen()<= 0L)
+        this.loadAlmacenes();
       this.loadPersonas(); 
     } // try
     catch (Exception e) {

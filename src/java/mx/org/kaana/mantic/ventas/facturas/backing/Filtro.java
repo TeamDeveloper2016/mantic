@@ -300,8 +300,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
 	} // toFindCliente
 	
-	public void doReporte(String nombre) throws Exception{
-		Parametros comunes = null;
+	public void doReporte(String nombre) throws Exception {
+		Parametros comunes           = null;
 		Map<String, Object>params    = null;
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
