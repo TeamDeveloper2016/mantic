@@ -2,7 +2,9 @@ package mx.org.kaana.mantic.catalogos.clientes.cuentas.backing;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,6 +71,8 @@ public class Saldos extends IBaseFilter implements Serializable {
 				doLoad();
 				this.idCliente= -1L;
 			} // if
+      this.attrs.put("plazo", 1);
+      doCalcularPlazo();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -249,7 +253,7 @@ public class Saldos extends IBaseFilter implements Serializable {
       seleccionado = ((Entity)this.attrs.get("seleccionado"));
       params.put("sortOrder", "order by	tc_mantic_clientes_deudas.registro desc");
       reporteSeleccion= EReportes.valueOf(nombre);
-      if(reporteSeleccion.equals(EReportes.CUENTA_COBRAR_DETALLE)){
+      if(reporteSeleccion.equals(EReportes.CUENTA_COBRAR_DETALLE) || reporteSeleccion.equals(EReportes.DEUDAS_CLIENTES_DETALLE)){
         params.put("idClienteDeuda", seleccionado.toLong("idKey"));
         comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), -1L, -1L , seleccionado.toLong("idCliente"));
       }
@@ -351,4 +355,72 @@ public class Saldos extends IBaseFilter implements Serializable {
 		} // catch
 		return regresar;
   } // doAccion 
+  
+  public void doAsignarReporte(String reporte) {
+		try {					
+			this.attrs.put("tipoReporteEspecial", reporte);
+     } // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch		
+	} // doAsignarReporte
+  
+  
+  public void doCalcularPlazo() {
+		Integer plazo= null;				
+    Calendar actual= null;
+    Calendar inicio= null;
+		try {					
+			plazo= Integer.valueOf(this.attrs.get("plazo").toString());
+      actual= Calendar.getInstance();
+      actual.setTime(new SimpleDateFormat("dd/MM/yyyy").parse(Fecha.getHoy()));
+      this.attrs.put("vigenciaFin",new java.sql.Date(actual.getTimeInMillis()));
+      inicio= Calendar.getInstance();
+      inicio.setTime(new SimpleDateFormat("dd/MM/yyyy").parse(Fecha.getHoy()));
+			switch(plazo){
+        case 1:
+          inicio.add(Calendar.DATE, -30);
+        break;
+        case 2:
+          inicio.set(Calendar.DAY_OF_MONTH,1);
+        break;
+        case 3:
+          inicio.setTime(new SimpleDateFormat("dd/MM/yyyy").parse(Fecha.getHoy()));
+        break;
+      }//switch
+      this.attrs.put("vigenciaIni", new java.sql.Date(inicio.getTimeInMillis()));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch		
+	} // doCalcularPlazo
+  
+  public void doReporteEspecial() throws Exception{
+    Parametros comunes = null;
+		Map<String, Object>params    = null;
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = null;
+    Entity seleccionado = ((Entity)this.attrs.get("seleccionado"));
+		try{		
+      params= toPrepare();
+      params.put("idCliente", seleccionado.toString("idCliente"));
+      params.put("idClienteDeuda", seleccionado.getKey());
+      params.put("fechaInicio", this.attrs.get("vigenciaIni"));
+      params.put("fechaFin", this.attrs.get("vigenciaFin"));
+      reporteSeleccion= EReportes.valueOf(this.attrs.get("tipoReporteEspecial").toString());
+      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), -1L, -1L , seleccionado.toLong("idCliente"));
+      parametros= comunes.getComunes();
+      this.reporte= JsfBase.toReporte();	
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
+      doVerificarReporte();
+      this.reporte.doAceptar();			
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+  } // doReporteEspecial
 }
