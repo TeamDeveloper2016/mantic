@@ -99,7 +99,7 @@
 									<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:separator/>
                   <p:menuitem id="reporteIcon" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('CUENTAS_POR_COBRAR')}" oncomplete="janal.desbloquear();" update="descargar"/>
-								</p:menuButton>
+                </p:menuButton>
 							</div>  
 							<div class="xs-pantalla">   
 								<p:menuitem action="#{manticCatalogosClientesCuentasSaldos.doTicketExpress}" icon="fa fa-file-text-o" title="Generar ticket express" onstart="return janal.bloquear()"/>						
@@ -182,6 +182,8 @@
 						<p:menuitem id="importar" icon="fa fa-external-link" value="Importar" title="Importar identificacion de representante" onstart="return janal.bloquear()" process="@this tabla" action="#{manticCatalogosClientesCuentasSaldos.doImportar}"/>
             <p:separator/>					
             <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('CUENTA_COBRAR_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
+            <p:menuitem id="reporteDetalle" icon="fa fa-file-pdf-o" value="Detalle cuenta por cobrar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('DEUDAS_CLIENTES_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
+            <p:menuitem id="estadoDeCuenta" icon="fa fa-file-pdf-o" value="Estado de cuenta" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosClientesCuentasSaldos.doAsignarReporte('DEUDAS_CLIENTES')}" oncomplete="PF('dlgPlazo').show();" update="dialogoPlazo"/>				
           </p:contextMenu>
 				</div>
 			</div>	
@@ -227,6 +229,30 @@
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgClientes').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
-		</p:dialog> 		
+		</p:dialog> 
+		<p:dialog id="dialogoPlazo" widgetVar="dlgPlazo" header="Seleccionar plazo" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.change('formDialogoPlazo', fieldsDialog);janal.refresh();">
+			<h:form id="formDialogoPlazo" prependId="false">
+				<h:panelGrid columns="1" styleClass="janal-wid-100">
+					<p:outputLabel for="plazo" value="Plazo:"/>
+          <p:selectOneRadio id="plazo" value="#{manticCatalogosClientesCuentasSaldos.attrs.plazo}" columns="1">
+						<p:ajax event="change" listener="#{manticCatalogosClientesCuentasSaldos.doCalcularPlazo}" process="@this"  update="panelFechas"/>
+						<f:selectItem itemLabel="Últimos 30 días" itemValue="1"/>
+						<f:selectItem itemLabel="De inicio de mes a fecha actual" itemValue="2"/>
+						<f:selectItem itemLabel="Seleccionar fechas" itemValue="3"/>
+					</p:selectOneRadio>
+				</h:panelGrid>	
+        <h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100"  id="panelFechas">
+					<h:outputLabel for="vigenciaIni" value="Inicio"/>
+          <p:calendar id="vigenciaIni" styleClass="Wid100" value="#{manticCatalogosClientesCuentasSaldos.attrs.vigenciaIni}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario" disabled="#{!(manticCatalogosClientesCuentasSaldos.attrs.plazo eq 3) }"/>
+          <h:outputLabel for="vigenciaFin" value="Fin"/>
+          <p:calendar id="vigenciaFin" styleClass="Wid100" value="#{manticCatalogosClientesCuentasSaldos.attrs.vigenciaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario" disabled="#{!(manticCatalogosClientesCuentasSaldos.attrs.plazo eq 3) }"/>
+				</h:panelGrid>
+        <hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this,@parent" value="Aceptar" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporteEspecial}" onstart="PF('dlgPlazo').hide(); janal.desbloquear();janal.restore();janal.refresh();" />
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgPlazo').hide();" oncomplete="janal.desbloquear();janal.restore();janal.refresh();"/>
+				</div>
+			</h:form>
+		</p:dialog>
 	</ui:define>
 </ui:composition>
