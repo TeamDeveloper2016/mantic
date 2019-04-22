@@ -230,7 +230,7 @@
 				</div>
 			</h:form>
 		</p:dialog> 
-		<p:dialog id="dialogoPlazo" widgetVar="dlgPlazo" header="Seleccionar plazo" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.change('formDialogoPlazo', fieldsDialog);janal.refresh();">
+		<p:dialog id="dialogoPlazo" widgetVar="dlgPlazo" header="Seleccionar plazo" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.desbloquear();janal.restore();janal.refresh();" onShow="janal.change('formDialogoPlazo', fieldsDialog);janal.refresh();">
 			<h:form id="formDialogoPlazo" prependId="false">
 				<h:panelGrid columns="1" styleClass="janal-wid-100">
 					<p:outputLabel for="plazo" value="Plazo:"/>
@@ -249,8 +249,8 @@
 				</h:panelGrid>
         <hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton icon="fa fa-check" process="@this,@parent" value="Aceptar" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporteEspecial}" onstart="PF('dlgPlazo').hide(); janal.desbloquear();janal.restore();janal.refresh();" />
-					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgPlazo').hide();" oncomplete="janal.desbloquear();janal.restore();janal.refresh();"/>
+					<p:commandButton icon="fa fa-check" process="@this,@parent" value="Aceptar" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporteEspecial}" onstart="PF('dlgPlazo').hide();" />
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgPlazo').hide();"/>
 				</div>
 			</h:form>
 		</p:dialog>
