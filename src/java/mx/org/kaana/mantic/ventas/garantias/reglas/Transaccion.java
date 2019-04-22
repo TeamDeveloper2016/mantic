@@ -631,6 +631,7 @@ public class Transaccion extends IBaseTnx{
 	private boolean registrarPago(Session sesion, Long idClienteDeuda, Double pagoParcial) throws Exception{
 		TcManticClientesPagosDto registroPago= null;
 		boolean regresar                     = false;
+		Long orden                           = 1L;
 		try {
 			registroPago= new TcManticClientesPagosDto();
 			registroPago.setIdClienteDeuda(idClienteDeuda);
@@ -639,6 +640,10 @@ public class Transaccion extends IBaseTnx{
 			registroPago.setPago(pagoParcial);
 			registroPago.setIdTipoMedioPago(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
 			registroPago.setIdCierre(this.idCierreVigente);				
+			orden= this.toSiguiente(sesion, this.detalleGarantia.getIdCliente());
+			registroPago.setOrden(orden);
+			registroPago.setConsecutivo(Fecha.getAnioActual() + Cadena.rellenar(orden.toString(), 5, '0', true));
+			registroPago.setEjercicio(new Long(Fecha.getAnioActual()));
 			regresar= DaoFactory.getInstance().insert(sesion, registroPago)>= 1L;
 		} // try
 		catch (Exception e) {			
@@ -646,7 +651,24 @@ public class Transaccion extends IBaseTnx{
 		} // catch		
 		return regresar;
 	} // registrarPago
-		
+	
+	private Long toSiguiente(Session sesion, Long idCliente) throws Exception {
+		Long regresar             = 1L;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("idEmpresa", ((TcManticClientesDto)DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, idCliente)).getIdEmpresa());
+			Value next= DaoFactory.getInstance().toField(sesion, "VistaTcManticClientesPagosDto", "siguiente", params, "siguiente");
+			if(next.getData()!= null)
+				regresar= next.toLong();
+		} // try		
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toSiguiente	
+	
 	private boolean alterarStockArticulos(Session sesion, List<ArticuloVenta> arts) throws Exception {
 		TcManticAlmacenesArticulosDto almacenArticulo= null;
 		TcManticArticulosDto articuloVenta           = null;		
