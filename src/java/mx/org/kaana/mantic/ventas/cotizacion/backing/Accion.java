@@ -91,6 +91,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("descripcion", "Imagen no disponible");
 			this.attrs.put("decuentoAutorizadoActivo", false);
 			this.attrs.put("tipoDecuentoAutorizadoActivo", MENUDEO);
+			this.attrs.put("ticketLock", -1L);
 			this.image= LoadImages.getImage(-1L);
 			loadClienteDefault();
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
@@ -497,6 +498,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				regresar.append(EEstatusVentas.ABIERTA.getIdEstatusVenta());
 				regresar.append(")");				
 			} // else
+			regresar.append(" and tc_mantic_ventas.candado=2 ");
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -511,7 +513,9 @@ public class Accion extends IBaseVenta implements Serializable {
 			params= new HashMap<>();
 			params.put("idVenta", this.attrs.get("ticketAbierto"));
 			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
-    	this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
+    	unlockVentaExtends(Long.valueOf(params.get("idVenta").toString()), (Long)this.attrs.get("ticketLock"));
+			this.attrs.put("ticketLock", Long.valueOf(params.get("idVenta").toString()));
+			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 			this.attrs.put("consecutivo", ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo());
 			toLoadCatalog();
 			doAsignaClienteTicketAbierto();
@@ -536,6 +540,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			actual= new Date(Calendar.getInstance().getTimeInMillis());
 			if(actual.after(((TicketVenta)getAdminOrden().getOrden()).getVigencia()))
 				generateNewVenta();
+			unlockVentaExtends(Long.valueOf(params.get("idVenta").toString()), (Long)this.attrs.get("ticketLock"));
+			this.attrs.put("ticketLock", Long.valueOf(params.get("idVenta").toString()));
     	this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 			this.attrs.put("consecutivo", ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo());
 			toLoadCatalog();
