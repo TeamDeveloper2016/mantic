@@ -13,6 +13,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EBooleanos;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
@@ -137,6 +138,20 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 					super.ejecutar(sesion, accion);
 					this.dto= getOrden();
 					regresar= procesaCotizacion(sesion);					
+					break;
+				case DESACTIVAR:
+					regresar= true;
+					TcManticVentasDto venta= null;
+					if(this.idVenta > 0){
+						venta= (TcManticVentasDto) DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.idVenta);
+						venta.setCandado(EBooleanos.SI.getIdBooleano());
+						regresar= DaoFactory.getInstance().update(sesion, venta)>= 1L;
+					} // if
+					if(this.idCliente > 0){
+						venta= (TcManticVentasDto) DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.idCliente);
+						venta.setCandado(EBooleanos.NO.getIdBooleano());
+						regresar= DaoFactory.getInstance().update(sesion, venta)>= 1L;
+					} // if
 					break;
 			} // switch
 			if(!regresar)
