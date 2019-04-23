@@ -70,6 +70,7 @@ public class Express extends IBaseVenta implements Serializable {
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR : JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null? -1L: JsfBase.getFlashAttribute("idVenta"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? null: JsfBase.getFlashAttribute("retorno"));      
+			this.attrs.put("ticketLock", -1L);
 			loadClienteDefault();
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			isMatriz= JsfBase.getAutentifica().getEmpresa().isMatriz();
@@ -135,9 +136,7 @@ public class Express extends IBaseVenta implements Serializable {
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
-		EAccion eaccion        = null;				
     try {
-			eaccion= (EAccion) this.attrs.get("accion");
 			this.venta.setIdEmpresa(((UISelectEntity) this.attrs.get("idEmpresa")).getKey());
 			this.venta.setIdCliente(((UISelectEntity) this.attrs.get("clienteSeleccion")).getKey());
 			if(this.aplicar)
