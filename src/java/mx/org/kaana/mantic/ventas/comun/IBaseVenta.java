@@ -257,6 +257,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				regresar.append("tc_mantic_ventas.id_venta_estatus in (");
 				regresar.append(EEstatusVentas.COTIZACION.getIdEstatusVenta());
 				regresar.append(") and vigencia is not null");
+				regresar.append(" and tc_mantic_ventas.candado= 2 ");
 				if(this.attrs.get("busquedaCotizacion")!= null && !Cadena.isVacio(this.attrs.get("busquedaCotizacion"))){
 					regresar.append(" and (upper(tc_mantic_personas.cuenta) like upper('%");
 					regresar.append(this.attrs.get("busquedaCotizacion"));
@@ -268,6 +269,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			} // if
 			else{
 				regresar.append(" date_format(tc_mantic_ventas.registro, '%Y%m%d')= date_format(SYSDATE(), '%Y%m%d')");
+				regresar.append(" and tc_mantic_ventas.candado= 2 ");				
 				regresar.append(" and tc_mantic_ventas.id_venta_estatus in (");				
 				regresar.append(EEstatusVentas.ELABORADA.getIdEstatusVenta());
 				regresar.append(" , ");			
@@ -296,6 +298,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			regresar.append("tc_mantic_ventas.id_venta_estatus in (");
 			regresar.append(EEstatusVentas.APARTADOS.getIdEstatusVenta());
 			regresar.append(") and vigencia is not null");
+			regresar.append(" and tc_mantic_ventas.candado= 2 ");
 			if(this.attrs.get("busquedaApartados")!= null && !Cadena.isVacio(this.attrs.get("busquedaApartados"))){
 				regresar.append(" and (upper(tc_mantic_personas.cuenta) like upper('%");
 				regresar.append(this.attrs.get("busquedaApartados"));
@@ -317,7 +320,9 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			params= new HashMap<>();			
 			params.put("idVenta", ((Entity)this.attrs.get("selectedCuentaAbierta")).get("idVenta"));
 			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
-    	this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
+    	unlockVentaExtends(Long.valueOf(params.get("idVenta").toString()), (Long)this.attrs.get("ticketLock"));
+			this.attrs.put("ticketLock", Long.valueOf(params.get("idVenta").toString()));
+			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 			this.attrs.put("consecutivo", ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo());
 			toLoadCatalog();
 			doAsignaClienteTicketAbierto();
@@ -339,6 +344,8 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			params= new HashMap<>();
 			params.put("idVenta", this.attrs.get("cotizacion"));
 			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
+			unlockVentaExtends(Long.valueOf(params.get("idVenta").toString()), (Long)this.attrs.get("ticketLock"));
+			this.attrs.put("ticketLock", Long.valueOf(params.get("idVenta").toString()));
 			actual= new Date(Calendar.getInstance().getTimeInMillis());
 			if(actual.after(((TicketVenta)getAdminOrden().getOrden()).getVigencia()))
 				generateNewVenta();    	
@@ -362,6 +369,8 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			params= new HashMap<>();
 			params.put("idVenta", this.attrs.get("apartados"));
 			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
+			unlockVentaExtends(Long.valueOf(params.get("idVenta").toString()), (Long)this.attrs.get("ticketLock"));
+			this.attrs.put("ticketLock", Long.valueOf(params.get("idVenta").toString()));
 			asignaAbonoApartado();
 			actual= new Date(Calendar.getInstance().getTimeInMillis());
 			if(actual.after(((TicketVenta)getAdminOrden().getOrden()).getVigencia()))
@@ -990,5 +999,5 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		finally{
 			Methods.clean(params);
 		} // finally
-	} // asignaAbonoApartado
+	} // asignaAbonoApartado	
 }
