@@ -20,6 +20,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -39,6 +40,7 @@ import mx.org.kaana.mantic.db.dto.TcManticVentasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.EReportes;
+import mx.org.kaana.mantic.facturas.beans.Correo;
 import mx.org.kaana.mantic.ventas.comun.IBaseTicket;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -50,7 +52,32 @@ public class Filtro extends IBaseTicket implements Serializable {
 
 	private static final Log LOG=LogFactory.getLog(Filtro.class);
   private static final long serialVersionUID = 8793667741599428332L;
+	
+	private List<Correo> correos;
+	private List<Correo> selectedCorreos;	
+	private Correo correo;
+	
 	private Reporte reporte;
+	
+	public List<Correo> getCorreos() {
+		return correos;
+	}
+
+	public List<Correo> getSelectedCorreos() {
+		return selectedCorreos;
+	}
+
+	public void setSelectedCorreos(List<Correo> selectedCorreos) {
+		this.selectedCorreos = selectedCorreos;
+	}	
+
+	public Correo getCorreo() {
+		return correo;
+	}
+
+	public void setCorreo(Correo correo) {
+		this.correo = correo;
+	}	
 	
   @PostConstruct
   @Override
@@ -64,6 +91,8 @@ public class Filtro extends IBaseTicket implements Serializable {
 			loadEstatusVentas();
       if(this.attrs.get("idVenta")!= null) 
 			  this.doLoad();
+			this.correos= new ArrayList<>();
+			this.selectedCorreos= new ArrayList<>();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -224,7 +253,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		return regresar.toString();
 	} // toCondicionEstatus
 	
-	public void doLoadEstatus(){
+	public void doLoadEstatus() {
 		Entity seleccionado          = null;
 		Map<String, Object>params    = null;
 		List<UISelectItem> allEstatus= null;
@@ -334,26 +363,36 @@ public class Filtro extends IBaseTicket implements Serializable {
 		return "/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR);
   } // doAccion     
 
-  public void doNotificar() {
+  public void doSendmail() {
+		StringBuilder emails= new StringBuilder("");
+		if(this.selectedCorreos!= null && !this.selectedCorreos.isEmpty()){
+			for(Correo mail: this.selectedCorreos){
+				if(!Cadena.isVacio(mail.getDescripcion()))
+					emails.append(mail.getDescripcion()).append(", ");
+			} // for
+		} // if
 		Map<String, Object> params= new HashMap<>();
 		//1.- CUENTAS DE CORREO DEL PROVEEDOR MAS LAS QUE SE ESCRIBAN EN EL DIALOGO DE LA PAGINA CAPTURADOS O SELECCIONADOS EN LA VENTANA EMERGENTE
-		String[] correos          = {"jimenez76@yahoo.com", "isabelbs59@gmail.com"};
+		String[] correos          = {"jimenez76@yahoo.com", "isabelbs59@gmail.com", (emails.length()> 0? emails.substring(0, emails.length()- 2): "")};
 		List<Attachment> files    = new ArrayList<>(); 
 		try {
 			params.put("header", "...");
 			params.put("footer", "...");
 			params.put("tipo", "Ferreteria Bonanza - Cotización");
+			//2.- RECUPERAR LA RAZON SOCIAL DEL PROVEEDOR
 			params.put("razonSocial", "M.C. Alejandro Jiménez García");
 			params.put("correo", "ventas@ferreteriabonanza.com");
-			//2.- AGREGAR EL REPORTE EN FORMATO PDF YA GENERADO DE LA COTIZACION PARA ANEXARLO COMO ATTACHMENT AL CORREO ELECTRONICO
+			//3.- AGREGAR EL REPORTE EN FORMATO PDF YA GENERADO DE LA COTIZACION PARA ANEXARLO COMO ATTACHMENT AL CORREO ELECTRONICO
 			Attachment attachments= new Attachment(new File("/Temporal/Pdf/K_20190423....123.pdf"), Boolean.FALSE);
+			params.put("attach", attachments.getId());
+			files.add(attachments);
 			for (String item: correos) {
 				try {
-					params.put("invitacion", attachments.getId());
-					files.add(attachments);
-					IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, (String)params.get("correo"), item, "Ferreteria Bonanza - Cotización", params, files);
-					LOG.info("Enviando correo a la cuenta: "+ item);
-					notificar.send();
+					if(!Cadena.isVacio(item)) {
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, (String)params.get("correo"), item, "Ferreteria Bonanza - Cotización", params, files);
+					  LOG.info("Enviando correo a la cuenta: "+ item);
+					  notificar.send();
+					} // if	
 				} // try
 				finally {
 				  if(attachments.getFile().exists()) {
@@ -374,4 +413,26 @@ public class Filtro extends IBaseTicket implements Serializable {
 			Methods.clean(files);
 		} // finally
 	}		
+	
+	public void doAgregarCorreo() {
+		Entity seleccionado    = null;
+//		Transaccion transaccion= null;
+//		try {
+//			if(!Cadena.isVacio(this.correo.getDescripcion())){
+//				seleccionado= (Entity)this.attrs.get("seleccionado");
+//				transaccion= new Transaccion(this.correo, seleccionado.toLong("idCliente"));
+//				if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
+//					JsfBase.addMessage("Se agrego el correo electronico correctamente !");
+//				else
+//					JsfBase.addMessage("Ocurrió un error al agregar el correo electronico");
+//			} // if
+//			else
+//				JsfBase.addMessage("Es necesario capturar un correo electronico !");
+//		} // try
+//		catch (Exception e) {
+//			JsfBase.addMessageError(e);
+//			Error.mensaje(e);			
+//		} // catch		
+	} // doAgregarCorreo
+	
 }

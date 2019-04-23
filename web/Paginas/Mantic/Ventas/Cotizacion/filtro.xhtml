@@ -186,6 +186,8 @@
 						<p:menuitem id="ticket" icon="fa fa-file-text-o" value="Ticket" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCotizacionFiltro.doTicket}" oncomplete="janal.desbloquear();jsTicket.clicTicket();" update="tabla" rendered="#{(manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '7') or (manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '9')}"/>
             <p:separator rendered="#{manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '7'}"/>					
             <p:menuitem value="Pagar" action="#{manticVentasCotizacionFiltro.doCobrar('AGREGAR')}" icon="fa fa-money" title="Pagar" onstart="return janal.bloquear()" rendered="#{manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '7'}"/>
+            <p:separator/>					
+            <p:menuitem id="reenviar" icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCotizacionFiltro.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="#{manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '12'}"/>					            
           </p:contextMenu>
         </div>
       </div>
@@ -211,6 +213,28 @@
 				</div>
 			</h:form>
 		</p:dialog>
+		<p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Reenviar factura" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
+			<h:form id="formDialogoCorreos" prependId="false">				
+				<h:panelGrid id="panelCorreos" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">					
+					<p:dataTable id="tablaCorreosReenviar" var="row" value="#{manticVentasCotizacionFiltro.correos}" selection="#{manticVentasCotizacionFiltro.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
+						<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
+						<p:column headerText="Correos disponibles del cliente" styleClass="descripcion tablaCorreosReenviar_selection">
+							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
+						</p:column>
+						<p:column style="width:45px;text-align: center">
+							<p:commandButton update="tablaCorreosReenviar" icon="fa fa-check" title="Agregar" action="#{manticVentasCotizacionFiltro.doAgregarCorreo}">
+								<f:setPropertyActionListener value="#{row}" target="#{manticVentasCotizacionFiltro.correo}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>		
+				</h:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this dialogoCorreos" value="Aceptar" actionListener="#{manticVentasCotizacionFiltro.doSendmail()}" onstart="return PF('dlgCorreos').hide();"  oncomplete="janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCorreos').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog>		
 	</ui:define>
   <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
   <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la cuenta de venta ?" />
