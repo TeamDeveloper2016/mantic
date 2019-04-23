@@ -4,6 +4,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
@@ -13,6 +14,7 @@ import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.mail.Address;
 import javax.mail.Authenticator;
+import javax.mail.BodyPart;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Session;
@@ -25,6 +27,7 @@ import javax.mail.internet.MimeMultipart;
 import mx.org.kaana.libs.correo.SMTPAuthenticator;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.correos.beans.Attachment;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -107,8 +110,10 @@ public class IBaseMail implements Serializable {
     MimeBodyPart body    = null;
     DataSource ds        = null;
     Multipart multipart  = null;    
+		List<BodyPart> files = null;
     try {
-      properties = new Properties();
+      properties= new Properties();
+			files     = new ArrayList<>();
       properties.put("mail.smtp.host", Configuracion.getInstance().getPropiedadServidor("mail.smtp.server"));
       properties.put("mail.transport.protocol", "smtp");
       properties.put("mail.smtp.auth", "true");
@@ -135,8 +140,19 @@ public class IBaseMail implements Serializable {
 				    body = new MimeBodyPart(); //MimeBodyPart
   			    body.setContent(Cadena.toCharSet(content), "text/html");
 						multipart.addBodyPart(body);
-					} // if
-				} // for rutas                           
+					} // if 
+          else {
+            BodyPart adj = new MimeBodyPart();
+            LOG.info(" ruta archivo :" + item.getAbsolute());
+            adj.setDataHandler(new DataHandler(new FileDataSource(item.getAbsolute())));
+            adj.setFileName(item.getName());
+            LOG.error(" ruta archivo :" + item.getAbsolute());
+            files.add(adj);          
+          }
+				} // for item
+				// add files to attachment for email
+        for(BodyPart bp: files)
+          multipart.addBodyPart(bp);
 				message.setContent(multipart);   
       } // if
 			else
@@ -157,6 +173,7 @@ public class IBaseMail implements Serializable {
         ds = null;
       if(multipart!=null)
         multipart = null;      
+			Methods.clean(files);
     } // finally
   } 
 
