@@ -1,9 +1,9 @@
 package mx.org.kaana.mantic.ventas.cotizacion.backing;
 
+import java.io.File;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,17 +32,23 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.ventas.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.correos.beans.Attachment;
+import mx.org.kaana.mantic.correos.enums.ECorreos;
+import mx.org.kaana.mantic.correos.reglas.IBaseAttachment;
 import mx.org.kaana.mantic.db.dto.TcManticVentasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.ventas.comun.IBaseTicket;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.primefaces.context.RequestContext;
 
 @Named(value= "manticVentasCotizacionFiltro")
 @ViewScoped
 public class Filtro extends IBaseTicket implements Serializable {
 
+	private static final Log LOG=LogFactory.getLog(Filtro.class);
   private static final long serialVersionUID = 8793667741599428332L;
 	private Reporte reporte;
 	
@@ -327,5 +333,42 @@ public class Filtro extends IBaseTicket implements Serializable {
 		} // catch
 		return "/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR);
   } // doAccion     
-  
+
+  public void doNotificar() {
+		Map<String, Object> params= new HashMap<>();
+		//1.- CUENTAS DE CORREO DEL PROVEEDOR MAS LAS QUE SE ESCRIBAN EN EL DIALOGO
+		String[] correos          = {"jimenez76@yahoo.com", "isabelbs59@gmail.com"};
+		List<Attachment> files    = new ArrayList<>(); 
+		try {
+			params.put("header", "...");
+			params.put("footer", "...");
+			params.put("tipo", "Ferreteria Bonanza - Cotización");
+			params.put("razonSocial", "M.C. Alejandro Jiménez García");
+			params.put("correo", "ventas@ferreteriabonanza.com");
+			//2.- AGREGAR EL REPORTE EN FORMATO PDF YA GENERADO DE LA COTIZACION PARA ANEXARLO COMO CORREO
+			Attachment attachments= new Attachment(new File("/Temporal/Pdf/K_20190423....123.pdf"), Boolean.FALSE);
+			for (String item: correos) {
+				try {
+					params.put("invitacion", attachments.getId());
+					files.add(attachments);
+					IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, (String)params.get("correo"), item, "Ferreteria Bonanza - Cotización", params, files);
+					LOG.info("Enviando correo a la cuenta: "+ item);
+					notificar.send();
+					files.remove(attachments);
+				} // try
+				finally {
+				  if(attachments.getFile().exists()) {
+   	  	    LOG.info("Eliminando archivo temporal: "+ attachments.getAbsolute());
+				    // user.getFile().delete();
+				  } // if	
+				} // finally	
+			} // for
+	  	LOG.info("Se envio el correo de forma exitosa");
+		  JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
+		} // try // try
+		catch(Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+	}		
 }

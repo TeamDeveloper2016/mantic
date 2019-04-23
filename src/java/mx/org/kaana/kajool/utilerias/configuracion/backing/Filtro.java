@@ -117,7 +117,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 //	
 	private String toWriteInvitacion(String nombre, String puesto) throws MalformedURLException, IOException, IOException {
 		String regresar= Constantes.RUTA_TEMPORALES.concat(Archivo.toFormatNameFile("fegems")).concat(".jpg");
-		final BufferedImage image = ImageIO.read(new File(JsfBase.getRealPath(ECorreos.NOTIFICACION.getImages().concat("invitacion.jpg"))));
+		final BufferedImage image = ImageIO.read(new File(JsfBase.getRealPath(ECorreos.FACTURACION.getImages().concat("invitacion.jpg"))));
    	Graphics g = image.getGraphics();
     g.setColor(new Color(157, 197, 23));
 		final int width= 693;
@@ -154,7 +154,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 					LOG.info("Generando invitacion personalizada: "+ image);
 					params.put("invitacion", user.getId());
 					files.add(user);
-					IBaseAttachment notificar= new IBaseAttachment(ECorreos.NOTIFICACION, "fegem@inegi.org.mx", item, "Invitación al evento de FEGEMS", params, files);
+					IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, "fegem@inegi.org.mx", item, "Invitación al evento de FEGEMS", params, files);
 					LOG.info("Enviando correo a la cuenta: "+ item);
 					notificar.send();
 					files.remove(user);

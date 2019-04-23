@@ -5,13 +5,24 @@
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
-  <body style="margin: 0 auto; padding: 0px; -webkit-text-size-adjust: none; width:1182px; height:1182px;">
-		<div style="text-align: center; width:1182px;">{header}</div>
-		<img src="cid:{invitacion}" alt="INEGI evento FEGEMS 2019"/>
-		<div style="text-align: center; width:1182px;">
-			<span style="float: rigth; font-weight: bold; color: rgb(94, 161, 216); font-family: sans-serif;">Registrate en:</span><span style="color: rgb(94, 161, 216); font-family: sans-serif;"><a href="mailto:{correo}" style="text-decoration: inherit;">{correo}</a></span>
-			<span style="float: left; font-weight: bold; color: rgb(94, 161, 216); font-family: sans-serif;">Contacto:</span><span style="color: rgb(94, 161, 216); font-family: sans-serif;"><a href="mailto:{correo}" style="text-decoration: inherit;">{correo}</a></span>
+  <body>
+		<div style="text-align: center; width:100%;">{header}</div>
+		<div>
+			Estimado Cliente: <span style="float: rigth; font-weight: bold; color: rgb(94, 161, 216); font-family: sans-serif;">{razonSocial}</span>
+			<br/>
+			<br/>
+			Por medio del presente le notificamos: 
+			<br/>
+			<br/>
+			Que se le ha enviado un archivo PDF como anexo de este correo electronico una <span style="font-weight: bold; color: rgb(124, 131, 216); font-family: sans-serif;">{tipo}</span>.
+			<br/>
+			Para cualquier duda o aclaración favor de contactar al siguiente correo electrónico:<span style="color: rgb(94, 161, 216); font-family: sans-serif;"><a href="mailto:{correo}" style="text-decoration: inherit;">{correo}</a></span>
+			<br/>
+			<br/>
+			Saludos Cordiales,
+			<br/>
+			FERRETERIA BONANZA
 		</div>
-		<div style="text-align: center; width:1182px;">{footer}</div>
+		<div style="text-align: center; width:100%;">{footer}</div>
   </body>
 </html>
