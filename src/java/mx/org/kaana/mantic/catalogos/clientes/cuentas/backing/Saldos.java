@@ -356,16 +356,6 @@ public class Saldos extends IBaseFilter implements Serializable {
 		return regresar;
   } // doAccion 
   
-  public void doAsignarReporte(String reporte) {
-		try {					
-			this.attrs.put("tipoReporteEspecial", reporte);
-     } // try
-		catch (Exception e) {
-			Error.mensaje(e);
-		} // catch		
-	} // doAsignarReporte
-  
-  
   public void doCalcularPlazo() {
 		Integer plazo= null;				
     Calendar actual= null;
@@ -377,6 +367,7 @@ public class Saldos extends IBaseFilter implements Serializable {
       this.attrs.put("vigenciaFin",new java.sql.Date(actual.getTimeInMillis()));
       inicio= Calendar.getInstance();
       inicio.setTime(new SimpleDateFormat("dd/MM/yyyy").parse(Fecha.getHoy()));
+      this.attrs.put("tipoReporteEspecial", "DEUDAS_CLIENTES");
 			switch(plazo){
         case 1:
           inicio.add(Calendar.DATE, -30);
@@ -386,6 +377,9 @@ public class Saldos extends IBaseFilter implements Serializable {
         break;
         case 3:
           inicio.setTime(new SimpleDateFormat("dd/MM/yyyy").parse(Fecha.getHoy()));
+        break;
+        case 4:
+          this.attrs.put("tipoReporteEspecial", "DEUDAS_CLIENTES_PENDIENTES");
         break;
       }//switch
       this.attrs.put("vigenciaIni", new java.sql.Date(inicio.getTimeInMillis()));
