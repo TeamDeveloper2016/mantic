@@ -91,6 +91,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.attrs.put("descuentoIndividual", 0);
 			this.attrs.put("descuentoGlobal", 0);
 			this.attrs.put("tipoDescuento", INDIVIDUAL);
+			this.attrs.put("ticketLock", -1L);
 			this.image= LoadImages.getImage(-1L);
 			loadClienteDefault();
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());

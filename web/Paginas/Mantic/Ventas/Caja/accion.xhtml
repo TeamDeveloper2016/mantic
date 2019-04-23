@@ -202,6 +202,7 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">		
+		<pe:remoteCommand name="unlockVenta" process="@this" actionListener="#{manticVentasCajaAccion.unlockVenta}"/>  					
 		<pe:remoteCommand name="cleanInitPage" onstart="return janal.bloquear();" process="@this" actionListener="#{manticVentasCajaAccion.doInitPage}" update="contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.recalculo) @(.janal-abono) contenedorGrupos:panelPago" oncomplete="janal.desbloquear();jsArticulos.refreshCobroValidate();"/>  			
 		<pe:remoteCommand name="cleanSelection" onstart="return janal.bloquear();" process="@this" actionListener="#{manticVentasCajaAccion.doCleanCaptura}" update="contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.recalculo) @(.janal-abono) contenedorGrupos:panelPago"/>  			
 		<pe:remoteCommand name="updateCambioPrecio" process="@this" update="panelCambioPrecio cambiopreciousr passwordcambioprecio"/>  			

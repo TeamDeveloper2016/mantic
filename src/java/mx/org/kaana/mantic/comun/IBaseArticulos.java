@@ -8,6 +8,7 @@ import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
@@ -30,6 +31,7 @@ import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TrManticArticuloPrecioSugeridoDto;
 import mx.org.kaana.mantic.enums.EPrecioArticulo;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
+import mx.org.kaana.mantic.ventas.caja.reglas.Transaccion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.component.datatable.DataTable;
@@ -857,5 +859,30 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	public String getRecordCount() {
 		return (this.attrs.get("perdidos")== null || ((List<UISelectEntity>)this.attrs.get("perdidos")).isEmpty()? 100: ((List<UISelectEntity>)this.attrs.get("perdidos")).size())+ ",".concat(Constantes.REGISTROS_POR_CADA_PAGINA);
 	}
+
+	public void unlockVenta(){
+		Transaccion transaccion= null;
+		try {
+			if(this.attrs.get("ticketLock")!= null){
+				transaccion= new Transaccion(-1L, (Long)this.attrs.get("ticketLock"));
+				transaccion.ejecutar(EAccion.DESACTIVAR);
+			} // if
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // unlockVenta	
 	
+	protected void unlockVentaExtends(Long block, Long active){
+		Transaccion transaccion= null;
+		try {			
+			transaccion= new Transaccion(block, active);
+			transaccion.ejecutar(EAccion.DESACTIVAR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // unlockVenta	
 }

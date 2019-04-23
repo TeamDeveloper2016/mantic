@@ -60,6 +60,7 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
+		<pe:remoteCommand name="unlockVenta" process="@this" actionListener="#{manticVentasAccion.unlockVenta}"/>
 		<p:commandLink id="listadoPrecios" value="Articulos" action="#{manticVentasAccion.doIrPage}" process="@form" style="display: none;"/>
 		<p:commandLink id="catalogoPrecios" value="Catalogos" action="#{manticVentasAccion.doIrPage}" process="@form" style="display: none;"/>
 		<p:poll listener="#{manticVentasAccion.doActivatePage}" process="@this" interval="60"/>

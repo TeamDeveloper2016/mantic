@@ -106,7 +106,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("apartado", false);			
 			this.attrs.put("isEfectivo", true);			
 			this.attrs.put("tipoVenta", 1L);			
-			this.attrs.put("tipoDevolucion", 1L);			
+			this.attrs.put("tipoDevolucion", 1L);	
+			this.attrs.put("ticketLock", -1L);
 			this.image= LoadImages.getImage(-1L);
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 				loadSucursales();	
@@ -502,6 +503,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("clienteAsignado", false);
 			this.attrs.put("tabIndex", 0);		
 			this.attrs.put("registroCliente", new TcManticClientesDto());
+			unlockVentaExtends(-1L, (Long)this.attrs.get("ticketLock"));			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -580,6 +582,8 @@ public class Accion extends IBaseVenta implements Serializable {
 				setDomicilio(new Domicilio());
 				this.attrs.put("registroCliente", new TcManticClientesDto());
 				if(!ticketAbierto.getKey().equals(-1L)){
+					unlockVentaExtends(ticketAbierto.getKey(), (Long)this.attrs.get("ticketLock"));
+					this.attrs.put("ticketLock", ticketAbierto.getKey());
 					ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
 					ticketAbiertoPivote= ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto));
 					this.attrs.put("ticket", (Entity)ticketAbiertoPivote);
@@ -611,7 +615,9 @@ public class Accion extends IBaseVenta implements Serializable {
 					else
 						this.attrs.put("isFactura", true);						
 				} // if
-				else{				
+				else{			
+					unlockVentaExtends(-1L, (Long)this.attrs.get("ticketLock"));
+					this.attrs.put("ticketLock", -1L);
 					this.setAdminOrden(new AdminGarantia(new TicketVenta()));
 					this.attrs.put("pagarVenta", false);
 					this.attrs.put("facturarVenta", false);
@@ -662,6 +668,8 @@ public class Accion extends IBaseVenta implements Serializable {
 				setDomicilio(new Domicilio());
 				this.attrs.put("registroCliente", new TcManticClientesDto());
 				if(!seleccion.getKey().equals(-1L)){	
+					unlockVentaExtends(seleccion.getKey(), (Long)this.attrs.get("ticketLock"));
+					this.attrs.put("ticketLock", seleccion.getKey());
 					this.attrs.put("ticket", (Entity)seleccion);
 					this.setAdminOrden(new AdminGarantia((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), false, EAccion.LISTAR, -1L));
 					loadMediosPago(seleccion.getKey());
@@ -689,6 +697,8 @@ public class Accion extends IBaseVenta implements Serializable {
 						this.attrs.put("isFactura", true);						
 				} // if
 				else{				
+					unlockVentaExtends(-1L, (Long)this.attrs.get("ticketLock"));
+					this.attrs.put("ticketLock", -1L);
 					this.setAdminOrden(new AdminGarantia(new TicketVenta()));
 					this.attrs.put("pagarVenta", false);
 					this.attrs.put("facturarVenta", false);

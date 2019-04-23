@@ -90,6 +90,7 @@
 				} // if	
 			});  
 			$(window).bind('beforeunload', function() { 
+				unlockVenta();
 				if(typeof(jsArticulos)=== 'undefined' || jsArticulos.leavePage)
 					return ;
 				else

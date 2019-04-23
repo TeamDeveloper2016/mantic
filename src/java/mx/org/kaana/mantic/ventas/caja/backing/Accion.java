@@ -166,6 +166,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doInitPage(){
 		Calendar fechaInicio= null;
 		try {
+			this.attrs.put("ticketLock", -1L);
 			this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
 			this.attrs.put("buscaPorCodigo", true);
@@ -549,6 +550,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("tabIndex", 0);
 			setDomicilio(new Domicilio());
 			this.attrs.put("registroCliente", new TcManticClientesDto());
+			unlockVentaExtends(-1L, (Long)this.attrs.get("ticketLock"));			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -576,6 +578,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	private String toCondicionEstatus(boolean all){
 		StringBuilder regresar= new StringBuilder("");
+		regresar.append(" and tc_mantic_ventas.candado = 2");
 		regresar.append(" and tc_mantic_ventas.id_venta_estatus in (");
 		regresar.append(EEstatusVentas.ELABORADA.getIdEstatusVenta());									
 		regresar.append(" , ");
@@ -627,7 +630,9 @@ public class Accion extends IBaseVenta implements Serializable {
 			params.put("idVenta", ticketAbierto!= null? ticketAbierto.getKey(): -1L);
 			setDomicilio(new Domicilio());
 			this.attrs.put("registroCliente", new TcManticClientesDto());
-			if(ticketAbierto!= null && !ticketAbierto.getKey().equals(-1L)){				
+			if(ticketAbierto!= null && !ticketAbierto.getKey().equals(-1L)){	
+				unlockVentaExtends(ticketAbierto.getKey(), (Long)this.attrs.get("ticketLock"));
+				this.attrs.put("ticketLock", ticketAbierto.getKey());
 				ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
 				ticketAbiertoPivote= ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto));												
 				this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), true));
@@ -651,6 +656,8 @@ public class Accion extends IBaseVenta implements Serializable {
 				this.attrs.put("creditoCliente", ticketAbiertoPivote.toLong("idCredito").equals(1L));
 			} // if
 			else{				
+				unlockVentaExtends(-1L, (Long)this.attrs.get("ticketLock"));
+				this.attrs.put("ticketLock", -1L);
 				this.setAdminOrden(new AdminTickets(new TicketVenta()));
 				this.attrs.put("pagarVenta", false);
 				this.attrs.put("facturarVenta", false);
