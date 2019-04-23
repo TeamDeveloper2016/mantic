@@ -90,6 +90,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("busquedaTicketAbierto", "");
 			this.attrs.put("decuentoAutorizadoActivo", false);
 			this.attrs.put("tipoDecuentoAutorizadoActivo", MENUDEO);
+			this.attrs.put("ticketLock", -1L);
 			this.image= LoadImages.getImage(-1L);
 			loadClienteDefault();
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
