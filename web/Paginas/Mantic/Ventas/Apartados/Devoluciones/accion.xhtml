@@ -132,6 +132,7 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
+		<pe:remoteCommand name="unlockVenta" process="@this" actionListener="#{manticVentasApartadosDevolucionesAccion.unlockVenta}"/>  					
 		<pe:remoteCommand name="cobrarVenta" process="@this" update="contenedorGrupos" actionListener="#{manticVentasApartadosDevolucionesAccion.doOpenCobro}" onstart="janal.bloquear()" oncomplete="janal.desbloquear();"/>  			
 		<pe:remoteCommand name="loadTicketAbiertos" process="@this" update="contenedorGrupos aceptar aceptarIcon @(.cotizar)" actionListener="#{manticVentasApartadosDevolucionesAccion.doAsignaTicketAbierto}" onstart="janal.bloquear()" oncomplete="janal.desbloquear();"/>  					
 		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticVentasApartadosDevolucionesAccion.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); setTimeout('jsArticulos.next()', 500);">  
