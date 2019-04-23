@@ -364,17 +364,17 @@ public class Filtro extends IBaseTicket implements Serializable {
   } // doAccion     
 
   public void doSendmail() {
-		StringBuilder emails= new StringBuilder("");
+		StringBuilder sb= new StringBuilder("");
 		if(this.selectedCorreos!= null && !this.selectedCorreos.isEmpty()){
 			for(Correo mail: this.selectedCorreos){
 				if(!Cadena.isVacio(mail.getDescripcion()))
-					emails.append(mail.getDescripcion()).append(", ");
+					sb.append(mail.getDescripcion()).append(", ");
 			} // for
 		} // if
 		Map<String, Object> params= new HashMap<>();
 		//1.- CUENTAS DE CORREO DEL PROVEEDOR MAS LAS QUE SE ESCRIBAN EN EL DIALOGO DE LA PAGINA CAPTURADOS O SELECCIONADOS EN LA VENTANA EMERGENTE
-		String[] correos          = {"jimenez76@yahoo.com", "isabelbs59@gmail.com", (emails.length()> 0? emails.substring(0, emails.length()- 2): "")};
-		List<Attachment> files    = new ArrayList<>(); 
+		String[] emails       = {"jimenez76@yahoo.com", "isabelbs59@gmail.com", (sb.length()> 0? sb.substring(0, sb.length()- 2): "")};
+		List<Attachment> files= new ArrayList<>(); 
 		try {
 			params.put("header", "...");
 			params.put("footer", "...");
@@ -386,7 +386,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 			Attachment attachments= new Attachment(new File("/Temporal/Pdf/K_20190423....123.pdf"), Boolean.FALSE);
 			params.put("attach", attachments.getId());
 			files.add(attachments);
-			for (String item: correos) {
+			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
 					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.COTIZACIONES, (String)params.get("correo"), item, "Ferreteria Bonanza - Cotización", params, files);
