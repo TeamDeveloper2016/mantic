@@ -52,6 +52,7 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
+		<pe:remoteCommand name="unlockVenta" process="@this" actionListener="#{manticVentasCotizacionAccion.unlockVenta}"/>
 		<pe:remoteCommand name="updateDescuentos" process="@this" update="panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd"/>  			
 		<pe:remoteCommand name="loginValidate" process="@this @(.janal-login-user)" update="panelEmpresa" actionListener="#{manticVentasCotizacionAccion.doLogin}" oncomplete="janal.desbloquear();"/>  			
 		<pe:remoteCommand name="userUpdate" process="@this" onstart="janal.bloquear();" actionListener="#{manticVentasCotizacionAccion.doCerrarTicket}" oncomplete="jsArticulos.activeLogin();" update="deudor contenido tabla panelTotales panelCliente panelEmpresa articulos total @(.filas) @(.recalculo)"/>  					
