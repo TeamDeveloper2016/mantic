@@ -237,8 +237,8 @@
           <p:selectOneRadio id="plazo" value="#{manticCatalogosClientesCuentasSaldos.attrs.plazo}" columns="1">
 						<p:ajax event="change" listener="#{manticCatalogosClientesCuentasSaldos.doCalcularPlazo}" process="@this"  update="panelFechas"/>
 						<f:selectItem itemLabel="Últimos 30 días" itemValue="1"/>
-						<f:selectItem itemLabel="De inicio de mes a fecha actual" itemValue="2"/>
-						<f:selectItem itemLabel="Seleccionar fechas" itemValue="3"/>
+						<f:selectItem itemLabel="De inicio de mes" itemValue="2"/>
+						<f:selectItem itemLabel="Periodo" itemValue="3"/>
 						<f:selectItem itemLabel="Cuentas pendientes" itemValue="4"/>
 					</p:selectOneRadio>
 				</h:panelGrid>	
