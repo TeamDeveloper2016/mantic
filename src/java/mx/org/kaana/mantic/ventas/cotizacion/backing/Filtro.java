@@ -336,7 +336,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 
   public void doNotificar() {
 		Map<String, Object> params= new HashMap<>();
-		//1.- CUENTAS DE CORREO DEL PROVEEDOR MAS LAS QUE SE ESCRIBAN EN EL DIALOGO
+		//1.- CUENTAS DE CORREO DEL PROVEEDOR MAS LAS QUE SE ESCRIBAN EN EL DIALOGO DE LA PAGINA CAPTURADOS O SELECCIONADOS EN LA VENTANA EMERGENTE
 		String[] correos          = {"jimenez76@yahoo.com", "isabelbs59@gmail.com"};
 		List<Attachment> files    = new ArrayList<>(); 
 		try {
@@ -345,7 +345,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 			params.put("tipo", "Ferreteria Bonanza - Cotización");
 			params.put("razonSocial", "M.C. Alejandro Jiménez García");
 			params.put("correo", "ventas@ferreteriabonanza.com");
-			//2.- AGREGAR EL REPORTE EN FORMATO PDF YA GENERADO DE LA COTIZACION PARA ANEXARLO COMO CORREO
+			//2.- AGREGAR EL REPORTE EN FORMATO PDF YA GENERADO DE LA COTIZACION PARA ANEXARLO COMO ATTACHMENT AL CORREO ELECTRONICO
 			Attachment attachments= new Attachment(new File("/Temporal/Pdf/K_20190423....123.pdf"), Boolean.FALSE);
 			for (String item: correos) {
 				try {
@@ -354,7 +354,6 @@ public class Filtro extends IBaseTicket implements Serializable {
 					IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, (String)params.get("correo"), item, "Ferreteria Bonanza - Cotización", params, files);
 					LOG.info("Enviando correo a la cuenta: "+ item);
 					notificar.send();
-					files.remove(attachments);
 				} // try
 				finally {
 				  if(attachments.getFile().exists()) {
@@ -370,5 +369,9 @@ public class Filtro extends IBaseTicket implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
+		finally {
+			files.remove(files);
+			Methods.clean(files);
+		} // finally
 	}		
 }
