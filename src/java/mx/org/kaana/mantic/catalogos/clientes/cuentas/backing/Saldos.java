@@ -387,6 +387,9 @@ public class Saldos extends IBaseFilter implements Serializable {
         case 3:
           inicio.setTime(new SimpleDateFormat("dd/MM/yyyy").parse(Fecha.getHoy()));
         break;
+        case 4:
+          this.attrs.put("tipoReporteEspecial", "DEUDAS_CLIENTES_PENDIENTES");
+        break;
       }//switch
       this.attrs.put("vigenciaIni", new java.sql.Date(inicio.getTimeInMillis()));
 		} // try
