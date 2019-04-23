@@ -88,6 +88,7 @@
 	</ui:define>
 	<ui:define name="contenido">
 		<p:defaultCommand target="limpio"/>
+		<pe:remoteCommand name="unlockVenta" process="@this" actionListener="#{manticFacturasAccion.unlockVenta}"/>  					
 		<pe:remoteCommand name="updateDescuentos" process="@this" update="panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd"/>  					
 		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticFacturasAccion.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); setTimeout('jsArticulos.next()', 500);">  
 			<pe:methodSignature parameters="java.lang.String, java.lang.Integer"/>  
