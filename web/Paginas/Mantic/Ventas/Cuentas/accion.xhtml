@@ -52,6 +52,7 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">		
+		<pe:remoteCommand name="unlockVenta" process="@this" actionListener="#{manticVentasCuentasAccion.unlockVenta}"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">										
