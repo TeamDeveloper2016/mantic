@@ -130,27 +130,26 @@ public class IBaseMail implements Serializable {
 			if(this.files!= null && !this.files.isEmpty()) {
 				multipart = new MimeMultipart(); // Multipart
 				for(Attachment item: this.files) {                   
+					body= new MimeBodyPart();
 					if(item.getCid()) {
-						body= new MimeBodyPart();
+            LOG.info("Add file to content-id to email :" + item.getAbsolute());
 						ds  = new FileDataSource(item.getFile());
 						body.setDataHandler(new DataHandler(ds));
 						body.setFileName(item.getName());
 						body.setDisposition(MimeBodyPart.INLINE);
 						body.setHeader("Content-ID", item.getId());
 						multipart.addBodyPart(body);               
-				    body = new MimeBodyPart(); //MimeBodyPart
-  			    body.setContent(Cadena.toCharSet(content), "text/html");
-						multipart.addBodyPart(body);
 					} // if 
           else {
-            BodyPart adj = new MimeBodyPart();
-            LOG.info(" ruta archivo :" + item.getAbsolute());
-            adj.setDataHandler(new DataHandler(new FileDataSource(item.getAbsolute())));
-            adj.setFileName(item.getName());
-            LOG.error(" ruta archivo :" + item.getAbsolute());
-            files.add(adj);          
+            LOG.info("Add file to attachment to email :" + item.getAbsolute());
+            body.setDataHandler(new DataHandler(new FileDataSource(item.getAbsolute())));
+            body.setFileName(item.getName());
+            files.add(body);          
           }
 				} // for item
+				body = new MimeBodyPart(); // MimeBodyPart
+				body.setContent(Cadena.toCharSet(content), "text/html");
+				multipart.addBodyPart(body);
 				// add files to attachment for email
         for(BodyPart bp: files)
           multipart.addBodyPart(bp);
