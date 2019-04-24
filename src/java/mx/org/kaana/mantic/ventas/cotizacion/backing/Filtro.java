@@ -398,12 +398,13 @@ public class Filtro extends IBaseTicket implements Serializable {
 		String[] emails       = {"jimenez76@yahoo.com", "isabelbs59@gmail.com", (sb.length()> 0? sb.substring(0, sb.length()- 2): "")};
 		List<Attachment> files= new ArrayList<>(); 
 		try {
+			Entity seleccionado= (Entity)this.attrs.get("seleccionado");
 			params.put("header", "...");
 			params.put("footer", "...");
 			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());
 			params.put("tipo", "Cotización");
 			//2.- RECUPERAR LA RAZON SOCIAL DEL PROVEEDOR
-			params.put("razonSocial", "M.C. Alejandro Jiménez García");
+			params.put("razonSocial", seleccionado.toString("cliente"));
 			params.put("correo", "ventas@ferreteriabonanza.com");
 			//3.- AGREGAR EL REPORTE EN FORMATO PDF YA GENERADO DE LA COTIZACION PARA ANEXARLO COMO ATTACHMENT AL CORREO ELECTRONICO
 			Attachment attachments= new Attachment("/Temporal/Pdf/K_20190225034851317_facturacion.pdf", Boolean.FALSE);
