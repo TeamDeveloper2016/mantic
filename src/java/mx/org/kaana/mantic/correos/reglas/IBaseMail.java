@@ -98,7 +98,9 @@ public class IBaseMail implements Serializable {
 		Address[] regresar= new InternetAddress[tokens.countTokens()];
 		int count= 0;
 		while(tokens.hasMoreTokens()) {
-			regresar[count++]= new InternetAddress(tokens.nextToken());
+			String email= tokens.nextToken();
+			if(!Cadena.isVacio(email))
+			  regresar[count++]= new InternetAddress(email.trim());
 		} // while
 		return regresar;
 	}
