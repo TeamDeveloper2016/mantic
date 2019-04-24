@@ -117,7 +117,6 @@ public class IBaseMail implements Serializable {
       properties.put("mail.smtp.host", Configuracion.getInstance().getPropiedadServidor("mail.smtp.server"));
       properties.put("mail.transport.protocol", "smtp");
       properties.put("mail.smtp.auth", "true");
-			properties.put("mail.smtp.localhost", "HADES");
       properties.put("mail.smtp.port", "26");			
 			session    = Session.getInstance(properties, this.authenticator);            
       message= new MimeMessage(session);
