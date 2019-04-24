@@ -46,8 +46,7 @@ public final class AdminOrdenes extends IAdminArticulos  implements Serializable
 			this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.orden.setIkEmpresa(new UISelectEntity(new Entity(this.orden.getIdEmpresa())));
 		} // else	
-		this.getArticulos().add(new Articulo(-1L));
-		this.toCalculate();
+		this.toStartCalculate();
 	}
 
 	@Override

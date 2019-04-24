@@ -73,8 +73,7 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 			if(articulo.getIdOrdenDetalle()!= null && articulo.getIdOrdenDetalle()<= 0)
 				articulo.setIdOrdenDetalle(null);
 		} // for
-		this.getArticulos().add(new Articulo(-1L));
-		this.toCalculate();
+		this.toStartCalculate();
 	}
 
 	@Override

@@ -416,7 +416,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				transaccion = new Transaccion((TicketVenta)this.getAdminOrden().getOrden());
 				confirmacion= transaccion.ejecutar(EAccion.MODIFICAR);				
 			} // else
-			if(confirmacion){
+			if(confirmacion) {
 				((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).setCotizacion(transaccion.getCotizacion());
 				ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago) this.attrs.get("pago"), "COTIZACIÓN");				
 				UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + transaccion.getCotizacion() + "','" + ticket.toHtml() + "');");

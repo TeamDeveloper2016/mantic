@@ -170,11 +170,27 @@ public abstract class IAdminArticulos implements Serializable {
 		this.toCalculate(false);
 	}
 	
+	public void toStartCalculate() {
+		this.articulos.add(new Articulo(-1L));
+		this.toCalculate(false);
+	}
+	
 	public void toCalculate(boolean modificado) {
 		this.totales.reset();
 		for (Articulo articulo: this.articulos) {
 	    articulo.toCalculate(this.getIdSinIva().equals(1L), this.getTipoDeCambio());
-		  articulo.setModificado(modificado);
+	    articulo.setModificado(modificado);
+			this.totales.addArticulo(articulo);
+		} // for
+		this.totales.removeUltimo(this.articulos.get(this.articulos.size()- 1));
+		this.totales.removeTotal();
+		this.setAjusteDeuda(this.totales.getTotal());
+	}
+
+	public void toRefreshCalculate() {
+		this.totales.reset();
+		for (Articulo articulo: this.articulos) {
+	    articulo.toCalculate(this.getIdSinIva().equals(1L), this.getTipoDeCambio());
 			this.totales.addArticulo(articulo);
 		} // for
 		this.totales.removeUltimo(this.articulos.get(this.articulos.size()- 1));
@@ -221,7 +237,7 @@ public abstract class IAdminArticulos implements Serializable {
 				else
 				  count++;
 		} // while
-		this.toCalculate();
+		this.toRefreshCalculate();
 	}
 
 	public void toCantidad() {

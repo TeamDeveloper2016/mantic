@@ -124,6 +124,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
     			UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 orden de compra', '"+ ((OrdenCompra)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 				} // if	
+				else
+					this.getAdminOrden().toStartCalculate();
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
     			JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la orden de compra."), ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
