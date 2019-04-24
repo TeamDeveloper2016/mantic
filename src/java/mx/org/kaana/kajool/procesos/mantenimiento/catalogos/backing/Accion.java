@@ -2,8 +2,8 @@ package mx.org.kaana.kajool.procesos.mantenimiento.catalogos.backing;
 
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -28,7 +28,7 @@ import org.primefaces.component.panelgrid.PanelGrid;
  * @time 08:42:32 AM
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
-@ManagedBean(name = "kajoolDinamicosAccion")
+@Named(value= "manticInventariosEntradasAccion")
 @ViewScoped
 public class Accion extends UIBase implements Serializable {
 

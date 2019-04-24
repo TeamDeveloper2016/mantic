@@ -289,6 +289,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 						break;
 				} // switch
 			} // if
+			UIBackingUtilities.update("contenedorGrupos:sinIva");
+			UIBackingUtilities.update("contenedorGrupos:paginator");
 		} // if	
 		else 
 			if(event.getTab().getTitle().equals("Faltantes")) 

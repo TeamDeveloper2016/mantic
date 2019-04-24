@@ -4938,14 +4938,36 @@
       <select id="detalle">
         select      
 				  tc_mantic_ordenes_detalles.id_orden_detalle as id_comodin,
-          tc_mantic_ordenes_detalles.*,
-          tc_mantic_ordenes_detalles.cantidad as cuantos,
+					tc_mantic_ordenes_detalles.id_orden_detalle,
+					tc_mantic_ordenes_detalles.id_articulo,
+					ifnull(tc_mantic_ordenes_detalles.codigo, tc_mantic_articulos_codigos.codigo) as codigo,
+					tc_mantic_ordenes_detalles.propio,
+					tc_mantic_ordenes_detalles.nombre,
+					tc_mantic_ordenes_detalles.cantidad,
+					tc_mantic_ordenes_detalles.costo,
+					tc_mantic_ordenes_detalles.descuento,
+					tc_mantic_ordenes_detalles.extras,
+					tc_mantic_ordenes_detalles.iva,
+					tc_mantic_ordenes_detalles.descuentos,
+					tc_mantic_ordenes_detalles.excedentes,
+					tc_mantic_ordenes_detalles.impuestos,
+					tc_mantic_ordenes_detalles.sub_total,
+					tc_mantic_ordenes_detalles.importe,
+					tc_mantic_ordenes_detalles.cantidades,
+					tc_mantic_ordenes_detalles.precios,
+					tc_mantic_ordenes_detalles.importes,
+					tc_mantic_ordenes_detalles.costo_real,
+					tc_mantic_ordenes_detalles.costo_calculado,
+					tc_mantic_ordenes_detalles.registro,
+					tc_mantic_ordenes_detalles.cantidad as cuantos,
           tc_mantic_ordenes_detalles.cantidad as inicial,
 				  tc_mantic_articulos.precio as valor
         from      
           tc_mantic_ordenes_detalles
         inner join
           tc_mantic_articulos on tc_mantic_ordenes_detalles.id_articulo= tc_mantic_articulos.id_articulo
+        left join
+          tc_mantic_articulos_codigos on tc_mantic_ordenes_detalles.id_articulo= tc_mantic_articulos_codigos.id_articulo and id_principal= 2 and tc_mantic_articulos_codigos.id_proveedor= {idProveedor}
         where      
           tc_mantic_ordenes_detalles.id_orden_compra = {idOrdenCompra}
 				order by

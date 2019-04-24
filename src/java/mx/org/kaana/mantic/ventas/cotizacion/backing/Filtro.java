@@ -400,7 +400,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		} // if
 		Map<String, Object> params= new HashMap<>();
 		//1.- CUENTAS DE CORREO DEL PROVEEDOR MAS LAS QUE SE ESCRIBAN EN EL DIALOGO DE LA PAGINA CAPTURADOS O SELECCIONADOS EN LA VENTANA EMERGENTE
-		String[] emails       = {"jimenez76@yahoo.com", "isabelbs59@gmail.com", (sb.length()> 0? sb.substring(0, sb.length()- 2): "")};
+		String[] emails       = {"jimenez76@yahoo.com", (sb.length()> 0? sb.substring(0, sb.length()- 2): "")};
 		List<Attachment> files= new ArrayList<>(); 
 		try {
 			Entity seleccionado= (Entity)this.attrs.get("seleccionado");
@@ -420,7 +420,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
-					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.COTIZACIONES, (String)params.get("correo"), item, "Ferreteria Bonanza - Cotización", params, files);
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.COTIZACIONES, (String)params.get("correo"), item, "davalos.dg1@gmail.com,isabelbs59@gmail.com", "Ferreteria Bonanza - Cotización", params, files);
 					  LOG.info("Enviando correo a la cuenta: "+ item);
 					  notificar.send();
 					} // if	

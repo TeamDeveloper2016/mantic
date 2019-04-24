@@ -55,4 +55,10 @@ public class ArticuloCodigo extends TcManticArticulosCodigosDto implements Seria
 	public Boolean getCandidatoPrincipal() {
 		return !(getIdProveedor()!= null && !getIdProveedor().equals(0L));
 	}
+
+	@Override
+	public void setCodigo(String codigo) {
+		super.setCodigo(codigo!= null? codigo.toUpperCase(): codigo);
+	}
+	
 }
