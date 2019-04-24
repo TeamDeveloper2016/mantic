@@ -401,6 +401,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 			//3.- AGREGAR EL REPORTE EN FORMATO PDF YA GENERADO DE LA COTIZACION PARA ANEXARLO COMO ATTACHMENT AL CORREO ELECTRONICO
 			Attachment attachments= new Attachment("/Temporal/Pdf/K_20190225034851317_facturacion.pdf", Boolean.FALSE);
 			files.add(attachments);
+			files.add(new Attachment("logo", ECorreos.COTIZACIONES.getImages().concat("logo.png"), Boolean.TRUE));
 			params.put("attach", attachments.getId());
 			for (String item: emails) {
 				try {
