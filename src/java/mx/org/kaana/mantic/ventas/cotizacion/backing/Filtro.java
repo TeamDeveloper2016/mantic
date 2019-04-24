@@ -406,7 +406,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
-					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.COTIZACIONES, TcConfiguraciones.getInstance().getPropiedadServidor("correo.admin.user"), item, "Ferreteria Bonanza - Cotización", params, files);
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.COTIZACIONES, (String)params.get("correo"), item, "Ferreteria Bonanza - Cotización", params, files);
 					  LOG.info("Enviando correo a la cuenta: "+ item);
 					  notificar.send();
 					} // if	
