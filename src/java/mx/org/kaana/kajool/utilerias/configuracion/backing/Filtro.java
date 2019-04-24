@@ -31,6 +31,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.libs.recurso.TcConfiguraciones;
 import mx.org.kaana.mantic.correos.beans.Attachment;
 import mx.org.kaana.mantic.correos.enums.ECorreos;
 import mx.org.kaana.mantic.correos.reglas.IBaseAttachment;
@@ -47,6 +48,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 	
 	private Boolean xml;
 	private Boolean properties;
+	private Boolean configuration;
 	private Boolean correo;
 
 	public Boolean getXml() {
@@ -73,6 +75,14 @@ public class Filtro extends IBaseAttribute implements Serializable {
 		this.correo=correo;
 	}
 
+	public Boolean getConfiguration() {
+		return configuration;
+	}
+
+	public void setConfiguration(Boolean configuration) {
+		this.configuration=configuration;
+	}
+
   @PostConstruct
 	@Override
 	protected void init() {
@@ -80,6 +90,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
   		this.xml= Boolean.FALSE;
   		this.properties= Boolean.FALSE;
   		this.correo= Boolean.FALSE;
+  		this.configuration= Boolean.FALSE;
     } // try
     catch(Exception e) {
 			JsfBase.addMessageError(e);
@@ -98,7 +109,14 @@ public class Filtro extends IBaseAttribute implements Serializable {
 		Configuracion.getInstance().reload();
 		LOG.info("Se recargo el archivo de configuracion PROPIEDADES de forma exitosa");
 		this.properties= Boolean.TRUE;
-		JsfBase.addMessage("Se recargó el archivo de configuración con éxito.", ETipoMensaje.INFORMACION);
+		JsfBase.addMessage("Se recargó el archivo de PROPIEDADES con éxito.", ETipoMensaje.INFORMACION);
+	}	
+	
+  public void doConfiguration() {
+		TcConfiguraciones.getInstance().reload();
+		LOG.info("Se recargo el archivo de CONFIGURACIONES de forma exitosa");
+		this.configuration= Boolean.TRUE;
+		JsfBase.addMessage("Se recargó el archivo de CONFIGURACIONES con éxito.", ETipoMensaje.INFORMACION);
 	}	
 	
 //  public void doNotificar() {
@@ -117,7 +135,8 @@ public class Filtro extends IBaseAttribute implements Serializable {
 //	
 	private String toWriteInvitacion(String nombre, String puesto) throws MalformedURLException, IOException, IOException {
 		String regresar= Constantes.RUTA_TEMPORALES.concat(Archivo.toFormatNameFile("fegems")).concat(".jpg");
-		final BufferedImage image = ImageIO.read(new File(JsfBase.getRealPath(ECorreos.FACTURACION.getImages().concat("invitacion.jpg"))));
+		//final BufferedImage image = ImageIO.read(new File(JsfBase.getRealPath(ECorreos.FACTURACION.getImages().concat("invitacion.jpg"))));
+		final BufferedImage image = ImageIO.read(new URL("https://bonanza.jvmhost.net/MANTIC/resources/janal/img/correo/invitacion.jpg"));
    	Graphics g = image.getGraphics();
     g.setColor(new Color(157, 197, 23));
 		final int width= 693;

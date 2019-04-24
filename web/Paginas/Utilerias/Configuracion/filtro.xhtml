@@ -32,6 +32,12 @@
 			</p:inputSwitch>
 			<p:spacer height="1px"/>
 			<p:spacer height="1px"/>
+			<p:outputLabel value="Tabla .configuraciones:"/>
+			<p:inputSwitch value="#{kajoolUtileriasConfiguracionFiltro.configuration}">
+				<p:ajax listener="#{kajoolUtileriasConfiguracionFiltro.doConfiguration()}" update="@form" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" />
+			</p:inputSwitch>
+			<p:spacer height="1px"/>
+			<p:spacer height="1px"/>
 			<p:outputLabel value="Notificar correo:"/>
 			<p:inputSwitch value="#{kajoolUtileriasConfiguracionFiltro.correo}">
 				<p:ajax listener="#{kajoolUtileriasConfiguracionFiltro.doNotificar()}" update="@form" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
