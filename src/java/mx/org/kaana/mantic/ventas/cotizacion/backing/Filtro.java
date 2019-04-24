@@ -27,9 +27,9 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
-import mx.org.kaana.libs.recurso.Configuracion;
-import mx.org.kaana.libs.recurso.TcConfiguraciones;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
+import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.ventas.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
@@ -40,8 +40,10 @@ import mx.org.kaana.mantic.db.dto.TcManticVentasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.EReportes;
+import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
 import mx.org.kaana.mantic.ventas.comun.IBaseTicket;
+import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.context.RequestContext;
@@ -257,7 +259,9 @@ public class Filtro extends IBaseTicket implements Serializable {
 		Entity seleccionado          = null;
 		Map<String, Object>params    = null;
 		List<UISelectItem> allEstatus= null;
+		MotorBusquedaCatalogos motor = null; 
 		Correo item                  = null;
+		List<ClienteTipoContacto>contactos= null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			params= new HashMap<>();
@@ -266,17 +270,20 @@ public class Filtro extends IBaseTicket implements Serializable {
 			this.attrs.put("allEstatus", allEstatus);
 			if(allEstatus!= null && !allEstatus.isEmpty())
 			  this.attrs.put("estatus", allEstatus.get(0));
+			
+			// 0.- AGREGAR EL CODIGO NECESARIO PARA RECUPERAR LOS CORREOS DEL PROVEEDOR
 			this.correos.clear();
 			this.selectedCorreos.clear();
-			// 0.- AGREGAR EL CODIGO NECESARIO PARA RECUPERAR LOS CORREOS DEL PROVEEDOR
-//			LOG.warn("Total de contactos asociados al proveedor" + contactos.size());
-//			for(ClienteTipoContacto contacto: contactos) {
-//				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())) {
-//					item= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor());
-//					this.correos.add(item);		
-//					this.selectedCorreos.add(item);
-//				} // if
-//			} // for
+			motor    = new MotorBusqueda(-1L, seleccionado.toLong("idCliente"));
+			contactos= motor.toClientesTipoContacto();
+			LOG.warn("Total de contactos asociados al proveedor" + contactos.size());
+			for(ClienteTipoContacto contacto: contactos) {
+				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())) {
+					item= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor());
+					this.correos.add(item);		
+					this.selectedCorreos.add(item);
+				} // if
+			} // for
 			LOG.warn("Agregando un correo por defecto para la cotizacion");
 			this.correos.add(new Correo(-1L, ""));
 		} // try
@@ -435,23 +442,23 @@ public class Filtro extends IBaseTicket implements Serializable {
 	
 	public void doAgregarCorreo() {
 		Entity seleccionado    = null;
-//		Transaccion transaccion= null;
-//		try {
-//			if(!Cadena.isVacio(this.correo.getDescripcion())){
-//				seleccionado= (Entity)this.attrs.get("seleccionado");
-//				transaccion= new Transaccion(this.correo, seleccionado.toLong("idCliente"));
-//				if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
-//					JsfBase.addMessage("Se agrego el correo electronico correctamente !");
-//				else
-//					JsfBase.addMessage("Ocurrió un error al agregar el correo electronico");
-//			} // if
-//			else
-//				JsfBase.addMessage("Es necesario capturar un correo electronico !");
-//		} // try
-//		catch (Exception e) {
-//			JsfBase.addMessageError(e);
-//			Error.mensaje(e);			
-//		} // catch		
+		mx.org.kaana.mantic.facturas.reglas.Transaccion transaccion= null;
+		try {
+			if(!Cadena.isVacio(this.correo.getDescripcion())) {
+				seleccionado= (Entity)this.attrs.get("seleccionado");
+				transaccion = new mx.org.kaana.mantic.facturas.reglas.Transaccion(this.correo, seleccionado.toLong("idCliente"));
+				if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
+					JsfBase.addMessage("Se agrego el correo electrónico correctamente !");
+				else
+					JsfBase.addMessage("Ocurrió un error al agregar el correo electronico");
+			} // if
+			else
+				JsfBase.addMessage("Es necesario capturar un correo electrónico !");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
 	} // doAgregarCorreo
 
 	@Override
