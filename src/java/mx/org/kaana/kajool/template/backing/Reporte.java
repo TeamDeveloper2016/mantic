@@ -135,7 +135,7 @@ public class Reporte extends BaseReportes implements Serializable{
 	public void doAceptar() {
     try {
       if(this.ijuntar!= null)
-        if(this.ijuntar.getDefiniciones().size()>1L)
+        if(this.ijuntar.getDefiniciones().size()> 1L)
           this.doAceptarVarios();
         else
           this.doAceptarVariosPdf();
@@ -144,7 +144,7 @@ public class Reporte extends BaseReportes implements Serializable{
     }
     catch (Exception e) {
 	 	  Error.mensaje(e);
-		  JsfBase.addMessage("Detalle del error", "No se pudo generar el reporte "+e, ETipoMensaje.ERROR);
+		  JsfBase.addMessage("Detalle del error", "No se pudo generar el reporte "+ e, ETipoMensaje.ERROR);
 	  } // catch
   } // doAceptar
 	
@@ -154,7 +154,7 @@ public class Reporte extends BaseReportes implements Serializable{
 		InputStream input= null;
 		try {
 			this.loadResourceFileJasper(this.ireporte.getParametros());        
-      if(this.nombre.equals("")){
+      if(this.nombre.equals("")) {
         this.nombre=this.idFormato.toPath().concat(this.fileName.concat(".")).concat(this.idFormato.name().toLowerCase());
         this.nombre= Cadena.reemplazarCaracter(this.nombre, '/', File.separatorChar);      
       } // if

@@ -319,8 +319,12 @@ public class Filtro extends IBaseTicket implements Serializable {
 		} // finally
 	}	// doActualizaEstatus
   
-  public void doReporte(String nombre) throws Exception{
-    Parametros comunes = null;
+  public void doReporte(String nombre) throws Exception {
+	  this.doReporte(nombre, Boolean.FALSE);
+	}
+	
+  public void doReporte(String nombre, Boolean email) throws Exception {
+    Parametros comunes           = null;
 		Map<String, Object>params    = null;
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
@@ -345,8 +349,12 @@ public class Filtro extends IBaseTicket implements Serializable {
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
       this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
-      if(doVerificarReporte())
-        this.reporte.doAceptar();			
+			if(email) {
+        this.reporte.doAceptarSimple();
+			}
+			else
+        if(this.doVerificarReporte())
+          this.reporte.doAceptar();			
     } // try
     catch(Exception e) {
       Error.mensaje(e);
@@ -407,7 +415,8 @@ public class Filtro extends IBaseTicket implements Serializable {
 			params.put("razonSocial", seleccionado.toString("cliente"));
 			params.put("correo", "ventas@ferreteriabonanza.com");
 			//3.- AGREGAR EL REPORTE EN FORMATO PDF YA GENERADO DE LA COTIZACION PARA ANEXARLO COMO ATTACHMENT AL CORREO ELECTRONICO
-			Attachment attachments= new Attachment("/Temporal/Pdf/K_20190225034851317_facturacion.pdf", Boolean.FALSE);
+			this.doReporte("COTIZACION_DETALLE", Boolean.TRUE);
+			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
 			files.add(attachments);
 			files.add(new Attachment("logo", ECorreos.COTIZACIONES.getImages().concat("logo.png"), Boolean.TRUE));
 			params.put("attach", attachments.getId());

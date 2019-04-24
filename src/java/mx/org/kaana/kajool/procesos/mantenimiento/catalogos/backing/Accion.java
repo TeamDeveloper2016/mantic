@@ -28,7 +28,7 @@ import org.primefaces.component.panelgrid.PanelGrid;
  * @time 08:42:32 AM
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
-@Named(value= "manticInventariosEntradasAccion")
+@Named(value= "kajoolDinamicosAccion")
 @ViewScoped
 public class Accion extends UIBase implements Serializable {
 
