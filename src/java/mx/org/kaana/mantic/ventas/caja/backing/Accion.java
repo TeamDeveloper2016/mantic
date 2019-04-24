@@ -166,6 +166,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doInitPage(){
 		Calendar fechaInicio= null;
 		try {
+			this.attrs.put("titleTab", "Articulos");
 			this.attrs.put("ticketLock", -1L);
 			this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
@@ -592,6 +593,40 @@ public class Accion extends IBaseVenta implements Serializable {
 		regresar.append(")");
 		return regresar.toString();
 	} // toCOndicionEstatus
+	
+	public void doActualizaTicketsAbiertos(){
+		List<UISelectEntity> ticketsAbiertos= null;
+		List<UISelectEntity> ticketsVigentes= null;
+		Map<String, Object>params           = null;
+		List<Columna> campos                = null;
+		try {
+			if(this.attrs.get("titleTab").toString().equals("Articulos")){
+				ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
+				params= new HashMap<>();
+				params.put("sortOrder", "");
+				params.put("idEmpresa", this.attrs.get("idEmpresa"));
+				campos= new ArrayList<>();
+				campos.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
+				campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+				params.put(Constantes.SQL_CONDICION, toCondicion(true));
+				ticketsVigentes= UIEntity.build("VistaVentasDto", "lazy", params, campos, Constantes.SQL_TODOS_REGISTROS);
+				if(!ticketsVigentes.isEmpty()){
+					for(UISelectEntity vigente: ticketsVigentes){
+						if(!ticketsAbiertos.isEmpty()){
+							if(ticketsAbiertos.indexOf(vigente) < 0)
+								ticketsAbiertos.add(vigente);
+						} // if
+						else
+							ticketsAbiertos.add(vigente);
+					} // for
+				} // if
+			} // if
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doActualizaTicketsAbiertos
 	
 	public void doAsignaTicketAbiertoDirecto(){
 		try {
@@ -1120,6 +1155,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			doLoadTickets();
 		if(title.equals("Pagar"))
 			UIBackingUtilities.execute("jsArticulos.focusCobro();");
+		this.attrs.put("titleTab", title);
 	} // doTabChange
 
 	public void doAplicarCambioPrecio(){
