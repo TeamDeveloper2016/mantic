@@ -125,7 +125,7 @@
 						</p:panelGrid>					
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 							<p:outputLabel for="clientes" value="Buscar cliente:"/>							
-							<p:autoComplete id="clientes" placeholder="Nombre o rfc" widgetVar="listadoClientes" var="customCliente" itemLabel="#{customCliente.rfc}" inputStyleClass="janal-wid-100-txt key-down-event filas" itemValue="#{customCliente}" value="#{manticVentasCotizacionAccion.attrs.cliente}" completeMethod="#{manticVentasCotizacionAccion.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
+							<p:autoComplete id="clientes" placeholder="Nombre o rfc" widgetVar="listadoClientes" var="customCliente" itemLabel="#{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-event filas" itemValue="#{customCliente}" value="#{manticVentasCotizacionAccion.attrs.cliente}" completeMethod="#{manticVentasCotizacionAccion.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
 								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticVentasCotizacionAccion.doAsignaCliente}" update="cliente contenido" oncomplete="janal.desbloquear();"/>
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
@@ -147,7 +147,7 @@
 							<p:outputLabel for="cliente" value="Cliente:"/>							
 							<p:selectOneMenu id="cliente" value="#{manticVentasCotizacionAccion.attrs.clienteSeleccion}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
 								<p:ajax event="change" process="@this idEmpresa" onstart="return janal.bloquear();" listener="#{manticVentasCotizacionAccion.doActualizaPrecioCliente}" oncomplete="janal.desbloquear();" update="tabla clientes"/>
-								<f:selectItems value="#{manticVentasCotizacionAccion.attrs.clientesSeleccion}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
+								<f:selectItems value="#{manticVentasCotizacionAccion.attrs.clientesSeleccion}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
 								</p:column>   
