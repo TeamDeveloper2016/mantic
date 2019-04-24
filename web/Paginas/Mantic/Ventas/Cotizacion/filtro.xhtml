@@ -127,19 +127,19 @@
                 <p:menuitem id="reporteIconXs" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCotizacionFiltro.doReporte('COTIZACIONES')}" oncomplete="janal.desbloquear();" update="descargar"/>
               </div>  
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{filtro.empresa}">
+            <p:column class="MarAuto Responsive janal-wid-18" sortBy="#{filtro.nombreEmpresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
-              <h:outputText value="#{filtro['empresa']}"/>
+              <h:outputText value="#{filtro['nombreEmpresa']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{filtro.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="No. cotización"/>
               </f:facet>
               <h:outputText value="#{filtro['consecutivo']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{filtro.orden}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.orden}">
               <f:facet name="header">
                 <h:outputText value="No. cuenta"/>
               </f:facet>
@@ -187,7 +187,7 @@
             <p:separator rendered="#{manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '7'}"/>					
             <p:menuitem value="Pagar" action="#{manticVentasCotizacionFiltro.doCobrar('AGREGAR')}" icon="fa fa-money" title="Pagar" onstart="return janal.bloquear()" rendered="#{manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '7'}"/>
             <p:separator/>					
-            <p:menuitem id="reenviar" icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCotizacionFiltro.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="#{manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '12'}"/>					            
+            <p:menuitem id="reenviar" icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCotizacionFiltro.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
           </p:contextMenu>
         </div>
       </div>
