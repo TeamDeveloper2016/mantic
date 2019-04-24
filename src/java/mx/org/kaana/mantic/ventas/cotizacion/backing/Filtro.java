@@ -1,6 +1,5 @@
 package mx.org.kaana.mantic.ventas.cotizacion.backing;
 
-import java.io.File;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -20,7 +19,6 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -403,6 +401,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 			Attachment attachments= new Attachment("/Temporal/Pdf/K_20190225034851317_facturacion.pdf", Boolean.FALSE);
 			files.add(attachments);
 			params.put("attach", attachments.getId());
+			
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {

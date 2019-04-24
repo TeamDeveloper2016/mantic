@@ -8,6 +8,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.enums.EEtapaServidor;
 
 
 public class TcConfiguraciones {
@@ -67,6 +68,28 @@ public class TcConfiguraciones {
     return getPropiedades().get(key);
   }
 	
+	public EEtapaServidor getEtapaServidor() {
+		EEtapaServidor regresar= null;
+    try {
+      regresar = EEtapaServidor.valueOf(Configuracion.getInstance().getPropiedad("sistema.servidor").toUpperCase());
+    }// try
+    catch (Exception e) {
+      Error.mensaje(e);
+    } // catch
+    return regresar;
+  } // getEtapaServidor
+
+  public String getPropiedadServidor(String key) {
+    try {
+      String servidor= this.getEtapaServidor().toLowerCase();
+      return this.getPropiedad(key.concat(".").concat(servidor));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+    } // catch
+    return null;
+  }	// getPropiedadServidor
+
 	public boolean exist(String key) {
 	  return getPropiedades().containsKey(key);
 	}
