@@ -270,7 +270,7 @@ public class Express extends IBaseAttribute implements Serializable {
 	}
 	
 	public void doUpdateArticuloExpress() {
-		if(this.attrs.get("seleccionado")!= null && ((Entity) this.attrs.get("seleccionado")).getKey()> 0L) {
+		if(this.attrs.get("seleccionado")!= null && !((Entity)this.attrs.get("seleccionado")).isEmpty()) {
 			Entity entity= (Entity)this.attrs.get("seleccionado");
 			if(entity.containsKey("idListaPrecio")) {
 				this.attrs.put("codigo", entity.toString("codigo"));
