@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.ventas.cotizacion.backing;
 
+import java.io.File;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -319,8 +320,9 @@ public class Filtro extends IBaseTicket implements Serializable {
 		} // finally
 	}	// doActualizaEstatus
   
-  public void doReporte(String nombre) throws Exception{
+  public String doReporte(String nombre) throws Exception{
     Parametros comunes = null;
+    String regresar = null;
 		Map<String, Object>params    = null;
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
@@ -346,12 +348,14 @@ public class Filtro extends IBaseTicket implements Serializable {
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
       this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
       if(doVerificarReporte())
-        this.reporte.doAceptar();			
+        this.reporte.doAceptar();		
+      regresar = this.reporte.getNombre();
     } // try
     catch(Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);			
     } // catch	
+    return regresar;
   } // doReporte
   
   public boolean doVerificarReporte() {
@@ -387,6 +391,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 
   public void doSendmail() {
 		StringBuilder sb= new StringBuilder("");
+		String nombreReporte = null;
 		if(this.selectedCorreos!= null && !this.selectedCorreos.isEmpty()) {
 			for(Correo mail: this.selectedCorreos) {
 				if(!Cadena.isVacio(mail.getDescripcion()))
@@ -407,7 +412,8 @@ public class Filtro extends IBaseTicket implements Serializable {
 			params.put("razonSocial", seleccionado.toString("cliente"));
 			params.put("correo", "ventas@ferreteriabonanza.com");
 			//3.- AGREGAR EL REPORTE EN FORMATO PDF YA GENERADO DE LA COTIZACION PARA ANEXARLO COMO ATTACHMENT AL CORREO ELECTRONICO
-			Attachment attachments= new Attachment("/Temporal/Pdf/K_20190225034851317_facturacion.pdf", Boolean.FALSE);
+      nombreReporte = doReporte("COTIZACION_DETALLE");
+			Attachment attachments= new Attachment(new File(JsfBase.getRealPath().concat(nombreReporte)), Boolean.FALSE);
 			files.add(attachments);
 			files.add(new Attachment("logo", ECorreos.COTIZACIONES.getImages().concat("logo.png"), Boolean.TRUE));
 			params.put("attach", attachments.getId());
