@@ -26,6 +26,7 @@ public class Attachment implements Serializable {
 
 	public Attachment(String absolute, Boolean cid) {
 		this.absolute= JsfBase.getRealPath(absolute);
+		this.file= new File(this.absolute);
 		this.init(cid);
 	} 
 
@@ -74,7 +75,6 @@ public class Attachment implements Serializable {
 	}
 	
 	private void init(Boolean cid) {
-		this.file= new File(this.absolute);
 		this.id  = file.getName();
 		if(this.id.contains("."))
 			this.id= this.id.substring(0, this.id.indexOf("."));

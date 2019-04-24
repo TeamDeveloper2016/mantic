@@ -29,6 +29,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.ventas.reglas.Transaccion;
@@ -264,7 +265,8 @@ public class Filtro extends IBaseTicket implements Serializable {
 			params.put(Constantes.SQL_CONDICION, "id_venta_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(") and id_venta_estatus not in (").concat(EEstatusVentas.ABIERTA.getIdEstatusVenta().toString()).concat(")"));
 			allEstatus= UISelect.build("TcManticVentasEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
-			this.attrs.put("estatus", allEstatus.get(0));
+			if(allEstatus!= null && !allEstatus.isEmpty())
+			  this.attrs.put("estatus", allEstatus.get(0));
 			this.correos.clear();
 			this.selectedCorreos.clear();
 			// 0.- AGREGAR EL CODIGO NECESARIO PARA RECUPERAR LOS CORREOS DEL PROVEEDOR
@@ -398,13 +400,13 @@ public class Filtro extends IBaseTicket implements Serializable {
 			params.put("razonSocial", "M.C. Alejandro Jiménez García");
 			params.put("correo", "ventas@ferreteriabonanza.com");
 			//3.- AGREGAR EL REPORTE EN FORMATO PDF YA GENERADO DE LA COTIZACION PARA ANEXARLO COMO ATTACHMENT AL CORREO ELECTRONICO
-			Attachment attachments= new Attachment(new File(JsfBase.getRealPath("/Temporal/Pdf/K_20190225034851317_facturacion.pdf")), Boolean.FALSE);
-			params.put("attach", attachments.getId());
+			Attachment attachments= new Attachment("/Temporal/Pdf/K_20190225034851317_facturacion.pdf", Boolean.FALSE);
 			files.add(attachments);
+			params.put("attach", attachments.getId());
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
-					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.COTIZACIONES, (String)params.get("correo"), item, "Ferreteria Bonanza - Cotización", params, files);
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.COTIZACIONES, Configuracion.getInstance().getPropiedadServidor("mail.user.default"), item, "Ferreteria Bonanza - Cotización", params, files);
 					  LOG.info("Enviando correo a la cuenta: "+ item);
 					  notificar.send();
 					} // if	
