@@ -5308,7 +5308,7 @@
 				where
 					tc_mantic_empresas_deudas.id_empresa_deuda= {idEmpresaDeuda}									
 				order by
-					tc_mantic_empresas_pagos desc					
+					tc_mantic_empresas_pagos.registro desc					
 			</select>
 			<select id="pagosBusqueda">				
 				select
