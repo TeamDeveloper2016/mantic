@@ -392,6 +392,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		try {
 			params.put("header", "...");
 			params.put("footer", "...");
+			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());
 			params.put("tipo", "Cotización");
 			//2.- RECUPERAR LA RAZON SOCIAL DEL PROVEEDOR
 			params.put("razonSocial", "M.C. Alejandro Jiménez García");
@@ -457,6 +458,5 @@ public class Filtro extends IBaseTicket implements Serializable {
 		Methods.clean(this.correos);
 		Methods.clean(this.selectedCorreos);
 	}
-	
 	
 }

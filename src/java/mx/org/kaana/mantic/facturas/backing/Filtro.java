@@ -558,4 +558,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("montoInicio", this.attrs.get("montoTermino"));
 	}
 		
+	@Override
+	protected void finalize() throws Throwable {
+    super.finalize();
+		Methods.clean(this.correos);
+		Methods.clean(this.selectedCorreos);
+	}
+	
 }
