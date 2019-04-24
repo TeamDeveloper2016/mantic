@@ -404,8 +404,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			motor= new MotorBusqueda(-1L, seleccionado.toLong("idCliente"));
 			contactos= motor.toClientesTipoContacto();
 			LOG.warn("Inicializando listas de correos y seleccionados");
-			this.correos= new ArrayList<>();
-			this.selectedCorreos= new ArrayList<>();
+			this.correos.clear();
+			this.selectedCorreos.clear();
 			LOG.warn("Total de contactos" + contactos.size());
 			for(ClienteTipoContacto contacto: contactos){
 				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())){

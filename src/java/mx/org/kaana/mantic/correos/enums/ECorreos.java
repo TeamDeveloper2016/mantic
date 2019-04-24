@@ -9,8 +9,8 @@ package mx.org.kaana.mantic.correos.enums;
  */
 public enum ECorreos {
   FACTURACION("/mx/org/kaana/mantic/correos/templates/facturacion.html", "/mx/org/kaana/mantic/correos/templates/"), 
-	COTIZACIONES("/mx/org/kaana/mantic/correos/templates/cotizacion.html", "resources/janal/img/correo/"),
-	ORDENES_COMPRA("/mx/org/kaana/mantic/correos/templates/ordenesCompra.html", "resources/janal/img/correo/");
+	COTIZACIONES("/mx/org/kaana/mantic/correos/templates/cotizacion.html", "/mx/org/kaana/mantic/correos/templates/"),
+	ORDENES_COMPRA("/mx/org/kaana/mantic/correos/templates/ordenes.html", "/mx/org/kaana/mantic/correos/templates/");
 	 
 	private String template;
 	private String images;
