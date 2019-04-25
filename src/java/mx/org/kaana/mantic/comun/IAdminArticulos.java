@@ -207,21 +207,21 @@ public abstract class IAdminArticulos implements Serializable {
 			articulo.setDescuento(this.getDescuento());
 			articulo.setExtras(this.getExtras());
 		} // for
-		this.toCalculate();
+		this.toCalculate(true);
 	}
 	
 	public void toUpdateDescuento() {
 		for (Articulo articulo: this.articulos) {
 			articulo.setDescuento(this.getDescuento());
 		} // for
-		this.toCalculate();
+		this.toCalculate(true);
 	}
 	
 	public void toUpdateExtras() {
 		for (Articulo articulo : this.articulos) {
 			articulo.setExtras(this.getExtras());
 		} // for
-		this.toCalculate();
+		this.toCalculate(true);
 	}
 	
 	public void toAdjustArticulos() {

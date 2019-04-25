@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.compras.ordenes.backing;
 
+import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -479,6 +480,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			for (Articulo articulo: this.getAdminOrden().getArticulos()) {
 				params.put("idArticulo", articulo.getIdArticulo());
 				Value codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "codigo", params, "codigo");
+				articulo.setModificado(codigo!= null? !Objects.equal(codigo.toString(), articulo.getCodigo()): !Cadena.isVacio(articulo.getCodigo()));
 				articulo.setCodigo(codigo== null? "": codigo.toString());
 			} // for
 		} // try
