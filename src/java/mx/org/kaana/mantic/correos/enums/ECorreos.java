@@ -8,9 +8,9 @@ package mx.org.kaana.mantic.correos.enums;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public enum ECorreos {
-  FACTURACION("/mx/org/kaana/mantic/correos/templates/facturacion.html", "mx/org/kaana/mantic/correos/templates/"), 
-	COTIZACIONES("/mx/org/kaana/mantic/correos/templates/cotizacion.html", "mx/org/kaana/mantic/correos/templates/"),
-	ORDENES_COMPRA("/mx/org/kaana/mantic/correos/templates/ordenes.html", "mx/org/kaana/mantic/correos/templates/");
+  FACTURACION("/mx/org/kaana/mantic/correos/templates/facturacion.html", "resources/janal/img/sistema/"), 
+	COTIZACIONES("/mx/org/kaana/mantic/correos/templates/cotizacion.html", "resources/janal/img/sistema/"),
+	ORDENES_COMPRA("/mx/org/kaana/mantic/correos/templates/ordenes.html", "resources/janal/img/sistema/");
 	 
 	private String template;
 	private String images;

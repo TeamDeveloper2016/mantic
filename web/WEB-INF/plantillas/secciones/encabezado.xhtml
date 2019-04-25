@@ -13,6 +13,10 @@
 		<h:outputStylesheet library="janal" name="css/jquery.magnify.min.css" />
 		<h:outputStylesheet library="janal" name="css/jquery.magnify.min.css.map" />
 		<script type="text/javascript">
+    	$(document).ready(function() {
+				janalCleanFlash();
+			});
+			
 			$(function() {
 				janal.fecha();
 				$('#banner').addClass('ui-panelgrid');
@@ -68,8 +72,11 @@
 		</div>	
 	</div>
 	<div id="sticky-menu" class="ui-panel ui-widget ui-widget-content ui-corner-all janal-content-header Responsive100">
-		<ui:include src="/WEB-INF/plantillas/secciones/topbar.xhtml"/>
-		<ui:include src="/WEB-INF/plantillas/secciones/calculadora.xhtml"/>
+    <h:form prependId="false" class="janal-padding-cero">
+      <p:remoteCommand name="janalCleanFlash" actionListener="#{kajoolEncabezado.doCleanFlash()}" process="@this"/>
+		  <ui:include src="/WEB-INF/plantillas/secciones/topbar.xhtml"/>
+		  <ui:include src="/WEB-INF/plantillas/secciones/calculadora.xhtml"/>
+		</h:form>
 		<div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header" style="display: -webkit-box;">
 			<h:panelGrid id="iktan-slide-menu">
 				<a href="#" class="BordRad3" onclick="mmenu.open('#{kajoolTemaActivo.name}');">

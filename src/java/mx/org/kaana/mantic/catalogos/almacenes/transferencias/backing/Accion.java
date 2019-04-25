@@ -153,8 +153,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   				 	this.toInitTransferencia();
           break;
       } // switch    
-			if(this.transferencia.getIdAlmacen()<= 0L)
-        this.loadAlmacenes();
+      this.loadAlmacenes();
       this.loadPersonas(); 
     } // try
     catch (Exception e) {
@@ -181,8 +180,13 @@ public class Accion extends IBaseAttribute implements Serializable {
 			if(almacenes!= null) {
 				if(this.accion.equals(EAccion.ACTIVAR))
 		      this.transferencia.setIkAlmacen(almacenes.get(0));
-				else
-		      this.transferencia.setIkAlmacen(almacenes.get(almacenes.indexOf(new UISelectEntity(this.transferencia.getIdAlmacen()))));
+				else {
+					int index= almacenes.indexOf(new UISelectEntity(this.transferencia.getIdAlmacen()));
+					if(index>= 0)
+		        this.transferencia.setIkAlmacen(almacenes.get(index));
+					else
+  		      this.transferencia.setIkAlmacen(almacenes.get(0));
+				} // if
         this.doUpdateAlmacenOrigen();
 		  } // if	
 		} // try
@@ -283,8 +287,13 @@ public class Accion extends IBaseAttribute implements Serializable {
 			if(!destinos.isEmpty()) 
 				if(this.accion.equals(EAccion.ACTIVAR))
   				this.transferencia.setIkDestino(destinos.get(0));
-				else
-		      this.transferencia.setIkDestino(destinos.get(destinos.indexOf(new UISelectEntity(this.transferencia.getIdDestino()))));
+				else {
+					index= destinos.indexOf(new UISelectEntity(this.transferencia.getIdDestino()));
+					if(index>= 0)
+		        this.transferencia.setIkDestino(destinos.get(index));
+					else
+		        this.transferencia.setIkDestino(destinos.get(0));
+				} // if
 			this.attrs.put("destinos", destinos);
 			this.doUpdateAlmacenDestino();
 		} // if	

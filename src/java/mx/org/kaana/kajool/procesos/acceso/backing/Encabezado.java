@@ -461,5 +461,8 @@ public class Encabezado extends IBaseFilter implements Serializable {
     return regresar;
 	}
 	
-	
+	public void doCleanFlash() {
+	  JsfBase.cleanFlashParams();
+	}
+
 }

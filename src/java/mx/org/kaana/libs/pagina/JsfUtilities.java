@@ -275,6 +275,7 @@ public class JsfUtilities {
 	
   public static void cleanFlashParams(){
     Flash flash = getFacesContext().getExternalContext().getFlash();
+		flash.clear();
     Iterator iterator = flash.entrySet().iterator();
     while (iterator.hasNext()) {
       Map.Entry item = (Map.Entry)iterator.next();
