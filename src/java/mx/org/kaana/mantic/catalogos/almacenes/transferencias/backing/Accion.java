@@ -130,7 +130,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 							this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 							this.attrs.put("idArticulo", this.detalle.getIdArticulo());
 							UISelectEntity articulo= this.detalle.toUISelectEntity();
-							this.attrs.put("articulo", articulo);
+							this.attrs.put("origen", articulo);
 							this.image= LoadImages.getImage(this.detalle.getIdArticulo());
 							params.put("idArticulo", this.detalle.getIdArticulo());
 							params.put("idAlmacen", this.transferencia.getIdAlmacen());
@@ -222,9 +222,9 @@ public class Accion extends IBaseAttribute implements Serializable {
   
   public void doCalculate() {
 		try {
-			UISelectEntity articulo= (UISelectEntity)this.attrs.get("articulo");
+			UISelectEntity articulo= (UISelectEntity)this.attrs.get("origen");
 			Entity destino         = (Entity)this.attrs.get("destino");
-			Double stock  = articulo!= null && articulo.containsKey("stock")? articulo.toDouble("stock"): 0D;
+			Double stock   = articulo!= null && articulo.containsKey("stock")? articulo.toDouble("stock"): 0D;
 			Double calculo = 0D;
 			Double maximo  = 0D;
 			Double sugerido= 0D;
@@ -262,7 +262,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		catch (Exception e) {
 			Error.mensaje(e);
 		} // catch
-  } // doCalculate
+  } 
   
   public void doUpdateAlmacenOrigen() {
 		if(this.attrs.get("almacenes")!= null) {
@@ -352,7 +352,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			int index= articulos.indexOf((UISelectEntity)event.getObject());
 			if(index>= 0) {
 			  seleccion= articulos.get(index);
-				this.attrs.put("articulo", seleccion);
+				this.attrs.put("origen", seleccion);
 				this.attrs.put("idArticulo", seleccion.get("idArticulo"));
 				this.detalle.setIdArticulo(seleccion.toLong("idArticulo"));
 				this.detalle.setPropio(seleccion.toString("propio"));
@@ -381,7 +381,6 @@ public class Accion extends IBaseAttribute implements Serializable {
 		finally {
 			Methods.clean(params);
 		} // finally
-		this.doCalculate();
 	} // doAsignaCliente
   
   public List<UISelectEntity> doCompleteArticulo(String query) {
@@ -428,7 +427,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
 	public String getNoTieneConteoOrigen() {
 		String color= "janal-color-orange";
-		UISelectEntity articulo= (UISelectEntity)this.attrs.get("articulo");
+		UISelectEntity articulo= (UISelectEntity)this.attrs.get("origen");
 		if(articulo!= null && !articulo.containsKey("vacio"))
 			articulo.put("vacio", new Value("vacio", true));
 		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(articulo== null || !articulo.toBoolean("vacio")? "none": "").concat("' title='El articulo no tiene un conteo en el almacen origen !'></i>");
@@ -436,13 +435,13 @@ public class Accion extends IBaseAttribute implements Serializable {
 
 	public String getNoTieneConteoDestino() {
 		String color= "janal-color-blue";
-		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(this.attrs.get("articulo")!= null && this.attrs.get("destino")== null? "": "none").concat("' title='El articulo no tiene un conteo en el almacen destino !'></i>");
+		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(this.attrs.get("origen")!= null && this.attrs.get("destino")== null? "": "none").concat("' title='El articulo no tiene un conteo en el almacen destino !'></i>");
 	}
 
 	public void doRecoverArticulo(Integer index) {
 		try {
-			if(this.attrs.get("articulo")!= null) {
-				this.attrs.put("seleccionado", this.attrs.get("articulo"));
+			if(this.attrs.get("origen")!= null) {
+				this.attrs.put("seleccionado", this.attrs.get("origen"));
 				Object backing= JsfBase.ELAsObject("manticCatalogosArticulosExpress");
 				if(backing!= null)
 					((IBaseAttribute)backing).getAttrs().put("seleccionado", this.attrs.get("seleccionado"));
