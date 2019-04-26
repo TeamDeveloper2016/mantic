@@ -1,5 +1,7 @@
 package mx.org.kaana.mantic.correos.enums;
 
+import mx.org.kaana.libs.recurso.TcConfiguraciones;
+
 /**
  *@company KAANA
  *@project KAJOOL (Control system polls)
@@ -9,17 +11,23 @@ package mx.org.kaana.mantic.correos.enums;
  */
 public enum ECorreos {
 	
-  FACTURACION   ("/mx/org/kaana/mantic/correos/templates/facturacion.html", "resources/janal/img/sistema/"), 
-	COTIZACIONES  ("/mx/org/kaana/mantic/correos/templates/cotizacion.html", "resources/janal/img/sistema/"),
-	ORDENES_COMPRA("/mx/org/kaana/mantic/correos/templates/ordenes.html", "resources/janal/img/sistema/"),
-	CUENTAS       ("/mx/org/kaana/mantic/correos/templates/cuentas.html", "resources/janal/img/sistema/");
+  FACTURACION   ("/mx/org/kaana/mantic/correos/templates/facturacion.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@ferreteriabonanza.com"), 
+	COTIZACIONES  ("/mx/org/kaana/mantic/correos/templates/cotizacion.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@ferreteriabonanza.com"),
+	ORDENES_COMPRA("/mx/org/kaana/mantic/correos/templates/ordenes.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@ferreteriabonanza.com"),
+	CUENTAS       ("/mx/org/kaana/mantic/correos/templates/cuentas.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@ferreteriabonanza.com");
 	 
 	private String template;
 	private String images;
+	private String user;
+	private String password;
+	private String email;
 
-	private ECorreos(String template, String images) {
+	private ECorreos(String template, String images, String user, String password, String email) {
 		this.template=template;
 		this.images=images;
+		this.user= user;
+		this.password= password;
+		this.email= email;
 	}
 
 	public String getTemplate() {
@@ -29,4 +37,17 @@ public enum ECorreos {
 	public String getImages() {
 		return images;
 	}	
+
+	public String getUser() {
+		return TcConfiguraciones.getInstance().getPropiedadServidor(this.user);
+	}
+
+	public String getPassword() {
+		return TcConfiguraciones.getInstance().getPropiedadServidor(this.password);
+	}
+
+	public String getEmail() {
+		return email;
+	}
+	
 }
