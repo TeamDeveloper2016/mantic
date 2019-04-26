@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.facturas.backing;
 
+import java.io.File;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.enums.ETiposArchivos;
 import mx.org.kaana.kajool.procesos.reportes.beans.Definicion;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
@@ -38,6 +40,10 @@ import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.JuntarReporte;
 import mx.org.kaana.mantic.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.correos.beans.Attachment;
+import mx.org.kaana.mantic.correos.enums.ECorreos;
+import mx.org.kaana.mantic.correos.reglas.IBaseAttachment;
+import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
 import mx.org.kaana.mantic.enums.EReportes;
@@ -302,6 +308,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // toFindCliente
 	
 	public void doReporte(String nombre) throws Exception{
+		doReporte(nombre, false);
+	} // doReporte
+	
+	private void doReporte(String nombre, boolean email) throws Exception{
 		Parametros comunes = null;
 		Map<String, Object>params    = null;
 		Map<String, Object>parametros= null;
@@ -340,9 +350,13 @@ public class Filtro extends IBaseFilter implements Serializable {
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
       this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
-      this.doVerificarReporte();
-			this.reporte.setPrevisualizar(true);
-      this.reporte.doAceptar();			
+			if(email) 
+        this.reporte.doAceptarSimple();			
+			else {				
+				this.doVerificarReporte();
+				this.reporte.setPrevisualizar(true);
+				this.reporte.doAceptar();			
+			} // else
     } // try
     catch(Exception e) {
       Error.mensaje(e);
@@ -517,6 +531,83 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.selectedCorreos= new ArrayList<>();
 		} // finally
 	}
+	
+	public void doSendMail() {
+		StringBuilder sb= new StringBuilder("");
+		if(this.selectedCorreos!= null && !this.selectedCorreos.isEmpty()) {
+			for(Correo mail: this.selectedCorreos) {
+				if(!Cadena.isVacio(mail.getDescripcion()))
+					sb.append(mail.getDescripcion()).append(", ");
+			} // for
+		} // if
+		Map<String, Object> params= new HashMap<>();
+		String[] emails= {"jimenez76@yahoo.com", (sb.length()> 0? sb.substring(0, sb.length()- 2): "")};
+		List<Attachment> files= new ArrayList<>(); 
+		try {
+			Entity seleccionado= (Entity)this.attrs.get("seleccionado");
+			params.put("header", "...");
+			params.put("footer", "...");
+			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());
+			params.put("tipo", "Factura");			
+			params.put("razonSocial", seleccionado.toString("cliente"));
+			params.put("correo", "facturas@ferreteriabonanza.com");			
+			this.doReporte("FACTURAS_FICTICIAS_DETALLE", true);
+			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
+			files.add(attachments);
+			files.add(new Attachment(toXml(seleccionado.toLong("idFactura")), Boolean.FALSE));
+			files.add(new Attachment("logo", ECorreos.FACTURACION.getImages().concat("logo.png"), Boolean.TRUE));
+			params.put("attach", attachments.getId());
+			for (String item: emails) {
+				try {
+					if(!Cadena.isVacio(item)) {
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, (String)params.get("correo"), item, "davalos.dg1@gmail.com,isabelbs59@gmail.com,jorge.alberto.vs.10@gmail.com", "Ferreteria Bonanza - Factura", params, files);
+					  LOG.info("Enviando correo a la cuenta: "+ item);
+					  notificar.send();
+					} // if	
+				} // try
+				finally {
+				  if(attachments.getFile().exists()) {
+   	  	    LOG.info("Eliminando archivo temporal: "+ attachments.getAbsolute());
+				    // user.getFile().delete();
+				  } // if	
+				} // finally	
+			} // for
+	  	LOG.info("Se envio el correo de forma exitosa");
+			if(sb.length()> 0)
+		    JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
+			else
+		    JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+		} // try // try
+		catch(Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(files);
+		} // finally
+	} // doSendMail
+	
+	private File toXml(Long idFactura) throws Exception{
+		File regresar            = null;
+		List<Entity> facturas    = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idFactura", idFactura);
+			facturas= DaoFactory.getInstance().toEntitySet("VistaFicticiasDto", "importados", params);
+			for(Entity factura: facturas){
+				if(factura.toLong("idTipoArchivo").equals(1L))
+					regresar= new File(factura.toString("ruta").concat(factura.toString("nombre")));
+			} // for
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toXml
 	
 	public void doClonar() {
 		Transaccion transaccion = null;
