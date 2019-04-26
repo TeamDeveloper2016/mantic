@@ -28,20 +28,35 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
+import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.correos.beans.Attachment;
+import mx.org.kaana.mantic.correos.enums.ECorreos;
+import mx.org.kaana.mantic.correos.reglas.IBaseAttachment;
 import mx.org.kaana.mantic.enums.EReportes;
+import mx.org.kaana.mantic.enums.ETiposContactos;
+import mx.org.kaana.mantic.facturas.beans.Correo;
+import mx.org.kaana.mantic.facturas.reglas.Transaccion;
+import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.primefaces.context.RequestContext;
 
 @Named(value = "manticCatalogosClientesCuentasSaldos")
 @ViewScoped
 public class Saldos extends IBaseFilter implements Serializable {
 
-  private static final long serialVersionUID = 8793667741599428879L;
+	private static final Log LOG              = LogFactory.getLog(Saldos.class);
+  private static final long serialVersionUID= 8793667741599428879L;
   private Reporte reporte;
 	private UISelectEntity encontrado;
   private Long idCliente;
 	private boolean filtro;
+	private List<Correo> correos;
+	private List<Correo> selectedCorreos;	
+	private Correo correo;
 
 	public UISelectEntity getEncontrado() {
 		return encontrado;
@@ -53,6 +68,26 @@ public class Saldos extends IBaseFilter implements Serializable {
 
 	public boolean isFiltro() {
 		return filtro;
+	}
+	
+	public List<Correo> getCorreos() {
+		return correos;
+	}
+
+	public List<Correo> getSelectedCorreos() {
+		return selectedCorreos;
+	}
+
+	public void setSelectedCorreos(List<Correo> selectedCorreos) {
+		this.selectedCorreos = selectedCorreos;
+	}	
+
+	public Correo getCorreo() {
+		return correo;
+	}
+
+	public void setCorreo(Correo correo) {
+		this.correo = correo;
 	}
 	
   @PostConstruct
@@ -73,6 +108,8 @@ public class Saldos extends IBaseFilter implements Serializable {
 			} // if
       this.attrs.put("plazo", 1);
       doCalcularPlazo();
+			this.correos        = new ArrayList<>();
+			this.selectedCorreos= new ArrayList<>();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -274,14 +311,19 @@ public class Saldos extends IBaseFilter implements Serializable {
     } // catch	
   } // doReporte
   
-  public void doVerificarReporte() {
+  public boolean doVerificarReporte() {
+    boolean regresar = false;
 		RequestContext rc= UIBackingUtilities.getCurrentInstance();
-		if(this.reporte.getTotal()> 0L)
+		if(this.reporte.getTotal()> 0L){
 			rc.execute("start(" + this.reporte.getTotal() + ")");		
+      regresar = true;
+    } // if
 		else{
 			rc.execute("generalHide();");		
 			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
+      regresar = false;
 		} // else
+    return regresar;
 	} // doVerificarReporte	
 	
 	public String doImportar() {
@@ -390,6 +432,10 @@ public class Saldos extends IBaseFilter implements Serializable {
 	} // doCalcularPlazo
   
   public void doReporteEspecial() throws Exception{
+		doReporteEspecial(false);
+	}
+	
+  private void doReporteEspecial(boolean email) throws Exception{
     Parametros comunes = null;
 		Map<String, Object>params    = null;
 		Map<String, Object>parametros= null;
@@ -409,12 +455,123 @@ public class Saldos extends IBaseFilter implements Serializable {
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
       this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
-      doVerificarReporte();
-      this.reporte.doAceptar();			
+			if(email) 
+        this.reporte.doAceptarSimple();			
+			else 
+				if(this.doVerificarReporte())
+          this.reporte.doAceptar();			      
     } // try
     catch(Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);			
     } // catch	
   } // doReporteEspecial
+	
+	public void doLoadEstatus() {
+		Entity seleccionado               = null;
+		Map<String, Object>params         = null;
+		MotorBusquedaCatalogos motor      = null; 
+		Correo item                       = null;
+		List<ClienteTipoContacto>contactos= null;
+		try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");			
+			this.correos.clear();
+			this.selectedCorreos.clear();
+			motor= new MotorBusqueda(-1L, seleccionado.toLong("idCliente"));
+			contactos= motor.toClientesTipoContacto();
+			LOG.warn("Total de contactos asociados al cliente" + contactos.size());
+			for(ClienteTipoContacto contacto: contactos) {
+				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())) {
+					item= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor());
+					this.correos.add(item);		
+					this.selectedCorreos.add(item);
+				} // if
+			} // for
+			LOG.warn("Agregando un correo por defecto para el estado de cuenta");
+			this.correos.add(new Correo(-1L, ""));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // doLoadEstatus
+	
+	public void doSendMail() {
+		StringBuilder sb= new StringBuilder("");
+		if(this.selectedCorreos!= null && !this.selectedCorreos.isEmpty()) {
+			for(Correo mail: this.selectedCorreos) {
+				if(!Cadena.isVacio(mail.getDescripcion()))
+					sb.append(mail.getDescripcion()).append(", ");
+			} // for
+		} // if
+		Map<String, Object> params= new HashMap<>();
+		String[] emails= {"jimenez76@yahoo.com", (sb.length()> 0? sb.substring(0, sb.length()- 2): "")};
+		List<Attachment> files= new ArrayList<>(); 
+		try {
+			Entity seleccionado= (Entity)this.attrs.get("seleccionado");
+			params.put("header", "...");
+			params.put("footer", "...");
+			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());
+			params.put("tipo", "Estado de Cuenta");
+			params.put("razonSocial", seleccionado.toString("razonSocial"));
+			params.put("correo", "ventas@ferreteriabonanza.com");
+			this.attrs.put("tipoReporteEspecial", "DEUDAS_CLIENTES_PENDIENTES");
+			this.doReporteEspecial(true);
+			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
+			files.add(attachments);
+			files.add(new Attachment("logo", ECorreos.CUENTAS.getImages().concat("logo.png"), Boolean.TRUE));
+			params.put("attach", attachments.getId());
+			for (String item: emails) {
+				try {
+					if(!Cadena.isVacio(item)) {
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.CUENTAS, (String)params.get("correo"), item, "davalos.dg1@gmail.com,isabelbs59@gmail.com,jorge.alberto.vs.10@gmail.com", "Ferreteria Bonanza - Estado de cuenta", params, files);
+					  LOG.info("Enviando correo a la cuenta: "+ item);
+					  notificar.send();
+					} // if	
+				} // try
+				finally {
+				  if(attachments.getFile().exists()) {
+   	  	    LOG.info("Eliminando archivo temporal: "+ attachments.getAbsolute());
+				    // user.getFile().delete();
+				  } // if	
+				} // finally	
+			} // for
+	  	LOG.info("Se envio el correo de forma exitosa");
+			if(sb.length()> 0)
+		    JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
+			else
+		    JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+		} // try // try
+		catch(Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(files);
+		} // finally
+	} // doSendMail
+	
+	public void doAgregarCorreo() {
+		Entity seleccionado    = null;
+		Transaccion transaccion= null;
+		try {
+			if(!Cadena.isVacio(this.correo.getDescripcion())) {
+				seleccionado= (Entity)this.attrs.get("seleccionado");
+				transaccion = new Transaccion(this.correo, seleccionado.toLong("idCliente"));
+				if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
+					JsfBase.addMessage("Se agrego el correo electrónico correctamente !");
+				else
+					JsfBase.addMessage("Ocurrió un error al agregar el correo electronico");
+			} // if
+			else
+				JsfBase.addMessage("Es necesario capturar un correo electrónico !");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doAgregarCorreo
 }
