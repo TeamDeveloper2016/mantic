@@ -17,13 +17,10 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.reportes.beans.Definicion;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
-import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
-import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -33,58 +30,26 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
-import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.JuntarReporte;
 import mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion;
-import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EEstatusFicticias;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
-import mx.org.kaana.mantic.facturas.reglas.Transferir;
+import mx.org.kaana.mantic.facturas.comun.FiltroFactura;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
 @Named(value= "manticVentasFacturasFiltro")
 @ViewScoped
-public class Filtro extends IBaseFilter implements Serializable {
+public class Filtro extends FiltroFactura implements Serializable {
 
-  private static final long serialVersionUID = 8793667741599428332L;
-	private static final Log LOG=LogFactory.getLog(Filtro.class);
-	
-	private List<Correo> correos;
-	private List<Correo> selectedCorreos;	
-	private Correo correo;
-	private Reporte reporte;
-	
-	public Reporte getReporte() {
-		return reporte;
-	}	// getReporte
-	
-	public List<Correo> getCorreos() {
-		return correos;
-	}
-
-	public List<Correo> getSelectedCorreos() {
-		return selectedCorreos;
-	}
-
-	public void setSelectedCorreos(List<Correo> selectedCorreos) {
-		this.selectedCorreos = selectedCorreos;
-	}	
-
-	public Correo getCorreo() {
-		return correo;
-	}
-
-	public void setCorreo(Correo correo) {
-		this.correo = correo;
-	}	
+  private static final long serialVersionUID= 8793667741599428332L;
+	private static final Log LOG              = LogFactory.getLog(Filtro.class);	
 	
   @PostConstruct
   @Override
@@ -99,8 +64,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       if(this.attrs.get("idVenta")!= null) 
 			  this.doLoad();			
       this.attrs.remove("idVenta"); 
-			this.correos= new ArrayList<>();
-			this.selectedCorreos= new ArrayList<>();
+			super.initBase();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -301,53 +265,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // toFindCliente
 	
 	public void doReporte(String nombre) throws Exception {
-		Parametros comunes           = null;
-		Map<String, Object>params    = null;
-		Map<String, Object>parametros= null;
-		EReportes reporteSeleccion   = null;
-    Entity seleccionado          = null;
-		try {		
-      params= this.toPrepare();	
-      seleccionado = ((Entity)this.attrs.get("seleccionado"));
-			//recuperar el sello digital en caso de que la factura ya fue timbrada para que salga de forma correcta el reporte
-			if(seleccionado.toString("idFacturama")!= null && seleccionado.toString("selloSat")== null) {
-				Transferir transferir= null;
-				try {
-          transferir= new Transferir(seleccionado.toString("idFacturama"));
-				  transferir.ejecutar(EAccion.PROCESAR);
-				} // try
-        catch(Exception e) {
-					LOG.warn("La factura ["+ seleccionado.toLong("idFactura")+ "] presento un problema al recuperar el sello digital ["+ seleccionado.toString("idFacturama")+"]");
-          Error.mensaje(e);
-				} // catch
-				finally {
-					transferir= null;
-				} // finally
-			} // if
-      //es importante este orden para los grupos en el reporte	
-      params.put("sortOrder", "order by tc_mantic_ventas.id_empresa, tc_mantic_clientes.id_cliente, tc_mantic_ventas.ejercicio, tc_mantic_ventas.orden");
-      reporteSeleccion= EReportes.valueOf(nombre);
-      if(!reporteSeleccion.equals(EReportes.FACTURAS_FICTICIAS)) {
-        params.put("idFicticia", seleccionado.getKey());
-        comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(),-1L, -1L, seleccionado.toLong("idCliente"));
-      } // if
-      else
-        comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      this.reporte= JsfBase.toReporte();	
-      parametros= comunes.getComunes();
-      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
-      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
-      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
-      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
-      this.doVerificarReporte();
-			this.reporte.setPrevisualizar(true);
-      this.reporte.doAceptar();			
-    } // try
-    catch(Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);			
-    } // catch	
-  } // doReporte
+		doReporte(nombre, false);
+	} // doReporte	
   
   public void doReporteFacturas(String nombre) throws Exception {
 		Map<String, Object>params    = null;
@@ -371,21 +290,6 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch	
   } // doReporte
 	
-	public boolean doVerificarReporte() {
-    boolean regresar = false;
-		RequestContext rc= UIBackingUtilities.getCurrentInstance();
-		if(this.reporte.getTotal()> 0L){
-			rc.execute("start(" + this.reporte.getTotal() + ")");	
-      regresar = true;
-    }
-		else{
-			rc.execute("generalHide();");		
-			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
-      regresar = false;
-		} // else
-    return regresar;
-	} // doVerificarReporte	
-	
 	public void doLoadEstatus() {
 		Entity seleccionado               = null;
 		Map<String, Object>params         = null;
@@ -403,18 +307,18 @@ public class Filtro extends IBaseFilter implements Serializable {
 			motor= new MotorBusqueda(-1L, seleccionado.toLong("idCliente"));
 			contactos= motor.toClientesTipoContacto();
 			LOG.warn("Inicializando listas de correos y seleccionados");
-			this.correos= new ArrayList<>();
-			this.selectedCorreos= new ArrayList<>();
+			setCorreos(new ArrayList<>());
+			setSelectedCorreos(new ArrayList<>());			
 			LOG.warn("Total de contactos" + contactos.size());
 			for(ClienteTipoContacto contacto: contactos){
 				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())){
 					correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor());
-					this.correos.add(correoAdd);		
-					this.selectedCorreos.add(correoAdd);
+					getCorreos().add(correoAdd);		
+					getSelectedCorreos().add(correoAdd);
 				} // if
 			} // for
 			LOG.warn("Agregando correo default");
-			this.correos.add(new Correo(-1L, ""));
+			getCorreos().add(new Correo(-1L, ""));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -433,8 +337,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			emails= new StringBuilder("");
-			if(this.selectedCorreos!= null && !this.selectedCorreos.isEmpty()){
-				for(Correo mail: this.selectedCorreos)
+			if(getSelectedCorreos()!= null && !getSelectedCorreos().isEmpty()){
+				for(Correo mail: getSelectedCorreos())
 					if(!Cadena.isVacio(mail.getDescripcion()))
 						emails.append(mail.getDescripcion()).append(", ");
 			} // if
@@ -454,7 +358,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
 		finally {
 			this.attrs.put("justificacion", "");
-			this.selectedCorreos= new ArrayList<>();
+			setSelectedCorreos(new ArrayList<>());
 		} // finally
 	}	// doActualizaEstatus
 	
@@ -462,9 +366,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Entity seleccionado    = null;
 		Transaccion transaccion= null;
 		try {
-			if(!Cadena.isVacio(this.correo.getDescripcion())){
+			if(!Cadena.isVacio(getCorreo().getDescripcion())){
 				seleccionado= (Entity)this.attrs.get("seleccionado");
-				transaccion= new Transaccion(this.correo, seleccionado.toLong("idCliente"));
+				transaccion= new Transaccion(getCorreo(), seleccionado.toLong("idCliente"));
 				if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
 					JsfBase.addMessage("Se agrego el correo electronico correctamente !");
 				else
@@ -490,34 +394,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("idVenta", ((Entity)this.attrs.get("seleccionado")).getKey());
 		JsfBase.setFlashAttribute("idFactura", ((Entity)this.attrs.get("seleccionado")).toLong("idFactura"));
 		return "importar".concat(Constantes.REDIRECIONAR);
-	}
-
-	public void doSendmail() {
-		try {
-			StringBuilder emails= new StringBuilder("");
-			if(this.selectedCorreos!= null && !this.selectedCorreos.isEmpty()){
-				for(Correo mail: this.selectedCorreos){
-					if(!Cadena.isVacio(mail.getDescripcion()))
-						emails.append(mail.getDescripcion()).append(", ");
-				} // for
-			} // if
-			String idFacturama= ((Entity)this.attrs.get("seleccionado")).toString("idFacturama");
-			if(emails.length()> 0 && !Cadena.isVacio(idFacturama)){
-  	    CFDIFactory.getInstance().toSendMail(emails.substring(0, emails.length()- 2), idFacturama);
-				JsfBase.addMessage("Reenviar factura", "Se realizo el reenvio de factura de forma correcta.");
-			} // if
-			else
-				JsfBase.addMessage("Reenviar factura", "Es necesario seleccionar un correo electronico.");
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch
-		finally{
-			this.selectedCorreos= new ArrayList<>();
-		} // finally
-	}
-
+	}	
+	
 	public String doMovimientos() {
 		JsfBase.setFlashAttribute("tipo", ETipoMovimiento.FACTURAS_FICTICIAS);
 		JsfBase.setFlashAttribute(ETipoMovimiento.FACTURAS_FICTICIAS.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
@@ -544,6 +422,5 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("montoTermino", this.attrs.get("montoInicio"));
 	  if(this.attrs.get("montoTermino")!= null && this.attrs.get("montoInicio")== null)
 			this.attrs.put("montoInicio", this.attrs.get("montoTermino"));
-	}
-	
+	}	// doMontoUpdate
 }
