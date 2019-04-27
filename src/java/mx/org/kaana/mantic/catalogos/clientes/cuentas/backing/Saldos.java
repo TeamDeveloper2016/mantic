@@ -517,7 +517,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());
 			params.put("tipo", "Estado de Cuenta");
 			params.put("razonSocial", seleccionado.toString("razonSocial"));
-			params.put("correo", "ventas@ferreteriabonanza.com");
+			params.put("correo", ECorreos.CUENTAS.getEmail());
 			this.attrs.put("tipoReporteEspecial", "DEUDAS_CLIENTES_PENDIENTES");
 			this.doReporteEspecial(true);
 			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
@@ -527,7 +527,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
-					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.CUENTAS, (String)params.get("correo"), item, "davalos.dg1@gmail.com,isabelbs59@gmail.com,jorge.alberto.vs.10@gmail.com", "Ferreteria Bonanza - Estado de cuenta", params, files);
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.CUENTAS, ECorreos.CUENTAS.getEmail(), item, "davalos.dg1@gmail.com,isabelbs59@gmail.com,jorge.alberto.vs.10@gmail.com", "Ferreteria Bonanza - Estado de cuenta", params, files);
 					  LOG.info("Enviando correo a la cuenta: "+ item);
 					  notificar.send();
 					} // if	
