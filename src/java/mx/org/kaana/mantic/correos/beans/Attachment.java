@@ -36,6 +36,7 @@ public class Attachment implements Serializable {
 	}
 
 	public Attachment(File file, Boolean cid) {
+		this.absolute= file.getAbsolutePath();
 		this.file= file;
 		this.init(cid);
 	}
