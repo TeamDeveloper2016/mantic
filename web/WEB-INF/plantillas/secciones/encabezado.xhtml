@@ -14,7 +14,8 @@
 		<h:outputStylesheet library="janal" name="css/jquery.magnify.min.css.map" />
 		<script type="text/javascript">
     	$(document).ready(function() {
-				janalCleanFlash();
+				if(#{empty janalCleanFlash})
+				  janalCleanFlash();
 			});
 			
 			$(function() {
