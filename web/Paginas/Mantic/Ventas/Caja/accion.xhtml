@@ -9,6 +9,7 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="Cuentas abiertas para cobro"/>
 	<ui:param name="notIsCaja" value="true" class="javax.faces.Boolean"/>
+  <ui:param name="janalCleanFlash" value="false"/>	
 	<ui:define name="librerias">    		
 		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryVentasJs}"/>
 		<h:outputScript library="janal" name="barcode/js.barcode.all.min.js"/>		
