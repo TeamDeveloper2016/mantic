@@ -37,9 +37,8 @@ import org.primefaces.event.SelectEvent;
 @ViewScoped
 public class Tickets extends IBaseFilter implements Serializable {
 
-  private static final long serialVersionUID = 8743667741599428332L;
-	private static final Log LOG= LogFactory.getLog(Tickets.class);
-	
+  private static final long serialVersionUID= 8743667741599428332L;
+	private static final Log LOG              = LogFactory.getLog(Tickets.class);	
 	private double importe;
 	private Entity pivote;
 	private List<Entity> acumulado;
@@ -473,6 +472,5 @@ public class Tickets extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch
 		return regresar.concat(Constantes.REDIRECIONAR);
-	}	
-	
+	}		
 }
