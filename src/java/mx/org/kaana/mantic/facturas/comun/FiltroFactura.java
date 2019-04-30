@@ -103,6 +103,7 @@ public abstract class FiltroFactura extends IBaseFilter{
 	}	// doSendmail
 	
 	public void doSendMail() {
+		File factura= null;
 		StringBuilder sb= new StringBuilder("");
 		if(this.selectedCorreos!= null && !this.selectedCorreos.isEmpty()) {
 			for(Correo mail: this.selectedCorreos) {
@@ -121,10 +122,11 @@ public abstract class FiltroFactura extends IBaseFilter{
 			params.put("tipo", "Factura");			
 			params.put("razonSocial", seleccionado.toString("cliente"));
 			params.put("correo", ECorreos.FACTURACION.getEmail());			
+			factura= toXml(seleccionado.toLong("idFactura"));
 			this.doReporte("FACTURAS_FICTICIAS_DETALLE", true);
 			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
 			files.add(attachments);
-			files.add(new Attachment(toXml(seleccionado.toLong("idFactura")), Boolean.FALSE));
+			files.add(new Attachment(factura, Boolean.FALSE));
 			files.add(new Attachment("logo", ECorreos.FACTURACION.getImages().concat("logo.png"), Boolean.TRUE));
 			params.put("attach", attachments.getId());
 			for (String item: emails) {
@@ -168,6 +170,8 @@ public abstract class FiltroFactura extends IBaseFilter{
 			for(Entity factura: facturas){
 				if(factura.toLong("idTipoArchivo").equals(1L))
 					regresar= new File(factura.toString("ruta").concat(factura.toString("nombre")));
+				else
+					this.attrs.put("nameFacturaPdf", factura.toString("nombre"));
 			} // for
 		} // try
 		catch (Exception e) {			
@@ -216,11 +220,13 @@ public abstract class FiltroFactura extends IBaseFilter{
       parametros= comunes.getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
-      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
-      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
-			if(email) 
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			      			
+			if(email){ 
+				this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros), this.attrs.get("nameFacturaPdf").toString().replaceFirst(".pdf", ""));		
         this.reporte.doAceptarSimple();			
+			} // if
 			else {				
+				this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
 				this.doVerificarReporte();
 				this.reporte.setPrevisualizar(true);
 				this.reporte.doAceptar();			
