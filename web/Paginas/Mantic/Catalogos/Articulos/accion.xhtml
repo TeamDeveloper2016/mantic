@@ -48,7 +48,7 @@
 					<p:tabView id="contenedorGrupos" onTabChange="simpleProcess();">
 						<p:ajax event="tabChange" process="@this" update="tablaTiposVenta tablaPreciosSugeridos tablaDescuentosEspeciales tablaEspecificaciones tablaDescuentos tablaArticulosProveedores" oncomplete="janal.refresh();"/>
             <p:tab title="General">
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">								
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-100-txt">								
 								<p:outputLabel for="nombre" value="Nombre:"/>
 								<p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.nombre}" />                    
 								<p:outputLabel for="descripcion" value="Descripción:"/>
@@ -194,7 +194,7 @@
 							</p:panelGrid>								
 						</p:tab>
 						<p:tab title="Categoría" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-100-txt">
 								<p:outputLabel for="categoria" value="Categoría:"/>
 								<p:selectOneMenu id="categoria" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.idCategoria}" styleClass="janal-wid-100-txt">									
 									<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.categorias}"/>
@@ -283,7 +283,7 @@
 							</p:panelGrid>
 						</p:tab>
 						<p:tab title="Empaque" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-100-txt">
 								<p:outputLabel for="empaque" value="Empaque:"/>
 								<p:selectOneMenu id="empaque" value="#{manticCatalogosArticulosAccion.registroArticulo.idEmpaque}" styleClass="janal-wid-100-txt">
 									<p:ajax event="change" listener="#{manticCatalogosArticulosAccion.doLoadUnidadesMedidas}" process="@this" update="unidadMedida" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
@@ -316,12 +316,12 @@
 								<p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.observaciones}"/>  
 							</p:panelGrid>
 							<p:separator/>
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
-								<p:outputLabel for="meta" value="Meta tag:"/>
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
+								<p:outputLabel for="meta" value="Meta tag:" styleClass="janal-wid-100-txt"/>
 								<p:inputText id="meta" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.metaTag}"/>                    
-								<p:outputLabel for="metaDescripcion" value="Meta descripción:"/>
+								<p:outputLabel for="metaDescripcion" value="Meta descripción:" styleClass="janal-wid-100-txt"/>
 								<p:inputTextarea id="metaDescripcion" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.metaTagDescipcion}"/>                    
-								<p:outputLabel for="metaTeclado" value="Meta referencia:"/>
+								<p:outputLabel for="metaTeclado" value="Meta referencia:" styleClass="janal-wid-100-txt"/>
 								<p:inputTextarea id="metaTeclado" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.metaTagTeclado}"/>                    																	
 							</p:panelGrid>	
 						</p:tab>
