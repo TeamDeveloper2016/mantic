@@ -124,14 +124,18 @@ public class UnirFacturas extends TransaccionFactura {
 	private boolean registrarFicticia(Session sesion, Long idEstatusFicticia) throws Exception {
 		boolean regresar         = false;
 		Long consecutivo         = -1L;
+		Long cuenta              = -1L;
 		Long idFactura           = -1L;
 		Map<String, Object>params= null;
 		try {									
 			idFactura= registrarFactura(sesion);										
-			if(idFactura>= 1L){
+			if(idFactura>= 1L){								
 				consecutivo= this.toSiguiente(sesion);			
-				this.orden.setConsecutivo(Fecha.getAnioActual() + Cadena.rellenar(consecutivo.toString(), 5, '0', true));			
-				this.orden.setOrden(consecutivo);
+				this.orden.setTicket(Fecha.getAnioActual() + Cadena.rellenar(consecutivo.toString(), 5, '0', true));			
+				this.orden.setCticket(consecutivo);			
+				cuenta= this.toCuenta(sesion);			
+				this.orden.setConsecutivo(String.valueOf(cuenta));			
+				this.orden.setOrden(cuenta);				
 				this.orden.setIdFicticiaEstatus(idEstatusFicticia);
 				this.orden.setEjercicio(new Long(Fecha.getAnioActual()));						
 				this.orden.setIdFactura(idFactura);
@@ -172,6 +176,27 @@ public class UnirFacturas extends TransaccionFactura {
 			} // if
 		} // for
 	} // toFillArticulos
+	
+	private Long toCuenta(Session sesion) throws Exception {
+		Long regresar             = 1L;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("dia", Fecha.getHoyEstandar());
+			params.put("idEmpresa", this.orden.getIdEmpresa());
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasDto", "cuenta", params, "siguiente");
+			if(next!= null && next.getData()!= null)
+				regresar= next.toLong();
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toCuenta
 	
 	private Long toSiguiente(Session sesion) throws Exception {
 		Long regresar             = 1L;
@@ -223,13 +248,7 @@ public class UnirFacturas extends TransaccionFactura {
 			factura.setArticulos(gestor.toDetalleCfdiFicticia(sesion));
 			factura.setCliente(gestor.toClienteCfdiFicticia(sesion));
 			factura.getCliente().setIdFactura(idFactura);
-			factura.generarCfdi(sesion);	
-			try {
-				CFDIFactory.getInstance().toSendMail(correos, factura.getIdFacturamaRegistro());
-			} // try
-			catch (Exception e) {				
-				Error.mensaje(e);				
-			} // catch						
+			factura.generarCfdi(sesion);				
 		} // try
 		finally{
 			this.messageError= "Error al generar el timbrado de la factura.";
