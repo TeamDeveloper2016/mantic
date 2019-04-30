@@ -75,16 +75,20 @@ public class Reporte extends BaseReportes implements Serializable{
 	} // init
 
 	public void toAsignarReporte(IReporte ireporte) {
-    toAsignarReporte(ireporte, Constantes.ARCHIVO_PATRON_NOMBRE);
+    toAsignarReporte(ireporte, Constantes.ARCHIVO_PATRON_NOMBRE, "");
   } // toAsignarReporte
   
-	public void toAsignarReporte(IReporte ireporte, String prefijo) {
+	public void toAsignarReporte(IReporte ireporte, String nombre) {
+		toAsignarReporte(ireporte, Constantes.ARCHIVO_PATRON_NOMBRE, nombre);
+	} // toAsignarReporte
+	
+	public void toAsignarReporte(IReporte ireporte, String prefijo, String nombre) {
 		this.ireporte = ireporte;
 		this.idTitulos= ireporte.getTitulo();		
     this.total    = ireporte instanceof IReporteDataSource ? 1L : toSize();		
     this.prefijo  = prefijo;
     this.idFormato= ireporte.getFormato();
-    this.fileName = Archivo.toFormatNameFile(ireporte.getNombre(), this.prefijo);
+    this.fileName = Cadena.isVacio(nombre) ? Archivo.toFormatNameFile(ireporte.getNombre(), this.prefijo) : nombre;
 		this.nombre   = this.idFormato.toPath().concat(this.fileName).concat(".").concat(this.idFormato.name().toLowerCase());
 	} // toAsiganarReporte
 
