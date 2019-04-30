@@ -6,7 +6,7 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
-                template="/WEB-INF/plantillas/accion.xhtml">
+                template="/WEB-INF/plantillas/reporte.xhtml">
 	<ui:param name="titulo" value="Generar una factura con la union de varios tickets"/>
 	<ui:param name="janalBackingPage" value="#{manticFacturasFacturar}"/>
   <ui:param name="janalEventPage" value="doGlobalEvent"	/>
@@ -74,7 +74,9 @@
 	  			$(jsArticulos.sat()).removeClass('ignore');
   				$(jsArticulos.amount()).removeClass('ignore');
 	  			$(jsArticulos.price()).removeClass('ignore');
-				} // else	
+				} // else
+				else
+					janal.bloquear();
 				return ok;
 			}			
 		</script>   
@@ -569,18 +571,41 @@
 			</div>
 		</p:dialog>	
 		<p:commandButton id="limpio" value="" styleClass="janal-zero-size"/>
+		<hr class="ui-widget-content"/>
+		<div class="janal-line-button">
+			<div class="lg-pantalla">			
+				<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" actionListener="#{manticFacturasFacturar.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" onstart="return execute(true);" update="deudor contenido panelEmpresa articulos total dialogoCorreos"/>
+				<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticFacturasFacturar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
+			</div>	
+			<div class="xs-pantalla">
+				<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" actionListener="#{manticFacturasFacturar.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" onstart="return execute(true);" update="deudor contenido panelEmpresa articulos total dialogoCorreos"/>
+				<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticFacturasFacturar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
+			</div>						
+		</div>				
 	</ui:define>    
-	<ui:define name="acciones">		
-		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticFacturasFacturar.doAceptar}" onstart="return execute(true);" oncomplete="janal.desbloquear()" update="deudor contenido panelEmpresa articulos total"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticFacturasFacturar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
-		</div>	
-		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticFacturasFacturar.doAceptar}" onstart="return execute(true);" oncomplete="janal.desbloquear()" update="deudor contenido panelEmpresa articulos total"/>
-			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticFacturasFacturar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
-		</div>						
-	</ui:define>	
 	<ui:define name="dialogos">		
+		<p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Reenviar factura" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
+			<h:form id="formDialogoCorreos" prependId="false">				
+				<h:panelGrid id="panelCorreos" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">					
+					<p:dataTable id="tablaCorreosReenviar" var="row" value="#{manticFacturasFacturar.correos}" selection="#{manticFacturasFacturar.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
+						<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
+						<p:column headerText="Correos disponibles del cliente" styleClass="descripcion tablaCorreosReenviar_selection">
+							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
+						</p:column>
+						<p:column style="width:45px;text-align: center">
+							<p:commandButton update="tablaCorreosReenviar" icon="fa fa-check" title="Agregar" action="#{manticFacturasFacturar.doAgregarCorreo}">
+								<f:setPropertyActionListener value="#{row}" target="#{manticFacturasFacturar.correo}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>		
+				</h:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this dialogoCorreos" value="Aceptar" action="#{manticFacturasFacturar.doAceptar}" onstart="return PF('dlgCorreos').hide();"  oncomplete="janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCorreos').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog>
 		<ui:include src="/Paginas/Mantic/Catalogos/Articulos/express.xhtml">
 			<ui:param name="dialogo" value="articulos"/>
 			<ui:param name="seleccionado" value="#{null}"/>

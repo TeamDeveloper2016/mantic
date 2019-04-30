@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.facturas.backing;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,22 +17,37 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
+import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.IBaseStorage;
+import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.correos.beans.Attachment;
+import mx.org.kaana.mantic.correos.enums.ECorreos;
+import mx.org.kaana.mantic.correos.reglas.IBaseAttachment;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
+import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
+import mx.org.kaana.mantic.enums.ETiposContactos;
+import mx.org.kaana.mantic.facturas.beans.Correo;
 import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
 import mx.org.kaana.mantic.facturas.reglas.AdminFacturas;
+import mx.org.kaana.mantic.facturas.reglas.Transferir;
 import mx.org.kaana.mantic.facturas.reglas.UnirFacturas;
 import mx.org.kaana.mantic.ventas.beans.SaldoCliente;
 import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
@@ -48,21 +64,54 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 
 	private static final Log LOG               = LogFactory.getLog(Facturar.class);  
   private static final long serialVersionUID = 327393488565639367L;
+	
 	private static final String VENDEDOR_PERFIL= "VENDEDOR DE PISO";
 	private static final String INDIVIDUAL     = "1";
-	private static final Long ESTATUS_ELABORADA= 2L;
-	
+	private static final Long ESTATUS_ELABORADA= 2L;	
 	private Entity cliente;
 	private List<Entity> tickets;
 	private List<Long> ventaPublico;
-
 	private SaldoCliente saldoCliente;
 	private StreamedContent image;
 	private FormatLazyModel almacenes;
-
+	private List<Correo> correos;
+	private List<Correo> selectedCorreos;	
+	private Correo correo;
+	protected Reporte reporte;
+	
 	public Facturar() {
 		super("menudeo", true);
+		this.correos= new ArrayList<>();
+		this.selectedCorreos= new ArrayList<>();
 	}
+	
+	public Reporte getReporte() {
+		return reporte;
+	}	// getReporte
+	
+	public List<Correo> getCorreos() {
+		return correos;
+	}
+
+	public void setCorreos(List<Correo> correos) {
+		this.correos = correos;
+	}	
+	
+	public List<Correo> getSelectedCorreos() {
+		return selectedCorreos;
+	}
+
+	public void setSelectedCorreos(List<Correo> selectedCorreos) {
+		this.selectedCorreos = selectedCorreos;
+	}	
+
+	public Correo getCorreo() {
+		return correo;
+	}
+
+	public void setCorreo(Correo correo) {
+		this.correo = correo;
+	}	
 	
 	@Override
 	public SaldoCliente getSaldoCliente() {
@@ -179,13 +228,16 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 	} // doAsignaCliente	
 	
   public String doAceptar() {  
-    UnirFacturas transaccion= null;
-    String regresar         = null;
+    UnirFacturas transaccion       = null;
+    String regresar                = null;
+		UISelectEntity clienteSeleccion= null;
     try {			
 			loadOrdenVenta();
 			transaccion = new UnirFacturas(((FacturaFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.attrs.get("observaciones").toString(), this.tickets, this.cliente);
 			this.getAdminOrden().toAdjustArticulos();
-			if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
+			if (transaccion.ejecutar(EAccion.REGISTRAR)) {					
+				clienteSeleccion= ((List<UISelectEntity>) this.attrs.get("clientesSeleccion")).get(((List<UISelectEntity>) this.attrs.get("clientesSeleccion")).indexOf((UISelectEntity) this.attrs.get("clienteSeleccion")));			
+				doSendMail(transaccion.getOrden().getIdFactura(), transaccion.getOrden().getIdFicticia(), transaccion.getOrden().getIdCliente(), clienteSeleccion.toString("razonSocial"));
     		UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la factura ', '"+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");					
 				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
   			JsfBase.setFlashAttribute("idFicticia", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia());				
@@ -886,5 +938,172 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 		  this.toSaveRecord();
     //UIBackingUtilities.execute("alert('ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA');");
 	} // doGlobalEvent
+
+	private void doSendMail(Long idFactura, Long idFicticia, Long idCliente, String cliente) {
+		File factura= null;
+		StringBuilder sb= new StringBuilder("");
+		if(this.selectedCorreos!= null && !this.selectedCorreos.isEmpty()) {
+			for(Correo mail: this.selectedCorreos) {
+				if(!Cadena.isVacio(mail.getDescripcion()))
+					sb.append(mail.getDescripcion()).append(", ");
+			} // for
+		} // if
+		Map<String, Object> params= new HashMap<>();
+		String[] emails= {"jimenez76@yahoo.com", (sb.length()> 0? sb.substring(0, sb.length()- 2): "")};
+		List<Attachment> files= new ArrayList<>(); 
+		try {			
+			params.put("header", "...");
+			params.put("footer", "...");
+			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());
+			params.put("tipo", "Factura");			
+			params.put("razonSocial", cliente);
+			params.put("correo", ECorreos.FACTURACION.getEmail());			
+			factura= toXml(idFactura);
+			this.doReporte(idFactura, idFicticia, idCliente);
+			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
+			files.add(attachments);
+			files.add(new Attachment(factura, Boolean.FALSE));
+			files.add(new Attachment("logo", ECorreos.FACTURACION.getImages().concat("logo.png"), Boolean.TRUE));
+			params.put("attach", attachments.getId());
+			for (String item: emails) {
+				try {
+					if(!Cadena.isVacio(item)) {
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, ECorreos.FACTURACION.getEmail(), item, "davalos.dg1@gmail.com,isabelbs59@gmail.com,jorge.alberto.vs.10@gmail.com", "Ferreteria Bonanza - Factura", params, files);
+					  LOG.info("Enviando correo a la cuenta: "+ item);
+					  notificar.send();
+					} // if	
+				} // try
+				finally {
+				  if(attachments.getFile().exists()) {
+   	  	    LOG.info("Eliminando archivo temporal: "+ attachments.getAbsolute());
+				    // user.getFile().delete();
+				  } // if	
+				} // finally	
+			} // for
+	  	LOG.info("Se envio el correo de forma exitosa");
+			if(sb.length()> 0)
+		    JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
+			else
+		    JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+		} // try // try
+		catch(Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(files);
+		} // finally
+	} // doSendMail	
 	
+	protected File toXml(Long idFactura) throws Exception{
+		File regresar            = null;
+		List<Entity> facturas    = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idFactura", idFactura);
+			facturas= DaoFactory.getInstance().toEntitySet("VistaFicticiasDto", "importados", params);
+			for(Entity factura: facturas){
+				if(factura.toLong("idTipoArchivo").equals(1L))
+					regresar= new File(factura.toString("ruta").concat(factura.toString("nombre")));
+				else
+					this.attrs.put("nameFacturaPdf", factura.toString("nombre"));
+			} // for
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toXml
+	
+	public void doReporte(Long idFactura, Long idFicticia, Long idCliente) throws Exception{
+		Parametros comunes           = null;
+		Map<String, Object>params    = null;
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = null;    
+		TcManticFacturasDto factura  = null;
+		try {		            
+			factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(TcManticFacturasDto.class, idFactura);
+			if(factura.getIdFacturama()!= null && factura.getSelloSat()== null) {
+				Transferir transferir= null;
+				try {
+          transferir= new Transferir(factura.getIdFacturama());
+				  transferir.ejecutar(EAccion.PROCESAR);
+				} // try
+        catch(Exception e) {
+					LOG.warn("La factura ["+ idFactura + "] presento un problema al recuperar el sello digital ["+ factura.getIdFacturama() +"]");
+          Error.mensaje(e);
+				} // catch
+				finally {
+					transferir= null;
+				} // finally
+			} // if
+      //es importante este orden para los grupos en el reporte	
+			params= new HashMap<>();
+      params.put("sortOrder", "order by tc_mantic_ventas.id_empresa, tc_mantic_clientes.id_cliente, tc_mantic_ventas.ejercicio, tc_mantic_ventas.orden");
+      reporteSeleccion= EReportes.valueOf("FACTURAS_FICTICIAS_DETALLE");      
+      params.put("idFicticia", idFicticia);
+      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(),-1L, -1L, idCliente);      
+      this.reporte= JsfBase.toReporte();	
+      parametros= comunes.getComunes();
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			      						
+			this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros), this.attrs.get("nameFacturaPdf").toString().replaceFirst(".pdf", ""));		
+      this.reporte.doAceptarSimple();						
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+  } // doReporte
+	
+	public boolean doVerificarReporte() {
+    boolean regresar = false;
+		RequestContext rc= UIBackingUtilities.getCurrentInstance();
+		if(this.reporte.getTotal()> 0L){
+			rc.execute("start(" + this.reporte.getTotal() + ")");	
+      regresar = true;
+    }
+		else{
+			rc.execute("generalHide();");		
+			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
+      regresar = false;
+		} // else
+    return regresar;
+	} // doVerificarReporte	
+	
+	public void doLoadEstatus() {		
+		Map<String, Object>params         = null;		
+		MotorBusquedaCatalogos motor      = null; 
+		List<ClienteTipoContacto>contactos= null;
+		Correo correoAdd                  = null;
+		try {			
+			motor= new MotorBusqueda(-1L, ((UISelectEntity) this.attrs.get("clienteSeleccion")).getKey());
+			contactos= motor.toClientesTipoContacto();
+			LOG.warn("Inicializando listas de correos y seleccionados");
+			getCorreos().clear();
+			getSelectedCorreos().clear();
+			LOG.warn("Total de contactos" + contactos.size());
+			for(ClienteTipoContacto contacto: contactos){
+				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())){
+					correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor());
+					getCorreos().add(correoAdd);		
+					getSelectedCorreos().add(correoAdd);
+				} // if
+			} // for
+			LOG.warn("Agregando correo default");
+			getCorreos().add(new Correo(-1L, ""));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // doLoadEstatus
 }
