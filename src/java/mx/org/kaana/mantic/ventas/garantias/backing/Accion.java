@@ -543,7 +543,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		return regresar.toString();
 	} // toCondicion
 	
-	private String toCondicionOpenTicket() {
+	protected String toCondicionOpenTicket() {
 		StringBuilder regresar= null;
 		try {
 			regresar= new StringBuilder();																
