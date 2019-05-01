@@ -13,14 +13,17 @@
 		<script type="text/javascript">
 			// <![CDATA[
 			Janal.Control.fields={
-				'ticket'         : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},			
-				'descuento'      : {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'general'},			
-				//'ticketsAbiertos': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona al menos un ticket abierto.'},				
-				'total'          : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general', mensaje: 'El importe total tiene que ser mayor a 0'}
+				'ticket'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},			
+				'descuento': {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'general'},			
+				'total'    : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general', mensaje: 'El importe total tiene que ser mayor a 0'}
 			};
 			
 			fieldsDialogPago= {
 				'referenciaDlg': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'}
+			};
+			
+			fieldsDialogPagoCredito= {
+				'tipoDevolucion': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'}
 			};
 			
 			$(document).ready(function() {
@@ -30,12 +33,14 @@
 			
 			function validateGarantia() {
 				var ok= janal.execute();
-				if(ok)
+				if(ok){
 					PF('dlgCerrarVenta').hide();
+					PF('dlgCerrarVentaCredito').hide();
+				} // if
 				return ok;
 			} // validateGarantia
 			
-			function ventaFinished() {
+			function validacionesApply(){
 				var custom= [];
 				var sum   = 0;
 				$('input[id$="cantidades"]').each(function() {
@@ -53,14 +58,18 @@
   					custom.push({summary: 'La fila '+ (janal.integer(items[2], 0)+ 1)+ ':', detail: 'La cantidad del articulo tiene que ser mayor a 0'});
 					} // if
 				});
-				var ok= janal.partial('general', custom);								
-				if(ok){
-					janal.bloquear();
-					PF('dlgCerrarVenta').show();
-				} // if
-				else
+				var ok= janal.partial('general', custom);	
+				if(!ok)
 					janal.desbloquear();
 				return ok;
+			} // validacionesApply
+			
+			function ventaFinished(tipoVenta) {															
+				janal.bloquear();
+				if(tipoVenta=== 1)
+					PF('dlgCerrarVentaCredito').show();						
+				else
+					PF('dlgCerrarVenta').show();																	
 			} // ventaFinished
 
 			function restoreCursoArt() {
@@ -111,7 +120,7 @@
 						} // if
 					} // else
 				});
-			}
+			} // readingModeLocal
 			// ]]>
 		</script>
 		<style type="text/css">
@@ -132,7 +141,7 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
-		<pe:remoteCommand name="unlockVenta" process="@this" actionListener="#{manticVentasApartadosDevolucionesAccion.unlockVenta}"/>  					
+		<pe:remoteCommand name="unlockVenta" process="@this" actionListener="#{manticVentasApartadosDevolucionesAccion.unlockVenta}"/>
 		<pe:remoteCommand name="cobrarVenta" process="@this" update="contenedorGrupos" actionListener="#{manticVentasApartadosDevolucionesAccion.doOpenCobro}" onstart="janal.bloquear()" oncomplete="janal.desbloquear();"/>  			
 		<pe:remoteCommand name="loadTicketAbiertos" process="@this" update="contenedorGrupos aceptar aceptarIcon @(.cotizar)" actionListener="#{manticVentasApartadosDevolucionesAccion.doAsignaTicketAbierto}" onstart="janal.bloquear()" oncomplete="janal.desbloquear();"/>  					
 		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticVentasApartadosDevolucionesAccion.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); setTimeout('jsArticulos.next()', 500);">  
@@ -175,7 +184,7 @@
 							<p:panelGrid id="panelEmpresa" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-5, janal-wid-100">
 								<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticVentasApartadosDevolucionesAccion.attrs.isMatriz}"/>
 								<p:selectOneMenu id="idEmpresa" value="#{manticVentasApartadosDevolucionesAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticVentasApartadosDevolucionesAccion.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="contains">
-									<p:ajax event="change" process="@this" listener="#{manticVentasApartadosDevolucionesAccion.doLoadTicketAbiertos}" update="caja" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+									<p:ajax event="change" process="@this" listener="#{manticVentasApartadosDevolucionesAccion.doLoadTicketAbiertos}" update="caja cajaCredito @(.cotizar) contenido encabezadoTicket" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{manticVentasApartadosDevolucionesAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -183,20 +192,7 @@
 									<p:column headerText="Nombre">
 										<h:outputText value="#{item.nombre}"/>
 									</p:column>   
-								</p:selectOneMenu>								
-								<p:outputLabel for="caja" value="Caja:" />
-								<p:selectOneMenu id="caja" value="#{manticVentasApartadosDevolucionesAccion.attrs.caja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains">								
-									<f:selectItems value="#{manticVentasApartadosDevolucionesAccion.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
-									<p:column headerText="Clave">
-										<h:outputText value="#{item.clave}"/>
-									</p:column>   
-									<p:column headerText="Nombre">
-										<h:outputText value="#{item.nombre}"/>
-									</p:column>   
-									<p:column headerText="Limite" styleClass="janal-column-right">
-										<h:outputText value="$#{item.limite}"/>
-									</p:column>   
-								</p:selectOneMenu>
+								</p:selectOneMenu>																
 							</p:panelGrid>
 						</div>
 					</div>
@@ -293,9 +289,16 @@
 											<f:facet name="header">
 												<h:outputText value="Precio"/>
 											</f:facet>
-											<p:outputLabel value="#{row['costo']}"/>													
-											<p:inputText id="values" value="#{row['valor']}" style="display:none"/>
-											<p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" style="display:none"/>
+											<div class="ui-grid-row janal-grid-row">
+												<div class="ui-grid-col-12 janal-column-right" style="padding-right: 14px;">											
+													<p:outputLabel value="#{row['costo']}"/>
+													<p:inputText id="values" value="#{row['valor']}" style="display:none"/>
+													<p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" style="display:none"/>																						
+												</div>	 
+												<div style="width: 10px; margin-left: -4px; margin-top: 1px;">
+													<h:outputText value="#{row['detallePrecio']}" escape="false"/>
+												</div>
+											</div>
 										</p:column>		
 										<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 											<f:facet name="header">
@@ -316,15 +319,7 @@
 												<h:outputText value="Importe"/>
 											</f:facet>
 											<p:outputLabel value="#{row['importe$']}"/>
-										</p:column>		
-										<p:column class="janal-column-center MarAuto Responsive janal-wid-col-60" rendered="#{!manticVentasApartadosDevolucionesAccion.attrs.mostrarGarantia}">
-											<f:facet name="header">
-												<h:outputText value="Garantía" title="Seleccionar para enviar a garantía el(los) articulo(s)"/>
-											</f:facet>
-											<p:selectBooleanCheckbox id="garantia" value="#{row['aplicar']}" title="Click para selecionar a garantia">
-												<p:ajax event="change" process="@this" update="@(.filas)"/>
-											</p:selectBooleanCheckbox>
-										</p:column>		
+										</p:column>												
 									</p:dataTable>
 								</p:panelGrid>
 								<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" columnClasses="janal-wid-100">	
@@ -483,17 +478,30 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@this" styleClass="cotizar janal-text-white" oncomplete="ventaFinished();" update="dialogoCerrarVenta"/>			
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@this" styleClass="cotizar janal-text-white" onstart="return validacionesApply();" actionListener="#{manticVentasApartadosDevolucionesAccion.doValidarDevolucion}" update="dialogoCerrarVentaCredito dialogoCerrarVenta tipoDevolucion"/>			
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticVentasApartadosDevolucionesAccion.doCancelar}" ajax="false" onstart="janal.bloquear();" oncomplete="janal.desbloquear()"/>						
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@this" styleClass="cotizar janal-text-white" oncomplete="ventaFinished();" update="dialogoCerrarVenta"/>			
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@this" styleClass="cotizar janal-text-white" onstart="return validacionesApply();" actionListener="#{manticVentasApartadosDevolucionesAccion.doValidarDevolucion}" update="dialogoCerrarVentaCredito dialogoCerrarVenta tipoDevolucion"/>			
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasApartadosDevolucionesAccion.doCancelar}" ajax="false" onstart="janal.bloquear();" oncomplete="janal.desbloquear()"/>						
 		</div>		
 	</ui:define>		
 	<ui:define name="dialogos">		
 		<p:dialog id="dialogoCerrarVenta" widgetVar="dlgCerrarVenta" header="Generar garantia" resizable="false" closable="false" responsive="true" width="30%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoCerrar', fieldsDialogPago);janal.refresh();">			
 			<h:form id="formDialogoCerrar" prependId="false">
+				<p:outputLabel for="caja" value="Caja:" styleClass="font-resume-venta-detail"/>
+				<p:selectOneMenu id="caja" value="#{manticVentasApartadosDevolucionesAccion.attrs.caja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains">								
+					<f:selectItems value="#{manticVentasApartadosDevolucionesAccion.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+					<p:column headerText="Clave">
+						<h:outputText value="#{item.clave}"/>
+					</p:column>   
+					<p:column headerText="Nombre">
+						<h:outputText value="#{item.nombre}"/>
+					</p:column>   
+					<p:column headerText="Limite" styleClass="janal-column-right">
+						<h:outputText value="$#{item.limite}"/>
+					</p:column>   
+				</p:selectOneMenu>
 				<h:panelGrid columns="3" class="janal-wid-100" columnClasses="janal-wid-50, janal-wid-5 janal-column-center, janal-wid-10 janal-column-right">
 					<p:outputLabel value="Cliente" styleClass="font-resume-venta-detail"/>
 					<p:spacer/><p:spacer/>					
@@ -533,6 +541,101 @@
 				<div class="janal-line-button">
 					<p:commandButton id="aceptarFinalizar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasApartadosDevolucionesAccion.doAceptar}" onstart="return validateGarantia();" oncomplete="janal.desbloquear()" update="contenedorGrupos @(.filas) @(.recalculo)" disabled="#{!manticVentasApartadosDevolucionesAccion.attrs.cobroVenta}"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog>
+		<p:dialog id="dialogoCerrarVentaCredito" widgetVar="dlgCerrarVentaCredito" header="Generar devolución" resizable="false" closable="false" responsive="true" width="60%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoCerrarCredito', fieldsDialogPagoCredito);janal.refresh();">			
+			<h:form id="formDialogoCerrarCredito" prependId="false">
+				<p:outputLabel for="cajaCredito" value="Caja:" styleClass="font-resume-venta-detail"/>
+				<p:selectOneMenu id="cajaCredito" value="#{manticVentasApartadosDevolucionesAccion.attrs.caja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains">								
+					<f:selectItems value="#{manticVentasApartadosDevolucionesAccion.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+					<p:column headerText="Clave">
+						<h:outputText value="#{item.clave}"/>
+					</p:column>   
+					<p:column headerText="Nombre">
+						<h:outputText value="#{item.nombre}"/>
+					</p:column>   
+					<p:column headerText="Limite" styleClass="janal-column-right">
+						<h:outputText value="$#{item.limite}"/>
+					</p:column>   
+				</p:selectOneMenu>
+				<p:spacer/>
+				<p:outputLabel value="#{manticVentasApartadosDevolucionesAccion.attrs.messageDialog}" styleClass="font-resume-venta-detail janal-color-blue"/>
+				<h:panelGrid columns="1">
+					<p:spacer/>
+				</h:panelGrid>
+				<p:outputLabel value="Deudas pendientes." styleClass="font-resume-venta-detail"/>
+				<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticVentasApartadosDevolucionesAccion.detalleDeudaCliente}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticVentasApartadosDevolucionesAccion.attrs.seleccionadoDetalle}" selectionMode="single" paginator="#{manticVentasApartadosDevolucionesAccion.detalleDeudaCliente.rowCount gt manticVentasApartadosDevolucionesAccion.detalleDeudaCliente.pageSize}" rowIndexVar="index" reflow="true">										
+					<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.consecutivo}">
+						<f:facet name="header">
+							<h:outputText value="Ticket"/>
+						</f:facet>
+						<h:outputText value="#{filtro['consecutivo']}"/>
+					</p:column>														
+					<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
+						<f:facet name="header">
+							<h:outputText value="Vendedor"/>
+						</f:facet>
+						<h:outputText value="#{filtro['persona']}"/>
+					</p:column>											
+					<p:column class="janal-column-left MarAuto Responsive janal-wid-13" sortBy="#{filtro.estatus}">
+						<f:facet name="header">
+							<h:outputText value="Estatus"/>
+						</f:facet>
+						<h:outputText value="#{filtro['estatus']}"/>
+					</p:column>						
+					<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{filtro.importe}">
+						<f:facet name="header">
+							<h:outputText value="Importe"/>
+						</f:facet>
+						<h:outputText value="#{filtro['importe']}"/>
+					</p:column>						
+					<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{filtro.saldo}">
+						<f:facet name="header">
+							<h:outputText value="Saldo"/>
+						</f:facet>
+						<h:outputText value="#{filtro['saldo']}"/>
+					</p:column>
+					<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.limite}">
+						<f:facet name="header">
+							<h:outputText value="Vence" title="Fecha en la que vence el crédito otorgado"/>
+						</f:facet>
+						<h:outputText value="#{filtro['limite']}"/>
+					</p:column>
+					<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.regitro}">
+						<f:facet name="header">
+							<h:outputText value="Fecha"/>
+						</f:facet>
+						<h:outputText value="#{filtro['registro']}"/>
+					</p:column>						
+					<f:facet name="footer">
+						<p:outputLabel value="Total [#{manticVentasApartadosDevolucionesAccion.detalleDeudaCliente==null?0:manticVentasApartadosDevolucionesAccion.detalleDeudaCliente.rowCount}] registros"/>
+					</f:facet>
+				</p:dataTable>				
+				<h:panelGrid columns="3" columnClasses="janal-wid-30, janal-wid-5 janal-column-center, janal-wid-10 janal-column-right">
+					<p:spacer/><p:spacer/><p:spacer/>
+					<p:outputLabel value="Cliente" styleClass="font-resume-venta-detail"/>
+					<p:spacer/><p:spacer/>					
+					<p:outputLabel value="#{manticVentasApartadosDevolucionesAccion.attrs.nombreCliente}"/>				
+					<p:spacer/><p:spacer/>
+					<p:outputLabel value="Descuento" styleClass="font-resume-venta-detail"/>
+					<p:outputLabel value="$"/>
+					<p:outputLabel value="#{manticVentasApartadosDevolucionesAccion.attrs.pago.totales.descuentoDosDecimales$}"/>				
+					<p:outputLabel value="Total:" styleClass="font-resume-venta-detail janal-color-orange"/>
+					<p:outputLabel value="$" styleClass="janal-color-orange"/>
+					<p:outputLabel value="#{manticVentasApartadosDevolucionesAccion.attrs.pago.totales.totalDosDecimales$}" styleClass="janal-color-orange"/>													
+					<p:spacer/><p:spacer/><p:spacer/>
+				</h:panelGrid>									
+				<p:outputLabel for="tipoDevolucion" value="Tipo de pago:" styleClass="font-resume-venta-detail" rendered="#{manticVentasApartadosDevolucionesAccion.attrs.mostrarDevolucion}"/>
+				<p:selectOneRadio id="tipoDevolucion" value="#{manticVentasApartadosDevolucionesAccion.attrs.tipoDevolucion}" rendered="#{manticVentasApartadosDevolucionesAccion.attrs.mostrarDevolucion}">						
+					<f:selectItem itemLabel="Efectivo" itemValue="1"/>																			
+					<f:selectItem itemLabel="Saldo a favor" itemValue="2"/>																			
+				</p:selectOneRadio>
+				<p:spacer/>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton id="aceptarFinalizarCredito" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasApartadosDevolucionesAccion.doAceptar}" onstart="return validateGarantia();" oncomplete="janal.desbloquear()" update="contenedorGrupos @(.filas) @(.recalculo)" disabled="#{!manticVentasApartadosDevolucionesAccion.attrs.cobroVenta}"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgCerrarVentaCredito').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
 		</p:dialog>
