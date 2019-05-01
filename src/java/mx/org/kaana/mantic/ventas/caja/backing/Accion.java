@@ -483,8 +483,10 @@ public class Accion extends IBaseVenta implements Serializable {
 			if(seleccion!= null && ((TicketVenta)this.getAdminOrden().getOrden()).isValid()){
 				transaccion= new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta(), seleccion.getKey());
 				if(transaccion.ejecutar(EAccion.ASIGNAR)){
+					unlockVentaExtends(-1L, (Long)this.attrs.get("ticketLock"));			
+					this.attrs.put("ticketLock", -1L);
 					doLoadTicketAbiertos();
-					this.attrs.put("ticketAbierto", ticketAbierto);
+					this.attrs.put("ticketAbierto", ticketAbierto);					
 					doAsignaTicketAbiertoCambioCliente();					
 					this.attrs.put("tabIndex", 1);
 					this.attrs.put("facturarVenta", facturarVenta);					
