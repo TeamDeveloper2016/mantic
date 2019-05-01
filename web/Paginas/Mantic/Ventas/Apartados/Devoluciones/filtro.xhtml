@@ -5,16 +5,16 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Tickets de ventas generados" />
+  <ui:param name="titulo" value="Tickets generados de devoluciones de apartados" />
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'idEmpresa'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'consecutivo'    : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true, grupo: 'general'},
-        'idCliente'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'fechaInicio'    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        'fechaTermino'   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        'idGarantiaEstatus' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
+        'idEmpresa'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'consecutivo'      : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true, grupo: 'general'},
+        'idCliente'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'fechaInicio'      : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'fechaTermino'     : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'idGarantiaEstatus': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
       };
 			
 			fieldsDialog= {
