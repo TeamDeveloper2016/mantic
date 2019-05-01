@@ -9,6 +9,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.caja.beans.Pago;
 import mx.org.kaana.mantic.ventas.garantias.reglas.AdminGarantia;
@@ -17,7 +18,7 @@ import mx.org.kaana.mantic.ventas.garantias.reglas.AdminGarantia;
 @ViewScoped
 public class Accion extends mx.org.kaana.mantic.ventas.garantias.backing.Accion implements Serializable {
 
-  private static final long serialVersionUID  = 327393488565639367L;
+  private static final long serialVersionUID= 327393488565639367L;
 	
 	@PostConstruct
   @Override
@@ -57,4 +58,20 @@ public class Accion extends mx.org.kaana.mantic.ventas.garantias.backing.Accion 
       JsfBase.addMessageError(e);
     } // catch		
   } // doLoad	
+	
+	@Override
+	protected String toCondicionOpenTicket() {
+		StringBuilder regresar= null;
+		try {
+			regresar= new StringBuilder();																
+			regresar.append(" tc_mantic_ventas.ticket like '%");
+			regresar.append(this.attrs.get("openTicket"));	
+			regresar.append("%' and tc_mantic_ventas.id_venta_estatus=");			
+			regresar.append(EEstatusVentas.APARTADOS.getIdEstatusVenta());												
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar.toString();
+	} // toCondicionOpenTicket
 }
