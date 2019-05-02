@@ -35,14 +35,13 @@ import mx.org.kaana.mantic.taller.reglas.Transaccion;
 @ViewScoped
 public class Detalle extends IBaseArticulos implements Serializable {
 
-  private static final long serialVersionUID = 327393488565639367L;
+  private static final long serialVersionUID= 327393488565639367L;
 	private static final Long ARTICULO= 1L;
-	private static final Long SERVICIO= 2L;
 	private EAccion accion;
 
 	public String getAgregar() {
 		return this.accion.equals(EAccion.AGREGAR)? "none": "";
-	}
+	} // getAgregar
 	
 	@PostConstruct
   @Override
@@ -198,7 +197,7 @@ public class Detalle extends IBaseArticulos implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     }// finally
-	}
+	} // doUpdateDialogArticulos
 	
 	@Override
   public void doLoad() {
@@ -221,7 +220,7 @@ public class Detalle extends IBaseArticulos implements Serializable {
 		String regresar        = null;
 		Transaccion transaccion= null;
     try {		
-			transaccion= new Transaccion(getAdminOrden().getArticulos(), Long.valueOf(this.attrs.get("idServicio").toString()));
+			transaccion= new Transaccion(getAdminOrden().getArticulos(), Long.valueOf(this.attrs.get("idServicio").toString()), getAdminOrden().getTotales());
 			if(transaccion.ejecutar(EAccion.COMPLEMENTAR)) {
 				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
 				JsfBase.addMessage("Se agregaron las refaccion de forma correcta.", ETipoMensaje.INFORMACION);
@@ -234,7 +233,7 @@ public class Detalle extends IBaseArticulos implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
     return regresar;
-  } // doAccion
+  } // doAceptar
 
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idServicio", this.attrs.get("idServicio"));
