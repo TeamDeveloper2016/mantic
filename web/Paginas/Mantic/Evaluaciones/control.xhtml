@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Administración de las preguntas"/>
+	<ui:define name="librerias">
+		<script type="text/javascript">			
+			Janal.Control.fields = {				 				
+			};	
+		</script>   
+		<style type="text/css">
+			.janal-label-size {
+				font-size: 17px !important;
+			}
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<p:defaultCommand target="limpio"/>
+		<br/>
+		<p:panelGrid layout="grid" columns="1" styleClass="ui-panelgrid-blank ui-fluid janal-wid-100-txt question">
+    	<p:outputLabel value="Pregunta:"/>
+			<p:spinner value="#{manticEvaluacionesControl.current.question}" styleClass="janal-wid-100-txt answer" min="0" max="#{manticEvaluacionesControl.current.top}"/>
+    	<p:outputLabel value="Control:"/>
+			<p:inputSwitch value="#{manticEvaluacionesControl.current.control}" onLabel="Pregunta" offLabel="Respuesta" styleClass="answer"/>
+    	<p:outputLabel value="Preguntas:"/>
+			<p:inputNumber value="#{manticEvaluacionesControl.current.top}" styleClass="janal-wid-100-txt answer" minValue="0" maxValue="10" readonly="true" inputStyle="text-aling: rigth;"/>
+		</p:panelGrid>	
+		<p:commandButton id="limpio" value="" styleClass="janal-zero-size"/>
+	</ui:define>    
+	<ui:define name="acciones">		
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Actualizar" icon="fa fa-undo" accesskey="a" process="@this @(.answer)" update="@(.question)" onstart="return true;" oncomplete="janal.desbloquear()" styleClass="question"/>
+		</div>	
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" value="Actualizar" icon="fa fa-undo" process="@this @(.answer)" update="@(.question)" onstart="return true;" oncomplete="janal.desbloquear()" styleClass="question"/>
+		</div>						
+	</ui:define>	
+</ui:composition>
