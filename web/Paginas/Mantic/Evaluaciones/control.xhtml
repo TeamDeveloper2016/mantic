@@ -24,7 +24,9 @@
 		<br/>
 		<p:panelGrid layout="grid" columns="1" styleClass="ui-panelgrid-blank ui-fluid janal-wid-100-txt question">
     	<p:outputLabel value="Pregunta:"/>
-			<p:spinner value="#{manticEvaluacionesControl.current.question}" styleClass="janal-wid-100-txt answer" min="0" max="#{manticEvaluacionesControl.current.top}"/>
+			<p:spinner value="#{manticEvaluacionesControl.current.question}" styleClass="janal-wid-100-txt answer" min="0" max="#{manticEvaluacionesControl.current.top}">
+				<p:ajax listener="#{manticEvaluacionesControl.doUpdateSwitch}" update="@(.answer)"/>
+			</p:spinner>	
     	<p:outputLabel value="Control:"/>
 			<p:inputSwitch value="#{manticEvaluacionesControl.current.control}" onLabel="Pregunta" offLabel="Respuesta" styleClass="answer"/>
     	<p:outputLabel value="Preguntas:"/>

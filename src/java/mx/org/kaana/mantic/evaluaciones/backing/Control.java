@@ -55,5 +55,9 @@ public class Control extends IBaseAttribute implements Serializable {
     } // catch		
   } // init		    
 
+
+  public void doUpdateSwitch() {
+	  this.current.setControl(Boolean.TRUE);
+	}	
 	
 }
