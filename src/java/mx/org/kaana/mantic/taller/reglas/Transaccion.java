@@ -9,7 +9,6 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EBooleanos;
-import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
 import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
@@ -18,6 +17,7 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.compras.ordenes.beans.Totales;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.db.dto.TcManticServiciosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticServiciosDetallesDto;
@@ -31,6 +31,7 @@ import org.hibernate.Session;
 public class Transaccion extends TransaccionFactura{
 
 	private static final Long ELABORADA= 1L;
+	private Totales totales;
 	private IBaseDto dto;
   private RegistroServicio registroServicio;
   private String messageError;
@@ -39,16 +40,17 @@ public class Transaccion extends TransaccionFactura{
 
 	public Transaccion(IBaseDto dto) {
 		this.dto = dto;
-	}
+	} // Transaccion
 	
   public Transaccion(RegistroServicio registroServicio) {
     this.registroServicio = registroServicio;
-  }
+  } // Transaccion
 
-	public Transaccion(List<Articulo> articulos, Long idServicio) {
+	public Transaccion(List<Articulo> articulos, Long idServicio, Totales totales) {
 		this.articulos = articulos;
 		this.idServicio= idServicio;		
-	}
+		this.totales   = totales;
+	} // Transaccion
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
@@ -81,7 +83,8 @@ public class Transaccion extends TransaccionFactura{
 					} // if
 					break;
 				case COMPLEMENTAR:
-					regresar= registrarDetalle(sesion);
+					if(actualizarTotales(sesion))
+						regresar= registrarDetalle(sesion);
 					break;
       } // switch
       if (!regresar) {
@@ -342,6 +345,24 @@ public class Transaccion extends TransaccionFactura{
 		} // finally
 		return regresar;
 	} // toSiguiente
+	
+	private boolean actualizarTotales(Session sesion) throws Exception{
+		boolean regresar             = false;
+		TcManticServiciosDto servicio= null;
+		try {
+			servicio= (TcManticServiciosDto) DaoFactory.getInstance().findById(sesion, TcManticServiciosDto.class, this.idServicio);
+			servicio.setDescuento(this.totales.getDescuento$());
+			servicio.setDescuentos(this.totales.getDescuentos());
+			servicio.setImpuestos(this.totales.getIva());
+			servicio.setSubTotal(this.totales.getSubTotal());
+			servicio.setTotal(this.totales.getTotal());
+			regresar= DaoFactory.getInstance().update(sesion, servicio)>= 1L;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // actualizarTotales
 	
 	private boolean registrarDetalle(Session sesion) throws Exception{
 		boolean regresar    = true;
