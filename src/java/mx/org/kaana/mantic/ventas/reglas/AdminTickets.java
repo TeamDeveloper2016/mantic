@@ -2,10 +2,13 @@ package mx.org.kaana.mantic.ventas.reglas;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.comun.IAdminArticulos;
@@ -41,6 +44,7 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
   	  this.setArticulos(arts);
       this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
       this.orden.setIkProveedor(new UISelectEntity(new Entity(this.orden.getIdCliente())));
+			this.orden.setIdServicio(toServicio());
 		}	// if
 		else	{
 			arts= new ArrayList<>();
@@ -109,4 +113,21 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
 	public void setDescuento(String descuento){
 		this.orden.setDescuento(descuento);
 	}
+	
+	private Long toServicio(){
+		Long regresar            = -1L;
+		Entity servicio          = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idVenta", this.orden.getIdVenta());
+			servicio= (Entity) DaoFactory.getInstance().toEntity("TcManticServiciosDto", "venta", params);
+			if(servicio!= null)
+				regresar= servicio.getKey();
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+		} // catch		
+		return regresar;
+	} // toServicio
 }
