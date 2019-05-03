@@ -41,6 +41,8 @@ import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
 import mx.org.kaana.mantic.db.dto.TcManticMovimientosDto;
+import mx.org.kaana.mantic.db.dto.TcManticServiciosBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticServiciosDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
@@ -61,9 +63,10 @@ import org.hibernate.Session;
 
 public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 
-	private static final Logger LOG          = Logger.getLogger(Transaccion.class);
+	private static final Logger LOG          = Logger.getLogger(Transaccion.class);		
 	private static final String GENERAL      = "GENERAL";
 	private static final String CIERRE_ACTIVO= "1,2";
+	private static final Long PAGADO         = 10L;
 	private static final Long SI             = 1L;
 	private static final Long NO             = 2L;	
 	private VentaFinalizada ventaFinalizada;
@@ -235,9 +238,49 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 				regresar= liquidarApartado(sesion);
 			if(this.ventaFinalizada.isFacturar() && !this.ventaFinalizada.getApartado())
 				generarTimbradoFactura(sesion, this.idFacturaGeneral);
+			if(this.ventaFinalizada.getTicketVenta().getIdServicio() > 0L)
+				actualizarServicio(sesion);
 		} // if		
 		return regresar;
 	} // procesarVenta
+	
+	private void actualizarServicio(Session sesion) throws Exception{
+		TcManticServiciosDto servicio        = null;
+		TcManticServiciosBitacoraDto bitacora= null;
+		try {
+			servicio= (TcManticServiciosDto) DaoFactory.getInstance().findById(sesion, TcManticServiciosDto.class, this.ventaFinalizada.getTicketVenta().getIdServicio());
+			if(this.ventaFinalizada.isFacturar())
+				servicio.setIdFactura(this.idFacturaGeneral);
+			servicio.setIdTipoMedioPago(getOrden().getIdTipoMedioPago());
+			servicio.setIdServicioEstatus(PAGADO);			
+			if(DaoFactory.getInstance().update(sesion, servicio)>= 1){
+				bitacora= new TcManticServiciosBitacoraDto("Pago de apartado", -1L, JsfBase.getIdUsuario(), PAGADO, this.ventaFinalizada.getTicketVenta().getIdServicio(), Cadena.rellenar(toSiguienteServicio(sesion, this.ventaFinalizada.getTicketVenta().getIdServicio()).toString(), 5, '0', true), servicio.getTotal());
+				DaoFactory.getInstance().insert(sesion, bitacora);
+			} // if
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // actualizarServicio
+	
+	private Long toSiguienteServicio(Session sesion, Long idServicio) throws Exception {
+		Long regresar             = 1L;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("idServicio", idServicio);
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticServiciosBitacoraDto", "siguiente", params, "siguiente");
+			if(next.getData()!= null)
+			  regresar= next.toLong();
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toSiguiente
 	
 	private boolean registrarApartado(Session sesion) throws Exception{
 		boolean regresar                     = false;		
