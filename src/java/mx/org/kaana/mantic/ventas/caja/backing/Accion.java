@@ -150,7 +150,7 @@ public class Accion extends IBaseVenta implements Serializable {
     try {
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null ? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null ? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
-      this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null ? -1L: JsfBase.getFlashAttribute("idVenta"));
+      this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null ? -1L: JsfBase.getFlashAttribute("idVenta"));                        
       this.attrs.put("fechaRegistro", JsfBase.getFlashAttribute("fechaRegistro")== null ? -1L: JsfBase.getFlashAttribute("fechaRegistro"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null ? null : JsfBase.getFlashAttribute("retorno"));
 			LOG.warn("Flash atributes [accion[" + this.attrs.get("accion") + "] idVenta [" + this.attrs.get("idVenta") + "] retorno [" + this.attrs.get("retorno") + "]]");
@@ -209,9 +209,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 				loadSucursales();							
 			loadCajas();
-      if(Long.valueOf(this.attrs.get("idVenta").toString()) != -1L){
-        this.attrs.put("fecha",this.attrs.get("fechaRegistro"));
-      }
+      if(Long.valueOf(this.attrs.get("idVenta").toString()) != -1L)
+        this.attrs.put("fecha",this.attrs.get("fechaRegistro"));      
 			doLoadTicketAbiertos();						
 			loadBancos();
 			loadCfdis();			
@@ -223,7 +222,8 @@ public class Accion extends IBaseVenta implements Serializable {
       if(Long.valueOf(this.attrs.get("idVenta").toString()) != -1L){
         this.attrs.put("ticketAbierto",new UISelectEntity(new Entity(Long.valueOf(this.attrs.get("idVenta").toString()))));
         doAsignaTicketAbierto();
-      }
+				this.attrs.put("clienteAsignado", true);
+      } // if
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -305,6 +305,7 @@ public class Accion extends IBaseVenta implements Serializable {
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));					
           break;
       } // switch
+			this.attrs.put("servicio", ((TicketVenta)getAdminOrden().getOrden()).getIdServicio() > 0L);
 			this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
 			loadCatalog();
     } // try
@@ -667,8 +668,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			params.put("idVenta", ticketAbierto!= null? ticketAbierto.getKey(): -1L);
 			setDomicilio(new Domicilio());
 			this.attrs.put("registroCliente", new TcManticClientesDto());
-			if(ticketAbierto!= null && !ticketAbierto.getKey().equals(-1L)){	
-				unlockVentaExtends(ticketAbierto.getKey(), (Long)this.attrs.get("ticketLock"));
+			if(ticketAbierto!= null && !ticketAbierto.getKey().equals(-1L)){					
+				unlockVentaExtends(ticketAbierto.getKey(), (Long)this.attrs.get("ticketLock"));									
 				this.attrs.put("ticketLock", ticketAbierto.getKey());
 				ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
 				ticketAbiertoPivote= ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto));												
@@ -1064,7 +1065,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			} // if
 			regresar.setDetailApartado(this.apartado);
 			regresar.setObservaciones((String)this.attrs.get("observaciones"));
-			regresar.setTipoCuenta(this.attrs.get("tipo").toString().toUpperCase());
+			regresar.setTipoCuenta(this.attrs.get("tipo").toString().toUpperCase());			
 		} // try
 		catch (Exception e) {			
 			throw e;
