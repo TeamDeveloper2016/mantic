@@ -28,7 +28,7 @@ public class VentaFinalizada implements Serializable{
 	private TcManticApartadosDto detailApartado;
 	private String observaciones;
 	private String tipoCuenta;
-	private Long idTipoPago;
+	private Long idTipoPago;	
 
 	public VentaFinalizada() {
 		this(new TicketVenta(), new ArrayList<ClienteTipoContacto>(), new ClienteTipoContacto(), new ClienteTipoContacto(), new Pago(), new Domicilio(), new TcManticClientesDto(), false, false, new ArrayList<Articulo>(), -1L, false, new TcManticApartadosDto(), "", "", 1L);
