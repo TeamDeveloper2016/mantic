@@ -1887,6 +1887,15 @@
         where 
           id_servicio = {idServicio} 
       </select>
+      <select id="venta">
+        select      
+				  tc_mantic_servicios.id_servicio as id_key,
+          tc_mantic_servicios.*
+        from      
+          tc_mantic_servicios
+        where 
+          id_venta = {idVenta} 
+      </select>
     </unit>		
     <unit id="TcManticServiciosBitacoraDto">
       <select id="row">
