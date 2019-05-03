@@ -26,6 +26,7 @@ import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
+import mx.org.kaana.mantic.db.dto.TcManticServiciosDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDetallesDto;
@@ -58,6 +59,7 @@ public class Transaccion extends TransaccionFactura {
 	private Long idClienteNuevo;
 	private Date vigencia;
 	private boolean aplicar;
+	private Long idServicio;
 
 	public Transaccion(TcManticVentasBitacoraDto bitacora) {
 		this.bitacora= bitacora;
@@ -75,6 +77,10 @@ public class Transaccion extends TransaccionFactura {
 		this(orden, articulos, new Date(Calendar.getInstance().getTimeInMillis()));
 	}
 	
+	public Transaccion(TcManticVentasDto orden, List<Articulo> articulos, Long idServicio) {
+		this(orden, articulos, "", new Date(Calendar.getInstance().getTimeInMillis()), idServicio);
+	}
+	
 	public Transaccion(TcManticVentasDto orden, List<Articulo> articulos, Date vigencia) {
 		this(orden, articulos, "", vigencia);
 	}
@@ -84,11 +90,16 @@ public class Transaccion extends TransaccionFactura {
 	}
 	
 	public Transaccion(TcManticVentasDto orden, List<Articulo> articulos, String justificacion, Date vigencia) {
+		this(orden, articulos, justificacion, vigencia, -1L);
+	}
+	
+	public Transaccion(TcManticVentasDto orden, List<Articulo> articulos, String justificacion, Date vigencia, Long idServicio) {
 		this.orden        = orden;		
 		this.articulos    = articulos;
 		this.justificacion= justificacion;
 		this.vigencia     = vigencia;
 		this.aplicar      = false;
+		this.idServicio   = idServicio;
 	} // Transaccion
 
 	public Transaccion(ClienteVenta clienteVenta) {
@@ -204,6 +215,17 @@ public class Transaccion extends TransaccionFactura {
 				case MOVIMIENTOS:
 					idEstatusVenta= EEstatusVentas.ABIERTA.getIdEstatusVenta();
 					regresar= this.orden.getIdVenta()!= null && !this.orden.getIdVenta().equals(-1L) ? actualizarVenta(sesion, idEstatusVenta) : registrarVenta(sesion, idEstatusVenta);					
+					break;
+				case LISTAR:
+					//Procesar servicio de taller
+					boolean actualizar= this.orden.getIdVenta()!= null && !this.orden.getIdVenta().equals(-1L);
+					idEstatusVenta= accion.equals(EAccion.AGREGAR) ? EEstatusVentas.ABIERTA.getIdEstatusVenta() : (accion.equals(EAccion.DESACTIVAR) ? this.orden.getIdVentaEstatus() : idEstatusVenta);
+					regresar= actualizar ? actualizarVenta(sesion, idEstatusVenta) : registrarVenta(sesion, idEstatusVenta);					
+					if(!actualizar){
+						TcManticServiciosDto servicio= (TcManticServiciosDto) DaoFactory.getInstance().findById(sesion, TcManticServiciosDto.class, this.idServicio);
+						servicio.setIdVenta(this.orden.getIdVenta());
+						regresar= DaoFactory.getInstance().update(sesion, servicio)>= 1L;
+					} // if
 					break;
 			} // switch
 			if(!regresar)
