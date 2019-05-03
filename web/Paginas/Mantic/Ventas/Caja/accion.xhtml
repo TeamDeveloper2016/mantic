@@ -99,6 +99,7 @@
 				janal.refresh();
 				var ok= janal.partial('general');
 				if(ok) {															
+					janal.bloquear();
 					PF('dlgCerrarVenta').show();	
 					setTimeout("$('#dialogoCerrarVenta').focus();", 1000);						
 				} // if				
