@@ -248,38 +248,45 @@ public class Filtro extends Comun implements Serializable {
   
   public String doPagarServicio() {  
     mx.org.kaana.mantic.ventas.reglas.Transaccion transaccion= null;
-    TicketVenta ticketVenta = new TicketVenta();
-    Entity seleccionado = null;
-    List<Articulo> articulos = null;
-    String regresar = "/Paginas/Mantic/Taller/filtro";
+    TicketVenta ticketVenta   = null;    
+    List<Articulo> articulos  = null;    
     Map<String, Object> params= null;
-    try {			
-			params=new HashMap<>();
-      seleccionado = ((Entity)this.attrs.get("seleccionado"));
-      ticketVenta.setIdEmpresa(seleccionado.toLong("idEmpresa"));
-      params.put("idEmpresa",seleccionado.toLong("idEmpresa"));
-      ticketVenta.setIdCliente(seleccionado.toLong("idCliente"));
-      Value value= DaoFactory.getInstance().toField("TcManticAlmacenesDto", "almacen", params, "idAlmacen");
-		  if(value.getData()!= null)
-        ticketVenta.setIdAlmacen(value.toLong());
-      ticketVenta.setIdUsuario(JsfBase.getIdUsuario());
-      ticketVenta.setDescuentos(seleccionado.toDouble("descuentos"));
-      ticketVenta.setImpuestos(seleccionado.toDouble("impuestos") != null? seleccionado.toDouble("impuestos"): 0.0D);
-      ticketVenta.setSubTotal(seleccionado.toDouble("subTotal") != null?seleccionado.toDouble("subTotal"):0.0D);
-      ticketVenta.setTotal(seleccionado.toDouble("total") != null?seleccionado.toDouble("total"):0.0D);
-      articulos = toListArticulos(seleccionado, ticketVenta);
-			transaccion = new mx.org.kaana.mantic.ventas.reglas.Transaccion(ticketVenta,articulos);
-			if (transaccion.ejecutar(EAccion.AGREGAR)) {
+		Entity seleccionado       = null;
+		String regresar           = null;
+    try {
+			regresar= "/Paginas/Mantic/Taller/filtro";			
+      seleccionado= ((Entity)this.attrs.get("seleccionado"));
+			params= new HashMap<>();
+			if(seleccionado.get("idVenta").getData()!= null && seleccionado.toLong("idVenta")> 0L){
+				params.put("idVenta", seleccionado.toLong("idVenta"));
+				ticketVenta= (TicketVenta) DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params);
+			} // if
+			else{
+				ticketVenta= new TicketVenta();
+				ticketVenta.setIdEmpresa(seleccionado.toLong("idEmpresa"));				
+				params.put("idEmpresa",seleccionado.toLong("idEmpresa"));
+				ticketVenta.setIdCliente(seleccionado.toLong("idCliente"));
+				Value value= DaoFactory.getInstance().toField("TcManticAlmacenesDto", "almacen", params, "idAlmacen");
+				if(value.getData()!= null)
+					ticketVenta.setIdAlmacen(value.toLong());
+				ticketVenta.setIdUsuario(JsfBase.getIdUsuario());
+				ticketVenta.setDescuentos(seleccionado.toDouble("descuentos"));
+				ticketVenta.setImpuestos(seleccionado.toDouble("impuestos") != null ? seleccionado.toDouble("impuestos"): 0.0D);
+				ticketVenta.setSubTotal(seleccionado.toDouble("subTotal") != null ? seleccionado.toDouble("subTotal"):0.0D);
+				ticketVenta.setTotal(seleccionado.toDouble("total") != null ? seleccionado.toDouble("total"):0.0D);
+			} // else
+      articulos= toListArticulos(seleccionado, ticketVenta);
+			transaccion= new mx.org.kaana.mantic.ventas.reglas.Transaccion(ticketVenta, articulos, seleccionado.getKey());
+			if (transaccion.ejecutar(EAccion.LISTAR)) {
         doEstatusCaja(seleccionado, transaccion.getOrden().getIdVenta());
         JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
         JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Taller/filtro");		
         JsfBase.setFlashAttribute("idVenta", transaccion.getOrden().getIdVenta());
-        JsfBase.setFlashAttribute("fechaRegistro", new Date(Fecha.getFechaCalendar( seleccionado.toString("registro")).getTimeInMillis()));	
-        regresar="/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR);
+        JsfBase.setFlashAttribute("fechaRegistro", new Date(Fecha.getFechaCalendar( seleccionado.toString("registro")).getTimeInMillis()));        
+        regresar= "/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR);
 			} // if
-			else {
-				JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);  
-      }
+			else 
+				JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);        
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -289,7 +296,7 @@ public class Filtro extends Comun implements Serializable {
 			Methods.clean(params);
 		} // finally
     return  regresar;
-  } 
+  } // doPagarServicio 
   
   public List<Articulo> toListArticulos(Entity seleccionado, TicketVenta venta) throws Exception {
 		Long idOrdenDetalle= new Long((int)(Math.random()*10000));
@@ -353,6 +360,5 @@ public class Filtro extends Comun implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-	}	// doEstatusCaja
-	
+	}	// doEstatusCaja	
 }
