@@ -87,17 +87,19 @@ public class TcManticServiciosDto implements IBaseDto, Serializable {
   private String cliente;
   @Column (name="telefonos")
   private String telefonos;
+	@Column (name="id_venta")
+  private Long idVenta;
 
   public TcManticServiciosDto() {
     this(new Long(-1L));
   }
 
   public TcManticServiciosDto(Long key) {
-    this(0D, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, "0", new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1L, null, null);
+    this(0D, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, "0", new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1L, null, null, null);
     setKey(key);
   }
 
-  public TcManticServiciosDto(Double descuentos, Long idFactura, String caracteristicas, Date fechaEstimada, Long idTipoMedioPago, Long idCliente, String herramienta, Long idServicioEstatus, String descuento, Long idServicio, String modelo, Long ejercicio, String consecutivo, String marca, Double total, Long idUsuario, Double impuestos, String observaciones, Double subTotal, Double efectivo, Long idEmpresa, String reparacion, Long orden, Long idGarantia, Long idParticular, String cliente, String telefonos) {
+  public TcManticServiciosDto(Double descuentos, Long idFactura, String caracteristicas, Date fechaEstimada, Long idTipoMedioPago, Long idCliente, String herramienta, Long idServicioEstatus, String descuento, Long idServicio, String modelo, Long ejercicio, String consecutivo, String marca, Double total, Long idUsuario, Double impuestos, String observaciones, Double subTotal, Double efectivo, Long idEmpresa, String reparacion, Long orden, Long idGarantia, Long idParticular, String cliente, String telefonos, Long idVenta) {
     setDescuentos(descuentos);
     setIdFactura(idFactura);
     setCaracteristicas(caracteristicas);
@@ -126,6 +128,7 @@ public class TcManticServiciosDto implements IBaseDto, Serializable {
 		this.idParticular= idParticular;
 		this.cliente= cliente;
 		this.telefonos= telefonos;
+		setIdVenta(idVenta);
   }
 
 	public Long getIdGarantia() {
@@ -352,6 +355,14 @@ public class TcManticServiciosDto implements IBaseDto, Serializable {
 		this.telefonos=telefonos;
 	}
 
+	public Long getIdVenta() {
+		return idVenta;
+	}
+
+	public void setIdVenta(Long idVenta) {
+		this.idVenta = idVenta;
+	}	
+	
   @Transient
   @Override
   public Long getKey() {
@@ -422,6 +433,8 @@ public class TcManticServiciosDto implements IBaseDto, Serializable {
 		regresar.append(getCliente());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getTelefonos());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdVenta());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -457,13 +470,14 @@ public class TcManticServiciosDto implements IBaseDto, Serializable {
 		regresar.put("idParticular", getIdParticular());
 		regresar.put("cliente", getCliente());
 		regresar.put("telefonos", getTelefonos());
+		regresar.put("idVenta", getIdVenta());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getDescuentos(), getIdFactura(), getCaracteristicas(), getFechaEstimada(), getIdTipoMedioPago(), getIdCliente(), getHerramienta(), getIdServicioEstatus(), getDescuento(), getIdServicio(), getModelo(), getEjercicio(), getRegistro(), getConsecutivo(), getMarca(), getTotal(), getIdUsuario(), getImpuestos(), getObservaciones(), getSubTotal(), getEfectivo(), getIdEmpresa(), getReparacion(), getIdGarantia(), getOrden(), getIdParticular(), getCliente(), getTelefonos()
+      getDescuentos(), getIdFactura(), getCaracteristicas(), getFechaEstimada(), getIdTipoMedioPago(), getIdCliente(), getHerramienta(), getIdServicioEstatus(), getDescuento(), getIdServicio(), getModelo(), getEjercicio(), getRegistro(), getConsecutivo(), getMarca(), getTotal(), getIdUsuario(), getImpuestos(), getObservaciones(), getSubTotal(), getEfectivo(), getIdEmpresa(), getReparacion(), getIdGarantia(), getOrden(), getIdParticular(), getCliente(), getTelefonos(), getIdVenta()
     };
     return regresar;
   }
@@ -521,7 +535,4 @@ public class TcManticServiciosDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdServicio() != null ? getIdServicio().hashCode() : 0);
     return hash;
   }
-
 }
-
-
