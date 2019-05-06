@@ -62,12 +62,12 @@ public class Accion extends IBaseAttribute implements Serializable {
   protected void init() {
     try {    	      
 			List<Answer> answers  = new ArrayList<>();
-			answers.add(new Answer(1, "opcion 1", "A", 2));
-			answers.add(new Answer(2, "opcion 2", "B", 2));
-			answers.add(new Answer(3, "opcion 3", "C", 1));
-			answers.add(new Answer(4, "opcion 4", "D", 2));
+			answers.add(new Answer(1, "Mucho", "A", 2));
+			answers.add(new Answer(2, "Algo", "B", 2));
+			answers.add(new Answer(3, "Poco", "C", 1));
+			answers.add(new Answer(4, "Nada", "D", 2));
 			List<Question> questions= new ArrayList<>();
-			questions.add(new Question(1, "Texto de la pregunta ?", answers));
+			questions.add(new Question(1, "En su opinión, ¿ Cuánto se respetan en el país los derechos de las personas indígenas ?", answers));
 			answers  = new ArrayList<>();
 			answers.add(new Answer(1, "texto opcion 1", "a", 2));
 			answers.add(new Answer(2, "texto opcion 2", "b", 1));
@@ -124,6 +124,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			questions.add(new Question(10, "Texto de la pregunta ?", answers));
 			this.evaluation= new Evaluation(questions);
 			this.model     = this.initBarModel();
+			this.control   = Boolean.FALSE;
 			this.doCheckStateQuestion();
     } // try
     catch (Exception e) {
@@ -165,7 +166,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		barmodel.setShadow(true);
 		barmodel.setSeriesColors("F52F2F, F52F2F, 00FF00, F52F2F, F52F2F");
 		// model.setSeriesColors("58BA27, FFCC33, 00FF00, F52F2F, A30303");
-		barmodel.setBarWidth(70);
+		//barmodel.setBarWidth(70);
 		barmodel.setExtender("chartExtender");
 		return barmodel;
 	}
@@ -180,5 +181,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 			LOG.info("Actual: "+ current);
 		} // if	
 	}
+
+  public void doSendTo() {
+		LOG.info("ENVIAR INFORMACION PARA CALCULAR GRAFICO");
+	}	
 	
 }

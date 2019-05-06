@@ -10,16 +10,30 @@
 	<ui:param name="titulo" value="Administración de las preguntas"/>
 	<ui:define name="librerias">
 		<script type="text/javascript">			
-			Janal.Control.fields = {				 				
+			Janal.Control.fields = {				 
+				options: {validaciones: 'requerido', mascara: 'libre', mensaje: 'Por favor seleccione una opción !'}       
 			};	
 			
     	$(document).ready(function() {
+				
       });							
 			
 			 function chartExtender() {        
 				 // this = chart widget instance        
 				 // this.cfg = options      
 				 this.cfg.seriesDefaults.rendererOptions.varyBarColor = true;
+         this.cfg.axes.xaxis.tickOptions.showGridline = false;
+         this.cfg.axes.yaxis.tickOptions.showGridline = false;				 
+			 }
+			 
+			 function execute() {
+				 var ok= janal.execute();
+				 if(ok) {
+					 PF('wenviar').disable();
+					 PF('wicon').disable();
+					 PF('woptions').disable();
+				 } // if
+				 return ok;
 			 }
 		</script>   
 		<style type="text/css">
@@ -27,34 +41,47 @@
         font-weight: bold;
       }
 			.janal-label-size {
-				font-size: 17px !important;
+				font-size: 16px !important;
+			}
+			.janal-option-color {
+				border-radius: 5px;
+        padding: 5px; 
+			}
+			.janal-counter-color {
+				color: #1578c9;
 			}
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
 		<p:defaultCommand target="limpio"/>
-		<p:poll interval="5" listener="#{manticEvaluacionesAccion.doCheckStateQuestion}" update="question answer @(.question)" process="@this @(.answer) @(.question)" autoStart="true" global="true"/>
+		<!-- p:poll interval="5" listener="#{manticEvaluacionesAccion.doCheckStateQuestion}" update="question answer @(.question)" process="@this @(.answer) @(.question)" autoStart="true" global="true" stop="true"/-->
+		<div class="janal-column-right">
+			<p:outputLabel value="#{manticEvaluacionesAccion.question.index} &lt;i class='fa fa-group'&gt;&lt;/i&gt;" styleClass="janal-wid-100-txt janal-counter-color janal-label-size counter" escape="false"/> 
+		</div>	
+		<p:outputLabel value="#{manticEvaluacionesAccion.question.index}.- #{manticEvaluacionesAccion.question.text}" styleClass="janal-wid-100-txt janal-label-size"/>
+		<p:outputLabel for="options" value="Pregunta:" style="display: none"/>
 		<p:panelGrid id="question" layout="grid" columns="1" styleClass="ui-panelgrid-blank ui-fluid janal-wid-100-txt question" style="display: #{manticEvaluacionesAccion.control? '': 'none'}">
-			<p:outputLabel value="#{manticEvaluacionesAccion.question.index}.- #{manticEvaluacionesAccion.question.text}" styleClass="janal-label-size"/>
-			<p:selectOneRadio value="#{manticEvaluacionesAccion.question.answer}" layout="responsive" columns="1" styleClass="janal-label-size answer">
-				<f:selectItems itemLabel="#{item.value}) #{item.text}" itemValue="#{item.value}" value="#{manticEvaluacionesAccion.question.answers}" var="item" />
+			<p:selectOneRadio id="options" widgetVar="woptions" value="#{manticEvaluacionesAccion.question.answer}" layout="responsive" columns="1" styleClass="janal-label-size janal-option-color answer">
+				<f:selectItems itemLabel="#{item.value}) #{item.text}" itemValue="#{item.value}" value="#{manticEvaluacionesAccion.question.answers}" var="item" class="hola" />
 			</p:selectOneRadio>
 		</p:panelGrid>	
 		<p:panelGrid id="answer" layout="grid" columns="1" styleClass="ui-panelgrid-blank ui-fluid janal-wid-100-txt question" style="display: #{manticEvaluacionesAccion.control? 'none': ''}">
-			<p:outputLabel value="Respuestas obtenidas de la pregunta #{manticEvaluacionesAccion.question.index}." styleClass="janal-label-size"/>
-			<p:chart type="bar" model="#{manticEvaluacionesAccion.model}" style="height:450px" responsive="true" styleClass="janal-wid-100-txt"/>
+			<p:repeat value="#{manticEvaluacionesAccion.question.answers}" var="item">
+				<p:panelGrid layout="grid" columns="1" styleClass="ui-panelgrid-blank ui-fluid janal-wid-100-txt question">
+					<p:outputLabel value="#{item.value}) #{item.text}" styleClass="janal-wid-100-txt janal-label-size"/>
+					<p:progressBar style="background-color:#F1F3F2;" value="33" styleClass="janal-wid-100-txt" labelTemplate="{value}%" displayOnly="true"/>
+				</p:panelGrid>	
+			</p:repeat>	
 			<p:outputLabel value="Tu respuesta fue [#{manticEvaluacionesAccion.question.answer}]" styleClass="janal-label-size janal-wid-100-txt"/>
 		</p:panelGrid>	
 		<p:commandButton id="limpio" value="" styleClass="janal-zero-size"/>
 	</ui:define>    
 	<ui:define name="acciones">		
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Siguiente" icon="fa fa-chevron-right" accesskey="a" process="@this @(.answer)" update="@(.question)" action="#{manticEvaluacionesAccion.doNext()}" onstart="return true;" oncomplete="janal.desbloquear()" styleClass="question" style="display: #{manticEvaluacionesAccion.last? 'none': ''}" rendered="false"/>
-			<p:commandButton id="cancelar" value="Anterior" icon="fa fa-chevron-left" accesskey="r" process="@this @(.answer)" update="@(.question)" action="#{manticEvaluacionesAccion.doPrevious()}" onstart="return true;" oncomplete="janal.desbloquear()" style="float: left; display: #{manticEvaluacionesAccion.first and manticEvaluacionesAccion.control? 'none': ''}" styleClass="question" rendered="false"/>
+			<p:commandButton id="aceptar" widgetVar="wenviar" value="Enviar" icon="fa fa-cloud-upload" accesskey="a" process="@this @(.answer)" update="@(.counter)" actionListener="#{manticEvaluacionesAccion.doSendTo()}" onstart="return execute();" oncomplete="janal.desbloquear()" styleClass="question" style="display: #{manticEvaluacionesAccion.control? '': 'none'}"/>
 		</div>	
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" value="Siguiente" icon="fa fa-chevron-right" process="@this @(.answer)" update="@(.question)" action="#{manticEvaluacionesAccion.doNext()}" onstart="return true;" oncomplete="janal.desbloquear()" styleClass="question" style="display: #{manticEvaluacionesAccion.last? 'none': ''}" rendered="false"/>
-			<p:commandButton id="cancelarIcon" value="Anterior" icon="fa fa-chevron-left" process="@this @(.answer)" update="@(.question)" action="#{manticEvaluacionesAccion.doPrevious()}" onstart="return true;" oncomplete="janal.desbloquear()" style="float: left; display: #{manticEvaluacionesAccion.first and manticEvaluacionesAccion.control? 'none': ''}" styleClass="question" rendered="false"/>
+			<p:commandButton id="icon" widgetVar="wicon" value="Enviar" icon="fa fa-cloud-upload" process="@this @(.answer)" update="@(.counter)" actionListener="#{manticEvaluacionesAccion.doSendTo()}" onstart="return execute();" oncomplete="janal.desbloquear()" styleClass="question" style="display: #{manticEvaluacionesAccion.control? '': 'none'}"/>
 		</div>						
 	</ui:define>	
 </ui:composition>
