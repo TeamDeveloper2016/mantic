@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.ventas.caja.backing;
 
+import java.io.File;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
@@ -36,18 +38,26 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ContadoresListas;
 import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.caja.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
+import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.correos.beans.Attachment;
+import mx.org.kaana.mantic.correos.enums.ECorreos;
+import mx.org.kaana.mantic.correos.reglas.IBaseAttachment;
 import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 import mx.org.kaana.mantic.db.dto.TcManticApartadosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
+import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
+import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.enums.ETiposContactos;
+import mx.org.kaana.mantic.facturas.reglas.Transferir;
 import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 import mx.org.kaana.mantic.ventas.caja.beans.Pago;
 import mx.org.kaana.mantic.ventas.caja.beans.VentaFinalizada;
@@ -74,11 +84,16 @@ public class Accion extends IBaseVenta implements Serializable {
 	private EOrdenes tipoOrden;	
 	private TcManticApartadosDto apartado;
 	private boolean pagar;
+	protected Reporte reporte;
 	//private Entity seleccionDetalleTicket;
 	
 	public Accion() {
 		super("menudeo");
 	}
+	
+	public Reporte getReporte() {
+		return reporte;
+	}	// getReporte
 	
 	public String getTitulo() {
 		return "(".concat(tipoOrden.name()).concat(")");
@@ -337,19 +352,27 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // toMoveArticulo
 	
   public void doAceptar() {  
-    Transaccion transaccion        = null;
-		Boolean validarCredito         = true;
-		Boolean creditoVenta           = null;
-		CreateTicket ticket            = null;
-		VentaFinalizada ventaFinalizada= null;
+    Transaccion transaccion               = null;
+		Boolean validarCredito                = true;
+		Boolean creditoVenta                  = null;
+		CreateTicket ticket                   = null;
+		VentaFinalizada ventaFinalizada       = null;
+		UISelectEntity cliente                = null;
+		UISelectEntity seleccionado           = null;
+		List<UISelectEntity> clientesSeleccion= null;
     try {	
 			creditoVenta= (Boolean) this.attrs.get("creditoVenta");
+			cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");	
+			clientesSeleccion= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
+			seleccionado= clientesSeleccion.get(clientesSeleccion.indexOf(cliente));
 			if(creditoVenta)
 				validarCredito= doValidaCreditoVenta();
 			if(validarCredito){
 				ventaFinalizada= loadVentaFinalizada();
 				transaccion = new Transaccion(ventaFinalizada);
 				if (transaccion.ejecutar(EAccion.REPROCESAR)) {
+					if(ventaFinalizada.isFacturar() && !ventaFinalizada.getApartado())
+						doSendMail(((TicketVenta)this.getAdminOrden().getOrden()).getCorreos(), seleccionado.toString("razonSocial"), ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta(), transaccion.getFacturaPrincipal(), seleccionado.getKey());
 					ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago) this.attrs.get("pago"), ventaFinalizada.getApartado() ? "APARTADO" : "VENTA DE MOSTRADOR");
 					UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + ((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).getTicket() + "','" + ticket.toHtml() + "');");
 					UIBackingUtilities.execute("jsTicket.clicTicket();");
@@ -370,6 +393,147 @@ public class Accion extends IBaseVenta implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
   } // doAccion
+	
+	public void doSendMail(String correos, String razonSocial, Long idVenta, TcManticFacturasDto facturaPrincipal, Long idCliente) {
+		File factura= null;		
+		Map<String, Object> params= new HashMap<>();
+		String[] emails= {"jimenez76@yahoo.com", correos};
+		List<Attachment> files= new ArrayList<>(); 
+		try {
+			params.put("header", "...");
+			params.put("footer", "...");
+			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());
+			params.put("tipo", "Factura");			
+			params.put("razonSocial", razonSocial);
+			params.put("correo", ECorreos.FACTURACION.getEmail());			
+			factura= toXml(facturaPrincipal.getIdFactura());
+			this.doReporte("FACTURAS_FICTICIAS_DETALLE", true, idVenta, facturaPrincipal.getIdFactura(), facturaPrincipal.getIdFacturama(), facturaPrincipal.getSelloSat(), idCliente);
+			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
+			files.add(attachments);
+			files.add(new Attachment(factura, Boolean.FALSE));
+			files.add(new Attachment("logo", ECorreos.FACTURACION.getImages().concat("logo.png"), Boolean.TRUE));
+			params.put("attach", attachments.getId());
+			for (String item: emails) {
+				try {
+					if(!Cadena.isVacio(item)) {
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, ECorreos.FACTURACION.getEmail(), item, "controlbonanza@gmail.com,jorge.alberto.vs.10@gmail.com", "Ferreteria Bonanza - Factura", params, files);
+					  LOG.info("Enviando correo a la cuenta: "+ item);
+					  notificar.send();
+					} // if	
+				} // try
+				finally {
+				  if(attachments.getFile().exists()) {
+   	  	    LOG.info("Eliminando archivo temporal: "+ attachments.getAbsolute());
+				    // user.getFile().delete();
+				  } // if	
+				} // finally	
+			} // for
+	  	LOG.info("Se envio el correo de forma exitosa");
+			if(correos.length()> 0)
+		    JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
+			else
+		    JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+		} // try // try
+		catch(Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(files);
+		} // finally
+	} // doSendMail	
+	
+	protected File toXml(Long idFactura) throws Exception{
+		File regresar            = null;
+		List<Entity> facturas    = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idFactura", idFactura);
+			facturas= DaoFactory.getInstance().toEntitySet("VistaFicticiasDto", "importados", params);
+			for(Entity factura: facturas){
+				if(factura.toLong("idTipoArchivo").equals(1L))
+					regresar= new File(factura.toString("ruta").concat(factura.toString("nombre")));
+				else
+					this.attrs.put("nameFacturaPdf", factura.toString("nombre"));
+			} // for
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toXml
+	
+	protected void doReporte(String nombre, boolean email, Long idVenta, Long idFactura, String idFacturama, String selloSat, Long idCliente) throws Exception{
+		Parametros comunes           = null;
+		Map<String, Object>params    = null;
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = null;
+		try {		      
+			//recuperar el sello digital en caso de que la factura ya fue timbrada para que salga de forma correcta el reporte
+			if(idFacturama!= null && selloSat== null) {
+				Transferir transferir= null;
+				try {
+          transferir= new Transferir(idFacturama);
+				  transferir.ejecutar(EAccion.PROCESAR);
+				} // try
+        catch(Exception e) {
+					LOG.warn("La factura ["+ idFactura+ "] presento un problema al recuperar el sello digital ["+ idFacturama +"]");
+          Error.mensaje(e);
+				} // catch
+				finally {
+					transferir= null;
+				} // finally
+			} // if
+      //es importante este orden para los grupos en el reporte	
+			params= new HashMap<>();
+      params.put("sortOrder", "order by tc_mantic_ventas.id_empresa, tc_mantic_clientes.id_cliente, tc_mantic_ventas.ejercicio, tc_mantic_ventas.orden");
+      reporteSeleccion= EReportes.valueOf(nombre);
+      if(!reporteSeleccion.equals(EReportes.FACTURAS_FICTICIAS)) {
+        params.put("idFicticia", idVenta);
+        comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(),-1L, -1L, idCliente);
+      } // if
+      else
+        comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.reporte= JsfBase.toReporte();	
+      parametros= comunes.getComunes();
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			      			
+			if(email){ 
+				this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros), this.attrs.get("nameFacturaPdf").toString().replaceFirst(".pdf", ""));		
+        this.reporte.doAceptarSimple();			
+			} // if
+			else {				
+				this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
+				this.doVerificarReporte();
+				this.reporte.setPrevisualizar(true);
+				this.reporte.doAceptar();			
+			} // else
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+  } // doReporte
+	
+	public boolean doVerificarReporte() {
+    boolean regresar = false;
+		RequestContext rc= UIBackingUtilities.getCurrentInstance();
+		if(this.reporte.getTotal()> 0L){
+			rc.execute("start(" + this.reporte.getTotal() + ")");	
+      regresar = true;
+    }
+		else{
+			rc.execute("generalHide();");		
+			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
+      regresar = false;
+		} // else
+    return regresar;
+	} // doVerificarReporte	
 	
 	public void doVerificaArticulosCotizacion() {
 		UISelectEntity ticketAbierto= null;
