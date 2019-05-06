@@ -50,6 +50,7 @@ public class Transaccion extends TransaccionFactura {
 	private Correo correo;
 	private Long idCliente;
 	private Long idEstatusFactura;
+	private TcManticFacturasDto facturaPrincipal;
 
 	public Transaccion(Correo correo, Long idCliente) {
 		this.correo   = correo;
@@ -77,7 +78,11 @@ public class Transaccion extends TransaccionFactura {
 	public TcManticVentasDto getOrden() {
 		return orden;
 	}	
-	
+
+	public TcManticFacturasDto getFacturaPrincipal() {
+		return facturaPrincipal;
+	}
+		
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar           = false;
@@ -99,12 +104,13 @@ public class Transaccion extends TransaccionFactura {
 							factura.setTimbrado(new Timestamp(Calendar.getInstance().getTimeInMillis()));							
 							factura.setIdFacturaEstatus(idEstatus);
 							regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;
+							this.facturaPrincipal= factura;
 						} // if
 						else{							
 							idFactura= registrarFactura(sesion);						
 							this.orden.setIdFactura(idFactura);
 							regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-						} // else					
+						} // else								
 						registrarBitacoraFactura(sesion, idFactura, idEstatus, this.justificacion);
 						this.generarTimbradoFactura(sesion, this.orden.getIdVenta(), idFactura, this.orden.getCorreos());						
 					} // if
@@ -162,6 +168,7 @@ public class Transaccion extends TransaccionFactura {
 			factura.setObservaciones(this.justificacion);
 			factura.setIdFacturaEstatus(EEstatusFacturas.TIMBRADA.getIdEstatusFactura());
 			regresar= DaoFactory.getInstance().insert(sesion, factura);
+			this.facturaPrincipal= factura;
 		} // try
 		finally {
 			setMessageError("Error al registrar la factura.");
@@ -227,12 +234,12 @@ public class Transaccion extends TransaccionFactura {
 			factura.getCliente().setIdFactura(idFactura);
 			factura.getCliente().setMetodoPago(ETipoPago.fromIdTipoPago(this.orden.getIdTipoPago()).getClave());
 			factura.generarCfdi(sesion);	
-			try {
+			/*try {
 				CFDIFactory.getInstance().toSendMail(correos, factura.getIdFacturamaRegistro());
 			} // try
 			catch (Exception e) {				
 				Error.mensaje(e);				
-			} // catch						
+			} // catch*/
 		} // try
 		catch (Exception e) {			
 			this.messageError= "";
