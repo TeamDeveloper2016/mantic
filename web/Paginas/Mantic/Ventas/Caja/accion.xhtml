@@ -6,7 +6,7 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
-                template="/WEB-INF/plantillas/accion.xhtml">
+                template="/WEB-INF/plantillas/reporte.xhtml">
 	<ui:param name="titulo" value="Cuentas abiertas para cobro"/>
 	<ui:param name="notIsCaja" value="true" class="javax.faces.Boolean"/>  
 	<ui:define name="librerias">    		
@@ -1377,20 +1377,21 @@
 			</div>
 		</p:dialog>		
 		<svg id="barcode" style="display: none"></svg>	
-		<button id="printTicket" style="display: none" onclick="jsTicket.loadTicket()">Imprimir</button>		
-	</ui:define>    	
-	<ui:define name="acciones">
-		<div class="lg-pantalla">
-			<p:commandButton id="aceptCotizacion" value="Cotización" widgetVar="wAceptarCotizacion" icon="fa fa-list-ul" process="@form" styleClass="cotizar janal-text-white" actionListener="#{manticVentasCajaAccion.doVerificaArticulosCotizacion}" update="dialogoCotizacion"/>
-			<p:commandButton id="aceptar" value="Aceptar" widgetVar="wAceptarCompra" icon="fa fa-check" accesskey="a"  process="@this" styleClass="cotizar janal-text-white" onstart="applyValidacionesGeneral();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}" style="display: #{manticVentasCajaAccion.pagar? '': 'none'}"/>			
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticVentasCajaAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
-		</div>		
-		<div class="xs-pantalla">
-			<p:commandButton id="cotizacionIcon" title="Cotización" widgetVar="wAceptarCotizacionIcon" icon="fa fa-check" process="@form" styleClass="cotizar janal-text-white" actionListener="#{manticVentasCajaAccion.doVerificaArticulosCotizacion}" update="dialogoCotizacion"/>
-			<p:commandButton id="aceptarIcon" title="Aceptar" widgetVar="wAceptarCompraIcon" icon="fa fa-check" process="@this" styleClass="cotizar janal-text-white" onstart="applyValidacionesGeneral();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}" style="display: #{manticVentasCajaAccion.pagar? '': 'none'}"/>			
-			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
-		</div>		
-	</ui:define>
+		<button id="printTicket" style="display: none" onclick="jsTicket.loadTicket()">Imprimir</button>
+		<hr class="ui-widget-content" style="#{empty lineaSeparacion? '': 'display:none'}"/>
+		<div class="janal-line-button">
+			<div class="lg-pantalla">
+				<p:commandButton id="aceptCotizacion" value="Cotización" widgetVar="wAceptarCotizacion" icon="fa fa-list-ul" process="@form" styleClass="cotizar janal-text-white" actionListener="#{manticVentasCajaAccion.doVerificaArticulosCotizacion}" update="dialogoCotizacion"/>
+				<p:commandButton id="aceptar" value="Aceptar" widgetVar="wAceptarCompra" icon="fa fa-check" accesskey="a"  process="@this" styleClass="cotizar janal-text-white" onstart="applyValidacionesGeneral();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}" style="display: #{manticVentasCajaAccion.pagar? '': 'none'}"/>			
+				<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticVentasCajaAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
+			</div>		
+			<div class="xs-pantalla">
+				<p:commandButton id="cotizacionIcon" title="Cotización" widgetVar="wAceptarCotizacionIcon" icon="fa fa-check" process="@form" styleClass="cotizar janal-text-white" actionListener="#{manticVentasCajaAccion.doVerificaArticulosCotizacion}" update="dialogoCotizacion"/>
+				<p:commandButton id="aceptarIcon" title="Aceptar" widgetVar="wAceptarCompraIcon" icon="fa fa-check" process="@this" styleClass="cotizar janal-text-white" onstart="applyValidacionesGeneral();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}" style="display: #{manticVentasCajaAccion.pagar? '': 'none'}"/>			
+				<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
+			</div>		
+		</div>
+	</ui:define>    		
 	<ui:define name="dialogos">
 		<p:dialog id="dialogoDescuentos" widgetVar="dlgDescuentos" header="Aplicar descuento" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="updateDescuentos();janal.change('dialogosVenta', fieldsDialogDescuento);janal.refresh();descuentoUserFocus();" width="50%" onHide="janal.desbloquear();janal.restore();janal.refresh();restoreCursoArt();">						
 			<h:form id="dialogosVenta" prependId="false">
