@@ -394,12 +394,12 @@ public class Transaccion extends TransaccionFactura {
 			factura.setCliente(gestor.toClienteCfdiFicticia(sesion));
 			factura.getCliente().setIdFactura(idFactura);
 			factura.generarCfdi(sesion);	
-			try {
+			/*try {
 				CFDIFactory.getInstance().toSendMail(correos, factura.getIdFacturamaRegistro());
 			} // try
 			catch (Exception e) {				
 				Error.mensaje(e);				
-			} // catch						
+			} // catch*/
 		} // try
 		catch (Exception e) {			
 			this.messageError= "";
