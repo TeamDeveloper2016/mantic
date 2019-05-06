@@ -16,7 +16,6 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EBooleanos;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
 import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Cadena;
@@ -80,6 +79,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	private Long idVenta;
 	private Long idCliente;
 	private String correosFactura;
+	private TcManticFacturasDto facturaPrincipal;
 	
 	public Transaccion(IBaseDto orden, List<Articulo> articulos) {
 		super((TcManticVentasDto)orden, articulos);		
@@ -112,6 +112,14 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	public String getCotizacion() {
 		return cotizacion;
 	}
+
+	public String getCorreosFactura() {
+		return correosFactura;
+	}
+
+	public TcManticFacturasDto getFacturaPrincipal() {
+		return facturaPrincipal;
+	}	
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
@@ -634,6 +642,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 				regresar= DaoFactory.getInstance().update(sesion, getOrden())>= 1L;				
 			} // if
 			this.idFacturaGeneral= factura.getIdFactura();
+			this.facturaPrincipal= factura;
 		} // try		
 		finally{
 			setMessageError("Error al registrar la factura.");
@@ -1034,13 +1043,13 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			factura.setCliente(clienteFactura);
 			factura.getCliente().setIdFactura(idFactura);
 			factura.generarCfdi(sesion);			
-			try {
+			/*try {
 				if(!Cadena.isVacio(this.correosFactura))
 					CFDIFactory.getInstance().toSendMail(this.correosFactura, factura.getIdFacturamaRegistro());
 			} // try
 			catch (Exception e) {				
 				Error.mensaje(e);				
-			} // catch	
+			} // catch	*/
 		} // try
 		catch (Exception e) {			
 			Error.mensaje(e);
