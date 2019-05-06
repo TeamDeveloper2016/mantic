@@ -23,9 +23,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
-import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
@@ -188,6 +186,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
     } // catch		
   } // init
 
+	@Override
   public void doLoad() {
     EAccion eaccion= null;
 		Long idCliente = -1L;
@@ -503,12 +502,13 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 	@Override
 	public void doUpdateArticulos() {
 		List<Columna> columns     = null;
-    Map<String, Object> params= new HashMap<>();
+    Map<String, Object> params= null;
 		boolean buscaPorCodigo    = false;
     try {
 			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			params= new HashMap<>();
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
 			String search= (String) this.attrs.get("codigo"); 
@@ -641,7 +641,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 		UISelectEntity seleccion              = null;
 		List<UISelectEntity> clientesSeleccion= null;
 		MotorBusqueda motorBusqueda           = null;
-		Map<String, Object> params            = new HashMap<>();
+		Map<String, Object> params            = null;
 		try {
 			motorBusqueda= new MotorBusqueda(-1L);
 			seleccion= new UISelectEntity(motorBusqueda.toClienteDefault());
@@ -651,6 +651,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("clienteSeleccion", seleccion);			
 			this.attrs.put("clienteDefault", seleccion);			
 			loadDomicilios(seleccion.getKey());
+			params= new HashMap<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
