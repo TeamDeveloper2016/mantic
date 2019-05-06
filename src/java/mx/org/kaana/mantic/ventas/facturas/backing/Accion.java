@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.ventas.facturas.backing;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -26,15 +28,23 @@ import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.IBaseStorage;
+import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.correos.beans.Attachment;
+import mx.org.kaana.mantic.correos.enums.ECorreos;
+import mx.org.kaana.mantic.correos.reglas.IBaseAttachment;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.enums.EEstatusFicticias;
+import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
+import mx.org.kaana.mantic.facturas.reglas.Transferir;
 import mx.org.kaana.mantic.ventas.beans.SaldoCliente;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
@@ -60,10 +70,15 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	private List<Correo> correos;
 	private List<Correo> selectedCorreos;	
 	private Correo correo;
+	protected Reporte reporte;
 
 	public Accion() {
 		super("menudeo", true);
 	}
+	
+	public Reporte getReporte() {
+		return reporte;
+	}	// getReporte
 	
 	@Override
 	public SaldoCliente getSaldoCliente() {
@@ -231,16 +246,20 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	} // doAsignaCliente	
 	
   public String doAceptar() {  
-    Transaccion transaccion= null;
-    String regresar        = null;
+    Transaccion transaccion     = null;
+    String regresar             = null;
+		List<UISelectEntity>clientes= null;
     try {				
 			this.loadOrdenVenta();
 			UISelectEntity cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");
-			if(cliente.toString("RAZON_SOCIAL")==null || cliente.toString("RAZON_SOCIAL").equals(Constantes.VENTA_AL_PUBLICO_GENERAL))
+			clientes= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
+			UISelectEntity seleccion= clientes.get(clientes.indexOf(cliente));			
+			if(seleccion.toString("razonSocial")==null || seleccion.toString("razonSocial").equals(Constantes.VENTA_AL_PUBLICO_GENERAL))
 				JsfBase.addMessage("No se puede generar una factura para VENTA AL PUBLICO EN GENERAL, por favor cambie el cliente.", ETipoMensaje.ALERTA);   
 			else {
 				transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), EEstatusFicticias.TIMBRADA.getIdEstatusFicticia(), (String)this.attrs.get("observaciones"));
 				if (transaccion.ejecutar(EAccion.MODIFICAR)) {								
+					doSendMail(((TicketVenta)this.getAdminOrden().getOrden()).getCorreos(), seleccion.toString("razonSocial"), ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta(), transaccion.getFacturaPrincipal(), seleccion.getKey());
 					regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
 					JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());				
 					JsfBase.addMessage("Se generó la factura de forma correcta.", ETipoMensaje.INFORMACION);      			
@@ -256,6 +275,147 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
     return regresar;
   } // doAccion
 
+	public void doSendMail(String correos, String razonSocial, Long idVenta, TcManticFacturasDto facturaPrincipal, Long idCliente) {
+		File factura= null;		
+		Map<String, Object> params= new HashMap<>();
+		String[] emails= {"jimenez76@yahoo.com", correos};
+		List<Attachment> files= new ArrayList<>(); 
+		try {
+			params.put("header", "...");
+			params.put("footer", "...");
+			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());
+			params.put("tipo", "Factura");			
+			params.put("razonSocial", razonSocial);
+			params.put("correo", ECorreos.FACTURACION.getEmail());			
+			factura= toXml(facturaPrincipal.getIdFactura());
+			this.doReporte("FACTURAS_FICTICIAS_DETALLE", true, idVenta, facturaPrincipal.getIdFactura(), facturaPrincipal.getIdFacturama(), facturaPrincipal.getSelloSat(), idCliente);
+			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
+			files.add(attachments);
+			files.add(new Attachment(factura, Boolean.FALSE));
+			files.add(new Attachment("logo", ECorreos.FACTURACION.getImages().concat("logo.png"), Boolean.TRUE));
+			params.put("attach", attachments.getId());
+			for (String item: emails) {
+				try {
+					if(!Cadena.isVacio(item)) {
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, ECorreos.FACTURACION.getEmail(), item, "controlbonanza@gmail.com,jorge.alberto.vs.10@gmail.com", "Ferreteria Bonanza - Factura", params, files);
+					  LOG.info("Enviando correo a la cuenta: "+ item);
+					  notificar.send();
+					} // if	
+				} // try
+				finally {
+				  if(attachments.getFile().exists()) {
+   	  	    LOG.info("Eliminando archivo temporal: "+ attachments.getAbsolute());
+				    // user.getFile().delete();
+				  } // if	
+				} // finally	
+			} // for
+	  	LOG.info("Se envio el correo de forma exitosa");
+			if(correos.length()> 0)
+		    JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
+			else
+		    JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+		} // try // try
+		catch(Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(files);
+		} // finally
+	} // doSendMail	
+	
+	protected File toXml(Long idFactura) throws Exception{
+		File regresar            = null;
+		List<Entity> facturas    = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idFactura", idFactura);
+			facturas= DaoFactory.getInstance().toEntitySet("VistaFicticiasDto", "importados", params);
+			for(Entity factura: facturas){
+				if(factura.toLong("idTipoArchivo").equals(1L))
+					regresar= new File(factura.toString("ruta").concat(factura.toString("nombre")));
+				else
+					this.attrs.put("nameFacturaPdf", factura.toString("nombre"));
+			} // for
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toXml
+	
+	protected void doReporte(String nombre, boolean email, Long idVenta, Long idFactura, String idFacturama, String selloSat, Long idCliente) throws Exception{
+		Parametros comunes           = null;
+		Map<String, Object>params    = null;
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = null;
+		try {		      
+			//recuperar el sello digital en caso de que la factura ya fue timbrada para que salga de forma correcta el reporte
+			if(idFacturama!= null && selloSat== null) {
+				Transferir transferir= null;
+				try {
+          transferir= new Transferir(idFacturama);
+				  transferir.ejecutar(EAccion.PROCESAR);
+				} // try
+        catch(Exception e) {
+					LOG.warn("La factura ["+ idFactura+ "] presento un problema al recuperar el sello digital ["+ idFacturama +"]");
+          Error.mensaje(e);
+				} // catch
+				finally {
+					transferir= null;
+				} // finally
+			} // if
+      //es importante este orden para los grupos en el reporte	
+			params= new HashMap<>();
+      params.put("sortOrder", "order by tc_mantic_ventas.id_empresa, tc_mantic_clientes.id_cliente, tc_mantic_ventas.ejercicio, tc_mantic_ventas.orden");
+      reporteSeleccion= EReportes.valueOf(nombre);
+      if(!reporteSeleccion.equals(EReportes.FACTURAS_FICTICIAS)) {
+        params.put("idFicticia", idVenta);
+        comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(),-1L, -1L, idCliente);
+      } // if
+      else
+        comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.reporte= JsfBase.toReporte();	
+      parametros= comunes.getComunes();
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			      			
+			if(email){ 
+				this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros), this.attrs.get("nameFacturaPdf").toString().replaceFirst(".pdf", ""));		
+        this.reporte.doAceptarSimple();			
+			} // if
+			else {				
+				this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
+				this.doVerificarReporte();
+				this.reporte.setPrevisualizar(true);
+				this.reporte.doAceptar();			
+			} // else
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+  } // doReporte
+	
+	public boolean doVerificarReporte() {
+    boolean regresar = false;
+		RequestContext rc= UIBackingUtilities.getCurrentInstance();
+		if(this.reporte.getTotal()> 0L){
+			rc.execute("start(" + this.reporte.getTotal() + ")");	
+      regresar = true;
+    }
+		else{
+			rc.execute("generalHide();");		
+			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
+      regresar = false;
+		} // else
+    return regresar;
+	} // doVerificarReporte	
+	
 	@Override
   public String doCancelar() {   
 		String regresar= null;
