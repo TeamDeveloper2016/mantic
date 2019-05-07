@@ -19,6 +19,7 @@
         'municipio': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         'localidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         'cp': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'codigoPostal': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'calle': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'exterior': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'interior': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
@@ -36,6 +37,11 @@
 			
 			$(document).ready(function(){janal.readingMode('#{manticVentasCliente.attrs.nombreAccion}');});
     </script>   
+		<style type="text/css">
+			.alinear-izquierda-cp{
+				text-align: left !important;
+			}
+		</style>
   </ui:define>
   <ui:define name="contenido">
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
@@ -125,13 +131,22 @@
 						<p:spacer id="spacerCp" rendered="#{!manticVentasCliente.domicilio.nuevoCp}"/>
 						<p:spacer rendered="#{manticVentasCliente.domicilio.nuevoCp}"/>
 						<p:spacer/>
-						<p:selectOneMenu id="codigoPostal" value="#{manticVentasCliente.domicilio.idCodigoPostal}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains">									
+						<p:autoComplete id="codigoPostal" placeholder="Código postal" widgetVar="listadoCodigoPostal" var="customCp" itemLabel="#{customCp.codigo}" inputStyleClass="alinear-izquierda-cp janal-wid-100-txt" itemValue="#{customCp}" value="#{manticVentasCliente.attrs.codigoSeleccionado}" completeMethod="#{manticVentasCliente.doCompleteCodigoPostal}" converter="janal.convertidor.Entity" minQueryLength="0" maxResults="10" styleClass="janal-wid-100-txt">
+							<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this entidad" listener="#{manticVentasCliente.doAsignaCodigoPostal}" update="panelDetalleDomicilio spacerCp calle exterior interior asentamiento entreCalle tipoDomicilio" oncomplete="janal.desbloquear();"/>
+							<f:facet name="itemtip">
+								<h:panelGrid columns="2" cellpadding="5">												
+									<h:outputText value="Código Postal:" />
+									<h:outputText value="#{customCp.codigo}"/>									
+								</h:panelGrid>
+							</f:facet>
+						</p:autoComplete>							
+						<!--p:selectOneMenu id="codigoPostal" value="#{manticVentasCliente.domicilio.idCodigoPostal}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains">									
 							<p:ajax event="change" listener="#{manticVentasCliente.doLoadDomicilios}" process="@this" update="panelDetalleDomicilio spacerCp calle exterior interior asentamiento entreCalle tipoDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
 							<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
 							<f:selectItems value="#{manticVentasCliente.attrs.codigosPostales}"/>
-						</p:selectOneMenu>
-						<p:inputText placeholder="Captura el nuevo código postal. Ej. 20284" id="cp" styleClass="janal-wid-100-txt" value="#{manticVentasCliente.domicilio.codigoPostal}" rendered="#{!manticVentasCliente.domicilio.nuevoCp}"/>
-						<p:spacer rendered="#{manticVentasCliente.domicilio.nuevoCp}"/>											
+						</p:selectOneMenu-->
+						<!--p:inputText placeholder="Captura el nuevo código postal. Ej. 20284" id="cp" styleClass="janal-wid-100-txt" value="#{manticVentasCliente.domicilio.codigoPostal}"/-->						
+						<p:spacer/>											
 						<p:spacer/>											
 						<p:outputLabel for="calle" value="Calle:"/>
 						<p:outputLabel for="exterior" value="Número exterior:"/>
