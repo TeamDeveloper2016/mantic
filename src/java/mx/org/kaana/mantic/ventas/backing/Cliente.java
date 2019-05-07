@@ -35,6 +35,7 @@ import mx.org.kaana.mantic.enums.ETipoVenta;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.enums.ETiposDomicilios;
 import mx.org.kaana.mantic.ventas.beans.ClienteVenta;
+import org.primefaces.event.SelectEvent;
 
 @Named(value = "manticVentasCliente")
 @ViewScoped
@@ -90,8 +91,8 @@ public class Cliente extends IBaseAttribute implements Serializable {
 		toAsignaMunicipio();
 		loadLocalidades();
 		toAsignaLocalidad();
-		loadCodigosPostales();      
-		toAsignaCodigoPostal();
+		//loadCodigosPostales();      
+		//toAsignaCodigoPostal();
 	}
 	
   public void doLoad() { 
@@ -138,8 +139,10 @@ public class Cliente extends IBaseAttribute implements Serializable {
 			toAsignaMunicipio();
 			loadLocalidades();
 			toAsignaLocalidad();
-			loadCodigosPostales();      
-			toAsignaCodigoPostal();
+			//loadCodigosPostales();      
+			//toAsignaCodigoPostal();
+			doCompleteCodigoPostal(this.domicilio.getDomicilio().toString("codigoPostal"));
+			asignaCodigoPostal();
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -448,7 +451,7 @@ public class Cliente extends IBaseAttribute implements Serializable {
     Map<String, Object> params = null;
     try {
 			if(!this.domicilio.getIdEntidad().getKey().equals(-1L)){
-				params = new HashMap<>();
+				params = new HashMap<>();				
 				params.put(Constantes.SQL_CONDICION, "id_entidad=" + this.domicilio.getIdEntidad().getKey());
 				codigosPostales = UISelect.build("TcManticCodigosPostalesDto", "row", params, "codigo", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
 				this.attrs.put("codigosPostales", codigosPostales);
@@ -573,8 +576,8 @@ public class Cliente extends IBaseAttribute implements Serializable {
 			toAsignaMunicipio();
 			loadLocalidades();
 			toAsignaLocalidad();
-			loadCodigosPostales();      
-			toAsignaCodigoPostal();
+			//loadCodigosPostales();      
+			//toAsignaCodigoPostal();
 			loadAtributosComplemento();			
 		} // try
 		catch (Exception e) {
@@ -612,7 +615,7 @@ public class Cliente extends IBaseAttribute implements Serializable {
     try {
       loadMunicipios();
       loadLocalidades();
-      loadCodigosPostales();      
+      //loadCodigosPostales();      
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -623,7 +626,7 @@ public class Cliente extends IBaseAttribute implements Serializable {
   public void doActualizaLocalidades() {
     try {
       loadLocalidades();
-      loadCodigosPostales();
+      //loadCodigosPostales();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -633,7 +636,7 @@ public class Cliente extends IBaseAttribute implements Serializable {
 
   public void doActualizaCodigosPostales() {
     try {
-      loadCodigosPostales();
+      //loadCodigosPostales();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -657,14 +660,18 @@ public class Cliente extends IBaseAttribute implements Serializable {
 				else{
 					this.domicilio.setDomicilio(new Entity(-1L));
 					this.domicilio.setIdDomicilio(-1L);
+					this.domicilio.setNuevoCp(false);
+					this.domicilio.setIdCodigoPostal(-1L);
+					this.domicilio.setCodigoPostal("");
+					this.attrs.put("codigoSeleccionado", new UISelectEntity(-1L));
 				} // else					
 				toAsignaEntidad();
 				loadMunicipios();
 				toAsignaMunicipio();
 				loadLocalidades();
 				toAsignaLocalidad();
-				loadCodigosPostales();      
-				toAsignaCodigoPostal();
+				//loadCodigosPostales();      
+				//toAsignaCodigoPostal();
 			} // if
       loadAtributosComplemento();
     } // try
@@ -726,4 +733,72 @@ public class Cliente extends IBaseAttribute implements Serializable {
 			throw e;
 		} // catch		
 	} // loadTiposVentas
+	
+	public List<UISelectEntity> doCompleteCodigoPostal(String query) {
+		if(this.domicilio.getIdEntidad().getKey()>= 1L && !Cadena.isVacio(query)){
+			this.attrs.put("condicionCodigoPostal", query);
+			this.doUpdateCodigosPostales();		
+			return (List<UISelectEntity>)this.attrs.get("allCodigosPostales");
+		} // if
+		else{
+			this.domicilio.setNuevoCp(false);
+			this.domicilio.setIdCodigoPostal(-1L);
+			this.domicilio.setCodigoPostal("");
+			return new ArrayList<>();
+		} // else
+	}	// doCompleteCliente
+	
+	public void doUpdateCodigosPostales() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
+    try {
+			params= new HashMap<>();
+			columns= new ArrayList<>();
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));      
+  		params.put(Constantes.SQL_CONDICION, "id_entidad=" + this.domicilio.getIdEntidad().getKey() + " and codigo like '" + this.attrs.get("condicionCodigoPostal") + "%'");						  		
+      this.attrs.put("allCodigosPostales", (List<UISelectEntity>) UIEntity.build("TcManticCodigosPostalesDto", "row", params, columns, 20L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}	// doUpdateClientes
+	
+	public void doAsignaCodigoPostal(SelectEvent event) {
+		UISelectEntity seleccion            = null;
+		List<UISelectEntity> codigosPostales= null;
+		try {
+			codigosPostales= (List<UISelectEntity>) this.attrs.get("allCodigosPostales");
+			seleccion= codigosPostales.get(codigosPostales.indexOf((UISelectEntity)event.getObject()));
+			this.domicilio.setCodigoPostal(seleccion.toString("codigo"));
+      this.domicilio.setNuevoCp(true);
+			this.domicilio.setIdCodigoPostal(seleccion.getKey());
+			this.attrs.put("codigoSeleccionado", seleccion);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doAsignaCliente
+	
+	public void asignaCodigoPostal() {
+		List<UISelectEntity> codigosPostales= null;
+		try {
+			codigosPostales= (List<UISelectEntity>) this.attrs.get("allCodigosPostales");
+			if(!codigosPostales.isEmpty()){
+				this.domicilio.setCodigoPostal(codigosPostales.get(0).toString("codigo"));
+				this.domicilio.setNuevoCp(true);
+				this.domicilio.setIdCodigoPostal(codigosPostales.get(0).getKey());
+				this.attrs.put("codigoSeleccionado", codigosPostales.get(0));
+			} // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doAsignaCliente
 }
