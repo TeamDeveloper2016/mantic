@@ -1351,15 +1351,16 @@
     specialCharacters: function(input) {
 			var c=input.toLowerCase();
 			c = c.replace(new RegExp("\s", 'g'),"");
-			c = c.replace(new RegExp("[אבגדהו]", 'g'),"a");
+			c = c.replace(new RegExp("[\u00E0\u00E1\u00E2\u00E3\u00E4\u00E5]", 'g'),"a");
 			c = c.replace(new RegExp("\u00E6", 'g'),"ae");
 			c = c.replace(new RegExp("\u00E7", 'g'),"c");
 			c = c.replace(new RegExp("[\u00E8\u00E9\u00EA\u00EB]", 'g'),"e");
-			c = c.replace(new RegExp("[לםמן]", 'g'),"i");                           
-			c = c.replace(new RegExp("[עףפץצ]", 'g'),"o");
+			c = c.replace(new RegExp("[\u00EC\u00ED\u00EE\u00EF]", 'g'),"i");                           
+			c = c.replace(new RegExp("[\u00F2\u00F3\u00F4\u00F5\u00F6]", 'g'),"o");
 			c = c.replace(new RegExp("\u0153", 'g'),"oe");
-			c = c.replace(new RegExp("[שתûü]", 'g'),"u");
-			c = c.replace(new RegExp("[‎ÿ]", 'g'),"y");
+			c = c.replace(new RegExp("[\u00F9\u00FA\u00FB\u00FC]", 'g'),"u");
+			c = c.replace(new RegExp("[\u00FD\u00FF]", 'g'),"y");
+			c = c.replace(new RegExp("\u00F1", 'g'),"n");
 			return c;
     },
 		contains: function(itemLabel, filterValue) {
