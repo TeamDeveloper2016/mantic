@@ -1348,6 +1348,23 @@
 			} // if	
 			return name;
 		},
+    specialCharacters: function(input) {
+			var c=input.toLowerCase();
+			c = c.replace(new RegExp("\s", 'g'),"");
+			c = c.replace(new RegExp("[אבגדהו]", 'g'),"a");
+			c = c.replace(new RegExp("\u00E6", 'g'),"ae");
+			c = c.replace(new RegExp("\u00E7", 'g'),"c");
+			c = c.replace(new RegExp("[\u00E8\u00E9\u00EA\u00EB]", 'g'),"e");
+			c = c.replace(new RegExp("[לםמן]", 'g'),"i");                           
+			c = c.replace(new RegExp("[עףפץצ]", 'g'),"o");
+			c = c.replace(new RegExp("\u0153", 'g'),"oe");
+			c = c.replace(new RegExp("[שתûü]", 'g'),"u");
+			c = c.replace(new RegExp("[‎ÿ]", 'g'),"y");
+			return c;
+    },
+		contains: function(itemLabel, filterValue) {
+      return itemLabel.includes(filterValue) || $janal.specialCharacters(itemLabel).includes(filterValue);
+    },
 		session: function() {
 			return $('#janalAccessControl').length=== 0 || $('#janalAccessControl').val()=== '1';
 		}
