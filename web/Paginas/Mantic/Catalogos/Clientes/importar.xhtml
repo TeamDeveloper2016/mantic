@@ -102,7 +102,7 @@
 						</p:tab>						            						            																																																
 						<p:tab title="Importar">
 							<p:outputLabel for="representate" value="Representate:" styleClass="janal-wid-100-txt"/>
-							<p:selectOneMenu id="representate" value="#{manticCatalogosClientesImportar.attrs.representante}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="contains">
+							<p:selectOneMenu id="representate" value="#{manticCatalogosClientesImportar.attrs.representante}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItems value="#{manticCatalogosClientesImportar.attrs.representantes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.rfc} - #{element.nombreCompleto}"/>
 								<p:column headerText="RFC">
 									<h:outputText value="#{item.rfc}"/>

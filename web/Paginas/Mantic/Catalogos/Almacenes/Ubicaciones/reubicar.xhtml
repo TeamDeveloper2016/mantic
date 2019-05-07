@@ -52,7 +52,7 @@
 							<f:selectItems value="#{manticCatalogosAlmacenesUbicacionesReubicar.attrs.niveles}"/>
 						</p:selectOneMenu>
 						<p:outputLabel for="ubicacion" value="Ubicación:" styleClass="janal-wid-100-txt"/>
-						<p:selectOneMenu id="ubicacion" value="#{manticCatalogosAlmacenesUbicacionesReubicar.attrs.ubicacion}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="contains" styleClass="janal-wid-100-txt">							
+						<p:selectOneMenu id="ubicacion" value="#{manticCatalogosAlmacenesUbicacionesReubicar.attrs.ubicacion}" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">							
 							<f:selectItems value="#{manticCatalogosAlmacenesUbicacionesReubicar.attrs.ubicaciones}" var="element" itemValue="#{element}" itemLabel="Almacen[#{element.almacen== null ? '' : element.almacen}] - Piso[#{element.piso== null ? '' : element.piso}] - Cuarto[#{element.cuarto eq null ? '' : element.cuarto}] - Anaquel[#{element.anaquel== null ? '' : element.anaquel}] - Charola[#{element.charola == null ? '' : element.charola}]"/>                
 							<p:column headerText="Almacen">
 								<h:outputText value="#{item.almacen}"/>

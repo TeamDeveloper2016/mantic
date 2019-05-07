@@ -58,7 +58,7 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticFacturasTickets.attrs.isMatriz}"/>
-              <p:selectOneMenu id="idEmpresa" value="#{manticFacturasTickets.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+              <p:selectOneMenu id="idEmpresa" value="#{manticFacturasTickets.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticFacturasTickets.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
                 <p:column headerText="Clave">
@@ -84,7 +84,7 @@
 							</p:autoComplete>	
               <p:outputLabel for="consecutivo" value="No. ticket:"/>
               <p:inputText id="consecutivo" placeholder="Ejemplo: 1+ ó 1- ó - ó 20181+" value="#{manticFacturasTickets.attrs.consecutivo}" styleClass="janal-wid-100-txt key-down-consecutivo"/> 
-              <p:selectOneMenu id="folios" var="item" styleClass="janal-wid-96 folios" effect="fade" filter="true" filterMatchMode="contains">
+              <p:selectOneMenu id="folios" var="item" styleClass="janal-wid-96 folios" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{manticFacturasTickets.folios}"/>
               </p:selectOneMenu>
 							<p:outputLabel for="fechaInicio" value="Fecha inicio:"/>

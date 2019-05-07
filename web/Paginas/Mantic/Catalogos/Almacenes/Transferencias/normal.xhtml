@@ -92,7 +92,7 @@
             <p:tab title="General">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-100">		
 								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="false"/>
-								<p:selectOneMenu id="idSucursal" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-99" rendered="false" effect="fade" filter="true" filterMatchMode="contains">
+								<p:selectOneMenu id="idSucursal" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-99" rendered="false" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasNormal.doLoadAlmacenes}" process="@this" update="idAlmacen"/>
 									<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
 									<p:column headerText="Clave">
@@ -106,7 +106,7 @@
 								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt recalculo" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.consecutivo}" readonly="true" style="display: #{manticCatalogosAlmacenesTransferenciasNormal.agregar}"/>
 								<p:spacer width="1px" style="display: #{manticCatalogosAlmacenesTransferenciasNormal.agregar}"/><p:separator style="display: #{manticCatalogosAlmacenesTransferenciasNormal.agregar}"/>
                 <p:outputLabel for="idAlmacen" value="Almacen origen:"/>
-								<p:selectOneMenu id="idAlmacen" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains">
+								<p:selectOneMenu id="idAlmacen" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasNormal.doUpdateAlmacen}" process="@this" update="tabla @(.total) @(.recalculo)"/>
 									<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.almacenes}" var="element" itemValue="#{element.key}" itemLabel="#{element.clave} - #{element.nombre}"/>
 									<p:column headerText="Clave">
@@ -117,7 +117,7 @@
 									</p:column>   
 								</p:selectOneMenu>
                 <p:outputLabel for="idDestino" value="Almacen destino:"/>
-								<p:selectOneMenu id="idDestino" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.ikDestino}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt total" effect="fade" filter="true" filterMatchMode="contains">
+								<p:selectOneMenu id="idDestino" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.ikDestino}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt total" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasNormal.doUpdateAlmacenDestino}" process="@this" update="tabla @(.total) @(.recalculo)"/>
 									<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.destinos}" var="element" itemValue="#{element.key}" itemLabel="#{element.clave} - #{element.nombre}"/>
 									<p:column headerText="Clave">
@@ -128,7 +128,7 @@
 									</p:column>   
 								</p:selectOneMenu>
                 <p:outputLabel for="idSolicito" value="Solicitó:"/>
-								<p:selectOneMenu id="idSolicito" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.ikSolicito}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains">
+								<p:selectOneMenu id="idSolicito" value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.ikSolicito}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
 									<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.personas}"  var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{element.paterno} #{element.materno}"/>
 									<p:column headerText="Nombre(s)">

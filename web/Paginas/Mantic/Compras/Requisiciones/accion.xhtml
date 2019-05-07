@@ -166,7 +166,7 @@
 						<p:tab title="Proveedores">
 							<p:dataTable id="listado" var="requisicionProveedor" value="#{manticComprasRequisicionesAccion.registroRequisicion.proveedores}" rows="6" paginator="false" reflow="true" rowKey="#{requisicionProveedor.key}" emptyMessage=" " styleClass="paginated">												
 								<p:column headerText="Proveedor">										
-									<p:selectOneMenu id="proveedorPrecioSugerido#{requisicionProveedor.key}" styleClass="janal-wid-100-txt" value="#{requisicionProveedor.idProveedor}" filter="true" filterMatchMode="contains">
+									<p:selectOneMenu id="proveedorPrecioSugerido#{requisicionProveedor.key}" styleClass="janal-wid-100-txt" value="#{requisicionProveedor.idProveedor}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 										<f:selectItems value="#{manticComprasRequisicionesAccion.attrs.proveedoresGeneral}"/>
 									</p:selectOneMenu> 				
 								</p:column>																						

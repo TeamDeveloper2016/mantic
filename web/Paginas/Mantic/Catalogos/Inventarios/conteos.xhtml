@@ -114,7 +114,7 @@
 									<p:outputLabel for="maximo" value="Stock máximo:"/>
 									<p:inputNumber id="maximo" inputStyleClass="janal-wid-96 janal-column-right" value="#{manticCatalogosInventariosConteos.articulo.maximo}" styleClass="filas"/>                    
 									<p:outputLabel for="idAlmacenUbicacion" value="Ubicaciones:"/>
-									<p:selectOneMenu id="idAlmacenUbicacion" tabindex="0" value="#{manticCatalogosInventariosConteos.attrs.idAlmacenUbicacion}" var="ubicacion" converter="janal.convertidor.Entity" styleClass="janal-wid-96 filas almacen" effect="fade" filter="true" filterMatchMode="contains">
+									<p:selectOneMenu id="idAlmacenUbicacion" tabindex="0" value="#{manticCatalogosInventariosConteos.attrs.idAlmacenUbicacion}" var="ubicacion" converter="janal.convertidor.Entity" styleClass="janal-wid-96 filas almacen" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 										<p:ajax event="change" listener="#{manticCatalogosInventariosConteos.doChangeUbicacion}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 										<f:selectItems value="#{manticCatalogosInventariosConteos.attrs.ubicaciones}" var="element" itemValue="#{element.key}" itemLabel="#{element.piso} - #{element.cuarto} - #{element.anaquel} - #{element.charola}"/>
 										<p:column headerText="Piso">

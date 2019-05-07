@@ -54,12 +54,12 @@
             <p:tab title="General">							
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">		
 								<p:outputLabel for="empresa" value="Sucursal:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}"/>
-								<p:selectOneMenu id="empresa" value="#{manticCatalogosPersonasAccion.attrs.idEmpresa}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}" filter="true" filterMatchMode="contains">									
+								<p:selectOneMenu id="empresa" value="#{manticCatalogosPersonasAccion.attrs.idEmpresa}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doActualizaClientesProveedores}" process="@this" update="cliente proveedores" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.empresas}"/>
 								</p:selectOneMenu>	
 								<p:outputLabel for="titulo" value="Titulo:"/>
-								<p:selectOneMenu id="titulo" value="#{manticCatalogosPersonasAccion.registroPersona.persona.idPersonaTitulo}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains">									
+								<p:selectOneMenu id="titulo" value="#{manticCatalogosPersonasAccion.registroPersona.persona.idPersonaTitulo}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.titulos}"/>
 								</p:selectOneMenu>								
 								<p:outputLabel for="nombre" value="Nombre:"/>
@@ -75,7 +75,7 @@
 								<p:outputLabel for="nacimiento" value="Fecha de nacimiento:"/>
 								<p:calendar id="nacimiento" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-94" value="#{manticCatalogosPersonasAccion.registroPersona.persona.fechaNacimiento}" mode="popup" pattern="dd/MM/yyyy" locale="es" effect="explode" converter="janal.convertidor.Calendario" showOn="button"/>
 								<p:outputLabel for="tipoPersona" value="Tipo persona:" rendered="#{manticCatalogosPersonasAccion.attrs.general}"/>
-								<p:selectOneMenu id="tipoPersona" value="#{manticCatalogosPersonasAccion.registroPersona.persona.idTipoPersona}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.general}" filter="true" filterMatchMode="contains">									
+								<p:selectOneMenu id="tipoPersona" value="#{manticCatalogosPersonasAccion.registroPersona.persona.idTipoPersona}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.general}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.tiposPersonas}"/>
 								</p:selectOneMenu>		
 								<p:outputLabel for="sexo" value="Sexo:"/>
@@ -86,11 +86,11 @@
 								</p:selectOneRadio>	
 								<p:spacer/><p:separator/>
 								<p:outputLabel for="puesto" value="Puesto:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-								<p:selectOneMenu id="puesto" value="#{manticCatalogosPersonasAccion.attrs.idPuesto}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="contains">									
+								<p:selectOneMenu id="puesto" value="#{manticCatalogosPersonasAccion.attrs.idPuesto}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.puestos}"/>
 								</p:selectOneMenu>
 								<p:outputLabel for="idEstadoCivil" value="Estado civil:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-								<p:selectOneMenu id="idEstadoCivil" value="#{manticCatalogosPersonasAccion.registroPersona.persona.idEstadoCivil}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="contains">									
+								<p:selectOneMenu id="idEstadoCivil" value="#{manticCatalogosPersonasAccion.registroPersona.persona.idEstadoCivil}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.estadosCiviles}"/>
 								</p:selectOneMenu>		
 								<p:outputLabel for="fechaIngreso" value="Fecha ingreso:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
@@ -98,7 +98,7 @@
 								<p:outputLabel for="sueldo" value="Sueldo:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
 								<p:inputText id="sueldo" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosPersonasAccion.registroPersona.persona.sueldo}" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>                    
 								<p:outputLabel for="proveedores" value="Proveedor:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarProveedores}"/>
-								<p:selectOneMenu id="proveedores" value="#{manticCatalogosPersonasAccion.attrs.proveedor}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarProveedores}" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">									
+								<p:selectOneMenu id="proveedores" value="#{manticCatalogosPersonasAccion.attrs.proveedor}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarProveedores}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.proveedores}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
 									<p:column  styleClass="janal-column-center">
 										<h:outputText value="#{item.clave}"/>
@@ -111,7 +111,7 @@
 									</p:column>  
 								</p:selectOneMenu>	
 								<p:outputLabel for="cliente" value="Cliente:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarClientes}"/>
-								<p:selectOneMenu id="cliente" value="#{manticCatalogosPersonasAccion.attrs.cliente}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarClientes}" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">									
+								<p:selectOneMenu id="cliente" value="#{manticCatalogosPersonasAccion.attrs.cliente}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarClientes}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
 									<p:column  styleClass="janal-column-center">
 										<h:outputText value="#{item.clave}"/>
@@ -150,7 +150,7 @@
                   <p:spacer/>
 									<p:commandButton process="@this" update="dialogoDomicilios" icon="fa fa-search" onstart="return janal.bloquear();" oncomplete="PF('dlgDomicilios').show();" title="Buscar domicilio" style="float: right !important"/>						
 									<p:outputLabel for="domicilio" value="Domicilio:"/>
-                  <p:selectOneMenu id="domicilio" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.domicilio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">									
+                  <p:selectOneMenu id="domicilio" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.domicilio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
                     <p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doLoadAtributos}" process="@this domicilio" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>										
                     <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
                     <f:selectItems value="#{manticCatalogosPersonasAccion.attrs.domicilios}" var="element" itemValue="#{element}" itemLabel="#{element.domicilio}"/>
@@ -169,7 +169,7 @@
                   </p:selectOneMenu>	
 									<p:spacer height="10px"/><p:spacer height="10px"/>
 									<p:outputLabel for="entidad" value="Entidad:"/>
-                  <p:selectOneMenu id="entidad" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.idEntidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">									
+                  <p:selectOneMenu id="entidad" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.idEntidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
                     <p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doActualizaMunicipios}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
                     <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
 										<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.entidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
@@ -181,7 +181,7 @@
 										</p:column>  
                   </p:selectOneMenu>								
                   <p:outputLabel for="municipio" value="Municipio:"/>
-                  <p:selectOneMenu id="municipio" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.idMunicipio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">									
+                  <p:selectOneMenu id="municipio" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.idMunicipio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
                     <p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doActualizaLocalidades}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
                     <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
 										<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.municipios}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
@@ -193,7 +193,7 @@
 										</p:column>  
                   </p:selectOneMenu>								
                   <p:outputLabel for="localidad" value="Localidad:"/>
-                  <p:selectOneMenu id="localidad" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.localidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">									
+                  <p:selectOneMenu id="localidad" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.localidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
                     <p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doActualizaCodigosPostales}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
                     <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
 										<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.localidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
@@ -205,7 +205,7 @@
 										</p:column>  
                   </p:selectOneMenu>																	
                   <p:outputLabel for="codigoPostal" value="Código postal:"/>
-                  <p:selectOneMenu id="codigoPostal" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.idCodigoPostal}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains">									
+                  <p:selectOneMenu id="codigoPostal" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.idCodigoPostal}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
                     <p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doLoadDomicilios}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
                     <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
                     <f:selectItems value="#{manticCatalogosPersonasAccion.attrs.codigosPostales}"/>
@@ -237,7 +237,7 @@
               <p:panelGrid id="panelTablaContactos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
                 <p:dataTable id="tablaContactos" rowIndexVar="index" var="contacto" value="#{manticCatalogosPersonasAccion.registroPersona.personasTiposContacto}" rows="6" paginator="false" reflow="true" rowKey="#{contacto.key}" emptyMessage=" " styleClass="paginated">																					
                   <p:column headerText="Tipo contacto">										
-                    <p:selectOneMenu id="contacto#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.idTipoContacto}" filter="true" filterMatchMode="contains" disabled="#{!contacto.nuevo}" onblur="simpleProcess();">
+                    <p:selectOneMenu id="contacto#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.idTipoContacto}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{!contacto.nuevo}" onblur="simpleProcess();">
                       <f:selectItems value="#{manticCatalogosPersonasAccion.attrs.tiposContactos}"/>
                     </p:selectOneMenu> 				
                   </p:column>	
@@ -279,7 +279,7 @@
 					<p:inputText id="calleBusqueda" value="#{manticCatalogosPersonasAccion.attrs.calle}" styleClass="janal-wid-100-txt"/>
 					<p:commandButton icon="fa fa-search" actionListener="#{manticCatalogosPersonasAccion.doBusquedaDomicilios}" process="@this calleBusqueda" update="domiciliosBusqueda totalResultados" onstart="return janal.partial('dialogo')"/>
 					<p:outputLabel for="domiciliosBusqueda" value="Domicilio:"/>
-					<p:selectOneMenu id="domiciliosBusqueda" value="#{manticCatalogosPersonasAccion.domicilioBusqueda}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">									
+					<p:selectOneMenu id="domiciliosBusqueda" value="#{manticCatalogosPersonasAccion.domicilioBusqueda}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
 						<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.domiciliosBusqueda}" var="element" itemValue="#{element}" itemLabel="#{element.domicilio}"/>
 						<p:column  styleClass="janal-column-left janal-wid-col-150">
 							<h:outputText value="#{item.entidad}"/>

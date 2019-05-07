@@ -45,7 +45,7 @@
 					</p:panelGrid>
 					<p:panelGrid id="panelTicket" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-70, janal-wid-100">
 						<p:outputLabel for="ticketsAbiertos" value="Ticket:" title="Ticket pendiente de autorizacion"/>
-						<p:selectOneMenu id="ticketsAbiertos" value="#{manticVentasAutorizacionFiltro.attrs.ticketAbierto}" styleClass="janal-wid-100-txt" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="contains">
+						<p:selectOneMenu id="ticketsAbiertos" value="#{manticVentasAutorizacionFiltro.attrs.ticketAbierto}" styleClass="janal-wid-100-txt" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 							<p:ajax event="change" onstart="loadTicketAbiertos();" update="" oncomplete="janal.desbloquear();" />
 							<f:selectItem itemValue="" itemLabel="SELECCIONE"/> 
 							<f:selectItems value="#{manticVentasAutorizacionFiltro.attrs.ticketsAbiertos}" var="element" itemValue="#{element}" itemLabel="No.: #{element.consecutivo} - Cliente: #{element.cliente} - Precio: #{element.precioTotal}"/>

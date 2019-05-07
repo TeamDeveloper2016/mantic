@@ -53,7 +53,7 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
 						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
 							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticVentasApartados.attrs.isMatriz}"/>
-							<p:selectOneMenu id="idEmpresa" value="#{manticVentasApartados.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+							<p:selectOneMenu id="idEmpresa" value="#{manticVentasApartados.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
 								<f:selectItems value="#{manticVentasApartados.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
 								<p:column headerText="Clave">
@@ -206,7 +206,7 @@
             <p:ajax listener="#{manticVentasApartados.doActiveTexts}" process="@this formDialogoEstatus" update="formDialogoEstatus" onstart="janal.bloquear();" oncomplete="janal.desbloquear(); janal.reset();"/>
           </p:inputSwitch>
           <p:outputLabel for="caja" value="Caja:" rendered="#{manticVentasApartados.attrs.mostrarCantidades}"/>
-					<p:selectOneMenu id="caja" value="#{manticVentasApartados.attrs.caja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains" rendered="#{manticVentasApartados.attrs.mostrarCantidades}">								
+					<p:selectOneMenu id="caja" value="#{manticVentasApartados.attrs.caja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="#{manticVentasApartados.attrs.mostrarCantidades}">								
 						<f:selectItems value="#{manticVentasApartados.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 						<p:column headerText="Clave">
 							<h:outputText value="#{item.clave}"/>
@@ -219,7 +219,7 @@
 						</p:column>   
 					</p:selectOneMenu>
           <p:outputLabel for="tipoPago" value="Tipo de pago:" rendered="#{manticVentasApartados.attrs.mostrarCantidades}"/>
-					<p:selectOneMenu id="tipoPago" value="#{manticVentasApartados.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="contains" rendered="#{manticVentasApartados.attrs.mostrarCantidades}">					
+					<p:selectOneMenu id="tipoPago" value="#{manticVentasApartados.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="#{manticVentasApartados.attrs.mostrarCantidades}">					
 						<p:ajax event="change" process="@this pago" listener="#{manticVentasApartados.doValidaTipoPago}" update="panelDialog lblBanco banco lblReferencia referencia" oncomplete="janal.refresh(); janal.reset();"/>
 						<f:selectItems value="#{manticVentasApartados.attrs.tiposPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
 						<p:column headerText="Clave">
@@ -230,7 +230,7 @@
 						</p:column>   
 					</p:selectOneMenu>		
 					<p:outputLabel id="lblBanco" for="banco" value="Banco:" rendered="#{manticVentasApartados.attrs.mostrarCantidades and manticVentasApartados.attrs.mostrarBanco}"/>
-					<p:selectOneMenu id="banco" value="#{manticVentasApartados.attrs.banco}" filter="true" filterMatchMode="contains" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity" rendered="#{manticVentasApartados.attrs.mostrarCantidades and manticVentasApartados.attrs.mostrarBanco}">														
+					<p:selectOneMenu id="banco" value="#{manticVentasApartados.attrs.banco}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity" rendered="#{manticVentasApartados.attrs.mostrarCantidades and manticVentasApartados.attrs.mostrarBanco}">														
 						<f:selectItems value="#{manticVentasApartados.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
 						<p:column headerText="Nombre">
 							<h:outputText value="#{item.nombre}"/>

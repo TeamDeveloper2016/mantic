@@ -79,7 +79,7 @@
 								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticInventariosCreditosAccion.orden.consecutivo}" readonly="true" style="display: #{manticInventariosCreditosAccion.agregar}"/>
 								<p:spacer width="1px" style="display: #{manticInventariosCreditosAccion.agregar}"/><p:separator style="display: #{manticInventariosCreditosAccion.agregar}"/>
 								<p:outputLabel for="idDevolucion" value="Proveedor:" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '1'}"/>
-								<p:selectOneMenu id="idDevolucion" value="#{manticInventariosCreditosAccion.orden.ikDevolucion}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="contains" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '1'}">
+								<p:selectOneMenu id="idDevolucion" value="#{manticInventariosCreditosAccion.orden.ikDevolucion}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '1'}">
 									<f:selectItems value="#{manticInventariosCreditosAccion.attrs.devoluciones}"  var="element" itemValue="#{element.key}" itemLabel="#{element.consecutivo} #{element.razonSocial} #{element.total}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.consecutivo}"/>
@@ -95,7 +95,7 @@
 									</p:column>   
 								</p:selectOneMenu>
 								<p:outputLabel for="idNotaEntrada" value="Nota de entrada:" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '2'}"/>
-								<p:selectOneMenu id="idNotaEntrada" value="#{manticInventariosCreditosAccion.orden.ikNotaEntrada}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="contains" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '2'}">
+								<p:selectOneMenu id="idNotaEntrada" value="#{manticInventariosCreditosAccion.orden.ikNotaEntrada}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '2'}">
 									<f:selectItems value="#{manticInventariosCreditosAccion.attrs.notas}"  var="element" itemValue="#{element.key}" itemLabel="#{element.consecutivo} #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.consecutivo}"/>
@@ -111,7 +111,7 @@
 									</p:column>   
 								</p:selectOneMenu>
 								<p:outputLabel for="idProveedor" value="Proveedor:" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '3'}"/>
-								<p:selectOneMenu id="idProveedor" value="#{manticInventariosCreditosAccion.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="contains" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '3'}">
+								<p:selectOneMenu id="idProveedor" value="#{manticInventariosCreditosAccion.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '3'}">
 									<f:selectItems value="#{manticInventariosCreditosAccion.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -197,7 +197,7 @@
 							<p:commandLink value="PDF importado: #{manticInventariosCreditosAccion.pdf.ruta}#{manticInventariosCreditosAccion.pdf.name}" onclick="viewDocument();" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento" style="#{(empty manticInventariosCreditosAccion.pdf)? 'display: none': ''}"/>
 							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 								<p:outputLabel value="Conceptos XML:"/>
-								<p:selectOneMenu value="#{manticInventariosCreditosAccion.attrs.faltante}" var="row" styleClass="importado janal-wid-99" effect="fade" filter="true" filterMatchMode="contains">
+								<p:selectOneMenu value="#{manticInventariosCreditosAccion.attrs.faltante}" var="row" styleClass="importado janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{manticInventariosCreditosAccion.attrs.faltantes}"  var="element" itemValue="#{element}" itemLabel="[#{element.sat}] [#{element.codigo}] #{element.nombre}  [#{element.cantidad}] $#{element.costo}"/>
 									<p:column class="MarAuto Responsive janal-wid-10">
 										<f:facet name="header">

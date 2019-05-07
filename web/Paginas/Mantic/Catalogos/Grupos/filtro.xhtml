@@ -28,7 +28,7 @@
               <p:outputLabel for="nombre" value="Nombre:"/>
               <p:inputText id="nombre" value="#{manticCatalogosGruposFiltro.attrs.nombre}" styleClass="janal-wid-100-txt"/> 
 							<p:outputLabel for="cliente" value="Cliente:"/>
-							<p:selectOneMenu id="cliente" styleClass="janal-wid-100-txt" var="item" value="#{manticCatalogosGruposFiltro.attrs.idCliente}" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="contains">
+							<p:selectOneMenu id="cliente" styleClass="janal-wid-100-txt" var="item" value="#{manticCatalogosGruposFiltro.attrs.idCliente}" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
 								<f:selectItems value="#{manticCatalogosGruposFiltro.attrs.clientes}" var="element" itemValue="#{element.key}" itemLabel="#{element.clave} - #{element.rfc}"/>
 								<p:column headerText="Clave">

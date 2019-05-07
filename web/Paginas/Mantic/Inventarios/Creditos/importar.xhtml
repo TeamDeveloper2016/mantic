@@ -68,7 +68,7 @@
 								<p:inputText styleClass="janal-wid-100-txt" value="#{manticInventariosCreditosImportar.orden.consecutivo}" readonly="true"/>
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel value="Proveedor:"/>
-								<p:selectOneMenu var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="contains">
+								<p:selectOneMenu var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{manticInventariosCreditosImportar.attrs.proveedores}" var="element" itemValue="#{element.key}" itemLabel="#{element.clave}-#{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -142,7 +142,7 @@
 							<p:commandLink value="PDF importado: #{manticInventariosCreditosImportar.pdf.ruta}#{manticInventariosCreditosImportar.pdf.name}" onclick="viewDocument();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento" style="#{(empty manticInventariosCreditosImportar.pdf)? 'display: none': ''}"/>
 							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 								<p:outputLabel value="Articulos XML:"/>
-								<p:selectOneMenu value="#{manticInventariosCreditosImportar.attrs.faltante}" var="row" styleClass="importado janal-wid-99" effect="fade" filter="true" filterMatchMode="contains">
+								<p:selectOneMenu value="#{manticInventariosCreditosImportar.attrs.faltante}" var="row" styleClass="importado janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{manticInventariosCreditosImportar.attrs.faltantes}"  var="element" itemValue="#{element}" itemLabel="[#{element.sat}] [#{element.codigo}] #{element.nombre}  [#{element.cantidad}] $#{element.costo}"/>
 									<p:column class="MarAuto Responsive janal-wid-10">
 										<f:facet name="header">

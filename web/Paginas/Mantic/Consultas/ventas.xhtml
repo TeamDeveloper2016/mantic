@@ -39,7 +39,7 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticConsultasVentas.attrs.isMatriz}"/>
-              <p:selectOneMenu id="idEmpresa" value="#{manticConsultasVentas.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+              <p:selectOneMenu id="idEmpresa" value="#{manticConsultasVentas.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticConsultasVentas.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
                 <p:column headerText="Clave">
@@ -52,7 +52,7 @@
 							<p:outputLabel for="consecutivo" value="No. cuenta:"/>
               <p:inputText id="consecutivo" value="#{manticConsultasVentas.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
 							<p:outputLabel for="vendedor" value="Vendedor:"/>
-              <p:selectOneMenu id="vendedor" value="#{manticConsultasVentas.attrs.vendedor}" styleClass="janal-wid-96" filter="true" filterMatchMode="contains">
+              <p:selectOneMenu id="vendedor" value="#{manticConsultasVentas.attrs.vendedor}" styleClass="janal-wid-96" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticConsultasVentas.attrs.vendedores}"/>                   
               </p:selectOneMenu>                                       
@@ -67,7 +67,7 @@
               <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticConsultasVentas.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>							
 							<p:outputLabel for="tipoPago" value="Tipo de pago:"/>
-							<p:selectOneMenu id="tipoPago" value="#{manticConsultasVentas.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="contains">													
+							<p:selectOneMenu id="tipoPago" value="#{manticConsultasVentas.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">													
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
 								<f:selectItems value="#{manticConsultasVentas.attrs.tiposPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
 								<p:column headerText="Clave">

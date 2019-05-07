@@ -191,7 +191,7 @@
 								<p:inputText styleClass="janal-column-center janal-wid-100-txt" value="#{kajoolEncabezado.attrs.selected.limiteMayoreo} - #######" readonly="true"/>
 							</p:panelGrid>
 							<p:outputLabel value="Existencias por almacen:" styleClass="janal-wid-99"/>
-							<p:selectOneMenu value="#{kajoolEncabezado.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="contains">
+							<p:selectOneMenu value="#{kajoolEncabezado.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItems value="#{kajoolEncabezado.attrs.almacenes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre} - #{element.stock}"/>
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
@@ -256,7 +256,7 @@
 			<p:remoteCommand name="faltantesReplace" actionListener="#{kajoolEncabezado.doReplaceFaltante}" process="@this" update="@(.faltantes)" oncomplete="jsPrecios.start();"/>
 			<p:remoteCommand name="faltantesVerificar" actionListener="#{kajoolEncabezado.doFaltanteArticulo}" process="@this @(.faltantes)" update="@(.faltantes)" oncomplete="jsPrecios.start();"/>
 			<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
-			<p:selectOneMenu id="idSucursal" value="#{kajoolEncabezado.faltante.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-98" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+			<p:selectOneMenu id="idSucursal" value="#{kajoolEncabezado.faltante.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-98" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 				<p:ajax event="change" process="@this" update="codigosFaltantes faltantesTabla" listener="#{kajoolEncabezado.doLoadFaltantes()}"/>
 				<f:selectItems value="#{kajoolEncabezado.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
 				<p:column headerText="Clave">

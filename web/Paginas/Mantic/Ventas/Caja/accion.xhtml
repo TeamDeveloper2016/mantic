@@ -268,7 +268,7 @@
 						<div class="ui-grid-col-12">					
 							<p:panelGrid id="panelEmpresa" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-5, janal-wid-100">
 								<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticVentasCajaAccion.attrs.isMatriz}"/>
-								<p:selectOneMenu id="idEmpresa" value="#{manticVentasCajaAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticVentasCajaAccion.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="contains">
+								<p:selectOneMenu id="idEmpresa" value="#{manticVentasCajaAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticVentasCajaAccion.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" process="@this" listener="#{manticVentasCajaAccion.doLoadTicketAbiertos}" update="encabezadoVenta contenedorGrupos:contenido caja" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{manticVentasCajaAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
 									<p:column headerText="Clave">
@@ -280,7 +280,7 @@
 								</p:selectOneMenu>
 								
 								<p:outputLabel for="caja" value="Caja:" />
-								<p:selectOneMenu id="caja" value="#{manticVentasCajaAccion.attrs.caja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains">								
+								<p:selectOneMenu id="caja" value="#{manticVentasCajaAccion.attrs.caja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">								
 									<f:selectItems value="#{manticVentasCajaAccion.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -304,7 +304,7 @@
 								<p:calendar id="fecha" inputStyleClass="janal-wid-70" styleClass="janal-wid-100" value="#{manticVentasCajaAccion.attrs.fecha}" mindate="#{manticVentasCajaAccion.attrs.fechaInicial}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario" beforeShowDay="markedDays">
 									<p:ajax event="dateSelect" process="@this" listener="#{manticVentasCajaAccion.doLoadTicketAbiertos}" update="encabezadoVenta contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.janal-abono)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 								</p:calendar>																
-								<p:selectOneMenu id="ticketsAbiertos" value="#{manticVentasCajaAccion.attrs.ticketAbierto}" styleClass="janal-wid-100-txt cambio-cliente" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="contains">									
+								<p:selectOneMenu id="ticketsAbiertos" value="#{manticVentasCajaAccion.attrs.ticketAbierto}" styleClass="janal-wid-100-txt cambio-cliente" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<p:ajax event="change" process="@this contenedorGrupos" onstart="return janal.bloquear();" listener="#{manticVentasCajaAccion.doAsignaTicketAbierto}" update="contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.janal-abono)" oncomplete="janal.desbloquear();jsArticulos.refreshCobroValidate();" />									
 									<f:selectItem itemValue="" itemLabel="SELECCIONE"/> 
 									<f:selectItems value="#{manticVentasCajaAccion.attrs.ticketsAbiertos}" var="element" itemValue="#{element}" itemLabel="No.: #{element.consecutivo} - Cliente: #{element.cliente} - Importe: #{element.precioTotal} - Tipo: #{element.tipo}"/>
@@ -508,7 +508,7 @@
 								<p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
 								<p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
 								<p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
-								<p:selectOneMenu id="cfdi" value="#{manticVentasCajaAccion.attrs.cfdi}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}">
+								<p:selectOneMenu id="cfdi" value="#{manticVentasCajaAccion.attrs.cfdi}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}">
 									<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 									<f:selectItems value="#{manticVentasCajaAccion.attrs.cfdis}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 									<p:column  styleClass="janal-column-left janal-wid-col-50">
@@ -542,7 +542,7 @@
 										<h:outputText value="#{item.municipio}"/>
 									</p:column>   
 								</p:selectOneMenu>
-								<p:selectOneMenu id="tipoPago" value="#{manticVentasCajaAccion.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains" rendered="false">
+								<p:selectOneMenu id="tipoPago" value="#{manticVentasCajaAccion.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="false">
 									<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 									<f:selectItems value="#{manticVentasCajaAccion.attrs.tiposPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
 									<p:column headerText="Clave">
@@ -579,7 +579,7 @@
 										<p:ajax event="blur" process="@this" update="contenedorGrupos:panelSumatoria @(.janal-color-diferencia)"/>
 									</p:inputNumber>
 									<p:outputLabel id="difDebito" value="$#{manticVentasCajaAccion.attrs.pago.difDebito}" styleClass="janal-color-diferencia janal-column-right"/>
-									<p:selectOneMenu id="bancoDebito" value="#{manticVentasCajaAccion.attrs.pago.bancoDebito}" filter="true" filterMatchMode="contains" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
+									<p:selectOneMenu id="bancoDebito" value="#{manticVentasCajaAccion.attrs.pago.bancoDebito}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
 										<f:selectItem itemValue="" itemLabel="SELECCIONE BANCO"/>
 										<f:selectItems value="#{manticVentasCajaAccion.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
 										<p:column headerText="Nombre">
@@ -597,7 +597,7 @@
 										<p:ajax event="blur" process="@this" update="contenedorGrupos:panelSumatoria @(.janal-color-diferencia)"/>
 									</p:inputNumber>
 									<p:outputLabel id="difCredito" value="$#{manticVentasCajaAccion.attrs.pago.difCredito}" styleClass="janal-color-diferencia janal-column-right"/>
-									<p:selectOneMenu id="bancoCredito" value="#{manticVentasCajaAccion.attrs.pago.bancoCredito}" filter="true" filterMatchMode="contains" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
+									<p:selectOneMenu id="bancoCredito" value="#{manticVentasCajaAccion.attrs.pago.bancoCredito}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
 										<f:selectItem itemValue="" itemLabel="SELECCIONE BANCO"/>
 										<f:selectItems value="#{manticVentasCajaAccion.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
 										<p:column headerText="Nombre">
@@ -615,7 +615,7 @@
 										<p:ajax event="blur" process="@this" update="contenedorGrupos:panelSumatoria @(.janal-color-diferencia)"/>
 									</p:inputNumber>
 									<p:outputLabel id="difTransferencia" value="$#{manticVentasCajaAccion.attrs.pago.difTransferencia}" styleClass="janal-color-diferencia janal-column-right"/>
-									<p:selectOneMenu id="bancoTransferencia" value="#{manticVentasCajaAccion.attrs.pago.bancoTransferencia}" filter="true" filterMatchMode="contains" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
+									<p:selectOneMenu id="bancoTransferencia" value="#{manticVentasCajaAccion.attrs.pago.bancoTransferencia}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
 										<f:selectItem itemValue="" itemLabel="SELECCIONE BANCO"/>
 										<f:selectItems value="#{manticVentasCajaAccion.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
 										<p:column headerText="Nombre">
@@ -633,7 +633,7 @@
 										<p:ajax event="blur" process="@this" update="contenedorGrupos:panelSumatoria @(.janal-color-diferencia)"/>
 									</p:inputNumber>
 									<p:outputLabel id="difCheque" value="$#{manticVentasCajaAccion.attrs.pago.difCheque}" styleClass="janal-color-diferencia janal-column-right"/>
-									<p:selectOneMenu id="bancoCheque" value="#{manticVentasCajaAccion.attrs.pago.bancoCheque}" filter="true" filterMatchMode="contains" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
+									<p:selectOneMenu id="bancoCheque" value="#{manticVentasCajaAccion.attrs.pago.bancoCheque}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
 										<f:selectItem itemValue="" itemLabel="SELECCIONE BANCO"/>
 										<f:selectItems value="#{manticVentasCajaAccion.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
 										<p:column headerText="Nombre">
@@ -696,7 +696,7 @@
 							<p:fieldset id="fieldDomicilios" legend="Domicilio">								
 								<p:panelGrid id="panelDetalleDomicilio" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100, janal-wid-5">
 									<p:outputLabel for="domicilio" value="Domicilio principal:"/>
-									<p:selectOneMenu id="domicilio" value="#{manticVentasCajaAccion.domicilio.domicilio}" styleClass="cotizar janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}">									
+									<p:selectOneMenu id="domicilio" value="#{manticVentasCajaAccion.domicilio.domicilio}" styleClass="cotizar janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}">									
 										<p:ajax event="change" listener="#{manticVentasCajaAccion.doLoadAtributos}" process="@this domicilio panelDetalleDomicilio" update="entidad municipio localidad codigoPostal calle exterior interior asentamiento entreCalle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>										
 										<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
 										<f:selectItems value="#{manticVentasCajaAccion.attrs.domicilios}" var="element" itemValue="#{element}" itemLabel="#{element.domicilio}"/>
@@ -720,7 +720,7 @@
 									<p:outputLabel for="municipio" value="Municipio:"/>
 									<p:outputLabel for="localidad" value="Localidad:"/>
 									<p:outputLabel for="codigoPostal" value="Código postal:"/>
-									<p:selectOneMenu id="entidad" value="#{manticVentasCajaAccion.domicilio.idEntidad}" styleClass="janal-wid-100-txt cotizar" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}">
+									<p:selectOneMenu id="entidad" value="#{manticVentasCajaAccion.domicilio.idEntidad}" styleClass="janal-wid-100-txt cotizar" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}">
 										<p:ajax event="change" listener="#{manticVentasCajaAccion.doActualizaMunicipios}" process="@this panelDetalleDireccion" update="municipio localidad codigoPostal calle exterior interior asentamiento entreCalle " onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
 										<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 										<f:selectItems value="#{manticVentasCajaAccion.attrs.entidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
@@ -731,7 +731,7 @@
 											<h:outputText value="#{item.descripcion}"/>
 										</p:column>  
 									</p:selectOneMenu>														
-									<p:selectOneMenu id="municipio" value="#{manticVentasCajaAccion.domicilio.idMunicipio}" styleClass="janal-wid-100-txt cotizar" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}">									
+									<p:selectOneMenu id="municipio" value="#{manticVentasCajaAccion.domicilio.idMunicipio}" styleClass="janal-wid-100-txt cotizar" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}">									
 										<p:ajax event="change" listener="#{manticVentasCajaAccion.doActualizaLocalidades}" process="@this panelDetalleDireccion" update="localidad codigoPostal calle exterior interior asentamiento entreCalle" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
 										<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 										<f:selectItems value="#{manticVentasCajaAccion.attrs.municipios}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
@@ -742,7 +742,7 @@
 											<h:outputText value="#{item.descripcion}"/>
 										</p:column>  
 									</p:selectOneMenu>														
-									<p:selectOneMenu id="localidad" value="#{manticVentasCajaAccion.domicilio.localidad}" styleClass="cotizar janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}" style="min-width: 100px !important">									
+									<p:selectOneMenu id="localidad" value="#{manticVentasCajaAccion.domicilio.localidad}" styleClass="cotizar janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}" style="min-width: 100px !important">									
 										<p:ajax event="change" listener="#{manticVentasCajaAccion.doActualizaCodigosPostales}" process="@this panelDetalleDireccion" update="codigoPostal calle exterior interior asentamiento entreCalle " onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
 										<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 										<f:selectItems value="#{manticVentasCajaAccion.attrs.localidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
@@ -753,7 +753,7 @@
 											<h:outputText value="#{item.descripcion}"/>
 										</p:column>  
 									</p:selectOneMenu>																																			
-									<p:selectOneMenu id="codigoPostal" value="#{manticVentasCajaAccion.domicilio.idCodigoPostal}" styleClass="cotizar janal-wid-100-txt" filter="true" filterMatchMode="contains" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}">									
+									<p:selectOneMenu id="codigoPostal" value="#{manticVentasCajaAccion.domicilio.idCodigoPostal}" styleClass="cotizar janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}">									
 										<p:ajax event="change" listener="#{manticVentasCajaAccion.doLoadDomicilios}" process="@this panelDetalleDireccion" update="panelDetalleDomicilio panelDetalleDireccion panelDetalleCalle calle exterior interior asentamiento entreCalle " onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
 										<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 										<f:selectItems value="#{manticVentasCajaAccion.attrs.codigosPostales}"/>
@@ -1453,7 +1453,7 @@
 					<p:inputText id="calleBusqueda" value="#{manticVentasCajaAccion.attrs.calle}" styleClass="janal-wid-100-txt"/>
 					<p:commandButton icon="fa fa-search" actionListener="#{manticVentasCajaAccion.doBusquedaDomicilios}" process="@this calleBusqueda" update="domiciliosBusqueda totalResultados" onstart="return janal.partial('dialogo')"/>
 					<p:outputLabel for="domiciliosBusqueda" value="Domicilio:"/>
-					<p:selectOneMenu id="domiciliosBusqueda" value="#{manticVentasCajaAccion.domicilioBusqueda}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">									
+					<p:selectOneMenu id="domiciliosBusqueda" value="#{manticVentasCajaAccion.domicilioBusqueda}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
 						<f:selectItems value="#{manticVentasCajaAccion.attrs.domiciliosBusqueda}" var="element" itemValue="#{element}" itemLabel="#{element.domicilio}"/>
 						<p:column  styleClass="janal-column-left janal-wid-col-150">
 							<h:outputText value="#{item.entidad}"/>

@@ -124,7 +124,7 @@
 					<p:panel>						
 						<h:outputText value="SelectCheckBoxMenu" styleClass="FontBold Fs18 hardblue"/>
 						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">              
-							<p:selectCheckboxMenu label="Cities" filter="true" filterMatchMode="contains" styleClass="janal-wid-100-txt">
+							<p:selectCheckboxMenu label="Cities" filter="true" filterMatchMode="custom" filterFunction="janal.contains" styleClass="janal-wid-100-txt">
 								<f:selectItem itemLabel="Option 1" itemValue="1" />
 								<f:selectItem itemLabel="Option 2" itemValue="2" />
 								<f:selectItem itemLabel="Option 3" itemValue="3" />

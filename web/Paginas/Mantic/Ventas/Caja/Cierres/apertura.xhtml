@@ -45,7 +45,7 @@
      								<p:outputLabel for="idEmpresa" value="Sucursal:"/>
 									</div>	
 									<div class="ui-grid-col-11">
-										<p:selectOneMenu id="idEmpresa" value="#{manticVentasCajaCierresApertura.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+										<p:selectOneMenu id="idEmpresa" value="#{manticVentasCajaCierresApertura.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 											<p:ajax event="change" listener="#{manticVentasCajaCierresApertura.doLoadCajas}" process="@this" update="idCaja" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 											<f:selectItems value="#{manticVentasCajaCierresApertura.attrs.empresas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
 											<p:column headerText="Clave">
@@ -62,7 +62,7 @@
 								    <p:outputLabel for="idCaja" value="Caja:"/>
 									</div>
 									<div class="ui-grid-col-11">
-										<p:selectOneMenu id="idCaja" value="#{manticVentasCajaCierresApertura.attrs.idCaja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99"  effect="fade" filter="true" filterMatchMode="contains">
+										<p:selectOneMenu id="idCaja" value="#{manticVentasCajaCierresApertura.attrs.idCaja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 											<f:selectItems value="#{manticVentasCajaCierresApertura.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 											<p:column headerText="Clave">
 												<h:outputText value="#{item.clave}"/>

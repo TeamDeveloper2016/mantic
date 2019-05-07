@@ -118,13 +118,13 @@
 						<div class="janal-content-table">
 							<h:panelGrid columns="2">
 								<h:outputLabel styleClass="janal-text-one-line" value="Unit:" for="units"/>
-								<p:selectOneMenu id="units" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.unit}" style="width: 305px" filter="true" filterMatchMode="contains">
+								<p:selectOneMenu id="units" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.unit}" style="width: 305px" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" process="@this select" update="sql nombreVista select" listener="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.actualizarSelects('wizard')}"/>
 									<f:selectItem itemLabel="INSERTAR UNIT" itemValue="INSERTAR"/>
 									<f:selectItems value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.units}"/>
 								</p:selectOneMenu>
 								<h:outputLabel styleClass="janal-text-one-line" value="Select:" for="select"/>
-								<p:selectOneMenu id="select" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.select}" style="width: 305px" filter="true" filterMatchMode="contains" disabled="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.unit=='INSERTAR'}">
+								<p:selectOneMenu id="select" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.select}" style="width: 305px" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.unit=='INSERTAR'}">
 									<p:ajax event="change" process="@this" update="sql nombreVista" listener="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.actualizaConsulta('wizard')}"/>
 									<f:selectItems value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.selects}"/>
 								</p:selectOneMenu>
@@ -328,13 +328,13 @@
               <div class="janal-content-table">
                 <h:panelGrid columns="2">
                   <h:outputLabel styleClass="janal-text-one-line" value="Unit:" for="unitsCombo"/>
-                  <p:selectOneMenu id="unitsCombo" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.unitCombo}" style="width: 305px" filter="true" filterMatchMode="contains">
+                  <p:selectOneMenu id="unitsCombo" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.unitCombo}" style="width: 305px" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                     <p:ajax event="change" process="@this selectCombo" update="sqlCombo nombreVistaCombo selectCombo" listener="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.actualizarSelects('dialogo')}"/>
                     <f:selectItem itemLabel="INSERTAR UNIT" itemValue="INSERTAR"/>
                     <f:selectItems value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.units}"/>
                   </p:selectOneMenu>
                   <h:outputLabel styleClass="janal-text-one-line" value="Select:" for="selectCombo"/>
-                  <p:selectOneMenu id="selectCombo" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.selectCombo}" style="width: 305px" filter="true" filterMatchMode="contains" disabled="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.unit=='INSERTAR'}">
+                  <p:selectOneMenu id="selectCombo" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.selectCombo}" style="width: 305px" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.unit=='INSERTAR'}">
                     <p:ajax event="change" process="@this" update="sqlCombo nombreVistaCombo" listener="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.actualizaConsulta('dialogo')}"/>
                     <f:selectItems value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.selects}"/>
                   </p:selectOneMenu>

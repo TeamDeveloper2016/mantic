@@ -106,7 +106,7 @@
 						</p:tab>						            						            																																																
 						<p:tab title="Importar">
 							<p:outputLabel for="pagos" value="Pagos:" styleClass="janal-wid-100-txt"/>
-							<p:selectOneMenu id="pagos" value="#{manticCatalogosClientesCuentasImportar.attrs.pago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="contains">
+							<p:selectOneMenu id="pagos" value="#{manticCatalogosClientesCuentasImportar.attrs.pago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItems value="#{manticCatalogosClientesCuentasImportar.attrs.pagos}"  var="element" itemValue="#{element.key}" itemLabel="$#{element.pago} - #{element.persona}"/>
 								<p:column headerText="Pago">
 									<h:outputText value="#{item.pago}"/>

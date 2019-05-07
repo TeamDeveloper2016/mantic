@@ -141,7 +141,7 @@
 								</h:panelGrid>
 							</f:facet>
 						</p:autoComplete>							
-						<!--p:selectOneMenu id="codigoPostal" value="#{manticVentasCliente.domicilio.idCodigoPostal}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains">									
+						<!--p:selectOneMenu id="codigoPostal" value="#{manticVentasCliente.domicilio.idCodigoPostal}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 							<p:ajax event="change" listener="#{manticVentasCliente.doLoadDomicilios}" process="@this" update="panelDetalleDomicilio spacerCp calle exterior interior asentamiento entreCalle tipoDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
 							<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
 							<f:selectItems value="#{manticVentasCliente.attrs.codigosPostales}"/>

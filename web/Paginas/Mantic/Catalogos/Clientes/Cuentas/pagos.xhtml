@@ -37,7 +37,7 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
 						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
 							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosClientesCuentasPagos.attrs.isMatriz}"/>
-							<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosClientesCuentasPagos.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+							<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosClientesCuentasPagos.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
 								<f:selectItems value="#{manticCatalogosClientesCuentasPagos.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
 								<p:column headerText="Clave">
@@ -149,7 +149,7 @@
 						<p:commandButton icon="fa fa-search" actionListener="#{manticCatalogosClientesCuentasPagos.doClientes}" process="@this busqueda" update="encontrados resultados" onstart="return janal.partial('dialogo');"/>
 					</h:panelGrid>
 					<p:outputLabel for="encontrados" value="Encontrados:"/>
-					<p:selectOneMenu id="encontrados" value="#{manticCatalogosClientesCuentasPagos.encontrado}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">									
+					<p:selectOneMenu id="encontrados" value="#{manticCatalogosClientesCuentasPagos.encontrado}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
 						<f:selectItems value="#{manticCatalogosClientesCuentasPagos.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.rfc} - #{element.razonSocial}"/>
 						<p:column styleClass="janal-column-left janal-wid-30" headerText="Clave">
 							<h:outputText value="#{item.clave}"/>

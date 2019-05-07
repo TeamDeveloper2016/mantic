@@ -139,7 +139,7 @@
 			<h:form id="formDialogoProveedor" prependId="false">
 				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 					<p:outputLabel for="proveedorDlg" value="Proveedor:"/>												
-					<p:selectOneMenu id="proveedorDlg" value="#{manticCatalogosListaPreciosFiltro.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="contains">
+					<p:selectOneMenu id="proveedorDlg" value="#{manticCatalogosListaPreciosFiltro.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 						<f:selectItem itemLabel="SELECCIONE" itemValue=""/>
 						<f:selectItems value="#{manticCatalogosListaPreciosFiltro.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
 						<p:column headerText="Clave">

@@ -63,7 +63,7 @@
 								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasImportar.orden.consecutivo}" readonly="true"/>
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="idOrdenCompra" value="No. orden:"/>
-								<p:selectOneMenu id="idOrdenCompra" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="contains">
+								<p:selectOneMenu id="idOrdenCompra" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{manticInventariosEntradasImportar.attrs.ordenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.consecutivo} #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.consecutivo}"/>
@@ -148,7 +148,7 @@
 							<p:commandLink value="PDF importado: #{manticInventariosEntradasImportar.pdf.ruta}#{manticInventariosEntradasImportar.pdf.name}" onclick="viewDocument();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento PDF" style="#{(empty manticInventariosEntradasImportar.pdf)? 'display: none': ''}"/>
 							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 								<p:outputLabel value="Articulos XML:"/>
-								<p:selectOneMenu value="#{manticInventariosEntradasImportar.attrs.faltante}" var="row" styleClass="importado janal-wid-99" effect="fade" filter="true" filterMatchMode="contains">
+								<p:selectOneMenu value="#{manticInventariosEntradasImportar.attrs.faltante}" var="row" styleClass="importado janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{manticInventariosEntradasImportar.attrs.faltantes}"  var="element" itemValue="#{element}" itemLabel="[#{element.sat}] [#{element.codigo}] #{element.nombre}  [#{element.cantidad}] $#{element.costo}"/>
 									<p:column class="MarAuto Responsive janal-wid-10">
 										<f:facet name="header">

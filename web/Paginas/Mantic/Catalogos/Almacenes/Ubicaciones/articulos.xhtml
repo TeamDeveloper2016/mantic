@@ -33,7 +33,7 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.isMatriz}"/>
-              <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.empresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains" disabled="true">
+              <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.empresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="true">
 								<p:ajax event="change" process="@this panelBusqueda" listener="#{manticCatalogosAlmacenesUbicacionesArticulos.doLoadAlmacenes}" update="panelBusqueda" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()"/>
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
@@ -56,7 +56,7 @@
 								</f:facet>
 							</p:autoComplete>												
               <p:outputLabel for="almacen" value="Almacen:"/>
-              <p:selectOneMenu id="almacen" value="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.almacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="contains" disabled="true">
+              <p:selectOneMenu id="almacen" value="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.almacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="true">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticCatalogosAlmacenesUbicacionesArticulos.attrs.almacenes}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>                
                 <p:column headerText="Nombre">

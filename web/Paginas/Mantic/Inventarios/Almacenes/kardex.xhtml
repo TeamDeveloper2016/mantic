@@ -110,7 +110,7 @@
 						</div>
 						<p:outputLabel for="idAlmacen" value="Seleccione el almacen:"/>
 						<br/>
-						<p:selectOneMenu id="idAlmacen" tabindex="0" value="#{manticInventariosAlmacenesKardex.attrs.idAlmacen}" var="almacen" converter="janal.convertidor.Entity" styleClass="janal-wid-99 almacen" effect="fade" filter="true" filterMatchMode="contains">
+						<p:selectOneMenu id="idAlmacen" tabindex="0" value="#{manticInventariosAlmacenesKardex.attrs.idAlmacen}" var="almacen" converter="janal.convertidor.Entity" styleClass="janal-wid-99 almacen" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 							<p:ajax event="change" listener="#{manticInventariosAlmacenesKardex.doChangeBusquedas}" process="@this" update="@(.paginated)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 							<f:selectItems value="#{manticInventariosAlmacenesKardex.attrs.depositos}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave} - #{element.nombre}"/>
 							<p:column headerText="Clave">

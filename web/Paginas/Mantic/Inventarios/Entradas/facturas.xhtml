@@ -42,7 +42,7 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticInventariosEntradasFacturas.attrs.isMatriz}"/>
-              <p:selectOneMenu id="idEmpresa" value="#{manticInventariosEntradasFacturas.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+              <p:selectOneMenu id="idEmpresa" value="#{manticInventariosEntradasFacturas.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticInventariosEntradasFacturas.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
                 <p:column headerText="Clave">
@@ -65,7 +65,7 @@
                 <f:selectItems value="#{manticInventariosEntradasFacturas.attrs.meses}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
               </p:selectOneMenu>
               <p:outputLabel for="idProveedor" value="Proveedor:"/>
-              <p:selectOneMenu id="idProveedor" value="#{manticInventariosEntradasFacturas.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="contains">
+              <p:selectOneMenu id="idProveedor" value="#{manticInventariosEntradasFacturas.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticInventariosEntradasFacturas.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}- #{element.razonSocial}"/>
                 <p:column headerText="Clave">

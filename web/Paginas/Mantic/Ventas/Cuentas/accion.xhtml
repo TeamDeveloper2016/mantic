@@ -58,7 +58,7 @@
 				<div class="ui-grid-col-12">										
 					<p:panelGrid id="panelEmpresa" columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-70, janal-wid-100">						
 						<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticVentasCuentasAccion.attrs.isMatriz}"/>
-						<p:selectOneMenu id="idEmpresa" value="#{manticVentasCuentasAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticVentasCuentasAccion.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="contains">
+						<p:selectOneMenu id="idEmpresa" value="#{manticVentasCuentasAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticVentasCuentasAccion.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 							<p:ajax event="change" process="@this" listener="#{manticVentasCuentasAccion.doUpdateForEmpresa}" update="clientes cliente contenido tabla" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 							<f:selectItems value="#{manticVentasCuentasAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
 							<p:column headerText="Clave">

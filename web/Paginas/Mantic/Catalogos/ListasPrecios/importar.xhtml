@@ -114,7 +114,7 @@
 									</p:panel>
 								</h:panelGrid>
                 <p:outputLabel for="idProveedor" value="Proveedor:" styleClass="involucrados" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '0'? '': 'none'}"/>
-                <p:selectOneMenu id="idProveedor" value="#{manticCatalogosListaPreciosImportar.attrs.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 involucrados"  effect="fade" filter="true" filterMatchMode="contains" disabled="#{manticCatalogosListaPreciosImportar.attrs.isDeshabilitado}" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '0'? '': 'none'}">
+                <p:selectOneMenu id="idProveedor" value="#{manticCatalogosListaPreciosImportar.attrs.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 involucrados"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{manticCatalogosListaPreciosImportar.attrs.isDeshabilitado}" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '0'? '': 'none'}">
                   <f:selectItems value="#{manticCatalogosListaPreciosImportar.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
                   <p:ajax event="change" listener="#{manticCatalogosListaPreciosImportar.doActualizarProveedor}" process="@this" update="idProveedor @(.importado)" oncomplete="janal.reset();"/>
                   <p:column headerText="Clave">
