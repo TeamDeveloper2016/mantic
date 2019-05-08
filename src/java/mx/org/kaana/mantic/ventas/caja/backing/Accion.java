@@ -372,7 +372,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				transaccion = new Transaccion(ventaFinalizada);
 				if (transaccion.ejecutar(EAccion.REPROCESAR)) {
 					if(ventaFinalizada.isFacturar() && !ventaFinalizada.getApartado())
-						doSendMail(((TicketVenta)this.getAdminOrden().getOrden()).getCorreos(), seleccionado.toString("razonSocial"), ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta(), transaccion.getFacturaPrincipal(), seleccionado.getKey());
+						doSendMail(transaccion.getCorreosFactura(), seleccionado.toString("razonSocial"), ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta(), transaccion.getFacturaPrincipal(), seleccionado.getKey());
 					ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago) this.attrs.get("pago"), ventaFinalizada.getApartado() ? "APARTADO" : "VENTA DE MOSTRADOR");
 					UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + ((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).getTicket() + "','" + ticket.toHtml() + "');");
 					UIBackingUtilities.execute("jsTicket.clicTicket();");
@@ -1201,10 +1201,17 @@ public class Accion extends IBaseVenta implements Serializable {
 			ticketVenta.setUtilidad(this.getAdminOrden().getTotales().getUtilidad());
 			facturarVenta= (Boolean) this.attrs.get("facturarVenta");
 			regresar= new VentaFinalizada();
+			regresar.setTotales((Pago) this.attrs.get("pago"));
 			if(facturarVenta){
 				cfdis= (List<UISelectEntity>) this.attrs.get("cfdis");
 				cfdi= (UISelectEntity) this.attrs.get("cfdi");
 				ticketVenta.setIdUsoCfdi(cfdis.get(cfdis.indexOf(cfdi)).getKey());
+				ticketVenta.setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));				
+				ticketVenta.setIdTipoMedioPago(regresar.getTotales().getIdTipoMedioPago());
+				if(!ETipoMediosPago.EFECTIVO.getIdTipoMedioPago().equals(regresar.getTotales().getIdTipoMedioPago())){
+					ticketVenta.setIdBanco(regresar.getTotales().getIdBanco());
+					ticketVenta.setReferencia(regresar.getTotales().getReferencia());
+				} // if
 				regresar.setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));		
 				ticketVenta.setIdClienteDomicilio(((Entity)this.attrs.get("domicilioFactura")).getKey());		
 			} // if			
@@ -1213,8 +1220,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				record.setIdTipoContacto(ETiposContactos.CORREO.getKey());
 			regresar.setCorreosContacto(this.clientesTiposContacto);
 			regresar.setCelular((ClienteTipoContacto) this.attrs.get("celular"));
-			regresar.setTelefono((ClienteTipoContacto) this.attrs.get("telefono"));
-			regresar.setTotales((Pago) this.attrs.get("pago"));
+			regresar.setTelefono((ClienteTipoContacto) this.attrs.get("telefono"));			
 			regresar.setCliente((TcManticClientesDto) this.attrs.get("registroCliente"));
 			regresar.setDomicilio(getDomicilio());
 			regresar.setFacturar(facturarVenta);
