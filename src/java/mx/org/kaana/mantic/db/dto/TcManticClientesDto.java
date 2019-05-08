@@ -66,7 +66,7 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
   }
 
   public TcManticClientesDto(Long key) {
-    this(null, null, new Long(-1L), null, null, null, 0.0D, null, null, 3L, null, null, null, null);
+    this(null, 0L, new Long(-1L), 0D, null, null, 0.0D, null, null, 3L, null, null, null, null);
     setKey(key);
   }
 
