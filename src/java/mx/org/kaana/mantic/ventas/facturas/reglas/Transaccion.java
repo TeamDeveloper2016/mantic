@@ -24,6 +24,7 @@ import mx.org.kaana.mantic.db.dto.TcManticVentasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.enums.EEstatusFacturas;
+import mx.org.kaana.mantic.enums.EEstatusFicticias;
 import mx.org.kaana.mantic.enums.ETipoPago;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
@@ -41,9 +42,8 @@ import org.apache.log4j.Logger;
 
 public class Transaccion extends TransaccionFactura {
 
-  private static final Logger LOG    = Logger.getLogger(Transaccion.class);
-	private static final Long TIMBRADA = 3L;
-	private static final Long CANCELADA= 5L;
+  private static final Logger LOG= Logger.getLogger(Transaccion.class);	
+	
 	private TicketVenta orden;		
 	private String messageError;	
 	private String justificacion;
@@ -56,10 +56,6 @@ public class Transaccion extends TransaccionFactura {
 		this.correo   = correo;
 		this.idCliente= idCliente;
 	}	// Transaccion		
-	
-	public Transaccion(TicketVenta orden, String justificacion) {
-		this(orden, TIMBRADA, justificacion);
-	} // Transaccion	
 	
 	public Transaccion(TicketVenta orden, Long idEstatusFactura, String justificacion) { 		
 		this.orden           = orden;		
@@ -94,7 +90,7 @@ public class Transaccion extends TransaccionFactura {
 			switch(accion) {																						
 				case MODIFICAR:
 					this.messageError= "Ocurrio un error al generar la factura.";
-					if(this.idEstatusFactura.equals(TIMBRADA) && this.checkTotal(sesion)){
+					if(this.idEstatusFactura.equals(EEstatusFicticias.TIMBRADA.getIdEstatusFicticia()) && this.checkTotal(sesion)){
 						idEstatus= EEstatusFacturas.TIMBRADA.getIdEstatusFactura();
 						if(this.orden.getIdFactura()!= null && !this.orden.getIdFactura().equals(-1L)){
 							idFactura= this.orden.getIdFactura();
@@ -114,7 +110,7 @@ public class Transaccion extends TransaccionFactura {
 						registrarBitacoraFactura(sesion, idFactura, idEstatus, this.justificacion);
 						this.generarTimbradoFactura(sesion, this.orden.getIdVenta(), idFactura, this.orden.getCorreos());						
 					} // if
-					else if(this.idEstatusFactura.equals(CANCELADA)) {
+					else if(this.idEstatusFactura.equals(EEstatusFicticias.CANCELADA.getIdEstatusFicticia())) {
 						idEstatus= EEstatusFacturas.CANCELADA.getIdEstatusFactura();
 						this.messageError= "Ocurrio un error al cancelar la factura.";
 						params= new HashMap<>();
@@ -281,5 +277,5 @@ public class Transaccion extends TransaccionFactura {
 			throw new KajoolBaseException("No se puede timbrar porque el importe total difiere de los importes del detalle de la factura !");	
 		} // if	
 		return regresar;
-	}	
+	}	// checkTotal
 } 

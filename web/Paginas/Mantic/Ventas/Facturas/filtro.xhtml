@@ -193,7 +193,7 @@
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">                        
 						<p:menuitem id="timbrar" icon="fa fa-check" value="Timbrar" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasFacturasFiltro.doAccion('MODIFICAR')}" rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '0'}"/>					            
-            <p:separator rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado ne '0'}"/>					            
+            <p:separator rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '0'}"/>					            
 						<p:menuitem id="estatus" icon="fa fa-close" value="Cancelar" onstart="return janal.bloquear()" process="@this tabla"  oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado ne '0'}"/>					            
 						<p:separator rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>
 						<!--p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasFacturasFiltro.doMovimientos}"/-->            

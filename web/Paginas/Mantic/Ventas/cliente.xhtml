@@ -141,7 +141,7 @@
 							</f:facet>
 						</p:autoComplete>													
 						<p:inputText placeholder="Captura el nuevo código postal. Ej. 20284" id="cp" styleClass="janal-wid-100-txt cp-style" value="#{manticVentasCliente.domicilio.codigoPostal}" rendered="#{!manticVentasCliente.domicilio.nuevoCp}"/>						
-						<p:selectBooleanButton value="#{manticVentasCliente.attrs.cpNuevo}" onLabel="NO" offLabel="SI" id="nuevo">
+						<p:selectBooleanButton value="#{manticVentasCliente.attrs.cpNuevo}" onLabel="NO" offLabel="SI" id="nuevo" title="Selecciona SI, si el CP a captura es nuevo y NO si el CP ya existe.">
 							<p:ajax process="@this" update="panelDetalleDomicilio codigoPostal cp" listener="#{manticVentasCliente.doInicializaCodigo}" oncomplete="janal.refresh();"/>
 						</p:selectBooleanButton>
 						<p:spacer/>											
