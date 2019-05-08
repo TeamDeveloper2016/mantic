@@ -183,7 +183,7 @@ public abstract class FiltroFactura extends IBaseFilter{
 		return regresar;
 	} // toXml
 	
-	protected void doReporte(String nombre, boolean email) throws Exception{
+	protected void doReporte(String nombre, boolean email) throws Exception {
 		Parametros comunes = null;
 		Map<String, Object>params    = null;
 		Map<String, Object>parametros= null;
@@ -221,7 +221,7 @@ public abstract class FiltroFactura extends IBaseFilter{
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			      			
-			if(email){ 
+			if(email) { 
 				this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros), this.attrs.get("nameFacturaPdf").toString().replaceFirst(".pdf", ""));		
         this.reporte.doAceptarSimple();			
 			} // if
@@ -241,11 +241,11 @@ public abstract class FiltroFactura extends IBaseFilter{
 	public boolean doVerificarReporte() {
     boolean regresar = false;
 		RequestContext rc= UIBackingUtilities.getCurrentInstance();
-		if(this.reporte.getTotal()> 0L){
+		if(this.reporte.getTotal()> 0L) {
 			rc.execute("start(" + this.reporte.getTotal() + ")");	
       regresar = true;
     }
-		else{
+		else {
 			rc.execute("generalHide();");		
 			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
       regresar = false;

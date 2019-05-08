@@ -21,13 +21,20 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
+import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.enums.EReportes;
+import mx.org.kaana.mantic.facturas.reglas.Transferir;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 @Named(value= "manticVentasCajaFiltro")
 @ViewScoped
 public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements Serializable {
 
-	private static final long serialVersionUID = -7581515424168997834L;
+	private static final Log LOG              = LogFactory.getLog(Filtro.class);
+	private static final long serialVersionUID= -7581515424168997834L;
 	
   @PostConstruct
   @Override
@@ -147,20 +154,69 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 		return regresar.toString();
 	} // toEstatusCaja
 	
-  public String doIrFacturas(){
-		Entity factura = null;
-		String regresar= null;
+  public void doIrFacturas() {
 		try {
-			factura= (Entity) this.attrs.get("factura");
-			JsfBase.setFlashAttribute("idVenta", factura.getKey());
-			JsfBase.setFlashAttribute("regreso", false);			
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Ventas/Caja/filtro");			
-			regresar= "/Paginas/Mantic/Ventas/Facturas/filtro".concat(Constantes.REDIRECIONAR);
+			this.doReporte("FACTURAS_FICTICIAS_DETALLE", false);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
-		return regresar;
 	} // doIrFacturas
+	
+	protected void doReporte(String nombre, boolean email) throws Exception {
+		Parametros comunes           = null;
+		Map<String, Object>params    = null;
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = null;
+    Entity seleccionado          = null;
+		try {		
+      params= this.toPrepare();	
+      seleccionado = ((Entity)this.attrs.get("seleccionado"));
+			//recuperar el sello digital en caso de que la factura ya fue timbrada para que salga de forma correcta el reporte
+			if(seleccionado.toString("idFacturama")!= null && seleccionado.toString("selloSat")== null) {
+				Transferir transferir= null;
+				try {
+          transferir= new Transferir(seleccionado.toString("idFacturama"));
+				  transferir.ejecutar(EAccion.PROCESAR);
+				} // try
+        catch(Exception e) {
+					LOG.warn("La factura ["+ seleccionado.toLong("idFactura")+ "] presento un problema al recuperar el sello digital ["+ seleccionado.toString("idFacturama")+"]");
+          Error.mensaje(e);
+				} // catch
+				finally {
+					transferir= null;
+				} // finally
+			} // if
+      //es importante este orden para los grupos en el reporte	
+      params.put("sortOrder", "order by tc_mantic_ventas.id_empresa, tc_mantic_clientes.id_cliente, tc_mantic_ventas.ejercicio, tc_mantic_ventas.orden");
+      reporteSeleccion= EReportes.valueOf(nombre);
+      if(!reporteSeleccion.equals(EReportes.FACTURAS_FICTICIAS)) {
+        params.put("idFicticia", seleccionado.getKey());
+        comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), -1L, -1L, seleccionado.toLong("idCliente"));
+      } // if
+      else
+        comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.setReporte(JsfBase.toReporte());	
+      parametros= comunes.getComunes();
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			      			
+			if(email) { 
+				this.getReporte().toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros), this.attrs.get("nameFacturaPdf").toString().replaceFirst(".pdf", ""));		
+        this.getReporte().doAceptarSimple();			
+			} // if
+			else {				
+				this.getReporte().toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
+				this.doVerificarReporte();
+				this.getReporte().setPrevisualizar(true);
+				this.getReporte().doAceptar();			
+			} // else
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+  } // doReporte
+	
 }

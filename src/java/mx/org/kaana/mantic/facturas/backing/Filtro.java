@@ -226,7 +226,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 		} // catch		
 	} // toFindCliente
 	
-	public void doReporte(String nombre) throws Exception{
+	public void doReporte(String nombre) throws Exception {
 		doReporte(nombre, false);
 	} // doReporte	
   
