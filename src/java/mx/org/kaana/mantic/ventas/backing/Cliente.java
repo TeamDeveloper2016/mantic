@@ -73,6 +73,7 @@ public class Cliente extends IBaseAttribute implements Serializable {
 			this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
 			this.attrs.put("admin", JsfBase.isAdminEncuestaOrAdmin());
 			this.attrs.put("contactos", new ArrayList<>());
+			this.attrs.put("cpNuevo", false);
       doLoad();      					
     } // try
     catch (Exception e) {
@@ -109,6 +110,7 @@ public class Cliente extends IBaseAttribute implements Serializable {
 					loadTiposVentas();
 					loadDomicilioActual(idCliente);
 					loadContactosActual(idCliente);
+					this.attrs.put("cpNuevo", true);
 					break;
 				case AGREGAR:
 					registroCliente= new TcManticClientesDto();
@@ -734,7 +736,7 @@ public class Cliente extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // loadTiposVentas
 	
-	public List<UISelectEntity> doCompleteCodigoPostal(String query) {
+	public List<UISelectEntity> doCompleteCodigoPostal(String query) {		
 		if(this.domicilio.getIdEntidad().getKey()>= 1L && !Cadena.isVacio(query)){
 			this.attrs.put("condicionCodigoPostal", query);
 			this.doUpdateCodigosPostales();		
@@ -745,7 +747,7 @@ public class Cliente extends IBaseAttribute implements Serializable {
 			this.domicilio.setIdCodigoPostal(-1L);
 			this.domicilio.setCodigoPostal("");
 			return new ArrayList<>();
-		} // else
+		} // else		
 	}	// doCompleteCliente
 	
 	public void doUpdateCodigosPostales() {
@@ -801,4 +803,21 @@ public class Cliente extends IBaseAttribute implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doAsignaCliente
+	
+	public void doInicializaCodigo(){
+		try {
+			this.domicilio.setIdCodigoPostal(-1L);
+			this.domicilio.setCodigoPostal("");
+			if((Boolean)this.attrs.get("cpNuevo")){
+				this.domicilio.setNuevoCp(true);		
+				this.attrs.put("codigoSeleccionado", new UISelectEntity(-1L));
+			} // 				
+			else
+				this.domicilio.setNuevoCp(false);			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);		
+		} // catch		
+	} // doInicializaCodigo
 }
