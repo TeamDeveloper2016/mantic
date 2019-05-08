@@ -115,25 +115,9 @@ public class Filtro extends FiltroFactura implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch
 		return "/Paginas/Mantic/Ventas/Facturas/accion".concat(Constantes.REDIRECIONAR);
-  } // doAccion 
-	
-  public void doEliminar() {
-		Transaccion transaccion = null;
-		Entity seleccionado     = null;
-		try {
-			seleccionado= (Entity) this.attrs.get("seleccionado");			
-			transaccion= new Transaccion(new TicketVenta(seleccionado.getKey()), this.attrs.get("justificacionEliminar").toString());
-			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar", "La factura se ha eliminado correctamente.", ETipoMensaje.ERROR);
-			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la factura.", ETipoMensaje.ERROR);								
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch			
-  } // doEliminar
+  } // doAccion   
 
+	@Override
 	protected Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
