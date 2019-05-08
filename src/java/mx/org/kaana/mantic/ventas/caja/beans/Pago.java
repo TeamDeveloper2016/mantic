@@ -6,11 +6,13 @@ import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.compras.ordenes.beans.Totales;
+import mx.org.kaana.mantic.enums.ETipoMediosPago;
 
 public class Pago implements Serializable{
 
 	private static final long serialVersionUID= -1010567299549184249L;
 	private Totales totales;	
+	private Long idBanco;
 	private UISelectEntity bancoCredito;
 	private UISelectEntity bancoDebito;
 	private UISelectEntity bancoCheque;
@@ -21,6 +23,7 @@ public class Pago implements Serializable{
 	private Double cheque;
 	private Double vales;	
 	private Double transferencia;	
+	private String referencia;
 	private String referenciaCredito;
 	private String referenciaDebito;
 	private String referenciaCheque;
@@ -75,6 +78,8 @@ public class Pago implements Serializable{
 		this.difEfectivo       = 0D;
 		this.difTransferencia  = 0D;
 		this.abono             = 0D;
+		this.referencia        = "";
+		this.idBanco           = -1L;
 	}
 	
 	public Totales getTotales() {
@@ -346,4 +351,40 @@ public class Pago implements Serializable{
 	public void setDifCheque(Double difCheque) {
 		this.difCheque = difCheque;
 	}	
+	
+	public Long getIdTipoMedioPago(){
+		Long regresar= -1L;
+		if((this.efectivo > 0D && this.debito<= 0 && this.credito<= 0 && this.transferencia<= 0 && this.cheque<= 0) || (this.efectivo > 0D && (this.debito>= 0 || this.credito>= 0 || this.transferencia>= 0 || this.cheque>= 0))){
+			regresar= ETipoMediosPago.EFECTIVO.getIdTipoMedioPago();
+		} // if
+		else if(this.debito > 0D && this.efectivo<= 0 && this.credito<= 0 && this.transferencia<= 0 && this.cheque<= 0){
+			regresar= ETipoMediosPago.TARJETA_DEBITO.getIdTipoMedioPago();
+			this.idBanco= this.bancoDebito.getKey();
+			this.referencia= this.referenciaDebito;
+		} // else id
+		else if(this.credito > 0D && this.efectivo<= 0 && this.debito<= 0 && this.transferencia<= 0 && this.cheque<= 0){
+			regresar= ETipoMediosPago.TARJETA_CREDITO.getIdTipoMedioPago();
+			this.idBanco= this.bancoCredito.getKey();
+			this.referencia= this.referenciaCredito;
+		} // else id
+		else if(this.transferencia > 0D && this.efectivo<= 0 && this.credito<= 0 && this.debito<= 0 && this.cheque<= 0){
+			regresar= ETipoMediosPago.TRANSFERENCIA.getIdTipoMedioPago();
+			this.idBanco= this.bancoTransferencia.getKey();
+			this.referencia= this.referenciaTransferencia;
+		} // else id
+		else if(this.cheque > 0D && this.efectivo<= 0 && this.credito<= 0 && this.transferencia<= 0 && this.debito<= 0){
+			regresar= ETipoMediosPago.CHEQUE.getIdTipoMedioPago();
+			this.idBanco= this.bancoCheque.getKey();
+			this.referencia= this.referenciaCheque;
+		} // else id
+		return regresar;
+	} // getIdTipoMedioPago
+	
+	public Long getIdBanco(){
+		return idBanco;
+	}
+	
+	public String getReferencia(){
+		return referencia;
+	}
 }
