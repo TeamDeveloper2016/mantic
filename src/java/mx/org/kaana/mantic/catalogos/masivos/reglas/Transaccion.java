@@ -380,6 +380,21 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toFindArticulo
 
+	private TcManticArticulosDto toFindArticuloIdentico(Session sesion, Map<String, Object> params, Long idArticuloTipo) {
+		TcManticArticulosDto regresar= null;
+		try {
+			params.put("idArticuloTipo", idArticuloTipo);
+			regresar= (TcManticArticulosDto)DaoFactory.getInstance().toEntity(sesion, TcManticArticulosDto.class, "VistaCargasMasivasDto", "identico", params);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toFindArticulo
+
   private Boolean toArticulos(Session sesion, File archivo) throws Exception {
 		Boolean regresar	      = false;
 		Workbook workbook	      = null;
@@ -477,7 +492,22 @@ public class Transaccion extends IBaseTnx {
 									"0", // String extra, 
 									null // String idFacturama
 								);
-								DaoFactory.getInstance().insert(sesion, articulo);
+  							TcManticArticulosDto identico= this.toFindArticuloIdentico(sesion, articulo.toMap(), 1L);
+								if(identico== null)
+  								DaoFactory.getInstance().insert(sesion, articulo);
+								else {
+									identico.setMinimo(minimo== 0D? 10D: minimo);
+									identico.setMaximo(maximo== 0D? 20D: maximo);
+									identico.setLimiteMedioMayoreo(lmenudeo== 0D? 20D: lmenudeo);
+									identico.setLimiteMayoreo(lmayoreo== 0D? 50D: lmayoreo);
+									identico.setMenudeo(menudeo);
+									identico.setMedioMayoreo(medio);
+									identico.setMayoreo(mayoreo);
+									identico.setIva(iva);
+									identico.setPrecio(costo);
+  								DaoFactory.getInstance().update(sesion, identico);
+									articulo.setIdArticulo(identico.getIdArticulo());
+								} // if
 								// insertar el codigo principal del articulo
 								codigos= new TcManticArticulosCodigosDto(
 									codigo, // String codigo, 
@@ -675,7 +705,18 @@ public class Transaccion extends IBaseTnx {
 									"0", // String extra, 
 									null // String idFacturama
 								);
-								DaoFactory.getInstance().insert(sesion, refaccion);
+  							TcManticArticulosDto identico= this.toFindArticuloIdentico(sesion, refaccion.toMap(), 1L);
+								if(identico== null)
+  								DaoFactory.getInstance().insert(sesion, refaccion);
+								else {
+									identico.setMenudeo(costo);
+									identico.setMedioMayoreo(costo);
+									identico.setMayoreo(costo);
+									identico.setIva(iva);
+									identico.setPrecio(Numero.toRedondear(costo- (costo* ((1+ (iva/ 100))- costo))));
+  								DaoFactory.getInstance().update(sesion, identico);
+									refaccion.setIdArticulo(identico.getIdArticulo());
+								} // if
 								// insertar el codigo principal del articulo
 								codigos= new TcManticArticulosCodigosDto(
 									codigo, // String codigo, 
@@ -858,7 +899,18 @@ public class Transaccion extends IBaseTnx {
 									"0", // String extra, 
 									null // String idFacturama
 								);
-								DaoFactory.getInstance().insert(sesion, servicio);
+  							TcManticArticulosDto identico= this.toFindArticuloIdentico(sesion, servicio.toMap(), 1L);
+								if(identico== null)
+  								DaoFactory.getInstance().insert(sesion, servicio);
+								else {
+									identico.setMenudeo(costo);
+									identico.setMedioMayoreo(costo);
+									identico.setMayoreo(costo);
+									identico.setIva(iva);
+									identico.setPrecio(costo);
+  								DaoFactory.getInstance().update(sesion, identico);
+									servicio.setIdArticulo(identico.getIdArticulo());
+								} // if
 								// insertar el codigo principal del articulo
 								codigos= new TcManticArticulosCodigosDto(
 									codigo, // String codigo, 

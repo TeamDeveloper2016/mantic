@@ -77,7 +77,7 @@
         from      
           tc_mantic_egresos_notas
         where      
-          id_egreso = {idEgreso} and id_egreso_nota = {idEgresoNota} and comentario = '{comentario}'
+          id_egreso = {idEgreso} and comentario = '{comentario}'
       </select>
     </unit>		
     <unit id="TcManticEgresosEstatusDto">
@@ -96,7 +96,7 @@
         from      
           tc_mantic_egresos_estatus
         where      
-          id_egreso_estatus = {idEgresoEstatus} and nombre = '{nombre}'
+          nombre = '{nombre}'
       </select>
     </unit>		
     <unit id="TcManticEgresosBitacoraDto">
@@ -385,7 +385,7 @@
         from      
           tc_mantic_bancos
         where      
-          nombre = '{nombre}' and id_banco = {idBanco}
+          nombre = '{nombre}'
       </select>
     </unit>
     <unit id="TcManticEstadosCivilesDto">
@@ -403,7 +403,7 @@
         from      
           tc_mantic_estados_civiles
         where      
-          id_estado_civil = {idEstadoCivil} and nombre = '{nombre}'
+          nombre = '{nombre}'
       </select>
       <select id="all">
         select      
@@ -430,7 +430,7 @@
         from      
           tc_mantic_facturas_archivos
         where      
-          id_factura = {idFactura} and id_factura_archivo = {idFacturaArchivo} and id_tipo_archivo = {idTipoArchivo} and mes = {mes} and nombre = '{nombre}' and ejercicio = {ejercicio}
+          id_factura = {idFactura} and id_tipo_archivo = {idTipoArchivo} and mes = {mes} and nombre = '{nombre}' and ejercicio = {ejercicio}
       </select>
       <select id="total">
         select      
@@ -439,24 +439,6 @@
           tc_mantic_facturas_archivos
         where 
           id_factura = {idFactura}
-      </select>
-    </unit>		
-    <unit id="TcManticFacturamaBitacoraDto">
-      <select id="row">
-        select      
-          *
-        from      
-          tc_mantic_facturama_bitacora
-        where 
-          {condicion} 
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tc_mantic_facturama_bitacora
-        where      
-          id_facturama_bitacora = {idFacturamaBitacora}
       </select>
     </unit>		
 		<unit id="TrManticGarantiaMedioPagoDto">
@@ -474,7 +456,7 @@
         from      
           tr_mantic_garantia_medio_pago
         where      
-          id_garantia = {idGarantia} and id_tipo_medio_pago = {idTipoMedioPago} and importe = {importe} and id_garantia_medio_pago = {idGarantiaMedioPago} and id_banco = {idBanco}
+          id_garantia = {idGarantia} and id_tipo_medio_pago = {idTipoMedioPago} and importe = {importe} and id_banco = {idBanco}
       </select>
     </unit>
     <unit id="TcManticAlertasDto">
@@ -507,6 +489,14 @@
 				order by 
 					id_garantia_estatus
 			</select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_garantias_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
 		</unit>
 		<unit id="TcManticFicticiasEstatusDto">
       <select id="row">
@@ -768,7 +758,7 @@
         from      
           tc_mantic_apartados_bitacora
         where      
-          id_apartado_bitacora = {idApartadoBitacora} and id_apartado_estatus = {idApartadoEstatus} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+          id_apartado_estatus = {idApartadoEstatus} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
       </select>
     </unit>
     <unit id="TcManticApartadosEstatusDto">
@@ -2667,7 +2657,7 @@
         from      
           tc_mantic_articulos
         where      
-          id_empaque_unidad_medida = {idEmpaqueUnidadMedida} and id_empresa = {idEmpresa} and id_articulo = {idArticulo} and nombre = '{nombre}'
+          id_empaque_unidad_medida = {idEmpaqueUnidadMedida} and id_empresa = {idEmpresa} and nombre = '{nombre}'
       </select>
       <select id="detalle">
         select      
@@ -2732,7 +2722,7 @@
         from      
           tc_mantic_articulos_codigos
         where      
-          codigo = '{codigo}' and id_articulo_codigo = {idArticuloCodigo} and id_articulo = {idArticulo}
+          codigo = '{codigo}' and id_articulo = {idArticulo} and id_proveedor = {idProveedor} and id_principal = {idPrincipal}
       </select>
       <select id="propio">
         select      
@@ -2786,7 +2776,7 @@
         from      
           tc_mantic_articulos_descuentos
         where      
-          vigencia_final = '{vigenciaFinal}' and vigencia_inicial = '{vigenciaInicial}' and porcentaje = {porcentaje} and id_articulo_descuento = {idArticuloDescuento}
+          vigencia_final = '{vigenciaFinal}' and vigencia_inicial = '{vigenciaInicial}' and porcentaje = {porcentaje}
       </select>
 			<select id="maximo">
         select      
@@ -2813,7 +2803,7 @@
         from      
           tc_mantic_articulos_disenios
         where      
-          id_articulo_disenio = {idArticuloDisenio} and id_articulo = {idArticulo} and nombre = '{nombre}'
+          id_articulo = {idArticulo} and nombre = '{nombre}'
       </select>
     </unit>
 		<unit id="TcManticArticulosEspecificacionesDto">
@@ -2832,7 +2822,7 @@
         from      
           tc_mantic_articulos_especificaciones
         where      
-          id_articulo_especificacion = {idArticuloEspecificacion} and id_articulo = {idArticulo} and nombre = '{nombre}'
+          id_articulo = {idArticulo} and nombre = '{nombre}'
       </select>
 			<select id="maximo">
         select      
@@ -2859,7 +2849,7 @@
         from      
           tc_mantic_articulos_dimenciones
         where      
-          id_articulo_dimension = {idArticuloDimension} and id_articulo = {idArticulo}
+          id_articulo = {idArticulo}
       </select>
 			<select id="maximo">
         select      
@@ -3028,7 +3018,7 @@
         from      
           tc_mantic_imagenes
         where      
-          id_imagen = {idImagen} and id_tipo_imagen = {idTipoImagen} and nombre = '{nombre}'
+          id_tipo_imagen = {idTipoImagen} and nombre = '{nombre}'
       </select>
 			<delete id="rows">
         delete from tc_mantic_imagenes where id_articulo={idArticulo} 
@@ -3049,7 +3039,7 @@
         from      
           tr_mantic_cliente_domicilio
         where      
-          id_cliente = {idCliente} and id_cliente_domicilio = {idClienteDomicilio} and id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal}
+          id_cliente = {idCliente} and id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal}
       </select>
 			<select id="maximo">
         select      
@@ -3088,7 +3078,7 @@
         from      
           tr_mantic_cliente_tipo_contacto
         where      
-          id_cliente = {idCliente} and id_cliente_tipo_contacto = {idClienteTipoContacto} and id_tipo_contacto = {idTipoContacto}
+          id_cliente = {idCliente} and id_tipo_contacto = {idTipoContacto}
       </select>      
 			<select id="maximo">
         select      
@@ -3128,7 +3118,7 @@
 			</select>
 			<select id="codigosPostales">
 				select   
-					id_domicilio AS id_key,
+					id_domicilio as id_key,
 					codigo_postal
 				from 
 				  tc_mantic_domicilios
@@ -3206,7 +3196,7 @@
         from      
           tc_mantic_almacenes
         where      
-          id_almacen = {idAlmacen} and id_empresa = {idEmpresa} and nombre = '{nombre}'
+          id_empresa = {idEmpresa} and nombre = '{nombre}'
       </select>
       <select id="almacenes">
         select      
@@ -3301,7 +3291,7 @@
         from      
           tc_mantic_proveedores_bancos
         where      
-          id_proveedor = {idProveedor} and convenio_cuenta = '{convenioCuenta}' and id_proveedor_banca = {idProveedorBanca} and id_tipo_cuenta = {idTipoCuenta} and clabe_referencia = '{clabeReferencia}'
+          id_proveedor = {idProveedor} and convenio_cuenta = '{convenioCuenta}' and id_tipo_cuenta = {idTipoCuenta} and clabe_referencia = '{clabeReferencia}'
       </select>
 			<select id="maximo">
         select      
@@ -3329,7 +3319,7 @@
         from      
           tc_mantic_proveedores_portales
         where      
-          pagina = '{pagina}' and id_proveedor_portal = {idProveedorPortal} and id_proveedor = {idProveedor} and cuenta = '{cuenta}'
+          pagina = '{pagina}' and id_proveedor = {idProveedor} and cuenta = '{cuenta}'
       </select>
 			<select id="maximo">
         select      
@@ -3356,7 +3346,7 @@
         from      
           tc_mantic_almacenes_ubicaciones
         where      
-          piso = '{piso}' and id_almacen = {idAlmacen} and id_almacen_ubicacion = {idAlmacenUbicacion}
+          piso = '{piso}' and id_almacen = {idAlmacen}
       </select>
       <select id="default">
         select      
@@ -3413,7 +3403,7 @@
         from      
           tc_mantic_cargos_compras
         where      
-          nombre = '{nombre}' and id_cargo_compra = {idCargoCompra}
+          nombre = '{nombre}'
       </select>
     </unit>
 	    <unit id="TcManticCodigosPostalesDto">
@@ -3434,7 +3424,7 @@
         from      
           tc_mantic_codigos_postales
         where      
-          id_codigo_postal = {idCodigoPostal}
+          id_entidad= {idEntidad} and codigo= '{codigo}'
       </select>
 			<select id="entidadCodigo">
 				select 
@@ -3463,7 +3453,7 @@
         from      
           tc_mantic_detalles_compras
         where      
-          id_detalle_compra = {idDetalleCompra} and id_orden_compra = {idOrdenCompra} and id_articulo = {idArticulo}
+          id_orden_compra = {idOrdenCompra} and id_articulo = {idArticulo}
       </select>
     </unit>
 	  <unit id="TcManticEmpaquesDto">
@@ -3482,7 +3472,7 @@
         from      
           tc_mantic_empaques
         where      
-          id_empaque = {idEmpaque} and nombre = '{nombre}'
+          nombre = '{nombre}'
       </select>
     </unit>
 	  <unit id="TcManticEmpresasDto">
@@ -3501,7 +3491,7 @@
         from      
           tc_mantic_empresas
         where      
-          id_empresa = {idEmpresa} and id_tipo_empresa = {idTipoEmpresa} and nombre = '{nombre}'
+          id_tipo_empresa = {idTipoEmpresa} and nombre = '{nombre}'
       </select>
       <select id="sucursales">
         select      
@@ -3541,7 +3531,7 @@
         from      
           tc_mantic_manufacturas
         where      
-          id_manufactura = {idManufactura} and nombre = '{nombre}'
+          nombre = '{nombre}'
       </select>
     </unit>
 	  <unit id="TcManticOrdenesComprasDto">
@@ -3594,7 +3584,7 @@
         from      
           tc_mantic_persona_domicilio
         where      
-          id_persona = {idPersona} and id_persona_domicilio = {idPersonaDomicilio} and id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal}
+          id_persona = {idPersona} and id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal}
       </select>
     </unit>
 	    <unit id="TcManticPersonasTitulosDto">
@@ -3633,7 +3623,7 @@
         from      
           tc_mantic_presentaciones
         where      
-          id_presentacion = {idPresentacion} and nombre = '{nombre}'
+          nombre = '{nombre}'
       </select>
     </unit>
 	    <unit id="TcManticPuestosDto">
@@ -3672,7 +3662,7 @@
         from      
           tc_mantic_sino
         where      
-          clave = '{clave}' and id_sino = {idSino}
+          clave = '{clave}'
       </select>
     </unit>
     <unit id="TcManticTiposContactosDto">
@@ -3693,7 +3683,7 @@
         from      
           tc_mantic_tipos_contactos
         where      
-          nombre = '{nombre}' and id_tipo_contacto = {idTipoContacto}
+          nombre = '{nombre}'
       </select>
     </unit>
 	  <unit id="TcManticTiposDiasDto">
@@ -3711,7 +3701,7 @@
         from      
           tc_mantic_tipos_dias
         where      
-          id_tipo_dia = {idTipoDia} and nombre = '{nombre}'
+          nombre = '{nombre}'
       </select>
     </unit>
 	    <unit id="TcManticTiposDomiciliosDto">
@@ -3729,7 +3719,7 @@
         from      
           tc_mantic_tipos_domicilios
         where      
-          id_tipo_domicilio = {idTipoDomicilio} and nombre = '{nombre}'
+          nombre = '{nombre}'
       </select>
     </unit>
 	    <unit id="TcManticTiposEmpresasDto">
@@ -3747,28 +3737,10 @@
         from      
           tc_mantic_tipos_empresas
         where      
-          nombre = '{nombre}' and id_tipo_empresa = {idTipoEmpresa}
+          nombre = '{nombre}'
       </select>
     </unit>
-	    <unit id="TcManticTiposFormasPagosDto">
-      <select id="row">
-        select      
-          *
-        from      
-          tc_mantic_tipos_formas_pagos
-        where 
-          {condicion} 
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tc_mantic_tipos_formas_pagos
-        where      
-          id_tipo_medio_pago = {idTipoMedioPago} and nombre = '{nombre}'
-      </select>
-    </unit>
-	    <unit id="TcManticTiposImagenesDto">
+    <unit id="TcManticTiposImagenesDto">
       <select id="row">
         select      
           *
@@ -3783,7 +3755,7 @@
         from      
           tc_mantic_tipos_imagenes
         where      
-          id_tipo_imagen = {idTipoImagen} and nombre = '{nombre}'
+          nombre = '{nombre}'
       </select>
     </unit>
 	    <unit id="TcManticTiposMediosDto">
@@ -3801,7 +3773,7 @@
         from      
           tc_mantic_tipos_medios
         where      
-          id_tipo_medio = {idTipoMedio} and nombre = '{nombre}'
+          nombre = '{nombre}'
       </select>
     </unit>
 	  <unit id="TcManticTiposMediosPagosDto">
@@ -3820,7 +3792,7 @@
         from      
           tc_mantic_tipos_medios_pagos
         where      
-          id_tipo_medio_pago = {idTipoMedioPago} and nombre = '{nombre}'
+          nombre = '{nombre}'
       </select>
       <select id="caja">
         select      
@@ -3848,7 +3820,7 @@
         from      
           tc_mantic_tipos_monedas
         where      
-          id_tipo_moneda = {idTipoMoneda} and nombre = '{nombre}'
+          nombre = '{nombre}'
       </select>
     </unit>
 	    <unit id="TcManticTiposPagosDto">
@@ -3867,7 +3839,7 @@
         from      
           tc_mantic_tipos_pagos
         where      
-          id_tipo_medio_pago = {idTipoMedioPago} and id_tipo_pago = {idTipoPago} and nombre = '{nombre}'
+          id_tipo_medio_pago = {idTipoMedioPago} and nombre = '{nombre}'
       </select>
     </unit>
 	    <unit id="TcManticTiposPersonasDto">
@@ -3886,7 +3858,7 @@
         from      
           tc_mantic_tipos_personas
         where      
-          nombre = '{nombre}' and id_tipo_persona = {idTipoPersona}
+          nombre = '{nombre}'
       </select>
     </unit>
 	  <unit id="TcManticTiposProveedoresDto">
@@ -3907,10 +3879,10 @@
         from      
           tc_mantic_tipos_proveedores
         where      
-          id_tipo_proveedor = {idTipoProveedor} and nombre = '{nombre}'
+          nombre = '{nombre}'
       </select>
     </unit>
-	    <unit id="TcManticTiposSexosDto">
+	  <unit id="TcManticTiposSexosDto">
       <select id="row">
         select      
           *
@@ -3925,10 +3897,10 @@
         from      
           tc_mantic_tipos_sexos
         where      
-          id_tipo_sexo = {idTipoSexo} and nombre = '{nombre}'
+          nombre = '{nombre}'
       </select>
     </unit>
-	    <unit id="TcManticTiposVentasDto">
+	  <unit id="TcManticTiposVentasDto">
       <select id="row">
         select 
 					tc_mantic_tipos_ventas.id_tipo_venta as id_key,
@@ -3947,7 +3919,7 @@
           nombre = '{nombre}' and id_tipo_venta = {idTipoVenta}
       </select>
     </unit>
-	    <unit id="TcManticUnidadesMedidasDto">
+	  <unit id="TcManticUnidadesMedidasDto">
       <select id="row">
         select      
           *
@@ -3962,7 +3934,7 @@
         from      
           tc_mantic_unidades_medidas
         where      
-          id_unidad_medida = {idUnidadMedida} and nombre = '{nombre}'
+          nombre = '{nombre}'
       </select>
     </unit>
 	  <unit id="TcManticUsosCfdiDto">
@@ -3981,7 +3953,7 @@
         from      
           tc_mantic_usos_cfdi
         where      
-          clave = '{clave}' and id_uso_cfdi = {idUsoCfdi}
+          clave = '{clave}'
       </select>
     </unit>
 		<unit id="TcManticNotasDetallesDto">
@@ -4038,7 +4010,7 @@
         from      
           tc_mantic_notas_bitacora
         where      
-          id_nota_bitacora = {idNotaBitacora} and id_nota_entrada = {idNotaEntrada} and id_nota_estatus = {idNotaEstatus}
+          id_nota_entrada = {idNotaEntrada} and id_nota_estatus = {idNotaEstatus}
       </select>
 			<select id="ultimo">
 				select
@@ -4155,7 +4127,7 @@
         from      
           tc_mantic_ventas_detalles
         where      
-          id_venta_detalle = {idVentaDetalle} and id_articulo = {idArticulo} and id_venta = {idVenta}
+          id_articulo = {idArticulo} and id_venta = {idVenta}
       </select>
       <select id="detalle">
         select      
@@ -4206,7 +4178,7 @@
         from      
           tc_mantic_ventas_bitacora
         where      
-          id_venta_bitacora = {idVentaBitacora} and id_venta = {idVenta} and id_venta_estatus = {idVentaEstatus}
+          id_venta = {idVenta} and id_venta_estatus = {idVentaEstatus}
       </select>
 			<delete id="rows">
 				delete from tc_mantic_ventas_bitacora where id_venta= {idVenta}
@@ -4353,7 +4325,7 @@
         from      
           tc_mantic_notas_estatus
         where      
-          nombre = '{nombre}' and id_nota_estatus = {idNotaEstatus}
+          nombre = '{nombre}'
       </select>
     </unit>		
     <unit id="TcManticOrdenesEstatusDto">
@@ -4374,7 +4346,7 @@
         from      
           tc_mantic_ordenes_estatus
         where      
-          id_orden_estatus = {idOrdenEstatus} and nombre = '{nombre}'
+          nombre = '{nombre}'
       </select>
     </unit>
     <unit id="TcManticVentasEstatusDto">
@@ -4396,7 +4368,7 @@
         from      
           tc_mantic_ventas_estatus
         where      
-          nombre = '{nombre}' and id_venta_estatus = {idVentaEstatus}
+          nombre = '{nombre}'
       </select>
     </unit>		
 		<unit id="TcManticGruposDto">
@@ -4467,7 +4439,7 @@
         from      
           tr_mantic_articulo_grupo_descuento
         where      
-          id_grupo = {idGrupo} and id_articulo_grupo_descuento = {idArticuloGrupoDescuento} and porcentaje = {porcentaje} and id_articulo = {idArticulo}
+          id_grupo = {idGrupo} and porcentaje = {porcentaje} and id_articulo = {idArticulo}
       </select>
 			<select id="maximo">
         select      
@@ -4494,7 +4466,7 @@
         from      
           tc_mantic_ordenes_bitacora
         where      
-          id_orden_compra = {idOrdenCompra} and id_orden_bitacora = {idOrdenBitacora} and id_orden_estatus = {idComprasEstatus}
+          id_orden_compra = {idOrdenCompra} and id_orden_estatus = {idComprasEstatus}
       </select>
 			<select id="ultimo">
 				select
@@ -4685,7 +4657,7 @@
         from      
           tc_mantic_trabajos
         where      
-          codigo = '{codigo}' and id_trabajo = {idTrabajo} and id_empresa = {idEmpresa}
+          codigo = '{codigo}' and id_empresa = {idEmpresa}
       </select>
     </unit>
 		<unit id="TcManticClientesArchivosDto">
@@ -4703,7 +4675,7 @@
         from      
           tc_mantic_clientes_archivos
         where      
-          id_cliente_representante = {idClienteRepresentante} and id_tipo_archivo = {idTipoArchivo} and id_cliente_archivo = {idClienteArchivo} and nombre = '{nombre}'
+          id_cliente_representante = {idClienteRepresentante} and id_tipo_archivo = {idTipoArchivo} and nombre = '{nombre}'
       </select>
 			<select id="listado">
         select      
