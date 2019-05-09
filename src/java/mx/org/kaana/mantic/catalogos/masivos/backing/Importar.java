@@ -26,7 +26,6 @@ import mx.org.kaana.mantic.catalogos.comun.IBaseImportar;
 import mx.org.kaana.mantic.catalogos.masivos.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 import mx.org.kaana.mantic.db.dto.TcManticMasivasArchivosDto;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 

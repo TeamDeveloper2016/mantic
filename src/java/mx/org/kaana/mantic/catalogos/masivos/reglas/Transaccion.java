@@ -2,7 +2,6 @@ package mx.org.kaana.mantic.catalogos.masivos.reglas;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -430,7 +429,9 @@ public class Transaccion extends IBaseTnx {
 						double maximo  = Numero.getDouble(sheet.getCell(12, fila).getContents()!= null? sheet.getCell(12, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
 						String nombre= new String(contenido.getBytes(ISO_8859_1), UTF_8);
 						if(costo> 0 && menudeo> 0 && medio> 0 && mayoreo> 0) {
+							nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
 							String codigo= new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+							codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim();
 							TcManticArticulosDto articulo= this.toFindArticulo(sesion, codigo, 1L);
 							if(articulo!= null) {
 								articulo.setIdCategoria(null);
@@ -588,7 +589,8 @@ public class Transaccion extends IBaseTnx {
 					DaoFactory.getInstance().update(sesion, bitacora);
 				} // if
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
-				regresar       = true;
+ 				this.procesados= this.masivo.getTuplas().intValue();
+				regresar= true;
 			} // if
 		} // try
 		catch (IOException | BiffException e) {
@@ -652,7 +654,9 @@ public class Transaccion extends IBaseTnx {
 						String nombre= new String(contenido.getBytes(ISO_8859_1), UTF_8);
 						String especificacion= new String(descripcion.getBytes(ISO_8859_1), UTF_8);
 						if(costo > 0) {
+							nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
 							String codigo= new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+							codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim();
 							TcManticArticulosDto refaccion= this.toFindArticulo(sesion, codigo, 2L);
 							if(refaccion!= null) {
 								// si trae nulo, blanco o cero se respeta el valor que tiene el campo								
@@ -804,6 +808,7 @@ public class Transaccion extends IBaseTnx {
 					DaoFactory.getInstance().update(sesion, bitacora);
 				} // if
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
+ 				this.procesados= this.masivo.getTuplas().intValue();
 				regresar       = true;
 			} // if
 		} // try
@@ -847,7 +852,9 @@ public class Transaccion extends IBaseTnx {
 						double iva  = Numero.getDouble(sheet.getCell(3, fila).getContents()!= null? sheet.getCell(3, fila).getContents().replaceAll("[$, ]", ""): "0", 16D);						
 						String nombre= new String(contenido.getBytes(ISO_8859_1), UTF_8);
 						if(costo > 0) {
+							nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
 							String codigo= new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+							codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim();
 							TcManticArticulosDto servicio= this.toFindArticulo(sesion, codigo, 3L);
 							if(servicio!= null) {
 								servicio.setIdCategoria(null);
@@ -991,6 +998,7 @@ public class Transaccion extends IBaseTnx {
 					DaoFactory.getInstance().update(sesion, bitacora);
 				} // if
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
+ 				this.procesados= this.masivo.getTuplas().intValue();
 				regresar       = true;
 			} // if
 		} // try
@@ -1101,6 +1109,7 @@ public class Transaccion extends IBaseTnx {
 					DaoFactory.getInstance().update(sesion, bitacora);
 				} // if
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
+ 				this.procesados= this.masivo.getTuplas().intValue();
 				regresar       = true;
 			} // if
 		} // try
@@ -1298,6 +1307,7 @@ public class Transaccion extends IBaseTnx {
 					DaoFactory.getInstance().update(sesion, bitacora);
 				} // if
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
+ 				this.procesados= this.masivo.getTuplas().intValue();
 				regresar       = true;
 			} // if
 		} // try
@@ -1475,6 +1485,7 @@ public class Transaccion extends IBaseTnx {
 					DaoFactory.getInstance().update(sesion, bitacora);
 				} // if
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
+ 				this.procesados= this.masivo.getTuplas().intValue();
 				regresar       = true;
 			} // if
 		} // try
