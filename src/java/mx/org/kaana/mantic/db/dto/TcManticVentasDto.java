@@ -114,6 +114,8 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
   private Long idTipoVenta;
 	@Column (name="candado")
   private Long candado;
+	@Column (name="id_sincronizado")
+  private Long idSincronizado;
 
   public TcManticVentasDto() {
     this(new Long(-1L));
@@ -178,6 +180,7 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		this.referencia= referencia;
 		this.idTipoVenta= idTipoVenta;
 		setCandado(candado);
+		this.idSincronizado= 2L;
   }
 	
 	public Long getIdManual() {
@@ -507,6 +510,14 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 	public void setCandado(Long candado) {
 		this.candado = candado;
 	}	
+
+	public Long getIdSincronizado() {
+		return idSincronizado;
+	}
+
+	public void setIdSincronizado(Long idSincronizado) {
+		this.idSincronizado=idSincronizado;
+	}
 	
   @Transient
   @Override
@@ -604,6 +615,8 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		regresar.append(getIdTipoVenta());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCandado());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdSincronizado());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -652,13 +665,14 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		regresar.put("referencia", getReferencia());
 		regresar.put("idTipoVenta", getIdTipoVenta());
 		regresar.put("candado", getCandado());
+		regresar.put("idSincronizado", getIdSincronizado());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-			getDescuentos(), getIdFactura(), getIdCredito(), getExtras(), getGlobal(), getUtilidad(), getTotal(), getIdAlmacen(), getTipoDeCambio(), getOrden(), getIdAutorizar(), getIdCliente(), getDescuento(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getIdVenta(), getDia(), getIdVentaEstatus(), getTicket(), getCotizacion(), getTicket(), getCcotizacion(), getVigencia(), getIdManual(), getIdFacturar(), getCobro(), getIdClienteDomicilio(), getIdTipoMedioPago(), getIdTipoPago(), getIdBanco(), getReferencia(), getIdTipoVenta(), getCandado()
+			getDescuentos(), getIdFactura(), getIdCredito(), getExtras(), getGlobal(), getUtilidad(), getTotal(), getIdAlmacen(), getTipoDeCambio(), getOrden(), getIdAutorizar(), getIdCliente(), getDescuento(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getIdVenta(), getDia(), getIdVentaEstatus(), getTicket(), getCotizacion(), getTicket(), getCcotizacion(), getVigencia(), getIdManual(), getIdFacturar(), getCobro(), getIdClienteDomicilio(), getIdTipoMedioPago(), getIdTipoPago(), getIdBanco(), getReferencia(), getIdTipoVenta(), getCandado(), getIdSincronizado()
     };
     return regresar;
   }

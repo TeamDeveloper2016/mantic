@@ -4,6 +4,32 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaSincronizarDto">
+			<select id="lazy">
+          tc_mantic_ventas.id_venta as id_key,
+				  tc_mantic_ventas.id_empresa,
+				  tc_mantic_empresas.clave as empresa,  
+				  tc_mantic_empresas.nombre as nombre_empresa,  
+          tc_mantic_ventas.consecutivo,
+				  tc_mantic_ventas.id_usuario,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
+				  tc_mantic_ventas.id_sincronizado,
+				  tc_mantic_ventas.registro
+        from
+          tc_mantic_ventas
+				inner join 
+					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
+				inner join
+					tc_janal_usuarios on tc_mantic_ventas.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where 
+          tc_mantic_ventas.id_empresa in ({idEmpresa}) 
+          and tc_mantic_ventas.id_sincronizado= 2
+				  and {condicion}	
+        {sortOrder}
+			</select>
+		</unit>			
     <unit id="VistaConfrontasDto">
 			<select id="confronta">
 				select

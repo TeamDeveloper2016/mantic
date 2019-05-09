@@ -68,7 +68,8 @@ public abstract class IBaseTnx {
 	}
 
   protected int getCurrentYear() {
-		return Configuracion.getInstance().isEtapaDesarrollo()? Fecha.getAnioActual()* 10+ 1: Fecha.getAnioActual();
+		//return Configuracion.getInstance().isEtapaDesarrollo()? Fecha.getAnioActual()* 10+ 1: Fecha.getAnioActual();
+		return Fecha.getAnioActual();
 	}	
 	
 }
