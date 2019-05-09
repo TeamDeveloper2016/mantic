@@ -13,6 +13,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
+import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
 import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Cadena;
@@ -143,7 +144,7 @@ public class Transaccion extends TransaccionFactura {
 		boolean regresar          = false;
 		Map<String, Object> params= null;
 		Long idEstatusVenta       = null;
-		Long consecutivo          = 1L;
+		Siguiente consecutivo     = null;
 		try {
 			idEstatusVenta= EEstatusVentas.ELABORADA.getIdEstatusVenta();
 			params= new HashMap<>();
@@ -192,15 +193,15 @@ public class Transaccion extends TransaccionFactura {
 				case NO_APLICA:
 					params= new HashMap<>();
 					params.put("idVenta", this.orden.getIdVenta());
-					if(DaoFactory.getInstance().deleteAll(sesion, TcManticVentasBitacoraDto.class, params)>= 0){
+					if(DaoFactory.getInstance().deleteAll(sesion, TcManticVentasBitacoraDto.class, params)>= 0) {
 						if(DaoFactory.getInstance().deleteAll(sesion, TcManticVentasDetallesDto.class, params)>= 0)
 							regresar= DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
 					} // if					
-					break;
-				case PROCESAR:				
+	        break;
+				case PROCESAR:
 					consecutivo= this.toSiguiente(sesion);			
-					this.orden.setConsecutivo(consecutivo);			
-					this.orden.setOrden(consecutivo);
+					this.orden.setConsecutivo(consecutivo.getOrden());			
+					this.orden.setOrden(consecutivo.getOrden());
 					this.orden.setIdUsuario(JsfBase.getIdUsuario());
 					if(this.orden.isValid())
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
@@ -245,24 +246,25 @@ public class Transaccion extends TransaccionFactura {
 	}
 	
 	private boolean registrarVentaCotizacion(Session sesion, Long idEstatusVenta, boolean cotizacion) throws Exception{
-		boolean regresar          = false;
-		Long consecutivo          = -1L;
-		Long consecutivoCotizacion= -1L;		
-		if(cotizacion){
-			consecutivoCotizacion= this.toSiguienteCotizacion(sesion);
-			this.orden.setCcotizacion(consecutivoCotizacion);
-			this.orden.setCotizacion(Fecha.getAnioActual() + Cadena.rellenar(consecutivoCotizacion.toString(), 5, '0', true));
+		boolean regresar     = false;
+		Siguiente consecutivo= null;
+		Siguiente siguiente  = null;		
+		if(cotizacion) {
+			siguiente= this.toSiguienteCotizacion(sesion);
+			this.orden.setCcotizacion(siguiente.getOrden());
+			this.orden.setCotizacion(siguiente.getConsecutivo());
 		} // if
 		consecutivo= this.toSiguiente(sesion);			
-		this.orden.setConsecutivo(consecutivo);			
-		this.orden.setOrden(consecutivo);
+		this.orden.setConsecutivo(consecutivo.getOrden());			
+		this.orden.setOrden(consecutivo.getOrden());
 		this.orden.setIdVentaEstatus(idEstatusVenta);
 		this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
 		if(this.orden.getIdCliente()< 0)
 			this.orden.setIdCliente(toClienteDefault(sesion));
 		regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
-		regresar= registraBitacora(sesion, this.orden.getIdVenta(), idEstatusVenta, "");
-		toFillArticulos(sesion);				
+		if(regresar)
+		  regresar= registraBitacora(sesion, this.orden.getIdVenta(), idEstatusVenta, "");
+		this.toFillArticulos(sesion);				
 		return regresar;
 	} // registrarVenta
 	
@@ -315,17 +317,19 @@ public class Transaccion extends TransaccionFactura {
 		} // for
 	} // toFillArticulos
 	
-	private Long toSiguiente(Session sesion) throws Exception {
-		Long regresar             = 1L;
+	private Siguiente toSiguiente(Session sesion) throws Exception {
+		Siguiente regresar        = null;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("ejercicio", this.getCurrentYear());
 			params.put("dia", Fecha.getHoyEstandar());
 			params.put("idEmpresa", this.orden.getIdEmpresa());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticVentasDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
-				regresar= next.toLong();
+				regresar= new Siguiente(next.toLong());
+			else
+				regresar= new Siguiente(1L); 
 		} // try		
 		finally {
 			Methods.clean(params);
@@ -333,16 +337,18 @@ public class Transaccion extends TransaccionFactura {
 		return regresar;
 	} // toSiguiente
 	
-	private Long toSiguienteCotizacion(Session sesion) throws Exception {
-		Long regresar             = 1L;
+	private Siguiente toSiguienteCotizacion(Session sesion) throws Exception {
+		Siguiente regresar        = null;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", this.orden.getIdEmpresa());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticVentasDto", "siguienteCotizacion", params, "siguiente");
 			if(next.getData()!= null)
-				regresar= next.toLong();
+				regresar= new Siguiente(next.toLong());
+			else
+				regresar= new Siguiente(1L);
 		} // try		
 		finally {
 			Methods.clean(params);

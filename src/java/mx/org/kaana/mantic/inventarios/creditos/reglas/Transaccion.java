@@ -13,6 +13,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import static mx.org.kaana.kajool.enums.EAccion.AGREGAR;
 import static mx.org.kaana.kajool.enums.EAccion.ELIMINAR;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
@@ -77,9 +78,9 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el nota de crédito.");
 			switch(accion) {
 				case AGREGAR:
-					Long consecutivo= this.toSiguiente(sesion);
-					this.orden.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
-					this.orden.setOrden(consecutivo);
+					Siguiente consecutivo= this.toSiguiente(sesion);
+					this.orden.setConsecutivo(consecutivo.getConsecutivo());
+					this.orden.setOrden(consecutivo.getOrden());
 					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
   				this.orden.setIdCreditoEstatus(3L);
 					switch(this.orden.getIdTipoCreditoNota().intValue()) {
@@ -146,16 +147,18 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		return regresar;
 	}	// ejecutar
 	
-	private Long toSiguiente(Session sesion) throws Exception {
-		Long regresar= 1L;
-		Map<String, Object> params=null;
+	private Siguiente toSiguiente(Session sesion) throws Exception {
+		Siguiente regresar        = null;
+		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticCreditosNotasDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
-			  regresar= next.toLong();
+			  regresar= new Siguiente(next.toLong());
+			else
+			  regresar= new Siguiente(1L);
 		} // try
 		catch (Exception e) {
 			throw e;

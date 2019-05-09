@@ -254,23 +254,23 @@ $.mask.masks = $.extend($.mask.masks, {
       var val= $.trim(value);
 			var params;
 			if(typeof(params)=== 'undefined')
-				params= {cuantos: 5, cual: '0'};
+				params= {cuantos: 6, cual: '0'};
 			if(typeof(params.cuantos)=== 'undefined')
-				params.cuantos= 5;
+				params.cuantos= 6;
 			if(typeof(params.cual)=== 'undefined')
 				params.cual= '0';
 			for(var x= 0; x< params.cuantos- $.trim(value).length; x++)
 				val= params.cual+ val;
       if (!janal.empty(value))
-				if(value.length< 5)
+				if(value.length< 6)
           $(element).val(year+ val); 
 			  else 
-  				if(value.length>= 5) {
+  				if(value.length>= 6) {
 						val= value.substring(4);
 						var count= val.length;
 					  for(var x= 0; x< params.cuantos- count; x++)
 		     		  val= params.cual+ val;
-					  $(element).val(value.substring(0, 4)+ val.substring(0, 5)); 
+					  $(element).val(value.substring(0, 4)+ val.substring(0, 6)); 
 					} // if
       return true;
     }, function(params, element) {

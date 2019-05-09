@@ -12,6 +12,7 @@ import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
@@ -196,19 +197,19 @@ public class Transaccion extends TransaccionFactura {
 	
 	private boolean registrarFicticia(Session sesion, Long idEstatusFicticia) throws Exception {
 		boolean regresar         = false;
-		Long consecutivo         = -1L;
-		Long cuenta              = -1L;
+		Siguiente consecutivo    = null;
+		Siguiente cuenta         = null;
 		Long idFactura           = -1L;
 		Map<String, Object>params= null;
 		try {									
 			idFactura= registrarFactura(sesion);										
 			if(idFactura>= 1L){
 				consecutivo= this.toSiguiente(sesion);			
-				this.orden.setTicket(Fecha.getAnioActual() + Cadena.rellenar(consecutivo.toString(), 5, '0', true));			
-				this.orden.setCticket(consecutivo);			
-				cuenta= this.toCuenta(sesion);			
-				this.orden.setConsecutivo(String.valueOf(cuenta));			
-				this.orden.setOrden(cuenta);
+				this.orden.setTicket(consecutivo.getConsecutivo());			
+				this.orden.setCticket(consecutivo.getOrden());			
+				cuenta= this.toSiguienteCuenta(sesion);			
+				this.orden.setConsecutivo(cuenta.toConsecutivo());			
+				this.orden.setOrden(cuenta.getOrden());
 				this.orden.setIdFicticiaEstatus(idEstatusFicticia);
 				this.orden.setEjercicio(new Long(Fecha.getAnioActual()));						
 				this.orden.setIdFactura(idFactura);
@@ -280,16 +281,18 @@ public class Transaccion extends TransaccionFactura {
 		} // for
 	} // toFillArticulos
 	
-	private Long toSiguiente(Session sesion) throws Exception {
-		Long regresar             = 1L;
+	private Siguiente toSiguiente(Session sesion) throws Exception {
+		Siguiente regresar        = null;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", this.orden.getIdEmpresa());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasDto", "siguiente", params, "siguiente");
 			if(next!= null && next.getData()!= null)
-				regresar= next.toLong();
+				regresar= new Siguiente(next.toLong());
+			else
+				regresar= new Siguiente(1L);
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -300,17 +303,19 @@ public class Transaccion extends TransaccionFactura {
 		return regresar;
 	} // toSiguiente
 	
-	private Long toCuenta(Session sesion) throws Exception {
-		Long regresar             = 1L;
+	private Siguiente toSiguienteCuenta(Session sesion) throws Exception {
+		Siguiente regresar        = null;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("ejercicio", this.getCurrentYear());
 			params.put("dia", Fecha.getHoyEstandar());
 			params.put("idEmpresa", this.orden.getIdEmpresa());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasDto", "cuenta", params, "siguiente");
 			if(next!= null && next.getData()!= null)
-				regresar= next.toLong();
+				regresar= new Siguiente(next.toLong());
+			else
+				regresar= new Siguiente(1L);
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -448,15 +453,15 @@ public class Transaccion extends TransaccionFactura {
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			Long cuenta     = this.toCuenta(sesion);			
-			Long consecutivo= this.toSiguiente(sesion);			
+			Siguiente cuenta     = this.toSiguienteCuenta(sesion);			
+			Siguiente consecutivo= this.toSiguiente(sesion);			
 			params.put("idVenta", this.orden.getKey());
 			this.orden.setKey(-1L);
 			this.orden.setDia(new Date(Calendar.getInstance().getTimeInMillis()));
-			this.orden.setConsecutivo(String.valueOf(cuenta));			
-			this.orden.setOrden(cuenta);
-			this.orden.setTicket(Fecha.getAnioActual() + Cadena.rellenar(consecutivo.toString(), 5, '0', true));			
-			this.orden.setCticket(consecutivo);
+			this.orden.setConsecutivo(cuenta.toConsecutivo());			
+			this.orden.setOrden(cuenta.getOrden());
+			this.orden.setTicket(consecutivo.getConsecutivo());			
+			this.orden.setCticket(consecutivo.getOrden());
 			this.orden.setIdFicticiaEstatus(idEstatusFicticia);
 			this.orden.setEjercicio(new Long(Fecha.getAnioActual()));						
 			this.orden.setIdUsuario(JsfBase.getIdUsuario());

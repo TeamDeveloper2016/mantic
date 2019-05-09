@@ -9,6 +9,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
@@ -55,7 +56,7 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 		TcManticCierresBitacoraDto bitacora= null;
 		try {
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el retiro de caja.");
-			Long consecutivo = null;
+			Siguiente consecutivo = null;
 			switch(accion) {
 				case AGREGAR:
 				case ASIGNAR:
@@ -76,8 +77,8 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 					} // else
 					regresar= DaoFactory.getInstance().update(sesion, caja)>= 1L;
 					consecutivo= this.toSiguiente(sesion);
-					this.retiro.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
-					this.retiro.setOrden(consecutivo);
+					this.retiro.setConsecutivo(consecutivo.getConsecutivo());
+					this.retiro.setOrden(consecutivo.getOrden());
 					this.retiro.setEjercicio(new Long(Fecha.getAnioActual()));
 					this.retiro.setIdUsuario(JsfBase.getIdUsuario());
 					this.retiro.setIdCierreCaja(caja.getIdCierreCaja());
@@ -97,12 +98,12 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 					this.retiro.setImporte(this.retiro.getImporte()* -1L);
 					consecutivo= this.toSiguiente(sesion);
 					this.retiro= new TcManticCierresRetirosDto(
-						Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true), 
+						consecutivo.getConsecutivo(), 
 						JsfBase.getIdUsuario(), 
 						-1L, 
 						"CONSECUTIVO: ".concat(this.retiro.getConsecutivo()), 
 						this.retiro.getIdCierreCaja(), 
-						consecutivo, 
+						consecutivo.getOrden(), 
 						this.retiro.getIdAbono(), 
 						this.retiro.getImporte(), 
 						new Long(Fecha.getAnioActual()), 
@@ -140,15 +141,17 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 		return regresar;
 	}
 
-	private Long toSiguiente(Session sesion) throws Exception {
-		Long regresar= 1L;
-		Map<String, Object> params=null;
+	private Siguiente toSiguiente(Session sesion) throws Exception {
+		Siguiente regresar        = null;
+		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("ejercicio", this.getCurrentYear());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticCierresRetirosDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
-			  regresar= next.toLong();
+			  regresar= new Siguiente(next.toLong());
+			else
+			  regresar= new Siguiente(1L);
 		} // try
 		catch (Exception e) {
 			throw e;

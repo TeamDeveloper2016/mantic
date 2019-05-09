@@ -6317,7 +6317,7 @@
 				from 
 					tc_mantic_confrontas
 				inner join
-          tc_mantic_transferencias on tc_mantic_confrontas.id_transferencia = tc_mantic_transferencias.id_transferencias
+          tc_mantic_transferencias on tc_mantic_confrontas.id_transferencia = tc_mantic_transferencias.id_transferencia
 				where
 				  tc_mantic_confrontas.ejercicio= {ejercicio} 
 				  and tc_mantic_transferencias.id_empresa= {idEmpresa}				

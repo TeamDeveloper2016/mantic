@@ -8,6 +8,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Cadena;
@@ -107,7 +108,7 @@ public class Transaccion extends TransaccionFactura{
 		boolean regresar               = false;
 		TcManticClientesDeudasDto deuda= null;
 		Double saldo                   = 0D;
-		Long orden                     = 1L;
+		Siguiente orden                = null;
 		try {
 			if(toCierreCaja(sesion, this.pago.getPago())){
 				this.pago.setIdCierre(this.idCierreActivo);				
@@ -116,8 +117,8 @@ public class Transaccion extends TransaccionFactura{
 					this.pago.setIdBanco(this.idBanco);
 				} // if
 				orden= this.toSiguiente(sesion, this.idCliente);
-				this.pago.setOrden(orden);
-				this.pago.setConsecutivo(Fecha.getAnioActual() + Cadena.rellenar(orden.toString(), 5, '0', true));
+				this.pago.setOrden(orden.getOrden());
+				this.pago.setConsecutivo(orden.getConsecutivo());
 				this.pago.setEjercicio(new Long(Fecha.getAnioActual()));
 				if(DaoFactory.getInstance().insert(sesion, this.pago)>= 1L){
 					deuda= (TcManticClientesDeudasDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDeudasDto.class, this.pago.getIdClienteDeuda());
@@ -188,7 +189,7 @@ public class Transaccion extends TransaccionFactura{
 	private boolean registrarPago(Session sesion, Long idClienteDeuda, Double pagoParcial) throws Exception{
 		TcManticClientesPagosDto registroPago= null;
 		boolean regresar                     = false;
-		Long orden	                         = 1L;
+		Siguiente orden	                     = null;
 		try {
 			if(toCierreCaja(sesion, pagoParcial)){
 				registroPago= new TcManticClientesPagosDto();
@@ -203,8 +204,8 @@ public class Transaccion extends TransaccionFactura{
 					registroPago.setReferencia(this.referencia);
 				} // if
 				orden= this.toSiguiente(sesion, this.idCliente);
-				registroPago.setOrden(orden);
-				registroPago.setConsecutivo(Fecha.getAnioActual() + Cadena.rellenar(orden.toString(), 5, '0', true));
+				registroPago.setOrden(orden.getOrden());
+				registroPago.setConsecutivo(orden.getConsecutivo());
 				registroPago.setEjercicio(new Long(Fecha.getAnioActual()));
 				regresar= DaoFactory.getInstance().insert(sesion, registroPago)>= 1L;
 			} // if
@@ -377,16 +378,18 @@ public class Transaccion extends TransaccionFactura{
 		return regresar;
 	} // toListFile
 	
-	private Long toSiguiente(Session sesion, Long idCliente) throws Exception {
-		Long regresar             = 1L;
+	private Siguiente toSiguiente(Session sesion, Long idCliente) throws Exception {
+		Siguiente regresar        = null;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", ((TcManticClientesDto)DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, idCliente)).getIdEmpresa());
 			Value next= DaoFactory.getInstance().toField(sesion, "VistaTcManticClientesPagosDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
-				regresar= next.toLong();
+				regresar= new Siguiente(next.toLong());
+			else
+				regresar= new Siguiente(1L);
 		} // try		
 		finally {
 			Methods.clean(params);

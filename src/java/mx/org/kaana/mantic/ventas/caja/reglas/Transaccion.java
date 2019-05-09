@@ -15,6 +15,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EBooleanos;
 import mx.org.kaana.kajool.enums.ESql;
+import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
 import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
@@ -191,16 +192,16 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		return regresar;
 	} // actualizarClienteVenta
 	
-	private boolean procesaCotizacion(Session sesion) throws Exception{
+	private boolean procesaCotizacion(Session sesion) throws Exception {
 		boolean regresar            = false;
 		Calendar calendar           = null;
 		TcManticVentasDto cotizacion= null;
-		Long consecutivoCotizacion  = -1L;		
+		Siguiente consecutivo       = null;		
 		cotizacion= (TcManticVentasDto) DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.dto.getKey());
-		if(Cadena.isVacio(cotizacion.getCotizacion())){
-			consecutivoCotizacion= this.toSiguienteCotizacion(sesion, cotizacion.getIdEmpresa());
-			cotizacion.setCcotizacion(consecutivoCotizacion);
-			cotizacion.setCotizacion(Fecha.getAnioActual() + Cadena.rellenar(consecutivoCotizacion.toString(), 5, '0', true));				
+		if(Cadena.isVacio(cotizacion.getCotizacion())) {
+			consecutivo= this.toSiguienteCotizacion(sesion, cotizacion.getIdEmpresa());
+			cotizacion.setCcotizacion(consecutivo.getOrden());
+			cotizacion.setCotizacion(consecutivo.getConsecutivo());				
 		} // if
 		this.cotizacion= cotizacion.getCotizacion();
 		calendar= Calendar.getInstance();
@@ -211,16 +212,18 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		return regresar;
 	} // procesaCotizacion
 	
-	private Long toSiguienteCotizacion(Session sesion, Long idEmpresa) throws Exception {
-		Long regresar             = 1L;
+	private Siguiente toSiguienteCotizacion(Session sesion, Long idEmpresa) throws Exception {
+		Siguiente regresar        = null;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", idEmpresa);
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticVentasDto", "siguienteCotizacion", params, "siguiente");
 			if(next!= null && next.getData()!= null)
-				regresar= next.toLong();
+				regresar= new Siguiente(next.toLong());
+			else
+				regresar= new Siguiente(1L);
 		} // try		
 		finally {
 			Methods.clean(params);
@@ -271,15 +274,17 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		} // catch		
 	} // actualizarServicio
 	
-	private Long toSiguienteServicio(Session sesion, Long idServicio) throws Exception {
-		Long regresar             = 1L;
+	private Siguiente toSiguienteServicio(Session sesion, Long idServicio) throws Exception {
+		Siguiente regresar        = null;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
 			params.put("idServicio", idServicio);
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticServiciosBitacoraDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
-			  regresar= next.toLong();
+			  regresar= new Siguiente(next.toLong());
+			else
+			  regresar= new Siguiente(1L);
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -292,15 +297,15 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	
 	private boolean registrarApartado(Session sesion) throws Exception{
 		boolean regresar                     = false;		
-		Long consecutivo                     = 1L;
+		Siguiente consecutivo                = null;
 		Long idApartado                      = -1L;
 		TcManticApartadosBitacoraDto bitacora= null;
 		Calendar calendar                    = null;
 		try {
 			this.ventaFinalizada.getDetailApartado().setIdVenta(this.ventaFinalizada.getTicketVenta().getIdVenta());
 			consecutivo= this.toSiguienteApartado(sesion);
-			this.ventaFinalizada.getDetailApartado().setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
-			this.ventaFinalizada.getDetailApartado().setOrden(consecutivo);
+			this.ventaFinalizada.getDetailApartado().setConsecutivo(consecutivo.getConsecutivo());
+			this.ventaFinalizada.getDetailApartado().setOrden(consecutivo.getOrden());
 			this.ventaFinalizada.getDetailApartado().setEjercicio(Long.valueOf(Fecha.getAnioActual()));
 			this.ventaFinalizada.getDetailApartado().setImporte(this.ventaFinalizada.getTotales().getTotales().getTotal());
 			this.ventaFinalizada.getDetailApartado().setAbonado(this.ventaFinalizada.getTotales().getPago());
@@ -495,16 +500,18 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		return regresar;
 	} // toCierreNuevo	
 	
-	private Long toSiguienteApartado(Session sesion) throws Exception {
-		Long regresar             = 1L;
-		Map<String, Object> params=null;
+	private Siguiente toSiguienteApartado(Session sesion) throws Exception {
+		Siguiente regresar        = null;
+		Map<String, Object> params= null;
 		Entity siguiente          = null;
 		try {
 			params=new HashMap<>();
-			params.put("ejercicio", Fecha.getAnioActual());			
+			params.put("ejercicio", this.getCurrentYear());			
 			siguiente= (Entity) DaoFactory.getInstance().toEntity(sesion, "TcManticApartadosDto", "siguiente", params);
-			if(siguiente!= null)
-			  regresar= siguiente.get("siguiente").getData()!= null ? siguiente.toLong("siguiente") : 1L;
+			if(siguiente!= null && siguiente.get("siguiente")!= null && siguiente.get("siguiente").getData()!= null)
+			  regresar= new Siguiente(siguiente.toLong("siguiente"));
+			else
+				regresar= new Siguiente(1L);
 		} // try		
 		finally {
 			Methods.clean(params);
@@ -515,13 +522,13 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	private boolean pagarVenta(Session sesion, Long idEstatusVenta) throws Exception{
 		boolean regresar         = false;
 		Map<String, Object>params= null;
-		Long consecutivo         = -1L;
+		Siguiente consecutivo    = null;
 		boolean validacionEstatus= false;
 		try {									
 			validacionEstatus= !idEstatusVenta.equals(EEstatusVentas.APARTADOS.getIdEstatusVenta());
-			consecutivo= toSiguiente(sesion);			
-			getOrden().setCticket(consecutivo);			
-			getOrden().setTicket(Fecha.getAnioActual() + Cadena.rellenar(consecutivo.toString(), 5, '0', true));
+			consecutivo= this.toSiguiente(sesion);			
+			getOrden().setCticket(consecutivo.getOrden());			
+			getOrden().setTicket(consecutivo.getConsecutivo());
 			getOrden().setIdVentaEstatus(idEstatusVenta);			
 			getOrden().setIdFacturar(this.ventaFinalizada.isFacturar() && validacionEstatus ? SI : NO);
 			getOrden().setIdCredito(this.ventaFinalizada.isCredito() && validacionEstatus ? SI : NO);
@@ -541,7 +548,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 				else
 					registraClientesTipoContacto(sesion, getOrden().getIdCliente());				
 			} // if						
-			if(DaoFactory.getInstance().update(sesion, getOrden())>= 1L){				
+			if(DaoFactory.getInstance().update(sesion, getOrden())>= 1L) {				
 				regresar= registraBitacora(sesion, getOrden().getIdVenta(), idEstatusVenta, "La venta ha sido finalizada.");				
 				params= new HashMap<>();
 				params.put("idVenta", getOrden().getIdVenta());
@@ -556,16 +563,18 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		return regresar;
 	} // pagarVenta
 	
-	private Long toSiguiente(Session sesion) throws Exception {
-		Long regresar             = 1L;
+	private Siguiente toSiguiente(Session sesion) throws Exception {
+		Siguiente regresar        = null;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", getOrden().getIdEmpresa());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticVentasDto", "siguienteTicket", params, "siguiente");
 			if(next!= null && next.getData()!= null)
-				regresar= next.toLong();
+				regresar= new Siguiente(next.toLong());
+			else
+				regresar= new Siguiente(1L);
 		} // try		
 		finally {
 			Methods.clean(params);

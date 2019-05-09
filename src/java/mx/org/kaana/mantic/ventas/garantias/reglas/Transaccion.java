@@ -13,6 +13,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -244,12 +245,12 @@ public class Transaccion extends IBaseTnx{
 	} // pagarVenta
 	
 	private void loadGarantia(Session sesion, Long idEstatusGarantia) throws Exception {
-		Long consecutivo= 1L;
+		Siguiente consecutivo= null;
 		try {
 			this.garantiaDto= new TcManticGarantiasDto();
-			consecutivo= toSiguiente(sesion);			
-			this.garantiaDto.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));			
-			this.garantiaDto.setOrden(consecutivo);			
+			consecutivo= this.toSiguiente(sesion);			
+			this.garantiaDto.setConsecutivo(consecutivo.getConsecutivo());			
+			this.garantiaDto.setOrden(consecutivo.getOrden());			
 			this.garantiaDto.setIdGarantiaEstatus(idEstatusGarantia);			
 			this.garantiaDto.setEjercicio(Long.valueOf(Fecha.getAnioActual()));			
 			this.garantiaDto.setIdUsuario(JsfBase.getIdUsuario());
@@ -266,15 +267,17 @@ public class Transaccion extends IBaseTnx{
 		} // catch		
 	} // loadGarantia
 		
-	private Long toSiguiente(Session sesion) throws Exception {
-		Long regresar             = 1L;
+	private Siguiente toSiguiente(Session sesion) throws Exception {
+		Siguiente regresar        = null;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("ejercicio", this.getCurrentYear());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticGarantiasDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
-				regresar= next.toLong();
+				regresar= new Siguiente(next.toLong());
+			else
+				regresar= new Siguiente(1L);
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -631,7 +634,7 @@ public class Transaccion extends IBaseTnx{
 	private boolean registrarPago(Session sesion, Long idClienteDeuda, Double pagoParcial) throws Exception{
 		TcManticClientesPagosDto registroPago= null;
 		boolean regresar                     = false;
-		Long orden                           = 1L;
+		Siguiente orden                      = null;
 		try {
 			registroPago= new TcManticClientesPagosDto();
 			registroPago.setIdClienteDeuda(idClienteDeuda);
@@ -641,8 +644,8 @@ public class Transaccion extends IBaseTnx{
 			registroPago.setIdTipoMedioPago(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
 			registroPago.setIdCierre(this.idCierreVigente);				
 			orden= this.toSiguiente(sesion, this.detalleGarantia.getIdCliente());
-			registroPago.setOrden(orden);
-			registroPago.setConsecutivo(Fecha.getAnioActual() + Cadena.rellenar(orden.toString(), 5, '0', true));
+			registroPago.setOrden(orden.getOrden());
+			registroPago.setConsecutivo(orden.getConsecutivo());
 			registroPago.setEjercicio(new Long(Fecha.getAnioActual()));
 			regresar= DaoFactory.getInstance().insert(sesion, registroPago)>= 1L;
 		} // try
@@ -652,16 +655,18 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // registrarPago
 	
-	private Long toSiguiente(Session sesion, Long idCliente) throws Exception {
-		Long regresar             = 1L;
+	private Siguiente toSiguiente(Session sesion, Long idCliente) throws Exception {
+		Siguiente regresar        = null;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", ((TcManticClientesDto)DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, idCliente)).getIdEmpresa());
 			Value next= DaoFactory.getInstance().toField(sesion, "VistaTcManticClientesPagosDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
-				regresar= next.toLong();
+				regresar= new Siguiente(next.toLong());
+			else
+				regresar= new Siguiente(1L);
 		} // try		
 		finally {
 			Methods.clean(params);

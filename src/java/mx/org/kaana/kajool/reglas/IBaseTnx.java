@@ -9,6 +9,9 @@ package mx.org.kaana.kajool.reglas;
  */
 import mx.org.kaana.kajool.db.comun.hibernate.SessionFactoryFacade;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.recurso.Configuracion;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -60,4 +63,12 @@ public abstract class IBaseTnx {
 		} // if	
 	}
 
+	protected Siguiente toNextItem(Long orden) {
+		return new Siguiente(orden);
+	}
+
+  protected int getCurrentYear() {
+		return Configuracion.getInstance().isEtapaDesarrollo()? Fecha.getAnioActual()* 10+ 1: Fecha.getAnioActual();
+	}	
+	
 }

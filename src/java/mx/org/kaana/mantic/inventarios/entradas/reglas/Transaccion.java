@@ -12,6 +12,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
@@ -24,7 +25,6 @@ import mx.org.kaana.libs.reportes.FileSearch;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Inventarios;
-import mx.org.kaana.mantic.db.dto.TcManticAlertasDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasArchivosDto;
@@ -34,7 +34,6 @@ import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
-import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
 import org.apache.log4j.Logger;
 
@@ -92,7 +91,7 @@ public class Transaccion extends Inventarios implements Serializable {
 		boolean regresar                     = false;
 		TcManticNotasBitacoraDto bitacoraNota= null;
 		Map<String, Object> params           = null;
-		Long consecutivo                     = 0L;
+		Siguiente consecutivo                = null;
 		try {
 			if(this.orden!= null) {
 				params= new HashMap<>();
@@ -108,8 +107,8 @@ public class Transaccion extends Inventarios implements Serializable {
 					} // if
 					else {
 					  consecutivo= this.toSiguiente(sesion);
-					  this.orden.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
-					  this.orden.setOrden(consecutivo);
+					  this.orden.setConsecutivo(consecutivo.getConsecutivo());
+					  this.orden.setOrden(consecutivo.getOrden());
 					  this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
 					  if(this.orden.getIdNotaTipo().equals(1L))
 						  this.orden.setIdOrdenCompra(null);
@@ -124,8 +123,8 @@ public class Transaccion extends Inventarios implements Serializable {
 					break;
 				case COMPLETO:
 					consecutivo= this.toSiguiente(sesion);
-					this.orden.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
-					this.orden.setOrden(consecutivo);
+					this.orden.setConsecutivo(consecutivo.getConsecutivo());
+					this.orden.setOrden(consecutivo.getOrden());
 					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
 					this.orden.setIdOrdenCompra(null);					
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
@@ -137,8 +136,8 @@ public class Transaccion extends Inventarios implements Serializable {
 					break;
 				case AGREGAR:
 					consecutivo= this.toSiguiente(sesion);
-					this.orden.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
-					this.orden.setOrden(consecutivo);
+					this.orden.setConsecutivo(consecutivo.getConsecutivo());
+					this.orden.setOrden(consecutivo.getOrden());
 					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
 					if(this.orden.getIdNotaTipo().equals(1L))
 						this.orden.setIdOrdenCompra(null);
@@ -281,16 +280,18 @@ public class Transaccion extends Inventarios implements Serializable {
 		} // if
 	}
 	
-	private Long toSiguiente(Session sesion) throws Exception {
-		Long regresar= 1L;
+	private Siguiente toSiguiente(Session sesion) throws Exception {
+		Siguiente regresar= null;
 		Map<String, Object> params=null;
 		try {
 			params=new HashMap<>();
-			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", this.orden.getIdEmpresa());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticNotasEntradasDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
-			  regresar= next.toLong();
+			  regresar= new Siguiente(next.toLong());
+			else
+			  regresar= new Siguiente(1L);
 		} // try
 		catch (Exception e) {
 			throw e;

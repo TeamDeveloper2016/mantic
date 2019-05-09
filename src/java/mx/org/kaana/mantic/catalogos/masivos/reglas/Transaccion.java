@@ -17,6 +17,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
@@ -1049,16 +1050,16 @@ public class Transaccion extends IBaseTnx {
 								DaoFactory.getInstance().update(sesion, egreso);
 							} // if
 							else {
-								Long consecutivo= this.toSiguiente(sesion);
+								Siguiente consecutivo= this.toSiguiente(sesion);
 								egreso= new TcManticEgresosDto(
-									Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true), // consecutivo
+									consecutivo.getConsecutivo(), // consecutivo
 									descripcion, // descripcion
 									Fecha.toDateDefault(fecha), // fecha
 									1L, // idEgresoEstatus 
 									-1L, // idEgreso
 									JsfBase.getIdUsuario(), // idUsuario
 									JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende(), // idEmpresa
-									consecutivo, // orden
+									consecutivo.getOrden(), // orden
 									importe, // importe
 									new Long(Fecha.getAnioActual()) // ejercicio
 								);
@@ -1511,16 +1512,18 @@ public class Transaccion extends IBaseTnx {
 			} // for
 	}	// toDeleteXls 	
 	
-	private Long toSiguiente(Session sesion) throws Exception {
-		Long regresar= 1L;
-		Map<String, Object> params=null;
+	private Siguiente toSiguiente(Session sesion) throws Exception {
+		Siguiente regresar        = null;
+		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticEgresosDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
-			  regresar= next.toLong();
+			  regresar= new Siguiente(next.toLong());
+			else
+			  regresar= new Siguiente(1L);
 		} // try
 		catch (Exception e) {
 			throw e;

@@ -19,6 +19,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.models.Client;
 import mx.org.kaana.libs.facturama.models.response.Cfdi;
@@ -114,9 +115,9 @@ public class Transferir extends IBaseTnx {
 	}	// ejecutar
 
   private TcManticFicticiasDto toFicticia(Session sesion, CfdiSearchResult cfdi, Cfdi detail, Calendar calendar, Long idCliente, Long idFactura) throws Exception {
-		Long consecutivo= this.toSiguiente(sesion, calendar);
-		Long cuenta     = this.toCuenta(sesion, calendar);
-		double taxes    = 0;
+		Siguiente consecutivo= this.toSiguiente(sesion, calendar);
+		Siguiente cuenta     = this.toSiguienteCuenta(sesion, calendar);
+		double taxes         = 0;
 		for (Tax tax: detail.getTaxes()) {
 			taxes+= tax.getTotal();
 		} // for
@@ -130,14 +131,14 @@ public class Transferir extends IBaseTnx {
 			cfdi.getTotal(), // Double total, 
 			3L, // Long idFicticiaEstatus, 
 			detail.getExchangeRate(), // Double tipoDeCambio, 
-			cuenta, // Long orden, 
+			cuenta.getOrden(), // Long orden, 
 			1L, // Long idTipoMedioPago, 
 			idCliente, // Long idCliente, 
 			toIdClienteDomicilio(sesion, idCliente),
 			"0", // String descuento, 
 			null, // Long idBanco, 
 			year, // Long ejercicio, 
-			String.valueOf(cuenta),// String consecutivo, 
+			cuenta.toConsecutivo(),// String consecutivo, 
 			JsfBase.getAutentifica()!= null? JsfBase.getIdUsuario(): 1L, //  Long idUsuario, 
 			taxes, // Double impuestos, 
 			1L,  // Long idUsoCfdi, 
@@ -149,8 +150,8 @@ public class Transferir extends IBaseTnx {
 			detail.getPaymentAccountNumber(), //  referencia
 			idFactura // id_factura
 		);
-		regresar.setTicket(year+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
-		regresar.setCticket(consecutivo);
+		regresar.setTicket(consecutivo.getConsecutivo());
+		regresar.setCticket(consecutivo.getOrden());
 		regresar.setIdFacturar(1L);
 		LOG.info("----------------------------------------------");
 		LOG.info("CONSECUTIVO:"+ cuenta+ " TICKET"+ consecutivo);
@@ -618,16 +619,18 @@ public class Transferir extends IBaseTnx {
 		} // if
 	}
 	
-	private Long toSiguiente(Session sesion, Calendar dia) throws Exception {
-		Long regresar             = 1L;
+	private Siguiente toSiguiente(Session sesion, Calendar dia) throws Exception {
+		Siguiente regresar        = null;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			params.put("ejercicio", new Long(dia.get(Calendar.YEAR)));
+			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", JsfBase.getAutentifica()!= null? JsfBase.getAutentifica().getEmpresa().getIdEmpresa(): 1L);
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasDto", "siguiente", params, "siguiente");
 			if(next!= null && next.getData()!= null)
-				regresar= next.toLong();
+				regresar= new Siguiente(next.toLong());
+			else
+				regresar= new Siguiente(1L);
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -638,17 +641,19 @@ public class Transferir extends IBaseTnx {
 		return regresar;
 	} // toSiguiente
 
-	private Long toCuenta(Session sesion, Calendar dia) throws Exception {
-		Long regresar             = 1L;
+	private Siguiente toSiguienteCuenta(Session sesion, Calendar dia) throws Exception {
+		Siguiente regresar        = null;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			params.put("ejercicio", new Long(dia.get(Calendar.YEAR)));
+			params.put("ejercicio", this.getCurrentYear());
 			params.put("dia", Fecha.formatear(Fecha.FECHA_ESTANDAR, dia));
 			params.put("idEmpresa", JsfBase.getAutentifica()!= null? JsfBase.getAutentifica().getEmpresa().getIdEmpresa(): 1L);
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasDto", "cuenta", params, "siguiente");
 			if(next!= null && next.getData()!= null)
-				regresar= next.toLong();
+				regresar= new Siguiente(next.toLong());
+			else
+				regresar= new Siguiente(1L);
 		} // try
 		catch (Exception e) {
 			throw e;

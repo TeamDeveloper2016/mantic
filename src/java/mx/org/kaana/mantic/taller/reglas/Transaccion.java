@@ -9,6 +9,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EBooleanos;
+import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
 import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
@@ -75,7 +76,7 @@ public class Transaccion extends TransaccionFactura{
 					break;
 				case JUSTIFICAR:
 					bitacora= (TcManticServiciosBitacoraDto) this.dto;
-					bitacora.setConsecutivo(Cadena.rellenar(toSiguiente(sesion, bitacora.getIdServicio()).toString(), 5, '0', true));
+					bitacora.setConsecutivo(this.toSiguiente(sesion, bitacora.getIdServicio()).getConsecutivo());
 					if(DaoFactory.getInstance().insert(sesion, bitacora)>= 1L){
 						servicio= (TcManticServiciosDto) DaoFactory.getInstance().findById(sesion, TcManticServiciosDto.class, bitacora.getIdServicio());
 						servicio.setIdServicioEstatus(bitacora.getIdServicioEstatus());
@@ -101,12 +102,12 @@ public class Transaccion extends TransaccionFactura{
 		boolean regresar= false;
 		Long idCliente  = -1L;		
 		Long idServicio = -1L;		
-		Long consecutivo= -1L;
+		Siguiente consecutivo= null;
     try {
       this.messageError = "Error al registrar el servicio";
 			consecutivo= toSiguiente(sesion);
-			this.registroServicio.getServicio().setConsecutivo(Fecha.getAnioActual() + Cadena.rellenar(consecutivo.toString(), 5, '0', true));
-			this.registroServicio.getServicio().setOrden(consecutivo);
+			this.registroServicio.getServicio().setConsecutivo(consecutivo.getConsecutivo());
+			this.registroServicio.getServicio().setOrden(consecutivo.getOrden());
 			this.registroServicio.getServicio().setEjercicio(new Long(Fecha.getAnioActual()));
 			this.registroServicio.getServicio().setIdUsuario(JsfBase.getIdUsuario());
 			this.registroServicio.getServicio().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
@@ -166,7 +167,7 @@ public class Transaccion extends TransaccionFactura{
 		regresar.setIdServicioEstatus(idServicioEstatus);
 		regresar.setIdUsuario(JsfBase.getIdUsuario());
 		regresar.setSeguimiento(observaciones);
-		regresar.setConsecutivo(Cadena.rellenar((toSiguiente(sesion, idServicio)).toString(), 5, '0', true));
+		regresar.setConsecutivo(this.toSiguiente(sesion, idServicio).getConsecutivo());
 		return regresar;
 	} // loadBitacora
 
@@ -326,16 +327,18 @@ public class Transaccion extends TransaccionFactura{
 		return regresar;
 	} // toClientesTipoContacto
 	
-	private Long toSiguiente(Session sesion) throws Exception {
-		Long regresar             = 1L;
+	private Siguiente toSiguiente(Session sesion) throws Exception {
+		Siguiente regresar        = null;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticServiciosDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
-				regresar= next.toLong();
+				regresar= new Siguiente(next.toLong());
+			else
+				regresar= new Siguiente(1L);
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -388,15 +391,17 @@ public class Transaccion extends TransaccionFactura{
 		return regresar;
 	} // registrarDetalle
 	
-	private Long toSiguiente(Session sesion, Long idServicio) throws Exception {
-		Long regresar             = 1L;
+	private Siguiente toSiguiente(Session sesion, Long idServicio) throws Exception {
+		Siguiente regresar        = null;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
 			params.put("idServicio", idServicio);
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticServiciosBitacoraDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
-			  regresar= next.toLong();
+			  regresar= new Siguiente(next.toLong());
+			else
+			  regresar= new Siguiente(next.toLong());
 		} // try
 		catch (Exception e) {
 			throw e;

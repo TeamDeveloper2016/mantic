@@ -8,6 +8,7 @@ import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -42,14 +43,14 @@ public class Transaccion extends ComunInventarios {
     boolean regresar= false;
     try {			
     	this.messageError = "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para transferencia de articulos.");
-  		Long consecutivo  = 0L;
+  		Siguiente consecutivo= null;
 			this.transferencia= (TcManticTransferenciasDto)DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, this.dto.getIdTransferencia());
       switch (accion) {
 				case ACTIVAR:
 				case AGREGAR:
 					consecutivo= this.toSiguiente(sesion);
-					this.dto.setConsecutivo(this.dto.getEjercicio()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
-					this.dto.setOrden(consecutivo);
+					this.dto.setConsecutivo(consecutivo.getConsecutivo());
+					this.dto.setOrden(consecutivo.getOrden());
           regresar= DaoFactory.getInstance().insert(sesion, this.dto).intValue()> 0;
 					this.toFillArticulos(sesion, accion);
 					this.bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), null, this.transferencia.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
@@ -85,16 +86,18 @@ public class Transaccion extends ComunInventarios {
     return regresar;
   } // ejecutar
 
-	private Long toSiguiente(Session sesion) throws Exception {
-		Long regresar= 1L;
-		Map<String, Object> params=null;
+	private Siguiente toSiguiente(Session sesion) throws Exception {
+		Siguiente regresar        = null;
+		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", this.transferencia.getIdEmpresa());
 			Value next= DaoFactory.getInstance().toField(sesion, "VistaConfrontasDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
-			  regresar= next.toLong();
+			  regresar= new Siguiente(next.toLong());
+			else
+			  regresar= new Siguiente(1L);
 		} // try
 		catch (Exception e) {
 			throw e;

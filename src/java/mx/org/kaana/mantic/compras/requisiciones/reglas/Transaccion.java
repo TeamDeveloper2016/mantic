@@ -11,6 +11,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
@@ -134,12 +135,12 @@ public class Transaccion extends IBaseTnx {
 	}	// ejecutar
 
 	private boolean registrarRequisicion(Session sesion, Long idRequisicionEstatus) throws Exception{
-		boolean regresar= false;
-		Long consecutivo= -1L;
+		boolean regresar     = false;
+		Siguiente consecutivo= null;
 		try {
 			consecutivo= this.toSiguiente(sesion);
-			this.requisicion.getRequisicion().setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
-			this.requisicion.getRequisicion().setOrden(consecutivo);
+			this.requisicion.getRequisicion().setConsecutivo(consecutivo.getConsecutivo());
+			this.requisicion.getRequisicion().setOrden(consecutivo.getOrden());
 			this.requisicion.getRequisicion().setIdRequisicionEstatus(idRequisicionEstatus);
 			this.requisicion.getRequisicion().setEjercicio(new Long(Fecha.getAnioActual()));
 			this.requisicion.getRequisicion().setIdSolicita(JsfBase.getAutentifica().getPersona().getIdPersona());
@@ -207,16 +208,18 @@ public class Transaccion extends IBaseTnx {
 		} // for
 	} // toFillArticulos
 	
-	private Long toSiguiente(Session sesion) throws Exception {
-		Long regresar             = 1L;
+	private Siguiente toSiguiente(Session sesion) throws Exception {
+		Siguiente regresar        = null;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticRequisicionesDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
-				regresar= next.toLong();
+				regresar= new Siguiente(next.toLong());
+			else
+				regresar= new Siguiente(1L);
 		} // try
 		catch (Exception e) {
 			throw e;
