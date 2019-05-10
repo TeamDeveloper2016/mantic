@@ -23,6 +23,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.MotorBusqueda;
@@ -224,7 +225,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			if(next!= null && next.getData()!= null)
 				regresar= new Siguiente(next.toLong());
 			else
-				regresar= new Siguiente(1L);
+				regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 10001L: 1L);
 		} // try		
 		finally {
 			Methods.clean(params);
@@ -285,7 +286,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			if(next.getData()!= null)
 			  regresar= new Siguiente(next.toLong());
 			else
-			  regresar= new Siguiente(1L);
+			  regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 10001L: 1L);
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -513,7 +514,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			if(siguiente!= null && siguiente.get("siguiente")!= null && siguiente.get("siguiente").getData()!= null)
 			  regresar= new Siguiente(siguiente.toLong("siguiente"));
 			else
-				regresar= new Siguiente(1L);
+				regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 10001L: 1L);
 		} // try		
 		finally {
 			Methods.clean(params);
@@ -577,7 +578,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			if(next!= null && next.getData()!= null)
 				regresar= new Siguiente(next.toLong());
 			else
-				regresar= new Siguiente(1L);
+				regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 10001L: 1L);
 		} // try		
 		finally {
 			Methods.clean(params);

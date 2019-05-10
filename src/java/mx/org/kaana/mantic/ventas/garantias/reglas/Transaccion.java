@@ -19,6 +19,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
@@ -278,7 +279,7 @@ public class Transaccion extends IBaseTnx{
 			if(next.getData()!= null)
 				regresar= new Siguiente(next.toLong());
 			else
-				regresar= new Siguiente(1L);
+				regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 10001L: 1L);
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -668,7 +669,7 @@ public class Transaccion extends IBaseTnx{
 			if(next.getData()!= null)
 				regresar= new Siguiente(next.toLong());
 			else
-				regresar= new Siguiente(1L);
+				regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 10001L: 1L);
 		} // try		
 		finally {
 			Methods.clean(params);

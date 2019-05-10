@@ -14,7 +14,6 @@ import static mx.org.kaana.kajool.enums.EAccion.AGREGAR;
 import static mx.org.kaana.kajool.enums.EAccion.ELIMINAR;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
-import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -159,7 +158,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			if(next.getData()!= null)
 			  regresar= new Siguiente(next.toLong());
 			else
-			  regresar= new Siguiente(1L);
+			  regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 10001L: 1L);
 		} // try
 		catch (Exception e) {
 			throw e;

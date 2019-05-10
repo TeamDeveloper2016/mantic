@@ -20,6 +20,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteDomicilio;
 import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
@@ -330,7 +331,7 @@ public class Transaccion extends TransaccionFactura {
 			if(next.getData()!= null)
 				regresar= new Siguiente(next.toLong());
 			else
-				regresar= new Siguiente(1L); 
+				regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 10001L: 1L); 
 		} // try		
 		finally {
 			Methods.clean(params);
@@ -350,7 +351,7 @@ public class Transaccion extends TransaccionFactura {
 			if(next.getData()!= null)
 				regresar= new Siguiente(next.toLong());
 			else
-				regresar= new Siguiente(1L);
+				regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 10001L: 1L);
 		} // try		
 		finally {
 			Methods.clean(params);
