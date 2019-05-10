@@ -6,7 +6,9 @@
 	<dml> 
 		<unit id="VistaSincronizarDto">
 			<select id="lazy">
+				select
           tc_mantic_ventas.id_venta as id_key,
+				  'VENTA' as documento,
 				  tc_mantic_ventas.id_empresa,
 				  tc_mantic_empresas.clave as empresa,  
 				  tc_mantic_empresas.nombre as nombre_empresa,  
@@ -25,7 +27,7 @@
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				where 
           tc_mantic_ventas.id_empresa in ({idEmpresa}) 
-          and tc_mantic_ventas.id_sincronizado= 2
+          and tc_mantic_ventas.id_sincronizado= 1
 				  and {condicion}	
         {sortOrder}
 			</select>

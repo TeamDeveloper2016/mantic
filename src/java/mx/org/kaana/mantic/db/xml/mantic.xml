@@ -764,6 +764,16 @@
         where      
           id_apartado_estatus = {idApartadoEstatus} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
       </select>
+      <select id="detalle">
+        select      
+          *
+        from      
+          tc_mantic_apartados_bitacora
+        where      
+          id_apartado = {idApartado}
+				order by
+				  tc_mantic_apartados_bitacora.registro
+      </select>
     </unit>
     <unit id="TcManticApartadosEstatusDto">
       <select id="row">
@@ -800,6 +810,16 @@
           tc_mantic_apartados_pagos
         where      
           id_apartado = {idApartado} and pago = {pago} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+      <select id="detalle">
+        select      
+          *
+        from      
+          tc_mantic_apartados_pagos
+        where      
+          id_apartado = {idApartado}
+				order by
+				  tc_mantic_apartados_pagos.registro
       </select>
     </unit>
     <unit id="TcManticGarantiasDto">
@@ -4195,6 +4215,17 @@
         where      
           id_venta = {idVenta} and id_venta_estatus = {idVentaEstatus}
       </select>
+      <select id="detalle">
+        select      
+				  tc_mantic_ventas_bitacora.id_venta_bitacora as id_key,
+          tc_mantic_ventas_bitacora.*
+        from      
+          tc_mantic_ventas_bitacora
+        where      
+          id_venta = {idVenta}
+				order by
+				  tc_mantic_ventas_bitacora.registro
+      </select>
 			<delete id="rows">
 				delete from tc_mantic_ventas_bitacora where id_venta= {idVenta}
 			</delete>
@@ -4539,6 +4570,17 @@
         where      
           id_venta = {idVenta}
 			</select>
+      <select id="detalle">
+        select      
+				  tr_mantic_venta_medio_pago.id_venta_medio_pago as id_key,
+          tr_mantic_venta_medio_pago.*
+        from      
+          tr_mantic_venta_medio_pago
+        where      
+          id_venta = {idVenta}
+				order by
+				  tr_mantic_venta_medio_pago.registro
+      </select>
     </unit>
 		<unit id="TcManticClientesDeudasDto">
       <select id="row">
@@ -4572,8 +4614,7 @@
 					tc_mantic_clientes_deudas 
 				where 
 					id_cliente= {idCliente} and id_cliente_estatus in (1, 2)
-				and 
-					id_venta not in ({idVenta})
+				  and id_venta not in ({idVenta})
 			</select>
 			<select id="deudaVenta">
 				select      
@@ -4583,9 +4624,19 @@
           tc_mantic_clientes_deudas
         where 
           id_venta= {idVenta} 
-				and 
-					id_cliente= {idCliente}
+				  and id_cliente= {idCliente}
 			</select>
+      <select id="detalle">
+        select      
+				  tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
+          tc_mantic_clientes_deudas.*
+        from      
+          tc_mantic_clientes_deudas
+        where      
+          id_venta = {idVenta}
+				order by
+				  tc_mantic_clientes_deudas.registro
+      </select>
     </unit>
     <unit id="TcManticClientesPagosDto">
       <select id="row">
@@ -4603,6 +4654,17 @@
           tc_mantic_clientes_pagos
         where      
           id_cliente_deuda = {idClienteDeuda} and pago = {pago} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+      <select id="detalle">
+        select      
+				  tc_mantic_clientes_pagos.id_cliente_pago as id_key,
+          tc_mantic_clientes_pagos.*
+        from      
+          tc_mantic_clientes_pagos
+        where      
+          id_venta = {idClienteDeuda}
+				order by
+				  tc_mantic_clientes_pagos.registro
       </select>
     </unit>
     <unit id="TcManticClientesEstatusDto">

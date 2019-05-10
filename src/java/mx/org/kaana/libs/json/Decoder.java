@@ -44,7 +44,7 @@ public final class Decoder {
  * @throws Exception
  */
 
-  public static  Serializable toSerializar(Class serializable,String json) throws Exception {
+  public static  Serializable toSerializar(Class serializable, String json) throws Exception {
     Serializable regresar   = null;
     Gson gson               = null;
     try {

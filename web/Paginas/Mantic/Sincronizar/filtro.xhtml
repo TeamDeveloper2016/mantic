@@ -29,7 +29,7 @@
         <div id="collapse-find" class="ui-grid-col-3">
           <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
-            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticSincronizarFiltro.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{manticSincronizarFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
@@ -47,13 +47,13 @@
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticSincronizarFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>              
 							<p:outputLabel for="fechaTermino" value="Fecha termino:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticSincronizarFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>							
-            </h:panelGrid>
+            </p:panelGrid>
             <p:separator/>
             <div class="janal-align-right lg-pantalla">
-              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="@this consecutivo cliente herramienta estatus" actionListener="#{manticSincronizarFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="@this consecutivo fechaInicio fechaTermino" actionListener="#{manticSincronizarFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
             </div>
 						<div class="janal-align-right xs-pantalla">
- 						  <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.partial('general');" process="@this consecutivo cliente herramienta estatus" actionListener="#{manticSincronizarFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+ 						  <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.partial('general');" process="@this consecutivo fechaInicio fechaTermino" actionListener="#{manticSincronizarFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
 					  </div>
           </p:panel>
         </div>
@@ -64,24 +64,30 @@
             <f:facet name="header" >
               <div class="lg-pantalla">
                 <p:menuButton value="Opciones">
-                  <p:menuitem value="Sincronizar" action="#{manticSincronizarFiltro.doAccion()}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                  <p:menuitem value="Sincronizar" action="#{manticSincronizarFiltro.doAccion()}" icon="fa fa-cloud-upload" title="Sincronizar" onstart="return janal.bloquear()"/>						
                   <p:separator/>
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:commandButton action="#{manticSincronizarFiltro.doAccion()}" icon="fa fa-plus" title="Sincronizar" onstart="return janal.bloquear()"/>						
+                <p:commandButton action="#{manticSincronizarFiltro.doAccion()}" icon="fa fa-cloud-upload" title="Sincronizar" onstart="return janal.bloquear()"/>						
                 <p:separator/>
                 <p:menuitem id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>												
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-12" sortBy="#{row.nombreEmpresa}">
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-13" sortBy="#{row.nombreEmpresa}">
               <f:facet name="header">
                 <h:outputText value="Empresa"/>
               </f:facet>
               <h:outputText value="#{row['nombreEmpresa']}"/>
+            </p:column>					                        
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-13" sortBy="#{row.documento}">
+              <f:facet name="header">
+                <h:outputText value="Documento"/>
+              </f:facet>
+              <h:outputText value="#{row['documento']}"/>
             </p:column>					                        
             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
               <f:facet name="header">
@@ -97,22 +103,22 @@
             </p:column>					                                    
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
               <f:facet name="header">
-                <h:outputText value="Fecha ingreso"/>
+                <h:outputText value="Fecha"/>
               </f:facet>
               <h:outputText value="#{row['registro']}"/>
             </p:column>	                          			
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38" sortBy="#{row.idSincronizado}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-80" sortBy="#{row.idSincronizado}">
               <f:facet name="header">
-                <h:outputText value="Sincronizado"/>
+                <h:outputText value="Sincronizar"/>
               </f:facet>
-              <h:outputText value="#{row['idSincronizado']}"/>
+							<h:graphicImage library="janal" name="icon/semaforos/#{row.idSincronizado eq '1' ? 'circulo-gris.png': 'circulo-verde.png'}" title="Registro #{row.idSincronizado eq '2' ? 'NO': 'SI'} sincronizado con el servidor"/>
             </p:column>	                          			
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticSincronizarFiltro.lazyModel== null? 0: manticSincronizarFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-						<p:menuitem action="#{manticSincronizarFiltro.doIndividual()}" icon="fa fa-edit" ajax="false" value="Sincronizar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"  rendered="#{fn:contains('|2|', manticSincronizarFiltro.attrs.seleccionado.idSincronizado)}"/>
+						<p:menuitem action="#{manticSincronizarFiltro.doIndividual()}" icon="fa fa-edit" ajax="false" value="Sincronizar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"  rendered="#{fn:contains('|1|', manticSincronizarFiltro.attrs.seleccionado.idSincronizado)}"/>
           </p:contextMenu>
         </div>
       </div>
