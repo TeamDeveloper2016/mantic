@@ -219,6 +219,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", idEmpresa);
+			params.put("operador", this.getCurrentSign());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticVentasDto", "siguienteCotizacion", params, "siguiente");
 			if(next!= null && next.getData()!= null)
 				regresar= new Siguiente(next.toLong());
@@ -507,6 +508,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		try {
 			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());			
+			params.put("operador", this.getCurrentSign());
 			siguiente= (Entity) DaoFactory.getInstance().toEntity(sesion, "TcManticApartadosDto", "siguiente", params);
 			if(siguiente!= null && siguiente.get("siguiente")!= null && siguiente.get("siguiente").getData()!= null)
 			  regresar= new Siguiente(siguiente.toLong("siguiente"));
@@ -570,6 +572,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", getOrden().getIdEmpresa());
+			params.put("operador", this.getCurrentSign());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticVentasDto", "siguienteTicket", params, "siguiente");
 			if(next!= null && next.getData()!= null)
 				regresar= new Siguiente(next.toLong());

@@ -288,6 +288,7 @@ public class Transaccion extends TransaccionFactura {
 			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", this.orden.getIdEmpresa());
+			params.put("operador", this.getCurrentSign());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasDto", "siguiente", params, "siguiente");
 			if(next!= null && next.getData()!= null)
 				regresar= new Siguiente(next.toLong());
@@ -311,6 +312,7 @@ public class Transaccion extends TransaccionFactura {
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("dia", Fecha.getHoyEstandar());
 			params.put("idEmpresa", this.orden.getIdEmpresa());
+			params.put("operador", this.getCurrentSign());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasDto", "cuenta", params, "siguiente");
 			if(next!= null && next.getData()!= null)
 				regresar= new Siguiente(next.toLong());

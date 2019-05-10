@@ -23,7 +23,7 @@ public final class Siguiente implements Serializable {
 	private Long orden;
 
 	public Siguiente(Long orden) {
-	  this(Cadena.rellenar(String.valueOf(Configuracion.getInstance().isEtapaDesarrollo()? 10000L+ orden: orden), Constantes.LENGTH_CONSECUTIVO, '0', true), Configuracion.getInstance().isEtapaDesarrollo()? 10000L+ orden: orden);
+	  this(Cadena.rellenar(String.valueOf(Configuracion.getInstance().isEtapaDesarrollo()? (orden<= 1L? 10001: orden): orden), Constantes.LENGTH_CONSECUTIVO, '0', true), Configuracion.getInstance().isEtapaDesarrollo()? (orden<= 1L? 10001: orden): orden);
 	}
 
 	public Siguiente(String consecutivo, Long orden) {

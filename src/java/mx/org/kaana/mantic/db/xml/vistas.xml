@@ -161,7 +161,8 @@
 				  tc_mantic_transferencias on tc_mantic_confrontas.id_transferencia= tc_mantic_transferencias.id_transferencia
 				where
 				  tc_mantic_confrontas.ejercicio= {ejercicio} 
-				  and tc_mantic_transferencias.id_empresa= {idEmpresa}				
+				  and tc_mantic_transferencias.id_empresa= {idEmpresa}		
+				  and tc_mantic_confrontas.orden {operador} 10000		
 			</select>		
       <select id="lazy">
         select 
@@ -8304,8 +8305,8 @@
 					tc_mantic_clientes on tc_mantic_clientes_deudas.id_cliente = tc_mantic_clientes.id_cliente
 				where
 				  tc_mantic_clientes.id_empresa= {idEmpresa}
-				and 
-					tc_mantic_clientes_pagos.ejercicio= {ejercicio} 
+				  and tc_mantic_clientes_pagos.ejercicio= {ejercicio} 
+			    and tc_mantic_clientes_pagos.orden{operador} 10000
 			</select>		
 		</unit>
 		<unit id="VistaTcManticEmpresasPagosDto">

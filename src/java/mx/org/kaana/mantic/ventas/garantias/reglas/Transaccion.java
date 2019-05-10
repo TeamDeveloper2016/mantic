@@ -273,6 +273,7 @@ public class Transaccion extends IBaseTnx{
 		try {
 			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
+			params.put("operador", this.getCurrentSign());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticGarantiasDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
 				regresar= new Siguiente(next.toLong());
@@ -662,6 +663,7 @@ public class Transaccion extends IBaseTnx{
 			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", ((TcManticClientesDto)DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, idCliente)).getIdEmpresa());
+			params.put("operador", this.getCurrentSign());
 			Value next= DaoFactory.getInstance().toField(sesion, "VistaTcManticClientesPagosDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
 				regresar= new Siguiente(next.toLong());

@@ -334,6 +334,7 @@ public class Transaccion extends TransaccionFactura{
 			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			params.put("operador", this.getCurrentSign());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticServiciosDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
 				regresar= new Siguiente(next.toLong());

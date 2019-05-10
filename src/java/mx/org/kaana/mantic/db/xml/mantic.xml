@@ -176,7 +176,8 @@
 					tc_mantic_egresos
 				where
 				  ejercicio= {ejercicio} 
-				  and id_empresa= {idEmpresa}				
+				  and id_empresa= {idEmpresa}
+				  and orden{operador} 10000				
 			</select>		
     </unit>
 		<unit id="TcManticConfrontasDto">
@@ -619,6 +620,7 @@
 				where
 				  id_empresa= {idEmpresa}
 				  and ejercicio= {ejercicio} 
+				  and orden{operador} 10000
 			</select>			
 			<select id="cuenta">
         select
@@ -629,6 +631,7 @@
 				  id_empresa= {idEmpresa}
 				  and ejercicio= {ejercicio} 
 				  and date_format(dia, '%Y%m%d')= '{dia}'
+				  and orden{operador} 10000
 			</select>			
 			<select id="total">
 				select
@@ -732,6 +735,7 @@
 					tc_mantic_apartados
 				where
 				  ejercicio= {ejercicio} 
+				  and orden{operador} 10000
 			</select>		
 			<select id="detalle">
         select      
@@ -821,7 +825,8 @@
 				from 
 					tc_mantic_garantias
 				where
-				  ejercicio= {ejercicio} 				  				  
+				  ejercicio= {ejercicio} 	
+				  and orden{operador} 10000			  				  
 			</select>		
 			<select id="detalle">
         select      
@@ -1091,6 +1096,7 @@
 					tc_mantic_cierres
 				where
 				  ejercicio= {ejercicio} 
+				  and orden{operador} 10000
 			</select>		
     </unit>
 		<unit id="TcManticCierresAlertasDto">
@@ -1218,6 +1224,7 @@
 					tc_mantic_cierres_retiros
 				where
 				  ejercicio= {ejercicio} 
+				  and orden{operador} 10000
 			</select>		
     </unit>				
     <unit id="TcManticCierresEstatusDto">
@@ -1344,7 +1351,8 @@
 					tc_mantic_requisiciones
 				where
 				  ejercicio= {ejercicio} 
-				  and id_empresa= {idEmpresa}				
+				  and id_empresa= {idEmpresa}	
+				  and orden{operador} 10000			
 			</select>	
 			<select id="detalle">
         select      
@@ -1668,7 +1676,8 @@
 					tc_mantic_creditos_notas
 				where
 				  ejercicio= {ejercicio} 
-				  and id_empresa= {idEmpresa}				
+				  and id_empresa= {idEmpresa}		
+				  and orden{operador} 10000		
 			</select>		
 			<select id="folio">
 				select
@@ -1745,7 +1754,8 @@
 					tc_mantic_devoluciones
 				where
 				  ejercicio= {ejercicio} 
-				  and id_empresa= {idEmpresa}				
+				  and id_empresa= {idEmpresa}		
+				  and orden{operador} 10000		
 			</select>		
       <select id="detalle">
         select      
@@ -1866,7 +1876,8 @@
 					tc_mantic_servicios
 				where
 				  ejercicio= {ejercicio} 
-				  and id_empresa= {idEmpresa}				
+				  and id_empresa= {idEmpresa}	
+				  and orden{operador} 10000			
 			</select>	
       <select id="detalle">
         select      
@@ -3558,7 +3569,8 @@
 					tc_mantic_ordenes_compras
 				where
 				  ejercicio= {ejercicio} 
-				  and id_empresa= {idEmpresa}				
+				  and id_empresa= {idEmpresa}	
+				  and orden{operador} 10000			
 			</select>
       <select id="detalle">
         select      
@@ -4057,6 +4069,7 @@
 				  ejercicio= {ejercicio} 
 				  and date_format(dia, '%Y%m%d') = '{dia}'
 				  and id_empresa= {idEmpresa}				
+				  and orden {operador} 10000
 			</select>			
       <select id="siguienteCotizacion">
         select
@@ -4065,7 +4078,8 @@
 					tc_mantic_ventas
 				where
 				  ejercicio= {ejercicio} 				  
-				  and id_empresa= {idEmpresa}				
+				  and id_empresa= {idEmpresa}		
+				  and ccotizacion{operador} 10000		
 			</select>			
       <select id="siguienteTicket">
         select
@@ -4074,7 +4088,8 @@
 					tc_mantic_ventas
 				where
 				  ejercicio= {ejercicio} 				  
-				  and id_empresa= {idEmpresa}				
+				  and id_empresa= {idEmpresa}	
+				  and cticket{operador} 10000
 			</select>			
       <select id="consecutivo">
         select      
@@ -4216,7 +4231,8 @@
 					tc_mantic_notas_entradas
 				where
 				  ejercicio= {ejercicio} 
-				  and id_empresa= {idEmpresa}				
+				  and id_empresa= {idEmpresa}	
+				  and orden{operador} 10000			
 			</select>		
 			<select id="existe">
         select      
@@ -4746,7 +4762,8 @@
 					tc_mantic_transferencias
 				where
 				  ejercicio= {ejercicio} 
-				  and id_empresa= {idEmpresa}				
+				  and id_empresa= {idEmpresa}			
+				  and orden{operador} 10000	
 			</select>		
       <select id="detalle">
         select      

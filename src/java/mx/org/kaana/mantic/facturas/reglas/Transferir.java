@@ -624,8 +624,9 @@ public class Transferir extends IBaseTnx {
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			params.put("ejercicio", this.getCurrentYear());
+			params.put("ejercicio", new Long(dia.get(Calendar.YEAR)));
 			params.put("idEmpresa", JsfBase.getAutentifica()!= null? JsfBase.getAutentifica().getEmpresa().getIdEmpresa(): 1L);
+			params.put("operador", this.getCurrentSign());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasDto", "siguiente", params, "siguiente");
 			if(next!= null && next.getData()!= null)
 				regresar= new Siguiente(next.toLong());
@@ -646,9 +647,10 @@ public class Transferir extends IBaseTnx {
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			params.put("ejercicio", this.getCurrentYear());
+			params.put("ejercicio", new Long(dia.get(Calendar.YEAR)));
 			params.put("dia", Fecha.formatear(Fecha.FECHA_ESTANDAR, dia));
 			params.put("idEmpresa", JsfBase.getAutentifica()!= null? JsfBase.getAutentifica().getEmpresa().getIdEmpresa(): 1L);
+			params.put("operador", this.getCurrentSign());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasDto", "cuenta", params, "siguiente");
 			if(next!= null && next.getData()!= null)
 				regresar= new Siguiente(next.toLong());

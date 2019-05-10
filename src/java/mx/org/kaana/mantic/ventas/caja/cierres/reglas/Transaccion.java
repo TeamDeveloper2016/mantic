@@ -147,6 +147,7 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 		try {
 			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
+			params.put("operador", this.getCurrentSign());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticCierresRetirosDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
 			  regresar= new Siguiente(next.toLong());

@@ -213,6 +213,7 @@ public class Cierre extends IBaseTnx implements Serializable  {
 			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idCierre", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			params.put("operador", this.getCurrentSign());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticCierresDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
 			  regresar= new Siguiente(next.toLong());

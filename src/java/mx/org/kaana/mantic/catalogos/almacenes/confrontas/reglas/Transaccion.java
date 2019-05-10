@@ -93,6 +93,7 @@ public class Transaccion extends ComunInventarios {
 			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", this.transferencia.getIdEmpresa());
+			params.put("operador", this.getCurrentSign());
 			Value next= DaoFactory.getInstance().toField(sesion, "VistaConfrontasDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
 			  regresar= new Siguiente(next.toLong());

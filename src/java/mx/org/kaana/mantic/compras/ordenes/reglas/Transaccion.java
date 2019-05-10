@@ -191,6 +191,7 @@ public class Transaccion extends Inventarios implements Serializable {
 			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", this.orden.getIdEmpresa());
+		  params.put("operador", this.getCurrentSign());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticOrdenesComprasDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
 			  regresar= new Siguiente(next.toLong());

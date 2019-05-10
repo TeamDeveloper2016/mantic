@@ -72,4 +72,8 @@ public abstract class IBaseTnx {
 		return Fecha.getAnioActual();
 	}	
 	
+  protected String getCurrentSign() {
+		return Configuracion.getInstance().isEtapaDesarrollo()? ">": "<=";
+	}	
+	
 }
