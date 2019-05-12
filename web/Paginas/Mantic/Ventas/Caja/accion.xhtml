@@ -166,6 +166,12 @@
 				else
 					cleanInitPage();
 			} // validaAccionCaptura
+			
+			function validateFacturacion(xhr, status, args){
+				if (args.facturacionOk) 
+          doFacturarPendiente(JSON.stringify(args.facturacion));
+			} // validateFacturacion
+			
 		// ]]>
 		</script>   
 		<style type="text/css">
@@ -202,8 +208,13 @@
 			}
 		</style>
 	</ui:define>
-	<ui:define name="contenido">
-		<!--p:poll interval="5" process="@this" listener="#{manticVentasCajaAccion.doActualizaTicketsAbiertos}" update="contenedorGrupos:ticketsAbiertos"/-->		
+	<ui:define name="contenido">		
+		<pe:remoteCommand name="doFacturarPendiente" process="@this @(.filas)" actionListener="#{manticVentasCajaAccion.doFacturarPendiente}">  
+			<pe:methodSignature parameters="mx.org.kaana.mantic.ventas.caja.beans.Facturacion"/>  
+			<pe:methodParam name="facturacion">
+				  <pe:convertJson />
+			</pe:methodParam>								
+		</pe:remoteCommand>		
 		<pe:remoteCommand name="unlockVenta" process="@this" actionListener="#{manticVentasCajaAccion.unlockVenta}"/>  					
 		<pe:remoteCommand name="cleanInitPage" onstart="return janal.bloquear();" process="@this" actionListener="#{manticVentasCajaAccion.doInitPage}" update="contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.recalculo) @(.janal-abono) contenedorGrupos:panelPago" oncomplete="janal.desbloquear();jsArticulos.refreshCobroValidate();"/>  			
 		<pe:remoteCommand name="cleanSelection" onstart="return janal.bloquear();" process="@this" actionListener="#{manticVentasCajaAccion.doCleanCaptura}" update="contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.recalculo) @(.janal-abono) contenedorGrupos:panelPago"/>  			
@@ -973,7 +984,7 @@
 			</h:panelGrid>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton id="aceptarFinalizar" value="Aceptar" icon="fa fa-check" process="@form" actionListener="#{manticVentasCajaAccion.doAceptar}" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear();" update="contenedorGrupos @(.filas) @(.recalculo) contenedorGrupos:deudorPago contenedorGrupos:deudor" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}"/>
+				<p:commandButton id="aceptarFinalizar" value="Aceptar" icon="fa fa-check" process="@form" actionListener="#{manticVentasCajaAccion.doAceptar}" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear();validateFacturacion(xhr, status, args);" update="contenedorGrupos @(.filas) @(.recalculo) contenedorGrupos:deudorPago contenedorGrupos:deudor" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}"/>
 				<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>
