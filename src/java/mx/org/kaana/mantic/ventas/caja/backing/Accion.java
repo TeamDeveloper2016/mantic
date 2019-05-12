@@ -59,6 +59,7 @@ import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.reglas.Transferir;
 import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
+import mx.org.kaana.mantic.ventas.caja.beans.Facturacion;
 import mx.org.kaana.mantic.ventas.caja.beans.Pago;
 import mx.org.kaana.mantic.ventas.caja.beans.VentaFinalizada;
 import mx.org.kaana.mantic.ventas.caja.reglas.CreateTicket;
@@ -371,8 +372,12 @@ public class Accion extends IBaseVenta implements Serializable {
 				ventaFinalizada= loadVentaFinalizada();
 				transaccion = new Transaccion(ventaFinalizada);
 				if (transaccion.ejecutar(EAccion.REPROCESAR)) {
-					if(ventaFinalizada.isFacturar() && !ventaFinalizada.getApartado())
-						doSendMail(transaccion.getCorreosFactura(), seleccionado.toString("razonSocial"), ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta(), transaccion.getFacturaPrincipal(), seleccionado.getKey());
+					if(ventaFinalizada.isFacturar() && !ventaFinalizada.getApartado()){
+						UIBackingUtilities.addCallbackParam("facturacionOk", true);
+						UIBackingUtilities.addCallbackParam("facturacion", new Facturacion(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta(), seleccionado.getKey(), transaccion.getCorreosFactura(), seleccionado.toString("razonSocial"), ventaFinalizada.getIdTipoPago(), transaccion.getFacturaPrincipal().getIdFactura(), transaccion.getFacturaPrincipal().getIdFacturama(), transaccion.getFacturaPrincipal().getSelloSat(), ventaFinalizada.getTicketVenta().getIdClienteDomicilio()));						
+					} // if
+					else
+						UIBackingUtilities.addCallbackParam("facturacionOk", false);
 					ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago) this.attrs.get("pago"), ventaFinalizada.getApartado() ? "APARTADO" : "VENTA DE MOSTRADOR");
 					UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + ((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).getTicket() + "','" + ticket.toHtml() + "');");
 					UIBackingUtilities.execute("jsTicket.clicTicket();");
@@ -394,25 +399,28 @@ public class Accion extends IBaseVenta implements Serializable {
     } // catch
   } // doAccion
 	
-	public void doSendMail(String correos, String razonSocial, Long idVenta, TcManticFacturasDto facturaPrincipal, Long idCliente) {
-		File factura= null;		
-		Map<String, Object> params= new HashMap<>();
-		String[] emails= {"jimenez76@yahoo.com", correos};
-		List<Attachment> files= new ArrayList<>(); 
+	public void doSendMail(Facturacion facturacion) {		
+		Map<String, Object> params= null;
+		List<Attachment> files    = null;
+		String[] emails           = null;
+		File factura              = null;		
 		try {
+			params= new HashMap<>();
 			params.put("header", "...");
 			params.put("footer", "...");
 			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());
 			params.put("tipo", "Factura");			
-			params.put("razonSocial", razonSocial);
+			params.put("razonSocial", facturacion.getRazonSocial());
 			params.put("correo", ECorreos.FACTURACION.getEmail());			
-			factura= toXml(facturaPrincipal.getIdFactura());
-			this.doReporte("FACTURAS_FICTICIAS_DETALLE", true, idVenta, facturaPrincipal.getIdFactura(), facturaPrincipal.getIdFacturama(), facturaPrincipal.getSelloSat(), idCliente);
+			factura= toXml(facturacion.getIdFactura());
+			this.doReporte("FACTURAS_FICTICIAS_DETALLE", true, facturacion.getIdVenta(), facturacion.getIdFactura(), facturacion.getIdFacturama(), facturacion.getSelloSat(), facturacion.getIdCliente());
 			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
+			files= new ArrayList<>(); 
 			files.add(attachments);
 			files.add(new Attachment(factura, Boolean.FALSE));
 			files.add(new Attachment("logo", ECorreos.FACTURACION.getImages().concat("logo.png"), Boolean.TRUE));
 			params.put("attach", attachments.getId());
+			emails= new String[]{"jimenez76@yahoo.com", facturacion.getCorreos()};		
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
@@ -429,10 +437,8 @@ public class Accion extends IBaseVenta implements Serializable {
 				} // finally	
 			} // for
 	  	LOG.info("Se envio el correo de forma exitosa");
-			if(correos.length()> 0)
-		    JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
-			else
-		    JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+			if(facturacion.getCorreos().length()> 0)
+		    JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);			
 		} // try // try
 		catch(Exception e) {
 			Error.mensaje(e);
@@ -1651,4 +1657,17 @@ public class Accion extends IBaseVenta implements Serializable {
 			Methods.clean(params);
 		} // finally
 	} // loadDomicilios
+	
+	public void doFacturarPendiente(Facturacion facturacion){
+		Transaccion transaccion= null;
+		try {
+			transaccion= new Transaccion(facturacion);
+			if(transaccion.ejecutar(EAccion.GENERAR))
+				doSendMail(facturacion);							
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doFacturarPendiente
 }
