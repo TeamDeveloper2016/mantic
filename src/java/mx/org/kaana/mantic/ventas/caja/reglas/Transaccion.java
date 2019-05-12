@@ -57,6 +57,7 @@ import mx.org.kaana.mantic.enums.ETiposDomicilios;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 import mx.org.kaana.mantic.ventas.beans.ClienteVenta;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
+import mx.org.kaana.mantic.ventas.caja.beans.Facturacion;
 import mx.org.kaana.mantic.ventas.caja.beans.VentaFinalizada;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Cierre;
 import org.apache.log4j.Logger;
@@ -82,6 +83,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	private Long idCliente;
 	private String correosFactura;
 	private TcManticFacturasDto facturaPrincipal;
+	private Facturacion facturacion;
 	
 	public Transaccion(IBaseDto orden, List<Articulo> articulos) {
 		super((TcManticVentasDto)orden, articulos);		
@@ -106,7 +108,12 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		this.idVenta  = idVenta;
 		this.idCliente= idCliente;		
 	} // Transaccion	
-	
+
+	public Transaccion(Facturacion facturacion) {
+		super(new TicketVenta());
+		this.facturacion = facturacion;
+	}
+		
 	public Long getIdCierreVigente() {
 		return idCierreVigente;
 	}	
@@ -165,6 +172,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 						venta.setCandado(EBooleanos.NO.getIdBooleano());
 						regresar= DaoFactory.getInstance().update(sesion, venta)>= 1L;
 					} // if
+					break;
+				case GENERAR:							
+					regresar= generarTimbradoFactura(sesion);;					
 					break;
 			} // switch
 			if(!regresar)
@@ -248,9 +258,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			if(this.ventaFinalizada.getApartado())
 				regresar= registrarApartado(sesion);
 			else if(this.ventaFinalizada.getTipoCuenta().equals(EEstatusVentas.APARTADOS.name()))
-				regresar= liquidarApartado(sesion);
-			if(this.ventaFinalizada.isFacturar() && !this.ventaFinalizada.getApartado())
-				generarTimbradoFactura(sesion, this.idFacturaGeneral);
+				regresar= liquidarApartado(sesion);			
 			if(this.ventaFinalizada.getTicketVenta().getIdServicio() > 0L)
 				actualizarServicio(sesion);
 		} // if		
@@ -1041,37 +1049,33 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		return regresar;
 	} // actualizaInventario
 	
-	private void generarTimbradoFactura(Session sesion, Long idFactura){
+	private boolean generarTimbradoFactura(Session sesion){
+		boolean regresar             = true;
 		TransaccionFactura factura   = null;
 		CFDIGestor gestor            = null;
-		ClienteFactura clienteFactura= null;
+		ClienteFactura clienteFactura= null;		
 		try {
 			sesion.flush();
-			actualizarClienteFacturama(sesion, this.ventaFinalizada.getTicketVenta().getIdCliente());
-			gestor= new CFDIGestor(this.ventaFinalizada.getTicketVenta().getIdVenta());			
+			actualizarClienteFacturama(sesion, this.facturacion.getIdCliente(), this.facturacion.getIdClienteDomicilio());
+			gestor= new CFDIGestor(this.facturacion.getIdVenta());			
 			factura= new TransaccionFactura();
 			factura.setArticulos(gestor.toDetalleCfdiVentas(sesion));
 			clienteFactura= gestor.toClienteCfdiVenta(sesion);			
-			clienteFactura.setMetodoPago(ETipoPago.fromIdTipoPago(this.ventaFinalizada.getIdTipoPago()).getClave());
+			clienteFactura.setMetodoPago(ETipoPago.fromIdTipoPago(this.facturacion.getIdTipoPago()).getClave());
 			factura.setCliente(clienteFactura);
-			factura.getCliente().setIdFactura(idFactura);
-			factura.generarCfdi(sesion);			
-			/*try {
-				if(!Cadena.isVacio(this.correosFactura))
-					CFDIFactory.getInstance().toSendMail(this.correosFactura, factura.getIdFacturamaRegistro());
-			} // try
-			catch (Exception e) {				
-				Error.mensaje(e);				
-			} // catch	*/
+			factura.getCliente().setIdFactura(this.facturacion.getIdFactura());
+			factura.generarCfdi(sesion);						
 		} // try
 		catch (Exception e) {			
+			regresar= false;
 			Error.mensaje(e);
 		} // catch				
+		return regresar;
 	} // generarTimbradoFactura
 	
-	private void actualizarClienteFacturama(Session sesion, Long idCliente) throws Exception{		
+	private void actualizarClienteFacturama(Session sesion, Long idCliente, Long idClienteDomicilio) throws Exception{		
 		CFDIGestor gestor= new CFDIGestor(idCliente);
-		ClienteFactura cliente= gestor.toClienteFacturaUpdateVenta(sesion, this.ventaFinalizada.getTicketVenta().getIdClienteDomicilio());
+		ClienteFactura cliente= gestor.toClienteFacturaUpdateVenta(sesion, idClienteDomicilio);
 		setCliente(cliente);
 		if(cliente.getIdFacturama()!= null)
 			updateCliente(sesion);
