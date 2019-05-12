@@ -4213,7 +4213,7 @@
         from      
           tc_mantic_ventas_bitacora
         where      
-          id_venta = {idVenta} and id_venta_estatus = {idVentaEstatus}
+          id_venta_bitacora = {idVentaBitacora}
       </select>
       <select id="detalle">
         select      
