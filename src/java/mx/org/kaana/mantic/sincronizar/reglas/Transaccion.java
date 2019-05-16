@@ -72,25 +72,25 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			params=new HashMap<>();
 			// INSERTAR LA VENTA PERO ANTES DE ESO SE TIENE QUE LIMPIAR EL ID_VENTA PARA QUE GENERE EL CORRESPONDIENTE A LA VENTA
 			documento.getVenta().setIdVenta(-1L);
-			regresar= DaoFactory.getInstance().insert(documento.getVenta()).intValue()>= 1;
+			regresar= DaoFactory.getInstance().insert(sesion, documento.getVenta()).intValue()>= 1;
 			if(documento.getVdetalle()!= null && !documento.getVdetalle().isEmpty())
 				for (TcManticVentasDetallesDto item : documento.getVdetalle()) {
 					item.setIdVentaDetalle(-1L);
 					item.setIdVenta(documento.getVenta().getIdVenta());
-					regresar= DaoFactory.getInstance().insert(item).intValue()>= 1;
-					// FALTA AFECTAR EL INVENTARIO Y LOS ALMACENES CORRESPONDIENTES
+					regresar= DaoFactory.getInstance().insert(sesion, item).intValue()>= 1;
+					// FALTA AFECTAR EL INVENTARIO Y LOS ALMACENES CORRESPONDIENTES Y SI ESTA MARCADA PARA FACTURAR ENTONCES LANZAR EL TIMBRADO DE LA VENTA
 				} // for
 			if(documento.getVbitacora()!= null && !documento.getVbitacora().isEmpty())
 				for (TcManticVentasBitacoraDto item : documento.getVbitacora()) {
 					item.setIdVentaBitacora(-1L);
 					item.setIdVenta(documento.getVenta().getIdVenta());
-					regresar= DaoFactory.getInstance().insert(item).intValue()>= 1;
+					regresar= DaoFactory.getInstance().insert(sesion, item).intValue()>= 1;
 				} // for
 			if(documento.getVmedios()!= null && !documento.getVmedios().isEmpty())
 				for (TrManticVentaMedioPagoDto item : documento.getVmedios()) {
 					item.setIdVentaMedioPago(-1L);
 					item.setIdVenta(documento.getVenta().getIdVenta());
-					regresar= DaoFactory.getInstance().insert(item).intValue()>= 1;
+					regresar= DaoFactory.getInstance().insert(sesion, item).intValue()>= 1;
 					// FALTA AFECTAR LOS IMPORTES DE CAJA DE ACUERDO A LOS TIPOS DE PAGO REALIZADOS
 				} // for
 			Long idClienteDeuda= -1L;
@@ -98,7 +98,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 				for (TcManticClientesDeudasDto item : documento.getVdeudas()) {
 					item.setIdClienteDeuda(-1L);
 					item.setIdVenta(documento.getVenta().getIdVenta());
-					regresar= DaoFactory.getInstance().insert(item).intValue()>= 1;
+					regresar= DaoFactory.getInstance().insert(sesion, item).intValue()>= 1;
 					idClienteDeuda= item.getIdClienteDeuda();
 					// FALTA AFECTAR EL CATALOGO DE CLIENTES PARA MODIFICAR SU SALDO CORRESPONDIENTE
 				} // for
@@ -106,7 +106,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 				for (TcManticClientesPagosDto item : documento.getVpagos()) {
 					item.setIdClientePago(-1L);
 					item.setIdClienteDeuda(idClienteDeuda);
-					regresar= DaoFactory.getInstance().insert(item).intValue()>= 1;
+					regresar= DaoFactory.getInstance().insert(sesion, item).intValue()>= 1;
 					// FALTA AFECTAR LOS IMPORTES DE CAJA DE ACUERDO A AL TIPO DE PAGO REALIZADOS
 				} // for
 			Long idApartado= -1L;
@@ -114,20 +114,20 @@ public class Transaccion extends IBaseTnx implements Serializable {
 				for (TcManticApartadosDto item : documento.getApartados()) {
 					item.setIdApartado(-1L);
 					item.setIdVenta(documento.getVenta().getIdVenta());
-					regresar= DaoFactory.getInstance().insert(item).intValue()>= 1;
+					regresar= DaoFactory.getInstance().insert(sesion, item).intValue()>= 1;
 					idApartado= item.getIdApartado();
 				} // for
 			if(documento.getAbitacora()!= null && !documento.getAbitacora().isEmpty())
 				for (TcManticApartadosBitacoraDto item : documento.getAbitacora()) {
 					item.setIdApartadoBitacora(-1L);
 					item.setIdApartado(idApartado);
-					regresar= DaoFactory.getInstance().insert(item).intValue()>= 1;
+					regresar= DaoFactory.getInstance().insert(sesion, item).intValue()>= 1;
 				} // for
 			if(documento.getApagos()!= null && !documento.getApagos().isEmpty())
 				for (TcManticApartadosPagosDto item : documento.getApagos()) {
 					item.setIdApartadoPago(-1L);
 					item.setIdApartado(idApartado);
-					regresar= DaoFactory.getInstance().insert(item).intValue()>= 1;
+					regresar= DaoFactory.getInstance().insert(sesion, item).intValue()>= 1;
 					// FALTA AFECTAR LOS IMPORTES DE CAJA DE ACUERDO A AL TIPO DE PAGO REALIZADOS
 				} // for
 		} // try
