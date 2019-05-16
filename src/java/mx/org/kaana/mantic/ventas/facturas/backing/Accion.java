@@ -138,6 +138,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("descuentoIndividual", 0);
 			this.attrs.put("descuentoGlobal", 0);
 			this.attrs.put("tipoDescuento", INDIVIDUAL);
+			doActivarDescuento();
 			this.attrs.put("decuentoAutorizadoActivo", false);
 			this.attrs.put("tipoDecuentoAutorizadoActivo", MENUDEO);
 			this.attrs.put("descripcion", "Imagen no disponible");
@@ -706,21 +707,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch		
-	} // loadSucursales
-	
-	@Override
-	public void doActivarDescuento(){
-		String tipoDescuento= null;		
-		try {
-			tipoDescuento= this.attrs.get("tipoDescuento").toString();
-			this.attrs.put("isIndividual", tipoDescuento.equals(INDIVIDUAL));
-			this.attrs.put(tipoDescuento.equals(INDIVIDUAL) ? "descuentoGlobal" : "descuentoIndividual", 0);
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch		
-	} // doActivarDescuento
+	} // loadSucursales	
 	
 	@Override
 	public void doAplicarDescuento(){
