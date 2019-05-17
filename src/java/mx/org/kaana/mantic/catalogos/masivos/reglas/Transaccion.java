@@ -394,7 +394,7 @@ public class Transaccion extends IBaseTnx {
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toFindArticulo
+	} // toFindArticuloIndentico
 
   private Boolean toArticulos(Session sesion, File archivo) throws Exception {
 		Boolean regresar	      = false;
@@ -414,8 +414,8 @@ public class Transaccion extends IBaseTnx {
 				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
 				LOG.info("Filas del documento: "+ sheet.getRows());
 				this.errores= 0;
-				int fila    = 0; 
-				for(fila= 1; fila< sheet.getRows(); fila++) {
+				int count   = 0; 
+				for(int fila= 1; fila< sheet.getRows(); fila++) {
 					if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
 						String contenido= new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 						// 0           1          2        3          4          5          6           7        8        9            10            11          12
@@ -436,8 +436,8 @@ public class Transaccion extends IBaseTnx {
 							codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim();
 							TcManticArticulosDto articulo= this.toFindArticulo(sesion, codigo, 1L);
 							if(articulo!= null) {
-								articulo.setIdCategoria(null);
-								articulo.setIdImagen(null);
+								//articulo.setIdCategoria(null);
+								//articulo.setIdImagen(null);
 								articulo.setPrecio(costo);
 								articulo.setMenudeo(menudeo);
 								articulo.setMedioMayoreo(medio);
@@ -536,6 +536,7 @@ public class Transaccion extends IBaseTnx {
 							} // if
 							// buscar si el codigo auxiliar existe para este articulo, en caso de que no insertarlo
 							codigo= new String(sheet.getCell(1, fila).getContents().getBytes(UTF_8), ISO_8859_1);
+							codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim();
 							Long auxiliar= this.toFindCodigoAuxiliar(sesion, codigo);
 							if(auxiliar< 0) {
 								codigos= new TcManticArticulosCodigosDto(
@@ -576,10 +577,11 @@ public class Transaccion extends IBaseTnx {
 							);
 							DaoFactory.getInstance().insert(sesion, detalle);
 						} // else	
+						count++;
 					} // if	
 //					if(fila> 3)
 //						throw new KajoolBaseException("Este error fue provocado intencionalmente !");
-  				this.procesados= fila;
+  				this.procesados= count;
 				} // for
 				if(bitacora== null) {
 					bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);
@@ -591,7 +593,7 @@ public class Transaccion extends IBaseTnx {
 					DaoFactory.getInstance().update(sesion, bitacora);
 				} // if
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
- 				this.procesados= this.masivo.getTuplas().intValue();
+ 				this.procesados= count;
 				regresar= true;
 			} // if
 		} // try
@@ -644,8 +646,8 @@ public class Transaccion extends IBaseTnx {
 				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
 				LOG.info("Filas del documento: "+ sheet.getRows());
 				this.errores= 0;
-				int fila    = 0; 
-				for(fila= 1; fila< sheet.getRows(); fila++) {
+				int count   = 0; 
+				for(int fila= 1; fila< sheet.getRows(); fila++) {
 					if(sheet.getCell(0, fila)!= null && sheet.getCell(1, fila)!= null && sheet.getCell(3, fila)!= null && sheet.getCell(4, fila)!= null && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(1, fila).getContents()) && !Cadena.isVacio(sheet.getCell(3, fila).getContents()) && !Cadena.isVacio(sheet.getCell(4, fila).getContents())) {
 						String contenido= new String(sheet.getCell(1, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 						String descripcion= new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
@@ -748,6 +750,7 @@ public class Transaccion extends IBaseTnx {
 							} // if
 							// buscar si el codigo auxiliar existe para este articulo, en caso de que no insertarlo
 							codigo= new String(sheet.getCell(0, fila).getContents().getBytes(UTF_8), ISO_8859_1);
+							codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim();
 							Long auxiliar= this.toFindCodigoAuxiliar(sesion, codigo);
 							if(auxiliar< 0) {
 								codigos= new TcManticArticulosCodigosDto(
@@ -795,6 +798,7 @@ public class Transaccion extends IBaseTnx {
 							);
 							DaoFactory.getInstance().insert(sesion, detalle);
 						} // else	
+						count++;
 					} // if	
 //					if(fila> 3)
 //						throw new KajoolBaseException("Este error fue provocado intencionalmente !");
@@ -810,7 +814,7 @@ public class Transaccion extends IBaseTnx {
 					DaoFactory.getInstance().update(sesion, bitacora);
 				} // if
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
- 				this.procesados= this.masivo.getTuplas().intValue();
+ 				this.procesados= count;
 				regresar       = true;
 			} // if
 		} // try
@@ -844,8 +848,8 @@ public class Transaccion extends IBaseTnx {
 				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
 				LOG.info("Filas del documento: "+ sheet.getRows());
 				this.errores= 0;
-				int fila    = 0; 
-				for(fila= 1; fila< sheet.getRows(); fila++) {
+				int count   = 0; 
+				for(int fila= 1; fila< sheet.getRows(); fila++) {
 					if(sheet.getCell(0, fila)!= null && sheet.getCell(1, fila)!= null && sheet.getCell(2, fila)!= null && sheet.getCell(3, fila)!= null && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(1, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents()) && !Cadena.isVacio(sheet.getCell(3, fila).getContents())) {
 						String contenido= new String(sheet.getCell(1, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 						//  0      1         2      3
@@ -945,6 +949,7 @@ public class Transaccion extends IBaseTnx {
 							} // if
 							// buscar si el codigo auxiliar existe para este articulo, en caso de que no insertarlo
 							codigo= new String(sheet.getCell(0, fila).getContents().getBytes(UTF_8), ISO_8859_1);
+							codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim();
 							Long auxiliar= this.toFindCodigoAuxiliar(sesion, codigo);
 							if(auxiliar< 0) {
 								codigos= new TcManticArticulosCodigosDto(
@@ -985,6 +990,7 @@ public class Transaccion extends IBaseTnx {
 							);
 							DaoFactory.getInstance().insert(sesion, detalle);
 						} // else	
+						count++;
 					} // if	
 //					if(fila> 3)
 //						throw new KajoolBaseException("Este error fue provocado intencionalmente !");
@@ -1000,7 +1006,7 @@ public class Transaccion extends IBaseTnx {
 					DaoFactory.getInstance().update(sesion, bitacora);
 				} // if
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
- 				this.procesados= this.masivo.getTuplas().intValue();
+ 				this.procesados= count;
 				regresar       = true;
 			} // if
 		} // try

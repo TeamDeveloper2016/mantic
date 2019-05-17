@@ -342,7 +342,7 @@
 				from
 					tc_mantic_articulos
 				inner join  
-					 tc_mantic_articulos_codigos on tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+					 tc_mantic_articulos_codigos on tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo
 				where  
 					 upper(tc_mantic_articulos_codigos.codigo)= '{codigo}'	
 				   and tc_mantic_articulos.id_articulo_tipo= {idArticuloTipo}
@@ -411,7 +411,6 @@
 					 tc_mantic_articulos_codigos on tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo 
 				where  
 					upper(tc_mantic_articulos_codigos.codigo)= '{codigo}'	
-				  and tc_mantic_articulos_codigos.id_principal!= 1 
 				  and tc_mantic_articulos_codigos.id_proveedor is null
 			</select>		
 			<select id="contactoc">
