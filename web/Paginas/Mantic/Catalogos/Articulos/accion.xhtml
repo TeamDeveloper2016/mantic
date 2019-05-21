@@ -77,6 +77,9 @@
 								</p:selectOneMenu>								
 								<p:outputLabel for="idBarras" value="Código de barras:"/>
 								<p:inputSwitch id="idBarras" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.idBarras}" offLabel="NO" onLabel="SI"/>
+								<p:spacer width="1px"/><p:separator/>
+								<p:outputLabel for="idVigente" value="Vigente/Activo:" styleClass="janal-color-blue strong"/>
+								<p:inputSwitch id="idVigente" styleClass="janal-wid-100-txt janal-color-blue strong" value="#{manticCatalogosArticulosAccion.registroArticulo.idVigente}" offLabel="NO" onLabel="SI"/>
               </p:panelGrid>
 						</p:tab>						
             <p:tab id="tabCodigos" title="Códigos">														
