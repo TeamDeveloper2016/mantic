@@ -4643,6 +4643,7 @@
 				where 
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and tc_mantic_articulos.id_articulo_tipo= 1
+				  and tc_mantic_articulos.id_vigente= 1
 				  and 
 				  (
 				    upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*'
@@ -4684,9 +4685,8 @@
 					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
 				where 
 					tc_mantic_empresas.id_empresa in ({sucursales})
-				and 
-				  tc_mantic_articulos.id_articulo_tipo in (1,2,3)
-				and 
+				  and tc_mantic_articulos.id_articulo_tipo in (1,2,3)
+				  and 
 				  (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' or tc_mantic_articulos.id_articulo= {idArticulo}) 			
 				order by 
 				  tc_mantic_articulos.nombre				
@@ -4726,6 +4726,7 @@
 				where 
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and tc_mantic_articulos.id_articulo_tipo= 1
+				  and tc_mantic_articulos.id_vigente= 1
 				  and (
 				      (upper(tc_mantic_articulos_codigos.codigo) like '{codigo}%' and tc_mantic_articulos_codigos.id_proveedor is null)
 				    or
@@ -4769,6 +4770,7 @@
 				where 
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and tc_mantic_articulos.id_articulo_tipo= 1
+				  and tc_mantic_articulos.id_vigente= 1
 				  and 
 				  (
 				    upper(tc_mantic_articulos.nombre) like upper('{codigo}%')
@@ -5593,6 +5595,7 @@
 				where 
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and tc_mantic_articulos.id_articulo_tipo in (1,2,3)
+				  and tc_mantic_articulos.id_vigente= 1
 				  and 
 				  (
 			      (upper(tc_mantic_articulos_codigos.codigo) regexp '.*{codigo}.*' and tc_mantic_articulos_codigos.id_proveedor is null)
@@ -5626,6 +5629,7 @@
 				where
 					tc_mantic_trabajos.id_empresa in ({sucursales})
 				  and tc_mantic_articulos.id_articulo_tipo in (2,3)
+				  and tc_mantic_articulos.id_vigente= 1
 					and 
 					(
 				    upper(tc_mantic_trabajos.codigo) regexp '.*{codigo}.*'
@@ -6099,6 +6103,7 @@
 				where 
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and tc_mantic_articulos.id_articulo_tipo= 1
+				  and tc_mantic_articulos.id_vigente= 1
 				  and 
 				  (
 				    upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*'
@@ -6147,6 +6152,7 @@
 				where 
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and tc_mantic_articulos.id_articulo_tipo= 1
+				  and tc_mantic_articulos.id_vigente= 1
 				  and (
 				      (upper(tc_mantic_articulos_codigos.codigo) like '{codigo}%' and tc_mantic_articulos_codigos.id_proveedor is null)
 				    or
