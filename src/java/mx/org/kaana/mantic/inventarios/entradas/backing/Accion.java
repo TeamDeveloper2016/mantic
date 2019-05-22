@@ -42,6 +42,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
@@ -717,16 +718,19 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 	
 	public void doRecoverArticulo(Integer index) {
-		if(index>= 0 && index< this.getAdminOrden().getArticulos().size()) {
-			Articulo temporal= this.getAdminOrden().getArticulos().get(index);
-			temporal.setOrigen("");
-			temporal.setDescuento("0");
-			temporal.setCosto(0.0);
-			temporal.setCantidad(0D);
-			temporal.setDisponible(true);
-		  this.getAdminOrden().toCalculate();
-		} // if
-	}
+		try {
+			if(index>= 0 && index< this.getAdminOrden().getArticulos().size()) {
+				this.attrs.put("seleccionado", this.getAdminOrden().getArticulos().get(index).toEntity());
+				Object backing= JsfBase.ELAsObject("manticCatalogosArticulosExpress");
+				if(backing!= null)
+					((IBaseAttribute)backing).getAttrs().put("seleccionado", this.attrs.get("seleccionado"));
+			} // if	
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch				
+	} // doRecoveryArticulo	
 	
 	public static void main(String ... args) {
 	  LOG.info("H2-111109".replaceAll(Constantes.CLEAN_STR, ""));	

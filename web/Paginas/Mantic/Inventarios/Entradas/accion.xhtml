@@ -119,13 +119,13 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
+		<pe:remoteCommand name="recover" process="@this" update="dialogoArtExpress" actionListener="#{manticInventariosEntradasAccion.doRecoverArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); PF('dlgArtExpress').show();">  
+			<pe:methodSignature parameters="java.lang.Integer"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>		
 		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticInventariosEntradasAccion.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.reset(); janal.desbloquear();">  
 			<pe:methodSignature parameters="java.lang.String, java.lang.Integer"/>  
 			<pe:methodParam name="codigo"/>  
-			<pe:methodParam name="index"/>  
-		</pe:remoteCommand>		
-		<pe:remoteCommand name="recover" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticInventariosEntradasAccion.doRecoverArticulo}" onstart="return janal.bloquear();" oncomplete="janal.reset(); janal.desbloquear(); jsArticulos.move();">  
-			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
 		<pe:remoteCommand name="suppress" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticInventariosEntradasAccion.doDeleteArticulo}" onstart="return janal.bloquear();" oncomplete="janal.reset(); janal.desbloquear(); jsArticulos.move();">  
@@ -292,9 +292,7 @@
 												<p:inputSwitch id="sinIva" widgetVar="widgetSinIva" value="#{manticInventariosEntradasAccion.attrs.sinIva}" onLabel="SI" offLabel="NO" styleClass="filas">
 													 <p:ajax event="change" listener="#{manticInventariosEntradasAccion.doUpdateIvaTipoDeCambio()}" process="@this" update="@(.filas) @(.recalculo)"/>
 												</p:inputSwitch>
-												<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();" style="float:right;">
-													<f:setPropertyActionListener target="#{manticInventariosEntradasAccion.attrs.seleccionado}" value="#{null}"/>
-												</p:commandButton>
+												<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" oncomplete="recover(jsArticulos.cursor.index)" style="float:right;"/>
                         <p:commandButton process="@form" icon="fa fa-save" title="Guardar nota de entrada" actionListener="#{manticInventariosEntradasAccion.doAutoSaveOrden()}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()" style="float:right;" update="@(.recalculo)"/>
 											</p:panelGrid>	
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
