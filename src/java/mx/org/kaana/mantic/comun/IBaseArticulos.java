@@ -23,6 +23,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfUtilities;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
@@ -885,4 +886,20 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			Error.mensaje(e);			
 		} // catch		
 	} // unlockVenta	
+	
+	public void doRecoverArticulo(Integer index) {
+		try {
+			if(index>= 0 && index< this.getAdminOrden().getArticulos().size()) {
+				this.attrs.put("seleccionado", this.getAdminOrden().getArticulos().get(index).toEntity());
+				Object backing= JsfBase.ELAsObject("manticCatalogosArticulosExpress");
+				if(backing!= null)
+					((IBaseAttribute)backing).getAttrs().put("seleccionado", this.attrs.get("seleccionado"));
+			} // if	
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch				
+	} // doRecoveryArticulo	
+	
 }
