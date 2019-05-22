@@ -51,7 +51,6 @@ import mx.org.kaana.mantic.correos.reglas.IBaseAttachment;
 import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 import mx.org.kaana.mantic.db.dto.TcManticApartadosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
-import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.EReportes;
@@ -678,6 +677,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		Map<String, Object>params= null;
 		List<Columna> campos     = null;
 		try {
+			refreshTicketsAbiertos();
 			campos= new ArrayList<>();
 			params= new HashMap<>();
 			params.put("sortOrder", "");
@@ -697,6 +697,27 @@ public class Accion extends IBaseVenta implements Serializable {
 			Methods.clean(params);
 		} // finally		
 	} // doLoadTicketAbiertosPrincipal
+	
+	public void refreshTicketsAbiertos(){
+		Map<String, Object>params= null;
+		List<Columna>campos      = null;
+		try {
+			params= new HashMap<>();
+			params.put("sortOrder", "");
+			params.put("idEmpresa", this.attrs.get("idEmpresa"));
+			campos= new ArrayList<>();
+			campos.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			params.put(Constantes.SQL_CONDICION, toCondicion(true));			
+			this.attrs.put("ticketsAbiertos", UIEntity.build("VistaVentasDto", "lazy", params, campos, Constantes.SQL_TODOS_REGISTROS));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // refreshTicketsAbiertos
 	
 	@Override
 	public void doLoadTicketAbiertos(){
