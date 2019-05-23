@@ -13,7 +13,7 @@
 			Janal.Control.fields = {
 				codigo: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				nombre: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
-			};						
+			};
 		</script>		
 	</ui:define>
 	<ui:define name="contenido">		
@@ -72,11 +72,16 @@
 								</f:facet>
 							</p:autoComplete>	
 							<p:outputLabel for="idTipoArticulo" value="Tipo articulo:"/>
-								<p:selectOneMenu id="idTipoArticulo" value="#{manticCatalogosArticulosFiltro.attrs.idTipoArticulo}" styleClass="janal-wid-100-txt">									
-									<f:selectItem itemLabel="ARTICULO" itemValue="1"/>
-									<f:selectItem itemLabel="REFACCIÓN" itemValue="2"/>
-									<f:selectItem itemLabel="SERVICIO" itemValue="3"/>
-								</p:selectOneMenu>								
+							<p:selectOneMenu id="idTipoArticulo" value="#{manticCatalogosArticulosFiltro.attrs.idTipoArticulo}" styleClass="janal-wid-100-txt">									
+								<f:selectItem itemLabel="ARTICULO" itemValue="1"/>
+								<f:selectItem itemLabel="REFACCIÓN" itemValue="2"/>
+								<f:selectItem itemLabel="SERVICIO" itemValue="3"/>
+							</p:selectOneMenu>								
+							<p:outputLabel for="idVigente" value="Vigentes:"/>
+							<p:selectOneMenu id="idVigente" value="#{manticCatalogosArticulosFiltro.attrs.idVigente}" styleClass="janal-wid-100-txt">									
+								<f:selectItem itemLabel="SI" itemValue="1"/>
+								<f:selectItem itemLabel="NO" itemValue="2"/>
+							</p:selectOneMenu>								
 						</h:panelGrid>
 						<p:separator/>
 						<div class="janal-align-right lg-pantalla">
@@ -194,7 +199,7 @@
 						</p:column>					
 						<p:column headerText="Imagen" styleClass="janal-column-center janal-wid-5">
 							<p:commandLink actionListener="#{manticCatalogosArticulosFiltro.doPrepareImage(row.alias.toString, row.nombre.toString)}" process="@this" update="dialogoArticulo" onstart="return janal.bloquear();" oncomplete="PF('dlgArticulo').show();" rendered="#{row.idImagen.toLong ne 0}">
-							  <i class="fa fa-fw fa-lg fa-file-image-o janal-color-red" style="display: #{row.idImagen.toLong eq 0? 'none': ''}" title="El articulo tiene imagen asociada, click para ver la imagen !"/>
+								<i class="fa fa-fw fa-lg fa-file-image-o janal-color-red" style="display: #{row.idImagen.toLong eq 0? 'none': ''}" title="El articulo tiene imagen asociada, click para ver la imagen !"/>
 							</p:commandLink>
 						</p:column>   
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
