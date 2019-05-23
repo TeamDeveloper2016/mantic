@@ -865,6 +865,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				this.attrs.put("ticketLock", ticketAbierto.getKey());
 				ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
 				ticketAbiertoPivote= ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto));												
+				this.attrs.put("ticketAbierto", ticketAbiertoPivote);
 				this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), true));
 				tipo= ticketAbiertoPivote.toString("tipo");
 				this.attrs.put("tipo", tipo);
@@ -885,7 +886,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				this.attrs.put("tabIndex", 0);
 				this.attrs.put("creditoCliente", ticketAbiertoPivote.toLong("idCredito").equals(1L));
 			} // if
-			else{				
+			else {				
 				unlockVentaExtends(-1L, (Long)this.attrs.get("ticketLock"));
 				this.attrs.put("ticketLock", -1L);
 				this.setAdminOrden(new AdminTickets(new TicketVenta()));
