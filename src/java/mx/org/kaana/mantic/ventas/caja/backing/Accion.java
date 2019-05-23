@@ -177,7 +177,7 @@ public class Accion extends IBaseVenta implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
   } // init
-
+	
 	public void doInitPage(){
 		Calendar fechaInicio= null;
 		try {
@@ -248,20 +248,24 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // doInitPage
 	
 	public void doCleanCaptura(){
+		mx.org.kaana.mantic.ventas.reglas.Transaccion transaccion= null;
 		RequestContext rc= null;
 		try {
 			rc= RequestContext.getCurrentInstance();
-			if(!this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0)
+			if(!this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid())
 				rc.execute("validaAccionCaptura();");
-			else{
+			else {
+				if(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta()> 0L){
+					transaccion= new mx.org.kaana.mantic.ventas.reglas.Transaccion((TicketVenta)this.getAdminOrden().getOrden());
+					transaccion.ejecutar(EAccion.ELIMINAR);
+				} // if
 				doInitPage();
 				rc.execute("janal.desbloquear();jsArticulos.refreshCobroValidate();");
 			} // else
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
-			Error.mensaje(e);
-			throw e;
+			Error.mensaje(e);			
 		} // catch		
 	} // doCleanCaptura
 	
