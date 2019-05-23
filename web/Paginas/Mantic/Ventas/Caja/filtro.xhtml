@@ -166,11 +166,11 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{!(manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '6')}"/>					
-            <p:separator rendered="#{(manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '6') or !(manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '6' or manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '3' or manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '4')}"/>					
+            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{(manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '1' or manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '2')}"/>					
+            <p:separator rendered="#{(manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '1' or manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '2')}"/>					
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCajaFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '6' or manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '3' or manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '4')}"/>					            
             <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCajaFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{(manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '6')}"/>					
-						<p:separator rendered="#{(manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '7') or (manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '9')}"/>					
+						<p:separator rendered="#{!(manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '6' or manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '3' or manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '4') or (manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '6')}"/>					
 						<p:menuitem id="ticket" icon="fa fa-file-text-o" value="Ticket" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCajaFiltro.doTicket}" oncomplete="janal.desbloquear();jsTicket.clicTicket();" update="tabla" rendered="#{(manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '7') or (manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '9')}"/>
           </p:contextMenu>
         </div>
@@ -205,11 +205,11 @@
   <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
   <ui:param name="renderedConfirmacion" value="true"/>	
   <ui:define name="detalleConfirmacion">
-    <p:panelGrid layout="grid" columns="2">
+    <h:panelGrid columns="2">
       <p:outputLabel value="No. ticket:"/>
-      <p:outputLabel value="#{manticVentasCajaFiltro.attrs.seleccionado.consecutivo}"/>
-      <p:outputLabel value="Justificación:"/>
-      <p:inputTextarea value="#{manticVentasCajaFiltro.attrs.justificacionEliminar}"/>
-    </p:panelGrid>			
+      <p:outputLabel value="#{manticVentasCajaFiltro.attrs.seleccionado.consecutivo}"/>      
+    </h:panelGrid>			
+		<p:outputLabel value="Justificación:"/>
+    <p:inputTextarea value="#{manticVentasCajaFiltro.attrs.justificacionEliminar}" styleClass="janal-wid-100-txt"/>
   </ui:define>
 </ui:composition>
