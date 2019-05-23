@@ -979,9 +979,8 @@
         from      
           tc_mantic_cajas
         where      
-          id_empresa in ({idEmpresa}) and 
-          upper(clave) like upper('%{clave}%') and
-          upper(nombre) like upper('%{nombre}%')
+          id_empresa in ({idEmpresa}) 
+				  and {condicion}
         {sortOrder}
       </select>
     </unit>		
