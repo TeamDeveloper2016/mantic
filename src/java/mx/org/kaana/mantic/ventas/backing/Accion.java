@@ -168,24 +168,34 @@ public class Accion extends IBaseVenta implements Serializable {
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
-		EAccion eaccion        = null;				
+		EAccion eaccion        = null;
+		boolean bandera        = true;
     try {			
-			loadOrdenVenta();
-			eaccion= (EAccion) this.attrs.get("accion");						
-			transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
-			this.getAdminOrden().toAdjustArticulos();
-			if (transaccion.ejecutar(eaccion)) {				
-    		UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la cuenta ', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");									
+			if(!this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid()){
+				loadOrdenVenta();
+				eaccion= (EAccion) this.attrs.get("accion");						
+				transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
+				this.getAdminOrden().toAdjustArticulos();
+				if (transaccion.ejecutar(eaccion)) 
+					UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la cuenta ', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");																		
+				else{ 
+					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);      			
+					bandera= false;
+				} // else
+			} // if
+			else if (((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta()> 0L){
+				transaccion= new Transaccion((TicketVenta)this.getAdminOrden().getOrden());
+				transaccion.ejecutar(EAccion.ELIMINAR);
+			} // else if			
+			if(bandera){
 				JsfBase.setFlashAttribute("idVenta", null);
 				JsfBase.setFlashAttribute("accion", null);				
 				this.attrs.put("idEmpresaVenta", this.attrs.get("idEmpresa"));
 				this.init();
 				this.attrs.put("idEmpresa", this.attrs.get("idEmpresaVenta"));
 				doAsignaClienteInicial(3515L);
-				UIBackingUtilities.execute("userUpdate();");
+				UIBackingUtilities.execute("userUpdate();");			
 			} // if
-			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
