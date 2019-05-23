@@ -381,6 +381,26 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toFindArticulo
 
+	private Boolean toFindPrincipal(Session sesion, Long idArticulo, Long idArticuloTipo) {
+		Boolean regresar          = false;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("idArticulo", idArticulo);
+			params.put("idArticuloTipo", idArticuloTipo);
+			Value data= DaoFactory.getInstance().toField(sesion, "VistaCargasMasivasDto", "principal", params, "total");
+			if(data!= null && data.getData()!= null)
+				regresar= data.toLong()>= 1;
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toFindPrincipal
+
 	private TcManticArticulosDto toFindArticuloIdentico(Session sesion, Map<String, Object> params, Long idArticuloTipo) {
 		TcManticArticulosDto regresar= null;
 		try {
@@ -511,12 +531,15 @@ public class Transaccion extends IBaseTnx {
   								DaoFactory.getInstance().update(sesion, identico);
 									articulo.setIdArticulo(identico.getIdArticulo());
 								} // if
+								Long idPrincipal= 1L;
+								if(this.toFindPrincipal(sesion, articulo.getIdArticulo(), articulo.getIdArticuloTipo()))
+									idPrincipal= 2L;
 								// insertar el codigo principal del articulo
 								codigos= new TcManticArticulosCodigosDto(
 									codigo, // String codigo, 
 									null, // Long idProveedor, 
 									JsfBase.getIdUsuario(), // Long idUsuario, 
-									1L, // Long idPrincipal, 
+									idPrincipal, // Long idPrincipal, 
 									null, // String observaciones, 
 									-1L, // Long idArticuloCodigo, 
 									1L, // Long orden, 
@@ -725,12 +748,15 @@ public class Transaccion extends IBaseTnx {
   								DaoFactory.getInstance().update(sesion, identico);
 									refaccion.setIdArticulo(identico.getIdArticulo());
 								} // if
+								Long idPrincipal= 1L;
+								if(this.toFindPrincipal(sesion, refaccion.getIdArticulo(), refaccion.getIdArticuloTipo()))
+									idPrincipal= 2L;
 								// insertar el codigo principal del articulo
 								codigos= new TcManticArticulosCodigosDto(
 									codigo, // String codigo, 
 									null, // Long idProveedor, 
 									JsfBase.getIdUsuario(), // Long idUsuario, 
-									1L, // Long idPrincipal, 
+									idPrincipal, // Long idPrincipal, 
 									null, // String observaciones, 
 									-1L, // Long idArticuloCodigo, 
 									1L, // Long orden, 
@@ -924,12 +950,15 @@ public class Transaccion extends IBaseTnx {
   								DaoFactory.getInstance().update(sesion, identico);
 									servicio.setIdArticulo(identico.getIdArticulo());
 								} // if
+								Long idPrincipal= 1L;
+								if(this.toFindPrincipal(sesion, servicio.getIdArticulo(), servicio.getIdArticuloTipo()))
+									idPrincipal= 2L;
 								// insertar el codigo principal del articulo
 								codigos= new TcManticArticulosCodigosDto(
 									codigo, // String codigo, 
 									null, // Long idProveedor, 
 									JsfBase.getIdUsuario(), // Long idUsuario, 
-									1L, // Long idPrincipal, 
+									idPrincipal, // Long idPrincipal, 
 									null, // String observaciones, 
 									-1L, // Long idArticuloCodigo, 
 									1L, // Long orden, 
