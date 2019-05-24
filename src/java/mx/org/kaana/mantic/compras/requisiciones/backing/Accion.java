@@ -228,7 +228,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 					this.getAdminOrden().toAddUltimo(this.getAdminOrden().getArticulos().size()- 1);
 					UIBackingUtilities.execute("jsArticulos.update("+ (getAdminOrden().getArticulos().size()- 1)+ ");");
 				} // if	
-				UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.toMap()+ "');");				
+				UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.getKey()+ "');");				
 				this.getAdminOrden().toCantidad();
 			} // if	
 			else

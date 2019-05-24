@@ -690,7 +690,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 					this.getAdminOrden().toAddUltimo(this.getAdminOrden().getArticulos().size()- 1);
 					UIBackingUtilities.execute("jsArticulos.update("+ (getAdminOrden().getArticulos().size()- 1)+ ");");
 				} // if	
-				UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
+				UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.getKey()+ "');");
 				getAdminOrden().toCalculate();
 			} // if	
 			else

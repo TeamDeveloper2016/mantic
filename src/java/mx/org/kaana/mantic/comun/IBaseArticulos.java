@@ -139,7 +139,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
   				this.adminOrden.toAddUltimo(this.adminOrden.getArticulos().size()- 1);
 					UIBackingUtilities.execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
 				} // if	
-				UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
+				UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.getKey()+ "');");
 				this.adminOrden.toCalculate(index);
 				if(this.attrs.get("paginator")== null || !(boolean)this.attrs.get("paginator"))
 				  this.attrs.put("paginator", this.adminOrden.getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
@@ -205,7 +205,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			this.adminOrden.getArticulos().add(temporal);
 			this.adminOrden.toAddUltimo(this.adminOrden.getArticulos().size()- 1);
 			UIBackingUtilities.execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");				
-			UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
+			UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.getKey()+ "');");
 			this.adminOrden.toAddArticulo(this.adminOrden.getArticulos().size()- 1);		
 			if(this.attrs.get("paginator")== null || !(boolean)this.attrs.get("paginator"))
   			this.attrs.put("paginator", this.adminOrden.getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
@@ -637,7 +637,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			else {
 				if(this.getAdminOrden().add(item))
 					UIBackingUtilities.execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
-				UIBackingUtilities.execute("jsArticulos.callback('"+ item.toMap()+ "');");
+				UIBackingUtilities.execute("jsArticulos.callback('"+ item.getKey()+ "');");
 			}   // if
 			this.getAdminOrden().toCalculate();
 		} // try
@@ -686,7 +686,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			);
 			if(this.getAdminOrden().add(item))
 				UIBackingUtilities.execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
-			UIBackingUtilities.execute("jsArticulos.callback('"+ item.toMap()+ "');");
+			UIBackingUtilities.execute("jsArticulos.callback('"+ item.getKey()+ "');");
 		} // try
 		finally {
 			Methods.clean(params);

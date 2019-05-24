@@ -408,7 +408,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 					this.getAdminOrden().toAddUltimo(this.getAdminOrden().getArticulos().size()- 1);
 					UIBackingUtilities.execute("jsArticulos.update("+ (this.getAdminOrden().getArticulos().size()- 1)+ ");");
 				} // if	
-				UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
+				UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.getKey()+ "');");
 				this.getAdminOrden().toCalculate(index);
 			} // if	
 			else
