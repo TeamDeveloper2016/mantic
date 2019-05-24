@@ -24,6 +24,7 @@ import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.KajoolBaseException;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
@@ -430,6 +431,7 @@ public class Transaccion extends IBaseTnx {
       workbookSettings.setLocale(new Locale("es", "MX"));
 			workbook= Workbook.getWorkbook(archivo, workbookSettings);
 			sheet		= workbook.getSheet(0);
+			Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
 			if(sheet != null && sheet.getColumns()>= this.categoria.getColumns() && sheet.getRows()>= 2) {
 				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
 				LOG.info("Filas del documento: "+ sheet.getRows());
@@ -449,7 +451,7 @@ public class Transaccion extends IBaseTnx {
 						double lmayoreo= Numero.getDouble(sheet.getCell(10, fila).getContents()!= null? sheet.getCell(10, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
 						double minimo  = Numero.getDouble(sheet.getCell(11, fila).getContents()!= null? sheet.getCell(11, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
 						double maximo  = Numero.getDouble(sheet.getCell(12, fila).getContents()!= null? sheet.getCell(12, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
-						String nombre= new String(contenido.getBytes(ISO_8859_1), UTF_8);
+						String nombre  = new String(contenido.getBytes(ISO_8859_1), UTF_8);
 						if(costo> 0 && menudeo> 0 && medio> 0 && mayoreo> 0) {
 							nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
 							String codigo= new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
@@ -574,7 +576,7 @@ public class Transaccion extends IBaseTnx {
 								);
 								DaoFactory.getInstance().insert(sesion, codigos);
 							} // if
-							JsfBase.getAutentifica().getMonitoreo().incrementar();
+							monitoreo.incrementar();
 							if(fila% this.categoria.getTuplas()== 0) {
 								if(bitacora== null) {
 								  bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, new Long(fila), 2L);
@@ -587,6 +589,7 @@ public class Transaccion extends IBaseTnx {
 								} // else
 								this.commit();
 								this.procesados= fila;
+								LOG.warn("Realizando proceso de commit en la fila "+ this.procesados);
 							} // if
 						} // if
 						else {
@@ -602,9 +605,10 @@ public class Transaccion extends IBaseTnx {
 						} // else	
 						count++;
 					} // if	
-//					if(fila> 3)
+//					if(fila> 500)
 //						throw new KajoolBaseException("Este error fue provocado intencionalmente !");
   				this.procesados= count;
+					LOG.warn("Procesando el registro de "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
 				} // for
 				if(bitacora== null) {
 					bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);
@@ -665,6 +669,7 @@ public class Transaccion extends IBaseTnx {
       workbookSettings.setLocale(new Locale("es", "MX"));
 			workbook= Workbook.getWorkbook(archivo, workbookSettings);
 			sheet		= workbook.getSheet(0);
+			Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
 			if(sheet != null && sheet.getColumns()>= this.categoria.getColumns() && sheet.getRows()>= 2) {
 				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
 				LOG.info("Filas del documento: "+ sheet.getRows());
@@ -798,7 +803,7 @@ public class Transaccion extends IBaseTnx {
 								especificaciones= new TcManticArticulosEspecificacionesDto(JsfBase.getIdUsuario(), especificacion, -1L, refaccion.getIdArticulo(), "HERRAMIENTA");
 								DaoFactory.getInstance().insert(sesion, especificaciones);
 							} // if
-							JsfBase.getAutentifica().getMonitoreo().incrementar();
+							monitoreo.incrementar();
 							if(fila% this.categoria.getTuplas()== 0) {
 								if(bitacora== null) {
 								  bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, new Long(fila), 2L);
@@ -829,6 +834,7 @@ public class Transaccion extends IBaseTnx {
 //					if(fila> 3)
 //						throw new KajoolBaseException("Este error fue provocado intencionalmente !");
   				this.procesados= fila;
+					LOG.warn("Procesando el registro de "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
 				} // for
 				if(bitacora== null) {
 					bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);
@@ -870,6 +876,7 @@ public class Transaccion extends IBaseTnx {
       workbookSettings.setLocale(new Locale("es", "MX"));
 			workbook= Workbook.getWorkbook(archivo, workbookSettings);
 			sheet		= workbook.getSheet(0);
+			Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
 			if(sheet != null && sheet.getColumns()>= this.categoria.getColumns() && sheet.getRows()>= 2) {
 				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
 				LOG.info("Filas del documento: "+ sheet.getRows());
@@ -993,7 +1000,7 @@ public class Transaccion extends IBaseTnx {
 								);
 								DaoFactory.getInstance().insert(sesion, codigos);
 							} // if							
-							JsfBase.getAutentifica().getMonitoreo().incrementar();
+							monitoreo.incrementar();
 							if(fila% this.categoria.getTuplas()== 0) {
 								if(bitacora== null) {
 								  bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, new Long(fila), 2L);
@@ -1019,11 +1026,12 @@ public class Transaccion extends IBaseTnx {
 							);
 							DaoFactory.getInstance().insert(sesion, detalle);
 						} // else	
-						count++;
+						count++; 
 					} // if	
 //					if(fila> 3)
 //						throw new KajoolBaseException("Este error fue provocado intencionalmente !");
   				this.procesados= fila;
+					LOG.warn("Procesando el registro de "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
 				} // for
 				if(bitacora== null) {
 					bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);
@@ -1064,11 +1072,13 @@ public class Transaccion extends IBaseTnx {
       workbookSettings.setLocale(new Locale("es", "MX"));
 			workbook= Workbook.getWorkbook(archivo, workbookSettings);
 			sheet		= workbook.getSheet(0);
+			Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
 			if(sheet != null && sheet.getColumns()>= this.categoria.getColumns() && sheet.getRows()>= 2) {
 				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
 				LOG.info("Filas del documento: "+ sheet.getRows());
 				this.errores= 0;
 				int fila    = 0; 
+				int count   = 0; 
 				for(fila= 1; fila< sheet.getRows(); fila++) {
 					if(sheet.getCell(0, fila)!= null && sheet.getCell(1, fila)!= null && sheet.getCell(2, fila)!= null && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(1, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
 						String contenido= new String(sheet.getCell(1, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);						
@@ -1108,7 +1118,7 @@ public class Transaccion extends IBaseTnx {
 								);
 								DaoFactory.getInstance().insert(sesion, detalle);								
 							} // if												
-							JsfBase.getAutentifica().getMonitoreo().incrementar();
+							monitoreo.incrementar();
 							if(fila% this.categoria.getTuplas()== 0) {
 								if(bitacora== null) {
 								  bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, new Long(fila), 2L);
@@ -1133,8 +1143,10 @@ public class Transaccion extends IBaseTnx {
 							);
 							DaoFactory.getInstance().insert(sesion, detalle);
 						} // else	
+    	      count++; 
 					} // if	
   				this.procesados= fila;
+					LOG.warn("Procesando el registro de "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
 				} // for
 				if(bitacora== null) {
 					bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);
@@ -1212,11 +1224,13 @@ public class Transaccion extends IBaseTnx {
       workbookSettings.setLocale(new Locale("es", "MX"));
 			workbook= Workbook.getWorkbook(archivo, workbookSettings);
 			sheet		= workbook.getSheet(0);
+			Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
 			if(sheet != null && sheet.getColumns()>= this.categoria.getColumns() && sheet.getRows()>= 2) {
 				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
 				LOG.info("Filas del documento: "+ sheet.getRows());
 				this.errores= 0;
 				int fila    = 0;
+				int count   = 0;
 				for(fila= 1; fila< sheet.getRows(); fila++) {
 					if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
 						String contenido= new String(sheet.getCell(2, fila).getContents().getBytes(UTF_8), ISO_8859_1);
@@ -1305,7 +1319,7 @@ public class Transaccion extends IBaseTnx {
 								this.toProcessContactoCliente(sesion, sheet.getCell(5, fila).getContents(), 9L, cliente.getIdCliente());
 							if(!Cadena.isVacio(sheet.getCell(6, fila).getContents())) 
 								this.toProcessContactoCliente(sesion, sheet.getCell(6, fila).getContents(), 10L, cliente.getIdCliente());
-							JsfBase.getAutentifica().getMonitoreo().incrementar();
+							monitoreo.incrementar();
 							if(fila% this.categoria.getTuplas()== 0) {
 								if(bitacora== null) {
 								  bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, new Long(fila), 2L);
@@ -1319,6 +1333,7 @@ public class Transaccion extends IBaseTnx {
 								this.commit();
 								this.procesados= fila; 
 							} // if
+							count++;
 						} // if
 						else {
 							this.errores++;
@@ -1332,6 +1347,7 @@ public class Transaccion extends IBaseTnx {
 							DaoFactory.getInstance().insert(sesion, detalle);
 						} // else	
     				this.procesados= fila; 
+  					LOG.warn("Procesando el registro de "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
 					} // if	
  				} // for
 				if(bitacora== null) {
@@ -1394,11 +1410,13 @@ public class Transaccion extends IBaseTnx {
       workbookSettings.setLocale(new Locale("es", "MX"));
 			workbook= Workbook.getWorkbook(archivo, workbookSettings);
 			sheet		= workbook.getSheet(0);
+			Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
 			if(sheet != null && sheet.getColumns()>= this.categoria.getColumns() && sheet.getRows()>= 2) {
 				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
 				LOG.info("Filas del documento: "+ sheet.getRows());
 				this.errores= 0;
 				int fila    = 0; 
+				int count   = 0;
 				for(fila= 1; fila< sheet.getRows(); fila++) {
 					if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
 						String contenido= new String(sheet.getCell(2, fila).getContents().getBytes(UTF_8), ISO_8859_1);
@@ -1483,7 +1501,7 @@ public class Transaccion extends IBaseTnx {
 								this.toProcessContactoProveedor(sesion, sheet.getCell(4, fila).getContents(), 9L, proveedor.getIdProveedor());
 							if(!Cadena.isVacio(sheet.getCell(5, fila).getContents())) 
 								this.toProcessContactoProveedor(sesion, sheet.getCell(5, fila).getContents(), 10L, proveedor.getIdProveedor());
-							JsfBase.getAutentifica().getMonitoreo().incrementar();
+							monitoreo.incrementar();
 							if(fila% this.categoria.getTuplas()== 0) {
 								if(bitacora== null) {
 								  bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, new Long(fila), 2L);
@@ -1497,6 +1515,7 @@ public class Transaccion extends IBaseTnx {
 								this.commit();
 								this.procesados= fila; 
 							} // if
+							count++;
 						} // if
 						else {
 							this.errores++;
@@ -1510,6 +1529,7 @@ public class Transaccion extends IBaseTnx {
 							DaoFactory.getInstance().insert(sesion, detalle);
 						} // else	
     				this.procesados= fila; 
+  					LOG.warn("Procesando el registro de "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
 					} // if	
 				} // for
 				if(bitacora== null) {
