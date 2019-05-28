@@ -34,7 +34,16 @@
         PF('progressBar').cancel();
         PF('progressBar').setValue(0);
         PF('progressBar').start(parseInt($('#contenedorGrupos\\:registros').html(), 10));
+				longProcess();
       }
+			
+			function longProcess() {
+				var tuplas= parseInt($('#contenedorGrupos\\:tuplas').html().replace(/[,]/g, ''), 10);
+				if(tuplas> 1000) {
+  				janal.console("progreso.longProcess(): Entro para cambiar de pagina de seguimiento");
+					setTimeout("$('#progreso').click();", 6000);
+				} // if
+			}
 		</script>
 		<style>
 			.janal-upload-frame {
@@ -45,6 +54,7 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
+		<p:commandButton id="progreso" action="progreso?faces-redirect=true" process="@this" style="display: none;" immediate="true" ajax="false"/>
 		<p:remoteCommand name="viewFile" actionListener="#{manticCatalogosMasivosImportar.doViewFile}" process="@this" update="@(.viewXLS)" onstart="return janal.bloquear();" oncomplete="PF('dlgXLS').show();"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
@@ -88,19 +98,20 @@
   						<p:outputLabel for="observacion" value="Observaciones:"/>
 							<p:inputTextarea id="observacion" value="#{manticCatalogosMasivosImportar.masivo.observaciones}" rows="2" styleClass="janal-wid-100-txt"/>
 							<p:fileUpload fileUploadListener="#{manticCatalogosMasivosImportar.doFileUpload}" 
-							  mode="advanced" process="@form" update="@(.importado)" label="Selecciona XLS" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="104857600"
+							  mode="advanced" process="@form" update="contenedorGrupos:tuplas @(.importado)" label="Selecciona XLS" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="104857600"
 								multiple="false" allowTypes="#{manticCatalogosMasivosImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 100 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosMasivosImportar.attrs.formatos}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()"/>
 							<p:inputText id="xls" value="#{manticCatalogosMasivosImportar.attrs.xls}" styleClass="importado" style="display:none"/>
 							<p:commandLink value="XLS importado: #{manticCatalogosMasivosImportar.xls.ruta}#{manticCatalogosMasivosImportar.xls.name}" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" style="#{(empty manticCatalogosMasivosImportar.xls)? 'display: none': ''}"/>
 							<br/>
+              <p:outputLabel id="tuplas" value="#{manticCatalogosMasivosImportar.masivo.tuplas}" styleClass="importado janal-color-orange janal-steps-boton-siguiente" style="display: none"/>
               <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-                <p:outputLabel value="Total de registros a importar: #{manticCatalogosMasivosImportar.masivo.tuplas}" styleClass="importado janal-color-orange janal-steps-boton-siguiente janal-font-bold"/>
+                <p:outputLabel value="Total de registros a importar: #{manticCatalogosMasivosImportar.attrs.tuplas}" styleClass="importado janal-color-orange janal-steps-boton-siguiente janal-font-bold"/>
                 <p:outputLabel value="Total de registros procesados: #{manticCatalogosMasivosImportar.attrs.procesados}" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold"/>
 							</p:panelGrid>
               <p:panel styleClass="tabla-filtro" id="barra" >
                 Proceso:
-                <p:progressBar interval="500" styleClass="animate" labelTemplate="{value}%" ajax="true" widgetVar="progressBar" value="#{sessionScope.autentifica.monitoreo.progreso}" global="false" >
+                <p:progressBar interval="10000" styleClass="animate" labelTemplate="{value}%" ajax="true" widgetVar="progressBar" value="#{sessionScope.autentifica.monitoreo.progreso}" global="true">
                   <p:ajax event="complete" listener="#{manticCatalogosMasivosImportar.doCompleto}"/>  
                 </p:progressBar>  			
               </p:panel>
@@ -161,7 +172,7 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@(.importado)" action="#{manticCatalogosMasivosImportar.doAceptar}"  onstart="startTask(); return janal.bloquear();" oncomplete="cancel(); janal.desbloquear();" disabled="#{empty manticCatalogosMasivosImportar.masivo.alias}" styleClass="importado"/>
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@(.importado)" action="#{manticCatalogosMasivosImportar.doAceptar}" onstart="startTask(); return janal.bloquear();" oncomplete="cancel(); janal.desbloquear();" disabled="#{empty manticCatalogosMasivosImportar.masivo.alias}" styleClass="importado"/>
 			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosMasivosImportar.doCancelar}" ajax="false" onstart="cancel(); return janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">

@@ -18,6 +18,7 @@ public class Monitoreo implements Serializable {
 	
 	private static final long serialVersionUID=6098914907638039562L;
 	
+	private String id;
 	private Long total;
 	private Long progreso;
 	private boolean corriendo;
@@ -28,12 +29,29 @@ public class Monitoreo implements Serializable {
   private Elapsed elapsed;
 	
 	public Monitoreo() {
+		this("");
+	}
+	
+	public Monitoreo(String id) {
+		this.id      = id;
 		this.messages= new ArrayList<>();
 		this.elapsed = new Elapsed();
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id=id;
 	}
 	
 	public Long getProgreso() {
 		return progreso;
+	}
+
+	public Integer getPorcentaje() {
+		return new Integer((int)(this.getTotal()<= 0? 0: this.getProgreso()* 100/ this.getTotal()));
 	}
 
 	public void setProgreso(Long progreso) {

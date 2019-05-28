@@ -126,6 +126,7 @@ public class Transaccion extends IBaseTnx {
 			Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
 			monitoreo.comenzar(0L);
 			monitoreo.setTotal(this.masivo.getTuplas());
+			monitoreo.setId(file.getName().toUpperCase());
 			switch (this.categoria) {
 				case ARTICULOS:
     			this.toArticulos(sesion, file);
@@ -437,7 +438,7 @@ public class Transaccion extends IBaseTnx {
 				LOG.info("Filas del documento: "+ sheet.getRows());
 				this.errores= 0;
 				int count   = 0; 
-				for(int fila= 1; fila< sheet.getRows(); fila++) {
+				for(int fila= 1; fila< sheet.getRows() && monitoreo.isCorriendo(); fila++) {
 					if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
 						String contenido= new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 						// 0           1          2        3          4          5          6           7        8        9            10            11          12
@@ -608,7 +609,7 @@ public class Transaccion extends IBaseTnx {
 //					if(fila> 500)
 //						throw new KajoolBaseException("Este error fue provocado intencionalmente !");
   				this.procesados= count;
-					LOG.warn("Procesando el registro de "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
+					LOG.warn("Procesando el registro "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
 				} // for
 				if(bitacora== null) {
 					bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);
@@ -675,7 +676,7 @@ public class Transaccion extends IBaseTnx {
 				LOG.info("Filas del documento: "+ sheet.getRows());
 				this.errores= 0;
 				int count   = 0; 
-				for(int fila= 1; fila< sheet.getRows(); fila++) {
+				for(int fila= 1; fila< sheet.getRows() && monitoreo.isCorriendo(); fila++) {
 					if(sheet.getCell(0, fila)!= null && sheet.getCell(1, fila)!= null && sheet.getCell(3, fila)!= null && sheet.getCell(4, fila)!= null && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(1, fila).getContents()) && !Cadena.isVacio(sheet.getCell(3, fila).getContents()) && !Cadena.isVacio(sheet.getCell(4, fila).getContents())) {
 						String contenido= new String(sheet.getCell(1, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 						String descripcion= new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
@@ -834,7 +835,7 @@ public class Transaccion extends IBaseTnx {
 //					if(fila> 3)
 //						throw new KajoolBaseException("Este error fue provocado intencionalmente !");
   				this.procesados= fila;
-					LOG.warn("Procesando el registro de "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
+					LOG.warn("Procesando el registro "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
 				} // for
 				if(bitacora== null) {
 					bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);
@@ -882,7 +883,7 @@ public class Transaccion extends IBaseTnx {
 				LOG.info("Filas del documento: "+ sheet.getRows());
 				this.errores= 0;
 				int count   = 0; 
-				for(int fila= 1; fila< sheet.getRows(); fila++) {
+				for(int fila= 1; fila< sheet.getRows() && monitoreo.isCorriendo(); fila++) {
 					if(sheet.getCell(0, fila)!= null && sheet.getCell(1, fila)!= null && sheet.getCell(2, fila)!= null && sheet.getCell(3, fila)!= null && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(1, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents()) && !Cadena.isVacio(sheet.getCell(3, fila).getContents())) {
 						String contenido= new String(sheet.getCell(1, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 						//  0      1         2      3
@@ -1031,7 +1032,7 @@ public class Transaccion extends IBaseTnx {
 //					if(fila> 3)
 //						throw new KajoolBaseException("Este error fue provocado intencionalmente !");
   				this.procesados= fila;
-					LOG.warn("Procesando el registro de "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
+					LOG.warn("Procesando el registro "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
 				} // for
 				if(bitacora== null) {
 					bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);
@@ -1079,7 +1080,7 @@ public class Transaccion extends IBaseTnx {
 				this.errores= 0;
 				int fila    = 0; 
 				int count   = 0; 
-				for(fila= 1; fila< sheet.getRows(); fila++) {
+				for(fila= 1; fila< sheet.getRows() && monitoreo.isCorriendo(); fila++) {
 					if(sheet.getCell(0, fila)!= null && sheet.getCell(1, fila)!= null && sheet.getCell(2, fila)!= null && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(1, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
 						String contenido= new String(sheet.getCell(1, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);						
 						//  0      1         2
@@ -1146,7 +1147,7 @@ public class Transaccion extends IBaseTnx {
     	      count++; 
 					} // if	
   				this.procesados= fila;
-					LOG.warn("Procesando el registro de "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
+					LOG.warn("Procesando el registro "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
 				} // for
 				if(bitacora== null) {
 					bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);
@@ -1231,7 +1232,7 @@ public class Transaccion extends IBaseTnx {
 				this.errores= 0;
 				int fila    = 0;
 				int count   = 0;
-				for(fila= 1; fila< sheet.getRows(); fila++) {
+				for(fila= 1; fila< sheet.getRows() && monitoreo.isCorriendo(); fila++) {
 					if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
 						String contenido= new String(sheet.getCell(2, fila).getContents().getBytes(UTF_8), ISO_8859_1);
 						// 0    1       2          3       4       5       6       7        8         9     10     11       12
@@ -1347,7 +1348,7 @@ public class Transaccion extends IBaseTnx {
 							DaoFactory.getInstance().insert(sesion, detalle);
 						} // else	
     				this.procesados= fila; 
-  					LOG.warn("Procesando el registro de "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
+  					LOG.warn("Procesando el registro "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
 					} // if	
  				} // for
 				if(bitacora== null) {
@@ -1417,7 +1418,7 @@ public class Transaccion extends IBaseTnx {
 				this.errores= 0;
 				int fila    = 0; 
 				int count   = 0;
-				for(fila= 1; fila< sheet.getRows(); fila++) {
+				for(fila= 1; fila< sheet.getRows() && monitoreo.isCorriendo(); fila++) {
 					if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
 						String contenido= new String(sheet.getCell(2, fila).getContents().getBytes(UTF_8), ISO_8859_1);
 						// 0    1       2          3       4       5       6        7        8       9     10      11
@@ -1529,7 +1530,7 @@ public class Transaccion extends IBaseTnx {
 							DaoFactory.getInstance().insert(sesion, detalle);
 						} // else	
     				this.procesados= fila; 
-  					LOG.warn("Procesando el registro de "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
+  					LOG.warn("Procesando el registro "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
 					} // if	
 				} // for
 				if(bitacora== null) {

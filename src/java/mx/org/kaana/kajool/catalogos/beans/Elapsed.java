@@ -75,12 +75,12 @@ public class Elapsed implements Serializable {
 		this.missing= (total- progreso)* unit;
 	}
 	
-	public String formatElapsed() {
-	  return Fecha.toFormatSecondsToHour((long)(this.elapsed/ 1000));
+	public String getFormatElapsed() {
+	  return Fecha.toFormatSecondsToHour((long)(this.elapsed/ 1000))+ " Hrs.";
 	}
 	
-	public String formatMissing() {
-	  return Fecha.toFormatSecondsToHour((long)(this.missing/ 1000));
+	public String getFormatMissing() {
+	  return Fecha.toFormatSecondsToHour((long)(this.missing/ 1000))+ " Hrs.";
 	}
 	
 	public static void main(String ... agrs) {

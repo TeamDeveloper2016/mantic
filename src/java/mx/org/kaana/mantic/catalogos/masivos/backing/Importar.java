@@ -20,6 +20,7 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.comun.IBaseImportar;
@@ -85,6 +86,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			else
 				this.categoria= ECargaMasiva.ARTICULOS;
 			this.attrs.put("xls", ""); 
+			this.attrs.put("tuplas", 0L);
 			this.masivo = new TcManticMasivasArchivosDto(
 				-1L, // Long idMasivaArchivo, 
 				Configuracion.getInstance().getPropiedadSistemaServidor("masivos"), // String ruta, 
@@ -136,15 +138,20 @@ public class Importar extends IBaseImportar implements Serializable {
   } // doLoadArhivos
 	
 	public void doFileUpload(FileUploadEvent event) {
+		String tuplas= "0";
 		try {
   		this.attrs.put("procesados", 0);
       this.doFileUploadMasivo(event, this.masivo.getRegistro().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("masivos"), this.masivo, this.categoria);
+			tuplas= Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, this.masivo.getTuplas());
+			this.attrs.put("tuplas", tuplas);
 		} // try
 		catch(Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
-	  // UIBackingUtilities.execute("janal.show([{summary: 'Error:', detail: 'Solo se pueden importar catalogos en formato PDF ["+ event.getFile().getFileName().toUpperCase()+ "].'}]);"); 
+		if(this.masivo.getIdTipoMasivo()== 1L) {
+	    UIBackingUtilities.execute("janal.show([{summary: 'Procesar:', detail: 'Filas encontradas en el archivo ["+ tuplas+ "].'}], 'info');"); 
+		} // if	
 	} // doFileUpload	
 	
 	public void doViewFile() {
@@ -163,7 +170,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.masivo.setArchivo(this.getXls().getOriginal());
 		  this.masivo.setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
       transaccion= new Transaccion(this.masivo, this.categoria);
-      if(transaccion.ejecutar(EAccion.PROCESAR)) {
+      if(tuplas> 0L && transaccion.ejecutar(EAccion.PROCESAR)) {
 //        UIBackingUtilities.execute("janal.alert('Cátalogo procesado de forma correcta ["+ tuplas+ "], registros erroneos ["+ transaccion.getErrores()+ "]';");
 //				this.setXls(null);
 //				this.attrs.put("xls", ""); 
@@ -190,7 +197,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);
 		} // catch
-		if(transaccion!= null) {
+		if(tuplas> 0L &&  transaccion!= null) {
 			this.attrs.put("procesados", transaccion.getProcesados());
 			UIBackingUtilities.execute("janal.alert('Se termin\\u00F3 de procesar el archivo !\\u000DTotal de registros: "+ tuplas+ "\\u000DRegistros procesados: "+ transaccion.getProcesados()+ 
 				(tuplas!= transaccion.getProcesados()? "\\u000D\\u000DEl total de filas del archivo es diferente al procesado, favor de verificarlo": "")+ "')");
@@ -221,6 +228,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.attrs.put("procesados", 0);
 			this.setXls(null);
 			this.attrs.put("xls", ""); 
+			this.attrs.put("tuplas", 0L);
 			this.masivo = new TcManticMasivasArchivosDto(
 				-1L, // Long idMasivaArchivo, 
 				null, // String ruta, 

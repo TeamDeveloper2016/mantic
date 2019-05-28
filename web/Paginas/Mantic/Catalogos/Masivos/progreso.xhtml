@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="[#{manticCatalogosMasivosProgreso.monitoreo.id}] Monitoreo del avance de la importacion de registros"/>
+  <ui:define name="librerias">
+		<meta id="refresh" http-equiv="#{manticCatalogosMasivosProgreso.attrs.cancelar? 'refresh': 'description'}" content="120"/>
+		<script type="text/javascript">
+		  function cancel() {
+				janal.console("progreso.cancel(): Entro a cancelar el refrescado de la pagina");
+		    window.stop();
+		  }
+		</script>	
+	</ui:define>	
+  <ui:define name="contenido">
+		<p:poll autoStart="true" interval="3" global="true" process="@this" update="@(.filas)" listener="#{manticCatalogosMasivosProgreso.doProgreso}" stop="#{not manticCatalogosMasivosProgreso.attrs.cancelar}"/>
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-content" class="ui-grid-col-6 janal-column-center">
+					<p:outputLabel value="Tiempo transcurrido:"/>
+        </div>
+        <div id="collapse-content" class="ui-grid-col-6 janal-column-center">
+					<p:outputLabel value="Tiempo restante:"/>
+        </div>
+      </div>
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-content" class="ui-grid-col-6 janal-column-center">
+					<p:inputText readonly="true" value="#{manticCatalogosMasivosProgreso.monitoreo.elapsed.formatElapsed}" styleClass="janal-column-center janal-wid-96 filas"/>
+        </div>
+        <div id="collapse-content" class="ui-grid-col-6 janal-column-center">
+					<p:inputText readonly="true" value="#{manticCatalogosMasivosProgreso.monitoreo.elapsed.formatMissing}" styleClass="janal-column-center janal-wid-96 filas"/>
+        </div>
+      </div>
+  		<br/>
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-content" class="ui-grid-col-4 janal-column-left">
+					<p:outputLabel value="0"/>
+        </div>
+        <div id="collapse-content" class="ui-grid-col-4 janal-column-center">
+					<p:outputLabel value="#{manticCatalogosMasivosProgreso.doNumerico(manticCatalogosMasivosProgreso.monitoreo.progreso)}" styleClass="filas"/>
+        </div>
+        <div id="collapse-content" class="ui-grid-col-4 janal-column-right">
+					<p:outputLabel value="#{manticCatalogosMasivosProgreso.doNumerico(manticCatalogosMasivosProgreso.monitoreo.total)}"/>
+        </div>
+      </div>
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-content" class="ui-grid-col-12">
+					<p:progressBar value="#{manticCatalogosMasivosProgreso.attrs.value}" labelTemplate="{value}%" displayOnly="true" styleClass="filas"/>
+        </div>
+      </div>
+    </div>		   
+		<br/>
+  </ui:define>   
+  <ui:define name="acciones">
+		<p:commandButton id="aceptar" process="@this" update="cancelar @(.filas)" icon="fa fa-remove" value="Cancelar" styleClass="filas" action="#{manticCatalogosMasivosProgreso.doCancelar}" style="display: #{manticCatalogosMasivosProgreso.attrs.cancelar? '': 'none'}"/>
+		<p:commandButton id="cancelar" process="@this" update="cancelar @(.filas)" icon="fa fa-reply" value="Regresar" styleClass="filas" action="#{manticCatalogosMasivosProgreso.doRegresar}" style="display: #{manticCatalogosMasivosProgreso.attrs.cancelar? 'none': ''}"/>
+  </ui:define>   
+  <ui:param name="componenteBloqueo" value="aceptar cancelar"/>
+</ui:composition>
