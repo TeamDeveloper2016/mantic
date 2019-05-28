@@ -90,7 +90,7 @@ public class CreateTicket {
 		return regresar.toString();
 	} // toDomicilio
 	
-	private String toFindDomicilio() throws Exception{
+	protected String toFindDomicilio() throws Exception{
 		Entity domicilio         = null;
 		String regresar          = null;
 		Map<String, Object>params= null;
