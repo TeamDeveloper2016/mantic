@@ -19,16 +19,16 @@ public class CreateTicket {
 	private AdminTickets ticket;
 	private Pago pago;
 	private Sucursal principal;
-	private String tipo;
+	protected String tipo;
 	
 	public CreateTicket(AdminTickets ticket, Pago pago, String tipo) {
 		this.ticket= ticket;
 		this.pago  = pago;
 		this.tipo  = tipo;
 		init();
-	}
+	} // CreateTicket
 	
-	private void init(){		
+	protected void init(){		
 		Sucursal matriz= null;		
 		for(Sucursal sucursal: JsfBase.getAutentifica().getSucursales()){
 			if(sucursal.isMatriz())
@@ -61,7 +61,7 @@ public class CreateTicket {
 		return sb.toString();
 	} // toHtml
 	
-	private String toHeader() throws Exception{
+	protected String toHeader() throws Exception{
 		//String ticket= this.principal.getTicket()!= null ? this.principal.getTicket() : "";
 		StringBuilder regresar= new StringBuilder("<div id=\"ticket\" style=\"width: 90px; max-width: 80px;\">");
 		regresar.append("<table style=\"width: 290px;\"><tr>");
@@ -78,7 +78,7 @@ public class CreateTicket {
 		return regresar.toString();
 	} // toEncabezado;
 	
-	private String toBlackBar(){
+	protected String toBlackBar(){
 		StringBuilder regresar= new StringBuilder();
 		regresar.append("<p style=\"width: 290px;text-align: center;font-family: sans-serif;font-size: 13px;font-weight: bold;background: black;color: white\">CENTRO DE SERVICIO DEWALT Y B&amp;D</p>");
 		return regresar.toString();
@@ -115,13 +115,13 @@ public class CreateTicket {
 		return regresar.toString();
 	} // toNoTicket
 	
-	private String toTipoTransaccion(){
+	protected String toTipoTransaccion(){
 		StringBuilder regresar= new StringBuilder();
 		regresar.append(this.tipo).append("<br>");		
 		return regresar.toString();
 	} // toTipoVenta
 	
-	private String toFecha(){
+	protected String toFecha(){
 		StringBuilder regresar= new StringBuilder();
 		regresar.append("Fecha:").append(Fecha.formatear(Fecha.FECHA_HORA_CORTA, ((TicketVenta)this.ticket.getOrden()).getCobro()));
 		if(this.tipo.equals("APARTADO")){
@@ -132,13 +132,13 @@ public class CreateTicket {
 		return regresar.toString();
 	} // toFecha
 	
-	private String toTable(){
+	protected String toTable(){
 		StringBuilder regresar= new StringBuilder();
 		regresar.append("<table style=\"width: 290px;border-top: 1px solid black;border-collapse: collapse;\">");		
 		return regresar.toString();
 	} // toTable
 	
-	private String toHeaderTable(){
+	protected String toHeaderTable(){
 		StringBuilder regresar= new StringBuilder();
 		regresar.append("<thead>");
 		regresar.append("<tr style=\"border-top: 1px solid black;border-collapse: collapse;\">");
@@ -254,7 +254,7 @@ public class CreateTicket {
 		return regresar.toString();
 	} // toPagos
 	
-	private String toFinishTable(){		
+	protected String toFinishTable(){		
 		return "</table>";
 	} // toArticulos
 
@@ -289,7 +289,7 @@ public class CreateTicket {
 		return regresar.toString();
 	} // toArticulos
 	
-	private String toFooter(){
+	protected String toFooter(){
 		StringBuilder regresar= new StringBuilder();
 		String descripcion= this.tipo.equals("COTIZACIÓN") || this.tipo.equals("APARTADO") ? "GRACIAS POR SU PREFERENCIA" : "GRACIAS POR SU COMPRA";			
 		regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 14px;border-top: 1px solid black;border-collapse: collapse;\">");
