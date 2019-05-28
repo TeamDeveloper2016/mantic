@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
@@ -26,19 +27,17 @@ public class CreateCierre extends CreateTicket {
 		sb.append(toBlackBar());				
 		sb.append(toTipoTransaccion());
 		sb.append(toFecha());
-		sb.append(toTable());			
-		sb.append(toHeaderTable());
-		sb.append(toFinishTable());
+		sb.append(toTable());					
 		sb.append(toCantidad());				
-		sb.append(toVendedor());		
-		sb.append(toFooter());		
+		sb.append(toVendedor());				
 		return sb.toString();
 	} // toHtml
 	
 	@Override
 	public String toTipoTransaccion(){
 		StringBuilder regresar= new StringBuilder();
-		regresar.append(this.tipo).append("<br>");		
+		regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 14px;border-collapse: collapse;\">");
+		regresar.append(this.tipo).append("<br>").append("<br>");		
 		return regresar.toString();
 	} // toTipoVenta			
 
@@ -49,6 +48,23 @@ public class CreateCierre extends CreateTicket {
 		return regresar.toString();
 	} // toArticulos
 
+	@Override
+	protected String toFindDomicilio() throws Exception{
+		Entity domicilio         = null;
+		String regresar          = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idEmpresa", this.getPrincipal().getIdEmpresa());
+			domicilio= (Entity) DaoFactory.getInstance().toEntity("VistaInformacionEmpresas", "datosEmpresa", params);
+			regresar= domicilio.toString("empresaDireccion").concat(" C.P. ").concat(domicilio.toString("codigoPostal")).concat("<br> COLONIA. ").concat(domicilio.toString("colonia"));
+		} // try
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toFindDomicilio
+	
 	private String toUsuario() throws Exception{
 		String regresar          = null;
 		Entity usuario           = null;
@@ -77,4 +93,12 @@ public class CreateCierre extends CreateTicket {
 		regresar.append("</tbody></table>");					
 		return regresar.toString();
 	} // toPagos
+	
+	@Override
+	protected String toFecha(){
+		StringBuilder regresar= new StringBuilder();
+		regresar.append("Fecha:").append(Fecha.formatear(Fecha.FECHA_HORA_CORTA));		
+		regresar.append("</p>");		
+		return regresar.toString();
+	} // toFecha
 }
