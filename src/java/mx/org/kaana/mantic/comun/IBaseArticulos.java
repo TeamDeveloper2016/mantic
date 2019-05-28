@@ -134,6 +134,10 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				
 				Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
 				temporal.setStock(stock== null? 0D: stock.toDouble());
+
+				// Esto es para cuando se agregan articulos de forma directa del archivo XML
+				if(articulo.containsKey("disponible")) 
+  				temporal.setDisponible(articulo.toBoolean("disponible"));
 				if(index== this.adminOrden.getArticulos().size()- 1) {
 					this.adminOrden.getArticulos().add(new Articulo(-1L));
   				this.adminOrden.toAddUltimo(this.adminOrden.getArticulos().size()- 1);

@@ -636,6 +636,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				buscado.put("iva", new Value("iva", faltante.getIva()));
 				buscado.put("unidadMedida", new Value("unidadMedida", faltante.getUnidadMedida()!= null? faltante.getUnidadMedida().toUpperCase(): ""));
 				buscado.put("origen", new Value("origen", faltante.getNombre()));
+				buscado.put("disponible", new Value("disponible", false));
 			} // if	
 			this.attrs.put("encontrado", new UISelectEntity(buscado));
 		} // if
@@ -732,5 +733,22 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	  LOG.info("H2 111109".replaceAll(Constantes.CLEAN_STR, ""));	
 	  LOG.info(Cadena.toEqualsString("H2 111109", "H2-111109"));	
 	}
+
+  public void doDesasociarArticulo(Articulo row, Integer index) {
+		if(!row.isDisponible()) {
+			if(row.getIdComodin()!= null && row.getIdComodin()> 0L) {
+		    row.setDisponible(true);
+		    row.setCodigo("");
+			} // if
+			else {
+				this.doDeleteArticulo(index);
+				UIBackingUtilities.execute("janal.reset();");
+				UIBackingUtilities.execute("jsArticulos.move();");
+			} // else	
+		  this.doLoadXmlFile();
+		} // if
+		else
+			JsfBase.addMessage("El articulo aun no se encuentra asociado a una partida de la factura (XML) !", ETipoMensaje.ALERTA);
+	}	
 	
 }

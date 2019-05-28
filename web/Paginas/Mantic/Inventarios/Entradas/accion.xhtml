@@ -329,6 +329,9 @@
 													<f:facet name="header">
 														<h:outputText value="No."/>
 													</f:facet>
+													<p:commandLink process="@this" update="@(.importado) @(.filas) @(.recalculo)" actionListener="#{manticInventariosEntradasAccion.doDesasociarArticulo(row, index)}" title="Click para desvincular un articulo de la factura (XML)" styleClass="filas">
+													  <h:graphicImage library="janal" name="icon/semaforos/#{row.disponible? 'circulo-rojo.png': 'circulo-verde.png'}"/>
+													</p:commandLink>
 													<h:outputText value="#{index+ 1}.-"/>
 												</p:column>		
 												<p:column class="MarAuto Responsive janal-wid-12">
