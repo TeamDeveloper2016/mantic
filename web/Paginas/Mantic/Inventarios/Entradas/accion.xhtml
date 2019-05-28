@@ -821,7 +821,7 @@
 				<p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide(); jsArticulos.move();"/>
 			</div>
 		</p:dialog>
-		<p:dialog widgetVar="buscador" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();" width="850px" height="470px" resizable="false" appendTo="@(body)">
+		<p:dialog widgetVar="buscador" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();" width="850px" height="470px" resizable="false" appendTo="@(body)" styleClass="relacionado">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
 					<p:outputLabel for="codigo" value="Código o nombre:"/>
@@ -839,8 +839,9 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
 					<p:outputLabel value="Click sobre la tabla para seleccionar el articulo, por defecto es el primero de la lista"/><br/>
-					<p:dataTable id="encontrados" widgetVar="widgetEncontrados" lazy="true" styleClass="janal-find-articulos janal-wid-100" value="#{manticInventariosEntradasAccion.attrs.lazyModel}" selection="#{manticInventariosEntradasAccion.attrs.buscado}" var="item" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="50" liveScroll="true" liveScrollBuffer="50" scrollable="true" scrollHeight="280" style="margin-bottom:0">
-						<p:ajax event="rowDblselect" oncomplete="$('#encontrado').click();"/>
+					<p:dataTable id="encontrados" widgetVar="widgetEncontrados" lazy="true" styleClass="relacionado janal-find-articulos janal-wid-100" value="#{manticInventariosEntradasAccion.attrs.lazyModel}" selection="#{manticInventariosEntradasAccion.attrs.registro}" var="item" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="50" liveScroll="true" liveScrollBuffer="50" scrollable="true" scrollHeight="280" style="margin-bottom:0" rowKey="#{item.key}">
+						<p:ajax event="rowDblselect" process="@this encontrados" update="@(.filas) @(.recalculo)" listener="#{manticInventariosEntradasAccion.doDblClickArticulo}" oncomplete="PF('buscador').hide(); jsArticulos.cursor.index= jsArticulos.cursor.top; jsArticulos.close();"/>
+						<p:ajax event="rowSelect" process="@this encontrados" listener="#{manticInventariosEntradasAccion.doRowSelectArticulo}"/>
 						<p:column headerText="Nombre">
 							<h:outputText value="#{item.nombre}"/>
 						</p:column>   
@@ -861,7 +862,7 @@
 			</div>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton id="encontrado" icon="fa fa-check" process="@this encontrados" update="@(.filas) @(.recalculo)" value="Aceptar" actionListener="#{manticInventariosEntradasAccion.doFindOutArticulo}" oncomplete="PF('buscador').hide(); jsArticulos.cursor.index= jsArticulos.cursor.top; jsArticulos.close();" disabled="#{manticInventariosEntradasAccion.attrs.lazyModel.rowCount lt 1}"/>
+				<p:commandButton id="encontrado" icon="fa fa-check" process="@this @(.relacionado)" update="@(.filas) @(.recalculo)" value="Aceptar" actionListener="#{manticInventariosEntradasAccion.doFindOutArticulo}" oncomplete="PF('buscador').hide(); jsArticulos.cursor.index= jsArticulos.cursor.top; jsArticulos.close();" disabled="#{manticInventariosEntradasAccion.attrs.lazyModel.rowCount lt 1}"/>
 				<p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" oncomplete="PF('buscador').hide();"/>
 			</div>
 		</p:dialog>

@@ -47,6 +47,7 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.StreamedContent;
 
@@ -598,9 +599,18 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		this.doUpdateRfc(this.proveedor);
 	}
 
+	public void doDblClickArticulo(SelectEvent event) {
+		this.attrs.put("buscado", event.getObject());
+		this.doFindOutArticulo();
+	}
+	
+	public void doRowSelectArticulo(SelectEvent event) {
+		this.attrs.put("buscado", event.getObject());
+	}
+	
 	public void doFindOutArticulo() {
 		Articulo faltante= (Articulo)this.attrs.get("faltante");
-		Entity buscado   = (Entity)this.attrs.get("buscado");
+		Entity  buscado  = (Entity)this.attrs.get("buscado");
 		if(faltante!= null) { 
 			if(buscado== null) {
 				FormatCustomLazy list= (FormatCustomLazy)this.attrs.get("lazyModel");
