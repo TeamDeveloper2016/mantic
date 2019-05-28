@@ -123,8 +123,8 @@ public class Encabezado extends IBaseFilter implements Serializable {
 			this.lazyModel= null;
 		else {
   		codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
-			boolean buscaPorCodigo= codigo.startsWith(".");
-			if(buscaPorCodigo)
+			boolean buscaPorCodigo= !codigo.startsWith(".");
+			if(!buscaPorCodigo)
 				codigo= codigo.trim().substring(1);
 			codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
 			this.attrs.put("codigo", codigo);
