@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cuentasPorCobrar" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.libs.reportes.scriptlets.BarraProgreso" uuid="76ae20a3-dc6e-4e9a-8d8f-3b427271c490">
-	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="56"/>
+	<property name="ireport.zoom" value="1.771561000000001"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
@@ -205,7 +205,7 @@
 				<textFieldExpression><![CDATA["Versión: "+$P{REPORTE_VERSION}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="161" y="1" width="509" height="38" uuid="eda2b842-f6b7-41a6-bfa2-d2ec35042265"/>
+				<reportElement mode="Transparent" x="161" y="1" width="413" height="38" uuid="eda2b842-f6b7-41a6-bfa2-d2ec35042265"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.0"/>
@@ -279,6 +279,55 @@
 					<font fontName="Arial Narrow" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["RFC: "+$P{REPORTE_EMPRESA_RFC}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement x="574" y="30" width="28" height="10" uuid="c3a700de-a2e7-48ad-a94f-bcad931c95d5"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="6" isBold="true" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["CLABE:"]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement x="574" y="21" width="28" height="10" uuid="af9b4aec-1e3a-4ec4-b71d-0c972e16e37e"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="6" isBold="true" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Cuenta:"]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement x="574" y="3" width="95" height="10" uuid="0b9954e7-3a0f-4e81-a31e-f27b378762a1"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["JOSE ANTONIO DAVALOS PADILLA"]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement x="602" y="21" width="67" height="10" uuid="be27881b-919d-48bc-bc4e-4e83f0847d4b"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["0132410869"]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement x="574" y="12" width="28" height="10" uuid="74ab8e4d-dfb7-4c1f-902e-0bf12d6a5fbe"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="6" isBold="true" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Banco:"]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement x="602" y="12" width="67" height="10" uuid="c2559b61-7242-4c87-b191-1dc355e4fb24"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["BBVA BANCOMER"]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement x="602" y="30" width="67" height="10" uuid="67ce5494-a0e1-481b-abd8-4f2c0eaa2ded"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["012010001324108694"]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
