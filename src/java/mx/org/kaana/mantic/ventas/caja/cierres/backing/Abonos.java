@@ -25,7 +25,12 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticCierresRetirosDto;
+import mx.org.kaana.mantic.ventas.beans.TicketVenta;
+import mx.org.kaana.mantic.ventas.caja.beans.Pago;
+import mx.org.kaana.mantic.ventas.caja.cierres.reglas.CreateCierre;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Transaccion;
+import mx.org.kaana.mantic.ventas.caja.reglas.CreateTicket;
+import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 
 /**
  *@company KAANA
@@ -94,6 +99,7 @@ public class Abonos extends IBaseAttribute implements Serializable {
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
+		CreateCierre ticket    = null;
     try {			
 			TcManticCierresRetirosDto abono= new TcManticCierresRetirosDto(-1L);
 			abono.setIdAbono(1L);
@@ -102,15 +108,19 @@ public class Abonos extends IBaseAttribute implements Serializable {
 			abono.setImporte((Double)this.attrs.get("importe"));
 			transaccion = new Transaccion((Long)this.attrs.get("idCierre"), abono);
 			if (transaccion.ejecutar(this.accion)) {
-				if(this.accion.equals(EAccion.ASIGNAR)) {
+				if(this.accion.equals(EAccion.ASIGNAR)) {	
 					if(JsfBase.isCajero())
- 				    regresar = "/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR);
- 				  else
-					  regresar = "ambos".concat(Constantes.REDIRECIONAR);
+						regresar = "/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR);
+					else
+						regresar = "ambos".concat(Constantes.REDIRECIONAR);
      			JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));
 		    	JsfBase.setFlashAttribute("idCaja", this.attrs.get("idCaja"));
- 	        JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));
-    			UIBackingUtilities.execute("janal.alert('Se gener\\u00F3 el abono de efectivo, con consecutivo: "+ abono.getConsecutivo()+ "');");
+ 	        JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));    			
+					ticket= new CreateCierre(abono.getImporte(), "ABONO:" + abono.getConsecutivo());
+					UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + abono.getConsecutivo() + "','" + ticket.toHtml() + "');");
+					UIBackingUtilities.execute("jsTicket.clicTicket();");
+					UIBackingUtilities.execute("executeReturn(" + abono.getConsecutivo() + ");");							
+					init();
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR)? "agregó": this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" el abono de caja."), ETipoMensaje.INFORMACION);
