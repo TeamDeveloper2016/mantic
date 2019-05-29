@@ -25,8 +25,8 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticCierresRetirosDto;
+import mx.org.kaana.mantic.ventas.caja.cierres.reglas.CreateCierre;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Transaccion;
-import org.primefaces.context.RequestContext;
 
 /**
  *@company KAANA
@@ -99,6 +99,7 @@ public class Retiros extends IBaseAttribute implements Serializable {
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
+		CreateCierre ticket    = null;
     try {			
 			TcManticCierresRetirosDto retiro= new TcManticCierresRetirosDto(-1L);
 			retiro.setIdAbono(2L);
@@ -107,15 +108,19 @@ public class Retiros extends IBaseAttribute implements Serializable {
 			retiro.setImporte((Double)this.attrs.get("importe"));
 			transaccion = new Transaccion((Long)this.attrs.get("idCierre"), retiro);
 			if (transaccion.ejecutar(this.accion)) {
-				if(this.accion.equals(EAccion.AGREGAR)) {
+				if(this.accion.equals(EAccion.AGREGAR)) {	
 					if(JsfBase.isCajero())
- 				    regresar = "/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR);
- 				  else
-					  regresar = "ambos".concat(Constantes.REDIRECIONAR);
+						regresar = "/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR);
+					else
+						regresar = "ambos".concat(Constantes.REDIRECIONAR);
      			JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));
 		    	JsfBase.setFlashAttribute("idCaja", this.attrs.get("idCaja"));
- 	        JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));
-    			UIBackingUtilities.execute("janal.alert('Se gener\\u00F3 el retiro de efectivo, con consecutivo: "+ retiro.getConsecutivo()+ "');");
+ 	        JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));    			
+					ticket= new CreateCierre(retiro.getImporte(), "RETIRO:" + retiro.getConsecutivo());
+					UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + retiro.getConsecutivo() + "','" + ticket.toHtml() + "');");
+					UIBackingUtilities.execute("jsTicket.clicTicket();");
+					UIBackingUtilities.execute("executeReturn("+ retiro.getConsecutivo() +");");
+					init();
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR)? "agregó": this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" el retiro de caja."), ETipoMensaje.INFORMACION);
