@@ -736,9 +736,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 
   public void doDesasociarArticulo(Articulo row, Integer index) {
 		if(!row.isDisponible()) {
-			if(row.getIdComodin()!= null && row.getIdComodin()> 0L) {
+			if(row.getIdOrdenDetalle()!= null && row.getIdOrdenDetalle()> 0L) {
 		    row.setDisponible(true);
 		    row.setCodigo("");
+		    row.setOrigen("");
 			} // if
 			else {
 				this.doDeleteArticulo(index);
