@@ -297,6 +297,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 					articulo= articulos.get(articulos.indexOf(articulo));
 			  else
 			    articulo= articulos.get(0);
+			this.attrs.put("seleccionado", articulo);
 			this.updateArticulo(articulo);
 		} // try
 	  catch (Exception e) {
@@ -587,8 +588,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 
 	public void doRecoverArticulo(Integer index) {
 		try {
-			if(this.attrs.get("idArticulo")!= null) {
-				this.attrs.put("seleccionado", this.attrs.get("idArticulo"));
+			if(this.attrs.get("seleccionado")!= null) {
 				Object backing= JsfBase.ELAsObject("manticCatalogosArticulosExpress");
 				if(backing!= null)
 					((IBaseAttribute)backing).getAttrs().put("seleccionado", this.attrs.get("seleccionado"));
