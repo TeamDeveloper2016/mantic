@@ -1181,8 +1181,8 @@ public static String sinAcentos(String cadena){
 	}
 	
 	public static boolean toEqualsString(String source, String target) {
-		source= new String(source.replaceAll(Constantes.CLEAN_STR, "").trim());
-		target= new String(target.replaceAll(Constantes.CLEAN_STR, "").trim());
+		source= source.replaceAll(Constantes.CLEAN_STR, "").trim();
+		target= target.replaceAll(Constantes.CLEAN_STR, "").trim();
 		return source.equals(target);
 	}
 
