@@ -1450,8 +1450,8 @@
         from      
           tc_mantic_faltantes
         where      
-          id_articulo = {idArticulo} 
-				  and id_empresa = {idEmpresa} 
+          id_articulo= {idArticulo} 
+				  and id_empresa= {idEmpresa} 
 				  and id_vigente= 1
       </select>
 			<update id="rows">
@@ -1460,8 +1460,9 @@
 				set 
 				  id_vigente= 2, actualizado= current_timestamp, observaciones= '{observaciones}'
 				where 
-				  id_articulo = {idArticulo} and id_vigente= 1
-				  and id_empresa = {idEmpresa} 
+				  id_articulo= {idArticulo} 
+				  and id_vigente= 1
+				  and id_empresa= {idEmpresa} 
 			</update>
     </unit>
 		<unit id="TcManticNotasArchivosDto">
@@ -4041,7 +4042,9 @@
         from      
           tc_mantic_notas_bitacora
         where      
-          id_nota_entrada = {idNotaEntrada} and id_nota_estatus = {idNotaEstatus}
+          id_nota_entrada = {idNotaEntrada} 
+				  and id_nota_estatus = {idNotaEstatus}
+				  and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
       </select>
 			<select id="ultimo">
 				select
@@ -4512,7 +4515,9 @@
         from      
           tc_mantic_ordenes_bitacora
         where      
-          id_orden_compra = {idOrdenCompra} and id_orden_estatus = {idComprasEstatus}
+          id_orden_compra = {idOrdenCompra} 
+				  and id_orden_estatus = {idComprasEstatus}
+			    and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
       </select>
 			<select id="ultimo">
 				select

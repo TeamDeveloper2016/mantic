@@ -106,19 +106,23 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 			// afectar los precios del catalogo de articulos
 			if(!Cadena.isVacio(codigos.getSat()))
 			  global.setSat(codigos.getSat());
-			
+			// esto aplica para cuando el precio que llega es mayor al registrado dejar el nuevo
+			Descuentos descuentos= new Descuentos(item.getCosto(), item.getDescuento());
+			double costo= descuentos.toImporte()== 0D? item.getCosto(): descuentos.toImporte();
 			// si esta marcado como afectar los costos se aplicara el cambio en el catalogo de articulos
-			if(codigos.getIdAplicar().equals(1L)) {
-				Descuentos descuentos= new Descuentos(item.getCosto(), item.getDescuento());
+			if(codigos.getIdAplicar().equals(1L) || costo> global.getPrecio()) {
 				// aplicar el descuento sobre el valor del costo del articulo para afectar el catalogo
-			  global.setPrecio(Numero.toRedondearSat(descuentos.toImporte()== 0D? item.getCosto(): descuentos.toImporte()));
-			  global.setMenudeo(Numero.toRedondearSat(global.getPrecio()* Constantes.PORCENTAJE_MENUDEO));
-			  global.setMedioMayoreo(Numero.toRedondearSat(global.getPrecio()* Constantes.PORCENTAJE_MEDIO_MAYOREO));
-			  global.setMayoreo(Numero.toRedondearSat(global.getPrecio()* Constantes.PORCENTAJE_MAYOREO));
+				double menudeo= Numero.toRedondearSat((global.getMenudeo()* 100/ global.getPrecio())/ 100);
+				double medio  = Numero.toRedondearSat((global.getMedioMayoreo()* 100/ global.getPrecio())/ 100);
+				double mayoreo= Numero.toRedondearSat((global.getMayoreo()* 100/ global.getPrecio())/ 100);
+				
+			  global.setPrecio(Numero.toRedondearSat(costo));
+			  global.setMenudeo(Numero.toRedondearSat(global.getPrecio()* menudeo));
+			  global.setMedioMayoreo(Numero.toRedondearSat(global.getPrecio()* medio));
+			  global.setMayoreo(Numero.toRedondearSat(global.getPrecio()* mayoreo));
 				global.setDescuento(item.getDescuento());
 				global.setExtra(item.getExtras());
 			} // if	
-			
 			global.setStock(global.getStock()+ item.getCantidad());
 			DaoFactory.getInstance().update(sesion, global);
 			
