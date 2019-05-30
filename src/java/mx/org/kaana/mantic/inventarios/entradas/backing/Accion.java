@@ -426,6 +426,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     			  disponibles.remove(disponible);
 						if(checkItems)
     			    this.toMoveArticulo(disponible, faltante);
+						disponible.setDisponible(false);
 						break;
 					} // if	
 					y++;
