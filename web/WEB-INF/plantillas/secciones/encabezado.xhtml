@@ -244,6 +244,12 @@
 					</f:facet>
 					<h:outputText value="#{row['menudeo']}"/>
 				</p:column>		
+				<p:column class="janal-column-right MarAuto Responsive janal-wid-20">
+					<f:facet name="header">
+						<h:outputText value="Stock"/>
+					</f:facet>
+					<h:outputText value="#{row['stock']}"/>
+				</p:column>		
 				<f:facet name="footer">
 					<p:outputLabel value="Total [#{kajoolEncabezado.lazyModel==null?0:kajoolEncabezado.lazyModel.rowCount}] registros"/>
 				</f:facet>
