@@ -124,7 +124,8 @@
             ''),
             ' ) ',
             tc_mantic_articulos.nombre) as articulo,
-          tc_mantic_articulos.precio            												
+          tc_mantic_articulos.precio,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario
 				from 
 					tc_mantic_ordenes_compras
 				inner join 
@@ -139,6 +140,10 @@
 					tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
 				inner join 
 					tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus= tc_mantic_ordenes_estatus.id_orden_estatus
+				inner join
+					tc_janal_usuarios on tc_mantic_ordenes_compras.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				where 
           tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}	
       </select>
@@ -171,7 +176,8 @@
             tc_mantic_articulos.nombre) as articulo,
           tc_mantic_articulos.precio,
           (select group_concat(tc_mantic_notas_entradas.factura separator ' , ') fac from  tc_mantic_notas_entradas where   tc_mantic_notas_entradas.id_orden_compra = tc_mantic_ordenes_compras.id_orden_compra order by tc_mantic_notas_entradas.id_nota_entrada asc) factura,
-			    (select group_concat(tc_mantic_notas_entradas.consecutivo separator ' , ') fac from  tc_mantic_notas_entradas where   tc_mantic_notas_entradas.id_orden_compra = tc_mantic_ordenes_compras.id_orden_compra order by tc_mantic_notas_entradas.id_nota_entrada asc) consecutivo_nota_entrada           												
+			    (select group_concat(tc_mantic_notas_entradas.consecutivo separator ' , ') fac from  tc_mantic_notas_entradas where   tc_mantic_notas_entradas.id_orden_compra = tc_mantic_ordenes_compras.id_orden_compra order by tc_mantic_notas_entradas.id_nota_entrada asc) consecutivo_nota_entrada,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario
          from 
            tc_mantic_ordenes_compras
          inner join 
@@ -182,6 +188,10 @@
 					tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
          inner join 
            tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus= tc_mantic_ordenes_estatus.id_orden_estatus
+				inner join
+					tc_janal_usuarios on tc_mantic_ordenes_compras.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
          where 
           tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra} 
           and (tc_mantic_ordenes_detalles.cantidades &lt;&gt; 0 or tc_mantic_ordenes_detalles.importes &lt;&gt; 0)
@@ -199,7 +209,8 @@
 				  tc_mantic_ordenes_estatus.nombre as estatus,
 					tc_mantic_ordenes_compras.id_orden_estatus,
 					tc_mantic_ordenes_compras.registro,
-					tc_mantic_ordenes_estatus.estatus_asociados
+					tc_mantic_ordenes_estatus.estatus_asociados,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario
 				from 
 					tc_mantic_ordenes_compras
 				inner join 
@@ -210,6 +221,10 @@
 					tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
 				inner join 
 					tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus=tc_mantic_ordenes_estatus.id_orden_estatus
+				inner join
+					tc_janal_usuarios on tc_mantic_ordenes_compras.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				where
 					tc_mantic_ordenes_compras.id_empresa in ({idEmpresa})
 					and {condicion}
