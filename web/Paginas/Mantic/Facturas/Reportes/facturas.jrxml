@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="facturas" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.libs.reportes.scriptlets.BarraProgreso">
 	<property name="ireport.zoom" value="1.6105100000000008"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="1"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -74,6 +74,7 @@
 	<field name="ID_CLIENTE" class="java.lang.String"/>
 	<field name="TIMBRADO" class="java.util.Date"/>
 	<field name="FOLIO" class="java.lang.String"/>
+	<field name="TICKET" class="java.lang.String"/>
 	<variable name="CONTADOR" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
@@ -472,7 +473,7 @@
 						<font fontName="Arial Narrow" size="9" isBold="false"/>
 						<paragraph leftIndent="4" rightIndent="4"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{CONSECUTIVO}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{TICKET}]]></textFieldExpression>
 				</textField>
 				<textField pattern="" isBlankWhenNull="true">
 					<reportElement x="104" y="0" width="150" height="14"/>
