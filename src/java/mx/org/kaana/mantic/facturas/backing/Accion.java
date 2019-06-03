@@ -248,7 +248,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 				} // if	
 				if(eaccion.equals(EAccion.MODIFICAR))
 				  JsfBase.addMessage("Se modificó la factura con consecutivo ["+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getTicket()+ "].", ETipoMensaje.INFORMACION);
-				regresar= this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR): "filtro";
+				regresar= (this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString() : "filtro").concat(Constantes.REDIRECIONAR);
   			JsfBase.setFlashAttribute("idFicticia", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia());				
 			} // if
 			else 
