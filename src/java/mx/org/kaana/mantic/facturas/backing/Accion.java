@@ -237,7 +237,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
     String regresar        = null;
 		EAccion eaccion        = null;		
     try {			
-			loadOrdenVenta();
+			this.loadOrdenVenta();
 			eaccion= (EAccion) this.attrs.get("accion");						
 			transaccion = new Transaccion(((FacturaFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.attrs.get("observaciones").toString());
 			this.getAdminOrden().toAdjustArticulos();
@@ -248,7 +248,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 				} // if	
 				if(eaccion.equals(EAccion.MODIFICAR))
 				  JsfBase.addMessage("Se modificó la factura con consecutivo ["+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getTicket()+ "].", ETipoMensaje.INFORMACION);
-				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
+				regresar= this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR): "filtro";
   			JsfBase.setFlashAttribute("idFicticia", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia());				
 			} // if
 			else 
