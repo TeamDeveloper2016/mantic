@@ -4,6 +4,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -51,6 +52,7 @@ public class IBaseMail implements Serializable {
 	private String subject;
 	private List<Attachment> files;
 	private Authenticator authenticator;
+	private String alias;
 
 	public IBaseMail(String to, String subject) {
 		this(Configuracion.getInstance().getPropiedadServidor("mail.user.default"), to, null, subject, Collections.EMPTY_LIST);
@@ -61,7 +63,12 @@ public class IBaseMail implements Serializable {
 	}
 
 	public IBaseMail(String from, String to, String copies, String subject, List<Attachment> files) {
+    this(from, to, copies, subject, files, "");
+	}
+	
+	public IBaseMail(String from, String to, String copies, String subject, List<Attachment> files, String alias) {
     this(from, to, copies, subject, files, new SMTPAuthenticator());
+		this.alias= alias;
 	}
 	
 	public IBaseMail(String from, String to, String copies, String subject, Authenticator authenticator) {
@@ -92,6 +99,14 @@ public class IBaseMail implements Serializable {
 	public void setSubject(String subject) {
 		this.subject=subject;
 	}
+
+	public String getAlias() {
+		return alias;
+	}
+
+	public void setAlias(String alias) {
+		this.alias=alias;
+	}
 	
 	private Address[] toPrepare(String emails) throws AddressException {
     StringTokenizer tokens= new StringTokenizer(emails, ",");     
@@ -101,6 +116,28 @@ public class IBaseMail implements Serializable {
 			String email= tokens.nextToken();
 			if(!Cadena.isVacio(email))
 			  regresar[count++]= new InternetAddress(email.trim());
+		} // while
+		return regresar;
+	}
+		
+	private Address[] toPrepareAlias(String emails, String alias) throws AddressException {
+    StringTokenizer tokens= new StringTokenizer(emails, ",");     
+		Address[] regresar= new InternetAddress[tokens.countTokens()];
+		int count= 0;
+		while(tokens.hasMoreTokens()) {
+			String email= tokens.nextToken();
+			if(!Cadena.isVacio(email)) {
+				try {
+					if(Cadena.isVacio(alias))
+	  		    regresar[count]= new InternetAddress(email.trim());
+					else
+  			    regresar[count]= new InternetAddress(email.trim(), alias);
+				} // try
+				catch(UnsupportedEncodingException e) {
+					regresar[count]= new InternetAddress(email.trim());
+				} // catch
+				count++;
+			} // if
 		} // while
 		return regresar;
 	}
@@ -124,7 +161,7 @@ public class IBaseMail implements Serializable {
       message= new MimeMessage(session);
       message.setFrom(new InternetAddress(this.from));
       // SI SON VARIOS CORREOS TIENEN QUE ESTAR SEPARADOS POR COMAS Y SIN ESPACIOS EN BLANCO
-      message.addRecipients(javax.mail.Message.RecipientType.TO, this.toPrepare(this.to));
+      message.addRecipients(javax.mail.Message.RecipientType.TO, this.toPrepareAlias(this.to, this.alias));
 			if(this.copies!= null)
         message.addRecipients(javax.mail.Message.RecipientType.BCC, this.toPrepare(this.copies));
       message.setSubject(this.subject);

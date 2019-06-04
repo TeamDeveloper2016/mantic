@@ -43,7 +43,11 @@ public class IBaseAttachment extends IBaseMail implements Serializable {
 	}
 	
 	public IBaseAttachment(ECorreos type, String from, String to, String copies, String subject, Map<String, Object> params, List<Attachment> files) {
-		super(from, to, copies, subject, files);
+    this(type, from, to, copies, subject, params, files, "");	
+	}
+	
+	public IBaseAttachment(ECorreos type, String from, String to, String copies, String subject, Map<String, Object> params, List<Attachment> files, String alias) {
+		super(from, to, copies, subject, files, alias);
 		this.type=type;
 		this.params=params;
 	}
