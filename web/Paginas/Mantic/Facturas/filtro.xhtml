@@ -206,7 +206,7 @@
             <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{manticFacturasFiltro.doMovimientos}"/>
             <p:menuitem id="clonar" icon="fa fa-copy" value="Clonar" process="@this tabla" onstart="janal.bloquear();" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>
             <p:separator rendered="#{!(manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '12')}"/>					
-            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '12')}"/>					            
+            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '14')}"/>					            
             <p:separator/>					
             <p:menuitem id="reenviar" icon="fa fa-mail-forward" value="Reenviar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="#{manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '12'}"/>					            
             <p:separator rendered="#{manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '12'}"/>					
