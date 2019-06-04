@@ -142,7 +142,7 @@ public class IBaseMail implements Serializable {
 		return regresar;
 	}
 		
-	public void send(String content) throws MessagingException {
+	public void send(String content) throws MessagingException, UnsupportedEncodingException {
     Properties properties= null;
     Session session      = null;
     MimeMessage message  = null;
@@ -159,9 +159,12 @@ public class IBaseMail implements Serializable {
       properties.put("mail.smtp.port", "26");			
 			session    = Session.getInstance(properties, this.authenticator);            
       message= new MimeMessage(session);
-      message.setFrom(new InternetAddress(this.from));
+			if(Cadena.isVacio(this.alias))
+        message.setFrom(new InternetAddress(this.from));
+			else
+        message.setFrom(new InternetAddress(this.from, this.alias));
       // SI SON VARIOS CORREOS TIENEN QUE ESTAR SEPARADOS POR COMAS Y SIN ESPACIOS EN BLANCO
-      message.addRecipients(javax.mail.Message.RecipientType.TO, this.toPrepareAlias(this.to, this.alias));
+      message.addRecipients(javax.mail.Message.RecipientType.TO, this.toPrepare(this.to));
 			if(this.copies!= null)
         message.addRecipients(javax.mail.Message.RecipientType.BCC, this.toPrepare(this.copies));
       message.setSubject(this.subject);
