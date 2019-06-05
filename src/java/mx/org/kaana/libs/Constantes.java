@@ -23,9 +23,9 @@ public final class Constantes {
   public static final String VENTA_AL_PUBLICO_GENERAL = "VENTA PUBLICO EN GENERAL";
 
 	public static final String CODIGO_SAT= "40141700";
-	public static final String CLEAN_ART= "([',!,|,<,>,?,ø,&,%,$,;,:,{,},~])";
+	public static final String CLEAN_ART= "[^a-zA-Z0-9 Ò—\"\\.\\(\\)\\#\\+*-_$:;]+";
 	public static final String CLEAN_SQL= "([(,),',*,!,|,<,>,?,ø,&,%,$,#,;,:,{,},\\[,\\],~,\"])";
-	public static final String CLEAN_STR= "([-,_, ,(,),',*,!,|,<,>,?,ø,&,%,$,#,;,:,{,},\\[,\\],~,\"])";
+	public static final String CLEAN_STR= "([',!,|,<,>,?,ø,&,%,$,;,:,{,},~])";
   public static final String ESPACIO = "&nbsp;";
   public static final String BR = "<br>";
   public static final String EOL = "\r\n";

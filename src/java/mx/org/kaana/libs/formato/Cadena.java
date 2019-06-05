@@ -1174,6 +1174,7 @@ public static String sinAcentos(String cadena){
    // System.out.println(Cadena.toSqlCleanOrderBy(sql));
     
     System.out.println(Cadena.ajustarDecimales("12987.127", 2));
+    System.out.println("Hola*+ \"e+sto\" es. uña pr-ue$ba/de ||(#302@)''{}".replaceAll("[^a-zA-Z0-9 ñÑ\"\\.\\(\\)\\#\\+*-_$]+", ""));
   }
 	
 	public static String toNormalizer(String text) {

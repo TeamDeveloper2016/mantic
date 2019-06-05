@@ -29,10 +29,10 @@
       </div>
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-content" class="ui-grid-col-6 janal-column-center">
-					<p:inputText readonly="true" value="#{manticCatalogosMasivosProgreso.monitoreo.elapsed.formatElapsed}" styleClass="janal-column-center janal-wid-96 filas"/>
+					<p:inputText readonly="true" value="#{manticCatalogosMasivosProgreso.monitoreo.elapsed.formatElapsed}" styleClass="janal-column-center janal-wid-100-txt filas"/>
         </div>
         <div id="collapse-content" class="ui-grid-col-6 janal-column-center">
-					<p:inputText readonly="true" value="#{manticCatalogosMasivosProgreso.monitoreo.elapsed.formatMissing}" styleClass="janal-column-center janal-wid-96 filas"/>
+					<p:inputText readonly="true" value="#{manticCatalogosMasivosProgreso.monitoreo.elapsed.formatMissing}" styleClass="janal-column-center janal-wid-100-txt filas"/>
         </div>
       </div>
   		<br/>
@@ -41,7 +41,7 @@
 					<p:outputLabel value="0"/>
         </div>
         <div id="collapse-content" class="ui-grid-col-4 janal-column-center">
-					<p:outputLabel value="#{manticCatalogosMasivosProgreso.doNumerico(manticCatalogosMasivosProgreso.monitoreo.progreso)}" styleClass="filas"/>
+					<p:outputLabel value="#{manticCatalogosMasivosProgreso.doNumerico(manticCatalogosMasivosProgreso.monitoreo.progreso)}" styleClass="filas janal-color-blue"/>
         </div>
         <div id="collapse-content" class="ui-grid-col-4 janal-column-right">
 					<p:outputLabel value="#{manticCatalogosMasivosProgreso.doNumerico(manticCatalogosMasivosProgreso.monitoreo.total)}"/>
