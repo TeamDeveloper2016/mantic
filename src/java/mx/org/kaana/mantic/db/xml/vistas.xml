@@ -8353,5 +8353,33 @@
 					tc_mantic_empresas_pagos.ejercicio= {ejercicio} 
 			</select>		
 		</unit>
+		<unit id="VistaEmpaquesUnidadesDto">
+			<select id="row">
+				select 
+					tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida as id_key,
+					tr_mantic_empaque_unidad_medida.id_empaque,
+					tr_mantic_empaque_unidad_medida.id_unidad_medida, 
+					tr_mantic_empaque_unidad_medida.observaciones,
+					tr_mantic_empaque_unidad_medida.id_usuario,
+					tr_mantic_empaque_unidad_medida.registro,
+					tc_mantic_empaques.clave as clave_empaque,
+					tc_mantic_empaques.nombre as empaque,
+					tc_mantic_empaques.descripcion as descripcion_empaque,
+					tc_mantic_unidades_medidas.nombre as unidad,
+					tc_mantic_unidades_medidas.clave as clave_unidad,
+					tc_mantic_unidades_medidas.descripcion as clave_descripcion,
+					tc_mantic_unidades_medidas.proporcion
+				from 
+					tr_mantic_empaque_unidad_medida
+				inner join 
+					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+				inner join
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida= tc_mantic_unidades_medidas.id_unidad_medida
+				where 
+					{condicion}
+				order by 
+					tc_mantic_empaques.nombre, tc_mantic_unidades_medidas.proporcion
+			</select>
+		</unit>
 	</dml>    
 </process>
