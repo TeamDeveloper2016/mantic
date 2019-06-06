@@ -123,7 +123,7 @@
                 <p:menuitem id="reporteIconXs" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosDevolucionesFiltro.doReporte('DEVOLUCIONES')}" oncomplete="janal.desbloquear();" update="descargar"/>
               </div>  
             </f:facet>	            
-						<p:column style="width:38px; text-align: center">
+						<p:column styleClass="janal-column-icon">
 							<p:commandButton icon="fa fa-chevron-circle-right" title="Nota(s) de credito" action="#{manticInventariosDevolucionesFiltro.doNotaCredito}" rendered="#{fn:contains('|3|4|', filtro['idCreditoEstatus'].toInteger)}">
 								<f:setPropertyActionListener value="#{filtro['consecutivo']}" target="#{manticInventariosDevolucionesFiltro.attrs.devolucion}" />
 							</p:commandButton>

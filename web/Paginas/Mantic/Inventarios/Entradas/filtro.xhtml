@@ -129,7 +129,7 @@
                 <p:menuitem icon="fa fa-download" title="Descargar XML/PDF" onstart="return janal.bloquear()" process="@this" action="facturas?faces-redirect=true" oncomplete="janal.desbloquear();" immediate="true"/>
               </div>  
             </f:facet>	            
-						<p:column style="width:38px; text-align: center">
+						<p:column styleClass="janal-column-icon">
 							<p:commandButton icon="fa fa-chevron-circle-right" title="Devolucion(es)" action="#{manticInventariosEntradasFiltro.doDevoluciones}" rendered="#{fn:contains('|3|4|5|6|', filtro['idNotaEstatus'].toInteger)}">
 								<f:setPropertyActionListener value="#{filtro['consecutivo']}" target="#{manticInventariosEntradasFiltro.attrs.notaEntrada}" />
 							</p:commandButton>

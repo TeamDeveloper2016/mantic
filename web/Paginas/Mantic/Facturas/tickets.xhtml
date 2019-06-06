@@ -180,7 +180,7 @@
 									</f:facet>
 									<h:outputText value="#{row['medio']}"/>
 								</p:column>		
-								<p:column style="width:38px; text-align: center">
+								<p:column styleClass="janal-column-icon">
 									<p:commandButton process="@this" update="tabla @(.relacionado)" icon="fa fa-plus" title="Agregar ticket" onstart="return janal.bloquear()" oncomplete="janal.refresh(); janal.desbloquear();" actionListener="#{manticFacturasTickets.doAddTicket(row)}" rendered="#{manticFacturasTickets.doDisponible(row)}">
 										<f:setPropertyActionListener value="#{row}" target="#{manticFacturasTickets.attrs.ticket}" />
 									</p:commandButton>
@@ -271,7 +271,7 @@
 									</f:facet>
 									<h:outputText value="#{row['registro']}"/>
 								</p:column>		
-								<p:column style="width:38px; text-align: center">
+								<p:column styleClass="janal-column-icon">
 									<p:commandButton process="@this" update="tabla @(.relacionado)" icon="fa fa-minus" title="Eliminar ticket" onstart="return janal.bloquear()" oncomplete="janal.refresh();janal.desbloquear();" actionListener="#{manticFacturasTickets.doRemoveTicket(row)}">
 										<f:setPropertyActionListener value="#{row}" target="#{manticFacturasTickets.attrs.ticket}" />
 									</p:commandButton>

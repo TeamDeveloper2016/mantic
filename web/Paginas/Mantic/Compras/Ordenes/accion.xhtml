@@ -588,7 +588,7 @@
 									</f:facet>
 									<h:outputText value="#{row['consecutivo']} (#{row['estatus']}) {#{row['solicitado']}} [#{row['llegaron']}]" title="Solicitados: {#{row['solicitado']}} Surtidos: [#{row['llegaron']}]"/>
 								</p:column>		
-								<p:column style="width:38px; text-align: center">
+								<p:column styleClass="janal-column-icon">
 									<p:commandButton update="faltantes @(.filas) @(.recalculo)" icon="fa fa-plus" title="Agregar" action="#{manticComprasOrdendesAccion.doFaltanteArticulo}">
 										<f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdendesAccion.attrs.faltante}" />
 										<f:setPropertyActionListener value="#{manticComprasOrdendesAccion.adminOrden.orden.ikAlmacen}" target="#{manticComprasOrdendesAccion.attrs.idAlmacen}" />
@@ -651,12 +651,12 @@
 									</f:facet>
 									<h:outputText value="#{row['registro']}"/>
 								</p:column>		
-								<p:column style="width:38px; text-align: center">
+								<p:column styleClass="janal-column-icon">
 									<p:commandButton process="@this" update="perdidos @(.filas) @(.recalculo)" icon="fa fa-plus" title="Agregar el articulo a la orden de compra" action="#{manticComprasOrdendesAccion.doAgregarPerdido}">
 										<f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdendesAccion.attrs.perdido}" />
 									</p:commandButton>
 								</p:column>
-								<p:column style="width:38px; text-align: center">
+								<p:column styleClass="janal-column-icon">
 									<p:commandButton update="perdidos @(.filas) @(.recalculo)" icon="fa fa-minus" title="Eliminar" action="#{manticComprasOrdendesAccion.doEliminarPerdido}">
 										<f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdendesAccion.attrs.perdidoRemove}" />										
 									</p:commandButton>

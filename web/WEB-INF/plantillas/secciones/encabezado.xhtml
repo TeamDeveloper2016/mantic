@@ -337,7 +337,7 @@
 					</f:facet>
 					<h:outputText value="#{row['registro']}"/>
 				</p:column>		
-				<p:column style="width:38px; text-align: center">
+				<p:column styleClass="janal-column-icon">
 					<p:commandButton id="faltanteEliminar" process="@this" update="@(.faltantes)" icon="fa fa-minus" title="Eliminar un articulo de la lista de faltantes" action="#{kajoolEncabezado.doEliminarFaltante}" onstart="return jsPrecios.ask('#{kajoolEncabezado.doCleanChars(row.nombre)}')">
 						<f:setPropertyActionListener value="#{row}" target="#{kajoolEncabezado.attrs.eliminado}" />
 					</p:commandButton>

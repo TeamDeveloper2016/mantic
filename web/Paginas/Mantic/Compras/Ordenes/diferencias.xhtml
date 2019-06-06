@@ -141,7 +141,7 @@
               </f:facet>
               <h:outputText value="#{row['importes']}"/>
             </p:column>		
-						<p:column style="width:38px; text-align: center" rendered="#{manticComprasOrdenesDiferencias.attrs.tipoDiferencia eq 4}">
+						<p:column styleClass="janal-column-icon" rendered="#{manticComprasOrdenesDiferencias.attrs.tipoDiferencia eq 4}">
 							<p:commandButton update="tabla @(.refrescar)" icon="fa fa-plus" title="Agregar" action="#{manticComprasOrdenesDiferencias.doFaltanteArticulo}">
 								<f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdenesDiferencias.attrs.faltante}" />
 							</p:commandButton>

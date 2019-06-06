@@ -304,7 +304,7 @@
 									</f:facet>
 									<h:outputText value="#{row['cantidad']}"/>	
 								</p:column>		
-								<p:column style="width:38px; text-align: center">
+								<p:column styleClass="janal-column-icon">
 									<p:commandButton update="faltantes @(.filas) @(.recalculo)" icon="fa fa-plus" title="Agregar" action="#{manticCatalogosAlmacenesTransferenciasNormal.doFaltanteArticulo}">
 										<f:setPropertyActionListener value="#{row}" target="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.faltante}" />
 										<f:setPropertyActionListener value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.ikAlmacen}" target="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.idAlmacen}" />
@@ -354,12 +354,12 @@
 									</f:facet>
 									<h:outputText value="#{row['registro']}"/>
 								</p:column>		
-								<p:column style="width:38px; text-align: center">
+								<p:column styleClass="janal-column-icon">
 									<p:commandButton process="@this" update="perdidos @(.filas) @(.recalculo)" icon="fa fa-plus" title="Agregar el articulo a la transferencia" action="#{manticCatalogosAlmacenesTransferenciasNormal.doAgregarPerdido}">
 										<f:setPropertyActionListener value="#{row}" target="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.perdido}" />
 									</p:commandButton>
 								</p:column>
-								<p:column style="width:38px; text-align: center">
+								<p:column styleClass="janal-column-icon">
 									<p:commandButton update="perdidos @(.filas) @(.recalculo)" icon="fa fa-minus" title="Eliminar" action="#{manticCatalogosAlmacenesTransferenciasNormal.doEliminarPerdido}">
 										<f:setPropertyActionListener value="#{row}" target="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.perdidoRemove}" />										
 									</p:commandButton>

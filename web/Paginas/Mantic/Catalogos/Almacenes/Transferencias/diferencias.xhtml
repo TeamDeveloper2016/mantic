@@ -106,7 +106,7 @@
               </f:facet>
               <h:outputText value="#{row['cantidades']}"/>
             </p:column>		
-						<p:column style="width:38px; text-align: center" rendered="#{manticCatalogosAlmacenesTransferenciasDiferencias.attrs.tipoDiferencia eq 4}">
+						<p:column styleClass="janal-column-icon" rendered="#{manticCatalogosAlmacenesTransferenciasDiferencias.attrs.tipoDiferencia eq 4}">
 							<p:commandButton update="tabla @(.refrescar)" icon="fa fa-plus" title="Agregar" action="#{manticCatalogosAlmacenesTransferenciasDiferencias.doFaltanteArticulo}">
 								<f:setPropertyActionListener value="#{row}" target="#{manticCatalogosAlmacenesTransferenciasDiferencias.attrs.faltante}" />
 							</p:commandButton>

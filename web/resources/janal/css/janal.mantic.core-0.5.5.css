@@ -140,6 +140,10 @@ div.ui-panelgrid-content {
 .janal-column-left {
   text-align: left;
 }
+.janal-column-icon {
+  text-align: center;
+  width: 38px;
+}
 .janal-context-menu {
   cursor: pointer;
   margin-left: auto;
@@ -376,6 +380,10 @@ div.ui-panelgrid-content {
 /*==== Media queries =====*/
 /* Smartphones (portrait) ----------- */
 @media  (max-width : 480px) {
+	.janal-column-icon {
+    text-align: left;
+    width: 100%;
+  }
   .ui-tabs .ui-tabs-panel {padding: initial;}
   .janal-header-sedesol {
     width: 100%;
@@ -427,6 +435,10 @@ div.ui-panelgrid-content {
 }
 /* long-Smartphones (portrait) ----------- */
 @media  (min-width : 481px) and (max-width : 767px) {
+	.janal-column-icon {
+    text-align: left;
+    width: 100%;
+  }
   .ui-tabs .ui-tabs-panel {padding: initial;}
   .ui-sticky {top: 89px !important;}
   .layout-header-widgets {top: 0px;}
