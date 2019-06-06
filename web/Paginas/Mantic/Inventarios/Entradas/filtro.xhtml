@@ -102,7 +102,7 @@
         </div>
 				<p:spacer/>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticInventariosEntradasFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticInventariosEntradasFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticInventariosEntradasFiltro.lazyModel.rowCount gt manticInventariosEntradasFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticInventariosEntradasFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticInventariosEntradasFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticInventariosEntradasFiltro.lazyModel.rowCount gt manticInventariosEntradasFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
 						<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >
@@ -119,14 +119,11 @@
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:commandButton value="Agregar directa" action="#{manticInventariosEntradasFiltro.doAccion('COMPLETO')}" icon="fa fa-plus" title="Nota de entrada directa" onstart="return janal.bloquear()"/>						
-                <p:separator/>
-                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:separator/>
-                <p:menuitem icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosEntradasFiltro.doReporte('NOTAS_ENTRADA')}" oncomplete="janal.desbloquear();" update="descargar"/>
-                <p:separator/>
-                <p:menuitem icon="fa fa-download" title="Descargar XML/PDF" onstart="return janal.bloquear()" process="@this" action="facturas?faces-redirect=true" oncomplete="janal.desbloquear();" immediate="true"/>
+                <p:commandButton action="#{manticInventariosEntradasFiltro.doAccion('COMPLETO')}" icon="fa fa-plus" title="Nota de entrada directa" onstart="return janal.bloquear()"/>						
+                <p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosEntradasFiltro.doReporte('NOTAS_ENTRADA')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                <p:commandButton icon="fa fa-download" title="Descargar XML/PDF" onstart="return janal.bloquear()" process="@this" action="facturas?faces-redirect=true" oncomplete="janal.desbloquear();" immediate="true"/>
               </div>  
             </f:facet>	            
 						<p:column styleClass="janal-column-icon">
