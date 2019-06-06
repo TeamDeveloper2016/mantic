@@ -97,8 +97,9 @@
 									</p:menuButton>
 								</div>  
 								<div class="xs-pantalla">              								
-									<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-									<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+									<p:commandButton action="#{manticVentasAutorizacionFiltro.doDetalleVenta}" icon="fa fa-list-alt" ajax="false" title="Detalle articulos" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+									<p:commandButton id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+									<p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 								</div>  
 							</f:facet>	
 							<p:column style="width: 16px" exportable="false">  
