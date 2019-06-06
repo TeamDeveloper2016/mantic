@@ -13,9 +13,9 @@
         </style>
     </ui:define>
     <ui:define name="contenido">        
-			<div class="janal-align-right xs-pantalla">
-				<p:commandButton icon="fa fa-search" onstart="janal.togglePanel('panelBusqueda');"/>
-				<p:spacer height="5px"/>		
+			<div class="xs-pantalla janal-wid-100">
+				<p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
+						
 			</div>			
 			<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 				<div class="ui-grid-row janal-grid-row">
@@ -38,7 +38,7 @@
               <div class="janal-align-right lg-pantalla">
                 <p:commandButton id="buscarSentinel" value="Buscar" icon="fa fa-filter"  oncomplete="janal.execute()"/>
               </div>
-              <div class="janal-align-right xs-pantalla">
+              <div class="xs-pantalla janal-wid-100">
                 <p:commandButton id="buscarSentinelIcon" icon="fa fa-filter"  oncomplete="janal.execute()"/>
               </div>
 						</p:panel>

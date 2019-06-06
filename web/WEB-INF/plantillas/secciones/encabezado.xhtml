@@ -35,40 +35,37 @@
 			}
 		</style>	
   <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
-    <div class="ui-grid-row janal-grid-row">
-			<div style="width: 4% !important; text-align: center">
+    <div class="ui-g ui-grid-row janal-grid-row">
+			<div class="ui-g-1 janal-content-center janal-column-center">
 				<p:commandLink action="#{kajoolEncabezado.doMovePageStart()}" title="Ir a la página de inicio">
-					<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="50" height="50"/>
-				</p:commandLink>
+					<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="35"/>
+				</p:commandLink>	
 			</div>	
-  		<div class="ui-grid-col-12">
-				<div class="ui-grid-row janal-grid-row">
-					<div class="ui-grid-col-8 lg-pantalla">
-						<h1 class="titulo-proyecto janal-header-title">#{sessionScope.autentifica.empresa.nombre}</h1>
+			<div class="ui-g-11 janal-content-center">
+        <div class="ui-g ui-grid-row janal-grid-row">
+					<div class="ui-g-10 janal-content-center">
+  		  		<h1 class="titulo-proyecto janal-header-title">#{kajoolUtilAplicacion.tituloSistema}</h1>
+	  		  	<h1 class="titulo-siglas janal-header-acronym">#{kajoolUtilAplicacion.tituloCorto}</h1>
 					</div>
-					<div class="ui-grid-col-8 xs-pantalla">
-						<h1 class="janal-header-title">#{kajoolUtilAplicacion.tituloCorto}</h1>
-					</div>
-					<div class="ui-grid-col-4 lg-pantalla">
-      		  <span class="version" style="float:right;"><strong class='janal-color-blue'>[CTRL+H]</strong> Ayuda</span>
+					<div class="ui-g-2 janal-content-center">
+      		  <span class="version lg-pantalla" style="float:right;"><strong class='janal-color-blue'>[CTRL+H]</strong>Ayuda</span>
+      		  <span class="version xs-pantalla" style="float:right;"><strong class='janal-color-blue'>[CTRL+H]</strong></span>
 					</div>  
-					<div class="ui-grid-col-4 xs-pantalla">
+				</div>	
+        <div class="ui-g ui-grid-row janal-grid-row">
+					<div class="ui-g-4 janal-content-center">
+						<span id="reloj" class="fecha lg-pantalla"></span>
+						<span class="fecha xs-pantalla Fs14">#{kajoolUtilAplicacion.currentDate}</span>
 					</div>
-				</div>
-				<div class="ui-grid-row janal-grid-rows">
-					<div class="ui-grid-col-4 margin-fecha">
-						<span id="reloj" class="fecha janal-text-one-line lg-pantalla"></span>
-						<span class="fecha janal-text-one-line xs-pantalla Fs14">#{kajoolUtilAplicacion.currentDate}</span>
-					</div>
-					<div class="ui-grid-col-4 margin-desarrollo" style="text-align: center;">
+					<div class="ui-g-4 janal-content-center margin-desarrollo" style="text-align: center;">
 						<p:outputLabel styleClass="janal-etapa lg-pantalla" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
 						<p:outputLabel styleClass="janal-etapa xs-pantalla Fs14" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
 					</div>
-					<div class="ui-grid-col-4 margin-version" style="text-align: right;">
-						<span id="version" class="version lg-pantalla">#{kajoolUtilAplicacion.versionAplicacion}<strong class='janal-color-blue' title='C&oacute;digo de acceso' style='cursor:pointer;'>#{kajoolUtilAplicacion.modulo}</strong></span>
+					<div class="ui-g-4 janal-content-center margin-version" style="text-align: right;">
+						<span id="version" class="version lg-pantalla">#{kajoolUtilAplicacion.versionAplicacion}</span>
 						<span id="version" class="version xs-pantalla Fs14">#{kajoolUtilAplicacion.version}</span>
 					</div>
-				</div>
+				</div>	
 			</div>
 		</div>	
 	</div>

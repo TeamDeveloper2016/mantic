@@ -182,12 +182,12 @@
 							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-column-center involucrados" style="display: #{manticInventariosCreditosAccion.diferente? '': 'none'}">
   							<p:commandLink actionListener="#{manticInventariosCreditosAccion.doUpdateRfc}" process="@this" update="@(.involucrados)" onstart="janal.bloquear(); if(confirm('Esta seguro que desea actualizar el RFC ?')) { return true; } else { janal.desbloquear(); return false; }" oncomplete="janal.desbloquear();">
 									<p:outputLabel value="El RFC del proveedor [#{manticInventariosCreditosAccion.proveedor.rfc}] no coincide con el de la factura [#{manticInventariosCreditosAccion.emisor.rfc}], click aqui para actualizarlo !" styleClass="janal-color-orange" style="cursor: pointer;"/>
-		  					  <p:spacer height="5px"/>
+		  					  
 			  				</p:commandLink>
 							</p:panelGrid>	
 							<p:outputLabel for="comentarios" value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
 							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticInventariosCreditosAccion.attrs.observaciones}"/>
-							<p:spacer height="5px"/>
+							
 							<p:fileUpload fileUploadListener="#{manticInventariosCreditosAccion.doFileUpload}" 
 								mode="advanced" process="@this comentarios" update="@(.importado) @(.involucrados)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
 								multiple="false" allowTypes="#{manticInventariosCreditosAccion.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"

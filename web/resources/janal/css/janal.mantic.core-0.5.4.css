@@ -57,8 +57,8 @@ div.ui-panelgrid-content {
   float: none;
   padding: 10px 10px !important;
 }
-.janal-align-right{position:relative; float:right; margin-right:5px;}
-.janal-align-left{position:relative; float:left; margin-right:5px;}
+.janal-align-right{position:relative; float:right; margin-right:0px;}
+.janal-align-left{position:relative; float:left; margin-right:0px;}
 .janal-font-bold{font-weight: bold;}
 .janal-only-out-lines {
   border-style: solid;
@@ -251,7 +251,6 @@ div.ui-panelgrid-content {
 .janal-header-acronym {
   font-size: 14px;
   position: relative;
-  text-align: center !important;
 }
 .janal-header-sedesol {   
   height: 54px;
@@ -352,6 +351,7 @@ div.ui-panelgrid-content {
 /*Css que modifica las cabeceras*/
 .titulo-proyecto{display:block}
 .titulo-siglas{display:none !important;}
+.margin-fecha {padding-left: 28px;}
 .xs-pantalla{display:none;}
 .lg-pantalla{display:block;}
 .fecha {
@@ -372,6 +372,7 @@ div.ui-panelgrid-content {
   width: 180px;
   text-align: center;  
 }
+.janal-logo-mini {width: 35px;}
 /*==== Media queries =====*/
 /* Smartphones (portrait) ----------- */
 @media  (max-width : 480px) {
@@ -390,15 +391,15 @@ div.ui-panelgrid-content {
     width: 80px;
     text-align: center;  
   }
-  .janal-logo-mini {height: 53px;float: right; margin-top: -41px;}
-  .janal-grid-row {margin: 0px 0px -10px !important;}
+  .janal-logo-mini {width: 30px;}
+  .janal-grid-row {}
   .xs-pantalla{display:block;}
   .lg-pantalla{display: none;}
-  .titulo-proyecto{display:none !important;}
-  .titulo-siglas{margin-top: 0px !important; display:block !important;}
-  .margin-fecha {}
-  .margin-desarrollo {margin-top: -20px !important;}
-  .margin-version {margin-top: -20px !important;}
+  .titulo-proyecto{margin-bottom: 0px; margin-top: 0px; display:none !important;}
+  .titulo-siglas{margin-bottom: 0px; margin-top: 0px; display:block !important;}
+  .margin-fecha {padding-left: 0px;}
+  .margin-desarrollo {margin-top: 0px !important;}
+  .margin-version {margin-top: 0px !important;}
   .janal-wid-3 {width: 100% !important}
   .janal-wid-5 {width: 100% !important}
   .janal-wid-8 {width: 100% !important}
@@ -434,9 +435,10 @@ div.ui-panelgrid-content {
     width: 80px;
     text-align: center;  
   }
-  .janal-logo-mini {height: 45px;float: right;}
-  .titulo-proyecto{display:none !important;}
-  .titulo-siglas{margin-top: 0px !important; display:block !important;}
+  .janal-logo-mini {width: 30px;}
+  .titulo-proyecto{margin-bottom: 0px; margin-top: 0px; display:none !important;}
+  .titulo-siglas{margin-bottom: 0px; margin-top: 0px; display:block !important;}
+  .margin-fecha {padding-left: 0px;}
   .janal-header-sedesol {
     width: 100%;
     background-repeat: no-repeat;
@@ -444,13 +446,13 @@ div.ui-panelgrid-content {
     background-position: center;
     margin: -10px;
   }
-  .janal-grid-row {margin: 0px 0px -13px !important;}
+  .janal-grid-row {}
   .xs-pantalla{display:block;}
   .lg-pantalla{display: none;}
-  .janal-header-acronym {font-size: 24px;letter-spacing:.5em}
-  .margin-fecha {margin-top: 15px !important;}
-  .margin-desarrollo {margin-top: 15px !important;}
-  .margin-version {margin-top: 15px !important;}
+  .janal-header-acronym {font-size: 24px;letter-spacing:.3em}
+  .margin-fecha {padding-left: 0px;}
+  .margin-desarrollo {margin-top: 0px !important;}
+  .margin-version {margin-top: 0px !important;}
   .janal-wid-3 {width: 100% !important}
   .janal-wid-5 {width: 100% !important}
   .janal-wid-8 {width: 100% !important}
