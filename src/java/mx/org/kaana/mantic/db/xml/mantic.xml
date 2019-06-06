@@ -3954,7 +3954,8 @@
 	  <unit id="TcManticUnidadesMedidasDto">
       <select id="row">
         select      
-          *
+					tc_mantic_unidades_medidas.id_unidad_medida as id_key,
+          tc_mantic_unidades_medidas.*
         from      
           tc_mantic_unidades_medidas
         where 
