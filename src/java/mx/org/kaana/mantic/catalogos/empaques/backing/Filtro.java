@@ -94,9 +94,9 @@ public class Filtro extends Comun implements Serializable {
 			sb= new StringBuilder();	
 			regresar= new HashMap<>();								
 			if(!Cadena.isVacio(this.attrs.get("idEmpaque")) && !this.attrs.get("idEmpaque").toString().equals("-1"))
-  		  sb.append("tr_mantic_empaque_unidad_medida.id_empaque=").append(this.attrs.get("idEmpaque")).append(" and");
+  		  sb.append("tr_mantic_empaque_unidad_medida.id_empaque=").append(this.attrs.get("idEmpaque")).append(" and ");
 			if(!Cadena.isVacio(this.attrs.get("idUnidad")) && !this.attrs.get("idUnidad").toString().equals("-1"))
-  		  sb.append("tr_mantic_empaque_unidad_medida.id_unidad_medida=").append(this.attrs.get("idUnidad")).append(" and");
+  		  sb.append("tr_mantic_empaque_unidad_medida.id_unidad_medida=").append(this.attrs.get("idUnidad")).append(" and ");
 			if(Cadena.isVacio(sb.toString()))
 				regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			else
