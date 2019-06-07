@@ -22,14 +22,17 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
+import mx.org.kaana.mantic.catalogos.empaques.reglas.Transaccion;
+import mx.org.kaana.mantic.catalogos.empaques.beans.EmpaqueUnidad;
 import mx.org.kaana.mantic.db.dto.TcManticEmpaquesDto;
+import mx.org.kaana.mantic.db.dto.TrManticEmpaqueUnidadMedidaDto;
 
 @Named(value = "manticCatalogosEmpaquesAccion")
 @ViewScoped
 public class Accion extends IBaseAttribute implements Serializable {
 
-	private static final long serialVersionUID = 6498389869799336830L;  
+	private static final long serialVersionUID= 6498389869799336830L;  
+	
 	
   @PostConstruct
   @Override
@@ -73,16 +76,21 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
   public void doLoad() {
     EAccion eaccion= null;    
+		TrManticEmpaqueUnidadMedidaDto empaqueUnidad= null;
     try {
       eaccion= (EAccion) this.attrs.get("accion");			
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
+			this.attrs.put("empaqueUnidad", new EmpaqueUnidad());
       switch (eaccion) {
-        case AGREGAR:
+        case AGREGAR:					
           this.attrs.put("empaque", DaoFactory.getInstance().findById(TcManticEmpaquesDto.class, ((UISelectEntity)this.attrs.get("idEmpaque")).getKey()));
           this.attrs.put("unidad", DaoFactory.getInstance().findById(TcManticEmpaquesDto.class, ((UISelectEntity)this.attrs.get("idUnidad")).getKey()));
           break;
         case MODIFICAR:
-        case CONSULTAR:                  
+        case CONSULTAR:                  					
+					empaqueUnidad= (TrManticEmpaqueUnidadMedidaDto) DaoFactory.getInstance().findById(TrManticEmpaqueUnidadMedidaDto.class, (Long)this.attrs.get("idEmpaqueUnidadMedida"));
+					this.attrs.put("idEmpaque", new UISelectEntity(empaqueUnidad.getIdEmpaque()));
+					this.attrs.put("idUnidad", new UISelectEntity(empaqueUnidad.getIdUnidadMedida()));
           break;
       } // switch
     } // try
@@ -93,17 +101,23 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doLoad
 
   public String doAceptar(String accion) {
-    Transaccion transaccion= null;
-    String regresar        = null;
-		EAccion eaccion        = null;
+    Transaccion transaccion    = null;
+    String regresar            = null;
+		EAccion eaccion            = null;
+		EmpaqueUnidad empaqueUnidad= null;
     try {
-			eaccion= EAccion.valueOf(accion.toUpperCase());      
+			eaccion= EAccion.valueOf(accion.toUpperCase());
+			empaqueUnidad= (EmpaqueUnidad) this.attrs.get("empaqueUnidad");
+			empaqueUnidad.setIdEmpaque(((UISelectEntity) this.attrs.get("idEmpaque")).getKey());
+			empaqueUnidad.setIdUnidad(((UISelectEntity) this.attrs.get("idUnidad")).getKey());
+			empaqueUnidad.setObservaciones(this.attrs.get("observaciones").toString());
+			transaccion= new Transaccion(empaqueUnidad);
       if (transaccion.ejecutar(eaccion)) {
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
-        JsfBase.addMessage("Se registro el artículo de forma correcta.", ETipoMensaje.INFORMACION);
+        JsfBase.addMessage("Se registro de forma correcta.", ETipoMensaje.INFORMACION);
       } // if
       else 
-        JsfBase.addMessage("Ocurrió un error al registrar el artículo", ETipoMensaje.ERROR);      
+        JsfBase.addMessage("Ocurrió un error al realizar el registro", ETipoMensaje.ERROR);      
     } // try
     catch (Exception e) {
       Error.mensaje(e);
