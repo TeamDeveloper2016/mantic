@@ -27,7 +27,7 @@
           <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
 						<h:panelGrid styleClass="janal-wid-100">
-              <p:outputLabel for="empaque" value="Empaque:" rendered="#{manticCatalogosEmpaquesFiltro.attrs.isMatriz}"/>
+              <p:outputLabel for="empaque" value="Empaque:"/>
               <p:selectOneMenu id="empaque" value="#{manticCatalogosEmpaquesFiltro.attrs.idEmpaque}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">								
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticCatalogosEmpaquesFiltro.attrs.empaques}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
