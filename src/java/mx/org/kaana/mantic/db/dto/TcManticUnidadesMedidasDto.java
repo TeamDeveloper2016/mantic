@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -42,20 +36,32 @@ public class TcManticUnidadesMedidasDto implements IBaseDto, Serializable {
   private Long idUnidadMedida;
   @Column (name="nombre")
   private String nombre;
+  @Column (name="descripcion")
+  private String descripcion;
+	@Column (name="id_usuario")
+  private Long idUsuario;
+	@Column (name="registro")
+  private Timestamp registro;
+	@Column (name="proporcion")
+  private Long proporcion;
 
   public TcManticUnidadesMedidasDto() {
     this(new Long(-1L));
   }
 
   public TcManticUnidadesMedidasDto(Long key) {
-    this(null, new Long(-1L), null);
+    this(null, new Long(-1L), null, null, -1L, -1L);
     setKey(key);
   }
 
-  public TcManticUnidadesMedidasDto(String clave, Long idUnidadMedida, String nombre) {
+  public TcManticUnidadesMedidasDto(String clave, Long idUnidadMedida, String nombre, String descripcion, Long idUsuario, Long proporcion) {
     setClave(clave);
     setIdUnidadMedida(idUnidadMedida);
     setNombre(nombre);
+		setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		setIdUsuario(idUsuario);
+		setDescripcion(descripcion);
+		setProporcion(proporcion);
   }
 	
   public void setClave(String clave) {
@@ -82,6 +88,38 @@ public class TcManticUnidadesMedidasDto implements IBaseDto, Serializable {
     return nombre;
   }
 
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public Long getIdUsuario() {
+		return idUsuario;
+	}
+
+	public void setIdUsuario(Long idUsuario) {
+		this.idUsuario = idUsuario;
+	}
+
+	public Timestamp getRegistro() {
+		return registro;
+	}
+
+	public void setRegistro(Timestamp registro) {
+		this.registro = registro;
+	}
+
+	public Long getProporcion() {
+		return proporcion;
+	}
+
+	public void setProporcion(Long proporcion) {
+		this.proporcion = proporcion;
+	}	
+	
   @Transient
   @Override
   public Long getKey() {
@@ -102,6 +140,14 @@ public class TcManticUnidadesMedidasDto implements IBaseDto, Serializable {
 		regresar.append(getIdUnidadMedida());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getDescripcion());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getProporcion());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdUsuario());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -112,13 +158,17 @@ public class TcManticUnidadesMedidasDto implements IBaseDto, Serializable {
 		regresar.put("clave", getClave());
 		regresar.put("idUnidadMedida", getIdUnidadMedida());
 		regresar.put("nombre", getNombre());
+		regresar.put("descripcion", getDescripcion());
+		regresar.put("idUsuario", getIdUsuario());
+		regresar.put("registro", getRegistro());
+		regresar.put("proporcion", getProporcion());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getClave(), getIdUnidadMedida(), getNombre()
+			getClave(), getIdUnidadMedida(), getNombre(), getDescripcion(), getIdUsuario(), getRegistro(), getProporcion()
     };
     return regresar;
   }
@@ -176,7 +226,4 @@ public class TcManticUnidadesMedidasDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdUnidadMedida() != null ? getIdUnidadMedida().hashCode() : 0);
     return hash;
   }
-
 }
-
-
