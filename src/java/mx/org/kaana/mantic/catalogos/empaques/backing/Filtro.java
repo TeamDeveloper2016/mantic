@@ -27,8 +27,8 @@ import mx.org.kaana.libs.reflection.Methods;
 @ViewScoped
 public class Filtro extends Comun implements Serializable {
 
-  private static final long serialVersionUID = 8793667741599428879L;
-	
+	private static final long serialVersionUID = 572331401280070748L;
+
   @PostConstruct
   @Override
   protected void init() {
