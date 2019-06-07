@@ -81,7 +81,7 @@
 			<p:commandButton id="aceptar" widgetVar="wenviar" value="Enviar" icon="fa fa-cloud-upload" accesskey="a" process="@this @(.answer)" update="@(.counter)" actionListener="#{manticEvaluacionesAccion.doSendTo()}" onstart="return execute();" oncomplete="janal.desbloquear()" styleClass="question" style="display: #{manticEvaluacionesAccion.control? '': 'none'}"/>
 		</div>	
 		<div class="xs-pantalla">
-			<p:commandButton id="icon" widgetVar="wicon" value="Enviar" icon="fa fa-cloud-upload" process="@this @(.answer)" update="@(.counter)" actionListener="#{manticEvaluacionesAccion.doSendTo()}" onstart="return execute();" oncomplete="janal.desbloquear()" styleClass="question" style="display: #{manticEvaluacionesAccion.control? '': 'none'}"/>
+			<p:commandButton id="icon" widgetVar="wicon" title="Enviar" icon="fa fa-cloud-upload" process="@this @(.answer)" update="@(.counter)" actionListener="#{manticEvaluacionesAccion.doSendTo()}" onstart="return execute();" oncomplete="janal.desbloquear()" styleClass="question" style="display: #{manticEvaluacionesAccion.control? '': 'none'}"/>
 		</div>						
 	</ui:define>	
 </ui:composition>

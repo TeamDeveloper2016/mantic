@@ -46,7 +46,6 @@
   <ui:define name="contenido">
     <div class="xs-pantalla janal-wid-100">
       <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
-      		
     </div>			
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
@@ -135,16 +134,12 @@
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:menuitem id="agregarIcon" icon="fa fa-plus" title="Agregar" action="#{manticFacturasFiltro.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>						
-                <p:separator/>
-                <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:separator/>
-                <p:menuitem id="reporteIcon" icon="fa fa-file-word-o" title="Listado" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doReporte('FACTURAS_FICTICIAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
-                <p:separator/>
-                <p:menuitem id="sincronizarIcon" icon="fa fa-refresh" title="Sincronizar" action="#{manticFacturasFiltro.doSincronizar()}" onstart="return janal.bloquear()"/>
-                <p:separator/>
-                <p:menuitem id="facturasPdfIcon" icon="fa fa-file-pdf-o" title="Facturama pdf" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doReporteFacturas('FACTURAS_RESUMEN')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                <p:commandButton id="agregarIcon" icon="fa fa-plus" title="Agregar" action="#{manticFacturasFiltro.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>						
+                <p:commandButton id="pdfIcon" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton id="xlsIcon" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton id="reporteIcon" icon="fa fa-file-word-o" title="Listado" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doReporte('FACTURAS_FICTICIAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                <p:commandButton id="sincronizarIcon" icon="fa fa-refresh" title="Sincronizar" action="#{manticFacturasFiltro.doSincronizar()}" onstart="return janal.bloquear()"/>
+                <p:commandButton id="facturasPdfIcon" icon="fa fa-file-pdf-o" title="Facturama pdf" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doReporteFacturas('FACTURAS_RESUMEN')}" oncomplete="janal.desbloquear();" update="descargar"/>
               </div>  
             </f:facet>	            
             <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.nombreEmpresa}">
