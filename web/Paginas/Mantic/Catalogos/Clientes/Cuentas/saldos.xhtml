@@ -102,12 +102,10 @@
                 </p:menuButton>
 							</div>  
 							<div class="xs-pantalla">   
-								<p:menuitem action="#{manticCatalogosClientesCuentasSaldos.doTicketExpress}" icon="fa fa-file-text-o" title="Generar ticket express" onstart="return janal.bloquear()"/>						
-								<p:separator/>
-								<p:menuitem id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-								<p:menuitem id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:separator/>
-                <p:menuitem id="reporteIconXs" icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('CUENTAS_POR_COBRAR')}" oncomplete="janal.desbloquear();" update="descargar"/>
+								<p:commandButton action="#{manticCatalogosClientesCuentasSaldos.doTicketExpress}" icon="fa fa-file-text-o" title="Generar ticket express" onstart="return janal.bloquear()"/>						
+								<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton id="reporteIconXs" icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('CUENTAS_POR_COBRAR')}" oncomplete="janal.desbloquear();" update="descargar"/>
 							</div>  
 						</f:facet>												
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.consecutivo}">
