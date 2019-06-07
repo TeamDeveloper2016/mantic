@@ -56,8 +56,15 @@
 		<br/>
   </ui:define>   
   <ui:define name="acciones">
-		<p:commandButton id="aceptar" process="@this" update="cancelar @(.filas)" icon="fa fa-remove" value="Cancelar" styleClass="filas" action="#{manticCatalogosMasivosProgreso.doCancelar}" style="display: #{manticCatalogosMasivosProgreso.attrs.cancelar? '': 'none'}"/>
-		<p:commandButton id="cancelar" process="@this" update="cancelar @(.filas)" icon="fa fa-reply" value="Regresar" styleClass="filas" action="#{manticCatalogosMasivosProgreso.doRegresar}" style="display: #{manticCatalogosMasivosProgreso.attrs.cancelar? 'none': ''}"/>
+  	<div class="lg-pantalla">
+  		<p:commandButton id="aceptar" process="@this" update="cancelar @(.filas)" icon="fa fa-remove" value="Cancelar" styleClass="filas" action="#{manticCatalogosMasivosProgreso.doCancelar}" style="display: #{manticCatalogosMasivosProgreso.attrs.cancelar? '': 'none'}"/>
+	  	<p:commandButton id="cancelar" process="@this" update="cancelar @(.filas)" icon="fa fa-reply" value="Regresar" styleClass="filas" action="#{manticCatalogosMasivosProgreso.doRegresar}" style="display: #{manticCatalogosMasivosProgreso.attrs.cancelar? 'none': ''}"/>
+		</div>
+  	<div class="xs-pantalla">
+  		<p:commandButton process="@this" update="cancelar @(.filas)" icon="fa fa-remove" title="Cancelar" styleClass="filas" action="#{manticCatalogosMasivosProgreso.doCancelar}" style="display: #{manticCatalogosMasivosProgreso.attrs.cancelar? '': 'none'}"/>
+	  	<p:commandButton process="@this" update="cancelar @(.filas)" icon="fa fa-reply" title="Regresar" styleClass="filas" action="#{manticCatalogosMasivosProgreso.doRegresar}" style="display: #{manticCatalogosMasivosProgreso.attrs.cancelar? 'none': ''}"/>
+		</div>		
+
   </ui:define>   
   <ui:param name="componenteBloqueo" value="aceptar cancelar"/>
 </ui:composition>
