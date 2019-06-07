@@ -125,7 +125,7 @@
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosArticulosImagenes.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" action="#{manticCatalogosArticulosImagenes.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()" process="@this tabla" update="tabla"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" action="#{manticCatalogosArticulosImagenes.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()" process="@this tabla" update="tabla"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosArticulosImagenes.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 	</ui:define>
