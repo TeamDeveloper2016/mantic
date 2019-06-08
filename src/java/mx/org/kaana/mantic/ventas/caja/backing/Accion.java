@@ -1100,7 +1100,8 @@ public class Accion extends IBaseVenta implements Serializable {
 		// this.getAdminOrden().toCheckTotales();
 		MotorBusqueda motor= new MotorBusqueda(-1L);
 		((TicketVenta)this.getAdminOrden().getOrden()).setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));
-		((TicketVenta)this.getAdminOrden().getOrden()).setIdCliente(motor.toClienteDefault().getKey());
+		if(((TicketVenta)this.getAdminOrden().getOrden()).getIdCliente() < 1L)
+			((TicketVenta)this.getAdminOrden().getOrden()).setIdCliente(motor.toClienteDefault().getKey());
 		((TicketVenta)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
 		((TicketVenta)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
 		((TicketVenta)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
