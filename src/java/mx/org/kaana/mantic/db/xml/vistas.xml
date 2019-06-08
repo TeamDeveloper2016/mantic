@@ -4758,7 +4758,7 @@
 				      tc_mantic_articulos.id_articulo= {idArticulo}
 				   )) principal 			
 				order by 
-				  codigo
+				  propio
 			</select>
 			<select id="porLikeNombre">
 				select 
