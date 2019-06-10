@@ -221,10 +221,12 @@
 														</f:facet>
 														<h:outputText value="Código:" />
 														<h:outputText value="#{custom.propio}" />
-														<h:outputText value="Código:" />
-														<h:outputText value="#{custom.codigo}" />
+														<h:outputText value="Precio venta:" />
+														<p:outputLabel value="$ #{custom.menudeo}" styleClass="janal-color-blue janal-font-bold"/>
 														<h:outputText value="Nombre:" />
 														<h:outputText value="#{custom.nombre}" />														
+														<h:outputText value="Código auxiliar:" />
+														<h:outputText value="#{custom.codigo}" />
 													</h:panelGrid>
 												</f:facet>
 											</p:autoComplete>												
@@ -413,7 +415,7 @@
 				<p:tab title="Generales">
 					<h:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
 						<p:outputLabel value="Nombre:"/>
-						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.nombre}" styleClass="janal-wid-100-txt" disabled="true"/>					
+						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.nombre}" styleClass="janal-wid-100-txt" readonly="true"/>					
 					</h:panelGrid>	
 					<p:separator/>
 					<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-80, janal-wid-20">
@@ -421,22 +423,22 @@
 							<p:outputLabel value="Menudeo:" />
 							<p:outputLabel value="Medio mayoreo:" />
 							<p:outputLabel value="Mayoreo:" />
-							<p:inputText value="$#{manticVentasAccion.attrs.detailArticulo.menudeo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>											
-							<p:inputText value="$#{manticVentasAccion.attrs.detailArticulo.medioMayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
-							<p:inputText value="$#{manticVentasAccion.attrs.detailArticulo.mayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>																							
+							<p:inputText value="$#{manticVentasAccion.attrs.detailArticulo.menudeo}" styleClass="janal-color-blue janal-font-bold janal-wid-100-txt janal-column-right" readonly="true"/>											
+							<p:inputText value="$#{manticVentasAccion.attrs.detailArticulo.medioMayoreo}" styleClass="janal-font-bold janal-wid-100-txt janal-column-right" readonly="true"/>					
+							<p:inputText value="$#{manticVentasAccion.attrs.detailArticulo.mayoreo}" styleClass="janal-font-bold janal-wid-100-txt janal-column-right" readonly="true"/>																							
 							<p:outputLabel value="Limite menudeo:" />
 							<p:outputLabel value="Limite medio mayoreo:" />
 							<p:outputLabel value="Limite mayoreo:" />						
-							<p:inputText value="0 - #{manticVentasAccion.attrs.detailArticulo.limiteMedioMayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>											
-							<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.limiteMedioMayoreo} - #{manticVentasAccion.attrs.detailArticulo.limiteMayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>											
-							<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.limiteMayoreo} - #" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
+							<p:inputText value="0 - #{manticVentasAccion.attrs.detailArticulo.limiteMedioMayoreo}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>											
+							<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.limiteMedioMayoreo} - #{manticVentasAccion.attrs.detailArticulo.limiteMayoreo}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>											
+							<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.limiteMayoreo} - #" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>					
 							<p:separator/><p:separator/><p:separator/>
 							<p:outputLabel value="Unidad de medida:" />
 							<p:outputLabel value="Stock:" />
 							<p:outputLabel value="IVA:" />
-							<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.unidadMedida}" styleClass="janal-wid-100-txt" disabled="true"/>											
-							<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.stock}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>																									
-							<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.iva}%" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
+							<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.unidadMedida}" styleClass="janal-wid-100-txt" readonly="true"/>											
+							<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.stock}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>																									
+							<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.iva}%" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>					
 						</h:panelGrid>
 						<p:panel id="panelImage" header="#{manticVentasAccion.attrs.detailArticulo.codigo}" styleClass="TexAlCenter janal-wid-100-txt" style="height:100%">
 							<a id="detail-image" data-magnify="gallery" data-caption="#{manticVentasAccion.attrs.detailArticulo.nombre}" data-group="detail-gallery" href="" title="Click para ver más grande la imagen">
@@ -501,10 +503,10 @@
 						<p:outputLabel value="Cuarto:" />
 						<p:outputLabel value="Anaquel:" />
 						<p:outputLabel value="Charola:" />
-						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.piso}" styleClass="janal-wid-100-txt" disabled="true"/>											
-						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.cuarto}" styleClass="janal-wid-100-txt" disabled="true"/>					
-						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.anaquel}" styleClass="janal-wid-100-txt" disabled="true"/>																							
-						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.charola}" styleClass="janal-wid-100-txt" disabled="true"/>																																			
+						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.piso}" styleClass="janal-wid-100-txt" readonly="true"/>											
+						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.cuarto}" styleClass="janal-wid-100-txt" readonly="true"/>					
+						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.anaquel}" styleClass="janal-wid-100-txt" readonly="true"/>																							
+						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.charola}" styleClass="janal-wid-100-txt" readonly="true"/>																																			
 					</h:panelGrid>						
 				</p:tab>
 			</p:tabView>			
