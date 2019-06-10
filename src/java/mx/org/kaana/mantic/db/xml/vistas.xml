@@ -4794,8 +4794,7 @@
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and tc_mantic_articulos.id_articulo_tipo= 1
 				  and tc_mantic_articulos.id_vigente= 1
-				  and 
-				  (
+				  and (
 				    upper(tc_mantic_articulos.nombre) like upper('{codigo}%')
 				  or
 				    tc_mantic_articulos.id_articulo= {idArticulo}
