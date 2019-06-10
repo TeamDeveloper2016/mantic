@@ -8365,8 +8365,8 @@
 					tc_mantic_empaques.clave as clave_empaque,
 					tc_mantic_empaques.nombre as empaque,
 					tc_mantic_empaques.descripcion as descripcion_empaque,
-					tc_mantic_unidades_medidas.nombre as unidad,
 					tc_mantic_unidades_medidas.clave as clave_unidad,
+					tc_mantic_unidades_medidas.nombre as unidad,
 					tc_mantic_unidades_medidas.descripcion as clave_descripcion,
 					tc_mantic_unidades_medidas.proporcion
 				from 

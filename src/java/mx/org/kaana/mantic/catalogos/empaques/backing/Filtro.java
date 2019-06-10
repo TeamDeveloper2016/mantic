@@ -75,8 +75,7 @@ public class Filtro extends Comun implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("empaques", (List<UISelectEntity>) UIEntity.build("TcManticEmpaquesDto", "row", params, columns));
 			this.attrs.put("idEmpaque", new UISelectEntity("-1"));
-      this.attrs.put("unidades", (List<UISelectEntity>) UIEntity.build("TcManticUnidadesMedidasDto", "row", params, columns));
-			this.attrs.put("idUnidad", new UISelectEntity("-1"));
+			this.doUpdateEmpaque();
     } // try
     catch (Exception e) {
       throw e;
@@ -121,4 +120,27 @@ public class Filtro extends Comun implements Serializable {
     } // catch
     return "accion".concat(Constantes.REDIRECIONAR);
   } // doAccion
+	
+	public void doUpdateEmpaque() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			columns= new ArrayList<>();			
+      columns.add(new Columna("claveUnidad", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("unidad", EFormatoDinamicos.MAYUSCULAS));
+			if(!Cadena.isVacio(this.attrs.get("idEmpaque")) && !this.attrs.get("idEmpaque").toString().equals("-1")) {
+  			params.put(Constantes.SQL_CONDICION, "tr_mantic_empaque_unidad_medida.id_empaque="+ this.attrs.get("idEmpaque"));
+        this.attrs.put("unidades", (List<UISelectEntity>) UIEntity.build("VistaEmpaquesUnidadesDto", "row", params, columns));
+			} // if	
+			this.attrs.put("idUnidad", new UISelectEntity("-1"));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}
+	
 }

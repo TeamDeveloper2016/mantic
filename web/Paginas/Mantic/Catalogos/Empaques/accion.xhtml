@@ -33,69 +33,60 @@
 					<p:tabView id="contenedorGrupos" onTabChange="simpleProcess();">
 						<p:ajax event="tabChange" process="@this" oncomplete="janal.refresh();"/>
             <p:tab title="General">
-							<p:panelGrid columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-350, janal-wid-100-txt, janal-wid-col-150 , janal-wid-col-350, janal-wid-100-txt">								
-								<p:outputLabel for="empaqueExistente" value="Empaque existente:"/>
-								<p:selectBooleanCheckbox id="empaqueExistente" value="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}">
-									<p:ajax update="contenedorGrupos" process="@this contenedorGrupos" oncomplete="janal.refresh();"/>
-								</p:selectBooleanCheckbox>
-								<p:spacer/>
-								<p:outputLabel for="unidadExistente" value="Unidad existente:"/>
-								<p:selectBooleanCheckbox id="unidadExistente" value="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}">
-								  <p:ajax update="contenedorGrupos" process="@this contenedorGrupos" oncomplete="janal.refresh();"/>
-								</p:selectBooleanCheckbox>
-								<p:outputLabel for="empaque" value="Empaque:" rendered="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}"/>
-								<p:selectOneMenu id="empaque" value="#{manticCatalogosEmpaquesAccion.attrs.idEmpaque}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}">																	
-									<f:selectItems value="#{manticCatalogosEmpaquesAccion.attrs.empaques}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
-									<p:column headerText="Clave">
-										<h:outputText value="#{item.clave}"/>
-									</p:column>   
-									<p:column headerText="Nombre">
-										<h:outputText value="#{item.nombre}"/>
-									</p:column>   
-								</p:selectOneMenu>
-								<p:spacer rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}"/><p:spacer rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}"/>
-								<p:spacer/>
-								<p:outputLabel for="unidad" value="Unidad medida:" rendered="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
-								<p:selectOneMenu id="unidad" value="#{manticCatalogosEmpaquesAccion.attrs.idUnidad}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
-									<f:selectItems value="#{manticCatalogosEmpaquesAccion.attrs.unidades}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
-									<p:column headerText="Clave">
-										<h:outputText value="#{item.clave}"/>
-									</p:column>   
-									<p:column headerText="Nombre">
-										<h:outputText value="#{item.nombre}"/>
-									</p:column>   
-								</p:selectOneMenu>														
-								<p:spacer rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/><p:spacer rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
-								<p:outputLabel for="claveEmpaque" value="Clave:" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}"/>
-								<p:spacer rendered="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}"/>
-								<p:inputText id="claveEmpaque" value="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.claveEmpaque}" styleClass="janal-wid-100-txt" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}"/>
-								<p:spacer rendered="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}"/><p:spacer/>
-								<p:outputLabel for="claveUnidad" value="Clave:" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
-								<p:spacer rendered="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
-								<p:inputText id="claveUnidad" value="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.claveUnidad}" styleClass="janal-wid-100-txt" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
-								<p:spacer rendered="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
-								<p:outputLabel for="nombreEmpaque" value="Nombre:" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}"/>
-								<p:spacer rendered="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}"/>
-								<p:inputText id="nombreEmpaque" value="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.nombreEmpaque}" styleClass="janal-wid-100-txt" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}"/>
-								<p:spacer rendered="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}"/><p:spacer/>
-								<p:outputLabel for="nombreUnidad" value="Nombre:" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
-								<p:spacer rendered="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
-								<p:inputText id="nombreUnidad" value="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.nombreUnidad}" styleClass="janal-wid-100-txt" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
-								<p:spacer rendered="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
-								<p:outputLabel for="descripcionEmpaque" value="Descripción:" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}"/>
-								<p:spacer rendered="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}"/>
-								<p:inputTextarea id="descripcionEmpaque" value="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.descripcionEmpaque}" styleClass="janal-wid-100-txt" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}"/>
-								<p:spacer rendered="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}"/><p:spacer/>
-								<p:outputLabel for="descripcionUnidad" value="Descripción:" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
-								<p:spacer rendered="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
-								<p:inputTextarea id="descripcionUnidad" value="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.descripcionUnidad}" styleClass="janal-wid-100-txt" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
-								<p:spacer rendered="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
-								<p:spacer/><p:spacer/><p:spacer/>
-								<p:outputLabel for="proporcion" value="Proporción:" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
-								<p:spacer rendered="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
-								<p:inputText id="proporcion" value="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.proporcion}" styleClass="janal-wid-100-txt" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
-								<p:spacer rendered="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
-              </p:panelGrid>
+							<p:panel styleClass="janal-wid-100" header="Empaques">
+								<p:panelGrid layout="grid" columns="1">
+									<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-col-38">
+		  							<p:selectBooleanCheckbox id="empaqueExistente" value="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}">
+			  							<p:ajax update="contenedorGrupos" process="@this contenedorGrupos" oncomplete="janal.refresh();"/>
+				  					</p:selectBooleanCheckbox>
+	  								<p:outputLabel for="empaque" value="Disponibles:"/>
+									</p:panelGrid>	
+									<p:selectOneMenu id="empaque" value="#{manticCatalogosEmpaquesAccion.attrs.idEmpaque}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}">																	
+										<f:selectItems value="#{manticCatalogosEmpaquesAccion.attrs.empaques}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+										<p:column headerText="Clave">
+											<h:outputText value="#{item.clave}"/>
+										</p:column>   
+										<p:column headerText="Nombre">
+											<h:outputText value="#{item.nombre}"/>
+										</p:column>   
+									</p:selectOneMenu>
+									<p:separator rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}"/>
+									<p:outputLabel for="claveEmpaque" value="Clave:" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}"/>
+									<p:inputText id="claveEmpaque" value="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.claveEmpaque}" styleClass="janal-wid-100-txt" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}"/>
+									<p:outputLabel for="nombreEmpaque" value="Nombre:" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}"/>
+  								<p:inputText id="nombreEmpaque" value="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.nombreEmpaque}" styleClass="janal-wid-100-txt" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}"/>
+									<p:outputLabel for="descripcionEmpaque" value="Descripción:" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}"/>
+									<p:inputTextarea id="descripcionEmpaque" value="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.descripcionEmpaque}" styleClass="janal-wid-100-txt" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.empaqueExistente}"/>
+	  						</p:panelGrid>
+							</p:panel>	
+							<p:panel styleClass="janal-wid-100" header="Unidades de medida">
+								<p:panelGrid layout="grid" columns="1">
+									<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-col-38">
+	  								<p:selectBooleanCheckbox id="unidadExistente" value="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}">
+		  								<p:ajax update="contenedorGrupos" process="@this contenedorGrupos" oncomplete="janal.refresh();"/>
+			  						</p:selectBooleanCheckbox>
+									  <p:outputLabel for="unidad" value="Disponibles:"/>
+									</p:panelGrid>	
+									<p:selectOneMenu id="unidad" value="#{manticCatalogosEmpaquesAccion.attrs.idUnidad}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+										<f:selectItems value="#{manticCatalogosEmpaquesAccion.attrs.unidades}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+										<p:column headerText="Clave">
+											<h:outputText value="#{item.clave}"/>
+										</p:column>   
+										<p:column headerText="Nombre">
+											<h:outputText value="#{item.nombre}"/>
+										</p:column>   
+									</p:selectOneMenu>														
+									<p:separator rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
+								  <p:outputLabel for="claveUnidad" value="Clave:" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
+								  <p:inputText id="claveUnidad" value="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.claveUnidad}" styleClass="janal-wid-100-txt" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
+  								<p:outputLabel for="nombreUnidad" value="Nombre:" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
+  								<p:inputText id="nombreUnidad" value="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.nombreUnidad}" styleClass="janal-wid-100-txt" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
+									<p:outputLabel for="descripcionUnidad" value="Descripción:" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
+									<p:inputTextarea id="descripcionUnidad" value="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.descripcionUnidad}" styleClass="janal-wid-100-txt" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
+									<p:outputLabel for="proporcion" value="Proporción:" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
+									<p:inputText id="proporcion" value="#{manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.proporcion}" styleClass="janal-wid-100-txt" rendered="#{!manticCatalogosEmpaquesAccion.attrs.empaqueUnidad.unidadExistente}"/>
+							  </p:panelGrid>
+              </p:panel>
 						</p:tab>						            
 						<p:tab title="Observaciones">
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">

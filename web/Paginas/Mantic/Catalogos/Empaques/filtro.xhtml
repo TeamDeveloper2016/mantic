@@ -28,6 +28,7 @@
 						<h:panelGrid styleClass="janal-wid-100">
               <p:outputLabel for="empaque" value="Empaque:"/>
               <p:selectOneMenu id="empaque" value="#{manticCatalogosEmpaquesFiltro.attrs.idEmpaque}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">								
+								<p:ajax event="change" process="@this" update="unidad" listener="#{manticCatalogosEmpaquesFiltro.doUpdateEmpaque}"/>
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticCatalogosEmpaquesFiltro.attrs.empaques}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
                 <p:column headerText="Clave">
@@ -40,12 +41,12 @@
               <p:outputLabel for="unidad" value="Unidad medida:"/>
               <p:selectOneMenu id="unidad" value="#{manticCatalogosEmpaquesFiltro.attrs.idUnidad}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-                <f:selectItems value="#{manticCatalogosEmpaquesFiltro.attrs.unidades}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+                <f:selectItems value="#{manticCatalogosEmpaquesFiltro.attrs.unidades}" var="element" itemValue="#{element}" itemLabel="#{element.claveUnidad} - #{element.unidad}"/>
                 <p:column headerText="Clave">
-                  <h:outputText value="#{item.clave}"/>
+                  <h:outputText value="#{item.claveUnidad}"/>
                 </p:column>   
                 <p:column headerText="Nombre">
-                  <h:outputText value="#{item.nombre}"/>
+                  <h:outputText value="#{item.unidad}"/>
                 </p:column>   
               </p:selectOneMenu>														
 						</h:panelGrid>
