@@ -169,7 +169,7 @@ public class Accion extends IBaseVenta implements Serializable {
       this.attrs.put("fechaRegistro", JsfBase.getFlashAttribute("fechaRegistro")== null ? -1L: JsfBase.getFlashAttribute("fechaRegistro"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null ? null : JsfBase.getFlashAttribute("retorno"));
 			LOG.warn("Flash atributes [accion[" + this.attrs.get("accion") + "] idVenta [" + this.attrs.get("idVenta") + "] retorno [" + this.attrs.get("retorno") + "]]");
-			this.attrs.put("sortOrder", "order by tc_mantic_ventas.registro desc");
+			this.attrs.put("sortOrder", "order by tc_mantic_ventas.registro desc");			
       doInitPage();
     } // try
     catch (Exception e) {
@@ -181,6 +181,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doInitPage(){
 		Calendar fechaInicio= null;
 		try {
+			this.attrs.put("facturacionSinCorreo", false);
 			this.attrs.put("titleTab", "Articulos");
 			this.attrs.put("ticketLock", -1L);
 			this.attrs.put("isPesos", false);
@@ -680,8 +681,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doLoadTicketAbiertosPrincipal(){		
 		Map<String, Object>params= null;
 		List<Columna> campos     = null;
-		try {
-			refreshTicketsAbiertos();
+		try {			
 			campos= new ArrayList<>();
 			params= new HashMap<>();
 			params.put("sortOrder", "");
@@ -829,6 +829,8 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	public void doAsignaTicketAbiertoDirecto(){
 		try {
+			this.attrs.put("facturarVenta", false);			
+			refreshTicketsAbiertos();
 			this.attrs.put("ajustePreciosCliente", true);			
 			this.attrs.put("ticketAbierto", new UISelectEntity((Entity)this.attrs.get("selectedCuentaAbierta")));
 			doAsignaTicketAbierto();
@@ -973,6 +975,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		ClienteTipoContacto telefono          = null;
 		ClienteTipoContacto celular           = null;
 		try {						
+			this.attrs.put("facturacionSinCorreo", false);
 			this.attrs.put("disabledFacturar", !((Boolean)this.attrs.get("facturarVenta")));						
 			cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");	
 			if(cliente!= null){
@@ -986,6 +989,7 @@ public class Accion extends IBaseVenta implements Serializable {
 					this.attrs.put("celular", motor.toCelularCliente());					
 					this.attrs.put("clienteRegistrado", true);
 					loadDomiciliosFactura(seleccionado.getKey());
+					this.attrs.put("facturacionSinCorreo", !this.clientesTiposContacto.isEmpty());
 				} // if
 				else{
 					setDomicilio(new Domicilio());
