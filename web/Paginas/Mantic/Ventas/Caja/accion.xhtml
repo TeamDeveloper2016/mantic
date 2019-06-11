@@ -477,7 +477,7 @@
 								<p:outputLabel value="Facturar:"/>
 								<p:outputLabel value="Credito:"/>
 								<p:autoComplete id="clientes" placeholder="RFC o nombre" widgetVar="listadoClientes" var="customCliente" itemLabel="#{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticVentasCajaAccion.attrs.cliente}" completeMethod="#{manticVentasCajaAccion.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
-									<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa contenedorGrupos" listener="#{manticVentasCajaAccion.doAsignaCliente}" update="cliente contenido @(.cambio-cliente) contenedorGrupos contenedorGrupos:deudorPago contenedorGrupos:deudor" oncomplete="janal.desbloquear();"/>
+									<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa contenedorGrupos" listener="#{manticVentasCajaAccion.doAsignaCliente}" update="cliente contenido @(.cambio-cliente) contenedorGrupos contenedorGrupos:deudorPago contenedorGrupos:deudor contenedorGrupos:facturacionSinCorreo" oncomplete="janal.desbloquear();"/>
 									<f:facet name="itemtip">
 										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
 											<h:outputText value="Clave" />
@@ -508,7 +508,7 @@
 									<p:ajax listener="#{manticVentasCajaAccion.doActiveApartado}" process="@this contenedorGrupos:panelTotales" update="contenedorGrupos contenedorGrupos:switchFacturar tabPagar" onstart="janal.bloquear();" oncomplete="applyValidacionesCredito();"/>
 								</p:inputSwitch>
 								<p:inputSwitch id="switchFacturar" value="#{manticVentasCajaAccion.attrs.facturarVenta}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt cambio-cliente janal-abono" disabled="#{manticVentasCajaAccion.attrs.disabledFacturarSwitch}">
-									<p:ajax listener="#{manticVentasCajaAccion.doActivarCliente}" process="@this contenedorGrupos:panelTotales contenedorGrupos:observacionesFactura" update="contenedorGrupos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();janal.refresh();"/>
+									<p:ajax listener="#{manticVentasCajaAccion.doActivarCliente}" process="@this contenedorGrupos:panelTotales contenedorGrupos:observacionesFactura contenedorGrupos:facturacionSinCorreo" update="contenedorGrupos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();janal.refresh();"/>
 								</p:inputSwitch>
 								<p:inputSwitch id="creditoCliente" value="#{manticVentasCajaAccion.attrs.creditoVenta}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt cambio-cliente janal-abono" disabled="#{!manticVentasCajaAccion.attrs.creditoCliente}">
 									<p:ajax process="@this" update="contenedorGrupos:panelSumatoria" onstart="janal.bloquear();" oncomplete="applyValidacionesCredito();" />
@@ -568,6 +568,9 @@
 							</p:panelGrid>			
 							<p:panelGrid id="deudorPago" columns="1" layout="grid" styleClass="janal-wid-100 janal-column-center" columnClasses="janal-wid-100" style="display: #{manticVentasCajaAccion.saldoCliente.deudor} ? 'none' : ''">
 								<p:outputLabel value="#{manticVentasCajaAccion.saldoCliente.mensaje}" styleClass="janal-column-center janal-color-orange" style="font-weight: bold !important"/>
+							</p:panelGrid>
+							<p:panelGrid id="facturacionSinCorreo" columns="1" layout="grid" styleClass="janal-wid-100 janal-column-center" columnClasses="janal-wid-100" rendered="#{!manticVentasCajaAccion.attrs.facturacionSinCorreo}">
+								<p:outputLabel value="El cliente a facturar no cuenta con un correo electronico registrado" styleClass="janal-column-center janal-color-orange" style="font-weight: bold !important"/>
 							</p:panelGrid>
 							<p:panelGrid id="panelTotales" layout="grid" columns="3" styleClass="janal-wid-99" columnClasses="janal-wid-80, janal-wid-20">
 								<p:panelGrid id="panelPago" columns="6" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-13, janal-wid-1, janal-wid-20, janal-wid-5, janal-wid-30, janal-wid-30">																											
@@ -1254,7 +1257,7 @@
 				</p:inputText>
 			</p:panelGrid>							
 			<p:dataTable lazy="true" id="tablaTicketsAbiertos" widgetVar="widgetTablaTicketsAbiertos" var="row" styleClass="janal-row-tickets-abiertos janal-wid-100" value="#{manticVentasCajaAccion.lazyCuentasAbiertas}" selection="#{manticVentasCajaAccion.attrs.selectedCuentaAbierta}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="270" style="margin-bottom:0">
-				<p:ajax event="rowDblselect" listener="#{manticVentasCajaAccion.doAsignaTicketAbiertoDirecto}" process="@this tablaTicketsAbiertos" update="contenedorGrupos @(.janal-abono) aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion) contenedorGrupos:deudor contenedorGrupos:deudorPago" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();" />	
+				<p:ajax event="rowDblselect" listener="#{manticVentasCajaAccion.doAsignaTicketAbiertoDirecto}" process="@this tablaTicketsAbiertos" update="contenedorGrupos @(.janal-abono) aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion) contenedorGrupos:deudor contenedorGrupos:deudorPago @(.tickets-principal) contenedorGrupos:ticketsAbiertos" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();" />	
 				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 					<f:facet name="header">
 						<h:outputText value="Cuenta"/>
@@ -1285,7 +1288,7 @@
 			</p:dataTable>			
 			<hr class="ui-widget-content" style="display: none"/>
 			<div class="janal-line-button" style="display: none">
-				<p:commandButton id="aceptarTicketAbierto" icon="fa fa-check" process="@this tablaTicketsAbiertos" value="Aceptar" onstart="PF('dlgOpenTickets').hide();" actionListener="#{manticVentasCajaAccion.doAsignaTicketAbiertoDirecto}" update="contenedorGrupos @(.janal-abono) aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion) contenedorGrupos:deudorPago contenedorGrupos:deudor" oncomplete="janal.desbloquear();jsArticulos.refreshCobroValidate();" style="display: none"/>
+				<p:commandButton id="aceptarTicketAbierto" icon="fa fa-check" process="@this tablaTicketsAbiertos" value="Aceptar" onstart="PF('dlgOpenTickets').hide();" actionListener="#{manticVentasCajaAccion.doAsignaTicketAbiertoDirecto}" update="contenedorGrupos @(.janal-abono) aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion) contenedorGrupos:deudorPago contenedorGrupos:deudor @(.tickets-principal) contenedorGrupos:ticketsAbiertos" oncomplete="janal.desbloquear();jsArticulos.refreshCobroValidate();" style="display: none"/>
 				<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();" rendered="false"/>
 			</div>
 		</p:dialog>	
