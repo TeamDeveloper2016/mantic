@@ -1080,7 +1080,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		if(cliente.getIdFacturama()!= null)
 			updateCliente(sesion);
 		else
-			registraClienteFacturama(sesion, idCliente);;		
+			registraClienteFacturama(sesion, idCliente);
 	} // actualizarArticuloFacturama
 	
 	private boolean actualizarVenta(Session sesion, Long idEstatusVenta) throws Exception{
