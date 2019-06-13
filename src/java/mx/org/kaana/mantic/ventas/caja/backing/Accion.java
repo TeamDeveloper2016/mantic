@@ -241,6 +241,7 @@ public class Accion extends IBaseVenta implements Serializable {
         doAsignaTicketAbierto();
 				this.attrs.put("clienteAsignado", true);
       } // if
+			loadUltimoTicket();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -1446,13 +1447,37 @@ public class Accion extends IBaseVenta implements Serializable {
 		return regresar;		
 	} // toPrepare
 	
+	private void loadUltimoTicket() throws Exception{
+		Entity ultimoTicket      = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("sortOrder", "order by tc_mantic_ventas.cobro desc");
+			params.put("idEmpresa", this.attrs.get("idEmpresa"));
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_ventas.id_venta_estatus in (" + EEstatusVentas.PAGADA.getIdEstatusVenta() + "," + EEstatusVentas.TERMINADA.getIdEstatusVenta() + "," + EEstatusVentas.TIMBRADA.getIdEstatusVenta() + ")");
+      ultimoTicket= (Entity) DaoFactory.getInstance().toEntity("VistaConsultasDto", "lazy", params);
+			this.attrs.put("ultimoTicketEntity", ultimoTicket);
+			this.attrs.put("ultimoTicket", ultimoTicket.toString("ticket"));
+			this.attrs.put("descripcionUltimoTicket", "Ticket: ".concat(ultimoTicket.toString("ticket")).concat(", Total: $").concat(ultimoTicket.toString("total")));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // loadUltimoTicket
+	
+	public void doPrintUltimoTicket(){
+		doPrint((Entity) this.attrs.get("ultimoTicketEntity"));		
+	} // doPrintUltimoTicket
+	
 	public void doPrintTicket(){
-		Entity seleccionado      = null;
+		doPrint((Entity) this.attrs.get("seleccionTicket"));
+	} // doPrintTicket
+	
+	public void doPrint(Entity seleccionado){
 		Map<String, Object>params= null;
 		CreateTicket ticket      = null;
 		AdminTickets adminTicket = null;
 		try {			
-			seleccionado= (Entity) this.attrs.get("seleccionTicket");
 			params= new HashMap<>();
 			params.put("idVenta", seleccionado.toLong("idVenta"));
 			adminTicket= new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params));			
