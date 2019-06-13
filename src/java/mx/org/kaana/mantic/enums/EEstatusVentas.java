@@ -15,7 +15,9 @@ public enum EEstatusVentas {
   COTIZACION (7L),
   EXPIRADA   (8L),
   APARTADOS  (9L),
-	EN_CAPTURA (10L);
+	EN_CAPTURA (10L),
+	TIMBRADA   (15L),
+	ELIMINADA  (16L);
 
   private Long idEstatusVenta;
 	private static final Map<Long, EEstatusVentas> lookup= new HashMap<>();
