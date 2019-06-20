@@ -145,23 +145,23 @@ public class ArticuloVenta extends Articulo {
 		String regresar = "";
 		boolean display = (!Cadena.isVacio(getDescuentos()) && !getDescuentos().equals(0D)) || (!Cadena.isVacio(getDescuento()) && !getDescuento().equals("0"));			
 		if(this.getDescripcionPrecio()!= null || display) {
-			String color  = "janal-color-blue";
+			String color= "janal-color-blue";
 			boolean precio= false;			
-			switch(this.getDescripcionPrecio()) {
-				case "medioMayoreo":
-					color   = "janal-color-orange";
-					precio  = true;
-					regresar= "Medio mayoreo";
-					break;
-				case "mayoreo":
-					color   = "janal-color-green";
-					precio  = true;
-					regresar= "Mayoreo";
-					break;
-				default:
-					regresar= "Menudeo";
-					break;
-			} // switch
+			regresar= "Menudeo";
+			if(this.getDescripcionPrecio()!= null){
+				switch(this.getDescripcionPrecio()) {
+					case "medioMayoreo":
+						color   = "janal-color-orange";
+						precio  = true;
+						regresar= "Medio mayoreo";
+						break;
+					case "mayoreo":
+						color   = "janal-color-green";
+						precio  = true;
+						regresar= "Mayoreo";
+						break;				
+				} // switch
+			} // if
 			regresar= "<i class='fa fa-fw fa-question-circle ".concat(color)
 								.concat("' style='float:right; display:").concat(precio || display? "": "none").concat("' title='")
 								.concat("Menudeo: ").concat(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getMenudeo()))
