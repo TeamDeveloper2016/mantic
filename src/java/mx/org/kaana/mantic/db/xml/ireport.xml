@@ -331,17 +331,8 @@
           tc_mantic_ventas.registro registro_venta,
           tc_mantic_ventas.vigencia,
           tc_mantic_ventas.observaciones,
-          tc_mantic_ventas_detalles.*,
-          concat('(',
-          ifnull((select
-            tc_mantic_articulos_codigos.codigo 
-          from
-            tc_mantic_articulos_codigos 
-          where
-            tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal =1),
-          ''),
-          ' ) ',
-          tc_mantic_articulos.nombre) as nombre_articulo,
+          tc_mantic_ventas_detalles.*,          
+          tc_mantic_articulos.nombre as nombre_articulo,
         	 tc_mantic_personas.cuenta,
 			 concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre_alta
         from 
