@@ -88,11 +88,13 @@ public class Filtro extends IBaseTicket implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta"));
-      this.attrs.put("sortOrder", "order by id_empresa, cliente, consecutivo");
+      this.attrs.put("sortOrder", "order by consecutivo desc");
 			toLoadCatalog();
 			loadEstatusVentas();
-      if(this.attrs.get("idVenta")!= null) 
+      if(this.attrs.get("idVenta")!= null){ 
 			  this.doLoad();
+				this.attrs.put("idVenta", null);
+			} // if
 			this.correos        = new ArrayList<>();
 			this.selectedCorreos= new ArrayList<>();
     } // try
@@ -107,6 +109,7 @@ public class Filtro extends IBaseTicket implements Serializable {
     List<Columna> columns     = null;
 		Map<String, Object> params= toPrepare();
     try {
+			params.put("sortOrder", "order by consecutivo desc");
       columns = new ArrayList<>();
       columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
