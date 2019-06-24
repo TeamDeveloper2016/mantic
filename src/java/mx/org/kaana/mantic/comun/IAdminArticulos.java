@@ -204,8 +204,8 @@ public abstract class IAdminArticulos implements Serializable {
 	
 	public void toUpdatePorcentajes() {
 		for (Articulo articulo: this.articulos) {
-			articulo.setDescuento(this.getDescuento());
-			articulo.setExtras(this.getExtras());
+   		articulo.setDescuento(this.getDescuento());
+ 			articulo.setExtras(this.getExtras());
 		} // for
 		this.toCalculate(true);
 	}

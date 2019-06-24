@@ -351,7 +351,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				} // if	
 				((NotaEntrada)this.getAdminOrden().getOrden()).setDiasPlazo(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedorPago().toLong("plazo")+ 1);
         ((NotaEntrada)this.getAdminOrden().getOrden()).setDescuento(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedorPago().toString("descuento"));
-        this.doUpdatePorcentaje();
+				if(this.accion.equals(EAccion.AGREGAR))
+          this.doUpdatePorcentaje();
 			} // if
     } // try
     catch (Exception e) {
