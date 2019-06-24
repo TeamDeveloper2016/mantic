@@ -53,7 +53,7 @@ public class Transaccion extends IBaseTnx {
 					articulo.setPrecio(this.precio);
 					articulo.setMenudeo(this.articulos.get(0).getPrecio());
 					articulo.setLimiteMedioMayoreo(this.articulos.get(0).getLimite());
-					articulo.setMayoreo(this.articulos.get(1).getPrecio());
+					articulo.setMedioMayoreo(this.articulos.get(1).getPrecio());
 					articulo.setLimiteMayoreo(this.articulos.get(1).getLimite());
 					articulo.setMayoreo(this.articulos.get(2).getPrecio());
 				  regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
