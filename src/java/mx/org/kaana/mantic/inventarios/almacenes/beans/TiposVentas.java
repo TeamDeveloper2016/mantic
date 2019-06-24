@@ -156,7 +156,7 @@ public class TiposVentas implements Serializable {
 	}
 
 	public void toUpdateUtilidad(double utilidadad) {
-		 this.precio= Numero.toRedondearSat(((utilidadad/ 100)+ 1)* (this.costo* ((this.iva/100)+ 1)));
+		 this.precio= Numero.toRedondearSat(((this.iva/100)+ (utilidadad/ 100)+ 1)* this.costo);
 		 this.toCalculate();
 	}
 	

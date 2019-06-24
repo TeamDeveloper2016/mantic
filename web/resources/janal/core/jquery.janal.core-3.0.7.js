@@ -956,12 +956,14 @@
       $janal.errors.validations= [];
       $.each($janal.fields, function(id, value) {
         var $components= $janal.components(value.multiple, id);
-        $.each($components, function() {
-					if(typeof(clear) === 'undefined' || clear)
-						$(this).rules('remove');
-          if(group=== $janal.JANAL_RESERVE || value.grupo.indexOf(group)>= 0)
-            $janal.rules(id, $(this), $janal.vector(value.validaciones, ['\\\|']), value.mensaje);
-        });
+				if(typeof($components)!== 'undefined') {
+					$.each($components, function() {
+						if(typeof(clear) === 'undefined' || clear)
+							$(this).rules('remove');
+						if(group=== $janal.JANAL_RESERVE || value.grupo.indexOf(group)>= 0)
+							$janal.rules(id, $(this), $janal.vector(value.validaciones, ['\\\|']), value.mensaje);
+					});
+				} // if	
       }); // each
       $janal.programmer($janal.errors.validations);
     }, // apply
@@ -1017,16 +1019,18 @@
           // search all components with same selector
           $janal.data(false, id, value);
           var $components= $janal.components(value.multiple, id);
-          $.each($components, function() {
-						$(this).rules('remove');
-            var complete= value.formatos;
-            if(all || value.individual)
-              if(complete.endsWith('|'))
-                complete+= value.validaciones;
-              else
-                complete+= '|'+ value.validaciones;
-            $janal.rules(id, $(this), $janal.vector(complete, ['\\\|']), '');
-          });
+					if(typeof($components)!== 'undefinded') {
+						$.each($components, function() {
+							$(this).rules('remove');
+							var complete= value.formatos;
+							if(all || value.individual)
+								if(complete.endsWith('|'))
+									complete+= value.validaciones;
+								else
+									complete+= '|'+ value.validaciones;
+							$janal.rules(id, $(this), $janal.vector(complete, ['\\\|']), '');
+						});
+					} // if	
         } // if  
       }); // each
       $janal.programmer($janal.errors.validations);
@@ -1198,7 +1202,7 @@
 			alert(msg);
     }, // alert
     version: function() {
-      return '0.3.0.1';
+      return '0.3.0.7';
     }, // version
     align: function(pixels) {
       try {
