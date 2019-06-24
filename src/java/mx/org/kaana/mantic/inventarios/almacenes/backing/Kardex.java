@@ -442,18 +442,19 @@ public class Kardex extends IBaseAttribute implements Serializable {
 		double value= ((Entity)this.attrs.get("articulo")).toDouble("value");
 		this.attrs.put("costoMayorMenor", this.getCostoMayorMenor(value, precio));
 		for (TiposVentas item: this.adminKardex.getTiposVentas()) {
-			switch(item.toEnum()) {
-				case MENUDEO:
-					item.setUtilidad(50D);
-					break;
-				case MEDIO_MAYOREO:
-					item.setUtilidad(40D);
-					break;
-				case MAYOREO:
-					item.setUtilidad(30D);
-					break;
-			} // switch
-			item.setPrecio(Numero.toRedondearSat((1+ (item.getUtilidad()/ 100))* precio));
+  		if(!keep)
+				switch(item.toEnum()) {
+					case MENUDEO:
+						item.setUtilidad(50D);
+						break;
+					case MEDIO_MAYOREO:
+						item.setUtilidad(40D);
+						break;
+					case MAYOREO:
+						item.setUtilidad(30D);
+						break;
+				} // switch
+			item.setPrecio(Numero.toRedondearSat((1+ (item.getUtilidad()/ 100)+ (item.getIva()/100))* precio));
 			item.setCosto(precio);
   		item.toCalculate();
 		} // for

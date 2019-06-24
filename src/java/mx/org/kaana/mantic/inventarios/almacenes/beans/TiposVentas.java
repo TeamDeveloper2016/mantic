@@ -167,7 +167,7 @@ public class TiposVentas implements Serializable {
 		this.importe  = Numero.toRedondearSat(this.precio);
 		double calculo= (this.costo* ((this.iva/100)+ 1));
 		// al precio de neto se le quita el costo+ iva y lo que queda se calcula la utilidad bruta 
-		this.utilidad = Numero.toRedondearSat((this.precio- calculo)* 100/ calculo);
+		this.utilidad = Numero.toRedondearSat((this.precio- calculo)* 100/ this.costo);
 	}	
 	
 	public ETiposVentas toEnum() {
