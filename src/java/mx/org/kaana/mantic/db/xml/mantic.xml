@@ -1399,6 +1399,14 @@
         where      
           nombre = '{nombre}'
       </select>
+			<select id="ultimo">
+        select      
+          *
+        from      
+          tc_mantic_respaldos
+        order by 
+					registro desc
+      </select>
     </unit>
 		<unit id="TcManticTiposCreditosNotasDto">
       <select id="row">
