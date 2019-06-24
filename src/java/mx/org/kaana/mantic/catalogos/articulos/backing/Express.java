@@ -15,6 +15,7 @@ import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -258,9 +259,9 @@ public class Express extends IBaseAttribute implements Serializable {
 	public void doActualizaPrecios(){
 		try {
 			if(this.registroArticulo.getArticulo().getPrecio()!= null){
-				this.registroArticulo.getArticulo().setMenudeo(this.registroArticulo.getArticulo().getPrecio() + (this.registroArticulo.getArticulo().getPrecio() * .5));
-				this.registroArticulo.getArticulo().setMedioMayoreo(this.registroArticulo.getArticulo().getPrecio() + (this.registroArticulo.getArticulo().getPrecio() * .4));
-				this.registroArticulo.getArticulo().setMayoreo(this.registroArticulo.getArticulo().getPrecio() + (this.registroArticulo.getArticulo().getPrecio() * .3));
+				this.registroArticulo.getArticulo().setMenudeo(Numero.toAjustarDecimales(this.registroArticulo.getArticulo().getPrecio() + (this.registroArticulo.getArticulo().getPrecio() * .5)));
+				this.registroArticulo.getArticulo().setMedioMayoreo(Numero.toAjustarDecimales(this.registroArticulo.getArticulo().getPrecio() + (this.registroArticulo.getArticulo().getPrecio() * .4)));
+				this.registroArticulo.getArticulo().setMayoreo(Numero.toAjustarDecimales(this.registroArticulo.getArticulo().getPrecio() + (this.registroArticulo.getArticulo().getPrecio() * .3)));
 			} // if
 		} // try
 		catch (Exception e) {

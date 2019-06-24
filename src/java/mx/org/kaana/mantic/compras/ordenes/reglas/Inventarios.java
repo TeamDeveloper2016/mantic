@@ -117,9 +117,9 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 				double mayoreo= Numero.toRedondearSat((global.getMayoreo()* 100/ global.getPrecio())/ 100);
 				
 			  global.setPrecio(Numero.toRedondearSat(costo));
-			  global.setMenudeo(Numero.toRedondearSat(global.getPrecio()* menudeo));
-			  global.setMedioMayoreo(Numero.toRedondearSat(global.getPrecio()* medio));
-			  global.setMayoreo(Numero.toRedondearSat(global.getPrecio()* mayoreo));
+			  global.setMenudeo(Numero.toAjustarDecimales(global.getPrecio()* menudeo));
+			  global.setMedioMayoreo(Numero.toAjustarDecimales(global.getPrecio()* medio));
+			  global.setMayoreo(Numero.toAjustarDecimales(global.getPrecio()* mayoreo));
 				global.setDescuento(item.getDescuento());
 				global.setExtra(item.getExtras());
 			} // if	

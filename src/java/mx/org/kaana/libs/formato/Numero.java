@@ -9,10 +9,13 @@
 package mx.org.kaana.libs.formato;
 
 import java.lang.reflect.Constructor;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
+import mx.org.kaana.libs.Constantes;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -117,6 +120,21 @@ public final class Numero {
     return operador* (Math.floor(Math.abs(valor)*100000+ 0.50000001)/100000.0);
   } // redondear
 
+  public static double toAjustarDecimales(double valor) {
+    valor= toRedondearSat(valor);
+		if(valor> Constantes.TOPE_COSTO_ARTICULO) {
+      BigDecimal value = new BigDecimal(String.valueOf(valor));
+      BigDecimal ivalue= new BigDecimal(value.toBigInteger());
+      BigDecimal dvalue= value.remainder(BigDecimal.ONE);
+      //BigDecimal avalue= value.subtract(value.setScale(0, RoundingMode.FLOOR)).movePointRight(value.scale());		
+			if(dvalue.doubleValue()>= 0.5)
+			  valor= ivalue.doubleValue()+ 1;
+			else
+				valor= ivalue.doubleValue()+ 0.5;
+		} // if
+    return valor;
+  } // redondear
+
   private static Number getNumber(Class objeto, String value) {
     Number regresar= null;
     try  {
@@ -193,5 +211,5 @@ public final class Numero {
     LOG.info(Numero.toTruncate(10D/3D));		
     LOG.info(Numero.toTruncate(3.123455, 3));		
 	}	
-	
+
 } // Numero

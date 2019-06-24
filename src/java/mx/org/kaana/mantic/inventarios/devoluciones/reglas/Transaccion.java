@@ -317,9 +317,9 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		  		// aplicar el descuento sobre el valor del costo del articulo para afectar el catalogo
   			  global.setPrecio(Numero.toRedondearSat(descuentos.toImporte()== 0D? ultimo.getCosto(): descuentos.toImporte()));
 					global.setPrecio(ultimo.getCosto());
-					global.setMenudeo(ultimo.getMenudeo());
-					global.setMedioMayoreo(ultimo.getMedioMayoreo());
-					global.setMayoreo(ultimo.getMayoreo());
+					global.setMenudeo(Numero.toAjustarDecimales(ultimo.getMenudeo()));
+					global.setMedioMayoreo(Numero.toAjustarDecimales(ultimo.getMedioMayoreo()));
+					global.setMayoreo(Numero.toAjustarDecimales(ultimo.getMayoreo()));
 					global.setDescuento(ultimo.getDescuento());
 					global.setExtra(ultimo.getExtras());
 				} // if	

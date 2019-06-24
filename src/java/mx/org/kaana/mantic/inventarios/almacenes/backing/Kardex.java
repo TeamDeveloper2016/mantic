@@ -254,7 +254,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
     Transaccion transaccion= null;
 		EAccion eaccion        = EAccion.MODIFICAR;
     try {			
-			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"),  (Double)this.attrs.get("precio"), this.adminKardex.getTiposVentas());
+			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (Double)this.attrs.get("precio"), this.adminKardex.getTiposVentas());
 			if (transaccion.ejecutar(eaccion)) {
 				JsfBase.addMessage("Se modificaron los precios de tipos de ventas del articulo.", ETipoMensaje.INFORMACION);
    			UIBackingUtilities.execute("jsKardex.callback('"+ this.adminKardex.getTiposVentas()+ "');");

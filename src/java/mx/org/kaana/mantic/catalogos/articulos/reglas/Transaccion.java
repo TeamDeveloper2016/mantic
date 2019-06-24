@@ -14,6 +14,7 @@ import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
 import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloCodigo;
@@ -213,15 +214,15 @@ public class Transaccion extends TransaccionFactura {
 	} // actualizarArticuloFacturama
 	
 	private Double toMenudeo(){
-		return this.articulo.getArticulo().getPrecio() + (this.articulo.getArticulo().getPrecio() * .5);				
+		return Numero.toAjustarDecimales(this.articulo.getArticulo().getPrecio() + (this.articulo.getArticulo().getPrecio()* .5));				
 	} // toMenudeo
 	
 	private Double toMedioMayoreo(){
-		return this.articulo.getArticulo().getPrecio() + (this.articulo.getArticulo().getPrecio() * .4);				
+		return Numero.toAjustarDecimales(this.articulo.getArticulo().getPrecio() + (this.articulo.getArticulo().getPrecio()* .4));				
 	} // toMedioMayoreo
 	
 	private Double toMayoreo(){
-		return this.articulo.getArticulo().getPrecio() + (this.articulo.getArticulo().getPrecio() * .3);
+		return Numero.toAjustarDecimales(this.articulo.getArticulo().getPrecio() + (this.articulo.getArticulo().getPrecio()* .3));
 	} // toMayoreo
 	
 	private boolean actualizarArticulo(Session sesion) throws Exception{

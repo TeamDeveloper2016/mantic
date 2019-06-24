@@ -467,9 +467,9 @@ public class Transaccion extends IBaseTnx {
 									//articulo.setIdCategoria(null);
 									//articulo.setIdImagen(null);
 									articulo.setPrecio(costo);
-									articulo.setMenudeo(menudeo);
-									articulo.setMedioMayoreo(medio);
-									articulo.setMayoreo(mayoreo);
+									articulo.setMenudeo(Numero.toAjustarDecimales(menudeo));
+									articulo.setMedioMayoreo(Numero.toAjustarDecimales(medio));
+									articulo.setMayoreo(Numero.toAjustarDecimales(mayoreo));
 									// si trae nulo, blanco o cero se respeta el valor que tiene el campo
 									if(lmenudeo!= 0D)
 										articulo.setLimiteMedioMayoreo(lmenudeo);
@@ -533,9 +533,9 @@ public class Transaccion extends IBaseTnx {
 										identico.setMaximo(maximo== 0D? 20D: maximo);
 										identico.setLimiteMedioMayoreo(lmenudeo== 0D? 20D: lmenudeo);
 										identico.setLimiteMayoreo(lmayoreo== 0D? 50D: lmayoreo);
-										identico.setMenudeo(menudeo);
-										identico.setMedioMayoreo(medio);
-										identico.setMayoreo(mayoreo);
+										identico.setMenudeo(Numero.toAjustarDecimales(menudeo));
+										identico.setMedioMayoreo(Numero.toAjustarDecimales(medio));
+										identico.setMayoreo(Numero.toAjustarDecimales(mayoreo));
 										identico.setIva(iva);
 										identico.setPrecio(costo);
 										DaoFactory.getInstance().update(sesion, identico);
@@ -759,9 +759,9 @@ public class Transaccion extends IBaseTnx {
 									if(identico== null)
 										DaoFactory.getInstance().insert(sesion, refaccion);
 									else {
-										identico.setMenudeo(costo);
-										identico.setMedioMayoreo(costo);
-										identico.setMayoreo(costo);
+										identico.setMenudeo(Numero.toAjustarDecimales(costo));
+										identico.setMedioMayoreo(Numero.toAjustarDecimales(costo));
+										identico.setMayoreo(Numero.toAjustarDecimales(costo));
 										identico.setIva(iva);
 										identico.setPrecio(Numero.toRedondear(costo- (costo* ((1+ (iva/ 100))- costo))));
 										DaoFactory.getInstance().update(sesion, identico);
@@ -919,9 +919,9 @@ public class Transaccion extends IBaseTnx {
 									servicio.setIdCategoria(null);
 									servicio.setIdImagen(null);
 									servicio.setPrecio(costo);
-									servicio.setMenudeo(costo);
-									servicio.setMedioMayoreo(costo);
-									servicio.setMayoreo(costo);
+									servicio.setMenudeo(Numero.toAjustarDecimales(costo));
+									servicio.setMedioMayoreo(Numero.toAjustarDecimales(costo));
+									servicio.setMayoreo(Numero.toAjustarDecimales(costo));
 									// si trae nulo, blanco o cero se respeta el valor que tiene el campo								
 									if(iva!= 0D)
 										servicio.setIva(iva<1 ? iva*100 : iva);								

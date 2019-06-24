@@ -8,6 +8,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import static mx.org.kaana.kajool.enums.EAccion.MODIFICAR;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
@@ -51,14 +52,18 @@ public class Transaccion extends IBaseTnx {
 				case MODIFICAR:
 					TcManticArticulosDto articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.idArticulo);
 					articulo.setPrecio(this.precio);
-					articulo.setMenudeo(this.articulos.get(0).getPrecio());
+					articulo.setMenudeo(Numero.toAjustarDecimales(this.articulos.get(0).getPrecio()));
 					articulo.setLimiteMedioMayoreo(this.articulos.get(0).getLimite());
-					articulo.setMedioMayoreo(this.articulos.get(1).getPrecio());
+					articulo.setMedioMayoreo(Numero.toAjustarDecimales(this.articulos.get(1).getPrecio()));
 					articulo.setLimiteMayoreo(this.articulos.get(1).getLimite());
-					articulo.setMayoreo(this.articulos.get(2).getPrecio());
+					articulo.setMayoreo(Numero.toAjustarDecimales(this.articulos.get(2).getPrecio()));
 				  regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
 					TcManticArticulosBitacoraDto movimiento= new TcManticArticulosBitacoraDto(articulo.getIva(), JsfBase.getIdUsuario(), articulo.getMayoreo(), -1L, articulo.getMenudeo(), articulo.getCantidad(), articulo.getIdArticulo(), null, articulo.getMedioMayoreo(), this.precio, articulo.getLimiteMedioMayoreo(), articulo.getLimiteMayoreo(), articulo.getDescuento(), articulo.getExtra());
 					regresar= DaoFactory.getInstance().insert(sesion, movimiento)>= 1L;
+					
+					this.articulos.get(0).setPrecio(articulo.getMenudeo());
+					this.articulos.get(1).setPrecio(articulo.getMedioMayoreo());
+					this.articulos.get(2).setPrecio(articulo.getMayoreo());
 					break;				
 			} // switch
 			if(!regresar)
