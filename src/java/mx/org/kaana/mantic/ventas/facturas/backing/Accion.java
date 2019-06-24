@@ -279,7 +279,8 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	public void doSendMail(String correos, String razonSocial, Long idVenta, TcManticFacturasDto facturaPrincipal, Long idCliente) {
 		File factura= null;		
 		Map<String, Object> params= new HashMap<>();
-		String[] emails= {"jimenez76@yahoo.com", correos};
+		//String[] emails= {"jimenez76@yahoo.com", correos};
+		String[] emails= {correos};
 		List<Attachment> files= new ArrayList<>(); 
 		try {
 			params.put("header", "...");

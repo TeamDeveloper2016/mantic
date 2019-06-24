@@ -406,7 +406,8 @@ public class Filtro extends IBaseTicket implements Serializable {
 		} // if
 		Map<String, Object> params= new HashMap<>();
 		//1.- CUENTAS DE CORREO DEL PROVEEDOR MAS LAS QUE SE ESCRIBAN EN EL DIALOGO DE LA PAGINA CAPTURADOS O SELECCIONADOS EN LA VENTANA EMERGENTE
-		String[] emails       = {"jimenez76@yahoo.com", (sb.length()> 0? sb.substring(0, sb.length()- 2): "")};
+		//String[] emails       = {"jimenez76@yahoo.com", (sb.length()> 0? sb.substring(0, sb.length()- 2): "")};
+		String[] emails       = {(sb.length()> 0? sb.substring(0, sb.length()- 2): "")};
 		List<Attachment> files= new ArrayList<>(); 
 		try {
 			Entity seleccionado= (Entity)this.attrs.get("seleccionado");

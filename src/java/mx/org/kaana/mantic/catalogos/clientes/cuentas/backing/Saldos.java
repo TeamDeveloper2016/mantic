@@ -508,7 +508,8 @@ public class Saldos extends IBaseFilter implements Serializable {
 			} // for
 		} // if
 		Map<String, Object> params= new HashMap<>();
-		String[] emails= {"jimenez76@yahoo.com", (sb.length()> 0? sb.substring(0, sb.length()- 2): "")};
+		//String[] emails= {"jimenez76@yahoo.com", (sb.length()> 0? sb.substring(0, sb.length()- 2): "")};
+		String[] emails= {(sb.length()> 0? sb.substring(0, sb.length()- 2): "")};
 		List<Attachment> files= new ArrayList<>(); 
 		try {
 			Entity seleccionado= (Entity)this.attrs.get("seleccionado");

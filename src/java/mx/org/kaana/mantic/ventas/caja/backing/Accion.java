@@ -426,7 +426,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			files.add(new Attachment(factura, Boolean.FALSE));
 			files.add(new Attachment("logo", ECorreos.FACTURACION.getImages().concat("logo.png"), Boolean.TRUE));
 			params.put("attach", attachments.getId());
-			emails= new String[]{"jimenez76@yahoo.com", facturacion.getCorreos()};		
+			//emails= new String[]{"jimenez76@yahoo.com", facturacion.getCorreos()};		
+			emails= new String[]{facturacion.getCorreos()};		
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {

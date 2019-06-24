@@ -157,7 +157,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 		// for (Attachment item: files) {
 		//	 params.put(item.getId(), item.getId());
 		// } // for
-		String[] correos      = {"alejandro.jimenez@inegi.org.mx", "jimenez76@yahoo.com"};
+		String[] correos      = {"jimenez76@yahoo.com"};
 		List<Attachment> files= new ArrayList<>(); 
 		try {
 			params.put("header", "...");
