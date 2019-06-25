@@ -307,6 +307,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			temporal= proveedores.get(proveedores.indexOf(temporal));
 			temporal.put("fechaEstimada", new Value("fechaEstimada", this.toCalculateFechaEstimada(this.fechaEstimada, temporal.toInteger("idTipoDia"), temporal.toInteger("dias"))));
 			this.attrs.put("proveedor", temporal);
+			this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, temporal.getKey());
 			this.toLoadCondiciones(proveedores.get(proveedores.indexOf((UISelectEntity)((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor())));
 			this.doUpdatePlazo();
 			// this.doCalculateFechaPago();
@@ -384,15 +385,19 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	
 	public void doFileUpload(FileUploadEvent event) {
 		this.attrs.put("relacionados", 0);
-		this.doFileUpload(event, ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas"), this.proveedor.getClave(), (boolean)this.attrs.get("sinIva"), this.getAdminOrden().getTipoDeCambio());
-		if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name())) {
-		  ((NotaEntrada)this.getAdminOrden().getOrden()).setFactura(this.getFactura().getFolio());
-		  ((NotaEntrada)this.getAdminOrden().getOrden()).setFechaFactura(Fecha.toDateDefault(this.getFactura().getFecha()));
-		  ((NotaEntrada)this.getAdminOrden().getOrden()).setOriginal(Numero.toRedondearSat(Double.parseDouble(this.getFactura().getTotal())));
-  		this.toPrepareDisponibles(true);
-	  	this.doCheckFolio();
-			this.doCalculatePagoFecha();
+		if(this.proveedor!= null) {
+			this.doFileUpload(event, ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas"), this.proveedor.getClave(), (boolean)this.attrs.get("sinIva"), this.getAdminOrden().getTipoDeCambio());
+			if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name())) {
+				((NotaEntrada)this.getAdminOrden().getOrden()).setFactura(this.getFactura().getFolio());
+				((NotaEntrada)this.getAdminOrden().getOrden()).setFechaFactura(Fecha.toDateDefault(this.getFactura().getFecha()));
+				((NotaEntrada)this.getAdminOrden().getOrden()).setOriginal(Numero.toRedondearSat(Double.parseDouble(this.getFactura().getTotal())));
+				this.toPrepareDisponibles(true);
+				this.doCheckFolio();
+				this.doCalculatePagoFecha();
+			} // if
 		} // if
+		else 
+			JsfBase.addMessage("Se tiene que seleccionar un proveedor primero.", ETipoMensaje.ALERTA);      			
 	} // doFileUpload	
 	
 	private void toPrepareDisponibles(boolean checkItems) {
