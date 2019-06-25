@@ -519,7 +519,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doUpdateArticulos() {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
-		int buscarCodigoPor       = 2;
+		int buscarCodigoPor       = 1;
     try {
 			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
@@ -529,12 +529,12 @@ public class Accion extends IBaseVenta implements Serializable {
 			String search= (String)this.attrs.get("codigo"); 
 			if(!Cadena.isVacio(search)) {
 				if((boolean)this.attrs.get("buscaPorCodigo"))
-			    buscarCodigoPor= 0;
+			    buscarCodigoPor= 1;
 				if(search.startsWith("."))
 					buscarCodigoPor= 2;
 				else 
 					if(search.startsWith(":"))
-						buscarCodigoPor= 1;
+						buscarCodigoPor= 0;
 				if(search.startsWith(".") || search.startsWith(":"))
 					search= search.trim().substring(1);				
 				search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");

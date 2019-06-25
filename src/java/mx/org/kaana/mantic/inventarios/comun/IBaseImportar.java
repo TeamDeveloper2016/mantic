@@ -402,7 +402,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			while ((line = br.readLine()) != null) {
   			sb.append(line);
 			} // while
-			regresar= this.prettyFormat(sb.toString().startsWith("<")? sb.toString(): sb.substring(3), 2);
+			regresar= this.prettyFormat(sb.toString().startsWith("<")? sb.toString(): sb.substring(sb.indexOf("<")), 2);
 		} // try
 		catch (Exception e) {
       Error.mensaje(e);
