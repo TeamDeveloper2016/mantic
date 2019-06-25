@@ -22,19 +22,19 @@ public class AdminKardex implements Serializable {
 	private double iva;
 	private List<TiposVentas> tiposVentas;
 	
-	public AdminKardex(Long idArticulo) {
-		this(idArticulo, 1D, 16D, 0D, 0D, 0D, 3L, 8L);
+	public AdminKardex(Long idArticulo, boolean rounded) {
+		this(idArticulo, 1D, 16D, 0D, 0D, 0D, 3L, 8L, rounded);
 	}
 
-	public AdminKardex(Long idArticulo, double costo, double iva, double menudeo, double medioMayoreo, double mayoreo, long limiteMedioMayoreo, long limiteMayoreo) {
+	public AdminKardex(Long idArticulo, double costo, double iva, double menudeo, double medioMayoreo, double mayoreo, long limiteMedioMayoreo, long limiteMayoreo, boolean rounded) {
 		this.idArticulo= idArticulo;
 		this.costo     = costo;
 		this.iva       = iva;
 		this.tiposVentas= new ArrayList<>();
 		if(this.idArticulo> 0) {
-			this.add(ETiposVentas.MENUDEO.ordinal(), "MENUDEO", menudeo, limiteMedioMayoreo, menudeo);
-			this.add(ETiposVentas.MEDIO_MAYOREO.ordinal(), "MEDIO-MAYOREO", medioMayoreo, limiteMayoreo, menudeo);
-			this.add(ETiposVentas.MAYOREO.ordinal(), "MAYOREO", mayoreo, 0, menudeo);
+			this.add(ETiposVentas.MENUDEO.ordinal(), "MENUDEO", menudeo, limiteMedioMayoreo, menudeo, rounded);
+			this.add(ETiposVentas.MEDIO_MAYOREO.ordinal(), "MEDIO-MAYOREO", medioMayoreo, limiteMayoreo, menudeo, rounded);
+			this.add(ETiposVentas.MAYOREO.ordinal(), "MAYOREO", mayoreo, 0, menudeo, rounded);
 		} // if	
 	}
 
@@ -66,8 +66,8 @@ public class AdminKardex implements Serializable {
 		return tiposVentas;
 	}
 
-  private void add(Integer index, String nombre, double precio, long limite, double pivote) {
-		this.tiposVentas.add(new TiposVentas(index, nombre, this.costo, precio, this.iva, limite, pivote));
+  private void add(Integer index, String nombre, double precio, long limite, double pivote, boolean rounded) {
+		this.tiposVentas.add(new TiposVentas(index, nombre, this.costo, precio, this.iva, limite, pivote, rounded));
 	}	
 
 	public void toUpdateUtilidad(Integer index, Double value) {

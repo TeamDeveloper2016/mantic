@@ -29,13 +29,14 @@ public class TiposVentas implements Serializable {
 	private double limite;
 	private double impuesto;
 	private double pivote;
+	private boolean rounded;
 
 	public TiposVentas(Integer index) {
-		this(index, "", 0D, 0D, 16D, 0L, 0D);
+		this(index, "", 0D, 0D, 16D, 0L, 0D, false);
 	}
 
 	
-	public TiposVentas(Integer index, String nombre, double costo, double precio, double iva, double limite, double pivote) {
+	public TiposVentas(Integer index, String nombre, double costo, double precio, double iva, double limite, double pivote, boolean rounded) {
 		this.index= index;
 		this.nombre=nombre;
 		this.costo=costo;
@@ -46,7 +47,8 @@ public class TiposVentas implements Serializable {
 		this.limite=limite;
 		this.impuesto= 0D;
 		this.pivote= pivote;
-		this.toCalculate();
+		this.rounded= rounded;
+		this.toCalculate(false);
 	}
 
 	public Integer getIndex() {
@@ -125,6 +127,10 @@ public class TiposVentas implements Serializable {
 		this.pivote=pivote;
 	}
 
+	public boolean isRounded() {
+		return rounded;
+	}
+
 	@Override
 	public int hashCode() {
 		int hash=5;
@@ -156,16 +162,19 @@ public class TiposVentas implements Serializable {
 	}
 
 	public void toUpdateUtilidad(double utilidadad) {
-		 this.precio= Numero.toRedondearSat(((this.iva/100)+ (utilidadad/ 100)+ 1)* this.costo);
-		 this.toCalculate();
+		this.precio= Numero.toRedondearSat(((this.iva/100)+ (utilidadad/ 100)+ 1)* this.costo);
+		this.toCalculate(this.rounded);
 	}
 	
   public void toCalculate() {
-  	this.precio  = Numero.toRedondearSat(this.precio);
-		//this.utilidad= Numero.toRedondearSat((this.precio*100/(this.costo<= 0? 1: this.costo))- 100);
+	  this.toCalculate(this.rounded);	
+	}
+	
+  public void toCalculate(boolean round) {
+  	this.precio   = Numero.toAjustarDecimales(this.precio, round);
 	  this.impuesto = Numero.toRedondearSat((this.precio* ((this.iva/100)+ 1))- this.precio);
-		this.importe  = Numero.toRedondearSat(this.precio);
-		double calculo= (this.costo* ((this.iva/100)+ 1));
+		this.importe  = this.precio;
+		double calculo= Numero.toRedondearSat((this.costo* ((this.iva/100)+ 1)));
 		// al precio de neto se le quita el costo+ iva y lo que queda se calcula la utilidad bruta 
 		this.utilidad = Numero.toRedondearSat((this.precio- calculo)* 100/ this.costo);
 	}	

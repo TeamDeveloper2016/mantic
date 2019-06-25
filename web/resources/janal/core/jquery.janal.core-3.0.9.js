@@ -958,10 +958,15 @@
         var $components= $janal.components(value.multiple, id);
 				if(typeof($components)!== 'undefined') {
 					$.each($components, function() {
-						if(typeof(clear) === 'undefined' || clear)
-							$(this).rules('remove');
-						if(group=== $janal.JANAL_RESERVE || value.grupo.indexOf(group)>= 0)
-							$janal.rules(id, $(this), $janal.vector(value.validaciones, ['\\\|']), value.mensaje);
+						try {
+						  if(typeof(clear) === 'undefined' || clear)
+							  $(this).rules('remove');
+						  if(group=== $janal.JANAL_RESERVE || value.grupo.indexOf(group)>= 0)
+							  $janal.rules(id, $(this), $janal.vector(value.validaciones, ['\\\|']), value.mensaje);
+						} // try
+						catch(error) {
+              $janal.console('error: '+ error);
+						} // catch	
 					});
 				} // if	
       }); // each
@@ -1021,14 +1026,19 @@
           var $components= $janal.components(value.multiple, id);
 					if(typeof($components)!== 'undefinded') {
 						$.each($components, function() {
-							$(this).rules('remove');
-							var complete= value.formatos;
-							if(all || value.individual)
-								if(complete.endsWith('|'))
-									complete+= value.validaciones;
-								else
-									complete+= '|'+ value.validaciones;
-							$janal.rules(id, $(this), $janal.vector(complete, ['\\\|']), '');
+							try {
+								$(this).rules('remove');
+								var complete= value.formatos;
+								if(all || value.individual)
+									if(complete.endsWith('|'))
+										complete+= value.validaciones;
+									else
+										complete+= '|'+ value.validaciones;
+								$janal.rules(id, $(this), $janal.vector(complete, ['\\\|']), '');
+							} // try
+							catch(error) {
+								$janal.console('error: '+ error);
+							} // catch	
 						});
 					} // if	
         } // if  

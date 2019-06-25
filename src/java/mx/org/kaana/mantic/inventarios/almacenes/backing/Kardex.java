@@ -85,7 +85,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 		this.tabPage= 0;
   	this.attrs.put("buscaPorCodigo", false);
 		this.attrs.put("costoMayorMenor", 0);
-		this.adminKardex= new AdminKardex(-1L);
+		this.adminKardex= new AdminKardex(-1L, false);
 		this.toLoadCatalog();
 		if(JsfBase.getFlashAttribute("xcodigo")!= null) {
 			this.doCompleteArticulo((String)JsfBase.getFlashAttribute("xcodigo"));
@@ -154,7 +154,8 @@ public class Kardex extends IBaseAttribute implements Serializable {
 						solicitado.toDouble("medioMayoreo"), 
 						solicitado.toDouble("mayoreo"), 
 						solicitado.toLong("limiteMedioMayoreo"),
-						solicitado.toLong("limiteMayoreo")
+						solicitado.toLong("limiteMayoreo"),
+						solicitado.toLong("idRedondear").equals(1L)
 					);
 				} // if	
 			} // if
@@ -454,7 +455,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 						item.setUtilidad(30D);
 						break;
 				} // switch
-			item.setPrecio(Numero.toRedondearSat((1+ (item.getUtilidad()/ 100)+ (item.getIva()/100))* precio));
+			item.setPrecio(Numero.toAjustarDecimales(((1+ (item.getUtilidad()/ 100)+ (item.getIva()/100))* precio), item.isRounded()));
 			item.setCosto(precio);
   		item.toCalculate();
 		} // for

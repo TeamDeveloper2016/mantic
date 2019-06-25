@@ -121,8 +121,12 @@ public final class Numero {
   } // redondear
 
   public static double toAjustarDecimales(double valor) {
+		return toAjustarDecimales(valor, true);
+	}
+	
+  public static double toAjustarDecimales(double valor, boolean rounded) {
     valor= toRedondearSat(valor);
-		if(valor> Constantes.TOPE_COSTO_ARTICULO) {
+		if(rounded && valor> Constantes.TOPE_COSTO_ARTICULO) {
       BigDecimal value = new BigDecimal(String.valueOf(valor));
       BigDecimal ivalue= new BigDecimal(value.toBigInteger());
       BigDecimal dvalue= value.remainder(BigDecimal.ONE);
@@ -130,7 +134,10 @@ public final class Numero {
 			if(dvalue.doubleValue()>= 0.5)
 			  valor= ivalue.doubleValue()+ 1;
 			else
-				valor= ivalue.doubleValue()+ 0.5;
+  			if(dvalue.doubleValue()>= 0.01)
+	  			valor= ivalue.doubleValue()+ 0.5;
+			  else
+					valor= ivalue.doubleValue();
 		} // if
     return valor;
   } // redondear
