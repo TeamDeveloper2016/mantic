@@ -123,7 +123,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
       temp.append("/");
       temp.append(Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase());
       temp.append("/");
-      temp.append(clave);
+      temp.append(clave!= null? clave.trim(): "NoDefinido");
       temp.append("/");
 			path.append(temp.toString());
 			result= new File(path.toString());		
@@ -165,7 +165,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
       path.append(Configuracion.getInstance().getPropiedadSistemaServidor(propiedadServidor));
       temp.append(JsfBase.getAutentifica().getEmpresa().getNombreCorto().replaceAll(" ", ""));
       temp.append("/");
-      temp.append(clave);
+      temp.append(clave!= null? clave.trim(): "NoDefinido");
       temp.append("/");      
 			path.append(temp.toString());
 			result= new File(path.toString());		
