@@ -447,7 +447,7 @@
 			</p:dialog>
 			<p:dialog id="dialogoXML" widgetVar="dlgXML" styleClass="viewXML" header="Factura en formato XML" onShow="load();" onHide="janal.desbloquear();" height="550px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
 				<pre id="documentXml" class="brush: xml;" style="width: 925px; height: 470px;">
-					<p:outputLabel styleClass="viewXML" value="#{manticEgresosDetalle.attrs.temporal}" escape="true"/>
+					#{manticEgresosDetalle.attrs.temporal}
 				</pre>
   			<hr class="ui-widget-content"/>
 	  		<div class="janal-line-button">

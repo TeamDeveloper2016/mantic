@@ -614,7 +614,7 @@
 							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.attrs.observaciones}" style="display:#{manticInventariosEntradasAccion.consultar};"/>
 							<p:spacer height="5px"/>
 							<p:fileUpload fileUploadListener="#{manticInventariosEntradasAccion.doFileUpload}" 
-								mode="advanced" process="@this comentarios" update="@(.importado) @(.involucrados) @(.filas)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
+								mode="advanced" process="@this comentarios" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
 								multiple="false" allowTypes="#{manticInventariosEntradasAccion.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticInventariosEntradasAccion.attrs.formatos}" oncomplete="PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>
 							<p:commandLink value="XML importado: #{manticInventariosEntradasAccion.xml.ruta}#{manticInventariosEntradasAccion.xml.name}" onclick="viewFile();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento XML" style="#{(empty manticInventariosEntradasAccion.xml)? 'display: none': ''}"/>
@@ -905,7 +905,7 @@
 			</p:dialog>
 			<p:dialog id="dialogoXML" widgetVar="dlgXML" styleClass="viewXML" header="Factura en formato XML" onShow="load();" onHide="janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
 				<pre id="documentXml" class="brush: xml;" style="width: 925px; height: 370px;">
-					<p:outputLabel styleClass="viewXML" value="#{manticInventariosEntradasAccion.attrs.temporal}" escape="true"/>
+					#{manticInventariosEntradasAccion.attrs.temporal}
 				</pre>
   			<hr class="ui-widget-content"/>
 	  		<div class="janal-line-button">
