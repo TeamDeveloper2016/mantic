@@ -121,7 +121,7 @@ public final class Numero {
   } // redondear
 
   public static double toAjustarDecimales(double valor) {
-		return toAjustarDecimales(valor, true);
+		return toAjustarDecimales(valor, false);
 	}
 	
   public static double toAjustarDecimales(double valor, boolean rounded) {
