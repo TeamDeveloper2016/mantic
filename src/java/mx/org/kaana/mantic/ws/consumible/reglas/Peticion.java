@@ -46,19 +46,18 @@ public class Peticion implements Serializable{
 		return regresar;
 	} // regresar
 	
-	public String consumir() throws Exception {
-    String regresar    = null;
-    Service service    = null;
-    Call call          = null;
-    String resultado   = null;    		
+	public String consumir() throws Exception {    
+    Service service= null;
+    Call call      = null;
+    String regresar= null;    		
     try {     
 			LOG.debug("Preparando consumir ws [".concat(this.servicio).concat("]"));
 			service= new Service();
       call= (Call) service.createCall();
       call.setTargetEndpointAddress(toEndPoint());
       call.setOperationName(this.servicio);
-      resultado = (String) call.invoke(this.parametros);
-			LOG.debug("Result ws [".concat(resultado).concat("]"));			
+      regresar = (String) call.invoke(this.parametros);
+			LOG.debug("Result ws [".concat(regresar).concat("]"));			
     } // try
     catch (Exception e) {       			
 			Error.mensaje(e);
