@@ -1408,6 +1408,24 @@
 					registro desc
       </select>
     </unit>
+		<unit id="TcManticDescargasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_descargas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_descargas
+        where      
+          nombre = '{nombre}'
+      </select>			
+    </unit>
 		<unit id="TcManticTiposCreditosNotasDto">
       <select id="row">
         select      
