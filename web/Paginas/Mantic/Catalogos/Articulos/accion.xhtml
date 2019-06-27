@@ -53,8 +53,15 @@
 								<p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.nombre}" />                    
 								<p:outputLabel for="descripcion" value="Descripción:"/>
 								<p:inputTextarea id="descripcion" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.descripcion}"/>                    
-								<p:outputLabel for="precio" value="Precio:"/>
+								<p:outputLabel for="precio" value="Costo:"/>
 								<p:inputNumber id="precio" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.precio}"/>                    
+								<p:spacer width="1px"/><p:separator/>
+								<p:outputLabel for="menudeo" value="Menudeo:"/>
+								<p:inputNumber id="menudeo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.menudeo}" readonly="true"/>
+								<p:outputLabel for="medio" value="Medio mayoreo:"/>
+								<p:inputNumber id="medio" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.medioMayoreo}" readonly="true"/>
+								<p:outputLabel for="mayoreo" value="Mayoreo:"/>
+								<p:inputNumber id="mayoreo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.mayoreo}" readonly="true"/>
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="sat" value="Código SAT:"/>
 								<p:inputText id="sat" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.sat}"/>                    

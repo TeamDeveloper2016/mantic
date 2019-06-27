@@ -155,7 +155,8 @@ public class Kardex extends IBaseAttribute implements Serializable {
 						solicitado.toDouble("mayoreo"), 
 						solicitado.toLong("limiteMedioMayoreo"),
 						solicitado.toLong("limiteMayoreo"),
-						solicitado.toLong("idRedondear").equals(1L)
+						solicitado.toLong("idRedondear").equals(1L),
+						solicitado.toString("descuento")
 					);
 				} // if	
 			} // if
@@ -455,7 +456,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 						item.setUtilidad(30D);
 						break;
 				} // switch
-			item.setPrecio(Numero.toAjustarDecimales(((1+ (item.getUtilidad()/ 100)+ (item.getIva()/100))* precio), item.isRounded()));
+			item.setPrecio(Numero.toRedondearSat(((1+ (item.getUtilidad()/ 100))* (precio* (1+ (item.getIva()/100))))));
 			item.setCosto(precio);
   		item.toCalculate();
 		} // for

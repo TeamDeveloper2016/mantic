@@ -40,6 +40,10 @@ public class Descuentos implements Serializable {
 		this.token      = token;
 		split();
 	}
+
+	public double getImporte() {
+		return importe;
+	}
   
 	private void split() {
 		this.tokens= Arrays.asList(this.porcentajes.split(String.valueOf(this.token)));
@@ -77,9 +81,10 @@ public class Descuentos implements Serializable {
 	
 	
   public static void main(String ... args) {
-		Descuentos descuentos= new Descuentos(100, "10,0.00,0.00");
+		Descuentos descuentos= new Descuentos(100, "5");
 		LOG.info(descuentos.getFactor());
 		LOG.info(descuentos.toImporte());
+		LOG.info(descuentos.getImporte());
 	}	
 
 }
