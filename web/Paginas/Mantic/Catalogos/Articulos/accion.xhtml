@@ -57,11 +57,11 @@
 								<p:inputNumber id="precio" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.precio}"/>                    
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="menudeo" value="Menudeo:"/>
-								<p:inputNumber id="menudeo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.menudeo}" readonly="true"/>
+								<p:inputNumber id="menudeo" inputStyleClass="janal-wid-100-txt janal-color-blue janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.menudeo}" readonly="true"/>
 								<p:outputLabel for="medio" value="Medio mayoreo:"/>
-								<p:inputNumber id="medio" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.medioMayoreo}" readonly="true"/>
+								<p:inputNumber id="medio" inputStyleClass="janal-wid-100-txt janal-color-blue janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.medioMayoreo}" readonly="true"/>
 								<p:outputLabel for="mayoreo" value="Mayoreo:"/>
-								<p:inputNumber id="mayoreo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.mayoreo}" readonly="true"/>
+								<p:inputNumber id="mayoreo" inputStyleClass="janal-wid-100-txt janal-color-blue janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.mayoreo}" readonly="true"/>
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="sat" value="Código SAT:"/>
 								<p:inputText id="sat" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.sat}"/>                    
@@ -343,11 +343,13 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
+			<p:commandButton id="kardex" value="Kardex" icon="fa fa-cart-plus" process="@form" action="#{manticCatalogosArticulosAccion.doKardex()}" rendered="#{manticCatalogosArticulosAccion.attrs.goKardex}"/>
 			<p:commandButton id="clonar" value="Clonar" icon="fa fa-copy" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar('ACTIVAR')}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosArticulosAccion.attrs.activeClon}"/>
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticCatalogosArticulosAccion.doAceptar(manticCatalogosArticulosAccion.attrs.nombreAccion)}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosArticulosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
+			<p:commandButton id="kardexIcon" title="Kardex" icon="fa fa-cart-plus" process="@form" action="#{manticCatalogosArticulosAccion.doKardex()}" rendered="#{manticCatalogosArticulosAccion.attrs.goKardex}"/>
 			<p:commandButton id="clonarIcon" title="Clonar" icon="fa fa-copy" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar('ACTIVAR')}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosArticulosAccion.attrs.activeClon}"/>
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar(manticCatalogosArticulosAccion.attrs.nombreAccion)}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosArticulosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>

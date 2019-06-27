@@ -50,6 +50,8 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idArticulo", JsfBase.getFlashAttribute("idArticulo"));
+      this.attrs.put("xcodigo", JsfBase.getFlashAttribute("idArticulo"));
+      this.attrs.put("goKardex", this.attrs.get("xcodigo")!= null);
       doLoad();
       loadProveedores();
       loadCategorias();
@@ -122,7 +124,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     if (((EAccion) this.attrs.get("accion")).equals(EAccion.AGREGAR)) 
       this.registroArticulo.doCancelar();    
     return "filtro";
-  } // doAccion
+  } // doCancelar
 
   private void loadEmpaques() {
     List<UISelectItem> empaques= null;
@@ -237,4 +239,12 @@ public class Accion extends IBaseAttribute implements Serializable {
       Methods.clean(params);
     } // finally
   } // loadClientes	
+	
+	public String doKardex() {
+		JsfBase.setFlashAttribute("idArticulo", this.attrs.get("idArticulo"));
+		if(!this.registroArticulo.getArticulosCodigos().isEmpty())
+		  JsfBase.setFlashAttribute("xcodigo", this.registroArticulo.getArticulosCodigos().get(0).getCodigo());
+		return "/Paginas/Mantic/Inventarios/Almacenes/kardex".concat(Constantes.REDIRECIONAR);
+	}
+	
 }
