@@ -30,6 +30,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.inventarios.almacenes.beans.AdminKardex;
@@ -158,6 +159,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 						solicitado.toLong("limiteMayoreo"),
 						solicitado.toLong("idRedondear").equals(1L)
 					);
+					this.toUpdatePrecioVenta(false);
 				} // if	
 			} // if
 			else {
@@ -439,16 +441,15 @@ public class Kardex extends IBaseAttribute implements Serializable {
 
 	public void doUpdateUtilidad(Integer index, Double value) {
 		this.adminKardex.toUpdateUtilidad(index, value);
-		this.toUpdatePrecioVenta();
+		this.toUpdatePrecioVenta(true);
 	}
 	
 	public void doUpdateCosto(Double precio, Boolean keep) {
 		Entity articulo= (Entity)this.attrs.get("articulo");
 		double value   = articulo.toDouble("value");
 		this.attrs.put("costoMayorMenor", this.getCostoMayorMenor(value, precio));
+		articulo.getValue("calculado").setData(precio);
 		articulo.getValue("precio").setData(precio);
-		articulo.getValue("descuento").setData("0");
-		articulo.getValue("extra").setData("0");
 		for (TiposVentas item: this.adminKardex.getTiposVentas()) {
   		if(!keep)
 				switch(item.toEnum()) {
@@ -466,13 +467,15 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			item.setPrecio(Numero.toRedondearSat(((1+ (item.getUtilidad()/ 100))* calculo)));
 			item.setCosto(precio);
   		item.toCalculate();
-			this.toUpdatePrecioVenta();
+			this.toUpdatePrecioVenta(true);
 		} // for
 	}
 	
 	public void doCalculate(Integer index) {
 		this.adminKardex.toCalculate(index);
-		this.toUpdatePrecioVenta();
+		Entity articulo= (Entity)this.attrs.get("articulo");
+		articulo.getValue("calculado").setData(this.adminKardex.getTiposVentas().get(0).getPrecio());
+		this.toUpdatePrecioVenta(true);
 	}
 
 	private String getCostoMayorMenor(double value, double precio) {
@@ -806,8 +809,17 @@ public class Kardex extends IBaseAttribute implements Serializable {
     }// finally
 	}
 
-	private void toUpdatePrecioVenta() {
+	private void toUpdatePrecioVenta(boolean keep) {
 		Entity articulo= (Entity)this.attrs.get("articulo");
+		if(keep) {
+  		articulo.getValue("descuento").setData("0");
+	  	articulo.getValue("extra").setData("0");
+		} // if
+    Descuentos descuentos= new Descuentos(articulo.toDouble("calculado"), articulo.toString("descuento"));
+		double calculado= descuentos.getImporte();
+		if(descuentos.getFactor()!= 0D)
+		  calculado= descuentos.getImporte()* (1+ (1- descuentos.getFactor()));
+		articulo.getValue("calculado").setData(Numero.toAjustarDecimales(calculado, this.adminKardex.getTiposVentas().get(0).isRounded()));
 		articulo.getValue("menudeo").setData(this.adminKardex.getTiposVentas().get(0).getPrecio());
 		articulo.getValue("utilidad").setData(this.adminKardex.getTiposVentas().get(0).getUtilidad());
 	}
