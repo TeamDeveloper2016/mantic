@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.compras.ordenes.reglas;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -122,6 +123,7 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 			  global.setMayoreo(Numero.toAjustarDecimales(global.getPrecio()* mayoreo, global.getIdRedondear().equals(1L)));
 				global.setDescuento(item.getDescuento());
 				global.setExtra(item.getExtras());
+				global.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 			} // if	
 			global.setStock(global.getStock()+ item.getCantidad());
 			DaoFactory.getInstance().update(sesion, global);

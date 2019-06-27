@@ -102,6 +102,8 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
   private String extra;
   @Column (name="id_facturama")
   private String idFacturama;
+  @Column (name="actualizado")
+  private Timestamp actualizado;
 
   public TcManticArticulosDto() {
     this(new Long(-1L));
@@ -137,6 +139,7 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
     setMenudeo(menudeo);
     setMetaTagTeclado(metaTagTeclado);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
     setFecha(fecha);
     setIdUsuario(idUsuario);
     setIdEmpresa(idEmpresa);
@@ -438,6 +441,14 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
 	public void setIdFacturama(String idFacturama) {
 		this.idFacturama=idFacturama;
 	}
+
+	public Timestamp getActualizado() {
+		return actualizado;
+	}
+
+	public void setActualizado(Timestamp actualizado) {
+		this.actualizado=actualizado;
+	}
 	
   @Transient
   @Override
@@ -525,6 +536,8 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
 		regresar.append(getExtra());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdFacturama());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getActualizado());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -568,13 +581,14 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
 		regresar.put("descuento", getDescuento());
 		regresar.put("extra", getExtra());
 		regresar.put("idFacturama", getIdFacturama());
+		regresar.put("actualizado", getActualizado());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getDescripcion(), getDescuentos(), getIdImagen(), getIdCategoria(), getExtras(), getMetaTag(), getNombre(), getPrecio(), getIva(), getMayoreo(), getDesperdicio(), getMetaTagDescipcion(), getIdVigente(), getIdArticulo(), getStock(), getMedioMayoreo(), getPesoEstimado(), getIdEmpaqueUnidadMedida(), getIdRedondear(), getMenudeo(), getMetaTagTeclado(), getRegistro(), getFecha(), getIdUsuario(), getIdEmpresa(), getCantidad(), getMinimo(), getMaximo(), getLimiteMedioMayoreo(), getLimiteMayoreo(), getSat(), getIdArticuloTipo(), getIdBarras(), getDescuento(), getExtras(), getIdFacturama()
+      getDescripcion(), getDescuentos(), getIdImagen(), getIdCategoria(), getExtras(), getMetaTag(), getNombre(), getPrecio(), getIva(), getMayoreo(), getDesperdicio(), getMetaTagDescipcion(), getIdVigente(), getIdArticulo(), getStock(), getMedioMayoreo(), getPesoEstimado(), getIdEmpaqueUnidadMedida(), getIdRedondear(), getMenudeo(), getMetaTagTeclado(), getRegistro(), getFecha(), getIdUsuario(), getIdEmpresa(), getCantidad(), getMinimo(), getMaximo(), getLimiteMedioMayoreo(), getLimiteMayoreo(), getSat(), getIdArticuloTipo(), getIdBarras(), getDescuento(), getExtras(), getIdFacturama(), getActualizado()
     };
     return regresar;
   }

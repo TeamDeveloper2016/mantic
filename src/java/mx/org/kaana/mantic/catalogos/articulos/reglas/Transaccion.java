@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.catalogos.articulos.reglas;
 
 import java.io.File;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
@@ -45,11 +46,24 @@ public class Transaccion extends TransaccionFactura {
 	private RegistroArticulo articulo;
 	private EAccion eaccionGeneral; 	
 	private String messageError;
+	private Double precio;
+	private Double factorMenudeo;
+	private Double factorMedio;
+	private Double factorMayoreo;
 
-	public Transaccion(RegistroArticulo articulo) {
-		this.articulo     = articulo;		
+	public Transaccion(RegistroArticulo articulo, Double precio) {
+		this.articulo= articulo;		
+		this.precio  = precio;
+		this.toFactores();
 	} // Transaccion
 
+	private void toFactores() {
+		double calculo= this.precio* (1+ (this.articulo.getArticulo().getIva()/ 100));
+		this.factorMenudeo= Numero.toRedondearSat((this.articulo.getArticulo().getMenudeo()- calculo)* 100/ calculo);
+		this.factorMedio  = Numero.toRedondearSat((this.articulo.getArticulo().getMedioMayoreo()- calculo)* 100/ calculo);
+		this.factorMayoreo= Numero.toRedondearSat((this.articulo.getArticulo().getMayoreo()- calculo)* 100/ calculo);
+	}
+	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
 		boolean regresar= false;
@@ -57,6 +71,9 @@ public class Transaccion extends TransaccionFactura {
 			this.eaccionGeneral= accion;
 			switch(accion){
 				case AGREGAR:			
+					this.factorMenudeo= 1.5;
+					this.factorMedio  = 1.4;
+					this.factorMayoreo= 1.3;
 					regresar= procesarArticulo(sesion);
 					break;
 				case MODIFICAR:
@@ -126,13 +143,13 @@ public class Transaccion extends TransaccionFactura {
 				this.articulo.getArticulo().setIdArticuloTipo(this.articulo.getIdTipoArticulo());
 				idCategoria= this.articulo.getArticulo().getIdCategoria()!= null && this.articulo.getArticulo().getIdCategoria() < 1L ? null : this.articulo.getArticulo().getIdCategoria();
 				this.articulo.getArticulo().setIdCategoria(idCategoria);
-				if(this.articulo.getIdTipoArticulo().equals(1L)){				
+				if(this.articulo.getIdTipoArticulo().equals(1L)) {				
 					if(this.articulo.getArticulo().getMenudeo()== null)
-						this.articulo.getArticulo().setMenudeo(toMenudeo());
+						this.articulo.getArticulo().setMenudeo(this.toMenudeo());
 					if(this.articulo.getArticulo().getMedioMayoreo()== null)
-						this.articulo.getArticulo().setMedioMayoreo(toMedioMayoreo());
+						this.articulo.getArticulo().setMedioMayoreo(this.toMedioMayoreo());
 					if(this.articulo.getArticulo().getMayoreo()== null)
-						this.articulo.getArticulo().setMayoreo(toMayoreo());
+						this.articulo.getArticulo().setMayoreo(this.toMayoreo());
 				} // if
 				else{					
 					this.articulo.getArticulo().setMenudeo(this.articulo.getArticulo().getPrecio());					
@@ -213,16 +230,16 @@ public class Transaccion extends TransaccionFactura {
 		} // catch		
 	} // actualizarArticuloFacturama
 	
-	private Double toMenudeo(){
-		return Numero.toAjustarDecimales(this.articulo.getArticulo().getPrecio() + (this.articulo.getArticulo().getPrecio()* .5));				
+	private Double toMenudeo() {
+		return Numero.toAjustarDecimales(this.articulo.getArticulo().getPrecio()* this.factorMenudeo, this.articulo.getArticulo().getIdRedondear().equals(1L));
 	} // toMenudeo
 	
-	private Double toMedioMayoreo(){
-		return Numero.toAjustarDecimales(this.articulo.getArticulo().getPrecio() + (this.articulo.getArticulo().getPrecio()* .4));				
+	private Double toMedioMayoreo() {
+		return Numero.toAjustarDecimales(this.articulo.getArticulo().getPrecio()* this.factorMedio, this.articulo.getArticulo().getIdRedondear().equals(1L));
 	} // toMedioMayoreo
 	
-	private Double toMayoreo(){
-		return Numero.toAjustarDecimales(this.articulo.getArticulo().getPrecio() + (this.articulo.getArticulo().getPrecio()* .3));
+	private Double toMayoreo() {
+		return Numero.toAjustarDecimales(this.articulo.getArticulo().getPrecio()* this.factorMayoreo, this.articulo.getArticulo().getIdRedondear().equals(1L));
 	} // toMayoreo
 	
 	private boolean actualizarArticulo(Session sesion) throws Exception{
@@ -242,13 +259,16 @@ public class Transaccion extends TransaccionFactura {
 										if(registraArticulosTipoVenta(sesion, idArticulo)){
 											dimencion= this.articulo.getArticuloDimencion();
 											regresar= dimencion.isValid() ? DaoFactory.getInstance().update(sesion, this.articulo.getArticuloDimencion()) >= 0L : true;
-											if(regresar){
-												this.articulo.getArticulo().setMenudeo(toMenudeo());
-												this.articulo.getArticulo().setMedioMayoreo(toMedioMayoreo());
-												this.articulo.getArticulo().setMayoreo(toMayoreo());
-												this.articulo.getArticulo().setIdArticuloTipo(this.articulo.getIdTipoArticulo());
+											if(regresar) {
+												if(this.precio!= this.articulo.getArticulo().getPrecio()) {
+												  this.articulo.getArticulo().setMenudeo(this.toMenudeo());
+												  this.articulo.getArticulo().setMedioMayoreo(this.toMedioMayoreo());
+												  this.articulo.getArticulo().setMayoreo(this.toMayoreo());
+												  this.articulo.getArticulo().setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+												} // if	
+											  this.articulo.getArticulo().setIdArticuloTipo(this.articulo.getIdTipoArticulo());
 												regresar= this.articulo.getArticulo().getIdImagen()!= null && !this.articulo.getArticulo().getIdImagen().equals(-1L) && this.articulo.isImagen();
-												if(regresar){				
+												if(regresar) { 				
 													if(DaoFactory.getInstance().update(sesion, loadImage(sesion, this.articulo.getArticulo().getIdImagen(), idArticulo))>= 0L)
 														regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
 												} // if 

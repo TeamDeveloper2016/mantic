@@ -1,5 +1,7 @@
 package mx.org.kaana.mantic.inventarios.almacenes.reglas;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import org.hibernate.Session;
@@ -60,6 +62,7 @@ public class Transaccion extends IBaseTnx {
 					articulo.setMedioMayoreo(this.articulos.get(1).getPrecio());
 					articulo.setLimiteMayoreo(this.articulos.get(1).getLimite());
 					articulo.setMayoreo(this.articulos.get(2).getPrecio());
+					articulo.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 				  regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
 					TcManticArticulosBitacoraDto movimiento= new TcManticArticulosBitacoraDto(articulo.getIva(), JsfBase.getIdUsuario(), articulo.getMayoreo(), -1L, articulo.getMenudeo(), articulo.getCantidad(), articulo.getIdArticulo(), null, articulo.getMedioMayoreo(), this.precio, articulo.getLimiteMedioMayoreo(), articulo.getLimiteMayoreo(), articulo.getDescuento(), articulo.getExtra());
 					regresar= DaoFactory.getInstance().insert(sesion, movimiento)>= 1L;
