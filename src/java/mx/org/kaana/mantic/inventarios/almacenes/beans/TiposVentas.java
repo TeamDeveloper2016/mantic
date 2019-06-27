@@ -2,7 +2,6 @@ package mx.org.kaana.mantic.inventarios.almacenes.beans;
 
 import java.io.Serializable;
 import mx.org.kaana.libs.formato.Numero;
-import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
 import mx.org.kaana.mantic.inventarios.almacenes.enums.ETiposVentas;
 import static mx.org.kaana.mantic.inventarios.almacenes.enums.ETiposVentas.MAYOREO;
 import static mx.org.kaana.mantic.inventarios.almacenes.enums.ETiposVentas.MEDIO_MAYOREO;
@@ -31,14 +30,13 @@ public class TiposVentas implements Serializable {
 	private double impuesto;
 	private double pivote;
 	private boolean rounded;
-	private String descuento;
 
 	public TiposVentas(Integer index) {
-		this(index, "", 0D, 0D, 16D, 0L, 0D, false, "0");
+		this(index, "", 0D, 0D, 16D, 0L, 0D, false);
 	}
 
 	
-	public TiposVentas(Integer index, String nombre, double costo, double precio, double iva, double limite, double pivote, boolean rounded, String descuento) {
+	public TiposVentas(Integer index, String nombre, double costo, double precio, double iva, double limite, double pivote, boolean rounded) {
 		this.index=index;
 		this.nombre=nombre;
 		this.costo=costo;
@@ -49,11 +47,8 @@ public class TiposVentas implements Serializable {
 		this.impuesto=0D;
 		this.pivote=pivote;
 		this.rounded=rounded;
-		this.descuento=descuento;
-		Descuentos descuentos= new Descuentos(precio, this.descuento);
-		this.precio= Numero.toRedondearSat(descuentos.getFactor()== 0? descuentos.getImporte(): descuentos.getImporte()* (1.0026+ (1- descuentos.getFactor())));
-		//this.precio= precio;
-		this.toCalculate(false, this.descuento);
+		this.precio= precio;
+		this.toCalculate(false);
 	}
 
 	public Integer getIndex() {
@@ -167,22 +162,22 @@ public class TiposVentas implements Serializable {
 	}
 
 	public void toUpdateUtilidad(double utilidadad) {
-		this.precio = Numero.toRedondearSat(((utilidadad/ 100)+ 1)* (this.costo* (1+ (this.iva/100))));
-		this.toCalculate(this.rounded, this.descuento);
+		double calculo= Numero.toRedondearSat((this.costo* ((this.iva/100)+ 1)));
+		this.precio   = Numero.toRedondearSat(((utilidadad/ 100)+ 1)* calculo);
+		this.toCalculate(this.rounded);
 	}
 	
   public void toCalculate() {
-	  this.toCalculate(this.rounded, "0");	
+	  this.toCalculate(this.rounded);	
 	}
 	
-  public void toCalculate(boolean round, String discount) {
-		Descuentos descuentos= new Descuentos(this.precio, discount);
-		this.precio   = Numero.toAjustarDecimales(descuentos.getFactor()== 0? descuentos.getImporte(): descuentos.toImporte(), round);
-		this.importe  = this.precio;
+  public void toCalculate(boolean round) {
+		this.precio   = Numero.toAjustarDecimales(this.precio, round);
 	  this.impuesto = Numero.toRedondearSat((this.precio* ((this.iva/100)+ 1))- this.precio);
+		this.importe  = Numero.toRedondearSat(this.precio- this.impuesto);
 		double calculo= Numero.toRedondearSat((this.costo* ((this.iva/100)+ 1)));
 		// al precio de neto se le quita el costo+ iva y lo que queda se calcula la utilidad bruta 
-		this.utilidad = Numero.toRedondearSat((descuentos.getImporte()- calculo)* 100/ calculo);
+		this.utilidad = Numero.toRedondearSat((this.precio- calculo)* 100/ calculo);
 	}	
 	
 	public ETiposVentas toEnum() {

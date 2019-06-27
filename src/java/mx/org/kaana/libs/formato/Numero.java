@@ -126,7 +126,7 @@ public final class Numero {
 	
   public static double toAjustarDecimales(double valor, boolean rounded) {
     valor= toRedondearSat(valor);
-		if(rounded && valor> Constantes.TOPE_COSTO_ARTICULO) {
+		if(rounded) {
       BigDecimal value = new BigDecimal(String.valueOf(valor));
       BigDecimal ivalue= new BigDecimal(value.toBigInteger());
       BigDecimal dvalue= value.remainder(BigDecimal.ONE);

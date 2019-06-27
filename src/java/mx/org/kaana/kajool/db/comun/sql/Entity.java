@@ -49,6 +49,15 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
     return regresar.getData();
   }
 
+  public Value getValue(String name) {
+    Value regresar = null;
+    if (this.containsKey(name))
+      regresar = get(name);
+    else
+      throw new RuntimeException("El nombre de campo [".concat(name).concat("] no existe."));
+    return regresar;
+  }
+
   @Override
   public Object toValue(String name) {
     return toObject(name);

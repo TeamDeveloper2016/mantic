@@ -206,10 +206,10 @@
 								</p:column>   
 								<p:column headerText="Unidades máximas" styleClass="janal-wid-10 limites">#{index eq 0? 0.0: manticInventariosAlmacenesKardex.adminKardex.tiposVentas[index- 1].limite}  -  <p:inputText id="limites" value="#{item.limite}" styleClass="janal-wid-60 janal-column-right key-focus-event key-change-event recalculo" rendered="#{item.limite gt 0}" onblur="janal.individual('contenedorGrupos\\:tabla\\:#{index}\\:limites');"/>#{index eq 2? 'MAS': ''}</p:column>   
 								<p:column headerText="% Utilidad" styleClass="janal-wid-10">
-									<p:inputText id="utilidades" value="#{item.utilidad}" styleClass="recalculo janal-wid-100-txt janal-column-right key-focus-event key-change-event" readonly="#{empty(manticInventariosAlmacenesKardex.attrs.articulo.propio)}"/>
+									<p:inputText id="utilidades" value="#{item.utilidad}" styleClass="recalculo janal-wid-100-txt janal-column-right key-focus-event key-change-event" readonly="#{empty(manticInventariosAlmacenesKardex.attrs.articulo.propio)}" onblur="jsKardex.calculate(this);"/>
 								</p:column>   
-								<p:column headerText="$ Precio venta" styleClass="janal-wid-10">
-									<p:inputText id="precios" value="#{item.precio}" styleClass="recalculo janal-wid-100-txt janal-column-right key-focus-event key-change-event" readonly="#{empty(manticInventariosAlmacenesKardex.attrs.articulo.propio)}"/>
+								<p:column headerText="Precio sin iva" styleClass="janal-wid-10 janal-column-right">
+									<p:outputLabel value="#{manticInventariosAlmacenesKardex.doMoneyValueFormat(item.importe)}" styleClass="recalculo"/>
 								</p:column>   
 								<p:column headerText="IVA" styleClass="janal-wid-10 janal janal-column-right">
 									<p:outputLabel value="#{manticInventariosAlmacenesKardex.doPercentageValueFormat(item.iva)}" styleClass="recalculo"/>
@@ -217,8 +217,8 @@
 								<p:column headerText="Impuesto" styleClass="janal-wid-10 janal-column-right">
 									<p:outputLabel value="#{manticInventariosAlmacenesKardex.doMoneyValueFormat(item.impuesto)}" styleClass="recalculo"/>
 								</p:column>   
-								<p:column headerText="Precio con IVA" styleClass="janal-wid-10 janal-column-right">
-									<p:outputLabel value="#{manticInventariosAlmacenesKardex.doMoneyValueFormat(item.importe)}" styleClass="recalculo"/>
+								<p:column headerText="Precio de venta" styleClass="janal-wid-10">
+									<p:inputText id="precios" value="#{item.precio}" styleClass="recalculo janal-wid-100-txt janal-column-right key-focus-event key-change-event" readonly="#{empty(manticInventariosAlmacenesKardex.attrs.articulo.propio)}" onblur="jsKardex.calculate(this);"/>
 								</p:column>   
 							</p:dataTable>	
 						</p:tab>

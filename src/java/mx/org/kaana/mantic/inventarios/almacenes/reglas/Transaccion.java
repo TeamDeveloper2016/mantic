@@ -1,14 +1,12 @@
 package mx.org.kaana.mantic.inventarios.almacenes.reglas;
 
 import java.util.List;
-import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.enums.EAccion;
 import static mx.org.kaana.kajool.enums.EAccion.MODIFICAR;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
@@ -29,12 +27,16 @@ public class Transaccion extends IBaseTnx {
  
 	private Long idArticulo;
 	private Double precio;
+	private String descuento;
+	private String extra;
 	private List<TiposVentas> articulos;
 	private String messageError;
 
-	public Transaccion(Long idArticulo, Double precio, List<TiposVentas> articulos) {
+	public Transaccion(Long idArticulo, Double precio, String descuento, String extra, List<TiposVentas> articulos) {
 		this.idArticulo= idArticulo;
 		this.precio    = precio;
+		this.descuento = descuento;
+		this.extra     = extra;
 		this.articulos = articulos;
 	} // Transaccion
 
@@ -44,14 +46,15 @@ public class Transaccion extends IBaseTnx {
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar          = false;
-		Map<String, Object> params= null;
+		boolean regresar= false;
 		try {
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el precio del tipo de venta del articulo.");
 			switch(accion) {
 				case MODIFICAR:
 					TcManticArticulosDto articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.idArticulo);
 					articulo.setPrecio(this.precio);
+					articulo.setDescuento(this.descuento);
+					articulo.setExtra(this.extra);
 					articulo.setMenudeo(this.articulos.get(0).getPrecio());
 					articulo.setLimiteMedioMayoreo(this.articulos.get(0).getLimite());
 					articulo.setMedioMayoreo(this.articulos.get(1).getPrecio());

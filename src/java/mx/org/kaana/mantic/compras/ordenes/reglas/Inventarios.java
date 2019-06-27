@@ -108,7 +108,7 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 			  global.setSat(codigos.getSat());
 			// esto aplica para cuando el precio que llega es mayor al registrado dejar el nuevo
 			Descuentos descuentos= new Descuentos(item.getCosto(), item.getDescuento());
-			double costo= descuentos.toImporte()== 0D? item.getCosto(): descuentos.toImporte();
+			double costo= descuentos.getFactor()== 0D? item.getCosto(): descuentos.toImporte();
 			// si esta marcado como afectar los costos se aplicara el cambio en el catalogo de articulos
 			if(codigos.getIdAplicar().equals(1L) || costo> global.getPrecio()) {
 				// aplicar el descuento sobre el valor del costo del articulo para afectar el catalogo

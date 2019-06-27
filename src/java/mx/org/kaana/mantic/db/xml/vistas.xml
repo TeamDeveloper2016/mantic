@@ -4391,7 +4391,8 @@
         inner join 
           tc_mantic_tipos_monedas on tc_mantic_proveedores.id_tipo_moneda= tc_mantic_tipos_monedas.id_tipo_moneda
         where      
-          tc_mantic_ordenes_detalles.id_articulo = {idArticulo}
+          tc_mantic_ordenes_detalles.id_articulo= {idArticulo}
+				  and tc_mantic_ordenes_compras.id_almacen= {idAlmacen}
           and tc_mantic_ordenes_compras.id_orden_estatus in (3,4)
         order by
           tc_mantic_ordenes_detalles.registro desc				
