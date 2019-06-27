@@ -100,7 +100,7 @@ public class Express extends IBaseAttribute implements Serializable {
     Transaccion transaccion= null;
     try {
 			prepareRegistro();
-      transaccion = new Transaccion(this.registroArticulo);
+      transaccion = new Transaccion(this.registroArticulo, 0D);
       if (transaccion.ejecutar(EAccion.COPIAR)) 
 				JsfBase.addMessage("Se registro el artículo de forma correcta.", ETipoMensaje.INFORMACION);
       else

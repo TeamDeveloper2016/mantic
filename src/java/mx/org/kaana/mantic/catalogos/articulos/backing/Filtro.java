@@ -201,7 +201,7 @@ public class Filtro extends Comun implements Serializable {
       seleccionado = (Entity) this.attrs.get("seleccionado");
       registro = new RegistroArticulo();
       registro.setIdArticulo(seleccionado.getKey());
-      transaccion = new Transaccion(registro);
+      transaccion = new Transaccion(registro, 0D);
       if (transaccion.ejecutar(EAccion.ELIMINAR)) {
         JsfBase.addMessage("Eliminar articulo", "El artículo se ha eliminado correctamente.", ETipoMensaje.ERROR);
       } else {
