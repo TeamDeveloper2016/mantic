@@ -34,6 +34,7 @@ import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
 import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -43,6 +44,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.RegistroArticulo;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
+import mx.org.kaana.mantic.consultas.reglas.ArticulosLazy;
 import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
@@ -85,7 +87,7 @@ public class Articulos extends Comun implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("actualizado", EFormatoDinamicos.FECHA_HORA));
       params.put("sortOrder", "order by tc_mantic_articulos.nombre, tc_mantic_articulos.actualizado");
-      this.lazyModel = new FormatCustomLazy("VistaArticulosDto", "row", params, columns);
+      this.lazyModel = new ArticulosLazy("VistaArticulosDto", "row", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -221,38 +223,6 @@ public class Articulos extends Comun implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     } // finally
-	}
-
-	public enum Colors {
-		BLUE(0xFF40BAD0), RED(0xFFE91C43), PURPLE(0xFF8A4F9E), ORANGE(0xFFF4B13D), WHITE(0xFFFFFFFF), BLACK(0xFF000000);
-		private final int argb;
-
-		Colors(final int argb) {
-			this.argb=argb;
-		}
-
-		public int getArgb() {
-			return argb;
-		}
-	}
-
-	private static MatrixToImageConfig getMatrixConfig() {
-		// ARGB Colors
-		// Check Colors ENUM
-		return new MatrixToImageConfig(Colors.WHITE.getArgb(), Colors.BLACK.getArgb());
-	}
-
-	public static void main(String ... args) throws WriterException, IOException {
-    Map<EncodeHintType, Object> hints = new HashMap<>();
-    hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
-    hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);	  
-    hints.put(EncodeHintType.MARGIN, 3);	
-		QRCodeWriter writer  = new QRCodeWriter();
-		BitMatrix bitMatrix  = writer.encode("Alejandro Jiménez García", BarcodeFormat.QR_CODE, 200, 200, hints);
-		// Load QR image
-		BufferedImage qrImage= MatrixToImageWriter.toBufferedImage(bitMatrix, getMatrixConfig());
-		File outputfile = new File("d:/codigo-qr.jpg");
-		ImageIO.write(qrImage, "jpg", outputfile);
 	}
 
 	public void doMontoUpdate() {

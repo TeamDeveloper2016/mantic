@@ -145,11 +145,23 @@
 								</f:facet>
 								<h:outputText value="#{row['menudeo']}"/>
 							</p:column>					
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+								<f:facet name="header">
+									<h:outputText value="Utilidad"/>
+								</f:facet>
+								<h:outputText value="#{row['utilidadMenudeo']} %"/>
+							</p:column>					
 							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.medioMayoreo}">
 								<f:facet name="header">
 									<h:outputText value="Medio mayoreo"/>
 								</f:facet>
 								<h:outputText value="#{row['medioMayoreo']}"/>
+							</p:column>					
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+								<f:facet name="header">
+									<h:outputText value="Utilidad"/>
+								</f:facet>
+								<h:outputText value="#{row['utilidadMedioMayoreo']} %"/>
 							</p:column>					
 							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.mayoreo}">
 								<f:facet name="header">
@@ -157,11 +169,11 @@
 								</f:facet>
 								<h:outputText value="#{row['mayoreo']}"/>
 							</p:column>											
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.stock}">
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 								<f:facet name="header">
-									<h:outputText value="Stock"/>
+									<h:outputText value="Utilidad"/>
 								</f:facet>
-								<h:outputText value="#{row['stock']}"/>
+								<h:outputText value="#{row['utilidadMayoreo']} %"/>
 							</p:column>					
 							<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.actualizado}">
 								<f:facet name="header">
