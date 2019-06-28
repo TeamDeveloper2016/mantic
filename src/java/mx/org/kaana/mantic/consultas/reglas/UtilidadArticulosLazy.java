@@ -19,11 +19,11 @@ import org.primefaces.model.SortOrder;
  *@author Alejandro Jimenez Garcia <alejandro.jimenez@inegi.org.mx>
  */
 
-public class ArticulosLazy extends FormatCustomLazy implements Serializable {
+public class UtilidadArticulosLazy extends FormatCustomLazy implements Serializable {
 
 	private static final long serialVersionUID=-1006491386246716097L;
 
-	public ArticulosLazy(String proceso, String idXml, Map<String, Object> params, List<Columna> columns) {
+	public UtilidadArticulosLazy(String proceso, String idXml, Map<String, Object> params, List<Columna> columns) {
 		super(proceso, idXml, params, columns);
 	}
 

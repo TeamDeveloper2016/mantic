@@ -44,7 +44,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.RegistroArticulo;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
-import mx.org.kaana.mantic.consultas.reglas.ArticulosLazy;
+import mx.org.kaana.mantic.consultas.reglas.UtilidadArticulosLazy;
 import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
@@ -87,9 +87,9 @@ public class Articulos extends Comun implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("actualizado", EFormatoDinamicos.FECHA_HORA));
       params.put("sortOrder", "order by tc_mantic_articulos.nombre, tc_mantic_articulos.actualizado");
-      this.lazyModel = new ArticulosLazy("VistaArticulosDto", "row", params, columns);
+      this.lazyModel = new UtilidadArticulosLazy("VistaArticulosDto", "row", params, columns);
       UIBackingUtilities.resetDataTable();
-    } // try
+    } // try // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
