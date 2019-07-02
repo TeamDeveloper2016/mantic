@@ -3135,7 +3135,7 @@
         from      
           tr_mantic_cliente_tipo_contacto
         where      
-          id_cliente = {idCliente} and id_tipo_contacto = {idTipoContacto}
+          id_cliente = {idCliente} and id_tipo_contacto = {idTipoContacto} and valor = '{valor}'
       </select>      
 			<select id="maximo">
         select      
