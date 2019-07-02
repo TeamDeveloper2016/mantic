@@ -4652,7 +4652,9 @@
 				  tc_mantic_articulos.limite_mayoreo,
 				  tc_mantic_articulos.iva,
 				  tc_mantic_articulos.id_redondear,
-				  tc_mantic_unidades_medidas.nombre unidad_medida
+				  tc_mantic_unidades_medidas.nombre unidad_medida,
+				  ifnull(tc_mantic_articulos.extra, '0') as morado,
+				  concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes		
 				from 
 					tc_mantic_articulos
 				inner join 
@@ -4695,7 +4697,9 @@
 				  tc_mantic_articulos.limite_mayoreo,
 				  tc_mantic_articulos.iva,
 				  tc_mantic_articulos.id_redondear,
-				  tc_mantic_unidades_medidas.nombre unidad_medida
+				  tc_mantic_unidades_medidas.nombre unidad_medida,
+				  ifnull(tc_mantic_articulos.extra, '0') as morado,
+				  concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes		
 				from 
 					tc_mantic_articulos
 				inner join 
@@ -4737,7 +4741,9 @@
 				  tc_mantic_articulos.limite_mayoreo,
 				  tc_mantic_articulos.iva,
 				  tc_mantic_articulos.id_redondear,
-				  tc_mantic_unidades_medidas.nombre unidad_medida					
+				  tc_mantic_unidades_medidas.nombre unidad_medida,
+				  ifnull(tc_mantic_articulos.extra, '0') as morado,
+				  concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes		
 				from 
 					tc_mantic_articulos
 				inner join
@@ -4787,7 +4793,9 @@
 				  tc_mantic_articulos.limite_mayoreo,
 				  tc_mantic_articulos.iva,
 				  tc_mantic_articulos.id_redondear,
-				  tc_mantic_unidades_medidas.nombre unidad_medida					
+				  tc_mantic_unidades_medidas.nombre unidad_medida,
+				  ifnull(tc_mantic_articulos.extra, '0') as morado,
+				  concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes		
 				from 
 					tc_mantic_articulos
 				inner join
@@ -4833,7 +4841,9 @@
 				  tc_mantic_articulos.limite_mayoreo,
 				  tc_mantic_articulos.iva,
 				  tc_mantic_articulos.id_redondear,
-				  tc_mantic_unidades_medidas.nombre unidad_medida
+				  tc_mantic_unidades_medidas.nombre unidad_medida,
+				  ifnull(tc_mantic_articulos.extra, '0') as morado,
+				  concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes		
 				from 
 					tc_mantic_articulos
 				inner join 
@@ -6286,8 +6296,8 @@
 				  tc_mantic_transferencias.consecutivo,
           tc_mantic_transferencias.id_almacen,
           tc_mantic_transferencias.id_destino,
-          origen.nombre  nombre_origen,
-          origen.clave clave_origen,
+          origen.nombre as nombre_origen,
+          origen.clave as clave_origen,
           destino.nombre nombre_destino,
           destino.clave clave_destino,
           tc_mantic_transferencias.id_solicito,

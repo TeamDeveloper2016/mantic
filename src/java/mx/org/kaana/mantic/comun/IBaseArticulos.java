@@ -108,6 +108,12 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				temporal.setNombre(articulo.toString("nombre"));
 				temporal.setOrigen(articulo.toString("origen"));
 				temporal.setValor(articulo.toDouble(this.precio));
+				// SI VIENE EN LA CONSULTA EL CAMPO DE PORCENTAJE ES LA SUMA DE LA COLUMNA DE DESCUENTO Y EXTRA SEPARADA POR COMA
+				// ASIGNARLA PARA CALCULAR EL COSTO REAL DEL ARTICULO
+				if(articulo.containsKey("porcentajes")) {
+					temporal.setMorado(articulo.toString("morado"));
+					temporal.setPorcentajes(articulo.toString("porcentajes"));
+				} // if	
 				// SI VIENE DE IMPORTAR EL ARTICULO DE UN XML ENTONCES CONSIDERAR EL COSTO DE LA FACTURA CON RESPECTO AL DEL CATALOGOD E ARTICULOS
 				if(articulo.containsKey("costo")) 
   				temporal.setCosto(articulo.toDouble("costo"));

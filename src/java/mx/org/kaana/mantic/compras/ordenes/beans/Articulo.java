@@ -58,6 +58,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	private double cuantos;
 	private boolean modificado;
 	private double inicial;
+	private String morado;
+	private String porcentajes;
 
 	public Articulo() {
 		this(-1L);
@@ -98,6 +100,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.cuantos     = cantidad;
 		this.modificado  = false;
 		this.inicial     = cantidad;
+		this.morado      = "0";
+		this.porcentajes = "0";
 	}
 
 	public UISelectEntity getIdEntity() {
@@ -243,6 +247,22 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	public void setCostoLibre(boolean costoLibre) {
 		this.costoLibre=costoLibre;
 	}
+
+	public String getMorado() {
+		return morado;
+	}
+
+	public void setMorado(String morado) {
+		this.morado=morado;
+	}
+
+	public String getPorcentajes() {
+		return porcentajes;
+	}
+
+	public void setPorcentajes(String porcentajes) {
+		this.porcentajes=porcentajes;
+	}
 	
 	public String getImporte$() {
 		return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getImporte());
@@ -258,14 +278,18 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 
 	public String getCostoMayorMenor() {
-		String color     = this.diferencia< -5? "janal-color-orange": this.diferencia> 5? "janal-color-blue": "janal-color-green";
-		boolean display  = this.diferencia!= 0D;
+		Descuentos descuentos= new Descuentos(this.getValor(), this.getMorado());
+		String color   = descuentos.getFactor()!= 0? "janal-color-purple": this.diferencia< -5? "janal-color-orange": this.diferencia> 5? "janal-color-blue": "janal-color-green";
+		boolean display= this.diferencia!= 0D;
+		descuentos.toImporte(this.getPorcentajes());
+		double anterior= descuentos.getFactor()== 0D? descuentos.getImporte(): descuentos.toImporte();
 		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(display? "": "").concat("' title='")
 		.concat("Costo: ").concat(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getCosto())
 		).concat("\nCosto real: ").concat(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.real)
 		).concat("\nCosto calculado: ").concat(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.calculado)
 		).concat("\n\nIVA: ").concat(Global.format(EFormatoDinamicos.NUMERO_SAT_DECIMALES, this.getIva())
 		).concat("%\n\nCosto anterior: ").concat(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getValor())
+		).concat("%\nCosto con descuentos: ").concat(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, anterior)
 		).concat("\nCosto digitado: ").concat(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, Math.abs(this.real))
 		).concat("\nDiferencia: ").concat(String.valueOf(this.diferencia)).concat("%'></i>");
 	}
@@ -327,7 +351,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.importes.setDescuento(Numero.toRedondearSat(temporal> 0? this.importes.getImporte()- temporal: 0D));
 		
 		temporal= descuentos.toImporte(this.getExtras());
-		this.importes.setExtra(Numero.toRedondearSat(temporal> 0? (this.importes.getImporte()- this.importes.getSubTotal())- this.importes.getDescuento(): 0D));
+		this.importes.setExtra(Numero.toRedondearSat(temporal> 0? (this.importes.getImporte()- this.importes.getSubTotal()): 0D));
 
 		if(this.sinIva) {
 	  	this.importes.setIva(Numero.toRedondearSat(this.importes.getSubTotal()- (this.importes.getSubTotal()/ porcentajeIva)));
@@ -406,12 +430,12 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		
 	protected void toDiferencia() {
 		Descuentos descuentos= new Descuentos(this.getCosto(), this.getDescuento());
-		double value  = descuentos.toImporte();
-		this.calculado= Numero.toRedondearSat(value== 0? this.getCosto(): value);
-		descuentos    = new Descuentos(this.getCosto(), this.getDescuento().concat(",").concat(this.getExtras()));
-		value         = descuentos.toImporte();
-		this.real     = Numero.toRedondearSat(value== 0? this.getCosto(): value);
-		value         = Numero.toRedondearSat((value== 0? this.getCosto(): value)- this.getValor()); 
+		double value   = descuentos.toImporte();
+		this.calculado = Numero.toRedondearSat(descuentos.getFactor()== 0? this.getCosto(): value);
+		descuentos     = new Descuentos(this.getCosto(), this.getDescuento().concat(",").concat(this.getExtras()));
+		value          = descuentos.toImporte();
+		this.real      = Numero.toRedondearSat(descuentos.getFactor()== 0? this.getCosto(): value);
+		value          = Numero.toRedondearSat(this.real- this.getValor()); 
   	this.diferencia= this.getValor()== 0? 0: Numero.toRedondearSat(value* 100/ this.getValor());
 	}	
 

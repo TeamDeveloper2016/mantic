@@ -38,7 +38,7 @@ public class Descuentos implements Serializable {
 		this.importe    = importe;
 		this.porcentajes= porcentajes;
 		this.token      = token;
-		split();
+		this.split();
 	}
 
 	public double getImporte() {
@@ -67,7 +67,7 @@ public class Descuentos implements Serializable {
   public double toImporte(String porcentajes, char token) {
 		this.porcentajes= porcentajes;
 		this.token      = token;
-		split();
+		this.split();
 	  return getFactor()* this.importe; 
 	}
 	
