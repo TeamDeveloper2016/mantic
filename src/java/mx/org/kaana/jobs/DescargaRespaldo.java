@@ -23,7 +23,7 @@ public class DescargaRespaldo implements Job, Serializable {
 	public void execute(JobExecutionContext jec) throws JobExecutionException {
 		Manager manager= null;
 		try {
-			if(!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion() && (Especial.getInstance().getPath()== null ? JsfBase.getRealPath() : Especial.getInstance().getPath()).contains(BUILD)) {
+			if(Configuracion.getInstance().isEtapaDesarrollo() && (Especial.getInstance().getPath()== null ? JsfBase.getRealPath() : Especial.getInstance().getPath()).contains(BUILD)) {
 				manager= new Manager();
 				if(manager.execute())
 					LOG.info("Se realizo el proceso de descarga de respaldo de forma correcta.");
