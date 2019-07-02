@@ -5,9 +5,8 @@ import java.io.Serializable;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.kajool.enums.EEtapaServidor;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Variables;
 import mx.org.kaana.libs.ftp.Ftp;
 import mx.org.kaana.libs.ftp.FtpProperties;
@@ -130,12 +129,12 @@ public class Manager implements Serializable{
 		String[] host         = null;		
 		String user           = null;		
 		try {
-			user= TcConfiguraciones.getInstance().getPropiedad(USER.concat(TcConfiguraciones.getInstance().getEtapaServidor().toLowerCase()));
+			user= TcConfiguraciones.getInstance().getPropiedad(USER.concat(EEtapaServidor.PRODUCCION.toLowerCase()));
 			host= user.split("@");
 			regresar= new FtpProperties();
 			regresar.setHost("ftp.".concat(host[1]));
 			regresar.setUser(user);
-			regresar.setPassword(TcConfiguraciones.getInstance().getPropiedad(PASSWORD.concat(TcConfiguraciones.getInstance().getEtapaServidor().toLowerCase())));							
+			regresar.setPassword(TcConfiguraciones.getInstance().getPropiedad(PASSWORD.concat(EEtapaServidor.PRODUCCION.toLowerCase())));
 		} // try
 		catch (Exception e) {			
 			Error.mensaje(e);
