@@ -1128,19 +1128,19 @@
       newForm.find("*").each(function () {
         if (typeof $(this).attr("class") !== "undefined" ) {
           clasesSplit =$(this).attr("class").split(" ");
-          $.each(clasesSplit, function( index, value ) {
+          $.each(clasesSplit, function(index, value) {
             if (clasesABuscar.indexOf(value) === -1)
               clasesABuscar.push(value);
           });
         } // if
       });
       $.each(document.styleSheets,function (key,value) {
-          $.each(value.cssRules,function (keyRuleCss,valueRuleCss) {
+          $.each(value.cssRules,function (keyRuleCss, valueRuleCss) {
             if (typeof valueRuleCss.selectorText !== "undefined" ) {
               encontrado = false;
               $.each(valueRuleCss.selectorText.split(" "), function( index, value ) {
                 if ( clasesABuscar.indexOf( value.substring(1,value.length))!==  -1)
-                  encontrado = true;
+                  encontrado= true;
               });
               if (encontrado)
                 styles =styles+valueRuleCss.cssText+" ";
