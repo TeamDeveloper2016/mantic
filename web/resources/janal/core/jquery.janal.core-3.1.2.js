@@ -1212,7 +1212,7 @@
 			alert(msg);
     }, // alert
     version: function() {
-      return '0.3.1.0';
+      return '0.3.1.2';
     }, // version
     align: function(pixels) {
       try {
