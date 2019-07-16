@@ -389,3 +389,10 @@ shortcut.add("minus", function() {
 		cleanSelection();		
 	} // else if
 });
+
+shortcut.add("Shift+Z", function() {
+	janal.console('Shortcut limpiar seleccionado de venta:');
+	if((janal.session() && (PF('wAceptarCompra') && $('#' + PF('wAceptarCompra').id).css('display')!== 'none')) || (PF('wAceptarCompraIcon') && $('#' + PF('wAceptarCompraIcon').id).css('display')!== 'none')||(PF('wAceptarCotizacion') && $('#' + PF('wAceptarCotizacion').id).css('display')!== 'none') || (PF('wAceptarCotizacionIcon') && $('#' + PF('wAceptarCotizacionIcon').id).css('display')!== 'none')) {
+		cleanInitPage();
+	} // if	
+});

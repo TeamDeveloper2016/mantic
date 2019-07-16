@@ -854,6 +854,11 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 	} // doAsignaTicketAbiertoCambioCliente
 	
+	public void doCleanInitPage() {
+		this.attrs.put("ticketAbierto", null);
+		doAsignaTicketAbierto();
+	} // doCleanInitPage
+	
 	@Override
 	public void doAsignaTicketAbierto() {
 		Map<String, Object>params           = null;		
