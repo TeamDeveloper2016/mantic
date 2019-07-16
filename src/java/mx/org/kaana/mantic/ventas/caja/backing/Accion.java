@@ -238,7 +238,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			doLoadSaldos(-1L);
       if(Long.valueOf(this.attrs.get("idVenta").toString()) != -1L){
         this.attrs.put("ticketAbierto",new UISelectEntity(new Entity(Long.valueOf(this.attrs.get("idVenta").toString()))));
-        doAsignaTicketAbierto();
+        this.doAsignaTicketAbierto();
 				this.attrs.put("clienteAsignado", true);
       } // if
 			loadUltimoTicket();
@@ -835,7 +835,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			refreshTicketsAbiertos();
 			this.attrs.put("ajustePreciosCliente", true);			
 			this.attrs.put("ticketAbierto", new UISelectEntity((Entity)this.attrs.get("selectedCuentaAbierta")));
-			doAsignaTicketAbierto();
+			this.doAsignaTicketAbierto();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -846,7 +846,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doAsignaTicketAbiertoCambioCliente(){
 		try {
 			this.attrs.put("ajustePreciosCliente", false);
-			doAsignaTicketAbierto();
+			this.doAsignaTicketAbierto();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -1086,7 +1086,7 @@ public class Accion extends IBaseVenta implements Serializable {
 					doLoadTicketAbiertos();
 					this.attrs.put("ajustePreciosCliente", false);			
 					this.attrs.put("ticketAbierto", new UISelectEntity(new Entity(transaccion.getOrden().getIdVenta())));
-					doAsignaTicketAbierto();
+					this.doAsignaTicketAbierto();
 					this.attrs.put("tabIndex", 1);
 					this.pagar= true;
 				} // if
@@ -1602,7 +1602,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			super.doAsignaCotizacion();						
 			this.attrs.put("ajustePreciosCliente", true);			
 			this.attrs.put("ticketAbierto", new UISelectEntity(new Entity(Long.valueOf(this.attrs.get("cotizacion").toString()))));
-			doAsignaTicketAbierto();			
+			this.doAsignaTicketAbierto();			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -1619,7 +1619,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("creditoVenta", false);
 			this.attrs.put("ajustePreciosCliente", true);			
 			this.attrs.put("ticketAbierto", new UISelectEntity(new Entity(Long.valueOf(this.attrs.get("apartados").toString()))));
-			doAsignaTicketAbierto();
+			this.doAsignaTicketAbierto();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -1728,4 +1728,10 @@ public class Accion extends IBaseVenta implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doFacturarPendiente
+	
+	public void doCleanOpenTicket() {
+	  this.attrs.put("ticketAbierto", null);
+		this.doAsignaTicketAbierto();
+	}
+	
 }
