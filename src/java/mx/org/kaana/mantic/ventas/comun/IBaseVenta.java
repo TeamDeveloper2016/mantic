@@ -999,5 +999,55 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		finally{
 			Methods.clean(params);
 		} // finally
-	} // asignaAbonoApartado	
+	} // asignaAbonoApartado
+
+	@Override
+	public void doUpdateArticulos() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		int buscarCodigoPor       = 1;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
+  		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
+			String search= (String)this.attrs.get("codigo"); 
+			if(!Cadena.isVacio(search)) {
+				if((boolean)this.attrs.get("buscaPorCodigo"))
+			    buscarCodigoPor= 1;
+				if(search.startsWith("."))
+					buscarCodigoPor= 2;
+				else 
+					if(search.startsWith(":"))
+						buscarCodigoPor= 0;
+				if(search.startsWith(".") || search.startsWith(":"))
+					search= search.trim().substring(1);				
+				search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+			} // if	
+			else
+				search= "WXYZ";
+  		params.put("codigo", search);						
+			switch(buscarCodigoPor) {      
+				case 0: 
+					this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
+					break;
+				case 1: 
+					this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigoIgual", params, columns, 20L));
+					break;
+				case 2:
+          this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 20L));
+          break;
+			} // switch
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	} // doUpdateArticulos
+	
 }

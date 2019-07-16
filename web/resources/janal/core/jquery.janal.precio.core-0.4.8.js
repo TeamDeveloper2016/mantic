@@ -27,6 +27,7 @@
 			'faltantesCantidad'  : {validaciones: 'requerido|mayor-igual({"cuanto": 0})', mascara: 'entero', formatos: 'precio', grupo: 'faltantes'},
 			'faltantesIdArticulo': {validaciones: 'requerido', mascara: 'libre', grupo: 'faltantes'}
 		},
+		temporal: '',
 		init: function() { // constructor
 			$precios= this;
 			this.hide();
@@ -59,6 +60,8 @@
 					case $precios.VK_UP:	
 					case $precios.VK_DOWN:	
 					case $precios.VK_TAB:
+						if($precios.temporal!== $('#verificadorValue').val().trim())
+						  verificadorKeyEnter();
 						return $precios.next(true);
 					  break;
 					case $precios.VK_ESC:
@@ -66,7 +69,8 @@
 					  break;
 					case $precios.VK_ENTER:
       			janal.console('jsPrecios.lookup');
-						//lookup();
+						$precios.temporal= $('#verificadorValue').val().trim();
+						verificadorKeyEnter();
 						return false;
 						break;
 					case $precios.VK_PAGE_NEXT:

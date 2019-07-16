@@ -364,13 +364,20 @@ shortcut.add("escape", function() {
 
 shortcut.add("Shift+P", function() {
 	janal.console('Shortcut cobrar venta:');
-	if(janal.session() && PF('contenedorCaja')) {
-	  cobrarVenta();
-		setTimeout(function(){			
-			$('#contenedorGrupos\\:efectivo_input').addClass('ui-state-focus');
-			$('#contenedorGrupos\\:efectivo_input').focus();
-		}, 1000);						
+	if(janal.session() && PF('dlgOpenTickets') && !PF('dlgOpenTickets').isVisible()) {
+		if(!($('#aceptar').prop("disabled")=== true && $('#cuenta').prop("disabled")=== false)){
+			janal.bloquear();
+			loadTicketAbiertos();
+		} // if
 	} // if
+	else
+		if(janal.session() && PF('contenedorCaja')) {
+			cobrarVenta();
+			setTimeout(function(){			
+				$('#contenedorGrupos\\:efectivo_input').addClass('ui-state-focus');
+				$('#contenedorGrupos\\:efectivo_input').focus();
+			}, 1000);						
+		} // if
 });
 
 shortcut.add("minus", function() {

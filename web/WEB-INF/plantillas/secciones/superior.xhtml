@@ -148,11 +148,12 @@
 	<p:dialog id="dialogoVerificador" widgetVar="dlgVerificador" header="Verificador de precios" onShow="janal.pivot(); $('#verificadorValue').val(''); $('#verificadorValue').focus();janal.bloquear();" onHide="jsPrecios.hide(); janal.recover(); janal.desbloquear();" height="550px" width="950px" resizable="false" closeOnEscape="true" dynamic="true">
 		<h:form prependId="false">
 			<p:remoteCommand name="verificadorLookup" actionListener="#{kajoolEncabezado.doChange}" process="@this verificadorBuscarPor verificadorValue" update="verificadorPrecio verificadorTabla" oncomplete="if($('#verificadorValue').val()==='.*.') $('#verificadorValue').val('');"/>
-			<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-90, janal-wid-15">
+      <p:remoteCommand name="verificadorKeyEnter" actionListener="#{kajoolEncabezado.doChange}" process="@this verificadorBuscarPor verificadorValue" update="verificadorPrecio verificadorTabla" onstart="return $('#verificadorValue').val().trim().length> 1"/>
+      <p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-90, janal-wid-15">
 				<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 					<p:outputLabel for="verificadorValue" value="C&oacute;digo o nombre articulo:"/>
 					<p:inputText id="verificadorValue" styleClass="janal-key-verificador janal-wid-100-txt" value="#{kajoolEncabezado.attrs.buscarPor}" style="text-transform: uppercase">   
-						<p:ajax event="keyup" listener="#{kajoolEncabezado.doChange}" process="@this verificadorBuscarPor" update="verificadorPrecio verificadorTabla" onstart="return $('#verificadorValue').val().trim().length> 1"/>
+						
 					</p:inputText>
 				</p:panelGrid>	
 				<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-right">

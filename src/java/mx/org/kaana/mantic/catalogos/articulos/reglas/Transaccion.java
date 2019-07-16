@@ -59,9 +59,9 @@ public class Transaccion extends TransaccionFactura {
 
 	private void toFactores() {
 		double calculo= this.precio* (1+ (this.articulo.getArticulo().getIva()/ 100));
-		this.factorMenudeo= Numero.toRedondearSat((this.articulo.getArticulo().getMenudeo()- calculo)* 100/ calculo);
-		this.factorMedio  = Numero.toRedondearSat((this.articulo.getArticulo().getMedioMayoreo()- calculo)* 100/ calculo);
-		this.factorMayoreo= Numero.toRedondearSat((this.articulo.getArticulo().getMayoreo()- calculo)* 100/ calculo);
+		this.factorMenudeo= 1+ (Numero.toRedondearSat((this.articulo.getArticulo().getMenudeo()- calculo)* 100/ calculo)/ 100);
+		this.factorMedio  = 1+ (Numero.toRedondearSat((this.articulo.getArticulo().getMedioMayoreo()- calculo)* 100/ calculo)/ 100);
+		this.factorMayoreo= 1+ (Numero.toRedondearSat((this.articulo.getArticulo().getMayoreo()- calculo)* 100/ calculo)/ 100);
 	}
 	
 	@Override
