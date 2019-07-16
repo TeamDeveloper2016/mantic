@@ -217,7 +217,7 @@
 			</pe:methodParam>								
 		</pe:remoteCommand>		
 		<pe:remoteCommand name="unlockVenta" process="@this" actionListener="#{manticVentasCajaAccion.unlockVenta}"/>  					
-		<pe:remoteCommand name="cleanInitPage" onstart="return janal.bloquear();" process="@this" actionListener="#{manticVentasCajaAccion.doInitPage}" update="contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.recalculo) @(.janal-abono) contenedorGrupos:panelPago" oncomplete="janal.desbloquear();jsArticulos.refreshCobroValidate();"/>  			
+		<pe:remoteCommand name="cleanInitPage" onstart="return janal.bloquear();" process="@this" actionListener="#{manticVentasCajaAccion.doCleanInitPage}" update="contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.recalculo) @(.janal-abono) contenedorGrupos:panelPago" oncomplete="janal.desbloquear();jsArticulos.refreshCobroValidate();"/>  			
 		<pe:remoteCommand name="cleanSelection" onstart="return janal.bloquear();" process="@this" actionListener="#{manticVentasCajaAccion.doCleanCaptura}" update="contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.recalculo) @(.janal-abono) contenedorGrupos:panelPago"/>  			
 		<pe:remoteCommand name="updateCambioPrecio" process="@this" update="panelCambioPrecio cambiopreciousr passwordcambioprecio"/>  			
 		<pe:remoteCommand name="updateDescuentos" process="@this" update="panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd"/>  			
