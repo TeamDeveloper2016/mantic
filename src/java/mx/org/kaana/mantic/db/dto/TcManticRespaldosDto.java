@@ -46,6 +46,10 @@ public class TcManticRespaldosDto implements IBaseDto, Serializable {
   private String nombre;
   @Column (name="registro")
   private Timestamp registro;
+  @Column (name="eliminado")
+  private Timestamp eliminado;
+	@Column (name="activo")
+  private Long activo;
 
   public TcManticRespaldosDto() {
     this(new Long(-1L));
@@ -57,6 +61,10 @@ public class TcManticRespaldosDto implements IBaseDto, Serializable {
   }
 
   public TcManticRespaldosDto(String ruta, Long tamanio, Long idUsuario, String observaciones, Long idRespaldo, String alias, String nombre) {
+		this(ruta, tamanio, idUsuario, observaciones, idRespaldo, alias, nombre, 1L);
+	}
+	
+  public TcManticRespaldosDto(String ruta, Long tamanio, Long idUsuario, String observaciones, Long idRespaldo, String alias, String nombre, Long activo) {
     setRuta(ruta);
     setTamanio(tamanio);
     setIdUsuario(idUsuario);
@@ -65,6 +73,8 @@ public class TcManticRespaldosDto implements IBaseDto, Serializable {
     setAlias(alias);
     setNombre(nombre);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		setEliminado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		setActivo(activo);
   }
 	
   public void setRuta(String ruta) {
@@ -131,6 +141,22 @@ public class TcManticRespaldosDto implements IBaseDto, Serializable {
     return registro;
   }
 
+	public Timestamp getEliminado() {
+		return eliminado;
+	}
+
+	public void setEliminado(Timestamp eliminado) {
+		this.eliminado = eliminado;
+	}
+
+	public Long getActivo() {
+		return activo;
+	}
+
+	public void setActivo(Long activo) {
+		this.activo = activo;
+	}	
+	
   @Transient
   @Override
   public Long getKey() {
@@ -161,6 +187,10 @@ public class TcManticRespaldosDto implements IBaseDto, Serializable {
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getEliminado());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getActivo());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -176,13 +206,15 @@ public class TcManticRespaldosDto implements IBaseDto, Serializable {
 		regresar.put("alias", getAlias());
 		regresar.put("nombre", getNombre());
 		regresar.put("registro", getRegistro());
+		regresar.put("eliminado", getEliminado());
+		regresar.put("activo", getActivo());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getRuta(), getTamanio(), getIdUsuario(), getObservaciones(), getIdRespaldo(), getAlias(), getNombre(), getRegistro()
+    getRuta(), getTamanio(), getIdUsuario(), getObservaciones(), getIdRespaldo(), getAlias(), getNombre(), getRegistro(), getEliminado(), getActivo()
     };
     return regresar;
   }
@@ -240,7 +272,4 @@ public class TcManticRespaldosDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdRespaldo() != null ? getIdRespaldo().hashCode() : 0);
     return hash;
   }
-
 }
-
-
