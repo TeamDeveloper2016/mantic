@@ -126,12 +126,12 @@
 				var value = parseFloat(input, 10);
 				if(value> 0) { 
 					if(name.indexOf('efectivo')< 0) {
-						letter= letter.replace(/_input/g, '_filter');
-						$('#contenedorGrupos\\:banco'+ letter).focus();
-						janal.console('#contenedorGrupos\\:banco'+ letter+ '.focus()');
-						letter= letter.replace(/_filter/g, '_label');
+						letter= letter.replace(/_input/g, '_label');
 						$('#contenedorGrupos\\:banco'+ letter).click();
 						janal.console('#contenedorGrupos\\:banco'+ letter+ '.click()');
+						letter= letter.replace(/_label/g, '_filter');
+						$('#contenedorGrupos\\:banco'+ letter).focus();
+						janal.console('#contenedorGrupos\\:banco'+ letter+ '.focus()');
 					} // if
 					else {
 						$('#contenedorGrupos\\:debito'+ janal.INPUT_RESERVE).focus();
@@ -151,7 +151,7 @@
 				} // else	
 			}
 			
-			function ventaFinishedTime(){
+			function ventaFinishedTime() {
 				setTimeout("ventaFinished()", 1000);						
 			}
 			
