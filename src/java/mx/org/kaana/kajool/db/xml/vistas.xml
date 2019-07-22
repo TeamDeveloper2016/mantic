@@ -1211,6 +1211,15 @@
           {condicion}
         {sortOrder}
       </select>
+      <select id="historial">
+        select 
+          tc_mantic_respaldos.id_respaldo as id_key,
+          tc_mantic_respaldos.*
+        from 
+          tc_mantic_respaldos         
+        order by 
+					tc_mantic_respaldos.registro desc
+      </select>
     </unit>     		
   </dml>
 </process>
