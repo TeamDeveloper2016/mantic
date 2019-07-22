@@ -63,6 +63,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("observaciones", EFormatoDinamicos.LIBRE));    
       columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));    
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA)); 
+      columns.add(new Columna("eliminado", EFormatoDinamicos.FECHA_HORA_CORTA)); 
       params.put("sortOrder", this.attrs.get("sortOrder"));
 			this.lazyModel = new FormatCustomLazy("VistaRespaldosBdDto", "respaldos", params , columns);
       UIBackingUtilities.resetDataTable();			
