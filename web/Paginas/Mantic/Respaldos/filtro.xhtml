@@ -102,8 +102,14 @@
 							</f:facet>
 							<h:outputText value="#{filtro['registro']}"/>
 						</p:column>
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.eliminado}">
+							<f:facet name="header">
+								<h:outputText value="Eliminado"/>
+							</f:facet>
+							<h:outputText value="#{filtro.activo eq '2' ? filtro['eliminado'] : ''}"/>
+						</p:column>
             <p:column style="text-align: center" styleClass="janal-wid-col-38">
-              <p:commandButton icon="fa fa-download" title="Descargar respaldo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+              <p:commandButton icon="fa fa-download" title="Descargar respaldo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" disabled="#{filtro.activo eq '2'}">
                 <p:fileDownload value="#{manticRespaldosFiltro.doFileDownload(filtro)}" />
               </p:commandButton>
             </p:column>
