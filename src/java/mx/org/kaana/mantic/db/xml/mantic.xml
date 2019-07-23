@@ -1407,6 +1407,17 @@
         order by 
 					registro desc
       </select>
+			<select id="historial">
+        select 
+          tc_mantic_respaldos.id_respaldo as id_key,
+          tc_mantic_respaldos.*
+        from 
+          tc_mantic_respaldos 
+				where 
+					activo=1
+        order by 
+					tc_mantic_respaldos.registro desc
+      </select>
     </unit>
 		<unit id="TcManticDescargasDto">
       <select id="row">
@@ -1424,6 +1435,17 @@
           tc_mantic_descargas
         where      
           nombre = '{nombre}'
+      </select>			
+      <select id="historial">
+        select      
+					tc_mantic_descargas.id_descarga as id_key,
+          tc_mantic_descargas.*
+        from      
+          tc_mantic_descargas
+				where 
+					activo=1
+        order by 
+					registro desc
       </select>			
     </unit>
 		<unit id="TcManticTiposCreditosNotasDto">
