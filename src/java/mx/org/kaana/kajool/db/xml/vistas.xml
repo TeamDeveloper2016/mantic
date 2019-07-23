@@ -1216,7 +1216,9 @@
           tc_mantic_respaldos.id_respaldo as id_key,
           tc_mantic_respaldos.*
         from 
-          tc_mantic_respaldos         
+          tc_mantic_respaldos 
+				where 
+					activo=1
         order by 
 					tc_mantic_respaldos.registro desc
       </select>
