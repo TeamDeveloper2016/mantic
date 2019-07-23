@@ -161,12 +161,14 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		List<Entity> respaldos= null;
 		try {
 			respaldos= toAllRespaldos(sesion);
-			for(int count=0; count< respaldos.size(); count++){
-				if(count>= 15){
-					if(desactivarRespaldo(sesion, respaldos.get(count)))
-						deleteFile(respaldos.get(count));
-				} // if
-			} // for
+			if(!respaldos.isEmpty()){
+				for(int count=0; count< respaldos.size(); count++){
+					if(count>= 15){
+						if(desactivarRespaldo(sesion, respaldos.get(count)))
+							deleteFile(respaldos.get(count));
+					} // if
+				} // for
+			} // if
 		} // try
 		catch (Exception e) {			
 			Error.mensaje(e);
