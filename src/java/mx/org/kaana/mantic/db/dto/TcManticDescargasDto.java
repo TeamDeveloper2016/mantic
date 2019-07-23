@@ -38,6 +38,10 @@ public class TcManticDescargasDto implements IBaseDto, Serializable {
   private String nombre;
   @Column (name="registro")
   private Timestamp registro;
+  @Column (name="eliminado")
+  private Timestamp eliminado;
+	@Column (name="activo")
+  private Long activo;
 
   public TcManticDescargasDto() {
     this(new Long(-1L));
@@ -49,6 +53,10 @@ public class TcManticDescargasDto implements IBaseDto, Serializable {
   }
 
   public TcManticDescargasDto(String ruta, Long tamanio, Long idUsuario, String observaciones, Long idDescarga, String alias, String nombre) {
+		this(ruta, tamanio, idUsuario, observaciones, idDescarga, alias, nombre, 1L);
+	}
+	
+  public TcManticDescargasDto(String ruta, Long tamanio, Long idUsuario, String observaciones, Long idDescarga, String alias, String nombre, Long activo) {
     setRuta(ruta);
     setTamanio(tamanio);
     setIdUsuario(idUsuario);
@@ -57,6 +65,8 @@ public class TcManticDescargasDto implements IBaseDto, Serializable {
     setAlias(alias);
     setNombre(nombre);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		setEliminado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		setActivo(activo);
   }
 	
   public void setRuta(String ruta) {
@@ -123,6 +133,22 @@ public class TcManticDescargasDto implements IBaseDto, Serializable {
     return registro;
   }
 
+	public Timestamp getEliminado() {
+		return eliminado;
+	}
+
+	public void setEliminado(Timestamp eliminado) {
+		this.eliminado = eliminado;
+	}
+
+	public Long getActivo() {
+		return activo;
+	}
+
+	public void setActivo(Long activo) {
+		this.activo = activo;
+	}	
+	
   @Transient
   @Override
   public Long getKey() {
@@ -168,13 +194,15 @@ public class TcManticDescargasDto implements IBaseDto, Serializable {
 		regresar.put("alias", getAlias());
 		regresar.put("nombre", getNombre());
 		regresar.put("registro", getRegistro());
+		regresar.put("eliminado", getEliminado());
+		regresar.put("activo", getActivo());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getRuta(), getTamanio(), getIdUsuario(), getObservaciones(), getIdDescarga(), getAlias(), getNombre(), getRegistro()
+    getRuta(), getTamanio(), getIdUsuario(), getObservaciones(), getIdDescarga(), getAlias(), getNombre(), getRegistro(), getEliminado(), getActivo()
     };
     return regresar;
   }
