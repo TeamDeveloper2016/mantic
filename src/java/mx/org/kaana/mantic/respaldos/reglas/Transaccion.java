@@ -184,7 +184,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			descargas= toAllDescargas(sesion);
 			if(!descargas.isEmpty()){
 				for(int count=0; count< descargas.size(); count++){
-					if(count>= 15){
+					if(count>= 30){
 						if(desactivarDescarga(sesion, descargas.get(count)))
 							deleteFileDescarga(descargas.get(count));
 					} // if
