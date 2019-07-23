@@ -77,6 +77,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					break;
 				case REGISTRAR:
 					regresar= DaoFactory.getInstance().insert(sesion, this.descarga)>= 1L;
+					if(regresar)
+						depurarDescargas(sesion);					
 					break;
 			} // switch
 			if(!regresar)
@@ -176,10 +178,41 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		} // catch		
 	} // depurarRespaldos
 	
+	private void depurarDescargas(Session sesion) throws Exception{
+		List<Entity> descargas= null;
+		try {
+			descargas= toAllDescargas(sesion);
+			if(!descargas.isEmpty()){
+				for(int count=0; count< descargas.size(); count++){
+					if(count>= 15){
+						if(desactivarDescarga(sesion, descargas.get(count)))
+							deleteFileDescarga(descargas.get(count));
+					} // if
+				} // for
+			} // if
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+			throw e;
+		} // catch		
+	} // depurarRespaldos
+	
 	private List<Entity> toAllRespaldos(Session sesion) throws Exception{
 		List<Entity>regresar= null;
 		try {
-			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaRespaldosBdDto", "historial", Collections.EMPTY_MAP, Constantes.SQL_TODOS_REGISTROS);
+			regresar= DaoFactory.getInstance().toEntitySet(sesion, "TcManticRespaldosDto", "historial", Collections.EMPTY_MAP, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+			throw e;
+		} // catch		
+		return regresar;
+	} // toAllRespaldos
+	
+	private List<Entity> toAllDescargas(Session sesion) throws Exception{
+		List<Entity>regresar= null;
+		try {
+			regresar= DaoFactory.getInstance().toEntitySet(sesion, "TcManticDescargasDto", "historial", Collections.EMPTY_MAP, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {			
 			Error.mensaje(e);
@@ -204,12 +237,41 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		return regresar;
 	} // desactivarRespaldo
 	
+	private boolean desactivarDescarga(Session sesion, Entity entity) throws Exception{
+		boolean regresar                   = false;
+		TcManticDescargasDto recordDescarga= null;
+		try {
+			recordDescarga= (TcManticDescargasDto) DaoFactory.getInstance().findById(sesion, TcManticRespaldosDto.class, entity.getKey());
+			recordDescarga.setActivo(EBooleanos.NO.getIdBooleano());
+			recordDescarga.setEliminado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			regresar= DaoFactory.getInstance().update(sesion, recordDescarga)>= 1L;
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+			throw e;
+		} // catch		
+		return regresar;
+	} // desactivarRespaldo
+	
 	private void deleteFile(Entity respaldo){
 		File respaldoFile= null;
 		try {
 			respaldoFile= new File(Configuracion.getInstance().getPropiedadSistemaServidor("respaldos").concat(respaldo.toString("ruta")).concat(respaldo.toString("nombre")));
 			if(respaldoFile.exists())
 				respaldoFile.delete();
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+			throw e;
+		} // catch		
+	} // deleteFile
+	
+	private void deleteFileDescarga(Entity descarga){
+		File descargaFile= null;
+		try {
+			descargaFile= new File(Configuracion.getInstance().getPropiedadSistemaServidor("descargas").concat(descarga.toString("ruta")).concat(descarga.toString("nombre")));
+			if(descargaFile.exists())
+				descargaFile.delete();
 		} // try
 		catch (Exception e) {			
 			Error.mensaje(e);
