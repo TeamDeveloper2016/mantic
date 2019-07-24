@@ -533,54 +533,235 @@
 			$(document).on('keydown', '.key-caja-efectivo', function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
 				janal.console('jsArticulos.cajaEfectivo');
+				var valor= 0;
 				switch(key) {					
 					case $articulos.VK_ENTER:
+					case $articulos.VK_TAB:
+					case $articulos.VK_DOWN:
 						$("#contenedorGrupos\\:debito_input").focus();
-						$("#contenedorGrupos\\:debito_input").val('');
+						valor= parseFloat($("#contenedorGrupos\\:debito_input").val()); 
+						if(isNaN(valor) || valor=== 0)
+							$("#contenedorGrupos\\:debito_input").val('');
+						valor= parseFloat($("#contenedorGrupos\\:efectivo_input").val()); 
+						if(isNaN(valor) || valor=== 0)
+							$("#contenedorGrupos\\:efectivo_input").val('0.00');
 						break;
-				} // switch
+					case $articulos.VK_UP:
+						$("#contenedorGrupos\\:cheque_input").focus();
+						valor= parseFloat($("#contenedorGrupos\\:cheque_input").val()); 
+						if(isNaN(valor) || valor=== 0)
+							$("#contenedorGrupos\\:cheque_input").val('');
+						valor= parseFloat($("#contenedorGrupos\\:efectivo_input").val()); 
+						if(isNaN(valor) || valor=== 0)
+							$("#contenedorGrupos\\:efectivo_input").val('0.00');
+						break;
+				} // switch				
 			});
 			$(document).on('keydown', '.key-caja-debito', function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
 				janal.console('jsArticulos.cajaDebito');
+				var valor= 0;
 				switch(key) {					
 					case $articulos.VK_ENTER:
-						$("#contenedorGrupos\\:credito_input").focus();
-						$("#contenedorGrupos\\:credito_input").val('');
+					case $articulos.VK_TAB:
+					case $articulos.VK_DOWN:						
+						valor= parseFloat($("#contenedorGrupos\\:debito_input").val()); 
+						if(isNaN(valor) || valor=== 0){
+							$("#contenedorGrupos\\:debito_input").val('0.00');
+							$("#contenedorGrupos\\:credito_input").focus();
+							valor= parseFloat($("#contenedorGrupos\\:credito_input").val()); 
+							if(isNaN(valor) || valor=== 0){								
+								$("#contenedorGrupos\\:credito_input").val('');
+							} // if
+						} // if						
+						else{							
+							$('#contenedorGrupos\\:bancoDebito_label').click();
+							$('#contenedorGrupos\\:bancoDebito_label').focus();
+						} // else						
 						break;
-				} // switch
+					case $articulos.VK_UP:
+						$("#contenedorGrupos\\:efectivo_input").focus();
+						valor= parseFloat($("#contenedorGrupos\\:efectivo_input").val()); 
+						if(isNaN(valor) || valor=== 0)
+							$("#contenedorGrupos\\:efectivo_input").val('');
+						valor= parseFloat($("#contenedorGrupos\\:debito_input").val()); 
+						if(isNaN(valor) || valor=== 0)
+							$("#contenedorGrupos\\:debito_input").val('0.00');
+						break;
+				} // switch				
 			});
 			$(document).on('keydown', '.key-caja-credito', function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
 				janal.console('jsArticulos.cajaCredito');
+				var valor= 0;
 				switch(key) {					
 					case $articulos.VK_ENTER:
-						$("#contenedorGrupos\\:transferencia_input").focus();
-						$("#contenedorGrupos\\:transferencia_input").val('');
+					case $articulos.VK_TAB:
+					case $articulos.VK_DOWN:						
+						valor= parseFloat($("#contenedorGrupos\\:credito_input").val()); 
+						if(isNaN(valor) || valor=== 0){
+							$("#contenedorGrupos\\:credito_input").val('0.00');
+							$("#contenedorGrupos\\:transferencia_input").focus();
+							valor= parseFloat($("#contenedorGrupos\\:transferencia_input").val()); 
+							if(isNaN(valor) || valor=== 0)							
+								$("#contenedorGrupos\\:transferencia_input").val('');
+						} // if												
+						else{
+							$('#contenedorGrupos\\:bancoCredito_label').click();
+							$('#contenedorGrupos\\:bancoCredito_label').focus();
+						} // else						
 						break;
-				} // switch
+					case $articulos.VK_UP:
+						$("#contenedorGrupos\\:debito_input").focus();
+						valor= parseFloat($("#contenedorGrupos\\:debito_input").val()); 
+						if(isNaN(valor) || valor=== 0)
+							$("#contenedorGrupos\\:debito_input").val('');
+						valor= parseFloat($("#contenedorGrupos\\:credito_input").val()); 
+						if(isNaN(valor) || valor=== 0)
+							$("#contenedorGrupos\\:credito_input").val('0.00');
+						break;
+				} // switch				
 			});
 			$(document).on('keydown', '.key-caja-transferencia', function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
 				janal.console('jsArticulos.cajaTransferencia');
+				var valor= 0;
 				switch(key) {					
 					case $articulos.VK_ENTER:
-						$("#contenedorGrupos\\:cheque_input").focus();
-						$("#contenedorGrupos\\:cheque_input").val('');
+					case $articulos.VK_TAB:
+					case $articulos.VK_DOWN:						
+						valor= parseFloat($("#contenedorGrupos\\:transferencia_input").val()); 
+						if(isNaN(valor) || valor=== 0){
+							$("#contenedorGrupos\\:transferencia_input").val('0.00');
+							$("#contenedorGrupos\\:cheque_input").focus();
+							valor= parseFloat($("#contenedorGrupos\\:cheque_input").val()); 
+							if(isNaN(valor) || valor=== 0)
+								$("#contenedorGrupos\\:cheque_input").val('');						
+						} // if						
+						else{
+							$('#contenedorGrupos\\:bancoTransferencia_label').click();
+							$('#contenedorGrupos\\:bancoTransferencia_label').focus();
+						} // else						
 						break;
-				} // switch
+					case $articulos.VK_UP:
+						$("#contenedorGrupos\\:credito_input").focus();
+						valor= parseFloat($("#contenedorGrupos\\:credito_input").val()); 
+						if(isNaN(valor) || valor=== 0)
+							$("#contenedorGrupos\\:credito_input").val('');
+						valor= parseFloat($("#contenedorGrupos\\:transferencia_input").val()); 
+						if(isNaN(valor) || valor=== 0)
+							$("#contenedorGrupos\\:transferencia_input").val('0.00');
+						break;
+				} // switch				
 			});
 			$(document).on('keydown', '.key-caja-cheque', function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
 				janal.console('jsArticulos.cajaCheque');
+				var valor= 0;
 				switch(key) {					
 					case $articulos.VK_ENTER:
-						$("#aceptar").click();												
+					case $articulos.VK_TAB:
+					case $articulos.VK_DOWN:						
+						valor= parseFloat($("#contenedorGrupos\\:cheque_input").val()); 
+						if(isNaN(valor) || valor=== 0){
+							$("#contenedorGrupos\\:cheque_input").val('0.00');
+							$("#contenedorGrupos\\:efectivo_input").focus();
+							valor= parseFloat($("#contenedorGrupos\\:efectivo_input").val()); 
+							if(isNaN(valor) || valor=== 0)							
+								$("#contenedorGrupos\\:efectivo_input").val('');						
+						} // if						
+						else{
+							$('#contenedorGrupos\\:bancoCheque_label').click();
+							$('#contenedorGrupos\\:bancoCheque_label').focus();
+						} // else						
+						//$("#aceptar").click();													
 						break;
-				} // switch
+					case $articulos.VK_UP:
+						$("#contenedorGrupos\\:transferencia_input").focus();
+						valor= parseFloat($("#contenedorGrupos\\:transferencia_input").val()); 
+						if(isNaN(valor) || valor=== 0)
+							$("#contenedorGrupos\\:transferencia_input").val('');
+						valor= parseFloat($("#contenedorGrupos\\:cheque_input").val()); 
+						if(isNaN(valor) || valor=== 0)
+							$("#contenedorGrupos\\:cheque_input").val('0.00');
+						break;
+				} // switch				
+			});
+			$(document).on('keydown', '.janal-select-type', function(e) {
+				var key= e.keyCode ? e.keyCode : e.which;
+				switch(key) {					
+					case $articulos.VK_ENTER:
+					case $articulos.VK_TAB:
+					case $articulos.VK_DOWN:
+						$articulos.jumpNextTypeReference(e);
+						break;
+					case $articulos.VK_UP:
+						$articulos.jumpPreviousTypeReference(e);
+						break;
+				} // switch																
+			});
+			$(document).on('blur, keydown', '.janal-select-referencia', function(e) {
+				var key= e.keyCode ? e.keyCode : e.which;
+				switch(key) {					
+					case $articulos.VK_ENTER:
+					case $articulos.VK_TAB:
+						$articulos.jumpNextBankReference(e);
+						break;
+				} // switch											
 			});
 			setTimeout('$articulos.goto()', 1000);
 		},
+		jumpNextBankReference: function(e) {
+			var name= $(e.currentTarget).attr('id');
+			var reference= name.substring(name.indexOf('banco') + 5, name.length);
+			$('#contenedorGrupos\\:referencia' + reference).focus();				
+		},	// jumpNextBankReference
+		jumpNextTypeReference: function(e) {
+			var name= $(e.currentTarget).attr('id');
+			var reference= name.substring(name.indexOf('referencia') + 10, name.length).toLowerCase();
+			var jump= '';
+			switch(reference){
+				case 'debito':
+					jump= 'credito';
+					break;
+				case 'credito':
+					jump= 'transferencia';
+					break;
+				case 'transferencia':
+					jump= 'cheque';
+					break;
+				case 'cheque':
+					jump= 'efectivo';
+					break;
+			} // switch
+			$("#contenedorGrupos\\:" + jump + "_input").focus();
+			var valor= parseFloat($("#contenedorGrupos\\:" + jump + "_input").val()); 
+			if(isNaN(valor) || valor=== 0)
+				$("#contenedorGrupos\\:" + jump + "_input").val('');				
+		},	// jumpNextTypeReference
+		jumpPreviousTypeReference: function(e) {
+			var name= $(e.currentTarget).attr('id');
+			var reference= name.substring(name.indexOf('referencia') + 10, name.length).toLowerCase();
+			var jump= '';
+			switch(reference){
+				case 'debito':
+					jump= 'efectivo';
+					break;
+				case 'credito':
+					jump= 'debito';
+					break;
+				case 'transferencia':
+					jump= 'credito';						
+					break;
+				case 'cheque':
+					jump= 'transferencia';						
+					break;
+			} // switch
+			$("#contenedorGrupos\\:" + jump + "_input").focus();
+			var valor= parseFloat($("#contenedorGrupos\\:" + jump + "_input").val()); 
+			if(isNaN(valor) || valor=== 0)
+				$("#contenedorGrupos\\:" + jump + "_input").val('');				
+		},	// jumpPreviousTypeReference
 		nextOpenTicket: function(focus) {
 			janal.console('jsArticulos.nextOpenTicket');
 			if(!PF('widgetTablaTicketsAbiertos').isEmpty()) {
