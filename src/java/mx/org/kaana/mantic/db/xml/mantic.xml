@@ -507,7 +507,7 @@
         from      
           tc_mantic_ventas_estatus
         where 
-				  id_tipo_venta= 1 and 
+				  id_tipo_documento= 1 and 
           {condicion} 
 				order by 
 				  id_venta_estatus
@@ -4455,7 +4455,7 @@
         from      
           tc_mantic_ventas_estatus
         where 
-				  id_tipo_venta= 2 and 
+				  id_tipo_documento= 2 and 
           {condicion} 
 				order by 
 				  id_venta_estatus
@@ -4466,7 +4466,29 @@
         from      
           tc_mantic_ventas_estatus
         where      
-          nombre = '{nombre}'
+          nombre = '{nombre}' and id_tipo_documento= {idTipoDocumento}
+      </select>
+    </unit>		
+    <unit id="TcManticCotizacionesEstatusDto">
+      <select id="row">
+        select      
+				  tc_mantic_ventas_estatus.id_venta_estatus as id_key,
+          tc_mantic_ventas_estatus.*
+        from      
+          tc_mantic_ventas_estatus
+        where 
+				  id_tipo_documento= 3 and 
+          {condicion} 
+				order by 
+				  id_venta_estatus
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ventas_estatus
+        where      
+          nombre = '{nombre}' and id_tipo_documento= {idTipoDocumento}
       </select>
     </unit>		
 		<unit id="TcManticGruposDto">
