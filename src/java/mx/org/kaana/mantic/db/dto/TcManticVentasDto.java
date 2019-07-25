@@ -110,8 +110,8 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
   private Long idBanco;
   @Column (name="referencia")
   private String referencia;
-	@Column (name="id_tipo_venta")
-  private Long idTipoVenta;
+	@Column (name="id_tipo_documento")
+  private Long idTipoDocumento;
 	@Column (name="candado")
   private Long candado;
 	@Column (name="id_sincronizado")
@@ -138,7 +138,7 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		this(descuentos, idFactura, idCredito, extras, global, utilidad, total, idAlmacen, tipoDeCambio, orden, idAutorizar, idCliente, descuento, ejercicio, consecutivo, idUsuario, impuestos, idUsoCfdi, idSinIva, subTotal, observaciones, idEmpresa, idVenta, dia, idVentaEstatus, cotizacion, ticket, ccotizacion, cticket, vigencia, idManual, idFacturar, cobro, null, null, null, null, null, 2L, 2L);
 	}
 	
-  public TcManticVentasDto(Double descuentos, Long idFactura, Long idCredito, String extras, Double global, Double utilidad, Double total, Long idAlmacen, Double tipoDeCambio, Long orden, Long idAutorizar, Long idCliente, String descuento, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Long idVenta, Date dia, Long idVentaEstatus, String cotizacion, String ticket, Long ccotizacion, Long cticket, Date vigencia, Long idManual, Long idFacturar, Timestamp cobro, Long idClienteDomicilio, Long idTipoMedioPago, Long idTipoPago, Long idBanco, String referencia, Long idTipoVenta, Long candado) {
+  public TcManticVentasDto(Double descuentos, Long idFactura, Long idCredito, String extras, Double global, Double utilidad, Double total, Long idAlmacen, Double tipoDeCambio, Long orden, Long idAutorizar, Long idCliente, String descuento, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Long idVenta, Date dia, Long idVentaEstatus, String cotizacion, String ticket, Long ccotizacion, Long cticket, Date vigencia, Long idManual, Long idFacturar, Timestamp cobro, Long idClienteDomicilio, Long idTipoMedioPago, Long idTipoPago, Long idBanco, String referencia, Long idTipoDocumento, Long candado) {
     setDescuentos(descuentos);
     setIdFactura(idFactura);
     setIdCredito(idCredito);
@@ -178,7 +178,7 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		this.idTipoPago= idTipoPago; 
 		this.idBanco= idBanco;
 		this.referencia= referencia;
-		this.idTipoVenta= idTipoVenta;
+		this.idTipoDocumento= idTipoDocumento;
 		setCandado(candado);
 		this.idSincronizado= 2L;
   }
@@ -495,12 +495,12 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		this.referencia=referencia;
 	}
 
-	public Long getIdTipoVenta() {
-		return idTipoVenta;
+	public Long getIdTipoDocumento() {
+		return idTipoDocumento;
 	}
 
-	public void setIdTipoVenta(Long idTipoVenta) {
-		this.idTipoVenta=idTipoVenta;
+	public void setIdTipoDocumento(Long idTipoDocumento) {
+		this.idTipoDocumento=idTipoDocumento;
 	}
 
 	public Long getCandado() {
@@ -612,7 +612,7 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getReferencia());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdTipoVenta());
+		regresar.append(getIdTipoDocumento());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCandado());
 		regresar.append(Constantes.SEPARADOR);
@@ -663,7 +663,7 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		regresar.put("idTipoPago", getIdTipoPago());
 		regresar.put("idBanco", getIdBanco());
 		regresar.put("referencia", getReferencia());
-		regresar.put("idTipoVenta", getIdTipoVenta());
+		regresar.put("idTipoDocumento", getIdTipoDocumento());
 		regresar.put("candado", getCandado());
 		regresar.put("idSincronizado", getIdSincronizado());
   	return regresar;
@@ -672,7 +672,7 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-			getDescuentos(), getIdFactura(), getIdCredito(), getExtras(), getGlobal(), getUtilidad(), getTotal(), getIdAlmacen(), getTipoDeCambio(), getOrden(), getIdAutorizar(), getIdCliente(), getDescuento(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getIdVenta(), getDia(), getIdVentaEstatus(), getTicket(), getCotizacion(), getTicket(), getCcotizacion(), getVigencia(), getIdManual(), getIdFacturar(), getCobro(), getIdClienteDomicilio(), getIdTipoMedioPago(), getIdTipoPago(), getIdBanco(), getReferencia(), getIdTipoVenta(), getCandado(), getIdSincronizado()
+			getDescuentos(), getIdFactura(), getIdCredito(), getExtras(), getGlobal(), getUtilidad(), getTotal(), getIdAlmacen(), getTipoDeCambio(), getOrden(), getIdAutorizar(), getIdCliente(), getDescuento(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getIdVenta(), getDia(), getIdVentaEstatus(), getTicket(), getCotizacion(), getTicket(), getCcotizacion(), getVigencia(), getIdManual(), getIdFacturar(), getCobro(), getIdClienteDomicilio(), getIdTipoMedioPago(), getIdTipoPago(), getIdBanco(), getReferencia(), getIdTipoDocumento(), getCandado(), getIdSincronizado()
     };
     return regresar;
   }
