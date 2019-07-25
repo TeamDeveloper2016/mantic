@@ -1820,7 +1820,7 @@
 					tc_mantic_facturas ON tc_mantic_ventas.id_factura = tc_mantic_facturas.id_factura
 				where
 					tc_mantic_ventas.id_empresa in ({idEmpresa})
-			    and tc_mantic_ventas.id_tipo_venta= 2
+			    and tc_mantic_ventas.id_tipo_documento= 2
 					and {condicion}
 				{sortOrder}
 			</select>
@@ -2072,7 +2072,7 @@
 					tc_mantic_facturas on tc_mantic_ventas.id_factura = tc_mantic_facturas.id_factura				
 				where
 					tc_mantic_ventas.id_empresa in ({idEmpresa})
-			    and tc_mantic_ventas.id_tipo_venta= 2
+			    and tc_mantic_ventas.id_tipo_documento= 2
 					and {condicion}
 				group by 
 					tc_mantic_ventas.id_venta,
@@ -6962,7 +6962,7 @@
 					tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
 				where
 					tc_mantic_ventas.id_empresa in ({idEmpresa})
-				  and tc_mantic_ventas.id_tipo_venta= 1
+				  and tc_mantic_ventas.id_tipo_documento= 1
 					and {condicion}
 				group by 
 					tc_mantic_ventas.id_venta,
@@ -7423,7 +7423,7 @@
 			</select>
 			<select id="articulosMasUtilidad">
 				select
-					id_key, articulo, total, ((total * 100)/(select sum(utilidad) from tc_mantic_ventas where tc_mantic_ventas.id_tipo_venta= 2 and tc_mantic_ventas.id_venta_estatus in (3,4,9) and {condicionGeneral})) porcentaje
+					id_key, articulo, total, ((total * 100)/(select sum(utilidad) from tc_mantic_ventas where tc_mantic_ventas.id_tipo_documento= 2 and tc_mantic_ventas.id_venta_estatus in (3,4,9) and {condicionGeneral})) porcentaje
 				from(
 				select
 					id_key, articulo, sum(utilidad) total
@@ -7439,7 +7439,7 @@
 					inner join 
 						tc_mantic_articulos on tc_mantic_ventas_detalles.id_articulo = tc_mantic_articulos.id_articulo
 					where
-				    tc_mantic_ventas.id_tipo_venta= 2 and 
+				    tc_mantic_ventas.id_tipo_documento= 2 and 
 						{condicionGeneral}
 				) principal
 				group by 
