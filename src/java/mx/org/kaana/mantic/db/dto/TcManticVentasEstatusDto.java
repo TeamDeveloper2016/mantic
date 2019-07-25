@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -42,6 +36,8 @@ public class TcManticVentasEstatusDto implements IBaseDto, Serializable {
   private String decripcion;
   @Column (name="nombre")
   private String nombre;
+  @Column (name="id_tipo_documento")
+  private Long idTipoDocumento;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_venta_estatus")
@@ -54,15 +50,16 @@ public class TcManticVentasEstatusDto implements IBaseDto, Serializable {
   }
 
   public TcManticVentasEstatusDto(Long key) {
-    this(null, null, null, null, new Long(-1L));
+    this(null, null, null, null, null, new Long(-1L));
     setKey(key);
   }
 
-  public TcManticVentasEstatusDto(Long idJustificacion, String estatusAsociados, String decripcion, String nombre, Long idVentaEstatus) {
+  public TcManticVentasEstatusDto(Long idJustificacion, String estatusAsociados, String decripcion, String nombre, Long idTipoDocumento, Long idVentaEstatus) {
     setIdJustificacion(idJustificacion);
     setEstatusAsociados(estatusAsociados);
     setDecripcion(decripcion);
     setNombre(nombre);
+    setIdTipoDocumento(idTipoDocumento);
     setIdVentaEstatus(idVentaEstatus);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
@@ -97,6 +94,14 @@ public class TcManticVentasEstatusDto implements IBaseDto, Serializable {
 
   public String getNombre() {
     return nombre;
+  }
+
+  public void setIdTipoDocumento(Long idTipoDocumento) {
+    this.idTipoDocumento = idTipoDocumento;
+  }
+
+  public Long getIdTipoDocumento() {
+    return idTipoDocumento;
   }
 
   public void setIdVentaEstatus(Long idVentaEstatus) {
@@ -138,6 +143,8 @@ public class TcManticVentasEstatusDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoDocumento());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdVentaEstatus());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
@@ -152,6 +159,7 @@ public class TcManticVentasEstatusDto implements IBaseDto, Serializable {
 		regresar.put("estatusAsociados", getEstatusAsociados());
 		regresar.put("decripcion", getDecripcion());
 		regresar.put("nombre", getNombre());
+		regresar.put("idTipoDocumento", getIdTipoDocumento());
 		regresar.put("idVentaEstatus", getIdVentaEstatus());
 		regresar.put("registro", getRegistro());
   	return regresar;
@@ -160,7 +168,7 @@ public class TcManticVentasEstatusDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdJustificacion(), getEstatusAsociados(), getDecripcion(), getNombre(), getIdVentaEstatus(), getRegistro()
+    getIdJustificacion(), getEstatusAsociados(), getDecripcion(), getNombre(), getIdTipoDocumento(), getIdVentaEstatus(), getRegistro()
     };
     return regresar;
   }
@@ -218,7 +226,4 @@ public class TcManticVentasEstatusDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdVentaEstatus() != null ? getIdVentaEstatus().hashCode() : 0);
     return hash;
   }
-
 }
-
-
