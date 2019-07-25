@@ -43,6 +43,14 @@
 				return ok;
 			} // validateCapturaDescuentos		
 			
+			function validateFinishVenta(){
+				janal.bloquear();
+				var ok= janal.partial('articulo');
+				if(!ok)
+					janal.desbloquear();
+				return ok;
+			} // validateFinishVenta
+			
 			function descuentoUserFocus(){
 				setTimeout("$('#descuentousr').focus();", 1000);						
 			}
@@ -577,11 +585,11 @@
 				</div>	
 				<div class="ui-grid-col-3 janal-column-right">
 					<div class="lg-pantalla">
-						<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticVentasAccion.doAceptar}" onstart="return janal.partial('articulo', true);" oncomplete="janal.desbloquear()" update="deudor contenido panelCliente panelEmpresa articulos total"/>
+						<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticVentasAccion.doAceptar}" onstart="return validateFinishVenta();" update="deudor contenido panelCliente panelEmpresa articulos total"/>
 						<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticVentasAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 					</div>	
 					<div class="xs-pantalla">
-						<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasAccion.doAceptar}" onstart="return janal.partial('articulo', true);" oncomplete="janal.desbloquear()" update="deudor contenido panelCliente panelEmpresa articulos total"/>
+						<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasAccion.doAceptar}" onstart="return validateFinishVenta();" update="deudor contenido panelCliente panelEmpresa articulos total"/>
 						<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 					</div>		
 				</div>	
