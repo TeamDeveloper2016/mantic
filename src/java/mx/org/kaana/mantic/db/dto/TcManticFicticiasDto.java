@@ -85,8 +85,8 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   private String referencia;
   @Column (name="id_factura")
   private Long idFactura;
-  @Column (name="id_tipo_venta")
-  private Long idTipoVenta;
+  @Column (name="id_tipo_documento")
+  private Long idTipoDocumento;
   @Column (name="id_almacen")
   private Long idAlmacen;
   @Column (name="id_facturar")
@@ -111,7 +111,7 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 	  this(descuentos, idTipoPago, idFicticia, extras, global, total, idFicticiaEstatus, tipoDeCambio, orden, idTipoMedioPago, idCliente, idClienteDomicilio, descuento, idBanco, ejercicio, consecutivo, idUsuario, impuestos, idUsoCfdi, idSinIva, subTotal, observaciones, idEmpresa, dia, referencia, idFactura, 1L);
 	}
 	
-  public TcManticFicticiasDto(Double descuentos, Long idTipoPago, Long idFicticia, String extras, Double global, Double total, Long idFicticiaEstatus, Double tipoDeCambio, Long orden, Long idTipoMedioPago, Long idCliente, Long idClienteDomicilio, String descuento, Long idBanco, Long ejercicio, String consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Date dia, String referencia, Long idFactura, Long idTipoVenta) {
+  public TcManticFicticiasDto(Double descuentos, Long idTipoPago, Long idFicticia, String extras, Double global, Double total, Long idFicticiaEstatus, Double tipoDeCambio, Long orden, Long idTipoMedioPago, Long idCliente, Long idClienteDomicilio, String descuento, Long idBanco, Long ejercicio, String consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Date dia, String referencia, Long idFactura, Long idTipoDocumento) {
     setDescuentos(descuentos);
     setIdTipoPago(idTipoPago);
     setIdFicticia(idFicticia);
@@ -139,7 +139,7 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     setReferencia(referencia);
 		this.idClienteDomicilio= idClienteDomicilio;
 		this.idFactura  = idFactura;
-		this.idTipoVenta= idTipoVenta;
+		this.idTipoDocumento= idTipoDocumento;
 		this.idAlmacen  = 1L;
 		this.idFacturar = 1L;
 		this.ticket     = consecutivo;
@@ -371,12 +371,12 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 		this.idFactura=idFactura;
 	}
 
-	public Long getIdTipoVenta() {
-		return idTipoVenta;
+	public Long getIdTipoDocumento() {
+		return idTipoDocumento;
 	}
 
-	public void setIdTipoVenta(Long idTipoVenta) {
-		this.idTipoVenta=idTipoVenta;
+	public void setIdTipoDocumento(Long idTipoDocumento) {
+		this.idTipoDocumento=idTipoDocumento;
 	}
 
 	public Long getIdAlmacen() {
@@ -488,7 +488,7 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdFactura());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdTipoVenta());
+		regresar.append(getIdTipoDocumento());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdAlmacen());
 		regresar.append(Constantes.SEPARADOR);
@@ -533,7 +533,7 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 		regresar.put("dia", getDia());
 		regresar.put("referencia", getReferencia());
 		regresar.put("idFactura", getIdFactura());
-		regresar.put("idTipoVenta", getIdTipoVenta());
+		regresar.put("idTipoDocumento", getIdTipoDocumento());
 		regresar.put("idAlmacen", getIdAlmacen());
 		regresar.put("idFacturar", getIdFacturar());
 		regresar.put("ticket", getTicket());
@@ -546,7 +546,7 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getDescuentos(), getIdTipoPago(), getIdFicticia(), getExtras(), getGlobal(), getTotal(), getIdFicticiaEstatus(), getTipoDeCambio(), getOrden(), getIdTipoMedioPago(), getIdCliente(), getIdClienteDomicilio(), getDescuento(), getIdBanco(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getDia(), getReferencia(), getIdFactura(), getIdTipoVenta(), getIdAlmacen(), getIdFacturar(), getTicket(), getCticket(), getUtilidad()
+      getDescuentos(), getIdTipoPago(), getIdFicticia(), getExtras(), getGlobal(), getTotal(), getIdFicticiaEstatus(), getTipoDeCambio(), getOrden(), getIdTipoMedioPago(), getIdCliente(), getIdClienteDomicilio(), getDescuento(), getIdBanco(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getDia(), getReferencia(), getIdFactura(), getIdTipoDocumento(), getIdAlmacen(), getIdFacturar(), getTicket(), getCticket(), getUtilidad()
     };
     return regresar;
   }
