@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="Generar/Modificar/Consultar una facturas"/>
+	<ui:param name="titulo" value="Generar/Modificar/Consultar una cotización"/>
 	<ui:param name="janalBackingPage" value="#{manticCotizacionesAccion}"/>
   <ui:param name="janalEventPage" value="doGlobalEvent"	/>
 	<ui:param name="notIsCaja" value="false" class="javax.faces.Boolean"/>
@@ -139,7 +139,7 @@
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 ui-panel-titlebar ui-widget-header ui-helper-clearfix ui-corner-all">
-					<span class="ui-panel-title">[F12] Mostrar y/o ocultar los datos de facturación</span>
+					<span class="ui-panel-title">[F12] Mostrar y/o ocultar los datos de la cotización</span>
 					<a href="#" id="janal-icon-minus" class="ui-panel-titlebar-icon ui-corner-all ui-state-default janal-icon-click" style="display: none"><span class="ui-icon ui-icon-minusthick"></span></a>
 					<a href="#" id="janal-icon-plus" class="ui-panel-titlebar-icon ui-corner-all ui-state-default janal-icon-click"><span class="ui-icon ui-icon-plusthick"></span></a>
 				</div>	
