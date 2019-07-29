@@ -29,8 +29,6 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
-import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.comun.JuntarReporte;
 import mx.org.kaana.mantic.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
@@ -38,7 +36,6 @@ import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
 import mx.org.kaana.mantic.enums.EEstatusFicticias;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
-import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
 import mx.org.kaana.mantic.facturas.comun.FiltroFactura;
 import org.apache.commons.logging.Log;
@@ -184,7 +181,7 @@ public class Filtro extends FiltroFactura implements Serializable {
       columns.add(new Columna("limiteCredito", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
 			columns.remove(0);
 			columns.remove(1);
-      this.attrs.put("estatusFiltro", (List<UISelectEntity>) UIEntity.build("TcManticFicticiasEstatusDto", "row", params, columns));
+      this.attrs.put("estatusFiltro", (List<UISelectEntity>) UIEntity.build("TcManticCotizacionesEstatusDto", "row", params, columns));
 			this.attrs.put("idFicticiaEstatus", new UISelectEntity("-1"));
     } // try
     catch (Exception e) {
@@ -287,34 +284,16 @@ public class Filtro extends FiltroFactura implements Serializable {
   } // doReporte	
 	
 	public void doLoadEstatus() {
-		Entity seleccionado               = null;
-		Map<String, Object>params         = null;
-		List<UISelectItem> allEstatus     = null;
-		MotorBusquedaCatalogos motor      = null; 
-		List<ClienteTipoContacto>contactos= null;
-		Correo correoAdd                  = null;
+		Entity seleccionado          = null;
+		Map<String, Object>params    = null;
+		List<UISelectItem> allEstatus= null;		
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_venta_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
-			allEstatus= UISelect.build("TcManticFicticiasEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
+			allEstatus= UISelect.build("TcManticCotizacionesEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
-			this.attrs.put("estatus", allEstatus.get(0).getValue().toString());
-			motor= new MotorBusqueda(-1L, seleccionado.toLong("idCliente"));
-			contactos= motor.toClientesTipoContacto();
-			LOG.warn("Inicializando listas de correos y seleccionados");
-			getCorreos().clear();
-			getSelectedCorreos().clear();
-			LOG.warn("Total de contactos" + contactos.size());
-			for(ClienteTipoContacto contacto: contactos){
-				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())){
-					correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor());
-					getCorreos().add(correoAdd);		
-					getSelectedCorreos().add(correoAdd);
-				} // if
-			} // for
-			LOG.warn("Agregando correo default");
-			getCorreos().add(new Correo(-1L, ""));
+			this.attrs.put("estatus", allEstatus.get(0).getValue().toString());									
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
