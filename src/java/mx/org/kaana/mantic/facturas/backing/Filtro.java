@@ -399,9 +399,75 @@ public class Filtro extends FiltroFactura implements Serializable {
 	  if(this.attrs.get("montoTermino")!= null && this.attrs.get("montoInicio")== null)
 			this.attrs.put("montoInicio", this.attrs.get("montoTermino"));
 	} // doMontoUpdate
-		
+	
+	public void doUpdateCodigos() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
+    try {
+			params= new HashMap<>();
+			columns= new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			String search= (String)this.attrs.get("codigoCodigo"); 
+			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";
+			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+				params.put("sucursales", this.attrs.get("idEmpresa"));
+			else
+				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("idProveedor", -1L);			
+  		params.put("codigo", search);			
+      this.attrs.put("codigos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}	// doUpdateCodigos
+
+	public List<UISelectEntity> doCompleteCodigo(String query) {
+		this.attrs.put("codigoCodigo", query);
+    this.doUpdateCodigos();		
+		return (List<UISelectEntity>)this.attrs.get("codigos");
+	}	// doCompleteCodigo
+
+	private void toFindCodigo(UISelectEntity seleccion) {
+		List<UISelectEntity> codigo= null;
+		MotorBusqueda motorBusqueda= null;
+		try {
+			codigo= new ArrayList<>();
+			codigo.add(seleccion);
+			motorBusqueda= new mx.org.kaana.mantic.ventas.reglas.MotorBusqueda(-1L);
+			codigo.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
+			this.attrs.put("codigosSeleccion", codigo);
+			this.attrs.put("codigoSeleccion", seleccion);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // toFindCodigo
+
+	public void doAsignaCodigo(SelectEvent event) {
+		UISelectEntity seleccion    = null;
+		List<UISelectEntity> codigos= null;
+		try {
+			codigos= (List<UISelectEntity>) this.attrs.get("codigos");
+			seleccion= codigos.get(codigos.indexOf((UISelectEntity)event.getObject()));
+			this.toFindCodigo(seleccion);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doAsignaCodigo
+	
 	@Override
 	protected void finalize() throws Throwable {
     super.finalize();		
 	}	// finalize
+	
 }
