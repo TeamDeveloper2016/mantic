@@ -65,9 +65,9 @@
                 </p:column>   
               </p:selectOneMenu>
               <p:outputLabel for="consecutivo" value="No. factura:"/>
-              <p:inputText id="consecutivo" value="#{manticFacturasFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>               
+              <p:inputText id="consecutivo" placeholder="ej. 20190000001" value="#{manticFacturasFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>               
               <p:outputLabel for="folio" value="No. folio:"/>
-              <p:inputText id="folio" placeholder="ej. 20190000001" value="#{manticFacturasFiltro.attrs.folio}" styleClass="janal-wid-100-txt"/>               
+              <p:inputText id="folio" value="#{manticFacturasFiltro.attrs.folio}" styleClass="janal-wid-100-txt"/>               
               <p:outputLabel for="razonSocial" value="Cliente:"/>
               <p:autoComplete id="razonSocial" placeholder="RFC o nombre" var="customCliente" itemLabel="#{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticFacturasFiltro.attrs.cliente}" completeMethod="#{manticFacturasFiltro.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
 								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticFacturasFiltro.doAsignaCliente}" oncomplete="janal.desbloquear();"/>
@@ -84,7 +84,7 @@
 							</p:autoComplete>	
               <p:outputLabel for="codigo" value="Código:"/>
               <p:autoComplete id="codigo" placeholder="ej. CT123" var="customCodigo" itemLabel="#{customCodigo.propio}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{customCodigo}" value="#{manticFacturasFiltro.attrs.codigo}" completeMethod="#{manticFacturasFiltro.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
-c								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticFacturasFiltro.doAsignaCodigo}" oncomplete="janal.desbloquear();"/>
+								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticFacturasFiltro.doAsignaCodigo}" oncomplete="janal.desbloquear();"/>
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
 										<h:outputText value="Código" />

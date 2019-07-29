@@ -260,9 +260,9 @@ public abstract class FiltroFactura extends IBaseFilter{
 		UISelectEntity estatus= (UISelectEntity) this.attrs.get("idFicticiaEstatus");
 		if(!Cadena.isVacio(JsfBase.getParametro("codigo_input"))) 
 	 	  sb.append("tc_mantic_ventas_detalles.codigo regexp '.*").append(JsfBase.getParametro("codigo_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");
-		else 
-		  if(!Cadena.isVacio(this.attrs.get("codigo")) && !this.attrs.get("codigo").toString().equals("-1"))
-			  sb.append("(upper(tc_mantic_ventas_detalles.codigo) like upper('%").append(((Entity)this.attrs.get("codigo")).getKey()).append("%')) and ");					
+//		else 
+//		  if(!Cadena.isVacio(this.attrs.get("codigo")) && !this.attrs.get("codigo").toString().equals("-1"))
+//			  sb.append("(upper(tc_mantic_ventas_detalles.codigo) like upper('%").append(((Entity)this.attrs.get("codigo")).getKey()).append("%')) and ");					
 		if(!Cadena.isVacio(this.attrs.get("articulo")))
   		sb.append("(upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(this.attrs.get("articulo")).append("%')) and ");
 		if(!Cadena.isVacio(this.attrs.get("razonSocial")) && !this.attrs.get("razonSocial").toString().equals("-1"))
