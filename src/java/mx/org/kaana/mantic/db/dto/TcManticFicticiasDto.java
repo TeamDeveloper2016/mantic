@@ -97,6 +97,12 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   private Long cticket;
   @Column (name="utilidad")
   private Double utilidad;
+	@Column (name="vigencia")
+  private Date vigencia;
+	@Column (name="ccotizacion")
+  private Long ccotizacion;
+	@Column (name="cotizacion")
+  private String cotizacion;
 
   public TcManticFicticiasDto() {
     this(new Long(-1L));
@@ -112,6 +118,10 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 	}
 	
   public TcManticFicticiasDto(Double descuentos, Long idTipoPago, Long idFicticia, String extras, Double global, Double total, Long idFicticiaEstatus, Double tipoDeCambio, Long orden, Long idTipoMedioPago, Long idCliente, Long idClienteDomicilio, String descuento, Long idBanco, Long ejercicio, String consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Date dia, String referencia, Long idFactura, Long idTipoDocumento) {
+		this(descuentos, idTipoPago, idFicticia, extras, global, total, idFicticiaEstatus, tipoDeCambio, orden, idTipoMedioPago, idCliente, idClienteDomicilio, descuento, idBanco, ejercicio, consecutivo, idUsuario, impuestos, idUsoCfdi, idSinIva, subTotal, observaciones, idEmpresa, dia, referencia, idFactura, idTipoDocumento, null, null);
+	}
+	
+  public TcManticFicticiasDto(Double descuentos, Long idTipoPago, Long idFicticia, String extras, Double global, Double total, Long idFicticiaEstatus, Double tipoDeCambio, Long orden, Long idTipoMedioPago, Long idCliente, Long idClienteDomicilio, String descuento, Long idBanco, Long ejercicio, String consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Date dia, String referencia, Long idFactura, Long idTipoDocumento, Long ccotizacion, String cotizacion) {
     setDescuentos(descuentos);
     setIdTipoPago(idTipoPago);
     setIdFicticia(idFicticia);
@@ -127,6 +137,7 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     setIdBanco(idBanco);
     setEjercicio(ejercicio);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setVigencia(new Date(Calendar.getInstance().getTimeInMillis()));
     setConsecutivo(consecutivo);
     setIdUsuario(idUsuario);
     setImpuestos(impuestos);
@@ -145,6 +156,8 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 		this.ticket     = consecutivo;
 		this.cticket    = orden;
 		this.utilidad   = 0D;
+		setCotizacion(cotizacion);
+		setCcotizacion(ccotizacion);
   }
 	
   public void setDescuentos(Double descuentos) {
@@ -419,6 +432,30 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 		this.utilidad=utilidad;
 	}
 
+		public Date getVigencia() {
+		return vigencia;
+	}
+
+	public void setVigencia(Date vigencia) {
+		this.vigencia = vigencia;
+	}
+	
+	public Long getCcotizacion() {
+		return ccotizacion;
+	}
+
+	public void setCcotizacion(Long ccotizacion) {
+		this.ccotizacion = ccotizacion;
+	}
+	
+	public String getCotizacion() {
+		return cotizacion;
+	}
+
+	public void setCotizacion(String cotizacion) {
+		this.cotizacion = cotizacion;
+	}	
+	
   @Transient
   @Override
   public Long getKey() {
@@ -499,6 +536,12 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 		regresar.append(getCticket());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getUtilidad());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getVigencia());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCotizacion());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCcotizacion());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -540,13 +583,16 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 		regresar.put("cticket", getCticket());
 		regresar.put("utilidad", getUtilidad());
 		regresar.put("idVenta", getIdVenta());
+		regresar.put("vigencia", getVigencia());
+		regresar.put("cotizacion", getCotizacion());
+		regresar.put("ccotizacion", getCcotizacion());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getDescuentos(), getIdTipoPago(), getIdFicticia(), getExtras(), getGlobal(), getTotal(), getIdFicticiaEstatus(), getTipoDeCambio(), getOrden(), getIdTipoMedioPago(), getIdCliente(), getIdClienteDomicilio(), getDescuento(), getIdBanco(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getDia(), getReferencia(), getIdFactura(), getIdTipoDocumento(), getIdAlmacen(), getIdFacturar(), getTicket(), getCticket(), getUtilidad()
+      getDescuentos(), getIdTipoPago(), getIdFicticia(), getExtras(), getGlobal(), getTotal(), getIdFicticiaEstatus(), getTipoDeCambio(), getOrden(), getIdTipoMedioPago(), getIdCliente(), getIdClienteDomicilio(), getDescuento(), getIdBanco(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getDia(), getReferencia(), getIdFactura(), getIdTipoDocumento(), getIdAlmacen(), getIdFacturar(), getTicket(), getCticket(), getUtilidad(), getVigencia(), getCotizacion(), getCcotizacion()
     };
     return regresar;
   }
