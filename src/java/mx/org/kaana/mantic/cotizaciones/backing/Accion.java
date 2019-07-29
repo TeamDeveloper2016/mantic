@@ -243,16 +243,16 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(eaccion)) {
 				if(eaccion.equals(EAccion.AGREGAR)) { 				  
-    			UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la factura ', '"+ ((CotizacionFicticia)this.getAdminOrden().getOrden()).getTicket()+ "');");
+    			UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la cotización ', '"+ ((CotizacionFicticia)this.getAdminOrden().getOrden()).getTicket()+ "');");
 					this.init();
 				} // if	
 				if(eaccion.equals(EAccion.MODIFICAR))
-				  JsfBase.addMessage("Se modificó la factura con consecutivo ["+ ((CotizacionFicticia)this.getAdminOrden().getOrden()).getTicket()+ "].", ETipoMensaje.INFORMACION);
+				  JsfBase.addMessage("Se modificó la cotización con consecutivo ["+ ((CotizacionFicticia)this.getAdminOrden().getOrden()).getTicket()+ "].", ETipoMensaje.INFORMACION);
 				regresar= (this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString() : "filtro").concat(Constantes.REDIRECIONAR);
   			JsfBase.setFlashAttribute("idFicticia", ((CotizacionFicticia)this.getAdminOrden().getOrden()).getIdFicticia());				
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la factura.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar la cotización.", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -788,7 +788,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 				JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
 			} // else
 			JsfBase.setFlashAttribute("observaciones", this.attrs.get("observaciones"));								
-			JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Facturas/accion.jsf");								
+			JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Cotizaciones/accion.jsf");								
 			regresar= "/Paginas/Mantic/Ventas/cliente.jsf".concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
@@ -901,11 +901,11 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			transaccion = new Transaccion(((CotizacionFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.attrs.get("observaciones").toString());			
 			if (transaccion.ejecutar(eaccion)){ 
 				if(eaccion.equals(EAccion.AGREGAR))
-					UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la factura ', '"+ ((CotizacionFicticia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+					UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la cotización ', '"+ ((CotizacionFicticia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
   			JsfBase.setFlashAttribute("idFicticia", ((CotizacionFicticia)this.getAdminOrden().getOrden()).getIdFicticia());							
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la factura.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar la cotización.", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
