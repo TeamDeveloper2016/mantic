@@ -163,7 +163,7 @@
 							</p:column>   
 						</p:selectOneMenu>
 					</p:panelGrid>					
-					<p:panelGrid id="panelCliente" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-24, janal-wid-8, janal-wid-70">												
+					<p:panelGrid id="panelCliente" columns="4" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-24, janal-wid-8, janal-wid-50, janal-wid-20">												
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 							<p:outputLabel for="clientes" value="Buscar cliente:"/>							
 							<p:autoComplete id="clientes" placeholder="RFC o nombre" widgetVar="listadoClientes" var="customCliente" itemLabel="#{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticCotizacionesAccion.attrs.cliente}" completeMethod="#{manticCotizacionesAccion.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
@@ -203,6 +203,10 @@
 									<h:outputText value="#{item.razonSocial}"/>
 								</p:column>   
 							</p:selectOneMenu>
+						</p:panelGrid>
+						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+							<p:outputLabel for="vigencia" value="Vigencia:"/>
+							<p:calendar id="vigencia" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticCotizacionesAccion.attrs.vigencia}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 						</p:panelGrid>						
 					</p:panelGrid>	
 					
