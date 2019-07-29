@@ -16,7 +16,6 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
-import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDetallesDto;
@@ -124,7 +123,11 @@ public class Transaccion extends TransaccionFactura {
 		boolean regresar     = false;
 		Siguiente consecutivo= null;
 		Siguiente cuenta     = null;				
-		try {											
+		Siguiente siguiente  = null;		
+		try {						
+			siguiente= this.toSiguienteCotizacion(sesion);
+			this.orden.setCcotizacion(siguiente.getOrden());
+			this.orden.setCotizacion(siguiente.getConsecutivo());
 			consecutivo= this.toSiguiente(sesion);			
 			this.orden.setTicket(consecutivo.getConsecutivo());			
 			this.orden.setCticket(consecutivo.getOrden());			
@@ -133,6 +136,7 @@ public class Transaccion extends TransaccionFactura {
 			this.orden.setOrden(cuenta.getOrden());
 			this.orden.setIdFicticiaEstatus(idEstatusFicticia);
 			this.orden.setEjercicio(new Long(Fecha.getAnioActual()));									
+			this.orden.setObservaciones(this.justificacion);
 			if(DaoFactory.getInstance().insert(sesion, this.orden)>= 1L) {				
 				regresar= registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "");
 				this.toFillArticulos(sesion);				
@@ -144,25 +148,41 @@ public class Transaccion extends TransaccionFactura {
 		return regresar;
 	} // registrarFicticia
 	
+	private Siguiente toSiguienteCotizacion(Session sesion) throws Exception {
+		Siguiente regresar        = null;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("ejercicio", this.getCurrentYear());
+			params.put("idEmpresa", this.orden.getIdEmpresa());
+			params.put("operador", this.getCurrentSign());
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticVentasDto", "siguienteCotizacion", params, "siguiente");
+			if(next.getData()!= null)
+				regresar= new Siguiente(next.toLong());
+			else
+				regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 10001L: 1L);
+		} // try		
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toSiguiente
+	
 	private boolean actualizarFicticia(Session sesion, Long idEstatusFicticia) throws Exception{
-		boolean regresar           = false;
-		Map<String, Object>params  = null;
-		TcManticFacturasDto factura=null;
+		boolean regresar         = false;
+		Map<String, Object>params= null;		
 		try {						
+			this.orden.setObservaciones(this.justificacion);
 			this.orden.setIdFicticiaEstatus(idEstatusFicticia);						
 			regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 			params= new HashMap<>();
-			params.put("idVenta", this.orden.getIdVenta());
-			factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "VistaFicticiasDto", "factura", params);
-			factura.setObservaciones(this.justificacion);
-			if(DaoFactory.getInstance().update(sesion, factura)>= 1L){
-				if(registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "")) {
-					params= new HashMap<>();
-					params.put("idFicticia", this.orden.getIdFicticia());
-					regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticFicticiasDetallesDto.class, params)>= 0;
-					toFillArticulos(sesion);
-				} // if
-			} // if
+			params.put("idVenta", this.orden.getIdVenta());						
+			if(registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "")) {
+				params= new HashMap<>();
+				params.put("idFicticia", this.orden.getIdFicticia());
+				regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticFicticiasDetallesDto.class, params)>= 0;
+				toFillArticulos(sesion);
+			} // if			
 		} // try
 		catch (Exception e) {			
 			throw e;

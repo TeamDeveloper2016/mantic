@@ -1,7 +1,9 @@
 package mx.org.kaana.mantic.cotizaciones.backing;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +33,6 @@ import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.cotizaciones.beans.CotizacionFicticia;
 import mx.org.kaana.mantic.cotizaciones.reglas.AdminCotizaciones;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
-import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.ventas.beans.SaldoCliente;
 import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
@@ -108,6 +109,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("observaciones", JsfBase.getFlashAttribute("observaciones")== null? "" : JsfBase.getFlashAttribute("observaciones"));
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.isAdminEncuestaOrAdmin());
+			this.attrs.put("vigencia", new Date(Calendar.getInstance().getTimeInMillis()));
 			loadClienteDefault();
 			if(JsfBase.isAdminEncuestaOrAdmin())
 				loadSucursales();
@@ -125,11 +127,10 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 
 	@Override
   public void doLoad() {
-    EAccion eaccion            = null;
-		Long idCliente             = -1L;
-		Long idClienteDomicilio    = -1L;
-		TcManticFacturasDto factura= null;
-		this.saldoCliente          = new SaldoCliente();
+    EAccion eaccion        = null;
+		Long idCliente         = -1L;
+		Long idClienteDomicilio= -1L;		
+		this.saldoCliente      = new SaldoCliente();
     try {
       eaccion= (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
@@ -145,9 +146,9 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
         case CONSULTAR:			
           this.setAdminOrden(new AdminCotizaciones((CotizacionFicticia)DaoFactory.getInstance().toEntity(CotizacionFicticia.class, "VistaFicticiasDto", "ficticia", this.attrs)));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));					
-					this.attrs.put("consecutivo", ((CotizacionFicticia)this.getAdminOrden().getOrden()).getConsecutivo());	
-					factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(TcManticFacturasDto.class, ((CotizacionFicticia)this.getAdminOrden().getOrden()).getIdFactura());
-					this.attrs.put("observaciones", factura.getObservaciones());					
+					this.attrs.put("consecutivo", ((CotizacionFicticia)this.getAdminOrden().getOrden()).getConsecutivo());						
+					this.attrs.put("observaciones", ((CotizacionFicticia)this.getAdminOrden().getOrden()).getObservaciones());						
+					this.attrs.put("vigencia", ((CotizacionFicticia)getAdminOrden().getOrden()).getVigencia());
 					idCliente= ((CotizacionFicticia)getAdminOrden().getOrden()).getIdCliente();
 					if(idCliente!= null && !idCliente.equals(-1L)){
 						doAsignaClienteInicial(idCliente);
@@ -378,6 +379,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	private void loadOrdenVenta() {
 		// this.getAdminOrden().toCheckTotales();
 		UISelectEntity cliente = (UISelectEntity) this.attrs.get("clienteSeleccion");			
+		((CotizacionFicticia)this.getAdminOrden().getOrden()).setVigencia((Date)this.attrs.get("vigencia"));
 		((CotizacionFicticia)this.getAdminOrden().getOrden()).setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));
 		((CotizacionFicticia)this.getAdminOrden().getOrden()).setIdCliente(cliente.getKey());
 		((CotizacionFicticia)this.getAdminOrden().getOrden()).setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
