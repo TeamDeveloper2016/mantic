@@ -138,16 +138,4 @@
 		</div>		
 	</ui:define>
   <ui:param name="updateComponent" value="tabla"/>	
-	<ui:define name="dialogos">
-		<p:dialog id="dialogoArticulo" widgetVar="dlgArticulo" header="Imagen del articulo" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();" width="50%">			
-			<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt janal-colum-center" columnClasses="TexAlCenter">
-				<p:outputLabel value="#{manticCatalogosArticulosImagenes.attrs.nombre}" styleClass="janal-color-orange"/>
-				<p:graphicImage value="#{manticCatalogosArticulosImagenes.pivote}" styleClass="janal-logo-mini" width="350" height="230" stream="false"/>
-			</p:panelGrid>
-			<hr class="ui-widget-content"/>
-			<div class="janal-line-button">				
-				<p:commandButton icon="fa fa-close" process="@none" accesskey="r" value="Cerrar" onstart="PF('dlgArticulo').hide();" oncomplete="janal.desbloquear();"/>
-			</div>
-		</p:dialog>
-	</ui:define>
 </ui:composition>
