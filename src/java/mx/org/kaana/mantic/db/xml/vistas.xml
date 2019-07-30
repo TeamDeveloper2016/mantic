@@ -1848,6 +1848,7 @@
 					tc_mantic_personas.cuenta,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno),
 					tc_mantic_clientes.id_credito,
+					if(tc_mantic_facturas.folio is null, 0, 1),
 				  tc_mantic_facturas.id_facturama,
 				  tc_mantic_facturas.sello_sat
 				{sortOrder}
