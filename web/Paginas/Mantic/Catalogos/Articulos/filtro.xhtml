@@ -50,8 +50,18 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
-							<p:outputLabel for="codigo" value="Código:"/>
-							<p:inputText id="codigo" value="#{manticCatalogosArticulosFiltro.attrs.codigo}" styleClass="janal-wid-100-txt"/>              							
+              <p:outputLabel for="codigo" value="Código:"/>
+              <p:autoComplete id="codigo" placeholder="ej. CT123" var="customCodigo" itemLabel="#{customCodigo.propio}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{customCodigo}" value="#{manticCatalogosArticulosFiltro.attrs.codigo}" completeMethod="#{manticCatalogosArticulosFiltro.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
+								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticCatalogosArticulosFiltro.doAsignaCodigo}" oncomplete="janal.desbloquear();"/>
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
+										<h:outputText value="Código" />
+										<h:outputText value="#{customCodigo.propio}"/>
+										<h:outputText value="Nombre:" />
+										<h:outputText value="#{customCodigo.nombre}"/>
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
 							<p:outputLabel for="nombre" value="Nombre:"/>							
 							<p:autoComplete id="nombre" var="custom" placeholder="Nombre articulo" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosArticulosFiltro.attrs.nombre}" completeMethod="#{manticCatalogosArticulosFiltro.doCompleteArticuloFiltro}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">									
 								<f:facet name="itemtip">
@@ -193,9 +203,10 @@
 								<h:outputText value="#{row['stock']}"/>
 							</p:column>					
 							<p:column headerText="Imagen" styleClass="janal-column-center janal-wid-5">
-								<p:commandLink actionListener="#{manticCatalogosArticulosFiltro.doPrepareImage(row.alias.toString, row.nombre.toString)}" process="@this" update="dialogoArticulo" onstart="return janal.bloquear();" oncomplete="PF('dlgArticulo').show();" rendered="#{row.idImagen.toLong ne 0}">
+                <a id="source-image" data-magnify="gallery" data-caption="#{row.nombre.toString}" data-group="icon-image" href="" title="Click para ver más grande la imagen" style="display: #{row.idImagen.toLong eq 0? 'none': ''}">
+								  <p:graphicImage id="icon-image" cache="false" value="#{manticCatalogosArticulosFiltro.doPrepareImage(row)}" styleClass="janal-logo-mini filas" width="8" height="5" stream="false" rendered="#{row.idImagen.toLong ne 0}"/>
 									<i class="fa fa-fw fa-lg fa-file-image-o janal-color-red" style="display: #{row.idImagen.toLong eq 0? 'none': ''}" title="El articulo tiene imagen asociada, click para ver la imagen !"/>
-								</p:commandLink>
+								</a>	
 							</p:column>   
 							<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
 								<h:graphicImage library="janal" name="icon/semaforos/#{row.idFacturama eq '-1' ? 'circulo-gris.png': 'circulo-verde.png'}" title="Articulo #{row.idFacturama eq '-1' ? 'NO': ''} registrado en facturama"/>
@@ -241,15 +252,5 @@
 			<ui:param name="dialogo" value="articulos"/>
 			<ui:param name="seleccionado" value="#{manticCatalogosArticulosFiltro.attrs.seleccionado}"/>
 		</ui:include>
-		<p:dialog id="dialogoArticulo" widgetVar="dlgArticulo" header="Imagen del articulo" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();" width="50%">			
-			<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt janal-colum-center" columnClasses="TexAlCenter">
-				<p:outputLabel value="#{manticCatalogosArticulosFiltro.attrs.nombre}" styleClass="janal-color-orange"/>
-				<p:graphicImage value="#{manticCatalogosArticulosFiltro.image}" styleClass="janal-logo-mini" width="350" height="230" stream="false"/>
-			</p:panelGrid>
-			<hr class="ui-widget-content"/>
-			<div class="janal-line-button">				
-				<p:commandButton icon="fa fa-close" process="@none" accesskey="r" value="Cerrar" onstart="PF('dlgArticulo').hide();" oncomplete="janal.desbloquear();"/>
-			</div>
-		</p:dialog>
 	</ui:define>
 </ui:composition>

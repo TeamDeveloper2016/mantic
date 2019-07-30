@@ -126,8 +126,8 @@ public class Filtro extends Comun implements Serializable {
 		StringBuilder sb            = null;
 		try {
 			sb= new StringBuilder("tc_mantic_articulos.id_articulo_tipo=").append(this.attrs.get("idTipoArticulo")).append(" and ");			
-			if(!Cadena.isVacio(this.attrs.get("codigo")))
-				sb.append("upper(tc_mantic_articulos_codigos.codigo) like upper('%").append(this.attrs.get("codigo")).append("%') and ");						
+			if(!Cadena.isVacio(JsfBase.getParametro("codigo_input")))
+				sb.append("upper(tc_mantic_articulos_codigos.codigo) like upper('%").append(JsfBase.getParametro("codigo_input")).append("%') and ");						
 			if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L) 
 				sb.append("tc_mantic_articulos.id_articulo=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");						
   		else 
@@ -346,15 +346,16 @@ public class Filtro extends Comun implements Serializable {
     return "/Paginas/Mantic/Catalogos/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	} // doMasivo	
 	
-	public void doPrepareImage(String alias, String nombre) {
+	public StreamedContent doPrepareImage(Entity row) {
+		StreamedContent regresar= null;
 		try {
-			this.attrs.put("nombre", nombre);
-			this.image= LoadImages.getFile(alias);
+			this.image= LoadImages.getImage(row.toLong("idKey"));
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
 			JsfBase.addMessageError(e);
     } // catch   
+		return regresar;
 	}
 	
 	public String doReplicar() {
@@ -421,5 +422,53 @@ public class Filtro extends Comun implements Serializable {
 		File outputfile = new File("d:/codigo-qr.jpg");
 		ImageIO.write(qrImage, "jpg", outputfile);
 	}
+
+	public void doUpdateCodigos() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
+    try {
+			params= new HashMap<>();
+			columns= new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			String search= (String)this.attrs.get("codigoCodigo"); 
+			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";
+			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+				params.put("sucursales", this.attrs.get("idEmpresa"));
+			else
+				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("idProveedor", -1L);			
+  		params.put("codigo", search);			
+      this.attrs.put("codigos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}	// doUpdateCodigos
+
+	public List<UISelectEntity> doCompleteCodigo(String query) {
+		this.attrs.put("codigoCodigo", query);
+    this.doUpdateCodigos();		
+		return (List<UISelectEntity>)this.attrs.get("codigos");
+	}	// doCompleteCodigo
+
+	public void doAsignaCodigo(SelectEvent event) {
+		UISelectEntity seleccion    = null;
+		List<UISelectEntity> codigos= null;
+		try {
+			codigos= (List<UISelectEntity>) this.attrs.get("codigos");
+			seleccion= codigos.get(codigos.indexOf((UISelectEntity)event.getObject()));
+			this.attrs.put("codigoSeleccion", seleccion);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doAsignaCodigo	
 	
 }
