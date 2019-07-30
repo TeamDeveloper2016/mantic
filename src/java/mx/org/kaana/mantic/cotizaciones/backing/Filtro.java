@@ -281,6 +281,7 @@ public class Filtro extends FiltroFactura implements Serializable {
       reporteSeleccion= EReportes.valueOf(nombre);
       if(reporteSeleccion.equals(EReportes.COTIZACION_DETALLE)){
         seleccionado = ((Entity)this.attrs.get("seleccionado"));
+        params.put("letra", "F");
         params.put("idCliente", seleccionado.get("id_cliente"));
         params.put("cliente", seleccionado.get("cliente"));
         params.put("idVenta", seleccionado.toLong("idKey"));
