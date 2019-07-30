@@ -320,7 +320,7 @@
       <select id="ventas">
         select 
           tc_mantic_ventas.id_venta id_key,
-          tc_mantic_ventas.{campoConsecutivo} as consecutivo,
+          concat('{letra}',tc_mantic_ventas.{campoConsecutivo}) as consecutivo,
           tc_mantic_ventas.descuento descuento_venta,
           tc_mantic_ventas.extras extras_venta,
           tc_mantic_ventas.descuentos descuentos_venta,
