@@ -16,6 +16,14 @@
 				'articulos': {multiple: '$', validaciones: 'requerido|mayor({"cuanto":0})', mascara: 'libre', mensaje: 'Se tiene que seleccionar por lo menos un articulo'}
 			};				
 
+			function reload() {
+				$('.janal-control-imagen').each(function(index, item) {
+					var name= $(this).attr('id').replace('source-image', 'icon-image', 'gi').replace(/[:]/g, '\\:');
+					janal.console('Reload image: '+ name);
+					$(this).attr('href', $('#'+ name).attr('src'));
+ 			  });
+			};					
+
 	    $(document).ready(function() {
 				$('#source-image').attr('href', $('#icon-image').attr('src'));
 				setTimeout("$('#codigos_input').focus();", 1000);
@@ -46,7 +54,7 @@
 						</div>
 						<div class="ui-grid-col-11">
 							<p:autoComplete id="codigos" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosArticulosImagenes.attrs.custom}" completeMethod="#{manticCatalogosArticulosImagenes.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
-								<p:ajax event="itemSelect" oncomplete="jsKardex.close();"/>
+								<p:ajax event="itemSelect" oncomplete="jsKardex.close();setTimeout('reload()', 1000);"/>
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
 										<f:facet name="header" class="TexAlCenter">
@@ -103,9 +111,9 @@
 							<h:outputText value="#{row.nombre}"/>
 						</p:column>   
 						<p:column headerText="Imagen" styleClass="janal-column-center janal-wid-5">
-							<p:commandLink actionListener="#{manticCatalogosArticulosImagenes.doPrepareImage(row.alias, row.nombre)}" process="@this" update="dialogoArticulo" onstart="return janal.bloquear();" oncomplete="PF('dlgArticulo').show();" rendered="#{row.cantidad ne 0}">
-							  <i class="fa fa-fw fa-lg fa-file-image-o janal-color-red" style="display: #{row.cantidad eq 0? 'none': ''}" title="El articulo tiene imagen asociada, click para ver la imagen !"/>
-							</p:commandLink>
+							<a id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row.nombre}" data-group="icon-image" href="" title="Click para ver más grande la imagen" style="display: #{row.cantidad eq 0? 'none': ''}">
+								<p:graphicImage id="icon-image" cache="false" value="#{manticCatalogosArticulosImagenes.doPrepareImage(row)}" width="26" height="22" stream="false" rendered="#{row.cantidad ne 0}" style="cursor:zoom-in;"/>
+							</a>	
 						</p:column>   
 						<p:column headerText="Quitar" styleClass="janal-wid-col-38 janal-column-center">
 							<p:commandButton icon="fa fa-minus" title="Eliminar articulo" actionListener="#{manticCatalogosArticulosImagenes.doEliminar(row)}" process="@this" update="@(.filas)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>

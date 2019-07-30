@@ -245,16 +245,16 @@ public class Imagenes extends IBaseAttribute implements Serializable {
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 
-	public void doPrepareImage(String alias, String nombre) {
+	public StreamedContent doPrepareImage(CodigoArticulo row) {
+		StreamedContent regresar= null;
 		try {
-			LOG.info("alias: "+ alias);
-			this.attrs.put("nombre", nombre);
-			this.pivote= LoadImages.getFile(alias);
+			regresar= LoadImages.getImage(row.getIdArticulo());
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
 			JsfBase.addMessageError(e);
     } // catch   
+		return regresar;
 	}
 	
 }
