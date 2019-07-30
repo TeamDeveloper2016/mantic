@@ -35,6 +35,7 @@ import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.ventas.comun.IBaseTicket;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 
 @Named(value= "manticVentasFiltro")
 @ViewScoped
@@ -137,6 +138,13 @@ public class Filtro extends IBaseTicket implements Serializable {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
 		UISelectEntity estatus= (UISelectEntity) this.attrs.get("idVentaEstatus");
+		if(!Cadena.isVacio(JsfBase.getParametro("codigo_input"))) 
+	 	  sb.append("tc_mantic_ventas_detalles.codigo regexp '.*").append(JsfBase.getParametro("codigo_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");
+//		else 
+//		  if(!Cadena.isVacio(this.attrs.get("codigo")) && !this.attrs.get("codigo").toString().equals("-1"))
+//			  sb.append("(upper(tc_mantic_ventas_detalles.codigo) like upper('%").append(((Entity)this.attrs.get("codigo")).getKey()).append("%')) and ");					
+		if(!Cadena.isVacio(this.attrs.get("articulo_input")))
+  		sb.append("(upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(this.attrs.get("articulo_input")).append("%')) and ");
 		if(!Cadena.isVacio(this.attrs.get("idVenta")) && !this.attrs.get("idVenta").toString().equals("-1"))
   		sb.append("(tc_mantic_ventas.id_venta=").append(this.attrs.get("idVenta")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
@@ -309,4 +317,105 @@ public class Filtro extends IBaseTicket implements Serializable {
 			this.attrs.put("montoInicio", this.attrs.get("montoTermino"));
 	}
 		
+	public void doUpdateCodigos() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
+    try {
+			params= new HashMap<>();
+			columns= new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			String search= (String)this.attrs.get("codigoCodigo"); 
+			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";
+			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+				params.put("sucursales", this.attrs.get("idEmpresa"));
+			else
+				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("idProveedor", -1L);			
+  		params.put("codigo", search);			
+      this.attrs.put("codigos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}	// doUpdateCodigos
+
+	public List<UISelectEntity> doCompleteCodigo(String query) {
+		this.attrs.put("codigoCodigo", query);
+    this.doUpdateCodigos();		
+		return (List<UISelectEntity>)this.attrs.get("codigos");
+	}	// doCompleteCodigo
+
+	public void doAsignaCodigo(SelectEvent event) {
+		UISelectEntity seleccion    = null;
+		List<UISelectEntity> codigos= null;
+		try {
+			codigos= (List<UISelectEntity>) this.attrs.get("codigos");
+			seleccion= codigos.get(codigos.indexOf((UISelectEntity)event.getObject()));
+			this.attrs.put("codigoSeleccion", seleccion);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doAsignaCodigo
+	
+	public void doUpdateArticulos() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
+    try {
+			params= new HashMap<>();
+			columns= new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			String search= (String)this.attrs.get("codigoArticulo"); 
+			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";
+			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+				params.put("sucursales", this.attrs.get("idEmpresa"));
+			else
+				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("idProveedor", -1L);			
+  		params.put("codigo", search.replaceAll("[ ]", "*.*"));			
+      this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 20L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}	// doUpdateArticulo
+
+	public List<UISelectEntity> doCompleteArticulo(String query) {
+		this.attrs.put("codigoArticulo", query);
+    this.doUpdateArticulos();		
+		return (List<UISelectEntity>)this.attrs.get("articulos");
+	}	// doCompleteCodigo
+
+	public void doAsignaArticulo(SelectEvent event) {
+		UISelectEntity seleccion      = null;
+		List<UISelectEntity> articulos= null;
+		try {
+			articulos= (List<UISelectEntity>) this.attrs.get("articulos");
+			seleccion= articulos.get(articulos.indexOf((UISelectEntity)event.getObject()));
+			this.attrs.put("articulosSeleccion", seleccion);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doAsignaArticulo
+
+	@Override
+	protected void finalize() throws Throwable {
+    super.finalize();		
+	}	// finalize
+	
 }

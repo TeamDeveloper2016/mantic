@@ -95,7 +95,17 @@
 								</f:facet>
 							</p:autoComplete>	
 							<p:outputLabel for="articulo" value="Articulo:"/>
-              <p:inputText id="articulo" placeholder="ej. CLAVOS" value="#{manticFacturasFiltro.attrs.articulo}" styleClass="janal-wid-100-txt"/>                             							
+              <p:autoComplete id="articulo" placeholder="ej. CLAVOS" var="customArticulo" itemLabel="#{customArticulo.nombre}" inputStyleClass="janal-wid-100-txt key-down-articulos filas" itemValue="#{customArticulo}" value="#{manticFacturasFiltro.attrs.articulo}" completeMethod="#{manticFacturasFiltro.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
+								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticFacturasFiltro.doAsignaArticulo}" oncomplete="janal.desbloquear();"/>
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
+										<h:outputText value="Código" />
+										<h:outputText value="#{customArticulo.propio}"/>
+										<h:outputText value="Nombre:" />
+										<h:outputText value="#{customArticulo.nombre}"/>
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
 							<p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticFacturasFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>              
 							<p:outputLabel for="fechaTermino" value="Fecha termino:"/>
