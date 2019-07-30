@@ -51,12 +51,6 @@ public class Filtro extends Comun implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
 
-	private StreamedContent image;
-
-	public StreamedContent getImage() {
-		return image;
-	}
-	
   @PostConstruct
   @Override
   protected void init() {
@@ -349,7 +343,7 @@ public class Filtro extends Comun implements Serializable {
 	public StreamedContent doPrepareImage(Entity row) {
 		StreamedContent regresar= null;
 		try {
-			this.image= LoadImages.getImage(row.toLong("idKey"));
+			regresar= LoadImages.getImage(row.toLong("idKey"));
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
