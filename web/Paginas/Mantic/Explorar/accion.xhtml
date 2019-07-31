@@ -27,7 +27,7 @@
 		</style>		
 	</ui:define>
 	<ui:define name="contenido">
-		<p:focus context="codigo"/>
+		<p:focus context="aceptar"/>
 		<p:defaultCommand target="tabla"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
@@ -39,22 +39,36 @@
 					<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-80">	
 						<p:panel styleClass="TexAlCenter janal-wid-100-txt" style="height:100%; border:0px;">
 							<a id="source-image" data-magnify="gallery" data-caption="#{manticExplorarAccion.attrs.articulo.nombre}" data-group="icon-gallery" href="" title="Click para ver más grande la imagen">
-								<p:graphicImage id="icon-image" value="#{manticExplorarAccion.image}" width="250" height="200" stream="false" style="cursor:zoom-in;"/>
+								<p:graphicImage id="icon-image" value="#{manticExplorarAccion.image}" width="265" height="250" stream="false" style="cursor:zoom-in;"/>
 							</a>	
+							<p:spacer height="5px"/>
+  						<div class="lg-pantalla">
+								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt janal-column-right, janal-wid-100-txt janal-column-left">							
+									<p:commandButton id="aceptar" value="Agregar pedido" icon="fa fa-shopping-cart" accesskey="a" process="@form" update="@(.recalculo)" action="#{manticExplorarAccion.doAceptar}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear();"/>
+									<p:commandButton id="cancelar" value="Buscar otro ..." icon="fa fa-reply-all" accesskey="r" process="@this" action="#{manticExplorarAccion.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+								</p:panelGrid>	
+							</div>		
+							<div class="xs-pantalla">
+								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt janal-column-right, janal-wid-100-txt janal-column-left">							
+  								<p:commandButton title="Agregar pedido" icon="fa fa-shopping-cart" process="@form" update="@(.recalculo)" action="#{manticInventariosAlmacenesKardex.doAceptar}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear();"/>
+	  							<p:commandButton title="Buscar otro ..." icon="fa fa-reply-all" process="@this" action="#{manticInventariosAlmacenesKardex.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                </p:panelGrid>									
+							</div>							
 						</p:panel>
 						<p:panel styleClass="TexAlCenter janal-wid-100-txt" style="height:100%; border:0px;">
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15 janal-column-right, janal-wid-100-txt">		
-								<p:outputLabel for="codigo" value="Código:"/>
-								<p:inputText id="codigo" value="#{manticExplorarAccion.attrs.articulo.propio}" styleClass="janal-wid-96 filas" readonly="true"/>
-								<p:outputLabel for="nombre" value="Nombre:"/>
-								<p:inputText id="nombre" value="#{manticExplorarAccion.attrs.articulo.nombre}" styleClass="janal-wid-96 filas" readonly="true"/>
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-column-left janal-wid-100-txt">		
+								<p:outputLabel value="#{manticExplorarAccion.attrs.articulo.propio} #{manticExplorarAccion.attrs.articulo.nombre}"/>
+								<p:rating value="3" readonly="true" />
 								<p:spacer width="1px"/><p:separator/>
-								<p:outputLabel for="empaque" value="Empaque:"/>
-								<p:inputText id="empaque" value="#{manticExplorarAccion.attrs.articulo.empaque}" styleClass="janal-wid-96 filas" readonly="true"/>
-								<p:outputLabel for="unidadMedida" value="Unidad medida:"/>
-								<p:inputText id="unidadMedida" value="#{manticExplorarAccion.attrs.articulo.unidadMedida}" styleClass="janal-wid-96 filas" readonly="true"/>
-								<p:outputLabel for="piezasPor" value="Piezas por empaque:"/>
-								<p:inputText id="piezasPor" value="#{manticExplorarAccion.attrs.articulo.cantidad}" styleClass="janal-wid-96 filas" readonly="true"/>
+								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-10 janal-column-right, janal-wid-100-txt janal-column-left">
+								  <p:outputLabel value="Precio recomendado:  "/>
+								  <p:outputLabel value="$ #{manticExplorarAccion.attrs.articulo.precio}" styleClass="janal-wid-96 filas"/>
+								  <p:outputLabel value="Precio:  "/>
+								  <p:outputLabel value="$ #{0}" styleClass="janal-wid-96 filas janal-precio-azul"/>
+								  <p:outputLabel value="Ahorras:  "/>
+									<p:outputLabel value="$ #{0}" styleClass="janal-wid-96 filas janal-precio-rojo"/>
+  							</p:panelGrid>
+							  <p:outputLabel value="#{manticExplorarAccion.attrs.articulo.descripcion}" styleClass="janal-wid-96 filas"/>
 							</p:panelGrid>
 						</p:panel>	
 					</p:panelGrid>	
@@ -63,14 +77,11 @@
 		</div>		
 		<p:commandButton id="tabla" value="" styleClass="janal-zero-size"/>
 	</ui:define>    
-	<ui:define name="acciones">
-		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@(.recalculo)" action="#{manticExplorarAccion.doAceptar}" onstart="return janal.execute(true) &amp;&amp; confirm('Esta seguro que desea guardar los cambios ?');" oncomplete="janal.desbloquear();janal.reset();" disabled="#{empty(manticExplorarAccion.attrs.articulo.propio)}" styleClass="recalculo"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticExplorarAccion.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" update="@(.filas) @(.recalculo)"/>
-		</div>		
-		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="@(.recalculo)" action="#{manticExplorarAccion.doAceptar}" onstart="return janal.execute(true) &amp;&amp; confirm('Esta seguro que desea guardar los cambios ?');" oncomplete="janal.desbloquear();janal.reset();" styleClass="recalculo"/>
-			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticExplorarAccion.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" update="@(.filas) @(.recalculo)"/>
-		</div>		
-	</ui:define>
+  <ui:define name="acciones">
+		<div class="janal-column-left">
+		  <p:outputLabel value="Especificaciones técnicas" styleClass="janal-color-blue"/>
+		  <p:separator/>
+		  <p:outputLabel value="bla bla bla"/>
+		</div>	
+	</ui:define>	
 </ui:composition>

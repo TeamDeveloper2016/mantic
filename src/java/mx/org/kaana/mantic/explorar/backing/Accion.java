@@ -13,6 +13,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
@@ -164,7 +165,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	}
 	
   public String	doCancelar() {
-    return (String)this.attrs.get("retorno");
+    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
 	}
 
 	private String getCostoMayorMenor(double value, double precio) {
