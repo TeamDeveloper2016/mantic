@@ -49,13 +49,13 @@
   						<div class="lg-pantalla">
 								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt janal-column-right, janal-wid-100-txt janal-column-left">							
 									<p:commandButton id="aceptar" value="Agregar pedido" icon="fa fa-shopping-cart" accesskey="a" process="@form" update="@(.recalculo)" action="#{manticExplorarAccion.doAceptar}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear();"/>
-									<p:commandButton id="cancelar" value="Buscar otro ..." icon="fa fa-reply-all" accesskey="r" process="@this" action="#{manticExplorarAccion.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+									<p:commandButton id="cancelar" value="Buscar otro ..." icon="fa fa-reply-all" accesskey="r" process="@this" action="#{manticExplorarAccion.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" ajax="false"/>
 								</p:panelGrid>	
 							</div>		
 							<div class="xs-pantalla">
 								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt janal-column-right, janal-wid-100-txt janal-column-left">							
   								<p:commandButton title="Agregar pedido" icon="fa fa-shopping-cart" process="@form" update="@(.recalculo)" action="#{manticInventariosAlmacenesKardex.doAceptar}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear();"/>
-	  							<p:commandButton title="Buscar otro ..." icon="fa fa-reply-all" process="@this" action="#{manticInventariosAlmacenesKardex.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+	  							<p:commandButton title="Buscar otro ..." icon="fa fa-reply-all" process="@this" action="#{manticInventariosAlmacenesKardex.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" ajax="false"/>
                 </p:panelGrid>									
 							</div>							
 						</p:panel>
@@ -63,7 +63,7 @@
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-column-left janal-wid-100-txt">		
 								<p:outputLabel value="#{manticExplorarAccion.attrs.articulo.propio} #{manticExplorarAccion.attrs.articulo.nombre}"/>
 								<p:rating value="3" readonly="true" />
-								<p:spacer width="1px"/><p:separator/>
+								<p:separator/>
 								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-10 janal-column-right, janal-wid-100-txt janal-column-left">
 								  <p:outputLabel value="Precio sugerido:  "/>
 								  <p:outputLabel value="$ #{manticExplorarAccion.attrs.articulo.precio}" styleClass="janal-wid-96 filas"/>
@@ -72,7 +72,7 @@
 								  <p:outputLabel value="Ahorras:  "/>
 									<p:outputLabel value="$ #{0}" styleClass="janal-wid-96 filas janal-precio-rojo"/>
   							</p:panelGrid>
-							  <p:outputLabel value="#{manticExplorarAccion.attrs.articulo.descripcion}" styleClass="janal-wid-96 filas"/>
+							  <p:outputLabel value="Descripción: #{manticExplorarAccion.attrs.articulo.descripcion}" styleClass="janal-wid-96 filas"/>
 							</p:panelGrid>
 						</p:panel>	
 					</p:panelGrid>	

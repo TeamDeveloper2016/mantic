@@ -7,7 +7,133 @@
   </model>
 
   <dml>
-    <unit id="TcManticMovimientosDto">
+   <unit id="TcManticPedidosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_pedidos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_pedidos
+        where      
+          id_usuario = {idUsuario} and id_empresa = {idEmpresa} and orden = {orden} and ejercicio = {ejercicio}
+      </select>
+    </unit>		
+    <unit id="TcManticPedidosDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_pedidos_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_pedidos_detalles
+        where      
+          id_articulo = {idArticulo} and id_pedido = {idPedido}
+      </select>
+    </unit>		
+    <unit id="TcManticPedidosBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_pedidos_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_pedidos_bitacora
+        where      
+          id_pedido_bitacora = {idPedidoBitacora} and id_pedido_estatus = {idPedidoEstatus} and registro = '{registro}'
+      </select>
+    </unit>
+		<unit id="TcManticPedidosEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_pedidos_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_pedidos_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+		<unit id="TcManticControlDescargasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_control_descargas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_control_descargas
+        where      
+          id_usuario= {idUsuario} and id_respaldo = {idRespaldo} and registro = '{registro}'
+      </select>
+    </unit>		
+    <unit id="TcManticTiposColoresDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_colores
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_colores
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcManticTiposTallasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_tallas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_tallas
+        where      
+          clave = '{clave}' and nombre = '{nombre}'
+      </select>
+    </unit>
+		<unit id="TcManticMovimientosDto">
       <select id="row">
         select      
           *
