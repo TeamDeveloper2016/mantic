@@ -149,8 +149,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 		EAccion eaccion        = EAccion.MODIFICAR;
     try {			
 			Entity articulo= (Entity)this.attrs.get("articulo");
-			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (Double)this.attrs.get("precio"), articulo.toString("descuento"), articulo.toString("extra"), this.adminKardex.getTiposVentas());
-			if (transaccion.ejecutar(eaccion)) {
+			// if (transaccion.ejecutar(eaccion)) {
+			if (true) {
 				JsfBase.addMessage("Se modificaron los precios de tipos de ventas del articulo.", ETipoMensaje.INFORMACION);
    			UIBackingUtilities.execute("jsKardex.callback('"+ this.adminKardex.getTiposVentas()+ "');");
 			}	// if

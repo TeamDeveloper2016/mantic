@@ -27,7 +27,7 @@
 		</style>		
 	</ui:define>
 	<ui:define name="contenido">
-		<p:focus context="aceptar"/>
+		<p:focus context="cantidad"/>
 		<p:defaultCommand target="tabla"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
@@ -41,7 +41,11 @@
 							<a id="source-image" data-magnify="gallery" data-caption="#{manticExplorarAccion.attrs.articulo.nombre}" data-group="icon-gallery" href="" title="Click para ver más grande la imagen">
 								<p:graphicImage id="icon-image" value="#{manticExplorarAccion.image}" width="265" height="250" stream="false" style="cursor:zoom-in;"/>
 							</a>	
-							<p:spacer height="5px"/>
+							<p:spacer height="10px"/>
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30 janal-column-right, janal-wid-100-txt janal-column-left">
+								<p:outputLabel for="cantidad" value="Cantidad: "/>
+								<p:inputNumber id="cantidad" value="1" styleClass="filas janal-precio-azul" inputStyleClass="janal-wid-80 janal-column-right"/>
+              </p:panelGrid>
   						<div class="lg-pantalla">
 								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt janal-column-right, janal-wid-100-txt janal-column-left">							
 									<p:commandButton id="aceptar" value="Agregar pedido" icon="fa fa-shopping-cart" accesskey="a" process="@form" update="@(.recalculo)" action="#{manticExplorarAccion.doAceptar}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear();"/>
@@ -61,7 +65,7 @@
 								<p:rating value="3" readonly="true" />
 								<p:spacer width="1px"/><p:separator/>
 								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-10 janal-column-right, janal-wid-100-txt janal-column-left">
-								  <p:outputLabel value="Precio recomendado:  "/>
+								  <p:outputLabel value="Precio sugerido:  "/>
 								  <p:outputLabel value="$ #{manticExplorarAccion.attrs.articulo.precio}" styleClass="janal-wid-96 filas"/>
 								  <p:outputLabel value="Precio:  "/>
 								  <p:outputLabel value="$ #{0}" styleClass="janal-wid-96 filas janal-precio-azul"/>
