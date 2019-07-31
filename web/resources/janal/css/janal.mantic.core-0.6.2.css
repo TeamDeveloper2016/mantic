@@ -245,6 +245,21 @@ div.ui-panelgrid-content {
 
 .janal-text-one-line {white-space: nowrap;}
 .janal-text-white {color: #ffffff !important;}
+.janal-descuento-gris {
+  font-size: 14px;
+	color: gray;
+}	
+.janal-precio-normal {
+	font-weight: bold;
+  font-size: 18px;
+	color: black;
+}	
+.janal-precio-normal janal-precio-rojo {
+	color: red;
+}	
+.janal-precio-normal janal-precio-azul {
+	color: blue;
+}	
 .janal-header-title {
   font-size: 22px;
   position: relative;

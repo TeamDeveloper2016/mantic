@@ -47,7 +47,7 @@ public final class LoadImages {
 			if(alias!= null && !Cadena.isVacio(alias.toString()))
 				regresar= getFile(alias.toString());
 		  else
-				regresar= new DefaultStreamedContent(new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/bonanza.svg")), "image/svg+xml");
+				regresar= new DefaultStreamedContent(new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/sin-foto.png")), "image/png");
 		} // try
 		finally {
 			Methods.clean(params);
@@ -57,7 +57,7 @@ public final class LoadImages {
 	
 	public static DefaultStreamedContent getFile(String name) throws FileNotFoundException {
 		if(Cadena.isVacio(name))
-		  return new DefaultStreamedContent(new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/bonanza.svg")), "image/svg+xml");
+		  return new DefaultStreamedContent(new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/sin-foto.png")), "image/png"); // svg+xml
 		else {
 		  File file= new File(name);
 		  return file.exists()? new DefaultStreamedContent(new FileInputStream(name), "image/jpg"): new DefaultStreamedContent(new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/bonanza.svg")), "image/svg+xml");
@@ -67,7 +67,7 @@ public final class LoadImages {
 	private static DefaultStreamedContent toReturnFile(File file) throws FileNotFoundException {
 		DefaultStreamedContent regresar;
 		if(file== null || !file.exists() || file.isDirectory())
-		  regresar= new DefaultStreamedContent(new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/bonanza.svg")), "image/svg+xml");
+		  regresar= new DefaultStreamedContent(new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/sin-foto.png")), "image/png");
 		else
 			regresar= new DefaultStreamedContent(new FileInputStream(file.getAbsolutePath()), "image/jpg");
 		return regresar;

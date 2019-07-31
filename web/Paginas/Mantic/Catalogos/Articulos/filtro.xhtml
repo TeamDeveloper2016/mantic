@@ -145,7 +145,7 @@
 						</div>
 					</div>
 					<div class="ui-grid-row janal-grid-row">
-						<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosArticulosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosArticulosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosArticulosFiltro.lazyModel.rowCount gt manticCatalogosArticulosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+						<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosArticulosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosArticulosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosArticulosFiltro.lazyModel.rowCount gt manticCatalogosArticulosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
 							<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 							<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 							<f:facet name="header">

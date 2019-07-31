@@ -4709,6 +4709,46 @@
 				order by 
 				  nombre				
 			</select>
+			<select id="porTodos">
+				select 
+					principal.*,
+					(select if(sum(stock) is null, 0, sum(stock)) from tc_mantic_almacenes_articulos where id_articulo= principal.id_articulo and id_almacen in (select id_almacen from tc_mantic_almacenes where id_empresa in ({sucursales}))) stock
+				from(
+				select 
+				  tc_mantic_articulos.id_articulo as id_key,
+				  tc_mantic_articulos.id_articulo,
+				  ifnull(tc_mantic_articulos.id_imagen, 0) as id_imagen,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*') as propio,
+				  tc_mantic_articulos.nombre,
+				  tc_mantic_articulos.descripcion,
+				  tc_mantic_articulos.precio,
+				  tc_mantic_articulos.menudeo,
+				  tc_mantic_articulos.medio_mayoreo,
+				  tc_mantic_articulos.mayoreo,
+				  tc_mantic_articulos.sat,
+				  tc_mantic_articulos.limite_medio_mayoreo,
+				  tc_mantic_articulos.limite_mayoreo,
+				  tc_mantic_articulos.iva,
+				  tc_mantic_articulos.id_redondear,
+				  tc_mantic_unidades_medidas.nombre unidad_medida
+				from 
+					tc_mantic_articulos
+				inner join 
+					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
+				inner join
+					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+				inner join 
+					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+				inner join 
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+				where 
+					tc_mantic_empresas.id_empresa in ({sucursales})
+				  and tc_mantic_articulos.id_vigente= 1
+				  and {condicion}
+				) principal 			
+				order by 
+				  nombre					
+			</select>		
 			<select id="porNombreTipoArticulo">
 				select 
 				  tc_mantic_articulos.id_articulo as id_key,

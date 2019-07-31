@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Detalle del articulo"/>
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {				 				
+				codigo: {validaciones: 'requerido', mascara: 'libre'}
+			};	
+			$(document).ready(function() {
+				$('#source-image').attr('href', $('#icon-image').attr('src'));
+			});						
+		</script>   
+		<style type="text/css">
+				.ui-treetable table {
+					table-layout: fixed
+				}
+				.janal-letter-capitalized {
+          text-transform: uppercase;
+        }
+		</style>		
+	</ui:define>
+	<ui:define name="contenido">
+		<p:focus context="codigo"/>
+		<p:defaultCommand target="tabla"/>
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+				</div>	
+			</div>	
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-80">	
+						<p:panel styleClass="TexAlCenter janal-wid-100-txt" style="height:100%; border:0px;">
+							<a id="source-image" data-magnify="gallery" data-caption="#{manticExplorarAccion.attrs.articulo.nombre}" data-group="icon-gallery" href="" title="Click para ver más grande la imagen">
+								<p:graphicImage id="icon-image" value="#{manticExplorarAccion.image}" width="250" height="200" stream="false" style="cursor:zoom-in;"/>
+							</a>	
+						</p:panel>
+						<p:panel styleClass="TexAlCenter janal-wid-100-txt" style="height:100%; border:0px;">
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15 janal-column-right, janal-wid-100-txt">		
+								<p:outputLabel for="codigo" value="Código:"/>
+								<p:inputText id="codigo" value="#{manticExplorarAccion.attrs.articulo.propio}" styleClass="janal-wid-96 filas" readonly="true"/>
+								<p:outputLabel for="nombre" value="Nombre:"/>
+								<p:inputText id="nombre" value="#{manticExplorarAccion.attrs.articulo.nombre}" styleClass="janal-wid-96 filas" readonly="true"/>
+								<p:spacer width="1px"/><p:separator/>
+								<p:outputLabel for="empaque" value="Empaque:"/>
+								<p:inputText id="empaque" value="#{manticExplorarAccion.attrs.articulo.empaque}" styleClass="janal-wid-96 filas" readonly="true"/>
+								<p:outputLabel for="unidadMedida" value="Unidad medida:"/>
+								<p:inputText id="unidadMedida" value="#{manticExplorarAccion.attrs.articulo.unidadMedida}" styleClass="janal-wid-96 filas" readonly="true"/>
+								<p:outputLabel for="piezasPor" value="Piezas por empaque:"/>
+								<p:inputText id="piezasPor" value="#{manticExplorarAccion.attrs.articulo.cantidad}" styleClass="janal-wid-96 filas" readonly="true"/>
+							</p:panelGrid>
+						</p:panel>	
+					</p:panelGrid>	
+				</div>
+			</div>
+		</div>		
+		<p:commandButton id="tabla" value="" styleClass="janal-zero-size"/>
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@(.recalculo)" action="#{manticExplorarAccion.doAceptar}" onstart="return janal.execute(true) &amp;&amp; confirm('Esta seguro que desea guardar los cambios ?');" oncomplete="janal.desbloquear();janal.reset();" disabled="#{empty(manticExplorarAccion.attrs.articulo.propio)}" styleClass="recalculo"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticExplorarAccion.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" update="@(.filas) @(.recalculo)"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="@(.recalculo)" action="#{manticExplorarAccion.doAceptar}" onstart="return janal.execute(true) &amp;&amp; confirm('Esta seguro que desea guardar los cambios ?');" oncomplete="janal.desbloquear();janal.reset();" styleClass="recalculo"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticExplorarAccion.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" update="@(.filas) @(.recalculo)"/>
+		</div>		
+	</ui:define>
+</ui:composition>

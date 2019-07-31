@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+	<ui:param name="titulo" value="Artículos disponibles" />
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {
+				idTipoArticulo: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
+			};
+			function reload() {
+				$('.janal-control-imagen').each(function (index, item) {
+					var name = $(this).attr('id').replace('source-image', 'icon-image', 'gi').replace(/[:]/g, '\\:');
+					janal.console('Reload image: ' + name);
+					$(this).attr('href', $('#' + name).attr('src'));
+				});
+			};
+		</script>		
+	</ui:define>
+	<ui:define name="contenido">		
+		<div class="xs-pantalla janal-wid-100">
+			<p:commandButton id="filtrar" icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
+		</div>			
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div id="collapse-find" class="">
+          <p:panel id="panelBusqueda" header="Criterio:" styleClass="lg-pantalla" toggleable="true" collapsed="true" toggleOrientation="horizontal">
+						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
+						<h:panelGrid styleClass="janal-wid-100">
+							<p:outputLabel for="idTipoArticulo" value="Tipo articulo:"/>
+							<p:selectOneMenu id="idTipoArticulo" value="#{manticExplorarFiltro.attrs.idTipoArticulo}" styleClass="janal-wid-100-txt">									
+								<f:selectItem itemLabel="ARTICULO" itemValue="1"/>
+								<f:selectItem itemLabel="REFACCIÓN" itemValue="2"/>
+								<f:selectItem itemLabel="SERVICIO" itemValue="3"/>
+							</p:selectOneMenu>								
+						</h:panelGrid>
+						<p:separator/>
+					</p:panel>
+				</div>
+				<div style="width: 10px;">
+				</div>	
+				<div id="collapse-content" class="ui-grid-col-12">
+					<div class="ui-grid-row janal-grid-row">
+						<div class="ui-grid-col-12">
+							<p:outputLabel for="nombre" value="Descripción del articulo:" styleClass="janal-wid-100-txt"/>
+						</div>
+					</div>	
+					<div class="ui-grid-row janal-grid-row">
+						<div class="ui-grid-col-12">
+							<p:inputText id="nombre" placeholder="ej. Clavos" value="#{manticExplorarFiltro.attrs.nombre}" styleClass="janal-wid-100-txt">
+								<p:ajax event="keyup" listener="#{manticExplorarFiltro.doLoad}" process="@this" update="tabla" onstart="return $('#nombre').val().trim().length> 2;"/>
+							</p:inputText>			
+						</div>
+					</div>
+					<div class="ui-grid-row janal-grid-row">
+						<div class="ui-grid-col-12">
+							<p:spacer height="1px" />
+							<p:dataGrid var="row" value="#{manticExplorarFiltro.lazyModel}" columns="4" layout="grid" rowIndexVar="index"
+													rows="#{Constantes.REGISTROS_POR_PAGINA}" paginator="#{manticExplorarFiltro.lazyModel.size() gt Constantes.REGISTROS_POR_PAGINA}" id="tabla"
+													emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}"
+													paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"
+													rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
+								<p:panel header="#{row.propio}" style="text-align:center; border: 0px;">
+									<h:panelGrid columns="1" style="width:100%">
+										<p:commandLink process="@this" update="tabla" title="Ver detalle del articulo" action="#{manticExplorarFiltro.doAceptar}">
+										  <p:graphicImage id="icon-image" cache="false" value="#{manticExplorarFiltro.doPrepareImage(row)}" width="185" height="150" stream="false" style="cursor:zoom-in;"/>
+											<f:setPropertyActionListener value="#{row}" target="#{manticExplorarFiltro.attrs.articulo}"/>
+										</p:commandLink>	
+									  <span id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row.nombre.toString}" data-group="icon-image" href="" title="Click para ver más grande la imagen">
+											<h:outputText styleClass="pi pi-search" style="margin:0 auto;"/>
+									  </span>	
+										<h:outputText value="#{row.nombre}"/>
+										<p:panelGrid columns="2" layout="grid" columnClasses="janal-column-right, janal-column-left">
+										  <h:outputText value="Precio:"/>
+										  <h:outputText value="$ #{row.precio}" styleClass="janal-precio-blue"/>
+										</p:panelGrid>
+										<p:rating value="3" readonly="true" />
+										<!--h:outputText value="Descripción: #{row.descripcion}"/-->
+									</h:panelGrid>
+								</p:panel>
+								<f:facet name="footer">
+									<div class="janal-column-right">
+									  <p:outputLabel value="Total de articulos [#{manticExplorarFiltro.lazyModel.size()}]"/>							
+									</div>	
+								</f:facet>
+							</p:dataGrid>						
+						</div>	
+					</div>	
+				</div>
+			</div>
+		</div>		           				
+	</ui:define>    
+	<ui:param name="updateComponent" value="filtrar"/>
+</ui:composition>
