@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -48,8 +42,8 @@ public class TcManticPedidosDetallesDto implements IBaseDto, Serializable {
   private String descuento;
   @Column (name="sat")
   private String sat;
-  @Column (name="extras")
-  private String extras;
+  @Column (name="extra")
+  private String extra;
   @Column (name="nombre")
   private String nombre;
   @Column (name="importe")
@@ -82,14 +76,14 @@ public class TcManticPedidosDetallesDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticPedidosDetallesDto(Double descuentos, Long idPedidoDetalle, String codigo, String unidadMedida, String descuento, String sat, String extras, String nombre, Double importe, Double precio, Double iva, Double impuestos, Double unitarioSinIva, Double subTotal, Double cantidad, Long idArticulo, Long idPedido) {
+  public TcManticPedidosDetallesDto(Double descuentos, Long idPedidoDetalle, String codigo, String unidadMedida, String descuento, String sat, String extra, String nombre, Double importe, Double precio, Double iva, Double impuestos, Double unitarioSinIva, Double subTotal, Double cantidad, Long idArticulo, Long idPedido) {
     setDescuentos(descuentos);
     setIdPedidoDetalle(idPedidoDetalle);
     setCodigo(codigo);
     setUnidadMedida(unidadMedida);
     setDescuento(descuento);
     setSat(sat);
-    setExtras(extras);
+    setExtra(extra);
     setNombre(nombre);
     setImporte(importe);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
@@ -151,12 +145,12 @@ public class TcManticPedidosDetallesDto implements IBaseDto, Serializable {
     return sat;
   }
 
-  public void setExtras(String extras) {
-    this.extras = extras;
+  public void setExtra(String extra) {
+    this.extra = extra;
   }
 
-  public String getExtras() {
-    return extras;
+  public String getExtra() {
+    return extra;
   }
 
   public void setNombre(String nombre) {
@@ -274,7 +268,7 @@ public class TcManticPedidosDetallesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getSat());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getExtras());
+		regresar.append(getExtra());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
@@ -310,7 +304,7 @@ public class TcManticPedidosDetallesDto implements IBaseDto, Serializable {
 		regresar.put("unidadMedida", getUnidadMedida());
 		regresar.put("descuento", getDescuento());
 		regresar.put("sat", getSat());
-		regresar.put("extras", getExtras());
+		regresar.put("extra", getExtra());
 		regresar.put("nombre", getNombre());
 		regresar.put("importe", getImporte());
 		regresar.put("registro", getRegistro());
@@ -328,7 +322,7 @@ public class TcManticPedidosDetallesDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescuentos(), getIdPedidoDetalle(), getCodigo(), getUnidadMedida(), getDescuento(), getSat(), getExtras(), getNombre(), getImporte(), getRegistro(), getPrecio(), getIva(), getImpuestos(), getUnitarioSinIva(), getSubTotal(), getCantidad(), getIdArticulo(), getIdPedido()
+    getDescuentos(), getIdPedidoDetalle(), getCodigo(), getUnidadMedida(), getDescuento(), getSat(), getExtra(), getNombre(), getImporte(), getRegistro(), getPrecio(), getIva(), getImpuestos(), getUnitarioSinIva(), getSubTotal(), getCantidad(), getIdArticulo(), getIdPedido()
     };
     return regresar;
   }

@@ -24,6 +24,22 @@
         where      
           id_usuario = {idUsuario} and id_empresa = {idEmpresa} and orden = {orden} and ejercicio = {ejercicio}
       </select>
+      <select id="abierto">
+        select      
+          *
+        from      
+          tc_mantic_pedidos
+        where      
+          id_usuario = {idUsuario} and id_empresa = {idEmpresa} and (id_pedido_estatus= 1 or id_pedido_estatus= 4)
+      </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_pedidos
+				where				  
+				  id_usuario = {idUsuario} and id_empresa = {idEmpresa}	and ejercicio = {ejercicio}			
+			</select>			
     </unit>		
     <unit id="TcManticPedidosDetallesDto">
       <select id="row">
@@ -42,6 +58,12 @@
         where      
           id_articulo = {idArticulo} and id_pedido = {idPedido}
       </select>
+			<delete id="rows">
+				delete from
+				  tc_mantic_pedidos
+				where
+				  id_pedido= {idPedido}
+			</delete>
     </unit>		
     <unit id="TcManticPedidosBitacoraDto">
       <select id="row">
