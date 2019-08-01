@@ -2922,6 +2922,18 @@
 				where
 				  id_empresa in ({sucursales}) and id_iva= 1
 			</update>
+			<select id="findImage">
+				select 
+					tc_mantic_articulos.id_articulo as id_key,
+          tc_mantic_articulos.*
+				from 
+					tc_mantic_articulos
+				where 
+					id_imagen= {idImagen}
+			</select>
+			<update id="cleanImage">
+				update tc_mantic_articulos set id_imagen= null where id_articulo= {idArticulo}
+			</update>
     </unit>
 		<unit id="TcManticArticulosCodigosDto">
       <select id="row">
