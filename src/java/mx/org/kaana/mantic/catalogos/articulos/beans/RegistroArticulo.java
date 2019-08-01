@@ -16,6 +16,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TrManticEmpaqueUnidadMedidaDto;
@@ -570,6 +571,45 @@ public class RegistroArticulo implements Serializable {
 			JsfBase.addMessage("Importar archivo", "El archivo no pudo ser importado.", ETipoMensaje.ERROR);
 		} // catch
 	} // doFileUpload
+	
+	public boolean validaImagenComun(){
+		boolean regresar   = false;
+		MotorBusqueda motor= null;		
+		try {
+			motor= new MotorBusqueda(this.articulo.getIdImagen());
+			regresar= motor.deleteImage();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		return regresar;
+	} // validaImagenComun 	
+	
+	public void doDeleteFile(){
+		String genericPath= null;		
+		File image        = null;
+		File imageContent = null;
+		try {
+			if (this.importado != null && !Cadena.isVacio(this.importado.getName())) {
+				genericPath= Configuracion.getInstance().getPropiedadSistemaServidor("path.image").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat("/");
+				image= new File(genericPath.concat(this.importado.getName()));
+				if(image.exists())
+					image.delete();
+				imageContent= new File(genericPath.concat(this.importado.getContent()));
+				if(imageContent.exists())
+					imageContent.delete();
+			} // if			
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+			throw e;
+		} // catch		
+		finally{						
+			image= null;			
+			imageContent= null;			
+		} // finally
+	} // doDeleteFile
 	
 	private void toMessageImage() {
 		FacesMessage msg= null;
