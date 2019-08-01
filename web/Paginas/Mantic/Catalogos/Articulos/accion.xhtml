@@ -141,16 +141,21 @@
 							</p:panelGrid>	
 						</p:tab>
             <p:tab id="tabImagen" title="Imagen" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">								
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid">
+							<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-5, janal-wid-2, janal-wid TexAlLeft">								
 								<p:outputLabel id="labelImagen" value="Importar:"/>
-								<p:fileUpload id="imagen" update="importacion nombreImagen tamanioImagen" fileUploadListener="#{manticCatalogosArticulosAccion.registroArticulo.doFileUpload}" uploadLabel="Importar" cancelLabel="Cancelar" label="Seleccionar" mode="advanced" dragDropSupport="false" allowTypes="/(\.|\/)(jpe?g|png)$/" sizeLimit="5242880" invalidSizeMessage="El tamaño maximo permitido es de 5 Megabytes !" invalidFileMessage="Solo se permiten importar archivos con extensión .PNG y .JPG !"/>
+								<p:spacer/>								
+								<p:fileUpload id="imagen" update="importacion nombreImagen tamanioImagen" fileUploadListener="#{manticCatalogosArticulosAccion.registroArticulo.doFileUpload}" uploadLabel="Importar" cancelLabel="Cancelar" label="Seleccionar" mode="advanced" dragDropSupport="false" allowTypes="/(\.|\/)(jpe?g|png)$/" sizeLimit="5242880" invalidSizeMessage="El tamaño maximo permitido es de 5 Megabytes !" invalidFileMessage="Solo se permiten importar archivos con extensión .PNG y .JPG !"/>																
 								<p:outputLabel value="Imagen:"/>
-								<p:graphicImage id="importacion" value="#{manticCatalogosArticulosAccion.image}" styleClass="janal-logo-mini filas" width="65" stream="false" cache="false"/>
+								<p:commandButton id="eliminarImage" title="Eliminar" icon="fa fa-trash-o" onstart="janal.bloquear();" oncomplete="janal.desbloquear();" actionListener="#{manticCatalogosArticulosAccion.doDeleteFile}" process="@this" update="contenedorGrupos:importacion contenedorGrupos:nombreImagen contenedorGrupos:tamanioImagen"/>
+								<p:graphicImage id="importacion" value="#{manticCatalogosArticulosAccion.image}" styleClass="janal-logo-mini filas" width="65" stream="false" cache="false"/>								
 								<p:outputLabel value="Nombre:"/>
-								<p:outputLabel id="nombreImagen" value="#{manticCatalogosArticulosAccion.registroArticulo.importado.name}"/>
+								<p:spacer/>
+								<p:outputLabel id="nombreImagen" value="#{manticCatalogosArticulosAccion.registroArticulo.importado.name}"/>								
 								<p:outputLabel value="Tamaño:"/>
-								<p:outputLabel id="tamanioImagen" value="#{manticCatalogosArticulosAccion.registroArticulo.importado.fileSize}#{manticCatalogosArticulosAccion.registroArticulo.importado.medicion}"/>								
+								<p:spacer/>
+								<p:outputLabel id="tamanioImagen" value="#{manticCatalogosArticulosAccion.registroArticulo.importado.fileSize}#{manticCatalogosArticulosAccion.registroArticulo.importado.medicion}"/>																
 								<p:selectBooleanCheckbox value="#{manticCatalogosArticulosAccion.registroArticulo.imagen}"/>
+								<p:spacer/>
 								<p:outputLabel value="Respetar todos los articulos que cuentan con esta imagen." styleClass="janal-color-blue"/>								
 							</p:panelGrid>
 						</p:tab>
