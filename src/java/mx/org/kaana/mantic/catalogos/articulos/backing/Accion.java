@@ -21,6 +21,7 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.catalogos.articulos.beans.RegistroArticulo;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
 import org.primefaces.model.StreamedContent;
@@ -265,8 +266,32 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.registroArticulo.getArticulo().setMedioMayoreo(calculo* factor);
       factor = Numero.toRedondearSat((this.registroArticulo.getArticulo().getMayoreo()- calculo)* 100/ calculo);
 			this.registroArticulo.getArticulo().setMayoreo(calculo* factor);
-		} // if
-		
-	}
+		} // if	
+	}	 // doUpdatePrecio
 	
+	public void doDeleteFile(){
+		Transaccion transaccion= null;
+		EAccion accion         = null;
+		try {
+			accion= (EAccion)this.attrs.get("accion");			
+			if(accion.equals(EAccion.AGREGAR) || (this.registroArticulo.getArticulo().getIdImagen()== null || this.registroArticulo.getArticulo().getIdImagen() < 1L)) 
+				this.registroArticulo.doDeleteFile();										
+			if (this.registroArticulo.validaImagenComun()){
+				transaccion= new Transaccion(this.registroArticulo, 0D);
+				if(transaccion.ejecutar(EAccion.DEPURAR)){
+					if(this.image!= null){
+						this.image.getStream().close();
+						this.image= null;
+					}	// if				
+					this.registroArticulo.doDeleteFile();		
+				} // if
+			} // else			
+			this.registroArticulo.getArticulo().setIdImagen(null);
+			this.registroArticulo.setImportado(new Importado());
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doDeleteFile
 }
