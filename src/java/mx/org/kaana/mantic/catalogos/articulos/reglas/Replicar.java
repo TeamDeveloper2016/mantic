@@ -47,8 +47,10 @@ public final class Replicar extends IBaseTnx implements Serializable {
 						params.put("idImagen", idImagen);
 						params.put("idArticulo", element.getIdArticulo());
 						Value count= (Value)DaoFactory.getInstance().toField(sesion, "TcManticArticulosDto", "existe", params, "total");
-						if(count== null || count.toLong()<= 0L)
+						if(count== null || count.toLong()<= 0L){
+							sesion.flush();
 							DaoFactory.getInstance().delete(sesion, TcManticImagenesDto.class, idImagen);
+						} // if
 					} // if
 				} // if
 				else
