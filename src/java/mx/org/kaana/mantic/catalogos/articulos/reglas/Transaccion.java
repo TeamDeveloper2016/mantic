@@ -16,6 +16,7 @@ import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.formato.Variables;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloCodigo;
@@ -86,6 +87,10 @@ public class Transaccion extends TransaccionFactura {
 				case COPIAR:				
 					this.articulo.getArticulo().setIdArticulo(-1L);
 					regresar= procesarArticulo(sesion);
+					break;
+				case DEPURAR:					
+					if(DaoFactory.getInstance().execute(ESql.UPDATE, sesion, "TcManticArticulosDto", "cleanImage", Variables.toMap("idArticulo~".concat(this.articulo.getIdArticulo().toString())))>= 1L)
+						regresar= DaoFactory.getInstance().delete(sesion, TcManticImagenesDto.class, this.articulo.getArticulo().getIdImagen())>= 1L;
 					break;
 			} // switch
 			if(!regresar)
