@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -239,5 +240,23 @@ public class MotorBusqueda implements Serializable{
 		} // catch		
 		return regresar;
 	} // toArticuloImagen
-	
+
+	public boolean deleteImage() throws Exception{
+		boolean regresar         = false;
+		List<Entity> articulos   = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idImagen", this.idArticulo);
+			articulos= DaoFactory.getInstance().toEntitySet("TcManticArticulosDto", "findImage", params);
+			regresar= !articulos.isEmpty() && articulos.size()== 1;
+		} // try
+		catch (Exception e) {						
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // deleteImage	
 }
