@@ -17,12 +17,12 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
-import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
+import mx.org.kaana.mantic.explorar.comun.Pedido;
 import mx.org.kaana.mantic.inventarios.almacenes.beans.AdminKardex;
 import mx.org.kaana.mantic.inventarios.almacenes.reglas.Transaccion;
 import org.apache.commons.logging.Log;
@@ -39,7 +39,7 @@ import org.primefaces.model.StreamedContent;
 
 @Named(value= "manticExplorarAccion")
 @ViewScoped
-public class Accion extends IBaseAttribute implements Serializable {
+public class Accion extends Pedido implements Serializable {
 
 	private static final long serialVersionUID=-6770709196941718388L;
 	private static final Log LOG=LogFactory.getLog(Accion.class);
