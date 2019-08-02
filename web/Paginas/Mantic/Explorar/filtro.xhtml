@@ -6,13 +6,18 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
-                template="/WEB-INF/plantillas/filtro.xhtml">
+                template="/WEB-INF/plantillas/pedidos/filtro.xhtml">
+	<ui:param name="backingPedido" value="#{manticExplorarFiltro}" />
+	<ui:param name="eventoPedidoAutocompletar" value="doCompleteArticulo" />
+	<ui:param name="eventoPedidoBuscar" value="doLoad" />
+	<ui:param name="atributoPedidoNombre" value="#{manticExplorarFiltro.attrs.nombre}" />
 	<ui:param name="titulo" value="Artículos disponibles" />
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
 				idTipoArticulo: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
 			};
+			
 			function reload() {
 				$('.janal-control-imagen').each(function (index, item) {
 					var name = $(this).attr('id').replace('source-image', 'icon-image', 'gi').replace(/[:]/g, '\\:');
@@ -22,41 +27,11 @@
 			};
 		</script>		
 	</ui:define>
-	<ui:define name="contenido">		
-		<div class="xs-pantalla janal-wid-100">
-			<p:commandButton id="filtrar" icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
-		</div>			
+	<ui:define name="contenido">				
+		<p:commandButton id="replace" actionListener="#{manticExplorarFiltro.doLoad}" process="@this" update="tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:none"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
-			<div class="ui-grid-row janal-grid-row">
-				<div id="collapse-find" class="">
-          <p:panel id="panelBusqueda" header="Criterio:" styleClass="lg-pantalla" toggleable="true" collapsed="true" toggleOrientation="horizontal">
-						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
-						<h:panelGrid styleClass="janal-wid-100">
-							<p:outputLabel for="idTipoArticulo" value="Tipo articulo:"/>
-							<p:selectOneMenu id="idTipoArticulo" value="#{manticExplorarFiltro.attrs.idTipoArticulo}" styleClass="janal-wid-100-txt">									
-								<f:selectItem itemLabel="ARTICULO" itemValue="1"/>
-								<f:selectItem itemLabel="REFACCIÓN" itemValue="2"/>
-								<f:selectItem itemLabel="SERVICIO" itemValue="3"/>
-							</p:selectOneMenu>								
-						</h:panelGrid>
-						<p:separator/>
-					</p:panel>
-				</div>
-				<div style="width: 10px;">
-				</div>	
-				<div id="collapse-content" class="ui-grid-col-12">
-					<div class="ui-grid-row janal-grid-row">
-						<div class="ui-grid-col-12">
-							<p:outputLabel for="nombre" value="Descripción del articulo:" styleClass="janal-wid-100-txt"/>
-						</div>
-					</div>	
-					<div class="ui-grid-row janal-grid-row">
-						<div class="ui-grid-col-12">
-							<p:inputText id="nombre" placeholder="ej. Clavos" value="#{manticExplorarFiltro.attrs.nombre}" styleClass="janal-wid-100-txt">
-								<p:ajax event="keyup" listener="#{manticExplorarFiltro.doLoad}" process="@this" update="tabla" onstart="return $('#nombre').val().trim().length> 2;"/>
-							</p:inputText>			
-						</div>
-					</div>
+			<div class="ui-grid-row janal-grid-row">								
+				<div id="collapse-content" class="ui-grid-col-12">					
 					<div class="ui-grid-row janal-grid-row">
 						<div class="ui-grid-col-12">
 							<p:spacer height="1px" />
