@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+			xmlns:ui="http://java.sun.com/jsf/facelets"
+			xmlns:pe="http://primefaces.org/ui/extensions">	
+	<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryPreciosJs}"/>
+	<h:outputScript library="janal" name="js/jquery.magnify.min-1.2.0.js"/>
+	<h:outputScript library="janal" name="core/jquery.janal.magnify-0.0.1.js"/>
+	<h:outputStylesheet library="janal" name="css/jquery.magnify.min.css" />
+	<h:outputStylesheet library="janal" name="css/jquery.magnify.min.css.map" />		
+	<style>
+		.janal-faltantes-top {
+			margin-top: -6px;
+		}
+		.ui-datatable tr.ui-state-highlight,
+		.ui-datatable tr.ui-state-hover {
+			background-color: #9EB3BB;
+		}
+	</style>	  	           					
+	<!--div class="xs-pantalla janal-wid-100">
+		<p:commandButton id="filtrar" icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
+	</div-->	
+	<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+		<div class="ui-grid-row janal-grid-row">
+			<!--div id="collapse-find" class="">
+				<p:panel id="panelBusqueda" header="Criterio:" styleClass="lg-pantalla" toggleable="true" collapsed="true" toggleOrientation="horizontal">
+					<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
+					<h:panelGrid styleClass="janal-wid-100">
+						<p:outputLabel for="idTipoArticulo" value="Tipo articulo:"/>
+						<p:selectOneMenu id="idTipoArticulo" value="#{manticExplorarFiltro.attrs.idTipoArticulo}" styleClass="janal-wid-100-txt">									
+							<f:selectItem itemLabel="ARTICULO" itemValue="1"/>
+							<f:selectItem itemLabel="REFACCIÓN" itemValue="2"/>
+							<f:selectItem itemLabel="SERVICIO" itemValue="3"/>
+						</p:selectOneMenu>								
+					</h:panelGrid>
+					<p:separator/>
+				</p:panel>
+			</div-->			
+			<div class="ui-grid-col-2" style="text-align: right !important; padding-top: 7px !important">
+				<div class="ui-grid-row janal-grid-row">
+					<div class="ui-grid-col-12">
+						<p:outputLabel for="nombre" value="Buscar:" styleClass="janal-wid-100-txt alinear-derecha" style="font-weight: bold !important; padding-right: 5px !important"/>
+					</div>
+				</div>	
+			</div>
+			<div id="collapse-content" class="ui-grid-col-12">				
+				<div class="ui-grid-row janal-grid-row">
+					<div class="ui-grid-col-12">
+						<!--p:inputText id="nombre" placeholder="Ejemplo: Zapatos, Pantalones" value="#{atributoPedidoNombre}" styleClass="janal-wid-100-txt">
+							<p:ajax event="keyup" listener="#{backingPedido[backingPlantillaPedidoEvento]}" process="@this nombre" update="tabla" onstart="return $('#nombre').val().trim().length> 2;"/>
+						</p:inputText-->			
+						
+						<p:autoComplete id="nombre" var="custom" placeholder="Ejemplo: Zapatos, Pantalones" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{atributoPedidoNombre}" completeMethod="#{backingPedido[eventoPedidoAutocompletar]}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" style="width: 100% !important;">
+							<p:ajax event="itemSelect" oncomplete="$('#replace').click();"/>							
+						</p:autoComplete>	
+					</div>
+				</div>			
+			</div>
+			<div class="ui-grid-col-2" style="text-align: left !important;">
+				<div class="ui-grid-row janal-grid-row">
+					<div class="ui-grid-col-12">
+						<p:commandButton icon="fa fa-search" process="@this nombre" actionListener="#{backingPedido[eventoPedidoBuscar]}" update="tabla" onstart="janal.bloquear()" oncomplete="janal.desbloquear();"/>
+					</div>
+				</div>	
+			</div>
+		</div>
+	</div>
+	<p:spacer height="10px"/>			
+	
+	<div id="sticky-menu" class="ui-panel ui-widget ui-widget-content ui-corner-all janal-content-header Responsive100">
+    <h:form prependId="false" class="janal-padding-cero">
+      <p:remoteCommand name="janalCleanFlash" actionListener="#{kajoolEncabezado.doCleanFlash()}" process="@this"/>
+		  <ui:include src="/WEB-INF/plantillas/secciones/topbar.xhtml"/>		  
+		</h:form>
+		<div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header" style="display: -webkit-box;">
+			<h:panelGrid id="iktan-slide-menu">
+				<!--a href="#" class="BordRad3" onclick="mmenu.open('#{kajoolTemaActivo.name}');">
+					<i class="fa fa-lg icon-menu-1" style="color: white"/>
+				</a-->
+			</h:panelGrid>  
+			<span class="ui-panel-title Fs18 lg-pantalla">
+				#{titulo} 
+			</span>
+			<span class="ui-panel-title Fs16 xs-pantalla">
+				#{kajoolUtilAplicacion.toTitle(titulo, 35)}
+			</span>
+		</div>
+		<div class="janal-icon-ajax">
+			<p:ajaxStatus style="width:16px; height:16px;">
+				<f:facet name="start">
+					<i class="fa fa-spinner fa-spin fa-2x"/>
+				</f:facet>
+				<f:facet name="complete">
+					<h:outputText value="" />
+				</f:facet>
+			</p:ajaxStatus>
+		</div>
+	</div>	
+	
+</html>

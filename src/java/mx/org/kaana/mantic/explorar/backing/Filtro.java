@@ -15,26 +15,27 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.explorar.comun.Pedido;
 import org.primefaces.model.StreamedContent;
 
 @Named(value = "manticExplorarFiltro")
 @ViewScoped
-public class Filtro extends IBaseAttribute implements Serializable {
+public class Filtro extends Pedido implements Serializable {
 
-  private static final long serialVersionUID = 8793667741599428879L;
-
-	private List<Entity> lazyModel;
+  private static final long serialVersionUID = 8793667741599428879L;	
+	
+	private List<Entity> lazyModel;	
 
 	public List<Entity> getLazyModel() {
 		return lazyModel;
-	}
+	}	
 	
-  @PostConstruct
+	@PostConstruct
   @Override
   protected void init() {
     try {
@@ -45,8 +46,8 @@ public class Filtro extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
   } // init
-
-  public void doLoad() {
+	
+	public void doLoad() {
     List<Columna> columns     = null;
 		Map<String, Object> params= this.toPrepare();
     try {
@@ -69,11 +70,14 @@ public class Filtro extends IBaseAttribute implements Serializable {
 		Map<String, Object> regresar= new HashMap<>();
 		StringBuilder sb            = null;
 		try {
-			sb= new StringBuilder();			
-			if(!Cadena.isVacio(this.attrs.get("nombre"))) { 
-				String nombre= ((String)this.attrs.get("nombre")).toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
-				sb.append("(tc_mantic_articulos.nombre regexp '.*").append(nombre).append(".*' or tc_mantic_articulos.descripcion regexp '.*").append(nombre).append(".*') and ");				
-			} // if	
+			sb= new StringBuilder();						
+			if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L) 
+				sb.append("tc_mantic_articulos.id_articulo=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");						
+  		else 
+	  		if(!Cadena.isVacio(JsfBase.getParametro("nombre_input"))) { 
+					String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+		  		sb.append("(tc_mantic_articulos.nombre regexp '.*").append(nombre).append(".*' or tc_mantic_articulos.descripcion regexp '.*").append(nombre).append(".*') and ");				
+				} // if	
 			if(Cadena.isVacio(sb.toString()))
 				regresar.put("condicion", Constantes.SQL_VERDADERO);
 			else
@@ -84,8 +88,8 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			throw e;
 		} // catch		
 		return regresar;
-	} // toCondicion
-	
+	} // toCondicion		  
+  
 	public StreamedContent doPrepareImage(Entity row) {
 		StreamedContent regresar= null;
 		try {
@@ -96,13 +100,12 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			JsfBase.addMessageError(e);
     } // catch   
 		return regresar;
-	}
+	} // doPrepareImage
 	
 	public String doAceptar() {
 		String regresar= "accion";		
     JsfBase.setFlashAttribute("retorno", "filtro");
     JsfBase.setFlashAttribute("articulo", this.attrs.get("articulo"));
 		return regresar.concat(Constantes.REDIRECIONAR);
-	} 
-	
+	} // doAceptar	
 }

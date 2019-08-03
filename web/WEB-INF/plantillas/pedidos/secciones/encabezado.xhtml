@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+			xmlns:ui="http://java.sun.com/jsf/facelets"
+			xmlns:pe="http://primefaces.org/ui/extensions">	
+	<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryPreciosJs}"/>
+	<h:outputScript library="janal" name="js/jquery.magnify.min-1.2.0.js"/>
+	<h:outputScript library="janal" name="core/jquery.janal.magnify-0.0.1.js"/>
+	<h:outputStylesheet library="janal" name="css/jquery.magnify.min.css" />
+	<h:outputStylesheet library="janal" name="css/jquery.magnify.min.css.map" />
+	<script type="text/javascript">
+		$(document).ready(function () {
+			if (#{empty janalCleanFlash})
+				janalCleanFlash();
+		});
+
+		$(function () {
+			janal.fecha();
+			$('#banner').addClass('ui-panelgrid');
+			$('#banner').addClass('ui-widget');
+			$('#banner tr:eq(0)').addClass('ui-widget-content');
+		});
+	</script>
+	<style>
+		.janal-faltantes-top {
+			margin-top: -6px;
+		}
+		.ui-datatable tr.ui-state-highlight,
+		.ui-datatable tr.ui-state-hover {
+			background-color: #9EB3BB;
+		}
+	</style>	
+
+  <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+    <div class="ui-g ui-grid-row janal-grid-row">
+			<div class="ui-g-1 janal-content-center janal-column-center">
+				<p:commandLink action="#{kajoolEncabezado.doMovePageStart()}" title="Ir a la página de inicio">
+					<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="35"/>
+				</p:commandLink>	
+			</div>	
+			<div class="ui-g-11 janal-content-center">
+        <div class="ui-g ui-grid-row janal-grid-row">
+					<div class="ui-g-10 janal-content-center">
+						<h1 class="titulo-proyecto janal-header-title">#{kajoolUtilAplicacion.tituloSistema}</h1>
+						<h1 class="titulo-siglas janal-header-acronym">#{kajoolUtilAplicacion.tituloCorto}</h1>
+					</div>
+					<div class="ui-g-2 janal-content-center">
+						<!--span class="version lg-pantalla" style="float:right;"><strong class='janal-color-blue'>[CTRL+H]</strong>Ayuda</span>
+						<span class="version xs-pantalla" style="float:right;"><strong class='janal-color-blue'>[CTRL+H]</strong></span-->
+					</div>  
+				</div>	
+        <div class="ui-g ui-grid-row janal-grid-row">
+					<div class="ui-g-4 janal-content-center">
+						<span id="reloj" class="fecha lg-pantalla"></span>
+						<span class="fecha xs-pantalla Fs14">#{kajoolUtilAplicacion.currentDate}</span>
+					</div>
+					<div class="ui-g-4 janal-content-center margin-desarrollo" style="text-align: center;">
+						<p:outputLabel styleClass="janal-etapa lg-pantalla" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
+						<p:outputLabel styleClass="janal-etapa xs-pantalla Fs14" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
+					</div>
+					<div class="ui-g-4 janal-content-center margin-version" style="text-align: right;">
+						<span id="version" class="version lg-pantalla">#{kajoolUtilAplicacion.versionAplicacion}</span>
+						<span id="version" class="version xs-pantalla Fs14">#{kajoolUtilAplicacion.version}</span>
+					</div>
+				</div>	
+			</div>
+		</div>	
+	</div>			           										
+
+  <p:notificationBar id="lockNotification" position="top" effect="slide" styleClass="jana-bar-top" widgetVar="notification" effectSpeed="slow">
+    <span title="Cerrar" style="position: absolute; top: 10px; right: 80px; cursor: pointer;" onclick="PF('notification').hide();"><i class="fa fa-lg fa-close"/></span>
+    <p:panelGrid layout="grid" columns="2" columnClasses="janal-wid-col-200">
+      <h:outputText value="Aplicaci&oacute;n MANTIC" styleClass="Fs20"/>
+      <h:outputText value="#{kajoolUtilAplicacion.notificacion}" escape="false" styleClass="Fs14"/>
+    </p:panelGrid>
+  </p:notificationBar>  
+	<p:ajaxExceptionHandler type="java.lang.RuntimeException" update="janalGlobalException" onexception="#{pfExceptionHandler.type eq 'javax.faces.application.ViewExpiredException'? 'janal.forward();': 'PF(\'exceptionGlobalDialog\').show();'}" />
+	<h:form prependId="false">
+		<pe:remoteCommand name="executeGlobalException" actionListener="#{janalBackingPage[janalEventPage]}" process="@all" oncomplete="janal.forward();">
+			<pe:methodSignature parameters="java.lang.Boolean"/>  
+			<pe:methodParam name="isViewException"/>  
+		</pe:remoteCommand>	
+		<p:dialog id="janalGlobalException" header="Ocurrió una excepción: '#{pfExceptionHandler.type}' !" widgetVar="exceptionGlobalDialog" width="1300px" height="400px" closeOnEscape="true" closable="true" onShow="janal.pivot(); janal.bloquear();" onHide="janal.recover(); janal.desbloquear();">
+			<div class="janal-wid-100-txt janal-column-center janal-font-bold">
+				<p:outputLabel value="FAVOR DE NOTIFICAR DE ESTE ERROR AL EQUIPO DE DESARROLLO DE ESTE SISTEMA !" styleClass="recalculo janal-field-error"/>
+			</div>
+			<strong>Message: </strong>#{pfExceptionHandler.message} <br/><br/>
+			<strong>StackTrace: </strong><h:outputText value="#{pfExceptionHandler.formattedStackTrace}" escape="false" /><br/>
+			<hr class="ui-widget-content" style="display: #{pfExceptionHandler.type eq 'javax.faces.application.ViewExpiredException'? '': 'none'}"/>
+			<div class="janal-line-button">						  
+				<p:commandButton type="button" icon="fa fa-refresh" onclick="document.location.href = document.location.href;" value="Recargar!" rendered="#{pfExceptionHandler.type eq 'javax.faces.application.ViewExpiredException'}" />
+			</div>	
+		</p:dialog>							
+	</h:form>	
+	<p:idleMonitor timeout="#{(session.maxInactiveInterval- 120)* 1000}" onidle="janal.bloquear(); PF('dialogoInactivo').show(); $('#dialogoInactividad_modal').removeClass('ui-widget-overlay'); janal.console('El clase ui-widget-overlay fué eliminada del dialogo !');"/>		
+	<p:dialog id="dialogoInactividad" header="Está por expirar la sesión" resizable="false" widgetVar="dialogoInactivo" onShow="janal.globalTimeout= true; janal.monitor(1);" closable="false" width="650px" onHide="janal.console('Salir automático ['+ janal.globalTimeout+ ']'); if(janal.globalTimeout)#{empty(janalBackingPage)? 'janal.forward();': 'executeGlobalException(true);'}">
+		<div class="janal-column-center janal-field-error strong">														
+			<h:outputText id="segundos"/>
+		</div>						
+		<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-70">
+			<div class="janal-column-center strong">
+				<i class="fa fa-refresh Fs130 janal-color-orange"/>
+			</div>
+      <h:panelGrid columns="1">					
+				<p:spacer width="2px"/>
+				<h:outputText value="Para continuar es necesario, dar clic en el boton Aceptrar. "/>
+				<h:outputText value="Para no perder sus datos, recuerde guardarlos antes."/>
+				<p:spacer width="1px"/>
+			</h:panelGrid>	
+		</h:panelGrid>
+		<hr class="ui-widget-content"/>
+		<div class="janal-line-button">
+			<p:commandButton value="Aceptar" icon="fa fa-check" onstart="janal.monitor(0);" oncomplete="janal.globalTimeout= false; PF('dialogoInactivo').hide(); janal.desbloquear();"/>							
+		</div>				
+	</p:dialog>		  	
+	<p:dialog id="dialogoEjecutar" widgetVar="dlgEjecutar" header="Ingrese el c&oacute;digo del m&oacute;dulo ..." onShow="janal.pivot(); $('#kajoolOpcion').val(''); janal.bloquear();" onHide="janal.recover(); janal.desbloquear();" height="90px" width="650px" resizable="false" closeOnEscape="true" dynamic="true">
+		<h:form id="teclasEjecutar" prependId="false">
+			<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+				<div class="ui-grid-row janal-grid-row">
+					<div class="ui-grid-col-2">
+						<p:outputLabel value="C&oacute;digo m&oacute;dulo:"/>
+					</div>
+					<div class="ui-grid-col-10">
+						<p:inputText id="kajoolOpcion" value="#{kajoolEncabezado.attrs.opcion}" styleClass="janal-wid-100-txt janal-key-run" onblur="janal.mayusculas('kajoolOpcion');"/>
+					</div>
+				</div>	
+				<div class="ui-grid-row janal-grid-row">
+					<div class="ui-grid-col-12 janal-column-right">
+						<br/>
+						<p:commandButton id="kajoolEjecutar" icon="fa fa-qq" value="Ejecutar" action="#{kajoolEncabezado.doEjecutar}" process="@this kajoolOpcion" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); PF('dlgEjecutar').hide();"/>
+					</div>
+				</div>
+			</div>	
+		</h:form>
+	</p:dialog>		
+</html>

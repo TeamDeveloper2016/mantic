@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"	
+  xmlns:p="http://primefaces.org/ui"
+  xmlns:pe="http://primefaces.org/ui/extensions">
+  <f:view contentType="text/html">
+    <h:head>
+      <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+      <meta http-equiv="X-UA-Compatible" content="IE=EDGE; IE=10; IE=9;" />
+			<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+      <link rel="shortcut icon" type="image/ico" href="#{kajoolUtilAplicacion.defaultResourceImg}/sistema/favicon.ico.jsf?ln=janal"/>
+      <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryJs}"/>
+      <h:outputText escape="false" value="#{kajoolUtilAplicacion.defaultScripts}"/>
+      <h:outputText escape="false" value="#{kajoolUtilAplicacion.defaultCss}"/>
+      <ui:insert name="librerias"/>      	
+    </h:head>
+    <h:body class="ui-widget-content">
+			<p:layout fullPage="true">
+        <p:layoutUnit id="layoutEncabezado" position="north" styleClass="janal-header-page" style="border:0; width: 100%" gutter="0">
+          <!--ui:include src="/WEB-INF/plantillas/secciones/leftmenu.xhtml"/-->  
+					<ui:include src="/WEB-INF/plantillas/pedidos/secciones/encabezado.xhtml" />
+				</p:layoutUnit>
+        <p:layoutUnit id="principal" position="center" size="100%" style="border:0;" styleClass="sticky-wrapper" gutter="0">
+          <div id="layout-portlets-cover" class="janal-content-center janal-padding-cero" style="margin-left: 0 !important;margin-right: 0 !important;">
+            <h:form id="datos" prependId="false" styleClass="janal-padding-cero">
+							<ui:include src="/WEB-INF/plantillas/pedidos/secciones/criterio.xhtml" />
+              <p:growl id="mensaje" autoUpdate="true" showSummary="false" showDetail="true" sticky="false" widgetVar="mensajes" escape="false" life="15000"/>
+              <p:panel styleClass="sticky-body janal-padding-cero" toggleable="true" style="border:0px;">
+                <p:focus class="janal-padding-cero" context="principal"/>														
+                <ui:insert name="contenido"/>
+                  <h:commandLink id="dataPdf">
+                    <pe:exporter type="pdf"  skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton"  target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+                  </h:commandLink>
+                  <h:commandLink id="dataXls">
+                    <pe:exporter type="xlsx" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+                  </h:commandLink>			
+                <p:dialog id="confirmacion" widgetVar="dialogoConfirmacion" header="#{empty tituloConfirmacion? 'Confirmación': tituloConfirmacion}" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false"  onHide="#{empty onHideDlg? 'janal.desbloquear();': onHideDlg}" width="60%">
+                  <h:outputText value="#{textoConfirmacion}" escape="false"/>
+                  <ui:insert name="detalleConfirmacion" />
+                  <hr class="ui-widget-content"/>
+                  <div class="janal-line-button">
+                    <p:commandButton id="confirmar" process="@form" update="#{empty updateComponent? 'temporal': updateComponent}"  value="Aceptar" action="#{accionConfirmacion[eventoConfirmacion]}" oncomplete="PF('dialogoConfirmacion').hide();janal.desbloquear();" rendered="#{empty renderedConfirmacion? false: renderedConfirmacion}" icon="fa fa-check"/>
+                    <p:commandButton process="@none"  value="#{renderedConfirmacion?'Cancelar':'Regresar'}" oncomplete="PF('dialogoConfirmacion').hide();" icon="fa fa-close"/>
+                  </div>
+                </p:dialog> 								
+              </p:panel>						
+              <p:spacer id="temporal" width="1px" height="1px"/>
+              <p:blockUI block="principal" widgetVar="bloqueo" trigger="#{empty componenteBloqueo? 'temporal': componenteBloqueo}">
+                ¡  Espere por favor !<br/><br/><br/>
+                <i class="fa fa-spinner fa-spin fa-2x"/>
+              </p:blockUI>							
+              <pe:remoteCommand name="countHelp" process="@this" actionListener="#{kajoolMantenimientoContadoresAyudas.doCount}">
+                <pe:methodSignature parameters="java.lang.Long"/>
+                <pe:methodParam name="idAyuda"/>
+              </pe:remoteCommand>
+            </h:form>
+          </div>
+          <ui:include src="/WEB-INF/plantillas/secciones/perfil.xhtml"/>
+          <ui:include src="/WEB-INF/plantillas/secciones/buzon.xhtml" />
+          <ui:insert name="dialogos"/>
+     	</p:layoutUnit>
+     </p:layout>
+    </h:body>
+  </f:view>
+</html>
