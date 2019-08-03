@@ -5,13 +5,12 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core"
-			xmlns:ui="http://java.sun.com/jsf/facelets"
-			xmlns:pe="http://primefaces.org/ui/extensions">	
+			xmlns:ui="http://java.sun.com/jsf/facelets">	
 	<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryPreciosJs}"/>
 	<h:outputScript library="janal" name="js/jquery.magnify.min-1.2.0.js"/>
 	<h:outputScript library="janal" name="core/jquery.janal.magnify-0.0.1.js"/>
 	<h:outputStylesheet library="janal" name="css/jquery.magnify.min.css" />
-	<h:outputStylesheet library="janal" name="css/jquery.magnify.min.css.map" />		
+	<h:outputStylesheet library="janal" name="css/jquery.magnify.min.css.map" />			
 	<style>
 		.janal-faltantes-top {
 			margin-top: -6px;
@@ -20,11 +19,18 @@
 		.ui-datatable tr.ui-state-hover {
 			background-color: #9EB3BB;
 		}
-	</style>	  	           					
+		.janal-fija-componente{			
+			overflow-y: hidden;
+			position: fixed;
+			width: 100% !important;
+			background: white;
+		}
+	</style>	  	      
 	<!--div class="xs-pantalla janal-wid-100">
 		<p:commandButton id="filtrar" icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
 	</div-->	
-	<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+	
+	<div class="ui-grid ui-grid-responsive ui-panel-title janal-fija-componente" style="overflow-y:hidden;height: 44px !important; padding-top: 5px !important;">
 		<div class="ui-grid-row janal-grid-row">
 			<!--div id="collapse-find" class="">
 				<p:panel id="panelBusqueda" header="Criterio:" styleClass="lg-pantalla" toggleable="true" collapsed="true" toggleOrientation="horizontal">
@@ -54,7 +60,7 @@
 							<p:ajax event="keyup" listener="#{backingPedido[backingPlantillaPedidoEvento]}" process="@this nombre" update="tabla" onstart="return $('#nombre').val().trim().length> 2;"/>
 						</p:inputText-->			
 						
-						<p:autoComplete id="nombre" var="custom" placeholder="Ejemplo: Zapatos, Pantalones" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{atributoPedidoNombre}" completeMethod="#{backingPedido[eventoPedidoAutocompletar]}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" style="width: 100% !important;">
+						<p:autoComplete id="nombre" var="custom" placeholder="Ejemplo: Zapatos, Pantalones" itemLabel="#{custom.nombre}" styleClass="key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{atributoPedidoNombre}" completeMethod="#{backingPedido[eventoPedidoAutocompletar]}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" style="width: 100% !important;">
 							<p:ajax event="itemSelect" oncomplete="$('#replace').click();"/>							
 						</p:autoComplete>	
 					</div>
@@ -68,10 +74,9 @@
 				</div>	
 			</div>
 		</div>
-	</div>
-	<p:spacer height="10px"/>			
-	
-	<div id="sticky-menu" class="ui-panel ui-widget ui-widget-content ui-corner-all janal-content-header Responsive100">
+	</div>	
+	<p:spacer height="40px"/>				
+	<div id="sticky-menu" class="ui-panel ui-widget ui-widget-content ui-corner-all janal-content-header Responsive100 janal-fija-componente">
     <h:form prependId="false" class="janal-padding-cero">
       <p:remoteCommand name="janalCleanFlash" actionListener="#{kajoolEncabezado.doCleanFlash()}" process="@this"/>
 		  <ui:include src="/WEB-INF/plantillas/secciones/topbar.xhtml"/>		  
@@ -100,5 +105,5 @@
 			</p:ajaxStatus>
 		</div>
 	</div>	
-	
+	<p:spacer height="40px"/>				
 </html>

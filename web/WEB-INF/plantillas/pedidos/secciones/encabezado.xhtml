@@ -33,9 +33,9 @@
 		.ui-datatable tr.ui-state-hover {
 			background-color: #9EB3BB;
 		}
-	</style>	
+	</style>	  			           										
 
-  <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+	<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;padding-bottom: 5px !important;">
     <div class="ui-g ui-grid-row janal-grid-row">
 			<div class="ui-g-1 janal-content-center janal-column-center">
 				<p:commandLink action="#{kajoolEncabezado.doMovePageStart()}" title="Ir a la página de inicio">
@@ -69,8 +69,8 @@
 				</div>	
 			</div>
 		</div>	
-	</div>			           										
-
+	</div>
+	
   <p:notificationBar id="lockNotification" position="top" effect="slide" styleClass="jana-bar-top" widgetVar="notification" effectSpeed="slow">
     <span title="Cerrar" style="position: absolute; top: 10px; right: 80px; cursor: pointer;" onclick="PF('notification').hide();"><i class="fa fa-lg fa-close"/></span>
     <p:panelGrid layout="grid" columns="2" columnClasses="janal-wid-col-200">
