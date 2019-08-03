@@ -76,7 +76,7 @@ public class Filtro extends Pedido implements Serializable {
   		else 
 	  		if(!Cadena.isVacio(JsfBase.getParametro("nombre_input"))) { 
 					String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
-		  		sb.append("(tc_mantic_articulos.nombre regexp '.*").append(nombre).append(".*' or tc_mantic_articulos.descripcion regexp '.*").append(nombre).append(".*') and ");				
+		  		sb.append("(tc_mantic_articulos.nombre regexp '.*").append(nombre.toUpperCase()).append(".*' or tc_mantic_articulos.descripcion regexp '.*").append(nombre.toUpperCase()).append(".*') and ");				
 				} // if	
 			if(Cadena.isVacio(sb.toString()))
 				regresar.put("condicion", Constantes.SQL_VERDADERO);
