@@ -11,7 +11,7 @@
 	<ui:param name="eventoPedidoAutocompletar" value="doCompleteArticulo" />
 	<ui:param name="eventoPedidoBuscar" value="doLoad" />
 	<ui:param name="atributoPedidoNombre" value="#{manticExplorarFiltro.attrs.nombre}" />
-	<ui:param name="titulo" value="Artículos disponibles" />
+	<ui:param name="titulo" value="Catalogo de artículos" />
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
@@ -25,6 +25,14 @@
 					$(this).attr('href', $('#' + name).attr('src'));
 				});
 			};
+			
+			$( window ).load(function() {
+				$('#layoutEncabezado').css('height', '80px');				
+			});									
+			
+			function adjustPanelContains(){
+				$('#nombre_panel').css('width', '75%');
+			}
 		</script>		
 	</ui:define>
 	<ui:define name="contenido">				
