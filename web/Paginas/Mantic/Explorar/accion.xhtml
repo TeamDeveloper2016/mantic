@@ -67,10 +67,11 @@
 						  <p:outputLabel value="$ #{0}" styleClass="janal-wid-96 filas janal-precio-azul"/>
               <br/>
 							<p:spacer height="50px"/>
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30 janal-column-right, janal-wid-100-txt janal-column-left">
-								<p:outputLabel for="cantidad" value="Cantidad: "/>
-								<p:inputNumber id="cantidad" value="1" styleClass="filas janal-precio-azul" inputStyleClass="janal-wid-80 janal-column-right"/>
-              </p:panelGrid>
+							<br/>
+							<p:outputLabel for="cantidad" value="Cantidad: "/>
+							<br/>
+							<p:spacer height="20px"/>
+							<p:inputNumber id="cantidad" value="1" styleClass="filas janal-precio-azul" inputStyleClass="janal-wid-40 janal-column-right"/>
   						<div class="lg-pantalla">
 								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt janal-column-center">							
 									<p:commandButton id="aceptar" value="Agregar pedido" icon="fa fa-shopping-cart" accesskey="a" process="@form" update="@(.recalculo)" action="#{manticExplorarAccion.doAceptar}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear();"/>
