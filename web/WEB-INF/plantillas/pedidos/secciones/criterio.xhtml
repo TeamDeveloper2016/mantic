@@ -85,7 +85,38 @@
 	<div id="sticky-menu" class="ui-panel ui-widget ui-widget-content ui-corner-all janal-content-header Responsive100 janal-fija-componente">
     <h:form prependId="false" class="janal-padding-cero">
       <p:remoteCommand name="janalCleanFlash" actionListener="#{kajoolEncabezado.doCleanFlash()}" process="@this"/>
-		  <ui:include src="/WEB-INF/plantillas/secciones/topbar.xhtml"/>		  
+		  <!--ui:include src="/WEB-INF/plantillas/secciones/topbar.xhtml"/-->		  
+			<div id="layout-header" class="Unselectable fontRegular janal-top-menu">
+				<ul id="sm-topmenu" class="layout-header-widgets white Fs14" style="right: 30px !important">					
+					<li class="Fleft BordRadHalf TexAlCenter" title="Ir a carrito de pedidos." style="width: 38px !important;height: 38px !important;">
+						<i class="fa fa-shopping-cart fa-2x"></i>
+						<span class="alertBubble BordRad5 Fs12">0</span>
+						<ul class="layout-header-widgets-submenu BordRad5 shadows janal-text-white Animated05">
+							<li class="Animated05">
+								<a href="/MANTIC/Paginas/Mantic/Explorar/pedido.jsf" class="janal-text-white Unselectable">
+								<i class="fa fa-gg fa-1x janal-text-one-line">
+								</i>Carrito</a>
+							</li>
+						</ul>    	
+						<ul id="sm-mobiletopmenu" class="layout-header-widgets white Fs14">
+							<li class="Fleft BordRadHalf TexAlCenter Animated05 DisplayOnResponsive"><i class="icon-th-1"></i></li>
+						</ul>
+					</li>
+					<li class="Fleft BordRadHalf TexAlCenter" title="Cerrar sesión." style="width: 38px !important;height: 38px !important;">
+						<i class="fa fa-power-off fa-2x"></i>						
+						<ul class="layout-header-widgets-submenu BordRad5 shadows janal-text-white Animated05">
+							<li class="Animated05">
+								<a href="/MANTIC/Exclusiones/salir.jsf" class="janal-text-white Unselectable">
+								<i class="fa fa-gg fa-1x janal-text-one-line">
+								</i>Cerrar sesión.</a>
+							</li>
+						</ul>    	
+						<ul id="sm-mobiletopmenu" class="layout-header-widgets white Fs14">
+							<li class="Fleft BordRadHalf TexAlCenter Animated05 DisplayOnResponsive"><i class="icon-th-1"></i></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
 		</h:form>
 		<div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header" style="display: -webkit-box;">
 			<h:panelGrid id="iktan-slide-menu">
