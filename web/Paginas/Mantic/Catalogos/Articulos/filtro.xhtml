@@ -21,6 +21,11 @@
 					$(this).attr('href', $('#'+ name).attr('src'));
  			  });
 			};					
+			Janal.Control.Validations.prototype.onLoadCallBack= function() {
+				$janal.console('janal.onLoadCallBack.reload()');
+				setTimeout('reload();', 1000);
+			};
+			
 			$(document).ready(function() {
 		  });
 		</script>		
@@ -106,7 +111,7 @@
 						</h:panelGrid>
 						<p:separator/>
 						<div class="janal-align-right lg-pantalla">
-							<p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@form" actionListener="#{manticCatalogosArticulosFiltro.doLoad}" oncomplete="janal.desbloquear();setTimeout('reload()', 1000);" update="tabla"/>
+							<p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@form" actionListener="#{manticCatalogosArticulosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
 						</div>
 						<div class="xs-pantalla janal-wid-100">
 							<p:commandButton id="buscarIcon" title="Buscar" value="Buscar" iconPos="right" styleClass="janal-text-white janal-wid-100" accesskey="b" icon="fa fa-filter" onstart="return janal.execute(true);" process="@form" actionListener="#{manticCatalogosArticulosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
@@ -146,6 +151,7 @@
 					</div>
 					<div class="ui-grid-row janal-grid-row">
 						<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosArticulosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosArticulosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosArticulosFiltro.lazyModel.rowCount gt manticCatalogosArticulosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+							<!--p:ajax event="page" oncomplete="reload();	" process="tabla" skipChildren="false"/-->
 							<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 							<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 							<f:facet name="header">

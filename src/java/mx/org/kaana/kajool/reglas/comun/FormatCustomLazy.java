@@ -4,6 +4,7 @@ package mx.org.kaana.kajool.reglas.comun;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.naming.directory.SearchResult;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
@@ -12,6 +13,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.SortOrder;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import org.primefaces.context.RequestContext;
 
 /**
  *@company Instituto Nacional de Estadistica y Geografia
@@ -64,6 +67,8 @@ public class FormatCustomLazy extends FormatLazyModel<IBaseDto> {
     if(filters.size()> 0)
       this.getParams().put("filters", " and (".concat(toFilters(filters)).concat(")"));
     LOG.info("Lazy params: "+ this.getParams());
+		
+		UIBackingUtilities.execute("janal.onLoadCallBack();");
     return super.load(first, pageSize, sortField, sortOrder, filters);
   }
 

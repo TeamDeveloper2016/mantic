@@ -1363,6 +1363,7 @@
 			return name;
 		},
     specialCharacters: function(input) {
+			$janal.console('janal.specialCharacters');
 			var c=input.toLowerCase();
 			c = c.replace(new RegExp("\s", 'g'),"");
 			c = c.replace(new RegExp("[\u00E0\u00E1\u00E2\u00E3\u00E4\u00E5]", 'g'),"a");
@@ -1378,10 +1379,15 @@
 			return c;
     },
 		contains: function(itemLabel, filterValue) {
+			$janal.console('janal.contains');
       return itemLabel.includes(filterValue) || $janal.specialCharacters(itemLabel).includes(filterValue);
     },
 		session: function() {
+			$janal.console('janal.session');
 			return $('#janalAccessControl').length=== 0 || $('#janalAccessControl').val()=== '1';
+		},
+		onLoadCallBack: function() {
+			$janal.console('janal.onLoadCallBack');
 		}
   });
   window.Janal= Janal;

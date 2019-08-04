@@ -93,7 +93,8 @@ public class UIBackingUtilities {
 	}
 	
 	public static void execute(String script) {
-    RequestContext.getCurrentInstance().execute(script);
+		if(RequestContext.getCurrentInstance()!= null)
+      RequestContext.getCurrentInstance().execute(script);
 	}
 	
 	public static void update(String component) {
