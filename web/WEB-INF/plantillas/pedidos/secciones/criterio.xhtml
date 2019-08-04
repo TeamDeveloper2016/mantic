@@ -11,6 +11,12 @@
 	<h:outputScript library="janal" name="core/jquery.janal.magnify-0.0.1.js"/>
 	<h:outputStylesheet library="janal" name="css/jquery.magnify.min.css" />
 	<h:outputStylesheet library="janal" name="css/jquery.magnify.min.css.map" />			
+	<script type="text/javascript">
+		function setActualVal(){
+			var val= $('#nombre_input').val();
+			$('#hidenValCriterio').val(val);
+		}
+	</script>			
 	<style>
 		.janal-faltantes-top {
 			margin-top: -6px;
@@ -59,9 +65,9 @@
 						<!--p:inputText id="nombre" placeholder="Ejemplo: Zapatos, Pantalones" value="#{atributoPedidoNombre}" styleClass="janal-wid-100-txt">
 							<p:ajax event="keyup" listener="#{backingPedido[backingPlantillaPedidoEvento]}" process="@this nombre" update="tabla" onstart="return $('#nombre').val().trim().length> 2;"/>
 						</p:inputText-->			
-						
-						<p:autoComplete id="nombre" var="custom" placeholder="Ejemplo: Zapatos, Pantalones" itemLabel="#{custom.nombre}" styleClass="key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{atributoPedidoNombre}" completeMethod="#{backingPedido[eventoPedidoAutocompletar]}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" style="width: 100% !important;">
-							<p:ajax event="itemSelect" oncomplete="$('#replace').click();"/>							
+						<h:inputHidden id="hidenValCriterio" value="#{atributoPedidoHidden}"/>
+						<p:autoComplete id="nombre" var="custom" placeholder="Ejemplo: Zapatos, Pantalones" itemLabel="#{custom.nombre}" styleClass="key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{atributoPedidoNombre}" completeMethod="#{backingPedido[eventoPedidoAutocompletar]}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" style="width: 100% !important;" onkeyup="setActualVal();">
+							<p:ajax event="itemSelect" process="@this hidenValCriterio" oncomplete="$('#replace').click();"/>							
 						</p:autoComplete>	
 					</div>
 				</div>			
@@ -69,7 +75,7 @@
 			<div class="ui-grid-col-2" style="text-align: left !important;">
 				<div class="ui-grid-row janal-grid-row">
 					<div class="ui-grid-col-12">
-						<p:commandButton icon="fa fa-search" process="@this nombre" actionListener="#{backingPedido[eventoPedidoBuscar]}" update="tabla" onstart="janal.bloquear()" oncomplete="janal.desbloquear();"/>
+						<p:commandButton icon="fa fa-search" process="@this nombre hidenValCriterio" update="tabla" onstart="janal.bloquear()" oncomplete="$('#replace').click();"/>
 					</div>
 				</div>	
 			</div>
