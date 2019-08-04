@@ -23,6 +23,8 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.articulos.beans.Especificacion;
+import mx.org.kaana.mantic.catalogos.articulos.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
 import mx.org.kaana.mantic.explorar.comun.Pedido;
 import mx.org.kaana.mantic.inventarios.almacenes.beans.AdminKardex;
@@ -64,14 +66,22 @@ public class Accion extends Pedido implements Serializable {
 	@Override
 	@PostConstruct
 	protected void init() {
-		this.adminKardex= new AdminKardex(-1L, false);
-		Entity articulo= (Entity)JsfBase.getFlashAttribute("articulo");
-    this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
-		this.attrs.put("articulo", articulo);
-		if(articulo!= null && !articulo.isEmpty()) {
-			this.updateArticulo();
-		} // if	
-	}
+		Entity articulo= null;
+		try {
+			this.adminKardex= new AdminKardex(-1L, false);
+			articulo= (Entity)JsfBase.getFlashAttribute("articulo");
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
+			this.attrs.put("articulo", articulo);
+			if(articulo!= null && !articulo.isEmpty()) {
+				this.updateArticulo();
+				loadEspecificaciones();
+			} // if	
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);		
+		} // catch		
+	} // init
 	
 	private void updateArticulo() {
 		Entity articulo= (Entity)this.attrs.get("articulo");
@@ -215,4 +225,17 @@ public class Accion extends Pedido implements Serializable {
 		} // catch		
 		return regresar;
 	} // doBusqueda
+	
+	private void loadEspecificaciones() throws Exception{
+		List<Especificacion> especificaciones= null;
+		MotorBusqueda motor                  = null;		
+		try {			
+			motor= new MotorBusqueda((Long)this.attrs.get("idArticulo"));
+			especificaciones= motor.toArticulosEspecificaciones();
+			this.attrs.put("especificaciones", especificaciones);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // loadEspecificaciones
 }
