@@ -7,9 +7,10 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/pedidos/accion.xhtml">
-	<ui:param name="backingPlantillaPedido" value="#{manticExplorarAccion}" />
-	<ui:param name="backingPlantillaPedidoEvento" value="doLoad" />
-	<ui:param name="backingPlantillaPedidoAtributo" value="#{manticExplorarAccion.nombre}" />
+	<ui:param name="backingPedido" value="#{manticExplorarAccion}" />
+	<ui:param name="eventoPedidoAutocompletar" value="doCompleteArticulo" />	
+	<ui:param name="atributoPedidoNombre" value="#{manticExplorarAccion.attrs.nombre}" />
+	<ui:param name="atributoPedidoHidden" value="#{manticExplorarAccion.attrs.nombreHidden}" />
 	<ui:param name="titulo" value="Detalle del articulo"/>
 	<ui:define name="librerias">
 		<script type="text/javascript">
@@ -30,6 +31,7 @@
 		</style>		
 	</ui:define>
 	<ui:define name="contenido">
+		<p:commandButton id="replace" action="#{manticExplorarAccion.doBusqueda}" process="@this" onstart="return janal.bloquear();" style="display:none"/>
 		<p:focus context="cantidad"/>
 		<p:defaultCommand target="tabla"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">

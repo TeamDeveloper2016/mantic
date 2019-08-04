@@ -9,8 +9,8 @@
                 template="/WEB-INF/plantillas/pedidos/filtro.xhtml">
 	<ui:param name="backingPedido" value="#{manticExplorarFiltro}" />
 	<ui:param name="eventoPedidoAutocompletar" value="doCompleteArticulo" />
-	<ui:param name="eventoPedidoBuscar" value="doLoad" />
 	<ui:param name="atributoPedidoNombre" value="#{manticExplorarFiltro.attrs.nombre}" />
+	<ui:param name="atributoPedidoHidden" value="#{manticExplorarFiltro.attrs.nombreHidden}" />
 	<ui:param name="titulo" value="Catalogo de artículos" />
 	<ui:define name="librerias">
 		<script type="text/javascript">
@@ -26,12 +26,16 @@
 				});
 			};
 			
-			$( window ).load(function() {
+			$(window).load(function() {
 				$('#layoutEncabezado').css('height', '80px');				
 			});									
 			
 			function adjustPanelContains(){
 				$('#nombre_panel').css('width', '75%');
+			};
+			
+			function setCriterioBusqueda(param){
+				$('#nombre_input').val(param);
 			}
 		</script>		
 	</ui:define>
