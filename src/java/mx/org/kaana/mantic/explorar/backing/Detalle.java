@@ -23,6 +23,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticPedidosDetallesDto;
+import mx.org.kaana.mantic.explorar.comun.Pedido;
 import mx.org.kaana.mantic.explorar.reglas.Transaccion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,7 +39,7 @@ import org.primefaces.model.StreamedContent;
 
 @Named(value= "manticExplorarDetalle")
 @ViewScoped
-public class Detalle extends IBaseAttribute implements Serializable {
+public class Detalle extends Pedido implements Serializable {
 
 	private static final long serialVersionUID=-6770709196941718388L;
 	private static final Log LOG=LogFactory.getLog(Detalle.class);
