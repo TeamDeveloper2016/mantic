@@ -38,8 +38,17 @@ public class Filtro extends Pedido implements Serializable {
 	@PostConstruct
   @Override
   protected void init() {
+		String criterio= null;
     try {
-      this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());      
+      this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			this.attrs.put("principal", Boolean.TRUE);
+			if(criterio != JsfBase.getFlashAttribute("criterio")){
+				criterio= String.valueOf(JsfBase.getFlashAttribute("criterio"));
+				this.attrs.put("principal", Boolean.FALSE);
+				this.attrs.put("criterio", criterio);				
+				doLoad();				
+				UIBackingUtilities.execute("setCriterioBusqueda('".concat(criterio).concat("');"));
+			} // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -69,15 +78,24 @@ public class Filtro extends Pedido implements Serializable {
 	private Map<String, Object> toPrepare() {
 		Map<String, Object> regresar= new HashMap<>();
 		StringBuilder sb            = null;
+		Boolean principal           = false;
+		String nombre               = null;
 		try {
+			principal= (Boolean) this.attrs.get("principal");
 			sb= new StringBuilder();						
-			if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L) 
-				sb.append("tc_mantic_articulos.id_articulo=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");						
-  		else 
-	  		if(!Cadena.isVacio(JsfBase.getParametro("nombre_input"))) { 
-					String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
-		  		sb.append("(tc_mantic_articulos.nombre regexp '.*").append(nombre.toUpperCase()).append(".*' or tc_mantic_articulos.descripcion regexp '.*").append(nombre.toUpperCase()).append(".*') and ");				
+			if(principal){
+				if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L) 
+					sb.append("tc_mantic_articulos.id_articulo=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");						
+				else if(!Cadena.isVacio(JsfBase.getParametro("nombre_input"))) { 
+					nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+					sb.append("(tc_mantic_articulos.nombre regexp '.*").append(nombre.toUpperCase()).append(".*' or tc_mantic_articulos.descripcion regexp '.*").append(nombre.toUpperCase()).append(".*') and ");				
 				} // if	
+			} // if
+			else{
+				nombre= this.attrs.get("criterio").toString().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+				sb.append("(tc_mantic_articulos.nombre regexp '.*").append(nombre.toUpperCase()).append(".*' or tc_mantic_articulos.descripcion regexp '.*").append(nombre.toUpperCase()).append(".*') and ");				
+				this.attrs.put("principal", Boolean.TRUE);
+			} // else
 			if(Cadena.isVacio(sb.toString()))
 				regresar.put("condicion", Constantes.SQL_VERDADERO);
 			else

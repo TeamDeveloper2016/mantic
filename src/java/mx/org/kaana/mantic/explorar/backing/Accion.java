@@ -14,11 +14,13 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
@@ -95,7 +97,7 @@ public class Accion extends Pedido implements Serializable {
 					Value ultimo= (Value)DaoFactory.getInstance().toField("TcManticArticulosBitacoraDto", "ultimo", this.attrs, "registro");
 					if(ultimo!= null)
 					  this.attrs.put("ultimo", Global.format(EFormatoDinamicos.FECHA_HORA, ultimo.toTimestamp()));
-					UIBackingUtilities.execute("jsKardex.callback("+ solicitado +");");
+					//UIBackingUtilities.execute("jsKardex.callback("+ solicitado +");");
       		this.adminKardex= new AdminKardex(
 						articulo.toLong("idArticulo"), 
 						solicitado.toDouble("precio"), 
@@ -192,5 +194,25 @@ public class Accion extends Pedido implements Serializable {
 		articulo.getValue("menudeo").setData(this.adminKardex.getTiposVentas().get(0).getPrecio());
 		articulo.getValue("utilidad").setData(this.adminKardex.getTiposVentas().get(0).getUtilidad());
 	}
-	
+
+	public String doBusqueda(){
+		String regresar               = null;
+		String criterio               = null;
+		List<UISelectEntity> articulos= null;
+		try {			
+			if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L){
+				articulos= (List<UISelectEntity>) this.attrs.get("articulosFiltro");
+				criterio= articulos.get(articulos.indexOf((UISelectEntity)this.attrs.get("nombre"))).toString("nombre");						
+			} // if
+  		else if(!Cadena.isVacio(this.attrs.get("nombreHidden"))) 
+				criterio= this.attrs.get("nombreHidden").toString();		  			
+			JsfBase.setFlashAttribute("criterio", criterio!= null ? criterio.toUpperCase() : criterio);
+			regresar= "filtro".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		return regresar;
+	} // doBusqueda
 }
