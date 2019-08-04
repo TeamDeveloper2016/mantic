@@ -167,7 +167,7 @@ public class Accion extends Pedido implements Serializable {
 	}
 	
   public String	doCancelar() {
-    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+    return "filtro".concat(Constantes.REDIRECIONAR);
 	}
 
 	private String getCostoMayorMenor(double value, double precio) {
