@@ -66,8 +66,13 @@
 										</p:panelGrid>
 										<p:spacer width="30px"/>
 										<p:outputLabel value="Especificaciones técnicas" style="font-size: x-large"/>
-										<p:separator/>
-										<p:outputLabel value="bla bla bla"/>
+										<p:separator/>										
+											<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-17 janal-column-left, janal-wid-100-txt janal-column-left">
+												<c:forEach items="#{manticExplorarAccion.attrs.especificaciones}" var="prop" varStatus="index">
+													<p:outputLabel value="#{prop.nombre}" style="font-weight: bold !important"/>
+													<p:outputLabel value="#{prop.valor}" styleClass="janal-wid-96 filas"/>											
+												</c:forEach>
+											</p:panelGrid>											
 									</p:panelGrid>
 								</p:panel>	
 							</p:panelGrid>	
@@ -84,7 +89,7 @@
 				<p:inputNumber id="cantidad" value="1" styleClass="filas janal-precio-azul" inputStyleClass="janal-wid-100-txt janal-column-right"/>				
 				<p:commandButton id="aceptar" value="Agregar al carrito" icon="fa fa-shopping-cart" accesskey="a" process="@form" update="@(.recalculo)" action="#{manticExplorarAccion.doAceptar}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear();" class="janal-wid-100-txt"/>												
 				<p:separator/>
-				<p:commandButton id="cancelar" value="Buscar otro ..." icon="fa fa-reply-all" accesskey="r" process="@this" action="#{manticExplorarAccion.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" ajax="false" class="janal-wid-100-txt"/>					
+				<p:commandButton id="cancelar" value="Buscar otro ..." icon="fa fa-reply-all" accesskey="r" process="@this" action="#{manticExplorarAccion.doCancelar}" onstart="janal.bloquear();" oncomplete="janal.desbloquear()" class="janal-wid-100-txt"/>					
 				<p:spacer height="45px"/>				
 			</h:panelGrid>			
 		</h:panelGrid>				
