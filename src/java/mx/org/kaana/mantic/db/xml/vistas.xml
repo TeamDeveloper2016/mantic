@@ -4,6 +4,96 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaPedidosDto">
+			<select id="row">
+				select
+					tc_mantic_pedidos.id_pedido as id_key,
+					tc_mantic_pedidos.id_pedido,
+					tc_mantic_pedidos.id_usuario,
+					tc_mantic_pedidos.consecutivo,
+					tc_mantic_pedidos.total,
+					tc_mantic_pedidos.id_pedido_estatus,
+					tc_mantic_pedidos_detalles.id_pedido_detalle,
+					tc_mantic_pedidos_detalles.id_articulo,
+					tc_mantic_pedidos_detalles.codigo,
+					tc_mantic_pedidos_detalles.nombre,
+					tc_mantic_pedidos_detalles.cantidad,
+					tc_mantic_pedidos_detalles.precio,
+					tc_mantic_pedidos_detalles.importe,
+					tc_mantic_pedidos_detalles.registro
+				from
+					tc_mantic_pedidos
+				left join
+					tc_mantic_pedidos_detalles on tc_mantic_pedidos.id_pedido= tc_mantic_pedidos_detalles.id_pedido
+				where
+					tc_mantic_pedidos.id_usuario= {idUsuario}
+				  and (tc_mantic_pedidos.id_pedido_estatus= 1 or tc_mantic_pedidos.id_pedido_estatus= 4)
+				order by
+					tc_mantic_pedidos_detalles.id_pedido_detalle
+			</select>	
+			<select id="pedido">
+				select
+					tc_mantic_pedidos.id_pedido as id_key,
+					tc_mantic_pedidos.id_usuario,
+					tc_mantic_pedidos.consecutivo,
+					tc_mantic_pedidos.total,
+					tc_mantic_pedidos.id_pedido_estatus,
+					tc_mantic_pedidos_detalles.id_pedido_detalle,
+					tc_mantic_pedidos_detalles.id_articulo,
+					tc_mantic_pedidos_detalles.codigo,
+					tc_mantic_pedidos_detalles.nombre,
+					tc_mantic_pedidos_detalles.cantidad,
+					tc_mantic_pedidos_detalles.precio,
+					tc_mantic_pedidos_detalles.importe,
+				  tc_mantic_articulos.id_imagen,
+					tc_mantic_pedidos_detalles.registro
+				from
+					tc_mantic_pedidos
+				left join
+					tc_mantic_pedidos_detalles on tc_mantic_pedidos.id_pedido= tc_mantic_pedidos_detalles.id_pedido
+				inner join
+				  tc_mantic_articulos on tc_mantic_pedidos_detalles.id_articulo= tc_mantic_articulos.id_articulo
+				where
+					tc_mantic_pedidos.id_pedido= {idPedido}
+				order by
+					tc_mantic_pedidos_detalles.id_pedido_detalle
+			</select>	
+			<select id="pedidos">
+				select
+					tc_mantic_pedidos.id_pedido as id_key,
+					tc_mantic_pedidos.id_usuario,
+					tc_mantic_pedidos.consecutivo,
+					count(*) as articulos,
+					tc_mantic_pedidos.total,
+					tc_mantic_pedidos.id_pedido_estatus,
+					tc_mantic_pedidos_estatus.nombre,
+					tc_mantic_pedidos.registro
+				from
+					tc_mantic_pedidos
+				left join
+					tc_mantic_pedidos_detalles on tc_mantic_pedidos.id_pedido= tc_mantic_pedidos_detalles.id_pedido
+				inner join
+					tc_mantic_pedidos_estatus on tc_mantic_pedidos.id_pedido_estatus= tc_mantic_pedidos_estatus.id_pedido_estatus
+				where
+					tc_mantic_pedidos.id_usuario= {idUsuario}
+				group by
+					tc_mantic_pedidos.id_empresa,
+					tc_mantic_pedidos.id_usuario,
+					tc_mantic_pedidos.consecutivo
+				order by
+					tc_mantic_pedidos.id_pedido
+			</select>	
+			<select id="articulos">
+				select
+					count(*) as articulos
+				from
+					tc_mantic_pedidos
+				left join
+					tc_mantic_pedidos_detalles on tc_mantic_pedidos.id_pedido= tc_mantic_pedidos_detalles.id_pedido
+				where
+					tc_mantic_pedidos.id_pedido= {idPedido}				
+			</select>
+		</unit>
 		<unit id="VistaSincronizarDto">
 			<select id="lazy">
 				select

@@ -1,0 +1,123 @@
+package mx.org.kaana.mantic.explorar.backing;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.PostConstruct;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.pagina.IBaseAttribute;
+import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.LoadImages;
+import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticPedidosDetallesDto;
+import mx.org.kaana.mantic.explorar.reglas.Transaccion;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.primefaces.model.StreamedContent;
+
+/**
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
+ *@date 26/05/2018
+ *@time 02:19:46 PM 
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
+ */
+
+@Named(value= "manticExplorarDetalle")
+@ViewScoped
+public class Detalle extends IBaseAttribute implements Serializable {
+
+	private static final long serialVersionUID=-6770709196941718388L;
+	private static final Log LOG=LogFactory.getLog(Detalle.class);
+
+	@Override
+	@PostConstruct
+	protected void init() {
+    List<Columna> columns     = null;
+		Map<String, Object> params=null;
+		try {
+      columns= new ArrayList<>();
+      columns.add(new Columna("precio", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			params=new HashMap<>();
+			params.put("idUsuario", JsfBase.getIdUsuario());
+			Entity pedido= (Entity)DaoFactory.getInstance().toEntity("VistaPedidosDto", params);
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
+			this.attrs.put("pedido", pedido);
+	 		if(pedido!= null && !pedido.isEmpty()) {
+	  		params.put("idPedido", pedido.toLong("idPedido"));
+				List<Entity> detalle= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaPedidosDto", "pedido", params);
+		  	if(detalle!= null && !detalle.isEmpty()) {
+  				UIBackingUtilities.toFormatEntitySet(detalle, columns);
+	  			this.attrs.put("detalle", detalle);
+				} // if
+			} // if
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);		
+		} // catch		
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // init
+	
+	public StreamedContent doPrepareImage(Entity row) {
+		StreamedContent regresar= null;
+		try {
+			regresar= LoadImages.getImage(row.toLong("idArticulo"));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+		return regresar;
+	} // doPrepareImage
+
+	public void doItemDelete(Entity row) {
+		Transaccion transaccion= null;
+		try {
+			TcManticPedidosDetallesDto detalle= (TcManticPedidosDetallesDto)DaoFactory.getInstance().findById(TcManticPedidosDetallesDto.class, row.toLong("idPedidoDetalle"));
+			transaccion= new Transaccion(detalle);
+			transaccion.ejecutar(EAccion.ELIMINAR);
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+	}
+
+	public String doBusqueda() {
+		String regresar               = null;
+		String criterio               = null;
+		List<UISelectEntity> articulos= null;
+		try {			
+			if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L){
+				articulos= (List<UISelectEntity>) this.attrs.get("articulosFiltro");
+				criterio= articulos.get(articulos.indexOf((UISelectEntity)this.attrs.get("nombre"))).toString("nombre");						
+			} // if
+  		else if(!Cadena.isVacio(this.attrs.get("nombreHidden"))) 
+				criterio= this.attrs.get("nombreHidden").toString();		  			
+			JsfBase.setFlashAttribute("criterio", criterio!= null ? criterio.toUpperCase() : criterio);
+			regresar= "filtro".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		return regresar;
+	} // doBusqueda
+
+}

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/pedidos/filtro.xhtml">
+		<ui:param name="backingPedido" value="#{manticExplorarDetalle}" />
+		<ui:param name="eventoPedidoAutocompletar" value="doCompleteArticulo" />	
+		<ui:param name="atributoPedidoNombre" value="#{manticExplorarDetalle.attrs.nombre}" />
+		<ui:param name="atributoPedidoHidden" value="#{manticExplorarDetalle.attrs.nombreHidden}" />
+	<ui:param name="titulo" value="Articulos del pedido"/>
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {
+				codigo: {validaciones: 'requerido', mascara: 'libre'}
+			};
+			function reload() {
+				$('.janal-control-imagen').each(function(index, item) {
+					var name= $(this).attr('id').replace('source-image', 'icon-image', 'gi').replace(/[:]/g, '\\:');
+					janal.console('Reload image: '+ name);
+					$(this).attr('href', $('#'+ name).attr('src'));
+ 			  });
+			};					
+	    $(document).ready(function () {
+				setTimeout('reload();', 1000);
+			});
+		</script>   
+		<style type="text/css">
+			.ui-treetable table {
+				table-layout: fixed
+			}
+			.janal-letter-capitalized {
+				text-transform: uppercase;
+			}
+		</style>		
+	</ui:define>
+	<ui:define name="contenido">
+		<p:commandButton id="replace" action="#{manticExplorarDetalle.doBusqueda}" process="@this" onstart="return janal.bloquear();" style="display:none"/>
+		<p:focus context="replace"/>
+		<p:defaultCommand target="tabla"/>
+    <p:panelGrid  layout="grid" columns="4" style="janal-wid-100-txt" columnClasses="janal-wid-20, janal-wid-60, janal-wid-10 janal-column-center, janal-wid-10 janal-column-center">	
+			<p:spacer/>
+			<p:spacer/>
+			<p:outputLabel value="Precio"/>
+			<p:outputLabel value="Cantidad"/>
+		</p:panelGrid>
+	  <p:repeat value="#{manticExplorarDetalle.attrs.detalle}" var="row">
+      <p:panelGrid  layout="grid" columns="4" styleClass="janal-wid-100-txt" columnClasses="janal-wid-20 janal-column-center, janal-wid-60, janal-wid-10 janal-column-left, janal-wid-10 janal-column-center">	
+				<p:panel styleClass="janal-wid-100" style="text-align:center; border: 0px;">
+					<span id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row.nombre.toString}" data-group="icon-image" href="" title="Click para ver más grande la imagen">
+						<p:graphicImage id="icon-image" cache="false" value="#{manticExplorarDetalle.doPrepareImage(row)}" width="120" height="80" stream="false" style="cursor:zoom-in;"/>
+					</span>	
+				</p:panel>
+				<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt">
+					<p:outputLabel value="#{row.codigo} | #{row.nombre}" style="font-size: x-large"/>
+					<p:spacer height="10px"/>
+					<p:commandLink actionListener="#{manticExplorarDetalle.doItemDelete(row)}">
+						<i class="fa fa-trash">  Eliminar</i>
+					</p:commandLink>	
+				</p:panelGrid>
+				<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt janal-column-right">
+				  <p:outputLabel value="#{row.precio}" styleClass="janal-color-red"/>
+				</p:panelGrid>
+				<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-column-center">
+  				<p:inputNumber id="cantidad" value="1" styleClass="janal-precio-azul" inputStyleClass="janal-wid-60 janal-column-right"/>				
+				</p:panelGrid>	
+			</p:panelGrid>
+			<p:separator/>
+		</p:repeat>
+		<p:commandButton id="tabla" value="" styleClass="janal-zero-size"/>
+	</ui:define>	
+</ui:composition>
