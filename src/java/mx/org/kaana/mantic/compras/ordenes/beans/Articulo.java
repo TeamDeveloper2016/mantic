@@ -22,6 +22,7 @@ import mx.org.kaana.mantic.db.dto.TcManticFicticiasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticGarantiasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticPedidosDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticRequisicionesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticServiciosDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDetallesDto;
@@ -523,6 +524,31 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getPrecio(),
 			this.getUtilidad(),
 			this.getIva()> 0? unitario: 0D
+		);
+	}
+	
+	public TcManticPedidosDetallesDto toPedidoDetalle() {
+		if(Cadena.isVacio(this.getPropio()))
+		  LOG.warn("El codigo propio esta vacio ["+ this.getNombre()+ "] corresponde al ticket de venta");
+		double unitario= Numero.toRedondearSat(this.getSubTotal()/ this.getCantidad());
+		return new TcManticPedidosDetallesDto(
+			this.getDescuentos(),
+			-1L, /*idPedidoDetalle, */						
+			Cadena.isVacio(this.getCodigo())? this.getPropio(): this.getCodigo(), 
+			this.getUnidadMedida(),
+			this.getDescuento(), 
+      this.getSat(),
+			this.getExtras(), 
+			this.getNombre(), 
+			this.getImporte(), 
+      this.getPrecio(),
+			this.getIva(), 
+			this.getImpuestos(), 
+			this.getIva()> 0? unitario: 0D,
+			this.getSubTotal(), 
+			this.getCantidad(), 
+			this.getIdArticulo(),			
+			this.getIdComodin() /*idPedido, */						
 		);
 	}
 	
