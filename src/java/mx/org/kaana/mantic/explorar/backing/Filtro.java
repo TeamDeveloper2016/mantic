@@ -41,7 +41,8 @@ public class Filtro extends Pedido implements Serializable {
 		String criterio= null;
     try {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			this.attrs.put("principal", Boolean.TRUE);
+			this.attrs.put("principal", Boolean.TRUE);			
+			super.initPedido();
 			if(criterio != JsfBase.getFlashAttribute("criterio")){
 				criterio= String.valueOf(JsfBase.getFlashAttribute("criterio"));
 				this.attrs.put("principal", Boolean.FALSE);

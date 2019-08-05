@@ -68,6 +68,7 @@ public class Accion extends Pedido implements Serializable {
 	protected void init() {
 		Entity articulo= null;
 		try {
+			super.initPedido();
 			this.adminKardex= new AdminKardex(-1L, false);
 			articulo= (Entity)JsfBase.getFlashAttribute("articulo");
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
