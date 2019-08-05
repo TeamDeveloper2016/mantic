@@ -32,12 +32,16 @@ import org.apache.log4j.Logger;
 public class Transaccion extends IBaseTnx {
 
   private static final Logger LOG = Logger.getLogger(Transaccion.class);
- 
+ 	
 	private Entity articulo;
 	private TcManticPedidosDto pedido;
 	private TcManticPedidosDetallesDto detalle;
 	private String messageError;
 
+	public Transaccion() {
+		this(new Entity());
+	} 
+	
 	public Transaccion(Entity articulo) {
 		this.articulo = articulo;
 	} // Transaccion
@@ -60,32 +64,14 @@ public class Transaccion extends IBaseTnx {
 		Map<String, Object> params= new HashMap<>();
 		TcManticPedidosBitacoraDto bitacora= null;
 		try {
-			this.messageError    = "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el pedido a realizar.");
-			Siguiente consecutivo= null;
+			this.messageError    = "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el pedido a realizar.");			
 			switch(accion) {
 				case AGREGAR:
 					params.put("idUsuario", JsfBase.getIdUsuario());
 					params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 					this.pedido= (TcManticPedidosDto)DaoFactory.getInstance().findFirst(TcManticPedidosDto.class, "abierto", params);
 					if(this.pedido== null) {
-						consecutivo= this.toSiguiente(sesion);
-						this.pedido= new TcManticPedidosDto(
-             0D, // Double descuentos, 
-						 "0", // String descuento, 
-						 "0", //	String extras, 
-						 new Long(Calendar.getInstance().get(Calendar.YEAR)), //	Long ejercicio, 
-						 1L, //	Long idPedidoEstatus, 
-						 consecutivo.getConsecutivo(), // String consecutivo, 
-						 0D, // Double total, 
-						 JsfBase.getIdUsuario(), // Long idUsuario, 
-						 0D, // Double excedentes, 
-						 0D, // Double impuestos, 
-						 0D, // Double subTotal, 
-						 "", // String observaciones, 
-						 JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), //	Long idEmpresa, 
-						 consecutivo.getOrden(), // Long orden, 
-						 -1L //	Long idPedido							
-						);
+						this.pedido= loadPedido(sesion);												
 						DaoFactory.getInstance().insert(sesion, this.pedido);
   					this.toGlobalEstatus(sesion);
 					} // else
@@ -145,6 +131,11 @@ public class Transaccion extends IBaseTnx {
 					regresar= DaoFactory.getInstance().update(sesion, this.pedido)> 0L;
 					this.toGlobalEstatus(sesion);
 					break;
+				case ACTIVAR:
+					this.pedido= loadPedido(sesion);												
+					regresar= DaoFactory.getInstance().insert(sesion, this.pedido)>= 1L;
+					this.toGlobalEstatus(sesion);
+					break;
 			} // switch
 			if(!regresar)
         throw new Exception("");
@@ -159,6 +150,28 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	}	// ejecutar
 
+	private TcManticPedidosDto loadPedido(Session sesion) throws Exception{
+		Siguiente consecutivo= this.toSiguiente(sesion);
+		TcManticPedidosDto regresar= new TcManticPedidosDto(
+			0D, // Double descuentos, 
+			"0", // String descuento, 
+			"0", //	String extras, 
+			new Long(Calendar.getInstance().get(Calendar.YEAR)), //	Long ejercicio, 
+			1L, //	Long idPedidoEstatus, 
+			consecutivo.getConsecutivo(), // String consecutivo, 
+			0D, // Double total, 
+			JsfBase.getIdUsuario(), // Long idUsuario, 
+			0D, // Double excedentes, 
+			0D, // Double impuestos, 
+			0D, // Double subTotal, 
+			"", // String observaciones, 
+			JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), //	Long idEmpresa, 
+			consecutivo.getOrden(), // Long orden, 
+			-1L //	Long idPedido							
+		 );
+		return regresar;
+	} // loadPedido
+	
 	private Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
 		Map<String, Object> params= null;
@@ -209,5 +222,4 @@ public class Transaccion extends IBaseTnx {
 		);
 		DaoFactory.getInstance().insert(sesion, bitacora);
 	}	
-
 } 
