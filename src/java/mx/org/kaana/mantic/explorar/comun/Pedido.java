@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
@@ -69,20 +70,26 @@ public abstract class Pedido extends IBaseAttribute implements Serializable{
 	}	// doUpdateArticulos
 	
 	protected void loadPedido(){
+		Entity pedido          = null;
 		MotorBusqueda motor    = null;
 		Transaccion transaccion= null;
 		try {
 			motor= new MotorBusqueda(JsfBase.getIdUsuario());
 			if(motor.toExistePedido()){
+				pedido= motor.toPedidoAbierto();
 				this.attrs.put("pedidoCount", motor.toTotalArticulos());							
-				this.attrs.put("total", motor.toFieldPedido("total"));							
+				this.attrs.put("total", pedido.toString("total"));							
+				this.attrs.put("idPedido", pedido.toLong("idPedido"));							
 			} // if
 			else{
 				this.attrs.put("pedidoCount", 0);
 				this.attrs.put("total", 0);
 				transaccion= new Transaccion();
 				transaccion.ejecutar(EAccion.ACTIVAR);
+				pedido= motor.toPedidoAbierto();
+				this.attrs.put("idPedido", pedido.toLong("idPedido"));							
 			} // else
+			this.attrs.put("cantidad", 1);							
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
