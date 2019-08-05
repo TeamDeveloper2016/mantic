@@ -87,8 +87,8 @@
 				<p:separator/>
 				<p:spacer height="10px"/>
 				<p:outputLabel for="cantidad" value="Cantidad: " styleClass="janal-wid-100-txt"/>
-				<p:inputNumber id="cantidad" value="1" styleClass="filas janal-precio-azul" inputStyleClass="janal-wid-100-txt janal-column-right"/>				
-				<p:commandButton id="aceptar" value="Agregar al carrito" icon="fa fa-shopping-cart" accesskey="a" process="@form" update="@(.recalculo)" action="#{manticExplorarAccion.doAceptar}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear();" class="janal-wid-100-txt"/>												
+				<p:inputNumber id="cantidad" value="#{manticExplorarAccion.attrs.cantidad}" styleClass="filas janal-precio-azul" inputStyleClass="janal-wid-100-txt janal-column-right"/>				
+				<p:commandButton id="aceptar" value="Agregar al carrito" icon="fa fa-shopping-cart" accesskey="a" process="@this cantidad" update="@(.recalculo)" action="#{manticExplorarAccion.doAceptar}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" class="janal-wid-100-txt"/>												
 				<p:separator/>
 				<p:commandButton id="cancelar" value="Buscar otro ..." icon="fa fa-reply-all" accesskey="r" process="@this" action="#{manticExplorarAccion.doCancelar}" onstart="janal.bloquear();" oncomplete="janal.desbloquear()" class="janal-wid-100-txt"/>					
 				<p:spacer height="45px"/>				
