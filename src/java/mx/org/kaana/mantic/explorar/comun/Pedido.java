@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
@@ -15,10 +16,21 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.explorar.reglas.MotorBusqueda;
+import mx.org.kaana.mantic.explorar.reglas.Transaccion;
 
 public abstract class Pedido extends IBaseAttribute implements Serializable{
 	
 	private static final long serialVersionUID = -3990912822820692539L;	
+	
+	public void initPedido(){
+		try {
+			loadPedido();
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // initPedido
 	
 	public List<UISelectEntity> doCompleteArticulo(String query) {
 		this.attrs.put("codigoFiltro", query);
@@ -55,4 +67,26 @@ public abstract class Pedido extends IBaseAttribute implements Serializable{
       Methods.clean(params);
     }// finally
 	}	// doUpdateArticulos
+	
+	protected void loadPedido(){
+		MotorBusqueda motor    = null;
+		Transaccion transaccion= null;
+		try {
+			motor= new MotorBusqueda(JsfBase.getIdUsuario());
+			if(motor.toExistePedido()){
+				this.attrs.put("pedidoCount", motor.toTotalArticulos());							
+				this.attrs.put("total", motor.toFieldPedido("total"));							
+			} // if
+			else{
+				this.attrs.put("pedidoCount", 0);
+				this.attrs.put("total", 0);
+				transaccion= new Transaccion();
+				transaccion.ejecutar(EAccion.ACTIVAR);
+			} // else
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // loadPedido
 }
