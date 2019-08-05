@@ -159,22 +159,19 @@ public class Accion extends Pedido implements Serializable {
 	
 	public String doAceptar() {
     Transaccion transaccion= null;
-		EAccion eaccion        = EAccion.MODIFICAR;
     try {			
 			Entity articulo= (Entity)this.attrs.get("articulo");
-			// if (transaccion.ejecutar(eaccion)) {
-			if (true) {
-				JsfBase.addMessage("Se modificaron los precios de tipos de ventas del articulo.", ETipoMensaje.INFORMACION);
-   			UIBackingUtilities.execute("jsKardex.callback('"+ this.adminKardex.getTiposVentas()+ "');");
-			}	// if
+			transaccion= new Transaccion(articulo.getKey(), (Long)this.attrs.get("idPedido"), Double.valueOf(this.attrs.get("cantidad").toString()));
+			if (transaccion.ejecutar(EAccion.REGISTRAR)) 			
+				JsfBase.addMessage("Se agregó el articulo de forma correcta.", ETipoMensaje.INFORMACION);   			
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar los precios de los tipos de ventas del articulo.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar el articulo en el pedido.", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
-		return null;
+		return "filtro".concat(Constantes.REDIRECIONAR);
 	}
 	
   public String	doCancelar() {
