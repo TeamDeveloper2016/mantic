@@ -11,6 +11,7 @@
 	<ui:param name="eventoPedidoAutocompletar" value="doCompleteArticulo" />	
 	<ui:param name="atributoPedidoNombre" value="#{manticExplorarAccion.attrs.nombre}" />
 	<ui:param name="atributoPedidoHidden" value="#{manticExplorarAccion.attrs.nombreHidden}" />
+	<ui:param name="atributoPedidoCount" value="#{manticExplorarAccion.attrs.pedidoCount}" />	
 	<ui:param name="titulo" value="Detalle del articulo"/>
 	<ui:define name="librerias">
 		<script type="text/javascript">
@@ -82,7 +83,7 @@
 			</h:panelGrid>
 			<h:panelGrid columns="1" class="janal-wid-100" columnClasses="janal-wid-100">
 				<p:outputLabel for="total" value="Total: " styleClass="janal-wid-100-txt"/>
-				<p:inputNumber id="total" value="0.00" styleClass="filas janal-precio-azul" inputStyleClass="janal-wid-100-txt janal-column-right" disabled="true"/>				
+				<p:inputNumber id="total" value="#{manticExplorarAccion.attrs.total}" styleClass="filas janal-precio-azul" inputStyleClass="janal-wid-100-txt janal-column-right" disabled="true"/>				
 				<p:separator/>
 				<p:spacer height="10px"/>
 				<p:outputLabel for="cantidad" value="Cantidad: " styleClass="janal-wid-100-txt"/>
