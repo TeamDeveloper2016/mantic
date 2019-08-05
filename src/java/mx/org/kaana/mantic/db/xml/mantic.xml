@@ -64,6 +64,14 @@
 				where
 				  id_pedido= {idPedido}
 			</delete>
+			<select id="totalArticulos">
+				select 
+					count(*) total
+				from 
+					tc_mantic_pedidos_detalles
+				where
+					id_pedido= {idPedido}
+			</select>
     </unit>		
     <unit id="TcManticPedidosBitacoraDto">
       <select id="row">
