@@ -108,6 +108,12 @@
 								<f:selectItem itemLabel="SI" itemValue="1"/>
 								<f:selectItem itemLabel="NO" itemValue="2"/>
 							</p:selectOneMenu>								
+							<p:outputLabel for="idImagen" value="Con imagen:"/>
+							<p:selectOneMenu id="idImagen" value="#{manticCatalogosArticulosFiltro.attrs.idImagen}" styleClass="janal-wid-100-txt">									
+								<f:selectItem itemLabel="TODOS" itemValue="-1"/>
+								<f:selectItem itemLabel="SI" itemValue="1"/>
+								<f:selectItem itemLabel="NO" itemValue="2"/>
+							</p:selectOneMenu>								
 						</h:panelGrid>
 						<p:separator/>
 						<div class="janal-align-right lg-pantalla">

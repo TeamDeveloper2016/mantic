@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -23,6 +24,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticPedidosDetallesDto;
+import mx.org.kaana.mantic.explorar.beans.Item;
 import mx.org.kaana.mantic.explorar.comun.Pedido;
 import mx.org.kaana.mantic.explorar.reglas.Transaccion;
 import org.apache.commons.logging.Log;
@@ -59,9 +61,8 @@ public class Detalle extends Pedido implements Serializable {
 			this.attrs.put("pedido", pedido);
 	 		if(pedido!= null && !pedido.isEmpty()) {
 	  		params.put("idPedido", pedido.toLong("idPedido"));
-				List<Entity> detalle= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaPedidosDto", "pedido", params);
+				List<Item> detalle= (List<Item>)DaoFactory.getInstance().toEntitySet(Item.class, "VistaPedidosDto", "pedido", params);
 		  	if(detalle!= null && !detalle.isEmpty()) {
-  				UIBackingUtilities.toFormatEntitySet(detalle, columns);
 	  			this.attrs.put("detalle", detalle);
 				} // if
 			} // if
@@ -75,10 +76,10 @@ public class Detalle extends Pedido implements Serializable {
 		} // finally
 	} // init
 	
-	public StreamedContent doPrepareImage(Entity row) {
+	public StreamedContent doPrepareImage(Item row) {
 		StreamedContent regresar= null;
 		try {
-			regresar= LoadImages.getImage(row.toLong("idArticulo"));
+			regresar= LoadImages.getImage(row.getIdArticulo());
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -87,12 +88,27 @@ public class Detalle extends Pedido implements Serializable {
 		return regresar;
 	} // doPrepareImage
 
-	public void doItemDelete(Entity row) {
+	public void doItemDelete(Item row) {
 		Transaccion transaccion= null;
 		try {
-			TcManticPedidosDetallesDto detalle= (TcManticPedidosDetallesDto)DaoFactory.getInstance().findById(TcManticPedidosDetallesDto.class, row.toLong("idPedidoDetalle"));
-			transaccion= new Transaccion(detalle);
+			//TcManticPedidosDetallesDto detalle= (TcManticPedidosDetallesDto)DaoFactory.getInstance().findById(TcManticPedidosDetallesDto.class, row.toLong("idPedidoDetalle"));
+			transaccion= new Transaccion((TcManticPedidosDetallesDto)row);
 			transaccion.ejecutar(EAccion.ELIMINAR);
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+	}
+
+	public void doItemChange(Item row) {
+		Transaccion transaccion= null;
+		try {
+			//TcManticPedidosDetallesDto detalle= (TcManticPedidosDetallesDto)DaoFactory.getInstance().findById(TcManticPedidosDetallesDto.class, row.toLong("idPedidoDetalle"));
+			if(!Objects.equals(row.getOriginal(), row.getCantidad())) {
+			  transaccion= new Transaccion((TcManticPedidosDetallesDto)row);
+			  transaccion.ejecutar(EAccion.MODIFICAR);
+			} // if	
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -121,4 +137,9 @@ public class Detalle extends Pedido implements Serializable {
 		return regresar;
 	} // doBusqueda
 
+	public String doAceptar() {
+		
+		return null;
+	}
+	
 }

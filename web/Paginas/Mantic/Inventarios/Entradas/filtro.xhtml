@@ -4,6 +4,7 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
   <ui:param name="titulo" value="Notas de entrada generadas" />
@@ -40,6 +41,10 @@
 	  </style>		
   </ui:define>
   <ui:define name="contenido">
+		<pe:remoteCommand name="asociar" process="@this" action="#{manticInventariosEntradasFiltro.doAssignImage}">  
+			<pe:methodSignature parameters="java.lang.Long" />  
+			<pe:methodParam name="idNotaEntrada"/>  
+		</pe:remoteCommand>  
     <div class="xs-pantalla janal-wid-100">
       <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
     </div>			
@@ -101,7 +106,7 @@
         </div>
 				<p:spacer/>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticInventariosEntradasFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticInventariosEntradasFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticInventariosEntradasFiltro.lazyModel.rowCount gt manticInventariosEntradasFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticInventariosEntradasFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticInventariosEntradasFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticInventariosEntradasFiltro.lazyModel.rowCount gt manticInventariosEntradasFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
 						<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >
@@ -127,59 +132,67 @@
             </f:facet>	            
 						<p:column styleClass="janal-column-icon">
 							<p:commandButton icon="fa fa-chevron-circle-right" title="Devolucion(es)" action="#{manticInventariosEntradasFiltro.doDevoluciones}" rendered="#{fn:contains('|3|4|5|6|', filtro['idNotaEstatus'].toInteger)}">
-								<f:setPropertyActionListener value="#{filtro['consecutivo']}" target="#{manticInventariosEntradasFiltro.attrs.notaEntrada}" />
+								<f:setPropertyActionListener value="#{row['consecutivo']}" target="#{manticInventariosEntradasFiltro.attrs.notaEntrada}" />
 							</p:commandButton>
 						</p:column>
-            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{filtro.empresa}">
+            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.empresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
-              <h:outputText value="#{filtro['empresa']}"/>
+              <h:outputText value="#{row['empresa']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="Nota entrada"/>
               </f:facet>
-              <h:outputText value="#{filtro['consecutivo']}"/>
+              <h:outputText value="#{row['consecutivo']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.ordenCompra}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.ordenCompra}">
               <f:facet name="header">
                 <h:outputText value="Orden compra"/>
               </f:facet>
 							<p:commandLink action="#{manticInventariosEntradasFiltro.doOrdenCompra}">
-								<f:setPropertyActionListener target="#{manticInventariosEntradasFiltro.attrs.idOrdenCompra}" value="#{filtro.idOrdenCompra}"/>
-                <h:outputText value="#{filtro['ordenCompra']}"/>
+								<f:setPropertyActionListener target="#{manticInventariosEntradasFiltro.attrs.idOrdenCompra}" value="#{row.idOrdenCompra}"/>
+                <h:outputText value="#{row['ordenCompra']}"/>
 						  </p:commandLink>
             </p:column>		
-            <p:column class="MarAuto Responsive  janal-wid-10" sortBy="#{filtro.directa}">
+            <p:column class="MarAuto Responsive  janal-wid-10" sortBy="#{row.directa}">
               <f:facet name="header">
                 <h:outputText value="Tipo"/>
               </f:facet>
-              <h:outputText value="#{filtro['directa']}"/>
+              <h:outputText value="#{row['directa']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{filtro.razonSocial}">
+            <p:column class="MarAuto Responsive" sortBy="#{row.razonSocial}">
               <f:facet name="header">
                 <h:outputText value="Proveeedor"/>
               </f:facet>
-              <h:outputText value="#{filtro['razonSocial']}"/>
+              <h:outputText value="#{row['razonSocial']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.estatus}">
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
-              <h:outputText value="#{filtro['estatus']}"/>
+              <h:outputText value="#{row['estatus']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-13 janal-column-right" sortBy="#{filtro.total}">
+            <p:column class="MarAuto Responsive janal-wid-13 janal-column-right" sortBy="#{row.total}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
-              <h:outputText value="#{filtro['total']}"/>
+              <h:outputText value="#{row['total']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{filtro.registro}">
+            <p:column class="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>
-              <h:outputText value="#{filtro['registro']}"/>
+              <h:outputText value="#{row['registro']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-wid-col-38 janal-column-center">
+              <f:facet name="header">
+                <h:outputText value="Img"/>
+              </f:facet>
+							<p:graphicImage library="janal" name="icon/acciones/circulo-rojo.png" onclick="asociar(#{row.idKey})" rendered="#{row.imagenes.toLong eq 0}" title="Los articulos [#{row.articulos}] no tienen imagen" style="cursor: pointer;"/>
+							<p:graphicImage library="janal" name="icon/acciones/circulo-amarillo.png" onclick="asociar(#{row.idKey})" rendered="#{row.imagenes.toLong gt 0 and row.imagenes.toLong ne row.imagenes.toLong}" title="Solo [#{row.imagenes} / #{row.articulos}] tienen imagen" style="cursor: pointer;"/>
+							<p:graphicImage library="janal" name="icon/acciones/circulo-verde.png" rendered="#{row.imagenes.toLong gt 0 and row.imagenes.toLong eq row.imagenes.toLong}" title="Todos lo articulos tienen imagen [#{row.articulos}]"/>
             </p:column>		
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticInventariosEntradasFiltro.lazyModel==null?0:manticInventariosEntradasFiltro.lazyModel.rowCount}] registros"/>
