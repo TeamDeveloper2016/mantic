@@ -41,7 +41,7 @@
 	  </style>		
   </ui:define>
   <ui:define name="contenido">
-		<pe:remoteCommand name="asociar" process="@this" action="#{manticInventariosEntradasFiltro.doAssignImage}">  
+		<pe:remoteCommand name="asociar" process="@this" actionListener="#{manticInventariosEntradasFiltro.doAssignNota}" action="#{manticInventariosEntradasFiltro.doAssignImage}">  
 			<pe:methodSignature parameters="java.lang.Long" />  
 			<pe:methodParam name="idNotaEntrada"/>  
 		</pe:remoteCommand>  
