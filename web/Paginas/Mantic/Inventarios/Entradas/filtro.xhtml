@@ -190,7 +190,7 @@
               <f:facet name="header">
                 <h:outputText value="Img"/>
               </f:facet>
-							<p:graphicImage library="janal" name="icon/acciones/circulo-rojo.png" onclick="asociar(#{row.idKey})" rendered="#{row.imagenes.toLong eq 0}" title="Los articulos [#{row.articulos}] no tienen imagen" style="cursor: pointer;"/>
+							<p:graphicImage library="janal" name="icon/acciones/circulo-rojo.png" onclick="asociar(#{row.idKey})" rendered="#{row.imagenes.toLong eq 0}" title="Todos articulos no tienen imagen [#{row.articulos}]" style="cursor: pointer;"/>
 							<p:graphicImage library="janal" name="icon/acciones/circulo-amarillo.png" onclick="asociar(#{row.idKey})" rendered="#{row.imagenes.toLong gt 0 and row.imagenes.toLong ne row.imagenes.toLong}" title="Solo [#{row.imagenes} / #{row.articulos}] tienen imagen" style="cursor: pointer;"/>
 							<p:graphicImage library="janal" name="icon/acciones/circulo-verde.png" rendered="#{row.imagenes.toLong gt 0 and row.imagenes.toLong eq row.imagenes.toLong}" title="Todos lo articulos tienen imagen [#{row.articulos}]"/>
             </p:column>		
