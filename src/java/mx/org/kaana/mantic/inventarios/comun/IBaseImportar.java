@@ -360,6 +360,46 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
     } // catch		
 		return regresar;
 	}
+	
+	protected StreamedContent toPdfFileDownload(Entity file) {
+		StreamedContent regresar= null;
+		try {
+			File reference= new File(file.toString("alias"));
+			if(reference.exists()) {
+				InputStream stream = new FileInputStream(reference);
+				regresar= new DefaultStreamedContent(stream, EFormatos.PDF.getContent(), file.toString("nombre"));
+			} // if	
+			else {
+				LOG.warn("No existe el archivo: "+ file.toString("alias"));
+        JsfBase.addMessage("No existe el archivo:"+ file.toString("nombre")+ ", favor de verificarlo.");
+			} // else	
+		} // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+		return regresar;
+	}
+	
+	protected StreamedContent toXmlFileDownload(Entity file) {
+		StreamedContent regresar= null;
+		try {
+			File reference= new File(file.toString("alias"));
+			if(reference.exists()) {
+				InputStream stream = new FileInputStream(reference);
+  			regresar= new DefaultStreamedContent(stream, EFormatos.XML.getContent(), file.toString("nombre"));
+			} // if	
+			else {
+				LOG.warn("No existe el archivo: "+ file.toString("alias"));
+        JsfBase.addMessage("No existe el archivo:"+ file.toString("nombre")+ ", favor de verificarlo.");
+			} // else	
+		} // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+		return regresar;
+	}
 
 	public void doViewFileDocument(UISelectEntity item) {
 		this.doViewPdfDocument(item);
@@ -434,7 +474,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 		return xmlOutput.getWriter().toString();
   }
 	
-  private void toCopyDocument(String alias, String name) {
+  protected void toCopyDocument(String alias, String name) {
 		try {
 			LOG.warn("context: "+ JsfBase.getContext().concat("/").concat(Constantes.PATH_INVOICE).concat(name).concat("?pfdrid_c=true"));
   	  this.attrs.put("temporal", JsfBase.getContext().concat("/").concat(Constantes.PATH_INVOICE).concat(name).concat("?pfdrid_c=true"));

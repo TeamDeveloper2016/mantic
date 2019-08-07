@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/plantillas/ingreso.xhtml">
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.errors = 2;
+			Janal.Control.fields = {
+				cuenta: {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresar'},
+				contrasenia: {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresar'},
+				recuperar: {validaciones: 'requerido', mascara: 'libre', grupo: 'recuperar'},
+				curp: {validaciones: 'requerido', mascara: 'libre', grupo: 'recuperar'},
+				nueva: {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresar'},
+				confirma: {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresar'}
+			};
+			//<![CDATA[
+			function validar() {
+				var ok = janal.partial('recuperar');
+				var captcha = captcha.validarCaptcha();
+				if (!captcha)
+					janal.show([{summary: 'Captcha', detail: 'El orden de las letras es incorrecto.'}]);
+				return ok && captcha;
+			} // validar			
+			//]]>
+		</script>
+		<style>
+			input[type="text"], input[type="password"] {
+				text-align: center !important;
+			}
+		</style>
+	</ui:define>
+	<ui:define name="contenido">  	
+		<div class="janal-content-center">
+			<div class="Container50 TexAlCenter Animated05 BoxSizeBorder TabBtn left TabBtnActiveLeft" role="1">
+				<div class="Container80 Fnone MarAuto"><i class="icon-lock"></i>Accesar</div>
+			</div>
+			<div class="Container50 TexAlCenter Animated05 BoxSizeBorder TabBtn right" role="2">
+				<div class="Container80 Fnone MarAuto"><i class="icon-key-1"></i>Recuperar</div>
+			</div>
+			<div id="tab_1" class="Container90 Fnone MarAuto TexAlCenter TabContent">										
+				<p:panelGrid layout="grid" columns="1" id="gridCuenta">
+					<p:spacer height="1"/>
+					<p:outputLabel for="cuenta" value="Cuenta:" styleClass="Fs16"/>
+					<p:inputText placeholder="ej. juan.lopez" id="cuenta" tabindex="1" value="#{kajoolAccesoControl.cliente.cuenta}" styleClass="Container80 Fnone MarAuto Fs18"/>
+					<p:outputLabel for="contrasenia" value="Contraseña:" styleClass="Fs16"/>
+					<p:password placeholder="contraseña" id="contrasenia" tabindex="2" value="#{kajoolAccesoControl.cliente.contrasenia}" styleClass="Container80 Fnone MarAuto Fs18" autocomplete="new-password"/>
+					<p:spacer width="3%"/>
+					<p:commandButton id="aceptar" tabindex="3" value="Iniciar sesión" onstart="return janal.partial('ingresar');" action="#{kajoolAccesoControl.doIngresar()}" update="@this cuenta contrasenia gridCuenta"/>					
+					<p:spacer height="1"/>
+				</p:panelGrid>
+			</div>
+			<div id="tab_2" class="Container90 Fnone MarAuto TexAlCenter TabContent DispNone">
+				<p:panelGrid layout="grid" columns="1">
+					<p:spacer width="3%"/>
+					<p:outputLabel for="recuperar" value="Cuenta:" styleClass="Fs16"/>
+					<p:inputText id="recuperar" placeholder="ej. juan.lopez" tabindex="1" value="#{kajoolAccesoControl.cliente.recuperar}" styleClass="Container80 Fnone MarAuto Fs18"/>
+					<p:outputLabel for="curp" value="CURP:" styleClass="Fs16"/>
+					<p:inputText id="curp" placeholder="ej. RERA900517..." tabindex="1" value="#{kajoolAccesoControl.cliente.curp}" styleClass="Container80 Fnone MarAuto Fs18"/>
+					<p:outputLabel value="Ordene la secuencia de letras:" styleClass="Fs16"/>
+					<div class="captcha_wrap MarAuto TexAlCenter janal-wid-80">
+						<ul id="sortable">
+							<li class="captchaItem">A</li>
+							<li class="captchaItem">B</li>
+							<li class="captchaItem">C</li>
+							<li class="captchaItem">D</li>
+							<li class="captchaItem">E</li>
+						</ul>
+					</div>					
+					<p:spacer width="3%"/>
+					<p:commandButton id="enviar" tabindex="3" value="Reiniciar contraseña" onstart="return validar()" actionListener="#{kajoolAccesoControl.doVerificarCuenta}" process="@this recuperar curp" update="recuperar curp"  disabled="#{kajoolUtilAplicacion.lockUserStarted}"/>
+					<p:spacer height="1"/>
+				</p:panelGrid>
+			</div>
+  		Servidor:<p:clock pattern="HH:mm:ss dd/MM/yyyy" mode="server"/><br/>
+ 			<p:spacer height="1"/>
+		</div>
+	</ui:define>
+	<ui:param name="componenteBloqueo" value="aceptar enviar"/>
+</ui:composition>
