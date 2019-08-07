@@ -18,6 +18,7 @@
 				folio: {validaciones: 'requerido', mascara: 'libre'},
 				codigo: {validaciones: 'requerido', mascara: 'libre'}
 			};
+			//<![CDATA[
 			function start() {
         PF('statusDialog').show();
       };
@@ -26,7 +27,6 @@
         PF('statusDialog').hide();
       };
 			
-			//<![CDATA[
 			$(document).ready(function() {
 				$('#codigo').realperson({length: 5, regenerate: 'Clic para cambiar', includeNumbers: true});
 			});
@@ -64,21 +64,21 @@
 			<div id="tab_2" class="Container90 Fnone MarAuto TexAlCenter TabContent DispNone">
 				<p:panelGrid layout="grid" columns="1" styleClass="refresh">
 					<p:spacer width="10%"/>
-					<p:commandLink title="Click para descargar el documento" rendered="#{kajoolAccesoIndice.existsPdf}" styleClass="refresh">
-						<p:fileDownload value="#{kajoolAccesoIndice.pdfFileDownload}" class="refresh"/>
+					<p:commandLink title="Click para descargar el documento" rendered="#{kajoolAccesoIndice.existsPdf}" styleClass="refresh" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+						<p:fileDownload value="#{kajoolAccesoIndice.pdfFileDownload}"/>
 						<i class="fa fa-file-pdf-o Fs30"></i><br/>
 						<p:outputLabel value="#{kajoolAccesoIndice.attrs.pdfFile.nombre}" styleClass="refresh"/>
 					</p:commandLink>
 					<p:spacer width="5%"/>
-					<p:commandLink title="Click para descargar el documento" rendered="#{kajoolAccesoIndice.existsXml}" styleClass="refresh">
-						<p:fileDownload value="#{kajoolAccesoIndice.xmlFileDownload}" class="refresh"/>
+					<p:commandLink title="Click para descargar el documento" rendered="#{kajoolAccesoIndice.existsXml}" styleClass="refresh" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+						<p:fileDownload value="#{kajoolAccesoIndice.xmlFileDownload}"/>
 						<i class="fa fa-file-code-o Fs30"></i><br/>
 						<p:outputLabel value="#{kajoolAccesoIndice.attrs.xmlFile.nombre}" styleClass="refresh"/>
 					</p:commandLink>
 				</p:panelGrid>	
 			</div>	
 		</div>
-		<p:dialog modal="true" widgetVar="statusDialog" header="Estatus de la descarga del archivo" draggable="false" closable="false" resizable="false">
+		<p:dialog modal="true" widgetVar="statusDialog" header="Descargando documento ..." draggable="false" closable="false" resizable="false">
 			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
 		</p:dialog>		
 	</ui:define>
