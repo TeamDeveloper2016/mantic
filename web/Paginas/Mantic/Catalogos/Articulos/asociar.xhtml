@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+	<ui:param name="titulo" value="Asignación de imagen a articulos." />
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {};									
+		</script>		
+	</ui:define>
+	<ui:define name="contenido">									
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">				
+				<div id="collapse-content" class="ui-grid-col-12">
+					<div class="ui-grid-row janal-grid-row">
+						<div class="ui-grid-col-12">
+							<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-5, janal-wid-2, janal-wid TexAlLeft">								
+								<p:outputLabel id="labelImagen" value="Importar:"/>
+								<p:spacer/>								
+								<p:fileUpload id="imagen" update="importacion nombreImagen tamanioImagen" fileUploadListener="#{manticCatalogosArticulosAsociar.doFileUpload}" uploadLabel="Importar" cancelLabel="Cancelar" label="Seleccionar" mode="advanced" dragDropSupport="false" allowTypes="/(\.|\/)(jpe?g|png)$/" sizeLimit="5242880" invalidSizeMessage="El tamaño maximo permitido es de 5 Megabytes !" invalidFileMessage="Solo se permiten importar archivos con extensión .PNG y .JPG !"/>																
+								<p:outputLabel value="Imagen:"/>
+								<p:commandButton id="eliminarImage" title="Eliminar" icon="fa fa-trash-o" onstart="janal.bloquear();" oncomplete="janal.desbloquear();" actionListener="#{manticCatalogosArticulosAsociar.doDeleteFile}" process="@this" update="importacion nombreImagen tamanioImagen"/>
+								<p:graphicImage id="importacion" value="#{manticCatalogosArticulosAsociar.image}" styleClass="janal-logo-mini filas" width="65" stream="false" cache="false"/>								
+								<p:outputLabel value="Nombre:"/>
+								<p:spacer/>
+								<p:outputLabel id="nombreImagen" value="#{manticCatalogosArticulosAsociar.importado.name}"/>								
+								<p:outputLabel value="Tamaño:"/>
+								<p:spacer/>
+								<p:outputLabel id="tamanioImagen" value="#{manticCatalogosArticulosAsociar.importado.fileSize}#{manticCatalogosArticulosAsociar.importado.medicion}"/>																								
+								<p:spacer height="20px"/>
+							</p:panelGrid>
+						</div>
+					</div>						
+					<div class="ui-grid-row janal-grid-row">
+						<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosArticulosAsociar.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosArticulosAsociar.attrs.seleccionado}" paginator="#{manticCatalogosArticulosAsociar.lazyModel.rowCount gt manticCatalogosArticulosAsociar.lazyModel.pageSize}" rowIndexVar="index" reflow="true">							
+							<f:facet name="header">									
+								<div class="lg-pantalla">
+									<p:menuButton value="Opciones">										
+										<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+										<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+									</p:menuButton>
+								</div>	
+								<div class="xs-pantalla">									
+									<p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+									<p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+								</div>	
+							</f:facet>												
+							<p:column selectionMode="multiple" style="width:30px;text-align:center"/>
+							<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.propio}">
+								<f:facet name="header">
+									<h:outputText value="Código"/>
+								</f:facet>
+								<h:outputText value="#{row['propio']}"/>
+							</p:column>														
+							<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
+								<f:facet name="header">
+									<h:outputText value="Nombre"/>
+								</f:facet>
+								<h:outputText value="#{row['nombre']}"/>
+							</p:column>																					
+							<f:facet name="footer">
+								<p:outputLabel value="Total [#{manticCatalogosArticulosAsociar.lazyModel== null ? 0: manticCatalogosArticulosAsociar.lazyModel.rowCount}] registros"/>
+							</f:facet>
+						</p:dataTable>						
+					</div>	
+				</div>
+			</div>
+		</div>		           				
+	</ui:define>    
+	<ui:param name="textoConfirmacion" value="¿ Está seguro de asociar la imagen a los articulos seleccionados ?" />
+	<ui:param name="accionConfirmacion" value="#{manticCatalogosArticulosAsociar}"/>
+	<ui:param name="updateComponent" value="tabla"/>
+	<ui:param name="eventoConfirmacion" value="doAceptar"	/>	
+	<ui:param name="renderedConfirmacion" value="true"/>			
+</ui:composition>
