@@ -351,7 +351,8 @@ public class Detalle extends IBaseImportar implements Serializable {
 		return xmlOutput.getWriter().toString();
   } // prettyFormat
 	
-	private void toCopyDocument(String alias, String name) {
+	@Override
+	public void toCopyDocument(String alias, String name) {
 		try {
   	  this.attrs.put("temporal", JsfBase.getContext().concat("/").concat(Constantes.PATH_INVOICE).concat(name).concat("?pfdrid_c=true"));
   		File source= new File(JsfBase.getRealPath().concat(Constantes.PATH_INVOICE).concat(name));
