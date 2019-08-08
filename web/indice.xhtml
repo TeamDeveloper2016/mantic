@@ -50,15 +50,15 @@
 				<p:panelGrid layout="grid" columns="1" id="gridCuenta">
 					<p:spacer height="1"/>
 					<p:outputLabel for="rfc" value="RFC:" styleClass="Fs16"/>
-					<p:inputText placeholder="ej. ADRC760130L95" id="rfc" tabindex="1" value="#{kajoolAccesoIndice.attrs.rfc}" styleClass="Container80 Fnone MarAuto Fs18"/>
+					<p:inputText placeholder="ej. ADRC760130L95" id="rfc" tabindex="1" value="#{kajoolAccesoIndice.attrs.rfc}" styleClass="items Container80 Fnone MarAuto Fs18"/>
 					<p:outputLabel for="folio" value="Folio ticket:" styleClass="Fs16"/>
-					<p:inputText placeholder="ej. 2019000123" id="folio" tabindex="2" value="#{kajoolAccesoIndice.attrs.folio}" styleClass="Container80 Fnone MarAuto Fs18"/>
+					<p:inputText placeholder="ej. 2019000123" id="folio" tabindex="2" value="#{kajoolAccesoIndice.attrs.folio}" styleClass="items Container80 Fnone MarAuto Fs18"/>
 					<p:outputLabel for="codigo" value="Código:" styleClass="Fs16" style="display: none;"/>
-					<p:inputText placeholder="Dijite código" id="codigo" tabindex="3" value="#{kajoolAccesoIndice.attrs.codigo}" styleClass="Container80 Fnone MarAuto Fs18"/>
-					<p:commandButton id="aceptar" tabindex="3" value="Recuperar" onstart="$('#encode').val($('#codigo').realperson('getHash')); return janal.execute();" action="#{kajoolAccesoIndice.doRecoverTicket()}" process="@form" update="codigo @(.refresh)"/>
+					<p:inputText placeholder="Dijite código" id="codigo" tabindex="3" value="#{kajoolAccesoIndice.attrs.codigo}" styleClass="items Container80 Fnone MarAuto Fs18"/>
+					<p:commandButton id="aceptar" tabindex="3" value="Recuperar" onstart="$('#encode').val($('#codigo').realperson('getHash')); return janal.execute();" action="#{kajoolAccesoIndice.doRecoverTicket()}" process="@this @(.items)" update="codigo @(.refresh)"/>
 					<p:spacer height="1"/>
 				</p:panelGrid>
-				<p:inputText id="encode" value="#{kajoolAccesoIndice.attrs.encode}" style="display: none;"/>
+				<p:inputText id="encode" value="#{kajoolAccesoIndice.attrs.encode}" styleClass="items" style="display: none;"/>
 			</div>
 			<div id="tab_2" class="Container90 Fnone MarAuto TexAlCenter TabContent DispNone">
 				<p:panelGrid layout="grid" columns="1" styleClass="refresh">
