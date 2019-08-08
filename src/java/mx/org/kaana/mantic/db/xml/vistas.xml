@@ -4398,6 +4398,27 @@
 				order by
 				  tc_mantic_notas_detalles.registro
       </select>
+      <select id="detalleImage">
+        select      
+				  tc_mantic_notas_detalles.id_nota_detalle as id_key,
+          tc_mantic_notas_detalles.*,
+          tc_mantic_notas_detalles.cantidad as cuantos,
+          tc_mantic_notas_detalles.cantidad as inicial,
+				  if(tc_mantic_ordenes_detalles.costo is null, 0, tc_mantic_ordenes_detalles.costo) as valor,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio
+        from      
+          tc_mantic_notas_detalles
+				inner join 
+					tc_mantic_articulos on tc_mantic_notas_detalles.id_articulo = tc_mantic_articulos.id_articulo
+        left join
+          tc_mantic_ordenes_detalles on tc_mantic_notas_detalles.id_orden_detalle= tc_mantic_ordenes_detalles.id_orden_detalle
+        where      
+          tc_mantic_notas_detalles.id_nota_entrada = {idNotaEntrada}
+				and 
+					tc_mantic_articulos.id_imagen is null
+				order by
+				  tc_mantic_notas_detalles.registro
+      </select>
       <select id="proveedor">
         select      
 				  tc_mantic_articulos.id_articulo as id_key,
