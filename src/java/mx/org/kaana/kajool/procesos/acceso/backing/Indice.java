@@ -90,8 +90,8 @@ public class Indice extends IBaseImportar implements Serializable {
 					this.attrs.put("codigo", "");
 				}	 // if
 				else {
-					pdfFileDownload= this.toPdfFileDownload((Entity)this.attrs.get("pdfFile"));
-					xmlFileDownload= this.toPdfFileDownload((Entity)this.attrs.get("xmlFile"));
+					this.pdfFileDownload= this.toPdfFileDownload((Entity)this.attrs.get("pdfFile"));
+					this.xmlFileDownload= this.toXmlFileDownload((Entity)this.attrs.get("xmlFile"));
 					UIBackingUtilities.execute("$('#download').click();");
 				} // if	
 			} // if

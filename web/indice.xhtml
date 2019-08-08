@@ -55,7 +55,6 @@
 					<p:inputText placeholder="ej. 2019000123" id="folio" tabindex="2" value="#{kajoolAccesoIndice.attrs.folio}" styleClass="Container80 Fnone MarAuto Fs18"/>
 					<p:outputLabel for="codigo" value="Código:" styleClass="Fs16" style="display: none;"/>
 					<p:inputText placeholder="Dijite código" id="codigo" tabindex="3" value="#{kajoolAccesoIndice.attrs.codigo}" styleClass="Container80 Fnone MarAuto Fs18"/>
-					<p:spacer height="1"/>
 					<p:commandButton id="aceptar" tabindex="3" value="Recuperar" onstart="$('#encode').val($('#codigo').realperson('getHash')); return janal.execute();" action="#{kajoolAccesoIndice.doRecoverTicket()}" process="@form" update="codigo @(.refresh)"/>
 					<p:spacer height="1"/>
 				</p:panelGrid>
@@ -64,16 +63,16 @@
 			<div id="tab_2" class="Container90 Fnone MarAuto TexAlCenter TabContent DispNone">
 				<p:panelGrid layout="grid" columns="1" styleClass="refresh">
 					<p:spacer width="10%"/>
-					<p:commandLink title="Click para descargar el documento" rendered="#{kajoolAccesoIndice.existsPdf}" styleClass="refresh" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+					<p:commandLink title="Click para descargar el documento" rendered="#{kajoolAccesoIndice.existsPdf}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
 						<p:fileDownload value="#{kajoolAccesoIndice.pdfFileDownload}"/>
 						<i class="fa fa-file-pdf-o Fs30"></i><br/>
-						<p:outputLabel value="#{kajoolAccesoIndice.attrs.pdfFile.nombre}" styleClass="refresh"/>
+						<p:outputLabel value="#{kajoolAccesoIndice.attrs.pdfFile.nombre}"/>
 					</p:commandLink>
 					<p:spacer width="5%"/>
-					<p:commandLink title="Click para descargar el documento" rendered="#{kajoolAccesoIndice.existsXml}" styleClass="refresh" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+					<p:commandLink title="Click para descargar el documento" rendered="#{kajoolAccesoIndice.existsXml}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
 						<p:fileDownload value="#{kajoolAccesoIndice.xmlFileDownload}"/>
 						<i class="fa fa-file-code-o Fs30"></i><br/>
-						<p:outputLabel value="#{kajoolAccesoIndice.attrs.xmlFile.nombre}" styleClass="refresh"/>
+						<p:outputLabel value="#{kajoolAccesoIndice.attrs.xmlFile.nombre}"/>
 					</p:commandLink>
 				</p:panelGrid>	
 			</div>	
