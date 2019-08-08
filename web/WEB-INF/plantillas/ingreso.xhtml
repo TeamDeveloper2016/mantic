@@ -19,6 +19,15 @@
 			<h:outputScript library="janal" name="js/jquery.janal.capcha-1.0.0.js"/>
 			<h:outputText escape="false" value="#{kajoolUtilAplicacion.defaultCss}"/>
 			<ui:insert name="librerias"/>
+			<script type="text/javascript">
+  			//<![CDATA[
+				$(document).ready(function() {
+					var site= document.location.href;
+					if(site.indexOf('acceso')> 0)
+						$('#janalAccesoSitio').hide();
+				});
+  			//]]>
+			</script>	
 			<title>#{kajoolUtilAplicacion.tituloSistema}</title>
 		</h:head>
 		<h:body >

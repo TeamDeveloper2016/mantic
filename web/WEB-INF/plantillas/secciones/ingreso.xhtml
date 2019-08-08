@@ -33,8 +33,18 @@
 						<p:outputLabel styleClass="janal-etapa xs-pantalla Fs14" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
 					</div>
 					<div class="ui-g-4 janal-content-center margin-version" style="text-align: right;">
-						<span id="version" class="version lg-pantalla">#{kajoolUtilAplicacion.versionAplicacion}</span>
-						<span id="version" class="version xs-pantalla Fs14">#{kajoolUtilAplicacion.version}</span>
+						<p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-column-right, janal-column-right janal-wid-col-38">
+							<div>
+							  <span id="version" class="version lg-pantalla">#{kajoolUtilAplicacion.versionAplicacion}</span>
+							  <span id="version" class="version xs-pantalla Fs14">#{kajoolUtilAplicacion.version}</span>
+							</div>
+							<p:commandLink id="janalAccesoSitio" action="/acceso?faces-redirect=true" title="Iniciar sesion">
+								<span class="fa fa-stack">
+									<i class="fa fa-circle fa-stack-2x janal-color-blue"></i>
+									<i class="fa fa-user fa-stack-1x fa-inverse"></i>
+								</span>
+							</p:commandLink>
+						</p:panelGrid>
 					</div>
 				</div>	
 			</div>

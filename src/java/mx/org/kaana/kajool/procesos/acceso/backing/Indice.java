@@ -36,8 +36,6 @@ public class Indice extends IBaseImportar implements Serializable {
   @Inject 
   private TemaActivo temaActivo;
   private static final Log LOG = LogFactory.getLog(Indice.class);
-	private StreamedContent pdfFileDownload;
-	private StreamedContent xmlFileDownload;
 
   public TemaActivo getTemaActivo() {
     return temaActivo;
@@ -56,11 +54,11 @@ public class Indice extends IBaseImportar implements Serializable {
   }
 
 	public StreamedContent getPdfFileDownload() {
-		return this.pdfFileDownload; 
+		return this.toPdfFileDownload((Entity)this.attrs.get("pdfFile")); 
 	}
 	
 	public StreamedContent getXmlFileDownload() {
-		return this.xmlFileDownload; 
+		return this.toXmlFileDownload((Entity)this.attrs.get("xmlFile")); 
 	}
 	
   @Override
@@ -89,11 +87,8 @@ public class Indice extends IBaseImportar implements Serializable {
 					JsfBase.addAlert("Error", "La factura no existe con los datos propocionados !", ETipoMensaje.ERROR);
 					this.attrs.put("codigo", "");
 				}	 // if
-				else {
-					this.pdfFileDownload= this.toPdfFileDownload((Entity)this.attrs.get("pdfFile"));
-					this.xmlFileDownload= this.toXmlFileDownload((Entity)this.attrs.get("xmlFile"));
+				else 
 					UIBackingUtilities.execute("$('#download').click();");
-				} // if	
 			} // if
 			else 
 				JsfBase.addAlert("Error", "El código de verificación, esta incorrecto !", ETipoMensaje.ERROR);
