@@ -24,6 +24,7 @@ import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloProveedor;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Descuento;
 import mx.org.kaana.mantic.catalogos.articulos.beans.DescuentoEspecial;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Especificacion;
+import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.catalogos.articulos.beans.PrecioSugerido;
 import mx.org.kaana.mantic.catalogos.articulos.beans.RegistroArticulo;
 import mx.org.kaana.mantic.catalogos.articulos.beans.TipoVenta;
@@ -51,7 +52,12 @@ public class Transaccion extends TransaccionFactura {
 	private Double factorMenudeo;
 	private Double factorMedio;
 	private Double factorMayoreo;
+	private Importado importado;
 
+	public Transaccion(Importado importado) {
+		this.importado = importado;
+	}	
+	
 	public Transaccion(RegistroArticulo articulo, Double precio) {
 		this.articulo= articulo;		
 		this.precio  = precio;
