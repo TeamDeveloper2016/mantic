@@ -87,7 +87,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   public String doRegresar() {
     String regresar = null;
     try {
-      regresar = "/indice.jsf".concat(Constantes.REDIRECIONAR);
+      regresar = "/acceso.jsf".concat(Constantes.REDIRECIONAR);
     } // try
     catch (Exception e) {
       Error.mensaje(e);

@@ -268,7 +268,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
     }// try
     catch (Exception e) {
       Error.mensaje(e);
-      regresar = "/indice".concat(Constantes.REDIRECIONAR);
+      regresar = "/acceso".concat(Constantes.REDIRECIONAR);
       JsfBase.addMessageError(e);
     } // catch
     return regresar;

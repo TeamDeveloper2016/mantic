@@ -16,7 +16,7 @@
   <ui:define name="contenido">	
     <p:remoteCommand name="janalGlobalAutoRun" action="#{kajoolAccesoInvalidar.clean()}" autoRun="true" oncomplete="$('#limpio').click();"/>
 		<p:defaultCommand target="limpio"/>
-		<p:commandButton id="limpio" action="/indice??faces-redirect=true" styleClass="janal-zero-size"/>
+		<p:commandButton id="limpio" action="/acceso?faces-redirect=true" styleClass="janal-zero-size"/>
     <div id="login-box" class="Container80 MaxWid500 Fnone MarAuto BordRad10" style="border: transparent;">
       <div class="janal-content-center">
         <div class="Container60 Fnone MarAuto TexAlCenter TabContent">
@@ -25,7 +25,7 @@
             <span class=" softblue Fs40 Wid100 DispBlock lg-pantalla">Sesión concluida</span>
             <span class=" softblue Fs20 Wid100 DispBlock xs-pantalla">Sesión concluida</span>
             <div class="EmptyBox20"/>
-            <p:button value="Regresar al acceso" icon="fa fa-user" styleClass="janal-button-alone Fs20 janal-text-white" href="/indice.jsf?faces-redirect=true"/> 
+            <p:button value="Regresar al acceso" icon="fa fa-user" styleClass="janal-button-alone Fs20 janal-text-white" href="/acceso.jsf?faces-redirect=true"/> 
           </p:panelGrid>   
         </div>  
       </div>  

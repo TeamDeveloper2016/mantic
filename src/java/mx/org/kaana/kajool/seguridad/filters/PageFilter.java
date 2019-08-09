@@ -52,7 +52,7 @@ public class PageFilter extends HttpServlet implements Filter {
 
   public void setPaginaIndice(String paginaIndice) {
     if (paginaIndice == null) {
-      this.paginaIndice = "/indice";
+      this.paginaIndice = "/acceso";
     } else {
       this.paginaIndice = paginaIndice;
     }
