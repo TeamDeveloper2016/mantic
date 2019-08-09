@@ -28,7 +28,8 @@
       };
 			
 			$(document).ready(function() {
-				$('#codigo').realperson({length: 5, regenerate: 'Clic para cambiar', includeNumbers: true});
+				$.salt= #{kajoolAccesoIndice.salt};
+				$('#codigo').realperson({length: 5, regenerate: 'Clic para cambiar', includeNumbers: true, chars: $.realperson.alphanumeric});
 			});
 			//]]>
 		</script>
@@ -55,7 +56,7 @@
 					<p:inputText placeholder="ej. 2019000123" id="folio" tabindex="2" value="#{kajoolAccesoIndice.attrs.folio}" styleClass="items Container80 Fnone MarAuto Fs18"/>
 					<p:outputLabel for="codigo" value="Código:" styleClass="Fs16" style="display: none;"/>
 					<p:inputText placeholder="Dijite código" id="codigo" tabindex="3" value="#{kajoolAccesoIndice.attrs.codigo}" styleClass="items Container80 Fnone MarAuto Fs18"/>
-					<p:commandButton id="aceptar" tabindex="3" value="Recuperar" onstart="$('#encode').val($('#codigo').realperson('getHash')); return janal.execute();" actionListener="#{kajoolAccesoIndice.doRecoverTicket}" process="@this @(.items)" update="codigo @(.refresh)"/>					
+					<p:commandButton id="aceptar" tabindex="3" value="Recuperar" onstart="$('#encode').val($('#codigo').realperson('getHash')); return janal.execute();" oncomplete="$('#codigo').realperson({length: 5, regenerate: 'Clic para cambiar', includeNumbers: true, chars: $.realperson.alphanumeric});" actionListener="#{kajoolAccesoIndice.doRecoverTicket}" process="@this @(.items)" update="codigo @(.refresh)"/>					
 					<p:spacer height="1"/>
 				</p:panelGrid>
 				<p:inputText id="encode" value="#{kajoolAccesoIndice.attrs.encode}" styleClass="items" style="display: none;"/>

@@ -31,11 +31,12 @@ import org.primefaces.model.StreamedContent;
 @Named(value = "kajoolAccesoIndice")
 public class Indice extends IBaseImportar implements Serializable {
 
+  private static final Log LOG = LogFactory.getLog(Indice.class);
   private static final long serialVersionUID = 5323749709626263801L;
   
   @Inject 
   private TemaActivo temaActivo;
-  private static final Log LOG = LogFactory.getLog(Indice.class);
+	private Integer salt;
 
   public TemaActivo getTemaActivo() {
     return temaActivo;
@@ -60,15 +61,20 @@ public class Indice extends IBaseImportar implements Serializable {
 	public StreamedContent getXmlFileDownload() {
 		return this.toXmlFileDownload((Entity)this.attrs.get("xmlFile")); 
 	}
+
+	public Integer getSalt() {
+		return salt;
+	}
 	
   @Override
   @PostConstruct
   protected void init() {
 		this.attrs.put("rfc", "BCO131129C26");
 		this.attrs.put("folio", "201900001");
-		this.attrs.put("codigo", "201900001");
+		this.attrs.put("codigo", "");
 		this.attrs.put("pdfFile", null);
 		this.attrs.put("xmlFile", null);
+		this.salt= (int)(Math.random()* 10000);
   }
 
   public void doRecoverTicket() {
@@ -76,7 +82,7 @@ public class Indice extends IBaseImportar implements Serializable {
 		try {
 			String codigo= this.toDecodeHash((String)this.attrs.get("codigo"));
 			String encode= this.attrs.get("encode")== null? "": (String)this.attrs.get("encode");
-			if(true || encode.equals(codigo)) {
+			if(encode.equals(codigo)) {
 				params.put("rfc", this.attrs.get("rfc"));
 				params.put("folio", this.attrs.get("folio"));
 				params.put("idTipoArchivo", "2");
@@ -85,7 +91,6 @@ public class Indice extends IBaseImportar implements Serializable {
 				this.attrs.put("xmlFile", DaoFactory.getInstance().toEntity("VistaFicticiasDto", "descargas", params)); 			
 				if(this.attrs.get("xmlFile")== null || this.attrs.get("pdfFile")== null) {
 					JsfBase.addAlert("Error", "La factura no existe con los datos propocionados !", ETipoMensaje.ERROR);
-					this.attrs.put("codigo", "");
 				}	 // if
 				else 
 					UIBackingUtilities.execute("$('#download').click();");
@@ -100,6 +105,7 @@ public class Indice extends IBaseImportar implements Serializable {
 		finally {
 			Methods.clean(params);
 		} // finally
+		this.attrs.put("codigo", "");
   } 
 
 	@Override

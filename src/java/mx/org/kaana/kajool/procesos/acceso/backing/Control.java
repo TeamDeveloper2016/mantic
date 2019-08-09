@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import mx.org.kaana.kajool.procesos.acceso.reglas.Acceso;
@@ -29,7 +29,7 @@ import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
  * @time 12:27:03 PM
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
-@RequestScoped
+@ViewScoped
 @Named(value = "kajoolAccesoControl")
 public class Control extends IBaseAttribute implements Serializable {
 
