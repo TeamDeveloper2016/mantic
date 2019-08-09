@@ -93,7 +93,7 @@ public class Indice extends IBaseImportar implements Serializable {
 					JsfBase.addAlert("Error", "La factura no existe con los datos propocionados !", ETipoMensaje.ERROR);
 				}	 // if
 				else 
-					UIBackingUtilities.execute("$('#download').click();");
+					UIBackingUtilities.execute("$(\"div[role='1']\").removeClass('Container100');$(\"div[role]\").addClass('Container50');$(\"div[role='2']\").show();$('#download').click();");
 			} // if
 			else 
 				JsfBase.addAlert("Error", "El código de verificación, esta incorrecto !", ETipoMensaje.ERROR);
