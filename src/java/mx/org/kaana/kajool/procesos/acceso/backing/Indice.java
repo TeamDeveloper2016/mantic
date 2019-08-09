@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -27,7 +27,7 @@ import org.primefaces.model.StreamedContent;
  * @time 12:27:03 PM
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
-@RequestScoped
+@ViewScoped
 @Named(value = "kajoolAccesoIndice")
 public class Indice extends IBaseImportar implements Serializable {
 
@@ -121,6 +121,5 @@ public class Indice extends IBaseImportar implements Serializable {
 			hash = ((hash << 5) + hash) + value.charAt(i);
 		} // for
 		return String.valueOf(hash);
-	}	
-	
+	}		
 }
