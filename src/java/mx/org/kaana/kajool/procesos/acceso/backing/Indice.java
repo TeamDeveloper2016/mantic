@@ -69,8 +69,8 @@ public class Indice extends IBaseImportar implements Serializable {
   @Override
   @PostConstruct
   protected void init() {
-		this.attrs.put("rfc", "BCO131129C26");
-		this.attrs.put("folio", "201900001");
+		this.attrs.put("rfc", "");
+		this.attrs.put("folio", "");
 		this.attrs.put("codigo", "");
 		this.attrs.put("pdfFile", null);
 		this.attrs.put("xmlFile", null);
