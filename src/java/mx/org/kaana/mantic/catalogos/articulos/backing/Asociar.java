@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.catalogos.articulos.backing;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +12,8 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.EFormatos;
@@ -40,7 +43,16 @@ public class Asociar extends Comun implements Serializable {
 	private static final String K_BYTES       = " Kb";	
 	private Importado importado;
 	private StreamedContent image;
+	protected Entity[] selecteds;	
 
+	public Entity[] getSelecteds() {
+		return selecteds;
+	}
+
+	public void setSelecteds(Entity[] selecteds) {
+		this.selecteds=selecteds;
+	}
+	
 	public Importado getImportado() {
 		return importado;
 	}
@@ -110,6 +122,7 @@ public class Asociar extends Comun implements Serializable {
 			Archivo.toWriteFile(result, event.getFile().getInputstream());
 			fileSize= event.getFile().getSize();
 			this.importado= new Importado(nameFile, event.getFile().getContentType(), EFormatos.FREE, event.getFile().getSize(), fileSize.equals(0L) ? fileSize : fileSize/1024, event.getFile().equals(0L) ? BYTES : K_BYTES, genericPath, "", event.getFile().getFileName());      
+			this.image= LoadImages.getFile(genericPath.concat(nameFile));
 			this.toMessageImage();					
 		} // try
 		catch (Exception e) {
@@ -118,11 +131,12 @@ public class Asociar extends Comun implements Serializable {
 		} // catch
 	} // doFileUpload	
 	
-	public void doEliminarTemporal(){
+	private void doEliminarTemporal() throws Exception{
 		File result= null;
 		try {
+			liberarImage();
 			if (this.importado != null && !Cadena.isVacio(this.importado.getName())) {
-				result= new File(JsfBase.getRealPath().concat("Temporal").concat(File.separator).concat("Img").concat(File.separator).concat(this.importado.getName()));
+				result= new File(Configuracion.getInstance().getPropiedadSistemaServidor("path.image").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat("/").concat(this.importado.getName()));
 				if (result.exists())
 					result.delete();
 			} // if						
@@ -130,7 +144,14 @@ public class Asociar extends Comun implements Serializable {
 		catch (Exception e) {		
 			throw e;
 		} // catch		
-	} // doCancelar
+	} // doEliminarTemporal
+	
+	private void liberarImage() throws IOException{
+		if(this.image!= null){
+			this.image.getStream().close();
+			this.image= null;
+		}	// if	
+	} // liberarImage
 	
 	private void toMessageImage() {
 		FacesMessage msg= null;
@@ -159,8 +180,20 @@ public class Asociar extends Comun implements Serializable {
 	} // toDetailMessage	
 	
 	public void doAceptar(){
+		Transaccion transaccion= null;
 		try {
-			
+			if(this.selecteds.length > 0){
+				liberarImage();
+				transaccion= new Transaccion(this.selecteds, this.importado);
+				if(transaccion.ejecutar(EAccion.ASIGNAR)){
+					JsfBase.addMessage("Asignar imagen a articulos.", "Se realizó la asignacion de la imagen de forma correcta.", ETipoMensaje.ERROR);
+					doLoad();
+				} // if
+				else
+					JsfBase.addMessage("Asignar imagen a articulos.", "Ocurrió un error al realizar la asignación de la imagen.", ETipoMensaje.ERROR);
+			} // if
+			else
+				JsfBase.addMessage("Asignar imagen a articulos.", "Es necesario seleccionar al menos un articulo.", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -171,6 +204,7 @@ public class Asociar extends Comun implements Serializable {
 	public String doCancelar(){
 		String regresar= null;
 		try {
+			doEliminarTemporal();
 			JsfBase.setFlashAttribute("idNotaEntrada", this.attrs.get("idNotaEntrada"));
 			regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
 		} // try
@@ -183,6 +217,7 @@ public class Asociar extends Comun implements Serializable {
 	
 	public void doDeleteFile(){		
 		try {						
+			liberarImage();
 			deleteFile();																			
 		} // try
 		catch (Exception e) {
@@ -204,6 +239,7 @@ public class Asociar extends Comun implements Serializable {
 				imageContent= new File(genericPath.concat(this.importado.getContent()));
 				if(imageContent.exists())
 					imageContent.delete();
+				this.importado= new Importado();
 			} // if			
 		} // try
 		catch (Exception e) {			
