@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.mantic.db.dto.TcManticImagenesDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
@@ -53,9 +54,11 @@ public class Transaccion extends TransaccionFactura {
 	private Double factorMedio;
 	private Double factorMayoreo;
 	private Importado importado;
+	private Entity[] seleccionados;
 
-	public Transaccion(Importado importado) {
-		this.importado = importado;
+	public Transaccion(Entity[] seleccionados, Importado importado) {
+		this.importado    = importado;
+		this.seleccionados= seleccionados;
 	}	
 	
 	public Transaccion(RegistroArticulo articulo, Double precio) {
@@ -98,6 +101,9 @@ public class Transaccion extends TransaccionFactura {
 					if(DaoFactory.getInstance().execute(ESql.UPDATE, sesion, "TcManticArticulosDto", "cleanImage", Variables.toMap("idArticulo~".concat(this.articulo.getIdArticulo().toString())))>= 1L)
 						regresar= DaoFactory.getInstance().delete(sesion, TcManticImagenesDto.class, this.articulo.getArticulo().getIdImagen())>= 1L;
 					break;
+				case ASIGNAR:
+					regresar= asignarImagen(sesion);
+					break;
 			} // switch
 			if(!regresar)
         throw new Exception("");
@@ -107,6 +113,76 @@ public class Transaccion extends TransaccionFactura {
 		} // catch		
 		return regresar;
 	} // ejecutar
+	
+	private boolean asignarImagen(Session sesion) throws Exception{
+		boolean regresar             = false;
+		TcManticImagenesDto image    = null;
+		TcManticArticulosDto articulo= null;
+		int count                    = 0;
+		Long idImage                 = -1L;
+		try {
+			image= loadImageImportado(this.seleccionados[0].toLong("idArticulo"));
+			idImage= DaoFactory.getInstance().insert(sesion, image);
+			if(idImage >= 1L){
+				for(Entity seleccionado: this.seleccionados){
+					articulo= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, seleccionado.toLong("idArticulo"));
+					articulo.setIdImagen(idImage);
+					DaoFactory.getInstance().update(sesion, articulo);
+					count++;
+				} // for
+				regresar= count== this.seleccionados.length;
+			} // if
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // asignarImagen
+	
+	private TcManticImagenesDto loadImageImportado(Long idArticulo) throws Exception {
+		TcManticImagenesDto regresar= null;
+		Long tipoImagen             = null;
+		String name                 = null;
+		File result                 = null;
+		String pathPivote           = null;
+		try {			
+			regresar= new TcManticImagenesDto();
+			name= this.importado.getName();
+			if(!Cadena.isVacio(name)) {
+				tipoImagen= ETipoImagen.valueOf(name.substring(name.lastIndexOf(".")+ 1, name.length()).toUpperCase()).getIdTipoImagen();
+				regresar.setNombre(name);				
+				regresar.setArchivo(Archivo.toFormatNameFile(idArticulo.toString().concat(".").concat(name.substring(name.lastIndexOf(".")+ 1, name.length())), "IMG"));
+				regresar.setIdTipoImagen(tipoImagen);
+				regresar.setIdUsuario(JsfBase.getIdUsuario());				
+				regresar.setTamanio(this.importado.getFileSize());
+				regresar.setRuta(this.importado.getRuta());			
+				String path= Configuracion.getInstance().getPropiedadSistemaServidor("path.image").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat("/");
+				regresar.setAlias(path.concat(regresar.getArchivo()));
+				result= new File(path.concat(regresar.getNombre()));			
+				if(result.exists()) {
+					Archivo.copy(path.concat(this.importado.getName()), path.concat(regresar.getArchivo()), true);												
+					new File(path.concat(this.importado.getName())).delete();
+					if(pathPivote!= null ){
+						result= new File(pathPivote);
+						if(result.exists())
+							result.delete();
+					} // if
+				} // if
+				else if(pathPivote!= null){					
+					result= new File(pathPivote);			
+					if(result.exists()) 
+						Archivo.copyDeleteSource(pathPivote, path.concat(regresar.getArchivo()), true);									
+				} // else
+			} // if
+		} // try
+		catch (Exception e) {						
+			throw e;
+		} // catch		
+		finally{
+			this.messageError= "Error al registrar imagen del articulo";			
+		} // finally
+		return regresar;
+	} // loadImage
 	
 	private boolean eliminarArticulo(Session sesion) throws Exception{
 		boolean regresar         = false;		
