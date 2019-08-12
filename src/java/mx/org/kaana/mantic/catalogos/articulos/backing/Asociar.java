@@ -71,7 +71,7 @@ public class Asociar extends Comun implements Serializable {
     try {    	      
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());   
 			this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: JsfBase.getFlashAttribute("idNotaEntrada"));
-			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro" : JsfBase.getFlashAttribute("retorno"));
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Mantic/Inventarios/Entradas/filtro" : JsfBase.getFlashAttribute("retorno"));
 			this.image= LoadImages.getImage(-1L);
 			doLoad();
     } // try
