@@ -19,8 +19,16 @@
 			<div class="ui-g-11 janal-content-center">
         <div class="ui-g ui-grid-row janal-grid-row">
 					<div class="ui-g-12 janal-content-center">
-  		  		<h1 class="titulo-proyecto janal-header-title">#{kajoolUtilAplicacion.tituloSistema}</h1>
-	  		  	<h1 class="titulo-siglas janal-header-acronym">#{kajoolUtilAplicacion.tituloCorto}</h1>
+						<p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-column-left, janal-control-acceso janal-column-center janal-wid-col-90">
+  		  		  <h1 class="titulo-proyecto janal-header-title">#{kajoolUtilAplicacion.tituloSistema}</h1>
+	  		  	  <h1 class="titulo-siglas janal-header-acronym">#{kajoolUtilAplicacion.tituloCorto}</h1>
+							<p:commandLink action="/acceso?faces-redirect=true" title="Iniciar sesion" styleClass="janal-control-acceso">
+								<span class="fa fa-stack">
+									<i class="fa fa-circle fa-stack-2x janal-color-blue"></i>
+									<i class="fa fa-user fa-stack-1x fa-inverse"></i>
+								</span>
+							</p:commandLink>
+						</p:panelGrid>
 				  </div>	
 				</div>	
         <div class="ui-g ui-grid-row janal-grid-row">
@@ -33,16 +41,13 @@
 						<p:outputLabel styleClass="janal-etapa xs-pantalla Fs14" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
 					</div>
 					<div class="ui-g-4 janal-content-center margin-version" style="text-align: right;">
-						<p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-column-right, janal-control-acceso janal-column-right janal-wid-col-38">
+						<p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-column-right, janal-control-acceso janal-column-right janal-wid-30">
 							<div>
 							  <span id="version" class="version lg-pantalla">#{kajoolUtilAplicacion.versionAplicacion}</span>
 							  <span id="version" class="version xs-pantalla Fs14">#{kajoolUtilAplicacion.version}</span>
 							</div>
-							<p:commandLink action="/acceso?faces-redirect=true" title="Iniciar sesion" styleClass="janal-control-acceso">
-								<span class="fa fa-stack">
-									<i class="fa fa-circle fa-stack-2x janal-color-blue"></i>
-									<i class="fa fa-user fa-stack-1x fa-inverse"></i>
-								</span>
+							<p:commandLink action="/acceso?faces-redirect=true" title="Iniciar sesion" styleClass="janal-control-acceso" style="text-decoration: none;">
+								<p:outputLabel value="Iniciar sesión" />
 							</p:commandLink>
 						</p:panelGrid>
 					</div>
