@@ -64,7 +64,7 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
-              <p:outputLabel for="consecutivo" value="No. factura:"/>
+              <p:outputLabel for="consecutivo" value="No. ticket:"/>
               <p:inputText id="consecutivo" placeholder="ej. 20190000001" value="#{manticFacturasFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>               
               <p:outputLabel for="folio" value="No. folio:"/>
               <p:inputText id="folio" value="#{manticFacturasFiltro.attrs.folio}" styleClass="janal-wid-100-txt"/>               
@@ -181,7 +181,7 @@
             </p:column>		
             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.ticket}">
               <f:facet name="header">
-                <h:outputText value="No. factura"/>
+                <h:outputText value="No. ticket"/>
               </f:facet>
               <h:outputText value="#{row['ticket']}"/>
             </p:column>		            
