@@ -457,7 +457,7 @@
 				</textField>
 				<textField pattern="" isBlankWhenNull="true">
 					<reportElement x="29" y="0" width="84" height="14"/>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
+					<textElement verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="9" isBold="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{CODIGO}]]></textFieldExpression>
