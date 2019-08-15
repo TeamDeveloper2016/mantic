@@ -164,10 +164,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				this.attrs.put("idPedidoSucursal", empresas.get(0));
 				if(this.accion.equals(EAccion.AGREGAR))
   				((OrdenCompra)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(0));
-			  else
+			  else 
 				  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(empresas.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkEmpresa())));
 			} // if	
-			params.put("sucursales", params.get("idEmpresa"));
+  		params.put("sucursales", ((OrdenCompra)this.getAdminOrden().getOrden()).getIkEmpresa());
       this.attrs.put("almacenes", UIEntity.seleccione("TcManticAlmacenesDto", "almacenes", params, columns, "clave"));
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 			if(!almacenes.isEmpty()) {
@@ -179,6 +179,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.remove(0);
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("clientes", UIEntity.build("TcManticClientesDto", "sucursales", params, columns));
       this.attrs.put("proveedores", UIEntity.build("VistaOrdenesComprasDto", "moneda", params, columns));
 			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
