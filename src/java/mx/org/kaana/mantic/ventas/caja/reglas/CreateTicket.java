@@ -5,11 +5,13 @@ import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.procesos.acceso.beans.Sucursal;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.caja.beans.Pago;
 import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
@@ -98,13 +100,33 @@ public class CreateTicket {
 			params= new HashMap<>();
 			params.put("idEmpresa", ((TicketVenta)this.ticket.getOrden()).getIdEmpresa());
 			domicilio= (Entity) DaoFactory.getInstance().toEntity("VistaInformacionEmpresas", "datosEmpresa", params);
-			regresar= domicilio.toString("empresaDireccion").concat(" C.P. ").concat(domicilio.toString("codigoPostal")).concat("<br> COLONIA. ").concat(domicilio.toString("colonia"));
+			regresar= domicilio.toString("empresaDireccion").concat(" C.P. ").concat(domicilio.toString("codigoPostal")).concat("<br> COLONIA. ").concat(domicilio.toString("colonia")).concat("<br> TEL.").concat(toTelefono());
 		} // try
 		finally{
 			Methods.clean(params);
 		} // finally
 		return regresar;
 	} // toFindDomicilio
+	
+	private String toTelefono() throws Exception{
+		String regresar          = "";
+		Map<String, Object>params= null;
+		Entity telefono          = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_empresa=" + ((TicketVenta)this.ticket.getOrden()).getIdEmpresa() + " and id_tipo_contacto=" + ETiposContactos.TELEFONO.getKey());
+			telefono= (Entity) DaoFactory.getInstance().toEntity("TrManticEmpresaTipoContactoDto", "row", params);
+			if(telefono!= null)
+				regresar= telefono.toString("valor");
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toTelefono
 	
 	private String toNoTicket(){		
 		StringBuilder	regresar= new StringBuilder();
@@ -291,14 +313,21 @@ public class CreateTicket {
 	
 	protected String toFooter(){
 		StringBuilder regresar= new StringBuilder();
-		String descripcion= this.tipo.equals("COTIZACIÓN") || this.tipo.equals("APARTADO") ? "GRACIAS POR SU PREFERENCIA" : "GRACIAS POR SU COMPRA";			
-		regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 14px;border-top: 1px solid black;border-collapse: collapse;\">");
+		String descripcion= this.tipo.equals("COTIZACIÓN") || this.tipo.equals("APARTADO") ? "GRACIAS POR SU PREFERENCIA" : "GRACIAS POR SU COMPRA";							
+		regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 14px;border-top: 1px solid black;border-collapse: collapse;\">");				
 		regresar.append("<br/>¡");
 		regresar.append(descripcion);
 		regresar.append("!</p>");
 		regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 10px;\">");
 		regresar.append("PARA CUALQUIER ACLARACION, MANTENER SU TICKET");
 		regresar.append("</p>");
+		if(!this.tipo.equals("COTIZACIÓN") && !this.tipo.equals("APARTADO")){			
+			regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 10px;\">");
+			regresar.append("PARA LA DESCARGA DE TUS ARCHIVOS FISCALES INGRESAR A LA SIGUIENTE PAGINA");
+			regresar.append("<br/><br/>");
+			regresar.append("https://ferreteriabonanza.com");
+			regresar.append("</p>");
+		} // if
 		//regresar.append("<svg id=\"barcode\"></svg>");
 		regresar.append("</div>");		
 		return regresar.toString();
