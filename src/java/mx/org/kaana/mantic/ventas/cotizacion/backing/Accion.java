@@ -141,21 +141,22 @@ public class Accion extends IBaseVenta implements Serializable {
   public String doAceptarCotizacion() {  
     Transaccion transaccion= null;
     String regresar        = null;
-		EAccion eaccion        = null;		
+		EAccion eaccion        = null;			
     try {			
 			this.loadOrdenVenta();
 			eaccion= (EAccion) this.attrs.get("accion");						
 			transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), (Date)this.attrs.get("vigencia"));
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(EAccion.GENERAR)) {
-				if(eaccion.equals(EAccion.AGREGAR)) {
- 				  regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR): "filtro".concat(Constantes.REDIRECIONAR);
-    			UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la cotización ', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getCotizacion()+ "');");
-					this.init();
+				if(eaccion.equals(EAccion.AGREGAR)) { 				  
+    			UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la cotización ', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getCotizacion()+ "');");										
+					this.init();					
+					//JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la cotización."), ETipoMensaje.INFORMACION);					
 				} // if	
-				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la cotización."), ETipoMensaje.INFORMACION);
-  			JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
-				UIBackingUtilities.execute("userUpdate();");
+				else
+					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);      												
+				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR): "filtro".concat(Constantes.REDIRECIONAR);
+				JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());										
 			} // if
 			else 
 				JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);      			
