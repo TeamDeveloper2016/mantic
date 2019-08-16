@@ -372,7 +372,7 @@ div.ui-panelgrid-content {
 .titulo-siglas{display:none !important;}
 .margin-fecha {padding-left: 28px;}
 .xs-pantalla{display:none;}
-.lg-pantalla{display:block;}
+.lg-pantalla{display:contents;}
 .fecha {
    font-size: 14px;
    font-weight: 100 !important;
