@@ -240,7 +240,7 @@
 				<h:panelGrid id="panelCorreos" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">					
 					<p:dataTable id="tablaCorreosReenviar" var="row" value="#{manticVentasCotizacionFiltro.correos}" selection="#{manticVentasCotizacionFiltro.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
 						<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
-						<p:column headerText="Correos disponibles del proveedor" styleClass="descripcion tablaCorreosReenviar_selection">
+						<p:column headerText="Correos disponibles del cliente" styleClass="descripcion tablaCorreosReenviar_selection">
 							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
 						</p:column>
 						<p:column style="width:45px;text-align: center">
