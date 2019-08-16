@@ -29,15 +29,21 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
+import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.JuntarReporte;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.correos.beans.Attachment;
+import mx.org.kaana.mantic.correos.enums.ECorreos;
+import mx.org.kaana.mantic.correos.reglas.IBaseAttachment;
 import mx.org.kaana.mantic.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
-import mx.org.kaana.mantic.enums.EEstatusFicticias;
+import mx.org.kaana.mantic.enums.EEstatusCotizaciones;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
+import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
 import mx.org.kaana.mantic.facturas.comun.FiltroFactura;
 import org.apache.commons.logging.Log;
@@ -49,7 +55,7 @@ import org.primefaces.event.SelectEvent;
 public class Filtro extends FiltroFactura implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428332L;
-	private static final Log LOG=LogFactory.getLog(Filtro.class);			
+	private static final Log LOG=LogFactory.getLog(Filtro.class);				
 	
   @PostConstruct
   @Override
@@ -61,7 +67,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 			this.toLoadCatalog();
       if(this.attrs.get("idFicticia")!= null) 
 			  this.doLoad();			
-      this.attrs.remove("idFicticia"); 
+      this.attrs.remove("idFicticia"); 			
 			super.initBase();
     } // try
     catch (Exception e) {
@@ -332,16 +338,33 @@ public class Filtro extends FiltroFactura implements Serializable {
   } // doReporte	
 	
 	public void doLoadEstatus() {
-		Entity seleccionado          = null;
-		Map<String, Object>params    = null;
-		List<UISelectItem> allEstatus= null;		
+		Entity seleccionado               = null;
+		Map<String, Object>params         = null;
+		List<UISelectItem> allEstatus     = null;	
+		MotorBusquedaCatalogos motor      = null; 
+		Correo item                       = null;
+		List<ClienteTipoContacto>contactos= null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_venta_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
 			allEstatus= UISelect.build("TcManticCotizacionesEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
-			this.attrs.put("estatus", allEstatus.get(0).getValue().toString());									
+			this.attrs.put("estatus", allEstatus.get(0).getValue().toString());				
+			getCorreos().clear();
+			getSelectedCorreos().clear();
+			motor    = new MotorBusqueda(-1L, seleccionado.toLong("idCliente"));
+			contactos= motor.toClientesTipoContacto();
+			LOG.warn("Total de contactos asociados al proveedor" + contactos.size());
+			for(ClienteTipoContacto contacto: contactos) {
+				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())) {
+					item= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor());
+					getCorreos().add(item);		
+					getSelectedCorreos().add(item);
+				} // if
+			} // for
+			LOG.warn("Agregando un correo por defecto para la cotizacion");
+			getCorreos().add(new Correo(-1L, ""));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -370,8 +393,8 @@ public class Filtro extends FiltroFactura implements Serializable {
 			} // if
 			transaccion= new Transaccion(bitacora, emails.toString(), (String)this.attrs.get("justificacion"));
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR)){
-				if(bitacora.getIdFicticiaEstatus().equals(EEstatusFicticias.TIMBRADA.getIdEstatusFicticia()))
-					doSendMail();				
+				if(bitacora.getIdFicticiaEstatus().equals(EEstatusCotizaciones.FINALIZADA.getIdEstatusFicticia()))
+					doSendmail();				
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
 			} // if
 			else
@@ -501,5 +524,63 @@ public class Filtro extends FiltroFactura implements Serializable {
 	protected void finalize() throws Throwable {
     super.finalize();		
 	}	// finalize
-	
+
+	@Override
+	public void doSendmail() {
+		StringBuilder sb= new StringBuilder("");
+		if(getSelectedCorreos()!= null && !getSelectedCorreos().isEmpty()) {
+			for(Correo mail: getSelectedCorreos()) {
+				if(!Cadena.isVacio(mail.getDescripcion()))
+					sb.append(mail.getDescripcion()).append(", ");
+			} // for
+		} // if
+		Map<String, Object> params= new HashMap<>();
+		//1.- CUENTAS DE CORREO DEL PROVEEDOR MAS LAS QUE SE ESCRIBAN EN EL DIALOGO DE LA PAGINA CAPTURADOS O SELECCIONADOS EN LA VENTANA EMERGENTE
+		//String[] emails       = {"jimenez76@yahoo.com", (sb.length()> 0? sb.substring(0, sb.length()- 2): "")};
+		String[] emails       = {(sb.length()> 0? sb.substring(0, sb.length()- 2): "")};
+		List<Attachment> files= new ArrayList<>(); 
+		try {
+			Entity seleccionado= (Entity)this.attrs.get("seleccionado");
+			params.put("header", "...");
+			params.put("footer", "...");
+			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());
+			params.put("tipo", "Cotización");
+			//2.- RECUPERAR LA RAZON SOCIAL DEL PROVEEDOR
+			params.put("razonSocial", seleccionado.toString("cliente"));
+			params.put("correo", ECorreos.COTIZACIONES.getEmail());
+			//3.- AGREGAR EL REPORTE EN FORMATO PDF YA GENERADO DE LA COTIZACION PARA ANEXARLO COMO ATTACHMENT AL CORREO ELECTRONICO
+			this.doReporte("COTIZACION_DETALLE", Boolean.TRUE);
+			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
+			files.add(attachments);
+			files.add(new Attachment("logo", ECorreos.COTIZACIONES.getImages().concat("logo.png"), Boolean.TRUE));
+			params.put("attach", attachments.getId());
+			for (String item: emails) {
+				try {
+					if(!Cadena.isVacio(item)) {
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.COTIZACIONES, ECorreos.COTIZACIONES.getEmail(), item, "davalos.dg1@gmail.com,isabelbs59@gmail.com", "Ferreteria Bonanza - Cotización", params, files);
+					  LOG.info("Enviando correo a la cuenta: "+ item);
+					  notificar.send();
+					} // if	
+				} // try
+				finally {
+				  if(attachments.getFile().exists()) {
+   	  	    LOG.info("Eliminando archivo temporal: "+ attachments.getAbsolute());
+				    // user.getFile().delete();
+				  } // if	
+				} // finally	
+			} // for
+	  	LOG.info("Se envio el correo de forma exitosa");
+			if(sb.length()> 0)
+		    JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
+			else
+		    JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+		} // try // try
+		catch(Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(files);
+		} // finally
+	} // doSendMail		
 }
