@@ -200,10 +200,10 @@
 						<p:menuitem id="consultar" action="#{manticCotizacionesFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					            
             <p:separator rendered="#{!(manticCotizacionesFiltro.attrs.seleccionado.idVentaEstatus eq '19')}"/>					
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCotizacionesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticCotizacionesFiltro.attrs.seleccionado.idVentaEstatus eq '19')}"/>					                                    
-						<p:separator rendered="#{fn:contains('|18|', manticCotizacionesFiltro.attrs.seleccionado.idVentaEstatus)}"/>											
-						<p:menuitem id="enviar" icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCotizacionesFiltro.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="#{fn:contains('|18|', manticCotizacionesFiltro.attrs.seleccionado.idVentaEstatus)}"/>
 						<p:separator rendered="#{manticCotizacionesFiltro.attrs.seleccionado.idVentaEstatus eq '19'}"/>											
 						<p:menuitem id="ticket" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCotizacionesFiltro.doReporte('COTIZACION_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{fn:contains('|18|', manticCotizacionesFiltro.attrs.seleccionado.idVentaEstatus)}"/>						
+						<p:separator rendered="#{fn:contains('|18|', manticCotizacionesFiltro.attrs.seleccionado.idVentaEstatus)}"/>											
+						<p:menuitem id="enviar" icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCotizacionesFiltro.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="#{fn:contains('|18|', manticCotizacionesFiltro.attrs.seleccionado.idVentaEstatus)}"/>
           </p:contextMenu>
         </div>
       </div>
