@@ -679,7 +679,7 @@
       $janal.console('janal.renovate');
       if($janal.fields[id]) {
         $janal.blank(id, value);
-        $janal.refresh([id]);
+        $janal.refresh($janal.fields[id]);
       } // if  
       else
         $janal.show([{summary: 'No existe el ID', detail: 'El elemento llamado['+ id+ '] no existe !!!'}]);

@@ -44,10 +44,10 @@
 					</div>	
 					<div class="ui-grid-row janal-grid-row">
 						<div class="ui-grid-col-12">
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-40, janal-wid-60">	
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-70">	
 								<p:panel styleClass="TexAlCenter janal-wid-100-txt" style="height:100%; border:0px;">
 									<a id="source-image" data-magnify="gallery" data-caption="#{manticExplorarAccion.attrs.articulo.nombre}" data-group="icon-gallery" href="" title="Click para ver más grande la imagen">
-										<p:graphicImage id="icon-image" value="#{manticExplorarAccion.image}" width="265" height="250" stream="false" style="cursor:zoom-in;"/>
+										<p:graphicImage id="icon-image" value="#{manticExplorarAccion.image}" width="305" height="250" stream="false" style="cursor:zoom-in;"/>
 									</a>	
 								</p:panel>
 								<p:panel styleClass="TexAlCenter janal-wid-100-txt" style="height:100%; border:0px;">
@@ -65,7 +65,7 @@
 											<p:outputLabel value="Descripción: " style="font-weight: bold !important"/>
 											<p:outputLabel value="#{manticExplorarAccion.attrs.articulo.descripcion}" styleClass="janal-wid-96 filas"/>
 										</p:panelGrid>
-										<p:spacer width="30px"/>
+										<p:spacer width="10px"/>
 										<p:outputLabel value="Especificaciones técnicas" style="font-size: x-large"/>
 										<p:separator/>										
 											<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-17 janal-column-left, janal-wid-100-txt janal-column-left">
@@ -89,8 +89,6 @@
 				<p:outputLabel for="cantidad" value="Cantidad: " styleClass="janal-wid-100-txt"/>
 				<p:inputNumber id="cantidad" value="#{manticExplorarAccion.attrs.cantidad}" styleClass="filas janal-precio-azul" inputStyleClass="janal-wid-100-txt janal-column-right"/>				
 				<p:commandButton id="aceptar" value="Agregar al carrito" icon="fa fa-shopping-cart" accesskey="a" process="@this cantidad" update="@(.recalculo)" action="#{manticExplorarAccion.doAceptar}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" class="janal-wid-100-txt"/>												
-				<p:separator/>
-				<p:commandButton id="cancelar" value="Buscar otro ..." icon="fa fa-reply-all" accesskey="r" process="@this" action="#{manticExplorarAccion.doCancelar}" onstart="janal.bloquear();" oncomplete="janal.desbloquear()" class="janal-wid-100-txt"/>					
 				<p:spacer height="45px"/>				
 			</h:panelGrid>			
 		</h:panelGrid>				
