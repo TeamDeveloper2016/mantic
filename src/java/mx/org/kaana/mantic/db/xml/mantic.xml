@@ -7,6 +7,32 @@
   </model>
 
   <dml>
+   <unit id="TcManticControlRespaldosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_control_respaldos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_control_respaldos
+        where      
+          id_usuario = {idUsuario} and id_respaldo = {idRespaldo} and registro = {registro}
+      </select>
+      <select id="ultimo">
+        select      
+          *
+        from      
+          tc_mantic_control_respaldos
+        order by
+				  registro desc
+      </select>
+   </unit>		
    <unit id="TcManticPedidosDto">
       <select id="row">
         select      

@@ -27,6 +27,7 @@ import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticRespaldosDto;
 import mx.org.kaana.mantic.respaldos.reglas.Transaccion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -117,10 +118,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 			if(reference.exists()) {
 		    InputStream stream = new FileInputStream(reference);			
 		    regresar= new DefaultStreamedContent(stream, EFormatos.ZIP.getContent(), file.toString("nombre"));
+				this.checkDonwloadBackup(new  TcManticRespaldosDto(file.toLong("idRespaldo")));
 			} // if
 			else {
 				LOG.warn("No existe el archivo: "+ file.toString("alias"));
-        JsfBase.addMessage("No existe el archivo:"+ file.toString("nombre")+ ", favor de verificarlo.");
+        JsfBase.addMessage("No existe el archivo: "+ file.toString("nombre")+ ", favor de verificarlo.");
 			} // else	
 		} // try
     catch (Exception e) {
@@ -129,5 +131,18 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch		
 		return regresar;
 	} // doFileDownload
-  
+ 
+	private void checkDonwloadBackup(TcManticRespaldosDto respaldo) {
+		Transaccion transaccion= null;
+		try {
+			transaccion= new Transaccion(respaldo);
+			if(!transaccion.ejecutar(EAccion.BAJAR))
+        JsfBase.addMessage("No se pudo registrar en bitacora el registro de la descarga !");
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+	}
+	
 }

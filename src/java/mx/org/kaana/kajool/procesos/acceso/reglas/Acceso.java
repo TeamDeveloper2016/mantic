@@ -99,20 +99,20 @@ public class Acceso implements Serializable {
   } // valida  
 
   protected void agregarUsuariosSitio(HttpSession session, Autentifica autentifica) {
-    Usuario usuario = null;
-    UsuariosEnLinea usuarios = null;
-    usuario = new Usuario(
-            autentifica.getPersona().getIdGrupo(),
-            autentifica.getPersona().getIdPerfil(),
-            autentifica.getPersona().getDescripcionPerfil(),
-            session.getId(),
-            autentifica.getPersona().getCuenta(),
-            autentifica.getPersona().getNombreCompleto(),
-            null, null,
-            "",
-            Calendar.getInstance(), 0, -1, false, null,
-            autentifica.getPersona().getClaveGrupo());
+    UsuariosEnLinea usuarios= null;
+    Usuario usuario= new Usuario(
+			autentifica.getPersona().getIdGrupo(),
+			autentifica.getPersona().getIdPerfil(),
+			autentifica.getPersona().getDescripcionPerfil(),
+			session.getId(),
+			autentifica.getPersona().getCuenta(),
+			autentifica.getPersona().getNombreCompleto(),
+			null, null,
+			"",
+			Calendar.getInstance(), 0, -1, false, null,
+			autentifica.getPersona().getClaveGrupo());
     usuarios = (UsuariosEnLinea) JsfBase.getUsuariosSitio();
     usuarios.addCuenta(session.getId(), usuario);
   } // agregarUsuariosSitio
+	
 }

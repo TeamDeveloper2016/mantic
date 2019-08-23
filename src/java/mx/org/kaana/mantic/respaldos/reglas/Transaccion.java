@@ -20,6 +20,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.mantic.db.dto.TcManticControlRespaldosDto;
 import mx.org.kaana.mantic.db.dto.TcManticDescargasDto;
 import mx.org.kaana.mantic.db.dto.TcManticRespaldosDto;
 import org.apache.log4j.Logger;
@@ -40,6 +41,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	private String observacion;
 	private String messageError;
 	private TcManticDescargasDto descarga;
+	private TcManticRespaldosDto respaldo;
 
 	public Transaccion() {
 	 this("GENERACION DEL RESPALDO AUTOMATICO");
@@ -51,6 +53,10 @@ public class Transaccion extends IBaseTnx implements Serializable {
 
 	public Transaccion(TcManticDescargasDto descarga) {
 		this.descarga = descarga;
+	}
+	
+	public Transaccion(TcManticRespaldosDto respaldo) {
+		this.respaldo = respaldo;
 	}
 	
 	protected void setMessageError(String messageError) {
@@ -79,6 +85,10 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					regresar= DaoFactory.getInstance().insert(sesion, this.descarga)>= 1L;
 					if(regresar)
 						depurarDescargas(sesion);					
+					break;
+				case BAJAR:
+					TcManticControlRespaldosDto control= new TcManticControlRespaldosDto(JsfBase.getIdUsuario(), this.respaldo.getIdRespaldo(), -1L);
+					regresar= DaoFactory.getInstance().insert(sesion, control)>= 1L;
 					break;
 			} // switch
 			if(!regresar)

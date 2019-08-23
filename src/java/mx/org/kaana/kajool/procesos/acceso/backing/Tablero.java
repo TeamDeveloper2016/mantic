@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ESucursales;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Cadena;
@@ -29,8 +31,12 @@ import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.Title;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.reglas.BuildChart;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Global;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticControlRespaldosDto;
+import mx.org.kaana.mantic.db.dto.TcManticRespaldosDto;
 import mx.org.kaana.mantic.enums.EGraficasTablero;
 import mx.org.kaana.mantic.enums.EPeriodosTableros;
 import org.apache.commons.logging.Log;
@@ -79,14 +85,16 @@ public class Tablero extends Comun implements Serializable {
       this.attrs.put("pathMensajes", JsfBase.getApplication().getContextPath() + "/Paginas/Mantenimiento/Mensajes/Notificacion/filtro.jsf");
       this.attrs.put("vigenciaInicial", new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
       this.attrs.put("vigenciaFin", new java.sql.Date(Calendar.getInstance().getTimeInMillis()));						
-			initPeriodos(fechaActual);
-			loadAllCharts();       
-      doLoadSucursales();
-      doLoad();
-      loadMeses();
+			this.initPeriodos(fechaActual);
+			this.loadAllCharts();       
+      this.doLoadSucursales();
+      this.doLoad();
+      this.loadMeses();
       //doLoadContadoresMeses();
-      loadContadoresGenerales();
-      toMensajesNoLeidos();            			
+      this.loadContadoresGenerales();
+      this.toMensajesNoLeidos(); 
+			if(JsfBase.isAdminEncuestaOrAdmin())
+			  this.checkDonwloadBackup();
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
@@ -938,4 +946,28 @@ public class Tablero extends Comun implements Serializable {
 			Methods.clean(params);
 		} // finally
 	} // doLoadVentasEmpleado	
+	
+  private void checkDonwloadBackup() {
+	  Map<String, Object> params= null;
+		try {
+		  params=new HashMap<>();
+			TcManticRespaldosDto respaldo= (TcManticRespaldosDto)DaoFactory.getInstance().toEntity(TcManticRespaldosDto.class, "TcManticRespaldosDto", "ultimo", Collections.EMPTY_MAP);
+			if(respaldo!= null) {
+			  params.put("idRespaldo", respaldo.getIdRespaldo());
+				TcManticControlRespaldosDto control= (TcManticControlRespaldosDto)DaoFactory.getInstance().toEntity(TcManticControlRespaldosDto.class, "TcManticControlRespaldosDto", "ultimo", params);
+			  if(control!= null && !control.getIdRespaldo().equals(respaldo.getIdRespaldo())) 
+					this.attrs.put("messageBackup", "NO se ha DESCARGADO el respaldo de la 'Base de Datos', desde "+ Global.format(EFormatoDinamicos.DIA_FECHA_HORA, control.getRegistro()));
+				else
+					this.attrs.put("messageBackup", "NUNCA se ha DESCARGADO el respaldo de la 'Base de Datos', por favor realice una descarga a su equipo de trabajo !");
+				UIBackingUtilities.execute("PF('downloadBackup').show()");
+			} // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally	
+	}	
+	
 }
