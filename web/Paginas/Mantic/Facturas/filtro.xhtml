@@ -129,13 +129,12 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
+							<p:separator/>
+							<div class="janal-align-right">
+								<p:commandButton id="buscar" styleClass="lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticFacturasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+								<p:commandButton id="buscarIcon" title="Buscar" value="Buscar" iconPos="right" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticFacturasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+							</div>
             </p:panelGrid>
-            <div class="janal-align-right lg-pantalla janal-wid-100">
-              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticFacturasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
-            </div>
-            <div class="janal-align-right xs-pantalla janal-wid-100">
-              <p:commandButton id="buscarIcon" title="Buscar" value="Buscar" iconPos="right" styleClass="janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticFacturasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
-            </div>
           </p:panel>
         </div>
 				<p:spacer width="3px"/>
