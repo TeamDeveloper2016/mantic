@@ -24,7 +24,6 @@
   <ui:define name="contenido">
     <div class="janal-align-right xs-pantalla janal-wid-100">
       <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
-      		
     </div>			
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
@@ -41,14 +40,12 @@
                   <h:outputText value="#{item.descripcion}"/>
                 </p:column>                
               </p:selectOneMenu>
+							<p:separator/>
+							<div class="janal-align-right">
+								<p:commandButton id="buscar" styleClass="lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this nombre tipoPerfil" actionListener="#{kajoolUsuariosFiltro.doLoad()}" oncomplete="janal.desbloquear();" update="tabla"/>
+								<p:commandButton id="buscarIcon" icon="fa fa-filter"  iconPos="right" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b" onstart="janal.execute()"  process="@this nombre tipoPerfil" actionListener="#{kajoolUsuariosFiltro.doLoad()}" oncomplete="janal.desbloquear();" update="tabla"/>
+							</div>
             </h:panelGrid>
-            <p:separator/>
-            <div class="janal-align-right">
-              <p:commandButton id="buscar" styleClass="lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this nombre tipoPerfil" actionListener="#{kajoolUsuariosFiltro.doLoad()}" oncomplete="janal.desbloquear();" update="tabla"/>
-            </div>
-						<div class="janal-align-right xs-pantalla janal-wid-100">
-							<p:commandButton id="buscarSentinelIcon" icon="fa fa-filter"  onstart="janal.execute()"  process="@this nombre tipoPerfil" actionListener="#{kajoolUsuariosFiltro.doLoad()}" oncomplete="janal.desbloquear();" update="tabla"/>
-						</div>
           </p:panel>
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
