@@ -22,7 +22,7 @@
         from      
           tc_mantic_control_respaldos
         where      
-          id_usuario = {idUsuario} and id_respaldo = {idRespaldo} and registro = {registro}
+          id_usuario = {idUsuario} and id_respaldo = {idRespaldo} and date_format(registro, '%Y%m%d%H%i%S') = '{registro}'
       </select>
       <select id="ultimo">
         select      
@@ -114,7 +114,7 @@
         from      
           tc_mantic_pedidos_bitacora
         where      
-          id_pedido_bitacora = {idPedidoBitacora} and id_pedido_estatus = {idPedidoEstatus} and registro = '{registro}'
+          id_pedido_bitacora = {idPedidoBitacora} and id_pedido_estatus = {idPedidoEstatus} and date_format(registro, '%Y%m%d%H%i%S') = '{registro}'
       </select>
     </unit>
 		<unit id="TcManticPedidosEstatusDto">
@@ -150,7 +150,7 @@
         from      
           tc_mantic_control_descargas
         where      
-          id_usuario= {idUsuario} and id_respaldo = {idRespaldo} and registro = '{registro}'
+          id_usuario= {idUsuario} and id_respaldo = {idRespaldo} and date_format(registro, '%Y%m%d%H%i%S') = '{registro}'
       </select>
     </unit>		
     <unit id="TcManticTiposColoresDto">

@@ -19,7 +19,7 @@
     </script>		
   </ui:define>
   <ui:define name="contenido">
-    <div class="xs-pantalla janal-wid-100">
+    <div class="janal-align-right xs-pantalla janal-wid-100">
       <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
     </div>			
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
@@ -27,7 +27,7 @@
         <div id="collapse-find" class="ui-grid-col-3">
           <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
-            <h:panelGrid styleClass="janal-wid-100">
+            <p:panelGrid layout="grid" styleClass="janal-wid-100">
               <p:outputLabel for="nombres" value="Nombres, paterno, materno:"/>
               <p:inputText id="nombres" value="#{manticCatalogosResponsablesFiltro.attrs.nombres}" styleClass="janal-wid-100-txt" /> 
               <p:outputLabel for="rfc" value="RFC:"/>
@@ -41,12 +41,12 @@
                 <f:selectItem itemLabel="MUJER" itemValue="2"/>
                 <f:selectItem itemLabel="NO ESPECIFICADO" itemValue="3"/>
               </p:selectOneMenu>              
-            </h:panelGrid>
+            </p:panelGrid>
             <p:separator/>
-            <div class="janal-align-right lg-pantalla">
+            <div class="janal-align-right lg-pantalla janal-wid-100">
               <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this nombres rfc curp idTipoSexo" actionListener="#{manticCatalogosResponsablesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
             </div>
-            <div class="xs-pantalla janal-wid-100">
+            <div class="janal-align-right xs-pantalla janal-wid-100">
               <p:commandButton id="buscarIcon" title="Buscar" value="Buscar" iconPos="right" styleClass="janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this nombres rfc curp idTipoSexo" actionListener="#{manticCatalogosResponsablesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
             </div>
           </p:panel>

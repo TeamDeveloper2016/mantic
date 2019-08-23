@@ -13,7 +13,7 @@
         </style>
     </ui:define>
     <ui:define name="contenido">        
-			<div class="xs-pantalla janal-wid-100">
+			<div class="janal-align-right xs-pantalla janal-wid-100">
 				<p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
 						
 			</div>			
@@ -35,10 +35,10 @@
                 </p:inputText>   
               </h:panelGrid>
               <p:separator/>
-              <div class="janal-align-right lg-pantalla">
+              <div class="janal-align-right lg-pantalla janal-wid-100">
                 <p:commandButton id="buscarSentinel" value="Buscar" icon="fa fa-filter"  oncomplete="janal.execute()"/>
               </div>
-              <div class="xs-pantalla janal-wid-100">
+              <div class="janal-align-right xs-pantalla janal-wid-100">
                 <p:commandButton id="buscarSentinelIcon" icon="fa fa-filter"  oncomplete="janal.execute()"/>
               </div>
 						</p:panel>

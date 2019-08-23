@@ -17,7 +17,7 @@
     </script>		
   </ui:define>
   <ui:define name="contenido">
-    <div class="xs-pantalla janal-wid-100">
+    <div class="janal-align-right xs-pantalla janal-wid-100">
       <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
     </div>			
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
@@ -43,10 +43,10 @@
               <p:inputText id="nombre" value="#{manticCatalogosCajasFiltro.attrs.nombre}" styleClass="janal-wid-100-txt"/>                   			                                          
             </p:panelGrid>
             <p:separator/>
-            <div class="janal-align-right lg-pantalla">
+            <div class="janal-align-right lg-pantalla janal-wid-100">
               <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@this idEmpresa clave nombre" actionListener="#{manticCatalogosCajasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
             </div>
-            <div class="xs-pantalla janal-wid-100">
+            <div class="janal-align-right xs-pantalla janal-wid-100">
               <p:commandButton id="buscarIcon" title="Buscar" value="Buscar" iconPos="right" styleClass="janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute(true);" process="@this clave nombre" actionListener="#{manticCatalogosCajasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
             </div>
           </p:panel>
