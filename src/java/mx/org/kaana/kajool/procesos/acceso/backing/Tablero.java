@@ -956,12 +956,15 @@ public class Tablero extends Comun implements Serializable {
 			  params.put("idRespaldo", respaldo.getIdRespaldo());
 				TcManticControlRespaldosDto control= (TcManticControlRespaldosDto)DaoFactory.getInstance().toEntity(TcManticControlRespaldosDto.class, "TcManticControlRespaldosDto", "ultimo", params);
 			  if(control!= null) {
-					if(!control.getIdRespaldo().equals(respaldo.getIdRespaldo())) 
+					if(!control.getIdRespaldo().equals(respaldo.getIdRespaldo())) {
 					  this.attrs.put("messageBackup", "NO se ha DESCARGADO el respaldo de la 'Base de Datos', desde "+ Global.format(EFormatoDinamicos.DIA_FECHA_HORA, control.getRegistro()));
+  				  UIBackingUtilities.execute("PF('downloadBackup').show()");
+	  			} // if
 				} // if	
-				else
+				else {
 					this.attrs.put("messageBackup", "NUNCA se ha DESCARGADO el respaldo de la 'Base de Datos', por favor realice una descarga a su equipo de trabajo !");
-				UIBackingUtilities.execute("PF('downloadBackup').show()");
+				  UIBackingUtilities.execute("PF('downloadBackup').show()");
+				} // else	
 			} // if
 		} // try
 		catch (Exception e) {
