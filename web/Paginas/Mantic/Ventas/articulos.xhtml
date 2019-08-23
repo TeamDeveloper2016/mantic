@@ -25,7 +25,7 @@
 				<div id="collapse-find" class="ui-grid-col-3">
           <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
-						<h:panelGrid styleClass="janal-wid-100">
+						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 							<p:outputLabel for="nombre" value="Nombre:"/>
 							<p:inputText id="nombre" value="#{manticCatalogosListaPreciosArticulos.attrs.nombre}" styleClass="janal-wid-100-txt"/>                						
 							<p:outputLabel for="codigo" value="Código:"/>
@@ -39,7 +39,7 @@
  						  <p:commandButton id="buscarIcon" title="Buscar" value="Buscar" iconPos="right" styleClass="janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute(true);" process="@this codigo nombre" actionListener="#{manticCatalogosListaPreciosArticulos.doLoad}" oncomplete="janal.desbloquear();" update="tabla idProveedor"/>
 					  </div>
 						<p:spacer height="50px"/>
-						<h:panelGrid styleClass="janal-wid-100">
+						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
               <p:outputLabel for="idProveedor" value="El articulo lo tienen los siguientes proveedores:"/>
               <p:selectManyCheckbox id="idProveedor" layout="responsive" columns="1" value="#{manticCatalogosListaPreciosArticulos.attrs.idProveedor}" converter="janal.convertidor.Entity" styleClass="janal-wid-96">
                 <p:ajax event="change" process="@this codigo nombre" update="tabla" listener="#{manticCatalogosListaPreciosArticulos.doLoadArticulos}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
