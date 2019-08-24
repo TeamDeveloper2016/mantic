@@ -31,11 +31,11 @@
 							<p:outputLabel for="codigo" value="Código:"/>
 							<p:inputText id="codigo" value="#{manticCatalogosListaPreciosArticulos.attrs.codigo}" styleClass="janal-wid-100-txt"/>  
 							<p:separator/>
-							<div class="janal-align-right">
-								<p:commandButton id="buscar" styleClass="lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@this codigo nombre" actionListener="#{manticCatalogosListaPreciosArticulos.doLoad}" oncomplete="janal.desbloquear();" update="tabla idProveedor"/>
-								<p:commandButton id="buscarIcon" title="Buscar" value="Buscar" iconPos="right" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute(true);" process="@this codigo nombre" actionListener="#{manticCatalogosListaPreciosArticulos.doLoad}" oncomplete="janal.desbloquear();" update="tabla idProveedor"/>
-							</div>
             </h:panelGrid>
+						<div class="janal-align-right">
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@this codigo nombre" actionListener="#{manticCatalogosListaPreciosArticulos.doLoad}" oncomplete="janal.desbloquear();" update="tabla idProveedor"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="right" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute(true);" process="@this codigo nombre" actionListener="#{manticCatalogosListaPreciosArticulos.doLoad}" oncomplete="janal.desbloquear();" update="tabla idProveedor"/>
+						</div>
 						<p:spacer height="50px"/>
 						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
               <p:outputLabel for="idProveedor" value="El articulo lo tienen los siguientes proveedores:"/>

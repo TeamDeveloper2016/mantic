@@ -19,6 +19,7 @@
           <p:spacer/>
           <p:outputLabel value="Descripción"/>
           <p:inputText id="descripcion" styleClass="Container90" value="#{kajoolMantenimientoMensajesGruposFiltro.attrs.descripcion}"/>
+					<p:separator/>
           <p:commandButton id="buscar" icon="fa fa-search" ajax="true" actionListener="#{kajoolMantenimientoMensajesGruposFiltro.doLoad}" process="@this idGrupo descripcion" update="tabla"/>
         </p:panelGrid>
       </p:fieldset>
