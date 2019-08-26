@@ -68,7 +68,7 @@
               <p:autoComplete id="codigo" placeholder="ej. CT123" var="customCodigo" itemLabel="#{customCodigo.propio}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{customCodigo}" value="#{manticCatalogosArticulosFiltro.attrs.codigoBuscado}" completeMethod="#{manticCatalogosArticulosFiltro.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
 								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticCatalogosArticulosFiltro.doAsignaCodigo}" oncomplete="janal.desbloquear();"/>
 								<f:facet name="itemtip">
-									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">												
+									<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-col-400">												
 										<f:facet name="header" class="TexAlCenter">
 											<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini"  width="50" height="30"/>
 										</f:facet>
@@ -76,7 +76,7 @@
 										<h:outputText value="#{customCodigo.propio}"/>
 										<h:outputText value="Nombre:" />
 										<h:outputText value="#{customCodigo.nombre}"/>
-									</h:panelGrid>
+									</p:panelGrid>
 								</f:facet>
 							</p:autoComplete>	
 							<p:outputLabel for="nombre" value="Nombre:"/>							

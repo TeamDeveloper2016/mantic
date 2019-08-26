@@ -31,7 +31,7 @@
 							<p:outputLabel for="descripcion"  value="Descripción:"/>
 							<p:inputText id="descripcion" value="#{manticCatalogosCategoriasFiltro.attrs.descripcion}" styleClass="janal-wid-100-txt"/>               
 							<p:separator/>
-						</h:panelGrid>
+						</p:panelGrid>
 						<div class="janal-align-right">
 							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this nombre descripcion" actionListener="#{manticCatalogosCategoriasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
 							<p:commandButton id="buscarIcon" title="Buscar" iconPos="right" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this nombre descripcion" actionListener="#{manticCatalogosCategoriasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
