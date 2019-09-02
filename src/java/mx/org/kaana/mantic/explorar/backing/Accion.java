@@ -172,11 +172,7 @@ public class Accion extends Pedido implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
 		return "filtro".concat(Constantes.REDIRECIONAR);
-	}
-	
-  public String	doCancelar() {
-    return "filtro".concat(Constantes.REDIRECIONAR);
-	}
+	}  
 
 	private String getCostoMayorMenor(double value, double precio) {
 		double diferencia= precio- value;
