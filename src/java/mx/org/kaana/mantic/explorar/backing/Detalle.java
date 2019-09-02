@@ -17,9 +17,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
@@ -52,6 +50,7 @@ public class Detalle extends Pedido implements Serializable {
     List<Columna> columns     = null;
 		Map<String, Object> params=null;
 		try {
+			super.initPedido();
       columns= new ArrayList<>();
       columns.add(new Columna("precio", EFormatoDinamicos.MONEDA_CON_DECIMALES));
 			params=new HashMap<>();
@@ -137,9 +136,7 @@ public class Detalle extends Pedido implements Serializable {
 		return regresar;
 	} // doBusqueda
 
-	public String doAceptar() {
-		
+	public String doAceptar() {		
 		return null;
-	}
-	
+	}	
 }
