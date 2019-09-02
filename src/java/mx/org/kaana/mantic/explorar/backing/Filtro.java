@@ -87,8 +87,8 @@ public class Filtro extends Pedido implements Serializable {
 			if(principal){
 				if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L) 
 					sb.append("tc_mantic_articulos.id_articulo=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");						
-				else if(!Cadena.isVacio(JsfBase.getParametro("nombre_input"))) { 
-					nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+				else if(!Cadena.isVacio(this.attrs.get("nombreHidden").toString())) { 
+					nombre= this.attrs.get("nombreHidden").toString().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
 					sb.append("(tc_mantic_articulos.nombre regexp '.*").append(nombre.toUpperCase()).append(".*' or tc_mantic_articulos.descripcion regexp '.*").append(nombre.toUpperCase()).append(".*') and ");				
 				} // if	
 			} // if
