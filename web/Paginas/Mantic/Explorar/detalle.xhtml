@@ -7,10 +7,11 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/pedidos/filtro.xhtml">
-		<ui:param name="backingPedido" value="#{manticExplorarDetalle}" />
-		<ui:param name="eventoPedidoAutocompletar" value="doCompleteArticulo" />	
-		<ui:param name="atributoPedidoNombre" value="#{manticExplorarDetalle.attrs.nombre}" />
-		<ui:param name="atributoPedidoHidden" value="#{manticExplorarDetalle.attrs.nombreHidden}" />
+	<ui:param name="backingPedido" value="#{manticExplorarDetalle}"/>
+	<ui:param name="eventoPedidoAutocompletar" value="doCompleteArticulo"/>	
+	<ui:param name="atributoPedidoNombre" value="#{manticExplorarDetalle.attrs.nombre}"/>
+	<ui:param name="atributoPedidoHidden" value="#{manticExplorarDetalle.attrs.nombreHidden}"/>
+	<ui:param name="atributoPedidoCount" value="#{manticExplorarAccion.attrs.pedidoCount}" />	
 	<ui:param name="titulo" value="Articulos del pedido"/>
 	<ui:define name="librerias">
 		<script type="text/javascript">
@@ -22,9 +23,9 @@
 					var name= $(this).attr('id').replace('source-image', 'icon-image', 'gi').replace(/[:]/g, '\\:');
 					janal.console('Reload image: '+ name);
 					$(this).attr('href', $('#'+ name).attr('src'));
- 			  });
+				});
 			};					
-	    $(document).ready(function () {
+			$(document).ready(function () {
 				setTimeout('reload();', 1000);
 			});
 		</script>   
@@ -75,7 +76,7 @@
 					</p:panelGrid>
 					<p:separator/>
 				</p:repeat>
-  		</p:panelGrid>	
+			</p:panelGrid>	
 			<p:panel styleClass="janal-wid-100-txt janal-column-center" style="border: 0px;">
 				<p:outputLabel value="Total"/>
 				<br/>
