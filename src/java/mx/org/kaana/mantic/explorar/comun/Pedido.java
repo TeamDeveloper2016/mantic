@@ -96,4 +96,8 @@ public abstract class Pedido extends IBaseAttribute implements Serializable{
 			Error.mensaje(e);			
 		} // catch		
 	} // loadPedido
+	
+	public String	doCancelar() {
+    return "filtro".concat(Constantes.REDIRECIONAR);
+	}
 }
