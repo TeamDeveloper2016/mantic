@@ -84,7 +84,9 @@
 				<br/>
 				<p:spacer height="20px"/>
 				<p:separator styleClass="janal-wid-100"/>
-				<p:commandButton id="aceptar" value="Agregar al carrito" icon="fa fa-shopping-cart" accesskey="a" process="@this" update="@(.recalculo)" action="#{manticExplorarDetalle.doAceptar}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" styleClass="janal-wid-60"/>												
+				<p:commandButton id="aceptar" value="Agregar al carrito" icon="fa fa-shopping-cart" accesskey="a" process="@this" update="@(.recalculo)" action="#{manticExplorarDetalle.doAceptar}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" class="janal-wid-100-txt"/>
+				<p:separator/>
+				<p:commandButton id="cancelar" value="Buscar otro ..." icon="fa fa-reply-all" accesskey="r" process="@this" action="#{manticExplorarDetalle.doCancelar}" onstart="janal.bloquear();" oncomplete="janal.desbloquear()" class="janal-wid-100-txt"/>					
 			</p:panel>	
 		</p:panelGrid>	
 		<p:commandButton id="tabla" value="" styleClass="janal-zero-size"/>
