@@ -43,36 +43,31 @@
 		<p:focus context="replace"/>
 		<p:defaultCommand target="tabla"/>
     <p:panelGrid  layout="grid" columns="2" style="janal-wid-100-txt" columnClasses="janal-wid-80, janal-wid-20">	
-			<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt">
-				<p:panelGrid  layout="grid" columns="4" style="janal-wid-100-txt" columnClasses="janal-wid-20, janal-wid-60, janal-wid-10 janal-column-center, janal-wid-10 janal-column-center">	
-					<p:spacer/>
-					<p:spacer/>
-					<p:outputLabel value="Precio"/>
-					<p:outputLabel value="Cantidad"/>
+			<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" style="height:475px !important;overflow-y: auto" columnClasses="janal-wid-100">			
+				<p:panelGrid  layout="grid" columns="4" style="janal-wid-100-txt" columnClasses="janal-wid-20, janal-wid-60, janal-wid-10 janal-column-center, janal-wid-10 janal-column-left">	
+					<p:spacer/><p:spacer/><p:spacer/><p:outputLabel value="Precio" style="font-size: large" class="janal-color-blue"/>					
 				</p:panelGrid>
 				<p:repeat value="#{manticExplorarDetalle.attrs.detalle}" var="row" varStatus="status">
 					<p:panelGrid layout="grid" columns="4" styleClass="janal-wid-100-txt" columnClasses="janal-wid-20 janal-column-center, janal-wid-60, janal-wid-10 janal-column-left, janal-wid-10 janal-column-center">	
 						<p:panel styleClass="janal-wid-100-txt janal-column-center" style="border: 0px;">
+							<p:outputLabel value="#{status.index+ 1}" style="float:left;font-size: large;" styleClass="janal-color-blue"/>
 							<span id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row.nombre}" data-group="icon-image" href="" title="Click para ver más grande la imagen">
-								<p:graphicImage id="icon-image" cache="false" value="#{manticExplorarDetalle.doPrepareImage(row)}" width="100" height="80" stream="false" style="cursor:zoom-in;"/>
-							</span>	
-							<p:outputLabel value="No. #{status.index+ 1}" style="float:left;" styleClass="janal-clolor-blue"/>
+								<p:graphicImage id="icon-image" cache="false" value="#{manticExplorarDetalle.doPrepareImage(row)}" width="100" height="80" stream="false" style="cursor:zoom-in;"/>								
+							</span>								
+							<p:rating value="3" readonly="true" />
 						</p:panel>
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt">
-							<p:outputLabel value="#{row.codigo} | #{row.nombre}" style="font-size: x-large"/>
-							<p:spacer height="10px"/>
-							<p:commandLink actionListener="#{manticExplorarDetalle.doItemDelete(row)}">
-								<i class="fa fa-trash">  Eliminar</i>
-							</p:commandLink>	
+							<p:outputLabel value="#{row.codigo} | #{row.nombre}" style="font-size: large"/>							
+							<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-40 janal-column-left janal-wid-100-txt, janal-wid-10">
+								<p:outputLabel value="Cantidad"/><p:spacer/>
+								<p:spinner id="cantidad" value="#{row.cantidad}" min="1" />
+								<p:commandButton icon="fa fa-trash" actionListener="#{manticExplorarDetalle.doItemDelete(row)}" title="Eliminar producto"/>															
+							</p:panelGrid>								
 						</p:panelGrid>
-						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt janal-column-right">
-							<p:outputLabel value="$ #{manticExplorarDetalle.doNumericoSat(row.precio)}" styleClass="janal-color-red"/>
-						</p:panelGrid>
-						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-column-center">
-							<p:inputNumber id="cantidad" value="#{row.cantidad}" inputStyleClass="janal-wid-60 janal-precio-azul janal-column-right">				
-								<p:ajax event="blur" process="@this" update="@this" listener="#{manticExplorarDetalle.doItemDelete(row)}"/>
-							</p:inputNumber>	
-						</p:panelGrid>	
+						<p:spacer/>
+						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt janal-column-left">
+							<p:outputLabel value="$ #{manticExplorarDetalle.doNumericoSat(row.precio)}" styleClass="janal-color-red" style="font-weight: bold !important; font-size: large !important"/>
+						</p:panelGrid>						
 					</p:panelGrid>
 					<p:separator/>
 				</p:repeat>
@@ -84,7 +79,7 @@
 				<br/>
 				<p:spacer height="20px"/>
 				<p:separator styleClass="janal-wid-100"/>
-				<p:commandButton id="aceptar" value="Agregar al carrito" icon="fa fa-shopping-cart" accesskey="a" process="@this" update="@(.recalculo)" action="#{manticExplorarDetalle.doAceptar}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" class="janal-wid-100-txt"/>
+				<p:commandButton id="aceptar" value="Finalizar pedido" icon="fa fa-shopping-cart" accesskey="a" process="@this" update="@(.recalculo)" action="#{manticExplorarDetalle.doAceptar}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" class="janal-wid-100-txt"/>
 				<p:separator/>
 				<p:commandButton id="cancelar" value="Buscar otro ..." icon="fa fa-reply-all" accesskey="r" process="@this" action="#{manticExplorarDetalle.doCancelar}" onstart="janal.bloquear();" oncomplete="janal.desbloquear()" class="janal-wid-100-txt"/>					
 			</p:panel>	
