@@ -14,7 +14,11 @@
 		function setActualVal(){
 			var val= $('#nombre_input').val();
 			$('#hidenValCriterio').val(val);
-		}
+		} // setActualVal
+		
+		function updateCountVal(val){
+			$('#contadorCriterio').text(val);
+		} // updateCountVal
 	</script>			
 	<style>
 		.janal-faltantes-top {
@@ -68,7 +72,7 @@
 					<li class="Fleft BordRadHalf TexAlCenter" title="Ir a carrito de pedidos." style="width: 30px !important;height: 30px !important;">
 						<a href="/MANTIC/Paginas/Mantic/Explorar/detalle.jsf" class="janal-text-white Unselectable">
 						<i class="fa fa-shopping-cart fa-lg"></i>
-						<span class="alertBubble BordRad5 Fs12">#{atributoPedidoCount}</span>
+						<span id="contadorCriterio" class="alertBubble BordRad5 Fs12">#{atributoPedidoCount}</span>
 						<ul class="layout-header-widgets-submenu BordRad5 shadows janal-text-white Animated05">
 							<li class="Animated05">								
 								<i class="fa fa-gg fa-1x janal-text-one-line"></i>
