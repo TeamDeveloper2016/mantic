@@ -82,12 +82,14 @@
 				</div>				
 			</h:panelGrid>
 			<h:panelGrid columns="1" class="janal-wid-100" columnClasses="janal-wid-100">
+				<p:outputLabel for="subTotal" value="Sub total: " styleClass="janal-wid-100-txt"/>
+				<p:inputNumber id="subTotal" value="#{manticExplorarAccion.attrs.subTotal}" styleClass="filas janal-precio-azul" inputStyleClass="janal-wid-100-txt janal-column-right" disabled="true"/>				
 				<p:outputLabel for="total" value="Total: " styleClass="janal-wid-100-txt"/>
 				<p:inputNumber id="total" value="#{manticExplorarAccion.attrs.total}" styleClass="filas janal-precio-azul" inputStyleClass="janal-wid-100-txt janal-column-right" disabled="true"/>				
 				<p:separator/>
 				<p:spacer height="10px"/>
 				<p:outputLabel for="cantidad" value="Cantidad: " styleClass="janal-wid-100-txt"/>
-				<p:inputNumber id="cantidad" value="#{manticExplorarAccion.attrs.cantidad}" styleClass="filas janal-precio-azul" inputStyleClass="janal-wid-100-txt janal-column-right"/>				
+				<p:inputNumber id="cantidad" value="#{manticExplorarAccion.attrs.cantidad}" styleClass="filas janal-precio-azul" inputStyleClass="janal-wid-100-txt janal-column-right"/>					
 				<p:commandButton id="aceptar" value="Agregar al carrito" icon="fa fa-shopping-cart" accesskey="a" process="@this cantidad" update="@(.recalculo)" action="#{manticExplorarAccion.doAceptar}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" class="janal-wid-100-txt"/>												
 				<p:separator/>
 				<p:commandButton id="cancelar" value="Buscar otro ..." icon="fa fa-reply-all" accesskey="r" process="@this" action="#{manticExplorarAccion.doCancelar}" onstart="janal.bloquear();" oncomplete="janal.desbloquear()" class="janal-wid-100-txt"/>					

@@ -74,17 +74,17 @@
 					<p:separator/>
 				</p:repeat>
 			</p:panelGrid>	
-			<p:panel styleClass="janal-wid-100-txt janal-column-center" style="border: 0px;">
-				<p:outputLabel for="total" value="Total"/>
-				<br/>
-				<p:outputLabel id="total" value="$ 0.00"/>
-				<br/>
-				<p:spacer height="20px"/>
-				<p:separator styleClass="janal-wid-100"/>
+			<h:panelGrid columns="1" class="janal-wid-100" columnClasses="janal-wid-100">
+				<p:outputLabel for="subTotal" value="Sub total: " styleClass="janal-wid-100-txt"/>
+				<p:inputNumber id="subTotal" value="#{manticExplorarDetalle.attrs.subTotal}" styleClass="filas janal-precio-azul" inputStyleClass="janal-wid-100-txt janal-column-right" disabled="true"/>				
+				<p:outputLabel for="total" value="Total: " styleClass="janal-wid-100-txt"/>
+				<p:inputNumber id="total" value="#{manticExplorarDetalle.attrs.total}" styleClass="filas janal-precio-azul" inputStyleClass="janal-wid-100-txt janal-column-right" disabled="true"/>				
+				<p:separator/>
+				<p:spacer height="10px"/>				
 				<p:commandButton id="aceptar" value="Finalizar pedido" icon="fa fa-shopping-cart" accesskey="a" process="@this" update="@(.recalculo)" action="#{manticExplorarDetalle.doAceptar}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" class="janal-wid-100-txt"/>
 				<p:separator/>
 				<p:commandButton id="cancelar" value="Buscar otro ..." icon="fa fa-reply-all" accesskey="r" process="@this" action="#{manticExplorarDetalle.doCancelar}" onstart="janal.bloquear();" oncomplete="janal.desbloquear()" class="janal-wid-100-txt"/>					
-			</p:panel>	
+			</h:panelGrid>			
 		</p:panelGrid>	
 		<p:commandButton id="tabla" value="" styleClass="janal-zero-size"/>
 	</ui:define>	
