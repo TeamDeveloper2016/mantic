@@ -11,12 +11,12 @@
 	<h:outputStylesheet library="janal" name="css/jquery.magnify.min.css" />
 	<h:outputStylesheet library="janal" name="css/jquery.magnify.min.css.map" />			
 	<script type="text/javascript">
-		function setActualVal(){
-			var val= $('#nombre_input').val();
+		function setActualVal() {
+			var val = $('#nombre_input').val();
 			$('#hidenValCriterio').val(val);
 		} // setActualVal
-		
-		function updateCountVal(val){
+
+		function updateCountVal(val) {
 			$('#contadorCriterio').text(val);
 		} // updateCountVal
 	</script>			
@@ -64,13 +64,12 @@
 		</div>
 	</div>	
 	<p:spacer height="40px"/>				
-	<div id="sticky-menu" class="ui-panel ui-widget ui-widget-content ui-corner-all janal-content-header Responsive100 janal-fija-componente">
-    <h:form prependId="false" class="janal-padding-cero">
-      <p:remoteCommand name="janalCleanFlash" actionListener="#{kajoolEncabezado.doCleanFlash()}" process="@this"/>
-			<div id="layout-header" class="Unselectable fontRegular janal-top-menu">
-				<ul id="sm-topmenu" class="layout-header-widgets white Fs12" style="right: 30px !important">					
-					<li class="Fleft BordRadHalf TexAlCenter" title="Ir a carrito de pedidos." style="width: 30px !important;height: 30px !important;">
-						<a href="/MANTIC/Paginas/Mantic/Explorar/detalle.jsf" class="janal-text-white Unselectable">
+	<div id="sticky-menu" class="ui-panel ui-widget ui-widget-content ui-corner-all janal-content-header Responsive100 janal-fija-componente">    
+		<p:remoteCommand name="janalCleanFlash" actionListener="#{kajoolEncabezado.doCleanFlash()}" process="@this"/>
+		<div id="layout-header" class="Unselectable fontRegular janal-top-menu">
+			<ul id="sm-topmenu" class="layout-header-widgets white Fs12" style="right: 30px !important">					
+				<li class="Fleft BordRadHalf TexAlCenter" title="Ir a carrito de pedidos." style="width: 30px !important;height: 30px !important;">
+					<a href="/MANTIC/Paginas/Mantic/Explorar/detalle.jsf" class="janal-text-white Unselectable">
 						<i class="fa fa-shopping-cart fa-lg"></i>
 						<span id="contadorCriterio" class="alertBubble BordRad5 Fs12">#{atributoPedidoCount}</span>
 						<ul class="layout-header-widgets-submenu BordRad5 shadows janal-text-white Animated05">
@@ -81,10 +80,10 @@
 						<ul id="sm-mobiletopmenu" class="layout-header-widgets white Fs12">
 							<li class="Fleft BordRadHalf TexAlCenter Animated05 DisplayOnResponsive"><i class="icon-th-1"></i></li>
 						</ul>
-						</a>
-					</li>
-					<li class="Fleft BordRadHalf TexAlCenter" title="Cerrar sesión." style="width: 30px !important;height: 30px !important;">
-						<a href="/MANTIC/Exclusiones/salir.jsf" class="janal-text-white Unselectable">
+					</a>
+				</li>
+				<li class="Fleft BordRadHalf TexAlCenter" title="Cerrar sesión." style="width: 30px !important;height: 30px !important;">
+					<a href="/MANTIC/Exclusiones/salir.jsf" class="janal-text-white Unselectable">
 						<i class="fa fa-power-off fa-lg"></i>
 						<ul class="layout-header-widgets-submenu BordRad5 shadows janal-text-white Animated05">
 							<li class="Animated05">								
@@ -94,11 +93,10 @@
 						<ul id="sm-mobiletopmenu" class="layout-header-widgets white Fs12">
 							<li class="Fleft BordRadHalf TexAlCenter Animated05 DisplayOnResponsive"><i class="icon-th-1"></i></li>
 						</ul>
-						</a>
-					</li>
-				</ul>
-			</div>
-		</h:form>
+					</a>
+				</li>
+			</ul>
+		</div>		
 		<div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header Responsive100" style="display: -webkit-box; margin-right: 10px;">
 			<h:panelGrid id="iktan-slide-menu">
 			</h:panelGrid>  

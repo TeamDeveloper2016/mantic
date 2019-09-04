@@ -28,10 +28,11 @@
 				<p:layoutUnit id="principal" position="center" size="100%" style="border:0;" styleClass="sticky-wrapper" gutter="0">
 					<div id="layout-portlets-cover" class="janal-content-center janal-padding-cero" style="margin-left: 0 !important;margin-right: 0 !important;">
 						<h:form id="datos" prependId="false" styleClass="janal-padding-cero">									
-							<ui:include src="/WEB-INF/plantillas/pedidos/secciones/criterio.xhtml" />														
+							<ui:include src="/WEB-INF/plantillas/pedidos/secciones/criterio.xhtml" />							
 							<p:growl id="mensaje" autoUpdate="true" showSummary="false" showDetail="true" sticky="false" widgetVar="mensajes" escape="false" life="15000"/>
 							<p:panel styleClass="sticky-body janal-padding-cero" toggleable="true" style="border:0px;">
-								<p:focus class="janal-padding-cero" context="principal"/>														
+								<p:focus class="janal-padding-cero" context="principal"/>							
+								<p:spacer height="50px"/>
 								<ui:insert name="contenido"/>
 								<h:commandLink id="dataPdf">
 									<pe:exporter type="pdf"  skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton"  target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
