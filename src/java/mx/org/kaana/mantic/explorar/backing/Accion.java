@@ -156,7 +156,7 @@ public class Accion extends Pedido implements Serializable {
 	public String doNumberFormat(Value value) {
 		return value== null? "": Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, value.toDouble());
 	}
-	
+			
 	public String doAceptar() {
     Transaccion transaccion= null;
     try {			
@@ -170,7 +170,7 @@ public class Accion extends Pedido implements Serializable {
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
-    } // catch
+    } // catch		
 		return "filtro".concat(Constantes.REDIRECIONAR);
 	} // doAceptar 
 
