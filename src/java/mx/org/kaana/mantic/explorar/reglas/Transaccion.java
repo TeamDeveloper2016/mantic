@@ -9,10 +9,11 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.enums.EAccion;
-import static mx.org.kaana.kajool.enums.EAccion.MODIFICAR;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Variables;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
@@ -61,12 +62,13 @@ public class Transaccion extends IBaseTnx {
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar          = false;
-		Map<String, Object> params= new HashMap<>();
-		TcManticPedidosBitacoraDto bitacora= null;
+		Map<String, Object> params= null;				
 		try {
-			this.messageError    = "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el pedido a realizar.");			
+			initPedido(sesion, accion);
+			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el pedido a realizar.");						
 			switch(accion) {
 				case AGREGAR:
+					params= new HashMap<>();
 					params.put("idUsuario", JsfBase.getIdUsuario());
 					params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 					this.pedido= (TcManticPedidosDto)DaoFactory.getInstance().findFirst(TcManticPedidosDto.class, "abierto", params);
@@ -98,10 +100,9 @@ public class Transaccion extends IBaseTnx {
 					regresar= DaoFactory.getInstance().insert(sesion, this.detalle)> 0L;
 					this.toUpdateTotal(sesion);
 					break;				
-				case ELIMINAR:
+				case ELIMINAR:										
 					regresar= DaoFactory.getInstance().delete(sesion, this.detalle)> 0L;
-					this.toUpdateTotal(sesion);
-					this.toUpdateEstatus(sesion);
+					this.toUpdateTotal(sesion);					
 					break;				
 				case MODIFICAR:
 					regresar= DaoFactory.getInstance().update(sesion, this.detalle)> 0L;
@@ -109,9 +110,10 @@ public class Transaccion extends IBaseTnx {
 					this.toUpdateEstatus(sesion);
 					break;				
 				case DEPURAR:
+					params= new HashMap<>();
 					params.put("idPedido", this.pedido.getIdPedido());
 					regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticPedidosDetallesDto.class, params)> 0L;
-					this.pedido= (TcManticPedidosDto)DaoFactory.getInstance().findById(TcManticPedidosDto.class, this.pedido.getIdPedido());
+					this.pedido= (TcManticPedidosDto)DaoFactory.getInstance().findById(sesion, TcManticPedidosDto.class, this.pedido.getIdPedido());
 					this.pedido.setTotal(0D);
 					this.pedido.setSubTotal(0D);
       		this.pedido.setImpuestos(0D);
@@ -150,6 +152,20 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	}	// ejecutar
 
+	private void initPedido(Session sesion, EAccion accion) throws Exception{
+		try {
+			switch(accion) {
+				case ELIMINAR:
+				case MODIFICAR:
+					this.pedido= (TcManticPedidosDto)DaoFactory.getInstance().findById(sesion, TcManticPedidosDto.class, this.detalle.getIdPedido());
+					break;
+			} // switch
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // initPedido
+	
 	private TcManticPedidosDto loadPedido(Session sesion) throws Exception{
 		Siguiente consecutivo= this.toSiguiente(sesion);
 		TcManticPedidosDto regresar= new TcManticPedidosDto(
@@ -193,7 +209,7 @@ public class Transaccion extends IBaseTnx {
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	}	
+	}	// toSiguiente
 	
 	private void toUpdateEstatus(Session sesion) throws Exception {
 		if(this.pedido.getIdPedidoEstatus()== 1L || this.pedido.getIdPedidoEstatus()== 4L) {
@@ -201,16 +217,24 @@ public class Transaccion extends IBaseTnx {
 			DaoFactory.getInstance().update(sesion, this.pedido);
 			this.toGlobalEstatus(sesion);
 		} // if	
-	}	
+	}	// toUpdateEstatus
 
 	private void toUpdateTotal(Session sesion) throws Exception {
+		List<TcManticPedidosDetallesDto> detalles= DaoFactory.getInstance().toEntitySet(sesion, TcManticPedidosDetallesDto.class, Variables.toMap(Constantes.SQL_CONDICION.concat("~id_pedido=").concat(this.pedido.getIdPedido().toString())));
 		this.pedido.setTotal(0D);
 		this.pedido.setSubTotal(0D);
 		this.pedido.setImpuestos(0D);
-		this.pedido.setDescuentos(0D);
-		this.pedido.setExcedentes(0D);
+		this.pedido.setDescuentos(0D);		
+		if(!detalles.isEmpty()){
+			for(TcManticPedidosDetallesDto recordDetalle: detalles){
+				this.pedido.setTotal(this.pedido.getTotal() + recordDetalle.getImporte());
+				this.pedido.setSubTotal(this.pedido.getSubTotal() + recordDetalle.getSubTotal());
+				this.pedido.setImpuestos(this.pedido.getImpuestos()+ recordDetalle.getImpuestos());
+				this.pedido.setDescuentos(this.pedido.getDescuentos()+ recordDetalle.getDescuentos());				
+			} // for
+		} // if
 		DaoFactory.getInstance().update(sesion, this.pedido);
-	}
+	} // toUpdateTotal
 	
 	private void toGlobalEstatus(Session sesion) throws Exception {
 		TcManticPedidosBitacoraDto bitacora= new TcManticPedidosBitacoraDto(
@@ -221,5 +245,5 @@ public class Transaccion extends IBaseTnx {
 			this.pedido.getIdPedidoEstatus() // Long idPedidoEstatus
 		);
 		DaoFactory.getInstance().insert(sesion, bitacora);
-	}	
+	}	// toGlobalEstatus
 } 
