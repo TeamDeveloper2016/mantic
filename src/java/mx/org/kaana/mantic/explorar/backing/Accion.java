@@ -134,8 +134,8 @@ public class Accion extends Pedido implements Serializable {
     } // catch
 		finally {
       Methods.clean(columns);
-    }// finally
-	}
+    } // finally
+	} // updateArticulo
 	
 	public String doMoneyValueFormat(Double value) {
 		return value== null? "": Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, value);
@@ -172,7 +172,7 @@ public class Accion extends Pedido implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
 		return "filtro".concat(Constantes.REDIRECIONAR);
-	}  
+	} // doAceptar 
 
 	private String getCostoMayorMenor(double value, double precio) {
 		double diferencia= precio- value;
@@ -182,7 +182,7 @@ public class Accion extends Pedido implements Serializable {
 		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(display? "": "none").concat("' title='Costo anterior: ").concat(
 			Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, value)
 		).concat("\n\nDiferencia: ").concat(String.valueOf(diferencia)).concat("%'></i>");
-	}
+	} // getCostoMayorMenor
 
 	private void toUpdatePrecioVenta(boolean keep) {
 		Entity articulo= (Entity)this.attrs.get("articulo");
@@ -197,7 +197,7 @@ public class Accion extends Pedido implements Serializable {
 		articulo.getValue("calculado").setData(Numero.toAjustarDecimales(calculado, this.adminKardex.getTiposVentas().get(0).isRounded()));
 		articulo.getValue("menudeo").setData(this.adminKardex.getTiposVentas().get(0).getPrecio());
 		articulo.getValue("utilidad").setData(this.adminKardex.getTiposVentas().get(0).getUtilidad());
-	}
+	} // toUpdatePrecioVenta
 
 	public String doBusqueda(){
 		String regresar               = null;
