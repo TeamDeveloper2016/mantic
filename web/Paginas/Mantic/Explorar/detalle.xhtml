@@ -42,7 +42,7 @@
 		<p:commandButton id="replace" action="#{manticExplorarDetalle.doBusqueda}" process="@this" onstart="return janal.bloquear();" style="display:none"/>
 		<p:focus context="replace"/>
 		<p:defaultCommand target="tabla"/>
-    <p:panelGrid  layout="grid" columns="2" style="janal-wid-100-txt" columnClasses="janal-wid-80, janal-wid-20">	
+    <p:panelGrid id="panelPrincipal" layout="grid" columns="2" style="janal-wid-100-txt" columnClasses="janal-wid-80, janal-wid-20">	
 			<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" style="height:475px !important;overflow-y: auto" columnClasses="janal-wid-100">			
 				<p:panelGrid  layout="grid" columns="4" style="janal-wid-100-txt" columnClasses="janal-wid-20, janal-wid-60, janal-wid-10 janal-column-center, janal-wid-10 janal-column-left">	
 					<p:spacer/><p:spacer/><p:spacer/><p:outputLabel value="Precio" style="font-size: large" class="janal-color-blue"/>					
@@ -60,8 +60,10 @@
 							<p:outputLabel value="#{row.codigo} | #{row.nombre}" style="font-size: large"/>							
 							<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-40 janal-column-left janal-wid-100-txt, janal-wid-10">
 								<p:outputLabel value="Cantidad"/><p:spacer/>
-								<p:spinner id="cantidad" value="#{row.cantidad}" min="1" />
-								<p:commandButton icon="fa fa-trash" actionListener="#{manticExplorarDetalle.doItemDelete(row)}" title="Eliminar producto"/>															
+								<p:spinner id="cantidad" value="#{row.cantidad}" min="1">
+									<!--p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{manticExplorarDetalle.doRecalculate}" update="total" oncomplete="janal.desbloquear();"/-->
+								</p:spinner>
+								<p:commandButton icon="fa fa-trash" process="@this" actionListener="#{manticExplorarDetalle.doItemDelete(row)}" update="panelPrincipal" title="Eliminar producto" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>															
 							</p:panelGrid>								
 						</p:panelGrid>
 						<p:spacer/>
@@ -73,9 +75,9 @@
 				</p:repeat>
 			</p:panelGrid>	
 			<p:panel styleClass="janal-wid-100-txt janal-column-center" style="border: 0px;">
-				<p:outputLabel value="Total"/>
+				<p:outputLabel for="total" value="Total"/>
 				<br/>
-				<p:outputLabel value="$ 0.00"/>
+				<p:outputLabel id="total" value="$ 0.00"/>
 				<br/>
 				<p:spacer height="20px"/>
 				<p:separator styleClass="janal-wid-100"/>
