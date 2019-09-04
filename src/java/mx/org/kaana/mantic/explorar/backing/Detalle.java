@@ -13,11 +13,13 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
@@ -41,39 +43,49 @@ import org.primefaces.model.StreamedContent;
 @ViewScoped
 public class Detalle extends Pedido implements Serializable {
 
-	private static final long serialVersionUID=-6770709196941718388L;
-	private static final Log LOG=LogFactory.getLog(Detalle.class);
+	private static final long serialVersionUID= -6770709196941718388L;
+	private static final Log LOG              = LogFactory.getLog(Detalle.class);
 
 	@Override
 	@PostConstruct
-	protected void init() {
-    List<Columna> columns     = null;
-		Map<String, Object> params=null;
+	protected void init() {    
 		try {
 			super.initPedido();
-      columns= new ArrayList<>();
-      columns.add(new Columna("precio", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-			params=new HashMap<>();
-			params.put("idUsuario", JsfBase.getIdUsuario());
-			Entity pedido= (Entity)DaoFactory.getInstance().toEntity("VistaPedidosDto", params);
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
-			this.attrs.put("pedido", pedido);
-	 		if(pedido!= null && !pedido.isEmpty()) {
-	  		params.put("idPedido", pedido.toLong("idPedido"));
-				List<Item> detalle= (List<Item>)DaoFactory.getInstance().toEntitySet(Item.class, "VistaPedidosDto", "pedido", params);
-		  	if(detalle!= null && !detalle.isEmpty()) {
-	  			this.attrs.put("detalle", detalle);
-				} // if
-			} // if
+      doLoad();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);		
-		} // catch		
-		finally {
-			Methods.clean(params);
-		} // finally
+		} // catch				
 	} // init
+	
+	public void doLoad(){
+		List<Columna> columns     = null;
+		Map<String, Object> params= null;
+		try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("precio", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			params=new HashMap<>();
+			params.put("idUsuario", JsfBase.getIdUsuario());
+			Entity pedido= (Entity)DaoFactory.getInstance().toEntity("VistaPedidosDto", params);			
+			this.attrs.put("pedido", pedido);
+			if(pedido!= null && !pedido.isEmpty()) {
+	  		params.put("idPedido", pedido.toLong("idPedido"));
+				List<Item> detalle= (List<Item>)DaoFactory.getInstance().toEntitySet(Item.class, "VistaPedidosDto", "pedido", params);
+		  	if(detalle!= null && !detalle.isEmpty()) 
+	  			this.attrs.put("detalle", detalle);				
+			} // if
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+			Methods.clean(columns);
+		} // finally
+	} // doLoad
 	
 	public StreamedContent doPrepareImage(Item row) {
 		StreamedContent regresar= null;
@@ -89,16 +101,21 @@ public class Detalle extends Pedido implements Serializable {
 
 	public void doItemDelete(Item row) {
 		Transaccion transaccion= null;
-		try {
-			//TcManticPedidosDetallesDto detalle= (TcManticPedidosDetallesDto)DaoFactory.getInstance().findById(TcManticPedidosDetallesDto.class, row.toLong("idPedidoDetalle"));
+		try {			
 			transaccion= new Transaccion((TcManticPedidosDetallesDto)row);
-			transaccion.ejecutar(EAccion.ELIMINAR);
+			if(transaccion.ejecutar(EAccion.ELIMINAR)){
+				JsfBase.addMessage("Eliminar articulo", "Se eliminó el articulo de forma correcta.", ETipoMensaje.INFORMACION);
+				init();
+				UIBackingUtilities.execute("updateCountVal(".concat(this.attrs.get("pedidoCount").toString()).concat(");"));
+			} // if
+			else
+				JsfBase.addMessage("Eliminar articulo", "Ocurrió un error al eliminar el articulo.", ETipoMensaje.ERROR);
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
 			JsfBase.addMessageError(e);
     } // catch   
-	}
+	} // doItemDelete
 
 	public void doItemChange(Item row) {
 		Transaccion transaccion= null;
@@ -113,7 +130,7 @@ public class Detalle extends Pedido implements Serializable {
       Error.mensaje(e);
 			JsfBase.addMessageError(e);
     } // catch   
-	}
+	} // doItemChange
 
 	public String doBusqueda() {
 		String regresar               = null;
@@ -138,5 +155,5 @@ public class Detalle extends Pedido implements Serializable {
 
 	public String doAceptar() {		
 		return null;
-	}	
+	}	// Transaccion
 }
