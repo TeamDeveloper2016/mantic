@@ -99,5 +99,5 @@ public abstract class Pedido extends IBaseAttribute implements Serializable{
 	
 	public String	doCancelar() {
     return "filtro".concat(Constantes.REDIRECIONAR);
-	}
+	} // doCancelar
 }
