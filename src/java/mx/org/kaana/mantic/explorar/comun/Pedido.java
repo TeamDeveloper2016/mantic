@@ -78,11 +78,13 @@ public abstract class Pedido extends IBaseAttribute implements Serializable{
 			if(motor.toExistePedido()){
 				pedido= motor.toPedidoAbierto();
 				this.attrs.put("pedidoCount", motor.toTotalArticulos());							
+				this.attrs.put("subTotal", pedido.toString("subTotal"));							
 				this.attrs.put("total", pedido.toString("total"));							
 				this.attrs.put("idPedido", pedido.toLong("idPedido"));							
 			} // if
 			else{
 				this.attrs.put("pedidoCount", 0);
+				this.attrs.put("subTotal", 0);							
 				this.attrs.put("total", 0);
 				transaccion= new Transaccion();
 				transaccion.ejecutar(EAccion.ACTIVAR);
