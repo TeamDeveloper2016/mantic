@@ -12,11 +12,11 @@ import mx.org.kaana.libs.formato.Numero;
 import org.primefaces.model.SortOrder;
 
 /**
- *@company INEGI
- *@project IKTAN (Sistema de seguimiento y control de proyectos)
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
  *@date 28/06/2019
  *@time 10:24:20 AM 
- *@author Alejandro Jimenez Garcia <alejandro.jimenez@inegi.org.mx>
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
 public class UtilidadArticulosLazy extends FormatCustomLazy implements Serializable {

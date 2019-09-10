@@ -1,7 +1,7 @@
 package mx.org.kaana.kajool.beans;
 
 /**
- *@company INEGI
+ *@company KAANA
  *@project IKTAN (Sistema de Seguimiento y Control de proyectos estadísticos)
  *@date 14/06/2016
  *@time 12:00:00 PM 

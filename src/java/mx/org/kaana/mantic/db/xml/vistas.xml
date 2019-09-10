@@ -8722,5 +8722,35 @@
 					tc_mantic_empaques.nombre, tc_mantic_unidades_medidas.proporcion
 			</select>
 		</unit>
+		<unit id="VistaEchartsDemostracionDto">
+			<select id="multiple">
+select
+  tc_mantic_empresas.nombre as serie,
+  tc_mantic_ventas_detalles.codigo as text,
+  sum(tc_mantic_ventas_detalles.importe) as value
+from
+  tc_mantic_ventas_detalles
+inner join
+  tc_mantic_ventas on tc_mantic_ventas_detalles.id_venta= tc_mantic_ventas.id_venta
+inner join 
+  tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
+group by
+  tc_mantic_empresas.nombre,
+  tc_mantic_ventas_detalles.codigo  				
+			</select>
+			<select id="simple">
+select
+  tc_mantic_ventas_detalles.codigo as text,
+  sum(tc_mantic_ventas_detalles.importe) as value
+from
+  tc_mantic_ventas_detalles
+inner join
+  tc_mantic_ventas on tc_mantic_ventas_detalles.id_venta= tc_mantic_ventas.id_venta
+inner join 
+  tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
+group by
+  tc_mantic_ventas_detalles.codigo  				
+			</select>
+		</unit>
 	</dml>    
 </process>

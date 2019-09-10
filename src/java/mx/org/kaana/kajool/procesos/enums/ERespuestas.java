@@ -1,8 +1,8 @@
 package mx.org.kaana.kajool.procesos.enums;
 
 /**
- *@company INEGI
- *@project IKTAN (Sistema de seguimiento y control de proyectos)
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
  *@date 17/11/2016
  *@time 10:33:27 AM 
  *@author Usuario <usuario.usuario@inegi.org.mx>

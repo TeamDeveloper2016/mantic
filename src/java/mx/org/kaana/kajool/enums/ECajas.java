@@ -8,8 +8,11 @@ package mx.org.kaana.kajool.enums;
 import mx.org.kaana.libs.formato.Cadena;
 
 /**
- *
- * @author JORGE.VAZQUEZSER
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
+ *@date 5/09/2019
+ *@time 09:47:13 AM 
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public enum ECajas {
 

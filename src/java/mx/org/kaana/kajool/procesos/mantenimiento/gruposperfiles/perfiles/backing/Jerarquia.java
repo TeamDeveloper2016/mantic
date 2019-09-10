@@ -1,7 +1,7 @@
 package mx.org.kaana.kajool.procesos.mantenimiento.gruposperfiles.perfiles.backing;
 
 /**
- *@company INEGI
+ *@company KAANA
  *@project SECO (Sistema de seguimiento y control de proyetos estadisticos)
  *@date Jan 15, 2013
  *@time 2:19:30 PM 

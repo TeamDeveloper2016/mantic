@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Demostración de las gráficas de echarts de apache" />
+  <ui:define name="librerias">
+		<h:outputScript library="janal" name="echarts/echarts.min-4.2.2.js"/>
+    <script type="text/javascript">
+			Janal.Control.fields = {
+			};
+			$(document).ready(function () {
+				var multiple = echarts.init(document.getElementById('multiple'));
+				multiple.setOption(#{kajoolPlantillasGraficasFiltro.attrs.multiple});
+				var simple = echarts.init(document.getElementById('simple'));
+				simple.setOption(#{kajoolPlantillasGraficasFiltro.attrs.simple});
+			});
+    </script>		
+		<style type="text/css">
+			.cgor-chart-panel {
+				width: 480px; 
+				height: 520px; 
+				display:inline-block;
+			}
+			.cgor-chart-content {
+				width: 100%;
+        text-align: center;
+			}
+		</style>
+  </ui:define>
+  <ui:define name="contenido">
+		Hi
+		<div class="cgor-chart-content">
+			<div id="multiple" class="cgor-chart-panel">
+				Gráficas de barras de series multiples
+			</div>	
+			<div id="simple" class="cgor-chart-panel">
+				Gráficas de barras de serie simple
+			</div>	
+		</div>	
+  </ui:define>   
+</ui:composition>

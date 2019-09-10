@@ -12,7 +12,7 @@ import mx.org.kaana.libs.cfg.Detalle;
 
 /**
  *
- * @author JORGE.VAZQUEZSER
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public class MotorBusqueda implements Serializable{
 	

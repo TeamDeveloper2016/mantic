@@ -7,11 +7,11 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.procesos.beans.Variable;
 
 /**
- *@company INEGI
+ *@company KAANA
  *@project IKTAN (Sistema de Seguimiento y Control de proyectos estadísticos)
  *@date 28/11/2016
  *@time 01:20:23 PM 
- *@author Jorge Alberto Vazquez Serafin <jorge.vazquezser@inegi.gob.mx>
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
 public final class Variables {

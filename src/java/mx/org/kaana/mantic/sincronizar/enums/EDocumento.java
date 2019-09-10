@@ -3,8 +3,8 @@ package mx.org.kaana.mantic.sincronizar.enums;
 import java.io.Serializable;
 
 /**
- *@company INEGI
- *@project IKTAN (Sistema de seguimiento y control de proyectos)
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
  *@date 10/05/2019
  *@time 11:54:53 AM 
  *@author Team Developer 2016 <team.developer@kaana.org.mx>

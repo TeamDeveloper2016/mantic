@@ -25,10 +25,10 @@ public final class Decoder {
    * @throws Exception
    */
   public static String toJson(Serializable serializable) throws Exception {
-    String regresar = null;
-    Gson gson       = null;
+    String regresar    = null;
+    Gson gson          = null;
     try {
-      gson     = new Gson();
+			gson= new GsonBuilder().setPrettyPrinting().create();
       regresar = gson.toJson(serializable);
     } // try
     catch(Exception e) {

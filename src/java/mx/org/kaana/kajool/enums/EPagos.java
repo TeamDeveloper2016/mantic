@@ -7,7 +7,7 @@ package mx.org.kaana.kajool.enums;
 
 /**
  *
- * @author JORGE.VAZQUEZSER
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public enum EPagos {
 

@@ -9,7 +9,7 @@ import mx.org.kaana.libs.formato.Cadena;
 
 /**
  *
- * @author JORGE.VAZQUEZSER
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public enum ESucursales {
 

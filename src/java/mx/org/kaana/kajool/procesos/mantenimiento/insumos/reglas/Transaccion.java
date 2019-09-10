@@ -1,11 +1,11 @@
 package mx.org.kaana.kajool.procesos.mantenimiento.insumos.reglas;
 
 /**
- *@company INEGI
+ *@company KAANA
  *@project IKTAN (Sistema de Seguimiento y Control de proyectos estadísticos)
  *@date 7/12/2016
  *@time 11:09:34 AM 
- *@author Jorge Alberto Vazquez Serafin <jorge.vazquezser@inegi.gob.mx>
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
 import java.util.Collections;
