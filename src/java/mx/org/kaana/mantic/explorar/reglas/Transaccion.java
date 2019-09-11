@@ -9,7 +9,6 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
@@ -30,14 +29,13 @@ import org.apache.log4j.Logger;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Transaccion extends IBaseTnx {
+public class Transaccion extends mx.org.kaana.mantic.inventarios.almacenes.reglas.Transaccion {
 
   private static final Logger LOG = Logger.getLogger(Transaccion.class);
  	
 	private Entity articulo;
 	private TcManticPedidosDto pedido;
-	private TcManticPedidosDetallesDto detalle;
-	private String messageError;
+	private TcManticPedidosDetallesDto detalle;	
 
 	public Transaccion() {
 		this(new Entity());
@@ -55,14 +53,11 @@ public class Transaccion extends IBaseTnx {
 		this.detalle  = detalle;
 	} // Transaccion
 
-	public String getMessageError() {
-		return messageError;
-	}
-
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar          = false;
-		Map<String, Object> params= null;				
+		boolean regresar                        = false;
+		Map<String, Object> params              = null;		
+		TcManticPedidosDetallesDto pivoteDetalle= null;		
 		try {
 			initPedido(sesion, accion);
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el pedido a realizar.");						
@@ -105,7 +100,10 @@ public class Transaccion extends IBaseTnx {
 					this.toUpdateTotal(sesion);					
 					break;				
 				case MODIFICAR:
-					regresar= DaoFactory.getInstance().update(sesion, this.detalle)> 0L;
+					pivoteDetalle= toArticuloDetalle(sesion, this.detalle.getIdArticulo(), this.detalle.getCantidad());
+					pivoteDetalle.setIdPedido(this.detalle.getIdPedido());
+					pivoteDetalle.setIdPedidoDetalle(this.detalle.getIdPedidoDetalle());
+					regresar= DaoFactory.getInstance().update(sesion, pivoteDetalle)> 0L;
 					this.toUpdateTotal(sesion);
 					this.toUpdateEstatus(sesion);
 					break;				
@@ -158,6 +156,9 @@ public class Transaccion extends IBaseTnx {
 				case ELIMINAR:
 				case MODIFICAR:
 					this.pedido= (TcManticPedidosDto)DaoFactory.getInstance().findById(sesion, TcManticPedidosDto.class, this.detalle.getIdPedido());
+					break;
+				case PROCESAR:
+					this.pedido= (TcManticPedidosDto)DaoFactory.getInstance().findById(sesion, TcManticPedidosDto.class, this.pedido.getKey());
 					break;
 			} // switch
 		} // try
