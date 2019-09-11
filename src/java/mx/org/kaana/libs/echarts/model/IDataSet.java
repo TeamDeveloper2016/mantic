@@ -2,9 +2,7 @@ package mx.org.kaana.libs.echarts.model;
 
 import java.util.List;
 import mx.org.kaana.libs.echarts.beans.Legend;
-import mx.org.kaana.libs.echarts.beans.Serie;
 import mx.org.kaana.libs.echarts.beans.Xaxis;
-import mx.org.kaana.libs.echarts.beans.Yaxis;
 
 /**
  *@company KAANA
@@ -15,8 +13,8 @@ import mx.org.kaana.libs.echarts.beans.Yaxis;
  */
 public interface IDataSet {
 
-	public DataModel dataSet();
-	public List<Serie> getDataset();
+	public List<mx.org.kaana.libs.echarts.bar.Serie> getSeries();
+	public List<mx.org.kaana.libs.echarts.pie.Serie> getDatas();
 	public Xaxis getXaxis();
 	public Legend getLegend();
 	

@@ -16,14 +16,16 @@ public final class ToolTip implements Serializable {
 
 	private String trigger;
 	private AxisPointer axisPointer;
+	private String formatter;
 
 	public ToolTip() {
-		this("axis", new AxisPointer());
+		this("axis", new AxisPointer(), "{a} <br/>{b}: {c} ({d}%)");
 	}
 
-	public ToolTip(String trigger, AxisPointer axisPointer) {
+	public ToolTip(String trigger, AxisPointer axisPointer, String formatter) {
 		this.trigger=trigger;
 		this.axisPointer=axisPointer;
+		this.formatter=formatter;
 	}
 
 	public String getTrigger() {
@@ -42,9 +44,17 @@ public final class ToolTip implements Serializable {
 		this.axisPointer=axisPointer;
 	}
 
+	public String getFormatter() {
+		return formatter;
+	}
+
+	public void setFormatter(String formatter) {
+		this.formatter=formatter;
+	}
+
 	@Override
 	public String toString() {
-		return "ToolTip{"+"trigger="+trigger+", axisPointer="+axisPointer+'}';
+		return "ToolTip{"+"trigger="+trigger+", axisPointer="+axisPointer+", formatter="+formatter+'}';
 	}
- 
+
 }

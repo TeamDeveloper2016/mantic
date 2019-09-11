@@ -7,7 +7,7 @@ import java.util.List;
 import mx.org.kaana.libs.echarts.beans.Axis;
 import mx.org.kaana.libs.echarts.beans.Grid;
 import mx.org.kaana.libs.echarts.beans.Legend;
-import mx.org.kaana.libs.echarts.beans.Serie;
+import mx.org.kaana.libs.echarts.bar.Serie;
 import mx.org.kaana.libs.echarts.beans.Title;
 import mx.org.kaana.libs.echarts.beans.ToolTip;
 import mx.org.kaana.libs.echarts.beans.Xaxis;
@@ -24,10 +24,12 @@ import mx.org.kaana.libs.json.Decoder;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public final class BarModel implements Serializable {
+public class BarModel extends ChartModel implements Serializable {
 
 	private static final long serialVersionUID=-4271194453055348485L;
 
+	private static final String[] SERIES_COLORS= {"#0080FF", "#80BFFF", "#3398AA", "#0059B3", "#001A33"};
+	
 	private Title title;
 	private Legend legend;
 	private List<String> color;
@@ -47,18 +49,18 @@ public final class BarModel implements Serializable {
 	}
 
 	public BarModel(Title title, IDataSet data) {
-		this(title, data.getLegend(), new ArrayList(Arrays.asList("#0080FF", "#80BFFF", "#3398AA", "#0059B3", "#001A33")), new ToolTip(), new Grid(), data.getXaxis(), new Yaxis(), data.getDataset(), EBarOritentation.VERTICAL);
+		this(title, data.getLegend(), new ArrayList(Arrays.asList(SERIES_COLORS)), new ToolTip(), new Grid(), data.getXaxis(), new Yaxis(), data.getSeries(), EBarOritentation.VERTICAL);
 	}
 
 	public BarModel(Title title, EBarOritentation orientation) {
-		this(title, new Legend(Arrays.asList("2019")), Arrays.asList("#3398AA"), new ToolTip(), new Grid(), new Xaxis(), new Yaxis(), Arrays.asList(new Serie()), orientation);
+		this(title, new Legend("2019"), new ArrayList(Arrays.asList(SERIES_COLORS)), new ToolTip(), new Grid(), new Xaxis(), new Yaxis(), new ArrayList(Arrays.asList(new Serie())), orientation);
 	}
 	
 	public BarModel(Title title, IDataSet data, EBarOritentation orientation) {
-		this(title, data.getLegend(), Arrays.asList("#3398AA"), new ToolTip(), new Grid(), 
+		this(title, data.getLegend(), new ArrayList(Arrays.asList(SERIES_COLORS)), new ToolTip(), new Grid(), 
 			EBarOritentation.VERTICAL.equals(orientation)? data.getXaxis(): new Yaxis(), 
 			EBarOritentation.VERTICAL.equals(orientation)? new Yaxis(): data.getXaxis(), 
-			data.getDataset(), orientation);
+			data.getSeries(), orientation);
 	}
 
 	public BarModel(List<String> color, ToolTip tooltip, Axis xAxis, Axis yAxis, List<Serie> series) {
@@ -70,6 +72,7 @@ public final class BarModel implements Serializable {
 	}
 	
 	public BarModel(Title title, Legend legend, List<String> color, ToolTip tooltip, Grid grid, Axis xAxis, Axis yAxis, List<Serie> series, EBarOritentation orientation) {
+		super(Axis.COLOR_WHITE);
 		this.title=title;
 		this.legend=legend;
 		this.color=color;

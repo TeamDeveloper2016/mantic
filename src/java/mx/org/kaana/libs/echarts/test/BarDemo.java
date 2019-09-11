@@ -17,9 +17,9 @@ import org.apache.commons.logging.LogFactory;
  *@time 10:01:14 AM 
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
-public class Demo {
+public class BarDemo {
 
-	  private static final Log LOG=LogFactory.getLog(Demo.class);
+	  private static final Log LOG=LogFactory.getLog(BarDemo.class);
 		
     /**
      * @param args the command line arguments

@@ -4,9 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.echarts.beans.Legend;
-import mx.org.kaana.libs.echarts.beans.Serie;
 import mx.org.kaana.libs.echarts.beans.Xaxis;
-import mx.org.kaana.libs.echarts.beans.Yaxis;
+import mx.org.kaana.libs.echarts.enums.EData;
 
 /**
  *@company KAANA
@@ -23,7 +22,7 @@ public final class Simple extends Series implements IDataSet, Serializable {
 	private String name;
 	
 	public Simple(String name, List<Entity> data) {
-		super(data);
+		super(name, EData.SIMPLE, data);
 		this.name= name;
 	}
 
@@ -36,23 +35,24 @@ public final class Simple extends Series implements IDataSet, Serializable {
 	}
 
 	@Override
-	public DataModel dataSet() {
-		return this.simple(this.name);
+	public List<mx.org.kaana.libs.echarts.bar.Serie> getSeries() {
+		return this.getModel().getSeries();
 	}
 
 	@Override
-	public List<Serie> getDataset() {
-		return this.dataSet().getDataset();
+	public List<mx.org.kaana.libs.echarts.pie.Serie> getDatas() {
+		return this.getModel().getDatas();
 	}
 
 	@Override
 	public Xaxis getXaxis() {
-		return this.dataSet().getXaxis();
+		return this.getModel().getXaxis();
 	}
 
 	@Override
 	public Legend getLegend() {
-		return this.dataSet().getLegend();
+		return this.getModel().getLegend();
 	}
+
 	
 }

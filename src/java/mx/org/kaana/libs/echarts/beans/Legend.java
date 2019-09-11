@@ -2,6 +2,7 @@ package mx.org.kaana.libs.echarts.beans;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -16,14 +17,38 @@ public final class Legend implements Serializable {
  
 	private static final long serialVersionUID=7980019871750859771L;
  
+	private String orient;
+	private String left;
 	private List<String> data;
 
 	public Legend() {
-		this(new ArrayList<>());
+		this("vertical", "left", new ArrayList<>());
 	}
 
-	public Legend(List<String> data) {
+	public Legend(String data) {
+		this("vertical", "left", new ArrayList(Arrays.asList(data)));
+	}
+
+	public Legend(String orient, String left, List<String> data) {
+		this.orient=orient;
+		this.left=left;
 		this.data=data;
+	}
+
+	public String getOrient() {
+		return orient;
+	}
+
+	public void setOrient(String orient) {
+		this.orient=orient;
+	}
+
+	public String getLeft() {
+		return left;
+	}
+
+	public void setLeft(String left) {
+		this.left=left;
 	}
 
 	public List<String> getData() {
@@ -33,10 +58,10 @@ public final class Legend implements Serializable {
 	public void add(String name) {
 		this.data.add(name);
 	}
-	
+
 	@Override
 	public String toString() {
-		return "Legend{"+"data="+data+'}';
+		return "Legend{"+"orient="+orient+", left="+left+", data="+data+'}';
 	}
 	
 }

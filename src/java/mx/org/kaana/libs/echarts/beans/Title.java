@@ -16,13 +16,20 @@ public final class Title implements Serializable {
 
 	private String text;
 	private String subtext;
+	private String left;
+	private Integer top;
+	private TextStyle textStyle;
 
 	public Title() {
+		this(null, null);
 	}
 
 	public Title(String text, String subtext) {
 		this.text=text;
 		this.subtext=subtext;
+		this.top=10;
+		this.left="right";
+		this.textStyle= new TextStyle(Axis.COLOR_BLACK);
 	}
 
 	public String getText() {
@@ -39,6 +46,30 @@ public final class Title implements Serializable {
 
 	public void setSubtext(String subtext) {
 		this.subtext=subtext;
+	}
+
+	public String getLeft() {
+		return left;
+	}
+
+	public void setLeft(String left) {
+		this.left=left;
+	}
+
+	public Integer getTop() {
+		return top;
+	}
+
+	public void setTop(Integer top) {
+		this.top=top;
+	}
+
+	public TextStyle getTextStyle() {
+		return textStyle;
+	}
+
+	public void setTextStyle(TextStyle textStyle) {
+		this.textStyle=textStyle;
 	}
 
 	@Override

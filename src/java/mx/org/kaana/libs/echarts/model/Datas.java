@@ -6,6 +6,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.echarts.beans.Legend;
 import mx.org.kaana.libs.echarts.beans.Xaxis;
 import mx.org.kaana.libs.echarts.enums.EData;
+import mx.org.kaana.libs.echarts.pie.Data;
 
 /**
  *@company KAANA
@@ -15,12 +16,23 @@ import mx.org.kaana.libs.echarts.enums.EData;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public final class Multiple extends Series implements IDataSet, Serializable {
+public final class Datas extends Series implements IDataSet, Serializable {
 
 	private static final long serialVersionUID=-941459668404769397L;
 
-	public Multiple(List<Entity> data) {
-		super(EData.MULTIPLE, data);
+	private String name;
+	
+	public Datas(String name, List<Entity> data) {
+		super(name, EData.DATA, data);
+		this.name= name;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name=name;
 	}
 
 	@Override
@@ -42,6 +54,5 @@ public final class Multiple extends Series implements IDataSet, Serializable {
 	public Legend getLegend() {
 		return this.getModel().getLegend();
 	}
-	
 	
 }

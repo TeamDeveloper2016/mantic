@@ -3,7 +3,8 @@ package mx.org.kaana.libs.echarts.model;
 import java.io.Serializable;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.libs.echarts.beans.Serie;
+import mx.org.kaana.libs.echarts.enums.EData;
+import mx.org.kaana.libs.echarts.pie.Data;
 import mx.org.kaana.libs.formato.Cadena;
 
 /**
@@ -22,36 +23,56 @@ public class Series implements Serializable {
 	private static final String FIELD_VALUE= "value";	
 	
 	private List<Entity> data;
+	private DataModel model;
 
-	public Series(List<Entity> data) {
-		this.data=data;
+	public Series(EData kind, List<Entity> data) {
+		this(null, kind, data);
 	}
 	
-	public DataModel simple(String legend) {
+	public Series(String name, EData kind, List<Entity> data) {
+		this.data=data;
+		switch (kind) {
+			case SIMPLE:
+				this.model= this.simple(name);
+				break;
+			case MULTIPLE:
+				this.model= this.multiple();
+				break;
+			case DATA:
+				this.model= this.data(name);
+				break;
+		} // switch
+	}
+
+	public DataModel getModel() {
+		return model;
+	}
+	
+	protected DataModel simple(String legend) {
 		DataModel regresar= new DataModel();
 		regresar.getLegend().add(legend);
-		Serie serie       = new Serie(legend);
+		mx.org.kaana.libs.echarts.bar.Serie serie= new mx.org.kaana.libs.echarts.bar.Serie(legend);
 		serie.getData().clear();
 		for (Entity item: this.data) {
 			regresar.label(item.toString(FIELD_TEXT));
 			serie.getData().add(item.toDouble(FIELD_VALUE));
 		} // for
-		regresar.add(serie);
+		regresar.serie(serie);
 		return regresar;
 	}
 	
-	public DataModel multiple() {
+	protected DataModel multiple() {
 		DataModel regresar= new DataModel();
-		Serie serie = null;
+		mx.org.kaana.libs.echarts.bar.Serie serie = null;
 		String group= null;
 		int count   = 0;
 		for (Entity item: this.data) {
 			if(Cadena.isVacio(group) || !group.equals(item.toString(FIELD_GROUP))) {
 				if(!Cadena.isVacio(group))
-      		regresar.add(serie);
+      		regresar.serie(serie);
 				group= item.toString(FIELD_GROUP);
 				regresar.getLegend().add(group);
-			  serie= new Serie(group);
+			  serie= new mx.org.kaana.libs.echarts.bar.Serie(group);
   			serie.getData().clear();
 				count++;
 			}	// if
@@ -59,8 +80,20 @@ public class Series implements Serializable {
 			  regresar.label(item.toString(FIELD_TEXT));
 			serie.getData().add(item.toDouble(FIELD_VALUE));
 		} // for
- 		regresar.add(serie);
+ 		regresar.serie(serie);
 		return regresar;
 	}
 
+	protected DataModel data(String legend) {
+		DataModel regresar= new DataModel();
+		mx.org.kaana.libs.echarts.pie.Serie serie= new mx.org.kaana.libs.echarts.pie.Serie(legend);
+		serie.getData().clear();
+		for (Entity item: this.data) {
+			regresar.getLegend().add(item.toString(FIELD_TEXT));
+  		serie.getData().add(new Data(item.toString(FIELD_TEXT), item.toDouble(FIELD_VALUE)));
+		} // for
+ 		regresar.data(serie);
+		return regresar;
+	}
+	
 }
