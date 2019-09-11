@@ -24,6 +24,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticPedidosDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticPedidosDto;
 import mx.org.kaana.mantic.explorar.beans.Item;
 import mx.org.kaana.mantic.explorar.comun.Pedido;
 import mx.org.kaana.mantic.explorar.reglas.Transaccion;
@@ -74,7 +75,9 @@ public class Detalle extends Pedido implements Serializable {
 	  		params.put("idPedido", pedido.toLong("idPedido"));
 				List<Item> detalle= (List<Item>)DaoFactory.getInstance().toEntitySet(Item.class, "VistaPedidosDto", "pedido", params);
 		  	if(detalle!= null && !detalle.isEmpty()) 
-	  			this.attrs.put("detalle", detalle);				
+	  			this.attrs.put("detalle", detalle);		
+				else
+					this.attrs.put("detalle", new ArrayList<>());		
 			} // if
 		} // try
 		catch (Exception e) {
@@ -119,11 +122,15 @@ public class Detalle extends Pedido implements Serializable {
 
 	public void doItemChange(Item row) {
 		Transaccion transaccion= null;
-		try {
-			//TcManticPedidosDetallesDto detalle= (TcManticPedidosDetallesDto)DaoFactory.getInstance().findById(TcManticPedidosDetallesDto.class, row.toLong("idPedidoDetalle"));
+		try {			
 			if(!Objects.equals(row.getOriginal(), row.getCantidad())) {
 			  transaccion= new Transaccion((TcManticPedidosDetallesDto)row);
-			  transaccion.ejecutar(EAccion.MODIFICAR);
+			  if(transaccion.ejecutar(EAccion.MODIFICAR)){
+					JsfBase.addMessage("Modificar cantidad de articulo", "Se modificó la cantidad del articulo de forma correcta.", ETipoMensaje.INFORMACION);
+					init();
+				} // if
+				else
+					JsfBase.addMessage("Modificar cantidad de articulo", "Ocurrió un error al modificar la cantidad del articulo.", ETipoMensaje.ERROR);
 			} // if	
 		} // try
 	  catch (Exception e) {
@@ -154,6 +161,20 @@ public class Detalle extends Pedido implements Serializable {
 	} // doBusqueda
 
 	public String doAceptar() {		
-		return null;
+		Transaccion transaccion= null;
+		Entity pedido          = null;
+		try {
+			pedido= (Entity) this.attrs.get("pedido");
+			transaccion= new Transaccion(new TcManticPedidosDto(pedido.getKey()));
+			if(transaccion.ejecutar(EAccion.PROCESAR))
+				JsfBase.addMessage("Cerrar pedidio", "El pedido se cerró de forma correcta.", ETipoMensaje.INFORMACION);
+			else
+				JsfBase.addMessage("Cerrar pedidio", "Ocurrió un error al cerrar el pedido.", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		return "listado".concat(Constantes.REDIRECIONAR);
 	}	// Transaccion
 }
