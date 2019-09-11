@@ -38,8 +38,12 @@ public class Transaccion extends IBaseTnx {
 	private String descuento;
 	private String extra;
 	private List<TiposVentas> articulos;
-	private String messageError;		
+	protected String messageError;		
 
+	public Transaccion() {
+		this(-1L, -1L, 0D);
+	} // Transaccion
+	
 	public Transaccion(Long idArticulo, Long idPedido, Double cantidad) {
 		this.idArticulo= idArticulo;
 		this.idPedido  = idPedido;
@@ -60,8 +64,7 @@ public class Transaccion extends IBaseTnx {
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		TcManticPedidosDto pedido         = null;
-		Articulo articuloPedido           = null;
+		TcManticPedidosDto pedido         = null;		
 		TcManticPedidosDetallesDto detalle= null;
 		boolean regresar                  = false;
 		try {
@@ -83,12 +86,8 @@ public class Transaccion extends IBaseTnx {
 					regresar= DaoFactory.getInstance().insert(sesion, movimiento)>= 1L;
 					break;
 				case REGISTRAR:
-					pedido= (TcManticPedidosDto) DaoFactory.getInstance().findById(sesion, TcManticPedidosDto.class, this.idPedido);
-					articuloPedido= (Articulo) DaoFactory.getInstance().toEntity(sesion, Articulo.class, "TcManticArticulosDto", "row", Variables.toMap("condicion~".concat("id_articulo=").concat(this.idArticulo.toString())));					
-					articuloPedido.setCantidad(this.cantidad);
-					articuloPedido.setCosto(toCalculateCostoPorCantidad(sesion));
-					articuloPedido.toCalculate(false, 0);
-					detalle= articuloPedido.toPedidoDetalle();
+					pedido= (TcManticPedidosDto) DaoFactory.getInstance().findById(sesion, TcManticPedidosDto.class, this.idPedido);					
+					detalle= toArticuloDetalle(sesion);
 					detalle.setIdPedido(this.idPedido);
 					if(DaoFactory.getInstance().insert(sesion, detalle)>= 1L){
 						pedido.setIdPedidoEstatus(4L);
@@ -106,18 +105,18 @@ public class Transaccion extends IBaseTnx {
 			throw new Exception(this.messageError.concat("<br/>")+ e.getMessage());
 		} // catch		
 		return regresar;
-	}	// ejecutar
-
-	private Double toCalculateCostoPorCantidad(Session sesion) {
+	}	// ejecutar	
+	
+	protected Double toCalculateCostoPorCantidad(Session sesion, Long idArticulo, Double cantidad) {
 		TcManticArticulosDto validate= null;
 		Double regresar                 = 0D;
 		try {			
-			validate= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, this.idArticulo);
+			validate= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, idArticulo);
 			if(validate!= null) {				
 				regresar= validate.getMenudeo();				
-				if (this.cantidad>= validate.getLimiteMayoreo())
+				if (cantidad >= validate.getLimiteMayoreo())
 					regresar=validate.getMayoreo();						
-				else if(this.cantidad>= validate.getLimiteMedioMayoreo() && this.cantidad< validate.getLimiteMayoreo())
+				else if(cantidad >= validate.getLimiteMedioMayoreo() && cantidad< validate.getLimiteMayoreo())
 					regresar=validate.getMedioMayoreo();																		
 			} // if 
 		} // try
@@ -126,4 +125,24 @@ public class Transaccion extends IBaseTnx {
 		} // catch		
 		return regresar;
 	} // toCalculateCostoPorCantidad
+	
+	protected TcManticPedidosDetallesDto toArticuloDetalle(Session sesion) throws Exception{
+		return toArticuloDetalle(sesion, this.idArticulo, this.cantidad);
+	} // toArticuloDetalle
+	
+	protected TcManticPedidosDetallesDto toArticuloDetalle(Session sesion, Long idArticulo, Double cantidad) throws Exception{
+		TcManticPedidosDetallesDto regresar= null;
+		Articulo articuloPedido            = null;
+		try {
+			articuloPedido= (Articulo) DaoFactory.getInstance().toEntity(sesion, Articulo.class, "TcManticArticulosDto", "row", Variables.toMap("condicion~".concat("id_articulo=").concat(idArticulo.toString())));					
+			articuloPedido.setCantidad(cantidad);
+			articuloPedido.setCosto(toCalculateCostoPorCantidad(sesion, idArticulo, cantidad));
+			articuloPedido.toCalculate(false, 0);			
+			regresar= articuloPedido.toPedidoDetalle();
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toArticuloDetalle
 } 
