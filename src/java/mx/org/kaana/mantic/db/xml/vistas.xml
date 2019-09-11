@@ -27,7 +27,7 @@
 					tc_mantic_pedidos_detalles on tc_mantic_pedidos.id_pedido= tc_mantic_pedidos_detalles.id_pedido
 				where
 					tc_mantic_pedidos.id_usuario= {idUsuario}
-				  and (tc_mantic_pedidos.id_pedido_estatus= 1 or tc_mantic_pedidos.id_pedido_estatus= 4)
+				  and (tc_mantic_pedidos.id_pedido_estatus= 1 or tc_mantic_pedidos.id_pedido_estatus= 4 or tc_mantic_pedidos.id_pedido_estatus= 2)
 				order by
 					tc_mantic_pedidos_detalles.id_pedido_detalle
 			</select>	
