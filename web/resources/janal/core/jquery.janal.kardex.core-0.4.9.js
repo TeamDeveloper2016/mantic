@@ -6,8 +6,6 @@
  *author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-			
-
 (function(window) {
 	var jsKardex;
 	
@@ -252,8 +250,26 @@
  			janal.console('jsKardex.costo: '+ name+ ' value: '+ value);
 			if($kardex.different(value)) {
 				$kardex.current= value;
-			  var keep= confirm('Quieres manter el porcentaje de utilidad ?');
-  			costo(value, keep);
+			  //var keep= confirm('\u00BF Quieres manter el porcentaje de utilidad ?\n\n Si se presiona el boton de cancelar se aplicara el\n  50% al menudeo\n  40% al medio mayoreo\n  30% al mayoreo');
+        $.confirm({
+					title: 'Favor de confirmar',
+					content: '\u00BF Quieres manter el porcentaje de utilidad ?<br\><br\><div style="text-align:left">Si se presiona el boton de NO se aplicara el<br\>  50% al menudeo<br\>  40% al medio mayoreo<br\>  30% al mayoreo</div>',
+					theme: 'modern',
+					boxWidth: '30%',
+					useBootstrap: false,
+					draggable: true,
+					backgroundDismiss: false,
+					backgroundDismissAnimation: 'shake',
+					escapeKey: true,
+					buttons: {
+						Si: function () {
+							costo(value, true);
+						},
+						No: function () {
+							costo(value, false);
+						}
+					}
+				});				
 			} // if	
 			return false;
 		},

@@ -88,6 +88,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
   	this.attrs.put("buscaPorCodigo", false);
 		this.attrs.put("costoMayorMenor", 0);
   	this.attrs.put("redondear", false);
+  	this.attrs.put("ultimoCosto", 0.0D);
 		this.adminKardex= new AdminKardex(-1L, false);
 		this.toLoadCatalog();
 		if(JsfBase.getFlashAttribute("xcodigo")!= null) {
@@ -144,6 +145,14 @@ public class Kardex extends IBaseAttribute implements Serializable {
 					UIBackingUtilities.toFormatEntity(solicitado, columns);
 					this.attrs.put("articulo", solicitado);
 					this.attrs.put("redondear", solicitado.toLong("idRedondear")== 1L);
+					Periodo periodo= new Periodo();
+			    periodo.addMeses(-6);
+			    this.attrs.put("registro", periodo.toString());
+					Value ultimoCosto= DaoFactory.getInstance().toField("VistaKardexDto", "historial", this.attrs, "costo");
+					if(ultimoCosto.getData()!= null) 
+						this.attrs.put("ultimoCosto", ultimoCosto.toDouble());
+					else
+					  this.attrs.put("ultimoCosto", solicitado.toDouble("precio"));
 					this.attrs.put("precio", solicitado.toDouble("precio"));
 					this.attrs.put("costoMayorMenor", this.getCostoMayorMenor(solicitado.toDouble("value"), solicitado.toDouble("precio")));
 					Value ultimo= (Value)DaoFactory.getInstance().toField("TcManticArticulosBitacoraDto", "ultimo", this.attrs, "registro");
@@ -168,6 +177,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 				this.attrs.put("existe", "<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
 				this.attrs.put("articulo", null);
 				this.attrs.put("redondear", false);
+				this.attrs.put("ultimoCosto", 0.0D);
 				this.adminKardex.getTiposVentas().clear();
 			} // if	
 			this.toInventario();

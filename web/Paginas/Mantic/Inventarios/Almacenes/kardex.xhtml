@@ -9,6 +9,8 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="Kardex de un articulo"/>
 	<ui:define name="librerias">
+    <h:outputStylesheet library="janal" name="css/jquery.confirm.min-3.3.4.css"/>
+    <h:outputScript library="janal" name="js/jquery.confirm.min-3.3.4.js"/>
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryKardexJs}"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
@@ -20,7 +22,7 @@
 				'precios'   : {multiple: '$', validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'libre', formatos: 'flotante', individual: true, grupo: 'calculos', mensaje: 'El precio tiene que ser mayor a cero.'},
 				'contenedorGrupos\\:tabla\\:0\\:limites': {validaciones: 'requerido|flotante|menor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:1\\\\:limites"})', mascara: 'libre', formatos: 'precio', grupo: 'calculos'},
 				'contenedorGrupos\\:tabla\\:1\\:limites': {validaciones: 'requerido|flotante|mayor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:0\\\\:limites"})', mascara: 'libre', formatos: 'precio', grupo: 'calculos'}
-			};	
+			};
 		</script>   
 		<style type="text/css">
 				.ui-treetable table {
@@ -106,7 +108,7 @@
 			<p:spacer height="2px"/>
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
-  				<p:panel header="Código: [#{manticInventariosAlmacenesKardex.attrs.articulo.propio}]" styleClass="filas">
+  				<p:panel header="Código: [#{manticInventariosAlmacenesKardex.attrs.articulo.propio}]" styleClass="filas hola">
 						<div class="janal-column-center">
   						<p:outputLabel value="#{manticInventariosAlmacenesKardex.attrs.articulo.nombre}" styleClass="janal-color-blue"/>
 						</div>
@@ -167,7 +169,7 @@
 							<div class="ui-grid-row janal-grid-row">
 								<div class="ui-grid-col-2 janal-column-center">
  									<p:outputLabel value="Último costo:"/><br/>
-									<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.precio}" styleClass="janal-wid-100-txt janal-column-right recalculo" readonly="true"/>
+									<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.ultimoCosto}" styleClass="janal-wid-100-txt janal-column-right recalculo" readonly="true"/>
                 </div>
 								<div class="ui-grid-col-2 janal-column-center">
  									<p:outputLabel value="% Descuento aplicado:"/><br/>
