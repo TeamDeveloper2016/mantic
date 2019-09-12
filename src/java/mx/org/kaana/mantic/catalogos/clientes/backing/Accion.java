@@ -796,7 +796,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		List<UISelectEntity> codigosPostales= null;
 		try {
 			codigosPostales= (List<UISelectEntity>) this.attrs.get("allCodigosPostales");
-			if(!codigosPostales.isEmpty()){
+			if(codigosPostales!= null && !codigosPostales.isEmpty()){
 				this.registroCliente.getDomicilio().setCodigoPostal(codigosPostales.get(0).toString("codigo"));
 				this.registroCliente.getDomicilio().setNuevoCp(true);
 				this.registroCliente.getDomicilio().setIdCodigoPostal(codigosPostales.get(0).getKey());
