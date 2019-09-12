@@ -3,6 +3,7 @@ package mx.org.kaana.libs.echarts.test;
 import java.util.Collections;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.libs.echarts.beans.Title;
+import mx.org.kaana.libs.echarts.kind.DonutModel;
 import mx.org.kaana.libs.echarts.kind.PieModel;
 import mx.org.kaana.libs.echarts.model.Datas;
 import org.apache.commons.logging.Log;
@@ -23,11 +24,11 @@ public class DonutDemo {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
-      PieModel model= new PieModel("serie", "55%", new Title("CGOR", null));
+      PieModel model= new DonutModel("serie", "55%", "40%", new Title("CGOR", null));
 			LOG.info(model.toJson());
 			
 			Datas datas       = new Datas("ventas", DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "simple", Collections.EMPTY_MAP));
-  		PieModel data= new PieModel("ventas", "55%", datas);
+  		PieModel data= new DonutModel("ventas", "55%", "40%", datas);
 			LOG.info(data.toJson());
     }
 

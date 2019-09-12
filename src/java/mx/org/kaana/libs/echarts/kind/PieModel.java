@@ -24,7 +24,7 @@ import mx.org.kaana.libs.json.Decoder;
 public class PieModel extends ChartModel implements Serializable {
 
 	private static final long serialVersionUID=3783050684207305584L;
-  private static final String[] SERIES_COLORS= {"#0080FF", "#80BFFF", "#3398AA", "#0059B3", "#001A33"};
+  public static final String[] SERIES_COLORS= {"#0080FF", "#80BFFF", "#3398AA", "#0059B3", "#001A33"};
 	
 	private Title title;
 	private Legend legend;
@@ -65,7 +65,7 @@ public class PieModel extends ChartModel implements Serializable {
 		this.radius= radius;
 		if(series!= null && series.isEmpty()) {
 			for (Serie item: series) {
-				item.setRadius(this.radius);
+				item.setRadius(Arrays.asList("0%", this.radius));
 			} // for
 		} // if
 	}
