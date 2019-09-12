@@ -56,7 +56,7 @@
         from      
           tc_mantic_pedidos
         where      
-          id_usuario = {idUsuario} and id_empresa = {idEmpresa} and (id_pedido_estatus= 1 or id_pedido_estatus= 4)
+          id_usuario = {idUsuario} and id_empresa = {idEmpresa} and (id_pedido_estatus= 1 or id_pedido_estatus= 4 or id_pedido_estatus= 2)
       </select>
 			<select id="siguiente">
         select
