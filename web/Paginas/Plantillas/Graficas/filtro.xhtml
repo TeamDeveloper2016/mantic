@@ -18,6 +18,10 @@
 				multiple.setOption(#{kajoolPlantillasGraficasFiltro.attrs.multiple});
 				var simple = echarts.init(document.getElementById('simple'));
 				simple.setOption(#{kajoolPlantillasGraficasFiltro.attrs.simple});
+				var pie = echarts.init(document.getElementById('pie'));
+				pie.setOption(#{kajoolPlantillasGraficasFiltro.attrs.pie});
+				var donut = echarts.init(document.getElementById('donut'));
+				donut.setOption(#{kajoolPlantillasGraficasFiltro.attrs.donut});
 			});
     </script>		
 		<style type="text/css">
@@ -40,6 +44,14 @@
 			</div>	
 			<div id="simple" class="cgor-chart-panel">
 				Gráficas de barras de serie simple
+			</div>	
+		</div>	
+		<div class="cgor-chart-content">
+			<div id="pie" class="cgor-chart-panel">
+				Gráficas de pie
+			</div>	
+			<div id="donut" class="cgor-chart-panel">
+				Gráficas de dona
 			</div>	
 		</div>	
   </ui:define>   
