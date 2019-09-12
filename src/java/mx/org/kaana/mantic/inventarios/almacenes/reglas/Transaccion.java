@@ -33,6 +33,7 @@ public class Transaccion extends IBaseTnx {
  
 	private Long idArticulo;
 	private Long idPedido;
+	private Long idRedondear;
 	private Double cantidad;
 	private Double precio;
 	private String descuento;
@@ -45,6 +46,11 @@ public class Transaccion extends IBaseTnx {
 		this.idPedido  = idPedido;
 		this.cantidad  = cantidad;
 	} // Transaccion
+	
+	public Transaccion(Long idArticulo, Long idRedondear) {
+		this.idArticulo= idArticulo;
+		this.idRedondear= idRedondear;
+	}
 	
 	public Transaccion(Long idArticulo, Double precio, String descuento, String extra, List<TiposVentas> articulos) {
 		this.idArticulo= idArticulo;
@@ -63,12 +69,13 @@ public class Transaccion extends IBaseTnx {
 		TcManticPedidosDto pedido         = null;
 		Articulo articuloPedido           = null;
 		TcManticPedidosDetallesDto detalle= null;
+		TcManticArticulosDto articulo     = null;
 		boolean regresar                  = false;
 		try {
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el precio del tipo de venta del articulo.");
 			switch(accion) {
 				case MODIFICAR:
-					TcManticArticulosDto articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.idArticulo);
+					articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.idArticulo);
 					articulo.setPrecio(this.precio);
 					articulo.setDescuento(this.descuento);
 					articulo.setExtra(this.extra);
@@ -96,6 +103,11 @@ public class Transaccion extends IBaseTnx {
 						pedido.setTotal(pedido.getTotal()+ detalle.getImporte());
 						regresar= DaoFactory.getInstance().update(sesion, pedido)>= 1L;
 					} // if
+					break;
+				case PROCESAR:
+					articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.idArticulo);
+					articulo.setIdRedondear(this.idRedondear);
+					regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
 					break;
 			} // switch
 			if(!regresar)

@@ -87,6 +87,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 		this.tabPage= 0;
   	this.attrs.put("buscaPorCodigo", false);
 		this.attrs.put("costoMayorMenor", 0);
+  	this.attrs.put("redondear", false);
 		this.adminKardex= new AdminKardex(-1L, false);
 		this.toLoadCatalog();
 		if(JsfBase.getFlashAttribute("xcodigo")!= null) {
@@ -142,6 +143,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 				if(solicitado!= null) {
 					UIBackingUtilities.toFormatEntity(solicitado, columns);
 					this.attrs.put("articulo", solicitado);
+					this.attrs.put("redondear", solicitado.toLong("idRedondear")== 1L);
 					this.attrs.put("precio", solicitado.toDouble("precio"));
 					this.attrs.put("costoMayorMenor", this.getCostoMayorMenor(solicitado.toDouble("value"), solicitado.toDouble("precio")));
 					Value ultimo= (Value)DaoFactory.getInstance().toField("TcManticArticulosBitacoraDto", "ultimo", this.attrs, "registro");
@@ -165,6 +167,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			else {
 				this.attrs.put("existe", "<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
 				this.attrs.put("articulo", null);
+				this.attrs.put("redondear", false);
 				this.adminKardex.getTiposVentas().clear();
 			} // if	
 			this.toInventario();
@@ -451,7 +454,8 @@ public class Kardex extends IBaseAttribute implements Serializable {
 		articulo.getValue("calculado").setData(precio);
 		articulo.getValue("precio").setData(precio);
 		for (TiposVentas item: this.adminKardex.getTiposVentas()) {
-  		if(!keep)
+			// ¿Quieres manter el porcentaje de utilidad?
+  		if(!keep) 
 				switch(item.toEnum()) {
 					case MENUDEO:
 						item.setUtilidad(50D);
@@ -822,6 +826,24 @@ public class Kardex extends IBaseAttribute implements Serializable {
 		articulo.getValue("calculado").setData(Numero.toAjustarDecimales(calculado, this.adminKardex.getTiposVentas().get(0).isRounded()));
 		articulo.getValue("menudeo").setData(this.adminKardex.getTiposVentas().get(0).getPrecio());
 		articulo.getValue("utilidad").setData(this.adminKardex.getTiposVentas().get(0).getUtilidad());
+	}
+	
+	public void doChangeRedondear() {
+    Transaccion transaccion= null;
+		EAccion eaccion        = EAccion.PROCESAR;
+    try {			
+			//Entity articulo= (Entity)this.attrs.get("articulo");
+			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (Boolean)this.attrs.get("redondear")? 1L: 2L);
+			if (transaccion.ejecutar(eaccion)) {
+				JsfBase.addMessage("Se modificaron el tipo de redondeo del articulo.", ETipoMensaje.INFORMACION);
+			}	// if
+			else 
+				JsfBase.addMessage("Ocurrió un error al hacer el cambio del tipo de redondeo.", ETipoMensaje.ERROR);      			
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
 	}
 
 }

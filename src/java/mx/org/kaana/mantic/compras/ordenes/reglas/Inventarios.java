@@ -123,8 +123,11 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 			  global.setMayoreo(Numero.toAjustarDecimales(global.getPrecio()* mayoreo, global.getIdRedondear().equals(1L)));
 				global.setDescuento(item.getDescuento());
 				global.setExtra(item.getExtras());
-				global.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 			} // if	
+			else 
+			  global.setPrecio(Numero.toRedondearSat(costo));
+			// siempre se modifica el costo del catalogo de articulo 
+			global.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 			global.setStock(global.getStock()+ item.getCantidad());
 			DaoFactory.getInstance().update(sesion, global);
 			

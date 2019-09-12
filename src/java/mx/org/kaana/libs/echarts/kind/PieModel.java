@@ -31,35 +31,43 @@ public class PieModel extends ChartModel implements Serializable {
 	private List<String> color;
 	private ToolTip tooltip;
 	private List<Serie> series;
+	private transient String radius;
 
 	public PieModel(String name) {
-		this(name, new Title("CGOR", "subtitulo"));
+		this(name, "55%", new Title("CGOR", "subtitulo"));
 	}
 
-	public PieModel(String name, Title title) {
-		this(title, new Legend("2019"), new ArrayList(Arrays.asList(SERIES_COLORS)), new ToolTip(), new ArrayList<Serie>());
-		this.series.add(new Serie(name));
+	public PieModel(String name, String radius, Title title) {
+		this(radius, title, new Legend("2019"), new ArrayList(Arrays.asList(SERIES_COLORS)), new ToolTip(), new ArrayList<Serie>());
+		this.series.add(new Serie(name, radius));
 		this.getLegend().getData().clear();
-		for (Data data : this.series.get(0).getData()) {
+		for (Data data: this.series.get(0).getData()) {
 			this.getLegend().add(data.getName());
 		} // for
+		this.radius= radius;
 	}
 	
-	public PieModel(String name, IDataSet data) {
-		this(name, new Title("CGOR", "subtitulo"), data);
+	public PieModel(String name, String radius, IDataSet data) {
+		this(name, radius, new Title("CGOR", "subtitulo"), data);
 	}
 	
-	public PieModel(String name, Title title, IDataSet data) {
-		this(title, data.getLegend(), new ArrayList(Arrays.asList(SERIES_COLORS)), new ToolTip(), data.getDatas());
+	public PieModel(String name, String radius, Title title, IDataSet data) {
+		this(radius, title, data.getLegend(), new ArrayList(Arrays.asList(SERIES_COLORS)), new ToolTip(), data.getDatas());
 	}
 	
-	public PieModel(Title title, Legend legend, List<String> color, ToolTip tooltip, List<Serie> series) {
+	public PieModel(String radius, Title title, Legend legend, List<String> color, ToolTip tooltip, List<Serie> series) {
 		super(Axis.COLOR_WHITE);
 		this.title=title;
 		this.legend=legend;
 		this.color=color;
 		this.tooltip=tooltip;
 		this.series=series;
+		this.radius= radius;
+		if(series!= null && series.isEmpty()) {
+			for (Serie item: series) {
+				item.setRadius(this.radius);
+			} // for
+		} // if
 	}
 
 	public Title getTitle() {

@@ -135,6 +135,8 @@
 								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">		
 									<p:outputLabel for="codigo" value="Código:"/>
 									<p:inputText id="codigo" value="#{manticInventariosAlmacenesKardex.attrs.articulo.propio}" styleClass="janal-wid-90 filas" readonly="true"/>
+									<p:outputLabel for="sat" value="Código SAT:"/>
+									<p:inputText id="sat" value="#{manticInventariosAlmacenesKardex.attrs.articulo.sat}" styleClass="janal-wid-90 filas" readonly="true"/>                    
 									<p:outputLabel for="nombre" value="Nombre:"/>
 									<p:inputText id="nombre" value="#{manticInventariosAlmacenesKardex.attrs.articulo.nombre}" styleClass="janal-wid-90 filas" readonly="true"/>
 									<p:spacer width="1px"/><p:separator/>
@@ -149,6 +151,10 @@
 									<p:inputText id="fechaAlta" value="#{manticInventariosAlmacenesKardex.attrs.articulo.registro}" styleClass="janal-wid-90 filas" readonly="true"/>
 									<p:outputLabel for="ulitmoCambio" value="Último cambio:"/>
 									<p:inputText id="ulitmoCambio" value="#{manticInventariosAlmacenesKardex.attrs.ultimo}" styleClass="janal-wid-90 filas" readonly="true"/>
+									<p:outputLabel for="redondear" value="Redondear:"/>
+									<p:inputSwitch id="redondear" styleClass="janal-wid-100-txt filas" value="#{manticInventariosAlmacenesKardex.attrs.redondear}" offLabel="NO" onLabel="SI" disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}">
+										<p:ajax listener="#{manticInventariosAlmacenesKardex.doChangeRedondear}" process="@this" update="@none" />
+									</p:inputSwitch>	
 								</p:panelGrid>
 								<p:panel id="panelImage" header="#{manticInventariosAlmacenesKardex.attrs.articulo.propio}" styleClass="TexAlCenter janal-wid-100-txt" style="height:100%">
 									<a id="source-image" data-magnify="gallery" data-caption="#{manticInventariosAlmacenesKardex.attrs.articulo.nombre}" data-group="icon-gallery" href="" title="Click para ver más grande la imagen">
@@ -161,7 +167,7 @@
 							<div class="ui-grid-row janal-grid-row">
 								<div class="ui-grid-col-2 janal-column-center">
  									<p:outputLabel value="Último costo:"/><br/>
-									<p:inputText value="#{manticInventariosAlmacenesKardex.doMoneyFormat(manticInventariosAlmacenesKardex.attrs.articulo.calculado)}" styleClass="janal-wid-100-txt janal-column-right recalculo" readonly="true"/>
+									<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.precio}" styleClass="janal-wid-100-txt janal-column-right recalculo" readonly="true"/>
                 </div>
 								<div class="ui-grid-col-2 janal-column-center">
  									<p:outputLabel value="% Descuento aplicado:"/><br/>

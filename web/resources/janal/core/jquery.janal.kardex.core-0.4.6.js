@@ -252,7 +252,7 @@
  			janal.console('jsKardex.costo: '+ name+ ' value: '+ value);
 			if($kardex.different(value)) {
 				$kardex.current= value;
-			  var keep= confirm('Desea mantener los porcentajes de utilidad actuales ?');
+			  var keep= confirm('Quieres manter el porcentaje de utilidad ?');
   			costo(value, keep);
 			} // if	
 			return false;

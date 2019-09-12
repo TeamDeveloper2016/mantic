@@ -329,7 +329,7 @@
 													<f:facet name="header">
 														<h:outputText value="No."/>
 													</f:facet>
-													<p:commandLink process="@this" update="@(.importado) @(.filas) @(.recalculo)" actionListener="#{manticInventariosEntradasAccion.doDesasociarArticulo(row, index)}" title="Click para desvincular un articulo de la factura (XML)" styleClass="filas">
+													<p:commandLink process="@this" update="@(.importado) @(.filas) @(.recalculo)" actionListener="#{manticInventariosEntradasAccion.doDesasociarArticulo(row, index)}" title="Click para desvincular un articulo de la factura (XML)" styleClass="filas" rendered="#{not row.disponible}">
 													  <h:graphicImage library="janal" name="icon/semaforos/#{row.disponible? 'circulo-rojo.png': 'circulo-verde.png'}"/>
 													</p:commandLink>
 													<h:outputText value="#{index+ 1}.-"/>
@@ -871,6 +871,10 @@
 				<p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" oncomplete="PF('buscador').hide();"/>
 			</div>
 		</p:dialog>
+		<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-col-5, janal-wid-100">
+			<h:graphicImage library="janal" name="icon/semaforos/circulo-verde.png'}"/>
+			<p:outputLabel value="El articulo se encuentra asociado a una partida de la factura (XML)"/>
+		</p:panelGrid>
 	</ui:define>   
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
