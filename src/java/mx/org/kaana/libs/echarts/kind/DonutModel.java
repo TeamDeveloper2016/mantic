@@ -49,6 +49,8 @@ public class DonutModel extends PieModel implements Serializable {
 	}
 
 	private void prepare(String radius, String inside) {
+		this.getTooltip().setTrigger("item");
+		this.getTooltip().setAxisPointer(null);
 		this.getLegend().getData().clear();
 		for (Serie serie: this.getSeries()) {
 			serie.setRadius(new ArrayList(Arrays.asList(inside, radius)));

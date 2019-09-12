@@ -12,6 +12,7 @@ import mx.org.kaana.libs.echarts.beans.ToolTip;
 import mx.org.kaana.libs.echarts.model.IDataSet;
 import mx.org.kaana.libs.echarts.pie.Data;
 import mx.org.kaana.libs.json.Decoder;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
  *@company KAANA
@@ -111,7 +112,7 @@ public class PieModel extends ChartModel implements Serializable {
 	}
 
   public String toJson() throws Exception {
-	  return Decoder.toJson(this);	
+	  return StringEscapeUtils.unescapeJava(Decoder.toJson(this));	
 	}	
 
 	@Override

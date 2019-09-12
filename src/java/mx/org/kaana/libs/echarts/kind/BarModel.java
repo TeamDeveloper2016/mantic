@@ -15,6 +15,7 @@ import mx.org.kaana.libs.echarts.beans.Yaxis;
 import mx.org.kaana.libs.echarts.enums.EBarOritentation;
 import mx.org.kaana.libs.echarts.model.IDataSet;
 import mx.org.kaana.libs.json.Decoder;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
  *@company KAANA
@@ -155,7 +156,7 @@ public class BarModel extends ChartModel implements Serializable {
 	}
 
   public String toJson() throws Exception {
-	  return Decoder.toJson(this);	
+	  return StringEscapeUtils.unescapeJava(Decoder.toJson(this));	
 	}	
 
 	@Override
