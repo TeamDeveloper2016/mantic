@@ -149,7 +149,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			    periodo.addMeses(-6);
 			    this.attrs.put("registro", periodo.toString());
 					Value ultimoCosto= DaoFactory.getInstance().toField("VistaKardexDto", "historial", this.attrs, "costo");
-					if(ultimoCosto.getData()!= null) 
+					if(ultimoCosto!= null && ultimoCosto.getData()!= null) 
 						this.attrs.put("ultimoCosto", ultimoCosto.toDouble());
 					else
 					  this.attrs.put("ultimoCosto", solicitado.toDouble("precio"));
