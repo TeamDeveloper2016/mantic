@@ -465,18 +465,12 @@ public class Kardex extends IBaseAttribute implements Serializable {
 		articulo.getValue("precio").setData(precio);
 		for (TiposVentas item: this.adminKardex.getTiposVentas()) {
 			// ¿Quieres manter el porcentaje de utilidad?
-  		if(!keep) 
-				switch(item.toEnum()) {
-					case MENUDEO:
-						item.setUtilidad(50D);
-						break;
-					case MEDIO_MAYOREO:
-						item.setUtilidad(40D);
-						break;
-					case MAYOREO:
-						item.setUtilidad(30D);
-						break;
-				} // switch
+  		if(!keep) {
+				double costo   = Numero.toAjustarDecimales(item.getPrecio(), item.isRounded());
+				double calculo = Numero.toRedondearSat((precio* ((item.getIva()/100)+ 1)));
+				// al precio de neto se le quita el costo+ iva y lo que queda se calcula la utilidad bruta 
+				item.setUtilidad(Numero.toRedondearSat((costo- calculo)* 100/ calculo));
+			} // if	
 			double calculo= Numero.toRedondearSat((precio* ((item.getIva()/100)+ 1)));
 			item.setPrecio(Numero.toRedondearSat(((1+ (item.getUtilidad()/ 100))* calculo)));
 			item.setCosto(precio);

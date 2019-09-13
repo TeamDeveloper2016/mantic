@@ -253,7 +253,7 @@
 			  //var keep= confirm('\u00BF Quieres manter el porcentaje de utilidad ?\n\n Si se presiona el boton de cancelar se aplicara el\n  50% al menudeo\n  40% al medio mayoreo\n  30% al mayoreo');
         $.confirm({
 					title: 'Favor de confirmar',
-					content: '\u00BF Quieres manter el porcentaje de utilidad ?<br\><br\><div style="text-align:left">Si se presiona el boton de NO se aplicara el<br\>  50% al menudeo<br\>  40% al medio mayoreo<br\>  30% al mayoreo</div>',
+					content: '\u00BF Quieres manter el porcentaje de utilidad ?',
 					theme: 'modern',
 					boxWidth: '30%',
 					useBootstrap: false,
