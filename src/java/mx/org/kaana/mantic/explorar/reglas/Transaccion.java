@@ -19,6 +19,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticPedidosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticPedidosDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticPedidosDto;
+import mx.org.kaana.mantic.enums.EEstatusPedidos;
 import org.apache.log4j.Logger;
 
 /**
@@ -117,17 +118,17 @@ public class Transaccion extends mx.org.kaana.mantic.inventarios.almacenes.regla
       		this.pedido.setImpuestos(0D);
 					this.pedido.setDescuentos(0D);
 					this.pedido.setExcedentes(0D);
-					this.pedido.setIdPedidoEstatus(4L);
+					this.pedido.setIdPedidoEstatus(EEstatusPedidos.INICIALIZADO.getIdEstatus());
 					regresar= DaoFactory.getInstance().update(sesion, this.pedido)> 0L;
 					this.toGlobalEstatus(sesion);
 					break;				
 				case DESACTIVAR:
-					this.pedido.setIdPedidoEstatus(5L);
+					this.pedido.setIdPedidoEstatus(EEstatusPedidos.CANCELADO.getIdEstatus());
 					regresar= DaoFactory.getInstance().update(sesion, this.pedido)> 0L;
 					this.toGlobalEstatus(sesion);
 					break;
 				case PROCESAR:
-					this.pedido.setIdPedidoEstatus(3L);
+					this.pedido.setIdPedidoEstatus(EEstatusPedidos.CERRADO.getIdEstatus());
 					regresar= DaoFactory.getInstance().update(sesion, this.pedido)> 0L;
 					this.toGlobalEstatus(sesion);
 					break;
@@ -213,8 +214,8 @@ public class Transaccion extends mx.org.kaana.mantic.inventarios.almacenes.regla
 	}	// toSiguiente
 	
 	private void toUpdateEstatus(Session sesion) throws Exception {
-		if(this.pedido.getIdPedidoEstatus()== 1L || this.pedido.getIdPedidoEstatus()== 4L) {
-			this.pedido.setIdPedidoEstatus(2L);
+		if(this.pedido.getIdPedidoEstatus().equals(EEstatusPedidos.ABIERTO.getIdEstatus()) || this.pedido.getIdPedidoEstatus().equals(EEstatusPedidos.INICIALIZADO.getIdEstatus())) {
+			this.pedido.setIdPedidoEstatus(EEstatusPedidos.ACTUALIZADO.getIdEstatus());
 			DaoFactory.getInstance().update(sesion, this.pedido);
 			this.toGlobalEstatus(sesion);
 		} // if	
