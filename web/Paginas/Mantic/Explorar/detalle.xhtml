@@ -11,7 +11,7 @@
 	<ui:param name="eventoPedidoAutocompletar" value="doCompleteArticulo"/>	
 	<ui:param name="atributoPedidoNombre" value="#{manticExplorarDetalle.attrs.nombre}"/>
 	<ui:param name="atributoPedidoHidden" value="#{manticExplorarDetalle.attrs.nombreHidden}"/>
-	<ui:param name="atributoPedidoCount" value="#{manticExplorarAccion.attrs.pedidoCount}" />	
+	<ui:param name="atributoPedidoCount" value="#{manticExplorarDetalle.attrs.pedidoCount}" />	
 	<ui:param name="titulo" value="Articulos del pedido"/>
 	<ui:define name="librerias">
 		<script type="text/javascript">
@@ -83,7 +83,7 @@
 				<p:spacer height="10px"/>				
 				<p:commandButton id="aceptar" value="Finalizar pedido" icon="fa fa-shopping-cart" accesskey="a" process="@this" update="@(.recalculo)" action="#{manticExplorarDetalle.doAceptar}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" class="janal-wid-100-txt" disabled="#{manticExplorarAccion.attrs.pedidoCount eq '0'}"/>
 				<p:separator/>
-				<p:commandButton id="cancelar" value="Buscar otro ..." icon="fa fa-reply-all" accesskey="r" process="@this" action="#{manticExplorarDetalle.doCancelar}" onstart="janal.bloquear();" oncomplete="janal.desbloquear()" class="janal-wid-100-txt"/>					
+				<p:commandButton id="cancelar" value="Seguir comprando ..." icon="fa fa-reply-all" accesskey="r" process="@this" action="#{manticExplorarDetalle.doCancelar}" onstart="janal.bloquear();" oncomplete="janal.desbloquear()" class="janal-wid-100-txt"/>					
 			</h:panelGrid>			
 		</p:panelGrid>	
 		<p:commandButton id="tabla" value="" styleClass="janal-zero-size"/>
