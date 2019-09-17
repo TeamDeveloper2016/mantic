@@ -42,7 +42,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 	protected void init() {
 		try {
 			Simple simple    = new Simple("Ventas", DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "simple", attrs));
-  		BarModel modelSimple  = new BarModel(new Title(), simple);
+  		BarModel modelSimple  = new BarModel(new Title(), simple, EBarOritentation.HORIZONTAL);
   		this.attrs.put("simple", modelSimple.toJson());
 			
 			Multiple multiple= new Multiple(DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "multiple", attrs));

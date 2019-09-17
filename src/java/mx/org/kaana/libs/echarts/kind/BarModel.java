@@ -59,9 +59,7 @@ public class BarModel extends ChartModel implements Serializable {
 	
 	public BarModel(Title title, IDataSet data, EBarOritentation orientation) {
 		this(title, data.getLegend(), new ArrayList(Arrays.asList(SERIES_COLORS)), new ToolTip(), new Grid(), 
-			EBarOritentation.VERTICAL.equals(orientation)? data.getXaxis(): new Yaxis(), 
-			EBarOritentation.VERTICAL.equals(orientation)? new Yaxis(): data.getXaxis(), 
-			data.getSeries(), orientation);
+			data.getXaxis(), new Yaxis(), data.getSeries(), orientation);
 	}
 
 	public BarModel(List<String> color, ToolTip tooltip, Axis xAxis, Axis yAxis, List<Serie> series) {
