@@ -17,7 +17,7 @@ public class AxisPointer implements Serializable {
 	private String type;
 	
 	public AxisPointer() {
-		this("shadow");  // line
+		this("cross");  // line
 	}
 
 	public AxisPointer(String type) {

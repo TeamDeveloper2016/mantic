@@ -69,6 +69,8 @@ public class PieModel extends ChartModel implements Serializable {
 				item.setRadius(Arrays.asList("0%", this.radius));
 			} // for
 		} // if
+		this.getTooltip().setTrigger("item");
+		//this.getTooltip().setAxisPointer(new);
 	}
 
 	public Title getTitle() {

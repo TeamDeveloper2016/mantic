@@ -40,7 +40,7 @@ public final class Legend implements Serializable {
 
 	public Legend(String type, String x, String y, List<String> data) {
 		this.orient="vertical";
-		this.left="left";
+		this.left="center";
 		this.type=type;
 		this.x=x;
 		this.y=y;
