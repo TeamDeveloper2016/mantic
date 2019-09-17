@@ -26,34 +26,37 @@
     </script>		
 		<style type="text/css">
 			.cgor-chart-panel {
-				width: 480px; 
-				height: 520px; 
 				display:inline-block;
 			}
 			.cgor-chart-content {
-				width: 100%;
+				width: 96%;
         text-align: center;
 			}
 		</style>
   </ui:define>
   <ui:define name="contenido">
-		Hi
-		<div class="cgor-chart-content">
-			<div id="multiple" class="cgor-chart-panel">
-				Gráficas de barras de series multiples
-			</div>	
-			<div id="simple" class="cgor-chart-panel">
-				Gráficas de barras de serie simple
-			</div>	
-		</div>	
-		<div class="cgor-chart-content">
-			<div id="pie" class="cgor-chart-panel">
-				Gráficas de pie
-			</div>	
-			<div id="donut" class="cgor-chart-panel">
-				Gráficas de dona
-			</div>	
-		</div>	
-		<p:commandButton value="Clean" icon="fa fa-clean" actionListener="#{kajoolPlantillasGraficasFiltro.doCleanDB}"/>
+		<div class="ui-g cgor-chart-panel">
+			<div class="ui-g-12 ui-md-6 ui-lg-3">
+				<div id="multiple" class="cgor-chart-panel">
+					Gráficas de barras de series multiples
+				</div>	
+			</div>
+			<div class="ui-g-12 ui-md-6 ui-lg-3">
+				<div id="simple" class="cgor-chart-panel">
+					Gráficas de barras de serie simple
+				</div>	
+			</div>
+			<div class="ui-g-12 ui-md-6 ui-lg-3">
+				<div id="pie" class="cgor-chart-panel">
+					Gráficas de pie
+				</div>	
+			</div>
+			<div class="ui-g-12 ui-md-6 ui-lg-3">
+				<div id="donut" class="cgor-chart-panel">
+					Gráficas de dona
+				</div>
+			</div>
+		</div>		
+		<p:commandButton value="Clean" icon="fa fa-clean" actionListener="#{kajoolPlantillasGraficasFiltro.doCleanDB}" rendered="false"/>
   </ui:define>   
 </ui:composition>

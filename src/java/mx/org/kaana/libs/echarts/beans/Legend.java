@@ -17,22 +17,42 @@ public final class Legend implements Serializable {
  
 	private static final long serialVersionUID=7980019871750859771L;
  
-	private String orient;
+	private String type;
+	private transient String orient;
+	private String x;
+	private String y;
 	private String left;
 	private List<String> data;
 
 	public Legend() {
-		this("vertical", "left", new ArrayList<>());
+		this("scroll", "center", "bottom", new ArrayList<>());
 	}
 
 	public Legend(String data) {
-		this("vertical", "left", new ArrayList(Arrays.asList(data)));
+		this("scroll", "center", "bottom", new ArrayList(Arrays.asList(data)));
 	}
 
 	public Legend(String orient, String left, List<String> data) {
+		this("scroll", "center", "bottom", new ArrayList(Arrays.asList(data)));
 		this.orient=orient;
 		this.left=left;
+	}
+
+	public Legend(String type, String x, String y, List<String> data) {
+		this.orient="vertical";
+		this.left="left";
+		this.type=type;
+		this.x=x;
+		this.y=y;
 		this.data=data;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type=type;
 	}
 
 	public String getOrient() {
@@ -41,6 +61,22 @@ public final class Legend implements Serializable {
 
 	public void setOrient(String orient) {
 		this.orient=orient;
+	}
+
+	public String getX() {
+		return x;
+	}
+
+	public void setX(String x) {
+		this.x=x;
+	}
+
+	public String getY() {
+		return y;
+	}
+
+	public void setY(String y) {
+		this.y=y;
 	}
 
 	public String getLeft() {
