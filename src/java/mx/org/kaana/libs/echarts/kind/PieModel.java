@@ -70,7 +70,7 @@ public class PieModel extends ChartModel implements Serializable {
 			} // for
 		} // if
 		this.getTooltip().setTrigger("item");
-		//this.getTooltip().setAxisPointer(new);
+		this.getTooltip().setAxisPointer(null);
 	}
 
 	public Title getTitle() {

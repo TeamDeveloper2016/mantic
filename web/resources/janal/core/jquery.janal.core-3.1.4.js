@@ -1365,7 +1365,7 @@
     specialCharacters: function(input) {
 			$janal.console('janal.specialCharacters');
 			var c=input.toLowerCase();
-			c = c.replace(new RegExp("\s", 'g'),"");
+			c = c.replace(new RegExp("¨", 'g'),"");
 			c = c.replace(new RegExp("[\u00E0\u00E1\u00E2\u00E3\u00E4\u00E5]", 'g'),"a");
 			c = c.replace(new RegExp("\u00E6", 'g'),"ae");
 			c = c.replace(new RegExp("\u00E7", 'g'),"c");

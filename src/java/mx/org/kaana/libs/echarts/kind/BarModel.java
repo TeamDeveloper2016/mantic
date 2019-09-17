@@ -79,7 +79,8 @@ public class BarModel extends ChartModel implements Serializable {
 		this.legend.setY("top");
 		this.color=color;
 		this.tooltip=tooltip;
-		this.tooltip.setFormatter("{a} <br/>{b}: {c}");
+		this.tooltip.setAxisPointer(null);
+		this.tooltip.setFormatter(null);
 		this.grid=grid;
 		this.orientation= orientation;
 	  if(EBarOritentation.VERTICAL.equals(this.orientation)) {
