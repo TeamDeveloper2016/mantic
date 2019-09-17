@@ -19,6 +19,7 @@ import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.mantic.test.depurar.Clean;
 
 /**
  *@company KAANA
@@ -60,4 +61,14 @@ public class Filtro extends IBaseAttribute implements Serializable {
 		} // catch
 	}
 
+	public void doCleanDB() {
+		try {
+  		Clean.main(null);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+	}
+		
 }
