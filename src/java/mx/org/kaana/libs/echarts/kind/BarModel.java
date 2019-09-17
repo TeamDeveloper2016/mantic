@@ -161,9 +161,18 @@ public class BarModel extends ChartModel implements Serializable {
 	  return StringEscapeUtils.unescapeJava(Decoder.toJson(this));	
 	}	
 
+	public EBarOritentation getOrientation() {
+		return orientation;
+	}
+
+	public void setOrientation(EBarOritentation orientation) {
+		this.orientation=orientation;
+	}
+
 	@Override
 	public String toString() {
-		return "BarModel{"+"color="+color+", tooltip="+tooltip+", grid="+grid+", xAxis="+xAxis+", yAxis="+yAxis+", series="+series+'}';
+		return "BarModel{"+"title="+title+", legend="+legend+", color="+color+", tooltip="+tooltip+", grid="+grid+", xAxis="+xAxis+", yAxis="+yAxis+", series="+series+", orientation="+orientation+'}';
 	}
-	
+
+
 }

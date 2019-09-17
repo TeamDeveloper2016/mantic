@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import mx.org.kaana.libs.echarts.beans.MarkLine;
 import mx.org.kaana.libs.echarts.enums.EKinds;
 
 /**
@@ -20,6 +21,7 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 
   private String barWidth;	
 	private List<Double> data;
+  private MarkLine markLine;
 
 	public Serie() {
 		this("Serie");
@@ -33,6 +35,7 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 		super(name, type.toString());
 		this.barWidth=barWidth;
 		this.data=data;
+		this.markLine= new MarkLine(name);
 	}
 
 	public String getBarWidth() {
@@ -51,9 +54,17 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 		this.data=data;
 	}
 
+	public MarkLine getMarkLine() {
+		return markLine;
+	}
+
+	public void setMarkLine(MarkLine markLine) {
+		this.markLine=markLine;
+	}
+
 	@Override
 	public String toString() {
-		return "Serie{"+"barWidth="+barWidth+", data="+data+'}';
+		return "Serie{"+"barWidth="+barWidth+", data="+data+", markLine="+markLine+'}';
 	}
 
 }
