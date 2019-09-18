@@ -331,10 +331,29 @@
           tc_mantic_ventas.registro registro_venta,
           tc_mantic_ventas.vigencia,
           tc_mantic_ventas.observaciones,
-          tc_mantic_ventas_detalles.*,          
-          tc_mantic_articulos.nombre as nombre_articulo,
-        	 tc_mantic_personas.cuenta,
-			 concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre_alta
+          tc_mantic_ventas_detalles.id_venta_detalle,          
+					tc_mantic_ventas_detalles.id_venta,          
+					tc_mantic_ventas_detalles.id_articulo,          
+					tc_mantic_ventas_detalles.codigo,          
+					tc_mantic_ventas_detalles.sat,          
+					tc_mantic_ventas_detalles.nombre as nombre_articulo,          
+          tc_mantic_ventas_detalles.cantidad,          
+					tc_mantic_ventas_detalles.precio,          
+					tc_mantic_ventas_detalles.costo,          
+					tc_mantic_ventas_detalles.descuento,          
+					tc_mantic_ventas_detalles.extras,          
+					tc_mantic_ventas_detalles.descuentos,          
+					tc_mantic_ventas_detalles.iva,          
+					tc_mantic_ventas_detalles.impuestos,          
+					tc_mantic_ventas_detalles.sub_total,          
+					tc_mantic_ventas_detalles.importe,          
+					tc_mantic_ventas_detalles.unidad_medida,          
+					tc_mantic_ventas_detalles.utilidad,          
+					tc_mantic_ventas_detalles.unitario_sin_iva,          
+					tc_mantic_ventas_detalles.registro,          			
+					tc_mantic_articulos.nombre,
+        	tc_mantic_personas.cuenta,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre_alta
         from 
           tc_mantic_ventas 
         inner join 
