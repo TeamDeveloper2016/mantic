@@ -285,6 +285,14 @@ $.mask.masks = $.extend($.mask.masks, {
       return 'No se logro convertir a mayusculas el texto.';
     });
 
+  $.validator.addMethod('especial-mayusculas', function(value, element, params) {
+      if (!janal.empty(value))
+        $(element).val(janal.specialCharacters($(element).val()).toUpperCase()); 
+      return true;
+    }, function(params, element) {
+      return 'No se logro convertir a mayusculas el texto.';
+    });
+
   $.validator.addMethod('sat', function(value, element, params) {
       if (!janal.empty(value)) 
         $(element).val(parseFloat($(element).val(), 10).toFixed(4)); 

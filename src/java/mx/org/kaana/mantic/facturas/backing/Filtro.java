@@ -302,15 +302,15 @@ public class Filtro extends FiltroFactura implements Serializable {
 			orden= (TcManticFicticiasDto)DaoFactory.getInstance().findById(TcManticFicticiasDto.class, seleccionado.getKey());
 			bitacora= new TcManticFicticiasBitacoraDto(orden.getConsecutivo(), (String)this.attrs.get("justificacion"), Long.valueOf(this.attrs.get("estatus").toString()), JsfBase.getIdUsuario(), seleccionado.getKey(), -1L, orden.getTotal());
 			emails= new StringBuilder("");
-			if(getSelectedCorreos()!= null && !getSelectedCorreos().isEmpty()){
-				for(Correo mail: getSelectedCorreos())
+			if(this.getSelectedCorreos()!= null && !this.getSelectedCorreos().isEmpty()){
+				for(Correo mail: this.getSelectedCorreos())
 					if(!Cadena.isVacio(mail.getDescripcion()))
 						emails.append(mail.getDescripcion()).append(", ");
 			} // if
 			transaccion= new Transaccion(bitacora, emails.toString(), (String)this.attrs.get("justificacion"));
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR)){
 				if(bitacora.getIdFicticiaEstatus().equals(EEstatusFicticias.TIMBRADA.getIdEstatusFicticia()))
-					doSendMail();				
+					this.doSendMail();				
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
 			} // if
 			else

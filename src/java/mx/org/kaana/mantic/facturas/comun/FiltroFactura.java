@@ -123,7 +123,7 @@ public abstract class FiltroFactura extends IBaseFilter{
 			params.put("tipo", "Factura");			
 			params.put("razonSocial", seleccionado.toString("cliente"));
 			params.put("correo", ECorreos.FACTURACION.getEmail());			
-			factura= toXml(seleccionado.toLong("idFactura"));
+			factura= this.toXml(seleccionado.toLong("idFactura"));
 			this.doReporte("FACTURAS_FICTICIAS_DETALLE", true);
 			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
 			files.add(attachments);
