@@ -13,7 +13,7 @@
     <script type="text/javascript">
 			Janal.Control.fields = {
 			};
-			function update() {
+			function update(time) {
 				setTimeout(function () {
 					window.multiple = echarts.init(document.getElementById('multiple'), {renderer: 'canvas', width: 'auto', height: 'auto'});
 					window.multiple.clear();
@@ -25,12 +25,12 @@
 					window.donut = echarts.init(document.getElementById('donut'), {renderer: 'canvas', width: 'auto', height: 'auto'});
 					window.donut.clear();
 					window.donut.setOption(#{kajoolPlantillasGraficasFiltro.attrs.donut}, true);
-				}, 500);	
+				}, time);	
 			}
 			$(document).ready(function () {
-				update();
+				update(500);
 				window.onresize = function() {
-					update();
+					update(1000);
         };
 			});
     </script>		
@@ -47,7 +47,7 @@
   </ui:define>
   <ui:define name="contenido">
 		<div class="ui-g cgor-chart-panel">
-			<div class="ui-g-12 ui-md-6 ui-lg-3">
+			<div class="ui-g-12 ui-md-6 ui-lg-6">
 				<div>
 					Esto es un demo
 				</div>	
@@ -60,21 +60,35 @@
 					Esto es un pie pagina
 				</div>	
 			</div>
-			<div class="ui-g-12 ui-md-6 ui-lg-3">
+			<div class="ui-g-12 ui-md-6 ui-lg-6">
+				<div>
+					Esto es un demo
+				</div>	
 				<div class="cgor-chart-panel">
 					<div id="simple" class="cgor-chart-panel">
 						Gráficas de barras de serie simple
 					</div>	
 				</div>	
+				<div>
+					Esto es un pie pagina
+				</div>	
 			</div>
-			<div class="ui-g-12 ui-md-6 ui-lg-3">
+		</div>	
+		<div class="ui-g cgor-chart-panel">
+			<div class="ui-g-12 ui-md-6 ui-lg-6">
+				<div>
+					Esto es un demo
+				</div>	
 				<div class="cgor-chart-panel">
 					<div id="pie" class="cgor-chart-panel">
 						Gráficas de pie
 					</div>	
 				</div>	
+				<div>
+					Esto es un pie pagina
+				</div>	
 			</div>
-			<div class="ui-g-12 ui-md-6 ui-lg-3">
+			<div class="ui-g-12 ui-md-6 ui-lg-6">
 				<div>
 					Esto es un demo
 				</div>	
