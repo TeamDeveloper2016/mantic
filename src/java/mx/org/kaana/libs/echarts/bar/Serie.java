@@ -22,20 +22,22 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
   private String barWidth;	
 	private List<Double> data;
   private MarkLine markLine;
+	private Integer barGap; 
 
 	public Serie() {
 		this("Serie");
 	}
 
 	public Serie(String name) {
-		this(name, "60%", new ArrayList(Arrays.asList(120D, 200D, 150D, 80D, 70D, 110D, 130D)), EKinds.BAR);
+		this(name, null, new ArrayList(Arrays.asList(120D, 200D, 150D, 80D, 70D, 110D, 130D)), EKinds.BAR);
 	}
 	
 	public Serie(String name, String barWidth, List<Double> data, EKinds type) {
 		super(name, type.toString());
 		this.barWidth=barWidth;
 		this.data=data;
-		this.markLine= new MarkLine(name);
+		this.markLine=new MarkLine(name);
+		this.barGap=0;
 	}
 
 	public String getBarWidth() {
@@ -62,9 +64,17 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 		this.markLine=markLine;
 	}
 
+	public Integer getBarGap() {
+		return barGap;
+	}
+
+	public void setBarGap(Integer barGap) {
+		this.barGap=barGap;
+	}
+
 	@Override
 	public String toString() {
-		return "Serie{"+"barWidth="+barWidth+", data="+data+", markLine="+markLine+'}';
+		return "Serie{"+"barWidth="+barWidth+", data="+data+", markLine="+markLine+", barGap="+barGap+'}';
 	}
 
 }

@@ -13,22 +13,32 @@
     <script type="text/javascript">
 			Janal.Control.fields = {
 			};
+			function update() {
+				setTimeout(function () {
+					window.multiple = echarts.init(document.getElementById('multiple'), {renderer: 'canvas', width: 'auto', height: 'auto'});
+					window.multiple.clear();
+					window.multiple.setOption(#{kajoolPlantillasGraficasFiltro.attrs.multiple}, true);
+					window.simple = echarts.init(document.getElementById('simple'), {renderer: 'canvas', width: 'auto', height: 'auto'});
+					window.simple.setOption(#{kajoolPlantillasGraficasFiltro.attrs.simple}, true);
+					window.pie = echarts.init(document.getElementById('pie'), {renderer: 'canvas', width: 'auto', height: 'auto'});
+					window.pie.setOption(#{kajoolPlantillasGraficasFiltro.attrs.pie}, true);
+					window.donut = echarts.init(document.getElementById('donut'), {renderer: 'canvas', width: 'auto', height: 'auto'});
+					window.donut.clear();
+					window.donut.setOption(#{kajoolPlantillasGraficasFiltro.attrs.donut}, true);
+				}, 500);	
+			}
 			$(document).ready(function () {
-				var multiple = echarts.init(document.getElementById('multiple'));
-				multiple.setOption(#{kajoolPlantillasGraficasFiltro.attrs.multiple});
-				var simple = echarts.init(document.getElementById('simple'));
-				simple.setOption(#{kajoolPlantillasGraficasFiltro.attrs.simple});
-				var pie = echarts.init(document.getElementById('pie'));
-				pie.setOption(#{kajoolPlantillasGraficasFiltro.attrs.pie});
-				var donut = echarts.init(document.getElementById('donut'));
-				donut.setOption(#{kajoolPlantillasGraficasFiltro.attrs.donut});
+				update();
+				window.onresize = function() {
+					update();
+        };
 			});
     </script>		
 		<style type="text/css">
 			.cgor-chart-panel {
 				width: 100%; 
-				height: 220px; 
-				display:inline-block;
+				height: 420px; 
+				display:block;
 			}
 			.cgor-chart-content {
         text-align: center;
@@ -37,25 +47,45 @@
   </ui:define>
   <ui:define name="contenido">
 		<div class="ui-g cgor-chart-panel">
-			<div class="ui-g-12 ui-md-6 ui-lg-6">
-				<div id="multiple" class="cgor-chart-panel">
-					Gráficas de barras de series multiples
+			<div class="ui-g-12 ui-md-6 ui-lg-3">
+				<div>
+					Esto es un demo
+				</div>	
+				<div class="cgor-chart-panel">
+				  <div id="multiple" class="cgor-chart-panel">
+					  Gráficas de barras de series multiples
+				  </div>	
+				</div>	
+				<div>
+					Esto es un pie pagina
 				</div>	
 			</div>
-			<div class="ui-g-12 ui-md-6 ui-lg-6">
-				<div id="simple" class="cgor-chart-panel">
-					Gráficas de barras de serie simple
+			<div class="ui-g-12 ui-md-6 ui-lg-3">
+				<div class="cgor-chart-panel">
+					<div id="simple" class="cgor-chart-panel">
+						Gráficas de barras de serie simple
+					</div>	
 				</div>	
 			</div>
-			<div class="ui-g-12 ui-md-6 ui-lg-6">
-				<div id="pie" class="cgor-chart-panel">
-					Gráficas de pie
+			<div class="ui-g-12 ui-md-6 ui-lg-3">
+				<div class="cgor-chart-panel">
+					<div id="pie" class="cgor-chart-panel">
+						Gráficas de pie
+					</div>	
 				</div>	
 			</div>
-			<div class="ui-g-12 ui-md-6 ui-lg-6">
-				<div id="donut" class="cgor-chart-panel">
-					Gráficas de dona
-				</div>
+			<div class="ui-g-12 ui-md-6 ui-lg-3">
+				<div>
+					Esto es un demo
+				</div>	
+				<div class="cgor-chart-panel">
+  				<div id="donut" class="cgor-chart-panel">
+	  				Gráficas de dona
+		  		</div>
+				</div>	
+				<div>
+					Esto es un pie pagina
+				</div>	
 			</div>
 		</div>		
 		<p:commandButton value="Clean" icon="fa fa-clean" actionListener="#{kajoolPlantillasGraficasFiltro.doCleanDB}" rendered="false"/>

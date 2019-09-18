@@ -50,10 +50,10 @@ public class Filtro extends IBaseAttribute implements Serializable {
   		this.attrs.put("multiple", modelMultiple.toJson());
 			
 			Datas datas = new Datas("ventas", DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "simple", Collections.EMPTY_MAP));
-  		PieModel pie= new PieModel("ventas", "55%", datas);
+  		PieModel pie= new PieModel("ventas", "55%", new Title(), datas);
 			this.attrs.put("pie", pie.toJson());
 			
-  		DonutModel donut= new DonutModel("ventas", "55%", "40%", datas);
+  		DonutModel donut= new DonutModel("ventas", "55%", "40%", new Title(), datas);
   		this.attrs.put("donut", donut.toJson());
 		} // try
 		catch (Exception e) {

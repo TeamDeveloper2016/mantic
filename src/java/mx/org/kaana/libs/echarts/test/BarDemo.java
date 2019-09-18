@@ -25,7 +25,7 @@ public class BarDemo {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
-      BarModel model= new BarModel(new Title("CGOR", null), EBarOritentation.HORIZONTAL);
+      BarModel model= new BarModel(new Title("CGOR", null), EBarOritentation.VERTICAL);
 			LOG.info(model.toJson());
 			
 			Simple simple       = new Simple("ventas", DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "simple", Collections.EMPTY_MAP));
