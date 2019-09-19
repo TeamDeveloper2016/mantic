@@ -256,15 +256,21 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.registroArticulo.getArticulo().setMenudeo(Numero.toRedondearSat(calculo* 1.5));
 			this.registroArticulo.getArticulo().setMedioMayoreo(Numero.toRedondearSat(calculo* 1.4));
 			this.registroArticulo.getArticulo().setMayoreo(Numero.toRedondearSat(calculo* 1.3));
+			this.attrs.put("menudeo", 50D);
+			this.attrs.put("medioMayoreo", 40D);
+			this.attrs.put("mayoreo", 30D);
 		} // if	
 		else {
 			double calculo= (Double)this.attrs.get("precio")* (1+ (this.registroArticulo.getArticulo().getIva()/ 100));
-      double factor = Numero.toRedondearSat((this.registroArticulo.getArticulo().getMenudeo()- calculo)* 100/ calculo);
-			this.registroArticulo.getArticulo().setMenudeo(precio* (1+ (factor/ 100)));
-      factor = Numero.toRedondearSat((this.registroArticulo.getArticulo().getMedioMayoreo()- calculo)* 100/ calculo);
-			this.registroArticulo.getArticulo().setMedioMayoreo(precio* (1+ (factor/ 100)));
-      factor = Numero.toRedondearSat((this.registroArticulo.getArticulo().getMayoreo()- calculo)* 100/ calculo);
-			this.registroArticulo.getArticulo().setMayoreo(precio* (1+ (factor/ 100)));
+      double factor = Numero.toRedondearSat(this.registroArticulo.getArticulo().getMenudeo()/ calculo);
+			this.attrs.put("menudeo", Numero.toRedondearSat((1- factor)/ 100));
+			this.registroArticulo.getArticulo().setMenudeo(calculo* factor);
+      factor = Numero.toRedondearSat(this.registroArticulo.getArticulo().getMedioMayoreo()/ calculo);
+			this.attrs.put("medioMayoreo", Numero.toRedondearSat((1- factor)/ 100));
+			this.registroArticulo.getArticulo().setMedioMayoreo(calculo* factor);
+      factor = Numero.toRedondearSat(this.registroArticulo.getArticulo().getMayoreo()/ calculo);
+			this.attrs.put("mayoreo", Numero.toRedondearSat((1- factor)/ 100));
+			this.registroArticulo.getArticulo().setMayoreo(calculo* factor);
 		} // if	
 	  this.attrs.put("precio", precio);
 	}	 // doUpdatePrecio
