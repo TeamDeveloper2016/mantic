@@ -520,7 +520,8 @@
 			</select>
 			<select id="auxiliar">
 				select
-					tc_mantic_articulos_codigos.id_articulo_codigo
+					tc_mantic_articulos_codigos.id_articulo_codigo,
+				  tc_mantic_articulos.nombre
 				from
 					tc_mantic_articulos
 				inner join  

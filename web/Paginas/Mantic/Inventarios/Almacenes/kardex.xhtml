@@ -17,12 +17,13 @@
 				'contenedorGrupos\\:codigo' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:nombre' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:codigos': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:sat'    : {validaciones: 'libre', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas'},
-				'contenedorGrupos\\:costos' : {validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'libre', formatos: 'flotante', individual: true, grupo: 'calculos'},
-				'utilidades': {multiple: '$', validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'libre', formatos: 'flotante', individual: true, grupo: 'calculos', mensaje: 'La utilidad tiene que ser mayor a cero'},
-				'precios'   : {multiple: '$', validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'libre', formatos: 'flotante', individual: true, grupo: 'calculos', mensaje: 'El precio tiene que ser mayor a cero.'},
-				'contenedorGrupos\\:tabla\\:0\\:limites': {validaciones: 'requerido|flotante|menor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:1\\\\:limites"})', mascara: 'libre', formatos: 'precio', grupo: 'calculos'},
-				'contenedorGrupos\\:tabla\\:1\\:limites': {validaciones: 'requerido|flotante|mayor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:0\\\\:limites"})', mascara: 'libre', formatos: 'precio', grupo: 'calculos'}
+				'contenedorGrupos\\:sat'    : {validaciones: 'libre', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
+				'contenedorGrupos\\:costos' : {validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'libre', formatos: 'flotante', individual: true, grupo: 'general'},
+				'utilidades': {multiple: '$', validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'libre', formatos: 'flotante', individual: true, grupo: 'general', mensaje: 'La utilidad tiene que ser mayor a cero'},
+				'precios'   : {multiple: '$', validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'libre', formatos: 'flotante', individual: true, grupo: 'general', mensaje: 'El precio tiene que ser mayor a cero.'},
+				'contenedorGrupos\\:tabla\\:0\\:limites': {validaciones: 'requerido|flotante|menor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:1\\\\:limites"})', mascara: 'libre', formatos: 'precio', grupo: 'general'},
+				'contenedorGrupos\\:tabla\\:1\\:limites': {validaciones: 'requerido|flotante|mayor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:0\\\\:limites"})', mascara: 'libre', formatos: 'precio', grupo: 'general'},
+				'contenedorGrupos\\:auxiliar': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'auxiliar', individual: true}
 			};
 		</script>   
 		<style type="text/css">
@@ -139,9 +140,9 @@
 									<p:outputLabel for="codigo" value="Código:"/>
 									<p:inputText id="codigo" value="#{manticInventariosAlmacenesKardex.attrs.articulo.propio}" styleClass="janal-wid-90 filas" readonly="true"/>
 									<p:outputLabel for="sat" value="Código SAT:"/>
-									<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-wid-col-38">	
-									  <p:inputText id="sat" value="#{manticInventariosAlmacenesKardex.attrs.articulo.sat}" styleClass="janal-wid-90 filas" disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}"/>
-										<p:commandButton title="Actualizar código" icon="fa fa-check" process="@this sat" update="@(.filas)" action="#{manticInventariosAlmacenesKardex.doChangeCodigoSat}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
+									<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-86, janal-wid-col-38">	
+									  <p:inputText id="sat" value="#{manticInventariosAlmacenesKardex.attrs.sat}" styleClass="janal-wid-95 janal-column-right filas" disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}"/>
+										<p:commandButton title="Actualizar código del SAT" icon="fa fa-check" process="@this sat" update="@(.filas)" action="#{manticInventariosAlmacenesKardex.doChangeCodigoSat}" styleClass="janal-text-white janal-column-center filas" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}"/> 
   								</p:panelGrid>
 									<p:outputLabel for="nombre" value="Nombre:"/>
 									<p:inputText id="nombre" value="#{manticInventariosAlmacenesKardex.attrs.articulo.nombre}" styleClass="janal-wid-90 filas" readonly="true"/>
@@ -235,6 +236,13 @@
 							</p:dataTable>	
 						</p:tab>
 						<p:tab title="Códigos">
+ 						  <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-110, janal-wid-100">		
+								<p:outputLabel for="auxiliar" value="Código auxiliar:"/>
+								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-wid-col-38">	
+									<p:inputText id="auxiliar" value="#{manticInventariosAlmacenesKardex.attrs.auxiliar}" styleClass="janal-wid-98 filas" disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}"/>
+									<p:commandButton title="Agregar código auxiliar" icon="fa fa-plus" process="@this auxiliar" update="@(.filas)" action="#{manticInventariosAlmacenesKardex.doAddCodigoAuxiliar}" styleClass="janal-text-white janal-column-center filas" onstart="return janal.partial('auxiliar', true) &amp;&amp; confirm('Esta seguro que desea agregar el código ?');" oncomplete="janal.desbloquear()"  disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}"/> 
+								</p:panelGrid>
+							</p:panelGrid>
 							<p:dataTable var="item" value="#{manticInventariosAlmacenesKardex.attrs.codigos}" paginator="false" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="paginated filas" rowIndexVar="index">
 								<p:column headerText="No" styleClass="janal-wid-3">
 									<h:outputText value="#{index+ 1}.-"/>
@@ -446,11 +454,11 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@(.recalculo)" action="#{manticInventariosAlmacenesKardex.doAceptar}" onstart="return janal.execute(true) &amp;&amp; confirm('Esta seguro que desea guardar los cambios ?');" oncomplete="janal.desbloquear();janal.reset();" disabled="#{empty(manticInventariosAlmacenesKardex.attrs.articulo.propio)}" styleClass="recalculo"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@(.recalculo)" action="#{manticInventariosAlmacenesKardex.doAceptar}" onstart="return janal.partial('general', true) &amp;&amp; confirm('Esta seguro que desea guardar los cambios ?');" oncomplete="janal.desbloquear();janal.reset();" disabled="#{empty(manticInventariosAlmacenesKardex.attrs.articulo.propio)}" styleClass="recalculo"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticInventariosAlmacenesKardex.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" update="contenedorGrupos:tabla @(.filas) @(.recalculo) contenedorGrupos:panelImage"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="@(.recalculo)" action="#{manticInventariosAlmacenesKardex.doAceptar}" onstart="return janal.execute(true) &amp;&amp; confirm('Esta seguro que desea guardar los cambios ?');" oncomplete="janal.desbloquear();janal.reset();" styleClass="recalculo"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="@(.recalculo)" action="#{manticInventariosAlmacenesKardex.doAceptar}" onstart="return janal.partial('general', true) &amp;&amp; confirm('Esta seguro que desea guardar los cambios ?');" oncomplete="janal.desbloquear();janal.reset();" styleClass="recalculo"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticInventariosAlmacenesKardex.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" update="contenedorGrupos:tabla @(.filas) @(.recalculo) contenedorGrupos:panelImage"/>
 		</div>		
 	</ui:define>

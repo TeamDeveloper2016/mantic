@@ -2,17 +2,26 @@ package mx.org.kaana.mantic.inventarios.almacenes.reglas;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.enums.EAccion;
 import static mx.org.kaana.kajool.enums.EAccion.MODIFICAR;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Variables;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosCodigosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticPedidosDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticPedidosDto;
@@ -121,6 +130,25 @@ public class Transaccion extends IBaseTnx {
 					articulo.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 					regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
 					break;
+				case ASIGNAR:
+					this.sat= this.sat.replaceAll(Constantes.CLEAN_ART, "").trim();
+					Entity auxiliar= this.toFindCodigoAuxiliar(sesion, this.sat);
+					if(auxiliar== null || auxiliar.isEmpty()) {
+						TcManticArticulosCodigosDto codigos= new TcManticArticulosCodigosDto(
+							this.sat, // String codigo, 
+							null, // Long idProveedor, 
+							JsfBase.getIdUsuario(), // Long idUsuario, 
+							2L, // Long idPrincipal, 
+							null, // String observaciones, 
+							-1L, // Long idArticuloCodigo, 
+							this.toSiguiente(sesion), // Long orden, 
+							this.idArticulo // Long idArticulo
+						);
+						regresar= DaoFactory.getInstance().insert(sesion, codigos)>= 1L;
+					} // if
+					else 
+						new RuntimeException("El código ya lo tiene asignado el articulo ["+ auxiliar.toString("nombre")+ "] !");
+					break;
 			} // switch
 			if(!regresar)
         throw new Exception("");
@@ -170,4 +198,41 @@ public class Transaccion extends IBaseTnx {
 		} // catch		
 		return regresar;
 	} // toArticuloDetalle
+
+	private Entity toFindCodigoAuxiliar(Session sesion, String codigo) {
+		Entity regresar= null;
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("codigo", codigo);
+			regresar= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaCargasMasivasDto", "auxiliar", params);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toFindCodigoAuxiliar
+
+	private Long toSiguiente(Session sesion) throws Exception {
+		Long regresar             = 1L;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("idArticulo", this.idArticulo);
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticArticulosCodigosDto", "siguiente", params, "siguiente");
+			if(next!= null && next.getData()!= null)
+			  regresar= next.toLong();
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}
+
 } 

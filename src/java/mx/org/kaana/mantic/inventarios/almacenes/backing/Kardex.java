@@ -136,7 +136,8 @@ public class Kardex extends IBaseAttribute implements Serializable {
       columns.add(new Columna("empaque", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("unidadMedida", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+      columns.add(new Columna("registro", EFormatoDinamicos.DIA_FECHA_HORA_CORTA));
+      columns.add(new Columna("actualizado", EFormatoDinamicos.DIA_FECHA_HORA_CORTA));
 			this.attrs.put("idArticulo", null);
 			if(articulo.size()> 1) {
 				this.image= LoadImages.getImage(articulo.toLong("idArticulo"));
@@ -147,7 +148,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 					this.attrs.put("articulo", solicitado);
 					this.attrs.put("redondear", solicitado.toLong("idRedondear")== 1L);
         	this.attrs.put("sat", solicitado.toString("sat"));
-        	this.attrs.put("ultimo", Global.format(EFormatoDinamicos.FECHA_HORA, solicitado.toTimestamp("actualizado")));
+        	this.attrs.put("ultimo", solicitado.toString("actualizado"));
 					Periodo periodo= new Periodo();
 			    periodo.addMeses(-6);
 			    this.attrs.put("registro", periodo.toString());
@@ -859,13 +860,27 @@ public class Kardex extends IBaseAttribute implements Serializable {
     Transaccion transaccion= null;
 		EAccion eaccion        = EAccion.COMPLEMENTAR;
     try {			
-			// Entity articulo= (Entity)this.attrs.get("articulo");
 			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (String)this.attrs.get("sat"));
-			if (transaccion.ejecutar(eaccion)) {
-				JsfBase.addMessage("Se modificaron el tipo de redondeo del articulo.", ETipoMensaje.INFORMACION);
-			}	// if
+			if (transaccion.ejecutar(eaccion)) 
+				JsfBase.addMessage("Se modificÓ el código del SAT ["+ (String)this.attrs.get("sat")+ "]del articulo.", ETipoMensaje.INFORMACION);
 			else 
-				JsfBase.addMessage("Ocurrió un error al hacer el cambio del tipo de redondeo.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al hacer el cambio del código del SAT.", ETipoMensaje.ERROR);      			
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+	}
+
+	public void doAddCodigoAuxiliar() {
+    Transaccion transaccion= null;
+		EAccion eaccion        = EAccion.ASIGNAR;
+    try {			
+			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (String)this.attrs.get("auxiliar"));
+			if (transaccion.ejecutar(eaccion)) 
+				JsfBase.addMessage("Se agregó el código auxiliar ["+ (String)this.attrs.get("auxiliar")+ "]al articulo.", ETipoMensaje.INFORMACION);
+			else 
+				JsfBase.addMessage("Ocurrió un error al agregar el código auxiliar al articulo.", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
