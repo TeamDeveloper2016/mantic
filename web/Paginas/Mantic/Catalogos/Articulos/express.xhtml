@@ -35,6 +35,12 @@
 				z-index: 2012 !important;
 				overflow:auto;
 		}		
+		.ui-autocomplete-panel {
+      width: 350px !important;
+		}		
+		.ui-autocomplete-itemtip {
+      width: 250px !important;
+		}		
   </style>		
 	<p:dialog header="Agregar articulo de forma express" id="dialogoArtExpress" widgetVar="dlgArtExpress" onShow="notificarExpress();" onHide="janal.desbloquear(); janal.restore(); janal.refresh();" dynamic="true" width="70%" resizable="false" closeOnEscape="true" closable="true" appendTo="@(body)" styleClass="janal-dialog-express">
 		<h:form id="formDialogoExpressArticulos" prependId="false">
@@ -46,7 +52,7 @@
 							<p:outputLabel for="codigoDialog" value="Código:"/>
 							<p:outputLabel for="satDialog" value="SAT:"/>
 							<p:outputLabel for="nombreDialog" value="Nombre:"/>
-              <p:autoComplete id="codigoDialog" placeholder="ej. CT123" var="customDialog" itemLabel="#{customDialog.propio}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{customDialog}" value="#{manticCatalogosArticulosExpress.attrs.codigo}" completeMethod="#{manticCatalogosArticulosExpress.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt" appendTo="@(body)" panelStyleClass="janal-autocomplete-panel">
+              <p:autoComplete id="codigoDialog" placeholder="ej. CT123" var="customDialog" itemLabel="#{customDialog.propio}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{customDialog}" value="#{manticCatalogosArticulosExpress.attrs.codigoExpress}" completeMethod="#{manticCatalogosArticulosExpress.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt" appendTo="@(body)" panelStyleClass="janal-autocomplete-panel">
 								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this" listener="#{manticCatalogosArticulosExpress.doAsignaCodigo}" oncomplete="janal.desbloquear();"/>
 								<f:facet name="itemtip">
 									<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-col-400">												

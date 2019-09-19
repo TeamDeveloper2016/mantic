@@ -107,14 +107,14 @@ public class Express extends IBaseAttribute implements Serializable {
   public void doAceptar() {
     Transaccion transaccion= null;
     try {
-			prepareRegistro();
+			this.prepareRegistro();
       transaccion = new Transaccion(this.registroArticulo, 0D);
       if (transaccion.ejecutar(EAccion.COPIAR)) 
 				JsfBase.addMessage("Se registro el artículo de forma correcta.", ETipoMensaje.INFORMACION);
       else
 				JsfBase.addMessage("Ocurrió un error al registrar el artículo", ETipoMensaje.ERROR);						
 			this.registroArticulo= new RegistroArticulo();
-			this.attrs.put("codigo", "");
+			this.attrs.put("codigoExpress", null);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -126,7 +126,7 @@ public class Express extends IBaseAttribute implements Serializable {
 		ArticuloCodigo codigo= null;
 		try {			
 			codigo= new ArticuloCodigo(-1L, ESql.INSERT, true);
-			codigo.setCodigo((String) this.attrs.get("codigo"));
+			codigo.setCodigo((String) JsfBase.getParametro("codigoDialog_input"));
 			codigo.setIdPrincipal(1L);
 			codigo.setIdUsuario(JsfBase.getIdUsuario());
 			codigo.setOrden(1L);
@@ -358,7 +358,7 @@ public class Express extends IBaseAttribute implements Serializable {
 		try {
 			codigos= (List<UISelectEntity>) this.attrs.get("codigosExpress");
 			seleccion= codigos.get(codigos.indexOf((UISelectEntity)event.getObject()));
-			this.attrs.put("codigoSeleccionExpress", seleccion);			
+			this.attrs.put("codigoExpressSeleccion", seleccion);			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
