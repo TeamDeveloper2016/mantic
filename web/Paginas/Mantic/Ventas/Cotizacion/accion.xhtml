@@ -375,7 +375,7 @@
 					</h:panelGrid>	
 				</p:tab>
 				<p:tab title="Especificaciones">
-					<p:dataTable lazy="true" id="lazyEspecificaciones" var="row" value="#{manticVentasCotizacionAccion.attrs.lazyEspecificaciones}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{manticVentasCotizacionAccion.attrs.lazyEspecificaciones.rowCount gt manticVentasCotizacionAccion.attrs.lazyEspecificaciones.pageSize}" rowIndexVar="index" reflow="true">            
+					<p:dataTable lazy="true" id="lazyEspecificaciones" var="row" value="#{manticVentasCotizacionAccion.attrs.lazyEspecificaciones}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{manticVentasCotizacionAccion.attrs.lazyEspecificaciones.rowCount gt manticVentasCotizacionAccion.attrs.lazyEspecificaciones.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
             <p:column class="MarAuto Responsive">
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
@@ -394,7 +394,7 @@
           </p:dataTable>
 				</p:tab>
 				<p:tab title="Descuentos">
-					<p:dataTable lazy="true" id="lazyDescuentos" var="row" value="#{manticVentasCotizacionAccion.attrs.lazyDescuentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticVentasCotizacionAccion.attrs.lazyDescuentos.rowCount gt manticVentasCotizacionAccion.attrs.lazyDescuentos.pageSize}" rowIndexVar="index" reflow="true">            
+					<p:dataTable lazy="true" id="lazyDescuentos" var="row" value="#{manticVentasCotizacionAccion.attrs.lazyDescuentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticVentasCotizacionAccion.attrs.lazyDescuentos.rowCount gt manticVentasCotizacionAccion.attrs.lazyDescuentos.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
             <p:column class="MarAuto Responsive janal-column-right janal-wid-20">
               <f:facet name="header">
                 <h:outputText value="Porcentaje"/>
@@ -431,7 +431,7 @@
 			</div>
 		</p:dialog>		
 		<p:dialog id="dialogoAlmacenes" widgetVar="dlgAlmacenes" header="Ubicación de articulo" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();" width="60%">						
-			<p:dataTable lazy="true" id="almacenes" widgetVar="kajoolTable" var="row" value="#{manticVentasCotizacionAccion.almacenes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticVentasCotizacionAccion.almacenes.rowCount gt manticVentasCotizacionAccion.almacenes.pageSize}" rowIndexVar="index" reflow="true">            	
+			<p:dataTable lazy="true" id="almacenes" widgetVar="kajoolTable" var="row" value="#{manticVentasCotizacionAccion.almacenes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticVentasCotizacionAccion.almacenes.rowCount gt manticVentasCotizacionAccion.almacenes.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            	
 				<p:column headerText="No" styleClass="janal-wid-3">
 					<h:outputText value="#{index+ 1}.-"/>
 				</p:column>   

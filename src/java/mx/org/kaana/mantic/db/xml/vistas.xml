@@ -2656,7 +2656,8 @@
 				  if(tc_mantic_articulos.id_facturama is null, -1, tc_mantic_articulos.id_facturama) id_facturama,
 				  ifnull(tc_mantic_articulos.id_imagen, 0) as id_imagen,
 				  sum(ifnull(tc_mantic_almacenes_articulos.stock, 0)) as stock,
-				  ifnull(tc_mantic_imagenes.alias, ' ') as alias
+				  ifnull(tc_mantic_imagenes.alias, ' ') as alias,
+				  tc_mantic_articulos.id_redondear
 				from 
 					tc_mantic_articulos
 				left join

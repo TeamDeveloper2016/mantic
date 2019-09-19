@@ -768,7 +768,7 @@
 					</h:panelGrid>	
 				</p:tab>
 				<p:tab title="Especificaciones">
-					<p:dataTable lazy="true" id="lazyEspecificaciones" var="row" value="#{manticComprasOrdendesAccion.attrs.lazyEspecificaciones}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{manticComprasOrdendesAccion.attrs.lazyEspecificaciones.rowCount gt manticComprasOrdendesAccion.attrs.lazyEspecificaciones.pageSize}" rowIndexVar="index" reflow="true">            
+					<p:dataTable lazy="true" id="lazyEspecificaciones" var="row" value="#{manticComprasOrdendesAccion.attrs.lazyEspecificaciones}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{manticComprasOrdendesAccion.attrs.lazyEspecificaciones.rowCount gt manticComprasOrdendesAccion.attrs.lazyEspecificaciones.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
             <p:column class="MarAuto Responsive">
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
@@ -787,7 +787,7 @@
           </p:dataTable>
 				</p:tab>
 				<p:tab title="Descuentos">
-					<p:dataTable lazy="true" id="lazyDescuentos" var="row" value="#{manticComprasOrdendesAccion.attrs.lazyDescuentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticComprasOrdendesAccion.attrs.lazyDescuentos.rowCount gt manticComprasOrdendesAccion.attrs.lazyDescuentos.pageSize}" rowIndexVar="index" reflow="true">            
+					<p:dataTable lazy="true" id="lazyDescuentos" var="row" value="#{manticComprasOrdendesAccion.attrs.lazyDescuentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticComprasOrdendesAccion.attrs.lazyDescuentos.rowCount gt manticComprasOrdendesAccion.attrs.lazyDescuentos.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
             <p:column class="MarAuto Responsive janal-column-right janal-wid-20">
               <f:facet name="header">
                 <h:outputText value="Porcentaje"/>

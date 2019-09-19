@@ -63,7 +63,7 @@
           </p:panel>
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosProveedoresFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosProveedoresFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosProveedoresFiltro.lazyModel.rowCount gt manticCatalogosProveedoresFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosProveedoresFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosProveedoresFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosProveedoresFiltro.lazyModel.rowCount gt manticCatalogosProveedoresFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
             <f:facet name="header" >
 							<div class="janal-icons-header">
 								<h:outputLink value="#{request.contextPath}/Temporal/Masivo/masivo-proveedores.xls" title="Plantilla de proveedores XLS">

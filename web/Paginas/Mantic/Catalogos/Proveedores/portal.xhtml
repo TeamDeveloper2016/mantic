@@ -48,7 +48,7 @@
 					</p:panelGrid>  
 					<p:separator/>
 					<p:fieldset legend="Cuentas de servicios">
-						<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosProveedoresPortal.lazyModelServicios}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{manticCatalogosProveedoresPortal.lazyModelServicios.rowCount gt manticCatalogosProveedoresPortal.lazyModelServicios.pageSize}" rowIndexVar="index" reflow="true">
+						<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosProveedoresPortal.lazyModelServicios}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{manticCatalogosProveedoresPortal.lazyModelServicios.rowCount gt manticCatalogosProveedoresPortal.lazyModelServicios.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 							<p:column class="janal-column-left Responsive">
 								<f:facet name="header">
 									<h:outputText value="Banco"/>
@@ -74,7 +74,7 @@
 					</p:fieldset>
 					<p:separator/>
 					<p:fieldset legend="Cuentas de transferencias">
-						<p:dataTable lazy="true" id="tablaTransferencia" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosProveedoresPortal.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{manticCatalogosProveedoresPortal.lazyModel.rowCount gt manticCatalogosProveedoresPortal.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+						<p:dataTable lazy="true" id="tablaTransferencia" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosProveedoresPortal.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{manticCatalogosProveedoresPortal.lazyModel.rowCount gt manticCatalogosProveedoresPortal.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 							<p:column class="janal-column-left Responsive">
 								<f:facet name="header">
 									<h:outputText value="Banco"/>

@@ -216,11 +216,7 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
   }
 
   public Double getPrecio() {
-		if(this.precio<= 0) {
-			double impuesto= (this.menudeo/ 2)* (this.iva/ 100);
-			this.precio= Numero.toAjustarDecimales((this.menudeo/ 2)- impuesto, this.idRedondear== 1L);
-		} // if
-    return precio;
+    return precio== null || precio<= 0D? 1D: precio;
   }
 
   public void setIva(Double iva) {

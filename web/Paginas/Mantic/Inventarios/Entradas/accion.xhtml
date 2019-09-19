@@ -623,7 +623,7 @@
 							<p:commandLink value="PDF importado: #{manticInventariosEntradasAccion.pdf.ruta}#{manticInventariosEntradasAccion.pdf.name}" onclick="viewDocument();" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento" style="#{(empty manticInventariosEntradasAccion.pdf)? 'display: none': ''}"/>
 							<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100">
 								<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-									<p:dataTable id="faltante" var="row" styleClass="importado janal-wid-99" value="#{manticInventariosEntradasAccion.attrs.faltantes}" selection="#{manticInventariosEntradasAccion.attrs.faltante}" rowKey="#{row.key}" rowIndexVar="index" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" reflow="true">
+									<p:dataTable id="faltante" var="row" styleClass="importado janal-wid-99" value="#{manticInventariosEntradasAccion.attrs.faltantes}" selection="#{manticInventariosEntradasAccion.attrs.faltante}" rowKey="#{row.key}" rowIndexVar="index" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" reflow="true" paginatorPosition="bottom">
 										<f:facet name="header">
 											<div style="display: flow-root;">
 												<p:outputLabel value="Articulos cargados del archivo XML" style="font-weight: normal;" styleClass="janal-text-white"/>
@@ -703,7 +703,7 @@
 								</p:panelGrid>
 								<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 									<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-wid-col-50 janal-column-right">
-										<p:dataTable id="disponible" var="row" styleClass="importado janal-wid-99" value="#{manticInventariosEntradasAccion.attrs.disponibles}" selection="#{manticInventariosEntradasAccion.attrs.disponible}" rowKey="#{row.key}" rowIndexVar="index" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" reflow="true">
+										<p:dataTable id="disponible" var="row" styleClass="importado janal-wid-99" value="#{manticInventariosEntradasAccion.attrs.disponibles}" selection="#{manticInventariosEntradasAccion.attrs.disponible}" rowKey="#{row.key}" rowIndexVar="index" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" reflow="true" paginatorPosition="bottom">
 											<f:facet name="header">
 												<div style="display: flow-root;">
   											  <p:outputLabel value="Articulos disponibles en la orden de compra" style="font-weight: normal;" styleClass="janal-text-white"/>
@@ -958,7 +958,7 @@
 					</h:panelGrid>	
 				</p:tab>
 				<p:tab title="Especificaciones">
-					<p:dataTable lazy="true" id="lazyEspecificaciones" var="row" value="#{manticInventariosEntradasAccion.attrs.lazyEspecificaciones}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{manticInventariosEntradasAccion.attrs.lazyEspecificaciones.rowCount gt manticInventariosEntradasAccion.attrs.lazyEspecificaciones.pageSize}" rowIndexVar="index" reflow="true">            
+					<p:dataTable lazy="true" id="lazyEspecificaciones" var="row" value="#{manticInventariosEntradasAccion.attrs.lazyEspecificaciones}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{manticInventariosEntradasAccion.attrs.lazyEspecificaciones.rowCount gt manticInventariosEntradasAccion.attrs.lazyEspecificaciones.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
             <p:column class="MarAuto Responsive">
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
@@ -977,7 +977,7 @@
           </p:dataTable>
 				</p:tab>
 				<p:tab title="Descuentos">
-					<p:dataTable lazy="true" id="lazyDescuentos" var="row" value="#{manticInventariosEntradasAccion.attrs.lazyDescuentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticInventariosEntradasAccion.attrs.lazyDescuentos.rowCount gt manticInventariosEntradasAccion.attrs.lazyDescuentos.pageSize}" rowIndexVar="index" reflow="true">            
+					<p:dataTable lazy="true" id="lazyDescuentos" var="row" value="#{manticInventariosEntradasAccion.attrs.lazyDescuentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticInventariosEntradasAccion.attrs.lazyDescuentos.rowCount gt manticInventariosEntradasAccion.attrs.lazyDescuentos.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
             <p:column class="MarAuto Responsive janal-column-right janal-wid-20">
               <f:facet name="header">
                 <h:outputText value="Porcentaje"/>

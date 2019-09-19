@@ -240,7 +240,7 @@
 								<p:outputLabel for="auxiliar" value="Código auxiliar:"/>
 								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-wid-col-38">	
 									<p:inputText id="auxiliar" value="#{manticInventariosAlmacenesKardex.attrs.auxiliar}" styleClass="janal-wid-98 filas" disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}"/>
-									<p:commandButton title="Agregar código auxiliar" icon="fa fa-plus" process="@this auxiliar" update="@(.filas)" action="#{manticInventariosAlmacenesKardex.doAddCodigoAuxiliar}" styleClass="janal-text-white janal-column-center filas" onstart="return janal.partial('auxiliar', true) &amp;&amp; confirm('Esta seguro que desea agregar el código ?');" oncomplete="janal.desbloquear()"  disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}"/> 
+									<p:commandButton title="Agregar código auxiliar" icon="fa fa-plus" process="@this auxiliar" update="@(.filas)" action="#{manticInventariosAlmacenesKardex.doAddCodigoAuxiliar}" styleClass="janal-text-white janal-column-center filas" onstart="return janal.partial('auxiliar', true);" oncomplete="janal.desbloquear()"  disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}"/> 
 								</p:panelGrid>
 							</p:panelGrid>
 							<p:dataTable var="item" value="#{manticInventariosAlmacenesKardex.attrs.codigos}" paginator="false" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="paginated filas" rowIndexVar="index">

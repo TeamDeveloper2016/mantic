@@ -278,7 +278,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 		EAccion eaccion        = EAccion.MODIFICAR;
     try {			
 			Entity articulo= (Entity)this.attrs.get("articulo");
-			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (Double)this.attrs.get("precio"), articulo.toString("descuento"), articulo.toString("extra"), this.adminKardex.getTiposVentas());
+			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (Double)this.attrs.get("precio"), articulo.toString("descuento"), articulo.toString("extra"), this.adminKardex.getTiposVentas(), (String)this.attrs.get("sat"));
 			if (transaccion.ejecutar(eaccion)) {
 				JsfBase.addMessage("Se modificaron los precios de tipos de ventas del articulo.", ETipoMensaje.INFORMACION);
    			UIBackingUtilities.execute("jsKardex.callback('"+ this.adminKardex.getTiposVentas()+ "');");
@@ -862,7 +862,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
     try {			
 			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (String)this.attrs.get("sat"));
 			if (transaccion.ejecutar(eaccion)) 
-				JsfBase.addMessage("Se modificÓ el código del SAT ["+ (String)this.attrs.get("sat")+ "]del articulo.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se modificó el código del SAT ["+ (String)this.attrs.get("sat")+ "] del articulo.", ETipoMensaje.INFORMACION);
 			else 
 				JsfBase.addMessage("Ocurrió un error al hacer el cambio del código del SAT.", ETipoMensaje.ERROR);      			
     } // try
@@ -878,7 +878,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
     try {			
 			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (String)this.attrs.get("auxiliar"));
 			if (transaccion.ejecutar(eaccion)) 
-				JsfBase.addMessage("Se agregó el código auxiliar ["+ (String)this.attrs.get("auxiliar")+ "]al articulo.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se agregó el código auxiliar ["+ (String)this.attrs.get("auxiliar")+ "] al articulo.", ETipoMensaje.INFORMACION);
 			else 
 				JsfBase.addMessage("Ocurrió un error al agregar el código auxiliar al articulo.", ETipoMensaje.ERROR);      			
     } // try

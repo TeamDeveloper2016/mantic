@@ -60,7 +60,7 @@
 						<p:inputText value="#{manticEgresosDetalle.attrs.estatus}" styleClass="janal-wid-100-txt janal-column-left" disabled="true"/>						
 					</p:panelGrid>
 					<p:panel header="Notas de entrada" styleClass="janal-wid-99" toggleable="true">		
-						<p:dataTable  lazy="true" id="tablaNotasEntrada" widgetVar="kajoolTableNotasEntrada" var="filtro" value="#{manticEgresosDetalle.egresosNotasEntradas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticEgresosDetalle.egresosNotasEntradas.rowCount gt manticEgresosDetalle.egresosNotasEntradas.pageSize}" rowIndexVar="index" reflow="true">																		
+						<p:dataTable  lazy="true" id="tablaNotasEntrada" widgetVar="kajoolTableNotasEntrada" var="filtro" value="#{manticEgresosDetalle.egresosNotasEntradas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticEgresosDetalle.egresosNotasEntradas.rowCount gt manticEgresosDetalle.egresosNotasEntradas.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">																		
 							<f:facet name="header">								
 								<div class="lg-pantalla">
 									<p:menuButton value="Opciones">																			
@@ -145,7 +145,7 @@
 						</p:dataTable>																
 					</p:panel>																		
 					<p:panel header="Notas de credito" styleClass="janal-wid-99" toggleable="true">		
-						<p:dataTable  lazy="true" id="tablaCreditosNotas" widgetVar="kajoolTableCreditosNotas" var="filtro" value="#{manticEgresosDetalle.egresosCreditosNotas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticEgresosDetalle.egresosCreditosNotas.rowCount gt manticEgresosDetalle.egresosCreditosNotas.pageSize}" rowIndexVar="index" reflow="true">																		
+						<p:dataTable  lazy="true" id="tablaCreditosNotas" widgetVar="kajoolTableCreditosNotas" var="filtro" value="#{manticEgresosDetalle.egresosCreditosNotas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticEgresosDetalle.egresosCreditosNotas.rowCount gt manticEgresosDetalle.egresosCreditosNotas.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">																		
 							<f:facet name="header">								
 								<div class="lg-pantalla">
 									<p:menuButton value="Opciones">																			
@@ -232,7 +232,7 @@
 						</p:dataTable>								
 					</p:panel>						
 					<p:panel header="Empresas pagos" styleClass="janal-wid-99" toggleable="true">		
-						<p:dataTable  lazy="true" id="tablaEmpresasPagos" widgetVar="kajoolTableEmpresasPagos" var="filtro" value="#{manticEgresosDetalle.egresosEmpresasPagos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticEgresosDetalle.egresosEmpresasPagos.rowCount gt manticEgresosDetalle.egresosEmpresasPagos.pageSize}" rowIndexVar="index" reflow="true">								
+						<p:dataTable  lazy="true" id="tablaEmpresasPagos" widgetVar="kajoolTableEmpresasPagos" var="filtro" value="#{manticEgresosDetalle.egresosEmpresasPagos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticEgresosDetalle.egresosEmpresasPagos.rowCount gt manticEgresosDetalle.egresosEmpresasPagos.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">								
 							<f:facet name="header">								
 								<div class="lg-pantalla">
 									<p:menuButton value="Opciones">																			
@@ -299,7 +299,7 @@
 						</p:dataTable>								
 					</p:panel>					
 					<p:panel header="Notas" styleClass="janal-wid-99" toggleable="true">		
-						<p:dataTable  lazy="true" id="tablaNotas" widgetVar="kajoolTableNotas" var="filtro" value="#{manticEgresosDetalle.egresosNotas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticEgresosDetalle.egresosNotas.rowCount gt manticEgresosDetalle.egresosNotas.pageSize}" rowIndexVar="index" reflow="true">								
+						<p:dataTable  lazy="true" id="tablaNotas" widgetVar="kajoolTableNotas" var="filtro" value="#{manticEgresosDetalle.egresosNotas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticEgresosDetalle.egresosNotas.rowCount gt manticEgresosDetalle.egresosNotas.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">								
 							<f:facet name="header">								
 								<div class="lg-pantalla">
 									<p:menuButton value="Opciones">																			

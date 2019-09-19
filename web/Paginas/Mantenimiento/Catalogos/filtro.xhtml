@@ -40,7 +40,7 @@
     <p:panelGrid id="boton" columns="1" layout="grid" styleClass="Responsive100">
       <p:commandButton id="filtrar" icon="fa fa-search" value="Filtrar" actionListener="#{kajoolDinamicosFiltro.doLoad}" process="@this #{kajoolDinamicosFiltro.namesFields}" update="tabla" styleClass="Fright" rendered="#{not empty kajoolDinamicosFiltro.criterios}"/>
     </p:panelGrid>
-    <p:dataTable id="tabla" var="row" value="#{kajoolDinamicosFiltro.lazyModel}" paginator="true" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" selection="#{kajoolDinamicosFiltro.attrs.selected}" lazy="true" reflow="true">
+    <p:dataTable id="tabla" var="row" value="#{kajoolDinamicosFiltro.lazyModel}" paginator="true" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" selection="#{kajoolDinamicosFiltro.attrs.selected}" lazy="true" reflow="true" paginatorPosition="bottom">
       <f:facet name="header">				
         <p:menuButton value="Opciones">
           <p:menuitem value="Agregar" icon="fa fa-plus" title="Agregar" action="accion?faces-redirect=true" actionListener="#{kajoolDinamicosFiltro.doEvento('AGREGAR')}"/>

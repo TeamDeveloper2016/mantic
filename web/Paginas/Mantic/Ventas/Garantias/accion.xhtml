@@ -368,7 +368,7 @@
 			</div>
 		</p:dialog>
 		<p:dialog id="dialogoAlmacenes" widgetVar="dlgAlmacenes" header="Articulo en sucursales" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();restoreCursoArt();" width="60%">						
-			<p:dataTable lazy="true" id="almacenes" widgetVar="kajoolTable" var="row" value="#{manticVentasGarantiasAccion.almacenes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticVentasGarantiasAccion.almacenes.rowCount gt manticVentasGarantiasAccion.almacenes.pageSize}" rowIndexVar="index" reflow="true">            	
+			<p:dataTable lazy="true" id="almacenes" widgetVar="kajoolTable" var="row" value="#{manticVentasGarantiasAccion.almacenes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticVentasGarantiasAccion.almacenes.rowCount gt manticVentasGarantiasAccion.almacenes.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            	
 				<p:column headerText="No" styleClass="janal-wid-10">
 					<h:outputText value="#{index+ 1}.-"/>
 				</p:column>   
@@ -428,7 +428,7 @@
 					</h:panelGrid>	
 				</p:tab>
 				<p:tab title="Especificaciones">
-					<p:dataTable lazy="true" id="lazyEspecificaciones" var="row" value="#{manticVentasGarantiasAccion.attrs.lazyEspecificaciones}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{manticVentasGarantiasAccion.attrs.lazyEspecificaciones.rowCount gt manticVentasGarantiasAccion.attrs.lazyEspecificaciones.pageSize}" rowIndexVar="index" reflow="true">            
+					<p:dataTable lazy="true" id="lazyEspecificaciones" var="row" value="#{manticVentasGarantiasAccion.attrs.lazyEspecificaciones}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{manticVentasGarantiasAccion.attrs.lazyEspecificaciones.rowCount gt manticVentasGarantiasAccion.attrs.lazyEspecificaciones.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
             <p:column class="MarAuto Responsive">
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
@@ -447,7 +447,7 @@
           </p:dataTable>
 				</p:tab>
 				<p:tab title="Descuentos">
-					<p:dataTable lazy="true" id="lazyDescuentos" var="row" value="#{manticVentasGarantiasAccion.attrs.lazyDescuentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticVentasGarantiasAccion.attrs.lazyDescuentos.rowCount gt manticVentasGarantiasAccion.attrs.lazyDescuentos.pageSize}" rowIndexVar="index" reflow="true">            
+					<p:dataTable lazy="true" id="lazyDescuentos" var="row" value="#{manticVentasGarantiasAccion.attrs.lazyDescuentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticVentasGarantiasAccion.attrs.lazyDescuentos.rowCount gt manticVentasGarantiasAccion.attrs.lazyDescuentos.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
             <p:column class="MarAuto Responsive janal-column-right janal-wid-20">
               <f:facet name="header">
                 <h:outputText value="Porcentaje"/>
@@ -573,7 +573,7 @@
 					<p:spacer/>
 				</h:panelGrid>
 				<p:outputLabel value="Deudas pendientes." styleClass="font-resume-venta-detail"/>
-				<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticVentasGarantiasAccion.detalleDeudaCliente}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticVentasGarantiasAccion.attrs.seleccionadoDetalle}" selectionMode="single" paginator="#{manticVentasGarantiasAccion.detalleDeudaCliente.rowCount gt manticVentasGarantiasAccion.detalleDeudaCliente.pageSize}" rowIndexVar="index" reflow="true">										
+				<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticVentasGarantiasAccion.detalleDeudaCliente}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticVentasGarantiasAccion.attrs.seleccionadoDetalle}" selectionMode="single" paginator="#{manticVentasGarantiasAccion.detalleDeudaCliente.rowCount gt manticVentasGarantiasAccion.detalleDeudaCliente.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">										
 					<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.consecutivo}">
 						<f:facet name="header">
 							<h:outputText value="Ticket"/>

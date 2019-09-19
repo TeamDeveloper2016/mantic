@@ -34,7 +34,7 @@
             </p:selectOneMenu>
           </p:panelGrid>
           <p:spacer width="20"/>
-          <p:dataTable lazy="true" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolMantenimientoInsumosCuentas.lazyModel}" paginator="#{kajoolMantenimientoInsumosCuentas.lazyModel.rowCount gt kajoolMantenimientoInsumosCuentas.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" selectionMode="single" selection="#{kajoolMantenimientoInsumosCuentas.attrs.selected}" reflow="true">								
+          <p:dataTable lazy="true" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolMantenimientoInsumosCuentas.lazyModel}" paginator="#{kajoolMantenimientoInsumosCuentas.lazyModel.rowCount gt kajoolMantenimientoInsumosCuentas.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" selectionMode="single" selection="#{kajoolMantenimientoInsumosCuentas.attrs.selected}" reflow="true" paginatorPosition="bottom">								
             <f:facet name="header">
               <p:menuButton value="Opciones">
                 <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>

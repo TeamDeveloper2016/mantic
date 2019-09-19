@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.catalogos.articulos.backing;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,18 +14,22 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloCodigo;
 import mx.org.kaana.mantic.catalogos.articulos.beans.RegistroArticulo;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
+import org.primefaces.event.SelectEvent;
 
 @Named(value = "manticCatalogosArticulosExpress")
 @ViewScoped
@@ -48,13 +53,16 @@ public class Express extends IBaseAttribute implements Serializable {
 			this.attrs.put("seleccionado", new Entity(-1L));				
 			this.attrs.put("idArticulo", JsfBase.getFlashAttribute("idArticulo")== null? -1L: JsfBase.getFlashAttribute("idArticulo"));
 			this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null || JsfBase.getFlashAttribute("idArticulo")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));				
-      doLoad();
-      loadProveedores();
-      loadCategorias();
-      loadEmpaques();
-      doLoadUnidadesMedidas();
-      loadGrupos();
-      loadTiposVentas();
+			this.attrs.put("menudeo", 50D);				
+			this.attrs.put("medioMayoreo", 40D);				
+			this.attrs.put("mayoreo", 40D);				
+      this.doLoad();
+      this.loadProveedores();
+      this.loadCategorias();
+      this.loadEmpaques();
+      this.doLoadUnidadesMedidas();
+      this.loadGrupos();
+      this.loadTiposVentas();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -256,12 +264,14 @@ public class Express extends IBaseAttribute implements Serializable {
     } // finally
   } // loadClientes	
 	
-	public void doActualizaPrecios(){
+	public void doActualizaPrecios() {
 		try {
-			if(this.registroArticulo.getArticulo().getPrecio()!= null){
-				this.registroArticulo.getArticulo().setMenudeo(Numero.toAjustarDecimales(this.registroArticulo.getArticulo().getPrecio() + (this.registroArticulo.getArticulo().getPrecio() * .5)));
-				this.registroArticulo.getArticulo().setMedioMayoreo(Numero.toAjustarDecimales(this.registroArticulo.getArticulo().getPrecio() + (this.registroArticulo.getArticulo().getPrecio() * .4)));
-				this.registroArticulo.getArticulo().setMayoreo(Numero.toAjustarDecimales(this.registroArticulo.getArticulo().getPrecio() + (this.registroArticulo.getArticulo().getPrecio() * .3)));
+			if(this.registroArticulo.getArticulo().getPrecio()!= null) {
+				boolean redondear= this.registroArticulo.getArticulo().getIdRedondear().equals(1L);
+				double total= this.registroArticulo.getArticulo().getPrecio()* (1+ (this.registroArticulo.getArticulo().getIva()/ 100));
+				this.registroArticulo.getArticulo().setMenudeo(Numero.toAjustarDecimales(total+ (total* ((Double)this.attrs.get("menudeo")/ 100)), redondear));
+				this.registroArticulo.getArticulo().setMedioMayoreo(Numero.toAjustarDecimales(total+ (total* ((Double)this.attrs.get("medioMayoreo")/ 100)), redondear));
+				this.registroArticulo.getArticulo().setMayoreo(Numero.toAjustarDecimales(total+ (total* ((Double)this.attrs.get("mayoreo")/ 100)), redondear));
 			} // if
 		} // try
 		catch (Exception e) {
@@ -271,6 +281,8 @@ public class Express extends IBaseAttribute implements Serializable {
 	}
 	
 	public void doUpdateArticuloExpress() {
+    double costo  = 0D;
+	  double calculo= 0D;
 		if(this.attrs.get("seleccionado")!= null && ((Entity)this.attrs.get("seleccionado")).size()> 1) {
 			Entity entity= (Entity)this.attrs.get("seleccionado");
 			if(entity.containsKey("idListaPrecio")) {
@@ -278,6 +290,16 @@ public class Express extends IBaseAttribute implements Serializable {
 				this.registroArticulo.getArticulo().setDescripcion(entity.toString("descripcion"));
 				this.registroArticulo.getArticulo().setNombre(entity.toString("descripcion"));
 				this.registroArticulo.getArticulo().setPrecio(entity.toDouble("costo"));
+				this.registroArticulo.getArticulo().setIva(16D);
+				this.registroArticulo.getArticulo().setIdRedondear(2L);
+				calculo = Numero.toRedondearSat((this.registroArticulo.getArticulo().getPrecio()* ((this.registroArticulo.getArticulo().getIva()/100)+ 1)));
+			  // al precio de neto se le quita el costo+ iva y lo que queda se calcula la utilidad bruta 
+				this.registroArticulo.getArticulo().setMenudeo(calculo+ (calculo* 0.5));
+				this.registroArticulo.getArticulo().setMedioMayoreo(calculo+ (calculo* 0.4));
+				this.registroArticulo.getArticulo().setMayoreo(calculo+ (calculo* 0.3));
+				this.attrs.put("menudeo", 50D);				
+				this.attrs.put("medioMayoreo", 40D);				
+				this.attrs.put("mayoreo", 30D);			
 				this.doActualizaPrecios();
 			} // if
 			else {
@@ -289,6 +311,13 @@ public class Express extends IBaseAttribute implements Serializable {
 				this.registroArticulo.getArticulo().setMenudeo(entity.toDouble("menudeo"));
 				this.registroArticulo.getArticulo().setMedioMayoreo(entity.toDouble("medioMayoreo"));
 				this.registroArticulo.getArticulo().setMayoreo(entity.toDouble("mayoreo"));
+				this.registroArticulo.getArticulo().setIva(entity.toDouble("iva"));
+				this.registroArticulo.getArticulo().setIdRedondear(entity.toLong("idRedondear"));
+				calculo = Numero.toRedondearSat((this.registroArticulo.getArticulo().getPrecio()* ((this.registroArticulo.getArticulo().getIva()/100)+ 1)));
+				this.attrs.put("menudeo", Numero.toRedondearSat((calculo- this.registroArticulo.getArticulo().getMenudeo())* 100/ calculo));				
+				this.attrs.put("medioMayoreo", Numero.toRedondearSat((calculo- this.registroArticulo.getArticulo().getMedioMayoreo())* 100/ calculo));				
+				this.attrs.put("mayoreo", Numero.toRedondearSat((calculo- this.registroArticulo.getArticulo().getMayoreo())* 100/ calculo));			
+				this.doActualizaPrecios();
 			} // else	
 		} // if
 	}	
@@ -297,5 +326,43 @@ public class Express extends IBaseAttribute implements Serializable {
 		if(this.getRegistroArticulo().getArticulo().getNombre()!= null && Cadena.isVacio(this.getRegistroArticulo().getArticulo().getDescripcion())) 
 		  this.getRegistroArticulo().getArticulo().setDescripcion(this.getRegistroArticulo().getArticulo().getNombre().toUpperCase());
 	}	
-	
+
+	public List<UISelectEntity> doCompleteCodigo(String query) {
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
+    try {
+			params= new HashMap<>();
+			columns= new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			String search= !Cadena.isVacio(query)? query.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("idProveedor", -1L);			
+  		params.put("codigo", search);			
+      this.attrs.put("codigosExpress", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+		return (List<UISelectEntity>)this.attrs.get("codigosExpress");
+	}	// doCompleteCodigo
+
+	public void doAsignaCodigo(SelectEvent event) {
+		UISelectEntity seleccion    = null;
+		List<UISelectEntity> codigos= null;
+		try {
+			codigos= (List<UISelectEntity>) this.attrs.get("codigosExpress");
+			seleccion= codigos.get(codigos.indexOf((UISelectEntity)event.getObject()));
+			this.attrs.put("codigoSeleccionExpress", seleccion);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doAsignaCodigo		
 }

@@ -50,7 +50,7 @@
 			</div>
 			<div class="ui-grid-row janal-grid-row">
 				<div id="collapse-content" class="ui-grid-col-12">
-					<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosClientesCuentasDeuda.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosClientesCuentasDeuda.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosClientesCuentasDeuda.lazyModel.rowCount gt manticCatalogosClientesCuentasDeuda.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+					<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosClientesCuentasDeuda.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosClientesCuentasDeuda.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosClientesCuentasDeuda.lazyModel.rowCount gt manticCatalogosClientesCuentasDeuda.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 						<p:ajax event="rowToggle" listener="#{manticCatalogosClientesCuentasDeuda.onRowToggle}" update="tablaDetalle" />  
 						<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
@@ -118,7 +118,7 @@
 							<h:outputText value="#{filtro['registro']}"/>
 						</p:column>		
 						<p:rowExpansion> 
-							<p:dataTable  lazy="true" id="tablaDetalle" widgetVar="kajoolTableDetalle" var="filtro" value="#{manticCatalogosClientesCuentasDeuda.detallePagos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticCatalogosClientesCuentasDeuda.detallePagos.rowCount gt manticCatalogosClientesCuentasDeuda.detallePagos.pageSize}" rowIndexVar="index" reflow="true">								
+							<p:dataTable  lazy="true" id="tablaDetalle" widgetVar="kajoolTableDetalle" var="filtro" value="#{manticCatalogosClientesCuentasDeuda.detallePagos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticCatalogosClientesCuentasDeuda.detallePagos.rowCount gt manticCatalogosClientesCuentasDeuda.detallePagos.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">								
 								<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.pago}">
 									<f:facet name="header">
 										<h:outputText value="Pago"/>
@@ -313,7 +313,7 @@
 			<h:form id="formDialogoPagoSegmento" prependId="false">
 				<p:tabView id="tabPagosSegmentos">
 					<p:tab title="Cuentas">												
-						<p:dataTable lazy="true" id="tablaSegmentos" var="filtro" value="#{manticCatalogosClientesCuentasDeuda.pagosSegmento}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosClientesCuentasDeuda.seleccionadosSegmento}" paginator="#{manticCatalogosClientesCuentasDeuda.pagosSegmento.rowCount gt manticCatalogosClientesCuentasDeuda.pagosSegmento.pageSize}" rowIndexVar="index" reflow="true">												
+						<p:dataTable lazy="true" id="tablaSegmentos" var="filtro" value="#{manticCatalogosClientesCuentasDeuda.pagosSegmento}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosClientesCuentasDeuda.seleccionadosSegmento}" paginator="#{manticCatalogosClientesCuentasDeuda.pagosSegmento.rowCount gt manticCatalogosClientesCuentasDeuda.pagosSegmento.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">												
 							<p:column selectionMode="multiple" style="width:30px;text-align:center"/>							
 							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
 								<f:facet name="header">

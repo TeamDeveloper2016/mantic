@@ -59,7 +59,7 @@
             <p:spacer width="1"/>
           </p:panelGrid>  
           <div class="EmptyBox10"/>
-          <p:dataTable lazy="true" widgetVar="iktanTable" id="tabla" var="row" rowIndexVar="index" value="#{kajoolExplotacionFiltro.lazyModel}" paginator="#{kajoolExplotacionFiltro.lazyModel.rowCount gt kajoolExplotacionFiltro.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="tabla-filtro" selectionMode="single" selection="#{kajoolExplotacionFiltro.attrs.selected}" draggableColumns="true"  reflow="true">
+          <p:dataTable lazy="true" widgetVar="iktanTable" id="tabla" var="row" rowIndexVar="index" value="#{kajoolExplotacionFiltro.lazyModel}" paginator="#{kajoolExplotacionFiltro.lazyModel.rowCount gt kajoolExplotacionFiltro.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="tabla-filtro" selectionMode="single" selection="#{kajoolExplotacionFiltro.attrs.selected}" draggableColumns="true"  reflow="true" paginatorPosition="bottom">
             <f:facet name="header">          
               <p:menuButton value="Opciones">                
                 <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>

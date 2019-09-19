@@ -12,12 +12,10 @@ import org.hibernate.Session;
 import mx.org.kaana.kajool.enums.EAccion;
 import static mx.org.kaana.kajool.enums.EAccion.MODIFICAR;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
-import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Variables;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosBitacoraDto;
@@ -71,12 +69,13 @@ public class Transaccion extends IBaseTnx {
 		this.sat=sat;
 	}
 	
-	public Transaccion(Long idArticulo, Double precio, String descuento, String extra, List<TiposVentas> articulos) {
+	public Transaccion(Long idArticulo, Double precio, String descuento, String extra, List<TiposVentas> articulos, String sat) {
 		this.idArticulo= idArticulo;
 		this.precio    = precio;
 		this.descuento = descuento;
 		this.extra     = extra;
 		this.articulos = articulos;
+		this.sat       = sat;
 	} // Transaccion
 
 	public String getMessageError() {

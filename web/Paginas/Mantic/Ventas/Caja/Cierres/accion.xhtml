@@ -300,7 +300,7 @@
 							</div>
 						</p:tab>						
 						<p:tab title="Retiros/Abonos">
-							<p:dataTable lazy="true" id="movimientos" styleClass="ambos" widgetVar="kajoolTable" var="row" value="#{manticVentasCajaCierresAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticVentasCajaCierresAccion.lazyModel.rowCount gt manticVentasCajaCierresAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+							<p:dataTable lazy="true" id="movimientos" styleClass="ambos" widgetVar="kajoolTable" var="row" value="#{manticVentasCajaCierresAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticVentasCajaCierresAccion.lazyModel.rowCount gt manticVentasCajaCierresAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 								<f:facet name="header" >
 									<div class="lg-pantalla">
 										<p:menuButton value="Opciones">

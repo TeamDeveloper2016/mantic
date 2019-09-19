@@ -24,7 +24,7 @@
         </p:panelGrid>
       </p:fieldset>
 		</div>
-    <p:dataTable lazy="true" id="tabla" styleClass="janal-content-table"  widgetVar="kajoolTable" var="row" rowIndexVar="index" value="#{kajoolMantenimientoGruposperfilesGruposFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{kajoolMantenimientoGruposperfilesGruposFiltro.lazyModel.rowCount gt kajoolMantenimientoGruposperfilesGruposFiltro.lazyModel.pageSize}" selection="#{kajoolMantenimientoGruposperfilesGruposFiltro.attrs.seleccionado}" reflow="true">
+    <p:dataTable lazy="true" id="tabla" styleClass="janal-content-table"  widgetVar="kajoolTable" var="row" rowIndexVar="index" value="#{kajoolMantenimientoGruposperfilesGruposFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{kajoolMantenimientoGruposperfilesGruposFiltro.lazyModel.rowCount gt kajoolMantenimientoGruposperfilesGruposFiltro.lazyModel.pageSize}" selection="#{kajoolMantenimientoGruposperfilesGruposFiltro.attrs.seleccionado}" reflow="true" paginatorPosition="bottom">
       <f:facet name="header">
           <p:menuButton value="Opciones">
             <p:menuitem value="Agregar" action="#{kajoolMantenimientoGruposperfilesGruposFiltro.doEvento('AGREGAR')}" icon="fa fa-plus" title="Agregar grupo" ajax="false" />

@@ -64,7 +64,7 @@
 						<p:commandButton id="buscar" icon="fa fa-search" process="@this estatus consecutivo fechaApartir fechaHasta importe producto" update="tabla" actionListener="#{manticExplorarListado.doLoad}" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 					</p:panelGrid>
 					<p:spacer/>
-          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticExplorarListado.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticExplorarListado.attrs.seleccionado}" selectionMode="single" paginator="#{manticExplorarListado.lazyModel.rowCount gt manticExplorarListado.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticExplorarListado.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticExplorarListado.attrs.seleccionado}" selectionMode="single" paginator="#{manticExplorarListado.lazyModel.rowCount gt manticExplorarListado.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 						<p:ajax event="rowToggle" listener="#{manticExplorarListado.onRowToggle}" update="tablaDetalle" />  
 						<f:facet name="header" >								
 							<div class="lg-pantalla">								
@@ -130,7 +130,7 @@
 							<h:outputText value="#{filtro['registro']}"/>
 						</p:column>		
 						<p:rowExpansion> 
-							<p:dataTable  lazy="true" id="tablaDetalle" widgetVar="kajoolTableDetalle" var="filtro" value="#{manticExplorarListado.detalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticExplorarListado.attrs.detalleSeleccionado}" selectionMode="single" paginator="#{manticExplorarListado.detalle.rowCount gt manticExplorarListado.detalle.pageSize}" rowIndexVar="index" reflow="true">								
+							<p:dataTable  lazy="true" id="tablaDetalle" widgetVar="kajoolTableDetalle" var="filtro" value="#{manticExplorarListado.detalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticExplorarListado.attrs.detalleSeleccionado}" selectionMode="single" paginator="#{manticExplorarListado.detalle.rowCount gt manticExplorarListado.detalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">								
 								<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.codigo}">
 									<f:facet name="header">
 										<h:outputText value="Código"/>

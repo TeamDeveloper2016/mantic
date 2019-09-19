@@ -218,7 +218,7 @@
 							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticInventariosDevolucionesAccion.adminOrden.orden.observaciones}"/>
 						</p:tab>
 						<p:tab title="Costo actual">
-							<p:dataTable lazy="true" id="catalogo" widgetVar="kajoolTable" var="filtro" value="#{manticInventariosDevolucionesAccion.lazyArticulos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticInventariosDevolucionesAccion.lazyArticulos.rowCount gt manticInventariosDevolucionesAccion.lazyArticulos.pageSize}" rowIndexVar="index" reflow="true">
+							<p:dataTable lazy="true" id="catalogo" widgetVar="kajoolTable" var="filtro" value="#{manticInventariosDevolucionesAccion.lazyArticulos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticInventariosDevolucionesAccion.lazyArticulos.rowCount gt manticInventariosDevolucionesAccion.lazyArticulos.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 								<f:facet name="header" >
 									<div style="float: left; font-weight: normal !important;">
 										<h:outputText value="Costo(s) actuales de los articulos relacionados"/>
@@ -288,7 +288,7 @@
 							</p:dataTable>
 						</p:tab>
 						<p:tab title="Costo anterior">
-							<p:dataTable lazy="true" id="bitacora" widgetVar="kajoolTable" var="filtro" value="#{manticInventariosDevolucionesAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticInventariosDevolucionesAccion.lazyModel.rowCount gt manticInventariosDevolucionesAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+							<p:dataTable lazy="true" id="bitacora" widgetVar="kajoolTable" var="filtro" value="#{manticInventariosDevolucionesAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticInventariosDevolucionesAccion.lazyModel.rowCount gt manticInventariosDevolucionesAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 								<f:facet name="header" >
 									<div style="float: left; font-weight: normal !important;">
 										<h:outputText value="Relación de articulos de la nota de credito"/>
@@ -417,7 +417,7 @@
 					</h:panelGrid>	
 				</p:tab>
 				<p:tab title="Especificaciones">
-					<p:dataTable lazy="true" id="lazyEspecificaciones" var="row" value="#{manticInventariosDevolucionesAccion.attrs.lazyEspecificaciones}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{manticInventariosDevolucionesAccion.attrs.lazyEspecificaciones.rowCount gt manticInventariosDevolucionesAccion.attrs.lazyEspecificaciones.pageSize}" rowIndexVar="index" reflow="true">            
+					<p:dataTable lazy="true" id="lazyEspecificaciones" var="row" value="#{manticInventariosDevolucionesAccion.attrs.lazyEspecificaciones}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{manticInventariosDevolucionesAccion.attrs.lazyEspecificaciones.rowCount gt manticInventariosDevolucionesAccion.attrs.lazyEspecificaciones.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
             <p:column class="MarAuto Responsive">
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
@@ -436,7 +436,7 @@
           </p:dataTable>
 				</p:tab>
 				<p:tab title="Descuentos">
-					<p:dataTable lazy="true" id="lazyDescuentos" var="row" value="#{manticInventariosDevolucionesAccion.attrs.lazyDescuentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticInventariosDevolucionesAccion.attrs.lazyDescuentos.rowCount gt manticInventariosDevolucionesAccion.attrs.lazyDescuentos.pageSize}" rowIndexVar="index" reflow="true">            
+					<p:dataTable lazy="true" id="lazyDescuentos" var="row" value="#{manticInventariosDevolucionesAccion.attrs.lazyDescuentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticInventariosDevolucionesAccion.attrs.lazyDescuentos.rowCount gt manticInventariosDevolucionesAccion.attrs.lazyDescuentos.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
             <p:column class="MarAuto Responsive janal-column-right janal-wid-20">
               <f:facet name="header">
                 <h:outputText value="Porcentaje"/>

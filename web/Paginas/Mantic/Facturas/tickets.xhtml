@@ -318,7 +318,7 @@
 			<p:inputText value="#{manticFacturasTickets.attrs.seleccionado.cliente}" styleClass="janal-wid-100-txt janal-color-blue" readonly="true"/>
 			<p:inputText value="#{manticFacturasTickets.attrs.seleccionado.total}" styleClass="janal-wid-100-txt janal-column-right janal-color-blue" readonly="true"/>
 		</p:panelGrid>			
-    <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{manticFacturasTickets.lazyTicket}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticFacturasTickets.lazyTicket.rowCount gt manticFacturasTickets.lazyTicket.pageSize}" rowIndexVar="index" reflow="true">
+    <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{manticFacturasTickets.lazyTicket}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticFacturasTickets.lazyTicket.rowCount gt manticFacturasTickets.lazyTicket.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 			<p:column class="MarAuto Responsive janal-wid-5">
 				<f:facet name="header">
 					<h:outputText value="No."/>
@@ -356,7 +356,7 @@
   </ui:define>	
 	<ui:define name="dialogos">
 		<p:dialog id="dialogoDetalle" widgetVar="dlgDetalle" header="Detalle de la(s) devolucion(es) de articulos" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="true" onHide="janal.desbloquear();" width="80%">			
-			<p:dataTable lazy="true" id="devoluciones" widgetVar="kajoolDevolucion" var="row" value="#{manticFacturasTickets.lazyTicket}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticFacturasTickets.lazyTicket.rowCount gt manticFacturasTickets.lazyTicket.pageSize}" rowIndexVar="index" reflow="true">
+			<p:dataTable lazy="true" id="devoluciones" widgetVar="kajoolDevolucion" var="row" value="#{manticFacturasTickets.lazyTicket}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticFacturasTickets.lazyTicket.rowCount gt manticFacturasTickets.lazyTicket.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 				<p:column class="MarAuto Responsive janal-wid-5">
 					<f:facet name="header">
 						<h:outputText value="No."/>

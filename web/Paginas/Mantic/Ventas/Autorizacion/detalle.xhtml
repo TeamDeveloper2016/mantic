@@ -34,7 +34,7 @@
 				<div class="ui-grid-col-12">												
 					<p:panelGrid id="contenido" columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">					
 						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" style="overflow-y: visible" columnClasses="janal-wid-100">					
-							<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticVentasAutorizacionDetalle.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticVentasAutorizacionDetalle.attrs.seleccionado}" selectionMode="single" paginator="#{manticVentasAutorizacionDetalle.lazyModel.rowCount gt manticVentasAutorizacionDetalle.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+							<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticVentasAutorizacionDetalle.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticVentasAutorizacionDetalle.attrs.seleccionado}" selectionMode="single" paginator="#{manticVentasAutorizacionDetalle.lazyModel.rowCount gt manticVentasAutorizacionDetalle.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 								<p:column class="MarAuto Responsive janal-wid-3">
 									<f:facet name="header">
 										<h:outputText value="No."/>

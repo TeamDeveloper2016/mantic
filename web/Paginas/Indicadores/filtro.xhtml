@@ -17,7 +17,7 @@
   <ui:define name="librerias">
   </ui:define>
   <ui:define name="contenido">	
-    <p:dataTable lazy="true" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolIndicadoresFiltro.lazyModel}" paginator="false" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="40" styleClass="janal-content-table" selectionMode="single" selection="#{kajoolIndicadoresFiltro.attrs.selected}" reflow="true">
+    <p:dataTable lazy="true" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolIndicadoresFiltro.lazyModel}" paginator="false" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="40" styleClass="janal-content-table" selectionMode="single" selection="#{kajoolIndicadoresFiltro.attrs.selected}" reflow="true" paginatorPosition="bottom">
       <f:facet name="header">
         <p:menuButton value="Opciones">
 					<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>

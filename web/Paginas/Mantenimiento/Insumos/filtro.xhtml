@@ -42,7 +42,7 @@
     <div class="Container100">
       <div class="ContainerIndent">
         <div class="Container">
-          <p:dataTable lazy="true" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolMantenimientoInsumosFiltro.lazyModel}" paginator="#{kajoolMantenimientoInsumosFiltro.lazyModel.rowCount gt kajoolMantenimientoInsumosFiltro.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" selectionMode="single" selection="#{kajoolMantenimientoInsumosFiltro.attrs.selected}" reflow="true">								
+          <p:dataTable lazy="true" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolMantenimientoInsumosFiltro.lazyModel}" paginator="#{kajoolMantenimientoInsumosFiltro.lazyModel.rowCount gt kajoolMantenimientoInsumosFiltro.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" selectionMode="single" selection="#{kajoolMantenimientoInsumosFiltro.attrs.selected}" reflow="true" paginatorPosition="bottom">								
             <f:facet name="header">
               <p:menuButton value="Opciones">
                 <p:menuitem id="agregar" icon="fa fa-plus" value="Agregar" onstart="return janal.bloquear();" actionListener="#{kajoolMantenimientoInsumosFiltro.doLoadDialogo('AGREGAR')}" oncomplete="PF('dlgInsumo').show();" rendered="#{kajoolMantenimientoInsumosFiltro.attrs.admin}" update="dialogoInsumo"/>
