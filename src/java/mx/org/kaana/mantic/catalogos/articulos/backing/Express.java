@@ -311,8 +311,12 @@ public class Express extends IBaseAttribute implements Serializable {
 				this.registroArticulo.getArticulo().setMenudeo(entity.toDouble("menudeo"));
 				this.registroArticulo.getArticulo().setMedioMayoreo(entity.toDouble("medioMayoreo"));
 				this.registroArticulo.getArticulo().setMayoreo(entity.toDouble("mayoreo"));
-				this.registroArticulo.getArticulo().setIva(entity.toDouble("iva"));
-				this.registroArticulo.getArticulo().setIdRedondear(entity.toLong("idRedondear"));
+				this.registroArticulo.getArticulo().setIva(16D);
+				if(entity.containsKey("iva"))
+				  this.registroArticulo.getArticulo().setIva(entity.toDouble("iva"));
+				this.registroArticulo.getArticulo().setIdRedondear(2L);
+				if(entity.containsKey("idRedondear"))
+  				this.registroArticulo.getArticulo().setIdRedondear(entity.toLong("idRedondear"));
 				calculo = Numero.toRedondearSat((this.registroArticulo.getArticulo().getPrecio()* ((this.registroArticulo.getArticulo().getIva()/100)+ 1)));
 				this.attrs.put("menudeo", Numero.toRedondearSat((calculo- this.registroArticulo.getArticulo().getMenudeo())* 100/ calculo));				
 				this.attrs.put("medioMayoreo", Numero.toRedondearSat((calculo- this.registroArticulo.getArticulo().getMedioMayoreo())* 100/ calculo));				
