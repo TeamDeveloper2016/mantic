@@ -185,7 +185,7 @@ public class Transaccion extends TransaccionFactura {
 		} // try
 		catch (Exception e) {		
 			Error.mensaje(e);
-			throw new Exception(this.messageError.concat("<br/>")+ e.getMessage());
+			throw new Exception(this.messageError.concat("<br/>")+ e);
 		} // catch		
 		finally {
 			Methods.clean(params);

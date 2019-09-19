@@ -125,20 +125,23 @@ public final class Numero {
 	}
 	
   public static double toAjustarDecimales(double valor, boolean rounded) {
-    valor= toRedondearSat(valor);
-		if(rounded) {
-      BigDecimal value = new BigDecimal(String.valueOf(valor));
-      BigDecimal ivalue= new BigDecimal(value.toBigInteger());
-      BigDecimal dvalue= value.remainder(BigDecimal.ONE);
-      //BigDecimal avalue= value.subtract(value.setScale(0, RoundingMode.FLOOR)).movePointRight(value.scale());		
-			if(dvalue.doubleValue()>= 0.5)
-			  valor= ivalue.doubleValue()+ 1;
-			else
-  			if(dvalue.doubleValue()>= 0.01)
-	  			valor= ivalue.doubleValue()+ 0.5;
-			  else
-					valor= ivalue.doubleValue();
-		} // if
+		valor= toRedondearSat(valor);
+		try {
+			if(rounded) {
+				BigDecimal value = new BigDecimal(String.valueOf(valor));
+				BigDecimal ivalue= new BigDecimal(value.toBigInteger());
+				BigDecimal dvalue= value.remainder(BigDecimal.ONE);
+				//BigDecimal avalue= value.subtract(value.setScale(0, RoundingMode.FLOOR)).movePointRight(value.scale());		
+				if(dvalue.doubleValue()> 0.5)
+					valor= ivalue.doubleValue()+ 1;
+				else
+					if(dvalue.doubleValue()>= 0.01 && dvalue.doubleValue()< 0.5)
+						valor= ivalue.doubleValue()+ 0.5;
+			} // if
+		} // try
+		catch(Exception e) {
+			Error.mensaje(e);
+		} // catch
     return valor;
   } // redondear
 
@@ -210,13 +213,18 @@ public final class Numero {
   }
 
 	public static void main(String ... args) {
-    LOG.info(10*100.0);		
-    LOG.info(Numero.toRedondearSat(10*100.0));		
-    LOG.info(10D/3D);		
-    LOG.info(Numero.toRedondearSat(3.123455));		
-    LOG.info(Numero.toRedondearSat(10D/3D));		
-    LOG.info(Numero.toTruncate(10D/3D));		
-    LOG.info(Numero.toTruncate(3.123455, 3));		
+//    LOG.info(10*100.0);		
+//    LOG.info(Numero.toRedondearSat(10*100.0));		
+//    LOG.info(10D/3D);		
+//    LOG.info(Numero.toRedondearSat(3.123455));		
+//    LOG.info(Numero.toRedondearSat(10D/3D));		
+//    LOG.info(Numero.toTruncate(10D/3D));		
+//    LOG.info(Numero.toTruncate(3.123455, 3));		
+    LOG.info("3.5: "+ Numero.toAjustarDecimales(3.50, true));		
+    LOG.info("3.123455: "+ Numero.toAjustarDecimales(3.123455, true));		
+    LOG.info("3.123455: "+ Numero.toAjustarDecimales(3.123455, false));		
+    LOG.info("3.5123: "+ Numero.toAjustarDecimales(3.5123, true));		
+    LOG.info("3.1999: "+ Numero.toAjustarDecimales(3.1999, true));		
 	}	
 
 } // Numero

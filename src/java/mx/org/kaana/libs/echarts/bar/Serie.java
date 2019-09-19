@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import mx.org.kaana.libs.echarts.beans.Label;
 import mx.org.kaana.libs.echarts.beans.MarkLine;
 import mx.org.kaana.libs.echarts.enums.EKinds;
 
@@ -76,5 +77,5 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 	public String toString() {
 		return "Serie{"+"barWidth="+barWidth+", data="+data+", markLine="+markLine+", barGap="+barGap+'}';
 	}
-
+	
 }

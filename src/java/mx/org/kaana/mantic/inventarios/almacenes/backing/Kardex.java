@@ -88,6 +88,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
   	this.attrs.put("buscaPorCodigo", false);
 		this.attrs.put("costoMayorMenor", 0);
   	this.attrs.put("redondear", false);
+  	this.attrs.put("sat", Constantes.CODIGO_SAT);
   	this.attrs.put("ultimoCosto", 0.0D);
 		this.adminKardex= new AdminKardex(-1L, false);
 		this.toLoadCatalog();
@@ -145,6 +146,8 @@ public class Kardex extends IBaseAttribute implements Serializable {
 					UIBackingUtilities.toFormatEntity(solicitado, columns);
 					this.attrs.put("articulo", solicitado);
 					this.attrs.put("redondear", solicitado.toLong("idRedondear")== 1L);
+        	this.attrs.put("sat", solicitado.toString("sat"));
+        	this.attrs.put("ultimo", Global.format(EFormatoDinamicos.FECHA_HORA, solicitado.toTimestamp("actualizado")));
 					Periodo periodo= new Periodo();
 			    periodo.addMeses(-6);
 			    this.attrs.put("registro", periodo.toString());
@@ -177,6 +180,8 @@ public class Kardex extends IBaseAttribute implements Serializable {
 				this.attrs.put("existe", "<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
 				this.attrs.put("articulo", null);
 				this.attrs.put("redondear", false);
+      	this.attrs.put("sat", Constantes.CODIGO_SAT);
+       	this.attrs.put("ultimo", "");
 				this.attrs.put("ultimoCosto", 0.0D);
 				this.adminKardex.getTiposVentas().clear();
 			} // if	
@@ -838,6 +843,24 @@ public class Kardex extends IBaseAttribute implements Serializable {
     try {			
 			//Entity articulo= (Entity)this.attrs.get("articulo");
 			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (Boolean)this.attrs.get("redondear")? 1L: 2L);
+			if (transaccion.ejecutar(eaccion)) {
+				JsfBase.addMessage("Se modificaron el tipo de redondeo del articulo.", ETipoMensaje.INFORMACION);
+			}	// if
+			else 
+				JsfBase.addMessage("Ocurrió un error al hacer el cambio del tipo de redondeo.", ETipoMensaje.ERROR);      			
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+	}
+
+	public void doChangeCodigoSat() {
+    Transaccion transaccion= null;
+		EAccion eaccion        = EAccion.COMPLEMENTAR;
+    try {			
+			// Entity articulo= (Entity)this.attrs.get("articulo");
+			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (String)this.attrs.get("sat"));
 			if (transaccion.ejecutar(eaccion)) {
 				JsfBase.addMessage("Se modificaron el tipo de redondeo del articulo.", ETipoMensaje.INFORMACION);
 			}	// if

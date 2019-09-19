@@ -91,6 +91,7 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 			
 			// registar el cambio de precios en la bitacora de articulo 
 			TcManticArticulosDto global= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, item.getIdArticulo());
+			
 			TcManticArticulosBitacoraDto movimiento= new TcManticArticulosBitacoraDto(global.getIva(), JsfBase.getIdUsuario(), global.getMayoreo(), -1L, global.getMenudeo(), global.getCantidad(), global.getIdArticulo(), idNotaEntrada, global.getMedioMayoreo(), global.getPrecio(), global.getLimiteMedioMayoreo(), global.getLimiteMayoreo(), global.getDescuento(), global.getExtra());			
 			DaoFactory.getInstance().insert(sesion, movimiento);
 			
@@ -124,8 +125,15 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 				global.setDescuento(item.getDescuento());
 				global.setExtra(item.getExtras());
 			} // if	
-			else 
+			else {
 			  global.setPrecio(Numero.toRedondearSat(costo));
+				// ajustar solo los decimales cuando sea redondear 
+				if(global.getIdRedondear().equals(1L)) {
+					global.setMenudeo(Numero.toAjustarDecimales(global.getMenudeo(), true));
+					global.setMedioMayoreo(Numero.toAjustarDecimales(global.getMedioMayoreo(), true));
+					global.setMayoreo(Numero.toAjustarDecimales(global.getMayoreo(), true));
+				} // if
+			} // else
 			// siempre se modifica el costo del catalogo de articulo 
 			global.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 			global.setStock(global.getStock()+ item.getCantidad());

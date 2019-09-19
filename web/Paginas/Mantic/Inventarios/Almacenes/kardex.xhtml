@@ -17,6 +17,7 @@
 				'contenedorGrupos\\:codigo' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:nombre' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:codigos': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:sat'    : {validaciones: 'libre', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:costos' : {validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'libre', formatos: 'flotante', individual: true, grupo: 'calculos'},
 				'utilidades': {multiple: '$', validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'libre', formatos: 'flotante', individual: true, grupo: 'calculos', mensaje: 'La utilidad tiene que ser mayor a cero'},
 				'precios'   : {multiple: '$', validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'libre', formatos: 'flotante', individual: true, grupo: 'calculos', mensaje: 'El precio tiene que ser mayor a cero.'},
@@ -138,7 +139,10 @@
 									<p:outputLabel for="codigo" value="Código:"/>
 									<p:inputText id="codigo" value="#{manticInventariosAlmacenesKardex.attrs.articulo.propio}" styleClass="janal-wid-90 filas" readonly="true"/>
 									<p:outputLabel for="sat" value="Código SAT:"/>
-									<p:inputText id="sat" value="#{manticInventariosAlmacenesKardex.attrs.articulo.sat}" styleClass="janal-wid-90 filas" readonly="true"/>                    
+									<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-wid-col-38">	
+									  <p:inputText id="sat" value="#{manticInventariosAlmacenesKardex.attrs.articulo.sat}" styleClass="janal-wid-90 filas" disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}"/>
+										<p:commandButton title="Actualizar código" icon="fa fa-check" process="@this sat" update="@(.filas)" action="#{manticInventariosAlmacenesKardex.doChangeCodigoSat}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
+  								</p:panelGrid>
 									<p:outputLabel for="nombre" value="Nombre:"/>
 									<p:inputText id="nombre" value="#{manticInventariosAlmacenesKardex.attrs.articulo.nombre}" styleClass="janal-wid-90 filas" readonly="true"/>
 									<p:spacer width="1px"/><p:separator/>

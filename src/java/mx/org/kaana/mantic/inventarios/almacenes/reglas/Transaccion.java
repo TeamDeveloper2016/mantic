@@ -38,6 +38,7 @@ public class Transaccion extends IBaseTnx {
 	private Double precio;
 	private String descuento;
 	private String extra;
+	private String sat;
 	private List<TiposVentas> articulos;
 	protected String messageError;		
 
@@ -54,6 +55,11 @@ public class Transaccion extends IBaseTnx {
 	public Transaccion(Long idArticulo, Long idRedondear) {
 		this.idArticulo= idArticulo;
 		this.idRedondear= idRedondear;
+	}
+
+	public Transaccion(Long idArticulo, String sat) {
+		this.idArticulo=idArticulo;
+		this.sat=sat;
 	}
 	
 	public Transaccion(Long idArticulo, Double precio, String descuento, String extra, List<TiposVentas> articulos) {
@@ -106,6 +112,13 @@ public class Transaccion extends IBaseTnx {
 				case PROCESAR:
 					articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.idArticulo);
 					articulo.setIdRedondear(this.idRedondear);
+					articulo.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+					regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
+					break;
+				case COMPLEMENTAR:
+					articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.idArticulo);
+					articulo.setSat(this.sat);
+					articulo.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 					regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
 					break;
 			} // switch
@@ -114,7 +127,7 @@ public class Transaccion extends IBaseTnx {
 		} // try
 		catch (Exception e) {
       Error.mensaje(e);			
-			throw new Exception(this.messageError.concat("<br/>")+ e.getMessage());
+			throw new Exception(this.messageError.concat("<br/>")+ e);
 		} // catch		
 		return regresar;
 	}	// ejecutar	

@@ -80,7 +80,7 @@ public class Transaccion extends IBaseTnx {
       } // if
     } // try
     catch (Exception e) {
-      throw new Exception(this.messageError.concat("<br/>")+ e.getMessage());
+      throw new Exception(this.messageError.concat("<br/>")+ e);
     } // catch		
     return regresar;
   } // ejecutar

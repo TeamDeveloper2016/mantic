@@ -93,7 +93,7 @@ public class Transaccion extends TransaccionFactura{
       } // if
     } // try
     catch (Exception e) {
-      throw new Exception(this.messageError.concat("<br/>")+ e.getMessage());
+      throw new Exception(this.messageError.concat("<br/>")+ e);
     } // catch		
     return regresar;
 	} // ejecutar	

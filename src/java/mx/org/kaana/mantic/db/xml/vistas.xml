@@ -2257,6 +2257,7 @@
 					tc_mantic_articulos.descuento,
 					tc_mantic_articulos.extra,
 					tc_mantic_articulos.id_redondear,
+					tc_mantic_articulos.actualizado,
 					tc_mantic_articulos.registro
 				from
 					tc_mantic_articulos

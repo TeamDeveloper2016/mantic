@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
+import mx.org.kaana.libs.formato.Numero;
 
 /**
  *@company KAANA
@@ -215,6 +216,10 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
   }
 
   public Double getPrecio() {
+		if(this.precio<= 0) {
+			double impuesto= (this.menudeo/ 2)* (this.iva/ 100);
+			this.precio= Numero.toAjustarDecimales((this.menudeo/ 2)- impuesto, this.idRedondear== 1L);
+		} // if
     return precio;
   }
 

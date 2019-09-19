@@ -135,7 +135,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		} // try
 		catch (Exception e) {
       Error.mensaje(e);			
-			throw new Exception(this.messageError.concat("<br/>")+ e.getMessage());
+			throw new Exception(this.messageError.concat("<br/>")+ e);
 		} // catch		
 		LOG.info("Se generó de forma correcta la devolución de entrada: "+ this.orden.getConsecutivo());
 		return regresar;
