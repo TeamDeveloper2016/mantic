@@ -290,7 +290,7 @@
 		process: function()  {
  			janal.console('jsKardex.process: '+ $kardex.reference);
 			janal.desbloquear();
-			janal.reset();
+			janal.refresh();
 			setTimeout($kardex.locate(), 500);
 			$('#source-image').attr('href', $('#contenedorGrupos\\:icon-image').attr('src'));
 		},

@@ -131,7 +131,7 @@ public class Transaccion extends IBaseTnx {
 					regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
 					break;
 				case ASIGNAR:
-					this.sat= this.sat.replaceAll(Constantes.CLEAN_ART, "").trim();
+					this.sat= this.sat.toUpperCase().replaceAll(Constantes.CLEAN_ART, "").trim();
 					Entity auxiliar= this.toFindCodigoAuxiliar(sesion, this.sat);
 					if(auxiliar== null || auxiliar.isEmpty()) {
 						TcManticArticulosCodigosDto codigos= new TcManticArticulosCodigosDto(
@@ -146,8 +146,10 @@ public class Transaccion extends IBaseTnx {
 						);
 						regresar= DaoFactory.getInstance().insert(sesion, codigos)>= 1L;
 					} // if
-					else 
-						new RuntimeException("El código ya lo tiene asignado el articulo ["+ auxiliar.toString("nombre")+ "] !");
+					else {
+						this.messageError= "El código ya lo tiene asignado el articulo ["+ auxiliar.toString("nombre")+ "] !";
+						regresar= false;
+					} // else	
 					break;
 			} // switch
 			if(!regresar)
