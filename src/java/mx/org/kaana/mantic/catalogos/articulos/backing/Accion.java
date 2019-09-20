@@ -264,13 +264,13 @@ public class Accion extends IBaseAttribute implements Serializable {
 		else {
 			double calculo= (Double)this.attrs.get("precio")* (1+ (this.registroArticulo.getArticulo().getIva()/ 100));
       double factor = Numero.toRedondearSat(this.registroArticulo.getArticulo().getMenudeo()/ calculo);
-			this.attrs.put("menudeo", Numero.toRedondearSat(factor- 1));
+			this.attrs.put("menudeo", Numero.toRedondearSat((factor- 1)* 100));
 			this.registroArticulo.getArticulo().setMenudeo(calculo* factor);
       factor = Numero.toRedondearSat(this.registroArticulo.getArticulo().getMedioMayoreo()/ calculo);
-			this.attrs.put("medioMayoreo", Numero.toRedondearSat(factor- 1));
+			this.attrs.put("medioMayoreo", Numero.toRedondearSat((factor- 1)* 100));
 			this.registroArticulo.getArticulo().setMedioMayoreo(calculo* factor);
       factor = Numero.toRedondearSat(this.registroArticulo.getArticulo().getMayoreo()/ calculo);
-			this.attrs.put("mayoreo", Numero.toRedondearSat(factor- 1));
+			this.attrs.put("mayoreo", Numero.toRedondearSat((factor- 1)* 100));
 			this.registroArticulo.getArticulo().setMayoreo(calculo* factor);
 		} // if	
 	  this.attrs.put("precio", precio);
