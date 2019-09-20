@@ -62,9 +62,14 @@ public class Transaccion extends TransaccionFactura {
 	}	
 	
 	public Transaccion(RegistroArticulo articulo, Double precio) {
+		this(articulo, precio, false);
+	}
+	
+	public Transaccion(RegistroArticulo articulo, Double precio, Boolean eliminar) {
 		this.articulo= articulo;		
 		this.precio  = precio;
-		this.toFactores();
+		if(!eliminar)
+			this.toFactores();
 	} // Transaccion
 
 	private void toFactores() {
@@ -109,7 +114,7 @@ public class Transaccion extends TransaccionFactura {
         throw new Exception("");
 		} // try
 		catch (Exception e) {			
-			throw new Exception(this.messageError.concat("<br/>")+ e);
+			throw new Exception(this.messageError.concat("<br/>") + e);
 		} // catch		
 		return regresar;
 	} // ejecutar
@@ -187,7 +192,7 @@ public class Transaccion extends TransaccionFactura {
 	private boolean eliminarArticulo(Session sesion) throws Exception{
 		boolean regresar         = false;		
 		Map<String, Object>params= null;
-		try {			
+		try {						
 			params= new HashMap<>();
 			params.put("idArticulo", this.articulo.getIdArticulo());
 			if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosCodigosDto.class, params)> -1L){
@@ -199,15 +204,18 @@ public class Transaccion extends TransaccionFactura {
 									if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloTipoVentaDto.class, params)> -1L){
 										if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosDimencionesDto.class, params)> -1L){
 											//if(DaoFactory.getInstance().deleteAll(sesion, TcManticImagenesDto.class, params)> -1L){
-											//if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloPresentacionDto.class, params)> -1L){
+											if(DaoFactory.getInstance().execute(ESql.DELETE, sesion, "TrManticArticuloPresentacionDto", "rows", params)> -1L){
 												regresar= DaoFactory.getInstance().delete(sesion, TcManticArticulosDto.class, this.articulo.getIdArticulo())>= 1L;
 												if(this.articulo.getArticulo().getIdArticuloTipo().equals(1L))
 													eliminarArticuloFacturama(sesion, this.articulo.getArticulo().getIdFacturama());
-				}	}	}	}	}	}	}	} // if		
+				}	}	}	}	}	}	}	} } // if		
 		} // try
 		catch (Exception e) {			
 			throw e;
-		} // catch		
+		} // catch	
+		finally{
+			this.messageError= "Error al eliminar el articulo, verifique que el articulo no tenga dependencias (venta, cotización, orden, etc.)";
+		} // finally
 		return regresar;
 	} // eliminarArticulo
 	
