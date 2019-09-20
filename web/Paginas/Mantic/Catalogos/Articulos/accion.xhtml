@@ -360,13 +360,13 @@
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
 			<p:commandButton id="kardex" value="Kardex" icon="fa fa-cart-plus" process="@form" action="#{manticCatalogosArticulosAccion.doKardex()}" rendered="#{manticCatalogosArticulosAccion.attrs.goKardex}"/>
-			<p:commandButton id="clonar" value="Clonar" icon="fa fa-copy" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar('ACTIVAR')}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosArticulosAccion.attrs.activeClon}"/>
+			<p:commandButton id="clonar" value="Clonar" icon="fa fa-copy" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar('COPIAR')}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosArticulosAccion.attrs.activeClon}"/>
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticCatalogosArticulosAccion.doAceptar(manticCatalogosArticulosAccion.attrs.nombreAccion)}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosArticulosAccion.doCancelar}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
 			<p:commandButton id="kardexIcon" title="Kardex" icon="fa fa-cart-plus" process="@form" action="#{manticCatalogosArticulosAccion.doKardex()}" rendered="#{manticCatalogosArticulosAccion.attrs.goKardex}"/>
-			<p:commandButton id="clonarIcon" title="Clonar" icon="fa fa-copy" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar('ACTIVAR')}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosArticulosAccion.attrs.activeClon}"/>
+			<p:commandButton id="clonarIcon" title="Clonar" icon="fa fa-copy" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar('COPIAR')}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosArticulosAccion.attrs.activeClon}"/>
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar(manticCatalogosArticulosAccion.attrs.nombreAccion)}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosArticulosAccion.doCancelar}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
