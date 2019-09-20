@@ -269,9 +269,9 @@ public class Express extends IBaseAttribute implements Serializable {
 			if(this.registroArticulo.getArticulo().getPrecio()!= null) {
 				boolean redondear= this.registroArticulo.getArticulo().getIdRedondear().equals(1L);
 				double total= this.registroArticulo.getArticulo().getPrecio()* (1+ (this.registroArticulo.getArticulo().getIva()/ 100));
-				this.registroArticulo.getArticulo().setMenudeo(Numero.toAjustarDecimales(total+ (total* ((Double)this.attrs.get("menudeo")/ 100)), redondear));
-				this.registroArticulo.getArticulo().setMedioMayoreo(Numero.toAjustarDecimales(total+ (total* ((Double)this.attrs.get("medioMayoreo")/ 100)), redondear));
-				this.registroArticulo.getArticulo().setMayoreo(Numero.toAjustarDecimales(total+ (total* ((Double)this.attrs.get("mayoreo")/ 100)), redondear));
+				this.registroArticulo.getArticulo().setMenudeo(Numero.toAjustarDecimales(total* (1+ ((Double)this.attrs.get("menudeo")/ 100)), redondear));
+				this.registroArticulo.getArticulo().setMedioMayoreo(Numero.toAjustarDecimales(total* (1+ ((Double)this.attrs.get("medioMayoreo")/ 100)), redondear));
+				this.registroArticulo.getArticulo().setMayoreo(Numero.toAjustarDecimales(total* (1+ ((Double)this.attrs.get("mayoreo")/ 100)), redondear));
 			} // if
 		} // try
 		catch (Exception e) {
@@ -281,7 +281,6 @@ public class Express extends IBaseAttribute implements Serializable {
 	}
 	
 	public void doUpdateArticuloExpress() {
-    double costo  = 0D;
 	  double calculo= 0D;
 		if(this.attrs.get("seleccionado")!= null && ((Entity)this.attrs.get("seleccionado")).size()> 1) {
 			Entity entity= (Entity)this.attrs.get("seleccionado");
@@ -318,9 +317,9 @@ public class Express extends IBaseAttribute implements Serializable {
 				if(entity.containsKey("idRedondear"))
   				this.registroArticulo.getArticulo().setIdRedondear(entity.toLong("idRedondear"));
 				calculo = Numero.toRedondearSat((this.registroArticulo.getArticulo().getPrecio()* ((this.registroArticulo.getArticulo().getIva()/100)+ 1)));
-				this.attrs.put("menudeo", Numero.toRedondearSat((calculo- this.registroArticulo.getArticulo().getMenudeo())* 100/ calculo));				
-				this.attrs.put("medioMayoreo", Numero.toRedondearSat((calculo- this.registroArticulo.getArticulo().getMedioMayoreo())* 100/ calculo));				
-				this.attrs.put("mayoreo", Numero.toRedondearSat((calculo- this.registroArticulo.getArticulo().getMayoreo())* 100/ calculo));			
+				this.attrs.put("menudeo", Numero.toRedondearSat((this.registroArticulo.getArticulo().getMenudeo()- calculo)* 100/ calculo));				
+				this.attrs.put("medioMayoreo", Numero.toRedondearSat((this.registroArticulo.getArticulo().getMedioMayoreo()- calculo)* 100/ calculo));				
+				this.attrs.put("mayoreo", Numero.toRedondearSat((this.registroArticulo.getArticulo().getMayoreo()- calculo)* 100/ calculo));			
 				this.doActualizaPrecios();
 			} // else	
 		} // if

@@ -45,7 +45,7 @@
   </style>		
 	<p:dialog header="Agregar articulo de forma express" id="dialogoArtExpress" widgetVar="dlgArtExpress" onShow="notificarExpress();" onHide="janal.desbloquear(); janal.restore(); janal.refresh();" dynamic="true" width="70%" resizable="false" closeOnEscape="true" closable="true" appendTo="@(body)" styleClass="janal-dialog-express">
 		<h:form id="formDialogoExpressArticulos" prependId="false">
-			<p:remoteCommand name="notificarExpress" actionListener="#{manticCatalogosArticulosExpress.doUpdateArticuloExpress}" process="@this" update="@(.express)" oncomplete="janal.change('formDialogoExpressArticulos', fieldsDialogExpressArt);"/>
+			<p:remoteCommand name="notificarExpress" actionListener="#{manticCatalogosArticulosExpress.doUpdateArticuloExpress}" process="@this" update="@(.express) @(.calculos) @(.filas)" oncomplete="janal.change('formDialogoExpressArticulos', fieldsDialogExpressArt);"/>
 			<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 				<div class="ui-grid-row janal-grid-row">
 					<div class="ui-grid-col-12">
@@ -91,7 +91,7 @@
   							<p:outputLabel for="mayoreoDialog" value="% Mayoreo:"/>
 								<p:outputLabel value="$ #{manticCatalogosArticulosExpress.registroArticulo.articulo.mayoreo}" styleClass="janal-font-bold janal-color-blue express"/>
 							</p:panelGrid>	
-							<p:inputNumber id="precioDialog" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" value="#{manticCatalogosArticulosExpress.registroArticulo.articulo.precio}">
+							<p:inputNumber id="precioDialog" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue filas" value="#{manticCatalogosArticulosExpress.registroArticulo.articulo.precio}">
  								 <p:ajax event="blur" listener="#{manticCatalogosArticulosExpress.doActualizaPrecios}" process="@this precioDialog" update="@(.calculos) @(.express)" onstart="janal.partial('costo');"/>
 							</p:inputNumber>                    														
 							<p:inputNumber id="menudeoDialog" styleClass="janal-wid-100-txt calculos" inputStyleClass="janal-wid-100-txt janal-column-right calculos" value="#{manticCatalogosArticulosExpress.attrs.menudeo}" converter="javax.faces.Double">
