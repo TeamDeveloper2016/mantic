@@ -59,8 +59,10 @@
 		move: function() {
 			janal.console('jsCalculator.move: '+ this.last);
 			// janal.valueLastFocus(this.last);
-			if($(janal.lastNameFocus) && !$(this.lastNameFocus).is('[readonly="readonly"]'))	
+			if($(janal.lastNameFocus) && !$(this.lastNameFocus).is('[readonly="readonly"]')) {
 				$(janal.lastNameFocus).val(this.last);
+				$(janal.lastNameFocus).addClass('add-value-calculator');
+			} // if
 			else
 				janal.console('jsCalculator.move: '+ janal.lastNameFocus+ ' esta de solo lectura, no se puede pasar el valor ! ');
 			PF('dlgCalculadora').hide();

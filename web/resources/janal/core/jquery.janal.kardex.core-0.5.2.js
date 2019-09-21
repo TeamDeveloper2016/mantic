@@ -81,7 +81,12 @@
       $(document).on('focus', this.focus, function() {
 				janal.lastNameFocus= this;
   			janal.console('jsKardex.focus: '+ $(this).attr('id')+ ' value: '+ $(this).val());
-				$kardex.current= $kardex.number($(this));
+				if($(this).hasClass('add-value-calculator')) {
+    			janal.console('jsKardex.focus: El componente fue modificado por jsCalculator');
+					$(this).removeClass('add-value-calculator');
+				} // if
+				else
+  				$kardex.current= $kardex.number($(this));
 				$kardex.id     = $(this).attr('id');
 				if($kardex.id.indexOf(':')>= 0)
 					$kardex.id= $kardex.id.replace(/:/gi, '\\:');
@@ -234,7 +239,7 @@
 		},
 		different: function(value) {
  			janal.console('jsKardex.different ['+ $kardex.id+ '] value: '+ parseFloat($kardex.current, 10).toFixed(2)+ " => "+ parseFloat(value, 10).toFixed(2));
-			return $kardex.current!== value && parseFloat($kardex.current, 10).toFixed(2)!= parseFloat(value, 10).toFixed(2);
+			return ($kardex.current!== value && parseFloat($kardex.current, 10).toFixed(2)!= parseFloat(value, 10).toFixed(2));
 		},
 		calculate: function(name) {
 			var value= $kardex.number(name);
@@ -247,7 +252,7 @@
 		},
 		costo: function(name) {
 			var value= $kardex.number(name);
- 			janal.console('jsKardex.costo: '+ name+ ' value: '+ value);
+ 			janal.console('jsKardex.costo: '+ $(name).attr('id')+ ' value: '+ value);
 			if($kardex.different(value)) {
 				$kardex.current= value;
 			  //var keep= confirm('\u00BF Quieres manter el porcentaje de utilidad ?\n\n Si se presiona el boton de cancelar se aplicara el\n  50% al menudeo\n  40% al medio mayoreo\n  30% al mayoreo');

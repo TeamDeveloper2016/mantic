@@ -1,7 +1,9 @@
 package mx.org.kaana.mantic.inventarios.almacenes.backing;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -161,7 +163,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 					this.attrs.put("costoMayorMenor", this.getCostoMayorMenor(solicitado.toDouble("value"), solicitado.toDouble("precio")));
 					Value ultimo= (Value)DaoFactory.getInstance().toField("TcManticArticulosBitacoraDto", "ultimo", this.attrs, "registro");
 					if(ultimo!= null)
-					  this.attrs.put("ultimo", Global.format(EFormatoDinamicos.FECHA_HORA, ultimo.toTimestamp()));
+					  this.attrs.put("ultimo", Global.format(EFormatoDinamicos.DIA_FECHA_HORA_CORTA, ultimo.toTimestamp()));
 					UIBackingUtilities.execute("jsKardex.callback("+ solicitado +");");
       		this.adminKardex= new AdminKardex(
 						articulo.toLong("idArticulo"), 
@@ -282,6 +284,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			if (transaccion.ejecutar(eaccion)) {
 				JsfBase.addMessage("Se modificaron los precios de tipos de ventas del articulo.", ETipoMensaje.INFORMACION);
    			UIBackingUtilities.execute("jsKardex.callback('"+ this.adminKardex.getTiposVentas()+ "');");
+				this.attrs.put("ultimo", Global.format(EFormatoDinamicos.DIA_FECHA_HORA_CORTA, new Timestamp(Calendar.getInstance().getTimeInMillis())));
 			}	// if
 			else 
 				JsfBase.addMessage("Ocurrió un error al registrar los precios de los tipos de ventas del articulo.", ETipoMensaje.ERROR);      			

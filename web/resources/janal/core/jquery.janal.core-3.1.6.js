@@ -84,7 +84,7 @@
     }, // dateFormat
     console: function(msg) {
       if("produccion"!== $control.toUnicodeString($control.stage) || $control.logger)
-        console.log('INFO '+ this.dateFormat('yyyy-mm-dd hh:ii:ss')+ ': '+ msg);
+        console.log('INFO '+ this.dateFormat('yyyy-mm-dd hh:ii:ss')+ ': janal.console: '+ msg);
     }, // console
     cache: function(url, options, count, items) {
       // Allow user to set any option except for dataType, cache, and url
@@ -1212,7 +1212,7 @@
 			alert(msg);
     }, // alert
     version: function() {
-      return '0.3.1.5';
+      return '0.3.1.6';
     }, // version
     align: function(pixels) {
       try {

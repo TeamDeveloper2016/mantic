@@ -454,7 +454,7 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@(.recalculo)" action="#{manticInventariosAlmacenesKardex.doAceptar}" onstart="return janal.partial('general', true) &amp;&amp; confirm('Esta seguro que desea guardar los cambios ?');" oncomplete="janal.desbloquear();janal.reset();" disabled="#{empty(manticInventariosAlmacenesKardex.attrs.articulo.propio)}" styleClass="recalculo"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@(.recalculo) @(.filas)" action="#{manticInventariosAlmacenesKardex.doAceptar}" onstart="return janal.partial('general', true) &amp;&amp; confirm('Esta seguro que desea guardar los cambios ?');" oncomplete="janal.desbloquear();janal.reset();" disabled="#{empty(manticInventariosAlmacenesKardex.attrs.articulo.propio)}" styleClass="recalculo"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticInventariosAlmacenesKardex.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" update="contenedorGrupos:tabla @(.filas) @(.recalculo) contenedorGrupos:panelImage"/>
 		</div>		
 		<div class="xs-pantalla">
