@@ -1212,7 +1212,7 @@
 			alert(msg);
     }, // alert
     version: function() {
-      return '0.3.1.7';
+      return '0.3.1.8';
     }, // version
     align: function(pixels) {
       try {
@@ -1387,7 +1387,7 @@
 			return $('#janalAccessControl').length=== 0 || $('#janalAccessControl').val()=== '1';
 		},
 		number: function(name) {
-			janal.console('janal.calulator: '+ $(name).attr('id')+ ' -> '+ $(name).val().trim());
+			$janal.console('janal.calulator: '+ $(name).attr('id')+ ' -> '+ $(name).val().trim());
 			var value= $(name).val().trim();
 			if(typeof(value)=== 'undefined' || value==='' || Number.isNaN(parseFloat(value, 10)) || parseFloat(value, 10)=== 0) 
 			  value= '1';
@@ -1396,14 +1396,14 @@
 				id= id.replace(/:/gi, '\\:');
 			$('#'+ id).attr('value', value);
 			$(name).val(value);
-			janal.console('janal.calulator ['+ id+ ']  value: ['+ value+ '] set ['+ $(name).val().trim()+ ']');
+			$janal.console('janal.calulator ['+ id+ ']  value: ['+ value+ '] set ['+ $(name).val().trim()+ ']');
 			return value;
 		},
 		calculator: function(name) {
-			janal.console('janal.calculator: '+ $(name).attr('id')+ ' value: '+ $(name).val());
+			$janal.console('janal.calculator: '+ $(name).attr('id')+ ' value: '+ $(name).val());
 			var result= true;
 			if($(name).hasClass('add-value-calculator')) {
-				janal.console('janal.calculator: El componente fue modificado por jsCalculator');
+				$janal.console('janal.calculator: El componente fue modificado por jsCalculator');
 				$(name).removeClass('add-value-calculator');
 				result= false;
 			} // if
