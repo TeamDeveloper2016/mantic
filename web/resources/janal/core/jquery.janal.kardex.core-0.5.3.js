@@ -81,13 +81,9 @@
       $(document).on('focus', this.focus, function() {
 				janal.lastNameFocus= this;
   			janal.console('jsKardex.focus: '+ $(this).attr('id')+ ' value: '+ $(this).val());
-				if($(this).hasClass('add-value-calculator')) {
-    			janal.console('jsKardex.focus: El componente fue modificado por jsCalculator');
-					$(this).removeClass('add-value-calculator');
-				} // if
-				else
+				if(janal.calculator(this))
   				$kardex.current= $kardex.number($(this));
-				$kardex.id     = $(this).attr('id');
+				$kardex.id= $(this).attr('id');
 				if($kardex.id.indexOf(':')>= 0)
 					$kardex.id= $kardex.id.replace(/:/gi, '\\:');
 				$kardex.index();
