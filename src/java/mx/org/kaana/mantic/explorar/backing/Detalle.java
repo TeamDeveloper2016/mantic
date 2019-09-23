@@ -102,7 +102,7 @@ public class Detalle extends Pedido implements Serializable {
 		return regresar;
 	} // doPrepareImage
 
-	public void doItemDelete(Item row) {
+	public String doItemDelete(Item row) {
 		Transaccion transaccion= null;
 		try {			
 			transaccion= new Transaccion((TcManticPedidosDetallesDto)row);
@@ -117,7 +117,8 @@ public class Detalle extends Pedido implements Serializable {
 	  catch (Exception e) {
       Error.mensaje(e);
 			JsfBase.addMessageError(e);
-    } // catch   
+    } // catch 
+		return "filtro".concat(Constantes.REDIRECIONAR);
 	} // doItemDelete
 
 	public void doItemChange(Item row) {
