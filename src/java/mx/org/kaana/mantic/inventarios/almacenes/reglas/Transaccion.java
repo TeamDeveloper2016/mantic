@@ -14,10 +14,9 @@ import static mx.org.kaana.kajool.enums.EAccion.MODIFICAR;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.libs.formato.Variables;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosCodigosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
@@ -186,13 +185,18 @@ public class Transaccion extends IBaseTnx {
 	
 	protected TcManticPedidosDetallesDto toArticuloDetalle(Session sesion, Long idArticulo, Double cantidad) throws Exception{
 		TcManticPedidosDetallesDto regresar= null;
-		Articulo articuloPedido            = null;
+		ArticuloVenta articuloPedido       = null;
+		Map<String, Object>params          = null;		
 		try {
-			articuloPedido= (Articulo) DaoFactory.getInstance().toEntity(sesion, Articulo.class, "TcManticArticulosDto", "row", Variables.toMap("condicion~".concat("id_articulo=").concat(idArticulo.toString())));					
+			params= new HashMap<>();
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
+			params.put("idArticulo", idArticulo);
+			params.put("codigo", "WXYZ");
+			articuloPedido= (ArticuloVenta) DaoFactory.getInstance().toEntity(sesion, ArticuloVenta.class, "VistaOrdenesComprasDto", "porNombre", params);					
 			articuloPedido.setCantidad(cantidad);
 			articuloPedido.setCosto(toCalculateCostoPorCantidad(sesion, idArticulo, cantidad));
-			articuloPedido.toCalculate(false, 0);			
-			regresar= articuloPedido.toPedidoDetalle();
+			articuloPedido.toCalculate();
+			regresar= articuloPedido.toPedidoDetalle();			
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -234,6 +238,5 @@ public class Transaccion extends IBaseTnx {
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	}
-
+	} // toSiguiente
 } 
