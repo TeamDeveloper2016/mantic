@@ -532,23 +532,23 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		  LOG.warn("El codigo propio esta vacio ["+ this.getNombre()+ "] corresponde al ticket de venta");
 		double unitario= Numero.toRedondearSat(this.getSubTotal()/ this.getCantidad());
 		return new TcManticPedidosDetallesDto(
-			this.getDescuentos(),
-			-1L, /*idPedidoDetalle, */						
-			Cadena.isVacio(this.getCodigo())? this.getPropio(): this.getCodigo(), 
-			this.getUnidadMedida(),
-			this.getDescuento(), 
-      this.getSat(),
-			this.getExtras(), 
-			this.getNombre(), 
-			this.getImporte(), 
-      this.getPrecio(),
-			this.getIva(), 
-			this.getImpuestos(), 
-			this.getIva()> 0? unitario: 0D,
-			this.getSubTotal(), 
-			this.getCantidad(), 
-			this.getIdArticulo(),			
-			this.getIdComodin() /*idPedido, */						
+			this.getDescuentos(),  //descuentos
+			-1L,                   //idPedidoDetalle						
+			Cadena.isVacio(this.getCodigo())? this.getPropio(): this.getCodigo(), //codigo
+			this.getUnidadMedida(),//unidadMedida
+			this.getDescuento(),   //descuento
+      this.getSat(),         //sat
+			this.getExtras(),      //extra
+			this.getNombre(),      //nombre
+			this.getImporte(),     //importe
+      this.getPrecio(),      //precio
+			this.getIva(),         //iva
+			this.getImpuestos(),   //impuestos
+			this.getIva()> 0? unitario: 0D,//unitarioSinIva
+			this.getSubTotal(),    //subTotal
+			this.getCantidad(),    //cantidad
+			this.getIdArticulo(),	 //idArticulo		
+			this.getIdComodin()    //idPedido
 		);
 	}
 	
