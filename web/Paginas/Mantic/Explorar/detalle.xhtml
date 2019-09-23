@@ -63,12 +63,12 @@
 								<p:spinner id="cantidad" value="#{row.cantidad}" min="1">
 									<p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{manticExplorarDetalle.doItemChange(row)}" update="total panelTotales" oncomplete="janal.desbloquear();"/>
 								</p:spinner>
-								<p:commandButton icon="fa fa-trash" process="@this" actionListener="#{manticExplorarDetalle.doItemDelete(row)}" update="panelPrincipal panelTotales" title="Eliminar producto" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>															
+								<p:commandButton icon="fa fa-trash" process="@this" action="#{manticExplorarDetalle.doItemDelete(row)}" update="panelPrincipal panelTotales" title="Eliminar producto" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>															
 							</p:panelGrid>								
 						</p:panelGrid>
 						<p:spacer/>
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt janal-column-left">
-							<p:outputLabel value="$ #{manticExplorarDetalle.doNumericoSat(row.precio)}" styleClass="janal-color-red" style="font-weight: bold !important; font-size: large !important"/>
+							<p:outputLabel value="$ #{manticExplorarDetalle.doNumericoSat(row.total)}" styleClass="janal-color-red" style="font-weight: bold !important; font-size: large !important"/>
 						</p:panelGrid>						
 					</p:panelGrid>
 					<p:separator/>
