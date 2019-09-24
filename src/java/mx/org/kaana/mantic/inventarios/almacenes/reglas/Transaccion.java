@@ -195,8 +195,9 @@ public class Transaccion extends IBaseTnx {
 			articuloPedido= (ArticuloVenta) DaoFactory.getInstance().toEntity(sesion, ArticuloVenta.class, "VistaOrdenesComprasDto", "porNombre", params);					
 			articuloPedido.setCantidad(cantidad);
 			articuloPedido.setCosto(toCalculateCostoPorCantidad(sesion, idArticulo, cantidad));
+			articuloPedido.setSinIva(true);
 			articuloPedido.toCalculate();
-			regresar= articuloPedido.toPedidoDetalle();			
+			regresar= articuloPedido.toPedidoDetalle();					
 		} // try
 		catch (Exception e) {			
 			throw e;
