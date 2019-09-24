@@ -118,7 +118,7 @@ public class Detalle extends Pedido implements Serializable {
       Error.mensaje(e);
 			JsfBase.addMessageError(e);
     } // catch 
-		return "filtro".concat(Constantes.REDIRECIONAR);
+		return "detalle".concat(Constantes.REDIRECIONAR);
 	} // doItemDelete
 
 	public void doItemChange(Item row) {
