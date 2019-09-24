@@ -3,7 +3,6 @@ package mx.org.kaana.libs.echarts.kind;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import mx.org.kaana.libs.echarts.stack.Serie;
 import mx.org.kaana.libs.echarts.beans.Axis;

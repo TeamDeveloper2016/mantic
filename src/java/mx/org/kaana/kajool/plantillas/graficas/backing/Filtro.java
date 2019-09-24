@@ -55,7 +55,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
   		PieModel pie= new PieModel("ventas", "55%", new Title(), datas);
 			this.attrs.put("pie", pie.toJson());
 			
-  		DonutModel donut= new DonutModel("ventas", "55%", "40%", new Title(), datas);
+  		DonutModel donut= new DonutModel("ventas", "55%", "30%", new Title(), datas);
   		this.attrs.put("donut", donut.toJson());
 			
 			Stacked stacked= new Stacked(DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "multiple", attrs));
