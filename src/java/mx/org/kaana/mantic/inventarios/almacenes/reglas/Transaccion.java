@@ -113,6 +113,8 @@ public class Transaccion extends IBaseTnx {
 						pedido.setIdPedidoEstatus(4L);
 						pedido.setSubTotal(pedido.getSubTotal()+ detalle.getSubTotal());
 						pedido.setTotal(pedido.getTotal()+ detalle.getImporte());
+						pedido.setDescuentos(pedido.getDescuentos()+ detalle.getDescuentos());
+						pedido.setImpuestos(pedido.getImpuestos()+ detalle.getImpuestos());						
 						regresar= DaoFactory.getInstance().update(sesion, pedido)>= 1L;
 					} // if
 					break;
