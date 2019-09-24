@@ -140,6 +140,11 @@ public class Filtro extends Comun implements Serializable {
     		  sb.append("(tc_mantic_articulos.precio>= tc_mantic_articulos.menudeo or tc_mantic_articulos.precio>= tc_mantic_articulos.mayoreo or tc_mantic_articulos.precio>= tc_mantic_articulos.medio_mayoreo) and ");
 			  else
     		  sb.append("(tc_mantic_articulos.precio< tc_mantic_articulos.menudeo and tc_mantic_articulos.precio< tc_mantic_articulos.mayoreo and tc_mantic_articulos.precio< tc_mantic_articulos.medio_mayoreo) and ");
+			if(!Cadena.isVacio(this.attrs.get("idMenor10")) && !this.attrs.get("idMenor10").toString().equals("-1"))
+  			if(this.attrs.get("idMenor10").toString().equals("1"))
+    		  sb.append("(tc_mantic_articulos.menudeo< 10 and tc_mantic_articulos.id_redondear= 1) and ");
+			  else
+    		  sb.append("(tc_mantic_articulos.menudeo>= 10 and tc_mantic_articulos.id_redondear= 2) and ");
 			if(!Cadena.isVacio(this.attrs.get("idAlmacen")) && !this.attrs.get("idAlmacen").toString().equals("-1"))
   		  regresar.put("almacen", " and (tc_mantic_almacenes_articulos.id_almacen= "+ ((UISelectEntity)this.attrs.get("idAlmacen")).getKey()+ ")");
 			else
