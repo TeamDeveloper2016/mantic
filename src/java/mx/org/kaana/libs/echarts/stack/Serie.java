@@ -18,6 +18,15 @@ public class Serie extends mx.org.kaana.libs.echarts.bar.Serie implements Serial
 	private String stack;
 	private Label label;
 
+	public Serie() {
+		this("Serie");
+	}
+
+	public Serie(String legend) {
+		super(legend);
+		this.stack="Stack";
+	}
+
 	public String getStack() {
 		return stack;
 	}

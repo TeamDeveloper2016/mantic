@@ -15,10 +15,10 @@ public class Normal implements Serializable {
 	private static final long serialVersionUID=-7749442518672455859L;
 
 	private Boolean show;
-	private String position;
+	private String position; // insideRigth, insideLeft, inside
 
 	public Normal() {
-		this(true, "insideRight");
+		this(true, "inside");
 	}
 
 	public Normal(Boolean show, String position) {

@@ -25,6 +25,9 @@
 					window.donut = echarts.init(document.getElementById('donut'), {renderer: 'canvas', width: 'auto', height: 'auto'});
 					window.donut.clear();
 					window.donut.setOption(#{kajoolPlantillasGraficasFiltro.attrs.donut}, true);
+					window.stack = echarts.init(document.getElementById('stack'), {renderer: 'canvas', width: 'auto', height: 'auto'});
+					window.stack.clear();
+					window.stack.setOption(#{kajoolPlantillasGraficasFiltro.attrs.stack}, true);
 				}, time);	
 			}
 			$(document).ready(function () {
@@ -102,6 +105,34 @@
 				</div>	
 			</div>
 		</div>		
+		<div class="ui-g cgor-chart-panel">
+			<div class="ui-g-12 ui-md-6 ui-lg-6">
+				<div>
+					Esto es un demo
+				</div>	
+				<div class="cgor-chart-panel">
+					<div id="stack" class="cgor-chart-panel">
+						Gráficas apilada
+					</div>	
+				</div>	
+				<div>
+					Esto es un pie pagina
+				</div>	
+			</div>
+			<div class="ui-g-12 ui-md-6 ui-lg-6">
+				<div>
+					Esto es un demo
+				</div>	
+				<div class="cgor-chart-panel">
+					<div id="group" class="cgor-chart-panel">
+						Gráficas apilada
+					</div>	
+				</div>	
+				<div>
+					Esto es un pie pagina
+				</div>	
+			</div>
+		</div>	
 		<p:commandButton value="Clean" icon="fa fa-clean" actionListener="#{kajoolPlantillasGraficasFiltro.doCleanDB}" rendered="false"/>
   </ui:define>   
 </ui:composition>

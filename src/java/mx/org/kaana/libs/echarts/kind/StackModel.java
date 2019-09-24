@@ -3,11 +3,12 @@ package mx.org.kaana.libs.echarts.kind;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import mx.org.kaana.libs.echarts.stack.Serie;
 import mx.org.kaana.libs.echarts.beans.Axis;
 import mx.org.kaana.libs.echarts.beans.Grid;
 import mx.org.kaana.libs.echarts.beans.Legend;
-import mx.org.kaana.libs.echarts.bar.Serie;
 import mx.org.kaana.libs.echarts.beans.Title;
 import mx.org.kaana.libs.echarts.beans.ToolTip;
 import mx.org.kaana.libs.echarts.beans.Xaxis;
@@ -25,41 +26,42 @@ import org.apache.commons.lang3.StringEscapeUtils;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class BarModel extends BaseBarModel implements Serializable {
+public class StackModel extends BaseBarModel implements Serializable {
 
-	private static final long serialVersionUID=-4271194453055348485L;
+	private static final long serialVersionUID=-2335254501339126952L;
 
 	private List<Serie> series;
-
-	public BarModel() {
+	
+	public StackModel() {
 		this(new Title("CGOR", "Subtitulo"), EBarOritentation.VERTICAL);
 	}
 	
-	public BarModel(Title title) {
+	public StackModel(Title title) {
 		this(title, EBarOritentation.VERTICAL);
 	}
 
-	public BarModel(Title title, IDataSet data) {
-		this(title, data.getLegend(), new ArrayList(Arrays.asList(SERIES_COLORS)), new ToolTip(), new Grid(), data.getXaxis(), new Yaxis(), data.getSeries(), EBarOritentation.VERTICAL);
+	public StackModel(Title title, IDataSet data) {
+		this(title, data.getLegend(), new ArrayList(Arrays.asList(SERIES_COLORS)), new ToolTip(), new Grid(), data.getXaxis(), new Yaxis(), data.getStack(), EBarOritentation.VERTICAL);
 	}
 
-	public BarModel(Title title, EBarOritentation orientation) {
+	public StackModel(Title title, EBarOritentation orientation) {
 		this(title, new Legend("2019"), new ArrayList(Arrays.asList(SERIES_COLORS)), new ToolTip(), new Grid(), new Xaxis(), new Yaxis(), new ArrayList(Arrays.asList(new Serie())), orientation);
 	}
 	
-	public BarModel(Title title, IDataSet data, EBarOritentation orientation) {
-		this(title, data.getLegend(), new ArrayList(Arrays.asList(SERIES_COLORS)), new ToolTip(), new Grid(), data.getXaxis(), new Yaxis(), data.getSeries(), orientation);
+	public StackModel(Title title, IDataSet data, EBarOritentation orientation) {
+		this(title, data.getLegend(), new ArrayList(Arrays.asList(SERIES_COLORS)), new ToolTip(), new Grid(), 
+			data.getXaxis(), new Yaxis(), data.getStack(), orientation);
 	}
 
-	public BarModel(List<String> color, ToolTip tooltip, Axis xAxis, Axis yAxis, List<Serie> series) {
+	public StackModel(List<String> color, ToolTip tooltip, Axis xAxis, Axis yAxis, List<Serie> series) {
 		this(color, tooltip, xAxis, yAxis, series, EBarOritentation.VERTICAL);
 	}
 	
-	public BarModel(List<String> color, ToolTip tooltip, Axis xAxis, Axis yAxis, List<Serie> series, EBarOritentation orientation) {
+	public StackModel(List<String> color, ToolTip tooltip, Axis xAxis, Axis yAxis, List<Serie> series, EBarOritentation orientation) {
 		this(null, null, color, tooltip, new Grid(), xAxis, yAxis, series, orientation);
 	}
 	
-	public BarModel(Title title, Legend legend, List<String> color, ToolTip tooltip, Grid grid, Axis xAxis, Axis yAxis, List<Serie> series, EBarOritentation orientation) {
+	public StackModel(Title title, Legend legend, List<String> color, ToolTip tooltip, Grid grid, Axis xAxis, Axis yAxis, List<Serie> series, EBarOritentation orientation) {
 		super(title, legend, color, tooltip, grid, xAxis, yAxis, orientation);
 		this.series=series;
 	}
@@ -78,7 +80,7 @@ public class BarModel extends BaseBarModel implements Serializable {
 	
 	@Override
 	public String toString() {
-		return "BarModel{"+"series="+series+'}';
+		return "StackModel{"+"series="+series+'}';
 	}
 
 }

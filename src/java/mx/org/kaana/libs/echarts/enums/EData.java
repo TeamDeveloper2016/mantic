@@ -9,6 +9,6 @@ package mx.org.kaana.libs.echarts.enums;
  */
 public enum EData {
  
-	SIMPLE, MULTIPLE, DATA;
+	SIMPLE, MULTIPLE, DATA, STACK;
 	
 }

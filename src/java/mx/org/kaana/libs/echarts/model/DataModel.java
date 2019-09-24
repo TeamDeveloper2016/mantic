@@ -23,17 +23,19 @@ public class DataModel implements Serializable {
 	private Xaxis xAxis;
 	private List<mx.org.kaana.libs.echarts.bar.Serie> series;
 	private List<mx.org.kaana.libs.echarts.pie.Serie> datas;
+	private List<mx.org.kaana.libs.echarts.stack.Serie> stacks;
 	private Legend legend;
 
 	public DataModel() {
-		this(new ArrayList<>(), new ArrayList<>(), new Legend());
+		this(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new Legend());
 	}
 
-	public DataModel(List<mx.org.kaana.libs.echarts.pie.Serie> datas, List<mx.org.kaana.libs.echarts.bar.Serie> series, Legend legend) {
-		this.datas=datas;
-		this.xAxis=new Xaxis();
+	public DataModel(List<mx.org.kaana.libs.echarts.pie.Serie> datas, List<mx.org.kaana.libs.echarts.bar.Serie> series, List<mx.org.kaana.libs.echarts.stack.Serie> stacks, Legend legend) {
 		this.series=series;
+		this.datas=datas;
+		this.stacks=stacks;
 		this.legend=legend;
+		this.xAxis=new Xaxis();
 		this.xAxis.clear();
 	}
 
@@ -77,6 +79,10 @@ public class DataModel implements Serializable {
 	  this.datas.add(serie);
 	}
 	
+	public void stack(mx.org.kaana.libs.echarts.stack.Serie serie) {
+	  this.stacks.add(serie);
+	}
+
 	public void label(String label) {
 	  this.xAxis.add(label);
 	}
@@ -85,10 +91,17 @@ public class DataModel implements Serializable {
 	  this.legend.add(legend);
 	}
 
+	public List<mx.org.kaana.libs.echarts.stack.Serie> getStacks() {
+		return stacks;
+	}
+
+	public void setStacks(List<mx.org.kaana.libs.echarts.stack.Serie> stacks) {
+		this.stacks=stacks;
+	}
+
 	@Override
 	public String toString() {
-		return "DataModel{"+"xAxis="+xAxis+", series="+series+", datas="+datas+", legend="+legend+'}';
+		return "DataModel{"+"xAxis="+xAxis+", series="+series+", datas="+datas+", stacks="+stacks+", legend="+legend+'}';
 	}
-	
 	
 }

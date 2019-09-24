@@ -45,6 +45,11 @@ public final class Simple extends Series implements IDataSet, Serializable {
 	}
 
 	@Override
+	public List<mx.org.kaana.libs.echarts.stack.Serie> getStack() {
+	  return this.getModel().getStacks();		
+	}
+
+	@Override
 	public Xaxis getXaxis() {
 		return this.getModel().getXaxis();
 	}

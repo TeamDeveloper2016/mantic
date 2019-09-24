@@ -12,9 +12,11 @@ import mx.org.kaana.libs.echarts.enums.EBarOritentation;
 import mx.org.kaana.libs.echarts.kind.BarModel;
 import mx.org.kaana.libs.echarts.kind.DonutModel;
 import mx.org.kaana.libs.echarts.kind.PieModel;
+import mx.org.kaana.libs.echarts.kind.StackModel;
 import mx.org.kaana.libs.echarts.model.Datas;
 import mx.org.kaana.libs.echarts.model.Multiple;
 import mx.org.kaana.libs.echarts.model.Simple;
+import mx.org.kaana.libs.echarts.model.Stacked;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
@@ -55,6 +57,10 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			
   		DonutModel donut= new DonutModel("ventas", "55%", "40%", new Title(), datas);
   		this.attrs.put("donut", donut.toJson());
+			
+			Stacked stacked= new Stacked(DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "multiple", attrs));
+  		StackModel stack= new StackModel(new Title(), stacked);
+  		this.attrs.put("stack", stack.toJson());
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

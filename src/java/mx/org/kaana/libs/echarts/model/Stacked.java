@@ -15,12 +15,12 @@ import mx.org.kaana.libs.echarts.enums.EData;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public final class Multiple extends Series implements IDataSet, Serializable {
+public final class Stacked extends Series implements IDataSet, Serializable {
 
-	private static final long serialVersionUID=-941459668404769397L;
+	private static final long serialVersionUID=-4392515461487030782L;
 
-	public Multiple(List<Entity> data) {
-		super(EData.MULTIPLE, data);
+	public Stacked(List<Entity> data) {
+		super(EData.STACK, data);
 	}
 
 	@Override

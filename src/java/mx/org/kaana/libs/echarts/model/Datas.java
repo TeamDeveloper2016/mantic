@@ -6,7 +6,6 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.echarts.beans.Legend;
 import mx.org.kaana.libs.echarts.beans.Xaxis;
 import mx.org.kaana.libs.echarts.enums.EData;
-import mx.org.kaana.libs.echarts.pie.Data;
 
 /**
  *@company KAANA
@@ -46,6 +45,11 @@ public final class Datas extends Series implements IDataSet, Serializable {
 	}
 
 	@Override
+	public List<mx.org.kaana.libs.echarts.stack.Serie> getStack() {
+		return this.getModel().getStacks();
+	}
+
+	@Override
 	public Xaxis getXaxis() {
 		return this.getModel().getXaxis();
 	}
@@ -54,5 +58,5 @@ public final class Datas extends Series implements IDataSet, Serializable {
 	public Legend getLegend() {
 		return this.getModel().getLegend();
 	}
-	
+
 }

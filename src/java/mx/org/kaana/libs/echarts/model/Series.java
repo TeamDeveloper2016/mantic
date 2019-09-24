@@ -41,6 +41,9 @@ public class Series implements Serializable {
 			case DATA:
 				this.model= this.data(name);
 				break;
+			case STACK:
+				this.model= this.group();
+				break;
 		} // switch
 	}
 
@@ -93,6 +96,42 @@ public class Series implements Serializable {
   		serie.getData().add(new Data(item.toString(FIELD_TEXT), item.toDouble(FIELD_VALUE)));
 		} // for
  		regresar.data(serie);
+		return regresar;
+	}
+	
+	protected DataModel stack(String legend) {
+		DataModel regresar= new DataModel();
+		regresar.getLegend().add(legend);
+		mx.org.kaana.libs.echarts.stack.Serie serie= new mx.org.kaana.libs.echarts.stack.Serie(legend);
+		serie.getData().clear();
+		for (Entity item: this.data) {
+			regresar.label(item.toString(FIELD_TEXT));
+			serie.getData().add(item.toDouble(FIELD_VALUE));
+		} // for
+		regresar.stack(serie);
+		return regresar;
+	}
+	
+	protected DataModel group() {
+		DataModel regresar= new DataModel();
+		mx.org.kaana.libs.echarts.stack.Serie serie = null;
+		String group= null;
+		int count   = 0;
+		for (Entity item: this.data) {
+			if(Cadena.isVacio(group) || !group.equals(item.toString(FIELD_GROUP))) {
+				if(!Cadena.isVacio(group))
+      		regresar.stack(serie);
+				group= item.toString(FIELD_GROUP);
+				regresar.getLegend().add(group);
+			  serie= new mx.org.kaana.libs.echarts.stack.Serie(group);
+  			serie.getData().clear();
+				count++;
+			}	// if
+			if(count== 1)
+			  regresar.label(item.toString(FIELD_TEXT));
+			serie.getData().add(item.toDouble(FIELD_VALUE));
+		} // for
+ 		regresar.stack(serie);
 		return regresar;
 	}
 	

@@ -9,7 +9,7 @@ package mx.org.kaana.libs.echarts.enums;
  */
 public enum EKinds {
  
-	BAR, LINE, PIE;
+	BAR, LINE, PIE, STACK;
 	
 	public String toString() {
 		return this.name().toLowerCase();
