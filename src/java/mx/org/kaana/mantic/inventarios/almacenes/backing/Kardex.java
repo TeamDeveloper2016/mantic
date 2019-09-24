@@ -880,8 +880,11 @@ public class Kardex extends IBaseAttribute implements Serializable {
 		EAccion eaccion        = EAccion.ASIGNAR;
     try {			
 			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (String)this.attrs.get("auxiliar"));
-			if (transaccion.ejecutar(eaccion)) 
+			if (transaccion.ejecutar(eaccion)) {
 				JsfBase.addMessage("Se agregó el código auxiliar ["+ (String)this.attrs.get("auxiliar")+ "] al articulo.", ETipoMensaje.INFORMACION);
+				this.toLoadCodigos();
+				this.attrs.put("auxiliar", "");
+			} // if	
 			else 
 				JsfBase.addMessage("Ocurrió un error al agregar el código auxiliar al articulo.", ETipoMensaje.ERROR);      			
     } // try
@@ -890,5 +893,23 @@ public class Kardex extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
 	}
-
+ 
+	public void doDeleteCodigoAlterno(UISelectEntity depurar) {
+    Transaccion transaccion= null;
+		EAccion eaccion        = EAccion.DEPURAR;
+    try {			
+			transaccion = new Transaccion(depurar.getKey(), "");
+			if (transaccion.ejecutar(eaccion)) {
+				JsfBase.addMessage("Se eliminó el código auxiliar ["+ depurar.toString("codigo")+ "] del articulo.", ETipoMensaje.INFORMACION);
+				this.toLoadCodigos();
+			} // if	
+			else 
+				JsfBase.addMessage("Ocurrió un error al eliminar el código auxiliar del articulo.", ETipoMensaje.ERROR);      			
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+	}
+ 
 }

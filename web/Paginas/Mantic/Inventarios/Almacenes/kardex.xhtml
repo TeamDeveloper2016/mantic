@@ -243,7 +243,7 @@
 									<p:commandButton title="Agregar código auxiliar" icon="fa fa-plus" process="@this auxiliar" update="@(.filas)" action="#{manticInventariosAlmacenesKardex.doAddCodigoAuxiliar}" styleClass="janal-text-white janal-column-center filas" onstart="return janal.partial('auxiliar', true);" oncomplete="janal.desbloquear()"  disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}"/> 
 								</p:panelGrid>
 							</p:panelGrid>
-							<p:dataTable var="item" value="#{manticInventariosAlmacenesKardex.attrs.codigos}" paginator="false" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="paginated filas" rowIndexVar="index">
+							<p:dataTable id="codigosAlternos" var="item" value="#{manticInventariosAlmacenesKardex.attrs.codigos}" paginator="false" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="paginated filas" rowIndexVar="index">
 								<p:column headerText="No" styleClass="janal-wid-3">
 									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>   
@@ -261,7 +261,10 @@
 								</p:column>   
 								<p:column headerText="Fecha" styleClass="janal-wid-15 janal-column-center">
 									<h:outputText value="#{item.registro}"/>
-								</p:column>   
+								</p:column> 
+								<p:column style="text-align: center" styleClass="janal-wid-col-38">
+									<p:commandButton process="@this" update="@(.filas)" icon="fa fa-minus" title="Eliminar código auxiliar" onstart="return confirm('Esta seguro que desea eliminar el código [#{item.codigo}] auxiliar ?');" actionListener="#{manticInventariosAlmacenesKardex.doDeleteCodigoAlterno(item)}" rendered="#{item.principal ne 'SI'}" styleClass="filas"/>
+								</p:column>
               </p:dataTable>
 						</p:tab>
 						<p:tab title="Almacenes">

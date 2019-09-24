@@ -149,6 +149,9 @@ public class Transaccion extends IBaseTnx {
 						regresar= false;
 					} // else	
 					break;
+				case DEPURAR:
+					regresar= DaoFactory.getInstance().delete(sesion, TcManticArticulosCodigosDto.class, this.idArticulo)>= 1L;
+					break;
 			} // switch
 			if(!regresar)
         throw new Exception("");
