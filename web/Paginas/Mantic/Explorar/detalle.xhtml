@@ -58,7 +58,7 @@
 						</p:panel>
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt">
 							<p:outputLabel value="#{row.codigo} | #{row.nombre}" style="font-size: large"/>							
-							<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-40 janal-column-left janal-wid-100-txt, janal-wid-10">
+							<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-50 janal-column-left janal-wid-100-txt, janal-wid-20">
 								<p:outputLabel value="Cantidad"/><p:spacer/>
 								<p:spinner id="cantidad" value="#{row.cantidad}" min="1">
 									<p:ajax event="change" onstart="return janal.bloquear();" process="@this" listener="#{manticExplorarDetalle.doItemChange(row)}" update="total panelTotales" oncomplete="janal.desbloquear();"/>
