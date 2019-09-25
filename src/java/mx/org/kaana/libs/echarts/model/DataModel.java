@@ -6,7 +6,6 @@ import java.util.List;
 import mx.org.kaana.libs.echarts.beans.Legend;
 import mx.org.kaana.libs.echarts.bar.Serie;
 import mx.org.kaana.libs.echarts.beans.Xaxis;
-import mx.org.kaana.libs.echarts.pie.Data;
 
 /**
  *@company KAANA
@@ -27,7 +26,7 @@ public class DataModel implements Serializable {
 	private Legend legend;
 
 	public DataModel() {
-		this(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new Legend());
+		this(new ArrayList<mx.org.kaana.libs.echarts.pie.Serie>(), new ArrayList<mx.org.kaana.libs.echarts.bar.Serie>(), new ArrayList<mx.org.kaana.libs.echarts.stack.Serie>(), new Legend());
 	}
 
 	public DataModel(List<mx.org.kaana.libs.echarts.pie.Serie> datas, List<mx.org.kaana.libs.echarts.bar.Serie> series, List<mx.org.kaana.libs.echarts.stack.Serie> stacks, Legend legend) {
