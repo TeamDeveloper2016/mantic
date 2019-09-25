@@ -60,7 +60,8 @@ public final class Loader {
       startOnLoad = Configuracion.getInstance().getPropiedadServidor("sistema.quartz");
       if (startOnLoad.equals("true")) {
         loadEspecialScheduler(servletContextEvent);
-      } else {
+      } 
+			else {
         Especial.getInstance().refreshPath(servletContextEvent);
         LOG.info("Scheduler has not been started. verify configuration.properties");
         servletContextEvent.getServletContext().log("Scheduler has not been started. verify configuration.properties.");

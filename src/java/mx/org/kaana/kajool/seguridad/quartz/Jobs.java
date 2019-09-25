@@ -61,12 +61,12 @@ public class Jobs {
 							expression= element.getAttribute("expresion");
 							if(evaluaElement(element)){
 								if (element.getAttribute("load")== null || (element.getAttribute("load").equals("true")) || (element.getAttribute("load").equals(""))) 
-									loadJob(element.getTextContent(),  expression, item.getAttribute("id").concat(element.getAttribute("id")).concat("Cron"),  item.getAttribute("id").concat(element.getAttribute("id")), false);
+									load(element.getTextContent(), expression, item.getAttribute("id").concat(element.getAttribute("id")).concat("Cron"), item.getAttribute("id").concat(element.getAttribute("id")), false);
 								else																				
-									loadJob(element.getTextContent(),  expression, item.getAttribute("id").concat(element.getAttribute("id")).concat("Cron"),  item.getAttribute("id").concat(element.getAttribute("id")), true);
+									load(element.getTextContent(), expression, item.getAttribute("id").concat(element.getAttribute("id")).concat("Cron"), item.getAttribute("id").concat(element.getAttribute("id")), true);
 							} // if
 							else
-								loadJob( element.getTextContent(),  expression, item.getAttribute("id").concat(element.getAttribute("id")).concat("Cron"),  item.getAttribute("id").concat(element.getAttribute("id")), true);							
+								load( element.getTextContent(), expression, item.getAttribute("id").concat(element.getAttribute("id")).concat("Cron"), item.getAttribute("id").concat(element.getAttribute("id")), true);							
 						} // for
 					} // if
         } // for y
@@ -80,9 +80,9 @@ public class Jobs {
     NodeList regresar= null;
     try {
 			if(node instanceof Document)
-      regresar = ((Document)node).getElementsByTagName(label);
+        regresar = ((Document)node).getElementsByTagName(label);
 			if(node instanceof Element)
-      regresar = ((Element)node).getElementsByTagName(label);
+        regresar = ((Element)node).getElementsByTagName(label);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -90,7 +90,7 @@ public class Jobs {
     return regresar;
   }
 	
-	private void loadJob(String jobClass, String expression,String trigger, String job, boolean sleep)  {
+	private void load(String jobClass, String expression,String trigger, String job, boolean sleep)  {
 		JobDetail jobIntegracion      = null;
 		CronTrigger triggerIntegracion= null;	
 		try {			
@@ -131,4 +131,5 @@ public class Jobs {
 		} // catch		
 		return regresar;
 	}
+	
 }

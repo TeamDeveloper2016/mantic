@@ -128,10 +128,10 @@ public final class Especial implements Serializable {
 	}
 	
 	public boolean validate(ServletContextEvent servletContextEvent) {
-		boolean regresar= false;		
-		String realPath = null;
-		int pos         = 0;
-		this.tareaServidor        = null;
+		boolean regresar  = false;		
+		String realPath   = null;
+		int pos           = 0;
+		this.tareaServidor= null;
 		try {
 			this.tareaServidor= new ArrayList<>();
 			LOG.info("Iniciando validación de Quartz");
@@ -172,12 +172,12 @@ public final class Especial implements Serializable {
 	
 	public void init() {
 		try {						
-			SchedulerFactory sf=new StdSchedulerFactory(toParameter(servletContextEvent,"quartz-config-file"));
-			setScheduler(sf.getScheduler());						
-			getScheduler().start();
-			addParameters(this.servletContextEvent);			
+			SchedulerFactory sf=new StdSchedulerFactory(toParameter(servletContextEvent, "quartz-config-file"));
+			this.setScheduler(sf.getScheduler());						
+			this.getScheduler().start();
+			this.addParameters(this.servletContextEvent);			
 			LOG.info("Ejecutando quartz");
-			load();
+			this.load();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
