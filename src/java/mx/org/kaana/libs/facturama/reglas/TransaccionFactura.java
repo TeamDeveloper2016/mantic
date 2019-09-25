@@ -346,35 +346,42 @@ public class TransaccionFactura extends IBaseTnx{
 	} // actualizarCliente
 	
 	public boolean generarCfdi(Session sesion) throws Exception{
+		return generarCfdi(sesion, JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), JsfBase.getIdUsuario());
+	} // generarCfdi
+	
+	public boolean generarCfdi(Session sesion, String idEmpresa, Long idUsuario) throws Exception{
 		boolean regresar= false;
 		Cfdi cfdi       = null;
 		try {
 			cfdi= CFDIFactory.getInstance().createCfdi(this.cliente, this.articulos);
 			if(isCorrectId(cfdi.getId())) {
 				this.idFacturamaRegistro= cfdi.getId();
-				regresar= this.actualizarFactura(sesion, this.cliente.getIdFactura(), cfdi);
+				regresar= this.actualizarFactura(sesion, this.cliente.getIdFactura(), cfdi, idUsuario);
 				Calendar calendar= Fecha.toCalendar(cfdi.getDate().substring(0, 10), cfdi.getDate().substring(11, 19));				
-				String path = Configuracion.getInstance().getPropiedadSistemaServidor("facturama").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat("/")+ calendar.get(Calendar.YEAR)+ "/"+ Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase()+"/"+ this.cliente.getRfc().concat("/");				
+				String path = Configuracion.getInstance().getPropiedadSistemaServidor("facturama").concat(idEmpresa).concat("/")+ calendar.get(Calendar.YEAR)+ "/"+ Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase()+"/"+ this.cliente.getRfc().concat("/");				
 				CFDIFactory.getInstance().download(path, this.cliente.getRfc().concat("-").concat(cfdi.getFolio()), cfdi.getId());
-				this.toUpdateData(sesion, cfdi, this.cliente.getIdFactura(), path);
-				this.insertFiles(sesion, calendar, cfdi, path, this.cliente.getRfc(), this.cliente.getIdFactura());
+				this.toUpdateData(sesion, cfdi, this.cliente.getIdFactura(), path, idUsuario);
+				this.insertFiles(sesion, calendar, cfdi, path, this.cliente.getRfc(), this.cliente.getIdFactura(), idUsuario);
 			} // if
-			else
+			else{
 				this.registrarBitacora(sesion, this.cliente.getIdFactura(), cfdi.getId(), REGISTRO_CFDI);
+				actualizarFacturaAutomatico(sesion, this.cliente.getIdFactura(), idUsuario);
+			} // else
 		} // try
 		catch (Exception e) {
 			this.registrarBitacora(sesion, this.cliente.getId(), e.getMessage(), REGISTRO_CFDI);
+			actualizarFacturaAutomatico(sesion, this.cliente.getIdFactura(), idUsuario);
 			throw e;
 		} // catch
 		return regresar;
 	} // generarCfdi
 	
-	private void toUpdateData(Session sesion, Cfdi detail, Long idFactura, String path) throws Exception {
+	private void toUpdateData(Session sesion, Cfdi detail, Long idFactura, String path, Long idUsuario) throws Exception {
 		TcManticFacturasDto factura= (TcManticFacturasDto)DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, idFactura);
 		try {
 			if(factura!= null && factura.getSelloSat()== null && factura.getCadenaOriginal()== null) {
 				LOG.warn("Actualizando datos de la factura ["+ detail.getFolio()+ "] del cliente ["+ this.cliente.getRfc()+ "] porque estaba incompleto el registro !");			
-				registrarBitacoraFactura(sesion, idFactura, EEstatusFacturas.TIMBRADA.getIdEstatusFactura(), "ESTA FACTURA FUE RECUPERADA DE FACTURAMA.");
+				registrarBitacoraFactura(sesion, idFactura, EEstatusFacturas.TIMBRADA.getIdEstatusFactura(), "ESTA FACTURA FUE RECUPERADA DE FACTURAMA.", idUsuario);
 				Complement complement = detail.getComplement();
 				factura.setComentarios("ESTA FACTURA FUE RECUPERADA DE FACTURAMA !");
 				factura.setSelloCfdi(complement.getTaxStamp().getCfdiSign());
@@ -402,7 +409,7 @@ public class TransaccionFactura extends IBaseTnx{
 		return result.getWriter().toString();
 	} // toCadenaOriginal
 	
-	public void insertFiles(Session sesion, Calendar calendar, Cfdi cfdi, String path, String rfc, Long idFactura) throws Exception {
+	public void insertFiles(Session sesion, Calendar calendar, Cfdi cfdi, String path, String rfc, Long idFactura, Long idUsuario) throws Exception {
 	TcManticFacturasArchivosDto xml= new TcManticFacturasArchivosDto(
 			idFactura, 
 			path, 
@@ -412,7 +419,7 @@ public class TransaccionFactura extends IBaseTnx{
 			null, 
 			-1L,
 			0L,
-			JsfBase.getIdUsuario(),
+			idUsuario,
 			1L, // idTipoArchivo XML
 			1L, // idPrincipal
 			cfdi.getCfdiType()+ "|"+ cfdi.getPaymentMethod()+ "|"+ cfdi.getSerie(), // observaciones, 
@@ -430,7 +437,7 @@ public class TransaccionFactura extends IBaseTnx{
 			null, 
 			-1L,
 			0L,
-			JsfBase.getIdUsuario(),
+			idUsuario,
 			2L, // idTipoArchivo PDF
 			1L, // idPrincipal
 			cfdi.getCfdiType()+ "|"+ cfdi.getPaymentMethod()+ "|"+ cfdi.getPaymentConditions(), // observaciones, 
@@ -441,11 +448,11 @@ public class TransaccionFactura extends IBaseTnx{
 		DaoFactory.getInstance().insert(sesion, pdf);
 	} // insertFiles	
 	
-	protected boolean actualizarFactura(Session sesion, Long id, Cfdi cfdi) throws Exception {
+	protected boolean actualizarFactura(Session sesion, Long id, Cfdi cfdi, Long idUsuario) throws Exception {
 		boolean regresar           = false;
 		TcManticFacturasDto factura= null;		
 		factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, id);
-		registrarBitacoraFactura(sesion, id, EEstatusFacturas.TIMBRADA.getIdEstatusFactura(), "Timbrado de factura.");		
+		registrarBitacoraFactura(sesion, id, EEstatusFacturas.TIMBRADA.getIdEstatusFactura(), "Timbrado de factura.", idUsuario);		
 		factura.setIdFacturama(cfdi.getId());
 		factura.setFolio(cfdi.getFolio());					
 		factura.setTimbrado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
@@ -453,16 +460,57 @@ public class TransaccionFactura extends IBaseTnx{
 		return regresar;
 	} // actualizarFactura
 	
+	public boolean actualizarFacturaAutomatico(Session sesion, Long id, Long idUsuario) throws Exception {		
+		boolean regresar           = false;
+		TcManticFacturasDto factura= null;		
+		factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, id);
+		registrarBitacoraFactura(sesion, id, EEstatusFacturas.AUTOMATICO.getIdEstatusFactura(), "Asignación a facturación automatica.", idUsuario);		
+		factura.setIdFacturaEstatus(EEstatusFacturas.AUTOMATICO.getIdEstatusFactura());		
+		regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;		
+		return regresar;
+	} // actualizarFacturaAutomatico
+	
+	public boolean actualizarFacturaAutomatico(Long id, Long idUsuario, Long idEstatus) throws Exception {
+		boolean regresar           = false;
+		TcManticFacturasDto factura= null;		
+		factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(TcManticFacturasDto.class, id);
+		registrarBitacoraFactura(id, idEstatus, "Asignación a facturación automatica.", idUsuario);		
+		factura.setIdFacturaEstatus(idEstatus);		
+		regresar= DaoFactory.getInstance().update(factura)>= 1L;		
+		return regresar;
+	} // actualizarFactura
+	
 	protected boolean registrarBitacoraFactura(Session sesion, Long idFactura, Long idFacturaEstatus, String justificacion) throws Exception{
+		return registrarBitacoraFactura(sesion, idFactura, idFacturaEstatus, justificacion, JsfBase.getIdUsuario());
+	} // registrarBitacoraFactura
+	
+	protected boolean registrarBitacoraFactura(Session sesion, Long idFactura, Long idFacturaEstatus, String justificacion, Long idUsuario) throws Exception{
 		boolean regresar= false;
 		TcManticFacturasBitacoraDto bitacora= null;
 		try {
 			bitacora= new TcManticFacturasBitacoraDto();
 			bitacora.setIdFactura(idFactura);
 			bitacora.setIdFacturaEstatus(idFacturaEstatus);
-			bitacora.setIdUsuario(JsfBase.getIdUsuario());
+			bitacora.setIdUsuario(idUsuario);
 			bitacora.setJustificacion(justificacion);
 			regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // registrarBitacoraFactura
+	
+	protected boolean registrarBitacoraFactura(Long idFactura, Long idFacturaEstatus, String justificacion, Long idUsuario) throws Exception{
+		boolean regresar= false;
+		TcManticFacturasBitacoraDto bitacora= null;
+		try {
+			bitacora= new TcManticFacturasBitacoraDto();
+			bitacora.setIdFactura(idFactura);
+			bitacora.setIdFacturaEstatus(idFacturaEstatus);
+			bitacora.setIdUsuario(idUsuario);
+			bitacora.setJustificacion(justificacion);
+			regresar= DaoFactory.getInstance().insert(bitacora)>= 1L;
 		} // try
 		catch (Exception e) {			
 			throw e;
