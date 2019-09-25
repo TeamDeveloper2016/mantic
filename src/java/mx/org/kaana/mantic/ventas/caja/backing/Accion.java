@@ -1725,8 +1725,8 @@ public class Accion extends IBaseVenta implements Serializable {
 		Transaccion transaccion= null;
 		try {
 			transaccion= new Transaccion(facturacion);
-			if(transaccion.ejecutar(EAccion.GENERAR))
-				doSendMail(facturacion);							
+			transaccion.ejecutar(EAccion.TRANSFORMACION);
+				//doSendMail(facturacion);							
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
