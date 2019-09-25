@@ -58,8 +58,7 @@ public class FacturacionAutomatica implements Job, Serializable {
 		Transaccion transaccion            = null;
 		String correos                     = null;
 		try {			
-			//if(!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion() && validateHora()) {
-			if(validateHora()) {
+			if(!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion() && validateHora()) {			
 				facturasPendientes= toFacturasPendientes();
 				for(Facturacion factura: facturasPendientes){
 					correos= toCorreosCliente(factura.getIdCliente());
