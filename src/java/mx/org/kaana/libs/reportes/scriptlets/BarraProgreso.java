@@ -99,7 +99,7 @@ public class BarraProgreso extends DJDefaultScriptlet implements Serializable {
 				  this.total= DaoFactory.getInstance().toSize((String)checkParameter(Constantes.REPORTE_SQL));
 				else
 				  this.total= 1L;
-			if(this.total> 0) {
+			if(this.total> 0 && JsfBase.getFacesContext()!= null) {
   		  Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
 			  if(monitoreo!= null)
 	  	    monitoreo.setTotal(total);
@@ -113,7 +113,7 @@ public class BarraProgreso extends DJDefaultScriptlet implements Serializable {
 
 	@Override
   public void afterDetailEval() throws JRScriptletException {
-	  if(this.total> 0) {
+	  if(this.total> 0 && JsfBase.getFacesContext()!= null) {
 			Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
 			if(monitoreo!= null) {
 				long current       = ((Number)this.getVariableValue("REPORT_COUNT")).longValue();
