@@ -203,12 +203,16 @@ public class BaseReportes extends IBaseAttribute implements Serializable {
 	}
 	
 	protected Reporte reporteConnection(String source, String nombreArchivo) throws Exception {
+		return reporteConnection(source, nombreArchivo, JsfBase.getRealPath());
+	} // reporteConnection
+	
+	protected Reporte reporteConnection(String source, String nombreArchivo, String path) throws Exception {
 		Reporte regresar= null;
 		String sql      = null;
 		try {
 			sql= Dml.getInstance().getSelect(this.ireporte.getProceso(), this.ireporte.getIdXml(), this.ireporte.getParams());
 			this.ireporte.getParametros().put(Constantes.REPORTE_SQL, sql);
-			regresar= new Reporte(this.pdfConSeguridad, source.substring(0, source.lastIndexOf('.')), JsfBase.getRealPath().concat(this.idFormato.toPath()).concat(File.separator), this.ireporte.getParametros(), nombreArchivo , this.paginacionXls, this.previsualizar);
+			regresar= new Reporte(this.pdfConSeguridad, source.substring(0, source.lastIndexOf('.')), path.concat(this.idFormato.toPath()).concat(File.separator), this.ireporte.getParametros(), nombreArchivo , this.paginacionXls, this.previsualizar);
 		} // try
 		catch(Exception e) {
 			throw e;
