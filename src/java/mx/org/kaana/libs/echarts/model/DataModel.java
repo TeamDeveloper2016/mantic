@@ -58,7 +58,7 @@ public class DataModel implements Serializable {
 		return series;
 	}
 
-	public void setSeries(List<Serie> Series) {
+	public void setSeries(List<Serie> series) {
 		this.series=series;
 	}
 

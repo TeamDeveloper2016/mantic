@@ -10,32 +10,37 @@
   <ui:param name="titulo" value="Demostración de las gráficas de echarts de apache" />
   <ui:define name="librerias">
 		<h:outputScript library="janal" name="echarts/echarts.min-4.2.2.js"/>
+		<h:outputScript library="janal" name="echarts/resize-sensor-0.0.1.js"/>
     <script type="text/javascript">
 			Janal.Control.fields = {
 			};
-			function update(time) {
-				setTimeout(function () {
-					window.multiple = echarts.init(document.getElementById('multiple'), {renderer: 'canvas', width: 'auto', height: 'auto'});
-					window.multiple.clear();
-					window.multiple.setOption(#{kajoolPlantillasGraficasFiltro.attrs.multiple}, true);
-					window.simple = echarts.init(document.getElementById('simple'), {renderer: 'canvas', width: 'auto', height: 'auto'});
-					window.simple.setOption(#{kajoolPlantillasGraficasFiltro.attrs.simple}, true);
-					window.pie = echarts.init(document.getElementById('pie'), {renderer: 'canvas', width: 'auto', height: 'auto'});
-					window.pie.setOption(#{kajoolPlantillasGraficasFiltro.attrs.pie}, true);
-					window.donut = echarts.init(document.getElementById('donut'), {renderer: 'canvas', width: 'auto', height: 'auto'});
-					window.donut.clear();
-					window.donut.setOption(#{kajoolPlantillasGraficasFiltro.attrs.donut}, true);
-					window.stack = echarts.init(document.getElementById('stack'), {renderer: 'canvas', width: 'auto', height: 'auto'});
-					window.stack.clear();
-					window.stack.setOption(#{kajoolPlantillasGraficasFiltro.attrs.stack}, true);
-				}, time);	
-			}
 			$(document).ready(function () {
-				update(500);
-				window.onresize = function() {
-					update(1000);
-        };
+				window.multiple = echarts.init(document.getElementById('multiple'), {renderer: 'svg', width: 'auto', height: 'auto'});
+				window.multiple.clear();
+				window.multiple.setOption(#{kajoolPlantillasGraficasFiltro.attrs.multiple}, true);
+				window.simple = echarts.init(document.getElementById('simple'), {renderer: 'canvas', width: 'auto', height: 'auto'});
+				window.simple.clear();
+				window.simple.setOption(#{kajoolPlantillasGraficasFiltro.attrs.simple}, true);
+				window.pie = echarts.init(document.getElementById('pie'), {renderer: 'canvas', width: 'auto', height: 'auto'});
+				window.pie.clear();
+				window.pie.setOption(#{kajoolPlantillasGraficasFiltro.attrs.pie}, true);
+				window.donut = echarts.init(document.getElementById('donut'), {renderer: 'canvas', width: 'auto', height: 'auto'});
+				window.donut.clear();
+				window.donut.setOption(#{kajoolPlantillasGraficasFiltro.attrs.donut}, true);
+				window.stack = echarts.init(document.getElementById('stack'), {renderer: 'canvas', width: 'auto', height: 'auto'});
+				window.stack.clear();
+				window.stack.setOption(#{kajoolPlantillasGraficasFiltro.attrs.stack}, true);
 			});
+			function resize() {
+				window.multiple.resize();
+				window.simple.resize();
+				window.pie.resize();
+				window.donut.resize();
+				window.stack.resize();
+			}
+			new ResizeSensor($('.cgor-app-main'), function() {
+				resize();
+			});				
     </script>		
 		<style type="text/css">
 			.cgor-chart-panel {
@@ -49,7 +54,7 @@
 		</style>
   </ui:define>
   <ui:define name="contenido">
-		<div class="ui-g cgor-chart-panel">
+		<div class="ui-g cgor-app-main" style="position: relative;">
 			<div class="ui-g-12 ui-md-6 ui-lg-6">
 				<div>
 					Esto es un demo
