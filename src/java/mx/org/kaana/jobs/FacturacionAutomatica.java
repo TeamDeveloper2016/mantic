@@ -19,11 +19,10 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.procesos.reportes.reglas.IReporte;
 import mx.org.kaana.kajool.seguridad.quartz.Especial;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
@@ -39,6 +38,7 @@ import mx.org.kaana.mantic.ventas.caja.beans.Facturacion;
 import mx.org.kaana.mantic.ventas.caja.reglas.Transaccion;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.kajool.template.backing.Reporte;
+import mx.org.kaana.libs.recurso.Configuracion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.quartz.Job;
@@ -51,6 +51,7 @@ public class FacturacionAutomatica implements Job, Serializable {
 	private static final long serialVersionUID= 1809037806413388478L;	
 	private String nameFacturaPdf;
 	private Reporte reporte;
+	private IReporte ireporte;	
 	
 	@Override
 	public void execute(JobExecutionContext jec) throws JobExecutionException {
@@ -58,7 +59,7 @@ public class FacturacionAutomatica implements Job, Serializable {
 		Transaccion transaccion            = null;
 		String correos                     = null;
 		try {			
-			if(!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion() && validateHora()) {			
+			if(!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion() && validateHora()) {										
 				facturasPendientes= toFacturasPendientes();
 				for(Facturacion factura: facturasPendientes){
 					correos= toCorreosCliente(factura.getIdCliente());
@@ -66,7 +67,7 @@ public class FacturacionAutomatica implements Job, Serializable {
 						factura.setCorreos(correos);
 						transaccion = new Transaccion(factura);
 						if (transaccion.ejecutar(EAccion.GENERAR)){ 
-							//doSendMail(factura);
+								doSendMail(factura);
 							LOG.info("Se realizo la facturación de forma correcta");
 						} // if
 						else
@@ -136,7 +137,7 @@ public class FacturacionAutomatica implements Job, Serializable {
 		String[] emails           = null;
 		File factura              = null;				
 		try {
-			this.reporte= JsfBase.toReporte();
+			this.reporte= new Reporte();			
 			params= new HashMap<>();
 			params.put("header", "...");
 			params.put("footer", "...");
@@ -146,11 +147,11 @@ public class FacturacionAutomatica implements Job, Serializable {
 			params.put("correo", ECorreos.FACTURACION.getEmail());			
 			factura= toXml(facturacion.getIdFactura());
 			this.doReporte("FACTURAS_FICTICIAS_DETALLE", facturacion);
-			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
+			Attachment attachments= new Attachment(Especial.getInstance().getPath().substring(0, Especial.getInstance().getPath().length()-1), this.reporte.getNombre(), Boolean.FALSE, true);
 			files= new ArrayList<>(); 
 			files.add(attachments);
 			files.add(new Attachment(factura, Boolean.FALSE));
-			files.add(new Attachment("logo", ECorreos.FACTURACION.getImages().concat("logo.png"), Boolean.TRUE));
+			files.add(new Attachment(Especial.getInstance().getPath(), "logo", ECorreos.FACTURACION.getImages().concat("logo.png"), Boolean.TRUE));
 			params.put("attach", attachments.getId());			
 			emails= new String[]{facturacion.getCorreos()};		
 			for (String item: emails) {
@@ -209,6 +210,7 @@ public class FacturacionAutomatica implements Job, Serializable {
 		Map<String, Object>params    = null;
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;		
+		String path                  = null;
 		try {		      
 			if(facturacion.getIdFacturama()!= null && facturacion.getSelloSat()== null) {
 				Transferir transferir= null;
@@ -225,23 +227,22 @@ public class FacturacionAutomatica implements Job, Serializable {
 				} // finally
 			} // if      
 			params= new HashMap<>();
-      params.put("sortOrder", "order by tc_mantic_ventas.id_empresa, tc_mantic_clientes.id_cliente, tc_mantic_ventas.ejercicio, tc_mantic_ventas.orden");
-      reporteSeleccion= EReportes.valueOf(nombre);
-      if(!reporteSeleccion.equals(EReportes.FACTURAS_FICTICIAS)) {
-        params.put("idFicticia", facturacion.getIdVenta());
-        comunes= new Parametros(facturacion.getIdEmpresa(), -1L, -1L, facturacion.getIdCliente());
-      } // if
-      else
-        comunes= new Parametros(facturacion.getIdEmpresa());      	
+      params.put("sortOrder", "order by tc_mantic_ventas.id_empresa, tc_mantic_clientes.id_cliente, tc_mantic_ventas.ejercicio, tc_mantic_ventas.orden");      
+      params.put("idFicticia", facturacion.getIdVenta());
+      comunes= new Parametros(facturacion.getIdEmpresa(), -1L, -1L, facturacion.getIdCliente());      
       parametros= comunes.getComunes();
+			reporteSeleccion= EReportes.valueOf(nombre);      
       parametros.put("ENCUESTA", facturacion.getNombreEmpresa().toUpperCase());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
-      parametros.put("REPORTE_ICON", Especial.getInstance().getPath().concat("resources/iktan/icon/acciones/"));			      			
-			this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros), this.nameFacturaPdf.replaceFirst(".pdf", ""));		
-      this.reporte.doAceptarSimple();			
+      parametros.put("REPORTE_ICON", Especial.getInstance().getPath().concat("resources/iktan/icon/acciones/"));			
+			this.ireporte= new ParametrosReporte(reporteSeleccion, params, parametros);			
+			this.reporte.toAsignarReporte(this.ireporte, this.nameFacturaPdf.replaceFirst(".pdf", ""));		
+			path= Especial.getInstance().getPath();
+			this.reporte.setPrevisualizar(Boolean.FALSE);
+      this.reporte.doAceptarSimple(path.substring(0, path.length()-2).concat(this.ireporte.getJrxml()).concat(".jasper"), path.substring(0, path.length()-2).concat(Constantes.RUTA_IMAGENES).concat(File.separator), path.substring(0, path.length()-1));			
     } // try
     catch(Exception e) {
       Error.mensaje(e);      
     } // catch	
-  } // doReporte
+  } // doReporte	
 }

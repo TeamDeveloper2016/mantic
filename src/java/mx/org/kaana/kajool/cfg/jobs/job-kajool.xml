@@ -12,6 +12,6 @@
 		 <clase expresion="0 0 2 1/1 * ? *"    id="respaldoBd" description="realiza respaldo de la BD" load="true" pruebas="*" produccion="*" >mx.org.kaana.jobs.Respaldos</clase>
 		 <clase expresion="0 0/60 * 1/1 * ? *" id="facturas" description="sincronización de facturas" load="false" pruebas="*" produccion="*" >mx.org.kaana.jobs.Facturas</clase>
 		 <clase expresion="0 0 7,14 ? * * *"   id="descargas" description="descargas de respaldos" load="false" pruebas="*" produccion="*" >mx.org.kaana.jobs.DescargaRespaldo</clase>
-		 <clase expresion="0 0 0/1 1/1 * ? *"  id="facturacion" description="Facturación automatica" load="false" pruebas="*" produccion="*" >mx.org.kaana.jobs.FacturacionAutomatica</clase>		 
+		 <clase expresion="0 0 0/1 1/1 * ? *"  id="facturacion" description="Facturación automatica" load="true" pruebas="*" produccion="*" >mx.org.kaana.jobs.FacturacionAutomatica</clase>		 
    </tarea>      	        
 </tareas>
