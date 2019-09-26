@@ -153,8 +153,11 @@ public class Reporte extends BaseReportes implements Serializable{
   } // doAceptar
 	
 	public void doAceptarSimple() throws Exception {
-		mx.org.kaana.libs.reportes.scriptlets.Reporte reporteGenerar= null;
-		String source    = null;		
+		doAceptarSimple(JsfBase.getRealPath(this.ireporte.getJrxml().concat(".jasper")), JsfBase.getRealPath(Constantes.RUTA_IMAGENES).concat(File.separator), JsfBase.getRealPath());
+	} // doAceptarSimple
+	
+	public void doAceptarSimple(String source, String imagenes, String path) throws Exception {
+		mx.org.kaana.libs.reportes.scriptlets.Reporte reporteGenerar= null;		
 		InputStream input= null;
 		try {
 			this.loadResourceFileJasper(this.ireporte.getParametros());        
@@ -166,15 +169,14 @@ public class Reporte extends BaseReportes implements Serializable{
 			this.ireporte.getParametros().put(Constantes.REPORTE_VERSION, Configuracion.getInstance().getPropiedad("sistema.version"));
 			this.ireporte.getParametros().put(Constantes.REPORTE_SQL, sql);
 			this.ireporte.getParametros().put(Constantes.REPORTE_REGISTROS, this.total);
-			this.ireporte.getParametros().put(Constantes.REPORTE_IMAGENES, JsfBase.getRealPath(Constantes.RUTA_IMAGENES).concat(File.separator));
-			this.ireporte.getParametros().put(Constantes.REPORTE_TITULOS, this.idTitulos);
-      source= JsfBase.getRealPath(this.ireporte.getJrxml().concat(".jasper"));
+			this.ireporte.getParametros().put(Constantes.REPORTE_IMAGENES, imagenes);
+			this.ireporte.getParametros().put(Constantes.REPORTE_TITULOS, this.idTitulos);      
       this.ireporte.getParametros().put(Constantes.REPORTE_SUBREPORTE, source.substring(0, source.lastIndexOf(File.separator)+File.separator.length()));
 			input = SearchFileJar.getInstance().toInputStream(this.ireporte.getJrxml().concat(".jasper"));
 			if (ireporte instanceof IReporteDataSource) 
 				reporteGenerar=reporteDataSource(source, this.fileName);
 			else 
-				reporteGenerar=reporteConnection(source, this.fileName);
+				reporteGenerar=reporteConnection(source, this.fileName, path);
 			if(this.ireporte.getJrxml().startsWith(Constantes.NOMBRE_DE_APLICACION)) 
 				reporteGenerar.procesar(this.idFormato, input);
 			else 
