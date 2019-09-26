@@ -8,7 +8,9 @@ public enum EEstatusFacturas {
   
   REGISTRADA(1L),
   TIMBRADA  (2L),  
-  CANCELADA (3L);
+  CANCELADA (3L),
+	AUTOMATICO(4L),
+	PROCESANDO(5L);
 
   private Long idEstatusFactura;
 	private static final Map<Long, EEstatusFacturas> lookup= new HashMap<>();

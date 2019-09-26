@@ -174,7 +174,10 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 					} // if
 					break;
 				case GENERAR:							
-					regresar= generarTimbradoFactura(sesion);;					
+					regresar= generarTimbradoFactura(sesion);
+					break;
+				case TRANSFORMACION:
+					regresar= assignStatusAutomatico(sesion);
 					break;
 			} // switch
 			if(!regresar)
@@ -1054,17 +1057,18 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		TransaccionFactura factura   = null;
 		CFDIGestor gestor            = null;
 		ClienteFactura clienteFactura= null;		
-		try {
+		try {			
 			sesion.flush();
 			actualizarClienteFacturama(sesion, this.facturacion.getIdCliente(), this.facturacion.getIdClienteDomicilio());
 			gestor= new CFDIGestor(this.facturacion.getIdVenta());			
 			factura= new TransaccionFactura();
+			factura.actualizarFacturaAutomatico(this.facturacion.getIdFactura(), this.facturacion.getIdUsuario(), EEstatusFacturas.PROCESANDO.getIdEstatusFactura());
 			factura.setArticulos(gestor.toDetalleCfdiVentas(sesion));
 			clienteFactura= gestor.toClienteCfdiVenta(sesion);			
 			clienteFactura.setMetodoPago(ETipoPago.fromIdTipoPago(this.facturacion.getIdTipoPago()).getClave());
 			factura.setCliente(clienteFactura);
 			factura.getCliente().setIdFactura(this.facturacion.getIdFactura());
-			factura.generarCfdi(sesion);						
+			factura.generarCfdi(sesion, this.facturacion.getIdEmpresa().toString(), this.facturacion.getIdUsuario());						
 		} // try
 		catch (Exception e) {			
 			regresar= false;
@@ -1072,6 +1076,19 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		} // catch				
 		return regresar;
 	} // generarTimbradoFactura
+	
+	private boolean assignStatusAutomatico(Session sesion) throws Exception{
+		boolean regresar          = false;		
+		TransaccionFactura factura= null;
+		try {
+			factura= new TransaccionFactura();
+			regresar= factura.actualizarFacturaAutomatico(sesion, this.facturacion.getIdFactura(), JsfBase.getIdUsuario());
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch		
+		return regresar;
+	} // assignStatusAutomatico
 	
 	private void actualizarClienteFacturama(Session sesion, Long idCliente, Long idClienteDomicilio) throws Exception{		
 		CFDIGestor gestor= new CFDIGestor(idCliente);
