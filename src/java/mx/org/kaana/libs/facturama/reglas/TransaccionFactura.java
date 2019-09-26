@@ -368,9 +368,9 @@ public class TransaccionFactura extends IBaseTnx{
 				actualizarFacturaAutomatico(sesion, this.cliente.getIdFactura(), idUsuario);
 			} // else
 		} // try
-		catch (Exception e) {
-			this.registrarBitacora(sesion, this.cliente.getId(), e.getMessage(), REGISTRO_CFDI);
-			actualizarFacturaAutomatico(sesion, this.cliente.getIdFactura(), idUsuario);
+		catch (Exception e) {			
+			registrarBitacoraFactura(this.cliente.getIdFactura(), EEstatusFacturas.AUTOMATICO.getIdEstatusFactura(), "Ocurrió un error al realizar la facturación automatica.", idUsuario);		
+			actualizarFacturaAutomatico(this.cliente.getIdFactura(), idUsuario, EEstatusFacturas.AUTOMATICO.getIdEstatusFactura());
 			throw e;
 		} // catch
 		return regresar;
