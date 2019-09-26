@@ -23,15 +23,25 @@ public class Attachment implements Serializable {
 	private String absolute;
 	private File file;
 	private Boolean cid;
-
+			
+	
 	public Attachment(String absolute, Boolean cid) {
-		this.absolute= JsfBase.getRealPath(absolute);
+		this(JsfBase.getRealPath(""), absolute, cid, true);
+	}
+	
+	public Attachment(String path, String absolute, Boolean cid, Boolean principal) {
+		this.absolute= path.concat(absolute);
 		this.file= new File(this.absolute);
 		this.init(cid);
 	} 
 
 	public Attachment(String id, String absolute, Boolean cid) {
 		this(absolute, cid);
+		this.id= id;
+	}
+	
+	public Attachment(String path, String id, String absolute, Boolean cid) {
+		this(path, absolute, cid, true);
 		this.id= id;
 	}
 
