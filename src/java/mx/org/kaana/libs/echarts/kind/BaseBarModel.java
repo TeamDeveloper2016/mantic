@@ -22,7 +22,7 @@ import mx.org.kaana.libs.echarts.enums.EBarOritentation;
 public class BaseBarModel extends ChartModel implements Serializable {
 
 	private static final long serialVersionUID=1747946676353409638L;
-	protected static final String[] SERIES_COLORS= {"#0080FF", "#80BFFF", "#3398AA", "#0059B3", "#001A33"};
+	protected static final String[] SERIES_COLORS= {"#1A4150", "#70AEC6", "#245D74", "#A7D0E0", "#41839C", "#3A728E", "#OC3756", "#5EBEBD", "#061C36", "#7CD9CE", "#2E7588", "#4499A3"};
 	
 	private Title title;
 	private Legend legend;
