@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import mx.org.kaana.libs.echarts.beans.Label;
 import mx.org.kaana.libs.echarts.enums.EKinds;
 
 /**
@@ -22,6 +23,7 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 	private List<String> center;
 	private ItemStyle itemStyle;
 	private List<Data> data;
+	private Label label;
 
 	public Serie(String name) {
 		this(name, "55%");
@@ -52,7 +54,9 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 		this.radius=radius;
 		this.center=center;
 		this.itemStyle=new ItemStyle();
-		this.data= data;
+		this.data=data;
+		this.label=new Label();
+		
 	}
 
 	public List<String> getRadius() {
@@ -65,6 +69,14 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 
 	public List<String> getCenter() {
 		return center;
+	}
+
+	public Label getLabel() {
+		return label;
+	}
+
+	public void setLabel(Label label) {
+		this.label=label;
 	}
 
 	public void setCenter(List<String> center) {
@@ -85,6 +97,11 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 
 	public void setData(List<Data> data) {
 		this.data=data;
+	}
+
+	@Override
+	public String toString() {
+		return "Serie{"+"radius="+radius+", center="+center+", itemStyle="+itemStyle+", data="+data+'}';
 	}
 	
 }

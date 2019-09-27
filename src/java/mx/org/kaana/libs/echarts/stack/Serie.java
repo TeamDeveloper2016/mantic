@@ -16,7 +16,6 @@ public class Serie extends mx.org.kaana.libs.echarts.bar.Serie implements Serial
 	private static final long serialVersionUID=1120245308527989974L;
 
 	private String stack;
-	private Label label;
 
 	public Serie() {
 		this("Serie");
@@ -35,17 +34,9 @@ public class Serie extends mx.org.kaana.libs.echarts.bar.Serie implements Serial
 		this.stack=stack;
 	}
 
-	public Label getLabel() {
-		return label;
-	}
-
-	public void setLabel(Label label) {
-		this.label=label;
-	}
-
 	@Override
 	public String toString() {
-		return "Serie{"+"stack="+stack+", label="+label+'}';
+		return "Serie{"+"stack="+stack+'}';
 	}
 	
 }
