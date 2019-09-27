@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import mx.org.kaana.libs.echarts.beans.Label;
 import mx.org.kaana.libs.echarts.beans.MarkLine;
+import mx.org.kaana.libs.echarts.beans.MarkPoint;
 import mx.org.kaana.libs.echarts.enums.EKinds;
 
 /**
@@ -22,6 +23,7 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 
   private String barWidth;	
 	private List<Double> data;
+  private MarkPoint markPoint;
   private MarkLine markLine;
 	private Integer barGap; 
 
@@ -37,6 +39,7 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 		super(name, type.toString());
 		this.barWidth=barWidth;
 		this.data=data;
+		this.markPoint=new MarkPoint();
 		this.markLine=new MarkLine(name);
 		this.barGap=0;
 	}
@@ -57,6 +60,14 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 		this.data=data;
 	}
 
+	public MarkPoint getMarkPoint() {
+		return markPoint;
+	}
+
+	public void setMarkPoint(MarkPoint markPoint) {
+		this.markPoint=markPoint;
+	}
+
 	public MarkLine getMarkLine() {
 		return markLine;
 	}
@@ -75,7 +86,7 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 
 	@Override
 	public String toString() {
-		return "Serie{"+"barWidth="+barWidth+", data="+data+", markLine="+markLine+", barGap="+barGap+'}';
+		return "Serie{"+"barWidth="+barWidth+", data="+data+", markPoint="+markPoint+", markLine="+markLine+", barGap="+barGap+'}';
 	}
-	
+
 }
