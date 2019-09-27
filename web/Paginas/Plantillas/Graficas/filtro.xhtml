@@ -16,20 +16,17 @@
 			};
 			$(document).ready(function () {
 				window.multiple = echarts.init(document.getElementById('multiple'), {renderer: 'svg', width: 'auto', height: 'auto'});
-				window.multiple.clear();
 				window.multiple.setOption(#{kajoolPlantillasGraficasFiltro.attrs.multiple}, true);
 				window.simple = echarts.init(document.getElementById('simple'), {renderer: 'canvas', width: 'auto', height: 'auto'});
-				window.simple.clear();
 				window.simple.setOption(#{kajoolPlantillasGraficasFiltro.attrs.simple}, true);
 				window.pie = echarts.init(document.getElementById('pie'), {renderer: 'canvas', width: 'auto', height: 'auto'});
-				window.pie.clear();
 				window.pie.setOption(#{kajoolPlantillasGraficasFiltro.attrs.pie}, true);
 				window.donut = echarts.init(document.getElementById('donut'), {renderer: 'canvas', width: 'auto', height: 'auto'});
-				window.donut.clear();
 				window.donut.setOption(#{kajoolPlantillasGraficasFiltro.attrs.donut}, true);
 				window.stack = echarts.init(document.getElementById('stack'), {renderer: 'canvas', width: 'auto', height: 'auto'});
-				window.stack.clear();
 				window.stack.setOption(#{kajoolPlantillasGraficasFiltro.attrs.stack}, true);
+				window.vertical = echarts.init(document.getElementById('vertical'), {renderer: 'canvas', width: 'auto', height: 'auto'});
+				window.vertical.setOption(#{kajoolPlantillasGraficasFiltro.attrs.vertical}, true);
 			});
 			
    $(function(){
@@ -40,6 +37,7 @@
 				window.pie.resize();
 				window.donut.resize();
 				window.stack.resize();
+				window.vertical.resize();
 				janal.console('filtro.echarts resize();');
 			});				
 		});
@@ -131,7 +129,7 @@
 					Esto es un demo
 				</div>	
 				<div class="cgor-chart-panel">
-					<div id="group" class="cgor-chart-panel">
+					<div id="vertical" class="cgor-chart-panel">
 						Gráficas apilada
 					</div>	
 				</div>	

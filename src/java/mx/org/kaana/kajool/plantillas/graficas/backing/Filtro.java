@@ -61,6 +61,11 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			Stacked stacked= new Stacked(DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "multiple", attrs));
   		StackModel stack= new StackModel(new Title(), stacked);
   		this.attrs.put("stack", stack.toJson());
+			
+  		modelSimple  = new BarModel(new Title(), simple);
+			modelSimple.getGrid().setRight("10%");
+  		this.attrs.put("vertical", modelSimple.toJson());
+			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
