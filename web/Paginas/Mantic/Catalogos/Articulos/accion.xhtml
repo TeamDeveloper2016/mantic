@@ -42,6 +42,7 @@
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
+		<p:defaultCommand target="contenedorGrupos"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
@@ -60,17 +61,23 @@
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="menudeo" value="Menudeo:"/>
 								<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100 calculos" columnClasses="janal-wid-100, janal-wid-col-80 janal-column-right">
-									<p:inputNumber id="menudeo" styleClass="calculos" inputStyleClass="janal-wid-100-txt janal-color-blue janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.menudeo}" readonly="true"/>
+									<p:inputNumber id="menudeo" styleClass="calculos" inputStyleClass="janal-wid-100-txt janal-color-blue janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.menudeo}">
+  									<p:ajax event="blur" process="@this" update="@(.calculos)" listener="#{manticCatalogosArticulosAccion.doUpdatePreciosVenta()}"/>
+									</p:inputNumber>
 									<p:outputLabel value="#{manticCatalogosArticulosAccion.attrs.menudeo} %" styleClass="janal-font-bold calculos" title="Utilidad"/>
 								</p:panelGrid>
 								<p:outputLabel for="medio" value="Medio mayoreo:"/>
 								<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100 calculos" columnClasses="janal-wid-100, janal-wid-col-80 janal-column-right">
-	  							<p:inputNumber id="medio" styleClass="calculos" inputStyleClass="janal-wid-100-txt janal-color-blue janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.medioMayoreo}" readonly="true"/>
+	  							<p:inputNumber id="medio" styleClass="calculos" inputStyleClass="janal-wid-100-txt janal-color-blue janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.medioMayoreo}">
+  									<p:ajax event="blur" process="@this" update="@(.calculos)" listener="#{manticCatalogosArticulosAccion.doUpdatePreciosVenta()}"/>
+									</p:inputNumber>
 									<p:outputLabel value="#{manticCatalogosArticulosAccion.attrs.medioMayoreo} %" styleClass="janal-font-bold calculos" title="Utilidad"/>
 								</p:panelGrid>
 								<p:outputLabel for="mayoreo" value="Mayoreo:"/>
 								<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100 calculos" columnClasses="janal-wid-100, janal-wid-col-80 janal-column-right">
-  								<p:inputNumber id="mayoreo" styleClass="calculos" inputStyleClass="janal-wid-100-txt janal-color-blue janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.mayoreo}" readonly="true"/>
+  								<p:inputNumber id="mayoreo" styleClass="calculos" inputStyleClass="janal-wid-100-txt janal-color-blue janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.mayoreo}">
+  									<p:ajax event="blur" process="@this" update="@(.calculos)" listener="#{manticCatalogosArticulosAccion.doUpdatePreciosVenta()}"/>
+									</p:inputNumber>
 									<p:outputLabel value="#{manticCatalogosArticulosAccion.attrs.mayoreo} %" styleClass="janal-font-bold calculos" title="Utilidad"/>
 								</p:panelGrid>
 								<p:spacer width="1px"/><p:separator/>
@@ -79,7 +86,9 @@
 								<p:outputLabel for="iva" value="Iva:"/>
 								<p:inputNumber id="iva" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.iva}"/>                    
 								<p:outputLabel for="redondear" value="Redondear:"/>
-								<p:inputSwitch id="redondear" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.redondear}" offLabel="NO" onLabel="SI"/>
+								<p:inputSwitch id="redondear" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.redondear}" offLabel="NO" onLabel="SI">
+ 									<p:ajax event="change" process="@this" update="@(.calculos)" listener="#{manticCatalogosArticulosAccion.doUpdatePreciosVenta()}"/>
+								</p:inputSwitch>
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="pesoEstimado" value="Peso estimado:"/>
 								<p:inputNumber id="pesoEstimado" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.pesoEstimado}"/>                    																	

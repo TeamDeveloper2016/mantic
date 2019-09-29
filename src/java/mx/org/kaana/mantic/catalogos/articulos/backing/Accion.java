@@ -252,7 +252,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
   public void doUpdatePrecio() {
 		double precio    = this.registroArticulo.getArticulo().getPrecio();
-		boolean redondear= this.registroArticulo.getArticulo().getIdRedondear()== null || this.registroArticulo.getArticulo().getIdRedondear().equals(1L);
+		boolean redondear= this.registroArticulo== null || this.registroArticulo.isRedondear();
 		if(((EAccion)this.attrs.get("accion")).equals(EAccion.AGREGAR)) {
   	  this.attrs.put("precio", precio);
 			double calculo= precio* (1+ (this.registroArticulo.getArticulo().getIva()/ 100));
@@ -279,7 +279,24 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // if	
 	}	 // doUpdatePrecio
 	
-	public void doDeleteFile(){
+  public void doUpdatePreciosVenta() {
+		double precio    = this.registroArticulo.getArticulo().getPrecio();
+		boolean redondear= this.registroArticulo== null || this.registroArticulo.isRedondear();
+		double calculo= (Double)this.attrs.get("precio")* (1+ (this.registroArticulo.getArticulo().getIva()/ 100));
+		double total  = precio* (1+ (this.registroArticulo.getArticulo().getIva()/ 100));
+		double factor = Numero.toRedondearSat(this.registroArticulo.getArticulo().getMenudeo()/ calculo);
+		this.attrs.put("menudeo", Numero.toRedondearSat((factor- 1)* 100));
+		this.registroArticulo.getArticulo().setMenudeo(Numero.toAjustarDecimales(total* factor, redondear));
+		factor = Numero.toRedondearSat(this.registroArticulo.getArticulo().getMedioMayoreo()/ calculo);
+		this.attrs.put("medioMayoreo", Numero.toRedondearSat((factor- 1)* 100));
+		this.registroArticulo.getArticulo().setMedioMayoreo(Numero.toAjustarDecimales(total* factor, redondear));
+		factor = Numero.toRedondearSat(this.registroArticulo.getArticulo().getMayoreo()/ calculo);
+		this.attrs.put("mayoreo", Numero.toRedondearSat((factor- 1)* 100));
+		this.registroArticulo.getArticulo().setMayoreo(Numero.toAjustarDecimales(total* factor, redondear));
+		this.attrs.put("precio", precio);
+	}
+
+	public void doDeleteFile() {
 		Transaccion transaccion= null;
 		EAccion accion         = null;
 		try {
