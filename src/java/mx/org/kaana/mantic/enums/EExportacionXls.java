@@ -4,7 +4,7 @@ import mx.org.kaana.kajool.procesos.reportes.reglas.IExportacionXls;
 
 public enum EExportacionXls implements IExportacionXls{
 
-	ARTICULOS ("VistaArticulosDto", "catalogoArticulos", "Catalogo_Articulos", "/Paginas/Mantic/Catalogos/Articulos/filtro", "");
+	ARTICULOS ("VistaArticulosDto", "exportar", "Articulos", "/Paginas/Mantic/Catalogos/Articulos/filtro", "");
   
   private final String proceso;
   private final String idXml;

@@ -34,7 +34,7 @@ import org.primefaces.model.StreamedContent;
 
 @Named(value = "kajoolReportesExcel")
 @ViewScoped
-public class Excel implements Serializable{
+public class Excel implements Serializable {
 
 	private static final long serialVersionUID = 4446536384405049607L;    
   private IXls ixls;

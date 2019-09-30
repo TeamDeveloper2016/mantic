@@ -13,7 +13,7 @@ public class ExportarXls implements IXls, Serializable {
   private String campos;
 	private Map<String, Object> parametros; 
 
-  public ExportarXls(Modelo modelo, IExportacionXls exportacionXls){
+  public ExportarXls(Modelo modelo, IExportacionXls exportacionXls) {
     this(modelo, exportacionXls, null);
   }
   
