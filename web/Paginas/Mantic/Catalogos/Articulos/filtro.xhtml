@@ -189,6 +189,8 @@
 										<p:separator/>
 										<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 										<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+										<p:separator/>
+										<p:menuitem icon="fa fa-file-excel-o" value="Exportar catalogo" onstart="return janal.bloquear();" action="#{manticCatalogosArticulosFiltro.doExportarXls}" process="@this panelBusqueda" oncomplete="janal.desbloquear()"/>
 									</p:menuButton>
 								</div>	
 								<div class="xs-pantalla">
@@ -199,6 +201,7 @@
 									<p:commandButton icon="fa fa-history" title="Carga masiva" action="#{manticCatalogosArticulosFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
 									<p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 									<p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+									<p:commandButton icon="fa fa-file-excel-o" title="Exportar catalogo" onstart="return janal.bloquear();" action="#{manticCatalogosArticulosFiltro.doExportarXls}" process="@this panelBusqueda" oncomplete="janal.desbloquear()"/>
 								</div>	
 							</f:facet>												
 							<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.propio}">

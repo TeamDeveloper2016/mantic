@@ -26,6 +26,10 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.comun.Comun;
+import mx.org.kaana.kajool.procesos.enums.EExportarDatos;
+import mx.org.kaana.kajool.procesos.reportes.beans.Exportar;
+import mx.org.kaana.kajool.procesos.reportes.beans.ExportarXls;
+import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
@@ -41,6 +45,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.RegistroArticulo;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
+import mx.org.kaana.mantic.enums.EExportacionXls;
 import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
@@ -479,5 +484,23 @@ public class Filtro extends Comun implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doAsignaCodigo	
-	
+
+	public String doExportarXls() {
+		String regresar          = null;		
+		Map<String, Object>params= null;
+		try {									   
+			params= toPrepare();
+			params.put("sortOrder", "order by tc_mantic_articulos.nombre, tc_mantic_articulos.actualizado");
+			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.ARTICULOS.getProceso(), EExportacionXls.ARTICULOS.getIdXml(), EExportacionXls.ARTICULOS.getNombreArchivo()), EExportacionXls.ARTICULOS));
+			regresar = "/Paginas/Reportes/excel".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e){
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // doExportarFdDbf  
 }
