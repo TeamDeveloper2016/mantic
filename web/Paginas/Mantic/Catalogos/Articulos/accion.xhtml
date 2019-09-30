@@ -62,23 +62,23 @@
 								<p:outputLabel for="menudeo" value="Menudeo:"/>
 								<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100 calculos" columnClasses="janal-wid-100, janal-wid-col-80 janal-column-right">
 									<p:inputNumber id="menudeo" styleClass="calculos" inputStyleClass="janal-wid-100-txt janal-color-blue janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.menudeo}">
-  									<p:ajax event="blur" process="@this" update="@(.calculos)" listener="#{manticCatalogosArticulosAccion.doUpdatePreciosVenta()}"/>
+  									<p:ajax event="blur" process="@this" update="@(.porcentajes)" listener="#{manticCatalogosArticulosAccion.doUpdatePreciosVenta()}"/>
 									</p:inputNumber>
-									<p:outputLabel value="#{manticCatalogosArticulosAccion.attrs.menudeo} %" styleClass="janal-font-bold calculos" title="Utilidad"/>
+									<p:outputLabel value="#{manticCatalogosArticulosAccion.attrs.menudeo} %" styleClass="janal-font-bold calculos porcentajes" title="Utilidad"/>
 								</p:panelGrid>
 								<p:outputLabel for="medio" value="Medio mayoreo:"/>
 								<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100 calculos" columnClasses="janal-wid-100, janal-wid-col-80 janal-column-right">
 	  							<p:inputNumber id="medio" styleClass="calculos" inputStyleClass="janal-wid-100-txt janal-color-blue janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.medioMayoreo}">
-  									<p:ajax event="blur" process="@this" update="@(.calculos)" listener="#{manticCatalogosArticulosAccion.doUpdatePreciosVenta()}"/>
+  									<p:ajax event="blur" process="@this" update="@(.porcentajes)" listener="#{manticCatalogosArticulosAccion.doUpdatePreciosVenta()}"/>
 									</p:inputNumber>
-									<p:outputLabel value="#{manticCatalogosArticulosAccion.attrs.medioMayoreo} %" styleClass="janal-font-bold calculos" title="Utilidad"/>
+									<p:outputLabel value="#{manticCatalogosArticulosAccion.attrs.medioMayoreo} %" styleClass="janal-font-bold calculos porcentajes" title="Utilidad"/>
 								</p:panelGrid>
 								<p:outputLabel for="mayoreo" value="Mayoreo:"/>
 								<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100 calculos" columnClasses="janal-wid-100, janal-wid-col-80 janal-column-right">
   								<p:inputNumber id="mayoreo" styleClass="calculos" inputStyleClass="janal-wid-100-txt janal-color-blue janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.mayoreo}">
-  									<p:ajax event="blur" process="@this" update="@(.calculos)" listener="#{manticCatalogosArticulosAccion.doUpdatePreciosVenta()}"/>
+  									<p:ajax event="blur" process="@this" update="@(.porcentajes)" listener="#{manticCatalogosArticulosAccion.doUpdatePreciosVenta()}"/>
 									</p:inputNumber>
-									<p:outputLabel value="#{manticCatalogosArticulosAccion.attrs.mayoreo} %" styleClass="janal-font-bold calculos" title="Utilidad"/>
+									<p:outputLabel value="#{manticCatalogosArticulosAccion.attrs.mayoreo} %" styleClass="janal-font-bold calculos porcentajes" title="Utilidad"/>
 								</p:panelGrid>
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="sat" value="Código SAT:"/>

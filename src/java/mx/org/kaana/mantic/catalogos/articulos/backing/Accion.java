@@ -105,7 +105,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
       transaccion = new Transaccion(this.registroArticulo, (Double)this.attrs.get("precio"));
-			if(this.image!= null){
+			if(this.image!= null) {
 				this.image.getStream().close();
 				this.image= null;
 			} // if
