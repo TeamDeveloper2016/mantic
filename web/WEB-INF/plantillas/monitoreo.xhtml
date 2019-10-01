@@ -29,8 +29,7 @@
 					PF('progreso').cancel();
 					if (args.janalOk) {
 						janal.console('Se exportó de forma correcta el archivo a excel !');
-						janal.bloquear();
-						setTimeout(PF('dialogoConfirmacion').show(), 1000);
+						setTimeout("janal.bloquear();PF('dialogoConfirmacion').show();", 1000);
 					} // if
 				}
 
@@ -66,7 +65,7 @@
                 <p:panel styleClass="janal-content-table" id="barra">
                   Proceso:
                   <p:progressBar interval="1000" styleClass="animate" labelTemplate="Registro [{index} de {count}] procesados, porcentaje {value}%" ajax="true" widgetVar="progreso" value="#{sessionScope.autentifica.monitoreo.progreso}" >
-                    <p:ajax event="complete" listener="#{accionConfirmacion[eventoProgreso]}" />
+                    <p:ajax event="complete" listener="#{accionConfirmacion[eventoProgreso]}"/>
                   </p:progressBar>  			
                 </p:panel>
                 <p:dialog id="confirmacion" widgetVar="dialogoConfirmacion" header="#{empty tituloConfirmacion? 'Confirmación': tituloConfirmacion}" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false" onHide="#{empty onHideDlg? 'janal.desbloquear();': onHideDlg}">
