@@ -16,7 +16,7 @@
   </ui:define>
 	<ui:define name="acciones">
     <div style="display:none">
-      <p:commandButton id="aceptar" value="Aceptar" onstart="return start(#{kajoolReportesExcel.total})" oncomplete="download(xhr, status, args)" actionListener="#{kajoolReportesExcel.doAceptar}" process="@form" update=":datos:confirmacion" widgetVar="procesar"/>
+      <p:commandButton id="aceptar" value="Aceptar" onstart="return start(#{kajoolReportesExcel.total})" oncomplete="download(xhr, status, args);" actionListener="#{kajoolReportesExcel.doAceptar}" process="@form" update=":datos:confirmacion" widgetVar="procesar"/>
     </div>
     <p:commandButton id="cancelar" value="Regresar" action="#{kajoolReportesExcel.doCancelar}" immediate="true" ajax="false" oncomplete="PF('progreso').cancel()" /> 
 	</ui:define>

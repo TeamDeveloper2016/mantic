@@ -306,10 +306,10 @@ public class Express extends IBaseAttribute implements Serializable {
 				this.registroArticulo.getArticulo().setSat(Cadena.isVacio(entity.toString("sat"))? Constantes.CODIGO_SAT: entity.toString("sat"));
 				this.registroArticulo.getArticulo().setDescripcion(entity.toString("descripcion"));
 				this.registroArticulo.getArticulo().setNombre(entity.toString("nombre"));
-				this.registroArticulo.getArticulo().setPrecio(entity.toDouble("precio"));
-				this.registroArticulo.getArticulo().setMenudeo(entity.toDouble("menudeo"));
-				this.registroArticulo.getArticulo().setMedioMayoreo(entity.toDouble("medioMayoreo"));
-				this.registroArticulo.getArticulo().setMayoreo(entity.toDouble("mayoreo"));
+				this.registroArticulo.getArticulo().setPrecio(entity.toDouble("precio").equals(0D)? 10D: entity.toDouble("precio"));
+				this.registroArticulo.getArticulo().setMenudeo(entity.toDouble("menudeo").equals(0D)? 17.4D: entity.toDouble("menudeo"));
+				this.registroArticulo.getArticulo().setMedioMayoreo(entity.toDouble("medioMayoreo").equals(0D)? 16.24D: entity.toDouble("medioMayoreo"));
+				this.registroArticulo.getArticulo().setMayoreo(entity.toDouble("mayoreo").equals(0D)? 15.08D: entity.toDouble("mayoreo"));
 				this.registroArticulo.getArticulo().setIva(16D);
 				if(entity.containsKey("iva"))
 				  this.registroArticulo.getArticulo().setIva(entity.toDouble("iva"));

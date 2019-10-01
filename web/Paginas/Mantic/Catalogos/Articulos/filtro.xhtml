@@ -12,7 +12,9 @@
 		<script type="text/javascript">
 			Janal.Control.fields = {
 				codigo: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				nombre: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
+				nombre: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        fechaInicio  : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        fechaTermino : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'}
 			};
 			function reload() {
 				$('.janal-control-imagen').each(function(index, item) {
@@ -114,6 +116,10 @@
 								<f:selectItem itemLabel="SI" itemValue="1"/>
 								<f:selectItem itemLabel="NO" itemValue="2"/>
 							</p:selectOneMenu>								
+              <p:outputLabel for="fechaInicio" value="Actualizado fecha inicio:"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosArticulosFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+              <p:outputLabel for="fechaTermino" value="Actualizado fecha termino:"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosArticulosFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 							<p:outputLabel for="idPerdida" value="Precio venta erroneo:"/>
 							<p:selectOneMenu id="idPerdida" value="#{manticCatalogosArticulosFiltro.attrs.idPerdida}" styleClass="janal-wid-100-txt">									
 								<f:selectItem itemLabel="TODOS" itemValue="-1"/>

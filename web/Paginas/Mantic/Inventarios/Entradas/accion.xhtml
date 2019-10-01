@@ -119,7 +119,7 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
-		<pe:remoteCommand name="recover" process="@this" update="dialogoArtExpress" actionListener="#{manticInventariosEntradasAccion.doRecoverArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); PF('dlgArtExpress').show();">  
+		<pe:remoteCommand name="recover" process="@this" update="dialogoArtExpress" actionListener="#{manticInventariosEntradasAccion.doRecoverArticulo}" onstart="return janal.bloquear();" oncomplete="PF('dlgArtExpress').show();">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		

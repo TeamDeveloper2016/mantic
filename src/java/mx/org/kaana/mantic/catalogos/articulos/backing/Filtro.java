@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +37,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
 import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -140,6 +142,10 @@ public class Filtro extends Comun implements Serializable {
     		  sb.append("tc_mantic_articulos.id_imagen is not null and ");
 			  else
     		  sb.append("tc_mantic_articulos.id_imagen is null and ");
+			if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
+				sb.append("(date_format(tc_mantic_articulos.actualizado, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
+			if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
+				sb.append("(date_format(tc_mantic_articulos.actualizado, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
 			if(!Cadena.isVacio(this.attrs.get("idPerdida")) && !this.attrs.get("idPerdida").toString().equals("-1"))
   			if(this.attrs.get("idPerdida").toString().equals("1"))
     		  sb.append("(tc_mantic_articulos.precio>= tc_mantic_articulos.menudeo or tc_mantic_articulos.precio>= tc_mantic_articulos.mayoreo or tc_mantic_articulos.precio>= tc_mantic_articulos.medio_mayoreo) and ");
@@ -491,7 +497,7 @@ public class Filtro extends Comun implements Serializable {
 		try {									   
 			params= this.toPrepare();
 			params.put("sortOrder", "order by tc_mantic_articulos.nombre, tc_mantic_articulos.actualizado");
-			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.ARTICULOS.getProceso(), EExportacionXls.ARTICULOS.getIdXml(), EExportacionXls.ARTICULOS.getNombreArchivo()), EExportacionXls.ARTICULOS, "codigo,sat,nombre,iva,costo,menudeo,medioMayoreo,mayoreo,limiteMedioMayoreo,limiteMayoreo,stock,unidad,actualizado"));
+			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.ARTICULOS.getProceso(), EExportacionXls.ARTICULOS.getIdXml(), EExportacionXls.ARTICULOS.getNombreArchivo()), EExportacionXls.ARTICULOS, "CODIGO,CODIGO AUXILIAR,NOMBRE,COSTO S/IVA,MENUDEO NETO,MEDIO NETO,MAYOREO NETO,UNIDAD MEDIDA,IVA,LIMITE MENUDEO,LIMITE MAYOREO,STOCK MINIMO,STOCK MAXIMO,SAT,ACTUALIZADO"));
 			regresar = "/Paginas/Reportes/excel".concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e){

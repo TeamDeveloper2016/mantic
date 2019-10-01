@@ -129,8 +129,9 @@ public class Excel implements Serializable {
 	}
   
   public void doCompleto() {
-    if(this.reporteGenerado)
+    if(this.reporteGenerado) {
       JsfBase.addMessage("Reporte", "Se generó correctamente la exportación.", ETipoMensaje.INFORMACION);
+		} // if
     else
       JsfBase.addMessage("Reporte", "Ocurrio un error en la generación del reporte.", ETipoMensaje.ERROR);
 	}

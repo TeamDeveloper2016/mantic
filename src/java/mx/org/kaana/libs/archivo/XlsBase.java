@@ -129,9 +129,9 @@ public abstract class XlsBase implements Serializable {
   
   protected void procesarEncabezado(String algunos) {
     try {
-      StringTokenizer stringTokenizer= new StringTokenizer(algunos, ",");
-      String alias      = "";
-      int x = 1;
+      StringTokenizer stringTokenizer= new StringTokenizer(algunos.toUpperCase(), ",");
+      String alias= "";
+      int x       = 1;
       while (stringTokenizer.hasMoreTokens()) {
         alias = stringTokenizer.nextToken();
         Label label = new Label(getPosicionColumna()+ x- 1, getPosicionFila(), alias);

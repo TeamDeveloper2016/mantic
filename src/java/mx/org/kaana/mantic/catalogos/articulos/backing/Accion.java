@@ -53,13 +53,13 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idArticulo", JsfBase.getFlashAttribute("idArticulo"));
       this.attrs.put("goKardex", ((Long)JsfBase.getFlashAttribute("idArticulo"))> 0L);
-      doLoad();
-      loadProveedores();
-      loadCategorias();
-      loadEmpaques();
-      doLoadUnidadesMedidas();
-      loadGrupos();
-      loadTiposVentas();
+      this.doLoad();
+      this.loadProveedores();
+      this.loadCategorias();
+      this.loadEmpaques();
+      this.doLoadUnidadesMedidas();
+      this.loadGrupos();
+      this.loadTiposVentas();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -87,10 +87,10 @@ public class Accion extends IBaseAttribute implements Serializable {
           this.registroArticulo = new RegistroArticulo(idArticulo);
 					this.image= LoadImages.getImage(idArticulo);
 					this.registroArticulo.setIdTipoArticulo(this.registroArticulo.getArticulo().getIdArticuloTipo());
-					this.attrs.put("precio", this.registroArticulo.getArticulo().getPrecio());
-					this.doUpdatePrecio();
           break;
       } // switch
+			this.attrs.put("precio", this.registroArticulo.getArticulo().getPrecio());
+			this.doUpdatePrecio();
     } // try
     catch (Exception e) {
       Error.mensaje(e);

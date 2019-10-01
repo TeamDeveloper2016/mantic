@@ -14,6 +14,7 @@ import mx.org.kaana.kajool.db.comun.page.LinkPage;
 import mx.org.kaana.kajool.db.comun.page.PageRecords;
 import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import org.apache.commons.logging.Log;
@@ -106,7 +107,7 @@ public class Xls extends XlsBase {
       nombreColumnas= this.campos.split(",");
       columna= new HashMap();
       for (int i=0; i< getColumnasInformacion(); i++) {        
-        columna.put("col"+String.valueOf(i), registroMap.get(nombreColumnas[i]));
+        columna.put("col"+String.valueOf(i), registroMap.get(Cadena.toBeanName(nombreColumnas[i])));
       } // for  
     } // try 
     catch (Exception e)  {
@@ -132,7 +133,7 @@ public class Xls extends XlsBase {
     catch (Exception e) {
       Error.mensaje(e);
     } // try
-    return regresar;
+    return regresar.toUpperCase();
   }
 
 	@Override

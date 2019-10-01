@@ -14,7 +14,6 @@ import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
-import mx.org.kaana.libs.formato.Numero;
 
 /**
  *@company KAANA
@@ -111,7 +110,7 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
   }
 
   public TcManticArticulosDto(Long key) {
-    this(null, null, null, null, null, null, null, null, 16D, null, 0D, null, null, new Long(-1L), 0D, null, 0D, null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null, 3D, 5D, 3D, 8D, Constantes.CODIGO_SAT, 1L, 2L, "0", "0", null);
+    this(null, null, null, null, null, null, null, 10D, 16D, 13D, 0D, null, null, new Long(-1L), 0D, 15D, 0D, null, null, 17D, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null, 3D, 5D, 3D, 8D, Constantes.CODIGO_SAT, 1L, 2L, "0", "0", null);
     setKey(key);
   }
 

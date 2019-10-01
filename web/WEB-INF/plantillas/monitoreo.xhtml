@@ -28,8 +28,9 @@
 				function download(xhr, status, args) {
 					PF('progreso').cancel();
 					if (args.janalOk) {
+						janal.console('Se exportó de forma correcta el archivo a excel !');
 						janal.bloquear();
-						PF('dialogoConfirmacion').show();
+						setTimeout(PF('dialogoConfirmacion').show(), 1000);
 					} // if
 				}
 
@@ -68,7 +69,7 @@
                     <p:ajax event="complete" listener="#{accionConfirmacion[eventoProgreso]}" />
                   </p:progressBar>  			
                 </p:panel>
-                <p:dialog id="confirmacion" widgetVar="dialogoConfirmacion" header="#{empty tituloConfirmacion? 'Confirmación': tituloConfirmacion}" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false"  onHide="#{empty onHideDlg? 'janal.desbloquear();': onHideDlg}">
+                <p:dialog id="confirmacion" widgetVar="dialogoConfirmacion" header="#{empty tituloConfirmacion? 'Confirmación': tituloConfirmacion}" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false" onHide="#{empty onHideDlg? 'janal.desbloquear();': onHideDlg}">
                   <h:outputText value="#{textoConfirmacion}" escape="false"/>
                   <ui:insert name="detalleConfirmacion" />
                   <hr class="ui-widget-content"/>
