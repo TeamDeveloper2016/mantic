@@ -328,8 +328,8 @@ public class Express extends IBaseAttribute implements Serializable {
 	}	
 	
 	public void doUpdateNombre() {
-		if(this.getRegistroArticulo().getArticulo().getNombre()!= null && Cadena.isVacio(this.getRegistroArticulo().getArticulo().getDescripcion())) 
-		  this.getRegistroArticulo().getArticulo().setDescripcion(this.getRegistroArticulo().getArticulo().getNombre().toUpperCase());
+		if(JsfBase.getParametro("nombreDialog_input")!= null && Cadena.isVacio(this.getRegistroArticulo().getArticulo().getDescripcion())) 
+		  this.getRegistroArticulo().getArticulo().setDescripcion(((String)JsfBase.getParametro("nombreDialog_input")).toUpperCase());
 	}	
 
 	public List<UISelectEntity> doCompleteCodigo(String query) {
@@ -410,7 +410,7 @@ public class Express extends IBaseAttribute implements Serializable {
 			seleccion= nombres.get(nombres.indexOf((UISelectEntity)event.getObject()));
 			this.attrs.put("nombreExpressSeleccion", seleccion);			
 			this.getRegistroArticulo().getArticulo().setNombre(seleccion.toString("nombre"));
-  		this.doUpdateNombre();
+		  this.getRegistroArticulo().getArticulo().setDescripcion(seleccion.toString("nombre"));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
