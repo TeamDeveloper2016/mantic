@@ -115,6 +115,7 @@ public class Express extends IBaseAttribute implements Serializable {
 				JsfBase.addMessage("Ocurrió un error al registrar el artículo", ETipoMensaje.ERROR);						
 			this.registroArticulo= new RegistroArticulo();
 			this.attrs.put("codigoExpress", null);
+			this.attrs.put("nombreExpress", null);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -132,6 +133,7 @@ public class Express extends IBaseAttribute implements Serializable {
 			codigo.setOrden(1L);
 			this.registroArticulo.getArticulosCodigos().clear();
 			this.registroArticulo.getArticulosCodigos().add(codigo);
+			this.registroArticulo.getArticulo().setNombre((String) JsfBase.getParametro("nombreDialog_input"));
 			this.registroArticulo.getArticulo().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.registroArticulo.getArticulo().setIdEmpaqueUnidadMedida(1L);
 			this.registroArticulo.getArticulo().setIdRedondear(2L);
@@ -368,4 +370,52 @@ public class Express extends IBaseAttribute implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doAsignaCodigo		
+	
+	public List<UISelectEntity> doCompleteNombre(String query) {
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
+    try {
+			params= new HashMap<>();
+			columns= new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			boolean	buscaPorCodigo= query.startsWith(".");
+			if(buscaPorCodigo)
+				query= query.trim().substring(1);
+			String search= !Cadena.isVacio(query)? query.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("idProveedor", -1L);			
+  		params.put("codigo", search);		
+			if(buscaPorCodigo) 
+        this.attrs.put("nombresExpress", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porLikeNombre", params, columns, 20L));
+			else
+        this.attrs.put("nombresExpress", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 20L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+		return (List<UISelectEntity>)this.attrs.get("nombresExpress");
+	}	// doCompleteNombre
+
+	public void doAsignaNombre(SelectEvent event) {
+		UISelectEntity seleccion    = null;
+		List<UISelectEntity> nombres= null;
+		try {
+			nombres= (List<UISelectEntity>) this.attrs.get("nombresExpress");
+			seleccion= nombres.get(nombres.indexOf((UISelectEntity)event.getObject()));
+			this.attrs.put("nombreExpressSeleccion", seleccion);			
+			this.getRegistroArticulo().getArticulo().setNombre(seleccion.toString("nombre"));
+  		this.doUpdateNombre();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doAsignaNombre
+	
 }

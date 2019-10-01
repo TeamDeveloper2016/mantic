@@ -8,14 +8,14 @@
                 xmlns:pe="http://primefaces.org/ui/extensions">
 	<script type="text/javascript">
 		fieldsDialogExpressArt = {
-			'codigoDialog'      : {validaciones: 'requerido', mascara: 'codigo', formatos: 'cambiar-mayusculas'},
-			'satDialog'         : {validaciones: 'libre', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas', individual: true},			
-			'nombreDialog'      : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-			'precioDialog'      : {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre', individual: true, grupo: 'costo'},
-			'menudeoDialog'     : {validaciones: 'requerido|flotante|mayor({"cuanto": 0})|mayor-a({"cual":"medioMayoreoDialog"})', mascara: 'libre', individual: true, grupo: 'menudeo'},
-			'medioMayoreoDialog': {validaciones: 'requerido|flotante|mayor({"cuanto": 0})|mayor-a({"cual":"mayoreoDialog"})', mascara: 'libre', individual: true, grupo: 'medioMayoreo'},
-			'mayoreoDialog'     : {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre', individual: true, grupo: 'mayoreo'},
-			'descripcionDialog' : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
+			codigoDialog      : {validaciones: 'requerido', mascara: 'codigo', formatos: 'cambiar-mayusculas'},
+			satDialog         : {validaciones: 'libre', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas', individual: true},			
+			nombreDialog      : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+			descripcionDialog : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
+			precioDialog      : {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre', individual: true, grupo: 'costo'},
+			menudeoDialog     : {validaciones: 'requerido|flotante|mayor({"cuanto": 0})|mayor-a({"cual":"medioMayoreoDialog"})', mascara: 'libre', individual: true, grupo: 'menudeo'},
+			medioMayoreoDialog: {validaciones: 'requerido|flotante|mayor({"cuanto": 0})|mayor-a({"cual":"mayoreoDialog"})', mascara: 'libre', individual: true, grupo: 'medioMayoreo'},
+			mayoreoDialog     : {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre', individual: true, grupo: 'mayoreo'}
 		};
 		
 		function validaCaptura() {
@@ -45,7 +45,7 @@
   </style>		
 	<p:dialog header="Agregar articulo de forma express" id="dialogoArtExpress" widgetVar="dlgArtExpress" onShow="notificarExpress();" onHide="janal.desbloquear(); janal.restore(); janal.refresh();" dynamic="true" width="70%" resizable="false" closeOnEscape="true" closable="true" appendTo="@(body)" styleClass="janal-dialog-express">
 		<h:form id="formDialogoExpressArticulos" prependId="false">
-			<p:remoteCommand name="notificarExpress" actionListener="#{manticCatalogosArticulosExpress.doUpdateArticuloExpress}" process="@this" update="@(.express) @(.calculos) @(.filas)" oncomplete="janal.change('formDialogoExpressArticulos', fieldsDialogExpressArt);"/>
+			<p:remoteCommand name="notificarExpress" actionListener="#{manticCatalogosArticulosExpress.doUpdateArticuloExpress}" process="@this" update="@(.generales) @(.express) @(.calculos) @(.filas)" oncomplete="janal.change('formDialogoExpressArticulos', fieldsDialogExpressArt);"/>
 			<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 				<div class="ui-grid-row janal-grid-row">
 					<div class="ui-grid-col-12">
@@ -54,7 +54,7 @@
 							<p:outputLabel for="satDialog" value="SAT:"/>
 							<p:outputLabel for="nombreDialog" value="Nombre:"/>
               <p:autoComplete id="codigoDialog" placeholder="ej. CT123" var="customDialog" itemLabel="#{customDialog.propio}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{customDialog}" value="#{manticCatalogosArticulosExpress.attrs.codigoExpress}" completeMethod="#{manticCatalogosArticulosExpress.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt" appendTo="@(body)" panelStyleClass="janal-autocomplete-panel">
-								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this" listener="#{manticCatalogosArticulosExpress.doAsignaCodigo}" oncomplete="janal.desbloquear();"/>
+								<p:ajax event="itemSelect" process="@this" listener="#{manticCatalogosArticulosExpress.doAsignaCodigo}"/>
 								<f:facet name="itemtip">
 									<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-col-400" columnClasses="janal-wid-col-110, janal-wid-100">												
 										<f:facet name="header" class="TexAlCenter">
@@ -62,19 +62,35 @@
 										</f:facet>
 										<h:outputText value="Código" />
 										<h:outputText value="#{customDialog.propio}"/>
+										<h:outputText value="Código SAT" />
+										<h:outputText value="#{customDialog.sat}"/>
 										<h:outputText value="Nombre:" />
 										<h:outputText value="#{customDialog.nombre}"/>
 									</p:panelGrid>
 								</f:facet>
 							</p:autoComplete>	
-							<p:inputText id="satDialog" styleClass="janal-wid-100-txt express" value="#{manticCatalogosArticulosExpress.registroArticulo.articulo.sat}"/>                    
-							<p:inputText id="nombreDialog" styleClass="janal-wid-100-txt express" value="#{manticCatalogosArticulosExpress.registroArticulo.articulo.nombre}">
-								<p:ajax event="blur" process="@this" update="descripcionDialog" listener="#{manticCatalogosArticulosExpress.doUpdateNombre()}" oncomplete="janal.refresh();"/>
-							</p:inputText>	
+							<p:inputText id="satDialog" styleClass="janal-wid-100-txt generales" value="#{manticCatalogosArticulosExpress.registroArticulo.articulo.sat}"/>                    
+              <p:autoComplete id="nombreDialog" placeholder="ej. BOTE CESPOL 3/4" var="customNombreDialog" itemLabel="#{customNombreDialog.nombre}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{customNombreDialog}" value="#{manticCatalogosArticulosExpress.attrs.nombreExpress}" completeMethod="#{manticCatalogosArticulosExpress.doCompleteNombre}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt" appendTo="@(body)" panelStyleClass="janal-autocomplete-panel">
+								<p:ajax event="itemSelect" process="@this" update="descripcionDialog" listener="#{manticCatalogosArticulosExpress.doAsignaNombre}"/>
+								<p:ajax event="blur" process="@this" update="descripcionDialog" listener="#{manticCatalogosArticulosExpress.doUpdateNombre}"/>
+								<f:facet name="itemtip">
+									<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-col-400" columnClasses="janal-wid-col-110, janal-wid-100">												
+										<f:facet name="header" class="TexAlCenter">
+											<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini"  width="50" height="30"/>
+										</f:facet>
+										<h:outputText value="Código" />
+										<h:outputText value="#{customNombreDialog.propio}"/>
+										<h:outputText value="Código SAT" />
+										<h:outputText value="#{customNombreDialog.sat}"/>
+										<h:outputText value="Nombre:" />
+										<h:outputText value="#{customNombreDialog.nombre}"/>
+									</p:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
 						</p:panelGrid>
 						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
 							<p:outputLabel for="descripcionDialog" value="Descripción:"/>
-							<p:inputTextarea id="descripcionDialog" styleClass="janal-wid-100-txt express" value="#{manticCatalogosArticulosExpress.registroArticulo.articulo.descripcion}"/>                    
+							<p:inputTextarea id="descripcionDialog" styleClass="janal-wid-100-txt generales" value="#{manticCatalogosArticulosExpress.registroArticulo.articulo.descripcion}"/>                    
 						</p:panelGrid>
 						<p:separator/>
 						<p:panelGrid columns="4" layout="grid" styleClass="janal-wid-100">
@@ -92,16 +108,16 @@
 								<p:outputLabel value="$ #{manticCatalogosArticulosExpress.registroArticulo.articulo.mayoreo}" styleClass="janal-font-bold janal-color-blue express"/>
 							</p:panelGrid>	
 							<p:inputNumber id="precioDialog" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue filas" value="#{manticCatalogosArticulosExpress.registroArticulo.articulo.precio}">
- 								 <p:ajax event="blur" listener="#{manticCatalogosArticulosExpress.doActualizaPrecios}" process="@this precioDialog" update="@(.calculos) @(.express)" onstart="janal.partial('costo');"/>
+								<p:ajax event="blur" listener="#{manticCatalogosArticulosExpress.doActualizaPrecios}" process="@this precioDialog" update="@(.calculos) @(.express)" onstart="janal.partial('costo');" oncomplete="janal.refresh();"/>
 							</p:inputNumber>                    														
 							<p:inputNumber id="menudeoDialog" styleClass="janal-wid-100-txt calculos" inputStyleClass="janal-wid-100-txt janal-column-right calculos" value="#{manticCatalogosArticulosExpress.attrs.menudeo}" converter="javax.faces.Double">
- 								 <p:ajax event="blur" listener="#{manticCatalogosArticulosExpress.doActualizaPrecios}" process="@this menudeoDialog" update="@(.express)" onstart="return janal.partial('menudeo');"/>
+ 								 <p:ajax event="blur" listener="#{manticCatalogosArticulosExpress.doActualizaPrecios}" process="@this menudeoDialog" update="@(.express)" onstart="return janal.partial('menudeo');" oncomplete="janal.refresh();"/>
 							</p:inputNumber>                    														
 							<p:inputNumber id="medioMayoreoDialog" styleClass="janal-wid-100-txt calculos" inputStyleClass="janal-wid-100-txt janal-column-right calculos" value="#{manticCatalogosArticulosExpress.attrs.medioMayoreo}" converter="javax.faces.Double">
- 								 <p:ajax event="blur" listener="#{manticCatalogosArticulosExpress.doActualizaPrecios}" process="@this medioMayoreoDialog" update="@(.express)" onstart="return janal.partial('medioMayoreo');"/>
+ 								 <p:ajax event="blur" listener="#{manticCatalogosArticulosExpress.doActualizaPrecios}" process="@this medioMayoreoDialog" update="@(.express)" onstart="return janal.partial('medioMayoreo');" oncomplete="janal.refresh();"/>
 							</p:inputNumber>                    														
 							<p:inputNumber id="mayoreoDialog" styleClass="janal-wid-100-txt calculos" inputStyleClass="janal-wid-100-txt janal-column-right calculos" value="#{manticCatalogosArticulosExpress.attrs.mayoreo}" converter="javax.faces.Double">
- 								 <p:ajax event="blur" listener="#{manticCatalogosArticulosExpress.doActualizaPrecios}" process="@this mayoreoDialog" update="@(.express)" onstart="return janal.partial('mayoreo');"/>
+ 								 <p:ajax event="blur" listener="#{manticCatalogosArticulosExpress.doActualizaPrecios}" process="@this mayoreoDialog" update="@(.express)" onstart="return janal.partial('mayoreo');" oncomplete="janal.refresh();"/>
 							</p:inputNumber>                    														
 						</p:panelGrid>								
 					</div>
