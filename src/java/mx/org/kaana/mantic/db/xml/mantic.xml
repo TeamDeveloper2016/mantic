@@ -3011,6 +3011,15 @@
           id_articulo = {idArticulo} 
           and id_principal= 1
       </select>
+      <select id="existe">
+        select      
+          count(*) as total
+        from      
+          tc_mantic_articulos_codigos
+        where      
+          codigo = '{codigo}' 
+          and id_proveedor is null
+      </select>
       <select id="codigo">
         select      
           *

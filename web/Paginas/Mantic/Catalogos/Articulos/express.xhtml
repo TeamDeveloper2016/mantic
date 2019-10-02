@@ -56,6 +56,7 @@
 							<p:outputLabel value="Redondear:"/>
               <p:autoComplete id="codigoDialog" placeholder="ej. CT123" var="customDialog" itemLabel="#{customDialog.propio}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{customDialog}" value="#{manticCatalogosArticulosExpress.attrs.codigoExpress}" completeMethod="#{manticCatalogosArticulosExpress.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt" appendTo="@(body)" panelStyleClass="janal-autocomplete-panel">
 								<p:ajax event="itemSelect" process="@this" listener="#{manticCatalogosArticulosExpress.doAsignaCodigo}"/>
+								<p:ajax event="blur" process="@this" listener="#{manticCatalogosArticulosExpress.doLookForCodigo}"/>
 								<f:facet name="itemtip">
 									<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-col-400" columnClasses="janal-wid-col-110, janal-wid-100">												
 										<f:facet name="header" class="TexAlCenter">
@@ -88,7 +89,7 @@
 									</p:panelGrid>
 								</f:facet>
 							</p:autoComplete>	
-							<p:inputSwitch id="redondear" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosExpress.attrs.redondearExperss}" offLabel="NO" onLabel="SI">
+							<p:inputSwitch id="redondear" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosExpress.attrs.redondearExpress}" offLabel="NO" onLabel="SI">
 								<p:ajax event="change" process="@this" update="@(.calculos) @(.express)" listener="#{manticCatalogosArticulosExpress.doActualizaPrecios()}"/>
 							</p:inputSwitch>
 						</p:panelGrid>

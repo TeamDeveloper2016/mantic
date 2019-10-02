@@ -8,7 +8,9 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -268,7 +270,7 @@ public class Express extends IBaseAttribute implements Serializable {
 	
 	public void doActualizaPrecios() {
 		try {
-			this.registroArticulo.getArticulo().setIdRedondear((boolean)this.attrs.get("redondearExperss")? 1L: 2L);
+			this.registroArticulo.getArticulo().setIdRedondear(this.attrs.get("redondearExpress")!= null && (boolean)this.attrs.get("redondearExpress")? 1L: 2L);
 			if(this.registroArticulo.getArticulo().getPrecio()!= null) {
 				boolean redondear= this.registroArticulo.getArticulo().getIdRedondear().equals(1L);
 				double total= this.registroArticulo.getArticulo().getPrecio()* (1+ (this.registroArticulo.getArticulo().getIva()/ 100));
@@ -326,7 +328,7 @@ public class Express extends IBaseAttribute implements Serializable {
 				this.doActualizaPrecios();
 			} // else	
 		} // if
-		this.attrs.put("redondearExperss", this.getRegistroArticulo().getArticulo().getIdRedondear().equals(1L));
+		this.attrs.put("redondearExpress", this.getRegistroArticulo().getArticulo()!= null && this.getRegistroArticulo().getArticulo().getIdRedondear()!= null && this.getRegistroArticulo().getArticulo().getIdRedondear().equals(1L));
 	}	
 	
 	public void doUpdateNombre() {
@@ -365,7 +367,8 @@ public class Express extends IBaseAttribute implements Serializable {
 		try {
 			codigos= (List<UISelectEntity>) this.attrs.get("codigosExpress");
 			seleccion= codigos.get(codigos.indexOf((UISelectEntity)event.getObject()));
-			this.attrs.put("codigoExpressSeleccion", seleccion);			
+			this.attrs.put("codigoExpressSeleccion", seleccion);	
+			this.doLookForCodigo();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -419,7 +422,7 @@ public class Express extends IBaseAttribute implements Serializable {
 		  this.getRegistroArticulo().getArticulo().setMayoreo(seleccion.toDouble("mayoreo"));
 		  this.getRegistroArticulo().getArticulo().setIva(seleccion.toDouble("iva"));
 		  this.getRegistroArticulo().getArticulo().setIdRedondear(seleccion.toLong("idRedondear"));
-			this.attrs.put("redondearExperss", this.getRegistroArticulo().getArticulo().getIdRedondear().equals(1L));
+			this.attrs.put("redondearExpress", this.getRegistroArticulo().getArticulo()!= null && this.getRegistroArticulo().getArticulo().getIdRedondear()!= null && this.getRegistroArticulo().getArticulo().getIdRedondear().equals(1L));
 			this.doActualizaPrecios();
 		} // try
 		catch (Exception e) {
@@ -427,5 +430,29 @@ public class Express extends IBaseAttribute implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doAsignaNombre
+
+  public void doLookForCodigo() {
+	  Map<String, Object> params=null;
+		String codigo= JsfBase.getParametro("codigoDialog_input");
+		try {
+			params=new HashMap<>();
+			if(!Cadena.isVacio(codigo)) {
+			  params.put("codigo", codigo.toUpperCase());
+			  Value value= DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "existe", params, "total");
+				if(value!= null && value.getData()!= null && value.toLong()> 0) {
+					JsfBase.addAlert("El código ya esta asociado a otro articulo !", ETipoMensaje.ALERTA);
+					UIBackingUtilities.execute("$('#codigoDialog_input').val('');");
+    			this.attrs.put("codigoExpress", null);
+				} // if	
+			} // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+	    JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally	
+	}	
 	
 }
