@@ -101,15 +101,15 @@
 						  <p:outputLabel for="precioDialog" value="Costo:"/>
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-column-left, janal-column-center">
   							<p:outputLabel for="menudeoDialog" value="% Menudeo:"/>
-								<p:outputLabel value="$ #{manticCatalogosArticulosExpress.registroArticulo.articulo.menudeo}" styleClass="janal-font-bold janal-color-blue express"/>
+								<p:outputLabel value="[ $ #{manticCatalogosArticulosExpress.registroArticulo.articulo.menudeo} ]" styleClass="janal-font-bold janal-color-blue express"/>
 							</p:panelGrid>	
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-column-left, janal-column-center">
     						<p:outputLabel for="medioMayoreoDialog" value="% Medio mayoreo:"/>
-								<p:outputLabel value="$ #{manticCatalogosArticulosExpress.registroArticulo.articulo.medioMayoreo}" styleClass="janal-font-bold janal-color-blue express"/>
+								<p:outputLabel value="[ $ #{manticCatalogosArticulosExpress.registroArticulo.articulo.medioMayoreo} ]" styleClass="janal-font-bold janal-color-blue express"/>
 							</p:panelGrid>	
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-column-left, janal-column-center">
   							<p:outputLabel for="mayoreoDialog" value="% Mayoreo:"/>
-								<p:outputLabel value="$ #{manticCatalogosArticulosExpress.registroArticulo.articulo.mayoreo}" styleClass="janal-font-bold janal-color-blue express"/>
+								<p:outputLabel value="[ $ #{manticCatalogosArticulosExpress.registroArticulo.articulo.mayoreo} ]" styleClass="janal-font-bold janal-color-blue express"/>
 							</p:panelGrid>	
 							<p:inputNumber id="precioDialog" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue filas" value="#{manticCatalogosArticulosExpress.registroArticulo.articulo.precio}">
 								<p:ajax event="blur" listener="#{manticCatalogosArticulosExpress.doActualizaPrecios}" process="@this precioDialog" update="@(.calculos) @(.express)" onstart="janal.partial('costo');" oncomplete="janal.refresh();"/>

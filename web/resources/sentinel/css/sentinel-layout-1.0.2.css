@@ -116,7 +116,7 @@ body{background-color: #F6F8F8; margin:0px;}
 		#layout-logo{width:auto; margin-bottom:-2px; padding:0px; margin:18px; float:left; line-height: 16px;}
                     #layout-logo img{height:16px;}
                     
-		.layout-header-widgets{margin:0px; padding:0px; position:absolute; right:15px;}
+		.layout-header-widgets{margin:0px; padding:0px; position:absolute; right:15px; top:-2px;}
 			.layout-header-widgets li{background-color:#0f446c; width:34px; height:34px; margin-left:10px; /*for background transition overflow problem of safari*/-webkit-backface-visibility: hidden;}
 			.layout-header-widgets li:hover{background-color:#165686;}
 				.layout-header-widgets li i{margin-top:7px; display:block;cursor:pointer}

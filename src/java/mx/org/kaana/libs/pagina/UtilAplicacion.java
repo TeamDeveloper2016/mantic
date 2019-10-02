@@ -112,7 +112,7 @@ public class UtilAplicacion {
 
   public String getDefaultCss() {
     StringBuilder sb = new StringBuilder();
-    String[] css = {"sentinel-core-1.0.2.css|sentinel", "sentinel-font-icon-1.0.0.css|sentinel", "sentinel-layout-1.0.1.css|sentinel", CSS.concat("|janal")};
+    String[] css = {"sentinel-core-1.0.2.css|sentinel", "sentinel-font-icon-1.0.0.css|sentinel", "sentinel-layout-1.0.2.css|sentinel", CSS.concat("|janal")};
     for (String item : css) {
       String[] values = item.split("[|]");
       sb.append(MessageFormat.format(STYLE_SHEET, JsfUtilities.getContext(), values[0], values[1]));
