@@ -438,6 +438,7 @@ public class Express extends IBaseAttribute implements Serializable {
 			params=new HashMap<>();
 			if(!Cadena.isVacio(codigo)) {
 			  params.put("codigo", codigo.toUpperCase());
+				params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			  Value value= DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "existe", params, "total");
 				if(value!= null && value.getData()!= null && value.toLong()> 0) {
 					JsfBase.addAlert("El código ya esta asociado a otro articulo !", ETipoMensaje.ALERTA);

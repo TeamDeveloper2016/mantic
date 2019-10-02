@@ -3019,6 +3019,7 @@
         where      
           codigo = '{codigo}' 
           and id_proveedor is null
+				  and {condicion}
       </select>
       <select id="codigo">
         select      

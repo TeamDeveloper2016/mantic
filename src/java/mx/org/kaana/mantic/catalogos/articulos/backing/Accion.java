@@ -330,6 +330,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 			params=new HashMap<>();
 			if(!Cadena.isVacio(codigo)) {
 			  params.put("codigo", codigo.toUpperCase());
+				params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+				if(!((EAccion)this.attrs.get("accion")).equals(EAccion.AGREGAR))
+					params.put(Constantes.SQL_CONDICION, " id_articulo!="+ this.attrs.get("idArticulo"));
 			  Value value= DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "existe", params, "total");
 				if(value!= null && value.getData()!= null && value.toLong()> 0) {
 					JsfBase.addAlert("El código ya esta asociado a otro articulo !", ETipoMensaje.ALERTA);
