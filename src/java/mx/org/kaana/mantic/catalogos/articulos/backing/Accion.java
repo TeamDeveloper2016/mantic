@@ -7,6 +7,8 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -321,4 +323,29 @@ public class Accion extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doDeleteFile
+	
+	public void doLookForCodigo(String id, String codigo) {
+	  Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			if(!Cadena.isVacio(codigo)) {
+			  params.put("codigo", codigo.toUpperCase());
+			  Value value= DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "existe", params, "total");
+				if(value!= null && value.getData()!= null && value.toLong()> 0) {
+					JsfBase.addAlert("El código ya esta asociado a otro articulo !", ETipoMensaje.ALERTA);
+					id= id.replaceAll("[:]+", "\\\\:").replaceAll("[:]+", "\\\\:");
+					UIBackingUtilities.execute("$('#"+ id+ "').val('');$('#"+ id+ "').focus();");
+				} // if	
+			} // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+	    JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally	
+	}	
+		
+	
 }
