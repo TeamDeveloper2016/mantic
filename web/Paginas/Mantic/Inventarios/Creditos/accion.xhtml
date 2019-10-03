@@ -126,7 +126,7 @@
 								<p:outputLabel for="folio" value="Folio:"/>
 								<p:inputText id="folio" styleClass="janal-wid-100-txt involucrados" value="#{manticInventariosCreditosAccion.orden.folio}" onblur="janal.individual('contenedorGrupos\\:folio'); if($('#contenedorGrupos\\:folio').val().trim().length> 0) factura();"/>
 								<p:outputLabel for="fecha" value="Fecha documento:"/>
-								<p:calendar id="fecha" inputStyleClass="janal-wid-94" styleClass="janal-wid-100 involucrados" value="#{manticInventariosCreditosAccion.orden.fecha}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+								<p:calendar id="fecha" inputStyleClass="janal-wid-94" styleClass="janal-wid-100-txt involucrados" value="#{manticInventariosCreditosAccion.orden.fecha}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 								<p:outputLabel for="importe" value="Importe:"/>
 								<p:inputText id="importe" styleClass="janal-column-right janal-wid-100-txt" value="#{manticInventariosCreditosAccion.orden.importe}"/>
 							</p:panelGrid>

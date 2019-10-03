@@ -129,7 +129,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_FACTURA);
 			this.fechaEstimada= Calendar.getInstance();
-			doLoad();
+			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
