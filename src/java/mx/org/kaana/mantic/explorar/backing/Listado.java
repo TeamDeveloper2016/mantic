@@ -239,13 +239,15 @@ public class Listado extends Pedido implements Serializable {
 		List<UISelectEntity> articulos= null;
 		try {			
 			if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L){
-				articulos= (List<UISelectEntity>) this.attrs.get("articulosFiltro");
-				criterio= articulos.get(articulos.indexOf((UISelectEntity)this.attrs.get("nombre"))).toString("nombre");						
+				articulos= (List<UISelectEntity>) this.attrs.get("articulosFiltro");				
+				JsfBase.setFlashAttribute("articulo", ((Entity)articulos.get(articulos.indexOf((UISelectEntity)this.attrs.get("nombre")))));
+				regresar= "accion".concat(Constantes.REDIRECIONAR);
 			} // if
-  		else if(!Cadena.isVacio(this.attrs.get("nombreHidden"))) 
+  		else if(!Cadena.isVacio(this.attrs.get("nombreHidden"))){ 
 				criterio= this.attrs.get("nombreHidden").toString();		  			
-			JsfBase.setFlashAttribute("criterio", criterio!= null ? criterio.toUpperCase() : criterio);
-			regresar= "filtro".concat(Constantes.REDIRECIONAR);
+				JsfBase.setFlashAttribute("criterio", criterio!= null ? criterio.toUpperCase() : criterio);
+				regresar= "filtro".concat(Constantes.REDIRECIONAR);
+			} // else
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
