@@ -57,7 +57,7 @@
 			<div class="ui-grid-col-2" style="text-align: left !important;">
 				<div class="ui-grid-row janal-grid-row">
 					<div class="ui-grid-col-12">
-						<p:commandButton icon="fa fa-search" process="@this nombre hidenValCriterio" update="tabla" onstart="janal.bloquear()" oncomplete="$('#replace').click();"/>
+						<p:commandButton icon="fa fa-search" process="@this nombre hidenValCriterio" update="tabla" onstart="janal.bloquear();setActualVal();" oncomplete="$('#replace').click();"/>
 					</div>
 				</div>	
 			</div>
