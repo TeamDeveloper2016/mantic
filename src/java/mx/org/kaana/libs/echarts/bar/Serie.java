@@ -22,7 +22,7 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 	private static final long serialVersionUID=71577914809278916L;
 
   private String barWidth;	
-	private List<Double> data;
+	private List<Value> data;
   private MarkPoint markPoint;
   private MarkLine markLine;
 	private Integer barGap; 
@@ -34,10 +34,10 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 	}
 
 	public Serie(String name) {
-		this(name, null, new ArrayList(Arrays.asList(120D, 200D, 150D, 80D, 70D, 110D, 130D)), EKinds.BAR);
+		this(name, null, new ArrayList(Arrays.asList(new Value(120D), new Value(200D), new Value(150D), new Value(80D), new Value(70D), new Value(110D), new Value(130D))), EKinds.BAR);
 	}
 	
-	public Serie(String name, String barWidth, List<Double> data, EKinds type) {
+	public Serie(String name, String barWidth, List<Value> data, EKinds type) {
 		super(name, type.toString());
 		this.barWidth=barWidth;
 		this.data=data;
@@ -56,11 +56,11 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 		this.barWidth=barWidth;
 	}
 
-	public List<Double> getData() {
+	public List<Value> getData() {
 		return data;
 	}
 
-	public void setData(List<Double> data) {
+	public void setData(List<Value> data) {
 		this.data=data;
 	}
 

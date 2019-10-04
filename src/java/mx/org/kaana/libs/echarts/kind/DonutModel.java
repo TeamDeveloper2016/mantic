@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import mx.org.kaana.libs.echarts.beans.Colors;
 import mx.org.kaana.libs.echarts.beans.Legend;
 import mx.org.kaana.libs.echarts.pie.Serie;
 import mx.org.kaana.libs.echarts.beans.Title;
@@ -28,7 +29,7 @@ public class DonutModel extends PieModel implements Serializable {
 	}
 
 	public DonutModel(String name, String radius, String inside, Title title) {
-		super(radius, title, new Legend("2019"), new ArrayList(Arrays.asList(PieModel.SERIES_COLORS)), new ToolTip(), new ArrayList<Serie>());
+		super(radius, title, new Legend("2019"), new ArrayList(Arrays.asList(Colors.SERIES_COLORS)), new ToolTip(), new ArrayList<Serie>());
 		this.getSeries().add(new Serie(name, new ArrayList(Arrays.asList(inside, radius))));
 		this.prepare(radius, inside);
 	}

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import mx.org.kaana.libs.echarts.beans.Axis;
+import mx.org.kaana.libs.echarts.beans.Colors;
 import mx.org.kaana.libs.echarts.beans.Legend;
 import mx.org.kaana.libs.echarts.pie.Serie;
 import mx.org.kaana.libs.echarts.beans.Title;
@@ -25,7 +26,6 @@ import org.apache.commons.lang3.StringEscapeUtils;
 public class PieModel extends ChartModel implements Serializable {
 
 	private static final long serialVersionUID=3783050684207305584L;
-  public static final String[] SERIES_COLORS= {"#0080FF", "#80BFFF", "#3398AA", "#0059B3", "#001A33"};
 	
 	private Title title;
 	private Legend legend;
@@ -39,7 +39,7 @@ public class PieModel extends ChartModel implements Serializable {
 	}
 
 	public PieModel(String name, String radius, Title title) {
-		this(radius, title, new Legend("2019"), new ArrayList(Arrays.asList(SERIES_COLORS)), new ToolTip(), new ArrayList<Serie>());
+		this(radius, title, new Legend("2019"), new ArrayList(Arrays.asList(Colors.SERIES_COLORS)), new ToolTip(), new ArrayList<Serie>());
 		this.series.add(new Serie(name, radius));
 		this.getLegend().getData().clear();
 		for (Data data: this.series.get(0).getData()) {
@@ -53,7 +53,7 @@ public class PieModel extends ChartModel implements Serializable {
 	}
 	
 	public PieModel(String name, String radius, Title title, IDataSet data) {
-		this(radius, title, data.getLegend(), new ArrayList(Arrays.asList(SERIES_COLORS)), new ToolTip(), data.getDatas());
+		this(radius, title, data.getLegend(), new ArrayList(Arrays.asList(Colors.SERIES_COLORS)), new ToolTip(), data.getDatas());
 	}
 	
 	public PieModel(String radius, Title title, Legend legend, List<String> color, ToolTip tooltip, List<Serie> series) {

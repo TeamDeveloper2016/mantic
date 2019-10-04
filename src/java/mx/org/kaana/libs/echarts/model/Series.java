@@ -3,6 +3,7 @@ package mx.org.kaana.libs.echarts.model;
 import java.io.Serializable;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.libs.echarts.bar.Value;
 import mx.org.kaana.libs.echarts.enums.EData;
 import mx.org.kaana.libs.echarts.pie.Data;
 import mx.org.kaana.libs.formato.Cadena;
@@ -58,7 +59,7 @@ public class Series implements Serializable {
 		serie.getData().clear();
 		for (Entity item: this.data) {
 			regresar.label(item.toString(FIELD_TEXT));
-			serie.getData().add(item.toDouble(FIELD_VALUE));
+			serie.getData().add(new Value(item.toDouble(FIELD_VALUE)));
 		} // for
 		regresar.serie(serie);
 		return regresar;
@@ -81,7 +82,7 @@ public class Series implements Serializable {
 			}	// if
 			if(count== 1)
 			  regresar.label(item.toString(FIELD_TEXT));
-			serie.getData().add(item.toDouble(FIELD_VALUE));
+			serie.getData().add(new Value(item.toDouble(FIELD_VALUE)));
 		} // for
  		regresar.serie(serie);
 		return regresar;
@@ -106,7 +107,7 @@ public class Series implements Serializable {
 		serie.getData().clear();
 		for (Entity item: this.data) {
 			regresar.label(item.toString(FIELD_TEXT));
-			serie.getData().add(item.toDouble(FIELD_VALUE));
+			serie.getData().add(new Value(item.toDouble(FIELD_VALUE)));
 		} // for
 		regresar.stack(serie);
 		return regresar;
@@ -129,7 +130,7 @@ public class Series implements Serializable {
 			}	// if
 			if(count== 1)
 			  regresar.label(item.toString(FIELD_TEXT));
-			serie.getData().add(item.toDouble(FIELD_VALUE));
+			serie.getData().add(new Value(item.toDouble(FIELD_VALUE)));
 		} // for
  		regresar.stack(serie);
 		return regresar;
