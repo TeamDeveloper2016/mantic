@@ -39,7 +39,6 @@ public class BaseBarModel extends ChartModel implements Serializable {
 		this.legend.setY("top");
 		this.color=color;
 		this.tooltip=tooltip;
-		this.tooltip.setAxisPointer(null);
 		this.tooltip.setFormatter(null);
 		this.grid=grid;
 		this.orientation= orientation;
