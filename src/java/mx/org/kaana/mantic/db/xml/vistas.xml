@@ -5299,9 +5299,9 @@
 				from
 					tc_mantic_notas_entradas
 				inner join
-					tc_mantic_articulos on tc_mantic_notas_entradas.id_articulo= tc_mantic_articulos.id_articulo
-				inner join
 					tc_mantic_notas_detalles on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_notas_detalles.id_nota_entrada
+				inner join
+					tc_mantic_articulos on tc_mantic_notas_detalles.id_articulo= tc_mantic_articulos.id_articulo
 				inner join
 				  tc_mantic_notas_estatus on tc_mantic_notas_entradas.id_nota_estatus= tc_mantic_notas_estatus.id_nota_estatus
 				left join

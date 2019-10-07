@@ -35,7 +35,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
-public class TransaccionFactura extends IBaseTnx{
+public class TransaccionFactura extends IBaseTnx {
 
 	private static final Log LOG                 = LogFactory.getLog(TransaccionFactura.class);
 	private static final String REGISTRO_CLIENTE = "REGISTRO DE CLIENTE";

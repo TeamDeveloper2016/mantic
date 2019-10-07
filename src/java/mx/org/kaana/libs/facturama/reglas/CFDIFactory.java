@@ -429,11 +429,9 @@ public class CFDIFactory implements Serializable {
 	
 	public Product updateProduct(ArticuloFactura detalleArticulo, String id) throws Exception {
 		Product regresar= null;
-		Product product = null;
-		Product pivote  = null;
-		try {
-			pivote= productFindById(id);
-			product= loadProduct(detalleArticulo);			
+		Product pivote= productFindById(id);
+		if(pivote!= null) {
+			Product product= loadProduct(detalleArticulo);			
 			pivote.getTaxes().clear();
 			pivote.setTaxes(product.getTaxes());
 			pivote.setUnit(Cadena.letraCapital(product.getUnit()));
@@ -445,11 +443,10 @@ public class CFDIFactory implements Serializable {
 			pivote.setCodeProdServ(product.getCodeProdServ());
 			pivote.setCuentaPredial(null);
 			if(Configuracion.getInstance().isEtapaProduccion()|| Configuracion.getInstance().isEtapaPruebas())
-			  regresar= this.facturama.Products().Update(pivote, pivote.getId());
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch	
+				regresar= this.facturama.Products().Update(pivote, pivote.getId());
+		}	// if
+		else
+			throw new RuntimeException("El articulo no existe en facturama: "+ detalleArticulo);
 		return regresar;
 	} // updateProduct
 	
