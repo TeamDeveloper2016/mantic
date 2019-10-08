@@ -195,7 +195,7 @@ function	findPrinter(query, set) {
 		if(ok){
 			if (set) 
 				setPrinter(data);		
-			if(confirm('¿ Esta seguro que desea imprimir los códigos ?'))
+			if(confirm('\u00BF Esta seguro que desea imprimir los códigos ?'))
 				executeDoAceptar();
 		} // if
 	}).catch(function(){

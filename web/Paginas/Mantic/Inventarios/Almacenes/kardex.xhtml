@@ -263,7 +263,7 @@
 									<h:outputText value="#{item.registro}"/>
 								</p:column> 
 								<p:column style="text-align: center" styleClass="janal-wid-col-38">
-									<p:commandButton process="@this" update="@(.filas)" icon="fa fa-minus" title="Eliminar código auxiliar" onstart="return confirm('Esta seguro que desea eliminar el código [#{item.codigo}] auxiliar ?');" actionListener="#{manticInventariosAlmacenesKardex.doDeleteCodigoAlterno(item)}" rendered="#{item.principal ne 'SI'}" styleClass="filas"/>
+									<p:commandButton process="@this" update="@(.filas)" icon="fa fa-minus" title="Eliminar código auxiliar" onstart="return confirm('\u00BF Esta seguro que desea eliminar el código [#{item.codigo}] auxiliar ?');" actionListener="#{manticInventariosAlmacenesKardex.doDeleteCodigoAlterno(item)}" rendered="#{item.principal ne 'SI'}" styleClass="filas"/>
 								</p:column>
               </p:dataTable>
 						</p:tab>
@@ -461,7 +461,7 @@
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticInventariosAlmacenesKardex.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" update="contenedorGrupos:tabla @(.filas) @(.recalculo) contenedorGrupos:panelImage"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="@(.recalculo)" action="#{manticInventariosAlmacenesKardex.doAceptar}" onstart="return janal.partial('general', true) &amp;&amp; confirm('Esta seguro que desea guardar los cambios ?');" oncomplete="janal.desbloquear();janal.reset();" styleClass="recalculo"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="@(.recalculo)" action="#{manticInventariosAlmacenesKardex.doAceptar}" onstart="return janal.partial('general', true) &amp;&amp; confirm('\u00BF Esta seguro que desea guardar los cambios ?');" oncomplete="janal.desbloquear();janal.reset();" styleClass="recalculo"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticInventariosAlmacenesKardex.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" update="contenedorGrupos:tabla @(.filas) @(.recalculo) contenedorGrupos:panelImage"/>
 		</div>		
 	</ui:define>

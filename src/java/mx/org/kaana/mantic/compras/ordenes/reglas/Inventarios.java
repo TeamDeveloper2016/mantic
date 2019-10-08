@@ -180,7 +180,9 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
     		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "VistaNotasEntradasDto", "detalle", nota.toMap());
 				for (Articulo articulo: todos) {
 					TcManticNotasDetallesDto item= articulo.toNotaDetalle();
-    		  this.toAffectAlmacenes(sesion, nota.getConsecutivo(), nota.getIdNotaEntrada(), item, articulo);
+					// Si la cantidad es mayor a cero realizar todo el proceso para el articulos, si no ignorarlo porque el articulo no se surtio
+					if(articulo.getCantidad()> 0L)
+    		    this.toAffectAlmacenes(sesion, nota.getConsecutivo(), nota.getIdNotaEntrada(), item, articulo);
 				} // for
 			} // if	
 		} // for

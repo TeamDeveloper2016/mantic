@@ -66,7 +66,7 @@
 					var total= parseFloat($('#contenedorGrupos\\:total').val(), 10);
 					var diferencia= (deuda* 100/ total)- 100;
 					if(!((diferencia&gt;= -5.0) &amp;&amp; (diferencia&lt;= 5.0))) 
-						ok= confirm('La diferencia del total de la nota de entrada con respecto a la deuda capturada es del '+ diferencia.toFixed(4)+ '% desea continuar con el registro ?');
+						ok= confirm('\u00BF La diferencia del total de la nota de entrada con respecto a la deuda capturada es del '+ diferencia.toFixed(4)+ '% desea continuar con el registro ?');
 				} // if	
 				else {
 					jsArticulos.cursor.index= index;
@@ -76,6 +76,13 @@
 				} // else	
 				return ok;
 			}
+			
+			function apply() {
+				var ok= false;
+				if(confirm('\u00BF Esta seguro que desea aplicar la Nota de entrada ?'))
+					ok= execute();
+				return ok;
+			}	
 			
 			function start() {
         PF('statusDialog').show();
@@ -606,7 +613,7 @@
 						</p:tab>
 						<p:tab title="Importar">
 							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-column-center involucrados" style="display: #{manticInventariosEntradasAccion.diferente? '': 'none'}">
-								<p:commandLink actionListener="#{manticInventariosEntradasAccion.doUpdateRfc}" process="@this" update="@(.involucrados)" onstart="janal.bloquear(); if(confirm('Esta seguro que desea actualizar el RFC ?')) { return true; } else { janal.desbloquear(); return false; }" oncomplete="janal.desbloquear();">
+								<p:commandLink actionListener="#{manticInventariosEntradasAccion.doUpdateRfc}" process="@this" update="@(.involucrados)" onstart="janal.bloquear(); if(confirm('\u00BF Esta seguro que desea actualizar el RFC ?')) { return true; } else { janal.desbloquear(); return false; }" oncomplete="janal.desbloquear();">
 									<p:outputLabel value="El RFC del proveedor [#{manticInventariosEntradasAccion.proveedor.rfc}] no coincide con el de la factura [#{manticInventariosEntradasAccion.emisor.rfc}], click aqui para actualizarlo !" styleClass="janal-color-orange" style="cursor: pointer;"/>
 		  					  <p:spacer height="5px"/>
 			  				</p:commandLink>
@@ -882,12 +889,12 @@
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticInventariosEntradasAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()" />
-			<p:commandButton id="aplicar" value="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticInventariosEntradasAccion.doAplicar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()" rendered="#{manticInventariosEntradasAccion.isAplicar}"/>
+			<p:commandButton id="aplicar" value="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticInventariosEntradasAccion.doAplicar}" onclick="janal.bloquear();" onstart="return apply();" oncomplete="janal.desbloquear()" rendered="#{manticInventariosEntradasAccion.isAplicar}"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticInventariosEntradasAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticInventariosEntradasAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="aplicarIcon" title="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticInventariosEntradasAccion.doAplicar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()" rendered="#{manticInventariosEntradasAccion.isAplicar}"/>
+			<p:commandButton id="aplicarIcon" title="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticInventariosEntradasAccion.doAplicar}" onclick="janal.bloquear();" onstart="return apply();" oncomplete="janal.desbloquear()" rendered="#{manticInventariosEntradasAccion.isAplicar}"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticInventariosEntradasAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 	</ui:define>

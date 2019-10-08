@@ -123,7 +123,7 @@
 						</p:tab>						            						            																																																
 						<p:tab title="Importar">
 							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-column-center involucrados" style="display: #{manticInventariosCreditosImportar.diferente? '': 'none'}">
-  							<p:commandLink actionListener="#{manticInventariosCreditosImportar.doUpdateRfc}" process="@this" update="@(.involucrados)" onstart="janal.bloquear(); if(confirm('Esta seguro que desea actualizar el RFC ?')) { return true; } else { janal.desbloquear(); return false; }" oncomplete="janal.desbloquear();">
+  							<p:commandLink actionListener="#{manticInventariosCreditosImportar.doUpdateRfc}" process="@this" update="@(.involucrados)" onstart="janal.bloquear(); if(confirm('\u00BF Esta seguro que desea actualizar el RFC ?')) { return true; } else { janal.desbloquear(); return false; }" oncomplete="janal.desbloquear();">
 									<p:outputLabel value="El RFC del proveedor [#{manticInventariosCreditosImportar.proveedor.rfc}] no coincide con el de la factura [#{manticInventariosCreditosImportar.emisor.rfc}], click aqui para actualizarlo !" styleClass="janal-color-orange" style="cursor: pointer;"/>
 		  					  <p:spacer height="5px"/>
 			  				</p:commandLink>

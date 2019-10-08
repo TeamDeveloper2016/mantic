@@ -305,7 +305,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 				DaoFactory.getInstance().update(sesion, ubicacion);
 			} // if
 			else {
-				LOG.warn("VERIFICAR PORQUE RAZON NO ESTA EL ARTICULO["+ item.getIdArticulo()+ "] EN EL ALMACEN["+ idAlmacen+ "] SI ES QUE EN LA NOTA DE ENTRADA SE REGISTRO SU INGRESO.");
+				LOG.warn("VERIFICAR PORQUE RAZON NO ESTA EL ARTICULO ["+ item.getIdArticulo()+ "] EN EL ALMACEN ["+ idAlmacen+ "] SI ES QUE EN LA NOTA DE ENTRADA SE REGISTRO SU INGRESO.");
 			} // else
 			// afectar los precios del catalogo de articulos
 			if(this.aplicar) {

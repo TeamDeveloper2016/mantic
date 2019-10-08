@@ -24,6 +24,10 @@
 				else
 					populate();
 			}
+			
+			function apply() {
+				return confirm('\u00BF Esta seguro que desea aplicar la(s) diferencias(s) ?');
+			}	
 		</script>   
 		<style>
       .ui-widget-content a {	
@@ -284,11 +288,11 @@
   <hr class="ui-widget-content" style="#{empty lineaSeparacion? '': 'display:none'}"/>
   <div class="janal-line-button">
     <div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@this justificacion" action="#{manticComprasOrdenesDiferencias.doAceptar}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" rendered="#{manticComprasOrdenesDiferencias.orden.idOrdenEstatus eq 5}"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@this justificacion" action="#{manticComprasOrdenesDiferencias.doAceptar}" onstart="return apply();" oncomplete="janal.desbloquear()" rendered="#{manticComprasOrdenesDiferencias.orden.idOrdenEstatus eq 5}"/>
 			<p:commandButton id="regresar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticComprasOrdenesDiferencias.doRegresar}" immediate="true"/>
 		</div>	
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@this justificacion" action="#{manticComprasOrdenesDiferencias.doAceptar}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" rendered="#{manticComprasOrdenesDiferencias.orden.idOrdenEstatus eq 5}"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@this justificacion" action="#{manticComprasOrdenesDiferencias.doAceptar}" onstart="return apply();" oncomplete="janal.desbloquear()" rendered="#{manticComprasOrdenesDiferencias.orden.idOrdenEstatus eq 5}"/>
 			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticComprasOrdenesDiferencias.doRegresar}" immediate="true"/>
 		</div>	
   </div>
