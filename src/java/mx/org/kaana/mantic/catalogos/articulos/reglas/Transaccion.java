@@ -4,6 +4,7 @@ import java.io.File;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -306,11 +307,11 @@ public class Transaccion extends TransaccionFactura {
 		TcManticImagenesDto image                = null;
 		Long idImagen                            = -1L;
 		TcManticArticulosDimencionesDto dimencion= null;
-		boolean regresar= false;
-		Long idArticulo = -1L;
+		boolean regresar                         = false;
+		Long idArticulo                          = -1L;
 		try {
-			idArticulo= this.articulo.getIdArticulo();
-			if(registraCodigos(sesion, idArticulo)) {
+			idArticulo= this.articulo.getIdArticulo();			
+				if(registraCodigos(sesion, idArticulo)) {
 					if(registraEspecificaciones(sesion, idArticulo)) {
 						if(registraDescuentos(sesion, idArticulo)) {
 							if(registraClientesDescuentos(sesion, idArticulo)) {
@@ -335,15 +336,19 @@ public class Transaccion extends TransaccionFactura {
 												}				
 												else							
 													regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
+												sesion.flush();
 												if(this.articulo.getArticulo().getIdArticuloTipo().equals(1L))
-													actualizarArticuloFacturama(sesion, this.articulo.getIdArticulo());
-			} } } } } } } } 
+													actualizarArticuloFacturama(sesion, this.articulo.getIdArticulo());												
+			} } } } } } } } 			
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
+		finally{
+			this.messageError="Ocurrió un error al realizar la actualización, probablemente ya existe un registro en la base de datos. Favor de validar.";
+		} // finally
 		return regresar;
-	} // actualizarArticulo	
+	} // actualizarArticulo			
 	
 	private TcManticImagenesDto loadImage(Session sesion, Long idImagen, Long idArticulo) throws Exception {
 		TcManticImagenesDto regresar= null;
