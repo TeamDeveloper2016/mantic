@@ -46,6 +46,7 @@
 		VK_NEXT_PAGE : 34, 
 		VK_ESC       : 27,
 		VK_ASTERISK  : 106,
+		VK_EQUALS    : 48,
 		VK_MINUS     : 109,
 		VK_COMA      : 191,
 		VK_OPEN      : 122,
@@ -250,6 +251,7 @@
 					$articulos.leavePage= false;
 				  setTimeout("$('div[id$='+ jsArticulos.panels+ ']').hide();$('div[id$='+ jsArticulos.itemtips+ ']').hide();", 500);
 				} // if	 
+	  		var calculate= $articulos.get().trim().startsWith('=');
 				switch(key) {
 					case $articulos.VK_ENTER:
 						return $articulos.find();
@@ -263,32 +265,48 @@
   						return $articulos.down(true);
 						break;
 					case $articulos.VK_ASTERISK:
-						return $articulos.asterisk();
+						if(calculate)
+						  return true;
+						else
+						  return $articulos.asterisk();
 						break;
 					case $articulos.VK_DIV:
-            return $articulos.div();
+						if(calculate)
+						  return true;
+						else
+              return $articulos.div();
 						break;
 					case $articulos.VK_PLUS:
-						return $articulos.plus();
+						if(calculate)
+						  return true;
+						else
+	    				return $articulos.plus();
 						break;
 					case $articulos.VK_COMA:
-						return $articulos.point();
+						if(calculate)
+						  return true;
+						else
+  						return $articulos.point();
 						break;
 					case $articulos.VK_REST:
-						var txt  = $(this).val().trim().length<= 0;
-						var token= $($articulos.lock())? $articulos.remove(): true;
-						if(txt && $('ul.ui-autocomplete-items:visible').length<= 0)
-							if(token)
-						    return $articulos.clean();
-						  else
-						    return $articulos.recover();
+						if(calculate)
+						  return true;
+						else {
+							var txt  = $(this).val().trim().length<= 0;
+							var token= $($articulos.lock())? $articulos.remove(): true;
+							if(txt && $('ul.ui-autocomplete-items:visible').length<= 0)
+								if(token)
+									return $articulos.clean();
+								else
+									return $articulos.recover();
+						} // else		
 						break;
 					case $articulos.VK_PIPE:
 						return $articulos.search();
 						break;						
 					case $articulos.VK_MINUS:
 						var ok= janal.partial('articulo');
-						if(ok){
+						if(ok) {
 							$articulos.leavePage= true;
 							var txt= $(this).val().trim().length<= 0;
 							if(txt && $('ul.ui-autocomplete-items:visible').length<= 0 && confirm('\u00BF Esta seguro que desea terminar con la captura ?')) {
@@ -302,6 +320,11 @@
 						break;
 					case $articulos.VK_F7:
 						return $articulos.detail();
+						break;
+					case $articulos.VK_F10:
+						if(calculate)
+						  $articulos.set(eval($articulos.get().trim().substring(1)));
+						return false;
 						break;
 					case $articulos.VK_PREV_PAGE:
 						return $articulos.pagePrev();
@@ -319,6 +342,15 @@
 						if(!$(PF($articulos.datapaginate).jqId).hasClass('disabled'))
 						  PF($articulos.datapaginate).toggle();
 						return false;
+						break;
+					case $articulos.VK_EQUALS:
+						var value= $articulos.get().trim();
+					  if(calculate && value.length> 2 && e.key=== '=') {
+						  $articulos.set(eval(value.substring(1)));
+							return false;
+						} // if	
+					  else
+						  return true;
 						break;
 					default:
 						break;
