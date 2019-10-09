@@ -291,7 +291,7 @@
 						if(ok){
 							$articulos.leavePage= true;
 							var txt= $(this).val().trim().length<= 0;
-							if(txt && $('ul.ui-autocomplete-items:visible').length<= 0 && confirm('¿ Esta seguro que desea terminar con la captura ?')) {
+							if(txt && $('ul.ui-autocomplete-items:visible').length<= 0 && confirm('\u00BF Esta seguro que desea terminar con la captura ?')) {
 								$('#aceptar').click();
 								return false;
 							} // if

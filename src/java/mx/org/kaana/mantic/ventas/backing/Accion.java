@@ -286,22 +286,26 @@ public class Accion extends IBaseVenta implements Serializable {
 		String descuentoVigente        = null;		
 		try {
 			clienteSeleccion= (UISelectEntity) this.attrs.get("clienteSeleccion");
-			if(clienteSeleccion!= null && !clienteSeleccion.getKey().equals(-1L)){
-				descuentoVigente= toDescuentoVigente(articulo.toLong("idArticulo"), clienteSeleccion.getKey());				
-				if(descuentoVigente!= null){
-					descuentoPivote= getAdminOrden().getDescuento();
-					getAdminOrden().setDescuento(descuentoVigente);
-					super.toMoveData(articulo, index);			
-					getAdminOrden().setDescuento(descuentoPivote);
+			if(articulo!= null && articulo.containsKey("idArticulo")) {
+				if(clienteSeleccion!= null && !clienteSeleccion.getKey().equals(-1L)) {
+					descuentoVigente= this.toDescuentoVigente(articulo.toLong("idArticulo"), clienteSeleccion.getKey());				
+					if(descuentoVigente!= null) {
+						descuentoPivote= getAdminOrden().getDescuento();
+						getAdminOrden().setDescuento(descuentoVigente);
+						super.toMoveData(articulo, index);			
+						getAdminOrden().setDescuento(descuentoPivote);
+					} // if
+					else
+						super.toMoveData(articulo, index);				
 				} // if
 				else
-					super.toMoveData(articulo, index);				
+					super.toMoveData(articulo, index);	
+				this.attrs.put("decripcion", articulo.toString("nombre"));
+				this.image= LoadImages.getImage(articulo.toLong("idArticulo"));
+				this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
 			} // if
 			else
-				super.toMoveData(articulo, index);	
-			this.attrs.put("decripcion", articulo.toString("nombre"));
-			this.image= LoadImages.getImage(articulo.toLong("idArticulo"));
-			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
+				LOG.warn("VERIFICAR PORQUE RAZON NO SE TIENE EL ID_ARTICULO "+ articulo);
 			UIBackingUtilities.update("deudor");
 		} // try
 		catch (Exception e) {

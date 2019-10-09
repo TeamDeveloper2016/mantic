@@ -52,7 +52,7 @@
 						<p:panel styleClass="janal-wid-100-txt janal-column-center" style="border: 0px;">
 							<p:outputLabel value="#{status.index+ 1}" style="float:left;font-size: large;" styleClass="janal-color-blue"/>
 							<span id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row.nombre}" data-group="icon-image" href="" title="Click para ver más grande la imagen">
-								<p:graphicImage id="icon-image" cache="false" value="#{manticExplorarDetalle.doPrepareImage(row)}" width="100" height="80" stream="false" style="cursor:zoom-in;"/>								
+								<p:graphicImage id="icon-image" cache="false" value="#{manticExplorarDetalle.doPrepareImage(row)}" width="100" height="80" stream="false" style="cursor:zoom-in;width:100%;"/>								
 							</span>								
 							<p:rating value="3" readonly="true" />
 						</p:panel>
