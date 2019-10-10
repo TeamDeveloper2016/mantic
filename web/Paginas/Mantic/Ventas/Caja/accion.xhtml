@@ -374,7 +374,7 @@
 								<p:outputLabel value="Cuentas abiertas:"/>								
 								<p:outputLabel/>
 								<p:outputLabel for="ultimoTicket" value="Reimpresión: #{manticVentasCajaAccion.attrs.ultimoTicket}" title="#{manticVentasCajaAccion.attrs.descripcionUltimoTicket}"/>
-								<p:calendar id="fecha" inputStyleClass="janal-wid-70" styleClass="janal-wid-100" value="#{manticVentasCajaAccion.attrs.fecha}" mindate="#{manticVentasCajaAccion.attrs.fechaInicial}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario" beforeShowDay="markedDays">
+								<p:calendar id="fecha" inputStyleClass="janal-wid-70" styleClass="janal-wid-100" value="#{manticVentasCajaAccion.attrs.fecha}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario" beforeShowDay="markedDays">
 									<p:ajax event="dateSelect" process="@this" listener="#{manticVentasCajaAccion.doLoadTicketAbiertos}" update="encabezadoVenta contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.janal-abono)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 								</p:calendar>																
 								<p:selectOneMenu id="ticketsAbiertos" value="#{manticVentasCajaAccion.attrs.ticketAbierto}" styleClass="janal-wid-100-txt cambio-cliente tickets-principal" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
