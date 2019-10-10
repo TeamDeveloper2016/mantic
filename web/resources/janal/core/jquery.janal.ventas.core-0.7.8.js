@@ -131,7 +131,7 @@
 					$articulos.leavePage= false;
 				switch(key) {
 					case $articulos.VK_ENTER:
-						$('#buscarTicket').click();
+						$('#contenedorGrupos\\:buscarTicket').click();
 						return false;
 						break;
 				} // switch
