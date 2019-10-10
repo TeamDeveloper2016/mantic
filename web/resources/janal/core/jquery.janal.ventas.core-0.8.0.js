@@ -41,6 +41,7 @@
 		VK_ENTER    : 13, 
 		VK_ESC      : 27,
 		VK_ASTERISK : 106,
+		VK_EQUALS   : 48,
 		VK_MINUS    : 109,
 		VK_COMA     : 191,
 		VK_OPEN     : 122,
@@ -52,12 +53,14 @@
 		VK_DOWN     : 40,
 		VK_REST     : 189,
 		VK_PIPE     : 220,
+		VK_BRACKET  : 222,
 		VK_CTRL     : 17,
 		VK_MAYOR    : 226,
 		VK_F7       : 118,
 		VK_F8       : 119,
+		VK_F10       : 121,
 		VK_SAT	    : 188,
-	  change      : [13, 27, 106, 107, 110, 111, 188, 189, 191, 220, 222, 226],
+	  change      : [13, 27, 106, 107, 110, 111, 121, 188, 189, 191, 220, 222, 226],
 	  control     : [9, 13, 17, 27, 38, 40, 220, 118, 121, 122],
 		cursor: {
 			top: 1, // el top debera ser elementos que van de 0 a n-1
@@ -176,6 +179,7 @@
 					$articulos.leavePage= false;
 				  setTimeout("$('div[id$='+ jsArticulos.panels+ ']').hide();$('div[id$='+ jsArticulos.itemtips+ ']').hide();", 500);
 				} // if	 
+				var calculate= $articulos.get().trim().startsWith('=');
 				switch(key) {
 					case $articulos.VK_ENTER:
 						return $articulos.find();
@@ -189,16 +193,28 @@
   						return $articulos.down(true);
 						break;
 					case $articulos.VK_ASTERISK:
-						return $articulos.asterisk();
+						if(calculate)
+						  return true;
+						else
+  						return $articulos.asterisk();
 						break;
 					case $articulos.VK_DIV:
-            return $articulos.div();
+						if(calculate)
+						  return true;
+						else
+              return $articulos.div();
 						break;
 					case $articulos.VK_PLUS:
-						return $articulos.plus();
+						if(calculate)
+						  return true;
+						else
+	    				return $articulos.plus();
 						break;
 					case $articulos.VK_COMA:
-						return $articulos.point();
+						if(calculate)
+						  return true;
+						else
+  						return $articulos.point();
 						break;
 					case $articulos.VK_SAT:
 						janal.console('jsArticulo.sat: ');
@@ -221,26 +237,30 @@
 						return $articulos.search();
 						break;						
 					case $articulos.VK_MINUS:
-						var value= $(this).val().trim();
-						if(value.length=== 0) {
-							if(parseInt($('#articulos').val())===0) {
-								if(PF('dlgCloseTicket')) {
-									janal.bloquear();
-									userUpdate();
+						if(calculate)
+						  return true;
+						else {
+							var value= $(this).val().trim();
+							if(value.length=== 0) {
+								if(parseInt($('#articulos').val())===0) {
+									if(PF('dlgCloseTicket')) {
+										janal.bloquear();
+										userUpdate();
+									} // if
 								} // if
+								else {
+									var ok= janal.partial('articulo');
+									if(ok) {
+										$articulos.leavePage= true;
+										var txt= $(this).val().trim().length<= 0;
+										if(txt && $('ul.ui-autocomplete-items:visible').length<= 0 && !PF('wAceptarCompra')) {
+											$('#aceptar').click();
+											return false;
+										} // if									
+									} // if
+								} // else
 							} // if
-							else {
-								var ok= janal.partial('articulo');
-								if(ok) {
-									$articulos.leavePage= true;
-									var txt= $(this).val().trim().length<= 0;
-									if(txt && $('ul.ui-autocomplete-items:visible').length<= 0 && !PF('wAceptarCompra')) {
-										$('#aceptar').click();
-										return false;
-									} // if									
-								} // if
-							} // else
-						} // if
+						} // else
 						break;
 					case $articulos.VK_MAYOR:
 						return $articulos.show(this);
@@ -250,6 +270,20 @@
 						break;
 					case $articulos.VK_F8:
 						return $articulos.locationArt();
+						break;
+					case $articulos.VK_F10:
+						if(calculate)
+						  $articulos.set(eval($articulos.get().trim().substring(1)));
+						return false;
+						break;
+					case $articulos.VK_EQUALS:
+						var value= $articulos.get().trim();
+					  if(calculate && value.length> 2 && e.key=== '=') {
+						  $articulos.set(eval(value.substring(1)));
+							return false;
+						} // if	
+					  else
+						  return true;
 						break;
 					default:
 						break;

@@ -62,6 +62,7 @@
 		VK_MAYOR     : 226,
 		VK_F7        : 118,
 		VK_F10       : 121,
+		VK_BRACKET   : 222,
 		VK_FIN       : 35,
 		VK_PAGINATOR : 19,
 	  change       : [13, 19, 27, 106, 107, 110, 111, 188, 121, 189, 191, 220, 222, 226],
@@ -246,7 +247,7 @@
 			});	
       $(document).on('keydown', this.selector, function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('jsArticulos.keydown: '+ $(this).attr('id')+ ' key: '+ key);
+				janal.console('jsArticulos.keydown [key-down-event]: '+ $(this).attr('id')+ ' key: '+ key);
 				if(($articulos.change.indexOf(key)>= 0)) {
 					$articulos.leavePage= false;
 				  setTimeout("$('div[id$='+ jsArticulos.panels+ ']').hide();$('div[id$='+ jsArticulos.itemtips+ ']').hide();", 500);
@@ -326,6 +327,14 @@
 						  $articulos.set(eval($articulos.get().trim().substring(1)));
 						return false;
 						break;
+				  case $articulos.VK_BRACKET:
+						if(calculate)
+						  return true;
+						else {
+							if($('ul.ui-autocomplete-items:visible').length<= 0)
+								return $articulos.recover();
+						} // else		
+					  break;
 					case $articulos.VK_PREV_PAGE:
 						return $articulos.pagePrev();
 						break;
