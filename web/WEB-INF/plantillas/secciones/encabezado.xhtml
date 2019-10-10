@@ -152,7 +152,7 @@
 			<p:commandButton value="Aceptar" icon="fa fa-check" onstart="janal.monitor(0);" oncomplete="janal.globalTimeout= false; PF('dialogoInactivo').hide(); janal.desbloquear();"/>							
 		</div>				
 	</p:dialog>
-	<p:dialog id="dialogoVerificador" widgetVar="dlgVerificador" header="Verificador de precios" onShow="janal.pivot(); $('#verificadorValue').val('');janal.bloquear();setTimeout($('#verificadorValue').focus(), 1000);" onHide="jsPrecios.hide(); janal.recover(); janal.desbloquear();" height="550px" width="950px" resizable="false" closeOnEscape="true" dynamic="true">
+	<p:dialog id="dialogoVerificador" widgetVar="dlgVerificador" header="Verificador de precios" onShow="janal.pivot(); $('#verificadorValue').val('');janal.bloquear();setTimeout($('#verificadorValue').focus(), 500);" onHide="jsPrecios.hide(); janal.recover(); janal.desbloquear();" height="550px" width="950px" resizable="false" closeOnEscape="true" dynamic="true">
 		<h:form prependId="false">
 			<p:remoteCommand name="verificadorLookup" actionListener="#{kajoolEncabezado.doChange}" process="@this verificadorBuscarPor verificadorValue" update="verificadorPrecio verificadorTabla" oncomplete="if($('#verificadorValue').val()==='.*.') $('#verificadorValue').val('');"/>
       <p:remoteCommand name="verificadorKeyEnter" actionListener="#{kajoolEncabezado.doChange}" process="@this verificadorBuscarPor verificadorValue" update="verificadorPrecio verificadorTabla" onstart="return $('#verificadorValue').val().trim().length> 1"/>
@@ -252,7 +252,7 @@
 			</p:dataTable>
 		</h:form>
 	</p:dialog>  	
-	<p:dialog id="dialogoFaltantes" widgetVar="dlgFaltantes" header="Lista de articulos faltantes" onShow="janal.pivot(); jsPrecios.refresh(); faltantesLookup(); janal.bloquear();setTimeout($('#codigosFaltantes_input').focus(), 1000);" onHide="jsPrecios.update(); janal.recover(); janal.desbloquear();" height="490px" width="950px" resizable="false" closeOnEscape="true" dynamic="true">
+	<p:dialog id="dialogoFaltantes" widgetVar="dlgFaltantes" header="Lista de articulos faltantes" onShow="janal.pivot(); jsPrecios.refresh(); faltantesLookup(); janal.bloquear();setTimeout($('#codigosFaltantes_input').focus(), 500);" onHide="jsPrecios.update(); janal.recover(); janal.desbloquear();" height="490px" width="950px" resizable="false" closeOnEscape="true" dynamic="true">
 		<h:form id="faltantes" prependId="false">
 			<p:remoteCommand name="faltantesLookup" actionListener="#{kajoolEncabezado.doLoadFaltantes}" process="@this" update="@(.faltantes)" oncomplete="jsPrecios.start();"/>
 			<p:remoteCommand name="faltantesReplace" actionListener="#{kajoolEncabezado.doReplaceFaltante}" process="@this" update="@(.faltantes)" oncomplete="jsPrecios.start();"/>
