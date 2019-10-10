@@ -18,6 +18,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -251,6 +252,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	
 	private String toCondicion(boolean cotizacion) {
 		StringBuilder regresar= null;
+		Date fecha            = null;
 		try {
 			regresar= new StringBuilder();
 			if(cotizacion){
@@ -258,6 +260,10 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				regresar.append(EEstatusVentas.COTIZACION.getIdEstatusVenta());
 				regresar.append(") and vigencia is not null");
 				regresar.append(" and tc_mantic_ventas.candado= 2 ");
+				if(this.attrs.get("fecha")!= null){
+					fecha= (Date) this.attrs.get("fecha");			
+					regresar.append(" and date_format (tc_mantic_ventas.registro, '%Y%m%d')=".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, fecha)));
+				} // if
 				if(this.attrs.get("busquedaCotizacion")!= null && !Cadena.isVacio(this.attrs.get("busquedaCotizacion"))){
 					regresar.append(" and (upper(tc_mantic_personas.cuenta) like upper('%");
 					regresar.append(this.attrs.get("busquedaCotizacion"));
@@ -293,12 +299,17 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	
 	private String toCondicionApartados() {
 		StringBuilder regresar= null;
+		Date fecha            = null;
 		try {
 			regresar= new StringBuilder();			
 			regresar.append("tc_mantic_ventas.id_venta_estatus in (");
 			regresar.append(EEstatusVentas.APARTADOS.getIdEstatusVenta());
 			regresar.append(") and vigencia is not null");
 			regresar.append(" and tc_mantic_ventas.candado= 2 ");
+			if(this.attrs.get("fecha")!= null){
+				fecha= (Date) this.attrs.get("fecha");			
+				regresar.append(" and date_format (tc_mantic_ventas.registro, '%Y%m%d')=".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, fecha)));
+			} // if
 			if(this.attrs.get("busquedaApartados")!= null && !Cadena.isVacio(this.attrs.get("busquedaApartados"))){
 				regresar.append(" and (upper(tc_mantic_personas.cuenta) like upper('%");
 				regresar.append(this.attrs.get("busquedaApartados"));
