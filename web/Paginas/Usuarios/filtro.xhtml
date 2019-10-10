@@ -41,7 +41,7 @@
                 </p:column>                
               </p:selectOneMenu>
 							<p:separator/>
-            </h:panelGrid>
+            </p:panelGrid>
 						<div class="janal-align-right">
 							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this nombre tipoPerfil" actionListener="#{kajoolUsuariosFiltro.doLoad()}" oncomplete="janal.desbloquear();" update="tabla"/>
 							<p:commandButton id="buscarIcon" icon="fa fa-filter"  iconPos="right" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b" onstart="janal.execute()"  process="@this nombre tipoPerfil" actionListener="#{kajoolUsuariosFiltro.doLoad()}" oncomplete="janal.desbloquear();" update="tabla"/>
