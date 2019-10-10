@@ -1741,7 +1741,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	public String doDevolucion() {
 		JsfBase.setFlashAttribute("devolucionTicket", this.attrs.get("devolucionTicket"));
-		JsfBase.setFlashAttribute("regresar", "/Paginas/Mantic/Ventas/Caja/accion");
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Ventas/Caja/accion");
 	  return "/Paginas/Mantic/Ventas/Garantias/accion".concat(Constantes.REDIRECIONAR);	
 	}
 	
