@@ -1441,6 +1441,9 @@ public class Accion extends IBaseVenta implements Serializable {
 		if(this.attrs.get("productoTicket")!= null && !((Entity)this.attrs.get("productoTicket")).getKey().equals(-1L)){
 			sb.append("tc_mantic_ventas_detalles.id_articulo=").append(((Entity)this.attrs.get("productoTicket")).getKey()).append(" and ");					
 		} // if
+		else if (JsfBase.getParametro("contenedorGrupos:productoTicket_input")!= null){
+			sb.append("tc_mantic_ventas_detalles.nombre like '%").append(JsfBase.getParametro("contenedorGrupos:productoTicket_input")).append("%' and ");					
+		} // else if
 		if(this.attrs.get("importeTicket")!= null && !Cadena.isVacio(this.attrs.get("importeTicket")) && !this.attrs.get("importeTicket").toString().equals("0.00")){												
 			sb.append("tc_mantic_ventas.total like '%").append(Cadena.eliminaCaracter(this.attrs.get("importeTicket").toString(), ',')).append("%' and ");			
 		} // if
