@@ -172,28 +172,26 @@ public class Accion extends IBaseVenta implements Serializable {
 		boolean bandera        = true;
     try {			
 			if(!this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid()){
-				loadOrdenVenta();
+				this.loadOrdenVenta();
 				eaccion= (EAccion) this.attrs.get("accion");						
 				transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
 				this.getAdminOrden().toAdjustArticulos();
-				if (transaccion.ejecutar(eaccion)) 
-					UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la cuenta ', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");																		
-				else{ 
+				if (!transaccion.ejecutar(eaccion)) {
 					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);      			
 					bandera= false;
-				} // else
+				} // if
 			} // if
-			else if (((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta()> 0L){
+			else if (((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta()> 0L) {
 				transaccion= new Transaccion((TicketVenta)this.getAdminOrden().getOrden());
 				transaccion.ejecutar(EAccion.ELIMINAR);
 			} // else if			
-			if(bandera){
+			if(bandera) {
 				JsfBase.setFlashAttribute("idVenta", null);
 				JsfBase.setFlashAttribute("accion", null);				
 				this.attrs.put("idEmpresaVenta", this.attrs.get("idEmpresa"));
 				this.init();
 				this.attrs.put("idEmpresa", this.attrs.get("idEmpresaVenta"));
-				doAsignaClienteInicial(3515L);
+				this.doAsignaClienteInicial(3515L);
 				UIBackingUtilities.execute("userUpdate();");			
 			} // if
     } // try

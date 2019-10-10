@@ -145,16 +145,14 @@
 			<p:commandButton value="Aceptar" icon="fa fa-check" onstart="janal.monitor(0);" oncomplete="janal.globalTimeout= false; PF('dialogoInactivo').hide(); janal.desbloquear();"/>							
 		</div>				
 	</p:dialog>
-	<p:dialog id="dialogoVerificador" widgetVar="dlgVerificador" header="Verificador de precios" onShow="janal.pivot(); $('#verificadorValue').val(''); $('#verificadorValue').focus();janal.bloquear();" onHide="jsPrecios.hide(); janal.recover(); janal.desbloquear();" height="550px" width="950px" resizable="false" closeOnEscape="true" dynamic="true">
+	<p:dialog id="dialogoVerificador" widgetVar="dlgVerificador" header="Verificador de precios" onShow="janal.pivot(); $('#verificadorValue').val('');janal.bloquear();setTimeout($('#verificadorValue').focus(), 1000);" onHide="jsPrecios.hide(); janal.recover(); janal.desbloquear();" height="550px" width="950px" resizable="false" closeOnEscape="true" dynamic="true">
 		<h:form prependId="false">
 			<p:remoteCommand name="verificadorLookup" actionListener="#{kajoolEncabezado.doChange}" process="@this verificadorBuscarPor verificadorValue" update="verificadorPrecio verificadorTabla" oncomplete="if($('#verificadorValue').val()==='.*.') $('#verificadorValue').val('');"/>
       <p:remoteCommand name="verificadorKeyEnter" actionListener="#{kajoolEncabezado.doChange}" process="@this verificadorBuscarPor verificadorValue" update="verificadorPrecio verificadorTabla" onstart="return $('#verificadorValue').val().trim().length> 1"/>
       <p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-90, janal-wid-15">
 				<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 					<p:outputLabel for="verificadorValue" value="C&oacute;digo o nombre articulo:"/>
-					<p:inputText id="verificadorValue" styleClass="janal-key-verificador janal-wid-100-txt" value="#{kajoolEncabezado.attrs.buscarPor}" style="text-transform: uppercase">   
-						
-					</p:inputText>
+					<p:inputText id="verificadorValue" styleClass="janal-key-verificador janal-wid-100-txt" value="#{kajoolEncabezado.attrs.buscarPor}" style="text-transform: uppercase"/>   
 				</p:panelGrid>	
 				<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-right">
 					<p:outputLabel value="Buscar por c&oacute;digo:"/>
@@ -247,7 +245,7 @@
 			</p:dataTable>
 		</h:form>
 	</p:dialog>   	 	
-	<p:dialog id="dialogoFaltantes" widgetVar="dlgFaltantes" header="Lista de articulos faltantes" onShow="janal.pivot(); jsPrecios.refresh(); faltantesLookup();$('#codigosFaltantes').focus();janal.bloquear();" onHide="jsPrecios.update(); janal.recover(); janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" dynamic="true">
+	<p:dialog id="dialogoFaltantes" widgetVar="dlgFaltantes" header="Lista de articulos faltantes" onShow="janal.pivot(); jsPrecios.refresh(); faltantesLookup();janal.bloquear();setTimeout($('#codigosFaltantes_input').focus(), 1000);" onHide="jsPrecios.update(); janal.recover(); janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" dynamic="true">
 		<h:form id="faltantes" prependId="false">
 			<p:remoteCommand name="faltantesLookup" actionListener="#{kajoolEncabezado.doLoadFaltantes}" process="@this" update="@(.faltantes)"/>
 			<p:remoteCommand name="faltantesReplace" actionListener="#{kajoolEncabezado.doReplaceFaltante}" process="@this" update="@(.faltantes)"/>

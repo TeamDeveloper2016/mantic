@@ -917,8 +917,8 @@
 								<p:outputLabel for="fechaHastaTicket" value="Hasta:" title="Fecha de fin"/>
 								<p:outputLabel for="importeTicket" value="Importe:" title="Importe de la venta"/>								
 								<p:spacer/>
-								<p:inputText id="noTicket" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.noTicket}"/>									
-								<p:autoComplete id="productoTicket" styleClass="janal-wid-100-txt" var="customs" itemLabel="#{customs.nombre}" inputStyleClass="janal-wid-100-txt" itemValue="#{customs}" value="#{manticVentasCajaAccion.attrs.productoTicket}" completeMethod="#{manticVentasCajaAccion.doCompleteProductoTicket}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" panelStyleClass="janal-wid-col-300">
+								<p:inputText id="noTicket" styleClass="janal-wid-100-txt janal-key-search" value="#{manticVentasCajaAccion.attrs.noTicket}"/>									
+								<p:autoComplete id="productoTicket" styleClass="janal-wid-100-txt" var="customs" itemLabel="#{customs.nombre}" inputStyleClass="janal-wid-100-txt janal-key-search" itemValue="#{customs}" value="#{manticVentasCajaAccion.attrs.productoTicket}" completeMethod="#{manticVentasCajaAccion.doCompleteProductoTicket}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" panelStyleClass="janal-wid-col-300">
 									<f:facet name="itemtip">
 										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
 											<f:facet name="header" class="TexAlCenter">
@@ -1001,9 +1001,12 @@
 									</f:facet>
 									<h:outputText value="#{manticVentasCajaAccion.doTipoMedioPago(filtro)}"/>
 								</p:column>										
-								<p:column style="width:32px;text-align: center">
+								<p:column style="width:65px;text-align: center">
 									<p:commandButton icon="ui-icon-print" title="Ticket" action="#{manticVentasCajaAccion.doPrintTicket}">
 										<f:setPropertyActionListener value="#{filtro}" target="#{manticVentasCajaAccion.attrs.seleccionTicket}" />
+									</p:commandButton>
+									<p:commandButton icon="fa fa-cart-arrow-down" title="Devolución" action="#{manticVentasCajaAccion.doDevolucion}">
+										<f:setPropertyActionListener value="#{filtro}" target="#{manticVentasCajaAccion.attrs.devolucionTicket}" />
 									</p:commandButton>
 								</p:column>
 								<f:facet name="footer">

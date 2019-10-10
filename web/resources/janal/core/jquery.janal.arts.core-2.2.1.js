@@ -98,7 +98,7 @@
 				if(typeof(jsArticulos)=== 'undefined' || jsArticulos.leavePage)
 					return ;
 				else
-				  return 'Es probable que los cambios no se hayan guardado\nAun asi deseas salir de esta opción?.';
+				  return 'Es probable que los cambios no se hayan guardado\n\u00BF Aun asi deseas salir de esta opción ?';
 			});			
       $(document).on('keyup', this.lookup, function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;

@@ -1739,4 +1739,10 @@ public class Accion extends IBaseVenta implements Serializable {
 		this.doAsignaTicketAbierto();
 	}
 	
+	public String doDevolucion() {
+		JsfBase.setFlashAttribute("devolucionTicket", this.attrs.get("devolucionTicket"));
+		JsfBase.setFlashAttribute("regresar", "/Paginas/Mantic/Ventas/Caja/accion");
+	  return "/Paginas/Mantic/Ventas/Garantias/accion".concat(Constantes.REDIRECIONAR);	
+	}
+	
 }

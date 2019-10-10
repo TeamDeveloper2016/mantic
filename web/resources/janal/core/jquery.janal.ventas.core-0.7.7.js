@@ -94,7 +94,7 @@
 				if(typeof(jsArticulos)=== 'undefined' || jsArticulos.leavePage)
 					return ;
 				else
-				  return 'Es probable que los cambios no se hayan guardado\n¿Aun asi deseas salir de esta opción?.';
+				  return 'Es probable que los cambios no se hayan guardado\n\u00BF Aun asi deseas salir de esta opción ?';
 			});			
       $(document).on('keyup', this.lookup, function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
@@ -114,7 +114,7 @@
 			});  
       $(document).on('keydown', this.averages, function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
-				janal.console('jsArticulos.keydown: '+  key);
+				janal.console('jsArticulos.keydown [key-press-enter]: '+  key);
 				if(($articulos.change.indexOf(key)>= 0)) 
 					$articulos.leavePage= false;
 				switch(key) {
@@ -124,9 +124,21 @@
 						break;
 				} // switch
 			});	
+      $(document).on('keydown', '.janal-key-search', function(e) {
+				var key= e.keyCode ? e.keyCode : e.which;
+				janal.console('jsArticulos.keydown [janal-key-search]: '+  key);
+				if(($articulos.change.indexOf(key)>= 0)) 
+					$articulos.leavePage= false;
+				switch(key) {
+					case $articulos.VK_ENTER:
+						$('#buscarTicket').click();
+						return false;
+						break;
+				} // switch
+			});	
 			$(document).on('keydown', '.key-event-sat', function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
-				janal.console('jsArticulos.keydown: '+  key);
+				janal.console('jsArticulos.keydown [key-event-sat]: '+  key);
 				switch(key) {
 					case $articulos.VK_UP:
 						return $articulos.moveup('\\'+ $(this).attr('id').substring($(this).attr('id').lastIndexOf(':')));
@@ -222,7 +234,7 @@
 								if(ok) {
 									$articulos.leavePage= true;
 									var txt= $(this).val().trim().length<= 0;
-									if(txt && $('ul.ui-autocomplete-items:visible').length<= 0 && !PF('wAceptarCompra') && confirm('\u00BF Esta seguro de finalizar la captura ?')) {
+									if(txt && $('ul.ui-autocomplete-items:visible').length<= 0 && !PF('wAceptarCompra')) {
 										$('#aceptar').click();
 										return false;
 									} // if									
