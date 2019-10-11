@@ -246,6 +246,5 @@ public class Accion extends IBaseArticulos implements Serializable {
 			Methods.clean(columns);
 		} // finally
 	}
-	
 
 }

@@ -478,5 +478,11 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			Methods.clean(params);
 		} // finally
 	}	
+
+	@Override
+	public void doSearchArticulo(Long idArticulo, Integer index) {
+		this.attrs.put("idAlmacen", ((OrdenCompra)this.getAdminOrden().getOrden()).getIkAlmacen().getKey());
+		super.doSearchArticulo(idArticulo, index);
+	}
 	
 }

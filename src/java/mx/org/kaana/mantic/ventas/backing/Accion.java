@@ -576,4 +576,11 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 		return regresar;
 	} // doCatalogos
+	
+	@Override
+	public void doSearchArticulo(Long idArticulo, Integer index) {
+		this.attrs.put("idAlmacen", ((TicketVenta)this.getAdminOrden().getOrden()).getIkAlmacen().getKey());
+		super.doSearchArticulo(idArticulo, index);
+	}
+	
 }

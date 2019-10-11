@@ -757,5 +757,11 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		else
 			JsfBase.addMessage("El articulo aun no se encuentra asociado a una partida de la factura (XML) !", ETipoMensaje.ALERTA);
 	}	
+
+	@Override
+	public void doSearchArticulo(Long idArticulo, Integer index) {
+		this.attrs.put("idAlmacen", ((NotaEntrada)this.getAdminOrden().getOrden()).getIkAlmacen().getKey());
+		super.doSearchArticulo(idArticulo, index);
+	}
 	
 }
