@@ -86,6 +86,7 @@ public class Filtro extends IBaseTicket implements Serializable {
   @Override
   protected void init() {
     try {
+			this.attrs.put("showButtonCorreo", true);
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta"));
@@ -287,6 +288,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 			this.selectedCorreos.clear();
 			motor    = new MotorBusqueda(-1L, seleccionado.toLong("idCliente"));
 			contactos= motor.toClientesTipoContacto();
+			this.attrs.put("showButtonCorreo", !seleccionado.toLong("idCliente").equals(motor.toClienteDefault().getKey()));
 			LOG.warn("Total de contactos asociados al proveedor" + contactos.size());
 			for(ClienteTipoContacto contacto: contactos) {
 				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())) {
