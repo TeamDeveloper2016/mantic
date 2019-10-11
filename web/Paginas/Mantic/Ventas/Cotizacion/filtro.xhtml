@@ -242,7 +242,7 @@
 						<p:column headerText="Correos disponibles del cliente" styleClass="descripcion tablaCorreosReenviar_selection">
 							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
 						</p:column>
-						<p:column style="width:45px;text-align: center">
+						<p:column style="width:45px;text-align: center" rendered="#{manticVentasCotizacionFiltro.attrs.showButtonCorreo}">
 							<p:commandButton update="tablaCorreosReenviar" icon="fa fa-check" title="Agregar" action="#{manticVentasCotizacionFiltro.doAgregarCorreo}">
 								<f:setPropertyActionListener value="#{row}" target="#{manticVentasCotizacionFiltro.correo}" />
 							</p:commandButton>
