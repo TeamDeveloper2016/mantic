@@ -8,7 +8,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -23,6 +23,7 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloCodigo;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.catalogos.articulos.beans.RegistroArticulo;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
@@ -324,18 +325,21 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // doDeleteFile
 	
-	public void doLookForCodigo(String id, String codigo) {
+	public void doLookForCodigo(String id, String codigo, Long index) {
 	  Map<String, Object> params=null;
 		try {
 			params=new HashMap<>();
 			if(!Cadena.isVacio(codigo)) {
+				ArticuloCodigo proveedor= this.registroArticulo.getArticulosCodigos().get(index.intValue());
+				if(proveedor.getIdProveedor()!= null)
+			    params.put("idProveedor", proveedor.getIdProveedor());
 			  params.put("codigo", codigo.toUpperCase());
 				params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 				if(!((EAccion)this.attrs.get("accion")).equals(EAccion.AGREGAR))
-					params.put(Constantes.SQL_CONDICION, " id_articulo!="+ this.attrs.get("idArticulo"));
-			  Value value= DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "existe", params, "total");
-				if(value!= null && value.getData()!= null && value.toLong()> 0) {
-					JsfBase.addAlert("El código ya esta asociado a otro articulo !", ETipoMensaje.ALERTA);
+					params.put(Constantes.SQL_CONDICION, " tc_mantic_articulos_codigos.id_articulo!="+ this.attrs.get("idArticulo"));
+			  Entity value= (Entity)DaoFactory.getInstance().toEntity("VistaArticulosDto", "existeCodigo", params);
+				if(value!= null && !value.isEmpty() && value.toLong("total")> 0) {
+					JsfBase.addAlert("El código ya esta ocupado por otro articulo, el cual es !".concat("<br/>[").concat(value.toString("codigo").concat("] ").concat(value.toString("nombre").concat(" como ").concat(value.toString("principal")).concat("<br/>"))), ETipoMensaje.ALERTA);
 					id= id.replaceAll("[:]+", "\\\\:").replaceAll("[:]+", "\\\\:");
 					UIBackingUtilities.execute("$('#"+ id+ "').val('');$('#"+ id+ "').focus();");
 				} // if	

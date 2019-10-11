@@ -42,10 +42,11 @@
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
-		<pe:remoteCommand name="lookForCodigo" process="@this" actionListener="#{manticCatalogosArticulosAccion.doLookForCodigo}">  
-			<pe:methodSignature parameters="java.lang.String, java.lang.String"/>  
+		<pe:remoteCommand name="lookForCodigo" process="@this @(.proveedores-codigo)" actionListener="#{manticCatalogosArticulosAccion.doLookForCodigo}">  
+			<pe:methodSignature parameters="java.lang.String, java.lang.String, java.lang.Long"/>  
 			<pe:methodParam name="id"/>  
 			<pe:methodParam name="codigo"/>  
+			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
 		<p:defaultCommand target="contenedorGrupos"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
@@ -116,17 +117,17 @@
 						</p:tab>						
             <p:tab id="tabCodigos" title="Códigos">														
 							<p:panelGrid id="panelTablaCodigos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
-								<p:dataTable id="tablaCodigos" rowIndexVar="index" var="codigo" value="#{manticCatalogosArticulosAccion.registroArticulo.articulosCodigos}" rows="6" paginator="false" reflow="true" rowKey="#{codigo.key}" emptyMessage=" " styleClass="paginated">												
-									<p:column headerText="Código" styleClass="janal-wid-30 codigo">		
-										<p:inputText id="codigo#{codigo.key}" styleClass="janal-wid-100-txt" value="#{codigo.codigo}" onblur="lookForCodigo($(this).attr('id'), $(this).val());simpleProcess();"/>	
-									</p:column>
+								<p:dataTable id="tablaCodigos" rowIndexVar="index" var="codigo" value="#{manticCatalogosArticulosAccion.registroArticulo.articulosCodigos}" rows="15" paginator="false" reflow="true" rowKey="#{codigo.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Proveedor">										
-										<p:selectOneMenu id="proveedor#{codigo.key}" styleClass="janal-wid-100-txt" value="#{codigo.idProveedor}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" onblur="simpleProcess();">
+										<p:selectOneMenu id="proveedor#{codigo.key}" styleClass="janal-wid-100-txt proveedores-codigo" value="#{codigo.idProveedor}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" onblur="simpleProcess();">
 											<p:ajax update="tablaCodigos" process="@this tablaCodigos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 											<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 											<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.proveedoresGeneral}"/>
 										</p:selectOneMenu> 				
 									</p:column>				
+									<p:column headerText="Código" styleClass="janal-wid-30 codigo">		
+										<p:inputText id="codigo#{codigo.key}" styleClass="janal-wid-100-txt" value="#{codigo.codigo}" onblur="lookForCodigo($(this).attr('id'), $(this).val(), #{index}); simpleProcess();"/>	
+									</p:column>
 									<p:column headerText="Principal" styleClass="janal-wid-5" style="text-align: center">
 										<p:selectBooleanCheckbox value="#{codigo.principal}" rendered="#{codigo.candidatoPrincipal}" onblur="simpleProcess();">
 											<p:ajax listener="#{manticCatalogosArticulosAccion.registroArticulo.doSeleccionarPrincipal(codigo)}" update="tablaCodigos" process="@this tablaCodigos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>

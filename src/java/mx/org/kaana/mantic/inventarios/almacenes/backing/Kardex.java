@@ -32,6 +32,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloCodigo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
@@ -911,5 +912,30 @@ public class Kardex extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
 	}
- 
+
+	public void doLookForCodigo(String id, String codigo, Long index) {
+	  Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			if(!Cadena.isVacio(codigo)) {
+			  params.put("codigo", codigo.toUpperCase());
+				params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+				params.put(Constantes.SQL_CONDICION, " tc_mantic_articulos_codigos.id_articulo!="+ this.attrs.get("idArticulo"));
+			  Entity value= (Entity)DaoFactory.getInstance().toEntity("VistaArticulosDto", "existeCodigo", params);
+				if(value!= null && !value.isEmpty() && value.toLong("total")> 0) {
+					JsfBase.addAlert("El código ya esta ocupado por otro articulo, el cual es !".concat("<br/>[").concat(value.toString("codigo").concat("] ").concat(value.toString("nombre").concat(" como ").concat(value.toString("principal")).concat("<br/>"))), ETipoMensaje.ALERTA);
+					id= id.replaceAll("[:]+", "\\\\:").replaceAll("[:]+", "\\\\:");
+					UIBackingUtilities.execute("$('#"+ id+ "').val('');$('#"+ id+ "').focus();");
+				} // if	
+			} // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+	    JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally	
+	}	
+	
 }

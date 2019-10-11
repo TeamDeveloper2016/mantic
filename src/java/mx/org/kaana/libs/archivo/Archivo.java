@@ -195,9 +195,8 @@ public final class Archivo {
     return regresar.toString();    
   }
 
-	public static void toWriteFile(File result, InputStream upload) throws Exception {
+	public static void toWriteFile(File result, InputStream inputStream) throws Exception {
 		FileOutputStream fileOutputStream= new FileOutputStream(result);
-		InputStream inputStream          = upload;
 		byte[] buffer                    = new byte[Constantes.BUFFER_SIZE];
 		int bulk;
 		while(true) {
@@ -209,5 +208,6 @@ public final class Archivo {
 		} // while
 		fileOutputStream.close();
 		inputStream.close();
-	} // toWriteFile	
+	} // toWriteFile
+	
 }

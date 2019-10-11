@@ -54,7 +54,7 @@ public class UtilAplicacion {
 	private static final String TICKET= "jquery.janal.ticket.core-0.0.5.js";
   private static final String CALC  = "jquery.janal.arts.core-2.2.2.js";
   private static final String KARDEX= "jquery.janal.kardex.core-0.5.3.js";
-  private static final String DLGS  = "jquery.janal.precio.core-0.4.8.js";
+  private static final String DLGS  = "jquery.janal.precio.core-0.4.9.js";
   private static final String FUSION= "jquery.janal.fusion.charts-3.3.1.js";
 
   public String getTituloSistema() {

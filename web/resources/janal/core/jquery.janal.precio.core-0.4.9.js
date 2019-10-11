@@ -489,7 +489,7 @@
 			return false;
 		},
 		start: function() {
-			setTimeout("$('#codigosFaltantes_input').focus();", 2000);
+			setTimeout("$('#codigosFaltantes_input').focus();", 500);
 		}
 	});
 	

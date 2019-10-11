@@ -147,7 +147,7 @@ public class Transaccion extends IBaseTnx {
 						regresar= DaoFactory.getInstance().insert(sesion, codigos)>= 1L;
 					} // if
 					else {
-						this.messageError= "El código ya lo tiene asignado el articulo ["+ auxiliar.toString("nombre")+ "] !";
+						this.messageError= "El código ya lo tiene asignado el articulo !\n ["+ auxiliar.toString("codigo")+ " "+ auxiliar.toString("nombre")+ " como "+ auxiliar.toString("principal ");
 						regresar= false;
 					} // else	
 					break;
@@ -216,7 +216,8 @@ public class Transaccion extends IBaseTnx {
 		try {
 			params=new HashMap<>();
 			params.put("codigo", codigo);
-			regresar= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaCargasMasivasDto", "auxiliar", params);
+  		params.put(Constantes.SQL_CONDICION, " tc_mantic_articulos_codigos.id_articulo!= "+ this.idArticulo);
+			regresar= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaArticulosDto", "existeCodigo", params);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

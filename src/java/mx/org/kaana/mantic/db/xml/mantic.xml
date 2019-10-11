@@ -3021,6 +3021,15 @@
           and id_proveedor is null
 				  and {condicion}
       </select>
+      <select id="duplicado">
+        select      
+          count(*) as total
+        from      
+          tc_mantic_articulos_codigos
+        where      
+          codigo = '{codigo}' 
+          and id_proveedor!= {idProveedor}
+      </select>
       <select id="codigo">
         select      
           *
