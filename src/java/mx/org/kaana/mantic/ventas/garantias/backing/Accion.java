@@ -76,13 +76,16 @@ public class Accion extends IBaseVenta implements Serializable {
 	@PostConstruct
   @Override
   protected void init() {	
-		EAccion accion= null;
+		EAccion accion              = null;
+		List<UISelectEntity> tickets= null;
+		Entity entity               = null;
     try {
 			this.attrs.put("xcodigo", JsfBase.getFlashAttribute("xcodigo"));	
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null ? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null ? -1L: JsfBase.getFlashAttribute("idVenta"));
       this.attrs.put("idGarantia", JsfBase.getFlashAttribute("idGarantia")== null ? -1L: JsfBase.getFlashAttribute("idGarantia"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null ? null : JsfBase.getFlashAttribute("retorno"));
+			this.attrs.put("devolucionTicket", JsfBase.getFlashAttribute("devolucionTicket")== null ? null : JsfBase.getFlashAttribute("devolucionTicket"));
       this.attrs.put("isFactura", true);
       this.attrs.put("factura", null);
       this.attrs.put("isPesos", false);
@@ -112,7 +115,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 				loadSucursales();	
 			else
-				loadSucursalesPerfil();
+				loadSucursalesPerfil();			
 			if(JsfBase.getFlashAttribute("accionVenta")!= null){								
 				this.attrs.put("mostrarGarantia", true);
 				this.attrs.put("accion", EAccion.AGREGAR);				
@@ -137,6 +140,14 @@ public class Accion extends IBaseVenta implements Serializable {
 					doAsignaTicketAbierto();
 				loadBancos();
 			} // else
+			if(this.attrs.get("devolucionTicket")!= null){				
+				doUpdateOpenTickets(true);
+				tickets= (List<UISelectEntity>) this.attrs.get("openTickets");
+				toFindOpenTicket(tickets.get(0));
+				entity= new Entity(-1L);
+				entity.put("ticket", new Value("ticket", ((TicketVenta)this.getAdminOrden().getOrden()).getTicket()));
+				this.attrs.put("cliente", entity);
+			} // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -544,18 +555,32 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // toCondicion
 	
 	protected String toCondicionOpenTicket() {
+		return toCondicionOpenTicket(false);
+	}
+	
+	protected String toCondicionOpenTicket(boolean cobroCaja) {
 		StringBuilder regresar= null;
+		Entity ticket         = null;
 		try {
-			regresar= new StringBuilder();																
-			regresar.append(" tc_mantic_ventas.ticket like '%");
-			regresar.append(this.attrs.get("openTicket"));	
-			regresar.append("%' and (tc_mantic_ventas.id_venta_estatus=");			
+			regresar= new StringBuilder();
+			if(this.attrs.get("openTicket")!= null){
+				regresar.append(" tc_mantic_ventas.ticket like '%");
+				regresar.append(this.attrs.get("openTicket"));	
+				regresar.append("%' and ");			
+			} // if
+			regresar.append(" (tc_mantic_ventas.id_venta_estatus=");			
 			regresar.append(EEstatusVentas.PAGADA.getIdEstatusVenta());						
 			regresar.append(" or tc_mantic_ventas.id_venta_estatus=");
 			regresar.append(EEstatusVentas.TERMINADA.getIdEstatusVenta());									
 			regresar.append(" or tc_mantic_ventas.id_venta_estatus=");
 			regresar.append(EEstatusVentas.CREDITO.getIdEstatusVenta());									
 			regresar.append(") ");
+			if(cobroCaja){
+				ticket= (Entity) this.attrs.get("devolucionTicket");
+				regresar.append(" and tc_mantic_ventas.ticket= '");
+				regresar.append(ticket.toString("ticket"));	
+				regresar.append("'");
+			} // if
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -858,13 +883,17 @@ public class Accion extends IBaseVenta implements Serializable {
 	}	// doCompleteCliente
 	
 	public void doUpdateOpenTickets() {
+		doUpdateOpenTickets(false);
+	} // doUpdateOpenTickets
+	
+	public void doUpdateOpenTickets(Boolean cobroCaja) {
 		List<Columna> columns     = null;
     Map<String, Object> params= null;
     try {
 			params= new HashMap<>();
 			params.put("sortOrder", "");
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
-			params.put(Constantes.SQL_CONDICION, toCondicionOpenTicket());
+			params.put(Constantes.SQL_CONDICION, toCondicionOpenTicket(cobroCaja));
 			columns= new ArrayList<>();
 			columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));			
@@ -879,4 +908,9 @@ public class Accion extends IBaseVenta implements Serializable {
       Methods.clean(params);
     } // finally
 	}	// doUpdateClientes
+	
+	@Override
+	public String doCancelar() {     	
+    return (this.attrs.get("retorno") != null ? (String)this.attrs.get("retorno") : "filtro").concat(Constantes.REDIRECIONAR);
+  } // doCancelar
 }
