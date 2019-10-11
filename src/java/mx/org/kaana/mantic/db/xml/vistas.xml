@@ -8864,8 +8864,8 @@
 		<unit id="VistaEchartsDemostracionDto">
 			<select id="multiple">
 select
-  tc_mantic_empresas.nombre as serie,
-  tc_mantic_ventas_detalles.codigo as text,
+  tc_mantic_empresas.nombre as category,
+  tc_mantic_ventas_detalles.codigo as serie,
   sum(tc_mantic_ventas_detalles.importe) as value
 from
   tc_mantic_ventas_detalles
@@ -8879,7 +8879,7 @@ group by
 			</select>
 			<select id="simple">
 select
-  tc_mantic_ventas_detalles.codigo as text,
+  tc_mantic_ventas_detalles.codigo as serie,
   sum(tc_mantic_ventas_detalles.importe) as value
 from
   tc_mantic_ventas_detalles

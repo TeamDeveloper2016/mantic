@@ -19,8 +19,8 @@ import mx.org.kaana.libs.formato.Cadena;
 public class Series implements Serializable {
 
 	private static final long serialVersionUID=2040043938762402282L;
-	private static final String FIELD_GROUP= "serie";	
-	private static final String FIELD_TEXT = "text";	
+	private static final String FIELD_GROUP= "category";	
+	private static final String FIELD_TEXT = "serie";	
 	private static final String FIELD_VALUE= "value";	
 	
 	private List<Entity> data;
