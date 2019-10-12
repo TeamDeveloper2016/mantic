@@ -101,7 +101,7 @@
 			});			
       $(document).on('keydown', '.key-buscados-event', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('jsVentas.keydown [key-up-event]: '+ key);
+				janal.console('jsVentas.keydown [key-buscados-event]: '+ key);
 				switch(key) {
 					case $articulos.VK_UP:	
 					case $articulos.VK_DOWN:	
@@ -133,7 +133,7 @@
 			});  
 	    $(document).on('keydown', '.janal-buscados-articulos', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('jsVentas.keydown: '+ $(this).attr('id')+ ' key: '+ key);
+				janal.console('jsVentas.keydown [janal-buscados-articulos]: '+ $(this).attr('id')+ ' key: '+ key);
 				switch(key) {
 					case $articulos.VK_ESC:
             PF('dialogo').hide();
