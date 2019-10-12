@@ -33,11 +33,11 @@
 			this.hide();
 	    $(document).on('keydown', '.janal-key-event', function(e) {
 				var key= e.keyCode? e.keyCode: e.which;
-				janal.console('jsPrecios.keydown: '+ key);
+				janal.console('jsPrecios.keydown [janal-key-event]: '+ key);
 				switch(key) {
 					case $precios.VK_TAB:
 					case $precios.VK_ENTER:
-						janal.console('jsPrecios.keydown: '+ $(this).attr('alt'));
+						janal.console('jsPrecios.keydown [janal-key-event]: '+ $(this).attr('alt'));
 						if($('#'+ $(this).attr('alt'))) {
 						  $('#'+ $(this).attr('alt')).focus();
 							if('agregarFaltantes'=== $(this).attr('id'))
@@ -55,7 +55,7 @@
 			});	
 	    $(document).on('keydown', '.janal-key-verificador', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('jsPrecios.keydown: '+ key);
+				janal.console('jsPrecios.keydown [janal-key-verificador]: '+ key);
 				switch(key) {
 					case $precios.VK_UP:	
 					case $precios.VK_DOWN:	
@@ -85,7 +85,7 @@
 			});	
 	    $(document).on('keydown', '.janal-event-verificador', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('jsPrecios.keydown: '+ key);
+				janal.console('jsPrecios.keydown [janal-event-verificador]: '+ key);
 				switch(key) {
 					case $precios.VK_UP:	
 					case $precios.VK_DOWN:	
@@ -113,7 +113,7 @@
 			});	
 	    $(document).on('keydown', '.janal-key-lista', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('jsPrecios.keydown: '+ key);
+				janal.console('jsPrecios.keydown [janal-key-lista]: '+ key);
 				switch(key) {
 					case $precios.VK_UP:	
 					case $precios.VK_DOWN:	
@@ -140,7 +140,7 @@
 			});	
 	    $(document).on('keydown', '.janal-key-catalogo', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('jsPrecios.keydown: '+ key);
+				janal.console('jsPrecios.keydown [janal-key-lista]: '+ key);
 				switch(key) {
 					case $precios.VK_UP:	
 					case $precios.VK_DOWN:	
@@ -167,7 +167,7 @@
 			});	
 	    $(document).on('keydown', '.janal-key-articulo', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('jsPrecios.keydown: '+ key);
+				janal.console('jsPrecios.keydown [janal-key-articulo]: '+ key);
 				switch(key) {
 					case $precios.VK_UP:	
 					case $precios.VK_DOWN:	
@@ -199,7 +199,7 @@
 			});	
 	    $(document).on('keydown', '.janal-row-verificador', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('jsPrecios.keydown: '+ $(this).attr('id')+ ' key: '+ key);
+				janal.console('jsPrecios.keydown [janal-row-verificador]: '+ $(this).attr('id')+ ' key: '+ key);
 				switch(key) {
 					case $precios.VK_ESC:
             PF('dlgVerificador').hide();
@@ -245,7 +245,7 @@
 			});	
 	    $(document).on('keydown', '.janal-row-faltantes', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('jsPrecios.keydown: '+ $(this).attr('id')+ ' key: '+ key);
+				janal.console('jsPrecios.keydown [janal-row-faltantes]: '+ $(this).attr('id')+ ' key: '+ key);
 				switch(key) {
 					case $precios.VK_TAB:
 					  $('#codigosFaltantes').focus();
@@ -278,7 +278,7 @@
 			});	
 	    $(document).on('keydown', '.janal-row-lista', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('jsPrecios.keydown: '+ $(this).attr('id')+ ' key: '+ key);
+				janal.console('jsPrecios.keydown [janal-row-lista]: '+ $(this).attr('id')+ ' key: '+ key);
 				switch(key) {
 					case $precios.VK_TAB:
 					case $precios.VK_ENTER:
@@ -311,7 +311,7 @@
 			});	
 	    $(document).on('keydown', '.janal-row-catalogo', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('jsPrecios.keydown: '+ $(this).attr('id')+ ' key: '+ key);
+				janal.console('jsPrecios.keydown [janal-row-catalogo]: '+ $(this).attr('id')+ ' key: '+ key);
 				switch(key) {
 					case $precios.VK_TAB:
 					case $precios.VK_ENTER:
@@ -344,7 +344,7 @@
 			});	
 	    $(document).on('keydown', '.janal-row-articulos', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('jsPrecios.keydown: '+ $(this).attr('id')+ ' key: '+ key);
+				janal.console('jsPrecios.keydown [janal-row-articulos]: '+ $(this).attr('id')+ ' key: '+ key);
 				switch(key) {
 					case $precios.VK_TAB:
 					  $('#codigo').focus();
@@ -380,7 +380,7 @@
 			});	
 	    $(document).on('keydown', '.janal-key-run', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('Keydown: '+ key);
+				janal.console('jsPrecios.keydown [janal-key-run]: '+ key);
 				switch(key) {
 					case $precios.VK_ENTER:
 					case $precios.VK_TAB:
