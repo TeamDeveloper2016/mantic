@@ -27,7 +27,6 @@
 		descriptions: '\\:nombres',
 		selector    : '.key-down-event',
 		focus       : '.key-focus-event',
-		lookup      : '.key-up-event',
 		averages    : '.key-press-enter',
 		filter      : '.key-filter-event',
 		ctrlPlus    : false,
