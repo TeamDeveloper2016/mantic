@@ -579,7 +579,7 @@ public class Transaccion extends IBaseTnx {
 										2L, // Long idPrincipal, 
 										null, // String observaciones, 
 										-1L, // Long idArticuloCodigo, 
-										2L, // Long orden, 
+									  this.toNextOrden(sesion, articulo.getIdArticulo()), // Long orden, 
 										articulo.getIdArticulo() // Long idArticulo
 									);
 									DaoFactory.getInstance().insert(sesion, codigos);
@@ -648,6 +648,25 @@ public class Transaccion extends IBaseTnx {
     } // finally
 		return regresar;
 	} // toArticulos		
+
+	private Long toNextOrden(Session sesion, Long idArticulo) throws Exception {
+		Long regresar             = 1L;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("idArticulo", idArticulo);
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticArticulosCodigosDto", "siguiente", params, "siguiente");
+			if(next!= null && next.getData()!= null)
+			  regresar= next.toLong();
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toNextOrden
 
 	private TcManticTrabajosDto toFindTrabajo(Session sesion, String codigo) {
 		TcManticTrabajosDto regresar= null;
@@ -805,7 +824,7 @@ public class Transaccion extends IBaseTnx {
 										2L, // Long idPrincipal, 
 										null, // String observaciones, 
 										-1L, // Long idArticuloCodigo, 
-										2L, // Long orden, 
+										this.toNextOrden(sesion, refaccion.getIdArticulo()), // Long orden, 
 										refaccion.getIdArticulo() // Long idArticulo
 									);
 									DaoFactory.getInstance().insert(sesion, codigos);
@@ -1015,7 +1034,7 @@ public class Transaccion extends IBaseTnx {
 										2L, // Long idPrincipal, 
 										null, // String observaciones, 
 										-1L, // Long idArticuloCodigo, 
-										2L, // Long orden, 
+										this.toNextOrden(sesion, servicio.getIdArticulo()), // Long orden, 
 										servicio.getIdArticulo() // Long idArticulo
 									);
 									DaoFactory.getInstance().insert(sesion, codigos);

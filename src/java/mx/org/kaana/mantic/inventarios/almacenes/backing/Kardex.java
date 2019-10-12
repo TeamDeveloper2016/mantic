@@ -921,11 +921,22 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			  params.put("codigo", codigo.toUpperCase());
 				params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 				params.put(Constantes.SQL_CONDICION, " tc_mantic_articulos_codigos.id_articulo!="+ this.attrs.get("idArticulo"));
-			  Entity value= (Entity)DaoFactory.getInstance().toEntity("VistaArticulosDto", "existeCodigo", params);
-				if(value!= null && !value.isEmpty() && value.toLong("total")> 0) {
-					JsfBase.addAlert("El código ya esta ocupado por otro articulo, el cual es !".concat("<br/>[").concat(value.toString("codigo").concat("] ").concat(value.toString("nombre").concat(" como ").concat(value.toString("principal")).concat("<br/>"))), ETipoMensaje.ALERTA);
-					id= id.replaceAll("[:]+", "\\\\:").replaceAll("[:]+", "\\\\:");
-					UIBackingUtilities.execute("$('#"+ id+ "').val('');$('#"+ id+ "').focus();");
+			  List<Entity> values= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaArticulosDto", "existeCodigo", params);
+				if(values!= null && values.size()> 0) {
+					StringBuilder sb= new StringBuilder();
+					sb.append("<br/>");
+					for (Entity item : values) {
+						sb.append("  [");
+						sb.append(item.toString("codigo"));
+						sb.append("]  ");
+						sb.append(item.toString("nombre"));
+						sb.append(" como  ");
+						sb.append(item.toString("principal"));
+						sb.append(".<br/>");
+					} // for
+					JsfBase.addAlert("El código esta siendo utilizado por los siguientes articulos:".concat("<br/>").concat(sb.toString()), ETipoMensaje.ALERTA);
+					//id= id.replaceAll("[:]+", "\\\\:").replaceAll("[:]+", "\\\\:");
+					//UIBackingUtilities.execute("$('#"+ id+ "').val('');$('#"+ id+ "').focus();");
 				} // if	
 			} // if
 		} // try

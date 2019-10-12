@@ -67,6 +67,7 @@
 			index: 0,
 			tmp: 0
 		},
+		temporal: '',
 		init: function(top, content, plus, div) { // Constructor
 			$articulos= this;
 			this.cursor.top= top-1;
@@ -80,13 +81,13 @@
 		}, // init
 		events: function() {
       $(document).on('focus', this.filter, function() {
-				janal.console('jsArticulos.focus: '+ $(this).attr('id')+ ' value:['+ $(this).val().trim()+ ']');
+				janal.console('jsVentas.focus: '+ $(this).attr('id')+ ' value:['+ $(this).val().trim()+ ']');
 				$articulos.current= $(this).val().trim();
 				janal.lastNameFocus= this;
 			});  
       $(document).on('keyup', this.filter, function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
-				janal.console('jsArticulos.keyup: '+ $(this).attr('id')+ ' current: ['+ $articulos.current+ '] value: ['+ $(this).val().trim()+ ']');
+				janal.console('jsVentas.keyup: '+ $(this).attr('id')+ ' current: ['+ $articulos.current+ '] value: ['+ $(this).val().trim()+ ']');
 				if($articulos.current!== $(this).val().trim()) {
 					$articulos.current= $(this).val().trim();
 					filterRows();
@@ -99,14 +100,81 @@
 				else
 				  return 'Es probable que los cambios no se hayan guardado\n\u00BF Aun asi deseas salir de esta opción ?';
 			});			
-      $(document).on('keyup', this.lookup, function(e) {
-				var key= e.keyCode ? e.keyCode : e.which;
-				clearTimeout($articulos.typingTimer);
-        if ($(this).val() && $(this).val().trim().length> 0 && $articulos.control.indexOf(key)< 0) 
-          $articulos.typingTimer= setTimeout($articulos.look($(this)), $articulos.doneInterval);
-				return false;
+      $(document).on('keydown', '.key-buscados-event', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('jsVentas.keydown [key-up-event]: '+ key);
+				switch(key) {
+					case $articulos.VK_UP:	
+					case $articulos.VK_DOWN:	
+					case $articulos.VK_TAB:
+						if($articulos.temporal!== $('#codigo').val().trim()) {
+        			janal.console('jsVentas.lookup '+ + $(this).val());
+  						lookup($(this).val().replace(janal.cleanString, '').trim());
+						} // if
+						return $articulos.jump(true);
+					  break;
+					case $articulos.VK_ESC:
+            PF('dialogo').hide();
+					  break;
+					case $articulos.VK_ENTER:
+      			janal.console('jsVentas.lookup '+ + $(this).val());
+						$articulos.temporal= $('#codigo').val().trim();
+						lookup($(this).val().replace(janal.cleanString, '').trim());
+						return false;
+						break;
+					case $articulos.VK_PAGE_NEXT:
+						$('#buscados_paginator_top > a.ui-paginator-next').click();
+						return setTimeout($articulos.jump(false), 1000);
+						break;
+					case $articulos.VK_PAGE_PREV:
+						$('#buscados_paginator_top > a.ui-paginator-prev').click();
+						return setTimeout($articulos.jump(false), 1000);
+						break;
+				} // swtich
 			});  
-      $(document).on('focus', this.focus+ ',.key-move-event', function() {
+	    $(document).on('keydown', '.janal-buscados-articulos', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('jsVentas.keydown: '+ $(this).attr('id')+ ' key: '+ key);
+				switch(key) {
+					case $articulos.VK_ESC:
+            PF('dialogo').hide();
+						break;
+					case $articulos.VK_F7:
+					case $articulos.VK_ENTER:
+						return false;
+						break;
+					case $articulos.VK_UP:
+					case $articulos.VK_DOWN:
+						break;
+					case $articulos.VK_PAGE_NEXT:
+						if($('#buscados_paginator_top > a.ui-paginator-next')) {
+						  $('#buscados_paginator_top > a.ui-paginator-next').click();
+						  return setTimeout($articulos.jump(false), 1000);
+						} // if
+						else
+							return false;
+						break;
+					case $articulos.VK_PAGE_PREV:
+						if($('#buscados_paginator_top > a.ui-paginator-prev')) {
+  						$('#buscados_paginator_top > a.ui-paginator-prev').click();
+	  					return setTimeout($articulos.jump(false), 1000);
+						} // if
+						else
+							return false;
+						break;
+					default:
+						if(key>= 32)
+					    $('#codigo').val($('#codigo').val()+ String.fromCharCode(key));
+					  $('#codigo').focus();
+						var event = jQuery.Event("keyup");
+						event.keyCode= key;
+						event.which  = key;
+						$('#codigo').trigger(event);
+						return false;
+					  break;
+				} // swtich
+			});	
+      $(document).on('focus', '.key-focus-event,.key-move-event', function() {
 				$articulos.current= $(this).val();
 				$articulos.index($(this).attr('id'));
 				janal.lastNameFocus= this;
@@ -117,7 +185,7 @@
 			});  
       $(document).on('keydown', this.averages, function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
-				janal.console('jsArticulos.keydown [key-press-enter]: '+  key);
+				janal.console('jsVentas.keydown [key-press-enter]: '+  key);
 				if(($articulos.change.indexOf(key)>= 0)) 
 					$articulos.leavePage= false;
 				switch(key) {
@@ -129,7 +197,7 @@
 			});	
       $(document).on('keydown', '.janal-key-search', function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
-				janal.console('jsArticulos.keydown [janal-key-search]: '+  key);
+				janal.console('jsVentas.keydown [janal-key-search]: '+  key);
 				if(($articulos.change.indexOf(key)>= 0)) 
 					$articulos.leavePage= false;
 				switch(key) {
@@ -141,7 +209,7 @@
 			});	
 			$(document).on('keydown', '.key-event-sat', function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
-				janal.console('jsArticulos.keydown [key-event-sat]: '+  key);
+				janal.console('jsVentas.keydown [key-event-sat]: '+  key);
 				switch(key) {
 					case $articulos.VK_UP:
 						return $articulos.moveup('\\'+ $(this).attr('id').substring($(this).attr('id').lastIndexOf(':')));
@@ -152,9 +220,9 @@
 						break;
 				} // switch
 			});	
-      $(document).on('keydown', this.focus, function(e) {
+      $(document).on('keydown', '.key-focus-event', function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
-				janal.console('jsArticulos.keydown: '+  key);
+				janal.console('jsVentas.keydown: '+  key);
 				if(($articulos.change.indexOf(key)>= 0))
 					$articulos.leavePage= false;
 				switch(key) {
@@ -174,7 +242,7 @@
 			});	
       $(document).on('keydown', this.selector, function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('jsArticulos.keydown: '+  key);
+				janal.console('jsVentas.keydown: '+  key);
 				if(($articulos.change.indexOf(key)>= 0)) {
 					$articulos.leavePage= false;
 				  setTimeout("$('div[id$='+ jsArticulos.panels+ ']').hide();$('div[id$='+ jsArticulos.itemtips+ ']').hide();", 500);
@@ -217,7 +285,7 @@
   						return $articulos.point();
 						break;
 					case $articulos.VK_SAT:
-						janal.console('jsArticulo.sat: ');
+						janal.console('jsVentas.sat: ');
 						var ok= true;
 						var value= $(this).val().trim();
 						if(janal.isInteger(value) && value.length=== 8) {
@@ -291,7 +359,7 @@
       });
       $(document).on('keydown', '.key-down-clientes', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('jsArticulos.keyup: '+ $(this).attr('id')+ ' key: '+ key);
+				janal.console('jsVentas.keyup: '+ $(this).attr('id')+ ' key: '+ key);
 				switch(key) {
 					case $articulos.VK_MAYOR:
 						return $articulos.display($(this));
@@ -300,7 +368,7 @@
 			});  
       $(document).on('keyup', '.key-up-clientes', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('jsArticulos.keyup: '+ $(this).attr('id')+ ' key: '+ key);
+				janal.console('jsVentas.keyup: '+ $(this).attr('id')+ ' key: '+ key);
 				clearTimeout($articulos.typingTimer);
 				if ($(this).val() && $(this).val().trim().length> 0 && $articulos.control.indexOf(key)< 0) 
 					$articulos.typingTimer= setTimeout($articulos.clientes($(this)), $articulos.doneInterval);
@@ -335,7 +403,7 @@
 			});	
 			$(document).on('keydown', '.janal-row-tickets-abiertos', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('jsArticulos.keydown: '+ $(this).attr('id')+ ' key: '+ key);
+				janal.console('jsVentas.keydown: '+ $(this).attr('id')+ ' key: '+ key);
 				switch(key) {
 					case $articulos.VK_TAB:
 					  $('#busquedaTicketAbierto').focus();
@@ -399,7 +467,7 @@
 			});	
 			$(document).on('keydown', '.janal-row-cotizaciones', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('jsArticulos.keydown: '+ $(this).attr('id')+ ' key: '+ key);
+				janal.console('jsVentas.keydown: '+ $(this).attr('id')+ ' key: '+ key);
 				switch(key) {
 					case $articulos.VK_TAB:
 					  $('#busquedaCotizacion').focus();
@@ -463,7 +531,7 @@
 			});	
 			$(document).on('keydown', '.janal-row-apartados', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('jsArticulos.keydown: '+ $(this).attr('id')+ ' key: '+ key);
+				janal.console('jsVentas.keydown: '+ $(this).attr('id')+ ' key: '+ key);
 				switch(key) {
 					case $articulos.VK_TAB:
 					  $('#busquedaApartados').focus();
@@ -500,7 +568,7 @@
 			});	
 	    $(document).on('keydown', '.janal-key-clientes', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('jsArticulos.keydown: '+ key);
+				janal.console('jsVentas.keydown: '+ key);
 				switch(key) {
 					case $articulos.VK_UP:	
 					case $articulos.VK_DOWN:	
@@ -532,7 +600,7 @@
 			});
 	    $(document).on('keydown', '.janal-row-clientes', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('jsArticulos.keydown: '+ $(this).attr('id')+ ' key: '+ key);
+				janal.console('jsVentas.keydown: '+ $(this).attr('id')+ ' key: '+ key);
 				switch(key) {
 					case $articulos.VK_TAB:
 					  $('#rfcClientes').focus();
@@ -569,7 +637,7 @@
 			});	
 			$(document).on('keydown', '.key-caja-dialogo-finalizar', function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
-				janal.console('jsArticulos.cajaDialogoFinalizar');
+				janal.console('jsVentas.cajaDialogoFinalizar');
 				switch(key) {					
 					case $articulos.VK_ENTER:
 						$('#aceptarFinalizar').click();
@@ -578,7 +646,7 @@
 			});
 			$(document).on('keydown', '.key-caja-efectivo', function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
-				janal.console('jsArticulos.cajaEfectivo');
+				janal.console('jsVentas.cajaEfectivo');
 				var valor= 0;
 				switch(key) {					
 					case $articulos.VK_ENTER:
@@ -605,7 +673,7 @@
 			});
 			$(document).on('keydown', '.key-caja-debito', function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
-				janal.console('jsArticulos.cajaDebito');
+				janal.console('jsVentas.cajaDebito');
 				var valor= 0;
 				switch(key) {					
 					case $articulos.VK_ENTER:
@@ -638,7 +706,7 @@
 			});
 			$(document).on('keydown', '.key-caja-credito', function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
-				janal.console('jsArticulos.cajaCredito');
+				janal.console('jsVentas.cajaCredito');
 				var valor= 0;
 				switch(key) {					
 					case $articulos.VK_ENTER:
@@ -670,7 +738,7 @@
 			});
 			$(document).on('keydown', '.key-caja-transferencia', function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
-				janal.console('jsArticulos.cajaTransferencia');
+				janal.console('jsVentas.cajaTransferencia');
 				var valor= 0;
 				switch(key) {					
 					case $articulos.VK_ENTER:
@@ -702,7 +770,7 @@
 			});
 			$(document).on('keydown', '.key-caja-cheque', function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
-				janal.console('jsArticulos.cajaCheque');
+				janal.console('jsVentas.cajaCheque');
 				var valor= 0;
 				switch(key) {					
 					case $articulos.VK_ENTER:
@@ -809,7 +877,7 @@
 				$("#contenedorGrupos\\:" + jump + "_input").val('');				
 		},	// jumpPreviousTypeReference
 		nextOpenTicket: function(focus) {
-			janal.console('jsArticulos.nextOpenTicket');
+			janal.console('jsVentas.nextOpenTicket');
 			if(!PF('widgetTablaTicketsAbiertos').isEmpty()) {
 				PF('widgetTablaTicketsAbiertos').clearSelection();
 				PF('widgetTablaTicketsAbiertos').writeSelections();
@@ -820,7 +888,7 @@
 			return false;
 		},
 		nextCotizacion: function(focus) {
-			janal.console('jsArticulos.nextCotizacion');
+			janal.console('jsVentas.nextCotizacion');
 			if(!PF('widgetTablaCotizaciones').isEmpty()) {
 				PF('widgetTablaCotizaciones').clearSelection();
 				PF('widgetTablaCotizaciones').writeSelections();
@@ -831,7 +899,7 @@
 			return false;
 		},
 		nextApartados: function(focus) {
-			janal.console('jsArticulos.nextApartados');
+			janal.console('jsVentas.nextApartados');
 			if(!PF('widgetTablaApartados').isEmpty()) {
 				PF('widgetTablaApartados').clearSelection();
 				PF('widgetTablaApartados').writeSelections();				
@@ -841,7 +909,7 @@
 			return false;
 		},
 		moveup: function(which) {
-			janal.console('jsArticulos.moveup: '+ this.cursor.index+ ' =>'+ which);
+			janal.console('jsVentas.moveup: '+ this.cursor.index+ ' =>'+ which);
 			this.up(false);
 			var id= '#'+ this.joker+ this.cursor.index+ which;
 			if($(id))
@@ -849,7 +917,7 @@
 			return false;
 		},
 		movedown: function(which) {
-			janal.console('jsArticulos.movedown: '+ this.cursor.index+ ' =>'+ which);
+			janal.console('jsVentas.movedown: '+ this.cursor.index+ ' =>'+ which);
 			this.down(false);
 			var id= '#'+ this.joker+ this.cursor.index+ which;
 			if($(id))
@@ -857,7 +925,7 @@
 			return false;
 		},
 		index: function(id) {
-			janal.console('jsArticulos.index: '+ this.cursor.index+ ' =>'+ id);
+			janal.console('jsVentas.index: '+ this.cursor.index+ ' =>'+ id);
 			id= id.replace(/:/gi, '\\:');
 			var start= id.indexOf(this.joker)>= 0? this.joker.length: -1;
 			if(start> 0)
@@ -904,16 +972,16 @@
 			return '#'+ this.joker+ this.cursor.index+ this.values;
 		},
 		set: function(value) {
-			janal.console('jsArticulo.set: '+ this.name()+ ' ->'+ $(this.name()).val());
+			janal.console('jsVentas.set: '+ this.name()+ ' ->'+ $(this.name()).val());
 		  if($(this.name()))
 				$(this.name()).val(value);	
 		},
 		get: function() {
-			janal.console('jsArticulo.get: '+ this.name()+ ' ->'+ $(this.name()).val());
+			janal.console('jsVentas.get: '+ this.name()+ ' ->'+ $(this.name()).val());
 			return $(this.name())? $(this.name()).val(): '';
 		},
 		up: function(jump) {
-			janal.console("jsArticulos.up: "+ this.cursor.index);
+			janal.console("jsVentas.up: "+ this.cursor.index);
 			if(this.cursor.index> 0)
 				this.cursor.index--;
 			else
@@ -923,7 +991,7 @@
 			return false;
 		},
 		down: function(jump) {
-			janal.console("jsArticulos.down: "+ this.cursor.index);
+			janal.console("jsVentas.down: "+ this.cursor.index);
 			if(this.cursor.index< this.cursor.top)
 				this.cursor.index++;
 			else
@@ -933,27 +1001,27 @@
 			return false;
 		},
 		valid: function() {
-			janal.console('jsArticulo.valid: ');
+			janal.console('jsVentas.valid: ');
 			return $(this.key()) && parseInt($(this.key()).val(), 10)> 0;
 		}, 
 		remove: function() {
-			janal.console('jsArticulo.remove: ');
+			janal.console('jsVentas.remove: ');
 			return this.valid() && $(this.lock()) && ($(this.lock()).val().length=== 0 || parseInt($(this.lock()).val(), 10)<= 0);
 		}, 
 		refresh: function() {
 			if(this.valid()) {
-  			janal.console("jsArticulos.refresh: "+ this.cursor.index);
+  			janal.console("jsVentas.refresh: "+ this.cursor.index);
 				refresh(this.cursor.index);
 			} // if
 			return false;
 		},
 		refreshGarantia: function(index) {			
-  		janal.console("jsArticulos.refreshGarantia: " + index);
+  		janal.console("jsVentas.refreshGarantia: " + index);
 			refresh(index);			
 			return false;
 		},
 		refreshAsterisk: function() {			
-  		janal.console("jsArticulos.refresh: "+ this.cursor.index);
+  		janal.console("jsVentas.refresh: "+ this.cursor.index);
 			refresh(this.cursor.index);
 			return false;
 		},
@@ -984,7 +1052,7 @@
       return true;
 		},
 		div: function() {
-			janal.console('jsArticulo.div: ');		
+			janal.console('jsVentas.div: ');		
 		  if(this.ctrlDiv) {
 				var value= this.get().trim();
 				var temp = $(this.discount()).val();
@@ -1003,15 +1071,15 @@
 			return true;
 		},
 		autorizedDiscount: function() {
-			janal.console('jsArticulo.autorizedDiscount: ');					
+			janal.console('jsVentas.autorizedDiscount: ');					
 			autorized(this.cursor.index);
 		}, // autorizedDiscount
 		autorizedPrecio: function() {
-			janal.console('jsArticulo.autorizedDiscount: ');					
+			janal.console('jsVentas.autorizedDiscount: ');					
 			autorizedModificacionPrecio(this.cursor.index);
 		}, // autorizedDiscount
 		divDiscount: function(value) {
-			janal.console('jsArticulo.div: ');					
+			janal.console('jsVentas.div: ');					
 			//var value= this.get().trim();
 			var temp = $(this.discount()).val();
 			if($(this.discount()) && value.length> 0 && this.isPorcentaje(value)) {
@@ -1028,7 +1096,7 @@
 			return true;
 		},
 		asterisk: function() {
-			janal.console('jsArticulo.asterisk: ');
+			janal.console('jsVentas.asterisk: ');
 			var value = this.get().trim();
 			var temp = $(this.amount()).val();
 			if($(this.amount()) && value.length> 0 && this.isFlotante(value)) {
@@ -1045,7 +1113,7 @@
 			return true;
 		},
 		plus: function() {
-			janal.console('jsArticulo.plus: ');			
+			janal.console('jsVentas.plus: ');			
 		  if(this.ctrlPlus) {
 				var value = this.get().trim();
 				var temp = $(this.price()).val();
@@ -1064,7 +1132,7 @@
 			return true;
 		},
 		point: function() {
-			janal.console('jsArticulo.point: ');
+			janal.console('jsVentas.point: ');
 			var value = this.get().trim();
 			var temp = $(this.additional()).val();
 			if($(this.additional()) && value.length> 0 && this.isPorcentaje(value)) {
@@ -1081,7 +1149,7 @@
 			return true;
 		},
 		find: function() {
-			janal.console('jsArticulo.find: '+ this.get().trim());
+			janal.console('jsVentas.find: '+ this.get().trim());
 			var value = this.get().trim();
 			if(value.startsWith('='))
 				this.set(eval(value.substring(1)));
@@ -1091,19 +1159,19 @@
 			return false;
 		},
 		exists: function(index) {
-			janal.console('jsArticulo.exists: '+ index);
+			janal.console('jsVentas.exists: '+ index);
 			alert('El articulo ya existe en la orden y se encuentra en la fila '+ (index+ 1)+ ',\n la cantidad de articulos solicitados se aumento\n con la cantidad del articulo seleccionado\n por favor verifique y corriga el valor !');
 			this.cursor.tmp= index;
 			setTimeout('$articulos.cursor.index= $articulos.cursor.tmp;$articulos.goto();', 1000);
 			janal.desbloquear();
 		}, 
 		goto: function() {
-			janal.console('jsArticulo.goto: '+ this.name());
+			janal.console('jsVentas.goto: '+ this.name());
 			if($(this.name())) 
 				$(this.name()).focus();
 		},
 		clean: function() {
-			janal.console('jsArticulos.clean: '+ this.cursor.index+ ' => '+ this.cursor.top);
+			janal.console('jsVentas.clean: '+ this.cursor.index+ ' => '+ this.cursor.top);
 			if(this.cursor.top> 0 && this.valid()) {
 			  suppress(this.cursor.index);
 				$(this.price()).val('0');
@@ -1115,11 +1183,11 @@
 			return false;
 		},
 		update: function(top) {
-			janal.console('jsArticulos.update: '+ top);
+			janal.console('jsVentas.update: '+ top);
 			this.cursor.top= top;
 		},
 		calculate: function(active) {
-			janal.console('jsArticulo.calculate: '+ this.current+ ' => '+ $(active).val());
+			janal.console('jsVentas.calculate: '+ this.current+ ' => '+ $(active).val());
 			if($(active).val()!== this.current)
 				if(parseFloat($(active).val(), 10)!== parseFloat(this.current, 10))
   				this.refresh();
@@ -1129,7 +1197,7 @@
 			return false;	
 		},
 		calculateGarantia: function(active, index) {
-			janal.console('jsArticulo.calculate: '+ this.current+ ' => '+ $(active).val());
+			janal.console('jsVentas.calculate: '+ this.current+ ' => '+ $(active).val());
 			if($(active).val()!== this.current)
 				if(parseFloat($(active).val(), 10)!== parseFloat(this.current, 10))
   				this.refreshGarantia(index);
@@ -1138,8 +1206,19 @@
     				this.refreshGarantia(index);
 			return false;	
 		},
+		jump: function(focus) {
+			janal.console('jsVentas.jump');
+			if(!PF('widgetBuscados').isEmpty()) {
+				PF('widgetBuscados').clearSelection();
+				PF('widgetBuscados').writeSelections();
+				PF('widgetBuscados').selectRow(0, true);	
+				if(focus)
+					$('#buscados .ui-datatable-data').focus();
+			} // if	
+			return false;
+		},
 		next: function() {
-			janal.console('jsArticulo.next: '+ this.cursor.index);
+			janal.console('jsVentas.next: '+ this.cursor.index);
 			if(($(this.key()) && parseInt($(this.key()).val(), 10)> 0)) {
 				if($('ul.ui-autocomplete-items:visible').length> 0) {
           $('ul.ui-autocomplete-items:visible').hide();
@@ -1150,13 +1229,13 @@
 			} // if	
 		},
 		reset: function(name) {
-			janal.console('jsArticulo.reset: ');
+			janal.console('jsVentas.reset: ');
 			if($(name).attr('id').endsWith(this.prices.substring(2)))
 				$(name).val($(this.value()).val());
 			return false;
 		},
 		search: function() {
-			janal.console('jsArticulo.search: ');
+			janal.console('jsVentas.search: ');
 			if(this.valid())
 				search($(this.key()).val(), this.cursor.index);
 			return false;
@@ -1170,22 +1249,22 @@
 			return false;
 		},
 	  callback: function(code) {
-			janal.console('jsArticulo.callback: '+ code);
+			janal.console('jsVentas.callback: '+ code);
 		  return false;
 		},
 		close: function() {
-			janal.console('jsArticulo.close: ');
+			janal.console('jsVentas.close: ');
 		  replace(this.cursor.index);
 			return false;
 		},
 		look: function(name) {
-			console.log('jsArticulo.look: '+ $(name).val());
+			console.log('jsVentas.look: '+ $(name).val());
 			var search= $(name).val().replace(janal.cleanString, '').trim();
 			if(search.length> 2)
 			  lookup(search);
 		},
 		back: function(title, count) {
-			janal.console('jsArticulo.back: ');
+			janal.console('jsVentas.back: ');
 			janal.bloquear();
 			alert('Se '+ title+ ' con consecutivo: '+ count);
 		},
@@ -1200,7 +1279,7 @@
 			return false;
 		},
 		compare: function(index) {
-			janal.console('jsArticulos.compare: '+ index);
+			janal.console('jsVentas.compare: '+ index);
 			var tmp= this.cursor.index;
 			var msg= [];
 			if(typeof(index)=== 'undefined') {
@@ -1219,7 +1298,7 @@
 			return msg;
 		},
 		individual: function(index) {
-			janal.console('jsArticulos.individual: '+ index);
+			janal.console('jsVentas.individual: '+ index);
 			janal.precio($('#contenedorGrupos\\:tabla\\:'+ index+ '\\:cantidades'), '0'); 
 			janal.hide();
 			var error= this.compare(index);
@@ -1241,11 +1320,11 @@
 					count++;
 			} // for
 			this.cursor.index= tmp; 
-			janal.console('jsArticulos.zeros: '+ count+ ' => '+ this.cursor.top);
+			janal.console('jsVentas.zeros: '+ count+ ' => '+ this.cursor.top);
 			return this.cursor.top=== count;
 		},
 		invalidate: function(top) {
-			janal.console('jsArticulos.invalidate: '+ top);
+			janal.console('jsVentas.invalidate: '+ top);
 			if(top>= 0)
 			  this.cursor.top= top;
 			janal.reset();
@@ -1407,7 +1486,7 @@
 			this.cursor.top= size;
 		}, // initArrayArt
 		process: function() {
-			janal.console('jsArticulos.process: ');
+			janal.console('jsVentas.process: ');
 			janal.refresh();
 			janal.desbloquear(); 
 			PF('listado').hide();
@@ -1417,13 +1496,13 @@
 			setTimeout('$articulos.goto();', 1000); 
 		},
 		clientes: function(name) {
-			console.log('jsArticulo.clientes: '+ $(name).val());
+			console.log('jsVentas.clientes: '+ $(name).val());
 			var search= $(name).val().replace(janal.cleanString, '').trim();
 			if(search.length> 2)
   			listado(search);
 		},
 		goon: function(focus) {
-			janal.console('jsArticulo.goon');
+			janal.console('jsVentas.goon');
 			if(!PF('widgetClientes').isEmpty()) {
 				PF('widgetClientes').clearSelection();
 				PF('widgetClientes').writeSelections();

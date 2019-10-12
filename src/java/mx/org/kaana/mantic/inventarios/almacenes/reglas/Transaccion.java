@@ -246,4 +246,5 @@ public class Transaccion extends IBaseTnx {
 		} // finally
 		return regresar;
 	} // toSiguiente
+	
 } 

@@ -6983,11 +6983,7 @@
 					tc_mantic_listas_precios_detalles on tc_mantic_listas_precios.id_lista_precio = tc_mantic_listas_precios_detalles.id_lista_precio
 				where 
 					tc_mantic_listas_precios.id_empresa in ({sucursales})
-				  and (
-				    upper(tc_mantic_articulos_codigos.codigo) like '{codigo}%'
-				   or
-				    upper(tc_mantic_articulos_codigos.auxiliar) like '{codigo}%'
-			    )
+				  and ( upper(tc_mantic_listas_precios_detalles.codigo) like '{codigo}%' or upper(tc_mantic_listas_precios_detalles.auxiliar) like '{codigo}%')
 				order by 
 				  tc_mantic_listas_precios_detalles.descripcion	
 			</select>			

@@ -471,7 +471,7 @@
 			janal.console('jsPrecios.execute: '+ ok);
 			if(ok)
 				faltantesVerificar();
-			$('#codigosFaltantes').focus();
+			this.start();
 		},
 		update: function() {
 			janal.console('jsPrecios.update');

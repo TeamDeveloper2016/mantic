@@ -72,6 +72,7 @@
 			index: 0,
 			tmp: 0
 		},
+		temporal: '',
 		init: function(top, content, paginator) { // Constructor
 			$articulos= this;
 			this.cursor.top= top-1;
@@ -101,14 +102,80 @@
 				else
 				  return 'Es probable que los cambios no se hayan guardado\n\u00BF Aun asi deseas salir de esta opción ?';
 			});			
-      $(document).on('keyup', this.lookup, function(e) {
+      $(document).on('keydown', '.key-buscados-event', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('jsArticulos.keyup: '+ $(this).attr('id')+ ' key: '+ key);
-				clearTimeout($articulos.typingTimer);
-				if ($(this).val() && $(this).val().trim().length> 0 && $articulos.teclas.indexOf(key)< 0) 
-					$articulos.typingTimer= setTimeout($articulos.look($(this)), $articulos.doneInterval);
-				return false;
+				janal.console('jsArticulos.keydown [key-up-event]: '+ key);
+				switch(key) {
+					case $articulos.VK_UP:	
+					case $articulos.VK_DOWN:	
+					case $articulos.VK_TAB:
+						if($articulos.temporal!== $('#codigo').val().trim()) {
+        			janal.console('jsArticulos.lookup '+ + $(this).val());
+  						lookup($(this).val().replace(janal.cleanString, '').trim());
+						} // if
+						return $articulos.jump(true);
+					  break;
+					case $articulos.VK_ESC:
+            PF('dialogo').hide();
+					  break;
+					case $articulos.VK_ENTER:
+      			janal.console('jsArticulos.lookup '+ + $(this).val());
+						$articulos.temporal= $('#codigo').val().trim();
+						lookup($(this).val().replace(janal.cleanString, '').trim());
+						return false;
+						break;
+					case $articulos.VK_PAGE_NEXT:
+						$('#buscados_paginator_top > a.ui-paginator-next').click();
+						return setTimeout($articulos.jump(false), 1000);
+						break;
+					case $articulos.VK_PAGE_PREV:
+						$('#buscados_paginator_top > a.ui-paginator-prev').click();
+						return setTimeout($articulos.jump(false), 1000);
+						break;
+				} // swtich
 			});  
+	    $(document).on('keydown', '.janal-buscados-articulos', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('jsVentas.keydown: '+ $(this).attr('id')+ ' key: '+ key);
+				switch(key) {
+					case $articulos.VK_ESC:
+            PF('dialogo').hide();
+						break;
+					case $articulos.VK_F7:
+					case $articulos.VK_ENTER:
+						return false;
+						break;
+					case $articulos.VK_UP:
+					case $articulos.VK_DOWN:
+						break;
+					case $articulos.VK_PAGE_NEXT:
+						if($('#buscados_paginator_top > a.ui-paginator-next')) {
+						  $('#buscados_paginator_top > a.ui-paginator-next').click();
+						  return setTimeout($articulos.jump(false), 1000);
+						} // if
+						else
+							return false;
+						break;
+					case $articulos.VK_PAGE_PREV:
+						if($('#buscados_paginator_top > a.ui-paginator-prev')) {
+  						$('#buscados_paginator_top > a.ui-paginator-prev').click();
+	  					return setTimeout($articulos.jump(false), 1000);
+						} // if
+						else
+							return false;
+						break;
+					default:
+						if(key>= 32)
+					    $('#codigo').val($('#codigo').val()+ String.fromCharCode(key));
+					  $('#codigo').focus();
+						var event = jQuery.Event("keyup");
+						event.keyCode= key;
+						event.which  = key;
+						$('#codigo').trigger(event);
+						return false;
+					  break;
+				} // swtich
+			});	
       $(document).on('keyup', this.findout, function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
 				janal.console('jsArticulos.keyup: '+ $(this).attr('id')+ ' key: '+ key);
@@ -778,6 +845,17 @@
   				if($(active).val().indexOf(',')>= 0 || this.current.indexOf(',')>= 0)
     				this.refresh();
 			return false;	
+		},
+		jump: function(focus) {
+			janal.console('jsArticulos.jump');
+			if(!PF('widgetBuscados').isEmpty()) {
+				PF('widgetBuscados').clearSelection();
+				PF('widgetBuscados').writeSelections();
+				PF('widgetBuscados').selectRow(0, true);	
+				if(focus)
+					$('#buscados .ui-datatable-data').focus();
+			} // if	
+			return false;
 		},
 		next: function() {
 			janal.console('jsArticulo.next: '+ this.cursor.index);
