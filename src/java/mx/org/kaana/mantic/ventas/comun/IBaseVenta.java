@@ -685,7 +685,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				  temporal.setCantidad(articulo.toDouble("cantidad"));
 				  temporal.setSolicitados(articulo.toDouble("cantidad"));
 				} // if	
-				if(temporal.getCantidad()< 1D)					
+				if(temporal.getCantidad()<= 0D)					
 					temporal.setCantidad(1D);
 				temporal.setDescripcionPrecio(getPrecio());
 				temporal.setMenudeo(articulo.toDouble("menudeo"));				
