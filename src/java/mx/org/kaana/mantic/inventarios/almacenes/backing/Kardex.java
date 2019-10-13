@@ -914,7 +914,8 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	}
 
 	public void doLookForCodigo(String id, String codigo, Long index) {
-	  Map<String, Object> params=null;
+	  Map<String, Object> params= null;
+		int count                 = 0;
 		try {
 			params=new HashMap<>();
 			if(!Cadena.isVacio(codigo)) {
@@ -926,15 +927,19 @@ public class Kardex extends IBaseAttribute implements Serializable {
 					StringBuilder sb= new StringBuilder();
 					sb.append("<br/>");
 					for (Entity item : values) {
-						sb.append("  [");
-						sb.append(item.toString("codigo"));
-						sb.append("]  ");
-						sb.append(item.toString("nombre"));
-						sb.append(" como  ");
-						sb.append(item.toString("principal"));
-						sb.append(".<br/>");
+						if(item.toLong("idKey")!= null && item.toLong("idKey")>0){
+							count++;
+							sb.append("  [");
+							sb.append(item.toString("codigo"));
+							sb.append("]  ");
+							sb.append(item.toString("nombre"));
+							sb.append(" como  ");
+							sb.append(item.toString("principal"));
+							sb.append(".<br/>");
+						} // if
 					} // for
-					JsfBase.addAlert("El código esta siendo utilizado por los siguientes articulos:".concat("<br/>").concat(sb.toString()), ETipoMensaje.ALERTA);
+					if(count>0)
+						JsfBase.addAlert("El código esta siendo utilizado por los siguientes articulos:".concat("<br/>").concat(sb.toString()), ETipoMensaje.ALERTA);
 					//id= id.replaceAll("[:]+", "\\\\:").replaceAll("[:]+", "\\\\:");
 					//UIBackingUtilities.execute("$('#"+ id+ "').val('');$('#"+ id+ "').focus();");
 				} // if	
