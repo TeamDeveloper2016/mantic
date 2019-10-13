@@ -132,8 +132,8 @@ public class Transaccion extends IBaseTnx {
 					break;
 				case ASIGNAR:
 					this.sat= this.sat.toUpperCase().replaceAll(Constantes.CLEAN_ART, "").trim();
-					Entity auxiliar= this.toFindCodigoAuxiliar(sesion, this.sat);
-					if(auxiliar== null || auxiliar.isEmpty()) {
+					//Entity auxiliar= this.toFindCodigoAuxiliar(sesion, this.sat);
+					//if(auxiliar== null || auxiliar.isEmpty()) {
 						TcManticArticulosCodigosDto codigos= new TcManticArticulosCodigosDto(
 							this.sat, // String codigo, 
 							null, // Long idProveedor, 
@@ -145,11 +145,11 @@ public class Transaccion extends IBaseTnx {
 							this.idArticulo // Long idArticulo
 						);
 						regresar= DaoFactory.getInstance().insert(sesion, codigos)>= 1L;
-					} // if
-					else {
-						this.messageError= "El código ya lo tiene asignado el articulo !\n ["+ auxiliar.toString("codigo")+ " "+ auxiliar.toString("nombre")+ " como "+ auxiliar.toString("principal ");
-						regresar= false;
-					} // else	
+					//} // if
+					//else {
+						//this.messageError= "El código ya lo tiene asignado el articulo !\n ["+ auxiliar.toString("codigo")+ " "+ auxiliar.toString("nombre")+ " como "+ auxiliar.toString("principal");
+						//regresar= false;
+					//} // else	
 					break;
 				case DEPURAR:
 					regresar= DaoFactory.getInstance().delete(sesion, TcManticArticulosCodigosDto.class, this.idArticulo)>= 1L;
