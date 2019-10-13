@@ -392,20 +392,18 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	
 	public boolean alterarCierreCaja(Session sesion, Long idTipoMedioPago) throws Exception{
 		boolean regresar     = true;
-		TcManticCajasDto caja= null;
-		Double limiteCaja    = 0D;				
-		caja= (TcManticCajasDto) DaoFactory.getInstance().findById(sesion, TcManticCajasDto.class, this.ventaFinalizada.getIdCaja());
-		limiteCaja= caja.getLimite();
-		toCierreActivo(sesion, idTipoMedioPago);
-		if(idTipoMedioPago.equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){				
-			if(this.isNuevoCierre){
+		TcManticCajasDto caja= (TcManticCajasDto) DaoFactory.getInstance().findById(sesion, TcManticCajasDto.class, this.ventaFinalizada.getIdCaja());
+		Double limiteCaja    = caja.getLimite();
+		this.toCierreActivo(sesion, idTipoMedioPago);
+		if(idTipoMedioPago.equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())) {
+			if(this.isNuevoCierre) {
 				if(limiteCaja< this.cierreCaja)
-					regresar= registraAlertaRetiro(sesion, this.idCierreVigente, limiteCaja-this.cierreCaja);				
+					regresar= this.registraAlertaRetiro(sesion, this.idCierreVigente, limiteCaja-this.cierreCaja);				
 			}	// if		
-			else{
-				this.cierreCaja= toAcumuladoCierreActivo(sesion, this.idCierreVigente, idTipoMedioPago);
+			else {
+				this.cierreCaja= this.toAcumuladoCierreActivo(sesion, this.idCierreVigente, idTipoMedioPago);
 				if(limiteCaja< this.cierreCaja)
-					regresar= registraAlertaRetiro(sesion, this.idCierreVigente, limiteCaja-this.cierreCaja);
+					regresar= this.registraAlertaRetiro(sesion, this.idCierreVigente, limiteCaja-this.cierreCaja);
 			} // else
 		} // if		
 		return regresar;
@@ -435,14 +433,13 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		return regresar;
 	} // registraAlertaRetiro
 	
-	private Double toAcumuladoCierreActivo(Session sesion, Long idCierre, Long idTipoMedioPago) throws Exception{
-		Double regresar                          = 0D;
-		TcManticCierresCajasDto acumulaCierreCaja= null;
-		Map<String, Object>params                = null;
+	private Double toAcumuladoCierreActivo(Session sesion, Long idCierre, Long idTipoMedioPago) throws Exception {
+		Double regresar          = 0D;
+		Map<String, Object>params= null;
 		try{
 			params= new HashMap<>();		
 			params.put(Constantes.SQL_CONDICION, "id_cierre="+idCierre+" and id_tipo_medio_pago=" + idTipoMedioPago);
-			acumulaCierreCaja= (TcManticCierresCajasDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresCajasDto.class, "TcManticCierresCajasDto", "row", params);
+			TcManticCierresCajasDto acumulaCierreCaja= (TcManticCierresCajasDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresCajasDto.class, "TcManticCierresCajasDto", "row", params);
 			regresar= acumulaCierreCaja.getAcumulado();		
 		} // try
 		finally{

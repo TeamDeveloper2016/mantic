@@ -216,7 +216,7 @@ public class Transaccion extends Inventarios implements Serializable {
 			for (Articulo item: todos) 
 				if(this.articulos.indexOf(item)< 0) {
 					this.toAffectOrdenDetalle(sesion, item);
-					DaoFactory.getInstance().delete(sesion, item);
+					DaoFactory.getInstance().delete(sesion, TcManticNotasDetallesDto.class, item.getIdComodin());
 				} // if
 			for (Articulo articulo: this.articulos) {
 				TcManticNotasDetallesDto item= articulo.toNotaDetalle();
