@@ -4270,7 +4270,7 @@
         from      
           tc_mantic_notas_detalles
         where      
-          id_nota_entrada = {idNotaEntrada} and id_articulo= {id_articulo}
+          id_nota_entrada = {idNotaEntrada} and id_articulo= {idArticulo}
       </select>
 			<select id="errores">
 				select

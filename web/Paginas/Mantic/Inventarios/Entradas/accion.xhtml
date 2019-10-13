@@ -303,7 +303,7 @@
                         <p:commandButton process="@form" icon="fa fa-save" title="Guardar nota de entrada" actionListener="#{manticInventariosEntradasAccion.doAutoSaveOrden()}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()" style="float:right;" update="@(.recalculo)"/>
 											</p:panelGrid>	
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-												<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" style="margin-top: -7px;" columnClasses="janal-move-left janal-wid-col40, janal-wid-100-txt, janal-wid-col40">
+												<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" style="margin-top: -4px;" columnClasses="janal-move-left janal-wid-col40, janal-wid-100-txt, janal-wid-col40">
                           <p:commandButton type="button" icon="fa fa-file-pdf-o" onclick="viewDocument();" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento [#{manticInventariosEntradasAccion.pdf.name}]" style="#{(empty manticInventariosEntradasAccion.pdf)? 'display: none': ''}"/>
 													<p:outputLabel value="Segmentar partidas: " escape="false" styleClass="filas" style="float: right; display:#{manticInventariosEntradasAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}"/>
 													<p:inputSwitch id="paginator" widgetVar="widgetPaginator" value="#{manticInventariosEntradasAccion.attrs.paginator}" onLabel="SI" offLabel="NO" style="display:#{manticInventariosEntradasAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}" styleClass="filas">
@@ -332,11 +332,11 @@
 										</p:panelGrid>	
 										<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100" >						
 											<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticInventariosEntradasAccion.adminOrden.filtrados}" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas" paginator="#{manticInventariosEntradasAccion.attrs.paginator}" rows="#{manticInventariosEntradasAccion.rows}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_LOTE}">
-												<p:column class="MarAuto Responsive janal-wid-3">
+												<p:column class="MarAuto Responsive janal-wid-col-50">
 													<f:facet name="header">
 														<h:outputText value="No."/>
 													</f:facet>
-													<p:commandLink process="@this" update="@(.importado) @(.filas) @(.recalculo)" actionListener="#{manticInventariosEntradasAccion.doDesasociarArticulo(row, index)}" title="Click para desvincular un articulo de la factura (XML)" styleClass="filas" rendered="#{not row.disponible}">
+													<p:commandLink process="@this" update="@(.importado) @(.filas) @(.recalculo)" actionListener="#{manticInventariosEntradasAccion.doDesasociarArticulo(row, index)}" title="Clic para desvincular un articulo de la factura (XML)" styleClass="filas" rendered="#{not row.disponible}">
 													  <h:graphicImage library="janal" name="icon/semaforos/circulo-verde.png"/>
 													</p:commandLink>
 													<h:graphicImage library="janal" name="icon/semaforos/circulo-rojo.png" rendered="#{row.disponible}"/>
@@ -386,13 +386,13 @@
 														</div>
 													</div>	
 												</p:column>
-												<p:column class="MarAuto Responsive janal-wid-10">
+												<p:column class="MarAuto Responsive janal-wid-col-90">
 													<f:facet name="header">
 														<h:outputText value="Código SAT"/>
 													</f:facet>
 													<p:inputText id="sat" value="#{row['sat']}" styleClass="janal-wid-100-txt key-event-sat fila"/>
 												</p:column>		
-												<p:column class="MarAuto Responsive janal-wid-12">
+												<p:column class="MarAuto Responsive janal-wid-col-90">
 													<f:facet name="header">
 														<h:outputText value="Código proveedor"/>
 													</f:facet>
