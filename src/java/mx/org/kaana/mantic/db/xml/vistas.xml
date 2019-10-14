@@ -4580,6 +4580,28 @@
 				order by
 				  tc_mantic_articulos_codigos.orden desc
 			</select>
+			<select id="proveedores">
+        select
+					tc_mantic_proveedores.id_proveedor as id_key,
+					tc_mantic_proveedores.clave,  
+					tc_mantic_proveedores.razon_social as nombre,
+					tc_mantic_proveedores.dias_entrega
+				from 
+					tc_mantic_notas_entradas
+				inner join
+					tr_mantic_proveedor_pago on tc_mantic_notas_entradas.id_proveedor_pago= tr_mantic_proveedor_pago.id_proveedor_pago
+				inner join
+					tc_mantic_proveedores on tr_mantic_proveedor_pago.id_proveedor= tc_mantic_proveedores.id_proveedor       
+				where 		
+				  tc_mantic_notas_entradas.id_empresa in ({sucursales})
+				group by
+          tc_mantic_proveedores.id_proveedor,
+					tc_mantic_proveedores.clave,  
+					tc_mantic_proveedores.razon_social,
+					tc_mantic_proveedores.dias_entrega			
+				order by
+				  tc_mantic_proveedores.clave
+			</select>			
 		</unit>
 		<unit id="VistaOrdenesComprasDto">
 			<select id="pendientes">
