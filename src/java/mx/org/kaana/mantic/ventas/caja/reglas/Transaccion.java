@@ -463,8 +463,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 				case CHEQUE:
 					abono= this.ventaFinalizada.getTotales().getCheque();
 					break;
-				case EFECTIVO:
-					abono= this.ventaFinalizada.getTotales().getEfectivo();
+				case EFECTIVO:					
+					abono= this.ventaFinalizada.getTotales().getEfectivo() - this.ventaFinalizada.getTotales().getCambio();
 					break;
 				case TARJETA_CREDITO:
 					abono= this.ventaFinalizada.getTotales().getCredito();
