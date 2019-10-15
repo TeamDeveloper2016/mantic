@@ -663,6 +663,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("impuestos", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("precio", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));

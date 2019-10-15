@@ -2690,6 +2690,7 @@
 					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
 					tc_mantic_notas_detalles.nombre,
 					tc_mantic_notas_detalles.cantidad,
+					tc_mantic_notas_detalles.impuestos,
 					tc_mantic_notas_detalles.costo as precio,
 					tc_mantic_notas_detalles.importe
 				from 
@@ -2713,7 +2714,8 @@
 					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_ventas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
 					tc_mantic_ventas_detalles.nombre,
 					tc_mantic_ventas_detalles.cantidad,
-					tc_mantic_ventas_detalles.precio,
+					tc_mantic_ventas_detalles.costo as precio,
+					tc_mantic_ventas_detalles.impuestos,
 					tc_mantic_ventas_detalles.importe
 				from 
 					tc_mantic_ventas

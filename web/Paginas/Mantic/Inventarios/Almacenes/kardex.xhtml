@@ -420,7 +420,7 @@
 				<p:outputLabel value="Consecutivo"/>
 				<p:outputLabel value="Razón social"/>
 				<p:outputLabel value="Fecha"/>
-				<p:outputLabel value="$ Total"/>
+				<p:outputLabel value="Total"/>
 				<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.documento.consecutivo}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
 				<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.documento.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>
 				<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.documento.fecha}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
@@ -440,10 +440,13 @@
 					<p:column headerText="Cantidad" styleClass="janal-wid-10 janal-column-right">
 						<h:outputText value="#{item.cantidad}"/>
 					</p:column>   
-					<p:column headerText="Precio" styleClass="janal-wid-15 janal-column-right">
+					<p:column headerText="Precio" styleClass="janal-wid-10 janal-column-right">
 						<h:outputText value="#{item.precio}"/>
 					</p:column>   
-					<p:column headerText="Importe" styleClass="janal-wid-15 janal-column-right">
+					<p:column headerText="Impuestos" styleClass="janal-wid-10 janal-column-right">
+						<h:outputText value="#{item.impuestos}"/>
+					</p:column>   
+					<p:column headerText="Importe" styleClass="janal-wid-10 janal-column-right">
 						<h:outputText value="#{item.importe}"/>
 					</p:column>   
 				</p:dataTable>
