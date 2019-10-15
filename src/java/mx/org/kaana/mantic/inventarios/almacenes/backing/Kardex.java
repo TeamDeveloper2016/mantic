@@ -654,50 +654,62 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	}
 		
 	public String doMoveSection() {
-		String regresar= null;
 		UISelectEntity consecutivo= (UISelectEntity)this.attrs.get("consecutivo");
-		switch(consecutivo.toLong("idTipoMovimiento").intValue()) {
-			case 1: // ENTRADAS
-				Long idNotaEntrada= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticNotasEntradasDto", "consecutivo");
-    		JsfBase.setFlashAttribute("idNotaEntrada", idNotaEntrada);
-    		JsfBase.setFlashAttribute("idOrdenCompra", this.toFindIdKey(String.valueOf(idNotaEntrada), "TcManticNotasEntradasDto", "orden"));
-    		JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);
-				regresar= "/Paginas/Mantic/Inventarios/Entradas/accion?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs".concat(Constantes.REDIRECIONAR_AMPERSON);
-				break;
-			case 2: // VENTAS
-				Long idVenta= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticVentasDto", "consecutivo");
-    		JsfBase.setFlashAttribute("idVenta", idVenta);
-    		JsfBase.setFlashAttribute("idCliente", this.toFindIdKey(String.valueOf(idVenta), "TcManticVentasDto", "cliente"));
-    		JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);
-				regresar= "/Paginas/Mantic/Ventas/accion".concat(Constantes.REDIRECIONAR);
-				break;
-			case 3: // DEVOLUCIONES
-				Long idDevolucion= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticDevolucionesDto", "consecutivo");
-    		JsfBase.setFlashAttribute("idDevolucion", idDevolucion);
-    		JsfBase.setFlashAttribute("idNotaEntrada", this.toFindIdKey(String.valueOf(idDevolucion), "TcManticDevolucionesDto", "nota"));
-    		JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);
-				regresar= "/Paginas/Mantic/Inventarios/Devoluciones/accion".concat(Constantes.REDIRECIONAR);
-				break;
-			case 4: // TRASPASOS
-    		JsfBase.setFlashAttribute("idTransferencia", this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticTransferenciasDto", "consecutivo"));
-    		JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);
-				regresar= "/Paginas/Mantic/Catalogos/Almacenes/Transferencias/normal".concat(Constantes.REDIRECIONAR);
-				break;
-			case 5: // GARANTIAS
-				Long idGarantia= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticGarantiasDto", "consecutivo");
-    		JsfBase.setFlashAttribute("idGarantia", idGarantia);
-    		JsfBase.setFlashAttribute("idVenta", this.toFindIdKey(String.valueOf(idGarantia), "TcManticGarantiasDto", "venta"));
-    		JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);
-				regresar= "/Paginas/Mantic/Ventas/Garantias/accion".concat(Constantes.REDIRECIONAR);
-				break;
-			case 6: // CONTEOS
-    		JsfBase.setFlashAttribute("idArticulo", consecutivo.toLong("idArticulo"));
-				regresar= "/Paginas/Mantic/Catalogos/Inventarios/conteos".concat(Constantes.REDIRECIONAR);
-				break;
-		} // switch
- 		JsfBase.setFlashAttribute("xcodigo", consecutivo.toString("propio"));
- 		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Almacenes/kardex");
-		return regresar;
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		List<UISelectEntity> documento= null;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("descuentos", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("precio", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_HORA));
+			switch(consecutivo.toLong("idTipoMovimiento").intValue()) {
+				case 1: // ENTRADAS
+					Long idNotaEntrada= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticNotasEntradasDto", "consecutivo");
+      		params.put("idNotaEntrada", idNotaEntrada);
+					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "notaEntrada", params, columns, Constantes.SQL_TODOS_REGISTROS);
+          this.attrs.put("documentos", documento);
+					break;
+				case 2: // VENTAS
+					Long idVenta= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticVentasDto", "ticket");
+      		params.put("idVenta", idVenta);
+					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "ventas", params, columns, Constantes.SQL_TODOS_REGISTROS);
+          this.attrs.put("documentos", documento);
+					break;
+				case 3: // DEVOLUCIONES
+					Long idDevolucion= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticDevolucionesDto", "consecutivo");
+
+					break;
+				case 4: // TRASPASOS
+					Long idTransferencia= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticTransferenciasDto", "consecutivo");
+
+					break;
+				case 5: // GARANTIAS
+					Long idGarantia= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticGarantiasDto", "consecutivo");
+
+					break;
+				case 6: // CONTEOS
+					Long idArticulo= consecutivo.toLong("idArticulo");
+
+					break;
+			} // switch
+			if(documento!= null && !documento.isEmpty())
+        this.attrs.put("documento", documento.get(0));
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+		finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+		return null;
 	}
 
 	private int toLoadAnaqueles(int count, TreeNode root, String anaquel, List<UISelectEntity> list) {

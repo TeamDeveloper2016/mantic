@@ -366,7 +366,7 @@
 									<h:outputText value="#{item.concepto}"/>
 								</p:column>   
 								<p:column headerText="Consecutivo" styleClass="janal-wid-8 janal-column-center">
-									<p:commandLink action="#{manticInventariosAlmacenesKardex.doMoveSection}">
+									<p:commandLink action="#{manticInventariosAlmacenesKardex.doMoveSection}" process="@this" update="documento @(.documento)" oncomplete="janal.bloquear();PF('widgetDetalle').show();">
 										<f:setPropertyActionListener target="#{manticInventariosAlmacenesKardex.attrs.consecutivo}" value="#{item}"/>
 										<h:outputText value="#{item.consecutivo}"/>
 									</p:commandLink>
@@ -415,6 +415,47 @@
 				</div>
 			</div>
 		</div>		
+		<p:dialog id="documento" widgetVar="widgetDetalle" header="Detalle del documento" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();" width="1000px" height="450px" resizable="false" appendTo="@(body)">
+			<p:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-70, janal-wid-10, janal-wid-10">
+				<p:outputLabel value="Consecutivo"/>
+				<p:outputLabel value="Razón social"/>
+				<p:outputLabel value="Fecha"/>
+				<p:outputLabel value="$ Total"/>
+				<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.documento.consecutivo}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+				<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.documento.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>
+				<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.documento.fecha}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+				<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.documento.total}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
+			</p:panelGrid>
+			<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100">		
+				<p:dataTable var="item" value="#{manticInventariosAlmacenesKardex.attrs.documentos}" paginator="false" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="documento" rowIndexVar="index">
+					<p:column headerText="No" styleClass="janal-wid-3">
+						<h:outputText value="#{index+ 1}.-"/>
+					</p:column>   
+					<p:column headerText="Código" styleClass="janal-wid-col-80">
+						<h:outputText value="#{item.propio}"/>
+					</p:column>   
+					<p:column headerText="Nombre">
+						<h:outputText value="#{item.nombre}"/>
+					</p:column>   
+					<p:column headerText="Cantidad" styleClass="janal-wid-10 janal-column-right">
+						<h:outputText value="#{item.cantidad}"/>
+					</p:column>   
+					<p:column headerText="Precio" styleClass="janal-wid-10 janal-column-right">
+						<h:outputText value="#{item.precio}"/>
+					</p:column>   
+					<p:column headerText="Descuento" styleClass="janal-wid-10 janal-column-right">
+						<h:outputText value="#{item.descuentos}"/>
+					</p:column>   
+					<p:column headerText="Importe" styleClass="janal-wid-10 janal-column-right">
+						<h:outputText value="#{item.importe}"/>
+					</p:column>   
+				</p:dataTable>
+			</p:panelGrid>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton process="@none" icon="fa fa-remove" value="Cerrar" oncomplete="PF('widgetDetalle').hide();"/>
+			</div>
+		</p:dialog>		
 		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();$('#codigos').focus();" onShow="$('#clave').val('');clean();" width="900px" height="470px" resizable="false" appendTo="@(body)">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
