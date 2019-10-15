@@ -720,6 +720,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 				documento.get(0).put("articulos", new Value("articulos", documento.size()));
         this.attrs.put("documento", documento.get(0));
 			} // if	
+      this.attrs.put("idTipoDocumento", consecutivo.toLong("idTipoMovimiento").intValue());
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
