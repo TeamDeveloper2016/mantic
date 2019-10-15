@@ -1437,7 +1437,7 @@
 			janal.fields.transferencia.validaciones= 'libre';
 		}, // refreshFreeValidationsPagos		
 		refreshCredito: function(total){
-			if(total > 0){
+			if(total > 0 && !$('#contenedorGrupos\\:switchFacturar').hasClass('ui-state-disabled') && $('#contenedorGrupos\\:switchFacturar_input').val()== 'on') {
 				janal.fields.referenciaCredito.validaciones= "requerido";
 				janal.fields.bancoCredito.validaciones= "requerido";										
 			} // if
