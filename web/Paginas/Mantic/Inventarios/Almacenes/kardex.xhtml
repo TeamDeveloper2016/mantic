@@ -386,7 +386,7 @@
 								<p:column headerText="Fecha" styleClass="janal-wid-13 janal-column-center">
 									<p:outputLabel value="#{item.registro}"/>
 								</p:column>   
-								<p:column headerText="Usuario" styleClass="janal-wid-20 janal-column-center">
+								<p:column headerText="Usuario" styleClass="janal-wid-20	">
 									<p:outputLabel value="#{item.usuario}"/>
 								</p:column>   
               </p:dataTable>
@@ -445,13 +445,19 @@
 					<p:column headerText="#{manticInventariosAlmacenesKardex.attrs.idTipoDocumento eq 6? 'Entradas': 'Cantidad'}" styleClass="janal-wid-10 janal-column-right documento">
 						<p:outputLabel value="#{item.cantidad}"/>
 					</p:column>   
-					<p:column headerText="Precio" styleClass="janal-wid-13 janal-column-right" rendered="#{not(manticInventariosAlmacenesKardex.attrs.idTipoDocumento eq 6)}">
+					<p:column headerText="Origen" styleClass="janal-wid-15 documento" rendered="#{manticInventariosAlmacenesKardex.attrs.idTipoDocumento eq 4}">
+						<p:outputLabel value="#{item.origen}"/>
+					</p:column>   
+					<p:column headerText="Destino" styleClass="janal-wid-15 documento" rendered="#{manticInventariosAlmacenesKardex.attrs.idTipoDocumento eq 4}">
+						<p:outputLabel value="#{item.destino}"/>
+					</p:column>   
+					<p:column headerText="Precio" styleClass="janal-wid-13 janal-column-right" rendered="#{not(manticInventariosAlmacenesKardex.attrs.idTipoDocumento eq 6) and not(manticInventariosAlmacenesKardex.attrs.idTipoDocumento eq 4)}">
 						<p:outputLabel value="#{item.precio}"/>
 					</p:column>   
 					<p:column headerText="Impuestos" styleClass="janal-wid-10 janal-column-right documento" rendered="#{not(manticInventariosAlmacenesKardex.attrs.idTipoDocumento eq 6) and not(manticInventariosAlmacenesKardex.attrs.idTipoDocumento eq 4)}">
 						<p:outputLabel value="#{item.impuestos}"/>
 					</p:column>   
-					<p:column headerText="Importe" styleClass="janal-wid-13 janal-column-right documento" rendered="#{not(manticInventariosAlmacenesKardex.attrs.idTipoDocumento eq 6)}">
+					<p:column headerText="Importe" styleClass="janal-wid-13 janal-column-right documento" rendered="#{not(manticInventariosAlmacenesKardex.attrs.idTipoDocumento eq 6) and not(manticInventariosAlmacenesKardex.attrs.idTipoDocumento eq 4)}">
 						<p:outputLabel value="#{item.importe}"/>
 					</p:column>   
 					<p:column headerText="Salidas" styleClass="janal-wid-10 janal-column-right documento" rendered="#{manticInventariosAlmacenesKardex.attrs.idTipoDocumento eq 6}">
@@ -460,7 +466,7 @@
 					<p:column headerText="Stock" styleClass="janal-wid-10 janal-column-right documento" rendered="#{manticInventariosAlmacenesKardex.attrs.idTipoDocumento eq 6}">
 						<p:outputLabel value="#{item.stock}"/>
 					</p:column>   
-					<p:column headerText="Registro" styleClass="janal-wid-13 janal-column-right documento" rendered="#{manticInventariosAlmacenesKardex.attrs.idTipoDocumento eq 4 or manticInventariosAlmacenesKardex.attrs.idTipoDocumento eq 6}">
+					<p:column headerText="Registro" styleClass="janal-wid-15 janal-column-right documento" rendered="#{manticInventariosAlmacenesKardex.attrs.idTipoDocumento eq 4 or manticInventariosAlmacenesKardex.attrs.idTipoDocumento eq 6}">
 						<p:outputLabel value="#{item.registro}"/>
 					</p:column>   
 				</p:dataTable>
