@@ -832,7 +832,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doAsignaTicketAbiertoDirecto(){
 		try {
 			this.attrs.put("facturarVenta", false);			
-			refreshTicketsAbiertos();
+			this.refreshTicketsAbiertos();
 			this.attrs.put("ajustePreciosCliente", true);			
 			this.attrs.put("ticketAbierto", new UISelectEntity((Entity)this.attrs.get("selectedCuentaAbierta")));
 			this.doAsignaTicketAbierto();
@@ -900,7 +900,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				this.attrs.put("creditoCliente", ticketAbiertoPivote.toLong("idCredito").equals(1L));
 			} // if
 			else {				
-				unlockVentaExtends(-1L, (Long)this.attrs.get("ticketLock"));
+				this.unlockVentaExtends(-1L, (Long)this.attrs.get("ticketLock"));
 				this.attrs.put("ticketLock", -1L);
 				this.setAdminOrden(new AdminTickets(new TicketVenta()));
 				this.attrs.put("pagarVenta", false);
@@ -910,16 +910,16 @@ public class Accion extends IBaseVenta implements Serializable {
 				this.attrs.put("tabIndex", 0);
 				this.attrs.put("creditoCliente", false);				
 			} // else			
-			validaFacturacion();
-			UIBackingUtilities.execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
+			this.validaFacturacion();
 			this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
-			doLoadSaldos(((TicketVenta)this.getAdminOrden().getOrden()).getIdCliente());
+			this.doLoadSaldos(((TicketVenta)this.getAdminOrden().getOrden()).getIdCliente());
 			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
 			UIBackingUtilities.update("deudor");
 			UIBackingUtilities.update("deudorPago");
 			if(tipo!= null && tipo.equals(EEstatusVentas.APARTADOS.name()))
 				asignaAbonoApartado();
-			doActivarCliente();
+			this.doActivarCliente();
+			UIBackingUtilities.execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -974,7 +974,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch	
 	} // loadCajas
 	
-	public void doActivarCliente(){		
+	public void doActivarCliente() {		
 		UISelectEntity cliente                = null;
 		UISelectEntity seleccionado           = null;
 		List<UISelectEntity> clientesSeleccion= null;

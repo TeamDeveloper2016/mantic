@@ -415,15 +415,17 @@
 				</div>
 			</div>
 		</div>		
-		<p:dialog id="documento" widgetVar="widgetDetalle" header="Detalle del documento" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();" width="1000px" height="480px" resizable="false" appendTo="@(body)">
-			<p:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-70, janal-wid-10, janal-wid-10">
+		<p:dialog id="documento" widgetVar="widgetDetalle" header="Detalle del documento [#{manticInventariosAlmacenesKardex.attrs.tipoDocumento}]" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();" width="1000px" height="480px" resizable="false" appendTo="@(body)">
+			<p:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-13, janal-wid-60, janal-wid-10, janal-wid-8, janal-wid-10">
 				<p:outputLabel value="Consecutivo"/>
 				<p:outputLabel value="Razón social"/>
 				<p:outputLabel value="Fecha"/>
+				<p:outputLabel value="Articulos"/>
 				<p:outputLabel value="Total"/>
 				<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.documento.consecutivo}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
 				<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.documento.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>
 				<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.documento.fecha}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+				<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.documento.articulos}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
 				<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.documento.total}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
 			</p:panelGrid>
 			<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100">		

@@ -1397,6 +1397,7 @@
 			this.refreshCheque(cheque);
 			this.refreshTransferencia(transferencia);
 			janal.refresh();
+			this.restoreCursorAt();
 		}, // refreshCobroValidate		
 		validateApartado: function(minPago) {			
 			var limiteCredito= parseFloat(parseFloat($('#contenedorGrupos\\:limiteCredito').text()).toFixed(2));
@@ -1481,7 +1482,7 @@
 			$('#password').val('');
 			setTimeout("$('#cuenta').focus();", 500);			
 		}, // restoreAutenticate
-		initArrayArt: function(size){
+		initArrayArt: function(size) {
 			this.cursor.top= size;
 		}, // initArrayArt
 		process: function() {
@@ -1536,6 +1537,14 @@
 			$('#contenedorGrupos\\:efectivo_input').addClass('ui-state-focus');
 			$('#contenedorGrupos\\:efectivo_input').focus();
 			$("#contenedorGrupos\\:efectivo_input").val('');
+		},
+		restoreCursorAt: function() {
+			janal.console('jsArticulos.restoreCursorAt: '+ this.name());
+			setTimeout("jsArticulos.goto();", 1000);
+		},
+		lastCursorAt: function() {
+			janal.console('jsArticulos.lastCursorAt: '+ $("input[id$="+ this.codes+ "]").last().attr('id'));
+			setTimeout('$("input[id$="+ jsArticulos.codes+ "]").last().focus();', 1000);
 		}
 	});
 	

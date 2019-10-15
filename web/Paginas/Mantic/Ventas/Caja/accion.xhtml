@@ -190,10 +190,6 @@
 				return ok;
 			} // validateCapturaCambioPrecio
 			
-			function restoreCursoArt(){
-				setTimeout("jsArticulos.goto();", 1000);						
-			}
-			
 			function descuentoUserFocus(){
 				setTimeout("$('#descuentousr').focus();", 1000);						
 			}						
@@ -1068,7 +1064,7 @@
 				<p:commandButton value="Cerrar" icon="fa fa-close" onstart="PF('dlgLimiteCaja').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>
-		<p:dialog id="dialogoAlmacenes" widgetVar="dlgAlmacenes" header="Articulo en sucursales" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();restoreCursoArt();" width="60%">						
+		<p:dialog id="dialogoAlmacenes" widgetVar="dlgAlmacenes" header="Articulo en sucursales" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();jsArticulos.restoreCursoArt();" width="60%">						
 			<p:dataTable lazy="true" id="almacenes" widgetVar="kajoolTable" var="row" value="#{manticVentasCajaAccion.almacenes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticVentasCajaAccion.almacenes.rowCount gt manticVentasCajaAccion.almacenes.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            	
 				<p:column headerText="No" styleClass="janal-wid-10">
 					<h:outputText value="#{index+ 1}.-"/>
@@ -1197,7 +1193,7 @@
 			</div>
 		</p:dialog>		
 		
-		<p:dialog id="dialogoCotizaciones" widgetVar="dlgCotizaciones" header="Cotizaciones" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();restoreCursoArt();" width="70%">			
+		<p:dialog id="dialogoCotizaciones" widgetVar="dlgCotizaciones" header="Cotizaciones" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();jsArticulos.restoreCursoArt();" width="70%">			
 			<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 				<p:outputLabel for="busquedaCotizacion" value="Cuenta de acceso ó nombre del vendedor:"/>
 				<p:inputText id="busquedaCotizacion" styleClass="janal-key-cotizaciones janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.busquedaCotizacion}">   
@@ -1253,7 +1249,7 @@
 			</div>
 		</p:dialog>			
 		
-		<p:dialog id="dialogoApartados" widgetVar="dlgApartados" header="Apartados" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();restoreCursoArt();" width="70%">			
+		<p:dialog id="dialogoApartados" widgetVar="dlgApartados" header="Apartados" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();jsArticulos.restoreCursoArt();" width="70%">			
 			<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 				<p:outputLabel for="busquedaApartados" value="Cuenta de acceso ó nombre del vendedor:"/>
 				<p:inputText id="busquedaApartados" styleClass="janal-key-apartados janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.busquedaApartados}">   
@@ -1309,7 +1305,7 @@
 			</div>
 		</p:dialog>			
 		
-		<p:dialog id="dialogoOpenTickets" widgetVar="dlgOpenTickets" header="Cuentas abiertas" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="$('#busquedaTicketAbierto').val(''); $('#busquedaTicketAbierto').focus();" onHide="janal.desbloquear();restoreCursoArt();" width="70%">						
+		<p:dialog id="dialogoOpenTickets" widgetVar="dlgOpenTickets" header="Cuentas abiertas" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="$('#busquedaTicketAbierto').val(''); $('#busquedaTicketAbierto').focus();" onHide="janal.desbloquear();" width="70%">						
 			<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 				<p:outputLabel for="busquedaTicketAbierto" value="Cuenta de acceso ó nombre del vendedor:"/>
 				<p:inputText id="busquedaTicketAbierto" styleClass="janal-key-tickets-abiertos janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.busquedaTicketAbierto}">   
@@ -1317,7 +1313,7 @@
 				</p:inputText>
 			</p:panelGrid>							
 			<p:dataTable lazy="true" id="tablaTicketsAbiertos" widgetVar="widgetTablaTicketsAbiertos" var="row" styleClass="janal-row-tickets-abiertos janal-wid-100" value="#{manticVentasCajaAccion.lazyCuentasAbiertas}" selection="#{manticVentasCajaAccion.attrs.selectedCuentaAbierta}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="270" style="margin-bottom:0">
-				<p:ajax event="rowDblselect" listener="#{manticVentasCajaAccion.doAsignaTicketAbiertoDirecto}" process="@this tablaTicketsAbiertos" update="contenedorGrupos @(.janal-abono) aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion) contenedorGrupos:deudor contenedorGrupos:deudorPago @(.tickets-principal) contenedorGrupos:ticketsAbiertos" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();" />	
+				<p:ajax event="rowDblselect" listener="#{manticVentasCajaAccion.doAsignaTicketAbiertoDirecto}" process="@this tablaTicketsAbiertos" update="contenedorGrupos @(.janal-abono) aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion) contenedorGrupos:deudor contenedorGrupos:deudorPago @(.tickets-principal) contenedorGrupos:ticketsAbiertos" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();jsArticulos.lastCursorAt();" />	
 				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 					<f:facet name="header">
 						<h:outputText value="Cuenta"/>
@@ -1353,7 +1349,7 @@
 			</div>
 		</p:dialog>	
 		
-		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onShow="$('input[name=codigo]').val('');clean();" width="900px" height="470px" resizable="false" onHide="janal.desbloquear(); restoreCursoArt();" appendTo="@(body)">
+		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onShow="$('input[name=codigo]').val('');clean();" width="900px" height="470px" resizable="false" onHide="janal.desbloquear(); jsArticulos.restoreCursoArt();" appendTo="@(body)">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
 					<p:outputLabel for="codigo" value="Código o nombre:"/>
@@ -1481,7 +1477,7 @@
 		</div>
 	</ui:define>    		
 	<ui:define name="dialogos">
-		<p:dialog id="dialogoDescuentos" widgetVar="dlgDescuentos" header="Aplicar descuento" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="updateDescuentos();janal.change('dialogosVenta', fieldsDialogDescuento);janal.refresh();descuentoUserFocus();" width="50%" onHide="janal.desbloquear();janal.restore();janal.refresh();restoreCursoArt();">						
+		<p:dialog id="dialogoDescuentos" widgetVar="dlgDescuentos" header="Aplicar descuento" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="updateDescuentos();janal.change('dialogosVenta', fieldsDialogDescuento);janal.refresh();descuentoUserFocus();" width="50%" onHide="janal.desbloquear();janal.restore();janal.refresh();jsArticulos.restoreCursoArt();">						
 			<h:form id="dialogosVenta" prependId="false">
 				<h:panelGrid columns="1" styleClass="janal-wid-100">
 					<p:outputLabel for="descuentousr" value="Usuario:"/>
@@ -1514,7 +1510,7 @@
 				</div>	
 			</h:form>
 		</p:dialog>		
-		<p:dialog id="dialogoCambioPrecio" widgetVar="dlgCambioPrecio" header="Aplicar cambio de precio" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="updateCambioPrecio();janal.change('formCambioPrecio', fieldsDialogPrecio);janal.refresh();descuentoUserFocus();" width="50%" onHide="janal.desbloquear();janal.restore();janal.refresh();restoreCursoArt();">						
+		<p:dialog id="dialogoCambioPrecio" widgetVar="dlgCambioPrecio" header="Aplicar cambio de precio" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="updateCambioPrecio();janal.change('formCambioPrecio', fieldsDialogPrecio);janal.refresh();descuentoUserFocus();" width="50%" onHide="janal.desbloquear();janal.restore();janal.refresh();jsArticulos.restoreCursoArt();">						
 			<h:form id="formCambioPrecio" prependId="false">
 				<h:panelGrid columns="1" styleClass="janal-wid-100">
 					<p:outputLabel for="cambiopreciousr" value="Usuario:"/>
