@@ -1437,9 +1437,9 @@
 			janal.fields.transferencia.validaciones= 'libre';
 		}, // refreshFreeValidationsPagos		
 		refreshCredito: function(total){
-			if(total > 0 && !$('#contenedorGrupos\\:switchFacturar').hasClass('ui-state-disabled') && $('#contenedorGrupos\\:switchFacturar_input').val()== 'on') {
-				janal.fields.referenciaCredito.validaciones= "requerido";
-				janal.fields.bancoCredito.validaciones= "requerido";										
+			if(total > 0) {
+				janal.fields.referenciaCredito.validaciones= "libre";
+				janal.fields.bancoCredito.validaciones= "libre";										
 			} // if
 			else{
 				janal.fields.referenciaCredito.validaciones= "libre";
@@ -1447,9 +1447,9 @@
 			} // else
 		}, // refreshCredito
 		refreshDebito: function(total) {
-			if(total > 0 && !$('#contenedorGrupos\\:switchFacturar').hasClass('ui-state-disabled') && $('#contenedorGrupos\\:switchFacturar_input').val()== 'on') {
-				janal.fields.referenciaDebito.validaciones= "requerido";
-				janal.fields.bancoDebito.validaciones= "requerido";										
+			if(total > 0) {
+				janal.fields.referenciaDebito.validaciones= "libre";
+				janal.fields.bancoDebito.validaciones= "libre";										
 			} // if
 			else {
 				janal.fields.referenciaDebito.validaciones= "libre";
