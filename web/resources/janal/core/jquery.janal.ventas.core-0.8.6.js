@@ -1446,12 +1446,12 @@
 				janal.fields.bancoCredito.validaciones= "libre";										
 			} // else
 		}, // refreshCredito
-		refreshDebito: function(total){
-			if(total > 0){
+		refreshDebito: function(total) {
+			if(total > 0 && !$('#contenedorGrupos\\:switchFacturar').hasClass('ui-state-disabled') && $('#contenedorGrupos\\:switchFacturar_input').val()== 'on') {
 				janal.fields.referenciaDebito.validaciones= "requerido";
 				janal.fields.bancoDebito.validaciones= "requerido";										
 			} // if
-			else{
+			else {
 				janal.fields.referenciaDebito.validaciones= "libre";
 				janal.fields.bancoDebito.validaciones= "libre";										
 			} // else

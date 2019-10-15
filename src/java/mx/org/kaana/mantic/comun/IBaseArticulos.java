@@ -496,11 +496,11 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			} // if	
 			else
 				codigo= "WXYZ";
-			params.put("codigo", codigo.toUpperCase());
+			params.put("codigo", codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*"));
 			if(buscaPorCodigo)
         this.attrs.put("lazyModel", new FormatCustomLazy("VistaOrdenesComprasDto", "porCodigo", params, columns));
 			else
-        this.attrs.put("lazyModel", new FormatCustomLazy("VistaOrdenesComprasDto", "porLikeNombre", params, columns));
+        this.attrs.put("lazyModel", new FormatCustomLazy("VistaOrdenesComprasDto", "porNombre", params, columns));
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);

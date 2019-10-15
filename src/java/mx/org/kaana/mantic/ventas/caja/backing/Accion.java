@@ -989,7 +989,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				clientesSeleccion= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
 				seleccionado= clientesSeleccion.get(clientesSeleccion.indexOf(cliente));
 				if(!seleccionado.toString("clave").equals(CLAVE_VENTA_GRAL)){
-					doAsignaDomicilioClienteInicial(seleccionado.getKey());
+					this.doAsignaDomicilioClienteInicial(seleccionado.getKey());
 					motor= new MotorBusqueda(-1L, seleccionado.getKey());
 					this.clientesTiposContacto= motor.toCorreosCliente();
 					this.attrs.put("telefono", motor.toTelefonoCliente());
@@ -1067,13 +1067,13 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 	} // doActiveApartado
 	
-	public void doOpenCobro(){
+	public void doOpenCobro() {
 		mx.org.kaana.mantic.ventas.reglas.Transaccion transaccion= null;
 		UISelectEntity ticketAbierto= null;
 		try {
 			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
 			if(ticketAbierto!= null && !ticketAbierto.getKey().equals(-1L) && !this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
-				loadOrdenVenta();				
+				this.loadOrdenVenta();				
 				transaccion = new mx.org.kaana.mantic.ventas.reglas.Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
 				this.getAdminOrden().toAdjustArticulos();
 				if (transaccion.ejecutar(EAccion.REGISTRAR)) {
@@ -1087,8 +1087,8 @@ public class Accion extends IBaseVenta implements Serializable {
 				transaccion = new mx.org.kaana.mantic.ventas.reglas.Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
 				this.getAdminOrden().toAdjustArticulos();
 				if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
-					UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la cuenta ', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");									
-					doLoadTicketAbiertos();
+					//UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la cuenta ', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");									
+					this.doLoadTicketAbiertos();
 					this.attrs.put("ajustePreciosCliente", false);			
 					this.attrs.put("ticketAbierto", new UISelectEntity(new Entity(transaccion.getOrden().getIdVenta())));
 					this.doAsignaTicketAbierto();
