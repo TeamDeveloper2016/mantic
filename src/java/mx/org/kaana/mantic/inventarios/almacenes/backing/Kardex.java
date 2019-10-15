@@ -679,35 +679,35 @@ public class Kardex extends IBaseAttribute implements Serializable {
 				case 2: // VENTAS
 					Long idVenta= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticVentasDto", "ticket");
       		params.put("idVenta", idVenta);
-					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "ventas", params, columns, Constantes.SQL_TODOS_REGISTROS);
+					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "venta", params, columns, Constantes.SQL_TODOS_REGISTROS);
           this.attrs.put("documentos", documento);
           this.attrs.put("tipoDocumento", "Venta");
 					break;
 				case 3: // DEVOLUCIONES
 					Long idDevolucion= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticDevolucionesDto", "consecutivo");
       		params.put("idDevolucion", idDevolucion);
-					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "ventas", params, columns, Constantes.SQL_TODOS_REGISTROS);
+					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "devolucion", params, columns, Constantes.SQL_TODOS_REGISTROS);
           this.attrs.put("documentos", documento);
           this.attrs.put("tipoDocumento", "Devolución");
 					break;
 				case 4: // TRASPASOS
 					Long idTransferencia= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticTransferenciasDto", "consecutivo");
       		params.put("idTransferencia", idTransferencia);
-					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "ventas", params, columns, Constantes.SQL_TODOS_REGISTROS);
+					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "traspaso", params, columns, Constantes.SQL_TODOS_REGISTROS);
           this.attrs.put("documentos", documento);
           this.attrs.put("tipoDocumento", "Traspaso");
 					break;
 				case 5: // GARANTIAS
 					Long idGarantia= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticGarantiasDto", "consecutivo");
       		params.put("idGarantia", idGarantia);
-					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "ventas", params, columns, Constantes.SQL_TODOS_REGISTROS);
+					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "garantia", params, columns, Constantes.SQL_TODOS_REGISTROS);
           this.attrs.put("documentos", documento);
           this.attrs.put("tipoDocumento", "Garantía");
 					break;
 				case 6: // CONTEOS
 					Long idArticulo= consecutivo.toLong("idArticulo");
       		params.put("idArticulo", idArticulo);
-					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "ventas", params, columns, Constantes.SQL_TODOS_REGISTROS);
+					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "conteo", params, columns, Constantes.SQL_TODOS_REGISTROS);
           this.attrs.put("documentos", documento);
           this.attrs.put("tipoDocumento", "Conteo");
 					break;

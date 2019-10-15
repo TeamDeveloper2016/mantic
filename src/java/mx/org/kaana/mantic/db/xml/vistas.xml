@@ -2704,7 +2704,7 @@
 				order by
 					tc_mantic_notas_entradas.registro				
 			</select>
-			<select id="ventas">
+			<select id="venta">
 				select
 					tc_mantic_ventas_detalles.id_venta_detalle as id_key,
 					tc_mantic_clientes.razon_social,
@@ -2726,7 +2726,93 @@
 				where 
 					tc_mantic_ventas.id_venta= {idVenta}
 				order by
-					tc_mantic_ventas.registro				
+				  tc_mantic_ventas_detalles.registro				
+			</select>
+			<select id="devolucion">
+				select
+					tc_mantic_devoluciones_detalles.id_devolucion_detalle as id_key,
+					tc_mantic_proveedores.razon_social,
+					tc_mantic_devoluciones.registro as fecha,
+					tc_mantic_devoluciones.consecutivo,
+					tc_mantic_devoluciones.total,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					tc_mantic_notas_detalles.nombre,
+					tc_mantic_devoluciones_detalles.cantidad,
+					tc_mantic_notas_detalles.impuestos/ tc_mantic_devoluciones_detalles.cantidad as impuestos,
+					tc_mantic_notas_detalles.costo as precio,
+					tc_mantic_devoluciones_detalles.cantidad* tc_mantic_notas_detalles.importe as importe
+				from 
+					tc_mantic_devoluciones
+				inner join
+					tc_mantic_notas_entradas on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_devoluciones.id_nota_entrada
+				inner join
+					tc_mantic_devoluciones_detalles on tc_mantic_devoluciones_detalles.id_devolucion= tc_mantic_devoluciones.id_devolucion
+				inner join
+					tc_mantic_notas_detalles on tc_mantic_notas_detalles.id_nota_detalle= tc_mantic_devoluciones_detalles.id_nota_detalle
+				inner join 
+					tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
+				where 
+					tc_mantic_devoluciones.id_devolucion= {idDevolucion}
+				order by
+					tc_mantic_devoluciones_detalles.registro				
+			</select>
+			<select id="traspaso">
+				select
+					tc_mantic_transferencias_detalles.id_transferencia_detalle as id_key,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as razon_social,
+					tc_mantic_transferencias.registro as fecha,
+					tc_mantic_transferencias.consecutivo,
+					0 as total,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_transferencias_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					tc_mantic_transferencias_detalles.nombre,
+					tc_mantic_transferencias_detalles.cantidad,
+					0 as impuestos,
+					tc_mantic_articulos.precio,
+					tc_mantic_transferencias_detalles.cantidad* tc_mantic_articulos.precio as importe
+				from 
+					tc_mantic_transferencias
+				inner join
+					tc_mantic_transferencias_detalles on tc_mantic_transferencias_detalles.id_transferencia= tc_mantic_transferencias.id_transferencia
+				inner join
+					tc_mantic_articulos on tc_mantic_transferencias_detalles.id_articulo= tc_mantic_articulos.id_articulo
+				inner join 
+					tc_janal_usuarios on tc_mantic_transferencias.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where 
+					tc_mantic_transferencias.id_transferencia= {idTransferencia}
+				order by
+					tc_mantic_transferencias_detalles.registro					
+			</select>
+			<select id="garantia">
+        select
+					tc_mantic_garantias_detalles.id_garantia_detalle as id_key,
+					tc_mantic_clientes.razon_social,
+					tc_mantic_garantias.registro as fecha,
+					tc_mantic_garantias.consecutivo,
+					tc_mantic_garantias.total,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_ventas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					tc_mantic_ventas_detalles.nombre,
+					tc_mantic_garantias_detalles.cantidad,
+					tc_mantic_ventas_detalles.costo as precio,
+					tc_mantic_garantias_detalles.impuestos,
+					tc_mantic_garantias_detalles.importe
+				from 
+					tc_mantic_garantias
+				inner join
+					tc_mantic_ventas on tc_mantic_garantias.id_venta= tc_mantic_ventas.id_venta
+				inner join
+					tc_mantic_garantias_detalles on tc_mantic_garantias.id_garantia= tc_mantic_garantias_detalles.id_garantia
+				inner join
+					tc_mantic_ventas_detalles on tc_mantic_garantias_detalles.id_venta_detalle= tc_mantic_ventas_detalles.id_venta_detalle
+				inner join 
+					tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
+				where 
+					tc_mantic_garantias.id_garantia= {idGarantia}
+				order by
+					tc_mantic_garantias_detalles.registro				
+			</select>
+			<select id="conteo">
 			</select>
 		</unit>
 		<unit id="VistaArticulosDto">
