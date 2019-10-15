@@ -674,42 +674,42 @@ public class Kardex extends IBaseAttribute implements Serializable {
       		params.put("idNotaEntrada", idNotaEntrada);
 					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "notaEntrada", params, columns, Constantes.SQL_TODOS_REGISTROS);
           this.attrs.put("documentos", documento);
-          this.attrs.put("tipoDocumento", "Nota de entrada");
+          this.attrs.put("tipoDocumento", "de la nota de entrada");
 					break;
 				case 2: // VENTAS
 					Long idVenta= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticVentasDto", "ticket");
       		params.put("idVenta", idVenta);
 					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "venta", params, columns, Constantes.SQL_TODOS_REGISTROS);
           this.attrs.put("documentos", documento);
-          this.attrs.put("tipoDocumento", "Venta");
+          this.attrs.put("tipoDocumento", "de la venta");
 					break;
 				case 3: // DEVOLUCIONES
 					Long idDevolucion= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticDevolucionesDto", "consecutivo");
       		params.put("idDevolucion", idDevolucion);
 					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "devolucion", params, columns, Constantes.SQL_TODOS_REGISTROS);
           this.attrs.put("documentos", documento);
-          this.attrs.put("tipoDocumento", "Devolución");
+          this.attrs.put("tipoDocumento", "de la devolución");
 					break;
 				case 4: // TRASPASOS
 					Long idTransferencia= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticTransferenciasDto", "consecutivo");
       		params.put("idTransferencia", idTransferencia);
 					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "traspaso", params, columns, Constantes.SQL_TODOS_REGISTROS);
           this.attrs.put("documentos", documento);
-          this.attrs.put("tipoDocumento", "Traspaso");
+          this.attrs.put("tipoDocumento", "del traspaso");
 					break;
 				case 5: // GARANTIAS
 					Long idGarantia= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticGarantiasDto", "consecutivo");
       		params.put("idGarantia", idGarantia);
 					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "garantia", params, columns, Constantes.SQL_TODOS_REGISTROS);
           this.attrs.put("documentos", documento);
-          this.attrs.put("tipoDocumento", "Garantía");
+          this.attrs.put("tipoDocumento", "de la garantía");
 					break;
 				case 6: // CONTEOS
 					Long idArticulo= consecutivo.toLong("idArticulo");
       		params.put("idArticulo", idArticulo);
 					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "conteo", params, columns, Constantes.SQL_TODOS_REGISTROS);
           this.attrs.put("documentos", documento);
-          this.attrs.put("tipoDocumento", "Conteo");
+          this.attrs.put("tipoDocumento", "del conteo");
 					break;
 			} // switch
 			if(documento!= null && !documento.isEmpty()) {
