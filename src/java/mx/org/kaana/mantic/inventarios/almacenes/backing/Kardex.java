@@ -691,6 +691,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
           this.attrs.put("tipoDocumento", "de la devolución");
 					break;
 				case 4: // TRASPASOS
+          columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
 					Long idTransferencia= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticTransferenciasDto", "consecutivo");
       		params.put("idTransferencia", idTransferencia);
 					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "traspaso", params, columns, Constantes.SQL_TODOS_REGISTROS);
