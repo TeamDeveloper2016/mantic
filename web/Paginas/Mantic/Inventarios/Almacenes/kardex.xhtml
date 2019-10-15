@@ -91,16 +91,16 @@
 									<f:facet name="header" class="TexAlCenter">
 										<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="50" height="30"/>
 									</f:facet>
-									<h:outputText value="Propio:" />
-									<h:outputText value="#{custom.propio}" />
-									<h:outputText value="Nombre:" />
-									<h:outputText value="#{custom.nombre}" />
-									<h:outputText value="Costo:" />
+									<p:outputLabel value="Propio:" />
+									<p:outputLabel value="#{custom.propio}" />
+									<p:outputLabel value="Nombre:" />
+									<p:outputLabel value="#{custom.nombre}" />
+									<p:outputLabel value="Costo:" />
 									<p:outputLabel value="$ #{custom.precio}" styleClass="janal-font-bold"/>
-									<h:outputText value="Precio venta:" />
+									<p:outputLabel value="Precio venta:" />
 									<p:outputLabel value="$ #{custom.menudeo}" styleClass="janal-color-blue janal-font-bold"/>
-									<h:outputText value="Código auxiliar:" />
-									<h:outputText value="#{custom.codigo}" />
+									<p:outputLabel value="Código auxiliar:" />
+									<p:outputLabel value="#{custom.codigo}" />
 								</h:panelGrid>
 							</f:facet>
 						</p:autoComplete>		
@@ -126,10 +126,10 @@
 							<p:ajax event="change" listener="#{manticInventariosAlmacenesKardex.doChangeBusquedas}" process="@this" update="@(.paginated)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 							<f:selectItems value="#{manticInventariosAlmacenesKardex.attrs.depositos}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave} - #{element.nombre}"/>
 							<p:column headerText="Clave">
-								<h:outputText value="#{almacen.clave}"/>
+								<p:outputLabel value="#{almacen.clave}"/>
 							</p:column>   
 							<p:column headerText="Nombre">
-								<h:outputText value="#{almacen.nombre}"/>
+								<p:outputLabel value="#{almacen.nombre}"/>
 							</p:column>   
 						</p:selectOneMenu>
 		  		</p:panel>
@@ -218,10 +218,10 @@
 							<p:spacer width="3px"/>
 							<p:dataTable id="tabla" var="item" value="#{manticInventariosAlmacenesKardex.adminKardex.tiposVentas}" paginator="false" reflow="true" rowKey="#{row.index}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="paginated filas" rowIndexVar="index">
 								<p:column headerText="No." styleClass="janal-wid-3">
-									<h:outputText value="#{index+ 1}.-"/>
+									<p:outputLabel value="#{index+ 1}.-"/>
 								</p:column>   
 								<p:column headerText="Nombre" styleClass="janal-wid-10">
-									<h:outputText value="#{item.nombre}"/>
+									<p:outputLabel value="#{item.nombre}"/>
 								</p:column>   
 								<p:column headerText="Unidades máximas" styleClass="janal-wid-10 limites">#{index eq 0? 0.0: manticInventariosAlmacenesKardex.adminKardex.tiposVentas[index- 1].limite}  -  <p:inputText id="limites" value="#{item.limite}" styleClass="janal-wid-60 janal-column-right key-focus-event key-change-event recalculo" rendered="#{item.limite gt 0}" onblur="janal.individual('contenedorGrupos\\:tabla\\:#{index}\\:limites');"/>#{index eq 2? 'MAS': ''}</p:column>   
 								<p:column headerText="% Utilidad" styleClass="janal-wid-10">
@@ -251,22 +251,22 @@
 							</p:panelGrid>
 							<p:dataTable id="codigosAlternos" var="item" value="#{manticInventariosAlmacenesKardex.attrs.codigos}" paginator="false" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="paginated filas" rowIndexVar="index">
 								<p:column headerText="No" styleClass="janal-wid-3">
-									<h:outputText value="#{index+ 1}.-"/>
+									<p:outputLabel value="#{index+ 1}.-"/>
 								</p:column>   
 								<p:column headerText="Código" styleClass="janal-wid-15">
-									<h:outputText value="#{item.codigo}"/>
+									<p:outputLabel value="#{item.codigo}"/>
 								</p:column>   
 								<p:column headerText="Clave" styleClass="janal-wid-15">
-									<h:outputText value="#{item.clave}"/>
+									<p:outputLabel value="#{item.clave}"/>
 								</p:column>   
 								<p:column headerText="Proveedor">
-									<h:outputText value="#{item.razonSocial}"/>
+									<p:outputLabel value="#{item.razonSocial}"/>
 								</p:column>   
 								<p:column headerText="Principal" styleClass="janal-wid-10">
-									<h:outputText value="#{item.principal}"/>
+									<p:outputLabel value="#{item.principal}"/>
 								</p:column>   
 								<p:column headerText="Fecha" styleClass="janal-wid-15 janal-column-center">
-									<h:outputText value="#{item.registro}"/>
+									<p:outputLabel value="#{item.registro}"/>
 								</p:column> 
 								<p:column style="text-align: center" styleClass="janal-wid-col-38">
 									<p:commandButton process="@this" update="@(.filas)" icon="fa fa-minus" title="Eliminar código auxiliar" onstart="return confirm('\u00BF Esta seguro que desea eliminar el código [#{item.codigo}] auxiliar ?');" actionListener="#{manticInventariosAlmacenesKardex.doDeleteCodigoAlterno(item)}" rendered="#{item.principal ne 'SI'}" styleClass="filas"/>
@@ -277,25 +277,25 @@
 							<p:dataTable var="row" value="#{manticInventariosAlmacenesKardex.attrs.almacenes}" paginator="false" reflow="true" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="paginated filas" rowIndexVar="index" selectionMode="single" selection="#{manticInventariosAlmacenesKardex.attrs.selected}" rowKey="#{row.idKey}">
 								<p:ajax event="rowSelect" listener="#{manticInventariosAlmacenesKardex.doUpdateInventario}" process="@this" update="@(.inventario)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 								<p:column headerText="No" styleClass="janal-wid-3">
-									<h:outputText value="#{index+ 1}.-"/>
+									<p:outputLabel value="#{index+ 1}.-"/>
 								</p:column>   
 								<p:column headerText="Clave" styleClass="janal-wid-10">
-									<h:outputText value="#{row.clave}"/>
+									<p:outputLabel value="#{row.clave}"/>
 								</p:column>   
 								<p:column headerText="Nombre">
-									<h:outputText value="#{row.nombre}"/>
+									<p:outputLabel value="#{row.nombre}"/>
 								</p:column>   
 								<p:column headerText="Existencias" styleClass="janal-wid-8 janal-column-right">
-									<h:outputText value="#{row.stock}"/>
+									<p:outputLabel value="#{row.stock}"/>
 								</p:column>   
 								<p:column headerText="Mínimo" styleClass="janal-wid-8 janal-column-right">
-									<h:outputText value="#{row.minimo}"/>
+									<p:outputLabel value="#{row.minimo}"/>
 								</p:column>   
 								<p:column headerText="Máximo" styleClass="janal-wid-8 janal-column-right">
-									<h:outputText value="#{row.maximo}"/>
+									<p:outputLabel value="#{row.maximo}"/>
 								</p:column>   
 								<p:column headerText="Ubicación" styleClass="janal-wid-30">
-									<h:outputText value="#{row.ubicacion}"/>
+									<p:outputLabel value="#{row.ubicacion}"/>
 								</p:column>   
 							</p:dataTable>	
 							<p:outputLabel value="Click sobre la fila del almacen para recuperar los valores del inventario del articulo seleccionado !" styleClass="janal-color-orange"/>
@@ -325,34 +325,34 @@
 						<p:tab title="Historial">
 							<p:dataTable var="item" value="#{manticInventariosAlmacenesKardex.attrs.historial}" paginator="false" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="paginated filas" rowIndexVar="index">
 								<p:column headerText="No" styleClass="janal-wid-3">
-									<h:outputText value="#{index+ 1}.-"/>
+									<p:outputLabel value="#{index+ 1}.-"/>
 								</p:column>   
 								<p:column headerText="Usuario">
-									<h:outputText value="#{item.persona}"/>
+									<p:outputLabel value="#{item.persona}"/>
 								</p:column>   
 								<p:column headerText="Proveedor" styleClass="janal-wid-8">
-									<h:outputText value="#{item.clave}" title="Razon social: #{item.razonSocial} Nota entrada: #{item.consecutivo}"/>
+									<p:outputLabel value="#{item.clave}" title="Razon social: #{item.razonSocial} Nota entrada: #{item.consecutivo}"/>
 								</p:column>   
 								<p:column headerText="Costo" styleClass="janal-wid-8 janal-column-right">
-									<h:outputText value="#{item.costo}"/>
+									<p:outputLabel value="#{item.costo}"/>
 								</p:column>   
 								<p:column headerText="Menudeo" styleClass="janal-wid-8 janal-column-right">
-									<h:outputText value="#{item.menudeo}"/>
+									<p:outputLabel value="#{item.menudeo}"/>
 								</p:column>   
 								<p:column headerText="Medio mayoreo" styleClass="janal-wid-8 janal-column-right">
-									<h:outputText value="#{item.medioMayoreo}"/>
+									<p:outputLabel value="#{item.medioMayoreo}"/>
 								</p:column>   
 								<p:column headerText="Mayoreo" styleClass="janal-wid-8 janal-column-right">
-									<h:outputText value="#{item.mayoreo}"/>
+									<p:outputLabel value="#{item.mayoreo}"/>
 								</p:column>   
 								<p:column headerText="% Descuento" styleClass="janal-wid-8 janal-column-right">
-									<h:outputText value="#{item.descuento}"/>
+									<p:outputLabel value="#{item.descuento}"/>
 								</p:column>   
 								<p:column headerText="% Extra" styleClass="janal-wid-8 janal-column-right">
-									<h:outputText value="#{item.extras}"/>
+									<p:outputLabel value="#{item.extras}"/>
 								</p:column>   
 								<p:column headerText="Fecha" styleClass="janal-wid-13 janal-column-center">
-									<h:outputText value="#{item.registro}"/>
+									<p:outputLabel value="#{item.registro}"/>
 								</p:column>   
               </p:dataTable>
 							<p:outputLabel value="Son los movimientos que ha tenido el articulo en los últimos 6 meses."/>
@@ -360,34 +360,34 @@
 						<p:tab title="Movimientos">
 							<p:dataTable var="item" value="#{manticInventariosAlmacenesKardex.attrs.movimientos}" paginator="#{manticInventariosAlmacenesKardex.attrs.movimientos.size() gt 0}" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" styleClass="paginated filas" rowIndexVar="index" paginatorPosition="bottom">
 								<p:column headerText="No" styleClass="janal-wid-3">
-									<h:outputText value="#{index+ 1}.-"/>
+									<p:outputLabel value="#{index+ 1}.-"/>
 								</p:column>   
 								<p:column headerText="Tipo" styleClass="janal-wid-10">
-									<h:outputText value="#{item.concepto}"/>
+									<p:outputLabel value="#{item.concepto}"/>
 								</p:column>   
 								<p:column headerText="Consecutivo" styleClass="janal-wid-8 janal-column-center">
 									<p:commandLink action="#{manticInventariosAlmacenesKardex.doMoveSection}" process="@this" update="documento @(.documento)" oncomplete="janal.bloquear();PF('widgetDetalle').show();">
 										<f:setPropertyActionListener target="#{manticInventariosAlmacenesKardex.attrs.consecutivo}" value="#{item}"/>
-										<h:outputText value="#{item.consecutivo}"/>
+										<p:outputLabel value="#{item.consecutivo}"/>
 									</p:commandLink>
 								</p:column>   
 								<p:column headerText="Almacen">
-									<h:outputText value="#{item.almacen}"/>
+									<p:outputLabel value="#{item.almacen}"/>
 								</p:column>   
 								<p:column headerText="Cantidad" styleClass="janal-wid-8 janal-column-right">
-									<h:outputText value="#{item.cantidad}"/>
+									<p:outputLabel value="#{item.cantidad}"/>
 								</p:column>   
 								<p:column headerText="Stock anterior" styleClass="janal-wid-8 janal-column-right">
-									<h:outputText value="#{item.stock}"/>
+									<p:outputLabel value="#{item.stock}"/>
 								</p:column>   
 								<p:column headerText="Stock nuevo" styleClass="janal-wid-8 janal-column-right">
-									<h:outputText value="#{item.calculo}"/>
+									<p:outputLabel value="#{item.calculo}"/>
 								</p:column>   
 								<p:column headerText="Fecha" styleClass="janal-wid-13 janal-column-center">
-									<h:outputText value="#{item.registro}"/>
+									<p:outputLabel value="#{item.registro}"/>
 								</p:column>   
 								<p:column headerText="Usuario" styleClass="janal-wid-20 janal-column-center">
-									<h:outputText value="#{item.usuario}"/>
+									<p:outputLabel value="#{item.usuario}"/>
 								</p:column>   
               </p:dataTable>
 							<p:outputLabel value="Los movimientos son del #{manticInventariosAlmacenesKardex.attrs.periodo} al dia de hoy." styleClass="paginated filas"/>
@@ -396,13 +396,13 @@
 							<p:outputLabel value="Articulo se encuentra en esta ubicación [ #{manticInventariosAlmacenesKardex.attrs.posicion['ubicacion']} ] con un stock de [ #{manticInventariosAlmacenesKardex.attrs.posicion['stock']} ]" styleClass="paginated filas"/>
 							<p:treeTable value="#{manticInventariosAlmacenesKardex.ubicaciones}" var="charola" nodeVar="node" styleClass="paginated filas">
 								<p:column headerText="Nivel" styleClass="janal-wid-20">
-									<h:outputText value="#{node.type}" styleClass="janal-letter-capitalized"/>
+									<p:outputLabel value="#{node.type}" styleClass="janal-letter-capitalized"/>
 								</p:column>
 								<p:column headerText="Ubicación" styleClass="janal-wid-30">
- 									<h:outputText value="#{charola[node.type]}" />
+ 									<p:outputLabel value="#{charola[node.type]}" />
 								</p:column>
 								<p:column headerText="Descripción">
-									<h:outputText value="#{charola.descripcion}" />
+									<p:outputLabel value="#{charola.descripcion}" />
 								</p:column>
 								<p:column styleClass="janal-wid-col-38">
 									<p:commandButton process="@this" update="@(.paginated) @(.filas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" title="Asignar ubicación" icon="fa fa-fire" action="#{manticInventariosAlmacenesKardex.doAssignUbicacion}">
@@ -431,25 +431,37 @@
 			<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100">		
 				<p:dataTable var="item" value="#{manticInventariosAlmacenesKardex.attrs.documentos}" paginator="false" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="documento" rowIndexVar="index">
 					<p:column headerText="No" styleClass="janal-wid-3">
-						<h:outputText value="#{index+ 1}.-"/>
+						<p:outputLabel value="#{index+ 1}.-"/>
 					</p:column>   
 					<p:column headerText="Código" styleClass="janal-wid-col-80">
-						<h:outputText value="#{item.propio}"/>
+						<p:outputLabel value="#{item.propio}"/>
 					</p:column>   
 					<p:column headerText="Nombre">
-						<h:outputText value="#{item.nombre}"/>
+						<p:outputLabel value="#{item.nombre}"/>
 					</p:column>   
-					<p:column headerText="Cantidad" styleClass="janal-wid-10 janal-column-right">
-						<h:outputText value="#{item.cantidad}"/>
+					<p:column headerText="Inicial" styleClass="janal-wid-10 janal-column-right documento" rendered="#{item.idTipoMovimiento.toLong() eq 6}">
+						<p:outputLabel value="#{item.inicial}"/>
 					</p:column>   
-					<p:column headerText="Precio" styleClass="janal-wid-13 janal-column-right">
-						<h:outputText value="#{item.precio}"/>
+					<p:column headerText="#{item.idTipoMovimiento.toLong() eq 6? 'Entradas': 'Cantidad'}" styleClass="janal-wid-10 janal-column-right documento">
+						<p:outputLabel value="#{item.cantidad}"/>
 					</p:column>   
-					<p:column headerText="Impuestos" styleClass="janal-wid-10 janal-column-right">
-						<h:outputText value="#{item.impuestos}"/>
+					<p:column headerText="Precio" styleClass="janal-wid-13 janal-column-right" rendered="#{not(item.idTipoMovimiento.toLong() eq 6)}">
+						<p:outputLabel value="#{item.precio}"/>
 					</p:column>   
-					<p:column headerText="Importe" styleClass="janal-wid-13 janal-column-right">
-						<h:outputText value="#{item.importe}"/>
+					<p:column headerText="Impuestos" styleClass="janal-wid-10 janal-column-right documento" rendered="#{not(item.idTipoMovimiento.toLong() eq 6)}">
+						<p:outputLabel value="#{item.impuestos}"/>
+					</p:column>   
+					<p:column headerText="Importe" styleClass="janal-wid-13 janal-column-right documento" rendered="#{not(item.idTipoMovimiento.toLong() eq 6)}">
+						<p:outputLabel value="#{item.importe}"/>
+					</p:column>   
+					<p:column headerText="Salidas" styleClass="janal-wid-10 janal-column-right documento" rendered="#{item.idTipoMovimiento.toLong() eq 6}">
+						<p:outputLabel value="#{item.salidas}"/>
+					</p:column>   
+					<p:column headerText="Stock" styleClass="janal-wid-10 janal-column-right documento" rendered="#{item.idTipoMovimiento.toLong() eq 6}">
+						<p:outputLabel value="#{item.stock}"/>
+					</p:column>   
+					<p:column headerText="Registro" styleClass="janal-wid-10 janal-column-right documento" rendered="#{item.idTipoMovimiento.toLong() eq 6}">
+						<p:outputLabel value="#{item.registro}"/>
 					</p:column>   
 				</p:dataTable>
 			</p:panelGrid>
@@ -479,16 +491,16 @@
 					<p:dataTable id="buscados" widgetVar="widgetBuscados" lazy="true" styleClass="janal-buscados-articulos janal-wid-100" value="#{manticInventariosAlmacenesKardex.attrs.lazyModel}" selection="#{manticInventariosAlmacenesKardex.attrs.buscado}" var="item" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="50" liveScroll="true" liveScrollBuffer="50" scrollable="true" scrollHeight="280" style="margin-bottom:0">
 						<p:ajax event="rowDblselect" listener="#{manticInventariosAlmacenesKardex.doRowDblselect}" process="@this" update="@(.filas) @(.recalculo) contenedorGrupos:panelImage" oncomplete="PF('dialogo').hide();"/>	
 						<p:column headerText="No" styleClass="janal-wid-col-30">
-							<h:outputText value="#{index+ 1}.-"/>
+							<p:outputLabel value="#{index+ 1}.-"/>
 						</p:column>   
 						<p:column headerText="Propio" styleClass="janal-wid-15">
-							<h:outputText value="#{item.propio}"/>
+							<p:outputLabel value="#{item.propio}"/>
 						</p:column>   
 						<p:column headerText="Nombre">
-							<h:outputText value="#{item.nombre}"/>
+							<p:outputLabel value="#{item.nombre}"/>
 						</p:column>   
 						<p:column headerText="Costo" styleClass="janal-column-right janal-wid-13">
-							<h:outputText value="#{item.original}"/>
+							<p:outputLabel value="#{item.original}"/>
 						</p:column>   
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticInventariosAlmacenesKardex.attrs.lazyModel==null? 0: manticInventariosAlmacenesKardex.attrs.lazyModel.rowCount}] registros"/>

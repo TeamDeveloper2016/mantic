@@ -705,6 +705,10 @@ public class Kardex extends IBaseAttribute implements Serializable {
           this.attrs.put("tipoDocumento", "de la garantía");
 					break;
 				case 6: // CONTEOS
+          columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+          columns.add(new Columna("inicial", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+          columns.add(new Columna("salidas", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+          columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_CON_DECIMALES));
 					Long idArticulo= consecutivo.toLong("idArticulo");
       		params.put("idArticulo", idArticulo);
 					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "conteo", params, columns, Constantes.SQL_TODOS_REGISTROS);

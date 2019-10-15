@@ -2382,169 +2382,6 @@
 				order by
 					tc_mantic_movimientos.registro desc
 			</select>
-			<select id="transacciones">
-				select
-				  (cast(date_format(now(), '%Y%m%d%H%i%S%s') as unsigned)+ truncate(rand()* 10000, 0)) as id_key,
-					'ENTRADA' as movimiento,
-				  tc_mantic_almacenes.nombre as almacen,
-					tc_mantic_notas_entradas.consecutivo,
-					tc_mantic_articulos.nombre,
-					tc_mantic_proveedores.clave,
-					tc_mantic_proveedores.razon_social,
-					tc_mantic_notas_detalles.cantidad,
-					tc_mantic_notas_detalles.costo,
-				  ifnull(tc_mantic_almacenes_articulos.stock, 0) as stock,
-					tc_mantic_notas_entradas.registro
-				from
-					tc_mantic_notas_entradas
-				inner join
-					tc_mantic_notas_detalles on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_notas_detalles.id_nota_entrada
-				inner join
-					tc_mantic_articulos on tc_mantic_notas_detalles.id_articulo= tc_mantic_articulos.id_articulo
-				inner join
-					tc_mantic_almacenes on tc_mantic_notas_entradas.id_empresa= tc_mantic_almacenes.id_empresa and tc_mantic_almacenes.id_principal= 1
-				inner join
-					tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
-				left join
-				  tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo and tc_mantic_almacenes.id_almacen= tc_mantic_almacenes_articulos.id_almacen
-				where
-					tc_mantic_articulos.id_articulo= {idArticulo}
-				  and tc_mantic_notas_entradas.id_almacen= {idAlmacen}
-					and date_format(tc_mantic_notas_detalles.registro, '%Y%m%d')&gt;= '{registro}'
-					and tc_mantic_notas_entradas.id_nota_estatus in (3, 5, 6)
-				union all
-				select
-				  (cast(date_format(now(), '%Y%m%d%H%i%S%s') as unsigned)+ truncate(rand()* 10000, 0)) as id_key,
-					'VENTAS' as movimiento,
-					tc_mantic_almacenes.nombre as almacen,
-					tc_mantic_ventas.ticket as consecutivo,
-					tc_mantic_articulos.nombre,
-					tc_mantic_clientes.clave,
-					tc_mantic_clientes.razon_social,
-					tc_mantic_ventas_detalles.cantidad * -1,
-					tc_mantic_ventas_detalles.costo,
-				  ifnull(tc_mantic_almacenes_articulos.stock, 0) as stock,
-					tc_mantic_ventas.registro
-				from
-					tc_mantic_ventas
-				inner join
-					tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta= tc_mantic_ventas_detalles.id_venta
-				inner join
-					tc_mantic_articulos on tc_mantic_ventas_detalles.id_articulo= tc_mantic_articulos.id_articulo
-				inner join
-					tc_mantic_almacenes on tc_mantic_ventas.id_empresa= tc_mantic_almacenes.id_empresa and tc_mantic_almacenes.id_principal= 1
-				inner join
-					tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
-				left join
-				  tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo and tc_mantic_almacenes.id_almacen= tc_mantic_almacenes_articulos.id_almacen
-				where
-					tc_mantic_articulos.id_articulo= {idArticulo}
-					and tc_mantic_ventas.id_almacen= {idAlmacen}
-					and date_format(tc_mantic_ventas_detalles.registro, '%Y%m%d')>= '{registro}'
-					and tc_mantic_ventas.id_venta_estatus in (3, 4, 6, 9)
-				union all
-				select
-				  (cast(date_format(now(), '%Y%m%d%H%i%S%s') as unsigned)+ truncate(rand()* 10000, 0)) as id_key,
-					'DEVOLUCIONES' as movimiento,
-					tc_mantic_almacenes.nombre as almacen,
-					tc_mantic_devoluciones.consecutivo,
-					tc_mantic_articulos.nombre,
-					tc_mantic_proveedores.clave,
-					tc_mantic_proveedores.razon_social,
-					tc_mantic_devoluciones_detalles.cantidad,
-					tc_mantic_notas_detalles.costo,
-				  ifnull(tc_mantic_almacenes_articulos.stock, 0) as stock,
-					tc_mantic_devoluciones.registro
-				from
-					tc_mantic_devoluciones
-				inner join
-					tc_mantic_devoluciones_detalles on tc_mantic_devoluciones.id_devolucion= tc_mantic_devoluciones_detalles.id_devolucion
-				inner join
-					tc_mantic_notas_detalles on tc_mantic_devoluciones_detalles.id_nota_detalle= tc_mantic_notas_detalles.id_nota_detalle
-				inner join
-					tc_mantic_articulos on tc_mantic_notas_detalles.id_articulo= tc_mantic_articulos.id_articulo
-				inner join
-					tc_mantic_almacenes on tc_mantic_devoluciones.id_empresa= tc_mantic_almacenes.id_empresa and tc_mantic_almacenes.id_principal= 1
-				inner join
-					tc_mantic_notas_entradas on tc_mantic_devoluciones.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
-				inner join
-					tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
-				left join
-				  tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo and tc_mantic_almacenes.id_almacen= tc_mantic_almacenes_articulos.id_almacen
-				where
-					tc_mantic_articulos.id_articulo= {idArticulo}
-					and tc_mantic_notas_entradas.id_almacen= {idAlmacen}
-					and date_format(tc_mantic_devoluciones_detalles.registro, '%Y%m%d')>= '{registro}'
-					and tc_mantic_devoluciones.id_devolucion_estatus in (3, 4, 5, 6)
-				union all
-				select
-				  (cast(date_format(now(), '%Y%m%d%H%i%S%s') as unsigned)+ truncate(rand()* 10000, 0)) as id_key,
-					'TRASPASOS' as movimiento,
-					tc_mantic_almacenes.nombre as almacen,
-					'2018000000' as consecutivo,
-					tc_mantic_articulos.nombre,
-					tc_mantic_personas.rfc as clave,
-					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) razon_social,
-					tc_mantic_transferencias_detalles.cantidad * -1,
-					tc_mantic_articulos.precio as costo,
-				  ifnull(tc_mantic_almacenes_articulos.stock, 0) as stock,
-					tc_mantic_transferencias.registro
-				from
-					tc_mantic_transferencias
-				inner join
-					tc_mantic_transferencias_detalles on tc_mantic_transferencias.id_transferencia= tc_mantic_transferencias_detalles.id_transferencia
-				inner join
-					tc_mantic_articulos on tc_mantic_transferencias_detalles.id_articulo= tc_mantic_articulos.id_articulo
-				inner join
-					tc_mantic_almacenes on tc_mantic_transferencias.id_almacen= tc_mantic_almacenes.id_almacen
-				inner join
-					tc_janal_usuarios on tc_mantic_transferencias.id_usuario= tc_janal_usuarios.id_usuario
-				inner join
-					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
-				left join
-				  tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo and tc_mantic_almacenes.id_almacen= tc_mantic_almacenes_articulos.id_almacen
-				where
-					tc_mantic_articulos.id_articulo= {idArticulo}
-					and tc_mantic_transferencias.id_almacen= {idAlmacen}
-					and date_format(tc_mantic_transferencias.registro, '%Y%m%d')>= '{registro}'
-					and tc_mantic_transferencias.id_transferencia_estatus in (3, 5, 6, 7, 8, 9)
-				union all
-				select
-				  (cast(date_format(now(), '%Y%m%d%H%i%S%s') as unsigned)+ truncate(rand()* 10000, 0)) as id_key,
-					'GARANTIAS' as movimiento,
-					tc_mantic_almacenes.nombre as almacen,
-					tc_mantic_garantias.consecutivo,
-					tc_mantic_articulos.nombre,
-					tc_mantic_clientes.clave,
-					tc_mantic_clientes.razon_social,
-					tc_mantic_garantias_detalles.cantidad,
-					tc_mantic_ventas_detalles.costo,
-				  ifnull(tc_mantic_almacenes_articulos.stock, 0) as stock,
-					tc_mantic_garantias.registro
-				from
-					tc_mantic_garantias
-				inner join
-					tc_mantic_garantias_detalles on tc_mantic_garantias.id_garantia= tc_mantic_garantias_detalles.id_garantia
-				inner join
-					tc_mantic_ventas on tc_mantic_garantias.id_venta= tc_mantic_ventas.id_venta
-				inner join
-					tc_mantic_ventas_detalles on tc_mantic_garantias_detalles.id_venta_detalle= tc_mantic_ventas_detalles.id_venta_detalle
-				inner join
-					tc_mantic_articulos on tc_mantic_ventas_detalles.id_articulo= tc_mantic_articulos.id_articulo
-				inner join
-					tc_mantic_almacenes on tc_mantic_ventas.id_empresa= tc_mantic_almacenes.id_empresa and tc_mantic_almacenes.id_principal= 1
-				inner join
-					tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
-				left join
-				  tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo and tc_mantic_almacenes.id_almacen= tc_mantic_almacenes_articulos.id_almacen
-				where
-					tc_mantic_articulos.id_articulo= {idArticulo}
-					and tc_mantic_ventas.id_almacen= {idAlmacen}
-					and date_format(tc_mantic_garantias_detalles.registro, '%Y%m%d')>= '{registro}'
-					and tc_mantic_garantias.id_garantia_estatus in (3, 4, 5, 6)
-			  order by
-				  registro desc
-			</select>
 			<select id="codigos">
         select      
           tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
@@ -2813,6 +2650,36 @@
 					tc_mantic_garantias_detalles.registro				
 			</select>
 			<select id="conteo">
+        select
+					tc_mantic_inventarios.id_inventario as id_key,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as razon_social,
+					tc_mantic_inventarios.registro as fecha,
+					concat(tc_mantic_inventarios.ejercicio, ' ', tc_mantic_almacenes.nombre) as consecutivo,
+					0 as total,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_inventarios.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					tc_mantic_articulos.nombre,
+					tc_mantic_inventarios.entradas as cantidad,
+					tc_mantic_articulos.precio,
+					0 as impuestos,
+					0 as importe,
+				  tc_mantic_inventarios.registro,
+				  tc_mantic_inventarios.inicial,
+				  tc_mantic_inventarios.salidas,
+				  tc_mantic_inventarios.stock
+				from 
+					tc_mantic_inventarios
+				inner join
+					tc_mantic_articulos on tc_mantic_inventarios.id_articulo= tc_mantic_articulos.id_articulo
+				inner join 
+					tc_janal_usuarios on tc_mantic_inventarios.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				inner join
+					tc_mantic_almacenes on tc_mantic_inventarios.id_almacen= tc_mantic_almacenes.id_almacen
+				where 
+					tc_mantic_inventarios.id_articulo= {idArticulo}
+				order by
+					tc_mantic_inventarios.registro desc				
 			</select>
 		</unit>
 		<unit id="VistaArticulosDto">
