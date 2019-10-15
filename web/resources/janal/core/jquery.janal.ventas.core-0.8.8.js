@@ -1436,10 +1436,10 @@
 			janal.fields.pago.validaciones= 'libre';
 			janal.fields.transferencia.validaciones= 'libre';
 		}, // refreshFreeValidationsPagos		
-		refreshCredito: function(total){
-			if(total > 0) {
-				janal.fields.referenciaCredito.validaciones= "libre";
-				janal.fields.bancoCredito.validaciones= "libre";										
+		refreshCredito: function(total) {
+			if(total > 0 && !$('#contenedorGrupos\\:switchFacturar').hasClass('ui-state-disabled') && !$('#contenedorGrupos\\:switchFacturar_input').val()==='on') {
+				janal.fields.referenciaCredito.validaciones= "requerido";
+				janal.fields.bancoCredito.validaciones= "requerido";										
 			} // if
 			else{
 				janal.fields.referenciaCredito.validaciones= "libre";

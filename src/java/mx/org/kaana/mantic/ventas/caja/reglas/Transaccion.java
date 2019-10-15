@@ -728,7 +728,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		return regresar;
 	} // toPagoEfectivo
 	
-	private TrManticVentaMedioPagoDto toPagoTarjetaDebito(){
+	private TrManticVentaMedioPagoDto toPagoTarjetaDebito() {
 		TrManticVentaMedioPagoDto regresar= null;		
 		if(this.ventaFinalizada.getTotales().getDebito()> 0D){
 			regresar= new TrManticVentaMedioPagoDto();
@@ -736,7 +736,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			regresar.setIdUsuario(JsfBase.getIdUsuario());
 			regresar.setIdVenta(getOrden().getIdVenta());
 			regresar.setImporte(this.ventaFinalizada.getTotales().getDebito());				
-			regresar.setIdBanco(this.ventaFinalizada.getTotales().getBancoDebito().getKey());
+			if(this.ventaFinalizada.getTotales().getBancoDebito()!= null)
+			  regresar.setIdBanco(this.ventaFinalizada.getTotales().getBancoDebito().getKey());
 			regresar.setReferencia(this.ventaFinalizada.getTotales().getReferenciaDebito());	
 			regresar.setIdCierre(this.idCierreVigente);
 		} // if		
@@ -751,7 +752,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			regresar.setIdUsuario(JsfBase.getIdUsuario());
 			regresar.setIdVenta(getOrden().getIdVenta());
 			regresar.setImporte(this.ventaFinalizada.getTotales().getCredito());				
-			regresar.setIdBanco(this.ventaFinalizada.getTotales().getBancoCredito().getKey());
+			if(this.ventaFinalizada.getTotales().getBancoCredito()!= null)
+  			regresar.setIdBanco(this.ventaFinalizada.getTotales().getBancoCredito().getKey());
 			regresar.setReferencia(this.ventaFinalizada.getTotales().getReferenciaCredito());	
 			regresar.setIdCierre(this.idCierreVigente);
 		} // if		
@@ -766,7 +768,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			regresar.setIdUsuario(JsfBase.getIdUsuario());
 			regresar.setIdVenta(getOrden().getIdVenta());
 			regresar.setImporte(this.ventaFinalizada.getTotales().getTransferencia());				
-			regresar.setIdBanco(this.ventaFinalizada.getTotales().getBancoTransferencia().getKey());
+			if(this.ventaFinalizada.getTotales().getBancoTransferencia()!= null)
+  			regresar.setIdBanco(this.ventaFinalizada.getTotales().getBancoTransferencia().getKey());
 			regresar.setReferencia(this.ventaFinalizada.getTotales().getReferenciaTransferencia());			
 			regresar.setIdCierre(this.idCierreVigente);
 		} // if		
@@ -800,7 +803,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			regresar.setIdUsuario(JsfBase.getIdUsuario());
 			regresar.setIdVenta(getOrden().getIdVenta());
 			regresar.setImporte(this.ventaFinalizada.getTotales().getCheque());				
-			regresar.setIdBanco(this.ventaFinalizada.getTotales().getBancoCheque().getKey());
+			if(this.ventaFinalizada.getTotales().getBancoCheque()!= null)
+  			regresar.setIdBanco(this.ventaFinalizada.getTotales().getBancoCheque().getKey());
 			regresar.setReferencia(this.ventaFinalizada.getTotales().getReferenciaCheque());		
 			regresar.setIdCierre(this.idCierreVigente);
 		} // if		
