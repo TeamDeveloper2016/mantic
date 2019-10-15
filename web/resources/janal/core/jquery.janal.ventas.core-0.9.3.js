@@ -1397,7 +1397,7 @@
 			this.refreshCheque(cheque);
 			this.refreshTransferencia(transferencia);
 			janal.refresh();
-			this.restoreCursorAt();
+			this.lastCursorAt();
 		}, // refreshCobroValidate		
 		validateApartado: function(minPago) {			
 			var limiteCredito= parseFloat(parseFloat($('#contenedorGrupos\\:limiteCredito').text()).toFixed(2));

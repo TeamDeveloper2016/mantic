@@ -888,11 +888,11 @@ public class Accion extends IBaseVenta implements Serializable {
 						asignaFechaApartado();
 					actual= new Date(Calendar.getInstance().getTimeInMillis());
 					if(actual.after(((TicketVenta)getAdminOrden().getOrden()).getVigencia()))
-						generateNewVenta();					
+						this.generateNewVenta();					
 				} // if
 				this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 				this.attrs.put("consecutivo", ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo());
-				loadCatalog();
+				this.loadCatalog();
 				doAsignaClienteTicketAbierto();
 				this.attrs.put("pagarVenta", true);
 				this.attrs.put("cobroVenta", true);				
