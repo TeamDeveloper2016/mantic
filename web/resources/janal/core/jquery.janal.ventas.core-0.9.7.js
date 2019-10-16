@@ -1438,7 +1438,7 @@
 			janal.fields.transferencia.validaciones= 'libre';
 		}, // refreshFreeValidationsPagos		
 		refreshCredito: function(total) {
-			if(total > 0 && !$('#contenedorGrupos\\:switchFacturar').hasClass('ui-state-disabled') && !$('#contenedorGrupos\\:switchFacturar_input').val()==='on') {
+			if(total > 0 && $('#contenedorGrupos\\:switchFacturar_input').is(':checked')) {
 				janal.fields.referenciaCredito.validaciones= "requerido";
 				janal.fields.bancoCredito.validaciones= "requerido";										
 			} // if
@@ -1448,9 +1448,9 @@
 			} // else
 		}, // refreshCredito
 		refreshDebito: function(total) {
-			if(total > 0) {
-				janal.fields.referenciaDebito.validaciones= "libre";
-				janal.fields.bancoDebito.validaciones= "libre";										
+			if(total > 0 && $('#contenedorGrupos\\:switchFacturar_input').is(':checked')) {
+				janal.fields.referenciaDebito.validaciones= "requerido";
+				janal.fields.bancoDebito.validaciones= "requerido";										
 			} // if
 			else {
 				janal.fields.referenciaDebito.validaciones= "libre";
@@ -1458,7 +1458,7 @@
 			} // else
 		}, // refreshCredito
 		refreshCheque: function(total){
-			if(total > 0){
+			if(total > 0 && $('#contenedorGrupos\\:switchFacturar_input').is(':checked')){
 				janal.fields.referenciaCheque.validaciones= "requerido";
 				janal.fields.bancoCheque.validaciones= "requerido";					
 			} // if
@@ -1468,7 +1468,7 @@
 			} // else
 		}, // refreshCheque
 		refreshTransferencia: function(total){
-			if(total > 0){
+			if(total > 0 && $('#contenedorGrupos\\:switchFacturar_input').is(':checked')){
 				janal.fields.referenciaTransferencia.validaciones= "requerido";
 				janal.fields.bancoTransferencia.validaciones= "requerido";					
 			} // if
@@ -1545,7 +1545,40 @@
 		lastCursorAt: function() {
 			janal.console('jsArticulos.lastCursorAt: '+ $("input[id$="+ this.codes+ "]").last().attr('id'));
 			setTimeout('$("input[id$="+ jsArticulos.codes+ "]").last().focus();', 1000);
-		}
+		},
+		ventaFinished: function(){
+			janal.refresh();
+			var ok= janal.partial('general');
+			if(ok) {																		
+				PF('dlgCerrarVenta').show();	
+				setTimeout("$('#dialogoCerrarVenta').focus();", 1000);						
+			} // if				
+			else
+				janal.desbloquear();
+			return ok;
+		}, // ventaFinished
+		applyValidacionesSwitch: function(){				
+			var isCredito = $('#contenedorGrupos\\:creditoCliente_input').is(':checked');
+			var isApartado= $('#contenedorGrupos\\:switchApartado_input').is(':checked');
+			if(isApartado){
+				var anticipo= 10;
+				var total   = parseFloat($('#contenedorGrupos\\:total').val());
+				var minAbono= (total * anticipo) / 100;
+				this.validateApartado(minAbono.toFixed(2));
+			} // if
+			else if(isCredito)
+				this.validateCredito();
+			else
+				this.refreshCobroValidate();
+		}, // applyValidacionesGeneral
+		applyValidacionesGeneral: function(){				
+			this.applyValidacionesSwitch();
+			this.ventaFinished();
+		}, // applyValidacionesGeneral
+		applyValidacionesCredito: function(){
+			this.applyValidacionesSwitch();		
+			janal.desbloquear();
+		} // applyValidacionesCredito
 	});
 	
 	console.info('Iktan.Control.Articulos initialized');
