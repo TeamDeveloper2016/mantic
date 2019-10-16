@@ -38,7 +38,7 @@
 	<ui:define name="contenido">
 		<p:focus context="codigos"/>
 		<p:defaultCommand target="tabla"/>
-		<pe:remoteCommand name="recover" process="@this" update="dialogoArtExpress" actionListener="#{manticInventariosAlmacenesKardex.doRecoverArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); PF('dlgArtExpress').show();">  
+		<pe:remoteCommand name="recover" process="@this" update="dialogoArtExpress" actionListener="#{manticInventariosAlmacenesKardex.doRecoverArticulo}" onstart="return janal.bloquear();" oncomplete="PF('dlgArtExpress').show();">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
@@ -433,7 +433,7 @@
 					<p:column headerText="No" styleClass="janal-wid-3">
 						<p:outputLabel value="#{index+ 1}.-"/>
 					</p:column>   
-					<p:column headerText="Código" styleClass="janal-wid-col-80">
+					<p:column headerText="Código" styleClass="janal-wid-col-100">
 						<p:outputLabel value="#{item.propio}"/>
 					</p:column>   
 					<p:column headerText="Nombre">
