@@ -149,24 +149,7 @@
 						} 
 					});
 				} // else	
-			}
-			
-			function ventaFinishedTime() {
-				setTimeout("ventaFinished()", 1000);						
-			}
-			
-			function ventaFinished(){
-				janal.refresh();
-				var ok= janal.partial('general');
-				if(ok) {															
-					janal.bloquear();
-					PF('dlgCerrarVenta').show();	
-					setTimeout("$('#dialogoCerrarVenta').focus();", 1000);						
-				} // if				
-				else
-					janal.desbloquear();
-				return ok;
-			} // ventaFinished
+			}												
 			
 			function validateCapturaDescuentos(){
 				var ok= janal.partial('descuento');
@@ -222,8 +205,7 @@
 			function validateFacturacion(xhr, status, args){
 				if (args.facturacionOk) 
           doFacturarPendiente(JSON.stringify(args.facturacion));
-			} // validateFacturacion
-			
+			} // validateFacturacion						
 		// ]]>
 		</script>   
 		<style type="text/css">
@@ -271,9 +253,7 @@
 		<pe:remoteCommand name="cleanInitPage" onstart="return janal.bloquear();" process="@this" actionListener="#{manticVentasCajaAccion.doCleanInitPage}" update="contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.recalculo) @(.janal-abono) contenedorGrupos:panelPago" oncomplete="janal.desbloquear();jsArticulos.refreshCobroValidate();"/>  			
 		<pe:remoteCommand name="cleanSelection" onstart="return janal.bloquear();" process="@this" actionListener="#{manticVentasCajaAccion.doCleanCaptura}" update="contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.recalculo) @(.janal-abono) contenedorGrupos:panelPago"/>  			
 		<pe:remoteCommand name="updateCambioPrecio" process="@this" update="panelCambioPrecio cambiopreciousr passwordcambioprecio"/>  			
-		<pe:remoteCommand name="updateDescuentos" process="@this" update="panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd"/>  			
-		<pe:remoteCommand name="applyValidacionesCredito" process="@this contenedorGrupos:creditoCliente" update="contenedorGrupos:panelSumatoria" actionListener="#{manticVentasCajaAccion.doValidaCreditoCliente}" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>  			
-		<pe:remoteCommand name="applyValidacionesGeneral" process="@this contenedorGrupos:creditoCliente" update="contenedorGrupos:panelSumatoria" actionListener="#{manticVentasCajaAccion.doValidaCreditoCliente}" onstart="janal.bloquear();" oncomplete="ventaFinishedTime();"/>  			
+		<pe:remoteCommand name="updateDescuentos" process="@this" update="panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd"/>  					
 		<pe:remoteCommand name="cobrarVenta" process="@this contenedorGrupos contenedorGrupos:ticketsAbiertos" update="contenedorGrupos aceptCotizacion aceptar cancelar cotizacionIcon aceptarIcon cancelarIcon" actionListener="#{manticVentasCajaAccion.doOpenCobro}" onstart="janal.bloquear()" oncomplete="janal.desbloquear();jsArticulos.focusCobro()"/>  			
 		<pe:remoteCommand name="loadTicketAbiertos" process="@this" update="dialogoOpenTickets @(.tickets-principal)" actionListener="#{manticVentasCajaAccion.doLoadTicketAbiertosPrincipal}" onstart="janal.bloquear()"/>  					
 		<pe:remoteCommand name="loadCotizaciones" process="@this" update="dialogoCotizaciones" actionListener="#{manticVentasCajaAccion.doLoadCotizaciones}" onstart="janal.bloquear();"/>  			
@@ -516,9 +496,9 @@
 					</div>
 				</div>
 				<p:inputText id="articulos" value="#{manticVentasCajaAccion.adminOrden.totales.articulos}" style="display:none"/>
-				<p:inputText id="total" value="#{manticVentasCajaAccion.adminOrden.totales.articulos}" style="display:none"/>					
+				<p:inputText id="total" value="#{manticVentasCajaAccion.adminOrden.totales.total}" style="display:none"/>					
 			</p:tab>
-			<p:tab id="tabPagar" title="Pagar" rendered="#{manticVentasCajaAccion.attrs.pagarVenta}" >
+			<p:tab id="tabPagar" title="Pagar" rendered="#{manticVentasCajaAccion.attrs.pagarVenta}" >				
 				<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 					<div class="ui-grid-row janal-grid-row">
 						<div class="ui-grid-col-12">																			
@@ -557,14 +537,14 @@
 								<p:inputText id="descuento" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticVentasCajaAccion.adminOrden.descuento}" disabled="true">
 									<p:ajax event="blur" listener="#{manticVentasCajaAccion.doUpdateDescuento}" process="@this" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#descuento'), '0'); return true;"/>
 								</p:inputText>	
-								<p:inputSwitch value="#{manticVentasCajaAccion.attrs.apartado}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt cambio-cliente janal-abono" disabled="#{manticVentasCajaAccion.attrs.mostrarApartado and !manticVentasCajaAccion.attrs.facturarVenta}">
-									<p:ajax listener="#{manticVentasCajaAccion.doActiveApartado}" process="@this contenedorGrupos:panelTotales" update="contenedorGrupos contenedorGrupos:switchFacturar tabPagar" onstart="janal.bloquear();" oncomplete="applyValidacionesCredito();"/>
+								<p:inputSwitch id="switchApartado" value="#{manticVentasCajaAccion.attrs.apartado}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt cambio-cliente janal-abono" disabled="#{manticVentasCajaAccion.attrs.mostrarApartado and !manticVentasCajaAccion.attrs.facturarVenta}">
+									<p:ajax listener="#{manticVentasCajaAccion.doActiveApartado}" process="@this contenedorGrupos:panelTotales" update="contenedorGrupos contenedorGrupos:switchFacturar tabPagar" onstart="janal.bloquear();" oncomplete="jsArticulos.applyValidacionesCredito();"/>
 								</p:inputSwitch>
 								<p:inputSwitch id="switchFacturar" widgetVar="widgetSwitchFacturar" value="#{manticVentasCajaAccion.attrs.facturarVenta}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt cambio-cliente janal-abono" disabled="#{manticVentasCajaAccion.attrs.disabledFacturarSwitch}">
 									<p:ajax listener="#{manticVentasCajaAccion.doActivarCliente}" process="@this contenedorGrupos:panelTotales contenedorGrupos:observacionesFactura contenedorGrupos:facturacionSinCorreo" update="contenedorGrupos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();janal.refresh();"/>
 								</p:inputSwitch>
 								<p:inputSwitch id="creditoCliente" value="#{manticVentasCajaAccion.attrs.creditoVenta}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt cambio-cliente janal-abono" disabled="#{!manticVentasCajaAccion.attrs.creditoCliente}">
-									<p:ajax process="@this" update="contenedorGrupos:panelSumatoria" onstart="janal.bloquear();" oncomplete="applyValidacionesCredito();" />
+									<p:ajax process="@this" update="contenedorGrupos:panelSumatoria" onstart="janal.bloquear();" oncomplete="jsArticulos.applyValidacionesCredito();" />
 								</p:inputSwitch>
 								
 								<p:outputLabel for="cfdi" value="Uso del CFDI:" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
@@ -1466,12 +1446,12 @@
 		<div class="janal-line-button">
 			<div class="lg-pantalla">
 				<p:commandButton id="aceptCotizacion" value="Cotización" widgetVar="wAceptarCotizacion" icon="fa fa-list-ul" process="@form" styleClass="cotizar janal-text-white" actionListener="#{manticVentasCajaAccion.doVerificaArticulosCotizacion}" update="dialogoCotizacion"/>
-				<p:commandButton id="aceptar" value="Aceptar" widgetVar="wAceptarCompra" icon="fa fa-check" accesskey="a"  process="@this" styleClass="cotizar janal-text-white" onstart="applyValidacionesGeneral();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}" style="display: #{manticVentasCajaAccion.pagar? '': 'none'}"/>			
+				<p:commandButton id="aceptar" value="Aceptar" widgetVar="wAceptarCompra" icon="fa fa-check" accesskey="a"  process="@this" styleClass="cotizar janal-text-white" onstart="return janal.bloquear();" oncomplete="jsArticulos.applyValidacionesGeneral();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}" style="display: #{manticVentasCajaAccion.pagar? '': 'none'}"/>			
 				<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticVentasCajaAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 			</div>		
 			<div class="xs-pantalla">
 				<p:commandButton id="cotizacionIcon" title="Cotización" widgetVar="wAceptarCotizacionIcon" icon="fa fa-check" process="@form" styleClass="cotizar janal-text-white" actionListener="#{manticVentasCajaAccion.doVerificaArticulosCotizacion}" update="dialogoCotizacion"/>
-				<p:commandButton id="aceptarIcon" title="Aceptar" widgetVar="wAceptarCompraIcon" icon="fa fa-check" process="@this" styleClass="cotizar janal-text-white" onstart="applyValidacionesGeneral();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}" style="display: #{manticVentasCajaAccion.pagar? '': 'none'}"/>			
+				<p:commandButton id="aceptarIcon" title="Aceptar" widgetVar="wAceptarCompraIcon" icon="fa fa-check" process="@this" styleClass="cotizar janal-text-white" onstart="return janal.bloquear();" oncomplete="jsArticulos.applyValidacionesGeneral();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}" style="display: #{manticVentasCajaAccion.pagar? '': 'none'}"/>			
 				<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 			</div>		
 		</div>
