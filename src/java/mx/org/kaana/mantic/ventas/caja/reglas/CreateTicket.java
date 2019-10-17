@@ -188,8 +188,8 @@ public class CreateTicket {
 				regresar.append("<tr>");
 				regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 80px;max-width: 80px;\">").append("</td>");
 				regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 35px;max-width: 35px;word-break: break-all;text-align: center\">").append(articulo.getCantidad()).append("</td>");
-				regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 35px;max-width: 45px;word-break: break-all;text-align: right\">").append(Numero.formatear(Numero.NUMERO_CON_DECIMALES, articulo.getCosto())).append("</td>");
-				regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 55px;max-width: 45px;word-break: break-all;text-align: right\">").append(articulo.getImporte()).append("</td>");
+				regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 35px;max-width: 35px;word-break: break-all;text-align: right\">").append(Numero.formatear(Numero.NUMERO_CON_DECIMALES, articulo.getCosto())).append("</td>");
+				regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 45px;max-width: 45px;word-break: break-all;text-align: right\">").append(articulo.getImporte()).append("</td>");
 				regresar.append("</tr>");
 				regresar.append("</tbody>");
 				regresar.append(toFinishTable());
