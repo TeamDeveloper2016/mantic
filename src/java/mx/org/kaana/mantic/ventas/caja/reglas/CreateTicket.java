@@ -166,8 +166,8 @@ public class CreateTicket {
 		regresar.append("<tr style=\"border-top: 1px solid black;border-collapse: collapse;\">");
 		regresar.append("<th style=\"font-family: sans-serif;font-size: 12px;width: 80px; max-width: 80px;border-top: 1px solid black;border-collapse: collapse;text-align: left\">CONCEPTO</th>");
 		regresar.append("<th style=\"font-family: sans-serif;font-size: 12px;width: 35px;max-width: 35px;word-break: break-all;border-top: 1px solid black;border-collapse: collapse;text-align: center\">CANT</th>");
-		regresar.append("<th style=\"font-family: sans-serif;font-size: 12px;width: 35px;max-width: 45px;word-break: break-all;border-top: 1px solid black;border-collapse: collapse;\">NETO</th>");
-		regresar.append("<th style=\"font-family: sans-serif;font-size: 12px;width: 55px;max-width: 45px;word-break: break-all;border-top: 1px solid black;border-collapse: collapse;\">IMPORTE</th>");
+		regresar.append("<th style=\"font-family: sans-serif;font-size: 12px;width: 35px;max-width: 35px;word-break: break-all;border-top: 1px solid black;border-collapse: collapse;\">NETO</th>");
+		regresar.append("<th style=\"font-family: sans-serif;font-size: 12px;width: 45px;max-width: 45px;word-break: break-all;border-top: 1px solid black;border-collapse: collapse;\">IMPORTE</th>");
 		regresar.append("</tr></thead>");		
 		return regresar.toString();
 	} // toHeaderTable
