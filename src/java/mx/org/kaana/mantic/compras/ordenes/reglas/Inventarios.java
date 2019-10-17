@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -139,7 +140,7 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 			global.setStock(global.getStock()+ item.getCantidad());
 			DaoFactory.getInstance().update(sesion, global);
 			
-			// afectar el catalogo de codigos del proveedor
+			// afectar el catalogo de codigos del proveedor y si se encuentra entonces actualizarlo en caso de ser diferente al que se tenia
 			if(!Cadena.isVacio(codigos.getCodigo())) {
 				TcManticArticulosCodigosDto remplazo= (TcManticArticulosCodigosDto)DaoFactory.getInstance().findFirst(sesion, TcManticArticulosCodigosDto.class, "codigo", params);
 				if(remplazo== null) {
@@ -148,10 +149,11 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 						next.setData(1L);
 					DaoFactory.getInstance().insert(sesion, new TcManticArticulosCodigosDto(codigos.getCodigo(), this.idProveedor, JsfBase.getIdUsuario(), 2L, "", -1L, next.toLong(), codigos.getIdArticulo()));
 				} // if	
-				else {
-					remplazo.setCodigo(codigos.getCodigo());
-					DaoFactory.getInstance().update(sesion, remplazo);
-				} // else	
+				else 
+					if(!Objects.equals(remplazo.getCodigo(), codigos.getCodigo())) {
+					  remplazo.setCodigo(codigos.getCodigo());
+					  DaoFactory.getInstance().update(sesion, remplazo);
+  				} // else	
 			} // if	
 		} // try
 		catch (Exception e) {
