@@ -369,6 +369,27 @@ shortcut.add("escape", function() {
 	else if(janal.session() && PF('dlgOpenTickets') && PF('dlgOpenTickets').isVisible()) {
 		PF('dlgOpenTickets').hide();
 	} // else if
+	if(janal.session() && PF('dlgTeclasAyuda') && !PF('dlgTeclasAyuda').isVisible()) {
+		PF('dlgTeclasAyuda').hide();
+	} // if
+	if(janal.session() && PF('dlgVerificador') && !PF('dlgVerificador').isVisible()) {
+	  PF('dlgVerificador').hide();
+  } // if
+	if(janal.session() && PF('dlgListaPrecios') && !PF('dlgListaPrecios').isVisible()) {
+	  PF('dlgListaPrecios').hide();
+	}// if
+	if(janal.session() && PF('dlgFaltantes') && !PF('dlgFaltantes').isVisible()) {
+	  PF('dlgFaltantes').hide();
+  } // if
+	if(janal.session() && PF('dlgListaPrecios') && !PF('dlgListaPrecios').isVisible()) {
+	  PF('dlgListaPrecios').hide();
+	} // if	
+	if(janal.session() && PF('dlgCatalogoArticulos') && !PF('dlgCatalogoArticulos').isVisible()) {
+	  PF('dlgCatalogoArticulos').hide();
+	} // if	
+	if(janal.session() && PF('dlgEjecutar') && !PF('dlgEjecutar').isVisible()) {
+		PF('dlgEjecutar').hide();
+	} // if
 });
 
 shortcut.add("Shift+P", function() {
