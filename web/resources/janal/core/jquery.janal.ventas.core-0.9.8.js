@@ -409,7 +409,7 @@
 						return false;
 					  break;
 					case $articulos.VK_ESC:
-            PF('widgetTablaTicketsAbiertos').hide();
+            PF('dlgOpenTickets').hide();
 						break;
 					case $articulos.VK_F7:
 					case $articulos.VK_ENTER:
