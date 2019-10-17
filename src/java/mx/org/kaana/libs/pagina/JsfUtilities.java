@@ -300,7 +300,7 @@ public class JsfUtilities {
   }
 
   public static void addAlert(String descripcion, ETipoMensaje tipoMensaje) {
-     addAlert(tipoMensaje.getTituloMensaje(),descripcion,tipoMensaje);
+     addAlert(tipoMensaje.getTituloMensaje(), descripcion, tipoMensaje);
   }
 
   public static void addAlert(String descripcion) {

@@ -338,7 +338,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				if(!((EAccion)this.attrs.get("accion")).equals(EAccion.AGREGAR))
 					params.put(Constantes.SQL_CONDICION, " tc_mantic_articulos_codigos.id_articulo!="+ this.attrs.get("idArticulo"));
 			  List<Entity> values= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaArticulosDto", "existeCodigo", params);
-				if(values!= null && values.size()> 0) {
+				if(values!= null && values.size()> 0 && !Cadena.isVacio(values.get(0).toString("codigo"))) {
 					StringBuilder sb= new StringBuilder();
 					sb.append("<br/>");
 					for (Entity item : values) {
