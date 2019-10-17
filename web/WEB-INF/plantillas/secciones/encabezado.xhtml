@@ -369,7 +369,7 @@
 			</div>	
 		</h:form>
 	</p:dialog>	
-	<p:dialog id="dialogoTeclasAyuda" widgetVar="dlgTeclasAyuda" header="Teclas rapidas de la aplicaci&oacute;n" onShow="janal.pivot(); janal.bloquear();" onHide="janal.recover(); janal.desbloquear();" height="#{empty notIsCaja or notIsCaja? '350px': '460px'}" width="650px" resizable="false" closeOnEscape="true" dynamic="true">
+	<p:dialog id="dialogoTeclasAyuda" widgetVar="dlgTeclasAyuda" header="Teclas rapidas de la aplicaci&oacute;n" onShow="janal.pivot(); janal.bloquear();" onHide="janal.recover(); janal.desbloquear();" height="#{empty notIsCaja or !notIsCaja? '350px': '490px'}" width="650px" resizable="false" closeOnEscape="true" dynamic="true">
 		<h:form id="teclasAyuda" prependId="false">
 			<div class="ui-datatable ui-widget ui-datatable-reflow">
 				<div class="ui-datatable-tablewrapper">
@@ -395,10 +395,7 @@
 							</tr>
 							<tr>
 								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-qq"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+R]</strong></td><td>Ir a un m&oacute;dulo</td>	
-							</tr>
-							<tr>
-								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-list-ol"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+Z]</strong></td><td>Soltar cuenta abierta</td>	
-							</tr>
+							</tr>							
 							<tr>
 								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-cart-plus"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+A]</strong></td><td>Cuentas de apartados</td>	
 							</tr>
@@ -411,20 +408,23 @@
 							<tr>
 								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-power-off"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+L]</strong></td><td>Terminar la sesi&oacute;n</td>	
 							</tr>
-							<tr style="display: #{empty notIsCaja or notIsCaja? 'none': ''}">
+							<tr style="display: #{empty notIsCaja or !notIsCaja? 'none': ''}">
 								<td colspan="3">&nbsp;</td>
 							</tr>
-							<tr style="display: #{empty notIsCaja or notIsCaja? 'none': ''}">
-								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-sellsy"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[SHIFT+P]</strong></td><td>Pagar ticket</td>	
+							<tr style="display: #{empty notIsCaja or !notIsCaja? 'none': ''}">
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-sellsy"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[SHIFT+P]</strong></td><td>Cuentas abiertas</td>	
 							</tr>
-							<tr style="display: #{empty notIsCaja or notIsCaja? 'none': ''}">
+							<tr style="display: #{empty notIsCaja or !notIsCaja? 'none': ''}">
 								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-desktop"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[F7]</strong></td><td>Detalle del articulo</td>	
 							</tr>
-							<tr style="display: #{empty notIsCaja or notIsCaja? 'none': ''}">
+							<tr style="display: #{empty notIsCaja or !notIsCaja? 'none': ''}">
 								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-truck"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[F8]</strong></td><td>Articulo en sucursales</td>	
 							</tr>
-							<tr style="display: #{empty notIsCaja or notIsCaja? 'none': ''}">
+							<tr style="display: #{empty notIsCaja or !notIsCaja? 'none': ''}">
 								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-thumbs-o-up"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[F10]</strong></td><td>Aplicar descuento</td>	
+							</tr>
+							<tr style="display: #{empty notIsCaja or !notIsCaja? 'none': ''}">
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-refresh"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+Z]</strong></td><td>Liberar cuenta abierta</td>	
 							</tr>
 						</tbody>	
 					</table>
