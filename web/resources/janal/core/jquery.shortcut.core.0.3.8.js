@@ -360,6 +360,15 @@ shortcut.add("escape", function() {
 	if(janal.session() && PF('dlgCerrarVenta') && PF('dlgCerrarVenta').isVisible()) {
 		PF('dlgCerrarVenta').hide();
 	} // if
+	else if(janal.session() && PF('dlgCotizaciones') && PF('dlgCotizaciones').isVisible()) {
+		PF('dlgCotizaciones').hide();
+	} // else if
+	else if(janal.session() && PF('dlgApartados') && PF('dlgApartados').isVisible()) {
+		PF('dlgApartados').hide();
+	} // else if
+	else if(janal.session() && PF('dlgOpenTickets') && PF('dlgOpenTickets').isVisible()) {
+		PF('dlgOpenTickets').hide();
+	} // else if
 });
 
 shortcut.add("Shift+P", function() {

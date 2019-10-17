@@ -648,6 +648,9 @@
 				janal.console('jsVentas.cajaEfectivo');
 				var valor= 0;
 				switch(key) {					
+					case $articulos.VK_MINUS:
+						$("#contenedorGrupos\\:debito_input").focus();
+						break;
 					case $articulos.VK_ENTER:
 					case $articulos.VK_TAB:
 					case $articulos.VK_DOWN:
@@ -675,6 +678,9 @@
 				janal.console('jsVentas.cajaDebito');
 				var valor= 0;
 				switch(key) {					
+					case $articulos.VK_MINUS:
+						$("#contenedorGrupos\\:credito_input").focus();
+						break;
 					case $articulos.VK_ENTER:
 					case $articulos.VK_TAB:
 					case $articulos.VK_DOWN:						
@@ -708,6 +714,9 @@
 				janal.console('jsVentas.cajaCredito');
 				var valor= 0;
 				switch(key) {					
+					case $articulos.VK_MINUS:
+						$("#contenedorGrupos\\:transferencia_input").focus();
+						break;
 					case $articulos.VK_ENTER:
 					case $articulos.VK_TAB:
 					case $articulos.VK_DOWN:						
@@ -740,6 +749,9 @@
 				janal.console('jsVentas.cajaTransferencia');
 				var valor= 0;
 				switch(key) {					
+					case $articulos.VK_MINUS:
+						$("#contenedorGrupos\\:cheque_input").focus();
+						break;
 					case $articulos.VK_ENTER:
 					case $articulos.VK_TAB:
 					case $articulos.VK_DOWN:						
@@ -772,6 +784,9 @@
 				janal.console('jsVentas.cajaCheque');
 				var valor= 0;
 				switch(key) {					
+					case $articulos.VK_MINUS:
+						$("#contenedorGrupos\\:efectivo_input").focus();
+						break;
 					case $articulos.VK_ENTER:
 					case $articulos.VK_TAB:
 					case $articulos.VK_DOWN:						
