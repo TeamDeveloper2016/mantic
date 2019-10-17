@@ -167,7 +167,7 @@ public class CreateTicket {
 		regresar.append("<th style=\"font-family: sans-serif;font-size: 12px;width: 80px; max-width: 80px;border-top: 1px solid black;border-collapse: collapse;text-align: left\">CONCEPTO</th>");
 		regresar.append("<th style=\"font-family: sans-serif;font-size: 12px;width: 35px;max-width: 35px;word-break: break-all;border-top: 1px solid black;border-collapse: collapse;text-align: center\">CANT</th>");
 		regresar.append("<th style=\"font-family: sans-serif;font-size: 12px;width: 35px;max-width: 35px;word-break: break-all;border-top: 1px solid black;border-collapse: collapse;\">NETO</th>");
-		regresar.append("<th style=\"font-family: sans-serif;font-size: 12px;width: 45px;max-width: 45px;word-break: break-all;border-top: 1px solid black;border-collapse: collapse;\">IMPORTE</th>");
+		regresar.append("<th style=\"font-family: sans-serif;font-size: 12px;width: 55px;max-width: 55px;word-break: break-all;border-top: 1px solid black;border-collapse: collapse;\">IMPORTE</th>");
 		regresar.append("</tr></thead>");		
 		return regresar.toString();
 	} // toHeaderTable
@@ -175,7 +175,7 @@ public class CreateTicket {
 	private String toArticulos(){				
 		StringBuilder regresar= new StringBuilder();			
 		for(Articulo articulo : this.ticket.getArticulos()){
-			if(articulo.isValid()){				
+			if(articulo.isValid()) {				
 				regresar.append(toTable());
 				regresar.append("<tbody>");
 				regresar.append("<tr style=\"border-top: 1px solid black;border-collapse: collapse;\">");
@@ -189,7 +189,7 @@ public class CreateTicket {
 				regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 80px;max-width: 80px;\">").append("</td>");
 				regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 35px;max-width: 35px;word-break: break-all;text-align: center\">").append(articulo.getCantidad()).append("</td>");
 				regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 35px;max-width: 35px;word-break: break-all;text-align: right\">").append(Numero.formatear(Numero.NUMERO_CON_DECIMALES, articulo.getCosto())).append("</td>");
-				regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 45px;max-width: 45px;word-break: break-all;text-align: right\">").append(articulo.getImporte()).append("</td>");
+				regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 55px;max-width: 55px;word-break: break-all;padding-right: 10px;text-align: right\">").append(articulo.getImporte()).append("</td>");
 				regresar.append("</tr>");
 				regresar.append("</tbody>");
 				regresar.append(toFinishTable());
