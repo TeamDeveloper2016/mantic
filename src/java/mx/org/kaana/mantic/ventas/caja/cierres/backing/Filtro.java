@@ -80,7 +80,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     List<Columna> columns     = null;
 		Map<String, Object> params= toPrepare();
     try {
-      params.put("sortOrder", "order by tc_mantic_empresas.id_empresa, tc_mantic_cajas.id_caja, tc_mantic_cajas.registro desc ");
+      params.put("sortOrder", "order by tc_mantic_empresas.id_empresa, tc_mantic_cajas.id_caja, tc_mantic_cierres.registro desc ");
       columns = new ArrayList<>();
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));
@@ -91,7 +91,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("acumulado", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("capturado", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));      
       this.lazyModel = new FormatCustomLazy("VistaCierresCajasDto", params, columns);
       UIBackingUtilities.resetDataTable();
 			this.attrs.put("idCierre", null);
