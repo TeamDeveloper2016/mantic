@@ -36,6 +36,7 @@
 		</style>		
 	</ui:define>
 	<ui:define name="contenido">
+  	<p:hotkey bind="esc" handler="if($('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon')){$('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon').click();}"/>
 		<p:focus context="codigos"/>
 		<p:defaultCommand target="tabla"/>
 		<pe:remoteCommand name="recover" process="@this" update="dialogoArtExpress" actionListener="#{manticInventariosAlmacenesKardex.doRecoverArticulo}" onstart="return janal.bloquear();" oncomplete="PF('dlgArtExpress').show();">  
