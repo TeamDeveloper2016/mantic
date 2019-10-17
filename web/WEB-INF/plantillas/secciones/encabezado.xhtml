@@ -369,7 +369,7 @@
 			</div>	
 		</h:form>
 	</p:dialog>	
-	<p:dialog id="dialogoTeclasAyuda" widgetVar="dlgTeclasAyuda" header="Teclas rapidas de la aplicaci&oacute;n" onShow="janal.pivot(); janal.bloquear();" onHide="janal.recover(); janal.desbloquear();" height="#{empty notIsCaja or notIsCaja? '280px': '370px'}" width="650px" resizable="false" closeOnEscape="true" dynamic="true">
+	<p:dialog id="dialogoTeclasAyuda" widgetVar="dlgTeclasAyuda" header="Teclas rapidas de la aplicaci&oacute;n" onShow="janal.pivot(); janal.bloquear();" onHide="janal.recover(); janal.desbloquear();" height="#{empty notIsCaja or notIsCaja? '340px': '450px'}" width="650px" resizable="false" closeOnEscape="true" dynamic="true">
 		<h:form id="teclasAyuda" prependId="false">
 			<div class="ui-datatable ui-widget ui-datatable-reflow">
 				<div class="ui-datatable-tablewrapper">
@@ -398,6 +398,15 @@
 							</tr>
 							<tr>
 								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-list-ol"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+Z]</strong></td><td>Soltar cuenta abierta</td>	
+							</tr>
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-cart-plus"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+A]</strong></td><td>Cuentas de apartados</td>	
+							</tr>
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-clipboard"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+P]</strong></td><td>Mostrar los ticket abiertos</td>	
+							</tr>
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-chain"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+U]</strong></td><td>Cerrar un ticket</td>	
 							</tr>
 							<tr>
 								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-power-off"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+L]</strong></td><td>Terminar la sesi&oacute;n</td>	
