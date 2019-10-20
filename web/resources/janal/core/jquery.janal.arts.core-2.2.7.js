@@ -768,12 +768,12 @@
 					this.down(true);
 			return false;
 		},
-		exists: function(index, top, paginator) {
+		exists: function(codigo, nombre, index, top, paginator) {
 			janal.console('jsArticulo.exists: '+ index);
 			this.cursor.tmp= index;
 			if(paginator)
         PF(this.datacontrol).paginator.setPage(Math.trunc(index/ top));
-			alert('El articulo ya existe en la orden y se encuentra en la fila '+ (index+ 1)+ ',\n la cantidad de articulos solicitados se aumento\n con la cantidad del articulo seleccionado\n por favor verifique y corriga el valor !');
+			alert('El articulo ['+ codigo+ ' - '+ nombre+' ]\nya existe en la orden y se encuentra en la fila '+ (index+ 1)+ ',\n la cantidad de articulos solicitados se aumento\n con la cantidad del articulo seleccionado\n por favor verifique y corriga el valor !');
 			setTimeout('$articulos.cursor.index= $articulos.cursor.tmp; $articulos.goto();', 1000);
 			janal.desbloquear();
  		}, 

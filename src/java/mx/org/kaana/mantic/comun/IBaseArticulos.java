@@ -151,6 +151,8 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
   				this.adminOrden.toAddUltimo(this.adminOrden.getArticulos().size()- 1);
 					UIBackingUtilities.execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
 				} // if	
+				if(articulo.containsKey("facturado")) 
+					temporal.setFacturado(true);
 				UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.getKey()+ "');");
 				this.adminOrden.toCalculate(index);
 				if(this.attrs.get("paginator")== null || !(boolean)this.attrs.get("paginator"))
@@ -253,7 +255,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				int position= this.getAdminOrden().getArticulos().indexOf(new Articulo(articulo.toLong("idArticulo")));
 				if(articulo.size()> 1 && position>= 0) {
 					if(index!= position)
-						UIBackingUtilities.execute("jsArticulos.exists("+ position+ ");");
+						UIBackingUtilities.execute("jsArticulos.exists('"+ articulo.toString("propio")+ "', '"+ articulo.toString("nombre")+ "', "+ position+ ");");
 				} // if	
 				else
 					this.toMoveData(articulo, index);
@@ -587,8 +589,12 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			if(articulo.size()> 1) {
 				int position= this.getAdminOrden().getArticulos().indexOf(new Articulo(articulo.toLong("idArticulo")));
 				if(articulo.size()> 1 && position>= 0) {
-					if(index!= position)
-						UIBackingUtilities.execute("jsArticulos.exists("+ position+ ","+ Constantes.REGISTROS_POR_LOTE+ ","+ (this.attrs.get("paginator")== null? false: this.attrs.get("paginator"))+ ");");
+					if(index!= position) {
+						if(this.attrs.get("omitirMensaje")!= null)
+							this.attrs.remove("omitirMensaje");
+						else
+						  UIBackingUtilities.execute("jsArticulos.exists('"+ articulo.toString("propio")+ "', '"+ articulo.toString("nombre")+ "', "+ position+ ","+ Constantes.REGISTROS_POR_LOTE+ ","+ (this.attrs.get("paginator")== null? false: this.attrs.get("paginator"))+ ");");
+					} // if	
 				} // if	
 				else
 					this.toMoveData(articulo, index);
@@ -656,8 +662,9 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			);
 			int position= this.getAdminOrden().getArticulos().indexOf(item);
 			if(this.getAdminOrden().getArticulos().size()> 1 && position>= 0) {
-				this.getAdminOrden().getArticulos().get(position).setCantidad(this.getAdminOrden().getArticulos().get(position).getCantidad()+ item.getCantidad());
-				UIBackingUtilities.execute("jsArticulos.exists("+ position+ ");");
+				Articulo articulo= this.getAdminOrden().getArticulos().get(position);
+				articulo.setCantidad(articulo.getCantidad()+ item.getCantidad());
+				UIBackingUtilities.execute("jsArticulos.exists('"+ articulo.getPropio()+ "', '"+ articulo.getNombre()+ "', "+ position+ ");");
 			} // if
 			else {
 				if(this.getAdminOrden().add(item))

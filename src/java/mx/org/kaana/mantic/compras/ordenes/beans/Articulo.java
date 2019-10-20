@@ -61,6 +61,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	private double inicial;
 	private String morado;
 	private String porcentajes;
+	private boolean facturado;
 
 	public Articulo() {
 		this(-1L);
@@ -103,6 +104,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.inicial     = cantidad;
 		this.morado      = "0";
 		this.porcentajes = "0";
+		this.facturado   = false;
 	}
 
 	public UISelectEntity getIdEntity() {
@@ -263,6 +265,14 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 
 	public void setPorcentajes(String porcentajes) {
 		this.porcentajes=porcentajes;
+	}
+
+	public boolean isFacturado() {
+		return facturado;
+	}
+
+	public void setFacturado(boolean facturado) {
+		this.facturado=facturado;
 	}
 	
 	public String getImporte$() {

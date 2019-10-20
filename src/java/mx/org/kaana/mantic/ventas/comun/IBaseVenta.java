@@ -826,7 +826,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				int position= this.getAdminOrden().getArticulos().indexOf(new ArticuloVenta(articulo.toLong("idArticulo"), this.costoLibre));
 				if(articulo.size()> 1 && position>= 0) {
 					if(index!= position)
-						UIBackingUtilities.execute("jsArticulos.exists("+ position+ ");");
+						UIBackingUtilities.execute("jsArticulos.exists('"+ articulo.toString("propio")+ "', '"+ articulo.toString("nombre")+ "', "+ position+ ");");
 				} // if	
 				else
 					this.toMoveData(articulo, index);

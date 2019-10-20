@@ -339,7 +339,7 @@
 													<p:commandLink process="@this" update="@(.importado) @(.filas) @(.recalculo)" actionListener="#{manticInventariosEntradasAccion.doDesasociarArticulo(row, index)}" title="Clic para desvincular un articulo de la factura (XML)" styleClass="filas" rendered="#{not row.disponible}">
 													  <h:graphicImage library="janal" name="icon/semaforos/circulo-verde.png"/>
 													</p:commandLink>
-													<h:graphicImage library="janal" name="icon/semaforos/circulo-rojo.png" rendered="#{row.disponible}"/>
+													<h:graphicImage library="janal" name="icon/semaforos/#{row.facturado? 'circulo-azul.png': 'circulo-rojo.png'}" rendered="#{row.disponible}"/>
 													<h:outputText value="#{index+ 1}.-"/>
 												</p:column>		
 												<p:column class="MarAuto Responsive janal-wid-12">
@@ -879,11 +879,13 @@
 				<p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" oncomplete="PF('buscador').hide();"/>
 			</div>
 		</p:dialog>
-		<p:panelGrid layout="grid" columns="2" columnClasses="janal-wid-col-38, janal-wid-100">
+		<p:panelGrid layout="grid" columns="6" columnClasses="janal-wid-col-30, janal-wid-100, janal-wid-col-30, janal-wid-100, janal-wid-col-30, janal-wid-100">
 			<h:graphicImage library="janal" name="icon/semaforos/circulo-verde.png"/>
-			<p:outputLabel value="El articulo se encuentra asociado a una partida de la factura (XML)"/>
+			<p:outputLabel value="El articulo se encuentra asociado a una partida de la factura"/>
 			<h:graphicImage library="janal" name="icon/semaforos/circulo-rojo.png"/>
 			<p:outputLabel value="El articulo se encuentra solamente en la nota de entrada"/>
+			<h:graphicImage library="janal" name="icon/semaforos/circulo-azul.png"/>
+			<p:outputLabel value="El articulo esta en la factura y no en la orden de compra"/>
 		</p:panelGrid>
 	</ui:define>   
 	<ui:define name="acciones">

@@ -477,7 +477,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 						disponibles.get(0).put("iva", new Value("iva", faltante.getIva()));
 						disponibles.get(0).put("unidadMedida", new Value("unidadMedida", faltante.getUnidadMedida()!= null? faltante.getUnidadMedida().toUpperCase(): ""));
 						disponibles.get(0).put("origen", new Value("origen", faltante.getNombre()));
+						disponibles.get(0).put("facturado", new Value("facturado", true));
 						this.attrs.put("encontrado", disponibles.get(0));
+						this.attrs.put("omitirMensaje", disponibles.get(0).toLong("idArticulo"));
 						this.doFindArticulo(this.getAdminOrden().getArticulos().size()- 1);
 					} // if
 				} // if	

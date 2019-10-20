@@ -3,8 +3,11 @@ package mx.org.kaana.mantic.inventarios.entradas.beans;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.Calendar;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
+import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 
 /**
  *@company KAANA
@@ -23,16 +26,18 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
   private UISelectEntity ikProveedorPago;
 	private UISelectEntity ikOrdenCompra;
 
-	public NotaEntrada() {
-		this(null);
+	public NotaEntrada() throws Exception {
+		this(1L, null);
 	}
 
-	public NotaEntrada(Long idOrdenCompra) {
-		this(-1L, idOrdenCompra);
-	}
-
-	public NotaEntrada(Long key, Long idOrdenCompra) {
+	public NotaEntrada(Long key, Long idOrdenCompra) throws Exception {
 		super(0D, null, "0.00", idOrdenCompra, 1L, new Date(Calendar.getInstance().getTimeInMillis()), "0.00", key, new Date(Calendar.getInstance().getTimeInMillis()), 1L, new Long(Calendar.getInstance().get(Calendar.YEAR)), Calendar.getInstance().get(Calendar.YEAR)+ "00000", 0D, "", 1L, -1L, 0D, 0D, 1D, 2L, "", -1L, 1L, 0D, 30L, new Date(Calendar.getInstance().getTimeInMillis()), 0D, -1L, 0D);
+		if(!Cadena.isVacio(idOrdenCompra)) {
+		  TcManticOrdenesComprasDto compra= (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, idOrdenCompra);
+		  super.setIdProveedor(compra.getIdProveedor());
+			super.setIdProveedorPago(compra.getIdProveedorPago());
+			super.setIdAlmacen(compra.getIdAlmacen());
+		} // if
 	}
 
 	public NotaEntrada(Double descuentos, Long idProveedor, String descuento, Long idOrdenCompra, Long idDirecta, Date fechaRecepcion, String extras, Long idNotaEntrada, Date fechaFactura, Long idNotaEstatus, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Long idAlmacen, Double subTotal, Double impuestos, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes, Long idProveedorPago) {

@@ -127,13 +127,17 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 	}
 
 	private ArrayList<Articulo> toLoadOrdenDetalle() throws Exception {
-		ArrayList<Articulo> regresar= new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "detalle", this.orden.toMap()));
-		ArrayList<Articulo> loaded  = new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "diferencia", this.orden.toMap()));
-		Map<String, Object> params=null;
+		ArrayList<Articulo> regresar= null;
+		ArrayList<Articulo> loaded  = null;
+		Map<String, Object> params  = null;
 		try {
 			params=new HashMap<>();
+			params.put("idNotaEntrada", this.orden.getIdOrdenCompra());
+			params.put("idOrdenCompra", this.orden.getIdNotaEntrada());
 			params.put("idProveedor", this.orden.getIdProveedor());
 			params.put("idAlmacen", this.orden.getIdAlmacen());
+  		regresar= new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "detalle", params));
+	  	loaded  = new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "diferencia", params));
 			for (Articulo item: loaded) {
   			params.put("idArticulo", item.getIdArticulo());
 				Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
@@ -159,15 +163,17 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 	}
 	
 	private ArrayList<Articulo> toDefaultOrdenDetalle() throws Exception {
-		ArrayList<Articulo> regresar= new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "diferencia", this.orden.toMap()));
-		Map<String, Object> params=null;
+		ArrayList<Articulo> regresar= null;
+		Map<String, Object> params  = null;
 		try {
 			params=new HashMap<>();
+			params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
 			params.put("idProveedor", this.orden.getIdProveedor());
 			params.put("idAlmacen", this.orden.getIdAlmacen());
+			regresar= new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "diferencia", params));
 			for (Articulo item: regresar) {
   			params.put("idArticulo", item.getIdArticulo());
-        Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", this.orden.toMap(), "stock");
+        Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
 				item.setStock(stock== null? 0D: stock.toDouble());
 			} // for
 		} // try
