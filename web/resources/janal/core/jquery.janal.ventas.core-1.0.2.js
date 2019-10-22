@@ -1174,9 +1174,9 @@
 					this.down(true);
 			return false;
 		},
-		exists: function(index) {
+		exists: function(codigo, nombre, index) {
 			janal.console('jsVentas.exists: '+ index);
-			alert('El articulo ya existe en la orden y se encuentra en la fila '+ (index+ 1)+ ',\n la cantidad de articulos solicitados se aumento\n con la cantidad del articulo seleccionado\n por favor verifique y corriga el valor !');
+			alert('El articulo ['+ codigo+ ' - '+ nombre+' ]\nya existe en la venta y se encuentra en la fila '+ (index+ 1)+ ',\npor favor verifique y corriga la cantidad !');
 			this.cursor.tmp= index;
 			setTimeout('$articulos.cursor.index= $articulos.cursor.tmp;$articulos.goto();', 1000);
 			janal.desbloquear();
@@ -1563,21 +1563,21 @@
 			janal.console('jsArticulos.lastCursorAt: '+ $("input[id$="+ this.codes+ "]").last().attr('id'));
 			setTimeout('$("input[id$="+ jsArticulos.codes+ "]").last().focus();', 1000);
 		},
-		ventaFinished: function(){
-			janal.refresh();
+		ventaFinished: function() {
+			// janal.refresh();
 			var ok= janal.partial('general');
 			if(ok) {																		
 				PF('dlgCerrarVenta').show();	
-				setTimeout("$('#dialogoCerrarVenta').focus();", 1000);						
+				// setTimeout("$('#dialogoCerrarVenta').focus();", 1000);						
 			} // if				
 			else
 				janal.desbloquear();
 			return ok;
 		}, // ventaFinished
-		applyValidacionesSwitch: function(){				
+		applyValidacionesSwitch: function() {				
 			var isCredito = $('#contenedorGrupos\\:creditoCliente_input').is(':checked');
 			var isApartado= $('#contenedorGrupos\\:switchApartado_input').is(':checked');
-			if(isApartado){
+			if(isApartado) {
 				var anticipo= 10;
 				var total   = parseFloat($('#contenedorGrupos\\:total').val());
 				var minAbono= (total * anticipo) / 100;

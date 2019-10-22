@@ -30,6 +30,7 @@
     	$(document).ready(function() {
         jsArticulos= new Janal.Control.Articulos.Core(#{manticVentasAccion.adminOrden.articulos.size()}, 'tabla\\:');
 				janal.readingMode('#{manticVentasAccion.attrs.nombreAccion}');
+				jsArticulos.lastCursorAt();
       });							
 			
 			function validateCapturaDescuentos() {

@@ -509,7 +509,7 @@
 		</div>		
 	</ui:define>		
 	<ui:define name="dialogos">		
-		<p:dialog id="dialogoCerrarVenta" widgetVar="dlgCerrarVenta" header="Generar garantia" resizable="false" closable="false" responsive="true" width="30%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoCerrar', fieldsDialogPago);janal.refresh();">			
+		<p:dialog id="dialogoCerrarVenta" widgetVar="dlgCerrarVenta" header="Generar garantia" resizable="false" closable="false" responsive="true" width="30%" onHide="janal.restore(); janal.refresh();" onShow="janal.change('formDialogoCerrar', fieldsDialogPago); janal.refresh();">			
 			<h:form id="formDialogoCerrar" prependId="false">
 				<p:outputLabel for="caja" value="Caja:" styleClass="font-resume-venta-detail"/>
 				<p:selectOneMenu id="caja" value="#{manticVentasGarantiasAccion.attrs.caja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">								

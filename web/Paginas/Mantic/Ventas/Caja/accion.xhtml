@@ -6,7 +6,7 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
-                template="/WEB-INF/plantillas/reporte.xhtml">
+                template="/WEB-INF/plantillas/venta.xhtml">
 	<ui:param name="titulo" value="Cuentas abiertas para cobro"/>
 	<ui:param name="notIsCaja" value="true" class="javax.faces.Boolean"/>  
 	<ui:define name="librerias">    		
@@ -89,6 +89,7 @@
     	$(document).ready(function() {
 				jsArticulos= new Janal.Control.Articulos.Core(#{manticVentasCajaAccion.adminOrden.articulos.size()}, 'contenedorGrupos\\:tabla\\:');
 				janal.readingMode('#{manticVentasCajaAccion.attrs.nombreAccion}');
+				jsArticulos.lastCursorAt();
 				/*$(document).on('blur, keydown', '.janal-key-control', function(e) {
 					var key= e.keyCode ? e.keyCode : e.which;
 					if(key=== 13 || key=== 9 || key=== 38 || key=== 40)
@@ -174,11 +175,11 @@
 			} // validateCapturaCambioPrecio
 			
 			function descuentoUserFocus(){
-				setTimeout("$('#descuentousr').focus();", 1000);						
+				setTimeout("$('#descuentousr').focus();", 100);						
 			}						
 			
 			function aceptarFinalizarFocus(){				
-				setTimeout("$('#aceptarFinalizar').focus();", 1000);
+				setTimeout("$('#aceptarFinalizar').focus();", 100);
 			}
 						
 			function markedDays(date) {				

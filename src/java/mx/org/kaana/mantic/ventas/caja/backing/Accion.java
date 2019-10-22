@@ -1474,15 +1474,15 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 	} // loadUltimoTicket
 	
-	public void doPrintUltimoTicket(){
-		doPrint((Entity) this.attrs.get("ultimoTicketEntity"));		
+	public void doPrintUltimoTicket() {
+		this.doPrint((Entity) this.attrs.get("ultimoTicketEntity"));		
 	} // doPrintUltimoTicket
 	
 	public void doPrintTicket(){
-		doPrint((Entity) this.attrs.get("seleccionTicket"));
+		this.doPrint((Entity) this.attrs.get("seleccionTicket"));
 	} // doPrintTicket
 	
-	public void doPrint(Entity seleccionado){
+	public void doPrint(Entity seleccionado) {
 		Map<String, Object>params= null;
 		CreateTicket ticket      = null;
 		AdminTickets adminTicket = null;
