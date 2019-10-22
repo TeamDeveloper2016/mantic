@@ -913,4 +913,19 @@ public class Accion extends IBaseVenta implements Serializable {
 	public String doCancelar() {     	
     return (this.attrs.get("retorno") != null ? (String)this.attrs.get("retorno") : "filtro").concat(Constantes.REDIRECIONAR);
   } // doCancelar
+	
+	public void doReturnAllItems() {
+		try {
+			int index= 0;
+			for(Articulo item: this.getAdminOrden().getArticulos()) {
+				item.setCantidad(item.getCantidadGarantia());
+				super.doCalculate(index++);
+			} // for
+		} // try
+		catch (Exception e) {			
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	}
+	
 }

@@ -121,7 +121,19 @@
 					} // else
 				});
 			} // readingModeLocal
+			
+			function equalsAll() {
+				janal.console('jsArticulos.equalsAll:');
+			  $('input[id$="cantidadGarantia"]').each(function() {
+ 					var name= $(this).attr('id');
+ 			  	janal.console('jsArticulos.equalsAll: '+ name);
+					name= '#'+ name.substring(0, name.lastIndexOf(":")+ 1)+ 'cantidades';
+					$(name.replace(/:/gi, '\\:')).val($(this).val());
+ 			  	janal.console('jsArticulos.equalsAll: '+ name);
+				});	
+			}
 			// ]]>
+			
 		</script>
 		<style type="text/css">
 			.janal-total-compra {
@@ -278,9 +290,11 @@
 											</f:facet>
 											<h:outputText id="nombres" value="#{row['nombre']}" title="Código propio: #{row['propio']}  Existencias almacen: #{row['stock']}" escape="false"/>
 										</p:column>		
-										<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+										<p:column class="janal-column-right MarAuto Responsive janal-wid-8" >
 											<f:facet name="header">
-												<h:outputText value="Cantidad"/>
+												<p:commandLink process="@this" update="@(.filas) @(.recalculo)" actionListener="#{manticVentasGarantiasAccion.doReturnAllItems}" title="Clic para devolver todos los articulos">
+												  <h:outputText value="Cantidad"/>
+												</p:commandLink>
 											</f:facet>											
 											<p:inputText id="cantidadGarantia" value="#{row['cantidadGarantia']}" style="display:none"/>
 											<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-move-event key-event-sat filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '0'); jsArticulos.calculateGarantia($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), #{index});"/>
