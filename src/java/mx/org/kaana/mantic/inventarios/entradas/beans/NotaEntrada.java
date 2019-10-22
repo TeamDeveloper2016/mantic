@@ -32,7 +32,7 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
 
 	public NotaEntrada(Long key, Long idOrdenCompra) throws Exception {
 		super(0D, null, "0.00", idOrdenCompra, 1L, new Date(Calendar.getInstance().getTimeInMillis()), "0.00", key, new Date(Calendar.getInstance().getTimeInMillis()), 1L, new Long(Calendar.getInstance().get(Calendar.YEAR)), Calendar.getInstance().get(Calendar.YEAR)+ "00000", 0D, "", 1L, -1L, 0D, 0D, 1D, 2L, "", -1L, 1L, 0D, 30L, new Date(Calendar.getInstance().getTimeInMillis()), 0D, -1L, 0D);
-		if(!Cadena.isVacio(idOrdenCompra)) {
+		if(!Cadena.isVacio(idOrdenCompra) && idOrdenCompra> 0L) {
 		  TcManticOrdenesComprasDto compra= (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, idOrdenCompra);
 		  super.setIdProveedor(compra.getIdProveedor());
 			super.setIdProveedorPago(compra.getIdProveedorPago());
