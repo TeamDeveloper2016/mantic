@@ -1329,7 +1329,7 @@
 			</div>
 		</p:dialog>	
 		
-		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onShow="$('input[name=codigo]').val('');clean();" width="900px" height="470px" resizable="false" onHide="janal.desbloquear(); jsArticulos.restoreCursoArt();" appendTo="@(body)">
+		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onShow="$('input[name=codigo]').val('');clean();" width="930px" height="470px" resizable="false" onHide="janal.desbloquear(); jsArticulos.restoreCursoArt();" appendTo="@(body)">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
 					<p:outputLabel for="codigo" value="Código o nombre:"/>
@@ -1348,6 +1348,7 @@
 				<div class="ui-grid-col-12 janal-column-left">
 					<p:outputLabel value="Click sobre la tabla para seleccionar el articulo, por defecto es el primero de la lista"/><br/>
 					<p:dataTable id="buscados" widgetVar="widgetBuscados" lazy="true" styleClass="janal-buscados-articulos janal-wid-100" value="#{manticVentasCajaAccion.attrs.lazyModel}" selection="#{manticVentasCajaAccion.attrs.buscado}" var="item" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="50" liveScroll="true" liveScrollBuffer="50" scrollable="true" scrollHeight="280" style="margin-bottom:0">
+						<p:ajax event="rowSelect" process="@this" update="@(.filas) @(.recalculo)" listener="#{manticVentasAccion.doRowDblselect}"/>
 						<p:ajax event="rowDblselect" listener="#{manticVentasCajaAccion.doRowDblselect}" process="@this" update="@(.filas) @(.recalculo)" oncomplete="PF('dialogo').hide(); jsArticulos.close();"/>	
 						<p:column headerText="No" styleClass="janal-wid-col-30">
 							<h:outputText value="#{index+ 1}.-"/>

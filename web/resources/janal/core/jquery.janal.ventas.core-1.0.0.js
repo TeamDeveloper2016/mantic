@@ -140,6 +140,8 @@
 						break;
 					case $articulos.VK_F7:
 					case $articulos.VK_ENTER:
+						PF('dialogo').hide(); 
+						$articulos.close();
 						return false;
 						break;
 					case $articulos.VK_UP:
@@ -1508,7 +1510,7 @@
 			$('div[id$='+ this.panels+ ']').hide();
 			$('div[id$='+ this.itemtips+ ']').hide();
 			$('#source-image').attr('href', $('#icon-image').attr('src'));
-			setTimeout('$articulos.goto();', 1000); 
+			setTimeout('$articulos.lastCursorAt();', 500); 
 		},
 		clientes: function(name) {
 			console.log('jsVentas.clientes: '+ $(name).val());
@@ -1590,7 +1592,7 @@
 			this.applyValidacionesSwitch();
 			this.ventaFinished();
 		}, // applyValidacionesGeneral
-		applyValidacionesCredito: function(){
+		applyValidacionesCredito: function() {
 			this.applyValidacionesSwitch();		
 			janal.desbloquear();
 		} // applyValidacionesCredito
