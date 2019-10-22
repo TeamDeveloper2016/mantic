@@ -1676,21 +1676,23 @@ public class Accion extends IBaseVenta implements Serializable {
     }// finally
 	}
 
-	public void doMostrarDetalleTicket(){
+	public void doMostrarDetalleTicket() {
 		Entity seleccionado      = null;
 		Map<String, Object>params= null;
 		List<Columna>campos      = null;
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionDetalle");									
 			params= new HashMap<>();
-			params.put("idVenta", seleccionado.getKey());
-			campos= new ArrayList<>();
-			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			this.lazyDetalleTicket= new FormatLazyModel("VistaTcManticVentasDetallesDto", "detalle", params, campos);
-			UIBackingUtilities.resetDataTable("tablaDetalleTicket");
-			//this.seleccionDetalleTicket= (Entity) DaoFactory.getInstance().toEntity("TcManticVentasDto", "detalle", params);
-			this.attrs.put("medioPagoDetalleTicket", doTipoMedioPago(seleccionado));						
-			this.attrs.put("seleccionDetalleTicket", seleccionado);						
+			if(seleccionado!= null && !seleccionado.isEmpty()) {
+				params.put("idVenta", seleccionado.getKey());
+				campos= new ArrayList<>();
+				campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+				this.lazyDetalleTicket= new FormatLazyModel("VistaTcManticVentasDetallesDto", "detalle", params, campos);
+				UIBackingUtilities.resetDataTable("tablaDetalleTicket");
+				//this.seleccionDetalleTicket= (Entity) DaoFactory.getInstance().toEntity("TcManticVentasDto", "detalle", params);
+				this.attrs.put("medioPagoDetalleTicket", doTipoMedioPago(seleccionado));						
+				this.attrs.put("seleccionDetalleTicket", seleccionado);			
+			} // if
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
