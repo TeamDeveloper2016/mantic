@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import mx.org.kaana.libs.echarts.beans.Coordinate;
 import mx.org.kaana.libs.echarts.beans.Label;
 import mx.org.kaana.libs.echarts.beans.MarkLine;
 import mx.org.kaana.libs.echarts.beans.MarkPoint;
@@ -109,4 +110,8 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 		return "Serie{"+"barWidth="+barWidth+", data="+data+", markPoint="+markPoint+", markLine="+markLine+", barGap="+barGap+", barMaxWidth="+barMaxWidth+", label="+label+'}';
 	}
 
+	public void addLine(Coordinate coordinate) {
+		this.getMarkLine().getData().add(coordinate);
+	}
+		
 }

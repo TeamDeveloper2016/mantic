@@ -2,6 +2,8 @@ package mx.org.kaana.libs.echarts.test;
 
 import java.util.Collections;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.libs.echarts.beans.Coordinate;
+import mx.org.kaana.libs.echarts.beans.MarkLine;
 import mx.org.kaana.libs.echarts.beans.Title;
 import mx.org.kaana.libs.echarts.enums.EBarOritentation;
 import mx.org.kaana.libs.echarts.kind.BarModel;
@@ -26,6 +28,7 @@ public class BarDemo {
      */
     public static void main(String[] args) throws Exception {
       BarModel model= new BarModel(new Title("CGOR", null), EBarOritentation.VERTICAL);
+			model.getSeries().get(0).addLine(new Coordinate("Hola", 6, 130));
 			LOG.info(model.toJson());
 			
 			Simple simple       = new Simple("ventas", DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "simple", Collections.EMPTY_MAP));

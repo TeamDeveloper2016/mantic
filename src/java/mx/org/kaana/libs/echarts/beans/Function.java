@@ -10,18 +10,18 @@ import java.io.Serializable;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Data implements Serializable {
+public class Function implements Serializable {
 
 	private static final long serialVersionUID=7426814294366922507L;
 
   private String name;
   private String type;
 
-	public Data(String name) {
+	public Function(String name) {
 		this(name, "average");
 	}
 
-	public Data(String name, String type) {
+	public Function(String name, String type) {
 		this.name=name;
 		this.type=type;
 	}

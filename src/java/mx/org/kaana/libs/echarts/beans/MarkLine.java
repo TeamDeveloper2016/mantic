@@ -13,25 +13,29 @@ import java.util.List;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class MarkLine implements Serializable {
+public class MarkLine implements  Serializable {
 
 	private static final long serialVersionUID=912847999224677836L;
 
-  private List<Data> data;
+  private List<IMarkLine> data;
 
 	public MarkLine(String name) {
-		this(new ArrayList(Arrays.asList(new Data(name))));
+		this(new ArrayList(Arrays.asList(new Function(name))));
 	}
 
-	public MarkLine(List<Data> data) {
+	public MarkLine(String name, Integer x, Integer y) {
+		this(new ArrayList(new Coordinate(name, x, y)));
+	}
+
+	public MarkLine(List<IMarkLine> data) {
 		this.data=data;
 	}
 
-	public List<Data> getData() {
+	public List<IMarkLine> getData() {
 		return data;
 	}
 
-	public void setData(List<Data> data) {
+	public void setData(List<IMarkLine> data) {
 		this.data=data;
 	}
 
