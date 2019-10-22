@@ -57,7 +57,7 @@
         </div>
 				<p:spacer/>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticConsultasHoras.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticConsultasHoras.attrs.seleccionado}" selectionMode="single" paginator="#{manticConsultasHoras.lazyModel.rowCount gt manticConsultasHoras.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
+          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticConsultasHoras.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticConsultasHoras.attrs.seleccionado}" selectionMode="single" paginator="#{manticConsultasHoras.lazyModel.rowCount gt manticConsultasHoras.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
             <f:facet name="header" >
               <div class="lg-pantalla">
                 <p:menuButton value="Opciones">                  
@@ -74,37 +74,37 @@
               <f:facet name="header">
                 <h:outputText value="Hora"/>
               </f:facet>
-              <h:outputText value="#{filtro['hora']}:00 - #{filtro['hora']}:59"/>
+              <h:outputText value="#{row['hora']}:00 - #{row['hora']}:59"/>
             </p:column>		
-						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.empresa}">
+						<p:column class="MarAuto Responsive janal-wid-20" sortBy="#{row.nombreEmpresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
-              <h:outputText value="#{filtro['empresa']}"/>
+              <h:outputText value="#{row['nombreEmpresa']}"/>
             </p:column>																
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-7" sortBy="#{filtro.totalVentas}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-7" sortBy="#{row.totalVentas}">
               <f:facet name="header">
                 <h:outputText value="Total ventas"/>
               </f:facet>
-              <h:outputText value="#{filtro['totalVentas']}"/>
+              <h:outputText value="#{row['totalVentas']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-7" sortBy="#{filtro.impuestos}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-7" sortBy="#{row.impuestos}">
               <f:facet name="header">
                 <h:outputText value="Iva"/>
               </f:facet>
-              <h:outputText value="#{filtro['impuestos']}"/>
+              <h:outputText value="#{row['impuestos']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-7" sortBy="#{filtro.subTotal}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-7" sortBy="#{row.subTotal}">
               <f:facet name="header">
                 <h:outputText value="Subtotal"/>
               </f:facet>
-              <h:outputText value="#{filtro['subTotal']}"/>
+              <h:outputText value="#{row['subTotal']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-7" sortBy="#{filtro.importe}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-7" sortBy="#{row.importe}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
-              <h:outputText value="#{filtro['total']}"/>
+              <h:outputText value="#{row['total']}"/>
             </p:column>								
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticConsultasDiarias.lazyModel==null?0:manticConsultasDiarias.lazyModel.rowCount}] registros"/>
