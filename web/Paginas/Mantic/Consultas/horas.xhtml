@@ -5,7 +5,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Ventas por vendedor" />
+  <ui:param name="titulo" value="Ventas por hora" />
   <ui:define name="librerias">
 		<h:outputScript library="janal" name="barcode/js.barcode.all.min.js"/>
 		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryTicketJs}"/>
@@ -107,7 +107,7 @@
               <h:outputText value="#{row['total']}"/>
             </p:column>								
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{manticConsultasDiarias.lazyModel==null?0:manticConsultasDiarias.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{manticConsultasHoras.lazyModel==null?0:manticConsultasHoras.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>          
         </div>

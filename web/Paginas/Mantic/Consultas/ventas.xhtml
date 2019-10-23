@@ -188,7 +188,7 @@
 				<p:spacer/><p:spacer/>
 			</h:panelGrid>
 			<p:spacer height="10px"/>
-			<p:dataTable  lazy="true" id="tablaDetalle" widgetVar="kajoolTable" var="filtro" value="#{manticConsultasVentas.detalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticConsultasVentas.attrs.seleccionadoDetalle}" selectionMode="single" paginator="#{manticConsultasVentas.detalle.rowCount gt manticConsultasVentas.detalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">								
+			<p:dataTable lazy="true" id="tablaDetalle" widgetVar="kajoolTableDetalle" var="row" value="#{manticConsultasVentas.detalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticConsultasVentas.attrs.seleccionadoDetalle}" selectionMode="single" paginator="#{manticConsultasVentas.detalle.rowCount gt manticConsultasVentas.detalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">								
 				<p:column class="MarAuto Responsive janal-wid-7" sortBy="#{row.codigo}">
 					<f:facet name="header">
 						<h:outputText value="Código"/>
