@@ -22,7 +22,7 @@
 				</div>	
 				<div class="ui-grid-col-12">
 					<p:selectOneMenu id="idEmpresas" value="#{manticVentasCajaCierresAmbos.attrs.idEmpresas}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-						<f:selectItems value="#{manticVentasCajaCierresAmbos.attrs.empresas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+						<f:selectItems value="#{manticVentasCajaCierresAmbos.attrs.empresas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{item.nombre}"/>
 						<p:column headerText="Clave">
 							<h:outputText value="#{item.clave}"/>
 						</p:column>   

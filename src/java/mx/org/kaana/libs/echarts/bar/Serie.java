@@ -26,8 +26,7 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 	private List<Value> data;
   private MarkPoint markPoint;
   private MarkLine markLine;
-	private Integer barGap; 
-	private Integer barMaxWidth;
+	private String barCategoryGap; 
 	private Label label;
 
 	public Serie() {
@@ -44,8 +43,7 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 		this.data=data;
 		this.markPoint=new MarkPoint();
 		this.markLine=new MarkLine(name);
-		this.barGap=0;
-		this.barMaxWidth=60;
+		this.barCategoryGap="10%";
 		this.label=new Label();
 	}
 
@@ -81,20 +79,12 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 		this.markLine=markLine;
 	}
 
-	public Integer getBarGap() {
-		return barGap;
+	public String getBarCategoryGap() {
+		return barCategoryGap;
 	}
 
-	public void setBarGap(Integer barGap) {
-		this.barGap=barGap;
-	}
-
-	public Integer getBarMaxWidth() {
-		return barMaxWidth;
-	}
-
-	public void setBarMaxWidth(Integer barMaxWidth) {
-		this.barMaxWidth=barMaxWidth;
+	public void setBarCategoryGap(String barCategoryGap) {
+		this.barCategoryGap=barCategoryGap;
 	}
 
 	public Label getLabel() {
@@ -107,7 +97,7 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 
 	@Override
 	public String toString() {
-		return "Serie{"+"barWidth="+barWidth+", data="+data+", markPoint="+markPoint+", markLine="+markLine+", barGap="+barGap+", barMaxWidth="+barMaxWidth+", label="+label+'}';
+		return "Serie{"+"barWidth="+barWidth+", data="+data+", markPoint="+markPoint+", markLine="+markLine+", barCategoryGap="+barCategoryGap+", label="+label+'}';
 	}
 
 	public void addLine(Coordinate coordinate) {
