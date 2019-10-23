@@ -62,6 +62,7 @@ public class Ambos extends IBaseFilter implements Serializable {
       this.attrs.put("idCaja", JsfBase.getFlashAttribute("idCaja"));
 			this.attrs.put("idAbono", -1L);
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
+			this.toLoadCatalog();
 		  this.doLoad();
     } // try
     catch (Exception e) {
@@ -106,6 +107,8 @@ public class Ambos extends IBaseFilter implements Serializable {
   		sb.append("(tc_mantic_cajas.id_caja= ").append(this.attrs.get("idCaja")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idAbono")) && !this.attrs.get("idAbono").toString().equals("-1"))
   		sb.append("(tc_mantic_cierres_retiros.id_abono= ").append(this.attrs.get("idAbono")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idUsuario")) && !this.attrs.get("idUsuario").toString().equals("-1"))
+  		sb.append("(tc_mantic_cierres_retiros.id_usuario= ").append(this.attrs.get("idUsuario")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
@@ -117,6 +120,19 @@ public class Ambos extends IBaseFilter implements Serializable {
 		return regresar;		
 	}
 
+	private void toLoadCatalog() {
+		List<Columna> columns     = null;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("usuarios", (List<UISelectEntity>) UIEntity.build("VistaCierresCajasDto", "usuarios", this.attrs, columns));
+			this.attrs.put("idUsuario", new UISelectEntity("-1"));
+    } // try
+    finally {
+      Methods.clean(columns);
+    }// finally
+	}
+	
 	private void toLoadEmpresas() {
 		List<Columna> columns= null;
     try {

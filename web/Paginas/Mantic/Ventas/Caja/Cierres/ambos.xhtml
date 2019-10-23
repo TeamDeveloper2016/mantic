@@ -56,6 +56,14 @@
 									<h:outputText value="#{manticVentasCajaCierresAmbos.doMonedaSat(item.limite)}"/>
 								</p:column>   
 							</p:selectOneMenu>						
+              <p:outputLabel for="idUsuario" value="Persona que $(+/-):"/>
+              <p:selectOneMenu id="idUsuario" value="#{manticVentasCajaCierresAmbos.attrs.idUsuario}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                <f:selectItems value="#{manticVentasCajaCierresAmbos.attrs.usuarios}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
               <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticVentasCajaCierresAmbos.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
