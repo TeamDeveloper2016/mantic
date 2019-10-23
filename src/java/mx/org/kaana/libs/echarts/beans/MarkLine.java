@@ -18,17 +18,23 @@ public class MarkLine implements  Serializable {
 	private static final long serialVersionUID=912847999224677836L;
 
   private List<IMarkLine> data;
+	private Label label;
 
 	public MarkLine(String name) {
-		this(new ArrayList(Arrays.asList(new Function(name))));
+		this(new ArrayList(Arrays.asList(new Function(name))), "end");
 	}
 
 	public MarkLine(String name, Integer x, Integer y) {
-		this(new ArrayList(new Coordinate(name, x, y)));
+		this(new ArrayList(new Coordinate(name, x, y)), "end");
 	}
 
-	public MarkLine(List<IMarkLine> data) {
+	public MarkLine(String name, Integer x, Integer y, String position) {
+		this(new ArrayList(new Coordinate(name, x, y)), position);
+	}
+
+	public MarkLine(List<IMarkLine> data, String position) {
 		this.data=data;
+		this.label= new Label(new Normal(Boolean.TRUE, position));
 	}
 
 	public List<IMarkLine> getData() {
@@ -39,9 +45,17 @@ public class MarkLine implements  Serializable {
 		this.data=data;
 	}
 
+	public Label getLabel() {
+		return label;
+	}
+
+	public void setLabel(Label label) {
+		this.label=label;
+	}
+
 	@Override
 	public String toString() {
-		return "MarkLine{"+"data="+data+'}';
+		return "MarkLine{"+"data="+data+", label="+label+'}';
 	}
 	
 }

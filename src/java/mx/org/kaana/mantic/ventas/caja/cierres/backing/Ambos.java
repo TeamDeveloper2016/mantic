@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.ventas.caja.cierres.backing;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +20,8 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -51,13 +54,14 @@ public class Ambos extends IBaseFilter implements Serializable {
     try {
 			if(JsfBase.getFlashAttribute("idCierre")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa"));
 			this.attrs.put("sucursales", JsfBase.getFlashAttribute("idEmpresa"));
       this.attrs.put("idCierre", JsfBase.getFlashAttribute("idCierre"));
       this.attrs.put("idCierreEstatus", JsfBase.getFlashAttribute("idCierreEstatus"));
       this.attrs.put("idCaja", JsfBase.getFlashAttribute("idCaja"));
+			this.attrs.put("idAbono", -1L);
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
-      this.attrs.put("sortOrder", "order by tc_mantic_cierres_retiros.id_abono, tc_mantic_cierres_retiros.consecutivo ");
 		  this.doLoad();
     } // try
     catch (Exception e) {
@@ -69,18 +73,15 @@ public class Ambos extends IBaseFilter implements Serializable {
   @Override
   public void doLoad() {
     List<Columna> columns     = null;
-		Map<String, Object> params= new HashMap<>();
+		Map<String, Object> params= this.toPrepare();
     try {
-			if(JsfBase.getFlashAttribute("idCierre")== null)
-				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-      params.put("idCierre", this.attrs.get("idCierre"));
-      params.put("sortOrder", "order by tc_mantic_cierres_retiros.id_abono, tc_mantic_cierres_retiros.consecutivo ");
+      params.put("sortOrder", "order by tc_mantic_empresas.id_empresa, tc_mantic_cajas.id_caja, tc_mantic_cierres_retiros.consecutivo desc");
       columns = new ArrayList<>();
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("caja", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-      this.lazyModel = new FormatCustomLazy("VistaCierresCajasDto", "retiros", params, columns);
+      this.lazyModel = new FormatCustomLazy("VistaCierresCajasDto", "consulta", params, columns);
       UIBackingUtilities.resetDataTable();
 			this.toLoadEmpresas();
     } // try
@@ -93,6 +94,28 @@ public class Ambos extends IBaseFilter implements Serializable {
       Methods.clean(columns);
     } // finally		
   } // doLoad
+
+  private Map<String, Object> toPrepare() {
+	  Map<String, Object> regresar= new HashMap<>();	
+		StringBuilder sb= new StringBuilder();
+		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
+		  sb.append("(date_format(tc_mantic_cierres_retiros.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
+		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
+		  sb.append("(date_format(tc_mantic_cierres_retiros.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+		if(!Cadena.isVacio(this.attrs.get("idCaja")) && !this.attrs.get("idCaja").toString().equals("-1"))
+  		sb.append("(tc_mantic_cajas.id_caja= ").append(this.attrs.get("idCaja")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idAbono")) && !this.attrs.get("idAbono").toString().equals("-1"))
+  		sb.append("(tc_mantic_cierres_retiros.id_abono= ").append(this.attrs.get("idAbono")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
+		else
+		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+		if(sb.length()== 0)
+		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+		else	
+		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+		return regresar;		
+	}
 
 	private void toLoadEmpresas() {
 		List<Columna> columns= null;

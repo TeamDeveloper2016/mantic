@@ -65,7 +65,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("idCierreAnterior", JsfBase.getFlashAttribute("idCierreAnterior"));
 			this.toLoadCatalog();
       if(this.attrs.get("idCierreAnterior")!= null && this.attrs.get("idCierre")!= null) 
-			  doPrintCorte();
+			  this.doPrintCorte();
       if(this.attrs.get("idCierre")!= null) 
 			  this.doLoad();
     } // try
@@ -78,7 +78,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   @Override
   public void doLoad() {
     List<Columna> columns     = null;
-		Map<String, Object> params= toPrepare();
+		Map<String, Object> params= this.toPrepare();
     try {
       params.put("sortOrder", "order by tc_mantic_empresas.id_empresa, tc_mantic_cajas.id_caja, tc_mantic_cierres.registro desc ");
       columns = new ArrayList<>();
