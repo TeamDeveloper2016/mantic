@@ -717,6 +717,8 @@
 					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
 				inner join 
 					tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus=tc_mantic_ventas_estatus.id_venta_estatus
+				inner join
+					tc_mantic_tipos_documentos on tc_mantic_tipos_documentos.id_tipo_documento= tc_mantic_ventas_estatus.id_tipo_documento
 				inner join 
 				  tc_janal_usuarios on tc_mantic_ventas.id_usuario = tc_janal_usuarios.id_usuario
 				inner join				
@@ -783,6 +785,8 @@
 					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
 				inner join 
 					tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus=tc_mantic_ventas_estatus.id_venta_estatus
+				inner join
+					tc_mantic_tipos_documentos on tc_mantic_tipos_documentos.id_tipo_documento= tc_mantic_ventas_estatus.id_tipo_documento
 				inner join 
 				  tc_janal_usuarios on tc_mantic_ventas.id_usuario = tc_janal_usuarios.id_usuario
 				inner join				
@@ -806,17 +810,16 @@
 			</select>
 			<select id="horas">
 				select 					
-					if(id_key is null, -1, id_key) id_key,
-					if(empresa is null, ' ', empresa) empresa,
-					if(nombre_empresa is null, ' ', nombre_empresa) nombre_empresa,
-					if(total_ventas is null, 0, total_ventas) total_ventas,					
-					if(total is null, 0, sum(total)) total,
-					if(sub_total is null, 0, sum(sub_total)) sub_total,
-					if(impuestos is null, 0, sum(impuestos)) impuestos,
-					if(hora is null, '00', hora) hora	
+					convert(hora, integer) as id_key,
+					empresa,
+					nombre_empresa,
+					total_ventas,
+					total,
+					sub_total,
+					impuestos,
+					hora   
 				from(
-        select					
-					tc_mantic_ventas.id_empresa as id_key,  				  
+        select										 				  
 				  tc_mantic_empresas.clave as empresa,  
 				  tc_mantic_empresas.nombre as nombre_empresa,  					
 					count(tc_mantic_ventas.total) total_ventas,
@@ -840,6 +843,8 @@
 					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
 				inner join 
 					tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus=tc_mantic_ventas_estatus.id_venta_estatus
+				inner join
+					tc_mantic_tipos_documentos on tc_mantic_tipos_documentos.id_tipo_documento= tc_mantic_ventas_estatus.id_tipo_documento
 				inner join 
 				  tc_janal_usuarios on tc_mantic_ventas.id_usuario = tc_janal_usuarios.id_usuario
 				inner join				
@@ -858,6 +863,8 @@
 					date_format(tc_mantic_ventas.registro, '%H')
 				order by 
 					date_format(tc_mantic_ventas.registro, '%H'), tc_mantic_empresas.clave) principal
+				order by 
+					hora
 			</select>
 			<select id="vendedor">
 				select
@@ -865,6 +872,10 @@
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre					
 				from
 					tc_mantic_ventas
+				inner join 
+					tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus=tc_mantic_ventas_estatus.id_venta_estatus
+				inner join
+					tc_mantic_tipos_documentos on tc_mantic_tipos_documentos.id_tipo_documento= tc_mantic_ventas_estatus.id_tipo_documento
 				inner join
 					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
 				inner join 
