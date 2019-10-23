@@ -114,7 +114,7 @@ public class Ventas extends IBaseTicket implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("vendedor")) && !this.attrs.get("vendedor").toString().equals("-1"))
 			sb.append("tc_mantic_ventas.id_usuario=").append(this.attrs.get("vendedor")).append(" and ");					
 		if(!Cadena.isVacio(this.attrs.get("tipoPago")) && !this.attrs.get("tipoPago").toString().equals("-1"))
-			sb.append("tc_mantic_tipos_medios_pagos.id_tipo_medio_pago=").append(this.attrs.get("tipoPago")).append(" and ");					
+			sb.append("tc_mantic_ventas.id_venta in (select id_venta from tr_mantic_venta_medio_pago where id_tipo_medio_pago in (").append(this.attrs.get("tipoPago")).append("))").append(" and ");					
 		if(!Cadena.isVacio(this.attrs.get("articulo")))
 			sb.append("upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(this.attrs.get("articulo")).append("%') and");					
 		if(!Cadena.isVacio(this.attrs.get("cliente")))
