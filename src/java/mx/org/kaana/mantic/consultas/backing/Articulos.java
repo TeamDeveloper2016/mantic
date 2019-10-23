@@ -45,6 +45,7 @@ import mx.org.kaana.mantic.catalogos.articulos.beans.RegistroArticulo;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 import mx.org.kaana.mantic.consultas.reglas.UtilidadArticulosLazy;
+import mx.org.kaana.mantic.enums.ETipoDocumento;
 import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
@@ -130,7 +131,7 @@ public class Articulos extends Comun implements Serializable {
 		Map<String, Object> regresar= new HashMap<>();
 		StringBuilder sb            = null;
 		try {
-			sb= new StringBuilder("tc_mantic_articulos.id_articulo_tipo=").append(this.attrs.get("idTipoArticulo")).append(" and ");			
+			sb= new StringBuilder("tc_mantic_articulos.id_articulo_tipo=").append(this.attrs.get("idTipoArticulo")).append(" and ");						
 			if(!Cadena.isVacio(this.attrs.get("codigo")))
 				sb.append("upper(tc_mantic_articulos_codigos.codigo) like upper('%").append(this.attrs.get("codigo")).append("%') and ");						
 			if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
