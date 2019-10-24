@@ -470,14 +470,16 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		TcManticArticulosDto articulo= null;
 		String descuento             = null;
 		String sinDescuento          = "0";
-		try {
+		try {			
 			if(!getAdminOrden().getArticulos().isEmpty()){
 				for(Articulo beanArticulo: getAdminOrden().getArticulos()){
 					if(beanArticulo.getIdArticulo()!= null && !beanArticulo.getIdArticulo().equals(-1L)){
 						motor= new MotorBusqueda(beanArticulo.getIdArticulo());
-						articulo= motor.toArticulo();
-						beanArticulo.setValor((Double) articulo.toValue(getPrecio()));
-						beanArticulo.setCosto((Double) articulo.toValue(getPrecio()));
+						articulo= motor.toArticulo();						
+						if(!beanArticulo.getCosto().equals(articulo.getMayoreo()) && !beanArticulo.getCosto().equals(articulo.getMedioMayoreo())){
+							beanArticulo.setValor((Double) articulo.toValue(getPrecio()));
+							beanArticulo.setCosto((Double) articulo.toValue(getPrecio()));
+						} // if													
 						if(descuentoVigente){
 							descuento= toDescuentoVigente(beanArticulo.getIdArticulo(), idCliente);
 							if(descuento!= null)
@@ -553,6 +555,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		String cuenta              = null;
 		String contrasenia         = null;
 		Double global              = 0D;
+		Boolean recalculate        = false;
 		try {
 			if(!getAdminOrden().getArticulos().isEmpty()){
 				cuenta       = (String)this.attrs.get("usuarioDescuento");
@@ -590,6 +593,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 						getAdminOrden().getArticulos().get(index).setCosto(getAdminOrden().getArticulos().get(index).toEntity().toDouble("medioMayoreo"));
 						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescripcionPrecio("medioMayoreo");
 						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).toCalculate();
+						recalculate= true;
 					} // else if
 					else if (isMayoreo){
 						this.attrs.put("tipoDecuentoAutorizadoActivo", MAYOREO);
@@ -597,6 +601,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 						getAdminOrden().getArticulos().get(index).setCosto(getAdminOrden().getArticulos().get(index).toEntity().toDouble("mayoreo"));
 						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescripcionPrecio("mayoreo");
 						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).toCalculate();
+						recalculate= true;
 					} // else if
 					else{
 						this.attrs.put("decuentoAutorizadoActivo", false);					
@@ -611,6 +616,10 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				else
 					JsfBase.addMessage("El usuario no tiene privilegios o el usuario y la contraseña son incorrectos", ETipoMensaje.ERROR);
 			} // if
+			if(recalculate){
+				getAdminOrden().toCalculate();
+				UIBackingUtilities.update("@(.filas) @(.recalculo) @(.informacion)");
+			} // if
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -621,6 +630,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			this.attrs.put("descuentoGlobal", 0);
 			this.attrs.put("usuarioDescuento", "");
 			this.attrs.put("passwordDescuento", "");
+			this.attrs.put("tipoDescuento", 1L);
 		} // finally
 	} // doAplicarDescuento
 	
@@ -1059,6 +1069,5 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     } // finally
-	} // doUpdateArticulos
-	
+	} // doUpdateArticulos	
 }
