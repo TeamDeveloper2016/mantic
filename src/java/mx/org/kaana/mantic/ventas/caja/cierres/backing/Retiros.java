@@ -219,6 +219,8 @@ public class Retiros extends IBaseAttribute implements Serializable {
 		try {
 			CambioUsuario	usuario= new CambioUsuario(cuenta, contrasenia);			
 			if(usuario.validaPrivilegiosDescuentos()) {
+				this.attrs.put("cuenta", "");
+				this.attrs.put("contrasenia", "");
 				regresar= this.doAceptar(usuario.getIdPersona());
 				this.attrs.put("ok", Boolean.FALSE);
 				UIBackingUtilities.execute("PF('widgetDialogoAutorizacion').hide();");

@@ -277,6 +277,15 @@ public class Accion extends IBaseAttribute implements Serializable {
 //			this.importes.remove(delete);
 	}
 	
+  public void doTotales() {
+		Double total= 0D;
+		for (Importe importe: this.importes) {
+			importe.toCalculate();
+			total+= importe.getImporte();
+		} // for
+    this.attrs.put("total", Numero.toRedondearSat(total));		
+	}
+
   public void doContinuar() {
 		this.attrs.put("continuar", "");
 	}	

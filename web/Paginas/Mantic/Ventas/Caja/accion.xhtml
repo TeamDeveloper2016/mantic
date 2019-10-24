@@ -174,8 +174,16 @@
 				return ok;
 			} // validateCapturaCambioPrecio
 			
-			function aceptarFinalizarFocus(){				
+			function aceptarFinalizarFocus() {				
 				setTimeout("$('#aceptarFinalizar').focus();", 100);
+			}
+						
+			function doFocusCuenta() {				
+				setTimeout("$('#descuentousr').focus();", 1000);
+			}
+						
+			function doFocusPrecio() {				
+				setTimeout("$('#cambiopreciousr').focus()", 1000);
 			}
 						
 			function markedDays(date) {				
@@ -1456,7 +1464,7 @@
 		</div>
 	</ui:define>    		
 	<ui:define name="dialogos">
-		<p:dialog id="dialogoDescuentos" widgetVar="dlgDescuentos" header="Aplicar descuento" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="updateDescuentos();janal.change('dialogosVenta', fieldsDialogDescuento); $('#descuentousr').focus();" width="50%" onHide="janal.desbloquear();janal.restore();janal.refresh();jsArticulos.restoreCursorAt();">						
+		<p:dialog id="dialogoDescuentos" widgetVar="dlgDescuentos" header="Aplicar descuento" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="updateDescuentos();janal.change('dialogosVenta', fieldsDialogDescuento); doFocusCuenta();" width="50%" onHide="janal.desbloquear();janal.restore();janal.refresh();jsArticulos.restoreCursorAt();">						
 			<h:form id="dialogosVenta" prependId="false">
 				<h:panelGrid columns="1" styleClass="janal-wid-100">
 					<p:outputLabel for="descuentousr" value="Usuario:"/>
@@ -1489,7 +1497,7 @@
 				</div>	
 			</h:form>
 		</p:dialog>		
-		<p:dialog id="dialogoCambioPrecio" widgetVar="dlgCambioPrecio" header="Aplicar cambio de precio" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="updateCambioPrecio(); janal.change('formCambioPrecio', fieldsDialogPrecio); $('#cambiopreciousr').focus();" width="50%" onHide="janal.restore(); janal.desbloquear(); jsArticulos.restoreCursorAt();">						
+		<p:dialog id="dialogoCambioPrecio" widgetVar="dlgCambioPrecio" header="Aplicar cambio de precio" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="updateCambioPrecio(); janal.change('formCambioPrecio', fieldsDialogPrecio); doFocusPrecio();" width="50%" onHide="janal.restore(); janal.desbloquear(); jsArticulos.restoreCursorAt();">						
 			<h:form id="formCambioPrecio" prependId="false">
 				<h:panelGrid columns="1" styleClass="janal-wid-100">
 					<p:outputLabel for="cambiopreciousr" value="Usuario:"/>

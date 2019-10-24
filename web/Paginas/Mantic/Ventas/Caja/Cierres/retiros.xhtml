@@ -30,6 +30,10 @@
 				janal.alert('Se generó el retiro de efectivo, con consecutivo: '+ cons);								
 				$('#cancelar').click();
 			};
+			
+			function focus() {
+				setTimeout("$('#cuenta').focus();", 1000);
+			}
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">		
@@ -106,34 +110,35 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" oncomplete="if(janal.execute()){janal.bloquear(); PF('widgetDialogoAutorizacion').show();} else {janal.desbloquear();}" disabled="#{empty manticVentasCajaCierresRetiros.attrs.idCierre}"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="dialogoAutorizacion" onstart="return janal.execute();" oncomplete="janal.bloquear(); PF('widgetDialogoAutorizacion').show();" disabled="#{empty manticVentasCajaCierresRetiros.attrs.idCierre}"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticVentasCajaCierresRetiros.doCancelar}" ajax="false" onstart="janal.bloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" oncomplete="if(janal.execute()){janal.bloquear(); PF('widgetDialogoAutorizacion').show();} else {janal.desbloquear();}" disabled="#{empty manticVentasCajaCierresRetiros.attrs.idCierre}"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="dialogoAutorizacion" onstart="return janal.execute();" oncomplete="janal.bloquear(); PF('widgetDialogoAutorizacion').show();" disabled="#{empty manticVentasCajaCierresRetiros.attrs.idCierre}"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresRetiros.doCancelar}" ajax="false" onstart="janal.bloquear()" immediate="true"/>
 		</div>		
 	</ui:define>
 	<ui:define name="dialogos">
-		<p:dialog id="dialogoAutorizacion" widgetVar="widgetDialogoAutorizacion" header="Persona que autoriza el movimiento" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="janal.change('formAutorizacion', Janal.Control.credenciales); $('#cuenta').focus();" width="50%" onHide="janal.restore(); janal.desbloquear();">						
+		<p:dialog id="dialogoAutorizacion" widgetVar="widgetDialogoAutorizacion" header="Persona que autoriza el movimiento" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="janal.change('formAutorizacion', Janal.Control.credenciales); focus();" width="50%" onHide="janal.restore(); janal.desbloquear();">						
 			<h:form id="formAutorizacion" prependId="false">
+				<p:defaultCommand target="cuenta"/>
 				<div class="janal-wid-100-txt janal-column-center">
 				  <p:outputLabel id="invalido" value="La cuenta o contraseña no son validas o no tienes autorización" styleClass="janal-color-orange" style="display: #{manticVentasCajaCierresRetiros.attrs.ok? '': 'none'};"/>
 			  </div>
 				<p:panelGrid columns="1" styleClass="janal-wid-100">
 					<p:outputLabel for="cuenta" value="Usuario:"/>
-					<p:inputText id="cuenta" value="#{manticVentasCajaCierresRetiros.attrs.cuenta}" styleClass="janal-wid-100-txt"/>
+					<p:inputText id="cuenta" value="#{manticVentasCajaCierresRetiros.attrs.cuenta}" onblur="$('#contrasenia').focus()" styleClass="janal-wid-100-txt"/>
 					<p:outputLabel for="contrasenia" value="Contraseña:"/>
-					<p:password id="contrasenia" value="#{manticVentasCajaCierresRetiros.attrs.contrasenia}" styleClass="janal-wid-100-txt" autocomplete="new-password"/>									
+					<p:password id="contrasenia" value="#{manticVentasCajaCierresRetiros.attrs.contrasenia}" onblur="$('#verificar').focus()" styleClass="janal-wid-100-txt" autocomplete="new-password"/>									
         </p:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton icon="fa fa-check" process="@this cuenta contrasenia" update="invalido" value="Aceptar" action="#{manticVentasCajaCierresRetiros.doCheckUser}" onstart="return janal.execute();"/>
+					<p:commandButton id="verificar" icon="fa fa-check" process="@this cuenta contrasenia" update="invalido" value="Aceptar" action="#{manticVentasCajaCierresRetiros.doCheckUser}" onstart="return janal.execute();"/>
 					<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('widgetDialogoAutorizacion').hide();"/>
 				</div>	
 			</h:form>
 		</p:dialog>		
 	</ui:define>
-  <ui:param name="componenteBloqueo" value="aceptar cancelar aceptarIcon cancelarIcon"/>
+  <ui:param name="componenteBloqueo" value="cancelar cancelarIcon"/>
 </ui:composition>
 
