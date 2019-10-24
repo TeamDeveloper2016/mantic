@@ -119,11 +119,6 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.toLoadCuentas();
 			this.toLoadCreditos();
 			this.doCalculate();
-  		for (Importe importe: this.importes) {
-	   		if(importe.getIdTipoMedioPago().equals(1L)) {
-					this.attrs.put("disponible", importe.getDisponible()> importe.getSaldo()? importe.getSaldo(): importe.getDisponible());
-				} // if
-			} // for
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -246,7 +241,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 	}
 
 	public void doCalculate() {
-		Double sum  = 0D;
+		Importe pivote= null;
+		Importe delete= null;
+		Double sum    = 0D;
+		Double total  = 0D;
 		for (Denominacion denominacion: this.denominaciones) {
 			denominacion.setImporte(Numero.toRedondearSat(denominacion.getDenominacion()* denominacion.getCantidad()));
 			sum+= denominacion.getImporte();
@@ -254,21 +252,31 @@ public class Accion extends IBaseAttribute implements Serializable {
     this.attrs.put("efectivo", Numero.toRedondearSat(sum));		
 		for (Importe importe: this.importes) {
 			importe.toCalculate();
-			if(importe.getIdTipoMedioPago().equals(1L)) 
-				importe.setImporte(Numero.toRedondearSat(sum));
-		} // for
-		this.doTotales();
-	}
-	
-	public void doTotales() {
-		Double total= 0D;
-		for (Importe importe: this.importes) {
-			importe.toCalculate();
 			total+= importe.getImporte();
+			if(importe.getIdTipoMedioPago().equals(1L)) {
+				importe.setImporte(Numero.toRedondearSat(sum));
+				this.attrs.put("disponible", importe.getDisponible()> importe.getSaldo()? importe.getSaldo(): importe.getDisponible());
+			} // if
+			else  // esto es para acumular los conceptos de tajertas de credito y tarjetas de debito como un solo rubro
+				if(importe.getIdTipoMedioPago().equals(4L) || importe.getIdTipoMedioPago().equals(18L)) {
+					if(pivote== null) {
+						pivote= importe;
+						pivote.setMedioPago("TARJETA BANCARIA");
+					} // if	
+					else {
+						pivote.setDisponible(pivote.getDisponible()+ importe.getDisponible());
+						pivote.setAcumulado(pivote.getAcumulado()+ importe.getAcumulado());
+						pivote.setSaldo(pivote.getSaldo()+ importe.getSaldo());
+						pivote.setImporte(pivote.getImporte()+ importe.getImporte());
+						delete= importe;
+					} // else
+				} // if
 		} // for
     this.attrs.put("total", Numero.toRedondearSat(total));		
+		if(delete!= null)
+			this.importes.remove(delete);
 	}
-
+	
   public void doContinuar() {
 		this.attrs.put("continuar", "");
 	}	

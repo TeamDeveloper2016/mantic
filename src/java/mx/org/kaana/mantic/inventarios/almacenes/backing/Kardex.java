@@ -88,6 +88,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	@PostConstruct
 	protected void init() {
 		this.tabPage= 0;
+  	this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Mantic/Ventas/accion": JsfBase.getFlashAttribute("retorno"));
   	this.attrs.put("buscaPorCodigo", false);
 		this.attrs.put("costoMayorMenor", 0);
   	this.attrs.put("redondear", false);
@@ -989,5 +990,8 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			Methods.clean(params);
 		} // finally	
 	}	
+  public String	doRegresar() {
+    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+	}
 	
 }

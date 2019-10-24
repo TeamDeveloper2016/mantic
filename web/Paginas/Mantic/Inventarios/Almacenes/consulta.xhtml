@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Kardex de un articulo"/>
+	<ui:define name="librerias">
+    <h:outputStylesheet library="janal" name="css/jquery.confirm.min-3.3.4.css"/>
+    <h:outputScript library="janal" name="js/jquery.confirm.min-3.3.4.js"/>
+    <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryKardexJs}"/>
+		<script type="text/javascript">
+			Janal.Control.fields = {				 				
+				'contenedorGrupos\\:codigo' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:nombre' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:codigos': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:sat'    : {validaciones: 'libre', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:costos' : {validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'libre', formatos: 'flotante', individual: true, grupo: 'general'},
+				'utilidades': {multiple: '$', validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'libre', formatos: 'flotante', individual: true, grupo: 'general', mensaje: 'La utilidad tiene que ser mayor a cero'},
+				'precios'   : {multiple: '$', validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'libre', formatos: 'flotante', individual: true, grupo: 'general', mensaje: 'El precio tiene que ser mayor a cero.'},
+				'contenedorGrupos\\:tabla\\:0\\:limites': {validaciones: 'requerido|flotante|menor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:1\\\\:limites"})', mascara: 'libre', formatos: 'precio', grupo: 'general'},
+				'contenedorGrupos\\:tabla\\:1\\:limites': {validaciones: 'requerido|flotante|mayor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:0\\\\:limites"})', mascara: 'libre', formatos: 'precio', grupo: 'general'},
+				'contenedorGrupos\\:auxiliar': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'auxiliar'}
+			};
+		</script>   
+		<style type="text/css">
+				.ui-treetable table {
+					table-layout: fixed
+				}
+				.janal-letter-capitalized {
+          text-transform: uppercase;
+        }
+		</style>		
+	</ui:define>
+	<ui:define name="contenido">
+  	<p:hotkey bind="esc" handler="if($('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon')){$('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon').click();}"/>
+		<p:focus context="codigos"/>
+		<p:defaultCommand target="tabla"/>
+		<pe:remoteCommand name="locate" process="@this" update="@(.filas) @(.recalculo) @(.inventario)" actionListener="#{manticInventariosAlmacenesKardex.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
+			<pe:methodSignature parameters="java.lang.String"/>  
+			<pe:methodParam name="codigo"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="calculate" process="@this @(.filas) @(.recalculo)" update="@(.filas) @(.recalculo)" actionListener="#{manticInventariosAlmacenesKardex.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset();">  
+			<pe:methodSignature parameters="java.lang.Integer"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="utilidad" process="@this" update="@(.filas) @(.recalculo)" actionListener="#{manticInventariosAlmacenesKardex.doUpdateUtilidad}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset();">  
+			<pe:methodSignature parameters="java.lang.Integer, java.lang.Double"/>  
+			<pe:methodParam name="index"/>  
+			<pe:methodParam name="value"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="costo" process="@this @(.filas) @(.recalculo)" update="@(.filas) @(.recalculo)" actionListener="#{manticInventariosAlmacenesKardex.doUpdateCosto}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset();">  
+			<pe:methodSignature parameters="java.lang.Double, java.lang.Boolean"/>  
+			<pe:methodParam name="value"/>  
+			<pe:methodParam name="keep"/>  
+		</pe:remoteCommand>		
+		<p:remoteCommand name="replace" actionListener="#{manticInventariosAlmacenesKardex.doFindArticulo}" process="@this" update="@(.filas) @(.recalculo) contenedorGrupos:panelImage" onstart="return janal.bloquear();" oncomplete="jsKardex.process();"/>
+		<pe:remoteCommand name="lookup" actionListener="#{manticInventariosAlmacenesKardex.doUpdateDialogArticulos}" onstart="return PF('dialogo').isVisible();" process="@this clave" update="buscados localizado">
+			<pe:methodSignature parameters="java.lang.String"/>  
+			<pe:methodParam name="codigo"/>  
+		</pe:remoteCommand>		
+		<p:remoteCommand name="clean" actionListener="#{manticInventariosAlmacenesKardex.doCleanArticulos}" process="@this clave" update="buscados localizado"/>
+		<pe:remoteCommand name="lookForCodigo" process="@this @(.proveedores-codigo)" actionListener="#{manticInventariosAlmacenesKardex.doLookForCodigo}">  
+			<pe:methodSignature parameters="java.lang.String, java.lang.String, java.lang.Long"/>  
+			<pe:methodParam name="id"/>  
+			<pe:methodParam name="codigo"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>		
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:outputLabel for="codigos" value="Código ó articulo:"/>
+					<p:selectBooleanCheckbox value="#{manticInventariosAlmacenesKardex.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
+						<p:ajax event="change" process="@this" update="@this"/>
+					</p:selectBooleanCheckbox>
+				</div>
+			</div>	
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">
+						<p:autoComplete id="codigos" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticInventariosAlmacenesKardex.attrs.custom}" completeMethod="#{manticInventariosAlmacenesKardex.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+							<p:ajax event="itemSelect" process="@this @(.almacen)" update="@(.paginated)" oncomplete="jsKardex.close();"/>
+							<f:facet name="itemtip">
+								<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+									<f:facet name="header" class="TexAlCenter">
+										<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="50" height="30"/>
+									</f:facet>
+									<p:outputLabel value="Propio:" />
+									<p:outputLabel value="#{custom.propio}" />
+									<p:outputLabel value="Nombre:" />
+									<p:outputLabel value="#{custom.nombre}" />
+									<p:outputLabel value="Costo:" />
+									<p:outputLabel value="$ #{custom.precio}" styleClass="janal-font-bold"/>
+									<p:outputLabel value="Precio venta:" />
+									<p:outputLabel value="$ #{custom.menudeo}" styleClass="janal-color-blue janal-font-bold"/>
+									<p:outputLabel value="Código auxiliar:" />
+									<p:outputLabel value="#{custom.codigo}" />
+								</h:panelGrid>
+							</f:facet>
+						</p:autoComplete>		
+          </p:panelGrid>					
+				</div>
+			</div>	
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-center">
+					<p:outputLabel value="#{manticInventariosAlmacenesKardex.attrs.existe}" styleClass="filas" escape="false"/>
+				</div>	
+			</div>	
+			<p:spacer height="2px"/>
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+  				<p:panel header="Código: [#{manticInventariosAlmacenesKardex.attrs.articulo.propio}]" styleClass="filas hola">
+						<div class="janal-column-center">
+  						<p:outputLabel value="#{manticInventariosAlmacenesKardex.attrs.articulo.nombre}" styleClass="janal-color-blue"/>
+						</div>
+						<p:outputLabel for="idAlmacen" value="Seleccione el almacen:"/>
+						<br/>
+						<p:selectOneMenu id="idAlmacen" tabindex="0" value="#{manticInventariosAlmacenesKardex.attrs.idAlmacen}" var="almacen" converter="janal.convertidor.Entity" styleClass="janal-wid-99 almacen" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+							<p:ajax event="change" listener="#{manticInventariosAlmacenesKardex.doChangeBusquedas}" process="@this" update="@(.paginated)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+							<f:selectItems value="#{manticInventariosAlmacenesKardex.attrs.depositos}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave} - #{element.nombre}"/>
+							<p:column headerText="Clave">
+								<p:outputLabel value="#{almacen.clave}"/>
+							</p:column>   
+							<p:column headerText="Nombre">
+								<p:outputLabel value="#{almacen.nombre}"/>
+							</p:column>   
+						</p:selectOneMenu>
+		  		</p:panel>
+				</div>	
+			</div>	
+			<p:spacer height="2px"/>
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+            <p:ajax event="tabChange" listener="#{manticInventariosAlmacenesKardex.doTabChange}" process="@this" update="@(.filas)" oncomplete="janal.refresh();"/>						
+            <p:tab title="General">			
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-70, janal-wid-30">	
+								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">		
+									<p:outputLabel for="codigo" value="Código:"/>
+									<p:inputText id="codigo" value="#{manticInventariosAlmacenesKardex.attrs.articulo.propio}" styleClass="janal-wid-90 filas" readonly="true"/>
+									<p:outputLabel for="sat" value="Código SAT:"/>
+								  <p:inputText id="sat" value="#{manticInventariosAlmacenesKardex.attrs.sat}" styleClass="janal-wid-95 janal-column-right filas" readonly="true"/>
+									<p:outputLabel for="nombre" value="Nombre:"/>
+									<p:inputText id="nombre" value="#{manticInventariosAlmacenesKardex.attrs.articulo.nombre}" styleClass="janal-wid-90 filas" readonly="true"/>
+									<p:spacer width="1px"/><p:separator/>
+									<p:outputLabel for="empaque" value="Empaque:"/>
+									<p:inputText id="empaque" value="#{manticInventariosAlmacenesKardex.attrs.articulo.empaque}" styleClass="janal-wid-90 filas" readonly="true"/>
+									<p:outputLabel for="unidadMedida" value="Unidad medida:"/>
+									<p:inputText id="unidadMedida" value="#{manticInventariosAlmacenesKardex.attrs.articulo.unidadMedida}" styleClass="janal-wid-90 filas" readonly="true"/>
+									<p:outputLabel for="piezasPor" value="Piezas por empaque:"/>
+									<p:inputText id="piezasPor" value="#{manticInventariosAlmacenesKardex.attrs.articulo.cantidad}" styleClass="janal-wid-90 filas" readonly="true"/>
+									<p:spacer width="1px"/><p:separator/>
+									<p:outputLabel for="fechaAlta" value="Fecha alta:"/>
+									<p:inputText id="fechaAlta" value="#{manticInventariosAlmacenesKardex.attrs.articulo.registro}" styleClass="janal-wid-90 filas" readonly="true"/>
+									<p:outputLabel for="ulitmoCambio" value="Último cambio:"/>
+									<p:inputText id="ulitmoCambio" value="#{manticInventariosAlmacenesKardex.attrs.ultimo}" styleClass="janal-wid-90 filas" readonly="true"/>
+									<p:outputLabel for="redondear" value="Redondear:"/>
+									<p:inputSwitch id="redondear" styleClass="janal-wid-100-txt filas" value="#{manticInventariosAlmacenesKardex.attrs.redondear}" offLabel="NO" onLabel="SI" disabled="true"/>
+								</p:panelGrid>
+								<p:panel id="panelImage" header="#{manticInventariosAlmacenesKardex.attrs.articulo.propio}" styleClass="TexAlCenter janal-wid-100-txt" style="height:100%">
+									<a id="source-image" data-magnify="gallery" data-caption="#{manticInventariosAlmacenesKardex.attrs.articulo.nombre}" data-group="icon-gallery" href="" title="Click para ver más grande la imagen">
+										<p:graphicImage id="icon-image" value="#{manticInventariosAlmacenesKardex.image}" width="205" height="165" stream="false" style="cursor:zoom-in;"/>
+									</a>	
+								</p:panel>
+							</p:panelGrid>	
+						</p:tab>						            						            																																																
+						<p:tab title="Costos">
+							<div class="ui-grid-row janal-grid-row">
+								<div class="ui-grid-col-2 janal-column-center">
+ 									<p:outputLabel value="Último costo:"/><br/>
+									<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.ultimoCosto}" styleClass="janal-wid-100-txt janal-column-right recalculo" readonly="true"/>
+                </div>
+								<div class="ui-grid-col-2 janal-column-center">
+ 									<p:outputLabel value="% Descuento aplicado:"/><br/>
+									<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.articulo.descuento}" styleClass="janal-wid-100-txt janal-column-right recalculo" readonly="true"/>
+                </div>
+								<div class="ui-grid-col-2 janal-column-center">
+ 									<p:outputLabel value="% Extra aplicado:"/><br/>
+									<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.articulo.extra}" styleClass="janal-wid-100-txt janal-column-right recalculo" readonly="true"/>
+                </div>
+  							<div class="ui-grid-col-2 janal-column-center">
+									<p:outputLabel value="Utilidad:"/><br/>
+									<p:inputText value="#{manticInventariosAlmacenesKardex.doPercentageFormat(manticInventariosAlmacenesKardex.attrs.articulo.utilidad)}" styleClass="janal-wid-100-txt janal-column-right recalculo" readonly="true"/>
+                </div>
+								<div class="ui-grid-col-2 janal-column-center">
+ 									<p:outputLabel value="IVA:"/><br/>
+									<p:inputText value="#{manticInventariosAlmacenesKardex.doPercentageFormat(manticInventariosAlmacenesKardex.attrs.articulo.iva)}" styleClass="janal-wid-100-txt janal-column-right recalculo" readonly="true"/>
+                </div>
+								<div class="ui-grid-col-2 janal-column-center">
+ 									<p:outputLabel value="Precio venta:"/><br/>
+									<p:inputText value="#{manticInventariosAlmacenesKardex.doMoneyFormat(manticInventariosAlmacenesKardex.attrs.articulo.menudeo)}" styleClass="janal-wid-100-txt janal-column-right recalculo" readonly="true"/>
+                </div>
+							</div>	
+							<p:spacer width="3px"/>
+							<div class="ui-grid-row janal-grid-row">
+								<div class="ui-grid-col-1 janal-wid-col-90">
+									<p:outputLabel value="Costo actual:" styleClass="janal-color-orange"/>
+								</div>
+								<div class="ui-grid-col-12" style="padding-right: 14px;">
+									<p:inputText id="costos" value="#{manticInventariosAlmacenesKardex.attrs.precio}" converter="javax.faces.Double" styleClass="janal-wid-98 janal-column-right key-focus-event key-change-event recalculo" readonly="true"/>
+								</div>
+								<div style="width: 10px; margin-left: -4px; margin-top: 1px;">
+									<p:outputLabel value="#{manticInventariosAlmacenesKardex.attrs.costoMayorMenor}" escape="false" styleClass="filas"/>
+								</div>
+							</div>	
+							<p:spacer width="3px"/>
+							<p:dataTable id="tabla" var="item" value="#{manticInventariosAlmacenesKardex.adminKardex.tiposVentas}" paginator="false" reflow="true" rowKey="#{row.index}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="paginated filas" rowIndexVar="index">
+								<p:column headerText="No." styleClass="janal-wid-3">
+									<p:outputLabel value="#{index+ 1}.-"/>
+								</p:column>   
+								<p:column headerText="Nombre" styleClass="janal-wid-10">
+									<p:outputLabel value="#{item.nombre}"/>
+								</p:column>   
+								<p:column headerText="Unidades máximas" styleClass="janal-wid-10 limites">#{index eq 0? 0.0: manticInventariosAlmacenesKardex.adminKardex.tiposVentas[index- 1].limite}  -  <p:inputText id="limites" value="#{item.limite}" styleClass="janal-wid-60 janal-column-right key-focus-event key-change-event recalculo" rendered="#{item.limite gt 0}"/>#{index eq 2? 'MAS': ''}</p:column>   
+								<p:column headerText="% Utilidad" styleClass="janal-wid-10">
+									<p:inputText id="utilidades" value="#{item.utilidad}" styleClass="recalculo janal-wid-100-txt janal-column-right key-focus-event key-change-event" readonly="true"/>
+								</p:column>   
+								<p:column headerText="Precio sin iva" styleClass="janal-wid-10 janal-column-right">
+									<p:outputLabel value="#{manticInventariosAlmacenesKardex.doMoneyValueFormat(item.importe)}" styleClass="recalculo"/>
+								</p:column>   
+								<p:column headerText="IVA" styleClass="janal-wid-10 janal janal-column-right">
+									<p:outputLabel value="#{manticInventariosAlmacenesKardex.doPercentageValueFormat(item.iva)}" styleClass="recalculo"/>
+								</p:column>   
+								<p:column headerText="Impuesto" styleClass="janal-wid-10 janal-column-right">
+									<p:outputLabel value="#{manticInventariosAlmacenesKardex.doMoneyValueFormat(item.impuesto)}" styleClass="recalculo"/>
+								</p:column>   
+								<p:column headerText="Precio de venta" styleClass="janal-wid-10">
+									<p:inputText id="precios" value="#{item.precio}" styleClass="recalculo janal-wid-100-txt janal-column-right key-focus-event key-change-event" readonly="true"/>
+								</p:column>   
+							</p:dataTable>	
+						</p:tab>
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();$('#codigos').focus();" onShow="$('#clave').val('');clean();" width="900px" height="470px" resizable="false" appendTo="@(body)">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:outputLabel for="clave" value="Código o nombre:"/>
+					<span class="janal-help-icon janal-help-8 fa fa-fw fa-question-circle Fright" onclick="countHelp(8);"/>	
+					<pe:tooltip for="@(.janal-help-8)" showEvent="click">
+						<h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(8)}" styleClass="Fs15" escape="false"/>
+					</pe:tooltip>
+				</div>			
+			</div>	
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:inputText id="clave" value="#{manticInventariosAlmacenesKardex.attrs.codigo}" styleClass="janal-wid-100-txt key-buscados-event janal-key-articulo" style="text-transform: uppercase"/>
+				</div>			
+			</div>
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:outputLabel value="Click sobre la tabla para seleccionar el articulo, por defecto es el primero de la lista"/><br/>
+					<p:dataTable id="buscados" widgetVar="widgetBuscados" lazy="true" styleClass="janal-buscados-articulos janal-wid-100" value="#{manticInventariosAlmacenesKardex.attrs.lazyModel}" selection="#{manticInventariosAlmacenesKardex.attrs.buscado}" var="item" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="50" liveScroll="true" liveScrollBuffer="50" scrollable="true" scrollHeight="280" style="margin-bottom:0">
+						<p:ajax event="rowDblselect" listener="#{manticInventariosAlmacenesKardex.doRowDblselect}" process="@this" update="@(.filas) @(.recalculo) contenedorGrupos:panelImage" oncomplete="PF('dialogo').hide();"/>	
+						<p:column headerText="No" styleClass="janal-wid-col-30">
+							<p:outputLabel value="#{index+ 1}.-"/>
+						</p:column>   
+						<p:column headerText="Propio" styleClass="janal-wid-15">
+							<p:outputLabel value="#{item.propio}"/>
+						</p:column>   
+						<p:column headerText="Nombre">
+							<p:outputLabel value="#{item.nombre}"/>
+						</p:column>   
+						<p:column headerText="Costo" styleClass="janal-column-right janal-wid-13">
+							<p:outputLabel value="#{item.original}"/>
+						</p:column>   
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticInventariosAlmacenesKardex.attrs.lazyModel==null? 0: manticInventariosAlmacenesKardex.attrs.lazyModel.rowCount}] registros"/>
+            </f:facet>
+					</p:dataTable>
+				</div>
+			</div>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton id="localizado" icon="fa fa-check" process="@this buscados" update="@(.filas) @(.recalculo) contenedorGrupos:panelImage" value="Aceptar" actionListener="#{manticInventariosAlmacenesKardex.doChangeBuscado}" onstart="return jsKardex.parche();" oncomplete="PF('dialogo').hide();" disabled="#{manticInventariosAlmacenesKardex.attrs.lazyModel.rowCount lt 1}"/>
+				<p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide();"/>
+			</div>
+		</p:dialog>
+		<p:commandButton id="tabla" value="" styleClass="janal-zero-size"/>
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticInventariosAlmacenesKardex.doRegresar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-close" process="@this" action="#{manticInventariosAlmacenesKardex.doRegresar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>
