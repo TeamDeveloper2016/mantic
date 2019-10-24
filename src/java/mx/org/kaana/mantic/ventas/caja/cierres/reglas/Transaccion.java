@@ -109,7 +109,8 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 						new Long(Fecha.getAnioActual()), 
 						this.retiro.getConcepto(), 
 						this.retiro.getIdTipoMedioPago(),
-						1L
+						1L,
+						JsfBase.getAutentifica().getPersona().getIdPersona()
 					);
 					regresar= DaoFactory.getInstance().insert(sesion, this.retiro)>= 1L;
 					if(this.retiro.getIdAbono().equals(1L))

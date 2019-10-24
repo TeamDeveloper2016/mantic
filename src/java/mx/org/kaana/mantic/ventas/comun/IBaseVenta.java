@@ -540,11 +540,11 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		return regresar;
 	} // toDescuentoVigente
 	
-	public void doAplicarDescuento(){
+	public void doAplicarDescuento() {
 		doAplicarDescuento(-1);
 	} // doAplicarDescuento
 	
-	public void doAplicarDescuento(Integer index){
+	public void doAplicarDescuento(Integer index) {
 		Boolean isIndividual       = false;
 		Boolean isGlobal           = false;
 		Boolean isMedioMayoreo     = false;
@@ -555,8 +555,8 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		Double global              = 0D;
 		try {
 			if(!getAdminOrden().getArticulos().isEmpty()){
-				cuenta= this.attrs.get("usuarioDescuento").toString();
-				contrasenia= this.attrs.get("passwordDescuento").toString();
+				cuenta       = (String)this.attrs.get("usuarioDescuento");
+				contrasenia  = (String)this.attrs.get("passwordDescuento");
 				cambioUsuario= new CambioUsuario(cuenta, contrasenia);
 				if(cambioUsuario.validaPrivilegiosDescuentos()){
 					this.attrs.put("decuentoAutorizadoActivo", true);				

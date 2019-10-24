@@ -999,7 +999,7 @@
 			$janal.change('datos', $janal.backup);
 		},
     change: function(form, fields) {
-      $janal.console('janal.update '+ fields);
+      $janal.console('janal.change '+ fields);
       $janal.clean();
       $janal.prepare(form, fields, $janal.errors.show);
     }, // update

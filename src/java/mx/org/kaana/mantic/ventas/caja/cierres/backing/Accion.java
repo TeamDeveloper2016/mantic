@@ -257,24 +257,24 @@ public class Accion extends IBaseAttribute implements Serializable {
 				importe.setImporte(Numero.toRedondearSat(sum));
 				this.attrs.put("disponible", importe.getDisponible()> importe.getSaldo()? importe.getSaldo(): importe.getDisponible());
 			} // if
-			else  // esto es para acumular los conceptos de tajertas de credito y tarjetas de debito como un solo rubro
-				if(importe.getIdTipoMedioPago().equals(4L) || importe.getIdTipoMedioPago().equals(18L)) {
-					if(pivote== null) {
-						pivote= importe;
-						pivote.setMedioPago("TARJETA BANCARIA");
-					} // if	
-					else {
-						pivote.setDisponible(pivote.getDisponible()+ importe.getDisponible());
-						pivote.setAcumulado(pivote.getAcumulado()+ importe.getAcumulado());
-						pivote.setSaldo(pivote.getSaldo()+ importe.getSaldo());
-						pivote.setImporte(pivote.getImporte()+ importe.getImporte());
-						delete= importe;
-					} // else
-				} // if
+//			else  // esto es para acumular los conceptos de tajertas de credito y tarjetas de debito como un solo rubro
+//				if(importe.getIdTipoMedioPago().equals(4L) || importe.getIdTipoMedioPago().equals(18L)) {
+//					if(pivote== null) {
+//						pivote= importe;
+//						pivote.setMedioPago("TARJETA BANCARIA");
+//					} // if	
+//					else {
+//						pivote.setDisponible(pivote.getDisponible()+ importe.getDisponible());
+//						pivote.setAcumulado(pivote.getAcumulado()+ importe.getAcumulado());
+//						pivote.setSaldo(pivote.getSaldo()+ importe.getSaldo());
+//						pivote.setImporte(pivote.getImporte()+ importe.getImporte());
+//						delete= importe;
+//					} // else
+//				} // if
 		} // for
     this.attrs.put("total", Numero.toRedondearSat(total));		
-		if(delete!= null)
-			this.importes.remove(delete);
+//		if(delete!= null)
+//			this.importes.remove(delete);
 	}
 	
   public void doContinuar() {

@@ -24,6 +24,7 @@ public class CambioUsuario extends Acceso implements Serializable{
 
 	private static final long serialVersionUID=-1750582993624963783L;
 	private boolean acceso;	
+	private Long idPersona;
 	
 	public CambioUsuario(String cuenta, String contrasenia) {
 		this(new Cliente(cuenta, contrasenia, "", "", ""));		
@@ -33,7 +34,23 @@ public class CambioUsuario extends Acceso implements Serializable{
 		super(cliente);
 		this.acceso= false;
 	} // CambioUsuario
-	
+
+	public boolean isAcceso() {
+		return acceso;
+	}
+
+	public void setAcceso(boolean acceso) {
+		this.acceso=acceso;
+	}
+
+	public Long getIdPersona() {
+		return idPersona;
+	}
+
+	public void setIdPersona(Long idPersona) {
+		this.idPersona=idPersona;
+	}
+
 	public boolean validaUsuario(){
 		boolean regresar= false;
 		try {
@@ -68,6 +85,7 @@ public class CambioUsuario extends Acceso implements Serializable{
       agregarUsuariosSitio(session, autentifica);
       registro.addMenuSesion(session);
       registro.addTopMenuSesion(session);
+			this.setIdPersona(autentifica.getPersona().getIdPersona());
 			this.acceso= true;
     } // if
     else {
@@ -81,7 +99,7 @@ public class CambioUsuario extends Acceso implements Serializable{
     } // else
   } 
 	
-	public boolean validaPrivilegiosDescuentos() throws Exception{
+	public boolean validaPrivilegiosDescuentos() throws Exception {
     boolean regresar          = false;
     Map<String, Object> params= null;
 		Persona persona           = null;
@@ -89,8 +107,10 @@ public class CambioUsuario extends Acceso implements Serializable{
       params = new HashMap<>();
       params.put("cuenta", getCliente().getCuenta());
       persona = (Persona) DaoFactory.getInstance().toEntity(Persona.class, "VistaTcJanalUsuariosDto", "acceso", params);
-      if (persona != null) 
-        regresar = verificaPerfil(persona) && verificaCredencial(getCliente().getContrasenia(), persona.getContrasenia());       
+      if (persona != null) {
+				this.setIdPersona(persona.getIdPersona());
+        regresar = verificaPerfil(persona) && verificaCredencial(getCliente().getContrasenia(), persona.getContrasenia()); 
+			} // if
     } // try
     catch (Exception e) {
       throw e;
@@ -106,7 +126,7 @@ public class CambioUsuario extends Acceso implements Serializable{
     return frase.equals(contrasenia);
   }
 	
-	private boolean verificaPerfil(Persona persona) throws Exception{
+	private boolean verificaPerfil(Persona persona) throws Exception {
 		boolean regresar         = false;
 		List<Entity> perfiles    = null;
 		Map<String, Object>params= null;

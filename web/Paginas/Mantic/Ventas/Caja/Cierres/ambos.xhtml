@@ -148,23 +148,17 @@
               </f:facet>
               <h:outputText value="#{row['tipo']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.moneda}">
+            <p:column class="MarAuto Responsive" sortBy="#{row.autorizo}">
               <f:facet name="header">
-                <h:outputText value="Moneda"/>
+                <h:outputText value="Autorizo"/>
               </f:facet>
-              <h:outputText value="#{row['moneda']}"/>
+              <h:outputText value="#{row['autorizo']}"/>
             </p:column>		
             <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
               <h:outputText value="#{manticVentasCajaCierresAmbos.doDecimalSat(row['importe'])}"/>
-            </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{row.observaciones}">
-              <f:facet name="header">
-                <h:outputText value="Observaciones"/>
-              </f:facet>
-              <h:outputText value="#{row['observaciones']}"/>
             </p:column>		
             <f:facet name="footer">
 							<p:outputLabel value="#{manticVentasCajaCierresAmbos.calculate}&lt;span class='janal-color-green'&gt;Abonos: &lt;strong&gt;#{manticVentasCajaCierresAmbos.attrs.abonos}&lt;/strong&gt;&lt;/span&gt;   &lt;span class='janal-color-orange'&gt;Retiros: &lt;strong&gt;#{manticVentasCajaCierresAmbos.attrs.retiros}&lt;/strong&gt;&lt;/span&gt;" style="float:left;" escape="false"/>

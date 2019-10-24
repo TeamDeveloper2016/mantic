@@ -79,6 +79,8 @@ public class Ambos extends IBaseFilter implements Serializable {
       params.put("sortOrder", "order by tc_mantic_empresas.id_empresa, tc_mantic_cajas.id_caja, tc_mantic_cierres_retiros.consecutivo desc");
       columns = new ArrayList<>();
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("concepto", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("autorizo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("caja", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));

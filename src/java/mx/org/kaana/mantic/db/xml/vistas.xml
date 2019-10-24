@@ -1221,6 +1221,7 @@
 					tc_mantic_cierres_retiros.id_abono,
 				  if(tc_mantic_cierres_retiros.id_abono= 1, 'ABONO', 'RETIRO') as tipo,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
+				  (select concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) from tc_mantic_personas where tc_mantic_personas.id_persona= tc_mantic_cierres_retiros.id_autorizo) as autorizo,
 					tc_mantic_tipos_medios_pagos.nombre as medio,
 				  tc_mantic_cierres_retiros.concepto,
 					tc_mantic_cierres_retiros.importe,
@@ -1320,8 +1321,9 @@
 				where
 				  tc_mantic_cierres.id_cierre= {idCierre}
 				  and tc_mantic_cierres_cajas.id_tipo_medio_pago= 1
+				  and tc_mantic_cierres.id_cierre_estatus in (1, 2)
 				order by
-				  tc_mantic_cierres_cajas.registro
+				  tc_mantic_cierres.registro desc
 			</select>
 			<select id="cierre">
 				select
@@ -1349,8 +1351,9 @@
 				  tc_mantic_empresas.id_empresa= {idEmpresa}
 				  and tc_mantic_cajas.id_caja= {idCaja}
 				  and tc_mantic_cierres_cajas.id_tipo_medio_pago= 1
+			    and tc_mantic_cierres.id_cierre_estatus in (1, 2)
 				order by
-				  tc_mantic_cierres_cajas.registro				
+				  tc_mantic_cierres.registro desc				
 			</select>
 			<select id="cierreVigente">
 				select

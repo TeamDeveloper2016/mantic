@@ -27,6 +27,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticCierresRetirosDto;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.CreateCierre;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Transaccion;
+import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 
 /**
  *@company KAANA
@@ -50,8 +51,8 @@ public class Retiros extends IBaseAttribute implements Serializable {
   protected void init() {		
     try {
       this.accion = EAccion.AGREGAR;
+  		this.attrs.put("ok", Boolean.FALSE);
 			this.attrs.put("retorno", JsfBase.getParametro("zwkl")== null || "0".equals(JsfBase.getParametro("zwkl"))? "ambos": "/Paginas/Mantic/Ventas/Caja/accion");
-      this.attrs.put("idCierre", JsfBase.getFlashAttribute("idCierre")== null? -1L: JsfBase.getFlashAttribute("idCierre"));
 			this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa"));
 			this.attrs.put("idCaja", JsfBase.getFlashAttribute("idCaja"));
       this.attrs.put("importe", 0D);
@@ -66,20 +67,10 @@ public class Retiros extends IBaseAttribute implements Serializable {
   } // init
 
   public void doLoad() {
-		Value cierre= null;
     try {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
-    	if(JsfBase.getFlashAttribute("idCierre")== null) {
-				this.toLoadEmpresas();
-				cierre= (Value)DaoFactory.getInstance().toField("VistaCierresCajasDto", "cierre", this.attrs, "idKey");
-				if(cierre!= null)
-					this.attrs.put("idCierre", cierre.toLong());
-				this.caja= (Entity)DaoFactory.getInstance().toEntity("VistaCierresCajasDto", "caja", this.attrs);
-			} // if	
-			else {
-				this.caja= (Entity)DaoFactory.getInstance().toEntity("VistaCierresCajasDto", "caja", this.attrs);
-				this.toLoadEmpresas();
-			} // if
+			this.toLoadEmpresas();
+			this.caja= (Entity)DaoFactory.getInstance().toEntity("VistaCierresCajasDto", "caja", this.attrs);
 			if(this.caja== null) {
 				this.caja= new Entity(-1L);
 				this.caja.put("saldo", new Value("saldo", 0D));
@@ -96,7 +87,7 @@ public class Retiros extends IBaseAttribute implements Serializable {
     } // catch		
   } // doLoad
 
-  public String doAceptar() {  
+  public String doAceptar(Long idAutorizo) {  
     Transaccion transaccion= null;
     String regresar        = null;
 		CreateCierre ticket    = null;
@@ -106,6 +97,7 @@ public class Retiros extends IBaseAttribute implements Serializable {
 			retiro.setIdTipoMedioPago(1L);
 			retiro.setConcepto((String)this.attrs.get("concepto"));
 			retiro.setImporte((Double)this.attrs.get("importe"));
+			retiro.setIdAutorizo(idAutorizo);
 			transaccion = new Transaccion((Long)this.attrs.get("idCierre"), retiro);
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {	
@@ -157,7 +149,7 @@ public class Retiros extends IBaseAttribute implements Serializable {
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } 
 	
-	private void toLoadEmpresas() {
+	private void toLoadEmpresas() throws Exception {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
     try {
@@ -187,16 +179,13 @@ public class Retiros extends IBaseAttribute implements Serializable {
 			this.attrs.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresas")).getKey());
 			this.doLoadCajas();
     } // try
-    catch (Exception e) {
-      throw e;
-    } // catch   
     finally {
       Methods.clean(columns);
       Methods.clean(params);
     }// finally
 	}
 	
-	public void doLoadCajas() {
+	public void doLoadCajas() throws Exception {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
     try {
@@ -215,16 +204,48 @@ public class Retiros extends IBaseAttribute implements Serializable {
 			} // if
 			else
   			this.attrs.put("idCajas", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("cajas")));
- 		  this.attrs.put("idCaja", ((UISelectEntity)this.attrs.get("idCajas")).getKey());
+			this.doLoadCierres();
     } // try
-    catch (Exception e) {
-      throw e;
-    } // catch   
     finally {
       Methods.clean(columns);
       Methods.clean(params);
     }// finally
 	}
 
+	public String doCheckUser() {
+		String regresar   = null;
+		String cuenta     = (String)this.attrs.get("cuenta");
+		String contrasenia= (String)this.attrs.get("contrasenia");
+		try {
+			CambioUsuario	usuario= new CambioUsuario(cuenta, contrasenia);			
+			if(usuario.validaPrivilegiosDescuentos()) {
+				regresar= this.doAceptar(usuario.getIdPersona());
+				this.attrs.put("ok", Boolean.FALSE);
+				UIBackingUtilities.execute("PF('widgetDialogoAutorizacion').hide();");
+			} // if
+			else
+				this.attrs.put("ok", Boolean.TRUE);
+	  } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+		return regresar;
+	}
+	
+	public void doLoadCierres() {
+		try {
+ 		  this.attrs.put("idCaja", ((UISelectEntity)this.attrs.get("idCajas")).getKey());
+			Value cierre= (Value)DaoFactory.getInstance().toField("VistaCierresCajasDto", "cierre", this.attrs, "idKey");
+			if(cierre!= null)
+				this.attrs.put("idCierre", cierre.toLong());
+			else
+				this.attrs.put("idCierre", null);
+	  } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+	}
 	
 }

@@ -103,8 +103,12 @@ public class Cierre extends IBaseTnx implements Serializable  {
 					this.cierre.setTermino(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 					regresar= DaoFactory.getInstance().update(sesion, this.cierre)>= 1L;
 					sesion.flush();
-					for (Importe importe: this.importes)
+					for (Importe importe: this.importes) {
 					  DaoFactory.getInstance().update(sesion, importe);
+						if(importe.getIdTipoMedioPago().equals(4L) || importe.getIdTipoMedioPago().equals(18L)) {
+							
+						} // if
+					} // for
 					for (Denominacion denominacion: this.denominaciones) 
 					  DaoFactory.getInstance().insert(sesion, denominacion);
 					// cambiar el estatus a todas las ventas realizadas en dia que no fueron cobradas a canceladas
