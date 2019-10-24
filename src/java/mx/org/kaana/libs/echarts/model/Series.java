@@ -119,11 +119,9 @@ public class Series implements Serializable {
 		mx.org.kaana.libs.echarts.stack.Serie serie = null;
 		String group= null;
 		String color= Colors.toColor();
-		int count   = 0;
 		for (Entity item: this.data) {
 			if(Cadena.isVacio(group) || !group.equals(item.toString(FIELD_GROUP))) {
 				color= Colors.toColor();
-				count= 0;
 				if(!Cadena.isVacio(group))
       		regresar.stack(serie);
 				group= item.toString(FIELD_GROUP);
@@ -131,10 +129,8 @@ public class Series implements Serializable {
 			  serie= new mx.org.kaana.libs.echarts.stack.Serie(group, color);
   			serie.getData().clear();
 			}	// if
-			if(count== 0)
-			  regresar.label(item.toString(FIELD_TEXT));
+		  regresar.label(item.toString(FIELD_TEXT));
 			serie.getData().add(new Value(item.toDouble(FIELD_VALUE), color));
-			count++;
 		} // for
  		regresar.stack(serie);
 		return regresar;

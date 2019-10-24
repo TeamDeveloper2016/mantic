@@ -883,10 +883,13 @@ public class Kardex extends IBaseAttribute implements Serializable {
     Transaccion transaccion= null;
 		EAccion eaccion        = EAccion.PROCESAR;
     try {			
-			//Entity articulo= (Entity)this.attrs.get("articulo");
 			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (Boolean)this.attrs.get("redondear")? 1L: 2L);
 			if (transaccion.ejecutar(eaccion)) {
 				JsfBase.addMessage("Se modificaron el tipo de redondeo del articulo.", ETipoMensaje.INFORMACION);
+				for (TiposVentas item: this.adminKardex.getTiposVentas()) {
+					item.setRounded((Boolean)this.attrs.get("redondear"));
+				} // for
+				this.doUpdateCosto((Double)this.attrs.get("precio"), true);
 			}	// if
 			else 
 				JsfBase.addMessage("Ocurrió un error al hacer el cambio del tipo de redondeo.", ETipoMensaje.ERROR);      			

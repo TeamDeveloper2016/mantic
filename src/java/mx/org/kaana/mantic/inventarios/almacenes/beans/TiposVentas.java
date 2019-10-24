@@ -127,6 +127,10 @@ public class TiposVentas implements Serializable {
 		this.pivote=pivote;
 	}
 
+	public void setRounded(boolean rounded) {
+		this.rounded=rounded;
+	}
+	
 	public boolean isRounded() {
 		return rounded;
 	}
