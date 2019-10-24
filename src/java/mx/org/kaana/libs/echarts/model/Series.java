@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.echarts.bar.Value;
+import mx.org.kaana.libs.echarts.beans.Colors;
 import mx.org.kaana.libs.echarts.enums.EData;
 import mx.org.kaana.libs.echarts.pie.Data;
 import mx.org.kaana.libs.formato.Cadena;
@@ -117,20 +118,22 @@ public class Series implements Serializable {
 		DataModel regresar= new DataModel();
 		mx.org.kaana.libs.echarts.stack.Serie serie = null;
 		String group= null;
+		String color= Colors.toColor();
 		int count   = 0;
 		for (Entity item: this.data) {
 			if(Cadena.isVacio(group) || !group.equals(item.toString(FIELD_GROUP))) {
+				color= Colors.toColor();
 				if(!Cadena.isVacio(group))
       		regresar.stack(serie);
 				group= item.toString(FIELD_GROUP);
 				regresar.getLegend().add(group);
-			  serie= new mx.org.kaana.libs.echarts.stack.Serie(group);
+			  serie= new mx.org.kaana.libs.echarts.stack.Serie(group, color);
   			serie.getData().clear();
 				count++;
 			}	// if
 			if(count== 1)
 			  regresar.label(item.toString(FIELD_TEXT));
-			serie.getData().add(new Value(item.toDouble(FIELD_VALUE)));
+			serie.getData().add(new Value(item.toDouble(FIELD_VALUE), color));
 		} // for
  		regresar.stack(serie);
 		return regresar;
