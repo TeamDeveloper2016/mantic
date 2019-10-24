@@ -123,17 +123,18 @@ public class Series implements Serializable {
 		for (Entity item: this.data) {
 			if(Cadena.isVacio(group) || !group.equals(item.toString(FIELD_GROUP))) {
 				color= Colors.toColor();
+				count= 0;
 				if(!Cadena.isVacio(group))
       		regresar.stack(serie);
 				group= item.toString(FIELD_GROUP);
 				regresar.getLegend().add(group);
 			  serie= new mx.org.kaana.libs.echarts.stack.Serie(group, color);
   			serie.getData().clear();
-				count++;
 			}	// if
-			if(count== 1)
+			if(count== 0)
 			  regresar.label(item.toString(FIELD_TEXT));
 			serie.getData().add(new Value(item.toDouble(FIELD_VALUE), color));
+			count++;
 		} // for
  		regresar.stack(serie);
 		return regresar;
