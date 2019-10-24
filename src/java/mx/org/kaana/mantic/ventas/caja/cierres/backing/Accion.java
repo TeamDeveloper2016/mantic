@@ -49,6 +49,9 @@ public class Accion extends IBaseAttribute implements Serializable {
   private static final long serialVersionUID = 323323488565639361L;
   
 	private List<Importe> importes;
+	private Importe debito;
+	private Importe credito;
+	private Importe pivote;
 	private List<Denominacion> denominaciones;
 	private List<Denominacion> fondos;
 	private FormatCustomLazy lazyModel;
@@ -132,6 +135,19 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {			
 			TcManticCierresDto cierre= (TcManticCierresDto)DaoFactory.getInstance().findById(TcManticCierresDto.class, (Long)this.attrs.get("idCierre"));
 			cierre.setObservaciones((String)this.attrs.get("observaciones"));
+			// ajustar los importes capturados en las tarjetas de credito y agregarlos de nueva cuenta al arreglo de importes para que se actualicen
+			double importe= this.debito!= null? 0D: this.pivote!= null? this.pivote.getImporte(): 0D;
+			if(this.debito!= null) {
+				importe= this.pivote.getImporte()>= this.debito.getSaldo()? this.pivote.getImporte()- this.debito.getSaldo(): 0D;
+				this.debito.setImporte(this.pivote.getImporte()>= this.debito.getSaldo()? this.debito.getSaldo(): this.pivote.getImporte());
+				this.importes.add(this.debito);
+			} // if	
+			if(this.credito!= null) {
+				this.credito.setImporte(importe);
+				this.importes.add(this.credito);
+			} // else	
+			if(this.pivote!= null) 
+				this.importes.remove(this.pivote);
 			transaccion = new Cierre((Long)this.attrs.get("idCaja"), (Double)this.attrs.get("efectivo"), cierre, this.importes, this.denominaciones);
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {
@@ -240,11 +256,9 @@ public class Accion extends IBaseAttribute implements Serializable {
     }// finally
 	}
 
-	public void doCalculate() {
-		Importe pivote= null;
-		Importe delete= null;
-		Double sum    = 0D;
-		Double total  = 0D;
+	public void doCalculate() throws CloneNotSupportedException {
+		Double sum  = 0D;
+		Double total= 0D;
 		for (Denominacion denominacion: this.denominaciones) {
 			denominacion.setImporte(Numero.toRedondearSat(denominacion.getDenominacion()* denominacion.getCantidad()));
 			sum+= denominacion.getImporte();
@@ -252,36 +266,51 @@ public class Accion extends IBaseAttribute implements Serializable {
     this.attrs.put("efectivo", Numero.toRedondearSat(sum));		
 		for (Importe importe: this.importes) {
 			importe.toCalculate();
-			total+= importe.getImporte();
-			if(importe.getIdTipoMedioPago().equals(1L)) {
-				importe.setImporte(Numero.toRedondearSat(sum));
-				this.attrs.put("disponible", importe.getDisponible()> importe.getSaldo()? importe.getSaldo(): importe.getDisponible());
-			} // if
-//			else  // esto es para acumular los conceptos de tajertas de credito y tarjetas de debito como un solo rubro
-//				if(importe.getIdTipoMedioPago().equals(4L) || importe.getIdTipoMedioPago().equals(18L)) {
-//					if(pivote== null) {
-//						pivote= importe;
-//						pivote.setMedioPago("TARJETA BANCARIA");
-//					} // if	
-//					else {
-//						pivote.setDisponible(pivote.getDisponible()+ importe.getDisponible());
-//						pivote.setAcumulado(pivote.getAcumulado()+ importe.getAcumulado());
-//						pivote.setSaldo(pivote.getSaldo()+ importe.getSaldo());
-//						pivote.setImporte(pivote.getImporte()+ importe.getImporte());
-//						delete= importe;
-//					} // else
-//				} // if
+			switch (importe.getIdTipoMedioPago().intValue()) {
+				case 1:
+					importe.setImporte(Numero.toRedondearSat(sum));
+					this.attrs.put("disponible", importe.getDisponible()> importe.getSaldo()? importe.getSaldo(): importe.getDisponible());
+					break;
+				case 4: // esto es para acumular los conceptos de tajertas de credito y tarjetas de debito como un solo rubro
+					importe.setOmitir(Boolean.TRUE);
+					this.debito= importe;
+					break;
+				case 18: // esto es para acumular los conceptos de tajertas de credito y tarjetas de debito como un solo rubro
+					importe.setOmitir(Boolean.TRUE);
+					this.credito= importe;
+					break;
+				default:
+					break;
+			} // switch
+		  total+= importe.getImporte();
 		} // for
     this.attrs.put("total", Numero.toRedondearSat(total));		
-//		if(delete!= null)
-//			this.importes.remove(delete);
+		if(this.debito!= null) {
+			this.pivote= (Importe)this.debito.clone();
+			this.importes.remove(this.debito);
+		} // if	
+		if(this.credito!= null) {
+			this.pivote= (Importe)this.credito.clone();
+			this.importes.remove(this.credito);
+		} // else	
+		if(this.pivote!= null) {
+			this.pivote.setMedioPago("TARJETA BANCARIA");
+			this.pivote.setDisponible((this.debito.getDisponible()== null? 0D: this.debito.getDisponible())+ (this.credito.getDisponible()== null? 0D: this.debito.getDisponible()));
+			this.pivote.setAcumulado((this.debito.getAcumulado()== null? 0D: this.debito.getAcumulado())   + (this.credito.getAcumulado()== null? 0D: this.debito.getAcumulado()));
+			this.pivote.setSaldo((this.debito.getSaldo()== null? 0D: this.debito.getSaldo())               + (this.credito.getSaldo()== null? 0D: this.debito.getSaldo()));
+			this.pivote.setImporte((this.debito.getImporte()== null? 0D: this.debito.getImporte())         + (this.credito.getImporte()== null? 0D: this.debito.getImporte()));
+			if(this.importes.size()> 1)
+			  this.importes.add(1, pivote);
+			else
+			  this.importes.add(pivote);
+		} // if
 	}
 	
   public void doTotales() {
 		Double total= 0D;
 		for (Importe importe: this.importes) {
 			importe.toCalculate();
-			total+= importe.getImporte();
+		  total+= importe.getImporte();
 		} // for
     this.attrs.put("total", Numero.toRedondearSat(total));		
 	}
@@ -303,7 +332,9 @@ public class Accion extends IBaseAttribute implements Serializable {
       params.put("sortOrder", "order by tc_mantic_cierres_retiros.id_abono, tc_mantic_cierres_retiros.consecutivo ");
       columns = new ArrayList<>();
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("concepto", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("autorizo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("caja", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       this.lazyModel = new FormatCustomLazy("VistaCierresCajasDto", "retiros", params, columns);

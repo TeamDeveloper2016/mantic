@@ -9,7 +9,7 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="Cierre de caja"/>
 	<ui:define name="librerias">
-    <h:outputScript library="janal" name="core/jquery.janal.close.core-0.0.3.js"/>
+    <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryCloseJs}"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
         'contenedorGrupos\\:idEmpresa'    : {validaciones: 'requerido', mascara: 'libre'},
@@ -35,6 +35,7 @@
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
+		<p:defaultCommand target="contenedorGrupos:tabla"/>
 		<p:remoteCommand name="calculate" process="@this @(.recalculo)" update="@(.filas)" actionListener="#{manticVentasCajaCierresAccion.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.reset(); janal.desbloquear();"/>  
 		<p:remoteCommand name="summary" process="@this @(.total)" update="@(.totales)" actionListener="#{manticVentasCajaCierresAccion.doTotales}" onstart="return janal.bloquear();" oncomplete="janal.reset(); janal.desbloquear();"/>  
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
@@ -236,7 +237,7 @@
 											</div>
 											<div class="ui-grid-row janal-grid-row">
 												<div class="ui-grid-col-12">
-													<p:inputTextarea id="observaciones" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticVentasCajaCierresAccion.attrs.observaciones}"/>
+													<p:inputTextarea id="observaciones" rows="3" cols="33" styleClass="janal-wid-100-txt" value="#{manticVentasCajaCierresAccion.attrs.observaciones}"/>
 												</div>
 											</div>
 										</div>	
@@ -337,11 +338,11 @@
 									</f:facet>
 									<h:outputText value="#{row['usuario']}"/>
 								</p:column>		
-								<p:column class="MarAuto Responsive" sortBy="#{row.observaciones}">
+								<p:column class="MarAuto Responsive" sortBy="#{row.concepto}">
 									<f:facet name="header">
-										<h:outputText value="Observaciones"/>
+										<h:outputText value="concepto"/>
 									</f:facet>
-									<h:outputText value="#{row['observaciones']}"/>
+									<h:outputText value="#{row['concepto']}"/>
 								</p:column>		
 								<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.registro}">
 									<f:facet name="header">
@@ -355,7 +356,13 @@
 									</f:facet>
 									<h:outputText value="#{row['tipo']}"/>
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.importe}">
+								<p:column class="MarAuto Responsive" sortBy="#{row.autorizo}">
+									<f:facet name="header">
+										<h:outputText value="Autorizo"/>
+									</f:facet>
+									<h:outputText value="#{row['autorizo']}"/>
+								</p:column>		
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
 									<f:facet name="header">
 										<h:outputText value="Importe"/>
 									</f:facet>

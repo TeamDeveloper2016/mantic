@@ -1162,6 +1162,7 @@
 					tc_mantic_cierres_retiros.id_abono,
 				  if(tc_mantic_cierres_retiros.id_abono= 1, 'ABONO', 'RETIRO') as tipo,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
+				  (select concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) from tc_mantic_personas where tc_mantic_personas.id_persona= tc_mantic_cierres_retiros.id_autorizo) as autorizo,
 					tc_mantic_tipos_medios_pagos.nombre as medio,
 				  tc_mantic_cierres_retiros.concepto,
 					tc_mantic_cierres_retiros.importe,

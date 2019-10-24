@@ -11,7 +11,6 @@
 	Janal.Control.Cierres= {};
 	
 	Janal.Control.Cierres.Core= Class.extend({
-		selector    : '.key-down-event',
 		VK_ENTER    : 13, 
 		VK_UP       : 38,
 		VK_DOWN     : 40,
@@ -34,21 +33,22 @@
 			this.events();
  		}, // init
 		events: function() {
-      $(document).on('focus', this.selector, function() {
+      $(document).on('focus', '.key-down-event', function() {
 				janal.console('jsCierres.focus: '+ $(this).attr('id')+ ' value:['+ $(this).val().trim()+ ']');
 				$cierres.before= $(this).val().trim();
 				janal.lastNameFocus= this;
 			});  
-      $(document).on('keydown', this.selector, function(e) {
+      $(document).on('keydown', '.key-down-event', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
 				janal.console('Keydown: '+  key);
 				switch(key) {
 					case $cierres.VK_ENTER:
 						if($cierres.enter=== 0) {
 					    $(this).blur();
-							$cierres.move(1);
+							$cierres.down();
 						} // if	
 						$cierres.enter= 0;
+						return false;
 						break;
 					case $cierres.VK_UP:
 					  return $cierres.up();
@@ -65,7 +65,7 @@
 			if(position=== 0 && move< 0)
 				tokens[2]= top;
 			else
-  			if(position=== top && move> 0)
+  			if(position=== top && move>= 0)
   				tokens[2]= 0;
 			  else
 					tokens[2]= position+ move;  

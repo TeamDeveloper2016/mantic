@@ -24,7 +24,23 @@
 
 		  $(document).ready(function() {
 				setTimeout("janal.readingMode('#{manticVentasCajaCierresRetiros.attrs.nombreAccion}')", 500);
-      });
+				$(document).on('keydown', '.event-keydown-enter', function(e) {
+					var key   = e.keyCode ? e.keyCode : e.which;
+					janal.console('Keydown: '+  key);
+					switch(key) {
+						case 13: // key_enter
+						case 40: // key_down
+							var name= janal.parser(this);
+							if(name)
+								$('#'+ name).focus();
+							return false;
+							break;
+						case 38:  // key_up
+							return false;
+							break;
+					} // switch
+				});
+		  });
 			
 			function executeReturn(cons){
 				janal.alert('Se generó el retiro de efectivo, con consecutivo: '+ cons);								
@@ -37,6 +53,8 @@
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">		
+		<p:defaultCommand target="vacio"/>
+		<p:inputText id="vacio" style="display:none"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
@@ -121,15 +139,14 @@
 	<ui:define name="dialogos">
 		<p:dialog id="dialogoAutorizacion" widgetVar="widgetDialogoAutorizacion" header="Persona que autoriza el movimiento" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="janal.change('formAutorizacion', Janal.Control.credenciales); focus();" width="50%" onHide="janal.restore(); janal.desbloquear();">						
 			<h:form id="formAutorizacion" prependId="false">
-				<p:defaultCommand target="cuenta"/>
 				<div class="janal-wid-100-txt janal-column-center">
 				  <p:outputLabel id="invalido" value="La cuenta o contraseña no son validas o no tienes autorización" styleClass="janal-color-orange" style="display: #{manticVentasCajaCierresRetiros.attrs.ok? '': 'none'};"/>
 			  </div>
 				<p:panelGrid columns="1" styleClass="janal-wid-100">
 					<p:outputLabel for="cuenta" value="Usuario:"/>
-					<p:inputText id="cuenta" value="#{manticVentasCajaCierresRetiros.attrs.cuenta}" onblur="$('#contrasenia').focus()" styleClass="janal-wid-100-txt"/>
+					<p:inputText id="cuenta" value="#{manticVentasCajaCierresRetiros.attrs.cuenta}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-contrasenia"/>
 					<p:outputLabel for="contrasenia" value="Contraseña:"/>
-					<p:password id="contrasenia" value="#{manticVentasCajaCierresRetiros.attrs.contrasenia}" onblur="$('#verificar').focus()" styleClass="janal-wid-100-txt" autocomplete="new-password"/>									
+					<p:password id="contrasenia" value="#{manticVentasCajaCierresRetiros.attrs.contrasenia}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-verificar" autocomplete="new-password"/>									
         </p:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">

@@ -14,7 +14,7 @@ import mx.org.kaana.mantic.db.dto.TcManticCierresCajasDto;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Importe extends TcManticCierresCajasDto implements Serializable {
+public class Importe extends TcManticCierresCajasDto implements Cloneable, Serializable {
 
 	private static final long serialVersionUID=-377455166380643306L;
 
@@ -22,7 +22,7 @@ public class Importe extends TcManticCierresCajasDto implements Serializable {
 	private String empresa;
 	private String medioPago;
 	private Double diferencia;
-
+	private boolean omitir;
 	
 	public String getCaja() {
 		return caja;
@@ -52,6 +52,14 @@ public class Importe extends TcManticCierresCajasDto implements Serializable {
 		return this.diferencia;
 	}
 
+	public Boolean getOmitir() {
+		return omitir;
+	}
+
+	public void setOmitir(Boolean omitir) {
+		this.omitir=omitir;
+	}
+
 	public String getDiferencia$() {
 		if(this.diferencia== null)
 			this.diferencia= 0D;
@@ -66,5 +74,10 @@ public class Importe extends TcManticCierresCajasDto implements Serializable {
 	public void toCalculate() {
 		this.diferencia= Numero.toRedondearSat(this.getImporte()- this.getSaldo());
 	}
+
+	@Override
+  public Object clone() throws CloneNotSupportedException {
+    return super.clone();
+  }
 	
 }

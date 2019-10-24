@@ -9,7 +9,7 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
   <ui:param name="titulo" value="#{manticCatalogosCajasAccion.attrs.nombreAccion} catálogo de cajas" />
  <ui:define name="librerias">
-    <h:outputScript library="janal" name="core/jquery.janal.close.core-0.0.3.js"/>
+    <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryCloseJs}"/>
 		<script type="text/javascript">
       Janal.Control.fields = {
         'contenedorGrupos\\:clave'        : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},

@@ -1357,9 +1357,9 @@
 					var name= $(element).attr('id').substring(0, $(element).attr('id').indexOf($janal.INPUT_RESERVE));
 					element= $('#'+ name.replace(/:/gi, '\\:'));
 				} // if	
-				if(typeof($(element).attr('class'))!== 'undefined' && $(element).attr('class').length> 0)
-  			  $.each($(element).attr('class').split(' '), function(index, value) { if(value.startsWith('janal-name')) { name= value.substring(11).replace(/_/g, ' '); } });
 			} // if	
+			if(typeof($(element).attr('class'))!== 'undefined' && $(element).attr('class').length> 0)
+				$.each($(element).attr('class').split(' '), function(index, value) { if(value.startsWith('janal-name')) { name= value.substring(11).replace(/_/g, ' '); } });
 			return name;
 		},
     specialCharacters: function(input) {
