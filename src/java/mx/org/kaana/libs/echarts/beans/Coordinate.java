@@ -2,6 +2,7 @@ package mx.org.kaana.libs.echarts.beans;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import mx.org.kaana.libs.echarts.enums.ETypeLine;
 
 /**
  *@company KAANA
@@ -22,6 +23,11 @@ public class Coordinate extends ArrayList<Line> implements IMarkLine, Serializab
 	public Coordinate(String name, Integer x, Integer y, String color) {
 		this.add(new Line(name, 0, y, color));
 		this.add(new Line(name, x, y, color));
+	}
+		
+	public Coordinate(String name, Integer x, Integer y, String color, ETypeLine type) {
+		this.add(new Line(name, 0, y, color, type));
+		this.add(new Line(name, x, y, color, type));
 	}
 		
 }

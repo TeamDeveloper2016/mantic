@@ -1,6 +1,7 @@
 package mx.org.kaana.libs.echarts.beans;
 
 import java.io.Serializable;
+import mx.org.kaana.libs.echarts.enums.ETypeLine;
 
 /**
  *@company KAANA
@@ -15,13 +16,19 @@ public class Style implements Serializable {
 	private static final long serialVersionUID=-6283466476453309041L;
 
 	private String color;
+	private String type;
 
 	public Style() {
 		this(Colors.COLOR_BLACK);
 	}
 	
 	public Style(String color) {
+		this(color, ETypeLine.DASHED.toName());
+	}
+
+	public Style(String color, String type) {
 		this.color=color;
+		this.type=type; 
 	}
 
 	public String getColor() {
@@ -32,10 +39,17 @@ public class Style implements Serializable {
 		this.color=color;
 	}
 
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type=type;
+	}
+
 	@Override
 	public String toString() {
-		return "Style{"+"color="+color+'}';
+		return "Style{"+"color="+color+", type="+type+'}';
 	}
-	
 		
 }

@@ -9,6 +9,7 @@ import mx.org.kaana.libs.echarts.beans.Grid;
 import mx.org.kaana.libs.echarts.beans.Legend;
 import mx.org.kaana.libs.echarts.bar.Serie;
 import mx.org.kaana.libs.echarts.beans.Colors;
+import mx.org.kaana.libs.echarts.beans.IMarkLine;
 import mx.org.kaana.libs.echarts.beans.Title;
 import mx.org.kaana.libs.echarts.beans.ToolTip;
 import mx.org.kaana.libs.echarts.beans.Xaxis;
@@ -76,6 +77,12 @@ public class BarModel extends BaseBarModel implements Serializable {
   public String toJson() throws Exception {
 	  return StringEscapeUtils.unescapeJava(Decoder.toJson(this));	
 	}	
+	
+	public void addLine(IMarkLine coordinate) {
+		if(this.series!= null && !this.series.isEmpty())
+			if(this.series.get(0).getMarkLine().getData()!= null)
+		    this.series.get(0).getMarkLine().getData().add(coordinate);
+	}
 	
 	@Override
 	public String toString() {

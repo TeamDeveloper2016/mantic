@@ -1,6 +1,7 @@
 package mx.org.kaana.libs.echarts.beans;
 
 import java.io.Serializable;
+import mx.org.kaana.libs.echarts.enums.ETypeLine;
 
 /**
  *@company KAANA
@@ -18,6 +19,10 @@ public class LineStyle implements Serializable {
 
 	public LineStyle(String color) {
 		this(new Style(color));
+	}
+	
+	public LineStyle(String color, ETypeLine type) {
+		this(new Style(color, type.toName()));
 	}
 
 	public LineStyle(Style normal) {

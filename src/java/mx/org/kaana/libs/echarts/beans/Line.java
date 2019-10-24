@@ -3,6 +3,7 @@ package mx.org.kaana.libs.echarts.beans;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import mx.org.kaana.libs.echarts.enums.ETypeLine;
 
 /**
  *@company KAANA
@@ -25,7 +26,11 @@ public class Line implements Serializable {
 	}
 	
 	public Line(String name, Integer x, Integer y, String color) {
-		this(name, x, y, new LineStyle(color));
+		this(name, x, y, new LineStyle(color, ETypeLine.DASHED));
+	}
+	
+	public Line(String name, Integer x, Integer y, String color, ETypeLine type) {
+		this(name, x, y, new LineStyle(color, type));
 	}
 	
 	public Line(String name, Integer x, Integer y, LineStyle lineStyle) {

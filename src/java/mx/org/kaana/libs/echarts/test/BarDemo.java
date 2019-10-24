@@ -2,9 +2,12 @@ package mx.org.kaana.libs.echarts.test;
 
 import java.util.Collections;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.libs.echarts.beans.Colors;
 import mx.org.kaana.libs.echarts.beans.Coordinate;
+import mx.org.kaana.libs.echarts.beans.CustomLine;
 import mx.org.kaana.libs.echarts.beans.Title;
 import mx.org.kaana.libs.echarts.enums.EBarOritentation;
+import mx.org.kaana.libs.echarts.enums.ETypeLine;
 import mx.org.kaana.libs.echarts.kind.BarModel;
 import mx.org.kaana.libs.echarts.model.Multiple;
 import mx.org.kaana.libs.echarts.model.Simple;
@@ -27,7 +30,9 @@ public class BarDemo {
      */
     public static void main(String[] args) throws Exception {
       BarModel model= new BarModel(new Title("CGOR", null), EBarOritentation.VERTICAL);
-			model.getSeries().get(0).addLine(new Coordinate("Hola", 6, 130));
+			model.addLine(new Coordinate("Hola", 6, 150, Colors.COLOR_RED, ETypeLine.SOLID));
+			model.addLine(new CustomLine("Hola", 180, Colors.COLOR_GREEN, ETypeLine.DASHED));
+			model.addLine(new CustomLine("Hola", 120, Colors.COLOR_BLUE, ETypeLine.DOTTED));
 			LOG.info(model.toJson());
 			
 			Simple simple       = new Simple("ventas", DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "simple", Collections.EMPTY_MAP));

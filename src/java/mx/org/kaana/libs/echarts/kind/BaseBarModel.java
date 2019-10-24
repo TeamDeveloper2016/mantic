@@ -120,5 +120,5 @@ public class BaseBarModel extends ChartModel implements Serializable {
 	public String toString() {
 		return "BaseBarModel{"+"title="+title+", legend="+legend+", color="+color+", tooltip="+tooltip+", grid="+grid+", xAxis="+xAxis+", yAxis="+yAxis+", orientation="+orientation+'}';
 	}
-
+	
 }
