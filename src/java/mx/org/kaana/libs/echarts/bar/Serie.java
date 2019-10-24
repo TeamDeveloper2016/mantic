@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import mx.org.kaana.libs.echarts.beans.Colors;
 import mx.org.kaana.libs.echarts.beans.IMarkLine;
 import mx.org.kaana.libs.echarts.beans.Label;
 import mx.org.kaana.libs.echarts.beans.MarkLine;
@@ -34,7 +35,11 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 	}
 
 	public Serie(String name) {
-		this(name, null, new ArrayList(Arrays.asList(new Value(120D), new Value(200D), new Value(150D), new Value(80D), new Value(70D), new Value(110D), new Value(130D))), EKinds.BAR);
+		this(name, Colors.toColor());
+	}
+	
+	public Serie(String name, String color) {
+		this(name, null, new ArrayList(Arrays.asList(new Value(120D, color), new Value(200D, color), new Value(150D, color), new Value(80D, color), new Value(70D, color), new Value(110D, color), new Value(130D, color))), EKinds.BAR);
 	}
 	
 	public Serie(String name, String barWidth, List<Value> data, EKinds type) {

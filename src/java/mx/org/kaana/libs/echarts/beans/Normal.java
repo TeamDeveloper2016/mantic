@@ -18,16 +18,31 @@ public class Normal implements Serializable {
 	private Integer fontSize;
 	private Boolean show;
 	private String position; // insideRigth, insideLeft, inside
+	private String formatter;
 
+/*	formatter
+{a}: series name.
+{b}: the name of a data item.
+{c}: the value of a data item.
+{d}: the percent.
+{@xxx}: the value of a dimension named'xxx', for example,{@product}refers the value of'product'` dimension.
+{@[n]}: the value of a dimension at the index ofn, for example,{@[3]}` refers the value at dimensions[3].	
+	
+	*/
 	public Normal() {
-		this(true, "inside");
+		this("{b}: {c}");
 	}
 
-	public Normal(Boolean show, String position) {
-		this.fontFamily= "Roboto, sans-serif";
-    this.fontSize= 11;
-		this.show=show;
+	public Normal(String formatter) {
+		this("inside", formatter);
+	}
+
+	public Normal(String position, String formatter) {
 		this.position=position;
+		this.formatter=formatter;
+		this.fontFamily="Roboto, sans-serif";
+    this.fontSize=11;
+		this.show=true;
 	}
 
 	public Boolean getShow() {
@@ -62,9 +77,17 @@ public class Normal implements Serializable {
 		this.fontSize=fontSize;
 	}
 
-	@Override
-	public String toString() {
-		return "Normal{"+"fontFamily="+fontFamily+", fontSize="+fontSize+", show="+show+", position="+position+'}';
+	public String getFormatter() {
+		return formatter;
 	}
 
+	public void setFormatter(String formatter) {
+		this.formatter=formatter;
+	}
+
+	@Override
+	public String toString() {
+		return "Normal{"+"fontFamily="+fontFamily+", fontSize="+fontSize+", show="+show+", position="+position+", formatter="+formatter+'}';
+	}
+	
 }

@@ -8,6 +8,7 @@ import mx.org.kaana.libs.echarts.stack.Serie;
 import mx.org.kaana.libs.echarts.beans.Axis;
 import mx.org.kaana.libs.echarts.beans.Colors;
 import mx.org.kaana.libs.echarts.beans.Grid;
+import mx.org.kaana.libs.echarts.beans.IMarkLine;
 import mx.org.kaana.libs.echarts.beans.Legend;
 import mx.org.kaana.libs.echarts.beans.Title;
 import mx.org.kaana.libs.echarts.beans.ToolTip;
@@ -45,12 +46,12 @@ public class StackModel extends BaseBarModel implements Serializable {
 	}
 
 	public StackModel(Title title, EBarOritentation orientation) {
-		this(title, new Legend("2019"), new ArrayList(Arrays.asList(Colors.SERIES_COLORS)), new ToolTip(), new Grid(), new Xaxis(), new Yaxis(), new ArrayList(Arrays.asList(new Serie())), orientation);
+		this(title, new Legend("2019"), new ArrayList(Arrays.asList(Colors.SERIES_COLORS)), new ToolTip(), new Grid(), new Xaxis(), new Yaxis(), new ArrayList(Arrays.asList(new Serie("2019", Colors.toColor()))), orientation);
+		this.series.add(new Serie("2020", Colors.toColor()));
 	}
 	
 	public StackModel(Title title, IDataSet data, EBarOritentation orientation) {
-		this(title, data.getLegend(), new ArrayList(Arrays.asList(Colors.SERIES_COLORS)), new ToolTip(), new Grid(), 
-			data.getXaxis(), new Yaxis(), data.getStack(), orientation);
+		this(title, data.getLegend(), new ArrayList(Arrays.asList(Colors.SERIES_COLORS)), new ToolTip(), new Grid(), data.getXaxis(), new Yaxis(), data.getStack(), orientation);
 	}
 
 	public StackModel(List<String> color, ToolTip tooltip, Axis xAxis, Axis yAxis, List<Serie> series) {
@@ -77,7 +78,13 @@ public class StackModel extends BaseBarModel implements Serializable {
   public String toJson() throws Exception {
 	  return StringEscapeUtils.unescapeJava(Decoder.toJson(this));	
 	}	
-	
+
+	public void addLine(IMarkLine line) {
+		if(this.series!= null && !this.series.isEmpty())
+			if(this.series.get(0).getMarkLine().getData()!= null)
+		    this.series.get(0).getMarkLine().getData().add(line);
+	}
+
 	@Override
 	public String toString() {
 		return "StackModel{"+"series="+series+'}';

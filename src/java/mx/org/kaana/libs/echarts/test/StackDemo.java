@@ -2,8 +2,11 @@ package mx.org.kaana.libs.echarts.test;
 
 import java.util.Collections;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.libs.echarts.beans.Colors;
+import mx.org.kaana.libs.echarts.beans.CustomLine;
 import mx.org.kaana.libs.echarts.beans.Title;
 import mx.org.kaana.libs.echarts.enums.EBarOritentation;
+import mx.org.kaana.libs.echarts.enums.ETypeLine;
 import mx.org.kaana.libs.echarts.kind.StackModel;
 import mx.org.kaana.libs.echarts.model.Stacked;
 import org.apache.commons.logging.Log;
@@ -25,6 +28,7 @@ public class StackDemo {
      */
     public static void main(String[] args) throws Exception {
       StackModel model= new StackModel(new Title("CGOR", null), EBarOritentation.VERTICAL);
+			model.addLine(new CustomLine("Hola", 150, Colors.COLOR_RED, ETypeLine.SOLID));
 			LOG.info(model.toJson());
 			
 			Stacked multiple     = new Stacked(DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "multiple", Collections.EMPTY_MAP));

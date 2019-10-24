@@ -1,7 +1,7 @@
 package mx.org.kaana.libs.echarts.stack;
 
 import java.io.Serializable;
-import mx.org.kaana.libs.echarts.beans.Label;
+import mx.org.kaana.libs.echarts.beans.Colors;
 
 /**
  *@company KAANA
@@ -22,7 +22,11 @@ public class Serie extends mx.org.kaana.libs.echarts.bar.Serie implements Serial
 	}
 
 	public Serie(String legend) {
-		super(legend);
+		this(legend, Colors.toColor());
+	}
+	
+	public Serie(String legend, String color) {
+		super(legend, color);
 		this.stack="Stack";
 	}
 

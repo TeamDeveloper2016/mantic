@@ -78,10 +78,10 @@ public class BarModel extends BaseBarModel implements Serializable {
 	  return StringEscapeUtils.unescapeJava(Decoder.toJson(this));	
 	}	
 	
-	public void addLine(IMarkLine coordinate) {
+	public void addLine(IMarkLine line) {
 		if(this.series!= null && !this.series.isEmpty())
 			if(this.series.get(0).getMarkLine().getData()!= null)
-		    this.series.get(0).getMarkLine().getData().add(coordinate);
+		    this.series.get(0).getMarkLine().getData().add(line);
 	}
 	
 	@Override

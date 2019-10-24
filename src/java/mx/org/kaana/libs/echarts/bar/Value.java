@@ -21,6 +21,10 @@ public final class Value implements Serializable {
 		this(value, new ItemStyle());
 	}
 
+	public Value(Double value, String color) {
+		this(value, new ItemStyle(color));
+	}
+
 	public Value(Double value, ItemStyle itemStyle) {
 		this.value=value;
 		this.itemStyle=itemStyle;

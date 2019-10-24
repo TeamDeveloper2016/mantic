@@ -34,7 +34,7 @@ public class MarkLine implements  Serializable {
 
 	public MarkLine(List<IMarkLine> data, String position) {
 		this.data=data;
-		this.label= new Label(new Normal(Boolean.TRUE, position));
+		this.label= new Label(new Normal(position));
 	}
 
 	public List<IMarkLine> getData() {

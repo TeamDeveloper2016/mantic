@@ -21,7 +21,11 @@ public final class ItemStyle implements Serializable {
 	private Double shadowBlur;
 
 	public ItemStyle() {
-		this(Colors.toColor(), 0.9D, "rgba(0, 0, 0, 0.5)", 10D);
+		this(Colors.toColor());
+	}
+
+	public ItemStyle(String color) {
+		this(color, 0.9D, "rgba(0, 0, 0, 0.5)", 10D);
 	}
 
 	public ItemStyle(String color, Double opacity, String shadowColor, Double shadowBlur) {
