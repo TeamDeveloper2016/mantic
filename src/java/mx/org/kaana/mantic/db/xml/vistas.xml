@@ -7144,7 +7144,8 @@
           tc_mantic_ventas_detalles.*,
           tc_mantic_ventas_detalles.cantidad as cuantos,
           tc_mantic_ventas_detalles.cantidad as inicial,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					tc_mantic_articulos.menudeo
 				from 
 					tc_mantic_ventas_detalles 
 				inner join
