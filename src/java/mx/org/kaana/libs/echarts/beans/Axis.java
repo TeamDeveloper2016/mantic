@@ -108,7 +108,8 @@ public class Axis implements Serializable {
 	}
 
 	public void add(String name) {
-		this.data.add(name);
+		if(this.data.indexOf(name)< 0)
+		  this.data.add(name);
 	}
 	
 	@Override

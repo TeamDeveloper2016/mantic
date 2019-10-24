@@ -34,7 +34,6 @@ public class TiposVentas implements Serializable {
 	public TiposVentas(Integer index) {
 		this(index, "", 0D, 0D, 16D, 0L, 0D, false);
 	}
-
 	
 	public TiposVentas(Integer index, String nombre, double costo, double precio, double iva, double limite, double pivote, boolean rounded) {
 		this.index=index;
