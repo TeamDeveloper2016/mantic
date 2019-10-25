@@ -56,7 +56,7 @@
 									<h:outputText value="#{manticVentasCajaCierresAmbos.doMonedaSat(item.limite)}"/>
 								</p:column>   
 							</p:selectOneMenu>						
-              <p:outputLabel for="idUsuario" value="Persona que $(+/-):"/>
+              <p:outputLabel for="idUsuario" value="Persona que retiró o abonó:"/>
               <p:selectOneMenu id="idUsuario" value="#{manticVentasCajaCierresAmbos.attrs.idUsuario}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticVentasCajaCierresAmbos.attrs.usuarios}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
@@ -68,9 +68,8 @@
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticVentasCajaCierresAmbos.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticVentasCajaCierresAmbos.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
-              <p:outputLabel for="idAbono" value="Estatus:"/>
+              <p:outputLabel for="idAbono" value="Retiro o abono:"/>
               <p:selectOneMenu id="idAbono" value="#{manticVentasCajaCierresAmbos.attrs.idAbono}" var="item" converter="javax.faces.Long" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItem itemValue="-1" itemLabel="TODOS"/>
                 <f:selectItem itemValue="1" itemLabel="ABONO"/>
                 <f:selectItem itemValue="2" itemLabel="RETIRO"/>

@@ -64,6 +64,7 @@ public class BarModel extends BaseBarModel implements Serializable {
 	public BarModel(Title title, Legend legend, List<String> color, ToolTip tooltip, Grid grid, Axis xAxis, Axis yAxis, List<Serie> series, EBarOritentation orientation) {
 		super(title, legend, color, tooltip, grid, xAxis, yAxis, orientation);
 		this.series=series;
+		this.loadColors();
 	}
 
 	public List<Serie> getSeries() {
@@ -89,4 +90,11 @@ public class BarModel extends BaseBarModel implements Serializable {
 		return "BarModel{"+"series="+series+'}';
 	}
 
+	private void loadColors() {
+	  super.getColor().clear();
+		for (Serie item : this.series) {
+			super.getColor().add(item.getData().get(0).getItemStyle().getColor());
+		} // for
+	}
+	
 }

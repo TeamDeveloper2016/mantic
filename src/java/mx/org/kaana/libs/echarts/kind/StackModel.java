@@ -48,6 +48,7 @@ public class StackModel extends BaseBarModel implements Serializable {
 	public StackModel(Title title, EBarOritentation orientation) {
 		this(title, new Legend("2019"), new ArrayList(Arrays.asList(Colors.SERIES_COLORS)), new ToolTip(), new Grid(), new Xaxis(), new Yaxis(), new ArrayList(Arrays.asList(new Serie("2019", Colors.toColor()))), orientation);
 		this.series.add(new Serie("2020", Colors.toColor()));
+		this.loadColors();
 	}
 	
 	public StackModel(Title title, IDataSet data, EBarOritentation orientation) {
@@ -65,6 +66,7 @@ public class StackModel extends BaseBarModel implements Serializable {
 	public StackModel(Title title, Legend legend, List<String> color, ToolTip tooltip, Grid grid, Axis xAxis, Axis yAxis, List<Serie> series, EBarOritentation orientation) {
 		super(title, legend, color, tooltip, grid, xAxis, yAxis, orientation);
 		this.series=series;
+		this.loadColors();
 	}
 
 	public List<Serie> getSeries() {
@@ -90,4 +92,11 @@ public class StackModel extends BaseBarModel implements Serializable {
 		return "StackModel{"+"series="+series+'}';
 	}
 
+	private void loadColors() {
+	  super.getColor().clear();
+		for (Serie item : this.series) {
+			super.getColor().add(item.getData().get(0).getItemStyle().getColor());
+		} // for
+	}
+	
 }

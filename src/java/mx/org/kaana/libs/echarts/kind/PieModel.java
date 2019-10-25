@@ -121,5 +121,5 @@ public class PieModel extends ChartModel implements Serializable {
 	public String toString() {
 		return "PieModel{"+"title="+title+", legend="+legend+", color="+color+", tooltip="+tooltip+", series="+series+'}';
 	}
-
+	
 }

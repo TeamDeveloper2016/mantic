@@ -27,6 +27,7 @@ public class Serie extends mx.org.kaana.libs.echarts.bar.Serie implements Serial
 	
 	public Serie(String legend, String color) {
 		super(legend, color);
+		super.setMarkPoint(null);
 		this.stack="Stack";
 	}
 
