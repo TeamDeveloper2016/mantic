@@ -3165,8 +3165,7 @@
           tc_mantic_articulos.id_articulo as id_key,
           tc_mantic_articulos_codigos.codigo,
 			  	if(tc_mantic_articulos_codigos.id_principal= 1, 'PRINCIPAL', 'AUXILIAR') as principal,
-          tc_mantic_articulos.nombre,
-  				count(*) as total
+          tc_mantic_articulos.nombre
         from      
           tc_mantic_articulos_codigos
 				inner join

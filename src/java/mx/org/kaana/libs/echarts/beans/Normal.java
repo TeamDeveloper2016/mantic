@@ -30,11 +30,11 @@ public class Normal implements Serializable {
 	
 	*/
 	public Normal() {
-		this("{b}: {c}");
+		this("inside");
 	}
 
-	public Normal(String formatter) {
-		this("inside", formatter);
+	public Normal(String position) {
+		this(position, "{b}\\n{c}");
 	}
 
 	public Normal(String position, String formatter) {
