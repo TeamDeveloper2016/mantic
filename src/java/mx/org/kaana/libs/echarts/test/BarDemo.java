@@ -31,8 +31,8 @@ public class BarDemo {
     public static void main(String[] args) throws Exception {
       BarModel model= new BarModel(new Title("CGOR", null), EBarOritentation.VERTICAL);
 			model.addLine(new Coordinate("Hola", 6, 150, Colors.COLOR_RED, ETypeLine.SOLID));
-			model.addLine(new CustomLine("Hola", 180, Colors.COLOR_GREEN, ETypeLine.DASHED));
-			model.addLine(new CustomLine("Hola", 120, Colors.COLOR_BLUE, ETypeLine.DOTTED));
+			model.addLine(new CustomLine("Hola", 180D, Colors.COLOR_GREEN, ETypeLine.DASHED));
+			model.addLine(new CustomLine("Hola", 120D, Colors.COLOR_BLUE, ETypeLine.DOTTED));
 			LOG.info(model.toJson());
 			
 			Simple simple       = new Simple("ventas", DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "simple", Collections.EMPTY_MAP));

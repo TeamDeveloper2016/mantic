@@ -28,7 +28,7 @@ public class StackDemo {
      */
     public static void main(String[] args) throws Exception {
       StackModel model= new StackModel(new Title("CGOR", null), EBarOritentation.VERTICAL);
-			model.addLine(new CustomLine("Hola", 150, Colors.COLOR_RED, ETypeLine.SOLID));
+			model.addLine(new CustomLine("Hola", 150D, Colors.COLOR_RED, ETypeLine.SOLID));
 			LOG.info(model.toJson());
 			
 			Stacked multiple     = new Stacked(DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "multiple", Collections.EMPTY_MAP));

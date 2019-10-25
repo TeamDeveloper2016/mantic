@@ -9011,30 +9011,26 @@
 			<select id="multiple">
 select
   tc_mantic_empresas.nombre as category,
-  tc_mantic_ventas_detalles.codigo as serie,
-  sum(tc_mantic_ventas_detalles.importe) as value
+  dayname(tc_mantic_ventas.registro) as serie,
+  sum(tc_mantic_ventas.total) as value
 from
-  tc_mantic_ventas_detalles
-inner join
-  tc_mantic_ventas on tc_mantic_ventas_detalles.id_venta= tc_mantic_ventas.id_venta
+  tc_mantic_ventas
 inner join 
   tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
 group by
   tc_mantic_empresas.nombre,
-  tc_mantic_ventas_detalles.codigo  				
+  dayname(tc_mantic_ventas.registro)			
 			</select>
 			<select id="simple">
 select
-  tc_mantic_ventas_detalles.codigo as serie,
-  sum(tc_mantic_ventas_detalles.importe) as value
+  dayname(tc_mantic_ventas.registro) as serie,
+  sum(tc_mantic_ventas.total) as value
 from
-  tc_mantic_ventas_detalles
-inner join
-  tc_mantic_ventas on tc_mantic_ventas_detalles.id_venta= tc_mantic_ventas.id_venta
+  tc_mantic_ventas
 inner join 
   tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
 group by
-  tc_mantic_ventas_detalles.codigo  				
+  dayname(tc_mantic_ventas.registro) 				
 			</select>
 			<select id="clean">
 select

@@ -7,6 +7,8 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.libs.echarts.beans.Colors;
+import mx.org.kaana.libs.echarts.beans.CustomLine;
 import mx.org.kaana.libs.echarts.beans.Title;
 import mx.org.kaana.libs.echarts.enums.EBarOritentation;
 import mx.org.kaana.libs.echarts.kind.BarModel;
@@ -45,6 +47,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 		try {
 			Simple simple    = new Simple("Ventas", DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "simple", attrs));
   		BarModel modelSimple  = new BarModel(new Title(), simple, EBarOritentation.HORIZONTAL);
+			modelSimple.addLine(new CustomLine("2019", 50000D, Colors.COLOR_RED));
   		this.attrs.put("simple", modelSimple.toJson());
 			
 			Multiple multiple= new Multiple(DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "multiple", attrs));

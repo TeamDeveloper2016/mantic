@@ -16,22 +16,22 @@ public class CustomLine implements IMarkLine, Serializable {
 	private static final long serialVersionUID=-8197395881452075986L;
 
 	private String name;
-	private Integer yAxis;
+	private Double yAxis;
 	private LineStyle lineStyle;
 
-	public CustomLine(String name, Integer yAxis) {
+	public CustomLine(String name, Double yAxis) {
 		this(name, yAxis, Colors.COLOR_BLACK);
 	}
 
-	public CustomLine(String name, Integer yAxis, String color) {
+	public CustomLine(String name, Double yAxis, String color) {
 		this(name, yAxis, new LineStyle(color));
 	}
 
-	public CustomLine(String name, Integer yAxis, String color, ETypeLine type) {
+	public CustomLine(String name, Double yAxis, String color, ETypeLine type) {
 		this(name, yAxis, new LineStyle(color, type));
 	}
 
-	public CustomLine(String name, Integer yAxis, LineStyle lineStyle) {
+	public CustomLine(String name, Double yAxis, LineStyle lineStyle) {
 		this.name=name;
 		this.yAxis=yAxis;
 		this.lineStyle=lineStyle;
@@ -45,11 +45,11 @@ public class CustomLine implements IMarkLine, Serializable {
 		this.name=name;
 	}
 
-	public Integer getyAxis() {
+	public Double getyAxis() {
 		return yAxis;
 	}
 
-	public void setyAxis(Integer yAxis) {
+	public void setyAxis(Double yAxis) {
 		this.yAxis=yAxis;
 	}
 
