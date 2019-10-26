@@ -860,7 +860,7 @@
 			</select>
 			<select id="horas">
 				select 					
-					convert(hora, integer) as id_key,
+					CONVERT(hora, SIGNED INTEGER) as id_key,
 					empresa,
 					nombre_empresa,
 					total_ventas,
