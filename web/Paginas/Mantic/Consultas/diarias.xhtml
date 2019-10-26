@@ -33,6 +33,7 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticConsultasDiarias.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{manticConsultasDiarias.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<p:ajax event="change" listener="#{manticConsultasDiarias.doLoadCajas}" process="@this" update="idCaja"/>
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticConsultasDiarias.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
                 <p:column headerText="Clave">
@@ -41,9 +42,27 @@
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
-              </p:selectOneMenu>          							
+              </p:selectOneMenu>  
+							<p:outputLabel for="idCaja" value="Cajas:"/>
+              <p:selectOneMenu id="idCaja" value="#{manticConsultasDiarias.attrs.idCaja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                <f:selectItems value="#{manticConsultasDiarias.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+                <p:column styleClass="janal-column-right" headerText="Limite">
+                  <h:outputText value="#{item.limite}"/>
+                </p:column>   
+              </p:selectOneMenu>
 							<p:outputLabel for="fechaInicio" value="Fecha:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticConsultasDiarias.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" locale="es" converter="janal.convertidor.Calendario"/>              							
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100"  value="#{manticConsultasDiarias.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" locale="es" converter="janal.convertidor.Calendario"/>              							
+							<p:outputLabel for="idMedioPago" value="Forma de pago:"/>
+              <p:selectOneMenu id="idMedioPago" value="#{manticConsultasDiarias.attrs.idMedioPago}" styleClass="janal-wid-96">								
+                <f:selectItems value="#{manticConsultasDiarias.attrs.mediosPago}"/>              
+              </p:selectOneMenu>
 							<p:separator/>
             </p:panelGrid>
 						<div class="janal-align-right">
@@ -67,7 +86,7 @@
                 <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	  						            		
-            <p:column class="MarAuto Responsive janal-wid-20" sortBy="#{row.nombreEmpresa}">
+            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.nombreEmpresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
@@ -78,25 +97,37 @@
                 <h:outputText value="Caja"/>
               </f:facet>
               <h:outputText value="#{row['caja']}"/>
-            </p:column>																
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-7" sortBy="#{row.impuestos}">
+            </p:column>																            
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-7" sortBy="#{row.ticket}">
               <f:facet name="header">
-                <h:outputText value="Iva"/>
+                <h:outputText value="Ticket"/>
               </f:facet>
-              <h:outputText value="#{row['impuestos']}"/>
-            </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-7" sortBy="#{row.subTotal}">
-              <f:facet name="header">
-                <h:outputText value="Subtotal"/>
-              </f:facet>
-              <h:outputText value="#{row['subTotal']}"/>
+              <h:outputText value="#{row['ticket']}"/>
             </p:column>		
             <p:column class="janal-column-right MarAuto Responsive janal-wid-7" sortBy="#{row.importe}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
-              <h:outputText value="#{row['total']}"/>
+              <h:outputText value="$#{row['importe']}"/>
+            </p:column>		
+						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.tipoMedioPago}">
+              <f:facet name="header">
+                <h:outputText value="Forma de pago"/>
+              </f:facet>
+              <h:outputText value="#{row['tipoMedioPago']}"/>
             </p:column>								
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.registro}">
+              <f:facet name="header">
+                <h:outputText value="Fecha"/>
+              </f:facet>
+              <h:outputText value="#{row['registro']}"/>
+            </p:column>		
+						<p:columnGroup type="footer">
+							<p:row>
+								<p:column colspan="3" style="text-align:right" footerText="Total:" />
+								<p:column footerText="$#{manticConsultasDiarias.attrs.total.total}" style="text-align:right"/>									
+							</p:row>
+						</p:columnGroup>
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticConsultasDiarias.lazyModel==null?0:manticConsultasDiarias.lazyModel.rowCount}] registros"/>
             </f:facet>
