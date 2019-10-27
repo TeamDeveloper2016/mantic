@@ -39,11 +39,12 @@ public class PieModel extends ChartModel implements Serializable {
 	}
 
 	public PieModel(String name, String radius, Title title) {
-		this(radius, title, new Legend("2019"), new ArrayList(Arrays.asList(Colors.SERIES_COLORS)), new ToolTip(), new ArrayList<Serie>());
+		this(radius, title, new Legend("2019"), new ArrayList(), new ToolTip(), new ArrayList<Serie>());
 		this.series.add(new Serie(name, radius));
-		this.getLegend().getData().clear();
+		this.legend.getData().clear();
 		for (Data data: this.series.get(0).getData()) {
-			this.getLegend().add(data.getName());
+			this.legend.add(data.getName());
+			this.color.add(Colors.toColor());
 		} // for
 		this.radius= radius;
 	}
@@ -53,7 +54,7 @@ public class PieModel extends ChartModel implements Serializable {
 	}
 	
 	public PieModel(String name, String radius, Title title, IDataSet data) {
-		this(radius, title, data.getLegend(), new ArrayList(Arrays.asList(Colors.SERIES_COLORS)), new ToolTip(), data.getDatas());
+		this(radius, title, data.getLegend(), new ArrayList(), new ToolTip(), data.getDatas());
 	}
 	
 	public PieModel(String radius, Title title, Legend legend, List<String> color, ToolTip tooltip, List<Serie> series) {
@@ -64,13 +65,16 @@ public class PieModel extends ChartModel implements Serializable {
 		this.tooltip=tooltip;
 		this.series=series;
 		this.radius= radius;
-		if(series!= null && series.isEmpty()) {
+		if(series!= null && !series.isEmpty()) {
 			for (Serie item: series) {
 				item.setRadius(Arrays.asList("0%", this.radius));
 			} // for
+			for (Data item: this.series.get(0).getData()) {
+				this.color.add(Colors.toColor());
+			} // for
 		} // if
-		this.getTooltip().setTrigger("item");
-		this.getTooltip().setAxisPointer(null);
+		this.tooltip.setTrigger("item");
+		this.tooltip.setAxisPointer(null);
 	}
 
 	public Title getTitle() {

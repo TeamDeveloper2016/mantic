@@ -104,12 +104,6 @@
               </f:facet>
               <h:outputText value="#{row['ticket']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-7" sortBy="#{row.importe}">
-              <f:facet name="header">
-                <h:outputText value="Importe"/>
-              </f:facet>
-              <h:outputText value="$#{row['importe']}"/>
-            </p:column>		
 						<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.tipoMedioPago}">
               <f:facet name="header">
                 <h:outputText value="Forma de pago"/>
@@ -122,9 +116,15 @@
               </f:facet>
               <h:outputText value="#{row['registro']}"/>
             </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-7" sortBy="#{row.importe}">
+              <f:facet name="header">
+                <h:outputText value="Importe"/>
+              </f:facet>
+              <h:outputText value="$#{row['importe']}"/>
+            </p:column>		
 						<p:columnGroup type="footer">
 							<p:row>
-								<p:column colspan="3" style="text-align:right" footerText="Total:" />
+								<p:column colspan="5" style="text-align:right" footerText="Total:" />
 								<p:column footerText="$#{manticConsultasDiarias.attrs.total.total}" style="text-align:right"/>									
 							</p:row>
 						</p:columnGroup>
