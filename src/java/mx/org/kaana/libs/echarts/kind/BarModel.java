@@ -87,7 +87,7 @@ public class BarModel extends BaseBarModel implements Serializable {
 	
 	@Override
 	public String toString() {
-		return "BarModel{"+"series="+series+'}';
+		return "BarModel{series="+series+'}';
 	}
 
 	private void loadColors() {
