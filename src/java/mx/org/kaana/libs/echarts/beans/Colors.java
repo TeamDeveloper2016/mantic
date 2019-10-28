@@ -1,6 +1,8 @@
 package mx.org.kaana.libs.echarts.beans;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -20,9 +22,28 @@ public final class Colors implements Serializable {
 	public static final String COLOR_RED  = "#FF0000";
 	public static final String COLOR_GREEN= "#248823";
 	private static final long serialVersionUID=4966824514724029183L;
+	private static final int TOP_LIST_COLORS= 10;
 	
+	private static List<String> colors;
+	
+	static {
+		colors= new ArrayList<>();
+	}
+	
+	private static String lookForNewColor() {
+		String regresar= SERIES_COLORS[new Random().nextInt(SERIES_COLORS.length)];
+		if(colors.indexOf(regresar)>= 0)
+			regresar= lookForNewColor();
+		return regresar;
+	}
 	public static String toColor() {
-		return SERIES_COLORS[new Random().nextInt(SERIES_COLORS.length)];
+		String color= SERIES_COLORS[new Random().nextInt(SERIES_COLORS.length)];
+    if(colors.size()>= TOP_LIST_COLORS) 
+			colors.remove(0);
+  	if(colors.indexOf(color)>= 0)
+			color= lookForNewColor();
+		colors.add(color);
+		return color;
 	}
 	
 }
