@@ -27,7 +27,43 @@
 				window.stack.setOption(#{kajoolPlantillasGraficasFiltro.attrs.stack}, true);
 				window.vertical = echarts.init(document.getElementById('vertical'), {renderer: 'canvas', width: 'auto', height: 'auto'});
 				window.vertical.setOption(#{kajoolPlantillasGraficasFiltro.attrs.vertical}, true);
+				
+				window.multiple.on('click', 'series', function (params) {params.chart= 'multiple'; sendDataEChart(params);});
+				window.simple.on('click', 'series', function (params) {params.chart= 'simple'; sendDataEChart(params);});
+				window.pie.on('click', 'series', function (params) {params.chart= 'pie'; sendDataEChart(params);});
+				window.donut.on('click', 'series', function (params) {params.chart= 'donut'; sendDataEChart(params);});
+				window.stack.on('click', 'series', function (params) {params.chart= 'stack'; sendDataEChart(params);});
+				window.vertical.on('click', 'series', function (params) {params.chart= 'vertical'; sendDataEChart(params);});
 			});
+			
+			function sendDataEChart(params) {
+				var json= {
+				  chart: params.chart,
+				  color: params.color,
+				  name: params.name,
+				  value: params.value,
+				  percent: params.percent,
+				  dataIndex: params.dataIndex,
+				  dataType: params.dataType,
+				  seriesId: params.seriesId,
+				  seriesIndex: params.seriesIndex,
+				  seriesName: params.seriesName,
+				  seriesType: params.seriesType,
+				  event: params.type
+				};
+				janal.console('filtro.sendDataEChart: '+ json.chart);
+				refreshEChart(JSON.stringify(json));
+			} // params
+			
+			function updateDataEChart(name, json) {
+				janal.console('filtro.updateDataEChart: '+ name);
+				if(window[name]) {
+					window[name].clear();
+				  window[name].setOption(json);
+				} // if	
+				else
+				  janal.console('El marco ['+ name+ '] de la grafica no existe !');
+			}
 			
    $(function(){
       'use strict'			
@@ -54,6 +90,12 @@
 		</style>
   </ui:define>
   <ui:define name="contenido">
+		<pe:remoteCommand name="refreshEChart" process="@this" actionListener="#{kajoolPlantillasGraficasFiltro.doRefreshEChartWith}">  
+      <pe:methodSignature parameters="mx.org.kaana.libs.echarts.json.ItemSelected" />  
+      <pe:methodParam name="itemSelected">  
+        <pe:convertJson />  
+      </pe:methodParam>  			
+		</pe:remoteCommand>
 		<div class="ui-g cgor-app-main" style="position: relative;">
 			<div class="ui-g-12 ui-md-6 ui-lg-6">
 				<div>

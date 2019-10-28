@@ -39,7 +39,7 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 	}
 	
 	public Serie(String name, String color) {
-		this(name, null, new ArrayList(Arrays.asList(new Value(120D, color), new Value(200D, color), new Value(150D, color), new Value(80D, color), new Value(70D, color), new Value(110D, color), new Value(130D, color))), EKinds.BAR);
+		this(name, null, new ArrayList(Arrays.asList(new Value(toValue(), color), new Value(toValue(), color), new Value(toValue(), color), new Value(toValue(), color), new Value(toValue(), color), new Value(toValue(), color), new Value(toValue(), color))), EKinds.BAR);
 	}
 	
 	public Serie(String name, String barWidth, List<Value> data, EKinds type) {

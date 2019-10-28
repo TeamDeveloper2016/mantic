@@ -1,6 +1,7 @@
 package mx.org.kaana.libs.echarts.beans;
 
 import java.io.Serializable;
+import java.util.concurrent.ThreadLocalRandom;
 import mx.org.kaana.libs.echarts.enums.EKinds;
 
 /**
@@ -48,4 +49,8 @@ public class Serie implements Serializable {
 		return "Serie{"+"name="+name+", type="+type+'}';
 	}
 
+	public static double toValue() {
+	  return ThreadLocalRandom.current().nextDouble(50D, 300D);
+	}
+	
 }

@@ -7,10 +7,14 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.libs.echarts.bar.Serie;
 import mx.org.kaana.libs.echarts.beans.Colors;
+import mx.org.kaana.libs.echarts.beans.Coordinate;
 import mx.org.kaana.libs.echarts.beans.CustomLine;
 import mx.org.kaana.libs.echarts.beans.Title;
 import mx.org.kaana.libs.echarts.enums.EBarOritentation;
+import mx.org.kaana.libs.echarts.enums.ETypeLine;
+import mx.org.kaana.libs.echarts.json.ItemSelected;
 import mx.org.kaana.libs.echarts.kind.BarModel;
 import mx.org.kaana.libs.echarts.kind.DonutModel;
 import mx.org.kaana.libs.echarts.kind.PieModel;
@@ -24,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.mantic.test.depurar.Clean;
 
 /**
@@ -85,5 +90,21 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);
 		} // catch
 	}
-		
+
+	public void doRefreshEChartWith(ItemSelected itemSelected) {
+		LOG.info(itemSelected);
+		try {
+      BarModel model= new BarModel(new Title("CGOR", null), EBarOritentation.VERTICAL);
+			model.addLine(new Coordinate("Hola", 6, 150, Colors.COLOR_RED, ETypeLine.SOLID));
+			model.addLine(new CustomLine("Como", Serie.toValue(), Colors.COLOR_GREEN, ETypeLine.DASHED));
+			model.addLine(new CustomLine("Estas", Serie.toValue(), Colors.COLOR_BLUE, ETypeLine.DOTTED));
+			String json= model.toJson();
+			UIBackingUtilities.execute("updateDataEChart('"+ itemSelected.getChart()+ "', "+ json+ ");");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+	}
+	
 }
