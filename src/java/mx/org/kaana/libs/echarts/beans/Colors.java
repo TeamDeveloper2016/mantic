@@ -36,9 +36,12 @@ public final class Colors implements Serializable {
 			regresar= lookForNewColor();
 		return regresar;
 	}
-	public static String toColor() {
+	
+	public static String toColor(int topColors) {
 		String color= SERIES_COLORS[new Random().nextInt(SERIES_COLORS.length)];
-    if(colors.size()>= TOP_LIST_COLORS) 
+		if(topColors>= TOP_LIST_COLORS)
+			topColors= TOP_LIST_COLORS- 2;
+    if(colors.size()>= topColors) 
 			colors.remove(0);
   	if(colors.indexOf(color)>= 0)
 			color= lookForNewColor();
@@ -46,4 +49,7 @@ public final class Colors implements Serializable {
 		return color;
 	}
 	
+	public static String toColor() {
+		return toColor(TOP_LIST_COLORS);
+	}
 }
