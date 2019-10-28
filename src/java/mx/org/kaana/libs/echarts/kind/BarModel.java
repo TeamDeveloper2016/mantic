@@ -93,6 +93,7 @@ public class BarModel extends BaseBarModel implements Serializable {
 	private void loadColors() {
 	  super.getColor().clear();
 		for (Serie item : this.series) {
+			item.getLabel().getNormal().setFormatter("{a}\\n{c}");
 			super.getColor().add(item.getData().get(0).getItemStyle().getColor());
 		} // for
 	}
