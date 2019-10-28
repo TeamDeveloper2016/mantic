@@ -52,4 +52,5 @@ public final class Colors implements Serializable {
 	public static String toColor() {
 		return toColor(TOP_LIST_COLORS);
 	}
+	
 }
