@@ -12,6 +12,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -55,6 +56,7 @@ public class Diarias extends IBaseTicket implements Serializable {
   @PostConstruct
   @Override
   protected void init() {
+		Entity total= null;
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
@@ -62,6 +64,9 @@ public class Diarias extends IBaseTicket implements Serializable {
       this.attrs.put("sortOrder", "order by tc_mantic_ventas.registro desc");
 			this.attrs.put("fechaInicio", new Date(Calendar.getInstance().getTimeInMillis()));
 			toLoadCatalog();      
+			total= new Entity();
+			total.put("total", new Value("total", 0L));
+			this.attrs.put("total", total);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
