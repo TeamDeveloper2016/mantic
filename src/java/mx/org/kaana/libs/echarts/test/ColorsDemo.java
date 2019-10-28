@@ -21,8 +21,8 @@ public class ColorsDemo {
 	public static void main(String[] args) {
 		List<String> colors= new ArrayList<>();
 		for (int x=0; x<10; x++) {
-			for (int y=0; y<10; y++) {
-				colors.add(Colors.toColor());
+			for (int y=0; y<32; y++) {
+				colors.add(Colors.toColor(32));
 			} // for
 			LOG.info(colors);
 			colors.clear();
