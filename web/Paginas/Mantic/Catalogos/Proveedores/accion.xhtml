@@ -65,7 +65,7 @@
           <p:tabView id="contenedorGrupos" onTabChange="simpleProcess();">
             <p:ajax event="tabChange" process="@this" update="tablaTipoPago tablaContactos" oncomplete="janal.refresh();"/>
             <p:tab id="general" title="General">
-              <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-100">								
+              <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-180, janal-wid-100-txt">								
                 <p:outputLabel for="clave" value="Clave"/>
                 <p:inputText id="clave" styleClass="janal-wid-100-txt" maxlength="50" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.clave}"/>                    
                 <p:outputLabel for="prefijo" value="Prefijo:"/>
@@ -86,9 +86,9 @@
                     <h:outputText value="#{item.dias}"/>
                   </p:column>   
                 </p:selectOneMenu>                
-                <p:outputLabel  for="diasEntrega" value="Tiempo de entrega (dias)"/>
+                <p:outputLabel  for="diasEntrega" value="Tiempo de entrega (dias):"/>
                 <p:inputText id="diasEntrega" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.diasEntrega}"  /> 
-                <p:outputLabel value="Tipo de dias de entrega" for="idTipoDia"/>
+                <p:outputLabel value="Tipo de dias de entrega:" for="idTipoDia"/>
                 <p:selectOneMenu id="idTipoDia" var="item" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.idTipoDia}" converter="javax.faces.Long"  styleClass="janal-wid-100-txt">
                   <f:selectItem itemLabel="NATURALES" itemValue="1"/>
                   <f:selectItem itemLabel="HÁBILES" itemValue="2"/>
@@ -96,7 +96,7 @@
                 </p:selectOneMenu>
                 <p:outputLabel value="Descuento:" for="descuento"/>
                 <p:inputText id="descuento" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.descuento}" /> 
-                <p:outputLabel value="Tipo de mondeda" for="idTipoMoneda"/>
+                <p:outputLabel value="Tipo de mondeda:" for="idTipoMoneda"/>
                 <p:selectOneMenu id="idTipoMoneda" var="item" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.idTipoMoneda}" converter="javax.faces.Long"  styleClass="janal-wid-100-txt">
                   <f:selectItem itemLabel="PESOS" itemValue="1"/>
                   <f:selectItem itemLabel="DOLARES" itemValue="2"/>
@@ -105,7 +105,7 @@
               </p:panelGrid>
             </p:tab>						
             <p:tab title="Domicilios">
-              <p:panelGrid id="panelTablaDomicilios" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-15, janal-wid-100">
+              <p:panelGrid id="panelTablaDomicilios" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-col-180, janal-wid-100-txt">
                 <p:dataList id="tablaDomicilios" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedoresDomicilio}" var="direccion" type="unordered" itemType="none" paginator="false" rows="10" styleClass="paginated" emptyMessage=" ">						
                   <p:commandLink update="contenedorGrupos:formularioDomicilio contenedorGrupos:tablaDomicilios" title="Eliminar" action="#{manticCatalogosProveedoresAccion.doEliminarDomicilio}" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();">                    
 										<f:setPropertyActionListener value="#{direccion}" target="#{manticCatalogosProveedoresAccion.registroProveedor.proveedorDomicilioSeleccion}" />
@@ -125,7 +125,7 @@
 										</p:commandLink>		              										
                   </f:facet>
                 </p:dataList>
-                <p:panelGrid id="formularioDomicilio" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">
+                <p:panelGrid id="formularioDomicilio" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-100-txt">
                   <p:spacer/>
 									<p:commandButton process="@this" update="dialogoDomicilios" icon="fa fa-search" onstart="return janal.bloquear();" oncomplete="PF('dlgDomicilios').show();" title="Buscar domicilio" style="float: right !important"/>						
 									<p:outputLabel for="domicilio" value="Domicilio:"/>
@@ -264,7 +264,7 @@
               </p:panelGrid>	
             </p:tab>
             <p:tab title="Agentes">
-              <p:panelGrid id="panelTablaAgentes" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-20, janal-wid-100">
+              <p:panelGrid id="panelTablaAgentes" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-col-180, janal-wid-100-txt">
 								<p:dataList id="tablaAgentes" value="#{manticCatalogosProveedoresAccion.registroProveedor.personasTiposContacto}" var="agente" type="unordered" itemType="none" paginator="false" rows="10" styleClass="paginated" emptyMessage=" ">						
                   <p:commandLink update="contenedorGrupos:formularioTablaAgentes contenedorGrupos:formularioNombreAgentes contenedorGrupos:tablaAgentes" title="Eliminar" action="#{manticCatalogosProveedoresAccion.doEliminarAgente}" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();">                    
 										<f:setPropertyActionListener value="#{agente}" target="#{manticCatalogosProveedoresAccion.registroProveedor.personaTipoContacto}" />
@@ -314,7 +314,7 @@
 							</p:panelGrid>
             </p:tab> 
 						<p:tab title="Portal" rendered="#{manticCatalogosProveedoresAccion.attrs.admin}">
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-100">
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-100, janal-wid-100-txt">
 								<p:outputLabel for="pagina" value="Pagina:"/>
                 <p:inputText id="pagina" value="#{manticCatalogosProveedoresAccion.registroProveedor.portal.pagina}" styleClass="janal-wid-100-txt"/>                    
 								<p:outputLabel for="cuenta" value="Cuenta:"/>

@@ -236,12 +236,12 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		JsfBase.setFlashAttribute("xcodigo", this.attrs.get("xcodigo"));	
 		if(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada()<= 0L) {
 			if(this.getXml()!= null && this.getXml().getRuta()!= null) {
-			  String delete= Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.getXml().getRuta()).concat(this.getXml().getName());
-			  Archivo.delete(delete);
+			  File oldNameFile= new File(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.getXml().getRuta()).concat(this.getXml().getName()));
+			  oldNameFile.delete();
 			} // if	
 			if(this.getPdf()!= null && this.getPdf().getRuta()!= null) {
-			  String delete= Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.getPdf().getRuta()).concat(this.getPdf().getName());
-			  Archivo.delete(delete);
+			  File oldNameFile= new File(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.getPdf().getRuta()).concat(this.getPdf().getName()));
+			  oldNameFile.delete();
 			} // if	
 		} // 
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);

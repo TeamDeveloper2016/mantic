@@ -518,10 +518,10 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 				// VERIFICAR SI EXISTE OTRO PROVEEDOR CON EL MISMO RFC Y MOSTRARLO CON ESTE MISMO MENSAJE EN CASO DE ENCONTRARLO
   			params.put("rfc", proveedor.getRfc());
   			params.put("idProveedor", proveedor.getIdProveedor());
-			  List<Entity> values= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticProveedoresDto", "duplicado", params);
+			  List<Entity> values= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticProveedoresDto", "duplicados", params);
 				StringBuilder sb= new StringBuilder();
 				if(values!= null && values.size()> 0) {
-					sb.append("<br/>Sin embargo este RFC esta asociado a otro(s) proveedor(es):<br/>");
+					sb.append("<br/>Más sin embargo este RFC esta asociado a otro(s) proveedor(es):<br/><br/>");
 					for (Entity item: values) {
 						sb.append("  [");
 						sb.append(item.toString("rfc"));
@@ -530,7 +530,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 						sb.append(".<br/>");
 					} // for
 				} // if
-				JsfBase.addAlert("Proveedor actualizado de forma correcta, con RFC "+ proveedor.getRfc()+ " !'".concat("<br/>").concat(sb.toString()), ETipoMensaje.ALERTA);
+				JsfBase.addAlert("El catálogo del proveedor fué actualizado de forma correcta con<br/> ["+ proveedor.getRfc()+ "] a nombre de "+ proveedor.getRazonSocial().concat("<br/>").concat(sb.toString()), ETipoMensaje.ALERTA);
 			} // if
 		} // try
 		catch (Exception e) {
