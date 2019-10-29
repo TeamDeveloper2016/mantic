@@ -3173,7 +3173,7 @@
         from      
           tc_mantic_proveedores
         where      
-          rfc = '{rfc}' and id_empresa = {idEmpresa}
+          rfc = '{rfc}' and id_empresa= {idEmpresa}
       </select>
 			<select id="porCodigo">			
         select      
@@ -3214,6 +3214,24 @@
 				order by
 				  tc_mantic_proveedores.clave
       </select>      
+      <select id="duplicados">
+        select      
+          id_proveedor as id_key,
+				  rfc,
+				  razon_social
+        from      
+          tc_mantic_proveedores
+        where      
+          rfc = '{rfc}' and id_proveedor!= {idProveedor}
+      </select>
+      <select id="proveedor">
+        select      
+          *
+        from      
+          tc_mantic_proveedores
+        where      
+          rfc = '{rfc}' and id_empresa in ({sucursales})
+      </select>
     </unit>
 		<unit id="TcManticClientesDto">
       <select id="row">

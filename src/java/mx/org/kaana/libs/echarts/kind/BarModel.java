@@ -8,6 +8,7 @@ import mx.org.kaana.libs.echarts.beans.Axis;
 import mx.org.kaana.libs.echarts.beans.Grid;
 import mx.org.kaana.libs.echarts.beans.Legend;
 import mx.org.kaana.libs.echarts.bar.Serie;
+import mx.org.kaana.libs.echarts.bar.Value;
 import mx.org.kaana.libs.echarts.beans.Colors;
 import mx.org.kaana.libs.echarts.beans.IMarkLine;
 import mx.org.kaana.libs.echarts.beans.Title;
@@ -16,6 +17,7 @@ import mx.org.kaana.libs.echarts.beans.Xaxis;
 import mx.org.kaana.libs.echarts.beans.Yaxis;
 import mx.org.kaana.libs.echarts.enums.EBarOritentation;
 import mx.org.kaana.libs.echarts.model.IDataSet;
+import mx.org.kaana.libs.echarts.model.SortNames;
 import mx.org.kaana.libs.json.Decoder;
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -32,6 +34,7 @@ public class BarModel extends BaseBarModel implements Serializable {
 	private static final long serialVersionUID=-4271194453055348485L;
 
 	private List<Serie> series;
+	private List<String> sequence;
 
 	public BarModel() {
 		this(new Title("CGOR", "Subtitulo"), EBarOritentation.VERTICAL);
@@ -43,6 +46,10 @@ public class BarModel extends BaseBarModel implements Serializable {
 
 	public BarModel(Title title, IDataSet data) {
 		this(title, data.getLegend(), new ArrayList(Arrays.asList(Colors.SERIES_COLORS)), new ToolTip(), new Grid(), data.getXaxis(), new Yaxis(), data.getSeries(), EBarOritentation.VERTICAL);
+	}
+
+	public BarModel(Title title, IDataSet data, List<String> sequence) {
+		this(title, data.getLegend(), new ArrayList(Arrays.asList(Colors.SERIES_COLORS)), new ToolTip(), new Grid(), data.getXaxis(), new Yaxis(), data.getSeries(), EBarOritentation.VERTICAL, sequence);
 	}
 
 	public BarModel(Title title, EBarOritentation orientation) {
@@ -62,8 +69,13 @@ public class BarModel extends BaseBarModel implements Serializable {
 	}
 	
 	public BarModel(Title title, Legend legend, List<String> color, ToolTip tooltip, Grid grid, Axis xAxis, Axis yAxis, List<Serie> series, EBarOritentation orientation) {
+		this(title, legend, color, tooltip, grid, xAxis, yAxis, series, orientation, EBarOritentation.VERTICAL.equals(orientation)? xAxis.getData(): yAxis.getData());
+	}
+	
+	public BarModel(Title title, Legend legend, List<String> color, ToolTip tooltip, Grid grid, Axis xAxis, Axis yAxis, List<Serie> series, EBarOritentation orientation, List<String> sequence) {
 		super(title, legend, color, tooltip, grid, xAxis, yAxis, orientation);
 		this.series=series;
+		this.sequence=sequence;
 		this.loadColors();
 	}
 
@@ -96,6 +108,37 @@ public class BarModel extends BaseBarModel implements Serializable {
 			item.getLabel().getNormal().setFormatter("{a}\\n{c}");
 			super.getColor().add(item.getData().get(0).getItemStyle().getColor());
 		} // for
+		this.ordered();
+	}
+
+	private void ordered() {
+		if(EBarOritentation.VERTICAL.equals(this.getOrientation()))
+		  this.getxAxis().setData(SortNames.toSort(this.getxAxis().getData(), this.sequence));
+		else
+		  this.getyAxis().setData(SortNames.toSort(this.getyAxis().getData(), this.sequence));
+		this.sort(this.sequence);
+	}
+	
+	public void sort(final List<String> labels) {
+		for (Serie item: this.series) {
+		  List<Value> values= new ArrayList<>();
+			for (String name: labels) {
+				int index= item.getData().indexOf(new Value(name));
+				if(index>= 0)
+					values.add(item.getData().get(index));
+			} // for
+			item.getData().clear();
+			item.setData(values);
+		} // for
+	}
+	
+	public void sort() {
+		this.sort(EBarOritentation.VERTICAL.equals(this.getOrientation())? this.getxAxis().getData(): this.getyAxis().getData());
+	}
+
+	public void sort(final String[] names) {
+		this.sequence= Arrays.asList(names);
+	  this.ordered();
 	}
 	
 }

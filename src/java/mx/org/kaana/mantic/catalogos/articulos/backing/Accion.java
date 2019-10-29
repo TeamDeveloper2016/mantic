@@ -364,6 +364,5 @@ public class Accion extends IBaseAttribute implements Serializable {
 			Methods.clean(params);
 		} // finally	
 	}	
-		
 	
 }

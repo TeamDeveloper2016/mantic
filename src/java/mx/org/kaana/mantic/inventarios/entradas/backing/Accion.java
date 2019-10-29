@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.inventarios.entradas.backing;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ import java.util.Collections;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.mantic.comun.IBaseStorage;
@@ -232,6 +234,16 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
 		JsfBase.setFlashAttribute("xcodigo", this.attrs.get("xcodigo"));	
+		if(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada()<= 0L) {
+			if(this.getXml()!= null && this.getXml().getRuta()!= null) {
+			  String delete= Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.getXml().getRuta()).concat(this.getXml().getName());
+			  Archivo.delete(delete);
+			} // if	
+			if(this.getPdf()!= null && this.getPdf().getRuta()!= null) {
+			  String delete= Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.getPdf().getRuta()).concat(this.getPdf().getName());
+			  Archivo.delete(delete);
+			} // if	
+		} // 
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 
@@ -318,7 +330,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     } // catch   
 	} 
 	
-	private Date toCalculateFechaEstimada(Calendar fechaEstimada, int tipoDia, int dias) {
+	private String toCalculateFechaEstimada(Calendar fechaEstimada, int tipoDia, int dias) {
 		fechaEstimada.set(Calendar.DATE, fechaEstimada.get(Calendar.DATE)+ dias);
 		if(tipoDia== 2) {
 			fechaEstimada.add(Calendar.DATE, ((int)(dias/5)* 2));
@@ -326,7 +338,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			dias= dia== Calendar.SUNDAY? 1: dia== Calendar.SATURDAY? 2: 0;
 			fechaEstimada.add(Calendar.DATE, dias);
 		} // if
-		return new Date(fechaEstimada.getTimeInMillis());
+		return Global.format(EFormatoDinamicos.FECHA_CORTA, new Date(fechaEstimada.getTimeInMillis()));
 	}
 
   private void toLoadCondiciones(UISelectEntity proveedor) {
@@ -390,6 +402,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				((NotaEntrada)this.getAdminOrden().getOrden()).setFactura(this.getFactura().getFolio());
 				((NotaEntrada)this.getAdminOrden().getOrden()).setFechaFactura(Fecha.toDateDefault(this.getFactura().getFecha()));
 				((NotaEntrada)this.getAdminOrden().getOrden()).setOriginal(Numero.toRedondearSat(Double.parseDouble(this.getFactura().getTotal())));
+				this.toMoveSelectedProveedor();
 				this.toPrepareDisponibles(true);
 				this.doCheckFolio();
 				this.doCalculatePagoFecha();
@@ -693,6 +706,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			if(this.getXml()!= null) {
 				String alias= Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.getXml().getRuta()).concat(this.getXml().getName());
 				this.toReadFactura(new File(alias), (boolean)this.attrs.get("sinIva"), this.getAdminOrden().getTipoDeCambio());
+				// VERIFICAR SI ES UNA NOTA DE ENTRADA DIRECTA Y CAMBIAR EL PROVEEDOR QUE SE TIENE POR EL QUE SE CARGANDO DE LA FACTURA 
+				// EN CASO DE QUE NO EXISTA MANDAR UN MENSAJE DE QUE ESE PROVEEDOR NO EXISTE EN EL CATALGO DE PROVEEDORES PARA QUE SE AGREGUE
+				this.toMoveSelectedProveedor();
 				this.toPrepareDisponibles(false);
 			} // if	
 	  }	// try
@@ -764,6 +780,45 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	public void doSearchArticulo(Long idArticulo, Integer index) {
 		this.attrs.put("idAlmacen", ((NotaEntrada)this.getAdminOrden().getOrden()).getIkAlmacen().getKey());
 		super.doSearchArticulo(idArticulo, index);
+	}
+
+  private void toMoveSelectedProveedor() {
+	  Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			if(this.tipoOrden.equals(EOrdenes.NORMAL)) {
+				params.put("rfc", this.getEmisor().getRfc());
+				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+				TcManticProveedoresDto encontrado= (TcManticProveedoresDto)DaoFactory.getInstance().findFirst(TcManticProveedoresDto.class, "proveedor", params);
+				if(encontrado!= null) {
+					String newFileName= this.getXml().getRuta().replaceAll("/"+ (this.proveedor.getClave()!= null? this.proveedor.getClave().trim(): "NoDefinido")+ "/", "/"+ (encontrado.getClave()!= null? encontrado.getClave().trim(): "NoDefinido")+ "/");
+					this.proveedor= encontrado;
+					UISelectEntity temporal= new UISelectEntity(new Entity(encontrado.getIdProveedor()));
+					((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(temporal);
+					List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");						
+					temporal= proveedores.get(proveedores.indexOf(temporal));
+					temporal.put("fechaEstimada", new Value("fechaEstimada", this.toCalculateFechaEstimada(this.fechaEstimada, temporal.toInteger("idTipoDia"), temporal.toInteger("dias"))));
+					this.attrs.put("proveedor", temporal);
+					this.toLoadCondiciones(temporal);
+					this.doUpdatePlazo();
+					this.toCheckProveedor(true);
+					File oldFileName= new File(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.getXml().getRuta()).concat(this.getXml().getName()));
+					FileInputStream source= new FileInputStream(oldFileName);
+					File target= new File(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(newFileName).concat(this.getXml().getName()));
+					Archivo.toWriteFile(target, source);
+					oldFileName.delete();
+					this.getXml().setRuta(newFileName);
+				} // if	
+				else
+					JsfBase.addAlert("El proveedor no existe en el catalogo de proveedores,<br/>favor de agregarlo antes al catálogo para generar la nota de entrada.<br/><br/> RFC ["+ this.getEmisor().getRfc()+ "] ".concat(this.getEmisor().getNombre()).concat("<br/>"), ETipoMensaje.ALERTA);
+			} // if
+	  }	// try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally	
 	}
 	
 }

@@ -31,6 +31,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
@@ -509,15 +510,36 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 	}
 	
 	protected void doUpdateRfc(TcManticProveedoresDto proveedor) {
+	  Map<String, Object> params=null;
 		try {
+			params=new HashMap<>();
 			proveedor.setRfc(this.emisor.getRfc());
-			if(DaoFactory.getInstance().update(proveedor)>= 1L)
-				UIBackingUtilities.execute("janal.alert('Proveedor actualizado de forma correcta, con RFC "+ proveedor.getRfc()+ " !');");
+			if(DaoFactory.getInstance().update(proveedor)>= 1L) {
+				// VERIFICAR SI EXISTE OTRO PROVEEDOR CON EL MISMO RFC Y MOSTRARLO CON ESTE MISMO MENSAJE EN CASO DE ENCONTRARLO
+  			params.put("rfc", proveedor.getRfc());
+  			params.put("idProveedor", proveedor.getIdProveedor());
+			  List<Entity> values= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticProveedoresDto", "duplicado", params);
+				StringBuilder sb= new StringBuilder();
+				if(values!= null && values.size()> 0) {
+					sb.append("<br/>Sin embargo este RFC esta asociado a otro(s) proveedor(es):<br/>");
+					for (Entity item: values) {
+						sb.append("  [");
+						sb.append(item.toString("rfc"));
+						sb.append("]  ");
+						sb.append(item.toString("razonSocial"));
+						sb.append(".<br/>");
+					} // for
+				} // if
+				JsfBase.addAlert("Proveedor actualizado de forma correcta, con RFC "+ proveedor.getRfc()+ " !'".concat("<br/>").concat(sb.toString()), ETipoMensaje.ALERTA);
+			} // if
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);
 		} // catch		
+		finally {
+			Methods.clean(params);
+		} // finally	
 	}
 
 	protected void doLoadImportados(String proceso, String idXml, Map<String, Object> params) {

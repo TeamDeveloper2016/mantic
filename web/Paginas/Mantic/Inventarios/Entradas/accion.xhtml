@@ -230,7 +230,7 @@
 								</p:selectOneMenu>
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="idProveedor" value="Proveedor:"/>
-								<p:selectOneMenu id="idProveedor" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{not manticInventariosEntradasAccion.isDirecta}">
+								<p:selectOneMenu id="idProveedor" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes proveedor" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{not manticInventariosEntradasAccion.isDirecta}">
 									<p:ajax event="change" listener="#{manticInventariosEntradasAccion.doUpdateProveedor}" update="idProveedorPago diasPlazo fechaPago datosProveedor datosArticulos tabla @(.recalculo)" process="@form" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{manticInventariosEntradasAccion.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
 									<p:column headerText="Clave">
@@ -244,7 +244,7 @@
 									</p:column>   
 								</p:selectOneMenu>
 								<p:outputLabel for="idProveedorPago" value="Condición de pago:"/>
-								<p:selectOneMenu id="idProveedorPago" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikProveedorPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<p:selectOneMenu id="idProveedorPago" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikProveedorPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 proveedor" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticInventariosEntradasAccion.doUpdatePlazo}" update="datosProveedor datosArticulos diasPlazo fechaPago tabla @(.recalculo)" process="@this"/>
 									<f:selectItems value="#{manticInventariosEntradasAccion.attrs.condiciones}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 									<p:column headerText="Clave">
@@ -265,27 +265,27 @@
 							<p:panelGrid id="datosProveedor" columns="6" layout="grid" styleClass="janal-wid-100">		
 								<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">	
 									<p:outputLabel for="moneda" value="Tipo de moneda:"/>
-									<p:inputText id="moneda" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.attrs.proveedor.moneda}" readonly="true"/>
+									<p:inputText id="moneda" styleClass="janal-wid-100-txt proveedor" value="#{manticInventariosEntradasAccion.attrs.proveedor.moneda}" readonly="true"/>
 								</p:panelGrid>	
 								<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">	
 									<p:outputLabel for="tipoProveedor" value="Tipo proveedor:"/>
-									<p:inputText id="tipoProveedor" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.attrs.proveedor.tipoProveedor}" readonly="true"/>
+									<p:inputText id="tipoProveedor" styleClass="janal-wid-100-txt proveedor" value="#{manticInventariosEntradasAccion.attrs.proveedor.tipoProveedor}" readonly="true"/>
 								</p:panelGrid>
 								<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">	
 									<p:outputLabel for="tipoDia" value="Dias plazo entrega: "/>
-									<p:inputText id="tipoDia" styleClass="janal-wid-100-txt janal-column-right" value="#{manticInventariosEntradasAccion.attrs.proveedor.dias}" readonly="true"/>
+									<p:inputText id="tipoDia" styleClass="janal-wid-100-txt janal-column-right proveedor" value="#{manticInventariosEntradasAccion.attrs.proveedor.dias}" readonly="true"/>
 								</p:panelGrid>
 								<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">	
 									<p:outputLabel for="dias" value="Entrega estimada: "/>
-									<p:inputText id="dias" styleClass="janal-wid-100-txt janal-column-center" value="#{manticInventariosEntradasAccion.attrs.proveedor.fechaEstimada}" readonly="true"/>
+									<p:inputText id="dias" styleClass="janal-wid-100-txt janal-column-center proveedor" value="#{manticInventariosEntradasAccion.attrs.proveedor.fechaEstimada}" readonly="true"/>
 								</p:panelGrid>
 								<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">	
 									<p:outputLabel for="excedente" value="Descuento otorgado: "/>
-									<p:inputText id="excedente" styleClass="janal-wid-100-txt janal-column-right" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikProveedorPago.descuento}%" readonly="true"/>
+									<p:inputText id="excedente" styleClass="janal-wid-100-txt janal-column-right proveedor" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikProveedorPago.descuento}%" readonly="true"/>
 								</p:panelGrid>
 								<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">	
 									<p:outputLabel for="plazo" value="Dias plazo para pagar: "/>
-									<p:inputText id="plazo" styleClass="janal-wid-100-txt janal-column-right" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikProveedorPago.plazo}" readonly="true"/>
+									<p:inputText id="plazo" styleClass="janal-wid-100-txt janal-column-right proveedor" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikProveedorPago.plazo}" readonly="true"/>
 								</p:panelGrid>
 							</p:panelGrid>								
 						</p:tab>						            						            																																																
@@ -622,7 +622,7 @@
 							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.attrs.observaciones}" style="display:#{manticInventariosEntradasAccion.consultar};"/>
 							<p:spacer height="5px"/>
 							<p:fileUpload fileUploadListener="#{manticInventariosEntradasAccion.doFileUpload}" 
-								mode="advanced" process="@this comentarios" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
+								mode="advanced" process="@this comentarios" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo) @(.proveedor)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
 								multiple="false" allowTypes="#{manticInventariosEntradasAccion.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticInventariosEntradasAccion.attrs.formatos}" oncomplete="PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>
 							<p:commandLink value="XML importado: #{manticInventariosEntradasAccion.xml.ruta}#{manticInventariosEntradasAccion.xml.name}" onclick="viewFile();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento XML" style="#{(empty manticInventariosEntradasAccion.xml)? 'display: none': ''}"/>

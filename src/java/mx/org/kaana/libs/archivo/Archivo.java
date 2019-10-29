@@ -177,7 +177,7 @@ public final class Archivo {
    * @return Si existe el archivo lo borra y regresa un valor verdadero
    */
 
-  public static boolean delete(String ruta){
+  public static boolean delete(String ruta) {
     boolean regresar= true;
     File dir = new File(ruta.substring(0,ruta.lastIndexOf(File.separator)));
     if(dir.exists())
