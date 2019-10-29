@@ -90,7 +90,7 @@ public class StackModel extends BaseBarModel implements Serializable {
 	}
 
   public String toJson() throws Exception {
-	  return StringEscapeUtils.unescapeJava(Decoder.toJson(this));	
+	  return StringEscapeUtils.unescapeJava(Decoder.json(this));	
 	}	
 
 	public void addLine(IMarkLine line) {
@@ -139,6 +139,12 @@ public class StackModel extends BaseBarModel implements Serializable {
 	public void sort(final String[] names) {
 	 this.getxAxis().setData(SortNames.toSort(this.getxAxis().getData(), names));	
 	 this.sort();
+	}
+
+	public void toCustomFormatLabel(String format) {
+		for (Serie item : this.series) {
+			item.getLabel().getNormal().setFormatter(format);
+		} // for
 	}
 	
 }

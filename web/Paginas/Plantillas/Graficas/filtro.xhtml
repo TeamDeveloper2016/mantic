@@ -65,18 +65,35 @@
 				  janal.console('El marco ['+ name+ '] de la grafica no existe !');
 			}
 			
-   $(function(){
-      'use strict'			
-			new ResizeSensor($('.cgor-app-main'), function() {
-				window.multiple.resize();
-				window.simple.resize();
-				window.pie.resize();
-				window.donut.resize();
-				window.stack.resize();
-				window.vertical.resize();
-				janal.console('filtro.echarts resize();');
-			});				
-		});
+			function toCustomFormatLabel(params) {
+          var data = parseFloat(params.value);
+					// params.seriesName
+					// params.name
+					// params.value
+					// params.data is Object
+					// params.color
+					// 
+					// toLocaleString('en-US') 1,234,567.123
+					// toLocaleString('en-US', {style: 'percent'})) 37%
+					// toLocaleString('en-GB', {style: 'currency', currency: 'GBP', currencyDisplay: 'name'})) 1,242.50
+					// toLocaleString('en-US', {style: 'currency', currency: 'USD'}) $1,242.50
+					// toLocaleString('en-US', {style: 'decimal', minimumFractionDigits: 1, maximumFractionDigits: 1}) 1,242.5
+          return params.name+"\n"+data.toLocaleString('en-US', {style: 'currency', currency: 'USD'});
+			}
+			
+			
+			$(function(){
+				 'use strict'			
+				 new ResizeSensor($('.cgor-app-main'), function() {
+					 window.multiple.resize();
+					 window.simple.resize();
+					 window.pie.resize();
+					 window.donut.resize();
+					 window.stack.resize();
+					 window.vertical.resize();
+					 janal.console('filtro.echarts resize();');
+				 });				
+			 });
     </script>		
 		<style type="text/css">
 			.cgor-chart-panel {

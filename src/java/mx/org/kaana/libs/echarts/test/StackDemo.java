@@ -11,6 +11,7 @@ import mx.org.kaana.libs.echarts.enums.ETypeLine;
 import mx.org.kaana.libs.echarts.model.SortNames;
 import mx.org.kaana.libs.echarts.kind.StackModel;
 import mx.org.kaana.libs.echarts.model.Stacked;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -31,11 +32,15 @@ public class StackDemo {
     public static void main(String[] args) throws Exception {
       StackModel model= new StackModel(new Title("CGOR", null), EBarOritentation.VERTICAL);
 			model.addLine(new CustomLine("Hola", 150D, Colors.COLOR_RED, ETypeLine.SOLID));
+			model.toCustomFormatLabel(StringEscapeUtils.unescapeJava("function (params) {return toCustomFormatLabel(params);}"));
 			LOG.info(model.toJson());
 			
-			Stacked multiple     = new Stacked(DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "multiple", Collections.EMPTY_MAP));
-  		StackModel modelMultiple= new StackModel(new Title(), multiple, Arrays.asList(SortNames.NAMES_DEMOS));
-			LOG.info(modelMultiple.toJson());
+			
+			
+//			Stacked multiple     = new Stacked(DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "multiple", Collections.EMPTY_MAP));
+//  		StackModel modelMultiple= new StackModel(new Title(), multiple, Arrays.asList(SortNames.NAMES_DEMOS));
+//			modelMultiple.toCustomFormatLabel("function (params) {return toCustomFormatLabel(params);}");
+//			LOG.info(modelMultiple.toJson());
     }
 
 }

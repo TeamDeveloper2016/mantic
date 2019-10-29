@@ -140,5 +140,11 @@ public class BarModel extends BaseBarModel implements Serializable {
 		this.sequence= Arrays.asList(names);
 	  this.ordered();
 	}
+
+	public void toCustomFormatLabel(String format) {
+		for (Serie item : this.series) {
+			item.getLabel().getNormal().setFormatter(format);
+		} // for
+	}
 	
 }
