@@ -60,7 +60,7 @@ public class Series implements Serializable {
 		serie.getData().clear();
 		for (Entity item: this.data) {
 			regresar.label(item.toString(FIELD_TEXT));
-			serie.getData().add(new Value(item.toDouble(FIELD_VALUE)));
+			serie.getData().add(new Value(item.toString(FIELD_TEXT), item.toDouble(FIELD_VALUE)));
 		} // for
 		regresar.serie(serie);
 		return regresar;
@@ -83,7 +83,7 @@ public class Series implements Serializable {
 			}	// if
 			if(count== 1)
 			  regresar.label(item.toString(FIELD_TEXT));
-			serie.getData().add(new Value(item.toDouble(FIELD_VALUE)));
+			serie.getData().add(new Value(item.toString(FIELD_TEXT), item.toDouble(FIELD_VALUE)));
 		} // for
  		regresar.serie(serie);
 		return regresar;
@@ -108,7 +108,7 @@ public class Series implements Serializable {
 		serie.getData().clear();
 		for (Entity item: this.data) {
 			regresar.label(item.toString(FIELD_TEXT));
-			serie.getData().add(new Value(item.toDouble(FIELD_VALUE)));
+			serie.getData().add(new Value(item.toString(FIELD_TEXT), item.toDouble(FIELD_VALUE)));
 		} // for
 		regresar.stack(serie);
 		return regresar;
@@ -130,7 +130,7 @@ public class Series implements Serializable {
   			serie.getData().clear();
 			}	// if
 		  regresar.label(item.toString(FIELD_TEXT));
-			serie.getData().add(new Value(item.toDouble(FIELD_VALUE), color));
+			serie.getData().add(new Value(item.toString(FIELD_TEXT), item.toDouble(FIELD_VALUE), color));
 		} // for
  		regresar.stack(serie);
 		return regresar;

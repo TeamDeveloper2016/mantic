@@ -1,7 +1,6 @@
 package mx.org.kaana.libs.echarts.beans;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import mx.org.kaana.libs.reflection.Methods;
@@ -108,7 +107,8 @@ public class Axis implements Serializable {
 	}
 
 	public void add(String name) {
-		if(this.data.indexOf(name)< 0)
+		name= name!= null? name.toUpperCase(): null;
+		if(name!= null && this.data.indexOf(name)< 0)
 		  this.data.add(name);
 	}
 	

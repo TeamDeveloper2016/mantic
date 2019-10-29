@@ -1,6 +1,7 @@
 package mx.org.kaana.libs.echarts.bar;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  *@company KAANA
@@ -14,20 +15,34 @@ public final class Value implements Serializable {
 
 	private static final long serialVersionUID=2531614052112824504L;
 
+	private String name;
 	private Double value;
 	private ItemStyle itemStyle;
 
-	public Value(Double value) {
-		this(value, new ItemStyle());
+	public Value(String name) {
+    this(name, 0D);		
+	}
+	
+	public Value(String name, Double value) {
+		this(name, value, new ItemStyle());
 	}
 
-	public Value(Double value, String color) {
-		this(value, new ItemStyle(color));
+	public Value(String name, Double value, String color) {
+		this(name, value, new ItemStyle(color));
 	}
 
-	public Value(Double value, ItemStyle itemStyle) {
+	public Value(String name, Double value, ItemStyle itemStyle) {
+		this.name= name!= null? name.toUpperCase(): null;
 		this.value=value;
 		this.itemStyle=itemStyle;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name=name;
 	}
 
 	public Double getValue() {
@@ -47,8 +62,33 @@ public final class Value implements Serializable {
 	}
 
 	@Override
+	public int hashCode() {
+		int hash=7;
+		hash=11*hash+Objects.hashCode(this.name);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this==obj) {
+			return true;
+		}
+		if (obj==null) {
+			return false;
+		}
+		if (getClass()!=obj.getClass()) {
+			return false;
+		}
+		final Value other=(Value) obj;
+		if (!Objects.equals(this.name, other.name)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
 	public String toString() {
-		return "Value{"+"value="+value+", itemStyle="+itemStyle+'}';
+		return "Value{"+"name="+name+", value="+value+", itemStyle="+itemStyle+'}';
 	}
 	
 }

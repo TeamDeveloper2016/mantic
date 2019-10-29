@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import mx.org.kaana.libs.echarts.bar.Value;
 import mx.org.kaana.libs.echarts.stack.Serie;
 import mx.org.kaana.libs.echarts.beans.Axis;
 import mx.org.kaana.libs.echarts.beans.Colors;
@@ -16,6 +17,7 @@ import mx.org.kaana.libs.echarts.beans.Xaxis;
 import mx.org.kaana.libs.echarts.beans.Yaxis;
 import mx.org.kaana.libs.echarts.enums.EBarOritentation;
 import mx.org.kaana.libs.echarts.model.IDataSet;
+import mx.org.kaana.libs.echarts.model.SortNames;
 import mx.org.kaana.libs.json.Decoder;
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -32,6 +34,7 @@ public class StackModel extends BaseBarModel implements Serializable {
 	private static final long serialVersionUID=-2335254501339126952L;
 
 	private List<Serie> series;
+	private List<String> sequence;
 	
 	public StackModel() {
 		this(new Title("CGOR", "Subtitulo"), EBarOritentation.VERTICAL);
@@ -43,6 +46,10 @@ public class StackModel extends BaseBarModel implements Serializable {
 
 	public StackModel(Title title, IDataSet data) {
 		this(title, data.getLegend(), new ArrayList(Arrays.asList(Colors.SERIES_COLORS)), new ToolTip(), new Grid(), data.getXaxis(), new Yaxis(), data.getStack(), EBarOritentation.VERTICAL);
+	}
+
+	public StackModel(Title title, IDataSet data, List<String> sequence) {
+		this(title, data.getLegend(), new ArrayList(Arrays.asList(Colors.SERIES_COLORS)), new ToolTip(), new Grid(), data.getXaxis(), new Yaxis(), data.getStack(), EBarOritentation.VERTICAL, sequence);
 	}
 
 	public StackModel(Title title, EBarOritentation orientation) {
@@ -64,8 +71,13 @@ public class StackModel extends BaseBarModel implements Serializable {
 	}
 	
 	public StackModel(Title title, Legend legend, List<String> color, ToolTip tooltip, Grid grid, Axis xAxis, Axis yAxis, List<Serie> series, EBarOritentation orientation) {
+    this(title, legend, color, tooltip, grid, xAxis, yAxis, series, orientation, xAxis.getData());
+	}
+
+	public StackModel(Title title, Legend legend, List<String> color, ToolTip tooltip, Grid grid, Axis xAxis, Axis yAxis, List<Serie> series, EBarOritentation orientation, List<String> sequence) {
 		super(title, legend, color, tooltip, grid, xAxis, yAxis, orientation);
 		this.series=series;
+		this.sequence=sequence;
 		this.loadColors();
 	}
 
@@ -95,9 +107,38 @@ public class StackModel extends BaseBarModel implements Serializable {
 	private void loadColors() {
 	  super.getColor().clear();
 		for (Serie item : this.series) {
+			String color= item.getData().get(0).getItemStyle().getColor();
 			item.getLabel().getNormal().setFormatter("{a}\\n{c}");
-			super.getColor().add(item.getData().get(0).getItemStyle().getColor());
+			super.getColor().add(color);
+			for (String element: this.getxAxis().getData()) {
+				if(!item.getData().contains(new Value(element)))
+					item.getData().add(new Value(element, 0D, color));
+			} // for
 		} // for
+		this.getxAxis().setData(SortNames.toSort(this.getxAxis().getData(), this.sequence));
+		this.sort(this.sequence);
+	}
+	
+	public void sort(final List<String> labels) {
+		for (Serie item: this.series) {
+		  List<Value> values= new ArrayList<>();
+			for (String name: labels) {
+				int index= item.getData().indexOf(new Value(name));
+				if(index>= 0)
+					values.add(item.getData().get(index));
+			} // for
+			item.getData().clear();
+			item.setData(values);
+		} // for
+	}
+	
+	public void sort() {
+		this.sort(this.getxAxis().getData());
+	}
+
+	public void sort(final String[] names) {
+	 this.getxAxis().setData(SortNames.toSort(this.getxAxis().getData(), names));	
+	 this.sort();
 	}
 	
 }

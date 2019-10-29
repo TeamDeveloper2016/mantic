@@ -31,15 +31,12 @@ public class StackDemo {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
-			List<String> months= new ArrayList<>(Arrays.asList("dic", "sep", "ene", "jul", "feb", "ago", "nov"));
-			LOG.info(SortNames.toNamesMonths(months));
-			
       StackModel model= new StackModel(new Title("CGOR", null), EBarOritentation.VERTICAL);
 			model.addLine(new CustomLine("Hola", 150D, Colors.COLOR_RED, ETypeLine.SOLID));
 			LOG.info(model.toJson());
 			
 			Stacked multiple     = new Stacked(DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "multiple", Collections.EMPTY_MAP));
-  		StackModel modelMultiple= new StackModel(new Title(), multiple);
+  		StackModel modelMultiple= new StackModel(new Title(), multiple, Arrays.asList(SortNames.NAMES_DEMOS));
 			LOG.info(modelMultiple.toJson());
     }
 
