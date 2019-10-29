@@ -21,15 +21,21 @@ import mx.org.kaana.libs.formato.Cifrar;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
+import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
+import mx.org.kaana.mantic.enums.ETiposContactos;
+import mx.org.kaana.mantic.facturas.beans.Correo;
 import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 import mx.org.kaana.mantic.ventas.beans.SaldoCliente;
 import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
@@ -47,6 +53,8 @@ public class Accion extends IBaseVenta implements Serializable {
 	private static final String VENDEDOR_PERFIL= "VENDEDOR DE PISO";	
 	private EOrdenes tipoOrden;
 	private StreamedContent image;
+	private List<Correo> correos;	
+	private Correo correo;
 
 	public Accion() {
 		super("menudeo");
@@ -62,6 +70,22 @@ public class Accion extends IBaseVenta implements Serializable {
 
 	public StreamedContent getImage() {
 		return image;
+	}
+	
+	public List<Correo> getCorreos() {
+		return correos;
+	}
+
+	public void setCorreos(List<Correo> correos) {
+		this.correos = correos;
+	}
+	
+	public Correo getCorreo() {
+		return correo;
+	}
+
+	public void setCorreo(Correo correo) {
+		this.correo = correo;
 	}
 	
 	@PostConstruct
@@ -124,6 +148,8 @@ public class Accion extends IBaseVenta implements Serializable {
 					idCliente= Long.valueOf(this.attrs.get("idCliente").toString());
 					if(idCliente!= null && !idCliente.equals(-1L))
 						doAsignaClienteInicial(idCliente);
+					else
+						this.attrs.put("mostrarCorreos", true);
           break;
         case MODIFICAR:			
         case CONSULTAR:			
@@ -232,12 +258,15 @@ public class Accion extends IBaseVenta implements Serializable {
 		UISelectEntity seleccion              = null;
 		List<UISelectEntity> clientesSeleccion= null;
 		MotorBusqueda motorBusqueda           = null; 
-		try {
+		Entity clienteDefault                 = null;
+		try {			
 			motorBusqueda= new MotorBusqueda(null, idCliente);
+			clienteDefault= motorBusqueda.toClienteDefault();
+			this.attrs.put("mostrarCorreos", idCliente.equals(-1L) || idCliente.equals(clienteDefault.getKey()));
 			seleccion= new UISelectEntity(motorBusqueda.toCliente());
 			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);
-			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
+			clientesSeleccion.add(0, new UISelectEntity(clienteDefault));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
 			this.setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
@@ -252,9 +281,10 @@ public class Accion extends IBaseVenta implements Serializable {
 		List<UISelectEntity> clientesSeleccion= null;
 		UISelectEntity clienteSeleccion       = null;
 		boolean precioVigente                 = false;
-		try {
+		try {			
 			clienteSeleccion= (UISelectEntity) this.attrs.get("clienteSeleccion");
 			precioVigente= clienteSeleccion!= null && !clienteSeleccion.getKey().equals(-1L);
+			this.attrs.put("mostrarCorreos", clienteSeleccion== null ||clienteSeleccion.getKey().equals(-1L) || clienteSeleccion.getKey().equals(((UISelectEntity)this.attrs.get("clienteDefault")).getKey()));			
 			if(precioVigente){
 				clientesSeleccion= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
 				clienteSeleccion= clientesSeleccion.get(clientesSeleccion.indexOf(clienteSeleccion));
@@ -583,4 +613,45 @@ public class Accion extends IBaseVenta implements Serializable {
 		super.doSearchArticulo(idArticulo, index);
 	}
 	
+	public void doLoadCorreos() {
+		MotorBusquedaCatalogos motor      = null; 
+		List<ClienteTipoContacto>contactos= null;
+		Correo correoAdd                  = null;
+		try {					
+			motor= new MotorBusqueda(-1L, ((UISelectEntity) this.attrs.get("clienteSeleccion")).getKey());
+			contactos= motor.toClientesTipoContacto();
+			setCorreos(new ArrayList<>());
+			for(ClienteTipoContacto contacto: contactos){
+				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())){
+					correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor().toUpperCase());
+					getCorreos().add(correoAdd);		
+				} // if
+			} // for
+			LOG.warn("Agregando correo default");
+			getCorreos().add(new Correo(-1L, ""));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doLoadCorreos
+	
+	public void doAgregarCorreo() {		
+		mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion transaccion= null;
+		try {
+			if(!Cadena.isVacio(getCorreo().getDescripcion())){				
+				transaccion= new mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion(getCorreo(), ((UISelectEntity) this.attrs.get("clienteSeleccion")).getKey());
+				if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
+					JsfBase.addMessage("Se agrego el correo electronico correctamente !");
+				else
+					JsfBase.addMessage("Ocurrió un error al agregar el correo electronico");
+			} // if
+			else
+				JsfBase.addMessage("Es necesario capturar un correo electronico !");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doAgregarCorreo
 }
