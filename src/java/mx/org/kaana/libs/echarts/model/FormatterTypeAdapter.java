@@ -16,12 +16,14 @@ import java.io.IOException;
 
 public class FormatterTypeAdapter extends TypeAdapter<String> {
 
+	private static final String FUNCTION_NAMES= "function";
+	
 	@Override
 	public void write(JsonWriter writer, String value) throws IOException {
     if (value == null) 
       writer.nullValue();
 		else
-			if(value.trim().startsWith("function"))
+			if(value.trim().toLowerCase().startsWith(FUNCTION_NAMES))
         writer.jsonValue(value);		
 		  else
 				writer.value(value);
