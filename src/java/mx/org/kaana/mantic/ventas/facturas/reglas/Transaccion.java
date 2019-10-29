@@ -192,7 +192,7 @@ public class Transaccion extends TransaccionFactura {
 				contacto.setIdCliente(this.idCliente);
 				contacto.setIdTipoContacto(ETiposContactos.CORREO.getKey());
 				contacto.setIdUsuario(JsfBase.getIdUsuario());
-				contacto.setValor(this.correo.getDescripcion());
+				contacto.setValor(this.correo.getDescripcion().toUpperCase());
 				contacto.setOrden(records);
 				regresar= DaoFactory.getInstance().insert(sesion, contacto)>= 1L;
 			} // else
