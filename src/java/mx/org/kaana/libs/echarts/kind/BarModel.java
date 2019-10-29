@@ -88,7 +88,7 @@ public class BarModel extends BaseBarModel implements Serializable {
 	}
 
   public String toJson() throws Exception {
-	  return StringEscapeUtils.unescapeJava(Decoder.toJson(this));	
+	  return StringEscapeUtils.unescapeJava(Decoder.json(this));	
 	}	
 	
 	public void addLine(IMarkLine line) {

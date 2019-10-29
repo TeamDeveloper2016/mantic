@@ -118,7 +118,7 @@ public class PieModel extends ChartModel implements Serializable {
 	}
 
   public String toJson() throws Exception {
-	  return StringEscapeUtils.unescapeJava(Decoder.toJson(this));	
+	  return StringEscapeUtils.unescapeJava(Decoder.json(this));	
 	}	
 
 	@Override
