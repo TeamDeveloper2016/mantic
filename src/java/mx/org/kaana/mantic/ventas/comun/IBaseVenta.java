@@ -444,12 +444,15 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		MotorBusqueda motorBusqueda           = null;
 		UISelectEntity seleccion              = null;
 		List<UISelectEntity> clientesSeleccion= null;
+		Entity clienteDefault                 = null;
 		try {
 			motorBusqueda= new MotorBusqueda(-1L, ((TicketVenta)this.getAdminOrden().getOrden()).getIdCliente());
 			seleccion= new UISelectEntity(motorBusqueda.toCliente());
 			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);
-			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
+			clienteDefault= motorBusqueda.toClienteDefault();
+			clientesSeleccion.add(0, new UISelectEntity(clienteDefault));
+			this.attrs.put("mostrarCorreos", seleccion.getKey().equals(-1L) || seleccion.getKey().equals(clienteDefault.getKey()));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
 			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
@@ -886,13 +889,16 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
   private void toFindCliente(UISelectEntity seleccion) {
 		List<UISelectEntity> clientesSeleccion= null;
 		MotorBusqueda motorBusqueda           = null;
+		Entity clienteDefault                 = null;
 		try {
 			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);
 			motorBusqueda= new MotorBusqueda(-1L);
-			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
+			clienteDefault= motorBusqueda.toClienteDefault();
+			clientesSeleccion.add(0, new UISelectEntity(clienteDefault));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
+			this.attrs.put("mostrarCorreos", seleccion.getKey().equals(-1L) || seleccion.getKey().equals(clienteDefault.getKey()));
 			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
 			doReCalculatePreciosArticulos(seleccion.getKey());		
 			doLoadSaldos(seleccion.getKey());
