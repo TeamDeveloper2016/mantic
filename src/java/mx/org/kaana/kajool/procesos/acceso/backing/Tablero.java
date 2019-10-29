@@ -37,6 +37,7 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticControlRespaldosDto;
 import mx.org.kaana.mantic.db.dto.TcManticRespaldosDto;
+import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.EGraficasTablero;
 import mx.org.kaana.mantic.enums.EPeriodosTableros;
 import org.apache.commons.logging.Log;
@@ -85,6 +86,7 @@ public class Tablero extends Comun implements Serializable {
       this.attrs.put("pathMensajes", JsfBase.getApplication().getContextPath() + "/Paginas/Mantenimiento/Mensajes/Notificacion/filtro.jsf");
       this.attrs.put("vigenciaInicial", new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
       this.attrs.put("vigenciaFin", new java.sql.Date(Calendar.getInstance().getTimeInMillis()));						
+			this.attrs.put("estatusVentas", EEstatusVentas.CREDITO.getIdEstatusVenta()+","+EEstatusVentas.PAGADA.getIdEstatusVenta()+","+EEstatusVentas.TERMINADA.getIdEstatusVenta()+","+EEstatusVentas.TIMBRADA.getIdEstatusVenta());
 			this.initPeriodos(fechaActual);
 			this.loadAllCharts();       
       this.doLoadSucursales();
@@ -135,6 +137,7 @@ public class Tablero extends Comun implements Serializable {
   @Override
   public void doLoad() {
     try {
+      this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idUsuario", JsfBase.getIdUsuario());
       this.attrs.put("almacen", "");
@@ -203,7 +206,7 @@ public class Tablero extends Comun implements Serializable {
 		try {
 			buildChart = new BuildChart(toCreateCondicion(EGraficasTablero.UTILIDAD_SUCURSAL));
 			utilidadPorSucursal = buildChart.buildUtilidadSucursal();
-      this.attrs.put("utilidadPorSucursal", Decoder.toJson(utilidadPorSucursal));
+      this.attrs.put("utilidadPorSucursal", Decoder.toJson(utilidadPorSucursal).replace("\n", ""));
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -216,7 +219,7 @@ public class Tablero extends Comun implements Serializable {
 		try {
 			buildChart = new BuildChart(toCreateCondicion(EGraficasTablero.UTILIDAD_CAJA));
 			utilidadPorCaja = buildChart.buildUtilidadCaja();            
-      this.attrs.put("jsonUtilidadPorCaja", Decoder.toJson(utilidadPorCaja));
+      this.attrs.put("jsonUtilidadPorCaja", Decoder.toJson(utilidadPorCaja).replace("\n", ""));
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -229,7 +232,7 @@ public class Tablero extends Comun implements Serializable {
 		try {
 			buildChart = new BuildChart(toCreateCondicion(EGraficasTablero.CUENTAS_COBRAR));       
 			cuentasPorCobrar = buildChart.buildCuentasCobrar();
-      this.attrs.put("jsonCobro", Decoder.toJson(cuentasPorCobrar));
+      this.attrs.put("jsonCobro", Decoder.toJson(cuentasPorCobrar).replace("\n", ""));
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -242,7 +245,7 @@ public class Tablero extends Comun implements Serializable {
     try {
       buildChart = new BuildChart(toCreateCondicion(EGraficasTablero.CUENTAS_PAGAR));           
       cuentasPorPagar = buildChart.buildCuentasPagar();      
-      this.attrs.put("jsonPago", Decoder.toJson(cuentasPorPagar));
+      this.attrs.put("jsonPago", Decoder.toJson(cuentasPorPagar).replace("\n", ""));
     } // try
     catch (Exception e) {
       throw e;
@@ -260,7 +263,7 @@ public class Tablero extends Comun implements Serializable {
       for (Highcharts chart : charts) {
         JsonChart json = new JsonChart(Cadena.eliminaCaracter(chart.getTitle().getText(), ' ').toLowerCase(), chart.getTitle().getText(), "");
         chart.setTitle(new Title(""));
-        json.setJson(Decoder.toJson(chart));
+        json.setJson(Decoder.toJson(chart).replace("\n", ""));
         jsons.add(json);
       } // if
       this.attrs.put("jsons", jsons);
@@ -279,11 +282,11 @@ public class Tablero extends Comun implements Serializable {
     try {
       buildChart = new BuildChart(toCreateCondicion(EGraficasTablero.ART_MAS_UTILIDAD));
       artMasUtilidad= buildChart.buildArticulosMasUtilidad();
-			jsonArtMasUtilidad = new JsonChart("avanceNacional", "Articulos con mas utilidad", Decoder.toJson(artMasUtilidad));
+			jsonArtMasUtilidad = new JsonChart("avanceNacional", "Articulos con mas utilidad", Decoder.toJson(artMasUtilidad).replace("\n", ""));
 			this.attrs.put("jsonUtilidad", jsonArtMasUtilidad);
 			buildChart = new BuildChart(toCreateCondicion(EGraficasTablero.ART_MAS_VENDIDOS));
       artMasVentas  = buildChart.buildArticulosMasVendidos();      
-      jsonArtMasVentas = new JsonChart("avanceNacional", "Articulos con mas ventas", Decoder.toJson(artMasVentas));      
+      jsonArtMasVentas = new JsonChart("avanceNacional", "Articulos con mas ventas", Decoder.toJson(artMasVentas).replace("\n", ""));      
       this.attrs.put("jsonVentas", jsonArtMasVentas);
     } // try
     catch (Exception e) {
@@ -935,6 +938,7 @@ public class Tablero extends Comun implements Serializable {
 			build= new BuildChart();
 			params= new HashMap<>();
 			params.put("condicionGeneral", build.toFormatCondicionGeneral(EGraficasTablero.VENTAS_EMPLEADO, toCreateCondicion(EGraficasTablero.VENTAS_EMPLEADO)));
+			params.put("estatusVentas", EEstatusVentas.CREDITO.getIdEstatusVenta()+","+EEstatusVentas.PAGADA.getIdEstatusVenta()+","+EEstatusVentas.TERMINADA.getIdEstatusVenta()+","+EEstatusVentas.TIMBRADA.getIdEstatusVenta());
 			ventas= DaoFactory.getInstance().toEntitySet(VentaEmpleado.class, "VistaIndicadoresTableroDto", "ventasPorEmpleado", params, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("ventasEmpleados", ventas);
 		} // try

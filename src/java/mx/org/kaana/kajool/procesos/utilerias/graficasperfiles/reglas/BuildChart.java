@@ -29,8 +29,8 @@ import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.Yaxis;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.EGraficasTablero;
-import org.eclipse.jdt.internal.compiler.impl.Constant;
 
 /**
  *@company KAANA
@@ -152,6 +152,7 @@ public class BuildChart implements Serializable{
       params.put("idGrupo", this.idGrupo);
       params.put("idUsuario", JsfBase.getIdUsuario());
       params.put("condicionGeneral", toFormatCondicionGeneral(grafica));
+      params.put("estatusVentas", EEstatusVentas.CREDITO.getIdEstatusVenta()+","+EEstatusVentas.PAGADA.getIdEstatusVenta()+","+EEstatusVentas.TERMINADA.getIdEstatusVenta()+","+EEstatusVentas.TIMBRADA.getIdEstatusVenta());
       regresar= DaoFactory.getInstance().toEntitySet(vista, idXml, params, records);
     } // try
     catch (Exception e) {
