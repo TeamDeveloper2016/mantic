@@ -69,7 +69,7 @@ public class BarModel extends BaseBarModel implements Serializable {
 	}
 	
 	public BarModel(Title title, Legend legend, List<String> color, ToolTip tooltip, Grid grid, Axis xAxis, Axis yAxis, List<Serie> series, EBarOritentation orientation) {
-		this(title, legend, color, tooltip, grid, xAxis, yAxis, series, orientation, EBarOritentation.VERTICAL.equals(orientation)? xAxis.getData(): yAxis.getData());
+		this(title, legend, color, tooltip, grid, xAxis, yAxis, series, orientation, xAxis.getData());
 	}
 	
 	public BarModel(Title title, Legend legend, List<String> color, ToolTip tooltip, Grid grid, Axis xAxis, Axis yAxis, List<Serie> series, EBarOritentation orientation, List<String> sequence) {

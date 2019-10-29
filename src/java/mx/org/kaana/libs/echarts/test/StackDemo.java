@@ -35,12 +35,10 @@ public class StackDemo {
 			model.toCustomFormatLabel(StringEscapeUtils.unescapeJava("function (params) {return toCustomFormatLabel(params);}"));
 			LOG.info(model.toJson());
 			
-			
-			
-//			Stacked multiple     = new Stacked(DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "multiple", Collections.EMPTY_MAP));
-//  		StackModel modelMultiple= new StackModel(new Title(), multiple, Arrays.asList(SortNames.NAMES_DEMOS));
-//			modelMultiple.toCustomFormatLabel("function (params) {return toCustomFormatLabel(params);}");
-//			LOG.info(modelMultiple.toJson());
+			Stacked multiple     = new Stacked(DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "multiple", Collections.EMPTY_MAP));
+  		StackModel modelMultiple= new StackModel(new Title(), multiple, Arrays.asList(SortNames.NAMES_DEMOS));
+			modelMultiple.toCustomFormatLabel("function (params) {return toCustomFormatLabel(params);}");
+			LOG.info(modelMultiple.toJson());
     }
 
 }

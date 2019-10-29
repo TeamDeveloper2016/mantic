@@ -53,6 +53,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			Simple simple    = new Simple("Ventas", DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "simple", attrs));
   		BarModel modelSimple  = new BarModel(new Title(), simple, EBarOritentation.HORIZONTAL);
 			modelSimple.addLine(new CustomLine("2019", 50000D, Colors.COLOR_RED));
+			//modelSimple.toCustomFormatLabel("function (params) {return janal.customFormatLabel(params, 'integer');}");
   		this.attrs.put("simple", modelSimple.toJson());
 			
 			Multiple multiple= new Multiple(DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "multiple", attrs));
@@ -68,6 +69,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			
 			Stacked stacked= new Stacked(DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "multiple", attrs));
   		StackModel stack= new StackModel(new Title(), stacked);
+			// stack.toCustomFormatLabel("function (params) {return janal.customFormatLabel(params, 'integer');}");
   		this.attrs.put("stack", stack.toJson());
 			
   		modelSimple  = new BarModel(new Title(), simple);
@@ -99,7 +101,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			model.addLine(new CustomLine("Como", Serie.toValue(), Colors.COLOR_GREEN, ETypeLine.DASHED));
 			model.addLine(new CustomLine("Estas", Serie.toValue(), Colors.COLOR_BLUE, ETypeLine.DOTTED));
 			String json= model.toJson();
-			UIBackingUtilities.execute("updateDataEChart('"+ itemSelected.getChart()+ "', "+ json+ ");");
+			UIBackingUtilities.execute("janal.updateDataEChart('"+ itemSelected.getChart()+ "', "+ json+ ");");
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

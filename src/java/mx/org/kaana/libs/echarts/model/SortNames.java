@@ -42,7 +42,7 @@ public final class SortNames implements Serializable {
 		List<String> regresar= new ArrayList<>();
 		for (int x=0; x< labels.size(); x++) 
 			labels.set(x, labels.get(x).toUpperCase());
-		for (String item: names) {
+		for(String item: names) {
 			if(labels.contains(item.toUpperCase()))
 				regresar.add(item.toUpperCase());
 		} // for

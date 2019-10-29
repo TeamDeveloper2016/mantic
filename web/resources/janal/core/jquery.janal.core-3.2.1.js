@@ -1411,7 +1411,69 @@
 		}, 
 		onLoadCallBack: function() {
 			$janal.console('janal.onLoadCallBack');
-		}
+		},
+		sendDataEChart: function (params) {
+			var json= {
+				chart: params.chart,
+				color: params.color,
+				name: params.name,
+				value: params.value,
+				percent: params.percent,
+				dataIndex: params.dataIndex,
+				dataType: params.dataType,
+				seriesId: params.seriesId,
+				seriesIndex: params.seriesIndex,
+				seriesName: params.seriesName,
+				seriesType: params.seriesType,
+				event: params.type
+			};
+			$janal.console('janal.sendDataEChart: '+ json.chart);
+			refreshEChart(JSON.stringify(json));
+		},
+		updateDataEChart: function (name, json) {
+			$janal.console('janal.updateDataEChart: '+ name);
+			if(window[name]) {
+				window[name].clear();
+				window[name].setOption(json);
+			} // if	
+			else
+				$janal.console('El marco ['+ name+ '] de la grafica no existe !');
+		},
+		customFormatLabel: function (params, type) {
+			$janal.console('janal.customFormatLabel: '+ type);
+			// params.seriesName
+			// params.name
+			// params.value
+			// params.data is Object
+			// params.color
+			if(typeof(type)=== 'undefined')
+				type= '';
+			var text= '';
+			var data= parseFloat(params.value);
+			switch (type) {
+				case 'integer':
+					text= params.name+ "\n"+ data.toLocaleString('en-US', {style: 'decimal', minimumFractionDigits: 0, maximumFractionDigits: 0}); // 1,234,567
+					break;
+				case 'double':
+					text= params.name+ "\n"+ data.toLocaleString('en-US', {style: 'decimal', minimumFractionDigits: 1, maximumFractionDigits: 2}); // 1,234,567.12
+					break;
+				case 'money':
+					text= params.name+ "\n"+ data.toLocaleString('en-US', {style: 'currency', currency: 'USD', minimumFractionDigits: 1, maximumFractionDigits: 2}); // $1,242.50
+					break;
+				case 'percent':
+					text= params.name+ "\n"+ data.toLocaleString('en-US', {style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 2}); // 37.53%
+					break;
+				case 'cgor-double':
+					text= params.name+ "\n"+ data.toLocaleString('en-US', {style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1}); // 1,234,567.1
+					break;
+				case 'cgor-percent':
+					text= params.name+ "\n"+ data.toLocaleString('en-US', {style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1}); // 37.5%
+					break;
+				default:
+					text= params.name+ "\n"+ data.toLocaleString('en-US'); // 1,234,567.123
+			} // switch
+			return text;
+		}		
   });
   window.Janal= Janal;
 })(window);

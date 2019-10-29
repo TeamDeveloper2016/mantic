@@ -28,61 +28,15 @@
 				window.vertical = echarts.init(document.getElementById('vertical'), {renderer: 'canvas', width: 'auto', height: 'auto'});
 				window.vertical.setOption(#{kajoolPlantillasGraficasFiltro.attrs.vertical}, true);
 				
-				window.multiple.on('click', 'series', function (params) {params.chart= 'multiple'; sendDataEChart(params);});
-				window.simple.on('click', 'series', function (params) {params.chart= 'simple'; sendDataEChart(params);});
-				window.pie.on('click', 'series', function (params) {params.chart= 'pie'; sendDataEChart(params);});
-				window.donut.on('click', 'series', function (params) {params.chart= 'donut'; sendDataEChart(params);});
-				window.stack.on('click', 'series', function (params) {params.chart= 'stack'; sendDataEChart(params);});
-				window.vertical.on('click', 'series', function (params) {params.chart= 'vertical'; sendDataEChart(params);});
+				window.multiple.on('click', 'series', function (params) {params.chart= 'multiple'; janal.sendDataEChart(params);});
+				window.simple.on('click', 'series', function (params) {params.chart= 'simple'; janal.sendDataEChart(params);});
+				window.pie.on('click', 'series', function (params) {params.chart= 'pie'; janal.sendDataEChart(params);});
+				window.donut.on('click', 'series', function (params) {params.chart= 'donut'; janal.sendDataEChart(params);});
+				window.stack.on('click', 'series', function (params) {params.chart= 'stack'; janal.sendDataEChart(params);});
+				window.vertical.on('click', 'series', function (params) {params.chart= 'vertical'; janal.sendDataEChart(params);});
 			});
 			
-			function sendDataEChart(params) {
-				var json= {
-				  chart: params.chart,
-				  color: params.color,
-				  name: params.name,
-				  value: params.value,
-				  percent: params.percent,
-				  dataIndex: params.dataIndex,
-				  dataType: params.dataType,
-				  seriesId: params.seriesId,
-				  seriesIndex: params.seriesIndex,
-				  seriesName: params.seriesName,
-				  seriesType: params.seriesType,
-				  event: params.type
-				};
-				janal.console('filtro.sendDataEChart: '+ json.chart);
-				refreshEChart(JSON.stringify(json));
-			} // params
-			
-			function updateDataEChart(name, json) {
-				janal.console('filtro.updateDataEChart: '+ name);
-				if(window[name]) {
-					window[name].clear();
-				  window[name].setOption(json);
-				} // if	
-				else
-				  janal.console('El marco ['+ name+ '] de la grafica no existe !');
-			}
-			
-			function toCustomFormatLabel(params) {
-          var data = parseFloat(params.value);
-					// params.seriesName
-					// params.name
-					// params.value
-					// params.data is Object
-					// params.color
-					// 
-					// toLocaleString('en-US') 1,234,567.123
-					// toLocaleString('en-US', {style: 'percent'})) 37%
-					// toLocaleString('en-GB', {style: 'currency', currency: 'GBP', currencyDisplay: 'name'})) 1,242.50
-					// toLocaleString('en-US', {style: 'currency', currency: 'USD'}) $1,242.50
-					// toLocaleString('en-US', {style: 'decimal', minimumFractionDigits: 1, maximumFractionDigits: 1}) 1,242.5
-          return params.name+"\n"+data.toLocaleString('en-US', {style: 'currency', currency: 'USD'});
-			}
-			
-			
-			$(function(){
+			$(function() {
 				 'use strict'			
 				 new ResizeSensor($('.cgor-app-main'), function() {
 					 window.multiple.resize();
