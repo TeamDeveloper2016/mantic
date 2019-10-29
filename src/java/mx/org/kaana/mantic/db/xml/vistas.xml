@@ -8012,7 +8012,7 @@
 				from 
 					tc_mantic_empresas
 				left join 
-					tc_mantic_ventas on tc_mantic_ventas.id_empresa = tc_mantic_empresas.id_empresa and tc_mantic_ventas.id_venta_estatus in (3,4,9)
+					tc_mantic_ventas on tc_mantic_ventas.id_empresa = tc_mantic_empresas.id_empresa and tc_mantic_ventas.id_venta_estatus in ({estatusVentas})
 				where
 					{condicionGeneral}
 				group by 
@@ -8040,7 +8040,7 @@
 				left join 
 					tr_mantic_venta_medio_pago on tc_mantic_cierres.id_cierre = tr_mantic_venta_medio_pago.id_cierre
 				left join 
-					tc_mantic_ventas on tr_mantic_venta_medio_pago.id_venta = tc_mantic_ventas.id_venta and tc_mantic_ventas.id_venta_estatus in (3,4,9)
+					tc_mantic_ventas on tr_mantic_venta_medio_pago.id_venta = tc_mantic_ventas.id_venta and tc_mantic_ventas.id_venta_estatus in ({estatusVentas})
 				where
 					{condicionGeneral}
 				group by 
@@ -8092,7 +8092,7 @@
 				from 
 					tc_mantic_empresas
 				left join 
-					tc_mantic_ventas on tc_mantic_ventas.id_empresa = tc_mantic_empresas.id_empresa and tc_mantic_ventas.id_venta_estatus in (3,4,9)
+					tc_mantic_ventas on tc_mantic_ventas.id_empresa = tc_mantic_empresas.id_empresa and tc_mantic_ventas.id_venta_estatus in ({estatusVentas})
 				where
 					{condicionGeneral}
 				group by 
@@ -8103,7 +8103,7 @@
 			</select>
 			<select id="articulosMasVentas">
 				select
-					id_key, articulo, total, ((total * 100)/(select sum(cantidad) from tc_mantic_ventas inner join tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta = tc_mantic_ventas_detalles.id_venta and tc_mantic_ventas.id_venta_estatus in (3,4,9) where tc_mantic_ventas.id_venta_estatus in (3,4,9) and {condicionGeneral})) porcentaje
+					id_key, articulo, total, ((total * 100)/(select sum(cantidad) from tc_mantic_ventas inner join tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta = tc_mantic_ventas_detalles.id_venta and tc_mantic_ventas.id_venta_estatus in ({estatusVentas}) where tc_mantic_ventas.id_venta_estatus in ({estatusVentas}) and {condicionGeneral})) porcentaje
 				from(
 				select
 					id_key, articulo, sum(cantidad) total
@@ -8115,7 +8115,7 @@
 					from 
 						tc_mantic_ventas
 					inner join 
-						tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta = tc_mantic_ventas_detalles.id_venta and tc_mantic_ventas.id_venta_estatus in (3,4,9)
+						tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta = tc_mantic_ventas_detalles.id_venta and tc_mantic_ventas.id_venta_estatus in ({estatusVentas})
 					inner join 
 						tc_mantic_articulos on tc_mantic_ventas_detalles.id_articulo = tc_mantic_articulos.id_articulo
 					where
@@ -8129,7 +8129,7 @@
 			</select>
 			<select id="articulosMasUtilidad">
 				select
-					id_key, articulo, total, ((total * 100)/(select sum(utilidad) from tc_mantic_ventas where tc_mantic_ventas.id_tipo_documento= 2 and tc_mantic_ventas.id_venta_estatus in (3,4,9) and {condicionGeneral})) porcentaje
+					id_key, articulo, total, ((total * 100)/(select sum(utilidad) from tc_mantic_ventas where tc_mantic_ventas.id_tipo_documento= 2 and tc_mantic_ventas.id_venta_estatus in ({estatusVentas}) and {condicionGeneral})) porcentaje
 				from(
 				select
 					id_key, articulo, sum(utilidad) total
@@ -8141,7 +8141,7 @@
 					from 
 						tc_mantic_ventas
 					inner join 
-						tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta = tc_mantic_ventas_detalles.id_venta and tc_mantic_ventas.id_venta_estatus in (3,4,9)
+						tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta = tc_mantic_ventas_detalles.id_venta and tc_mantic_ventas.id_venta_estatus in ({estatusVentas})
 					inner join 
 						tc_mantic_articulos on tc_mantic_ventas_detalles.id_articulo = tc_mantic_articulos.id_articulo
 					where
@@ -8158,7 +8158,7 @@
 			<select id="ventasPorEmpleado">
 				select
 					id_key, nombre, total,
-					((total * 100)/(select count(*) total from tc_mantic_ventas where tc_mantic_ventas.id_venta_estatus in (3,4,9) and {condicionGeneral})) porcentaje
+					((total * 100)/(select count(*) total from tc_mantic_ventas where tc_mantic_ventas.id_venta_estatus in ({estatusVentas}) and {condicionGeneral})) porcentaje
 				from (
 				select 
 					tc_mantic_personas.id_persona as id_key,
@@ -8173,7 +8173,7 @@
 				where 
 					{condicionGeneral}
 				and 
-					tc_mantic_ventas.id_venta_estatus in (3,4,9)
+					tc_mantic_ventas.id_venta_estatus in ({estatusVentas})
 				group by   
 					tc_mantic_personas.id_persona,
 					concat(tc_mantic_personas.nombres, tc_mantic_personas.paterno, tc_mantic_personas.materno)) principal
