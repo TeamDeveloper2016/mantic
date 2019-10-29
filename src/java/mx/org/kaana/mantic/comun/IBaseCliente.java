@@ -462,11 +462,14 @@ public abstract class IBaseCliente extends IBaseArticulos implements Serializabl
 			this.attrs.put("registroCliente", registroCliente);
 			domicilioCliente= motorBusqueda.toDomicilioCliente();
 			domicilios= new ArrayList<>();
-			domicilios.add(new UISelectEntity(domicilioCliente));
+			if(domicilioCliente!= null)
+				domicilios.add(new UISelectEntity(domicilioCliente));
 			this.attrs.put("domicilios", domicilios);			
 			this.domicilio= new Domicilio();
-			this.domicilio.setDomicilio(domicilioCliente);
-      this.domicilio.setIdDomicilio(domicilioCliente.getKey());
+			if(domicilioCliente!= null){
+				this.domicilio.setDomicilio(domicilioCliente);
+				this.domicilio.setIdDomicilio(domicilioCliente.getKey());
+			} // if
 			loadEntidades();
 			toAsignaEntidad();
 			loadMunicipios();
