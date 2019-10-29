@@ -507,15 +507,16 @@
 				<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 					<div class="ui-grid-row janal-grid-row">
 						<div class="ui-grid-col-12">																			
-							<p:panelGrid id="panelCliente" layout="grid" columns="6" styleClass="janal-wid-99" columnClasses="janal-wid-20, janal-wid-40, janal-wid-10, janal-wid-10 janal-column-center, janal-wid-10 janal-column-center, janal-wid-10 janal-column-center">								
+							<p:panelGrid id="panelCliente" layout="grid" columns="7" styleClass="janal-wid-99" columnClasses="janal-wid-20, janal-wid-40, janal-wid-5 janal-column-center, janal-wid-10, janal-wid-10 janal-column-center, janal-wid-10 janal-column-center, janal-wid-10 janal-column-center">								
 								<p:outputLabel for="clientes" value="Buscar cliente:"/>																							
 								<p:outputLabel for="cliente" value="Cliente:"/>		
-								<p:outputLabel for="descuento" value="Descuento:"/>
+								<p:spacer/>
+								<p:outputLabel for="descuento" value="Descuento:"/>								
 								<p:outputLabel value="Apartado:"/>
 								<p:outputLabel value="Facturar:"/>
 								<p:outputLabel value="Credito:"/>
 								<p:autoComplete id="clientes" placeholder="RFC o nombre" widgetVar="listadoClientes" var="customCliente" itemLabel="#{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticVentasCajaAccion.attrs.cliente}" completeMethod="#{manticVentasCajaAccion.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
-									<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa contenedorGrupos" listener="#{manticVentasCajaAccion.doAsignaCliente}" update="cliente contenido @(.cambio-cliente) contenedorGrupos contenedorGrupos:deudorPago contenedorGrupos:deudor contenedorGrupos:facturacionSinCorreo" oncomplete="janal.desbloquear();"/>
+									<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa contenedorGrupos" listener="#{manticVentasCajaAccion.doAsignaCliente}" update="cliente contenido @(.cambio-cliente) contenedorGrupos contenedorGrupos:deudorPago contenedorGrupos:deudor contenedorGrupos:facturacionSinCorreo contenedorGrupos:correosCliente" oncomplete="janal.desbloquear();"/>
 									<f:facet name="itemtip">
 										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
 											<h:outputText value="Clave" />
@@ -539,6 +540,7 @@
 										<h:outputText value="#{item.razonSocial}"/>
 									</p:column>   
 								</p:selectOneMenu>
+								<p:commandButton id="correosCliente" title="Correos del cliente" icon="fa fa-at" update="dialogoCorreos" process="@this" actionListener="#{manticVentasCajaAccion.doLoadCorreos}" styleClass="janal-text-white janal-column-center" onstart="return janal.bloquear()" oncomplete="PF('dlgCorreos').show();"  disabled="#{manticVentasCajaAccion.attrs.mostrarCorreos}"/>														
 								<p:inputText id="descuento" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticVentasCajaAccion.adminOrden.descuento}" disabled="true">
 									<p:ajax event="blur" listener="#{manticVentasCajaAccion.doUpdateDescuento}" process="@this" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#descuento'), '0'); return true;"/>
 								</p:inputText>	
@@ -1187,7 +1189,7 @@
 				</p:inputText>
 			</p:panelGrid>							
 			<p:dataTable lazy="true" id="tablaCotizaciones" widgetVar="widgetTablaCotizaciones" var="row" styleClass="janal-row-cotizaciones janal-wid-100" value="#{manticVentasCajaAccion.lazyCotizaciones}" selection="#{manticVentasCajaAccion.attrs.cotizacion}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="270" style="margin-bottom:0" rowStyleClass="#{!manticVentasCajaAccion.toColor(row)}">
-				<p:ajax event="rowDblselect" listener="#{manticVentasCajaAccion.doAsignaCotizacion}" process="@this tablaCotizaciones" update="contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion) @(.janal-abono) contenedorGrupos:deudorPago contenedorGrupos:deudor" onstart="PF('dlgCotizaciones').hide();" oncomplete="janal.desbloquear();" />	
+				<p:ajax event="rowDblselect" listener="#{manticVentasCajaAccion.doAsignaCotizacion}" process="@this tablaCotizaciones" update="contenedorGrupos:correosCliente contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion) @(.janal-abono) contenedorGrupos:deudorPago contenedorGrupos:deudor" onstart="PF('dlgCotizaciones').hide();" oncomplete="janal.desbloquear();" />	
 				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 					<f:facet name="header">
 						<h:outputText value="Cuenta"/>
@@ -1243,7 +1245,7 @@
 				</p:inputText>
 			</p:panelGrid>							
 			<p:dataTable lazy="true" id="tablaApartados" widgetVar="widgetTablaApartados" var="row" styleClass="janal-row-apartados janal-wid-100" value="#{manticVentasCajaAccion.lazyApartados}" selection="#{manticVentasCajaAccion.attrs.apartados}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="270" style="margin-bottom:0" rowStyleClass="#{!manticVentasCajaAccion.toColor(row)}">
-				<p:ajax event="rowDblselect" listener="#{manticVentasCajaAccion.doAsignaApartado}" process="@this tablaApartados" update="contenedorGrupos @(.janal-abono) aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion)" onstart="PF('dlgApartados').hide();" oncomplete="janal.desbloquear();" />	
+				<p:ajax event="rowDblselect" listener="#{manticVentasCajaAccion.doAsignaApartado}" process="@this tablaApartados" update="contenedorGrupos:correosCliente contenedorGrupos @(.janal-abono) aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion)" onstart="PF('dlgApartados').hide();" oncomplete="janal.desbloquear();" />	
 				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 					<f:facet name="header">
 						<h:outputText value="Cuenta"/>
@@ -1299,7 +1301,7 @@
 				</p:inputText>
 			</p:panelGrid>							
 			<p:dataTable lazy="true" id="tablaTicketsAbiertos" widgetVar="widgetTablaTicketsAbiertos" var="row" styleClass="janal-row-tickets-abiertos janal-wid-100" value="#{manticVentasCajaAccion.lazyCuentasAbiertas}" selection="#{manticVentasCajaAccion.attrs.selectedCuentaAbierta}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="270" style="margin-bottom:0">
-				<p:ajax event="rowDblselect" listener="#{manticVentasCajaAccion.doAsignaTicketAbiertoDirecto}" process="@this tablaTicketsAbiertos" update="contenedorGrupos @(.janal-abono) aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion) contenedorGrupos:deudor contenedorGrupos:deudorPago @(.tickets-principal) contenedorGrupos:ticketsAbiertos" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();jsArticulos.lastCursorAt();" />	
+				<p:ajax event="rowDblselect" listener="#{manticVentasCajaAccion.doAsignaTicketAbiertoDirecto}" process="@this tablaTicketsAbiertos" update="contenedorGrupos @(.janal-abono) aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion) contenedorGrupos:deudor contenedorGrupos:deudorPago @(.tickets-principal) contenedorGrupos:ticketsAbiertos contenedorGrupos:correosCliente" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();jsArticulos.lastCursorAt();" />	
 				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 					<f:facet name="header">
 						<h:outputText value="Cuenta"/>
@@ -1354,7 +1356,7 @@
 				<div class="ui-grid-col-12 janal-column-left">
 					<p:outputLabel value="Click sobre la tabla para seleccionar el articulo, por defecto es el primero de la lista"/><br/>
 					<p:dataTable id="buscados" widgetVar="widgetBuscados" lazy="true" styleClass="janal-buscados-articulos janal-wid-100" value="#{manticVentasCajaAccion.attrs.lazyModel}" selection="#{manticVentasCajaAccion.attrs.buscado}" var="item" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="50" liveScroll="true" liveScrollBuffer="50" scrollable="true" scrollHeight="280" style="margin-bottom:0">
-						<p:ajax event="rowSelect" process="@this" update="@(.filas) @(.recalculo)" listener="#{manticVentasAccion.doRowDblselect}"/>
+						<p:ajax event="rowSelect" process="@this" update="@(.filas) @(.recalculo)" listener="#{manticVentasCajaAccion.doRowDblselect}"/>
 						<p:ajax event="rowDblselect" listener="#{manticVentasCajaAccion.doRowDblselect}" process="@this" update="@(.filas) @(.recalculo)" oncomplete="PF('dialogo').hide(); jsArticulos.close();"/>	
 						<p:column headerText="No" styleClass="janal-wid-col-30">
 							<h:outputText value="#{index+ 1}.-"/>
@@ -1464,6 +1466,26 @@
 		</div>
 	</ui:define>    		
 	<ui:define name="dialogos">
+		<p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Correos para factura" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
+			<h:form id="formDialogoCorreos" prependId="false">				
+				<h:panelGrid id="panelCorreos" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">					
+					<p:dataTable id="tablaCorreosReenviar" var="row" value="#{manticVentasCajaAccion.correos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">						
+						<p:column headerText="Correos disponibles del cliente" styleClass="descripcion tablaCorreosReenviar_selection">
+							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
+						</p:column>
+						<p:column style="width:45px;text-align: center">
+							<p:commandButton update="tablaCorreosReenviar" icon="fa fa-check" title="Agregar" action="#{manticVentasCajaAccion.doAgregarCorreo}">
+								<f:setPropertyActionListener value="#{row}" target="#{manticVentasCajaAccion.correo}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>		
+				</h:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">					
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCorreos').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog>	
 		<p:dialog id="dialogoDescuentos" widgetVar="dlgDescuentos" header="Aplicar descuento" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="updateDescuentos();janal.change('dialogosVenta', fieldsDialogDescuento); doFocusCuenta();" width="50%" onHide="janal.desbloquear();janal.restore();janal.refresh();jsArticulos.restoreCursorAt();">						
 			<h:form id="dialogosVenta" prependId="false">
 				<h:panelGrid columns="1" styleClass="janal-wid-100">
