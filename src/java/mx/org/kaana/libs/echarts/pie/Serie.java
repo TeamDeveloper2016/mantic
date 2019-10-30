@@ -56,9 +56,8 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 		this.radius=radius;
 		this.center=center;
 		this.itemStyle=new ItemStyle();
+		this.label=new Label(new Normal("outside", "{b}\\n({d}%)"));
 		this.data=data;
-		this.label=new Label();
-		
 	}
 
 	public List<String> getRadius() {
