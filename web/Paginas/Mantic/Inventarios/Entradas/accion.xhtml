@@ -125,6 +125,7 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
+		<p:hotkey bind="esc" handler="if($('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon')){$('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon').click();}"/>
 		<p:remoteCommand name="cleanUploadFiles" actionListener="#{manticInventariosEntradasAccion.doCancelar}" process="@this"/>
 		<pe:remoteCommand name="recover" process="@this" update="dialogoArtExpress" actionListener="#{manticInventariosEntradasAccion.doRecoverArticulo}" onstart="return janal.bloquear();" oncomplete="PF('dlgArtExpress').show();">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  

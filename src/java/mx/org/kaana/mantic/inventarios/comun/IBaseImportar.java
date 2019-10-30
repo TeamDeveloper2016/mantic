@@ -513,24 +513,26 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 	  Map<String, Object> params=null;
 		try {
 			params=new HashMap<>();
-			proveedor.setRfc(this.emisor.getRfc());
-			if(DaoFactory.getInstance().update(proveedor)>= 1L) {
+			params.put("rfc", this.emisor.getRfc());
+			params.put("idProveedor", proveedor.getIdProveedor());
+			List<Entity> values= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticProveedoresDto", "duplicados", params);
+			StringBuilder sb= new StringBuilder();
+			if(values!= null && values.size()> 0) {
 				// VERIFICAR SI EXISTE OTRO PROVEEDOR CON EL MISMO RFC Y MOSTRARLO CON ESTE MISMO MENSAJE EN CASO DE ENCONTRARLO
-  			params.put("rfc", proveedor.getRfc());
-  			params.put("idProveedor", proveedor.getIdProveedor());
-			  List<Entity> values= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticProveedoresDto", "duplicados", params);
-				StringBuilder sb= new StringBuilder();
-				if(values!= null && values.size()> 0) {
-					sb.append("<br/>Más sin embargo este RFC esta asociado a otro(s) proveedor(es):<br/><br/>");
-					for (Entity item: values) {
-						sb.append("  [");
-						sb.append(item.toString("rfc"));
-						sb.append("]  ");
-						sb.append(item.toString("razonSocial"));
-						sb.append(".<br/>");
-					} // for
-				} // if
-				JsfBase.addAlert("El catálogo del proveedor fué actualizado de forma correcta con<br/> ["+ proveedor.getRfc()+ "] a nombre de "+ proveedor.getRazonSocial().concat("<br/>").concat(sb.toString()), ETipoMensaje.ALERTA);
+				for (Entity item: values) {
+					sb.append("  [");
+					sb.append(item.toString("rfc"));
+					sb.append("]  ");
+					sb.append(item.toString("razonSocial"));
+					sb.append(".<br/>");
+				} // for
+				sb.append("<br/>Por lo tanto no se puede cambiar el RFC a este proveedor.");
+				JsfBase.addAlert("El RFC del proveedor ya esta asociado a otro(s) proveedor(es):<br/><br/>".concat(sb.toString()), ETipoMensaje.ALERTA);
+			} // if
+			else {
+			  proveedor.setRfc(this.emisor.getRfc());
+		  	if(DaoFactory.getInstance().update(proveedor)>= 1L)
+  				JsfBase.addAlert("El catálogo del proveedor fué actualizado de forma correcta con<br/> ["+ proveedor.getRfc()+ "] a nombre de "+ proveedor.getRazonSocial(), ETipoMensaje.ALERTA);
 			} // if
 		} // try
 		catch (Exception e) {

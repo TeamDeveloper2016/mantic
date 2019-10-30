@@ -63,7 +63,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			
 			Datas datas = new Datas("ventas", DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "simple", Collections.EMPTY_MAP));
   		PieModel pie= new PieModel("ventas", "55%", new Title(), datas);
-			pie.toCustomFormatLabel("function (params) {return janal.customFormatLabel(params, 'percent');}");
+			// pie.toCustomFormatLabel("function (params) {return janal.customFormatLabel(params, 'percent');}");
 			this.attrs.put("pie", pie.toJson());
 			
   		DonutModel donut= new DonutModel("ventas", "55%", "30%", new Title(), datas);
