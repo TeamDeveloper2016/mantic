@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import mx.org.kaana.libs.echarts.beans.Label;
+import mx.org.kaana.libs.echarts.beans.Normal;
 import mx.org.kaana.libs.echarts.enums.EKinds;
 
 /**
@@ -38,6 +39,7 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 		this.radius=new ArrayList(Arrays.asList("0%", radius));
 		this.center=new ArrayList(Arrays.asList("50%", "50%"));
 		this.itemStyle=new ItemStyle();
+		this.label=new Label(new Normal("outside", "{b}\\n({d}%)"));
 		this.data= data;
 	}
 	

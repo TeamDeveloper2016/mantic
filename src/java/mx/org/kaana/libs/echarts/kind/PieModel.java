@@ -126,4 +126,10 @@ public class PieModel extends ChartModel implements Serializable {
 		return "PieModel{"+"title="+title+", legend="+legend+", color="+color+", tooltip="+tooltip+", series="+series+'}';
 	}
 	
+	public void toCustomFormatLabel(String format) {
+		for (Serie item: this.series) {
+			item.getLabel().getNormal().setFormatter(format);
+		} // for
+	}
+
 }
