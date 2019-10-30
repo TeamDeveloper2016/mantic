@@ -102,7 +102,7 @@ public class Serie extends mx.org.kaana.libs.echarts.beans.Serie implements Seri
 
 	@Override
 	public String toString() {
-		return "Serie{"+"radius="+radius+", center="+center+", itemStyle="+itemStyle+", data="+data+'}';
+		return "Serie{radius="+radius+", center="+center+", itemStyle="+itemStyle+", data="+data+'}';
 	}
 	
 }

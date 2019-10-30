@@ -1391,7 +1391,7 @@
 			var value= $(name).val().trim();
 			if(typeof(value)=== 'undefined' || value==='' || Number.isNaN(parseFloat(value, 10)) || parseFloat(value, 10)=== 0) 
 			  value= '1';
-			var id   = $(name).attr('id');
+			var id= $(name).attr('id');
 			if(id.indexOf(':')>= 0)
 				id= id.replace(/:/gi, '\\:');
 			$('#'+ id).attr('value', value);
