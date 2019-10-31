@@ -102,7 +102,7 @@
 						} // if	
 						janal.console('focus: '+ $(this).attr('id')+ ' target: '+ name);
 						if(key=== $articulos.VK_ENTER && $(this).attr('id')=== 'descuentoAceptar')
-							$('#descuentoAplicar').click();
+							$('#descuentoAceptar').click();
 						return false;
 						break;						
 					case $articulos.VK_UP:  
