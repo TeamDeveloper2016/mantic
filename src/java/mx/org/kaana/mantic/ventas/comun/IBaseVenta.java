@@ -108,7 +108,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		try {
 			columns= new ArrayList<>();
 			params= new HashMap<>();
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.put("sucursales", JsfBase.isAdminEncuestaOrAdmin() ? JsfBase.getAutentifica().getEmpresa().getSucursales() : JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			sucursales=(List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
