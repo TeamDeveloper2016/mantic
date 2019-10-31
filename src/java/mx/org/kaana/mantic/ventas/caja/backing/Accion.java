@@ -237,7 +237,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("isIndividual", true);
 			this.attrs.put("descuentoIndividual", 0);
 			this.attrs.put("descuentoGlobal", 0);
-			this.attrs.put("tipoDescuento", INDIVIDUAL);
+			this.attrs.put("tipoDescuento", MENUDEO);
 			doActivarDescuento();
 			this.attrs.put("decuentoAutorizadoActivo", false);
 			this.attrs.put("tipoDecuentoAutorizadoActivo", MENUDEO);
