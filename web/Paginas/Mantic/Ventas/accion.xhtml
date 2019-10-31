@@ -31,6 +31,23 @@
         jsArticulos= new Janal.Control.Articulos.Core(#{manticVentasAccion.adminOrden.articulos.size()}, 'tabla\\:');
 				janal.readingMode('#{manticVentasAccion.attrs.nombreAccion}');
 				jsArticulos.lastCursorAt();
+				$(document).on('keydown', '.event-keydown-enter', function(e) {
+					var key   = e.keyCode ? e.keyCode : e.which;
+					janal.console('Keydown: '+  key);
+					switch(key) {
+						case 13: // key_enter
+						case 40: // key_down
+							var name= janal.parser(this);
+							if(name)
+								$('#'+ name).focus();
+							janal.console(name);
+							return false;
+							break;
+						case 38:  // key_up
+							return false;
+							break;
+					} // switch
+				});
       });							
 			
 			function validateCapturaDescuentos() {
@@ -665,33 +682,34 @@
 		</p:dialog>
 		<p:dialog id="dialogoDescuentos" widgetVar="dlgDescuentos" header="Aplicar descuento" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="updateDescuentos();" width="50%" onHide="janal.desbloquear(); janal.restore(); janal.refresh(); janal.recover();">						
 			<h:form id="dialogosVenta" prependId="false">
+				<p:defaultCommand target="tipoDescuento"/>
 				<h:panelGrid id="panelPrincipalDescuentos" columns="1" styleClass="janal-wid-100 recalculo">
 					<p:outputLabel for="descuentousr" value="Usuario:"/>
-					<p:inputText id="descuentousr" value="#{manticVentasAccion.attrs.usuarioDescuento}" styleClass="janal-wid-100-txt"/>
+					<p:inputText id="descuentousr" value="#{manticVentasAccion.attrs.usuarioDescuento}" styleClass="janal-wid-100-txt event-keydown-enter janal-name-descuentopswrd"/>
 					<p:outputLabel for="descuentopswrd" value="Contraseña:"/>
-					<p:password id="descuentopswrd" value="#{manticVentasAccion.attrs.passwordDescuento}" styleClass="janal-wid-100-txt" autocomplete="new-password"/>									
+					<p:password id="descuentopswrd" value="#{manticVentasAccion.attrs.passwordDescuento}" styleClass="janal-wid-100-txt event-keydown-enter janal-name-tipoDescuento\:0" autocomplete="new-password"/>									
 					<p:separator/>
 					<p:outputLabel for="tipoDescuento" value="Tipo de descuento:"/>
-					<p:selectOneRadio id="tipoDescuento" widgetVar="tipoDescuento" value="#{manticVentasAccion.attrs.tipoDescuento}">
+					<p:selectOneRadio id="tipoDescuento" widgetVar="tipoDescuento" value="#{manticVentasAccion.attrs.tipoDescuento}" styleClass="event-keydown-enter janal-name-descuentoIndividual_input">
 						<p:ajax event="change" listener="#{manticVentasAccion.doActivarDescuento}" process="@this" update="panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal"/>
-						<f:selectItem itemLabel="Individual" itemValue="1"/>
-						<f:selectItem itemLabel="Global" itemValue="0"/>
 						<f:selectItem itemLabel="Menudeo" itemValue="4"/>						
 						<f:selectItem itemLabel="Medio mayoreo" itemValue="2"/>
 						<f:selectItem itemLabel="Mayoreo" itemValue="3"/>
+						<f:selectItem itemLabel="Individual" itemValue="1"/>
+						<f:selectItem itemLabel="Global" itemValue="0"/>
 					</p:selectOneRadio>
 				</h:panelGrid>				
 				<h:panelGrid id="panelDescuentoEspecificacionIndividual" columns="2" styleClass="janal-wid-100 recalculo" columnClasses="janal-wid-95 janal-column-right, janal-wid-5">			
-					<p:inputNumber id="descuentoIndividual" value="#{manticVentasAccion.attrs.descuentoIndividual}" inputStyleClass="janal-wid-100-txt janal-column-right" rendered="#{manticVentasAccion.attrs.isIndividual}"/>
+					<p:inputNumber id="descuentoIndividual" value="#{manticVentasAccion.attrs.descuentoIndividual}" inputStyleClass="janal-wid-100-txt janal-column-right event-keydown-enter janal-name-descuentoGlobal" rendered="#{manticVentasAccion.attrs.isIndividual}"/>
 					<p:outputLabel value="%" rendered="#{manticVentasAccion.attrs.isIndividual}"/>  
 				</h:panelGrid>				
 				<h:panelGrid id="panelDescuentoEspecificacionGlobal" columns="2" styleClass="janal-wid-100 recalculo" columnClasses="janal-wid-5, janal-wid-95 janal-column-right">
 					<p:outputLabel value="$" rendered="#{manticVentasAccion.attrs.isGlobal}"/>
-					<p:inputNumber id="descuentoGlobal" value="#{manticVentasAccion.attrs.descuentoGlobal}" inputStyleClass="janal-wid-100-txt janal-column-right" rendered="#{manticVentasAccion.attrs.isGlobal}"/>		
+					<p:inputNumber id="descuentoGlobal" value="#{manticVentasAccion.attrs.descuentoGlobal}" inputStyleClass="janal-wid-100-txt janal-column-right event-keydown-enter janal-name-descuentoAceptar" rendered="#{manticVentasAccion.attrs.isGlobal}"/>		
 				</h:panelGrid>				
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton icon="fa fa-check" process="@this panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd" value="Aceptar" onstart="return validateCapturaDescuentos();" update="contenido"/>
+					<p:commandButton id="descuentoAceptar" icon="fa fa-check" process="@this panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd" value="Aceptar" onstart="return validateCapturaDescuentos();" update="contenido"/>
 					<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('dlgDescuentos').hide();"/>
 				</div>	
 			</h:form>

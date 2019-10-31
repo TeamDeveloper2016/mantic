@@ -434,7 +434,7 @@
        Segundos= data.getSeconds();
        if(Segundos< 10)
          Segundos = "0" + Segundos;
-       texto="Hoy es "+ data.getDate()+ " de " + meses[index] +" de " + an+ "   	"+ Hora+ ":"+ Minutos+ ":"+ Segundos+ " "+ AmPm;
+       var texto="Hoy es "+ data.getDate()+ " de " + meses[index] +" de " + an+ "   	"+ Hora+ ":"+ Minutos+ ":"+ Segundos+ " "+ AmPm;
        $('#reloj').text( texto ).addClass("fecha	");  
        if (document.layers){
          document.layers.reloj.document.write(texto);
@@ -1263,7 +1263,7 @@
 			alert('Se '+ title+ ' con consecutivo: '+ count);
 		},
 		readingMode: function(action) {
-			actionValidate= action!== null && action!== undefined ? action.toUpperCase() : 'CONSULTAR';
+			var actionValidate= action!== null && action!== undefined ? action.toUpperCase() : 'CONSULTAR';
 			$('input:text,input:checkbox,input:file,textarea,button,a.ui-commandlink,div.ui-selectonemenu,div.ui-chkbox,span.ui-button,div.ui-inputswitch').each(function(index) {  
 				if(actionValidate=== 'CONSULTAR') {
 					if(this.id!== 'verificadorValue' && this.id!== 'verificadorBuscarPor'){
