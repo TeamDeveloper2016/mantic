@@ -1394,7 +1394,7 @@
 				</h:panelGrid>				
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton id="descuentoAceptar" icon="fa fa-check" process="@this panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd" value="Aceptar" onstart="return jsCaja.validateCapturaDescuentos();" update="contenedorGrupos:contenido"/>
+					<p:commandButton id="descuentoAceptar" icon="fa fa-check" process="@this panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd" value="Aceptar" onstart="return jsCaja.validateCapturaDescuentos();" update="contenedorGrupos:contenido" styleClass="event-keydown-enter"/>
 					<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('dlgDescuentos').hide();"/>
 				</div>	
 			</h:form>

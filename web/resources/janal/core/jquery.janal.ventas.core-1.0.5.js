@@ -82,7 +82,7 @@
 		events: function() {
 			$(document).on('keydown', '.event-keydown-enter', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('Keydown: '+  key);
+				janal.console('jsArticulos.keydown [event-keydown-enter]: '+  key);
 				switch(key) {
 					case $articulos.VK_TAB: 
 					case $articulos.VK_ENTER: 
@@ -100,7 +100,9 @@
 							}	// if
 							$('#'+ name).focus();
 						} // if	
-						janal.console(name);
+						janal.console('focus: '+ $(this).attr('id')+ ' target: '+ name);
+						if(key=== $articulos.VK_ENTER && $(this).attr('id')=== 'descuentoAceptar')
+							$('#descuentoAplicar').click();
 						return false;
 						break;						
 					case $articulos.VK_UP:  
