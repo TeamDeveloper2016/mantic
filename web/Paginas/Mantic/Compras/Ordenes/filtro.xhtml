@@ -237,8 +237,8 @@
 			</h:form>
 		</p:dialog>
 		<p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Enviar orden de compra" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
-			<h:form id="formDialogoCorreos" prependId="false">				
-				<h:panelGrid id="panelCorreos" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">					
+			<h:form id="formDialogoCorreos" prependId="false">								
+				<p:panelGrid id="panelCorreos" columns="1" layout="grid" styleClass="janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">										
 					<p:dataTable id="tablaCorreos" var="row" value="#{manticComprasOrdenesFiltro.correos}" selection="#{manticComprasOrdenesFiltro.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
 						<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
 						<p:column headerText="Correos disponibles del proveedor" styleClass="descripcion tablaCorreos_selection">
@@ -250,7 +250,7 @@
 							</p:commandButton>
 						</p:column>
 					</p:dataTable>		
-				</h:panelGrid>
+				</p:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
 					<p:commandButton icon="fa fa-check" process="@this dialogoCorreos" value="Aceptar" actionListener="#{manticComprasOrdenesFiltro.doEnviarCorreoOrden}" onstart="return PF('dlgCorreos').hide();"  oncomplete="janal.desbloquear();"/>
