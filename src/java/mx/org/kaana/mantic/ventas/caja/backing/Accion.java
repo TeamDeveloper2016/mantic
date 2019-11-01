@@ -274,7 +274,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		try {
 			rc= RequestContext.getCurrentInstance();
 			if(!this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid())
-				rc.execute("validaAccionCaptura();");
+				rc.execute("jsCaja.validaAccionCaptura();");
 			else {
 				if(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta()> 0L){
 					transaccion= new mx.org.kaana.mantic.ventas.reglas.Transaccion((TicketVenta)this.getAdminOrden().getOrden());
