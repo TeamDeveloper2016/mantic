@@ -638,6 +638,9 @@
 						<p:column headerText="Costo" styleClass="janal-column-right janal-wid-13">
 							<h:outputText value="#{item.original}"/>
 						</p:column>   
+						<p:column headerText="Stock" styleClass="janal-column-right janal-wid-10">
+							<h:outputText value="#{manticCotizacionesAccion.doMiles(item.stock)}"/>
+						</p:column>   
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticCotizacionesAccion.attrs.lazyModel==null? 0: manticCotizacionesAccion.attrs.lazyModel.rowCount}] registros"/>
             </f:facet>

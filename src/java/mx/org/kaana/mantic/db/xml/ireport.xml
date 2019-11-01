@@ -259,7 +259,8 @@
           tc_mantic_creditos_notas.consecutivo consecutivo_credito_nota,
           tc_mantic_creditos_notas.registro registro_credito_nota,
           tc_mantic_creditos_notas.importe importe_credito_nota,
-          tc_mantic_creditos_estatus.nombre estatus_credito_nota
+          tc_mantic_creditos_estatus.nombre estatus_credito_nota,
+				  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario
         from 
           tc_mantic_ordenes_compras
         inner join 
@@ -270,6 +271,10 @@
           tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
         inner join 
           tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus=tc_mantic_ordenes_estatus.id_orden_estatus
+				inner join
+					tc_janal_usuarios on tc_mantic_ordenes_compras.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
         left join 
           tc_mantic_notas_entradas on tc_mantic_ordenes_compras.id_orden_compra= tc_mantic_notas_entradas.id_orden_compra
         left join 
