@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -76,6 +77,15 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
   		sb.append("(tc_mantic_ventas.ticket like '%").append(this.attrs.get("consecutivo")).append("%') and tc_mantic_ventas.cticket is not null and ");
 		else
 			sb.append(" tc_mantic_ventas.cticket is not null and ");			
+		if(!Cadena.isVacio(JsfBase.getParametro("codigo_input")))
+			sb.append("upper(tc_mantic_ventas_detalles.codigo) like upper('%").append(JsfBase.getParametro("codigo_input")).append("%') and ");						
+		if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L) 
+			sb.append("tc_mantic_ventas_detalles.id_articulo=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");						
+		else 
+			if(!Cadena.isVacio(JsfBase.getParametro("nombre_input"))) { 
+				String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+				sb.append("(tc_mantic_ventas_detalles.nombre regexp '.*").append(nombre).append(".*') and ");				
+			} // if	
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
 		  sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
@@ -218,5 +228,81 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
       JsfBase.addMessageError(e);			
     } // catch	
   } // doReporte
+
+	public void doMoveSection() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		List<UISelectEntity> documento= null;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("impuestos", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("precio", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_HORA));
+			params.put("idVenta", ((Entity)this.attrs.get("seleccionado")).getKey());
+			documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "venta", params, columns, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("documentos", documento);
+			if(documento!= null && !documento.isEmpty()) {
+				documento.get(0).put("articulos", new Value("articulos", documento.size()));
+        this.attrs.put("documento", documento.get(0));
+			} // if	
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+		finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}
+
+	public void doUpdateArticulosFiltro() {
+		List<Columna> columns         = null;
+    Map<String, Object> params    = null;
+		List<UISelectEntity> articulos= null;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			params= new HashMap<>();
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("idProveedor", -1L);
+			String search= (String) this.attrs.get("codigoFiltro"); 
+			if(!Cadena.isVacio(search)) 
+  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*.*");			
+			else
+				search= "WXYZ";
+  		params.put("codigo", search);			        
+      articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombreTipoArticulo", params, columns, 40L);
+      this.attrs.put("articulosFiltro", articulos);
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}	// doUpdateArticulos
+
+	public List<UISelectEntity> doCompleteArticulo(String query) {
+		this.attrs.put("existe", null);
+		this.attrs.put("codigo", query);
+    this.doUpdateArticulos();		
+		return (List<UISelectEntity>)this.attrs.get("articulos");
+	}	// doCompleteArticulo
 	
+	public List<UISelectEntity> doCompleteArticuloFiltro(String query) {
+		this.attrs.put("existeFiltro", null);
+		this.attrs.put("codigoFiltro", query);
+    this.doUpdateArticulosFiltro();
+		return (List<UISelectEntity>)this.attrs.get("articulosFiltro");
+	}	// doCompleteArticulo
+
 }
