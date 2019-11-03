@@ -48,6 +48,17 @@ public class Ambos extends IBaseFilter implements Serializable {
 		return "";
 	}
 
+	public boolean getAdmin() {
+		boolean regresar= false;
+    try {
+  	  regresar= JsfBase.isAdminEncuestaOrAdmin();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+    } // catch		
+		return regresar;
+	}
+	
   @PostConstruct
   @Override
   protected void init() {
@@ -61,7 +72,7 @@ public class Ambos extends IBaseFilter implements Serializable {
       this.attrs.put("idCierreEstatus", JsfBase.getFlashAttribute("idCierreEstatus"));
       this.attrs.put("idCaja", JsfBase.getFlashAttribute("idCaja"));
 			this.attrs.put("idAbono", -1L);
-      this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
+      this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Mantic/Ventas/Caja/accion": JsfBase.getFlashAttribute("retorno"));
 			this.toLoadCatalog();
 		  this.doLoad();
     } // try
@@ -256,7 +267,7 @@ public class Ambos extends IBaseFilter implements Serializable {
 
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idCierre", this.attrs.get("idCierre"));
-    return "filtro".concat(Constantes.REDIRECIONAR);
+    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 	
   private void doLoadAmbos() {

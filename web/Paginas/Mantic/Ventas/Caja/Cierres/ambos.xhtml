@@ -165,7 +165,9 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="eliminar" value="Cancelar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" disabled="#{manticVentasCajaCierresAmbos.attrs.seleccionado.idTerminado.data eq 1}"/>
+            <p:menuitem id="eliminar" icon="fa fa-minus" value="Cancelar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" disabled="#{manticVentasCajaCierresAmbos.attrs.seleccionado.idTerminado.data eq 1}" rendered="#{manticVentasCajaCierresAmbos.admin}"/>
+            <p:separator rendered="#{manticVentasCajaCierresAmbos.admin}"/>
+            <p:menuitem id="imprirmir" icon="fa fa-file-text-o" value="Imprimir" process="@this tabla"/>
           </p:contextMenu>					
 					<hr class="ui-widget-content"/>
 					<div class="janal-line-button">
