@@ -90,6 +90,10 @@ public class Transaccion extends IBaseTnx{
 	public String getMessageError() {
 		return messageError;
 	}
+
+	public TcManticGarantiasDto getGarantiaDto() {
+		return garantiaDto;
+	}	
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
