@@ -41,7 +41,8 @@ public class CreateCierre extends CreateTicket {
 		return regresar.toString();
 	} // toTipoVenta			
 
-	private String toVendedor() throws Exception{
+	@Override
+	public String toVendedor() throws Exception{
 		StringBuilder regresar= new StringBuilder("<br/>");
 		regresar.append("<p style=\"width: 290px;font-family: sans-serif;font-size: 13px;border-top: 1px solid black;border-collapse: collapse;\">");
 		regresar.append("<br/><strong>USUARIO:</strong>").append(toUsuario()).append("<br/>");		
@@ -65,7 +66,8 @@ public class CreateCierre extends CreateTicket {
 		return regresar;
 	} // toFindDomicilio
 	
-	private String toUsuario() throws Exception{
+	@Override
+	public String toUsuario() throws Exception{
 		String regresar          = null;
 		Entity usuario           = null;
 		Map<String, Object>params= null;
