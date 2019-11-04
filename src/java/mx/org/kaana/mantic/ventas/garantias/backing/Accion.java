@@ -32,6 +32,7 @@ import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.compras.ordenes.beans.Totales;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.garantias.reglas.Transaccion;
@@ -39,6 +40,7 @@ import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.enums.EEstatusClientes;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
+import mx.org.kaana.mantic.enums.ETipoPago;
 import mx.org.kaana.mantic.enums.ETiposGarantias;
 import mx.org.kaana.mantic.ventas.caja.beans.Pago;
 import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
@@ -46,6 +48,7 @@ import mx.org.kaana.mantic.ventas.garantias.beans.DetalleGarantia;
 import mx.org.kaana.mantic.ventas.garantias.beans.Garantia;
 import mx.org.kaana.mantic.ventas.garantias.beans.PagoGarantia;
 import mx.org.kaana.mantic.ventas.garantias.reglas.AdminGarantia;
+import mx.org.kaana.mantic.ventas.garantias.reglas.CreateTicketGarantia;
 import mx.org.kaana.mantic.ventas.garantias.reglas.GestorSQL;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
@@ -345,16 +348,18 @@ public class Accion extends IBaseVenta implements Serializable {
 		return regresar;
 	} // toDevolucionCompleta
 	
-  public String doAceptar() {  
-    Transaccion transaccion= null;
-    String regresar        = null;
-    try {				
+  public void doAceptar() {  
+    Transaccion transaccion    = null;    
+		CreateTicketGarantia ticket= null;		
+		Pago pagoPivote            = null;
+    try {
+			pagoPivote= loadPagoPivote();
 			transaccion= new Transaccion(loadDetalleGarantia());			
-			if (transaccion.ejecutar(EAccion.REPROCESAR)) {
-				if(JsfBase.isCajero())
-					regresar= "/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR);
-				else
-					regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
+			if (transaccion.ejecutar(EAccion.REPROCESAR)) {						
+				ticket= new CreateTicketGarantia(pagoPivote, "DEVOLUCIÓN");
+				ticket.setTicket(((AdminGarantia)getAdminOrden()));
+				UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + transaccion.getGarantiaDto().getConsecutivo() + "','" + ticket.toHtml() + "');");
+				UIBackingUtilities.execute("jsTicket.clicTicket();");
 				JsfBase.addMessage("Se finalizo la garantia.", ETipoMensaje.INFORMACION);
 				this.setAdminOrden(new AdminGarantia(new TicketVenta()));
 				this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
@@ -367,9 +372,46 @@ public class Accion extends IBaseVenta implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
-    return regresar;
-  } // doAccion  
-
+  } // doAccion  	
+	
+	private Pago loadPagoPivote(){
+		Pago pago                = null;
+		ETipoMediosPago medioPago= null;
+		try {
+			pago= new Pago(((AdminGarantia)getAdminOrden()).getTotales());
+			medioPago= ETipoMediosPago.fromIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
+			switch(medioPago){
+				case EFECTIVO:
+					pago.setEfectivo(pago.getTotales().getTotalDosDecimales());
+					break;
+				case CHEQUE:
+					pago.setCheque(pago.getTotales().getTotalDosDecimales());
+					pago.setBancoCheque((UISelectEntity) this.attrs.get("banco"));
+					pago.setReferenciaCheque(this.attrs.get("referencia").toString());
+					break;
+				case TARJETA_CREDITO:
+					pago.setCredito(pago.getTotales().getTotalDosDecimales());
+					pago.setBancoCredito((UISelectEntity) this.attrs.get("banco"));
+					pago.setReferenciaCredito(this.attrs.get("referencia").toString());
+					break;
+				case TARJETA_DEBITO:
+					pago.setDebito(pago.getTotales().getTotalDosDecimales());
+					pago.setBancoDebito((UISelectEntity) this.attrs.get("banco"));
+					pago.setReferenciaTransferencia(this.attrs.get("referencia").toString());
+					break;
+				case TRANSFERENCIA:
+					pago.setTransferencia(pago.getTotales().getTotalDosDecimales());
+					pago.setBancoTransferencia((UISelectEntity) this.attrs.get("banco"));
+					pago.setReferenciaTransferencia(this.attrs.get("referencia").toString());
+					break;				
+			} // switch			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return pago;
+	} // loadPagoPivote
+	
 	private DetalleGarantia loadDetalleGarantia() throws Exception{
 		DetalleGarantia regresar = null;
 		List<Garantia> garantias = null;		
@@ -926,6 +968,5 @@ public class Accion extends IBaseVenta implements Serializable {
       Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-	}
-	
+	}	
 }
