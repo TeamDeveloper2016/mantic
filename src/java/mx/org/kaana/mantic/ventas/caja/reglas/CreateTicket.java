@@ -19,9 +19,13 @@ import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 public class CreateTicket {
 
 	private AdminTickets ticket;
-	private Pago pago;
-	private Sucursal principal;
+	protected Pago pago;
+	protected Sucursal principal;
 	protected String tipo;
+	
+	public CreateTicket(Pago pago, String tipo) {
+		this(null, pago, tipo);
+	}
 	
 	public CreateTicket(AdminTickets ticket, Pago pago, String tipo) {
 		this.ticket= ticket;
@@ -280,14 +284,14 @@ public class CreateTicket {
 		return "</table>";
 	} // toArticulos
 
-	private String toVendedor() throws Exception{
+	protected String toVendedor() throws Exception{
 		StringBuilder regresar= new StringBuilder("<br/>");
 		regresar.append("<p style=\"width: 290px;font-family: sans-serif;font-size: 13px;border-top: 1px solid black;border-collapse: collapse;\">");
 		regresar.append("<br/><strong>VENDEDOR:</strong>").append(toUsuario()).append("<br/>");		
 		return regresar.toString();
 	} // toArticulos
 
-	private String toUsuario() throws Exception{
+	protected String toUsuario() throws Exception{
 		String regresar          = null;
 		Entity usuario           = null;
 		Map<String, Object>params= null;
@@ -303,7 +307,7 @@ public class CreateTicket {
 		return regresar;
 	} // toUsuario
 	
-	private String toCajero(){
+	protected String toCajero(){
 		StringBuilder regresar=  new StringBuilder();
 		regresar.append("<strong>CAJERO:</strong>");
 		regresar.append(JsfBase.getAutentifica().getPersona().getNombreCompleto());
