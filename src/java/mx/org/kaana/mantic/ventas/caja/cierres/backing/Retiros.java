@@ -108,7 +108,7 @@ public class Retiros extends IBaseAttribute implements Serializable {
      			JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));
 		    	JsfBase.setFlashAttribute("idCaja", this.attrs.get("idCaja"));
  	        JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));    			
-					ticket= new CreateCierre(retiro.getImporte(), "RETIRO:" + retiro.getConsecutivo());
+					ticket= new CreateCierre(retiro.getImporte(), "RETIRO:" + retiro.getConsecutivo(), idAutorizo);
 					UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + retiro.getConsecutivo() + "','" + ticket.toHtml() + "');");
 					UIBackingUtilities.execute("jsTicket.clicTicket();");
 					UIBackingUtilities.execute("executeReturn("+ retiro.getConsecutivo() +");");
