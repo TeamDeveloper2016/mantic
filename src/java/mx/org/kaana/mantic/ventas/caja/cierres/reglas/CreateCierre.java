@@ -9,14 +9,21 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 
 public class CreateCierre extends CreateTicket {
 	
 	private Double cantidad;
+	private Long idAutorizo;
 	
 	public CreateCierre(Double cantidad, String tipo) {
+		this(cantidad, tipo, null);
+	}
+	
+	public CreateCierre(Double cantidad, String tipo, Long idAutorizo) {
 		super(null, null, tipo);
-		this.cantidad= cantidad;
+		this.cantidad  = cantidad;
+		this.idAutorizo= idAutorizo;
 		super.init();
 	}	
 	
@@ -29,7 +36,9 @@ public class CreateCierre extends CreateTicket {
 		sb.append(toFecha());
 		sb.append(toTable());					
 		sb.append(toCantidad());				
-		sb.append(toVendedor());				
+		sb.append(toVendedor());		
+		if(this.idAutorizo!= null)
+			sb.append(toAutorizo());				
 		return sb.toString();
 	} // toHtml
 	
@@ -46,6 +55,13 @@ public class CreateCierre extends CreateTicket {
 		StringBuilder regresar= new StringBuilder("<br/>");
 		regresar.append("<p style=\"width: 290px;font-family: sans-serif;font-size: 13px;border-top: 1px solid black;border-collapse: collapse;\">");
 		regresar.append("<br/><strong>USUARIO:</strong>").append(toUsuario()).append("<br/>");		
+		return regresar.toString();
+	} // toArticulos
+	
+	public String toAutorizo() throws Exception{
+		StringBuilder regresar= new StringBuilder("<br/>");
+		regresar.append("<p style=\"width: 290px;font-family: sans-serif;font-size: 13px;border-top: 1px solid black;border-collapse: collapse;\">");
+		regresar.append("<br/><strong>AUTORIZO:</strong>").append(toPersona()).append("<br/>");		
 		return regresar.toString();
 	} // toArticulos
 
@@ -80,6 +96,13 @@ public class CreateCierre extends CreateTicket {
 		finally{
 			Methods.clean(params);
 		} // finally
+		return regresar;
+	} // toUsuario
+	
+	public String toPersona() throws Exception{
+		String regresar            = null;
+		TcManticPersonasDto persona= (TcManticPersonasDto) DaoFactory.getInstance().findById(TcManticPersonasDto.class, this.idAutorizo);			
+		regresar= persona.getNombres().concat(" ").concat(persona.getPaterno()).concat(" ").concat(persona.getMaterno());
 		return regresar;
 	} // toUsuario
 	
