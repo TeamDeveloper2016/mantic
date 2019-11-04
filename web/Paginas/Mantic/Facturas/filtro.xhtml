@@ -202,14 +202,14 @@
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.timbrado}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-130" sortBy="#{row.timbrado}">
               <f:facet name="header">
                 <h:outputText value="Timbrado"/>
               </f:facet>
               <h:outputText value="#{row['timbrado']}"/><br style="display: #{row['idVentaEstatus'] eq '14'? '': 'none'}"/>
               <h:outputText value="( #{row['cancelada']} )" title="Fecha de cancelación" styleClass="janal-color-red janal-text-small" style="display: #{row['idVentaEstatus'] eq '14'? '': 'none'}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.registro}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-130" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Registro"/>
               </f:facet>

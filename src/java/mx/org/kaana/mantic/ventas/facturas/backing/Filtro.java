@@ -81,11 +81,11 @@ public class Filtro extends FiltroFactura implements Serializable {
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
-      columns.add(new Columna("timbrado", EFormatoDinamicos.FECHA_CORTA));   
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));      
+      columns.add(new Columna("timbrado", EFormatoDinamicos.FECHA_HORA_CORTA));   
       columns.add(new Columna("cancelada", EFormatoDinamicos.FECHA_CORTA));   
       params.put("sortOrder", "order by tc_mantic_ventas.registro desc");
-      this.lazyModel = new FormatCustomLazy("VistaVentasDto", "facturasVentas", params, columns);
+      this.lazyModel = new FormatCustomLazy("VistaVentasDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {

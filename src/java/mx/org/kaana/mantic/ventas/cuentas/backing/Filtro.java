@@ -125,7 +125,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));      
       this.lazyModel = new FormatCustomLazy("VistaVentasDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
