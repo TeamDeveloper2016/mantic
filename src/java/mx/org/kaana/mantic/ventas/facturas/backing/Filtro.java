@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -407,4 +408,37 @@ public class Filtro extends FiltroFactura implements Serializable {
 	  if(this.attrs.get("montoTermino")!= null && this.attrs.get("montoInicio")== null)
 			this.attrs.put("montoInicio", this.attrs.get("montoTermino"));
 	}	// doMontoUpdate
+	
+	public void doMoveSection() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		List<UISelectEntity> documento= null;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("impuestos", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("precio", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_HORA));
+			params.put("idVenta", ((Entity)this.attrs.get("seleccionado")).getKey());
+			documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "venta", params, columns, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("documentos", documento);
+			if(documento!= null && !documento.isEmpty()) {
+				documento.get(0).put("articulos", new Value("articulos", documento.size()));
+        this.attrs.put("documento", documento.get(0));
+			} // if	
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+		finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}
+	
 }

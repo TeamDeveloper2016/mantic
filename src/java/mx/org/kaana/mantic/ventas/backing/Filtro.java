@@ -282,7 +282,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		} // finally
 	}	// doActualizaEstatus
 	
-	public String doTicketExpress(){
+	public String doTicketExpress() {
 		String regresar= null;
 		try {
 			regresar= "/Paginas/Mantic/Ventas/express".concat(Constantes.REDIRECIONAR);

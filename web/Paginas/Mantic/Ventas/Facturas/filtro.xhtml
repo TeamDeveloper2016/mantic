@@ -8,18 +8,20 @@
                 template="/WEB-INF/plantillas/reporte.xhtml">
   <ui:param name="titulo" value="Facturas generadas hasta el momento" />
   <ui:define name="librerias">
+		<h:outputScript library="janal" name="barcode/js.barcode.all.min.js"/>
+		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryTicketJs}"/>
     <script type="text/javascript">
       Janal.Control.fields = {
-        'idEmpresa'     : {validaciones: 'libre',  mascara: 'libre', grupo: 'general'},
-        'folio'         : {validaciones: 'entero', mascara: 'numero', grupo: 'general'},
-        'consecutivo'   : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'consecutivo'},
-        'fechaInicio'   : {validaciones: 'fecha',  mascara: 'fecha', grupo: 'general'},
-        'fechaTermino'  : {validaciones: 'fecha',  mascara: 'fecha', grupo: 'general'},
-        'montoInicio'   : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
-        'montoTermino'  : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
-				'articulo'      : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
-				'razonSocial'   : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
-        'idVentaEstatus': {validaciones: 'libre',  mascara: 'libre', grupo: 'general'}        
+        idEmpresa     : {validaciones: 'libre',  mascara: 'libre', grupo: 'general'},
+        folio         : {validaciones: 'entero', mascara: 'numero', grupo: 'general'},
+        consecutivo   : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'consecutivo'},
+        fechaInicio   : {validaciones: 'fecha',  mascara: 'fecha', grupo: 'general'},
+        fechaTermino  : {validaciones: 'fecha',  mascara: 'fecha', grupo: 'general'},
+        montoInicio   : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
+        montoTermino  : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
+				articulo      : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+				razonSocial   : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        idVentaEstatus: {validaciones: 'libre',  mascara: 'libre', grupo: 'general'}        
       };
 			
 			fieldsDialog= {
@@ -188,15 +190,18 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">                        
-						<p:menuitem id="timbrar" icon="fa fa-check" value="Timbrar" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasFacturasFiltro.doAccion('MODIFICAR')}" rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '0'}"/>					            
-            <p:separator rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '0'}"/>					            
-						<p:menuitem id="estatus" icon="fa fa-close" value="Cancelar" onstart="return janal.bloquear()" process="@this tabla"  oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado ne '0'}"/>					            
+						<p:menuitem icon="fa fa-check" value="Timbrar" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasFacturasFiltro.doAccion('MODIFICAR')}" rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '0'}"/>					            
+            <p:separator rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>					            
+						<p:menuitem icon="fa fa-close" value="Cancelar" onstart="return janal.bloquear()" process="@this tabla"  oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado ne '0'}"/>					            
 						<p:separator rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>
 						<!--p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasFacturasFiltro.doMovimientos}"/-->            
-            <p:menuitem id="reenviar" icon="fa fa-mail-forward" value="Reenviar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasFacturasFiltro.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>					                        
-						<p:menuitem id="ticket" icon="fa fa-file-text-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasFacturasFiltro.doReporte('FACTURAS_FICTICIAS_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>			
+            <p:menuitem icon="fa fa-mail-forward" value="Reenviar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasFacturasFiltro.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>					                        
+						<p:menuitem icon="fa fa-file-text-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasFacturasFiltro.doReporte('FACTURAS_FICTICIAS_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>			
             <p:separator rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>			            
-						<p:menuitem id="importar" icon="fa fa-external-link" value="Ver XML/PDF" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasFacturasFiltro.doImportar}" rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>
+						<p:menuitem icon="fa fa-external-link" value="Ver XML/PDF" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasFacturasFiltro.doImportar}" rendered="#{manticVentasFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>
+            <p:separator/>			            
+						<p:menuitem icon="fa fa-search" value="Consultar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasFacturasFiltro.doMoveSection}" oncomplete="janal.bloquear();PF('widgetDetalle').show();" update="documento informacion @(.documento)" rendered="#{(manticVentasFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticVentasFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '7') or (manticVentasFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '9')}"/>
+						<p:menuitem icon="fa fa-file-text-o" value="Ticket" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasFacturasFiltro.doTicket}" oncomplete="janal.desbloquear();jsTicket.clicTicket();" update="tabla" rendered="#{(manticVentasFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticVentasFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '7') or (manticVentasFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '9')}"/>
           </p:contextMenu>
         </div>
       </div>
@@ -210,6 +215,8 @@
 				<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasFacturasFiltro.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true" rendered="#{!manticVentasFacturasFiltro.attrs.regreso}"/>						
 			</div>	
 		</div>
+		<svg id="barcode" style="display: none"></svg>	
+		<button id="printTicket" style="display: none" onclick="jsTicket.loadTicket()">Imprimir</button>		
   </ui:define>   
 	<ui:define name="dialogos">
 		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cancelar factura." resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.change('formDialogoEstatus', fieldsDialog);janal.refresh();">
@@ -247,6 +254,67 @@
 				</div>
 			</h:form>
 		</p:dialog>
+		<p:dialog id="documento" widgetVar="widgetDetalle" header="Detalle del ticket" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();" width="1000px" height="480px" resizable="false" appendTo="@(body)">
+			<p:panelGrid columns="5" styleClass="janal-wid-100" columnClasses="janal-wid-col-80 janal-column-center, janal-wid-60 janal-column-center, janal-wid-10 janal-column-center, janal-wid-col-60 janal-column-center, janal-wid-10 janal-column-center">
+				<p:outputLabel value="Consecutivo"/>
+				<p:outputLabel value="Razón social"/>
+				<p:outputLabel value="Fecha"/>
+				<p:outputLabel value="Articulos"/>
+				<p:outputLabel value="Total"/>
+				<p:inputText value="#{manticVentasFacturasFiltro.attrs.documento.consecutivo}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+				<p:inputText value="#{manticVentasFacturasFiltro.attrs.documento.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>
+				<p:inputText value="#{manticVentasFacturasFiltro.attrs.documento.fecha}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+				<p:inputText value="#{manticVentasFacturasFiltro.attrs.documento.articulos}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
+				<p:inputText value="#{manticVentasFacturasFiltro.attrs.documento.total}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
+			</p:panelGrid>
+			<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100">		
+				<p:dataTable id="informacion" var="item" value="#{manticVentasFacturasFiltro.attrs.documentos}" paginator="false" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="documento" rowIndexVar="index">
+					<p:column headerText="No" styleClass="janal-wid-3">
+						<p:outputLabel value="#{index+ 1}.-"/>
+					</p:column>   
+					<p:column headerText="Código" styleClass="janal-wid-col-100">
+						<p:outputLabel value="#{item.propio}"/>
+					</p:column>   
+					<p:column headerText="Nombre">
+						<p:outputLabel value="#{item.nombre}"/>
+					</p:column>   
+					<p:column headerText="Inicial" styleClass="janal-wid-10 janal-column-right documento" rendered="#{manticVentasFacturasFiltro.attrs.idTipoDocumento eq 6}">
+						<p:outputLabel value="#{item.inicial}"/>
+					</p:column>   
+					<p:column headerText="#{manticVentasFacturasFiltro.attrs.idTipoDocumento eq 6? 'Entradas': 'Cantidad'}" styleClass="janal-wid-10 janal-column-right documento">
+						<p:outputLabel value="#{item.cantidad}"/>
+					</p:column>   
+					<p:column headerText="Origen" styleClass="janal-wid-15 documento" rendered="#{manticVentasFacturasFiltro.attrs.idTipoDocumento eq 4}">
+						<p:outputLabel value="#{item.origen}"/>
+					</p:column>   
+					<p:column headerText="Destino" styleClass="janal-wid-15 documento" rendered="#{manticVentasFacturasFiltro.attrs.idTipoDocumento eq 4}">
+						<p:outputLabel value="#{item.destino}"/>
+					</p:column>   
+					<p:column headerText="Precio" styleClass="janal-wid-13 janal-column-right" rendered="#{not(manticVentasFacturasFiltro.attrs.idTipoDocumento eq 6) and not(manticVentasFacturasFiltro.attrs.idTipoDocumento eq 4)}">
+						<p:outputLabel value="#{item.precio}"/>
+					</p:column>   
+					<p:column headerText="Impuestos" styleClass="janal-wid-10 janal-column-right documento" rendered="#{not(manticVentasFacturasFiltro.attrs.idTipoDocumento eq 6) and not(manticVentasFacturasFiltro.attrs.idTipoDocumento eq 4)}">
+						<p:outputLabel value="#{item.impuestos}"/>
+					</p:column>   
+					<p:column headerText="Importe" styleClass="janal-wid-13 janal-column-right documento" rendered="#{not(manticVentasFacturasFiltro.attrs.idTipoDocumento eq 6) and not(manticVentasFacturasFiltro.attrs.idTipoDocumento eq 4)}">
+						<p:outputLabel value="#{item.importe}"/>
+					</p:column>   
+					<p:column headerText="Salidas" styleClass="janal-wid-10 janal-column-right documento" rendered="#{manticVentasFacturasFiltro.attrs.idTipoDocumento eq 6}">
+						<p:outputLabel value="#{item.salidas}"/>
+					</p:column>   
+					<p:column headerText="Stock" styleClass="janal-wid-10 janal-column-right documento" rendered="#{manticVentasFacturasFiltro.attrs.idTipoDocumento eq 6}">
+						<p:outputLabel value="#{item.stock}"/>
+					</p:column>   
+					<p:column headerText="Registro" styleClass="janal-wid-15 janal-column-right documento" rendered="#{manticVentasFacturasFiltro.attrs.idTipoDocumento eq 4 or manticVentasFacturasFiltro.attrs.idTipoDocumento eq 6}">
+						<p:outputLabel value="#{item.registro}"/>
+					</p:column>   
+				</p:dataTable>
+			</p:panelGrid>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton process="@none" icon="fa fa-remove" value="Cerrar" oncomplete="PF('widgetDetalle').hide();"/>
+			</div>
+		</p:dialog>			
 	</ui:define>
   <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>  
   <ui:param name="updateComponent" value="tabla"/>  

@@ -21,7 +21,7 @@ public abstract class IBaseTicket extends IBaseFilter implements Serializable {
 	
 	private static final long serialVersionUID = -2088985265691847994L;
 	
-	public void doTicket(){
+	public void doTicket() {
 		Entity seleccionado      = null;
 		Map<String, Object>params= null;
 		CreateTicket ticket      = null;

@@ -29,11 +29,12 @@ import mx.org.kaana.mantic.correos.reglas.IBaseAttachment;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.facturas.beans.Correo;
 import mx.org.kaana.mantic.facturas.reglas.Transferir;
+import mx.org.kaana.mantic.ventas.comun.IBaseTicket;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.context.RequestContext;
 
-public abstract class FiltroFactura extends IBaseFilter{
+public abstract class FiltroFactura extends IBaseTicket {
 
 	private static final Log LOG              = LogFactory.getLog(FiltroFactura.class);
 	private static final long serialVersionUID= 2049728714303120753L;
