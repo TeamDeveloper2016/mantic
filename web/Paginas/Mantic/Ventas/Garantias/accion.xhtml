@@ -9,7 +9,9 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="Tickets disponibles para garantias"/>	
 	<ui:define name="librerias">    		
-		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryVentasJs}"/>				
+		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryVentasJs}"/>	
+		<h:outputScript library="janal" name="barcode/js.barcode.all.min.js"/>		
+		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryTicketJs}"/>
 		<script type="text/javascript">
 			// <![CDATA[
 			Janal.Control.fields={
@@ -496,7 +498,9 @@
 			<div class="janal-line-button">				
 				<p:commandButton icon="fa fa-close" process="@none" accesskey="r" value="Cerrar" onstart="PF('dlgDetalleArticulo').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
-		</p:dialog>					
+		</p:dialog>
+		<svg id="barcode" style="display: none"></svg>	
+		<button id="printTicket" style="display: none" onclick="jsTicket.loadTicket()">Imprimir</button>
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
@@ -561,7 +565,7 @@
 				</h:panelGrid>							
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton id="aceptarFinalizar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasGarantiasAccion.doAceptar}" onstart="return validateGarantia();" oncomplete="janal.desbloquear()" update="contenedorGrupos @(.filas) @(.recalculo)" disabled="#{!manticVentasGarantiasAccion.attrs.cobroVenta}"/>
+					<p:commandButton id="aceptarFinalizar" value="Aceptar" icon="fa fa-check" process="@form" actionListener="#{manticVentasGarantiasAccion.doAceptar}" onstart="return validateGarantia();" oncomplete="janal.desbloquear()" update="contenedorGrupos @(.filas) @(.recalculo)" disabled="#{!manticVentasGarantiasAccion.attrs.cobroVenta}"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
@@ -656,7 +660,7 @@
 				<p:spacer/>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton id="aceptarFinalizarCredito" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasGarantiasAccion.doAceptar}" onstart="return validateGarantia();" oncomplete="janal.desbloquear()" update="contenedorGrupos @(.filas) @(.recalculo)" disabled="#{!manticVentasGarantiasAccion.attrs.cobroVenta}"/>
+					<p:commandButton id="aceptarFinalizarCredito" value="Aceptar" icon="fa fa-check" process="@form" actionListener="#{manticVentasGarantiasAccion.doAceptar}" onstart="return validateGarantia();" oncomplete="janal.desbloquear()" update="contenedorGrupos @(.filas) @(.recalculo)" disabled="#{!manticVentasGarantiasAccion.attrs.cobroVenta}"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgCerrarVentaCredito').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
