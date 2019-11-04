@@ -234,7 +234,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
 		JsfBase.setFlashAttribute("xcodigo", this.attrs.get("xcodigo"));	
-		if(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada()<= 0L) {
+		if(this.getAdminOrden()!= null && this.getAdminOrden().getOrden()!= null && ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada()<= 0L) {
 			if(this.getXml()!= null && this.getXml().getRuta()!= null) {
 			  File oldNameFile= new File(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.getXml().getRuta()).concat(this.getXml().getName()));
 			  oldNameFile.delete();
@@ -818,6 +818,16 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		} // catch
 		finally {
 			Methods.clean(params);
+		} // finally	
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		try {
+			this.doCancelar();
+		} // try
+		finally {
+			super.finalize();
 		} // finally	
 	}
 	

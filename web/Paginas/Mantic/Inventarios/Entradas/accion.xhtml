@@ -51,7 +51,7 @@
 				setTimeout("janal.readingMode('#{manticInventariosEntradasAccion.attrs.nombreAccion}')", 500);
         jsArticulos= new Janal.Control.Articulos.Core(#{manticInventariosEntradasAccion.adminOrden.filtrados.size()}, 'contenedorGrupos\\:tabla\\:', #{manticInventariosEntradasAccion.attrs.paginator});
 				janal.decimals= 4;
-				$(window).on('beforeunload', function() {cleanUploadFiles(); return true;});
+				// $(window).on('beforeunload', function() {cleanUploadFiles(); return true;});
       });
 			
 			function execute() {

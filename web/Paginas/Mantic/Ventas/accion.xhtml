@@ -565,7 +565,7 @@
 				</div>	
 				<div class="ui-grid-col-3 janal-column-right">
 					<div class="lg-pantalla">
-						<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticVentasAccion.doAceptar}" onstart="return validateFinishVenta();" update="deudor contenido panelCliente panelEmpresa articulos total"/>
+						<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticVentasAccion.doAceptar}" onstart="return jsArticulos.validateFinishVenta();" update="deudor contenido panelCliente panelEmpresa articulos total"/>
 						<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticVentasAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 					</div>	
 					<div class="xs-pantalla">

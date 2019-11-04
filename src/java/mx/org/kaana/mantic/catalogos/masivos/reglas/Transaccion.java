@@ -462,128 +462,130 @@ public class Transaccion extends IBaseTnx {
 								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
 								String codigo= new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 								codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim();
-								TcManticArticulosDto articulo= this.toFindArticulo(sesion, codigo, 1L);
-								if(articulo!= null) {
-									//articulo.setIdCategoria(null);
-									//articulo.setIdImagen(null);
-									articulo.setPrecio(costo);
-									articulo.setMenudeo(Numero.toAjustarDecimales(menudeo, articulo.getIdRedondear().equals(1L)));
-									articulo.setMedioMayoreo(Numero.toAjustarDecimales(medio, articulo.getIdRedondear().equals(1L)));
-									articulo.setMayoreo(Numero.toAjustarDecimales(mayoreo, articulo.getIdRedondear().equals(1L)));
-									// si trae nulo, blanco o cero se respeta el valor que tiene el campo
-									if(lmenudeo!= 0D)
-										articulo.setLimiteMedioMayoreo(lmenudeo);
-									if(lmenudeo!= 0D)
-										articulo.setLimiteMayoreo(lmayoreo);
-									if(minimo!= 0D)
-										articulo.setMinimo(minimo);
-									if(maximo!= 0D)
-										articulo.setMaximo(maximo);
-									if(iva!= 0D)
-										articulo.setIva(iva< 1? iva* 100: iva);
-//									if(!Cadena.isVacio(sheet.getCell(7, fila).getContents()))
-//										articulo.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(7, fila).getContents()));
-									if(!Cadena.isVacio(sat))
-										articulo.setSat(sat);
-									DaoFactory.getInstance().update(sesion, articulo);
-								} // if
-								else {
-									articulo= new TcManticArticulosDto(
-										nombre, // String descripcion, 
-										"0", // String descuentos, 
-										null, // Long idImagen, 
-										null, // Long idCategoria, 
-										"0", // String extras, 
-										null, // String metaTag, 
-										nombre, // String nombre, 
-										costo, // Double precio, 
-										iva, // Double iva, 
-										Numero.toAjustarDecimales(mayoreo, costo<= 10), // Double mayoreo, 
-										2D, // Double desperdicio, 
-										null, // String metaTagDescipcion, 
-										1L, // Long idVigente, 
-										-1L, // Long idArticulo, 
-										0D, // Double stock, 
-										Numero.toAjustarDecimales(medio, costo<= 10), // Double medioMayoreo, 
-										0D, // Double pesoEstimado, 
-										this.toFindUnidadMedida(sesion, sheet.getCell(7, fila).getContents()), // Long idEmpaqueUnidadMedida, 
-										costo<= 10? 1L: 2L, // Long idRedondear, 
-										Numero.toAjustarDecimales(menudeo, costo<= 10), // Double menudeo, 
-										null, // String metaTagTeclado, 
-										new Timestamp(Calendar.getInstance().getTimeInMillis()), // Timestamp fecha, 
-										JsfBase.getIdUsuario(), //  Long idUsuario, 
-										JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), // Long idEmpresa, 
-										0D, // Double cantidad, 
-										minimo== 0D? 10D: minimo, // Double minimo, 
-										maximo== 0D? 20D: maximo, // Double maximo, 
-										lmenudeo== 0D? 20D: lmenudeo, // Double limiteMedioMayoreo, 
-										lmayoreo== 0D? 50D: lmayoreo, // Double limiteMayoreo, 
-										Cadena.isVacio(sat)? Constantes.CODIGO_SAT: sat, // String sat, 
-										1L, // Long idArticuloTipo, 
-										2L, // Long idBarras, 
-										"0", // String descuento, 
-										"0", // String extra, 
-										null // String idFacturama
-									);
-									TcManticArticulosDto identico= this.toFindArticuloIdentico(sesion, articulo.toMap(), 1L);
-									if(identico== null)
-										DaoFactory.getInstance().insert(sesion, articulo);
-									else {
-										identico.setMinimo(minimo== 0D? 10D: minimo);
-										identico.setMaximo(maximo== 0D? 20D: maximo);
-										identico.setLimiteMedioMayoreo(lmenudeo== 0D? 20D: lmenudeo);
-										identico.setLimiteMayoreo(lmayoreo== 0D? 50D: lmayoreo);
-										identico.setMenudeo(Numero.toAjustarDecimales(menudeo, identico.getIdRedondear().equals(1L)));
-										identico.setMedioMayoreo(Numero.toAjustarDecimales(medio, identico.getIdRedondear().equals(1L)));
-										identico.setMayoreo(Numero.toAjustarDecimales(mayoreo, identico.getIdRedondear().equals(1L)));
-										identico.setIva(iva);
-										identico.setPrecio(costo);
-										DaoFactory.getInstance().update(sesion, identico);
-										articulo.setIdArticulo(identico.getIdArticulo());
+								if(codigo.length()> 0) {
+									TcManticArticulosDto articulo= this.toFindArticulo(sesion, codigo, 1L);
+									if(articulo!= null) {
+										//articulo.setIdCategoria(null);
+										//articulo.setIdImagen(null);
+										articulo.setPrecio(costo);
+										articulo.setMenudeo(Numero.toAjustarDecimales(menudeo, articulo.getIdRedondear().equals(1L)));
+										articulo.setMedioMayoreo(Numero.toAjustarDecimales(medio, articulo.getIdRedondear().equals(1L)));
+										articulo.setMayoreo(Numero.toAjustarDecimales(mayoreo, articulo.getIdRedondear().equals(1L)));
+										// si trae nulo, blanco o cero se respeta el valor que tiene el campo
+										if(lmenudeo!= 0D)
+											articulo.setLimiteMedioMayoreo(lmenudeo);
+										if(lmenudeo!= 0D)
+											articulo.setLimiteMayoreo(lmayoreo);
+										if(minimo!= 0D)
+											articulo.setMinimo(minimo);
+										if(maximo!= 0D)
+											articulo.setMaximo(maximo);
+										if(iva!= 0D)
+											articulo.setIva(iva< 1? iva* 100: iva);
+	//									if(!Cadena.isVacio(sheet.getCell(7, fila).getContents()))
+	//										articulo.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(7, fila).getContents()));
+										if(!Cadena.isVacio(sat))
+											articulo.setSat(sat);
+										DaoFactory.getInstance().update(sesion, articulo);
 									} // if
-									Long idPrincipal= 1L;
-									if(this.toFindPrincipal(sesion, articulo.getIdArticulo(), articulo.getIdArticuloTipo()))
-										idPrincipal= 2L;
-									// insertar el codigo principal del articulo
-									codigos= new TcManticArticulosCodigosDto(
-										codigo, // String codigo, 
-										null, // Long idProveedor, 
-										JsfBase.getIdUsuario(), // Long idUsuario, 
-										idPrincipal, // Long idPrincipal, 
-										null, // String observaciones, 
-										-1L, // Long idArticuloCodigo, 
-										1L, // Long orden, 
-										articulo.getIdArticulo() // Long idArticulo
-									);
-									DaoFactory.getInstance().insert(sesion, codigos);
-									TcManticMasivasDetallesDto detalle= new TcManticMasivasDetallesDto(
-										sheet.getCell(0, fila).getContents(), // String codigo, 
-										-1L, // Long idMasivaDetalle, 
-										this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
-										"ESTE ARTICULO FUE AGREGADO ["+ sheet.getCell(2, fila).getContents()+ "]" // String observaciones
-									);
-									DaoFactory.getInstance().insert(sesion, detalle);
-									// aqui va el codigo para que se registre en facturama el articulo
-									// **
-									// **
-								} // if
-								// buscar si el codigo auxiliar existe para este articulo, en caso de que no insertarlo
-								codigo= new String(sheet.getCell(1, fila).getContents().getBytes(UTF_8), ISO_8859_1);
-								codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim();
-								Long auxiliar= this.toFindCodigoAuxiliar(sesion, codigo);
-								if(auxiliar< 0) {
-									codigos= new TcManticArticulosCodigosDto(
-										codigo, // String codigo, 
-										null, // Long idProveedor, 
-										JsfBase.getIdUsuario(), // Long idUsuario, 
-										2L, // Long idPrincipal, 
-										null, // String observaciones, 
-										-1L, // Long idArticuloCodigo, 
-									  this.toNextOrden(sesion, articulo.getIdArticulo()), // Long orden, 
-										articulo.getIdArticulo() // Long idArticulo
-									);
-									DaoFactory.getInstance().insert(sesion, codigos);
-								} // if
+									else {
+										articulo= new TcManticArticulosDto(
+											nombre, // String descripcion, 
+											"0", // String descuentos, 
+											null, // Long idImagen, 
+											null, // Long idCategoria, 
+											"0", // String extras, 
+											null, // String metaTag, 
+											nombre, // String nombre, 
+											costo, // Double precio, 
+											iva, // Double iva, 
+											Numero.toAjustarDecimales(mayoreo, costo<= 10), // Double mayoreo, 
+											2D, // Double desperdicio, 
+											null, // String metaTagDescipcion, 
+											1L, // Long idVigente, 
+											-1L, // Long idArticulo, 
+											0D, // Double stock, 
+											Numero.toAjustarDecimales(medio, costo<= 10), // Double medioMayoreo, 
+											0D, // Double pesoEstimado, 
+											this.toFindUnidadMedida(sesion, sheet.getCell(7, fila).getContents()), // Long idEmpaqueUnidadMedida, 
+											costo<= 10? 1L: 2L, // Long idRedondear, 
+											Numero.toAjustarDecimales(menudeo, costo<= 10), // Double menudeo, 
+											null, // String metaTagTeclado, 
+											new Timestamp(Calendar.getInstance().getTimeInMillis()), // Timestamp fecha, 
+											JsfBase.getIdUsuario(), //  Long idUsuario, 
+											JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), // Long idEmpresa, 
+											0D, // Double cantidad, 
+											minimo== 0D? 10D: minimo, // Double minimo, 
+											maximo== 0D? 20D: maximo, // Double maximo, 
+											lmenudeo== 0D? 20D: lmenudeo, // Double limiteMedioMayoreo, 
+											lmayoreo== 0D? 50D: lmayoreo, // Double limiteMayoreo, 
+											Cadena.isVacio(sat)? Constantes.CODIGO_SAT: sat, // String sat, 
+											1L, // Long idArticuloTipo, 
+											2L, // Long idBarras, 
+											"0", // String descuento, 
+											"0", // String extra, 
+											null // String idFacturama
+										);
+										TcManticArticulosDto identico= this.toFindArticuloIdentico(sesion, articulo.toMap(), 1L);
+										if(identico== null)
+											DaoFactory.getInstance().insert(sesion, articulo);
+										else {
+											identico.setMinimo(minimo== 0D? 10D: minimo);
+											identico.setMaximo(maximo== 0D? 20D: maximo);
+											identico.setLimiteMedioMayoreo(lmenudeo== 0D? 20D: lmenudeo);
+											identico.setLimiteMayoreo(lmayoreo== 0D? 50D: lmayoreo);
+											identico.setMenudeo(Numero.toAjustarDecimales(menudeo, identico.getIdRedondear().equals(1L)));
+											identico.setMedioMayoreo(Numero.toAjustarDecimales(medio, identico.getIdRedondear().equals(1L)));
+											identico.setMayoreo(Numero.toAjustarDecimales(mayoreo, identico.getIdRedondear().equals(1L)));
+											identico.setIva(iva);
+											identico.setPrecio(costo);
+											DaoFactory.getInstance().update(sesion, identico);
+											articulo.setIdArticulo(identico.getIdArticulo());
+										} // if
+										Long idPrincipal= 1L;
+										if(this.toFindPrincipal(sesion, articulo.getIdArticulo(), articulo.getIdArticuloTipo()))
+											idPrincipal= 2L;
+										// insertar el codigo principal del articulo
+										codigos= new TcManticArticulosCodigosDto(
+											codigo, // String codigo, 
+											null, // Long idProveedor, 
+											JsfBase.getIdUsuario(), // Long idUsuario, 
+											idPrincipal, // Long idPrincipal, 
+											null, // String observaciones, 
+											-1L, // Long idArticuloCodigo, 
+											1L, // Long orden, 
+											articulo.getIdArticulo() // Long idArticulo
+										);
+										DaoFactory.getInstance().insert(sesion, codigos);
+										TcManticMasivasDetallesDto detalle= new TcManticMasivasDetallesDto(
+											sheet.getCell(0, fila).getContents(), // String codigo, 
+											-1L, // Long idMasivaDetalle, 
+											this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
+											"ESTE ARTICULO FUE AGREGADO ["+ sheet.getCell(2, fila).getContents()+ "]" // String observaciones
+										);
+										DaoFactory.getInstance().insert(sesion, detalle);
+										// aqui va el codigo para que se registre en facturama el articulo
+										// **
+										// **
+									} // if
+									// buscar si el codigo auxiliar existe para este articulo, en caso de que no insertarlo
+									codigo= new String(sheet.getCell(1, fila).getContents().getBytes(UTF_8), ISO_8859_1);
+									codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim();
+									Long auxiliar= this.toFindCodigoAuxiliar(sesion, codigo);
+									if(auxiliar< 0 && codigo.length()> 0) {
+										codigos= new TcManticArticulosCodigosDto(
+											codigo, // String codigo, 
+											null, // Long idProveedor, 
+											JsfBase.getIdUsuario(), // Long idUsuario, 
+											2L, // Long idPrincipal, 
+											null, // String observaciones, 
+											-1L, // Long idArticuloCodigo, 
+											this.toNextOrden(sesion, articulo.getIdArticulo()), // Long orden, 
+											articulo.getIdArticulo() // Long idArticulo
+										);
+										DaoFactory.getInstance().insert(sesion, codigos);
+									} // if
+								} // if codigo
 								monitoreo.incrementar();
 								if(fila% this.categoria.getTuplas()== 0) {
 									if(bitacora== null) {
