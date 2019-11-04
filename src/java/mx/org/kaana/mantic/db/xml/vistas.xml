@@ -2151,7 +2151,6 @@
 					tc_mantic_facturas.sello_sat,
 					tc_mantic_facturas.timbrado,
 					tc_mantic_facturas.cancelada,
-					tc_mantic_facturas.folio,
 					if(tc_mantic_facturas.folio is null, 0, 1) folio,
 					if(tc_mantic_facturas.id_facturama is null, 0, 1) facturado,
 					if(tc_mantic_facturas.id_factura_estatus is null, 1, tc_mantic_facturas.id_factura_estatus) id_factura_estatus
