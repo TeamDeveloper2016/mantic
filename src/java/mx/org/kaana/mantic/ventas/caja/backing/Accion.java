@@ -749,7 +749,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // refreshTicketsAbiertos
 	
 	@Override
-	public void doLoadTicketAbiertos(){
+	public void doLoadTicketAbiertos() {
 		List<UISelectEntity> ticketsAbiertos= null;
 		Map<String, Object>params           = null;
 		List<Columna> campos                = null;

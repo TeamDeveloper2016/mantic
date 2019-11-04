@@ -83,7 +83,7 @@ public class Filtro extends FiltroFactura implements Serializable {
       columns.add(new Columna("timbrado", EFormatoDinamicos.FECHA_HORA_CORTA));   
       columns.add(new Columna("cancelada", EFormatoDinamicos.FECHA_CORTA));   
       params.put("sortOrder", "order by tc_mantic_ventas.registro desc");
-      this.lazyModel = new FormatCustomLazy("VistaFicticiasDto", params, columns);
+      this.lazyModel = new FormatCustomLazy("VistaVentasDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -148,10 +148,7 @@ public class Filtro extends FiltroFactura implements Serializable {
       this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
 			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
       columns.add(new Columna("limiteCredito", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
-			columns.remove(0);
-			columns.remove(1);
-      this.attrs.put("estatusFiltro", (List<UISelectEntity>) UIEntity.build("TcManticFicticiasEstatusDto", "row", params, columns));
-			this.attrs.put("idFicticiaEstatus", new UISelectEntity("-1"));
+			this.doLoadDocumentoEstatus();
     } // try
     catch (Exception e) {
       throw e;
@@ -252,6 +249,31 @@ public class Filtro extends FiltroFactura implements Serializable {
     } // catch	
   } // doReporte	
 	
+	public void doLoadDocumentoEstatus() {
+		List<Columna> columns     = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			columns= new ArrayList<>();
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			if(this.attrs.get("idTipoDocumento")== null || (Long)this.attrs.get("idTipoDocumento")== -1L)
+			  params.put("idTipoDocumento", "1, 2");
+			else
+			  params.put("idTipoDocumento", this.attrs.get("idTipoDocumento"));
+      this.attrs.put("estatusFiltro", (List<UISelectEntity>) UIEntity.build("TcManticVentasEstatusDto", "rows", params, columns));
+			this.attrs.put("idVentaEstatus", new UISelectEntity("-1"));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+			Methods.clean(columns);
+		} // finally
+	}
+	
 	public void doLoadEstatus() {
 		Entity seleccionado               = null;
 		Map<String, Object>params         = null;
@@ -262,8 +284,9 @@ public class Filtro extends FiltroFactura implements Serializable {
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_venta_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
-			allEstatus= UISelect.build("TcManticFicticiasEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
+			params.put("idTipoDocumento", seleccionado.toLong("idTipoDocumento"));
+			params.put("estatusAsociados", seleccionado.toString("estatusAsociados"));
+			allEstatus= UISelect.build("TcManticVentasEstatusDto", "estatus", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
 			this.attrs.put("estatus", allEstatus.get(0).getValue().toString());
 			motor= new MotorBusqueda(-1L, seleccionado.toLong("idCliente"));
@@ -495,6 +518,10 @@ public class Filtro extends FiltroFactura implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doAsignaArticulo
+
+	public String doFacturaColor(Entity row) {
+		return row.toLong("idTipoDocumento").equals(1L)? "janal-tr-diferencias": "";
+	} 
 	
 	@Override
 	protected void finalize() throws Throwable {

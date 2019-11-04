@@ -100,15 +100,12 @@ public class Filtro extends FiltroFactura implements Serializable {
     } // finally		
   } // doLoad
 
+	@Override
 	protected Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
-		UISelectEntity estatus= (UISelectEntity) this.attrs.get("idFicticiaEstatus");
 		if(!Cadena.isVacio(JsfBase.getParametro("codigo_input"))) 
 	 	  sb.append("tc_mantic_ventas_detalles.codigo regexp '.*").append(JsfBase.getParametro("codigo_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");
-//		else 
-//		  if(!Cadena.isVacio(this.attrs.get("codigo")) && !this.attrs.get("codigo").toString().equals("-1"))
-//			  sb.append("(upper(tc_mantic_ventas_detalles.codigo) like upper('%").append(((Entity)this.attrs.get("codigo")).getKey()).append("%')) and ");					
 		if(!Cadena.isVacio(JsfBase.getParametro("articulo_input")))
   		sb.append("(upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(JsfBase.getParametro("articulo_input")).append("%')) and ");
 		if(!Cadena.isVacio(this.attrs.get("razonSocial")) && !this.attrs.get("razonSocial").toString().equals("-1"))
@@ -127,8 +124,8 @@ public class Filtro extends FiltroFactura implements Serializable {
 		  sb.append("(tc_mantic_ventas.total>= ").append((Double)this.attrs.get("montoInicio")).append(") and ");			
 		if(!Cadena.isVacio(this.attrs.get("montoTermino")))
 		  sb.append("(tc_mantic_ventas.total<= ").append((Double)this.attrs.get("montoTermino")).append(") and ");			
-		if(estatus!= null && !estatus.getKey().equals(-1L))
-  		sb.append("(tc_mantic_ventas.id_venta_estatus= ").append(estatus.getKey()).append(") and ");
+		if(this.attrs.get("idVentaEstatus")!= null && !((UISelectEntity) this.attrs.get("idVentaEstatus")).getKey().equals(-1L))
+  		sb.append("(tc_mantic_ventas.id_venta_estatus= ").append(((UISelectEntity) this.attrs.get("idVentaEstatus")).getKey()).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else

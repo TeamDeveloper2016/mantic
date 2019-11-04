@@ -119,7 +119,7 @@
 								<p:ajax event="blur" listener="#{manticCotizacionesFiltro.doMontoUpdate}" process="@this" update="montoInicio"/>
 							</p:inputText>	
               <p:outputLabel for="idVentaEstatus" value="Estatus:"/>
-              <p:selectOneMenu id="idVentaEstatus" value="#{manticCotizacionesFiltro.attrs.idFicticiaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:selectOneMenu id="idVentaEstatus" value="#{manticCotizacionesFiltro.attrs.idVentaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticCotizacionesFiltro.attrs.estatusFiltro}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">

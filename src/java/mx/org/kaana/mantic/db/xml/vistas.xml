@@ -2132,12 +2132,12 @@
 					tc_mantic_ventas.sub_total,
 					tc_mantic_ventas.impuestos as iva,
 					tc_mantic_ventas.total as precio_total,
-   			  tc_mantic_ventas_estatus.nombre as estatus,
 					tc_mantic_ventas.id_venta_estatus,
+					tc_mantic_ventas_estatus.nombre as estatus,
+					tc_mantic_ventas_estatus.estatus_asociados, 
 					if(tc_mantic_ventas_estatus.id_venta_estatus in (1,2), 'VENTA', tc_mantic_ventas_estatus.nombre) tipo,	
 					tc_mantic_ventas.registro,
 					tc_mantic_ventas.vigencia,
-					tc_mantic_ventas_estatus.estatus_asociados, 					
 					tc_mantic_personas.cuenta,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
 					tc_mantic_clientes.id_cliente,  
@@ -2153,7 +2153,8 @@
 					tc_mantic_facturas.cancelada,
 					if(tc_mantic_facturas.folio is null, 0, 1) folio,
 					if(tc_mantic_facturas.id_facturama is null, 0, 1) facturado,
-					if(tc_mantic_facturas.id_factura_estatus is null, 1, tc_mantic_facturas.id_factura_estatus) id_factura_estatus
+					if(tc_mantic_facturas.id_factura_estatus is null, 1, tc_mantic_facturas.id_factura_estatus) id_factura_estatus,
+					tc_mantic_ventas.id_tipo_documento
 				from 
 					tc_mantic_ventas						
 				left join 
@@ -2174,7 +2175,6 @@
 					tc_mantic_facturas on tc_mantic_ventas.id_factura = tc_mantic_facturas.id_factura				
 				where
 					tc_mantic_ventas.id_empresa in ({idEmpresa})
-			    and tc_mantic_ventas.id_tipo_documento= 2
 					and {condicion}
 				group by 
 					tc_mantic_ventas.id_venta,
@@ -2191,11 +2191,11 @@
 					tc_mantic_ventas.sub_total,
 					tc_mantic_ventas.impuestos,
 					tc_mantic_ventas.total,
-   				    tc_mantic_ventas_estatus.nombre,
 					tc_mantic_ventas.id_venta_estatus,
+					tc_mantic_ventas_estatus.nombre,
+					tc_mantic_ventas_estatus.estatus_asociados, 
 					tc_mantic_ventas.registro,
 					tc_mantic_ventas.vigencia,
-					tc_mantic_ventas_estatus.estatus_asociados, 					
 					tc_mantic_personas.cuenta,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno),
 					tc_mantic_clientes.id_cliente,  

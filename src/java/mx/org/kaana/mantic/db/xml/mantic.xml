@@ -4699,8 +4699,8 @@
         from      
           tc_mantic_ventas_estatus
         where 
-				  id_tipo_documento= 2 and 
-          {condicion} 
+				  id_tipo_documento= 2
+  				and {condicion} 
 				order by 
 				  id_venta_estatus
       </select>
@@ -4711,6 +4711,30 @@
           tc_mantic_ventas_estatus
         where      
           nombre = '{nombre}' and id_tipo_documento= {idTipoDocumento}
+      </select>
+      <select id="rows">
+        select      
+				  tc_mantic_ventas_estatus.id_venta_estatus as id_key,
+          tc_mantic_ventas_estatus.*
+        from      
+          tc_mantic_ventas_estatus
+        where 
+				  id_tipo_documento in ({idTipoDocumento})
+				  and {condicion} 
+				order by 
+				  id_tipo_documento, id_venta_estatus
+      </select>
+      <select id="estatus">
+        select      
+				  tc_mantic_ventas_estatus.id_venta_estatus as id_key,
+          tc_mantic_ventas_estatus.*
+        from      
+          tc_mantic_ventas_estatus
+        where 
+				  id_tipo_documento in ({idTipoDocumento})
+				  and id_venta_estatus in ({estatusAsociados})
+				order by 
+				  id_tipo_documento, id_venta_estatus
       </select>
     </unit>		
     <unit id="TcManticCotizacionesEstatusDto">

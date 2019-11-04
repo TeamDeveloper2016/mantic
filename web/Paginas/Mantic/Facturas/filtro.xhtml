@@ -10,16 +10,17 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'idEmpresa'     : {validaciones: 'libre',  mascara: 'libre', grupo: 'general'},
-        'folio'         : {validaciones: 'entero', mascara: 'numero', grupo: 'general'},
-        'consecutivo'   : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'consecutivo'},
-        'fechaInicio'   : {validaciones: 'fecha',  mascara: 'fecha', grupo: 'general'},
-        'fechaTermino'  : {validaciones: 'fecha',  mascara: 'fecha', grupo: 'general'},
-        'montoInicio'   : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
-        'montoTermino'  : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
-				'articulo'      : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
-				'razonSocial'   : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
-        'idVentaEstatus': {validaciones: 'libre',  mascara: 'libre', grupo: 'general'}        
+        idEmpresa      : {validaciones: 'libre',  mascara: 'libre', grupo: 'general'},
+        folio          : {validaciones: 'entero', mascara: 'numero', grupo: 'general'},
+        consecutivo    : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'consecutivo'},
+        fechaInicio    : {validaciones: 'fecha',  mascara: 'fecha', grupo: 'general'},
+        fechaTermino   : {validaciones: 'fecha',  mascara: 'fecha', grupo: 'general'},
+        montoInicio    : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
+        montoTermino   : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
+				articulo       : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+				razonSocial    : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        idTipoDocumento: {validaciones: 'libre',  mascara: 'libre', grupo: 'general'},   
+        idVentaEstatus : {validaciones: 'libre',  mascara: 'libre', grupo: 'general'}        
       };
 			
 			fieldsDialog= {
@@ -121,10 +122,20 @@
 							<p:inputText id="montoTermino" styleClass="janal-wid-100-txt" value="#{manticFacturasFiltro.attrs.montoTermino}" converter="javax.faces.Double">							
 								<p:ajax event="blur" listener="#{manticFacturasFiltro.doMontoUpdate}" process="@this" update="montoInicio"/>
 							</p:inputText>	
+              <p:outputLabel for="idTipoDocumento" value="Facturas:"/>
+              <p:selectOneMenu id="idTipoDocumento" value="#{manticFacturasFiltro.attrs.idTipoDocumento}" var="item" converter="javax.faces.Long" styleClass="janal-wid-96"  effect="fade" filter="true">
+                <p:ajax event="change" process="@this" listener="#{manticFacturasFiltro.doLoadDocumentoEstatus}" update="idVentaEstatus" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>								
+								<f:selectItem itemLabel="TODAS" itemValue="-1"/>
+								<f:selectItem itemLabel="NORMALES" itemValue="2"/>
+								<f:selectItem itemLabel="ESPECIALES" itemValue="1"/>
+							</p:selectOneMenu>	
               <p:outputLabel for="idVentaEstatus" value="Estatus:"/>
-              <p:selectOneMenu id="idVentaEstatus" value="#{manticFacturasFiltro.attrs.idFicticiaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:selectOneMenu id="idVentaEstatus" value="#{manticFacturasFiltro.attrs.idVentaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticFacturasFiltro.attrs.estatusFiltro}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <p:column headerText="Documento">
+                  <h:outputText value="#{item.idTipoDocumento.toLong eq 1? 'ESPECIAL': 'NORMAL'}"/>
+                </p:column>   
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
@@ -139,7 +150,7 @@
         </div>
 				<p:spacer width="3px"/>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticFacturasFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticFacturasFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticFacturasFiltro.lazyModel.rowCount gt manticFacturasFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticFacturasFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticFacturasFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticFacturasFiltro.lazyModel.rowCount gt manticFacturasFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowStyleClass="#{manticFacturasFiltro.doFacturaColor(row)}">
             <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >
@@ -216,6 +227,7 @@
               <h:outputText value="#{row['registro']}"/>
             </p:column>		
             <f:facet name="footer">
+							<p:outputLabel value="Las filas en color son facturas especiales, las otras son facturas que vienen de punto de venta" style="float: left;"/>
               <p:outputLabel value="Total [#{manticFacturasFiltro.lazyModel==null? 0: manticFacturasFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>

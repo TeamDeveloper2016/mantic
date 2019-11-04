@@ -285,8 +285,9 @@ public class Filtro extends FiltroFactura implements Serializable {
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_venta_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
-			allEstatus= UISelect.build("TcManticVentasEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
+			params.put("idTipoDocumento", seleccionado.toLong("idTipoDocumento"));
+			params.put("estatusAsociados", seleccionado.toString("estatusAsociados"));
+			allEstatus= UISelect.build("TcManticVentasEstatusDto", "estatus", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
 			this.attrs.put("estatus", allEstatus.get(0).getValue().toString());
 			motor= new MotorBusqueda(-1L, seleccionado.toLong("idCliente"));
