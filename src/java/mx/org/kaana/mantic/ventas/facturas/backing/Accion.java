@@ -423,6 +423,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		String regresar= null;
 		try {			
 			JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
+			JsfBase.setFlashAttribute("idFicticia", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
 			regresar= this.attrs.get("retorno") != null ? (String)this.attrs.get("retorno") : "filtro";
 		} // try
 		catch (Exception e) {
