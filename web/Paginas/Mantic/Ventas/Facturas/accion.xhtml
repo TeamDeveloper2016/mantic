@@ -189,10 +189,12 @@
 								</f:facet>
 							</p:autoComplete>	
 						</p:panelGrid>	
-						<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center">
+						<p:panelGrid layout="grid" columns="3" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center, janal-column-center">
+							<p:spacer width="1"/>
 							<p:spacer width="1"/>
 							<p:spacer width="1"/>
 						  <p:commandButton id="catalogoCliente" title="Agregar / Modificar un cliente" icon="fa fa-users" process="@this" action="#{manticVentasFacturasAccion.doClientes}" ajax="false" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+							<p:commandButton id="correosCliente" title="Correos del cliente" icon="fa fa-at" update="dialogoCorreos" process="@this" actionListener="#{manticVentasFacturasAccion.doLoadCorreos}" styleClass="janal-text-white janal-column-center" onstart="return janal.bloquear()" oncomplete="PF('dlgCorreos').show();" disabled="#{manticVentasFacturasAccion.attrs.mostrarCorreos}"/>						
 							<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();">
 							  <f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{null}"/>
 							</p:commandButton> 
@@ -566,7 +568,7 @@
 			<h:form id="formDialogoCorreos" prependId="false">				
 				<p:panelGrid id="panelCorreos" columns="1" layout="grid" styleClass="janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">									
 					<p:dataTable id="tablaCorreosReenviar" var="row" value="#{manticVentasFacturasAccion.correos}" selection="#{manticVentasFacturasAccion.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
-						<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
+						<p:column selectionMode="multiple" style="width:38px;text-align:center" rendered="#{!manticVentasFacturasAccion.attrs.consultarCorreos}"/>
 						<p:column headerText="Correos disponibles del cliente" styleClass="descripcion tablaCorreosReenviar_selection">
 							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
 						</p:column>
@@ -579,7 +581,7 @@
 				</p:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton icon="fa fa-check" process="@this dialogoCorreos" value="Aceptar" action="#{manticVentasFacturasAccion.doAceptar}" onstart="return PF('dlgCorreos').hide();"  oncomplete="janal.desbloquear();"/>
+					<p:commandButton icon="fa fa-check" process="@this dialogoCorreos" value="Aceptar" action="#{manticVentasFacturasAccion.doAceptar}" onstart="return PF('dlgCorreos').hide();"  oncomplete="janal.desbloquear();" rendered="#{!manticVentasFacturasAccion.attrs.consultarCorreos}"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCorreos').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
