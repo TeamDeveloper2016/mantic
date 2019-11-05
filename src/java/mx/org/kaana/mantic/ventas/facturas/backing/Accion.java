@@ -1095,15 +1095,15 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			motor= new MotorBusqueda(-1L, ((TicketVenta)this.getAdminOrden().getOrden()).getIdCliente());
 			contactos= motor.toClientesTipoContacto();
 			this.correos= new ArrayList<>();
-				this.selectedCorreos= new ArrayList<>();
-				LOG.warn("Total de contactos" + contactos.size());
-				for(ClienteTipoContacto contacto: contactos){
-					if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())){
-						correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor());
-						this.correos.add(correoAdd);		
-						this.selectedCorreos.add(correoAdd);
-					} // if
-				} // for
+			this.selectedCorreos= new ArrayList<>();
+			LOG.warn("Total de contactos: " + contactos.size());
+			for(ClienteTipoContacto contacto: contactos) {
+				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())) {
+					correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor());
+					this.correos.add(correoAdd);		
+					this.selectedCorreos.add(correoAdd);
+				} // if
+			} // for
 			LOG.warn("Agregando correo default");
 			this.correos.add(new Correo(-1L, ""));
 		} // try
@@ -1112,4 +1112,5 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doLoadCorreos	
+	
 }
