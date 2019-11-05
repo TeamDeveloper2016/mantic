@@ -9,6 +9,7 @@ import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.mantic.db.dto.TcManticImagenesDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
@@ -21,6 +22,7 @@ import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.formato.Variables;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloCodigo;
 import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloProveedor;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Descuento;
@@ -75,18 +77,18 @@ public class Transaccion extends TransaccionFactura {
 			this.eaccionGeneral= accion;
 			switch(accion){
 				case AGREGAR:			
-					regresar= procesarArticulo(sesion);
+					regresar= this.procesarArticulo(sesion);
 					break;
 				case MODIFICAR:
 				case ACTIVAR:
-					regresar= actualizarArticulo(sesion);
+					regresar= this.actualizarArticulo(sesion);
 					break;				
 				case ELIMINAR:
-					regresar= eliminarArticulo(sesion);				
+					regresar= this.eliminarArticulo(sesion);				
 					break;
 				case COPIAR:				
 					this.articulo.getArticulo().setIdArticulo(-1L);
-					regresar= procesarArticulo(sesion);
+					regresar= this.procesarArticulo(sesion);
 					break;
 				case DEPURAR:					
 					if(DaoFactory.getInstance().execute(ESql.UPDATE, sesion, "TcManticArticulosDto", "cleanImage", Variables.toMap("idArticulo~".concat(this.articulo.getIdArticulo().toString())))>= 1L)
@@ -205,6 +207,25 @@ public class Transaccion extends TransaccionFactura {
 		return regresar;
 	} // eliminarArticulo
 	
+	private Long toFindUnidadMedida(Session sesion, String codigo) {
+		Long regresar= 1L;
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("codigo", codigo);
+			Value value= DaoFactory.getInstance().toField(sesion, "VistaCargasMasivasDto", "empaque", params, "idEmpaqueUnidadMedida");
+			if(value!= null && value.getData()!= null)
+				regresar= value.toLong();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toFindUnidadMedida
+
 	@Override
 	public boolean procesarArticulo(Session sesion) throws Exception{
 		boolean regresar         = false;
@@ -215,13 +236,15 @@ public class Transaccion extends TransaccionFactura {
 		try {			
 			if(eliminarRegistros(sesion)){
 				this.messageError= "Error al registrar el articulo.\nVerificar que el articulo no se encuentre registrado.";
-				this.articulo.getArticulo().setIdRedondear(this.articulo.isRedondear() ? ACTIVO : INACTIVO);
+				this.articulo.getArticulo().setIdRedondear(this.articulo.isRedondear()? ACTIVO : INACTIVO);
 				this.articulo.getArticulo().setIdUsuario(JsfBase.getIdUsuario());
 				this.articulo.getArticulo().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 				this.articulo.getArticulo().setIdVigente(1L);
 				this.articulo.getArticulo().setStock(0D);
 				this.articulo.getArticulo().setCantidad(1D);
 				this.articulo.getArticulo().setIdArticuloTipo(this.articulo.getIdTipoArticulo());
+				// ESTO ES UN PARCHE, POR DEFECTO SE LE VA AGREGAR COMO UNIDAD DE MEDIDA LA PIEZA
+				this.articulo.getArticulo().setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, "PIEZA"));
 				idCategoria= this.articulo.getArticulo().getIdCategoria()!= null && this.articulo.getArticulo().getIdCategoria() < 1L ? null : this.articulo.getArticulo().getIdCategoria();
 				this.articulo.getArticulo().setIdCategoria(idCategoria);
 				if(!this.articulo.getIdTipoArticulo().equals(1L)) {
