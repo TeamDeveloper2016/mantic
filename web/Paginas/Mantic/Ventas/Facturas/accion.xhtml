@@ -176,7 +176,7 @@
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 							<p:outputLabel for="clientes" value="Buscar cliente:"/>							
 							<p:autoComplete id="clientes" placeholder="RFC o nombre" widgetVar="listadoClientes" var="customCliente" itemLabel="#{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticVentasFacturasAccion.attrs.cliente}" completeMethod="#{manticVentasFacturasAccion.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
-								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticVentasFacturasAccion.doAsignaCliente}" update="cliente contenido panelDomicilio" oncomplete="janal.desbloquear();"/>
+								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticVentasFacturasAccion.doAsignaCliente}" update="cliente contenido panelDomicilio correosCliente panelBotones" oncomplete="janal.desbloquear();"/>
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
 										<h:outputText value="Clave" />
@@ -189,7 +189,7 @@
 								</f:facet>
 							</p:autoComplete>	
 						</p:panelGrid>	
-						<p:panelGrid layout="grid" columns="3" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center, janal-column-center">
+						<p:panelGrid id="panelBotones" layout="grid" columns="3" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center, janal-column-center">
 							<p:spacer width="1"/>
 							<p:spacer width="1"/>
 							<p:spacer width="1"/>
