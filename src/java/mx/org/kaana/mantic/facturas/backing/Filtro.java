@@ -40,6 +40,7 @@ import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
 import mx.org.kaana.mantic.facturas.comun.FiltroFactura;
+import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -580,4 +581,28 @@ public class Filtro extends FiltroFactura implements Serializable {
     super.finalize();		
 	}	// finalize
 	
+	public void doCancelarFacturacion() {
+		Transaccion transaccion         = null;
+		Entity seleccionado             = null;		
+		TcManticFicticiasDto ticketVenta= null;
+		try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");						
+			ticketVenta= new TcManticFicticiasDto();
+			ticketVenta.setKey(seleccionado.getKey());
+			ticketVenta.setIdFactura(seleccionado.toLong("idFactura"));
+			transaccion= new Transaccion(ticketVenta, (String) this.attrs.get("justificacionCancelar"));
+			if(transaccion.ejecutar(EAccion.DEPURAR))
+				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
+			else
+				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		finally {
+			this.attrs.put("justificacionCancelar", "");
+			setSelectedCorreos(new ArrayList<>());
+		} // finally
+	}	// doActualizaEstatus
 }
