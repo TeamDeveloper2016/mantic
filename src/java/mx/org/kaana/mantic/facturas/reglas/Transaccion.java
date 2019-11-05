@@ -30,6 +30,7 @@ import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
+import mx.org.kaana.mantic.enums.EEstatusFacturas;
 import mx.org.kaana.mantic.enums.EEstatusFicticias;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
@@ -179,6 +180,21 @@ public class Transaccion extends TransaccionFactura {
 				case COMPLEMENTAR: 
 					regresar= agregarContacto(sesion);
 					break;
+				case DEPURAR:
+					this.messageError= "Ocurrio un error al cancelar la factura.";
+					params= new HashMap<>();
+					params.put("idFactura", this.orden.getIdFactura());
+					factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
+					if(factura!= null && factura.getIdFacturama()!= null) {
+						CFDIFactory.getInstance().cfdiRemove(factura.getIdFacturama());
+						factura.setCancelada(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+						factura.setIdFacturaEstatus(EEstatusFacturas.CANCELADA.getIdEstatusFactura());
+						regresar= DaoFactory.getInstance().update(sesion, factura)>= 0;
+						registrarBitacoraFactura(sesion, factura.getIdFactura(), EEstatusFacturas.CANCELADA.getIdEstatusFactura(), "Cancelación de factura.".concat(this.justificacion));
+					} // if
+					else
+						throw new Exception("No fue posible cancelar la factura, por favor vuelva a intentarlo !");															
+				break;
 			} // switch
 			if(!regresar)
         throw new Exception("");
