@@ -229,7 +229,7 @@
               <h:outputText value="#{row['registro']}"/>
             </p:column>		
             <f:facet name="footer">
-							<p:outputLabel value="Las filas en color son facturas especiales, las otras son facturas que vienen de punto de venta" style="float: left;"/>
+							<p:outputLabel value="Las filas en color verde son facturas especiales, las otras son facturas que vienen de punto de venta" style="float: left;"/>
               <p:outputLabel value="Total [#{manticFacturasFiltro.lazyModel==null? 0: manticFacturasFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
