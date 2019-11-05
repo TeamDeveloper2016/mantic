@@ -29,10 +29,24 @@
 				'justificacion': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}				
 			};
 			
+			fieldsDialogCancelar= {
+				'justificacionCancelar': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}				
+			};
+			
 			function validaJustificacion() {
 				var ok= janal.partial('dialogo');
 				if(ok) {
 					PF('dlgEstatus').hide();
+					janal.restore();
+					janal.refresh();
+				} // if
+				return ok;
+			} // validaJustificacion
+			
+			function validaJustificacionCancelar() {
+				var ok= janal.partial('dialogo');
+				if(ok) {
+					PF('dlgCancelar').hide();
 					janal.restore();
 					janal.refresh();
 				} // if
@@ -219,8 +233,8 @@
               <f:facet name="header">
                 <h:outputText value="Timbrado"/>
               </f:facet>
-              <h:outputText value="#{row['timbrado']}"/><br style="display: #{row['idVentaEstatus'] eq '14'? '': 'none'}"/>
-              <h:outputText value="( #{row['cancelada']} )" title="Fecha de cancelación" styleClass="janal-color-red janal-text-small" style="display: #{row['idVentaEstatus'] eq '14'? '': 'none'}"/>
+              <h:outputText value="#{row['timbrado']}"/><br style="display: #{(row['idVentaEstatus'] eq '14' or row['idFacturaEstatus'] eq '3') ? '' : 'none'}"/>
+              <h:outputText value="( #{row['cancelada']} )" title="Fecha de cancelación" styleClass="janal-color-red janal-text-small" style="display: #{(row['idVentaEstatus'] eq '14' or row['idFacturaEstatus'] eq '3') ? '' : 'none'}"/>
             </p:column>		
             <p:column class="janal-column-center MarAuto Responsive janal-wid-col-130" sortBy="#{row.registro}">
               <f:facet name="header">
@@ -239,6 +253,7 @@
             <p:menuitem value="Bitacora" icon="fa fa-user" onstart="return janal.bloquear()" process="@this tabla" action="#{manticFacturasFiltro.doMovimientos}"/>
             <p:menuitem value="Clonar" icon="fa fa-copy" process="@this tabla" onstart="janal.bloquear();" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{manticFacturasFiltro.attrs.seleccionado.idTipoDocumento eq '1'}"/>
             <p:separator rendered="#{(manticFacturasFiltro.attrs.seleccionado.idTipoDocumento eq '1') and !(manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '12') and !(manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '15')}"/>					
+						<p:menuitem icon="fa fa-close" value="Cancelar" onstart="return janal.bloquear()" process="@this tabla"  oncomplete="PF('dlgCancelar').show();" update="dialogoCancelar" rendered="#{manticFacturasFiltro.attrs.seleccionado.facturado ne '0'}"/>					            
             <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{(manticFacturasFiltro.attrs.seleccionado.idTipoDocumento eq '1') and !(manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '14') and !(manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '5')}"/>
             <p:separator rendered="#{(manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '7') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '9') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '12') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '15')}"/>					
             <p:menuitem value="Reenviar" icon="fa fa-mail-forward" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="#{(manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '12') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '15')}"/>
@@ -259,6 +274,19 @@
 		<button id="printTicket" style="display: none" onclick="jsTicket.loadTicket()">Imprimir</button>		
   </ui:define>   
 	<ui:define name="dialogos">
+		<p:dialog id="dialogoCancelar" widgetVar="dlgCancelar" header="Cancelar factura." resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.change('formDialogoCancelar', fieldsDialogCancelar);janal.refresh();">
+			<h:form id="formDialogoCancelar" prependId="false">				
+				<h:panelGrid id="salidaCancelar" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+					<p:outputLabel for="justificacionCancelar" value="#{manticFacturasFiltro.attrs.estatus eq '3'? 'Comentarios': 'Justificación'}:"/>
+					<p:inputTextarea id="justificacionCancelar" value="#{manticFacturasFiltro.attrs.justificacionCancelar}" styleClass="janal-wid-100-txt" rows="1"/>						
+				</h:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this dialogoCancelar" update="tabla" value="Aceptar" action="#{manticFacturasFiltro.doCancelarFacturacion}" onstart="return validaJustificacionCancelar();" oncomplete="janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCancelar').hide();" oncomplete="janal.desbloquear();janal.restore();janal.refresh();"/>
+				</div>
+			</h:form>
+		</p:dialog>
 		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus de la factura" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.change('formDialogoEstatus', fieldsDialog);janal.refresh();">
 			<h:form id="formDialogoEstatus" prependId="false">
 				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
