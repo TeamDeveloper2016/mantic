@@ -230,12 +230,15 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		UISelectEntity seleccion              = null;
 		List<UISelectEntity> clientesSeleccion= null;
 		MotorBusqueda motorBusqueda           = null; 
+		Entity clienteDefault                 = null;
 		try {
 			motorBusqueda= new MotorBusqueda(null, idCliente);
+			clienteDefault= motorBusqueda.toClienteDefault();
+			this.attrs.put("mostrarCorreos", idCliente.equals(-1L) || idCliente.equals(clienteDefault.getKey()));
 			seleccion= new UISelectEntity(motorBusqueda.toCliente());
 			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);
-			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
+			clientesSeleccion.add(0, new UISelectEntity(clienteDefault));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
 			this.setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
@@ -1029,6 +1032,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		List<ClienteTipoContacto>contactos= null;
 		Correo correoAdd                  = null;
 		try {			
+			this.attrs.put("consultarCorreos", false);
 			motor= new MotorBusqueda(-1L, ((TicketVenta)this.getAdminOrden().getOrden()).getIdCliente());
 			if(!motor.toClienteDefault().getKey().equals(((TicketVenta)this.getAdminOrden().getOrden()).getIdCliente())){
 				contactos= motor.toClientesTipoContacto();
@@ -1081,4 +1085,31 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doAgregarCorreo
+	
+	public void doLoadCorreos() {
+		MotorBusquedaCatalogos motor      = null; 
+		List<ClienteTipoContacto>contactos= null;
+		Correo correoAdd                  = null;
+		try {					
+			this.attrs.put("consultarCorreos", true);
+			motor= new MotorBusqueda(-1L, ((TicketVenta)this.getAdminOrden().getOrden()).getIdCliente());
+			contactos= motor.toClientesTipoContacto();
+			this.correos= new ArrayList<>();
+				this.selectedCorreos= new ArrayList<>();
+				LOG.warn("Total de contactos" + contactos.size());
+				for(ClienteTipoContacto contacto: contactos){
+					if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())){
+						correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor());
+						this.correos.add(correoAdd);		
+						this.selectedCorreos.add(correoAdd);
+					} // if
+				} // for
+			LOG.warn("Agregando correo default");
+			this.correos.add(new Correo(-1L, ""));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doLoadCorreos	
 }
