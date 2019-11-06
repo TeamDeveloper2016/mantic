@@ -11,15 +11,15 @@
   <ui:define name="librerias">
 		<h:outputScript library="janal" name="echarts/echarts.min-4.2.2.js"/>
 		<h:outputScript library="janal" name="echarts/resize-sensor-0.0.1.js"/>
-		<h:outputScript library="janal" name="core/jquery.janal.echarts.core-0.0.7.js"/>
+		<h:outputScript library="janal" name="core/jquery.janal.echarts.core-0.1.0.js"/>
     <script type="text/javascript">
 			Janal.Control.Echarts.names= {
-				multiple: {json: #{kajoolPlantillasGraficasFiltro.attrs.multiple}},
-				simple  : {json: #{kajoolPlantillasGraficasFiltro.attrs.simple}},
-				pie     : {json: #{kajoolPlantillasGraficasFiltro.attrs.pie}},
-				donut   : {json: #{kajoolPlantillasGraficasFiltro.attrs.donut}},
-				stack   : {json: #{kajoolPlantillasGraficasFiltro.attrs.stack}},
-				vertical: {json: #{kajoolPlantillasGraficasFiltro.attrs.vertical}}
+				multiple: #{kajoolPlantillasGraficasFiltro.attrs.multiple},
+				simple  : #{kajoolPlantillasGraficasFiltro.attrs.simple},
+				pie     : #{kajoolPlantillasGraficasFiltro.attrs.pie},
+				donut   : #{kajoolPlantillasGraficasFiltro.attrs.donut},
+				stack   : #{kajoolPlantillasGraficasFiltro.attrs.stack},
+				vertical: #{kajoolPlantillasGraficasFiltro.attrs.vertical}
 			};
 			$(function() {
 				 'use strict'			
@@ -38,7 +38,7 @@
 		</style>
   </ui:define>
   <ui:define name="contenido">
-		<pe:remoteCommand name="refreshEChart" process="@this" actionListener="#{kajoolPlantillasGraficasFiltro.doRefreshEChartWith}">  
+		<pe:remoteCommand name="refreshEChartFrame" process="@this" actionListener="#{kajoolPlantillasGraficasFiltro.doRefreshEChartWith}">  
       <pe:methodSignature parameters="mx.org.kaana.libs.echarts.json.ItemSelected" />  
       <pe:methodParam name="itemSelected">  
         <pe:convertJson />  

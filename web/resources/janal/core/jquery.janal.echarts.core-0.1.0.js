@@ -14,24 +14,29 @@
 	
 	Janal.Control.Echarts.Core= Class.extend({
 		charts: {},
+		backup: {},
 		init: function(names) { // Constructor
-      // janal.console('jsEcharts.init');
 			$echarts= this;
 			this.charts= names;
+			this.backup= names;
 			this.events();
 		}, // init
 		events: function() {
-      // janal.console('jsEcharts.events');
+			
 		},
 		load: function(names) {
-      // janal.console('jsEcharts.load');
-			if(typeof(names))
-				$echarts.charts= names;
-	    $.each($echarts.charts, function(id, value) {
-			  window[id]= echarts.init(document.getElementById(id), {renderer: 'svg', width: 'auto', height: 'auto'});
-			  window[id].setOption(value.json, true);
-			  window[id].on('click', 'series', function (params) {params.chart= id; $echarts.send(params);});
+			if(typeof(names)) {
+				this.charts= names;
+				this.backup= names;
+			} // if	
+	    $.each(this.charts, function(id, json) {
+				$echarts.create(id, json);
 			}); 
+		},
+		create: function(id, json) {
+			window[id]= echarts.init(document.getElementById(id), {renderer: 'svg', width: 'auto', height: 'auto'});
+			window[id].setOption(json, true);
+			window[id].on('click', 'series', function (params) {params.chart= id; $echarts.send(params);});
 		},
 		send: function (params) {
 			var json= {
@@ -48,21 +53,18 @@
 				seriesType: params.seriesType,
 				event: params.type
 			};
-			// janal.console('jsEcharts.send: '+ json.chart);
-			refreshEChart(JSON.stringify(json));
+			refreshEChartFrame(JSON.stringify(json));
 		},
 		update: function (name, json) {
-			// janal.console('jsEcharts.update: '+ name);
 			if(window[name]) {
 				window[name].clear();
 				window[name].setOption(json);
-				$echarts.charts[name].json= json;
+				this.charts[name]= json;
 			} // if	
 			else
 				console.info('El marco ['+ name+ '] de la grafica no existe !');
 		},
 		resize: function (name) {
-			// janal.console('jsEcharts.resize: '+ name);
 			if(window[name]) {
 				window[name].resize();
 			} // if	
@@ -70,7 +72,6 @@
 				console.info('El marco ['+ name+ '] de la grafica no existe !');
 		},
 		format: function (params, type) {
-			// janal.console('jsEcharts.format: '+ type);
 			// params.seriesName
 			// params.name
 			// params.value
@@ -105,20 +106,39 @@
 			return text;
 		},
 		responsive: function() {
-			$.each($charts.charts, function(id) {
-				// janal.console('jsEcharts.responsive: '+ id);
+			$.each(this.charts, function(id) {
 				if(window[id])
 				  window[id].resize();
 			});				
+		},
+		restore: function() {
+			this.charts= this.backup;
+			$.each(this.charts, function(id, json) {
+				$echarts.update(id, json);
+			});				
+		},
+		add: function(items) {
+			$.each(items, function(id, json) {
+				if($echarts[id]) {
+					console.info('Esta grafica ['+ id+ '] ya existe y se va a sobreescribir !');
+  				$echarts.charts[id]= json;
+          $echarts.update(id, json);
+				} // if
+				else {
+  				$echarts.charts[id]= json;
+					$echarts.create(id, json);
+				} // else	
+			});
+		},
+		remove: function(id) {
+			if($echarts.charts[id])
+			  delete $echarts.charts[id];
 		}
 	});
-	console.info('Iktan.Control.Echarts initialized');
+	console.info('Janal.Control.Echarts initialized');
 })(window);	
 jsEcharts= new Janal.Control.Echarts.Core(Janal.Control.Echarts.names);
 
 $(document).ready(function() {
 	jsEcharts.load(Janal.Control.Echarts.names);
 });
-
-			
-			
