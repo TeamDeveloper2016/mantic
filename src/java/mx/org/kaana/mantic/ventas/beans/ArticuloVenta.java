@@ -16,6 +16,7 @@ public class ArticuloVenta extends Articulo {
 	private String descripcionPrecio;
 	private Double menudeo;
 	private boolean descuentoActivo;
+	private boolean descuentoAsignado;
 	
 	public ArticuloVenta() {
 		this(-1L);
@@ -27,7 +28,8 @@ public class ArticuloVenta extends Articulo {
 	
 	public ArticuloVenta(Long key, boolean costoLibre) {
 		super(key, costoLibre);
-		this.descuentoActivo= false;
+		this.descuentoActivo  = false;
+		this.descuentoAsignado= false;
 	}
 
 	@Override
@@ -101,12 +103,12 @@ public class ArticuloVenta extends Articulo {
 						if(this.getDescuentos()> 0D)
 							this.setCosto(validate.getMenudeo());
 						else {
-							if (this.getCantidad()>= validate.getLimiteMayoreo() || this.getCosto().equals(validate.getMayoreo())){
+							if (this.getCantidad()>= validate.getLimiteMayoreo() || (this.getCosto().equals(validate.getMayoreo()) && this.descuentoAsignado)){
 								this.setCosto(validate.getMayoreo());
 								setDescripcionPrecio("mayoreo");
 							} // if
 							else 
-								if((this.getCantidad()>= validate.getLimiteMedioMayoreo() && this.getCantidad()< validate.getLimiteMayoreo()) || (this.getCosto().equals(validate.getMedioMayoreo()))) {
+								if((this.getCantidad()>= validate.getLimiteMedioMayoreo() && this.getCantidad()< validate.getLimiteMayoreo()) || (this.getCosto().equals(validate.getMedioMayoreo()) && this.descuentoAsignado)) {
 									this.setCosto(validate.getMedioMayoreo());
 									setDescripcionPrecio("medioMayoreo");
 								} // if
@@ -195,4 +197,12 @@ public class ArticuloVenta extends Articulo {
 	public void setDescuentoActivo(boolean descuentoActivo) {
 		this.descuentoActivo = descuentoActivo;
 	}
+
+	public boolean isDescuentoAsignado() {
+		return descuentoAsignado;
+	}
+
+	public void setDescuentoAsignado(boolean descuentoAsignado) {
+		this.descuentoAsignado = descuentoAsignado;
+	}		
 }
