@@ -1631,7 +1631,7 @@
 			var ok= janal.partial('descuento');
 			if(ok){
 				PF('dlgDescuentos').hide();					
-				jsArticulos.autorizedDiscount();
+				this.autorizedDiscount();
 				janal.restore();
 				janal.refresh();
 			} // if
