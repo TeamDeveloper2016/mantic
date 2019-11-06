@@ -21,12 +21,9 @@
 				stack   : {json: #{kajoolPlantillasGraficasFiltro.attrs.stack}},
 				vertical: {json: #{kajoolPlantillasGraficasFiltro.attrs.vertical}}
 			};
-			
 			$(function() {
 				 'use strict'			
-				 new ResizeSensor($('.cgor-app-main'), function() {
-					 jsEcharts.responsive();
-				 });				
+				 new ResizeSensor($('.cgor-app-main'), function() { jsEcharts.responsive(); });				
 			 });
     </script>		
 		<style type="text/css">
