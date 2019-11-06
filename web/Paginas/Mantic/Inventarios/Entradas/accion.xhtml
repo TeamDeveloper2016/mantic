@@ -300,7 +300,7 @@
 												<p:inputSwitch id="sinIva" widgetVar="widgetSinIva" value="#{manticInventariosEntradasAccion.attrs.sinIva}" onLabel="SI" offLabel="NO" styleClass="filas">
 													 <p:ajax event="change" listener="#{manticInventariosEntradasAccion.doUpdateIvaTipoDeCambio()}" process="@this" update="@(.filas) @(.recalculo)"/>
 												</p:inputSwitch>
-												<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" oncomplete="recover(jsArticulos.cursor.index)" style="float:right;"/>
+												<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" oncomplete="janal.bloquear(); recover(jsArticulos.cursor.index);" style="float:right;"/>
                         <p:commandButton process="@form" icon="fa fa-save" title="Guardar nota de entrada" actionListener="#{manticInventariosEntradasAccion.doAutoSaveOrden()}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()" style="float:right;" update="@(.recalculo)"/>
 											</p:panelGrid>	
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
@@ -614,10 +614,8 @@
 						</p:tab>
 						<p:tab title="Importar">
 							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-column-center involucrados" style="display: #{manticInventariosEntradasAccion.diferente? '': 'none'}">
-								<p:commandLink actionListener="#{manticInventariosEntradasAccion.doUpdateRfc}" process="@this" update="@(.involucrados)" onstart="janal.bloquear(); if(confirm('\u00BF Esta seguro que desea actualizar el RFC ?')) { return true; } else { janal.desbloquear(); return false; }" oncomplete="janal.desbloquear();">
-									<p:outputLabel value="El RFC del proveedor [#{manticInventariosEntradasAccion.proveedor.rfc}] #{manticInventariosEntradasAccion.proveedor.razonSocial} no coincide con el de la factura [#{manticInventariosEntradasAccion.emisor.rfc}], click aqui para actualizarlo !" styleClass="janal-color-orange" style="cursor: pointer;"/>
-		  					  <p:spacer height="5px"/>
-			  				</p:commandLink>
+								<p:outputLabel value="El RFC del proveedor [#{manticInventariosEntradasAccion.proveedor.rfc}] #{manticInventariosEntradasAccion.proveedor.razonSocial} no coincide con el de la factura [#{manticInventariosEntradasAccion.emisor.rfc}]" styleClass="janal-color-orange" style="cursor: pointer;"/>
+								<p:spacer height="5px"/>
 							</p:panelGrid>	
 							<p:outputLabel for="comentarios" value="Observaciones:" styleClass="janal-wid-100-txt" style="display:#{manticInventariosEntradasAccion.consultar};"/><br style="display:#{manticInventariosEntradasAccion.consultar};"/>
 							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.attrs.observaciones}" style="display:#{manticInventariosEntradasAccion.consultar};"/>
@@ -636,7 +634,7 @@
 											<div style="display: flow-root;">
 												<p:outputLabel value="Articulos cargados del archivo XML" style="font-weight: normal;" styleClass="janal-text-white"/>
 												<div style="float:right;">
-													<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();" style="float:right;">
+													<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="janal.bloquear(); PF('dlgArtExpress').show();" style="float:right;">
 														<f:setPropertyActionListener target="#{manticInventariosEntradasAccion.attrs.seleccionado}" value="#{null}"/>
 													</p:commandButton> 
 													<p:commandButton title="Refrescar articulos" icon="fa fa-refresh" process="@this" update="@(.importado)" action="#{manticInventariosEntradasAccion.doLoadXmlFile()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
@@ -645,13 +643,13 @@
 											</div>	
   									</f:facet>
 										<p:column selectionMode="single" style="width:16px;text-align:center"/>
-										<p:column class="MarAuto Responsive janal-wid-10">
+										<p:column class="MarAuto Responsive janal-wid-12">
 											<f:facet name="header">
 												<h:outputText value="SAT"/>
 											</f:facet>
 											<h:outputText value="#{row['sat']}"/>
 										</p:column>		
-										<p:column  class="MarAuto Responsive janal-wid-10">
+										<p:column  class="MarAuto Responsive janal-wid-12">
 											<f:facet name="header">
 												<h:outputText value="Código"/>
 											</f:facet>
@@ -675,7 +673,7 @@
 											</f:facet>
 											<h:outputText value="#{row['costo']}"/>
 										</p:column>		
-										<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+										<p:column class="janal-column-right MarAuto Responsive janal-wid-12">
 											<f:facet name="header">
 												<h:outputText value="Descuento"/>
 											</f:facet>
@@ -686,12 +684,6 @@
 												<h:outputText value="IVA"/>
 											</f:facet>
 											<h:outputText value="#{row['iva']}"/>
-										</p:column>		
-										<p:column class="MarAuto Responsive janal-wid-10">
-											<f:facet name="header">
-												<h:outputText value="Unidad medida"/>
-											</f:facet>
-											<h:outputText value="#{row['unidadMedida']}"/>
 										</p:column>		
 										<p:column styleClass="janal-column-icon">
 											<p:outputLabel id="descripcion" value="#{row.nombre}" style="display:none"/>
@@ -716,7 +708,7 @@
 												<div style="display: flow-root;">
   											  <p:outputLabel value="Articulos disponibles en la orden de compra" style="font-weight: normal;" styleClass="janal-text-white"/>
 													<div style="float:right;">
-														<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();" style="float:right;">
+														<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="janal.bloquear(); PF('dlgArtExpress').show();" style="float:right;">
 															<f:setPropertyActionListener target="#{manticInventariosEntradasAccion.attrs.seleccionado}" value="#{null}"/>
 														</p:commandButton> 
 														<p:commandButton update="@(.importado) @(.filas) @(.recalculo)" process="@this @(.importado)" icon="fa fa-exchange" title="Asociar articulo" actionListener="#{manticInventariosEntradasAccion.doFaltanteArticulo}" disabled="#{manticInventariosEntradasAccion.attrs.disponibles.size() eq 0 or manticInventariosEntradasAccion.attrs.faltantes.size() eq 0}" onstart="return checkValueList();"/>

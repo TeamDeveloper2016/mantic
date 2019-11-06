@@ -783,35 +783,38 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 
   private void toMoveSelectedProveedor() {
-	  Map<String, Object> params=null;
+		UISelectEntity temporal   = (UISelectEntity)this.attrs.get("proveedor");
+	  Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
 			if(this.tipoOrden.equals(EOrdenes.NORMAL)) {
-				params.put("rfc", this.getEmisor().getRfc());
-				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-				TcManticProveedoresDto encontrado= (TcManticProveedoresDto)DaoFactory.getInstance().findFirst(TcManticProveedoresDto.class, "proveedor", params);
-				if(encontrado!= null) {
-					String newFileName= this.getXml().getRuta().replaceAll("/"+ (this.proveedor.getClave()!= null? this.proveedor.getClave().trim(): "NoDefinido")+ "/", "/"+ (encontrado.getClave()!= null? encontrado.getClave().trim(): "NoDefinido")+ "/");
-					this.proveedor= encontrado;
-					UISelectEntity temporal= new UISelectEntity(new Entity(encontrado.getIdProveedor()));
-					((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(temporal);
-					List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");						
-					temporal= proveedores.get(proveedores.indexOf(temporal));
-					temporal.put("fechaEstimada", new Value("fechaEstimada", this.toCalculateFechaEstimada(this.fechaEstimada, temporal.toInteger("idTipoDia"), temporal.toInteger("dias"))));
-					this.attrs.put("proveedor", temporal);
-					this.toLoadCondiciones(temporal);
-					this.doUpdatePlazo();
-					this.toCheckProveedor(true);
-					File oldFileName= new File(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.getXml().getRuta()).concat(this.getXml().getName()));
-					FileInputStream source= new FileInputStream(oldFileName);
-					File target= new File(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(newFileName).concat(this.getXml().getName()));
-					Archivo.toWriteFile(target, source);
-					oldFileName.delete();
-					this.getXml().setRuta(newFileName);
-				} // if	
-				else
-					JsfBase.addAlert("El proveedor no existe en el catalogo de proveedores,<br/>favor de agregarlo antes al catálogo para generar la nota de entrada.<br/><br/> RFC ["+ this.getEmisor().getRfc()+ "] ".concat(this.getEmisor().getNombre()).concat("<br/>"), ETipoMensaje.ALERTA);
-			} // if
+				if(temporal== null || !this.getEmisor().getRfc().equals(temporal.toString("rfc"))) {
+					params.put("rfc", this.getEmisor().getRfc());
+					params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+					TcManticProveedoresDto encontrado= (TcManticProveedoresDto)DaoFactory.getInstance().findFirst(TcManticProveedoresDto.class, "proveedor", params);
+					if(encontrado!= null) {
+						String newFileName= this.getXml().getRuta().replaceAll("/"+ (this.proveedor.getClave()!= null? this.proveedor.getClave().trim(): "NoDefinido")+ "/", "/"+ (encontrado.getClave()!= null? encontrado.getClave().trim(): "NoDefinido")+ "/");
+						this.proveedor= encontrado;
+						temporal= new UISelectEntity(new Entity(encontrado.getIdProveedor()));
+						((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(temporal);
+						List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");						
+						temporal= proveedores.get(proveedores.indexOf(temporal));
+						temporal.put("fechaEstimada", new Value("fechaEstimada", this.toCalculateFechaEstimada(this.fechaEstimada, temporal.toInteger("idTipoDia"), temporal.toInteger("dias"))));
+						this.attrs.put("proveedor", temporal);
+						this.toLoadCondiciones(temporal);
+						this.doUpdatePlazo();
+						this.toCheckProveedor(true);
+						File oldFileName= new File(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.getXml().getRuta()).concat(this.getXml().getName()));
+						FileInputStream source= new FileInputStream(oldFileName);
+						File target= new File(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(newFileName).concat(this.getXml().getName()));
+						Archivo.toWriteFile(target, source);
+						oldFileName.delete();
+						this.getXml().setRuta(newFileName);
+					} // if	
+					else
+						JsfBase.addAlert("El proveedor no existe en el catalogo de proveedores,<br/>favor de agregarlo antes al catálogo para generar la nota de entrada.<br/><br/> RFC ["+ this.getEmisor().getRfc()+ "] ".concat(this.getEmisor().getNombre()).concat("<br/>"), ETipoMensaje.ALERTA);
+				} // if
+		  } // if
 	  }	// try
 		catch (Exception e) {
 			Error.mensaje(e);
