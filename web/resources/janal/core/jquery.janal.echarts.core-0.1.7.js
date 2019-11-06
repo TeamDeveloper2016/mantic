@@ -15,6 +15,7 @@
 	Janal.Control.Echarts.Core= Class.extend({
 		charts: {},
 		backup: {},
+		histoy: {},
 		init: function(names) { // Constructor
 			$echarts= this;
 			this.charts= names;
@@ -25,7 +26,7 @@
 			
 		},
 		load: function(names) {
-			if(typeof(names)) {
+			if(typeof(names)!== 'undefined') {
 				this.charts= names;
 				this.backup= names;
 			} // if	
@@ -34,9 +35,13 @@
 			}); 
 		},
 		create: function(id, json) {
-			window[id]= echarts.init(document.getElementById(id), {renderer: 'svg', width: 'auto', height: 'auto'});
-			window[id].setOption(json, true);
-			window[id].on('click', 'series', function (params) {params.chart= id; $echarts.send(params);});
+			if($('#'+ id).length> 0) {
+  			window[id]= echarts.init(document.getElementById(id), {renderer: 'svg', width: 'auto', height: 'auto'});
+	  		window[id].setOption(json, true);
+		  	window[id].on('click', 'series', function (params) {params.chart= id; $echarts.send(params);});
+			} // id
+			else
+				console.info('El marco ['+ id+ '] de la grafica no existe !');
 		},
 		send: function (params) {
 			var json= {
@@ -55,21 +60,34 @@
 			};
 			refreshEChartFrame(JSON.stringify(json));
 		},
-		update: function (name, json) {
-			if(window[name]) {
-				window[name].clear();
-				window[name].setOption(json);
-				this.charts[name]= json;
-			} // if	
-			else
-				console.info('El marco ['+ name+ '] de la grafica no existe !');
+		refresh: function(items) {
+			// esto es para actualizar varias graficas donde sus datos cambiaron
+			$.each(items, function(id, value) {
+				if(value['key'])
+          $echarts.update(id, (value['json']? value.json: value), value.key);
+				else	
+          $echarts.update(id, (value['json']? value.json: value));
+			});			
 		},
-		resize: function (name) {
-			if(window[name]) {
-				window[name].resize();
+		update: function(id, json, key) {
+			// esto es para actualizar una sola grafica porque sus datos cambiaron
+			if(window[id]) {
+				this.charts[id]= json;
+				window[id].clear();
+				window[id].setOption(json);
+				// generar un historial de graficas que han sido procesadas
+        if(typeof(key)!== 'undefined')
+					this.histoy[key]= json;
 			} // if	
 			else
-				console.info('El marco ['+ name+ '] de la grafica no existe !');
+				console.info('El marco ['+ id+ '] de la grafica no existe !');
+		},
+		resize: function (id) {
+			if(window[id]) {
+				window[id].resize();
+			} // if	
+			else
+				console.info('El marco ['+ id+ '] de la grafica no existe !');
 		},
 		format: function (params, type) {
 			// params.seriesName
@@ -118,8 +136,11 @@
 			});				
 		},
 		add: function(items) {
-			$.each(items, function(id, json) {
-				if($echarts[id]) {
+			$.each(items, function(id, value) {
+				var json= value;
+				if(value['json'])
+					json= value.json;
+				if($echarts.charts[id]) {
 					console.info('Esta grafica ['+ id+ '] ya existe y se va a sobreescribir !');
   				$echarts.charts[id]= json;
           $echarts.update(id, json);
@@ -128,11 +149,32 @@
   				$echarts.charts[id]= json;
 					$echarts.create(id, json);
 				} // else	
+				// generar un historial de graficas que han sido procesadas
+        if(value['key'])
+					$echarts.histoy[value.key]= json;
 			});
 		},
 		remove: function(id) {
 			if($echarts.charts[id])
 			  delete $echarts.charts[id];
+		},
+		exists: function(key, id) {
+			var ok= this.histoy[key]!== undefined;
+      if(ok)			
+				this.update(id, this.histoy[key]);
+			return ok;
+		},
+		clean: function() {
+		  this.histoy= {};
+		},
+		get: function(id) {
+			var json= undefined;
+			if(this.charts[id])
+				json= this.charts[id];
+			else
+  			if(this.histoy[id])
+  				json= this.histoy[id];
+			return json;
 		}
 	});
 	console.info('Janal.Control.Echarts initialized');
