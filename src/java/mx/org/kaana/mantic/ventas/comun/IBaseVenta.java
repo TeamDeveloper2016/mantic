@@ -595,6 +595,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 						setPrecio("medioMayoreo");
 						getAdminOrden().getArticulos().get(index).setCosto(getAdminOrden().getArticulos().get(index).toEntity().toDouble("medioMayoreo"));
 						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescripcionPrecio("medioMayoreo");
+						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescuentoAsignado(true);
 						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).toCalculate();
 						recalculate= true;
 					} // else if
@@ -603,6 +604,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 						setPrecio("mayoreo");
 						getAdminOrden().getArticulos().get(index).setCosto(getAdminOrden().getArticulos().get(index).toEntity().toDouble("mayoreo"));
 						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescripcionPrecio("mayoreo");
+						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescuentoAsignado(true);
 						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).toCalculate();
 						recalculate= true;
 					} // else if
@@ -613,6 +615,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescuentoActivo(false);
 						getAdminOrden().getArticulos().get(index).setCosto(getAdminOrden().getArticulos().get(index).toEntity().toDouble("menudeo"));
 						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescripcionPrecio("menudeo");
+						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescuentoAsignado(false);
 						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).toCalculate();
 					} // else
 				} // if
