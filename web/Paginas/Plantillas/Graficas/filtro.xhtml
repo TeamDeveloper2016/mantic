@@ -11,41 +11,21 @@
   <ui:define name="librerias">
 		<h:outputScript library="janal" name="echarts/echarts.min-4.2.2.js"/>
 		<h:outputScript library="janal" name="echarts/resize-sensor-0.0.1.js"/>
+		<h:outputScript library="janal" name="core/jquery.janal.echarts.core-0.0.7.js"/>
     <script type="text/javascript">
-			Janal.Control.fields = {
+			Janal.Control.Echarts.names= {
+				multiple: {json: #{kajoolPlantillasGraficasFiltro.attrs.multiple}},
+				simple  : {json: #{kajoolPlantillasGraficasFiltro.attrs.simple}},
+				pie     : {json: #{kajoolPlantillasGraficasFiltro.attrs.pie}},
+				donut   : {json: #{kajoolPlantillasGraficasFiltro.attrs.donut}},
+				stack   : {json: #{kajoolPlantillasGraficasFiltro.attrs.stack}},
+				vertical: {json: #{kajoolPlantillasGraficasFiltro.attrs.vertical}}
 			};
-			$(document).ready(function () {
-				window.multiple = echarts.init(document.getElementById('multiple'), {renderer: 'svg', width: 'auto', height: 'auto'});
-				window.multiple.setOption(#{kajoolPlantillasGraficasFiltro.attrs.multiple}, true);
-				window.simple = echarts.init(document.getElementById('simple'), {renderer: 'canvas', width: 'auto', height: 'auto'});
-				window.simple.setOption(#{kajoolPlantillasGraficasFiltro.attrs.simple}, true);
-				window.pie = echarts.init(document.getElementById('pie'), {renderer: 'canvas', width: 'auto', height: 'auto'});
-				window.pie.setOption(#{kajoolPlantillasGraficasFiltro.attrs.pie}, true);
-				window.donut = echarts.init(document.getElementById('donut'), {renderer: 'canvas', width: 'auto', height: 'auto'});
-				window.donut.setOption(#{kajoolPlantillasGraficasFiltro.attrs.donut}, true);
-				window.stack = echarts.init(document.getElementById('stack'), {renderer: 'canvas', width: 'auto', height: 'auto'});
-				window.stack.setOption(#{kajoolPlantillasGraficasFiltro.attrs.stack}, true);
-				window.vertical = echarts.init(document.getElementById('vertical'), {renderer: 'canvas', width: 'auto', height: 'auto'});
-				window.vertical.setOption(#{kajoolPlantillasGraficasFiltro.attrs.vertical}, true);
-				
-				window.multiple.on('click', 'series', function (params) {params.chart= 'multiple'; janal.sendDataEChart(params);});
-				window.simple.on('click', 'series', function (params) {params.chart= 'simple'; janal.sendDataEChart(params);});
-				window.pie.on('click', 'series', function (params) {params.chart= 'pie'; janal.sendDataEChart(params);});
-				window.donut.on('click', 'series', function (params) {params.chart= 'donut'; janal.sendDataEChart(params);});
-				window.stack.on('click', 'series', function (params) {params.chart= 'stack'; janal.sendDataEChart(params);});
-				window.vertical.on('click', 'series', function (params) {params.chart= 'vertical'; janal.sendDataEChart(params);});
-			});
 			
 			$(function() {
 				 'use strict'			
 				 new ResizeSensor($('.cgor-app-main'), function() {
-					 window.multiple.resize();
-					 window.simple.resize();
-					 window.pie.resize();
-					 window.donut.resize();
-					 window.stack.resize();
-					 window.vertical.resize();
-					 janal.console('filtro.echarts resize();');
+					 jsEcharts.responsive();
 				 });				
 			 });
     </script>		

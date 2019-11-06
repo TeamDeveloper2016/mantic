@@ -53,17 +53,17 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			Simple simple    = new Simple("Ventas", DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "simple", attrs));
   		BarModel modelSimple  = new BarModel(new Title(), simple, EBarOritentation.HORIZONTAL);
 			modelSimple.addLine(new CustomLine("2019", 50000D, Colors.COLOR_RED));
-			modelSimple.toCustomFormatLabel("function (params) {return janal.customFormatLabel(params, 'double');}");
+			modelSimple.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'double');}");
   		this.attrs.put("simple", modelSimple.toJson());
 			
 			Multiple multiple= new Multiple(DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "multiple", attrs));
   		BarModel modelMultiple= new BarModel(new Title(), multiple);
-			modelMultiple.toCustomFormatLabel("function (params) {return janal.customFormatLabel(params, 'integer');}");
+			modelMultiple.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
   		this.attrs.put("multiple", modelMultiple.toJson());
 			
 			Datas datas = new Datas("ventas", DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "simple", Collections.EMPTY_MAP));
   		PieModel pie= new PieModel("ventas", "55%", new Title(), datas);
-			pie.toCustomFormatLabel("function (params) {return janal.customFormatLabel(params, 'percent');}");
+			pie.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'percent');}");
 			this.attrs.put("pie", pie.toJson());
 			
   		DonutModel donut= new DonutModel("ventas", "55%", "30%", new Title(), datas);
@@ -71,7 +71,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			
 			Stacked stacked= new Stacked(DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "multiple", attrs));
   		StackModel stack= new StackModel(new Title(), stacked);
-			stack.toCustomFormatLabel("function (params) {return janal.customFormatLabel(params, 'money');}");
+			stack.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'money');}");
   		this.attrs.put("stack", stack.toJson());
 			
   		modelSimple  = new BarModel(new Title(), simple);
@@ -101,8 +101,9 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			model.addLine(new Coordinate("Hola", 6, 150, Colors.COLOR_RED, ETypeLine.SOLID));
 			model.addLine(new CustomLine("Como", Serie.toValue(), Colors.COLOR_GREEN, ETypeLine.DASHED));
 			model.addLine(new CustomLine("Estas", Serie.toValue(), Colors.COLOR_BLUE, ETypeLine.DOTTED));
+			model.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'double');}");
 			String json= model.toJson();
-			UIBackingUtilities.execute("janal.updateDataEChart('"+ itemSelected.getChart()+ "', "+ json+ ");");
+			UIBackingUtilities.execute("jsEcharts.update('"+ itemSelected.getChart()+ "', "+ json+ ");");
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
