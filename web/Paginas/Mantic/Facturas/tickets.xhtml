@@ -12,15 +12,16 @@
     <h:outputScript library="janal" name="core/jquery.janal.folio.core-0.0.9.js"/>
     <script type="text/javascript">
       Janal.Control.fields = {
-        'idEmpresa'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-				'razonSocial'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
-        'consecutivo'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'fechaInicio'    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        'fechaTermino'   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        'cantidadInicial': {validaciones: 'flotante', mascara: 'libre', grupo: 'general'},
-        'cantidadFinal'  : {validaciones: 'flotante', mascara: 'libre', grupo: 'general'},
-				'articulo'       : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				'total'          : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'factura', mensaje: 'Se tiene que seleccionar al menos un ticket'}
+        idEmpresa      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				razonSocial    : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        consecutivo    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        fechaInicio    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        fechaTermino   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        cantidadInicial: {validaciones: 'flotante', mascara: 'libre', grupo: 'general'},
+        cantidadFinal  : {validaciones: 'flotante', mascara: 'libre', grupo: 'general'},
+				articulo       : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				cliente        : {validaciones: 'requerido', mascara: 'libre', grupo: 'factura', mensaje: 'Alguno de los tickets tiene que pertenecer a un cliente'},
+				total          : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'factura', mensaje: 'Se tiene que seleccionar al menos un ticket'}
       };
     </script>		
 		<style>
@@ -204,11 +205,11 @@
 						</div>
 					</div>	
           <div class="ui-grid-row janal-grid-row">
-            <div class="janal-wid-col-150 ui-grid-col-1">
-							<p:outputLabel value="Razón social del cliente:"/>
+            <div class="janal-wid-col-180 ui-grid-col-1">
+							<p:outputLabel for="cliente" value="Razón social del cliente:"/>
 						</div>	
             <div class="ui-grid-col-11">
-							<p:inputText value="#{manticFacturasTickets.pivote.cliente}" styleClass="janal-wid-100-txt janal-color-blue relacionado" readonly="true"/>
+							<p:inputText id="cliente" value="#{manticFacturasTickets.pivote.cliente}" styleClass="janal-wid-100-txt janal-color-blue relacionado" readonly="true"/>
 						</div>	
 					</div>	
           <div class="ui-grid-row janal-grid-row">
