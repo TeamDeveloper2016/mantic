@@ -45,6 +45,7 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
       this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
       this.orden.setIkProveedor(new UISelectEntity(new Entity(this.orden.getIdCliente())));
 			this.orden.setIdServicio(toServicio());
+			validatePrecioArticulo();
 		}	// if
 		else	{
 			arts= new ArrayList<>();
@@ -58,6 +59,7 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
 			this.getArticulos().add(new ArticuloVenta(-1L));
 		this.setIdSinIva(1L);
 		this.toCalculate();
+		cleanPrecioDescuentoArticulo();
 	}
 
 	@Override
