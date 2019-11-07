@@ -184,7 +184,7 @@
 									<h:outputText value="#{row['medio']}"/>
 								</p:column>		
 								<p:column styleClass="janal-column-icon">
-									<p:commandButton process="@this" update="tabla @(.relacionado)" icon="fa fa-plus" title="Agregar ticket" onstart="return janal.bloquear()" oncomplete="janal.refresh(); janal.desbloquear();" actionListener="#{manticFacturasTickets.doAddTicket(row)}" rendered="#{manticFacturasTickets.doDisponible(row)}">
+									<p:commandButton process="@this" update="tabla @(.relacionado) cliente clienteAutocomplete activarBusqueda" icon="fa fa-plus" title="Agregar ticket" onstart="return janal.bloquear()" oncomplete="janal.refresh(); janal.desbloquear();" actionListener="#{manticFacturasTickets.doAddTicket(row)}" rendered="#{manticFacturasTickets.doDisponible(row)}">
 										<f:setPropertyActionListener value="#{row}" target="#{manticFacturasTickets.attrs.ticket}" />
 									</p:commandButton>
 								</p:column>
@@ -205,13 +205,31 @@
 						</div>
 					</div>	
           <div class="ui-grid-row janal-grid-row">
-            <div class="janal-wid-col-180 ui-grid-col-1">
+            <div class="janal-wid-col-180 ui-grid-col-1">							
 							<p:outputLabel for="cliente" value="Razón social del cliente:"/>
 						</div>	
-            <div class="ui-grid-col-11">
-							<p:inputText id="cliente" value="#{manticFacturasTickets.pivote.cliente}" styleClass="janal-wid-100-txt janal-color-blue relacionado" readonly="true"/>
+            <div class="ui-grid-col-9">
+							<p:inputText id="cliente" value="#{manticFacturasTickets.pivote.cliente}" styleClass="janal-wid-100-txt janal-color-blue relacionado" readonly="true" style="display: #{!manticFacturasTickets.attrs.activarCliente ? 'none' : ''}"/>							
+							<p:autoComplete id="clienteAutocomplete" placeholder="RFC ó nombre" var="item" itemLabel="#{item.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-cliente filas" itemValue="#{item}" value="#{manticFacturasTickets.attrs.clienteAutocomplete}" completeMethod="#{manticFacturasTickets.doCompleteClienteAutocomplete}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt" style="display: #{manticFacturasTickets.attrs.activarCliente ? 'none' : ''}">
+								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticFacturasTickets.doAsignaClienteAutocomplete}" oncomplete="janal.desbloquear();" update="tabla"/>
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-100">												
+										<h:outputText value="Clave" />
+										<h:outputText value="#{item.clave}"/>
+										<h:outputText value="RFC:" />
+										<h:outputText value="#{item.rfc}"/>
+										<h:outputText value="Razón social:"/>
+										<h:outputText value="#{item.razonSocial}"/>												
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
+						</div>
+						<div class="janal-wid-col-180 ui-grid-col-2 janal-column-center">
+							<p:selectBooleanCheckbox id="activarBusqueda" itemLabel="Asignar cliente." value="#{manticFacturasTickets.attrs.checkCliente}" disabled="#{manticFacturasTickets.attrs.disabledCliente}">
+								<p:ajax event="change" onstart="return janal.bloquear();" listener="#{manticFacturasTickets.doActivarBusquedaCliente}" process="@this activarBusqueda" update="cliente clienteAutocomplete" oncomplete="janal.desbloquear();"/>
+							</p:selectBooleanCheckbox>
 						</div>	
-					</div>	
+					</div>						
           <div class="ui-grid-row janal-grid-row">
             <div class="ui-grid-col-12">					
 							<p:dataTable id="listado" widgetVar="kajoolListado" var="row" value="#{manticFacturasTickets.acumulado}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticFacturasTickets.attrs.seleccionado}" selectionMode="single" paginator="#{manticFacturasTickets.acumulado.size()> 10}" rowIndexVar="index" reflow="true" rowKey="#{row.idKey}" styleClass="relacionado" rowStyleClass="#{manticFacturasTickets.doRowColor(row)}">
@@ -275,7 +293,7 @@
 									<h:outputText value="#{row['registro']}"/>
 								</p:column>		
 								<p:column styleClass="janal-column-icon">
-									<p:commandButton process="@this" update="tabla @(.relacionado)" icon="fa fa-minus" title="Eliminar ticket" onstart="return janal.bloquear()" oncomplete="janal.refresh();janal.desbloquear();" actionListener="#{manticFacturasTickets.doRemoveTicket(row)}">
+									<p:commandButton process="@this" update="tabla @(.relacionado) cliente clienteAutocomplete activarBusqueda" icon="fa fa-minus" title="Eliminar ticket" onstart="return janal.bloquear()" oncomplete="janal.refresh();janal.desbloquear();" actionListener="#{manticFacturasTickets.doRemoveTicket(row)}">
 										<f:setPropertyActionListener value="#{row}" target="#{manticFacturasTickets.attrs.ticket}" />
 									</p:commandButton>
 								</p:column>
