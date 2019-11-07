@@ -62,15 +62,18 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 					params.put("idGarantia", idGarantia);
 					arts= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticGarantiasArticulosDto", "detalleGarantia", params); 
 					this.setArticulos(arts);
+					validatePrecioArticulo();
 					break;				
 				case ASIGNAR:
 					arts= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticGarantiasArticulosDto", "detalleCantidad", orden.toMap());
 					this.setArticulos(arts);
+					validatePrecioArticulo();
 					validaArticulos();
 					break;
 				default:
 					arts= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticGarantiasArticulosDto", "detalle", orden.toMap());
 					this.setArticulos(arts);
+					validatePrecioArticulo();
 					validaArticulos();
 					break;
 			} // switch
@@ -87,6 +90,7 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 		if(loadDefault && !accion.equals(EAccion.CONSULTAR))
 			this.getArticulos().add(new ArticuloVenta(-1L));
 		this.toCalculate();
+		cleanPrecioDescuentoArticulo();
 	}
 
 	@Override
