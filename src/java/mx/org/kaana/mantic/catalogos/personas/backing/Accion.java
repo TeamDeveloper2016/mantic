@@ -128,7 +128,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       params = new HashMap<>();
       params.put(Constantes.SQL_CONDICION, "id_empresa=" + (Boolean.valueOf(this.attrs.get("mostrarEmpresas").toString()) ? Long.valueOf(this.attrs.get("idEmpresa").toString()) : JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
       puestos = UISelect.build("TcManticPuestosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
-			if(!puestos.isEmpty()){
+			if(!puestos.isEmpty()) {
 				this.attrs.put("puestos", puestos);
 				this.attrs.put("idPuesto", UIBackingUtilities.toFirstKeySelectItem(puestos));
 			} // if
@@ -170,7 +170,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       switch (eaccion) {
         case AGREGAR:											
           this.registroPersona= new RegistroPersona();			
-					loadCollections();
+					this.loadCollections();
 					if(this.attrs.get("tipoPersona")!= null)
 						this.registroPersona.getPersona().setIdTipoPersona(Long.valueOf(this.attrs.get("tipoPersona").toString()));					
           break;
@@ -178,7 +178,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         case CONSULTAR:					
           idPersona= Long.valueOf(this.attrs.get("idPersona").toString());					
           this.registroPersona= new RegistroPersona(idPersona);
-					loadCollections();
+					this.loadCollections();
 					if(!this.registroPersona.getPersonasDomicilio().isEmpty()){
 						this.registroPersona.setPersonaDomicilioSelecion(this.registroPersona.getPersonasDomicilio().get(0));
 						doConsultarClienteDomicilio();
@@ -204,11 +204,11 @@ public class Accion extends IBaseAttribute implements Serializable {
 			idEmpresa= Boolean.valueOf(this.attrs.get("mostrarEmpresas").toString()) ? Long.valueOf(this.attrs.get("idEmpresa").toString()) : JsfBase.getAutentifica().getEmpresa().getIdEmpresa();
 			eaccion= (EAccion) this.attrs.get("accion");
 			transaccion = new Transaccion(this.registroPersona, idEmpresa, Long.valueOf(this.attrs.get("idPuesto").toString()));
-			if(Boolean.valueOf(this.attrs.get("mostrarProveedores").toString())){
+			if(Boolean.valueOf(this.attrs.get("mostrarProveedores").toString())) {
 				persona= (Entity) this.attrs.get("proveedor");
 				transaccion = new Transaccion(this.registroPersona, idEmpresa, Long.valueOf(this.attrs.get("idPuesto").toString()), persona.getKey());
 			} // if
-			if(Boolean.valueOf(this.attrs.get("mostrarClientes").toString())){
+			if(Boolean.valueOf(this.attrs.get("mostrarClientes").toString())) {
 				persona= (Entity) this.attrs.get("cliente");
 				transaccion = new Transaccion(this.registroPersona, idEmpresa, Long.valueOf(this.attrs.get("idPuesto").toString()), persona.getKey());
 			} // if
@@ -227,20 +227,14 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAccion
 
   public String doCancelar() {   
-    return this.attrs.get("retorno").toString();
+    return this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
   } // doAccion
 	
-	private void loadTiposPersonas(){
-		List<UISelectItem> tiposPersonas= null;
-		try {
-			tiposPersonas= new ArrayList<>();
-			for(ETipoPersona tipoPersona: ETipoPersona.values())
-				tiposPersonas.add(new UISelectItem(tipoPersona.getIdTipoPersona(), Cadena.reemplazarCaracter(tipoPersona.name(), '_', ' ')));
-			this.attrs.put("tiposPersonas", tiposPersonas);
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
+	private void loadTiposPersonas() throws Exception {
+		List<UISelectItem>  tiposPersonas= new ArrayList<>();
+		for(ETipoPersona tipoPersona: ETipoPersona.values())
+			tiposPersonas.add(new UISelectItem(tipoPersona.getIdTipoPersona(), Cadena.reemplazarCaracter(tipoPersona.name(), '_', ' ')));
+		this.attrs.put("tiposPersonas", tiposPersonas);
 	} // loadTiposPersonas
 	
 	private void loadTitulos() {
@@ -264,32 +258,20 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
   } // loadTitulos
 	
-	private void loadTiposContactos() {
-    List<UISelectItem> tiposContactos = null;
-    try {
-      tiposContactos = new ArrayList<>();
-      for (ETiposContactos tipoContacto : ETiposContactos.values()) {
-        tiposContactos.add(new UISelectItem(tipoContacto.getKey(), Cadena.reemplazarCaracter(tipoContacto.name(), '_', ' ')));
-      }
-      this.attrs.put("tiposContactos", tiposContactos);
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch		    
+	private void loadTiposContactos() throws Exception {
+		List<UISelectItem> tiposContactos = new ArrayList<>();
+		for (ETiposContactos tipoContacto : ETiposContactos.values()) {
+			tiposContactos.add(new UISelectItem(tipoContacto.getKey(), Cadena.reemplazarCaracter(tipoContacto.name(), '_', ' ')));
+		} // for
+		this.attrs.put("tiposContactos", tiposContactos);
   } // loadTiposContactos
 
-  private void loadTiposDomicilios() {
-    List<UISelectItem> tiposDomicilios = null;
-    try {
-      tiposDomicilios = new ArrayList<>();
-      for (ETiposDomicilios tipoDomicilio : ETiposDomicilios.values()) {
-        tiposDomicilios.add(new UISelectItem(tipoDomicilio.getKey(), Cadena.reemplazarCaracter(tipoDomicilio.name(), '_', ' ')));
-      }
-      this.attrs.put("tiposDomicilios", tiposDomicilios);
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch		    
+  private void loadTiposDomicilios() throws Exception {
+		List<UISelectItem> tiposDomicilios = new ArrayList<>();
+		for (ETiposDomicilios tipoDomicilio : ETiposDomicilios.values()) {
+			tiposDomicilios.add(new UISelectItem(tipoDomicilio.getKey(), Cadena.reemplazarCaracter(tipoDomicilio.name(), '_', ' ')));
+		} // for
+		this.attrs.put("tiposDomicilios", tiposDomicilios);
   } // loadTiposDomicilios
 
   private void loadEntidades() {
@@ -306,9 +288,6 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("entidades", entidades);    
       this.registroPersona.getDomicilio().setIdEntidad(entidades.get(0));
     } // try
-    catch (Exception e) {
-      throw e;
-    } // catch		
     finally {
       Methods.clean(params);
     } // finally
