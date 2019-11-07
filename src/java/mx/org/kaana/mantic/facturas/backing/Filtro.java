@@ -40,7 +40,6 @@ import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
 import mx.org.kaana.mantic.facturas.comun.FiltroFactura;
-import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -60,6 +59,7 @@ public class Filtro extends FiltroFactura implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idFicticia", JsfBase.getFlashAttribute("idFicticia"));
+      this.attrs.put("facturama", 1L);
 			this.toLoadCatalog();
       if(this.attrs.get("idFicticia")!= null) 
 			  this.doLoad();			
