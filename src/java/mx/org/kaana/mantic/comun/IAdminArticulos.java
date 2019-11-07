@@ -16,6 +16,8 @@ import mx.org.kaana.libs.pagina.KajoolBaseException;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.beans.Totales;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
+import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -259,6 +261,36 @@ public abstract class IAdminArticulos implements Serializable {
 			throw new KajoolBaseException("Por favor verifique que los importes sean correctos y vuelva a guardar el documento !");	
 		} // if
 	}
+
+	protected void validatePrecioArticulo() throws Exception{
+		TcManticArticulosDto validate= null;
+		ArticuloVenta articuloPivote = null;
+		try {
+			for(Articulo articulo: this.getArticulos()){
+				validate= (TcManticArticulosDto) DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
+				if(validate!= null && validate.isValid()){
+					articuloPivote= (ArticuloVenta) articulo;
+					articuloPivote.setDescuentoAsignado(articulo.getCosto().equals(validate.getMayoreo()) || articulo.getCosto().equals(validate.getMedioMayoreo()));
+				} // if
+			} // for
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // validatePrecioArticulo
+	
+	protected void cleanPrecioDescuentoArticulo() throws Exception{		
+		ArticuloVenta articuloPivote = null;
+		try {
+			for(Articulo articulo: this.getArticulos()){				
+				articuloPivote= (ArticuloVenta) articulo;
+				articuloPivote.setDescuentoAsignado(false);				
+			} // for
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // validatePrecioArticulo
 	
 	@Override
 	protected void finalize() throws Throwable {
