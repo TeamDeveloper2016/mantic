@@ -12,6 +12,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -79,6 +80,9 @@ public class Tickets extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {
+			this.attrs.put("activarCliente", true);
+			this.attrs.put("checkCliente", false);
+			this.attrs.put("disabledCliente", false);
 			this.importe= 0D;
 			this.folios = new ArrayList<>();
       this.pivote = (Entity)JsfBase.getFlashAttribute("cliente");
@@ -212,6 +216,12 @@ public class Tickets extends IBaseFilter implements Serializable {
 		return (List<UISelectEntity>)this.attrs.get("clientes");
 	}	// doCompleteCliente
 	
+	public List<UISelectEntity> doCompleteClienteAutocomplete(String query) {
+		this.attrs.put("codigoClienteAutocomplete", query);
+    this.doUpdateClientesAutocomplete();
+		return (List<UISelectEntity>)this.attrs.get("clientesAutocomplete");
+	}	// doCompleteCliente
+	
 	public void doUpdateClientes() {
 		List<Columna> columns     = null;
     Map<String, Object> params= null;
@@ -239,6 +249,33 @@ public class Tickets extends IBaseFilter implements Serializable {
     } // finally
 	}	// doUpdateClientes
 	
+	public void doUpdateClientesAutocomplete() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
+    try {
+			params = new HashMap<>();
+			columns= new ArrayList<>();
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+				params.put("idEmpresa", this.attrs.get("idEmpresa"));
+			else
+				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			String search= (String)this.attrs.get("codigoClienteAutocomplete"); 
+			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*") : "WXYZ";
+  		params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_clientes.razon_social) regexp '.*".concat(search).concat(".*'").concat(" or upper(tc_mantic_clientes.rfc) regexp '.*".concat(search).concat(".*'")));			
+      this.attrs.put("clientesAutocomplete", (List<UISelectEntity>) UIEntity.build("VistaClientesDto", "findRazonSocial", params, columns, 20L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}	// doUpdateClientes
+	
 	public void doAsignaCliente(SelectEvent event) {
 		UISelectEntity seleccion     = null;
 		List<UISelectEntity> clientes= null;
@@ -246,6 +283,23 @@ public class Tickets extends IBaseFilter implements Serializable {
 			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
 			seleccion= clientes.get(clientes.indexOf((UISelectEntity)event.getObject()));
 			this.attrs.put("cliente", seleccion);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doAsignaCliente
+	
+	public void doAsignaClienteAutocomplete(SelectEvent event) {
+		UISelectEntity seleccion     = null;
+		List<UISelectEntity> clientes= null;
+		try {
+			clientes= (List<UISelectEntity>) this.attrs.get("clientesAutocomplete");
+			seleccion= clientes.get(clientes.indexOf((UISelectEntity)event.getObject()));
+			this.attrs.put("clienteAutocomplete", seleccion);
+			this.attrs.put("activarCliente", false);
+			this.pivote= new Entity(seleccion.getKey());
+			this.pivote.put("idCliente", new Value("idCliente", seleccion.getKey()));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -363,9 +417,14 @@ public class Tickets extends IBaseFilter implements Serializable {
 	public void doAddTicket(Entity row) {
 		if(this.acumulado.indexOf(row)< 0 && (this.ventaPublico.indexOf(row.toLong("idCliente"))>= 0 || this.checkIdCliente(row))) {
 			this.importe+= row.toDouble("importe");
+			if(this.ventaPublico.indexOf(row.toLong("idCliente"))< 0){
+				this.attrs.put("disabledCliente", true);
+				this.attrs.put("clienteAutocomplete", new UISelectEntity(-1L));
+				this.attrs.put("activarCliente", true);
+			} // if
 		  this.acumulado.add(row);
 			this.findCliente();
-			// JsfBase.addMessage("Se agregó el ticket de forma correcta", ETipoMensaje.INFORMACION);
+			// JsfBase.addMessage("Se agregó el ticket de forma correcta", ETipoMensaje.INFORMACION);			
 		} // if	
 		else
 			JsfBase.addMessage("No se agregó el ticket porque ya existe o porque es otro cliente !", ETipoMensaje.ALERTA);
@@ -386,6 +445,11 @@ public class Tickets extends IBaseFilter implements Serializable {
 	public void doRemoveTicket(Entity row) {
 		this.importe-= row.toDouble("importe");
 		this.acumulado.remove(row);
+		if(this.ventaPublico.indexOf(row.toLong("idCliente"))< 0 && this.acumulado.indexOf(row.toLong("idCliente"))< 0){
+			this.attrs.put("disabledCliente", false);
+			this.attrs.put("clienteAutocomplete", new UISelectEntity(-1L));
+			this.attrs.put("activarCliente", !Boolean.valueOf(this.attrs.get("checkCliente").toString()));
+		} // if		
 		this.pivote= null;
 		this.findCliente();
 		JsfBase.addMessage("Se eliminó el ticket del listado", ETipoMensaje.INFORMACION);
@@ -473,4 +537,18 @@ public class Tickets extends IBaseFilter implements Serializable {
 		} // catch
 		return regresar.concat(Constantes.REDIRECIONAR);
 	}		
+	
+	public void doActivarBusquedaCliente(){
+		Boolean check= false;
+		try {
+			check= Boolean.valueOf(this.attrs.get("checkCliente").toString());
+			this.attrs.put("activarCliente", !check);
+			if(!check)
+				this.attrs.put("clienteAutocomplete", new UISelectEntity(-1L));
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doActivarBusquedaCliente
 }
