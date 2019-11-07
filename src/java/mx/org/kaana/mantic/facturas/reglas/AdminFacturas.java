@@ -43,7 +43,8 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 		this.orden= orden;		
 		if(this.orden.isValid()) {
 			articulos= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaFicticiasDto", "detalle", orden.toMap());
-  	  this.setArticulos(articulos);      
+  	  this.setArticulos(articulos);    
+			validatePrecioArticulo();
 		}	// if
 		else	{
 		  articulos= new ArrayList<>();
@@ -69,6 +70,7 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 		} // finally
 		LOG.warn("Forzar que todos los precios capturados ya son netos, por lo tanto se les descuenta el IVA");
 		this.toCalculate();
+		cleanPrecioDescuentoArticulo();
 	}
 	
 	public AdminFacturas(FacturaFicticia orden, List<Entity> tickets) throws Exception {
