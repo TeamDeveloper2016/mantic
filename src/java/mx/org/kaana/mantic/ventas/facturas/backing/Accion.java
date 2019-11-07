@@ -1070,12 +1070,12 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	} // doLoadEstatus
 	
 	public void doAgregarCorreo() {
-		Entity seleccionado    = null;
+		UISelectEntity cliente = null;
 		Transaccion transaccion= null;
 		try {
 			if(!Cadena.isVacio(this.correo.getDescripcion())){
-				seleccionado= (Entity)this.attrs.get("seleccionado");
-				transaccion= new Transaccion(this.correo, seleccionado.toLong("idCliente"));
+				cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");
+				transaccion= new Transaccion(this.correo, cliente.getKey());
 				if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
 					JsfBase.addMessage("Se agrego el correo electronico correctamente !");
 				else
