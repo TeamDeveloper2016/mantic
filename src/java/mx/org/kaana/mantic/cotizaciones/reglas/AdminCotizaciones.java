@@ -44,6 +44,7 @@ public final class AdminCotizaciones extends IAdminArticulos implements Serializ
 		if(this.orden.isValid()) {
 			articulos= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaFicticiasDto", "detalle", orden.toMap());
   	  this.setArticulos(articulos);      
+			validatePrecioArticulo();
 		}	// if
 		else	{
 		  articulos= new ArrayList<>();
@@ -69,6 +70,7 @@ public final class AdminCotizaciones extends IAdminArticulos implements Serializ
 		} // finally
 		LOG.warn("Forzar que todos los precios capturados ya son netos, por lo tanto se les descuenta el IVA");
 		this.toCalculate();
+		cleanPrecioDescuentoArticulo();
 	}
 	
 	public AdminCotizaciones(CotizacionFicticia orden, List<Entity> tickets) throws Exception {
