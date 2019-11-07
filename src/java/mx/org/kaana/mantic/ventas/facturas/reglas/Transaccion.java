@@ -25,6 +25,7 @@ import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.enums.EEstatusFacturas;
 import mx.org.kaana.mantic.enums.EEstatusFicticias;
+import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETipoPago;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
@@ -108,7 +109,12 @@ public class Transaccion extends TransaccionFactura {
 							regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 						} // else								
 						registrarBitacoraFactura(sesion, idFactura, idEstatus, this.justificacion);
-						this.generarTimbradoFactura(sesion, this.orden.getIdVenta(), idFactura, this.orden.getCorreos());						
+						if(this.generarTimbradoFactura(sesion, this.orden.getIdVenta(), idFactura, this.orden.getCorreos())){
+							if(registraBitacora(sesion, this.orden.getIdVenta(), EEstatusVentas.TIMBRADA.getIdEstatusVenta(), "Se realizó el timbrado de la factura asociada a la venta.")){
+								this.orden.setIdVentaEstatus(EEstatusVentas.TIMBRADA.getIdEstatusVenta());
+								regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
+							} // if
+						} // if
 					} // if
 					else if(this.idEstatusFactura.equals(EEstatusFicticias.CANCELADA.getIdEstatusFicticia())) {
 						idEstatus= EEstatusFacturas.CANCELADA.getIdEstatusFactura();
@@ -217,7 +223,8 @@ public class Transaccion extends TransaccionFactura {
 		return regresar;
 	} // toClientesTipoContacto
 	
-	private void generarTimbradoFactura(Session sesion, Long idVenta, Long idFactura, String correos) throws Exception {
+	private boolean generarTimbradoFactura(Session sesion, Long idVenta, Long idFactura, String correos) throws Exception {
+		boolean regresar          = false;
 		TransaccionFactura factura= null;
 		CFDIGestor gestor         = null;
 		try {
@@ -229,18 +236,13 @@ public class Transaccion extends TransaccionFactura {
 			factura.setCliente(gestor.toClienteCfdiVenta(sesion));
 			factura.getCliente().setIdFactura(idFactura);
 			factura.getCliente().setMetodoPago(ETipoPago.fromIdTipoPago(this.orden.getIdTipoPago()).getClave());
-			factura.generarCfdi(sesion);	
-			/*try {
-				CFDIFactory.getInstance().toSendMail(correos, factura.getIdFacturamaRegistro());
-			} // try
-			catch (Exception e) {				
-				Error.mensaje(e);				
-			} // catch*/
+			regresar= factura.generarCfdi(sesion);				
 		} // try
 		catch (Exception e) {			
-			this.messageError= "";
+			this.messageError= "Error al realizar el timbrado de la factura.";
 			throw e;
-		} // catch				
+		} // catch	
+		return regresar;
 	} // generarTimbradoFactura
 
 	private void actualizarClienteFacturama(Session sesion) throws Exception{		
