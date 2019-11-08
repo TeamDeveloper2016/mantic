@@ -15,6 +15,7 @@ import mx.org.kaana.mantic.catalogos.personas.beans.PersonaDomicilio;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
+import mx.org.kaana.mantic.db.dto.TrManticEmpresaPersonalDto;
 
 public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializable{
 
@@ -129,4 +130,24 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		} // catch
 		return regresar;
 	}
+	
+	public Long toPuestoPersona() throws Exception{
+		Long regresar                    = -1L;
+		TrManticEmpresaPersonalDto puesto= null;
+		Map<String, Object>params        = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_persona=" + this.idPersona);
+			puesto= (TrManticEmpresaPersonalDto) DaoFactory.getInstance().findFirst(TrManticEmpresaPersonalDto.class, "row", params);
+			if(puesto!= null && puesto.isValid())
+				regresar= puesto.getIdPuesto();
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toPuestoPersona
 }
