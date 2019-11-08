@@ -33,8 +33,7 @@ public class Transaccion  extends IBaseTnx{
 	private RegistroPersona persona;	
 	private String messageError;
 	private String cuenta;
-	private Long idEmpresa;
-	private Long idPuesto;
+	private Long idEmpresa;	
 	private Long idPersonaAdicional;
 
 	public Transaccion(IBaseDto dto) {
@@ -42,17 +41,16 @@ public class Transaccion  extends IBaseTnx{
 	}
 	
 	public Transaccion(RegistroPersona persona) {
-		this(persona, null, null);
+		this(persona, null);
 	} // Transaccion
 	
-	public Transaccion(RegistroPersona persona, Long idEmpresa, Long idPuesto) {
-		this(persona, idEmpresa, idPuesto, null);
+	public Transaccion(RegistroPersona persona, Long idEmpresa) {
+		this(persona, idEmpresa, null);
 	} // Transaccion
 	
-	public Transaccion(RegistroPersona persona, Long idEmpresa, Long idPuesto, Long idPersonaAdicional) {
-		this.persona  = persona;		
-		this.idEmpresa= idEmpresa;
-		this.idPuesto = idPuesto;
+	public Transaccion(RegistroPersona persona, Long idEmpresa, Long idPersonaAdicional) {
+		this.persona           = persona;		
+		this.idEmpresa         = idEmpresa;		
 		this.idPersonaAdicional= idPersonaAdicional;
 	} // Transaccion
 
@@ -135,11 +133,13 @@ public class Transaccion  extends IBaseTnx{
 			this.cuenta= this.persona.getPersona().getCuenta();
       if (registraPersonasDomicilios(sesion, idPersona)) {
 				if (registraPersonasTipoContacto(sesion, idPersona)) {
-					regresar = DaoFactory.getInstance().update(sesion, this.persona.getPersona()) >= 1L;
-					if(this.persona.getPersona().getIdTipoPersona().equals(ETipoPersona.AGENTE_VENTAS.getIdTipoPersona()))
-						regresar= actualizaProveedor(sesion);
-					if(this.persona.getPersona().getIdTipoPersona().equals(ETipoPersona.REPRESENTANTE_LEGAL.getIdTipoPersona()))
-						regresar= actualizaCliente(sesion);
+					if (actualizaPuestoPersona(sesion, idPersona)) {
+						regresar = DaoFactory.getInstance().update(sesion, this.persona.getPersona()) >= 1L;
+						if(this.persona.getPersona().getIdTipoPersona().equals(ETipoPersona.AGENTE_VENTAS.getIdTipoPersona()))
+							regresar= actualizaProveedor(sesion);
+						if(this.persona.getPersona().getIdTipoPersona().equals(ETipoPersona.REPRESENTANTE_LEGAL.getIdTipoPersona()))
+							regresar= actualizaCliente(sesion);
+					} // if
 				} // if
       } // if
     } // try
@@ -179,9 +179,28 @@ public class Transaccion  extends IBaseTnx{
 			empresaPersonal= new TrManticEmpresaPersonalDto();
 			empresaPersonal.setIdPersona(idPersona);
 			empresaPersonal.setIdEmpresa(this.idEmpresa);
-			empresaPersonal.setIdPuesto(this.idPuesto);
+			empresaPersonal.setIdPuesto(this.persona.getIdPuesto());
 			empresaPersonal.setIdUsuario(JsfBase.getIdUsuario());
 			regresar= DaoFactory.getInstance().insert(sesion, empresaPersonal)>= 1L;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // registraPersonaEmpresa
+	
+	private boolean actualizaPuestoPersona(Session sesion, Long idPersona) throws Exception{
+		boolean regresar                          = false;
+		TrManticEmpresaPersonalDto empresaPersonal= null;
+		Map<String, Object>params                 = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_persona=" + idPersona);
+			empresaPersonal= (TrManticEmpresaPersonalDto) DaoFactory.getInstance().findFirst(TrManticEmpresaPersonalDto.class, "row", params);
+			if(empresaPersonal!= null && empresaPersonal.isValid()){
+				empresaPersonal.setIdPuesto(this.persona.getIdPuesto());
+				regresar= DaoFactory.getInstance().update(sesion, empresaPersonal)>= 1L;
+			} // if			
 		} // try
 		catch (Exception e) {			
 			throw e;
