@@ -224,8 +224,8 @@
 								</f:facet>
 							</p:autoComplete>	
 						</div>
-						<div class="janal-wid-col-180 ui-grid-col-2 janal-column-center">
-							<p:selectBooleanCheckbox id="activarBusqueda" itemLabel="Asignar cliente." value="#{manticFacturasTickets.attrs.checkCliente}" disabled="#{manticFacturasTickets.attrs.disabledCliente}">
+						<div class="janal-wid-col-140 ui-grid-col-2 janal-column-center">
+							<p:selectBooleanCheckbox id="activarBusqueda" itemLabel="Asignar cliente" value="#{manticFacturasTickets.attrs.checkCliente}" disabled="#{manticFacturasTickets.attrs.disabledCliente}">
 								<p:ajax event="change" onstart="return janal.bloquear();" listener="#{manticFacturasTickets.doActivarBusquedaCliente}" process="@this activarBusqueda" update="cliente clienteAutocomplete" oncomplete="janal.desbloquear();"/>
 							</p:selectBooleanCheckbox>
 						</div>	

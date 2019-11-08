@@ -13,6 +13,8 @@
 	};
 	
 	Janal.Control.Echarts.Core= Class.extend({
+		nacional: '#iconoNacional',
+		georreferencia: '#iconoInformacion',
 		charts: {},
 		backup: {},
 		histoy: {},
@@ -58,7 +60,10 @@
 				seriesType: params.seriesType,
 				event: params.type
 			};
-			refreshEChartFrame(JSON.stringify(json));
+      if(typeof refreshEChartFrame!== "undefined")
+			  refreshEChartFrame(JSON.stringify(json));
+			else
+				console.info('No existe la funcion de javascript llamada [refreshEChartFrame]');
 		},
 		refresh: function(items) {
 			// esto es para actualizar varias graficas donde sus datos cambiaron
@@ -88,6 +93,9 @@
 			} // if	
 			else
 				console.info('El marco ['+ id+ '] de la grafica no existe !');
+		},
+		label: function (value) {
+			return value.replace(/\s/g, '\n');
 		},
 		format: function (params, type) {
 			// params.seriesName
@@ -175,7 +183,29 @@
   			if(this.histoy[id])
   				json= this.histoy[id];
 			return json;
-		}
+		},
+		item: function(params) {
+			var token= params.split("|");
+			var value= {
+				idEntidad: token[0],
+				claveEntidad: token[1],
+				unidadEjecutora: token[2],
+				ambito: token[3],
+				descripcion: token[4],
+				evento: (token.length>= 5? token[5]: '')
+			};
+			return JSON.stringify(value);
+		},
+		map: function(params) {
+      if(typeof loadItemEventMap!== "undefined")
+			  loadItemEventMap(this.item(params));
+			else
+				console.info('No existe la funcion de javascript llamada [loadItemEventMap]');
+		},
+		toggle: function(style) {
+      $(this.nacional).attr('style', style+ ' cursor:pointer; padding:4px 10px 4px 10px!important;');
+      $(this.georreferencia).attr('style', style+ ' cursor:pointer; padding:4px 10px 4px 10px!important;');
+    }
 	});
 	console.info('Janal.Control.Echarts initialized');
 })(window);	

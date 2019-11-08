@@ -33,15 +33,16 @@ public class BarDemo {
 			model.addLine(new Coordinate("Hola", 6, 150, Colors.COLOR_RED, ETypeLine.SOLID));
 			model.addLine(new CustomLine("Hola", 180D, Colors.COLOR_GREEN, ETypeLine.DASHED));
 			model.addLine(new CustomLine("Hola", 120D, Colors.COLOR_BLUE, ETypeLine.DOTTED));
+			model.getxAxis().getAxisLabel().setFormatter("function(value) {return value.replace(/\\\\s/g, '\\\\n')}");
 			LOG.info(model.toJson());
 			
-			Simple simple       = new Simple("ventas", DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "simple", Collections.EMPTY_MAP));
-  		BarModel modelSimple= new BarModel(new Title(), simple);
-			LOG.info(modelSimple.toJson());
-			
-			Multiple multiple     = new Multiple(DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "multiple", Collections.EMPTY_MAP));
-  		BarModel modelMultiple= new BarModel(new Title(), multiple);
-			LOG.info(modelMultiple.toJson());
+//			Simple simple       = new Simple("ventas", DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "simple", Collections.EMPTY_MAP));
+//  		BarModel modelSimple= new BarModel(new Title(), simple);
+//			LOG.info(modelSimple.toJson());
+//			
+//			Multiple multiple     = new Multiple(DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "multiple", Collections.EMPTY_MAP));
+//  		BarModel modelMultiple= new BarModel(new Title(), multiple);
+//			LOG.info(modelMultiple.toJson());
     }
 
 }
