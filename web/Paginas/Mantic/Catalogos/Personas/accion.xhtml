@@ -87,7 +87,7 @@
 								</p:selectOneRadio>	
 								<p:spacer/><p:separator/>
 								<p:outputLabel for="puesto" value="Puesto:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
-								<p:selectOneMenu id="puesto" value="#{manticCatalogosPersonasAccion.attrs.idPuesto}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+								<p:selectOneMenu id="puesto" value="#{manticCatalogosPersonasAccion.registroPersona.idPuesto}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.puestos}"/>
 								</p:selectOneMenu>
 								<p:outputLabel for="idEstadoCivil" value="Estado civil:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}"/>
