@@ -439,7 +439,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 					if((faltante.getCodigo()!= null && disponible.getCodigo()!= null && Cadena.toEqualsString(faltante.getCodigo(), disponible.getCodigo())) || 
 						(faltante.getNombre()!= null && disponible.getOrigen()!= null && Cadena.toEqualsString(faltante.getNombre(), disponible.getOrigen()))) {
 						relacionados++;
-  				  LOG.error(relacionados+ ".- Relacionados ["+ disponible.getCodigo()+ "] "+ disponible.getNombre());
+  				  LOG.info(relacionados+ ".- Relacionados ["+ disponible.getCodigo()+ "] "+ disponible.getNombre());
 						found= true;
       			faltantes.remove(faltante);
     			  disponibles.remove(disponible);
@@ -454,7 +454,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				// EL ARTICULO FUE BUSCADO POR CODIGO EN EL PROVEDOR
 				if(!found) {
 					x++;
-   				LOG.error(x+ ".- NO ENCONTRADO ["+ faltante.getCodigo()+ "] "+ faltante.getNombre());
+   				LOG.info(x+ ".- NO ENCONTRADO ["+ faltante.getCodigo()+ "] "+ faltante.getNombre());
 				} // if	
 				// YA NO HAY MAS ARTICULOS QUE BUSCAR TODOS FUERON ASIGNADOS
 				if(disponibles.isEmpty())
