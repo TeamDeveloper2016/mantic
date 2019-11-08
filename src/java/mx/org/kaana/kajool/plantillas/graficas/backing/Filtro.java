@@ -103,7 +103,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			model.addLine(new CustomLine("Estas", Serie.toValue(), Colors.COLOR_BLUE, ETypeLine.DOTTED));
 			model.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'double');}");
 			String json= model.toJson();
-			UIBackingUtilities.execute("jsEcharts.update('"+ itemSelected.getChart()+ "', "+ json+ ");");
+			UIBackingUtilities.execute("jsEcharts.update('"+ itemSelected.getChart()+ "', {group:'00', json:"+ json+ "});");
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

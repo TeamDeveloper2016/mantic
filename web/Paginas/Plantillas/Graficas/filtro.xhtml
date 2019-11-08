@@ -11,15 +11,19 @@
   <ui:define name="librerias">
 		<h:outputScript library="janal" name="echarts/echarts.min-4.2.2.js"/>
 		<h:outputScript library="janal" name="echarts/resize-sensor-0.0.1.js"/>
-		<h:outputScript library="janal" name="core/jquery.janal.echarts.core-0.1.8.js"/>
+		<h:outputScript library="janal" name="core/jquery.janal.echarts.core-0.1.9.js"/>
     <script type="text/javascript">
+    //<![CDATA[ 
+    //]]>
+			
 			Janal.Control.Echarts.names= {
-				multiple: #{kajoolPlantillasGraficasFiltro.attrs.multiple},
-				simple  : #{kajoolPlantillasGraficasFiltro.attrs.simple},
-				pie     : #{kajoolPlantillasGraficasFiltro.attrs.pie},
-				donut   : #{kajoolPlantillasGraficasFiltro.attrs.donut},
-				stack   : #{kajoolPlantillasGraficasFiltro.attrs.stack},
-				vertical: #{kajoolPlantillasGraficasFiltro.attrs.vertical}
+				items   : {group: '00', json: {total: '1,234.00', subtotal: '$ 1,2345.12', importe: 1234, general: 'Esto es dinámico 1234.12%'}},
+				multiple: {group: '00', json: #{kajoolPlantillasGraficasFiltro.attrs.multiple}},
+				simple  : {group: '00', json: #{kajoolPlantillasGraficasFiltro.attrs.simple}},
+				pie     : {group: '00', json: #{kajoolPlantillasGraficasFiltro.attrs.pie}},
+				donut   : {group: '00', json: #{kajoolPlantillasGraficasFiltro.attrs.donut}},
+				stack   : {group: '00', json: #{kajoolPlantillasGraficasFiltro.attrs.stack}},
+				vertical: {group: '00', json: #{kajoolPlantillasGraficasFiltro.attrs.vertical}}
 			};
 			$(function() {
 				 'use strict'			
@@ -28,8 +32,8 @@
     </script>		
 		<style type="text/css">
 			.cgor-chart-panel {
-				width: 100%; 
-				height: 420px; 
+				width:100%; 
+				height:420px; 
 				display:block;
 			}
 			.cgor-chart-content {
@@ -38,6 +42,7 @@
 		</style>
   </ui:define>
   <ui:define name="contenido">
+		<input type="button" value="Load" onclick="jsEcharts.frames();"/>
 		<pe:remoteCommand name="refreshEChartFrame" process="@this" actionListener="#{kajoolPlantillasGraficasFiltro.doRefreshEChartWith}">  
       <pe:methodSignature parameters="mx.org.kaana.libs.echarts.json.ItemSelected" />  
       <pe:methodParam name="itemSelected">  
@@ -46,7 +51,7 @@
 		</pe:remoteCommand>
 		<div class="ui-g cgor-app-main" style="position: relative;">
 			<div class="ui-g-12 ui-md-6 ui-lg-6">
-				<div>
+				<div id='total'>
 					Esta es una gráfica de barras en vertical con dos categorias
 				</div>	
 				<div class="cgor-chart-panel">
@@ -59,7 +64,7 @@
 				</div>	
 			</div>
 			<div class="ui-g-12 ui-md-6 ui-lg-6">
-				<div>
+				<div id='subtotal'>
 					Esta es una gráfica de barras sencilla en horizontal
 				</div>	
 				<div class="cgor-chart-panel">
@@ -74,7 +79,7 @@
 		</div>	
 		<div class="ui-g cgor-chart-panel">
 			<div class="ui-g-12 ui-md-6 ui-lg-6">
-				<div>
+				<div id='importe'>
 					Esta es una gráfica de pay
 				</div>	
 				<div class="cgor-chart-panel">
@@ -87,7 +92,7 @@
 				</div>	
 			</div>
 			<div class="ui-g-12 ui-md-6 ui-lg-6">
-				<div>
+				<div id='general'>
 					Esta es una gráfica de dona
 				</div>	
 				<div class="cgor-chart-panel">

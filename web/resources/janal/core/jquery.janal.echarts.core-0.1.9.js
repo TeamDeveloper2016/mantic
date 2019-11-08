@@ -13,6 +13,9 @@
 	};
 	
 	Janal.Control.Echarts.Core= Class.extend({
+		RESERVED_ID: 'items',
+		RESERVED_NAMES: 'json',
+		RESERVED_GROUP: 'group',
 		nacional: '#iconoNacional',
 		georreferencia: '#iconoInformacion',
 		charts: {},
@@ -21,29 +24,48 @@
 		init: function(names) { // Constructor
 			$echarts= this;
 			this.charts= names;
-			this.backup= names;
-			this.events();
+			Object.assign(this.backup, names);
 		}, // init
-		events: function() {
-			
-		},
 		load: function(names) {
 			if(typeof(names)!== 'undefined') {
 				this.charts= names;
-				this.backup= names;
+				Object.assign(this.backup, names);
 			} // if	
-	    $.each(this.charts, function(id, json) {
-				$echarts.create(id, json);
+	    $.each(this.charts, function(id, value) {
+				if(id=== $echarts.RESERVED_ID)
+					$echarts.search(value);
+			  else
+				  $echarts.create(id, value);
+				$echarts.reserved(id, value);
 			}); 
 		},
-		create: function(id, json) {
-			if($('#'+ id).length> 0) {
+		frames: function() {
+			if(this.charts[$echarts.RESERVED_ID])
+				this.search(this.charts[$echarts.RESERVED_ID]);
+		},
+		search: function(value) {
+			if(value[this.RESERVED_NAMES])
+				$.each(value[this.RESERVED_NAMES], function(id, value) {
+					if($('#'+ id).length> 0)
+						$('#'+ id).html(value);
+				}); 
+		},
+		create: function(id, value) {
+			if($('#'+ id).length> 0 && value[this.RESERVED_NAMES]) {
   			window[id]= echarts.init(document.getElementById(id), {renderer: 'svg', width: 'auto', height: 'auto'});
-	  		window[id].setOption(json, true);
+	  		window[id].setOption(value[this.RESERVED_NAMES], true);
 		  	window[id].on('click', 'series', function (params) {params.chart= id; $echarts.send(params);});
 			} // id
 			else
 				console.info('El marco ['+ id+ '] de la grafica no existe !');
+		},
+		reserved: function(id, value) {
+			// si se definio un agrupador se mete al historial para ya no ir la backend
+			if(value[this.RESERVED_GROUP]) {
+				if(!this.histoy[value[this.RESERVED_GROUP]]) 
+					this.histoy[value[this.RESERVED_GROUP]]= {};
+				this.histoy[value[this.RESERVED_GROUP]][id]= value;
+			}	
 		},
 		send: function (params) {
 			var json= {
@@ -65,24 +87,29 @@
 			else
 				console.info('No existe la funcion de javascript llamada [refreshEChartFrame]');
 		},
-		refresh: function(items) {
+		refresh: function(items, look) {
+			if(typeof(look)=== 'undefined')
+				look= true;
 			// esto es para actualizar varias graficas donde sus datos cambiaron
 			$.each(items, function(id, value) {
-				if(value['key'])
-          $echarts.update(id, (value['json']? value.json: value), value.key);
-				else	
-          $echarts.update(id, (value['json']? value.json: value));
-			});			
+				if(id== $echarts.RESERVED_ID)
+					$echarts.search(value);
+				else
+					$echarts.update(id, value, look);
+			}); 
 		},
-		update: function(id, json, key) {
+		update: function(id, value, look) {
+			if(typeof(look)=== 'undefined')
+				look= true;
 			// esto es para actualizar una sola grafica porque sus datos cambiaron
 			if(window[id]) {
-				this.charts[id]= json;
-				window[id].clear();
-				window[id].setOption(json);
-				// generar un historial de graficas que han sido procesadas
-        if(typeof(key)!== 'undefined')
-					this.histoy[key]= json;
+				if(value[this.RESERVED_NAMES]) {
+					this.charts[id]= value;
+					window[id].clear();
+					window[id].setOption(value[this.RESERVED_NAMES]);
+					if(look)
+					  this.reserved(id, value);
+				} // if	
 			} // if	
 			else
 				console.info('El marco ['+ id+ '] de la grafica no existe !');
@@ -137,39 +164,34 @@
 				  window[id].resize();
 			});				
 		},
-		restore: function() {
-			this.charts= this.backup;
-			$.each(this.charts, function(id, json) {
-				$echarts.update(id, json);
+		reset: function() {
+			Object.assign(this.charts, this.backup);
+			$.each(this.charts, function(id, value) {
+				if(id!== $echarts.RESERVED_ID)
+  				$echarts.update(id, value, false);
 			});				
 		},
 		add: function(items) {
 			$.each(items, function(id, value) {
-				var json= value;
-				if(value['json'])
-					json= value.json;
-				if($echarts.charts[id]) {
-					console.info('Esta grafica ['+ id+ '] ya existe y se va a sobreescribir !');
-  				$echarts.charts[id]= json;
-          $echarts.update(id, json);
-				} // if
-				else {
-  				$echarts.charts[id]= json;
-					$echarts.create(id, json);
-				} // else	
-				// generar un historial de graficas que han sido procesadas
-        if(value['key'])
-					$echarts.histoy[value.key]= json;
+				if($echarts.charts[id])
+					console.info('Esta grafica ['+ id+ '] ya existe y se va a sobre escribir !');
+ 				$echarts.charts[id]= value;
+				if($echarts.charts[id]) 
+          $echarts.update(id, value);
+				else 
+					$echarts.create(id, value);
 			});
 		},
 		remove: function(id) {
 			if($echarts.charts[id])
 			  delete $echarts.charts[id];
 		},
-		exists: function(key, id) {
-			var ok= this.histoy[key]!== undefined;
-      if(ok)			
-				this.update(id, this.histoy[key]);
+		exists: function(group, update) {
+			if(typeof(update)=== 'undefined')
+				update= true;
+			var ok= this.histoy[group]!== undefined;
+      if(ok && update) 
+			  this.refresh(this.histoy[group], false);
 			return ok;
 		},
 		clean: function() {
@@ -179,9 +201,12 @@
 			var json= undefined;
 			if(this.charts[id])
 				json= this.charts[id];
-			else
-  			if(this.histoy[id])
-  				json= this.histoy[id];
+			return json;
+		},
+		group: function(id) {
+			var json= undefined;
+			if(this.history[id])
+				json= this.history[id];
 			return json;
 		},
 		item: function(params) {
