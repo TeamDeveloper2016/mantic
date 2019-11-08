@@ -29,7 +29,7 @@ public class DonutModel extends PieModel implements Serializable {
 	}
 
 	public DonutModel(String name, String radius, String inside, Title title) {
-		super(radius, title, new Legend("2019"), new ArrayList(Arrays.asList(Colors.SERIES_COLORS)), new ToolTip(), new ArrayList<Serie>());
+		super(name, radius, title, new Legend("2019"), new ArrayList(Arrays.asList(Colors.SERIES_COLORS)), new ToolTip(), new ArrayList<Serie>());
 		this.getSeries().add(new Serie(name, new ArrayList(Arrays.asList(inside, radius))));
 		this.prepare(radius, inside);
 	}
@@ -44,8 +44,8 @@ public class DonutModel extends PieModel implements Serializable {
 		this.prepare(radius, inside);
 	}
 
-	public DonutModel(String radius, String inside, Title title, Legend legend, List<String> color, ToolTip tooltip, List<Serie> series) {
-		super(radius, title, legend, color, tooltip, series);
+	public DonutModel(String name, String radius, String inside, Title title, Legend legend, List<String> color, ToolTip tooltip, List<Serie> series) {
+		super(name, radius, title, legend, color, tooltip, series);
 		this.prepare(radius, inside);
 	}
 

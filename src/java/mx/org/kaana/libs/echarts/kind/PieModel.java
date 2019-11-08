@@ -39,7 +39,7 @@ public class PieModel extends ChartModel implements Serializable {
 	}
 
 	public PieModel(String name, String radius, Title title) {
-		this(radius, title, new Legend("2019"), new ArrayList(), new ToolTip(), new ArrayList<Serie>());
+		this(name, radius, title, new Legend("2019"), new ArrayList(), new ToolTip(), new ArrayList<Serie>());
 		this.series.add(new Serie(name, radius));
 		this.legend.getData().clear();
 		for (Data data: this.series.get(0).getData()) {
@@ -54,10 +54,10 @@ public class PieModel extends ChartModel implements Serializable {
 	}
 	
 	public PieModel(String name, String radius, Title title, IDataSet data) {
-		this(radius, title, data.getLegend(), new ArrayList(), new ToolTip(), data.getDatas());
+		this(name, radius, title, data.getLegend(), new ArrayList(), new ToolTip(), data.getDatas());
 	}
 	
-	public PieModel(String radius, Title title, Legend legend, List<String> color, ToolTip tooltip, List<Serie> series) {
+	public PieModel(String name, String radius, Title title, Legend legend, List<String> color, ToolTip tooltip, List<Serie> series) {
 		super(Axis.COLOR_WHITE);
 		this.title=title;
 		this.legend=legend;
@@ -67,6 +67,7 @@ public class PieModel extends ChartModel implements Serializable {
 		this.radius= radius;
 		if(series!= null && !series.isEmpty()) {
 			for (Serie item: series) {
+				item.setName(name);
 				item.setRadius(Arrays.asList("0%", this.radius));
 			} // for
 			for (Data item: this.series.get(0).getData()) {
