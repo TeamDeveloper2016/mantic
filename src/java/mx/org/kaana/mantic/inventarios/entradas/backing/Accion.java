@@ -168,7 +168,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 					
           // ESTO ES PARA CARGAR LOS ARTICULOS DE LA FACTURA CUANDO SE ENTRA POR LA OPCION DE MODIFICAR Y VUELVA A HACER LA COMPARACION DE LOS ARTICULOS
 					this.doLoadFiles("TcManticNotasArchivosDto", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada(), "idNotaEntrada", (boolean)this.attrs.get("sinIva"), this.getAdminOrden().getTipoDeCambio());
-					this.toPrepareDisponibles(false);
+					this.toPrepareDisponibles(true);
           break;
       } // switch
 			this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
@@ -439,6 +439,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 					if((faltante.getCodigo()!= null && disponible.getCodigo()!= null && Cadena.toEqualsString(faltante.getCodigo(), disponible.getCodigo())) || 
 						(faltante.getNombre()!= null && disponible.getOrigen()!= null && Cadena.toEqualsString(faltante.getNombre(), disponible.getOrigen()))) {
 						relacionados++;
+  				  LOG.error(relacionados+ ".- Relacionados ["+ disponible.getCodigo()+ "] "+ disponible.getNombre());
 						found= true;
       			faltantes.remove(faltante);
     			  disponibles.remove(disponible);
@@ -447,11 +448,14 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 						disponible.setDisponible(false);
 						break;
 					} // if	
-					y++;
+					else
+					  y++;
 				} // for
 				// EL ARTICULO FUE BUSCADO POR CODIGO EN EL PROVEDOR
-				if(!found)
+				if(!found) {
 					x++;
+   				LOG.error(x+ ".- NO ENCONTRADO ["+ faltante.getCodigo()+ "] "+ faltante.getNombre());
+				} // if	
 				// YA NO HAY MAS ARTICULOS QUE BUSCAR TODOS FUERON ASIGNADOS
 				if(disponibles.isEmpty())
 					break;
@@ -709,7 +713,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				// VERIFICAR SI ES UNA NOTA DE ENTRADA DIRECTA Y CAMBIAR EL PROVEEDOR QUE SE TIENE POR EL QUE SE CARGANDO DE LA FACTURA 
 				// EN CASO DE QUE NO EXISTA MANDAR UN MENSAJE DE QUE ESE PROVEEDOR NO EXISTE EN EL CATALGO DE PROVEEDORES PARA QUE SE AGREGUE
 				this.toMoveSelectedProveedor();
-				this.toPrepareDisponibles(false);
+				this.toPrepareDisponibles(true);
 			} // if	
 	  }	// try
 		catch (Exception e) {
