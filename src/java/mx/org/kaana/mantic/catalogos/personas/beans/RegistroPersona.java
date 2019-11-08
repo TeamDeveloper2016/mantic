@@ -30,6 +30,7 @@ public class RegistroPersona implements Serializable{
 	private Long countIndice;
 	private Domicilio domicilio;
 	private Domicilio domicilioPivote;
+	private Long idPuesto;
 	
 	public RegistroPersona() {
 		this(-1L, new TcManticPersonasDto(), new ArrayList<PersonaDomicilio>(), new ArrayList<PersonaTipoContacto>(), new Domicilio());
@@ -55,6 +56,7 @@ public class RegistroPersona implements Serializable{
 		this.countIndice           = 0L;
 		this.domicilio             = domicilio;
 		this.domicilioPivote       = domicilio;
+		this.idPuesto              = -1L;
 	}
 
 	public Long getIdPersona() {
@@ -128,6 +130,14 @@ public class RegistroPersona implements Serializable{
 	public void setDomicilioPivote(Domicilio domicilioPivote) {
 		this.domicilioPivote = domicilioPivote;
 	}
+
+	public Long getIdPuesto() {
+		return idPuesto;
+	}
+
+	public void setIdPuesto(Long idPuesto) {
+		this.idPuesto = idPuesto;
+	}	
 	
 	private void init(){
 		MotorBusqueda motorBusqueda= null;
@@ -150,7 +160,8 @@ public class RegistroPersona implements Serializable{
 				count++;
 				personaDomicilio.setConsecutivo(Long.valueOf(count));
 			} // for				
-			this.personasTiposContacto= motor.toPersonasTipoContacto();			
+			this.personasTiposContacto= motor.toPersonasTipoContacto();		
+			this.idPuesto= motor.toPuestoPersona();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);			
