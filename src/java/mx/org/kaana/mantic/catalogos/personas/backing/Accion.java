@@ -203,14 +203,14 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {			
 			idEmpresa= Boolean.valueOf(this.attrs.get("mostrarEmpresas").toString()) ? Long.valueOf(this.attrs.get("idEmpresa").toString()) : JsfBase.getAutentifica().getEmpresa().getIdEmpresa();
 			eaccion= (EAccion) this.attrs.get("accion");
-			transaccion = new Transaccion(this.registroPersona, idEmpresa, Long.valueOf(this.attrs.get("idPuesto").toString()));
+			transaccion = new Transaccion(this.registroPersona, idEmpresa);
 			if(Boolean.valueOf(this.attrs.get("mostrarProveedores").toString())) {
 				persona= (Entity) this.attrs.get("proveedor");
-				transaccion = new Transaccion(this.registroPersona, idEmpresa, Long.valueOf(this.attrs.get("idPuesto").toString()), persona.getKey());
+				transaccion = new Transaccion(this.registroPersona, idEmpresa, persona.getKey());
 			} // if
 			if(Boolean.valueOf(this.attrs.get("mostrarClientes").toString())) {
 				persona= (Entity) this.attrs.get("cliente");
-				transaccion = new Transaccion(this.registroPersona, idEmpresa, Long.valueOf(this.attrs.get("idPuesto").toString()), persona.getKey());
+				transaccion = new Transaccion(this.registroPersona, idEmpresa, persona.getKey());
 			} // if
 			if (transaccion.ejecutar(eaccion)) {
 				regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
