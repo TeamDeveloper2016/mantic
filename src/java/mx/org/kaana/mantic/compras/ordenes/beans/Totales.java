@@ -34,16 +34,16 @@ public final class Totales implements Serializable {
 	}
 
 	public Totales(int articulos, double importe, double iva, double descuento, double extra, double subTotal, double total, double utilidad, double global, double cantidad) {
-		this.articulos=articulos;
-		this.importe= importe; 
-		this.iva=iva;
-		this.descuento=descuento;
-		this.extra=extra;
-		this.subTotal=subTotal;
-		this.total=total;
-		this.utilidad= utilidad;
-		this.global= global;
-		this.cantidad= cantidad;
+		this.articulos= articulos;
+		this.importe  = importe; 
+		this.iva      = iva;
+		this.descuento= descuento;
+		this.extra    = extra;
+		this.subTotal = subTotal;
+		this.total    = total;
+		this.utilidad = utilidad;
+		this.global   = global;
+		this.cantidad = cantidad;
 	}
 
 	public int getArticulos() {
