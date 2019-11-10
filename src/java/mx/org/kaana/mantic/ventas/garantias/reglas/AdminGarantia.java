@@ -171,15 +171,13 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 	} // toCalculate
 	
 	public void validaArticulos(){
-		List<Articulo>arts= null;
-		int count         = 0;
+		List<Articulo>arts= null;		
 		try {
 			arts= new ArrayList<>();
 			arts.addAll(this.getArticulos());
 			for(Articulo art: this.getArticulos()){
-				if(art.getCantidadGarantia().equals(0D))
-					arts.remove(count);
-				count++;
+				if(art.getCantidadGarantia().equals(0D))					
+					arts.remove(arts.indexOf(art));								
 			} // for
 			setArticulos(arts);
 		} // try
