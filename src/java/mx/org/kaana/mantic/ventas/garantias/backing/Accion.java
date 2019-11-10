@@ -40,8 +40,8 @@ import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.enums.EEstatusClientes;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
-import mx.org.kaana.mantic.enums.ETipoPago;
 import mx.org.kaana.mantic.enums.ETiposGarantias;
+import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 import mx.org.kaana.mantic.ventas.caja.beans.Pago;
 import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
 import mx.org.kaana.mantic.ventas.garantias.beans.DetalleGarantia;
@@ -352,14 +352,36 @@ public class Accion extends IBaseVenta implements Serializable {
     Transaccion transaccion    = null;    
 		CreateTicketGarantia ticket= null;		
 		Pago pagoPivote            = null;
+		DetalleGarantia detalle    = null;
+		String claves              = "";
+		String tickets             = "";
+		String numeroTicket        = "";
+		int count                  = 0;
     try {
-			pagoPivote= loadPagoPivote();
-			transaccion= new Transaccion(loadDetalleGarantia());			
+			detalle= loadDetalleGarantia();			
+			transaccion= new Transaccion(detalle);			
 			if (transaccion.ejecutar(EAccion.REPROCESAR)) {						
-				ticket= new CreateTicketGarantia(pagoPivote, "DEVOLUCIÓN");
-				ticket.setTicket(((AdminGarantia)getAdminOrden()));
-				UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + transaccion.getGarantiaDto().getConsecutivo() + "','" + ticket.toHtml() + "');");
-				UIBackingUtilities.execute("jsTicket.clicTicket();");
+				for(Garantia newGarantia: detalle.getGarantias()){
+					if(!newGarantia.getArticulosGarantia().isEmpty()){
+						numeroTicket= transaccion.getTickets().get(count);
+						count++;
+						pagoPivote= loadPagoPivote(newGarantia);
+						ticket= new CreateTicketGarantia(pagoPivote, "DEVOLUCIÓN", newGarantia.getIdEfectivo().equals(ETiposGarantias.RECIBIDA.getIdTipoGarantia().intValue()));
+						newGarantia.getGarantia().setTicket(numeroTicket);
+						newGarantia.setTotales(pagoPivote);
+						ticket.setGarantia(newGarantia);
+						claves= claves.concat(ticket.getPrincipal().getClave().concat("-").concat(numeroTicket).concat("~"));
+						tickets= tickets.concat(ticket.toHtml().concat("~")); 						
+					} // if
+				} // for
+				claves= claves.substring(0, claves.length()-1);
+				tickets= tickets.substring(0, tickets.length()-1);
+				if(count== 1){
+					UIBackingUtilities.execute("jsTicket.imprimirTicket('" + claves + "','" + tickets + "');");
+					UIBackingUtilities.execute("jsTicket.clicTicket();");
+				} // if
+				else
+					UIBackingUtilities.execute("jsTicket.imprimirMoreTicket('" + claves + "','" + tickets + "');");				
 				JsfBase.addMessage("Se finalizo la garantia.", ETipoMensaje.INFORMACION);
 				this.setAdminOrden(new AdminGarantia(new TicketVenta()));
 				this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
@@ -374,11 +396,22 @@ public class Accion extends IBaseVenta implements Serializable {
     } // catch
   } // doAccion  	
 	
-	private Pago loadPagoPivote(){
+	private Pago loadPagoPivote(Garantia garantia){
 		Pago pago                = null;
 		ETipoMediosPago medioPago= null;
+		Double total             = 0D;
+		Double subTotal          = 0D;
+		Double iva               = 0D;
 		try {
-			pago= new Pago(((AdminGarantia)getAdminOrden()).getTotales());
+			for(ArticuloVenta articulo: garantia.getArticulosGarantia()){
+				total= total + articulo.getTotal();
+				subTotal= subTotal + articulo.getSubTotal();
+				iva= iva + articulo.getImpuestos();
+			} // for
+			pago= new Pago(new Totales());
+			pago.getTotales().setTotal(total);
+			pago.getTotales().setSubTotal(subTotal);
+			pago.getTotales().setIva(iva);
 			medioPago= ETipoMediosPago.fromIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
 			switch(medioPago){
 				case EFECTIVO:
