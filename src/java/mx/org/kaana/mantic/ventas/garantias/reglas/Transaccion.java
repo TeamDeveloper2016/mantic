@@ -57,7 +57,8 @@ public class Transaccion extends IBaseTnx{
 	private String justificacion;
 	private String messageError;		
 	private Long idCierreVigente;
-	private Double pagoPivote;
+	private Double pagoPivote;	
+	List<String> tickets;
 	
 	public Transaccion(IBaseDto dto) {
 		this(null, dto);
@@ -93,15 +94,20 @@ public class Transaccion extends IBaseTnx{
 
 	public TcManticGarantiasDto getGarantiaDto() {
 		return garantiaDto;
-	}	
-	
+	}		
+
+	public List<String> getTickets() {
+		return tickets;
+	}
+				
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
 		boolean regresar      = false;
 		Long idEstatusGarantia= 1L;
-		try {						
+		try {									
 			switch(accion) {					
 				case REPROCESAR:				
+					this.tickets= new ArrayList<>();
 					regresar= procesarGarantia(sesion);
 					break;
 				case DEPURAR:
@@ -136,13 +142,13 @@ public class Transaccion extends IBaseTnx{
 	
 	private boolean procesarGarantia(Session sesion) throws Exception {
 		boolean regresar= false;
-		Long idEstatus  = -1L;		
+		Long idEstatus  = -1L;				
 		try {
 			for(Garantia newGarantia: this.detalleGarantia.getGarantias()){
 				if(newGarantia.getArticulosGarantia().size()> 0){
 					this.garantia= newGarantia;
 					idEstatus= this.detalleGarantia.getPagoGarantia().getIdTipoVenta().equals(1L) ? EEstatusGarantias.TERMINADA.getIdEstatusGarantia() : this.garantia.getIdEfectivo().equals(Constantes.SI) ? EEstatusGarantias.TERMINADA.getIdEstatusGarantia() : EEstatusGarantias.RECIBIDA.getIdEstatusGarantia();
-					this.generarGarantia(sesion, idEstatus);
+					this.generarGarantia(sesion, idEstatus);					
 					if(this.verificarCierreCaja(sesion)){
 						if(this.detalleGarantia.getPagoGarantia().getIdTipoVenta().equals(1L)){
 							executeAccionCredito(sesion);
@@ -152,7 +158,7 @@ public class Transaccion extends IBaseTnx{
 							if(this.registrarPagos(sesion, this.garantia.getTicketVenta().getTotal()))					
 								regresar= this.alterarStockArticulos(sesion, newGarantia.getArticulosGarantia());
 						} // else
-					} // if				
+					} // if						
 				} // if
 			} // for			
 		} // try
@@ -234,7 +240,7 @@ public class Transaccion extends IBaseTnx{
 		Map<String, Object>params= null;		
 		try {							
 			this.loadGarantia(sesion, idEstatusGarantia);			
-			if(DaoFactory.getInstance().insert(sesion, this.garantiaDto)>= 1L){
+			if(DaoFactory.getInstance().insert(sesion, this.garantiaDto)>= 1L){				
 				regresar= this.registraBitacora(sesion, this.garantiaDto.getIdGarantia(), idEstatusGarantia, "Se generó la garantía de forma correcta.");
 				this.toFillArticulos(sesion, this.garantia.getArticulosGarantia());
 			} // if
@@ -253,7 +259,8 @@ public class Transaccion extends IBaseTnx{
 		Siguiente consecutivo= null;
 		try {
 			this.garantiaDto= new TcManticGarantiasDto();
-			consecutivo= this.toSiguiente(sesion);			
+			consecutivo= this.toSiguiente(sesion);
+			this.tickets.add(consecutivo.getConsecutivo());
 			this.garantiaDto.setConsecutivo(consecutivo.getConsecutivo());			
 			this.garantiaDto.setOrden(consecutivo.getOrden());			
 			this.garantiaDto.setIdGarantiaEstatus(idEstatusGarantia);			
