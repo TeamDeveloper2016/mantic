@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.ventas.garantias.reglas;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
@@ -9,32 +10,48 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.enums.ETiposContactos;
+import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.caja.beans.Pago;
 import mx.org.kaana.mantic.ventas.caja.reglas.CreateTicket;
+import mx.org.kaana.mantic.ventas.garantias.beans.Garantia;
 
 public class CreateTicketGarantia extends CreateTicket{
+	
+	private TicketVenta ticket;		
+	private Garantia garantia;
+	private List<ArticuloVenta> articulos;
+	private boolean isGarantia;
 
-	private AdminGarantia ticket;		
-
-	public CreateTicketGarantia(Pago pago, String tipo) {
+	public CreateTicketGarantia(Pago pago, String tipo, boolean isGarantia) {
 		super(pago, tipo);
 		super.init();
+		this.isGarantia= isGarantia;
 	} // CreateTicketGarantia
 
-	public AdminGarantia getTicket() {
+	public TicketVenta getTicket() {
 		return ticket;
 	}
 
-	public void setTicket(AdminGarantia ticket) {
+	public void setTicket(TicketVenta ticket) {
 		this.ticket = ticket;
-	}		
+	}			
+
+	public Garantia getGarantia() {
+		return garantia;
+	}
+
+	public void setGarantia(Garantia garantia) {
+		this.garantia = garantia;
+	}	
 	
 	@Override
 	public String toHtml() throws Exception{
-		StringBuilder sb= new StringBuilder();
+		StringBuilder sb= new StringBuilder();		
+		this.pago= this.garantia.getTotales();
+		this.ticket= this.garantia.getGarantia();		
+		this.articulos= this.garantia.getArticulosGarantia();
 		sb.append(toHeader());
 		sb.append(toBlackBar());		
 		sb.append(toNoTicket());
@@ -48,9 +65,16 @@ public class CreateTicketGarantia extends CreateTicket{
 		sb.append(toFinishTable());	
 		sb.append(toVendedor());
 		sb.append(toCajero());
-		sb.append(toFooter());		
+		sb.append(toFooter());							
 		return sb.toString();
 	} // toHtml
+	
+	@Override
+	protected String toTipoTransaccion(){
+		StringBuilder regresar= new StringBuilder();
+		regresar.append(this.isGarantia ? "GARANTIA" : this.tipo).append("<br>");		
+		return regresar.toString();
+	} // toTipoVenta
 	
 	@Override
 	protected String toFindDomicilio() throws Exception{
@@ -59,7 +83,7 @@ public class CreateTicketGarantia extends CreateTicket{
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
-			params.put("idEmpresa", ((TicketVenta)this.ticket.getOrden()).getIdEmpresa());
+			params.put("idEmpresa", this.ticket.getIdEmpresa());
 			domicilio= (Entity) DaoFactory.getInstance().toEntity("VistaInformacionEmpresas", "datosEmpresa", params);
 			regresar= domicilio.toString("empresaDireccion").concat(" C.P. ").concat(domicilio.toString("codigoPostal")).concat("<br> COLONIA. ").concat(domicilio.toString("colonia")).concat("<br> TEL.").concat(toTelefono());
 		} // try
@@ -75,7 +99,7 @@ public class CreateTicketGarantia extends CreateTicket{
 		Entity telefono          = null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_empresa=" + ((TicketVenta)this.ticket.getOrden()).getIdEmpresa() + " and id_tipo_contacto=" + ETiposContactos.TELEFONO.getKey());
+			params.put(Constantes.SQL_CONDICION, "id_empresa=" + this.ticket.getIdEmpresa() + " and id_tipo_contacto=" + ETiposContactos.TELEFONO.getKey());
 			telefono= (Entity) DaoFactory.getInstance().toEntity("TrManticEmpresaTipoContactoDto", "row", params);
 			if(telefono!= null)
 				regresar= telefono.toString("valor");
@@ -91,28 +115,24 @@ public class CreateTicketGarantia extends CreateTicket{
 	
 	private String toNoTicket(){		
 		StringBuilder	regresar= new StringBuilder();
-		//String descripcionTicket= this.tipo.equals("COTIZACIÓN") ? ((TicketVenta)this.ticket.getOrden()).getCotizacion(): ((TicketVenta)this.ticket.getOrden()).getTicket();
+		String descripcionTicket= this.ticket.getTicket();
 		regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 15px;font-weight: bold\">");
-		//regresar.append(this.tipo.equals("COTIZACIÓN") ? "CONSECUTIVO: " : "TICKET No: ");
-		regresar.append("");
-		regresar.append("<br>");		
+		regresar.append(this.isGarantia ? "GARANTIA: " : "DEVOLUCION: ");
+		regresar.append(this.principal.getClave()).append("-").append(descripcionTicket).append("<br>");		
 		return regresar.toString();
 	} // toNoTicket
 	
+	@Override
 	protected String toFecha(){
 		StringBuilder regresar= new StringBuilder();
-		regresar.append("Fecha:").append(Fecha.formatear(Fecha.FECHA_HORA_CORTA, ((TicketVenta)this.ticket.getOrden()).getCobro()));
-		if(this.tipo.equals("APARTADO")){
-			regresar.append("<br>");		
-			regresar.append("Vencimiento:").append(Fecha.formatear(Fecha.FECHA_HORA_CORTA, ((TicketVenta)this.ticket.getOrden()).getVigencia()));
-		} // if
+		regresar.append("Fecha:").append(Fecha.formatear(Fecha.FECHA_HORA_CORTA, this.ticket.getCobro()));		
 		regresar.append("</p>");		
 		return regresar.toString();
 	} // toFecha
 	
 	private String toArticulos(){				
 		StringBuilder regresar= new StringBuilder();			
-		for(Articulo articulo : this.ticket.getArticulos()){
+		for(ArticuloVenta articulo : this.articulos){
 			if(articulo.isValid() && articulo.getCantidad() > 0D) {				
 				regresar.append(toTable());
 				regresar.append("<tbody>");
@@ -221,7 +241,7 @@ public class CreateTicketGarantia extends CreateTicket{
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
-			params.put("idUsuario", ((TicketVenta)this.ticket.getOrden()).getIdUsuario());
+			params.put("idUsuario", this.ticket.getIdUsuario());
 			usuario= (Entity) DaoFactory.getInstance().toEntity("VistaUsuariosDto", "perfilUsuario", params);
 			regresar= usuario.toString("nombreCompleto");
 		} // try
