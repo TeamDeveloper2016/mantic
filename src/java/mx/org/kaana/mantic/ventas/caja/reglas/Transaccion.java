@@ -1091,7 +1091,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		return regresar;
 	} // assignStatusAutomatico
 	
-	private void actualizarClienteFacturama(Session sesion, Long idCliente, Long idClienteDomicilio) throws Exception{		
+	private void actualizarClienteFacturama(Session sesion, Long idCliente, Long idClienteDomicilio) throws Exception {		
 		CFDIGestor gestor= new CFDIGestor(idCliente);
 		ClienteFactura cliente= gestor.toClienteFacturaUpdateVenta(sesion, idClienteDomicilio);
 		setCliente(cliente);
