@@ -8064,7 +8064,10 @@
 			</select>
 			<select id="articulosMasVentas">
 				select
-					id_key, articulo, total, ((total * 100)/(select sum(cantidad) from tc_mantic_ventas inner join tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta = tc_mantic_ventas_detalles.id_venta and tc_mantic_ventas.id_venta_estatus in ({estatusVentas}) where tc_mantic_ventas.id_venta_estatus in ({estatusVentas}) and {condicionGeneral})) porcentaje
+					id_key, 
+					articulo, 
+					total, 
+					((total * 100)/(select sum(cantidad) from tc_mantic_ventas inner join tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta = tc_mantic_ventas_detalles.id_venta and tc_mantic_ventas.id_venta_estatus in ({estatusVentas}) where tc_mantic_ventas.id_venta_estatus in ({estatusVentas}) and {condicionGeneral})) porcentaje
 				from(
 				select
 					id_key, articulo, sum(cantidad) total
@@ -8087,10 +8090,15 @@
 					total desc) general
 				group by 
 					id_key, articulo, total
+				order by
+					total desc
 			</select>
 			<select id="articulosMasUtilidad">
 				select
-					id_key, articulo, total, ((total * 100)/(select sum(utilidad) from tc_mantic_ventas where tc_mantic_ventas.id_tipo_documento= 2 and tc_mantic_ventas.id_venta_estatus in ({estatusVentas}) and {condicionGeneral})) porcentaje
+					id_key, 
+					articulo, 
+					total, 
+					((total * 100)/(select sum(utilidad) from tc_mantic_ventas where tc_mantic_ventas.id_tipo_documento= 2 and tc_mantic_ventas.id_venta_estatus in ({estatusVentas}) and {condicionGeneral})) porcentaje
 				from(
 				select
 					id_key, articulo, sum(utilidad) total
@@ -8115,6 +8123,8 @@
 					total desc ) general
 				group by 
 					id_key, articulo, total
+				order by
+					total desc
 			</select>
 			<select id="ventasPorEmpleado">
 				select
