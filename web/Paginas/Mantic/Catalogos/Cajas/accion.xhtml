@@ -46,7 +46,7 @@
             <p:tab id="tabGeneral" title="General">
               <p:panelGrid id="panelGeneral" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">								
 								<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosCajasAccion.attrs.isMatriz}"/>
-								<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosCajasAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosCajasAccion.attrs.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
 									<f:selectItems value="#{manticCatalogosCajasAccion.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
 									<p:column headerText="Clave">

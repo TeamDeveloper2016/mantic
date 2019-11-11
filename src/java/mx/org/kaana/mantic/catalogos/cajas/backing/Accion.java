@@ -87,13 +87,14 @@ public class Accion extends IBaseAttribute implements Serializable {
           this.attrs.put("idCierre", -1);
           this.fondos= (List<Denominacion>)DaoFactory.getInstance().toEntitySet(Denominacion.class, "TcManticMonedasDto", "denominacion", this.attrs);
           this.cierre= new TcManticCierresDto("", -1L, 2L, JsfBase.getIdUsuario(), 1L, "ESTA CAJA SE APERTURO DESDE EL ALTA DE CAJAS", 1L, new Long(Fecha.getAnioActual()));
-					this.attrs.put("idEmpresa", new UISelectEntity(-1L));
+					this.attrs.put("ikEmpresa", new UISelectEntity(-1L));
           break;
         case MODIFICAR:
         case CONSULTAR:
           idCaja = Long.valueOf(this.attrs.get("idCaja").toString());
           this.attrs.put("caja", DaoFactory.getInstance().findById(TcManticCajasDto.class, idCaja));
 					this.attrs.put("activa", ((TcManticCajasDto)this.attrs.get("caja")).getIdActiva().equals(EBooleanos.SI.getIdBooleano()));
+					this.attrs.put("idEmpresa", ((TcManticCajasDto)this.attrs.get("caja")).getIdEmpresa());
           this.attrs.put("estatusAbierto", 1);
           Entity cierreInicial = (Entity)DaoFactory.getInstance().toEntity("VistaCierresCajasDto", "cierreVigente", attrs);
           this.cierre = (TcManticCierresDto) DaoFactory.getInstance().findById(TcManticCierresDto.class, cierreInicial.getKey());
@@ -101,8 +102,13 @@ public class Accion extends IBaseAttribute implements Serializable {
           this.cierreCaja = (TcManticCierresCajasDto) DaoFactory.getInstance().findFirst(TcManticCierresCajasDto.class,  "cierreCajaEfectivo", this.attrs);
           this.attrs.put("disponible", this.cierreCaja.getDisponible());		
           this.fondos= (List<Denominacion>)DaoFactory.getInstance().toEntitySet(Denominacion.class, "TcManticMonedasDto", "denominacionActual", this.attrs);
-					this.attrs.put("idEmpresa", new UISelectEntity(((TcManticCajasDto)this.attrs.get("caja")).getKey()));
-          break;
+          List<UISelectEntity> sucursales= (List<UISelectEntity>)this.attrs.get("sucursales");
+					int index= sucursales.indexOf(new UISelectEntity(((TcManticCajasDto)this.attrs.get("caja")).getIdEmpresa()));
+					if(index>= 0)
+  					this.attrs.put("ikEmpresa", sucursales.get(index));
+          else
+  					this.attrs.put("ikEmpresa", new UISelectEntity(-1L));
+					break;
       } // switch 			
       this.doCalculate();
     } // try
@@ -140,7 +146,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
 			caja= (TcManticCajasDto) this.attrs.get("caja");
 			caja.setIdActiva(Boolean.valueOf(this.attrs.get("activa").toString()) ? EBooleanos.SI.getIdBooleano() : EBooleanos.NO.getIdBooleano());
-			caja.setIdEmpresa(((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
+			caja.setIdEmpresa(((UISelectEntity)this.attrs.get("ikEmpresa")).getKey());
 			caja.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
       transaccion = new Transaccion(caja,caja.getIdCaja(),(Double)this.attrs.get("disponible"), this.cierre, null, this.fondos);
       if(((EAccion) this.attrs.get("accion")).equals(EAccion.MODIFICAR)) {
