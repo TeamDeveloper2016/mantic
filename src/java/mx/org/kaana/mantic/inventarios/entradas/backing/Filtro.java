@@ -95,10 +95,18 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   public String doAccion(String accion) {
 		String regresar= "/Paginas/Mantic/Inventarios/Entradas/accion";
-    EAccion eaccion= null;
+    EAccion eaccion   = null;
+		Long idNotaEntrada= -1L;
+		Long idOrdenCompra= -1L;
+		Long idNotaTipo   = -1L;
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
-			if(this.attrs.get("seleccionado")!= null && ((Entity)this.attrs.get("seleccionado")).toLong("idNotaTipo").equals(3L)) {
+			if(this.attrs.get("seleccionado")!= null) {
+			  idNotaEntrada= ((Entity)this.attrs.get("seleccionado")).getKey();
+			  idOrdenCompra= ((Entity)this.attrs.get("seleccionado")).toLong("idOrdenCompra");
+			  idNotaTipo   = ((Entity)this.attrs.get("seleccionado")).toLong("idNotaTipo");
+			} // if
+			if(idNotaTipo.equals(3L)) {
 				regresar= "/Paginas/Mantic/Catalogos/Empresas/Cuentas/accion".concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
 				JsfBase.setFlashAttribute("accion", eaccion.equals(EAccion.MODIFICAR)? EAccion.COMPLEMENTAR: EAccion.CONSULTAR);
 			} // if	
@@ -107,17 +115,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 					JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
 				else 
 					JsfBase.setFlashAttribute("accion", eaccion);		
-				if(!eaccion.equals(EAccion.COMPLETO) || ((eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) && ((Entity)this.attrs.get("seleccionado")).toLong("idNotaTipo").equals(2L))) 
+				if(!eaccion.equals(EAccion.COMPLETO) || ((eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) && idNotaTipo.equals(2L))) 
 					regresar= regresar.concat("?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs");
 				else
 					regresar= regresar.concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
-				Long idOrdenCompra= -1L;
-				if(this.attrs.get("seleccionado")!= null && ((Entity)this.attrs.get("seleccionado")).toLong("idOrdenCompra")!= null)
-				  idOrdenCompra= ((Entity)this.attrs.get("seleccionado")).toLong("idOrdenCompra");
-  			JsfBase.setFlashAttribute("idOrdenCompra", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) || ((Entity)this.attrs.get("seleccionado")).toLong("idNotaTipo").equals(2L)? idOrdenCompra: -1L);
+  			JsfBase.setFlashAttribute("idOrdenCompra", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) || idNotaTipo.equals(2L)? idOrdenCompra: -1L);
 			} // else	
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");		
-			JsfBase.setFlashAttribute("idNotaEntrada", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
+			JsfBase.setFlashAttribute("idNotaEntrada", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? idNotaEntrada: -1L);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
