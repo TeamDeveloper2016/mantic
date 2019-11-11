@@ -14,8 +14,8 @@ public enum EGraficasTablero {
 	CUENTAS_COBRAR   (" ", "Importe / Saldo", "importe~saldo", "Clientes", "cliente", "cuentasCobrar", " ", ETipoGrafica.COLUMNA, "270", 80, 2, 5L, "tc_mantic_clientes_deudas"),
   CUENTAS_PAGAR    (" ", "Importe / Saldo", "importe~saldo", "Proveedores", "proveedor", "cuentasPagar", " ", ETipoGrafica.COLUMNA, "270", 80, 2, 5L, "tc_mantic_empresas_deudas"),    
 	VENTAS_SUCURSAL  ("Total de ventas por sucursal", "Ventas", "total", "Sucursales", "sucursal", "ventasSucursal", " ", ETipoGrafica.BARRAS, "180", 80, 1, Constantes.SQL_TODOS_REGISTROS, "tc_mantic_ventas"),
-	ART_MAS_VENDIDOS ("Articulos con mas ventas", "Total", "total", "Articulo", "articulo", "articulosMasVentas", " ", ETipoGrafica.PIE, "313", 80, 1, 5L, "tc_mantic_ventas"),
-	ART_MAS_UTILIDAD ("Articulos con mas utilidad", "Total", "total", "Articulo", "articulo", "articulosMasUtilidad", " ", ETipoGrafica.PIE, "313", 80, 1, 5L, "tc_mantic_ventas"),  
+	ART_MAS_VENDIDOS ("Articulos con mas ventas", "Total", "total", "Articulo", "articulo", "articulosMasVentas", " ", ETipoGrafica.PIE, "313", 80, 1, 10L, "tc_mantic_ventas"),
+	ART_MAS_UTILIDAD ("Articulos con mas utilidad", "Total", "total", "Articulo", "articulo", "articulosMasUtilidad", " ", ETipoGrafica.PIE, "313", 80, 1, 10L, "tc_mantic_ventas"),  
 	VENTAS_EMPLEADO  ("Ventas por empleado", "", "", "", "", "ventasPorEmpleado", " ", ETipoGrafica.COLUMNA, "313", 80, 1, 5L, "tc_mantic_ventas");  
   
 	private static final String vista= "VistaIndicadoresTableroDto";
