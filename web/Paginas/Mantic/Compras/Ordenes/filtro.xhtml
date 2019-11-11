@@ -52,7 +52,7 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticComprasOrdenesFiltro.attrs.isMatriz}"/>
-              <p:selectOneMenu id="idEmpresa" value="#{manticComprasOrdenesFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:selectOneMenu id="idEmpresa" value="#{manticComprasOrdenesFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticComprasOrdenesFiltro.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
                 <p:column headerText="Clave">
@@ -65,7 +65,7 @@
               <p:outputLabel for="consecutivo" value="No. orden:"/>
               <p:inputText id="consecutivo" value="#{manticComprasOrdenesFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>              
 							<p:outputLabel for="idCliente" value="Cliente:"/>
-							<p:selectOneMenu id="idCliente" value="#{manticComprasOrdenesFiltro.attrs.idCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+							<p:selectOneMenu id="idCliente" value="#{manticComprasOrdenesFiltro.attrs.idCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
 								<f:selectItems value="#{manticComprasOrdenesFiltro.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
 								<p:column headerText="Clave">
@@ -76,7 +76,7 @@
 								</p:column>   
 							</p:selectOneMenu>
 						  <p:outputLabel for="idProveedor" value="Proveedor:"/>
-              <p:selectOneMenu id="idProveedor" value="#{manticComprasOrdenesFiltro.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:selectOneMenu id="idProveedor" value="#{manticComprasOrdenesFiltro.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticComprasOrdenesFiltro.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
                 <p:column headerText="Clave">
@@ -94,7 +94,7 @@
               <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticComprasOrdenesFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="idOrdenEstatus" value="Estatus:"/>
-              <p:selectOneMenu id="idOrdenEstatus" value="#{manticComprasOrdenesFiltro.attrs.idOrdenEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:selectOneMenu id="idOrdenEstatus" value="#{manticComprasOrdenesFiltro.attrs.idOrdenEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticComprasOrdenesFiltro.attrs.catalogo}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">

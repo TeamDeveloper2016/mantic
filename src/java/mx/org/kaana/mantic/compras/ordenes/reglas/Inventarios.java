@@ -99,7 +99,7 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 			// afectar el inventario general de articulos dentro del almacen
 			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().findFirst(sesion, TcManticInventariosDto.class, "inventario", params);
 			if(inventario== null)
-				DaoFactory.getInstance().insert(sesion, new TcManticInventariosDto(JsfBase.getIdUsuario(), this.idAlmacen, item.getCantidad(), -1L, item.getIdArticulo(), 0D, item.getCantidad(), 0D, new Long(Calendar.getInstance().get(Calendar.YEAR))));
+				DaoFactory.getInstance().insert(sesion, new TcManticInventariosDto(JsfBase.getIdUsuario(), this.idAlmacen, item.getCantidad(), -1L, item.getIdArticulo(), 0D, item.getCantidad(), 0D, new Long(Calendar.getInstance().get(Calendar.YEAR)), 1L));
 			else {
 				inventario.setEntradas(inventario.getEntradas()+ item.getCantidad());
 				inventario.setStock(inventario.getStock()+ item.getCantidad());
