@@ -42,15 +42,15 @@ public class Transaccion extends Cierre {
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
-		 boolean regresar          = false;
-     Map<String, Object>params = null;
+		boolean regresar         = false;
+    Map<String, Object>params= null;
     try {			
       switch (accion) {
         case AGREGAR:
           regresar= DaoFactory.getInstance().insert(sesion, this.caja)>= 1L;
           sesion.flush();
           setIdCaja(this.caja.getIdCaja());
-          regresar= toRegistrar(sesion);
+          regresar= this.toRegistrar(sesion);
           break;
         case MODIFICAR:
           regresar= DaoFactory.getInstance().update(sesion, this.caja)>= 1L;
@@ -61,14 +61,14 @@ public class Transaccion extends Cierre {
         case ELIMINAR:
           params= new HashMap<>();
           params.put("idCaja", this.caja.getIdCaja());
-          regresar= toEliminar(sesion);
+          regresar= this.toEliminar(sesion);
           sesion.flush();
           if(DaoFactory.getInstance().toField("TcManticCierresCajasDto", "cajasConCierre", params , "total").toInteger()== 0)
             regresar= DaoFactory.getInstance().delete(sesion, this.caja)>= 1L;
-          else{
+					else {
             this.caja.setIdActiva(2L);
             regresar= DaoFactory.getInstance().update(sesion, this.caja)>= 1L;
-          }
+          } // else
           break;				
       } // switch
       if (!regresar) 
@@ -82,4 +82,5 @@ public class Transaccion extends Cierre {
 		} // finally
     return regresar;
 	} // ejecutar	
+	
 }

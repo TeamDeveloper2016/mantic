@@ -1069,6 +1069,22 @@
 			</select>			
 		</unit>	
 		<unit id="VistaCierresCajasDto">
+      <select id="consultar">
+        select      
+          tc_mantic_cajas.id_caja as id_key,
+				  tc_mantic_empresas.clave as empresa,  
+				  tc_mantic_empresas.nombre as nombre_empresa,  
+          tc_mantic_cajas.*,
+          if(tc_mantic_cajas.id_activa= 1, 'SI', 'NO') as activa
+        from      
+          tc_mantic_cajas
+				inner join 
+				  tc_mantic_empresas on tc_mantic_cajas.id_empresa= tc_mantic_empresas.id_empresa
+        where      
+          tc_mantic_cajas.id_empresa in ({idEmpresa}) 
+				  and {condicion}
+        {sortOrder}
+      </select>
 			<select id="creditos">
 				select
 					tc_mantic_ventas.id_venta as id_key,

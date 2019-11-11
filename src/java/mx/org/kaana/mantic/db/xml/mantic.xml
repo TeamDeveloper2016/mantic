@@ -1158,18 +1158,6 @@
         where      
 				  id_caja= {idCaja}
       </select>
-      <select id="lazy">
-        select      
-          tc_mantic_cajas.id_caja as id_key,
-          tc_mantic_cajas.*,
-          if(tc_mantic_cajas.id_activa= 1, 'SI', 'NO') as activa
-        from      
-          tc_mantic_cajas
-        where      
-          id_empresa in ({idEmpresa}) 
-				  and {condicion}
-        {sortOrder}
-      </select>
     </unit>		
     <unit id="TcManticListasPreciosDto">
       <select id="row">

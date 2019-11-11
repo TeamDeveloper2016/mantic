@@ -50,7 +50,7 @@
           </p:panel>
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosCajasFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosCajasFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosCajasFiltro.lazyModel.rowCount gt manticCatalogosCajasFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosCajasFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosCajasFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosCajasFiltro.lazyModel.rowCount gt manticCatalogosCajasFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
             <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >
@@ -68,45 +68,51 @@
                 <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>												
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.clave}">
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-20" sortBy="#{row.nombreEmpresa}">
+              <f:facet name="header">
+                <h:outputText value="Empresa"/>
+              </f:facet>
+              <h:outputText value="#{row['nombreEmpresa']}"/>
+            </p:column>														
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{row.clave}">
               <f:facet name="header">
                 <h:outputText value="Clave"/>
               </f:facet>
-              <h:outputText value="#{filtro['clave']}"/>
+              <h:outputText value="#{row['clave']}"/>
             </p:column>														
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-40" sortBy="#{filtro.nombre}">
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-40" sortBy="#{row.nombre}">
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
               </f:facet>
-              <h:outputText value="#{filtro['nombre']}"/>
+              <h:outputText value="#{row['nombre']}"/>
             </p:column>								
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.limite}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.limite}">
               <f:facet name="header">
                 <h:outputText value="Limite"/>
               </f:facet>
-              <h:outputText value="#{filtro['limite']}"/>
+              <h:outputText value="#{row['limite']}"/>
             </p:column>
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.activa}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.activa}">
               <f:facet name="header">
                 <h:outputText value="Activa"/>
               </f:facet>
-              <h:outputText value="#{filtro['activa']}"/>
+              <h:outputText value="#{row['activa']}"/>
             </p:column>
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.registro}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
 							<f:facet name="header">
 								<h:outputText value="Fecha"/>
 							</f:facet>
-							<h:outputText value="#{filtro['registro']}"/>
+							<h:outputText value="#{row['registro']}"/>
 						</p:column>			
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticCatalogosCajasFiltro.lazyModel==null?0:manticCatalogosCajasFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="consultar" action="#{manticCatalogosCajasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-						<p:separator/>
             <p:menuitem id="modificar" action="#{manticCatalogosCajasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{manticCatalogosCajasFiltro.attrs.isDeleted}"/>					
+						<p:separator/>
+            <p:menuitem id="consultar" action="#{manticCatalogosCajasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
           </p:contextMenu>
         </div>
       </div>

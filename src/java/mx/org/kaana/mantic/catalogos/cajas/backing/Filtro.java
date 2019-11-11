@@ -58,11 +58,13 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
       columns = new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                 
+      columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));                 
+      columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));                 
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));                    
       columns.add(new Columna("limite", EFormatoDinamicos.MONEDA_SAT_DECIMALES));   
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("activa", EFormatoDinamicos.MAYUSCULAS));
-      this.lazyModel = new FormatCustomLazy("TcManticCajasDto", "lazy", params, columns);
+      this.lazyModel = new FormatCustomLazy("VistaCierresCajasDto", "consultar", params, columns);
       this.attrs.put("isDeleted", isDeleted());
       UIBackingUtilities.resetDataTable();
     } // try
@@ -108,9 +110,6 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
     } // try
-    catch (Exception e) {
-      throw e;
-    } // catch   
     finally {
       Methods.clean(columns);
       Methods.clean(params);

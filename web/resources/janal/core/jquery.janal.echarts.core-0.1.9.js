@@ -16,6 +16,7 @@
 		RESERVED_ID: 'items',
 		RESERVED_NAMES: 'json',
 		RESERVED_GROUP: 'group',
+		RESERVED_KEY: 'CGOR',
 		nacional: '#iconoNacional',
 		georreferencia: '#iconoInformacion',
 		charts: {},
@@ -61,11 +62,11 @@
 		},
 		reserved: function(id, value) {
 			// si se definio un agrupador se mete al historial para ya no ir la backend
-			if(value[this.RESERVED_GROUP]) {
-				if(!this.histoy[value[this.RESERVED_GROUP]]) 
-					this.histoy[value[this.RESERVED_GROUP]]= {};
-				this.histoy[value[this.RESERVED_GROUP]][id]= value;
-			}	
+			if(!value[this.RESERVED_GROUP]) 
+         value[this.RESERVED_GROUP]= this.RESERVED_KEY;
+			if(!this.histoy[value[this.RESERVED_GROUP]]) 
+				this.histoy[value[this.RESERVED_GROUP]]= {};
+			this.histoy[value[this.RESERVED_GROUP]][id]= value;
 		},
 		send: function (params) {
 			var json= {
@@ -230,7 +231,23 @@
 		toggle: function(style) {
       $(this.nacional).attr('style', style+ ' cursor:pointer; padding:4px 10px 4px 10px!important;');
       $(this.georreferencia).attr('style', style+ ' cursor:pointer; padding:4px 10px 4px 10px!important;');
-    }
+    },
+		paint: function(id, group, update) {
+			var ok= false;
+			if(typeof(group)=== 'undefined')
+				group= RESERVED_GROUP;
+			if(typeof(update)=== 'undefined')
+				update= false;
+			// esto es para actualizar una sola grafica porque sus datos cambiaron
+			if(this.history[group]) {
+				if(this.history[group][id]) {
+					if(update)
+  				  $echarts.update(id, this.history[group][id], false);	
+					ok= true;
+				} // if
+			} // if
+			return ok;
+		}
 	});
 	console.info('Janal.Control.Echarts initialized');
 })(window);	

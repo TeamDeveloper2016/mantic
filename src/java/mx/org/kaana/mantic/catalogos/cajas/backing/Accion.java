@@ -1,7 +1,10 @@
 package mx.org.kaana.mantic.catalogos.cajas.backing;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -10,7 +13,9 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EBooleanos;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -18,6 +23,9 @@ import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.cajas.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticCajasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresCajasDto;
@@ -48,6 +56,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       if(JsfBase.getFlashAttribute("accion")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.accion = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
+      this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -56,6 +65,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("limite", 0D);
 			this.attrs.put("efectivo", 0D);
 			this.attrs.put("disponible", 0D);
+		  this.toLoadCatalog();
 			this.doLoad();   					
     } // try
     catch (Exception e) {
@@ -77,6 +87,7 @@ public class Accion extends IBaseAttribute implements Serializable {
           this.attrs.put("idCierre", -1);
           this.fondos= (List<Denominacion>)DaoFactory.getInstance().toEntitySet(Denominacion.class, "TcManticMonedasDto", "denominacion", this.attrs);
           this.cierre= new TcManticCierresDto("", -1L, 2L, JsfBase.getIdUsuario(), 1L, "ESTA CAJA SE APERTURO DESDE EL ALTA DE CAJAS", 1L, new Long(Fecha.getAnioActual()));
+					this.attrs.put("idEmpresa", new UISelectEntity(-1L));
           break;
         case MODIFICAR:
         case CONSULTAR:
@@ -87,9 +98,10 @@ public class Accion extends IBaseAttribute implements Serializable {
           Entity cierreInicial = (Entity)DaoFactory.getInstance().toEntity("VistaCierresCajasDto", "cierreVigente", attrs);
           this.cierre = (TcManticCierresDto) DaoFactory.getInstance().findById(TcManticCierresDto.class, cierreInicial.getKey());
           this.attrs.put("idCierre", this.cierre.getIdCierre());
-          this.cierreCaja = (TcManticCierresCajasDto) DaoFactory.getInstance().findFirst(TcManticCierresCajasDto.class,  "cierreCajaEfectivo",this.attrs);
+          this.cierreCaja = (TcManticCierresCajasDto) DaoFactory.getInstance().findFirst(TcManticCierresCajasDto.class,  "cierreCajaEfectivo", this.attrs);
           this.attrs.put("disponible", this.cierreCaja.getDisponible());		
           this.fondos= (List<Denominacion>)DaoFactory.getInstance().toEntitySet(Denominacion.class, "TcManticMonedasDto", "denominacionActual", this.attrs);
+					this.attrs.put("idEmpresa", new UISelectEntity(((TcManticCajasDto)this.attrs.get("caja")).getKey()));
           break;
       } // switch 			
       this.doCalculate();
@@ -100,17 +112,38 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
   } // doLoad
 
-  public String doAceptar() {
+	private void toLoadCatalog() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			columns= new ArrayList<>();
+			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+        params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
+			else
+				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
+    } // try
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}	
+	
+	public String doAceptar() {
     Transaccion transaccion = null;
 		TcManticCajasDto caja   = null;
     String regresar         = null;
     try {
 			caja= (TcManticCajasDto) this.attrs.get("caja");
 			caja.setIdActiva(Boolean.valueOf(this.attrs.get("activa").toString()) ? EBooleanos.SI.getIdBooleano() : EBooleanos.NO.getIdBooleano());
-			caja.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			caja.setIdEmpresa(((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
 			caja.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
       transaccion = new Transaccion(caja,caja.getIdCaja(),(Double)this.attrs.get("disponible"), this.cierre, null, this.fondos);
-      if(((EAccion) this.attrs.get("accion")).equals(EAccion.MODIFICAR)){
+      if(((EAccion) this.attrs.get("accion")).equals(EAccion.MODIFICAR)) {
         this.cierreCaja.setDisponible((Double)this.attrs.get("disponible"));
         transaccion.setCierreCaja(this.cierreCaja);
       }
