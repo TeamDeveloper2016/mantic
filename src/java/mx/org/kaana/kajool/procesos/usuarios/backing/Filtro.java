@@ -28,7 +28,9 @@ import mx.org.kaana.kajool.procesos.usuarios.reglas.beans.CriteriosBusqueda;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UIMessage;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 
@@ -59,6 +61,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.criteriosBusqueda = new CriteriosBusqueda();
       carga = new CargaInformacionUsuarios(getCriteriosBusqueda());
       carga.init();
+			this.toLoadCatalog();
       this.attrs.put("isPermisoDelega", JsfBase.isAdmin());
     } // try
     catch (Exception e) {
@@ -66,6 +69,27 @@ public class Filtro extends IBaseFilter implements Serializable {
       Error.mensaje(e);
     } // catch
   }
+
+	private void toLoadCatalog() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			columns= new ArrayList<>();
+			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+        params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
+			else
+				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
+    } // try
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}	
 
   /**
    * *
@@ -84,21 +108,27 @@ public class Filtro extends IBaseFilter implements Serializable {
       campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("descPerfil", EFormatoDinamicos.MAYUSCULAS));      
+			StringBuilder sb= new StringBuilder();
       switch (tipoBusqueda) {
         case NOMBRE:
-          params.put(Constantes.SQL_CONDICION, carga.busquedaPorNombre());
+          sb.append("(").append(carga.busquedaPorNombre()).append(") and ");
           break;
         case PERFIL:
-          params.put(Constantes.SQL_CONDICION, carga.busquedaPorPerfil());
+          sb.append("(").append(carga.busquedaPorPerfil()).append(") and ");
           break;
         case TODOS:
-          params.put(Constantes.SQL_CONDICION, carga.busquedaPorPerfilNombre());
+          sb.append("(").append(carga.busquedaPorPerfilNombre()).append(") and ");
           break;
         case SIN_CONDICION:
-          params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
           break;
       } // switch
-      this.attrs.put("condicion", params.get(Constantes.SQL_CONDICION));
+			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+				sb.append("(tr_mantic_empresa_personal.id_empresa= ").append(this.attrs.get("idEmpresa")).append(") and ");
+      if(sb.length()== 0)
+				sb.append(Constantes.SQL_VERDADERO);
+			else
+			  sb.delete(sb.length()- 4, sb.length());
+			params.put(Constantes.SQL_CONDICION, sb.toString());
       params.put("sortOrder", "order by tc_janal_perfiles.id_perfil, tc_mantic_personas.paterno, tc_mantic_personas.materno, tc_mantic_personas.nombres");
       this.lazyModel = new FormatCustomLazy("VistaUsuariosDto", "row", params, campos);
       UIBackingUtilities.resetDataTable();
@@ -200,10 +230,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   @Override
   public void doLoad() {
-    Entity seleccionado = (Entity) this.attrs.get("seleccionado");
+    Entity seleccionado = (Entity)this.attrs.get("seleccionado");
     try {
       //this.attrs.put("validaDelega", JsfBase.isAdmin() || JsfBase.getAutentifica().getPersona().getIdUsuario().equals(seleccionado.getKey()));      
-      doBuscar();
+      this.doBuscar();
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
@@ -259,16 +289,13 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   private void doBuscar() {
     try {
-      if (Cadena.isVacio(this.criteriosBusqueda.getNombre()) && this.criteriosBusqueda.getPerfil().getKey().equals(-1L)) {
+      if (Cadena.isVacio(this.criteriosBusqueda.getNombre()) && this.criteriosBusqueda.getPerfil().getKey().equals(-1L))
         recargarTablaDatos(ETipoBusqueda.SIN_CONDICION);
-      } else {
-        if (!Cadena.isVacio(this.criteriosBusqueda.getNombre()) && this.criteriosBusqueda.getPerfil().getKey().equals(-1L)) {
+			else 
+        if (!Cadena.isVacio(this.criteriosBusqueda.getNombre()) && this.criteriosBusqueda.getPerfil().getKey().equals(-1L)) 
           recargarTablaDatos(ETipoBusqueda.NOMBRE);
-        } // if
-        else {
+        else 
           recargarTablaDatos(Cadena.isVacio(this.criteriosBusqueda.getNombre()) ? ETipoBusqueda.PERFIL : ETipoBusqueda.TODOS);
-        }
-      }  // else        
     } // try
     catch (Exception e) {
       Error.mensaje(e);

@@ -31,10 +31,21 @@
           <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{kajoolUsuariosFiltro.attrs.isMatriz}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{kajoolUsuariosFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                <f:selectItems value="#{kajoolUsuariosFiltro.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
               <p:outputLabel for="nombre" value="Nombre completo:"/>
-              <p:inputText id="nombre" value="#{kajoolUsuariosFiltro.criteriosBusqueda.nombre}" styleClass="janal-wid-90" onblur="janal.mayusculas('nombre')" />              
+              <p:inputText id="nombre" value="#{kajoolUsuariosFiltro.criteriosBusqueda.nombre}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('nombre')" />              
               <p:outputLabel for="tipoPerfil"  value="Perfil:"/>
-              <p:selectOneMenu  id="tipoPerfil" value="#{kajoolUsuariosFiltro.criteriosBusqueda.perfil}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-90">
+              <p:selectOneMenu  id="tipoPerfil" value="#{kajoolUsuariosFiltro.criteriosBusqueda.perfil}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt">
                 <f:selectItems value="#{kajoolUsuariosFiltro.criteriosBusqueda.listaPerfiles}"  var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
                 <p:column>
                   <h:outputText value="#{item.descripcion}"/>
@@ -43,8 +54,8 @@
 							<p:separator/>
             </p:panelGrid>
 						<div class="janal-align-right">
-							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this nombre tipoPerfil" actionListener="#{kajoolUsuariosFiltro.doLoad()}" oncomplete="janal.desbloquear();" update="tabla"/>
-							<p:commandButton id="buscarIcon" icon="fa fa-filter"  iconPos="right" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b" onstart="janal.execute()"  process="@this nombre tipoPerfil" actionListener="#{kajoolUsuariosFiltro.doLoad()}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this idEmpresa nombre tipoPerfil" actionListener="#{kajoolUsuariosFiltro.doLoad()}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscarIcon" icon="fa fa-filter"  iconPos="right" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b" onstart="janal.execute()" process="@this idEmpresa nombre tipoPerfil" actionListener="#{kajoolUsuariosFiltro.doLoad()}" oncomplete="janal.desbloquear();" update="tabla"/>
 						</div>
           </p:panel>
         </div>
