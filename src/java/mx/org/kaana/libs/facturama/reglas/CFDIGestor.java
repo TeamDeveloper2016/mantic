@@ -9,9 +9,13 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
-public class CFDIGestor implements Serializable{
+public class CFDIGestor implements Serializable {
+	
+	private static final Log LOG= LogFactory.getLog(CFDIGestor.class);
 
 	private static final long serialVersionUID = 7197603923593328319L;
 	private Long idComodin;
@@ -94,15 +98,17 @@ public class CFDIGestor implements Serializable{
 		return regresar;
 	} // toClienteFactura
 	
-	public ClienteFactura toClienteFacturaUpdateVenta(Session sesion, Long idClientedomicilio) throws Exception{
+	public ClienteFactura toClienteFacturaUpdateVenta(Session sesion, Long idClientedomicilio) throws Exception {
 		ClienteFactura regresar  = null;
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_cliente=" + this.idComodin + " and tr_mantic_cliente_domicilio.id_cliente_domicilio=" + idClientedomicilio);
 			regresar= (ClienteFactura) DaoFactory.getInstance().toEntity(sesion, ClienteFactura.class, "VistaClientesDto", "facturamaDomicilioVenta", params);
+			if(regresar== null)
+			  LOG.error("El cliente no existe idCliente: "+ this.idComodin+ " idClientedomicilio: "+ idClientedomicilio);
 		} // try		
-		finally{
+		finally { 
 			Methods.clean(params);
 		} // finally
 		return regresar;
