@@ -55,8 +55,8 @@ import org.apache.commons.logging.LogFactory;
 @ViewScoped
 public class Tablero extends Comun implements Serializable {
 
-  private static final long serialVersionUID = 5323749709626263801L;
-  private static final Log LOG = LogFactory.getLog(Tablero.class);
+  private static final long serialVersionUID= 5323749709626263801L;
+  private static final Log LOG              = LogFactory.getLog(Tablero.class);
 	private String mes[] = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
   private List<UISelectItem> sucursales;
 	private List<Entity> articulos;
@@ -977,6 +977,5 @@ public class Tablero extends Comun implements Serializable {
 		finally {
 			Methods.clean(params);
 		} // finally	
-	}	
-	
+	} // checkDonwloadBackup
 }
