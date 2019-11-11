@@ -235,14 +235,22 @@
 		paint: function(id, group, update) {
 			var ok= false;
 			if(typeof(group)=== 'undefined')
-				group= RESERVED_GROUP;
+			  group= this.RESERVED_GROUP;
+			else
+				if(typeof(group)=== "boolean") {
+				  update= group;
+  			  group = this.RESERVED_GROUP;
+				} // if	
 			if(typeof(update)=== 'undefined')
 				update= false;
 			// esto es para actualizar una sola grafica porque sus datos cambiaron
 			if(this.history[group]) {
 				if(this.history[group][id]) {
 					if(update)
-  				  $echarts.update(id, this.history[group][id], false);	
+						if(id== this.RESERVED_ID)
+							this.search(this.history[group][id]);
+						else
+  				    this.update(id, this.history[group][id], false);	
 					ok= true;
 				} // if
 			} // if
