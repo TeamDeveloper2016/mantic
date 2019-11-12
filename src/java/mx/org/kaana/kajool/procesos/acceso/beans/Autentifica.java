@@ -228,7 +228,7 @@ public class Autentifica implements Serializable {
     return regresar;
   } // tieneAccesoBD
 	  
-  public boolean validaCambioUsuario(String cuenta, String contrasenia, Long idGrupo) throws Exception {
+  public boolean validaCambioUsuario(String cuenta, String contrasenia, Long idEmpresa) throws Exception {
     boolean regresar          = false;
     Map<String, Object> params= null;
 		List<Persona> personas    = null;
@@ -239,7 +239,7 @@ public class Autentifica implements Serializable {
       params = new HashMap<>();
       LOG.debug("[".concat(cuenta).concat("] Inicia la consulta sobre la vista VistaTcJanalUsuariosDto"));
       params.put("cuenta", cuenta);
-      params.put("idGrupo", idGrupo);
+      params.put("idEmpresa", idEmpresa);
 			personas= DaoFactory.getInstance().toEntitySet(Persona.class, "VistaTcJanalUsuariosDto", "cambioUsuarioAutentifica", params);
 			if(!personas.isEmpty()) {
 				if(personas.size()== 1)
