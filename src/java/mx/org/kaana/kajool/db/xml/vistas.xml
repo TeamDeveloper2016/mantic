@@ -94,10 +94,12 @@
 					tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
 				inner join
 					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
+				inner join
+					tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona
 				where
 					tc_mantic_personas.cuenta = '{cuenta}' and tc_janal_usuarios.activo=1				
 				and 
-					tc_janal_grupos.id_grupo= {idGrupo}				
+					tr_mantic_empresa_personal.id_empresa= {idEmpresa}				
       </select>
       <select id="recuperar">
         select
