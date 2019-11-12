@@ -211,7 +211,7 @@
             <div class="ui-grid-col-9">
 							<p:inputText id="cliente" value="#{manticFacturasTickets.pivote.cliente}" styleClass="janal-wid-100-txt janal-color-blue relacionado" readonly="true" style="display: #{!manticFacturasTickets.attrs.activarCliente ? 'none' : ''}"/>							
 							<p:autoComplete id="clienteAutocomplete" placeholder="RFC ó nombre" var="item" itemLabel="#{item.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-cliente filas" itemValue="#{item}" value="#{manticFacturasTickets.attrs.clienteAutocomplete}" completeMethod="#{manticFacturasTickets.doCompleteClienteAutocomplete}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt" style="display: #{manticFacturasTickets.attrs.activarCliente ? 'none' : ''}">
-								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticFacturasTickets.doAsignaClienteAutocomplete}" oncomplete="janal.desbloquear();" update="tabla"/>
+								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticFacturasTickets.doAsignaClienteAutocomplete}" oncomplete="$('#cliente').val($('#clienteAutocomplete_input').val());janal.desbloquear();" update="tabla"/>
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-100">												
 										<h:outputText value="Clave" />
@@ -226,7 +226,7 @@
 						</div>
 						<div class="janal-wid-col-140 ui-grid-col-2 janal-column-center">
 							<p:selectBooleanCheckbox id="activarBusqueda" itemLabel="Asignar cliente" value="#{manticFacturasTickets.attrs.checkCliente}" disabled="#{manticFacturasTickets.attrs.disabledCliente}">
-								<p:ajax event="change" onstart="return janal.bloquear();" listener="#{manticFacturasTickets.doActivarBusquedaCliente}" process="@this activarBusqueda" update="cliente clienteAutocomplete" oncomplete="janal.desbloquear();"/>
+								<p:ajax event="change" onstart="return janal.bloquear();" listener="#{manticFacturasTickets.doActivarBusquedaCliente}" process="@this activarBusqueda" update="cliente clienteAutocomplete" oncomplete="$('#cliente').val('');janal.desbloquear();"/>
 							</p:selectBooleanCheckbox>
 						</div>	
 					</div>						
