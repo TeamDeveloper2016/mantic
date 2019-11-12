@@ -32,8 +32,7 @@ public class Transaccion  extends IBaseTnx{
 	private IBaseDto dto;
 	private RegistroPersona persona;	
 	private String messageError;
-	private String cuenta;
-	private Long idEmpresa;	
+	private String cuenta;	
 	private Long idPersonaAdicional;
 
 	public Transaccion(IBaseDto dto) {
@@ -42,15 +41,10 @@ public class Transaccion  extends IBaseTnx{
 	
 	public Transaccion(RegistroPersona persona) {
 		this(persona, null);
-	} // Transaccion
+	} // Transaccion	
 	
-	public Transaccion(RegistroPersona persona, Long idEmpresa) {
-		this(persona, idEmpresa, null);
-	} // Transaccion
-	
-	public Transaccion(RegistroPersona persona, Long idEmpresa, Long idPersonaAdicional) {
-		this.persona           = persona;		
-		this.idEmpresa         = idEmpresa;		
+	public Transaccion(RegistroPersona persona, Long idPersonaAdicional) {
+		this.persona           = persona;				
 		this.idPersonaAdicional= idPersonaAdicional;
 	} // Transaccion
 
@@ -178,7 +172,7 @@ public class Transaccion  extends IBaseTnx{
 		try {
 			empresaPersonal= new TrManticEmpresaPersonalDto();
 			empresaPersonal.setIdPersona(idPersona);
-			empresaPersonal.setIdEmpresa(this.idEmpresa);
+			empresaPersonal.setIdEmpresa(this.persona.getIdEmpresa());
 			empresaPersonal.setIdPuesto(this.persona.getIdPuesto());
 			empresaPersonal.setIdUsuario(JsfBase.getIdUsuario());
 			regresar= DaoFactory.getInstance().insert(sesion, empresaPersonal)>= 1L;
@@ -199,6 +193,7 @@ public class Transaccion  extends IBaseTnx{
 			empresaPersonal= (TrManticEmpresaPersonalDto) DaoFactory.getInstance().findFirst(TrManticEmpresaPersonalDto.class, "row", params);
 			if(empresaPersonal!= null && empresaPersonal.isValid()){
 				empresaPersonal.setIdPuesto(this.persona.getIdPuesto());
+				empresaPersonal.setIdEmpresa(this.persona.getIdEmpresa());
 				regresar= DaoFactory.getInstance().update(sesion, empresaPersonal)>= 1L;
 			} // if			
 		} // try
