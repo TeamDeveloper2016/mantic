@@ -31,6 +31,7 @@ public class RegistroPersona implements Serializable{
 	private Domicilio domicilio;
 	private Domicilio domicilioPivote;
 	private Long idPuesto;
+	private Long idEmpresa;
 	
 	public RegistroPersona() {
 		this(-1L, new TcManticPersonasDto(), new ArrayList<PersonaDomicilio>(), new ArrayList<PersonaTipoContacto>(), new Domicilio());
@@ -57,6 +58,7 @@ public class RegistroPersona implements Serializable{
 		this.domicilio             = domicilio;
 		this.domicilioPivote       = domicilio;
 		this.idPuesto              = -1L;
+		this.idEmpresa             = -1L;
 	}
 
 	public Long getIdPersona() {
@@ -138,6 +140,14 @@ public class RegistroPersona implements Serializable{
 	public void setIdPuesto(Long idPuesto) {
 		this.idPuesto = idPuesto;
 	}	
+
+	public Long getIdEmpresa() {
+		return idEmpresa;
+	}
+
+	public void setIdEmpresa(Long idEmpresa) {
+		this.idEmpresa = idEmpresa;
+	}	
 	
 	private void init(){
 		MotorBusqueda motorBusqueda= null;
@@ -162,6 +172,7 @@ public class RegistroPersona implements Serializable{
 			} // for				
 			this.personasTiposContacto= motor.toPersonasTipoContacto();		
 			this.idPuesto= motor.toPuestoPersona();
+			this.idEmpresa= motor.toEmpresaPersona();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);			
