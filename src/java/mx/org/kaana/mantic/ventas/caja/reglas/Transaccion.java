@@ -1006,6 +1006,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 				regresar= ubicacion.getKey();
 			else{
 				ubicacion= new TcManticAlmacenesUbicacionesDto();
+				ubicacion.setNivel(1L);
 				ubicacion.setPiso(GENERAL);
 				ubicacion.setDescripcion(GENERAL);
 				ubicacion.setIdUsuario(JsfBase.getIdUsuario());				
