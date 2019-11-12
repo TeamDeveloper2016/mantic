@@ -153,7 +153,7 @@ public class Transaccion extends TransaccionFactura {
 	}	// ejecutar		
 	
 	protected boolean registraBitacora(Session sesion, Long idVenta, Long idVentaEstatus, String justificacion) throws Exception {
-		TcManticVentasBitacoraDto bitVenta= new TcManticVentasBitacoraDto(this.orden.getConsecutivo(), justificacion, idVentaEstatus, JsfBase.getIdUsuario(), idVenta, -1L, this.orden.getTotal());
+		TcManticVentasBitacoraDto bitVenta= new TcManticVentasBitacoraDto(-1L, justificacion, JsfBase.getIdUsuario(), idVenta, idVentaEstatus, this.orden.getConsecutivo(), this.orden.getTotal());
 		return DaoFactory.getInstance().insert(sesion, bitVenta)>= 1L;
 	} // registrarBitacora
 	
