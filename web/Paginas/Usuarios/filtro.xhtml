@@ -77,13 +77,19 @@
                 <p:commandButton id="xlsIcono" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>    
             </f:facet>						
-            <p:column class="janal-column-right Wid10 MarAuto Responsive">
+            <p:column class="janal-column-right janal-wid-col-38 MarAuto Responsive">
               <f:facet name="header">
-                <h:outputText value="Índice"/>
+                <h:outputText value="No."/>
               </f:facet>
-              <h:outputText value="#{index+1}"/>
+              <h:outputText value="#{index+1}.-"/>
             </p:column>				
-            <p:column class="janal-column-left Wid20 MarAuto Responsive" sortBy="#{filtro.primerApellido}">
+            <p:column class="janal-column-left Wid20 MarAuto Responsive" sortBy="#{filtro.nombreEmpresa}">
+              <f:facet name="header">
+                <h:outputText value="Empresa"/>
+              </f:facet>
+              <h:outputText value="#{filtro['nombreEmpresa']}"/>
+            </p:column>
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.primerApellido}">
               <f:facet name="header">
                 <h:outputText value="Usuario"/>
               </f:facet>
