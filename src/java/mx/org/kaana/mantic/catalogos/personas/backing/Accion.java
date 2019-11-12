@@ -126,7 +126,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     Map<String, Object> params= null;
     try {
       params = new HashMap<>();
-      params.put(Constantes.SQL_CONDICION, "id_empresa=" + (Boolean.valueOf(this.attrs.get("mostrarEmpresas").toString()) ? Long.valueOf(this.attrs.get("idEmpresa").toString()) : JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
+      params.put(Constantes.SQL_CONDICION, "id_empresa=" + Long.valueOf(this.attrs.get("idEmpresa").toString()));
       puestos = UISelect.build("TcManticPuestosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
 			if(!puestos.isEmpty()) {
 				this.attrs.put("puestos", puestos);
@@ -183,6 +183,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 						this.registroPersona.setPersonaDomicilioSelecion(this.registroPersona.getPersonasDomicilio().get(0));
 						doConsultarClienteDomicilio();
 					} // if
+					this.attrs.put("idEmpresa", this.registroPersona.getIdEmpresa());
           break;
       } // switch
 			this.registroPersona.getPersona().setEstilo(TEMA);
@@ -197,20 +198,19 @@ public class Accion extends IBaseAttribute implements Serializable {
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
-		EAccion eaccion        = null;
-		Long idEmpresa         = -1L;
+		EAccion eaccion        = null;		
 		Entity persona         = null;
-    try {			
-			idEmpresa= Boolean.valueOf(this.attrs.get("mostrarEmpresas").toString()) ? Long.valueOf(this.attrs.get("idEmpresa").toString()) : JsfBase.getAutentifica().getEmpresa().getIdEmpresa();
+    try {						
+			this.registroPersona.setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));
 			eaccion= (EAccion) this.attrs.get("accion");
-			transaccion = new Transaccion(this.registroPersona, idEmpresa);
+			transaccion = new Transaccion(this.registroPersona);
 			if(Boolean.valueOf(this.attrs.get("mostrarProveedores").toString())) {
 				persona= (Entity) this.attrs.get("proveedor");
-				transaccion = new Transaccion(this.registroPersona, idEmpresa, persona.getKey());
+				transaccion = new Transaccion(this.registroPersona, persona.getKey());
 			} // if
 			if(Boolean.valueOf(this.attrs.get("mostrarClientes").toString())) {
 				persona= (Entity) this.attrs.get("cliente");
-				transaccion = new Transaccion(this.registroPersona, idEmpresa, persona.getKey());
+				transaccion = new Transaccion(this.registroPersona, persona.getKey());
 			} // if
 			if (transaccion.ejecutar(eaccion)) {
 				regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
