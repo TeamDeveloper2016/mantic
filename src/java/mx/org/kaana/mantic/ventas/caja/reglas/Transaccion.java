@@ -415,14 +415,16 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		Map<String, Object>params       = null;		
 		try{
 			params= new HashMap<>();
+			params.put("idCierre", idCierre);
 			params.put(Constantes.SQL_CONDICION, "id_cierre="+idCierre);
 			alerta= (TcManticCierresAlertasDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresAlertasDto.class, "TcManticCierresAlertasDto", "row", params);
-			if(!(alerta!= null && alerta.isValid())){
+			if(!(alerta!= null && alerta.isValid())) {
+				DaoFactory.getInstance().updateAll(sesion, TcManticCierresAlertasDto.class, params);
 				alerta= new TcManticCierresAlertasDto();
 				alerta.setIdCierre(idCierre);
 				alerta.setIdNotifica(1L);
 				alerta.setIdUsuario(JsfBase.getIdUsuario());
-				alerta.setImporte(importe<= 0D ? 0D : importe);
+				alerta.setImporte(importe<= 0D ? 0D: importe);
 				alerta.setMensaje("El total de caja a sobrepasado el limite permitido, favor de realizar un retiro.");
 				regresar= DaoFactory.getInstance().insert(sesion, alerta)>= 1L;
 			} // if				

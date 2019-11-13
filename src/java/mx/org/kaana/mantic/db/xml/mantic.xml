@@ -1313,13 +1313,11 @@
 			<update id="rows">
         update 
 				  tc_mantic_cierres_alertas 
-				inner join
-				  tc_mantic_cierres_cajas on tc_mantic_cierres_alertas.id_cierre= tc_mantic_cierres_cajas.id_cierre
 				set 
-				  tc_mantic_cierres_alertas.id_notifica= 2
+				  id_notifica= 2
 				where 
-				  tc_mantic_cierres_alertas.id_cierre= {idCierre}
-				  and tc_mantic_cierres_cajas.id_caja= {idCaja}
+				  id_cierre= {idCierre}
+				  and id_notifica= 1
 			</update>
     </unit>
 		<unit id="TcManticCierresBitacoraDto">

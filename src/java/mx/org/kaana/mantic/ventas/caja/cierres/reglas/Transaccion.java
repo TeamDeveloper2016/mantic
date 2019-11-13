@@ -174,14 +174,15 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 			limite= (TcManticCajasDto)DaoFactory.getInstance().findById(TcManticCajasDto.class, caja.getIdCaja());
 			if(limite!= null) {
 				if(caja.getSaldo()< limite.getLimite()) {
-					params.put("idCaja", caja.getIdCaja());
 					params.put("idCierre", caja.getIdCierre());
 					DaoFactory.getInstance().updateAll(sesion, TcManticCierresAlertasDto.class, params);
 				} // if
 				else {
 				 existe= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaCierresCajasDto", "alerta", params);
 				 if(existe== null || existe.isEmpty()) {
-					 TcManticCierresAlertasDto alerta= new TcManticCierresAlertasDto(caja.getIdCaja(), JsfBase.getIdUsuario(), 1L, "EL SALDO EN EFECTIVO ["+ 
+  				 params.put("idCierre", caja.getIdCierre());
+					 DaoFactory.getInstance().updateAll(sesion, TcManticCierresAlertasDto.class, params);
+					 TcManticCierresAlertasDto alerta= new TcManticCierresAlertasDto(caja.getIdCierre(), JsfBase.getIdUsuario(), 1L, "EL SALDO EN EFECTIVO ["+ 
 						 Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, caja.getSaldo())+ 
 						 "] DE ESTA CAJA SUPERA AL LIMITE ["+ Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, limite.getLimite())
 						 + "] ESTABLECIDO PARA LA MISMA, EN EL PROCESO "+ (this.retiro.getIdAbono().equals(2L)? "RETIRO": "ABONO")+ "[AUTOMATICO]", -1L, caja.getSaldo());
