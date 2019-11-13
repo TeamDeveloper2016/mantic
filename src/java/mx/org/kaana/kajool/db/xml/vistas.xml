@@ -609,7 +609,7 @@
 				inner join
 				  tr_mantic_empresa_personal on tc_mantic_personas.id_persona= tr_mantic_empresa_personal.id_persona           				
 				inner join
-				  tr_mantic_empresas on tc_mantic_personas.id_empresa= tr_mantic_empresas.id_empresa           				
+				  tc_mantic_empresas on tr_mantic_empresa_personal.id_empresa= tc_mantic_empresas.id_empresa           				
 				inner join
 				  tc_janal_grupos on tc_janal_perfiles.id_grupo= tc_janal_grupos.id_grupo		
 				where
