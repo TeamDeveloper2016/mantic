@@ -17,11 +17,13 @@
 		RESERVED_NAMES: 'json',
 		RESERVED_GROUP: 'group',
 		RESERVED_KEY: 'CGOR',
+		RESERVED_SYMBOL: 'cgor-item-symbol',
 		nacional: '#iconoNacional',
 		georreferencia: '#iconoInformacion',
 		charts: {},
 		backup: {},
 		histoy: {},
+		selected: {},
 		init: function(names) { // Constructor
 			$echarts= this;
 			this.charts= names;
@@ -48,7 +50,10 @@
 			if(value[this.RESERVED_NAMES])
 				$.each(value[this.RESERVED_NAMES], function(id, value) {
 					if($('#'+ id).length> 0)
-						$('#'+ id).html(value);
+						if($('#'+ id).hasClass($echarts.RESERVED_SYMBOL))
+							$('#'+ id).html(value+ ' %');
+						else
+						  $('#'+ id).html(value);
 				}); 
 		},
 		create: function(id, value) {
@@ -166,21 +171,29 @@
 			});				
 		},
 		reset: function() {
+			janal.bloquear();
 			Object.assign(this.charts, this.backup);
 			$.each(this.charts, function(id, value) {
-				if(id!== $echarts.RESERVED_ID)
+				if(id=== $echarts.RESERVED_ID)
+					$echarts.search(value);
+			  else
   				$echarts.update(id, value, false);
-			});				
+			});	
+			this.toggle('display:none;');
+			return false;
 		},
 		add: function(items) {
 			$.each(items, function(id, value) {
-				if($echarts.charts[id])
-					console.info('Esta grafica ['+ id+ '] ya existe y se va a sobre escribir !');
  				$echarts.charts[id]= value;
-				if($echarts.charts[id]) 
-          $echarts.update(id, value);
-				else 
-					$echarts.create(id, value);
+				if(id=== $echarts.RESERVED_ID) {
+					$echarts.reserved(id, value);
+					$echarts.search(value);
+				} // if	
+				else
+					if($echarts.charts[id]) 
+						$echarts.update(id, value);
+					else 
+						$echarts.create(id, value);
 			});
 		},
 		remove: function(id) {
@@ -191,10 +204,23 @@
 			if(typeof(update)=== 'undefined')
 				update= true;
 			var ok= this.histoy[group]!== undefined;
-      if(ok && update) 
+      if(ok && update)
 			  this.refresh(this.histoy[group], false);
 			return ok;
 		},
+		valid: function(group) {
+			if(typeof(group)=== 'undefined')
+				if(this.selected['claveEntidad']) 
+				  group= this.selected.claveEntidad;
+			  else 
+				  group= 'RESERVED_KEY';
+			var ok= !this.exists(group, true);
+			if(ok)
+			  janal.bloquear();
+			else
+				this.toggle('');
+			return ok;
+   	}, 
 		clean: function() {
 		  this.histoy= {};
 		},
@@ -220,6 +246,7 @@
 				descripcion: token[4],
 				evento: (token.length>= 5? token[5]: '')
 			};
+			Object.assign(this.selected, value);
 			return JSON.stringify(value);
 		},
 		map: function(params) {
@@ -247,7 +274,7 @@
 			if(this.history[group]) {
 				if(this.history[group][id]) {
 					if(update)
-						if(id== this.RESERVED_ID)
+						if(id=== this.RESERVED_ID)
 							this.search(this.history[group][id]);
 						else
   				    this.update(id, this.history[group][id], false);	
