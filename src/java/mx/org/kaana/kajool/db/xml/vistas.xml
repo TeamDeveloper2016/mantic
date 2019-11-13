@@ -591,6 +591,8 @@
 				select
 			  	tc_janal_usuarios.id_usuario as id_key_usuario,
           tc_mantic_personas.id_persona,
+				  tc_mantic_empresas.clave as empresa,  
+				  tc_mantic_empresas.nombre as nombre_empresa,  
 				  if(isnull(tc_mantic_personas.nombres), ' ', tc_mantic_personas.nombres) nombres,
 					if(isnull(tc_mantic_personas.paterno), ' ', tc_mantic_personas.paterno) primer_apellido,
 					if(isnull(tc_mantic_personas.materno), ' ', tc_mantic_personas.materno) segundo_apellido,
@@ -606,6 +608,8 @@
 				  tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona    
 				inner join
 				  tr_mantic_empresa_personal on tc_mantic_personas.id_persona= tr_mantic_empresa_personal.id_persona           				
+				inner join
+				  tr_mantic_empresas on tc_mantic_personas.id_empresa= tr_mantic_empresas.id_empresa           				
 				inner join
 				  tc_janal_grupos on tc_janal_perfiles.id_grupo= tc_janal_grupos.id_grupo		
 				where
