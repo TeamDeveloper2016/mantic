@@ -482,7 +482,9 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 						if(!beanArticulo.getCosto().equals(articulo.getMayoreo()) && !beanArticulo.getCosto().equals(articulo.getMedioMayoreo())){
 							beanArticulo.setValor((Double) articulo.toValue(getPrecio()));
 							beanArticulo.setCosto((Double) articulo.toValue(getPrecio()));
-						} // if													
+						} // if		
+						else
+							((ArticuloVenta)beanArticulo).setDescuentoAsignado(true);						
 						if(descuentoVigente){
 							descuento= toDescuentoVigente(beanArticulo.getIdArticulo(), idCliente);
 							if(descuento!= null)
@@ -494,6 +496,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				} // for					
 				if(getAdminOrden().getArticulos().size()>1){					
 					getAdminOrden().toCalculate();
+					getAdminOrden().cleanPrecioDescuentoArticulo();
 					UIBackingUtilities.update("@(.filas) @(.recalculo) @(.informacion)");
 				} // if
 			} // if			
