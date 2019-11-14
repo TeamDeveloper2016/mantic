@@ -107,8 +107,8 @@
 										<p:inputNumber id="inicial" inputStyleClass="janal-wid-98 janal-column-right janal-key-kardex janal-color-orange" value="#{manticCatalogosInventariosConteos.attrs.vigente.inicial}" styleClass="filas" readonly="#{manticCatalogosInventariosConteos.habilitar}"/>	
 										<p:commandButton id="agregarInventario" process="@this @(.filas)" update="tabla" icon="fa fa-cart-plus" title="Agregar/Actualizar inventario" style="float:right;" styleClass="janal-key-kardex filas" action="#{manticCatalogosInventariosConteos.doConteo}" disabled="#{manticCatalogosInventariosConteos.habilitar}" onstart="return janal.execute();" oncomplete="$('#codigos_input').focus(); janal.desbloquear();"/>
 									</p:panelGrid>
-  							  <p:outputLabel value="Fecha:"/>
-  								<p:inputText value="#{manticCatalogosInventariosConteos.doRegistro(manticCatalogosInventariosConteos.attrs.vigente.registro)}" styleClass="janal-wid-96 filas" readonly="true"/>
+  							  <p:outputLabel value="Ultimo mov.:"/>
+  								<p:inputText value="#{manticCatalogosInventariosConteos.attrs.ultimo}" styleClass="janal-wid-96 filas" readonly="true"/>
 									<p:outputLabel for="minimo" value="Stock mínimo:"/>
 									<p:inputNumber id="minimo" inputStyleClass="janal-wid-96 janal-column-right" value="#{manticCatalogosInventariosConteos.articulo.minimo}" styleClass="filas"/>                    
 									<p:outputLabel for="maximo" value="Stock máximo:"/>
@@ -133,7 +133,7 @@
 								</p:panelGrid>	
 								<p:panel id="panelImage" header="#{manticCatalogosInventariosConteos.attrs.articulo.propio}" styleClass="TexAlCenter janal-wid-100-txt" style="height:98%">
 									<a id="source-image" data-magnify="gallery" data-caption="#{manticCatalogosInventariosConteos.attrs.articulo.nombre}" data-group="icon-gallery" href="" title="Click para ver más grande la imagen">
-										<p:graphicImage id="icon-image" value="#{manticCatalogosInventariosConteos.image}" width="170" height="135" stream="false" style="cursor:zoom-in;width:100%;"/>
+										<p:graphicImage id="icon-image" value="#{manticCatalogosInventariosConteos.image}" width="170" height="135" stream="false" style="cursor:zoom-in;"/>
 									</a>	
 								</p:panel>
 							</p:panelGrid>

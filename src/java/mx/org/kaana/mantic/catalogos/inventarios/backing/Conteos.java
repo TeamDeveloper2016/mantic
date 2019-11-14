@@ -22,6 +22,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Global;
+import mx.org.kaana.libs.formato.Periodo;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -70,6 +71,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());	
     	this.attrs.put("buscaPorCodigo", false);
+    	this.attrs.put("ultimo", "");
 			this.articulo= new TcManticAlmacenesArticulosDto();
 			this.toLoadAlmacenes();
 			if(this.attrs.get("xcodigo")!= null) {
@@ -118,6 +120,7 @@ public class Conteos extends IBaseFilter implements Serializable {
       this.lazyModel = new FormatCustomLazy("VistaInventariosDto", this.attrs, columns);
       UIBackingUtilities.resetDataTable();
 			this.toLoadAlmacenArticulo();
+			this.toSearchUltimo();
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
@@ -218,7 +221,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 
 	private void updateArticulo(UISelectEntity articulo) throws Exception {
 		List<Columna> columns= null;
-    try {
+		try {
 			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -226,17 +229,16 @@ public class Conteos extends IBaseFilter implements Serializable {
       columns.add(new Columna("unidadMedida", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+			this.attrs.put("ultimo", "");
 			this.attrs.put("idArticulo", null);
 			if(articulo.size()> 1) {
 				this.image= LoadImages.getImage(articulo.toLong("idArticulo"));
   			this.attrs.put("idArticulo", articulo.toLong("idArticulo"));
 				Entity solicitado= (Entity)DaoFactory.getInstance().toEntity("VistaKardexDto", "row", this.attrs);
 				if(solicitado!= null) {
-					UIBackingUtilities.toFormatEntity(solicitado, columns);
+				  UIBackingUtilities.toFormatEntity(solicitado, columns);
 					this.attrs.put("articulo", solicitado);
-					Value ultimo= (Value)DaoFactory.getInstance().toField("TcManticArticulosBitacoraDto", "ultimo", this.attrs, "registro");
-					if(ultimo!= null)
-					  this.attrs.put("ultimo", Global.format(EFormatoDinamicos.FECHA_HORA, ultimo.toTimestamp()));
+					this.toSearchUltimo();
 					UIBackingUtilities.execute("jsKardex.callback("+ solicitado +");");
 				} // if	
 			} // if
@@ -251,6 +253,36 @@ public class Conteos extends IBaseFilter implements Serializable {
     } // finally
 	}
 	
+	private void toSearchUltimo() {
+		Map<String, Object> params= null;
+		List<Columna> columns     = null;
+		try {
+			params = new HashMap<>();
+			columns= new ArrayList<>();
+			this.attrs.put("ultimo", "");
+	  	if(this.attrs.get("idArticulo")!= null) {
+				Periodo periodo= new Periodo();
+				periodo.addMeses(-12);
+				params.put("idArticulo", this.attrs.get("idArticulo"));
+				params.put("idAlmacen", this.attrs.get("idAlmacen"));
+				params.put("registro", periodo.toString());
+				columns.add(new Columna("concepto", EFormatoDinamicos.MAYUSCULAS));
+				columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+				Entity ultimo= (Entity)DaoFactory.getInstance().toEntity("VistaKardexDto", "conteo", params);
+				UIBackingUtilities.toFormatEntity(ultimo, columns);
+				if(ultimo!= null)
+					this.attrs.put("ultimo", ultimo.toString("concepto")+ " "+ ultimo.toString("registro"));
+			} // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+      Methods.clean(columns);
+		} // finally
+	}
 	public void doUpdateArticulo(String codigo) {
     try {
   		List<UISelectEntity> articulos= this.doCompleteArticulo(codigo);

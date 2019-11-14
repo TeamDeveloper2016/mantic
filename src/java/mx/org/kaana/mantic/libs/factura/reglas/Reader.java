@@ -9,6 +9,7 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.mantic.libs.factura.beans.ComprobanteFiscal;
 import mx.org.kaana.mantic.libs.factura.beans.Concepto;
 import mx.org.kaana.mantic.libs.factura.beans.Emisor;
@@ -233,7 +234,7 @@ public class Reader implements Serializable{
 									concepto.setImporte(valAttr);
 									break;
 								case "NoIdentificacion":
-									concepto.setNoIdentificacion(valAttr);
+									concepto.setNoIdentificacion(valAttr!= null? Cadena.eliminar(valAttr, ' '): valAttr);
 									break;
 								case "Unidad":
 									concepto.setUnidad(valAttr);
