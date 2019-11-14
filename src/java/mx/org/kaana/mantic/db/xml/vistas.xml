@@ -2964,6 +2964,7 @@
 					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
 				where 
 					tc_mantic_empresas.id_empresa in ({idEmpresa})
+			  	and tc_mantic_articulos.id_articulo_tipo= 1
 				  and {condicion}					
 				group by 
 				  tc_mantic_articulos.nombre        
