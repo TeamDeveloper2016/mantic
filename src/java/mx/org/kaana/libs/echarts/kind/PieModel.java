@@ -132,5 +132,5 @@ public class PieModel extends ChartModel implements Serializable {
 			item.getLabel().getNormal().setFormatter(format);
 		} // for
 	}
-
+	
 }

@@ -147,4 +147,10 @@ public class BarModel extends BaseBarModel implements Serializable {
 		} // for
 	}
 	
+	public void removeMarks() {
+		for (Serie item : this.series) {
+			item.setMarkPoint(null);
+		} // for
+	}
+	
 }

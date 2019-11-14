@@ -18,17 +18,97 @@
 		RESERVED_GROUP: 'group',
 		RESERVED_KEY: 'CGOR',
 		RESERVED_SYMBOL: 'cgor-item-symbol',
+		RESERVED_CAROUSEL: 'cgor-item-carousel',
+		RESERVED_HIDE: 'cgor-item-hide',
 		nacional: '#iconoNacional',
 		georreferencia: '#iconoInformacion',
 		charts: {},
 		backup: {},
-		histoy: {},
+		history: {},
 		selected: {},
+		carousel: {
+			index: 0,
+			top: 0,
+			items:[]
+		},
 		init: function(names) { // Constructor
 			$echarts= this;
 			this.charts= names;
 			Object.assign(this.backup, names);
 		}, // init
+		start: function() {
+			var items= $('.'+ this.RESERVED_CAROUSEL);
+			if(items.length> 0) {
+				$.each(items, function() {
+					$(this).addClass($echarts.RESERVED_HIDE);
+					$echarts.carousel.items.push($(this).attr('id'));
+				});
+				this.carousel.top= items.length- 1;
+				this.show(this.carousel.items[0]);
+			} // if	
+		},
+		display: function() {
+			if($("#index").length> 0) 
+				if(this.carousel.items.length> 0)
+					$("#index").html('chart: ['+ this.carousel.items[this.carousel.index]+ '] '+ this.carousel.index+ ' de '+ this.carousel.top);
+				else
+				  $("#index").html(this.carousel.index+ ' de '+ this.carousel.top);
+		},
+		show: function(id) {
+			var items= $('[id="'+ id+ '"]');
+			if(items.length> 0) 
+				$.each(items, function() {
+					$(this).removeClass($echarts.RESERVED_HIDE);
+				});
+			this.display();
+		},
+		hide: function(id) {
+			var items= $('[id="'+ id+ '"]');
+			if(items.length> 0) 
+				$.each(items, function() {
+					$(this).addClass($echarts.RESERVED_HIDE);
+				});
+		},
+		inc: function(group) {
+			var ok= true;
+			if(typeof(group)=== 'undefined')
+			  group= this.RESERVED_KEY;
+			this.hide(this.carousel.items[this.carousel.index]);
+			if(this.carousel.index< this.carousel.top)
+				this.carousel.index++;
+			else
+				this.carousel.index= 0;
+			this.show(this.carousel.items[this.carousel.index]);
+			this.display();
+			if(this.paint(this.carousel.items[this.carousel.index], group, true))
+				ok= false;
+			else
+				this.single(this.carousel.items[this.carousel.index], group);
+			return ok;
+		},
+		dec: function(group) {
+			var ok= true;
+			if(typeof(group)=== 'undefined')
+			  group= this.RESERVED_KEY;
+			this.hide(this.carousel.items[this.carousel.index]);
+			if(this.carousel.index> 0)
+				this.carousel.index--;
+			else
+				this.carousel.index= this.carousel.top;
+			this.show(this.carousel.items[this.carousel.index]);
+			this.display();
+			if(this.paint(this.carousel.items[this.carousel.index], group, true))
+				ok= false;
+			else
+				this.single(this.carousel.items[this.carousel.index], group);
+			return ok;
+		},
+		single: function(id, group) {
+      if(typeof refreshEChartSingle!== "undefined") {
+				janal.bloquear();
+			  refreshEChartSingle(id, group);
+			} // if	
+		},
 		load: function(names) {
 			if(typeof(names)!== 'undefined') {
 				this.charts= names;
@@ -49,11 +129,11 @@
 		search: function(value) {
 			if(value[this.RESERVED_NAMES])
 				$.each(value[this.RESERVED_NAMES], function(id, value) {
-					if($('#'+ id).length> 0)
-						if($('#'+ id).hasClass($echarts.RESERVED_SYMBOL))
-							$('#'+ id).html(value+ ' %');
-						else
-						  $('#'+ id).html(value);
+					var items= $('[id="'+ id+ '"]');
+					if(items.length> 0) 
+						$.each(items, function() {
+ 							$(this).html(value+ ($(this).hasClass($echarts.RESERVED_SYMBOL)? ' %': ''));
+					  });
 				}); 
 		},
 		create: function(id, value) {
@@ -69,9 +149,9 @@
 			// si se definio un agrupador se mete al historial para ya no ir la backend
 			if(!value[this.RESERVED_GROUP]) 
          value[this.RESERVED_GROUP]= this.RESERVED_KEY;
-			if(!this.histoy[value[this.RESERVED_GROUP]]) 
-				this.histoy[value[this.RESERVED_GROUP]]= {};
-			this.histoy[value[this.RESERVED_GROUP]][id]= value;
+			if(!this.history[value[this.RESERVED_GROUP]]) 
+				this.history[value[this.RESERVED_GROUP]]= {};
+			this.history[value[this.RESERVED_GROUP]][id]= value;
 		},
 		send: function (params) {
 			var json= {
@@ -128,8 +208,16 @@
 				console.info('El marco ['+ id+ '] de la grafica no existe !');
 		},
 		label: function (value) {
-			return value.replace(/\s/g, '\n');
+			value= this.capital(value);
+			return value.length> 15? value.replace(/\s/g, '\n'): value;
 		},
+		capital: function(text) {
+			text= text.toLowerCase();
+			text= text.charAt(0).toUpperCase()+ text.slice(1);
+			if(text> 75)
+				text= text.substring(0, 75)+ '...';
+			return text;
+		}, 
 		format: function (params, type) {
 			// params.seriesName
 			// params.name
@@ -151,13 +239,13 @@
 					text= data.toLocaleString('en-US', {style: 'currency', currency: 'USD', minimumFractionDigits: 1, maximumFractionDigits: 2}); // $1,242.50
 					break;
 				case 'percent':
-					text= params.name+ "\n("+ data.toLocaleString('en-US', {style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 2})+ ")"; // (37.53%)
+					text= this.capital(params.name)+ "\n("+ data.toLocaleString('en-US', {style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 2})+ ")"; // (37.53%)
 					break;
 				case 'cgor-double':
-					text= params.name+ "\n"+ data.toLocaleString('en-US', {style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1}); // 1,234,567.1
+					text= this.capital(params.name)+ "\n"+ data.toLocaleString('en-US', {style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1}); // 1,234,567.1
 					break;
 				case 'cgor-percent':
-					text= params.name+ "\n("+ data.toLocaleString('en-US', {style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1})+ ")"; // 37.5%
+					text= this.capital(params.name)+ "\n("+ data.toLocaleString('en-US', {style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1})+ ")"; // 37.5%
 					break;
 				default:
 					text= data.toLocaleString('en-US'); // 1,234,567.123
@@ -184,7 +272,6 @@
 		},
 		add: function(items) {
 			$.each(items, function(id, value) {
- 				$echarts.charts[id]= value;
 				if(id=== $echarts.RESERVED_ID) {
 					$echarts.reserved(id, value);
 					$echarts.search(value);
@@ -192,8 +279,10 @@
 				else
 					if($echarts.charts[id]) 
 						$echarts.update(id, value);
-					else 
+					else {
+    				$echarts.charts[id]= value;
 						$echarts.create(id, value);
+					} // if	
 			});
 		},
 		remove: function(id) {
@@ -203,9 +292,9 @@
 		exists: function(group, update) {
 			if(typeof(update)=== 'undefined')
 				update= true;
-			var ok= this.histoy[group]!== undefined;
+			var ok= this.history[group]!== undefined;
       if(ok && update)
-			  this.refresh(this.histoy[group], false);
+			  this.refresh(this.history[group], false);
 			return ok;
 		},
 		valid: function(group) {
@@ -222,7 +311,7 @@
 			return ok;
    	}, 
 		clean: function() {
-		  this.histoy= {};
+		  this.history= {};
 		},
 		get: function(id) {
 			var json= undefined;
@@ -262,11 +351,11 @@
 		paint: function(id, group, update) {
 			var ok= false;
 			if(typeof(group)=== 'undefined')
-			  group= this.RESERVED_GROUP;
+			  group= this.RESERVED_KEY;
 			else
 				if(typeof(group)=== "boolean") {
 				  update= group;
-  			  group = this.RESERVED_GROUP;
+  			  group = this.RESERVED_KEY;
 				} // if	
 			if(typeof(update)=== 'undefined')
 				update= false;
@@ -290,4 +379,5 @@ jsEcharts= new Janal.Control.Echarts.Core(Janal.Control.Echarts.names);
 
 $(document).ready(function() {
 	jsEcharts.load(Janal.Control.Echarts.names);
+	jsEcharts.start();
 });

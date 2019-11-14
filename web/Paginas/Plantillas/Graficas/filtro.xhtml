@@ -11,10 +11,11 @@
   <ui:define name="librerias">
 		<h:outputScript library="janal" name="echarts/echarts.min-4.2.2.js"/>
 		<h:outputScript library="janal" name="echarts/resize-sensor-0.0.1.js"/>
-		<h:outputScript library="janal" name="core/jquery.janal.echarts.core-0.2.0.js"/>
+		<h:outputScript library="janal" name="core/jquery.janal.echarts.core-0.2.6.js"/>
     <script type="text/javascript">
     //<![CDATA[ 
-    //]]>
+
+//]]>
 			Janal.Control.Echarts.names= {
 				items   : {json: {total: '1,234.00', subtotal: '$ 1,2345.12', importe: 1234, general: 'Esto es dinámico 1234.12%'}},
 				multiple: {json: #{kajoolPlantillasGraficasFiltro.attrs.multiple}},
@@ -30,6 +31,9 @@
 			 });
     </script>		
 		<style type="text/css">
+			.cgor-item-hide {
+				display: none;
+			}
 			.cgor-chart-panel {
 				width:100%; 
 				height:420px; 
@@ -41,40 +45,64 @@
 		</style>
   </ui:define>
   <ui:define name="contenido">
-		<input type="button" value="Load" onclick="jsEcharts.frames();"/>
-		<pe:remoteCommand name="refreshEChartFrame" process="@this" actionListener="#{kajoolPlantillasGraficasFiltro.doRefreshEChartWith}">  
+		<div style="display:block;">
+			<div id="index">0</div>
+			<div id="a" class="cgor-item-carousel" style="width:450px; height:160px;background-color:lavenderblush;">A</div>
+			<div id="b" class="cgor-item-carousel" style="width:450px; height:160px;">B</div>
+			<div id="c" class="cgor-item-carousel" style="width:450px; height:160px;">C</div>
+			<div id="d" class="cgor-item-carousel" style="width:450px; height:160px;">D</div>
+			<div id="e" class="cgor-item-carousel" style="width:450px; height:160px;">E</div>
+			<div id="f" class="cgor-item-carousel" style="width:450px; height:160px;">F</div>
+			<div id="g" class="cgor-item-carousel" style="width:450px; height:160px;">G</div>
+			<div id="h" class="cgor-item-carousel" style="width:450px; height:160px;">H</div>
+			<div id="i" class="cgor-item-carousel" style="width:450px; height:160px;">I</div>
+			<div style="width:450px;">
+				<div onclick="jsEcharts.dec();" style="cursor:pointer;float:left;">Anterior</div>
+				<div onclick="jsEcharts.inc();" style="cursor:pointer;float:right;">Siguiente</div>
+			</div>	
+		</div>	
+		<br/>
+		<br/>
+		<pe:remoteCommand name="refreshEChartSingle" process="@this" actionListener="#{kajoolPlantillasGraficasFiltro.doRefreshEChartSingle}" oncomplete="janal.desbloquear();">  
+			<pe:methodSignature parameters="java.lang.String, java.lang.String"/>  
+			<pe:methodParam name="id"/>  
+			<pe:methodParam name="group"/>  
+		</pe:remoteCommand>
+		<pe:remoteCommand name="refreshEChartFrame" process="@this" actionListener="#{kajoolPlantillasGraficasFiltro.doRefreshEChartWith}" oncomplete="janal.desbloquear();">  
       <pe:methodSignature parameters="mx.org.kaana.libs.echarts.json.ItemSelected" />  
       <pe:methodParam name="itemSelected">  
         <pe:convertJson />  
       </pe:methodParam>  			
 		</pe:remoteCommand>
-		<div class="ui-g cgor-app-main" style="position: relative;">
-			<div class="ui-g-12 ui-md-6 ui-lg-6">
-				<div id='total'>
-					Esta es una gráfica de barras en vertical con dos categorias
-				</div>	
-				<div class="cgor-chart-panel">
-				  <div id="multiple" class="cgor-chart-panel">
-					  Gráficas de barras de series multiples
-				  </div>	
-				</div>	
-				<div>
-					Esta es una gráfica de barras en vertical con dos categorias
-				</div>	
-			</div>
-			<div class="ui-g-12 ui-md-6 ui-lg-6">
-				<div id='subtotal'>
-					Esta es una gráfica de barras sencilla en horizontal
-				</div>	
-				<div class="cgor-chart-panel">
-					<div id="simple" class="cgor-chart-panel">
-						Gráficas de barras de serie simple
+		<div class="cgor-app-main">
+			<div class="ui-g cgor-chart-panel">
+				<div class="ui-g-12 ui-md-6 ui-lg-6">
+					<div id='total'>
+						Esta es una gráfica de barras en vertical con dos categorias
 					</div>	
-				</div>	
-				<div>
-					Esta es una gráfica de barras sencilla en horizontal
-				</div>	
-			</div>
+					<div class="cgor-chart-panel">
+						<div id="multiple" class="cgor-chart-panel">
+							Gráficas de barras de series multiples
+						</div>	
+					</div>	
+					<div>
+						Esta es una gráfica de barras en vertical con dos categorias
+					</div>	
+				</div>
+				<div class="ui-g-12 ui-md-6 ui-lg-6">
+					<div id='subtotal'>
+						Esta es una gráfica de barras sencilla en horizontal
+					</div>	
+					<div class="cgor-chart-panel">
+						<div id="simple" class="cgor-chart-panel">
+							Gráficas de barras de serie simple
+						</div>	
+					</div>	
+					<div>
+						Esta es una gráfica de barras sencilla en horizontal
+					</div>	
+				</div>
+			</div>	
 		</div>	
 		<div class="ui-g cgor-chart-panel">
 			<div class="ui-g-12 ui-md-6 ui-lg-6">
@@ -103,34 +131,34 @@
 					Esta es una gráfica de dona
 				</div>	
 			</div>
-		</div>		
-		<div class="ui-g cgor-chart-panel">
-			<div class="ui-g-12 ui-md-6 ui-lg-6">
-				<div>
-					Esta es una gráfica en apilada con dos series
-				</div>	
-				<div class="cgor-chart-panel">
-					<div id="stack" class="cgor-chart-panel">
-						Gráficas apilada
+			<div class="ui-g cgor-chart-panel">
+				<div class="ui-g-12 ui-md-6 ui-lg-6">
+					<div>
+						Esta es una gráfica en apilada con dos series
 					</div>	
-				</div>	
-				<div>
-					Esta es una gráfica en apilada con dos series
-				</div>	
-			</div>
-			<div class="ui-g-12 ui-md-6 ui-lg-6">
-				<div>
-					Esta es una gráfica de barras sencilla en vertical
-				</div>	
-				<div class="cgor-chart-panel">
-					<div id="vertical" class="cgor-chart-panel">
-						Gráficas apilada
+					<div class="cgor-chart-panel">
+						<div id="stack" class="cgor-chart-panel">
+							Gráficas apilada
+						</div>	
 					</div>	
-				</div>	
-				<div>
-					Esta es una gráfica de barras sencilla en vertical
-				</div>	
-			</div>
+					<div>
+						Esta es una gráfica en apilada con dos series
+					</div>	
+				</div>
+				<div class="ui-g-12 ui-md-6 ui-lg-6">
+					<div>
+						Esta es una gráfica de barras sencilla en vertical
+					</div>	
+					<div class="cgor-chart-panel">
+						<div id="vertical" class="cgor-chart-panel">
+							Gráficas apilada
+						</div>	
+					</div>	
+					<div>
+						Esta es una gráfica de barras sencilla en vertical
+					</div>	
+				</div>
+			</div>	
 		</div>	
 		<p:commandButton value="Clean" icon="fa fa-clean" actionListener="#{kajoolPlantillasGraficasFiltro.doCleanDB}" rendered="false"/>
   </ui:define>   

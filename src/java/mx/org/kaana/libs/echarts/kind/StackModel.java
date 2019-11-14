@@ -146,5 +146,11 @@ public class StackModel extends BaseBarModel implements Serializable {
 			item.getLabel().getNormal().setFormatter(format);
 		} // for
 	}
-	
+
+	public void removeMarks() {
+		for (mx.org.kaana.libs.echarts.bar.Serie item : this.series) {
+			item.setMarkPoint(null);
+		} // for
+	}
+
 }

@@ -102,13 +102,33 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			model.addLine(new CustomLine("Como", Serie.toValue(), Colors.COLOR_GREEN, ETypeLine.DASHED));
 			model.addLine(new CustomLine("Estas", Serie.toValue(), Colors.COLOR_BLUE, ETypeLine.DOTTED));
 			model.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'double');}");
-			String json= model.toJson();
-			UIBackingUtilities.execute("jsEcharts.update('"+ itemSelected.getChart()+ "', {group:'00', json:"+ json+ "});");
+			UIBackingUtilities.execute("jsEcharts.update('"+ itemSelected.getChart()+ "', {group:'00', json:"+ model.toJson()+ "});");
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);
 		} // catch
 	}
+
+	public void doRefreshEChartSingle(String id, String group) {
+		LOG.info(id);
+		try {
+      BarModel model= new BarModel(new Title("CGOR", null), EBarOritentation.VERTICAL);
+			model.addLine(new Coordinate("Hola", 6, 150, Colors.COLOR_RED, ETypeLine.SOLID));
+			model.addLine(new CustomLine("Como", Serie.toValue(), Colors.COLOR_GREEN, ETypeLine.DASHED));
+			model.addLine(new CustomLine("Estas", Serie.toValue(), Colors.COLOR_BLUE, ETypeLine.DOTTED));
+			model.removeMarks();
+			model.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'double');}");
+			StringBuilder sb= new StringBuilder();
+			sb.append("jsEcharts.add({");
+			sb.append(id).append(": {json:").append(model.toJson()).append("}");
+			sb.append("});");
+			UIBackingUtilities.execute(sb.toString());
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+	}	
 	
 }
