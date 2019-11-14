@@ -2933,6 +2933,42 @@
 			</select>
 		</unit>
 		<unit id="VistaArticulosDto">
+			<select id="conteo">
+				select 
+				  tc_mantic_articulos.id_articulo as id_key,
+				  tc_mantic_articulos.nombre,
+				  tc_mantic_articulos.descripcion,
+				  tc_mantic_articulos.actualizado,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and {condicion}) as propio,
+				  ifnull(tc_mantic_articulos.id_imagen, 0) as id_imagen,
+				  ifnull(tc_mantic_imagenes.alias, ' ') as alias,
+				  tc_mantic_inventarios.stock as cantidad,
+				  tc_mantic_inventarios.registro as fecha,
+				  tc_mantic_inventarios.registro as hora,
+				  tc_mantic_inventarios.ejercicio
+				from 
+					tc_mantic_articulos
+				left join
+					tc_mantic_imagenes on tc_mantic_articulos.id_imagen = tc_mantic_imagenes.id_imagen
+				inner join
+				  tc_mantic_inventarios on tc_mantic_articulos.id_articulo= tc_mantic_inventarios.id_articulo and tc_mantic_inventarios.id_almacen= {idAlmacen}
+				inner join
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+				inner join 
+					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
+				inner join
+					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+				inner join 
+					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+				inner join 
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+				where 
+					tc_mantic_empresas.id_empresa in ({idEmpresa})
+				  and {condicion}					
+				group by 
+				  tc_mantic_articulos.nombre        
+				{sortOrder}
+			</select>
 			<select id="row">
 				select 
 				  tc_mantic_articulos.id_articulo as id_key,

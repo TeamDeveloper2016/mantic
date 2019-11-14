@@ -2267,6 +2267,15 @@
         from      
           tc_mantic_inventarios
       </select>
+			<select id="ejercicios">
+        select      
+          distinct(ejercicio),
+          ejercicio as id_key
+        from      
+          tc_mantic_inventarios
+				order by
+				  ejercicio desc
+      </select>
 			<delete id="rows">
         delete from tc_mantic_inventarios where id_inventario = {idInventario}
       </delete>
