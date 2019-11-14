@@ -3030,7 +3030,7 @@
 				  tc_mantic_articulos.limite_medio_mayoreo as "limite menudeo",
 				  tc_mantic_articulos.limite_mayoreo as "limite mayoreo",
 				  tc_mantic_articulos.minimo as "stock minimo",
-				  tc_mantic_articulos.maximo as "stock_maximo",
+				  tc_mantic_articulos.maximo as "stock maximo",
 					tc_mantic_articulos.sat,
 					tc_mantic_articulos.actualizado
 				from 
