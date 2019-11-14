@@ -279,7 +279,7 @@ public abstract class IAdminArticulos implements Serializable {
 		} // catch		
 	} // validatePrecioArticulo
 	
-	protected void cleanPrecioDescuentoArticulo() throws Exception{		
+	public void cleanPrecioDescuentoArticulo() throws Exception{		
 		ArticuloVenta articuloPivote = null;
 		try {
 			for(Articulo articulo: this.getArticulos()){				
