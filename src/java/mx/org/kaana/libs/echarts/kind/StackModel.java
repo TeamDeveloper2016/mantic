@@ -109,6 +109,7 @@ public class StackModel extends BaseBarModel implements Serializable {
 		for (Serie item : this.series) {
 			String color= item.getData().get(0).getItemStyle().getColor();
 			item.getLabel().getNormal().setFormatter("{a}\\n{c}");
+			item.getLabel().getNormal().setPosition("inside");
 			super.getColor().add(color);
 			for (String element: this.getxAxis().getData()) {
 				if(!item.getData().contains(new Value(element)))

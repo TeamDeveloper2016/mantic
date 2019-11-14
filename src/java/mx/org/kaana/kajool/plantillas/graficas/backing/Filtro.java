@@ -115,13 +115,14 @@ public class Filtro extends IBaseAttribute implements Serializable {
 		try {
       BarModel model= new BarModel(new Title("CGOR", null), EBarOritentation.VERTICAL);
 			model.addLine(new Coordinate("Hola", 6, 150, Colors.COLOR_RED, ETypeLine.SOLID));
-			model.addLine(new CustomLine("Como", Serie.toValue(), Colors.COLOR_GREEN, ETypeLine.DASHED));
-			model.addLine(new CustomLine("Estas", Serie.toValue(), Colors.COLOR_BLUE, ETypeLine.DOTTED));
+			//model.addLine(new CustomLine("Como", Serie.toValue(), Colors.COLOR_GREEN, ETypeLine.DASHED));
+			//model.addLine(new CustomLine("Estas", Serie.toValue(), Colors.COLOR_BLUE, ETypeLine.DOTTED));
+			model.toCustomFontSize(16);
 			model.removeMarks();
 			model.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'double');}");
 			StringBuilder sb= new StringBuilder();
 			sb.append("jsEcharts.add({");
-			sb.append(id).append(": {json:").append(model.toJson()).append("}");
+			sb.append(id).append(": {group: '").append(group).append("', json:").append(model.toJson()).append(", title: '").append("Titulo demo "+ id.toUpperCase()).append("'}");
 			sb.append("});");
 			UIBackingUtilities.execute(sb.toString());
 		} // try

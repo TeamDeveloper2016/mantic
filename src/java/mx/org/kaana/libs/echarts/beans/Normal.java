@@ -14,6 +14,7 @@ public class Normal implements Serializable {
 
 	private static final long serialVersionUID=-7749442518672455859L;
 
+	private String color;
 	private String fontFamily;
 	private Integer fontSize;
 	private Boolean show;
@@ -30,7 +31,7 @@ public class Normal implements Serializable {
 	
 	*/
 	public Normal() {
-		this("inside");
+		this("outside"); // inside
 	}
 
 	public Normal(String position) {
@@ -41,8 +42,16 @@ public class Normal implements Serializable {
 		this.position=position;
 		this.formatter=formatter;
 		this.fontFamily="Roboto, sans-serif";
-    this.fontSize=11;
+    this.fontSize=19;
 		this.show=true;
+	}
+
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color=color;
 	}
 
 	public Boolean getShow() {
@@ -87,7 +96,7 @@ public class Normal implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Normal{"+"fontFamily="+fontFamily+", fontSize="+fontSize+", show="+show+", position="+position+", formatter="+formatter+'}';
+		return "Normal{"+"color="+color+", fontFamily="+fontFamily+", fontSize="+fontSize+", show="+show+", position="+position+", formatter="+formatter+'}';
 	}
 	
 }

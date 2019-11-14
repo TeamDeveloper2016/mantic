@@ -15,6 +15,8 @@
 	Janal.Control.Echarts.Core= Class.extend({
 		RESERVED_ID: 'items',
 		RESERVED_NAMES: 'json',
+		RESERVED_TITLE: 'title',
+		RESERVED_HEADER: 'cgor-item-title',
 		RESERVED_GROUP: 'group',
 		RESERVED_KEY: 'CGOR',
 		RESERVED_SYMBOL: 'cgor-item-symbol',
@@ -25,15 +27,18 @@
 		charts: {},
 		backup: {},
 		history: {},
-		selected: {},
+		selected: {
+			group: ''
+		},
 		carousel: {
 			index: 0,
 			top: 0,
 			items:[]
 		},
 		init: function(names) { // Constructor
-			$echarts= this;
+			$echarts   = this;
 			this.charts= names;
+			this.selected.group= this.RESERVED_KEY;
 			Object.assign(this.backup, names);
 		}, // init
 		start: function() {
@@ -72,7 +77,7 @@
 		inc: function(group) {
 			var ok= true;
 			if(typeof(group)=== 'undefined')
-			  group= this.RESERVED_KEY;
+			  group= this.selected.group;
 			this.hide(this.carousel.items[this.carousel.index]);
 			if(this.carousel.index< this.carousel.top)
 				this.carousel.index++;
@@ -89,7 +94,7 @@
 		dec: function(group) {
 			var ok= true;
 			if(typeof(group)=== 'undefined')
-			  group= this.RESERVED_KEY;
+			  group= this.selected.group;
 			this.hide(this.carousel.items[this.carousel.index]);
 			if(this.carousel.index> 0)
 				this.carousel.index--;
@@ -102,6 +107,13 @@
 			else
 				this.single(this.carousel.items[this.carousel.index], group);
 			return ok;
+		},
+		begin: function() {
+			this.hide(this.carousel.items[this.carousel.index]);
+			this.carousel.index= 0;
+			this.show(this.carousel.items[this.carousel.index]);
+			this.display();
+			return this.paint(this.carousel.items[this.carousel.index], this.selected.group, true);
 		},
 		single: function(id, group) {
       if(typeof refreshEChartSingle!== "undefined") {
@@ -141,6 +153,7 @@
   			window[id]= echarts.init(document.getElementById(id), {renderer: 'svg', width: 'auto', height: 'auto'});
 	  		window[id].setOption(value[this.RESERVED_NAMES], true);
 		  	window[id].on('click', 'series', function (params) {params.chart= id; $echarts.send(params);});
+        this.title(id, value);
 			} // id
 			else
 				console.info('El marco ['+ id+ '] de la grafica no existe !');
@@ -184,6 +197,14 @@
 					$echarts.update(id, value, look);
 			}); 
 		},
+		title: function(id, value) {
+			if(value[this.RESERVED_TITLE])
+			  if($('#'+ id+ '-'+ this.RESERVED_TITLE).length> 0)
+				  $('#'+ id+ '-'+ this.RESERVED_TITLE).html(value[this.RESERVED_TITLE]);
+			  else
+			    if($('.'+ this.RESERVED_HEADER).length> 0)
+				    $('.'+ this.RESERVED_HEADER).html(value[this.RESERVED_TITLE]);
+		},
 		update: function(id, value, look) {
 			if(typeof(look)=== 'undefined')
 				look= true;
@@ -193,6 +214,7 @@
 					this.charts[id]= value;
 					window[id].clear();
 					window[id].setOption(value[this.RESERVED_NAMES]);
+					this.title(id, value);
 					if(look)
 					  this.reserved(id, value);
 				} // if	
@@ -272,10 +294,9 @@
 		},
 		add: function(items) {
 			$.each(items, function(id, value) {
-				if(id=== $echarts.RESERVED_ID) {
-					$echarts.reserved(id, value);
+				$echarts.reserved(id, value);
+				if(id=== $echarts.RESERVED_ID) 
 					$echarts.search(value);
-				} // if	
 				else
 					if($echarts.charts[id]) 
 						$echarts.update(id, value);
@@ -302,7 +323,7 @@
 				if(this.selected['claveEntidad']) 
 				  group= this.selected.claveEntidad;
 			  else 
-				  group= 'RESERVED_KEY';
+				  group= this.selected.group;
 			var ok= !this.exists(group, true);
 			if(ok)
 			  janal.bloquear();
@@ -351,11 +372,11 @@
 		paint: function(id, group, update) {
 			var ok= false;
 			if(typeof(group)=== 'undefined')
-			  group= this.RESERVED_KEY;
+			  group= this.selected.group;
 			else
 				if(typeof(group)=== "boolean") {
 				  update= group;
-  			  group = this.RESERVED_KEY;
+  			  group = this.selected.group;
 				} // if	
 			if(typeof(update)=== 'undefined')
 				update= false;

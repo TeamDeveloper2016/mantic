@@ -147,6 +147,20 @@ public class BarModel extends BaseBarModel implements Serializable {
 		} // for
 	}
 	
+	public void toCustomColorLabel(String color) {
+		for (Serie item : this.series) {
+			item.getLabel().getNormal().setColor(color);
+		} // for
+	}
+	
+	public void toCustomFontSize(Integer size) {
+		for (Serie item : this.series) {
+			item.getLabel().getNormal().setFontSize(size);
+			if(item.getMarkLine()!= null)
+			  item.getMarkLine().getLabel().getNormal().setFontSize(size);
+		} // for
+	}
+	
 	public void removeMarks() {
 		for (Serie item : this.series) {
 			item.setMarkPoint(null);
