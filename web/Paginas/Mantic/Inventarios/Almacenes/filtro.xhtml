@@ -152,7 +152,7 @@
 								<f:facet name="header">
 									<h:outputText value="Código"/>
 								</f:facet>
-								<h:outputText value="#{row['propio']}"/>
+								<h:outputText value="#{row['codigo']}"/>
 							</p:column>														
 							<p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.nombre}">
 								<f:facet name="header">
@@ -160,12 +160,6 @@
 								</f:facet>
 								<h:outputText value="#{row['nombre']}"/>
 							</p:column>														
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cantidad}">
-								<f:facet name="header">
-									<h:outputText value="Cantidad"/>
-								</f:facet>
-								<h:outputText value="#{row['cantidad']}"/>
-							</p:column>					
 							<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.fecha}">
 								<f:facet name="header">
 									<h:outputText value="Fecha"/>
@@ -178,6 +172,12 @@
 								</f:facet>
 								<h:outputText value="#{row['hora']}"/>
 							</p:column>											
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.stock}">
+								<f:facet name="header">
+									<h:outputText value="Stock"/>
+								</f:facet>
+								<h:outputText value="#{row['stock']}"/>
+							</p:column>					
 							<p:column headerText="Imagen" styleClass="janal-column-center janal-wid-5">
                 <a id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row.nombre.toString}" data-group="icon-image" href="" title="Click para ver más grande la imagen" style="display: #{row.idImagen.toLong eq 0? 'none': ''}">
 								  <p:graphicImage id="icon-image" cache="false" value="#{manticInventariosAlmacenesFiltro.doPrepareImage(row)}" width="26" height="22" stream="false" rendered="#{row.idImagen.toLong ne 0}" style="cursor:zoom-in;"/>

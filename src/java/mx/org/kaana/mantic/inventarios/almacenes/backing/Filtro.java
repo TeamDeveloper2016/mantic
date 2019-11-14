@@ -65,7 +65,7 @@ public class Filtro extends Comun implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("hora", EFormatoDinamicos.HORA_LARGA));
-      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_CON_DECIMALES));
       params.put("sortOrder", "order by tc_mantic_articulos.nombre, tc_mantic_articulos.actualizado");
       this.lazyModel = new FormatCustomLazy("VistaArticulosDto", "conteo", params, columns);
       UIBackingUtilities.resetDataTable();
@@ -370,7 +370,7 @@ public class Filtro extends Comun implements Serializable {
 		try {									   
 			params= this.toPrepare();
 			params.put("sortOrder", "order by tc_mantic_articulos.nombre, tc_mantic_articulos.actualizado");
-			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.CONTEOS.getProceso(), EExportacionXls.CONTEOS.getIdXml(), EExportacionXls.CONTEOS.getNombreArchivo()), EExportacionXls.CONTEOS, "EJERCICIO,CODIGO,NOMBRE,CANTIDAD,FECHA,HORA"));
+			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.CONTEOS.getProceso(), EExportacionXls.CONTEOS.getIdXml(), EExportacionXls.CONTEOS.getNombreArchivo()), EExportacionXls.CONTEOS, "EJERCICIO,CODIGO,NOMBRE,STOCK,FECHA"));
 			JsfBase.getAutentifica().setMonitoreo(new Monitoreo());
 			regresar = "/Paginas/Reportes/excel".concat(Constantes.REDIRECIONAR);
 		} // try
