@@ -108,12 +108,15 @@
 				this.single(this.carousel.items[this.carousel.index], group);
 			return ok;
 		},
-		begin: function() {
-			this.hide(this.carousel.items[this.carousel.index]);
+		begin: function(paint) {
+			if(this.carousel.items.length> 0 && this.carousel.index< this.carousel.items.length)
+  			this.hide(this.carousel.items[this.carousel.index]);
 			this.carousel.index= 0;
-			this.show(this.carousel.items[this.carousel.index]);
+			if(this.carousel.items.length> 0)
+   			this.show(this.carousel.items[this.carousel.index]);
 			this.display();
-			return this.paint(this.carousel.items[this.carousel.index], this.selected.group, true);
+			if(typeof(paint)!== 'undefined' && paint)
+			  this.paint(this.carousel.items[this.carousel.index], this.selected.group, true);
 		},
 		single: function(id, group) {
       if(typeof refreshEChartSingle!== "undefined") {
@@ -153,6 +156,7 @@
   			window[id]= echarts.init(document.getElementById(id), {renderer: 'svg', width: 'auto', height: 'auto'});
 	  		window[id].setOption(value[this.RESERVED_NAMES], true);
 		  	window[id].on('click', 'series', function (params) {params.chart= id; $echarts.send(params);});
+				window[id].resize();
         this.title(id, value);
 			} // id
 			else
@@ -214,6 +218,7 @@
 					this.charts[id]= value;
 					window[id].clear();
 					window[id].setOption(value[this.RESERVED_NAMES]);
+					window[id].resize();
 					this.title(id, value);
 					if(look)
 					  this.reserved(id, value);
@@ -231,13 +236,15 @@
 		},
 		label: function (value) {
 			value= this.capital(value);
-			return value.length> 15? value.replace(/\s/g, '\n'): value;
+			return value.length> 12? value.replace(/\s/g, '\n'): value;
 		},
 		capital: function(text) {
-			text= text.toLowerCase();
-			text= text.charAt(0).toUpperCase()+ text.slice(1);
-			if(text> 75)
-				text= text.substring(0, 75)+ '...';
+			if(typeof(text)=== 'string') {
+				text= text.toLowerCase();
+				text= text.charAt(0).toUpperCase()+ text.slice(1);
+				if(text> 75)
+					text= text.substring(0, 75)+ '...';
+			} // if
 			return text;
 		}, 
 		format: function (params, type) {
@@ -281,7 +288,6 @@
 			});				
 		},
 		reset: function() {
-			janal.bloquear();
 			Object.assign(this.charts, this.backup);
 			$.each(this.charts, function(id, value) {
 				if(id=== $echarts.RESERVED_ID)
@@ -290,6 +296,7 @@
   				$echarts.update(id, value, false);
 			});	
 			this.toggle('display:none;');
+			this.selected= {group: $echarts.RESERVED_KEY};
 			return false;
 		},
 		add: function(items) {
@@ -297,13 +304,14 @@
 				$echarts.reserved(id, value);
 				if(id=== $echarts.RESERVED_ID) 
 					$echarts.search(value);
-				else
+				else {
 					if($echarts.charts[id]) 
 						$echarts.update(id, value);
 					else {
     				$echarts.charts[id]= value;
 						$echarts.create(id, value);
-					} // if	
+					} // else	
+				} // if	
 			});
 		},
 		remove: function(id) {

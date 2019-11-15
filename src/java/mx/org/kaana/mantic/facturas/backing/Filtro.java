@@ -35,6 +35,7 @@ import mx.org.kaana.mantic.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
 import mx.org.kaana.mantic.enums.EEstatusFicticias;
+import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import mx.org.kaana.mantic.enums.ETiposContactos;
@@ -333,8 +334,8 @@ public class Filtro extends FiltroFactura implements Serializable {
 						emails.append(mail.getDescripcion()).append(", ");
 			} // if
 			transaccion= new Transaccion(bitacora, emails.toString(), (String)this.attrs.get("justificacion"));
-			if(transaccion.ejecutar(EAccion.JUSTIFICAR)){
-				if(bitacora.getIdFicticiaEstatus().equals(EEstatusFicticias.TIMBRADA.getIdEstatusFicticia()))
+			if(transaccion.ejecutar(EAccion.JUSTIFICAR)) {
+				if(bitacora.getIdFicticiaEstatus().equals(EEstatusFicticias.TIMBRADA.getIdEstatusFicticia()) || bitacora.getIdFicticiaEstatus().equals(EEstatusVentas.ELIMINADA.getIdEstatusVenta()))
 					this.doSendMail();				
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
 			} // if

@@ -32,6 +32,7 @@ import mx.org.kaana.mantic.db.dto.TcManticFicticiasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.enums.EEstatusFacturas;
 import mx.org.kaana.mantic.enums.EEstatusFicticias;
+import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 import mx.org.kaana.mantic.facturas.beans.Correo;
@@ -48,8 +49,6 @@ import org.apache.log4j.Logger;
 public class Transaccion extends TransaccionFactura {
 
   private static final Logger LOG    = Logger.getLogger(Transaccion.class);
-	private static final Long TIMBRADA = 12L;
-	private static final Long CANCELADA= 14L;
 	private TcManticFicticiasBitacoraDto bitacora;
 	private TcManticFicticiasDto orden;	
 	private List<Articulo> articulos;
@@ -142,7 +141,7 @@ public class Transaccion extends TransaccionFactura {
 						this.orden= (TcManticFicticiasDto) DaoFactory.getInstance().findById(sesion, TcManticFicticiasDto.class, this.bitacora.getIdFicticia());
 						this.orden.setIdFicticiaEstatus(this.bitacora.getIdFicticiaEstatus());						
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-						if(this.bitacora.getIdFicticiaEstatus().equals(TIMBRADA) && this.checkTotal(sesion)) {
+						if((this.bitacora.getIdFicticiaEstatus().equals(EEstatusFicticias.TIMBRADA.getIdEstatusFicticia()) || this.bitacora.getIdFicticiaEstatus().equals(EEstatusVentas.TERMINADA.getIdEstatusVenta())) && this.checkTotal(sesion)) {
 							params.put("idVenta", this.orden.getIdVenta());
 							factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "VistaFicticiasDto", "factura", params);
 							if(factura!= null) {
@@ -154,7 +153,7 @@ public class Transaccion extends TransaccionFactura {
 							} // 
 						} // if
 						else 
-							if(this.bitacora.getIdFicticiaEstatus().equals(CANCELADA)) {
+							if(this.bitacora.getIdFicticiaEstatus().equals(EEstatusFicticias.CANCELADA.getIdEstatusFicticia()) || this.bitacora.getIdFicticiaEstatus().equals(EEstatusVentas.ELIMINADA.getIdEstatusVenta())) {
 								params.put("idVenta", this.orden.getIdVenta());
 								factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "VistaFicticiasDto", "factura", params);
 								if(factura!= null && factura.getIdFacturama()!= null) {

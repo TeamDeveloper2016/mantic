@@ -259,9 +259,10 @@
 						<p:menuitem value="Consultar" action="#{manticFacturasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticFacturasFiltro.attrs.seleccionado.idTipoDocumento eq '1'}"/>					
             <p:menuitem value="Bitacora" icon="fa fa-user" onstart="return janal.bloquear()" process="@this tabla" action="#{manticFacturasFiltro.doMovimientos}"/>
             <p:menuitem value="Clonar" icon="fa fa-copy" process="@this tabla" onstart="janal.bloquear();" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{manticFacturasFiltro.attrs.seleccionado.idTipoDocumento eq '1'}"/>
-            <p:separator rendered="#{(manticFacturasFiltro.attrs.seleccionado.idTipoDocumento eq '1') and !(manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '12') and !(manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '15')}"/>					
-						<p:menuitem icon="fa fa-close" value="Cancelar" onstart="return janal.bloquear()" process="@this tabla"  oncomplete="PF('dlgCancelar').show();" update="dialogoCancelar" rendered="#{manticFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>					            
-            <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{(manticFacturasFiltro.attrs.seleccionado.idTipoDocumento eq '1') and !(manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '14') and !(manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '5')}"/>
+            <p:separator rendered="#{(manticFacturasFiltro.attrs.seleccionado.facturado eq '1') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus.toLong() eq 3) or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '11') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '12') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '13') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '15')}"/>					
+						<p:menuitem value="Cancelar" icon="fa fa-close" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dlgCancelar').show();" update="dialogoCancelar" rendered="#{manticFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>					            
+            <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{(manticFacturasFiltro.attrs.seleccionado.idTipoDocumento eq '1') and !(manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '14')}"/>
+            <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{(manticFacturasFiltro.attrs.seleccionado.idTipoDocumento eq '2') and ((manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '15')) and (manticFacturasFiltro.attrs.seleccionado.idCliente.toLong() ne 3515)}"/>
             <p:separator rendered="#{(manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '7') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '9') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '12') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '15')}"/>					
             <p:menuitem value="Reenviar" icon="fa fa-mail-forward" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="#{manticFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>
 						<p:menuitem value="Ticket" icon="fa fa-file-text-o" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doTicket}" oncomplete="janal.desbloquear();jsTicket.clicTicket();" update="tabla" rendered="#{(manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '7') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '9') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '12') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '15')}"/>
@@ -269,8 +270,8 @@
 						<p:menuitem value="Reporte" icon="fa fa-file-text-o" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doReporte('FACTURAS_FICTICIAS_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{manticFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>			
             <p:separator rendered="#{manticFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>
             <p:menuitem value="Ver XML/PDF" icon="fa fa-external-link" onstart="return janal.bloquear()" process="@this tabla" action="#{manticFacturasFiltro.doImportar}" rendered="#{manticFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>
-            <p:separator rendered="#{manticFacturasFiltro.attrs.seleccionado.idTipoDocumento eq '2' and manticFacturasFiltro.attrs.seleccionado.facturado eq '0'}"/>			
-						<p:menuitem value="Timbrar" icon="fa fa-check" onstart="return janal.bloquear()" process="@this tabla" action="#{manticFacturasFiltro.doComplemento('MODIFICAR')}" rendered="#{manticFacturasFiltro.attrs.seleccionado.idTipoDocumento eq '2' and manticFacturasFiltro.attrs.seleccionado.facturado eq '0'}"/>
+            <p:separator rendered="#{manticFacturasFiltro.attrs.seleccionado.idTipoDocumento eq '2' and manticFacturasFiltro.attrs.seleccionado.facturado eq '0' and manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '6'}"/>			
+						<p:menuitem value="Timbrar" icon="fa fa-check" onstart="return janal.bloquear()" process="@this tabla" action="#{manticFacturasFiltro.doComplemento('MODIFICAR')}" rendered="#{manticFacturasFiltro.attrs.seleccionado.idTipoDocumento eq '2' and manticFacturasFiltro.attrs.seleccionado.facturado eq '0' and manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '6'}"/>
             <p:separator/>  
 						<p:menuitem value="Detalle" icon="fa fa-search" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doMoveSection}" oncomplete="janal.bloquear();PF('widgetDetalle').show();" update="documento informacion @(.documento)"/>
           </p:contextMenu>
@@ -294,7 +295,7 @@
 				</div>
 			</h:form>
 		</p:dialog>
-		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus de la factura" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.change('formDialogoEstatus', fieldsDialog);janal.refresh();">
+		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus de la factura" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.change('formDialogoEstatus', fieldsDialog); janal.refresh();">
 			<h:form id="formDialogoEstatus" prependId="false">
 				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
@@ -320,7 +321,7 @@
 				</p:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" action="#{manticFacturasFiltro.doActualizarEstatus}" onstart="return validaJustificacion()" oncomplete="janal.desbloquear();"/>
+					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" action="#{manticFacturasFiltro.doActualizarEstatus}" onstart="return validaJustificacion();" oncomplete="janal.desbloquear();"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgEstatus').hide();" oncomplete="janal.desbloquear();janal.restore();janal.refresh();"/>
 				</div>
 			</h:form>
