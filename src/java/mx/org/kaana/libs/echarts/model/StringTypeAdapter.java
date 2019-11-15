@@ -14,7 +14,7 @@ import java.io.IOException;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class FormatterTypeAdapter extends TypeAdapter<String> {
+public class StringTypeAdapter extends TypeAdapter<String> {
 
 	private static final String FUNCTION_NAMES= "function";
 	
