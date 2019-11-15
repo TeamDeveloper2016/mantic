@@ -6,7 +6,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.Serializable;
-import mx.org.kaana.libs.echarts.model.FormatterTypeAdapter;
+import mx.org.kaana.libs.echarts.model.DoubleTypeAdapter;
+import mx.org.kaana.libs.echarts.model.StringTypeAdapter;
 
 /**
  *@company KAANA
@@ -115,16 +116,8 @@ public final class Decoder {
   }
 
   public static String json(Serializable serializable) throws Exception {
-    String regresar    = null;
-    Gson gson          = null;
-    try {
-			gson= new GsonBuilder().setPrettyPrinting().registerTypeAdapter(String.class, new FormatterTypeAdapter()).create();
-      regresar = gson.toJson(serializable);
-    } // try
-    catch(Exception e) {
-      throw e;
-    } // catch
-    return regresar;
+  	Gson gson= new GsonBuilder().setPrettyPrinting().registerTypeAdapter(String.class, new StringTypeAdapter()).registerTypeAdapter(String.class, new DoubleTypeAdapter()).create();
+    return gson.toJson(serializable);
   }
 	
 }
