@@ -300,7 +300,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 			LOG.warn("Total de contactos" + contactos.size());
 			for(ClienteTipoContacto contacto: contactos){
 				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())){
-					correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor());
+					correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor().toUpperCase());
 					getCorreos().add(correoAdd);		
 					getSelectedCorreos().add(correoAdd);
 				} // if
