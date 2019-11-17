@@ -119,7 +119,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 					regresar= regresar.concat("?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs");
 				else
 					regresar= regresar.concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
-  			JsfBase.setFlashAttribute("idOrdenCompra", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) || idNotaTipo.equals(2L)? idOrdenCompra: -1L);
+  			JsfBase.setFlashAttribute("idOrdenCompra", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) || idNotaTipo.equals(2L)) && idOrdenCompra!= null? idOrdenCompra: -1L);
 			} // else	
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");		
 			JsfBase.setFlashAttribute("idNotaEntrada", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? idNotaEntrada: -1L);
