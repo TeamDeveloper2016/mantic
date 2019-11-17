@@ -271,7 +271,7 @@
             <p:separator rendered="#{manticFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>
             <p:menuitem value="Ver XML/PDF" icon="fa fa-external-link" onstart="return janal.bloquear()" process="@this tabla" action="#{manticFacturasFiltro.doImportar}" rendered="#{manticFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>
             <p:separator rendered="#{manticFacturasFiltro.attrs.seleccionado.idTipoDocumento eq '2' and manticFacturasFiltro.attrs.seleccionado.facturado eq '0' and manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '6'}"/>			
-						<p:menuitem value="Timbrar" icon="fa fa-check" onstart="return janal.bloquear()" process="@this tabla" action="#{manticFacturasFiltro.doComplemento('MODIFICAR')}" rendered="#{manticFacturasFiltro.attrs.seleccionado.idTipoDocumento eq '2' and manticFacturasFiltro.attrs.seleccionado.facturado eq '0' and manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '6'}"/>
+						<p:menuitem value="Timbrar" icon="fa fa-check" onstart="return janal.bloquear()" process="@this tabla" action="#{manticFacturasFiltro.doComplemento('MODIFICAR')}" rendered="#{manticFacturasFiltro.attrs.seleccionado.idTipoDocumento eq '2' and manticFacturasFiltro.attrs.seleccionado.facturado eq '0' and manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '3'}"/>
             <p:separator/>  
 						<p:menuitem value="Detalle" icon="fa fa-search" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doMoveSection}" oncomplete="janal.bloquear();PF('widgetDetalle').show();" update="documento informacion @(.documento)"/>
           </p:contextMenu>
