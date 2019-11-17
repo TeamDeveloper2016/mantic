@@ -1093,7 +1093,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			LOG.warn("Total de contactos" + contactos.size());
 			for(ClienteTipoContacto contacto: contactos){
 				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())){
-					correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor());
+					correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor().toUpperCase());
 					getCorreos().add(correoAdd);		
 					getSelectedCorreos().add(correoAdd);
 				} // if
@@ -1109,4 +1109,23 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			Methods.clean(params);
 		} // finally
 	} // doLoadEstatus
+	
+	public void doAgregarCorreo() {
+		Transaccion transaccion= null;
+		try {
+			if(!Cadena.isVacio(getCorreo().getDescripcion())){				
+				transaccion= new Transaccion(getCorreo(), (Long)this.attrs.get("idCliente"));
+				if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
+					JsfBase.addMessage("Se agrego el correo electronico correctamente !");
+				else
+					JsfBase.addMessage("Ocurrió un error al agregar el correo electronico");
+			} // if
+			else
+				JsfBase.addMessage("Es necesario capturar un correo electronico !");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doAgregarCorreo
 }
