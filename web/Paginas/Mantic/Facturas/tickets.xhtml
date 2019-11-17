@@ -23,6 +23,15 @@
 				cliente        : {validaciones: 'requerido', mascara: 'libre', grupo: 'factura', mensaje: 'Alguno de los tickets tiene que pertenecer a un cliente'},
 				total          : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'factura', mensaje: 'Se tiene que seleccionar al menos un ticket'}
       };
+			
+			function applyValidate(){
+				if($('#cliente').val()===''){
+					if(!($('#clienteAutocomplete_input').val()==='')){
+						$('#cliente').val($('#clienteAutocomplete_input').val());
+					} // if
+				} // if				
+				return janal.partial('factura');
+			} // applyValidate
     </script>		
 		<style>
 			.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-inputfield {
@@ -316,11 +325,11 @@
 		<hr class="ui-widget-content"/>
 		<div class="janal-line-button">				
 			<div class="lg-pantalla">
-				<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticFacturasTickets.doAceptar}" onstart="return janal.partial('factura');" oncomplete="janal.desbloquear()"/>
+				<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticFacturasTickets.doAceptar}" onstart="return applyValidate();" oncomplete="janal.desbloquear()"/>
 				<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" update="@(.relacionado)" action="#{manticFacturasTickets.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 			</div>		
 			<div class="xs-pantalla">
-				<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticFacturasTickets.doAceptar}" onstart="return janal.partial('factura');" oncomplete="janal.desbloquear()"/>
+				<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticFacturasTickets.doAceptar}" onstart="return applyValidate();" oncomplete="janal.desbloquear()"/>
 				<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" update="@(.relacionado)" action="#{manticFacturasTickets.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 			</div>		
 		</div>
