@@ -594,7 +594,10 @@
 										<f:setPropertyActionListener value="#{manticComprasOrdendesAccion.adminOrden.orden.ikAlmacen}" target="#{manticComprasOrdendesAccion.attrs.idAlmacen}" />
 										<f:setPropertyActionListener value="#{manticComprasOrdendesAccion.adminOrden.orden.ikProveedor}" target="#{manticComprasOrdendesAccion.attrs.idProveedor}" />
 									</p:commandButton>
-								</p:column>								
+								</p:column>	
+								<f:facet name="footer">
+									<p:outputLabel value="Total [#{manticComprasOrdendesAccion.attrs.faltantes==null? 0: manticComprasOrdendesAccion.attrs.faltantes.size()}] registros"/>
+								</f:facet>
 							</p:dataTable>
 						</p:tab>
 						<p:tab title="Ventas perdidas">
