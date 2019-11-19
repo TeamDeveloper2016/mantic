@@ -23,6 +23,7 @@ public final class Legend implements Serializable {
 	private String y;
 	private String left;
 	private List<String> data;
+	private String formatter;
 
 	public Legend() {
 		this("scroll", "center", "bottom", new ArrayList<>());
@@ -87,6 +88,14 @@ public final class Legend implements Serializable {
 		this.left=left;
 	}
 
+	public String getFormatter() {
+		return formatter;
+	}
+
+	public void setFormatter(String formatter) {
+		this.formatter=formatter;
+	}
+
 	public List<String> getData() {
 		return data;
 	}
@@ -97,7 +106,7 @@ public final class Legend implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Legend{"+"orient="+orient+", left="+left+", data="+data+'}';
+		return "Legend{"+"type="+type+", orient="+orient+", x="+x+", y="+y+", left="+left+", data="+data+", formatter="+formatter+'}';
 	}
-	
+
 }

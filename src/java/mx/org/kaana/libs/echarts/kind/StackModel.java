@@ -148,6 +148,23 @@ public class StackModel extends BaseBarModel implements Serializable {
 		} // for
 	}
 
+	public void toCustomFontSize(Integer size) {
+		for (Serie item: this.series) {
+			item.getLabel().getNormal().setFontSize(size);
+			if(item.getMarkLine()!= null)
+			  item.getMarkLine().getLabel().getNormal().setFontSize(size);
+		} // for
+	}
+	
+	public void toCustomLabel(String color, Integer size) {
+		for (Serie item: this.series) {
+			item.getLabel().getNormal().setColor(color);
+			item.getLabel().getNormal().setFontSize(size);
+			if(item.getMarkLine()!= null)
+			  item.getMarkLine().getLabel().getNormal().setFontSize(size);
+		} // for
+	}
+	
 	public void removeMarks() {
 		for (mx.org.kaana.libs.echarts.bar.Serie item : this.series) {
 			item.setMarkPoint(null);

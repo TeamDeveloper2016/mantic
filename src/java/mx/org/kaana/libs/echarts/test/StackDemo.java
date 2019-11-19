@@ -32,7 +32,11 @@ public class StackDemo {
     public static void main(String[] args) throws Exception {
       StackModel model= new StackModel(new Title("CGOR", null), EBarOritentation.VERTICAL);
 			model.addLine(new CustomLine("Hola", 150D, Colors.COLOR_RED, ETypeLine.SOLID));
-			model.toCustomFormatLabel(StringEscapeUtils.unescapeJava("function (params) {return toCustomFormatLabel(params);}"));
+			model.toCustomFontSize(13);
+			model.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
+			model.getxAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
+			model.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
+			model.getLegend().setFormatter("function (params) {return jsEcharts.legend(params);}");
 			LOG.info(model.toJson());
 			
 			Stacked multiple     = new Stacked(DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "multiple", Collections.EMPTY_MAP));

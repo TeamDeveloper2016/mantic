@@ -156,7 +156,6 @@
   			window[id]= echarts.init(document.getElementById(id), {renderer: 'svg', width: 'auto', height: 'auto'});
 	  		window[id].setOption(value[this.RESERVED_NAMES], true);
 		  	window[id].on('click', 'series', function (params) {params.chart= id; $echarts.send(params);});
-				window[id].resize();
         this.title(id, value);
 			} // id
 			else
@@ -218,7 +217,6 @@
 					this.charts[id]= value;
 					window[id].clear();
 					window[id].setOption(value[this.RESERVED_NAMES]);
-					window[id].resize();
 					this.title(id, value);
 					if(look)
 					  this.reserved(id, value);
@@ -242,7 +240,7 @@
 			if(typeof(text)=== 'string') {
 				text= text.toLowerCase();
 				text= text.charAt(0).toUpperCase()+ text.slice(1);
-				if(text> 75)
+				if(text.length> 75)
 					text= text.substring(0, 75)+ '...';
 			} // if
 			return text;
@@ -281,6 +279,30 @@
 			} // switch
 			return text;
 		},
+		tooltip: function(params, format) {
+		  var msg  = '<div style="text-align: left;">';
+		  var label= '';
+			if(typeof(format)=== 'undefined')
+				format= 'double';
+		  $.each(params, function(index, items) {
+		    label= items['name'];
+		    if(items['value']!== '-' && items['value']> 0)
+		      msg= msg+ items['marker']+ '  '+ $echarts.legend(items['seriesName'])+ ': '+ $echarts.format(items, format)+ '<br/>';
+		  });
+		  msg= $echarts.label(label)+ '<br/>'+ msg+ '</div>';
+      return msg;
+		},
+		legend: function(params) {
+			if(typeof(params)=== 'string') {
+				if(params.length> 7) {
+  				params= params.toLowerCase();
+	  			params= params.charAt(0).toUpperCase()+ params.slice(1);
+				} // if	
+				if(params.length> 75)
+					params= params.substring(0, 75)+ '...';
+			} // if
+			return params;
+		}, 
 		responsive: function() {
 			$.each(this.charts, function(id) {
 				if(window[id])
@@ -311,6 +333,7 @@
     				$echarts.charts[id]= value;
 						$echarts.create(id, value);
 					} // else	
+					window[id].resize();
 				} // if	
 			});
 		},

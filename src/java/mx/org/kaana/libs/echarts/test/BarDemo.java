@@ -33,7 +33,12 @@ public class BarDemo {
 			model.addLine(new Coordinate("Hola", 6, 150, Colors.COLOR_RED, ETypeLine.SOLID));
 			model.addLine(new CustomLine("Hola", 180D, Colors.COLOR_GREEN, ETypeLine.DASHED));
 			model.addLine(new CustomLine("Hola", 120D, Colors.COLOR_BLUE, ETypeLine.DOTTED));
-			model.getxAxis().getAxisLabel().setFormatter("function(value) {return value.replace(/\\\\s/g, '\\\\n')}");
+//			model.getxAxis().getAxisLabel().setFormatter("function(value) {return value.replace(/\\\\s/g, '\\\\n')}");
+			model.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
+			model.getxAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
+			model.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
+			model.getLegend().setFormatter("function (params) {return jsEcharts.legend(params);}");
+			
 			LOG.info(model.toJson());
 			
 //			Simple simple       = new Simple("ventas", DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "simple", Collections.EMPTY_MAP));
