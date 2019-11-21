@@ -5139,6 +5139,7 @@
 					tc_mantic_almacenes.id_empresa in ({sucursales})
 					and tc_mantic_almacenes.id_almacen= {idAlmacen}
 				  and tc_mantic_almacenes_articulos.minimo!= 0
+				  and tc_mantic_inventarios.id_automatico= 2
 					and tc_mantic_almacenes_articulos.stock &lt;= tc_mantic_almacenes_articulos.minimo
 					and tc_mantic_articulos_codigos.id_principal= 1
           and (tc_mantic_ordenes_compras.id_orden_estatus in (3,4,5) or tc_mantic_ordenes_compras.id_orden_estatus is null)
