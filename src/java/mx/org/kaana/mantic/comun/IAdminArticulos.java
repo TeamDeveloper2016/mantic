@@ -262,7 +262,7 @@ public abstract class IAdminArticulos implements Serializable {
 		} // if
 	}
 
-	protected void validatePrecioArticulo() throws Exception{
+	public void validatePrecioArticulo() throws Exception{
 		TcManticArticulosDto validate= null;
 		ArticuloVenta articuloPivote = null;
 		try {
