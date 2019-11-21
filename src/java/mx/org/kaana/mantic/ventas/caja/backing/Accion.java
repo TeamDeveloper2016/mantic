@@ -1099,7 +1099,9 @@ public class Accion extends IBaseVenta implements Serializable {
 			if(ticketAbierto!= null && !ticketAbierto.getKey().equals(-1L) && !this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
 				this.loadOrdenVenta();				
 				transaccion = new mx.org.kaana.mantic.ventas.reglas.Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
+				this.getAdminOrden().validatePrecioArticulo();
 				this.getAdminOrden().toAdjustArticulos();
+				this.getAdminOrden().cleanPrecioDescuentoArticulo();
 				if (transaccion.ejecutar(EAccion.REGISTRAR)) {
 					this.attrs.put("tabIndex", 1);
 					this.pagar= true;
@@ -1109,7 +1111,9 @@ public class Accion extends IBaseVenta implements Serializable {
 			else if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
 				loadOrdenVenta();				
 				transaccion = new mx.org.kaana.mantic.ventas.reglas.Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
+				this.getAdminOrden().validatePrecioArticulo();
 				this.getAdminOrden().toAdjustArticulos();
+				this.getAdminOrden().cleanPrecioDescuentoArticulo();
 				if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
 					//UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la cuenta ', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");									
 					this.doLoadTicketAbiertos();
