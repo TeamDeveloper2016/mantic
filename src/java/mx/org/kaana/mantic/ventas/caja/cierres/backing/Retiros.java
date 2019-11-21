@@ -89,7 +89,6 @@ public class Retiros extends IBaseAttribute implements Serializable {
 
   public String doAceptar(Long idAutorizo) {  
     Transaccion transaccion= null;
-    String regresar        = null;
 		CreateCierre ticket    = null;
     try {			
 			TcManticCierresRetirosDto retiro= new TcManticCierresRetirosDto(-1L);
@@ -101,10 +100,6 @@ public class Retiros extends IBaseAttribute implements Serializable {
 			transaccion = new Transaccion((Long)this.attrs.get("idCierre"), retiro);
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {	
-					if(JsfBase.isCajero())
-						regresar = "/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR);
-					else
-						regresar = "ambos".concat(Constantes.REDIRECIONAR);
      			JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));
 		    	JsfBase.setFlashAttribute("idCaja", this.attrs.get("idCaja"));
  	        JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));    			
@@ -125,28 +120,40 @@ public class Retiros extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
-    return regresar;
+    return null;
   } // doAccion
 	
-  public String doCancelar() {   
-  	JsfBase.setFlashAttribute("idCierre", this.attrs.get("idCierre"));
-		if(this.attrs.get("idEmpresa")== null) {
-			if(this.attrs.get("idEmpresas")!= null)
-        JsfBase.setFlashAttribute("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresas")).getKey());
-		} // if
-		else	
-      JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));
-		if(this.attrs.get("idCaja")== null) {
-			if(this.attrs.get("idCajas")!= null)
-        JsfBase.setFlashAttribute("idCaja", ((UISelectEntity)this.attrs.get("idCajas")).getKey());
-		} // if
-		else	
-  		JsfBase.setFlashAttribute("idCaja", this.attrs.get("idCaja"));
-		if(this.caja!= null)
-    	JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));
-		if(this.caja!= null)
-    	JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));
-    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+  public String doCancelar() {
+		String regresar= (String)this.attrs.get("retorno");
+		try {
+			if(JsfBase.isCajero())
+				regresar= "/Paginas/Mantic/Ventas/Caja/accion";
+			else
+				if(Cadena.isVacio(regresar))
+					regresar= "ambos";
+			JsfBase.setFlashAttribute("idCierre", this.attrs.get("idCierre"));
+			if(this.attrs.get("idEmpresa")== null) {
+				if(this.attrs.get("idEmpresas")!= null)
+					JsfBase.setFlashAttribute("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresas")).getKey());
+			} // if
+			else	
+				JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));
+			if(this.attrs.get("idCaja")== null) {
+				if(this.attrs.get("idCajas")!= null)
+					JsfBase.setFlashAttribute("idCaja", ((UISelectEntity)this.attrs.get("idCajas")).getKey());
+			} // if
+			else	
+				JsfBase.setFlashAttribute("idCaja", this.attrs.get("idCaja"));
+			if(this.caja!= null)
+				JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));
+			if(this.caja!= null)
+				JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    return regresar.concat(Constantes.REDIRECIONAR);
   } 
 	
 	private void toLoadEmpresas() throws Exception {
