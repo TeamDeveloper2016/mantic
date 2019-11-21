@@ -28,6 +28,8 @@ import mx.org.kaana.mantic.db.dto.TcManticCierresRetirosDto;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.CreateCierre;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Transaccion;
 import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *@company KAANA
@@ -42,6 +44,7 @@ import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 public class Retiros extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393488565639361L;
+	private static final Log LOG=LogFactory.getLog(Retiros.class);
   
 	private Entity caja;
 	private EAccion accion;
@@ -105,9 +108,7 @@ public class Retiros extends IBaseAttribute implements Serializable {
  	        JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));    			
 					ticket= new CreateCierre(retiro.getImporte(), "RETIRO:" + retiro.getConsecutivo(), idAutorizo);
 					UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + retiro.getConsecutivo() + "','" + ticket.toHtml() + "');");
-					UIBackingUtilities.execute("jsTicket.clicTicket();");
-					UIBackingUtilities.execute("executeReturn("+ retiro.getConsecutivo() +");");
-					init();
+					UIBackingUtilities.execute("jsTicket.process('"+ JsfBase.getContext()+ "/Paginas/Mantic/Ventas/Caja/accion.jsf');");
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR)? "agregó": this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" el retiro de caja."), ETipoMensaje.INFORMACION);

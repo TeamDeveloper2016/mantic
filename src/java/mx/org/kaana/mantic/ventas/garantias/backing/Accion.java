@@ -376,9 +376,9 @@ public class Accion extends IBaseVenta implements Serializable {
 				} // for
 				claves= claves.substring(0, claves.length()-1);
 				tickets= tickets.substring(0, tickets.length()-1);
-				if(count== 1){
+				if(count== 1) {
 					UIBackingUtilities.execute("jsTicket.imprimirTicket('" + claves + "','" + tickets + "');");
-					UIBackingUtilities.execute("jsTicket.clicTicket();");
+					UIBackingUtilities.execute("jsTicket.process('"+ JsfBase.getContext()+ "/Paginas/Mantic/Ventas/Caja/accion.jsf');");
 				} // if
 				else
 					UIBackingUtilities.execute("jsTicket.imprimirMoreTicket('" + claves + "','" + tickets + "');");				
