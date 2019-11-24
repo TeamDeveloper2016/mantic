@@ -752,15 +752,24 @@
 				{sortOrder}
 			</select>
 			<select id="diarias">
-				select					
-					tc_mantic_ventas.id_venta as id_key,
+				select 
+					convert(concat(id_empresa, id_caja, id_tipo_medio_pago), INTEGER) as id_key,
+					empresa, 
+					nombre_empresa, 
+					caja, 
+					tipo_medio_pago,
+					sum(importe) importe,
+					count(*) total
+				from 
+				(select										
+					tc_mantic_empresas.id_empresa,
 					tc_mantic_empresas.clave as empresa,
 					tc_mantic_empresas.nombre as nombre_empresa,
-					tc_mantic_cajas.clave caja,
-					tc_mantic_ventas.ticket,
+					tc_mantic_cajas.id_caja,            
+					tc_mantic_cajas.clave caja,					
 					tr_mantic_venta_medio_pago.importe,
-					tc_mantic_tipos_medios_pagos.nombre as tipo_medio_pago,
-					tc_mantic_ventas.registro
+					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
+					tc_mantic_tipos_medios_pagos.nombre as tipo_medio_pago					
 				from
 					tc_mantic_ventas     	
 				inner join
@@ -792,17 +801,23 @@
 				where
 					tc_mantic_ventas.id_empresa in ({idEmpresa})
 				  and {condicion}     
-				group by
-					tc_mantic_ventas.id_venta,
+				group by					
+					tc_mantic_empresas.id_empresa,
 					tc_mantic_empresas.clave,
 					tc_mantic_empresas.nombre,
-					tc_mantic_cajas.clave,
-					tc_mantic_ventas.ticket,
+					tc_mantic_cajas.id_caja,					
+					tc_mantic_cajas.clave,					
 					tr_mantic_venta_medio_pago.importe,
-					tc_mantic_tipos_medios_pagos.nombre,
-					tc_mantic_ventas.registro
+					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
+					tc_mantic_tipos_medios_pagos.nombre				
+				) general
+				group by
+					empresa, 
+					nombre_empresa, 
+					caja, 	
+					tipo_medio_pago
 				order by 
-					tc_mantic_ventas.registro desc, tc_mantic_ventas.id_venta, tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+					empresa, nombre_empresa, importe desc
 			</select>				
 			<select id="diariasTotales">
 				select if(sum(importe) is null, 0, sum(importe)) total from (
