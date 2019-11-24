@@ -80,8 +80,7 @@ public class Diarias extends IBaseTicket implements Serializable {
 		Map<String, Object> params= null;
     try {
 			params= toPrepare();
-      columns = new ArrayList<>();
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));      
+      columns = new ArrayList<>();      
       columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));      
       this.lazyModel = new FormatCustomLazy("VistaConsultasDto", "diarias", params, columns);
 			this.attrs.put("total", DaoFactory.getInstance().toEntity("VistaConsultasDto", "diariasTotales", params));
