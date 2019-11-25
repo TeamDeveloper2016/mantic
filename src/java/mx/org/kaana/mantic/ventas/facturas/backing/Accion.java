@@ -150,12 +150,12 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("isMatriz", JsfBase.isAdminEncuestaOrAdmin());
 			this.correos= new ArrayList<>();
 			this.selectedCorreos= new ArrayList<>();
-			loadClienteDefault();						
-			loadBancos();
-			loadCfdis();
-			loadTiposMediosPagos();
-			loadTiposPagos();
-			doLoad();			
+			this.loadClienteDefault();						
+			this.loadBancos();
+			this.loadCfdis();
+			this.loadTiposMediosPagos();
+			this.loadTiposPagos();
+			this.doLoad();			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -191,8 +191,20 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 						if(((TicketVenta)getAdminOrden().getOrden()).getIdClienteDomicilio()!= null && !((TicketVenta)getAdminOrden().getOrden()).getIdClienteDomicilio().equals(-1L))
 							this.attrs.put("domicilio", new UISelectEntity(((TicketVenta)getAdminOrden().getOrden()).getIdClienteDomicilio()));
 					} // if
-					loadSucursales();
-					loadCatalogs();					
+					this.loadSucursales();
+					this.loadCatalogs();		
+					List<UISelectEntity> tiposPagos= (List<UISelectEntity>)this.attrs.get("tiposMedioPagos");
+					int index= tiposPagos.indexOf(new UISelectEntity(((TicketVenta)this.getAdminOrden().getOrden()).getIdTipoMedioPago()));
+					if(index>= 0) {
+					  this.attrs.put("tipoMedioPago", tiposPagos.get(index));
+       		  if(!((TicketVenta)this.getAdminOrden().getOrden()).getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())) {
+    					List<UISelectEntity> bancos= (List<UISelectEntity>)this.attrs.get("bancos");
+							int banco= bancos.indexOf(new UISelectEntity(((TicketVenta)this.getAdminOrden().getOrden()).getIdBanco()));
+							if(banco>= 0)
+    		        this.attrs.put("banco", bancos.get(banco));
+	    	      this.attrs.put("referencia", ((TicketVenta)this.getAdminOrden().getOrden()).getReferencia());
+						} // if	
+					} // if	
           break;
       } // switch			
     } // try
@@ -427,7 +439,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		try {			
 			JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
 			JsfBase.setFlashAttribute("idFicticia", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
-			regresar= this.attrs.get("retorno") != null ? (String)this.attrs.get("retorno") : "filtro";
+			regresar= this.attrs.get("retorno") != null ? (String)this.attrs.get("retorno") : "/Paginas/Mantic/Facturas/filtro";
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -543,7 +555,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		((TicketVenta)this.getAdminOrden().getOrden()).setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
 		((TicketVenta)this.getAdminOrden().getOrden()).setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoMedioPago").toString()));
 		((TicketVenta)this.getAdminOrden().getOrden()).setIdUsoCfdi(Long.valueOf(this.attrs.get("cfdi").toString()));
-		if(!Long.valueOf(this.attrs.get("tipoMedioPago").toString()).equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){
+		if(!Long.valueOf(this.attrs.get("tipoMedioPago").toString()).equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())) {
 			((TicketVenta)this.getAdminOrden().getOrden()).setIdBanco(Long.valueOf(this.attrs.get("banco").toString()));
 			((TicketVenta)this.getAdminOrden().getOrden()).setReferencia(this.attrs.get("referencia").toString());
 		} // if
@@ -972,7 +984,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		} // catch		
 	} // loadCfdis
 	
-	private void loadTiposMediosPagos(){
+	private void loadTiposMediosPagos() throws Exception {
 		List<UISelectEntity> tiposPagos= null;
 		Map<String, Object>params      = null;
 		try {
@@ -982,10 +994,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("tiposMedioPagos", tiposPagos);
 			this.attrs.put("tipoMedioPago", UIBackingUtilities.toFirstKeySelectEntity(tiposPagos));
 		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		finally{
+		finally {
 			Methods.clean(params);
 		} // finally
 	} // loadTiposPagos
