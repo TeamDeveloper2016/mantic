@@ -167,8 +167,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
   public void doLoad() {
     EAccion eaccion            = null;
 		Long idCliente             = -1L;		
-		MotorBusqueda motorBusqueda= null; 
-		Entity clienteDefault      = null;
+		MotorBusqueda motorBusqueda= null; 		
 		this.saldoCliente          = new SaldoCliente();
     try {
       eaccion= (EAccion) this.attrs.get("accion");
