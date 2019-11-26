@@ -792,6 +792,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		try {
 			params=new HashMap<>();
 			if(this.tipoOrden.equals(EOrdenes.NORMAL)) {
+				while(this.getAdminOrden().getArticulos().size()> 1)
+			    this.getAdminOrden().getArticulos().remove(0);
+			  this.getAdminOrden().toCalculate();
 				if(temporal== null || !this.getEmisor().getRfc().equals(temporal.toString("rfc"))) {
 					params.put("rfc", this.getEmisor().getRfc());
 					params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());

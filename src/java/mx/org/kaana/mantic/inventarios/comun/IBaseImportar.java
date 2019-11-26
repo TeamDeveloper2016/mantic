@@ -31,13 +31,11 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
-import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -223,7 +221,9 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 	private int existsItem(List<Articulo> faltantes, Concepto concepto) {
 		int regresar= 0;
 		for (Articulo faltante: faltantes) {
-			if(faltante.getNombre().equals(concepto.getDescripcion()) && faltante.getUnidadMedida().equals(concepto.getUnidad()))
+			if(faltante.getNombre().equals(concepto.getDescripcion()) && 
+			   faltante.getCodigo().equals(concepto.getNoIdentificacion()) && 
+				 faltante.getUnidadMedida().equals(concepto.getUnidad()))
 				break;
 			else
 				regresar++;
