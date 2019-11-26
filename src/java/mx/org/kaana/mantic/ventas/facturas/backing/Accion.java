@@ -165,9 +165,11 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 
 	@Override
   public void doLoad() {
-    EAccion eaccion  = null;
-		Long idCliente   = -1L;
-		this.saldoCliente= new SaldoCliente();
+    EAccion eaccion            = null;
+		Long idCliente             = -1L;		
+		MotorBusqueda motorBusqueda= null; 
+		Entity clienteDefault      = null;
+		this.saldoCliente          = new SaldoCliente();
     try {
       eaccion= (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
@@ -181,11 +183,13 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
           break;
         case MODIFICAR:			
         case CONSULTAR:			
-          this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", this.attrs), false));
-					((AdminTickets)this.getAdminOrden()).loadTipoMedioPago();
+          this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", this.attrs), false));					
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));					
 					this.attrs.put("consecutivo", ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo());						
 					idCliente= ((TicketVenta)getAdminOrden().getOrden()).getIdCliente();
+					motorBusqueda= new MotorBusqueda(-1L);
+					if(idCliente!= null && (idCliente.equals(-1L) || idCliente.equals(motorBusqueda.toClienteDefault().getKey())))
+						((AdminTickets)this.getAdminOrden()).loadTipoMedioPago();
 					if(idCliente!= null && !idCliente.equals(-1L)){
 						doAsignaClienteInicial(idCliente);
 						loadDomicilios(idCliente);	
