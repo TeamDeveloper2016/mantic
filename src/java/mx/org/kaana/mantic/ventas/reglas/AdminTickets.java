@@ -11,7 +11,9 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.comun.IAdminArticulos;
+import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 import org.apache.commons.logging.Log;
@@ -132,4 +134,27 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
 		} // catch		
 		return regresar;
 	} // toServicio
+	
+	public void loadTipoMedioPago() throws Exception{
+		Entity tipoMedioPago     = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idVenta", this.orden.getIdVenta());
+			tipoMedioPago= (Entity) DaoFactory.getInstance().toEntity("TrManticVentaMedioPagoDto", "ticket", params);
+			if(tipoMedioPago!= null){
+				this.orden.setIdTipoMedioPago(tipoMedioPago.toLong("idTipoMedioPago"));
+				if(!tipoMedioPago.getKey().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){
+					this.orden.setIdBanco(tipoMedioPago.toLong("idBanco"));
+					this.orden.setReferencia(tipoMedioPago.toString("referencia"));
+				} // if
+			} // if
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // loadTipoMedioPago
 }
