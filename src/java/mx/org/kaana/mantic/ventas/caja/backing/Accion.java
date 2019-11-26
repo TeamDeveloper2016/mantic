@@ -1257,7 +1257,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 	} // addDeleteList
 	
-	private VentaFinalizada loadVentaFinalizada(){
+	private VentaFinalizada loadVentaFinalizada() throws Exception{
 		VentaFinalizada regresar  = null;
 		TicketVenta ticketVenta   = null;
 		List<UISelectEntity> cfdis= null;
@@ -1265,7 +1265,9 @@ public class Accion extends IBaseVenta implements Serializable {
 		Boolean facturarVenta     = false;
 		Calendar calendar         = null;
 		try {
+			this.getAdminOrden().validatePrecioArticulo();								
 			this.getAdminOrden().toCalculate();
+			this.getAdminOrden().cleanPrecioDescuentoArticulo();
 			ticketVenta= (TicketVenta)this.getAdminOrden().getOrden();
 			ticketVenta.setTotal(this.getAdminOrden().getTotales().getTotal());
 			ticketVenta.setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
