@@ -182,6 +182,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
         case MODIFICAR:			
         case CONSULTAR:			
           this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", this.attrs), false));
+					((AdminTickets)this.getAdminOrden()).loadTipoMedioPago();
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));					
 					this.attrs.put("consecutivo", ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo());						
 					idCliente= ((TicketVenta)getAdminOrden().getOrden()).getIdCliente();
@@ -203,6 +204,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 							if(banco>= 0)
     		        this.attrs.put("banco", bancos.get(banco));
 	    	      this.attrs.put("referencia", ((TicketVenta)this.getAdminOrden().getOrden()).getReferencia());
+							this.attrs.put("mostrarBanco", true);
 						} // if	
 					} // if	
           break;
