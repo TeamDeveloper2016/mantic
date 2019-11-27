@@ -281,7 +281,8 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 				transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), EEstatusFicticias.TIMBRADA.getIdEstatusFicticia(), (String)this.attrs.get("observaciones"));
 				if (transaccion.ejecutar(EAccion.MODIFICAR)) {								
 					doSendMail(((TicketVenta)this.getAdminOrden().getOrden()).getCorreos(), seleccion.toString("razonSocial"), ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta(), transaccion.getFacturaPrincipal(), seleccion.getKey());
-					regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
+					regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : "/Paginas/Mantic/Facturas/filtro".concat(Constantes.REDIRECIONAR);
+					JsfBase.setFlashAttribute("idFicticia", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
 					JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());				
 					JsfBase.addMessage("Se generó la factura de forma correcta.", ETipoMensaje.INFORMACION);      			
 				} // if
