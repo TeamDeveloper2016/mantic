@@ -962,6 +962,25 @@
 						</p:panel>
 					</h:panelGrid>	
 				</p:tab>
+				<p:tab title="Existencias">
+					<h:panelGrid columns="1" styleClass="janal-wid-100">
+   					<p:outputLabel value="Existencias del articulo por almacen:" styleClass="janal-wid-100-txt"/>
+					</h:panelGrid>	
+					<p:dataTable id="existencias" var="item" value="#{manticInventariosEntradasAccion.attrs.existencias}" paginator="false" reflow="true" rowKey="#{item.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="janal-wid-100 existencias" rowIndexVar="index" paginatorPosition="bottom">
+						<p:column headerText="Clave" styleClass="janal-wid-10">
+							<h:outputText value="#{item.clave}"/>
+						</p:column>   
+						<p:column headerText="Almacen">
+							<h:outputText value="#{item.nombre}"/>
+						</p:column>   
+						<p:column headerText="Ubicación">
+							<h:outputText value="#{item.ubicacion}"/>
+						</p:column>   
+						<p:column headerText="Stock" styleClass="janal-wid-13 janal-column-right">
+							<h:outputText value="#{item.stock}"/>
+						</p:column>   
+					</p:dataTable>
+				</p:tab>	
 				<p:tab title="Especificaciones">
 					<p:dataTable lazy="true" id="lazyEspecificaciones" var="row" value="#{manticInventariosEntradasAccion.attrs.lazyEspecificaciones}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{manticInventariosEntradasAccion.attrs.lazyEspecificaciones.rowCount gt manticInventariosEntradasAccion.attrs.lazyEspecificaciones.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
             <p:column class="MarAuto Responsive">

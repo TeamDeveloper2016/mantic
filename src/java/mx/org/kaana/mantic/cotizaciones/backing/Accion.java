@@ -99,7 +99,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("descuentoIndividual", 0);
 			this.attrs.put("descuentoGlobal", 0);
 			this.attrs.put("tipoDescuento", INDIVIDUAL);
-			doActivarDescuento();
+			this.doActivarDescuento();
 			this.attrs.put("descripcion", "Imagen no disponible");
 			this.attrs.put("mostrarBanco", false);
 			this.attrs.put("decuentoAutorizadoActivo", false);
@@ -110,14 +110,14 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.isAdminEncuestaOrAdmin());
 			this.attrs.put("vigencia", new Date(Calendar.getInstance().getTimeInMillis()));
-			loadClienteDefault();
+			this.loadClienteDefault();
 			if(JsfBase.isAdminEncuestaOrAdmin())
-				loadSucursales();
-			loadBancos();
-			loadCfdis();
-			loadTiposMediosPagos();
-			loadTiposPagos();
-			doLoad();
+				this.loadSucursales();
+			this.loadBancos();
+			this.loadCfdis();
+			this.loadTiposMediosPagos();
+			this.loadTiposPagos();
+			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -140,7 +140,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 					this.attrs.put("consecutivo", "");		
 					idCliente= Long.valueOf(this.attrs.get("idCliente").toString());
 					if(idCliente!= null && !idCliente.equals(-1L))
-						doAsignaClienteInicial(idCliente);
+						this.doAsignaClienteInicial(idCliente);
           break;
         case MODIFICAR:			
         case CONSULTAR:			
@@ -151,8 +151,8 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 					this.attrs.put("vigencia", ((CotizacionFicticia)getAdminOrden().getOrden()).getVigencia());
 					idCliente= ((CotizacionFicticia)getAdminOrden().getOrden()).getIdCliente();
 					if(idCliente!= null && !idCliente.equals(-1L)){
-						doAsignaClienteInicial(idCliente);
-						loadDomicilios(idCliente);
+						this.doAsignaClienteInicial(idCliente);
+						this.loadDomicilios(idCliente);
 						idClienteDomicilio= ((CotizacionFicticia)getAdminOrden().getOrden()).getIdClienteDomicilio();
 						if(idClienteDomicilio!= null && !idClienteDomicilio.equals(-1L))
 							this.attrs.put("domicilio", new UISelectEntity(idClienteDomicilio));
@@ -921,4 +921,5 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		  this.toSaveRecord();
     //UIBackingUtilities.execute("alert('ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA');");
 	} // doGlobalEvent
+	
 }

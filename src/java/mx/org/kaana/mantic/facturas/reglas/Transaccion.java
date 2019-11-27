@@ -51,6 +51,7 @@ public class Transaccion extends TransaccionFactura {
   private static final Logger LOG    = Logger.getLogger(Transaccion.class);
 	private TcManticFicticiasBitacoraDto bitacora;
 	private TcManticFicticiasDto orden;	
+	private Long idFicticia;
 	private List<Articulo> articulos;
 	private String messageError;	
 	private String justificacion;
@@ -91,6 +92,10 @@ public class Transaccion extends TransaccionFactura {
 		this.articulos    = articulos;
 		this.justificacion= justificacion;
 	} // Transaccion
+	
+	public Transaccion(Long idFicticia) {
+		this.idFicticia= idFicticia;
+	}
 	
 	public String getMessageError() {
 		return messageError;
@@ -193,7 +198,17 @@ public class Transaccion extends TransaccionFactura {
 					} // if
 					else
 						throw new Exception("No fue posible cancelar la factura, por favor vuelva a intentarlo !");															
-				break;
+				  break;
+				case ACTIVAR:
+					TcManticFicticiasDto ficticia= (TcManticFicticiasDto)DaoFactory.getInstance().findById(TcManticFicticiasDto.class, this.idFicticia);
+					if(ficticia!= null) {
+						ficticia.setIdTipoDocumento(1L);
+						ficticia.setIdFicticiaEstatus(EEstatusFicticias.ABIERTA.getIdEstatusFicticia());
+						regresar= DaoFactory.getInstance().update(sesion, ficticia)> 0;
+						TcManticFicticiasBitacoraDto bitFicticia= new TcManticFicticiasBitacoraDto(ficticia.getTicket(), "Se cambio la cotización especial para timbrarse", EEstatusFicticias.ABIERTA.getIdEstatusFicticia(), JsfBase.getIdUsuario(), this.idFicticia, -1L, ficticia.getTotal());
+						regresar= DaoFactory.getInstance().insert(sesion, bitFicticia)>= 1L;
+					} // if
+					break;
 			} // switch
 			if(!regresar)
         throw new Exception("");

@@ -48,6 +48,38 @@
 		}, // init
 		events: function() {
  			janal.console('jsKardex.events');
+      $(document).on('keydown', '.key-buscados-event', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('jsKardex.keydown [key-buscados-event]: '+ key);
+				switch(key) {
+					case $kardex.VK_UP:	
+					case $kardex.VK_DOWN:	
+					case $kardex.VK_TAB:
+						if($kardex.temporal!== $('#codigo').val().trim()) {
+        			janal.console('jsKardex.lookup '+ + $(this).val());
+  						lookup($(this).val().replace(janal.cleanString, '').trim());
+						} // if
+						return $kardex.jump(true);
+					  break;
+					case $kardex.VK_ESC:
+            PF('dialogo').hide();
+					  break;
+					case $kardex.VK_ENTER:
+      			janal.console('jsKardex.lookup '+ + $(this).val());
+						$kardex.temporal= $('#codigo').val().trim();
+						lookup($(this).val().replace(janal.cleanString, '').trim());
+						return false;
+						break;
+					case $kardex.VK_PAGE_NEXT:
+						$('#buscados_paginator_top > a.ui-paginator-next').click();
+						return setTimeout($kardex.jump(false), 1000);
+						break;
+					case $kardex.VK_PAGE_PREV:
+						$('#buscados_paginator_top > a.ui-paginator-prev').click();
+						return setTimeout($kardex.jump(false), 1000);
+						break;
+				} // swtich
+			});  
 	    $(document).on('keydown', '.janal-key-kardex', function(e) {
 				var key= e.keyCode? e.keyCode: e.which;
 				janal.console('jsKardex.keydown: '+ key);
@@ -314,6 +346,17 @@
 				ok= false;
 			} // if	
 			return ok;
+		},
+		jump: function(focus) {
+			janal.console('jsKardex.jump');
+			if(!PF('widgetBuscados').isEmpty()) {
+				PF('widgetBuscados').clearSelection();
+				PF('widgetBuscados').writeSelections();
+				PF('widgetBuscados').selectRow(0, true);	
+				if(focus)
+					$('#buscados .ui-datatable-data').focus();
+			} // if	
+			return false;
 		}
 	});
 	

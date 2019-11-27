@@ -402,6 +402,14 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				((NotaEntrada)this.getAdminOrden().getOrden()).setFactura(this.getFactura().getFolio());
 				((NotaEntrada)this.getAdminOrden().getOrden()).setFechaFactura(Fecha.toDateDefault(this.getFactura().getFecha()));
 				((NotaEntrada)this.getAdminOrden().getOrden()).setOriginal(Numero.toRedondearSat(Double.parseDouble(this.getFactura().getTotal())));
+				if(this.tipoOrden.equals(EOrdenes.NORMAL)) {
+					int count= 0;
+					while(count< this.getAdminOrden().getArticulos().size() && this.getAdminOrden().getArticulos().size()> 1) {
+						if(!this.getAdminOrden().getArticulos().get(count).isValid())
+							this.getAdminOrden().getArticulos().remove(count);
+						count++;
+					} // while 
+				} // if
 				this.toMoveSelectedProveedor();
 				this.toPrepareDisponibles(true);
 				this.doCheckFolio();
@@ -792,8 +800,6 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		try {
 			params=new HashMap<>();
 			if(this.tipoOrden.equals(EOrdenes.NORMAL)) {
-				while(this.getAdminOrden().getArticulos().size()> 1)
-			    this.getAdminOrden().getArticulos().remove(0);
 			  this.getAdminOrden().toCalculate();
 				if(temporal== null || !this.getEmisor().getRfc().equals(temporal.toString("rfc"))) {
 					params.put("rfc", this.getEmisor().getRfc());

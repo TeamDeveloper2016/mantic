@@ -37,6 +37,7 @@ import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.correos.beans.Attachment;
 import mx.org.kaana.mantic.correos.enums.ECorreos;
 import mx.org.kaana.mantic.correos.reglas.IBaseAttachment;
+import mx.org.kaana.mantic.cotizaciones.beans.CotizacionFicticia;
 import mx.org.kaana.mantic.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
@@ -580,4 +581,24 @@ public class Filtro extends FiltroFactura implements Serializable {
 			Methods.clean(files);
 		} // finally
 	} // doSendMail		
+	
+	public String doTimbrar() {
+	  String regresar= null;
+    Transaccion transaccion= null;
+		try {
+  		transaccion = new Transaccion(((Entity)this.attrs.get("seleccionado")).getKey());
+			if (transaccion.ejecutar(EAccion.ACTIVAR)) {
+   	    regresar= "/Paginas/Mantic/Facturas/filtro".concat(Constantes.REDIRECIONAR);
+				JsfBase.setFlashAttribute("idFicticia", ((Entity)this.attrs.get("seleccionado")).getKey());
+			} // if
+			else 
+				JsfBase.addMessage("Ocurrió un error al tratar de mover la cotización a las facturas.", ETipoMensaje.ERROR);      			
+   } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+		return regresar;
+	}
+
 }

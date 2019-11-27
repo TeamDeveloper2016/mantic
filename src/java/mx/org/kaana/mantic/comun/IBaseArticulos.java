@@ -864,6 +864,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				this.attrs.put("lazyDescuentos", new FormatLazyModel("TcManticArticulosDescuentosDto", "row", params, columns));
 				UIBackingUtilities.resetDataTable("lazyDescuentos");
 				this.detailImage= LoadImages.getImage(idArticulo);
+				this.toLoadExistencias(idArticulo);
 			} // if
 		} // try
 		catch (Exception e) {
@@ -934,4 +935,26 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 		} // catch				
 	} // doRecoveryArticulo	
 	
+  private void toLoadExistencias(Long idArticulo) {
+		List<Columna> columns     = null;
+		Map<String, Object> params= null;
+		try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("ubicacion", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+			params=new HashMap<>();
+			params.put("idArticulo", idArticulo);
+			this.attrs.put("existencias", UIEntity.build("VistaKardexDto", "localizado", params, columns));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+			Methods.clean(columns);
+		} // finally
+  }	
+
 }

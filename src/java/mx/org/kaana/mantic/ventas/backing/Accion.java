@@ -38,9 +38,9 @@ import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 import mx.org.kaana.mantic.ventas.beans.SaldoCliente;
 import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
 import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
+import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.StreamedContent;
-import org.apache.log4j.Logger;
 
 @Named(value= "manticVentasAccion")
 @ViewScoped
@@ -652,4 +652,5 @@ public class Accion extends IBaseVenta implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doAgregarCorreo
+	
 }

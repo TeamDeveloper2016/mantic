@@ -5500,6 +5500,10 @@
 			</select>
 			<select id="porLikeNombre">
 				select 
+					principal.*,
+					(select if(sum(stock) is null, 0, sum(stock)) from tc_mantic_almacenes_articulos where id_articulo= principal.id_articulo and id_almacen in (select id_almacen from tc_mantic_almacenes where id_empresa in ({sucursales}))) stock
+				from(
+				select 
 				  tc_mantic_articulos.id_articulo as id_key,
 				  tc_mantic_articulos.id_articulo,
 				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and (upper(tc_mantic_articulos.nombre) like upper('{codigo}%') or tc_mantic_articulos.id_articulo= {idArticulo})) as propio,
@@ -5538,9 +5542,9 @@
 				    upper(tc_mantic_articulos.nombre) like upper('{codigo}%')
 				  or
 				    tc_mantic_articulos.id_articulo= {idArticulo}
-				  ) 			
+				  )) principal 			
 				order by 
-				  tc_mantic_articulos.nombre				
+				  nombre 			
 			</select>
 			<select id="clientes">
         select

@@ -14,7 +14,7 @@
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryKardexJs}"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-				'contenedorGrupos\\:codigo' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:clave' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:nombre' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:codigos': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:sat'    : {validaciones: 'libre', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas', grupo: 'general'},
@@ -62,11 +62,11 @@
 			<pe:methodParam name="keep"/>  
 		</pe:remoteCommand>		
 		<p:remoteCommand name="replace" actionListener="#{manticInventariosAlmacenesKardex.doFindArticulo}" process="@this" update="@(.filas) @(.recalculo) contenedorGrupos:panelImage" onstart="return janal.bloquear();" oncomplete="jsKardex.process();"/>
-		<pe:remoteCommand name="lookup" actionListener="#{manticInventariosAlmacenesKardex.doUpdateDialogArticulos}" onstart="return PF('dialogo').isVisible();" process="@this clave" update="buscados localizado">
+		<pe:remoteCommand name="lookup" actionListener="#{manticInventariosAlmacenesKardex.doUpdateDialogArticulos}" onstart="return PF('dialogo').isVisible();" process="@this codigo" update="buscados localizado">
 			<pe:methodSignature parameters="java.lang.String"/>  
 			<pe:methodParam name="codigo"/>  
 		</pe:remoteCommand>		
-		<p:remoteCommand name="clean" actionListener="#{manticInventariosAlmacenesKardex.doCleanArticulos}" process="@this clave" update="buscados localizado"/>
+		<p:remoteCommand name="clean" actionListener="#{manticInventariosAlmacenesKardex.doCleanArticulos}" process="@this codigo" update="buscados localizado"/>
 		<pe:remoteCommand name="lookForCodigo" process="@this @(.proveedores-codigo)" actionListener="#{manticInventariosAlmacenesKardex.doLookForCodigo}">  
 			<pe:methodSignature parameters="java.lang.String, java.lang.String, java.lang.Long"/>  
 			<pe:methodParam name="id"/>  
@@ -144,8 +144,8 @@
             <p:tab title="General">			
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-70, janal-wid-30">	
 								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">		
-									<p:outputLabel for="codigo" value="Código:"/>
-									<p:inputText id="codigo" value="#{manticInventariosAlmacenesKardex.attrs.articulo.propio}" styleClass="janal-wid-90 filas" readonly="true"/>
+									<p:outputLabel for="clave" value="Código:"/>
+									<p:inputText id="clave" value="#{manticInventariosAlmacenesKardex.attrs.articulo.propio}" styleClass="janal-wid-90 filas" readonly="true"/>
 									<p:outputLabel for="sat" value="Código SAT:"/>
 									<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-86, janal-wid-col-38">	
 									  <p:inputText id="sat" value="#{manticInventariosAlmacenesKardex.attrs.sat}" styleClass="janal-wid-95 janal-column-right filas" disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}"/>
@@ -480,7 +480,7 @@
 		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();$('#codigos').focus();" onShow="$('#clave').val('');clean();" width="900px" height="470px" resizable="false" appendTo="@(body)">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
-					<p:outputLabel for="clave" value="Código o nombre:"/>
+					<p:outputLabel for="codigo" value="Código o nombre:"/>
 					<span class="janal-help-icon janal-help-8 fa fa-fw fa-question-circle Fright" onclick="countHelp(8);"/>	
 					<pe:tooltip for="@(.janal-help-8)" showEvent="click">
 						<h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(8)}" styleClass="Fs15" escape="false"/>
@@ -489,7 +489,7 @@
 			</div>	
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
-					<p:inputText id="clave" value="#{manticInventariosAlmacenesKardex.attrs.codigo}" styleClass="janal-wid-100-txt key-buscados-event" style="text-transform: uppercase"/>
+					<p:inputText id="codigo" value="#{manticInventariosAlmacenesKardex.attrs.codigo}" styleClass="janal-wid-100-txt key-buscados-event" style="text-transform: uppercase"/>
 				</div>			
 			</div>
 			<div class="ui-grid-row janal-grid-row">
