@@ -32,13 +32,11 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloCodigo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.inventarios.almacenes.beans.AdminKardex;
 import mx.org.kaana.mantic.inventarios.almacenes.beans.TiposVentas;
-import mx.org.kaana.mantic.inventarios.almacenes.enums.ETiposVentas;
 import mx.org.kaana.mantic.inventarios.almacenes.reglas.Transaccion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -391,9 +389,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
-      columns.add(new Columna("minimo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
-      columns.add(new Columna("maximo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("minimo", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("maximo", EFormatoDinamicos.NUMERO_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
       this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "almacenes", this.attrs, columns));
 		} // try
@@ -993,8 +991,35 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			Methods.clean(params);
 		} // finally	
 	}	
+	
   public String	doRegresar() {
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
 	}
 	
+	public void doAlmacen() {
+    Transaccion transaccion= null;
+    try {			
+  	  UISelectEntity almacen= (UISelectEntity)this.attrs.get("identificado");
+			almacen.put("min", new Value("min", this.attrs.get("min")));
+			almacen.put("max", new Value("max", this.attrs.get("max")));
+			transaccion = new Transaccion(almacen);
+			if (transaccion.ejecutar(EAccion.MOVIMIENTOS)) {
+				JsfBase.addMessage("Se modificaron los umbrales del articulo.", ETipoMensaje.INFORMACION);
+  			this.toLoadAlmacenes();
+			} // if
+			else 
+				JsfBase.addMessage("Ocurrió un error al registrar los umbrales del articulo.", ETipoMensaje.ERROR);      			
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+	}
+
+	public void doUpdateUmbrales() {
+ 	  UISelectEntity almacen= (UISelectEntity)this.attrs.get("identificado");
+		this.attrs.put("min", almacen.toDouble("min"));
+		this.attrs.put("max", almacen.toDouble("max"));
+	}
+
 }

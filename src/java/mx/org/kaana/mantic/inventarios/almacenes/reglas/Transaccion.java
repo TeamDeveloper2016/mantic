@@ -15,7 +15,9 @@ import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosCodigosDto;
@@ -47,6 +49,7 @@ public class Transaccion extends IBaseTnx {
 	private String sat;
 	private List<TiposVentas> articulos;
 	protected String messageError;		
+	private UISelectEntity almacen;
 
 	public Transaccion() {
 		this(-1L, -1L, 0D);
@@ -77,6 +80,10 @@ public class Transaccion extends IBaseTnx {
 		this.sat       = sat;
 	} // Transaccion
 
+	public Transaccion(UISelectEntity almacen) {
+	  this.almacen= almacen;
+	}
+	
 	public String getMessageError() {
 		return messageError;
 	}
@@ -153,6 +160,14 @@ public class Transaccion extends IBaseTnx {
 					break;
 				case DEPURAR:
 					regresar= DaoFactory.getInstance().delete(sesion, TcManticArticulosCodigosDto.class, this.idArticulo)>= 1L;
+					break;
+				case MOVIMIENTOS:
+					TcManticAlmacenesArticulosDto almacenArticulo= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findById(TcManticAlmacenesArticulosDto.class, this.almacen.getKey());
+					if(almacenArticulo!= null) {
+						almacenArticulo.setMinimo(this.almacen.toDouble("min"));
+						almacenArticulo.setMaximo(this.almacen.toDouble("max"));
+						regresar= DaoFactory.getInstance().update(sesion, almacenArticulo)> 0;
+					} // if
 					break;
 			} // switch
 			if(!regresar)

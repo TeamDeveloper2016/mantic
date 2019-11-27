@@ -2668,6 +2668,8 @@
           tc_mantic_almacenes_articulos.stock,
           tc_mantic_almacenes_articulos.minimo,
           tc_mantic_almacenes_articulos.maximo,
+          tc_mantic_almacenes_articulos.minimo as min,
+          tc_mantic_almacenes_articulos.maximo as max,
           concat(tc_mantic_almacenes_ubicaciones.piso, '=> ', if(tc_mantic_almacenes_ubicaciones.cuarto is null, '', tc_mantic_almacenes_ubicaciones.cuarto), '=> ', if(tc_mantic_almacenes_ubicaciones.anaquel is null, '', tc_mantic_almacenes_ubicaciones.anaquel), '=> ', if(tc_mantic_almacenes_ubicaciones.charola is null, '', tc_mantic_almacenes_ubicaciones.charola)) as ubicacion,
           tc_mantic_almacenes.registro
 				from      

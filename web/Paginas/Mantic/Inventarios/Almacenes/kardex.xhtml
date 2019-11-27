@@ -23,7 +23,9 @@
 				'precios'   : {multiple: '$', validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'libre', formatos: 'flotante', individual: true, grupo: 'general', mensaje: 'El precio tiene que ser mayor a cero.'},
 				'contenedorGrupos\\:tabla\\:0\\:limites': {validaciones: 'requerido|flotante|menor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:1\\\\:limites"})', mascara: 'libre', formatos: 'precio', grupo: 'general'},
 				'contenedorGrupos\\:tabla\\:1\\:limites': {validaciones: 'requerido|flotante|mayor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:0\\\\:limites"})', mascara: 'libre', formatos: 'precio', grupo: 'general'},
-				'contenedorGrupos\\:auxiliar': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'auxiliar'}
+				'contenedorGrupos\\:auxiliar': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'auxiliar'},
+        'minimo': {validaciones: 'requerido|mayor-igual({"cuanto": 0})|menor-a({"cual":"maximo"})', mascara: 'libre', grupo: 'almacen'},
+        'maximo': {validaciones: 'requerido|mayor-igual({"cuanto": 0})|mayor-a({"cual":"minimo"})', mascara: 'libre', grupo: 'almacen'}
 			};
 		</script>   
 		<style type="text/css">
@@ -275,7 +277,7 @@
               </p:dataTable>
 						</p:tab>
 						<p:tab title="Almacenes">
-							<p:dataTable var="row" value="#{manticInventariosAlmacenesKardex.attrs.almacenes}" paginator="false" reflow="true" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="paginated filas" rowIndexVar="index" selectionMode="single" selection="#{manticInventariosAlmacenesKardex.attrs.selected}" rowKey="#{row.idKey}">
+							<p:dataTable var="row" value="#{manticInventariosAlmacenesKardex.attrs.almacenes}" paginator="false" reflow="true" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="paginated filas existencias" rowIndexVar="index" selectionMode="single" selection="#{manticInventariosAlmacenesKardex.attrs.selected}" rowKey="#{row.idKey}">
 								<p:ajax event="rowSelect" listener="#{manticInventariosAlmacenesKardex.doUpdateInventario}" process="@this" update="@(.inventario)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 								<p:column headerText="No" styleClass="janal-wid-3">
 									<p:outputLabel value="#{index+ 1}.-"/>
@@ -297,7 +299,12 @@
 								</p:column>   
 								<p:column headerText="Ubicación" styleClass="janal-wid-30">
 									<p:outputLabel value="#{row.ubicacion}"/>
-								</p:column>   
+								</p:column>  
+								<p:column styleClass="janal-wid-col-38">
+									<p:commandButton process="@this" update="@(.existencias) dialogoAlmacen" action="#{manticInventariosAlmacenesKardex.doUpdateUmbrales}" onstart="return janal.bloquear();" oncomplete="PF('dlgAlmacen').show();" title="Cambiar umbrales" icon="fa fa-shopping-cart">
+										<f:setPropertyActionListener value="#{row}" target="#{manticInventariosAlmacenesKardex.attrs.identificado}" />
+									</p:commandButton>
+								</p:column>
 							</p:dataTable>	
 							<p:outputLabel value="Click sobre la fila del almacen para recuperar los valores del inventario del articulo seleccionado !" styleClass="janal-color-orange"/>
 							<br/>
@@ -541,5 +548,26 @@
 			<ui:param name="dialogo" value="articulos"/>
 			<ui:param name="seleccionado" value="#{manticInventariosAlmacenesKardex.attrs.seleccionado}"/>
 		</ui:include>
+		<p:dialog id="dialogoAlmacen" widgetVar="dlgAlmacen" header="Umbrales de existencias en el almacen" onShow="janal.reset();" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
+			<h:form id="formDialogoAlmacen" prependId="false">	
+				<p:panelGrid id="panelAlmacen" columns="2" layout="grid" styleClass="janal-wid-100" style="height:200px !important;overflow-y: auto" columnClasses="janal-wid-col-120, janal-wid-100">													
+					<p:outputLabel value="Clave:"/>
+					<p:inputText styleClass="janal-wid-100-txt" value="#{manticInventariosAlmacenesKardex.attrs.identificado.clave}" readonly="true"/>
+					<p:outputLabel value="Almacen:"/>
+					<p:inputText styleClass="janal-wid-100-txt" value="#{manticInventariosAlmacenesKardex.attrs.identificado.nombre}" readonly="true"/>
+					<p:outputLabel for="minimo" value="Minimo:"/>
+					<p:inputNumber id="minimo" value="#{manticInventariosAlmacenesKardex.attrs.min}" converter="javax.faces.Double" inputStyleClass="janal-wid-100-txt janal-column-right" decimalPlaces="2"/>
+					<p:outputLabel for="maximo" value="Maximo:"/>
+					<p:inputNumber id="maximo" value="#{manticInventariosAlmacenesKardex.attrs.max}" converter="javax.faces.Double" inputStyleClass="janal-wid-100-txt janal-column-right" decimalPlaces="2"/>	                  
+					<p:outputLabel for="stock" value="Stock:"/>
+					<p:inputText id="stock" styleClass="janal-wid-100-txt janal-column-right" value="#{manticInventariosAlmacenesKardex.attrs.identificado.stock}" readonly="true"/>
+				</p:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this dialogoAlmacen" update="@(.existencias)" value="Aceptar" action="#{manticInventariosAlmacenesKardex.doAlmacen}" onstart="return janal.partial('almacen', true);" oncomplete="PF('dlgAlmacen').hide(); janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgAlmacen').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog>
 	</ui:define>
 </ui:composition>
