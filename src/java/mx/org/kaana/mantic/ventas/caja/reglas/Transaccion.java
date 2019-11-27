@@ -1060,12 +1060,12 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		boolean regresar             = true;
 		TransaccionFactura factura   = null;
 		CFDIGestor gestor            = null;
-		ClienteFactura clienteFactura= null;		
+		ClienteFactura clienteFactura= null;				
 		try {			
 			sesion.flush();
 			actualizarClienteFacturama(sesion, this.facturacion.getIdCliente(), this.facturacion.getIdClienteDomicilio());
 			gestor= new CFDIGestor(this.facturacion.getIdVenta());			
-			factura= new TransaccionFactura();
+			factura= new TransaccionFactura();			
 			factura.actualizarFacturaAutomatico(this.facturacion.getIdFactura(), this.facturacion.getIdUsuario(), EEstatusFacturas.PROCESANDO.getIdEstatusFactura());
 			factura.setArticulos(gestor.toDetalleCfdiVentas(sesion));
 			clienteFactura= gestor.toClienteCfdiVenta(sesion);			
@@ -1074,9 +1074,16 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			factura.getCliente().setIdFactura(this.facturacion.getIdFactura());
 			factura.generarCfdi(sesion, this.facturacion.getIdEmpresa().toString(), this.facturacion.getIdUsuario());						
 		} // try
-		catch (Exception e) {			
-			regresar= false;
-			Error.mensaje(e);
+		catch (Exception e) {	
+			try {
+				if(factura!= null)
+					factura.actualizarFacturaAutomatico(this.facturacion.getIdFactura(), this.facturacion.getIdUsuario(), EEstatusFacturas.AUTOMATICO.getIdEstatusFactura());
+				regresar= false;
+				Error.mensaje(e);
+			} // try
+			catch (Exception ex) {				
+				Error.mensaje(ex);				
+			} // catch									
 		} // catch				
 		return regresar;
 	} // generarTimbradoFactura
