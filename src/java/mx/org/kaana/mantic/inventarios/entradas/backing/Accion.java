@@ -405,7 +405,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				if(this.tipoOrden.equals(EOrdenes.NORMAL)) {
 					int count= 0;
 					while(count< this.getAdminOrden().getArticulos().size() && this.getAdminOrden().getArticulos().size()> 1) {
-						if(!this.getAdminOrden().getArticulos().get(count).isValid())
+						if(this.getAdminOrden().getArticulos().get(count).getIdOrdenDetalle()== null)
 							this.getAdminOrden().getArticulos().remove(count);
 						count++;
 					} // while 
