@@ -10,6 +10,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
@@ -368,13 +369,29 @@ public class TransaccionFactura extends IBaseTnx {
 				actualizarFacturaAutomatico(sesion, this.cliente.getIdFactura(), idUsuario);
 			} // else
 		} // try
-		catch (Exception e) {			
-			registrarBitacoraFactura(this.cliente.getIdFactura(), EEstatusFacturas.AUTOMATICO.getIdEstatusFactura(), "Ocurrió un error al realizar la facturación automatica.", idUsuario);		
-			actualizarFacturaAutomatico(this.cliente.getIdFactura(), idUsuario, EEstatusFacturas.AUTOMATICO.getIdEstatusFactura());
+		catch (Exception e) {						
+			if(existFactura()){
+				registrarBitacoraFactura(this.cliente.getIdFactura(), EEstatusFacturas.AUTOMATICO.getIdEstatusFactura(), "Ocurrió un error al realizar la facturación automatica.", idUsuario);		
+				actualizarFacturaAutomatico(this.cliente.getIdFactura(), idUsuario, EEstatusFacturas.AUTOMATICO.getIdEstatusFactura());
+			} // if
 			throw e;
 		} // catch
 		return regresar;
 	} // generarCfdi
+	
+	private boolean existFactura(){
+		boolean regresar           = false;
+		TcManticFacturasDto factura= null;
+		try {
+			factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(TcManticFacturasDto.class, this.cliente.getIdFactura());
+			regresar= factura!= null && factura.isValid();
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+			regresar= false;
+		} // catch		
+		return regresar;
+	} // existFactura
 	
 	private void toUpdateData(Session sesion, Cfdi detail, Long idFactura, String path, Long idUsuario) throws Exception {
 		TcManticFacturasDto factura= (TcManticFacturasDto)DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, idFactura);
