@@ -128,7 +128,7 @@ $.mask.rules = $.extend($.mask.rules, {
 	'r': /[0-9,.-]/,
 	's':/[^\u0025\u0027]/,
 	't': /[0-9a-zA-Z_]/,
-	'v': /[0-9a-zA-Z_-]/
+	'v': /[0-9a-zA-Z._-]/
 });
 
 $.mask.masks = $.extend($.mask.masks, {
