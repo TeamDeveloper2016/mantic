@@ -23,7 +23,10 @@
 				'precios'   : {multiple: '$', validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'libre', formatos: 'flotante', individual: true, grupo: 'general', mensaje: 'El precio tiene que ser mayor a cero.'},
 				'contenedorGrupos\\:tabla\\:0\\:limites': {validaciones: 'requerido|flotante|menor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:1\\\\:limites"})', mascara: 'libre', formatos: 'precio', grupo: 'general'},
 				'contenedorGrupos\\:tabla\\:1\\:limites': {validaciones: 'requerido|flotante|mayor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:0\\\\:limites"})', mascara: 'libre', formatos: 'precio', grupo: 'general'},
-				'contenedorGrupos\\:auxiliar': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'auxiliar'},
+				'contenedorGrupos\\:auxiliar': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'auxiliar'}
+			}
+			
+			Janal.Control.almacen = {				 				
         'minimo': {validaciones: 'requerido|mayor-igual({"cuanto": 0})|menor-a({"cual":"maximo"})', mascara: 'libre', grupo: 'almacen'},
         'maximo': {validaciones: 'requerido|mayor-igual({"cuanto": 0})|mayor-a({"cual":"minimo"})', mascara: 'libre', grupo: 'almacen'}
 			};
@@ -548,7 +551,7 @@
 			<ui:param name="dialogo" value="articulos"/>
 			<ui:param name="seleccionado" value="#{manticInventariosAlmacenesKardex.attrs.seleccionado}"/>
 		</ui:include>
-		<p:dialog id="dialogoAlmacen" widgetVar="dlgAlmacen" header="Umbrales de existencias en el almacen" onShow="janal.reset();" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
+		<p:dialog id="dialogoAlmacen" widgetVar="dlgAlmacen" header="Umbrales de existencias en el almacen" onShow="janal.change('formDialogoAlmacen', Janal.Control.almacen);" onHide="janal.restore();" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
 			<h:form id="formDialogoAlmacen" prependId="false">	
 				<p:panelGrid id="panelAlmacen" columns="2" layout="grid" styleClass="janal-wid-100" style="height:200px !important;overflow-y: auto" columnClasses="janal-wid-col-120, janal-wid-100">													
 					<p:outputLabel value="Clave:"/>
