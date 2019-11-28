@@ -304,7 +304,7 @@
 									<p:outputLabel value="#{row.ubicacion}"/>
 								</p:column>  
 								<p:column styleClass="janal-wid-col-38">
-									<p:commandButton process="@this" update="@(.existencias) dialogoAlmacen" action="#{manticInventariosAlmacenesKardex.doUpdateUmbrales}" onstart="return janal.bloquear();" oncomplete="PF('dlgAlmacen').show();" title="Cambiar umbrales" icon="fa fa-shopping-cart">
+									<p:commandButton process="@this" update="@(.existencias) dialogoAlmacen" action="#{manticInventariosAlmacenesKardex.doUpdateUmbrales}" onstart="return janal.bloquear();" oncomplete="PF('dlgAlmacen').show();" title="Cambiar umbrales" icon="fa fa-edit">
 										<f:setPropertyActionListener value="#{row}" target="#{manticInventariosAlmacenesKardex.attrs.identificado}" />
 									</p:commandButton>
 								</p:column>
