@@ -97,9 +97,7 @@
 				inner join
 					tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona
 				where
-					tc_mantic_personas.cuenta = '{cuenta}' and tc_janal_usuarios.activo=1				
-				and 
-					tr_mantic_empresa_personal.id_empresa= {idEmpresa}				
+					tc_mantic_personas.cuenta = '{cuenta}' and tc_janal_usuarios.activo=1
       </select>
       <select id="recuperar">
         select
