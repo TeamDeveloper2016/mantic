@@ -216,7 +216,7 @@ public class Autentifica implements Serializable {
         regresar = isDelegaActivo();
       } // else
       if (regresar) {
-        this.ultimoAcceso = Fecha.formatear(Fecha.DIA_FECHA_HORA, this.persona.getUltimoAcceso().equals(null)?new Timestamp(Calendar.getInstance().getTimeInMillis()):this.persona.getUltimoAcceso());        
+        this.ultimoAcceso= Fecha.formatear(Fecha.DIA_FECHA_HORA, this.persona.getUltimoAcceso()== null? new Timestamp(Calendar.getInstance().getTimeInMillis()): this.persona.getUltimoAcceso());        
       } // else
     } // try
     catch (Exception e) {
