@@ -70,7 +70,7 @@ public class CambioUsuario extends Acceso implements Serializable{
     HttpSession session     = null;
     RegistroPerfil registro = null;    
 		autentifica.getCredenciales().setCuentaInicial(getCliente().getCuenta());
-    if (autentifica.validaCambioUsuario(getCliente().getCuenta(), getCliente().getContrasenia(), JsfBase.getAutentifica().getEmpresa().getDependencias())) {      
+    if (autentifica.validaCambioUsuario(getCliente().getCuenta(), getCliente().getContrasenia(), JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende())) {      
 			if (JsfBase.isLockUsers()) {
         throw new BloqueoSitioException();
       } // if
