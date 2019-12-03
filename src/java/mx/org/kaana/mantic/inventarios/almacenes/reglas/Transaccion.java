@@ -209,6 +209,7 @@ public class Transaccion extends IBaseTnx {
 		Map<String, Object>params          = null;		
 		try {
 			params= new HashMap<>();
+			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
 			params.put("idArticulo", idArticulo);
 			params.put("codigo", "WXYZ");

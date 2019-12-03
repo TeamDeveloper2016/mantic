@@ -345,6 +345,7 @@ public class Express extends IBaseAttribute implements Serializable {
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			String search= !Cadena.isVacio(query)? query.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";
+			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);			
   		params.put("codigo", search);			
@@ -388,6 +389,7 @@ public class Express extends IBaseAttribute implements Serializable {
 			if(buscaPorCodigo)
 				query= query.trim().substring(1);
 			String search= !Cadena.isVacio(query)? query.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";
+			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);			
   		params.put("codigo", search);		

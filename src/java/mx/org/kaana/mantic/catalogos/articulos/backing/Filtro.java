@@ -250,6 +250,7 @@ public class Filtro extends Comun implements Serializable {
 			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);
 			String search= new String((String)this.attrs.get("codigo")); 
@@ -454,6 +455,7 @@ public class Filtro extends Comun implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			String search= (String)this.attrs.get("codigoCodigo"); 
 			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";
+			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
 			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 				params.put("sucursales", this.attrs.get("idEmpresa"));
 			else

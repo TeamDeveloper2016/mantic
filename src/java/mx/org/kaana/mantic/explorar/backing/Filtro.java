@@ -101,6 +101,7 @@ public class Filtro extends Pedido implements Serializable {
 				regresar.put("condicion", Constantes.SQL_VERDADERO);
 			else
 			  regresar.put("condicion", sb.substring(0, sb.length()- 4));			
+			regresar.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
   	  regresar.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
 		} // try
 		catch (Exception e) {			

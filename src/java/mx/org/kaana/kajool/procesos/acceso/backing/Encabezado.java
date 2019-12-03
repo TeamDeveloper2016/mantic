@@ -2,8 +2,6 @@ package mx.org.kaana.kajool.procesos.acceso.backing;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -96,6 +94,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
 	@Override
 	public void doLoad() {
     List<Columna> columns= null;
+    Map<String, Object> params= new HashMap<>();
     try {
       columns = new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
@@ -105,7 +104,12 @@ public class Encabezado extends IBaseFilter implements Serializable {
       columns.add(new Columna("mayoreo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("limiteMedioMayoreo", EFormatoDinamicos.NUMERO_CON_DECIMALES));
       columns.add(new Columna("limiteMayoreo", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-      this.lazyModel = new FormatCustomLazy("VistaOrdenesComprasDto", (String)this.attrs.get("idXml"), this.attrs, columns);
+			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
+  		params.put("sucursales", this.attrs.get("sucursales"));
+  		params.put("idProveedor", this.attrs.get("proveedor"));
+  		params.put("codigo", this.attrs.get("codigo"));
+  		params.put("idArticulo", this.attrs.get("idArticulo"));
+      this.lazyModel = new FormatCustomLazy("VistaOrdenesComprasDto", (String)this.attrs.get("idXml"), params, columns);
       UIBackingUtilities.resetDataTable("verificadorTabla");
     } // try
     catch (Exception e) {
@@ -114,6 +118,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
     } // catch
     finally {
       Methods.clean(columns);
+      Methods.clean(params);
     } // finally			
 	}
 
@@ -241,6 +246,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
 			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
 			String search= new String((String)this.attrs.get("codigoFaltantes")); 

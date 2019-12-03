@@ -327,6 +327,7 @@ public class Filtro extends IBaseTicket implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			String search= (String)this.attrs.get("codigoCodigo"); 
 			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";
+			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
 			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 				params.put("sucursales", this.attrs.get("idEmpresa"));
 			else
@@ -375,6 +376,7 @@ public class Filtro extends IBaseTicket implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			String search= (String)this.attrs.get("codigoArticulo"); 
 			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";
+			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
 			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 				params.put("sucursales", this.attrs.get("idEmpresa"));
 			else

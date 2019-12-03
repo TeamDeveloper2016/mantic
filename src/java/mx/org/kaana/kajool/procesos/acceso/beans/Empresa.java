@@ -25,16 +25,17 @@ public class Empresa implements Serializable {
   private String dependencias;
 	private String ticket;
 	private String clave;
+  private Long idAlmacen;
 
   public Empresa () {
-    this(-1L, -1L, -1L, "", "", "", "-1");
+    this(-1L, -1L, -1L, "", "", "", "-1", -1L);
   }     
 
-  public Empresa(Long idEmpresa, Long idEmpresaDepende, Long idTipoEmpresa, String nombre, String nombreCorto, String titulo, String sucursales) {
-		this(idEmpresa, idEmpresaDepende, idTipoEmpresa, nombre, nombreCorto, titulo, sucursales, "", "", "");
+  public Empresa(Long idEmpresa, Long idEmpresaDepende, Long idTipoEmpresa, String nombre, String nombreCorto, String titulo, String sucursales, Long idAlmacen) {
+		this(idEmpresa, idEmpresaDepende, idTipoEmpresa, nombre, nombreCorto, titulo, sucursales, "", "", "", idAlmacen);
 	}
 	
-  public Empresa(Long idEmpresa, Long idEmpresaDepende, Long idTipoEmpresa, String nombre, String nombreCorto, String titulo, String sucursales, String ticket, String clave, String dependencias) {
+  public Empresa(Long idEmpresa, Long idEmpresaDepende, Long idTipoEmpresa, String nombre, String nombreCorto, String titulo, String sucursales, String ticket, String clave, String dependencias, Long idAlmacen) {
     this.nombre          = nombre;
     this.idEmpresa       = idEmpresa;
     this.idEmpresaDepende= idEmpresaDepende;
@@ -45,6 +46,7 @@ public class Empresa implements Serializable {
 		this.ticket          = ticket;
 		this.clave           = clave;
 		this.dependencias    = dependencias;
+	  this.idAlmacen       = idAlmacen;
   }
 
   public Long getIdEmpresaDepende() {
@@ -130,20 +132,20 @@ public class Empresa implements Serializable {
 	public void setDependencias(String dependencias) {
 		this.dependencias = dependencias;
 	}	
-	
-  @Override
-  public String toString() {
-    StringBuilder regresar = new StringBuilder();
-    regresar.append(Constantes.SEPARADOR);
-    regresar.append("empresa=");
-    regresar.append(Constantes.SEPARADOR);
-    regresar.append(this.idEmpresa);
-    regresar.append("nombre=");
-    regresar.append(this.nombre);
-    regresar.append(Constantes.SEPARADOR);    
-    return regresar.toString();
-  }
 
+	public Long getIdAlmacen() {
+		return idAlmacen;
+	}
+
+	public void setIdAlmacen(Long idAlmacen) {
+		this.idAlmacen=idAlmacen;
+	}
+
+	@Override
+	public String toString() {
+		return "Empresa{"+"idEmpresa="+idEmpresa+", idEmpresaDepende="+idEmpresaDepende+", idTipoEmpresa="+idTipoEmpresa+", nombre="+nombre+", nombreCorto="+nombreCorto+", titulo="+titulo+", sucursales="+sucursales+", dependencias="+dependencias+", ticket="+ticket+", clave="+clave+", idAlmacen="+idAlmacen+'}';
+	}
+	
   @Override
   public int hashCode() {
     int hash = 7;
@@ -168,4 +170,5 @@ public class Empresa implements Serializable {
     }
     return true;
   }
+	
 }

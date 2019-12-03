@@ -5270,7 +5270,7 @@
 			<select id="porNombre">
 				select 
 					principal.*,
-					(select if(sum(stock) is null, 0, sum(stock)) from tc_mantic_almacenes_articulos where id_articulo= principal.id_articulo and id_almacen in (select id_almacen from tc_mantic_almacenes where id_empresa in ({sucursales}))) stock
+					(select if(sum(stock) is null, 0, sum(stock)) from tc_mantic_almacenes_articulos where id_articulo= principal.id_articulo and id_almacen in (select id_almacen from tc_mantic_almacenes where id_empresa in ({idAlmacen}))) stock
 				from(
 				select 
 				  tc_mantic_articulos.id_articulo as id_key,
@@ -5319,7 +5319,7 @@
 			<select id="porTodos">
 				select 
 					principal.*,
-					(select if(sum(stock) is null, 0, sum(stock)) from tc_mantic_almacenes_articulos where id_articulo= principal.id_articulo and id_almacen in (select id_almacen from tc_mantic_almacenes where id_empresa in ({sucursales}))) stock
+					(select if(sum(stock) is null, 0, sum(stock)) from tc_mantic_almacenes_articulos where id_articulo= principal.id_articulo and id_almacen in (select id_almacen from tc_mantic_almacenes where id_empresa in ({idAlmacen}))) stock
 				from(
 				select 
 				  tc_mantic_articulos.id_articulo as id_key,
@@ -5399,7 +5399,7 @@
 			<select id="porCodigo">
 				select 
 					principal.*,
-					(select if(sum(stock) is null, 0, sum(stock)) from tc_mantic_almacenes_articulos where id_articulo= principal.id_articulo and id_almacen in (select id_almacen from tc_mantic_almacenes where id_empresa in ({sucursales}))) stock
+					(select if(sum(stock) is null, 0, sum(stock)) from tc_mantic_almacenes_articulos where id_articulo= principal.id_articulo and id_almacen in (select id_almacen from tc_mantic_almacenes where id_empresa in ({idAlmacen}))) stock
 				from(
 				select 
 				  tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
@@ -5451,7 +5451,7 @@
 			<select id="porCodigoIgual">
 				select 
 					principal.*,
-					(select if(sum(stock) is null, 0, sum(stock)) from tc_mantic_almacenes_articulos where id_articulo= principal.id_articulo and id_almacen in (select id_almacen from tc_mantic_almacenes where id_empresa in ({sucursales}))) stock
+					(select if(sum(stock) is null, 0, sum(stock)) from tc_mantic_almacenes_articulos where id_articulo= principal.id_articulo and id_almacen in (select id_almacen from tc_mantic_almacenes where id_empresa in ({idAlmacen}))) stock
 				from(
 				select 
 				  tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
@@ -5503,7 +5503,7 @@
 			<select id="porLikeNombre">
 				select 
 					principal.*,
-					(select if(sum(stock) is null, 0, sum(stock)) from tc_mantic_almacenes_articulos where id_articulo= principal.id_articulo and id_almacen in (select id_almacen from tc_mantic_almacenes where id_empresa in ({sucursales}))) stock
+					(select if(sum(stock) is null, 0, sum(stock)) from tc_mantic_almacenes_articulos where id_articulo= principal.id_articulo and id_almacen in (select id_almacen from tc_mantic_almacenes where id_empresa in ({idAlmacen}))) stock
 				from(
 				select 
 				  tc_mantic_articulos.id_articulo as id_key,
