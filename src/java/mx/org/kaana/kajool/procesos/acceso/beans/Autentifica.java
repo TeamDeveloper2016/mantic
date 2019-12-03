@@ -177,8 +177,8 @@ public class Autentifica implements Serializable {
       this.sucursales= privilegios.toSucursales();
       this.redirect= EPaginasPrivilegios.DEFAULT;
       this.empresa= this.sucursales.get(0);
-			this.empresa.setSucursales(toLoadSucursales());
-			this.empresa.setDependencias(toLoadDependencias());
+			this.empresa.setSucursales(this.toLoadSucursales());
+			this.empresa.setDependencias(this.toLoadDependencias());
       this.menu= privilegios.procesarModulosPerfil();
       this.topMenu= privilegios.procesarTopModulos();
       if (this.menu.isEmpty() && this.topMenu.isEmpty()) {
@@ -400,11 +400,11 @@ public class Autentifica implements Serializable {
 	}	
 
 	private String toLoadSucursales() throws Exception {
-		String regresar= "";
-		Map<String, Object> params=null;
+		String regresar           = "";
+		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-			params.put("idEmpresa", this.getEmpresa().getIdEmpresa());
+			params.put("idEmpresa", this.getEmpresa().getIdEmpresaDepende());
 			List<TcManticEmpresasDto> items= DaoFactory.getInstance().findViewCriteria(TcManticEmpresasDto.class, params, "sucursales");
 			if(items.isEmpty())
 				regresar= this.getEmpresa().getIdEmpresa().toString().concat(", ");

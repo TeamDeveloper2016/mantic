@@ -252,7 +252,7 @@
 			</p:dataTable>
 		</h:form>
 	</p:dialog>  	
-	<p:dialog id="dialogoFaltantes" widgetVar="dlgFaltantes" header="Lista de articulos faltantes" onShow="janal.pivot(); jsPrecios.refresh(); faltantesLookup(); janal.bloquear();" onHide="jsPrecios.update(); janal.recover(); janal.desbloquear();" height="490px" width="950px" resizable="false" closeOnEscape="true" dynamic="true" focus="codigosFaltantes">
+	<p:dialog id="dialogoFaltantes" widgetVar="dlgFaltantes" header="Lista de articulos faltantes" onShow="janal.pivot(); jsPrecios.refresh(); faltantesLookup(); janal.bloquear();" onHide="jsPrecios.update(); janal.recover(); janal.desbloquear();" height="490px" width="950px" resizable="false" closeOnEscape="true" dynamic="true">
 		<h:form id="faltantes" prependId="false">
 			<p:remoteCommand name="faltantesLookup" actionListener="#{kajoolEncabezado.doLoadFaltantes}" process="@this" update="@(.faltantes)" oncomplete="jsPrecios.start();"/>
 			<p:remoteCommand name="faltantesReplace" actionListener="#{kajoolEncabezado.doReplaceFaltante}" process="@this" update="@(.faltantes)" oncomplete="jsPrecios.start();"/>

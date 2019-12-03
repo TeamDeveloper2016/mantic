@@ -1,9 +1,11 @@
 package mx.org.kaana.kajool.procesos.usuarios.reglas;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.libs.formato.BouncyEncryption;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.dto.TcJanalUsuariosDto;
@@ -13,7 +15,6 @@ import static mx.org.kaana.kajool.enums.EAccion.ELIMINAR;
 import static mx.org.kaana.kajool.enums.EAccion.MODIFICAR;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
-import mx.org.kaana.mantic.enums.ETipoPersona;
 import org.hibernate.Session;
 
 /**
@@ -43,59 +44,73 @@ public class Transaccion extends IBaseTnx {
   }
 
   @Override
-  protected boolean ejecutar(Session session, EAccion accion) throws Exception {
+  protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
     boolean regresar          = false;
     IBaseDto usuarioExiste    = null;
     Map<String, Object> params= null;
-    try {
-      params = new HashMap<>();
-      switch (accion) {
-        case AGREGAR:
-					params.put("idPersona", this.persona.getIdPersona());
-					params.put("idPerfil", this.usuario.getIdPerfil());
-          usuarioExiste= (TcJanalUsuariosDto) DaoFactory.getInstance().findIdentically(session, TcJanalUsuariosDto.class, params);
-          if (usuarioExiste== null) {
-            this.usuario.setIdPersona(persona.getIdPersona());
-            regresar = DaoFactory.getInstance().insert(session, this.usuario)>= 1L;
-            this.persona.setContrasenia(BouncyEncryption.encrypt(this.persona.getContrasenia()));
-            regresar = DaoFactory.getInstance().update(session, this.persona)>= 1;
-          } // if
-          else 
-            regresar= false;
-          break;
-        case MODIFICAR:
-					params.put("idPersona", this.persona.getIdPersona());
-					params.put("idPerfil", this.usuario.getIdPerfil());
-          params.put("idUsuarioModifica", this.usuario.getIdUsuarioModifica());
-          usuarioExiste= (TcJanalUsuariosDto) DaoFactory.getInstance().findIdentically(session, TcJanalUsuariosDto.class, params);
-          if (usuarioExiste== null) 
-            regresar = DaoFactory.getInstance().update(session, this.usuario, params)>= 1L;
-          this.persona.setContrasenia(BouncyEncryption.encrypt(this.persona.getContrasenia()));
-          regresar = DaoFactory.getInstance().update(session, this.persona) >= 1L;
-          this.persona.setContrasenia(BouncyEncryption.decrypt(this.persona.getContrasenia()));
-          break;
-        case ELIMINAR:
-          regresar = DaoFactory.getInstance().delete(session, this.usuario.toHbmClass(), this.usuario.getKey()) >= 1L;
-          break;
-        case ACTIVAR:
-          params.put("activo", this.usuario.getActivo());
-          regresar = DaoFactory.getInstance().update(session, this.usuario, params) >= 1L;
-          break;
-        case RESTAURAR:
-          params.put("contrasenia", BouncyEncryption.encrypt(this.persona.getPaterno()));
-          regresar = DaoFactory.getInstance().update(session, this.persona, params) >= 1;
-          break;
-        case REGISTRAR:
-        case COMPLEMENTAR:
-          params.put("contrasenia", BouncyEncryption.encrypt(this.persona.getContrasenia()));
-          regresar = DaoFactory.getInstance().update(session, this.persona, params) >= 1;
-          break;
-      } // switch
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch    		
+		params = new HashMap<>();
+		switch (accion) {
+			case AGREGAR:
+				params.put("idPersona", this.persona.getIdPersona());
+				params.put("idPerfil", this.usuario.getIdPerfil());
+				usuarioExiste= (TcJanalUsuariosDto) DaoFactory.getInstance().findIdentically(sesion, TcJanalUsuariosDto.class, params);
+				if (usuarioExiste== null) {
+					if(this.toSearch(sesion, persona.getCuenta()))
+						throw new RuntimeException("La cuenta ya existe verifiquela de favor !\n");
+					else {
+  					this.usuario.setIdPersona(persona.getIdPersona());
+	  			  DaoFactory.getInstance().insert(sesion, this.usuario);
+		  			this.persona.setContrasenia(BouncyEncryption.encrypt(this.persona.getContrasenia()));
+			  		regresar = DaoFactory.getInstance().update(sesion, this.persona)>= 1;
+					} // else	
+				} // if
+				else 
+					regresar= false;
+				break;
+			case MODIFICAR:
+				params.put("idPersona", this.persona.getIdPersona());
+				params.put("idPerfil", this.usuario.getIdPerfil());
+				params.put("idUsuarioModifica", this.usuario.getIdUsuarioModifica());
+				usuarioExiste= (TcJanalUsuariosDto) DaoFactory.getInstance().findIdentically(sesion, TcJanalUsuariosDto.class, params);
+				if (usuarioExiste== null) 
+					regresar = DaoFactory.getInstance().update(sesion, this.usuario, params)>= 1L;
+				this.persona.setContrasenia(BouncyEncryption.encrypt(this.persona.getContrasenia()));
+				regresar = DaoFactory.getInstance().update(sesion, this.persona) >= 1L;
+				this.persona.setContrasenia(BouncyEncryption.decrypt(this.persona.getContrasenia()));
+				break;
+			case ELIMINAR:
+				regresar = DaoFactory.getInstance().delete(sesion, this.usuario.toHbmClass(), this.usuario.getKey()) >= 1L;
+				break;
+			case ACTIVAR:
+				params.put("activo", this.usuario.getActivo());
+				regresar = DaoFactory.getInstance().update(sesion, this.usuario, params) >= 1L;
+				break;
+			case RESTAURAR:
+				params.put("contrasenia", BouncyEncryption.encrypt(this.persona.getPaterno()));
+				regresar = DaoFactory.getInstance().update(sesion, this.persona, params) >= 1;
+				break;
+			case REGISTRAR:
+			case COMPLEMENTAR:
+				params.put("contrasenia", BouncyEncryption.encrypt(this.persona.getContrasenia()));
+				regresar = DaoFactory.getInstance().update(sesion, this.persona, params) >= 1;
+				break;
+		} // switch
     return regresar;
   } // ejecutar
 
+  private boolean toSearch(Session sesion, String cuenta) {
+    boolean regresar          = false;
+    Map<String, Object> params= null;
+		List<TcManticPersonasDto> listaTrUsuariosDto= null;
+    try {
+      params = new HashMap<>();
+      params.put("cuenta", cuenta);
+      listaTrUsuariosDto = DaoFactory.getInstance().findViewCriteria(sesion, TcManticPersonasDto.class, params, "findUsuario");
+      regresar = !listaTrUsuariosDto.isEmpty();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+    } // catch
+    return regresar;
+  }	
 }

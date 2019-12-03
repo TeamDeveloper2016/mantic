@@ -165,11 +165,11 @@ public class RandomCuenta {
   }
 
   private boolean toSearch(String cuenta) {
-    boolean regresar = false;
-    Map<String, Object> params = null;
-    List<TcManticPersonasDto> listaTrUsuariosDto;
+    boolean regresar          = false;
+    Map<String, Object> params= null;
+    List<TcManticPersonasDto> listaTrUsuariosDto= null;
     try {
-      params = new HashMap<String, Object>();
+      params = new HashMap<>();
       params.put("cuenta", cuenta);
       listaTrUsuariosDto = DaoFactory.getInstance().findViewCriteria(TcManticPersonasDto.class, params, "findUsuario");
       regresar = !listaTrUsuariosDto.isEmpty();
