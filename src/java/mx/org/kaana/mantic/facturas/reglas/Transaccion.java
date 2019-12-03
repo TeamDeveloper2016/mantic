@@ -499,6 +499,7 @@ public class Transaccion extends TransaccionFactura {
 			this.orden.setIdUsuario(JsfBase.getIdUsuario());
 			this.orden.setObservaciones("");
 			this.orden.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			this.orden.setIdTipoDocumento(1L);
 			regresar= DaoFactory.getInstance().insert(sesion, this.orden)> 0L;
 			if(regresar) {
 				TcManticFacturasDto factura= (TcManticFacturasDto)DaoFactory.getInstance().toEntity(TcManticFacturasDto.class, "VistaFicticiasDto", "factura", params);
