@@ -577,12 +577,12 @@ public class Accion extends IBaseVenta implements Serializable {
 			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
 			if(this.attrs.get("tipo")!= null){				
 				if(!(this.attrs.get("tipo").toString().equals(EEstatusVentas.APARTADOS.name()) || this.attrs.get("tipo").toString().equals(EEstatusVentas.COTIZACION.name())))
-					confirmacion= !getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()> 0;									
+					confirmacion= !getAdminOrden().getArticulos().isEmpty() && (getAdminOrden().getArticulos().size()> 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))));									
 				else
 					mensaje= "No es posible generar una cotización sobre un apartado o una misma cotización";
 			} // if
 			else
-				confirmacion= ticketAbierto== null && !this.getAdminOrden().getArticulos().isEmpty() && this.getAdminOrden().getTotales().getTotal() > 0D;			
+				confirmacion= (ticketAbierto== null || (ticketAbierto!= null && ticketAbierto.getKey().equals(-1L))) && (!this.getAdminOrden().getArticulos().isEmpty() && (getAdminOrden().getArticulos().size()> 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L)))));			
 			if(confirmacion){
 				UIBackingUtilities.execute("janal.bloquear();");
 				UIBackingUtilities.execute("PF('dlgCotizacion').show();");
@@ -602,12 +602,15 @@ public class Accion extends IBaseVenta implements Serializable {
     String regresar             = null;
 		CreateTicket ticket         = null;
 		boolean confirmacion        = false;
-    try {	
-			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
-			if(ticketAbierto== null && !this.getAdminOrden().getArticulos().isEmpty() && this.getAdminOrden().getTotales().getTotal() > 0D){
+    try {				
+			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");			
+			if(ticketAbierto== null && !this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L)))) && this.getAdminOrden().getTotales().getImporte()> 0D){
+				this.getAdminOrden().getTotales().setTotal(this.getAdminOrden().getTotales().getImporte());
 				loadOrdenVenta();				
 				transaccion= new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
+				this.getAdminOrden().validatePrecioArticulo();
 				this.getAdminOrden().toAdjustArticulos();
+				this.getAdminOrden().cleanPrecioDescuentoArticulo();				
 				confirmacion= transaccion.ejecutar(EAccion.MOVIMIENTOS);				
 			} // if
 			else{

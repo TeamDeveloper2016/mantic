@@ -922,7 +922,7 @@
 			<p:outputLabel value="¿ Deseas continuar con la finalización del ticket como una cotización ?"/>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton id="aceptarSendCotizacion" value="Aceptar" icon="fa fa-check" process="@this" action="#{manticVentasCajaAccion.doAceptarCotizacion}" onstart="PF('dlgCotizacion').hide();" oncomplete="janal.desbloquear();jsTicket.clicTicket();" update="contenedorGrupos @(.filas) @(.recalculo) contenedorGrupos:deudorPago contenedorGrupos:deudor"/>
+				<p:commandButton id="aceptarSendCotizacion" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaAccion.doAceptarCotizacion}" onstart="PF('dlgCotizacion').hide();" oncomplete="janal.desbloquear();jsTicket.clicTicket();" update="contenedorGrupos @(.filas) @(.recalculo) contenedorGrupos:deudorPago contenedorGrupos:deudor"/>
 				<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgCotizacion').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>
