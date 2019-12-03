@@ -220,6 +220,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
 			this.setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
+			loadDomicilios(idCliente);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
