@@ -3126,7 +3126,7 @@
 				  tc_mantic_articulos.limite_medio_mayoreo,          
 				  tc_mantic_articulos.mayoreo,          
 				  tc_mantic_articulos.limite_mayoreo,          
-				  tc_mantic_articulos.stock,       
+				  tc_mantic_almacenes_articulos.stock,       
 				  tc_mantic_articulos.peso_estimado,       
 				  tc_mantic_articulos.precio,       
 				  tc_mantic_articulos.iva,          
