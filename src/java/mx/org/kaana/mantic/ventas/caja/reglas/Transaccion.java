@@ -222,6 +222,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		calendar.add(Calendar.DAY_OF_YEAR, 15);
 		cotizacion.setVigencia(new Date(calendar.getTimeInMillis()));
 		cotizacion.setIdVentaEstatus(EEstatusVentas.COTIZACION.getIdEstatusVenta());					
+		cotizacion.setCandado(EBooleanos.NO.getIdBooleano());
 		regresar= DaoFactory.getInstance().update(sesion, cotizacion)>= 1L;		
 		return regresar;
 	} // procesaCotizacion

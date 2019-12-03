@@ -45,9 +45,9 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-public class FacturacionAutomatica implements Job, Serializable {
+public class Timbrado implements Job, Serializable {
 
-	private static final Log LOG              = LogFactory.getLog(FacturacionAutomatica.class);
+	private static final Log LOG              = LogFactory.getLog(Timbrado.class);
 	private static final long serialVersionUID= 1809037806413388478L;	
 	private String nameFacturaPdf;
 	private Reporte reporte;

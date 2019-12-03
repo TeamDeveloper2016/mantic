@@ -103,12 +103,12 @@ public class ArticuloVenta extends Articulo {
 						if(this.getDescuentos()> 0D)
 							this.setCosto(validate.getMenudeo());
 						else {
-							if (this.getCantidad()>= validate.getLimiteMayoreo() || (this.getCosto().equals(validate.getMayoreo()) && this.descuentoAsignado)){
+							if (this.getCantidad() > validate.getLimiteMayoreo() || (this.getCosto().equals(validate.getMayoreo()) && this.descuentoAsignado)){
 								this.setCosto(validate.getMayoreo());
 								setDescripcionPrecio("mayoreo");
 							} // if
-							else 
-								if((this.getCantidad()>= validate.getLimiteMedioMayoreo() && this.getCantidad()< validate.getLimiteMayoreo()) || (this.getCosto().equals(validate.getMedioMayoreo()) && this.descuentoAsignado)) {
+							else  
+								if((this.getCantidad() > validate.getLimiteMedioMayoreo() && this.getCantidad() <= validate.getLimiteMayoreo()) || (this.getCosto().equals(validate.getMedioMayoreo()) && this.descuentoAsignado)) {
 									this.setCosto(validate.getMedioMayoreo());
 									setDescripcionPrecio("medioMayoreo");
 								} // if

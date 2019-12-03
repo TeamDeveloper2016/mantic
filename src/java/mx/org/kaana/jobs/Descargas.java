@@ -13,9 +13,9 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-public class DescargaRespaldo implements Job, Serializable {
+public class Descargas implements Job, Serializable {
 
-	private static final Log LOG              = LogFactory.getLog(DescargaRespaldo.class);
+	private static final Log LOG              = LogFactory.getLog(Descargas.class);
 	private static final long serialVersionUID= 7960794038594054567L;
 	private static final String BUILD         = "build";	
 

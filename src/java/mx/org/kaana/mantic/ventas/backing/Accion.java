@@ -435,8 +435,8 @@ public class Accion extends IBaseVenta implements Serializable {
 		String password  = null;
 		RequestContext rc= null;
     try {					
-			cuenta       = this.attrs.get("cuenta").toString();
-			password     = this.attrs.get("password").toString();						
+			cuenta  = this.attrs.get("cuenta").toString();
+			password= this.attrs.get("password").toString();						
 			cambioUsuario= new CambioUsuario(cuenta, password);
 			rc= UIBackingUtilities.getCurrentInstance();
 			if(cambioUsuario.validaUsuario()) {
