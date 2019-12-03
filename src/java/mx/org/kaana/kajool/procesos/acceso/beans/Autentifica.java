@@ -228,7 +228,7 @@ public class Autentifica implements Serializable {
     return regresar;
   } // tieneAccesoBD
 	  
-  public boolean validaCambioUsuario(String cuenta, String contrasenia, Long idEmpresa) throws Exception {
+  public boolean validaCambioUsuario(String cuenta, String contrasenia, String idEmpresa) throws Exception {
     boolean regresar          = false;
     Map<String, Object> params= null;
 		List<Persona> personas    = null;
