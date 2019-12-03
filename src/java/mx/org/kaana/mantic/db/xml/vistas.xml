@@ -3969,7 +3969,7 @@
 				inner join 
 					tc_mantic_empresas on tc_mantic_ventas.id_empresa = tc_mantic_empresas.id_empresa
 				left join
-					tr_mantic_empresa_domicilio on tr_mantic_empresa_domicilio.id_empresa = tc_mantic_empresas.id_empresa
+					tr_mantic_empresa_domicilio on tr_mantic_empresa_domicilio.id_empresa = tc_mantic_empresas.id_empresa_depende
 				left join
 					tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio = tr_mantic_empresa_domicilio.id_domicilio and tr_mantic_empresa_domicilio.id_principal=1
 				where   
@@ -4003,7 +4003,7 @@
 				inner join 
 					tc_mantic_empresas on tc_mantic_ventas.id_empresa = tc_mantic_empresas.id_empresa
 				left join
-					tr_mantic_empresa_domicilio on tr_mantic_empresa_domicilio.id_empresa = tc_mantic_empresas.id_empresa
+					tr_mantic_empresa_domicilio on tr_mantic_empresa_domicilio.id_empresa = tc_mantic_empresas.id_empresa_depende
 				left join
 					tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio = tr_mantic_empresa_domicilio.id_domicilio and tr_mantic_empresa_domicilio.id_principal=1
 				where   
