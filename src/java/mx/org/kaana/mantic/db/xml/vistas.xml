@@ -265,7 +265,7 @@
 				where
 				  tc_mantic_confrontas.ejercicio= {ejercicio} 
 				  and tc_mantic_transferencias.id_empresa= {idEmpresa}		
-				  and tc_mantic_confrontas.orden {operador} 10000		
+				  and tc_mantic_confrontas.orden {operador} 20000		
 			</select>		
       <select id="lazy">
         select 
@@ -9175,7 +9175,7 @@
 				where
 				  tc_mantic_clientes.id_empresa= {idEmpresa}
 				  and tc_mantic_clientes_pagos.ejercicio= {ejercicio} 
-			    and tc_mantic_clientes_pagos.orden{operador} 10000
+			    and tc_mantic_clientes_pagos.orden{operador} 20000
 			</select>		
 		</unit>
 		<unit id="VistaTcManticEmpresasPagosDto">
