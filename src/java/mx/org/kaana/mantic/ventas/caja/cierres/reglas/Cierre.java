@@ -222,7 +222,7 @@ public class Cierre extends IBaseTnx implements Serializable  {
 			if(next.getData()!= null)
 			  regresar= new Siguiente(next.toLong());
 			else
-			  regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 10001L: 1L);
+			  regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 50001L: 1L);
 		} // try
 		catch (Exception e) {
 			throw e;
