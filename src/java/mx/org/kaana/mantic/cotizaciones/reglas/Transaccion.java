@@ -160,7 +160,7 @@ public class Transaccion extends TransaccionFactura {
 			if(next.getData()!= null)
 				regresar= new Siguiente(next.toLong());
 			else
-				regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 50001L: 1L);
+				regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 90001L: 1L);
 		} // try		
 		finally {
 			Methods.clean(params);
@@ -227,7 +227,7 @@ public class Transaccion extends TransaccionFactura {
 			if(next!= null && next.getData()!= null)
 				regresar= new Siguiente(next.toLong());
 			else
-				regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 50001L: 1L);
+				regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 90001L: 1L);
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -251,7 +251,7 @@ public class Transaccion extends TransaccionFactura {
 			if(next!= null && next.getData()!= null)
 				regresar= new Siguiente(next.toLong());
 			else
-				regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 50001L: 1L);
+				regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 90001L: 1L);
 		} // try
 		catch (Exception e) {
 			throw e;
