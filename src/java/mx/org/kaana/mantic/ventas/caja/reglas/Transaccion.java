@@ -391,7 +391,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		return regresar;
 	} // verificarCierreCaja
 	
-	public boolean alterarCierreCaja(Session sesion, Long idTipoMedioPago) throws Exception{
+	public boolean alterarCierreCaja(Session sesion, Long idTipoMedioPago) throws Exception {
 		boolean regresar     = true;
 		TcManticCajasDto caja= (TcManticCajasDto) DaoFactory.getInstance().findById(sesion, TcManticCajasDto.class, this.ventaFinalizada.getIdCaja());
 		Double limiteCaja    = caja.getLimite();
@@ -451,7 +451,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		return regresar;
 	} // toAcumuladoCierreActivo	
 	
-	private void toCierreActivo(Session sesion, Long idTipoMedioPago) throws Exception{
+	private void toCierreActivo(Session sesion, Long idTipoMedioPago) throws Exception {
 		Map<String, Object>params         = null;
 		TcManticCierresCajasDto cierreCaja= null;
 		ETipoMediosPago medioPago         = null;
@@ -679,16 +679,16 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		boolean regresar= false;		
 		int count       = 0;
 		try {
-			pagos= loadPagos(sesion);
+			pagos= this.loadPagos(sesion);
 			for(TrManticVentaMedioPagoDto pago: pagos){
 				if(DaoFactory.getInstance().insert(sesion, pago)>= 1L)
-					alterarCierreCaja(sesion, pago.getIdTipoMedioPago());
+					this.alterarCierreCaja(sesion, pago.getIdTipoMedioPago());
 				count++;
 			} // for
 			regresar= count== pagos.size();
 		} // try		
-		finally{
-			setMessageError("Error al registrar los pagos.");
+		finally {
+			this.setMessageError("Error al registrar los pagos.");
 		} // finally
 		return regresar;
 	} // registrarPagos
@@ -697,22 +697,22 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		List<TrManticVentaMedioPagoDto> regresar= null;
 		TrManticVentaMedioPagoDto pago          = null;		
 		regresar= new ArrayList<>();
-		pago= toPagoEfectivo();
+		pago= this.toPagoEfectivo();
 		if(pago!= null)
 			regresar.add(pago);			
-		pago= toPagoTarjeta();
+		pago= this.toPagoTarjeta();
 		if(pago!= null)
 			regresar.add(pago);
-		pago= toPagoTarjetaDebito();
+		pago= this.toPagoTarjetaDebito();
 		if(pago!= null)
 			regresar.add(pago);
-		pago= toPagoTransferencia();
+		pago= this.toPagoTransferencia();
 		if(pago!= null)
 			regresar.add(pago);
-		pago= toPagoCheque();
+		pago= this.toPagoCheque();
 		if(pago!= null)
 			regresar.add(pago);
-		pago= toPagoCredito(sesion);
+		pago= this.toPagoCredito(sesion);
 		if(pago!= null)
 			regresar.add(pago);		
 		return regresar;
