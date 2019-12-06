@@ -778,7 +778,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
   			regresar.setIdBanco(this.ventaFinalizada.getTotales().getBancoTransferencia().getKey());
 			regresar.setReferencia(this.ventaFinalizada.getTotales().getReferenciaTransferencia());			
 			regresar.setIdCierre(this.idCierreVigente);
-			regresar.setTotal(this.ventaFinalizada.getTotales().getTransferencia() - this.ventaFinalizada.getTotales().getCambio());
+			regresar.setTotal(this.ventaFinalizada.getTotales().getTransferencia());
 		} // if		
 		return regresar;
 	} // toPagoTransferencia
