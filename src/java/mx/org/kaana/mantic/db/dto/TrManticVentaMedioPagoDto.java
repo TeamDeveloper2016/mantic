@@ -44,6 +44,8 @@ public class TrManticVentaMedioPagoDto implements IBaseDto, Serializable {
   private Long idVenta;
   @Column (name="importe")
   private Double importe;
+  @Column (name="total")
+  private Double total;
   @Column (name="id_banco")
   private Long idBanco;
   @Column (name="referencia")
@@ -56,11 +58,11 @@ public class TrManticVentaMedioPagoDto implements IBaseDto, Serializable {
   }
 
   public TrManticVentaMedioPagoDto(Long key) {
-    this(null, null, null, null, new Long(-1L), null, null, null, null);
+    this(null, null, null, null, new Long(-1L), null, null, null, null, null);
     setKey(key);
   }
 
-  public TrManticVentaMedioPagoDto(Long idTipoMedioPago, Long idCierre, Long idUsuario, String observaciones, Long idVentaMedioPago, Long idVenta, Double importe, Long idBanco, String referencia) {
+  public TrManticVentaMedioPagoDto(Long idTipoMedioPago, Long idCierre, Long idUsuario, String observaciones, Long idVentaMedioPago, Long idVenta, Double importe, Long idBanco, String referencia, Double total) {
     setIdTipoMedioPago(idTipoMedioPago);
     setIdCierre(idCierre);
     setIdUsuario(idUsuario);
@@ -68,6 +70,7 @@ public class TrManticVentaMedioPagoDto implements IBaseDto, Serializable {
     setIdVentaMedioPago(idVentaMedioPago);
     setIdVenta(idVenta);
     setImporte(importe);
+    setTotal(total);
     setIdBanco(idBanco);
     setReferencia(referencia);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
@@ -153,6 +156,14 @@ public class TrManticVentaMedioPagoDto implements IBaseDto, Serializable {
     return registro;
   }
 
+	public Double getTotal() {
+		return total;
+	}
+
+	public void setTotal(Double total) {
+		this.total = total;
+	}	
+	
   @Transient
   @Override
   public Long getKey() {
@@ -187,6 +198,8 @@ public class TrManticVentaMedioPagoDto implements IBaseDto, Serializable {
 		regresar.append(getReferencia());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getTotal());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -204,13 +217,14 @@ public class TrManticVentaMedioPagoDto implements IBaseDto, Serializable {
 		regresar.put("idBanco", getIdBanco());
 		regresar.put("referencia", getReferencia());
 		regresar.put("registro", getRegistro());
+		regresar.put("total", getTotal());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdTipoMedioPago(), getIdCierre(), getIdUsuario(), getObservaciones(), getIdVentaMedioPago(), getIdVenta(), getImporte(), getIdBanco(), getReferencia(), getRegistro()
+    getIdTipoMedioPago(), getIdCierre(), getIdUsuario(), getObservaciones(), getIdVentaMedioPago(), getIdVenta(), getImporte(), getIdBanco(), getReferencia(), getRegistro(), getTotal()
     };
     return regresar;
   }
