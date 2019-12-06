@@ -727,6 +727,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			regresar.setIdVenta(getOrden().getIdVenta());
 			regresar.setImporte(this.ventaFinalizada.getTotales().getEfectivo());	
 			regresar.setIdCierre(this.idCierreVigente);
+			regresar.setTotal(this.ventaFinalizada.getTotales().getEfectivo() - this.ventaFinalizada.getTotales().getCambio());
 		} // if		
 		return regresar;
 	} // toPagoEfectivo
@@ -743,6 +744,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			  regresar.setIdBanco(this.ventaFinalizada.getTotales().getBancoDebito().getKey());
 			regresar.setReferencia(this.ventaFinalizada.getTotales().getReferenciaDebito());	
 			regresar.setIdCierre(this.idCierreVigente);
+			regresar.setTotal(this.ventaFinalizada.getTotales().getDebito());
 		} // if		
 		return regresar;
 	} // toPagoTCredito
@@ -759,6 +761,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
   			regresar.setIdBanco(this.ventaFinalizada.getTotales().getBancoCredito().getKey());
 			regresar.setReferencia(this.ventaFinalizada.getTotales().getReferenciaCredito());	
 			regresar.setIdCierre(this.idCierreVigente);
+			regresar.setTotal(this.ventaFinalizada.getTotales().getCredito());
 		} // if		
 		return regresar;
 	} // toPagoTCredito
@@ -775,6 +778,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
   			regresar.setIdBanco(this.ventaFinalizada.getTotales().getBancoTransferencia().getKey());
 			regresar.setReferencia(this.ventaFinalizada.getTotales().getReferenciaTransferencia());			
 			regresar.setIdCierre(this.idCierreVigente);
+			regresar.setTotal(this.ventaFinalizada.getTotales().getTransferencia() - this.ventaFinalizada.getTotales().getCambio());
 		} // if		
 		return regresar;
 	} // toPagoTransferencia
@@ -793,6 +797,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 				regresar.setIdVenta(getOrden().getIdVenta());
 				regresar.setImporte(totalCredito);								
 				regresar.setIdCierre(this.idCierreVigente);
+				regresar.setTotal(totalCredito);
 			} // if
 		} // if		
 		return regresar;
@@ -810,6 +815,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
   			regresar.setIdBanco(this.ventaFinalizada.getTotales().getBancoCheque().getKey());
 			regresar.setReferencia(this.ventaFinalizada.getTotales().getReferenciaCheque());		
 			regresar.setIdCierre(this.idCierreVigente);
+			regresar.setTotal(this.ventaFinalizada.getTotales().getCheque());
 		} // if		
 		return regresar;
 	} // toPagoCheque
