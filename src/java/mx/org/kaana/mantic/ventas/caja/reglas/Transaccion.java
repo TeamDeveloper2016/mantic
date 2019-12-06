@@ -484,9 +484,11 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 				case INTERMEDIARIO_PAGOS:
 					abono= this.ventaFinalizada.getTotales().getTotales().getTotal() - (this.ventaFinalizada.getTotales().getPago() - this.ventaFinalizada.getTotales().getCambio());
 					break;
-			} // switch			
+			} // switch					
+			LOG.error("Medio pago:" + idTipoMedioPago + "Cierre:" + cierreCaja.getIdCierre() + ", Caja:" + cierreCaja.getIdCaja() + ", Acumulado anterior:" + cierreCaja.getAcumulado() + ", Saldo anterior:" + cierreCaja.getSaldo());						
 			cierreCaja.setAcumulado(cierreCaja.getAcumulado()+ abono);			
 			cierreCaja.setSaldo(cierreCaja.getDisponible()+ cierreCaja.getAcumulado());
+			LOG.error("Medio pago:" + idTipoMedioPago + "Cierre:" + cierreCaja.getIdCierre() + ", Caja:" + cierreCaja.getIdCaja() + ", Disponible:" + cierreCaja.getDisponible() + ", Abono:" + abono + ", Acumulado:" + cierreCaja.getAcumulado() + ", Saldo:" + cierreCaja.getSaldo());
 			DaoFactory.getInstance().update(sesion, cierreCaja);		
 		} // try
 		finally{
