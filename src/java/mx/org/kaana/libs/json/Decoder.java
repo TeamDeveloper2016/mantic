@@ -116,7 +116,7 @@ public final class Decoder {
   }
 
   public static String json(Serializable serializable) throws Exception {
-  	Gson gson= new GsonBuilder().setPrettyPrinting().registerTypeAdapter(String.class, new StringTypeAdapter()).registerTypeAdapter(String.class, new DoubleTypeAdapter()).create();
+  	Gson gson= new GsonBuilder().setPrettyPrinting().registerTypeAdapter(String.class, new StringTypeAdapter()).registerTypeAdapter(Double.class, new DoubleTypeAdapter()).create();
     return gson.toJson(serializable);
   }
 	

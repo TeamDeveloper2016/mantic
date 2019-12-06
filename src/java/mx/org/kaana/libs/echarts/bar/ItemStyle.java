@@ -11,7 +11,7 @@ import mx.org.kaana.libs.echarts.beans.Colors;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public final class ItemStyle implements Serializable {
+public final class ItemStyle implements Serializable, Cloneable {
 
 	private static final long serialVersionUID=1L;
 
@@ -71,5 +71,17 @@ public final class ItemStyle implements Serializable {
 	public String toString() {
 		return "ItemStyle{"+"color="+color+", opacity="+opacity+", shadowColor="+shadowColor+", shadowBlur="+shadowBlur+'}';
 	}
-	
+
+	@Override
+	public ItemStyle clone() {
+		Object object=null;
+		try {
+			object= super.clone();
+		} // try
+		catch (CloneNotSupportedException e) {
+			mx.org.kaana.libs.formato.Error.mensaje(e);
+		} //catch
+		return (ItemStyle)object;
+	}
+
 }

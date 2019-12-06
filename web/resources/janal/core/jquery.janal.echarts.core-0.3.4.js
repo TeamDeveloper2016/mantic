@@ -22,6 +22,7 @@
 		RESERVED_SYMBOL: 'cgor-item-symbol',
 		RESERVED_CAROUSEL: 'cgor-item-carousel',
 		RESERVED_HIDE: 'cgor-item-hide',
+		LABEL_TOKEN: 'CGOR:',
 		nacional: '#iconoNacional',
 		georreferencia: '#iconoInformacion',
 		charts: {},
@@ -53,9 +54,10 @@
 			} // if	
 		},
 		display: function() {
+//					$("#index").html('chart: ['+ this.carousel.items[this.carousel.index]+ '] '+ this.carousel.index+ ' de '+ this.carousel.top);
 			if($("#index").length> 0) 
 				if(this.carousel.items.length> 0)
-					$("#index").html('chart: ['+ this.carousel.items[this.carousel.index]+ '] '+ this.carousel.index+ ' de '+ this.carousel.top);
+          $("#index").html('gr\u00E1fica: '+(this.carousel.index+1)+' de '+ (this.carousel.top+1));
 				else
 				  $("#index").html(this.carousel.index+ ' de '+ this.carousel.top);
 		},
@@ -245,7 +247,7 @@
 			} // if
 			return text;
 		}, 
-		format: function (params, type) {
+		format: function (params, type, all) {
 			// params.seriesName
 			// params.name
 			// params.value
@@ -253,8 +255,14 @@
 			// params.color
 			if(typeof(type)=== 'undefined')
 				type= '';
+			if(typeof(all)=== 'undefined')
+				all= true;
 			var text= '';
 			var data= parseFloat(params.value);
+			if(params.name.startsWith(this.LABEL_TOKEN)) {
+				data= parseFloat(params.name.substring(this.LABEL_TOKEN.length));
+				all = true;
+			} // if
 			switch (type) {
 				case 'integer':
 					text= data.toLocaleString('en-US', {style: 'decimal', minimumFractionDigits: 0, maximumFractionDigits: 0}); // 1,234,567
@@ -277,7 +285,7 @@
 				default:
 					text= data.toLocaleString('en-US'); // 1,234,567.123
 			} // switch
-			return text;
+			return all? text: '';
 		},
 		tooltip: function(params, format) {
 		  var msg  = '<div style="text-align: left;">';
@@ -285,7 +293,8 @@
 			if(typeof(format)=== 'undefined')
 				format= 'double';
 		  $.each(params, function(index, items) {
-		    label= items['name'];
+				if(index=== 0)
+		      label= items['name'];
 		    if(items['value']!== '-' && items['value']> 0)
 		      msg= msg+ items['marker']+ '  '+ $echarts.legend(items['seriesName'])+ ': '+ $echarts.format(items, format)+ '<br/>';
 		  });
@@ -336,6 +345,8 @@
 					window[id].resize();
 				} // if	
 			});
+      if(this.selected['claveEntidad']) 
+        $echarts.title(this.carousel.items[this.carousel.index],this.history[this.selected.claveEntidad][this.carousel.items[this.carousel.index]]);
 		},
 		remove: function(id) {
 			if($echarts.charts[id])
@@ -423,6 +434,9 @@
 				} // if
 			} // if
 			return ok;
+		},
+		total: function() {
+			
 		}
 	});
 	console.info('Janal.Control.Echarts initialized');

@@ -71,7 +71,9 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			
 			Stacked stacked= new Stacked(DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "multiple", attrs));
   		StackModel stack= new StackModel(new Title(), stacked);
-			stack.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'money');}");
+			stack.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'money', false);}");
+			stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'money');}");
+			
   		this.attrs.put("stack", stack.toJson());
 			
   		modelSimple  = new BarModel(new Title(), simple);

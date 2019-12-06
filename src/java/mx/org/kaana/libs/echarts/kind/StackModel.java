@@ -11,6 +11,7 @@ import mx.org.kaana.libs.echarts.beans.Colors;
 import mx.org.kaana.libs.echarts.beans.Grid;
 import mx.org.kaana.libs.echarts.beans.IMarkLine;
 import mx.org.kaana.libs.echarts.beans.Legend;
+import mx.org.kaana.libs.echarts.beans.Normal;
 import mx.org.kaana.libs.echarts.beans.Title;
 import mx.org.kaana.libs.echarts.beans.ToolTip;
 import mx.org.kaana.libs.echarts.beans.Xaxis;
@@ -53,9 +54,8 @@ public class StackModel extends BaseBarModel implements Serializable {
 	}
 
 	public StackModel(Title title, EBarOritentation orientation) {
-		this(title, new Legend("2019"), new ArrayList(Arrays.asList(Colors.SERIES_COLORS)), new ToolTip(), new Grid(), new Xaxis(), new Yaxis(), new ArrayList(Arrays.asList(new Serie("2019", Colors.toColor()))), orientation);
-		this.series.add(new Serie("2020", Colors.toColor()));
-		this.loadColors();
+		this(title, new Legend("2019"), new ArrayList(Arrays.asList(Colors.SERIES_COLORS)), new ToolTip(), new Grid(), new Xaxis(), new Yaxis(), new ArrayList(Arrays.asList(new Serie("2019", Colors.toColor()), new Serie("2020", Colors.toColor()))), orientation);
+		this.getLegend().add("2020");
 	}
 	
 	public StackModel(Title title, IDataSet data, EBarOritentation orientation) {
@@ -118,6 +118,31 @@ public class StackModel extends BaseBarModel implements Serializable {
 		} // for
 		this.getxAxis().setData(SortNames.toSort(this.getxAxis().getData(), this.sequence));
 		this.sort(this.sequence);
+		if(this.series!= null && !this.series.isEmpty()) {
+			try {
+				Serie serie= this.series.get(this.series.size()- 1).clone();
+				int count= 0;
+				serie.setName("Total");
+				serie.setData(new ArrayList<>());
+				for (Value item: this.series.get(this.series.size()- 1).getData()) {
+					serie.getData().add(new Value("CGOR:"+ this.calculate(count), 0.01D));
+					count++;
+				} // for
+				serie.getLabel().getNormal().setPosition("top");
+				this.series.add(serie);
+			} // try
+			catch(Exception e) {
+				mx.org.kaana.libs.formato.Error.mensaje(e);
+			} // catch
+		} // if	
+	}
+	
+	private Double calculate(int index) {
+		Double regresar= 0D;
+    for (Serie item: this.series) {
+			regresar+= item.getData().get(index).getValue();
+		}	// for	
+		return regresar;
 	}
 	
 	public void sort(final List<String> labels) {

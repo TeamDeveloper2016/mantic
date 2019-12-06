@@ -1,7 +1,6 @@
 package mx.org.kaana.libs.echarts.beans;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 import mx.org.kaana.libs.reflection.Methods;
 
@@ -46,7 +45,7 @@ public class Axis implements Serializable {
 		this.axisTick=axisTick;
 		this.axisLine=axisLine;
 		this.data=data;
-		this.boundaryGap=Arrays.asList(0D, 0.1D);
+		// this.boundaryGap=Arrays.asList(0D, 0.1D);
 		this.z= 0;
 	}
 

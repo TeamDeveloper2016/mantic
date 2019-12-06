@@ -10,7 +10,7 @@ import java.io.Serializable;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Normal implements Serializable {
+public class Normal implements Serializable, Cloneable {
 
 	private static final long serialVersionUID=-7749442518672455859L;
 
@@ -97,6 +97,18 @@ public class Normal implements Serializable {
 	@Override
 	public String toString() {
 		return "Normal{"+"color="+color+", fontFamily="+fontFamily+", fontSize="+fontSize+", show="+show+", position="+position+", formatter="+formatter+'}';
+	}
+
+	@Override
+	public Normal clone() {
+		Object object=null;
+		try {
+			object= super.clone();
+		} // try
+		catch (CloneNotSupportedException e) {
+			mx.org.kaana.libs.formato.Error.mensaje(e);
+		} //catch
+		return (Normal)object;
 	}
 	
 }

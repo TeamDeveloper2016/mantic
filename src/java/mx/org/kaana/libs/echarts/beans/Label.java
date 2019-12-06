@@ -10,7 +10,7 @@ import java.io.Serializable;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Label implements Serializable {
+public class Label implements Serializable, Cloneable {
 
 	private static final long serialVersionUID=-2619425225091818326L;
 
@@ -37,4 +37,16 @@ public class Label implements Serializable {
 		return "Label{"+"normal="+normal+'}';
 	}
 
+	@Override
+	public Label clone() {
+		Object object=null;
+		try {
+			object= super.clone();
+		} // try
+		catch (CloneNotSupportedException e) {
+			mx.org.kaana.libs.formato.Error.mensaje(e);
+		} //catch
+		return (Label)object;
+	}
+	
 }

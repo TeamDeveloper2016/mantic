@@ -11,7 +11,7 @@ import java.util.Objects;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public final class Value implements Serializable {
+public final class Value implements Serializable, Cloneable {
 
 	private static final long serialVersionUID=2531614052112824504L;
 
@@ -90,5 +90,17 @@ public final class Value implements Serializable {
 	public String toString() {
 		return "Value{"+"name="+name+", value="+value+", itemStyle="+itemStyle+'}';
 	}
-	
+
+	@Override
+	public Value clone() {
+		Object object=null;
+		try {
+			object= super.clone();
+		} // try
+		catch (CloneNotSupportedException e) {
+			mx.org.kaana.libs.formato.Error.mensaje(e);
+		} //catch
+		return (Value)object;
+	}
+
 }
