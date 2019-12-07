@@ -62,6 +62,7 @@ public class Timbrado implements Job, Serializable {
 			if(!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion() && validateHora()) {										
 				facturasPendientes= toFacturasPendientes();
 				for(Facturacion factura: facturasPendientes){
+                                    try{
 					correos= toCorreosCliente(factura.getIdCliente());
 					if(!Cadena.isVacio(correos)){
 						factura.setCorreos(correos);
@@ -73,6 +74,10 @@ public class Timbrado implements Job, Serializable {
 						else
 							LOG.error("Ocurrio un error al realizar la facturación");				
 					} // if
+                                    }
+                                    catch(Exception ex){ 
+                                        LOG.error("Ocurrio un error al realizar la facturación" + ex);
+                                    } // catch
 				} // for
 			} // if
 	  } // try
