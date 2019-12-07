@@ -5735,6 +5735,8 @@
           tc_mantic_faltantes
 				inner join 
 					tc_mantic_empresas on tc_mantic_faltantes.id_empresa = tc_mantic_empresas.id_empresa
+			  inner join
+          tc_mantic_almacenes on tc_mantic_empresas.id_empresa= tc_mantic_almacenes.id_empresa 
         inner join
           tc_mantic_articulos on tc_mantic_faltantes.id_articulo= tc_mantic_articulos.id_articulo
         inner join
@@ -5745,7 +5747,7 @@
           tc_mantic_articulos_codigos on tc_mantic_faltantes.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
 				where 
 				  tc_mantic_faltantes.id_vigente= 1
-				  and tc_mantic_faltantes.id_empresa= {idSucursal}
+				  and tc_mantic_almacenes.id_almacen= {idSucursal}
 				order by
 				   tc_mantic_articulos.nombre
 			</select>

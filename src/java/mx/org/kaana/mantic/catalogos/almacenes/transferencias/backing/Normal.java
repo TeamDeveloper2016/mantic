@@ -280,7 +280,6 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_CON_DECIMALES));
       columns.add(new Columna("minimo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
