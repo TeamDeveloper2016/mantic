@@ -229,15 +229,12 @@ public class TransaccionFactura extends IBaseTnx {
 	} // actualizarCliente
 	
 	protected boolean registrarBitacora(Session sesion, Long id, String error, String proceso) throws Exception{
-		boolean regresar                     = false;		
-		TcManticFacturamaBitacoraDto bitacora= null;		
-		bitacora= new TcManticFacturamaBitacoraDto();
+		TcManticFacturamaBitacoraDto bitacora= new TcManticFacturamaBitacoraDto();
 		bitacora.setIdKey(id);
 		bitacora.setProceso(proceso);
 		bitacora.setObservacion(error);
 		bitacora.setCodigo("99");
-		regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;		
-		return regresar;
+		return DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 	} // actualizarCliente
 	
 	protected boolean isCorrectId(String id){
@@ -487,13 +484,10 @@ public class TransaccionFactura extends IBaseTnx {
 	} // actualizarFacturaAutomatico
 	
 	public boolean actualizarFacturaAutomatico(Long id, Long idUsuario, Long idEstatus) throws Exception {
-		boolean regresar           = false;
-		TcManticFacturasDto factura= null;		
-		factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(TcManticFacturasDto.class, id);
+		TcManticFacturasDto factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(TcManticFacturasDto.class, id);
 		registrarBitacoraFactura(id, idEstatus, "Asignación a facturación automatica.", idUsuario);		
 		factura.setIdFacturaEstatus(idEstatus);		
-		regresar= DaoFactory.getInstance().update(factura)>= 1L;		
-		return regresar;
+		return DaoFactory.getInstance().update(factura)>= 1L;
 	} // actualizarFactura
 	
 	protected boolean registrarBitacoraFactura(Session sesion, Long idFactura, Long idFacturaEstatus, String justificacion) throws Exception{

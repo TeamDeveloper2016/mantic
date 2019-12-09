@@ -399,7 +399,7 @@ public class Transaccion extends TransaccionFactura {
     return regresar;
   } // procesarCliente
 	
-	protected void registraClienteFacturama(Session sesion, Long idCliente){		
+	protected void registraClienteFacturama(Session sesion, Long idCliente) {	
 		CFDIGestor gestor     = null;
 		ClienteFactura cliente= null;
 		try {

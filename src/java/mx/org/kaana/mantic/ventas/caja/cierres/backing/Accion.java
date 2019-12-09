@@ -115,7 +115,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				case CONSULTAR:
 					this.denominaciones= (List<Denominacion>)DaoFactory.getInstance().toEntitySet(Denominacion.class, "VistaCierresCajasDto", "denominacion", this.attrs);
   		    this.attrs.put("idEfectivo", 2);
-					this.fondos        = (List<Denominacion>)DaoFactory.getInstance().toEntitySet(Denominacion.class, "VistaCierresCajasDto", "denominacion", this.attrs);
+					this.fondos= (List<Denominacion>)DaoFactory.getInstance().toEntitySet(Denominacion.class, "VistaCierresCajasDto", "denominacion", this.attrs);
 					break;	
 			} // switch
 			this.toLoadEmpresas();
@@ -136,18 +136,20 @@ public class Accion extends IBaseAttribute implements Serializable {
 			TcManticCierresDto cierre= (TcManticCierresDto)DaoFactory.getInstance().findById(TcManticCierresDto.class, (Long)this.attrs.get("idCierre"));
 			cierre.setObservaciones((String)this.attrs.get("observaciones"));
 			// ajustar los importes capturados en las tarjetas de credito y agregarlos de nueva cuenta al arreglo de importes para que se actualicen
-			double importe= this.debito!= null? 0D: this.pivote!= null? this.pivote.getImporte(): 0D;
-			if(this.debito!= null) {
-				importe= this.pivote.getImporte()>= this.debito.getSaldo()? this.pivote.getImporte()- this.debito.getSaldo(): 0D;
-				this.debito.setImporte(this.pivote.getImporte()>= this.debito.getSaldo()? this.debito.getSaldo(): this.pivote.getImporte());
-				this.importes.add(this.debito);
-			} // if	
-			if(this.credito!= null) {
-				this.credito.setImporte(importe);
-				this.importes.add(this.credito);
-			} // else	
-			if(this.pivote!= null) 
+			double importe= 0D;
+			if(this.pivote!= null)  {
+				importe= this.pivote.getImporte();
+				if(this.debito!= null) {
+					importe= this.pivote.getImporte()>= this.debito.getSaldo()? this.pivote.getImporte()- this.debito.getSaldo(): 0D;
+					this.debito.setImporte(this.pivote.getImporte()>= this.debito.getSaldo()? this.debito.getSaldo(): this.pivote.getImporte());
+					this.importes.add(this.debito);
+				} // if	
+				if(this.credito!= null) {
+					this.credito.setImporte(importe);
+					this.importes.add(this.credito);
+				} // if
 				this.importes.remove(this.pivote);
+			} // if	
 			transaccion = new Cierre((Long)this.attrs.get("idCaja"), (Double)this.attrs.get("efectivo"), cierre, this.importes, this.denominaciones);
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {

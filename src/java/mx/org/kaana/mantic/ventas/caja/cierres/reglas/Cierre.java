@@ -82,7 +82,6 @@ public class Cierre extends IBaseTnx implements Serializable  {
 	public TcManticCierresDto getCierre() {
 		return cierre;
 	}
-		
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
@@ -104,10 +103,8 @@ public class Cierre extends IBaseTnx implements Serializable  {
 					regresar= DaoFactory.getInstance().update(sesion, this.cierre)>= 1L;
 					sesion.flush();
 					for (Importe importe: this.importes) {
+						LOG.error("[Cierre] Medio pago:" + importe.getIdTipoMedioPago() + ", Cierre:" + importe.getIdCierreCaja()+ ", Caja:" + importe.getIdCaja() + ", Disponible:" + importe.getDisponible()+ ", Acumulado anterior:" + importe.getAcumulado() + ", Saldo anterior:" + importe.getSaldo());
 					  DaoFactory.getInstance().update(sesion, importe);
-						if(importe.getIdTipoMedioPago().equals(4L) || importe.getIdTipoMedioPago().equals(18L)) {
-							
-						} // if
 					} // for
 					for (Denominacion denominacion: this.denominaciones) 
 					  DaoFactory.getInstance().insert(sesion, denominacion);

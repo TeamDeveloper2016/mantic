@@ -203,12 +203,13 @@
 			}); 
 		},
 		title: function(id, value) {
-			if(value.hasOwnProperty(this.RESERVED_TITLE))
-			  if($('#'+ id+ '-'+ this.RESERVED_TITLE).length> 0)
-				  $('#'+ id+ '-'+ this.RESERVED_TITLE).html(value[this.RESERVED_TITLE]);
-			  else
-			    if($('.'+ this.RESERVED_HEADER).length> 0)
-				    $('.'+ this.RESERVED_HEADER).html(value[this.RESERVED_TITLE]);
+			if(typeof(value) !== 'undefined')
+				if(value.hasOwnProperty(this.RESERVED_TITLE))
+					if($('#'+ id+ '-'+ this.RESERVED_TITLE).length> 0)
+						$('#'+ id+ '-'+ this.RESERVED_TITLE).html(value[this.RESERVED_TITLE]);
+					else
+						if($('.'+ this.RESERVED_HEADER).length> 0)
+							$('.'+ this.RESERVED_HEADER).html(value[this.RESERVED_TITLE]);
 		},
 		update: function(id, value, look) {
 			if(typeof(look)=== 'undefined')

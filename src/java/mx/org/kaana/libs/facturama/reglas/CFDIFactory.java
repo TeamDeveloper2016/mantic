@@ -287,7 +287,7 @@ public class CFDIFactory implements Serializable {
 	public Client createClient(Client client) throws Exception {
 		Client regresar= null;
 		try {
-			if(Configuracion.getInstance().isEtapaProduccion()|| Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
+			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
 			  regresar= this.facturama.Clients().Create(client);
 		} // try
 		catch (Exception e) {			
