@@ -140,11 +140,11 @@
 			}); 
 		},
 		frames: function() {
-			if(this.charts[$echarts.RESERVED_ID])
+			if(this.charts.hasOwnProperty($echarts.RESERVED_ID))
 				this.search(this.charts[$echarts.RESERVED_ID]);
 		},
 		search: function(value) {
-			if(value[this.RESERVED_NAMES])
+			if(value.hasOwnProperty(this.RESERVED_NAMES))
 				$.each(value[this.RESERVED_NAMES], function(id, value) {
 					var items= $('[id="'+ id+ '"]');
 					if(items.length> 0) 
@@ -154,7 +154,7 @@
 				}); 
 		},
 		create: function(id, value) {
-			if($('#'+ id).length> 0 && value[this.RESERVED_NAMES]) {
+			if($('#'+ id).length> 0 && value.hasOwnProperty(this.RESERVED_NAMES)) {
   			window[id]= echarts.init(document.getElementById(id), {renderer: 'svg', width: 'auto', height: 'auto'});
 	  		window[id].setOption(value[this.RESERVED_NAMES], true);
 		  	window[id].on('click', 'series', function (params) {params.chart= id; $echarts.send(params);});
@@ -165,7 +165,7 @@
 		},
 		reserved: function(id, value) {
 			// si se definio un agrupador se mete al historial para ya no ir la backend
-			if(!value[this.RESERVED_GROUP]) 
+			if(!value.hasOwnProperty(this.RESERVED_GROUP)) 
          value[this.RESERVED_GROUP]= this.RESERVED_KEY;
 			if(!this.history[value[this.RESERVED_GROUP]]) 
 				this.history[value[this.RESERVED_GROUP]]= {};
@@ -203,7 +203,7 @@
 			}); 
 		},
 		title: function(id, value) {
-			if(value[this.RESERVED_TITLE])
+			if(value.hasOwnProperty(this.RESERVED_TITLE))
 			  if($('#'+ id+ '-'+ this.RESERVED_TITLE).length> 0)
 				  $('#'+ id+ '-'+ this.RESERVED_TITLE).html(value[this.RESERVED_TITLE]);
 			  else
@@ -215,7 +215,7 @@
 				look= true;
 			// esto es para actualizar una sola grafica porque sus datos cambiaron
 			if(window[id]) {
-				if(value[this.RESERVED_NAMES]) {
+				if(value.hasOwnProperty(this.RESERVED_NAMES)) {
 					this.charts[id]= value;
 					window[id].clear();
 					window[id].setOption(value[this.RESERVED_NAMES]);
@@ -345,11 +345,11 @@
 					window[id].resize();
 				} // if	
 			});
-      if(this.selected['claveEntidad']) 
+      if(this.selected.hasOwnProperty('claveEntidad')) 
         $echarts.title(this.carousel.items[this.carousel.index],this.history[this.selected.claveEntidad][this.carousel.items[this.carousel.index]]);
 		},
 		remove: function(id) {
-			if($echarts.charts[id])
+			if($echarts.charts.hasOwnProperty(id))
 			  delete $echarts.charts[id];
 		},
 		exists: function(group, update) {
@@ -362,7 +362,7 @@
 		},
 		valid: function(group) {
 			if(typeof(group)=== 'undefined')
-				if(this.selected['claveEntidad']) 
+				if(this.selected.hasOwnProperty('claveEntidad')) 
 				  group= this.selected.claveEntidad;
 			  else 
 				  group= this.selected.group;
@@ -423,8 +423,8 @@
 			if(typeof(update)=== 'undefined')
 				update= false;
 			// esto es para actualizar una sola grafica porque sus datos cambiaron
-			if(this.history[group]) {
-				if(this.history[group][id]) {
+			if(this.history.hasOwnProperty(group)) {
+				if(this.history[group].hasOwnProperty(id)) {
 					if(update)
 						if(id=== this.RESERVED_ID)
 							this.search(this.history[group][id]);
