@@ -212,12 +212,9 @@ public class TransaccionFactura extends IBaseTnx {
 	} // procesarClientes	
 	
 	protected boolean actualizarCliente(Session sesion, Long id, String idFacturama) throws Exception{
-		boolean regresar           = false;
-		TcManticClientesDto cliente= null;		
-		cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, id);
+		TcManticClientesDto cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, id);
 		cliente.setIdFacturama(idFacturama);
-		regresar= DaoFactory.getInstance().update(sesion, cliente)>= 1L;		
-		return regresar;
+		return DaoFactory.getInstance().update(sesion, cliente)>= 1L;
 	} // actualizarCliente
 	
 	protected boolean registrarBitacora(Session sesion, Long id, String error) throws Exception{
