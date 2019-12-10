@@ -489,6 +489,7 @@
     initialized   : false,
     offContextMenu: true,
 		lastNameFocus : null,
+		idNameFocus   : null,
 		reference     : null,
 		lastReference : null,
 		globalTimeout : true,
@@ -1310,8 +1311,12 @@
 				janal.console('janal.focus: '+ this.lastNameFocus+ ' esta de solo lectura ');
 		},
 		sendLastFocus: function() {
-			if($(this.lastNameFocus))
-				$(this.lastNameFocus).focus();
+			this.console('janal.sendLastFocus: '+ this.lastNameFocus);
+			if($(this.lastNameFocus)) {
+				this.idNameFocus= $(this.lastNameFocus).attr('id').replace(/:/gi, '\\:');
+  			this.console('janal.sendLastFocus: '+ this.idNameFocus);
+				setTimeout("$('#'+ $janal.idNameFocus).focus();", 2000);
+			} // if	
 		},				
   	isPostBack: function(name) {
 	  	setTimeout($('#'+ name).click(), 50);
