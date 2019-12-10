@@ -31,13 +31,13 @@
 		init: function() { // constructor
 			$precios= this;
 			this.hide();
-	    $(document).on('keydown', '.janal-key-event', function(e) {
+	    $(document).on('keydown', '.janal-key-faltante', function(e) {
 				var key= e.keyCode? e.keyCode: e.which;
-				janal.console('jsPrecios.keydown [janal-key-event]: '+ key);
+				janal.console('jsPrecios.keydown [janal-key-faltante]: '+ key);
 				switch(key) {
 					case $precios.VK_TAB:
 					case $precios.VK_ENTER:
-						janal.console('jsPrecios.keydown [janal-key-event]: '+ $(this).attr('alt'));
+						janal.console('jsPrecios.keydown [janal-key-faltante]: '+ $(this).attr('alt'));
 						if($('#'+ $(this).attr('alt'))) {
 						  $('#'+ $(this).attr('alt')).focus();
 							if('agregarFaltantes'=== $(this).attr('id'))

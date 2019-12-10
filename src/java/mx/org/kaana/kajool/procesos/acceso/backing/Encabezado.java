@@ -50,13 +50,13 @@ public class Encabezado extends IBaseFilter implements Serializable {
   private static final long serialVersionUID = 5323749709626263793L;
   private static final Log LOG = LogFactory.getLog(Encabezado.class);
 	
-  private FormatLazyModel lazyFaltantes;
+  private List<Entity> lazyFaltantes;
   private FormatLazyModel lazyListaPrecios;
   private List<Entity> lazyCatalogoArticulos;
 	private Faltante faltante;
 	private StreamedContent image;
 
-	public FormatLazyModel getLazyFaltantes() {
+	public List<Entity> getLazyFaltantes() {
 		return lazyFaltantes;
 	}
 
@@ -219,6 +219,11 @@ public class Encabezado extends IBaseFilter implements Serializable {
     List<Columna> columns= null;
     try {
 			Long idSucursal= this.faltante.getIdEmpresa()== null? -1L: this.faltante.getIdEmpresa();
+			if(JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getEmpresa()!= null && JsfBase.getAutentifica().getEmpresa().getIdEmpresa()!= null && JsfBase.getAutentifica().getEmpresa().getIdEmpresa()> 0L) {
+				idSucursal= JsfBase.getAutentifica().getEmpresa().getIdEmpresa();
+				this.faltante.setIdUsuario(JsfBase.getIdUsuario());
+				this.faltante.setIdEmpresa(idSucursal);
+			} // if
 			this.attrs.put("idSucursal", idSucursal);
       columns = new ArrayList<>();
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
@@ -226,7 +231,8 @@ public class Encabezado extends IBaseFilter implements Serializable {
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-      this.lazyFaltantes = new FormatCustomLazy("VistaOrdenesComprasDto", "registrados", this.attrs, columns);
+      this.lazyFaltantes = (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaOrdenesComprasDto", "registrados", this.attrs);
+      UIBackingUtilities.toFormatEntitySet(this.lazyFaltantes, columns);
       UIBackingUtilities.resetDataTable("faltantesTabla");
     } // try
     catch (Exception e) {
