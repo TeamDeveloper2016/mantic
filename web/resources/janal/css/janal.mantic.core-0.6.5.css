@@ -4,6 +4,9 @@
   font-family:'titillium_webregular' !important;
   font-size:14px;
 }
+.ui-autocomplete-panel .ui-autocomplete-items .ui-state-highlight {
+  background-color: #B0C4DE;
+}
 .ui-panel .ui-panel-content {
     padding: 0.2em .2em;
 }
