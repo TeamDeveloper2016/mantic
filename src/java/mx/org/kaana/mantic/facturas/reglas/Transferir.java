@@ -543,6 +543,7 @@ public class Transferir extends IBaseTnx {
 			factura.setFolioFiscal(complement.getTaxStamp().getUuid());
 			factura.setCadenaOriginal(this.toCadenaOriginal(path.concat(cfdi.getRfc()).concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase())));
 			factura.setIdFacturaEstatus(EEstatusFacturas.TIMBRADA.getIdEstatusFactura());
+			factura.setIntentos(factura.getIntentos()+1L);
 			DaoFactory.getInstance().update(sesion, factura);
 			registrarBitacoraFactura(sesion, idFactura, EEstatusFacturas.TIMBRADA.getIdEstatusFactura(), factura.getComentarios());
 		} // if
