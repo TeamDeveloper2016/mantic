@@ -401,6 +401,7 @@ public class TransaccionFactura extends IBaseTnx {
 				factura.setFolioFiscal(complement.getTaxStamp().getUuid());
 				factura.setCadenaOriginal(this.toCadenaOriginal(path.concat(this.cliente.getRfc()).concat("-").concat(detail.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase())));
 				factura.setIdFacturaEstatus(EEstatusFacturas.TIMBRADA.getIdEstatusFactura());
+				factura.setIntentos(factura.getIntentos()+1L);
 				DaoFactory.getInstance().update(sesion, factura);
 			} // if
 		} // try
@@ -466,6 +467,7 @@ public class TransaccionFactura extends IBaseTnx {
 		factura.setIdFacturama(cfdi.getId());
 		factura.setFolio(cfdi.getFolio());					
 		factura.setTimbrado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		factura.setIntentos(factura.getIntentos()+1L);
 		regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;		
 		return regresar;
 	} // actualizarFactura
@@ -476,14 +478,16 @@ public class TransaccionFactura extends IBaseTnx {
 		factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, id);
 		registrarBitacoraFactura(sesion, id, EEstatusFacturas.AUTOMATICO.getIdEstatusFactura(), "Asignación a facturación automatica.", idUsuario);		
 		factura.setIdFacturaEstatus(EEstatusFacturas.AUTOMATICO.getIdEstatusFactura());		
+		factura.setIntentos(factura.getIntentos()+1L);
 		regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;		
 		return regresar;
 	} // actualizarFacturaAutomatico
 	
 	public boolean actualizarFacturaAutomatico(Long id, Long idUsuario, Long idEstatus) throws Exception {
 		TcManticFacturasDto factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(TcManticFacturasDto.class, id);
-		registrarBitacoraFactura(id, idEstatus, "Asignación a facturación automatica.", idUsuario);		
+		registrarBitacoraFactura(id, idEstatus, "Asignación a facturación automatica.", idUsuario);				
 		factura.setIdFacturaEstatus(idEstatus);		
+		factura.setIntentos(factura.getIntentos()+1L);
 		return DaoFactory.getInstance().update(factura)>= 1L;
 	} // actualizarFactura
 	
