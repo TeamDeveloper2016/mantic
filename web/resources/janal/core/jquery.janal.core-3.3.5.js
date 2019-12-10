@@ -443,7 +443,7 @@
        else 
          if (document.all) 
            reloj.innerHTML = texto;
-       setTimeout('janal.fecha()', 1500);
+       setTimeout('janal.fecha();', 1500);
      }, // fecha     
      monitor:	function (value) {
       var count   = 11;
@@ -1319,7 +1319,7 @@
 			} // if	
 		},				
   	isPostBack: function(name) {
-	  	setTimeout($('#'+ name).click(), 50);
+	  	setTimeout("$('#'+ name).click();", 50);
 		},
 		notificacion: function() {
 			if(typeof(PF('retiroEfectivo'))!== 'undefined') {
