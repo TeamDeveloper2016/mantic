@@ -34,6 +34,7 @@ import mx.org.kaana.mantic.comun.JuntarReporte;
 import mx.org.kaana.mantic.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
+import mx.org.kaana.mantic.enums.EEstatusFacturas;
 import mx.org.kaana.mantic.enums.EEstatusFicticias;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.EReportes;
@@ -525,8 +526,13 @@ public class Filtro extends FiltroFactura implements Serializable {
 	} // doAsignaArticulo
 
 	public String doFacturaColor(Entity row) {
-		return row.toLong("idTipoDocumento").equals(1L)? "janal-tr-diferencias": "";
-	} 
+		String regresar= "";
+		if(row.toLong("idFacturaEstatus").equals(EEstatusFacturas.AUTOMATICO.getIdEstatusFactura()))
+			regresar= "janal-tr-nuevo";
+		else if(row.toLong("idTipoDocumento").equals(1L))
+			regresar= "janal-tr-diferencias";
+		return regresar;
+	}  // doFacturaColor
 
 	public String doComplemento(String accion) {
     EAccion eaccion= null;
