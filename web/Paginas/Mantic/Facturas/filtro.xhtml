@@ -243,6 +243,12 @@
               <h:outputText value="#{row['timbrado']}"/><br style="display: #{(row['idVentaEstatus'] eq '14' or row['idFacturaEstatus'] eq '3') ? '' : 'none'}"/>
               <h:outputText value="( #{row['cancelada']} )" title="Fecha de cancelación" styleClass="janal-color-red janal-text-small" style="display: #{(row['idVentaEstatus'] eq '14' or row['idFacturaEstatus'] eq '3') ? '' : 'none'}"/>
             </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive" sortBy="#{row.intentos}">
+              <f:facet name="header">
+                <h:outputText value="Intentos"/>
+              </f:facet>
+              <h:outputText value="#{row['intentos']}"/>
+            </p:column>		
             <p:column class="janal-column-center MarAuto Responsive janal-wid-col-130" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Registro"/>
@@ -251,6 +257,7 @@
             </p:column>		
             <f:facet name="footer">
 							<p:outputLabel value="Las filas en color verde son facturas especiales, las otras son facturas que vienen de punto de venta" style="float: left;"/>
+							<p:outputLabel value="Las filas en color marron son facturas que han sido asignadas a la facturacion automatica." style="float: left;"/>
               <p:outputLabel value="Total [#{manticFacturasFiltro.lazyModel==null? 0: manticFacturasFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
