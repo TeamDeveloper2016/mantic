@@ -5751,7 +5751,7 @@
 				  tc_mantic_faltantes.id_vigente= 1
 				  and tc_mantic_almacenes.id_almacen= {idSucursal}
 				order by
-				   tc_mantic_articulos.nombre
+				   tc_mantic_faltantes.registro desc
 			</select>
       <select id="detalle">
         select      
