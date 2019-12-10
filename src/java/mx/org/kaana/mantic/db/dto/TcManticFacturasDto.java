@@ -79,7 +79,7 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
   }
 
   public TcManticFacturasDto(Long key) {
-    this(new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null);
+    this(new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, 0L, null, null, null, null);
     setKey(key);
   }
 
