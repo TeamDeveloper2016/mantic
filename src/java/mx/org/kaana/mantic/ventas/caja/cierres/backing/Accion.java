@@ -122,6 +122,29 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.toLoadCuentas();
 			this.toLoadCreditos();
 			this.doCalculate();
+			if(this.debito!= null) 
+				this.importes.remove(this.debito);
+			if(this.credito!= null) 
+				this.importes.remove(this.credito);
+			if(this.debito!= null || this.credito!= null) {
+				this.pivote= new Importe();
+				this.pivote.setMedioPago("TARJETA BANCARIA");
+				this.pivote.setCaja(this.debito.getCaja());
+				this.pivote.setEmpresa(this.debito.getEmpresa());
+				this.pivote.setIdCaja(this.debito.getIdCaja());
+				this.pivote.setIdCierre(this.debito.getIdCierre());
+				this.pivote.setIdCierreCaja(this.debito.getIdCierreCaja());
+				this.pivote.setIdTipoMedioPago(-1L);
+				this.pivote.setDisponible((this.debito.getDisponible()== null? 0D: this.debito.getDisponible())+ (this.credito.getDisponible()== null? 0D: this.credito.getDisponible()));
+				this.pivote.setAcumulado((this.debito.getAcumulado()== null? 0D: this.debito.getAcumulado())   + (this.credito.getAcumulado()== null? 0D: this.credito.getAcumulado()));
+				this.pivote.setSaldo((this.debito.getSaldo()== null? 0D: this.debito.getSaldo())               + (this.credito.getSaldo()== null? 0D: this.credito.getSaldo()));
+				this.pivote.setImporte((this.debito.getImporte()== null? 0D: this.debito.getImporte())         + (this.credito.getImporte()== null? 0D: this.credito.getImporte()));
+				if(this.importes.size()> 1)
+					this.importes.add(1, pivote);
+				else
+					this.importes.add(pivote);
+			} // if
+			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -287,27 +310,6 @@ public class Accion extends IBaseAttribute implements Serializable {
 		  total+= importe.getImporte();
 		} // for
     this.attrs.put("total", Numero.toRedondearSat(total));		
-		if(this.debito!= null) 
-		  this.importes.remove(this.debito);
-		if(this.credito!= null) 
-  		this.importes.remove(this.credito);
-		if(this.debito!= null || this.credito!= null) {
-			this.pivote= new Importe();
-			this.pivote.setCaja(this.debito.getCaja());
-			this.pivote.setEmpresa(this.debito.getEmpresa());
-			this.pivote.setIdCaja(this.debito.getIdCaja());
-			this.pivote.setIdCierre(this.debito.getIdCierre());
-			this.pivote.setIdCierreCaja(this.debito.getIdCierreCaja());
-			this.pivote.setIdTipoMedioPago(this.debito.getIdTipoMedioPago());
-			this.pivote.setDisponible((this.debito.getDisponible()== null? 0D: this.debito.getDisponible())+ (this.credito.getDisponible()== null? 0D: this.credito.getDisponible()));
-			this.pivote.setAcumulado((this.debito.getAcumulado()== null? 0D: this.debito.getAcumulado())   + (this.credito.getAcumulado()== null? 0D: this.credito.getAcumulado()));
-			this.pivote.setSaldo((this.debito.getSaldo()== null? 0D: this.debito.getSaldo())               + (this.credito.getSaldo()== null? 0D: this.credito.getSaldo()));
-			this.pivote.setImporte((this.debito.getImporte()== null? 0D: this.debito.getImporte())         + (this.credito.getImporte()== null? 0D: this.credito.getImporte()));
-			if(this.importes.size()> 1)
-			  this.importes.add(1, pivote);
-			else
-			  this.importes.add(pivote);
-		} // if
 	}
 	
   public void doTotales() {
