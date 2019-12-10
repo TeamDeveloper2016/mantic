@@ -2177,6 +2177,7 @@
 					tc_mantic_facturas.id_facturama,
 					tc_mantic_facturas.sello_sat,
 					tc_mantic_facturas.timbrado,
+					tc_mantic_facturas.intentos,
 					tc_mantic_facturas.cancelada,
 				  tc_mantic_facturas.folio as factura,
 					if(tc_mantic_facturas.folio is null, 0, 1) folio,
@@ -2234,6 +2235,7 @@
 					tc_mantic_facturas.id_facturama,
 					tc_mantic_facturas.sello_sat,
 					tc_mantic_facturas.timbrado,
+					tc_mantic_facturas.intentos,
 					tc_mantic_facturas.cancelada,
 					tc_mantic_facturas.folio
 				{sortOrder}
