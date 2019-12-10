@@ -152,7 +152,8 @@ public class Transaccion extends TransaccionFactura {
 							if(factura!= null) {
 								params.put("correos", this.correos);
 								params.put("comentarios", this.comentarios);								
-								params.put("timbrado", new Timestamp(Calendar.getInstance().getTimeInMillis()));								
+								params.put("timbrado", new Timestamp(Calendar.getInstance().getTimeInMillis()));		
+								params.put("intentos", (factura.getIntentos()+1L));
 								DaoFactory.getInstance().update(sesion, TcManticFacturasDto.class, factura.getIdFactura(), params);
 								this.generarTimbradoFactura(sesion, this.orden.getIdFicticia(), factura.getIdFactura(), this.correos);
 							} // 
