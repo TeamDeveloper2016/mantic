@@ -18,7 +18,7 @@
 				'articulos' : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica'},			
 				'total'     : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica'},			
 				'descuento' : {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos'},
-				'observaciones' : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'observaciones' : {validaciones: 'libre|max-caracteres({"cuantos":100})', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'cfdi'      : {validaciones: 'requerido', mascara: 'libre', mensaje:'Tipo de CFDI obligatorio.'},
 				'referencia': {validaciones: 'requerido', mascara: 'libre'},
 				'tipoPago'  : {validaciones: 'requerido', mascara: 'libre'},
