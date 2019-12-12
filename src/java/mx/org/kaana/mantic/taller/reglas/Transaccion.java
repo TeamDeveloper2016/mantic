@@ -339,7 +339,7 @@ public class Transaccion extends TransaccionFactura{
 			if(next.getData()!= null)
 				regresar= new Siguiente(next.toLong());
 			else
-				regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 90001L: 1L);
+				regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 900001L: 1L);
 		} // try
 		catch (Exception e) {
 			throw e;

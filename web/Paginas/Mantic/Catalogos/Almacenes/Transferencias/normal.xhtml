@@ -17,7 +17,7 @@
 				'contenedorGrupos\\:consecutivo'  : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:idAlmacen'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idSolicito'   : {validaciones: 'libre', mascara: 'libre'},
-				'contenedorGrupos\\:articulos'    : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
+				'contenedorGrupos\\:articulos'    : {validaciones: 'requerido|mayor({"cuanto": 1})', mascara: 'no-aplica', grupo: 'general'},			
 				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'cantidades'                      : {multiple: '$', validaciones: 'mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'}
 			};	

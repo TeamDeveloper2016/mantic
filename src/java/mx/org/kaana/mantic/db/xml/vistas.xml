@@ -265,7 +265,7 @@
 				where
 				  tc_mantic_confrontas.ejercicio= {ejercicio} 
 				  and tc_mantic_transferencias.id_empresa= {idEmpresa}		
-				  and tc_mantic_confrontas.orden {operador} 90000		
+				  and tc_mantic_confrontas.orden {operador} 900000		
 			</select>		
       <select id="lazy">
         select 
@@ -7109,6 +7109,8 @@
 				inner join
 					tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo
 				inner join
+					tc_mantic_inventarios on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_inventarios.id_almacen and tc_mantic_almacenes_articulos.id_articulo= tc_mantic_inventarios.id_articulo and tc_mantic_inventarios.id_automatico= 2
+				inner join
 					tc_mantic_almacenes on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_almacenes.id_almacen
 				inner join
 					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo
@@ -9177,7 +9179,7 @@
 				where
 				  tc_mantic_clientes.id_empresa= {idEmpresa}
 				  and tc_mantic_clientes_pagos.ejercicio= {ejercicio} 
-			    and tc_mantic_clientes_pagos.orden{operador} 90000
+			    and tc_mantic_clientes_pagos.orden{operador} 900000
 			</select>		
 		</unit>
 		<unit id="VistaTcManticEmpresasPagosDto">

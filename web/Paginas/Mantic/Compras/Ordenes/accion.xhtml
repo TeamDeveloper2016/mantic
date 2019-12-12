@@ -96,7 +96,7 @@
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>	
 		<h:commandLink id="dataPdfPerdidos">
-			<pe:exporter type="pdf"  skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="perdidos" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+			<pe:exporter type="pdf" skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="perdidos" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
 		</h:commandLink>
 		<h:commandLink id="dataXlsPerdidos">
 			<pe:exporter type="xlsx" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="perdidos" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
@@ -624,7 +624,7 @@
 								<f:facet name="header">
 									<div class="lg-pantalla">
 										<p:menuButton value="Opciones">
-    									<p:commandButton value="Actualizar" title="Refrescar articulos de las ventas perdidas" icon="fa fa-refresh" process="@this" update="perdidos" action="#{manticComprasOrdendesAccion.doLoadPerdidas()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
+    									<p:menuitem value="Actualizar" title="Refrescar articulos de las ventas perdidas" icon="fa fa-refresh" process="@this" update="perdidos" action="#{manticComprasOrdendesAccion.doLoadPerdidas()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
 											<p:separator/>
 											<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfPerdidos', 'perdidos')" oncomplete="janal.desbloquear()"/>
 											<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsPerdidos', 'perdidos')" oncomplete="janal.desbloquear()"/>

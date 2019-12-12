@@ -210,6 +210,10 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 		Value origen              = null;
 		try {
 			params=new HashMap<>();
+  		List<UISelectEntity> destinos= (List<UISelectEntity>)((ArrayList<UISelectEntity>)this.attrs.get("almacenes"));
+			int index= destinos.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino());
+			if(index> 0)
+				((Transferencia)this.getAdminOrden().getOrden()).setIkDestino(destinos.get(index));
 			for (Articulo articulo: this.getAdminOrden().getArticulos()) {
 				params.put("idArticulo", articulo.getIdArticulo());
 				if(articulo.getIdArticulo()> 0L) {
@@ -267,7 +271,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
         this.doLoadFaltantes();
 			else 
 			  if(event.getTab().getTitle().equals("Ventas perdidas")) 
-          this.doLoadPerdidas(((Transferencia)this.getAdminOrden().getOrden()).getIdDestino()== null? -1L: ((Transferencia)this.getAdminOrden().getOrden()).getIdDestino());
+          this.doLoadPerdidas(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino()== null? -1L: ((Transferencia)this.getAdminOrden().getOrden()).getIkDestino().toLong("idEmpresa"));
 	}
 
 	@Override
@@ -363,17 +367,17 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 				temporal.setKey(articulo.toLong("idArticulo"));
 				temporal.setIdArticulo(articulo.toLong("idArticulo"));
 				temporal.setIdProveedor(-1L);
-				temporal.setIdRedondear(articulo.toLong("idRedondear"));
+//				temporal.setIdRedondear(articulo.toLong("idRedondear"));
 				temporal.setCodigo(articulo.toString("propio"));
 				temporal.setPropio(articulo.toString("propio"));
 				temporal.setNombre(articulo.toString("nombre"));
-				temporal.setOrigen(articulo.toString("origen"));
+//				temporal.setOrigen(articulo.toString("origen"));
 				temporal.setPrecio(articulo.toDouble("precio"));				
 				temporal.setIva(articulo.toDouble("iva"));				
 				temporal.setSat("");				
 				temporal.setDescuento("");
 				temporal.setExtras("");				
-				temporal.setUnidadMedida(articulo.toString("unidadMedida"));
+//				temporal.setUnidadMedida(articulo.toString("unidadMedida"));
 				// recuperar el stock de articulos en el almacen origen
 				Value origen= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
 				temporal.setStock(origen== null? 0D: origen.toDouble());
@@ -475,6 +479,34 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
       Methods.clean(columns);
       Methods.clean(params);
     } // finally
+	}
+	
+	@Override
+	public void doFaltanteArticulo() {
+		try {
+			UISelectEntity faltante= (UISelectEntity)this.attrs.get("faltante");
+   		this.toMoveData(faltante, this.getAdminOrden().getArticulos().size()- 1);
+		  List<UISelectEntity> faltantes= (List<UISelectEntity>)this.attrs.get("faltantes");
+			faltantes.remove(faltantes.indexOf(faltante));
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+	}
+
+	@Override
+	public void doAgregarPerdido() {
+		try {
+			UISelectEntity perdido= (UISelectEntity)this.attrs.get("perdido");
+   		this.toMoveData(perdido, this.getAdminOrden().getArticulos().size()- 1);
+		  List<UISelectEntity> perdidos= (List<UISelectEntity>)this.attrs.get("perdidos");
+			perdidos.remove(perdidos.indexOf(perdido));
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
 	}
 	
 }
