@@ -3530,6 +3530,17 @@
 				order by
 				 tc_mantic_almacenes.id_almacen
       </select>
+			<select id="almacenPrincipal">
+        select      
+				  tc_mantic_almacenes.id_almacen as id_key,
+          tc_mantic_almacenes.*
+        from      
+          tc_mantic_almacenes
+        where      
+          tc_mantic_almacenes.id_empresa in ({sucursales}) and id_principal= 1
+				order by
+				 tc_mantic_almacenes.clave
+      </select>
     </unit>
 	  <unit id="TcManticAlmacenesArticulosDto">
       <select id="row">
@@ -4435,6 +4446,15 @@
 					tc_mantic_ventas
 				where  
 					id_venta = {idVenta}
+			</select>
+			<select id="findByIdfactura">
+				select      
+				  tc_mantic_ventas.id_venta as id_key,
+					tc_mantic_ventas.*
+        from      
+          tc_mantic_ventas
+        where 
+          id_factura = {idFactura} 
 			</select>
     </unit>
     <unit id="TcManticVentasDetallesDto">
