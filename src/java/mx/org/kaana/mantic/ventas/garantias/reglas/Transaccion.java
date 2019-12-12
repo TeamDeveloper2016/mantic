@@ -205,10 +205,10 @@ public class Transaccion extends IBaseTnx{
 			params.put("idCierre", this.idCierreVigente);
 			params.put("medioPago", idTipoMedioPago);
 			cierreCaja= (TcManticCierresCajasDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresCajasDto.class, "TcManticCierresCajasDto", "cajaMedioPago", params);			
-			LOG.error("Medio pago:" + idTipoMedioPago + ", Cierre:" + this.idCierreVigente+ ", Caja:" + cierreCaja.getIdCaja() + ", Acumulado anterior:" + cierreCaja.getAcumulado() + ", Saldo anterior:" + cierreCaja.getSaldo());						
+			// LOG.error("Medio pago:" + idTipoMedioPago + ", Cierre:" + this.idCierreVigente+ ", Caja:" + cierreCaja.getIdCaja() + ", Acumulado anterior:" + cierreCaja.getAcumulado() + ", Saldo anterior:" + cierreCaja.getSaldo());						
 			cierreCaja.setAcumulado(cierreCaja.getAcumulado()- totalPago);			
 			cierreCaja.setSaldo(cierreCaja.getDisponible()+ cierreCaja.getAcumulado());
-			LOG.error("Medio pago:" + idTipoMedioPago + ", Cierre:" + cierreCaja.getIdCierre() + ", Caja:" + cierreCaja.getIdCaja() + ", Disponible:" + cierreCaja.getDisponible() + ", Devolucion:" + totalPago + ", Acumulado:" + cierreCaja.getAcumulado() + ", Saldo:" + cierreCaja.getSaldo());
+			// LOG.error("Medio pago:" + idTipoMedioPago + ", Cierre:" + cierreCaja.getIdCierre() + ", Caja:" + cierreCaja.getIdCaja() + ", Disponible:" + cierreCaja.getDisponible() + ", Devolucion:" + totalPago + ", Acumulado:" + cierreCaja.getAcumulado() + ", Saldo:" + cierreCaja.getSaldo());
 			DaoFactory.getInstance().update(sesion, cierreCaja);
 		} // try
 		catch (Exception e) {			
