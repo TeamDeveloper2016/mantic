@@ -475,6 +475,9 @@ public class Accion extends IBaseVenta implements Serializable {
 				garantia.setArticulosGarantia(tipoGarantia.equals(ETiposGarantias.RECIBIDA) ? ((AdminGarantia)this.getAdminOrden()).getArticulosRecibida() : ((AdminGarantia)this.getAdminOrden()).getArticulosTerminada());				
 				garantia.setGarantia(this.ticketOriginal);			
 				garantia.setIdEfectivo(tipoGarantia.getIdTipoGarantia().intValue());
+				List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
+				if(!almacenes.isEmpty()) 
+					garantia.getTicketVenta().setIdAlmacen(almacenes.get(0).getKey());			
 				garantias.add(garantia);
 			} // for			
 			pagoGarantia= new PagoGarantia();
@@ -494,7 +497,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			regresar.setPagoGarantia(pagoGarantia);
 			regresar.setTotales((Pago) this.attrs.get("pago"));			
 			regresar.setIdCaja(Long.valueOf(this.attrs.get("caja").toString()));			
-			regresar.getTicketVenta().setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));
+			regresar.getTicketVenta().setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));			
 			regresar.setAccionCredito((EAccion) this.attrs.get("accionCredito"));
 			regresar.setPagoCredito((Double) this.attrs.get("pagoCredito"));
 			regresar.setDevolucionCredito((Double) this.attrs.get("devolucionCredito"));
@@ -512,13 +515,14 @@ public class Accion extends IBaseVenta implements Serializable {
 			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
+			params.put("sucursales", this.attrs.get("idEmpresa"));
+      this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenPrincipal", params, columns));
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 			if(!almacenes.isEmpty()) 
 				((TicketVenta)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
       columns.remove(0);
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("clientes", UIEntity.build("TcManticClientesDto", "sucursales", params, columns));
     } // try
     catch (Exception e) {
@@ -555,6 +559,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		List<UISelectEntity> ticketsAbiertos= null;
 		Map<String, Object>params           = null;
 		List<Columna> campos                = null;
+		List<Columna> columns               = null;
 		EAccion accion                      = null;
 		Entity entity                       = null;
 		try {
@@ -589,6 +594,16 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("clienteAsignado", false);
 			this.attrs.put("tabIndex", 0);		
 			this.attrs.put("registroCliente", new TcManticClientesDto());
+			columns= new ArrayList<>();
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			params.clear();
+			params.put("sucursales", this.attrs.get("idEmpresa"));			
+      this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenPrincipal", params, columns));
+ 			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
+			if(!almacenes.isEmpty()) 
+				((TicketVenta)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
+			params.clear();
 			unlockVentaExtends(-1L, (Long)this.attrs.get("ticketLock"));			
 		} // try
 		catch (Exception e) {
