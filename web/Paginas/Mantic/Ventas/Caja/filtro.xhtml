@@ -16,6 +16,8 @@
         idEmpresa     : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         consecutivo   : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true, grupo: 'general'},
         idCliente     : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				montoInicio   : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
+        montoTermino  : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
         fechaInicio   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         fechaTermino  : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         idVentaEstatus: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
@@ -115,7 +117,15 @@
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticVentasCajaFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticVentasCajaFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
-              <p:outputLabel for="idVentaEstatus" value="Estatus:"/>
+              <p:outputLabel for="montoInicio" value="Monto inicio:"/>
+							<p:inputText id="montoInicio" styleClass="janal-wid-100-txt" value="#{manticVentasCajaFiltro.attrs.montoInicio}" converter="javax.faces.Double">
+								<p:ajax event="blur" listener="#{manticVentasCajaFiltro.doMontoUpdate}" process="@this" update="montoTermino"/>
+							</p:inputText>	
+							<p:outputLabel for="montoTermino" value="Monto termino:"/>
+							<p:inputText id="montoTermino" styleClass="janal-wid-100-txt" value="#{manticVentasCajaFiltro.attrs.montoTermino}" converter="javax.faces.Double">							
+								<p:ajax event="blur" listener="#{manticVentasCajaFiltro.doMontoUpdate}" process="@this" update="montoInicio"/>
+							</p:inputText>
+							<p:outputLabel for="idVentaEstatus" value="Estatus:"/>
               <p:selectOneMenu id="idVentaEstatus" value="#{manticVentasCajaFiltro.attrs.idVentaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticVentasCajaFiltro.attrs.estatusFiltro}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
