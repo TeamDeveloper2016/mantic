@@ -94,31 +94,31 @@
               </f:facet>
               <h:outputText value="#{index+ 1}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-13">
+            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.codigo}">
               <f:facet name="header">
                 <h:outputText value="Código"/>
               </f:facet>
               <h:outputText value="#{row['codigo']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive">
+            <p:column class="MarAuto Responsive" sortBy="#{row.nombre}">
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
               </f:facet>
               <h:outputText value="#{row['nombre']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-7">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.cantidad}">
               <f:facet name="header">
                 <h:outputText value="Cantidad"/>
               </f:facet>
               <h:outputText value="#{row['cantidad']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive">
+            <p:column class="MarAuto Responsive" sortBy="#{row.usuario}">
               <f:facet name="header">
                 <h:outputText value="Usuario"/>
               </f:facet>
               <h:outputText value="#{row['usuario']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-15">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Registro"/>
               </f:facet>

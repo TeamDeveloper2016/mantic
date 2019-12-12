@@ -94,7 +94,13 @@
 			<pe:methodSignature parameters="java.lang.Long, java.lang.Integer"/>  
 			<pe:methodParam name="idArticulo"/>  
 			<pe:methodParam name="index"/>  
-		</pe:remoteCommand>				
+		</pe:remoteCommand>	
+		<h:commandLink id="dataPdfPerdidos">
+			<pe:exporter type="pdf"  skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="perdidos" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+		</h:commandLink>
+		<h:commandLink id="dataXlsPerdidos">
+			<pe:exporter type="xlsx" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="perdidos" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+		</h:commandLink>						
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
@@ -616,7 +622,19 @@
 							</p:panelGrid>
 							<p:dataTable id="perdidos" var="row" value="#{manticComprasOrdendesAccion.attrs.perdidos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{manticComprasOrdendesAccion.recordCount}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
 								<f:facet name="header">
-									<p:commandButton title="Refrescar articulos de las ventas perdidas" icon="fa fa-refresh" process="@this" update="perdidos" action="#{manticComprasOrdendesAccion.doLoadPerdidas()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
+									<div class="lg-pantalla">
+										<p:menuButton value="Opciones">
+    									<p:commandButton value="Actualizar" title="Refrescar articulos de las ventas perdidas" icon="fa fa-refresh" process="@this" update="perdidos" action="#{manticComprasOrdendesAccion.doLoadPerdidas()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
+											<p:separator/>
+											<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfPerdidos', 'perdidos')" oncomplete="janal.desbloquear()"/>
+											<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsPerdidos', 'perdidos')" oncomplete="janal.desbloquear()"/>
+										</p:menuButton>
+									</div>  
+									<div class="xs-pantalla">              
+  									<p:commandButton title="Refrescar articulos de las ventas perdidas" icon="fa fa-refresh" process="@this" update="perdidos" action="#{manticComprasOrdendesAccion.doLoadPerdidas()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
+										<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdfPerdidos', 'perdidos')" oncomplete="janal.desbloquear()"/>
+										<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlsPerdidos', 'perdidos')" oncomplete="janal.desbloquear()"/>
+									</div>  
                 </f:facet>
 								<p:column class="MarAuto Responsive janal-wid-col-20">
 									<f:facet name="header">

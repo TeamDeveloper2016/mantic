@@ -252,9 +252,15 @@
 			</p:dataTable>
 		</h:form>
 	</p:dialog>  	
-	<p:dialog id="dialogoFaltantes" widgetVar="dlgFaltantes" header="Lista de articulos faltantes" onShow="janal.pivot(); jsPrecios.refresh(); faltantesLookup(); janal.bloquear();" onHide="jsPrecios.update(); janal.recover(); janal.desbloquear();" height="490px" width="980px" resizable="false" closeOnEscape="true" dynamic="true">
+	<p:dialog id="dialogoFaltantes" widgetVar="dlgFaltantes" header="Lista de articulos faltantes" onShow="janal.pivot(); jsPrecios.refresh(); faltantesLookup(); janal.bloquear();" onHide="jsPrecios.update(); janal.recover(); janal.desbloquear();" height="420px" width="980px" resizable="false" closeOnEscape="true" dynamic="true">
 		<h:form id="faltantes" prependId="false">
-			<p:remoteCommand name="faltantesLookup" actionListener="#{kajoolEncabezado.doLoadFaltantes}" process="@this" update="faltantesTabla @(.sucursales) @(.faltantes)" oncomplete="jsPrecios.start();"/>
+			<h:commandLink id="dataPdfFaltantes">
+				<pe:exporter type="pdf"  skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="faltantesTabla" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+			</h:commandLink>
+			<h:commandLink id="dataXlsFaltantes">
+				<pe:exporter type="xlsx" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="faltantesTabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+			</h:commandLink>						
+			<p:remoteCommand name="faltantesLookup" actionListener="#{kajoolEncabezado.doStartLoadFaltantes}" process="@this" update="faltantesTabla @(.sucursales) @(.faltantes)" oncomplete="jsPrecios.start();"/>
 			<p:remoteCommand name="faltantesReplace" actionListener="#{kajoolEncabezado.doReplaceFaltante}" process="@this" update="@(.faltantes)" oncomplete="jsPrecios.start();"/>
 			<p:remoteCommand name="faltantesVerificar" actionListener="#{kajoolEncabezado.doFaltanteArticulo}" process="@this @(.faltantes)" update="@(.faltantes)" oncomplete="jsPrecios.start();"/>
 			<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.idTipoEmpresa eq 1}" styleClass="sucursales"/>
@@ -300,8 +306,19 @@
           <p:commandButton id="agregarFaltantes" type="button" update="@(.faltantes)" process="@this @(.faltantes) idSucursal" icon="fa fa-plus" title="Agregar articulo a la lista de faltantes" styleClass="janal-text-white janal-key-faltante" onclick="jsPrecios.execute();" alt="codigosFaltantes"/>
 				</p:panelGrid>	
 			</p:panelGrid>	
-			<p:spacer height="3px"/>
-			<p:dataTable id="faltantesTabla" widgetVar="widgetFaltantes" var="row" styleClass="janal-row-faltantes faltantes janal-wid-100" value="#{kajoolEncabezado.lazyFaltantes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="250" rowIndexVar="index" reflow="true" scrollRows="250" scrollable="true" virtualScroll="true" scrollHeight="250" style="margin-bottom:0" selectionMode="single" selection="#{kajoolEncabezado.attrs.itemSelected}" rowKey="#{row.key}">
+			<p:dataTable id="faltantesTabla" widgetVar="widgetFaltantes" var="row" styleClass="janal-row-faltantes faltantes janal-wid-100" value="#{kajoolEncabezado.lazyFaltantes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="250" rowIndexVar="index" reflow="true" scrollRows="150" scrollable="true" virtualScroll="true" scrollHeight="150" style="margin-bottom:0" rowKey="#{row.key}">
+				<f:facet name="header">
+					<div class="lg-pantalla">
+						<p:menuButton value="Opciones">
+							<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
+							<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
+						</p:menuButton>
+					</div>  
+					<div class="xs-pantalla">              
+						<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdfFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
+						<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlsFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
+					</div>  
+				</f:facet>	            
 				<p:column class="MarAuto Responsive janal-wid-col-15">
 					<f:facet name="header">
 						<h:outputText value="No."/>
@@ -344,7 +361,7 @@
 					</p:commandButton>
 				</p:column>
 				<f:facet name="footer">
-					<p:outputLabel value="Total [#{kajoolEncabezado.lazyFaltantes==null ? 0: kajoolEncabezado.lazyFaltantes.size}] registros"/>
+					<p:outputLabel value="Total [#{kajoolEncabezado.lazyFaltantes==null ? 0: kajoolEncabezado.lazyFaltantes.size()}] registros"/>
 				</f:facet>
 			</p:dataTable>
 		</h:form>

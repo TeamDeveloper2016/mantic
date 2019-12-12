@@ -215,15 +215,18 @@ public class Encabezado extends IBaseFilter implements Serializable {
     } // catch   
 	}
 	
+	public void doStartLoadFaltantes() {
+		if(JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getEmpresa()!= null && JsfBase.getAutentifica().getEmpresa().getIdEmpresa()!= null && JsfBase.getAutentifica().getEmpresa().getIdEmpresa()> 0L) {
+			this.faltante.setIdUsuario(JsfBase.getIdUsuario());
+			this.faltante.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+		} // if
+		this.doLoadFaltantes();
+	}
+	
 	public void doLoadFaltantes() {
     List<Columna> columns= null;
     try {
 			Long idSucursal= this.faltante.getIdEmpresa()== null? -1L: this.faltante.getIdEmpresa();
-			if(JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getEmpresa()!= null && JsfBase.getAutentifica().getEmpresa().getIdEmpresa()!= null && JsfBase.getAutentifica().getEmpresa().getIdEmpresa()> 0L) {
-				idSucursal= JsfBase.getAutentifica().getEmpresa().getIdEmpresa();
-				this.faltante.setIdUsuario(JsfBase.getIdUsuario());
-				this.faltante.setIdEmpresa(idSucursal);
-			} // if
 			this.attrs.put("idSucursal", idSucursal);
       columns = new ArrayList<>();
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
@@ -233,7 +236,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			if(this.lazyFaltantes!= null)
 				Methods.clean(this.lazyFaltantes);
-      this.lazyFaltantes = (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaOrdenesComprasDto", "registrados", this.attrs, 50L);
+      this.lazyFaltantes = (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaOrdenesComprasDto", "registrados", this.attrs);
       UIBackingUtilities.toFormatEntitySet(this.lazyFaltantes, columns);
       UIBackingUtilities.resetDataTable("faltantesTabla");
     } // try
