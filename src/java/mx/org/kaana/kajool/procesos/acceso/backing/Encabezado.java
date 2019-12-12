@@ -236,7 +236,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			if(this.lazyFaltantes!= null)
 				Methods.clean(this.lazyFaltantes);
-      this.lazyFaltantes = (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaOrdenesComprasDto", "registrados", this.attrs);
+      this.lazyFaltantes = (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaOrdenesComprasDto", "registrados", this.attrs, 50L);
       UIBackingUtilities.toFormatEntitySet(this.lazyFaltantes, columns);
       UIBackingUtilities.resetDataTable("faltantesTabla");
     } // try

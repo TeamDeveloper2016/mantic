@@ -753,7 +753,7 @@
 			</select>
 			<select id="diarias">
 				select 
-					convert(concat(id_empresa, id_caja, id_tipo_medio_pago), INTEGER) as id_key,
+					convert(concat(id_empresa, id_caja, id_tipo_medio_pago), signed) as id_key,
 					empresa, 
 					nombre_empresa, 
 					caja, 
@@ -810,7 +810,7 @@
 					tr_mantic_venta_medio_pago.importe,
 					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
 					tc_mantic_tipos_medios_pagos.nombre				
-				) general
+				) as general
 				group by
 					empresa, 
 					nombre_empresa, 
@@ -875,18 +875,18 @@
 			</select>
 			<select id="horas">
 				select
-					IF((CONVERT(CONCAT(CAST(hora AS CHAR),CAST(empresa AS CHAR)),SIGNED INTEGER)) IS NULL, tc_janal_horas.id_hora,  (CONVERT(CONCAT(CAST(hora AS CHAR),CAST(empresa AS CHAR)),SIGNED INTEGER))) AS id_key,
+					if((convert(concat(cast(hora as char), cast(empresa as char)), signed)) is null, tc_janal_horas.id_hora,  (convert(concat(cast(horaas char), cast(empresaas char)), signed))) as id_key,
 					empresa,
 					nombre_empresa,
-					(select COUNT(*) FROM tc_mantic_ventas where tc_mantic_ventas.id_venta_estatus in ({idVentaEstatus}) and (date_format(tc_mantic_ventas.registro, '%Y%m%d')= principal.fecha) and date_format(tc_mantic_ventas.registro,'%H')= principal.hora and tc_mantic_ventas.id_empresa= principal.id_empresa) total_ventas,
+					(select count(*) from tc_mantic_ventas where tc_mantic_ventas.id_venta_estatus in ({idVentaEstatus}) and (date_format(tc_mantic_ventas.registro, '%Y%m%d')= principal.fecha) and date_format(tc_mantic_ventas.registro,'%H')= principal.hora and tc_mantic_ventas.id_empresa= principal.id_empresa) total_ventas,
 					caja,
-					(select IF(SUM(total) IS NULL, 0,  SUM(total)) FROM tc_mantic_ventas where tc_mantic_ventas.id_venta_estatus in ({idVentaEstatus}) and (date_format(tc_mantic_ventas.registro, '%Y%m%d')= principal.fecha) and date_format(tc_mantic_ventas.registro,'%H')= principal.hora and tc_mantic_ventas.id_empresa= principal.id_empresa) total,
-					IF(STR_TO_DATE(fecha,'%Y%m%d') IS NULL , STR_TO_DATE('{fechaInicio}','%Y%m%d'), STR_TO_DATE(fecha,'%Y%m%d'))fecha,
+					(select if(sum(total) is null, 0,  sum(total)) from tc_mantic_ventas where tc_mantic_ventas.id_venta_estatus in ({idVentaEstatus}) and (date_format(tc_mantic_ventas.registro, '%Y%m%d')= principal.fecha) and date_format(tc_mantic_ventas.registro,'%H')= principal.hora and tc_mantic_ventas.id_empresa= principal.id_empresa) total,
+					if(str_to_date(fecha,'%Y%m%d') is null , str_to_date('{fechaInicio}','%Y%m%d'), str_to_date(fecha,'%Y%m%d'))fecha,
 					tc_janal_horas.descripcion                 
 				from        
 					(select
-						tc_mantic_empresas.clave AS empresa,
-						tc_mantic_empresas.nombre AS nombre_empresa,
+						tc_mantic_empresas.clave as empresa,
+						tc_mantic_empresas.nombre as nombre_empresa,
 						tc_mantic_cajas.clave caja,
 						tc_mantic_ventas.id_empresa,
 						date_format(tc_mantic_ventas.registro,'%Y%m%d') fecha,
