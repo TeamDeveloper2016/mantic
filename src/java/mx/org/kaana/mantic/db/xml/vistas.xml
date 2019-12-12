@@ -875,13 +875,13 @@
 			</select>
 			<select id="horas">
 				select
-					if((convert(concat(cast(hora as char), cast(empresa as char)), signed)) is null, tc_janal_horas.id_hora,  (convert(concat(cast(horaas char), cast(empresaas char)), signed))) as id_key,
+					if((convert(concat(hora, empresa), signed integer)) is null, tc_janal_horas.id_hora, (convert(concat(hora, empresa), signed integer))) as id_key,
 					empresa,
 					nombre_empresa,
-					(select count(*) from tc_mantic_ventas where tc_mantic_ventas.id_venta_estatus in ({idVentaEstatus}) and (date_format(tc_mantic_ventas.registro, '%Y%m%d')= principal.fecha) and date_format(tc_mantic_ventas.registro,'%H')= principal.hora and tc_mantic_ventas.id_empresa= principal.id_empresa) total_ventas,
+					(select count(*) from tc_mantic_ventas where tc_mantic_ventas.id_venta_estatus in ({idVentaEstatus}) and (date_format(tc_mantic_ventas.registro, '%Y%m%d')= principal.fecha) and (date_format(tc_mantic_ventas.registro,'%H')= principal.hora) and tc_mantic_ventas.id_empresa= principal.id_empresa) as total_ventas,
 					caja,
-					(select if(sum(total) is null, 0,  sum(total)) from tc_mantic_ventas where tc_mantic_ventas.id_venta_estatus in ({idVentaEstatus}) and (date_format(tc_mantic_ventas.registro, '%Y%m%d')= principal.fecha) and date_format(tc_mantic_ventas.registro,'%H')= principal.hora and tc_mantic_ventas.id_empresa= principal.id_empresa) total,
-					if(str_to_date(fecha,'%Y%m%d') is null , str_to_date('{fechaInicio}','%Y%m%d'), str_to_date(fecha,'%Y%m%d'))fecha,
+					(select if(sum(total) is null, 0,  sum(total)) from tc_mantic_ventas where tc_mantic_ventas.id_venta_estatus in ({idVentaEstatus}) and (date_format(tc_mantic_ventas.registro, '%Y%m%d')= principal.fecha) and (date_format(tc_mantic_ventas.registro,'%H')= principal.hora) and tc_mantic_ventas.id_empresa= principal.id_empresa) as total,
+					if(str_to_date(fecha,'%Y%m%d') is null , str_to_date('{fechaInicio}','%Y%m%d'), str_to_date(fecha,'%Y%m%d')) as fecha,
 					tc_janal_horas.descripcion                 
 				from        
 					(select
@@ -889,8 +889,8 @@
 						tc_mantic_empresas.nombre as nombre_empresa,
 						tc_mantic_cajas.clave caja,
 						tc_mantic_ventas.id_empresa,
-						date_format(tc_mantic_ventas.registro,'%Y%m%d') fecha,
-						date_format(tc_mantic_ventas.registro,'%H') hora                 
+						cast(date_format(tc_mantic_ventas.registro,'%Y%m%d') as char) as fecha,
+						cast(date_format(tc_mantic_ventas.registro,'%H') as char) as hora                 
 					from
 						tc_mantic_ventas                      
 					inner join
@@ -940,7 +940,7 @@
 						tc_mantic_cajas.clave,
 						date_format(tc_mantic_ventas.registro,'%Y%m%d'),
 						date_format(tc_mantic_ventas.registro,'%h')
-					) principal
+					) as principal
 				right join 
 					tc_janal_horas on principal.hora = tc_janal_horas.descripcion
 				order by
