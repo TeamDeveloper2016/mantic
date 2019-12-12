@@ -90,6 +90,10 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 		  sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
 		  sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+		if(!Cadena.isVacio(this.attrs.get("montoInicio")))
+		  sb.append("(tc_mantic_ventas.total>= ").append((Double)this.attrs.get("montoInicio")).append(") and ");			
+		if(!Cadena.isVacio(this.attrs.get("montoTermino")))
+		  sb.append("(tc_mantic_ventas.total<= ").append((Double)this.attrs.get("montoTermino")).append(") and ");			
 		if(!Cadena.isVacio(this.attrs.get("idCliente")) && !this.attrs.get("idCliente").toString().equals("-1"))
   		sb.append("(tc_mantic_clientes.id_cliente= ").append(this.attrs.get("idCliente")).append(") and ");
 		if(estatus!= null){ 
@@ -305,4 +309,10 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 		return (List<UISelectEntity>)this.attrs.get("articulosFiltro");
 	}	// doCompleteArticulo
 
+	public void doMontoUpdate() {
+	  if(this.attrs.get("montoInicio")!= null && this.attrs.get("montoTermino")== null)
+			this.attrs.put("montoTermino", this.attrs.get("montoInicio"));
+	  if(this.attrs.get("montoTermino")!= null && this.attrs.get("montoInicio")== null)
+			this.attrs.put("montoInicio", this.attrs.get("montoTermino"));
+	} // doMontoUpdate
 }
