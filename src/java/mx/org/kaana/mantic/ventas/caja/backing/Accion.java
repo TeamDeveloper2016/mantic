@@ -1481,7 +1481,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			sb.append("tc_mantic_ventas.total like '%").append(Cadena.eliminaCaracter(this.attrs.get("importeTicket").toString(), ',')).append("%' and ");			
 		} // if
 		sb.append("tc_mantic_ventas.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(")");
-		regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+		regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	
