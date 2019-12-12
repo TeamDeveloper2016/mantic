@@ -712,7 +712,7 @@ public class Transaccion extends IBaseTnx{
 					stock= 0D;
 					regresar= generarAlmacenArticulo(sesion, articulo.getIdArticulo(), articulo.getCantidad());
 				} // else				
-				registrarMovimiento(sesion, this.garantia.getTicketVenta().getIdAlmacen(), articulo.getCantidad(), articulo.getIdArticulo(), stock);
+				registrarMovimiento(sesion, this.garantia.getTicketVenta().getIdAlmacen(), articulo.getCantidad(), articulo.getIdArticulo(), stock, this.garantia.getTicketVenta().getIdUsuario());
 				if(regresar) {
 					articuloVenta= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, articulo.getIdArticulo());
 					articuloVenta.setStock(articuloVenta.getStock() + articulo.getCantidad());
@@ -733,18 +733,18 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // alterarStockArticulos
 	
-	private void registrarMovimiento(Session sesion, Long idAlmacen, Double cantidad, Long idArticulo, Double stock) throws Exception{
+	private void registrarMovimiento(Session sesion, Long idAlmacen, Double cantidad, Long idArticulo, Double stock, Long idUsuario) throws Exception{
 		Double calculo= Numero.toRedondearSat(stock + cantidad) ;
 		TcManticMovimientosDto movimiento= new TcManticMovimientosDto(
 			  this.garantiaDto.getConsecutivo(), // String consecutivo, 
-				5L,                     // Long idTipoMovimiento, 
-				JsfBase.getIdUsuario(), // Long idUsuario, 
-				idAlmacen,              // Long idAlmacen, 
-				-1L,                    // Long idMovimiento, 
-				cantidad,               // Double cantidad, 
-				idArticulo,             // Long idArticulo, 
-				stock,                  // Double stock, 
-				calculo,                // Double calculo
+				5L,        // Long idTipoMovimiento, 
+				idUsuario, // Long idUsuario, 
+				idAlmacen, // Long idAlmacen, 
+				-1L,       // Long idMovimiento, 
+				cantidad,  // Double cantidad, 
+				idArticulo,// Long idArticulo, 
+				stock,     // Double stock, 
+				calculo,   // Double calculo
 				null
 		  );
 			DaoFactory.getInstance().insert(sesion, movimiento); 
