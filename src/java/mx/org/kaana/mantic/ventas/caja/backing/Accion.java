@@ -645,13 +645,14 @@ public class Accion extends IBaseVenta implements Serializable {
 			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
+			params.put("sucursales", this.attrs.get("idEmpresa"));
+      this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenPrincipal", params, columns));
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 			if(!almacenes.isEmpty()) 
 				((TicketVenta)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
       columns.remove(0);
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("clientes", UIEntity.build("TcManticClientesDto", "sucursales", params, columns));
     } // try
     catch (Exception e) {
@@ -756,10 +757,11 @@ public class Accion extends IBaseVenta implements Serializable {
 		List<UISelectEntity> ticketsAbiertos= null;
 		Map<String, Object>params           = null;
 		List<Columna> campos                = null;
+		List<Columna> columns               = null;
 		try {
 			loadRangoFechas(false);
 			loadCajas();
-			params= new HashMap<>();
+			params= new HashMap<>();			
 			params.put("sortOrder", "");
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			campos= new ArrayList<>();
@@ -778,6 +780,16 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("tabIndex", 0);
 			setDomicilio(new Domicilio());
 			this.attrs.put("registroCliente", new TcManticClientesDto());
+			columns= new ArrayList<>();
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			params.clear();
+			params.put("sucursales", this.attrs.get("idEmpresa"));			
+      this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenPrincipal", params, columns));
+ 			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
+			if(!almacenes.isEmpty()) 
+				((TicketVenta)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
+			params.clear();
 			unlockVentaExtends(-1L, (Long)this.attrs.get("ticketLock"));			
 		} // try
 		catch (Exception e) {
