@@ -233,13 +233,14 @@ public class Accion extends IBaseVenta implements Serializable {
 			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
+			params.put("sucursales", this.attrs.get("idEmpresa"));
+      this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenPrincipal", params, columns));
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 			if(!almacenes.isEmpty()) 
 				((TicketVenta)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
       columns.remove(0);
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("clientes", UIEntity.build("TcManticClientesDto", "sucursales", params, columns));
     } // try
     catch (Exception e) {
@@ -565,14 +566,28 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // loadClienteDefault	
 	
 	public void doUpdateForEmpresa(){
+		Map<String, Object>params= null;
+		List<Columna> columns     = null;    
 		try {
 			loadClienteDefault();
-			doActualizaPrecioCliente();
+			doActualizaPrecioCliente();			    
+			columns= new ArrayList<>();
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			params= new HashMap<>();
+			params.put("sucursales", this.attrs.get("idEmpresa"));
+      this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenPrincipal", params, columns));
+ 			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
+			if(!almacenes.isEmpty()) 
+				((TicketVenta)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
 	} // doUpdateForEmpresa	
 	
 	public void doActivatePage(){
