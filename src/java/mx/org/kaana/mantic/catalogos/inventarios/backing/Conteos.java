@@ -121,6 +121,7 @@ public class Conteos extends IBaseFilter implements Serializable {
       UIBackingUtilities.resetDataTable();
 			this.toLoadAlmacenArticulo();
 			this.toSearchUltimo();
+			this.toLoadUbicaciones();
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);

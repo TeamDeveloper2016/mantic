@@ -72,7 +72,7 @@
 						<p:panelGrid id="panelAlmacen" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-60, janal-wid-100">
 							<p:outputLabel for="almacen" value="Almacen:"/>
 							<p:selectOneMenu id="almacen" value="#{manticCatalogosInventariosConteos.attrs.almacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade">
-								<p:ajax event="change" onstart="janal.bloquear();" process="@this almacen" listener="#{manticCatalogosInventariosConteos.doLoad}" update="contenedorGrupos" oncomplete="janal.desbloquear();"/>
+								<p:ajax event="change" onstart="janal.bloquear();" process="@this almacen" listener="#{manticCatalogosInventariosConteos.doLoad}" update="@(.filas)" oncomplete="janal.desbloquear();"/>
 								<f:selectItems value="#{manticCatalogosInventariosConteos.attrs.almacenes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
 								<p:column headerText="Sucursal">
 									<h:outputText value="#{item.sucursal}"/>

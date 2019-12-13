@@ -2727,7 +2727,11 @@
 				where
 					tc_mantic_almacenes_ubicaciones.id_almacen= {idAlmacen}  
 				order by
-				  tc_mantic_almacenes.clave, tc_mantic_almacenes_ubicaciones.piso, tc_mantic_almacenes_ubicaciones.cuarto, tc_mantic_almacenes_ubicaciones.anaquel, tc_mantic_almacenes_ubicaciones.charola
+				  tc_mantic_almacenes.clave, 
+				  tc_mantic_almacenes_ubicaciones.piso, 
+				  tc_mantic_almacenes_ubicaciones.cuarto, 
+				  tc_mantic_almacenes_ubicaciones.anaquel, 
+				  tc_mantic_almacenes_ubicaciones.charola
 			</select>
 			<select id="almacenesDetalle">
         select   
