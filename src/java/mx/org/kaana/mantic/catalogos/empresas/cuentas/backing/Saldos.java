@@ -111,7 +111,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 				case 1: // SI
       		sb.append("(now()> tc_mantic_empresas_deudas.limite) and ");
 				case 2: // NO
-         	sb.append("(tc_mantic_clientes_deudas.saldo<> 0) and ");
+         	sb.append("(tc_mantic_empresas_deudas.saldo<> 0) and ");
 					break;
 				case 3: // TODOS
 					break;
