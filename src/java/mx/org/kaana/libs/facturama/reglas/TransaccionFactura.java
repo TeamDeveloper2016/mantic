@@ -489,7 +489,7 @@ public class TransaccionFactura extends IBaseTnx {
 		factura.setIdFacturaEstatus(idEstatus);		
 		factura.setIntentos(factura.getIntentos()+1L);
 		return DaoFactory.getInstance().update(factura)>= 1L;
-	} // actualizarFactura
+	} // actualizarFacturaAutomatico
 	
 	protected boolean registrarBitacoraFactura(Session sesion, Long idFactura, Long idFacturaEstatus, String justificacion) throws Exception{
 		return registrarBitacoraFactura(sesion, idFactura, idFacturaEstatus, justificacion, JsfBase.getIdUsuario());
