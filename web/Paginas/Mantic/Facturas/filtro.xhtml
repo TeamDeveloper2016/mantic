@@ -256,8 +256,7 @@
               <h:outputText value="#{row['registro']}"/>
             </p:column>		
             <f:facet name="footer">
-							<p:outputLabel value="Las filas en color verde son facturas especiales, las otras son facturas que vienen de punto de venta" style="float: left;"/>
-							<p:outputLabel value="Las filas en color marron son facturas que han sido asignadas a la facturacion automatica." style="float: left;"/>
+							<p:outputLabel value="Las filas en color verde son facturas especiales, las otras son facturas que vienen de punto de venta &lt;br&gt;Las filas en color marron son facturas que han sido asignadas a la facturacion automatica. " style="float: left;text-align: left" escape="false"/>							
               <p:outputLabel value="Total [#{manticFacturasFiltro.lazyModel==null? 0: manticFacturasFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
@@ -279,6 +278,7 @@
             <p:menuitem value="Ver XML/PDF" icon="fa fa-external-link" onstart="return janal.bloquear()" process="@this tabla" action="#{manticFacturasFiltro.doImportar}" rendered="#{manticFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>
             <p:separator rendered="#{manticFacturasFiltro.attrs.seleccionado.idTipoDocumento eq '2' and manticFacturasFiltro.attrs.seleccionado.facturado eq '0' and manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '6'}"/>			
 						<p:menuitem value="Timbrar" icon="fa fa-check" onstart="return janal.bloquear()" process="@this tabla" action="#{manticFacturasFiltro.doComplemento('MODIFICAR')}" rendered="#{manticFacturasFiltro.attrs.seleccionado.idTipoDocumento eq '2' and manticFacturasFiltro.attrs.seleccionado.facturado eq '0' and manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '3'}"/>
+						<p:menuitem value="Automatico" icon="fa fa-gear" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doAutomatico}" rendered="#{manticFacturasFiltro.attrs.seleccionado.facturado eq '0' and (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '3' or manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '11') and (manticFacturasFiltro.attrs.seleccionado.idCliente.toLong() ne 3515)}" update="tabla"/>
             <p:separator/>  
 						<p:menuitem value="Detalle" icon="fa fa-search" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doMoveSection}" oncomplete="janal.bloquear();PF('widgetDetalle').show();" update="documento informacion @(.documento)"/>
           </p:contextMenu>
