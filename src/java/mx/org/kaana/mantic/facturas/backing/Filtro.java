@@ -614,4 +614,21 @@ public class Filtro extends FiltroFactura implements Serializable {
 			setSelectedCorreos(new ArrayList<>());
 		} // finally
 	}	// doActualizaEstatus
+	
+	public void doAutomatico(){
+		Transaccion transaccion= null;
+		Entity seleccionado    = null;
+		try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");
+			transaccion= new Transaccion(seleccionado.getKey());
+			if(transaccion.ejecutar(EAccion.PROCESAR))
+				JsfBase.addMessage("Automatico", "Se actualizó el estatus de forma correcta.", ETipoMensaje.INFORMACION);			
+			else
+				JsfBase.addMessage("Automatico", "Ocurrió un error al realizar el cambio de estatus.", ETipoMensaje.ERROR);			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doAutomatico
 }
