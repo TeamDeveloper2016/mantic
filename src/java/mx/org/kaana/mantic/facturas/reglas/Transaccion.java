@@ -111,10 +111,12 @@ public class Transaccion extends TransaccionFactura {
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar           = false;
-		Map<String, Object> params = null;
-		Long idEstatusFactura      = null;
-		TcManticFacturasDto factura= null;
+		boolean regresar             = false;
+		Map<String, Object> params   = null;
+		Long idEstatusFactura        = null;
+		TcManticFacturasDto factura  = null;
+		TcManticFicticiasDto ficticia= null;
+		Long idFactura               = -1L;
 		try {
 			idEstatusFactura= EEstatusFicticias.ABIERTA.getIdEstatusFicticia();
 			params= new HashMap<>();
@@ -201,13 +203,30 @@ public class Transaccion extends TransaccionFactura {
 						throw new Exception("No fue posible cancelar la factura, por favor vuelva a intentarlo !");															
 				  break;
 				case ACTIVAR:
-					TcManticFicticiasDto ficticia= (TcManticFicticiasDto)DaoFactory.getInstance().findById(TcManticFicticiasDto.class, this.idFicticia);
+					ficticia= (TcManticFicticiasDto)DaoFactory.getInstance().findById(sesion, TcManticFicticiasDto.class, this.idFicticia);
 					if(ficticia!= null) {
 						ficticia.setIdTipoDocumento(1L);
 						ficticia.setIdFicticiaEstatus(EEstatusFicticias.ABIERTA.getIdEstatusFicticia());
 						regresar= DaoFactory.getInstance().update(sesion, ficticia)> 0;
 						TcManticFicticiasBitacoraDto bitFicticia= new TcManticFicticiasBitacoraDto(ficticia.getTicket(), "Se cambio la cotización especial para timbrarse", EEstatusFicticias.ABIERTA.getIdEstatusFicticia(), JsfBase.getIdUsuario(), this.idFicticia, -1L, ficticia.getTotal());
 						regresar= DaoFactory.getInstance().insert(sesion, bitFicticia)>= 1L;
+					} // if
+					break;
+				case PROCESAR:
+					ficticia= (TcManticFicticiasDto)DaoFactory.getInstance().findById(sesion, TcManticFicticiasDto.class, this.idFicticia);
+					if(ficticia!= null && ficticia.isValid()){
+						if(ficticia.getIdFactura()!= null && ficticia.getIdFactura()>= 1L){
+							factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, ficticia.getIdFactura());
+							if(factura.getIdFacturaEstatus().equals(EEstatusFacturas.REGISTRADA.getIdEstatusFactura())){
+								factura.setIdFacturaEstatus(EEstatusFacturas.AUTOMATICO.getIdEstatusFactura());
+								regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;
+							} // if
+						} // if
+						else{
+							idFactura= registrarFactura(sesion, EEstatusFacturas.AUTOMATICO.getIdEstatusFactura());						
+							ficticia.setIdFactura(idFactura);
+							regresar= DaoFactory.getInstance().update(sesion, ficticia)>= 1L;
+						} // else
 					} // if
 					break;
 			} // switch
@@ -360,10 +379,15 @@ public class Transaccion extends TransaccionFactura {
 	} // toCuenta
 	
 	private Long registrarFactura(Session sesion) throws Exception {
+		return registrarFactura(sesion, EEstatusFacturas.REGISTRADA.getIdEstatusFactura());
+	} // registrarFactura
+	
+	private Long registrarFactura(Session sesion, Long idEstatus) throws Exception {
 		Long regresar              = -1L;
 		TcManticFacturasDto factura= null;
 		try {			
 			factura= new TcManticFacturasDto();
+			factura.setIdFacturaEstatus(idEstatus);
 			factura.setIdUsuario(JsfBase.getIdUsuario());
 			factura.setIntentos(0L);
 			factura.setCorreos("");
@@ -383,7 +407,7 @@ public class Transaccion extends TransaccionFactura {
 		int count                              = 0;
 		Long records                           = 1L;
 		try {
-			correos= toClientesTipoContacto();
+			correos= toClientesTipoContacto(sesion);
 			if(!correos.isEmpty()){
 				for(ClienteTipoContacto tipoContacto: correos){
 					if(tipoContacto.getValor().equals(this.correo.getDescripcion()))
@@ -407,13 +431,13 @@ public class Transaccion extends TransaccionFactura {
 		return regresar;
 	} // agregarContacto
 	
-	public List<ClienteTipoContacto> toClientesTipoContacto() throws Exception {
+	public List<ClienteTipoContacto> toClientesTipoContacto(Session sesion) throws Exception {
 		List<ClienteTipoContacto> regresar= null;
 		Map<String, Object>params    = null;
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_cliente=" + this.idCliente + " and id_tipo_contacto=" + ETiposContactos.CORREO.getKey());
-			regresar= DaoFactory.getInstance().toEntitySet(ClienteTipoContacto.class, "TrManticClienteTipoContactoDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+			regresar= DaoFactory.getInstance().toEntitySet(sesion, ClienteTipoContacto.class, "TrManticClienteTipoContactoDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		finally {
 			Methods.clean(params);
