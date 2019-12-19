@@ -207,9 +207,14 @@ public class Transaccion extends TransaccionFactura {
 					if(ficticia!= null) {
 						ficticia.setIdTipoDocumento(1L);
 						ficticia.setIdFicticiaEstatus(EEstatusFicticias.ABIERTA.getIdEstatusFicticia());
-						regresar= DaoFactory.getInstance().update(sesion, ficticia)> 0;
-						TcManticFicticiasBitacoraDto bitFicticia= new TcManticFicticiasBitacoraDto(ficticia.getTicket(), "Se cambio la cotización especial para timbrarse", EEstatusFicticias.ABIERTA.getIdEstatusFicticia(), JsfBase.getIdUsuario(), this.idFicticia, -1L, ficticia.getTotal());
-						regresar= DaoFactory.getInstance().insert(sesion, bitFicticia)>= 1L;
+						if(DaoFactory.getInstance().update(sesion, ficticia)> 0){
+							idFactura= registrarFactura(sesion);
+							ficticia.setIdFactura(idFactura);
+							if(DaoFactory.getInstance().update(sesion, ficticia)> 0){
+								TcManticFicticiasBitacoraDto bitFicticia= new TcManticFicticiasBitacoraDto(ficticia.getTicket(), "Se cambio la cotización especial para timbrarse", EEstatusFicticias.ABIERTA.getIdEstatusFicticia(), JsfBase.getIdUsuario(), this.idFicticia, -1L, ficticia.getTotal());
+								regresar= DaoFactory.getInstance().insert(sesion, bitFicticia)>= 1L;
+							} // if
+						} // if
 					} // if
 					break;
 				case PROCESAR:

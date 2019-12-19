@@ -37,7 +37,6 @@ import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.correos.beans.Attachment;
 import mx.org.kaana.mantic.correos.enums.ECorreos;
 import mx.org.kaana.mantic.correos.reglas.IBaseAttachment;
-import mx.org.kaana.mantic.cotizaciones.beans.CotizacionFicticia;
 import mx.org.kaana.mantic.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
@@ -585,7 +584,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 	} // doSendMail		
 	
 	public String doTimbrar() {
-	  String regresar= null;
+	  String regresar        = null;
     Transaccion transaccion= null;
 		try {
   		transaccion = new Transaccion(((Entity)this.attrs.get("seleccionado")).getKey());
@@ -601,6 +600,5 @@ public class Filtro extends FiltroFactura implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
 		return regresar;
-	}
-
+	} // doTimbrar
 }
