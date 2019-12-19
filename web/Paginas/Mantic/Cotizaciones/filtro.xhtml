@@ -203,21 +203,21 @@
 						<p:menuitem id="ticket" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCotizacionesFiltro.doReporte('COTIZACION_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{fn:contains('|18|', manticCotizacionesFiltro.attrs.seleccionado.idVentaEstatus)}"/>						
 						<p:separator rendered="#{fn:contains('|18|', manticCotizacionesFiltro.attrs.seleccionado.idVentaEstatus)}"/>											
 						<p:menuitem id="enviar" icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCotizacionesFiltro.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="#{fn:contains('|18|', manticCotizacionesFiltro.attrs.seleccionado.idVentaEstatus)}"/>
-						<p:menuitem id="timbrar" icon="fa fa-check" value="Timbrar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dlgTimbrar').show();" update="dialogoTimbrar" rendered="#{fn:contains('|18|', manticCotizacionesFiltro.attrs.seleccionado.idVentaEstatus)}"/>
+						<p:menuitem id="timbrar" icon="fa fa-check" value="Transferir" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dlgTimbrar').show();" update="dialogoTimbrar" rendered="#{fn:contains('|18|', manticCotizacionesFiltro.attrs.seleccionado.idVentaEstatus)}"/>
           </p:contextMenu>
         </div>
       </div>
     </div>		    
   </ui:define>   
 	<ui:define name="dialogos">
-		<p:dialog id="dialogoTimbrar" widgetVar="dlgTimbrar" header="Timbrar cotización" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="45%">
+		<p:dialog id="dialogoTimbrar" widgetVar="dlgTimbrar" header="Transferir cotización" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="45%">
 			<h:form id="formDialogoTimbrar" prependId="false">	
 				<p:panelGrid id="panelTimbrar" columns="1" layout="grid" styleClass="janal-column-center janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">													
 					<h:outputText value="Esta cotización se pasará al modulo de facturación, por lo"/>
 					<h:outputText value="que una vez que sea aceptada no se podrá regresar"/>
 					<h:outputText value="al módulo de cotizaciones."/>
 					<p:spacer height="5px"/>
-					<h:outputText value="Si esta seguro, ¿ Favor de aceptar y realizar el timbrado ?"/>
+					<h:outputText value="Si esta seguro, ¿ Favor de aceptar ?"/>
 				</p:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
