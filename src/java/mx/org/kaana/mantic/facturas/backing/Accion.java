@@ -146,8 +146,12 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
           this.setAdminOrden(new AdminFacturas((FacturaFicticia)DaoFactory.getInstance().toEntity(FacturaFicticia.class, "VistaFicticiasDto", "ficticia", this.attrs)));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));					
 					this.attrs.put("consecutivo", ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo());	
-					factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(TcManticFacturasDto.class, ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFactura());
-					this.attrs.put("observaciones", factura.getObservaciones());					
+					if(((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFactura()!= null &&((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFactura()>-1L){
+						factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(TcManticFacturasDto.class, ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFactura());
+						this.attrs.put("observaciones", factura.getObservaciones());					
+					} // if
+					else
+						this.attrs.put("observaciones", "");									
 					idCliente= ((FacturaFicticia)getAdminOrden().getOrden()).getIdCliente();
 					if(idCliente!= null && !idCliente.equals(-1L)){
 						doAsignaClienteInicial(idCliente);
