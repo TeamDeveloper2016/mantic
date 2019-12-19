@@ -25,6 +25,8 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteContactoRepresentante;
+import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteDomicilio;
+import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.clientes.beans.RegistroCliente;
@@ -68,8 +70,10 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente"));
 			this.attrs.put("admin", JsfBase.isAdminEncuestaOrAdmin());
-			this.attrs.put("cpNuevo", false);
+			this.attrs.put("cpNuevo", false);						
       doLoad();      					
+			this.attrs.put("renderedFacturacion", false);
+			doCreateMessage();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -825,4 +829,41 @@ public class Accion extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);		
 		} // catch		
 	} // doInicializaCodigo
+	
+	public void doCreateMessage(){		
+		int count         = 0;
+		int countDomicilio= 0;
+		try {
+			this.attrs.put("renderedIntro", true);
+			this.attrs.put("renderedRfc", true);
+			this.attrs.put("renderedDomicilio", true);
+			this.attrs.put("renderedContacto", true);
+			this.attrs.put("mensajeIntro", "Para que el cliente pueda facturar requiere que se capture lo siguiente:");			
+			if(this.registroCliente.getCliente().getRfc()== null || Cadena.isVacio(this.registroCliente.getCliente().getRfc())){
+				this.attrs.put("renderedRfc", false);
+				this.attrs.put("mensajeRfc", "Un RFC registrado.");				
+			} // if
+			for(ClienteDomicilio clienteDomicilio: this.registroCliente.getClientesDomicilio()){
+				if(clienteDomicilio.getKey()>= 0L)
+					countDomicilio++;
+			} // for
+			if(countDomicilio== 0){
+				this.attrs.put("renderedDomicilio", false);
+				this.attrs.put("mensajeDomicilio", "Un DOMICILIO registrado.");								
+			} // if
+			for(ClienteTipoContacto contacto: this.registroCliente.getClientesTiposContacto()){
+				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey()))
+					count++;
+			} // for
+			if(count== 0){
+				this.attrs.put("renderedContacto", false);
+				this.attrs.put("mensajeContacto", "Un contacto tipo CORREO registrado.");												
+			} // if
+			this.attrs.put("renderedIntro", !(!(Boolean)this.attrs.get("renderedContacto") || !(Boolean)this.attrs.get("renderedDomicilio") || !(Boolean)this.attrs.get("renderedRfc")));
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doCreateMessage
 }
