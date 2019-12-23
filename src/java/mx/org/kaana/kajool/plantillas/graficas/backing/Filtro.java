@@ -17,10 +17,12 @@ import mx.org.kaana.libs.echarts.enums.ETypeLine;
 import mx.org.kaana.libs.echarts.json.ItemSelected;
 import mx.org.kaana.libs.echarts.kind.BarModel;
 import mx.org.kaana.libs.echarts.kind.DonutModel;
+import mx.org.kaana.libs.echarts.kind.PicModel;
 import mx.org.kaana.libs.echarts.kind.PieModel;
 import mx.org.kaana.libs.echarts.kind.StackModel;
 import mx.org.kaana.libs.echarts.model.Datas;
 import mx.org.kaana.libs.echarts.model.Multiple;
+import mx.org.kaana.libs.echarts.model.Pictorial;
 import mx.org.kaana.libs.echarts.model.Simple;
 import mx.org.kaana.libs.echarts.model.Stacked;
 import org.apache.commons.logging.Log;
@@ -73,12 +75,19 @@ public class Filtro extends IBaseAttribute implements Serializable {
   		StackModel stack= new StackModel(new Title(), stacked);
 			stack.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'money', false);}");
 			stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'money');}");
-			
   		this.attrs.put("stack", stack.toJson());
 			
   		modelSimple  = new BarModel(new Title(), simple);
 			modelSimple.getGrid().setRight("10%");
   		this.attrs.put("vertical", modelSimple.toJson());
+			
+			Pictorial pictorial= new Pictorial(DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "multiple", Collections.EMPTY_MAP));
+  		PicModel picModel  = new PicModel(new Title(), pictorial);
+			picModel.getyAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
+			picModel.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'percent');}");
+			picModel.getLegend().setFormatter("function (params) {return jsEcharts.legend(params);}");
+			picModel.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'percent');}");
+  		this.attrs.put("pictorial", picModel.toJson());
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

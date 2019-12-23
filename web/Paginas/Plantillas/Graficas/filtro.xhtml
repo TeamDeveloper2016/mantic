@@ -22,7 +22,8 @@
 				pie     : {json: #{kajoolPlantillasGraficasFiltro.attrs.pie}},
 				donut   : {json: #{kajoolPlantillasGraficasFiltro.attrs.donut}},
 				stack   : {json: #{kajoolPlantillasGraficasFiltro.attrs.stack}},
-				vertical: {json: #{kajoolPlantillasGraficasFiltro.attrs.vertical}}
+				vertical: {json: #{kajoolPlantillasGraficasFiltro.attrs.vertical}},
+				pictorial: {json: #{kajoolPlantillasGraficasFiltro.attrs.pictorial}}
 			};
 			$(function() {
 				 'use strict'			
@@ -76,7 +77,20 @@
 		</pe:remoteCommand>
 		<div class="cgor-app-main">
 			<div class="ui-g cgor-chart-panel">
-				<div class="ui-g-12 ui-md-6 ui-lg-6">
+				<div class="ui-g-12 ui-md-4 ui-lg-4">
+					<div id='total'>
+						Esta es una gráfica de pics con una sola categoria
+					</div>	
+					<div class="cgor-chart-panel">
+						<div id="pictorial" class="cgor-chart-panel">
+							Gráficas de pictorial con una sola categoria
+						</div>	
+					</div>	
+					<div>
+						Esta es una gráfica de pictorial con una sola categoria
+					</div>	
+				</div>
+				<div class="ui-g-12 ui-md-4 ui-lg-4">
 					<div id='total'>
 						Esta es una gráfica de barras en vertical con dos categorias
 					</div>	
@@ -89,7 +103,7 @@
 						Esta es una gráfica de barras en vertical con dos categorias
 					</div>	
 				</div>
-				<div class="ui-g-12 ui-md-6 ui-lg-6">
+				<div class="ui-g-12 ui-md-4 ui-lg-4">
 					<div id='subtotal'>
 						Esta es una gráfica de barras sencilla en horizontal
 					</div>	
