@@ -305,8 +305,6 @@
         	tc_mantic_almacenes destino on tc_mantic_transferencias.id_destino = destino.id_almacen
         inner join 
         	tc_mantic_transferencias_tipos on tc_mantic_transferencias.id_transferencia_tipo = tc_mantic_transferencias_tipos.id_transferencia_tipo
-        inner join 
-        	tc_mantic_confrontas_detalles on tc_mantic_confrontas.id_confronta = tc_mantic_confrontas_detalles.id_confronta
 				where 
           tc_mantic_empresas.id_empresa in ({idEmpresa}) 
 				  and {condicion}	
@@ -2950,6 +2948,19 @@
 				order by
 					tc_mantic_inventarios.registro desc				
 			</select>
+			<select id="existencias">
+    		select
+				  tc_mantic_almacenes_articulos.id_articulo, sum(tc_mantic_almacenes_articulos.stock) as total
+				from
+				  tc_mantic_almacenes
+				inner join 
+				  tc_mantic_almacenes_articulos on tc_mantic_almacenes.id_almacen= tc_mantic_almacenes_articulos.id_almacen
+				where
+				  tc_mantic_almacenes.id_empresa in ({sucursales})
+				  and tc_mantic_almacenes_articulos.id_articulo= {idArticulo}
+				order by
+				  tc_mantic_almacenes_articulos.id_articulo				
+			</select>	
 		</unit>
 		<unit id="VistaArticulosDto">
 			<select id="conteo">
@@ -7014,8 +7025,6 @@
         	tc_mantic_almacenes destino on tc_mantic_transferencias.id_destino = destino.id_almacen
         inner join 
         	tc_mantic_transferencias_tipos on tc_mantic_transferencias.id_transferencia_tipo = tc_mantic_transferencias_tipos.id_transferencia_tipo
-       inner join
-          tc_mantic_transferencias_detalles on tc_mantic_transferencias.id_transferencia = tc_mantic_transferencias_detalles.id_transferencia
 				where 
           tc_mantic_empresas.id_empresa in ({idEmpresa}) 
 				  and {condicion}	

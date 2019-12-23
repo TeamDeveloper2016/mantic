@@ -3506,7 +3506,7 @@
         from      
           tc_mantic_almacenes
         where      
-          id_empresa = {idEmpresa} and nombre = '{nombre}'
+          id_empresa = {idEmpresa} and clave = '{clave}'
       </select>
       <select id="almacenes">
         select      
@@ -3540,6 +3540,14 @@
           tc_mantic_almacenes.id_empresa in ({sucursales}) and id_principal= 1
 				order by
 				 tc_mantic_almacenes.clave
+      </select>
+      <select id="conteo">
+        select      
+          *
+        from      
+          tc_mantic_almacenes
+        where      
+          id_empresa in ({sucursales}) and clave= '{clave}'
       </select>
     </unit>
 	  <unit id="TcManticAlmacenesArticulosDto">

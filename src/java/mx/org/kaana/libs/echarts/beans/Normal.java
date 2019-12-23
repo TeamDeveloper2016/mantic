@@ -1,6 +1,7 @@
 package mx.org.kaana.libs.echarts.beans;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *@company KAANA
@@ -20,6 +21,8 @@ public class Normal implements Serializable, Cloneable {
 	private Boolean show;
 	private String position; // insideRigth, insideLeft, inside
 	private String formatter;
+	private List<Integer> offset;
+	private TextStyle textStyle;
 
 /*	formatter
 {a}: series name.
@@ -94,9 +97,25 @@ public class Normal implements Serializable, Cloneable {
 		this.formatter=formatter;
 	}
 
+	public List<Integer> getOffset() {
+		return offset;
+	}
+
+	public void setOffset(List<Integer> offset) {
+		this.offset=offset;
+	}
+
+	public TextStyle getTextStyle() {
+		return textStyle;
+	}
+
+	public void setTextStyle(TextStyle textStyle) {
+		this.textStyle=textStyle;
+	}
+
 	@Override
 	public String toString() {
-		return "Normal{"+"color="+color+", fontFamily="+fontFamily+", fontSize="+fontSize+", show="+show+", position="+position+", formatter="+formatter+'}';
+		return "Normal{"+"color="+color+", fontFamily="+fontFamily+", fontSize="+fontSize+", show="+show+", position="+position+", formatter="+formatter+", offset="+offset+", textStyle="+textStyle+'}';
 	}
 
 	@Override

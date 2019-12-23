@@ -17,9 +17,10 @@ public final class AxisLabel implements Serializable {
 	private Boolean inside; 
 	private TextStyle textStyle;
 	private String formatter;
+	private Integer margin;
 
 	public AxisLabel() {
-		this(false, new TextStyle());
+		this(Boolean.FALSE, new TextStyle());
 	}
 
 	public AxisLabel(Boolean inside, TextStyle textStyle) {
@@ -27,11 +28,20 @@ public final class AxisLabel implements Serializable {
 	}
 	
 	public AxisLabel(Boolean inside, TextStyle textStyle, String formatter) {
-		this.inside=inside;
-		this.textStyle=textStyle;
-		this.formatter= formatter;
+		this(inside, textStyle, formatter, 30);
 	}
 
+	public AxisLabel(TextStyle textStyle) {
+		this(Boolean.FALSE, textStyle, null, 30);
+	}
+
+	public AxisLabel(Boolean inside, TextStyle textStyle, String formatter, Integer margin) {
+		this.inside=inside;
+		this.textStyle=textStyle;
+		this.formatter=formatter;
+		this.margin=margin;
+	}
+	
 	public Boolean getInside() {
 		return inside;
 	}
@@ -56,9 +66,17 @@ public final class AxisLabel implements Serializable {
 		this.formatter=formatter;
 	}
 
+	public void setMargin(Integer margin) {
+		this.margin=margin;
+	}
+
+	public Integer getMargin() {
+		return margin;
+	}
+
 	@Override
 	public String toString() {
-		return "AxisLabel{"+"inside="+inside+", textStyle="+textStyle+", formatter="+formatter+'}';
+		return "AxisLabel{"+"inside="+inside+", textStyle="+textStyle+", formatter="+formatter+", margin="+margin+'}';
 	}
 	
 }

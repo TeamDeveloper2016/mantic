@@ -15,11 +15,16 @@ public final class TextStyle implements Serializable {
 	private static final long serialVersionUID=-6049969544415495534L;
 	
 	private String color;
+	private Integer fontSize;
 
 	public TextStyle() {
 		this(Axis.COLOR_BLACK);
 	}
 
+	public TextStyle(Integer fontSize) {
+		this.fontSize=fontSize;
+	}
+	
 	public TextStyle(String color) {
 		this.color=color;
 	}
@@ -32,9 +37,17 @@ public final class TextStyle implements Serializable {
 		this.color=color;
 	}
 
+	public Integer getFontSize() {
+		return fontSize;
+	}
+
+	public void setFontSize(Integer fontSize) {
+		this.fontSize=fontSize;
+	}
+
 	@Override
 	public String toString() {
-		return "TextStyle{"+"color="+color+'}';
+		return "TextStyle{"+"color="+color+", fontSize="+fontSize+'}';
 	}
 	
 }

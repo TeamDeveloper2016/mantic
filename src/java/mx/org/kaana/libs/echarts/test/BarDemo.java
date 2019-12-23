@@ -32,7 +32,7 @@ public class BarDemo {
 //			model.getxAxis().getAxisLabel().setFormatter("function(value) {return value.replace(/\\\\s/g, '\\\\n')}");
 			model.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
 			model.getxAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
-			model.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'integer');}");
+			model.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'percent');}");
 			model.getLegend().setFormatter("function (params) {return jsEcharts.legend(params);}");
 			
 			LOG.info(model.toJson());

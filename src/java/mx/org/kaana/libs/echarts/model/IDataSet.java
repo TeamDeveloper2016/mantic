@@ -16,6 +16,7 @@ public interface IDataSet {
 	public List<mx.org.kaana.libs.echarts.bar.Serie> getSeries();
 	public List<mx.org.kaana.libs.echarts.pie.Serie> getDatas();
 	public List<mx.org.kaana.libs.echarts.stack.Serie> getStack();
+	public List<mx.org.kaana.libs.echarts.pic.Serie> getPictorial();
 	public Xaxis getXaxis();
 	public Legend getLegend();
 	

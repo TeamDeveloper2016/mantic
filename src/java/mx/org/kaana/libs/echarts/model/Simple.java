@@ -50,6 +50,11 @@ public final class Simple extends Series implements IDataSet, Serializable {
 	}
 
 	@Override
+	public List<mx.org.kaana.libs.echarts.pic.Serie> getPictorial() {
+	  return this.getModel().getPics();		
+	}
+	
+	@Override
 	public Xaxis getXaxis() {
 		return this.getModel().getXaxis();
 	}

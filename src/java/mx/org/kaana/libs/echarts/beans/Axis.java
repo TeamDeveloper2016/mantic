@@ -15,9 +15,9 @@ import mx.org.kaana.libs.reflection.Methods;
 public class Axis implements Serializable {
 
 	private static final long serialVersionUID=4270159570077052025L;
-  public static final String COLOR_WHITE= "#FFF";
-  public static final String COLOR_BLACK= "#000";
-  public static final String COLOR_GRAY = "#999";
+  public static final String COLOR_WHITE= "#FFFFFF";
+  public static final String COLOR_BLACK= "#000000";
+  public static final String COLOR_GRAY = "#999999";
 
 	private String type;
 	private AxisLabel axisLabel;

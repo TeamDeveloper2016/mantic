@@ -29,6 +29,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 import mx.org.kaana.mantic.enums.EExportacionXls;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
@@ -385,5 +386,13 @@ public class Filtro extends Comun implements Serializable {
 		} // finally
 		return regresar;
 	} // doExportarFdDbf  
+
+	public String doMasivo() {
+    JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Almacenes/filtro");
+    JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.CONTEOS.getId());
+    return "/Paginas/Mantic/Catalogos/Masivos/importar".concat(Constantes.REDIRECIONAR);
+	} // doMasivo	
 	
+
+
 }

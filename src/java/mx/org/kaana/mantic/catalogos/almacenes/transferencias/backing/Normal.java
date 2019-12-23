@@ -64,7 +64,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 			this.attrs.put("seleccionado", null);
 			if(this.accion!= EAccion.AGREGAR && (Long)this.attrs.get("idTransferencia")<= 0) 
 				this.accion= EAccion.AGREGAR;
-			doLoad();
+			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -194,7 +194,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 		int index = destinos.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkAlmacen());
 		if(index>= 0)
       destinos.remove(index);
-		if(destinos.isEmpty())
+		if(!destinos.isEmpty())
       ((Transferencia)this.getAdminOrden().getOrden()).setIkDestino(destinos.get(0));
 		this.getAdminOrden().getArticulos().clear();
 		this.getAdminOrden().getArticulos().add(new Articulo(-1L));

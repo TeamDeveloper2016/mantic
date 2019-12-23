@@ -1,7 +1,6 @@
 package mx.org.kaana.mantic.catalogos.masivos.reglas;
 
 import java.io.File;
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -11,7 +10,6 @@ import java.util.Map;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.WorkbookSettings;
-import jxl.read.biff.BiffException;
 import mx.org.kaana.kajool.catalogos.backing.Monitoreo;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -27,15 +25,19 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
+import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosCodigosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosEspecificacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEgresosDto;
+import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
 import mx.org.kaana.mantic.db.dto.TcManticMasivasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticMasivasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticMasivasDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticMovimientosDto;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.db.dto.TcManticTrabajosDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteDomicilioDto;
@@ -145,6 +147,9 @@ public class Transaccion extends IBaseTnx {
 						break;
 					case EGRESOS:
 						this.toEgresos(sesion, file);
+						break;
+					case CONTEOS:
+						this.toConteos(sesion, file);
 						break;
 				} // swtich
 			} // try
@@ -385,6 +390,87 @@ public class Transaccion extends IBaseTnx {
 		} // finally
 		return regresar;
 	} // toFindArticulo
+
+	private Long toFindAlmacen(Session sesion, String almacen) {
+		Long regresar             = -1L;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.put("clave", almacen);
+			Value value= DaoFactory.getInstance().toField(sesion, "TcManticAlmacenesDto", "conteo", params, "idAlmacen");
+			if(value!= null && value.getData()!= null)
+				regresar= value.toLong();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}
+	
+	private TcManticAlmacenesArticulosDto toFindAlmacenArticulo(Session sesion, Long idAlmacen, Long idArticulo) {
+		TcManticAlmacenesArticulosDto regresar= null;
+		Map<String, Object> params   = null;
+		try {
+			params=new HashMap<>();
+			params.put("idAlmacen", idAlmacen);
+			params.put("idArticulo", idArticulo);
+			regresar= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().toEntity(sesion, TcManticAlmacenesArticulosDto.class, "TcManticAlmacenesArticulosDto", "ubicacion", params);
+			if(regresar== null) {
+				regresar= new TcManticAlmacenesArticulosDto(
+					10D, // Double minimo, 
+					-1L, // Long idAlmacenArticulo, 
+					JsfBase.getIdUsuario(), // Long idUsuario, 
+					idAlmacen, // Long idAlmacen, 
+					20D, // Double maximo, 
+					-1L, // Long idAlmacenUbicacion, 
+					idArticulo, // Long idArticulo, 
+					0D // Double stock
+				);
+			} // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toFindAlmacenArticulo
+
+	private TcManticInventariosDto toFindInventario(Session sesion, Long idAlmacen, Long idArticulo, Double stock) {
+		TcManticInventariosDto regresar= null;
+		Map<String, Object> params     = null;
+		try {
+			params=new HashMap<>();
+			params.put("idAlmacen", idAlmacen);
+			params.put("idArticulo", idArticulo);
+			regresar= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(sesion, TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
+			if(regresar== null || !regresar.getEntradas().equals(0D) || !regresar.getSalidas().equals(0D)) {
+				regresar= new TcManticInventariosDto(-1L);
+				regresar.setIdAlmacen(idAlmacen);
+				regresar.setIdArticulo(idArticulo);
+				regresar.setEjercicio(new Long(Calendar.getInstance().get(Calendar.YEAR)));
+				regresar.setEntradas(0D);
+				regresar.setSalidas(0D);
+				regresar.setIdUsuario(JsfBase.getIdUsuario());
+				regresar.setIdAutomatico(2L);
+				regresar.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			} // if
+			regresar.setInicial(stock);
+			regresar.setStock(stock);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toFindInventario
 
 	private Boolean toFindPrincipal(Session sesion, Long idArticulo, Long idArticuloTipo) {
 		Boolean regresar          = false;
@@ -639,9 +725,6 @@ public class Transaccion extends IBaseTnx {
 				regresar= true;
 			} // if
 		} // try
-		catch (IOException | BiffException e) {
-			throw e;
-		} // catch
     finally {
       if(workbook!= null) {
         workbook.close();
@@ -661,9 +744,6 @@ public class Transaccion extends IBaseTnx {
 			if(next!= null && next.getData()!= null)
 			  regresar= next.toLong();
 		} // try
-		catch (Exception e) {
-			throw e;
-		} // catch
 		finally {
 			Methods.clean(params);
 		} // finally
@@ -890,9 +970,6 @@ public class Transaccion extends IBaseTnx {
 				regresar       = true;
 			} // if
 		} // try
-		catch (IOException | BiffException e) {
-			throw e;
-		} // catch
     finally {
       if(workbook!= null) {
         workbook.close();
@@ -1093,9 +1170,6 @@ public class Transaccion extends IBaseTnx {
 				regresar       = true;
 			} // if
 		} // try
-		catch (IOException | BiffException e) {
-			throw e;
-		} // catch
     finally {
       if(workbook!= null) {
         workbook.close();
@@ -1214,9 +1288,6 @@ public class Transaccion extends IBaseTnx {
 				regresar       = true;
 			} // if
 		} // try
-		catch (IOException | BiffException e) {
-			throw e;
-		} // catch
     finally {
       if(workbook!= null) {
         workbook.close();
@@ -1422,9 +1493,6 @@ public class Transaccion extends IBaseTnx {
 				regresar       = true;
 			} // if
 		} // try
-		catch (IOException | BiffException e) {
-			throw e;
-		} // catch
     finally {
       if(workbook!= null) {
         workbook.close();
@@ -1610,9 +1678,6 @@ public class Transaccion extends IBaseTnx {
 				regresar       = true;
 			} // if
 		} // try
-		catch (IOException | BiffException e) {
-			throw e;
-		} // catch
     finally {
       if(workbook!= null) {
         workbook.close();
@@ -1621,6 +1686,174 @@ public class Transaccion extends IBaseTnx {
     } // finally
 		return regresar;
 	} // toProveedores
+	
+  private Boolean toConteos(Session sesion, File archivo) throws Exception {
+		Boolean regresar	      = false;
+		Workbook workbook	      = null;
+		Sheet sheet             = null;
+		TcManticMasivasBitacoraDto bitacora= null;
+		try {
+      WorkbookSettings workbookSettings = new WorkbookSettings();
+      workbookSettings.setEncoding("Cp1252");	
+			workbookSettings.setExcelDisplayLanguage("MX");
+      workbookSettings.setExcelRegionalSettings("MX");
+      workbookSettings.setLocale(new Locale("es", "MX"));
+			workbook= Workbook.getWorkbook(archivo, workbookSettings);
+			sheet		= workbook.getSheet(0);
+			Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
+			if(sheet != null && sheet.getColumns()>= this.categoria.getColumns() && sheet.getRows()>= 2) {
+				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
+				LOG.info("Filas del documento: "+ sheet.getRows());
+				this.errores= 0;
+				int count   = 0; 
+				for(int fila= 1; fila< sheet.getRows() && monitoreo.isCorriendo(); fila++) {
+					try {
+						if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
+							String contenido= new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+							//   0       1      2        3          4         5
+							//ALMACEN|CODIGO|NOMBRE|STOCKMINIMO|STOCKMAXIMO|STOCK
+  						String codigo = new String(sheet.getCell(1, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+							codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim();
+							String almacen= new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+							double minimo = Numero.getDouble(sheet.getCell(3, fila).getContents()!= null? sheet.getCell(3, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
+							double maximo = Numero.getDouble(sheet.getCell(4, fila).getContents()!= null? sheet.getCell(4, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
+							double stock  = Numero.getDouble(sheet.getCell(5, fila).getContents()!= null? sheet.getCell(5, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
+							String nombre = new String(contenido.getBytes(ISO_8859_1), UTF_8);
+							if(codigo.length()> 0 && almacen.length()> 0 && stock> 0) {
+								TcManticArticulosDto articulo= this.toFindArticulo(sesion, codigo, 1L);
+								Long idAlmacen= this.toFindAlmacen(sesion, almacen);
+								if(articulo!= null && idAlmacen> 0L) {
+									TcManticAlmacenesArticulosDto ubicacion= this.toFindAlmacenArticulo(sesion, idAlmacen, articulo.getIdArticulo());
+									// double cantidad= stock- ubicacion.getStock();
+									if(minimo!= 0D) 
+										ubicacion.setMinimo(minimo);
+									if(maximo!= 0D)
+										ubicacion.setMaximo(maximo);
+									ubicacion.setStock(stock);
+									TcManticInventariosDto inventario= this.toFindInventario(sesion, idAlmacen, articulo.getIdArticulo(), stock);
+                  this.toAffectAlmacenes(sesion, ubicacion, inventario);
+									if(minimo!= 0D) 
+										articulo.setMinimo(minimo);
+									if(maximo!= 0D)
+										articulo.setMaximo(maximo);
+									sesion.flush();
+							   	articulo.setStock(this.toSumAlmacenArticulo(sesion, articulo.getIdArticulo()));
+									DaoFactory.getInstance().update(sesion, articulo);
+								} // if
+								TcManticMasivasDetallesDto detalle= new TcManticMasivasDetallesDto(
+									sheet.getCell(0, fila).getContents(), // String codigo, 
+									-1L, // Long idMasivaDetalle, 
+									this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
+									"ESTE ARTICULO FUE AGREGADO ["+ sheet.getCell(2, fila).getContents()+ "]" // String observaciones
+								);
+								DaoFactory.getInstance().insert(sesion, detalle);
+								monitoreo.incrementar();
+								if(fila% this.categoria.getTuplas()== 0) {
+									if(bitacora== null) {
+										bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, new Long(fila), 2L);
+										DaoFactory.getInstance().insert(sesion, bitacora);
+									} // if
+									else {
+										bitacora.setProcesados(new Long(fila));
+										bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+										DaoFactory.getInstance().update(sesion, bitacora);
+									} // else
+									this.commit();
+									this.procesados= fila;
+									LOG.warn("Realizando proceso de commit en la fila "+ this.procesados);
+								} // if
+							} // if
+							else {
+								this.errores++;
+								LOG.warn(fila+ "almacen: ["+ almacen+ "] codigo: ["+ codigo+ "] nombre: ["+ nombre+ "] minimo: ["+ minimo+ "] maximo: ["+ maximo+ "] stock: ["+ stock+ "]");
+								TcManticMasivasDetallesDto detalle= new TcManticMasivasDetallesDto(
+									sheet.getCell(0, fila).getContents(), // String codigo, 
+									-1L, // Long idMasivaDetalle, 
+									this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
+									"EL ALMACEN["+ almacen+ "], CODIGO["+ codigo+ "], MINIMO["+ minimo+ "], MAXIMO["+ maximo+ "], STOCK["+ stock+ "] ESTAN EN CEROS" // String observaciones
+								);
+								DaoFactory.getInstance().insert(sesion, detalle);
+							} // else	
+							count++;
+						} // if	
+	//					if(fila> 500)
+	//						throw new KajoolBaseException("Este error fue provocado intencionalmente !");
+					} // try
+					catch(Exception e) {
+            LOG.error("[--->>> ["+ fila+ "] {"+ sheet.getCell(0, fila).getContents().toUpperCase()+ "} {"+ sheet.getCell(2, fila).getContents().toUpperCase()+ "} <<<---]");
+						Error.mensaje(e);
+					} // catch
+					this.procesados= count;
+					LOG.warn("Procesando el registro "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
+				} // for
+				if(bitacora== null) {
+					bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);
+  				DaoFactory.getInstance().insert(sesion, bitacora);
+				} // if
+			  else {
+					bitacora.setProcesados(this.masivo.getTuplas());
+					bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+					DaoFactory.getInstance().update(sesion, bitacora);
+				} // if
+				LOG.warn("Cantidad de filas con error son: "+ this.errores);
+ 				this.procesados= count;
+				regresar= true;
+			} // if
+		} // try
+    finally {
+      if(workbook!= null) {
+        workbook.close();
+        workbook = null;
+      } // if
+    } // finally
+		return regresar;
+	} // toArticulos		
+	
+	private void toAffectAlmacenes(Session sesion, TcManticAlmacenesArticulosDto almacen, TcManticInventariosDto inventario) throws Exception {
+		Map<String, Object> params= null;
+		double stock              = inventario.getInicial();
+		try {
+			params=new HashMap<>();
+			almacen.setStock(inventario.getInicial());
+			if(almacen.isValid()) 
+				DaoFactory.getInstance().update(sesion, almacen);
+			else {
+				params.put("idAlmacen", inventario.getIdAlmacen());
+				params.put("idArticulo", inventario.getIdArticulo());
+				TcManticAlmacenesArticulosDto ubicacion= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesArticulosDto.class, params, "ubicacion");
+				if(ubicacion== null) {
+					TcManticAlmacenesUbicacionesDto general= (TcManticAlmacenesUbicacionesDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesUbicacionesDto.class, params, "general");
+					if(general== null) {
+						general= new TcManticAlmacenesUbicacionesDto("GENERAL", "", "GENERAL", "", "", JsfBase.getAutentifica().getPersona().getIdUsuario(), inventario.getIdAlmacen(), -1L);
+						DaoFactory.getInstance().insert(sesion, general);
+					} // if	
+					almacen.setIdAlmacenUbicacion(general.getIdAlmacenUbicacion());
+					DaoFactory.getInstance().insert(sesion, almacen);
+				} // if		
+			} // else	
+			if(inventario.isValid()) 
+				DaoFactory.getInstance().update(sesion, inventario);
+			else 
+				DaoFactory.getInstance().insert(sesion, inventario);
+			// generar un registro en la bitacora de movimientos de los articulos 
+			TcManticMovimientosDto movimiento= new TcManticMovimientosDto(
+				"VER", // String consecutivo, 
+				6L, // Long idTipoMovimiento, 
+				JsfBase.getIdUsuario(), // Long idUsuario, 
+				almacen.getIdAlmacen(), // Long idAlmacen, 
+				-1L, // Long idMovimiento, 
+				0D, // Double cantidad, 
+				inventario.getIdArticulo(), // Long idArticulo, 
+				stock, // Double stock, 
+				Numero.toRedondearSat(stock), // Double calculo
+				null // String observaciones
+			);
+			DaoFactory.getInstance().insert(sesion, movimiento);
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
 	
 	public void toDeleteXls() throws Exception {
 		List<TcManticMasivasArchivosDto> list= (List<TcManticMasivasArchivosDto>)DaoFactory.getInstance().findViewCriteria(TcManticMasivasArchivosDto.class, this.masivo.toMap(), "all");
@@ -1646,13 +1879,30 @@ public class Transaccion extends IBaseTnx {
 			else
 			  regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 900001L: 1L);
 		} // try
-		catch (Exception e) {
-			throw e;
-		} // catch
 		finally {
 			Methods.clean(params);
 		} // finally
 		return regresar;
 	}
 
+  private Double toSumAlmacenArticulo(Session sesion, Long idArticulo) {
+		Double regresar           = 0D;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.put("idArticulo", idArticulo);
+			Value value= DaoFactory.getInstance().toField(sesion, "VistaKardexDto", "existencias", params, "total");
+			if(value!= null && value.getData()!= null)
+				regresar= value.toDouble();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toSumAlmacenArticulo
+	
 }

@@ -128,12 +128,20 @@
 					<div class="ui-grid-row janal-grid-row">
 						<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticInventariosAlmacenesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticInventariosAlmacenesFiltro.lazyModel.rowCount gt manticInventariosAlmacenesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 							<f:facet name="header">
+								<div class="janal-icons-header">
+									<h:outputLink value="#{request.contextPath}/Temporal/Masivo/masivo-conteos.xls" title="Plantilla de conteos XLS">
+										<p:commandButton type="button" icon="fa fa-file-excel-o"/>
+									</h:outputLink>
+								</div>	
 								<div class="lg-pantalla">
 									<p:menuButton value="Opciones">
 										<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 										<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 										<p:separator/>
+										<p:menuitem icon="fa fa-history" value="Importar" title="Carga masiva" action="#{manticInventariosAlmacenesFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
+										<p:separator/>
 										<p:menuitem icon="fa fa-file-excel-o" value="Exportar" onstart="return janal.bloquear();" action="#{manticInventariosAlmacenesFiltro.doExportarXls}" process="@this panelBusqueda" oncomplete="janal.desbloquear()"/>
+										<p:separator/>
 									</p:menuButton>
 								</div>	
 								<div class="xs-pantalla">

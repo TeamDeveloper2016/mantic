@@ -23,16 +23,18 @@ public class DataModel implements Serializable {
 	private List<mx.org.kaana.libs.echarts.bar.Serie> series;
 	private List<mx.org.kaana.libs.echarts.pie.Serie> datas;
 	private List<mx.org.kaana.libs.echarts.stack.Serie> stacks;
+	private List<mx.org.kaana.libs.echarts.pic.Serie> pics;
 	private Legend legend;
 
 	public DataModel() {
-		this(new ArrayList<mx.org.kaana.libs.echarts.pie.Serie>(), new ArrayList<mx.org.kaana.libs.echarts.bar.Serie>(), new ArrayList<mx.org.kaana.libs.echarts.stack.Serie>(), new Legend());
+		this(new ArrayList<mx.org.kaana.libs.echarts.pie.Serie>(), new ArrayList<mx.org.kaana.libs.echarts.bar.Serie>(), new ArrayList<mx.org.kaana.libs.echarts.stack.Serie>(), new ArrayList<mx.org.kaana.libs.echarts.pic.Serie>(), new Legend());
 	}
 
-	public DataModel(List<mx.org.kaana.libs.echarts.pie.Serie> datas, List<mx.org.kaana.libs.echarts.bar.Serie> series, List<mx.org.kaana.libs.echarts.stack.Serie> stacks, Legend legend) {
+	public DataModel(List<mx.org.kaana.libs.echarts.pie.Serie> datas, List<mx.org.kaana.libs.echarts.bar.Serie> series, List<mx.org.kaana.libs.echarts.stack.Serie> stacks, List<mx.org.kaana.libs.echarts.pic.Serie> pics, Legend legend) {
 		this.series=series;
 		this.datas=datas;
 		this.stacks=stacks;
+		this.pics=pics;
 		this.legend=legend;
 		this.xAxis=new Xaxis();
 		this.xAxis.clear();
@@ -82,6 +84,10 @@ public class DataModel implements Serializable {
 	  this.stacks.add(serie);
 	}
 
+	public void pics(mx.org.kaana.libs.echarts.pic.Serie serie) {
+	  this.pics.add(serie);
+	}
+
 	public void label(String label) {
 	  this.xAxis.add(label);
 	}
@@ -96,6 +102,14 @@ public class DataModel implements Serializable {
 
 	public void setStacks(List<mx.org.kaana.libs.echarts.stack.Serie> stacks) {
 		this.stacks=stacks;
+	}
+
+	public List<mx.org.kaana.libs.echarts.pic.Serie> getPics() {
+		return pics;
+	}
+
+	public void setPics(List<mx.org.kaana.libs.echarts.pic.Serie> pics) {
+		this.pics=pics;
 	}
 
 	@Override

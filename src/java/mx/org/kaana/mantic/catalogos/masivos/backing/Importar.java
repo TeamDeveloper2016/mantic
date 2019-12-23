@@ -82,6 +82,9 @@ public class Importar extends IBaseImportar implements Serializable {
 					case 6:
 						this.categoria= ECargaMasiva.EGRESOS;
 						break;
+					case 7:
+						this.categoria= ECargaMasiva.CONTEOS;
+						break;
 				} // switch
 			else
 				this.categoria= ECargaMasiva.ARTICULOS;
@@ -222,6 +225,8 @@ public class Importar extends IBaseImportar implements Serializable {
 			case 5: this.categoria= ECargaMasiva.SERVICIOS;
 				break;
 			case 6: this.categoria= ECargaMasiva.EGRESOS;
+				break;
+			case 7: this.categoria= ECargaMasiva.CONTEOS;
 				break;
 		} // switch
 		if(this.masivo!= null && this.masivo.isValid()) {

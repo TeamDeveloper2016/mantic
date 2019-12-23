@@ -20,6 +20,7 @@ import mx.org.kaana.libs.formato.Cadena;
 public class Series implements Serializable {
 
 	private static final long serialVersionUID=2040043938762402282L;
+	private static final String PIVOT_GROUP= "cgor";	
 	private static final String FIELD_GROUP= "category";	
 	private static final String FIELD_TEXT = "serie";	
 	private static final String FIELD_VALUE= "value";	
@@ -45,6 +46,10 @@ public class Series implements Serializable {
 				break;
 			case STACK:
 				this.model= this.group();
+				break;
+			case PICTORIAL:
+				if(this.data!= null && !this.data.isEmpty())
+				  this.model= this.data.contains(FIELD_GROUP)? this.pics(): this.single();
 				break;
 		} // switch
 	}
@@ -133,6 +138,58 @@ public class Series implements Serializable {
 			serie.getData().add(new Value(item.toString(FIELD_TEXT), item.toDouble(FIELD_VALUE), color));
 		} // for
  		regresar.stack(serie);
+		return regresar;
+	}
+	
+	protected DataModel pics() {
+		DataModel regresar= new DataModel();
+		regresar.getLegend().setType(null);
+		regresar.getLegend().setLeft(null);
+		regresar.getLegend().setOrient(null);
+		regresar.getLegend().setX(null);
+		regresar.getLegend().setY(null);
+		mx.org.kaana.libs.echarts.pic.Serie serie = null;
+		String group= null;
+		String color= Colors.toColor();
+		for (Entity item: this.data) {
+			if(Cadena.isVacio(group) || !group.equals(item.toString(FIELD_GROUP))) {
+				color= Colors.toColor();
+				if(!Cadena.isVacio(group))
+      		regresar.pics(serie);
+				group= item.toString(FIELD_GROUP);
+				regresar.getLegend().add(group);
+			  serie= new mx.org.kaana.libs.echarts.pic.Serie(group);
+  			serie.getData().clear();
+			}	// if
+		  regresar.label(item.toString(FIELD_TEXT));
+			serie.getData().add(new mx.org.kaana.libs.echarts.pic.Data(item.toString(FIELD_TEXT), item.toDouble(FIELD_VALUE), color));
+		} // for
+ 		regresar.pics(serie);
+		return regresar;
+	}
+	
+	protected DataModel single() {
+		DataModel regresar= new DataModel();
+		regresar.getLegend().setType(null);
+		regresar.getLegend().setLeft(null);
+		regresar.getLegend().setOrient(null);
+		regresar.getLegend().setX(null);
+		regresar.getLegend().setY(null);
+		mx.org.kaana.libs.echarts.pic.Serie serie = null;
+		String group= null;
+		String color= Colors.toColor();
+		for (Entity item: this.data) {
+			if(Cadena.isVacio(group)) {
+				color= Colors.toColor();
+				group= PIVOT_GROUP;
+				regresar.getLegend().add(group);
+			  serie= new mx.org.kaana.libs.echarts.pic.Serie(group);
+  			serie.getData().clear();
+			}	// if
+		  regresar.label(item.toString(FIELD_TEXT));
+			serie.getData().add(new mx.org.kaana.libs.echarts.pic.Data(item.toString(FIELD_TEXT), item.toDouble(FIELD_VALUE), color));
+		} // for
+ 		regresar.pics(serie);
 		return regresar;
 	}
 	

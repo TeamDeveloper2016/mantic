@@ -24,6 +24,10 @@ public final class Grid implements Serializable {
 		this("60", "60", "10%", "10%", true);
 	}
 
+	public Grid(String left) {
+		this(left, null, null, null, Boolean.TRUE);
+	}
+	
 	public Grid(String left, String right, String top, String bottom, Boolean containLabel) {
 		this.left=left;
 		this.right=right;

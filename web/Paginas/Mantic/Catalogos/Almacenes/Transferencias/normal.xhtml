@@ -310,7 +310,10 @@
 										<f:setPropertyActionListener value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.ikAlmacen}" target="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.idAlmacen}" />
 										<f:setPropertyActionListener value="#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.ikDestino}" target="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.ikDestino}" />
 									</p:commandButton>
-								</p:column>								
+								</p:column>					
+								<f:facet name="footer">
+									Total [#{manticCatalogosAlmacenesTransferenciasNormal.attrs.faltantes eq null? 0: manticCatalogosAlmacenesTransferenciasNormal.attrs.faltantes.size()}] registros
+								</f:facet>
 							</p:dataTable>
 						</p:tab>
 						<p:tab title="Ventas perdidas">
