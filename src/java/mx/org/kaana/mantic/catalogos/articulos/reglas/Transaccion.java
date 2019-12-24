@@ -333,7 +333,8 @@ public class Transaccion extends TransaccionFactura {
 		boolean regresar                         = false;
 		Long idArticulo                          = -1L;
 		try {
-			idArticulo= this.articulo.getIdArticulo();			
+			idArticulo= this.articulo.getIdArticulo();	
+			if(eliminarRegistros(sesion)){
 				if(registraCodigos(sesion, idArticulo)) {
 					if(registraEspecificaciones(sesion, idArticulo)) {
 						if(registraDescuentos(sesion, idArticulo)) {
@@ -362,7 +363,7 @@ public class Transaccion extends TransaccionFactura {
 												sesion.flush();
 												if(this.articulo.getArticulo().getIdArticuloTipo().equals(1L))
 													actualizarArticuloFacturama(sesion, this.articulo.getIdArticulo());												
-			} } } } } } } } 			
+			} } } } } } } } }			
 		} // try
 		catch (Exception e) {			
 			throw e;
