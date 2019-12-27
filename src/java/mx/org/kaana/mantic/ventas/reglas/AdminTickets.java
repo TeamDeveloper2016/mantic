@@ -145,8 +145,14 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
 			if(tipoMedioPago!= null){
 				this.orden.setIdTipoMedioPago(tipoMedioPago.toLong("idTipoMedioPago"));
 				if(!tipoMedioPago.getKey().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){
-					this.orden.setIdBanco(tipoMedioPago.toLong("idBanco"));
-					this.orden.setReferencia(tipoMedioPago.toString("referencia"));
+					if(tipoMedioPago.toLong("idBanco") != null)
+						this.orden.setIdBanco(tipoMedioPago.toLong("idBanco"));
+					else
+						this.orden.setIdBanco(0L);
+					if(tipoMedioPago.toString("referencia")!= null)
+						this.orden.setReferencia(tipoMedioPago.toString("referencia"));
+					else
+						this.orden.setReferencia("");
 				} // if
 			} // if
 		} // try
