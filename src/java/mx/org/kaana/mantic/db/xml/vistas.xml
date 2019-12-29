@@ -6017,7 +6017,7 @@
 						concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
 						tc_mantic_empresas_deudas.limite,
 						tc_mantic_empresas_deudas.registro,
-						datediff(tc_mantic_empresas_deudas.limite, now()) as dias,
+						(datediff(tc_mantic_empresas_deudas.limite, now())* -1) as dias,
 						tc_mantic_empresas.nombre,
 						tc_mantic_empresas.clave,
 						tc_mantic_proveedores.razon_social proveedor,
@@ -6048,12 +6048,10 @@
 						tc_mantic_notas_tipos on tc_mantic_notas_entradas.id_nota_tipo= tc_mantic_notas_tipos.id_nota_tipo
 					where
 						{condicion}								  
-					and 
-						tc_mantic_almacenes.id_empresa in ({idEmpresa})				  
-					and 
-						tc_mantic_notas_entradas.id_empresa in ({idEmpresa})
-					{sortOrder}						
-				) principal order by registro desc					
+					and tc_mantic_almacenes.id_empresa in ({idEmpresa})				  
+					and tc_mantic_notas_entradas.id_empresa in ({idEmpresa})
+				) principal 
+				{sortOrder}					
 			</select>		
 			<select id="cuentas">
 				select
