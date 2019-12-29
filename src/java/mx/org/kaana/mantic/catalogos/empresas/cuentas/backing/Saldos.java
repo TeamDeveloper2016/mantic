@@ -74,7 +74,7 @@ public class Saldos extends IBaseFilter implements Serializable {
       columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));    
       columns.add(new Columna("directa", EFormatoDinamicos.MAYUSCULAS));    
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));  
-			params.put("sortOrder", this.attrs.get("sortOrder"));
+			params.put("sortOrder", "order by registro desc");
 			this.lazyModel = new FormatCustomLazy("VistaEmpresasDto", "cuentasBusqueda", params, columns);
       UIBackingUtilities.resetDataTable();		
 			this.attrs.put("idEmpresaDeuda", null);
@@ -117,7 +117,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 					break;
 			} // switch
 		if(!Cadena.isVacio(this.attrs.get("dias")))
-  		sb.append("(datediff(tc_mantic_empresas_deudas.limite, now())>= ").append(this.attrs.get("dias")).append(") and ");
+  		sb.append("((datediff(tc_mantic_empresas_deudas.limite, now())* -1)>= ").append(this.attrs.get("dias")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("almacen")))
   		sb.append("tc_mantic_almacenes.nombre like '%").append(this.attrs.get("almacen")).append("%' and ");
 		regresar.put("idEmpresa", this.attrs.get("idEmpresa").toString().equals("-1") ? this.attrs.get("allEmpresa") : this.attrs.get("idEmpresa"));			
