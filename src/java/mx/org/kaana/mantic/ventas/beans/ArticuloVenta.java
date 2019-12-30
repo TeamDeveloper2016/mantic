@@ -1,11 +1,14 @@
 package mx.org.kaana.mantic.ventas.beans;
 
+import java.util.HashMap;
+import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
@@ -94,11 +97,19 @@ public class ArticuloVenta extends Articulo {
 	}
 	
 	private void toCalculateCostoPorCantidad() {
-		TcManticArticulosDto validate= null;
+		TcManticArticulosDto validate= null;	
+		Map<String, Object>params    = null;
 		try {
 			if(!this.isDescuentoActivo()){
 				if(!this.isCostoLibre()) {
-					validate= (TcManticArticulosDto) DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.getIdArticulo());
+					if(getIdComodin()!= null && getIdComodin() > -1L){
+						params= new HashMap<>();
+						params.put("idArticulo", this.getIdArticulo());
+						params.put("idComodin", this.getIdComodin());
+						validate= (TcManticArticulosDto) DaoFactory.getInstance().toEntity(TcManticArticulosDto.class, "VistaTcManticVentasDetallesDto", "detalleArticulo", params);
+					} // if
+					else
+						validate= (TcManticArticulosDto) DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.getIdArticulo());
 					if(validate!= null) {
 						if(this.getDescuentos()> 0D)
 							this.setCosto(validate.getMenudeo());
@@ -124,6 +135,9 @@ public class ArticuloVenta extends Articulo {
 		catch (Exception e) {			
 			Error.mensaje(e);
 		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
 	} // toCalculateCostoPorCantidad
 	
 	@Override
