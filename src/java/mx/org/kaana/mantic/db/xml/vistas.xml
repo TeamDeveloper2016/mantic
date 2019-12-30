@@ -3583,7 +3583,7 @@
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
 					tc_mantic_clientes_deudas.limite,
 					tc_mantic_clientes_deudas.registro,
-					datediff(tc_mantic_clientes_deudas.limite, now()) as dias,
+					(datediff(tc_mantic_clientes_deudas.limite, now())* -1) as dias,
 					tc_mantic_clientes.razon_social,
 					tc_mantic_clientes_deudas.id_cliente_estatus,
 					tc_mantic_ventas.id_venta,
@@ -3654,7 +3654,7 @@
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
 					tc_mantic_clientes_deudas.limite,
 					tc_mantic_clientes_deudas.registro,
-					datediff(tc_mantic_clientes_deudas.limite, now()) as dias,
+					(datediff(tc_mantic_clientes_deudas.limite, now())* -1) as dias,
 					tc_mantic_clientes.razon_social,
 					tc_mantic_ventas.id_venta,
 					tc_mantic_clientes_estatus.nombre estatus

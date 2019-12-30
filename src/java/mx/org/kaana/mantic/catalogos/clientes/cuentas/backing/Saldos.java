@@ -103,7 +103,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 				loadSucursales();
 			if(!this.idCliente.equals(-1L)){
-				doLoad();
+				this.doLoad();
 				this.idCliente= -1L;
 			} // if
       this.attrs.put("plazo", 1);
@@ -122,7 +122,7 @@ public class Saldos extends IBaseFilter implements Serializable {
     List<Columna> columns     = null;
 	  Map<String, Object> params= null;	
     try {
-  	  params = toPrepare();	
+  	  params = this.toPrepare();	
 			params.put("idCliente", this.idCliente);
       columns= new ArrayList<>();
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
@@ -164,7 +164,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("vencidos")) && this.attrs.get("vencidos").toString().equals("1"))
   		sb.append("(now()> tc_mantic_clientes_deudas.limite) and ");
 		if(!Cadena.isVacio(this.attrs.get("dias")))
-  		sb.append("(datediff(tc_mantic_clientes_deudas.limite, now())>= ").append(this.attrs.get("dias")).append(") and ");
+  		sb.append("((datediff(tc_mantic_clientes_deudas.limite, now())* -1)>= ").append(this.attrs.get("dias")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))			
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
