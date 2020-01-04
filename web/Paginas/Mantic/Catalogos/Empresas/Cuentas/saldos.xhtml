@@ -14,6 +14,7 @@
         'razonSocial' : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'almacen'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'consecutivo' : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'consecutivo'},
+        'factura'     : {validaciones: 'libre', mascara: 'numeros-letras', formatos: 'cambiar-mayusculas', grupo: 'general'},
         'dias'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'vencidos'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'fechaInicio' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -73,6 +74,8 @@
 							</p:autoComplete>			
 							<p:outputLabel for="consecutivo" value="Nota entrada:"/>
 							<p:inputText id="consecutivo" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.consecutivo}" styleClass="janal-wid-100-txt janal-column-right"/> 
+              <p:outputLabel for="factura" value="Factura proveedor:"/>
+              <p:inputText id="factura" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.factura}" styleClass="janal-wid-100-txt"/> 
 							<p:outputLabel for="dias" value="Días vencidos:"/>
 							<p:inputText id="dias" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.dias}" styleClass="janal-wid-100-txt janal-column-right"/> 
 							<p:outputLabel for="vencidos" value="Vencidos:"/>

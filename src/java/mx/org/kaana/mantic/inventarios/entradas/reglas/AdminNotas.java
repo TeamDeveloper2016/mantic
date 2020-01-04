@@ -132,8 +132,8 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 		Map<String, Object> params  = null;
 		try {
 			params=new HashMap<>();
-			params.put("idNotaEntrada", this.orden.getIdOrdenCompra());
-			params.put("idOrdenCompra", this.orden.getIdNotaEntrada());
+			params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
+			params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
 			params.put("idProveedor", this.orden.getIdProveedor());
 			params.put("idAlmacen", this.orden.getIdAlmacen());
   		regresar= new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "detalle", params));
