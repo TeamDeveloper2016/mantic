@@ -31,6 +31,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
@@ -220,9 +221,11 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 
 	private int existsItem(List<Articulo> faltantes, Concepto concepto) {
 		int regresar= 0;
+		if(Cadena.isVacio(concepto.getNoIdentificacion())) 
+			concepto.setNoIdentificacion("WXYZ");
 		for (Articulo faltante: faltantes) {
 			if(faltante.getNombre().equals(concepto.getDescripcion()) && 
-			   faltante.getCodigo().equals(concepto.getNoIdentificacion()) && 
+				 faltante.getCodigo().equals(concepto.getNoIdentificacion()) && 
 				 faltante.getUnidadMedida().equals(concepto.getUnidad()))
 				break;
 			else
