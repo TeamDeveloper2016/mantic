@@ -287,6 +287,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 		} // try
 		catch (Exception e) {
 			this.factura= null;
+			reader = null;
 			throw e;
 		} // catch
 	}

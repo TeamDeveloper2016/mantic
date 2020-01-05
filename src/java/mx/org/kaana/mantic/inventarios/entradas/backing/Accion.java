@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.inventarios.entradas.backing;
 
+import com.google.common.base.Objects;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.Serializable;
@@ -39,6 +40,7 @@ import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import java.util.Collections;
+import java.util.Random;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
@@ -47,6 +49,9 @@ import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
+import mx.org.kaana.mantic.libs.factura.beans.ComprobanteFiscal;
+import mx.org.kaana.mantic.libs.factura.beans.Concepto;
+import mx.org.kaana.mantic.libs.factura.reglas.Reader;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -770,8 +775,76 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	  LOG.info(Cadena.toEqualsString("H2 111109", "H2-111109"));	
 	}
 
+	private void doResetArticuloFromXmlFile(String original, String codigo, String unidadMedida) {
+    Reader reader            = null;
+		Articulo item            = null;
+		File file                = null;
+		ComprobanteFiscal factura= null;
+		List<Articulo> faltantes = (List<Articulo>)this.attrs.get("faltantes");
+		if(this.getXml()!= null && faltantes!= null) {
+			try {
+				file   = new File(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.getXml().getRuta()).concat(this.getXml().getName()));
+				reader = new Reader(file.getAbsolutePath());
+				factura= reader.execute();
+				for (Concepto concepto: factura.getConceptos()) {
+					if(Cadena.isVacio(concepto.getNoIdentificacion())) 
+						concepto.setNoIdentificacion("WXYZ");
+          if(original.equals(concepto.getDescripcion())) {
+						if(item== null) {
+							item= new Articulo(
+								(boolean)this.attrs.get("sinIva"), // sinIva
+								this.getAdminOrden().getTipoDeCambio(), // tipoDeCambio
+								concepto.getDescripcion(), // nombre
+								concepto.getNoIdentificacion(), // codigo
+								Numero.toRedondearSat((Double.parseDouble(concepto.getTraslado().getBase()))/ Double.parseDouble(concepto.getCantidad())), // costo
+								"", // descuento,
+								-1L, // idOrdenCompra
+								"", // extras
+								0D, // importe
+								"", // propio
+								Double.parseDouble(concepto.getTraslado().getTasaCuota())* 100, // iva
+								0D, // totalImpuesto 
+								Numero.toRedondearSat(Double.parseDouble(concepto.getTraslado().getBase())), // subTotal
+								Double.parseDouble(concepto.getCantidad()), // cantidad
+								-1L, // idOrdenDetalle 
+								new Random().nextLong(), // idArticulo 
+								0D, // totalDescuentos
+								-1L, // idProveedor
+								false, // ultimo
+								false, // solicitado
+								0D, // stock
+								0D, // excedentes
+								concepto.getClaveProdServ(), // sat
+								concepto.getUnidad(), // unidadMedida
+								2L, // idAplicar
+								concepto.getDescripcion() // origen
+							);
+						} // if
+						else {
+							item.setCantidad(item.getCantidad()+ Double.parseDouble(concepto.getCantidad()));
+							item.setCosto(Numero.toRedondearSat((item.getSubTotal()+ Double.parseDouble(concepto.getTraslado().getBase()))/ item.getCantidad()));
+							item.setSubTotal(item.getSubTotal()+ Double.parseDouble(concepto.getTraslado().getBase()));
+						} // else
+					} // if
+				} // for
+				if(item!= null)
+  				faltantes.add(0, item);
+			} // try	
+			catch (Exception e) {
+				Error.mensaje(e);
+				JsfBase.addMessageError(e);
+			} // catch
+			finally {
+				factura= null;
+				file   = null;
+				reader = null;
+			} // finally	
+	  } // if 
+	}
+	
   public void doDesasociarArticulo(Articulo row, Integer index) {
 		if(!row.isDisponible()) {
+ 		  this.doResetArticuloFromXmlFile(row.getOrigen(), row.getCodigo(), row.getUnidadMedida());
 			if(row.getIdOrdenDetalle()!= null && row.getIdOrdenDetalle()> 0L) {
 		    row.setDisponible(true);
 		    row.setCodigo("");
@@ -782,7 +855,6 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				UIBackingUtilities.execute("janal.reset();");
 				UIBackingUtilities.execute("jsArticulos.move();");
 			} // else	
-		  this.doLoadXmlFile();
 		} // if
 		else
 			JsfBase.addMessage("El articulo aun no se encuentra asociado a una partida de la factura (XML) !", ETipoMensaje.ALERTA);
