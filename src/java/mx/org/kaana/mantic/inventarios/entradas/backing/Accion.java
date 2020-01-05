@@ -775,7 +775,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	  LOG.info(Cadena.toEqualsString("H2 111109", "H2-111109"));	
 	}
 
-	private void doResetArticuloFromXmlFile(String original, String codigo, String unidadMedida) {
+	private void doResetArticuloFromXmlFile(String origen) {
     Reader reader            = null;
 		Articulo item            = null;
 		File file                = null;
@@ -789,7 +789,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				for (Concepto concepto: factura.getConceptos()) {
 					if(Cadena.isVacio(concepto.getNoIdentificacion())) 
 						concepto.setNoIdentificacion("WXYZ");
-          if(original.equals(concepto.getDescripcion())) {
+          if(origen.equals(concepto.getDescripcion())) {
 						if(item== null) {
 							item= new Articulo(
 								(boolean)this.attrs.get("sinIva"), // sinIva
@@ -844,7 +844,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	
   public void doDesasociarArticulo(Articulo row, Integer index) {
 		if(!row.isDisponible()) {
- 		  this.doResetArticuloFromXmlFile(row.getOrigen(), row.getCodigo(), row.getUnidadMedida());
+ 		  this.doResetArticuloFromXmlFile(row.getOrigen());
 			if(row.getIdOrdenDetalle()!= null && row.getIdOrdenDetalle()> 0L) {
 		    row.setDisponible(true);
 		    row.setCodigo("");
