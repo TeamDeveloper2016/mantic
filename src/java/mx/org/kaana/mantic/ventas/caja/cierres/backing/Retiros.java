@@ -244,9 +244,11 @@ public class Retiros extends IBaseAttribute implements Serializable {
 	}
 	
 	public void doLoadCierres() {
-		try {
- 		  this.attrs.put("idCaja", ((UISelectEntity)this.attrs.get("idCajas")).getKey());
-			Value cierre= (Value)DaoFactory.getInstance().toField("VistaCierresCajasDto", "cierre", this.attrs, "idKey");
+    Map<String, Object> params= new HashMap<>();
+    try {
+			params.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresas")).getKey());
+ 		  params.put("idCaja", ((UISelectEntity)this.attrs.get("idCajas")).getKey());
+			Value cierre= (Value)DaoFactory.getInstance().toField("VistaCierresCajasDto", "cierre", params, "idKey");
 			if(cierre!= null)
 				this.attrs.put("idCierre", cierre.toLong());
 			else
@@ -256,6 +258,9 @@ public class Retiros extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
+    finally {
+      Methods.clean(params);
+    }// finally
 	}
 	
 }
