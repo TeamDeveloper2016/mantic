@@ -144,11 +144,11 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
 			tipoMedioPago= (Entity) DaoFactory.getInstance().toEntity("TrManticVentaMedioPagoDto", "ticket", params);
 			if(tipoMedioPago!= null){
 				this.orden.setIdTipoMedioPago(tipoMedioPago.toLong("idTipoMedioPago"));
-				if(!tipoMedioPago.getKey().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){
+				if(!tipoMedioPago.toLong("idTipoMedioPago").equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){
 					if(tipoMedioPago.toLong("idBanco") != null)
 						this.orden.setIdBanco(tipoMedioPago.toLong("idBanco"));
 					else
-						this.orden.setIdBanco(0L);
+						this.orden.setIdBanco(1L);
 					if(tipoMedioPago.toString("referencia")!= null)
 						this.orden.setReferencia(tipoMedioPago.toString("referencia"));
 					else
