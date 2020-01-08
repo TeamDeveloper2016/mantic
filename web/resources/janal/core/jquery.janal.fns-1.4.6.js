@@ -126,9 +126,9 @@ $.mask.rules = $.extend($.mask.rules, {
   'p': /[0-9a-zA-Z\u00C1\u00E1\u00C4\u00E4\u00C9\u00E9\u00CB\u00EB\u00CD\u00ED\u00CF\u00EF\u00D3\u00F3\u00D6\u00F6\u00DA\u00FA\u00DC\u00FC \u00F1\u00D1]/,
 	'q': /[0-9a-zA-Z.@_]/,
 	'r': /[0-9,.-]/,
-	's':/[^\u0025\u0027]/,
+	's': /[^\u0025\u0027]/,
 	't': /[0-9a-zA-Z_]/,
-	'v': /[0-9a-zA-Z ._-]/
+	'v': /[0-9a-zA-Z ._-/]/
 });
 
 $.mask.masks = $.extend($.mask.masks, {
@@ -138,7 +138,7 @@ $.mask.masks = $.extend($.mask.masks, {
   'hora': {mask: '29:59', fixedChars: '[:]'},
   'hora-completa': {mask: '29:59:59', fixedChars: '[:]'},
   'tarjeta-credito': {mask: '9999 9999 9999 9999', fixedChars: '[ ]'},
-  'decimal': {mask: '99.999,999,999,999', type: 'reverse',defaultValue: '000', fixedChars: '[,.]'},
+  'decimal': {mask: '99.999,999,999,999', type: 'reverse', defaultValue: '000', fixedChars: '[,.]'},
   'decimal-signo': {mask: '99.999,999,999,999',type: 'reverse', defaultValue: '+000', fixedChars: '[,.]'},
   'letras': {mask: 'c', type: 'repeat', maxLength: -1, fixedChars: '[]'},		
   'vocales': {mask: 'l', type: 'repeat', maxLength: -1, fixedChars: '[]'},		
@@ -177,16 +177,13 @@ $.mask.masks = $.extend($.mask.masks, {
   'telefono': {mask: '(999)999-99-99', fixedChars: '[()-]'},
   'ip': {mask: '999.999.999.999', type: 'reverse', fixedChars: '[.]'},
   'version': {mask: '9.9.9.9', type: 'reverse', fixedChars: '[.]'},
-  'clave-ct-call-center': {mask: '99bbb9999b', type: 'fixed', maxLength: 10},
   'clave-ct': {mask: '99bbb9999b9', type: 'fixed', maxLength: 11},		
   'clave-operativa': {mask: '99b9999o9', type: 'fixed', maxLength: 9},
-  'resultado-entrevista-basico': {mask: 'm', type: 'repeat', maxLength: 2},
-  'resultado-entrevista-modulo': {mask: 'n', type: 'repeat', maxLength: 2},
 	'correo':{mask:'q', type:'repeat'},
 	'alfanumerico':{mask:'t', type:'repeat'},
 	'valor-simple':{mask:'r', type:'repeat'},
 	'acceso':{mask:'s', type:'repeat'},
-	'codigo':{mask:'v', type:'repeat'}
+	'codigo':{mask:'v', type:'repeat', fixedChars: '[]'}
 });
 
 (function() {
