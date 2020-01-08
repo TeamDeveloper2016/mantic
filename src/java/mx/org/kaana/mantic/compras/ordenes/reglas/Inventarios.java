@@ -141,18 +141,24 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 			
 			// afectar el catalogo de codigos del proveedor y si se encuentra entonces actualizarlo en caso de ser diferente al que se tenia
 			if(!Cadena.isVacio(codigos.getCodigo())) {
-				TcManticArticulosCodigosDto remplazo= (TcManticArticulosCodigosDto)DaoFactory.getInstance().findFirst(sesion, TcManticArticulosCodigosDto.class, "codigo", params);
+				params.put("codigo", codigos.getCodigo());
+				TcManticArticulosCodigosDto remplazo= (TcManticArticulosCodigosDto)DaoFactory.getInstance().findFirst(sesion, TcManticArticulosCodigosDto.class, "proveedor", params);
+				// si el codigo ya lo tiene el proveedor ya no hacer nada de nada porque es el mismo
 				if(remplazo== null) {
-					Value next= DaoFactory.getInstance().toField(sesion, "TcManticArticulosCodigosDto", "siguiente", params, "siguiente");
-					if(next.getData()== null)
-						next.setData(1L);
-					DaoFactory.getInstance().insert(sesion, new TcManticArticulosCodigosDto(codigos.getCodigo(), this.idProveedor, JsfBase.getIdUsuario(), 2L, "", -1L, next.toLong(), codigos.getIdArticulo()));
+					remplazo= (TcManticArticulosCodigosDto)DaoFactory.getInstance().findFirst(sesion, TcManticArticulosCodigosDto.class, "codigo", params);
+					// si el codigo es diferente el que se tiene registrado al que tiene el proveedor actualizarlo
+					if(remplazo== null) {
+						Value next= DaoFactory.getInstance().toField(sesion, "TcManticArticulosCodigosDto", "siguiente", params, "siguiente");
+						if(next.getData()== null)
+							next.setData(1L);
+						DaoFactory.getInstance().insert(sesion, new TcManticArticulosCodigosDto(codigos.getCodigo(), this.idProveedor, JsfBase.getIdUsuario(), 2L, "", -1L, next.toLong(), codigos.getIdArticulo()));
+					} // if	
+					else 
+						if(!Objects.equals(remplazo.getCodigo(), codigos.getCodigo())) {
+							remplazo.setCodigo(codigos.getCodigo());
+							DaoFactory.getInstance().update(sesion, remplazo);
+						} // else	
 				} // if	
-				else 
-					if(!Objects.equals(remplazo.getCodigo(), codigos.getCodigo())) {
-					  remplazo.setCodigo(codigos.getCodigo());
-					  DaoFactory.getInstance().update(sesion, remplazo);
-  				} // else	
 			} // if	
 		} // try
 		catch (Exception e) {

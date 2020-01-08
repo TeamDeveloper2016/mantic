@@ -3034,6 +3034,16 @@
           id_articulo = {idArticulo}
 			    and id_proveedor= {idProveedor}
       </select>
+      <select id="proveedor">
+        select      
+          *
+        from      
+          tc_mantic_articulos_codigos
+        where      
+          id_articulo= {idArticulo}
+				  and codigo= '{codigo}' 
+			    and id_proveedor= {idProveedor}
+      </select>
 			<select id="maximo">
         select      
           max(id_articulo_codigo) maximo
