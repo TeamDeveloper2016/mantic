@@ -33,6 +33,7 @@
 		averages    : '.key-press-enter',
 		filter      : '.key-filter-event',
 		current     : '',
+		before      : '',
 		typingTimer : null,
 		doneInterval: 10000,
 		continue    : false,
@@ -86,6 +87,10 @@
 				janal.console('jsArticulos.focus: '+ $(this).attr('id')+ ' value:['+ $(this).val().trim()+ ']');
 				$articulos.current= $(this).val().trim();
 				janal.lastNameFocus= this;
+			});  
+      $(document).on('focus', '.key-event-before', function() {
+				janal.console('jsArticulos.focus: '+ $(this).attr('id')+ ' value:['+ $(this).val().trim()+ ']');
+				$articulos.before= $(this).val().trim();
 			});  
       $(document).on('keyup', this.filter, function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
@@ -281,13 +286,22 @@
 			$(document).on('keydown', '.key-event-sat', function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
 				janal.console('jsArticulos.keydown: '+ $(this).attr('id')+ ' key: '+ key);
+				var ok   = true;
+				var value= $(this).val().trim();
+				var code = $articulos.before;
 				switch(key) {
 					case $articulos.VK_UP:
-						return $articulos.moveup('\\'+ $(this).attr('id').substring($(this).attr('id').lastIndexOf(':')));
+						ok= $articulos.moveup('\\'+ $(this).attr('id').substring($(this).attr('id').lastIndexOf(':')));
+						if(code!== value && value.length> 0)
+							temporal();
+						return ok;
 						break;
 					case $articulos.VK_DOWN:
 					case $articulos.VK_ENTER:
-						return $articulos.movedown('\\'+$(this).attr('id').substring($(this).attr('id').lastIndexOf(':')));
+						ok= $articulos.movedown('\\'+$(this).attr('id').substring($(this).attr('id').lastIndexOf(':')));
+						if(code!== value && value.length> 0)
+							temporal();
+						return ok;
 						break;
 					case $articulos.VK_F7:
 						return $articulos.detail();

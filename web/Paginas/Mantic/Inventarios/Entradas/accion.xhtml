@@ -42,7 +42,7 @@
 				'contenedorGrupos\\:comentarios'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
 				'codigos'                           : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
 				'sat'                               : {multiple: '$', validaciones: 'entero|igual-caracteres({"cuantos": 8})', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
-				'auxiliares'                        : {multiple: '$', validaciones: 'libre', mascara: 'codigo', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},				
+				'auxiliares'                        : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},				
 				'precios'                           : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general', individual: true},				
 				'cantidades'                        : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general', individual: true}				
 			};
@@ -171,6 +171,7 @@
 			<pe:methodParam name="idArticulo"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
+		<p:remoteCommand name="temporal" process="@this @(.key-event-before)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
@@ -391,13 +392,13 @@
 													<f:facet name="header">
 														<h:outputText value="Código SAT"/>
 													</f:facet>
-													<p:inputText id="sat" value="#{row['sat']}" styleClass="janal-wid-100-txt key-event-sat fila"/>
+													<p:inputText id="sat" value="#{row['sat']}" styleClass="janal-wid-100-txt key-event-before key-event-sat fila"/>
 												</p:column>		
 												<p:column class="MarAuto Responsive janal-wid-col-90">
 													<f:facet name="header">
 														<h:outputText value="Código proveedor"/>
 													</f:facet>
-													<p:inputText id="auxiliares" value="#{row['codigo']}" styleClass="janal-wid-100-txt key-event-sat fila"/>
+													<p:inputText id="auxiliares" value="#{row['codigo']}" styleClass="janal-wid-100-txt key-event-before key-event-sat fila"/>
 												</p:column>		
 												<p:column  class="MarAuto Responsive">
 													<f:facet name="header">
