@@ -520,15 +520,17 @@ public class CFDIFactory implements Serializable {
 		this.facturama.Cfdis().SendEmail(email, CfdiService.InvoiceType.Issued, id);
 	}
 	
-	public static void main(String ... args) {
-		double subtotal= Numero.toRedondear(48.9071);
-		double impuestos= Numero.toRedondear(7.8251);
-		double total= Numero.toRedondear(56.7322);
-		double diferencia= Numero.toRedondear(total- (impuestos+ subtotal));
-		LOG.info("subtotal: "+ Numero.toRedondear(48.9071));
-		LOG.info("impuesto: "+ Numero.toRedondear(7.8251));
-		LOG.info("total: "+ Numero.toRedondear(56.7322)+ " calculado: "+ Numero.toRedondear(impuestos+ subtotal)+ " ajustado: "+ Numero.toRedondear(impuestos+ subtotal+ diferencia));
-		subtotal+= diferencia;
-		LOG.info("original: "+ Numero.toRedondear(48.9071)+ " diferencia: "+ diferencia+ "  subtotal: "+ subtotal+ " total: "+ Numero.toRedondear(impuestos+ subtotal));
+	public static void main(String ... args) throws Exception {
+//		double subtotal= Numero.toRedondear(48.9071);
+//		double impuestos= Numero.toRedondear(7.8251);
+//		double total= Numero.toRedondear(56.7322);
+//		double diferencia= Numero.toRedondear(total- (impuestos+ subtotal));
+//		LOG.info("subtotal: "+ Numero.toRedondear(48.9071));
+//		LOG.info("impuesto: "+ Numero.toRedondear(7.8251));
+//		LOG.info("total: "+ Numero.toRedondear(56.7322)+ " calculado: "+ Numero.toRedondear(impuestos+ subtotal)+ " ajustado: "+ Numero.toRedondear(impuestos+ subtotal+ diferencia));
+//		subtotal+= diferencia;
+//		LOG.info("original: "+ Numero.toRedondear(48.9071)+ " diferencia: "+ diferencia+ "  subtotal: "+ subtotal+ " total: "+ Numero.toRedondear(impuestos+ subtotal));
+
+    CFDIFactory.getInstance().download("/home/ferreter/servicios/", "hola", "DPcNXR5fvhTy72x6ILNZsg2");
 	} 	
 }
