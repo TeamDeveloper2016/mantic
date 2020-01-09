@@ -128,7 +128,8 @@ $.mask.rules = $.extend($.mask.rules, {
 	'r': /[0-9,.-]/,
 	's': /[^\u0025\u0027]/,
 	't': /[0-9a-zA-Z_]/,
-	'v': /[0-9a-zA-Z ._\-\/]/
+	'v': /[0-9a-zA-Z ._\-\/]/,
+	'w': /[0-9a-zA-Z,.;:¿?¡!"(){}@+\-=*_%#|~^&/]/
 });
 
 $.mask.masks = $.extend($.mask.masks, {
@@ -183,7 +184,8 @@ $.mask.masks = $.extend($.mask.masks, {
 	'alfanumerico':{mask:'t', type:'repeat'},
 	'valor-simple':{mask:'r', type:'repeat'},
 	'acceso':{mask:'s', type:'repeat'},
-	'codigo':{mask:'v', type:'repeat', fixedChars: '[]'}
+	'codigo':{mask:'v', type:'repeat', fixedChars: '[]'},
+	'codigo-diagonal':{mask:'w', type:'repeat'}
 });
 
 (function() {
