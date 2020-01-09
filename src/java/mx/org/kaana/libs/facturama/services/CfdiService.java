@@ -180,7 +180,8 @@ public class CfdiService  extends HttpService{ //<mx.org.kaana.libs.facturama.Mo
      */
     public InovoiceFile GetFile(String id, FileFormat format, InvoiceType type ) throws FacturamaException, Exception{
         
-        String resource = "cfdi/" +  format + "/" + type + "/" + "/" + id;
+			  String sFormat = format.name().toLowerCase(); 
+        String resource = "cfdi/" +  sFormat + "/" + type + "/"+ id;
         
         InovoiceFile file = (InovoiceFile)  Get(resource, InovoiceFile.class);                         
         
