@@ -23,7 +23,7 @@
 				'precios'   : {multiple: '$', validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'libre', formatos: 'flotante', individual: true, grupo: 'general', mensaje: 'El precio tiene que ser mayor a cero.'},
 				'contenedorGrupos\\:tabla\\:0\\:limites': {validaciones: 'requerido|flotante|menor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:1\\\\:limites"})', mascara: 'libre', formatos: 'precio', grupo: 'general'},
 				'contenedorGrupos\\:tabla\\:1\\:limites': {validaciones: 'requerido|flotante|mayor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:0\\\\:limites"})', mascara: 'libre', formatos: 'precio', grupo: 'general'},
-				'contenedorGrupos\\:auxiliar': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'auxiliar'}
+				'contenedorGrupos\\:auxiliar': {validaciones: 'requerido', mascara: 'codigo', formatos: 'cambiar-mayusculas', grupo: 'auxiliar'}
 			}
 			
 			Janal.Control.almacen = {				 				
