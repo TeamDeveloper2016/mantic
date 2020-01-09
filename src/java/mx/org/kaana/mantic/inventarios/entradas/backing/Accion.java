@@ -776,19 +776,11 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 
 	private void doResetArticuloFromXmlFile(String origen) {
-    Reader reader            = null;
-		Articulo item            = null;
-		File file                = null;
-		ComprobanteFiscal factura= null;
-		List<Articulo> faltantes = (List<Articulo>)this.attrs.get("faltantes");
-		if(this.getXml()!= null && faltantes!= null) {
+		Articulo item           = null;
+		List<Articulo> faltantes= (List<Articulo>)this.attrs.get("faltantes");
+		if(this.getFactura()!= null && faltantes!= null) {
 			try {
-				file   = new File(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.getXml().getRuta()).concat(this.getXml().getName()));
-				reader = new Reader(file.getAbsolutePath());
-				factura= reader.execute();
-				for (Concepto concepto: factura.getConceptos()) {
-					if(Cadena.isVacio(concepto.getNoIdentificacion())) 
-						concepto.setNoIdentificacion("WXYZ");
+				for (Concepto concepto: this.getFactura().getConceptos()) {
           if(origen.equals(concepto.getDescripcion())) {
 						if(item== null) {
 							item= new Articulo(
@@ -834,11 +826,6 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				Error.mensaje(e);
 				JsfBase.addMessageError(e);
 			} // catch
-			finally {
-				factura= null;
-				file   = null;
-				reader = null;
-			} // finally	
 	  } // if 
 	}
 	

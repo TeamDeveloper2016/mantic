@@ -222,7 +222,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 	private int existsItem(List<Articulo> faltantes, Concepto concepto) {
 		int regresar= 0;
 		if(Cadena.isVacio(concepto.getNoIdentificacion())) 
-			concepto.setNoIdentificacion("WXYZ");
+			concepto.setNoIdentificacion("");
 		for (Articulo faltante: faltantes) {
 			if(faltante.getNombre().equals(concepto.getDescripcion()) && 
 				 faltante.getCodigo().equals(concepto.getNoIdentificacion()) && 
@@ -286,7 +286,6 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			this.attrs.put("faltantes", faltantes);
 		} // try
 		catch (Exception e) {
-			this.factura= null;
 			reader = null;
 			throw e;
 		} // catch
