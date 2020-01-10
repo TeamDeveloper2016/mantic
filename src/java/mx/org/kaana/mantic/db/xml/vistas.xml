@@ -9290,41 +9290,76 @@
 		</unit>
 		<unit id="VistaEchartsDemostracionDto">
 			<select id="multiple">
-select
-  tc_mantic_empresas.nombre as category,
-  dayname(tc_mantic_ventas.registro) as serie,
-  sum(tc_mantic_ventas.total) as value
-from
-  tc_mantic_ventas
-inner join 
-  tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
-group by
-  tc_mantic_empresas.nombre,
-  dayname(tc_mantic_ventas.registro)			
+				select
+					tc_mantic_empresas.nombre as category,
+					dayname(tc_mantic_ventas.registro) as serie,
+					sum(tc_mantic_ventas.total) as value
+				from
+					tc_mantic_ventas
+				inner join 
+					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
+				group by
+					tc_mantic_empresas.nombre,
+					dayname(tc_mantic_ventas.registro)			
 			</select>
 			<select id="simple">
-select
-  dayname(tc_mantic_ventas.registro) as serie,
-  sum(tc_mantic_ventas.total) as value
-from
-  tc_mantic_ventas
-inner join 
-  tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
-group by
-  dayname(tc_mantic_ventas.registro) 				
+				select
+					dayname(tc_mantic_ventas.registro) as serie,
+					sum(tc_mantic_ventas.total) as value
+				from
+					tc_mantic_ventas
+				inner join 
+					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
+				group by
+					dayname(tc_mantic_ventas.registro) 				
 			</select>
 			<select id="clean">
-select
-	tc_mantic_articulos_codigos.id_articulo_codigo as id_key,			
-  tc_mantic_articulos_codigos.*
-from
-  tc_mantic_articulos_codigos
-where
-  tc_mantic_articulos_codigos.id_articulo= {idArticulo}
-  and tc_mantic_articulos_codigos.codigo= '{codigo}'
-  and tc_mantic_articulos_codigos.id_proveedor is null
-order by
-  tc_mantic_articulos_codigos.id_principal				
+				select
+					tc_mantic_articulos_codigos.id_articulo_codigo as id_key,			
+					tc_mantic_articulos_codigos.*
+				from
+					tc_mantic_articulos_codigos
+				where
+					tc_mantic_articulos_codigos.id_articulo= {idArticulo}
+					and tc_mantic_articulos_codigos.codigo= '{codigo}'
+					and tc_mantic_articulos_codigos.id_proveedor is null
+				order by
+					tc_mantic_articulos_codigos.id_principal				
+			</select>
+		</unit>
+		<unit id="VistaIncidentesDto">
+			<select id="principal">
+				select 
+					tc_mantic_incidentes.id_incidente as id_key,
+					tc_mantic_incidentes.consecutivo,
+					tc_mantic_incidentes.id_persona, 
+					tc_mantic_incidentes.id_tipo_incidente, 
+					tc_mantic_incidentes.vigencia_inicio,
+					tc_mantic_incidentes.vigencia_fin,
+					tc_mantic_incidentes.ejercicio,
+					tc_mantic_incidentes.orden,
+					tc_mantic_incidentes.id_incidente_estatus,
+					tc_mantic_incidentes.observaciones,
+					tc_mantic_incidentes.id_usuario,
+					tc_mantic_incidentes.registro,	
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) nombre,
+					concat(persona_usuario.nombres, ' ', persona_usuario.paterno, ' ', persona_usuario.materno) nombre_usuario,
+					tc_mantic_tipos_incidentes.nombre tipo_incidente,
+					tc_mantic_incidentes_estatus.nombre estatus
+				from 
+					tc_mantic_incidentes
+				inner join 
+					tc_mantic_personas on tc_mantic_incidentes.id_persona = tc_mantic_personas.id_persona
+				inner join 
+					tc_mantic_tipos_incidentes on tc_mantic_incidentes.id_tipo_incidente = tc_mantic_tipos_incidentes.id_tipo_incidente
+				inner join 
+					tc_mantic_incidentes_estatus on tc_mantic_incidentes_estatus.id_incidente_estatus = tc_mantic_incidentes.id_incidente_estatus
+				inner join 
+					tc_janal_usuarios on tc_mantic_incidentes.id_usuario = tc_janal_usuarios.id_usuario
+				inner join 
+					tc_mantic_personas persona_usuario on tc_janal_usuarios.id_persona = persona_usuario.id_persona
+				where 
+					{condicion}
 			</select>
 		</unit>
 	</dml>    
