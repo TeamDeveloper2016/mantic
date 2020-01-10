@@ -5374,5 +5374,41 @@
           id_factura_bitacora = {idFacturaBitacora}
       </select>
 		</unit>
+		<unit id="TcManticIncidentesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_incidentes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_incidentes
+        where      
+          consecutivo = '{consecutivo}' and id_incidente = {idIncidente}
+      </select>
+    </unit>
+		<unit id="TcManticIncidentesBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_incidentes_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_incidentes_bitacora
+        where      
+          id_incidente = {idIncidente} and id_incidente_bitacora = {idIncidenteBitacora} and id_incidente_estatus = {idIncidenteEstatus} and registro = {registro}
+      </select>
+    </unit>
   </dml>    
 </process>
