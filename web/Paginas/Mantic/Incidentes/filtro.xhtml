@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+	<ui:param name="titulo" value="Incidentes" />
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {
+				codigo: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				nombre: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        fechaInicio  : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        fechaTermino : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'}
+			};						
+		</script>		
+	</ui:define>
+	<ui:define name="contenido">				
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div id="collapse-find" class="ui-grid-col-3">
+          <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
+						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
+						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+              <p:outputLabel for="idEmpresa" value="Sucursal:"/>
+              <p:selectOneMenu id="idEmpresa" value="#{manticIncidentesFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">								
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                <f:selectItems value="#{manticIncidentesFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>              
+              <p:outputLabel for="orden" value="Orden:"/>
+              <p:autoComplete id="orden" placeholder="ej. 202000001" var="customCodigo" itemLabel="#{customOrden.orden}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{customOrden}" value="#{manticIncidentesFiltro.attrs.ordenBuscado}" completeMethod="#{manticIncidentesFiltro.doCompleteOrden}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt" panelStyleClass="janal-wid-col-250"/>															
+							<p:outputLabel for="nombre" value="Nombre:"/>							
+							<p:autoComplete id="nombre" var="custom" placeholder="Nombre empleado" itemLabel="#{custom.nombreCompleto}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticIncidentesFiltro.attrs.nombre}" completeMethod="#{manticIncidentesFiltro.doCompleteNombreEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500"/>																
+              <p:outputLabel for="fechaInicio" value="Vigencia inicio:"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticIncidentesFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+              <p:outputLabel for="fechaTermino" value="Vigencia termino:"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticIncidentesFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>														
+							<p:outputLabel for="estatus" value="Estatus:"/>
+              <p:selectOneMenu id="estatus" value="#{manticIncidentesFiltro.attrs.idEstatus}" styleClass="janal-wid-100-txt" effect="fade">																
+                <f:selectItems value="#{manticIncidentesFiltro.attrs.estatus}"/>                
+              </p:selectOneMenu> 
+						</p:panelGrid>
+						<div class="janal-align-right">
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@form" actionListener="#{manticIncidentesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="right" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b" icon="fa fa-filter" onstart="return janal.execute(true);" process="@form" actionListener="#{manticIncidentesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+						</div>
+					</p:panel>
+				</div>
+				<p:spacer width="5px"/>
+				<div id="collapse-content" class="ui-grid-col-9">										
+					<div class="ui-grid-row janal-grid-row">
+						<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticIncidentesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticIncidentesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticIncidentesFiltro.lazyModel.rowCount gt manticIncidentesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">							
+							<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+							<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
+							<f:facet name="header">								
+								<div class="lg-pantalla">
+									<p:menuButton value="Opciones">
+										<p:menuitem icon="fa fa-plus" value="Agregar" title="Agregar articulo" action="#{manticIncidentesFiltro.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>						
+										<p:separator/>										
+										<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+										<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>										
+									</p:menuButton>
+								</div>	
+								<div class="xs-pantalla">
+									<p:commandButton icon="fa fa-plus" title="Agregar articulo" action="#{manticIncidentesFiltro.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>															
+									<p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+									<p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>									
+								</div>	
+							</f:facet>												
+							<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.orden}">
+								<f:facet name="header">
+									<h:outputText value="Orden"/>
+								</f:facet>
+								<h:outputText value="#{row['orden']}"/>
+							</p:column>														
+							<p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.nombre}">
+								<f:facet name="header">
+									<h:outputText value="Nombre"/>
+								</f:facet>
+								<h:outputText value="#{row['nombre']}"/>
+							</p:column>																					
+							<p:column class="janal-column-left MarAuto Responsive janal-wid-20" sortBy="#{row.puesto}">
+								<f:facet name="header">
+									<h:outputText value="Puesto"/>
+								</f:facet>
+								<h:outputText value="#{row['puesto']}"/>
+							</p:column>																					
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.tipoInicidente}">
+								<f:facet name="header">
+									<h:outputText value="Incidente"/>
+								</f:facet>
+								<h:outputText value="#{row['tipoInicidente']}"/>
+							</p:column>					
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+								<f:facet name="header">
+									<h:outputText value="Estatus"/>
+								</f:facet>
+								<h:outputText value="#{row['estatus']}"/>
+							</p:column>														
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.ejercicio}">
+								<f:facet name="header">
+									<h:outputText value="Ejercicio"/>
+								</f:facet>
+								<h:outputText value="#{row['ejercicio']}"/>
+							</p:column>					
+							<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.vigenciaInicio}">
+								<f:facet name="header">
+									<h:outputText value="Vigencia inicio"/>
+								</f:facet>
+								<h:outputText value="#{row['vigenciaInicio']}"/>
+							</p:column>					
+							<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.vigenciaFin}">
+								<f:facet name="header">
+									<h:outputText value="Vigencia fin"/>
+								</f:facet>
+								<h:outputText value="#{row['vigenciaFin']}"/>
+							</p:column>					
+							<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
+								<f:facet name="header">
+									<h:outputText value="Registro"/>
+								</f:facet>
+								<h:outputText value="#{row['registro']}"/>
+							</p:column>												
+							<f:facet name="footer">
+								Total [#{manticIncidentesFiltro.lazyModel== null ? 0: manticIncidentesFiltro.lazyModel.rowCount}] registros
+							</f:facet>
+						</p:dataTable>
+						<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">							
+							<p:menuitem id="modificar" action="#{manticIncidentesFiltro.doAccion('MODIFICAR')}" process="@this tabla" icon="fa fa-edit" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+							<p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
+							<p:separator/>
+							<p:menuitem id="consultar" action="#{manticIncidentesFiltro.doAccion('CONSULTAR')}" process="@this tabla" icon="fa fa-search" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />																			
+						</p:contextMenu>		
+					</div>	
+				</div>
+			</div>
+		</div>		           				
+	</ui:define>    
+	<ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el articulo seleccionado ?" />
+	<ui:param name="accionConfirmacion" value="#{manticIncidentesFiltro}"/>
+	<ui:param name="updateComponent" value="tabla"/>
+	<ui:param name="eventoConfirmacion" value="doEliminar"	/>	
+	<ui:param name="renderedConfirmacion" value="true"/>	
+	<ui:define name="detalleConfirmacion">
+		<h:panelGrid columns="2">
+			<p:outputLabel value="Categoría: "/>
+			<p:outputLabel value="#{manticIncidentesFiltro.attrs.seleccionado.nombre}"/>
+		</h:panelGrid>			
+	</ui:define>	
+</ui:composition>
