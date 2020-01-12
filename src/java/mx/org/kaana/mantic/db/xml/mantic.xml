@@ -5391,6 +5391,15 @@
         where      
           consecutivo = '{consecutivo}' and id_incidente = {idIncidente}
       </select>
+			<select id="siguiente">
+        select
+					max(orden) + 1 as siguiente
+				from 
+					tc_mantic_incidentes
+				where
+				  ejercicio= {ejercicio} 				  
+				  and orden {operador} 900000
+			</select>		
     </unit>
 		<unit id="TcManticIncidentesBitacoraDto">
       <select id="row">
