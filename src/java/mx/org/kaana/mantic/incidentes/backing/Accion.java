@@ -10,8 +10,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.reglas.comun.Columna;
@@ -23,13 +21,12 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.enums.EEstatusIncidentes;
+import mx.org.kaana.mantic.incidentes.reglas.Transaccion;
 
-@Named(value = "manticIncidentesFiltro")
+@Named(value = "manticIncidentesAccion")
 @ViewScoped
-public class Filtro extends Comun implements Serializable {
+public class Accion extends Comun implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
 
@@ -37,8 +34,7 @@ public class Filtro extends Comun implements Serializable {
   @Override
   protected void init() {
     try {    	
-      this.attrs.put("codigo", "");                  
-			this.toLoadCatalog();
+      
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -70,34 +66,6 @@ public class Filtro extends Comun implements Serializable {
       Methods.clean(columns);
     } // finally		
   } // doLoad
-	
-	private void toLoadCatalog() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
-		List<UISelectItem> estatus= null;
-    try {
-			columns= new ArrayList<>();			
-			params = new HashMap<>();
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());			
-      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
-			this.attrs.put("idEmpresa", new UISelectEntity("-1"));      
-			estatus= new ArrayList<>();
-			for(EEstatusIncidentes eIncidente: EEstatusIncidentes.values())
-				estatus.add(new UISelectItem(eIncidente.getIdEstatusInicidente(), eIncidente.name()));
-			estatus.add(0, new UISelectItem(-1L, "TODOS"));
-			this.attrs.put("estatus", estatus);
-			this.attrs.put("idEstatus", UIBackingUtilities.toFirstKeySelectItem(estatus));
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch   
-    finally {
-      Methods.clean(columns);
-      Methods.clean(params);
-    }// finally
-	}
 
 	private Map<String, Object> toPrepare() {
 		Map<String, Object> regresar= new HashMap<>();
@@ -133,38 +101,6 @@ public class Filtro extends Comun implements Serializable {
 		} // catch		
 		return regresar;
 	} // toCondicion
-
-	public List<UISelectEntity> doCompleteOrden(String query) {
-		this.attrs.put("orden", query);
-    this.doUpdateOrdenes();		
-		return (List<UISelectEntity>)this.attrs.get("ordenes");
-	}	// doCompleteOrden
-	
-	public void doUpdateOrdenes() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
-    try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
-      columns.add(new Columna("orden", EFormatoDinamicos.MAYUSCULAS));      
-			String orden= (String)this.attrs.get("orden"); 
-			orden= !Cadena.isVacio(orden) ? orden.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";			
-			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
-				params.put("idEmpresa", this.attrs.get("idEmpresa"));
-			else
-				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());  		
-  		params.put("orden", orden);			
-      this.attrs.put("ordenes", (List<UISelectEntity>) UIEntity.build("VistaIncidentesDto", "ordenes", params, columns, 20L));
-		} // try
-	  catch (Exception e) {
-      Error.mensaje(e);
-			JsfBase.addMessageError(e);
-    } // catch   
-    finally {
-      Methods.clean(columns);
-      Methods.clean(params);
-    } // finally
-	}	// doUpdateCodigos
 	
 	public List<UISelectEntity> doCompleteNombreEmpleado(String query) {
 		this.attrs.put("nombreEmpleado", query);
@@ -197,19 +133,30 @@ public class Filtro extends Comun implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     }// finally
-	}	// doUpdateArticulos
+	}	// doUpdateArticulos  
 	
-  public String doAccion(String accion) {
-    EAccion eaccion = null;
-    try {
-      eaccion = EAccion.valueOf(accion.toUpperCase());
-      JsfBase.setFlashAttribute("accion", eaccion);
-      JsfBase.setFlashAttribute("idIncidente", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) || eaccion.equals(EAccion.COPIAR) || eaccion.equals(EAccion.ACTIVAR)) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch
-    return "accion".concat(Constantes.REDIRECIONAR);
-  } // doAccion	
+	public String doAceptar(){
+		String regresar        = null;
+		Transaccion transaccion= null;
+		try {
+			regresar= "filtro".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch		
+		return regresar;
+	} // doAceptar
+	
+	public String doCancelar(){
+		String regresar= null;
+		try {
+			regresar= "filtro".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch		
+		return regresar;
+	} // doAceptar
 }
