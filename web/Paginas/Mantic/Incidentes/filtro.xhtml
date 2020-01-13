@@ -11,11 +11,25 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
-				codigo: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				nombre: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				codigo: {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+				nombre: {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         fechaInicio  : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         fechaTermino : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'}
-			};						
+			};	
+			
+			fieldsDialog= {
+				'justificacion': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}				
+			};
+			
+			function validaJustificacion() {
+				var ok= janal.partial('dialogo');
+				if(ok) {
+					PF('dlgEstatus').hide();
+					janal.restore();
+					janal.refresh();
+				} // if
+				return ok;
+			} // validaJustificacion
 		</script>		
 	</ui:define>
 	<ui:define name="contenido">				
@@ -50,8 +64,8 @@
               </p:selectOneMenu> 
 						</p:panelGrid>
 						<div class="janal-align-right">
-							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@form" actionListener="#{manticIncidentesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
-							<p:commandButton id="buscarIcon" title="Buscar" iconPos="right" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b" icon="fa fa-filter" onstart="return janal.execute(true);" process="@form" actionListener="#{manticIncidentesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="@form" actionListener="#{manticIncidentesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="right" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b" icon="fa fa-filter" onstart="return janal.partial('general');" process="@form" actionListener="#{manticIncidentesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
 						</div>
 					</p:panel>
 				</div>
@@ -135,13 +149,36 @@
 							</f:facet>
 						</p:dataTable>
 						<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">							
-							<p:menuitem id="modificar" action="#{manticIncidentesFiltro.doAccion('MODIFICAR')}" process="@this tabla" icon="fa fa-edit" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />												
-							<p:separator/>
+							<p:menuitem id="modificar" action="#{manticIncidentesFiltro.doAccion('MODIFICAR')}" process="@this tabla" icon="fa fa-edit" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{!(manticIncidentesFiltro.attrs.seleccionado.idIncidenteEstatus eq '4' or manticIncidentesFiltro.attrs.seleccionado.idIncidenteEstatus eq '3' or manticIncidentesFiltro.attrs.seleccionado.idIncidenteEstatus eq '2')}"/>
+							<p:separator rendered="#{!(manticIncidentesFiltro.attrs.seleccionado.idIncidenteEstatus eq '4' or manticIncidentesFiltro.attrs.seleccionado.idIncidenteEstatus eq '3' or manticIncidentesFiltro.attrs.seleccionado.idIncidenteEstatus eq '2')}"/>
 							<p:menuitem id="consultar" action="#{manticIncidentesFiltro.doAccion('CONSULTAR')}" process="@this tabla" icon="fa fa-search" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />																			
+							<p:separator rendered="#{!(manticIncidentesFiltro.attrs.seleccionado.idIncidenteEstatus eq '4')}"/>
+							<p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticIncidentesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticIncidentesFiltro.attrs.seleccionado.idIncidenteEstatus eq '4')}"/>
 						</p:contextMenu>		
 					</div>	
 				</div>
 			</div>
 		</div>		           				
 	</ui:define>    	
+	<ui:define name="dialogos">
+		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus de la factura" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.change('formDialogoEstatus', fieldsDialog); janal.refresh();">
+			<h:form id="formDialogoEstatus" prependId="false">
+				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
+					<p:selectOneMenu id="estatusDlg" value="#{manticIncidentesFiltro.attrs.estatusDlg}" styleClass="janal-wid-100-txt">															
+						<f:selectItems value="#{manticIncidentesFiltro.attrs.allEstatus}"/>					
+					</p:selectOneMenu>
+				</h:panelGrid>
+				<p:panelGrid id="salida" columns="1" layout="grid" styleClass="janal-wid-99" style="height:250px !important;overflow-y: auto" columnClasses="janal-wid-100">				
+					<p:outputLabel for="justificacion" value="Justificación"/>
+					<p:inputTextarea id="justificacion" value="#{manticIncidentesFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt" rows="1"/>														
+				</p:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" actionListener="#{manticIncidentesFiltro.doActualizarEstatus}" onstart="return validaJustificacion();" oncomplete="janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgEstatus').hide();" oncomplete="janal.desbloquear();janal.restore();janal.refresh();"/>
+				</div>
+			</h:form>
+		</p:dialog>
+	</ui:define>
 </ui:composition>
