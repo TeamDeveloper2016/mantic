@@ -2,6 +2,9 @@ package mx.org.kaana.mantic.incidentes.beans;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import mx.org.kaana.mantic.db.dto.TcManticIncidentesDto;
 
 public class Incidente implements Serializable{
 
@@ -15,9 +18,13 @@ public class Incidente implements Serializable{
 	private String observaciones;
 
 	public Incidente() {
-		this(-1L, -1L, -1L, -1L, null, null, null);
+		this(-1L, -1L, -1L, -1L, new Date(Calendar.getInstance().getTimeInMillis()), new Date(Calendar.getInstance().getTimeInMillis()), "");
 	}
 
+	public Incidente(TcManticIncidentesDto dto){
+		this(dto.getIdIncidente(), dto.getIdPersona(), dto.getIdTipoIncidente(), dto.getIdIncidenteEstatus(), dto.getVigenciaInicio(), dto.getVigenciaFin(), dto.getObservaciones());
+	}
+	
 	public Incidente(Long idIncidente, Long idPersona, Long idTipoIncidente, Long idIncidenteEstatus, Date vigenciaInicio, Date vigenciaFin, String observaciones) {
 		this.idIncidente       = idIncidente;
 		this.idPersona         = idPersona;
