@@ -9,10 +9,12 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
@@ -22,10 +24,14 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticIncidentesDto;
 import mx.org.kaana.mantic.enums.EEstatusIncidentes;
+import mx.org.kaana.mantic.incidentes.reglas.Transaccion;
+import mx.org.kaana.mantic.incidentes.beans.Incidente;
 
 @Named(value = "manticIncidentesFiltro")
 @ViewScoped
@@ -105,7 +111,7 @@ public class Filtro extends Comun implements Serializable {
 		try {
 			sb= new StringBuilder("");						
 			if(this.attrs.get("idEstatus")!= null && Long.valueOf(this.attrs.get("idEstatus").toString())>0L)
-				sb.append("tc_mantic_incidentes.id_estatus=").append(this.attrs.get("idEstatus")).append(" and ");						
+				sb.append("tc_mantic_incidentes.id_incidente_estatus=").append(this.attrs.get("idEstatus")).append(" and ");						
 			if(!Cadena.isVacio(JsfBase.getParametro("orden_input")))
 				sb.append("upper(tc_mantic_incidentes.orden) like upper('%").append(JsfBase.getParametro("orden_input")).append("%') and ");						
 			if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L) 
@@ -212,4 +218,50 @@ public class Filtro extends Comun implements Serializable {
     } // catch
     return "accion".concat(Constantes.REDIRECIONAR);
   } // doAccion	
+	
+	public void doLoadEstatus() {
+		Entity seleccionado          = null;
+		Map<String, Object>params    = null;
+		List<UISelectItem> allEstatus= null;		
+		try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");
+			params= new HashMap<>();			
+			params.put("estatusAsociados", seleccionado.toString("estatusAsociados"));
+			allEstatus= UISelect.build("TcManticIncidentesEstatusDto", "estatus", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
+			this.attrs.put("allEstatus", allEstatus);
+			this.attrs.put("estatus", allEstatus.get(0).getValue().toString());		
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // doLoadEstatus
+	
+	public void doActualizarEstatus() {
+		Transaccion transaccion  = null;
+		Entity seleccionado      = null;
+		Incidente incidente      = null;
+		TcManticIncidentesDto dto= null;
+		try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");
+			dto= (TcManticIncidentesDto) DaoFactory.getInstance().findById(TcManticIncidentesDto.class, seleccionado.getKey());
+			incidente= new Incidente(dto);
+			incidente.setIdIncidenteEstatus(Long.valueOf(this.attrs.get("estatus").toString()));
+			transaccion= new Transaccion(incidente);
+			if(transaccion.ejecutar(EAccion.ASIGNAR)) 			
+				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);			
+			else
+				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		finally {
+			this.attrs.put("justificacion", "");			
+		} // finally
+	}	// doActualizaEstatus
 }
