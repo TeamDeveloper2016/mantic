@@ -5416,8 +5416,22 @@
         from      
           tc_mantic_incidentes_bitacora
         where      
-          id_incidente = {idIncidente} and id_incidente_bitacora = {idIncidenteBitacora} and id_incidente_estatus = {idIncidenteEstatus} and registro = {registro}
+          id_incidente = {idIncidente} and id_incidente_bitacora = {idIncidenteBitacora} and id_incidente_estatus = {idIncidenteEstatus}
       </select>
     </unit>
+		<unit id="TcManticTiposIncidentesDto">
+			<select id="row">
+				select 
+					tc_mantic_tipos_incidentes.id_tipo_incidente as id_key,
+					tc_mantic_tipos_incidentes.id_tipo_incidente,
+					tc_mantic_tipos_incidentes.nombre,
+					tc_mantic_tipos_incidentes.descripcion,
+					tc_mantic_tipos_incidentes.registro
+				from 
+					tc_mantic_tipos_incidentes
+				where 
+					{condicion}
+			</select>
+		</unit>
   </dml>    
 </process>

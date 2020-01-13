@@ -4219,6 +4219,51 @@
 				and
 					tr_mantic_empresa_personal.id_empresa in ({idEmpresa})				
 			</select>              
+			<select id="rowAutocompleteAccion">
+				select 
+				  tc_mantic_personas.id_persona as id_key,
+				  tc_mantic_personas.nombres,
+				  tc_mantic_personas.paterno,
+				  tc_mantic_personas.materno,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) nombre_completo,
+				  tc_mantic_personas.rfc,
+				  tc_mantic_personas.curp,
+				  tc_mantic_personas.fecha_nacimiento,
+				  tc_mantic_tipos_personas.nombre as tipo_persona,
+				  tc_janal_tipos_sexos.id_tipo_sexo,
+		 		  tc_janal_tipos_sexos.nombre as sexo,
+				  tc_janal_tipos_sexos.nombre,
+				  tc_mantic_personas.cuenta,
+					tc_mantic_empresas.nombre sucursal,
+					tc_mantic_puestos.nombre puesto,
+					tr_mantic_persona_tipo_contacto.valor contacto
+				from 
+					tc_mantic_personas
+				inner join
+					tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona
+				inner join 
+					tc_mantic_empresas on tr_mantic_empresa_personal.id_empresa = tc_mantic_empresas.id_empresa
+				inner join
+					tc_mantic_personas_titulos on tc_mantic_personas_titulos.id_persona_titulo =tc_mantic_personas.id_persona_titulo
+				inner join
+					tc_mantic_tipos_personas  on tc_mantic_personas.id_tipo_persona=tc_mantic_tipos_personas.id_tipo_persona
+				inner join
+					tc_janal_tipos_sexos  on tc_janal_tipos_sexos.id_tipo_sexo = tc_mantic_personas.id_tipo_sexo
+				left join
+					tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona AND tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
+				left join 
+					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
+				where 
+					(tc_mantic_personas.nombres like '%{nombreEmpleado}%' 
+				or
+					tc_mantic_personas.paterno like '%{nombreEmpleado}%'
+				or
+					tc_mantic_personas.materno  like '%{nombreEmpleado}%'
+				or 
+					tc_mantic_personas.id_persona = {idPersona})
+				and
+					tr_mantic_empresa_personal.id_empresa in ({idEmpresa})				
+			</select>              
 			<select id="tipoPersona">
 				select 
 					tc_mantic_personas.*,tc_mantic_personas.id_persona as id_key
