@@ -98,7 +98,7 @@
 								<f:facet name="header">
 									<h:outputText value="Incidente"/>
 								</f:facet>
-								<h:outputText value="#{row['tipoInicidente']}"/>
+								<h:outputText value="#{row['tipoIncidente']}"/>
 							</p:column>					
 							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
 								<f:facet name="header">
@@ -135,8 +135,7 @@
 							</f:facet>
 						</p:dataTable>
 						<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">							
-							<p:menuitem id="modificar" action="#{manticIncidentesFiltro.doAccion('MODIFICAR')}" process="@this tabla" icon="fa fa-edit" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-							<p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
+							<p:menuitem id="modificar" action="#{manticIncidentesFiltro.doAccion('MODIFICAR')}" process="@this tabla" icon="fa fa-edit" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />												
 							<p:separator/>
 							<p:menuitem id="consultar" action="#{manticIncidentesFiltro.doAccion('CONSULTAR')}" process="@this tabla" icon="fa fa-search" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />																			
 						</p:contextMenu>		
@@ -144,16 +143,5 @@
 				</div>
 			</div>
 		</div>		           				
-	</ui:define>    
-	<ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el articulo seleccionado ?" />
-	<ui:param name="accionConfirmacion" value="#{manticIncidentesFiltro}"/>
-	<ui:param name="updateComponent" value="tabla"/>
-	<ui:param name="eventoConfirmacion" value="doEliminar"	/>	
-	<ui:param name="renderedConfirmacion" value="true"/>	
-	<ui:define name="detalleConfirmacion">
-		<h:panelGrid columns="2">
-			<p:outputLabel value="Categoría: "/>
-			<p:outputLabel value="#{manticIncidentesFiltro.attrs.seleccionado.nombre}"/>
-		</h:panelGrid>			
-	</ui:define>	
+	</ui:define>    	
 </ui:composition>
