@@ -9434,6 +9434,7 @@
 					concat(persona_usuario.nombres, ' ', persona_usuario.paterno, ' ', persona_usuario.materno) nombre_usuario,
 					tc_mantic_tipos_incidentes.nombre tipo_incidente,
 					tc_mantic_incidentes_estatus.nombre estatus,
+					tc_mantic_incidentes_estatus.estatus_asociados,
 					tc_mantic_puestos.nombre puesto
 				from 
 					tc_mantic_incidentes

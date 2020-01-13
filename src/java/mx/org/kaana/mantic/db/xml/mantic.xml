@@ -5433,5 +5433,18 @@
 					{condicion}
 			</select>
 		</unit>
+		<unit id="TcManticIncidentesEstatusDto">
+			<select id="estatus">
+        select      
+				  tc_mantic_incidentes_estatus.id_incidente_estatus as id_key,
+          tc_mantic_incidentes_estatus.*
+        from      
+          tc_mantic_incidentes_estatus
+        where 				  
+				  id_incidente_estatus in ({estatusAsociados})
+				order by 
+				  id_incidente_estatus
+      </select>
+		</unit>
   </dml>    
 </process>
