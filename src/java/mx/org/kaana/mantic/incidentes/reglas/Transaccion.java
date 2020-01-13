@@ -35,10 +35,10 @@ public class Transaccion extends IBaseTnx {
 					regresar= registrarIncidente(sesion);
 					break;
 				case MODIFICAR:									
-					regresar= modificarIncidente(sesion);
+					regresar= modificarIncidente(sesion, false);
 					break;				
-				case ELIMINAR:
-					regresar= eliminarIncidente(sesion);
+				case ASIGNAR:
+					regresar= modificarIncidente(sesion, true);
 					break;
 			} // switch
 			if(!regresar)
@@ -114,11 +114,13 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toSiguiente
 	
-	private boolean modificarIncidente(Session sesion) throws Exception{
+	private boolean modificarIncidente(Session sesion, boolean estatus) throws Exception{
 		boolean regresar         = false;
 		TcManticIncidentesDto dto= null;
 		try {
 			dto= (TcManticIncidentesDto) DaoFactory.getInstance().findById(sesion, TcManticIncidentesDto.class, this.incidente.getIdIncidente());
+			if(estatus)
+				dto.setIdIncidenteEstatus(this.incidente.getIdIncidenteEstatus());
 			dto.setIdPersona(this.incidente.getIdPersona());
 			dto.setIdTipoIncidente(this.incidente.getIdTipoIncidente());			
 			dto.setObservaciones(this.incidente.getObservaciones());
