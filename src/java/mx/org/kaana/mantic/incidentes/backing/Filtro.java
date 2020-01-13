@@ -229,7 +229,7 @@ public class Filtro extends Comun implements Serializable {
 			params.put("estatusAsociados", seleccionado.toString("estatusAsociados"));
 			allEstatus= UISelect.build("TcManticIncidentesEstatusDto", "estatus", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
-			this.attrs.put("estatus", allEstatus.get(0).getValue().toString());		
+			this.attrs.put("estatusDlg", UIBackingUtilities.toFirstKeySelectItem(allEstatus));		
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -249,7 +249,7 @@ public class Filtro extends Comun implements Serializable {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			dto= (TcManticIncidentesDto) DaoFactory.getInstance().findById(TcManticIncidentesDto.class, seleccionado.getKey());
 			incidente= new Incidente(dto);
-			incidente.setIdIncidenteEstatus(Long.valueOf(this.attrs.get("estatus").toString()));
+			incidente.setIdIncidenteEstatus(Long.valueOf(this.attrs.get("estatusDlg").toString()));
 			transaccion= new Transaccion(incidente);
 			if(transaccion.ejecutar(EAccion.ASIGNAR)) 			
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);			
