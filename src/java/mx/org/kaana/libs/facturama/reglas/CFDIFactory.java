@@ -116,6 +116,14 @@ public class CFDIFactory implements Serializable {
 			this.facturama.Cfdis().SaveXml(path.concat(name).concat(".").concat(EFormatos.XML.name().toLowerCase()), id);
 	}	
 
+  public void downpdf(String path, String name, String id) throws Exception {
+		File result= new File(path);		
+		if (!result.exists())
+			result.mkdirs();
+		result= new File(path.concat(name).concat(".").concat(EFormatos.PDF.name().toLowerCase()));
+		this.facturama.Cfdis().SavePdf(path.concat(name).concat(".").concat(EFormatos.PDF.name().toLowerCase()), id);
+	}	
+
 	public mx.org.kaana.libs.facturama.models.response.Cfdi cfdiRemove(String id) throws Exception {
 		mx.org.kaana.libs.facturama.models.response.Cfdi regresar= null;
 		try {
@@ -531,6 +539,50 @@ public class CFDIFactory implements Serializable {
 //		subtotal+= diferencia;
 //		LOG.info("original: "+ Numero.toRedondear(48.9071)+ " diferencia: "+ diferencia+ "  subtotal: "+ subtotal+ " total: "+ Numero.toRedondear(impuestos+ subtotal));
 
-    CFDIFactory.getInstance().download("/home/ferreter/servicios/", "hola", "DPcNXR5fvhTy72x6ILNZsg2");
+    CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/ADC190402MT8/", "ADC190402MT8-8781", "PgPhuWwpq0Hs85QOyP5vqg2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/AEGF750411U56/", "AEGF750411U56-8757", "ZyDgIIgsR-vYdBe0yTBdow2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/AEGF750411U56/", "AEGF750411U56-8767", "FRGoiEWSyc25ZGVr13U3ug2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/ATP011227AH0/", "ATP011227AH0-8774", "1qhXrJWdCKVo5lo50vPwSg2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/AUTA730525EF4/", "AUTA730525EF4-8770", "B1zej5tzRXL37PdxIkOgBg2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/CAP9510013B8/", "CAP9510013B8-8779", "f7nRvBU2a20uQeA0W7y4Cw2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/CAP9510013B8/", "CAP9510013B8-8785", "mVS0miGWNWoa1tx6S5uRlA2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/CASA7210257Y0/", "CASA7210257Y0-8775", "zYm2UDek6OCKssEUMkh3Gg2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/CCA090124LP2/",  "CCA090124LP2-8792",  "S4J7XRCo5KAdUZjWS6FFDQ2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/CCI810108NU2/",  "CCI810108NU2-8773",  "v6h8kLxAoN9pZ5vzLnw3qQ2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/DCO8202203T1/",  "DCO8202203T1-8765",  "6EQxv7Z6mWbiwwlinghn8w2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/DIAL6709208J5/", "DIAL6709208J5-8791", "TrklmBlG1_iLKxvZ3aLAiA2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/EAC941216GT7/",  "EAC941216GT7-8780",  "fcu70UzfsDzjt4Pmw4aOpQ2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/GTA1709112P9/",  "GTA1709112P9-8776",  "z6GXdSoxMy03XatpZFHqyg2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/HME1303115Y9/",  "HME1303115Y9-8762",  "0C-DQvW9mK3an_9KECXDdA2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/HME1303115Y9/",  "HME1303115Y9-8763",  "Aijd-MAJpliQyYSQJD4zUg2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/ICV9006077Q6/",  "ICV9006077Q6-8755",  "3NgDfQYGcnc7J7IFSWJgpA2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/IGT171113TC4/",  "IGT171113TC4-8778",  "ka99lC1nKD1b_V6CDPVa6Q2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/IIM1309093E1/",  "IIM1309093E1-8771",  "fANRYnlOUGuo_34mLu214w2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/MEMM980221AS2/", "MEMM980221AS2-8752", "lk6Gros_OWE9L3AGXDcQQg2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/MDI070910NSA/",  "MDI070910NSA-8753",  "HiwIdsdvwtVZIzLQYa-OAA2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/MJM831201P8A/",  "MJM831201P8A-8749",  "CiI7KOV43LAXJV2lAqSaZQ2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/MJM831201P8A/",  "MJM831201P8A-8784",  "J_BCaVCl0y2gEkcU6rc08Q2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/NCE150605AG3/",  "NCE150605AG3-8754",  "oDReDqcsKNyk_qUjM39LeQ2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/OME561118AA8/",  "OME561118AA8-8788",  "skDmS90pHmHlbYT_Lns_Tw2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/PME111005LEA/",  "PME111005LEA-8772",  "aSjLaq7MqRRWNDmVUdFDQw2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/PME111005LEA/",  "PME111005LEA-8786",  "loUfUjaK4HLDZ1z-9Q6sjg2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/PME111005LEA/",  "PME111005LEA-8787",  "wshKL5aoLRBl2dJr-u_l6w2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/REOI830320GG8/", "REOI830320GG8-8766", "LXImtPrGazA1mOdcovwKsA2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/RUML790625IE3/", "RUML790625IE3-8751", "xRNAdWE1DMfeYiFyqLlvag2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/RUML790625IE3/", "RUML790625IE3-8764", "TSi5o8Uh86HfyOs5bgVaQQ2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/SIA100512PAA/",  "SIA100512PAA-8768",  "d4bm74uz3POG5v84zH92Fw2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/SVI810112T87/",  "SVI810112T87-8761",  "H3HlbDyFLzFrGB0PVyq-BA2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/TABE631013PR5/", "TABE631013PR5-8769", "0NfDNmV27VIm3p7IfKHpbA2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/TABE631013PR5/", "TABE631013PR5-8777", "IKdcOsr1pklsXEWmtcv4SA2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/1/2020/ENERO/TOSJ5303065G7/", "TOSJ5303065G7-8756", "-U_PbjCUCpdq1SO0tAC2rg2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/2/2020/ENERO/MJM831201P8A/",  "MJM831201P8A-8750",  "gSB1XYW_f_dkPt9Fmnfbyw2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/2/2020/ENERO/PUR020308JZ8/",  "PUR020308JZ8-8790",  "BHJiqxqx3DNd72ENvG_zMw2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/2/2020/ENERO/SAM110131IH9/",  "SAM110131IH9-8783",  "2HZQPXkky4Odg9X1VMsTIg2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/2/2020/ENERO/SARJ8008223V4/", "SARJ8008223V4-8758", "WYstgZmkqN7idtlLeN5mfw2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/2/2020/ENERO/SARJ8008223V4/", "SARJ8008223V4-8759", "F4F3lw2l0UL2qRWFbylVDw2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/2/2020/ENERO/SARJ8008223V4/", "SARJ8008223V4-8760", "YMk3hUtbcApeAeTrAIoFnw2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/2/2020/ENERO/SARJ8008223V4/", "SARJ8008223V4-8789", "PGd0-tGLPZnayQEtblYgNQ2");
+		CFDIFactory.getInstance().downpdf("/home/ferreter/servicios/produccion/facturama/2/2020/ENERO/TAA121024V48/",  "TAA121024V48-8782",  "5UYLutmgTgvkygRbSGAJCA2");
+		LOG.error("Ok.");
 	} 	
 }

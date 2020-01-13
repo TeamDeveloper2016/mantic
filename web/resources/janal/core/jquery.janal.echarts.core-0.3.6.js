@@ -9,6 +9,7 @@
 	var jsEcharts;
 	
 	Janal.Control.Echarts= {
+		group: 'CGOR',
 		names: {}
 	};
 	
@@ -36,10 +37,11 @@
 			top: 0,
 			items:[]
 		},
-		init: function(names) { // Constructor
+		init: function(names, group) { // Constructor
 			$echarts   = this;
 			this.charts= names;
-			this.selected.group= this.RESERVED_KEY;
+			if(typeof(group)=== 'undefined')
+			  this.selected.group= this.RESERVED_KEY;
 			Object.assign(this.backup, names);
 		}, // init
 		start: function() {
@@ -442,7 +444,7 @@
 	});
 	console.info('Janal.Control.Echarts initialized');
 })(window);	
-jsEcharts= new Janal.Control.Echarts.Core(Janal.Control.Echarts.names);
+jsEcharts= new Janal.Control.Echarts.Core(Janal.Control.Echarts.names, Janal.Control.Echarts.group);
 
 $(document).ready(function() {
 	jsEcharts.load(Janal.Control.Echarts.names);
