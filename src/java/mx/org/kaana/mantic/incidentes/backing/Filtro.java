@@ -203,8 +203,8 @@ public class Filtro extends Comun implements Serializable {
     EAccion eaccion = null;
     try {
       eaccion = EAccion.valueOf(accion.toUpperCase());
-      JsfBase.setFlashAttribute("accion", eaccion);
-      JsfBase.setFlashAttribute("idIncidente", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) || eaccion.equals(EAccion.COPIAR) || eaccion.equals(EAccion.ACTIVAR)) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
+      JsfBase.setFlashAttribute("eaccion", eaccion);
+      JsfBase.setFlashAttribute("idIncidente", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
