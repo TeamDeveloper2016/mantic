@@ -95,6 +95,7 @@ public class Filtro extends Comun implements Serializable {
 			estatus.add(0, new UISelectItem(-1L, "TODOS"));
 			this.attrs.put("estatus", estatus);
 			this.attrs.put("idEstatus", UIBackingUtilities.toFirstKeySelectItem(estatus));
+			this.loadTiposIncidentes();
     } // try
     catch (Exception e) {
       throw e;
@@ -112,6 +113,8 @@ public class Filtro extends Comun implements Serializable {
 			sb= new StringBuilder("");						
 			if(this.attrs.get("idEstatus")!= null && Long.valueOf(this.attrs.get("idEstatus").toString())>0L)
 				sb.append("tc_mantic_incidentes.id_incidente_estatus=").append(this.attrs.get("idEstatus")).append(" and ");						
+			if(this.attrs.get("idTipoIncidente")!= null && Long.valueOf(this.attrs.get("idTipoIncidente").toString())>0L)
+				sb.append("tc_mantic_incidentes.id_tipo_incidente=").append(this.attrs.get("idTipoIncidente")).append(" and ");						
 			if(!Cadena.isVacio(JsfBase.getParametro("orden_input")))
 				sb.append("upper(tc_mantic_incidentes.orden) like upper('%").append(JsfBase.getParametro("orden_input")).append("%') and ");						
 			if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L) 
@@ -264,4 +267,13 @@ public class Filtro extends Comun implements Serializable {
 			this.attrs.put("justificacion", "");			
 		} // finally
 	}	// doActualizaEstatus
+	
+	private void loadTiposIncidentes() {
+		Map<String, Object> params= new HashMap<>();
+		params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+		List<UISelectItem> tiposIncidentes= UISelect.build("TcManticTiposIncidentesDto", "row", params, "nombre", " ", EFormatoDinamicos.MAYUSCULAS);
+		tiposIncidentes.add(0, new UISelectItem(-1L, "TODOS"));
+		this.attrs.put("incidentes", tiposIncidentes);
+	} // loadTiposInicidentes
+	
 }

@@ -51,7 +51,7 @@ public class Accion extends Comun implements Serializable {
 		EAccion eaccion = null;		
 		Long idIncidente= null;
     try {    	
-			loadTiposIncidentes();
+			this.loadTiposIncidentes();
       eaccion= (EAccion) JsfBase.getFlashAttribute("eaccion");
 			switch(eaccion){
 				case AGREGAR:

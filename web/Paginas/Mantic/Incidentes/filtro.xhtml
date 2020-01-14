@@ -11,10 +11,13 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
-				codigo: {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
-				nombre: {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
-        fechaInicio  : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        fechaTermino : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'}
+        idEmpresa   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				consecutivo : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'consecutivo'},
+				nombre      : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        fechaInicio : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        fechaTermino: {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        idTipoIncidente: {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        estatus     : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}
 			};	
 			
 			fieldsDialog= {
@@ -50,14 +53,18 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>              
-              <p:outputLabel for="orden" value="Orden:"/>
-              <p:autoComplete id="orden" placeholder="ej. 202000001" var="customCodigo" itemLabel="#{customOrden.orden}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{customOrden}" value="#{manticIncidentesFiltro.attrs.ordenBuscado}" completeMethod="#{manticIncidentesFiltro.doCompleteOrden}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt" panelStyleClass="janal-wid-col-250"/>															
+              <p:outputLabel for="consecutivo" value="Consecutivo:"/>
+              <p:autoComplete id="consecutivo" placeholder="ej. 202000001" var="customCodigo" itemLabel="#{customOrden.orden}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{customOrden}" value="#{manticIncidentesFiltro.attrs.ordenBuscado}" completeMethod="#{manticIncidentesFiltro.doCompleteOrden}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt" panelStyleClass="janal-wid-col-250"/>															
 							<p:outputLabel for="nombre" value="Nombre:"/>							
 							<p:autoComplete id="nombre" var="custom" placeholder="Nombre empleado" itemLabel="#{custom.nombreCompleto}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticIncidentesFiltro.attrs.nombre}" completeMethod="#{manticIncidentesFiltro.doCompleteNombreEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500"/>																
               <p:outputLabel for="fechaInicio" value="Vigencia inicio:"/>
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticIncidentesFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="fechaTermino" value="Vigencia termino:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticIncidentesFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>														
+							<p:outputLabel for="idTipoIncidente" value="Tipo incidente:"/>
+							<p:selectOneMenu id="idTipoIncidente" value="#{manticIncidentesFiltro.attrs.idTipoIncidente}" styleClass="janal-wid-100-txt">
+								<f:selectItems value="#{manticIncidentesFiltro.attrs.incidentes}"/>
+							</p:selectOneMenu>																		
 							<p:outputLabel for="estatus" value="Estatus:"/>
               <p:selectOneMenu id="estatus" value="#{manticIncidentesFiltro.attrs.idEstatus}" styleClass="janal-wid-100-txt" effect="fade">																
                 <f:selectItems value="#{manticIncidentesFiltro.attrs.estatus}"/>                
@@ -90,11 +97,11 @@
 									<p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>									
 								</div>	
 							</f:facet>												
-							<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.orden}">
+							<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
 								<f:facet name="header">
-									<h:outputText value="Orden"/>
+									<h:outputText value="Consecutivo"/>
 								</f:facet>
-								<h:outputText value="#{row['orden']}"/>
+								<h:outputText value="#{row['consecutivo']}"/>
 							</p:column>														
 							<p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.nombre}">
 								<f:facet name="header">
@@ -108,7 +115,7 @@
 								</f:facet>
 								<h:outputText value="#{row['puesto']}"/>
 							</p:column>																					
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.tipoInicidente}">
+							<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.tipoInicidente}">
 								<f:facet name="header">
 									<h:outputText value="Incidente"/>
 								</f:facet>
