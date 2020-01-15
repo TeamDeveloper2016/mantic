@@ -64,7 +64,7 @@ public class Filtro extends Comun implements Serializable {
       columns.add(new Columna("vigenciaInicio", EFormatoDinamicos.FECHA_HORA_CORTA));
       columns.add(new Columna("vigenciaFin", EFormatoDinamicos.FECHA_HORA_CORTA));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-      params.put("sortOrder", "order by tc_mantic_incidentes.registro desc");
+      params.put("sortOrder", "order by tc_mantic_incidentes.consecutivo desc");
       this.lazyModel = new FormatCustomLazy("VistaIncidentesDto", "principal", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
