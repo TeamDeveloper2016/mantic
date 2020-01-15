@@ -49,6 +49,7 @@ import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.db.dto.TrManticVentaMedioPagoDto;
 import mx.org.kaana.mantic.enums.EEstatusFacturas;
+import mx.org.kaana.mantic.enums.EEstatusFicticias;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETipoDocumento;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
@@ -1070,7 +1071,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		boolean regresar             = true;
 		TransaccionFactura factura   = null;
 		CFDIGestor gestor            = null;
-		ClienteFactura clienteFactura= null;				
+		ClienteFactura clienteFactura= null;
+		TcManticVentasDto venta      = null;
 		try {			
 			sesion.flush();
 			this.actualizarClienteFacturama(sesion, this.facturacion.getIdCliente(), this.facturacion.getIdClienteDomicilio());
@@ -1083,6 +1085,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			factura.setCliente(clienteFactura);
 			factura.getCliente().setIdFactura(this.facturacion.getIdFactura());
 			factura.generarCfdi(sesion, this.facturacion.getIdEmpresa().toString(), this.facturacion.getIdUsuario());						
+			venta= (TcManticVentasDto) DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.facturacion.getIdVenta());
+			venta.setIdVentaEstatus(this.facturacion.getIdTipoDocumento().equals(ETipoDocumento.VENTAS_NORMALES.getIdTipoDocumento()) ? EEstatusVentas.TIMBRADA.getIdEstatusVenta() : EEstatusFicticias.TIMBRADA.getIdEstatusFicticia());
+			DaoFactory.getInstance().update(sesion, venta);
 		} // try
 		catch (Exception e) {	
 			Error.mensaje(e);
