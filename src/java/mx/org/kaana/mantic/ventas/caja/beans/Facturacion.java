@@ -17,6 +17,7 @@ public class Facturacion implements Serializable{
 	private Long idUsuario;
 	private String nombreEmpresa;
 	private Long idEmpresa;
+	private Long idTipoDocumento;
 
 	public Facturacion() {
 		this(-1L, -1L, "", "", -1L, -1L, "", "", -1L);
@@ -27,6 +28,10 @@ public class Facturacion implements Serializable{
 	} // Facturacion
 	
 	public Facturacion(Long idVenta, Long idCliente, String correos, String razonSocial, Long idTipoPago, Long idFactura, String idFacturama, String selloSat, Long idClienteDomicilio, Long idUsuario, String nombreEmpresa, Long idEmpresa) {
+		this(idVenta, idCliente, correos, razonSocial, idTipoPago, idFactura, idFacturama, selloSat, idClienteDomicilio, idUsuario, nombreEmpresa, idEmpresa, -1L);
+	}
+	
+	public Facturacion(Long idVenta, Long idCliente, String correos, String razonSocial, Long idTipoPago, Long idFactura, String idFacturama, String selloSat, Long idClienteDomicilio, Long idUsuario, String nombreEmpresa, Long idEmpresa, Long idTipoDocumento) {
 		this.idVenta           = idVenta;
 		this.idCliente         = idCliente;
 		this.correos           = correos;
@@ -39,6 +44,7 @@ public class Facturacion implements Serializable{
 		this.idUsuario         = idUsuario;
 		this.nombreEmpresa     = nombreEmpresa;
 		this.idEmpresa         = idEmpresa;
+		this.idTipoDocumento   = idTipoDocumento;
 	}
 
 	public Long getIdVenta() {
@@ -135,5 +141,13 @@ public class Facturacion implements Serializable{
 
 	public void setIdEmpresa(Long idEmpresa) {
 		this.idEmpresa = idEmpresa;
+	}	
+
+	public Long getIdTipoDocumento() {
+		return idTipoDocumento;
+	}
+
+	public void setIdTipoDocumento(Long idTipoDocumento) {
+		this.idTipoDocumento = idTipoDocumento;
 	}	
 }
