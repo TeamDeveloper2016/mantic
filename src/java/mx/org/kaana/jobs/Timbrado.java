@@ -92,7 +92,7 @@ public class Timbrado implements Job, Serializable {
 		Calendar calendario=null;
 		try {
 			calendario=Calendar.getInstance();
-			regresar=calendario.get(Calendar.HOUR_OF_DAY)>8&&calendario.get(Calendar.HOUR_OF_DAY)<21;
+			regresar=calendario.get(Calendar.HOUR_OF_DAY)>=5&&calendario.get(Calendar.HOUR_OF_DAY)<=23;
 		} // try
 		catch (Exception e) {
 			throw e;
