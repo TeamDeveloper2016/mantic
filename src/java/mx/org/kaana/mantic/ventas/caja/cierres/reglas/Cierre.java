@@ -103,7 +103,7 @@ public class Cierre extends IBaseTnx implements Serializable  {
 					regresar= DaoFactory.getInstance().update(sesion, this.cierre)>= 1L;
 					sesion.flush();
 					for (Importe importe: this.importes) {
-						LOG.error("[Cierre] Medio pago:" + importe.getIdTipoMedioPago() + ", Cierre:" + importe.getIdCierreCaja()+ ", Caja:" + importe.getIdCaja() + ", Disponible:" + importe.getDisponible()+ ", Acumulado anterior:" + importe.getAcumulado() + ", Saldo anterior:" + importe.getSaldo());
+						// LOG.error("[Cierre] Medio pago:" + importe.getIdTipoMedioPago() + ", Cierre:" + importe.getIdCierreCaja()+ ", Caja:" + importe.getIdCaja() + ", Disponible:" + importe.getDisponible()+ ", Acumulado anterior:" + importe.getAcumulado() + ", Saldo anterior:" + importe.getSaldo());
 					  DaoFactory.getInstance().update(sesion, importe);
 					} // for
 					for (Denominacion denominacion: this.denominaciones) 
