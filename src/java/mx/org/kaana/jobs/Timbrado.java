@@ -58,7 +58,7 @@ public class Timbrado implements Job, Serializable {
 		Transaccion transaccion=null;
 		String correos=null;
 		try {
-			if (!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion()) {
+			if (!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion() && validateHora()) {
 				pendientes= this.toFacturasPendientes();
 				for (Facturacion factura: pendientes) {
 					try {
