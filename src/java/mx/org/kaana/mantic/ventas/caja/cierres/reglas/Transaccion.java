@@ -67,11 +67,11 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 					caja= (TcManticCierresCajasDto)DaoFactory.getInstance().findFirst(TcManticCierresCajasDto.class, "caja", bitacora.toMap());
 					if(this.retiro.getIdAbono().equals(1L)) {
-  					caja.setSaldo(Numero.toRedondearSat(caja.getSaldo()+ Math.abs(this.retiro.getImporte())));
+  					caja.setSaldo(Numero.toRedondearSat((caja.getDisponible()+ caja.getSaldo())+ Math.abs(this.retiro.getImporte())));
 						caja.setAcumulado(Numero.toRedondearSat(caja.getAcumulado()+ Math.abs(this.retiro.getImporte())));
 					} // if	
 					else {
-  					caja.setSaldo(Numero.toRedondearSat(caja.getSaldo()- Math.abs(this.retiro.getImporte())));
+  					caja.setSaldo(Numero.toRedondearSat((caja.getDisponible()+ caja.getSaldo())- Math.abs(this.retiro.getImporte())));
 						caja.setAcumulado(Numero.toRedondearSat(caja.getAcumulado()- Math.abs(this.retiro.getImporte())));
   					this.retiro.setImporte(this.retiro.getImporte()* -1L);
 					} // else
