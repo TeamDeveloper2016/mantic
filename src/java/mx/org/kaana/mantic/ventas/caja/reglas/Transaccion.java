@@ -50,6 +50,7 @@ import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.db.dto.TrManticVentaMedioPagoDto;
 import mx.org.kaana.mantic.enums.EEstatusFacturas;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
+import mx.org.kaana.mantic.enums.ETipoDocumento;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.enums.ETipoPago;
 import mx.org.kaana.mantic.enums.ETiposContactos;
@@ -1077,7 +1078,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			factura= new TransaccionFactura();			
 			factura.actualizarFacturaAutomatico(this.facturacion.getIdFactura(), this.facturacion.getIdUsuario(), EEstatusFacturas.PROCESANDO.getIdEstatusFactura());
 			factura.setArticulos(gestor.toDetalleCfdiVentas(sesion));
-			clienteFactura= gestor.toClienteCfdiVenta(sesion);			
+			clienteFactura= this.facturacion.getIdTipoDocumento().equals(ETipoDocumento.VENTAS_NORMALES.getIdTipoDocumento()) ? gestor.toClienteCfdiVenta(sesion) : gestor.toClienteCfdiFicticia(sesion);			
 			clienteFactura.setMetodoPago(ETipoPago.fromIdTipoPago(this.facturacion.getIdTipoPago()).getClave());
 			factura.setCliente(clienteFactura);
 			factura.getCliente().setIdFactura(this.facturacion.getIdFactura());
