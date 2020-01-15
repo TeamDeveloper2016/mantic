@@ -2454,7 +2454,8 @@
 					tc_mantic_ventas.id_cliente_domicilio,
 					tc_mantic_ventas.id_usuario,
 					tc_mantic_empresas.nombre as nombre_empresa,
-					tc_mantic_ventas.id_empresa
+					tc_mantic_ventas.id_empresa,
+					tc_mantic_ventas.id_tipo_documento
 				from 
 					tc_mantic_ventas										
 				inner join 
