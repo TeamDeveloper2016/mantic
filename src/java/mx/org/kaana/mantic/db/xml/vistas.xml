@@ -9456,6 +9456,7 @@
 					{condicion}
 				and 
 					tr_mantic_empresa_personal.id_empresa in ({idEmpresa})
+				{sortOrder}
 			</select>
 			<select id="ordenes">
 				select 
