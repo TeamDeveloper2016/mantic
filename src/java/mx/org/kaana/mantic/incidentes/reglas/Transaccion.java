@@ -1,8 +1,11 @@
 package mx.org.kaana.mantic.incidentes.reglas;
 
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
@@ -32,10 +35,12 @@ public class Transaccion extends IBaseTnx {
 		try {
 			switch(accion){
 				case AGREGAR:			
-					regresar= registrarIncidente(sesion);
+					if(verificaExistente(sesion))
+						regresar= registrarIncidente(sesion);
 					break;
 				case MODIFICAR:									
-					regresar= modificarIncidente(sesion, false);
+					if(verificaExistente(sesion))
+						regresar= modificarIncidente(sesion, false);
 					break;				
 				case ASIGNAR:
 					regresar= modificarIncidente(sesion, true);
@@ -49,6 +54,60 @@ public class Transaccion extends IBaseTnx {
 		} // catch		
 		return regresar;
 	} // ejecutar
+	
+	private boolean verificaExistente(Session sesion) throws Exception{
+		boolean regresar         = true;
+		Entity registro          = null;
+		Map<String, Object>params= null;
+		int totalDias            = 0;
+		Date initDate            = null;
+		Calendar calendar        = null;
+		try {
+			this.messageError= "No es posible agregar una incidencia del mismo tipo al mismo empleado cuando hay una vigente.";
+			totalDias= Fecha.getBetweenDays(this.incidente.getVigenciaInicio(), this.incidente.getVigenciaFin());
+			initDate= this.incidente.getVigenciaInicio();
+			if(totalDias== 0)
+				totalDias=1;
+			for(int count=0; count< totalDias; count++){
+				params= new HashMap<>();
+				params.put("idPersona", this.incidente.getIdPersona());
+				params.put("idTipoIncidente", this.incidente.getIdTipoIncidente());
+				params.put("estatus", toEstatus());
+				params.put("fecha", Fecha.formatear(Fecha.FECHA_MYSQL, initDate));
+				registro= (Entity) DaoFactory.getInstance().toEntity(sesion, "TcManticIncidentesDto", "existente", params);
+				if(registro!= null && registro.isValid()){
+					regresar= false;
+					break;
+				} // if
+				else{
+					calendar= Calendar.getInstance();
+					calendar.setTime(initDate);
+					calendar.add(Calendar.DAY_OF_YEAR, 1);
+					initDate= new Date(calendar.getTimeInMillis());
+				} // else
+			} // for
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // verificaExistente
+	
+	private String toEstatus(){
+		StringBuilder regresar= null;
+		try {
+			regresar= new StringBuilder("");
+			regresar.append(EEstatusIncidentes.ACEPTADA.getIdEstatusInicidente());
+			regresar.append(",");
+			regresar.append(EEstatusIncidentes.APLICADA.getIdEstatusInicidente());
+			regresar.append(",");
+			regresar.append(EEstatusIncidentes.CAPTURADA.getIdEstatusInicidente());		
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar.toString();
+	} // toEstatus
 	
 	private boolean registrarIncidente(Session sesion) throws Exception{
 		boolean regresar         = false;
