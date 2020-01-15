@@ -5400,6 +5400,21 @@
 				  ejercicio= {ejercicio} 				  
 				  and orden {operador} 900000
 			</select>		
+			<select id="existente">
+				select 
+					tc_mantic_incidentes.id_incidente as id_key,
+					tc_mantic_incidentes.*
+				from 
+					tc_mantic_incidentes
+				where 
+					id_persona= {idPersona}
+				and 
+					id_tipo_incidente={idTipoIncidente}
+				and 
+					id_incidente_estatus in ({estatus})
+				and 
+					('{fecha}' between tc_mantic_incidentes.vigencia_inicio and tc_mantic_incidentes.vigencia_fin)
+			</select>
     </unit>
 		<unit id="TcManticIncidentesBitacoraDto">
       <select id="row">
