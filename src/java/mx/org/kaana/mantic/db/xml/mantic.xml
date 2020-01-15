@@ -3855,7 +3855,7 @@
 				  clave
       </select>
     </unit>
-	    <unit id="TcManticManufacturasDto">
+	  <unit id="TcManticManufacturasDto">
       <select id="row">
         select      
           *

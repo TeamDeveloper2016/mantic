@@ -67,14 +67,13 @@ public class Ambos extends IBaseFilter implements Serializable {
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa"));
-			this.attrs.put("sucursales", JsfBase.getFlashAttribute("idEmpresa"));
+			this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("idCierre", JsfBase.getFlashAttribute("idCierre"));
       this.attrs.put("idCierreEstatus", JsfBase.getFlashAttribute("idCierreEstatus"));
       this.attrs.put("idCaja", JsfBase.getFlashAttribute("idCaja"));
 			this.attrs.put("idAbono", -1L);
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Mantic/Ventas/Caja/accion": JsfBase.getFlashAttribute("retorno"));
 			this.toLoadCatalog();
-		  this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -97,7 +96,6 @@ public class Ambos extends IBaseFilter implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       this.lazyModel = new FormatCustomLazy("VistaCierresCajasDto", "consulta", params, columns);
       UIBackingUtilities.resetDataTable();
-			this.toLoadEmpresas();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -140,7 +138,8 @@ public class Ambos extends IBaseFilter implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("usuarios", (List<UISelectEntity>) UIEntity.build("VistaCierresCajasDto", "usuarios", this.attrs, columns));
 			this.attrs.put("idUsuario", new UISelectEntity("-1"));
-    } // try
+  		this.toLoadEmpresas();
+  } // try
     finally {
       Methods.clean(columns);
     }// finally
@@ -163,14 +162,15 @@ public class Ambos extends IBaseFilter implements Serializable {
     }// finally
 	}
 	
-	private void doLoadCajas() {
+	public void doLoadCajas() {
 		List<Columna> columns= null;
     try {
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("cajas", (List<UISelectEntity>) UIEntity.build("TcManticCajasDto", "unica", this.attrs, columns));
-    } // try
+      this.attrs.put("cajas", (List<UISelectEntity>) UIEntity.build("TcManticCajasDto", "cajas", this.attrs, columns));
+      this.doLoad();
+		} // try
     catch (Exception e) {
       throw e;
     } // catch   

@@ -33,9 +33,10 @@
           <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
-    					<p:outputLabel for="idEmpresas" value="Sucursal:"/>
-							<p:selectOneMenu id="idEmpresas" value="#{manticVentasCajaCierresAmbos.attrs.idEmpresas}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItems value="#{manticVentasCajaCierresAmbos.attrs.empresas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+    					<p:outputLabel for="idEmpresa" value="Sucursal:"/>
+							<p:selectOneMenu id="idEmpresa" value="#{manticVentasCajaCierresAmbos.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<p:ajax event="change" listener="#{manticVentasCajaCierresAmbos.doLoadCajas}" process="@this" update="idCajas"/>
+								<f:selectItems value="#{manticVentasCajaCierresAmbos.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
 								</p:column>   
