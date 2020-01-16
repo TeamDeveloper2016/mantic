@@ -6100,6 +6100,7 @@
 						tc_mantic_notas_entradas.id_nota_entrada,
 						tc_mantic_notas_entradas.consecutivo,
 						tc_mantic_notas_entradas.factura,
+						tc_mantic_notas_entradas.fecha_factura,
 						tc_mantic_empresas_deudas.importe,
 						tc_mantic_empresas_deudas.pagar,
 						tc_mantic_empresas_deudas.saldo,
