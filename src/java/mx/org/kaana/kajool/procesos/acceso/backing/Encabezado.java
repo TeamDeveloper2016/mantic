@@ -3,7 +3,9 @@ package mx.org.kaana.kajool.procesos.acceso.backing;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -178,6 +180,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
 				} // if	
 		  }	// if
 			else {
+				existe.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 				existe.setCantidad(existe.getCantidad()+ this.faltante.getCantidad());
 				if(DaoFactory.getInstance().update(existe)> 0L) {
 	  			JsfBase.addMessage("Agregado:", "El articulo fue actualizado en la relación de faltantes. !", ETipoMensaje.INFORMACION);
