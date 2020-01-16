@@ -307,19 +307,19 @@ public class Transaccion extends IBaseTnx {
 			} // if	
 			if(this.pdf!= null) {
 				tmp= new TcManticEmpresasArchivosDto(
-					this.xml.getRuta(),
+					this.pdf.getRuta(),
 					-1L,
-					this.xml.getName(),
+					this.pdf.getName(),
 					new Long(Calendar.getInstance().get(Calendar.YEAR)),
-					this.xml.getFileSize(),
+					this.pdf.getFileSize(),
 					JsfBase.getIdUsuario(),	
 					2L,
 					1L,
-					this.xml.getObservaciones(),
+					this.pdf.getObservaciones(),
 					this.idPago,																					
-					Configuracion.getInstance().getPropiedadSistemaServidor("pagos").concat(this.xml.getRuta()).concat(this.xml.getName()),
+					Configuracion.getInstance().getPropiedadSistemaServidor("pagos").concat(this.pdf.getRuta()).concat(this.pdf.getName()),
 					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
-          this.xml.getOriginal()					
+          this.pdf.getOriginal()					
 				);
 				TcManticEmpresasArchivosDto exists= (TcManticEmpresasArchivosDto)DaoFactory.getInstance().toEntity(TcManticEmpresasArchivosDto.class, "TcManticEmpresasArchivosDto", "identically", tmp.toMap());
 				File reference= new File(tmp.getAlias());
