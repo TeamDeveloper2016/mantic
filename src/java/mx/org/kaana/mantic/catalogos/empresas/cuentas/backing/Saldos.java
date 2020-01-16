@@ -189,7 +189,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 			params.put("idEmpresa", this.attrs.get("idEmpresa").toString().equals("-1") ? this.attrs.get("allEmpresa") : this.attrs.get("idEmpresa"));			
 			params.put("almacen", this.attrs.get("almacen"));			
       seleccionado = ((Entity)this.attrs.get("seleccionado"));
-      params.put("sortOrder", "order by	tc_mantic_empresas_deudas.registro desc");
+      params.put("sortOrder", "order by	registro desc");
       reporteSeleccion= EReportes.valueOf(nombre);
       if(reporteSeleccion.equals(EReportes.CUENTA_PAGAR_DETALLE)){
         params.put("idEmpresaDeuda", seleccionado.toLong("idKey"));
