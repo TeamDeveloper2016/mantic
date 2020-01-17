@@ -478,10 +478,12 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				for(Articulo beanArticulo: getAdminOrden().getArticulos()){
 					if(beanArticulo.getIdArticulo()!= null && !beanArticulo.getIdArticulo().equals(-1L)){
 						motor= new MotorBusqueda(beanArticulo.getIdArticulo());
-						articulo= motor.toArticulo();						
+						articulo= motor.toArticulo();
+						beanArticulo.setCosto((Double) articulo.toValue(getPrecio()));
 						if(!beanArticulo.getCosto().equals(articulo.getMayoreo()) && !beanArticulo.getCosto().equals(articulo.getMedioMayoreo())){
 							beanArticulo.setValor((Double) articulo.toValue(getPrecio()));
 							beanArticulo.setCosto((Double) articulo.toValue(getPrecio()));
+							((ArticuloVenta)beanArticulo).setDescripcionPrecio(getPrecio());
 						} // if		
 						else
 							((ArticuloVenta)beanArticulo).setDescuentoAsignado(true);						
