@@ -124,7 +124,7 @@ public class ArticuloVenta extends Articulo {
 									setDescripcionPrecio("medioMayoreo");
 								} // if
 								else{
-									if(this.descripcionPrecio!=null && !this.descripcionPrecio.equals("menudeo")){
+									if(!Cadena.isVacio(this.descripcionPrecio) && !this.descripcionPrecio.equals("menudeo")){
 										this.setCosto((Double) validate.toValue(this.descripcionPrecio));
 										setDescripcionPrecio(this.descripcionPrecio);
 									} // if
