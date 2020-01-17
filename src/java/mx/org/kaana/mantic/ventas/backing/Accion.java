@@ -667,5 +667,4 @@ public class Accion extends IBaseVenta implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doAgregarCorreo
-	
 }
