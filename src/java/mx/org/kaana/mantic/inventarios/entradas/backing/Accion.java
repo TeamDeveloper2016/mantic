@@ -449,7 +449,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   			boolean found= false;
 				while (y< disponibles.size()) {
 					disponible= disponibles.get(y);
-					if((faltante.getCodigo()!= null && disponible.getCodigo()!= null && Cadena.toEqualsString(faltante.getCodigo(), disponible.getCodigo())) || 
+					if((faltante.getCodigo()!= null && disponible.getCodigo()!= null && faltante.getCodigo().length()> 0 &&  Cadena.toEqualsString(faltante.getCodigo(), disponible.getCodigo())) || 
 						(faltante.getNombre()!= null && disponible.getOrigen()!= null && Cadena.toEqualsString(faltante.getNombre(), disponible.getOrigen()))) {
 						relacionados++;
   				  LOG.info(relacionados+ ".- Relacionados ["+ disponible.getCodigo()+ "] "+ disponible.getNombre());
