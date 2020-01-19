@@ -29,7 +29,6 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.UIEntity;
-import mx.org.kaana.libs.pagina.UIMessage;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
@@ -266,20 +265,19 @@ public class Filtro extends IBaseFilter implements Serializable {
   }
 
   public void doReset() {
-    Transaccion tx = null;
-    TcManticPersonasDto persona = null;
-    Entity seleccionado = null;
+    Transaccion transaccion    = null;
+    TcManticPersonasDto persona= null;
+    Entity seleccionado        = null;
     try {
-      seleccionado = (Entity) this.attrs.get("seleccionado");
-      persona = new TcManticPersonasDto(seleccionado.toLong("idPersona"));
+      seleccionado= (Entity) this.attrs.get("seleccionado");
+      persona= new TcManticPersonasDto(seleccionado.toLong("idPersona"));
       persona.setCurp(seleccionado.toString("curp"));
-      tx = new Transaccion(persona);
-      if (tx.ejecutar(EAccion.RESTAURAR)) {
-        JsfBase.addMessage("La cuenta del usuario ".concat(seleccionado.toString("cuenta")).concat(" ya fue resetada con exito."));
-      } // if
-      else {
-        JsfBase.addMessage("Error", "No se puede resetar la contraseña del usuario", ETipoMensaje.ERROR);
-      } // else
+      persona.setPaterno(seleccionado.toString("primerApellido"));
+      transaccion= new Transaccion(persona);
+      if (transaccion.ejecutar(EAccion.RESTAURAR)) 
+        JsfBase.addMessage("La cuenta del usuario ".concat(seleccionado.toString("cuenta")).concat(" ya fue resetada con exito."));      
+      else 
+        JsfBase.addMessage("Error", "No se puede resetar la contraseña del usuario", ETipoMensaje.ERROR);      
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -301,6 +299,5 @@ public class Filtro extends IBaseFilter implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessage("Ocurrió un error en la busqueda de los usuarios", ETipoMensaje.ERROR);
     } // catch
-
   }
 }
