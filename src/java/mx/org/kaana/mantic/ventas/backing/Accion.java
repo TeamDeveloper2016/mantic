@@ -32,6 +32,7 @@ import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
+import mx.org.kaana.mantic.enums.ETipoVenta;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
 import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
@@ -91,6 +92,7 @@ public class Accion extends IBaseVenta implements Serializable {
   protected void init() {		
 		boolean isMatriz= false;
     try {
+			setPrecio(ETipoVenta.MENUDEO.getNombreCampo());
 			this.attrs.put("xcodigo", JsfBase.getFlashAttribute("xcodigo"));	
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
 			this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null? -1L: JsfBase.getFlashAttribute("idVenta"));
