@@ -74,9 +74,12 @@ public class Transaccion extends IBaseTnx {
 				usuarioExiste= (TcJanalUsuariosDto) DaoFactory.getInstance().findIdentically(sesion, TcJanalUsuariosDto.class, params);
 				if (usuarioExiste== null) 
 					regresar = DaoFactory.getInstance().update(sesion, this.usuario, params)>= 1L;
-				this.persona.setContrasenia(BouncyEncryption.encrypt(this.persona.getContrasenia()));
-				regresar = DaoFactory.getInstance().update(sesion, this.persona) >= 1L;
-				this.persona.setContrasenia(BouncyEncryption.decrypt(this.persona.getContrasenia()));
+				if(this.toSearch(sesion, persona.getCuenta()))
+						throw new RuntimeException("La cuenta ya existe verifiquela de favor !\n");
+				else{
+					this.persona.setContrasenia(BouncyEncryption.encrypt(this.persona.getContrasenia()));
+					regresar = DaoFactory.getInstance().update(sesion, this.persona) >= 1L;				
+				} // else
 				break;
 			case ELIMINAR:
 				regresar = DaoFactory.getInstance().delete(sesion, this.usuario.toHbmClass(), this.usuario.getKey()) >= 1L;
@@ -99,18 +102,26 @@ public class Transaccion extends IBaseTnx {
   } // ejecutar
 
   private boolean toSearch(Session sesion, String cuenta) {
-    boolean regresar          = false;
-    Map<String, Object> params= null;
-		List<TcManticPersonasDto> listaTrUsuariosDto= null;
+    boolean regresar                       = false;
+    Map<String, Object> params             = null;
+		List<TcManticPersonasDto> listaPersonas= null;
+		boolean mismaPersona                   = false;
+		int count                              = 0;
     try {
       params = new HashMap<>();
       params.put("cuenta", cuenta);
-      listaTrUsuariosDto = DaoFactory.getInstance().findViewCriteria(sesion, TcManticPersonasDto.class, params, "findUsuario");
-      regresar = !listaTrUsuariosDto.isEmpty();
+      listaPersonas = DaoFactory.getInstance().findViewCriteria(sesion, TcManticPersonasDto.class, params, "findUsuario");
+			for(TcManticPersonasDto recordPersona: listaPersonas){
+				if(recordPersona.getIdPersona().equals(this.persona.getIdPersona())){
+					count++;					
+				} // if
+			} // for
+			mismaPersona= count== listaPersonas.size();					
+      regresar = !listaPersonas.isEmpty() && !mismaPersona;
     } // try
     catch (Exception e) {
       Error.mensaje(e);
     } // catch
     return regresar;
-  }	
+  }	// toSearch
 }
