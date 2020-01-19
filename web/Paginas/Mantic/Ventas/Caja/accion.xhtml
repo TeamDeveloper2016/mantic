@@ -286,7 +286,7 @@
 												<div class="ui-grid-col-12">
 													<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
 													<p:inputText id="locks" value="0" style="display:none"/>
-													<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticVentasCajaAccion.attrs.articulo}" completeMethod="#{manticVentasCajaAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" forceSelection="true" placeholder="ej. CT123">
+													<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticVentasCajaAccion.attrs.articulo}" completeMethod="#{manticVentasCajaAccion.doCompleteArticuloPrecioCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" forceSelection="true" placeholder="ej. CT123">
 														<p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
 														<f:facet name="itemtip">
 															<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
@@ -296,7 +296,7 @@
 																<h:outputText value="Código:" />
 																<h:outputText value="#{custom.propio}" />
 																<h:outputText value="Precio venta:" />
-																<p:outputLabel value="$ #{custom.menudeo}" styleClass="janal-color-blue janal-font-bold"/>
+																<p:outputLabel value="$ #{custom.precioCliente}" styleClass="janal-color-blue janal-font-bold"/>
 																<h:outputText value="Nombre:" />
 																<h:outputText value="#{custom.nombre}" />
 																<h:outputText value="Código auxiliar:" />
