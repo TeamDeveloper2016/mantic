@@ -59,15 +59,15 @@
                 <p:outputLabel for="materno" value="Apellido materno:"/>                   
                 <p:inputText id="materno" readonly="true" styleClass="information janal-wid-100-txt" value="#{kajoolUsuariosAccion.attrs.tcManticPersonasDto.materno}"/>
 								<p:spacer/><p:separator/>
-                <p:outputLabel for="cuenta" value="Cuenta:"/>
-                <p:inputText  id="cuenta" readonly="#{kajoolUsuariosAccion.lockField}" value="#{kajoolUsuariosAccion.attrs.tcManticPersonasDto.cuenta}" styleClass="information janal-wid-100-txt"/>
-                <p:outputLabel for="contrasenia" value="Contraseña:"/>
-								<p:panelGrid columns="2" styleClass="information janal-wid-100" columnClasses="janal-wid-98, janal-wid-2">								
+                <p:outputLabel for="cuenta" value="Cuenta:" rendered="#{kajoolUsuariosAccion.attrs.isModificar}"/>
+                <p:inputText  id="cuenta" readonly="#{kajoolUsuariosAccion.lockField}" value="#{kajoolUsuariosAccion.attrs.tcManticPersonasDto.cuenta}" styleClass="information janal-wid-100-txt" rendered="#{kajoolUsuariosAccion.attrs.isModificar}"/>
+                <p:outputLabel for="contrasenia" value="Contraseña:" rendered="#{kajoolUsuariosAccion.attrs.isModificar}"/>
+								<p:panelGrid columns="2" styleClass="information janal-wid-100" columnClasses="janal-wid-98, janal-wid-2" rendered="#{kajoolUsuariosAccion.attrs.isModificar}">								
                   <p:password id="contrasenia" readonly="#{kajoolUsuariosAccion.lockField}" value="#{kajoolUsuariosAccion.attrs.tcManticPersonasDto.contrasenia}" styleClass="information janal-wid-100-txt" placeholder="#{kajoolUsuariosAccion.attrs.tcManticPersonasDto.contrasenia}" redisplay="true"/>
 									<div class="information" title="#{kajoolUsuariosAccion.attrs.tcManticPersonasDto.contrasenia}" style="float: right; display: #{kajoolUsuariosAccion.lockField? 'none': ''}"><i class="fa fa-fw fa-eye-slash"/></div>
 								</p:panelGrid>	
-                <p:outputLabel for="confirmar" value="Confirmar:"/>
-                <p:password id="confirmar" readonly="#{kajoolUsuariosAccion.lockField}" value="#{kajoolUsuariosAccion.attrs.confirmar}" styleClass="information janal-wid-100-txt" placeholder="#{kajoolUsuariosAccion.attrs.tcManticPersonasDto.contrasenia}" redisplay="true"/>
+                <p:outputLabel for="confirmar" value="Confirmar:" rendered="#{kajoolUsuariosAccion.attrs.isModificar}"/>
+                <p:password id="confirmar" readonly="#{kajoolUsuariosAccion.lockField}" value="#{kajoolUsuariosAccion.attrs.confirmar}" styleClass="information janal-wid-100-txt" placeholder="#{kajoolUsuariosAccion.attrs.tcManticPersonasDto.contrasenia}" redisplay="true" rendered="#{kajoolUsuariosAccion.attrs.isModificar}"/>
               </p:panelGrid>              
             </p:tab>						
             <p:tab title="Observaciones">
@@ -83,7 +83,7 @@
   <ui:param name="componenteBloqueo" value="aceptar contenedorGrupos:persona contenedorGrupos:tipoPerfil"/> 
   <ui:define name="acciones">
     <div class="lg-pantalla">
-      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@this @(.information)" update="@(.information)" actionListener="#{kajoolUsuariosAccion.doAceptar}"  oncomplete="janal.desbloquear()" onstart="return janal.execute();"/>
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@this @(.information)" update="@(.information)" action="#{kajoolUsuariosAccion.doAceptar}"  oncomplete="janal.desbloquear()" onstart="return janal.execute();"/>
       <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{kajoolUsuariosAccion.doCancelar}" ajax="false"/>
     </div>		
     <div class="xs-pantalla">
