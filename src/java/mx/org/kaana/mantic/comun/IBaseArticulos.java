@@ -32,6 +32,7 @@ import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TrManticArticuloPrecioSugeridoDto;
 import mx.org.kaana.mantic.enums.EPrecioArticulo;
+import mx.org.kaana.mantic.enums.ETipoVenta;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
 import mx.org.kaana.mantic.ventas.caja.reglas.Transaccion;
@@ -482,6 +483,56 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
     }// finally
 	}	
 	
+	public void doUpdateArticulosPrecioCliente() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		int buscarCodigoPor       = 1;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
+  		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
+  		params.put("precioCliente", ETipoVenta.fromNombreCampo(getPrecio()).name().toLowerCase());
+			String search= (String) this.attrs.get("codigo"); 
+			if(!Cadena.isVacio(search)) {
+				if((boolean)this.attrs.get("buscaPorCodigo"))
+			    buscarCodigoPor= 1;
+				if(search.startsWith("."))
+					buscarCodigoPor= 2;
+				else 
+					if(search.startsWith(":"))
+						buscarCodigoPor= 0;
+				if(search.startsWith(".") || search.startsWith(":"))
+					search= search.trim().substring(1);				
+				search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+			} // if	
+			else
+				search= "WXYZ";
+  		params.put("codigo", search);	
+			switch(buscarCodigoPor) {      
+				case 0: 
+					this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaBusquedaArticulosVentasDto", "porCodigoIgual", params, columns, 20L));
+					break;
+				case 1: 
+					this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaBusquedaArticulosVentasDto", "porCodigo", params, columns, 20L));
+					break;
+				case 2:
+          this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaBusquedaArticulosVentasDto", "porNombre", params, columns, 20L));
+          break;
+			} // switch
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	} // doUpdateArticulosPrecioCliente	
+	
 	public void doUpdateDialogArticulos(String codigo) {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
@@ -814,6 +865,12 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	public List<UISelectEntity> doCompleteArticulo(String query) {
 		this.attrs.put("codigo", query);
     this.doUpdateArticulos();		
+		return (List<UISelectEntity>)this.attrs.get("articulos");
+	}	
+	
+	public List<UISelectEntity> doCompleteArticuloPrecioCliente(String query) {
+		this.attrs.put("codigo", query);
+    this.doUpdateArticulosPrecioCliente();		
 		return (List<UISelectEntity>)this.attrs.get("articulos");
 	}	
 

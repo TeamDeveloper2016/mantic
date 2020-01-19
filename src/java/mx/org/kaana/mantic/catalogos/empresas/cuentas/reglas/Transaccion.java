@@ -303,7 +303,7 @@ public class Transaccion extends IBaseTnx {
 				  if(!reference.exists())
 						LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
 				sesion.flush();
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("pagos").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.toListFile(sesion, this.xml, 1L));
+				//this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("pagos").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.toListFile(sesion, this.xml, 1L));
 			} // if	
 			if(this.pdf!= null) {
 				tmp= new TcManticEmpresasArchivosDto(
@@ -331,7 +331,7 @@ public class Transaccion extends IBaseTnx {
 				  if(!reference.exists())
 						LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
 				sesion.flush();
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("pagos").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
+				//this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("pagos").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
 			} // if	
   	} // if	
 	}

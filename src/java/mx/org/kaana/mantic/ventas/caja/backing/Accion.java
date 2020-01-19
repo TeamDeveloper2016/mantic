@@ -55,6 +55,7 @@ import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
+import mx.org.kaana.mantic.enums.ETipoVenta;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
 import mx.org.kaana.mantic.facturas.reglas.Transferir;
@@ -200,6 +201,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doInitPage(){
 		Calendar fechaInicio= null;
 		try {
+			setPrecio(ETipoVenta.MENUDEO.getNombreCampo());
 			this.attrs.put("facturacionSinCorreo", false);
 			this.attrs.put("titleTab", "Articulos");
 			this.attrs.put("ticketLock", -1L);

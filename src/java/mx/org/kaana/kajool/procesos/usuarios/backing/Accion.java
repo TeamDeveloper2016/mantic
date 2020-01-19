@@ -27,6 +27,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.db.dto.TcJanalUsuariosDto;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.CargaInformacionUsuarios;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.Transaccion;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.beans.CriteriosBusqueda;
@@ -54,13 +55,14 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       this.criteriosBusqueda = new CriteriosBusqueda();
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
-      this.attrs.put("idUsuario", JsfBase.getFlashAttribute("idUsuario")!= null? (Long)JsfBase.getFlashAttribute("idUsuario"): -1L);
+      this.attrs.put("isModificar", this.accion.equals(EAccion.MODIFICAR));
+			this.attrs.put("idUsuario", JsfBase.getFlashAttribute("idUsuario")!= null? (Long)JsfBase.getFlashAttribute("idUsuario"): -1L);
 			this.attrs.put("nuevo", JsfBase.getFlashAttribute("idUsuario")!= null);
       loadPerfiles();
       loadPersonas();      
       loadUsuario();
-      this.attrs.put("titulo", this.accion.equals(EAccion.MODIFICAR) ? "Modificar usuario cuenta [".concat(((TcManticPersonasDto) this.attrs.get("tcManticPersonasDto")).getCuenta()).concat("]") : "Agregar usuario [...]");
-      buscar();
+      this.attrs.put("titulo", this.accion.equals(EAccion.MODIFICAR) ? "Modificar usuario cuenta [".concat(((TcManticPersonasDto) this.attrs.get("tcManticPersonasDto")).getCuenta()).concat("]") : "Agregar usuario [...]");      
+			buscar();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -101,12 +103,12 @@ public class Accion extends IBaseAttribute implements Serializable {
       persona.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       transaccion = new Transaccion(usuario, persona);
       if (transaccion.ejecutar(this.accion)) {
-        regresar = "filtro";
-        JsfBase.addMessage(this.accion.equals(EAccion.AGREGAR) ? "Se agregó el usuario con éxito." : "Se modificó el usuario con éxito.");
+        regresar = "filtro".concat(Constantes.REDIRECIONAR);
+        JsfBase.addMessage("Usuarios", this.accion.equals(EAccion.AGREGAR) ? "Se agregó el usuario con éxito." : "Se modificó el usuario con éxito.", ETipoMensaje.INFORMACION);
       } // if
       else {
         String perfil= this.criteriosBusqueda.getListaPerfiles().get(this.criteriosBusqueda.getListaPerfiles().indexOf(new UISelectEntity(this.criteriosBusqueda.getPerfil().getKey().toString()))).toString("descripcion");
-        JsfBase.addMessage("El usuario ".concat(persona.getNombres()).concat(" ").concat(persona.getPaterno()).concat(" ya existe con perfil de ").concat(perfil));
+        JsfBase.addMessage("Usuarios", "El usuario ".concat(persona.getNombres()).concat(" ").concat(persona.getPaterno()).concat(" ya existe con perfil de ").concat(perfil), ETipoMensaje.ERROR);
       } // else
     } // try
     catch (Exception e) {

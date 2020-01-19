@@ -35,6 +35,7 @@ import mx.org.kaana.mantic.db.dto.TcManticVentasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteDomicilioDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
+import mx.org.kaana.mantic.enums.ETipoVenta;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 import mx.org.kaana.mantic.ventas.beans.ClienteVenta;
@@ -387,6 +388,7 @@ public class Transaccion extends TransaccionFactura {
 		this.clienteVenta.getCliente().setPlazoDias(15L);
 		this.clienteVenta.getCliente().setIdUsuario(JsfBase.getIdUsuario());
 		this.clienteVenta.getCliente().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+		this.clienteVenta.getCliente().setIdTipoVenta(ETipoVenta.MENUDEO.getIdTipoVenta());
 		idCliente = DaoFactory.getInstance().insert(sesion, this.clienteVenta.getCliente());
 		this.idClienteNuevo= idCliente;
 		if(updateDomicilioPrincipal(sesion, this.clienteVenta.getCliente().getIdCliente())){
