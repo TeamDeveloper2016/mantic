@@ -107,15 +107,15 @@
 									<h:outputText value="#{row.registroPago}"/>
 								</p:column>   
 								<p:column style="text-align: center" styleClass="janal-wid-col-38">
-									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" rendered="#{row.idPrincipal.toLong() eq 1}">
+									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
 										<p:fileDownload value="#{manticCatalogosEmpresasCuentasImportar.doFileDownload(row)}" />
 									</p:commandButton>
 								</p:column>
 								<p:column style="text-align: center" styleClass="janal-wid-col-38">
-									<p:commandLink  actionListener="#{manticCatalogosEmpresasCuentasImportar.doViewPdfDocument(row)}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 2}">
+									<p:commandLink  actionListener="#{manticCatalogosEmpresasCuentasImportar.doViewPdfDocument(row)}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idTipoArchivo.toLong() eq 2}">
 									  <p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button"/>
 									</p:commandLink>	
-									<p:commandLink  actionListener="#{manticCatalogosEmpresasCuentasImportar.doViewXmlDocument(row)}" process="@this" update="@(.viewXML)" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 1}">
+									<p:commandLink  actionListener="#{manticCatalogosEmpresasCuentasImportar.doViewXmlDocument(row)}" process="@this" update="@(.viewXML)" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();" rendered="#{row.idTipoArchivo.toLong() eq 1}">
 									  <p:commandButton icon="fa fa-eye" title="Ver documento XML" ajax="false" type="button"/>
 									</p:commandLink>	
 								</p:column>
