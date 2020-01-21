@@ -133,11 +133,11 @@
             </p:column>		
             <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cantidades}">
               <f:facet name="header">
-                <h:outputText value="Cantidad [+/-]"/>
+                <h:outputText value="Faltantes [+/-]"/>
               </f:facet>
               <h:outputText value="#{row['cantidades']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importes}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importes}" rendered="#{manticComprasOrdenesDiferencias.attrs.tipoDiferencia ne 4}">
               <f:facet name="header">
                 <h:outputText value="Importe [+/-]"/>
               </f:facet>

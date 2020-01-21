@@ -486,7 +486,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	public void doUpdateArticulosPrecioCliente() {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
-		int buscarCodigoPor       = 1;
+		int buscarCodigoPor       = 2;
     try {
 			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
@@ -498,12 +498,12 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			String search= (String) this.attrs.get("codigo"); 
 			if(!Cadena.isVacio(search)) {
 				if((boolean)this.attrs.get("buscaPorCodigo"))
-			    buscarCodigoPor= 1;
+			    buscarCodigoPor= 0;
 				if(search.startsWith("."))
-					buscarCodigoPor= 2;
+					buscarCodigoPor= 1;
 				else 
 					if(search.startsWith(":"))
-						buscarCodigoPor= 0;
+						buscarCodigoPor= 2;
 				if(search.startsWith(".") || search.startsWith(":"))
 					search= search.trim().substring(1);				
 				search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");

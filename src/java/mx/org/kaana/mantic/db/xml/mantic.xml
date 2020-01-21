@@ -4355,6 +4355,17 @@
 				  and id_nota_estatus = {idNotaEstatus}
 				  and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
       </select>
+      <select id="igual">
+        select      
+          *
+        from      
+          tc_mantic_notas_bitacora
+        where      
+          id_nota_entrada = {idNotaEntrada} 
+				  and id_nota_estatus = {idNotaEstatus}
+			  order by
+				  registro desc
+      </select>
 			<select id="ultimo">
 				select
 				  *

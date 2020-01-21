@@ -342,28 +342,39 @@ public class Transaccion extends Inventarios implements Serializable {
 	}
 	
 	private void toApplyNotaEntrada(Session sesion) throws Exception {
-		for (Articulo articulo: this.articulos) {
-			TcManticNotasDetallesDto item= articulo.toNotaDetalle();
-			item.setIdNotaEntrada(this.orden.getIdNotaEntrada());
-			// Si la cantidad es mayor a cero realizar todo el proceso para el articulos, si no ignorarlo porque el articulo no se surtio
-		  if(articulo.getCantidad()> 0L)
-		    this.toAffectAlmacenes(sesion, this.orden.getConsecutivo(), this.orden.getIdNotaEntrada(), item, articulo);
-		} // for
-		this.orden.setIdNotaEstatus(3L);
-		DaoFactory.getInstance().update(sesion, this.orden);
-		
-		// Una vez que la nota de entrada es cambiada a terminar se registra la cuenta por cobrar
-		TcManticEmpresasDeudasDto deuda= null;
-		if(this.orden.getDiasPlazo()> 1) 
-		  deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), (this.orden.getDeuda()- this.orden.getExcedentes())* -1, this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes());
-		else
-		  deuda= new TcManticEmpresasDeudasDto(3L, JsfBase.getIdUsuario(), -1L, "ESTE DEUDA FUE LIQUIDADA EN EFECTIVO", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 0D, this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes());
-	  DaoFactory.getInstance().insert(sesion, deuda);
-		
-		TcManticNotasBitacoraDto registro= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
-		DaoFactory.getInstance().insert(sesion, registro);
-		if(!this.orden.getIdNotaTipo().equals(3L))
-		  this.toCommonNotaEntrada(sesion, this.orden.getIdNotaEntrada(), this.orden.toMap());
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			for (Articulo articulo: this.articulos) {
+				TcManticNotasDetallesDto item= articulo.toNotaDetalle();
+				item.setIdNotaEntrada(this.orden.getIdNotaEntrada());
+				// Si la cantidad es mayor a cero realizar todo el proceso para el articulos, si no ignorarlo porque el articulo no se surtio
+				if(articulo.getCantidad()> 0L)
+					this.toAffectAlmacenes(sesion, this.orden.getConsecutivo(), this.orden.getIdNotaEntrada(), item, articulo);
+			} // for
+			this.orden.setIdNotaEstatus(3L);
+			DaoFactory.getInstance().update(sesion, this.orden);
+
+			// Una vez que la nota de entrada es cambiada a terminar se registra la cuenta por cobrar
+			TcManticEmpresasDeudasDto deuda= null;
+			if(this.orden.getDiasPlazo()> 1) 
+				deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), (this.orden.getDeuda()- this.orden.getExcedentes())* -1, this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes());
+			else
+				deuda= new TcManticEmpresasDeudasDto(3L, JsfBase.getIdUsuario(), -1L, "ESTE DEUDA FUE LIQUIDADA EN EFECTIVO", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 0D, this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes());
+			DaoFactory.getInstance().insert(sesion, deuda);
+			params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
+			params.put("idNotaEstatus", this.orden.getIdNotaEstatus());
+			TcManticNotasBitacoraDto registro= (TcManticNotasBitacoraDto)DaoFactory.getInstance().findFirst(TcManticNotasBitacoraDto.class, "igual", params);
+			if(registro== null) {
+				registro= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
+				DaoFactory.getInstance().insert(sesion, registro);
+			} // if
+			if(!this.orden.getIdNotaTipo().equals(3L))
+				this.toCommonNotaEntrada(sesion, this.orden.getIdNotaEntrada(), this.orden.toMap());
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
 	}
 	
 	private void toDeleteAll(String path, String type, List<Nombres> listado) {
