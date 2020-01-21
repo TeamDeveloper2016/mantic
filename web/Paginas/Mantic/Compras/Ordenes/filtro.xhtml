@@ -134,7 +134,7 @@
             </f:facet>	            
 						<p:column styleClass="janal-column-icon">
 							<p:commandButton icon="fa fa-chevron-circle-right" title="Nota(s) de entrada(s)" action="#{manticComprasOrdenesFiltro.doNotaEntrada}" rendered="#{fn:contains('|4|5|6|7|', filtro['idOrdenEstatus'].toInteger)}">
-								<f:setPropertyActionListener value="#{row['consecutivo']}" target="#{manticComprasOrdenesFiltro.attrs.ordenCompra}" />
+								<f:setPropertyActionListener value="#{row['idKey']}" target="#{manticComprasOrdenesFiltro.attrs.ordenCompra}" />
 							</p:commandButton>
 						</p:column>
             <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.empresa}">

@@ -134,7 +134,7 @@
             </f:facet>	            
 						<p:column styleClass="janal-column-icon">
 							<p:commandButton icon="fa fa-chevron-circle-right" title="Devolucion(es)" action="#{manticInventariosEntradasFiltro.doDevoluciones}" rendered="#{fn:contains('|3|4|5|6|', filtro['idNotaEstatus'].toInteger)}">
-								<f:setPropertyActionListener value="#{row['consecutivo']}" target="#{manticInventariosEntradasFiltro.attrs.notaEntrada}" />
+								<f:setPropertyActionListener value="#{row['idKey']}" target="#{manticInventariosEntradasFiltro.attrs.notaEntrada}" />
 							</p:commandButton>
 						</p:column>
             <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.empresa}">

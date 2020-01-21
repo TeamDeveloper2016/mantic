@@ -500,10 +500,10 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				if((boolean)this.attrs.get("buscaPorCodigo"))
 			    buscarCodigoPor= 0;
 				if(search.startsWith("."))
-					buscarCodigoPor= 1;
+					buscarCodigoPor= 2;
 				else 
 					if(search.startsWith(":"))
-						buscarCodigoPor= 2;
+						buscarCodigoPor= 1;
 				if(search.startsWith(".") || search.startsWith(":"))
 					search= search.trim().substring(1);				
 				search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");

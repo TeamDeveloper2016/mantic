@@ -52,7 +52,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		EReportes reporteSeleccion   = null;
     Entity seleccionado          = null;
 		try{		
-      params= toPrepare();
+      params= this.toPrepare();
       seleccionado = ((Entity)this.attrs.get("seleccionado"));
       params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
       params.put("sortOrder", "order by tc_mantic_creditos_notas.id_empresa, tc_mantic_creditos_notas.ejercicio, tc_mantic_creditos_notas.orden");
@@ -60,7 +60,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       if(reporteSeleccion.equals(EReportes.NOTA_CREDITO_DETALLE)){
         params.put("idCreditoNota", seleccionado.toLong("idCreditoNota"));
         comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), -1L, seleccionado.toLong("idProveedor"), -1L);
-      }
+      } // if
       else
         comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.reporte= JsfBase.toReporte();	
@@ -84,9 +84,12 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("idCreditoNota", JsfBase.getFlashAttribute("idCreditoNota"));
+      this.attrs.put("devolucion", JsfBase.getFlashAttribute("devolucion"));
 			this.toLoadCatalog();
-      if(this.attrs.get("idCreditoNota")!= null) 
+      if(this.attrs.get("idCreditoNota")!= null || this.attrs.get("devolucion")!= null) {
 			  this.doLoad();
+        this.attrs.put("devolucion", "null");
+			} // if	
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -97,7 +100,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   @Override
   public void doLoad() {
     List<Columna> columns     = null;
-		Map<String, Object> params= toPrepare();
+		Map<String, Object> params= this.toPrepare();
     try {
       params.put("sortOrder", "order by tc_mantic_creditos_notas.registro desc");
       columns = new ArrayList<>();
@@ -160,7 +163,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("idCreditoNota")) && !this.attrs.get("idCreditoNota").toString().equals("-1"))
   		sb.append("(tc_mantic_creditos_notas.id_credito_nota=").append(this.attrs.get("idCreditoNota")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("devolucion")))
-  		sb.append("(tc_mantic_devoluciones.consecutivo like '%").append(this.attrs.get("devolucion")).append("%') and ");
+  		sb.append("(tc_mantic_devoluciones.id_devolucion= ").append(this.attrs.get("devolucion")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("folio")))
   		sb.append("(tc_mantic_creditos_notas.folio like '%").append(this.attrs.get("folio")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))

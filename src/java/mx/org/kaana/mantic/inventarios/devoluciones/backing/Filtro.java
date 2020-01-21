@@ -54,8 +54,10 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("idDevolucion", JsfBase.getFlashAttribute("idDevolucion"));
       this.attrs.put("notaEntrada", JsfBase.getFlashAttribute("notaEntrada"));
 			this.toLoadCatalog();
-      if(this.attrs.get("idDevolucion")!= null || this.attrs.get("notaEntrada")!= null) 
+      if(this.attrs.get("idDevolucion")!= null || this.attrs.get("notaEntrada")!= null) {
 			  this.doLoad();
+        this.attrs.put("notaEntrada", null);
+			} // if	
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -136,7 +138,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("idDevolucion")) && !this.attrs.get("idDevolucion").toString().equals("-1"))
   		sb.append("(tc_mantic_devoluciones.id_devolucion=").append(this.attrs.get("idDevolucion")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("notaEntrada")))
-  		sb.append("(tc_mantic_notas_entradas.consecutivo like '%").append(this.attrs.get("notaEntrada")).append("%') and ");
+  		sb.append("(tc_mantic_notas_entradas.id_nota_entrada= ").append(this.attrs.get("notaEntrada")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(tc_mantic_devoluciones.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("idProveedor")) && !this.attrs.get("idProveedor").toString().equals("-1"))
@@ -305,7 +307,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		EReportes reporteSeleccion   = null;
     Entity seleccionado          = null;
 		try{		
-      params= toPrepare();
+      params= this.toPrepare();
       seleccionado = ((Entity)this.attrs.get("seleccionado"));
       params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
       params.put("sortOrder", "order by tc_mantic_devoluciones.id_empresa, tc_mantic_devoluciones.ejercicio, tc_mantic_devoluciones.orden");

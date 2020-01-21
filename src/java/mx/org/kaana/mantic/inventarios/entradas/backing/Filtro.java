@@ -58,8 +58,10 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada"));
       this.attrs.put("ordenCompra", JsfBase.getFlashAttribute("ordenCompra"));
 			this.toLoadCatalog();
-      if(this.attrs.get("idNotaEntrada")!= null || this.attrs.get("ordenCompra")!= null) 
+      if(this.attrs.get("idNotaEntrada")!= null || this.attrs.get("ordenCompra")!= null) {
 			  this.doLoad();
+        this.attrs.put("ordenCompra", null);
+			} // if	
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -154,7 +156,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("idNotaEntrada")) && !this.attrs.get("idNotaEntrada").toString().equals("-1"))
   		sb.append("(tc_mantic_notas_entradas.id_nota_entrada=").append(this.attrs.get("idNotaEntrada")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("ordenCompra")))
-  		sb.append("(tc_mantic_ordenes_compras.consecutivo= '").append(this.attrs.get("ordenCompra")).append("') and ");
+  		sb.append("(tc_mantic_ordenes_compras.id_orden_compra= ").append(this.attrs.get("ordenCompra")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(tc_mantic_notas_entradas.consecutivo= '").append(this.attrs.get("consecutivo")).append("') and ");
 		if(!Cadena.isVacio(this.attrs.get("factura")))
@@ -215,7 +217,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		EReportes reporteSeleccion   = null;
     Entity seleccionado          = null;
 		try{		
-      params= toPrepare();
+      params= this.toPrepare();
       seleccionado = ((Entity)this.attrs.get("seleccionado"));
       params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
       params.put("sortOrder", "order by tc_mantic_notas_entradas.id_empresa, tc_mantic_notas_entradas.ejercicio, tc_mantic_notas_entradas.orden");
