@@ -13,7 +13,7 @@
 		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryTicketJs}"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-        'contenedorGrupos\\:importe' : {validaciones: 'requerido|flotante|mayor({"cuanto":0})|menor-igual({"cuanto": #{manticVentasCajaCierresRetiros.doNumericoSat(manticVentasCajaCierresRetiros.attrs.caja.saldo)}})', mascara: 'libre'},
+        'contenedorGrupos\\:importe' : {validaciones: 'requerido|flotante|mayor({"cuanto":0})|menor-igual({"cuanto": #{manticVentasCajaCierresRetiros.attrs.caja.saldo}})', mascara: 'libre'},
         'contenedorGrupos\\:concepto': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
 			};			
 			

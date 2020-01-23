@@ -71,21 +71,9 @@ public class Abonos extends IBaseAttribute implements Serializable {
   } // init
 
   public void doLoad() {
-		Value cierre= null;
     try {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
-    	if(JsfBase.getFlashAttribute("idCierre")== null) {
-				this.toLoadEmpresas();
-				cierre= (Value)DaoFactory.getInstance().toField("VistaCierresCajasDto", "cierre", this.attrs, "idKey");
-				if(cierre!= null)
-					this.attrs.put("idCierre", cierre.toLong());
-				this.caja= (Entity)DaoFactory.getInstance().toEntity("VistaCierresCajasDto", "caja", this.attrs);
-			} // if	
-			else {
-				this.caja= (Entity)DaoFactory.getInstance().toEntity("VistaCierresCajasDto", "caja", this.attrs);
-				this.toLoadEmpresas();
-			} // if
-      this.attrs.put("caja", this.caja);
+			this.toLoadEmpresas();
 			Entity retiros= (Entity)DaoFactory.getInstance().toEntity("VistaCierresCajasDto", "ambos", this.attrs);
       this.attrs.put("retiros", retiros!= null && retiros.get("retiros").getData()!= null? retiros.toDouble("retiros"): 0D);
       this.attrs.put("abonos", retiros!= null && retiros.get("abonos").getData()!= null? retiros.toDouble("abonos"): 0D);
@@ -110,17 +98,16 @@ public class Abonos extends IBaseAttribute implements Serializable {
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.ASIGNAR)) {	
 					if(JsfBase.isCajero())
-						regresar = "/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR);
+						regresar = "/Paginas/Mantic/Ventas/Caja/accion";
 					else
-						regresar = "ambos".concat(Constantes.REDIRECIONAR);
+						regresar = "/Paginas/Mantic/Ventas/Caja/Cierres/ambos";
      			JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));
 		    	JsfBase.setFlashAttribute("idCaja", this.attrs.get("idCaja"));
  	        JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));    			
 					ticket= new CreateCierre(abono.getImporte(), "ABONO:" + abono.getConsecutivo());
 					UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + abono.getConsecutivo() + "','" + ticket.toHtml() + "');");
 					UIBackingUtilities.execute("jsTicket.clicTicket();");
-					UIBackingUtilities.execute("executeReturn(" + abono.getConsecutivo() + ");");							
-					init();
+					UIBackingUtilities.execute("jsTicket.process('"+ JsfBase.getContext()+ regresar+ ".jsf');");
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR)? "agregó": this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" el abono de caja."), ETipoMensaje.INFORMACION);
@@ -133,7 +120,7 @@ public class Abonos extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
-    return regresar;
+    return null;
   } // doAccion
 	
   public String doCancelar() {   
@@ -155,11 +142,10 @@ public class Abonos extends IBaseAttribute implements Serializable {
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } 
 	
-	private void toLoadEmpresas() {
-		List<Columna> columns     = null;
+	private void toLoadEmpresas() throws Exception {
     Map<String, Object> params= new HashMap<>();
+		List<Columna> columns     = new ArrayList<>();
     try {
-			columns= new ArrayList<>();
 			if(this.attrs.get("idEmpresa")== null)
 				if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 					params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
@@ -173,21 +159,14 @@ public class Abonos extends IBaseAttribute implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			List<UISelectEntity> sucursales= (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
       this.attrs.put("sucursales", sucursales);
-			if(this.caja!= null) {
-				int index= sucursales.indexOf(new UISelectEntity(new Entity(this.caja.toLong("idEmpresa"))));
-				if(index>= 0)
-					this.attrs.put("idEmpresas", sucursales.get(index));
-				else
-			    this.attrs.put("idEmpresas", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("sucursales")));
-			} // if
+			int index= sucursales.indexOf(new UISelectEntity(new Entity((Long)this.attrs.get("idEmpresa"))));
+			if(index>= 0)
+				this.attrs.put("idEmpresas", sucursales.get(index));
 			else
-			  this.attrs.put("idEmpresas", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("sucursales")));
+				this.attrs.put("idEmpresas", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("sucursales")));
  		  this.attrs.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresas")).getKey());
 			this.doLoadCajas();
     } // try
-    catch (Exception e) {
-      throw e;
-    } // catch   
     finally {
       Methods.clean(columns);
       Methods.clean(params);
@@ -204,18 +183,15 @@ public class Abonos extends IBaseAttribute implements Serializable {
 			params.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresas")).getKey());
 			List<UISelectEntity> cajas= (List<UISelectEntity>) UIEntity.build("TcManticCajasDto", "cajas", params, columns);
       this.attrs.put("cajas", cajas);
-			if(this.caja!= null) {
-				int index= cajas.indexOf(new UISelectEntity(new Entity(this.caja.toLong("idCaja"))));
-				if(index>= 0)
-					this.attrs.put("idCajas", cajas.get(index));
-				else
-    			this.attrs.put("idCajas", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("cajas")));
-			} // if
+			int index= cajas.indexOf(new UISelectEntity(new Entity((Long)this.attrs.get("idCaja"))));
+			if(index>= 0)
+				this.attrs.put("idCajas", cajas.get(index));
 			else
-  			this.attrs.put("idCajas", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("cajas")));
+				this.attrs.put("idCajas", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("cajas")));
 			if(this.attrs.get("idCajas")!= null)
 				this.attrs.put("limite", ((UISelectEntity)this.attrs.get("idCajas")).toDouble("limite"));
  		  this.attrs.put("idCaja", ((UISelectEntity)this.attrs.get("idCajas")).getKey());
+			this.doLoadCierres();
     } // try
     catch (Exception e) {
       throw e;
@@ -226,5 +202,31 @@ public class Abonos extends IBaseAttribute implements Serializable {
     }// finally
 	}
 
+	public void doLoadCierres() {
+    Map<String, Object> params= new HashMap<>();
+    try {
+			params.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresas")).getKey());
+ 		  params.put("idCaja", ((UISelectEntity)this.attrs.get("idCajas")).getKey());
+			Value cierre= (Value)DaoFactory.getInstance().toField("VistaCierresCajasDto", "cierre", params, "idKey");
+			if(cierre!= null)
+				this.attrs.put("idCierre", cierre.toLong());
+			else
+				this.attrs.put("idCierre", null);
+			this.caja= (Entity)DaoFactory.getInstance().toEntity("VistaCierresCajasDto", "caja", this.attrs);
+			if(this.caja== null) {
+				this.caja= new Entity(-1L);
+				this.caja.put("saldo", new Value("saldo", 0D));
+				this.caja.put("idCierreEstatus", new Value("idCierreEstatus", -1L));
+			} // 
+      this.attrs.put("caja", this.caja);
+	  } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+    }// finally
+	}
 	
 }

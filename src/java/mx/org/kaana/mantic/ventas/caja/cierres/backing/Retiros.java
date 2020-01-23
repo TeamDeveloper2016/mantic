@@ -48,12 +48,13 @@ public class Retiros extends IBaseAttribute implements Serializable {
   
 	private Entity caja;
 	private EAccion accion;
-
+	
   @Override
 	@PostConstruct
   protected void init() {		
     try {
       this.accion = EAccion.AGREGAR;
+  		this.attrs.put("first", Boolean.FALSE);
   		this.attrs.put("ok", Boolean.FALSE);
 			this.attrs.put("retorno", JsfBase.getParametro("zwkl")== null || "0".equals(JsfBase.getParametro("zwkl"))? "ambos": "/Paginas/Mantic/Ventas/Caja/accion");
 			this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa"));
@@ -62,6 +63,7 @@ public class Retiros extends IBaseAttribute implements Serializable {
       this.attrs.put("retiros", 0D);
       this.attrs.put("abonos", 0D);
 			this.doLoad();
+  		this.attrs.put("first", Boolean.TRUE);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -73,13 +75,6 @@ public class Retiros extends IBaseAttribute implements Serializable {
     try {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
 			this.toLoadEmpresas();
-			this.caja= (Entity)DaoFactory.getInstance().toEntity("VistaCierresCajasDto", "caja", this.attrs);
-			if(this.caja== null) {
-				this.caja= new Entity(-1L);
-				this.caja.put("saldo", new Value("saldo", 0D));
-				this.caja.put("idCierreEstatus", new Value("idCierreEstatus", -1L));
-			} // 
-      this.attrs.put("caja", this.caja);
 			Entity retiros= (Entity)DaoFactory.getInstance().toEntity("VistaCierresCajasDto", "ambos", this.attrs);
       this.attrs.put("retiros", retiros!= null && retiros.get("retiros").getData()!= null? retiros.toDouble("retiros"): 0D);
       this.attrs.put("abonos", retiros!= null && retiros.get("abonos").getData()!= null? retiros.toDouble("abonos"): 0D);
@@ -175,15 +170,11 @@ public class Retiros extends IBaseAttribute implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			List<UISelectEntity> sucursales= (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
       this.attrs.put("sucursales", sucursales);
-			if(this.caja!= null) {
-				int index= sucursales.indexOf(new UISelectEntity(new Entity(this.caja.toLong("idEmpresa"))));
-				if(index>= 0)
-					this.attrs.put("idEmpresas", sucursales.get(index));
-				else
-			    this.attrs.put("idEmpresas", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("sucursales")));
-			} // if
+			int index= sucursales.indexOf(new UISelectEntity(new Entity((Long)this.attrs.get("idEmpresa"))));
+			if(index>= 0)
+				this.attrs.put("idEmpresas", sucursales.get(index));
 			else
-			  this.attrs.put("idEmpresas", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("sucursales")));
+				this.attrs.put("idEmpresas", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("sucursales")));
 			this.attrs.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresas")).getKey());
 			this.doLoadCajas();
     } // try
@@ -203,15 +194,11 @@ public class Retiros extends IBaseAttribute implements Serializable {
 			params.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresas")).getKey());
 			List<UISelectEntity> cajas= (List<UISelectEntity>) UIEntity.build("TcManticCajasDto", "cajas", params, columns);
       this.attrs.put("cajas", cajas);
-			if(this.caja!= null) {
-				int index= cajas.indexOf(new UISelectEntity(new Entity(this.caja.toLong("idCaja"))));
-				if(index>= 0)
-					this.attrs.put("idCajas", cajas.get(index));
-				else
-    			this.attrs.put("idCajas", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("cajas")));
-			} // if
+			int index= cajas.indexOf(new UISelectEntity(new Entity((Long)this.attrs.get("idCaja"))));
+			if(index>= 0)
+				this.attrs.put("idCajas", cajas.get(index));
 			else
-  			this.attrs.put("idCajas", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("cajas")));
+				this.attrs.put("idCajas", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("cajas")));
 			this.doLoadCierres();
     } // try
     finally {
@@ -253,6 +240,15 @@ public class Retiros extends IBaseAttribute implements Serializable {
 				this.attrs.put("idCierre", cierre.toLong());
 			else
 				this.attrs.put("idCierre", null);
+			this.caja= (Entity)DaoFactory.getInstance().toEntity("VistaCierresCajasDto", "caja", this.attrs);
+			if(this.caja== null) {
+				this.caja= new Entity(-1L);
+				this.caja.put("saldo", new Value("saldo", 0D));
+				this.caja.put("idCierreEstatus", new Value("idCierreEstatus", -1L));
+			} // 
+      this.attrs.put("caja", this.caja);
+  		if((Boolean)this.attrs.get("first"))
+			  UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:importe', {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor-igual({\"cuanto\": "+ this.caja.toDouble("saldo") + "})', mascara: 'libre'});");
 	  } // try
     catch (Exception e) {
       Error.mensaje(e);
