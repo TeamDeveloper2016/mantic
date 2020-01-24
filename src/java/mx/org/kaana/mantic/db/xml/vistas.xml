@@ -3004,6 +3004,7 @@
 			<select id="row">
 				select 
 				  tc_mantic_articulos.id_articulo as id_key,
+				  tc_mantic_articulos.id_vigente,
 				  tc_mantic_articulos.nombre,
 				  tc_mantic_articulos.descripcion,
 				  tc_mantic_articulos.sat,
@@ -3040,6 +3041,7 @@
 					tc_mantic_empresas.id_empresa in ({idEmpresa})
 				  and {condicion}					
 				group by 
+					tc_mantic_articulos.id_vigente,
 				  tc_mantic_articulos.nombre,          
 				  tc_mantic_articulos.menudeo,          
 				  tc_mantic_articulos.medio_mayoreo,          
