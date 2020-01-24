@@ -154,7 +154,7 @@
 						<div class="ui-grid-col-12">
 							<p:autoComplete id="codigos" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosArticulosFiltro.attrs.custom}" completeMethod="#{manticCatalogosArticulosFiltro.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 								<p:ajax event="itemSelect" oncomplete="$('#replace').click();"/>
-								<f:facet name="itemtip">
+								<f:facet name="itemtip">c
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
 										<f:facet name="header" class="TexAlCenter">
 											<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="50" height="30"/>
@@ -251,6 +251,9 @@
 								  <p:graphicImage id="icon-image" cache="false" value="#{manticCatalogosArticulosFiltro.doPrepareImage(row)}" width="26" height="22" stream="false" rendered="#{row.idImagen.toLong ne 0}" style="cursor:zoom-in;"/>
 								</a>	
 							</p:column>   
+							<p:column headerText="Vigente" class="janal-column-center MarAuto Responsive janal-wid-col-38">
+								<h:graphicImage library="janal" name="icon/semaforos/#{row.idVigente eq '1' ? 'circulo-verde.png': 'circulo-rojo.png'}" title="Articulo #{row.idVigente eq '1' ? 'vigente': 'deshabilitado'}"/>
+							</p:column>
 							<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
 								<h:graphicImage library="janal" name="icon/semaforos/#{row.idFacturama eq '-1' ? 'circulo-gris.png': 'circulo-verde.png'}" title="Articulo #{row.idFacturama eq '-1' ? 'NO': ''} registrado en facturama"/>
 							</p:column>
@@ -273,6 +276,9 @@
 							<p:menuitem id="facturama" icon="fa fa-gear" value="Sincronizar" title="Registrar articulo en facturama" onstart="return janal.bloquear()" process="@this tabla" oncomplete="janal.desbloquear()" action="#{manticCatalogosArticulosFiltro.doPublicarFacturama}"/>
 							<p:separator rendered="#{manticCatalogosArticulosFiltro.attrs.seleccionado.idImagen.toLong ne 0}"/>
 							<p:menuitem id="replicar" action="#{manticCatalogosArticulosFiltro.doReplicar()}" process="@this tabla" icon="fa fa-file-picture-o" value="Replicar imagen" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosArticulosFiltro.attrs.seleccionado.idImagen.toLong ne 0}"/>
+							<p:separator/>
+							<p:menuitem id="habilitar" actionListener="#{manticCatalogosArticulosFiltro.doHabilitar}" process="@this tabla" update="tabla" icon="fa fa-refresh" value="Habilitar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosArticulosFiltro.attrs.isGerente and manticCatalogosArticulosFiltro.attrs.seleccionado.idVigente eq '2'}"/>
+							<p:menuitem id="deshabilitar" actionListener="#{manticCatalogosArticulosFiltro.doDeshabilitar}" process="@this tabla" update="tabla" icon="fa fa-refresh" value="Deshabilitar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosArticulosFiltro.attrs.isGerente and manticCatalogosArticulosFiltro.attrs.seleccionado.idVigente eq '1'}"/>
 						</p:contextMenu>		
 					</div>	
 				</div>
