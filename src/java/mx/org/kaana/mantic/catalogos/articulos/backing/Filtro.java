@@ -68,6 +68,7 @@ public class Filtro extends Comun implements Serializable {
       //this.attrs.put("nombre", "");
       this.attrs.put("idTipoArticulo", 1L);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());      
+			this.attrs.put("isGerente", JsfBase.isAdminEncuestaOrAdmin());
 			this.toLoadCatalog();
     } // try
     catch (Exception e) {
@@ -513,4 +514,40 @@ public class Filtro extends Comun implements Serializable {
 		} // finally
 		return regresar;
 	} // doExportarFdDbf  
+	
+	public void doHabilitar(){
+		Transaccion transaccion= null;
+		try {
+			transaccion= new Transaccion(new RegistroArticulo(((Entity)this.attrs.get("seleccionado")).getKey()), 0D, false);
+			if(transaccion.ejecutar(EAccion.PROCESAR))
+				JsfBase.addMessage("Habilitar articulo", "Se habilito de forma correcta el articulo.", ETipoMensaje.INFORMACION);
+			else
+				JsfBase.addMessage("Habilitar articulo", "Ocurrió un error al habilitar el articulo.", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch
+		finally {
+			
+		} // finally
+	}
+	
+	public void doDeshabilitar(){
+		Transaccion transaccion= null;
+		try {
+			transaccion= new Transaccion(new RegistroArticulo(((Entity)this.attrs.get("seleccionado")).getKey()), 0D, true);			
+			if(transaccion.ejecutar(EAccion.PROCESAR))
+				JsfBase.addMessage("Deshabilitar articulo", "Se deshabilito de forma correcta el articulo.", ETipoMensaje.INFORMACION);
+			else
+				JsfBase.addMessage("Deshabilitar articulo", "Ocurrió un error al deshabilitar el articulo.", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch
+		finally {
+			
+		} // finally
+	}
 }
