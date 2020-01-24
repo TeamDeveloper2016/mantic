@@ -4,7 +4,6 @@ import java.io.File;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -18,7 +17,6 @@ import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
 import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.formato.Variables;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -55,6 +53,7 @@ public class Transaccion extends TransaccionFactura {
 	private Double precio;
 	private Importado importado;
 	private Entity[] seleccionados;
+	private boolean eliminar;
 
 	public Transaccion(Entity[] seleccionados, Importado importado) {
 		this.importado    = importado;
@@ -68,11 +67,13 @@ public class Transaccion extends TransaccionFactura {
 	public Transaccion(RegistroArticulo articulo, Double precio, Boolean eliminar) {
 		this.articulo= articulo;		
 		this.precio  = precio;
+		this.eliminar= eliminar;
 	} // Transaccion
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
-		boolean regresar= false;
+		TcManticArticulosDto art= null;
+		boolean regresar        = false;
 		try {
 			this.eaccionGeneral= accion;
 			switch(accion){
@@ -96,6 +97,11 @@ public class Transaccion extends TransaccionFactura {
 					break;
 				case ASIGNAR:
 					regresar= asignarImagen(sesion);
+					break;
+				case PROCESAR:
+					art= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, this.articulo.getIdArticulo());
+					art.setIdVigente(this.eliminar ? 2L : 1L);
+					regresar= DaoFactory.getInstance().update(sesion, art)>= 1L;
 					break;
 			} // switch
 			if(!regresar)
