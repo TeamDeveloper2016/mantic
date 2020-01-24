@@ -155,7 +155,7 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 			regresar= new StringBuilder("id_venta_estatus in (");
 			allEstatusCaja= "";
 			for(EEstatusVentas estatus: EEstatusVentas.values()){
-				if(estatus.equals(EEstatusVentas.PAGADA) || estatus.equals(EEstatusVentas.CREDITO) || estatus.equals(EEstatusVentas.APARTADOS))
+				if(estatus.equals(EEstatusVentas.PAGADA) || estatus.equals(EEstatusVentas.CREDITO) || estatus.equals(EEstatusVentas.APARTADOS) || estatus.equals(EEstatusVentas.TIMBRADA) || estatus.equals(EEstatusVentas.TIMBRADA))
 					allEstatusCaja= allEstatusCaja.concat(estatus.getIdEstatusVenta().toString()).concat(",");
 			} // for
 			allEstatusCaja= allEstatusCaja.substring(0, allEstatusCaja.length()-1);
