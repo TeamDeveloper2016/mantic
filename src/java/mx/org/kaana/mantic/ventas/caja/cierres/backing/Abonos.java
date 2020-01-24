@@ -109,8 +109,8 @@ public class Abonos extends IBaseAttribute implements Serializable {
 					UIBackingUtilities.execute("jsTicket.clicTicket();");
 					UIBackingUtilities.execute("jsTicket.process('"+ JsfBase.getContext()+ regresar+ ".jsf');");
 				} // if	
- 				if(!this.accion.equals(EAccion.CONSULTAR)) 
-  				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR)? "agregó": this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" el abono de caja."), ETipoMensaje.INFORMACION);
+ 				//if(!this.accion.equals(EAccion.CONSULTAR)) 
+  			//	JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR)? "agregó": this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" el abono de caja."), ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idCierre", this.attrs.get("idCierre"));
 			} // if
 			else 
