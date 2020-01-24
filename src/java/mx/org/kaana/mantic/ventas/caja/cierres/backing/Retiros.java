@@ -57,8 +57,8 @@ public class Retiros extends IBaseAttribute implements Serializable {
   		this.attrs.put("first", Boolean.FALSE);
   		this.attrs.put("ok", Boolean.FALSE);
 			this.attrs.put("retorno", JsfBase.getParametro("zwkl")== null || "0".equals(JsfBase.getParametro("zwkl"))? "ambos": "/Paginas/Mantic/Ventas/Caja/accion");
-			this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa"));
-			this.attrs.put("idCaja", JsfBase.getFlashAttribute("idCaja"));
+			this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa")== null? JsfBase.getAutentifica().getEmpresa().getIdEmpresa(): JsfBase.getFlashAttribute("idEmpresa"));
+			this.attrs.put("idCaja", JsfBase.getFlashAttribute("idCaja")== null? -1L: JsfBase.getFlashAttribute("idCaja"));
       this.attrs.put("importe", 0D);
       this.attrs.put("retiros", 0D);
       this.attrs.put("abonos", 0D);
@@ -157,13 +157,7 @@ public class Retiros extends IBaseAttribute implements Serializable {
     Map<String, Object> params= new HashMap<>();
     try {
 			columns= new ArrayList<>();
-			if(this.attrs.get("idEmpresa")== null)
-			  if(JsfBase.getAutentifica().getEmpresa().isMatriz())
-          params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
-			  else
-				  params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-		  else
-  		  params.put("idEmpresa", this.attrs.get("idEmpresa"));
+ 		  params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
@@ -199,6 +193,7 @@ public class Retiros extends IBaseAttribute implements Serializable {
 				this.attrs.put("idCajas", cajas.get(index));
 			else
 				this.attrs.put("idCajas", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("cajas")));
+			this.attrs.put("idCaja", ((UISelectEntity)this.attrs.get("idCajas")).getKey());
 			this.doLoadCierres();
     } // try
     finally {
