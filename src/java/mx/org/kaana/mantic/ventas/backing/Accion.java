@@ -303,6 +303,7 @@ public class Accion extends IBaseVenta implements Serializable {
 
 	@Override
 	public void doCalculate(Integer index) {
+		super.validatePrecioAsignado(index);
 		super.doCalculate(index);
 		this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
 		UIBackingUtilities.update("deudor");
