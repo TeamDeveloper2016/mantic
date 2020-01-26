@@ -1085,4 +1085,20 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
       Methods.clean(params);
     } // finally
 	} // doUpdateArticulos	
+	
+	protected void validatePrecioAsignado(Integer index){
+		List<UISelectEntity> clientesSeleccion= null;
+		UISelectEntity seleccion              = null;		
+		try {
+			seleccion= (UISelectEntity) this.attrs.get("clienteSeleccion");
+			clientesSeleccion= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");					
+			if(seleccion!= null && clientesSeleccion!= null && !clientesSeleccion.isEmpty())
+				((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescripcionPrecio(Cadena.toBeanName(clientesSeleccion.get(clientesSeleccion.indexOf(seleccion)).toString("tipoVenta").toLowerCase()));
+			else
+				((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescripcionPrecio("menudeo");
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+		} // catch		
+	} // validatePrecioAsignado
 }
