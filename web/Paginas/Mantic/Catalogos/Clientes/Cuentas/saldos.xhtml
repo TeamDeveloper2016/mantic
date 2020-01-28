@@ -55,13 +55,11 @@
 							<p:outputLabel for="consecutivo" value="No. ticket:"/>
 							<p:inputText id="consecutivo" value="#{manticCatalogosClientesCuentasSaldos.attrs.ticket}" styleClass="janal-wid-100-txt janal-column-right"/> 
               <p:outputLabel for="razonSocial" value="Razón social:"/>
-							<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: ENVASES UNIVERSALES S.A." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosClientesCuentasSaldos.attrs.cliente}" completeMethod="#{manticCatalogosClientesCuentasSaldos.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+							<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: ENVASES UNIVERSALES S.A." itemLabel="#{custom.clave}#{empty custom.clave? '': ' | '}#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosClientesCuentasSaldos.attrs.cliente}" completeMethod="#{manticCatalogosClientesCuentasSaldos.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
 										<h:outputText value="Clave:" />
 										<h:outputText value="#{custom.clave}" />
-										<h:outputText value="RFC:" />
-										<h:outputText value="#{custom.rfc}" />
 										<h:outputText value="Razón social:" />
 										<h:outputText value="#{custom.razonSocial}" />
 									</h:panelGrid>
