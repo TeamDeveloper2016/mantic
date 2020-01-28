@@ -144,7 +144,13 @@
 							</f:facet>
 							<h:outputText value="#{row['estatus']}"/>
 						</p:column>						
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.pagar}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-13" style="display: none">
+							<f:facet name="header">
+								<h:outputText value="Deuda"/>
+							</f:facet>							
+    					<h:outputText value="#{row['pagar']}"/>															
+						</p:column>											
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.pagar}" exportable="false">
 							<f:facet name="header">
 								<h:outputText value="Deuda"/>
 							</f:facet>
