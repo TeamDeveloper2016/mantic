@@ -449,9 +449,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		try{
 			params= new HashMap<>();		
 			params.put("idCierre", idCierre);
-			TcManticCierresCajasDto efectivo= (TcManticCierresCajasDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresCajasDto.class, "TcManticCierresCajasDto", "caja", params);
-			if(efectivo!= null)
-			  regresar= efectivo.getSaldo();		
+			TcManticCierresCajasDto saldo= (TcManticCierresCajasDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresCajasDto.class, "TcManticCierresCajasDto", "caja", params);
+			if(saldo!= null)
+			  regresar= saldo.getSaldo();		
 		} // try
 		finally{
 			Methods.clean(params);
