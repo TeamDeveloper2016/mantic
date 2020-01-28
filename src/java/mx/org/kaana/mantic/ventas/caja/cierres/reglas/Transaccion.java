@@ -178,7 +178,7 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 				Value value= DaoFactory.getInstance().toField(sesion, "TcManticCierresCajasDto", "caja", params, "saldo");
 				if(value!= null && value.getData()!= null)
 					efectivo= value.toDouble();
-				if(efectivo< limite.getLimite()) {
+				if(efectivo<= limite.getLimite()) {
 					DaoFactory.getInstance().updateAll(sesion, TcManticCierresAlertasDto.class, params);
 				} // if
 				else {
