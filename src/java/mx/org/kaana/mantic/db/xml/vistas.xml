@@ -756,19 +756,29 @@
 					nombre_empresa, 
 					caja, 
 					tipo_medio_pago,
-					sum(importe) importe,
+					sum(total_deducciones) importe,	
 					count(*) total
 				from 
-				(select							
+				(
+				select 
+					recalculo.*,
+					if(id_tipo_medio_pago=1, (total - if(deduccion is null, 0, deduccion)), importe) total_deducciones
+				from(
+				select 
+					deducciones.*,	
+					(select if(importe is null, 0, importe) importe from tr_mantic_venta_medio_pago where id_venta=deducciones.id_venta and id_tipo_medio_pago != 1) deduccion
+				from (
+				select							
 					tc_mantic_ventas.id_venta,
 					tc_mantic_empresas.id_empresa,
-					tc_mantic_empresas.clave as empresa,
-					tc_mantic_empresas.nombre as nombre_empresa,
+					tc_mantic_empresas.clave AS empresa,
+					tc_mantic_empresas.nombre AS nombre_empresa,
 					tc_mantic_cajas.id_caja,            
 					tc_mantic_cajas.clave caja,					
 					tr_mantic_venta_medio_pago.importe,
+					tc_mantic_ventas.total,	
 					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
-					tc_mantic_tipos_medios_pagos.nombre as tipo_medio_pago					
+					tc_mantic_tipos_medios_pagos.nombre AS tipo_medio_pago					
 				from
 					tc_mantic_ventas     	
 				inner join
@@ -808,8 +818,9 @@
 					tc_mantic_cajas.id_caja,					
 					tc_mantic_cajas.clave,					
 					tr_mantic_venta_medio_pago.importe,
+					tc_mantic_ventas.total,
 					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
-					tc_mantic_tipos_medios_pagos.nombre				
+					tc_mantic_tipos_medios_pagos.nombre) as deducciones ) as recalculo
 				) as general
 				group by
 					empresa, 
@@ -821,15 +832,35 @@
 			</select>				
 			<select id="diariasTotales">
 				select if(sum(importe) is null, 0, sum(importe)) total from (
-				select					
-					tc_mantic_ventas.id_venta as id_key,
-					tc_mantic_empresas.clave as empresa,
-					tc_mantic_empresas.nombre as nombre_empresa,
-					tc_mantic_cajas.clave caja,
-					tc_mantic_ventas.ticket,
+				select 
+					convert(concat(id_empresa, id_caja, id_tipo_medio_pago), signed) as id_key,
+					empresa, 
+					nombre_empresa, 
+					caja, 
+					tipo_medio_pago,
+					sum(total_deducciones) importe,	
+					count(*) total
+				from 
+				(
+				select 
+					recalculo.*,
+					if(id_tipo_medio_pago=1, (total - if(deduccion is null, 0, deduccion)), importe) total_deducciones
+				from(
+				select 
+					deducciones.*,	
+					(select if(importe is null, 0, importe) importe from tr_mantic_venta_medio_pago where id_venta=deducciones.id_venta and id_tipo_medio_pago != 1) deduccion
+				from (
+				select							
+					tc_mantic_ventas.id_venta,
+					tc_mantic_empresas.id_empresa,
+					tc_mantic_empresas.clave AS empresa,
+					tc_mantic_empresas.nombre AS nombre_empresa,
+					tc_mantic_cajas.id_caja,            
+					tc_mantic_cajas.clave caja,					
 					tr_mantic_venta_medio_pago.importe,
-					tc_mantic_tipos_medios_pagos.nombre as tipo_medio_pago,
-					tc_mantic_ventas.registro
+					tc_mantic_ventas.total,	
+					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
+					tc_mantic_tipos_medios_pagos.nombre AS tipo_medio_pago					
 				from
 					tc_mantic_ventas     	
 				inner join
@@ -861,17 +892,26 @@
 				where
 					tc_mantic_ventas.id_empresa in ({idEmpresa})
 				  and {condicion}     
-				group by
+				group by				
 					tc_mantic_ventas.id_venta,
+					tc_mantic_empresas.id_empresa,
 					tc_mantic_empresas.clave,
 					tc_mantic_empresas.nombre,
-					tc_mantic_cajas.clave,
-					tc_mantic_ventas.ticket,
+					tc_mantic_cajas.id_caja,					
+					tc_mantic_cajas.clave,					
 					tr_mantic_venta_medio_pago.importe,
-					tc_mantic_tipos_medios_pagos.nombre,
-					tc_mantic_ventas.registro
+					tc_mantic_ventas.total,
+					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
+					tc_mantic_tipos_medios_pagos.nombre) as deducciones ) as recalculo
+				) as general
+				group by
+					empresa, 
+					nombre_empresa, 
+					caja, 	
+					tipo_medio_pago
 				order by 
-					tc_mantic_ventas.registro desc, tc_mantic_ventas.id_venta, tc_mantic_tipos_medios_pagos.id_tipo_medio_pago) principal
+					empresa, nombre_empresa, importe desc
+				) principal
 			</select>
 			<select id="horas">
 				select
