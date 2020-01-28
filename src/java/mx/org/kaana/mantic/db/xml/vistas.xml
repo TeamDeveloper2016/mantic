@@ -767,7 +767,7 @@
 					tc_mantic_empresas.nombre as nombre_empresa,
 					tc_mantic_cajas.id_caja,            
 					tc_mantic_cajas.clave caja,					
-					if(tc_mantic_tipos_medios_pagos.id_tipo_medio_pago= 1, if(tc_mantic_ventas.total> tr_mantic_venta_medio_pago.importe, tr_mantic_venta_medio_pago.importe, tc_mantic_ventas.total), if(tc_mantic_ventas.total> tr_mantic_venta_medio_pago.importe, tr_mantic_venta_medio_pago.importe, tc_mantic_ventas.total)) as importe,
+					if(tc_mantic_ventas.total> tr_mantic_venta_medio_pago.importe, tr_mantic_venta_medio_pago.importe, tc_mantic_ventas.total) as importe,
 					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
 					tc_mantic_tipos_medios_pagos.nombre as tipo_medio_pago					
 				from
