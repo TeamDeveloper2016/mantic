@@ -14,6 +14,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EBooleanos;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.Constantes;
@@ -21,6 +22,7 @@ import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
 import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -77,7 +79,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	private IBaseDto dto;
 	private boolean clienteDeault;
 	private boolean isNuevoCierre;
-	private Double cierreCaja;
+	private Double efectivo;
 	private Long idCierreVigente;
 	private String cotizacion;
 	private Long idFacturaGeneral;
@@ -136,7 +138,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
 		boolean regresar   = false;
 		this.isNuevoCierre = false;
-		this.cierreCaja    = 0D;		
+		this.efectivo      = 0D;		
 		Long idEstatusVenta= null;
 		try {						
 			switch(accion) {					
@@ -400,19 +402,19 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		this.toCierreActivo(sesion, idTipoMedioPago);
 		if(idTipoMedioPago.equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())) {
 			if(this.isNuevoCierre) {
-				if(limiteCaja< this.cierreCaja)
-					regresar= this.registraAlertaRetiro(sesion, this.idCierreVigente, limiteCaja-this.cierreCaja);				
+				if(limiteCaja< this.efectivo)
+					regresar= this.registraAlertaRetiro(sesion, this.idCierreVigente, this.efectivo, limiteCaja);				
 			}	// if		
 			else {
-				this.cierreCaja= this.toAcumuladoCierreActivo(sesion, this.idCierreVigente, idTipoMedioPago);
-				if(limiteCaja< this.cierreCaja)
-					regresar= this.registraAlertaRetiro(sesion, this.idCierreVigente, limiteCaja-this.cierreCaja);
+				this.efectivo= this.toAcumuladoCierreActivo(sesion, this.idCierreVigente);
+				if(limiteCaja< this.efectivo)
+					regresar= this.registraAlertaRetiro(sesion, this.idCierreVigente, this.efectivo, limiteCaja);
 			} // else
 		} // if		
 		return regresar;
 	} // alterarCierreCaja
 	
-	private boolean registraAlertaRetiro(Session sesion, Long idCierre, Double importe) throws Exception{
+	private boolean registraAlertaRetiro(Session sesion, Long idCierre, Double efectivo, Double limite) throws Exception{
 		boolean regresar                = true;
 		TcManticCierresAlertasDto alerta= null;
 		Map<String, Object>params       = null;		
@@ -427,8 +429,11 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 				alerta.setIdCierre(idCierre);
 				alerta.setIdNotifica(1L);
 				alerta.setIdUsuario(JsfBase.getIdUsuario());
-				alerta.setImporte(importe<= 0D ? 0D: importe);
-				alerta.setMensaje("El total de caja a sobrepasado el limite permitido, favor de realizar un retiro.");
+				alerta.setImporte(efectivo<= 0D ? 0D: efectivo);
+				alerta.setMensaje("EL SALDO EN EFECTIVO ["+ 
+						 Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, efectivo)+ 
+						 "] DE ESTA CAJA SUPERA AL LIMITE ["+ Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, limite)
+						 + "] ESTABLECIDO PARA LA MISMA, POR FAVOR REALICE UN RETIRO DE CAJA.");
 				regresar= DaoFactory.getInstance().insert(sesion, alerta)>= 1L;
 			} // if				
 		} // try
@@ -438,14 +443,15 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		return regresar;
 	} // registraAlertaRetiro
 	
-	private Double toAcumuladoCierreActivo(Session sesion, Long idCierre, Long idTipoMedioPago) throws Exception {
+	private Double toAcumuladoCierreActivo(Session sesion, Long idCierre) throws Exception {
 		Double regresar          = 0D;
 		Map<String, Object>params= null;
 		try{
 			params= new HashMap<>();		
-			params.put(Constantes.SQL_CONDICION, "id_cierre="+idCierre+" and id_tipo_medio_pago=" + idTipoMedioPago);
-			TcManticCierresCajasDto acumulaCierreCaja= (TcManticCierresCajasDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresCajasDto.class, "TcManticCierresCajasDto", "row", params);
-			regresar= acumulaCierreCaja.getAcumulado();		
+			params.put("idCierre", idCierre);
+			TcManticCierresCajasDto efectivo= (TcManticCierresCajasDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresCajasDto.class, "TcManticCierresCajasDto", "caja", params);
+			if(efectivo!= null)
+			  regresar= efectivo.getSaldo();		
 		} // try
 		finally{
 			Methods.clean(params);
@@ -511,8 +517,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		cierreNuevo= new Cierre(this.ventaFinalizada.getIdCaja(), 0D, registro, new ArrayList<>(), new ArrayList<>());				
 		if(cierreNuevo.toNewCierreCaja(sesion)){
 			this.isNuevoCierre= true;				
-			this.cierreCaja= 0D;
-			regresar= cierreNuevo.getCierre();
+			this.efectivo     = 0D;
+			regresar          = cierreNuevo.getCierre();
 		} // if		
 		return regresar;
 	} // toCierreNuevo	

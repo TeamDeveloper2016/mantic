@@ -173,19 +173,22 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 			// esto es para quitar la alerta por el retiro de efectivo
 			limite= (TcManticCajasDto)DaoFactory.getInstance().findById(TcManticCajasDto.class, caja.getIdCaja());
 			if(limite!= null) {
-				if(caja.getSaldo()< limite.getLimite()) {
-					params.put("idCierre", caja.getIdCierre());
+				params.put("idCierre", caja.getIdCierre());
+				Double efectivo= 0D;
+				Value value= DaoFactory.getInstance().toField(sesion, "TcManticCierresCajasDto", "caja", params, "saldo");
+				if(value!= null && value.getData()!= null)
+					efectivo= value.toDouble();
+				if(efectivo< limite.getLimite()) {
 					DaoFactory.getInstance().updateAll(sesion, TcManticCierresAlertasDto.class, params);
 				} // if
 				else {
 				 existe= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaCierresCajasDto", "alerta", params);
 				 if(existe== null || existe.isEmpty()) {
-  				 params.put("idCierre", caja.getIdCierre());
 					 DaoFactory.getInstance().updateAll(sesion, TcManticCierresAlertasDto.class, params);
 					 TcManticCierresAlertasDto alerta= new TcManticCierresAlertasDto(caja.getIdCierre(), JsfBase.getIdUsuario(), 1L, "EL SALDO EN EFECTIVO ["+ 
-						 Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, caja.getSaldo())+ 
-						 "] DE ESTA CAJA SUPERA AL LIMITE ["+ Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, limite.getLimite())
-						 + "] ESTABLECIDO PARA LA MISMA, EN EL PROCESO "+ (this.retiro.getIdAbono().equals(2L)? "RETIRO": "ABONO")+ "[AUTOMATICO]", -1L, caja.getSaldo());
+						 Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, efectivo)+ 
+						 "] DE ESTA CAJA SUPERA AL LIMITE ["+ Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, limite.getLimite())
+						 + "] ESTABLECIDO PARA LA MISMA, EN EL PROCESO "+ (this.retiro.getIdAbono().equals(2L)? "RETIRO": "ABONO")+ "[AUTOMATICO]", -1L, efectivo);
 					 DaoFactory.getInstance().insert(sesion, alerta);
 				 } // if
 				} // else
