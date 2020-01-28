@@ -129,7 +129,13 @@
 								<h:outputText value="Factura"/>
 							</f:facet>
 							<h:outputText value="#{row['factura']}"/>
-						</p:column>						
+						</p:column>	
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.claveProveedor}">
+							<f:facet name="header">
+								<h:outputText value="Clave"/>
+							</f:facet>
+							<h:outputText value="#{row['claveProveedor']}"/>
+						</p:column>	
 						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.proveedor}">
 							<f:facet name="header">
 								<h:outputText value="Proveedor"/>
@@ -167,19 +173,19 @@
 							</f:facet>
 							<h:outputText value="#{row['saldo']}"/>
 						</p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.regitro}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.regitro}">
 							<f:facet name="header">
 								<h:outputText value="Fecha" title="Fecha en la que que se hizo la compra"/>
 							</f:facet>
 							<h:outputText value="#{row['fechaFactura']}"/>
 						</p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.limite}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.limite}">
 							<f:facet name="header">
 								<h:outputText value="Vence" title="Fecha en la que vence el crédito otorgado"/>
 							</f:facet>
 							<h:outputText value="#{row['limite']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-6" sortBy="#{row.dias}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-4" sortBy="#{row.dias}">
 							<f:facet name="header">
 								<h:outputText value="Días" title="Días trascurridos desde la compra"/>
 							</f:facet>
