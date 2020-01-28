@@ -756,29 +756,20 @@
 					nombre_empresa, 
 					caja, 
 					tipo_medio_pago,
-					sum(total_deducciones) importe,	
+					sum(importe) importe,	
 					count(*) total
 				from 
 				(
-				select 
-					recalculo.*,
-					if(id_tipo_medio_pago=1, (total - if(deduccion is null, 0, deduccion)), importe) total_deducciones
-				from(
-				select 
-					deducciones.*,	
-					(select if(importe is null, 0, importe) importe from tr_mantic_venta_medio_pago where id_venta=deducciones.id_venta and id_tipo_medio_pago != 1) deduccion
-				from (
 				select							
 					tc_mantic_ventas.id_venta,
 					tc_mantic_empresas.id_empresa,
-					tc_mantic_empresas.clave AS empresa,
-					tc_mantic_empresas.nombre AS nombre_empresa,
+					tc_mantic_empresas.clave as empresa,
+					tc_mantic_empresas.nombre as nombre_empresa,
 					tc_mantic_cajas.id_caja,            
 					tc_mantic_cajas.clave caja,					
-					tr_mantic_venta_medio_pago.importe,
-					tc_mantic_ventas.total,	
+					if(tc_mantic_tipos_medios_pagos.id_tipo_medio_pago= 1, if(tc_mantic_ventas.total> tr_mantic_venta_medio_pago.importe, tr_mantic_venta_medio_pago.importe, tc_mantic_ventas.total), if(tc_mantic_ventas.total> tr_mantic_venta_medio_pago.importe, tr_mantic_venta_medio_pago.importe, tc_mantic_ventas.total)) as importe,
 					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
-					tc_mantic_tipos_medios_pagos.nombre AS tipo_medio_pago					
+					tc_mantic_tipos_medios_pagos.nombre as tipo_medio_pago					
 				from
 					tc_mantic_ventas     	
 				inner join
@@ -820,7 +811,7 @@
 					tr_mantic_venta_medio_pago.importe,
 					tc_mantic_ventas.total,
 					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
-					tc_mantic_tipos_medios_pagos.nombre) as deducciones ) as recalculo
+					tc_mantic_tipos_medios_pagos.nombre
 				) as general
 				group by
 					empresa, 
@@ -828,7 +819,7 @@
 					caja, 	
 					tipo_medio_pago
 				order by 
-					empresa, nombre_empresa, importe desc
+					empresa, importe desc
 			</select>				
 			<select id="diariasTotales">
 				select if(sum(importe) is null, 0, sum(importe)) total from (
