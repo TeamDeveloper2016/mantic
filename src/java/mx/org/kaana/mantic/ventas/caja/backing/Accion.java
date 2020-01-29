@@ -1352,7 +1352,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		this.attrs.put("cfdi", cfdiSeleccion);
 	} // loadCfdis
 	
-	private boolean doValidaCreditoVenta() throws Exception, Exception{
+	private boolean doValidaCreditoVenta() throws Exception {
 		boolean regresar               = true;
 		TcManticVentasDto venta        = null;
 		MotorBusqueda motor            = null;
@@ -1413,16 +1413,16 @@ public class Accion extends IBaseVenta implements Serializable {
 		this.attrs.put("titleTab", title);
 	} // doTabChange
 
-	public void doAplicarCambioPrecio(){
+	public void doAplicarCambioPrecio() {
 		doAplicarCambioPrecio(-1);
 	}
 	
-	public void doAplicarCambioPrecio(Integer index){
+	public void doAplicarCambioPrecio(Integer index) {
 		CambioUsuario cambioUsuario= null;
 		String cuenta              = null;
 		String contrasenia         = null;
 		try {
-			if(!getAdminOrden().getArticulos().isEmpty()){
+			if(!getAdminOrden().getArticulos().isEmpty()) {
 				cuenta= this.attrs.get("cambioPrecioUsr").toString();
 				contrasenia= this.attrs.get("passwordCambioPrecio").toString();
 				cambioUsuario= new CambioUsuario(cuenta, contrasenia);
