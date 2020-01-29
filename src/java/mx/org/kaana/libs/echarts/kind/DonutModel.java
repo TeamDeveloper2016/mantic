@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import mx.org.kaana.libs.echarts.beans.Colors;
+import mx.org.kaana.libs.echarts.beans.Graphic;
 import mx.org.kaana.libs.echarts.beans.Legend;
 import mx.org.kaana.libs.echarts.pie.Serie;
 import mx.org.kaana.libs.echarts.beans.Title;
 import mx.org.kaana.libs.echarts.beans.ToolTip;
 import mx.org.kaana.libs.echarts.model.IDataSet;
 import mx.org.kaana.libs.echarts.pie.Data;
+import mx.org.kaana.libs.formato.Numero;
 
 /**
  *@company KAANA
@@ -24,6 +26,8 @@ public class DonutModel extends PieModel implements Serializable {
 
 	private static final long serialVersionUID=9169328733926503563L;
 
+	private List<Graphic> graphic;
+	
 	public DonutModel(String name) {
 		this(name, "40%", "60%", new Title("CGOR", "subtitulo"));
 	}
@@ -59,6 +63,41 @@ public class DonutModel extends PieModel implements Serializable {
 		for (Data data: this.getSeries().get(0).getData()) {
 			this.getLegend().add(data.getName());
 		} // for
+	}
+
+	private void toInnerDisplay(boolean clean) {
+		for (Serie item: this.getSeries()) {
+		  item.getLabel().getNormal().setPosition("inner");
+			if(clean)
+				item.getLabel().getNormal().setFormatter("function(params) { return ''; }");
+			else 
+			  item.getLabel().getNormal().setFormatter("function(params) { return params.percent+ ' %'; }");
+		} // for	
+	}
+		
+  public void toCustomDisplay(String elapsed, String percent, String total) {
+		StringBuilder sb= new StringBuilder();
+		sb.append("Transcurridos: ").append(elapsed).append("\\n").append("Porcentaje: ").append(percent);
+		this.graphic= new ArrayList<>();
+		this.graphic.add(new Graphic(sb.toString()));
+		this.graphic.add(new Graphic("center", total, "40px Microsoft YaHei"));
+		this.setTooltip(null);
+		this.toInnerDisplay(true);
+		this.setLegend(null);
+	}
+
+  public void toCustomDisplay(Double elapsed, Double percent, Double total) {
+		this.toCustomDisplay(Numero.formatear(Numero.MILES_SIN_DECIMALES, elapsed), Numero.formatear(Numero.MONEDA_CON_DECIMALES, percent)+ " %", Numero.formatear(Numero.MILES_SIN_DECIMALES, total));
+	}
+	
+  public void toCustomDonut(String total) {
+		this.graphic= new ArrayList<>();
+		this.graphic.add(new Graphic("center", total, "40px Microsoft YaHei"));
+		this.toInnerDisplay(false);
+	}
+
+  public void toCustomDonut(Double total) {
+		this.toCustomDonut(Numero.formatear(Numero.MILES_SIN_DECIMALES, total));
 	}
 	
 }

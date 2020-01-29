@@ -25,9 +25,12 @@ public class DonutDemo {
      */
     public static void main(String[] args) throws Exception {
       PieModel model= new DonutModel("serie", "55%", "40%", new Title("CGOR", null));
+			((DonutModel)model).toCustomDisplay("1,234", "56.12 %", "1,234");
+//			((DonutModel)model).toCustomDonut("1,234");
+//			model.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'percent');}");
 			LOG.info(model.toJson());
 			
-			Datas datas       = new Datas("ventas", DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "simple", Collections.EMPTY_MAP));
+			Datas datas  = new Datas("ventas", DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "simple", Collections.EMPTY_MAP));
   		PieModel data= new DonutModel("ventas", "55%", "40%", datas);
 			LOG.info(data.toJson());
     }
