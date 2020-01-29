@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.catalogos.proveedores.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,7 @@ import mx.org.kaana.mantic.catalogos.proveedores.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.enums.ETiposDomicilios;
+import org.primefaces.event.SelectEvent;
 
 @Named(value = "manticCatalogosProveedoresAccion")
 @ViewScoped
@@ -324,8 +326,8 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
   } // loadLocalidades
 	
-	private void toAsignaLocalidad(){
-		Entity domicilio= null;
+	private void toAsignaLocalidad() {
+		Entity domicilio       = null;
 		List<Entity>localidades= null;
 		try {
 			if(!this.registroProveedor.getDomicilio().getIdDomicilio().equals(-1L)){
@@ -345,76 +347,43 @@ public class Accion extends IBaseAttribute implements Serializable {
 	} // toAsignaLocalidad
 
   private void loadCodigosPostales() {
-    List<UISelectItem> codigosPostales = null;
-    Map<String, Object> params = null;
-    try {
-			if(!this.registroProveedor.getDomicilio().getIdEntidad().getKey().equals(-1L)){
-				params = new HashMap<>();
-				params.put(Constantes.SQL_CONDICION, "id_entidad=" + this.registroProveedor.getDomicilio().getIdEntidad().getKey());
-				codigosPostales = UISelect.build("TcManticCodigosPostalesDto", "row", params, "codigo", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
-				this.attrs.put("codigosPostales", codigosPostales);
-				if (!codigosPostales.isEmpty()) {
-					this.registroProveedor.getDomicilio().setCodigoPostal(codigosPostales.get(0).getLabel());
-					this.registroProveedor.getDomicilio().setIdCodigoPostal((Long) codigosPostales.get(0).getValue());
-					this.registroProveedor.getDomicilio().setNuevoCp(true);
-				} // if
-				else 
-					this.registroProveedor.getDomicilio().setNuevoCp(false);				
-			} // if
-			else
-				this.registroProveedor.getDomicilio().setNuevoCp(false);				
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch		
-    finally {
-      Methods.clean(params);
-    } // finally
+		this.registroProveedor.getDomicilio().setNuevoCp(false);
+		this.registroProveedor.getDomicilio().setIdCodigoPostal(-1L);
+		this.registroProveedor.getDomicilio().setCodigoPostal("");
+		this.attrs.put("codigoBuscado", null);
+		this.attrs.put("codigosPostales", null);
   } // loadCodigosPostales
 
-	private void toAsignaCodigoPostal(){
-		Entity domicilio= null;
-		List<UISelectItem>codigos= null;
-		int count=0;
+	private void toAsignaCodigoPostal() {
+		Entity domicilio           = null;
+    Map<String, Object> params = null;
+		List<UISelectEntity>codigos= null;
 		try {
-			if(!this.registroProveedor.getDomicilio().getIdDomicilio().equals(-1L)){
+			this.registroProveedor.getDomicilio().setNuevoCp(false);
+			this.registroProveedor.getDomicilio().setIdCodigoPostal(-1L);
+			this.registroProveedor.getDomicilio().setCodigoPostal("");
+			if(!this.registroProveedor.getDomicilio().getIdDomicilio().equals(-1L)) {
 				domicilio= this.registroProveedor.getDomicilio().getDomicilio();
-				codigos= (List<UISelectItem>) this.attrs.get("codigosPostales");
-				for(UISelectItem codigo: codigos){
-					if(codigo.getLabel().equals(domicilio.toString("codigoPostal"))){
-						this.registroProveedor.getDomicilio().setCodigoPostal(codigo.getLabel());
-						this.registroProveedor.getDomicilio().setIdCodigoPostal((Long) codigo.getValue());
-						this.registroProveedor.getDomicilio().setNuevoCp(true);
-						count++;
-					} // if
-				} // for
-				if(count==0){
-					this.registroProveedor.getDomicilio().setNuevoCp(false);
-					this.registroProveedor.getDomicilio().setIdCodigoPostal(-1L);
-					this.registroProveedor.getDomicilio().setCodigoPostal("");
+				params= new HashMap<>();
+				params.put("idEntidad", domicilio.getKey());
+				params.put("codigo", domicilio.toString("codigoPostal"));
+				codigos= (List<UISelectEntity>) UIEntity.build("TcManticCodigosPostalesDto", "entidadCodigo", params, Collections.EMPTY_LIST, 30L);
+				this.attrs.put("codigosPostales", codigos);
+				if(codigos!= null && !codigos.isEmpty()) {
+					this.registroProveedor.getDomicilio().setIdCodigoPostal(codigos.get(0).getKey());
+					this.registroProveedor.getDomicilio().setCodigoPostal(codigos.get(0).toString("codigo"));
+					this.registroProveedor.getDomicilio().setNuevoCp(true);
+					this.attrs.put("codigoBuscado", codigos.get(0));
 				} // if
+				else
+					this.attrs.put("codigoBuscado", null);
 			} // if
-			else{
-				this.registroProveedor.getDomicilio().setNuevoCp(false);
-				this.registroProveedor.getDomicilio().setIdCodigoPostal(-1L);
-				this.registroProveedor.getDomicilio().setCodigoPostal("");
-			} // else
 		} // try
-		catch (Exception e) {			
-			throw e;
+		finally {			
+      Methods.clean(params);
 		} // catch		
 	} // toAsignaCodigoPostal
 	
-  public void doLoadDomicilios() {
-    try {
-      updateCodigoPostal();
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch		
-  } // doLoadDomicilios
-
   private void loadDomicilios() {
 		List<UISelectEntity> domicilios= null;
 		try {
@@ -484,28 +453,6 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch
 	} // doAsignaDomicilio
 	
-  private void updateCodigoPostal() {
-    List<UISelectItem> codigosPostales = null;
-    try {
-      if (this.registroProveedor.getDomicilio().getIdCodigoPostal().equals(-1L)) {
-        this.registroProveedor.getDomicilio().setCodigoPostal("");
-        this.registroProveedor.getDomicilio().setNuevoCp(false);
-      } // if
-      else {
-        codigosPostales = (List<UISelectItem>) this.attrs.get("codigosPostales");
-        for (UISelectItem codigo : codigosPostales) {
-          if (codigo.getValue().equals(this.registroProveedor.getDomicilio().getIdCodigoPostal())) {
-            this.registroProveedor.getDomicilio().setCodigoPostal(codigo.getLabel());
-            this.registroProveedor.getDomicilio().setNuevoCp(true);
-          } // if
-        } // for
-      } // else
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch		
-  } // updateCodigoPostal
-
   public void doActualizaMunicipios() {
     try {
       loadMunicipios();
@@ -742,7 +689,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
 	} // doEliminarRepresentante
 	
-	private void loadBancos(){
+	private void loadBancos() {
 		List<UISelectItem> bancos= null;
 		Map<String, Object>params= null;
 		List<String> campos= null;
@@ -761,4 +708,53 @@ public class Accion extends IBaseAttribute implements Serializable {
 			Methods.clean(params);
 		} // finally
 	}
+	
+	public List<UISelectEntity> doCompleteCodigo(String query) {
+		List<Columna> columns        = null;
+    Map<String, Object> params   = null;
+		List<UISelectEntity> regresar= null;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+			params= new HashMap<>();
+  		params.put("idEntidad", this.registroProveedor.getDomicilio().getIdEntidad().getKey());
+  		params.put("codigo", query);
+      regresar= (List<UISelectEntity>) UIEntity.build("TcManticCodigosPostalesDto", "existe", params, columns, 30L);
+      this.attrs.put("codigosPostales", regresar);
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally	
+		return regresar;
+	}
+
+	public void doAsignaCodigo(SelectEvent event) {
+		UISelectEntity seleccion    = null;
+		List<UISelectEntity> codigos= null;
+		try {
+			codigos= (List<UISelectEntity>) this.attrs.get("codigosPostales");
+			seleccion= codigos.get(codigos.indexOf((UISelectEntity)event.getObject()));
+			if(seleccion!= null && !seleccion.isEmpty()) {
+				this.registroProveedor.getDomicilio().setIdCodigoPostal(seleccion.getKey());
+				this.registroProveedor.getDomicilio().setCodigoPostal(seleccion.toString("codigo"));
+				this.registroProveedor.getDomicilio().setNuevoCp(true);
+				this.attrs.put("codigoBuscado", seleccion);
+			} // if	
+			else {
+				this.registroProveedor.getDomicilio().setIdCodigoPostal(-1L);
+				this.registroProveedor.getDomicilio().setCodigoPostal("");
+				this.registroProveedor.getDomicilio().setNuevoCp(false);
+			} //else	
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doAsignaCodigo	
+	
 }

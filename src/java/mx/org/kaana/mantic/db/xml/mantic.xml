@@ -3763,7 +3763,8 @@
         from      
           tc_mantic_codigos_postales
         where      
-          id_entidad= {idEntidad} and codigo= '{codigo}'
+          id_entidad= {idEntidad} 
+				  and codigo= '{codigo}'
       </select>
 			<select id="entidadCodigo">
 				select 
@@ -3773,8 +3774,19 @@
 					tc_mantic_codigos_postales
 				where 
 					id_entidad= {idEntidad}
-				and 
-					codigo= '{codigo}'
+				  and codigo= '{codigo}'
+			</select>
+			<select id="existe">
+				select 
+					tc_mantic_codigos_postales.id_codigo_postal as id_key, 
+					tc_mantic_codigos_postales.*
+				from 
+					tc_mantic_codigos_postales
+				where 
+					id_entidad= {idEntidad}
+				  and codigo like '%{codigo}%'
+				order by
+				  codigo
 			</select>
     </unit>
 	    <unit id="TcManticDetallesComprasDto">
