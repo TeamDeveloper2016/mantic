@@ -1401,7 +1401,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			params.put("idCaja", this.attrs.get("caja"));
 			alerta= (Entity) DaoFactory.getInstance().toEntity("VistaCierresCajasDto", "alerta", params);
-			if(alerta!= null){
+			if(alerta!= null) {
 				UIBackingUtilities.execute("janal.bloquear();");
 				UIBackingUtilities.execute("PF('dlgLimiteCaja').show();");
 			} // if

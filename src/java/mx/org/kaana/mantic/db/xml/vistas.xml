@@ -1603,7 +1603,7 @@
 			</select>
 			<select id="alerta">
 				select
-					tc_mantic_cierres.id_cierre as id_key,
+					tc_mantic_cierres_alertas.id_cierre_alerta as id_key,
 					tc_mantic_empresas.id_empresa,
 					tc_mantic_empresas.clave as empresa,
 					tc_mantic_cajas.clave as caja,

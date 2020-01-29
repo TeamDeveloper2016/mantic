@@ -182,15 +182,15 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 					DaoFactory.getInstance().updateAll(sesion, TcManticCierresAlertasDto.class, params);
 				} // if
 				else {
-				 existe= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaCierresCajasDto", "alerta", params);
-				 if(existe== null || existe.isEmpty()) {
-					 DaoFactory.getInstance().updateAll(sesion, TcManticCierresAlertasDto.class, params);
-					 TcManticCierresAlertasDto alerta= new TcManticCierresAlertasDto(caja.getIdCierre(), JsfBase.getIdUsuario(), 1L, "EL SALDO EN EFECTIVO ["+ 
-						 Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, efectivo)+ 
-						 "] DE ESTA CAJA SUPERA AL LIMITE ["+ Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, limite.getLimite())
-						 + "] ESTABLECIDO PARA LA MISMA, EN EL PROCESO "+ (this.retiro.getIdAbono().equals(2L)? "RETIRO": "ABONO")+ "[AUTOMATICO]", -1L, efectivo);
-					 DaoFactory.getInstance().insert(sesion, alerta);
-				 } // if
+				  existe= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaCierresCajasDto", "alerta", params);
+				  if(existe== null || existe.isEmpty()) {
+					  DaoFactory.getInstance().updateAll(sesion, TcManticCierresAlertasDto.class, params);
+					  TcManticCierresAlertasDto alerta= new TcManticCierresAlertasDto(caja.getIdCierre(), JsfBase.getIdUsuario(), 1L, "EL SALDO EN EFECTIVO ["+ 
+						  Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, efectivo)+ 
+						  "] DE ESTA CAJA SUPERA AL LIMITE ["+ Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, limite.getLimite())
+						  + "] ESTABLECIDO PARA LA MISMA, EN EL PROCESO "+ (this.retiro.getIdAbono().equals(2L)? "RETIRO": "ABONO")+ "[AUTOMATICO]", -1L, efectivo);
+					  DaoFactory.getInstance().insert(sesion, alerta);
+				  } // if
 				} // else
 			} // if					
 		} // try

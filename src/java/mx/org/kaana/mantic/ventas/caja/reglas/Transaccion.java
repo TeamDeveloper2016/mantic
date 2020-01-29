@@ -453,7 +453,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			if(saldo!= null)
 			  regresar= saldo.getSaldo();		
 		} // try
-		finally{
+		finally {
 			Methods.clean(params);
 		} // finally
 		return regresar;
