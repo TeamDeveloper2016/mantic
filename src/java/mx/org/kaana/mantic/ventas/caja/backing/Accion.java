@@ -1336,28 +1336,20 @@ public class Accion extends IBaseVenta implements Serializable {
 		return regresar;
 	} // loadVentaFinalizada
 	
-	private void loadCfdis(){
-		List<UISelectEntity> cfdis  = null;
+	private void loadCfdis() throws Exception {
 		UISelectEntity cfdiSeleccion= null;
-		List<Columna> campos        = null;
-		Map<String, Object>params   = null;
-		try {
-			params= new HashMap<>();
-			campos= new ArrayList<>();
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-			cfdis= UIEntity.build("TcManticUsosCfdiDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
-			this.attrs.put("cfdis", cfdis);
-			for(UISelectEntity record: cfdis){
-				if(record.toString("clave").equals(GASTOS_GENERAL_CLAVE))
-					cfdiSeleccion= record;
-			} // for
-			this.attrs.put("cfdi", cfdiSeleccion);
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
+		Map<String, Object>params= new HashMap<>();
+		List<Columna> campos     = new ArrayList<>();
+		params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+		campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+		campos.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+		List<UISelectEntity> cfdis= UIEntity.build("TcManticUsosCfdiDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
+		this.attrs.put("cfdis", cfdis);
+		for(UISelectEntity record: cfdis){
+			if(record.toString("clave").equals(GASTOS_GENERAL_CLAVE))
+				cfdiSeleccion= record;
+		} // for
+		this.attrs.put("cfdi", cfdiSeleccion);
 	} // loadCfdis
 	
 	private boolean doValidaCreditoVenta() throws Exception, Exception{
@@ -1393,7 +1385,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		return regresar;
 	} // doValidaCreditoVenta
 	
-	private void verificaLimiteCaja() throws Exception{
+	private void verificaLimiteCaja() throws Exception {
 		Entity alerta            = null;
 		Map<String, Object>params= null;
 		try {
@@ -1406,10 +1398,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				UIBackingUtilities.execute("PF('dlgLimiteCaja').show();");
 			} // if
 		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch
-		finally{
+		finally {
 			Methods.clean(params);
 		}	// finally	
 	} // verificaLimiteCaja
