@@ -1248,6 +1248,7 @@
 				  tc_mantic_cierres_cajas.saldo,
 				  tc_mantic_cierres_cajas.dia,
 				  tc_mantic_cierres_cajas.importe,
+				  tc_mantic_cierres_alertas.importe as efectivo,
 				  tc_mantic_cierres_alertas.registro
 				from
 					tc_mantic_cierres

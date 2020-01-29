@@ -102,8 +102,8 @@
   </p:notificationBar>
   <p:notificationBar id="cajaNotification" position="top" effect="slide" styleClass="jana-bar-top" widgetVar="retiroEfectivo" effectSpeed="slow">
     <span title="Cerrar" style="position: absolute; top: 10px; right: 80px; cursor: pointer;" onclick="PF('retiroEfectivo').hide();"><i class="fa fa-lg fa-close"/></span>
-    <p:panelGrid layout="grid" columns="1" columnClasses="janal-wid-col-250, janal-wid-70" style="background-color: transparent !important;">
-      <h:outputText value="&lt;br/&gt;Cajas que superan el limite de efectivo permitido:" styleClass="Fs20" escape="false"/>
+    <p:panelGrid layout="grid" columns="2" columnClasses="janal-wid-col-250, janal-wid-70" style="background-color: transparent !important;">
+      <h:outputText value="&lt;br/&gt;Cajas que exceden el limite de efectivo:" styleClass="Fs20" escape="false"/>
       <h:outputText value="#{kajoolAccesoAlerta.checkCaja}" escape="false" styleClass="Fs14"/>
     </p:panelGrid>
   </p:notificationBar>

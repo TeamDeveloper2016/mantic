@@ -41,7 +41,7 @@ public class Alerta extends IBaseAttribute implements Serializable {
 			try {
 				params=new HashMap<>();
     		if(JsfBase.isAdminEncuestaOrAdmin()) {
-					regresar.append("<br/><div class=\"\"><table class=\"janal-color-cyan janal-wid-100\"><thead><tr><th class=\"janal-column-center\">Empresa</th><th class=\"janal-column-center\">Caja</th><th class=\"janal-column-center\">Ventas</th><th class=\"janal-column-center\">Saldo</th><th class=\"janal-column-center\">Limite</th><th class=\"janal-column-center\">Registro</th></tr></thead><tbody>");
+					regresar.append("<br/><div class=\"\"><table class=\"janal-color-cyan janal-wid-100\"><thead><tr><th class=\"janal-column-center\">Empresa</th><th class=\"janal-column-center\">Caja</th><th class=\"janal-column-center\">Ventas</th><th class=\"janal-column-center\">Saldo</th><th class=\"janal-column-center\">Limite</th><th class=\"janal-column-center\">Efectivo</th><th class=\"janal-column-center\">Registro</th></tr></thead><tbody>");
 					if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 						params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 					else
@@ -54,11 +54,13 @@ public class Alerta extends IBaseAttribute implements Serializable {
 						regresar.append("</td><td class=\"janal-column-left janal-color-yellow janal-wid-10\">");
 						regresar.append(caja.toString("caja"));
 						regresar.append("</td><td class=\"janal-column-right janal-color-yellow janal-wid-13\">");
-						regresar.append(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, Numero.toRedondearSat(caja.toDouble("disponible")+ caja.toDouble("acumulado"))));
+						regresar.append(Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(caja.toDouble("disponible")+ caja.toDouble("acumulado"))));
 						regresar.append("<td class=\"janal-column-right janal-color-cyan janal-wid-13\">");
-						regresar.append(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, Numero.toRedondearSat(caja.toDouble("saldo"))));
+						regresar.append(Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(caja.toDouble("saldo"))));
 						regresar.append("</td><td class=\"janal-column-center janal-color-white janal-wid-13\">");
-						regresar.append(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, Numero.toRedondearSat(caja.toDouble("limite"))));
+						regresar.append(Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(caja.toDouble("limite"))));
+						regresar.append("</td><td class=\"janal-column-center janal-color-yellow janal-wid-13\">");
+						regresar.append(Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(caja.toDouble("efectivo"))));
 						regresar.append("</td><td class=\"janal-column-center janal-color-white janal-wid-15\">");
 						regresar.append(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, caja.toTimestamp("registro")));
 						regresar.append("</td></tr>");
