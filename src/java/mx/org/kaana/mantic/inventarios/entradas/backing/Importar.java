@@ -41,7 +41,7 @@ import org.primefaces.event.TabChangeEvent;
 @ViewScoped
 public class Importar extends IBaseImportar implements Serializable {
 
-	private static final Log LOG=LogFactory.getLog(Importar.class);
+	private static final Log LOG              = LogFactory.getLog(Importar.class);
   private static final long serialVersionUID= 327353488565639367L;
 	
 	private TcManticNotasEntradasDto orden;
@@ -66,7 +66,7 @@ public class Importar extends IBaseImportar implements Serializable {
     try {
 			if(JsfBase.getFlashAttribute("idNotaEntrada")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-      idNotaEntrada= JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: (Long)JsfBase.getFlashAttribute("idNotaEntrada");
+      this.idNotaEntrada= JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: (Long)JsfBase.getFlashAttribute("idNotaEntrada");
 			this.orden= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, idNotaEntrada);
 			if(this.orden!= null) {
 			  this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.orden.getIdProveedor());
@@ -86,8 +86,9 @@ public class Importar extends IBaseImportar implements Serializable {
 	@Override
 	public void doLoad() {	
 		List<Columna> columns     = null;
-    Map<String, Object> params= new HashMap<>();
+    Map<String, Object> params= null;
     try {
+			params= new HashMap<>();
 			columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
@@ -104,16 +105,15 @@ public class Importar extends IBaseImportar implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     } // finally
-	}
+	} // doLoad
 
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Archivos")) 
 			this.doLoadImportados("VistaNotasEntradasDto", "importados", this.orden.toMap());
-/*		else
-		  if(event.getTab().getTitle().equals("Importar")) 
-				this.doLoadFiles("TcManticNotasArchivosDto", this.orden.getIdNotaEntrada(), "idNotaEntrada");
-*/
-	}		
+		//else
+		//	if(event.getTab().getTitle().equals("Importar")) 
+		//		this.doLoadFiles("TcManticNotasArchivosDto", this.orden.getIdNotaEntrada(), "idNotaEntrada");
+	} // doTabChange		
 
 	public void doFileUpload(FileUploadEvent event) {
 		this.doFileUpload(event, this.orden.getFechaFactura().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas"), this.proveedor.getClave());
@@ -121,15 +121,15 @@ public class Importar extends IBaseImportar implements Serializable {
 	
 	public void doViewDocument() {
 		this.doViewDocument(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas"));
-	}
+	} // doViewDocument
 
 	public void doViewFile() {
 		this.doViewFile(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas"));
-	}
+	} // doViewFile
 	
 	public void doUpdateRfc() {
 		this.doUpdateRfc(this.proveedor);
-	}
+	} // doUpdateRfc
 	
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idNotaEntrada", this.idNotaEntrada);
@@ -137,13 +137,14 @@ public class Importar extends IBaseImportar implements Serializable {
   } // doCancelar
 	
 	public String doAceptar() {
-		String regresar= null;
+		String regresar      = null;
+		Importados importados= null;
 		try {
 			if(this.getXml()!= null && Cadena.isVacio(this.getXml().getObservaciones()))
 			  this.getXml().setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
 			if(this.getPdf()!= null && Cadena.isVacio(this.getPdf().getObservaciones()))
 			  this.getPdf().setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
-			Importados importados= new Importados(this.orden, this.getXml(), this.getPdf());
+			importados= new Importados(this.orden, this.getXml(), this.getPdf());
       if(importados.ejecutar(EAccion.AGREGAR)) {
       	UIBackingUtilities.execute("janal.alert('Se actualizo y se importaron los catalogos de forma correcta !');");
 				regresar= this.doCancelar();
@@ -154,6 +155,5 @@ public class Importar extends IBaseImportar implements Serializable {
 			Error.mensaje(e);
 		} // catch
     return regresar;
-	}	
-	
+	} // doAceptar		
 }
