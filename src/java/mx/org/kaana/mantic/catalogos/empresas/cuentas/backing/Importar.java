@@ -113,7 +113,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 			this.deuda= (TcManticEmpresasDeudasDto)DaoFactory.getInstance().findById(TcManticEmpresasDeudasDto.class, this.idEmpresaDeuda);
 			if(this.deuda!= null) {
 				this.notaEntrada= (TcManticNotasEntradasDto) DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, this.deuda.getIdNotaEntrada());
-				this.proveedor= (TcManticProveedoresDto) DaoFactory.getInstance().findById(TcManticProveedoresDto.class, notaEntrada.getIdProveedor());
+				this.proveedor= (TcManticProveedoresDto) DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.notaEntrada.getIdProveedor());
 				this.toLoadCatalog();
 			} // if
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
@@ -268,11 +268,32 @@ public class Importar extends IBaseAttribute implements Serializable {
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Archivos")) 
 			this.doLoadImportados();
-		else
-		  if(event.getTab().getTitle().equals("Importar")) 
-				this.doLoadFiles();
+		else if(event.getTab().getTitle().equals("Importar")) 
+			this.doLoadFiles();
+		else if(event.getTab().getTitle().equals("Facturas") && this.notaEntrada!= null && this.notaEntrada.isValid()) 
+			this.doLoadImportados("VistaNotasEntradasDto", "importados", this.notaEntrada.toMap());
 	}		
 
+	protected void doLoadImportados(String proceso, String idXml, Map<String, Object> params) {
+		List<Columna> columns= null;
+		try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("ruta", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+		  this.attrs.put("facturas", UIEntity.build(proceso, idXml, params, columns));
+		} // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+    finally {
+      Methods.clean(columns);
+    } // finally
+  } // doLoadImportados
+	
 	private void doLoadFiles() {
 		TcManticEmpresasArchivosDto tmp= null;
 		if(this.deuda.getIdEmpresaDeuda()> 0) {
