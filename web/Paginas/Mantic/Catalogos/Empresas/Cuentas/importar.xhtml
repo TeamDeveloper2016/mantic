@@ -120,7 +120,42 @@
 									</p:commandLink>	
 								</p:column>
 							</p:dataTable>
-						</p:tab>						            						            																																																
+						</p:tab>			
+						<p:tab title="Facturas">
+							<p:dataTable id="facturas" var="row" value="#{manticCatalogosEmpresasCuentasImportar.attrs.facturas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
+								<p:column styleClass="janal-wid-col-30" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-col-40 janal-column-center" headerText="Tipo">
+									<h:outputText value="#{row.tipo}"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-15" headerText="Nombre">
+									<h:outputText value="#{row.nombre}"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-25" headerText="Usuario">
+									<h:outputText value="#{row.usuario}"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-15 janal-column-center" headerText="Fecha">
+									<h:outputText value="#{row.registro}"/>
+								</p:column>   
+								<p:column headerText="Observaciones">
+									<h:outputText value="#{row.observaciones}"/>
+								</p:column>   
+								<p:column style="text-align: center" styleClass="janal-wid-col-38">
+									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" rendered="#{row.idPrincipal.toLong() eq 1}">
+										<p:fileDownload value="#{manticCatalogosEmpresasCuentasImportar.doFileDownload(row)}" />
+									</p:commandButton>
+								</p:column>
+								<p:column style="text-align: center" styleClass="janal-wid-col-38">
+									<p:commandLink actionListener="#{manticCatalogosEmpresasCuentasImportar.doViewPdfDocument(row)}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 2}">
+									  <p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button"/>
+									</p:commandLink>	
+									<p:commandLink actionListener="#{manticCatalogosEmpresasCuentasImportar.doViewXmlDocument(row)}" process="@this" update="@(.viewXML)" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 1}">
+									  <p:commandButton icon="fa fa-eye" title="Ver documento XML" ajax="false" type="button"/>
+									</p:commandLink>	
+								</p:column>
+							</p:dataTable>
+						</p:tab>						
 						<p:tab title="Importar">
 							<p:outputLabel for="pago" value="Pago:" styleClass="janal-wid-100-txt"/>
 							<p:selectOneMenu id="pago" value="#{manticCatalogosEmpresasCuentasImportar.attrs.pago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
