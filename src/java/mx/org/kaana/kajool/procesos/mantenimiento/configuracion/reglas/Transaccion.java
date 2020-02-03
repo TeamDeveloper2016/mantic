@@ -9,6 +9,7 @@ import mx.org.kaana.kajool.db.dto.TcJanalConfiguracionesDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.recurso.TcConfiguraciones;
 import org.hibernate.Session;
 
 public class Transaccion extends IBaseTnx {
@@ -49,6 +50,7 @@ public class Transaccion extends IBaseTnx {
 			} // else
 			if(!regresar)
         throw new Exception("");
+			TcConfiguraciones.getInstance().reload();
 		} // try
 		catch (Exception e) {			
 			throw new Exception(this.messageError.concat("<br/>")+ e);
