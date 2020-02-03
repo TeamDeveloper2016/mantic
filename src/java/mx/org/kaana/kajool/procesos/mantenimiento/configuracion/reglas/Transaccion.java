@@ -30,7 +30,7 @@ public class Transaccion extends IBaseTnx {
 		Map<String, Object> params= new HashMap<>();
 		try {
 			params.put("llave", "sucursal."+ JsfBase.getAutentifica().getCredenciales().getCuenta());
-			this.messageError= "Ocurrio un error al ".concat(accion.name().toLowerCase()).concat(" actualizar a configuración.");
+			this.messageError= "Ocurrio un error al actualizar la configuración de la sucursal.";
 			TcJanalConfiguracionesDto configuracion= (TcJanalConfiguracionesDto)DaoFactory.getInstance().findIdentically(sesion, TcJanalConfiguracionesDto.class, params);
 			if(configuracion!= null) {
 				configuracion.setValor(String.valueOf(this.idEmpresa));

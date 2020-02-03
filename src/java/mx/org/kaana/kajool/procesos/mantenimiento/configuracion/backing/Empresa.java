@@ -73,7 +73,7 @@ public class Empresa extends IBaseFilter implements Serializable {
 		EAccion eaccion        = null;
     try {			
 			eaccion= (EAccion) this.attrs.get("accion");
-			transaccion = new Transaccion((Long) this.attrs.get("idEmpresa"));
+			transaccion = new Transaccion(((UISelectEntity) this.attrs.get("idEmpresa")).getKey());
 			if (transaccion.ejecutar(eaccion)) {
 				if(eaccion.equals(EAccion.AGREGAR))
 				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
