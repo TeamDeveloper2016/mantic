@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Sucursales disponibles, por favor seleccione una" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+			Janal.Control.fields = {				
+				idEmpresa: {validaciones: 'requerido', mascara: 'libre'}
+			};		
+    </script>    
+  </ui:define>
+  <ui:define name="contenido">		
+    <p:fieldset legend="Selecciona el archivo de configuración"> 
+      <p:panelGrid columns="2" layout="grid" columnClasses="janal-wid-col-200, jana-wid-100-txt">
+				<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{kajoolMantenimientoConfiguracionEmpresa.attrs.isMatriz}"/>
+				<p:selectOneMenu id="idEmpresa" value="#{kajoolMantenimientoConfiguracionEmpresa.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+					<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+					<f:selectItems value="#{kajoolMantenimientoConfiguracionEmpresa.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
+					<p:column headerText="Clave">
+						<h:outputText value="#{item.clave}"/>
+					</p:column>   
+					<p:column headerText="Nombre">
+						<h:outputText value="#{item.nombre}"/>
+					</p:column>   
+				</p:selectOneMenu>
+      </p:panelGrid>
+    </p:fieldset>  
+  </ui:define>
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{kajoolMantenimientoConfiguracionEmpresa.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{kajoolMantenimientoConfiguracionEmpresa.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{kajoolMantenimientoConfiguracionEmpresa.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{kajoolMantenimientoConfiguracionEmpresa.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>

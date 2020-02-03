@@ -1217,6 +1217,14 @@
         where
           {condicion}
       </select>
+      <select id="identically">
+        select
+          tc_janal_configuraciones.*
+        from
+          tc_janal_configuraciones
+        where
+          llave= {llave}
+			</select>
     </unit>    
     <unit id="TrJanalIndicadoresPerfilDto">
       <select id="row">

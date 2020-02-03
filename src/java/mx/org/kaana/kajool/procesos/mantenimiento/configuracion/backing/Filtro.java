@@ -9,8 +9,7 @@ package mx.org.kaana.kajool.procesos.mantenimiento.configuracion.backing;
  */
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.kajool.procesos.mantenimiento.contadores.reglas.Ayudas;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
@@ -21,8 +20,8 @@ import mx.org.kaana.xml.Dml;
 import org.apache.commons.logging.Log; 
 import org.apache.commons.logging.LogFactory;
 
-@ManagedBean(name="kajoolMantenimientoConfiguracionFiltro")
-@ViewScoped
+@Named(value="kajoolMantenimientoConfiguracionFiltro")
+@javax.faces.view.ViewScoped
 public class Filtro extends IBaseAttribute implements Serializable {
 
 	private static final Log LOG              = LogFactory.getLog(Filtro.class);	
