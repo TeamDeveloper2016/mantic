@@ -1223,7 +1223,7 @@
         from
           tc_janal_configuraciones
         where
-          llave= '{llave}'
+          llave= '{llave}'	
 			</select>
     </unit>    
     <unit id="TrJanalIndicadoresPerfilDto">
