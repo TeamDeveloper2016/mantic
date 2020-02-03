@@ -25,6 +25,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
@@ -101,7 +102,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
     return this.attrs.get("retorno") != null ? (String)this.attrs.get("retorno") : "filtro";
   } // doCancelar
 	
-	protected void loadSucursales(){
+	protected void loadSucursales() {
 		List<UISelectEntity> sucursales= null;
 		Map<String, Object>params      = null;
 		List<Columna> columns          = null;
@@ -113,7 +114,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			sucursales=(List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
 			this.attrs.put("sucursales", sucursales);
-			this.attrs.put("idEmpresa", sucursales.get(0));
+			this.attrs.put("idEmpresa", this.toDefaultSucursal(sucursales));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
