@@ -75,9 +75,7 @@ public class Empresa extends IBaseFilter implements Serializable {
 			eaccion= (EAccion) this.attrs.get("accion");
 			transaccion = new Transaccion(((UISelectEntity) this.attrs.get("idEmpresa")).getKey());
 			if (transaccion.ejecutar(eaccion)) {
-				if(eaccion.equals(EAccion.AGREGAR))
-				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la configuración."), ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se modificó la configuración de la sucursal.", ETipoMensaje.INFORMACION);
 			} // if
 			else 
 				JsfBase.addMessage("Ocurrió un error al modificar la configuración.", ETipoMensaje.ERROR);      			
