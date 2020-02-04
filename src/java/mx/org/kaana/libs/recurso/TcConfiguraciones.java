@@ -22,8 +22,8 @@ public class TcConfiguraciones {
   }
 
   private TcConfiguraciones() {
-    setPropiedades(new HashMap<String, String>());
-    init();
+    this.setPropiedades(new HashMap<String, String>());
+    this.init();
   }
 
   public static TcConfiguraciones getInstance() {
@@ -46,21 +46,20 @@ public class TcConfiguraciones {
 
 
   private void init() {
-    List<TcJanalConfiguracionesDto> listTcConfiguracionesDto= null;		
+    List<TcJanalConfiguracionesDto> list= null;		
     try {
-      listTcConfiguracionesDto= DaoFactory.getInstance().findAll(TcJanalConfiguracionesDto.class, Constantes.SQL_TODOS_REGISTROS);
-      for(TcJanalConfiguracionesDto tcConfiguracionesDto: listTcConfiguracionesDto){
-        getPropiedades().put(tcConfiguracionesDto.getLlave(), tcConfiguracionesDto.getValor());
-      }// for			
+      list= DaoFactory.getInstance().findAll(TcJanalConfiguracionesDto.class, Constantes.SQL_TODOS_REGISTROS);
+      for(TcJanalConfiguracionesDto tcConfiguracionesDto: list) {
+        this.getPropiedades().put(tcConfiguracionesDto.getLlave(), tcConfiguracionesDto.getValor());
+      } // for			
     } // try
     catch (Exception e)  {
       Error.mensaje(e);
     } // catch
-    finally{
-      if (listTcConfiguracionesDto!= null) {
-        listTcConfiguracionesDto.clear();
-      }
-      listTcConfiguracionesDto= null;
+    finally {
+      if (list!= null) 
+        list.clear();
+      list= null;
     } // finally
   }
 
