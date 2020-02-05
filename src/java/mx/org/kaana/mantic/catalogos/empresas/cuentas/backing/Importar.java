@@ -51,7 +51,8 @@ import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
-import mx.org.kaana.mantic.db.dto.TcManticEmpresasArchivosDto;
+import mx.org.kaana.libs.pagina.UISelect;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
@@ -80,15 +81,10 @@ public class Importar extends IBaseAttribute implements Serializable {
 	private TcManticProveedoresDto proveedor;
 	private TcManticNotasEntradasDto notaEntrada;
 	private Long idEmpresaDeuda;
-	private Importado xml;
-	private Importado pdf;
-
-	public Importado getXml() {
-		return xml;
-	}
+	private Importado importado;	
 	
-	public Importado getPdf() {
-		return pdf;
+	public Importado getImportado() {
+		return importado;
 	}
 
 	public TcManticEmpresasDeudasDto getDeuda() {
@@ -106,9 +102,16 @@ public class Importar extends IBaseAttribute implements Serializable {
 	@PostConstruct
   @Override
   protected void init() {		
+		Map<String, Object> params        = null;
+		List<UISelectItem> tiposDocumentos= null;
     try {
 			if(JsfBase.getFlashAttribute("idEmpresaDeuda")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			tiposDocumentos= UISelect.build("TcManticTiposComprobantesDto", "row", params, "nombre", " ", EFormatoDinamicos.MAYUSCULAS);
+			this.attrs.put("tiposDocumentos", tiposDocumentos);
+			this.attrs.put("tipoDocumento", UIBackingUtilities.toFirstKeySelectItem(tiposDocumentos));
       this.idEmpresaDeuda= JsfBase.getFlashAttribute("idEmpresaDeuda")== null? -1L: (Long)JsfBase.getFlashAttribute("idEmpresaDeuda");
 			this.deuda= (TcManticEmpresasDeudasDto)DaoFactory.getInstance().findById(TcManticEmpresasDeudasDto.class, this.idEmpresaDeuda);
 			if(this.deuda!= null) {
@@ -117,11 +120,9 @@ public class Importar extends IBaseAttribute implements Serializable {
 				this.toLoadCatalog();
 			} // if
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
-			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_FACTURA);
-  		this.xml= null;
-			this.pdf= null;
-			this.attrs.put("xml", ""); 
-			this.attrs.put("pdf", ""); 
+			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR);  		
+			this.importado= null;			
+			this.attrs.put("importado", ""); 
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -148,7 +149,7 @@ public class Importar extends IBaseAttribute implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     } // finally
-	}
+	} // toLoadCatalog
 
   private void doLoadImportados() {
 		List<Columna> columns= null;
@@ -201,15 +202,14 @@ public class Importar extends IBaseAttribute implements Serializable {
 			Archivo.toWriteFile(result, event.getFile().getInputstream());
 			fileSize= event.getFile().getSize();
 			if(nameFile.endsWith(EFormatos.XML.name())) {
-			  this.xml= new Importado(nameFile, event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase());
+			  this.importado= new Importado(nameFile, event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase());
 				this.toReadFactura(result);
-				this.attrs.put("xml", this.xml.getName());
+				this.attrs.put("importado", this.importado.getName());
 			} //
-			else
-			  if(nameFile.endsWith(EFormatos.PDF.name())) {
-			    this.pdf= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase());
-  				this.attrs.put("pdf", this.pdf.getName()); 
-				} // if
+			else {
+				this.importado= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase());
+				this.attrs.put("importado", this.importado.getName());
+			} // if			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -267,12 +267,10 @@ public class Importar extends IBaseAttribute implements Serializable {
 	
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Archivos")) 
-			this.doLoadImportados();
-		else if(event.getTab().getTitle().equals("Importar")) 
-			this.doLoadFiles();
+			this.doLoadImportados();		
 		else if(event.getTab().getTitle().equals("Facturas") && this.notaEntrada!= null && this.notaEntrada.isValid()) 
 			this.doLoadImportados("VistaNotasEntradasDto", "importados", this.notaEntrada.toMap());
-	}		
+	}	// doTabChange	
 
 	protected void doLoadImportados(String proceso, String idXml, Map<String, Object> params) {
 		List<Columna> columns= null;
@@ -292,39 +290,8 @@ public class Importar extends IBaseAttribute implements Serializable {
     finally {
       Methods.clean(columns);
     } // finally
-  } // doLoadImportados
+  } // doLoadImportados	
 	
-	private void doLoadFiles() {
-		TcManticEmpresasArchivosDto tmp= null;
-		if(this.deuda.getIdEmpresaDeuda()> 0) {
-			Map<String, Object> params=null;
-			try {
-				params=new HashMap<>();
-				params.put("idEmpresaDeuda", this.deuda.getIdEmpresaDeuda());
-				params.put("idTipoArchivo", 1L);
-				tmp= (TcManticEmpresasArchivosDto)DaoFactory.getInstance().toEntity(TcManticEmpresasArchivosDto.class, "VistaEmpresasDto", "exists", params);
-				if(tmp!= null) {
-					this.xml= new Importado(tmp.getNombre(), "XML", EFormatos.XML, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones());
-					this.toReadFactura(new File(tmp.getAlias()));
-  				this.attrs.put("xml", this.xml.getName()); 
-				} // if	
-				params.put("idTipoArchivo", 2L);
-				tmp= (TcManticEmpresasArchivosDto)DaoFactory.getInstance().toEntity(TcManticEmpresasArchivosDto.class, "VistaEmpresasDto","exists", params);
-				if(tmp!= null) {
-					this.pdf= new Importado(tmp.getNombre(), "PDF", EFormatos.PDF, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones());
-  				this.attrs.put("pdf", this.pdf.getName()); 
-				} // if	
-			} // try
-			catch (Exception e) {
-				Error.mensaje(e);
-				JsfBase.addMessageError(e);
-			} // catch
-			finally {
-				Methods.clean(params);
-			} // finally
-		} // if
-	}
-
 	public StreamedContent doFileDownload(UISelectEntity file) {
 		StreamedContent regresar= null;
 		try {
@@ -359,7 +326,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 	} // doViewPdfDocument
 	
 	public void doViewDocument() {
-		this.toCopyDocument(Configuracion.getInstance().getPropiedadSistemaServidor("pagos").concat(this.pdf.getRuta()).concat(this.pdf.getName()), this.pdf.getName());
+		this.toCopyDocument(Configuracion.getInstance().getPropiedadSistemaServidor("pagos").concat(this.importado.getRuta()).concat(this.importado.getName()), this.importado.getName());
 	} // doViewDocument
 
 	public void doViewXmlDocument(UISelectEntity item) {
@@ -367,7 +334,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 	} // doViewXmlDocument
 
 	public void doViewFile() {
-		this.doViewFile(Configuracion.getInstance().getPropiedadSistemaServidor("pagos").concat(this.xml.getRuta()).concat(this.xml.getName()));
+		this.doViewFile(Configuracion.getInstance().getPropiedadSistemaServidor("pagos").concat(this.importado.getRuta()).concat(this.importado.getName()));
 	} // doViewFile
 	
 	public void doViewFile(String nameXml) {
@@ -430,25 +397,26 @@ public class Importar extends IBaseAttribute implements Serializable {
     } // catch		
 	}	// toCopyDocument
 	
-	public String doAceptar() {
-		String regresar        = null;
+	public void doAceptar() {		
 		Transaccion transaccion= null;
-		try {
-			if(this.getXml()!= null && Cadena.isVacio(this.getXml().getObservaciones()))
-			  this.getXml().setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
-			if(this.getPdf()!= null && Cadena.isVacio(this.getPdf().getObservaciones()))
-			  this.getPdf().setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
-			transaccion= new Transaccion(this.deuda, this.xml, this.pdf, Long.valueOf(this.attrs.get("pago").toString()));
+		try {			
+			if(this.getImportado()!= null && Cadena.isVacio(this.getImportado().getObservaciones()))
+			  this.getImportado().setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
+			if(this.importado.getFormat().equals(EFormatos.PDF))
+				transaccion= new Transaccion(this.deuda, null, this.importado, Long.valueOf(this.attrs.get("pago").toString()), Long.valueOf(this.attrs.get("tipoDocumento").toString()));
+			else
+				transaccion= new Transaccion(this.deuda, this.importado, null, Long.valueOf(this.attrs.get("pago").toString()), Long.valueOf(this.attrs.get("tipoDocumento").toString()));
       if(transaccion.ejecutar(EAccion.REGISTRAR)) {
-      	UIBackingUtilities.execute("janal.alert('Se importaron los archivos de forma correcta !');");
-				regresar= this.doCancelar();
+      	UIBackingUtilities.execute("janal.alert('Se importaron los archivos de forma correcta !');");		
+				this.importado= null;			
+				this.attrs.put("importado", ""); 
+				this.attrs.put("observaciones", "");
 			} // if
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);
-		} // catch
-    return regresar;
+		} // catch    
 	} // doAceptar
 	
 	public void doCerrar() {

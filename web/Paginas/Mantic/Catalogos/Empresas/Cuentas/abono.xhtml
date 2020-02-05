@@ -148,21 +148,30 @@
 							<p:dataTable id="importados" var="row" value="#{manticCatalogosEmpresasCuentasAbono.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
 								<p:column styleClass="janal-wid-col-30" headerText="No.">
 									<h:outputText value="#{index+ 1}.-"/>
-								</p:column>   								
+								</p:column>   
+								<p:column styleClass="janal-wid-col-40 janal-column-center" headerText="Tipo">
+									<h:outputText value="#{row.tipo}"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-10" headerText="Comprobante">
+									<h:outputText value="#{row.comprobante}"/>
+								</p:column>   
 								<p:column styleClass="janal-wid-20" headerText="Nombre">
 									<h:outputText value="#{row.nombre}"/>
 								</p:column>   
-								<p:column styleClass="janal-wid-25" headerText="Usuario">
+								<p:column styleClass="janal-wid-15" headerText="Usuario">
 									<h:outputText value="#{row.usuario}"/>
 								</p:column>   
-								<p:column styleClass="janal-column-rigth" headerText="Pago">
-									<h:outputText value="$#{row.pago}"/>
-								</p:column>   
-								<p:column styleClass="janal-wid-13 janal-column-center" headerText="Fecha">
+								<p:column styleClass="janal-wid-10 janal-column-center" headerText="Fecha">
 									<h:outputText value="#{row.registro}"/>
 								</p:column>   
 								<p:column headerText="Observaciones">
 									<h:outputText value="#{row.observaciones}"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-8 janal-column-right" headerText="Pago">
+									<h:outputText value="#{row.pago}"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-10 janal-column-center" headerText="Fecha de pago">
+									<h:outputText value="#{row.registroPago}"/>
 								</p:column>   
 								<p:column style="text-align: center" styleClass="janal-wid-col-38">
 									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" rendered="#{row.idPrincipal.toLong() eq 1}">
@@ -189,6 +198,10 @@
 								<p:column headerText="Tipo de pago">
 									<h:outputText value="#{item.nombre}"/>
 								</p:column>   									
+							</p:selectOneMenu>
+							<p:outputLabel for="tipoDocumento" value="Tipo documento:" styleClass="janal-wid-100-txt"/>
+							<p:selectOneMenu id="tipoDocumento" value="#{manticCatalogosEmpresasCuentasAbono.attrs.tipoDocumento}" styleClass="janal-wid-99 faltantes">
+								<f:selectItems value="#{manticCatalogosEmpresasCuentasAbono.attrs.tiposDocumentos}"/>								
 							</p:selectOneMenu>
 							<p:outputLabel for="observacionesFile" value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
 							<p:inputTextarea id="observacionesFile" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasCuentasAbono.file.observaciones}" autoResize="true"/>
