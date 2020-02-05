@@ -6347,7 +6347,8 @@
 					tc_mantic_empresas_archivos.observaciones,
 					tc_mantic_empresas_archivos.registro,
 				  tc_mantic_empresas_pagos.pago,
-				  tc_mantic_empresas_pagos.registro registro_pago
+				  tc_mantic_empresas_pagos.registro registro_pago,
+					tc_mantic_tipos_comprobantes.nombre comprobante
 				from
 					tc_mantic_empresas_archivos
 				inner join
@@ -6360,6 +6361,8 @@
 					tc_janal_usuarios on tc_mantic_empresas_archivos.id_usuario= tc_janal_usuarios.id_usuario
 				inner join
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				left join 
+					tc_mantic_tipos_comprobantes on tc_mantic_empresas_archivos.id_tipo_comprobante = tc_mantic_tipos_comprobantes.id_tipo_comprobante
 				where
 					tc_mantic_empresas_deudas.id_empresa_deuda= {idEmpresaDeuda}
 				order by
