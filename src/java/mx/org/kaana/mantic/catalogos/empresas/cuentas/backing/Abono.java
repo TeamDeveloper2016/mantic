@@ -234,6 +234,7 @@ public class Abono extends IBasePagos implements Serializable {
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+			columns.add(new Columna("pago", EFormatoDinamicos.MONEDA_CON_DECIMALES));
 			empresaDeuda= (TcManticEmpresasDeudasDto)DaoFactory.getInstance().findById(TcManticEmpresasDeudasDto.class, (Long) this.attrs.get("idEmpresaDeuda"));
 		  this.attrs.put("importados", UIEntity.build("VistaEmpresasDto", "importados", empresaDeuda.toMap(), columns));
 		} // try
