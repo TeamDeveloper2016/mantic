@@ -65,7 +65,7 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 				  else	
   					bitacora= new TcManticCierresBitacoraDto("RETIRO DE EFECTIVO", -1L, this.idCierre, JsfBase.getIdUsuario(), 2L);
 					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
-					caja= (TcManticCierresCajasDto)DaoFactory.getInstance().findFirst(TcManticCierresCajasDto.class, "caja", bitacora.toMap());
+					caja= (TcManticCierresCajasDto)DaoFactory.getInstance().findFirst(sesion, TcManticCierresCajasDto.class, "caja", bitacora.toMap());
 					if(this.retiro.getIdAbono().equals(1L)) {
   					caja.setSaldo(Numero.toRedondearSat((caja.getDisponible()+ caja.getAcumulado())+ Math.abs(this.retiro.getImporte())));
 						caja.setAcumulado(Numero.toRedondearSat(caja.getAcumulado()+ Math.abs(this.retiro.getImporte())));
@@ -83,7 +83,7 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 					this.retiro.setIdUsuario(JsfBase.getIdUsuario());
 					this.retiro.setIdCierreCaja(caja.getIdCierreCaja());
 					regresar= DaoFactory.getInstance().insert(sesion, this.retiro)>= 1L;
-					cierre= (TcManticCierresDto)DaoFactory.getInstance().findById(TcManticCierresDto.class, this.idCierre);
+					cierre= (TcManticCierresDto)DaoFactory.getInstance().findById(sesion, TcManticCierresDto.class, this.idCierre);
 					cierre.setIdCierreEstatus(2L);
 					regresar= DaoFactory.getInstance().update(sesion, cierre)>= 1L;
 					this.toCheckCajaAlerta(sesion, caja);
@@ -118,7 +118,7 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 					else
 					  bitacora= new TcManticCierresBitacoraDto("RETIRO DE EFECTIVO CANCELADO POR "+ JsfBase.getAutentifica().getCredenciales().getCuenta(), -1L, this.idCierre, JsfBase.getIdUsuario(), 2L);
 					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
-					caja= (TcManticCierresCajasDto)DaoFactory.getInstance().findFirst(TcManticCierresCajasDto.class, "caja", bitacora.toMap());
+					caja= (TcManticCierresCajasDto)DaoFactory.getInstance().findFirst(sesion, TcManticCierresCajasDto.class, "caja", bitacora.toMap());
 					if(this.retiro.getIdAbono().equals(1L)) {
   					caja.setSaldo(Numero.toRedondearSat(caja.getSaldo()- Math.abs(this.retiro.getImporte())));
 						caja.setAcumulado(Numero.toRedondearSat(caja.getAcumulado()- Math.abs(this.retiro.getImporte())));
@@ -167,11 +167,12 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 	private void toCheckCajaAlerta(Session sesion, TcManticCierresCajasDto caja) throws Exception {
 		Map<String, Object> params= null;
 		TcManticCajasDto limite   = null;
-		Entity existe             = null; 
+//		Entity existe             = null; 
 		try {
+			sesion.flush();
 			params=new HashMap<>();
 			// esto es para quitar la alerta por el retiro de efectivo
-			limite= (TcManticCajasDto)DaoFactory.getInstance().findById(TcManticCajasDto.class, caja.getIdCaja());
+			limite= (TcManticCajasDto)DaoFactory.getInstance().findById(sesion, TcManticCajasDto.class, caja.getIdCaja());
 			if(limite!= null) {
 				params.put("idCierre", caja.getIdCierre());
 				Double efectivo= 0D;
@@ -182,15 +183,17 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 					DaoFactory.getInstance().updateAll(sesion, TcManticCierresAlertasDto.class, params);
 				} // if
 				else {
-				  existe= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaCierresCajasDto", "alerta", params);
-				  if(existe== null || existe.isEmpty()) {
+//					params.put("idEmpresa", limite.getIdEmpresa());
+//					params.put("idCaja", limite.getIdCaja());
+//				  existe= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaCierresCajasDto", "alerta", params);
+//				  if(existe== null || existe.isEmpty()) {
 					  DaoFactory.getInstance().updateAll(sesion, TcManticCierresAlertasDto.class, params);
 					  TcManticCierresAlertasDto alerta= new TcManticCierresAlertasDto(caja.getIdCierre(), JsfBase.getIdUsuario(), 1L, "EL SALDO EN EFECTIVO ["+ 
 						  Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, efectivo)+ 
 						  "] DE ESTA CAJA SUPERA AL LIMITE ["+ Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, limite.getLimite())
 						  + "] ESTABLECIDO PARA LA MISMA, EN EL PROCESO "+ (this.retiro.getIdAbono().equals(2L)? "RETIRO": "ABONO")+ "[AUTOMATICO]", -1L, efectivo);
 					  DaoFactory.getInstance().insert(sesion, alerta);
-				  } // if
+//				  } // if
 				} // else
 			} // if					
 		} // try
