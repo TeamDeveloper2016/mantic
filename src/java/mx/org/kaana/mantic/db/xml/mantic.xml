@@ -5195,7 +5195,7 @@
 				  ruta
       </select>
 			<update id="rows">
-				update tc_mantic_empresas_archivos set id_principal= 2 where id_tipo_archivo = {idTipoArchivo} and id_empresa_pago = {idEmpresaPago}
+				update tc_mantic_empresas_archivos set id_principal= 2 where id_empresa_pago = {idEmpresaPago}
 			</update>
     </unit>
     <unit id="TcManticTransferenciasDto">
@@ -5483,6 +5483,19 @@
 				order by 
 				  id_incidente_estatus
       </select>
+		</unit>
+		<unit id="TcManticTiposComprobantesDto">
+			<select id="row">
+				select 
+					id_tipo_comprobante as id_key,
+					nombre,
+					descripcion,
+					registro
+				from
+					tc_mantic_tipos_comprobantes
+				where 
+					{condicion}
+			</select>
 		</unit>
   </dml>    
 </process>
