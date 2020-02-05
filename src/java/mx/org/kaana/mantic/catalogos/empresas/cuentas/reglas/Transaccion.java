@@ -55,6 +55,7 @@ public class Transaccion extends IBaseTnx {
 	private boolean saldar;
 	private Long idCierreActivo;
 	private Double pagoGeneral;
+	private Long idTipoComprobante;
 	
 	public Transaccion(TcManticEmpresasPagosDto pago) {
 		this(pago, -1L, -1L, -1L, -1L, null, false);
@@ -85,15 +86,16 @@ public class Transaccion extends IBaseTnx {
 		this.notasCredito= notasCredito;
 	} // Transaccion
 	
-	public Transaccion(TcManticEmpresasDeudasDto deuda, Importado pdf, Long idPago) {
-		this(deuda, null, pdf, idPago);
+	public Transaccion(TcManticEmpresasDeudasDto deuda, Importado pdf, Long idPago, Long idTipoComprobante) {
+		this(deuda, null, pdf, idPago, idTipoComprobante);
 	}
 	
-	public Transaccion(TcManticEmpresasDeudasDto deuda, Importado xml, Importado pdf, Long idPago) {
+	public Transaccion(TcManticEmpresasDeudasDto deuda, Importado xml, Importado pdf, Long idPago, Long idTipoComprobante) {
 		this.deuda = deuda;
 		this.pdf   = pdf;
 		this.xml   = xml;
 		this.idPago= idPago;
+		this.idTipoComprobante= idTipoComprobante;
 	} // Transaccion
 
 	public Transaccion(Entity detalle, Date fecha) {
@@ -291,7 +293,8 @@ public class Transaccion extends IBaseTnx {
 					this.idPago,																					
 					Configuracion.getInstance().getPropiedadSistemaServidor("pagos").concat(this.xml.getRuta()).concat(this.xml.getName()),
 					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
-          this.xml.getOriginal()					
+          this.xml.getOriginal(),
+					this.idTipoComprobante
 				);
 				TcManticEmpresasArchivosDto exists= (TcManticEmpresasArchivosDto)DaoFactory.getInstance().toEntity(TcManticEmpresasArchivosDto.class, "TcManticEmpresasArchivosDto", "identically", tmp.toMap());
 				File reference= new File(tmp.getAlias());
@@ -319,7 +322,8 @@ public class Transaccion extends IBaseTnx {
 					this.idPago,																					
 					Configuracion.getInstance().getPropiedadSistemaServidor("pagos").concat(this.pdf.getRuta()).concat(this.pdf.getName()),
 					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
-          this.pdf.getOriginal()					
+          this.pdf.getOriginal(),
+					this.idTipoComprobante
 				);
 				TcManticEmpresasArchivosDto exists= (TcManticEmpresasArchivosDto)DaoFactory.getInstance().toEntity(TcManticEmpresasArchivosDto.class, "TcManticEmpresasArchivosDto", "identically", tmp.toMap());
 				File reference= new File(tmp.getAlias());
@@ -632,7 +636,8 @@ public class Transaccion extends IBaseTnx {
 					this.idPago,	
 					Configuracion.getInstance().getPropiedadSistemaServidor("pagos").concat(this.pdf.getRuta()).concat(this.pdf.getName()),
 					Long.valueOf(Fecha.getMesActual()),
-					this.pdf.getOriginal()
+					this.pdf.getOriginal(),
+					this.idTipoComprobante
 				);
 				TcManticEmpresasArchivosDto exists= (TcManticEmpresasArchivosDto)DaoFactory.getInstance().toEntity(TcManticEmpresasArchivosDto.class, "TcManticEmpresasArchivosDto", "identically", tmp.toMap());
 				File reference= new File(tmp.getAlias());
