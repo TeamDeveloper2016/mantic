@@ -26,6 +26,8 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelect;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
@@ -77,6 +79,8 @@ public class Abono extends IBasePagos implements Serializable {
   @PostConstruct
   @Override
   protected void init() {
+		Map<String, Object> params        = null;
+		List<UISelectItem> tiposDocumentos= null;
     try {			
 			if(JsfBase.getFlashAttribute("idEmpresaDeuda")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
@@ -87,6 +91,11 @@ public class Abono extends IBasePagos implements Serializable {
 			this.attrs.put("empresaDeuda", DaoFactory.getInstance().findById(TcManticEmpresasDeudasDto.class, Long.valueOf(this.attrs.get("idEmpresaDeuda").toString())));
 			this.attrs.put("proveedor", DaoFactory.getInstance().findById(TcManticProveedoresDto.class, Long.valueOf(this.attrs.get("idProveedor").toString())));
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));  
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			tiposDocumentos= UISelect.build("TcManticTiposComprobantesDto", "row", params, "nombre", " ", EFormatoDinamicos.MAYUSCULAS);
+			this.attrs.put("tiposDocumentos", tiposDocumentos);
+			this.attrs.put("tipoDocumento", UIBackingUtilities.toFirstKeySelectItem(tiposDocumentos));
 			initValues();
 			loadProveedorDeuda();
 			doLoad();
@@ -289,7 +298,7 @@ public class Abono extends IBasePagos implements Serializable {
 		TcManticEmpresasDeudasDto empresaDeuda= null;
 		try {
 			empresaDeuda= (TcManticEmpresasDeudasDto)DaoFactory.getInstance().findById(TcManticEmpresasDeudasDto.class, (Long) this.attrs.get("idEmpresaDeuda"));
-			transaccion= new Transaccion(empresaDeuda, getFile(), ((Entity)this.attrs.get("pagoCombo")).getKey());
+			transaccion= new Transaccion(empresaDeuda, getFile(), ((Entity)this.attrs.get("pagoCombo")).getKey(), Long.valueOf(this.attrs.get("tipoDocumento").toString()));
       if(transaccion.ejecutar(EAccion.SUBIR)) {
       	UIBackingUtilities.execute("janal.alert('Se importaron los archivos de forma correcta !');");				
 			} // if
@@ -409,7 +418,7 @@ public class Abono extends IBasePagos implements Serializable {
 			deudaReabrir= new TcManticEmpresasDeudasDto();
 			deudaReabrir.setIdEmpresaDeuda((Long)this.attrs.get("idEmpresaDeuda"));
 			deudaReabrir.setObservaciones(toObservacionesReabrir());
-			transaccion= new Transaccion(deudaReabrir, null, -1L);
+			transaccion= new Transaccion(deudaReabrir, null, -1L, null);
 			if(transaccion.ejecutar(EAccion.ACTIVAR)){
 				JsfBase.addMessage("Se abrió la cuenta de forma correcta", ETipoMensaje.INFORMACION);
 				loadProveedorDeuda();
