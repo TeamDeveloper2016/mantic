@@ -163,7 +163,7 @@ public class Importar extends IBaseAttribute implements Serializable {
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-      columns.add(new Columna("registroPago", EFormatoDinamicos.FECHA_HORA_CORTA));
+      columns.add(new Columna("registroPago", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("pago", EFormatoDinamicos.MONEDA_CON_DECIMALES));
 		  this.attrs.put("importados", UIEntity.build("VistaEmpresasDto", "importados", this.deuda.toMap(), columns));
 			this.attrs.put("paginator", ((List<UISelectEntity>)this.attrs.get("importados")).size()>15);

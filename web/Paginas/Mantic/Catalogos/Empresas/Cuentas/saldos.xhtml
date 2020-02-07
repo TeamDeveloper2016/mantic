@@ -211,7 +211,7 @@
 						<p:separator/>
 						<p:menuitem icon="fa fa-check" value="Actualizar" onstart="return janal.bloquear()" action="#{manticCatalogosEmpresasCuentasSaldos.doModificar}" process="@this tabla" />
 						<p:separator/>
-						<p:menuitem icon="fa fa-external-link" value="Importar" title="Importar identificacion de representante" onstart="return janal.bloquear()" process="@this tabla" action="#{manticCatalogosEmpresasCuentasSaldos.doImportar}"/>
+						<p:menuitem icon="fa fa-external-link" value="Importar XML/PDF" title="Importar identificacion de representante" onstart="return janal.bloquear()" process="@this tabla" action="#{manticCatalogosEmpresasCuentasSaldos.doImportar}"/>
             <p:separator/>					
             <p:menuitem icon="fa fa-sitemap" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosEmpresasCuentasSaldos.doReporte('CUENTA_PAGAR_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
 						<p:separator/>

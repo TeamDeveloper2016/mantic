@@ -296,9 +296,9 @@ public class Transaccion extends IBaseTnx {
 					Configuracion.getInstance().getPropiedadSistemaServidor("pagos").concat(this.xml.getRuta()).concat(this.xml.getName()),
 					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
           this.xml.getOriginal(),
-					this.idTipoComprobante
+					this.idTipoComprobante,
+					new java.sql.Date(this.fecha.getTime())
 				);
-				tmp.setRegistro(new Timestamp(this.fecha.getTime()));
 				TcManticEmpresasArchivosDto exists= (TcManticEmpresasArchivosDto)DaoFactory.getInstance().toEntity(TcManticEmpresasArchivosDto.class, "TcManticEmpresasArchivosDto", "identically", tmp.toMap());
 				File reference= new File(tmp.getAlias());
 				if(exists== null && reference.exists()) {
@@ -326,9 +326,9 @@ public class Transaccion extends IBaseTnx {
 					Configuracion.getInstance().getPropiedadSistemaServidor("pagos").concat(this.pdf.getRuta()).concat(this.pdf.getName()),
 					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
           this.pdf.getOriginal(),
-					this.idTipoComprobante
+					this.idTipoComprobante,
+					new java.sql.Date(this.fecha.getTime())
 				);
-				tmp.setRegistro(new Timestamp(this.fecha.getTime()));
 				TcManticEmpresasArchivosDto exists= (TcManticEmpresasArchivosDto)DaoFactory.getInstance().toEntity(TcManticEmpresasArchivosDto.class, "TcManticEmpresasArchivosDto", "identically", tmp.toMap());
 				File reference= new File(tmp.getAlias());
 				if(exists== null && reference.exists()) {
@@ -641,7 +641,8 @@ public class Transaccion extends IBaseTnx {
 					Configuracion.getInstance().getPropiedadSistemaServidor("pagos").concat(this.pdf.getRuta()).concat(this.pdf.getName()),
 					Long.valueOf(Fecha.getMesActual()),
 					this.pdf.getOriginal(),
-					this.idTipoComprobante
+					this.idTipoComprobante,
+					new java.sql.Date(this.fecha.getTime())
 				);
 				TcManticEmpresasArchivosDto exists= (TcManticEmpresasArchivosDto)DaoFactory.getInstance().toEntity(TcManticEmpresasArchivosDto.class, "TcManticEmpresasArchivosDto", "identically", tmp.toMap());
 				File reference= new File(tmp.getAlias());

@@ -6339,7 +6339,7 @@
 					tc_mantic_empresas_archivos.id_empresa_pago,
 			  	tc_mantic_empresas_archivos.id_tipo_archivo,
 					tc_mantic_tipos_archivos.nombre as tipo,
-					tc_mantic_empresas_archivos.nombre,
+					tc_mantic_empresas_archivos.archivo as nombre,
 					tc_mantic_empresas_archivos.alias,
 					tc_mantic_empresas_archivos.ruta,
 					tc_mantic_empresas_archivos.id_principal,
@@ -6347,7 +6347,7 @@
 					tc_mantic_empresas_archivos.observaciones,
 					tc_mantic_empresas_archivos.registro,
 				  tc_mantic_empresas_pagos.pago,
-				  tc_mantic_empresas_pagos.registro registro_pago,
+				  tc_mantic_empresas_archivos.pago registro_pago,
 					tc_mantic_tipos_comprobantes.nombre comprobante
 				from
 					tc_mantic_empresas_archivos

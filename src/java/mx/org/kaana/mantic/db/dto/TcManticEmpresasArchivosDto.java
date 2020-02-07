@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -60,17 +61,19 @@ public class TcManticEmpresasArchivosDto implements IBaseDto, Serializable {
   private String alias;
   @Column (name="mes")
   private Long mes;
+  @Column (name="pago")
+  private Date pago;
 
   public TcManticEmpresasArchivosDto() {
     this(new Long(-1L));
   }
 
   public TcManticEmpresasArchivosDto(Long key) {
-    this(null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null);
+    this(null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()));
     setKey(key);
   }
 
-  public TcManticEmpresasArchivosDto(String ruta, Long idEmpresaArchivo, String nombre, Long ejercicio, Long tamanio, Long idUsuario, Long idTipoArchivo, Long idPrincipal, String observaciones, Long idEmpresaPago, String alias, Long mes, String archivo, Long idTipoComprobante) {
+  public TcManticEmpresasArchivosDto(String ruta, Long idEmpresaArchivo, String nombre, Long ejercicio, Long tamanio, Long idUsuario, Long idTipoArchivo, Long idPrincipal, String observaciones, Long idEmpresaPago, String alias, Long mes, String archivo, Long idTipoComprobante, Date pago) {
     setRuta(ruta);
     setIdEmpresaArchivo(idEmpresaArchivo);
     setNombre(nombre);
@@ -86,6 +89,7 @@ public class TcManticEmpresasArchivosDto implements IBaseDto, Serializable {
     setMes(mes);
 		this.archivo= archivo;
 		setIdTipoComprobante(idTipoComprobante);
+		this.pago= pago;
   }
 	
   public void setRuta(String ruta) {
@@ -208,6 +212,14 @@ public class TcManticEmpresasArchivosDto implements IBaseDto, Serializable {
 		this.idTipoComprobante = idTipoComprobante;
 	}	
 	
+	public Date getPago() {
+		return pago;
+	}
+
+	public void setPago(Date pago) {
+		this.pago = pago;
+	}	
+	
   @Transient
   @Override
   public Long getKey() {
@@ -252,6 +264,8 @@ public class TcManticEmpresasArchivosDto implements IBaseDto, Serializable {
 		regresar.append(getMes());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTipoComprobante());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPago());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -274,13 +288,14 @@ public class TcManticEmpresasArchivosDto implements IBaseDto, Serializable {
 		regresar.put("alias", getAlias());
 		regresar.put("mes", getMes());
 		regresar.put("idTipoComprobante", getIdTipoComprobante());
+		regresar.put("pago", getPago());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-			getRuta(), getIdEmpresaArchivo(), getNombre(), getArchivo(), getEjercicio(), getRegistro(), getTamanio(), getIdUsuario(), getIdTipoArchivo(), getIdPrincipal(), getObservaciones(), getIdEmpresaPago(), getAlias(), getMes(), getIdTipoComprobante()
+			getRuta(), getIdEmpresaArchivo(), getNombre(), getArchivo(), getEjercicio(), getRegistro(), getTamanio(), getIdUsuario(), getIdTipoArchivo(), getIdPrincipal(), getObservaciones(), getIdEmpresaPago(), getAlias(), getMes(), getIdTipoComprobante(), getPago()
     };
     return regresar;
   }

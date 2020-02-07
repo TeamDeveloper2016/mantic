@@ -209,7 +209,7 @@ public class Abono extends IBasePagos implements Serializable {
 		} // finally
 	} // doRegistrarPago
 	
-	private boolean validaPago(){		
+	private boolean validaPago() {		
 		boolean regresar= false;
 		Double pago     = 0D;
 		Double saldo    = 0D;

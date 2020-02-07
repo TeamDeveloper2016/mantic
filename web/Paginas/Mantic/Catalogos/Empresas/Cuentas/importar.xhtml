@@ -110,6 +110,9 @@
 								<p:column styleClass="janal-wid-10 janal-column-center" headerText="Fecha de pago">
 									<h:outputText value="#{row.registroPago}"/>
 								</p:column>   
+								<p:column styleClass="janal-wid-10 janal-column-center" headerText="Registró">
+									<h:outputText value="#{row.registro}"/>
+								</p:column>   
 								<p:column style="text-align: center" styleClass="janal-wid-col-38">
 									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
 										<p:fileDownload value="#{manticCatalogosEmpresasCuentasImportar.doFileDownload(row)}" />
