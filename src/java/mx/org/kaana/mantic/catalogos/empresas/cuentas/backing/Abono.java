@@ -43,6 +43,7 @@ import mx.org.kaana.mantic.enums.ECuentasEgresos;
 import mx.org.kaana.mantic.enums.EEstatusEmpresas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.TabChangeEvent;
 
 @Named(value = "manticCatalogosEmpresasCuentasAbono")
 @ViewScoped
@@ -477,5 +478,12 @@ public class Abono extends IBasePagos implements Serializable {
 		} // catch		
 		return "/Paginas/Mantic/Egresos/cuentas".concat(Constantes.REDIRECIONAR);
 	} // doEgreso	
-	
+
+	@Override
+	public void doTabChange(TabChangeEvent event) {
+		if(event.getTab().getTitle().equals("Archivos")) 
+			doLoadImportados();
+		else if(event.getTab().getTitle().equals("Importar")) 
+			doLoadPagosArchivos();					
+	}	// doTabChange
 }
