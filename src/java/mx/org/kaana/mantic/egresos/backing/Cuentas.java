@@ -73,11 +73,11 @@ public class Cuentas extends mx.org.kaana.mantic.egresos.backing.Filtro implemen
 	private void setFlashValues(){
 		try {
 			JsfBase.setFlashAttribute("retorno", this.attrs.get("retornoPrincipal"));
-			JsfBase.setFlashAttribute("iEmpresa", this.attrs.get("idEmpresa"));
-			JsfBase.setFlashAttribute("iProveedor", this.attrs.get("idProveedor"));
+			JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));
+			JsfBase.setFlashAttribute("idProveedor", this.attrs.get("idProveedor"));
 			JsfBase.setFlashAttribute("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));
 		} // try
-		catch (Exception e) {			
+		catch (Exception e) {
 			throw e;
 		} // catch		
 	} // setFlashValues
