@@ -10,7 +10,7 @@
   <ui:define name="librerias">
     <script type="text/javascript">
 			Janal.Control.fields = {
-				'contenedorGrupos\\:file'             : {validaciones: 'requerido', mascara: 'libre'},				
+				'contenedorGrupos\\:file'             : {validaciones: 'requerido', mascara: 'libre', mensaje: 'Es necesario seleccionar un archivo.'},				
 				'contenedorGrupos\\:observacionesFile': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:fecha'            : {validaciones: 'requerido', mascara: 'libre'}
 			};
@@ -215,7 +215,7 @@
 														multiple="false" allowTypes="#{manticCatalogosEmpresasCuentasAbono.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 														invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosEmpresasCuentasAbono.attrs.formatos}"/>														
 							<p:inputText id="file" value="#{manticCatalogosEmpresasCuentasAbono.attrs.file}" styleClass="importado" style="display:none"/>
-							<p:commandButton id="importar" value="Importar" icon="fa fa-check" accesskey="a"  process="@form" update="@(.importado)" action="#{manticCatalogosEmpresasCuentasAbono.doImportar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+							<p:commandButton id="importar" value="Importar" icon="fa fa-check" accesskey="a"  process="@form" update="@(.importado) contenedorGrupos" action="#{manticCatalogosEmpresasCuentasAbono.doImportar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
 							<p:commandLink value="Archivo importado: #{manticCatalogosEmpresasCuentasAbono.file.ruta}#{manticCatalogosEmpresasCuentasAbono.file.name}" onclick="viewDocument();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento" style="#{(empty manticCatalogosEmpresasCuentasAbono.file)? 'display: none': ''}"/>						
 						</p:tab>
 					</p:tabView>
