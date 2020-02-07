@@ -453,8 +453,8 @@ public class Abono extends IBasePagos implements Serializable {
 	public String doEgreso() {				
 		try {															
 			JsfBase.setFlashAttribute("retornoPrincipal", this.attrs.get("retorno"));
-			JsfBase.setFlashAttribute("iEmpresa", this.attrs.get("idEmpresa"));
-			JsfBase.setFlashAttribute("iProveedor", this.attrs.get("idProveedor"));
+			JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));
+			JsfBase.setFlashAttribute("idProveedor", this.attrs.get("idProveedor"));
 			JsfBase.setFlashAttribute("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));
 			JsfBase.setFlashAttribute("idCuenta", ((Entity)this.attrs.get("pagoEgreso")).getKey());
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Empresas/Cuentas/abono");
