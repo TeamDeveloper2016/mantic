@@ -19,10 +19,10 @@
 	  <h:outputScript library="janal" name="js/shBrushCss.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 								
-				'contenedorGrupos\\:importado': {validaciones: 'libre', mascara: 'libre'},
-				'contenedorGrupos\\:pago': {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:importado'    : {validaciones: 'libre'    , mascara: 'libre'},
+				'contenedorGrupos\\:pago'         : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:tipoDocumento': {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}
+				'contenedorGrupos\\:observaciones': {validaciones: 'libre'    , mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}
 			};	
 			
 			function start() {
@@ -251,11 +251,11 @@
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" actionListener="#{manticCatalogosEmpresasCuentasImportar.doAceptar}" update="contenedorGrupos" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosEmpresasCuentasImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-reply" process="@this" action="#{manticCatalogosEmpresasCuentasImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" actionListener="#{manticCatalogosEmpresasCuentasImportar.doAceptar}" update="contenedorGrupos" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosEmpresasCuentasImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-reply" process="@this" action="#{manticCatalogosEmpresasCuentasImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
 	<ui:define name="dialogos">
