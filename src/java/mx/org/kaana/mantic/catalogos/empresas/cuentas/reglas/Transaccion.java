@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.catalogos.empresas.cuentas.reglas;
 
 import java.io.File;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -55,7 +56,7 @@ public class Transaccion extends IBaseTnx {
 	private boolean saldar;
 	private Long idCierreActivo;
 	private Double pagoGeneral;
-	private Long idTipoComprobante;
+	private Long idTipoComprobante;	
 	
 	public Transaccion(TcManticEmpresasPagosDto pago) {
 		this(pago, -1L, -1L, -1L, -1L, null, false);
@@ -86,16 +87,17 @@ public class Transaccion extends IBaseTnx {
 		this.notasCredito= notasCredito;
 	} // Transaccion
 	
-	public Transaccion(TcManticEmpresasDeudasDto deuda, Importado pdf, Long idPago, Long idTipoComprobante) {
-		this(deuda, null, pdf, idPago, idTipoComprobante);
+	public Transaccion(TcManticEmpresasDeudasDto deuda, Importado pdf, Long idPago, Long idTipoComprobante, Date fecha) {
+		this(deuda, null, pdf, idPago, idTipoComprobante, fecha);
 	}
 	
-	public Transaccion(TcManticEmpresasDeudasDto deuda, Importado xml, Importado pdf, Long idPago, Long idTipoComprobante) {
+	public Transaccion(TcManticEmpresasDeudasDto deuda, Importado xml, Importado pdf, Long idPago, Long idTipoComprobante, Date fecha) {
 		this.deuda = deuda;
 		this.pdf   = pdf;
 		this.xml   = xml;
 		this.idPago= idPago;
 		this.idTipoComprobante= idTipoComprobante;
+		this.fecha = fecha;
 	} // Transaccion
 
 	public Transaccion(Entity detalle, Date fecha) {
@@ -296,6 +298,7 @@ public class Transaccion extends IBaseTnx {
           this.xml.getOriginal(),
 					this.idTipoComprobante
 				);
+				tmp.setRegistro(new Timestamp(this.fecha.getTime()));
 				TcManticEmpresasArchivosDto exists= (TcManticEmpresasArchivosDto)DaoFactory.getInstance().toEntity(TcManticEmpresasArchivosDto.class, "TcManticEmpresasArchivosDto", "identically", tmp.toMap());
 				File reference= new File(tmp.getAlias());
 				if(exists== null && reference.exists()) {
@@ -325,6 +328,7 @@ public class Transaccion extends IBaseTnx {
           this.pdf.getOriginal(),
 					this.idTipoComprobante
 				);
+				tmp.setRegistro(new Timestamp(this.fecha.getTime()));
 				TcManticEmpresasArchivosDto exists= (TcManticEmpresasArchivosDto)DaoFactory.getInstance().toEntity(TcManticEmpresasArchivosDto.class, "TcManticEmpresasArchivosDto", "identically", tmp.toMap());
 				File reference= new File(tmp.getAlias());
 				if(exists== null && reference.exists()) {
