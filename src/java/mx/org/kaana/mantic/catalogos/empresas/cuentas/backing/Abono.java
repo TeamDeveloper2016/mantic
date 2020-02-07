@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.catalogos.empresas.cuentas.backing;
 
 import java.io.File;
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
@@ -84,6 +86,8 @@ public class Abono extends IBasePagos implements Serializable {
     try {			
 			if(JsfBase.getFlashAttribute("idEmpresaDeuda")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+			this.attrs.put("paginator", false);
+			this.attrs.put("fecha", new Date(Calendar.getInstance().getTimeInMillis()));
       this.attrs.put("sortOrder", "order by	tc_mantic_empresas_deudas.registro desc");
       this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa"));     
       this.attrs.put("idProveedor", JsfBase.getFlashAttribute("idProveedor"));     
@@ -234,9 +238,11 @@ public class Abono extends IBasePagos implements Serializable {
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+			columns.add(new Columna("registroPago", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("pago", EFormatoDinamicos.MONEDA_CON_DECIMALES));
 			empresaDeuda= (TcManticEmpresasDeudasDto)DaoFactory.getInstance().findById(TcManticEmpresasDeudasDto.class, (Long) this.attrs.get("idEmpresaDeuda"));
 		  this.attrs.put("importados", UIEntity.build("VistaEmpresasDto", "importados", empresaDeuda.toMap(), columns));
+			this.attrs.put("paginator", ((List<UISelectEntity>)this.attrs.get("importados")).size()>15);
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -298,11 +304,16 @@ public class Abono extends IBasePagos implements Serializable {
 		Transaccion transaccion               = null;
 		TcManticEmpresasDeudasDto empresaDeuda= null;
 		try {
-			empresaDeuda= (TcManticEmpresasDeudasDto)DaoFactory.getInstance().findById(TcManticEmpresasDeudasDto.class, (Long) this.attrs.get("idEmpresaDeuda"));
-			transaccion= new Transaccion(empresaDeuda, getFile(), ((Entity)this.attrs.get("pagoCombo")).getKey(), Long.valueOf(this.attrs.get("tipoDocumento").toString()));
-      if(transaccion.ejecutar(EAccion.SUBIR)) {
-      	UIBackingUtilities.execute("janal.alert('Se importaron los archivos de forma correcta !');");				
-			} // if
+			if(getFile()!= null){
+				empresaDeuda= (TcManticEmpresasDeudasDto)DaoFactory.getInstance().findById(TcManticEmpresasDeudasDto.class, (Long) this.attrs.get("idEmpresaDeuda"));
+				transaccion= new Transaccion(empresaDeuda, getFile(), ((Entity)this.attrs.get("pagoCombo")).getKey(), Long.valueOf(this.attrs.get("tipoDocumento").toString()), (Date)this.attrs.get("fecha"));
+				if(transaccion.ejecutar(EAccion.SUBIR)) {
+					UIBackingUtilities.execute("janal.alert('Se importaron los archivos de forma correcta !');");				
+					setFile(null);								
+				} // if
+			} // if			
+			else
+				JsfBase.addMessage("Importar archivo", "Es necesario seleccionar un archivo.", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -419,7 +430,7 @@ public class Abono extends IBasePagos implements Serializable {
 			deudaReabrir= new TcManticEmpresasDeudasDto();
 			deudaReabrir.setIdEmpresaDeuda((Long)this.attrs.get("idEmpresaDeuda"));
 			deudaReabrir.setObservaciones(toObservacionesReabrir());
-			transaccion= new Transaccion(deudaReabrir, null, -1L, null);
+			transaccion= new Transaccion(deudaReabrir, null, -1L, null, null);
 			if(transaccion.ejecutar(EAccion.ACTIVAR)){
 				JsfBase.addMessage("Se abrió la cuenta de forma correcta", ETipoMensaje.INFORMACION);
 				loadProveedorDeuda();
