@@ -400,18 +400,22 @@ public class Importar extends IBaseAttribute implements Serializable {
 	public void doAceptar() {		
 		Transaccion transaccion= null;
 		try {			
-			if(this.getImportado()!= null && Cadena.isVacio(this.getImportado().getObservaciones()))
-			  this.getImportado().setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
-			if(this.importado.getFormat().equals(EFormatos.PDF))
-				transaccion= new Transaccion(this.deuda, null, this.importado, Long.valueOf(this.attrs.get("pago").toString()), Long.valueOf(this.attrs.get("tipoDocumento").toString()));
-			else
-				transaccion= new Transaccion(this.deuda, this.importado, null, Long.valueOf(this.attrs.get("pago").toString()), Long.valueOf(this.attrs.get("tipoDocumento").toString()));
-      if(transaccion.ejecutar(EAccion.REGISTRAR)) {
-      	UIBackingUtilities.execute("janal.alert('Se importaron los archivos de forma correcta !');");		
-				this.importado= null;			
-				this.attrs.put("importado", ""); 
-				this.attrs.put("observaciones", "");
+			if(this.importado!= null){
+				if(this.getImportado()!= null && Cadena.isVacio(this.getImportado().getObservaciones()))
+					this.getImportado().setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
+				if(this.importado.getFormat().equals(EFormatos.PDF))
+					transaccion= new Transaccion(this.deuda, null, this.importado, Long.valueOf(this.attrs.get("pago").toString()), Long.valueOf(this.attrs.get("tipoDocumento").toString()));
+				else
+					transaccion= new Transaccion(this.deuda, this.importado, null, Long.valueOf(this.attrs.get("pago").toString()), Long.valueOf(this.attrs.get("tipoDocumento").toString()));
+				if(transaccion.ejecutar(EAccion.REGISTRAR)) {
+					UIBackingUtilities.execute("janal.alert('Se importaron los archivos de forma correcta !');");		
+					this.importado= null;			
+					this.attrs.put("importado", ""); 
+					this.attrs.put("observaciones", "");
+				} // if
 			} // if
+			else
+				JsfBase.addMessage("Importar archivo", "Es necesario seleccionar un archivo.", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
