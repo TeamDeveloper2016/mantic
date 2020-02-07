@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -107,12 +108,14 @@ public class Importar extends IBaseAttribute implements Serializable {
     try {
 			if(JsfBase.getFlashAttribute("idEmpresaDeuda")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+			this.attrs.put("paginator", false);
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			tiposDocumentos= UISelect.build("TcManticTiposComprobantesDto", "row", params, "nombre", " ", EFormatoDinamicos.MAYUSCULAS);
 			this.attrs.put("tiposDocumentos", tiposDocumentos);
 			this.attrs.put("tipoDocumento", UIBackingUtilities.toFirstKeySelectItem(tiposDocumentos));
-      this.idEmpresaDeuda= JsfBase.getFlashAttribute("idEmpresaDeuda")== null? -1L: (Long)JsfBase.getFlashAttribute("idEmpresaDeuda");
+      this.attrs.put("fecha", new Date(Calendar.getInstance().getTimeInMillis()));
+			this.idEmpresaDeuda= JsfBase.getFlashAttribute("idEmpresaDeuda")== null? -1L: (Long)JsfBase.getFlashAttribute("idEmpresaDeuda");
 			this.deuda= (TcManticEmpresasDeudasDto)DaoFactory.getInstance().findById(TcManticEmpresasDeudasDto.class, this.idEmpresaDeuda);
 			if(this.deuda!= null) {
 				this.notaEntrada= (TcManticNotasEntradasDto) DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, this.deuda.getIdNotaEntrada());
@@ -163,6 +166,7 @@ public class Importar extends IBaseAttribute implements Serializable {
       columns.add(new Columna("registroPago", EFormatoDinamicos.FECHA_HORA_CORTA));
       columns.add(new Columna("pago", EFormatoDinamicos.MONEDA_CON_DECIMALES));
 		  this.attrs.put("importados", UIEntity.build("VistaEmpresasDto", "importados", this.deuda.toMap(), columns));
+			this.attrs.put("paginator", ((List<UISelectEntity>)this.attrs.get("importados")).size()>15);
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -404,9 +408,9 @@ public class Importar extends IBaseAttribute implements Serializable {
 				if(this.getImportado()!= null && Cadena.isVacio(this.getImportado().getObservaciones()))
 					this.getImportado().setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
 				if(this.importado.getFormat().equals(EFormatos.PDF))
-					transaccion= new Transaccion(this.deuda, null, this.importado, Long.valueOf(this.attrs.get("pago").toString()), Long.valueOf(this.attrs.get("tipoDocumento").toString()));
+					transaccion= new Transaccion(this.deuda, null, this.importado, Long.valueOf(this.attrs.get("pago").toString()), Long.valueOf(this.attrs.get("tipoDocumento").toString()), (Date)this.attrs.get("fecha"));
 				else
-					transaccion= new Transaccion(this.deuda, this.importado, null, Long.valueOf(this.attrs.get("pago").toString()), Long.valueOf(this.attrs.get("tipoDocumento").toString()));
+					transaccion= new Transaccion(this.deuda, this.importado, null, Long.valueOf(this.attrs.get("pago").toString()), Long.valueOf(this.attrs.get("tipoDocumento").toString()), (Date)this.attrs.get("fecha"));
 				if(transaccion.ejecutar(EAccion.REGISTRAR)) {
 					UIBackingUtilities.execute("janal.alert('Se importaron los archivos de forma correcta !');");		
 					this.importado= null;			
