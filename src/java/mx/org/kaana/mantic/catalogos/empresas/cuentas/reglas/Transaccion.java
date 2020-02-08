@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.catalogos.empresas.cuentas.reglas;
 
 import java.io.File;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.Constantes;
@@ -36,7 +38,7 @@ import org.hibernate.Session;
 public class Transaccion extends IBaseTnx {
 
 	private static final Log LOG=LogFactory.getLog(Transaccion.class);
-	
+	private Long idArchivo;
 	private List<Entity> cuentas;
 	private List<Entity> notasEntrada;
 	private List<Entity> notasCredito;
@@ -57,6 +59,10 @@ public class Transaccion extends IBaseTnx {
 	private Long idCierreActivo;
 	private Double pagoGeneral;
 	private Long idTipoComprobante;	
+
+	public Transaccion(Long idArchivo) {
+		this.idArchivo= idArchivo;
+	} // Transaccion
 	
 	public Transaccion(TcManticEmpresasPagosDto pago) {
 		this(pago, -1L, -1L, -1L, -1L, null, false);
@@ -139,6 +145,9 @@ public class Transaccion extends IBaseTnx {
 					observaciones= Cadena.isVacio(deudaReabrir.getObservaciones()) ? this.deuda.getObservaciones() : deudaReabrir.getObservaciones().concat("; ").concat(this.deuda.getObservaciones());
 					deudaReabrir.setObservaciones(observaciones);
 					regresar= DaoFactory.getInstance().update(sesion, deudaReabrir)>= 1L;
+					break;
+				case ELIMINAR:
+					regresar= eliminarPago(sesion);
 					break;
       } // switch
       if (!regresar) 
@@ -656,7 +665,7 @@ public class Transaccion extends IBaseTnx {
 					DaoFactory.getInstance().insert(sesion, tmp);
 				} // else
 				sesion.flush();
-				toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("pagos").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
+				//toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("pagos").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
 			} // if	
   	} // if	
 	} // toUpdateDeleteXml
@@ -679,5 +688,20 @@ public class Transaccion extends IBaseTnx {
 		} // finally
 		return regresar;
 	} // toSiguiente	
-	
+
+	private boolean eliminarPago(Session sesion) throws Exception{
+		boolean regresar                   = false;
+		TcManticEmpresasArchivosDto archivo= null;		
+		try {
+			archivo= (TcManticEmpresasArchivosDto) DaoFactory.getInstance().findById(sesion, TcManticEmpresasArchivosDto.class, this.idArchivo);			
+			File file= new File(archivo.getAlias());
+			if(file.exists())
+				file.delete();			
+			regresar= DaoFactory.getInstance().delete(sesion, archivo)>= 1L;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // eliminarPago
 }
