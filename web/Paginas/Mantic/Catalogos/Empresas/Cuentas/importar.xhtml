@@ -97,10 +97,7 @@
 								</p:column>   
 								<p:column styleClass="janal-wid-15" headerText="Usuario">
 									<h:outputText value="#{row.usuario}"/>
-								</p:column>   
-								<p:column styleClass="janal-wid-10 janal-column-center" headerText="Fecha">
-									<h:outputText value="#{row.registro}"/>
-								</p:column>   
+								</p:column>   								
 								<p:column headerText="Observaciones">
 									<h:outputText value="#{row.observaciones}"/>
 								</p:column>   
@@ -125,6 +122,11 @@
 									<p:commandLink  actionListener="#{manticCatalogosEmpresasCuentasImportar.doViewXmlDocument(row)}" process="@this" update="@(.viewXML)" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();" rendered="#{row.idTipoArchivo.toLong() eq 1}">
 									  <p:commandButton icon="fa fa-eye" title="Ver documento XML" ajax="false" type="button"/>
 									</p:commandLink>	
+								</p:column>
+								<p:column style="text-align: center" styleClass="janal-wid-col-38">									
+									<p:commandLink  actionListener="#{manticCatalogosEmpresasCuentasImportar.doEliminar(row)}" process="@this" update="contenedorGrupos importados" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
+									  <p:commandButton icon="fa fa-close" title="Eliminar documento" ajax="false" type="button"/>
+									</p:commandLink>										
 								</p:column>
 							</p:dataTable>
 						</p:tab>			
