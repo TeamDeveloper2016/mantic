@@ -590,6 +590,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 						global= Double.valueOf(this.attrs.get("descuentoGlobal").toString());
 						getAdminOrden().toCalculate();
 						if(global < getAdminOrden().getTotales().getUtilidad()){
+							((TicketVenta)this.getAdminOrden().getOrden()).setGlobal(global);
 							getAdminOrden().getTotales().setGlobal(global);							
 							getAdminOrden().toCalculate();
 						} // if
