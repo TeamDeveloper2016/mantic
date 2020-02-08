@@ -62,6 +62,7 @@ import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import mx.org.kaana.mantic.catalogos.empresas.cuentas.reglas.Transaccion;
+import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosDto;
 
 /**
  *@company KAANA
@@ -166,7 +167,7 @@ public class Importar extends IBaseAttribute implements Serializable {
       columns.add(new Columna("registroPago", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("pago", EFormatoDinamicos.MONEDA_CON_DECIMALES));
 		  this.attrs.put("importados", UIEntity.build("VistaEmpresasDto", "importados", this.deuda.toMap(), columns));
-			this.attrs.put("paginator", ((List<UISelectEntity>)this.attrs.get("importados")).size()>15);
+			this.attrs.put("paginator", this.attrs.get("importados")!= null && ((List<UISelectEntity>)this.attrs.get("importados")).size()>15);
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -442,4 +443,21 @@ public class Importar extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);
 		} // catch
 	}	// doCerrar
+	
+	public void doEliminar(UISelectEntity item){
+		Transaccion transaccion= null;
+		try {
+			transaccion= new Transaccion(item.getKey());
+			if(transaccion.ejecutar(EAccion.ELIMINAR)){
+				JsfBase.addMessage("Eliminar documento", "El documento se eliminó de forma correcta", ETipoMensaje.INFORMACION);
+				doLoadImportados();
+			} // if
+			else
+				JsfBase.addMessage("Eliminar documento", "Ocurrió un error al eliminar el documento", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doEliminar
 }

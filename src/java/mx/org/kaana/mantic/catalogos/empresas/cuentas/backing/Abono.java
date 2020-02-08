@@ -239,11 +239,11 @@ public class Abono extends IBasePagos implements Serializable {
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-			columns.add(new Columna("registroPago", EFormatoDinamicos.FECHA_HORA_CORTA));
+			columns.add(new Columna("registroPago", EFormatoDinamicos.FECHA_CORTA));
 			columns.add(new Columna("pago", EFormatoDinamicos.MONEDA_CON_DECIMALES));
 			empresaDeuda= (TcManticEmpresasDeudasDto)DaoFactory.getInstance().findById(TcManticEmpresasDeudasDto.class, (Long) this.attrs.get("idEmpresaDeuda"));
 		  this.attrs.put("importados", UIEntity.build("VistaEmpresasDto", "importados", empresaDeuda.toMap(), columns));
-			this.attrs.put("paginator", ((List<UISelectEntity>)this.attrs.get("importados")).size()>15);
+			this.attrs.put("paginator", this.attrs.get("importados")!= null && ((List<UISelectEntity>)this.attrs.get("importados")).size()>15);
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -486,4 +486,21 @@ public class Abono extends IBasePagos implements Serializable {
 		else if(event.getTab().getTitle().equals("Importar")) 
 			doLoadPagosArchivos();					
 	}	// doTabChange
+	
+	public void doEliminar(UISelectEntity item){
+		Transaccion transaccion= null;
+		try {
+			transaccion= new Transaccion(item.getKey());
+			if(transaccion.ejecutar(EAccion.ELIMINAR)){
+				JsfBase.addMessage("Eliminar documento", "El documento se eliminó de forma correcta", ETipoMensaje.INFORMACION);
+				doLoadImportados();
+			} // if
+			else
+				JsfBase.addMessage("Eliminar documento", "Ocurrió un error al eliminar el documento", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doEliminar
 }
