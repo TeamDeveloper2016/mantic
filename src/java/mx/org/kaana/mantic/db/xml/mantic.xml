@@ -7,6 +7,24 @@
   </model>
 
   <dml>
+    <unit id="TcManticArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_archivos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
 		<unit id="TrManticArticuloPresentacionDto">
 			<delete id="rows">
 				delete from tr_mantic_articulo_presentacion where id_articulo= {idArticulo}
