@@ -25,6 +25,9 @@ public class TreeCuenta implements Serializable, IBaseDto {
 	private String nombre;				
 	private Long dias;
 	private boolean ultimoNivel;  
+	private Long idProveedor;
+	private Long totalArchivos;
+	private Long idEmpresaArchivo;
 
 	public TreeCuenta() {
 		this(-1L);
@@ -35,25 +38,28 @@ public class TreeCuenta implements Serializable, IBaseDto {
 	}	
 	
 	public TreeCuenta(Long idKey, boolean ultimoNivel) {
-		this(idKey, null, null, null, null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, ultimoNivel);
+		this(idKey, null, null, null, null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, ultimoNivel, null, 0L, -1L);
 	}	
 
-	public TreeCuenta(Long idKey, String consecutivo, Double importe, Double saldo, Double pago, Long idEmpresa, Long idEmpresaEstatus, String persona, Timestamp registro, String proveedor, String almacen, String clave, String nombre, Long dias, boolean ultimoNivel) {
-		this.idKey = idKey;
-		this.consecutivo = consecutivo;
-		this.importe = importe;
-		this.saldo = saldo;
-		this.pago = pago;
-		this.idEmpresa = idEmpresa;
-		this.idEmpresaEstatus = idEmpresaEstatus;
-		this.persona = persona;
-		this.registro = registro;
-		this.proveedor = proveedor;
-		this.almacen = almacen;
-		this.clave = clave;
-		this.nombre = nombre;
-		this.dias = dias;
-		this.ultimoNivel = ultimoNivel;
+	public TreeCuenta(Long idKey, String consecutivo, Double importe, Double saldo, Double pago, Long idEmpresa, Long idEmpresaEstatus, String persona, Timestamp registro, String proveedor, String almacen, String clave, String nombre, Long dias, boolean ultimoNivel, Long idProveedor, Long totalArchivos, Long idEmpresaArchivo) {
+		this.idKey           = idKey;
+		this.consecutivo     = consecutivo;
+		this.importe         = importe;
+		this.saldo           = saldo;
+		this.pago            = pago;
+		this.idEmpresa       = idEmpresa;
+		this.idEmpresaEstatus= idEmpresaEstatus;
+		this.persona         = persona;
+		this.registro        = registro;
+		this.proveedor       = proveedor;
+		this.almacen         = almacen;
+		this.clave           = clave;
+		this.nombre          = nombre;
+		this.dias            = dias;
+		this.ultimoNivel     = ultimoNivel;
+		this.idProveedor     = idProveedor;
+		this.totalArchivos   = totalArchivos;
+		this.idEmpresaArchivo= idEmpresaArchivo;
 	}
 
 	public Long getIdKey() {
@@ -176,6 +182,30 @@ public class TreeCuenta implements Serializable, IBaseDto {
 		this.ultimoNivel = ultimoNivel;
 	}	
 
+	public Long getIdProveedor() {
+		return idProveedor;
+	}
+
+	public void setIdProveedor(Long idProveedor) {
+		this.idProveedor = idProveedor;
+	}	
+
+	public Long getTotalArchivos() {
+		return totalArchivos;
+	}
+
+	public void setTotalArchivos(Long totalArchivos) {
+		this.totalArchivos = totalArchivos;
+	}	
+
+	public Long getIdEmpresaArchivo() {
+		return idEmpresaArchivo;
+	}
+
+	public void setIdEmpresaArchivo(Long idEmpresaArchivo) {
+		this.idEmpresaArchivo = idEmpresaArchivo;
+	}	
+	
 	@Override
 	public Long getKey() {
 		return this.idKey;
@@ -238,6 +268,9 @@ public class TreeCuenta implements Serializable, IBaseDto {
 					+ "clave="+clave+", "
 					+ "nombre="+nombre+", "
 					+ "dias="+dias+", "					
+					+ "idProveedor="+idProveedor+", "					
+					+ "totalArchivos="+totalArchivos+", "					
+					+ "idEmpresaArchivo="+idEmpresaArchivo+", "					
 					+ "ultimoNivel="+ultimoNivel+'}';
 	} // toString
 }
