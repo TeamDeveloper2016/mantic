@@ -6,7 +6,7 @@
                 xmlns:p="http://primefaces.org/ui"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-  <ui:param name="titulo" value="Estructura de documentos de la orden de compra" />
+  <ui:param name="titulo" value="Estructura de documentos de la cuenta por pagar" />
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {        
@@ -20,7 +20,10 @@
             break;
           case 'detalle':
             detalle();
-            break;          
+            break;   
+					case 'descargar':
+						$('#descargarDoc').click();
+						break;
         } // switch       
       } // methodExecute			     
 			
@@ -60,9 +63,12 @@
   </ui:define>
   <ui:define name="contenido">  
 		<p:remoteCommand name="consultar" onstart="return janal.bloquear();" process="@this tabla" action="#{manticEmpresasCuentasEstructura.doAccion}"/>
-    <p:remoteCommand name="detalle" onstart="return janal.bloquear();" process="@this tabla" actionListener="#{manticEmpresasCuentasEstructura.doConsultarDetalle}" update="dialogoDetalle"/>    
+    <p:remoteCommand name="detalle" onstart="return janal.bloquear();" process="@this tabla" actionListener="#{manticEmpresasCuentasEstructura.doConsultarDetalle}" update="dialogoDetalle"/>        
 		<p:commandButton id="descargar" value="Descargar documentos" icon="fa fa-download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" title="Descargar todas las facturas" oncomplete="janal.desbloquear();" process="@this" style="display: none">
 			<p:fileDownload value="#{manticEmpresasCuentasEstructura.doExportar()}" />
+		</p:commandButton>
+		<p:commandButton id="descargarDoc" value="Descargar documentos" icon="fa fa-download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" title="Descargar pagos" oncomplete="janal.desbloquear();" process="@this" style="display: none">
+			<p:fileDownload value="#{manticEmpresasCuentasEstructura.doExportarPago()}" />
 		</p:commandButton>
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">                 
@@ -102,13 +108,14 @@
 								<p:outputLabel value="$ #{manticEmpresasCuentasEstructura.doNumericoSat(node.pago)}" styleClass="descripcion-nodo"/>																
 								<p:spacer/><p:spacer/>
 							</h:panelGrid>							
-							<div id="icons" class="janal-align-right-icon">								
+							<div id="icons" class="janal-align-right-icon">		
+								<i class="fa fa-download" onclick="methodExecute(this,'descargar');" title="Documentos" style="display: #{node.totalArchivos eq 0? 'none': ''}"></i>								
 								<i class="fa fa-list-alt" onclick="methodExecute(this,'detalle');" title="Detalle"></i>								
 							</div>  
 							<p:spacer/>							
 						</p:treeNode>            						       						
 					</p:tree>		   
-					<p:outputLabel value="Cantidad de documentos asociados a la orden de compra: &lt;strong class='janal-color-blue' &gt;#{manticEmpresasCuentasEstructura.files.size()}&lt;/strong&gt;" escape="false"/>
+					<p:outputLabel value="Cantidad de documentos asociados a la cuenta por pagar: &lt;strong class='janal-color-blue' &gt;#{manticEmpresasCuentasEstructura.files.size()}&lt;/strong&gt;" escape="false"/>
         </div>
       </div>
     </div>
