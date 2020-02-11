@@ -5215,6 +5215,14 @@
 			<update id="rows">
 				update tc_mantic_empresas_archivos set id_principal= 2 where id_empresa_pago = {idEmpresaPago}
 			</update>
+			<select id="empresasPagos">
+        select      
+          *
+        from      
+          tc_mantic_empresas_archivos
+        where 
+          id_empresa_pago= {idEmpresaPago}
+      </select>
     </unit>
     <unit id="TcManticTransferenciasDto">
       <select id="row">

@@ -21,6 +21,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.empresas.cuentas.beans.TreeCuenta;
 import mx.org.kaana.mantic.catalogos.empresas.cuentas.reglas.MotorBusqueda;
@@ -87,9 +88,13 @@ public class Estructura extends IBaseFilter implements Serializable {
     List<Columna> columns     = null;
 		Map<String, Object> params= null;
 		MotorBusqueda busqueda    = null;
+		TreeCuenta parent         = null;
     try {      
 			busqueda = new MotorBusqueda(Long.valueOf(this.attrs.get("idEmpresaDeuda").toString()));
-			this.tree= new DefaultTreeNode("cuenta", busqueda.toParent(), null);
+			parent= busqueda.toParent();
+			this.attrs.put("idEmpresaParent", parent.getIdEmpresa());
+			this.attrs.put("idProveedorParent", parent.getIdProveedor());
+			this.tree= new DefaultTreeNode("cuenta", parent, null);
 			this.tree.getChildren().add(new DefaultTreeNode());      
 			createTree(this.tree);		
     } // try
@@ -118,6 +123,7 @@ public class Estructura extends IBaseFilter implements Serializable {
 					seleccionado.setExpanded(true);
           seleccionado.getChildren().add(childNode);					
         } // for
+				gestor.toFillDocuments("idEmpresaDeuda", Long.valueOf(this.attrs.get("idEmpresaDeuda").toString()), Configuracion.getInstance().getPropiedadSistemaServidor("pagos").length()+ "|PAGOS|");
 				if(gestor.getFiles().size()> 0)
   			  this.files.addAll(gestor.getFiles());
       } // if                  
@@ -204,6 +210,8 @@ public class Estructura extends IBaseFilter implements Serializable {
 				regresar= "abono".concat(Constantes.REDIRECIONAR);
 				JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Empresas/Cuentas/estructura.jsf".concat(Constantes.REDIRECIONAR));				
 				JsfBase.setFlashAttribute("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));								
+				JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresaParent"));								
+				JsfBase.setFlashAttribute("idProveedor", this.attrs.get("idProveedorParent"));								
       } // if
       else{
         rc.execute("janal.desbloquear();");        
@@ -224,6 +232,24 @@ public class Estructura extends IBaseFilter implements Serializable {
 		StreamedContent regresar= null;
 		try {
 			regresar= this.toZipFile(this.files.toArray(new String[0]));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return regresar;
+	}
+  
+	public StreamedContent doExportarPago() {
+		StreamedContent regresar= null;
+		MotorBusqueda gestor    = null;
+		TreeCuenta seleccionado = null;
+		try {
+			if(this.node!= null){
+				seleccionado= (TreeCuenta) this.node.getData();
+				gestor= new MotorBusqueda(seleccionado.getKey());
+				regresar= this.toZipFile(gestor.toFillDocumentsPago("idEmpresaPago", seleccionado.getKey(), Configuracion.getInstance().getPropiedadSistemaServidor("pagos").length()+ "|PAGOS|").toArray(new String[0]));
+			} // if
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

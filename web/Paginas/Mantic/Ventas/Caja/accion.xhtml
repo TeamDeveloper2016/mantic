@@ -83,8 +83,8 @@
 				'descuentousr'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'descuento'},			
 				'descuentopswrd'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'descuento'},			
 				'tipoDescuento'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'descuento'},		
-				'descuentoIndividual': {validaciones: 'requerido', mascara: 'libre', grupo: 'descuento'},		
-				'descuentoGlobal'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'descuento'}
+				'descuentoIndividual': {validaciones: 'requerido|menor-igual({"cuanto": 10})', mascara: 'libre', grupo: 'descuento'},		
+				'descuentoGlobal'    : {validaciones: 'requerido|menor-igual({"cuanto": 10})', mascara: 'libre', grupo: 'descuento', mensaje: 'El descuento maximo es del 10%'}
 			};
 			
     	$(document).ready(function() {
@@ -1411,9 +1411,9 @@
 					<p:inputNumber id="descuentoIndividual" value="#{manticVentasCajaAccion.attrs.descuentoIndividual}" inputStyleClass="janal-wid-100-txt janal-column-right event-keydown-enter janal-name-descuentoAceptar" rendered="#{manticVentasCajaAccion.attrs.isIndividual}"/>
 					<p:outputLabel value="%" rendered="#{manticVentasCajaAccion.attrs.isIndividual}"/>  
 				</h:panelGrid>				
-				<h:panelGrid id="panelDescuentoEspecificacionGlobal" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-5, janal-wid-95 janal-column-right">
-					<p:outputLabel value="$" rendered="#{manticVentasCajaAccion.attrs.isGlobal}"/>
+				<h:panelGrid id="panelDescuentoEspecificacionGlobal" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-95 janal-column-right, janal-wid-5">					
 					<p:inputNumber id="descuentoGlobal" value="#{manticVentasCajaAccion.attrs.descuentoGlobal}" inputStyleClass="janal-wid-100-txt janal-column-right event-keydown-enter janal-name-descuentoAceptar" rendered="#{manticVentasCajaAccion.attrs.isGlobal}"/>		
+					<p:outputLabel for="descuentoGlobal" value="%" rendered="#{manticVentasCajaAccion.attrs.isGlobal}"/>
 				</h:panelGrid>				
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">

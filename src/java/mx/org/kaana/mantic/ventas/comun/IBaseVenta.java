@@ -25,7 +25,6 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
@@ -564,6 +563,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		String cuenta              = null;
 		String contrasenia         = null;
 		Double global              = 0D;
+		Double globalCalculado     = 0D;
 		Boolean recalculate        = false;
 		try {
 			if(!getAdminOrden().getArticulos().isEmpty()){
@@ -588,10 +588,13 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 					else if (isGlobal){		
 						this.attrs.put("tipoDecuentoAutorizadoActivo", GLOBAL);
 						global= Double.valueOf(this.attrs.get("descuentoGlobal").toString());
+						globalCalculado= (getAdminOrden().getTotales().getTotal() * global) / 100;
 						getAdminOrden().toCalculate();
-						if(global < getAdminOrden().getTotales().getUtilidad()){
-							((TicketVenta)this.getAdminOrden().getOrden()).setGlobal(global);
-							getAdminOrden().getTotales().setGlobal(global);							
+						if(globalCalculado < getAdminOrden().getTotales().getUtilidad()){
+							((TicketVenta)this.getAdminOrden().getOrden()).setGlobal(globalCalculado);
+							getAdminOrden().getTotales().setGlobal(globalCalculado);	
+							getAdminOrden().setDescuento(global.toString());
+							doUpdateDescuento();
 							getAdminOrden().toCalculate();
 						} // if
 						else
@@ -603,6 +606,8 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 						getAdminOrden().getArticulos().get(index).setCosto(getAdminOrden().getArticulos().get(index).toEntity().toDouble("medioMayoreo"));
 						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescripcionPrecio("medioMayoreo");
 						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescuentoAsignado(true);
+						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescuentos(0D);						
+						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescuento("");						
 						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).toCalculate();
 						recalculate= true;
 					} // else if
@@ -612,6 +617,8 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 						getAdminOrden().getArticulos().get(index).setCosto(getAdminOrden().getArticulos().get(index).toEntity().toDouble("mayoreo"));
 						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescripcionPrecio("mayoreo");
 						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescuentoAsignado(true);
+						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescuentos(0D);												
+						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescuento("");						
 						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).toCalculate();
 						recalculate= true;
 					} // else if
@@ -623,6 +630,8 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 						getAdminOrden().getArticulos().get(index).setCosto(getAdminOrden().getArticulos().get(index).toEntity().toDouble("menudeo"));
 						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescripcionPrecio("menudeo");
 						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescuentoAsignado(false);
+						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescuentos(0D);						
+						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescuento("");						
 						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).toCalculate();
 					} // else
 				} // if

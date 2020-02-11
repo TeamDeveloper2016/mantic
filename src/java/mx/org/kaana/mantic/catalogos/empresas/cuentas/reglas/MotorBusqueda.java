@@ -76,12 +76,12 @@ public class MotorBusqueda implements Serializable {
 		return regresar;
 	} // toChildrens
 
-	private void toFillDocuments(String idKey, String key, Long id, String path) throws Exception {
+	public void toFillDocuments(String key, Long id, String path) throws Exception {
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
       params.put(key, id);			
-			List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaEstructuraOrdenesCompraDto", idKey, params, Constantes.SQL_TODOS_REGISTROS);
+			List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaEmpresasDto", "importados", params, Constantes.SQL_TODOS_REGISTROS);
 			if(items!= null && !items.isEmpty()){
 				for (Entity item : items) {
 				  this.files.add(path+ item.toString("alias"));	
@@ -94,6 +94,29 @@ public class MotorBusqueda implements Serializable {
 		finally {
 			Methods.clean(params);
 		} // finally
+	} // toFillDocuments
+	
+	public List<String> toFillDocumentsPago(String key, Long id, String path) throws Exception {
+		List<String> regresar     = null;
+		Map<String, Object> params= null;
+		try {
+			regresar= new ArrayList<>();
+			params=new HashMap<>();
+      params.put(key, id);			
+			List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticEmpresasArchivosDto", "empresasPagos", params, Constantes.SQL_TODOS_REGISTROS);
+			if(items!= null && !items.isEmpty()){
+				for (Entity item : items) {
+				  regresar.add(path+ item.toString("alias"));	
+				} // for
+			} // if
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
 	} // toFillDocuments
 	
 	@Override

@@ -6241,6 +6241,7 @@
 					tc_mantic_empresas_deudas.registro,
 					datediff(tc_mantic_empresas_deudas.limite, now()) as dias,
 					tc_mantic_empresas.nombre,
+					tc_mantic_proveedores.id_proveedor,
 					tc_mantic_proveedores.razon_social proveedor,
 					tc_mantic_almacenes.nombre almacen,
 					tc_mantic_empresas_estatus.nombre estatus
@@ -6316,7 +6317,8 @@
 					tc_mantic_tipos_medios_pagos.nombre,
 					if(tc_mantic_empresas_pagos.id_egreso is null, '0', tc_mantic_empresas_pagos.id_egreso) id_egreso,					
 					tc_mantic_empresas_pagos.id_credito_nota,
-					tc_mantic_empresas_pagos.id_nota_entrada
+					tc_mantic_empresas_pagos.id_nota_entrada, 
+					if(archivos.total is null, 0, archivos.total) total_archivos
 				from
 					tc_mantic_empresas_pagos
 				inner join
@@ -6329,6 +6331,8 @@
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				inner join 
 					tc_mantic_tipos_medios_pagos on tc_mantic_empresas_pagos.id_tipo_medio_pago = tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+				left join
+					(select id_empresa_pago, COUNT(*) total from tc_mantic_empresas_archivos group by id_empresa_pago ) archivos on tc_mantic_empresas_pagos.id_empresa_pago = archivos.id_empresa_pago
 				where
 					tc_mantic_empresas_deudas.id_empresa_deuda= {idEmpresaDeuda}									
 				order by
@@ -7540,7 +7544,8 @@
           tc_mantic_ventas_detalles.cantidad as cuantos,
           tc_mantic_ventas_detalles.cantidad as inicial,
 					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
-					tc_mantic_articulos.menudeo
+					tc_mantic_articulos.menudeo,
+					if(tc_mantic_ventas_detalles.descuentos is not null and tc_mantic_ventas_detalles.descuentos &gt; 0, true, false) descuento_activo
 				from 
 					tc_mantic_ventas_detalles 
 				inner join
