@@ -113,6 +113,7 @@ public class Importar extends IBaseImportar implements Serializable {
 				1L,
 				null
 			);
+  		this.toCheckRequerido();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -262,12 +263,16 @@ public class Importar extends IBaseImportar implements Serializable {
 				null
 			);
 		} // if
-		if(this.masivo.getIdTipoMasivo().intValue()== ECargaMasiva.CODIGOS.getId())
-      UIBackingUtilities.execute("janal.renovate(contenedorGrupos\\\\:idProveedor, {validaciones: 'libre', mascara: 'libre'});");			
-		else
-      UIBackingUtilities.execute("janal.renovate((contenedorGrupos\\\\:idProveedor, {validaciones: 'requerido, mascara: 'libre'});");		
+		this.toCheckRequerido();
 	} // doChangeTipo
 
+	private void toCheckRequerido() {
+		if(this.masivo.getIdTipoMasivo().intValue()== ECargaMasiva.CODIGOS.getId())
+      UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idProveedor', {validaciones: 'requerido', mascara: 'libre'});");			
+		else
+      UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idProveedor', {validaciones: 'libre', mascara: 'libre'});");		
+	}
+	
 	public String doMovimientos() {
 		JsfBase.setFlashAttribute("idMasivaArchivo", ((Entity)this.attrs.get("seleccionado")).getKey());
 		JsfBase.setFlashAttribute("regreso", "importar");
@@ -288,7 +293,7 @@ public class Importar extends IBaseImportar implements Serializable {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
  			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-  		this.attrs.put("proveedores", UIEntity.build("VistaOrdenesComprasDto", "moneda", params, columns));
+  		this.attrs.put("proveedores", UIEntity.seleccione("VistaOrdenesComprasDto", "moneda", params, columns, "clave"));
     } // try
     catch (Exception e) {
       Error.mensaje(e);

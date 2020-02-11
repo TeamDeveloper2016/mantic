@@ -104,8 +104,8 @@
 								</p:selectOneRadio>
 							</p:panel>
 							<br/>
-							<p:outputLabel for="proveedor" value="Proveedor:" rendered="#{manticCatalogosMasivosImportar.masivo.idTipoMasivo eq 8}" styleClass="involucrados"/>
-							<p:selectOneMenu id="idProveedor" value="#{manticCatalogosMasivosImportar.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="#{manticCatalogosMasivosImportar.masivo.idTipoMasivo eq 8}">
+							<p:outputLabel for="idProveedor" value="Proveedor:" style="display:#{manticCatalogosMasivosImportar.masivo.idTipoMasivo eq 8? '': 'none'}" styleClass="involucrados"/>
+							<p:selectOneMenu id="idProveedor" value="#{manticCatalogosMasivosImportar.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{manticCatalogosMasivosImportar.masivo.idTipoMasivo eq 8? '': 'none'}">
 								<f:selectItems value="#{manticCatalogosMasivosImportar.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
@@ -191,11 +191,11 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@(.importado)" action="#{manticCatalogosMasivosImportar.doAceptar}" onstart="startTask(); return janal.bloquear();" oncomplete="cancel(); janal.desbloquear();" disabled="#{empty manticCatalogosMasivosImportar.masivo.alias}" styleClass="importado"/>
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@(.importado)" action="#{manticCatalogosMasivosImportar.doAceptar}" onstart="if(janal.partial('general')){ startTask(); return janal.bloquear(); } else return false;" oncomplete="cancel(); janal.desbloquear();" disabled="#{empty manticCatalogosMasivosImportar.masivo.alias}" styleClass="importado"/>
 			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosMasivosImportar.doCancelar}" ajax="false" onstart="cancel(); return janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="@(.importado)" action="#{manticCatalogosMasivosImportar.doAceptar}" onstart="startTask(); return janal.bloquear();" oncomplete="cancel(); janal.desbloquear();" disabled="#{empty manticCatalogosMasivosImportar.masivo.alias}" styleClass="importado"/>
+      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="@(.importado)" action="#{manticCatalogosMasivosImportar.doAceptar}" onstart="if(janal.partial('general')){ startTask(); return janal.bloquear(); } else return false;" oncomplete="cancel(); janal.desbloquear();" disabled="#{empty manticCatalogosMasivosImportar.masivo.alias}" styleClass="importado"/>
 			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosMasivosImportar.doCancelar}" ajax="false" onstart="cancel(); return janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>

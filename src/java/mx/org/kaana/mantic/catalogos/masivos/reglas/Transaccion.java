@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.WorkbookSettings;
@@ -1954,6 +1955,7 @@ public class Transaccion extends IBaseTnx {
 		Boolean regresar	      = false;
 		Workbook workbook	      = null;
 		Sheet sheet             = null;
+		TcManticProveedoresDto proveedor   = null;
 		TcManticMasivasBitacoraDto bitacora= null;
 		try {
       WorkbookSettings workbookSettings = new WorkbookSettings();
@@ -1981,9 +1983,10 @@ public class Transaccion extends IBaseTnx {
 							auxiliar= auxiliar.replaceAll(Constantes.CLEAN_ART, "").trim();
 							String rfc = new String(contenido.getBytes(ISO_8859_1), UTF_8);
 							if(codigo.length()> 0 && auxiliar.length()> 0) {
-								TcManticArticulosDto articulo   = this.toFindArticuloCodigo(sesion, codigo);
-								TcManticProveedoresDto proveedor= this.toFindProveedor(sesion, rfc);
-								if(articulo!= null && proveedor!= null) {
+								TcManticArticulosDto articulo= this.toFindArticuloCodigo(sesion, codigo);
+								if(articulo!=null && (proveedor==null || !Objects.equals(rfc, proveedor.getRfc())))
+								  proveedor= this.toFindProveedor(sesion, rfc);
+								if(articulo!= null && proveedor!= null && Objects.equals(this.idProveedor, proveedor.getIdProveedor())) {
 									TcManticArticulosDto existe= this.toExistsArticuloCodigo(sesion, articulo.getIdArticulo(), auxiliar);
 									if(existe== null) {
 										TcManticArticulosCodigosDto adicional= new TcManticArticulosCodigosDto(

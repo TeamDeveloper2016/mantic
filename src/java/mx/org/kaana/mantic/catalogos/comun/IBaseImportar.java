@@ -48,6 +48,7 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
+import mx.org.kaana.mantic.db.dto.TcManticArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticListasPreciosDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticMasivasArchivosDto;
 import static org.apache.commons.io.Charsets.ISO_8859_1;
@@ -119,6 +120,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			result= new File(path.toString());		
 			if (!result.exists())
 				result.mkdirs();
+      String ruta= path.toString();
       path.append(nameFile);
 			result = new File(path.toString());
 			if (result.exists())
@@ -137,6 +139,9 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			    this.pdf= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
   				this.attrs.put("pdf", this.pdf.getName()); 
 				} // if
+			
+			//**
+			this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), this.file.getName());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -162,6 +167,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			result= new File(path.toString());		
 			if (!result.exists())
 				result.mkdirs();
+			String ruta= path.toString(); 
       path.append(nameFile);
 			result = new File(path.toString());
 			if (result.exists())
@@ -170,6 +176,9 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			fileSize= event.getFile().getSize();						
 			this.file= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName());
   		this.attrs.put("file", this.file.getName()); 			
+
+			//**
+			this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), this.file.getName());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -189,6 +198,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			result= new File(path.toString());		
 			if (!result.exists())
 				result.mkdirs();
+      String ruta= path.toString();
       path.append(nameFile);
 			result = new File(path.toString());
 			if (result.exists())
@@ -202,7 +212,10 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			Archivo.toWriteFile(result, event.getFile().getInputstream());
 			fileSize= event.getFile().getSize();						
 			this.file= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", "/img/proveedores", (String)this.attrs.get("observaciones"), event.getFile().getFileName());
-  		this.attrs.put("file", this.file.getName()); 			
+  		this.attrs.put("file", this.file.getName()); 	
+			
+			//**
+			this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), this.file.getName());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -571,6 +584,9 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 				masivo.setAlias(path.toString());
 				masivo.setTamanio(event.getFile().getSize());
         this.attrs.put("xls", this.xls.getName());
+				
+				//**
+				this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), masivo.getRuta(), masivo.getAlias(), masivo.getNombre());
 			} //
 			else
 				result.delete();
@@ -581,9 +597,22 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			throw e;
 		} // catch
 	} // doFileUpload	
-	
+
+  private void toSaveFileRecord(String archivo, String ruta, String alias, String nombre) throws Exception {
+		TcManticArchivosDto registro= new TcManticArchivosDto(
+			archivo, // String archivo, 
+			2L, // Long idEliminado, 
+			ruta, // String ruta, 
+			JsfBase.getIdUsuario(), // Long idUsuario, 
+			alias, // String alias, 
+			-1L, // Long idArchivo, 
+			nombre // String nombre
+		);
+		DaoFactory.getInstance().insert(registro);
+	}
+		
 	public static void main(String ... args) {
 		LOG.info(" $ 3,123.12 sin caracteres especiales: "+ " $ 3,123.12 ".replaceAll("[$, ]", ""));
 	}
-	
+
 }
