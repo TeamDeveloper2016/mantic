@@ -55,15 +55,21 @@ public class Transaccion extends IBaseTnx {
   private static final Log LOG = LogFactory.getLog(Transaccion.class);
   private TcManticMasivasArchivosDto masivo;	
 	private ECargaMasiva categoria;
+	private Long idProveedor;
 	private int errores;
 	private int procesados;
 	private String messageError;
   
   public Transaccion(TcManticMasivasArchivosDto masivo, ECargaMasiva categoria) {
-		this.masivo    = masivo;		
-		this.categoria = categoria;
-		this.errores   = 0;
-		this.procesados= 0;
+		this(masivo, categoria, -1L);
+	}
+	
+  public Transaccion(TcManticMasivasArchivosDto masivo, ECargaMasiva categoria, Long idProveedor) {
+		this.masivo     = masivo;		
+		this.categoria  = categoria;
+		this.errores    = 0;
+		this.procesados = 0;
+		this.idProveedor= idProveedor;
 	} // Transaccion
 
 	protected void setMessageError(String messageError) {
@@ -150,6 +156,9 @@ public class Transaccion extends IBaseTnx {
 						break;
 					case CONTEOS:
 						this.toConteos(sesion, file);
+						break;
+					case CODIGOS:
+						this.toCodigos(sesion, file);
 						break;
 				} // swtich
 			} // try
@@ -1904,5 +1913,159 @@ public class Transaccion extends IBaseTnx {
 		} // finally
 		return regresar;
 	} // toSumAlmacenArticulo
+
+	private TcManticArticulosDto toFindArticuloCodigo(Session sesion, String codigo) {
+		TcManticArticulosDto regresar= null;
+		Map<String, Object> params   = null;
+		try {
+			params=new HashMap<>();
+			params.put("codigo", codigo);
+			regresar= (TcManticArticulosDto)DaoFactory.getInstance().toEntity(sesion, TcManticArticulosDto.class, "VistaCargasMasivasDto", "codigo", params);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toFindArticulo
+
+	private TcManticArticulosDto toExistsArticuloCodigo(Session sesion, Long idArticulo, String codigo) {
+		TcManticArticulosDto regresar= null;
+		Map<String, Object> params   = null;
+		try {
+			params=new HashMap<>();
+			params.put("codigo", codigo);
+			params.put("idArticulo", idArticulo);
+			regresar= (TcManticArticulosDto)DaoFactory.getInstance().toEntity(sesion, TcManticArticulosDto.class, "VistaCargasMasivasDto", "encontrado", params);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toFindArticulo
+		
+	
+  private Boolean toCodigos(Session sesion, File archivo) throws Exception {
+		Boolean regresar	      = false;
+		Workbook workbook	      = null;
+		Sheet sheet             = null;
+		TcManticMasivasBitacoraDto bitacora= null;
+		try {
+      WorkbookSettings workbookSettings = new WorkbookSettings();
+      workbookSettings.setEncoding("Cp1252");	
+			workbookSettings.setExcelDisplayLanguage("MX");
+      workbookSettings.setExcelRegionalSettings("MX");
+      workbookSettings.setLocale(new Locale("es", "MX"));
+			workbook= Workbook.getWorkbook(archivo, workbookSettings);
+			sheet		= workbook.getSheet(0);
+			Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
+			if(sheet != null && sheet.getColumns()>= this.categoria.getColumns() && sheet.getRows()>= 2) {
+				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
+				LOG.info("Filas del documento: "+ sheet.getRows());
+				this.errores= 0;
+				int count   = 0; 
+				for(int fila= 1; fila< sheet.getRows() && monitoreo.isCorriendo(); fila++) {
+					try {
+						if(sheet.getCell(0, fila)!= null && sheet.getCell(1, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(1, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
+							String contenido= new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+							//   0            1             2
+							//PROVEEDOR|CODIGO PROPIO|CODIGO PROVEEDOR
+  						String codigo = new String(sheet.getCell(1, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+							codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim();
+							String auxiliar= new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+							auxiliar= auxiliar.replaceAll(Constantes.CLEAN_ART, "").trim();
+							String rfc = new String(contenido.getBytes(ISO_8859_1), UTF_8);
+							if(codigo.length()> 0 && auxiliar.length()> 0) {
+								TcManticArticulosDto articulo   = this.toFindArticuloCodigo(sesion, codigo);
+								TcManticProveedoresDto proveedor= this.toFindProveedor(sesion, rfc);
+								if(articulo!= null && proveedor!= null) {
+									TcManticArticulosDto existe= this.toExistsArticuloCodigo(sesion, articulo.getIdArticulo(), auxiliar);
+									if(existe== null) {
+										TcManticArticulosCodigosDto adicional= new TcManticArticulosCodigosDto(
+											auxiliar, // String codigo
+											proveedor.getIdProveedor(),  // Long idProveedor
+											JsfBase.getIdUsuario(), // Long idUsuario
+											2L, // Long idPrincipal
+											null, // String observaciones
+											-1L, // Long idArticuloCodigo
+											this.toNextOrden(sesion, articulo.getIdArticulo()), // Long orden 
+											articulo.getIdArticulo() // Long idArticulo
+										); 
+									  DaoFactory.getInstance().insert(sesion, adicional);
+									  TcManticMasivasDetallesDto detalle= new TcManticMasivasDetallesDto(
+											sheet.getCell(0, fila).getContents(), // String codigo, 
+											-1L, // Long idMasivaDetalle, 
+											this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
+											"ESTE ARTICULO FUE AGREGADO ["+ sheet.getCell(2, fila).getContents()+ "]" // String observaciones
+										);
+										DaoFactory.getInstance().insert(sesion, detalle);
+									} // if	
+								} // if
+								monitoreo.incrementar();
+								if(fila% this.categoria.getTuplas()== 0) {
+									if(bitacora== null) {
+										bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, new Long(fila), 2L);
+										DaoFactory.getInstance().insert(sesion, bitacora);
+									} // if
+									else {
+										bitacora.setProcesados(new Long(fila));
+										bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+										DaoFactory.getInstance().update(sesion, bitacora);
+									} // else
+									this.commit();
+									this.procesados= fila;
+									LOG.warn("Realizando proceso de commit en la fila "+ this.procesados);
+								} // if
+							} // if
+							else {
+								this.errores++;
+								LOG.warn(fila+ " proveedor: ["+ rfc+ "] codigo propio: ["+ codigo+ "] codigo proveedor: ["+ auxiliar+ "] ");
+								TcManticMasivasDetallesDto detalle= new TcManticMasivasDetallesDto(
+									sheet.getCell(0, fila).getContents(), // String codigo, 
+									-1L, // Long idMasivaDetalle, 
+									this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
+									"EL PROVEEDOR["+ rfc+ "], CODIGO PROPIO["+ codigo+ "], CODIGO PROVEEDOR["+ auxiliar+ "] NO EXISTE" // String observaciones
+								);
+								DaoFactory.getInstance().insert(sesion, detalle);
+							} // else	
+							count++;
+						} // if	
+	//					if(fila> 500)
+	//						throw new KajoolBaseException("Este error fue provocado intencionalmente !");
+					} // try
+					catch(Exception e) {
+            LOG.error("[--->>> ["+ fila+ "] {"+ sheet.getCell(0, fila).getContents().toUpperCase()+ "} {"+ sheet.getCell(2, fila).getContents().toUpperCase()+ "} <<<---]");
+						Error.mensaje(e);
+					} // catch
+					this.procesados= count;
+					LOG.warn("Procesando el registro "+ count+ " de "+ monitoreo.getTotal()+ "  ["+ Numero.toRedondear(monitoreo.getProgreso()* 100/ monitoreo.getTotal())+ " %]");
+				} // for
+				if(bitacora== null) {
+					bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);
+  				DaoFactory.getInstance().insert(sesion, bitacora);
+				} // if
+			  else {
+					bitacora.setProcesados(this.masivo.getTuplas());
+					bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+					DaoFactory.getInstance().update(sesion, bitacora);
+				} // if
+				LOG.warn("Cantidad de filas con error son: "+ this.errores);
+ 				this.procesados= count;
+				regresar= true;
+			} // if
+		} // try
+    finally {
+      if(workbook!= null) {
+        workbook.close();
+        workbook = null;
+      } // if
+    } // finally
+		return regresar;
+	} // toCodigos
 	
 }

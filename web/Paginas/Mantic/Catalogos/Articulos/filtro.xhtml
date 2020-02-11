@@ -179,7 +179,10 @@
 							<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 							<f:facet name="header">
 								<div class="janal-icons-header">
-									<h:outputLink value="#{request.contextPath}/Temporal/Masivo/masivo-articulos.xls" title="Plantilla de articulos XLS">
+									<h:outputLink value="#{request.contextPath}/Temporal/Masivo/masivo-articulos.xls" title="Plantilla de articulos">
+										<p:commandButton type="button" icon="fa fa-file-excel-o"/>
+									</h:outputLink>
+									<h:outputLink value="#{request.contextPath}/Temporal/Masivo/masivo-codigos.xls" title="Plantilla de códigos por articulos">
 										<p:commandButton type="button" icon="fa fa-file-excel-o"/>
 									</h:outputLink>
 								</div>	
@@ -191,7 +194,8 @@
 											<f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{null}"/>
 										</p:menuitem>	
 										<p:separator/>
-										<p:menuitem icon="fa fa-history" value="Importar" title="Carga masiva" action="#{manticCatalogosArticulosFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
+										<p:menuitem icon="fa fa-history" value="Importar" title="Carga masiva de articulos" action="#{manticCatalogosArticulosFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
+										<p:menuitem icon="fa fa-file-excel-o" value="Códigos" title="Carga masiva de códigos" action="#{manticCatalogosArticulosFiltro.doCodigos()}" onstart="return janal.bloquear()"/>						
 										<p:separator/>
 										<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 										<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -204,7 +208,8 @@
 									<p:commandButton icon="fa fa-file-text-o" title="Articulo express" actionListener="#{manticCatalogosArticulosFiltro.doExpress}" onstart="janal.bloquear();" process="@this tabla">
 										<f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{null}"/>
 									</p:commandButton>	
-									<p:commandButton icon="fa fa-history" title="Carga masiva" action="#{manticCatalogosArticulosFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
+									<p:commandButton icon="fa fa-history" title="Carga masiva de articulos" action="#{manticCatalogosArticulosFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
+									<p:commandButton icon="fa fa-file-excel-o" title="Carga masiva de códigos" action="#{manticCatalogosArticulosFiltro.doCodigos()}" onstart="return janal.bloquear()"/>						
 									<p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 									<p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 									<p:commandButton icon="fa fa-file-excel-o" title="Exportar catalogo" onstart="return janal.bloquear();" action="#{manticCatalogosArticulosFiltro.doExportarXls}" process="@this panelBusqueda" oncomplete="janal.desbloquear()"/>

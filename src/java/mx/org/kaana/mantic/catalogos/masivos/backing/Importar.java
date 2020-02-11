@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.catalogos.masivos.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -22,6 +23,8 @@ import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.comun.IBaseImportar;
 import mx.org.kaana.mantic.catalogos.masivos.reglas.Transaccion;
@@ -84,6 +87,10 @@ public class Importar extends IBaseImportar implements Serializable {
 						break;
 					case 7:
 						this.categoria= ECargaMasiva.CONTEOS;
+						break;
+					case 8:
+						this.categoria= ECargaMasiva.CODIGOS;
+						this.toLoadProveedores();
 						break;
 				} // switch
 			else
@@ -172,7 +179,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		try {
 			this.masivo.setArchivo(this.getXls().getOriginal());
 		  this.masivo.setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
-      transaccion= new Transaccion(this.masivo, this.categoria);
+      transaccion= new Transaccion(this.masivo, this.categoria, this.attrs.get("idProveedor")!= null? ((UISelectEntity)this.attrs.get("idProveedor")).getKey(): -1L);
       if(tuplas> 0L && transaccion.ejecutar(EAccion.PROCESAR)) {
 //        UIBackingUtilities.execute("janal.alert('Cátalogo procesado de forma correcta ["+ tuplas+ "], registros erroneos ["+ transaccion.getErrores()+ "]';");
 //				this.setXls(null);
@@ -213,6 +220,7 @@ public class Importar extends IBaseImportar implements Serializable {
 	} // doCompleto
 
 	public void doChangeTipo() {
+		this.attrs.put("proveedores", null);
 		switch(this.masivo.getIdTipoMasivo().intValue()) {
 			case 1: this.categoria= ECargaMasiva.ARTICULOS;
 				break;
@@ -227,6 +235,9 @@ public class Importar extends IBaseImportar implements Serializable {
 			case 6: this.categoria= ECargaMasiva.EGRESOS;
 				break;
 			case 7: this.categoria= ECargaMasiva.CONTEOS;
+				break;
+			case 8: this.categoria= ECargaMasiva.CODIGOS;
+			  this.toLoadProveedores();
 				break;
 		} // switch
 		if(this.masivo!= null && this.masivo.isValid()) {
@@ -251,6 +262,10 @@ public class Importar extends IBaseImportar implements Serializable {
 				null
 			);
 		} // if
+		if(this.masivo.getIdTipoMasivo().intValue()== ECargaMasiva.CODIGOS.getId())
+      UIBackingUtilities.execute("janal.renovate(contenedorGrupos\\\\:idProveedor, {validaciones: 'libre', mascara: 'libre'});");			
+		else
+      UIBackingUtilities.execute("janal.renovate((contenedorGrupos\\\\:idProveedor, {validaciones: 'requerido, mascara: 'libre'});");		
 	} // doChangeTipo
 
 	public String doMovimientos() {
@@ -264,4 +279,25 @@ public class Importar extends IBaseImportar implements Serializable {
 		JsfBase.setFlashAttribute("regreso", "importar");
 		return "detalles".concat(Constantes.REDIRECIONAR);
 	} // doDetalles	
+
+	private void toLoadProveedores() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+ 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		this.attrs.put("proveedores", UIEntity.build("VistaOrdenesComprasDto", "moneda", params, columns));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+		
+	}
 }

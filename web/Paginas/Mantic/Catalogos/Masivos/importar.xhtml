@@ -12,6 +12,7 @@
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:xls'        : {validaciones: 'libre', mascara: 'libre'},
+				'contenedorGrupos\\:idProveedor': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:observacion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
 			};	
 			
@@ -71,19 +72,22 @@
 									<h:outputLink rendered="#{manticCatalogosMasivosImportar.masivo.idTipoMasivo eq 2}" style="float:right" styleClass="involucrados" value="#{request.contextPath}/Temporal/Masivo/masivo-clientes.xls" title="Plantilla de clientes XLS">
   									<p:commandButton type="button" icon="fa fa-file-excel-o"/>
 									</h:outputLink>	
-									<h:outputLink rendered="#{manticCatalogosMasivosImportar.masivo.idTipoMasivo eq 3}" style="float:right" styleClass="involucrados" value="#{request.contextPath}/Temporal/Masivo/masivo-proveedores.xls" title="Plantilla proveedores XLS">
+									<h:outputLink rendered="#{manticCatalogosMasivosImportar.masivo.idTipoMasivo eq 3}" style="float:right" styleClass="involucrados" value="#{request.contextPath}/Temporal/Masivo/masivo-proveedores.xls" title="Plantilla de proveedores XLS">
 	  								<p:commandButton type="button" icon="fa fa-file-excel-o"/>
 									</h:outputLink>	
-									<h:outputLink rendered="#{manticCatalogosMasivosImportar.masivo.idTipoMasivo eq 4}" style="float:right" styleClass="involucrados" value="#{request.contextPath}/Temporal/Masivo/masivo-refacciones.xls" title="Plantilla refacciones XLS">
+									<h:outputLink rendered="#{manticCatalogosMasivosImportar.masivo.idTipoMasivo eq 4}" style="float:right" styleClass="involucrados" value="#{request.contextPath}/Temporal/Masivo/masivo-refacciones.xls" title="Plantilla de refacciones XLS">
 	  								<p:commandButton type="button" icon="fa fa-file-excel-o"/>
 									</h:outputLink>	
-									<h:outputLink rendered="#{manticCatalogosMasivosImportar.masivo.idTipoMasivo eq 5}" style="float:right" styleClass="involucrados" value="#{request.contextPath}/Temporal/Masivo/masivo-servicios.xls" title="Plantilla servicios XLS">
+									<h:outputLink rendered="#{manticCatalogosMasivosImportar.masivo.idTipoMasivo eq 5}" style="float:right" styleClass="involucrados" value="#{request.contextPath}/Temporal/Masivo/masivo-servicios.xls" title="Plantilla de servicios XLS">
 	  								<p:commandButton type="button" icon="fa fa-file-excel-o"/>
 									</h:outputLink>	
-									<h:outputLink rendered="#{manticCatalogosMasivosImportar.masivo.idTipoMasivo eq 6}" style="float:right" styleClass="involucrados" value="#{request.contextPath}/Temporal/Masivo/masivo-egresos.xls" title="Plantilla egresos XLS">
+									<h:outputLink rendered="#{manticCatalogosMasivosImportar.masivo.idTipoMasivo eq 6}" style="float:right" styleClass="involucrados" value="#{request.contextPath}/Temporal/Masivo/masivo-egresos.xls" title="Plantilla de egresos XLS">
 	  								<p:commandButton type="button" icon="fa fa-file-excel-o"/>
 									</h:outputLink>	
-									<h:outputLink rendered="#{manticCatalogosMasivosImportar.masivo.idTipoMasivo eq 7}" style="float:right" styleClass="conteos" value="#{request.contextPath}/Temporal/Masivo/masivo-conteos.xls" title="Plantilla conteos XLS">
+									<h:outputLink rendered="#{manticCatalogosMasivosImportar.masivo.idTipoMasivo eq 7}" style="float:right" styleClass="conteos" value="#{request.contextPath}/Temporal/Masivo/masivo-conteos.xls" title="Plantilla de conteos XLS">
+	  								<p:commandButton type="button" icon="fa fa-file-excel-o"/>
+									</h:outputLink>	
+									<h:outputLink rendered="#{manticCatalogosMasivosImportar.masivo.idTipoMasivo eq 8}" style="float:right" styleClass="conteos" value="#{request.contextPath}/Temporal/Masivo/masivo-codigos.xls" title="Plantilla de códigos XLS">
 	  								<p:commandButton type="button" icon="fa fa-file-excel-o"/>
 									</h:outputLink>	
 								</f:facet>	
@@ -96,9 +100,20 @@
 									<f:selectItem itemLabel="SERVICIOS" itemValue="5"/>
 									<f:selectItem itemLabel="EGRESOS" itemValue="6"/>
 									<f:selectItem itemLabel="CONTEOS" itemValue="7"/>
+									<f:selectItem itemLabel="CODIGOS" itemValue="8"/>
 								</p:selectOneRadio>
 							</p:panel>
 							<br/>
+							<p:outputLabel for="proveedor" value="Proveedor:" rendered="#{manticCatalogosMasivosImportar.masivo.idTipoMasivo eq 8}" styleClass="involucrados"/>
+							<p:selectOneMenu id="idProveedor" value="#{manticCatalogosMasivosImportar.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="#{manticCatalogosMasivosImportar.masivo.idTipoMasivo eq 8}">
+								<f:selectItems value="#{manticCatalogosMasivosImportar.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
+								<p:column headerText="Clave">
+									<h:outputText value="#{item.clave}"/>
+								</p:column>   
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.razonSocial}"/>
+								</p:column>   
+							</p:selectOneMenu>
   						<p:outputLabel for="observacion" value="Observaciones:"/>
 							<p:inputTextarea id="observacion" value="#{manticCatalogosMasivosImportar.masivo.observaciones}" rows="2" styleClass="janal-wid-100-txt"/>
 							<p:fileUpload fileUploadListener="#{manticCatalogosMasivosImportar.doFileUpload}" 

@@ -446,6 +446,43 @@
 					 upper(tc_mantic_articulos_codigos.codigo)= '{codigo}'	
 				   and tc_mantic_articulos.id_articulo_tipo= {idArticuloTipo}
 			</select>		
+			<select id="codigo">
+				select
+					tc_mantic_articulos.id_articulo as id_key,
+					tc_mantic_articulos.*
+				from
+					tc_mantic_articulos
+				inner join  
+					tc_mantic_articulos_codigos on tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo
+				where  
+					upper(tc_mantic_articulos_codigos.codigo)= '{codigo}'	
+				  and tc_mantic_articulos_codigos.id_principal= 1
+					and tc_mantic_articulos_codigos.id_proveedor is null
+			</select>		
+			<select id="encontrado">
+				select
+					tc_mantic_articulos.id_articulo as id_key,
+					tc_mantic_articulos.*
+				from
+					tc_mantic_articulos
+				inner join  
+					 tc_mantic_articulos_codigos on tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo
+				where  
+					 tc_mantic_articulos_codigos.codigo= {idArticulo}	
+				   and upper(tc_mantic_articulos_codigos.codigo)= '{codigo}'
+			</select>		
+			<select id="auxiliar">
+				select
+					tc_mantic_articulos_codigos.id_articulo_codigo,
+				  tc_mantic_articulos.nombre
+				from
+					tc_mantic_articulos
+				inner join  
+					 tc_mantic_articulos_codigos on tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo 
+				where  
+					upper(tc_mantic_articulos_codigos.codigo)= '{codigo}'	
+				  and tc_mantic_articulos_codigos.id_proveedor is null
+			</select>		
 			<select id="principal">
 				select
 					count(*) as total
