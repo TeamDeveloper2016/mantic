@@ -1829,4 +1829,12 @@ public class Accion extends IBaseVenta implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doAgregarCorreo	
+	
+	public String doFacturar() {
+		JsfBase.setFlashAttribute("accion", EAccion.MODIFICAR);
+		JsfBase.setFlashAttribute("idFicticia", ((Entity)this.attrs.get("facturarTicket")).getKey());
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Ventas/Caja/accion");
+	  return "/Paginas/Mantic/Facturas/accion".concat(Constantes.REDIRECIONAR);	
+	}
+	
 }

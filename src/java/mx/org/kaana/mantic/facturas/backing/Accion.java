@@ -108,14 +108,14 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("observaciones", JsfBase.getFlashAttribute("observaciones")== null? "" : JsfBase.getFlashAttribute("observaciones"));
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.isAdminEncuestaOrAdmin());
-			loadClienteDefault();
+			this.loadClienteDefault();
 			if(JsfBase.isAdminEncuestaOrAdmin())
 				loadSucursales();
-			loadBancos();
-			loadCfdis();
-			loadTiposMediosPagos();
-			loadTiposPagos();
-			doLoad();
+			this.loadBancos();
+			this.loadCfdis();
+			this.loadTiposMediosPagos();
+			this.loadTiposPagos();
+			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);

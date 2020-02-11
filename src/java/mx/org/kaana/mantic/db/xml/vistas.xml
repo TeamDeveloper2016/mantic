@@ -728,6 +728,7 @@
 					tc_mantic_ventas.total as precio_total,
 				  tc_mantic_ventas_estatus.nombre as estatus,
 					tc_mantic_ventas.id_venta_estatus,
+				  tc_mantic_ventas.id_factura,
 					tc_mantic_ventas.registro,
 					tc_mantic_ventas.registro as hora,
 					tc_mantic_ventas_estatus.estatus_asociados, 					

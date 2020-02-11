@@ -861,12 +861,15 @@
 									</f:facet>
 									<h:outputText value="#{manticVentasCajaAccion.doTipoMedioPago(filtro)}"/>
 								</p:column>										
-								<p:column style="width:80px;text-align: center">
+								<p:column style="width:120px;text-align: center">
 									<p:commandButton icon="ui-icon-print" title="Ticket" action="#{manticVentasCajaAccion.doPrintTicket}">
 										<f:setPropertyActionListener value="#{filtro}" target="#{manticVentasCajaAccion.attrs.seleccionTicket}" />
 									</p:commandButton>
 									<p:commandButton icon="fa fa-cart-arrow-down" title="Devolución" action="#{manticVentasCajaAccion.doDevolucion}">
 										<f:setPropertyActionListener value="#{filtro}" target="#{manticVentasCajaAccion.attrs.devolucionTicket}" />
+									</p:commandButton>
+									<p:commandButton icon="fa fa-cloud-download" title="Facturar" action="#{manticVentasCajaAccion.doFacturar}" disabled="#{empty filtro.idFactura and filtro.idVentaEstatus.toLong eq 3}">
+										<f:setPropertyActionListener value="#{filtro}" target="#{manticVentasCajaAccion.attrs.facturarTicket}" />
 									</p:commandButton>
 								</p:column>
 								<f:facet name="footer">
