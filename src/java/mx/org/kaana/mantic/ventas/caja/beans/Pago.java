@@ -193,7 +193,7 @@ public class Pago implements Serializable{
 			regresar= this.totales.getTotal();
 		else
 			regresar= this.totales.getTotal() - (this.cheque + this.debito + this.vales + this.transferencia + this.abono);
-		return regresar < 0 ? 0 : regresar;
+		return regresar < 0 ? 0 : Numero.toRedondear(regresar);
 	}	
 
 	public Double getLimiteDebito() {
@@ -202,7 +202,7 @@ public class Pago implements Serializable{
 			regresar= this.totales.getTotal();
 		else
 			regresar= this.totales.getTotal() - (this.cheque + this.credito + this.vales + this.transferencia + this.abono);
-		return regresar < 0 ? 0 : regresar;
+		return regresar < 0 ? 0 : Numero.toRedondear(regresar);
 	}
 
 	public Double getLimiteCheque() {
@@ -211,12 +211,12 @@ public class Pago implements Serializable{
 			regresar= this.totales.getTotal();
 		else
 			regresar= this.totales.getTotal() - (this.credito + this.debito + this.vales + this.transferencia + this.abono);
-		return regresar < 0 ? 0 : regresar;
+		return regresar < 0 ? 0 : Numero.toRedondear(regresar);
 	}
 
 	public Double getLimiteVales() {
 		Double regresar= this.totales.getTotal() - (this.cheque + this.debito + this.credito + this.transferencia + this.abono);
-		return regresar < 0D ? 0D : regresar;
+		return regresar < 0D ? 0D : Numero.toRedondear(regresar);
 	}
 
 	public Double getLimiteTransferencia() {
@@ -225,7 +225,7 @@ public class Pago implements Serializable{
 			regresar= this.totales.getTotal();
 		else
 			regresar= this.totales.getTotal() - (this.credito + this.debito + this.vales + this.cheque + this.abono);
-		return regresar < 0 ? 0 : regresar;
+		return regresar < 0 ? 0 : Numero.toRedondear(regresar);
 	}
 
 	public void setLimiteTransferencia(Double limiteTransferencia) {
