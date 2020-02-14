@@ -10,13 +10,13 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {        
-        'idEmpresa'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'razonSocial' : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
-        'consecutivo' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'dias'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'vencidos'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'fechaInicio' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'fechaTermino': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}
+        idEmpresa   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        razonSocial : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        consecutivo : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true, grupo: 'general'},
+        dias        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        vencidos    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        fechaInicio : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        fechaTermino: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}
       };
 			
 			fieldsDialog = {
@@ -109,7 +109,7 @@
 							<f:facet name="header">
 								<h:outputText value="Ticket"/>
 							</f:facet>
-							<h:outputText value="#{filtro['consecutivo']}"/>
+							<h:outputText value="#{filtro['ticket']}"/>
 						</p:column>					
 						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.razonSocial}">
 							<f:facet name="header">
