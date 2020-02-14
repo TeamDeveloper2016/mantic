@@ -3660,6 +3660,7 @@
 				select
 					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
 					tc_mantic_clientes_deudas.id_cliente,
+					tc_mantic_ventas.ticket,
 					tc_mantic_ventas.consecutivo,
 					tc_mantic_ventas.id_manual,
 					tc_mantic_clientes_deudas.importe,
@@ -3731,6 +3732,7 @@
 				select
 					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
 					tc_mantic_clientes_deudas.id_cliente,
+					tc_mantic_ventas.ticket,
 					tc_mantic_ventas.consecutivo,
 					tc_mantic_ventas.id_manual,
 					tc_mantic_clientes_deudas.importe,
