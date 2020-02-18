@@ -81,6 +81,12 @@
 							</f:facet>
 							<h:outputText value="#{filtro['consecutivo']}"/>
 						</p:column>														
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.factura}">
+							<f:facet name="header">
+								<h:outputText value="Factura"/>
+							</f:facet>
+							<h:outputText value="#{filtro['factura']}"/>
+						</p:column>														
 						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
 							<f:facet name="header">
 								<h:outputText value="Usuario"/>
