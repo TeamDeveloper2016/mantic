@@ -6236,6 +6236,7 @@
 					tc_mantic_empresas_deudas.id_empresa_estatus,
 				  tc_mantic_notas_entradas.id_nota_entrada,
 					tc_mantic_notas_entradas.consecutivo,
+					tc_mantic_notas_entradas.factura,
 					tc_mantic_empresas_deudas.importe,
 					tc_mantic_empresas_deudas.saldo as debe,
 					tc_mantic_empresas_deudas.saldo,
@@ -6274,6 +6275,7 @@
 					tc_mantic_empresas_deudas.id_empresa,
 					tc_mantic_empresas_deudas.id_empresa_estatus,
 					tc_mantic_notas_entradas.consecutivo,
+					tc_mantic_notas_entradas.factura,
 					tc_mantic_empresas_deudas.importe,
 					tc_mantic_empresas_deudas.saldo,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
@@ -6310,6 +6312,7 @@
 				select
 					tc_mantic_empresas_pagos.id_empresa_pago as id_key,
 					tc_mantic_notas_entradas.consecutivo,
+					tc_mantic_notas_entradas.factura,
 					tc_mantic_empresas_deudas.importe,
 					tc_mantic_empresas_deudas.saldo,
 					tc_mantic_empresas_pagos.pago,
