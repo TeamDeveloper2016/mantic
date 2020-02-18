@@ -198,16 +198,18 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 					this.loadSucursales();
 					this.loadCatalogs();		
 					List<UISelectEntity> tiposPagos= (List<UISelectEntity>)this.attrs.get("tiposMedioPagos");
-					int index= tiposPagos.indexOf(new UISelectEntity(((TicketVenta)this.getAdminOrden().getOrden()).getIdTipoMedioPago()));
-					if(index>= 0) {
-					  this.attrs.put("tipoMedioPago", tiposPagos.get(index));
-       		  if(!((TicketVenta)this.getAdminOrden().getOrden()).getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())) {
-    					List<UISelectEntity> bancos= (List<UISelectEntity>)this.attrs.get("bancos");
-							int banco= bancos.indexOf(new UISelectEntity(((TicketVenta)this.getAdminOrden().getOrden()).getIdBanco()));
-							if(banco>= 0)
-    		        this.attrs.put("banco", bancos.get(banco));
-	    	      this.attrs.put("referencia", ((TicketVenta)this.getAdminOrden().getOrden()).getReferencia());
-							this.attrs.put("mostrarBanco", true);
+					if(((TicketVenta)this.getAdminOrden().getOrden()).getIdTipoMedioPago()!= null){
+						int index= tiposPagos.indexOf(new UISelectEntity(((TicketVenta)this.getAdminOrden().getOrden()).getIdTipoMedioPago()));
+						if(index>= 0) {
+							this.attrs.put("tipoMedioPago", tiposPagos.get(index));
+							if(!((TicketVenta)this.getAdminOrden().getOrden()).getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())) {
+								List<UISelectEntity> bancos= (List<UISelectEntity>)this.attrs.get("bancos");
+								int banco= bancos.indexOf(new UISelectEntity(((TicketVenta)this.getAdminOrden().getOrden()).getIdBanco()));
+								if(banco>= 0)
+									this.attrs.put("banco", bancos.get(banco));
+								this.attrs.put("referencia", ((TicketVenta)this.getAdminOrden().getOrden()).getReferencia());
+								this.attrs.put("mostrarBanco", true);
+							} // if	
 						} // if	
 					} // if	
           break;
@@ -443,8 +445,10 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
   public String doCancelar() {   
 		String regresar= null;
 		try {			
-			JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
-			JsfBase.setFlashAttribute("idFicticia", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
+			if(!((String)this.attrs.get("retorno")).contains("Caja")){
+				JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
+				JsfBase.setFlashAttribute("idFicticia", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
+			} // if
 			regresar= this.attrs.get("retorno") != null ? (String)this.attrs.get("retorno") : "/Paginas/Mantic/Facturas/filtro";
 		} // try
 		catch (Exception e) {
