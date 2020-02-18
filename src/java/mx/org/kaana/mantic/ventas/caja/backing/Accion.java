@@ -182,6 +182,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	@PostConstruct
   @Override
   protected void init() {				
+		MotorBusqueda motorBusqueda= null;
     try {
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null ? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null ? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
@@ -189,8 +190,11 @@ public class Accion extends IBaseVenta implements Serializable {
       this.attrs.put("fechaRegistro", JsfBase.getFlashAttribute("fechaRegistro")== null ? -1L: JsfBase.getFlashAttribute("fechaRegistro"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null ? null : JsfBase.getFlashAttribute("retorno"));
 			LOG.warn("Flash atributes [accion[" + this.attrs.get("accion") + "] idVenta [" + this.attrs.get("idVenta") + "] retorno [" + this.attrs.get("retorno") + "]]");
-			this.attrs.put("sortOrder", "order by tc_mantic_ventas.registro desc");			
+			this.attrs.put("sortOrder", "order by tc_mantic_ventas.registro desc");	
+			this.attrs.put("mostrarConfirmacionFactura", true);			
       doInitPage();
+			motorBusqueda= new MotorBusqueda(Long.valueOf(this.attrs.get("idEmpresa").toString()));
+			this.attrs.put("clienteGeneral", motorBusqueda.toClienteDefault());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -756,14 +760,14 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // refreshTicketsAbiertos
 	
 	@Override
-	public void doLoadTicketAbiertos() {
+	public void doLoadTicketAbiertos() {		
 		List<UISelectEntity> ticketsAbiertos= null;
 		Map<String, Object>params           = null;
 		List<Columna> campos                = null;
 		List<Columna> columns               = null;
 		try {
 			loadRangoFechas(false);
-			loadCajas();
+			loadCajas();			
 			params= new HashMap<>();			
 			params.put("sortOrder", "");
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
@@ -808,7 +812,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		StringBuilder regresar= null;
 		Date fecha            = null;
 		try {
-			fecha= (Date) this.attrs.get("fecha");
+			fecha= this.attrs.get("fecha")!= null && ((Object)this.attrs.get("fecha")) instanceof Date ? (Date) this.attrs.get("fecha") : new Date(Calendar.getInstance().getTimeInMillis());
 			regresar= new StringBuilder();
 			regresar.append(" date_format (tc_mantic_ventas.registro, '%Y%m%d')=".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, fecha)));
 			regresar.append(toCondicionEstatus(all));
@@ -918,27 +922,29 @@ public class Accion extends IBaseVenta implements Serializable {
 				unlockVentaExtends(ticketAbierto.getKey(), (Long)this.attrs.get("ticketLock"));									
 				this.attrs.put("ticketLock", ticketAbierto.getKey());
 				ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
-				ticketAbiertoPivote= ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto));												
-				this.attrs.put("ticketAbierto", ticketAbiertoPivote);
-				this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), true));
-				tipo= ticketAbiertoPivote.toString("tipo");
-				this.attrs.put("tipo", tipo);
-				this.attrs.put("mostrarApartado", tipo.equals(EEstatusVentas.APARTADOS.name()));								
-				if(tipo.equals(EEstatusVentas.COTIZACION.name()) || tipo.equals(EEstatusVentas.APARTADOS.name())){					
-					if(tipo.equals(EEstatusVentas.APARTADOS.name()))
-						asignaFechaApartado();
-					actual= new Date(Calendar.getInstance().getTimeInMillis());
-					if(actual.after(((TicketVenta)getAdminOrden().getOrden()).getVigencia()))
-						this.generateNewVenta();					
+				if(!ticketsAbiertos.isEmpty()){
+					ticketAbiertoPivote= ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto));												
+					this.attrs.put("ticketAbierto", ticketAbiertoPivote);
+					this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), true));
+					tipo= ticketAbiertoPivote.toString("tipo");
+					this.attrs.put("tipo", tipo);
+					this.attrs.put("mostrarApartado", tipo.equals(EEstatusVentas.APARTADOS.name()));								
+					if(tipo.equals(EEstatusVentas.COTIZACION.name()) || tipo.equals(EEstatusVentas.APARTADOS.name())){					
+						if(tipo.equals(EEstatusVentas.APARTADOS.name()))
+							asignaFechaApartado();
+						actual= new Date(Calendar.getInstance().getTimeInMillis());
+						if(actual.after(((TicketVenta)getAdminOrden().getOrden()).getVigencia()))
+							this.generateNewVenta();					
+					} // if
+					this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
+					this.attrs.put("consecutivo", ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo());
+					this.loadCatalog();
+					doAsignaClienteTicketAbierto();
+					this.attrs.put("pagarVenta", true);
+					this.attrs.put("cobroVenta", true);				
+					this.attrs.put("tabIndex", 0);
+					this.attrs.put("creditoCliente", ticketAbiertoPivote.toLong("idCredito").equals(1L));
 				} // if
-				this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
-				this.attrs.put("consecutivo", ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo());
-				this.loadCatalog();
-				doAsignaClienteTicketAbierto();
-				this.attrs.put("pagarVenta", true);
-				this.attrs.put("cobroVenta", true);				
-				this.attrs.put("tabIndex", 0);
-				this.attrs.put("creditoCliente", ticketAbiertoPivote.toLong("idCredito").equals(1L));
 			} // if
 			else {				
 				this.unlockVentaExtends(-1L, (Long)this.attrs.get("ticketLock"));
@@ -1832,9 +1838,26 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	public String doFacturar() {
 		JsfBase.setFlashAttribute("accion", EAccion.MODIFICAR);
-		JsfBase.setFlashAttribute("idFicticia", ((Entity)this.attrs.get("facturarTicket")).getKey());
+		JsfBase.setFlashAttribute("idVenta", ((Entity)this.attrs.get("facturarTicket")).getKey());
 		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Ventas/Caja/accion");
-	  return "/Paginas/Mantic/Facturas/accion".concat(Constantes.REDIRECIONAR);	
+		this.attrs.put("idVenta", -1L);
+	  return "/Paginas/Mantic/Ventas/Facturas/accion".concat(Constantes.REDIRECIONAR);	
 	}
-	
+
+	public void doValidateConfirmacionFactura(){
+		boolean mostrarConfirmacionFactura= true;
+		Entity clienteGeneral             = null;
+		UISelectEntity cliente            = null;
+		try {
+			this.attrs.put("confirmarFactura", false);			
+			clienteGeneral= (Entity) this.attrs.get("clienteGeneral");
+			cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");	
+			mostrarConfirmacionFactura= !((boolean)this.attrs.get("apartado")) && !clienteGeneral.getKey().equals(cliente.getKey()) && !((boolean)this.attrs.get("facturarVenta"));
+			this.attrs.put("mostrarConfirmacionFactura", mostrarConfirmacionFactura);			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch
+	} // doValidateConfirmacionFactura
 }
