@@ -18,6 +18,7 @@ public class Facturacion implements Serializable{
 	private String nombreEmpresa;
 	private Long idEmpresa;
 	private Long idTipoDocumento;
+	private Long intentos;
 
 	public Facturacion() {
 		this(-1L, -1L, "", "", -1L, -1L, "", "", -1L);
@@ -28,10 +29,10 @@ public class Facturacion implements Serializable{
 	} // Facturacion
 	
 	public Facturacion(Long idVenta, Long idCliente, String correos, String razonSocial, Long idTipoPago, Long idFactura, String idFacturama, String selloSat, Long idClienteDomicilio, Long idUsuario, String nombreEmpresa, Long idEmpresa) {
-		this(idVenta, idCliente, correos, razonSocial, idTipoPago, idFactura, idFacturama, selloSat, idClienteDomicilio, idUsuario, nombreEmpresa, idEmpresa, -1L);
+		this(idVenta, idCliente, correos, razonSocial, idTipoPago, idFactura, idFacturama, selloSat, idClienteDomicilio, idUsuario, nombreEmpresa, idEmpresa, -1L, 0L);
 	}
 	
-	public Facturacion(Long idVenta, Long idCliente, String correos, String razonSocial, Long idTipoPago, Long idFactura, String idFacturama, String selloSat, Long idClienteDomicilio, Long idUsuario, String nombreEmpresa, Long idEmpresa, Long idTipoDocumento) {
+	public Facturacion(Long idVenta, Long idCliente, String correos, String razonSocial, Long idTipoPago, Long idFactura, String idFacturama, String selloSat, Long idClienteDomicilio, Long idUsuario, String nombreEmpresa, Long idEmpresa, Long idTipoDocumento, Long intentos) {
 		this.idVenta           = idVenta;
 		this.idCliente         = idCliente;
 		this.correos           = correos;
@@ -45,6 +46,7 @@ public class Facturacion implements Serializable{
 		this.nombreEmpresa     = nombreEmpresa;
 		this.idEmpresa         = idEmpresa;
 		this.idTipoDocumento   = idTipoDocumento;
+		this.intentos          = intentos;
 	}
 
 	public Long getIdVenta() {
@@ -149,5 +151,13 @@ public class Facturacion implements Serializable{
 
 	public void setIdTipoDocumento(Long idTipoDocumento) {
 		this.idTipoDocumento = idTipoDocumento;
+	}	
+
+	public Long getIntentos() {
+		return intentos;
+	}
+
+	public void setIntentos(Long intentos) {
+		this.intentos = intentos;
 	}	
 }
