@@ -535,7 +535,7 @@
         from      
           tc_mantic_masivas_archivos
         where      
-          id_empresa = {idEmpresa} and ruta = '{ruta}' and id_tipo_archivo = {idTipoArchivo} and id_tipo_masivo = {idTipoMasivo} and nombre = '{nombre}' and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+          nombre = '{nombre}'
       </select>
       <select id="all">
         select      
