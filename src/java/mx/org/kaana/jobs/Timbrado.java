@@ -62,17 +62,19 @@ public class Timbrado implements Job, Serializable {
 				pendientes= this.toFacturasPendientes();
 				for (Facturacion factura: pendientes) {
 					try {
-						correos=toCorreosCliente(factura.getIdCliente());
-						if (!Cadena.isVacio(correos)) {
-							factura.setCorreos(correos);
-							transaccion=new Transaccion(factura);
-							if (transaccion.ejecutar(EAccion.GENERAR)) {
-								this.doSendMail(factura);
-								LOG.info("Se realizo la facturación de forma correcta");
+						if(factura.getIntentos()<= 2){
+							correos=toCorreosCliente(factura.getIdCliente());
+							if (!Cadena.isVacio(correos)) {
+								factura.setCorreos(correos);
+								transaccion=new Transaccion(factura);
+								if (transaccion.ejecutar(EAccion.GENERAR)) {
+									this.doSendMail(factura);
+									LOG.info("Se realizo la facturación de forma correcta");
+								} // if
+								else {
+									LOG.error("Ocurrio un error al realizar la facturación");
+								}
 							} // if
-							else {
-								LOG.error("Ocurrio un error al realizar la facturación");
-							}
 						} // if
 					}
 					catch (Exception ex) {
