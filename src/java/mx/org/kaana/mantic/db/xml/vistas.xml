@@ -2536,7 +2536,8 @@
 					tc_mantic_ventas.id_usuario,
 					tc_mantic_empresas.nombre as nombre_empresa,
 					tc_mantic_ventas.id_empresa,
-					tc_mantic_ventas.id_tipo_documento
+					tc_mantic_ventas.id_tipo_documento,
+					tc_mantic_facturas.intentos
 				from 
 					tc_mantic_ventas										
 				inner join 
@@ -2564,7 +2565,9 @@
 					tc_mantic_ventas.id_cliente_domicilio,
 					tc_mantic_ventas.id_usuario,
 					tc_mantic_empresas.nombre,
-					tc_mantic_ventas.id_empresa
+					tc_mantic_ventas.id_empresa,
+					tc_mantic_ventas.id_tipo_documento,
+					tc_mantic_facturas.intentos
 			</select>
 		</unit>		
 		<unit id="VistaKardexDto">
