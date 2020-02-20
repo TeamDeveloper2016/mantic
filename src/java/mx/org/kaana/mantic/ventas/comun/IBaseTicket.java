@@ -56,6 +56,9 @@ public abstract class IBaseTicket extends IBaseFilter implements Serializable {
 				case APARTADOS:
 					regresar= "APARTADO";
 					break;
+				case CREDITO:
+					regresar= "VENTA A CREDITO";
+					break;
 			} // switch			
 		} // try
 		catch (Exception e) {			
