@@ -56,11 +56,14 @@ public class Filtro extends IBaseAttribute implements Serializable {
   		BarModel modelSimple  = new BarModel(new Title(), simple, EBarOritentation.HORIZONTAL);
 			modelSimple.addLine(new CustomLine("2019", 50000D, Colors.COLOR_RED));
 			modelSimple.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'double');}");
+			modelSimple.toCustomFontSize(14);
   		this.attrs.put("simple", modelSimple.toJson());
 			
 			Multiple multiple= new Multiple(DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "multiple", attrs));
   		BarModel modelMultiple= new BarModel(new Title(), multiple);
 			modelMultiple.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
+			// modelMultiple.toCustomColorSerie(Colors.toColor(), Colors.toColor());
+			modelMultiple.toCustomFontSize(14);
   		this.attrs.put("multiple", modelMultiple.toJson());
 			
 			Datas datas = new Datas("ventas", DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "simple", Collections.EMPTY_MAP));
@@ -75,10 +78,12 @@ public class Filtro extends IBaseAttribute implements Serializable {
   		StackModel stack= new StackModel(new Title(), stacked);
 			stack.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'money', false);}");
 			stack.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'money');}");
+			stack.toCustomFontSize(14);
   		this.attrs.put("stack", stack.toJson());
 			
   		modelSimple  = new BarModel(new Title(), simple);
 			modelSimple.getGrid().setRight("10%");
+			modelSimple.toCustomFontSize(14);
   		this.attrs.put("vertical", modelSimple.toJson());
 			
 			Pictorial pictorial= new Pictorial(DaoFactory.getInstance().toEntitySet("VistaEchartsDemostracionDto", "multiple", Collections.EMPTY_MAP));

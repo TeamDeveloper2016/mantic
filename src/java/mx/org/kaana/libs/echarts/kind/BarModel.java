@@ -109,6 +109,8 @@ public class BarModel extends BaseBarModel implements Serializable {
 			super.getColor().add(item.getData().get(0).getItemStyle().getColor());
 		} // for
 		this.ordered();
+		if(this.series!= null && this.series.get(0).getData()!= null && this.series.get(0).getData().size()> 0)
+			this.toCustomColorSerie();
 	}
 
 	private void ordered() {
@@ -151,6 +153,27 @@ public class BarModel extends BaseBarModel implements Serializable {
 		for (Serie item : this.series) {
 			item.getLabel().getNormal().setColor(color);
 		} // for
+	}
+	
+	private void toCustomColorSerie() {
+		int x= 0;
+		for (Serie item : this.series) {
+      for (Value value : item.getData()) {
+				if(x< this.getColor().size())
+				  value.getItemStyle().setColor(this.getColor().get(x));
+			} // for
+			x++;
+		} // for
+	}
+	
+	public void toCustomColorSerie(String ... colors) {
+		int x= 0;
+		for (String item: colors) {
+			if(x< this.getColor().size())
+			  this.getColor().set(x, item);
+			x++;
+		} // for
+		this.toCustomColorSerie();
 	}
 	
 	public void toCustomFontSize(Integer size) {
