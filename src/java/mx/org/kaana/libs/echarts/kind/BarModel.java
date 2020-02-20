@@ -109,7 +109,7 @@ public class BarModel extends BaseBarModel implements Serializable {
 			super.getColor().add(item.getData().get(0).getItemStyle().getColor());
 		} // for
 		this.ordered();
-		if(this.series!= null && this.series.get(0).getData()!= null && this.series.get(0).getData().size()> 0)
+		if(this.series!= null && this.series.size()> 1)
 			this.toCustomColorSerie();
 	}
 
