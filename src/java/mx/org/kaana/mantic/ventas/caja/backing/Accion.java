@@ -394,6 +394,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		UISelectEntity cliente                = null;
 		UISelectEntity seleccionado           = null;
 		List<UISelectEntity> clientesSeleccion= null;
+		String tipoTicket                     = null;
     try {	
 			creditoVenta= (Boolean) this.attrs.get("creditoVenta");
 			cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");	
@@ -411,7 +412,8 @@ public class Accion extends IBaseVenta implements Serializable {
 					} // if
 					else
 						UIBackingUtilities.addCallbackParam("facturacionOk", false);
-					ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago) this.attrs.get("pago"), ventaFinalizada.getApartado() ? "APARTADO" : "VENTA DE MOSTRADOR");
+					tipoTicket= ventaFinalizada.getApartado() ? "APARTADO" : (ventaFinalizada.isFacturar() ? "FACTURA" : (ventaFinalizada.isCredito() ? "CREDITO" : "VENTA DE MOSTRADOR"));
+					ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago) this.attrs.get("pago"), tipoTicket);
 					UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + ((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).getTicket() + "','" + ticket.toHtml() + "');");
 					UIBackingUtilities.execute("jsTicket.clicTicket();");
 					JsfBase.addMessage("Se finalizo el pago del ticket de venta.", ETipoMensaje.INFORMACION);
