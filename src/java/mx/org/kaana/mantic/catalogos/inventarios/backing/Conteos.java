@@ -165,13 +165,16 @@ public class Conteos extends IBaseFilter implements Serializable {
 		} // if
 	}
 	
-	private void toLoadAlmacenes() {
+	private void toLoadAlmacenes() throws Exception {
 		List<UISelectEntity> almacenes= null;
 		Map<String, Object> params    = null;
 		List<Columna> columns         = null;
 		try {
 			params= new HashMap<>();
-			params.put("idEmpresa", this.attrs.get("idEmpresa"));
+			if(JsfBase.isCajero())
+				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			else
+				params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			columns= new ArrayList<>();
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));							
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));							
