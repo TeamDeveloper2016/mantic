@@ -52,6 +52,7 @@ public class CreateTicket {
 		sb.append(toHeader());
 		sb.append(toBlackBar());
 		//sb.append(toDomicilio());
+		sb.append(toCredito());
 		sb.append(toNoTicket());
 		sb.append(toTipoTransaccion());
 		sb.append(toFecha());
@@ -132,18 +133,29 @@ public class CreateTicket {
 		return regresar;
 	} // toTelefono
 	
+	private String toCredito(){		
+		StringBuilder	regresar= new StringBuilder("");
+		if(this.tipo.equals("CREDITO")){			
+			regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 15px;font-weight: bold\">");
+			regresar.append("<br>");
+			regresar.append(this.tipo);			
+			regresar.append("</p>");		
+		}	// if			
+		return regresar.toString();
+	} // toCredito
+	
 	private String toNoTicket(){		
 		StringBuilder	regresar= new StringBuilder();
 		String descripcionTicket= this.tipo.equals("COTIZACIÓN") ? ((TicketVenta)this.ticket.getOrden()).getCotizacion(): ((TicketVenta)this.ticket.getOrden()).getTicket();
 		regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 15px;font-weight: bold\">");
-		regresar.append(this.tipo.equals("COTIZACIÓN") ? "CONSECUTIVO: " : "TICKET No: ");
+		regresar.append(this.tipo.equals("COTIZACIÓN") ? "CONSECUTIVO: " : (this.tipo.equals("FACTURA") ? "FACTURA No: " : "TICKET No: "));
 		regresar.append(this.principal.getClave()).append("-").append(descripcionTicket).append("<br>");		
 		return regresar.toString();
 	} // toNoTicket
 	
 	protected String toTipoTransaccion(){
 		StringBuilder regresar= new StringBuilder();
-		regresar.append(this.tipo).append("<br>");		
+		regresar.append(this.tipo.equals("CREDITO") || this.tipo.equals("FACTURA") ? "VENTA DE MOSTRADOR" : this.tipo).append("<br>");		
 		return regresar.toString();
 	} // toTipoVenta
 	
