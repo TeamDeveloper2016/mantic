@@ -884,7 +884,13 @@
 				</div>
 			</p:tab>
 		</p:tabView>				
-		<p:dialog id="dialogoCerrarVenta" widgetVar="dlgCerrarVenta" header="Finalizar venta" resizable="false" closable="false" responsive="true" width="40%" styleClass="key-caja-dialogo-finalizar" onShow="jsCaja.aceptarFinalizarFocus();" onHide="janal.desbloquear();" closeOnEscape="true">
+		<p:dialog id="dialogoCerrarVenta" widgetVar="dlgCerrarVenta" header="Finalizar venta" resizable="false" closable="false" responsive="true" width="40%" styleClass="key-caja-dialogo-finalizar" onShow="jsCaja.aceptarFinalizarFocus();" onHide="janal.desbloquear();" closeOnEscape="true">									
+			<h:panelGrid columns="1" columnClasses="janal-color-red janal-column-center" rendered="#{manticVentasCajaAccion.attrs.mostrarConfirmacionFactura}">
+				<p:selectBooleanCheckbox id="confirmarFactura" value="#{manticVentasCajaAccion.attrs.confirmarFactura}" itemLabel="NO SE HA SELECCIONADO OPCIÓN PARA FACTURAR (MARCAR PARA FACTURAR VENTA)" style="font-size: 16px; font-weight: bold">
+					<p:ajax onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear();PF('widgetSwitchFacturar').check();"/>
+				</p:selectBooleanCheckbox>
+			</h:panelGrid>
+			<p:spacer/>
 			<h:panelGrid columns="4" columnClasses="janal-wid-70, janal-wid-10 janal-column-center, janal-wid-10 janal-column-center, janal-wid-10 janal-column-center">
 				<p:outputLabel value="Resumen de venta" styleClass="font-resume-venta"/><p:spacer/><p:spacer/><p:spacer/>				
 				<p:outputLabel value="Cliente" styleClass="font-resume-venta-detail"/>
@@ -914,7 +920,7 @@
 				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.cheque}"/>				
 				<p:outputLabel value="Cambio:" styleClass="font-resume-venta-detail janal-color-blue"/><p:outputLabel value="$" styleClass="janal-color-blue"/>
 				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.cambio$}" styleClass="janal-color-blue"/>
-			</h:panelGrid>
+			</h:panelGrid>			
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
 				<p:commandButton id="aceptarFinalizar" value="Aceptar" icon="fa fa-check" process="@form" actionListener="#{manticVentasCajaAccion.doAceptar}" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear(); jsCaja.validateFacturacion(xhr, status, args);" update="contenedorGrupos @(.filas) @(.recalculo) contenedorGrupos:deudorPago contenedorGrupos:deudor" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}"/>
@@ -1361,12 +1367,12 @@
 		<div class="janal-line-button">
 			<div class="lg-pantalla">
 				<p:commandButton id="aceptCotizacion" value="Cotización" widgetVar="wAceptarCotizacion" icon="fa fa-list-ul" process="@form" styleClass="cotizar janal-text-white" actionListener="#{manticVentasCajaAccion.doVerificaArticulosCotizacion}" update="dialogoCotizacion"/>
-				<p:commandButton id="aceptar" value="Aceptar" widgetVar="wAceptarCompra" icon="fa fa-check" accesskey="a"  process="@this" styleClass="cotizar janal-text-white" onstart="return janal.bloquear();" oncomplete="jsArticulos.applyValidacionesGeneral();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}" style="display: #{manticVentasCajaAccion.pagar? '': 'none'}"/>			
+				<p:commandButton id="aceptar" value="Aceptar" widgetVar="wAceptarCompra" icon="fa fa-check" accesskey="a"  process="@this" styleClass="cotizar janal-text-white" onstart="return janal.bloquear();" actionListener="#{manticVentasCajaAccion.doValidateConfirmacionFactura}" oncomplete="jsArticulos.applyValidacionesGeneral();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}" style="display: #{manticVentasCajaAccion.pagar? '': 'none'}"/>			
 				<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticVentasCajaAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 			</div>		
 			<div class="xs-pantalla">
 				<p:commandButton id="cotizacionIcon" title="Cotización" widgetVar="wAceptarCotizacionIcon" icon="fa fa-check" process="@form" styleClass="cotizar janal-text-white" actionListener="#{manticVentasCajaAccion.doVerificaArticulosCotizacion}" update="dialogoCotizacion"/>
-				<p:commandButton id="aceptarIcon" title="Aceptar" widgetVar="wAceptarCompraIcon" icon="fa fa-check" process="@this" styleClass="cotizar janal-text-white" onstart="return janal.bloquear();" oncomplete="jsArticulos.applyValidacionesGeneral();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}" style="display: #{manticVentasCajaAccion.pagar? '': 'none'}"/>			
+				<p:commandButton id="aceptarIcon" title="Aceptar" widgetVar="wAceptarCompraIcon" icon="fa fa-check" process="@this" styleClass="cotizar janal-text-white" onstart="return janal.bloquear();" actionListener="#{manticVentasCajaAccion.doValidateConfirmacionFactura}" oncomplete="jsArticulos.applyValidacionesGeneral();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}" style="display: #{manticVentasCajaAccion.pagar? '': 'none'}"/>			
 				<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 			</div>		
 		</div>
