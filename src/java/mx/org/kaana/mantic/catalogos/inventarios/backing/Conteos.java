@@ -123,6 +123,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 			this.toLoadAlmacenArticulo();
 			this.toSearchUltimo();
 			this.toLoadUbicaciones();
+			this.toLoadMovimientos();
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
@@ -526,12 +527,12 @@ public class Conteos extends IBaseFilter implements Serializable {
   } // doCancelar
 
   public void doChangeUbicacion() {
-		if(this.articulo!= null && this.attrs.get("idAlmacenUbicacion")!= null && ((UISelectEntity)this.attrs.get("idAlmacenUbicacion")).getKey()> 0L)
+		if(this.articulo!= null && this.attrs.get("idAlmacenUbicacion")!= null && ((UISelectEntity)this.attrs.get("idAlmacenUbicacion")).getKey()> 0L) 
 			this.articulo.setIdAlmacenUbicacion(((UISelectEntity)this.attrs.get("idAlmacenUbicacion")).getKey());
 	} 
 
 	public void doTabChange(TabChangeEvent event) {
-		if(event.getTab().getTitle().equals("Movimientos") && this.attrs.get("idArticulo")!= null) 
+		if(event.getTab().getTitle().equals("Movimientos (60 días)") && this.attrs.get("idArticulo")!= null) 
 			this.toLoadMovimientos();
 	}
 	
