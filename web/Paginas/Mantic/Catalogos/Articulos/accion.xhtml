@@ -122,7 +122,7 @@
 								<p:dataTable id="tablaCodigos" rowIndexVar="index" var="codigo" value="#{manticCatalogosArticulosAccion.registroArticulo.articulosCodigos}" rows="15" paginator="false" reflow="true" rowKey="#{codigo.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Proveedor">										
 										<p:selectOneMenu id="proveedor#{codigo.key}" styleClass="janal-wid-100-txt proveedores-codigo" value="#{codigo.idProveedor}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" onblur="simpleProcess();">
-											<p:ajax update="tablaCodigos" process="@this tablaCodigos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<p:ajax update="tablaCodigos @(.multiplo)" process="@this tablaCodigos" onstart="janal.bloquear();" oncomplete="janal.refresh(); janal.desbloquear();"/>
 											<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 											<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.proveedoresGeneral}"/>
 										</p:selectOneMenu> 				
@@ -131,7 +131,7 @@
 										<p:inputText id="codigo#{codigo.key}" styleClass="janal-wid-100-txt" value="#{codigo.codigo}" onblur="lookForCodigo($(this).attr('id'), $(this).val(), #{index}); simpleProcess();"/>	
 									</p:column>
 									<p:column headerText="Multiplo" styleClass="janal-wid-30 codigo">		
-										<p:inputText id="multiplo#{codigo.key}" styleClass="janal-wid-100-txt" value="#{codigo.multiplo}" onblur="$(this).val().trim().length=== 0? '1': $(this).val().trim()"/>	
+										<p:inputText id="multiplo#{codigo.key}" styleClass="janal-wid-100-txt multiplo" value="#{codigo.multiplo}" onblur="$(this).val().trim().length=== 0? '1': $(this).val().trim()" style="display: #{empty codigo.idProveedor or codigo.idProveedor eq -1? 'none': ''}"/>	
 									</p:column>
 									<p:column headerText="Principal" styleClass="janal-wid-5" style="text-align: center">
 										<p:selectBooleanCheckbox value="#{codigo.principal}" rendered="#{codigo.candidatoPrincipal}" onblur="simpleProcess();">
