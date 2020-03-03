@@ -22,6 +22,7 @@
 				'contenedorGrupos\\:metaDescripcion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:metaTeclado'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},				
 				'codigo'                            : {multiple: '$', validaciones: 'requerido', mascara: 'codigo', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del codigo'},
+				'multiplo'                          : {multiple: '$', validaciones: 'requerido|entero', mascara: 'entero', individual: true, mensaje:'Es necesario la captura del multiplo'},
 				'nombres'                           : {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del nombre de la especificacion'},
 				'valor'                             : {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor de la especificacion'},
 				'obsv'                              : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
@@ -128,6 +129,9 @@
 									</p:column>				
 									<p:column headerText="Código" styleClass="janal-wid-30 codigo">		
 										<p:inputText id="codigo#{codigo.key}" styleClass="janal-wid-100-txt" value="#{codigo.codigo}" onblur="lookForCodigo($(this).attr('id'), $(this).val(), #{index}); simpleProcess();"/>	
+									</p:column>
+									<p:column headerText="Multiplo" styleClass="janal-wid-30 codigo">		
+										<p:inputText id="multiplo#{codigo.key}" styleClass="janal-wid-100-txt" value="#{codigo.multiplo}" onblur="$(this).val().trim().length=== 0? '1': $(this).val().trim()/>	
 									</p:column>
 									<p:column headerText="Principal" styleClass="janal-wid-5" style="text-align: center">
 										<p:selectBooleanCheckbox value="#{codigo.principal}" rendered="#{codigo.candidatoPrincipal}" onblur="simpleProcess();">

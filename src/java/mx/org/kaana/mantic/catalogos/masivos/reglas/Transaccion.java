@@ -1957,7 +1957,9 @@ public class Transaccion extends IBaseTnx {
 		Sheet sheet             = null;
 		TcManticProveedoresDto proveedor   = null;
 		TcManticMasivasBitacoraDto bitacora= null;
+		Map<String, Object> params         = null;
 		try {
+			params=new HashMap<>();
       WorkbookSettings workbookSettings = new WorkbookSettings();
       workbookSettings.setEncoding("Cp1252");	
 			workbookSettings.setExcelDisplayLanguage("MX");
@@ -1975,12 +1977,13 @@ public class Transaccion extends IBaseTnx {
 					try {
 						if(sheet.getCell(0, fila)!= null && sheet.getCell(1, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(1, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
 							String contenido= new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
-							//   0            1             2
-							//PROVEEDOR|CODIGO PROPIO|CODIGO PROVEEDOR
+							//   0            1             2							3
+							//PROVEEDOR|CODIGO PROPIO|CODIGO PROVEEDOR|MULTIPLO
   						String codigo = new String(sheet.getCell(1, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 							codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim();
 							String auxiliar= new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 							auxiliar= auxiliar.replaceAll(Constantes.CLEAN_ART, "").trim();
+							long multiplo= Numero.getLong(sheet.getCell(3, fila).getContents()!= null? sheet.getCell(3, fila).getContents().replaceAll("[$, ]", ""): "0", 1L);
 							String rfc = new String(contenido.getBytes(ISO_8859_1), UTF_8);
 							if(codigo.length()> 0 && auxiliar.length()> 0) {
 								TcManticArticulosDto articulo= this.toFindArticuloCodigo(sesion, codigo);
@@ -1997,7 +2000,8 @@ public class Transaccion extends IBaseTnx {
 											null, // String observaciones
 											-1L, // Long idArticuloCodigo
 											this.toNextOrden(sesion, articulo.getIdArticulo()), // Long orden 
-											articulo.getIdArticulo() // Long idArticulo
+											articulo.getIdArticulo(), // Long idArticulo
+											multiplo
 										); 
 									  DaoFactory.getInstance().insert(sesion, adicional);
 									  TcManticMasivasDetallesDto detalle= new TcManticMasivasDetallesDto(
@@ -2008,6 +2012,17 @@ public class Transaccion extends IBaseTnx {
 										);
 										DaoFactory.getInstance().insert(sesion, detalle);
 									} // if	
+									else {
+										// articulo.getIdArticulo(), auxiliar
+										params.put("idArticulo", articulo.getIdArticulo());
+										params.put("codigo", auxiliar);
+										params.put("idProveedor", this.idProveedor);
+										TcManticArticulosCodigosDto update= (TcManticArticulosCodigosDto)DaoFactory.getInstance().findFirst(TcManticArticulosCodigosDto.class, "proveedor", params);
+										if(update!= null) {
+											update.setMultiplo(multiplo);
+										  DaoFactory.getInstance().update(sesion, update);
+										} // if
+									} // else
 								} // if
 								monitoreo.incrementar();
 								if(fila% this.categoria.getTuplas()== 0) {
@@ -2027,12 +2042,12 @@ public class Transaccion extends IBaseTnx {
 							} // if
 							else {
 								this.errores++;
-								LOG.warn(fila+ " proveedor: ["+ rfc+ "] codigo propio: ["+ codigo+ "] codigo proveedor: ["+ auxiliar+ "] ");
+								LOG.warn(fila+ " proveedor: ["+ rfc+ "] codigo propio: ["+ codigo+ "] codigo proveedor: ["+ auxiliar+ "] multiplo["+ multiplo+ "]");
 								TcManticMasivasDetallesDto detalle= new TcManticMasivasDetallesDto(
 									sheet.getCell(0, fila).getContents(), // String codigo, 
 									-1L, // Long idMasivaDetalle, 
 									this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
-									"EL PROVEEDOR["+ rfc+ "], CODIGO PROPIO["+ codigo+ "], CODIGO PROVEEDOR["+ auxiliar+ "] NO EXISTE" // String observaciones
+									"EL PROVEEDOR["+ rfc+ "], CODIGO PROPIO["+ codigo+ "], CODIGO PROVEEDOR["+ auxiliar+ "], MULTIPLO["+ multiplo+ "] NO EXISTE" // String observaciones
 								);
 								DaoFactory.getInstance().insert(sesion, detalle);
 							} // else	
@@ -2063,6 +2078,7 @@ public class Transaccion extends IBaseTnx {
 			} // if
 		} // try
     finally {
+			Methods.clean(params);
       if(workbook!= null) {
         workbook.close();
         workbook = null;
