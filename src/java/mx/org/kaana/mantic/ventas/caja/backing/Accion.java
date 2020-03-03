@@ -1315,7 +1315,16 @@ public class Accion extends IBaseVenta implements Serializable {
 				} // if
 				regresar.setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));		
 				ticketVenta.setIdClienteDomicilio(((Entity)this.attrs.get("domicilioFactura")).getKey());		
-			} // if			
+			} // if	
+			else{
+				ticketVenta.setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));				
+				ticketVenta.setIdTipoMedioPago(regresar.getTotales().getIdTipoMedioPago());
+				if(!ETipoMediosPago.EFECTIVO.getIdTipoMedioPago().equals(regresar.getTotales().getIdTipoMedioPago())){
+					ticketVenta.setIdBanco(regresar.getTotales().getIdBanco());
+					ticketVenta.setReferencia(regresar.getTotales().getReferencia());
+				} // if
+				regresar.setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));		
+			} // else
 			regresar.setTicketVenta(ticketVenta);
 			for(ClienteTipoContacto record: this.clientesTiposContacto)
 				record.setIdTipoContacto(ETiposContactos.CORREO.getKey());
