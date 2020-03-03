@@ -2018,7 +2018,7 @@ public class Transaccion extends IBaseTnx {
 										params.put("codigo", auxiliar);
 										params.put("idProveedor", this.idProveedor);
 										TcManticArticulosCodigosDto update= (TcManticArticulosCodigosDto)DaoFactory.getInstance().findFirst(TcManticArticulosCodigosDto.class, "proveedor", params);
-										if(update!= null) {
+										if(update!= null && update.getMultiplo()!= multiplo && multiplo>= 1L) {
 											update.setMultiplo(multiplo);
 										  DaoFactory.getInstance().update(sesion, update);
 										} // if
