@@ -97,6 +97,7 @@
 			<div class="ui-grid-row janal-grid-row">								
 				<div id="collapse-content" class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
+            <p:ajax event="tabChange" listener="#{manticCatalogosInventariosConteos.doTabChange}" process="@this" update="@(.filas)"/>												
 						<p:tab title="Generales">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-70, janal-wid-30">	
 								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-100, janal-wid-100">		
@@ -199,6 +200,41 @@
 								</f:facet>
 							</p:dataTable>							
 						</p:tab>
+						<p:tab title="Movimientos (60 días)">
+							<p:dataTable var="item" value="#{manticCatalogosInventariosConteos.attrs.movimientos}" paginator="#{manticCatalogosInventariosConteos.attrs.movimientos.size() gt 0}" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" styleClass="paginated filas" rowIndexVar="index" paginatorPosition="bottom">
+								<p:column headerText="No" styleClass="janal-wid-3">
+									<p:outputLabel value="#{index+ 1}.-"/>
+								</p:column>   
+								<p:column headerText="Tipo" styleClass="janal-wid-10">
+									<p:outputLabel value="#{item.concepto}"/>
+								</p:column>   
+								<p:column headerText="Consecutivo" styleClass="janal-wid-8 janal-column-center">
+									<p:commandLink action="#{manticCatalogosInventariosConteos.doMoveSection}" process="@this" update="documento informacion @(.documento)" oncomplete="janal.bloquear();PF('widgetDetalle').show();">
+										<f:setPropertyActionListener target="#{manticCatalogosInventariosConteos.attrs.consecutivo}" value="#{item}"/>
+										<p:outputLabel value="#{item.consecutivo}"/>
+									</p:commandLink>
+								</p:column>   
+								<p:column headerText="Almacen">
+									<p:outputLabel value="#{item.almacen}"/>
+								</p:column>   
+								<p:column headerText="Cantidad" styleClass="janal-wid-8 janal-column-right">
+									<p:outputLabel value="#{item.cantidad}"/>
+								</p:column>   
+								<p:column headerText="Stock anterior" styleClass="janal-wid-8 janal-column-right">
+									<p:outputLabel value="#{item.stock}"/>
+								</p:column>   
+								<p:column headerText="Stock nuevo" styleClass="janal-wid-8 janal-column-right">
+									<p:outputLabel value="#{item.calculo}"/>
+								</p:column>   
+								<p:column headerText="Fecha" styleClass="janal-wid-13 janal-column-center">
+									<p:outputLabel value="#{item.registro}"/>
+								</p:column>   
+								<p:column headerText="Usuario" styleClass="janal-wid-20	">
+									<p:outputLabel value="#{item.usuario}"/>
+								</p:column>   
+              </p:dataTable>
+							<p:outputLabel value="Los movimientos son del #{manticCatalogosInventariosConteos.attrs.periodo} al dia de hoy." styleClass="paginated filas"/>
+						</p:tab>						
 					</p:tabView>										
 				</div>
 			</div>	
@@ -214,6 +250,67 @@
 	  		<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosInventariosConteos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true" style="display: #{empty manticCatalogosInventariosConteos.attrs.xcodigo? 'none': ''}"/>
 			</div>		
 		</div>	
+		<p:dialog id="documento" widgetVar="widgetDetalle" header="Detalle #{manticCatalogosInventariosConteos.attrs.tipoDocumento}" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();" width="1000px" height="480px" resizable="false" appendTo="@(body)">
+			<p:panelGrid columns="5" styleClass="janal-wid-100" columnClasses="janal-wid-col-80 janal-column-center, janal-wid-60 janal-column-center, janal-wid-10 janal-column-center, janal-wid-col-60 janal-column-center, janal-wid-10 janal-column-center">
+				<p:outputLabel value="Consecutivo"/>
+				<p:outputLabel value="Razón social"/>
+				<p:outputLabel value="Fecha"/>
+				<p:outputLabel value="Articulos"/>
+				<p:outputLabel value="Total"/>
+				<p:inputText value="#{manticCatalogosInventariosConteos.attrs.documento.consecutivo}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+				<p:inputText value="#{manticCatalogosInventariosConteos.attrs.documento.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>
+				<p:inputText value="#{manticCatalogosInventariosConteos.attrs.documento.fecha}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+				<p:inputText value="#{manticCatalogosInventariosConteos.attrs.documento.articulos}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
+				<p:inputText value="#{manticCatalogosInventariosConteos.attrs.documento.total}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
+			</p:panelGrid>
+			<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100">		
+				<p:dataTable id="informacion" var="item" value="#{manticCatalogosInventariosConteos.attrs.documentos}" paginator="false" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="documento" rowIndexVar="index">
+					<p:column headerText="No" styleClass="janal-wid-3">
+						<p:outputLabel value="#{index+ 1}.-"/>
+					</p:column>   
+					<p:column headerText="Código" styleClass="janal-wid-col-100">
+						<p:outputLabel value="#{item.propio}"/>
+					</p:column>   
+					<p:column headerText="Nombre">
+						<p:outputLabel value="#{item.nombre}"/>
+					</p:column>   
+					<p:column headerText="Inicial" styleClass="janal-wid-10 janal-column-right documento" rendered="#{manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6}">
+						<p:outputLabel value="#{item.inicial}"/>
+					</p:column>   
+					<p:column headerText="#{manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6? 'Entradas': 'Cantidad'}" styleClass="janal-wid-10 janal-column-right documento">
+						<p:outputLabel value="#{item.cantidad}"/>
+					</p:column>   
+					<p:column headerText="Origen" styleClass="janal-wid-15 documento" rendered="#{manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 4}">
+						<p:outputLabel value="#{item.origen}"/>
+					</p:column>   
+					<p:column headerText="Destino" styleClass="janal-wid-15 documento" rendered="#{manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 4}">
+						<p:outputLabel value="#{item.destino}"/>
+					</p:column>   
+					<p:column headerText="Precio" styleClass="janal-wid-13 janal-column-right" rendered="#{not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6) and not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 4)}">
+						<p:outputLabel value="#{item.precio}"/>
+					</p:column>   
+					<p:column headerText="Impuestos" styleClass="janal-wid-10 janal-column-right documento" rendered="#{not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6) and not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 4)}">
+						<p:outputLabel value="#{item.impuestos}"/>
+					</p:column>   
+					<p:column headerText="Importe" styleClass="janal-wid-13 janal-column-right documento" rendered="#{not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6) and not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 4)}">
+						<p:outputLabel value="#{item.importe}"/>
+					</p:column>   
+					<p:column headerText="Salidas" styleClass="janal-wid-10 janal-column-right documento" rendered="#{manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6}">
+						<p:outputLabel value="#{item.salidas}"/>
+					</p:column>   
+					<p:column headerText="Stock" styleClass="janal-wid-10 janal-column-right documento" rendered="#{manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6}">
+						<p:outputLabel value="#{item.stock}"/>
+					</p:column>   
+					<p:column headerText="Registro" styleClass="janal-wid-15 janal-column-right documento" rendered="#{manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 4 or manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6}">
+						<p:outputLabel value="#{item.registro}"/>
+					</p:column>   
+				</p:dataTable>
+			</p:panelGrid>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton process="@none" icon="fa fa-remove" value="Cerrar" oncomplete="PF('widgetDetalle').hide();"/>
+			</div>
+		</p:dialog>			
 		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();$('#codigos').focus();" onShow="$('#clave').val('');clean();" width="900px" height="470px" resizable="false" appendTo="@(body)">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
