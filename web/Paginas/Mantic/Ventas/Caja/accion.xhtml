@@ -885,10 +885,11 @@
 			</p:tab>
 		</p:tabView>				
 		<p:dialog id="dialogoCerrarVenta" widgetVar="dlgCerrarVenta" header="Finalizar venta" resizable="false" closable="false" responsive="true" width="40%" styleClass="key-caja-dialogo-finalizar" onShow="jsCaja.aceptarFinalizarFocus();" onHide="janal.desbloquear();" closeOnEscape="true">									
-			<h:panelGrid columns="1" columnClasses="janal-color-red janal-column-center" rendered="#{manticVentasCajaAccion.attrs.mostrarConfirmacionFactura}">
-				<p:selectBooleanCheckbox id="confirmarFactura" value="#{manticVentasCajaAccion.attrs.confirmarFactura}" itemLabel="NO SE HA SELECCIONADO OPCIÓN PARA FACTURAR (MARCAR PARA FACTURAR VENTA)" style="font-size: 16px; font-weight: bold">
+			<h:panelGrid columns="1" columnClasses="janal-color-red janal-column-center" rendered="#{manticVentasCajaAccion.attrs.mostrarConfirmacionFactura}" style="width: 100% !important">
+				<!--p:selectBooleanCheckbox id="confirmarFactura" value="#{manticVentasCajaAccion.attrs.confirmarFactura}" itemLabel="NO SE HA SELECCIONADO OPCIÓN PARA FACTURAR (MARCAR PARA FACTURAR VENTA)" style="font-size: 16px; font-weight: bold">
 					<p:ajax onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear();PF('widgetSwitchFacturar').check();"/>
-				</p:selectBooleanCheckbox>
+				</p:selectBooleanCheckbox-->
+				<p:outputLabel value="NO SE HA SELECCIONADO OPCIÓN FACTURAR Y/O CREDITO" style="font-weight: bold !important" styleClass="janal-color-red janal-column-center"/>
 			</h:panelGrid>
 			<p:spacer/>
 			<h:panelGrid columns="4" columnClasses="janal-wid-70, janal-wid-10 janal-column-center, janal-wid-10 janal-column-center, janal-wid-10 janal-column-center">
