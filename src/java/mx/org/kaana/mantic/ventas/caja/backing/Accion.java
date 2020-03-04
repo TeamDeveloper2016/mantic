@@ -1316,7 +1316,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				regresar.setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));		
 				ticketVenta.setIdClienteDomicilio(((Entity)this.attrs.get("domicilioFactura")).getKey());		
 			} // if	
-			else{
+			else if(!((Boolean) this.attrs.get("creditoVenta"))){
 				ticketVenta.setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));				
 				ticketVenta.setIdTipoMedioPago(regresar.getTotales().getIdTipoMedioPago());
 				if(!ETipoMediosPago.EFECTIVO.getIdTipoMedioPago().equals(regresar.getTotales().getIdTipoMedioPago())){
@@ -1866,7 +1866,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("confirmarFactura", false);			
 			clienteGeneral= (Entity) this.attrs.get("clienteGeneral");
 			cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");	
-			mostrarConfirmacionFactura= !((boolean)this.attrs.get("apartado")) && !clienteGeneral.getKey().equals(cliente.getKey()) && !((boolean)this.attrs.get("facturarVenta"));
+			mostrarConfirmacionFactura= !((boolean)this.attrs.get("apartado")) && !clienteGeneral.getKey().equals(cliente.getKey()) && !((boolean)this.attrs.get("facturarVenta")) && !((boolean)this.attrs.get("creditoVenta"));
 			this.attrs.put("mostrarConfirmacionFactura", mostrarConfirmacionFactura);			
 		} // try
 		catch (Exception e) {
