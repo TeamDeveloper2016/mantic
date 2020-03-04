@@ -280,6 +280,7 @@
 														<div class="ui-grid-col-12" style="padding-right: 14px;">
 															<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
 															<p:inputText id="locks" value="0" style="display:none"/>
+															<p:inputText id="multiplos" value="#{row['multiplo']}" style="display:none"/>
 															<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticComprasOrdendesAccion.attrs.articulo}" completeMethod="#{manticComprasOrdendesAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2"  maxResults="10">
 																<p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
 																<f:facet name="itemtip">
@@ -309,7 +310,7 @@
 													<f:facet name="header">
 														<h:outputText value="Articulo"/>
 													</f:facet>
-													<h:outputText id="nombres" value="[#{row['codigo']}] #{row['nombre']}" title="Código propio: #{row['propio']}  Existencias almacen: #{row['stock']}" escape="false" styleClass="#{empty(row['propio'])? 'janal-color-red janal-font-bold': ''}"/>
+													<h:outputText id="nombres" value="[#{row['codigo']}] #{row['nombre']}" title="Código propio: #{row['propio']}  Existencias almacen: #{row['stock']}  Multiplo: #{row['multiplo']}" escape="false" styleClass="#{empty(row['propio'])? 'janal-color-red janal-font-bold': row['multiplo'] gt 1? 'janal-color-blue janal-font-bold': ''}"/>
 												</p:column>		
 												<p:column class="cantidades janal-column-right MarAuto Responsive janal-wid-6">
 													<f:facet name="header">

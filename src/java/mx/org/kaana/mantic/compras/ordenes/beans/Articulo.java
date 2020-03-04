@@ -62,6 +62,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	private String morado;
 	private String porcentajes;
 	private boolean facturado;
+	private long multiplo;
 
 	public Articulo() {
 		this(-1L);
@@ -105,6 +106,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.morado      = "0";
 		this.porcentajes = "0";
 		this.facturado   = false;
+		this.multiplo    = 1;
 	}
 
 	public UISelectEntity getIdEntity() {
@@ -273,6 +275,14 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 
 	public void setFacturado(boolean facturado) {
 		this.facturado=facturado;
+	}
+
+	public long getMultiplo() {
+		return multiplo;
+	}
+
+	public void setMultiplo(long multiplo) {
+		this.multiplo=multiplo;
 	}
 	
 	public String getImporte$() {

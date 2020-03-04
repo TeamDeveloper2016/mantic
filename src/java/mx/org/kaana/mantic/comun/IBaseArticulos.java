@@ -101,8 +101,17 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				temporal.setIdArticulo(articulo.toLong("idArticulo"));
 				temporal.setIdProveedor(this.adminOrden.getIdProveedor());
 				temporal.setIdRedondear(articulo.toLong("idRedondear"));
-				Value codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "codigo", params, "codigo");
-				temporal.setCodigo(codigo== null? articulo.containsKey("codigo")? articulo.toString("codigo"): "": codigo.toString());
+				// verificar el codigo principal del articulo y recuperar el valor del multiplo paras las ordenes de compra
+				Entity codigo= (Entity)DaoFactory.getInstance().toEntity("TcManticArticulosCodigosDto", "codigo", params);
+				if(codigo== null || codigo.isEmpty()) {
+  				temporal.setCodigo(articulo.containsKey("codigo")? articulo.toString("codigo"): "");
+					temporal.setMultiplo(1L);
+				} // if
+				else {
+				  temporal.setCodigo(codigo.toString("codigo"));
+				  temporal.setMultiplo(codigo.toLong("multiplo"));
+					temporal.setCantidad(Double.valueOf(temporal.getMultiplo()));
+				}	// else
 				if(Cadena.isVacio(articulo.toString("propio")))
 					LOG.warn("El articulo ["+ articulo.toLong("idArticulo")+" ] no tiene codigo asignado '"+ articulo.toString("nombre")+ "'");
 				temporal.setPropio(articulo.toString("propio"));
