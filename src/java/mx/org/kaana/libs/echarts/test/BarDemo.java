@@ -29,11 +29,13 @@ public class BarDemo {
 			model.addLine(new Coordinate("Hola", 6, 150, Colors.COLOR_RED, ETypeLine.SOLID));
 			model.addLine(new CustomLine("Hola", 180D, Colors.COLOR_GREEN, ETypeLine.DASHED));
 			model.addLine(new CustomLine("Hola", 120D, Colors.COLOR_BLUE, ETypeLine.DOTTED));
+			((BarModel)model).addSpecificText("25%", "92%", "Viviendas habitadas");
+			((BarModel)model).addSpecificText("65%", "92%", "Viviendas visitadas");
 //			model.getxAxis().getAxisLabel().setFormatter("function(value) {return value.replace(/\\\\s/g, '\\\\n')}");
-			model.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
-			model.getxAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
-			model.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'percent');}");
-			model.getLegend().setFormatter("function (params) {return jsEcharts.legend(params);}");
+			//model.toCustomFormatLabel("function (params) {return jsEcharts.format(params, 'integer');}");
+			//model.getxAxis().getAxisLabel().setFormatter("function(value) {return jsEcharts.label(value);}");
+			//model.getTooltip().setFormatter("function (params) {return jsEcharts.tooltip(params, 'percent');}");
+			//model.getLegend().setFormatter("function (params) {return jsEcharts.legend(params);}");
 			
 			LOG.info(model.toJson());
 			

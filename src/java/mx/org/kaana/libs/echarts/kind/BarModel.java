@@ -10,6 +10,7 @@ import mx.org.kaana.libs.echarts.beans.Legend;
 import mx.org.kaana.libs.echarts.bar.Serie;
 import mx.org.kaana.libs.echarts.bar.Value;
 import mx.org.kaana.libs.echarts.beans.Colors;
+import mx.org.kaana.libs.echarts.beans.Graphic;
 import mx.org.kaana.libs.echarts.beans.IMarkLine;
 import mx.org.kaana.libs.echarts.beans.Title;
 import mx.org.kaana.libs.echarts.beans.ToolTip;
@@ -35,6 +36,7 @@ public class BarModel extends BaseBarModel implements Serializable {
 
 	private List<Serie> series;
 	private List<String> sequence;
+	private List<Graphic> graphic;
 
 	public BarModel() {
 		this(new Title("CGOR", "Subtitulo"), EBarOritentation.VERTICAL);
@@ -74,6 +76,7 @@ public class BarModel extends BaseBarModel implements Serializable {
 	
 	public BarModel(Title title, Legend legend, List<String> color, ToolTip tooltip, Grid grid, Axis xAxis, Axis yAxis, List<Serie> series, EBarOritentation orientation, List<String> sequence) {
 		super(title, legend, color, tooltip, grid, xAxis, yAxis, orientation);
+		this.graphic= new ArrayList<>();
 		this.series=series;
 		this.sequence=sequence;
 		this.loadColors();
@@ -197,6 +200,19 @@ public class BarModel extends BaseBarModel implements Serializable {
 		for (Serie item : this.series) {
 			item.setMarkPoint(null);
 		} // for
+	}
+
+  public void toCustomText(String total) {
+		this.graphic= new ArrayList<>();
+		this.graphic.add(new Graphic("center", total, "20px Microsoft YaHei"));
+	}
+	
+  public void addSpecificText(String left, String top, String text) {
+		this.addSpecificText(left, top, text, null);
+	}
+	
+  public void addSpecificText(String left, String top, String text, String font) {
+		this.graphic.add(new Graphic(left, top, text, font));
 	}
 	
 }

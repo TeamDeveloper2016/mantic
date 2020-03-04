@@ -26,22 +26,20 @@ public class Graphic implements Serializable {
 	}
 
 	public Graphic(String text) {
-		this("group", "center", "70%", text);
+		this("50%", "50%", text);
 	}
 	
-	public Graphic(String top, String text, String font) {
-		this("group", "center", top, text);
-		this.children.remove(0);
-		this.children.get(0).getStyle().setFont(font);
+	public Graphic(String left, String top, String text) {
+		this(left, top, text, null);
 	}
 	
-	public Graphic(String type, String left, String top, String text) {
-		this.type=type;
+	public Graphic(String left, String top, String text, String font) {
+		this.type="group";
 		this.left=left;
 		this.top=top;
 		this.children= new ArrayList<>();
-		this.children.add(new Children());
 		this.children.add(new Children(text));
+    this.children.get(0).getStyle().setFont(font);
 	}
 
 	public String getType() {
