@@ -741,7 +741,8 @@
 						$(this.amount()).val(entero* multiplo);
 					} // if	
 					else 
-						$(this.multiplo()).val(1);
+						if($(this.multiplo()).val()!== 1)
+						  $(this.multiplo()).val(1);
     			janal.console('jsArticulo.refresh: ');
 					this.set('');
 	 				refresh(this.cursor.index);
