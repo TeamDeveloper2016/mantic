@@ -736,10 +736,12 @@
 				else {
 					// calcular el multiplo 
 					var multiplo= parseFloat($(this.multiplo()).val(), 10);
-					if(multiplo!== 1) {
+					if(multiplo!== NaN && multiplo> 1) {
 					  var entero= Math.trunc(parseFloat(ok.value, 10)/ multiplo)+ (parseFloat(ok.value, 10)%multiplo> 0? 1: 0);
 						$(this.amount()).val(entero* multiplo);
 					} // if	
+					else 
+						$(this.multiplo()).val(1);
     			janal.console('jsArticulo.refresh: ');
 					this.set('');
 	 				refresh(this.cursor.index);
