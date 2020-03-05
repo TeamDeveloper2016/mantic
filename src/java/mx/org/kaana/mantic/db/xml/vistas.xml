@@ -688,7 +688,7 @@
           tc_mantic_articulos.precio,
           tc_mantic_articulos.sat,
           tc_mantic_unidades_medidas.nombre unidad_medida,
-          (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+          (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
           tc_mantic_articulos.stock
         from      
           tc_mantic_servicios_detalles		
@@ -1130,7 +1130,7 @@
           tc_mantic_ventas_detalles.*,
           tc_mantic_ventas_detalles.cantidad as cuantos,
           tc_mantic_ventas_detalles.cantidad as inicial,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 					tc_mantic_articulos.stock
 				from 
 					tc_mantic_ventas_detalles 
@@ -2653,7 +2653,7 @@
 					tc_mantic_almacenes.nombre as almacen,
 					tc_mantic_movimientos.consecutivo,
 					tc_mantic_movimientos.id_articulo,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 					tc_mantic_articulos.nombre,
 					tc_mantic_movimientos.cantidad,
 					tc_mantic_movimientos.stock,
@@ -2693,7 +2693,7 @@
 					tc_mantic_almacenes.nombre as almacen,
 					tc_mantic_movimientos.consecutivo,
 					tc_mantic_movimientos.id_articulo,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 					tc_mantic_articulos.nombre,
 					tc_mantic_movimientos.cantidad,
 					tc_mantic_movimientos.stock,
@@ -2871,7 +2871,7 @@
 					tc_mantic_notas_entradas.registro as fecha,
 					tc_mantic_notas_entradas.consecutivo,
 					tc_mantic_notas_entradas.total,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 					tc_mantic_notas_detalles.nombre,
 					tc_mantic_notas_detalles.cantidad,
 					tc_mantic_notas_detalles.impuestos,
@@ -2895,7 +2895,7 @@
 					tc_mantic_ventas.registro as fecha,
 					tc_mantic_ventas.ticket as consecutivo,
 					tc_mantic_ventas.total,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_ventas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_ventas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 					tc_mantic_ventas_detalles.nombre,
 					tc_mantic_ventas_detalles.cantidad,
 					tc_mantic_ventas_detalles.costo as precio,
@@ -2919,7 +2919,7 @@
 					tc_mantic_devoluciones.registro as fecha,
 					tc_mantic_devoluciones.consecutivo,
 					tc_mantic_devoluciones.total,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 					tc_mantic_notas_detalles.nombre,
 					tc_mantic_devoluciones_detalles.cantidad,
 					tc_mantic_notas_detalles.impuestos/ tc_mantic_devoluciones_detalles.cantidad as impuestos,
@@ -2947,7 +2947,7 @@
 					tc_mantic_transferencias.registro as fecha,
 					tc_mantic_transferencias.consecutivo,
 					0 as total,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_transferencias_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_transferencias_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 					tc_mantic_transferencias_detalles.nombre,
 					tc_mantic_transferencias_detalles.cantidad,
 					0 as impuestos,
@@ -2980,7 +2980,7 @@
 					tc_mantic_garantias.registro as fecha,
 					tc_mantic_garantias.consecutivo,
 					tc_mantic_garantias.total,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_ventas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_ventas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 					tc_mantic_ventas_detalles.nombre,
 					tc_mantic_garantias_detalles.cantidad,
 					tc_mantic_ventas_detalles.costo as precio,
@@ -3008,7 +3008,7 @@
 					tc_mantic_inventarios.registro as fecha,
 					concat(tc_mantic_inventarios.ejercicio, ' ', tc_mantic_almacenes.nombre) as consecutivo,
 					0 as total,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_inventarios.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_inventarios.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 					tc_mantic_articulos.nombre,
 					tc_mantic_inventarios.entradas as cantidad,
 					tc_mantic_articulos.precio,
@@ -3054,7 +3054,7 @@
 				  tc_mantic_articulos.nombre,
 				  tc_mantic_articulos.descripcion,
 				  tc_mantic_articulos.actualizado,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and {condicion}) as codigo,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and {condicion} limit 0, 1) as codigo,
 				  ifnull(tc_mantic_articulos.id_imagen, 0) as id_imagen,
 				  ifnull(tc_mantic_imagenes.alias, ' ') as alias,
 				  tc_mantic_inventarios.stock,
@@ -3099,7 +3099,7 @@
 				  tc_mantic_articulos.iva,
 				  tc_mantic_articulos.desperdicio,
 				  tc_mantic_articulos.actualizado,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and {condicion}) as propio,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and {condicion} limit 0, 1) as propio,
 				  if(tc_mantic_articulos.id_facturama is null, -1, tc_mantic_articulos.id_facturama) id_facturama,
 				  ifnull(tc_mantic_articulos.id_imagen, 0) as id_imagen,
 				  sum(ifnull(tc_mantic_almacenes_articulos.stock, 0)) as stock,
@@ -3137,7 +3137,7 @@
 			<select id="exportar">
 				select 				  
 					tc_mantic_articulos_codigos.codigo,
-  				(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor is null and tc_mantic_articulos_codigos.orden= 2 and tc_mantic_articulos_codigos.id_principal= 2) as "codigo auxiliar", 
+  				(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor is null and tc_mantic_articulos_codigos.orden= 2 and tc_mantic_articulos_codigos.id_principal= 2 limit 0, 1) as "codigo auxiliar", 
 				  tc_mantic_articulos.nombre,
 				  tc_mantic_articulos.precio as "costo s/iva",
 				  tc_mantic_articulos.menudeo as "menudeo neto",
@@ -3304,7 +3304,7 @@
         select 
 				  tc_mantic_articulos.id_articulo as id_key,
 				  tc_mantic_articulos.id_articulo,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 				  tc_mantic_articulos.nombre,
 				  1 as cantidad,
 				  tc_mantic_notas_detalles.cantidad as tope
@@ -3324,7 +3324,7 @@
         select 
 				  tc_mantic_articulos.id_articulo as id_key,
 				  tc_mantic_articulos.id_articulo,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 				  tc_mantic_articulos.nombre,
 				  ifnull(tc_mantic_imagenes.id_imagen, 0) as id_imagen,
 				  ifnull(tc_mantic_imagenes.nombre, ' ') as imagen,
@@ -3343,7 +3343,7 @@
 				select 
 					tc_mantic_articulos.id_articulo as id,
 					tc_mantic_articulos.id_facturama,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as identificador,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as identificador,
 					tc_mantic_unidades_medidas.nombre unidad,
 					tc_mantic_unidades_medidas.clave codigo,
 					tc_mantic_articulos.nombre,
@@ -3378,7 +3378,7 @@
 				select 
 					tc_mantic_articulos.id_articulo as id,
 					tc_mantic_articulos.id_facturama,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as identificador,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as identificador,
 					tc_mantic_unidades_medidas.nombre unidad,
 					tc_mantic_unidades_medidas.clave codigo,
 					tc_mantic_ventas_detalles.nombre,
@@ -3422,7 +3422,7 @@
 				select 
 					tc_mantic_articulos.id_articulo as id,
 					tc_mantic_articulos.id_facturama,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as identificador,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as identificador,
 					tc_mantic_unidades_medidas.nombre unidad,
 					tc_mantic_unidades_medidas.clave codigo,
 					tc_mantic_ventas_detalles.nombre,
@@ -4416,7 +4416,7 @@
 					tc_mantic_articulos_bitacora.id_articulo_bitacora as id_key,
 					tc_mantic_notas_entradas.consecutivo,
 					tc_mantic_articulos_bitacora.id_articulo,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 					tc_mantic_notas_detalles.codigo,
 					tc_mantic_notas_detalles.nombre,
 					tc_mantic_articulos_bitacora.cantidad,
@@ -4439,7 +4439,7 @@
 				select 
 					tc_mantic_articulos_bitacora.id_articulo_bitacora as id_key,
 					tc_mantic_articulos_bitacora.id_articulo,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 					tc_mantic_notas_detalles.codigo,
 					tc_mantic_notas_detalles.nombre,
 					tc_mantic_articulos.cantidad,
@@ -4506,7 +4506,7 @@
 					tc_mantic_notas_detalles.extras, 
 					tc_mantic_notas_detalles.importe, 
 					tc_mantic_notas_entradas.total, 
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 					tc_mantic_notas_detalles.iva, 
 					tc_mantic_notas_detalles.impuestos, 
 					tc_mantic_notas_detalles.sub_total, 
@@ -4562,7 +4562,7 @@
 					tc_mantic_notas_detalles.id_nota_detalle as id_key,
 					tc_mantic_devoluciones.id_devolucion,
 					tc_mantic_devoluciones.consecutivo,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 					tc_mantic_notas_detalles.sat,
 					tc_mantic_notas_detalles.codigo,
 					tc_mantic_notas_detalles.nombre,
@@ -4591,7 +4591,7 @@
 					tc_mantic_notas_detalles.id_nota_detalle as id_key,
 				  tc_mantic_notas_entradas.id_nota_entrada,
 				  tc_mantic_notas_entradas.consecutivo,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 					tc_mantic_notas_detalles.codigo,
 					tc_mantic_notas_detalles.nombre,
 					tc_mantic_notas_detalles.cantidad,
@@ -4897,7 +4897,7 @@
           1 as sin_iva, 
 					1 as tipo_de_cambio, 
 					tc_mantic_articulos.nombre, 
-          ifnull(tc_mantic_ordenes_detalles.codigo, (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_ordenes_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 2 and tc_mantic_articulos_codigos.id_proveedor= {idProveedor})) as codigo,
+          ifnull(tc_mantic_ordenes_detalles.codigo, (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_ordenes_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 2 and tc_mantic_articulos_codigos.id_proveedor= {idProveedor}) limit 0, 1) as codigo,
 				  tc_mantic_articulos.sat,
 					0 as costo, 
 					(tc_mantic_ordenes_detalles.costo- (tc_mantic_ordenes_detalles.descuentos/ tc_mantic_ordenes_detalles.cantidad)) as valor, 
@@ -5014,7 +5014,7 @@
 				  tc_mantic_notas_detalles.id_nota_detalle as id_comodin,
           tc_mantic_notas_detalles.id_nota_entrada,
           tc_mantic_notas_detalles.id_articulo,
-          ifnull(tc_mantic_notas_detalles.codigo, (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 2 and tc_mantic_articulos_codigos.id_proveedor= {idProveedor})) as codigo,
+          ifnull(tc_mantic_notas_detalles.codigo, (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 2 and tc_mantic_articulos_codigos.id_proveedor= {idProveedor}) limit 0, 1) as codigo,
           tc_mantic_notas_detalles.sat,
           tc_mantic_notas_detalles.nombre,
           tc_mantic_notas_detalles.cantidad,
@@ -5058,7 +5058,7 @@
           tc_mantic_notas_detalles.cantidad as cuantos,
           tc_mantic_notas_detalles.cantidad as inicial,
 				  if(tc_mantic_ordenes_detalles.costo is null, tc_mantic_articulos.precio, tc_mantic_ordenes_detalles.costo) as valor,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio
         from      
           tc_mantic_notas_detalles
 				inner join 
@@ -5077,7 +5077,7 @@
 				  tc_mantic_articulos.id_articulo as id_key,
 				  tc_mantic_articulos_codigos.id_proveedor,
 				  tc_mantic_articulos.id_articulo,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 				  tc_mantic_articulos_codigos.codigo,
 				  tc_mantic_articulos.nombre,
 				  tc_mantic_articulos.descripcion,
@@ -5239,7 +5239,7 @@
 					-1 as id_orden_compra,
 					'0.00' as extras,
 					tc_mantic_articulos.precio as importe,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor}) as codigo,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} limit 0, 1) as codigo,
 					tc_mantic_articulos.iva,
 					0.0 as total_impuesto,
 					0.0 as sub_total,
@@ -5270,7 +5270,7 @@
 			<select id="proveedor">
 				select
 					tc_mantic_articulos.id_articulo as id_key,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 					tc_mantic_articulos.nombre,
 					tc_mantic_articulos.precio as costo,
 					'0.00' as descuento,
@@ -5313,7 +5313,7 @@
 					tc_mantic_articulos.id_articulo,
 					tc_mantic_articulos_codigos.codigo as propio,
 					tc_mantic_articulos.nombre,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor}) as codigo,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} limit 0, 1) as codigo,
 					tc_mantic_articulos.iva,
 					tc_mantic_articulos.precio as costo,
 					tc_mantic_articulos.precio,
@@ -5434,7 +5434,7 @@
 				  tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
 				  tc_mantic_articulos.id_articulo,
 				  tc_mantic_articulos_codigos.codigo as propio,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor}) as codigo,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} limit 0, 1) as codigo,
 				  tc_mantic_articulos_codigos.id_principal,
 				  tc_mantic_articulos_codigos.id_proveedor,
 				  tc_mantic_articulos.nombre,
@@ -5469,8 +5469,8 @@
 				select 
 				  tc_mantic_articulos.id_articulo as id_key,
 				  tc_mantic_articulos.id_articulo,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' or tc_mantic_articulos.id_articulo= {idArticulo})) as propio,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' or tc_mantic_articulos.id_articulo= {idArticulo})) as codigo,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' or tc_mantic_articulos.id_articulo= {idArticulo}) limit 0, 1) as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' or tc_mantic_articulos.id_articulo= {idArticulo}) limit 0, 1) as codigo,
 				  tc_mantic_articulos.nombre,
 				  '   ' as origen,
 				  tc_mantic_articulos.descripcion,
@@ -5519,7 +5519,7 @@
 				  tc_mantic_articulos.id_articulo as id_key,
 				  tc_mantic_articulos.id_articulo,
 				  ifnull(tc_mantic_articulos.id_imagen, 0) as id_imagen,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*') as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' limit 0, 1) as propio,
 				  tc_mantic_articulos.nombre,
 				  tc_mantic_articulos.descripcion,
 				  tc_mantic_articulos.precio,
@@ -5554,8 +5554,8 @@
 				select 
 				  tc_mantic_articulos.id_articulo as id_key,
 				  tc_mantic_articulos.id_articulo,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' or tc_mantic_articulos.id_articulo= {idArticulo})) as propio,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' or tc_mantic_articulos.id_articulo= {idArticulo})) as codigo,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' or tc_mantic_articulos.id_articulo= {idArticulo}) limit 0, 1) as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' or tc_mantic_articulos.id_articulo= {idArticulo}) limit 0, 1) as codigo,
 				  tc_mantic_articulos.nombre,
 				  '   ' as origen,
 				  tc_mantic_articulos.descripcion,
@@ -5598,8 +5598,8 @@
 				select 
 				  tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
 				  tc_mantic_articulos.id_articulo,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and (tc_mantic_articulos_codigos.id_proveedor= {idProveedor} and tc_mantic_articulos_codigos.id_principal> 1) and ((upper(tc_mantic_articulos_codigos.codigo) like '{codigo}%' and (tc_mantic_articulos_codigos.id_proveedor = {idProveedor} and tc_mantic_articulos_codigos.id_principal> 1)) or tc_mantic_articulos.id_articulo= {idArticulo})) as codigo,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and (tc_mantic_articulos_codigos.id_proveedor= {idProveedor} and tc_mantic_articulos_codigos.id_principal> 1) and ((upper(tc_mantic_articulos_codigos.codigo) like '{codigo}%' and (tc_mantic_articulos_codigos.id_proveedor = {idProveedor} and tc_mantic_articulos_codigos.id_principal> 1)) or tc_mantic_articulos.id_articulo= {idArticulo}) limit 0, 1) as codigo,
 				  tc_mantic_articulos.nombre,
 				  ' ' as origen,
 				  tc_mantic_articulos.descripcion,
@@ -5650,8 +5650,8 @@
 				select 
 				  tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
 				  tc_mantic_articulos.id_articulo,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and (tc_mantic_articulos_codigos.id_proveedor= {idProveedor} and tc_mantic_articulos_codigos.id_principal> 1) and ((upper(tc_mantic_articulos_codigos.codigo) like '{codigo}%' and (tc_mantic_articulos_codigos.id_proveedor = {idProveedor} and tc_mantic_articulos_codigos.id_principal> 1)) or tc_mantic_articulos.id_articulo= {idArticulo})) as codigo,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and (tc_mantic_articulos_codigos.id_proveedor= {idProveedor} and tc_mantic_articulos_codigos.id_principal> 1) and ((upper(tc_mantic_articulos_codigos.codigo) like '{codigo}%' and (tc_mantic_articulos_codigos.id_proveedor = {idProveedor} and tc_mantic_articulos_codigos.id_principal> 1)) or tc_mantic_articulos.id_articulo= {idArticulo}) limit 0, 1) as codigo,
 				  tc_mantic_articulos.nombre,
 				  ' ' as origen,
 				  tc_mantic_articulos.descripcion,
@@ -5702,8 +5702,8 @@
 				select 
 				  tc_mantic_articulos.id_articulo as id_key,
 				  tc_mantic_articulos.id_articulo,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and (upper(tc_mantic_articulos.nombre) like upper('{codigo}%') or tc_mantic_articulos.id_articulo= {idArticulo})) as propio,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} and (upper(tc_mantic_articulos.nombre) like upper('{codigo}%') or tc_mantic_articulos.id_articulo= {idArticulo})) as codigo,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and (upper(tc_mantic_articulos.nombre) like upper('{codigo}%') or tc_mantic_articulos.id_articulo= {idArticulo}) limit 0, 1) as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} and (upper(tc_mantic_articulos.nombre) like upper('{codigo}%') or tc_mantic_articulos.id_articulo= {idArticulo}) limit 0, 1) as codigo,
 				  tc_mantic_articulos.nombre,
 				  ' ' as origen,
 				  tc_mantic_articulos.descripcion,
@@ -5829,7 +5829,7 @@
 				select
 					tc_mantic_notas_detalles.id_nota_detalle as id_key,
 					tc_mantic_notas_entradas.consecutivo,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 					tc_mantic_notas_detalles.sat,
 					tc_mantic_notas_detalles.codigo,
 					tc_mantic_notas_detalles.nombre,
@@ -6035,7 +6035,7 @@
 				  tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
 				  tc_mantic_articulos.id_articulo,
 				  tc_mantic_articulos_codigos.codigo as propio,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and ((upper(tc_mantic_articulos_codigos.codigo) like '%{codigo}%' and tc_mantic_articulos_codigos.id_principal= 1) or upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' or upper(tc_mantic_articulos_codigos.codigo) like '%{codigo}%')) as codigo,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and ((upper(tc_mantic_articulos_codigos.codigo) like '%{codigo}%' and tc_mantic_articulos_codigos.id_principal= 1) or upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' or upper(tc_mantic_articulos_codigos.codigo) like '%{codigo}%') limit 0, 1) as codigo,
 				  tc_mantic_articulos_codigos.id_principal,
 				  tc_mantic_articulos_codigos.id_proveedor,
 				  tc_mantic_articulos.nombre,
@@ -6066,7 +6066,7 @@
 				from (
 					select 				  
 						tc_mantic_articulos.id_articulo as id_key,				  
-						(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as codigo,				  
+						(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as codigo,				  
 						tc_mantic_articulos.nombre				  
 					from 
 						tc_mantic_articulos
@@ -6458,7 +6458,7 @@
 				select 
 				  tc_mantic_articulos.id_articulo as id_key,
 				  tc_mantic_articulos.id_articulo,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' or tc_mantic_articulos.id_articulo= {idArticulo})) as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' or tc_mantic_articulos.id_articulo= {idArticulo}) limit 0, 1) as propio,
 				  tc_mantic_articulos.nombre,
 				  tc_mantic_articulos.descripcion,
 				  tc_mantic_articulos.precio,
@@ -6489,7 +6489,7 @@
 				select
 				  tc_mantic_articulos.id_articulo as id_key,
 				  tc_mantic_articulos.id_articulo,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' or tc_mantic_articulos.id_articulo= {idArticulo})) as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' or tc_mantic_articulos.id_articulo= {idArticulo}) limit 0, 1) as propio,
 				  tc_mantic_articulos.nombre,
 				  tc_mantic_articulos.descripcion,
 				  tc_mantic_articulos.precio,
@@ -6521,7 +6521,7 @@
 				select 
 				  tc_mantic_articulos.id_articulo as id_key,
 				  tc_mantic_articulos.id_articulo,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and (upper(tc_mantic_articulos.nombre) like '{codigo}%' or tc_mantic_articulos.id_articulo= {idArticulo})) as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and (upper(tc_mantic_articulos.nombre) like '{codigo}%' or tc_mantic_articulos.id_articulo= {idArticulo}) limit 0, 1) as propio,
 				  tc_mantic_articulos.nombre,
 				  tc_mantic_articulos.descripcion,
 				  tc_mantic_articulos.precio,
@@ -6553,7 +6553,7 @@
 				select 
 				  tc_mantic_articulos.id_articulo as id_key,
 				  tc_mantic_articulos.id_articulo,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 				  tc_mantic_articulos.nombre,
 				  tc_mantic_articulos.descripcion,
 				  tc_mantic_articulos.precio,
@@ -6588,7 +6588,7 @@
 				select
 				  tc_mantic_articulos.id_articulo as id_key,
 				  tc_mantic_articulos.id_articulo,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 				  tc_mantic_articulos.nombre,
 				  tc_mantic_articulos.descripcion,
 				  tc_mantic_articulos.precio,
@@ -7048,8 +7048,8 @@
 				select 
 				  tc_mantic_articulos.id_articulo as id_key,
 				  tc_mantic_articulos.id_articulo,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' or tc_mantic_articulos.id_articulo= {idArticulo})) as propio,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' or tc_mantic_articulos.id_articulo= {idArticulo})) as codigo,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' or tc_mantic_articulos.id_articulo= {idArticulo}) limit 0, 1) as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' or tc_mantic_articulos.id_articulo= {idArticulo}) limit 0, 1) as codigo,
 				  tc_mantic_articulos.nombre,
 				  '   ' as origen,
 				  tc_mantic_articulos.descripcion,
@@ -7094,8 +7094,8 @@
 				select 
 				  tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
 				  tc_mantic_articulos.id_articulo,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} and ((upper(tc_mantic_articulos_codigos.codigo) like '{codigo}%' and tc_mantic_articulos_codigos.id_proveedor = {idProveedor}) or tc_mantic_articulos.id_articulo= {idArticulo})) as codigo,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} and ((upper(tc_mantic_articulos_codigos.codigo) like '{codigo}%' and tc_mantic_articulos_codigos.id_proveedor = {idProveedor}) or tc_mantic_articulos.id_articulo= {idArticulo}) limit 0, 1) as codigo,
 				  tc_mantic_articulos.nombre,
 				  ' ' as origen,
 				  tc_mantic_articulos.descripcion,
@@ -7221,7 +7221,7 @@
 				select 
 				  tc_mantic_articulos.id_articulo as id_key,
 				  tc_mantic_articulos.id_articulo,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
           tc_mantic_articulos.nombre,
 				  tc_mantic_articulos.precio,
 				  tc_mantic_articulos.menudeo,
@@ -7296,7 +7296,7 @@
 					tc_mantic_articulos.id_articulo,
 					tc_mantic_articulos_codigos.codigo as propio,
 					tc_mantic_articulos.nombre,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor}) as codigo,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} limit 0, 1) as codigo,
 					tc_mantic_articulos.iva,
 					tc_mantic_articulos.precio as costo,
 					tc_mantic_articulos.precio,
@@ -7552,7 +7552,7 @@
           tc_mantic_ventas_detalles.*,
           tc_mantic_ventas_detalles.cantidad as cuantos,
           tc_mantic_ventas_detalles.cantidad as inicial,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 					tc_mantic_articulos.menudeo,
 					if(tc_mantic_ventas_detalles.descuentos is not null and tc_mantic_ventas_detalles.descuentos &gt; 0, true, false) descuento_activo
 				from 
@@ -7655,7 +7655,7 @@
           0 as cantidad,
           (tc_mantic_ventas_detalles.cantidad - if(garantia_cantidad.cantidad is null, 0, garantia_cantidad.cantidad)) as cantidad_garantia,
 					tr_mantic_articulo_proveedor.id_proveedor,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio
 				from 
 					tc_mantic_ventas_detalles 
 				inner join
@@ -7704,7 +7704,7 @@
           (tc_mantic_ventas_detalles.cantidad - if(garantia_cantidad.cantidad is null, 0, garantia_cantidad.cantidad)) as cantidad,
           (tc_mantic_ventas_detalles.cantidad - if(garantia_cantidad.cantidad is null, 0, garantia_cantidad.cantidad)) as cantidad_garantia,
 					tr_mantic_articulo_proveedor.id_proveedor,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio
 				from 
 					tc_mantic_ventas_detalles 
 				inner join
@@ -7740,7 +7740,7 @@
 					tc_mantic_ventas_detalles.precio,
 					tc_mantic_ventas_detalles.costo,
           (tc_mantic_ventas_detalles.cantidad - if(tc_mantic_garantias_detalles.cantidad is null, 0, tc_mantic_garantias_detalles.cantidad)) as cantidad_garantia,					
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 				  if(tc_mantic_garantias_detalles.id_reparacion is not null and tc_mantic_garantias_detalles.id_reparacion= 1, true, false) as aplicar 
 				from 
 					tc_mantic_garantias_detalles
@@ -7879,7 +7879,7 @@
 				  tc_mantic_ventas_detalles.importe as total,
           tc_mantic_ventas_detalles.cantidad as cuantos,
           tc_mantic_ventas_detalles.cantidad as inicial,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 				  true as costo_libre
 				from 
 					tc_mantic_ventas_detalles 
@@ -8013,7 +8013,7 @@
           tc_mantic_ventas_detalles.*,
           tc_mantic_ventas_detalles.cantidad as cuantos,
           tc_mantic_ventas_detalles.cantidad as inicial,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 				  true as costo_libre
 				from 
 					tc_mantic_ventas_detalles 
@@ -8511,7 +8511,7 @@
         select      
 				  tc_mantic_faltantes.id_faltante as id_key,
           tc_mantic_faltantes.*,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as codigo,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as codigo,
 				  tc_mantic_articulos.nombre
         from      
           tc_mantic_faltantes
@@ -9595,8 +9595,8 @@
 				select 
 				  tc_mantic_articulos.id_articulo as id_key,
 				  tc_mantic_articulos.id_articulo,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' or tc_mantic_articulos.id_articulo= {idArticulo})) as propio,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' or tc_mantic_articulos.id_articulo= {idArticulo})) as codigo,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' or tc_mantic_articulos.id_articulo= {idArticulo}) limit 0, 1) as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' or tc_mantic_articulos.id_articulo= {idArticulo}) limit 0, 1) as codigo,
 				  tc_mantic_articulos.nombre,
 				  '   ' as origen,
 				  tc_mantic_articulos.descripcion,
@@ -9645,8 +9645,8 @@
 				select 
 				  tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
 				  tc_mantic_articulos.id_articulo,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and (tc_mantic_articulos_codigos.id_proveedor= {idProveedor} and tc_mantic_articulos_codigos.id_principal> 1) and ((upper(tc_mantic_articulos_codigos.codigo) like '{codigo}%' and (tc_mantic_articulos_codigos.id_proveedor = {idProveedor} and tc_mantic_articulos_codigos.id_principal> 1)) or tc_mantic_articulos.id_articulo= {idArticulo})) as codigo,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and (tc_mantic_articulos_codigos.id_proveedor= {idProveedor} and tc_mantic_articulos_codigos.id_principal> 1) and ((upper(tc_mantic_articulos_codigos.codigo) like '{codigo}%' and (tc_mantic_articulos_codigos.id_proveedor = {idProveedor} and tc_mantic_articulos_codigos.id_principal> 1)) or tc_mantic_articulos.id_articulo= {idArticulo}) limit 0, 1) as codigo,
 				  tc_mantic_articulos.nombre,
 				  ' ' as origen,
 				  tc_mantic_articulos.descripcion,
@@ -9698,8 +9698,8 @@
 				select 
 				  tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
 				  tc_mantic_articulos.id_articulo,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and (tc_mantic_articulos_codigos.id_proveedor= {idProveedor} and tc_mantic_articulos_codigos.id_principal> 1) and ((upper(tc_mantic_articulos_codigos.codigo) like '{codigo}%' and (tc_mantic_articulos_codigos.id_proveedor = {idProveedor} and tc_mantic_articulos_codigos.id_principal> 1)) or tc_mantic_articulos.id_articulo= {idArticulo})) as codigo,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and (tc_mantic_articulos_codigos.id_proveedor= {idProveedor} and tc_mantic_articulos_codigos.id_principal> 1) and ((upper(tc_mantic_articulos_codigos.codigo) like '{codigo}%' and (tc_mantic_articulos_codigos.id_proveedor = {idProveedor} and tc_mantic_articulos_codigos.id_principal> 1)) or tc_mantic_articulos.id_articulo= {idArticulo}) limit 0, 1) as codigo,
 				  tc_mantic_articulos.nombre,
 				  ' ' as origen,
 				  tc_mantic_articulos.descripcion,
