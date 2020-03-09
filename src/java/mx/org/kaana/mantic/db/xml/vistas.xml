@@ -5969,7 +5969,8 @@
 					tc_mantic_ordenes_detalles.registro,
 					tc_mantic_ordenes_detalles.cantidad as cuantos,
           tc_mantic_ordenes_detalles.cantidad as inicial,
-				  tc_mantic_articulos.precio as valor
+				  tc_mantic_articulos.precio as valor,
+				  tc_mantic_articulos_codigos.multiplo 
         from      
           tc_mantic_ordenes_detalles
         inner join
