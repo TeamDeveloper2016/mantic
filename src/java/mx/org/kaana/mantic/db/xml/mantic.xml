@@ -3605,6 +3605,14 @@
         where      
           id_empresa in ({sucursales}) and clave= '{clave}'
       </select>
+      <select id="empresa">
+        select      
+          *
+        from      
+          tc_mantic_almacenes
+        where 
+          id_almacen= {idAlmacen} 
+      </select>
     </unit>
 	  <unit id="TcManticAlmacenesArticulosDto">
       <select id="row">

@@ -1,18 +1,24 @@
 package mx.org.kaana.mantic.catalogos.inventarios.reglas;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
 import mx.org.kaana.mantic.db.dto.TcManticMovimientosDto;
 import org.apache.commons.logging.Log;
@@ -84,8 +90,18 @@ public class Transaccion extends IBaseTnx {
 					DaoFactory.getInstance().insert(sesion, this.almacen);
 				} // if		
 			} // else	
+			Long idEmpresa= JsfBase.getAutentifica().getEmpresa().getIdEmpresa();
+			params.put("idAlmacen", this.almacen.getIdAlmacen());
+			Value empresa= DaoFactory.getInstance().toField(sesion, "TcManticAlmacenesDto", "empresa", params, "idEmpresa");
+			if(empresa.getData()!= null)
+				idEmpresa= empresa.toLong();
+			// QUITAR DE LAS VENTAS PERDIDAS LOS ARTICULOS QUE FUERON YA SURTIDOS EN EL ALMACEN
+			params.put("idArticulo", this.articulo.getIdArticulo());
+			params.put("idEmpresa", idEmpresa);
+			params.put("observaciones", "ESTE ARTICULO FUE CONTADO EL DIA "+ Fecha.getHoyExtendido());
+			DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, params);
 			// afectar el stock global del articulo basado en las diferencias que existian en el almacen origen
-			TcManticArticulosDto global= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.articulo.getIdArticulo());
+			TcManticArticulosDto global= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, this.articulo.getIdArticulo());
 			if(global!= null) {
 				global.setStock(this.toSumAlmacenArticulo(sesion, this.almacen.getIdArticulo()));
   			DaoFactory.getInstance().update(sesion, global);

@@ -175,11 +175,6 @@ public class Transaccion extends ComunInventarios {
 				} // if	
 				else
 					this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
-				// QUITAR DE LAS VENTAS PERDIDAS LOS ARTICULOS QUE FUERON YA SURTIDOS EN EL ALMACEN
-				params.put("idArticulo", articulo.getIdArticulo());
-				params.put("idEmpresa", this.transferencia.getIdEmpresa());
-				params.put("observaciones", "ESTE ARTICULO FUE SURTIDO CON NO. CONFRONTA "+ this.dto.getConsecutivo()+ " EL DIA "+ Fecha.getHoyExtendido());
-				DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, params);
 			} // for
 		} // try
 		finally {
@@ -211,6 +206,25 @@ public class Transaccion extends ComunInventarios {
 			this.bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), null, this.transferencia.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
 			DaoFactory.getInstance().insert(sesion, this.bitacora);
 		} // if
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			if(this.transferencia.getIdTransferenciaEstatus()== 6L || 
+				 this.transferencia.getIdTransferenciaEstatus()== 7L || 
+				 this.transferencia.getIdTransferenciaEstatus()== 8L || 
+				 this.transferencia.getIdTransferenciaEstatus()== 9L) {
+				for (Articulo articulo: this.articulos) {
+					// QUITAR DE LAS VENTAS PERDIDAS LOS ARTICULOS QUE FUERON YA SURTIDOS EN EL ALMACEN
+					params.put("idArticulo", articulo.getIdArticulo());
+					params.put("idEmpresa", this.transferencia.getIdEmpresa());
+					params.put("observaciones", "ESTE ARTICULO FUE SURTIDO CON NO. CONFRONTA "+ this.dto.getConsecutivo()+ " EL DIA "+ Fecha.getHoyExtendido());
+					DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, params);
+				} // if
+			} // if
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
 	}
 
 	private void toCheckArticulos(Session sesion) throws Exception {
