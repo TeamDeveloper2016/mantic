@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
@@ -13,6 +14,7 @@ import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
 import mx.org.kaana.mantic.db.dto.TcManticMovimientosDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasBitacoraDto;
@@ -155,6 +157,17 @@ public abstract class ComunInventarios extends IBaseTnx {
 
 			origen.setStock(Numero.toRedondearSat(origen.getStock()+ diferencia));
 			DaoFactory.getInstance().update(sesion, origen);
+			
+			Long idEmpresa= JsfBase.getAutentifica().getEmpresa().getIdEmpresa();
+			params.put("idAlmacen", idDestino);
+			Value empresa= DaoFactory.getInstance().toField(sesion, "TcManticAlmacenesDto", "empresa", params, "idEmpresa");
+			if(empresa.getData()!= null)
+				idEmpresa= empresa.toLong();
+			// QUITAR DE LAS VENTAS PERDIDAS LOS ARTICULOS QUE FUERON YA SURTIDOS EN EL ALMACEN
+			params.put("idArticulo", articulo.getIdArticulo());
+			params.put("idEmpresa", idEmpresa);
+			params.put("observaciones", "ESTE ARTICULO FUE SURTIDO CON NO. TRANSFERENCIA "+ consecutivo+ " EL DIA "+ Fecha.getHoyExtendido());
+			DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, params);
 		} // try
 		finally {
 			Methods.clean(params);
