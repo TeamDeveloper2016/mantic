@@ -1210,8 +1210,10 @@
           concat(tc_mantic_personas.nombres, ' ' , tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona
         from 
           tc_mantic_respaldos 
-        inner join 
-          tc_mantic_personas on tc_mantic_respaldos.id_usuario = tc_mantic_personas.id_persona 
+				inner join
+					tc_janal_usuarios on tc_janal_usuarios.id_usuario = tc_mantic_respaldos.id_usuario
+				inner join
+					tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona        
         where 
           {condicion}
         {sortOrder}

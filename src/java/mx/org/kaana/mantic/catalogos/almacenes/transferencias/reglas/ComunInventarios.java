@@ -74,14 +74,12 @@ public abstract class ComunInventarios extends IBaseTnx {
 			  inventario= this.toCreateInvetario(sesion, articulo, idAlmacen, false);
 			else {
    			// si el estatus es el de cancelar entonces hacer los movimientos inversos al traspaso
-  			if(idTransferenciaEstatus.intValue()== 4) {
+  			if(idTransferenciaEstatus.intValue()== 4) 
 	  			inventario.setSalidas(Numero.toRedondearSat(inventario.getSalidas()- articulo.getCantidad()));
-		  		inventario.setStock(inventario.getIdAutomatico().equals(1L)? 0D: Numero.toRedondearSat(inventario.getStock()+ articulo.getCantidad()));
-				} // if
-				else {
+				else 
 	  			inventario.setSalidas(Numero.toRedondearSat(inventario.getSalidas()+ articulo.getCantidad()));
-		  		inventario.setStock(inventario.getIdAutomatico().equals(1L)? 0D: Numero.toRedondearSat(inventario.getStock()- articulo.getCantidad()));
-				} // if
+				// ajustar el stock del inventrio del almacn origen con el nuevo valor
+	  		inventario.setStock(Numero.toRedondearSat((inventario.getInicial()+ inventario.getEntradas())- inventario.getSalidas()));
   			DaoFactory.getInstance().update(sesion, inventario);
 			} // if
 			TcManticAlmacenesArticulosDto origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(TcManticAlmacenesArticulosDto.class, params);
@@ -111,9 +109,9 @@ public abstract class ComunInventarios extends IBaseTnx {
 			
 			// si el estatus es el de cancelar entonces hacer los movimientos inversos al traspaso
 			if(idTransferenciaEstatus.intValue()== 4)
-			  origen.setStock(inventario.getIdAutomatico().equals(1L)? 0D: Numero.toRedondearSat(origen.getStock()+ articulo.getCantidad()));
+			  origen.setStock(Numero.toRedondearSat(origen.getStock()+ articulo.getCantidad()));
 			else
-			  origen.setStock(inventario.getIdAutomatico().equals(1L)? 0D: Numero.toRedondearSat(origen.getStock()- articulo.getCantidad()));
+			  origen.setStock(Numero.toRedondearSat(origen.getStock()- articulo.getCantidad()));
 			DaoFactory.getInstance().update(sesion, origen);
 		} // try
 		finally {
@@ -132,8 +130,8 @@ public abstract class ComunInventarios extends IBaseTnx {
 			if(inventario== null)
 			  this.toCreateInvetario(sesion, articulo, idDestino, true);
 			else {
-				inventario.setSalidas(Numero.toRedondearSat(inventario.getSalidas()+ diferencia));
-				inventario.setStock(Numero.toRedondearSat(inventario.getStock()- diferencia));
+				inventario.setEntradas(Numero.toRedondearSat(inventario.getEntradas()+ diferencia));
+				inventario.setStock(Numero.toRedondearSat((inventario.getInicial()+ inventario.getEntradas())- inventario.getSalidas()));
   			DaoFactory.getInstance().update(sesion, inventario);
 			} // if
 			TcManticAlmacenesArticulosDto origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(TcManticAlmacenesArticulosDto.class, params);
@@ -193,10 +191,10 @@ public abstract class ComunInventarios extends IBaseTnx {
     TcManticInventariosDto regresar= new TcManticInventariosDto(
 			JsfBase.getIdUsuario(), // Long idUsuario, 
 			idAlmacen, // Long idAlmacen, 
-			0D, // Double entradas, 
+			inicial? articulo.getCantidad(): 0D, // Double entradas, 
 			-1L, // Long idInventario, 
 			articulo.getIdArticulo(), // Long idArticulo, 
-			inicial? articulo.getCantidad(): articulo.getCantidad()* -1D, // Double inicial, 
+			inicial? 0L: articulo.getCantidad()* -1D, // Double inicial, 
 			inicial? articulo.getCantidad(): 0D, // articulo.getCantidad()* -1D, // Double stock, 
 			articulo.getCantidad(), // Double salidas, 
 			new Long(Fecha.getAnioActual()), // Long ejercicio, 

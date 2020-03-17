@@ -1,18 +1,14 @@
 package mx.org.kaana.mantic.catalogos.inventarios.reglas;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
-import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
