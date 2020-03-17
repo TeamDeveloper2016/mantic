@@ -79,7 +79,7 @@ public abstract class ComunInventarios extends IBaseTnx {
 				else 
 	  			inventario.setSalidas(Numero.toRedondearSat(inventario.getSalidas()+ articulo.getCantidad()));
 				// ajustar el stock del inventrio del almacn origen con el nuevo valor
-	  		inventario.setStock(Numero.toRedondearSat((inventario.getInicial()+ inventario.getEntradas())- inventario.getSalidas()));
+	  		inventario.setStock(Numero.toRedondearSat(Math.abs(inventario.getInicial()+ inventario.getEntradas())- inventario.getSalidas()));
   			DaoFactory.getInstance().update(sesion, inventario);
 			} // if
 			TcManticAlmacenesArticulosDto origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(TcManticAlmacenesArticulosDto.class, params);
@@ -131,7 +131,7 @@ public abstract class ComunInventarios extends IBaseTnx {
 			  this.toCreateInvetario(sesion, articulo, idDestino, true);
 			else {
 				inventario.setEntradas(Numero.toRedondearSat(inventario.getEntradas()+ diferencia));
-				inventario.setStock(Numero.toRedondearSat((inventario.getInicial()+ inventario.getEntradas())- inventario.getSalidas()));
+				inventario.setStock(Numero.toRedondearSat(Math.abs(inventario.getInicial()+ inventario.getEntradas())- inventario.getSalidas()));
   			DaoFactory.getInstance().update(sesion, inventario);
 			} // if
 			TcManticAlmacenesArticulosDto origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(TcManticAlmacenesArticulosDto.class, params);
