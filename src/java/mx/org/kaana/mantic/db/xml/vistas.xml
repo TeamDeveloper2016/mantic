@@ -5232,6 +5232,7 @@
 			<select id="almacen">
 				select
 					tc_mantic_articulos.id_articulo as id_key,
+				  tc_mantic_almacenes.id_empresa,
 					tc_mantic_articulos_codigos.codigo as propio,
 					tc_mantic_articulos.nombre,
 					tc_mantic_articulos.precio as costo,
@@ -7294,6 +7295,7 @@
 			<select id="faltantes">
 				select
 					tc_mantic_articulos.id_articulo as id_key,
+				  tc_mantic_almacenes.id_empresa,
 					tc_mantic_articulos.id_articulo,
 					tc_mantic_articulos_codigos.codigo as propio,
 					tc_mantic_articulos.nombre,

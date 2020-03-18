@@ -126,7 +126,7 @@ public abstract class ComunInventarios extends IBaseTnx {
 			params=new HashMap<>();
 			params.put("idAlmacen", idDestino);
 			params.put("idArticulo", articulo.getIdArticulo());
-			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
+			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(sesion, TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
 			if(inventario== null)
 			  this.toCreateInvetario(sesion, articulo, idDestino, true);
 			else {
@@ -134,7 +134,7 @@ public abstract class ComunInventarios extends IBaseTnx {
 				inventario.setStock(Numero.toRedondearSat(Math.abs(inventario.getInicial()+ inventario.getEntradas())- inventario.getSalidas()));
   			DaoFactory.getInstance().update(sesion, inventario);
 			} // if
-			TcManticAlmacenesArticulosDto origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(TcManticAlmacenesArticulosDto.class, params);
+			TcManticAlmacenesArticulosDto origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(sesion, TcManticAlmacenesArticulosDto.class, params);
 			if(origen== null) 
 				origen= this.toCreateAlmacenArticulo(sesion, articulo, idDestino, umbrales);
 	

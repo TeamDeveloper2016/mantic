@@ -781,7 +781,7 @@
         from      
           tc_mantic_ventas_bitacora
         where      
-          id_venta_estatus = {idFicticiaEstatus} and id_venta = {idFicticia} and id_venta_bitacora = {idFicticiaBitacora}
+          id_venta_bitacora = {idFicticiaBitacora}
       </select>
 			<select id="siguiente">
         select

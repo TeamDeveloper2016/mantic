@@ -44,7 +44,7 @@ public class Transaccion extends ComunInventarios {
     try {			
     	this.messageError = "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para transferencia de articulos.");
   		Siguiente consecutivo= null;
-			this.transferencia= (TcManticTransferenciasDto)DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, this.dto.getIdTransferencia());
+			this.transferencia= (TcManticTransferenciasDto)DaoFactory.getInstance().findById(sesion, TcManticTransferenciasDto.class, this.dto.getIdTransferencia());
       switch (accion) {
 				case ACTIVAR:
 				case AGREGAR:
@@ -125,7 +125,7 @@ public class Transaccion extends ComunInventarios {
 					DaoFactory.getInstance().update(sesion, item);
 				this.toAffectTransferenciaDetalle(sesion, articulo);
 				if(!EAccion.AGREGAR.equals(accion)) {
-					TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
+					TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, articulo.getIdArticulo());
 					switch(accion) {
 						case ACTIVAR: // RECIBIR
 						case PROCESAR: // INCOMPLETA
@@ -134,12 +134,8 @@ public class Transaccion extends ComunInventarios {
 									this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getInicial()- articulo.getCantidad());
 							} // if	
 							else
-								this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
-							// QUITAR DE LAS VENTAS PERDIDAS LOS ARTICULOS QUE FUERON YA SURTIDOS EN EL ALMACEN
-							params.put("idArticulo", articulo.getIdArticulo());
-							params.put("idEmpresa", this.transferencia.getIdEmpresa());
-							params.put("observaciones", "ESTE ARTICULO FUE SURTIDO CON NO. CONFRONTA "+ this.dto.getConsecutivo()+ " EL DIA "+ Fecha.getHoyExtendido());
-							DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, params);
+								if(this.transferencia.getIdTransferenciaEstatus()!= 5L)
+								  this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
 							break;
 						case DEPURAR: // AUTORIZAR
 							break;
@@ -167,7 +163,7 @@ public class Transaccion extends ComunInventarios {
 			params=new HashMap<>();
 			for (Articulo articulo: this.articulos) {
 				TcManticConfrontasDetallesDto item= articulo.toConfrontasDetalle();
-				TcManticArticulosDto umbrales     = (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
+				TcManticArticulosDto umbrales     = (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, articulo.getIdArticulo());
 				if(this.transferencia.getIdTransferenciaEstatus()== 6L || this.transferencia.getIdTransferenciaEstatus()== 7L) {
 					if(articulo.getInicial()- item.getCantidad()!= 0L)
 						this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getInicial()- articulo.getCantidad());
@@ -228,7 +224,7 @@ public class Transaccion extends ComunInventarios {
 
 	private void toCheckArticulos(Session sesion) throws Exception {
 		for (Articulo articulo: this.articulos) {
-  		TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
+  		TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, articulo.getIdArticulo());
 			TcManticConfrontasDetallesDto item= articulo.toConfrontasDetalle();
 			item.setIdConfronta(this.dto.getIdConfronta());
 			double diferencia= articulo.getCantidad();
