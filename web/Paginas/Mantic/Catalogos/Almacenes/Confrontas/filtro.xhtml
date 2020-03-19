@@ -45,7 +45,7 @@
           <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-								<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.isMatriz}"/>
+							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<p:ajax event="change" process="@this" update="idAlmacen" listener="#{manticCatalogosAlmacenesConfrontasFiltro.doAlmacenes}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
@@ -107,7 +107,7 @@
             </p:panelGrid>
 						<div class="janal-align-right">
 							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" oncomplete="janal.desbloquear();" process="panelBusqueda" actionListener="#{manticCatalogosAlmacenesConfrontasFiltro.doLoad}" update="tabla"/>
-							<p:commandButton id="buscarIcon" title="Buscar" iconPos="right" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" oncomplete="janal.desbloquear();" actionListener="#{manticCatalogosAlmacenesConfrontasFiltro.doLoad}" update="tabla"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b" icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" oncomplete="janal.desbloquear();" actionListener="#{manticCatalogosAlmacenesConfrontasFiltro.doLoad}" update="tabla"/>
 						</div>
           </p:panel>
         </div>
@@ -196,5 +196,5 @@
       </div>
     </div>	    		
   </ui:define>
-  <ui:param name="componenteBloqueo" value="buscar buscarIcon  tabla"/>
+  <ui:param name="componenteBloqueo" value="tabla"/>
 </ui:composition>

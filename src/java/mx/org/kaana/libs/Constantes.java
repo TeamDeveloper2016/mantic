@@ -113,10 +113,12 @@ public final class Constantes {
   //Atributos utilizados para las tablas en las paginas de filtro
   public static final String NO_EXISTEN_REGISTROS = "No existen registros";
   public static final int REGISTROS_POR_PAGINA = 15;
+  public static final int REGISTROS_MAX_PAGINA = 50;
   public static final int REGISTROS_POR_LOTE   = 30;
   public static final int REGISTROS_LOTE_TOPE  = 50;
   public static final String ICONOS_DE_PAGINACION = "{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}";
   public static final String REGISTROS_POR_CADA_PAGINA = "10,15,20";
+  public static final String REGISTROS_MAX_CADA_PAGINA = "50,100,200";
 
   //Atributo que indica que estilo se estable como inicial en el sistema
   public static final String TEMA_INICIAL = "sentinel";
@@ -157,6 +159,10 @@ public final class Constantes {
     return Constantes.REGISTROS_POR_PAGINA;
   }
 
+  public Integer getREGISTROS_MAX_PAGINA() {
+    return Constantes.REGISTROS_MAX_PAGINA;
+  }
+
   public Integer getREGISTROS_POR_LOTE() {
     return Constantes.REGISTROS_POR_LOTE;
   }
@@ -173,4 +179,8 @@ public final class Constantes {
     return Constantes.REGISTROS_POR_CADA_PAGINA;
   }
 
+  public String getREGISTROS_MAX_CADA_PAGINA() {
+    return Constantes.REGISTROS_MAX_CADA_PAGINA;
+  }
+	
 }

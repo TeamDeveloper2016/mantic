@@ -258,7 +258,7 @@
 							</div>
 						</p:tab>
 						<p:tab title="Faltantes almacen">
-							<p:dataTable id="faltantes" var="row" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.faltantes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
+							<p:dataTable id="faltantes" var="row" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.faltantes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
 								<f:facet name="header">
 									<p:commandButton title="Refrescar articulos faltantes del almacen destino" icon="fa fa-refresh" process="@this" update="faltantes" action="#{manticCatalogosAlmacenesTransferenciasNormal.doLoadFaltantes()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
                 </f:facet>

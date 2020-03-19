@@ -60,18 +60,14 @@ public class Transaccion extends IBaseTnx {
 
   private boolean update(Session session) throws Exception {
     boolean regresar = false;
-    Long afectados = -1L;
     Map<String, Object> params = null;
     try {
       params = new HashMap<>();
-      params.put("path", Especial.getInstance().getPath().endsWith("\\") ? Especial.getInstance().getPath().concat("\\") : Especial.getInstance().getPath());
+      params.put("path", Especial.getInstance().getPath());
       params.put("sesion", this.session);
       params.put("inicio", Especial.getInstance().getRegistro());
-      regresar = DaoFactory.getInstance().execute(ESql.UPDATE, session, "TcJanalSesionesDto", "updateRegistroFin", params) > afectados;
+      regresar = DaoFactory.getInstance().execute(ESql.UPDATE, session, "TcJanalSesionesDto", "updateRegistroFin", params) >= 0;
     } // try
-    catch (Exception e) {
-      throw e;
-    }// catch	
     finally {
       Methods.clean(params);
     } // finally
