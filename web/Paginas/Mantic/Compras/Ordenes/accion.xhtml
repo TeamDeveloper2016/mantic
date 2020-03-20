@@ -536,7 +536,7 @@
 						<p:tab title="Observaciones">
 							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.adminOrden.orden.observaciones}"/>
 						</p:tab>
-						<p:tab title="Faltantes">
+						<p:tab title="Faltantes almacen">
 							<p:dataTable id="faltantes" var="row" value="#{manticComprasOrdendesAccion.attrs.faltantes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
 								<f:facet name="header">
 									<p:commandButton title="Refrescar articulos faltantes" icon="fa fa-refresh" process="@this" update="faltantes" action="#{manticComprasOrdendesAccion.doLoadFaltantes()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 

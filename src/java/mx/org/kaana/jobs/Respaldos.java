@@ -9,9 +9,15 @@ package mx.org.kaana.jobs;
  */
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.libs.formato.Periodo;
 import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.respaldos.reglas.Transaccion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,20 +32,32 @@ public class Respaldos implements Job, Serializable {
 
 	@Override
 	public void execute(JobExecutionContext jec) throws JobExecutionException {
-		Transaccion transaccion = null;
+		Transaccion transaccion   = null;
+		Map<String, Object> params= null;
 		try {
 			if(!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion()) {
 				transaccion= new Transaccion();
 				if(transaccion.ejecutar(EAccion.AGREGAR))
 					LOG.info("Se realizo el respaldo de la BD de forma correcta");
 				else
-					LOG.error("Ocurrio un error al realizar el respaldo de la BD");				
+					LOG.error("Ocurrio un error al realizar el respaldo de la BD");			
+				
+				Periodo periodo= new Periodo();
+				periodo.addDias(-20);
+  			params=new HashMap<>();
+				params.put("registro", periodo.toString());
+  			LOG.info("Iniciando el proceso de limpieza de ventas perdidas con fecha de "+ periodo.toString());
+				Long actualizados= DaoFactory.getInstance().updateAll(TcManticFaltantesDto.class, params, "olds");
+  			LOG.info("Se actulizarón "+ actualizados+ " registros del catalogo de ventas perdidas.");
 			} // if
 	  } // try
 		catch (Exception e) {
 			Error.mensaje(e);
       LOG.error("Ocurrio un error al realizar el respaldo de la BD");
 		} // catch	
+		finally {
+			Methods.clean(params);
+		} // finally
 	} // execute
 }
 
