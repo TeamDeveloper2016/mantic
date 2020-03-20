@@ -87,7 +87,7 @@
 					<div class="janal-wid-100-txt janal-column-center janal-font-bold">
 						<p:outputLabel value="LA TRANSFERENCIA DE ARTICULOS [#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.consecutivo}] SE AUTOGUARDO A LAS #{manticCatalogosAlmacenesTransferenciasNormal.attrs.autoSave} HRS." style="display: #{empty(manticCatalogosAlmacenesTransferenciasNormal.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-blue"/>
 					</div>
-					<p:tabView id="contenedorGrupos">
+					<p:tabView id="contenedorGrupos" dynamic="">
             <p:ajax event="tabChange" listener="#{manticCatalogosAlmacenesTransferenciasNormal.doTabChange}" process="@this idAlmacen idDestino" update="faltantes perdidos" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();"/>
             <p:tab title="General">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-100">		
