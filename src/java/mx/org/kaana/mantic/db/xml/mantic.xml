@@ -1703,6 +1703,14 @@
 				  and id_vigente= 1
 				  and id_empresa= {idEmpresa} 
 			</update>
+			<update id="olds">
+				update 
+				  tc_mantic_faltantes 
+			  set 
+				  id_vigente= 2 
+				where 
+				  id_vigente= 1 and date_format(registro, '%Y%m%d')< '{registro}' 
+			</update>	
     </unit>
 		<unit id="TcManticNotasArchivosDto">
       <select id="row">
