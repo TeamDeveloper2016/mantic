@@ -6,6 +6,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.procesos.acceso.beans.Sucursal;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -22,15 +23,21 @@ public class CreateTicket {
 	protected Pago pago;
 	protected Sucursal principal;
 	protected String tipo;
+	protected String cliente;
 	
 	public CreateTicket(Pago pago, String tipo) {
 		this(null, pago, tipo);
 	}
 	
 	public CreateTicket(AdminTickets ticket, Pago pago, String tipo) {
-		this.ticket= ticket;
-		this.pago  = pago;
-		this.tipo  = tipo;
+		this(ticket, pago, tipo, "");
+	} 
+	
+	public CreateTicket(AdminTickets ticket, Pago pago, String tipo, String cliente) {
+		this.ticket = ticket;
+		this.pago   = pago;
+		this.tipo   = tipo;
+		this.cliente= cliente;
 		init();
 	} // CreateTicket
 	
@@ -164,7 +171,11 @@ public class CreateTicket {
 		regresar.append("Fecha:").append(Fecha.formatear(Fecha.FECHA_HORA_CORTA, ((TicketVenta)this.ticket.getOrden()).getCobro()));
 		if(this.tipo.equals("APARTADO")){
 			regresar.append("<br>");		
-			regresar.append("Vencimiento:").append(Fecha.formatear(Fecha.FECHA_HORA_CORTA, ((TicketVenta)this.ticket.getOrden()).getVigencia()));
+			regresar.append("Vencimiento: ").append(Fecha.formatear(Fecha.FECHA_HORA_CORTA, ((TicketVenta)this.ticket.getOrden()).getVigencia()));
+		} // if
+		if(!Cadena.isVacio(this.cliente)){
+			regresar.append("<br>");		
+			regresar.append("Cliente: ").append(this.cliente);
 		} // if
 		regresar.append("</p>");		
 		return regresar.toString();
