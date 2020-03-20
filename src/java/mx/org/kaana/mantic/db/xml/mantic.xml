@@ -1709,7 +1709,7 @@
 			  set 
 				  id_vigente= 2 
 				where 
-				  id_vigente= 1 and date_format(registro, '%Y%m%d')< '{registro}' 
+				  id_vigente= 1 and date_format(registro, '%Y%m%d') &lt; '{registro}' 
 			</update>	
     </unit>
 		<unit id="TcManticNotasArchivosDto">
