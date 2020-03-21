@@ -297,7 +297,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			UIBackingUtilities.update("contenedorGrupos:paginator");
 		} // if	
 		else 
-			if(event.getTab().getTitle().equals("Faltantes")) 
+			if(event.getTab().getTitle().equals("Faltantes almacen")) 
         this.doLoadFaltantes();
 			else 
 			  if(event.getTab().getTitle().equals("Ventas perdidas")) 
