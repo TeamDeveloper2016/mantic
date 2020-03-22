@@ -9829,8 +9829,39 @@
 				where
 					tc_mantic_cierres_cajas.id_cierre= {idCierre} 
 			</select>
-			<select id="">
-				
+			<select id="devoluciones">
+				select
+					tc_mantic_garantias.id_garantia as id_key,
+					tc_mantic_empresas.id_empresa,
+					tc_mantic_empresas.clave as empresa,
+					tc_mantic_empresas.nombre as nombre_empresa,
+					tc_mantic_garantias.consecutivo,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+					tc_mantic_garantias.total as importe,
+					tc_mantic_garantias.id_garantia_estatus,
+					tc_mantic_garantias_estatus.nombre as estatus,
+					tc_mantic_garantias.id_usuario,
+					tc_mantic_garantias.registro
+				from
+					tc_mantic_garantias
+				inner join
+					tc_mantic_ventas on tc_mantic_ventas.id_venta= tc_mantic_garantias.id_venta
+				inner join
+					tr_mantic_venta_medio_pago on tr_mantic_venta_medio_pago.id_venta= tc_mantic_ventas.id_venta
+				inner join
+					tc_mantic_garantias_estatus on tc_mantic_garantias_estatus.id_garantia_estatus= tc_mantic_garantias.id_garantia_estatus
+				inner join 
+					tc_janal_usuarios on tc_mantic_garantias.id_usuario= tc_janal_usuarios.id_usuario
+				inner join				
+					tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
+				inner join
+					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa 
+				where 
+					tc_mantic_empresas.id_empresa= {idEmpresa}
+					and date_format(tc_mantic_garantias.registro, '%Y%m%d%H%i')>= '{fechaInicio}'
+					and date_format(tc_mantic_garantias.registro, '%Y%m%d%H%i')<= '{fechaTermino}'
+				order by
+					tc_mantic_garantias.registro desc
 			</select>
 		</unit>
 	</dml>    
