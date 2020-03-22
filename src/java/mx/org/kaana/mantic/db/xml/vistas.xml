@@ -9767,5 +9767,71 @@
 				  propio
 			</select>		
 		</unit>
+		<unit id="VistaCortesCajasDto">
+			<select id="row">
+				select
+				  tr_mantic_venta_medio_pago.id_venta as id_key,
+					tr_mantic_venta_medio_pago.id_cierre, 
+					tr_mantic_venta_medio_pago.id_venta, 
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as vendedor,
+					tc_mantic_ventas.ticket,
+					tc_mantic_ventas.id_venta_estatus,
+					tc_mantic_ventas_estatus.nombre as estatus,
+					tr_mantic_venta_medio_pago.id_tipo_medio_pago, 
+					tc_mantic_tipos_medios_pagos.nombre as medio_pago,
+					tr_mantic_venta_medio_pago.total, 
+					tr_mantic_venta_medio_pago.registro    
+				from
+					tr_mantic_venta_medio_pago     
+				inner join
+					tc_mantic_ventas on tr_mantic_venta_medio_pago.id_venta= tc_mantic_ventas.id_venta
+				inner join 
+					tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus= tc_mantic_ventas_estatus.id_venta_estatus
+				inner join
+					tc_mantic_tipos_medios_pagos on tc_mantic_tipos_medios_pagos.id_tipo_medio_pago =tr_mantic_venta_medio_pago.id_tipo_medio_pago
+				inner join 
+					tc_janal_usuarios on tc_mantic_ventas.id_usuario = tc_janal_usuarios.id_usuario
+				inner join				
+					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona				
+				where
+					 tr_mantic_venta_medio_pago.id_cierre= {idCierre} 
+				order by
+					tr_mantic_venta_medio_pago.id_tipo_medio_pago, tr_mantic_venta_medio_pago.registro;  
+			</select>	
+			<select id="retiros">
+				select 
+					tc_mantic_cierres_retiros.id_cierre_retiro as id_key,
+					tc_mantic_empresas.id_empresa,
+					tc_mantic_empresas.clave as empresa,
+					tc_mantic_empresas.nombre as nombre_empresa,
+					tc_mantic_cierres_cajas.id_caja,
+					tc_mantic_cajas.clave as caja,
+					tc_mantic_cierres_retiros.consecutivo,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+					tc_mantic_cierres_retiros.importe,
+					tc_mantic_cierres_retiros.concepto,
+					tc_mantic_cierres_retiros.id_abono,
+					if(tc_mantic_cierres_retiros.id_abono= 1, 'ABONO', 'RETIRO') as tipo,
+					tc_mantic_cierres_retiros.id_usuario,
+					tc_mantic_cierres_retiros.registro
+				from 
+					tc_mantic_cierres_cajas
+				inner join
+					tc_mantic_cierres_retiros on tc_mantic_cierres_retiros.id_cierre_caja= tc_mantic_cierres_cajas.id_cierre_caja
+				inner join 
+					tc_janal_usuarios on tc_mantic_cierres_retiros.id_usuario = tc_janal_usuarios.id_usuario
+				inner join				
+					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona				
+				inner join
+					tc_mantic_cajas on tc_mantic_cierres_cajas.id_caja = tc_mantic_cajas.id_caja     
+				inner join
+					tc_mantic_empresas on tc_mantic_cajas.id_empresa= tc_mantic_empresas.id_empresa     
+				where
+					tc_mantic_cierres_cajas.id_cierre= {idCierre} 
+			</select>
+			<select id="">
+				
+			</select>
+		</unit>
 	</dml>    
 </process>
