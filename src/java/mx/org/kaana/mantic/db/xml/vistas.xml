@@ -9816,7 +9816,7 @@
 					tc_mantic_cierres_retiros.registro
 				from 
 					tc_mantic_cierres_cajas
-				inner join
+				inner join 
 					tc_mantic_cierres_retiros on tc_mantic_cierres_retiros.id_cierre_caja= tc_mantic_cierres_cajas.id_cierre_caja
 				inner join 
 					tc_janal_usuarios on tc_mantic_cierres_retiros.id_usuario = tc_janal_usuarios.id_usuario
