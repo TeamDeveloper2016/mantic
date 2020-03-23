@@ -45,7 +45,7 @@
         <div id="collapse-find" class="ui-grid-col-3">
           <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
-            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticVentasCajaCierresFiltro.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{manticVentasCajaCierresFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<p:ajax event="change" listener="#{manticVentasCajaCierresFiltro.doLoadCajas}" process="@this" update="idCaja"/>
@@ -183,16 +183,18 @@
           </p:dataTable>
           <h:outputText value="Nota: Las filas que estan en color son cajas donde su efectivo sobrepasa a limite establecido !"/>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-           <p:menuitem id="agregar" action="#{manticVentasCajaCierresFiltro.doAccion('AGREGAR')}" icon="fa fa-briefcase" ajax="false" value="Realizar cierre" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
-            <p:menuitem id="fondo" action="#{manticVentasCajaCierresFiltro.doFondoCaja}" icon="fa fa-briefcase" ajax="false" value="Fondo de caja" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus) and manticVentasCajaCierresFiltro.admin}"/>
+           <p:menuitem action="#{manticVentasCajaCierresFiltro.doAccion('AGREGAR')}" icon="fa fa-briefcase" ajax="false" value="Realizar cierre" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
+            <p:menuitem action="#{manticVentasCajaCierresFiltro.doFondoCaja}" icon="fa fa-briefcase" ajax="false" value="Fondo de caja" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus) and manticVentasCajaCierresFiltro.admin}"/>
  						<p:separator rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
-            <p:menuitem id="consultar" action="#{manticVentasCajaCierresFiltro.doAccion('CONSULTAR')}" icon="fa fa-edit" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
-            <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasCajaCierresFiltro.doMovimientos}"/>
+            <p:menuitem action="#{manticVentasCajaCierresFiltro.doAccion('CONSULTAR')}" icon="fa fa-edit" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+            <p:menuitem icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasCajaCierresFiltro.doMovimientos}"/>
             <p:separator rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
-            <p:menuitem id="retiros" icon="fa fa-sign-out" value="Retiros parciales" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasCajaCierresFiltro.doRetiros}" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
-            <p:menuitem id="abonos" icon="fa fa-sign-in" value="Abonos parciales" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasCajaCierresFiltro.doAbonos}" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
+            <p:menuitem icon="fa fa-sign-out" value="Retiros parciales" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasCajaCierresFiltro.doRetiros}" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
+            <p:menuitem icon="fa fa-sign-in" value="Abonos parciales" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasCajaCierresFiltro.doAbonos}" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
             <p:separator/>
-            <p:menuitem id="ver" icon="fa fa-dollar" value="Ver abonos/retiros" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasCajaCierresFiltro.doVerAmbos}"/>
+            <p:menuitem icon="fa fa-dollar" value="Ver abonos/retiros" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasCajaCierresFiltro.doVerAmbos}"/>
+            <p:separator/>
+            <p:menuitem icon="fa fa-server" value="Movimientos" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasCajaCierresFiltro.doCorteCaja}"/>
           </p:contextMenu>
         </div>
       </div>

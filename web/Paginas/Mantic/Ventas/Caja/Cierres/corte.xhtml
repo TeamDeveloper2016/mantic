@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                template="/WEB-INF/plantillas/reporte.xhtml">
+  <ui:param name="titulo" value="Movimientos del corte de caja" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+    </script>		
+		<style>
+		</style>
+</ui:define>
+<ui:define name="contenido">
+	<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+		<p:outputLabel value="Sucursal:"/>
+		<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasCajaCierresCorte.attrs.nombreEmpresa}" readonly="true"/>
+		<p:outputLabel value="Caja:"/>
+		<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasCajaCierresCorte.attrs.caja}" readonly="true"/>
+		<p:outputLabel value="Importe en caja:"/>
+		<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasCajaCierresCorte.total}= #{manticVentasCajaCierresCorte.attrs.fventas}- #{manticVentasCajaCierresCorte.attrs.fabonos}- #{manticVentasCajaCierresCorte.attrs.fgarantias}" readonly="true"/>
+  </p:panelGrid>	
+	<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+		<div class="ui-grid-row janal-grid-row">
+			<div id="collapse-content" class="ui-grid-col-12">
+				<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticVentasCajaCierresCorte.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" paginator="#{manticVentasCajaCierresCorte.lazyModel.rowCount gt manticVentasCajaCierresCorte.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="top">
+					<f:facet name="header" >
+						Listado de ticket que conforman el corte de caja seleccionado
+						<div class="lg-pantalla">
+							<p:menuButton value="Opciones">
+								<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+							</p:menuButton>
+						</div>  
+						<div class="xs-pantalla">         
+							<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+						</div>  
+					</f:facet>	            
+					<p:column class="MarAuto Responsive janal-wid-col-40">
+						<f:facet name="header">
+							<h:outputText value="No."/>
+						</f:facet>
+						<h:outputText value="#{index+ 1}.-"/>
+					</p:column>		
+					<p:column class="MarAuto Responsive janal-wid-10">
+						<f:facet name="header">
+							<h:outputText value="Ticket"/>
+						</f:facet>
+						<h:outputText value="#{row['ticket']}"/>
+					</p:column>		
+					<p:column class="MarAuto Responsive">
+						<f:facet name="header">
+							<h:outputText value="Vendedor"/>
+						</f:facet>
+						<h:outputText value="#{row['vendedor']}"/>
+					</p:column>		
+					<p:column class="MarAuto Responsive janal-wid-10">
+						<f:facet name="header">
+							<h:outputText value="Estatus"/>
+						</f:facet>
+						<h:outputText value="#{row['estatus']}"/>
+					</p:column>		
+					<p:column class="MarAuto janal-column-right Responsive janal-wid-13">
+						<f:facet name="header">
+							<h:outputText value="Importe ($)"/>
+						</f:facet>
+						<h:outputText value="#{row['importe']}"/>
+					</p:column>		
+					<p:column class="MarAuto Responsive janal-wid-10">
+						<f:facet name="header">
+							<h:outputText value="Medio pago"/>
+						</f:facet>
+						<h:outputText value="#{row['medioPago']}"/>
+					</p:column>		
+					<p:column class="janal-column-center MarAuto Responsive janal-wid-13">
+						<f:facet name="header">
+							<h:outputText value="Fecha"/>
+						</f:facet>
+						<h:outputText value="#{row['registro']}"/>
+					</p:column>		
+					<f:facet name="footer">
+						<p:outputLabel value="&lt;span class='janal-color-green'&gt;Suma: &lt;strong&gt;#{manticVentasCajaCierresCorte.sumaTickets}&lt;/strong&gt;&lt;/span&gt;" style="float:left;" escape="false"/>
+						<p:outputLabel value="Total [#{manticVentasCajaCierresCorte.lazyModel==null?0:manticVentasCajaCierresCorte.lazyModel.rowCount}] registros"/>
+					</f:facet>
+				</p:dataTable>
+				<p:dataTable lazy="true" id="retiros" var="row" value="#{manticVentasCajaCierresCorte.retiros}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" paginator="#{manticVentasCajaCierresCorte.lazyModel.rowCount gt manticVentasCajaCierresCorte.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="top">
+					<f:facet name="header" >
+						Listado de retiros efectuados en el corte de caja seleccionado
+						<div class="lg-pantalla">
+							<p:menuButton value="Opciones">
+								<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'retiros')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'retiros')" oncomplete="janal.desbloquear()"/>
+							</p:menuButton>
+						</div>  
+						<div class="xs-pantalla">         
+							<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'retiros')" oncomplete="janal.desbloquear()"/>
+							<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'retiros')" oncomplete="janal.desbloquear()"/>
+						</div>  
+					</f:facet>	            
+					<p:column class="MarAuto Responsive janal-wid-col-40">
+						<f:facet name="header">
+							<h:outputText value="No."/>
+						</f:facet>
+						<h:outputText value="#{index+ 1}.-"/>
+					</p:column>		
+					<p:column class="MarAuto Responsive janal-wid-10">
+						<f:facet name="header">
+							<h:outputText value="Consecutivo"/>
+						</f:facet>
+						<h:outputText value="#{row['consecutivo']}"/>
+					</p:column>		
+					<p:column class="MarAuto Responsive">
+						<f:facet name="header">
+							<h:outputText value="Cajero"/>
+						</f:facet>
+						<h:outputText value="#{row['nombre']}"/>
+					</p:column>		
+					<p:column class="MarAuto Responsive">
+						<f:facet name="header">
+							<h:outputText value="Concepto"/>
+						</f:facet>
+						<h:outputText value="#{row['concepto']}"/>
+					</p:column>		
+					<p:column class="MarAuto janal-column-right Responsive janal-wid-13">
+						<f:facet name="header">
+							<h:outputText value="Importe ($)"/>
+						</f:facet>
+						<h:outputText value="#{row['importe']}"/>
+					</p:column>		
+					<p:column class="MarAuto Responsive janal-wid-10">
+						<f:facet name="header">
+							<h:outputText value="Tipo"/>
+						</f:facet>
+						<h:outputText value="#{row['tipo']}"/>
+					</p:column>		
+					<p:column class="janal-column-center MarAuto Responsive janal-wid-13">
+						<f:facet name="header">
+							<h:outputText value="Fecha"/>
+						</f:facet>
+						<h:outputText value="#{row['registro']}"/>
+					</p:column>		
+					<f:facet name="footer">
+						<p:outputLabel value="&lt;span class='janal-color-green'&gt;Suma: &lt;strong&gt;#{manticVentasCajaCierresCorte.sumaRetiros}&lt;/strong&gt;&lt;/span&gt;" style="float:left;" escape="false"/>
+						<p:outputLabel value="Total [#{manticVentasCajaCierresCorte.retiros== null? 0: manticVentasCajaCierresCorte.retiros.rowCount}] registros"/>
+					</f:facet>
+				</p:dataTable>
+				<p:dataTable lazy="true" id="devoluciones" var="row" value="#{manticVentasCajaCierresCorte.devoluciones}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" paginator="#{manticVentasCajaCierresCorte.lazyModel.rowCount gt manticVentasCajaCierresCorte.lazyModel.pageSize}" rowIndexVar="index" reflow="true"  paginatorPosition="top">
+					<f:facet name="header" >
+						Listado de devoluciones efectuados en el corte de caja seleccionado
+						<div class="lg-pantalla">
+							<p:menuButton value="Opciones">
+								<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'devoluciones')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'devoluciones')" oncomplete="janal.desbloquear()"/>
+							</p:menuButton>
+						</div>  
+						<div class="xs-pantalla">         
+							<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'devoluciones')" oncomplete="janal.desbloquear()"/>
+							<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'devoluciones')" oncomplete="janal.desbloquear()"/>
+						</div>  
+					</f:facet>	            
+					<p:column class="MarAuto Responsive janal-wid-col-40">
+						<f:facet name="header">
+							<h:outputText value="No."/>
+						</f:facet>
+						<h:outputText value="#{index+ 1}.-"/>
+					</p:column>		
+					<p:column class="MarAuto Responsive janal-wid-10">
+						<f:facet name="header">
+							<h:outputText value="Consecutivo"/>
+						</f:facet>
+						<h:outputText value="#{row['consecutivo']}"/>
+					</p:column>		
+					<p:column class="MarAuto Responsive">
+						<f:facet name="header">
+							<h:outputText value="Cajero"/>
+						</f:facet>
+						<h:outputText value="#{row['nombre']}"/>
+					</p:column>		
+					<p:column class="MarAuto janal-column-right Responsive janal-wid-13">
+						<f:facet name="header">
+							<h:outputText value="Importe ($)"/>
+						</f:facet>
+						<h:outputText value="#{row['importe']}"/>
+					</p:column>		
+					<p:column class="MarAuto Responsive janal-wid-10">
+						<f:facet name="header">
+							<h:outputText value="Estatus"/>
+						</f:facet>
+						<h:outputText value="#{row['estatus']}"/>
+					</p:column>		
+					<p:column class="janal-column-center MarAuto Responsive janal-wid-13">
+						<f:facet name="header">
+							<h:outputText value="Fecha"/>
+						</f:facet>
+						<h:outputText value="#{row['registro']}"/>
+					</p:column>		
+					<f:facet name="footer">
+						<p:outputLabel value="&lt;span class='janal-color-green'&gt;Suma: &lt;strong&gt;#{manticVentasCajaCierresCorte.sumaDevoluciones}&lt;/strong&gt;&lt;/span&gt;" style="float:left;" escape="false"/>
+						<p:outputLabel value="Total [#{manticVentasCajaCierresCorte.devoluciones== null? 0: manticVentasCajaCierresCorte.devoluciones.rowCount}] registros"/>
+					</f:facet>
+				</p:dataTable>
+  		</div>
+		</div>
+	</div>
+	<hr class="ui-widget-content" style="#{empty lineaSeparacion? '': 'display:none'}"/>
+	<div class="janal-line-button">
+		<div class="lg-pantalla">
+			<p:commandButton id="regresar" process="@this" icon="fa fa-reply" accesskey="r" value="Regresar" action="#{manticVentasCajaCierresCorte.doRegresar}" immediate="true"/>
+		</div>	
+		<div class="xs-pantalla">
+			<p:commandButton id="regresarIcon" process="@this" icon="fa fa-reply" accesskey="r" title="Regresar" action="#{manticVentasCajaCierresCorte.doRegresar}" immediate="true"/>
+		</div>		
+	</div>
+  </ui:define>   
+  <ui:param name="componenteBloqueo" value="tabla retiros devoluciones"/>
+</ui:composition>

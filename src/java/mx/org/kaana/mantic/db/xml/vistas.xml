@@ -1371,7 +1371,9 @@
 					tc_mantic_cierres.observaciones,
 					tc_mantic_cierres.registro,
 					tc_mantic_cierres.id_cierre_estatus,
-					tc_mantic_cajas.id_caja,tc_mantic_cierres.orden
+					tc_mantic_cajas.id_caja,tc_mantic_cierres.orden,
+          tc_mantic_cierres.registro as inicio,
+          tc_mantic_cierres.termino     
 				from
 					tc_mantic_cierres
 				inner join
@@ -9768,9 +9770,12 @@
 			</select>		
 		</unit>
 		<unit id="VistaCortesCajasDto">
-			<select id="row">
+			<select id="lazy">
 				select
-				  tr_mantic_venta_medio_pago.id_venta as id_key,
+				  tr_mantic_venta_medio_pago.id_venta_medio_pago as id_key,
+					tc_mantic_empresas.id_empresa,
+					tc_mantic_empresas.clave as empresa,
+					tc_mantic_empresas.nombre as nombre_empresa,
 					tr_mantic_venta_medio_pago.id_cierre, 
 					tr_mantic_venta_medio_pago.id_venta, 
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as vendedor,
@@ -9780,6 +9785,7 @@
 					tr_mantic_venta_medio_pago.id_tipo_medio_pago, 
 					tc_mantic_tipos_medios_pagos.nombre as medio_pago,
 					tr_mantic_venta_medio_pago.total, 
+					tr_mantic_venta_medio_pago.total as importe, 
 					tr_mantic_venta_medio_pago.registro    
 				from
 					tr_mantic_venta_medio_pago     
@@ -9793,10 +9799,34 @@
 					tc_janal_usuarios on tc_mantic_ventas.id_usuario = tc_janal_usuarios.id_usuario
 				inner join				
 					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona				
+				inner join
+					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa     
 				where
 					 tr_mantic_venta_medio_pago.id_cierre= {idCierre} 
 				order by
-					tr_mantic_venta_medio_pago.id_tipo_medio_pago, tr_mantic_venta_medio_pago.registro;  
+					tr_mantic_venta_medio_pago.id_tipo_medio_pago, tr_mantic_venta_medio_pago.registro 
+			</select>	
+			<select id="ventas">
+				select
+					sum(tr_mantic_venta_medio_pago.total) as total
+				from
+					tr_mantic_venta_medio_pago     
+				inner join
+					tc_mantic_ventas on tr_mantic_venta_medio_pago.id_venta= tc_mantic_ventas.id_venta
+				inner join 
+					tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus= tc_mantic_ventas_estatus.id_venta_estatus
+				inner join
+					tc_mantic_tipos_medios_pagos on tc_mantic_tipos_medios_pagos.id_tipo_medio_pago =tr_mantic_venta_medio_pago.id_tipo_medio_pago
+				inner join 
+					tc_janal_usuarios on tc_mantic_ventas.id_usuario = tc_janal_usuarios.id_usuario
+				inner join				
+					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona				
+				inner join
+					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa     
+				where
+					 tr_mantic_venta_medio_pago.id_cierre= {idCierre} 
+				order by
+					tr_mantic_venta_medio_pago.id_tipo_medio_pago, tr_mantic_venta_medio_pago.registro 
 			</select>	
 			<select id="retiros">
 				select 
@@ -9809,11 +9839,30 @@
 					tc_mantic_cierres_retiros.consecutivo,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
 					tc_mantic_cierres_retiros.importe,
+					tc_mantic_cierres_retiros.importe as total,
 					tc_mantic_cierres_retiros.concepto,
 					tc_mantic_cierres_retiros.id_abono,
 					if(tc_mantic_cierres_retiros.id_abono= 1, 'ABONO', 'RETIRO') as tipo,
 					tc_mantic_cierres_retiros.id_usuario,
 					tc_mantic_cierres_retiros.registro
+				from 
+					tc_mantic_cierres_cajas
+				inner join 
+					tc_mantic_cierres_retiros on tc_mantic_cierres_retiros.id_cierre_caja= tc_mantic_cierres_cajas.id_cierre_caja
+				inner join 
+					tc_janal_usuarios on tc_mantic_cierres_retiros.id_usuario = tc_janal_usuarios.id_usuario
+				inner join				
+					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona				
+				inner join
+					tc_mantic_cajas on tc_mantic_cierres_cajas.id_caja = tc_mantic_cajas.id_caja     
+				inner join
+					tc_mantic_empresas on tc_mantic_cajas.id_empresa= tc_mantic_empresas.id_empresa     
+				where
+					tc_mantic_cierres_cajas.id_cierre= {idCierre} 
+			</select>
+			<select id="abonos">
+				select 
+					sum(tc_mantic_cierres_retiros.importe) as total
 				from 
 					tc_mantic_cierres_cajas
 				inner join 
@@ -9838,6 +9887,7 @@
 					tc_mantic_garantias.consecutivo,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
 					tc_mantic_garantias.total as importe,
+					tc_mantic_garantias.total,
 					tc_mantic_garantias.id_garantia_estatus,
 					tc_mantic_garantias_estatus.nombre as estatus,
 					tc_mantic_garantias.id_usuario,
@@ -9858,8 +9908,32 @@
 					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa 
 				where 
 					tc_mantic_empresas.id_empresa= {idEmpresa}
-					and date_format(tc_mantic_garantias.registro, '%Y%m%d%H%i')>= '{fechaInicio}'
-					and date_format(tc_mantic_garantias.registro, '%Y%m%d%H%i')<= '{fechaTermino}'
+					and date_format(tc_mantic_garantias.registro, '%Y%m%d%H%i')&gt;= '{inicio}'
+					and date_format(tc_mantic_garantias.registro, '%Y%m%d%H%i')&lt;= '{termino}'
+				order by
+					tc_mantic_garantias.registro desc
+			</select>
+			<select id="garantias">
+				select
+					sum(tc_mantic_garantias.total) as total
+				from
+					tc_mantic_garantias
+				inner join
+					tc_mantic_ventas on tc_mantic_ventas.id_venta= tc_mantic_garantias.id_venta
+				inner join
+					tr_mantic_venta_medio_pago on tr_mantic_venta_medio_pago.id_venta= tc_mantic_ventas.id_venta
+				inner join
+					tc_mantic_garantias_estatus on tc_mantic_garantias_estatus.id_garantia_estatus= tc_mantic_garantias.id_garantia_estatus
+				inner join 
+					tc_janal_usuarios on tc_mantic_garantias.id_usuario= tc_janal_usuarios.id_usuario
+				inner join				
+					tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
+				inner join
+					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa 
+				where 
+					tc_mantic_empresas.id_empresa= {idEmpresa}
+					and date_format(tc_mantic_garantias.registro, '%Y%m%d%H%i')&gt;= '{inicio}'
+					and date_format(tc_mantic_garantias.registro, '%Y%m%d%H%i')&lt;= '{termino}'
 				order by
 					tc_mantic_garantias.registro desc
 			</select>
