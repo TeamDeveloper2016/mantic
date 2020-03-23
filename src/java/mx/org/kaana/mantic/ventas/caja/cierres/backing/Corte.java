@@ -2,18 +2,15 @@ package mx.org.kaana.mantic.ventas.caja.cierres.backing;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -45,8 +42,26 @@ public class Corte extends IBaseFilter implements Serializable {
 	}
 	
 	public String getTotal() {
-		Double total= (Double)this.attrs.get("ventas")- Math.abs((Double)this.attrs.get("abonos"))- (Double)this.attrs.get("garantias");
-		return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, total);
+		Double total= (Double)this.attrs.get("ventas")- (Double)this.attrs.get("garantias");
+		if((Double)this.attrs.get("abonos")> 0)
+			total+= (Double)this.attrs.get("abonos");
+		else
+			total-= (Double)this.attrs.get("abonos");
+		StringBuilder sb= new StringBuilder();
+		sb.append(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, total));
+		sb.append(" = ");
+		sb.append(this.attrs.get("ventas"));
+		sb.append(" - devoluciones (");
+		sb.append(this.attrs.get("garantias"));
+		sb.append(")");
+		if((Double)this.attrs.get("abonos")> 0)
+  		sb.append(" + abonos");
+		else
+  		sb.append(" - retiros"); 
+		sb.append(" (");
+		sb.append(this.attrs.get("abonos"));
+		sb.append(")");
+		return sb.toString();
 	}
 	
 	public String getSumaTickets() {
@@ -73,6 +88,7 @@ public class Corte extends IBaseFilter implements Serializable {
 			this.attrs.put("termino", JsfBase.getFlashAttribute("termino"));
 			this.attrs.put("nombreEmpresa", JsfBase.getFlashAttribute("nombreEmpresa"));
 			this.attrs.put("caja", JsfBase.getFlashAttribute("caja"));
+			this.attrs.put("acumulado", JsfBase.getFlashAttribute("acumulado"));
 		  this.doLoad();
     } // try
     catch (Exception e) {
@@ -89,7 +105,10 @@ public class Corte extends IBaseFilter implements Serializable {
       params.put("idEmpresa", this.attrs.get("idEmpresa"));
       params.put("idCierre", this.attrs.get("idCierre"));
       params.put("inicio", Fecha.formatear(Fecha.FECHA_HORA_LARGA, (Timestamp)this.attrs.get("inicio")));
-      params.put("termino", Fecha.formatear(Fecha.FECHA_HORA_LARGA, (Timestamp)this.attrs.get("termino")));
+			if(((Timestamp)this.attrs.get("inicio")).equals((Timestamp)this.attrs.get("termino")))
+        params.put("termino", Fecha.formatear(Fecha.FECHA_HORA_LARGA, new Timestamp(Calendar.getInstance().getTimeInMillis())));
+			else	
+        params.put("termino", Fecha.formatear(Fecha.FECHA_HORA_LARGA, (Timestamp)this.attrs.get("termino")));
 			
       columns = new ArrayList<>();
       columns.add(new Columna("importe", EFormatoDinamicos.NUMERO_CON_DECIMALES));

@@ -17,10 +17,14 @@
 	<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 		<p:outputLabel value="Sucursal:"/>
 		<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasCajaCierresCorte.attrs.nombreEmpresa}" readonly="true"/>
-		<p:outputLabel value="Caja:"/>
-		<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasCajaCierresCorte.attrs.caja}" readonly="true"/>
+  	<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100">
+		  <p:outputLabel value="Caja:"/>
+		  <p:outputLabel value="Ventas:"/>
+		  <p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasCajaCierresCorte.attrs.caja}" readonly="true"/>
+	  	<p:inputText styleClass="janal-wid-100-txt janal-column-right janal-color-blue" value="#{manticVentasCajaCierresCorte.doMonedaSat(manticVentasCajaCierresCorte.attrs.acumulado)}" readonly="true"/>
+    </p:panelGrid>	
 		<p:outputLabel value="Importe en caja:"/>
-		<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasCajaCierresCorte.total}= #{manticVentasCajaCierresCorte.attrs.fventas}- #{manticVentasCajaCierresCorte.attrs.fabonos}- #{manticVentasCajaCierresCorte.attrs.fgarantias}" readonly="true"/>
+		<p:inputText styleClass="janal-wid-100-txt janal-color-blue" value="#{manticVentasCajaCierresCorte.total}" readonly="true"/>
   </p:panelGrid>	
 	<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 		<div class="ui-grid-row janal-grid-row">
