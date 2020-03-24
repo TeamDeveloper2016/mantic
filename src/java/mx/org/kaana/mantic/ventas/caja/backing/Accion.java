@@ -1426,8 +1426,10 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doTabChange(TabChangeEvent event) {
 		String title= event.getTab().getTitle();
 		this.pagar= title.equals("Pagar") || title.equals("Apartado");
-		if(title.equals("Tickets"))
+		if(title.equals("Tickets")){
 			doLoadTickets();
+			UIBackingUtilities.update("contenedorGrupos:tablaTicket");
+		} // if
 		if(title.equals("Pagar"))
 			UIBackingUtilities.execute("jsArticulos.focusCobro();");
 		this.attrs.put("titleTab", title);
@@ -1477,7 +1479,7 @@ public class Accion extends IBaseVenta implements Serializable {
       columns.add(new Columna("hora", EFormatoDinamicos.HORA_CORTA));     
 			params.put("sortOrder", "order by tc_mantic_ventas.registro desc");
       this.lazyModelTicket = new FormatCustomLazy("VistaConsultasDto", params, columns);
-      UIBackingUtilities.resetDataTable("tablaTicket");
+      UIBackingUtilities.resetDataTable("contenedorGrupos:tablaTicket");
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -1504,7 +1506,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		if(this.attrs.get("importeTicket")!= null && !Cadena.isVacio(this.attrs.get("importeTicket")) && !this.attrs.get("importeTicket").toString().equals("0.00")){												
 			sb.append("tc_mantic_ventas.total like '%").append(Cadena.eliminaCaracter(this.attrs.get("importeTicket").toString(), ',')).append("%' and ");			
 		} // if
-		sb.append("tc_mantic_ventas.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(")");
+		sb.append("tc_mantic_ventas.id_venta_estatus in (").append(EEstatusVentas.CREDITO.getIdEstatusVenta()).append(",").append(EEstatusVentas.TIMBRADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(")");
 		regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
@@ -1515,12 +1517,12 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	private void loadUltimoTicket() throws Exception{
 		Entity ultimoTicket      = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= null;		
 		try {
 			params= new HashMap<>();
 			params.put("sortOrder", "order by tc_mantic_ventas.cobro desc");
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
-			params.put(Constantes.SQL_CONDICION, "tc_mantic_ventas.id_venta_estatus in (" + EEstatusVentas.PAGADA.getIdEstatusVenta() + "," + EEstatusVentas.TERMINADA.getIdEstatusVenta() + "," + EEstatusVentas.TIMBRADA.getIdEstatusVenta() + ")");
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_ventas.id_venta_estatus in (" + EEstatusVentas.CREDITO.getIdEstatusVenta() + "," + EEstatusVentas.PAGADA.getIdEstatusVenta() + "," + EEstatusVentas.TERMINADA.getIdEstatusVenta() + "," + EEstatusVentas.TIMBRADA.getIdEstatusVenta() + ")");
       ultimoTicket= (Entity) DaoFactory.getInstance().toEntity("VistaConsultasDto", "lazy", params);
 			this.attrs.put("ultimoTicketEntity", ultimoTicket);
 			this.attrs.put("ultimoTicket", ultimoTicket.toString("ticket"));
@@ -1542,14 +1544,23 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doPrint(Entity seleccionado) {
 		Map<String, Object>params= null;
 		CreateTicket ticket      = null;
-		AdminTickets adminTicket = null;
+		AdminTickets adminTicket = null;		
+		Entity cliente           = null;
+		MotorBusqueda motor      = null;
 		try {			
 			params= new HashMap<>();
 			params.put("idVenta", seleccionado.toLong("idVenta"));
-			adminTicket= new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params));			
-			ticket= new CreateTicket(adminTicket, toPago(adminTicket, seleccionado.getKey()), toTipoTransaccion(seleccionado.toLong("idVentaEstatus")));
+			adminTicket= new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params));
+			if(EEstatusVentas.fromIdTipoPago(seleccionado.toLong("idVentaEstatus")).equals(EEstatusVentas.TIMBRADA)){
+				motor= new MotorBusqueda(-1L, adminTicket.getIdCliente());
+				cliente= motor.toCliente();
+				ticket= new CreateTicket(adminTicket, toPago(adminTicket, seleccionado.getKey()), toTipoTransaccion(seleccionado.toLong("idVentaEstatus")), cliente.toString("razonSocial"));
+			} // if
+			else
+				ticket= new CreateTicket(adminTicket, toPago(adminTicket, seleccionado.getKey()), toTipoTransaccion(seleccionado.toLong("idVentaEstatus")));
 			UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + toConsecutivoTicket(seleccionado.toLong("idVentaEstatus"), adminTicket) + "','" + ticket.toHtml() + "');");
 			UIBackingUtilities.execute("jsTicket.clicTicket();");
+			doLoadTickets();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -1563,7 +1574,10 @@ public class Accion extends IBaseVenta implements Serializable {
 		try {
 			estatus= EEstatusVentas.fromIdTipoPago(idEstatus);
 			switch(estatus){
-				case PAGADA:
+				case TIMBRADA:
+					regresar= "FACTURA";
+					break;
+				case PAGADA:				
 				case TERMINADA:
 					regresar= "VENTA DE MOSTRADOR";
 				break;
@@ -1575,7 +1589,7 @@ public class Accion extends IBaseVenta implements Serializable {
 					break;
 				case CREDITO:
 					regresar= "VENTA A CREDITO";
-					break;
+					break;				
 			} // switch			
 		} // try
 		catch (Exception e) {			
@@ -1589,7 +1603,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		EEstatusVentas estatus= null;
 		try {
 			estatus= EEstatusVentas.fromIdTipoPago(idEstatus);
-			if(estatus.equals(EEstatusVentas.PAGADA) || estatus.equals(EEstatusVentas.TERMINADA) || estatus.equals(EEstatusVentas.APARTADOS))
+			if(estatus.equals(EEstatusVentas.TIMBRADA) || estatus.equals(EEstatusVentas.CREDITO) || estatus.equals(EEstatusVentas.PAGADA) || estatus.equals(EEstatusVentas.TERMINADA) || estatus.equals(EEstatusVentas.APARTADOS))
 				regresar= ((TicketVenta)(ticket.getOrden())).getTicket();
 			else
 				regresar= ((TicketVenta)(ticket.getOrden())).getCotizacion();
