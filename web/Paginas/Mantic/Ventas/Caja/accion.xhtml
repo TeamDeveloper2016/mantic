@@ -863,13 +863,13 @@
 									<h:outputText value="#{manticVentasCajaAccion.doTipoMedioPago(filtro)}"/>
 								</p:column>										
 								<p:column style="width:120px;text-align: center">
-									<p:commandButton icon="ui-icon-print" title="Ticket" action="#{manticVentasCajaAccion.doPrintTicket}">
+									<p:commandButton icon="ui-icon-print" title="Ticket" action="#{manticVentasCajaAccion.doPrintTicket}" oncomplete="PF('contenedorCaja').select(0);">
 										<f:setPropertyActionListener value="#{filtro}" target="#{manticVentasCajaAccion.attrs.seleccionTicket}" />
 									</p:commandButton>
-									<p:commandButton icon="fa fa-cart-arrow-down" title="Devolución" action="#{manticVentasCajaAccion.doDevolucion}">
+									<p:commandButton icon="fa fa-cart-arrow-down" title="Devolución" action="#{manticVentasCajaAccion.doDevolucion}" disabled="#{filtro.estatus eq 'TIMBRADA' || filtro.estatus eq 'CREDITO'}">
 										<f:setPropertyActionListener value="#{filtro}" target="#{manticVentasCajaAccion.attrs.devolucionTicket}" />
 									</p:commandButton>
-									<p:commandButton icon="fa fa-cloud-download" title="Facturar" action="#{manticVentasCajaAccion.doFacturar}" disabled="#{empty filtro.idFactura and filtro.idVentaEstatus.toLong eq 3}">
+									<p:commandButton icon="fa fa-cloud-download" title="Facturar" action="#{manticVentasCajaAccion.doFacturar}" disabled="#{filtro.estatus eq 'TIMBRADA' || filtro.estatus eq 'CREDITO'}">
 										<f:setPropertyActionListener value="#{filtro}" target="#{manticVentasCajaAccion.attrs.facturarTicket}" />
 									</p:commandButton>
 								</p:column>
@@ -1486,4 +1486,5 @@
 			</h:form>
 		</p:dialog> 
 	</ui:define>
+	<ui:param name="componenteBloqueo" value="contenedorGrupos:tablaTicket"/>
 </ui:composition>
