@@ -294,8 +294,10 @@ public class Saldos extends IBaseFilter implements Serializable {
         params.put("idClienteDeuda", seleccionado.toLong("idKey"));
         comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), -1L, -1L , seleccionado.toLong("idCliente"));
       }
-      else
+      else {
+        params.put("sortOrder", "order by	tc_mantic_clientes.razon_social,tc_mantic_clientes_deudas.registro desc");
         comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      }
       this.reporte= JsfBase.toReporte();	
       parametros= comunes.getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
