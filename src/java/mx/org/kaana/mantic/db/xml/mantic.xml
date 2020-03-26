@@ -2266,7 +2266,7 @@
       </select>
       <select id="stock">
         select      
-          stock
+          tc_mantic_inventarios.*
         from      
           tc_mantic_inventarios
         where      

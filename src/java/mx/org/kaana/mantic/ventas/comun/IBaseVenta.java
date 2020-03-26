@@ -726,8 +726,13 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				temporal.setSolicitado(this.attrs.get("solicitado")!= null);
 				temporal.setUnidadMedida(articulo.toString("unidadMedida"));
 				temporal.setPrecio(articulo.toDouble("precio"));				
-				Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
-				temporal.setStock(stock== null? 0D: stock.toDouble());
+				Entity inventario= (Entity)DaoFactory.getInstance().toEntity("TcManticInventariosDto", "stock", params);
+			  temporal.setStock(0D);
+			  temporal.setIdAutomatico(1L);
+				if(inventario!= null & inventario.size()> 0) {
+				  temporal.setStock(inventario.toDouble("stock"));
+				  temporal.setIdAutomatico(inventario.toLong("IdAutomatico"));
+				} // if
 				if(index== getAdminOrden().getArticulos().size()- 1) {
 					this.getAdminOrden().getArticulos().add(new ArticuloVenta(-1L, this.costoLibre));
 					this.getAdminOrden().toAddUltimo(this.getAdminOrden().getArticulos().size()- 1);
