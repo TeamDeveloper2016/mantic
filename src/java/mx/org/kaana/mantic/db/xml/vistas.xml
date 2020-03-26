@@ -5318,7 +5318,7 @@
 				    -1 as id_orden_detalle,
 						tc_mantic_articulos_codigos.codigo as propio,
 						tc_mantic_articulos.nombre,
-						(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= 97 limit 0, 1) as codigo,
+						(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} limit 0, 1) as codigo,
 						tc_mantic_articulos.iva,
 						tc_mantic_articulos.precio as costo,
 						tc_mantic_articulos.precio,
@@ -5338,12 +5338,12 @@
 					inner join
 						tc_mantic_almacenes on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_almacenes.id_almacen
 					inner join 
-						tc_mantic_inventarios on tc_mantic_articulos.id_articulo= tc_mantic_inventarios.id_articulo and tc_mantic_inventarios.id_almacen= 3
+						tc_mantic_inventarios on tc_mantic_articulos.id_articulo= tc_mantic_inventarios.id_articulo and tc_mantic_inventarios.id_almacen= {idAlmacen}
 					inner join
 						tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo
 					where 
-						tc_mantic_almacenes.id_empresa in (1,2)
-						and tc_mantic_almacenes.id_almacen= 3
+						tc_mantic_almacenes.id_empresa in ({sucursales})
+						and tc_mantic_almacenes.id_almacen= {idAlmacen}
 						and tc_mantic_inventarios.id_automatico= 2
 						and tc_mantic_almacenes_articulos.stock &lt;= tc_mantic_almacenes_articulos.minimo
 						and tc_mantic_articulos_codigos.id_principal= 1
