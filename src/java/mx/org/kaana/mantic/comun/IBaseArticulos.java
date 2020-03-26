@@ -148,12 +148,11 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				temporal.setUnidadMedida(articulo.toString("unidadMedida"));
 				temporal.setPrecio(articulo.toDouble("precio"));				
 				
+				// RECUPERA EL STOCK DEL ALMACEN MAS SABER SI YA FUE HUBO UN CONTEO O NO
 				Entity inventario= (Entity)DaoFactory.getInstance().toEntity("TcManticInventariosDto", "stock", params);
-			  temporal.setStock(0D);
-			  temporal.setIdAutomatico(1L);
-				if(inventario!= null & inventario.size()> 0) {
+				if(inventario!= null && inventario.size()> 0) {
 				  temporal.setStock(inventario.toDouble("stock"));
-				  temporal.setIdAutomatico(inventario.toLong("IdAutomatico"));
+				  temporal.setIdAutomatico(inventario.toLong("idAutomatico"));
 				} // if
 				// Esto es para cuando se agregan articulos de forma directa del archivo XML
 				if(articulo.containsKey("disponible")) 
