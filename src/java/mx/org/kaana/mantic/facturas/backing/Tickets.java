@@ -43,10 +43,10 @@ public class Tickets extends IBaseFilter implements Serializable {
 	private double importe;
 	private Entity pivote;
 	private List<Entity> acumulado;
-	private List<String> folios;
+	protected List<String> folios;
 	private FormatCustomLazy lazyTicket;
 	private List<Long> ventaPublico;
-	private StringBuilder idClientes;
+	protected StringBuilder idClientes;
 
 	public double getImporte() {
 		return importe;
@@ -103,6 +103,10 @@ public class Tickets extends IBaseFilter implements Serializable {
  
   @Override
   public void doLoad() {
+		this.doLoadComun("3, 6");
+	}
+	
+  protected void doLoadComun(String estatusTickets) {
     List<Columna> columns     = null;
 		Map<String, Object> params= this.toPrepare();
     try {
@@ -112,6 +116,7 @@ public class Tickets extends IBaseFilter implements Serializable {
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
       params.put("sortOrder", "order by tc_mantic_ventas.registro desc");
+			params.put("estatusTickets", estatusTickets);
       this.lazyModel = new FormatTicket("VistaVentasDto", "tickets", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try

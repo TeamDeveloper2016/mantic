@@ -2155,6 +2155,7 @@
 				select
 					tc_mantic_ventas.id_venta as id_key,
 					tc_mantic_ventas.id_venta,
+					tc_mantic_ventas.id_venta_estatus,
 					tc_mantic_ventas.ticket as consecutivo,
 					tc_mantic_empresas.id_empresa,  
 					tc_mantic_empresas.clave as empresa,  
@@ -2184,7 +2185,7 @@
 					tc_mantic_facturas on tc_mantic_ventas.id_factura= tc_mantic_facturas.id_factura
 				where
 					tc_mantic_ventas.id_empresa in ({idEmpresa})
-			    and tc_mantic_ventas.id_venta_estatus in (3, 6)
+			    and tc_mantic_ventas.id_venta_estatus in ({estatusTickets})
 					and {condicion}
 				group by
 					tc_mantic_ventas.id_venta,

@@ -10,6 +10,7 @@ import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.kajool.db.dto.TcManticFacturasGruposDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
@@ -325,9 +326,18 @@ public class UnirFacturas extends TransaccionFactura {
 		try {
 			params= new HashMap<>();
 			params.put("idFactura", this.orden.getIdFactura());
-			for(Entity venta: this.tickets){
+			for(Entity venta: this.tickets) {
 				if(DaoFactory.getInstance().update(sesion, TcManticVentasDto.class, venta.getKey(), params)>= 1L)
 					count++;
+				TcManticFacturasGruposDto grupo= new TcManticFacturasGruposDto(
+					this.orden.getIdFactura(), // Long idFactura, 
+					-1L, // Long idFacturaGrupo, 
+					JsfBase.getIdUsuario(), // Long idUsuario, 
+					1L, // Long idAplicado, 
+				  venta.getKey(), // Long idVenta
+					venta.toLong("idVentaEstatus") // Long idVentaEstatus
+				);
+				DaoFactory.getInstance().insert(grupo);
 			} // for
 			regresar= count==this.tickets.size();
 		} // try

@@ -7,6 +7,24 @@
   </model>
 
   <dml>
+    <unit id="TcManticFacturasGruposDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_facturas_grupos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_facturas_grupos
+        where      
+          id_factura = {idFactura} and id_venta = {idVenta}
+      </select>
+    </unit>		
     <unit id="TcManticArchivosDto">
       <select id="row">
         select      
@@ -2301,6 +2319,17 @@
           tc_mantic_inventarios
 				order by
 				  ejercicio desc
+      </select>
+			<select id="existe">
+        select      
+          consecutivo
+        from      
+          tc_mantic_inventarios
+				where
+				  id_tipo_movimiento= {idTipoMovimiento}
+				  and consecutivo= '{consecutivo}'
+				  and id_almacen= {idAlmacen}
+				  and id_articulo= {idArticulo}
       </select>
 			<delete id="rows">
         delete from tc_mantic_inventarios where id_inventario = {idInventario}

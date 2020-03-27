@@ -126,46 +126,53 @@ public abstract class ComunInventarios extends IBaseTnx {
 			params=new HashMap<>();
 			params.put("idAlmacen", idDestino);
 			params.put("idArticulo", articulo.getIdArticulo());
-			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(sesion, TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
-			if(inventario== null)
-			  this.toCreateInvetario(sesion, articulo, idDestino, true);
-			else {
-				inventario.setEntradas(Numero.toRedondearSat(inventario.getEntradas()+ diferencia));
-				inventario.setStock(Numero.toRedondearSat(Math.abs(inventario.getInicial()+ inventario.getEntradas())- inventario.getSalidas()));
-  			DaoFactory.getInstance().update(sesion, inventario);
-			} // if
-			TcManticAlmacenesArticulosDto origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(sesion, TcManticAlmacenesArticulosDto.class, params);
-			if(origen== null) 
-				origen= this.toCreateAlmacenArticulo(sesion, articulo, idDestino, umbrales);
-	
-			// generar un registro en la bitacora de movimientos de los articulos 
-			TcManticMovimientosDto movimiento= new TcManticMovimientosDto(
-			  consecutivo, // String consecutivo, 
-				4L, // Long idTipoMovimiento, 
-				JsfBase.getIdUsuario(), // Long idUsuario, 
-				idDestino, // Long idAlmacen, 
-				-1L, // Long idMovimiento, 
-				diferencia, // Double cantidad, 
-				articulo.getIdArticulo(), // Long idArticulo, 
-				origen.getStock(), // Double stock, 
-				Numero.toRedondearSat(origen.getStock()+ diferencia), // Double calculo
-				null // String observaciones
-		  );
-			DaoFactory.getInstance().insert(sesion, movimiento);
+			params.put("consecutivo", consecutivo);
+			params.put("idTipoMovimiento", 4);
+			Value existe= (Value)DaoFactory.getInstance().toField(sesion, "TcManticInventariosDto", "existe", params, "consecutivo");
+			if(existe== null) {
+				TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(sesion, TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
+				if(inventario== null)
+					this.toCreateInvetario(sesion, articulo, idDestino, true);
+				else {
+					inventario.setEntradas(Numero.toRedondearSat(inventario.getEntradas()+ diferencia));
+					inventario.setStock(Numero.toRedondearSat(Math.abs(inventario.getInicial()+ inventario.getEntradas())- inventario.getSalidas()));
+					DaoFactory.getInstance().update(sesion, inventario);
+				} // if
+				TcManticAlmacenesArticulosDto origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(sesion, TcManticAlmacenesArticulosDto.class, params);
+				if(origen== null) 
+					origen= this.toCreateAlmacenArticulo(sesion, articulo, idDestino, umbrales);
 
-			origen.setStock(Numero.toRedondearSat(origen.getStock()+ diferencia));
-			DaoFactory.getInstance().update(sesion, origen);
-			
-			Long idEmpresa= JsfBase.getAutentifica().getEmpresa().getIdEmpresa();
-			params.put("idAlmacen", idDestino);
-			Value empresa= DaoFactory.getInstance().toField(sesion, "TcManticAlmacenesDto", "empresa", params, "idEmpresa");
-			if(empresa.getData()!= null)
-				idEmpresa= empresa.toLong();
-			// QUITAR DE LAS VENTAS PERDIDAS LOS ARTICULOS QUE FUERON YA SURTIDOS EN EL ALMACEN
-			params.put("idArticulo", articulo.getIdArticulo());
-			params.put("idEmpresa", idEmpresa);
-			params.put("observaciones", "ESTE ARTICULO FUE SURTIDO CON NO. TRANSFERENCIA "+ consecutivo+ " EL DIA "+ Fecha.getHoyExtendido());
-			DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, params);
+				// generar un registro en la bitacora de movimientos de los articulos 
+				TcManticMovimientosDto movimiento= new TcManticMovimientosDto(
+					consecutivo, // String consecutivo, 
+					4L, // Long idTipoMovimiento, 
+					JsfBase.getIdUsuario(), // Long idUsuario, 
+					idDestino, // Long idAlmacen, 
+					-1L, // Long idMovimiento, 
+					diferencia, // Double cantidad, 
+					articulo.getIdArticulo(), // Long idArticulo, 
+					origen.getStock(), // Double stock, 
+					Numero.toRedondearSat(origen.getStock()+ diferencia), // Double calculo
+					null // String observaciones
+				);
+				DaoFactory.getInstance().insert(sesion, movimiento);
+
+				origen.setStock(Numero.toRedondearSat(origen.getStock()+ diferencia));
+				DaoFactory.getInstance().update(sesion, origen);
+
+				Long idEmpresa= JsfBase.getAutentifica().getEmpresa().getIdEmpresa();
+				params.put("idAlmacen", idDestino);
+				Value empresa= DaoFactory.getInstance().toField(sesion, "TcManticAlmacenesDto", "empresa", params, "idEmpresa");
+				if(empresa.getData()!= null)
+					idEmpresa= empresa.toLong();
+				// QUITAR DE LAS VENTAS PERDIDAS LOS ARTICULOS QUE FUERON YA SURTIDOS EN EL ALMACEN
+				params.put("idArticulo", articulo.getIdArticulo());
+				params.put("idEmpresa", idEmpresa);
+				params.put("observaciones", "ESTE ARTICULO FUE SURTIDO CON NO. TRANSFERENCIA "+ consecutivo+ " EL DIA "+ Fecha.getHoyExtendido());
+				DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, params);
+			} // if
+			else 
+				LOG.info("Verificar porque se esta invocando dos veces cuando solo deberia de ser una sola vez !");
 		} // try
 		finally {
 			Methods.clean(params);
