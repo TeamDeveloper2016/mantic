@@ -17,7 +17,14 @@
 				'contenedorGrupos\\:alto'           : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:largo'          : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:descripcion'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:menudeo'        : {validaciones: 'requerido', mascara: 'flotante'},
+				'contenedorGrupos\\:medio'          : {validaciones: 'requerido', mascara: 'flotante'},
+				'contenedorGrupos\\:mayoreo'        : {validaciones: 'requerido', mascara: 'flotante'},
 				'contenedorGrupos\\:sat'            : {validaciones: 'libre', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:iva'            : {validaciones: 'requerido', mascara: 'flotante'},
+				'contenedorGrupos\\:pesoEstimado'   : {validaciones: 'requerido', mascara: 'flotante'},
+				'contenedorGrupos\\:desperidicio'   : {validaciones: 'requerido', mascara: 'flotante'},
+				'contenedorGrupos\\:idTipoArticulo' : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:meta'           : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:metaDescripcion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:metaTeclado'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},				
@@ -113,8 +120,16 @@
 								<p:outputLabel for="idBarras" value="Código de barras:"/>
 								<p:inputSwitch id="idBarras" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.idBarras}" offLabel="NO" onLabel="SI"/>
 								<p:spacer width="1px"/><p:separator/>
-								<p:outputLabel for="idVigente" value="Vigente/Activo:" styleClass="janal-color-blue strong"/>
-								<p:inputSwitch id="idVigente" styleClass="janal-wid-100-txt janal-color-blue strong" value="#{manticCatalogosArticulosAccion.registroArticulo.idVigente}" offLabel="NO" onLabel="SI"/>
+								<p:outputLabel for="idVigente" value="Vigente:" styleClass="janal-color-blue strong"/>
+								<p:selectOneMenu id="idVigente" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.idVigente}" styleClass="janal-wid-100-txt">									
+									<f:selectItem itemLabel="SI" itemValue="1"/>
+									<f:selectItem itemLabel="NO" itemValue="2"/>
+								</p:selectOneMenu>								
+								<p:outputLabel for="idDescontinuado" value="Descontinuado:" styleClass="janal-color-blue strong"/>
+								<p:selectOneMenu id="idDescontinuado" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.idDescontinuado}" styleClass="janal-wid-100-txt">									
+									<f:selectItem itemLabel="SI" itemValue="1"/>
+									<f:selectItem itemLabel="NO" itemValue="2"/>
+								</p:selectOneMenu>								
               </p:panelGrid>
 						</p:tab>						
             <p:tab id="tabCodigos" title="Códigos">														

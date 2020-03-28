@@ -620,7 +620,8 @@ public class Transaccion extends IBaseTnx {
 											2L, // Long idBarras, 
 											"0", // String descuento, 
 											"0", // String extra, 
-											null // String idFacturama
+											null, // String idFacturama
+											2L // String idDescontinuado
 										);
 										TcManticArticulosDto identico= this.toFindArticuloIdentico(sesion, articulo.toMap(), 1L);
 										if(identico== null)
@@ -864,7 +865,8 @@ public class Transaccion extends IBaseTnx {
 										2L, // Long idBarras, 
 										"0", // String descuento, 
 										"0", // String extra, 
-										null // String idFacturama
+										null, // String idFacturama
+										2L // String idDescontinuado
 									);
 									TcManticArticulosDto identico= this.toFindArticuloIdentico(sesion, refaccion.toMap(), 1L);
 									if(identico== null)
@@ -1071,7 +1073,8 @@ public class Transaccion extends IBaseTnx {
 										2L, // Long idBarras, 
 										"0", // String descuento, 
 										"0", // String extra, 
-										null // String idFacturama
+										null, // String idFacturama
+										2L // String idDescontinuado
 									);
 									TcManticArticulosDto identico= this.toFindArticuloIdentico(sesion, servicio.toMap(), 1L);
 									if(identico== null)

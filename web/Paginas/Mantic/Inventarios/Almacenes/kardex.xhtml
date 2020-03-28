@@ -148,32 +148,45 @@
             <p:ajax event="tabChange" listener="#{manticInventariosAlmacenesKardex.doTabChange}" process="@this" update="@(.filas)" oncomplete="janal.refresh();"/>						
             <p:tab title="General">			
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-70, janal-wid-30">	
-								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">		
-									<p:outputLabel for="clave" value="Código:"/>
-									<p:inputText id="clave" value="#{manticInventariosAlmacenesKardex.attrs.articulo.propio}" styleClass="janal-wid-90 filas" readonly="true"/>
-									<p:outputLabel for="sat" value="Código SAT:"/>
-									<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-86, janal-wid-col-38">	
-									  <p:inputText id="sat" value="#{manticInventariosAlmacenesKardex.attrs.sat}" styleClass="janal-wid-95 janal-column-right filas" disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}"/>
-										<p:commandButton title="Actualizar código del SAT" icon="fa fa-check" process="@this sat" update="@(.filas)" action="#{manticInventariosAlmacenesKardex.doChangeCodigoSat}" styleClass="janal-text-white janal-column-center filas" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}"/> 
-  								</p:panelGrid>
-									<p:outputLabel for="nombre" value="Nombre:"/>
-									<p:inputText id="nombre" value="#{manticInventariosAlmacenesKardex.attrs.articulo.nombre}" styleClass="janal-wid-90 filas" readonly="true"/>
-									<p:spacer width="1px"/><p:separator/>
-									<p:outputLabel for="empaque" value="Empaque:"/>
-									<p:inputText id="empaque" value="#{manticInventariosAlmacenesKardex.attrs.articulo.empaque}" styleClass="janal-wid-90 filas" readonly="true"/>
-									<p:outputLabel for="unidadMedida" value="Unidad medida:"/>
-									<p:inputText id="unidadMedida" value="#{manticInventariosAlmacenesKardex.attrs.articulo.unidadMedida}" styleClass="janal-wid-90 filas" readonly="true"/>
-									<p:outputLabel for="piezasPor" value="Piezas por empaque:"/>
-									<p:inputText id="piezasPor" value="#{manticInventariosAlmacenesKardex.attrs.articulo.cantidad}" styleClass="janal-wid-90 filas" readonly="true"/>
-									<p:spacer width="1px"/><p:separator/>
-									<p:outputLabel for="fechaAlta" value="Fecha alta:"/>
-									<p:inputText id="fechaAlta" value="#{manticInventariosAlmacenesKardex.attrs.articulo.registro}" styleClass="janal-wid-90 filas" readonly="true"/>
-									<p:outputLabel for="ulitmoCambio" value="Último cambio:"/>
-									<p:inputText id="ulitmoCambio" value="#{manticInventariosAlmacenesKardex.attrs.ultimo}" styleClass="janal-wid-90 filas" readonly="true"/>
-									<p:outputLabel for="redondear" value="Redondear:"/>
-									<p:inputSwitch id="redondear" styleClass="janal-wid-100-txt filas" value="#{manticInventariosAlmacenesKardex.attrs.redondear}" offLabel="NO" onLabel="SI" disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}">
-										<p:ajax listener="#{manticInventariosAlmacenesKardex.doChangeRedondear}" process="@this" update="@none" />
-									</p:inputSwitch>	
+								<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">		
+									<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">		
+										<p:outputLabel for="clave" value="Código:"/>
+										<p:inputText id="clave" value="#{manticInventariosAlmacenesKardex.attrs.articulo.propio}" styleClass="janal-wid-90 filas" readonly="true"/>
+										<p:outputLabel for="sat" value="Código SAT:"/>
+										<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-86, janal-wid-col-38">	
+											<p:inputText id="sat" value="#{manticInventariosAlmacenesKardex.attrs.sat}" styleClass="janal-wid-95 janal-column-right filas" disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}"/>
+											<p:commandButton title="Actualizar código del SAT" icon="fa fa-check" process="@this sat" update="@(.filas)" action="#{manticInventariosAlmacenesKardex.doChangeCodigoSat}" styleClass="janal-text-white janal-column-center filas" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}"/> 
+										</p:panelGrid>
+										<p:outputLabel for="nombre" value="Nombre:"/>
+										<p:inputText id="nombre" value="#{manticInventariosAlmacenesKardex.attrs.articulo.nombre}" styleClass="janal-wid-90 filas" readonly="true"/>
+										<p:spacer width="1px"/><p:separator/>
+										<p:outputLabel for="empaque" value="Empaque:"/>
+										<p:inputText id="empaque" value="#{manticInventariosAlmacenesKardex.attrs.articulo.empaque}" styleClass="janal-wid-90 filas" readonly="true"/>
+										<p:outputLabel for="unidadMedida" value="Unidad medida:"/>
+										<p:inputText id="unidadMedida" value="#{manticInventariosAlmacenesKardex.attrs.articulo.unidadMedida}" styleClass="janal-wid-90 filas" readonly="true"/>
+										<p:outputLabel for="piezasPor" value="Piezas por empaque:"/>
+										<p:inputText id="piezasPor" value="#{manticInventariosAlmacenesKardex.attrs.articulo.cantidad}" styleClass="janal-wid-90 filas" readonly="true"/>
+										<p:spacer width="1px"/><p:separator/>
+										<p:outputLabel for="fechaAlta" value="Fecha alta:"/>
+										<p:inputText id="fechaAlta" value="#{manticInventariosAlmacenesKardex.attrs.articulo.registro}" styleClass="janal-wid-90 filas" readonly="true"/>
+										<p:outputLabel for="ulitmoCambio" value="Último cambio:"/>
+										<p:inputText id="ulitmoCambio" value="#{manticInventariosAlmacenesKardex.attrs.ultimo}" styleClass="janal-wid-90 filas" readonly="true"/>
+										<p:spacer width="1px"/><p:separator/>
+									</p:panelGrid>		
+									<p:panelGrid columns="6" layout="grid" styleClass="janal-wid-100">		
+										<p:outputLabel for="idRedondear" value="Redondear:"/>
+										<p:inputSwitch id="idRedondear" styleClass="janal-wid-100-txt filas" value="#{manticInventariosAlmacenesKardex.attrs.idRedondear}" offLabel="NO" onLabel="SI" disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}">
+											<p:ajax listener="#{manticInventariosAlmacenesKardex.doChangeRedondear}" process="@this" update="@none" />
+										</p:inputSwitch>	
+										<p:outputLabel for="idVigente" value="Vigente:" styleClass="janal-color-blue strong"/>
+										<p:inputSwitch id="idVigente" styleClass="janal-wid-100-txt janal-color-blue strong" value="#{manticCatalogosArticulosAccion.registroArticulo.idVigente}" offLabel="NO" onLabel="SI">
+											<p:ajax listener="#{manticInventariosAlmacenesKardex.doChangeVigente}" process="@this" update="@none" />
+										</p:inputSwitch>	
+										<p:outputLabel for="idDescontinuado" value="Descontinuado:" styleClass="janal-color-blue strong"/>
+										<p:inputSwitch id="idDescontinuado" styleClass="janal-wid-100-txt janal-color-blue strong" value="#{manticCatalogosArticulosAccion.registroArticulo.idDescontinuado}" offLabel="NO" onLabel="SI">
+											<p:ajax listener="#{manticInventariosAlmacenesKardex.doChangeDescontinuado}" process="@this" update="@none" />
+										</p:inputSwitch>	
+									</p:panelGrid>
 								</p:panelGrid>
 								<p:panel id="panelImage" header="#{manticInventariosAlmacenesKardex.attrs.articulo.propio}" styleClass="TexAlCenter janal-wid-100-txt" style="height:100%">
 									<a id="source-image" data-magnify="gallery" data-caption="#{manticInventariosAlmacenesKardex.attrs.articulo.nombre}" data-group="icon-gallery" href="" title="Click para ver más grande la imagen">

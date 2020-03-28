@@ -47,6 +47,8 @@ public class Transaccion extends IBaseTnx {
 	private String descuento;
 	private String extra;
 	private String sat;
+	private Long idVigente;
+	private Long idDescontinuado;
 	private List<TiposVentas> articulos;
 	protected String messageError;		
 	private UISelectEntity almacen;
@@ -61,9 +63,11 @@ public class Transaccion extends IBaseTnx {
 		this.cantidad  = cantidad;
 	} // Transaccion
 	
-	public Transaccion(Long idArticulo, Long idRedondear) {
+	public Transaccion(Long idArticulo, Long idRedondear, Long idVigente, Long idDescontinuado) {
 		this.idArticulo= idArticulo;
 		this.idRedondear= idRedondear;
+		this.idVigente= idVigente;
+		this.idDescontinuado= idDescontinuado;
 	}
 
 	public Transaccion(Long idArticulo, String sat) {
@@ -128,6 +132,18 @@ public class Transaccion extends IBaseTnx {
 				case PROCESAR:
 					articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.idArticulo);
 					articulo.setIdRedondear(this.idRedondear);
+					articulo.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+					regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
+					break;
+				case CALCULAR:
+					articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.idArticulo);
+					articulo.setIdVigente(this.idVigente);
+					articulo.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+					regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
+					break;
+				case LISTAR:
+					articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.idArticulo);
+					articulo.setIdDescontinuado(this.idDescontinuado);
 					articulo.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 					regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
 					break;

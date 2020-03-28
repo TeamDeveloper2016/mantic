@@ -89,7 +89,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
   	this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Mantic/Ventas/accion": JsfBase.getFlashAttribute("retorno"));
   	this.attrs.put("buscaPorCodigo", false);
 		this.attrs.put("costoMayorMenor", 0);
-  	this.attrs.put("redondear", false);
+  	this.attrs.put("idRedondear", false);
+  	this.attrs.put("idVigente", false);
+  	this.attrs.put("idDecontinuar", false);
   	this.attrs.put("sat", Constantes.CODIGO_SAT);
   	this.attrs.put("ultimoCosto", 0.0D);
 		this.adminKardex= new AdminKardex(-1L, false);
@@ -148,7 +150,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
 				if(solicitado!= null) {
 					UIBackingUtilities.toFormatEntity(solicitado, columns);
 					this.attrs.put("articulo", solicitado);
-					this.attrs.put("redondear", solicitado.toLong("idRedondear")== 1L);
+					this.attrs.put("idRedondear", solicitado.toLong("idRedondear")== 1L);
+					this.attrs.put("idVigente", solicitado.toLong("idVigente")== 1L);
+					this.attrs.put("idDescontinuado", solicitado.toLong("idDescontinuado")== 1L);
         	this.attrs.put("sat", solicitado.toString("sat"));
         	this.attrs.put("ultimo", solicitado.toString("actualizado"));
 					Periodo periodo= new Periodo();
@@ -182,7 +186,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			else {
 				this.attrs.put("existe", "<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
 				this.attrs.put("articulo", null);
-				this.attrs.put("redondear", false);
+				this.attrs.put("idRedondear", false);
+				this.attrs.put("idVigente", false);
+				this.attrs.put("idDescontinuado", true);
       	this.attrs.put("sat", Constantes.CODIGO_SAT);
        	this.attrs.put("ultimo", "");
 				this.attrs.put("ultimoCosto", 0.0D);
@@ -884,11 +890,11 @@ public class Kardex extends IBaseAttribute implements Serializable {
     Transaccion transaccion= null;
 		EAccion eaccion        = EAccion.PROCESAR;
     try {			
-			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (Boolean)this.attrs.get("redondear")? 1L: 2L);
+			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (Boolean)this.attrs.get("idRedondear")? 1L: 2L, -1L, -1L);
 			if (transaccion.ejecutar(eaccion)) {
-				JsfBase.addMessage("Se modificaron el tipo de redondeo del articulo.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se modificó el atributo de redondeo del articulo.", ETipoMensaje.INFORMACION);
 				for (TiposVentas item: this.adminKardex.getTiposVentas()) {
-					item.setRounded((Boolean)this.attrs.get("redondear"));
+					item.setRounded((Boolean)this.attrs.get("idRedondear"));
 				} // for
 				this.doUpdateCosto((Double)this.attrs.get("precio"), true);
 			}	// if
@@ -1023,6 +1029,38 @@ public class Kardex extends IBaseAttribute implements Serializable {
  	  UISelectEntity almacen= (UISelectEntity)this.attrs.get("identificado");
 		this.attrs.put("min", almacen.toDouble("min"));
 		this.attrs.put("max", almacen.toDouble("max"));
+	}
+
+	public void doChangeVigente() {
+    Transaccion transaccion= null;
+		EAccion eaccion        = EAccion.CALCULAR;
+    try {			
+			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), -1L, (Boolean)this.attrs.get("idVigente")? 1L: 2L, -1L);
+			if (transaccion.ejecutar(eaccion))
+				JsfBase.addMessage("Se modificò el atributo de vigencia del articulo.", ETipoMensaje.INFORMACION);
+			else 
+				JsfBase.addMessage("Ocurrió un error al hacer el cambio de vigente.", ETipoMensaje.ERROR);      			
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+	}
+
+	public void doChangeDescontinuado() {
+    Transaccion transaccion= null;
+		EAccion eaccion        = EAccion.LISTAR;
+    try {			
+			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), -1L, -1L, (Boolean)this.attrs.get("idDescontinuado")? 1L: 2L);
+			if (transaccion.ejecutar(eaccion))
+				JsfBase.addMessage("Se cambio el atributo de descontinuado del articulo.", ETipoMensaje.INFORMACION);
+			else 
+				JsfBase.addMessage("Ocurrió un error al hacer el cambio de descontinuado.", ETipoMensaje.ERROR);      			
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
 	}
 
 }
