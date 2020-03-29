@@ -5347,6 +5347,7 @@
 					where 
 						tc_mantic_almacenes.id_empresa in ({sucursales})
 						and tc_mantic_almacenes.id_almacen= {idAlmacen}
+				    and tc_mantic_articulos.id_descontinuado= 2
 						and tc_mantic_inventarios.id_automatico= 2
 						and tc_mantic_almacenes_articulos.stock &lt;= tc_mantic_almacenes_articulos.minimo
 						and tc_mantic_articulos_codigos.id_principal= 1
@@ -5412,6 +5413,7 @@
 						where 
 							tc_mantic_almacenes.id_empresa in ({sucursales})
 							and tc_mantic_almacenes.id_almacen= {idAlmacen}
+  				    and tc_mantic_articulos.id_descontinuado= 2
 							and tc_mantic_inventarios.id_automatico= 2
 							and tc_mantic_almacenes_articulos.stock &lt;= tc_mantic_almacenes_articulos.minimo
 							and tc_mantic_articulos_codigos.id_principal= 1
@@ -6024,6 +6026,7 @@
           tc_mantic_articulos_codigos on tc_mantic_faltantes.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
 				where 
 				  tc_mantic_faltantes.id_vigente= 1
+				  and tc_mantic_articulos.id_descontinuado= 2
 				  and tc_mantic_faltantes.id_empresa= {idSucursal}
 				order by
 				   tc_mantic_faltantes.registro desc
@@ -8636,6 +8639,7 @@
           tc_mantic_articulos_codigos on tc_mantic_faltantes.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
         where 
           tc_mantic_faltantes.id_vigente= 1
+				  and tc_mantic_articulos.id_descontinuado= 2
           and tc_mantic_faltantes.id_empresa in ({idEmpresa})
           and {condicion}
           {sortOrder}

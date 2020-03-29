@@ -128,7 +128,7 @@ public abstract class ComunInventarios extends IBaseTnx {
 			params.put("idArticulo", articulo.getIdArticulo());
 			params.put("consecutivo", consecutivo);
 			params.put("idTipoMovimiento", 4);
-			Value existe= (Value)DaoFactory.getInstance().toField(sesion, "TcManticInventariosDto", "existe", params, "consecutivo");
+			Value existe= (Value)DaoFactory.getInstance().toField(sesion, "TcManticMovimientosDto", "existe", params, "consecutivo");
 			if(existe== null) {
 				TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(sesion, TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
 				if(inventario== null)

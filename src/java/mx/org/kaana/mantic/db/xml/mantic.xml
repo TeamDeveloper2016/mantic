@@ -247,6 +247,17 @@
         where      
           id_movimiento = {idMovimiento}
       </select>
+			<select id="existe">
+        select      
+          consecutivo
+        from      
+          tc_mantic_movimientos
+				where
+				  id_tipo_movimiento= {idTipoMovimiento}
+				  and consecutivo= '{consecutivo}'
+				  and id_almacen= {idAlmacen}
+				  and id_articulo= {idArticulo}
+      </select>
     </unit>	
     <unit id="TcManticTiposMovimientosDto">
       <select id="row">
@@ -2319,17 +2330,6 @@
           tc_mantic_inventarios
 				order by
 				  ejercicio desc
-      </select>
-			<select id="existe">
-        select      
-          consecutivo
-        from      
-          tc_mantic_inventarios
-				where
-				  id_tipo_movimiento= {idTipoMovimiento}
-				  and consecutivo= '{consecutivo}'
-				  and id_almacen= {idAlmacen}
-				  and id_articulo= {idArticulo}
       </select>
 			<delete id="rows">
         delete from tc_mantic_inventarios where id_inventario = {idInventario}
