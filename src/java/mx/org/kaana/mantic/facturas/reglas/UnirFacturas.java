@@ -337,9 +337,9 @@ public class UnirFacturas extends TransaccionFactura {
 				  venta.getKey(), // Long idVenta
 					venta.toLong("idVentaEstatus") // Long idVentaEstatus
 				);
-				DaoFactory.getInstance().insert(grupo);
+				DaoFactory.getInstance().insert(sesion, grupo);
 			} // for
-			regresar= count==this.tickets.size();
+			regresar= count== this.tickets.size();
 		} // try
 		finally{
 			this.messageError= "Error al actualizar la factura en las ventas.";
