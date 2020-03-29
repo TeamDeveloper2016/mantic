@@ -266,7 +266,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
-    return regresar;
+    return regresar.concat(Constantes.REDIRECIONAR);
   } // doCancelar
 	
 	@Override
