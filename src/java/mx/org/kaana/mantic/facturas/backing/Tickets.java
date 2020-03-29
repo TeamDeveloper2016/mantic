@@ -41,11 +41,11 @@ public class Tickets extends IBaseFilter implements Serializable {
   private static final long serialVersionUID= 8743667741599428332L;
 	private static final Log LOG              = LogFactory.getLog(Tickets.class);	
 	private double importe;
-	private Entity pivote;
+	protected Entity pivote;
 	private List<Entity> acumulado;
 	protected List<String> folios;
 	private FormatCustomLazy lazyTicket;
-	private List<Long> ventaPublico;
+	protected List<Long> ventaPublico;
 	protected StringBuilder idClientes;
 
 	public double getImporte() {
