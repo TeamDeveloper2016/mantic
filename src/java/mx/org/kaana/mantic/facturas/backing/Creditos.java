@@ -3,6 +3,7 @@ package mx.org.kaana.mantic.facturas.backing;
 import java.io.Serializable;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.libs.pagina.JsfBase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -18,4 +19,10 @@ public class Creditos extends Tickets implements Serializable {
 		this.doLoadComun("4");
   } // doLoad
 
+	@Override
+	public String doAceptar() {
+		String regresar= super.doAceptar();
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Facturas/creditos");
+		return regresar;
+	} // doAceptar
 }
