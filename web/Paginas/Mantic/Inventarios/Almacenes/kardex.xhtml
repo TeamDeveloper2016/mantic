@@ -179,11 +179,11 @@
 											<p:ajax listener="#{manticInventariosAlmacenesKardex.doChangeRedondear}" process="@this" update="@none" />
 										</p:inputSwitch>	
 										<p:outputLabel for="idVigente" value="Vigente:" styleClass="janal-color-blue strong"/>
-										<p:inputSwitch id="idVigente" styleClass="janal-wid-100-txt janal-color-blue strong" value="#{manticCatalogosArticulosAccion.registroArticulo.idVigente}" offLabel="NO" onLabel="SI">
+										<p:inputSwitch id="idVigente" styleClass="janal-wid-100-txt janal-color-blue strong" value="#{manticInventariosAlmacenesKardex.attrs.idVigente}" offLabel="NO" onLabel="SI">
 											<p:ajax listener="#{manticInventariosAlmacenesKardex.doChangeVigente}" process="@this" update="@none" />
 										</p:inputSwitch>	
 										<p:outputLabel for="idDescontinuado" value="Descontinuado:" styleClass="janal-color-blue strong"/>
-										<p:inputSwitch id="idDescontinuado" styleClass="janal-wid-100-txt janal-color-blue strong" value="#{manticCatalogosArticulosAccion.registroArticulo.idDescontinuado}" offLabel="NO" onLabel="SI">
+										<p:inputSwitch id="idDescontinuado" styleClass="janal-wid-100-txt janal-color-blue strong" value="#{manticInventariosAlmacenesKardex.attrs.idDescontinuado}" offLabel="NO" onLabel="SI">
 											<p:ajax listener="#{manticInventariosAlmacenesKardex.doChangeDescontinuado}" process="@this" update="@none" />
 										</p:inputSwitch>	
 									</p:panelGrid>
