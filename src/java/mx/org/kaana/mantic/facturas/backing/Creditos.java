@@ -19,7 +19,7 @@ public class Creditos extends Tickets implements Serializable {
 
   @Override
   public void doLoad() {
-		this.doLoadComun("4");
+		super.doLoad();
   } // doLoad
 
 	@Override
