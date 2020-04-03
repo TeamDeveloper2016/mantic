@@ -103,7 +103,7 @@ public class Tickets extends IBaseFilter implements Serializable {
  
   @Override
   public void doLoad() {
-		this.doLoadComun("3, 6");
+		this.doLoadComun("3, 6, 4");
 	}
 	
   protected void doLoadComun(String estatusTickets) {
