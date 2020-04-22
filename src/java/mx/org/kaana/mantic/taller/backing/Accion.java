@@ -183,7 +183,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 			if(this.attrs.get("busqueda")!= null && this.attrs.get("busqueda").toString().length()> 3){
 				params = new HashMap<>();      
 				params.put(Constantes.SQL_CONDICION, "upper(razon_social) like upper('%".concat(this.attrs.get("busqueda").toString()).concat("%')"));
-				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+				// params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
 				columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));			
 				columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));			
 				clientes = UIEntity.build("VistaClientesDto", "findRazonSocial", params, columns, Constantes.SQL_TODOS_REGISTROS);      

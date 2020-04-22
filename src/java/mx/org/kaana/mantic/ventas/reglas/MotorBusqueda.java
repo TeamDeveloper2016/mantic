@@ -86,7 +86,8 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
-			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
+			// params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
+			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_cliente=" + this.idCliente);
 			regresar= (Entity) DaoFactory.getInstance().toEntity("VistaClientesDto", "findRazonSocial", params);
 		} // try
