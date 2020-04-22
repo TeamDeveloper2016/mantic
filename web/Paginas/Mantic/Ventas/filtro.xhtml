@@ -11,14 +11,14 @@
 		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryTicketJs}"/>
     <script type="text/javascript">
       Janal.Control.fields = {
-        'idEmpresa'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'consecutivo'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'idCliente'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'fechaInicio'    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        'fechaTermino'   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        'montoInicio'    : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
-        'montoTermino'   : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
-        'idVentaEstatus' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
+        idEmpresa     : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        consecutivo   : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'consecutivo'},
+			 	razonSocial   : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        fechaInicio   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        fechaTermino  : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        montoInicio   : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
+        montoTermino  : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
+        idVentaEstatus: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
       };
 			
 			fieldsDialog= {
@@ -64,20 +64,20 @@
               </p:selectOneMenu>
               <p:outputLabel for="consecutivo" value="No. cuenta:"/>
               <p:inputText id="consecutivo" value="#{manticVentasFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
-              <p:outputLabel for="idCliente" value="Cliente:"/>
-              <p:selectOneMenu id="idCliente" value="#{manticVentasFiltro.attrs.idCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-                <f:selectItems value="#{manticVentasFiltro.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
-                <p:column headerText="Clave">
-                  <h:outputText value="#{item.clave}"/>
-                </p:column>   
-                <p:column headerText="Nombre">
-                  <h:outputText value="#{item.nombre}"/>
-                </p:column>   
-                <p:column styleClass="janal-column-right" headerText="Limite credito">
-                  <h:outputText value="#{item.limiteCredito}"/>
-                </p:column>   
-              </p:selectOneMenu>
+              <p:outputLabel for="razonSocial" value="Cliente:"/>
+              <p:autoComplete id="razonSocial" placeholder="RFC o nombre" var="customCliente" itemLabel="#{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticVentasFiltro.attrs.cliente}" completeMethod="#{manticVentasFiltro.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
+								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticVentasFiltro.doAsignaCliente}" oncomplete="janal.desbloquear();"/>
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
+										<h:outputText value="Clave" />
+										<h:outputText value="#{customCliente.clave}"/>
+										<h:outputText value="RFC:" />
+										<h:outputText value="#{customCliente.rfc}"/>
+										<h:outputText value="Razón social:"/>
+										<h:outputText value="#{customCliente.razonSocial}"/>												
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
               <p:outputLabel for="codigo" value="Código:"/>
               <p:autoComplete id="codigo" placeholder="ej. CT123" var="customCodigo" itemLabel="#{customCodigo.propio}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{customCodigo}" value="#{manticVentasFiltro.attrs.codigo}" completeMethod="#{manticVentasFiltro.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
 								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticVentasFiltro.doAsignaCodigo}" oncomplete="janal.desbloquear();"/>
@@ -109,6 +109,7 @@
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticVentasFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticVentasFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+							<p:outputLabel for="montoInicio" value="Monto inicio:"/>
 							<p:inputText id="montoInicio" styleClass="janal-wid-100-txt" value="#{manticVentasFiltro.attrs.montoInicio}" converter="javax.faces.Double">
 								<p:ajax event="blur" listener="#{manticVentasFiltro.doMontoUpdate}" process="@this" update="montoTermino"/>
 							</p:inputText>	

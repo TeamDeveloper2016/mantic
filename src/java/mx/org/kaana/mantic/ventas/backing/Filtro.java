@@ -34,6 +34,7 @@ import mx.org.kaana.mantic.db.dto.TcManticVentasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.ventas.comun.IBaseTicket;
+import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
@@ -75,7 +76,7 @@ public class Filtro extends IBaseTicket implements Serializable {
   @Override
   public void doLoad() {
     List<Columna> columns     = null;
-		Map<String, Object> params= toPrepare();
+		Map<String, Object> params= this.toPrepare();
     try {
 			params.put("sortOrder", this.attrs.get("sortOrder"));
       columns = new ArrayList<>();
@@ -157,8 +158,10 @@ public class Filtro extends IBaseTicket implements Serializable {
 		  sb.append("(tc_mantic_ventas.total>= ").append((Double)this.attrs.get("montoInicio")).append(") and ");			
 		if(!Cadena.isVacio(this.attrs.get("montoTermino")))
 		  sb.append("(tc_mantic_ventas.total<= ").append((Double)this.attrs.get("montoTermino")).append(") and ");			
-		if(!Cadena.isVacio(this.attrs.get("idCliente")) && !this.attrs.get("idCliente").toString().equals("-1"))
-  		sb.append("(tc_mantic_clientes.id_cliente= ").append(this.attrs.get("idCliente")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("razonSocial")) && !this.attrs.get("razonSocial").toString().equals("-1"))
+			sb.append("tc_mantic_clientes.id_cliente = ").append(((Entity)this.attrs.get("razonSocial")).getKey()).append(" and ");					
+		else if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
+			 	 sb.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");
 		if(estatus!= null && !estatus.getKey().equals(-1L))
   		sb.append("(tc_mantic_ventas.id_venta_estatus= ").append(estatus.getKey()).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
@@ -187,17 +190,11 @@ public class Filtro extends IBaseTicket implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
 			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
-      columns.add(new Columna("limiteCredito", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      this.attrs.put("clientes", (List<UISelectEntity>) UIEntity.build("VistaVentasDto", "clientes", params, columns));
-			this.attrs.put("idCliente", new UISelectEntity("-1"));
 			columns.remove(0);
 			columns.remove(1);
       this.attrs.put("estatusFiltro", (List<UISelectEntity>) UIEntity.build("TcManticVentasEstatusDto", "row", params, columns));
 			this.attrs.put("idVentaEstatus", new UISelectEntity("-1"));
     } // try
-    catch (Exception e) {
-      throw e;
-    } // catch   
     finally {
       Methods.clean(columns);
       Methods.clean(params);
@@ -414,6 +411,67 @@ public class Filtro extends IBaseTicket implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doAsignaArticulo
+
+	public List<UISelectEntity> doCompleteCliente(String query) {
+		this.attrs.put("codigoCliente", query);
+    this.doUpdateClientes();		
+		return (List<UISelectEntity>)this.attrs.get("clientes");
+	}	// doCompleteCliente
+	
+	public void doUpdateClientes() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
+    try {
+			params= new HashMap<>();
+			columns= new ArrayList<>();
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());			
+			String search= (String)this.attrs.get("codigoCliente"); 
+			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*") : "WXYZ";
+  		params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_clientes.razon_social) regexp '.*".concat(search).concat(".*'").concat(" or upper(tc_mantic_clientes.rfc) regexp '.*".concat(search).concat(".*'")));			
+      this.attrs.put("clientes", (List<UISelectEntity>) UIEntity.build("VistaClientesDto", "findRazonSocial", params, columns, 20L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}	// doUpdateClientes
+	
+	public void doAsignaCliente(SelectEvent event) {
+		UISelectEntity seleccion     = null;
+		List<UISelectEntity> clientes= null;
+		try {
+			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
+			seleccion= clientes.get(clientes.indexOf((UISelectEntity)event.getObject()));
+			this.toFindCliente(seleccion);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doAsignaCliente
+	
+	private void toFindCliente(UISelectEntity seleccion) {
+		List<UISelectEntity> clientesSeleccion= null;
+		MotorBusqueda motorBusqueda           = null;
+		try {
+			clientesSeleccion= new ArrayList<>();
+			clientesSeleccion.add(seleccion);
+			motorBusqueda= new mx.org.kaana.mantic.ventas.reglas.MotorBusqueda(-1L);
+			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
+			this.attrs.put("clientesSeleccion", clientesSeleccion);
+			this.attrs.put("clienteSeleccion", seleccion);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // toFindCliente	
 
 	@Override
 	protected void finalize() throws Throwable {
