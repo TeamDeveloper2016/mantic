@@ -10,6 +10,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.mantic.enums.EEstatusFicticias;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
@@ -42,24 +43,28 @@ public abstract class IBaseTicket extends IBaseFilter implements Serializable {
 	
 	private String toTipoTransaccion(Long idEstatus){
 		String regresar       = null;
-		EEstatusVentas estatus= null;
+		EEstatusVentas estatus= null;		
 		try {
-			estatus= EEstatusVentas.fromIdTipoPago(idEstatus);
-			switch(estatus){
-				case PAGADA:
-				case TERMINADA:
-					regresar= "VENTA DE MOSTRADOR";
-				break;
-				case COTIZACION:
-					regresar= "COTIZACIÓN";
+			regresar= "VENTA DE MOSTRADOR";
+			if(idEstatus<= EEstatusVentas.EN_CAPTURA.getIdEstatusVenta() || idEstatus.equals(EEstatusVentas.TIMBRADA.getIdEstatusVenta())){
+				estatus= EEstatusVentas.fromIdTipoPago(idEstatus);
+				switch(estatus){
+					case PAGADA:
+					case TIMBRADA:
+					case TERMINADA:
+						regresar= "VENTA DE MOSTRADOR";
 					break;
-				case APARTADOS:
-					regresar= "APARTADO";
-					break;
-				case CREDITO:
-					regresar= "VENTA A CREDITO";
-					break;
-			} // switch			
+					case COTIZACION:
+						regresar= "COTIZACIÓN";
+						break;
+					case APARTADOS:
+						regresar= "APARTADO";
+						break;
+					case CREDITO:
+						regresar= "VENTA A CREDITO";
+						break;
+				} // switch			
+			} // if			
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -68,14 +73,12 @@ public abstract class IBaseTicket extends IBaseFilter implements Serializable {
 	} // toTipoTransaccion
 	
 	private String toConsecutivoTicket(Long idEstatus, AdminTickets ticket){
-		String regresar       = null;
-		EEstatusVentas estatus= null;
+		String regresar= null;		
 		try {
-			estatus= EEstatusVentas.fromIdTipoPago(idEstatus);
-			if(estatus.equals(EEstatusVentas.TERMINADA) || estatus.equals(EEstatusVentas.APARTADOS))
-				regresar= ((TicketVenta)(ticket.getOrden())).getTicket();
+			if(idEstatus.equals(EEstatusVentas.COTIZACION.getIdEstatusVenta()))
+				regresar= ((TicketVenta)(ticket.getOrden())).getCotizacion();							
 			else
-				regresar= ((TicketVenta)(ticket.getOrden())).getCotizacion();
+				regresar= ((TicketVenta)(ticket.getOrden())).getTicket();			
 		} // try
 		catch (Exception e) {			
 			throw e;
