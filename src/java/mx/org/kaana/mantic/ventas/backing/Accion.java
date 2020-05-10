@@ -22,6 +22,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
@@ -86,7 +87,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void setCorreo(Correo correo) {
 		this.correo = correo;
 	}
-	
+
 	@PostConstruct
   @Override
   protected void init() {		
@@ -123,7 +124,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("isMatriz", isMatriz);
 			if(isMatriz)
 				loadSucursales();
-			doLoad();
+			this.doLoad();
+			this.pathImage= Configuracion.getInstance().getPropiedadServidor("sistema.dns").concat("/").concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/images/");
     } // try
     catch (Exception e) {
       Error.mensaje(e);

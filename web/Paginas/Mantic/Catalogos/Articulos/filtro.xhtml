@@ -16,6 +16,7 @@
         fechaInicio  : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         fechaTermino : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'}
 			};
+			
 			function reload() {
 				$('.janal-control-imagen').each(function(index, item) {
 					var name= $(this).attr('id').replace('source-image', 'icon-image', 'gi').replace(/[:]/g, '\\:');

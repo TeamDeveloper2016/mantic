@@ -34,6 +34,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ContadoresListas;
@@ -192,9 +193,10 @@ public class Accion extends IBaseVenta implements Serializable {
 			LOG.warn("Flash atributes [accion[" + this.attrs.get("accion") + "] idVenta [" + this.attrs.get("idVenta") + "] retorno [" + this.attrs.get("retorno") + "]]");
 			this.attrs.put("sortOrder", "order by tc_mantic_ventas.registro desc");	
 			this.attrs.put("mostrarConfirmacionFactura", true);			
-      doInitPage();
+      this.doInitPage();
 			motorBusqueda= new MotorBusqueda(Long.valueOf(this.attrs.get("idEmpresa").toString()));
 			this.attrs.put("clienteGeneral", motorBusqueda.toClienteDefault());
+			this.pathImage= Configuracion.getInstance().getPropiedadServidor("sistema.dns").concat("/").concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/images/");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
