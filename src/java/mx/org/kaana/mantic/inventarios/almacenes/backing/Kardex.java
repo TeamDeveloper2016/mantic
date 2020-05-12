@@ -30,6 +30,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
@@ -65,6 +66,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	private StreamedContent image;
 	private Integer tabPage;
 	private TreeNode ubicaciones;
+	protected String pathImage;
 
 	public AdminKardex getAdminKardex() {
 		return adminKardex;
@@ -80,6 +82,10 @@ public class Kardex extends IBaseAttribute implements Serializable {
 
 	public TreeNode getUbicaciones() {
 		return ubicaciones;
+	}
+	
+	public String getPathImage() {
+		return pathImage;
 	}
 	
 	@Override
@@ -105,6 +111,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			} // if	
 		} // if	
 		this.ubicaciones= new DefaultTreeNode("idKey", new UISelectEntity(-1L), null);	
+		this.pathImage  = Configuracion.getInstance().getPropiedadServidor("sistema.dns").concat("/").concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/images/");
 	}
 	
 	private void toLoadCatalog() {
