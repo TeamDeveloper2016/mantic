@@ -86,12 +86,12 @@
 							<f:facet name="itemtip">
 								<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
 									<f:facet name="header" class="TexAlCenter">
-										<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="50" height="30"/>
+										<a data-magnify="gallery" href="#{manticInventariosAlmacenesKardex.pathImage}#{custom.archivo}" data-caption="#{custom.archivo}" data-group="icon-image" title="Click para ver más grande la imagen">
+											<p:graphicImage url="#{manticInventariosAlmacenesKardex.pathImage}#{custom.archivo}" width="105" height="80" style="cursor:zoom-in;"/>
+										</a>
 									</f:facet>
 									<p:outputLabel value="Propio:" />
 									<p:outputLabel value="#{custom.propio}" />
-									<p:outputLabel value="Nombre:" />
-									<p:outputLabel value="#{custom.nombre}" />
 									<p:outputLabel value="Costo:" />
 									<p:outputLabel value="$ #{custom.precio}" styleClass="janal-font-bold"/>
 									<p:outputLabel value="Precio venta:" />

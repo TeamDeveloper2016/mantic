@@ -56,7 +56,6 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	protected SaldoCliente saldoCliente;
 	private FormatLazyModel almacenes;
   private boolean costoLibre;
-	protected String pathImage;
 	
 	public IBaseVenta(String precio) {
 		this(precio, false);
@@ -94,10 +93,6 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	public boolean isCostoLibre() {
 		return costoLibre;
 	}	
-	
-	public String getPathImage() {
-		return pathImage;
-	}
 	
 	public String doCancelar() {   
   	JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());

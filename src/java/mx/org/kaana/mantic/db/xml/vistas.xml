@@ -5575,7 +5575,8 @@
 				  tc_mantic_articulos.id_redondear,
 				  tc_mantic_unidades_medidas.nombre unidad_medida,
 				  ifnull(tc_mantic_articulos.extra, '0') as morado,
-				  concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes		
+				  concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes,
+				  concat(tc_mantic_articulos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo
 				from 
 					tc_mantic_articulos
 				inner join 
@@ -5586,6 +5587,8 @@
 					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
 				inner join 
 					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+				left join
+				  tc_mantic_imagenes on tc_mantic_articulos.id_imagen= tc_mantic_imagenes.id_imagen
 				where 
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and tc_mantic_articulos.id_articulo_tipo= 1
@@ -5620,7 +5623,8 @@
 				  tc_mantic_articulos.limite_mayoreo,
 				  tc_mantic_articulos.iva,
 				  tc_mantic_articulos.id_redondear,
-				  tc_mantic_unidades_medidas.nombre unidad_medida
+				  tc_mantic_unidades_medidas.nombre unidad_medida,
+				  concat(tc_mantic_articulos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo
 				from 
 					tc_mantic_articulos
 				inner join 
@@ -5631,6 +5635,8 @@
 					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
 				inner join 
 					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+				left join
+				  tc_mantic_imagenes on tc_mantic_articulos.id_imagen= tc_mantic_imagenes.id_imagen
 				where 
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and tc_mantic_articulos.id_vigente= 1
@@ -5660,7 +5666,8 @@
 				  tc_mantic_articulos.id_redondear,
 				  tc_mantic_unidades_medidas.nombre unidad_medida,
 				  ifnull(tc_mantic_articulos.extra, '0') as morado,
-				  concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes		
+				  concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes,		
+				  concat(tc_mantic_articulos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo
 				from 
 					tc_mantic_articulos
 				inner join 
@@ -5671,6 +5678,8 @@
 					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
 				inner join 
 					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+				left join
+				  tc_mantic_imagenes on tc_mantic_articulos.id_imagen= tc_mantic_imagenes.id_imagen
 				where 
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and tc_mantic_articulos.id_articulo_tipo in (1,2,3)
@@ -5704,7 +5713,8 @@
 				  tc_mantic_articulos.id_redondear,
 				  tc_mantic_unidades_medidas.nombre unidad_medida,
 				  ifnull(tc_mantic_articulos.extra, '0') as morado,
-				  concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes		
+				  concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes,		
+				  concat(tc_mantic_articulos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo
 				from 
 					tc_mantic_articulos
 				inner join
@@ -5717,6 +5727,8 @@
 					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
 				inner join 
 					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+				left join
+				  tc_mantic_imagenes on tc_mantic_articulos.id_imagen= tc_mantic_imagenes.id_imagen
 				where 
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and tc_mantic_articulos.id_articulo_tipo= 1
@@ -5756,7 +5768,8 @@
 				  tc_mantic_articulos.id_redondear,
 				  tc_mantic_unidades_medidas.nombre unidad_medida,
 				  ifnull(tc_mantic_articulos.extra, '0') as morado,
-				  concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes		
+				  concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes,		
+				  concat(tc_mantic_articulos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo
 				from 
 					tc_mantic_articulos
 				inner join
@@ -5769,6 +5782,8 @@
 					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
 				inner join 
 					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+				left join
+				  tc_mantic_imagenes on tc_mantic_articulos.id_imagen= tc_mantic_imagenes.id_imagen
 				where 
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and tc_mantic_articulos.id_articulo_tipo= 1
@@ -5808,7 +5823,8 @@
 				  tc_mantic_articulos.id_redondear,
 				  tc_mantic_unidades_medidas.nombre unidad_medida,
 				  ifnull(tc_mantic_articulos.extra, '0') as morado,
-				  concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes		
+				  concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes,		
+				  concat(tc_mantic_articulos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo
 				from 
 					tc_mantic_articulos
 				inner join 
@@ -5819,6 +5835,8 @@
 					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
 				inner join 
 					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+				left join
+				  tc_mantic_imagenes on tc_mantic_articulos.id_imagen= tc_mantic_imagenes.id_imagen
 				where 
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and tc_mantic_articulos.id_articulo_tipo= 1

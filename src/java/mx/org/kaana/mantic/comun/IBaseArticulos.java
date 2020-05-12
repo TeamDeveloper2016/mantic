@@ -25,6 +25,7 @@ import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfUtilities;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
@@ -56,12 +57,14 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
   private IAdminArticulos adminOrden;
 	private StreamedContent detailImage;
 	private String precio;
+	protected String pathImage;
 
 	public IBaseArticulos() {
 		this("precio");
 		this.attrs.put("paginator", false); 
 		this.attrs.put("filterName", "");
 		this.attrs.put("filterCode", "");
+		this.pathImage= Configuracion.getInstance().getPropiedadServidor("sistema.dns").concat("/").concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/images/");
 	}
 
 	public IBaseArticulos(String precio) {
@@ -88,6 +91,10 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 		this.precio=precio;
 	}
 
+	public String getPathImage() {
+		return pathImage;
+	}
+	
   protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
 		Articulo temporal= this.adminOrden.getArticulos().get(index);
 		Map<String, Object> params= new HashMap<>();

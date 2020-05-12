@@ -196,7 +196,6 @@ public class Accion extends IBaseVenta implements Serializable {
       this.doInitPage();
 			motorBusqueda= new MotorBusqueda(Long.valueOf(this.attrs.get("idEmpresa").toString()));
 			this.attrs.put("clienteGeneral", motorBusqueda.toClienteDefault());
-			this.pathImage= Configuracion.getInstance().getPropiedadServidor("sistema.dns").concat("/").concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/images/");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
