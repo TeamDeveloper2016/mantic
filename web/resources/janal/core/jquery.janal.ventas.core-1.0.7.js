@@ -138,7 +138,7 @@
 					case $articulos.VK_DOWN:	
 					case $articulos.VK_TAB:
 						if($articulos.temporal!== $('#codigo').val().trim()) {
-        			janal.console('jsVentas.lookup '+ + $(this).val());
+        			janal.console('jsVentas.lookup '+ $(this).val());
   						lookup($(this).val().replace(janal.cleanString, '').trim());
 						} // if
 						return $articulos.jump(true);
@@ -147,7 +147,7 @@
             PF('dialogo').hide();
 					  break;
 					case $articulos.VK_ENTER:
-      			janal.console('jsVentas.lookup '+ + $(this).val());
+      			janal.console('jsVentas.lookup '+ $(this).val());
 						$articulos.temporal= $('#codigo').val().trim();
 						lookup($(this).val().replace(janal.cleanString, '').trim());
 						return false;
