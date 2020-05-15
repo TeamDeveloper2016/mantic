@@ -93,7 +93,7 @@
 						<p:autoComplete id="codigos" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticInventariosAlmacenesKardex.attrs.custom}" completeMethod="#{manticInventariosAlmacenesKardex.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 							<p:ajax event="itemSelect" process="@this @(.almacen)" update="@(.paginated)" oncomplete="jsKardex.close();"/>
 							<f:facet name="itemtip">
-								<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+								<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
 									<f:facet name="header" class="TexAlCenter">
 										<a data-magnify="gallery" href="#{manticInventariosAlmacenesKardex.pathImage}#{custom.archivo}" data-caption="#{custom.archivo}" data-group="icon-image" title="Click para ver más grande la imagen">
 											<p:graphicImage url="#{manticInventariosAlmacenesKardex.pathImage}#{custom.archivo}" width="105" height="80" style="cursor:zoom-in;"/>
