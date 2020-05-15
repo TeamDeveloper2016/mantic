@@ -632,10 +632,12 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 					switch (sqlAccion) {
 						case INSERT:
 							dto.setIdClienteTipoContacto(-1L);
-							validate = DaoFactory.getInstance().insert(sesion, dto)>= 1L;
+							if(DaoFactory.getInstance().findIdentically(sesion, TrManticClienteTipoContactoDto.class, dto.toMap())== null)
+								validate = DaoFactory.getInstance().insert(sesion, dto)>= 1L;
 							break;
 						case UPDATE:
-							validate = DaoFactory.getInstance().update(sesion, dto)>= 1L;
+							if(DaoFactory.getInstance().findIdentically(sesion, TrManticClienteTipoContactoDto.class, dto.toMap())== null)
+								validate = DaoFactory.getInstance().update(sesion, dto)>= 1L;
 							break;
 					} // switch
 					orden++;
@@ -645,8 +647,11 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
         if (validate) 
           count++;        
       } // for		
-      regresar = count == this.ventaFinalizada.getCorreosContacto().size();
+      regresar = count == this.ventaFinalizada.getCorreosContacto().size();						
     } // try    
+		catch(Exception e){
+			throw e;
+		} // catch
     finally {
       setMessageError("Error al registrar los tipos de contacto, verifique que no haya duplicados");
     } // finally
