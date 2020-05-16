@@ -697,16 +697,17 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 		Long idOrdenDetalle= new Long((int)(Math.random()*10000));
   	this.doSearchArticulo(seleccionado.toLong("idArticulo"), 0);
 		Map<String, Object> params= null;
-		Value codigo, stock       = null;
+		Value stock               = null;
 		try {
 			params=new HashMap<>();
 			params.put("idArticulo", seleccionado.toLong("idArticulo"));
 			params.put("idProveedor", this.adminOrden.getIdProveedor());
 			params.put("idAlmacen", this.adminOrden.getIdAlmacen());
-			codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "codigo", params, "codigo");
+      // verificar el codigo principal del articulo y recuperar el valor del multiplo paras las ordenes de compra
+			Entity codigo= (Entity)DaoFactory.getInstance().toEntity("TcManticArticulosCodigosDto", "codigo", params);			
   		stock = (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
 			Long multiplo= 1L;
-			if(seleccionado.containsKey("multiplo"))
+			if(codigo!= null && !codigo.isEmpty()) 
 			  multiplo= seleccionado.toLong("multiplo");
 			Double cantidad= seleccionado.toDouble("cantidad");
 			if(multiplo> 1) 
@@ -715,7 +716,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				(Boolean)this.attrs.get("sinIva"),
 				this.getAdminOrden().getTipoDeCambio(),
 				seleccionado.toString("nombre"), 
-				codigo== null? "": codigo.toString(),
+				codigo== null || Cadena.isVacio(codigo.toString("codigo"))? "": codigo.toString("codigo"),
 				seleccionado.toDouble(this.precio),
 				this.getAdminOrden().getDescuento(), 
 				-1L,
