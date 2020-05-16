@@ -1213,7 +1213,7 @@
 			alert(msg);
     }, // alert
     version: function() {
-      return '0.3.1.8';
+      return '0.3.3.9';
     }, // version
     align: function(pixels) {
       try {

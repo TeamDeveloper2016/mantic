@@ -419,7 +419,7 @@
             PF('dlgOpenTickets').hide();
 					  break;
 					case $articulos.VK_ENTER:
-      			janal.console('jsVentas.lookup');
+      			janal.console('jsVentas.veup');
 						lookup();
 						return false;
 						break;
