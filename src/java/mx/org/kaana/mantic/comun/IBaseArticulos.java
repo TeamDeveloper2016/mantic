@@ -708,7 +708,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
   		stock = (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
 			Long multiplo= 1L;
 			if(codigo!= null && !codigo.isEmpty()) 
-			  multiplo= seleccionado.toLong("multiplo");
+			  multiplo= codigo.toLong("multiplo");
 			Double cantidad= seleccionado.toDouble("cantidad");
 			if(multiplo> 1) 
 			  cantidad= (multiplo* (int)(cantidad/ multiplo))+ (cantidad% multiplo== 0? 0D: multiplo);
