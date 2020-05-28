@@ -32,10 +32,12 @@ public class Transaccion extends ComunInventarios {
 
   private TcManticConfrontasDto dto;
   private TcManticTransferenciasDto transferencia;
+	private boolean afectoAlmacenDestino;
 
 	public Transaccion(TcManticConfrontasDto dto, List<Articulo> articulos) {
 		this.dto= dto;
 		this.articulos= articulos;
+		this.afectoAlmacenDestino= false;
 	}
 	
   @Override
@@ -136,6 +138,7 @@ public class Transaccion extends ComunInventarios {
 							else
 								if(this.transferencia.getIdTransferenciaEstatus()!= 5L)
 								  this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
+							this.afectoAlmacenDestino= true;
 							break;
 						case DEPURAR: // AUTORIZAR
 							break;
@@ -162,8 +165,10 @@ public class Transaccion extends ComunInventarios {
 		try {
 			params=new HashMap<>();
 			for (Articulo articulo: this.articulos) {
-				TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, articulo.getIdArticulo());
-				this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
+				TcManticConfrontasDetallesDto item= articulo.toConfrontasDetalle();
+				TcManticArticulosDto umbrales     = (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
+				if(item.getDiferencia()== 0L)
+					this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
 			} // for
 		} // try
 		finally {
@@ -176,7 +181,8 @@ public class Transaccion extends ComunInventarios {
 		Value errors= DaoFactory.getInstance().toField(sesion, "VistaConfrontasDto", "errores", this.transferencia.toMap(), "total");
 		if(errors.toLong()!= null && errors.toLong()== 0) 
 			if(this.transferencia.getIdTransferenciaEstatus()== 3L || this.transferencia.getIdTransferenciaEstatus()== 5L) {
-				this.toApplyMovimientos(sesion);
+				if(!this.afectoAlmacenDestino)
+					this.toApplyMovimientos(sesion);
 				this.transferencia.setIdTransferenciaEstatus(8L); // TERMINADA
 			} // if
 			else
