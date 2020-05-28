@@ -129,7 +129,7 @@ public class Transaccion extends ComunInventarios {
 					switch(accion) {
 						case ACTIVAR: // RECIBIR
 						case PROCESAR: // INCOMPLETA
-							if(this.transferencia.getIdTransferenciaEstatus()== 6L || this.transferencia.getIdTransferenciaEstatus()== 7L) {
+							if(this.transferencia.getIdTransferenciaEstatus()== 3L || this.transferencia.getIdTransferenciaEstatus()== 6L || this.transferencia.getIdTransferenciaEstatus()== 7L) {
 								if(item.getDiferencia()== 0L)
 									this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getInicial());
 							} // if	
@@ -162,7 +162,7 @@ public class Transaccion extends ComunInventarios {
 		try {
 			params=new HashMap<>();
 			for (Articulo articulo: this.articulos) {
-				TcManticArticulosDto umbrales     = (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, articulo.getIdArticulo());
+				TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, articulo.getIdArticulo());
 				this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
 			} // for
 		} // try
