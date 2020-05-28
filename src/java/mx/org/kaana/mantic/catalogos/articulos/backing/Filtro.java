@@ -67,6 +67,7 @@ public class Filtro extends Comun implements Serializable {
       this.attrs.put("codigo", "");
       //this.attrs.put("nombre", "");
       this.attrs.put("idTipoArticulo", 1L);
+      this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());      
 			this.attrs.put("isGerente", JsfBase.isAdminEncuestaOrAdmin());
 			this.toLoadCatalog();
@@ -166,7 +167,7 @@ public class Filtro extends Comun implements Serializable {
 				regresar.put("condicion", Constantes.SQL_VERDADERO);
 			else
 			  regresar.put("condicion", sb.substring(0, sb.length()- 4));			
-		  if(!Cadena.isVacio(this.attrs.get("idEmpresa")) || this.attrs.get("idEmpresa").toString().equals("-1"))
+		  if(Cadena.isVacio(this.attrs.get("idEmpresa")) || this.attrs.get("idEmpresa").toString().equals("-1"))
 			  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
 			else
 			  regresar.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());

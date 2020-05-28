@@ -211,7 +211,12 @@ public class Transaccion extends ComunInventarios {
 				for (Articulo articulo: this.articulos) {
 					// QUITAR DE LAS VENTAS PERDIDAS LOS ARTICULOS QUE FUERON YA SURTIDOS EN EL ALMACEN
 					params.put("idArticulo", articulo.getIdArticulo());
-					params.put("idEmpresa", this.transferencia.getIdEmpresa());
+					Long idEmpresa= this.transferencia.getIdEmpresa();
+					params.put("idAlmacen", this.transferencia.getIdDestino());
+					Value empresa= DaoFactory.getInstance().toField(sesion, "TcManticAlmacenesDto", "empresa", params, "idEmpresa");
+					if(empresa.getData()!= null)
+						idEmpresa= empresa.toLong();
+					params.put("idEmpresa", idEmpresa);
 					params.put("observaciones", "ESTE ARTICULO FUE SURTIDO CON NO. CONFRONTA "+ this.dto.getConsecutivo()+ " EL DIA "+ Fecha.getHoyExtendido());
 					DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, params);
 				} // if
