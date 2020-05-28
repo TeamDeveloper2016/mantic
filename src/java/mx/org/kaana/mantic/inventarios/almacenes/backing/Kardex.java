@@ -481,25 +481,27 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	}
 	
 	public void doUpdateCosto(Double precio, Boolean keep) {
-		Entity articulo= (Entity)this.attrs.get("articulo");
-		double value   = articulo.toDouble("value");
+		Entity articulo  = (Entity)this.attrs.get("articulo");
+		double value     = articulo.toDouble("value");
+		double diferencia= Math.abs(articulo.toDouble("precio")- precio);
 		this.attrs.put("costoMayorMenor", this.getCostoMayorMenor(value, precio));
 		articulo.getValue("calculado").setData(precio);
 		articulo.getValue("precio").setData(precio);
-		for (TiposVentas item: this.adminKardex.getTiposVentas()) {
-			// ¿Quieres manter el porcentaje de utilidad?
-  		if(!keep) {
-				double costo   = Numero.toAjustarDecimales(item.getPrecio(), item.isRounded());
-				double calculo = Numero.toRedondearSat((precio* ((item.getIva()/100)+ 1)));
-				// al precio de neto se le quita el costo+ iva y lo que queda se calcula la utilidad bruta 
-				item.setUtilidad(Numero.toRedondearSat((costo- calculo)* 100/ calculo));
-			} // if	
-			double calculo= Numero.toRedondearSat((precio* ((item.getIva()/100)+ 1)));
-			item.setPrecio(Numero.toRedondearSat(((1+ (item.getUtilidad()/ 100))* calculo)));
-			item.setCosto(precio);
-  		item.toCalculate();
-			this.toUpdatePrecioVenta(true);
-		} // for
+		if(diferencia> 0.5) 
+			for (TiposVentas item: this.adminKardex.getTiposVentas()) {
+				// ¿Quieres manter el porcentaje de utilidad?
+				if(!keep) {
+					double costo   = Numero.toAjustarDecimales(item.getPrecio(), item.isRounded());
+					double calculo = Numero.toRedondearSat((precio* ((item.getIva()/100)+ 1)));
+					// al precio de neto se le quita el costo+ iva y lo que queda se calcula la utilidad bruta 
+					item.setUtilidad(Numero.toRedondearSat((costo- calculo)* 100/ calculo));
+				} // if	
+				double calculo= Numero.toRedondearSat((precio* ((item.getIva()/100)+ 1)));
+				item.setPrecio(Numero.toRedondearSat(((1+ (item.getUtilidad()/ 100))* calculo)));
+				item.setCosto(precio);
+				item.toCalculate();
+				this.toUpdatePrecioVenta(true);
+			} // for
 	}
 	
 	public void doCalculate(Integer index) {
