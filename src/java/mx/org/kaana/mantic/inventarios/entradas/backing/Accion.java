@@ -383,6 +383,12 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 
 	public void doUpdateAlmacen() {
+		List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
+		int index= almacenes.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkAlmacen());
+		if(index>= 0) {
+	  	((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(index));
+  		((NotaEntrada)this.getAdminOrden().getOrden()).setIdEmpresa(((NotaEntrada)this.getAdminOrden().getOrden()).getIkAlmacen().toLong("idEmpresa"));
+		} // if
 		if(this.tipoOrden.equals(EOrdenes.ALMACEN)) {
   		this.getAdminOrden().getArticulos().clear();
 			this.getAdminOrden().toCalculate();
