@@ -17,7 +17,12 @@
       <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryJs}"/>
       <h:outputText escape="false" value="#{kajoolUtilAplicacion.defaultScripts}"/>
       <h:outputText escape="false" value="#{kajoolUtilAplicacion.defaultCss}"/>
-      <ui:insert name="librerias"/>      	
+      <script type="text/javascript">
+				$(document).ready(function() {
+					$('div.ui-selectonemenu').attr('style', 'min-width: 100px;');
+        });
+			</script>      
+			<ui:insert name="librerias"/>      	
     </h:head>
     <h:body class="ui-widget-content">
 			<p:layout fullPage="true">

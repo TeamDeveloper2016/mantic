@@ -25,7 +25,11 @@
       <h:outputText escape="false" value="#{kajoolUtilAplicacion.defaultCss}"/>      
       <h:outputScript library="janal" name="core/jquery.progress.core.0.0.6.js"/>
       <script type="text/javascript">
-        $(function () {
+				$(document).ready(function() {
+					$('div.ui-selectonemenu').attr('style', 'min-width: 100px;');
+        });
+
+	      $(function () {
           $('#barra').hide();
           actualizarComponentes();
           $('#descargar').hide();
