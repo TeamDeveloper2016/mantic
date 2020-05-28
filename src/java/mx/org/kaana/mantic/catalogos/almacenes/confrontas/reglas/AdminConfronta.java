@@ -40,7 +40,7 @@ public final class AdminConfronta extends IAdminArticulos implements Serializabl
 		}	// if
 		else {
   	  this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaConfrontasDto", "diferencia", orden.toMap()));
-			this.orden.setConsecutivo(this.toConsecutivo("0"));
+			// this.orden.setConsecutivo(this.toConsecutivo("0"));
 		} // else	
 		this.toLoadStockArticulos();
 		this.orden.setIkEmpresa(new UISelectEntity(new Entity(this.orden.getTransferencia().getIdAlmacen())));
