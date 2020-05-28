@@ -130,8 +130,8 @@ public class Transaccion extends ComunInventarios {
 						case ACTIVAR: // RECIBIR
 						case PROCESAR: // INCOMPLETA
 							if(this.transferencia.getIdTransferenciaEstatus()== 6L || this.transferencia.getIdTransferenciaEstatus()== 7L) {
-								if(articulo.getInicial()- item.getCantidad()!= 0L)
-									this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getInicial()- articulo.getCantidad());
+								if(item.getDiferencia()== 0L)
+									this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getInicial());
 							} // if	
 							else
 								if(this.transferencia.getIdTransferenciaEstatus()!= 5L)
@@ -162,14 +162,8 @@ public class Transaccion extends ComunInventarios {
 		try {
 			params=new HashMap<>();
 			for (Articulo articulo: this.articulos) {
-				TcManticConfrontasDetallesDto item= articulo.toConfrontasDetalle();
 				TcManticArticulosDto umbrales     = (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, articulo.getIdArticulo());
-				if(this.transferencia.getIdTransferenciaEstatus()== 6L || this.transferencia.getIdTransferenciaEstatus()== 7L) {
-					if(articulo.getInicial()- item.getCantidad()!= 0L)
-						this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getInicial()- articulo.getCantidad());
-				} // if	
-				else
-					this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
+				this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
 			} // for
 		} // try
 		finally {
@@ -181,7 +175,7 @@ public class Transaccion extends ComunInventarios {
 		sesion.flush();
 		Value errors= DaoFactory.getInstance().toField(sesion, "VistaConfrontasDto", "errores", this.transferencia.toMap(), "total");
 		if(errors.toLong()!= null && errors.toLong()== 0) 
-			if(this.transferencia.getIdTransferenciaEstatus()== 3L || this.transferencia.getIdTransferenciaEstatus()== 5L || this.transferencia.getIdTransferenciaEstatus()== 7L) {
+			if(this.transferencia.getIdTransferenciaEstatus()== 3L || this.transferencia.getIdTransferenciaEstatus()== 5L) {
 				this.toApplyMovimientos(sesion);
 				this.transferencia.setIdTransferenciaEstatus(8L); // TERMINADA
 			} // if
