@@ -111,6 +111,29 @@ public class Transaccion extends ComunInventarios {
 		return regresar;
 	}
 
+	private void toMarkFaltantes(Session sesion, Articulo articulo) throws Exception {
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			// QUITAR DE LAS VENTAS PERDIDAS LOS ARTICULOS QUE FUERON YA SURTIDOS EN EL ALMACEN
+			params.put("idArticulo", articulo.getIdArticulo());
+			Long idEmpresa= this.transferencia.getIdEmpresa();
+			params.put("idAlmacen", this.transferencia.getIdDestino());
+			Value empresa= DaoFactory.getInstance().toField(sesion, "TcManticAlmacenesDto", "empresa", params, "idEmpresa");
+			if(empresa.getData()!= null)
+				idEmpresa= empresa.toLong();
+			params.put("idEmpresa", idEmpresa);
+			params.put("observaciones", "ESTE ARTICULO FUE SURTIDO CON NO. CONFRONTA "+ this.dto.getConsecutivo()+ " EL DIA "+ Fecha.getHoyExtendido());
+			DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, params);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
+	
 	private void toFillArticulos(Session sesion, EAccion accion) throws Exception {
 		Map<String, Object> params= new HashMap<>();
 		List<Articulo> todos      = (List<Articulo>) DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "VistaConfrontasDto", "detalle", this.dto.toMap());
@@ -132,10 +155,12 @@ public class Transaccion extends ComunInventarios {
 						case ACTIVAR: // RECIBIR
 						case PROCESAR: // INCOMPLETA
 							if(this.transferencia.getIdTransferenciaEstatus()== 3L || this.transferencia.getIdTransferenciaEstatus()== 5L || this.transferencia.getIdTransferenciaEstatus()== 6L || this.transferencia.getIdTransferenciaEstatus()== 7L) {
-								if(item.getDiferencia()== 0L)
-									this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getInicial());
+								if(item.getDiferencia()== 0L) {
+									this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
+									this.toMarkFaltantes(sesion, articulo);
+                  this.afectoAlmacenDestino= true;
+								} // if
 							} // if	
-							this.afectoAlmacenDestino= true;
 							break;
 						case DEPURAR: // AUTORIZAR
 							break;
@@ -198,30 +223,6 @@ public class Transaccion extends ComunInventarios {
 			this.bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), null, this.transferencia.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
 			DaoFactory.getInstance().insert(sesion, this.bitacora);
 		} // if
-		Map<String, Object> params=null;
-		try {
-			params=new HashMap<>();
-			if(this.transferencia.getIdTransferenciaEstatus()== 6L || 
-				 this.transferencia.getIdTransferenciaEstatus()== 7L || 
-				 this.transferencia.getIdTransferenciaEstatus()== 8L || 
-				 this.transferencia.getIdTransferenciaEstatus()== 9L) {
-				for (Articulo articulo: this.articulos) {
-					// QUITAR DE LAS VENTAS PERDIDAS LOS ARTICULOS QUE FUERON YA SURTIDOS EN EL ALMACEN
-					params.put("idArticulo", articulo.getIdArticulo());
-					Long idEmpresa= this.transferencia.getIdEmpresa();
-					params.put("idAlmacen", this.transferencia.getIdDestino());
-					Value empresa= DaoFactory.getInstance().toField(sesion, "TcManticAlmacenesDto", "empresa", params, "idEmpresa");
-					if(empresa.getData()!= null)
-						idEmpresa= empresa.toLong();
-					params.put("idEmpresa", idEmpresa);
-					params.put("observaciones", "ESTE ARTICULO FUE SURTIDO CON NO. CONFRONTA "+ this.dto.getConsecutivo()+ " EL DIA "+ Fecha.getHoyExtendido());
-					DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, params);
-				} // if
-			} // if
-		} // try
-		finally {
-			Methods.clean(params);
-		} // finally
 	}
 
 	private void toCheckArticulos(Session sesion) throws Exception {
@@ -242,12 +243,14 @@ public class Transaccion extends ComunInventarios {
 					break;
 				case 4: // AFECTAR DESTINO
 					this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
-					break;
+					this.toMarkFaltantes(sesion, articulo);
+  				break;
 				case 5: // REGRESAR ORIGEN
 					this.toMovimientosAlmacenOrigen(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdAlmacen(), articulo, umbrales, 4L);
 					break;
 				case 6: // SUMAR DESTINO
 					this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
+					this.toMarkFaltantes(sesion, articulo);
 					break;
 			} // switch
 			articulo.setCantidad(diferencia);
