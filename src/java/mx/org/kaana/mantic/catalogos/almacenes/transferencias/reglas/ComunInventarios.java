@@ -71,7 +71,7 @@ public abstract class ComunInventarios extends IBaseTnx {
 			params.put("idArticulo", articulo.getIdArticulo());
 			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
 			if(inventario== null)
-			  inventario= this.toCreateInvetario(sesion, articulo, idAlmacen, false);
+			  this.toCreateInvetario(sesion, articulo, idAlmacen, false);
 			else {
    			// si el estatus es el de cancelar entonces hacer los movimientos inversos al traspaso
   			if(idTransferenciaEstatus.intValue()== 4) 
@@ -114,6 +114,9 @@ public abstract class ComunInventarios extends IBaseTnx {
 			  origen.setStock(Numero.toRedondearSat(origen.getStock()- articulo.getCantidad()));
 			DaoFactory.getInstance().update(sesion, origen);
 		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
 		finally {
 			Methods.clean(params);
 		} // finally
@@ -174,6 +177,9 @@ public abstract class ComunInventarios extends IBaseTnx {
 			else 
 				LOG.info("Verificar porque se esta invocando dos veces cuando solo deberia de ser una sola vez !");
 		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
 		finally {
 			Methods.clean(params);
 		} // finally
@@ -201,9 +207,10 @@ public abstract class ComunInventarios extends IBaseTnx {
 			inicial? articulo.getCantidad(): 0D, // Double entradas, 
 			-1L, // Long idInventario, 
 			articulo.getIdArticulo(), // Long idArticulo, 
-			inicial? 0L: articulo.getCantidad()* -1D, // Double inicial, 
+			0D, // Double inicial, 
+			// inicial? 0D: articulo.getCantidad()* -1D, // Double inicial, 
 			inicial? articulo.getCantidad(): 0D, // articulo.getCantidad()* -1D, // Double stock, 
-			articulo.getCantidad(), // Double salidas, 
+			inicial? 0D: articulo.getCantidad(), // Double salidas, 
 			new Long(Fecha.getAnioActual()), // Long ejercicio, 
 			1L // Long idAutomatico
 		);
