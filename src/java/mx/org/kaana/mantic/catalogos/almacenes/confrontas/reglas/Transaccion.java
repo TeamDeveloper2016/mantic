@@ -189,8 +189,10 @@ public class Transaccion extends ComunInventarios {
 			for (Articulo articulo: this.articulos) {
 				TcManticConfrontasDetallesDto item= articulo.toConfrontasDetalle();
 				TcManticArticulosDto umbrales     = (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
-				if(item.getDiferencia()== 0L)
+				if(item.getDiferencia()== 0L) {
 					this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
+					this.toMarkFaltantes(sesion, articulo);
+				} // if
 			} // for
 		} // try
 		finally {
