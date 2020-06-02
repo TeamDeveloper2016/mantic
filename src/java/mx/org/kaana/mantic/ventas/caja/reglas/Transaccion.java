@@ -620,6 +620,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			dtoDiferencia.setImporte(getOrden().getTotal());
 			dtoDiferencia.setImporteDetalle(this.totalDetalle);
 			if(DaoFactory.getInstance().insert(sesion, dtoDiferencia)>= 1L){
+				LOG.info("Se registro una diferencia en la orden.");
 				for (Articulo articulo: this.ventaFinalizada.getArticulos()) {
 					if(articulo.isValid()){
 						total= total + articulo.getImporte();
