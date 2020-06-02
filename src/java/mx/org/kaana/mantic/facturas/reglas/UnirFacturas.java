@@ -29,6 +29,7 @@ import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticVentasDiferenciasDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.enums.EEstatusFacturas;
 import mx.org.kaana.mantic.enums.EEstatusFicticias;
@@ -53,6 +54,7 @@ public class UnirFacturas extends TransaccionFactura {
 	private Entity cliente;
 	private String messageError;	
 	private String justificacion;				
+	private Double totalDetalle;
 	
 	public UnirFacturas(TcManticFicticiasDto orden, List<Articulo> articulos, String justificacion, List<Entity> tickets, Entity cliente) { 		
 		this.orden        = orden;		
@@ -81,6 +83,7 @@ public class UnirFacturas extends TransaccionFactura {
 		String correos            = null;
 		Long idFicticiaEstatus    = EEstatusFicticias.ABIERTA.getIdEstatusFicticia();
 		try {			
+			this.totalDetalle= 0D;
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la factura.");
 			switch(accion) {												
 				case REGISTRAR:																						
@@ -146,6 +149,7 @@ public class UnirFacturas extends TransaccionFactura {
 					if(DaoFactory.getInstance().update(sesion, TcManticFacturasDto.class, idFactura, params)>= 1L){					
 						regresar= registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "");
 						this.toFillArticulos(sesion);
+						validarCabecera(sesion);
 					} // if					
 				} // if
 			} // if
@@ -174,9 +178,60 @@ public class UnirFacturas extends TransaccionFactura {
 					DaoFactory.getInstance().insert(sesion, item);
 				else
 					DaoFactory.getInstance().update(sesion, item);
+				this.totalDetalle= this.totalDetalle + articulo.getImporte();
 			} // if
 		} // for
 	} // toFillArticulos
+	
+	private void validarCabecera(Session sesion) throws Exception{
+		Double diferencia= 0D;
+		try {
+			if(this.orden.getTotal()> this.totalDetalle)
+				diferencia= this.orden.getTotal() - this.totalDetalle;							
+			else if(this.totalDetalle > this.orden.getTotal())
+				diferencia= this.totalDetalle - this.orden.getTotal();			
+			if(diferencia >= 1D)
+				actualizarCabecera(sesion, diferencia);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // validarCabezera
+	
+	private void actualizarCabecera(Session sesion, Double diferencia) throws Exception{
+		TcManticVentasDiferenciasDto dtoDiferencia= null;
+		Double total     = 0D;
+		Double subtotal  = 0D;
+		Double impuestos = 0D;
+		Double descuentos= 0D;
+		try {
+			dtoDiferencia= new TcManticVentasDiferenciasDto();
+			dtoDiferencia.setIdVenta(this.orden.getIdVenta());
+			dtoDiferencia.setDiferencia(diferencia);
+			dtoDiferencia.setIdUsuario(JsfBase.getIdUsuario());
+			dtoDiferencia.setImporte(this.orden.getTotal());
+			dtoDiferencia.setImporteDetalle(this.totalDetalle);
+			if(DaoFactory.getInstance().insert(sesion, dtoDiferencia)>= 1L){
+				LOG.info("Se registro una diferencia en la orden.");
+				for (Articulo articulo: this.articulos) {
+					if(articulo.isValid()){
+						total= total + articulo.getImporte();
+						subtotal= subtotal + articulo.getSubTotal();
+						impuestos= impuestos + articulo.getImpuestos();
+						descuentos= descuentos + articulo.getDescuentos();
+					} // if
+				} // for
+				this.orden.setTotal(total);
+				this.orden.setSubTotal(subtotal);
+				this.orden.setImpuestos(impuestos);
+				this.orden.setDescuentos(descuentos);
+				DaoFactory.getInstance().update(sesion, this.orden);
+			} // if
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // actualizarCabecera
 	
 	private Siguiente toSiguienteCuenta(Session sesion) throws Exception {
 		Siguiente regresar        = null;
