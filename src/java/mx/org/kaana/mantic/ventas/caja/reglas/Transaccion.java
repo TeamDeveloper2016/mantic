@@ -47,6 +47,7 @@ import mx.org.kaana.mantic.db.dto.TcManticMovimientosDto;
 import mx.org.kaana.mantic.db.dto.TcManticServiciosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticServiciosDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticVentasDiferenciasDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.db.dto.TrManticVentaMedioPagoDto;
@@ -88,6 +89,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	private String correosFactura;
 	private TcManticFacturasDto facturaPrincipal;
 	private Facturacion facturacion;
+	private Double totalDetalle;
 	
 	public Transaccion(IBaseDto orden, List<Articulo> articulos) {
 		super((TcManticVentasDto)orden, articulos);		
@@ -141,6 +143,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		this.efectivo      = 0D;		
 		Long idEstatusVenta= null;
 		try {						
+			this.totalDetalle= 0D;
 			switch(accion) {					
 				case REPROCESAR:				
 					regresar= procesarVenta(sesion);
@@ -578,6 +581,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 				params.put("idVenta", getOrden().getIdVenta());
 				regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticVentasDetallesDto.class, params)>= 1;
 				toFillArticulos(sesion, this.ventaFinalizada.getArticulos());
+				validarCabecera(sesion);
 			} // if			
 		} // try		
 		finally{
@@ -586,6 +590,75 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		} // finally			
 		return regresar;
 	} // pagarVenta
+	
+	private void validarCabecera(Session sesion) throws Exception{
+		Double diferencia= 0D;
+		try {
+			if(getOrden().getTotal()> this.totalDetalle)
+				diferencia= getOrden().getTotal() - this.totalDetalle;							
+			else if(this.totalDetalle > getOrden().getTotal())
+				diferencia= this.totalDetalle - getOrden().getTotal();			
+			if(diferencia >= 1D)
+				actualizarCabecera(sesion, diferencia);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // validarCabezera
+	
+	private void actualizarCabecera(Session sesion, Double diferencia) throws Exception{
+		TcManticVentasDiferenciasDto dtoDiferencia= null;
+		Double total     = 0D;
+		Double subtotal  = 0D;
+		Double impuestos = 0D;
+		Double descuentos= 0D;
+		try {
+			dtoDiferencia= new TcManticVentasDiferenciasDto();
+			dtoDiferencia.setIdVenta(getOrden().getIdVenta());
+			dtoDiferencia.setDiferencia(diferencia);
+			dtoDiferencia.setIdUsuario(JsfBase.getIdUsuario());
+			dtoDiferencia.setImporte(getOrden().getTotal());
+			dtoDiferencia.setImporteDetalle(this.totalDetalle);
+			if(DaoFactory.getInstance().insert(sesion, dtoDiferencia)>= 1L){
+				LOG.info("Se registro una diferencia en la orden.");
+				for (Articulo articulo: this.ventaFinalizada.getArticulos()) {
+					if(articulo.isValid()){
+						total= total + articulo.getImporte();
+						subtotal= subtotal + articulo.getSubTotal();
+						impuestos= impuestos + articulo.getImpuestos();
+						descuentos= descuentos + articulo.getDescuentos();
+					} // if
+				} // for
+				getOrden().setTotal(total);
+				getOrden().setSubTotal(subtotal);
+				getOrden().setImpuestos(impuestos);
+				getOrden().setDescuentos(descuentos);
+				DaoFactory.getInstance().update(sesion, getOrden());
+			} // if
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // actualizarCabecera
+	
+	@Override
+	protected void toFillArticulos(Session sesion, List<Articulo> detalleArt) throws Exception {
+		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticVentasDetallesDto", "detalle", getOrden().toMap());
+		for (Articulo item: todos) 
+			if(detalleArt.indexOf(item)< 0)
+				DaoFactory.getInstance().delete(sesion, item);
+		for (Articulo articulo: detalleArt) {
+			if(articulo.isValid()){
+				TcManticVentasDetallesDto item= articulo.toVentaDetalle();
+				item.setIdVenta(getOrden().getIdVenta());
+				if(DaoFactory.getInstance().findIdentically(sesion, TcManticVentasDetallesDto.class, item.toMap())== null) 
+					DaoFactory.getInstance().insert(sesion, item);
+				else
+					DaoFactory.getInstance().update(sesion, item);
+				this.totalDetalle= this.totalDetalle + articulo.getImporte();
+			} // if
+		} // for
+	} // toFillArticulos
 	
 	private Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;

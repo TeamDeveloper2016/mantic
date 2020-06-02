@@ -5596,5 +5596,24 @@
 					{condicion}
 			</select>
 		</unit>
+		<unit id="TcManticVentasDiferenciasDto">
+      <select id="row">
+        select      
+          tc_mantic_ventas_diferencias.id_venta_diferencia,
+					tc_mantic_ventas_diferencias.*
+        from      
+          tc_mantic_ventas_diferencias
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ventas_diferencias
+        where      
+          id_venta_diferencia = {idVentaDiferencia} and id_venta = {idVenta}
+      </select>
+    </unit>
   </dml>    
 </process>
