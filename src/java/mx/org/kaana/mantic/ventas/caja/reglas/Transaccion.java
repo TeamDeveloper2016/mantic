@@ -581,7 +581,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 				params.put("idVenta", getOrden().getIdVenta());
 				regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticVentasDetallesDto.class, params)>= 1;
 				toFillArticulos(sesion, this.ventaFinalizada.getArticulos());
-				validarCabezera(sesion);
+				validarCabecera(sesion);
 			} // if			
 		} // try		
 		finally{
@@ -591,7 +591,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		return regresar;
 	} // pagarVenta
 	
-	private void validarCabezera(Session sesion) throws Exception{
+	private void validarCabecera(Session sesion) throws Exception{
 		Double diferencia= 0D;
 		try {
 			if(getOrden().getTotal()> this.totalDetalle)
