@@ -25,7 +25,8 @@ import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticPedidosDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticPedidosDto;
 import mx.org.kaana.mantic.inventarios.almacenes.beans.TiposVentas;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *@company KAANA
@@ -37,7 +38,7 @@ import org.apache.log4j.Logger;
 
 public class Transaccion extends IBaseTnx {
 
-  private static final Logger LOG = Logger.getLogger(Transaccion.class);
+	private static final Log LOG= LogFactory.getLog(Transaccion.class);
  
 	private Long idArticulo;
 	private Long idPedido;
