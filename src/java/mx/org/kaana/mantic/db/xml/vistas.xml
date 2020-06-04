@@ -7431,6 +7431,7 @@
 					and tc_mantic_almacenes_articulos.stock &lt;= tc_mantic_almacenes_articulos.minimo
 					and tc_mantic_articulos_codigos.id_principal= 1
 					and tc_mantic_articulos.id_vigente= 1
+					and tc_mantic_articulos.id_descontinuado= 2
 				order by
 					tc_mantic_articulos.nombre
 			</select>		
