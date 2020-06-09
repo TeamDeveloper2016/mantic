@@ -485,4 +485,22 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		super.doSearchArticulo(idArticulo, index);
 	}
 	
+	public void doCleanLookForFaltantes() {
+		this.attrs.put("lookForFaltantes", "");
+		this.doLoadFaltantes();
+	} 
+	
+	public void doLookForFaltantes() {
+		this.doLoadFaltantes();
+	} 
+	
+  public void doCleanLookForPerdidos() {
+		this.attrs.put("lookForPerdidos", "");
+		this.doLoadPerdidas();
+	} 
+
+  public void doLookForPerdidos() {
+		this.doLoadPerdidas();
+	} 
+
 }

@@ -246,8 +246,8 @@
 			</p:dataTable>
 		</h:form>
 	</p:dialog>   	 	
-	<p:dialog id="dialogoFaltantes" widgetVar="dlgFaltantes" header="Lista de articulos faltantes" onShow="janal.pivot(); jsPrecios.refresh(); faltantesLookup(); janal.bloquear();" onHide="jsPrecios.update(); janal.recover(); janal.desbloquear();" height="420px" width="980px" resizable="false" closeOnEscape="true" dynamic="true">
-		<h:form id="faltantes" prependId="false">
+	<p:dialog id="dialogoFaltantes" widgetVar="dlgFaltantes" header="Lista de articulos faltantes" onShow="janal.pivot(); jsPrecios.refresh(); faltantesLookup();" onHide="janal.desbloquear(); jsPrecios.update(); janal.recover();" height="420px" width="980px" resizable="false" closeOnEscape="true" dynamic="true">
+		<h:form id="faltantes" prependId="false"> janal.desbloquear();
 			<h:commandLink id="dataPdfFaltantes">
 				<pe:exporter type="pdf"  skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="faltantesTabla" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
 			</h:commandLink>
@@ -301,16 +301,22 @@
 				</p:panelGrid>	
 			</p:panelGrid>	
 			<p:dataTable id="faltantesTabla" widgetVar="widgetFaltantes" var="row" styleClass="janal-row-faltantes faltantes janal-wid-100" value="#{kajoolEncabezado.lazyFaltantes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="250" rowIndexVar="index" reflow="true" scrollRows="150" scrollable="true" virtualScroll="true" scrollHeight="150" style="margin-bottom:0" rowKey="#{row.key}">
+				<p:inputText id="tablaLookFaltantes" placeholder="Filtrar un articulo: ej. ABRAZADERA ó AA451" value="#{kajoolEncabezado.attrs.lookForFaltantes}" styleClass="janal-wid-80" style="float: left;">
+					<p:ajax event="keyup" listener="#{kajoolEncabezado.doLookForFaltantes}" process="@this" update="faltantes" onstart="return $('#faltantesTabla\\:tablaLookFaltantes').val().trim().length> 1;"/>
+				</p:inputText>
 				<f:facet name="header">
 					<div class="lg-pantalla">
 						<p:menuButton value="Opciones">
-							<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
-							<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
+							<p:menuitem value="Actualizar" title="Refrescar articulos faltantes" icon="fa fa-refresh" process="@this" update="tablaLookFaltantes faltantesTabla" action="#{kajoolEncabezado.doCleanLookForFaltantes()}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
+							<p:separator/>
+							<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
+							<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
 						</p:menuButton>
 					</div>  
 					<div class="xs-pantalla">              
-						<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdfFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
-						<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlsFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
+						<p:commandButton title="Refrescar articulos faltantes" icon="fa fa-refresh" process="@this" update="tablaLookFaltantes faltantesTabla" action="#{kajoolEncabezado.doCleanLookForFaltantes()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
+						<p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdfFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
+						<p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlsFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
 					</div>  
 				</f:facet>	            
 				<p:column class="MarAuto Responsive janal-wid-col-38">

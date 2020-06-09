@@ -5352,6 +5352,7 @@
 						and tc_mantic_inventarios.id_automatico= 2
 						and tc_mantic_almacenes_articulos.stock &lt;= tc_mantic_almacenes_articulos.minimo
 						and tc_mantic_articulos_codigos.id_principal= 1
+            and (tc_mantic_articulos.nombre regexp '.*{codigoFaltante}.*' or upper(tc_mantic_articulos_codigos.codigo) regexp '.*{codigoFaltante}.*')										
 						and tc_mantic_articulos.id_articulo not in 
 				    (select tc_mantic_ordenes_detalles.id_articulo from tc_mantic_ordenes_detalles 
 				     inner join tc_mantic_ordenes_compras on tc_mantic_ordenes_detalles.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra and tc_mantic_ordenes_compras.id_orden_estatus in (3,4,5,7))
@@ -5419,6 +5420,7 @@
 							and tc_mantic_inventarios.id_automatico= 2
 							and tc_mantic_almacenes_articulos.stock &lt;= tc_mantic_almacenes_articulos.minimo
 							and tc_mantic_articulos_codigos.id_principal= 1
+              and (tc_mantic_articulos.nombre regexp '.*{codigoFaltante}.*' or upper(tc_mantic_articulos_codigos.codigo) regexp '.*{codigoFaltante}.*')										
 							and (tc_mantic_ordenes_compras.id_orden_estatus in (3,4,5,7) or tc_mantic_ordenes_compras.id_orden_estatus is null)
 						order by
 							tc_mantic_articulos.nombre, tc_mantic_ordenes_detalles.registro desc
@@ -6049,8 +6051,9 @@
 				  and tc_mantic_articulos.id_descontinuado= 2
 				  and tc_mantic_articulos.id_vigente= 1
 				  and tc_mantic_faltantes.id_empresa= {idSucursal}
+          and (tc_mantic_articulos.nombre regexp '.*{codigoPerdido}.*' or upper(tc_mantic_articulos_codigos.codigo) regexp '.*{codigoPerdido}.*')				
 				order by
-				   tc_mantic_faltantes.registro desc
+				  tc_mantic_faltantes.registro desc
 			</select>
       <select id="detalle">
         select      
@@ -7432,6 +7435,7 @@
 					and tc_mantic_articulos_codigos.id_principal= 1
 					and tc_mantic_articulos.id_vigente= 1
 					and tc_mantic_articulos.id_descontinuado= 2
+					and (tc_mantic_articulos.nombre regexp '.*{codigoFaltante}.*' or upper(tc_mantic_articulos_codigos.codigo) regexp '.*{codigoFaltante}.*')
 				order by
 					tc_mantic_articulos.nombre
 			</select>		

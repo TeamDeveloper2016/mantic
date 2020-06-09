@@ -618,6 +618,12 @@
 								<p:outputLabel value="El RFC del proveedor [#{manticInventariosEntradasAccion.proveedor.rfc}] #{manticInventariosEntradasAccion.proveedor.razonSocial} no coincide con el de la factura [#{manticInventariosEntradasAccion.emisor.rfc}]" styleClass="janal-color-orange" style="cursor: pointer;"/>
 								<p:spacer height="5px"/>
 							</p:panelGrid>	
+							<p:outputLabel for="idTipoComparacion" value="Tipo de comparación:" styleClass="janal-wid-100-txt" style="display:#{manticInventariosEntradasAccion.consultar};"/><br style="display:#{manticInventariosEntradasAccion.consultar};"/>
+							<p:selectOneMenu id="idTipoComparacion" value="#{manticCatalogosArticulosFiltro.attrs.idTipoComparacion}" converter="javax.faces.Integer" styleClass="janal-wid-100-txt" style="display:#{manticInventariosEntradasAccion.consultar};">									
+								<f:selectItem itemLabel="COMPRAR CODIGO Y NOMBRE" itemValue="1"/>
+								<f:selectItem itemLabel="COMPRAR SOLO EL CODIGO" itemValue="2"/>
+								<f:selectItem itemLabel="COMPRAR SOLO EL NOMBRE" itemValue="3"/>
+							</p:selectOneMenu>								
 							<p:outputLabel for="comentarios" value="Observaciones:" styleClass="janal-wid-100-txt" style="display:#{manticInventariosEntradasAccion.consultar};"/><br style="display:#{manticInventariosEntradasAccion.consultar};"/>
 							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.attrs.observaciones}" style="display:#{manticInventariosEntradasAccion.consultar};"/>
 							<p:spacer height="5px"/>
@@ -650,7 +656,7 @@
 											</f:facet>
 											<h:outputText value="#{row['sat']}"/>
 										</p:column>		
-										<p:column  class="MarAuto Responsive janal-wid-12">
+										<p:column  class="MarAuto Responsive janal-wid-13">
 											<f:facet name="header">
 												<h:outputText value="Código"/>
 											</f:facet>
@@ -723,13 +729,13 @@
 												</f:facet>
 												<h:outputText value="#{row['sat']}"/>
 											</p:column>		
-											<p:column  class="MarAuto Responsive janal-wid-10">
+											<p:column  class="MarAuto Responsive janal-wid-13">
 												<f:facet name="header">
 													<h:outputText value="Código"/>
 												</f:facet>
 												<h:outputText value="#{row['codigo']}"/>
 											</p:column>		
-											<p:column  class="MarAuto Responsive janal-wid-10">
+											<p:column  class="MarAuto Responsive janal-wid-13">
 												<f:facet name="header">
 													<h:outputText value="Interno"/>
 												</f:facet>

@@ -236,6 +236,12 @@ public class Encabezado extends IBaseFilter implements Serializable {
     try {
 			Long idSucursal= this.faltante.getIdEmpresa()== null? -1L: this.faltante.getIdEmpresa();
 			this.attrs.put("idSucursal", idSucursal);
+			if(Cadena.isVacio(this.attrs.get("lookForFaltantes")))
+			  this.attrs.put("codigoPerdido", "");
+			else {
+				String nombre= ((String)this.attrs.get("lookForFaltantes")).replaceAll(Constantes.CLEAN_SQL, "").trim();
+				this.attrs.put("codigoPerdido", nombre.toUpperCase());
+			} // else
       columns = new ArrayList<>();
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -489,5 +495,14 @@ public class Encabezado extends IBaseFilter implements Serializable {
 	public void doCleanFlash() {
 	  JsfBase.cleanFlashParams();
 	}
+
+	public void doCleanLookForFaltantes() {
+		this.attrs.put("lookForFaltantes", "");
+		this.doLoadFaltantes();
+	} 
+	
+	public void doLookForFaltantes() {
+		this.doLoadFaltantes();
+	} 
 
 }

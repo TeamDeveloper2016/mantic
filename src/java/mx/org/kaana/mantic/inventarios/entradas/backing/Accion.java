@@ -122,6 +122,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   @Override
   protected void init() {		
     try {
+			this.attrs.put("idTipoComparacion", 1);
 			this.aplicar  =  false;
 			this.attrs.put("xcodigo", JsfBase.getFlashAttribute("xcodigo"));	
 			if(JsfBase.getFlashAttribute("accion")== null && JsfBase.getParametro("zOyOxDwIvGuCt")== null)
@@ -442,11 +443,27 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     this.toCheckArticulos(checkItems);
 	}
 
+	private boolean isEqualsItems(Integer idTipoComparacion, Articulo faltante, Articulo disponible) {
+	  boolean regresar= false;
+		switch(idTipoComparacion) {
+			case 1: // COMPRAR AMBOS CODIGO Y NOMBRE
+				regresar= (faltante.getCodigo()!= null && disponible.getCodigo()!= null && faltante.getCodigo().length()> 0 &&  Cadena.toEqualsString(faltante.getCodigo(), disponible.getCodigo())) || 
+			            (faltante.getNombre()!= null && disponible.getOrigen()!= null && faltante.getNombre().length()> 0 &&  Cadena.toEqualsString(faltante.getNombre(), disponible.getOrigen()));
+			case 2: // COMPRAR CODIGO
+				regresar= (faltante.getCodigo()!= null && disponible.getCodigo()!= null && faltante.getCodigo().length()> 0 &&  Cadena.toEqualsString(faltante.getCodigo(), disponible.getCodigo()));
+			case 3: // COMPRAR NOMBRE
+				regresar= (faltante.getNombre()!= null && disponible.getOrigen()!= null && faltante.getNombre().length()> 0 &&  Cadena.toEqualsString(faltante.getNombre(), disponible.getOrigen()));
+				break;
+		} // switch
+		return regresar;
+	}
+	
 	private void toCheckArticulos(boolean checkItems) {
 		Articulo faltante, disponible= null;
 		int relacionados             = 0;
 		try {
-		  List<Articulo> faltantes= (List<Articulo>)this.attrs.get("faltantes");
+			Integer idTipoComparacion= (Integer)this.attrs.get("idTipoComparacion");
+		  List<Articulo> faltantes = (List<Articulo>)this.attrs.get("faltantes");
 			int x= 0;
 			while(faltantes!= null && x< faltantes.size()) {
 				faltante= faltantes.get(x);
@@ -455,8 +472,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   			boolean found= false;
 				while (y< disponibles.size()) {
 					disponible= disponibles.get(y);
-					if((faltante.getCodigo()!= null && disponible.getCodigo()!= null && faltante.getCodigo().length()> 0 &&  Cadena.toEqualsString(faltante.getCodigo(), disponible.getCodigo())) || 
-						(faltante.getNombre()!= null && disponible.getOrigen()!= null && Cadena.toEqualsString(faltante.getNombre(), disponible.getOrigen()))) {
+					if(this.isEqualsItems(idTipoComparacion, faltante, disponible)) {
 						relacionados++;
   				  LOG.info(relacionados+ ".- Relacionados ["+ disponible.getCodigo()+ "] "+ disponible.getNombre());
 						found= true;

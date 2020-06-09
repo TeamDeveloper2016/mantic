@@ -284,6 +284,12 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
     try {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
 			params.put("idAlmacen", ((Transferencia)this.getAdminOrden().getOrden()).getIdDestino());
+			if(Cadena.isVacio(this.attrs.get("lookForFaltantes")))
+			  params.put("codigoFaltante", "");
+			else {
+				String nombre= ((String)this.attrs.get("lookForFaltantes")).replaceAll(Constantes.CLEAN_SQL, "").trim();
+				params.put("codigoFaltante", nombre.toUpperCase());
+			} // else
 			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -304,6 +310,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 	
 	public void doLoadFaltantesAlmacenDestino() {
+		this.attrs.put("lookForPerdidos", "");
     this.doLoadPerdidas(((Transferencia)this.getAdminOrden().getOrden()).getIdDestino()== null? -1L: ((Transferencia)this.getAdminOrden().getOrden()).getIdDestino());
 	}
 	
@@ -511,5 +518,20 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 			JsfBase.addMessageError(e);
     } // catch   
 	}
+	
+	public void doCleanLookForFaltantes() {
+		this.attrs.put("lookForFaltantes", "");
+		this.doLoadFaltantes();
+	} 
+	
+	public void doLookForFaltantes() {
+		this.doLoadFaltantes();
+	} 
+	
+	public void doLookForPerdidos() {
+		if(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino()!= null && ((Transferencia)this.getAdminOrden().getOrden()).getIkDestino().size()== 1)
+			this.doUpdateAlmacenDestino(false);
+		this.doLoadPerdidas(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino()== null? -1L: ((Transferencia)this.getAdminOrden().getOrden()).getIkDestino().toLong("idEmpresa"));
+	} 
 	
 }

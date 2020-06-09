@@ -835,12 +835,18 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
     try {
-			Long before   = (Long)this.attrs.get("before");
-			Long idAlmacen= this.getAdminOrden().getIdAlmacen();
-			if(before== null || idAlmacen== null || !before.equals(idAlmacen)) {
+//			Long before   = (Long)this.attrs.get("before");
+//			Long idAlmacen= this.getAdminOrden().getIdAlmacen();
+//			if(before== null || idAlmacen== null || !before.equals(idAlmacen) || !Cadena.isVacio(this.attrs.get("lookForFaltantes"))) {
 				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
 				params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
 				params.put("idProveedor", this.getAdminOrden().getIdProveedor());
+				if(Cadena.isVacio(this.attrs.get("lookForFaltantes")))
+					params.put("codigoFaltante", "");
+				else {
+					String nombre= ((String)this.attrs.get("lookForFaltantes")).replaceAll(Constantes.CLEAN_SQL, "").trim();
+					params.put("codigoFaltante", nombre.toUpperCase());
+				} // else
 				columns= new ArrayList<>();
 				columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
 				columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -851,7 +857,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				columns.add(new Columna("maximo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
 				this.attrs.put("faltantes", UIEntity.build("VistaOrdenesComprasDto", "faltantes", params, columns, Constantes.SQL_TODOS_REGISTROS));
 			  this.attrs.put("before", this.attrs.get("idAlmacen"));
-			} // 
+//			} // 
     } // try
     catch (Exception e) {
 			Error.mensaje(e);
@@ -871,6 +877,12 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 		List<Columna> columns= null;
     try {
 			this.attrs.put("idSucursal", idSucursal);
+      if(Cadena.isVacio(this.attrs.get("lookForPerdidos")))
+			  this.attrs.put("codigoPerdido", "");
+			else {
+				String nombre= ((String)this.attrs.get("lookForPerdidos")).replaceAll(Constantes.CLEAN_SQL, "").trim();
+				this.attrs.put("codigoPerdido", nombre.toUpperCase());
+			} // else			
 			columns= new ArrayList<>();
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
