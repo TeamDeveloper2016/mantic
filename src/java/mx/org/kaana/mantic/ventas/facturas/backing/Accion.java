@@ -138,7 +138,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("descuentoIndividual", 0);
 			this.attrs.put("descuentoGlobal", 0);
 			this.attrs.put("tipoDescuento", INDIVIDUAL);
-			doActivarDescuento();
+			this.doActivarDescuento();
 			this.attrs.put("decuentoAutorizadoActivo", false);
 			this.attrs.put("tipoDecuentoAutorizadoActivo", MENUDEO);
 			this.attrs.put("descripcion", "Imagen no disponible");
@@ -190,8 +190,8 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 					if(idCliente!= null && (idCliente.equals(-1L) || idCliente.equals(motorBusqueda.toClienteDefault().getKey())))
 						((AdminTickets)this.getAdminOrden()).loadTipoMedioPago();
 					if(idCliente!= null && !idCliente.equals(-1L)){
-						doAsignaClienteInicial(idCliente);
-						loadDomicilios(idCliente);	
+						this.doAsignaClienteInicial(idCliente);
+						this.loadDomicilios(idCliente);	
 						if(((TicketVenta)getAdminOrden().getOrden()).getIdClienteDomicilio()!= null && !((TicketVenta)getAdminOrden().getOrden()).getIdClienteDomicilio().equals(-1L))
 							this.attrs.put("domicilio", new UISelectEntity(((TicketVenta)getAdminOrden().getOrden()).getIdClienteDomicilio()));
 					} // if

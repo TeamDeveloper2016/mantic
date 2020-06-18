@@ -20,6 +20,7 @@ public class ArticuloVenta extends Articulo {
 	private Double menudeo;
 	private boolean descuentoActivo;
 	private boolean descuentoAsignado;
+	private boolean viejosPrecios;
 	
 	public ArticuloVenta() {
 		this(-1L);
@@ -33,6 +34,15 @@ public class ArticuloVenta extends Articulo {
 		super(key, costoLibre);
 		this.descuentoActivo  = false;
 		this.descuentoAsignado= false;
+		this.viejosPrecios    = false;
+	}
+
+	public boolean isViejosPrecios() {
+		return viejosPrecios;
+	}
+
+	public void setViejosPrecios(boolean viejosPrecios) {
+		this.viejosPrecios=viejosPrecios;
 	}
 
 	@Override
@@ -54,7 +64,8 @@ public class ArticuloVenta extends Articulo {
 		boolean asignar= this.getImportes().getTotal()<= 0D;
 		if(!asignar)
 			this.setTotal(this.getTotal());
-		this.toCalculateCostoPorCantidad();
+		if(!this.viejosPrecios)
+		  this.toCalculateCostoPorCantidad();
 		double porcentajeIva = 1+ (this.getIva()/ 100); 		
 		double costoMoneda   = this.getCosto()* this.getTipoDeCambio();
 		double costoReal     = this.getCantidad()* costoMoneda;

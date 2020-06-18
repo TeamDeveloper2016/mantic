@@ -390,7 +390,7 @@
 									<p:outputLabel value="#{item.concepto}"/>
 								</p:column>   
 								<p:column headerText="Consecutivo" styleClass="janal-wid-8 janal-column-center">
-									<p:commandLink action="#{manticInventariosAlmacenesKardex.doMoveSection}" process="@this" update="documento informacion @(.documento)" oncomplete="janal.bloquear();PF('widgetDetalle').show();">
+									<p:commandLink action="#{manticInventariosAlmacenesKardex.doMoveSection}" process="@this idAlmacen" update="documento informacion @(.documento)" oncomplete="janal.bloquear();PF('widgetDetalle').show();">
 										<f:setPropertyActionListener target="#{manticInventariosAlmacenesKardex.attrs.consecutivo}" value="#{item}"/>
 										<p:outputLabel value="#{item.consecutivo}"/>
 									</p:commandLink>

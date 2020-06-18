@@ -563,12 +563,28 @@ public class Conteos extends IBaseFilter implements Serializable {
     }// finally
 	}	
 
+	private void toLoadItemAlmacen() {
+		List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
+		if(this.attrs.get("almacen")== null) {
+			this.attrs.put("almacen", almacenes.get(0));
+		} // if
+		else {
+			int index= almacenes.indexOf((UISelectEntity)this.attrs.get("almacen"));
+			if(index>= 0) 
+  			this.attrs.put("almacen", almacenes.get(index));
+			else
+				this.attrs.put("almacen", almacenes.get(0));
+		} // if
+	}
+		
 	private Long toFindIdKey(String consecutivo, String proceso, String idXml) {
-		Long regresar= -1L;
-		Map<String, Object> params=null;
+		Long regresar             = -1L;
+		Map<String, Object> params= null;
 		try {
+			this.toLoadItemAlmacen();
 			params=new HashMap<>();
 			params.put("consecutivo", consecutivo);
+			params.put("idEmpresa", ((UISelectEntity)this.attrs.get("almacen")).toLong("idEmpresa"));
 			Entity entity= (Entity)DaoFactory.getInstance().toEntity(proceso, idXml, params);
 			if(entity!= null && !entity.isEmpty())
 				regresar= entity.getKey();

@@ -650,12 +650,28 @@ public class Kardex extends IBaseAttribute implements Serializable {
 		} // catch				
 	} // doRecoveryArticulo
 
+	private void toLoadItemAlmacen() {
+		List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("depositos");
+		if(this.attrs.get("idAlmacen")== null) {
+			this.attrs.put("idAlmacen", almacenes.get(0));
+		} // if
+		else {
+			int index= almacenes.indexOf((UISelectEntity)this.attrs.get("idAlmacen"));
+			if(index>= 0) 
+  			this.attrs.put("idAlmacen", almacenes.get(index));
+			else
+				this.attrs.put("idAlmacen", almacenes.get(0));
+		} // if
+	}
+	
 	private Long toFindIdKey(String consecutivo, String proceso, String idXml) {
-		Long regresar= -1L;
-		Map<String, Object> params=null;
+		Long regresar             = -1L;
+		Map<String, Object> params= null;
 		try {
+			this.toLoadItemAlmacen();
 			params=new HashMap<>();
 			params.put("consecutivo", consecutivo);
+			params.put("idEmpresa", ((UISelectEntity)this.attrs.get("idAlmacen")).toLong("idEmpresa"));
 			Entity entity= (Entity)DaoFactory.getInstance().toEntity(proceso, idXml, params);
 			if(entity!= null && !entity.isEmpty())
 				regresar= entity.getKey();

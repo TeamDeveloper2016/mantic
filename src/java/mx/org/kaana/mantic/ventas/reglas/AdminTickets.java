@@ -40,14 +40,19 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
 	
 	public AdminTickets(TicketVenta orden, boolean loadDefault) throws Exception {
 		List<ArticuloVenta> arts= null;
-		this.orden  = orden;
+		boolean oldPrecios      = true;
+		this.orden= orden;
 		if(this.orden.isValid()) {
-			arts=(List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticVentasDetallesDto", "detalle", orden.toMap());
+			oldPrecios= orden.getIdVentaEstatus()== 3L || orden.getIdVentaEstatus()== 6L || orden.getIdVentaEstatus()== 8L || orden.getIdVentaEstatus()== 12L || 
+									orden.getIdVentaEstatus()== 14L || orden.getIdVentaEstatus()== 13L || orden.getIdVentaEstatus()== 15L || orden.getIdVentaEstatus()== 16L ||
+									orden.getIdVentaEstatus()== 18L || orden.getIdVentaEstatus()== 19L;
+		  arts=(List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticVentasDetallesDto", oldPrecios? "facturacion": "detalle", orden.toMap());
   	  this.setArticulos(arts);
       this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
       this.orden.setIkProveedor(new UISelectEntity(new Entity(this.orden.getIdCliente())));
 			this.orden.setIdServicio(toServicio());
-			validatePrecioArticulo();
+			if(!oldPrecios)
+			  this.validatePrecioArticulo();
 		}	// if
 		else	{
 			arts= new ArrayList<>();
@@ -61,7 +66,7 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
 			this.getArticulos().add(new ArticuloVenta(-1L));
 		this.setIdSinIva(1L);
 		this.toCalculate();
-		cleanPrecioDescuentoArticulo();
+		this.cleanPrecioDescuentoArticulo();
 	}
 
 	@Override
