@@ -87,12 +87,12 @@ public class UnirFacturas extends TransaccionFactura {
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la factura.");
 			switch(accion) {												
 				case REGISTRAR:																						
-					if(registrarFicticia(sesion, idFicticiaEstatus)){
-						if(actualizarVentas(sesion)){
+					if(this.registrarFicticia(sesion, idFicticiaEstatus)){
+						if(this.actualizarVentas(sesion)){
 							params= new HashMap<>();
 							params.put("idFicticia", this.orden.getIdFicticia());
 							idFicticiaEstatus= EEstatusFicticias.TIMBRADA.getIdEstatusFicticia();						
-							if(registraBitacora(sesion, this.orden.getIdFicticia(), idFicticiaEstatus, "Finalización de venta con timbrado de factura.")) {							
+							if(this.registraBitacora(sesion, this.orden.getIdFicticia(), idFicticiaEstatus, "Finalización de venta con timbrado de factura.")) {							
 								this.orden.setIdFicticiaEstatus(idFicticiaEstatus);						
 								regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 								if(this.checkTotal(sesion)) {																		
@@ -102,7 +102,7 @@ public class UnirFacturas extends TransaccionFactura {
 									params.put("timbrado", new Timestamp(Calendar.getInstance().getTimeInMillis()));								
 									params.put("idFacturaEstatus", EEstatusFacturas.TIMBRADA.getIdEstatusFactura());								
 									DaoFactory.getInstance().update(sesion, TcManticFacturasDto.class, this.orden.getIdFactura(), params);
-									registrarBitacoraFactura(sesion, this.orden.getIdFactura(), EEstatusFacturas.TIMBRADA.getIdEstatusFactura(), this.justificacion);
+									this.registrarBitacoraFactura(sesion, this.orden.getIdFactura(), EEstatusFacturas.TIMBRADA.getIdEstatusFactura(), this.justificacion);
 									this.generarTimbradoFactura(sesion, this.orden.getIdFicticia(), this.orden.getIdFactura(), correos);
 								} // if						
 							} // if						
@@ -132,8 +132,8 @@ public class UnirFacturas extends TransaccionFactura {
 		Long idFactura           = -1L;
 		Map<String, Object>params= null;
 		try {									
-			idFactura= registrarFactura(sesion);										
-			if(idFactura>= 1L){								
+			idFactura= this.registrarFactura(sesion);										
+			if(idFactura>= 1L) {								
 				consecutivo= this.toSiguiente(sesion);			
 				this.orden.setTicket(consecutivo.getConsecutivo());			
 				this.orden.setCticket(consecutivo.getOrden());			
@@ -149,7 +149,7 @@ public class UnirFacturas extends TransaccionFactura {
 					if(DaoFactory.getInstance().update(sesion, TcManticFacturasDto.class, idFactura, params)>= 1L){					
 						regresar= registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "");
 						this.toFillArticulos(sesion);
-						validarCabecera(sesion);
+						this.validarCabecera(sesion);
 					} // if					
 				} // if
 			} // if
@@ -292,9 +292,12 @@ public class UnirFacturas extends TransaccionFactura {
 			factura.setObservaciones(this.justificacion);
 			factura.setIdFacturaEstatus(EEstatusFacturas.REGISTRADA.getIdEstatusFactura());
 			regresar= DaoFactory.getInstance().insert(sesion, factura);
-			registrarBitacoraFactura(sesion, factura.getIdFactura(), EEstatusFacturas.REGISTRADA.getIdEstatusFactura(), this.justificacion);
+			this.registrarBitacoraFactura(sesion, factura.getIdFactura(), EEstatusFacturas.REGISTRADA.getIdEstatusFactura(), this.justificacion);
 		} // try
-		finally{
+    catch(Exception e) {
+			throw e;
+		} // catch
+		finally {
 			this.messageError= "Error al registrar la factura.";
 		} // finally
 		return regresar;
@@ -312,7 +315,10 @@ public class UnirFacturas extends TransaccionFactura {
 			factura.getCliente().setIdFactura(idFactura);
 			factura.generarCfdi(sesion);				
 		} // try
-		finally{
+    catch(Exception e) {
+			throw e;
+		} // catch
+		finally {
 			this.messageError= "Error al generar el timbrado de la factura.";
 		} // finally
 	} // generarTimbradoFactura
@@ -342,6 +348,9 @@ public class UnirFacturas extends TransaccionFactura {
 			if(total!= null && total.getData()!= null)
 				sumTotal= total.toDouble();
 		} // try
+    catch(Exception e) {
+			throw e;
+		} // catch
 		finally {
 			Methods.clean(params);
 		} // finally
@@ -367,8 +376,11 @@ public class UnirFacturas extends TransaccionFactura {
 					correos.append(contacto.getValor()).append(",");
 			} // for
 			regresar= correos.substring(0, correos.length()-1);
-		} // try		
-		finally{
+		} // try
+    catch(Exception e) {
+			throw e;
+		} // catch
+		finally {
 			this.messageError= "Error al recuperar los correos del cliente para enviar la factura.";
 		} // finally
 		return regresar;
@@ -396,9 +408,13 @@ public class UnirFacturas extends TransaccionFactura {
 			} // for
 			regresar= count== this.tickets.size();
 		} // try
-		finally{
+    catch(Exception e) {
+			throw e;
+		} // catch
+		finally {
 			this.messageError= "Error al actualizar la factura en las ventas.";
 		} // finally
 		return regresar;
 	} // actualizarVentas
+	
 } 

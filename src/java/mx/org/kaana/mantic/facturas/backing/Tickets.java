@@ -532,7 +532,7 @@ public class Tickets extends IBaseFilter implements Serializable {
 			}); // for
 			JsfBase.setFlashAttribute("cliente", this.pivote);
 			JsfBase.setFlashAttribute("tickets", this.acumulado);
-			JsfBase.setFlashAttribute("idCliente", this.pivote.toLong("idCliente"));
+		  JsfBase.setFlashAttribute("idCliente", this.pivote!= null ? this.pivote.toLong("idCliente"): -1L);
 			JsfBase.setFlashAttribute("observaciones", sb.substring(0, sb.length()- 2));
 			JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Facturas/tickets");

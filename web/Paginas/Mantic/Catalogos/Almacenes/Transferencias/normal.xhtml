@@ -261,7 +261,7 @@
 							<p:dataTable id="faltantes" var="row" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.faltantes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
 								<f:facet name="header">
 									<p:inputText id="lookFaltantes" placeholder="Filtrar un articulo: ej. ABRAZADERA ó AA451" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.lookForFaltantes}" styleClass="janal-wid-95" style="float: left;">
-										<p:ajax event="keyup" listener="#{manticCatalogosAlmacenesTransferenciasNormal.doLookForFaltantes}" process="@this" update="faltantes" onstart="return $('#contenedorGrupos\\:faltantes\\:lookFaltantes').val().trim().length> 1;"/>
+										<p:ajax event="keyup" listener="#{manticCatalogosAlmacenesTransferenciasNormal.doLookForFaltantes}" process="@this" update="faltantes" onstart="return $('#contenedorGrupos\\:faltantes\\:lookFaltantes').val().trim().length> 0;"/>
 									</p:inputText>
 									<p:commandButton title="Refrescar articulos faltantes del almacen destino" icon="fa fa-refresh" process="@this" update="lookFaltantes faltantes" action="#{manticCatalogosAlmacenesTransferenciasNormal.doCleanLookForFaltantes()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
                 </f:facet>
@@ -323,7 +323,7 @@
 							<p:dataTable id="perdidos" var="row" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.perdidos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{manticCatalogosAlmacenesTransferenciasNormal.recordCount}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
 								<f:facet name="header">
 									<p:inputText id="lookPerdidos" placeholder="Filtrar un articulo: ej. ABRAZADERA ó AA451" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.lookForPerdidos}" styleClass="janal-wid-95" style="float: left;">
-										<p:ajax event="keyup" listener="#{manticCatalogosAlmacenesTransferenciasNormal.doLookForPerdidos}" process="@this" update="perdidos" onstart="return $('#contenedorGrupos\\:perdidos\\:lookPerdidos').val().trim().length> 1;"/>
+										<p:ajax event="keyup" listener="#{manticCatalogosAlmacenesTransferenciasNormal.doLookForPerdidos}" process="@this" update="perdidos" onstart="return $('#contenedorGrupos\\:perdidos\\:lookPerdidos').val().trim().length> 0;"/>
 									</p:inputText>
 									<p:commandButton title="Refrescar articulos de las ventas perdidas del almacen destino" icon="fa fa-refresh" process="@this" update="lookPerdidos perdidos" action="#{manticCatalogosAlmacenesTransferenciasNormal.doLoadFaltantesAlmacenDestino()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
                 </f:facet>

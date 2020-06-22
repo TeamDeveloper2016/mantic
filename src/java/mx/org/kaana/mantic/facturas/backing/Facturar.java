@@ -131,7 +131,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 	}	
 	
 	public boolean getShowAllClients() {
-		return this.ventaPublico.indexOf(this.cliente.toLong("idCliente"))>= 0;
+		return this.cliente== null || !this.cliente.containsKey("idCliente") || this.ventaPublico.indexOf(this.cliente.toLong("idCliente"))>= 0;
 	}
 	
 	public String getDimensionsClients() {
@@ -160,7 +160,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("descuentoIndividual", 0);
 			this.attrs.put("descuentoGlobal", 0);
 			this.attrs.put("tipoDescuento", INDIVIDUAL);
-			doActivarDescuento();
+			this.doActivarDescuento();
 			this.attrs.put("descripcion", "Imagen no disponible");
 			this.attrs.put("mostrarBanco", false);
 			this.attrs.put("decuentoAutorizadoActivo", false);
@@ -172,9 +172,9 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("isMatriz", JsfBase.isAdminEncuestaOrAdmin());
 			this.loadClienteDefault();
 			if(JsfBase.isAdminEncuestaOrAdmin())
-				loadSucursales();
+				this.loadSucursales();
 			else
-				loadSucursalesPerfil();
+				this.loadSucursalesPerfil();
 			this.loadBancos();
 			this.loadCfdis();
 			this.loadTiposMediosPagos();
@@ -199,7 +199,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("consecutivo", "");		
 			idCliente= (Long)this.attrs.get("idCliente");
 			if(idCliente!= null && !idCliente.equals(-1L))
-				doAsignaClienteInicial(idCliente);
+				this.doAsignaClienteInicial(idCliente);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -220,7 +220,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
 			this.setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
-			loadDomicilios(idCliente);
+			this.loadDomicilios(idCliente);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -233,7 +233,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
     String regresar                = null;
 		UISelectEntity clienteSeleccion= null;
     try {			
-			loadOrdenVenta();
+			this.loadOrdenVenta();
 			transaccion = new UnirFacturas(((FacturaFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.attrs.get("observaciones").toString(), this.tickets, this.cliente);
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(EAccion.REGISTRAR)) {					
@@ -390,7 +390,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			((FacturaFicticia)this.getAdminOrden().getOrden()).setTipoDeCambio(1D);
 	} // loadOrdenVenta
 	
-	public void doCerrarTicket(){		
+	public void doCerrarTicket() {		
 		Transaccion transaccion= null;
     try {								
 			if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
@@ -885,7 +885,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 		} // finally
 	} // loadTiposPagos
 	
-	private void loadTiposPagos(){
+	private void loadTiposPagos() {
 		List<UISelectEntity> tiposPagos= null;
 		Map<String, Object>params      = null;
 		try {
@@ -903,10 +903,10 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 		} // finally
 	} // loadTiposPagos
 	
-	public void doValidaTipoPago(){
+	public void doValidaTipoPago() {
 		Long tipoPago= -1L;
 		try {
-			tipoPago= Long.valueOf(this.attrs.get("tipoMedioPago").toString());
+			tipoPago= ((UISelectEntity)this.attrs.get("tipoMedioPago")).getKey();
 			this.attrs.put("mostrarBanco", !ETipoMediosPago.EFECTIVO.getIdTipoMedioPago().equals(tipoPago));
 		} // try
 		catch (Exception e) {
@@ -1131,4 +1131,5 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doAgregarCorreo
+	
 }

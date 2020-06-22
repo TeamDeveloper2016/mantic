@@ -103,7 +103,13 @@
                 <p:commandButton id="reporteXs" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasApartados.doReporte('APARTADOS')}" oncomplete="janal.desbloquear();" update="descargar"/>
 							</div>  
 						</f:facet>												
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-5" sortBy="#{filtro.consecutivo}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{filtro.empresa}">
+              <f:facet name="header">
+                <h:outputText value="Sucursal"/>
+              </f:facet>
+              <h:outputText value="#{filtro['nombreEmpresa']}"/>
+            </p:column>		
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
 							<f:facet name="header">
 								<h:outputText value="Ticket"/>
 							</f:facet>

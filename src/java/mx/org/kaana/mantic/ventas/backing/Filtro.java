@@ -190,8 +190,7 @@ public class Filtro extends IBaseTicket implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
 			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
-			columns.remove(0);
-			columns.remove(1);
+			columns.clear();
       this.attrs.put("estatusFiltro", (List<UISelectEntity>) UIEntity.build("TcManticVentasEstatusDto", "row", params, columns));
 			this.attrs.put("idVentaEstatus", new UISelectEntity("-1"));
     } // try

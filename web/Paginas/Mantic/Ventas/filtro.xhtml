@@ -153,13 +153,13 @@
                 <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{filtro.empresa}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{filtro.empresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
-              <h:outputText value="#{filtro['empresa']}" title="#{filtro['nombreEmpresa']}"/>
+              <h:outputText value="#{filtro['nombreEmpresa']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.consecutivo}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="No. cuenta"/>
               </f:facet>

@@ -8187,7 +8187,9 @@
           select
             tc_mantic_apartados.id_apartado as id_key,
             tc_mantic_ventas.consecutivo,
-            tc_mantic_apartados.importe,
+				    tc_mantic_empresas.clave as empresa,  
+				    tc_mantic_empresas.nombre as nombre_empresa,  
+				    tc_mantic_apartados.importe,
             tc_mantic_apartados.saldo,
             tc_mantic_ventas.id_empresa,
             tc_mantic_ventas.id_cliente,
@@ -8211,6 +8213,8 @@
             tc_mantic_ventas on tc_mantic_apartados.id_venta= tc_mantic_ventas.id_venta
           inner join
             tc_janal_usuarios on tc_mantic_apartados.id_usuario= tc_janal_usuarios.id_usuario
+          inner join
+				    tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
           inner join
             tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona) apartados
 				where
