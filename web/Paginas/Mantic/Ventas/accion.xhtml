@@ -149,7 +149,10 @@
 						</p:panelGrid>
 						<p:spacer id="spacerCorreos" rendered="#{manticVentasAccion.attrs.mostrarCorreos}"/>
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-wid-100-txt" columnClasses="janal-wid-100-txt">
-							<p:outputLabel for="cliente" value="Cliente:"/>							
+  						<p:panelGrid columns="2" styleClass="janal-wid-100-txt">
+	 						  <p:outputLabel for="cliente" value="Cliente:"/>							
+								<p:outputLabel value="[F4] Mostrar cotizaciones" styleClass="janal-color-blue" style="float: right;"/>
+	  					</p:panelGrid>
 							<p:selectOneMenu id="cliente" value="#{manticVentasAccion.attrs.clienteSeleccion}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
 								<p:ajax event="change" process="@this idEmpresa" onstart="return janal.bloquear();" listener="#{manticVentasAccion.doActualizaPrecioCliente}" oncomplete="janal.desbloquear();" update="tabla clientes correosCliente spacerCorreos panelPrincipalCorreos panelCliente"/>
 								<f:selectItems value="#{manticVentasAccion.attrs.clientesSeleccion}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>

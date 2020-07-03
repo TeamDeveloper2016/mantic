@@ -193,14 +193,14 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		} // finally
 	} // doLoadTicketAbiertos		
 	
-	public void doLoadCotizaciones(){		
+	public void doLoadCotizaciones() {		
 		Map<String, Object>params      = null;		
 		List<Columna> campos           = null;
 		try {			
 			params= new HashMap<>();
-			params.put("sortOrder", "");
-			params.put("idEmpresa", this.attrs.get("idEmpresa"));
-			params.put(Constantes.SQL_CONDICION, toCondicion(true));
+			params.put("sortOrder", "order by tc_mantic_ventas.registro desc");
+			params.put("idEmpresa", this.attrs.get("idEmpresa"));  
+			params.put(Constantes.SQL_CONDICION, this.toCondicion(true));
 			campos= new ArrayList<>();
 			campos.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
@@ -259,10 +259,11 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				regresar.append(EEstatusVentas.COTIZACION.getIdEstatusVenta());
 				regresar.append(") and vigencia is not null");
 				regresar.append(" and tc_mantic_ventas.candado= 2 ");
-				if(this.attrs.get("fecha")!= null){
-					fecha= (Date) this.attrs.get("fecha");			
-					regresar.append(" and date_format (tc_mantic_ventas.registro, '%Y%m%d')=".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, fecha)));
-				} // if
+//				if(this.attrs.get("fecha")!= null){
+//					fecha= (Date) this.attrs.get("fecha");			
+//					regresar.append(" and date_format (tc_mantic_ventas.registro, '%Y%m%d')=".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, fecha)));
+//				} // if
+				regresar.append(" and date_format(tc_mantic_ventas.vigencia, '%Y%m%d')>= '").append(Fecha.getRegistro()).append("' ");
 				if(this.attrs.get("busquedaCotizacion")!= null && !Cadena.isVacio(this.attrs.get("busquedaCotizacion"))){
 					regresar.append(" and (upper(tc_mantic_personas.cuenta) like upper('%");
 					regresar.append(this.attrs.get("busquedaCotizacion"));
