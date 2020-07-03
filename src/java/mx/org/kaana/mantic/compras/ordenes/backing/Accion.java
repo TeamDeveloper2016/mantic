@@ -73,7 +73,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       this.attrs.put("isPesos", false);
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("seleccionado", null);
-			doLoad();
+			this.attrs.put("idCargar", 1L);
+			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -254,14 +255,16 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	
 	public void doUpdateProveedor() {
 		try {
-			if(this.tipoOrden.equals(EOrdenes.PROVEEDOR)) {
-				this.getAdminOrden().getArticulos().clear();
-				this.getAdminOrden().toCalculate();
-			} // if	
-			else 
+//			if(this.tipoOrden.equals(EOrdenes.PROVEEDOR)) {
+//				this.getAdminOrden().getArticulos().clear();
+//  			this.getAdminOrden().getArticulos().add(new Articulo(-1L));
+//				this.getAdminOrden().toCalculate();
+//			} // if	
+//			else 
 				this.toSearchCodigos();
 			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
 			this.toLoadCondiciones(proveedores.get(proveedores.indexOf((UISelectEntity)((OrdenCompra)this.getAdminOrden().getOrden()).getIkProveedor())));
+			this.doLoadArticulos();
 		}	
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -271,11 +274,12 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	
 	public void doUpdateAlmacen() {
 		this.attrs.put("idAlmacen", ((OrdenCompra)this.getAdminOrden().getOrden()).getIkAlmacen().getKey());
-		if(this.tipoOrden.equals(EOrdenes.ALMACEN)) {
-  		this.getAdminOrden().getArticulos().clear();
-			this.getAdminOrden().getArticulos().add(new Articulo(-1L));
-			this.getAdminOrden().toCalculate();
-		} // if	
+//		if(this.tipoOrden.equals(EOrdenes.ALMACEN)) {
+//  		this.getAdminOrden().getArticulos().clear();
+//			this.getAdminOrden().getArticulos().add(new Articulo(-1L));
+//			this.getAdminOrden().toCalculate();
+//		} // if	
+		this.doLoadArticulos();
 	}
 
 	public void doTabChange(TabChangeEvent event) {
@@ -503,5 +507,66 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   public void doLookForPerdidos() {
 		this.doLoadPerdidas();
 	} 
+
+  public void doLoadArticulos() {
+		Map<String, Object> params= null;
+		List<Articulo> articulos  = null;
+		try {
+			this.getAdminOrden().getArticulos().clear();
+			Long idCargar= (Long)this.attrs.get("idCargar");
+			if(!Objects.equal(idCargar, 1L) && 
+				this.getAdminOrden().getIdAlmacen()!= null && this.getAdminOrden().getIdAlmacen()> 0L &&
+				this.getAdminOrden().getIdProveedor()!= null && this.getAdminOrden().getIdProveedor()> 0L) {
+				params=new HashMap<>();
+				params.put("idSucursal", this.attrs.get("idPedidoSucursal")== null? -1L: ((UISelectEntity)this.attrs.get("idPedidoSucursal")).getKey());
+				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
+				params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
+				params.put("idProveedor", this.getAdminOrden().getIdProveedor());
+				params.put("codigoFaltante", "");
+				params.put("codigoPerdido", "");
+				switch(idCargar.intValue()) {
+					case 1: // SELECCIONE
+						break;
+					case 2: // FALTANTES DE ALMACEN
+						articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaOrdenesComprasDto", "prealmacen", params);
+						this.toPreLoadArticulos(articulos);
+						break;
+					case 3: // VENTAS PERDIDAS
+						articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaOrdenesComprasDto", "preregistrados", params);
+						this.getAdminOrden().getArticulos().clear();
+						this.toPreLoadArticulos(articulos);
+						break;
+					case 4: // DE AMBOS PROCESOS
+						articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaOrdenesComprasDto", "prealmacen", params);
+						this.toPreLoadArticulos(articulos);
+						articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaOrdenesComprasDto", "preregistrados", params);
+						this.toPreLoadArticulos(articulos);
+						break;
+				} // switch
+			} // if
+			this.getAdminOrden().getArticulos().add(new Articulo(-1L));
+			this.getAdminOrden().toCalculate();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} 
+	
+	private void toPreLoadArticulos(List<Articulo> articulos) throws Exception {
+		if(articulos!= null && !articulos.isEmpty())
+			for (Articulo articulo: articulos) {
+				articulo.toPrepare(
+					(Boolean)this.attrs.get("sinIva"), 
+					((OrdenCompra)this.getAdminOrden().getOrden()).getTipoDeCambio(), 
+					((OrdenCompra)this.getAdminOrden().getOrden()).getIdProveedor()
+				);
+			  this.getAdminOrden().insert(articulo);
+			} // for
+		
+	}
 
 }

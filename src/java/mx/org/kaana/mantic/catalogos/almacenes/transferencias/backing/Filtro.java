@@ -228,7 +228,7 @@ public class Filtro extends Comun implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch
 		return "/Paginas/Mantic/Catalogos/Almacenes/Confrontas/accion".concat(Constantes.REDIRECIONAR);
-  } // doAccion
+  } // doRecibir
   
   public void doLoadEstatus() {
 		Entity seleccionado          = null;

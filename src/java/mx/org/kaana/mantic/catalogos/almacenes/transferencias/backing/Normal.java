@@ -60,6 +60,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
       this.attrs.put("cantidad", 0D);
+      this.attrs.put("caja", 1L);
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("seleccionado", null);
 			if(this.accion!= EAccion.AGREGAR && (Long)this.attrs.get("idTransferencia")<= 0) 
@@ -418,6 +419,8 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 						  temporal.setCantidad(temporal.getCosto()- temporal.getValor());
 				// el stock del almacen destino es superior al maximo permitido en el almacen
 				temporal.setUltimo(temporal.getValor()> temporal.getCosto());
+				// agregar el paquete o caja donde se encuentra referenciado el articulo
+				temporal.setCaja(this.attrs.get("caja")!= null? (Long)this.attrs.get("caja"): 1L);
 				if(index== this.getAdminOrden().getArticulos().size()- 1) {
 					this.getAdminOrden().getArticulos().add(new Articulo(-1L));
 					this.getAdminOrden().toAddUltimo(this.getAdminOrden().getArticulos().size()- 1);

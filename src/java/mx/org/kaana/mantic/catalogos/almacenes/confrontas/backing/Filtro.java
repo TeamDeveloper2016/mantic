@@ -73,7 +73,7 @@ public class Filtro extends Comun implements Serializable {
     List<Columna> campos      = null;
 		Map<String, Object> params= this.toPrepare();
     try {
-      params.put("sortOrder", "order by tc_mantic_confrontas.registro desc");
+      params.put("sortOrder", "order by tc_mantic_transferencias.consecutivo desc");
       campos = new ArrayList<>();
       campos.add(new Columna("nombreOrigen", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("nombreDestino", EFormatoDinamicos.MAYUSCULAS));
@@ -196,7 +196,7 @@ public class Filtro extends Comun implements Serializable {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 		  JsfBase.setFlashAttribute("retorno", "filtro");		
 		  JsfBase.setFlashAttribute("accion", eaccion);		
-			JsfBase.setFlashAttribute("idConfronta", (eaccion.equals(EAccion.MODIFICAR)||eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).getKey(): -1L);
+			JsfBase.setFlashAttribute("idConfronta", (eaccion.equals(EAccion.MODIFICAR)||eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).toLong("idConfronta"): -1L);
 			JsfBase.setFlashAttribute("idTransferencia", (eaccion.equals(EAccion.MODIFICAR)||eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).toLong("idTransferencia"): -1L);
 		} // try
 		catch (Exception e) {
@@ -356,7 +356,7 @@ public class Filtro extends Comun implements Serializable {
 	
   public String doAutorizar() {
 		JsfBase.setFlashAttribute("accion", EAccion.CALCULAR);		
-		JsfBase.setFlashAttribute("idConfronta", ((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("idConfronta", ((Entity)this.attrs.get("seleccionado")).toLong("idConfronta"));
 		JsfBase.setFlashAttribute("idTransferencia", ((Entity)this.attrs.get("seleccionado")).toLong("idTransferencia"));
 		JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Catalogos/Almacenes/Confrontas/filtro");
 		return "/Paginas/Mantic/Catalogos/Almacenes/Transferencias/autorizar".concat(Constantes.REDIRECIONAR);
@@ -368,5 +368,19 @@ public class Filtro extends Comun implements Serializable {
 		JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Catalogos/Almacenes/Confrontas/filtro");
 		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
 	}
+
+  public String doRecibir() {
+		try {
+			Entity seleccionado= (Entity)this.attrs.get("seleccionado");
+  	  JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
+		  JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Almacenes/Confrontas/filtro");		
+			JsfBase.setFlashAttribute("idTransferencia", seleccionado.toLong("idTransferencia"));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return "/Paginas/Mantic/Catalogos/Almacenes/Confrontas/accion".concat(Constantes.REDIRECIONAR);
+  } // doRecibir	
 	
 }

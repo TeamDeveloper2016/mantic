@@ -64,6 +64,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	private boolean facturado;
 	private long multiplo;
 	private long idAutomatico;
+	private long caja;
 
 	public Articulo() {
 		this(-1L);
@@ -109,6 +110,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.facturado   = false;
 		this.multiplo    = 1;
 		this.idAutomatico= 1;
+		this.caja        = 1L;
 	}
 
 	public UISelectEntity getIdEntity() {
@@ -293,6 +295,14 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 
 	public void setIdAutomatico(long idAutomatico) {
 		this.idAutomatico=idAutomatico;
+	}
+
+	public long getCaja() {
+		return caja;
+	}
+
+	public void setCaja(long caja) {
+		this.caja=caja;
 	}
 	
 	public String getImporte$() {
@@ -682,7 +692,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getCantidad(), // Double cantidad, 
 			this.getIdArticulo(), // Long idArticulo, 
 			this.getIdOrdenDetalle(), // Long idTransferencia, 
-			this.getNombre() // String nombre
+			this.getNombre(), // String nombre
+			this.getCaja() // caja
 		);
 	}
 	
@@ -700,7 +711,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getIdAplicar(), // Long idAplicar, 
 			this.getNombre(), // String nombre, 
 			this.getSolicitados(), // Double declarados, 
-			this.getCantidad()- this.getSolicitados() // Double diferencia
+			this.getCantidad()- this.getSolicitados(), // Double diferencia
+			this.getCaja() // caja
    	);
 	}
 	

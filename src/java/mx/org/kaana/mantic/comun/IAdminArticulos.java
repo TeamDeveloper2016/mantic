@@ -99,6 +99,18 @@ public abstract class IAdminArticulos implements Serializable {
 		  throw new KajoolBaseException("El articulo ["+ articulo.getNombre()+ "] ya esta dentro de la lista seleccionada !");
 	}
 
+  public boolean insert(Articulo articulo) throws Exception {
+		boolean regresar= false;
+		if(this.articulos.indexOf(articulo)< 0) {
+			if(this.articulos.size()<= 1)
+		    this.articulos.add(0, articulo);
+			else
+		    this.articulos.add(this.articulos.size()- 1, articulo);
+			regresar= true;
+		} // if
+		return regresar;
+	}
+
 	private void toFillCodigo(Articulo articulo) throws Exception {
 		Map<String, Object> params=null;
 		try {

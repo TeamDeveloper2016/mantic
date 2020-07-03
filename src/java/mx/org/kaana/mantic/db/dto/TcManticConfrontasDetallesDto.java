@@ -52,6 +52,8 @@ public class TcManticConfrontasDetallesDto implements IBaseDto, Serializable {
   private Double declarados;
   @Column (name="diferencia")
   private Double diferencia;
+  @Column (name="caja")
+  private Long caja;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -60,11 +62,11 @@ public class TcManticConfrontasDetallesDto implements IBaseDto, Serializable {
   }
 
   public TcManticConfrontasDetallesDto(Long key) {
-    this(null, new Long(-1L), null, null, null, null, null, null, null, null, null);
+    this(null, new Long(-1L), null, null, null, null, null, null, null, null, null, 1L);
     setKey(key);
   }
 
-  public TcManticConfrontasDetallesDto(String codigo, Long idConfrontaDetalle, Double cantidades, Long idConfronta, Long idTransferenciaDetalle, Double cantidad, Long idArticulo, Long idAplicar, String nombre, Double declarados, Double diferencia) {
+  public TcManticConfrontasDetallesDto(String codigo, Long idConfrontaDetalle, Double cantidades, Long idConfronta, Long idTransferenciaDetalle, Double cantidad, Long idArticulo, Long idAplicar, String nombre, Double declarados, Double diferencia, Long caja) {
     setCodigo(codigo);
     setIdConfrontaDetalle(idConfrontaDetalle);
     setCantidades(cantidades);
@@ -76,6 +78,7 @@ public class TcManticConfrontasDetallesDto implements IBaseDto, Serializable {
     setNombre(nombre);
     setDeclarados(declarados);
     setDiferencia(diferencia);
+		this.caja= caja;
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -167,6 +170,14 @@ public class TcManticConfrontasDetallesDto implements IBaseDto, Serializable {
     return diferencia;
   }
 
+	public Long getCaja() {
+		return caja;
+	}
+
+	public void setCaja(Long caja) {
+		this.caja=caja;
+	}
+
   public void setRegistro(Timestamp registro) {
     this.registro = registro;
   }
@@ -212,6 +223,8 @@ public class TcManticConfrontasDetallesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDiferencia());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCaja());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -231,6 +244,7 @@ public class TcManticConfrontasDetallesDto implements IBaseDto, Serializable {
 		regresar.put("nombre", getNombre());
 		regresar.put("declarados", getDeclarados());
 		regresar.put("diferencia", getDiferencia());
+		regresar.put("caja", getCaja());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -238,7 +252,7 @@ public class TcManticConfrontasDetallesDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getCodigo(), getIdConfrontaDetalle(), getCantidades(), getIdConfronta(), getIdTransferenciaDetalle(), getCantidad(), getIdArticulo(), getIdAplicar(), getNombre(), getDeclarados(), getDiferencia(), getRegistro()
+    getCodigo(), getIdConfrontaDetalle(), getCantidades(), getIdConfronta(), getIdTransferenciaDetalle(), getCantidad(), getIdArticulo(), getIdAplicar(), getNombre(), getDeclarados(), getDiferencia(), getCaja(), getRegistro()
     };
     return regresar;
   }

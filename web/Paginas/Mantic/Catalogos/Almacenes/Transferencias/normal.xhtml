@@ -19,7 +19,8 @@
 				'contenedorGrupos\\:idSolicito'   : {validaciones: 'libre', mascara: 'libre'},
 				'contenedorGrupos\\:articulos'    : {validaciones: 'requerido|mayor({"cuanto": 1})', mascara: 'no-aplica', grupo: 'general'},			
 				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
-				'cantidades'                      : {multiple: '$', validaciones: 'mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'}
+				'cantidades'                      : {multiple: '$', validaciones: 'mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
+				'caja'                            : {multiple: '$', validaciones: 'mayor({"cuanto": 0})', mascara: 'entero', grupo: 'general'}
 			};	
 			
     	$(document).ready(function() {
@@ -62,7 +63,7 @@
 			<pe:methodParam name="idArticulo"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="replace" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticCatalogosAlmacenesTransferenciasNormal.doFindArticulo}" onstart="return janal.bloquear();" oncomplete="jsArticulos.process();">  
+		<pe:remoteCommand name="replace" process="@this contenedorGrupos:caja @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticCatalogosAlmacenesTransferenciasNormal.doFindArticulo}" onstart="return janal.bloquear();" oncomplete="jsArticulos.process();">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>
@@ -149,11 +150,37 @@
 							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-12">
-										<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-40, janal-wid-100, janal-wid-col-70">
+										<p:panelGrid columns="4" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-40, janal-wid-100, janal-wid-col-70">
 											<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();" style="float:left;">
 												<f:setPropertyActionListener target="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.seleccionado}" value="#{null}"/>
 											</p:commandButton>
-										  <p:outputLabel value="Segmentar partidas: " escape="false" styleClass="filas"  style="float: right; display:#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}"/>
+										  <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-100, janal-wid-100, janal-wid-col-200" style="margin-top: -8px !important;">
+												<p:outputLabel for="caja" value="Paquete:" styleClass="filas" style="float: right;"/>
+												<p:selectOneMenu id="caja" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.caja}" styleClass="janal-wid-10 filas" converter="javax.faces.Long" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">  
+													<p:ajax event="change" process="@this"/>
+													<f:selectItem itemLabel="1" itemValue="1"/>
+													<f:selectItem itemLabel="2" itemValue="2"/>
+													<f:selectItem itemLabel="3" itemValue="3"/>
+													<f:selectItem itemLabel="4" itemValue="4"/>
+													<f:selectItem itemLabel="5" itemValue="5"/>
+													<f:selectItem itemLabel="6" itemValue="6"/>
+													<f:selectItem itemLabel="7" itemValue="7"/>
+													<f:selectItem itemLabel="8" itemValue="8"/>
+													<f:selectItem itemLabel="9" itemValue="9"/>
+													<f:selectItem itemLabel="10" itemValue="10"/>
+													<f:selectItem itemLabel="11" itemValue="11"/>
+													<f:selectItem itemLabel="12" itemValue="12"/>
+													<f:selectItem itemLabel="13" itemValue="13"/>
+													<f:selectItem itemLabel="14" itemValue="14"/>
+													<f:selectItem itemLabel="15" itemValue="15"/>
+													<f:selectItem itemLabel="16" itemValue="16"/>
+													<f:selectItem itemLabel="17" itemValue="17"/>
+													<f:selectItem itemLabel="18" itemValue="18"/>
+													<f:selectItem itemLabel="19" itemValue="19"/>
+													<f:selectItem itemLabel="20" itemValue="20"/>
+												</p:selectOneMenu>	
+												<p:outputLabel value="Segmentar partidas:" escape="false" styleClass="filas" style="float: right; display:#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}"/>
+											</p:panelGrid>	
 										  <p:inputSwitch id="paginator" widgetVar="widgetPaginator" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.paginator}" onLabel="SI" offLabel="NO" style="display:#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}" styleClass="filas #{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'disabled': ''}">
   											<p:ajax event="change" process="@this" listener="#{manticCatalogosAlmacenesTransferenciasNormal.doResetDataTable()}" update="contenedorGrupos:tabla" oncomplete="jsArticulos.skip($(PF('widgetPaginator').input.selector+ ':checked').length=== 1);"/>
 	  									</p:inputSwitch>			
@@ -211,7 +238,13 @@
 														</div>
 													</div>	
 												</p:column>		
-												<p:column  class="MarAuto Responsive">
+												<p:column class="caja janal-column-right MarAuto Responsive janal-wid-5">
+													<f:facet name="header">
+														<h:outputText value="Paquete"/>
+													</f:facet>
+													<p:inputText id="caja" value="#{row['caja']}" styleClass="janal-wid-70 janal-column-right filas"/>
+												</p:column>		
+												<p:column class="MarAuto Responsive">
 													<f:facet name="header">
 														<h:outputText value="Articulo"/>
 													</f:facet>

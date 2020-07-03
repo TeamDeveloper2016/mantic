@@ -268,47 +268,50 @@
 				  and tc_mantic_confrontas.orden {operador} 900000		
 			</select>		
       <select id="lazy">
-        select 
-          tc_mantic_confrontas.id_confronta as id_key,
-          tc_mantic_confrontas.id_confronta,
-          tc_mantic_transferencias.id_transferencia,
-				  tc_mantic_confrontas.consecutivo,
-				  tc_mantic_transferencias.consecutivo as transferencia,
-          tc_mantic_transferencias.id_almacen,
-          tc_mantic_transferencias.id_destino,
-          origen.nombre  nombre_origen,
-          origen.clave clave_origen,
-          destino.nombre nombre_destino,
-          destino.clave clave_destino,
-          tc_mantic_transferencias.id_solicito,
-          concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as solicito,
-          tc_mantic_confrontas.id_usuario,
-          tc_mantic_confrontas.registro,
-          tc_mantic_confrontas.observaciones,
-          tc_mantic_transferencias.id_transferencia_estatus estatus,
-          tc_mantic_transferencias_estatus.nombre nombre_estatus,
-				  tc_mantic_transferencias_tipos.id_transferencia_tipo,
-				  tc_mantic_transferencias_tipos.nombre as tipo
-        from
-          tc_mantic_confrontas
-        inner join
-          tc_mantic_transferencias on tc_mantic_confrontas.id_transferencia= tc_mantic_transferencias.id_transferencia
-        inner join
-          tc_mantic_transferencias_estatus on tc_mantic_transferencias.id_transferencia_estatus = tc_mantic_transferencias_estatus.id_transferencia_estatus
-        inner join 
-					tc_mantic_empresas on tc_mantic_transferencias.id_empresa = tc_mantic_empresas.id_empresa
-        left join 
-          tc_mantic_personas on tc_mantic_transferencias.id_solicito = tc_mantic_personas.id_persona
-        inner join 
-        	tc_mantic_almacenes origen on tc_mantic_transferencias.id_almacen = origen.id_almacen
-        inner join 
-        	tc_mantic_almacenes destino on tc_mantic_transferencias.id_destino = destino.id_almacen
-        inner join 
-        	tc_mantic_transferencias_tipos on tc_mantic_transferencias.id_transferencia_tipo = tc_mantic_transferencias_tipos.id_transferencia_tipo
-				where 
-          tc_mantic_empresas.id_empresa in ({idEmpresa}) 
-				  and {condicion}	
-        {sortOrder}
+				select
+					tc_mantic_transferencias.id_transferencia as id_key,
+					ifnull(tc_mantic_confrontas.id_confronta, -1) as id_confronta,
+					tc_mantic_transferencias.id_transferencia,
+					ifnull(tc_mantic_confrontas.consecutivo, '') as consecutivo,
+					tc_mantic_transferencias.consecutivo as transferencia,
+					tc_mantic_transferencias.id_almacen,
+					tc_mantic_transferencias.id_destino,
+					origen.nombre  nombre_origen,
+					origen.clave clave_origen,
+					destino.nombre nombre_destino,
+					destino.clave clave_destino,
+					tc_mantic_transferencias.id_solicito,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as solicito,
+					ifnull(tc_mantic_confrontas.id_usuario, tc_mantic_transferencias.id_usuario) as id_usuario,
+					ifnull(tc_mantic_confrontas.registro, tc_mantic_transferencias.registro) as registro,
+					ifnull(tc_mantic_confrontas.observaciones, '') as observaciones,
+					tc_mantic_transferencias.id_transferencia_estatus estatus,
+					tc_mantic_transferencias_estatus.nombre nombre_estatus,
+					tc_mantic_transferencias_tipos.id_transferencia_tipo,
+					tc_mantic_transferencias_tipos.nombre as tipo         
+				from
+					tc_mantic_transferencias         
+				left join
+					tc_mantic_confrontas on tc_mantic_confrontas.id_transferencia= tc_mantic_transferencias.id_transferencia         
+				inner join
+					tc_mantic_transferencias_estatus on tc_mantic_transferencias.id_transferencia_estatus = tc_mantic_transferencias_estatus.id_transferencia_estatus         
+				inner join
+					tc_mantic_empresas on tc_mantic_transferencias.id_empresa = tc_mantic_empresas.id_empresa         
+				left join
+					tc_mantic_personas on tc_mantic_transferencias.id_solicito = tc_mantic_personas.id_persona         
+				inner join
+					tc_mantic_almacenes origen on tc_mantic_transferencias.id_almacen = origen.id_almacen         
+				inner join
+					tc_mantic_almacenes destino on tc_mantic_transferencias.id_destino = destino.id_almacen         
+				inner join
+					tc_mantic_transferencias_tipos on tc_mantic_transferencias.id_transferencia_tipo = tc_mantic_transferencias_tipos.id_transferencia_tipo     
+				where
+					tc_mantic_empresas.id_empresa in ({idEmpresa})        
+					and (
+				    ({condicion})
+						or tc_mantic_transferencias.id_transferencia_estatus= 3
+					)
+				{sortOrder}				
       </select>   
       <select id="detalle">
         select      
@@ -339,7 +342,7 @@
 				    (tc_mantic_transferencias.id_transferencia_estatus= 6 and tc_mantic_confrontas_detalles.diferencia!= 0)
 				  )
 				order by
-				  tc_mantic_confrontas_detalles.registro
+				  tc_mantic_confrontas_detalles.caja, tc_mantic_confrontas_detalles.codigo
       </select>
       <select id="diferencia">
         select      
@@ -362,7 +365,8 @@
 					false as ultimo, 
 					false as solicitado, 
 					0 as stock,
-				  0 as id_aplicar
+				  0 as id_aplicar,
+				  tc_mantic_transferencias_detalles.caja
         from      
           tc_mantic_transferencias
         inner join      
@@ -5445,6 +5449,154 @@
 				order by
 					propio				
 			</select>			
+			<select id="prealmacen">
+				select 
+				  compras.*,
+				  '0.00' as descuento,
+				  '0.00' as extras, 
+				  0.0 as total_impuesto,
+				  0.0 as sub_total,
+				  0.0 as descuentos,
+				  compras.precio as importe,
+				  -1 as id_orden_compra,
+				  {idProveedor} as id_proveedor
+				from
+					(select
+						tc_mantic_articulos.id_articulo as id_key,
+						tc_mantic_articulos.id_articulo,
+				    -1 as id_orden_detalle,
+						tc_mantic_articulos_codigos.codigo as propio,
+						tc_mantic_articulos.nombre,
+						(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} limit 0, 1) as codigo,
+						tc_mantic_articulos.iva,
+						tc_mantic_articulos.precio as costo,
+						tc_mantic_articulos.precio,
+						'   ' as consecutivo,
+						0 as id_orden_estatus,
+						'   ' as estatus, 
+						0 as solicitado,
+						0 as llegaron,
+						tc_mantic_almacenes_articulos.maximo- tc_mantic_almacenes_articulos.stock as cantidad,
+						tc_mantic_almacenes_articulos.stock,
+						tc_mantic_almacenes_articulos.minimo,
+						tc_mantic_almacenes_articulos.maximo
+					from
+						tc_mantic_articulos
+					inner join
+						tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo
+					inner join
+						tc_mantic_almacenes on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_almacenes.id_almacen
+					inner join 
+						tc_mantic_inventarios on tc_mantic_articulos.id_articulo= tc_mantic_inventarios.id_articulo and tc_mantic_inventarios.id_almacen= {idAlmacen}
+					inner join
+						tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo
+					where 
+						tc_mantic_almacenes.id_empresa in ({sucursales})
+						and tc_mantic_almacenes.id_almacen= {idAlmacen}
+				    and tc_mantic_articulos.id_descontinuado= 2
+				    and tc_mantic_articulos.id_vigente= 1
+						and tc_mantic_inventarios.id_automatico= 2
+						and tc_mantic_almacenes_articulos.stock &lt;= tc_mantic_almacenes_articulos.minimo
+						and tc_mantic_articulos_codigos.id_principal= 1
+            and (tc_mantic_articulos.nombre regexp '.*{codigoFaltante}.*' or upper(tc_mantic_articulos_codigos.codigo) regexp '.*{codigoFaltante}.*')										
+						and tc_mantic_articulos.id_articulo not in 
+				    (select 
+				      tc_mantic_ordenes_detalles.id_articulo 
+				     from 
+				      tc_mantic_ordenes_detalles 
+				     inner join tc_mantic_ordenes_compras on tc_mantic_ordenes_detalles.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra 
+				      and tc_mantic_ordenes_compras.id_orden_estatus in (3,4,5,7)
+				      and tc_mantic_ordenes_compras.id_proveedor= {idProveedor})
+				union						
+					select
+						 id_key,
+						 id_articulo,
+						 id_orden_detalle,
+						 propio,
+						 nombre,
+						 codigo,
+						 iva,
+						 costo,
+						 precio,
+						 consecutivo,
+						 id_orden_estatus,
+						 estatus,
+						 solicitado,
+						 llegaron,
+						 cantidad,
+						 stock,
+						 minimo,
+						 maximo      
+					from (
+						select
+							tc_mantic_articulos.id_articulo as id_key,
+							tc_mantic_articulos.id_articulo,
+							tc_mantic_ordenes_detalles.id_orden_detalle,
+							tc_mantic_articulos_codigos.codigo as propio,
+							tc_mantic_articulos.nombre,
+							(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} limit 0, 1) as codigo,
+							tc_mantic_articulos.iva,
+							tc_mantic_articulos.precio as costo,
+							tc_mantic_articulos.precio,
+							ifnull(tc_mantic_ordenes_compras.consecutivo, '   ') as consecutivo,
+							ifnull(tc_mantic_ordenes_compras.id_orden_estatus, 0) as id_orden_estatus,
+							ifnull(tc_mantic_ordenes_estatus.nombre, '   ') as estatus, 
+							ifnull(tc_mantic_ordenes_detalles.cantidad, 0) as solicitado,
+							ifnull(tc_mantic_ordenes_detalles.cantidad- tc_mantic_ordenes_detalles.cantidades, 0) as llegaron,
+							tc_mantic_almacenes_articulos.maximo- tc_mantic_almacenes_articulos.stock as cantidad,
+							tc_mantic_almacenes_articulos.stock,
+							tc_mantic_almacenes_articulos.minimo,
+							tc_mantic_almacenes_articulos.maximo
+						from
+							tc_mantic_articulos
+						inner join
+							tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo
+						inner join
+							tc_mantic_almacenes on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_almacenes.id_almacen
+						inner join 
+							tc_mantic_inventarios on tc_mantic_articulos.id_articulo= tc_mantic_inventarios.id_articulo and tc_mantic_inventarios.id_almacen= {idAlmacen}
+						inner join
+							tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo
+						left join	
+							tc_mantic_ordenes_detalles on tc_mantic_articulos.id_articulo= tc_mantic_ordenes_detalles.id_articulo
+						left join 
+							tc_mantic_ordenes_compras on tc_mantic_ordenes_detalles.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra
+						left join
+							tc_mantic_ordenes_estatus on tc_mantic_ordenes_estatus.id_orden_estatus= tc_mantic_ordenes_compras.id_orden_estatus
+						where 
+							tc_mantic_almacenes.id_empresa in ({sucursales})
+							and tc_mantic_almacenes.id_almacen= {idAlmacen}
+  				    and tc_mantic_articulos.id_descontinuado= 2
+   				    and tc_mantic_articulos.id_vigente= 1
+							and tc_mantic_inventarios.id_automatico= 2
+							and tc_mantic_almacenes_articulos.stock &lt;= tc_mantic_almacenes_articulos.minimo
+							and tc_mantic_articulos_codigos.id_principal= 1
+              and (tc_mantic_articulos.nombre regexp '.*{codigoFaltante}.*' or upper(tc_mantic_articulos_codigos.codigo) regexp '.*{codigoFaltante}.*')										
+							and (tc_mantic_ordenes_compras.id_orden_estatus in (3,4,5,7) or tc_mantic_ordenes_compras.id_orden_estatus is null)
+							and tc_mantic_ordenes_compras.id_proveedor= {idProveedor}
+						order by
+							tc_mantic_articulos.nombre, tc_mantic_ordenes_detalles.registro desc
+					) as faltantes
+					inner join (
+						select 
+							max(tc_mantic_ordenes_detalles.id_orden_detalle) as id_maximo_detalle,
+							tc_mantic_ordenes_detalles.id_articulo as id_maximo_articulo
+						from 
+							tc_mantic_ordenes_detalles 
+						inner join
+							tc_mantic_ordenes_compras on tc_mantic_ordenes_detalles.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra   
+						 where
+							 (tc_mantic_ordenes_compras.id_orden_estatus in (3,4,5,7) or tc_mantic_ordenes_compras.id_orden_estatus is null)
+							 and tc_mantic_ordenes_compras.id_proveedor= {idProveedor}
+						group by
+							tc_mantic_ordenes_detalles.id_articulo  
+						order by  
+							tc_mantic_ordenes_detalles.id_articulo      
+					) as ultimo on faltantes.id_orden_detalle= ultimo.id_maximo_detalle and faltantes.id_articulo= ultimo.id_maximo_articulo
+				) as compras
+				order by
+					propio				
+			</select>			
 			<select id="ultimo">
         select      
           tc_mantic_notas_detalles.id_orden_detalle as id_key,
@@ -6053,6 +6205,58 @@
 				  and tc_mantic_articulos.id_vigente= 1
 				  and tc_mantic_faltantes.id_empresa= {idSucursal}
           and (tc_mantic_articulos.nombre regexp '.*{codigoPerdido}.*' or upper(tc_mantic_articulos_codigos.codigo) regexp '.*{codigoPerdido}.*')				
+				order by
+				  tc_mantic_faltantes.registro desc
+			</select>
+			<select id="preregistrados">
+        select      
+          tc_mantic_articulos.id_articulo as id_key,
+          tc_mantic_faltantes.id_empresa,
+				  tc_mantic_empresas.clave as empresa,  
+				  tc_mantic_empresas.nombre as nombre_empresa,  
+          tc_mantic_articulos_codigos.codigo as propio,
+          (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} limit 0, 1) as codigo,				
+				  tc_mantic_articulos.id_articulo,
+				  tc_mantic_articulos.nombre,
+				  tc_mantic_articulos.precio as costo,
+				  tc_mantic_articulos.precio,
+				  tc_mantic_articulos.iva,
+          tc_mantic_faltantes.cantidad,
+				  tc_mantic_faltantes.registro,
+          t_mantic_articulos.stock,
+          tc_mantic_articulos.minimo,
+          tc_mantic_articulos.maximo,  				  
+				  '0.00' as descuento,
+				  '0.00' as extras, 
+				  0.0 as total_impuesto,
+				  0.0 as sub_total,
+				  0.0 as descuentos,
+				  tc_mantic_articulos.precio as importe,
+				  {idProveedor} as id_proveedor
+        from      
+          tc_mantic_faltantes
+				inner join 
+					tc_mantic_empresas on tc_mantic_faltantes.id_empresa = tc_mantic_empresas.id_empresa
+        inner join
+          tc_mantic_articulos on tc_mantic_faltantes.id_articulo= tc_mantic_articulos.id_articulo
+        inner join
+					tc_janal_usuarios on tc_mantic_faltantes.id_usuario= tc_janal_usuarios.id_usuario          
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+        left join
+          tc_mantic_articulos_codigos on tc_mantic_faltantes.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+        left join
+          tc_mantic_ordenes_detalles on tc_mantic_articulos.id_articulo= tc_mantic_ordenes_detalles.id_articulo       
+        left join
+          tc_mantic_ordenes_compras on tc_mantic_ordenes_detalles.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra
+				where 
+				  tc_mantic_faltantes.id_vigente= 1
+				  and tc_mantic_articulos.id_descontinuado= 2
+				  and tc_mantic_articulos.id_vigente= 1
+				  and tc_mantic_faltantes.id_empresa= {idSucursal}
+          and (tc_mantic_articulos.nombre regexp '.*.*' or upper(tc_mantic_articulos_codigos.codigo) regexp '.*.*')				
+          and (tc_mantic_ordenes_compras.id_orden_estatus in (3,4,5,7) or tc_mantic_ordenes_compras.id_orden_estatus is null)  
+          and tc_mantic_ordenes_compras.id_proveedor= {idProveedor}
 				order by
 				  tc_mantic_faltantes.registro desc
 			</select>
@@ -7402,7 +7606,7 @@
         where      
           tc_mantic_transferencias_detalles.id_transferencia= {idTransferencia}
 				order by
-				  tc_mantic_transferencias_detalles.registro
+				  tc_mantic_transferencias_detalles.caja, tc_mantic_transferencias_detalles.codigo
       </select>
 			<select id="faltantes">
 				select

@@ -19,7 +19,8 @@
 				'contenedorGrupos\\:idSolicito'   : {validaciones: 'libre', mascara: 'libre'},
 				'contenedorGrupos\\:articulos'    : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
 				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
-				'cantidades'                      : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'}
+				'cantidades'                      : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
+				'caja'                            : {multiple: '$', validaciones: 'mayor({"cuanto": 0})', mascara: 'entero', grupo: 'general'}
 			};	
 			
     	$(document).ready(function() {
@@ -213,7 +214,13 @@
 														</div>
 													</div>	
 												</p:column>		
-												<p:column  class="MarAuto Responsive">
+												<p:column class="janal-column-center MarAuto Responsive janal-wid-5">
+													<f:facet name="header">
+														<h:outputText value="Paquete"/>
+													</f:facet>
+													<p:inputText id="caja" value="#{row['caja']}" styleClass="janal-wid-70 janal-column-right filas"/>
+												</p:column>		
+												<p:column class="MarAuto Responsive">
 													<f:facet name="header">
 														<h:outputText value="Articulo"/>
 														<p:inputText id="filterName" value="#{manticCatalogosAlmacenesConfrontasAccion.attrs.filterName}" styleClass="janal-wid-100-txt key-filter-event"/>

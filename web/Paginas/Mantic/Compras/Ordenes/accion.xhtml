@@ -182,9 +182,17 @@
 								</p:selectOneMenu>
 								<p:outputLabel for="entregaEstimada" value="Entrega estimada:"/>
 								<p:calendar id="entregaEstimada" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{manticComprasOrdendesAccion.adminOrden.orden.entregaEstimada}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+								<p:outputLabel for="idCargar" value="Precargar articulos:"/>
+								<p:selectOneMenu id="idCargar" value="#{manticComprasOrdendesAccion.attrs.idCargar}" styleClass="janal-wid-99" converter="javax.faces.Long" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">   
+									<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doLoadArticulos}" update="datosProveedor datosArticulos tabla @(.filas) @(.recalculo)" process="@this"/>
+		  						<f:selectItem itemLabel="SELECCIONE" itemValue="1"/>
+		  						<f:selectItem itemLabel="FALTANTES DE ALMACEN" itemValue="2"/>
+                  <f:selectItem itemLabel="VENTAS PERDIDAS" itemValue="3"/>								
+                  <f:selectItem itemLabel="DE AMBOS PROCESOS" itemValue="4"/>								
+  							</p:selectOneMenu>	
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="idGasto" value="Es un gasto:"/>
-								<p:selectOneMenu id="idGasto" value="#{manticComprasOrdendesAccion.adminOrden.orden.idGasto}" styleClass="janal-wid-99">  
+								<p:selectOneMenu id="idGasto" value="#{manticComprasOrdendesAccion.adminOrden.orden.idGasto}" styleClass="janal-wid-99" converter="javax.faces.Long">  
 		  						<f:selectItem itemLabel="SI" itemValue="1" />
                   <f:selectItem itemLabel="NO" itemValue="2" />								
   							</p:selectOneMenu>	
@@ -629,19 +637,7 @@
 									<p:inputText id="lookPerdidos" placeholder="Filtrar un articulo: ej. ABRAZADERA ó AA451" value="#{manticComprasOrdendesAccion.attrs.lookForPerdidos}" styleClass="janal-wid-90" style="float: left;">
 										<p:ajax event="keyup" listener="#{manticComprasOrdendesAccion.doLookForPerdidos}" process="@this" update="perdidos" onstart="return $('#contenedorGrupos\\:perdidos\\:lookPerdidos').val().trim().length> 1;"/>
 									</p:inputText>
-									<div class="lg-pantalla">
-										<p:menuButton value="Opciones">
-    									<p:menuitem value="Actualizar" title="Refrescar articulos de las ventas perdidas" icon="fa fa-refresh" process="@this" update="lookPerdidos perdidos" action="#{manticComprasOrdendesAccion.doCleanLookForPerdidos()}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
-											<p:separator/>
-											<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfPerdidos', 'perdidos')" oncomplete="janal.desbloquear()"/>
-											<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsPerdidos', 'perdidos')" oncomplete="janal.desbloquear()"/>
-										</p:menuButton>
-									</div>  
-									<div class="xs-pantalla">              
-  									<p:commandButton title="Refrescar articulos de las ventas perdidas" icon="fa fa-refresh" process="@this" update="lookPerdidos perdidos" action="#{manticComprasOrdendesAccion.doCleanLookForPerdidos()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
-										<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdfPerdidos', 'perdidos')" oncomplete="janal.desbloquear()" styleClass="janal-text-white janal-column-center" />
-										<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlsPerdidos', 'perdidos')" oncomplete="janal.desbloquear()" styleClass="janal-text-white janal-column-center" />
-									</div>  
+ 									<p:commandButton title="Refrescar articulos de las ventas perdidas" icon="fa fa-refresh" process="@this" update="lookPerdidos perdidos" action="#{manticComprasOrdendesAccion.doCleanLookForPerdidos()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
                 </f:facet>
 								<p:column class="MarAuto Responsive janal-wid-col-20">
 									<f:facet name="header">
