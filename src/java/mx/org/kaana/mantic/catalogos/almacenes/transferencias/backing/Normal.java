@@ -176,7 +176,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
       this.attrs.put("personas", personas);
 			if(personas!= null && !this.accion.equals(EAccion.AGREGAR) && ((Transferencia)this.getAdminOrden().getOrden()).getIdSolicito()!= null && ((Transferencia)this.getAdminOrden().getOrden()).getIdSolicito()> 0L) 
 				((Transferencia)this.getAdminOrden().getOrden()).setIkSolicito(personas.get(personas.indexOf(new UISelectEntity(((Transferencia)this.getAdminOrden().getOrden()).getIdSolicito()))));
-			this.doUpdateAlmacenDestino(true);
+			this.doUpdateAlmacenDestino(true, this.accion== EAccion.AGREGAR);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -202,10 +202,10 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 	
 	public void doUpdateAlmacenDestino() {
-		this.doUpdateAlmacenDestino(false);
+		this.doUpdateAlmacenDestino(false, true);
 	}
 	
-	public void doUpdateAlmacenDestino(boolean recuperar) {
+	public void doUpdateAlmacenDestino(boolean recuperar, boolean calcular) {
 		Map<String, Object> params= null;
 		Value origen              = null;
 		try {
@@ -239,13 +239,15 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 					} // if
 					else	
 						articulo.setCosto(origen.toDouble());
-					// calcular el valor sugerido para la cantidad
-					if(articulo.getCantidad()<= 1D && articulo.getStock()> 0D && articulo.getCosto()> 0D) 
-						if((articulo.getCosto()- articulo.getValor())> articulo.getStock())
-							articulo.setCantidad(articulo.getStock()<= 0? 1D: articulo.getStock());
-						else
-							if(articulo.getValor()< articulo.getCosto())
-								articulo.setCantidad(articulo.getCosto()- articulo.getValor());
+					if(calcular) {
+						// calcular el valor sugerido para la cantidad
+						if(articulo.getCantidad()<= 1D && articulo.getStock()> 0D && articulo.getCosto()> 0D) 
+							if((articulo.getCosto()- articulo.getValor())> articulo.getStock())
+								articulo.setCantidad(articulo.getStock()<= 0? 1D: articulo.getStock());
+							else
+								if(articulo.getValor()< articulo.getCosto())
+									articulo.setCantidad(articulo.getCosto()- articulo.getValor());
+					} // if	
 					// el stock del almacen destino es superior al maximo permitido en el almacen
 					articulo.setUltimo(articulo.getValor()> articulo.getCosto());
 					articulo.setModificado(true);
@@ -272,7 +274,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 			else 
 			  if(event.getTab().getTitle().equals("Ventas perdidas")) {
 					if(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino()!= null && ((Transferencia)this.getAdminOrden().getOrden()).getIkDestino().size()== 1)
-						this.doUpdateAlmacenDestino(false);
+						this.doUpdateAlmacenDestino(false, true);
           this.doLoadPerdidas(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino()== null? -1L: ((Transferencia)this.getAdminOrden().getOrden()).getIkDestino().toLong("idEmpresa"));
 				} // if	
 	}
@@ -530,7 +532,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 	
 	public void doLookForPerdidos() {
 		if(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino()!= null && ((Transferencia)this.getAdminOrden().getOrden()).getIkDestino().size()== 1)
-			this.doUpdateAlmacenDestino(false);
+			this.doUpdateAlmacenDestino(false, true);
 		this.doLoadPerdidas(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino()== null? -1L: ((Transferencia)this.getAdminOrden().getOrden()).getIkDestino().toLong("idEmpresa"));
 	} 
 	

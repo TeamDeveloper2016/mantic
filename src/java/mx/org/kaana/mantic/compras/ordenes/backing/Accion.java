@@ -273,6 +273,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		this.attrs.put("idAlmacen", ((OrdenCompra)this.getAdminOrden().getOrden()).getIkAlmacen().getKey());
 		if(this.tipoOrden.equals(EOrdenes.ALMACEN)) {
   		this.getAdminOrden().getArticulos().clear();
+			this.getAdminOrden().getArticulos().add(new Articulo(-1L));
 			this.getAdminOrden().toCalculate();
 		} // if	
 	}

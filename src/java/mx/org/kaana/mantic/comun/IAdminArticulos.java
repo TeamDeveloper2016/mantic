@@ -184,7 +184,7 @@ public abstract class IAdminArticulos implements Serializable {
 	    articulo.setModificado(modificado);
 			this.totales.addArticulo(articulo);
 		} // for
-		this.totales.removeUltimo(this.articulos.get(this.articulos.size()- 1));
+	  this.totales.removeUltimo(this.articulos.get(this.articulos.size()- 1));
 		this.totales.removeTotal();
 		this.setAjusteDeuda(this.totales.getTotal());
 	}

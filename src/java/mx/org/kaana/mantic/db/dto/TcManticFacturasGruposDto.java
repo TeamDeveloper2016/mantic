@@ -1,4 +1,4 @@
-package mx.org.kaana.kajool.db.dto;
+package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
