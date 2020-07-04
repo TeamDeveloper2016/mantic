@@ -155,7 +155,7 @@
 												<f:setPropertyActionListener target="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.seleccionado}" value="#{null}"/>
 											</p:commandButton>
 										  <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-100, janal-wid-100, janal-wid-col-200" style="margin-top: -8px !important;">
-												<p:outputLabel for="caja" value="Paquete:" styleClass="filas" style="float: right;"/>
+												<p:outputLabel for="caja" value="Bulto:" styleClass="filas" style="float: right;"/>
 												<p:selectOneMenu id="caja" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.caja}" styleClass="janal-wid-10 filas" converter="javax.faces.Long" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">  
 													<p:ajax event="change" process="@this"/>
 													<f:selectItem itemLabel="1" itemValue="1"/>
@@ -240,7 +240,7 @@
 												</p:column>		
 												<p:column class="caja janal-column-right MarAuto Responsive janal-wid-5">
 													<f:facet name="header">
-														<h:outputText value="Paquete"/>
+														<h:outputText value="Bulto"/>
 													</f:facet>
 													<p:inputText id="caja" value="#{row['caja']}" styleClass="janal-wid-70 janal-column-right filas"/>
 												</p:column>		
