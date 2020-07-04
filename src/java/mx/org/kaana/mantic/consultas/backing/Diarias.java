@@ -62,10 +62,11 @@ public class Diarias extends IBaseTicket implements Serializable {
 	
 	public String getCredito() {
 		Double sum= 0D;
-		for (IBaseDto item: (List<IBaseDto>)lazyCredito.getWrappedData()) {
-			Entity row= (Entity)item;
-			sum+= row.toDouble("total");
-		} // for
+		if(lazyCredito!= null)
+			for (IBaseDto item: (List<IBaseDto>)lazyCredito.getWrappedData()) {
+				Entity row= (Entity)item;
+				sum+= row.toDouble("total");
+			} // for
 	  return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, sum);
 	}
 	
