@@ -1,6 +1,5 @@
 package mx.org.kaana.mantic.inventarios.entradas.backing;
 
-import com.google.common.base.Objects;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.Serializable;
@@ -447,12 +446,12 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	  boolean regresar= false;
 		switch(idTipoComparacion) {
 			case 1: // COMPRAR AMBOS CODIGO Y NOMBRE
-				regresar= (faltante.getCodigo()!= null && disponible.getCodigo()!= null && faltante.getCodigo().length()> 0 &&  Cadena.toEqualsString(faltante.getCodigo(), disponible.getCodigo())) || 
-			            (faltante.getNombre()!= null && disponible.getOrigen()!= null && faltante.getNombre().length()> 0 &&  Cadena.toEqualsString(faltante.getNombre(), disponible.getOrigen()));
+				regresar= (faltante.getCodigo()!= null && disponible.getCodigo()!= null && faltante.getCodigo().length()> 0 && Cadena.toEqualsString(faltante.getCodigo(), disponible.getCodigo())) || 
+			            (faltante.getNombre()!= null && disponible.getOrigen()!= null && faltante.getNombre().length()> 0 && Cadena.toEqualsString(faltante.getNombre(), disponible.getOrigen()));
 			case 2: // COMPRAR CODIGO
-				regresar= (faltante.getCodigo()!= null && disponible.getCodigo()!= null && faltante.getCodigo().length()> 0 &&  Cadena.toEqualsString(faltante.getCodigo(), disponible.getCodigo()));
+				regresar= (faltante.getCodigo()!= null && disponible.getCodigo()!= null && faltante.getCodigo().length()> 0 && Cadena.toEqualsString(faltante.getCodigo(), disponible.getCodigo()));
 			case 3: // COMPRAR NOMBRE
-				regresar= (faltante.getNombre()!= null && disponible.getOrigen()!= null && faltante.getNombre().length()> 0 &&  Cadena.toEqualsString(faltante.getNombre(), disponible.getOrigen()));
+				regresar= (faltante.getNombre()!= null && disponible.getOrigen()!= null && faltante.getNombre().length()> 0 && Cadena.toEqualsString(faltante.getNombre(), disponible.getOrigen()));
 				break;
 		} // switch
 		return regresar;

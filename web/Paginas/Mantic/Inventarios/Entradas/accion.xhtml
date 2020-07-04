@@ -619,17 +619,20 @@
 								<p:spacer height="5px"/>
 							</p:panelGrid>	
 							<p:outputLabel for="idTipoComparacion" value="Tipo de comparación:" styleClass="janal-wid-100-txt" style="display:#{manticInventariosEntradasAccion.consultar};"/><br style="display:#{manticInventariosEntradasAccion.consultar};"/>
-							<p:selectOneMenu id="idTipoComparacion" value="#{manticCatalogosArticulosFiltro.attrs.idTipoComparacion}" converter="javax.faces.Integer" styleClass="janal-wid-100-txt" style="display:#{manticInventariosEntradasAccion.consultar};">									
+							<p:selectOneMenu id="idTipoComparacion" value="#{manticInventariosEntradasAccion.attrs.idTipoComparacion}" converter="javax.faces.Integer" styleClass="janal-wid-100-txt documento" style="display:#{manticInventariosEntradasAccion.consultar};">									
+								<p:ajax event="change" process="@this"/>
 								<f:selectItem itemLabel="COMPRAR CODIGO Y NOMBRE" itemValue="1"/>
 								<f:selectItem itemLabel="COMPRAR SOLO EL CODIGO" itemValue="2"/>
 								<f:selectItem itemLabel="COMPRAR SOLO EL NOMBRE" itemValue="3"/>
 								<f:selectItem itemLabel="NO COMPARA POR NINGUNO" itemValue="4"/>
 							</p:selectOneMenu>								
-							<p:outputLabel for="comentarios" value="Observaciones:" styleClass="janal-wid-100-txt" style="display:#{manticInventariosEntradasAccion.consultar};"/><br style="display:#{manticInventariosEntradasAccion.consultar};"/>
-							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.attrs.observaciones}" style="display:#{manticInventariosEntradasAccion.consultar};"/>
+							<p:outputLabel for="comentarios" value="Observaciones:" styleClass="janal-wid-100-txt documento" style="display:#{manticInventariosEntradasAccion.consultar};"/><br style="display:#{manticInventariosEntradasAccion.consultar};"/>
+							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.attrs.observaciones}" style="display:#{manticInventariosEntradasAccion.consultar};">
+								<p:ajax event="blur" process="@this"/>
+							</p:inputTextarea>	
 							<p:spacer height="5px"/>
 							<p:fileUpload fileUploadListener="#{manticInventariosEntradasAccion.doFileUpload}" 
-								mode="advanced" process="@this comentarios" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo) @(.proveedor)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
+								mode="advanced" process="@this contenedorGrupos:comentarios contenedorGrupos:idTipoComparacion" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo) @(.proveedor)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
 								multiple="false" allowTypes="#{manticInventariosEntradasAccion.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticInventariosEntradasAccion.attrs.formatos}" oncomplete="PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>
 							<p:commandLink value="XML importado: #{manticInventariosEntradasAccion.xml.ruta}#{manticInventariosEntradasAccion.xml.name}" onclick="viewFile();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento XML" style="#{(empty manticInventariosEntradasAccion.xml)? 'display: none': ''}"/>
