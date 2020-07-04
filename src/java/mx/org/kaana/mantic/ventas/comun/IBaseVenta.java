@@ -273,7 +273,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 					regresar.append("%'))");
 				} // if
 			} // if
-			else{
+			else {
 				regresar.append(" date_format(tc_mantic_ventas.registro, '%Y%m%d')= date_format(SYSDATE(), '%Y%m%d')");
 				regresar.append(" and tc_mantic_ventas.candado= 2 ");				
 				regresar.append(" and tc_mantic_ventas.id_venta_estatus in (");				

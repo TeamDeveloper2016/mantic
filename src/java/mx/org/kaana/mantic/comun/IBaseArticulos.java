@@ -657,7 +657,8 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 					if(articulos.indexOf(articulo)>= 0) 
 						articulo= articulos.get(articulos.indexOf(articulo));
 					else
-						articulo= articulos.get(0);
+						if(articulos.size()> 0)
+						  articulo= articulos.get(0);
 			if(articulo.size()> 1) {
 				int position= this.getAdminOrden().getArticulos().indexOf(new Articulo(articulo.toLong("idArticulo")));
 				if(articulo.size()> 1 && position>= 0) {

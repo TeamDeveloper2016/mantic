@@ -4,6 +4,7 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
+								xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/filtro.xhtml">
   <ui:param name="titulo" value="Ventas diarias" />
   <ui:define name="librerias">
@@ -66,14 +67,14 @@
 							<p:separator/>
             </p:panelGrid>
 						<div class="janal-align-right">
-							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticConsultasDiarias.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
-							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticConsultasDiarias.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticConsultasDiarias.doLoad}" oncomplete="janal.desbloquear();" update="tabla credito"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticConsultasDiarias.doLoad}" oncomplete="janal.desbloquear();" update="tabla credito" />
 						</div>
           </p:panel>
         </div>
 				<p:spacer/>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticConsultasDiarias.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticConsultasDiarias.attrs.seleccionado}" selectionMode="single" paginator="#{manticConsultasDiarias.lazyModel.rowCount gt manticConsultasDiarias.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticConsultasDiarias.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticConsultasDiarias.attrs.seleccionado}" selectionMode="single" paginator="#{manticConsultasDiarias.lazyModel.rowCount gt manticConsultasDiarias.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
             <f:facet name="header" >
               <div class="lg-pantalla">
                 <p:menuButton value="Opciones">                  
@@ -125,7 +126,76 @@
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticConsultasDiarias.lazyModel==null?0:manticConsultasDiarias.lazyModel.rowCount}] registros"/>
             </f:facet>
-          </p:dataTable>          
+          </p:dataTable> 
+					<p:spacer height="2px"/>
+					<h:commandLink id="creditoPdf">
+						<pe:exporter type="pdf"  skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+					</h:commandLink>
+					<h:commandLink id="creditoXls">
+						<pe:exporter type="xlsx" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+					</h:commandLink>			
+          <p:dataTable lazy="true" id="credito" widgetVar="kajoolCredito" var="row" value="#{manticConsultasDiarias.lazyCredito}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" selection="#{manticConsultasDiarias.attrs.seleccionado}" selectionMode="single" paginator="#{manticConsultasDiarias.lazyModel.rowCount gt manticConsultasDiarias.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
+            <f:facet name="header">
+							<div>
+							  <p:outputLabel value="Ventas registrada a crédito" styleClass="janal-color-white" style="float:left;"/>
+							</div>
+              <div class="lg-pantalla">
+                <p:menuButton value="Opciones">                  
+                  <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('creditoPdf', 'credito')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('creditoXls', 'credito')" oncomplete="janal.desbloquear()"/>
+                </p:menuButton>
+              </div>  
+              <div class="xs-pantalla">                              
+                <p:commandButton id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('creditoPdf', 'credito')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('creditoXls', 'credito')" oncomplete="janal.desbloquear()"/>
+              </div>  
+            </f:facet>	  						            		
+            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.nombreEmpresa}">
+              <f:facet name="header">
+                <h:outputText value="Sucursal"/>
+              </f:facet>
+              <h:outputText value="#{row['nombreEmpresa']}"/>
+            </p:column>																
+            <p:column class="MarAuto Responsive" sortBy="#{row.razonSocial}">
+              <f:facet name="header">
+                <h:outputText value="Sucursal"/>
+              </f:facet>
+              <h:outputText value="#{row['razonSocial']}"/>
+            </p:column>																
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.caja}">
+              <f:facet name="header">
+                <h:outputText value="Caja"/>
+              </f:facet>
+              <h:outputText value="#{row['caja']}"/>
+            </p:column>																            
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-7" sortBy="#{row.total}">
+              <f:facet name="header">
+                <h:outputText value="Ventas"/>
+              </f:facet>
+              <h:outputText value="#{row['total']}"/>
+            </p:column>		
+						<p:column class="MarAuto Responsive" sortBy="#{row.tipoMedioPago}">
+              <f:facet name="header">
+                <h:outputText value="Forma de pago"/>
+              </f:facet>
+              <h:outputText value="#{row['tipoMedioPago']}"/>
+            </p:column>														
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-7" sortBy="#{row.importe}">
+              <f:facet name="header">
+                <h:outputText value="$ Importe"/>
+              </f:facet>
+              <h:outputText value="#{row['importe']}"/>
+            </p:column>		
+						<p:columnGroup type="footer">
+							<p:row>
+								<p:column colspan="5" style="text-align:right" footerText="Total:" />
+								<p:column footerText="#{manticConsultasDiarias.credito}" style="text-align:right"/>									
+							</p:row>
+						</p:columnGroup>
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticConsultasDiarias.lazyCredito== null? 0: manticConsultasDiarias.lazyCredito.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>  					
         </div>
       </div>
     </div>		    				

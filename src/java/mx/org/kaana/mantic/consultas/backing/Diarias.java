@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -23,6 +24,7 @@ import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -43,6 +45,7 @@ public class Diarias extends IBaseTicket implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428332L;
 	private FormatLazyModel detalle;
+	private FormatLazyModel lazyCredito;
 	private Reporte reporte;
 	
 	public Reporte getReporte() {
@@ -52,6 +55,19 @@ public class Diarias extends IBaseTicket implements Serializable {
 	public FormatLazyModel getDetalle() {
 		return detalle;
 	}	
+
+	public FormatLazyModel getLazyCredito() {
+		return lazyCredito;
+	}
+	
+	public String getCredito() {
+		Double sum= 0D;
+		for (IBaseDto item: (List<IBaseDto>)lazyCredito.getWrappedData()) {
+			Entity row= (Entity)item;
+			sum+= row.toDouble("total");
+		} // for
+	  return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, sum);
+	}
 	
   @PostConstruct
   @Override
@@ -63,7 +79,7 @@ public class Diarias extends IBaseTicket implements Serializable {
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta"));
       this.attrs.put("sortOrder", "order by tc_mantic_ventas.registro desc");
 			this.attrs.put("fechaInicio", new Date(Calendar.getInstance().getTimeInMillis()));
-			toLoadCatalog();      
+			this.toLoadCatalog();      
 			total= new Entity();
 			total.put("total", new Value("total", 0L));
 			this.attrs.put("total", total);
@@ -79,12 +95,13 @@ public class Diarias extends IBaseTicket implements Serializable {
     List<Columna> columns     = null;
 		Map<String, Object> params= null;
     try {
-			params= toPrepare();
-      columns = new ArrayList<>();      
+			params = this.toPrepare();
+      columns= new ArrayList<>();      
       columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));      
       this.lazyModel = new FormatCustomLazy("VistaConsultasDto", "diarias", params, columns);
 			this.attrs.put("total", DaoFactory.getInstance().toEntity("VistaConsultasDto", "diariasTotales", params));
       UIBackingUtilities.resetDataTable();
+      this.lazyCredito= new FormatCustomLazy("VistaConsultasDto", "credito", this.toPrepare(true), columns);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -97,10 +114,17 @@ public class Diarias extends IBaseTicket implements Serializable {
   } // doLoad
 
 	protected Map<String, Object> toPrepare() {
+	  return this.toPrepare(false);
+	}
+	
+	protected Map<String, Object> toPrepare(boolean credito) {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();		
 		sb.append("tc_mantic_tipos_documentos.id_tipo_documento=").append(ETipoDocumento.VENTAS_NORMALES.getIdTipoDocumento()).append(" and ");
-		sb.append("tc_mantic_ventas_estatus.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TIMBRADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(") and ");
+		if(credito)
+		  sb.append("tc_mantic_ventas_estatus.id_venta_estatus in (").append(EEstatusVentas.CREDITO.getIdEstatusVenta()).append(") and ");
+	  else	
+		  sb.append("tc_mantic_ventas_estatus.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TIMBRADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
 		  sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");			
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
