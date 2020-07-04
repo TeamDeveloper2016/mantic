@@ -223,10 +223,10 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 		int regresar= 0;
 		if(Cadena.isVacio(concepto.getNoIdentificacion())) 
 			concepto.setNoIdentificacion("");
+		//&& faltante.getUnidadMedida().equals(concepto.getUnidad()))
 		for (Articulo faltante: faltantes) {
 			if(faltante.getNombre().equals(concepto.getDescripcion()) && 
-				 faltante.getCodigo().equals(concepto.getNoIdentificacion()) && 
-				 faltante.getUnidadMedida().equals(concepto.getUnidad()))
+				 faltante.getCodigo().equals(concepto.getNoIdentificacion()))
 				break;
 			else
 				regresar++;
