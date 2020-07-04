@@ -242,7 +242,7 @@
 													<f:facet name="header">
 														<h:outputText value="Bulto"/>
 													</f:facet>
-													<p:inputText id="caja" value="#{row['caja']}" styleClass="janal-wid-70 janal-column-right filas"/>
+													<p:inputText id="caja" value="#{row['caja']}" styleClass="janal-wid-70 janal-column-right filas" onblur="janal.cantidad('#contenedorGrupos\\:tabla\\:#{index}\\:caja', '1');"/>
 												</p:column>		
 												<p:column class="MarAuto Responsive">
 													<f:facet name="header">
