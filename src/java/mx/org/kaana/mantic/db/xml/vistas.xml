@@ -307,10 +307,7 @@
 					tc_mantic_transferencias_tipos on tc_mantic_transferencias.id_transferencia_tipo = tc_mantic_transferencias_tipos.id_transferencia_tipo     
 				where
 					tc_mantic_empresas.id_empresa in ({idEmpresa})        
-					and (
-				    ({condicion})
-						or tc_mantic_transferencias.id_transferencia_estatus= 3
-					)
+					and ({condicion})
 				{sortOrder}				
       </select>   
       <select id="detalle">

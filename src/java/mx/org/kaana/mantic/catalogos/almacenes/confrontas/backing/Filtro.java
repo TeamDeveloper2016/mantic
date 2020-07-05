@@ -121,14 +121,20 @@ public class Filtro extends Comun implements Serializable {
 		  sb.append("(date_format(tc_mantic_confrontas, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("idTransferenciaEstatus")) && !this.attrs.get("idTransferenciaEstatus").toString().equals("-1"))
   		sb.append("(tc_mantic_transferencias.id_transferencia_estatus= ").append(this.attrs.get("idTransferenciaEstatus")).append(") and ");
+		else
+			if(sb.length()== 0)
+  		  sb.append("(tc_mantic_transferencias.id_transferencia_estatus>= 3) and ");
+			else {
+				sb.delete(sb.length()- 4, sb.length());
+				sb.insert(0, "(").append(" or (tc_mantic_transferencias.id_transferencia_estatus= 3)) and ");
+			} // else	
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
 		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
-		if(sb.length()== 0)
-		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-		else	
+		if(sb.length()!= 0)
 		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+		// or tc_mantic_transferencias.id_transferencia_estatus= 3
 		return regresar;
 	}
 
