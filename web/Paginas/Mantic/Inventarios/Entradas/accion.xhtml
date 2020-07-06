@@ -620,9 +620,9 @@
 							</p:panelGrid>	
 							<p:outputLabel for="idTipoComparacion" value="Tipo de comparación:" styleClass="janal-wid-100-txt" style="display:#{manticInventariosEntradasAccion.consultar};"/><br style="display:#{manticInventariosEntradasAccion.consultar};"/>
 							<p:selectOneMenu id="idTipoComparacion" value="#{manticInventariosEntradasAccion.attrs.idTipoComparacion}" converter="javax.faces.Integer" styleClass="janal-wid-100-txt documento" style="display:#{manticInventariosEntradasAccion.consultar};">									
-								<p:ajax event="change" process="@this"/>
-								<f:selectItem itemLabel="COMPRAR CODIGO Y NOMBRE" itemValue="1"/>
-								<f:selectItem itemLabel="COMPRAR SOLO EL CODIGO" itemValue="2"/>
+								<p:ajax event="change" listener="#{manticInventariosEntradasAccion.doPrepareDisponibles}" process="@this" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo) @(.proveedor)"/>
+								<f:selectItem itemLabel="COMPRAR SOLO EL CODIGO" itemValue="1"/>
+								<f:selectItem itemLabel="COMPRAR CODIGO Y NOMBRE" itemValue="2"/>
 								<f:selectItem itemLabel="COMPRAR SOLO EL NOMBRE" itemValue="3"/>
 								<f:selectItem itemLabel="NO COMPARA POR NINGUNO" itemValue="4"/>
 							</p:selectOneMenu>								
@@ -704,7 +704,7 @@
 										</p:column>
 										<f:facet name="footer">
 											<div style="display:flow-root;">
-												<p:outputLabel value="Se relacionaron &lt;strong class='janal-color-blue'&gt;[#{manticInventariosEntradasAccion.attrs.relacionados}]&lt;/strong&gt; articulos del archivo XML con respecto a la orden de compra" style="float: left;" escape="false"/>
+												<p:outputLabel value="Se relacionaron &lt;strong class='importado janal-color-blue'&gt;[#{manticInventariosEntradasAccion.attrs.relacionados}]&lt;/strong&gt; articulos del archivo XML con respecto a la orden de compra" style="float: left;" escape="false" styleClass="importado"/>
 												<div style="float:right;">
 											    <p:outputLabel value="Total articulos: #{manticInventariosEntradasAccion.attrs.faltantes.size()},   Facturado: #{manticInventariosEntradasAccion.adminOrden.orden.original}" styleClass="importado janal-color-orange"/>
 												</div>
@@ -759,7 +759,7 @@
 											</p:column>		
 											<f:facet name="footer">
 											<div style="display:flow-root;">
-												<p:outputLabel value="Se relacionaron &lt;strong class='janal-color-blue'&gt;[#{manticInventariosEntradasAccion.attrs.relacionados}]&lt;/strong&gt; articulos del archivo XML con respecto a la orden de compra" style="float: left;" escape="false"/>
+												<p:outputLabel value="Se relacionaron &lt;strong class='importado janal-color-blue'&gt;[#{manticInventariosEntradasAccion.attrs.relacionados}]&lt;/strong&gt; articulos del archivo XML con respecto a la orden de compra" style="float: left;" escape="false" styleClass="importado"/>
 												<div style="float:right;">
 												  <p:outputLabel value="Total articulos: #{manticInventariosEntradasAccion.attrs.disponibles.size()}" styleClass="importado janal-color-orange"/>
 												</div>

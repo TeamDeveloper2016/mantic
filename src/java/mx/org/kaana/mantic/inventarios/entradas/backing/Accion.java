@@ -48,9 +48,7 @@ import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
-import mx.org.kaana.mantic.libs.factura.beans.ComprobanteFiscal;
 import mx.org.kaana.mantic.libs.factura.beans.Concepto;
-import mx.org.kaana.mantic.libs.factura.reglas.Reader;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -434,6 +432,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	private void toPrepareDisponibles(boolean checkItems) {
 		List<Articulo> disponibles= new ArrayList<>();
 		for (Articulo disponible : this.getAdminOrden().getArticulos()) {
+			if(disponible.getIdOrdenDetalle()!= null && disponible.getIdOrdenDetalle()> 0L) {
+			  disponible.setDisponible(true);
+			  disponible.setOrigen("");
+			} // if
 			if(disponible.getIdArticulo()> -1L)
 				disponibles.add(disponible);
 		} // for
@@ -445,11 +447,13 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	private boolean isEqualsItems(Integer idTipoComparacion, Articulo faltante, Articulo disponible) {
 	  boolean regresar= false;
 		switch(idTipoComparacion) {
-			case 1: // COMPRAR AMBOS CODIGO Y NOMBRE
+			case 1: // COMPRAR CODIGO
+				regresar= (faltante.getCodigo()!= null && disponible.getCodigo()!= null && faltante.getCodigo().length()> 0 && Cadena.toEqualsString(faltante.getCodigo(), disponible.getCodigo()));
+				break;
+			case 2: // COMPRAR AMBOS CODIGO Y NOMBRE
 				regresar= (faltante.getCodigo()!= null && disponible.getCodigo()!= null && faltante.getCodigo().length()> 0 && Cadena.toEqualsString(faltante.getCodigo(), disponible.getCodigo())) || 
 			            (faltante.getNombre()!= null && disponible.getOrigen()!= null && faltante.getNombre().length()> 0 && Cadena.toEqualsString(faltante.getNombre(), disponible.getOrigen()));
-			case 2: // COMPRAR CODIGO
-				regresar= (faltante.getCodigo()!= null && disponible.getCodigo()!= null && faltante.getCodigo().length()> 0 && Cadena.toEqualsString(faltante.getCodigo(), disponible.getCodigo()));
+				break;
 			case 3: // COMPRAR NOMBRE
 				regresar= (faltante.getNombre()!= null && disponible.getOrigen()!= null && faltante.getNombre().length()> 0 && Cadena.toEqualsString(faltante.getNombre(), disponible.getOrigen()));
 				break;
@@ -500,7 +504,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			JsfBase.addMessageError(e);
     } // catch   
 		this.attrs.put("relacionados", relacionados);
-		this.toCheckProveedor(checkItems);
+		// this.toCheckProveedor(checkItems);
 	}
 	
 	private void toCheckProveedor(boolean checkItems) {
@@ -925,6 +929,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		finally {
 			super.finalize();
 		} // finally	
+	}
+	
+	public void doPrepareDisponibles() {
+		this.doLoadXmlFile();
 	}
 	
 }

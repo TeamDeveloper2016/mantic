@@ -5197,6 +5197,22 @@
 			</select>			
 		</unit>
 		<unit id="VistaOrdenesComprasDto">
+			<select id="comprados">
+				select
+					tc_mantic_notas_detalles.id_articulo as id_key,
+					tc_mantic_notas_detalles.id_articulo
+				from
+					tc_mantic_notas_entradas                 
+				inner join
+					tc_mantic_notas_detalles on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_notas_detalles.id_nota_entrada         
+				where
+				  tc_mantic_notas_entradas.id_empresa in ({sucursales})
+					and tc_mantic_notas_entradas.id_proveedor= {idProveedor}	
+					and tc_mantic_notas_detalles.id_articulo in ({articulos})	
+					and tc_mantic_notas_entradas.id_nota_estatus in (3, 5, 6)
+        group by
+          tc_mantic_notas_detalles.id_articulo				
+			</select>
 			<select id="pendientes">
 				select
 					tc_mantic_devoluciones.id_devolucion as id_key,

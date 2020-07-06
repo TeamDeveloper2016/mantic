@@ -556,17 +556,43 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		} // finally
 	} 
 	
-	private void toPreLoadArticulos(List<Articulo> articulos) throws Exception {
-		if(articulos!= null && !articulos.isEmpty())
-			for (Articulo articulo: articulos) {
-				articulo.toPrepare(
-					(Boolean)this.attrs.get("sinIva"), 
-					((OrdenCompra)this.getAdminOrden().getOrden()).getTipoDeCambio(), 
-					((OrdenCompra)this.getAdminOrden().getOrden()).getIdProveedor()
-				);
-			  this.getAdminOrden().insert(articulo);
-			} // for
-		
+	private void toPreLoadArticulos(List<Articulo> articulos) {
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			if(articulos!= null && !articulos.isEmpty()) {
+				StringBuilder sb= new StringBuilder();
+				for (Articulo articulo: articulos) 
+					sb.append(articulo.getIdArticulo()).append(", ");
+				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+				params.put("idProveedor", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdProveedor());
+				params.put("articulos", sb.substring(0, sb.length()- 2));
+				List<Entity> comprados= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaOrdenesComprasDto", "comprados", params);
+				sb.delete(0, sb.length());
+				if(comprados!= null && !comprados.isEmpty()) {
+					for (Entity comprado: comprados)
+						sb.append("|").append(comprado.toLong("idArticulo"));
+				  sb.append("|");
+				} // if
+				for (Articulo articulo: articulos) {
+					if(sb.indexOf("|"+ articulo.getIdArticulo()+ "|")> 0) {
+						articulo.toPrepare(
+							(Boolean)this.attrs.get("sinIva"), 
+							((OrdenCompra)this.getAdminOrden().getOrden()).getTipoDeCambio(), 
+							((OrdenCompra)this.getAdminOrden().getOrden()).getIdProveedor()
+						);
+						this.getAdminOrden().insert(articulo);
+					} // if
+				} // for
+			} // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
 	}
 
 }
