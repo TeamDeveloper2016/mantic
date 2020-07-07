@@ -557,6 +557,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	} 
 	
 	private void toPreLoadArticulos(List<Articulo> articulos) {
+    List<Entity> comprados= null;		
 		Map<String, Object> params=null;
 		try {
 			params=new HashMap<>();
@@ -566,24 +567,27 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 					sb.append(articulo.getIdArticulo()).append(", ");
 				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 				params.put("idProveedor", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdProveedor());
-				params.put("articulos", sb.substring(0, sb.length()- 2));
-				List<Entity> comprados= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaOrdenesComprasDto", "comprados", params);
-				sb.delete(0, sb.length());
-				if(comprados!= null && !comprados.isEmpty()) {
-					for (Entity comprado: comprados)
-						sb.append("|").append(comprado.toLong("idArticulo"));
-				  sb.append("|");
-				} // if
-				for (Articulo articulo: articulos) {
-					if(sb.indexOf("|"+ articulo.getIdArticulo()+ "|")> 0) {
-						articulo.toPrepare(
-							(Boolean)this.attrs.get("sinIva"), 
-							((OrdenCompra)this.getAdminOrden().getOrden()).getTipoDeCambio(), 
-							((OrdenCompra)this.getAdminOrden().getOrden()).getIdProveedor()
-						);
-						this.getAdminOrden().insert(articulo);
+				if(sb.length()> 0) {
+				  params.put("articulos", sb.substring(0, sb.length()- 2));
+				  comprados= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaOrdenesComprasDto", "comprados", params);
+				  sb.delete(0, sb.length());
+					if(comprados!= null && !comprados.isEmpty()) {
+						for (Entity comprado: comprados)
+							sb.append("|").append(comprado.toLong("idArticulo"));
+						sb.append("|");
 					} // if
-				} // for
+					if(sb.length()> 1)
+						for (Articulo articulo: articulos) {
+							if(sb.indexOf("|"+ articulo.getIdArticulo()+ "|")> 0) {
+								articulo.toPrepare(
+									(Boolean)this.attrs.get("sinIva"), 
+									((OrdenCompra)this.getAdminOrden().getOrden()).getTipoDeCambio(), 
+									((OrdenCompra)this.getAdminOrden().getOrden()).getIdProveedor()
+								);
+								this.getAdminOrden().insert(articulo);
+							} // if
+						} // for
+				} // if
 			} // if
 		} // try
 		catch (Exception e) {

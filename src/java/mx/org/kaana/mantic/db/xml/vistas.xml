@@ -6304,7 +6304,7 @@
 				  tc_mantic_articulos.iva,
           tc_mantic_faltantes.cantidad,
 				  tc_mantic_faltantes.registro,
-          t_mantic_articulos.stock,
+          tc_mantic_articulos.stock,
           tc_mantic_articulos.minimo,
           tc_mantic_articulos.maximo,  				  
 				  '0.00' as descuento,
