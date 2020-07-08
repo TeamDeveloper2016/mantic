@@ -85,7 +85,8 @@ public class Transaccion extends TransaccionFactura {
 		boolean regresar           = false;
 		Map<String, Object> params = null;
 		TcManticFacturasDto factura= null;
-		Long idFactura             = null;
+		TcManticVentasDto venta    = null;
+		Long idFactura             = null;		
 		Long idEstatus             = null;
 		try {									
 			switch(accion) {																						
@@ -102,6 +103,10 @@ public class Transaccion extends TransaccionFactura {
 							factura.setIdFacturaEstatus(idEstatus);
 							regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;
 							this.facturaPrincipal= factura;
+							venta= (TcManticVentasDto) DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.orden.getIdVenta());
+							venta.setIdCliente(this.orden.getIdCliente());
+							venta.setIdClienteDomicilio(this.orden.getIdClienteDomicilio());
+							DaoFactory.getInstance().update(sesion, venta);
 						} // if
 						else{							
 							idFactura= registrarFactura(sesion);						
