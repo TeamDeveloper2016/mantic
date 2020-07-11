@@ -2004,7 +2004,8 @@ public class Transaccion extends IBaseTnx {
 											-1L, // Long idArticuloCodigo
 											this.toNextOrden(sesion, articulo.getIdArticulo()), // Long orden 
 											articulo.getIdArticulo(), // Long idArticulo
-											multiplo
+											multiplo, // multiplo
+											null // nombre
 										); 
 									  DaoFactory.getInstance().insert(sesion, adicional);
 									  TcManticMasivasDetallesDto detalle= new TcManticMasivasDetallesDto(

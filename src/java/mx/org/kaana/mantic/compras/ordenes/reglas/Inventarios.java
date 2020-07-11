@@ -151,14 +151,31 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 						Value next= DaoFactory.getInstance().toField(sesion, "TcManticArticulosCodigosDto", "siguiente", params, "siguiente");
 						if(next.getData()== null)
 							next.setData(1L);
-						DaoFactory.getInstance().insert(sesion, new TcManticArticulosCodigosDto(codigos.getCodigo(), this.idProveedor, JsfBase.getIdUsuario(), 2L, "", -1L, next.toLong(), codigos.getIdArticulo()));
+						TcManticArticulosCodigosDto clon= new TcManticArticulosCodigosDto(
+							codigos.getCodigo(), // String codigo, 
+							this.idProveedor, // Long idProveedor, 
+							JsfBase.getIdUsuario(), // Long idUsuario, 
+							2L, // Long idPrincipal, 
+							null, // String observaciones, 
+							-1L, // Long idArticuloCodigo, 
+							next.toLong(), // Long orden, 
+							item.getIdArticulo(), // Long idArticulo, 
+							1L, // Long multiplo, 
+							Cadena.isVacio(codigos.getOrigen())? null: codigos.getOrigen() // String nombre
+						);
+						DaoFactory.getInstance().insert(sesion, clon);
 					} // if	
-					else 
-						if(!Objects.equals(remplazo.getCodigo(), codigos.getCodigo())) {
+					else { 
+						if(!Objects.equals(remplazo.getCodigo(), codigos.getCodigo()))
 							remplazo.setCodigo(codigos.getCodigo());
-							DaoFactory.getInstance().update(sesion, remplazo);
-						} // else	
-				} // if	
+					  remplazo.setNombre(codigos.getOrigen());
+						DaoFactory.getInstance().update(sesion, remplazo);
+					} // if	
+				} // if
+				else {
+					remplazo.setNombre(codigos.getOrigen());
+					DaoFactory.getInstance().update(sesion, remplazo);
+				} // else
 			} // if	
 		} // try
 		catch (Exception e) {

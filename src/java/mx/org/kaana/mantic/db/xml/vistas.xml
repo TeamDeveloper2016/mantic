@@ -339,7 +339,7 @@
 				    (tc_mantic_transferencias.id_transferencia_estatus= 6 and tc_mantic_confrontas_detalles.diferencia!= 0)
 				  )
 				order by
-				  tc_mantic_confrontas_detalles.caja, tc_mantic_confrontas_detalles.codigo
+				  tc_mantic_confrontas_detalles.caja, tc_mantic_confrontas_detalles.nombre
       </select>
       <select id="diferencia">
         select      
@@ -373,7 +373,7 @@
         where      
           tc_mantic_transferencias.id_transferencia= {idTransferencia}
 				order by
-				  tc_mantic_transferencias_detalles.registro	
+				  tc_mantic_transferencias_detalles.caja, tc_mantic_transferencias_detalles.nombre	
 			</select>
 		</unit>
 		<unit id="VistaInventariosDto">
@@ -5169,7 +5169,7 @@
           tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo
         where   
           tc_mantic_articulos_codigos.id_proveedor= {idProveedor}
-          and tc_mantic_articulos_codigos.codigo = '{codigo}'
+          and {condicion}
 				order by
 				  tc_mantic_articulos_codigos.orden desc
 			</select>

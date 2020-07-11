@@ -546,6 +546,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			} // if
 			this.getAdminOrden().getArticulos().add(new Articulo(-1L));
 			this.getAdminOrden().toCalculate();
+			UIBackingUtilities.execute("jsArticulos.update("+ (this.getAdminOrden().getArticulos().size()- 1)+ ");");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

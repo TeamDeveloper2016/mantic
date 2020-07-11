@@ -50,6 +50,8 @@ public class TcManticArticulosCodigosDto implements IBaseDto, Serializable {
   private Timestamp registro;
   @Column (name="multiplo")
   private Long multiplo;
+  @Column (name="nombre")
+  private String nombre;
 
   public TcManticArticulosCodigosDto() {
     this(new Long(-1L));
@@ -61,10 +63,10 @@ public class TcManticArticulosCodigosDto implements IBaseDto, Serializable {
   }
 
   public TcManticArticulosCodigosDto(String codigo, Long idProveedor, Long idUsuario, Long idPrincipal, String observaciones, Long idArticuloCodigo, Long orden, Long idArticulo) {
- 		this(codigo, idProveedor, idUsuario, idPrincipal, observaciones, idArticuloCodigo, orden, idArticulo, 1L);
+ 		this(codigo, idProveedor, idUsuario, idPrincipal, observaciones, idArticuloCodigo, orden, idArticulo, 1L, null);
 	}
 	
-  public TcManticArticulosCodigosDto(String codigo, Long idProveedor, Long idUsuario, Long idPrincipal, String observaciones, Long idArticuloCodigo, Long orden, Long idArticulo, Long multiplo) {
+  public TcManticArticulosCodigosDto(String codigo, Long idProveedor, Long idUsuario, Long idPrincipal, String observaciones, Long idArticuloCodigo, Long orden, Long idArticulo, Long multiplo, String nombre) {
     setCodigo(codigo);
     setIdProveedor(idProveedor);
     setIdUsuario(idUsuario);
@@ -75,6 +77,7 @@ public class TcManticArticulosCodigosDto implements IBaseDto, Serializable {
     setIdArticulo(idArticulo);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 		this.multiplo= multiplo;
+		this.nombre= nombre;
   }
 	
   public void setCodigo(String codigo) {
@@ -157,6 +160,14 @@ public class TcManticArticulosCodigosDto implements IBaseDto, Serializable {
 		this.multiplo=multiplo;
 	}
 
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre=nombre;
+	}
+
   @Transient
   @Override
   public Long getKey() {
@@ -191,6 +202,8 @@ public class TcManticArticulosCodigosDto implements IBaseDto, Serializable {
 		regresar.append(getRegistro());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getMultiplo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getNombre());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -208,13 +221,14 @@ public class TcManticArticulosCodigosDto implements IBaseDto, Serializable {
 		regresar.put("idArticulo", getIdArticulo());
 		regresar.put("registro", getRegistro());
 		regresar.put("multiplo", getMultiplo());
+		regresar.put("nombre", getNombre());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getCodigo(), getIdProveedor(), getIdUsuario(), getIdPrincipal(), getObservaciones(), getIdArticuloCodigo(), getOrden(), getIdArticulo(), getRegistro(), getMultiplo()
+      getCodigo(), getIdProveedor(), getIdUsuario(), getIdPrincipal(), getObservaciones(), getIdArticuloCodigo(), getOrden(), getIdArticulo(), getRegistro(), getMultiplo(), getNombre()
     };
     return regresar;
   }
