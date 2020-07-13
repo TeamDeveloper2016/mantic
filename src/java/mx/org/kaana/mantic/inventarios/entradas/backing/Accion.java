@@ -521,13 +521,13 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				faltante= faltantes.get(x);
 				switch(idTipoComparacion) {
 			   case 1: // COMPRAR CODIGO
-    			 params.put(Constantes.SQL_CONDICION, "tc_mantic_articulos_codigos.codigo= '"+ faltante.getCodigo()+"'");
+    			 params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_articulos_codigos.codigo)= upper('"+ faltante.getCodigo()+"')");
 					 break;
   			 case 2: // COMPRAR AMBOS CODIGO Y NOMBRE
-    			 params.put(Constantes.SQL_CONDICION, "(tc_mantic_articulos_codigos.codigo= '"+ faltante.getCodigo()+"' or tc_mantic_articulos_codigos.nombre = '"+ faltante.getOrigen()+"')");
+    			 params.put(Constantes.SQL_CONDICION, "(upper(tc_mantic_articulos_codigos.codigo)= upper('"+ faltante.getCodigo()+"') or upper(tc_mantic_articulos_codigos.nombre)= upper('"+ faltante.getOrigen()+"'))");
 					 break;
 				 case 3: // COMPRAR NOMBRE
-    			 params.put(Constantes.SQL_CONDICION, "tc_mantic_articulos_codigos.nombre= '"+ faltante.getOrigen()+"'");
+    			 params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_articulos_codigos.nombre)= upper('"+ faltante.getOrigen()+"')");
 					 break;
 				 default:
 				   params.put(Constantes.SQL_CONDICION, "tc_mantic_articulos_codigos.codigo= 'null'");

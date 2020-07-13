@@ -708,6 +708,93 @@
       </select>
 		</unit>
 		<unit id="VistaConsultasDto">
+			<select id="proveedor">
+				select
+					tc_mantic_articulos.id_articulo as id_key,
+					tc_mantic_notas_entradas.consecutivo,
+					tc_mantic_empresas.nombre as nombre_empresa,  
+					tc_mantic_proveedores.razon_social,
+					tc_mantic_articulos_codigos.codigo,
+					tc_mantic_articulos.nombre,
+					tc_mantic_notas_detalles.costo,
+					tc_mantic_notas_detalles.cantidad,
+					(tc_mantic_notas_detalles.sub_total/ tc_mantic_notas_detalles.cantidad) as costo_compra,
+					tc_mantic_articulos.precio as costo_actual,
+					tc_mantic_notas_entradas.registro
+				from 
+					tc_mantic_articulos
+				inner join
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+				inner join 
+					tc_mantic_empresas on tc_mantic_articulos.id_empresa= tc_mantic_empresas.id_empresa
+				left join
+					tc_mantic_notas_detalles on tc_mantic_articulos.id_articulo= tc_mantic_notas_detalles.id_articulo
+				left join
+					tc_mantic_notas_entradas on tc_mantic_notas_detalles.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+				left join
+					tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
+				where
+				  tc_mantic_articulos.id_empresa in ({idEmpresa})
+					and tc_mantic_notas_entradas.id_nota_estatus in (3, 5)
+				  and {condicion}
+				{sortOrder}
+			</select>
+			<select id="totalVendedores">
+				select 
+					tc_mantic_empresas.id_empresa as id_key,
+					tc_mantic_empresas.nombre as nombre_empresa,  
+					count(distinct(tc_mantic_ventas.id_usuario)) as vendedores,
+				  sum(tc_mantic_ventas.total) as total,
+				  sum(tc_mantic_ventas.utilidad) as utilidad
+				from
+					tc_mantic_ventas
+				inner join 
+					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
+				where
+					tc_mantic_ventas.id_empresa in ({idEmpresa})
+					and tc_mantic_ventas.id_tipo_documento= 2
+					and tc_mantic_ventas.id_venta_estatus in (3, 6, 15)
+					and date_format(tc_mantic_ventas.registro, '%Y%m%d')&gt;= '{fechaInicio}' 
+					and date_format(tc_mantic_ventas.registro, '%Y%m%d')&lt;= '{fechaTermino}' 
+				group by
+					tc_mantic_empresas.id_empresa
+				order by
+					tc_mantic_empresas.nombre
+			</select>
+			<select id="ventasVendedor">
+				select 
+					tc_mantic_ventas.id_venta as id_key,
+					tc_mantic_empresas.nombre as nombre_empresa,  
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as vendedor,
+					count(tc_mantic_ventas.id_venta) as ventas,
+					sum(tc_mantic_ventas.total) as total,
+					sum(tc_mantic_ventas.utilidad) as utilidad,
+					count(tc_mantic_garantias.id_garantia) as devoluciones,
+					sum(ifnull(tc_mantic_garantias.total, 0)) as garantias,
+					(sum(tc_mantic_ventas.total)* 100)/ {pventas} as pventas,
+					(sum(tc_mantic_ventas.utilidad)* 100)/ {putilidad} as putilidad,
+				  '{inicio}' as inicio,
+				  '{termino}' as termino
+				from
+					tc_mantic_ventas
+				inner join 
+					tc_janal_usuarios on tc_mantic_ventas.id_usuario= tc_janal_usuarios.id_usuario
+				inner join				
+					tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
+				inner join 
+					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
+				left join
+					tc_mantic_garantias on tc_mantic_ventas.id_venta= tc_mantic_garantias.id_venta
+				where
+					tc_mantic_ventas.id_empresa in ({idEmpresa})
+					and date_format(tc_mantic_ventas.registro, '%Y%m%d')&gt;= '{fechaInicio}' 
+					and date_format(tc_mantic_ventas.registro, '%Y%m%d')&lt;= '{fechaTermino}' 
+					and {condicion}
+				group by
+					tc_mantic_empresas.nombre,
+					tc_mantic_ventas.id_usuario  
+				{sortOrder}
+			</select>
 			<select id="lazy">
         select
 					tc_mantic_ventas.id_venta as id_key,
@@ -1150,16 +1237,11 @@
 						tc_mantic_cajas on cierre.id_caja = tc_mantic_cajas.id_caja                                                     
 					where
 						tc_mantic_ventas.id_empresa in ({idEmpresa})             
-					and
-						tc_mantic_tipos_documentos.id_tipo_documento= {idTipoDocumento}       
-					and
-						tc_mantic_ventas_estatus.id_venta_estatus in ({idVentaEstatus})       
-					and
-						(date_format(tc_mantic_ventas.registro, '%Y%m%d')&gt;= '{fechaInicio}')       
-					and
-						(date_format(tc_mantic_ventas.registro, '%Y%m%d')&lt;= '{fechaFin}')            
-					and
-						{condicionPrincipal}
+					  and tc_mantic_tipos_documentos.id_tipo_documento= {idTipoDocumento}       
+					  and tc_mantic_ventas_estatus.id_venta_estatus in ({idVentaEstatus})       
+					  and (date_format(tc_mantic_ventas.registro, '%Y%m%d')&gt;= '{fechaInicio}')       
+					  and (date_format(tc_mantic_ventas.registro, '%Y%m%d')&lt;= '{fechaFin}')            
+					  and {condicionPrincipal}
 					group by
 						tc_mantic_ventas.id_empresa,
 						tc_mantic_empresas.clave,
@@ -1189,6 +1271,7 @@
 					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
 				where
 					tc_mantic_empresas.id_empresa in ({condicionVendedor})
+				  and tc_mantic_ventas.id_usuario> 1
 				group by 
 					tc_mantic_ventas.id_usuario,					
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno)

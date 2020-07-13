@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/reporte.xhtml">
+  <ui:param name="titulo" value="Consultar ventas por vendedor en un periodo" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'idEmpresa'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},        				
+				'vendedor'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+				'fechaInicio' : {validaciones: 'requerido|fecha', mascara: 'fecha', grupo: 'general'},
+        'fechaTermino': {validaciones: 'requerido|fecha', mascara: 'fecha', grupo: 'general'}
+      };							
+    </script>		
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="janal-align-right xs-pantalla janal-wid-100">
+      <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
+    </div>			
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-3">
+          <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
+						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
+              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticConsultasVendedor.attrs.isMatriz}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{manticConsultasVendedor.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{manticConsultasVendedor.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>          
+							<p:outputLabel for="vendedor" value="Vendedor:"/>
+              <p:selectOneMenu id="vendedor" value="#{manticConsultasVendedor.attrs.vendedor}" styleClass="janal-wid-96" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                <f:selectItems value="#{manticConsultasVendedor.attrs.vendedores}"/>                   
+              </p:selectOneMenu>                                       
+							<p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticConsultasVendedor.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+              <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticConsultasVendedor.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>							
+							<p:separator/>
+            </p:panelGrid>
+						<div class="janal-align-right">
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticConsultasVendedor.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticConsultasVendedor.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+						</div>
+          </p:panel>
+        </div>
+				<p:spacer/>
+        <div id="collapse-content" class="ui-grid-col-9">
+          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticConsultasVendedor.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticConsultasVendedor.attrs.seleccionado}" selectionMode="single" paginator="#{manticConsultasVendedor.lazyModel.rowCount gt manticConsultasVendedor.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+            <f:facet name="header" >
+              <div class="lg-pantalla">
+                <p:menuButton value="Opciones">                  
+                  <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                </p:menuButton>
+              </div>  
+              <div class="xs-pantalla">                              
+                <p:commandButton id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+              </div>  
+            </f:facet>	  
+            <p:column class="MarAuto Responsive janal-wid-18" sortBy="#{row.nombreEmpresa}">
+              <f:facet name="header">
+                <h:outputText value="Sucursal"/>
+              </f:facet>
+              <h:outputText value="#{row['nombreEmpresa']}"/>
+            </p:column>																
+            <p:column class="MarAuto Responsive" sortBy="#{row.vendedor}">
+              <f:facet name="header">
+                <h:outputText value="Vendedor"/>
+              </f:facet>
+              <h:outputText value="#{row['vendedor']}"/>
+            </p:column>		
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-15">
+              <f:facet name="header">
+                <h:outputText value="Ventas : Importe"/>
+              </f:facet>
+              <h:outputText value="#{row['ventas']} : #{row['total']}"/>
+            </p:column>		
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-15">
+              <f:facet name="header">
+                <h:outputText value="Devoluciones : Importe"/>
+              </f:facet>
+              <h:outputText value="#{row['devoluciones']} : #{row['garantias']}"/>
+            </p:column>		
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.utilidad}">
+              <f:facet name="header">
+                <h:outputText value="Utilidad"/>
+              </f:facet>
+              <h:outputText value="#{row['utilidad']}"/>
+            </p:column>
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.pventas}">
+              <f:facet name="header">
+                <h:outputText value="% Ventas"/>
+              </f:facet>
+              <h:outputText value="#{row['pventas']}"/>
+            </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.putilidad}">
+              <f:facet name="header">
+                <h:outputText value="% Utilidad"/>
+              </f:facet>
+              <h:outputText value="#{row['putilidad']}"/>
+            </p:column>		            
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" rendered="false">
+              <f:facet name="header">
+                <h:outputText value="Inicio"/>
+              </f:facet>
+              <h:outputText value="#{row['inicio']}"/>
+            </p:column>		            
+            <p:column class="janal-column-centger MarAuto Responsive janal-wid-10" rendered="false">
+              <f:facet name="header">
+                <h:outputText value="Termino"/>
+              </f:facet>
+              <h:outputText value="#{row['termino']}"/>
+            </p:column>		            
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticConsultasVendedor.lazyModel==null?0:manticConsultasVendedor.lazyModel.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+        </div>
+      </div>
+    </div>		    
+  </ui:define>   	
+  <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
+</ui:composition>

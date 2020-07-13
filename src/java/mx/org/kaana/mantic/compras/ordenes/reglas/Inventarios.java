@@ -161,19 +161,19 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 							next.toLong(), // Long orden, 
 							item.getIdArticulo(), // Long idArticulo, 
 							1L, // Long multiplo, 
-							Cadena.isVacio(codigos.getOrigen())? null: codigos.getOrigen() // String nombre
+							Cadena.isVacio(codigos.getOrigen())? null: codigos.getOrigen().toUpperCase() // String nombre
 						);
 						DaoFactory.getInstance().insert(sesion, clon);
 					} // if	
 					else { 
 						if(!Objects.equals(remplazo.getCodigo(), codigos.getCodigo()))
 							remplazo.setCodigo(codigos.getCodigo());
-					  remplazo.setNombre(codigos.getOrigen());
+					  remplazo.setNombre(Cadena.isVacio(codigos.getOrigen())? null: codigos.getOrigen().toUpperCase());
 						DaoFactory.getInstance().update(sesion, remplazo);
 					} // if	
 				} // if
 				else {
-					remplazo.setNombre(codigos.getOrigen());
+					remplazo.setNombre(Cadena.isVacio(codigos.getOrigen())? null: codigos.getOrigen().toUpperCase());
 					DaoFactory.getInstance().update(sesion, remplazo);
 				} // else
 			} // if	

@@ -66,7 +66,7 @@ public class Saldos extends IBaseFilter implements Serializable {
     List<Columna> columns     = null;
 	  Map<String, Object> params= null;	
     try {
-  	  params = toPrepare();	
+  	  params = this.toPrepare();	
       columns= new ArrayList<>();
       columns.add(new Columna("pagar", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
       columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));    

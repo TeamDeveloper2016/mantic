@@ -61,7 +61,7 @@
 							<p:outputLabel for="almacen" value="Almacen:"/>
 							<p:inputText id="almacen" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.almacen}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="razonSocial" value="Razón social:"/>
-							<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: HERRAJES HF. S.A. DE C.V." itemLabel="#{custom.clave}#{empty custom.clave? '': ' | '}#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.proveedor}" completeMethod="#{manticCatalogosEmpresasCuentasSaldos.doCompleteProveedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+							<p:autoComplete id="razonSocial" var="custom" placeholder="ej. HERRAJES HF. S.A. DE C.V." itemLabel="#{custom.clave}#{empty custom.clave? '': ' | '}#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.proveedor}" completeMethod="#{manticCatalogosEmpresasCuentasSaldos.doCompleteProveedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
 										<h:outputText value="Clave:" />

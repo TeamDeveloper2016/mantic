@@ -109,7 +109,10 @@
 									</p:column>		
  								</p:dataTable>
 							</p:panelGrid>	
-							<p:outputLabel value="Las filas que estan en color naranja son articulos no solicitados en la transferencia, los de color verde son articulos que difieren en su cantidad" style="float: left;"/>
+							<p:outputLabel value="Las filas que estan en color naranja son articulos no solicitados en la transferencia, los de color verde son articulos que difieren en su cantidad" style="float: left;"/><br/>
+							<p:outputLabel value="&lt;span class='janal-color-red janal-font-bold'&gt;Ignorar cambios:&lt;/&gt; Las diferencias no afecta a ningun almacen" style="float: left;" escape="true"/><br/>
+							<p:outputLabel value="&lt;span class='janal-color-red janal-font-bold'&gt;Afectar origen:&lt;/&gt;Las diferencias solo afectan el almacen fuente u origen y se ignora el almacen destino" style="float: left;" escape="true"/><br/>
+							<p:outputLabel value="&lt;span class='janal-color-red janal-font-bold'&gt;Afectar destino:&lt;/&gt;Las diferencias solo afectan al almacen destino y se ignora el almacen origen" style="float: left;" escape="true"/>
 						</p:tab>
 					</p:tabView>	
 				</div>
