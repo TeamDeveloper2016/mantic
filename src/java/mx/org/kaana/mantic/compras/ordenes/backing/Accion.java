@@ -533,7 +533,6 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 						break;
 					case 3: // VENTAS PERDIDAS
 						articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaOrdenesComprasDto", "preregistrados", params);
-						this.getAdminOrden().getArticulos().clear();
 						this.toPreLoadArticulos(articulos);
 						break;
 					case 4: // DE AMBOS PROCESOS
@@ -585,6 +584,11 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 									((OrdenCompra)this.getAdminOrden().getOrden()).getTipoDeCambio(), 
 									((OrdenCompra)this.getAdminOrden().getOrden()).getIdProveedor()
 								);
+								if(articulo.getMultiplo()> 1L) {
+									int divisor= (int)(articulo.getCantidad()/ articulo.getMultiplo());
+									int residuo= (int)(articulo.getCantidad()% articulo.getMultiplo());
+									articulo.setCantidad((divisor* articulo.getMultiplo())+ (residuo!= 0? (articulo.getMultiplo()* 1D): 0D));
+								} // if	
 								this.getAdminOrden().insert(articulo);
 							} // if
 						} // for

@@ -19,6 +19,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -28,11 +29,10 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETipoDocumento;
-import mx.org.kaana.mantic.ventas.comun.IBaseTicket;
 
 @Named(value= "manticConsultasVendedor")
 @ViewScoped
-public class Vendedor extends IBaseTicket implements Serializable {
+public class Vendedor extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428332L;
 	

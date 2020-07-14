@@ -321,7 +321,8 @@
           tc_mantic_confrontas_detalles.cantidad as cuantos,
           tc_mantic_confrontas_detalles.cantidad as inicial,
  					ifnull(tc_mantic_transferencias_detalles.cantidad, 0) as solicitados, 
-				  tc_mantic_articulos.precio as valor
+				  tc_mantic_articulos.precio as valor,
+				  tc_mantic_confrontas_detalles.caja as bulto
         from      
           tc_mantic_confrontas_detalles
         inner join
@@ -365,7 +366,8 @@
 					false as solicitado, 
 					0 as stock,
 				  0 as id_aplicar,
-				  tc_mantic_transferencias_detalles.caja
+				  tc_mantic_transferencias_detalles.caja,
+				  tc_mantic_transferencias_detalles.caja as bulto
         from      
           tc_mantic_transferencias
         inner join      
@@ -710,6 +712,65 @@
       </select>
 		</unit>
 		<unit id="VistaConsultasDto">
+			<select id="conteos">
+				select
+					tc_mantic_inventarios.id_inventario as id_key,
+				  tc_mantic_empresas.nombre as nombre_empresa,  
+					tc_mantic_almacenes.id_almacen,
+					tc_mantic_articulos.id_articulo,
+					tc_mantic_articulos_codigos.codigo,
+					tc_mantic_articulos.nombre,
+					tc_mantic_almacenes.nombre as almacen,
+					tc_mantic_inventarios.inicial,
+					tc_mantic_inventarios.entradas,
+					tc_mantic_inventarios.salidas,
+					tc_mantic_inventarios.stock as conteo,
+					tc_mantic_almacenes_articulos.stock,
+					tc_mantic_inventarios.registro,
+					tc_mantic_almacenes_articulos.minimo,
+					tc_mantic_almacenes_articulos.maximo,
+					if(tc_mantic_conteo_previo.fecha_previa= null, '-', date_format(tc_mantic_conteo_previo.fecha_previa, '%d/%m/%Y')) as fecha_previa,
+					ifnull(tc_mantic_conteo_previo.conteo_previo, '0') as conteo_previo
+				from
+					tc_mantic_inventarios
+				inner join     
+				 (select
+						max(tc_mantic_inventarios.id_inventario) as id_inventario
+					from
+						tc_mantic_inventarios         
+					where
+						id_automatico= 2
+					group by
+						id_almacen, id_articulo  
+					) as tc_mantic_maximos  on tc_mantic_inventarios.id_inventario= tc_mantic_maximos.id_inventario
+				inner join
+					tc_mantic_articulos on tc_mantic_inventarios.id_articulo= tc_mantic_articulos.id_articulo
+				inner join
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+				inner join 
+					tc_mantic_almacenes on tc_mantic_inventarios.id_almacen= tc_mantic_almacenes.id_almacen
+				inner join 
+					tc_mantic_almacenes_articulos on tc_mantic_inventarios.id_almacen= tc_mantic_almacenes_articulos.id_almacen and tc_mantic_inventarios.id_articulo= tc_mantic_almacenes_articulos.id_articulo
+				left join 
+				 (
+					select
+						tc_mantic_inventarios.id_inventario,
+						tc_mantic_inventarios.id_almacen,
+						tc_mantic_inventarios.id_articulo,
+						tc_mantic_inventarios.registro as fecha_previa,
+						tc_mantic_inventarios.stock as conteo_previo
+					from
+						tc_mantic_inventarios         
+					where
+						tc_mantic_inventarios.id_automatico= 2
+				 ) as tc_mantic_conteo_previo on tc_mantic_inventarios.id_inventario!= tc_mantic_conteo_previo.id_inventario and tc_mantic_inventarios.id_almacen= tc_mantic_conteo_previo.id_almacen and tc_mantic_inventarios.id_articulo= tc_mantic_conteo_previo.id_articulo
+				inner join 
+					tc_mantic_empresas on tc_mantic_almacenes.id_empresa= tc_mantic_empresas.id_empresa
+				where
+				  tc_mantic_almacenes.id_empresa in ({idEmpresa})
+				  and {condicion}
+				{sortOrder}
+			</select>
 			<select id="proveedor">
 				select
 					tc_mantic_articulos.id_articulo as id_key,
@@ -5645,7 +5706,8 @@
 						tc_mantic_almacenes_articulos.maximo- tc_mantic_almacenes_articulos.stock as cantidad,
 						tc_mantic_almacenes_articulos.stock,
 						tc_mantic_almacenes_articulos.minimo,
-						tc_mantic_almacenes_articulos.maximo
+						tc_mantic_almacenes_articulos.maximo,
+				    (select tc_mantic_articulos_codigos.multiplo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} limit 0, 1) as multiplo
 					from
 						tc_mantic_articulos
 					inner join
@@ -5692,7 +5754,8 @@
 						 cantidad,
 						 stock,
 						 minimo,
-						 maximo      
+						 maximo,
+						 multiplo      
 					from (
 						select
 							tc_mantic_articulos.id_articulo as id_key,
@@ -5712,7 +5775,8 @@
 							tc_mantic_almacenes_articulos.maximo- tc_mantic_almacenes_articulos.stock as cantidad,
 							tc_mantic_almacenes_articulos.stock,
 							tc_mantic_almacenes_articulos.minimo,
-							tc_mantic_almacenes_articulos.maximo
+							tc_mantic_almacenes_articulos.maximo,
+							(select tc_mantic_articulos_codigos.multiplo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} limit 0, 1) as multiplo
 						from
 							tc_mantic_articulos
 						inner join
@@ -6391,7 +6455,8 @@
 				  tc_mantic_faltantes.registro,
           tc_mantic_articulos.stock,
           tc_mantic_articulos.minimo,
-          tc_mantic_articulos.maximo,  				  
+          tc_mantic_articulos.maximo,
+				  (select tc_mantic_articulos_codigos.multiplo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} limit 0, 1) as multiplo,
 				  '0.00' as descuento,
 				  '0.00' as extras, 
 				  0.0 as total_impuesto,

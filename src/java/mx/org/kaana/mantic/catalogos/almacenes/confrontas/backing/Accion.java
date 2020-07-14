@@ -92,9 +92,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
   		String fileName= JsfBase.getRealPath("").concat(salida);
 			if(((AdminConfronta)this.getAdminOrden()).getOrden().isValid())	
-        xls= new Xls(fileName, new Modelo(this.attrs, "VistaConfrontasDto", "detalle", template), "CONSECUTIVO,CODIGO,NOMBRE,CANTIDAD");	
+        xls= new Xls(fileName, new Modelo(this.attrs, "VistaConfrontasDto", "detalle", template), "CONSECUTIVO,CODIGO,NOMBRE,BULTO,CANTIDAD");	
 			else
-        xls= new Xls(fileName, new Modelo(this.attrs, "VistaConfrontasDto", "diferencia", template), "CONSECUTIVO,CODIGO,NOMBRE,CANTIDAD");	
+        xls= new Xls(fileName, new Modelo(this.attrs, "VistaConfrontasDto", "diferencia", template), "CONSECUTIVO,CODIGO,NOMBRE,BULTO,CANTIDAD");	
 			if(xls.procesar()) {
 //				Zip zip       = new Zip();
 //				String zipName= Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.ZIP.name().toLowerCase());

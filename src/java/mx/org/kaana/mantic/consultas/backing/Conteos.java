@@ -16,16 +16,16 @@ import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.ventas.comun.IBaseTicket;
 
-@Named(value= "manticConsultasProveedor")
+@Named(value= "manticConsultasConteos")
 @ViewScoped
-public class Proveedor extends IBaseTicket implements Serializable {
+public class Conteos extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428332L;
 	
@@ -35,6 +35,8 @@ public class Proveedor extends IBaseTicket implements Serializable {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			// this.attrs.put("fechaInicio", new Date(Calendar.getInstance().getTimeInMillis()));
+			// this.attrs.put("fechaTermino", new Date(Calendar.getInstance().getTimeInMillis()));
 			this.toLoadCatalog();      
     } // try
     catch (Exception e) {
@@ -47,18 +49,24 @@ public class Proveedor extends IBaseTicket implements Serializable {
   public void doLoad() {
     List<Columna> columns     = null;
 		Map<String, Object> params= null;
+		Double ventas             = 1D;
+		Double utilidad           = 1D;
     try {
-			params= this.toPrepare();
-			params.put("sortOrder", "order by tc_mantic_notas_entradas.registro desc");
-      columns = new ArrayList<>();
+			params = this.toPrepare();
+      params.put("sortOrder", "order by tc_mantic_inventarios.id_almacen, tc_mantic_articulos.nombre");
+      columns= new ArrayList<>();
       columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("almacen", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("costo", EFormatoDinamicos.MILES_SAT_DECIMALES));
-      columns.add(new Columna("costoCompra", EFormatoDinamicos.MILES_SAT_DECIMALES));
-      columns.add(new Columna("costoActual", EFormatoDinamicos.MILES_SAT_DECIMALES));
-      columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_SIN_DECIMALES));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
-      this.lazyModel = new FormatCustomLazy("VistaConsultasDto", "proveedor", params, columns);
+      columns.add(new Columna("conteo", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("stock", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("minimo", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("maximo", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("conteoPrevio", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
+      // columns.add(new Columna("fechaPrevia", EFormatoDinamicos.FECHA_CORTA));
+      this.lazyModel = new FormatCustomLazy("VistaConsultasDto", "conteos", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -72,16 +80,15 @@ public class Proveedor extends IBaseTicket implements Serializable {
   } // doLoad
 	
 	protected Map<String, Object> toPrepare() {
-	  Map<String, Object> regresar= new HashMap<>();	
-		StringBuilder sb= new StringBuilder();
+	  Map<String, Object> regresar  = new HashMap<>();	
+		StringBuilder sb              = new StringBuilder();
 	  UISelectEntity codigo         = (UISelectEntity)this.attrs.get("codigo");
 		List<UISelectEntity>codigos   = (List<UISelectEntity>)this.attrs.get("codigos");
 	  UISelectEntity articulo       = (UISelectEntity)this.attrs.get("articulo");
 		List<UISelectEntity>articulos = (List<UISelectEntity>)this.attrs.get("articulos");
-	  UISelectEntity proveedor      = (UISelectEntity)this.attrs.get("proveedor");
-		List<UISelectEntity>provedores= (List<UISelectEntity>)this.attrs.get("proveedores");
-  	if(!Cadena.isVacio(this.attrs.get("consecutivo")))
-  		sb.append("(tc_mantic_notas_entradas.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
+		
+		if(!Cadena.isVacio(this.attrs.get("idAlmacen")) && !this.attrs.get("idAlmacen").toString().equals("-1"))
+  		sb.append("(tc_mantic_almacenes.id_almacen= ").append(this.attrs.get("idAlmacen")).append(") and ");
 		
 		if(codigos!= null && codigo!= null && codigos.indexOf(codigo)>= 0) 
 			sb.append("(tc_mantic_articulos_codigos.id_articulo= ").append(codigo.getKey()).append(") and ");			
@@ -95,16 +102,10 @@ public class Proveedor extends IBaseTicket implements Serializable {
 			if(!Cadena.isVacio(JsfBase.getParametro("articulo_input")))
   			sb.append("(upper(tc_mantic_articulos.nombre) like upper('%").append(JsfBase.getParametro("articulo_input")).append("%')) and");									
 		
-		if(provedores!= null && proveedor!= null && provedores.indexOf(proveedor)>= 0) 
-			sb.append("(tc_mantic_proveedores.id_proveedor= ").append(proveedor.getKey()).append(") and ");			
-		else 
-			if(!Cadena.isVacio(JsfBase.getParametro("proveedor_input")))
-  			sb.append("(upper(tc_mantic_proveedores.razon_social) like upper('%").append(JsfBase.getParametro("proveedor_input")).append("%')").append(" or upper(tc_mantic_proveedores.rfc) like upper('%").append(JsfBase.getParametro("proveedor_input")).append("%') or upper(tc_mantic_proveedores.clave) like upper('%").append(JsfBase.getParametro("proveedor_input")).append("%')) and");									
-		
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("(date_format(tc_mantic_notas_entradas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and");
+		  sb.append("(date_format(tc_mantic_inventarios.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and");
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append("(date_format(tc_mantic_notas_entradas.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and");
+		  sb.append("(date_format(tc_mantic_inventarios.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
@@ -130,7 +131,9 @@ public class Proveedor extends IBaseTicket implements Serializable {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
-			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
+			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
+      this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
+			this.attrs.put("idAlmacen", new UISelectEntity("-1"));
     } // try
     catch (Exception e) {
       throw e;
@@ -138,9 +141,9 @@ public class Proveedor extends IBaseTicket implements Serializable {
     finally {
       Methods.clean(columns);
       Methods.clean(params);
-    } // finally
+    }// finally
 	}
-
+	
 	public List<UISelectEntity> doCompleteCodigo(String query) {
 		List<Columna> columns       = null;
     Map<String, Object> params  = null;
@@ -202,44 +205,31 @@ public class Proveedor extends IBaseTicket implements Serializable {
       Methods.clean(params);
     }// finally
 		return (List<UISelectEntity>)articulos;
-	}	// doCompleteArticulo
-	
-	public List<UISelectEntity> doCompleteProveedor(String query) {
- 		List<Columna> columns     = null;
+	}	// doCompleteArticulo	
+
+	public void doAlmacenes() {
+		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
-		boolean buscaPorCodigo    = false;
     try {
 			columns= new ArrayList<>();
+			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+				params.put("sucursales", this.attrs.get("idEmpresa"));
+			else
+				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
-  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			String search= query; 
-			if(!Cadena.isVacio(search)) {
-  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();
-				buscaPorCodigo= search.startsWith(".");
-				if(buscaPorCodigo)
-					search= search.trim().substring(1);
-				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
-			} // if	
-			else
-				search= "WXYZ";
-  		params.put("codigo", search);
-			if(buscaPorCodigo)
-        this.attrs.put("proveedores", UIEntity.build("TcManticProveedoresDto", "porCodigo", params, columns, 40L));
-			else
-        this.attrs.put("proveedores", UIEntity.build("TcManticProveedoresDto", "porNombre", params, columns, 40L));
-		} // try
-	  catch (Exception e) {
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
+			this.attrs.put("idAlmacen", new UISelectEntity("-1"));
+    } // try
+    catch (Exception e) {
       Error.mensaje(e);
 			JsfBase.addMessageError(e);
     } // catch   
     finally {
       Methods.clean(columns);
       Methods.clean(params);
-    }// finally
-		return (List<UISelectEntity>)this.attrs.get("proveedores");
-	}	
+    } // finally
+	}
 	
 }

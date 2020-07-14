@@ -1131,7 +1131,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 				inventario.setStock(inventario.getStock() - cantidad);
 				regresar= DaoFactory.getInstance().update(sesion, inventario)>= 1L;
 			} // if
-			else{
+			else {
 				inventario= new TcManticInventariosDto();
 				inventario.setEjercicio(Long.valueOf(Fecha.getAnioActual()));
 				inventario.setEntradas(0D);
@@ -1140,7 +1140,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 				inventario.setIdUsuario(JsfBase.getIdUsuario());
 				inventario.setInicial(0D);
 				inventario.setSalidas(cantidad);
-				inventario.setStock(cantidad);
+				inventario.setStock(cantidad* -1);
 				inventario.setIdAutomatico(1L);
 				regresar= DaoFactory.getInstance().insert(sesion, inventario)>= 1L;
 			} // else				
