@@ -165,7 +165,7 @@
 											<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();" style="float:left;">
 												<f:setPropertyActionListener target="#{manticCatalogosAlmacenesConfrontasAccion.attrs.seleccionado}" value="#{null}"/>
 											</p:commandButton>
-											<p:commandButton process="@this" icon="fa fa-file-excel-o" title="Exportar articulos" style="float:left;" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+											<p:commandButton process="@this" icon="fa fa-file-excel-o" title="Exportar articulos" style="float:left;" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" styleClass="janal-not-lock">
 												<p:fileDownload value="#{manticCatalogosAlmacenesConfrontasAccion.archivo}" />
 											</p:commandButton>
 										  <p:outputLabel value="Segmentar partidas: " escape="false" styleClass="filas"  style="float: right; display:#{manticCatalogosAlmacenesConfrontasAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}"/>
