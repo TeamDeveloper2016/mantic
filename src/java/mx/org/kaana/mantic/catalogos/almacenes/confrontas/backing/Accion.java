@@ -1,21 +1,29 @@
 package mx.org.kaana.mantic.catalogos.almacenes.confrontas.backing;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.archivo.Xls;
+import mx.org.kaana.libs.archivo.Zip;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
@@ -36,6 +44,8 @@ import mx.org.kaana.mantic.db.dto.TcManticConfrontasDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.event.TabChangeEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 
 @Named(value= "manticCatalogosAlmacenesConfrontasAccion")
@@ -73,6 +83,36 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		} // catch
 		return regresar;
 	}
+	
+  public StreamedContent getArchivo() {
+		StreamedContent regresar= null;
+		Xls xls                 = null;
+		String template         = "TRANSFERENCIA";
+		try {
+			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
+  		String fileName= JsfBase.getRealPath("").concat(salida);
+			if(((AdminConfronta)this.getAdminOrden()).getOrden().isValid())	
+        xls= new Xls(fileName, new Modelo(this.attrs, "VistaConfrontasDto", "detalle", template), "CONSECUTIVO,CODIGO,NOMBRE,CANTIDAD");	
+			else
+        xls= new Xls(fileName, new Modelo(this.attrs, "VistaConfrontasDto", "diferencia", template), "CONSECUTIVO,CODIGO,NOMBRE,CANTIDAD");	
+			if(xls.procesar()) {
+//				Zip zip       = new Zip();
+//				String zipName= Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.ZIP.name().toLowerCase());
+//				zip.setEliminar(true);
+//				zip.compactar(JsfBase.getRealPath("").concat(EFormatos.XLS.toPath()).concat(zipName), JsfBase.getRealPath("").concat(EFormatos.XLS.toPath()), "*".concat(template.concat(".").concat(EFormatos.XLS.name().toLowerCase())));
+//		    String contentType= EFormatos.ZIP.getContent();
+//        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(zipName));  
+		    String contentType= EFormatos.XLS.getContent();
+        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
+		    regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.XLS.name().toLowerCase()));				
+			} // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+    return regresar;
+  }	
 	
 	@PostConstruct
   @Override

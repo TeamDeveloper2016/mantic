@@ -180,10 +180,9 @@
 						</f:facet>
 					</p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-						<p:menuitem id="modificar" action="#{manticCatalogosAlmacenesConfrontasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|3|5|6|', manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.estatus) or manticCatalogosAlmacenesConfrontasFiltro.isAutorizar}"/>
-            <p:menuitem id="consultar" action="#{manticCatalogosAlmacenesConfrontasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
-            <p:separator rendered="#{fn:contains('|3|', manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.estatus)}"/>					
 						<p:menuitem id="recibir" value="Recibir" action="#{manticCatalogosAlmacenesConfrontasFiltro.doRecibir()}" icon="fa fa-edit" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|3|', manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.estatus)}"/>
+						<p:menuitem id="modificar" action="#{manticCatalogosAlmacenesConfrontasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|5|6|', manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.estatus) or manticCatalogosAlmacenesConfrontasFiltro.isAutorizar}"/>
+            <p:menuitem id="consultar" action="#{manticCatalogosAlmacenesConfrontasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"  rendered="#{!fn:contains('|3|', manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.estatus) or manticCatalogosAlmacenesConfrontasFiltro.isAutorizar}"/>
             <p:separator/>					
             <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{manticCatalogosAlmacenesConfrontasFiltro.doMovimientos}"/>
             <p:separator rendered="#{fn:contains('|5|6|7|9|', manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.estatus)}"/>			

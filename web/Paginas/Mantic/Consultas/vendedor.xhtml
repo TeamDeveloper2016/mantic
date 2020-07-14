@@ -100,15 +100,15 @@
             </p:column>
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.pventas}">
               <f:facet name="header">
-                <h:outputText value="% Ventas"/>
+                <h:outputText value="Ventas"/>
               </f:facet>
-              <h:outputText value="#{row['pventas']}"/>
+              <h:outputText value="#{row['pventas']} %"/>
             </p:column>		
             <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.putilidad}">
               <f:facet name="header">
-                <h:outputText value="% Utilidad"/>
+                <h:outputText value="Utilidad"/>
               </f:facet>
-              <h:outputText value="#{row['putilidad']}"/>
+              <h:outputText value="#{row['putilidad']} %"/>
             </p:column>		            
             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" rendered="false">
               <f:facet name="header">

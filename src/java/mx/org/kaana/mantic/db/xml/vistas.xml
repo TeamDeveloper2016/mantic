@@ -312,6 +312,7 @@
       </select>   
       <select id="detalle">
         select      
+				  tc_mantic_transferencias.consecutivo,
 				  tc_mantic_confrontas_detalles.id_confronta_detalle as id_key,
 				  tc_mantic_confrontas_detalles.id_confronta_detalle as id_comodin,
 				  tc_mantic_confrontas_detalles.id_transferencia_detalle as id_orden_detalle,
@@ -343,6 +344,7 @@
       </select>
       <select id="diferencia">
         select      
+				  tc_mantic_transferencias.consecutivo,
           1 as sin_iva, 
 					1 as tipo_de_cambio, 
 					tc_mantic_articulos.nombre, 
@@ -744,7 +746,7 @@
 					tc_mantic_empresas.id_empresa as id_key,
 					tc_mantic_empresas.nombre as nombre_empresa,  
 					count(distinct(tc_mantic_ventas.id_usuario)) as vendedores,
-				  sum(tc_mantic_ventas.total) as total,
+				  sum(tc_mantic_ventas.total) as ventas,
 				  sum(tc_mantic_ventas.utilidad) as utilidad
 				from
 					tc_mantic_ventas

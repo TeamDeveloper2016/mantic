@@ -11,7 +11,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
@@ -56,7 +56,8 @@ public class Vendedor extends IBaseTicket implements Serializable {
   public void doLoad() {
     List<Columna> columns     = null;
 		Map<String, Object> params= null;
-		Long vendedores           = 1L;
+		Double ventas             = 1D;
+		Double utilidad           = 1D;
     try {
 			params = this.toPrepare();
       params.put("sortOrder", "order by tc_mantic_empresas.nombre, tc_mantic_personas.nombres, tc_mantic_personas.paterno");
@@ -68,12 +69,15 @@ public class Vendedor extends IBaseTicket implements Serializable {
       columns.add(new Columna("total", EFormatoDinamicos.MILES_SAT_DECIMALES));
       columns.add(new Columna("utilidad", EFormatoDinamicos.MILES_SAT_DECIMALES));
       columns.add(new Columna("garantias", EFormatoDinamicos.MILES_SAT_DECIMALES));
-      columns.add(new Columna("pventas", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("putilidad", EFormatoDinamicos.MILES_CON_DECIMALES));
-			Value value= (Value)DaoFactory.getInstance().toField("VistaConsultasDto", "totalVendedores", params, "vendedores");
-			if(value!= null && value.getData()!= null)
-				vendedores= value.toLong();
-			params.put("vendedores", vendedores);
+      columns.add(new Columna("pventas", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("putilidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+			Entity value= (Entity)DaoFactory.getInstance().toEntity("VistaConsultasDto", "totalVendedores", params);
+			if(value!= null && !value.isEmpty()) {
+				ventas  = value.toDouble("ventas");
+				utilidad= value.toDouble("utilidad");
+			} // if	
+			params.put("pventas", ventas);
+			params.put("putilidad", utilidad);
 			params.put("inicio", Fecha.formatear(Fecha.FECHA_CORTA, (Date)this.attrs.get("fechaInicio")));
 			params.put("termino", Fecha.formatear(Fecha.FECHA_CORTA, (Date)this.attrs.get("fechaTermino")));
       this.lazyModel = new FormatCustomLazy("VistaConsultasDto", "ventasVendedor", params, columns);
