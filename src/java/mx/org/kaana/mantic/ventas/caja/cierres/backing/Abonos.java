@@ -94,6 +94,7 @@ public class Abonos extends IBaseAttribute implements Serializable {
 			abono.setIdTipoMedioPago(1L);
 			abono.setConcepto((String)this.attrs.get("concepto"));
 			abono.setImporte((Double)this.attrs.get("importe"));
+			abono.setIdAutorizo(JsfBase.getIdUsuario());
 			transaccion = new Transaccion((Long)this.attrs.get("idCierre"), abono);
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.ASIGNAR)) {	
