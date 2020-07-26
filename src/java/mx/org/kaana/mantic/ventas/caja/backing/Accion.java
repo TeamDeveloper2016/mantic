@@ -34,7 +34,6 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ContadoresListas;
@@ -942,6 +941,7 @@ public class Accion extends IBaseVenta implements Serializable {
 						if(actual.after(((TicketVenta)getAdminOrden().getOrden()).getVigencia()))
 							this.generateNewVenta();					
 					} // if
+					this.attrs.put("observaciones", ((TicketVenta)this.getAdminOrden().getOrden()).getObservaciones());
 					this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 					this.attrs.put("consecutivo", ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo());
 					this.loadCatalog();
@@ -961,7 +961,8 @@ public class Accion extends IBaseVenta implements Serializable {
 				this.attrs.put("cobroVenta", false);
 				this.attrs.put("clienteAsignado", false);
 				this.attrs.put("tabIndex", 0);
-				this.attrs.put("creditoCliente", false);				
+				this.attrs.put("creditoCliente", false);		
+				this.attrs.put("observaciones", "");
 			} // else			
 			this.validaFacturacion();
 			this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
@@ -1329,6 +1330,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				} // if
 				regresar.setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));		
 			} // else
+			ticketVenta.setObservaciones((String)this.attrs.get("observaciones"));
 			regresar.setTicketVenta(ticketVenta);
 			for(ClienteTipoContacto record: this.clientesTiposContacto)
 				record.setIdTipoContacto(ETiposContactos.CORREO.getKey());

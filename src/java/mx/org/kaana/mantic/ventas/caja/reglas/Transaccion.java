@@ -576,12 +576,13 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 					registraClientesTipoContacto(sesion, getOrden().getIdCliente());				
 			} // if						
 			if(DaoFactory.getInstance().update(sesion, getOrden())>= 1L) {				
-				regresar= registraBitacora(sesion, getOrden().getIdVenta(), idEstatusVenta, "La venta ha sido finalizada.");				
-				params= new HashMap<>();
-				params.put("idVenta", getOrden().getIdVenta());
-				regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticVentasDetallesDto.class, params)>= 1;
-				toFillArticulos(sesion, this.ventaFinalizada.getArticulos());
-				validarCabecera(sesion);
+				if(registraBitacora(sesion, getOrden().getIdVenta(), idEstatusVenta, "La venta ha sido finalizada.")){
+					params= new HashMap<>();
+					params.put("idVenta", getOrden().getIdVenta());
+					regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticVentasDetallesDto.class, params)>= 1;
+					toFillArticulos(sesion, this.ventaFinalizada.getArticulos());
+					validarCabecera(sesion);
+				} // if
 			} // if			
 		} // try		
 		finally{

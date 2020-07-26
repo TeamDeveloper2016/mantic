@@ -108,6 +108,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("autorized", false);
 			this.attrs.put("expirada", false);
 			this.attrs.put("isIndividual", true);
+			this.attrs.put("observaciones", "");
 			this.attrs.put("descuentoIndividual", 0);
 			this.attrs.put("descuentoGlobal", 0);
 			this.attrs.put("tipoDescuento", MENUDEO);
@@ -225,7 +226,7 @@ public class Accion extends IBaseVenta implements Serializable {
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
-    } // catch
+    } // catch		
     return regresar;
   } // doAccion  
 
@@ -406,6 +407,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		((TicketVenta)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
 		((TicketVenta)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
 		((TicketVenta)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
+		((TicketVenta)this.getAdminOrden().getOrden()).setObservaciones((String)this.attrs.get("observaciones"));
 	} // loadOrdenVenta
 	
 	public void doCerrarTicket(){		
