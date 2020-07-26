@@ -250,8 +250,8 @@
 															<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas janal-name-La_fila_#{index+ 1}" style="display: none"/>
 														</div>
 														<div style="width: 10px; margin-left: -4px; margin-top: 1px;">
-															<h:outputText value="#{row['cantidadMayorMenor']}" escape="false"/>
-														 </div>
+															<h:outputText value="#{row['cantidadMayorMenor']}" escape="false" rendered="#{manticCatalogosAlmacenesConfrontasAccion.mostrar}"/>
+														</div>
 													</div>
 												</p:column>		
 												<p:column class="costos janal-column-right MarAuto Responsive janal-wid-10">

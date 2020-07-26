@@ -33,6 +33,16 @@
 				} // if
 				return ok;
 			} // validaJustificacion
+			
+      //<![CDATA[
+				function start() {
+					janal.bloquear();
+				}
+
+				function stop() {
+					janal.desbloquear();
+				}
+      //]]>
     </script>		
   </ui:define>
   <ui:define name="contenido">
@@ -48,8 +58,7 @@
 							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<p:ajax event="change" process="@this" update="idAlmacen" listener="#{manticCatalogosAlmacenesConfrontasFiltro.doAlmacenes}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-                <f:selectItems value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+                <f:selectItems value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -57,10 +66,9 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
-              <p:outputLabel for="idAlmacen" value="Almacen:"/>
+              <p:outputLabel for="idAlmacen" value="Almacen:" rendered="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.isMatriz}"/>
               <p:selectOneMenu id="idAlmacen" value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-                <f:selectItems value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.almacenes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+                <f:selectItems value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.almacenes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -192,6 +200,10 @@
             <p:separator/>			
             <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte transferencias" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesConfrontasFiltro.doReporte('TRANSFERENCIAS_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
             <p:menuitem id="reporteconfronta" icon="fa fa-file-word-o" value="Reporte confronta" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesConfrontasFiltro.doReporte('CONFTONTAS_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
+            <p:separator rendered="#{fn:contains('|8|9|', manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.estatus)}"/>			
+            <p:menuitem icon="fa fa-indent" value="Sin conteo" onstart="return janal.bloquear()" process="@this tabla" onclick="PrimeFaces.monitorDownload(start, stop);" ajax="false" oncomplete="janal.desbloquear();" rendered="#{fn:contains('|8|9|', manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.estatus)}">
+							<p:fileDownload value="#{manticCatalogosAlmacenesConfrontasFiltro.archivo}" />
+						</p:menuitem>	
 					</p:contextMenu>
         </div>
       </div>

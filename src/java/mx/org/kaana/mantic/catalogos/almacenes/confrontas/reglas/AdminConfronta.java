@@ -43,7 +43,7 @@ public final class AdminConfronta extends IAdminArticulos implements Serializabl
 			// this.orden.setConsecutivo(this.toConsecutivo("0"));
 		} // else	
 		this.toLoadStockArticulos();
-		this.orden.setIkEmpresa(new UISelectEntity(new Entity(this.orden.getTransferencia().getIdAlmacen())));
+		this.orden.setIkEmpresa(new UISelectEntity(new Entity(this.orden.getTransferencia().getIdEmpresa())));
 		this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getTransferencia().getIdAlmacen())));
 		this.orden.setIkDestino(new UISelectEntity(new Entity(this.orden.getTransferencia().getIdDestino())));
 		if(this.orden.getTransferencia().getIdSolicito()!= null)
@@ -64,8 +64,8 @@ public final class AdminConfronta extends IAdminArticulos implements Serializabl
 			  // el almacen origen no tiene conteo 
 			  item.setSolicitado(stock== null);
   			params.put("idAlmacen", this.orden.getTransferencia().getIdDestino());
-				// recuperar el stock de articulos en el almacen destino
 				stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
+				// recuperar el stock de articulos en el almacen destino
 				item.setValor(stock== null? 0D: stock.toDouble());
 				// el almacen destino no tiene conteo
 				item.setCostoLibre(stock== null);

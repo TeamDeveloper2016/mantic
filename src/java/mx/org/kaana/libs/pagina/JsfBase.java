@@ -71,7 +71,7 @@ public class JsfBase extends JsfUtilities {
   public static boolean isAdminEncuestaOrAdmin() throws Exception {
     boolean regresar = false;
     try {
-      regresar = isAdmin() || isGerente();
+      regresar = isAdmin();
     } // try
     catch (Exception e) {
       throw e;

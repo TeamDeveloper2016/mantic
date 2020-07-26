@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.catalogos.almacenes.confrontas.backing;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -7,18 +8,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.comun.Comun;
+import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.archivo.Xls;
+import mx.org.kaana.libs.archivo.Zip;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -31,6 +39,8 @@ import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import org.primefaces.context.RequestContext;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @Named(value = "manticCatalogosAlmacenesConfrontasFiltro")
 @ViewScoped
@@ -51,6 +61,39 @@ public class Filtro extends Comun implements Serializable {
 		return regresar;
 	}
 
+  public StreamedContent getArchivo() {
+		StreamedContent regresar= null;
+		Xls xls                 = null;
+		String template         = "CONTEOS";
+		Map<String, Object> params=null;
+		try {
+			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
+  		String fileName= JsfBase.getRealPath("").concat(salida);
+			params         = new HashMap<>();
+			params.put("idConfronta", this.attrs.get("seleccionado")!= null? ((Entity)this.attrs.get("seleccionado")).toLong("idConfronta"): -1L);
+      xls= new Xls(fileName, new Modelo(params, "VistaConfrontasDto", "destino", template), "NUMERO,CODIGO,NOMBRE,FECHA,STOCK");	
+			if(xls.procesar()) {
+				Zip zip       = new Zip();
+				String zipName= Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.ZIP.name().toLowerCase());
+				zip.setEliminar(true);
+				zip.compactar(JsfBase.getRealPath("").concat(EFormatos.XLS.toPath()).concat(zipName), JsfBase.getRealPath("").concat(EFormatos.XLS.toPath()), "*".concat(template.concat(".").concat(EFormatos.XLS.name().toLowerCase())));
+		    String contentType= EFormatos.ZIP.getContent();
+        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(zipName));  
+		    // String contentType= EFormatos.XLS.getContent();
+        // InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
+		    regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.XLS.name().toLowerCase()));				
+			} // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+    return regresar;
+  }	
+	
   @PostConstruct
   @Override
   protected void init() {
@@ -107,7 +150,7 @@ public class Filtro extends Comun implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("transferencia")))
   		sb.append("(tc_mantic_transferencias.consecutivo like '%").append(this.attrs.get("transferencia")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("idAlmacen")) && !this.attrs.get("idAlmacen").toString().equals("-1"))
-  		sb.append("(tc_mantic_transferencias.id_almacen= ").append(this.attrs.get("idAlmacen")).append(" or tc_mantic_transferencias.id_destino= ").append(this.attrs.get("idAlmacen")).append(") and ");
+  		sb.append("(tc_mantic_transferencias.id_destino= ").append(this.attrs.get("idAlmacen")).append(") and ");
 		UISelectEntity articulo      = (UISelectEntity)this.attrs.get("articulo");
 		List<UISelectEntity>articulos= (List<UISelectEntity>)this.attrs.get("articulos");
 		if(articulos!= null && articulo!= null && articulos.indexOf(articulo)>= 0) 
@@ -126,7 +169,7 @@ public class Filtro extends Comun implements Serializable {
   		  sb.append("(tc_mantic_transferencias.id_transferencia_estatus>= 3) and ");
 			else {
 				sb.delete(sb.length()- 4, sb.length());
-				sb.insert(0, "(").append(" or (tc_mantic_transferencias.id_transferencia_estatus= 3)) and ");
+				sb.insert(0, "(").append(" or (tc_mantic_transferencias.id_destino= ").append(this.attrs.get("idAlmacen")).append(" and tc_mantic_transferencias.id_transferencia_estatus= 3)) and ");
 			} // else	
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
@@ -138,22 +181,36 @@ public class Filtro extends Comun implements Serializable {
 		return regresar;
 	}
 
-	private void toLoadCatalog() {
+	private void toLoadCatalog() throws Exception {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
+	  List<UISelectEntity> empresas = null;
     try {
 			columns= new ArrayList<>();
-			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
-        params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
-			else
-				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
-			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
-      this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
-			this.attrs.put("idAlmacen", new UISelectEntity("-1"));
+			if(JsfBase.isAdminEncuestaOrAdmin()) {
+        params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
+  			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+        empresas = (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave");
+			} // if	
+			else {
+				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+  			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+        empresas = (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
+			} // else	
+			this.attrs.put("empresas", empresas);
+			this.attrs.put("idEmpresa", empresas.size()> 0? empresas.get(0): new UISelectEntity("-1"));
+			List<UISelectEntity> almacenes= null;
+			if(JsfBase.isAdminEncuestaOrAdmin()) 
+				almacenes= (List<UISelectEntity>) UIEntity.seleccione("TcManticAlmacenesDto", "almacenes", params, columns, "clave");
+			else {
+        params.put("idEmpresa", empresas.size()> 0? empresas.get(0).getKey(): -1L);
+  			params.put("sucursales", empresas.size()> 0? empresas.get(0).getKey(): -1L);
+				almacenes= (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns);
+			} // else
+			this.attrs.put("almacenes", almacenes);
+			this.attrs.put("idAlmacen", almacenes.size()> 0? almacenes.get(0): new UISelectEntity("-1"));
 			columns.remove(0);
 			params.put(Constantes.SQL_CONDICION, "id_transferencia_estatus>= 3");
       this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcManticTransferenciasEstatusDto", "row", params, columns));
@@ -388,5 +445,9 @@ public class Filtro extends Comun implements Serializable {
 		} // catch
 		return "/Paginas/Mantic/Catalogos/Almacenes/Confrontas/accion".concat(Constantes.REDIRECIONAR);
   } // doRecibir	
+
+	public void doExportar() {
+    this.attrs.get("seleccionado");	 	
+	}
 	
 }

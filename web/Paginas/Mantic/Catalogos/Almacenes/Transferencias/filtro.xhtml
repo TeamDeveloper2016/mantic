@@ -33,6 +33,16 @@
 				} // if
 				return ok;
 			} // validaJustificacion
+			
+      //<![CDATA[
+				function start() {
+					janal.bloquear();
+				}
+
+				function stop() {
+					janal.desbloquear();
+				}
+      //]]>
     </script>		
   </ui:define>
   <ui:define name="contenido">
@@ -188,6 +198,10 @@
             <p:menuitem id="autorizar" icon="fa fa-check-square-o" value="Autorizar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();" process="@this tabla" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAutorizar}" rendered="#{fn:contains('|7|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>
             <p:separator/>			
             <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doReporte('TRANSFERENCIAS_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
+            <p:separator rendered="#{fn:contains('|8|9|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>			
+            <p:menuitem icon="fa fa-indent" value="Sin conteo" onstart="return janal.bloquear()" process="@this tabla" onclick="PrimeFaces.monitorDownload(start, stop);" ajax="false" oncomplete="janal.desbloquear();" rendered="#{fn:contains('|8|9|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}">
+							<p:fileDownload value="#{manticCatalogosAlmacenesTransferenciasFiltro.archivo}" />
+						</p:menuitem>	
 					</p:contextMenu>
         </div>
       </div>

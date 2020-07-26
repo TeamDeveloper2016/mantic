@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.catalogos.almacenes.transferencias.backing;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -7,19 +8,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.comun.Comun;
+import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.archivo.Xls;
+import mx.org.kaana.libs.archivo.Zip;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -37,6 +45,8 @@ import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import org.primefaces.context.RequestContext;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @Named(value = "manticCatalogosAlmacenesTransferenciasFiltro")
 @ViewScoped
@@ -57,6 +67,39 @@ public class Filtro extends Comun implements Serializable {
 		return regresar;
 	}
 
+	public StreamedContent getArchivo() {
+		StreamedContent regresar= null;
+		Xls xls                 = null;
+		String template         = "CONTEOS";
+		Map<String, Object> params=null;
+		try {
+			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
+  		String fileName= JsfBase.getRealPath("").concat(salida);
+			params         = new HashMap<>();
+			params.put("idTransferencia", this.attrs.get("seleccionado")!= null? ((Entity)this.attrs.get("seleccionado")).toLong("idTransferencia"): -1L);
+      xls= new Xls(fileName, new Modelo(params, "VistaConfrontasDto", "origen", template), "NUMERO,CODIGO,NOMBRE,FECHA,STOCK");	
+			if(xls.procesar()) {
+				Zip zip       = new Zip();
+				String zipName= Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.ZIP.name().toLowerCase());
+				zip.setEliminar(true);
+				zip.compactar(JsfBase.getRealPath("").concat(EFormatos.XLS.toPath()).concat(zipName), JsfBase.getRealPath("").concat(EFormatos.XLS.toPath()), "*".concat(template.concat(".").concat(EFormatos.XLS.name().toLowerCase())));
+		    String contentType= EFormatos.ZIP.getContent();
+        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(zipName));  
+		    // String contentType= EFormatos.XLS.getContent();
+        // InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
+		    regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.ZIP.name().toLowerCase()));
+			} // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+    return regresar;
+  }	
+	
   @PostConstruct
   @Override
   protected void init() {

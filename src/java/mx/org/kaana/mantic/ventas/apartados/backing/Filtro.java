@@ -11,12 +11,14 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -42,7 +44,12 @@ public class Filtro extends IBaseTicket implements Serializable {
 
   private static final long serialVersionUID = 8793578963299428879L;
   private TcManticApartadosDto apartado;
+	private FormatLazyModel lazyDetalleTicket;
   private Reporte reporte;
+	
+	public FormatLazyModel getLazyDetalleTicket() {
+		return lazyDetalleTicket;
+	}		
 	
   @PostConstruct
   @Override
@@ -321,7 +328,7 @@ public class Filtro extends IBaseTicket implements Serializable {
     Entity seleccionado          = null;
 		try{		
       params= toPrepare();
-      seleccionado = ((Entity)this.attrs.get("seleccionado"));
+      seleccionado = (Entity)this.attrs.get("seleccionado");
       params.put("sortOrder", "order by	registro desc");
       reporteSeleccion= EReportes.valueOf(nombre);
       if(reporteSeleccion.equals(EReportes.APARTADO_DETALLE)){
@@ -355,4 +362,67 @@ public class Filtro extends IBaseTicket implements Serializable {
 		} // else
 	} // doVerificarReporte	
 
+  public String doAccion() {
+    EAccion eaccion= EAccion.CONSULTAR;
+		String regresar= "/Paginas/Mantic/Ventas/accion".concat(Constantes.REDIRECIONAR); 
+		try {
+			JsfBase.setFlashAttribute("accion", eaccion);		
+			JsfBase.setFlashAttribute("idVenta", ((Entity)this.attrs.get("seleccionado")).toLong("idVenta"));
+			JsfBase.setFlashAttribute("idCliente", ((Entity)this.attrs.get("seleccionado")).toLong("idCliente"));
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Ventas/Apartados/filtro");					
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return regresar;
+  } // doAccion  	
+	
+	public void doMostrarDetalleTicket() {
+		Entity seleccionado      = null;
+		Map<String, Object>params= null;
+		List<Columna>campos      = null;
+		try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");									
+			params= new HashMap<>();
+			if(seleccionado!= null && !seleccionado.isEmpty()) {
+				params.put("idVenta", seleccionado.toLong("idVenta"));
+				campos= new ArrayList<>();
+				campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+				this.lazyDetalleTicket= new FormatLazyModel("VistaTcManticVentasDetallesDto", "detalle", params, campos);
+				UIBackingUtilities.resetDataTable("tablaDetalleTicket");
+				this.attrs.put("medioPagoDetalleTicket", this.doTipoMedioPago(seleccionado));						
+				this.attrs.put("seleccionDetalleTicket", seleccionado);			
+			} // if
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+			Methods.clean(campos);
+		} // finally
+	} // doMostrarDetalleTicket
+
+	public String doTipoMedioPago(Entity row) {
+		String regresar= null;
+    Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("idVenta", row.toLong("idVenta"));
+			Value value= (Value)DaoFactory.getInstance().toField("VistaVentasDto", "tipoMedioPago", params, "medios");
+			if(value!= null)
+				regresar= value.toString();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+      JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally		
+		return regresar;
+	}
+	
 }

@@ -23,7 +23,6 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.archivo.Xls;
-import mx.org.kaana.libs.archivo.Zip;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
@@ -113,6 +112,18 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		} // catch
     return regresar;
   }	
+	
+	public boolean isMostrar() {
+		Boolean regresar= true;
+		try {
+	    regresar= JsfBase.isAdminEncuestaOrAdmin();
+		} // try	
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		return regresar;
+	}
 	
 	@PostConstruct
   @Override

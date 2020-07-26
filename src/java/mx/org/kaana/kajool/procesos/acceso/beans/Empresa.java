@@ -3,6 +3,7 @@ package mx.org.kaana.kajool.procesos.acceso.beans;
 import java.io.Serializable;
 import java.util.Objects;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.pagina.JsfBase;
 
 /**
  * @company KAANA

@@ -167,7 +167,10 @@
 							<p:outputLabel value="Total [#{manticVentasApartados.lazyModel==null?0:manticVentasApartados.lazyModel.rowCount}] registros"/>
 						</f:facet>
 					</p:dataTable>
-					<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">            
+					<p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">            
+						<p:menuitem id="consultar" action="#{manticVentasApartados.doAccion}" process="@this tabla" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
+						<p:menuitem id="detalle" actionListener="#{manticVentasApartados.doMostrarDetalleTicket}" process="@this tabla" icon="fa fa-server" value="Detalle" onstart="return janal.bloquear()" oncomplete="PF('dlgDetalleTicket').show();" update="dialogoDetalleTicket"/>													
+						<p:separator/>
             <p:menuitem id="pago" icon="fa fa-money" value="Pago" onstart="return janal.bloquear()" action="#{manticVentasApartados.doPago}" process="@this tabla" rendered="#{fn:contains('|1|2|5|6|', manticVentasApartados.attrs.seleccionado.idApartadoEstatus)}"/>						
             <p:menuitem id="cancelar" icon="fa fa-calendar-times-o" value="Cancelar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasApartados.doLoadEstatus('CANCELADO')}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|5|6|', manticVentasApartados.attrs.seleccionado.idApartadoEstatus)}"/>					            
             <p:menuitem id="olvidado" icon="fa fa-frown-o" value="Marcar como olvidado" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasApartados.doLoadEstatus('OLVIDADO')}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{(fn:contains('|1|2|6|', manticVentasApartados.attrs.seleccionado.idApartadoEstatus)) and (manticVentasApartados.attrs.seleccionado.dias.toInteger() gt 29)}"/>					            
@@ -180,6 +183,76 @@
 				</div>
 			</div>	
     </div>	
+		<p:dialog id="dialogoDetalleTicket" widgetVar="dlgDetalleTicket" header="Detalle de ticket" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" width="930px" resizable="false" onHide="janal.desbloquear();" dynamic="true">			
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20,janal-wid-40,janal-wid-40">
+						<p:outputLabel value="No. ticket:"/>
+						<p:outputLabel value="Vendedor"/>
+						<p:outputLabel value="Sucursal"/>
+						<p:inputText styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasApartados.attrs.seleccionDetalleTicket.consecutivo}" readonly="true"/>
+						<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasApartados.attrs.seleccionDetalleTicket.nombre}" readonly="true"/>
+						<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasApartados.attrs.seleccionDetalleTicket.nombreEmpresa}" readonly="true"/>
+					</p:panelGrid>
+					<p:panelGrid columns="4" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-25,janal-wid-25,janal-wid-25,janal-wid-25">	
+						<p:outputLabel value="Importe:"/>
+						<p:outputLabel value="Fecha:"/>								
+						<p:outputLabel value="Estatus:"/>								
+						<p:outputLabel value="Medio de pago:"/>								
+						<p:inputText styleClass="janal-wid-100-txt janal-column-right" value="$#{manticVentasApartados.attrs.seleccionDetalleTicket.importe}" readonly="true"/>
+						<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasApartados.attrs.seleccionDetalleTicket.registro}" readonly="true"/>
+						<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasApartados.attrs.seleccionDetalleTicket.estatus}" readonly="true"/>
+						<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasApartados.attrs.medioPagoDetalleTicket}" readonly="true"/>
+					</p:panelGrid>	
+					<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+						<p:outputLabel value="Observaciones:"/>
+						<p:inputTextarea rows="2" styleClass="janal-wid-100-txt" value="#{manticVentasApartados.attrs.seleccionDetalleTicket.observaciones}" readonly="true"/>
+					</p:panelGrid>
+					<p:dataTable lazy="true" id="tablaDetalleTicket" widgetVar="kajoolTableDetalleTicket" var="row" value="#{manticVentasApartados.lazyDetalleTicket}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticVentasApartados.lazyDetalleTicket.rowCount gt manticVentasApartados.lazyDetalleTicket.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">										
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+							<f:facet name="header">
+								<h:outputText value="Cantidad"/>
+							</f:facet>
+							<p:outputLabel value="#{row['cantidad']}"/>							
+						</p:column>		
+						<p:column  class="MarAuto Responsive">
+							<f:facet name="header">
+								<h:outputText value="Articulo"/>
+							</f:facet>
+							<h:outputText id="nombres" value="[#{row['propio']}] #{row['nombre']}" title="Código propio: #{row['propio']}    Existencias almacen: #{row['stock']}" escape="false"/>
+						</p:column>								
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+							<f:facet name="header">
+								<h:outputText value="Precio"/>
+							</f:facet>
+							<p:outputLabel value="#{row['costo']}"/>							
+						</p:column>		
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-13">
+							<f:facet name="header">
+								<h:outputText value="% Descuento"/>
+							</f:facet>
+							<p:outputLabel value="#{row['descuentoDescripcion']}"/>							
+						</p:column>		
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-7">
+							<f:facet name="header">
+								<h:outputText value="IVA"/>
+							</f:facet>
+							<p:outputLabel value="#{row['iva']}"/>							
+						</p:column>		
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+							<f:facet name="header">
+								<h:outputText value="$ Importe"/>
+							</f:facet>
+							<p:outputLabel value="#{row['importe']}"/>
+						</p:column>		
+					</p:dataTable>
+				</div>
+			</div>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">				
+				<p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dlgDetalleTicket').hide();"/>
+			</div>
+		</p:dialog>				
 		<svg id="barcode" style="display: none"></svg>	
 		<button id="printTicket" style="display: none" onclick="jsTicket.loadTicket()">Imprimir</button>				
   </ui:define>  	
