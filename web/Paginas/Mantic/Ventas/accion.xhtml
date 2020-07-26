@@ -14,7 +14,8 @@
 			Janal.Control.fields = {				 				
 				'descuento': {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'articulo'},
 				'cuenta'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'login'},
-				'password' : {validaciones: 'requerido', mascara: 'libre', grupo: 'login'}				
+				'password' : {validaciones: 'requerido', mascara: 'libre', grupo: 'login'},				
+				'observacionesFactura' : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true}
 			};	
 			
 			fieldsDialog = {
@@ -49,7 +50,7 @@
 		<p:poll listener="#{manticVentasAccion.doActivatePage}" process="@this" interval="60"/>
 		<pe:remoteCommand name="updateDescuentos" process="@this" update="tipoDescuento panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd" oncomplete="janal.pivot(); janal.change('dialogosVenta', fieldsDialog); janal.refresh(); jsArticulos.descuentoUserFocus();"/>  			
 		<pe:remoteCommand name="loginValidate" process="@this @(.janal-login-user)" update="headerCuenta cuenta password panelEmpresa" actionListener="#{manticVentasAccion.doLogin}" oncomplete="janal.desbloquear(); if($('#tabla\\:0\\:codigos_input')) { $('#tabla\\:0\\:codigos_input').focus(); }"/>  			
-		<pe:remoteCommand name="userUpdate" process="@this" onstart="janal.bloquear();" actionListener="#{manticVentasAccion.doCerrarTicket}" oncomplete="jsArticulos.activeLogin();" update="deudor contenido tabla panelTotales panelCliente panelEmpresa articulos total @(.filas) @(.recalculo)"/>  			
+		<pe:remoteCommand name="userUpdate" process="@this" onstart="janal.bloquear();" actionListener="#{manticVentasAccion.doCerrarTicket}" oncomplete="jsArticulos.activeLogin();" update="observacionesFactura deudor contenido tabla panelTotales panelCliente panelEmpresa articulos total @(.filas) @(.recalculo)"/>  			
 		<pe:remoteCommand name="loadTicketAbiertos" process="@this" update="dialogoOpenTickets" actionListener="#{manticVentasAccion.doLoadTicketAbiertos}" onstart="janal.bloquear()"/>  			
 		<pe:remoteCommand name="loadCotizaciones" process="@this" update="dialogoCotizaciones" actionListener="#{manticVentasAccion.doLoadCotizaciones}" onstart="janal.bloquear()"/>  			
 		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion) deudor" actionListener="#{manticVentasAccion.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
@@ -272,6 +273,8 @@
 									<p:outputLabel value="#{row['importe$']}"/>
 								</p:column>		
 							</p:dataTable>
+							<p:outputLabel for="observacionesFactura" value="Observaciones:"/>
+							<p:inputTextarea id="observacionesFactura" value="#{manticVentasAccion.attrs.observaciones}" styleClass="janal-wid-100-txt" rows="2"/>
 						</p:panelGrid>
 						<p:panelGrid id="panelTotales" columns="1" layout="grid" styleClass="janal-wid-99" columnClasses="janal-wid-100">
 							<p:panel header="Imagen" styleClass="TexAlCenter janal-wid-100-txt" style="height:100%">
