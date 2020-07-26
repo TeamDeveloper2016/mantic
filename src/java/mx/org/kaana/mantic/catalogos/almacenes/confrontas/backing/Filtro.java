@@ -71,7 +71,7 @@ public class Filtro extends Comun implements Serializable {
   		String fileName= JsfBase.getRealPath("").concat(salida);
 			params         = new HashMap<>();
 			params.put("idConfronta", this.attrs.get("seleccionado")!= null? ((Entity)this.attrs.get("seleccionado")).toLong("idConfronta"): -1L);
-      xls= new Xls(fileName, new Modelo(params, "VistaConfrontasDto", "destino", template), "NUMERO,CODIGO,NOMBRE,FECHA,STOCK");	
+      xls= new Xls(fileName, new Modelo(params, "VistaConfrontasDto", "destino", template), "CODIGO,NOMBRE,FECHA,STOCK");	
 			if(xls.procesar()) {
 				Zip zip       = new Zip();
 				String zipName= Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.ZIP.name().toLowerCase());
@@ -81,7 +81,7 @@ public class Filtro extends Comun implements Serializable {
         InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(zipName));  
 		    // String contentType= EFormatos.XLS.getContent();
         // InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(salida);  
-		    regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.XLS.name().toLowerCase()));				
+		    regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.ZIP.name().toLowerCase()));				
 			} // if
 		} // try
 		catch (Exception e) {
@@ -446,8 +446,4 @@ public class Filtro extends Comun implements Serializable {
 		return "/Paginas/Mantic/Catalogos/Almacenes/Confrontas/accion".concat(Constantes.REDIRECIONAR);
   } // doRecibir	
 
-	public void doExportar() {
-    this.attrs.get("seleccionado");	 	
-	}
-	
 }

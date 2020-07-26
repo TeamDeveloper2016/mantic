@@ -201,7 +201,7 @@
             <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte transferencias" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesConfrontasFiltro.doReporte('TRANSFERENCIAS_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
             <p:menuitem id="reporteconfronta" icon="fa fa-file-word-o" value="Reporte confronta" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesConfrontasFiltro.doReporte('CONFTONTAS_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
             <p:separator rendered="#{fn:contains('|8|9|', manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.estatus)}"/>			
-            <p:menuitem icon="fa fa-indent" value="Sin conteo" onstart="return janal.bloquear()" process="@this tabla" onclick="PrimeFaces.monitorDownload(start, stop);" ajax="false" oncomplete="janal.desbloquear();" rendered="#{fn:contains('|8|9|', manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.estatus)}">
+            <p:menuitem icon="fa fa-indent" value="Sin conteo" process="@this tabla" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" rendered="#{fn:contains('|8|9|', manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.estatus)}">
 							<p:fileDownload value="#{manticCatalogosAlmacenesConfrontasFiltro.archivo}" />
 						</p:menuitem>	
 					</p:contextMenu>

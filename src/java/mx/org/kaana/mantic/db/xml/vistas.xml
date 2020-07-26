@@ -344,14 +344,13 @@
       </select>
 			<select id="origen">
         select      
-  				@rownum := @rownum + 1 as numero,
 				  tc_mantic_transferencias_detalles.id_articulo as id_key,
 				  tc_mantic_transferencias_detalles.codigo,
           tc_mantic_transferencias_detalles.nombre,
           ' ' as fecha,
           ' ' as stock
         from      
-          (select @rownum := 0) as numero, tc_mantic_transferencias
+          tc_mantic_transferencias
         inner join
 				  tc_mantic_transferencias_detalles on tc_mantic_transferencias.id_transferencia= tc_mantic_transferencias_detalles.id_transferencia
         inner join
@@ -375,14 +374,13 @@
 			</select>
 			<select id="destino">
         select      
-  				@rownum := @rownum + 1 as numero,
 				  tc_mantic_confrontas_detalles.id_articulo as id_key,
 				  tc_mantic_confrontas_detalles.codigo,
           tc_mantic_confrontas_detalles.nombre,
           ' ' as fecha,
           ' ' as stock
         from      
-          (select @rownum := 0) as numero, tc_mantic_confrontas_detalles
+          tc_mantic_confrontas_detalles
         inner join
           tc_mantic_articulos on tc_mantic_confrontas_detalles.id_articulo= tc_mantic_articulos.id_articulo
         inner join

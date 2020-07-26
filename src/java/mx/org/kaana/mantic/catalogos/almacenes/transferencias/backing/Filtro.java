@@ -77,7 +77,7 @@ public class Filtro extends Comun implements Serializable {
   		String fileName= JsfBase.getRealPath("").concat(salida);
 			params         = new HashMap<>();
 			params.put("idTransferencia", this.attrs.get("seleccionado")!= null? ((Entity)this.attrs.get("seleccionado")).toLong("idTransferencia"): -1L);
-      xls= new Xls(fileName, new Modelo(params, "VistaConfrontasDto", "origen", template), "NUMERO,CODIGO,NOMBRE,FECHA,STOCK");	
+      xls= new Xls(fileName, new Modelo(params, "VistaConfrontasDto", "origen", template), "CODIGO,NOMBRE,FECHA,STOCK");	
 			if(xls.procesar()) {
 				Zip zip       = new Zip();
 				String zipName= Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.ZIP.name().toLowerCase());
