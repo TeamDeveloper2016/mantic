@@ -8717,9 +8717,8 @@
           inner join
             tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona) apartados
 				where
-					{condicion}				
-				and 
-					id_empresa in ({idEmpresa})
+				  id_empresa in ({idEmpresa})
+					and {condicion}				
 				{sortOrder}  
       </select>  
       <select id="apartado">

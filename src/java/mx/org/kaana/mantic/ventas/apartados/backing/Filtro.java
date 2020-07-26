@@ -104,20 +104,20 @@ public class Filtro extends IBaseTicket implements Serializable {
 		String search= (String)this.attrs.get("cliente");
     if(!Cadena.isVacio(search)) {
 		  search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
-  		sb.append("upper(cliente) regexp '.*").append(search).append(".*'");
-    }
+  		sb.append("(upper(cliente) regexp '.*").append(search).append(".*') and ");
+    } // if
     if(!Cadena.isVacio(this.attrs.get("idVenta")))
-  		sb.append("(tc_mantic_apartados.id_venta= ").append(this.attrs.get("idVenta")).append(") and");
+  		sb.append("(id_venta= ").append(this.attrs.get("idVenta")).append(") and ");
     if(!Cadena.isVacio(this.attrs.get("dias")))
-  		sb.append((!Cadena.isVacio(this.attrs.get("cliente"))?" and ":" ").concat("dias =")).append(this.attrs.get("dias"));
+  		sb.append("(dias= ").append(this.attrs.get("dias")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append(((!Cadena.isVacio(this.attrs.get("cliente"))||!Cadena.isVacio(this.attrs.get("dias")))?" and ":" ").concat("(date_format(registro, '%Y%m%d')>= '")).append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("')");	
+		  sb.append("(date_format(registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append(((!Cadena.isVacio(this.attrs.get("cliente"))||!Cadena.isVacio(this.attrs.get("dias")) ||!Cadena.isVacio(this.attrs.get("fechaInicio")))?" and ":" ").concat("(date_format(registro, '%Y%m%d')>= '")).append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("')");	
+		  sb.append("(date_format(registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("vencidos")) && this.attrs.get("vencidos").toString().equals("1"))
-  		sb.append(((!Cadena.isVacio(this.attrs.get("cliente"))||!Cadena.isVacio(this.attrs.get("dias"))||!Cadena.isVacio(this.attrs.get("fechaInicio"))||!Cadena.isVacio(this.attrs.get("fechaTermino")))?" and ":" ").concat("(now()> vencimiento)"));
+  		sb.append("(now()> vencimiento) and ");
     if(!Cadena.isVacio(this.attrs.get("vencidos")) && this.attrs.get("vencidos").toString().equals("2"))
-  		sb.append(((!Cadena.isVacio(this.attrs.get("cliente"))||!Cadena.isVacio(this.attrs.get("dias"))||!Cadena.isVacio(this.attrs.get("fechaInicio"))||!Cadena.isVacio(this.attrs.get("fechaTermino")))?" and ":" ").concat("(now()< vencimiento)"));
+  		sb.append("(now()< vencimiento) and ");
     if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
@@ -125,7 +125,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	
-		  regresar.put(Constantes.SQL_CONDICION, sb);
+		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
 		return regresar;		
 	}
 	
