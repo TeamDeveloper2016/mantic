@@ -59,8 +59,12 @@ public class Filtro extends IBaseTicket implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
-				loadSucursales();
-      //doLoadEstatus();
+				this.loadSucursales();
+      if(JsfBase.getFlashAttribute("idVenta")!= null) {
+				this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta"));
+				this.doLoad();
+				this.attrs.remove("idVenta");
+			} // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -73,7 +77,7 @@ public class Filtro extends IBaseTicket implements Serializable {
     List<Columna> columns     = null;
 	  Map<String, Object> params= null;	
     try {
-  	  params = toPrepare();	
+  	  params = this.toPrepare();	
       columns= new ArrayList<>();
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));      
       columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));   
@@ -97,11 +101,13 @@ public class Filtro extends IBaseTicket implements Serializable {
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
-		String search= new String((String)this.attrs.get("cliente"));
+		String search= (String)this.attrs.get("cliente");
     if(!Cadena.isVacio(search)) {
 		  search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
   		sb.append("upper(cliente) regexp '.*").append(search).append(".*'");
     }
+    if(!Cadena.isVacio(this.attrs.get("idVenta")))
+  		sb.append("(tc_mantic_apartados.id_venta= ").append(this.attrs.get("idVenta")).append(") and");
     if(!Cadena.isVacio(this.attrs.get("dias")))
   		sb.append((!Cadena.isVacio(this.attrs.get("cliente"))?" and ":" ").concat("dias =")).append(this.attrs.get("dias"));
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))

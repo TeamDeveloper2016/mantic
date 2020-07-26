@@ -206,46 +206,48 @@
 					</p:panelGrid>	
 					<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 						<p:outputLabel value="Observaciones:"/>
-						<p:inputTextarea rows="2" styleClass="janal-wid-100-txt" value="#{manticVentasApartados.attrs.seleccionDetalleTicket.observaciones}" readonly="true"/>
+						<p:inputTextarea rows="1" styleClass="janal-wid-100-txt" value="#{manticVentasApartados.attrs.seleccionDetalleTicket.observaciones}" readonly="true"/>
 					</p:panelGrid>
-					<p:dataTable lazy="true" id="tablaDetalleTicket" widgetVar="kajoolTableDetalleTicket" var="row" value="#{manticVentasApartados.lazyDetalleTicket}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticVentasApartados.lazyDetalleTicket.rowCount gt manticVentasApartados.lazyDetalleTicket.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">										
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
-							<f:facet name="header">
-								<h:outputText value="Cantidad"/>
-							</f:facet>
-							<p:outputLabel value="#{row['cantidad']}"/>							
-						</p:column>		
-						<p:column  class="MarAuto Responsive">
-							<f:facet name="header">
-								<h:outputText value="Articulo"/>
-							</f:facet>
-							<h:outputText id="nombres" value="[#{row['propio']}] #{row['nombre']}" title="Código propio: #{row['propio']}    Existencias almacen: #{row['stock']}" escape="false"/>
-						</p:column>								
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
-							<f:facet name="header">
-								<h:outputText value="Precio"/>
-							</f:facet>
-							<p:outputLabel value="#{row['costo']}"/>							
-						</p:column>		
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-13">
-							<f:facet name="header">
-								<h:outputText value="% Descuento"/>
-							</f:facet>
-							<p:outputLabel value="#{row['descuentoDescripcion']}"/>							
-						</p:column>		
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-7">
-							<f:facet name="header">
-								<h:outputText value="IVA"/>
-							</f:facet>
-							<p:outputLabel value="#{row['iva']}"/>							
-						</p:column>		
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
-							<f:facet name="header">
-								<h:outputText value="$ Importe"/>
-							</f:facet>
-							<p:outputLabel value="#{row['importe']}"/>
-						</p:column>		
-					</p:dataTable>
+					<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" style="height:148px !important;overflow-y: auto" columnClasses="janal-wid-100">
+						<p:dataTable lazy="true" id="tablaDetalleTicket" widgetVar="kajoolTableDetalleTicket" var="row" value="#{manticVentasApartados.lazyDetalleTicket}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticVentasApartados.lazyDetalleTicket.rowCount gt manticVentasApartados.lazyDetalleTicket.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">										
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+								<f:facet name="header">
+									<h:outputText value="Cantidad"/>
+								</f:facet>
+								<p:outputLabel value="#{row['cantidad']}"/>							
+							</p:column>		
+							<p:column  class="MarAuto Responsive">
+								<f:facet name="header">
+									<h:outputText value="Articulo"/>
+								</f:facet>
+								<h:outputText id="nombres" value="[#{row['propio']}] #{row['nombre']}" title="Código propio: #{row['propio']}    Existencias almacen: #{row['stock']}" escape="false"/>
+							</p:column>								
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+								<f:facet name="header">
+									<h:outputText value="Precio"/>
+								</f:facet>
+								<p:outputLabel value="#{row['costo']}"/>							
+							</p:column>		
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-13">
+								<f:facet name="header">
+									<h:outputText value="% Descuento"/>
+								</f:facet>
+								<p:outputLabel value="#{row['descuentoDescripcion']}"/>							
+							</p:column>		
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-7">
+								<f:facet name="header">
+									<h:outputText value="IVA"/>
+								</f:facet>
+								<p:outputLabel value="#{row['iva']}"/>							
+							</p:column>		
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+								<f:facet name="header">
+									<h:outputText value="$ Importe"/>
+								</f:facet>
+								<p:outputLabel value="#{row['importe']}"/>
+							</p:column>		
+						</p:dataTable>
+					</p:panelGrid>	
 				</div>
 			</div>
 			<hr class="ui-widget-content"/>

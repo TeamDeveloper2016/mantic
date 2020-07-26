@@ -186,14 +186,14 @@ public class Ambos extends IBaseFilter implements Serializable {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
 			JsfBase.setFlashAttribute("idCierre", this.attrs.get("idCierre"));
-			JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));
+			JsfBase.setFlashAttribute("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
 			JsfBase.setFlashAttribute("idCaja", this.attrs.get("idCaja"));
 			switch(eaccion) {
 				case AGREGAR:
-					regresar= "retiros";
+					regresar= "retiros?zwkl=0";
 					break;
 				case ASIGNAR:
-					regresar= "abonos";
+					regresar= "abonos?zwkl=0";
 					break;
 			} // switch
 		} // try
@@ -201,7 +201,7 @@ public class Ambos extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return regresar.concat(Constantes.REDIRECIONAR);
+		return regresar.concat(Constantes.REDIRECIONAR_AMPERSON);
   } // doAccion  
 	
   public void doEliminar() {
