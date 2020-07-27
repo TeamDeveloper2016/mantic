@@ -90,6 +90,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	private TcManticFacturasDto facturaPrincipal;
 	private Facturacion facturacion;
 	private Double totalDetalle;
+	private String observaciones;
 	
 	public Transaccion(IBaseDto orden, List<Articulo> articulos) {
 		super((TcManticVentasDto)orden, articulos);		
@@ -110,9 +111,14 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	}	// Transaccion	
 
 	public Transaccion(Long idVenta, Long idCliente){
+		this(idVenta, idCliente, "");
+	}
+	
+	public Transaccion(Long idVenta, Long idCliente, String observaciones){
 		super(new TicketVenta());
-		this.idVenta  = idVenta;
-		this.idCliente= idCliente;		
+		this.idVenta      = idVenta;
+		this.idCliente    = idCliente;		
+		this.observaciones= observaciones;
 	} // Transaccion	
 
 	public Transaccion(Facturacion facturacion) {
@@ -205,6 +211,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		try {
 			params= new HashMap<>();
 			params.put("idCliente", this.idCliente);
+			params.put("observaciones", this.observaciones);
 			regresar= DaoFactory.getInstance().update(sesion, TcManticVentasDto.class, this.idVenta, params)>= 1L;
 		} // try		
 		finally {
