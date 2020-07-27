@@ -190,7 +190,7 @@
 		</pe:remoteCommand>		
 		<p:remoteCommand name="clean" actionListener="#{manticVentasCajaAccion.doCleanArticulos}" process="@this codigo" update="buscados localizado"/>		
 		<p:tabView id="contenedorGrupos" widgetVar="contenedorCaja" activeIndex="#{manticVentasCajaAccion.attrs.tabIndex}">		
-			<p:ajax event="tabChange" process="@this contenedorGrupos observacionesFactura" listener="#{manticVentasCajaAccion.doTabChange}" update="@(.cotizar) @(.janal-abono)" oncomplete="janal.refresh();"/>
+			<p:ajax event="tabChange" process="@this contenedorGrupos contenedorGrupos:observacionesFactura" listener="#{manticVentasCajaAccion.doTabChange}" update="@(.cotizar) @(.janal-abono)" oncomplete="janal.refresh();"/>
 			<p:tab title="Articulos">
 				<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 					<div class="ui-grid-row janal-grid-row">
@@ -400,7 +400,7 @@
 								<p:outputLabel value="Facturar:"/>
 								<p:outputLabel value="Credito:"/>
 								<p:autoComplete id="clientes" placeholder="RFC o nombre" widgetVar="listadoClientes" var="customCliente" itemLabel="#{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticVentasCajaAccion.attrs.cliente}" completeMethod="#{manticVentasCajaAccion.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
-									<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa contenedorGrupos" listener="#{manticVentasCajaAccion.doAsignaCliente}" update="cliente contenido @(.cambio-cliente) contenedorGrupos contenedorGrupos:deudorPago contenedorGrupos:deudor contenedorGrupos:facturacionSinCorreo contenedorGrupos:correosCliente" oncomplete="janal.desbloquear();"/>
+									<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa contenedorGrupos contenedorGrupos:observacionesFactura" listener="#{manticVentasCajaAccion.doAsignaCliente}" update="cliente contenido @(.cambio-cliente) contenedorGrupos contenedorGrupos:deudorPago contenedorGrupos:deudor contenedorGrupos:facturacionSinCorreo contenedorGrupos:correosCliente" oncomplete="janal.desbloquear();"/>
 									<f:facet name="itemtip">
 										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
 											<h:outputText value="Clave" />
