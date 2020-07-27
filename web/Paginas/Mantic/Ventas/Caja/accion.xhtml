@@ -137,10 +137,10 @@
 		</pe:remoteCommand>		
 		<pe:remoteCommand name="unlockVenta" process="@this" actionListener="#{manticVentasCajaAccion.unlockVenta}"/>  					
 		<pe:remoteCommand name="cleanInitPage" onstart="return janal.bloquear();" process="@this" actionListener="#{manticVentasCajaAccion.doCleanInitPage}" update="contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.recalculo) @(.janal-abono) contenedorGrupos:panelPago" oncomplete="janal.desbloquear();jsArticulos.refreshCobroValidate();"/>  			
-		<pe:remoteCommand name="cleanSelection" onstart="return janal.bloquear();" process="@this" actionListener="#{manticVentasCajaAccion.doCleanCaptura}" update="contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.recalculo) @(.janal-abono) contenedorGrupos:panelPago"/>  			
+		<pe:remoteCommand name="cleanSelection" onstart="return janal.bloquear();" process="@this contenedorGrupos:observacionesFactura" actionListener="#{manticVentasCajaAccion.doCleanCaptura}" update="contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.recalculo) @(.janal-abono) contenedorGrupos:panelPago"/>  			
 		<pe:remoteCommand name="updateCambioPrecio" process="@this" update="panelCambioPrecio cambiopreciousr passwordcambioprecio"/>  			
 		<pe:remoteCommand name="updateDescuentos" process="@this" update="panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd"/>  					
-		<pe:remoteCommand name="cobrarVenta" process="@this contenedorGrupos contenedorGrupos:ticketsAbiertos" update="contenedorGrupos aceptCotizacion aceptar cancelar cotizacionIcon aceptarIcon cancelarIcon" actionListener="#{manticVentasCajaAccion.doOpenCobro}" onstart="janal.bloquear()" oncomplete="janal.desbloquear();jsArticulos.focusCobro()"/>  			
+		<pe:remoteCommand name="cobrarVenta" process="@this contenedorGrupos contenedorGrupos:ticketsAbiertos contenedorGrupos:observacionesFactura" update="contenedorGrupos aceptCotizacion aceptar cancelar cotizacionIcon aceptarIcon cancelarIcon" actionListener="#{manticVentasCajaAccion.doOpenCobro}" onstart="janal.bloquear()" oncomplete="janal.desbloquear();jsArticulos.focusCobro()"/>  			
 		<pe:remoteCommand name="loadTicketAbiertos" process="@this" update="dialogoOpenTickets @(.tickets-principal)" actionListener="#{manticVentasCajaAccion.doLoadTicketAbiertosPrincipal}" onstart="janal.bloquear()"/>  					
 		<pe:remoteCommand name="loadCotizaciones" process="@this" update="dialogoCotizaciones" actionListener="#{manticVentasCajaAccion.doLoadCotizaciones}" onstart="janal.bloquear();"/>  			
 		<pe:remoteCommand name="loadApartados" process="@this" update="dialogoApartados" actionListener="#{manticVentasCajaAccion.doLoadApartados}" onstart="janal.bloquear();"/>  			
@@ -190,7 +190,7 @@
 		</pe:remoteCommand>		
 		<p:remoteCommand name="clean" actionListener="#{manticVentasCajaAccion.doCleanArticulos}" process="@this codigo" update="buscados localizado"/>		
 		<p:tabView id="contenedorGrupos" widgetVar="contenedorCaja" activeIndex="#{manticVentasCajaAccion.attrs.tabIndex}">		
-			<p:ajax event="tabChange" process="@this contenedorGrupos" listener="#{manticVentasCajaAccion.doTabChange}" update="@(.cotizar) @(.janal-abono)" oncomplete="janal.refresh();"/>
+			<p:ajax event="tabChange" process="@this contenedorGrupos observacionesFactura" listener="#{manticVentasCajaAccion.doTabChange}" update="@(.cotizar) @(.janal-abono)" oncomplete="janal.refresh();"/>
 			<p:tab title="Articulos">
 				<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 					<div class="ui-grid-row janal-grid-row">
