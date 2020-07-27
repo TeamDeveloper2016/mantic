@@ -700,7 +700,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("clienteSeleccion", seleccion);
 			facturarVenta= (Boolean) this.attrs.get("facturarVenta");
 			if(seleccion!= null && ((TicketVenta)this.getAdminOrden().getOrden()).isValid()){				
-				transaccion= new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta(), seleccion.getKey());
+				transaccion= new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta(), seleccion.getKey(), (String)this.attrs.get("observaciones"));
 				if(transaccion.ejecutar(EAccion.ASIGNAR)){
 					unlockVentaExtends(-1L, (Long)this.attrs.get("ticketLock"));			
 					this.attrs.put("ticketLock", -1L);
@@ -1432,13 +1432,15 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doTabChange(TabChangeEvent event) {
 		String title= event.getTab().getTitle();
 		this.pagar= title.equals("Pagar") || title.equals("Apartado");
+		if(title.equals("Cliente") || title.equals("Tickets") || title.equals("Pagar") || title.equals("Apartado")){
+			((TicketVenta)this.getAdminOrden().getOrden()).setObservaciones(!Cadena.isVacio(this.attrs.get("observaciones")) ? ((String)this.attrs.get("observaciones")).toUpperCase() : "");
+		} // if
 		if(title.equals("Tickets")){
-			doLoadTickets();
+			doLoadTickets();			
 			UIBackingUtilities.update("contenedorGrupos:tablaTicket");
 		} // if
 		if(title.equals("Pagar")){
-			UIBackingUtilities.execute("jsArticulos.focusCobro();");
-			((TicketVenta)this.getAdminOrden().getOrden()).setObservaciones(!Cadena.isVacio(this.attrs.get("observaciones")) ? ((String)this.attrs.get("observaciones")).toUpperCase() : "");
+			UIBackingUtilities.execute("jsArticulos.focusCobro();");			
 		} // if
 		if(title.equals("Articulos"))
 			this.attrs.put("observaciones", ((TicketVenta)this.getAdminOrden().getOrden()).getObservaciones());
