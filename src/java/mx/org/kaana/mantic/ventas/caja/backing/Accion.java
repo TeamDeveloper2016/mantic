@@ -279,8 +279,10 @@ public class Accion extends IBaseVenta implements Serializable {
 		RequestContext rc= null;
 		try {
 			rc= RequestContext.getCurrentInstance();
-			if(!this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid())
+			if(!this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid()){
+				((TicketVenta)this.getAdminOrden().getOrden()).setObservaciones(!Cadena.isVacio(this.attrs.get("observaciones")) ? ((String)this.attrs.get("observaciones")).toUpperCase() : "");
 				rc.execute("jsCaja.validaAccionCaptura();");
+			} // if				
 			else {
 				if(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta()> 0L){
 					transaccion= new mx.org.kaana.mantic.ventas.reglas.Transaccion((TicketVenta)this.getAdminOrden().getOrden());
@@ -1176,6 +1178,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		((TicketVenta)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
 		((TicketVenta)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
 		((TicketVenta)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
+		((TicketVenta)this.getAdminOrden().getOrden()).setObservaciones(!Cadena.isVacio(this.attrs.get("observaciones")) ? ((String)this.attrs.get("observaciones")).toUpperCase() : "");
 	} // loadOrdenVenta
 	
 	private void loadBancos(){
@@ -1433,9 +1436,13 @@ public class Accion extends IBaseVenta implements Serializable {
 			doLoadTickets();
 			UIBackingUtilities.update("contenedorGrupos:tablaTicket");
 		} // if
-		if(title.equals("Pagar"))
+		if(title.equals("Pagar")){
 			UIBackingUtilities.execute("jsArticulos.focusCobro();");
-		this.attrs.put("titleTab", title);
+			((TicketVenta)this.getAdminOrden().getOrden()).setObservaciones(!Cadena.isVacio(this.attrs.get("observaciones")) ? ((String)this.attrs.get("observaciones")).toUpperCase() : "");
+		} // if
+		if(title.equals("Articulos"))
+			this.attrs.put("observaciones", ((TicketVenta)this.getAdminOrden().getOrden()).getObservaciones());
+		this.attrs.put("titleTab", title);		
 	} // doTabChange
 
 	public void doAplicarCambioPrecio() {
