@@ -564,7 +564,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			if(articulos!= null && !articulos.isEmpty()) {
 				StringBuilder sb= new StringBuilder();
 				for (Articulo articulo: articulos) 
-					sb.append(articulo.getIdArticulo()).append(", ");
+					if(!Cadena.isVacio(articulo.getCodigo()))
+					  sb.append(articulo.getIdArticulo()).append(", ");
 				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 				params.put("idProveedor", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdProveedor());
 				if(sb.length()> 0) {
