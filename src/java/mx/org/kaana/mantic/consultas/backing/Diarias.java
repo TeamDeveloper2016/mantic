@@ -46,6 +46,7 @@ public class Diarias extends IBaseTicket implements Serializable {
   private static final long serialVersionUID = 8793667741599428332L;
 	private FormatLazyModel detalle;
 	private FormatLazyModel lazyCredito;
+	private FormatLazyModel lazyApartado;
 	private Reporte reporte;
 	
 	public Reporte getReporte() {
@@ -59,13 +60,27 @@ public class Diarias extends IBaseTicket implements Serializable {
 	public FormatLazyModel getLazyCredito() {
 		return lazyCredito;
 	}
+
+	public FormatLazyModel getLazyApartado() {
+		return lazyApartado;
+	}
 	
 	public String getCredito() {
 		Double sum= 0D;
-		if(lazyCredito!= null)
-			for (IBaseDto item: (List<IBaseDto>)lazyCredito.getWrappedData()) {
+		if(this.lazyCredito!= null)
+			for (IBaseDto item: (List<IBaseDto>)this.lazyCredito.getWrappedData()) {
 				Entity row= (Entity)item;
 				sum+= row.toDouble("total");
+			} // for
+	  return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, sum);
+	}
+	
+	public String getApartado() {
+		Double sum= 0D;
+		if(this.lazyApartado!= null)
+			for (IBaseDto item: (List<IBaseDto>)this.lazyApartado.getWrappedData()) {
+				Entity row= (Entity)item;
+				sum+= row.toDouble("importe");
 			} // for
 	  return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, sum);
 	}
@@ -93,16 +108,23 @@ public class Diarias extends IBaseTicket implements Serializable {
  
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
-		Map<String, Object> params= null;
+    List<Columna> columns       = null;
+		Map<String, Object> params  = null;
+		Map<String, Object> credito = null;
+		Map<String, Object> apartado= null;
     try {
 			params = this.toPrepare();
       columns= new ArrayList<>();      
       columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));      
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_SAT_DECIMALES));      
       this.lazyModel = new FormatCustomLazy("VistaConsultasDto", "diarias", params, columns);
 			this.attrs.put("total", DaoFactory.getInstance().toEntity("VistaConsultasDto", "diariasTotales", params));
       UIBackingUtilities.resetDataTable();
-      this.lazyCredito= new FormatCustomLazy("VistaConsultasDto", "credito", this.toPrepare(true), columns);
+			columns.remove(columns.size()- 1);
+			credito= this.toPrepare(EEstatusVentas.CREDITO);
+      this.lazyCredito = new FormatCustomLazy("VistaConsultasDto", "credito", credito, columns);
+			apartado= this.toPrepare(EEstatusVentas.APARTADOS);
+      this.lazyApartado= new FormatCustomLazy("VistaConsultasDto", "apartado", apartado, columns);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -110,22 +132,31 @@ public class Diarias extends IBaseTicket implements Serializable {
     } // catch
     finally {
       Methods.clean(params);
+      Methods.clean(credito);
+      Methods.clean(apartado);
       Methods.clean(columns);
     } // finally		
   } // doLoad
 
 	protected Map<String, Object> toPrepare() {
-	  return this.toPrepare(false);
+	  return this.toPrepare(EEstatusVentas.TIMBRADA);
 	}
 	
-	protected Map<String, Object> toPrepare(boolean credito) {
+	protected Map<String, Object> toPrepare(EEstatusVentas consulta) {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();		
 		sb.append("tc_mantic_tipos_documentos.id_tipo_documento=").append(ETipoDocumento.VENTAS_NORMALES.getIdTipoDocumento()).append(" and ");
-		if(credito)
-		  sb.append("tc_mantic_ventas_estatus.id_venta_estatus in (").append(EEstatusVentas.CREDITO.getIdEstatusVenta()).append(") and ");
-	  else	
-		  sb.append("tc_mantic_ventas_estatus.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TIMBRADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(") and ");
+		switch(consulta) {
+			case CREDITO:
+  		  sb.append("tc_mantic_ventas_estatus.id_venta_estatus in (").append(EEstatusVentas.CREDITO.getIdEstatusVenta()).append(") and ");
+				break;
+			case APARTADOS:
+  		  sb.append("tc_mantic_ventas_estatus.id_venta_estatus in (").append(EEstatusVentas.APARTADOS.getIdEstatusVenta()).append(") and ");
+				break;
+			default:
+  		  sb.append("tc_mantic_ventas_estatus.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TIMBRADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(") and ");
+				break;
+		} // switch
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
 		  sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");			
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
