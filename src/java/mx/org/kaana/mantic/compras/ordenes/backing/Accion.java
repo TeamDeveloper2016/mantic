@@ -518,8 +518,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				this.getAdminOrden().getIdAlmacen()!= null && this.getAdminOrden().getIdAlmacen()> 0L &&
 				this.getAdminOrden().getIdProveedor()!= null && this.getAdminOrden().getIdProveedor()> 0L) {
 				params=new HashMap<>();
-				params.put("idSucursal", this.attrs.get("idPedidoSucursal")== null? -1L: ((UISelectEntity)this.attrs.get("idPedidoSucursal")).getKey());
-				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
+				params.put("idSucursal", ((OrdenCompra)this.getAdminOrden().getOrden()).getIkEmpresa().getKey());
 				params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
 				params.put("idProveedor", this.getAdminOrden().getIdProveedor());
 				params.put("codigoFaltante", "");

@@ -354,6 +354,9 @@
 								<p:column headerText="Usuario">
 									<p:outputLabel value="#{item.persona}"/>
 								</p:column>   
+								<p:column headerText="Consecutivo" styleClass="janal-wid-8">
+									<p:outputLabel value="#{item.consecutivo}" title="Razon social: #{item.razonSocial} Nota entrada: #{item.consecutivo}"/>
+								</p:column>   
 								<p:column headerText="Proveedor" styleClass="janal-wid-8">
 									<p:outputLabel value="#{item.clave}" title="Razon social: #{item.razonSocial} Nota entrada: #{item.consecutivo}"/>
 								</p:column>   
@@ -369,10 +372,10 @@
 								<p:column headerText="Mayoreo" styleClass="janal-wid-8 janal-column-right">
 									<p:outputLabel value="#{item.mayoreo}"/>
 								</p:column>   
-								<p:column headerText="% Descuento" styleClass="janal-wid-8 janal-column-right">
+								<p:column headerText="% Descuento" styleClass="janal-wid-7 janal-column-right">
 									<p:outputLabel value="#{item.descuento}"/>
 								</p:column>   
-								<p:column headerText="% Extra" styleClass="janal-wid-8 janal-column-right">
+								<p:column headerText="% Extra" styleClass="janal-wid-7 janal-column-right">
 									<p:outputLabel value="#{item.extras}"/>
 								</p:column>   
 								<p:column headerText="Fecha" styleClass="janal-wid-13 janal-column-center">
