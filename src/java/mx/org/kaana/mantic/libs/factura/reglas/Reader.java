@@ -248,7 +248,8 @@ public class Reader implements Serializable{
 							} // switc						
 						} // for		
         		LOG.info("Reader.readConceptos: "+ concepto.getDescripcion());
- 						concepto.setTraslado(readTraslado(node.getFirstChild().getNodeName().equals("cfdi:Impuestos")? node.getFirstChild(): node.getFirstChild().getNextSibling()));
+						if(node.getFirstChild()!= null)
+ 						  concepto.setTraslado(readTraslado(node.getFirstChild().getNodeName().equals("cfdi:Impuestos")? node.getFirstChild(): node.getFirstChild().getNextSibling()));
 						concepto.setInformacionAduanera(readInformacionAduanera(node));
 						if(regresar.indexOf(concepto)< 0)
 						  regresar.add(concepto);
@@ -384,17 +385,17 @@ public class Reader implements Serializable{
 			list= document.getChildNodes().item(0).getChildNodes();
 			for(int count =0; count< list.getLength(); count++){
 				node= list.item(count);
-				if(node.getNodeName().equals("cfdi:Complemento")){
+				if(node.getNodeName().equals("cfdi:Complemento")) {
 					mapAttrs= node.getFirstChild().getAttributes()!= null? node.getFirstChild().getAttributes(): node.getFirstChild().getNextSibling().getAttributes();					
-					regresar.setFechaTimbrado(mapAttrs.getNamedItem("FechaTimbrado").getNodeValue());
-					regresar.setNoCertificadoSat(mapAttrs.getNamedItem("NoCertificadoSAT").getNodeValue());
-					regresar.setRfcProvCertif(mapAttrs.getNamedItem("RfcProvCertif").getNodeValue());
-					regresar.setSchemaLocation(mapAttrs.getNamedItem("xsi:schemaLocation").getNodeValue());
-					regresar.setSelloCfd(mapAttrs.getNamedItem("SelloCFD").getNodeValue());
-					regresar.setSelloSat(mapAttrs.getNamedItem("SelloSAT").getNodeValue());
-					regresar.setTfd(mapAttrs.getNamedItem("xmlns:tfd").getNodeValue());
-					regresar.setUuid(mapAttrs.getNamedItem("UUID").getNodeValue());
-					regresar.setVersion(mapAttrs.getNamedItem("Version").getNodeValue());
+					regresar.setFechaTimbrado(mapAttrs.getNamedItem("FechaTimbrado")== null? null: mapAttrs.getNamedItem("FechaTimbrado").getNodeValue());
+					regresar.setNoCertificadoSat(mapAttrs.getNamedItem("NoCertificadoSAT")== null? null: mapAttrs.getNamedItem("NoCertificadoSAT").getNodeValue());
+					regresar.setRfcProvCertif(mapAttrs.getNamedItem("RfcProvCertif")== null? null: mapAttrs.getNamedItem("RfcProvCertif").getNodeValue());
+					regresar.setSchemaLocation(mapAttrs.getNamedItem("xsi:schemaLocation")== null? null: mapAttrs.getNamedItem("xsi:schemaLocation").getNodeValue());
+					regresar.setSelloCfd(mapAttrs.getNamedItem("SelloCFD")== null? null: mapAttrs.getNamedItem("SelloCFD").getNodeValue());
+					regresar.setSelloSat(mapAttrs.getNamedItem("SelloSAT")== null? null: mapAttrs.getNamedItem("SelloSAT").getNodeValue());
+					regresar.setTfd(mapAttrs.getNamedItem("xmlns:tfd")== null? null: mapAttrs.getNamedItem("xmlns:tfd").getNodeValue());
+					regresar.setUuid(mapAttrs.getNamedItem("UUID")== null? null: mapAttrs.getNamedItem("UUID").getNodeValue());
+					regresar.setVersion(mapAttrs.getNamedItem("Version")== null? null: mapAttrs.getNamedItem("Version").getNodeValue());
 					if(mapAttrs.getNamedItem("xmlns:xsi")!= null)
 					  regresar.setXsi(mapAttrs.getNamedItem("xmlns:xsi").getNodeValue());
 				} // if
