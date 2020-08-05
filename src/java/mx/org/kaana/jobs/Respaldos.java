@@ -8,9 +8,9 @@ package mx.org.kaana.jobs;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import mx.org.kaana.jobs.comun.IBaseJob;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -21,17 +21,16 @@ import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.respaldos.reglas.Transaccion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-public class Respaldos implements Job, Serializable {
+public class Respaldos extends IBaseJob {
 
 	private static final Log LOG              = LogFactory.getLog(Respaldos.class);
 	private static final long serialVersionUID= 7960794038594054567L;
 
 	@Override
-	public void execute(JobExecutionContext jec) throws JobExecutionException {
+	public void procesar(JobExecutionContext jec) throws JobExecutionException {
 		Transaccion transaccion   = null;
 		Map<String, Object> params= null;
 		try {
