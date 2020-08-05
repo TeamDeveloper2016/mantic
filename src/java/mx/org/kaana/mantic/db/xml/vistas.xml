@@ -8249,8 +8249,8 @@
 					tc_mantic_articulos.menudeo,
 					if(tc_mantic_ventas_detalles.descuentos is not null and tc_mantic_ventas_detalles.descuentos &gt; 0, true, false) descuento_activo,
 					false as viejos_precios,
-          ifnull((select tc_mantic_inventarios.stock from tc_mantic_inventarios where tc_mantic_inventarios.id_almacen= 2 and tc_mantic_inventarios.id_articulo= tc_mantic_ventas_detalles.id_articulo order by tc_mantic_inventarios.registro desc limit 0, 1), 0) as stock,
-          ifnull((select tc_mantic_inventarios.id_automatico from tc_mantic_inventarios where tc_mantic_inventarios.id_almacen= 2 and tc_mantic_inventarios.id_articulo= tc_mantic_ventas_detalles.id_articulo order by tc_mantic_inventarios.registro desc limit 0, 1), 1) as id_automatico
+          ifnull((select tc_mantic_inventarios.stock from tc_mantic_inventarios where tc_mantic_inventarios.id_almacen= {idAlmacen} and tc_mantic_inventarios.id_articulo= tc_mantic_ventas_detalles.id_articulo order by tc_mantic_inventarios.registro desc limit 0, 1), 0) as stock,
+          ifnull((select tc_mantic_inventarios.id_automatico from tc_mantic_inventarios where tc_mantic_inventarios.id_almacen= {idAlmacen} and tc_mantic_inventarios.id_articulo= tc_mantic_ventas_detalles.id_articulo order by tc_mantic_inventarios.registro desc limit 0, 1), 1) as id_automatico
 				from 
 					tc_mantic_ventas_detalles 
 				inner join
@@ -8273,14 +8273,14 @@
 					tc_mantic_ventas_detalles.costo as menudeo,
 					if(tc_mantic_ventas_detalles.descuentos is not null and tc_mantic_ventas_detalles.descuentos &gt; 0, true, false) descuento_activo,
 					true as viejos_precios,
-          ifnull((select tc_mantic_inventarios.stock from tc_mantic_inventarios where tc_mantic_inventarios.id_almacen= 2 and tc_mantic_inventarios.id_articulo= tc_mantic_ventas_detalles.id_articulo order by tc_mantic_inventarios.registro desc limit 0, 1), 0) as stock,
-          ifnull((select tc_mantic_inventarios.id_automatico from tc_mantic_inventarios where tc_mantic_inventarios.id_almacen= 2 and tc_mantic_inventarios.id_articulo= tc_mantic_ventas_detalles.id_articulo order by tc_mantic_inventarios.registro desc limit 0, 1), 1) as id_automatico
+          ifnull((select tc_mantic_inventarios.stock from tc_mantic_inventarios where tc_mantic_inventarios.id_almacen= {idAlmacen} and tc_mantic_inventarios.id_articulo= tc_mantic_ventas_detalles.id_articulo order by tc_mantic_inventarios.registro desc limit 0, 1), 0) as stock,
+          ifnull((select tc_mantic_inventarios.id_automatico from tc_mantic_inventarios where tc_mantic_inventarios.id_almacen= {idAlmacen} and tc_mantic_inventarios.id_articulo= tc_mantic_ventas_detalles.id_articulo order by tc_mantic_inventarios.registro desc limit 0, 1), 1) as id_automatico
 				from 
 					tc_mantic_ventas_detalles 
 				inner join
 					tc_mantic_articulos on tc_mantic_ventas_detalles.id_articulo = tc_mantic_articulos.id_articulo
 				where  
-					id_venta = {idVenta}
+					tc_mantic_ventas_detalles.id_venta = {idVenta}
 				order by
 					tc_mantic_ventas_detalles.registro
 			</select>
