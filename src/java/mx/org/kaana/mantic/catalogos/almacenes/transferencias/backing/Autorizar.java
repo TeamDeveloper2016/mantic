@@ -73,14 +73,15 @@ public class Autorizar extends IBaseArticulos implements Serializable {
 			this.casoUno.add(new UISelectEntity(new Entity(2L, "RESTAR ORIGEN")));
 			this.casoDos= new ArrayList<>();
 			this.casoDos.add(new UISelectEntity(new Entity(0L, "SELECCIONE")));
-			this.casoDos.add(new UISelectEntity(new Entity(1L, "IGNORAR CAMBIOS"))); 
+			this.casoDos.add(new UISelectEntity(new Entity(1L, "IGNORAR CAMBIOS"))); // 1
 			this.casoDos.add(new UISelectEntity(new Entity(2L, "AFECTAR ORIGEN"))); // 3
 			this.casoDos.add(new UISelectEntity(new Entity(3L, "AFECTAR DESTINO"))); // 4
+			this.casoDos.add(new UISelectEntity(new Entity(4L, "AFECTAR AMBOS"))); // 5
 			this.casoTres= new ArrayList<>();
 			this.casoTres.add(new UISelectEntity(new Entity(0L, "SELECCIONE")));
-			this.casoTres.add(new UISelectEntity(new Entity(1L, "IGNORAR CAMBIOS")));
-			this.casoTres.add(new UISelectEntity(new Entity(2L, "REGRESAR ORIGEN"))); // 5
-			this.casoTres.add(new UISelectEntity(new Entity(3L, "SUMAR DESTINO"))); // 6
+			this.casoTres.add(new UISelectEntity(new Entity(1L, "IGNORAR CAMBIOS"))); // 1 
+			this.casoTres.add(new UISelectEntity(new Entity(2L, "REGRESAR ORIGEN"))); // 6
+			this.casoTres.add(new UISelectEntity(new Entity(3L, "SUMAR DESTINO"))); // 7
 			this.typeOfCase= 1;
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.CALCULAR: (EAccion)JsfBase.getFlashAttribute("accion");
 			this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
@@ -158,7 +159,7 @@ public class Autorizar extends IBaseArticulos implements Serializable {
 						 break;
 					 case 3:
 						 if(articulo.getIdAplicar()> 1L)
-						   articulo.setIdRedondear(articulo.getIdAplicar()+ 3L);
+						   articulo.setIdRedondear(articulo.getIdAplicar()+ 4L);
 						 break;
 				 } // switch				
 //				LOG.info("idAplicar: "+ articulo.getIdAplicar()+ " =>  "+ articulo.getIdRedondear());

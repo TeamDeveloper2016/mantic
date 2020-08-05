@@ -39,15 +39,13 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
 	}
 	
 	public AdminTickets(TicketVenta orden, boolean loadDefault) throws Exception {
-		List<ArticuloVenta> arts= null;
 		boolean oldPrecios      = true;
 		this.orden= orden;
 		if(this.orden.isValid()) {
 			oldPrecios= orden.getIdVentaEstatus()== 3L || orden.getIdVentaEstatus()== 6L || orden.getIdVentaEstatus()== 8L || orden.getIdVentaEstatus()== 12L || 
 									orden.getIdVentaEstatus()== 14L || orden.getIdVentaEstatus()== 13L || orden.getIdVentaEstatus()== 15L || orden.getIdVentaEstatus()== 16L ||
 									orden.getIdVentaEstatus()== 18L || orden.getIdVentaEstatus()== 19L;
-		  arts=(List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticVentasDetallesDto", oldPrecios? "facturacion": "detalle", orden.toMap());
-  	  this.setArticulos(arts);
+  	  this.setArticulos((List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticVentasDetallesDto", oldPrecios? "facturacion": "detalle", orden.toMap()));
       this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
       this.orden.setIkProveedor(new UISelectEntity(new Entity(this.orden.getIdCliente())));
 			this.orden.setIdServicio(toServicio());
@@ -55,8 +53,7 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
 			  this.validatePrecioArticulo();
 		}	// if
 		else	{
-			arts= new ArrayList<>();
-		  this.setArticulos(arts);
+		  this.setArticulos(new ArrayList<>());
 			this.orden.setConsecutivo(1L);
 			this.orden.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
 			this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());

@@ -255,10 +255,15 @@ public class Transaccion extends ComunInventarios {
 						this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
 						this.toMarkFaltantes(sesion, articulo);
 						break;
-					case 5: // REGRESAR ORIGEN
+					case 5: // AFECTAR AMBOS
+						this.toMovimientosAlmacenOrigen(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdAlmacen(), articulo, umbrales, this.transferencia.getIdTransferenciaEstatus());
+						this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
+						this.toMarkFaltantes(sesion, articulo);
+						break;
+					case 6: // REGRESAR ORIGEN
 						this.toMovimientosAlmacenOrigen(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdAlmacen(), articulo, umbrales, 4L);
 						break;
-					case 6: // SUMAR DESTINO
+					case 7: // SUMAR DESTINO
 						this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
 						this.toMarkFaltantes(sesion, articulo);
 						break;

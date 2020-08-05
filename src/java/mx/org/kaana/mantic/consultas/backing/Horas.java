@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -24,10 +25,10 @@ import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
-import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
@@ -45,6 +46,8 @@ public class Horas extends IBaseTicket implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428332L;
 	private FormatLazyModel detalle;
+	private FormatLazyModel lazyCredito;
+	private FormatLazyModel lazyApartado;
 	private Reporte reporte;
 	
 	public Reporte getReporte() {
@@ -54,6 +57,34 @@ public class Horas extends IBaseTicket implements Serializable {
 	public FormatLazyModel getDetalle() {
 		return detalle;
 	}	
+	
+	public FormatLazyModel getLazyCredito() {
+		return lazyCredito;
+	}
+
+	public FormatLazyModel getLazyApartado() {
+		return lazyApartado;
+	}
+	
+	public String getCredito() {
+		Double sum= 0D;
+		if(this.lazyCredito!= null)
+			for (IBaseDto item: (List<IBaseDto>)this.lazyCredito.getWrappedData()) {
+				Entity row= (Entity)item;
+				sum+= row.toDouble("total");
+			} // for
+	  return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, sum);
+	}
+	
+	public String getApartado() {
+		Double sum= 0D;
+		if(this.lazyApartado!= null)
+			for (IBaseDto item: (List<IBaseDto>)this.lazyApartado.getWrappedData()) {
+				Entity row= (Entity)item;
+				sum+= row.toDouble("importe");
+			} // for
+	  return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, sum);
+	}
 	
   @PostConstruct
   @Override
@@ -66,7 +97,7 @@ public class Horas extends IBaseTicket implements Serializable {
       this.attrs.put("sortOrder", "order by tc_mantic_ventas.registro desc");
 			this.attrs.put("fechaInicio", new Date(Calendar.getInstance().getTimeInMillis()));
 			this.attrs.put("fechaTermino", new Date(Calendar.getInstance().getTimeInMillis()));
-			toLoadCatalog();      
+			this.toLoadCatalog();      
 			total= new Entity();
 			total.put("total", new Value("total", 0L));
 			this.attrs.put("total", total);
@@ -79,16 +110,24 @@ public class Horas extends IBaseTicket implements Serializable {
  
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
-		Map<String, Object> params= null;
+    List<Columna> columns       = null;
+		Map<String, Object> params  = null;
+		Map<String, Object> credito = null;
+		Map<String, Object> apartado= null;
     try {
-			params= toPrepare();
+			params= this.toPrepare();
       columns = new ArrayList<>();
       columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));      
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));      
+      columns.add(new Columna("total", EFormatoDinamicos.MILES_SAT_DECIMALES));      
       this.lazyModel = new FormatCustomLazy("VistaConsultasDto", "horas", params, columns);
 			this.attrs.put("total", DaoFactory.getInstance().toEntity("VistaConsultasDto", "horasTotales", params));
       UIBackingUtilities.resetDataTable();
+			columns.remove(columns.size()- 1);
+			credito= this.toPrepare(EEstatusVentas.CREDITO);
+      this.lazyCredito = new FormatCustomLazy("VistaConsultasDto", "credito", credito, columns);
+			apartado= this.toPrepare(EEstatusVentas.APARTADOS);
+      this.lazyApartado= new FormatCustomLazy("VistaConsultasDto", "apartado", apartado, columns);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -97,6 +136,8 @@ public class Horas extends IBaseTicket implements Serializable {
     finally {
       Methods.clean(params);
       Methods.clean(columns);
+      Methods.clean(credito);
+      Methods.clean(apartado);
     } // finally		
   } // doLoad
 	
@@ -117,6 +158,10 @@ public class Horas extends IBaseTicket implements Serializable {
   } // doAccion    
 
 	protected Map<String, Object> toPrepare() {
+	  return this.toPrepare(EEstatusVentas.TIMBRADA);
+	}
+	
+	protected Map<String, Object> toPrepare(EEstatusVentas consulta) {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();	
 		regresar.put("idTipoDocumento", ETipoDocumento.VENTAS_NORMALES.getIdTipoDocumento());
@@ -124,7 +169,17 @@ public class Horas extends IBaseTicket implements Serializable {
 		regresar.put("fechaInicio", Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio")));
 		regresar.put("fechaFin", Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino")));				
 		sb.append("tc_mantic_tipos_documentos.id_tipo_documento=").append(ETipoDocumento.VENTAS_NORMALES.getIdTipoDocumento()).append(" and ");
-		sb.append("tc_mantic_ventas_estatus.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TIMBRADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(") and ");
+		switch(consulta) {
+			case CREDITO:
+  		  sb.append("tc_mantic_ventas_estatus.id_venta_estatus in (").append(EEstatusVentas.CREDITO.getIdEstatusVenta()).append(") and ");
+				break;
+			case APARTADOS:
+  		  sb.append("tc_mantic_ventas_estatus.id_venta_estatus in (").append(EEstatusVentas.APARTADOS.getIdEstatusVenta()).append(") and ");
+				break;
+			default:
+    		sb.append("tc_mantic_ventas_estatus.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TIMBRADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(") and ");
+				break;
+		} // switch
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
 		  sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");			
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))

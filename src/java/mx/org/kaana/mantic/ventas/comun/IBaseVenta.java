@@ -325,18 +325,18 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		return regresar.toString();
 	} // toCondicion	
 	
-	public void doAsignaTicketAbierto(){
+	public void doAsignaTicketAbierto() {
 		Map<String, Object>params = null;
 		try {
 			params= new HashMap<>();			
 			params.put("idVenta", ((Entity)this.attrs.get("selectedCuentaAbierta")).get("idVenta"));
 			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
-    	unlockVentaExtends(Long.valueOf(params.get("idVenta").toString()), (Long)this.attrs.get("ticketLock"));
+    	this.unlockVentaExtends(Long.valueOf(params.get("idVenta").toString()), (Long)this.attrs.get("ticketLock"));
 			this.attrs.put("ticketLock", Long.valueOf(params.get("idVenta").toString()));
 			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 			this.attrs.put("consecutivo", ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo());
-			toLoadCatalog();
-			doAsignaClienteTicketAbierto();
+			this.toLoadCatalog();
+			this.doAsignaClienteTicketAbierto();
 			UIBackingUtilities.execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
 		} // try
 		catch (Exception e) {
