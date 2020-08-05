@@ -8,25 +8,24 @@ package mx.org.kaana.jobs;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-import java.io.Serializable;
 import java.util.List;
+import mx.org.kaana.jobs.comun.IBaseJob;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.beans.DetalleConfiguracion;
 import mx.org.kaana.kajool.beans.TareaServidor;
 import mx.org.kaana.kajool.seguridad.quartz.Especial;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-public class Demo implements Job, Serializable {
+public class Demo extends IBaseJob {
 
 	private static final Log LOG              =LogFactory.getLog(Demo.class);
 	private static final long serialVersionUID=7505746848602636876L;
 
 	@Override
-	public void execute(JobExecutionContext jec) throws JobExecutionException {
+	public void procesar(JobExecutionContext jec) throws JobExecutionException {
 		DetalleConfiguracion detalleConfiguracion = null;
 		List<TareaServidor> tareaServidor         = null;		
 		try {
