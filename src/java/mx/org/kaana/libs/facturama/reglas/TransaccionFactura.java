@@ -468,6 +468,7 @@ public class TransaccionFactura extends IBaseTnx {
 		factura.setFolio(cfdi.getFolio());					
 		factura.setTimbrado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 		factura.setIntentos(factura.getIntentos()+1L);
+		factura.setIdFacturaEstatus(EEstatusFacturas.TIMBRADA.getIdEstatusFactura());
 		regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;		
 		return regresar;
 	} // actualizarFactura
