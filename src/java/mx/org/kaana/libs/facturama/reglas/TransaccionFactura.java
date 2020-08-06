@@ -399,9 +399,9 @@ public class TransaccionFactura extends IBaseTnx {
 				factura.setCertificadoDigital(detail.getCertNumber());
 				factura.setCertificadoSat(complement.getTaxStamp().getSatCertNumber());
 				factura.setFolioFiscal(complement.getTaxStamp().getUuid());
-				factura.setCadenaOriginal(this.toCadenaOriginal(path.concat(this.cliente.getRfc()).concat("-").concat(detail.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase())));
 				factura.setIdFacturaEstatus(EEstatusFacturas.TIMBRADA.getIdEstatusFactura());
 				factura.setIntentos(factura.getIntentos()+1L);
+				factura.setCadenaOriginal(this.toCadenaOriginal(path.concat(this.cliente.getRfc()).concat("-").concat(detail.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase())));				
 				DaoFactory.getInstance().update(sesion, factura);
 			} // if
 		} // try
