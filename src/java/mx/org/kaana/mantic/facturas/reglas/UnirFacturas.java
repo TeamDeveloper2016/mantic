@@ -92,7 +92,7 @@ public class UnirFacturas extends TransaccionFactura {
 							params= new HashMap<>();
 							params.put("idFicticia", this.orden.getIdFicticia());
 							idFicticiaEstatus= EEstatusFicticias.TIMBRADA.getIdEstatusFicticia();						
-							if(this.registraBitacora(sesion, this.orden.getIdFicticia(), idFicticiaEstatus, "Finalización de venta con timbrado de factura.")) {							
+							if(this.registraBitacora(sesion, this.orden.getIdFicticia(), idFicticiaEstatus, "FINALIZACION DE LA VENTA CON TIMBRADO DE LA FACTURA")) {							
 								this.orden.setIdFicticiaEstatus(idFicticiaEstatus);						
 								regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 								if(this.checkTotal(sesion)) {																		

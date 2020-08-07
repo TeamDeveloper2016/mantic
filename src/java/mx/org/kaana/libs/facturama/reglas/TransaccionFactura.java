@@ -410,14 +410,21 @@ public class TransaccionFactura extends IBaseTnx {
 		} // catch
 	} // toUpdateData
 	
-	private String toCadenaOriginal(String xml) throws Exception {
-		StreamSource source       = new StreamSource(new File(xml));
-		StreamSource stylesource  = new StreamSource(this.getClass().getResourceAsStream("/mx/org/kaana/mantic/libs/factura/cadenaoriginal_3_3.xslt"));
-		TransformerFactory factory= TransformerFactory.newInstance();
-		Transformer transformer   = factory.newTransformer(stylesource);
-		StreamResult result       = new StreamResult(new StringWriter());
-		transformer.transform(source, result);
-		return result.getWriter().toString();
+	private String toCadenaOriginal(String xml) {
+		String regresar= null;
+		try {
+			StreamSource source       = new StreamSource(new File(xml));
+			StreamSource stylesource  = new StreamSource(this.getClass().getResourceAsStream("/mx/org/kaana/mantic/libs/factura/cadenaoriginal_3_3.xslt"));
+			TransformerFactory factory= TransformerFactory.newInstance();
+			Transformer transformer   = factory.newTransformer(stylesource);
+			StreamResult result       = new StreamResult(new StringWriter());
+			transformer.transform(source, result);
+			regresar= result.getWriter().toString();
+		} // try
+		catch(Exception e) {
+			Error.mensaje(e);
+		} // catch
+		return regresar;
 	} // toCadenaOriginal
 	
 	public void insertFiles(Session sesion, Calendar calendar, Cfdi cfdi, String path, String rfc, Long idFactura, Long idUsuario) throws Exception {
@@ -463,7 +470,7 @@ public class TransaccionFactura extends IBaseTnx {
 		boolean regresar           = false;
 		TcManticFacturasDto factura= null;		
 		factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, id);
-		registrarBitacoraFactura(sesion, id, EEstatusFacturas.TIMBRADA.getIdEstatusFactura(), "Timbrado de factura.", idUsuario);		
+		registrarBitacoraFactura(sesion, id, EEstatusFacturas.TIMBRADA.getIdEstatusFactura(), "TIMBRADO DE LA FACTURA", idUsuario);		
 		factura.setIdFacturama(cfdi.getId());
 		factura.setFolio(cfdi.getFolio());					
 		factura.setTimbrado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
@@ -477,7 +484,7 @@ public class TransaccionFactura extends IBaseTnx {
 		boolean regresar           = false;
 		TcManticFacturasDto factura= null;		
 		factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, id);
-		registrarBitacoraFactura(sesion, id, EEstatusFacturas.AUTOMATICO.getIdEstatusFactura(), "Asignación a facturación automatica.", idUsuario);		
+		registrarBitacoraFactura(sesion, id, EEstatusFacturas.AUTOMATICO.getIdEstatusFactura(), "ASIGNACION A FACTURACION AUTOMATICA", idUsuario);		
 		factura.setIdFacturaEstatus(EEstatusFacturas.AUTOMATICO.getIdEstatusFactura());		
 		factura.setIntentos(factura.getIntentos()+1L);
 		regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;		
@@ -486,7 +493,7 @@ public class TransaccionFactura extends IBaseTnx {
 	
 	public boolean actualizarFacturaAutomatico(Long id, Long idUsuario, Long idEstatus) throws Exception {
 		TcManticFacturasDto factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(TcManticFacturasDto.class, id);
-		registrarBitacoraFactura(id, idEstatus, "Asignación a facturación automatica.", idUsuario);				
+		registrarBitacoraFactura(id, idEstatus, "ASIGNACION A FACTURACION AUTOMATICA", idUsuario);				
 		factura.setIdFacturaEstatus(idEstatus);		
 		factura.setIntentos(factura.getIntentos()+1L);
 		return DaoFactory.getInstance().update(factura)>= 1L;
