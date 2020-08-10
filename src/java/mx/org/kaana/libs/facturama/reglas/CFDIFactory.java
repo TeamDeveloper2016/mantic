@@ -96,6 +96,36 @@ public class CFDIFactory implements Serializable {
 		return this.facturama.Cfdis().List();
 	}
 	
+	public List<CfdiSearchResult> getCfdis(int folioStart, int folioEnd) throws FacturamaException, Exception {
+		return this.facturama.Cfdis().List(
+			folioStart, // folioStart
+			folioEnd, // folioEnd
+			null, // rfc
+			null, // taxEntityName
+			null, // dateStart
+			null, // dateEnd
+			null, // idBranch
+			null, // serie
+			CfdiService.CfdiStatus.Active, // status
+			CfdiService.InvoiceType.Issued // type
+		);
+	}
+	
+	public List<CfdiSearchResult> getCfdis(String dateStart, String dateEnd) throws FacturamaException, Exception {
+		return this.facturama.Cfdis().List(
+			-1, // folioStart
+			-1, // folioEnd
+			null, // rfc
+			null, // taxEntityName
+			dateStart, // dateStart
+			dateEnd, // dateEnd
+			null, // idBranch
+			null, // serie
+			CfdiService.CfdiStatus.Active, // status
+			CfdiService.InvoiceType.Issued // type
+		);
+	}
+	
 	public List<CfdiSearchResult> getCfdis(String rfc) throws FacturamaException, Exception {
 		return this.facturama.Cfdis().ListFilterByRfc(rfc);
 	}
