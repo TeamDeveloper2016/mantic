@@ -309,4 +309,10 @@ public class ClienteFactura implements Serializable, IBaseDto {
 	public Class toHbmClass() {
 		return ClienteFactura.class;
 	}
+
+	@Override
+	public String toString() {
+		return "ClienteFactura{"+"id="+id+", idFacturama="+idFacturama+", correo="+correo+", rfc="+rfc+", nombre="+nombre+", tipoCfdi="+tipoCfdi+", idFactura="+idFactura+", observaciones="+observaciones+", abreviaturaCfdi="+abreviaturaCfdi+", medioPago="+medioPago+", metodoPago="+metodoPago+", usoCfdi="+usoCfdi+", calle="+calle+", numeroExterior="+numeroExterior+", numeroInterior="+numeroInterior+", colonia="+colonia+", codigoPostal="+codigoPostal+", localidad="+localidad+", municipio="+municipio+", estado="+estado+", pais="+pais+'}';
+	}
+	
 }
