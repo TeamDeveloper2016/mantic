@@ -24,6 +24,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
+import mx.org.kaana.libs.formato.Periodo;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -523,6 +524,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				params.put("idProveedor", this.getAdminOrden().getIdProveedor());
 				params.put("codigoFaltante", "");
 				params.put("codigoPerdido", "");
+				Periodo periodo= new Periodo();
+				periodo.addDias(-31);
+				params.put("mes", periodo.toString());
 				switch(idCargar.intValue()) {
 					case 1: // SELECCIONE
 						break;
@@ -556,44 +560,26 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	} 
 	
 	private void toPreLoadArticulos(List<Articulo> articulos) {
-    List<Entity> comprados= null;		
-		Map<String, Object> params=null;
+    List<Entity> comprados    = null;		
+		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
 			if(articulos!= null && !articulos.isEmpty()) {
-				StringBuilder sb= new StringBuilder();
-				for (Articulo articulo: articulos) 
-					if(!Cadena.isVacio(articulo.getCodigo()))
-					  sb.append("|").append(articulo.getIdArticulo());
-//				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-//				params.put("idProveedor", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdProveedor());
-				if(sb.length()> 0) {
-					sb.append("|");
-//				  params.put("articulos", sb.substring(0, sb.length()- 2));
-//				  comprados= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaOrdenesComprasDto", "comprados", params);
-//				  sb.delete(0, sb.length());
-//					if(comprados!= null && !comprados.isEmpty()) {
-//						for (Entity comprado: comprados)
-//							sb.append("|").append(comprado.toLong("idArticulo"));
-//						sb.append("|");
-//					} // if
-//					if(sb.length()> 1)
-					for (Articulo articulo: articulos) {
-						if(sb.indexOf("|"+ articulo.getIdArticulo()+ "|")> 0) {
-							articulo.toPrepare(
-								(Boolean)this.attrs.get("sinIva"), 
-								((OrdenCompra)this.getAdminOrden().getOrden()).getTipoDeCambio(), 
-								((OrdenCompra)this.getAdminOrden().getOrden()).getIdProveedor()
-							);
-							if(articulo.getMultiplo()> 1L) {
-								int divisor= (int)(articulo.getCantidad()/ articulo.getMultiplo());
-								int residuo= (int)(articulo.getCantidad()% articulo.getMultiplo());
-								articulo.setCantidad((divisor* articulo.getMultiplo())+ (residuo!= 0? (articulo.getMultiplo()* 1D): 0D));
-							} // if	
-							this.getAdminOrden().insert(articulo);
-						} // if
-					} // for
-				} // if
+				for (Articulo articulo: articulos) {
+					if(!Cadena.isVacio(articulo.getCodigo())) {
+						articulo.toPrepare(
+							(Boolean)this.attrs.get("sinIva"), 
+							((OrdenCompra)this.getAdminOrden().getOrden()).getTipoDeCambio(), 
+							((OrdenCompra)this.getAdminOrden().getOrden()).getIdProveedor()
+						);
+						if(articulo.getMultiplo()> 1L) {
+							int divisor= (int)(articulo.getCantidad()/ articulo.getMultiplo());
+							int residuo= (int)(articulo.getCantidad()% articulo.getMultiplo());
+							articulo.setCantidad((divisor* articulo.getMultiplo())+ (residuo!= 0? (articulo.getMultiplo()* 1D): 0D));
+						} // if	
+						this.getAdminOrden().insert(articulo);
+					} // if
+				} // for
 			} // if
 		} // try
 		catch (Exception e) {

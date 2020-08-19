@@ -471,7 +471,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			while(faltantes!= null && x< faltantes.size()) {
 				faltante= faltantes.get(x);
   		  List<Articulo> disponibles= (List<Articulo>)this.attrs.get("disponibles");
-				int y        = 0;
+				int y= 0;
   			boolean found= false;
 				while (y< disponibles.size()) {
 					disponible= disponibles.get(y);
@@ -524,10 +524,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     			 params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_articulos_codigos.codigo)= upper('"+ faltante.getCodigo()+"')");
 					 break;
   			 case 2: // COMPRAR AMBOS CODIGO Y NOMBRE
-    			 params.put(Constantes.SQL_CONDICION, "(upper(tc_mantic_articulos_codigos.codigo)= upper('"+ faltante.getCodigo()+"') or upper(tc_mantic_articulos_codigos.nombre)= upper('"+ faltante.getOrigen()+"'))");
+    			 params.put(Constantes.SQL_CONDICION, "(upper(tc_mantic_articulos_codigos.codigo)= upper('"+ faltante.getCodigo()+"') or upper(tc_mantic_notas_detalles.origen)= upper('"+ faltante.getOrigen()+"'))");
 					 break;
 				 case 3: // COMPRAR NOMBRE
-    			 params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_articulos_codigos.nombre)= upper('"+ faltante.getOrigen()+"')");
+    			 params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_notas_detalles.origen)= upper('"+ faltante.getOrigen()+"')");
 					 break;
 				 default:
 				   params.put(Constantes.SQL_CONDICION, "tc_mantic_articulos_codigos.codigo= 'null'");

@@ -5445,13 +5445,18 @@
 				  tc_mantic_articulos.precio as valor
         from      
           tc_mantic_articulos
-        left join
+        inner join
           tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo
+        left join
+          tc_mantic_notas_detalles on tc_mantic_articulos.id_articulo= tc_mantic_notas_detalles.id_articulo
+        left join
+          tc_mantic_notas_entradas on tc_mantic_notas_detalles.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
         where   
           tc_mantic_articulos_codigos.id_proveedor= {idProveedor}
+          and tc_mantic_notas_entradas.id_proveedor= tc_mantic_articulos_codigos.id_proveedor
           and {condicion}
 				order by
-				  tc_mantic_articulos_codigos.orden desc
+				  tc_mantic_notas_entradas.registro desc
 			</select>
 			<select id="proveedores">
         select
@@ -6623,7 +6628,8 @@
 				      tc_mantic_ordenes_detalles 
 				     inner join tc_mantic_ordenes_compras on tc_mantic_ordenes_detalles.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra 
 				      and tc_mantic_ordenes_compras.id_orden_estatus in (3,4,5)
-				      and tc_mantic_ordenes_compras.id_proveedor= {idProveedor})				
+				      and tc_mantic_ordenes_compras.id_proveedor= {idProveedor}
+				      and date_format(tc_mantic_ordenes_compras.registro, '%Y%m%d')>= '{mes}')				
 				order by
 				  tc_mantic_faltantes.registro desc
 			</select>
