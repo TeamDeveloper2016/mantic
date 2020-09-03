@@ -204,6 +204,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 			this.attrs.put("pago", deuda.toDouble("saldo"));
 			this.attrs.put("pagoGeneral", deuda.toDouble("saldo"));
 			this.attrs.put("pagoSegmento", deuda.toDouble("saldo"));
+			this.attrs.put("recuperarPagoSegmento", deuda.toDouble("saldo"));
 			this.doLoad();
 		} // try
 		catch (Exception e) {
@@ -556,13 +557,14 @@ public class Deuda extends IBaseFilter implements Serializable {
         for(Entity cuenta: this.seleccionadosSegmento)					
           saldo+= Double.valueOf(cuenta.toString("saldo"));
         this.attrs.put("pagoSegmento", saldo);
-      } // if  
+      } // if
+      else
+        this.attrs.put("pagoSegmento", this.attrs.get("recuperarPagoSegmento"));
     } // if
   }  
  
   public void doRowSeleccionado() {
     LOG.info(this.seleccionadosSegmento.size());
-            
   }
   
 }

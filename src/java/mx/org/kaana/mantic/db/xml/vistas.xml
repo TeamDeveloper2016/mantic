@@ -5,6 +5,33 @@
 <process>
 	<dml> 
 		<unit id="VistaCuentasPorCobrarDto">
+      <select id="lazy">
+				select
+					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
+					tc_mantic_clientes_deudas.id_cliente,
+					tc_mantic_clientes.razon_social,
+					if(tc_mantic_clientes.saldo&lt; tc_mantic_clientes.limite_credito or tc_mantic_clientes.limite_credito= 0,  'ACTIVO', 'DETENIDO') as estatus,
+					sum(tc_mantic_clientes_deudas.importe) as deuda,
+					(sum(tc_mantic_clientes_deudas.importe)- sum(tc_mantic_clientes_deudas.saldo)) as pagado,
+					sum(if((datediff(tc_mantic_clientes_deudas.limite, now())* -1)&lt;= 0, tc_mantic_clientes_deudas.saldo, 0)) as saldo,
+					sum(if((datediff(tc_mantic_clientes_deudas.limite, now())* -1)&gt; 0,  tc_mantic_clientes_deudas.saldo, 0)) as vencido,
+					tc_mantic_clientes.limite_credito,
+					tc_mantic_clientes.saldo as saldo_global,
+					max(datediff(tc_mantic_clientes_deudas.limite, now())* -1) as dias
+				from
+					tc_mantic_clientes_deudas
+				inner join
+					tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
+				inner join 
+					tc_mantic_clientes on tc_mantic_clientes_deudas.id_cliente = tc_mantic_clientes.id_cliente
+				where
+				  tc_mantic_ventas.id_empresa in ({idEmpresa})
+				  and tc_mantic_clientes_deudas.id_cliente_estatus in (1,2)
+					and {condicion}
+				group by
+					tc_mantic_clientes_deudas.id_cliente
+        {sortOrder}        
+      </select>  
       <select id="porCodigo">
         select      
 					distinct(tc_mantic_clientes.id_cliente) as id_key,
@@ -34,7 +61,6 @@
 				    or
 				    upper(tc_mantic_clientes.rfc) regexp '.*{codigo}.*'
 				  )
-          
 				order by
 				  tc_mantic_clientes.clave
       </select>

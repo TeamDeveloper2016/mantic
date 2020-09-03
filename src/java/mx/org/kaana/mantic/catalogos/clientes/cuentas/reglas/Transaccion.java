@@ -264,9 +264,9 @@ public class Transaccion extends TransaccionFactura{
 		try {
 			deudas= toDeudas(sesion);
 			for(Entity deuda: deudas){
-				for(Entity cuenta: this.cuentas){
-					if(deuda.getKey().equals(cuenta.getKey())){
-						if(saldo > 0){					
+				for(Entity cuenta: this.cuentas) {
+					if(deuda.getKey().equals(cuenta.getKey())) {
+						if(saldo > 0) {					
 							saldoDeuda= Double.valueOf(deuda.toString("saldo"));
 							if(saldoDeuda < this.pago.getPago()){
 								pagoParcial= saldoDeuda;
@@ -275,7 +275,7 @@ public class Transaccion extends TransaccionFactura{
 								abono= 0D;
 								idEstatus= EEstatusClientes.FINALIZADA.getIdEstatus();
 							} // if
-							else{						
+              else {						
 								pagoParcial= this.pago.getPago();
 								saldo= 0D;
 								abono= saldoDeuda - this.pago.getPago();
@@ -289,8 +289,8 @@ public class Transaccion extends TransaccionFactura{
 								actualizarSaldoCatalogoCliente(sesion, this.idCliente, pagoParcial, false);
 							}	// if				
 						} // if
-						else if (this.saldar){
-							if(registrarPago(sesion, deuda.getKey(), 0D)){
+						else if (this.saldar) {
+							if(registrarPago(sesion, deuda.getKey(), 0D)) {
 								params= new HashMap<>();
 								params.put("saldo", 0);
 								params.put("idClienteEstatus", EEstatusClientes.FINALIZADA.getIdEstatus());
