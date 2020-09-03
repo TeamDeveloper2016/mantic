@@ -372,9 +372,9 @@ public class Saldos extends IBaseFilter implements Serializable {
 				codigo= "WXYZ";
   		params.put("codigo", codigo);
 			if(buscaPorCodigo)
-        this.attrs.put("clientes", UIEntity.build("TcManticClientesDto", "porCodigo", params, columns, 40L));
+        this.attrs.put("clientes", UIEntity.build("VistaCuentasPorCobrarDto", "porCodigo", params, columns, 40L));
 			else
-        this.attrs.put("clientes", UIEntity.build("TcManticClientesDto", "porNombre", params, columns, 40L));
+        this.attrs.put("clientes", UIEntity.build("VistaCuentasPorCobrarDto", "porNombre", params, columns, 40L));
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);

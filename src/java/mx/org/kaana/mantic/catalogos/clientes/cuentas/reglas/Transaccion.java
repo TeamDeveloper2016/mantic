@@ -109,7 +109,7 @@ public class Transaccion extends TransaccionFactura{
 		Double saldo                   = 0D;
 		Siguiente orden                = null;
 		try {
-			if(toCierreCaja(sesion, this.pago.getPago())){
+			if(toCierreCaja(sesion, this.pago.getPago())) {
 				this.pago.setIdCierre(this.idCierreActivo);				
 				if(!this.pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){
 					this.pago.setReferencia(this.referencia);
@@ -194,7 +194,7 @@ public class Transaccion extends TransaccionFactura{
 				registroPago= new TcManticClientesPagosDto();
 				registroPago.setIdClienteDeuda(idClienteDeuda);
 				registroPago.setIdUsuario(JsfBase.getIdUsuario());
-				registroPago.setObservaciones("Pago aplicado a la deuda general del cliente. ".concat(this.pago.getObservaciones()).concat(". Pago general por $").concat(this.pagoGeneral.toString()));
+				registroPago.setObservaciones("PAGO APLICADO A LA DEUDA GENERAL DEL CLIENTE. ".concat(this.pago.getObservaciones()).concat(". PAGO GENERAL POR $").concat(this.pagoGeneral.toString()));
 				registroPago.setPago(pagoParcial);
 				registroPago.setIdTipoMedioPago(this.pago.getIdTipoMedioPago());
 				registroPago.setIdCierre(this.idCierreActivo);

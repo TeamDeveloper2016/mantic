@@ -28,6 +28,9 @@ import mx.org.kaana.mantic.catalogos.clientes.cuentas.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticClientesPagosDto;
 import mx.org.kaana.mantic.enums.EEstatusClientes;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.primefaces.event.TabChangeEvent;
 import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.Visibility;
 
@@ -35,6 +38,8 @@ import org.primefaces.model.Visibility;
 @ViewScoped
 public class Deuda extends IBaseFilter implements Serializable {
 
+  private static final Log LOG = LogFactory.getLog(Deuda.class);
+  
   private static final long serialVersionUID = 8793667741599428879L;	
 	private FormatLazyModel detallePagos;
 	private FormatLazyModel pagosSegmento;
@@ -188,7 +193,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		} // catch	
 	} // loadCajas
 	
-	private void loadClienteDeuda() throws Exception{
+	private void loadClienteDeuda() throws Exception {
 		Entity deuda             = null;
 		Map<String, Object>params= null;
 		try {
@@ -199,7 +204,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 			this.attrs.put("pago", deuda.toDouble("saldo"));
 			this.attrs.put("pagoGeneral", deuda.toDouble("saldo"));
 			this.attrs.put("pagoSegmento", deuda.toDouble("saldo"));
-			doLoad();
+			this.doLoad();
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -222,8 +227,8 @@ public class Deuda extends IBaseFilter implements Serializable {
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
-			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			columns.add(new Columna("saldo", EFormatoDinamicos.MILES_SAT_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MILES_SAT_DECIMALES));
 			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
 			this.lazyModel = new FormatCustomLazy("VistaClientesDto", "cuentas", params, columns);			
@@ -272,8 +277,8 @@ public class Deuda extends IBaseFilter implements Serializable {
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
-			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			columns.add(new Columna("saldo", EFormatoDinamicos.MILES_SAT_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MILES_SAT_DECIMALES));
 			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));						
 			this.pagosSegmento= new FormatLazyModel("VistaClientesDto", "cuentas", params, columns);      
@@ -283,8 +288,8 @@ public class Deuda extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);
 		} // catch 		
-	}
-
+	} 
+  
 	public String doRegresar() {	  
 		return "saldos".concat(Constantes.REDIRECIONAR);
 	} // doRegresar
@@ -409,13 +414,13 @@ public class Deuda extends IBaseFilter implements Serializable {
 		} // catch				
 	} // doRegistrarPago
 	
-	public void doRegistrarPagoSegmento(){
+	public void doRegistrarPagoSegmento() {
 		Transaccion transaccion      = null;
 		TcManticClientesPagosDto pago= null;
 		boolean tipoPago             = false;
 		boolean saldar               = false;
 		try {
-			if(validaPagoSegmento() && !this.seleccionadosSegmento.isEmpty()){ 
+			if(validaPagoSegmento() && !this.seleccionadosSegmento.isEmpty()) { 
 				saldar= Long.valueOf(this.attrs.get("saldarSegmento").toString()).equals(1L);
 				pago= new TcManticClientesPagosDto();
 				pago.setIdUsuario(JsfBase.getIdUsuario());
@@ -462,7 +467,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		return regresar;
 	} // validaPagoGeneral
 	
-	private boolean validaPagoSegmento(){
+	private boolean validaPagoSegmento() {
 		boolean regresar= false;
 		Double pago     = 0D;
 		Double saldo    = 0D;
@@ -542,4 +547,22 @@ public class Deuda extends IBaseFilter implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doActualizaPago
+  
+  public void doTabChange(TabChangeEvent event) {
+		if(event.getTab().getTitle().equals("Registro pago")) {
+      // seleccionadosSegmento
+      if(!this.seleccionadosSegmento.isEmpty()) { 
+        Double saldo= 0D;
+        for(Entity cuenta: this.seleccionadosSegmento)					
+          saldo+= Double.valueOf(cuenta.toString("saldo"));
+        this.attrs.put("pagoSegmento", saldo);
+      } // if  
+    } // if
+  }  
+ 
+  public void doRowSeleccionado() {
+    LOG.info(this.seleccionadosSegmento.size());
+            
+  }
+  
 }

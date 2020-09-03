@@ -4,6 +4,41 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaCuentasPorCobrarDto">
+      <select id="porCodigo">
+        select      
+					distinct(tc_mantic_clientes.id_cliente) as id_key,
+          tc_mantic_clientes.*
+        from      
+          tc_mantic_clientes
+        inner join
+          tc_mantic_clientes_deudas on tc_mantic_clientes.id_cliente= tc_mantic_clientes_deudas.id_cliente
+        where 
+          tc_mantic_clientes.id_empresa in ({sucursales})
+          and upper(tc_mantic_clientes.clave) regexp '.*{codigo}.*'
+				order by
+				  tc_mantic_clientes.clave
+      </select>
+      <select id="porNombre">
+        select      
+					distinct(tc_mantic_clientes.id_cliente) as id_key,
+          tc_mantic_clientes.*
+        from      
+          tc_mantic_clientes
+        inner join
+          tc_mantic_clientes_deudas on tc_mantic_clientes.id_cliente= tc_mantic_clientes_deudas.id_cliente
+        where 
+          tc_mantic_clientes.id_empresa in ({sucursales})
+          and (
+				    upper(tc_mantic_clientes.razon_social) regexp '.*{codigo}.*'
+				    or
+				    upper(tc_mantic_clientes.rfc) regexp '.*{codigo}.*'
+				  )
+          
+				order by
+				  tc_mantic_clientes.clave
+      </select>
+    </unit>  
 		<unit id="VistaPedidosDto">
 			<select id="row">
 				select
