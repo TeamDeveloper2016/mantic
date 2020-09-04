@@ -85,10 +85,13 @@ public class Saldos extends IBaseFilter implements Serializable {
 			sb.append("tc_mantic_clientes.razon_social like '%").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial")).append("%' and ");			
 		else if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input")))
   		sb.append("tc_mantic_clientes.razon_social like '%").append(JsfBase.getParametro("razonSocial_input")).append("%' and ");						
-		if(!Cadena.isVacio(this.attrs.get("vencidos")) && this.attrs.get("vencidos").toString().equals("1"))
-  		sb.append("(now()> tc_mantic_clientes_deudas.limite) and ");
+		if(!Cadena.isVacio(this.attrs.get("vencidos")) && !this.attrs.get("vencidos").toString().equals("-1"))
+      if(this.attrs.get("vencidos").toString().equals("1"))
+  		  sb.append("((datediff(tc_mantic_clientes_deudas.limite, now())* -1)>= 0) and ");
+      else
+  		  sb.append("((datediff(tc_mantic_clientes_deudas.limite, now())* -1)< 0) and ");
 		if(!Cadena.isVacio(this.attrs.get("dias")))
-  		sb.append("max((datediff(tc_mantic_clientes_deudas.limite, now())* -1)>= ").append(this.attrs.get("dias")).append(") and ");
+  		sb.append("((datediff(tc_mantic_clientes_deudas.limite, now())* -1)>= ").append(this.attrs.get("dias")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))			
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else

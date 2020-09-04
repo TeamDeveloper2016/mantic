@@ -134,11 +134,11 @@
 							</f:facet>
 							<h:outputText value="#{filtro['dias']}"/>
 						</p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{filtro.limite}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{filtro.limiteCredito}">
 							<f:facet name="header">
 								<h:outputText value="Limite crédito" title="Limite de crédito otorgado"/>
 							</f:facet>
-							<h:outputText value="#{filtro['limite']}"/>
+							<h:outputText value="#{filtro['limiteCredito']}"/>
 						</p:column>
 						<f:facet name="footer">
  							<p:outputLabel value="Total [#{manticConsultasSaldos.lazyModel== null? 0: manticConsultasSaldos.lazyModel.rowCount}] registros"  styleClass="importado janal-color-orange"/>
