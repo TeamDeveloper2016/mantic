@@ -654,13 +654,14 @@ public class Conteos extends IBaseFilter implements Serializable {
           this.attrs.put("tipoDocumento", "de la garantía");
 					break;
 				case 6: // CONTEOS
+          columns.clear();
+          columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+          columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
           columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
-          columns.add(new Columna("inicial", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-          columns.add(new Columna("salidas", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+          columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_HORA));
           columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-					Long idArticulo= consecutivo.toLong("idArticulo");
-      		params.put("idArticulo", idArticulo);
-					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "conteo", params, columns, Constantes.SQL_TODOS_REGISTROS);
+      		params.put("idMovimiento", consecutivo.getKey());
+					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "ver", params, columns, Constantes.SQL_TODOS_REGISTROS);
           this.attrs.put("documentos", documento);
           this.attrs.put("tipoDocumento", "del conteo");
 					break;

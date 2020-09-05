@@ -3192,7 +3192,11 @@
           tc_mantic_articulos_especificaciones
       </select>
 			<delete id="rows">
-        delete from tc_mantic_articulos_especificaciones where id_articulo={idArticulo} 
+        delete from 
+          tc_mantic_articulos_especificaciones 
+        where 
+          id_articulo={idArticulo}
+          and nombre= '{nombre}' 
       </delete>
     </unit>
 		<unit id="TcManticArticulosDimencionesDto">
