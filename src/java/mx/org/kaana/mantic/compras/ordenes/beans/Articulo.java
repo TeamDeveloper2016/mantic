@@ -563,7 +563,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			-1L, /*idVenta, */
 			this.getPrecio(),
 			this.getUtilidad(),
-			this.getIva()> 0? unitario: 0D
+			this.getIva()> 0? unitario: 0D,
+      this.getFactor()
 		);
 	}
 	

@@ -12,6 +12,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.comun.IAdminArticulos;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
@@ -39,8 +40,8 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
 	}
 	
 	public AdminTickets(TicketVenta orden, boolean loadDefault) throws Exception {
-		boolean oldPrecios      = true;
-		this.orden= orden;
+		boolean oldPrecios= true;
+		this.orden        = orden;
 		if(this.orden.isValid()) {
 			oldPrecios= orden.getIdVentaEstatus()== 3L || orden.getIdVentaEstatus()== 6L || orden.getIdVentaEstatus()== 8L || orden.getIdVentaEstatus()== 12L || 
 									orden.getIdVentaEstatus()== 14L || orden.getIdVentaEstatus()== 13L || orden.getIdVentaEstatus()== 15L || orden.getIdVentaEstatus()== 16L ||
@@ -49,6 +50,7 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
       this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
       this.orden.setIkProveedor(new UISelectEntity(new Entity(this.orden.getIdCliente())));
 			this.orden.setIdServicio(toServicio());
+      /* RECUPERAR SI ES UN CLIENTE CON PRECIO ESPECIAL Y CALCULAR SU COSTO Y SU FACTOR POR CADA ARTICULO */
 			if(!oldPrecios)
 			  this.validatePrecioArticulo();
 		}	// if

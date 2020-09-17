@@ -19,6 +19,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -71,7 +72,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente"));
 			this.attrs.put("admin", JsfBase.isAdminEncuestaOrAdmin());
 			this.attrs.put("cpNuevo", false);						
-      doLoad();      					
+      this.doLoad();      					
 			this.attrs.put("renderedFacturacion", false);
 			doCreateMessage();
     } // try
@@ -125,7 +126,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 						this.registroCliente.doConsultarRepresentante();
 					} // if
           break;
-      } // switch 			
+      } // switch 		
+      this.attrs.put("idEspecial", this.registroCliente.getCliente()==null || this.registroCliente.getCliente().getEspecial()== 0D? "2": "1");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -757,7 +759,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.registroCliente.getDomicilio().setCodigoPostal("");
 			return new ArrayList<>();
 		} // else		
-	}	// doCompleteCliente
+	}	// doCompleteCodigoPostal
 	
 	public void doUpdateCodigosPostales() {
 		List<Columna> columns     = null;
@@ -866,4 +868,12 @@ public class Accion extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doCreateMessage
+  
+  public void doLoadEspecial() {
+		if(this.attrs.get("idEspecial")!= null && "1".equals((String)this.attrs.get("idEspecial")))
+      UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:especial', {validaciones: 'requerido|flotante|mayor({\"cuanto\":1}|menor-igual({\"cuanto\":30})', mascara: 'libre'});");
+		else
+      UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:especial', {validaciones: 'libre', mascara: 'libre'});");
+  }
+  
 }

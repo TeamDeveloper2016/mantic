@@ -7,6 +7,65 @@
   </model>
 
   <dml>
+    <unit id="TcManticPortalesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_portales
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_portales
+        where      
+          marca = '{marca}' and herramienta = '{herramienta}' and modelo = '{modelo}' and url = '{url}'
+      </select>
+      <select id="lazy">
+        select      
+          tc_mantic_portales.id_portal as id_key,
+          tc_mantic_portales.*
+        from      
+          tc_mantic_portales
+        where 
+          id_empresa in ({idEmpresa})
+          and {condicion} 
+        {sortOrder}
+      </select>
+      <select id="herramienta">
+        select
+          distinct(herramienta) as herramienta,
+          herramienta as id_key
+        from
+          tc_mantic_portales
+        where
+          id_empresa in ({idEmpresa})
+      </select>  
+      <select id="marca">
+        select
+          distinct(marca) as marca,
+          marca as id_key
+        from
+          tc_mantic_portales  
+        where
+          id_empresa in ({idEmpresa})
+          and herramienta= '{herramienta}'        
+      </select>  
+      <select id="modelo">
+        select
+          distinct(modelo) as modelo,
+          modelo as id_key
+        from
+          tc_mantic_portales  
+        where
+          id_empresa in ({idEmpresa})
+          and herramienta= '{herramienta}'
+          and marca= '{marca}'        
+      </select>  
+    </unit>
     <unit id="TcManticFacturasGruposDto">
       <select id="row">
         select      
@@ -1713,7 +1772,10 @@
         from      
           tc_mantic_faltantes
         where      
-          id_faltante = {idFaltante} and cantidad = {cantidad} and id_articulo = {idArticulo} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+          id_faltante = {idFaltante} 
+          and cantidad = {cantidad} 
+          and id_articulo = {idArticulo} 
+          and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
       </select>
       <select id="existe">
         select      
@@ -2460,8 +2522,7 @@
 					tc_mantic_categorias
 				where 
 					upper(nombre) like upper('%{nombre}%')
-				and 
-					upper(descripcion) like upper('%{descripcion}%')
+				  and upper(descripcion) like upper('%{descripcion}%')
 				{sortOrder}				
 			</select>
 		</unit>	

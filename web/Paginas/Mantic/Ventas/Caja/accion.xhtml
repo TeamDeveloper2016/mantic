@@ -628,7 +628,10 @@
 								<p:panelGrid id="panelGenerales" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-30, janal-wid-40">
 									<p:outputLabel for="clave" value="Clave:"/>
 									<p:outputLabel for="rfc" value="RFC:"/>
-									<p:outputLabel for="razonSocial" value="Razon social:"/>																											
+                  <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-column-left, janal-column-right">
+									  <p:outputLabel for="razonSocial" value="Razon social:"/>																											
+                    <p:outputLabel value="Tiene precio especial: [#{empty manticVentasCajaAccion.attrs.registroCliente.especial or manticVentasCajaAccion.attrs.registroCliente.especial eq 0? 'NO': 'SI'}]" styleClass="janal-color-red"/>
+                  </p:panelGrid>
 									<p:inputText id="clave" placeholder="Ej. 00001" styleClass="janal-wid-100-txt cotizar" value="#{manticVentasCajaAccion.attrs.registroCliente.clave}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}"/>                    						
 									<p:inputText id="rfc" placeholder="Ej. AAA000000AA0" styleClass="janal-wid-100-txt cotizar" value="#{manticVentasCajaAccion.attrs.registroCliente.rfc}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}"/>                    						
 									<p:inputText id="razonSocial" placeholder="Ej. Nombre de la empresa" styleClass="janal-wid-100-txt cotizar" value="#{manticVentasCajaAccion.attrs.registroCliente.razonSocial}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}"/>
@@ -1383,7 +1386,7 @@
 		</div>
 	</ui:define>    		
 	<ui:define name="dialogos">
-		<p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Correos para factura" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
+    <p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" dynamic="true" header="Correos para factura" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
 			<h:form id="formDialogoCorreos" prependId="false">								
 				<p:panelGrid id="panelCorreos" columns="1" layout="grid" styleClass="janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">									
 					<p:dataTable id="tablaCorreosReenviar" var="row" value="#{manticVentasCajaAccion.correos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">						
@@ -1403,9 +1406,14 @@
 				</div>
 			</h:form>
 		</p:dialog>	
-		<p:dialog id="dialogoDescuentos" widgetVar="dlgDescuentos" header="Aplicar descuento" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="updateDescuentos();janal.change('dialogosVenta', fieldsDialogDescuento); jsCaja.doFocusCuenta();" width="50%" onHide="janal.desbloquear();janal.restore();janal.refresh();jsArticulos.restoreCursorAt();">						
+    <p:dialog id="dialogoDescuentos" widgetVar="dlgDescuentos" dynamic="true" header="Aplicar descuento" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="updateDescuentos();janal.change('dialogosVenta', fieldsDialogDescuento); jsCaja.doFocusCuenta();" width="50%" onHide="janal.desbloquear();janal.restore();janal.refresh();jsArticulos.restoreCursorAt();">						
 			<h:form id="dialogosVenta" prependId="false">
-				<h:panelGrid columns="1" styleClass="janal-wid-100">
+        <h:panelGrid columns="1" styleClass="janal-wid-100 janal-column-center">
+          <p:outputLabel value="El cliente tiene un precio especial en todos los articulos, por lo tanto no se puede aplicar un descuento !" styleClass="janal-font-bold janal-color-red" style="display:#{empty manticVentasCajaAccion.attrs.registroCliente.especial or manticVentasCajaAccion.attrs.registroCliente.especial eq 0.0? 'none': ''}"/>
+          <p:spacer height="5px"/>
+          <p:outputLabel value="[ #{manticVentasCajaAccion.attrs.registroCliente.razonSocial} ]" styleClass="janal-font-bold janal-color-blue" style="display:#{empty manticVentasCajaAccion.attrs.registroCliente.especial or manticVentasCajaAccion.attrs.registroCliente.especial eq 0.0? 'none': ''}"/>
+        </h:panelGrid>  
+				<h:panelGrid columns="1" styleClass="janal-wid-100" style="display: #{empty manticVentasCajaAccion.attrs.registroCliente.especial or manticVentasCajaAccion.attrs.registroCliente.especial eq 0.0? '': 'none'}">
 					<p:outputLabel for="descuentousr" value="Usuario:"/>
 					<p:inputText id="descuentousr" value="#{manticVentasCajaAccion.attrs.usuarioDescuento}" styleClass="janal-wid-100-txt event-keydown-enter janal-name-descuentopswrd"/>
 					<p:outputLabel for="descuentopswrd" value="Contraseña:"/>
@@ -1421,22 +1429,22 @@
 						<f:selectItem itemLabel="Global" itemValue="0"/>
 					</p:selectOneRadio>
 				</h:panelGrid>				
-				<h:panelGrid id="panelDescuentoEspecificacionIndividual" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-95 janal-column-right, janal-wid-5">			
+				<h:panelGrid id="panelDescuentoEspecificacionIndividual" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-95 janal-column-right, janal-wid-5" style="display: #{empty manticVentasCajaAccion.attrs.registroCliente.especial or manticVentasCajaAccion.attrs.registroCliente.especial eq 0.0? '': 'none'}">			
 					<p:inputNumber id="descuentoIndividual" value="#{manticVentasCajaAccion.attrs.descuentoIndividual}" inputStyleClass="janal-wid-100-txt janal-column-right event-keydown-enter janal-name-descuentoAceptar" rendered="#{manticVentasCajaAccion.attrs.isIndividual}"/>
 					<p:outputLabel value="%" rendered="#{manticVentasCajaAccion.attrs.isIndividual}"/>  
 				</h:panelGrid>				
-				<h:panelGrid id="panelDescuentoEspecificacionGlobal" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-95 janal-column-right, janal-wid-5">					
+				<h:panelGrid id="panelDescuentoEspecificacionGlobal" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-95 janal-column-right, janal-wid-5" style="display: #{empty manticVentasCajaAccion.attrs.registroCliente.especial or manticVentasCajaAccion.attrs.registroCliente.especial eq 0.0? '': 'none'}">					
 					<p:inputNumber id="descuentoGlobal" value="#{manticVentasCajaAccion.attrs.descuentoGlobal}" inputStyleClass="janal-wid-100-txt janal-column-right event-keydown-enter janal-name-descuentoAceptar" rendered="#{manticVentasCajaAccion.attrs.isGlobal}"/>		
 					<p:outputLabel for="descuentoGlobal" value="%" rendered="#{manticVentasCajaAccion.attrs.isGlobal}"/>
 				</h:panelGrid>				
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton id="descuentoAceptar" icon="fa fa-check" process="@this panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd" value="Aceptar" onstart="return jsCaja.validateCapturaDescuentos();" update="contenedorGrupos:contenido" styleClass="event-keydown-enter"/>
+					<p:commandButton id="descuentoAceptar" icon="fa fa-check" process="@this panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd" value="Aceptar" onstart="return jsCaja.validateCapturaDescuentos();" update="contenedorGrupos:contenido" styleClass="event-keydown-enter" style="display: #{empty manticVentasCajaAccion.attrs.registroCliente.especial or manticVentasCajaAccion.attrs.registroCliente.especial eq 0.0? '': 'none'}"/>
 					<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('dlgDescuentos').hide();"/>
 				</div>	
 			</h:form>
 		</p:dialog>		
-		<p:dialog id="dialogoCambioPrecio" widgetVar="dlgCambioPrecio" header="Aplicar cambio de precio" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="updateCambioPrecio(); janal.change('formCambioPrecio', fieldsDialogPrecio); jsCaja.doFocusPrecio();" width="50%" onHide="janal.restore(); janal.desbloquear(); jsArticulos.restoreCursorAt();">						
+    <p:dialog id="dialogoCambioPrecio" widgetVar="dlgCambioPrecio" dynamic="true" header="Aplicar cambio de precio" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="updateCambioPrecio(); janal.change('formCambioPrecio', fieldsDialogPrecio); jsCaja.doFocusPrecio();" width="50%" onHide="janal.restore(); janal.desbloquear(); jsArticulos.restoreCursorAt();">						
 			<h:form id="formCambioPrecio" prependId="false">
 				<h:panelGrid columns="1" styleClass="janal-wid-100">
 					<p:outputLabel for="cambiopreciousr" value="Usuario:"/>
@@ -1456,7 +1464,7 @@
 				</div>	
 			</h:form>
 		</p:dialog>		
-		<p:dialog id="dialogoDomicilios" widgetVar="dlgDomicilios" header="Busqueda de domicilio:" resizable="false" closable="false" responsive="true" width="60%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoDomicilios', fieldsDialog);janal.refresh();">
+    <p:dialog id="dialogoDomicilios" widgetVar="dlgDomicilios" dynamic="true" header="Busqueda de domicilio:" resizable="false" closable="false" responsive="true" width="60%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoDomicilios', fieldsDialog);janal.refresh();">
 			<h:form id="formDialogoDomicilios" prependId="false">
 				<h:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-80, janal-wid-20">
 					<p:outputLabel for="calleBusqueda" value="Calle:"/>

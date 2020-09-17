@@ -18,11 +18,11 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
@@ -101,6 +101,7 @@ public class Accion extends IBaseVenta implements Serializable {
       this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente")== null? -1L: JsfBase.getFlashAttribute("idCliente"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? null: JsfBase.getFlashAttribute("retorno"));
 			LOG.warn("Flash atributes [accion[" + this.attrs.get("accion") + "] idVenta [" + this.attrs.get("idVenta") + "] retorno [" + this.attrs.get("retorno") + "]]");
+			this.loadClienteDefault();
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", true);
 			this.attrs.put("buscaPorCodigo", true);
@@ -112,19 +113,18 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("descuentoIndividual", 0);
 			this.attrs.put("descuentoGlobal", 0);
 			this.attrs.put("tipoDescuento", MENUDEO);
-			doActivarDescuento();
+			this.doActivarDescuento();
 			this.attrs.put("descripcion", "Imagen no disponible");
 			this.attrs.put("busquedaTicketAbierto", "");
 			this.attrs.put("decuentoAutorizadoActivo", false);
 			this.attrs.put("tipoDecuentoAutorizadoActivo", MENUDEO);
 			this.attrs.put("ticketLock", -1L);
 			this.image= LoadImages.getImage(-1L);
-			loadClienteDefault();
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			isMatriz= JsfBase.getAutentifica().getEmpresa().isMatriz();
 			this.attrs.put("isMatriz", isMatriz);
 			if(isMatriz)
-				loadSucursales();
+				this.loadSucursales();
 			this.doLoad();
     } // try
     catch (Exception e) {
@@ -278,7 +278,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-	} // doAsignaCliente	
+	} // doAsignaClienteInicial
 	
 	public void doActualizaPrecioCliente(){
 		List<UISelectEntity> clientesSeleccion= null;
@@ -410,11 +410,11 @@ public class Accion extends IBaseVenta implements Serializable {
 		((TicketVenta)this.getAdminOrden().getOrden()).setObservaciones((String)this.attrs.get("observaciones"));
 	} // loadOrdenVenta
 	
-	public void doCerrarTicket(){		
+	public void doCerrarTicket() {		
 		Transaccion transaccion= null;
     try {								
 			if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
-				loadOrdenVenta();
+				this.loadOrdenVenta();
 				transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
 				this.getAdminOrden().toAdjustArticulos();
 				if (transaccion.ejecutar(EAccion.REGISTRAR)) {				

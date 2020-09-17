@@ -274,13 +274,13 @@ public abstract class IAdminArticulos implements Serializable {
 		} // if
 	}
 
-	public void validatePrecioArticulo() throws Exception{
+	public void validatePrecioArticulo() throws Exception {
 		TcManticArticulosDto validate= null;
 		ArticuloVenta articuloPivote = null;
 		try {
-			for(Articulo articulo: this.getArticulos()){
+			for(Articulo articulo: this.getArticulos()) {
 				validate= (TcManticArticulosDto) DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
-				if(validate!= null && validate.isValid()){
+				if(validate!= null && validate.isValid()) {
 					articuloPivote= (ArticuloVenta) articulo;
 					articuloPivote.setDescuentoAsignado(articulo.getCosto().equals(validate.getMayoreo()) || articulo.getCosto().equals(validate.getMedioMayoreo()));
 				} // if
@@ -291,7 +291,7 @@ public abstract class IAdminArticulos implements Serializable {
 		} // catch		
 	} // validatePrecioArticulo
 	
-	public void cleanPrecioDescuentoArticulo() throws Exception{		
+	public void cleanPrecioDescuentoArticulo() throws Exception {		
 		ArticuloVenta articuloPivote = null;
 		try {
 			for(Articulo articulo: this.getArticulos()){				

@@ -55,6 +55,12 @@ public class TicketVenta extends TcManticVentasDto implements Serializable {
 		return ikCliente;
 	}
 
+  public void setIkCliente(UISelectEntity ikCliente) {
+    this.ikCliente = ikCliente;
+		if(this.ikCliente!= null)
+		  this.setIdCliente(this.ikCliente.getKey());
+  }
+
 	public void setIkProveedor(UISelectEntity ikCliente) {
 		this.ikCliente=ikCliente;
 		if(this.ikCliente!= null)

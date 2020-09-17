@@ -72,11 +72,11 @@ public final class UISelect {
   }
   
   public static List<UISelectItem> todos(List<IBaseDto> dtos, List<String> fields, String token, IFormatosKajool formato) {
-    return todos(dtos, fields, token, formato, null);    
+    return todos(dtos, fields, token, formato, fields.get(0));    
   }
   
   public static List<UISelectItem> seleccione(List<IBaseDto> dtos, List<String> fields, String token, IFormatosKajool formato) {
-    return seleccione(dtos, fields, token, formato, null);    
+    return seleccione(dtos, fields, token, formato, fields.get(0));    
   }
   
   public static List<UISelectItem> build(List<IBaseDto> dtos, List<String> fields, String token) {
@@ -485,12 +485,12 @@ public final class UISelect {
     return regresar;
   }
   
-  public static List<UISelectItem> seleccione(String proceso, String id, Map params, List<String> fields, String token, IFormatosKajool formato, Long records) {
+  public static List<UISelectItem> seleccione(String proceso, String id, Map params, List<String> fields, String token, IFormatosKajool formato, Long records, String value) {
     List<UISelectItem> regresar= null;
     List<IBaseDto> dtos        = null;
     try {
       dtos    = DaoFactory.getInstance().toEntitySet(proceso, id, params, records);   
-      regresar= seleccione(dtos, fields, token, formato);
+      regresar= seleccione(dtos, fields, token, formato, value);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -501,6 +501,10 @@ public final class UISelect {
       dtos = null;
     } // finally  
     return regresar;
+  }
+  
+  public static List<UISelectItem> seleccione(String proceso, String id, Map params, List<String> fields, String token, IFormatosKajool formato, Long records) {
+    return seleccione(proceso, id, params, fields, token, formato, records, fields.get(0));
   }
   
   public static List<UISelectItem> build(String proceso, String id, Map params, List<String> fields, String token, IFormatosKajool formato) {
@@ -628,6 +632,10 @@ public final class UISelect {
   }
   
   public static List<UISelectItem> seleccione(String proceso, String id, Map params, String fields, IFormatosKajool formato, Long records) {
+    return seleccione(proceso, id, params, Cadena.toList(fields), " ", formato, records);
+  }
+  
+  public static List<UISelectItem> seleccione(String proceso, String id, Map params, String fields, IFormatosKajool formato, Long records, String value) {
     return seleccione(proceso, id, params, Cadena.toList(fields), " ", formato, records);
   }
   

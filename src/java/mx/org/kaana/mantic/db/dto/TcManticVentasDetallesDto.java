@@ -70,21 +70,23 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
   private Long idVenta;
   @Column (name="unitario_sin_iva")
   private Double unitarioSinIva;
+ 	@Column (name="factor")
+  private Double factor;
 
   public TcManticVentasDetallesDto() {
     this(new Long(-1L));
   }
 
   public TcManticVentasDetallesDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, 0D);
+    this(null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, 0D, 1D);
     setKey(key);
   }
 
 	public TcManticVentasDetallesDto(Double descuentos, String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, String nombre, Double importe, Long idVentaDetalle, Double iva, Double impuestos, Double subTotal, Double cantidad, Long idArticulo, Long idVenta) {
-		this(descuentos, codigo, unidadMedida, costo, descuento, sat, extras, nombre, importe, idVentaDetalle, iva, impuestos, subTotal, cantidad, idArticulo, idVenta, null, null, 0D);
+		this(descuentos, codigo, unidadMedida, costo, descuento, sat, extras, nombre, importe, idVentaDetalle, iva, impuestos, subTotal, cantidad, idArticulo, idVenta, null, null, 0D, 1D);
 	}
 	
-  public TcManticVentasDetallesDto(Double descuentos, String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, String nombre, Double importe, Long idVentaDetalle, Double iva, Double impuestos, Double subTotal, Double cantidad, Long idArticulo, Long idVenta, Double precio, Double utilidad, Double unitarioSinIva) {
+  public TcManticVentasDetallesDto(Double descuentos, String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, String nombre, Double importe, Long idVentaDetalle, Double iva, Double impuestos, Double subTotal, Double cantidad, Long idArticulo, Long idVenta, Double precio, Double utilidad, Double unitarioSinIva, Double factor) {
     setDescuentos(descuentos);
     setCodigo(codigo);
     setUnidadMedida(unidadMedida);
@@ -105,6 +107,7 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
     setIdArticulo(idArticulo);
     setIdVenta(idVenta);
 		this.unitarioSinIva= unitarioSinIva;
+    this.factor= factor;
   }
 	
   public void setDescuentos(Double descuentos) {
@@ -267,6 +270,14 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
 		this.unitarioSinIva=unitarioSinIva;
 	}
 
+  public Double getFactor() {
+    return factor;
+  }
+
+  public void setFactor(Double factor) {
+    this.factor = factor;
+  }
+	
   @Transient
   @Override
   public Long getKey() {
@@ -321,6 +332,8 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
 		regresar.append(getIdVenta());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getUnitarioSinIva());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getFactor());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -348,13 +361,14 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
 		regresar.put("idArticulo", getIdArticulo());
 		regresar.put("idVenta", getIdVenta());
 		regresar.put("unitarioSinIva", getUnitarioSinIva());
+		regresar.put("factor", getFactor());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescuentos(), getCodigo(), getUnidadMedida(), getCosto(), getDescuento(), getSat(), getExtras(), getUtilidad(), getNombre(), getImporte(), getRegistro(), getPrecio(), getIdVentaDetalle(), getIva(), getImpuestos(), getSubTotal(), getCantidad(), getIdArticulo(), getIdVenta(), getUnitarioSinIva()
+      getDescuentos(), getCodigo(), getUnidadMedida(), getCosto(), getDescuento(), getSat(), getExtras(), getUtilidad(), getNombre(), getImporte(), getRegistro(), getPrecio(), getIdVentaDetalle(), getIva(), getImpuestos(), getSubTotal(), getCantidad(), getIdArticulo(), getIdVenta(), getUnitarioSinIva(), getFactor()
     };
     return regresar;
   }

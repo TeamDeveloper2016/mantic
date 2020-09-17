@@ -4073,7 +4073,8 @@
 					tc_mantic_domicilios.asentamiento,
 					tc_mantic_domicilios.codigo_postal, 
 					tc_mantic_tipos_ventas.nombre tipo_venta,
-					tc_mantic_clientes.saldo
+					tc_mantic_clientes.saldo,
+          tc_mantic_clientes.especial
 				from
 					tc_mantic_clientes 
 				inner join 
@@ -4102,7 +4103,8 @@
 					tc_mantic_domicilios.numero_exterior,
 					tc_mantic_domicilios.asentamiento,
 					tc_mantic_domicilios.codigo_postal, 
-					tc_mantic_tipos_ventas.nombre tipo_venta
+					tc_mantic_tipos_ventas.nombre tipo_venta,
+          tc_mantic_clientes.especial
 				from
 					tc_mantic_clientes 
 				inner join 
@@ -8352,6 +8354,7 @@
 					tc_mantic_ventas_detalles.id_venta_detalle as id_key,
 					tc_mantic_ventas_detalles.id_venta_detalle as id_comodin,
           tc_mantic_ventas_detalles.*,
+          if(tc_mantic_ventas_detalles.factor= 1, 'menudeo', 'ESPECIAL') as descripcion_precio,
           tc_mantic_ventas_detalles.cantidad as cuantos,
           tc_mantic_ventas_detalles.cantidad as inicial,
 					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
@@ -8376,6 +8379,7 @@
 					tc_mantic_ventas_detalles.id_venta_detalle as id_key,
 					tc_mantic_ventas_detalles.id_venta_detalle as id_comodin,
           tc_mantic_ventas_detalles.*,
+          if(tc_mantic_ventas_detalles.factor= 1, 'menudeo', 'ESPECIAL') as descripcion_precio,
           tc_mantic_ventas_detalles.cantidad as cuantos,
           tc_mantic_ventas_detalles.cantidad as inicial,
 					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,

@@ -60,7 +60,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta"));
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
-      this.attrs.put("regreso", JsfBase.getFlashAttribute("regreso")!= null ? JsfBase.getFlashAttribute("regreso") : true);
+      this.attrs.put("regreso", JsfBase.getFlashAttribute("regreso")!= null ? JsfBase.getFlashAttribute("regreso") : "");
 			this.toLoadCatalog();
       if(this.attrs.get("idVenta")!= null) 
 			  this.doLoad();			
@@ -389,11 +389,11 @@ public class Filtro extends FiltroFactura implements Serializable {
 		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
 	} // doMovimientos
 
-  public String doCancelar(){
+  public String doCancelar() {
 		String regresar= null;
 		try {
 			JsfBase.setFlashAttribute("regreso", null);
-			regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+			regresar= this.attrs.get("regreso").toString().concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

@@ -6,6 +6,15 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core">		
   <script type="text/javascript">
+		$(document).ready(function() {
+			setTimeout(function(){
+				$('div.keet-top-content').attr('style', 'margin-top: -1px !important;');
+				$('div.ui-selectonemenu').attr('style', 'min-width: 100px;');
+				$('input.ui-selectonemenu-filter').attr('style', 'width: 93% !important;');
+				$('div.ui-selectonemenu-filter-container').attr('style', 'padding-left: 3px !important; padding-right: 3px !important;');
+				$('div.ui-selectonemenu-items-wrapper').attr('style', 'padding-left: 3px !important; padding-right: 3px !important;');
+			}, 1000);
+		});
     $(function() {
       janal.fecha();
       $('#banner').addClass('ui-panelgrid');

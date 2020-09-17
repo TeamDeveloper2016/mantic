@@ -518,7 +518,7 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 	public void setIdSincronizado(Long idSincronizado) {
 		this.idSincronizado=idSincronizado;
 	}
-	
+
   @Transient
   @Override
   public Long getKey() {

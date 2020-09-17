@@ -111,9 +111,9 @@ public class ArticuloVenta extends Articulo {
 		TcManticArticulosDto validate= null;	
 		Map<String, Object>params    = null;
 		try {
-			if(!this.isDescuentoActivo()){
+			if(!this.isDescuentoActivo()) {
 				if(!this.isCostoLibre()) {
-					if(getIdComodin()!= null && getIdComodin() > -1L){
+					if(getIdComodin()!= null && getIdComodin() > -1L) {
 						params= new HashMap<>();
 						params.put("idArticulo", this.getIdArticulo());
 						params.put("idComodin", this.getIdComodin());
@@ -122,32 +122,37 @@ public class ArticuloVenta extends Articulo {
 					else
 						validate= (TcManticArticulosDto) DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.getIdArticulo());
 					if(validate!= null) {
-						if(this.getDescuentos()> 0D)
-							this.setCosto(validate.getMenudeo());
-						else {
-							if (this.getCantidad() > validate.getLimiteMayoreo() || (this.getCosto().equals(validate.getMayoreo()) && this.descuentoAsignado)){
-								this.setCosto(validate.getMayoreo());
-								setDescripcionPrecio("mayoreo");
-							} // if
-							else  
-								if((this.getCantidad() > validate.getLimiteMedioMayoreo() && this.getCantidad() <= validate.getLimiteMayoreo()) || (this.getCosto().equals(validate.getMedioMayoreo()) && this.descuentoAsignado)) {
-									this.setCosto(validate.getMedioMayoreo());
-									setDescripcionPrecio("medioMayoreo");
-								} // if
-								else{
-									if(!Cadena.isVacio(this.descripcionPrecio) && !this.descripcionPrecio.equals("menudeo")){
-										this.setCosto((Double) validate.toValue(this.descripcionPrecio));
-										setDescripcionPrecio(this.descripcionPrecio);
-									} // if
-									else{
-										this.setCosto(validate.getMenudeo());
-										setDescripcionPrecio("menudeo");
-									} // else
-								} // else
+            // SI EL CLIENTE TIENE UN DESCUENTO ESPECIAL ENTONCES CONSIDERAR EL CALCULO DEL PRECIO BASE POR EL PORCENTAJE ASIGNADO
+            if("ESPECIAL".equals(this.descripcionPrecio)) 
+              this.setCosto(Numero.toRedondearSat(validate.getPrecio()* this.getFactor()));
+            else { 
+              if(this.getDescuentos()> 0D)
+                this.setCosto(validate.getMenudeo());
+              else {
+                if (this.getCantidad() > validate.getLimiteMayoreo() || (this.getCosto().equals(validate.getMayoreo()) && this.descuentoAsignado)){
+                  this.setCosto(validate.getMayoreo());
+                  this.setDescripcionPrecio("mayoreo");
+                } // if
+                else  
+                  if((this.getCantidad() > validate.getLimiteMedioMayoreo() && this.getCantidad() <= validate.getLimiteMayoreo()) || (this.getCosto().equals(validate.getMedioMayoreo()) && this.descuentoAsignado)) {
+                    this.setCosto(validate.getMedioMayoreo());
+                    this.setDescripcionPrecio("medioMayoreo");
+                  } // if
+                  else {
+                    if(!Cadena.isVacio(this.descripcionPrecio) && !this.descripcionPrecio.equals("menudeo")) {
+                      this.setCosto((Double)validate.toValue(this.descripcionPrecio));
+                      this.setDescripcionPrecio(this.descripcionPrecio);
+                    } // if
+                    else {
+                      this.setCosto(validate.getMenudeo());
+                      this.setDescripcionPrecio("menudeo");
+                    } // else
+                  } // else
+              } // else
 						} // else						
 					} // if	
-				} // if
-			} // if
+				} // if costoLibre
+			} // if isDescuentoActivo
 		} // try
 		catch (Exception e) {			
 			Error.mensaje(e);

@@ -207,13 +207,13 @@
         </div>
       </div>
     </div>		 
-		<hr class="ui-widget-content" style="#{!manticVentasFacturasFiltro.attrs.regresar ? '': 'display:none'}"/>
-		<div class="janal-line-button" style="#{!manticVentasFacturasFiltro.attrs.regresar ? '': 'display:none'}">
+		<hr class="ui-widget-content" style="display:#{empty manticVentasFacturasFiltro.attrs.regreso or manticVentasFacturasFiltro.attrs.regreso eq ''? 'none': ''}"/>
+		<div class="janal-line-button" style="display:#{empty manticVentasFacturasFiltro.attrs.regreso or manticVentasFacturasFiltro.attrs.regreso eq ''? 'none': ''}">
 			<div class="lg-pantalla">			
-				<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticVentasFacturasFiltro.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true" rendered="#{!manticVentasFacturasFiltro.attrs.regreso}"/>						
+				<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticVentasFacturasFiltro.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true" rendered="#{not(empty manticVentasFacturasFiltro.attrs.regreso or manticVentasFacturasFiltro.attrs.regreso eq '')}"/>						
 			</div>	
 			<div class="xs-pantalla">			
-				<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasFacturasFiltro.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true" rendered="#{!manticVentasFacturasFiltro.attrs.regreso}"/>						
+				<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasFacturasFiltro.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true" rendered="#{not(empty manticVentasFacturasFiltro.attrs.regreso or manticVentasFacturasFiltro.attrs.regreso eq '')}"/>						
 			</div>	
 		</div>
 		<svg id="barcode" style="display: none"></svg>	

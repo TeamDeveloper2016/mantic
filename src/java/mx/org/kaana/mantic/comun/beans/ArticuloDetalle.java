@@ -58,6 +58,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 	private Double utilidad;	
 	private String origen;	
 	private UISelectEntity ikAplicar;
+	private Double factor;
 
   public ArticuloDetalle() {
     this(new Long(-1L));
@@ -112,6 +113,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		this.cantidadGarantia= cantidad;
 	  this.origen= origen;
 		this.ikAplicar= new UISelectEntity(new Entity(0L));
+    this.factor= 1D;
 	}
 	
   public void setCodigo(String codigo) {
@@ -474,6 +476,14 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		this.disponible=disponible;
 	}
 
+  public Double getFactor() {
+    return factor;
+  }
+
+  public void setFactor(Double factor) {
+    this.factor = factor;
+  }
+  
 	@Override
   public boolean isValid() {
   	return this.idArticulo!= null && this.idArticulo!=-1L;
