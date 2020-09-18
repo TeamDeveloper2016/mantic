@@ -181,12 +181,12 @@ public class ArticuloVenta extends Articulo {
 
 	public String getDetallePrecio() {
 		String regresar = "";
-		boolean display = (!Cadena.isVacio(getDescuentos()) && !getDescuentos().equals(0D)) || (!Cadena.isVacio(getDescuento()) && !getDescuento().equals("0"));			
+		boolean display = (!Cadena.isVacio(this.getDescuentos()) && !getDescuentos().equals(0D)) || (!Cadena.isVacio(this.getDescuento()) && !this.getDescuento().equals("0"));			
 		if(this.getDescripcionPrecio()!= null || display) {
-			String color= "janal-color-blue";
+			String color  = "janal-color-blue";
 			boolean precio= false;			
-			regresar= "Menudeo";
-			if(this.getDescripcionPrecio()!= null){
+			regresar      = "Menudeo";
+			if(this.getDescripcionPrecio()!= null) {
 				switch(this.getDescripcionPrecio()) {
 					case "medioMayoreo":
 						color   = "janal-color-orange";
@@ -198,14 +198,19 @@ public class ArticuloVenta extends Articulo {
 						precio  = true;
 						regresar= "Mayoreo";
 						break;				
+					case "ESPECIAL":
+						precio  = false;
+						regresar= "<i class='fa fa-fw fa-question-circle janal-color-purple' style='float:right;' title='Precio especial'></i>";
+           break;				
 				} // switch
 			} // if
-			regresar= "<i class='fa fa-fw fa-question-circle ".concat(color)
-								.concat("' style='float:right; display:").concat(precio || display? "": "none").concat("' title='")
-								.concat("Menudeo: ").concat(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getMenudeo()))
-								.concat(this.getDescripcionPrecio()!= null? "\n"+ regresar+": "+ Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getCosto()): "")
-				        .concat(display? "\nDescuento: "+ this.getDescuento()+ ", "+ this.getDescuentos(): "")
-								.concat("'></i>");
+      if(this.getFactor()== 1D)
+        regresar= "<i class='fa fa-fw fa-question-circle ".concat(color)
+                  .concat("' style='float:right; display:").concat(precio || display? "": "none").concat("' title='")
+                  .concat("Menudeo: ").concat(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getMenudeo()))
+                  .concat(this.getDescripcionPrecio()!= null? "\n"+ regresar+": "+ Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getCosto()): "")
+                  .concat(display? "\nDescuento: "+ this.getDescuento()+ ", "+ this.getDescuentos(): "")
+                  .concat("'></i>");
 		} // if
 		return regresar;
 	} // getDetallePrecio

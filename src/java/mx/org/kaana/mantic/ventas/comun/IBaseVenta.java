@@ -704,8 +704,13 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
         // SI EL CLIENTE TIENE UN PRECIO ESPECIAL ENTONCES DEBEMOS DE CONSIDERAR EL PRECIO BASE * POR EL PORCENTAJE ASIGNADO AL CLIENTE
         if(cliente!= null && !cliente.isEmpty() && cliente.toDouble("especial")!= 0D) {
           Double factor= 1+ (cliente.toDouble("especial")/ 100)+ (articulo.toDouble("iva")/ 100);
-          precioVenta= Numero.toRedondearSat(factor* articulo.toDouble("precio"));
-  				temporal.setDescripcionPrecio("ESPECIAL");
+          Double venta = Numero.toRedondearSat(factor* articulo.toDouble("precio"));
+          // SI AUN CUANDO EL PRECIO ESPECIAL ASIGNADO AL CLIENTE NO ES MENOR QUE EL PRECIO SUGERIDO SE RESPETA EL PRECIO MENOR DEL ARTICULO
+          if(precioVenta< venta) 
+            factor     = 1+ Numero.toRedondearSat((precioVenta- articulo.toDouble("precio"))* 100/ articulo.toDouble("precio")/ 100)+ (articulo.toDouble("iva")/ 100);
+          else
+            precioVenta= venta;
+				  temporal.setDescripcionPrecio("ESPECIAL");
           temporal.setFactor(factor);
         } // if
 				this.doSearchArticulo(articulo.toLong("idArticulo"), index);
@@ -1118,7 +1123,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
     } // finally
 	} // doUpdateArticulos	
 	
-	protected void validatePrecioAsignado(Integer index){
+	protected void validatePrecioAsignado(Integer index) {
 		List<UISelectEntity> clientesSeleccion= null;
 		UISelectEntity seleccion              = null;		
 		try {

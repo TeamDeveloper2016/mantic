@@ -533,6 +533,13 @@ div.ui-panelgrid-content {
 .janal-color-black{color: black;}
 .janal-color-yellow{color: yellow;}
 .janal-color-cyan{color: cyan;}
+.janal-tr-orange{background-color: rgba(255, 0, 0, 0.3) !important;}
+.janal-tr-green{background-color: rgba(0, 255, 0, 0.3) !important;}
+.janal-tr-purple{background-color: rgba(138, 43, 226, 0.3) !important;}
+.janal-tr-blue{background-color: rgba(0, 0, 255, 0.3) !important;}
+.janal-tr-red{background-color: rgba(255, 0, 0, 0.6) !important;}
+.janal-tr-yellow{background-color: rgba(255, 255, 0, 0.5) !important;}
+.janal-tr-lime{background-color: rgba(173, 255, 47, 0.5) !important;}
 .jana-bar-top { filter:alpha(opacity=80); opacity:0.8; padding:10px 0 0 50px; z-index: 1000; height: 120px !important; }
 .janal-padding-cero { padding-bottom: 0 !important; padding-left:  0 !important; padding-right: 0 !important;	padding-top: 0 !important; }
 .janal-wid-100-txt { width: -webkit-fill-available; width: -moz-available;}

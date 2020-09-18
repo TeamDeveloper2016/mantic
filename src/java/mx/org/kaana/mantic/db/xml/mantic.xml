@@ -122,7 +122,9 @@
         from      
           tc_mantic_control_respaldos
         where      
-          id_usuario = {idUsuario} and id_respaldo = {idRespaldo} and date_format(registro, '%Y%m%d%H%i%S') = '{registro}'
+          id_usuario = {idUsuario} 
+          and id_respaldo = {idRespaldo} 
+          and date_format(registro, '%Y%m%d%H%i%S') = '{registro}'
       </select>
       <select id="ultimo">
         select      
