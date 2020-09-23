@@ -17,7 +17,6 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -257,7 +256,7 @@ public class Abono extends IBaseTicket implements Serializable {
   public void doLoadTopePago() {
     Entity seleccionado= (Entity)this.attrs.get("apartado");
     this.attrs.put("pago", seleccionado.toDouble("saldo"));
-    UIBackingUtilities.execute("janal.renovate('pago', {validaciones: 'requerido|flotante|mayor({\"cuanto\":0}|menor-igual({\"cuanto\":"+ seleccionado.toDouble("saldo")+"})', mascara: 'libre'});");
+    // UIBackingUtilities.execute("janal.renovate('pago_input', {validaciones: 'requerido|flotante|mayor({\"cuanto\":0}|menor-igual({\"cuanto\":"+ seleccionado.toDouble("saldo")+"})', mascara: 'libre'});");
   } // doLoadTopePago
   
 }

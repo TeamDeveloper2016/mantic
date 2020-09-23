@@ -14,15 +14,15 @@
       Janal.Control.fields = {};		
 			
 			fieldsDialog ={
-				'pago'         : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
+				'pago_input'   : {validaciones: 'requerido|flotante|mayor({\"cuanto\":0}|menor-igual({\"cuanto\":#{manticVentasApartadosAbono.attrs.apartado.saldo}})', mascara: 'libre', grupo: 'dialogo'},
 				'referencia'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
         'observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
 			};
       
       function checkOpenRegistrarPago() {
         janal.change('formDialogoPago', fieldsDialog); 
-        janal.renovate('pago', {validaciones: 'requerido|flotante|mayor({\"cuanto\":0}|menor-igual({\"cuanto\":'+ $('#saldo').val()+ '})', mascara: 'libre'}); 
         janal.refresh();
+        // janal.renovate('pago', {validaciones: 'requerido|flotante|mayor({\"cuanto\":0}|menor-igual({\"cuanto\":#{manticVentasApartadosAbono.attrs.apartado.saldo}})', mascara: 'libre'}); 
       }
       
       function checkRegistrarPago() {
