@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -26,7 +27,7 @@ import mx.org.kaana.mantic.ventas.caja.beans.VentaFinalizada;
 import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 import org.hibernate.Session;
 
-public class Transaccion extends IBaseTnx{
+public class Transaccion extends IBaseTnx {
 
 	private String messageError;
 	private TcManticApartadosPagosDto pago;
@@ -93,31 +94,27 @@ public class Transaccion extends IBaseTnx{
 	} // ejecutar
 	
 	private boolean procesarPago(Session sesion) throws Exception{
-		boolean regresar               = false;
-		TcManticApartadosDto apartado  = null;
-		Double saldo                   = 0D;
-		Double abonado                 = 0D;
-    Map<String, Object>params      = null;
+		boolean regresar             = false;
+		TcManticApartadosDto apartado= null;
+    Map<String, Object>params    = null;
 		try {
-			if(toCierreCaja(sesion, this.pago.getPago())){
+			if(this.toCierreCaja(sesion, this.pago.getPago())) {
 				this.pago.setIdCierre(this.idCierreActivo);				
-				if(!this.pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){
+				if(!this.pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())) {
 					this.pago.setReferencia(this.referencia);
 					this.pago.setIdBanco(this.idBanco);
 				} // if
-				if(DaoFactory.getInstance().insert(sesion, this.pago)>= 1L){
+				if(DaoFactory.getInstance().insert(sesion, this.pago)>= 1L) {
 					apartado= (TcManticApartadosDto) DaoFactory.getInstance().findById(sesion, TcManticApartadosDto.class, this.pago.getIdApartado());
-					saldo= apartado.getSaldo() - this.pago.getPago();
-					abonado= apartado.getAbonado() + this.pago.getPago();
-					apartado.setSaldo(saldo);
-					apartado.setAbonado(abonado);
-					apartado.setIdApartadoEstatus(saldo.equals(0L) ? 3L : 2L);
+					apartado.setSaldo(apartado.getSaldo() - this.pago.getPago());
+					apartado.setAbonado(apartado.getAbonado() + this.pago.getPago());
+					apartado.setIdApartadoEstatus(apartado.getSaldo()<= 0D? 3L: 2L); 
 					regresar= DaoFactory.getInstance().update(sesion, apartado)>= 1L;
           params= new HashMap<>();
-					params.put(Constantes.SQL_CONDICION, "id_apartado = ".concat(apartado.getIdApartado().toString()));
+					params.put(Constantes.SQL_CONDICION, "id_apartado = "+ apartado.getIdApartado());
           this.bitacora = (TcManticApartadosBitacoraDto)DaoFactory.getInstance().findFirst(TcManticApartadosBitacoraDto.class, params);
           //preguntar si al iniciar inserta bitacora, si no cambiar a crear instancia en lugar de consultar
-          if(this.bitacora!= null){
+          if(this.bitacora!= null) {
             this.bitacora.setIdApartadoEstatus(apartado.getIdApartadoEstatus());
             this.bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
             this.bitacora.setIdUsuario(JsfBase.getIdUsuario());

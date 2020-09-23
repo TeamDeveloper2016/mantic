@@ -8917,17 +8917,18 @@
         select * from (select
 					tc_mantic_apartados.id_apartado as id_key,
 					tc_mantic_ventas.id_cliente,
-					tc_mantic_ventas.consecutivo,
+					tc_mantic_ventas.ticket as consecutivo,
 					tc_mantic_apartados.importe,
 					tc_mantic_apartados.saldo,
           tc_mantic_apartados.vencimiento,
-					concat(tc_mantic_apartados.nombre, ' ', tc_mantic_apartados.paterno, ' ', tc_mantic_apartados.materno) as cliente,
+					concat(tc_mantic_apartados.nombre, ' ', ifnull(tc_mantic_apartados.paterno, ''), ' ', ifnull(tc_mantic_apartados.materno, '')) as cliente,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
 					tc_mantic_apartados.abonado,
 					tc_mantic_apartados.registro,
 					datediff(now(),tc_mantic_apartados.registro) as dias,
 					tc_mantic_apartados.id_apartado_estatus,
 					tc_mantic_ventas.id_venta,
+          tc_mantic_ventas.id_venta_estatus,
         tc_mantic_apartados_estatus.nombre estatus
         from
           tc_mantic_apartados
@@ -8978,6 +8979,34 @@
 				order by
 					tc_mantic_ventas.consecutivo, 
 					tc_mantic_apartados.registro desc
+      </select> 
+      <select id="abonos"> 
+        select
+					tc_mantic_apartados_pagos.id_apartado_pago as id_key,
+          tc_mantic_apartados.abonado total_abonado,
+					tc_mantic_apartados.abonado,
+					tc_mantic_apartados_pagos.pago as importe,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
+					tc_mantic_apartados_pagos.registro,
+					tc_mantic_tipos_medios_pagos.nombre as medio,
+          ifnull(tc_mantic_apartados_pagos.referencia, ' ') as referencia,
+					tc_mantic_apartados_pagos.id_tipo_medio_pago
+				from
+					tc_mantic_apartados_pagos
+				inner join
+					tc_mantic_apartados on tc_mantic_apartados_pagos.id_apartado= tc_mantic_apartados.id_apartado
+				inner join
+					tc_mantic_ventas on tc_mantic_apartados.id_venta= tc_mantic_ventas.id_venta
+				inner join
+					tc_janal_usuarios on tc_mantic_apartados_pagos.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				inner join 
+					tc_mantic_tipos_medios_pagos on tc_mantic_apartados_pagos.id_tipo_medio_pago = tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+				where
+					tc_mantic_apartados.id_venta= {idVenta}
+				order by
+					tc_mantic_apartados_pagos.registro desc        
       </select> 
     </unit>
 		<unit id="VistaGarantiasDto">

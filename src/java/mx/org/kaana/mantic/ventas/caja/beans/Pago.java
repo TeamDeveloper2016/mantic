@@ -1,6 +1,9 @@
 package mx.org.kaana.mantic.ventas.caja.beans;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
@@ -8,7 +11,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.compras.ordenes.beans.Totales;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 
-public class Pago implements Serializable{
+public class Pago implements Serializable {
 
 	private static final long serialVersionUID= -1010567299549184249L;
 	private Totales totales;	
@@ -43,12 +46,13 @@ public class Pago implements Serializable{
 	private Double difTransferencia;
 	private Double difCheque;
 	private Double abono;
+  private List<Abono> abonos;
 	
-	public Pago(){
+	public Pago() {
 		this(new Totales());
 	}
 	
-	public Pago(Totales totales){
+	public Pago(Totales totales) {
 		this(totales, 0D, 0D, 0D, 0D, 0D, 0D);
 	}			
 
@@ -80,6 +84,7 @@ public class Pago implements Serializable{
 		this.abono             = 0D;
 		this.referencia        = "";
 		this.idBanco           = -1L;
+    this.abonos            = new ArrayList<>();
 	}
 	
 	public Totales getTotales() {
@@ -352,27 +357,27 @@ public class Pago implements Serializable{
 		this.difCheque = difCheque;
 	}	
 	
-	public Long getIdTipoMedioPago(){
+	public Long getIdTipoMedioPago() {
 		Long regresar= -1L;
-		if((this.efectivo > 0D && this.debito<= 0 && this.credito<= 0 && this.transferencia<= 0 && this.cheque<= 0) || (this.efectivo > 0D && (this.debito>= 0 || this.credito>= 0 || this.transferencia>= 0 || this.cheque>= 0))){
+		if((this.efectivo > 0D && this.debito<= 0 && this.credito<= 0 && this.transferencia<= 0 && this.cheque<= 0) || (this.efectivo > 0D && (this.debito>= 0 || this.credito>= 0 || this.transferencia>= 0 || this.cheque>= 0))) {
 			regresar= ETipoMediosPago.EFECTIVO.getIdTipoMedioPago();
 		} // if
-		else if(this.debito > 0D && this.efectivo<= 0 && this.credito<= 0 && this.transferencia<= 0 && this.cheque<= 0){
+		else if(this.debito > 0D && this.efectivo<= 0 && this.credito<= 0 && this.transferencia<= 0 && this.cheque<= 0) {
 			regresar= ETipoMediosPago.TARJETA_DEBITO.getIdTipoMedioPago();
 			this.idBanco= this.bancoDebito.getKey();
 			this.referencia= this.referenciaDebito;
 		} // else id
-		else if(this.credito > 0D && this.efectivo<= 0 && this.debito<= 0 && this.transferencia<= 0 && this.cheque<= 0){
+		else if(this.credito > 0D && this.efectivo<= 0 && this.debito<= 0 && this.transferencia<= 0 && this.cheque<= 0) {
 			regresar= ETipoMediosPago.TARJETA_CREDITO.getIdTipoMedioPago();
 			this.idBanco= this.bancoCredito.getKey();
 			this.referencia= this.referenciaCredito;
 		} // else id
-		else if(this.transferencia > 0D && this.efectivo<= 0 && this.credito<= 0 && this.debito<= 0 && this.cheque<= 0){
+		else if(this.transferencia > 0D && this.efectivo<= 0 && this.credito<= 0 && this.debito<= 0 && this.cheque<= 0) {
 			regresar= ETipoMediosPago.TRANSFERENCIA.getIdTipoMedioPago();
 			this.idBanco= this.bancoTransferencia.getKey();
 			this.referencia= this.referenciaTransferencia;
 		} // else id
-		else if(this.cheque > 0D && this.efectivo<= 0 && this.credito<= 0 && this.transferencia<= 0 && this.debito<= 0){
+		else if(this.cheque > 0D && this.efectivo<= 0 && this.credito<= 0 && this.transferencia<= 0 && this.debito<= 0) {
 			regresar= ETipoMediosPago.CHEQUE.getIdTipoMedioPago();
 			this.idBanco= this.bancoCheque.getKey();
 			this.referencia= this.referenciaCheque;
@@ -380,11 +385,25 @@ public class Pago implements Serializable{
 		return regresar;
 	} // getIdTipoMedioPago
 	
-	public Long getIdBanco(){
+	public Long getIdBanco() {
 		return idBanco;
 	}
 	
-	public String getReferencia(){
+	public String getReferencia() {
 		return referencia;
 	}
+
+  public List<Abono> getAbonos() {
+    return abonos;
+  }
+
+  public void addAbono(Double monto, Timestamp fecha, String medio) {
+    this.abonos.add(new Abono(monto, fecha, medio));
+  }  
+  
+  public void finalized() {
+    this.abonos.clear();
+    this.abonos= null;
+  }
+  
 }

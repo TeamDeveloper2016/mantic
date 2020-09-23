@@ -31,7 +31,7 @@ public abstract class IBaseTicket extends IBaseFilter implements Serializable {
 			params= new HashMap<>();
 			params.put("idVenta", seleccionado.toLong("idVenta"));
 			adminTicket= new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params));			
-			ticket= new CreateTicket(adminTicket, toPago(adminTicket, seleccionado.getKey()), toTipoTransaccion(seleccionado.toLong("idVentaEstatus")));
+			ticket= new CreateTicket(adminTicket, this.toPago(adminTicket, seleccionado.toLong("idVenta")), this.toTipoTransaccion(seleccionado.toLong("idVentaEstatus")));
 			UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + toConsecutivoTicket(seleccionado.toLong("idVentaEstatus"), adminTicket) + "','" + ticket.toHtml() + "');");
 		} // try
 		catch (Exception e) {
@@ -40,14 +40,14 @@ public abstract class IBaseTicket extends IBaseFilter implements Serializable {
 		} // catch		
 	} // doTicket
 	
-	private String toTipoTransaccion(Long idEstatus){
+	private String toTipoTransaccion(Long idEstatus) {
 		String regresar       = null;
 		EEstatusVentas estatus= null;		
 		try {
 			regresar= "VENTA DE MOSTRADOR";
-			if(idEstatus<= EEstatusVentas.EN_CAPTURA.getIdEstatusVenta() || idEstatus.equals(EEstatusVentas.TIMBRADA.getIdEstatusVenta())){
+			if(idEstatus<= EEstatusVentas.EN_CAPTURA.getIdEstatusVenta() || idEstatus.equals(EEstatusVentas.TIMBRADA.getIdEstatusVenta())) {
 				estatus= EEstatusVentas.fromIdTipoPago(idEstatus);
-				switch(estatus){
+				switch(estatus) {
 					case PAGADA:
 					case TIMBRADA:
 					case TERMINADA:
@@ -71,7 +71,7 @@ public abstract class IBaseTicket extends IBaseFilter implements Serializable {
 		return regresar;
 	} // toTipoTransaccion
 	
-	private String toConsecutivoTicket(Long idEstatus, AdminTickets ticket){
+	private String toConsecutivoTicket(Long idEstatus, AdminTickets ticket) {
 		String regresar= null;		
 		try {
 			if(idEstatus.equals(EEstatusVentas.COTIZACION.getIdEstatusVenta()))
@@ -85,33 +85,55 @@ public abstract class IBaseTicket extends IBaseFilter implements Serializable {
 		return regresar;
 	} // toTipoTransaccion
 	
-	private Pago toPago(AdminTickets adminTicket, Long idVenta) throws Exception{
+	private Pago toPago(AdminTickets adminTicket, Long idVenta) throws Exception {
 		Pago regresar            = null;
 		List<Entity> detallePago = null;
 		Map<String, Object>params= null;
 		ETipoMediosPago medioPago= null;
+    EEstatusVentas venta     = EEstatusVentas.ABIERTA;
 		try {
 			regresar= new Pago(adminTicket.getTotales());
-			params= new HashMap<>();
+			params  = new HashMap<>();
 			params.put("idVenta", idVenta);
-			detallePago= DaoFactory.getInstance().toEntitySet("TrManticVentaMedioPagoDto", "ticket", params, Constantes.SQL_TODOS_REGISTROS);
-			if(!detallePago.isEmpty()){
-				for(Entity pago: detallePago){
+      // SON LOS ABONOS QUE SE HAN REALIZADO POR EL CLIENTE SI ES UN APARTADO
+      detallePago= DaoFactory.getInstance().toEntitySet("VistaTcManticApartadosDto", "abonos", params, Constantes.SQL_TODOS_REGISTROS);
+      if(detallePago!= null && !detallePago.isEmpty()) {
+        for (Entity pago : detallePago) {
+          medioPago= ETipoMediosPago.fromIdTipoPago(pago.toLong("idTipoMedioPago"));
+          if(ETipoMediosPago.EFECTIVO.equals(medioPago))
+            regresar.addAbono(pago.toDouble("importe"), pago.toTimestamp("registro"), pago.toString("referencia"));
+          else
+            regresar.addAbono(pago.toDouble("importe"), pago.toTimestamp("registro"), "(REF "+ pago.toString("referencia")+ ")");
+        } // for
+        venta= EEstatusVentas.APARTADOS;
+      } // if
+      switch (venta) {
+        case APARTADOS:
+          break;
+        default:  
+    			detallePago= DaoFactory.getInstance().toEntitySet("TrManticVentaMedioPagoDto", "ticket", params, Constantes.SQL_TODOS_REGISTROS);
+      } // switch
+			if(!detallePago.isEmpty()) {
+				for(Entity pago: detallePago) {
 					medioPago= ETipoMediosPago.fromIdTipoPago(pago.toLong("idTipoMedioPago"));
-					switch(medioPago){
+					switch(medioPago) {
 						case EFECTIVO:
-							regresar.setEfectivo(pago.toDouble("importe"));							
+							regresar.setEfectivo(regresar.getEfectivo()+ pago.toDouble("importe"));							
+							break;
+						case TARJETA_DEBITO:
+							regresar.setDebito(regresar.getDebito()+ pago.toDouble("importe"));							
+							regresar.setReferenciaDebito(pago.toString("referencia"));							
 							break;
 						case TARJETA_CREDITO:
-							regresar.setCredito(pago.toDouble("importe"));							
+							regresar.setCredito(regresar.getCredito()+ pago.toDouble("importe"));							
 							regresar.setReferenciaCredito(pago.toString("referencia"));							
 							break;
 						case CHEQUE:
-							regresar.setCheque(pago.toDouble("importe"));							
+							regresar.setCheque(regresar.getCheque()+ pago.toDouble("importe"));							
 							regresar.setReferenciaCheque(pago.toString("referencia"));							
 							break;
 						case TRANSFERENCIA:
-							regresar.setTransferencia(pago.toDouble("importe"));							
+							regresar.setTransferencia(regresar.getTransferencia()+ pago.toDouble("importe"));							
 							regresar.setReferenciaTransferencia(pago.toString("referencia"));							
 							break;
 					} // switch

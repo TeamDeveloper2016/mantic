@@ -242,5 +242,17 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
     return Entity.class;
   }
 
+	@Override
+  public Entity clone() {
+		Entity regresar= new Entity();
+		for (String key : this.keySet()) {
+			regresar.put(key, this.get(key));
+		} // for
+		return regresar;
+	}	
 
+  public void add(String key, Object value) {
+    this.put(key, new Value(key, value, key));
+  }
+  
 }
