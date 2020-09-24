@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.ventas.beans;
 
 import java.io.Serializable;
-import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.Constantes;
 
 public class SaldoCliente implements Serializable{
 
@@ -12,7 +12,7 @@ public class SaldoCliente implements Serializable{
 	private Double totalVenta;
 
 	public SaldoCliente() {
-		this(3515L, 0D, 0D, 0D);
+		this(Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY, 0D, 0D, 0D);
 	}
 
 	public SaldoCliente(Long idCliente, Double totalDeuda, Double totalCredito, Double totalVenta) {

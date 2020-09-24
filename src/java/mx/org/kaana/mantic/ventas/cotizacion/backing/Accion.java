@@ -108,7 +108,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	@Override
   public void doLoad() {
     EAccion eaccion= null;
-		Long idCliente = 3515L;
+		Long idCliente = Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY;
     try {
       eaccion= (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));

@@ -18,7 +18,6 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
-import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -136,7 +135,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	@Override
   public void doLoad() {
     EAccion eaccion= null;
-		Long idCliente = 3515L;
+		Long idCliente = Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY;
     try {
       eaccion= (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
@@ -219,7 +218,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				this.attrs.put("idEmpresaVenta", this.attrs.get("idEmpresa"));
 				this.init();
 				this.attrs.put("idEmpresa", this.attrs.get("idEmpresaVenta"));
-				this.doAsignaClienteInicial(3515L);
+				this.doAsignaClienteInicial(Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY);
 				UIBackingUtilities.execute("userUpdate();");			
 			} // if
     } // try
@@ -280,22 +279,22 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 	} // doAsignaClienteInicial
 	
-	public void doActualizaPrecioCliente(){
+	public void doActualizaPrecioCliente() {
 		List<UISelectEntity> clientesSeleccion= null;
 		UISelectEntity clienteSeleccion       = null;
 		boolean precioVigente                 = false;
 		try {			
 			clienteSeleccion= (UISelectEntity) this.attrs.get("clienteSeleccion");
-			precioVigente= clienteSeleccion!= null && !clienteSeleccion.getKey().equals(-1L);
+			precioVigente   = clienteSeleccion!= null && !clienteSeleccion.getKey().equals(-1L);
 			this.attrs.put("mostrarCorreos", clienteSeleccion== null ||clienteSeleccion.getKey().equals(-1L) || clienteSeleccion.getKey().equals(((UISelectEntity)this.attrs.get("clienteDefault")).getKey()));			
-			if(precioVigente){
+			if(precioVigente) {
 				clientesSeleccion= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
 				clienteSeleccion= clientesSeleccion.get(clientesSeleccion.indexOf(clienteSeleccion));
 				setPrecio(Cadena.toBeanNameEspecial(clienteSeleccion.toString("tipoVenta")));				
 			} // if
 			else
-				setPrecio("menudeo");
-			doReCalculatePreciosArticulos(precioVigente, clienteSeleccion.getKey());
+				this.setPrecio("menudeo");
+			this.doReCalculatePreciosArticulos(precioVigente, clienteSeleccion.getKey());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

@@ -21,6 +21,8 @@ public final class Constantes {
   public static final String JAVAX_FACES_RESOURCE = "javax.faces.resource";
   public static final String VERSIONES = "Versiones";
   public static final String VENTA_AL_PUBLICO_GENERAL = "VENTA PUBLICO EN GENERAL";
+  public static final Long VENTA_AL_PUBLICO_GENERAL_ID_KEY= 3515L;
+  public static final String VENTA_AL_PUBLICO_GENERAL_CLAVE = "VENTA";
 
 	public static final String CODIGO_SAT= "40141700";
 	public static final String CLEAN_ART= "[^a-zA-Z0-9 Ò—\"\\.\\(\\)\\#\\+*-_$:;]+";
@@ -182,6 +184,10 @@ public final class Constantes {
 
   public String getREGISTROS_MAX_CADA_PAGINA() {
     return Constantes.REGISTROS_MAX_CADA_PAGINA;
+  }
+	
+  public Long getVENTA_AL_PUBLICO_GENERAL_ID_KEY() {
+    return Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY;
   }
 	
 }

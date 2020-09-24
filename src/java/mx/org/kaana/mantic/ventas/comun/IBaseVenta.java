@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.ventas.comun;
 
+import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -440,24 +441,25 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
     } // finally
 	}
 	
-	private void doAsignaClienteTicketAbierto() throws Exception{		
+	private void doAsignaClienteTicketAbierto() throws Exception {		
 		MotorBusqueda motorBusqueda           = null;
 		UISelectEntity seleccion              = null;
 		List<UISelectEntity> clientesSeleccion= null;
 		Entity clienteDefault                 = null;
 		try {
-			motorBusqueda= new MotorBusqueda(-1L, ((TicketVenta)this.getAdminOrden().getOrden()).getIdCliente());
-			seleccion= new UISelectEntity(motorBusqueda.toCliente());
+			motorBusqueda    = new MotorBusqueda(-1L, ((TicketVenta)this.getAdminOrden().getOrden()).getIdCliente());
+			seleccion        = new UISelectEntity(motorBusqueda.toCliente());
 			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);
 			clienteDefault= motorBusqueda.toClienteDefault();
-			clientesSeleccion.add(0, new UISelectEntity(clienteDefault));
+      if(!Objects.equal(seleccion.getKey(), clienteDefault.getKey()))
+			  clientesSeleccion.add(0, new UISelectEntity(clienteDefault));
 			this.attrs.put("mostrarCorreos", seleccion.getKey().equals(-1L) || seleccion.getKey().equals(clienteDefault.getKey()));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
-			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
-			doReCalculatePreciosArticulos(seleccion.getKey());	
-			doLoadSaldos(seleccion.getKey());
+			this.setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
+			this.doReCalculatePreciosArticulos(seleccion.getKey());	
+			this.doLoadSaldos(seleccion.getKey());
 		} // try
 		catch (Exception e) {	
 			throw e;
@@ -475,35 +477,65 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		String sinDescuento          = "0";
 		try {			
       UISelectEntity cliente= (UISelectEntity)this.attrs.get("clienteSeleccion");      
+      List<UISelectEntity> clientes= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");					
+			if(cliente!= null && cliente.size()<= 1 && clientes!= null && !clientes.isEmpty())
+        cliente= clientes.get(clientes.indexOf(cliente));
       // SI EL CLIENTE TIENE UN PRECIO ESPECIAL ENTONCES DEBEMOS DE CONSIDERAR EL PRECIO BASE * POR EL PORCENTAJE ASIGNADO AL CLIENTE
-			if(!getAdminOrden().getArticulos().isEmpty() && cliente!= null && !cliente.isEmpty() && cliente.toDouble("especial")== 0D) {
-				for(Articulo beanArticulo: getAdminOrden().getArticulos()){
-					if(beanArticulo.getIdArticulo()!= null && !beanArticulo.getIdArticulo().equals(-1L)){
-						motor= new MotorBusqueda(beanArticulo.getIdArticulo());
-						articulo= motor.toArticulo();
-						beanArticulo.setCosto((Double) articulo.toValue(getPrecio()));
-						if(!beanArticulo.getCosto().equals(articulo.getMayoreo()) && !beanArticulo.getCosto().equals(articulo.getMedioMayoreo())){
-							beanArticulo.setValor((Double) articulo.toValue(getPrecio()));
-							beanArticulo.setCosto((Double) articulo.toValue(getPrecio()));
-							((ArticuloVenta)beanArticulo).setDescripcionPrecio(getPrecio());
-						} // if		
-						else
-							((ArticuloVenta)beanArticulo).setDescuentoAsignado(true);						
-						if(descuentoVigente){
-							descuento= toDescuentoVigente(beanArticulo.getIdArticulo(), idCliente);
-							if(descuento!= null)
-								beanArticulo.setDescuento(descuento);							
-						} // if
-						else
-							beanArticulo.setDescuento(sinDescuento);
-					} // if
-				} // for					
-				if(getAdminOrden().getArticulos().size()> 1) {
-					getAdminOrden().toCalculate();
-					getAdminOrden().cleanPrecioDescuentoArticulo();
-					UIBackingUtilities.update("@(.filas) @(.recalculo) @(.informacion)");
-				} // if
-			} // if			
+			if(!this.getAdminOrden().getArticulos().isEmpty()) {
+        if(cliente!= null && !cliente.isEmpty() && cliente.toDouble("especial")!= 0D) {
+          Double costo;
+          Double venta;
+          Double factor;
+          for(Articulo original: getAdminOrden().getArticulos()) {
+            if(original.getIdArticulo()!= null && !original.getIdArticulo().equals(-1L)) {
+              motor   = new MotorBusqueda(original.getIdArticulo());
+              articulo= motor.toArticulo();
+              costo = articulo.getMenudeo();              
+              venta = Numero.toRedondearSat(articulo.getPrecio()* (1+ (articulo.getIva()/ 100))* (1+ (cliente.toDouble("especial")/ 100)));
+              factor= Numero.toRedondearSat(venta* 100/ articulo.getPrecio()/ 100);
+              // SI AUN CUANDO EL PRECIO ESPECIAL ASIGNADO AL CLIENTE NO ES MENOR QUE EL PRECIO SUGERIDO SE RESPETA EL PRECIO MENOR DEL ARTICULO
+              if(costo< venta) 
+                factor= 1+ Numero.toRedondearSat((costo- articulo.getPrecio())* 100/ articulo.getPrecio()/ 100);
+              else
+                costo= venta;
+              ((ArticuloVenta)original).setDescripcionPrecio("ESPECIAL");
+              original.setFactor(factor);
+              original.setDescuento("0");
+              original.setValor(costo);
+              original.setCosto(costo);
+            } // if
+          } // for  
+        } // if
+        else {
+          for(Articulo original: getAdminOrden().getArticulos()) {
+            if(original.getIdArticulo()!= null && !original.getIdArticulo().equals(-1L)) {
+              motor   = new MotorBusqueda(original.getIdArticulo());
+              articulo= motor.toArticulo();
+              original.setCosto((Double) articulo.toValue(getPrecio()));
+              if(!original.getCosto().equals(articulo.getMayoreo()) && !original.getCosto().equals(articulo.getMedioMayoreo())) {
+                original.setValor((Double) articulo.toValue(getPrecio()));
+                original.setCosto((Double) articulo.toValue(getPrecio()));
+                ((ArticuloVenta)original).setDescripcionPrecio(getPrecio());
+              } // if		
+              else
+                ((ArticuloVenta)original).setDescuentoAsignado(true);						
+              if(descuentoVigente) {
+                descuento= toDescuentoVigente(original.getIdArticulo(), idCliente);
+                if(descuento!= null)
+                  original.setDescuento(descuento);							
+              } // if
+              else
+                original.setDescuento(sinDescuento);
+              original.setFactor(1D);
+            } // if
+          } // for  
+        } // else
+        if(getAdminOrden().getArticulos().size()> 1) {
+          getAdminOrden().toCalculate();
+          getAdminOrden().cleanPrecioDescuentoArticulo();
+          UIBackingUtilities.update("@(.filas) @(.recalculo) @(.informacion)");
+        } // if
+      } // if			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -678,6 +710,9 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			tipoDescuento= (String)this.attrs.get("tipoDescuento");
       // SI EL CLIENTE TIENE UN PRECIO ESPECIAL ENTONCES DEJAR EL PRECIO DE MENUDEO Y NO CONSIDERAR NINGUN TIPO DE DESCUENTO
       UISelectEntity cliente= (UISelectEntity)this.attrs.get("clienteSeleccion");
+      List<UISelectEntity> clientes= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");					
+			if(cliente!= null && cliente.size()<= 1 && clientes!= null && !clientes.isEmpty())
+        cliente= clientes.get(clientes.indexOf(cliente));
       if(cliente!= null && !cliente.isEmpty() && cliente.toDouble("especial")!= 0D)
          tipoDescuento= MENUDEO;
 			this.attrs.put("isIndividual", tipoDescuento.equals(INDIVIDUAL));
@@ -701,13 +736,16 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
         Double precioVenta= articulo.toDouble(this.getPrecio());
         temporal.setDescripcionPrecio(this.getPrecio());
         UISelectEntity cliente= (UISelectEntity)this.attrs.get("clienteSeleccion");      
+        List<UISelectEntity> clientes= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");					
+        if(cliente!= null && cliente.size()<= 1 && clientes!= null && !clientes.isEmpty())
+          cliente= clientes.get(clientes.indexOf(cliente));
         // SI EL CLIENTE TIENE UN PRECIO ESPECIAL ENTONCES DEBEMOS DE CONSIDERAR EL PRECIO BASE * POR EL PORCENTAJE ASIGNADO AL CLIENTE
         if(cliente!= null && !cliente.isEmpty() && cliente.toDouble("especial")!= 0D) {
-          Double factor= 1+ (cliente.toDouble("especial")/ 100)+ (articulo.toDouble("iva")/ 100);
-          Double venta = Numero.toRedondearSat(factor* articulo.toDouble("precio"));
+          Double venta = Numero.toRedondearSat(articulo.toDouble("precio")* (1+ (articulo.toDouble("iva")/ 100))* (1+ (cliente.toDouble("especial")/ 100)));
+          Double factor= 1+ Numero.toRedondearSat(venta* 100/ articulo.toDouble("precio")/ 100);
           // SI AUN CUANDO EL PRECIO ESPECIAL ASIGNADO AL CLIENTE NO ES MENOR QUE EL PRECIO SUGERIDO SE RESPETA EL PRECIO MENOR DEL ARTICULO
           if(precioVenta< venta) 
-            factor     = 1+ Numero.toRedondearSat((precioVenta- articulo.toDouble("precio"))* 100/ articulo.toDouble("precio")/ 100)+ (articulo.toDouble("iva")/ 100);
+            factor     = 1+ Numero.toRedondearSat((precioVenta- articulo.toDouble("precio"))* 100/ articulo.toDouble("precio")/ 100);
           else
             precioVenta= venta;
 				  temporal.setDescripcionPrecio("ESPECIAL");
@@ -939,13 +977,14 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			clientesSeleccion.add(seleccion);
 			motorBusqueda= new MotorBusqueda(-1L);
 			clienteDefault= motorBusqueda.toClienteDefault();
-			clientesSeleccion.add(0, new UISelectEntity(clienteDefault));
+      if(!Objects.equal(seleccion.getKey(), clienteDefault.getKey()))
+			  clientesSeleccion.add(0, new UISelectEntity(clienteDefault));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
 			this.attrs.put("mostrarCorreos", seleccion.getKey().equals(-1L) || seleccion.getKey().equals(clienteDefault.getKey()));
-			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
-			doReCalculatePreciosArticulos(seleccion.getKey());		
-			doLoadSaldos(seleccion.getKey());
+		  this.setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
+			this.doReCalculatePreciosArticulos(seleccion.getKey());		
+			this.doLoadSaldos(seleccion.getKey());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -1012,7 +1051,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		List<Columna> columns     = null;
     Map<String, Object> params= null;
     try {
-			params= new HashMap<>();
+			params = new HashMap<>();
 			columns= new ArrayList<>();
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
