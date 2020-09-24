@@ -151,6 +151,12 @@
 										<p:commandButton id="xlsIcon" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 									</div>  
 								</f:facet>	            
+								<p:column class="MarAuto Responsive janal-wid-col-30">
+									<f:facet name="header">
+										<h:outputText value="No"/>
+									</f:facet>
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>		
 								<p:column class="MarAuto Responsive janal-wid-17" sortBy="#{row.nombreEmpresa}">
 									<f:facet name="header">
 										<h:outputText value="Sucursal"/>
