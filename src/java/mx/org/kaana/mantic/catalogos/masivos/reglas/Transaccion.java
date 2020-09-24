@@ -813,10 +813,10 @@ public class Transaccion extends IBaseTnx {
 							String nombre= new String(contenido.getBytes(ISO_8859_1), UTF_8);
 							String especificacion= new String(descripcion.getBytes(ISO_8859_1), UTF_8);
 							if(costo > 0) {
-                costo= Numero.toRedondear(costo- (costo* ((iva< 1? iva* 100: iva)/ 100)));
-								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
+                costo = Numero.toRedondear(costo- (costo* ((iva< 1? iva* 100: iva)/ 100)));
+								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim().toUpperCase();
 								String codigo= new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
-								codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim();
+								codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim().toUpperCase();
 								TcManticArticulosDto refaccion= this.toFindArticulo(sesion, codigo, 2L);
 								if(refaccion!= null) {
 									// si trae nulo, blanco o cero se respeta el valor que tiene el campo								
@@ -931,7 +931,7 @@ public class Transaccion extends IBaseTnx {
 									params.put("idArticulo", refaccion.getIdArticulo());
 									params.put("nombre", "HERRAMIENTA");
 									DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosEspecificacionesDto.class, params);
-									especificaciones= new TcManticArticulosEspecificacionesDto(JsfBase.getIdUsuario(), especificacion, -1L, refaccion.getIdArticulo(), "HERRAMIENTA");
+									especificaciones= new TcManticArticulosEspecificacionesDto(JsfBase.getIdUsuario(), especificacion.toUpperCase(), -1L, refaccion.getIdArticulo(), "HERRAMIENTA");
 									DaoFactory.getInstance().insert(sesion, especificaciones);
 								} // if
 								monitoreo.incrementar();
@@ -1032,9 +1032,9 @@ public class Transaccion extends IBaseTnx {
 							String nombre= new String(contenido.getBytes(ISO_8859_1), UTF_8);
 							if(costo > 0) {
                 costo= Numero.toRedondear(costo- (costo* ((iva< 1? iva* 100: iva)/ 100)));
-								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
+								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim().toUpperCase();
 								String codigo= new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
-								codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim();
+								codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim().toUpperCase();
 								TcManticArticulosDto servicio= this.toFindArticulo(sesion, codigo, 3L);
 								if(servicio!= null) {
 									servicio.setIdCategoria(null);
@@ -1149,7 +1149,7 @@ public class Transaccion extends IBaseTnx {
 									params.put("idArticulo", servicio.getIdArticulo());
 									params.put("nombre", "LINEA");
 									DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosEspecificacionesDto.class, params);
-									especificaciones= new TcManticArticulosEspecificacionesDto(JsfBase.getIdUsuario(), linea, -1L, servicio.getIdArticulo(), "LINEA");
+									especificaciones= new TcManticArticulosEspecificacionesDto(JsfBase.getIdUsuario(), linea.toUpperCase(), -1L, servicio.getIdArticulo(), "LINEA");
 									DaoFactory.getInstance().insert(sesion, especificaciones);
 								} // if
 								monitoreo.incrementar();

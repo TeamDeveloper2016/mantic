@@ -23,12 +23,13 @@
         'contenedorGrupos\\:rfc': {validaciones: 'requerido|rfc', mascara: 'fiscal', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:razonSocial': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         //'contenedorGrupos\\:limiteCredito': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:plazo': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},        
+        'contenedorGrupos\\:plazo': {validaciones: 'entero', mascara: 'libre', grupo: 'general'},        
         'contenedorGrupos\\:fechaEstimada': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},        
-        'contenedorGrupos\\:correo': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},        
+        'contenedorGrupos\\:correo': {validaciones: 'requerido|correo', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},        
         'contenedorGrupos\\:telefono': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},        
         'contenedorGrupos\\:clienteSinRegistro': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},        
-        'contenedorGrupos\\:contactoSinRegistro': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'}        
+        'contenedorGrupos\\:contactoSinRegistro': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:correoSinRegistro': {validaciones: 'correo', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'}        
       };		
 			
 			fieldsDialog= {
@@ -45,7 +46,7 @@
           <p:tabView id="contenedorGrupos">            
             <p:ajax event="tabChange" process="@this" oncomplete="janal.refresh(janal.tabView('contenedorGrupos'))"/>
             <p:tab title="General">
-              <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">								                
+              <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-7, janal-wid-93">
                 <p:outputLabel for="consecutivo" value="Consecutivo:" style="display: #{manticTallerAccion.agregar}"/>
                 <p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.servicio.consecutivo}" readonly="true" style="display: #{manticTallerAccion.agregar}"/>                    
                 <p:outputLabel for="herramienta" value="Herramienta:"/>
@@ -54,22 +55,18 @@
                 <p:inputText id="marca" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.servicio.marca}"/>                    
                 <p:outputLabel for="modelo" value="Modelo:"/>
                 <p:inputText id="modelo" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.servicio.modelo}"/>                    
-                <p:outputLabel for="caracteristicas" value="Caracteristicas:"/>
-                <p:inputTextarea id="caracteristicas" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.servicio.caracteristicas}"/>                    
-                <p:outputLabel for="reparacion" value="Reparación:"/>
-                <p:inputTextarea id="reparacion" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.servicio.reparacion}"/>                                    
-								<p:outputLabel for="ingreso" value="Tipo de ingreso:"/>
-								<p:selectOneMenu id="ingreso" value="#{manticTallerAccion.registroServicio.servicio.idGarantia}" styleClass="janal-wid-100-txt">
+								<p:outputLabel for="ingreso" value="Tipo ingreso:"/>
+                <p:selectOneMenu id="ingreso" value="#{manticTallerAccion.registroServicio.servicio.idGarantia}" placeholder="Tipo de ingreso" styleClass="janal-wid-100-txt">
 									<f:selectItem itemValue="1" itemLabel="GARANTIA"/>
 									<f:selectItem itemValue="2" itemLabel="REPARACIÓN"/>
 								</p:selectOneMenu>
-								<!--p:outputLabel for="idTipoMedioPago" value="Medio de pago:"/>
-								<p:selectOneMenu id="idTipoMedioPago" value="#{manticTallerAccion.registroServicio.servicio.idTipoMedioPago}" styleClass="janal-wid-100-txt">
-									<f:selectItems value="#{manticTallerAccion.attrs.mediosPagos}"/>
-								</p:selectOneMenu-->
-								<p:outputLabel for="fechaEstimada" value="Fecha estimada:"/>
-								<p:calendar id="fechaEstimada" inputStyleClass="janal-wid-94" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.servicio.fechaEstimada}" mode="popup" showOn="button" pattern="dd/MM/yyyy" converter="janal.convertidor.Calendario"/>
+								<p:outputLabel for="fechaEstimada" value="Fecha:"/>
+                <p:calendar id="fechaEstimada" placeholder="Fecha estimada de reparación" inputStyleClass="janal-wid-94" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.servicio.fechaEstimada}" mode="popup" showOn="button" pattern="dd/MM/yyyy" converter="janal.convertidor.Calendario"/>
               </p:panelGrid>
+              <p:outputLabel for="caracteristicas" value="Caracteristicas:"/>
+              <p:inputTextarea id="caracteristicas" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.servicio.caracteristicas}"/>                    
+              <p:outputLabel for="reparacion" value="Reparación:"/>
+              <p:inputTextarea id="reparacion" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.servicio.reparacion}"/>                                    
             </p:tab>
 						<p:tab title="Cliente">
               <p:panelGrid id="formularioCliente" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">								
@@ -80,8 +77,9 @@
 								<p:outputLabel for="clienteSinRegistro" value="Cliente:" rendered="#{!manticTallerAccion.attrs.clienteRegistrado}" styleClass="cliente-registrado" />
 								<p:inputText id="clienteSinRegistro" value="#{manticTallerAccion.registroServicio.servicio.cliente}" rendered="#{!manticTallerAccion.attrs.clienteRegistrado}" styleClass="janal-wid-100-txt cliente-registrado"/>
 								<p:outputLabel for="contactoSinRegistro" value="Telefono(s):" styleClass="cliente-registrado" rendered="#{!manticTallerAccion.attrs.clienteRegistrado}"/>
-								<p:inputText id="contactoSinRegistro" value="#{manticTallerAccion.registroServicio.servicio.telefonos}" rendered="#{!manticTallerAccion.attrs.clienteRegistrado}" styleClass="janal-wid-100-txt cliente-registrado"/>
-								
+                <p:inputText id="contactoSinRegistro" placeholder="ej. 4492090432,4491235412" value="#{manticTallerAccion.registroServicio.servicio.telefonos}" rendered="#{!manticTallerAccion.attrs.clienteRegistrado}" styleClass="janal-wid-100-txt cliente-registrado"/>
+								<p:outputLabel for="correoSinRegistro" value="Correo(s):" styleClass="cliente-registrado" rendered="#{!manticTallerAccion.attrs.clienteRegistrado}"/>
+                <p:inputText id="correoSinRegistro" placeholder="ej. daniel.davalos@hotmail.com,daniel.davalos@gmail.com" value="#{manticTallerAccion.registroServicio.servicio.correos}" rendered="#{!manticTallerAccion.attrs.clienteRegistrado}" styleClass="janal-wid-100-txt cliente-registrado"/>
 								<p:outputLabel for="cliente" value="Cliente:" rendered="#{manticTallerAccion.attrs.clienteRegistrado}"/>
         				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-wid-col-40" rendered="#{manticTallerAccion.attrs.clienteRegistrado}">
 									<p:selectOneMenu id="cliente" value="#{manticTallerAccion.registroServicio.clienteSeleccion}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">
@@ -104,15 +102,12 @@
                 <p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.cliente.rfc}" rendered="#{manticTallerAccion.attrs.clienteRegistrado}"/>
                 <p:outputLabel for="razonSocial" value="Razon social:" rendered="#{manticTallerAccion.attrs.clienteRegistrado}"/>
                 <p:inputText id="razonSocial" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.cliente.razonSocial}" rendered="#{manticTallerAccion.attrs.clienteRegistrado}"/>
-                <!--p:outputLabel for="limiteCredito" value="Limite de credito:"/>
-                <p:inputNumber id="limiteCredito" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticTallerAccion.registroServicio.cliente.limiteCredito}"/-->                    																	
                 <p:outputLabel for="plazo" value="Plazo de días:" rendered="#{manticTallerAccion.attrs.clienteRegistrado}"/>
                 <p:inputNumber id="plazo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticTallerAccion.registroServicio.cliente.plazoDias}" decimalPlaces="0" rendered="#{manticTallerAccion.attrs.clienteRegistrado}"/>
 								<p:outputLabel for="telefono" value="Teléfono:" rendered="#{manticTallerAccion.attrs.clienteRegistrado}"/>
-								<p:inputText id="telefono" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.contactoCliente.telefono}" rendered="#{manticTallerAccion.attrs.clienteRegistrado}"/>
+								<p:inputText id="telefono" placeholder="ej. 4492090432,4491235412" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.contactoCliente.telefono}" rendered="#{manticTallerAccion.attrs.clienteRegistrado}"/>
 								<p:outputLabel for="correo" value="Correo electrónico:" rendered="#{manticTallerAccion.attrs.clienteRegistrado}"/>
-								<p:inputText id="correo" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.contactoCliente.email}" rendered="#{manticTallerAccion.attrs.clienteRegistrado}"/>
-                
+								<p:inputText id="correo" placeholder="ej. daniel.davalos@hotmail.com,daniel.davalos@gmail.com" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.contactoCliente.email}" rendered="#{manticTallerAccion.attrs.clienteRegistrado}"/>
               </p:panelGrid>
             </p:tab>
             <p:tab title="Observaciones">

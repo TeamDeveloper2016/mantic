@@ -16,7 +16,7 @@ import org.hibernate.Session;
 
 public abstract class MotorBusquedaCatalogos {
 
-	private static final String VENTA= "VENTA";
+	public static final String VENTA= "VENTA";
 	protected Long idCliente;
 	
 	public MotorBusquedaCatalogos() {
@@ -206,7 +206,7 @@ public abstract class MotorBusquedaCatalogos {
 		return regresar;
 	} // toClientesTipoContacto
 	
-	public Entity toClienteDefault() throws Exception{
+	public Entity toClienteDefault() throws Exception {
 		Entity regresar          = null;
 		Map<String, Object>params= null;
 		try {

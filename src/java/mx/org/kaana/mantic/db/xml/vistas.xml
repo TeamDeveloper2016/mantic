@@ -7273,11 +7273,9 @@
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and tc_mantic_articulos.id_articulo_tipo in (1,2,3)
 				  and 
-				  (
-				    upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*'
+				  (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*'
 				  or
-				    tc_mantic_articulos.id_articulo= {idArticulo}
-				  )
+				    tc_mantic_articulos.id_articulo= {idArticulo})
 				order by
 				  tc_mantic_articulos.nombre			
 			</select>
@@ -7302,14 +7300,9 @@
 				inner join 
 					tc_mantic_articulos_tipos on tc_mantic_articulos.id_articulo_tipo = tc_mantic_articulos_tipos.id_articulo_tipo
 				where
-					tc_mantic_trabajos.id_empresa in ({sucursales})
+					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and tc_mantic_articulos.id_articulo_tipo in (2,3)
-				  and 
-					(
-				    upper(tc_mantic_trabajos.nombre) regexp '.*{codigo}.*'
-				   or
-					  tc_mantic_trabajos.id_trabajo= {idTrabajo}
-				  ) 
+				  and upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*'
 				order by
 				  tc_mantic_articulos.nombre			
 			</select>
@@ -7337,11 +7330,9 @@
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and tc_mantic_articulos.id_articulo_tipo in (1,2,3)
 				  and 
-				  (
-				    upper(tc_mantic_articulos.nombre) like '{codigo}%'
+				  (upper(tc_mantic_articulos.nombre) like '{codigo}%'
 				  or
-				    tc_mantic_articulos.id_articulo= {idArticulo}
-				  ) 			
+				    tc_mantic_articulos.id_articulo= {idArticulo}) 			
 				order by
 				  tc_mantic_articulos.nombre			
 			</select>
@@ -7370,13 +7361,11 @@
 				  and tc_mantic_articulos.id_articulo_tipo in (1,2,3)
 				  and tc_mantic_articulos.id_vigente= 1
 				  and 
-				  (
-			      (upper(tc_mantic_articulos_codigos.codigo) regexp '.*{codigo}.*' and tc_mantic_articulos_codigos.id_proveedor is null)
+				  ((upper(tc_mantic_articulos_codigos.codigo) regexp '.*{codigo}.*' and tc_mantic_articulos_codigos.id_proveedor is null)
 			     or
 			      (upper(tc_mantic_articulos_codigos.codigo) regexp '.*{codigo}.*' and tc_mantic_articulos_codigos.id_proveedor = {idProveedor})
 				   or
-				    tc_mantic_articulos.id_articulo= {idArticulo}
-				  ) 			
+				    tc_mantic_articulos.id_articulo= {idArticulo}) 			
 				order by
 				  propio
 			</select>			
@@ -7401,17 +7390,13 @@
 				inner join 
 					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
 				where
-					tc_mantic_trabajos.id_empresa in ({sucursales})
+					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and tc_mantic_articulos.id_articulo_tipo in (2,3)
 				  and tc_mantic_articulos.id_vigente= 1
 					and 
-					(
-				    upper(tc_mantic_trabajos.codigo) regexp '.*{codigo}.*'
+					(upper(tc_mantic_articulos_codigos.codigo) regexp '.*{codigo}.*'
 					 or
-						tc_mantic_trabajos.id_trabajo= {idTrabajo}
-				   or 
-				    tc_mantic_articulos.id_articulo= {idArticulo}
-				  ) 
+			    tc_mantic_articulos_codigos.id_articulo= {idArticulo}) 
 				order by
 				  propio
 			</select>			
@@ -7447,7 +7432,7 @@
 					tc_mantic_servicios_estatus.estatus_asociados
 				from 
 					tc_mantic_servicios
-				inner join 
+				left join 
 					tc_mantic_clientes on tc_mantic_servicios.id_cliente = tc_mantic_clientes.id_cliente
 				inner join 
 					tc_mantic_servicios_estatus on tc_mantic_servicios.id_servicio_estatus = tc_mantic_servicios_estatus.id_servicio_estatus

@@ -124,7 +124,7 @@ $.mask.rules = $.extend($.mask.rules, {
   'n': /[0-7A]/,
   'o': /[0-9a-zA-Z\u00C1\u00E1\u00C4\u00E4\u00C9\u00E9\u00CB\u00EB\u00CD\u00ED\u00CF\u00EF\u00D3\u00F3\u00D6\u00F6\u00DA\u00FA\u00DC\u00FC \u00F1\u00D1]/,
   'p': /[0-9a-zA-Z\u00C1\u00E1\u00C4\u00E4\u00C9\u00E9\u00CB\u00EB\u00CD\u00ED\u00CF\u00EF\u00D3\u00F3\u00D6\u00F6\u00DA\u00FA\u00DC\u00FC \u00F1\u00D1]/,
-	'q': /[0-9a-zA-Z.@_]/,
+	'q': /[0-9a-zA-Z.@_,]/,
 	'r': /[0-9,.-]/,
 	's': /[^\u0025\u0027]/,
 	't': /[0-9a-zA-Z_]/,

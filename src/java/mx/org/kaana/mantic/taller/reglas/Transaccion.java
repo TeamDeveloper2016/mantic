@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -20,6 +21,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.beans.Totales;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
+import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.db.dto.TcManticServiciosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticServiciosDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticServiciosDto;
@@ -63,21 +65,21 @@ public class Transaccion extends TransaccionFactura{
 				this.registroServicio.getServicio().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       switch (accion) {
         case AGREGAR:
-          regresar= procesarServicio(sesion);
+          regresar= this.procesarServicio(sesion);
           break;
         case MODIFICAR:
-          regresar= actualizarServicio(sesion);
+          regresar= this.actualizarServicio(sesion);
           break;
         case ELIMINAR:
-          regresar= eliminarServicio(sesion);
+          regresar= this.eliminarServicio(sesion);
           break;
 				case DEPURAR:
 					regresar= DaoFactory.getInstance().delete(sesion, this.dto)>= 1L;
 					break;
 				case JUSTIFICAR:
 					bitacora= (TcManticServiciosBitacoraDto) this.dto;
-					bitacora.setConsecutivo(this.toSiguiente(sesion, bitacora.getIdServicio()).getConsecutivo());
-					if(DaoFactory.getInstance().insert(sesion, bitacora)>= 1L){
+					bitacora.setConsecutivo("");
+					if(DaoFactory.getInstance().insert(sesion, bitacora)>= 1L) {
 						servicio= (TcManticServiciosDto) DaoFactory.getInstance().findById(sesion, TcManticServiciosDto.class, bitacora.getIdServicio());
 						servicio.setIdServicioEstatus(bitacora.getIdServicioEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, servicio)>= 1L;
@@ -99,35 +101,35 @@ public class Transaccion extends TransaccionFactura{
 	} // ejecutar	
 	
 	private boolean procesarServicio(Session sesion) throws Exception {
-		boolean regresar= false;
-		Long idCliente  = -1L;		
-		Long idServicio = -1L;		
+		boolean regresar     = false;
+		Long idCliente       = -1L;		
+		Long idServicio      = -1L;		
 		Siguiente consecutivo= null;
     try {
       this.messageError = "Error al registrar el servicio";
-			consecutivo= toSiguiente(sesion);
+			consecutivo= this.toSiguiente(sesion);
 			this.registroServicio.getServicio().setConsecutivo(consecutivo.getConsecutivo());
 			this.registroServicio.getServicio().setOrden(consecutivo.getOrden());
 			this.registroServicio.getServicio().setEjercicio(new Long(Fecha.getAnioActual()));
 			this.registroServicio.getServicio().setIdUsuario(JsfBase.getIdUsuario());
 			this.registroServicio.getServicio().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.registroServicio.getServicio().setIdServicioEstatus(ELABORADA);
-			this.registroServicio.getServicio().setIdCliente(this.registroServicio.getCliente().getIdCliente().equals(-1L) ? null : this.registroServicio.getCliente().getIdCliente());			
+			this.registroServicio.getServicio().setIdCliente(Objects.equals(MotorBusquedaCatalogos.VENTA, this.registroServicio.getCliente().getClave()) || this.registroServicio.getCliente().getIdCliente().equals(-1L) ? null : this.registroServicio.getCliente().getIdCliente());			
 			idServicio= DaoFactory.getInstance().insert(sesion, this.registroServicio.getServicio());
-			if(idServicio>= 1L){
-				if(DaoFactory.getInstance().insert(sesion, loadBitacora(sesion, idServicio, this.registroServicio.getServicio().getObservaciones()))>= 1L){
-					if(this.registroServicio.isRegistrarCliente()){
-						if(this.registroServicio.getCliente().getIdCliente()== null || this.registroServicio.getCliente().getIdCliente().equals(-1L) || this.registroServicio.getCliente().getIdCliente().equals(this.registroServicio.getIdClienteDefault())){
-							idCliente= registraCliente(sesion);
+			if(idServicio>= 1L) {
+				if(DaoFactory.getInstance().insert(sesion, this.loadBitacora(idServicio, this.registroServicio.getServicio().getObservaciones()))>= 1L) {
+					if(this.registroServicio.isRegistrarCliente()) {
+						if(this.registroServicio.getCliente().getIdCliente()== null || Objects.equals(MotorBusquedaCatalogos.VENTA, this.registroServicio.getCliente().getClave()) || this.registroServicio.getCliente().getIdCliente().equals(-1L)) {
+							idCliente= this.registraCliente(sesion);
 							this.registroServicio.getServicio().setIdCliente(idCliente);
 							regresar= DaoFactory.getInstance().update(sesion, this.registroServicio.getServicio())>= 1L;
 							sesion.flush();
-							registraClienteFacturama(sesion, idCliente);
+							this.registraClienteFacturama(sesion, idCliente);
 						} // if			
-						else{
-							registraContactos(sesion, this.registroServicio.getServicio().getIdCliente());
+            else {
+							this.registraContactos(sesion, this.registroServicio.getServicio().getIdCliente());
 							sesion.flush();
-							actualizarClienteFacturama(sesion, this.registroServicio.getServicio().getIdCliente());
+							this.actualizarClienteFacturama(sesion, this.registroServicio.getServicio().getIdCliente());
 							regresar= true;
 						} // else
 					} // if
@@ -143,7 +145,7 @@ public class Transaccion extends TransaccionFactura{
     return regresar;
   } // procesarCliente
 	
-	private void registraClienteFacturama(Session sesion, Long idCliente){		
+	private void registraClienteFacturama(Session sesion, Long idCliente) {		
 		CFDIGestor gestor     = null;
 		ClienteFactura cliente= null;
 		try {
@@ -157,28 +159,34 @@ public class Transaccion extends TransaccionFactura{
 		} // catch		
 	} // registraArticuloFacturama
 	
-	private TcManticServiciosBitacoraDto loadBitacora(Session sesion, Long idServicio, String observaciones) throws Exception{
-		return loadBitacora(sesion, ELABORADA, idServicio, observaciones);
+	private TcManticServiciosBitacoraDto loadBitacora(Long idServicio, String observaciones) throws Exception{
+		return loadBitacora(ELABORADA, idServicio, observaciones);
 	} // loadBitacora
 	
-	private TcManticServiciosBitacoraDto loadBitacora(Session sesion, Long idServicioEstatus, Long idServicio, String observaciones) throws Exception{
-		TcManticServiciosBitacoraDto regresar= new TcManticServiciosBitacoraDto();
-		regresar.setIdServicio(idServicio);
-		regresar.setIdServicioEstatus(idServicioEstatus);
-		regresar.setIdUsuario(JsfBase.getIdUsuario());
-		regresar.setSeguimiento(observaciones);
-		regresar.setConsecutivo(this.toSiguiente(sesion, idServicio).getConsecutivo());
+	private TcManticServiciosBitacoraDto loadBitacora(Long idServicioEstatus, Long idServicio, String observaciones) throws Exception {
+    TcManticServiciosBitacoraDto regresar= new TcManticServiciosBitacoraDto();
+    try {
+      regresar.setIdServicio(idServicio);
+      regresar.setIdServicioEstatus(idServicioEstatus);
+      regresar.setIdUsuario(JsfBase.getIdUsuario());
+      regresar.setSeguimiento(observaciones);
+      regresar.setConsecutivo(this.registroServicio.getServicio().getConsecutivo());
+      regresar.setImporte(this.registroServicio.getServicio().getTotal());
+    } // try
+    catch(Exception e) {
+      throw e;
+    } // catch
 		return regresar;
 	} // loadBitacora
 
-	private Long registraCliente(Session sesion) throws Exception{
+	private Long registraCliente(Session sesion) throws Exception {
 		this.registroServicio.getCliente().setLimiteCredito(0.0D);
 		this.registroServicio.getCliente().setIdTipoVenta(EBooleanos.SI.getIdBooleano());
 		this.registroServicio.getCliente().setIdCredito(EBooleanos.NO.getIdBooleano());
 		this.registroServicio.getCliente().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 		Long idCliente= DaoFactory.getInstance().insert(sesion, this.registroServicio.getCliente());
 		int count     =  0;
-		for(TrManticClienteTipoContactoDto contacto: loadContactos()){
+		for(TrManticClienteTipoContactoDto contacto: this.loadContactos()) {
 			contacto.setIdCliente(idCliente);
 			contacto.setIdUsuario(JsfBase.getIdUsuario());
 			contacto.setOrden(Long.valueOf(count++));
@@ -187,7 +195,7 @@ public class Transaccion extends TransaccionFactura{
 		return idCliente;
 	} // registraCliente
 	
-	private List<TrManticClienteTipoContactoDto> loadContactos(){
+	private List<TrManticClienteTipoContactoDto> loadContactos() {
 		List<TrManticClienteTipoContactoDto> regresar= new ArrayList<>();
 		TrManticClienteTipoContactoDto pivote= new TrManticClienteTipoContactoDto();
 		pivote.setIdTipoContacto(ETiposContactos.TELEFONO.getKey());
@@ -206,8 +214,8 @@ public class Transaccion extends TransaccionFactura{
 		boolean registrarCliente = false;
 		boolean actualizarCliente= false;
     try {
-			if(this.registroServicio.isRegistrarCliente()){
-				if(this.registroServicio.getCliente().getIdCliente()== null || this.registroServicio.getCliente().getIdCliente().equals(-1L) || this.registroServicio.getCliente().getIdCliente().equals(this.registroServicio.getIdClienteDefault())){
+			if(this.registroServicio.isRegistrarCliente()) {
+				if(this.registroServicio.getCliente().getIdCliente()== null || this.registroServicio.getCliente().getIdCliente().equals(-1L) || this.registroServicio.getCliente().getIdCliente().equals(this.registroServicio.getIdClienteDefault())) {
 					idCliente= registraCliente(sesion);
 					this.registroServicio.getServicio().setIdCliente(idCliente);				
 					registrarCliente= true;
@@ -222,11 +230,11 @@ public class Transaccion extends TransaccionFactura{
 			else
 				this.registroServicio.getServicio().setIdCliente(this.registroServicio.getIdClienteDefault());				
 			regresar= DaoFactory.getInstance().update(sesion, this.registroServicio.getServicio())>= 1L;      
-			if(registrarCliente){
+			if(registrarCliente) {
 				sesion.flush();
 				registraClienteFacturama(sesion, idCliente);
 			} // if
-			if(actualizarCliente){
+			if(actualizarCliente) {
 				sesion.flush();
 				actualizarClienteFacturama(sesion, idCliente);
 			} // if
@@ -237,7 +245,7 @@ public class Transaccion extends TransaccionFactura{
     return regresar;
   } // actualizarCliente
 
-	private void actualizarClienteFacturama(Session sesion, Long idCliente){		
+	private void actualizarClienteFacturama(Session sesion, Long idCliente) {		
 		CFDIGestor gestor     = null;
 		ClienteFactura cliente= null;
 		try {
@@ -262,11 +270,11 @@ public class Transaccion extends TransaccionFactura{
 		try {
 			contactos= toClientesTipoContacto(sesion, idCliente);
 			count= contactos.size();				
-			for(TrManticClienteTipoContactoDto contacto: loadContactos()){
+			for(TrManticClienteTipoContactoDto contacto: loadContactos()) {
 				exist= 0;
-				if(!contactos.isEmpty()){
-					for(ClienteTipoContacto tipoContacto: contactos){
-						if(tipoContacto.getIdTipoContacto().equals(contacto.getIdTipoContacto())){
+				if(!contactos.isEmpty()) {
+					for(ClienteTipoContacto tipoContacto: contactos) {
+						if(tipoContacto.getIdTipoContacto().equals(contacto.getIdTipoContacto())) {
 							exist++;
 							pivote= tipoContacto;
 							pivote.setValor(contacto.getValor());
@@ -274,7 +282,7 @@ public class Transaccion extends TransaccionFactura{
 						} // if
 					} // for
 				} // if					
-				if(exist== 0){
+				if(exist== 0) {
 					contacto.setIdCliente(idCliente);
 					contacto.setIdUsuario(JsfBase.getIdUsuario());
 					contacto.setOrden(Long.valueOf(count++));
@@ -377,7 +385,7 @@ public class Transaccion extends TransaccionFactura{
 				if(this.articulos.indexOf(item)< 0)
 					DaoFactory.getInstance().delete(sesion, item);
 			for (Articulo articulo: this.articulos) {
-				if(articulo.isValid()){
+				if(articulo.isValid()) {
 					TcManticServiciosDetallesDto item= articulo.toServicioDetalle();
 					item.setIdServicio(this.idServicio);					
 					item.setIdUsuario(JsfBase.getIdUsuario());

@@ -75,7 +75,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
   } // init
 
-	private void loadCollections(){
+	private void loadCollections() {
 		loadTiposMediosPagos();
 	} // loadCollections
 	

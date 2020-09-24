@@ -62,12 +62,12 @@ public class Filtro extends Comun implements Serializable {
     } // catch		
   } // init
 
-	private void loadTiposArticulos(){
+	private void loadTiposArticulos() {
 		List<UISelectItem> tiposArticulos= null;
 		StringBuilder tipos              = null;
 		tiposArticulos= new ArrayList<>();
 		tipos= new StringBuilder("");
-		for(ETipoArticulo tipoArticulo: ETipoArticulo.values()){
+		for(ETipoArticulo tipoArticulo: ETipoArticulo.values()) {
 			tiposArticulos.add(new UISelectItem(tipoArticulo.getIdTipoArticulo(), tipoArticulo.name()));
 			tipos.append(tipoArticulo.getIdTipoArticulo()).append(",");
 		} // for
@@ -107,7 +107,7 @@ public class Filtro extends Comun implements Serializable {
     } // finally		
   } // doLoad
 
-	private String toPrepare(){
+	private String toPrepare() {
 		StringBuilder regresar= null;
 		try {
 			regresar= new StringBuilder("tc_mantic_servicios_estatus.id_servicio_estatus in (");
@@ -160,7 +160,7 @@ public class Filtro extends Comun implements Serializable {
     } // catch		
   } // doEliminar
 	
-	private void loadEstatusServicios(){
+	private void loadEstatusServicios() {
 		List<UISelectItem> allEstatus= null;
 		Map<String, Object>params    = null;
 		List<String> campos          = null;
@@ -185,7 +185,7 @@ public class Filtro extends Comun implements Serializable {
 		} // finally
 	} // loadEstatusServicios
 	
-	public void doLoadEstatus(){
+	public void doLoadEstatus() {
 		Entity seleccionado          = null;
 		Map<String, Object>params    = null;
 		List<UISelectItem> allEstatus= null;
@@ -206,7 +206,7 @@ public class Filtro extends Comun implements Serializable {
 		} // finally
 	} // doLoadEstatus
 	
-	public void doActualizarEstatus(){
+	public void doActualizarEstatus() {
 		Transaccion transaccion              = null;
 		TcManticServiciosBitacoraDto bitacora= null;
 		Entity seleccionado                  = null;
@@ -257,7 +257,7 @@ public class Filtro extends Comun implements Serializable {
 			regresar= "/Paginas/Mantic/Taller/filtro";			
       seleccionado= ((Entity)this.attrs.get("seleccionado"));
 			params= new HashMap<>();
-			if(seleccionado.get("idVenta").getData()!= null && seleccionado.toLong("idVenta")> 0L){
+			if(seleccionado.get("idVenta").getData()!= null && seleccionado.toLong("idVenta")> 0L) {
 				params.put("idVenta", seleccionado.toLong("idVenta"));
 				ticketVenta= (TicketVenta) DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params);
 			} // if
@@ -307,7 +307,7 @@ public class Filtro extends Comun implements Serializable {
 			params=new HashMap<>();
 			params.put("idServicio", seleccionado.getKey());
 			articulosServicio= DaoFactory.getInstance().toEntitySet("VistaServiciosDetallesDto", "articulosDetalle", params);
-      for(Entity articuloServicio: articulosServicio){
+      for(Entity articuloServicio: articulosServicio) {
         Articulo item= new Articulo(
 				false,
 				venta.getTipoDeCambio(),
@@ -344,7 +344,7 @@ public class Filtro extends Comun implements Serializable {
     return articulos;
 	}
   
-  public void doEstatusCaja(Entity seleccionado, Long idVenta){
+  public void doEstatusCaja(Entity seleccionado, Long idVenta) {
 		Transaccion transaccion              = null;
 		TcManticServiciosBitacoraDto bitacora= null;
 		try {
