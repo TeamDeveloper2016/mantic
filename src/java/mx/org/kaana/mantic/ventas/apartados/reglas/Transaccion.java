@@ -21,6 +21,9 @@ import mx.org.kaana.mantic.db.dto.TcManticApartadosDto;
 import mx.org.kaana.mantic.db.dto.TcManticApartadosPagosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
+import mx.org.kaana.mantic.db.dto.TcManticVentasBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
+import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.caja.beans.VentaFinalizada;
@@ -120,10 +123,21 @@ public class Transaccion extends IBaseTnx {
             this.bitacora.setIdUsuario(JsfBase.getIdUsuario());
             regresar = insertarBitacora(sesion);
           } // if 
+          // CAMBIAR EL ESTATUS DE LA VENTA PARA QUE SE PUEDA FACTURAR
+          if(Objects.equals(apartado.getIdApartadoEstatus(), 3L)) {
+            TcManticVentasDto venta= (TcManticVentasDto)DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, apartado.getIdVenta());
+            venta.setIdVentaEstatus(EEstatusVentas.PAGADA.getIdEstatusVenta());
+            DaoFactory.getInstance().update(sesion, venta);
+		        TcManticVentasBitacoraDto bitVenta= new TcManticVentasBitacoraDto(-1L, "EL APARTADO FUE LIQUIDADO POR EL CLIENTE", JsfBase.getIdUsuario(), apartado.getIdVenta(), venta.getIdVentaEstatus(), venta.getCticket(), apartado.getImporte());
+		        DaoFactory.getInstance().insert(sesion, bitVenta);
+          } // if
 				} // if
 			} // if
 		} // try		
-		finally{
+    catch (Exception e) {
+      throw e;
+    } // catch		
+		finally {
 			Methods.clean(params);
 			this.messageError= "Error al registrar el pago";
 		} // finally
