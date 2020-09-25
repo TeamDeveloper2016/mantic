@@ -667,10 +667,15 @@
 				<p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogoClientes').hide();"/>
 			</div>
 		</p:dialog>
-		<p:dialog id="dialogoDescuentos" widgetVar="dlgDescuentos" header="Aplicar descuento" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="updateDescuentos();" width="50%" onHide="janal.desbloquear(); janal.restore(); janal.refresh(); janal.recover();">						
+    <p:dialog id="dialogoDescuentos" widgetVar="dlgDescuentos" header="Aplicar descuento" dynamic="true" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="updateDescuentos();" width="50%" onHide="janal.desbloquear(); janal.restore(); janal.refresh(); janal.recover();">
 			<h:form id="dialogosVenta" prependId="false">
 				<p:defaultCommand target="tipoDescuento"/>
-				<h:panelGrid id="panelPrincipalDescuentos" columns="1" styleClass="janal-wid-100 recalculo">
+        <h:panelGrid columns="1" styleClass="janal-wid-100 janal-column-center" style="display:#{empty manticVentasAccion.attrs.clienteSeleccion.especial or manticVentasAccion.attrs.clienteSeleccion.especial.toDouble() eq 0.0? 'none': ''}">
+          <p:outputLabel value="El cliente tiene un precio especial en todos los articulos, por lo tanto no se puede aplicar un descuento !" styleClass="janal-font-bold janal-color-red" style="display:#{empty manticVentasAccion.attrs.clienteSeleccion.especial or manticVentasAccion.attrs.clienteSeleccion.especial.toDouble() eq 0.0? 'none': ''}"/>
+          <p:spacer height="5px"/>
+          <p:outputLabel value="[ #{manticVentasAccion.attrs.clienteSeleccion.razonSocial} ]" styleClass="janal-font-bold janal-color-blue" style="display:#{empty manticVentasAccion.attrs.clienteSeleccion.especial or manticVentasAccion.attrs.clienteSeleccion.especial.toDouble() eq 0.0? 'none': ''}"/>
+        </h:panelGrid>  
+				<h:panelGrid id="panelPrincipalDescuentos" columns="1" styleClass="janal-wid-100 recalculo" style="display: #{empty manticVentasAccion.attrs.clienteSeleccion.especial or manticVentasAccion.attrs.clienteSeleccion.especial.toDouble() eq 0.0? '': 'none'}">
 					<p:outputLabel for="descuentousr" value="Usuario:"/>
 					<p:inputText id="descuentousr" value="#{manticVentasAccion.attrs.usuarioDescuento}" styleClass="janal-wid-100-txt event-keydown-enter janal-name-descuentopswrd"/>
 					<p:outputLabel for="descuentopswrd" value="Contraseña:"/>
@@ -686,11 +691,11 @@
 						<f:selectItem itemLabel="Global" itemValue="0"/>
 					</p:selectOneRadio>
 				</h:panelGrid>				
-				<h:panelGrid id="panelDescuentoEspecificacionIndividual" columns="2" styleClass="janal-wid-100 recalculo" columnClasses="janal-wid-95 janal-column-right, janal-wid-5">			
+				<h:panelGrid id="panelDescuentoEspecificacionIndividual" columns="2" styleClass="janal-wid-100 recalculo" columnClasses="janal-wid-95 janal-column-right, janal-wid-5" style="display: #{empty manticVentasAccion.attrs.clienteSeleccion.especial or manticVentasAccion.attrs.clienteSeleccion.especial.toDouble() eq 0.0? '': 'none'}">
 					<p:inputNumber id="descuentoIndividual" value="#{manticVentasAccion.attrs.descuentoIndividual}" inputStyleClass="janal-wid-100-txt janal-column-right event-keydown-enter janal-name-descuentoGlobal" rendered="#{manticVentasAccion.attrs.isIndividual}"/>
 					<p:outputLabel value="%" rendered="#{manticVentasAccion.attrs.isIndividual}"/>  
 				</h:panelGrid>				
-				<h:panelGrid id="panelDescuentoEspecificacionGlobal" columns="2" styleClass="janal-wid-100 recalculo" columnClasses="janal-wid-95 janal-column-right, janal-wid-5">					
+				<h:panelGrid id="panelDescuentoEspecificacionGlobal" columns="2" styleClass="janal-wid-100 recalculo" columnClasses="janal-wid-95 janal-column-right, janal-wid-5" style="display: #{empty manticVentasAccion.attrs.clienteSeleccion.especial or manticVentasAccion.attrs.clienteSeleccion.especial.toDouble() eq 0.0? '': 'none'}">
 					<p:inputNumber id="descuentoGlobal" value="#{manticVentasAccion.attrs.descuentoGlobal}" inputStyleClass="janal-wid-100-txt janal-column-right event-keydown-enter janal-name-descuentoAceptar" rendered="#{manticVentasAccion.attrs.isGlobal}"/>		
 					<p:outputLabel for="descuentoGlobal" value="%" rendered="#{manticVentasAccion.attrs.isGlobal}"/>
 				</h:panelGrid>				

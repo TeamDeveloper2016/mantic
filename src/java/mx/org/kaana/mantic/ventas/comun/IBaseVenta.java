@@ -490,9 +490,9 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
             if(original.getIdArticulo()!= null && !original.getIdArticulo().equals(-1L)) {
               motor   = new MotorBusqueda(original.getIdArticulo());
               articulo= motor.toArticulo();
-              costo = articulo.getMenudeo();              
-              venta = Numero.toRedondearSat(articulo.getPrecio()* (1+ (articulo.getIva()/ 100))* (1+ (cliente.toDouble("especial")/ 100)));
-              factor= Numero.toRedondearSat(venta* 100/ articulo.getPrecio()/ 100);
+              costo   = articulo.getMayoreo();
+              venta   = Numero.toRedondearSat(articulo.getPrecio()* (1+ (articulo.getIva()/ 100))* (1+ (cliente.toDouble("especial")/ 100)));
+              factor  = Numero.toRedondearSat(venta* 100/ articulo.getPrecio()/ 100);
               // SI AUN CUANDO EL PRECIO ESPECIAL ASIGNADO AL CLIENTE NO ES MENOR QUE EL PRECIO SUGERIDO SE RESPETA EL PRECIO MENOR DEL ARTICULO
               if(costo< venta) 
                 factor= 1+ Numero.toRedondearSat((costo- articulo.getPrecio())* 100/ articulo.getPrecio()/ 100);
@@ -741,6 +741,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
           cliente= clientes.get(clientes.indexOf(cliente));
         // SI EL CLIENTE TIENE UN PRECIO ESPECIAL ENTONCES DEBEMOS DE CONSIDERAR EL PRECIO BASE * POR EL PORCENTAJE ASIGNADO AL CLIENTE
         if(cliente!= null && !cliente.isEmpty() && cliente.toDouble("especial")!= 0D) {
+          precioVenta  = articulo.toDouble("mayoreo");
           Double venta = Numero.toRedondearSat(articulo.toDouble("precio")* (1+ (articulo.toDouble("iva")/ 100))* (1+ (cliente.toDouble("especial")/ 100)));
           Double factor= 1+ Numero.toRedondearSat(venta* 100/ articulo.toDouble("precio")/ 100);
           // SI AUN CUANDO EL PRECIO ESPECIAL ASIGNADO AL CLIENTE NO ES MENOR QUE EL PRECIO SUGERIDO SE RESPETA EL PRECIO MENOR DEL ARTICULO
