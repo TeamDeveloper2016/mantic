@@ -17,6 +17,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -43,6 +44,7 @@ public class Abono extends IBaseTicket implements Serializable {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());			
 			this.attrs.put("mostrarBanco", false);
+      this.attrs.put("resta", "$ 0.00");
 			if(JsfBase.isAdminEncuestaOrAdmin())
 				this.loadSucursales();							
 			this.doLoadCajas();
@@ -176,8 +178,8 @@ public class Abono extends IBaseTicket implements Serializable {
 				pago= new TcManticApartadosPagosDto();
 				pago.setIdApartado(Long.valueOf(this.attrs.get("idApartado").toString()));
 				pago.setIdUsuario(JsfBase.getIdUsuario());
-				pago.setObservaciones(this.attrs.get("observaciones").toString());
-				pago.setPago(Double.valueOf(this.attrs.get("pago").toString()));
+				pago.setObservaciones((String)this.attrs.get("observaciones"));
+				pago.setPago((Double)this.attrs.get("pago"));
 				pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
 				tipoPago= pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
 				transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("caja").toString()), Long.valueOf(this.attrs.get("idEmpresa").toString()), tipoPago ? -1 : Long.valueOf(this.attrs.get("banco").toString()), tipoPago ? "" : this.attrs.get("referencia").toString());
@@ -207,7 +209,7 @@ public class Abono extends IBaseTicket implements Serializable {
 		Double saldo    = 0D;
 		Entity apartado = null;
 		try {
-			pago= Double.valueOf(this.attrs.get("pago").toString());
+			pago= (Double)this.attrs.get("pago");
 			if(pago > 0D) {
 				apartado= (Entity) this.attrs.get("apartado");
 				saldo= Double.valueOf(apartado.toString("saldo"));
@@ -256,7 +258,15 @@ public class Abono extends IBaseTicket implements Serializable {
   public void doLoadTopePago() {
     Entity seleccionado= (Entity)this.attrs.get("apartado");
     this.attrs.put("pago", seleccionado.toDouble("saldo"));
+    this.attrs.put("resta", Numero.formatear(Numero.MONEDA_SAT_DECIMALES, seleccionado.toDouble("saldo")));
     // UIBackingUtilities.execute("janal.renovate('pago_input', {validaciones: 'requerido|flotante|mayor({\"cuanto\":0}|menor-igual({\"cuanto\":"+ seleccionado.toDouble("saldo")+"})', mascara: 'libre'});");
   } // doLoadTopePago
+ 
+  public void doCalculatePago() {
+     Entity apartado= (Entity) this.attrs.get("apartado");   
+     Double saldo   = Double.valueOf(apartado.toString("saldo"));
+     Double pago    = (Double)this.attrs.get("pago");
+     this.attrs.put("resta", Numero.formatear(Numero.MONEDA_SAT_DECIMALES, Numero.toRedondearSat(saldo- pago)));
+  }
   
 }

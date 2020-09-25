@@ -152,10 +152,14 @@
 							<h:outputText value="$#{item.limite}"/>
 						</p:column>   
 					</p:selectOneMenu>
-          <p:outputLabel value="Saldo:" styleClass="janal-color-red"/>
-          <p:inputText value="#{manticVentasApartadosAbono.doMonedaSat(manticVentasApartadosAbono.attrs.pago)}" styleClass="janal-wid-100-txt janal-column-right janal-color-red" readonly="true"/>
+          <p:outputLabel value="Saldo:" styleClass="janal-color-blue"/>
+          <p:inputText value="#{manticVentasApartadosAbono.doMonedaSat(manticVentasApartadosAbono.attrs.pago)}" styleClass="janal-wid-100-txt janal-column-right janal-color-blue" readonly="true"/>
 					<p:outputLabel for="pago" value="Monto: $"/>
-					<p:inputNumber id="pago" value="#{manticVentasApartadosAbono.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right"/>
+          <p:inputNumber id="pago" value="#{manticVentasApartadosAbono.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right" converter="javax.faces.Double">
+            <p:ajax event="blur" process="@this" update="resta" listener="#{manticVentasApartadosAbono.doCalculatePago()}"/>
+          </p:inputNumber>
+          <p:outputLabel value="Resta:" styleClass="janal-color-red"/>
+          <p:inputText id="resta" value="#{manticVentasApartadosAbono.attrs.resta}" styleClass="janal-wid-100-txt janal-column-right janal-color-red" readonly="true"/>
 					<p:outputLabel for="tipoPago" value="Tipo de pago:"/>
 					<p:selectOneMenu id="tipoPago" value="#{manticVentasApartadosAbono.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
 						<p:ajax event="change" process="@this pago" listener="#{manticVentasApartadosAbono.doValidaTipoPago}" update="panelDialog lblBanco banco lblReferencia referencia" oncomplete="janal.refresh();"/>
