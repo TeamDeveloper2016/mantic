@@ -275,7 +275,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 		} // finally
 	}
 	
-	public void doLoadEstatus() {
+	public void doSendMail() {
 		Entity seleccionado               = null;
 		Map<String, Object>params         = null;
 		List<UISelectItem> allEstatus     = null;
@@ -313,7 +313,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 		finally {
 			Methods.clean(params);
 		} // finally
-	} // doLoadEstatus
+	} // doSendMail
 	
 	public void doActualizarEstatus() {
 		Transaccion transaccion              = null;

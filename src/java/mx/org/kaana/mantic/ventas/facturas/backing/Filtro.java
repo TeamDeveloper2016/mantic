@@ -373,7 +373,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 		JsfBase.setFlashAttribute("accion", EAccion.GENERAR);		
 		JsfBase.setFlashAttribute("retorno", "filtro");		
 		return "sincronizar".concat(Constantes.REDIRECIONAR);
-  } // doAccion  
+  } // doSincronizar  
 
 	public String doImportar() {
 		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Ventas/Facturas/filtro");		

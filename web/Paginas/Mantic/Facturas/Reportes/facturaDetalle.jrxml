@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="facturaDetalle" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.mantic.facturas.scriplet.FacturaDetalle" uuid="bb4277c3-ed80-4c79-b7ab-b51954ca7552">
 	<property name="ireport.zoom" value="3.0"/>
-	<property name="ireport.x" value="1673"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.x" value="885"/>
+	<property name="ireport.y" value="814"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -737,11 +737,18 @@
 				<textFieldExpression><![CDATA["Metodo de pago:   "+$F{METODO_PAGO}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" x="0" y="222" width="752" height="15" uuid="a7432f65-7b2d-45aa-a345-63db9f1837ba"/>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="222" width="349" height="15" uuid="a7432f65-7b2d-45aa-a345-63db9f1837ba"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Este documento es una representación impresa de un CFDI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="351" y="222" width="400" height="15" uuid="ed35f02a-a036-4cec-acfd-b43445629f61"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SOLUCIONES WEB ... IMOX ...   Contacto: 449-209-05-86, imox@gmail.com]]></text>
 			</staticText>
 		</band>
 	</summary>
