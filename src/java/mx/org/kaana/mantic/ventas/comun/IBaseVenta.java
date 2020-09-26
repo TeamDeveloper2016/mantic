@@ -484,18 +484,22 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			if(!this.getAdminOrden().getArticulos().isEmpty()) {
         if(cliente!= null && !cliente.isEmpty() && cliente.toDouble("especial")!= 0D) {
           Double costo;
+          Double mayoreo;
           Double venta;
           Double factor;
           for(Articulo original: getAdminOrden().getArticulos()) {
             if(original.getIdArticulo()!= null && !original.getIdArticulo().equals(-1L)) {
               motor   = new MotorBusqueda(original.getIdArticulo());
               articulo= motor.toArticulo();
-              costo   = articulo.getMayoreo();
+              mayoreo = articulo.getMayoreo();
+              costo   = (Double)articulo.toValue(this.getPrecio());
               venta   = Numero.toRedondearSat(articulo.getPrecio()* (1+ (articulo.getIva()/ 100))* (1+ (cliente.toDouble("especial")/ 100)));
               factor  = Numero.toRedondearSat(venta* 100/ articulo.getPrecio()/ 100);
               // SI AUN CUANDO EL PRECIO ESPECIAL ASIGNADO AL CLIENTE NO ES MENOR QUE EL PRECIO SUGERIDO SE RESPETA EL PRECIO MENOR DEL ARTICULO
-              if(costo< venta) 
-                factor= 1+ Numero.toRedondearSat((costo- articulo.getPrecio())* 100/ articulo.getPrecio()/ 100);
+              if(mayoreo< venta) {
+                costo = mayoreo;
+                factor= Numero.toRedondearSat(costo* 100/ articulo.getPrecio()/ 100);
+              } // if  
               else
                 costo= venta;
               ((ArticuloVenta)original).setDescripcionPrecio("ESPECIAL");
@@ -741,12 +745,14 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
           cliente= clientes.get(clientes.indexOf(cliente));
         // SI EL CLIENTE TIENE UN PRECIO ESPECIAL ENTONCES DEBEMOS DE CONSIDERAR EL PRECIO BASE * POR EL PORCENTAJE ASIGNADO AL CLIENTE
         if(cliente!= null && !cliente.isEmpty() && cliente.toDouble("especial")!= 0D) {
-          precioVenta  = articulo.toDouble("mayoreo");
-          Double venta = Numero.toRedondearSat(articulo.toDouble("precio")* (1+ (articulo.toDouble("iva")/ 100))* (1+ (cliente.toDouble("especial")/ 100)));
-          Double factor= 1+ Numero.toRedondearSat(venta* 100/ articulo.toDouble("precio")/ 100);
+          Double mayoreo= articulo.toDouble("mayoreo");
+          Double venta  = Numero.toRedondearSat(articulo.toDouble("precio")* (1+ (articulo.toDouble("iva")/ 100))* (1+ (cliente.toDouble("especial")/ 100)));
+          Double factor = Numero.toRedondearSat(venta* 100/ articulo.toDouble("precio")/ 100);
           // SI AUN CUANDO EL PRECIO ESPECIAL ASIGNADO AL CLIENTE NO ES MENOR QUE EL PRECIO SUGERIDO SE RESPETA EL PRECIO MENOR DEL ARTICULO
-          if(precioVenta< venta) 
-            factor     = 1+ Numero.toRedondearSat((precioVenta- articulo.toDouble("precio"))* 100/ articulo.toDouble("precio")/ 100);
+          if(mayoreo< venta) {
+            precioVenta= mayoreo;
+            factor     = Numero.toRedondearSat(precioVenta* 100/ articulo.toDouble("precio")/ 100);
+          } // if  
           else
             precioVenta= venta;
 				  temporal.setDescripcionPrecio("ESPECIAL");

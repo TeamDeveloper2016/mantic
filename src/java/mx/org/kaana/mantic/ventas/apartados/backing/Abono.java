@@ -17,6 +17,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -41,6 +42,7 @@ public class Abono extends IBaseTicket implements Serializable {
       this.attrs.put("sortOrder", " order by	registro desc");
       //this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente"));     
       this.attrs.put("idApartado", JsfBase.getFlashAttribute("idApartado"));     
+      this.attrs.put("regreso", JsfBase.getFlashAttribute("regreso"));     
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());			
 			this.attrs.put("mostrarBanco", false);
@@ -267,6 +269,10 @@ public class Abono extends IBaseTicket implements Serializable {
      Double saldo   = Double.valueOf(apartado.toString("saldo"));
      Double pago    = (Double)this.attrs.get("pago");
      this.attrs.put("resta", Numero.formatear(Numero.MONEDA_SAT_DECIMALES, Numero.toRedondearSat(saldo- pago)));
+  }
+ 
+  public String doBackCommonPage() {
+    return !Cadena.isVacio(this.attrs.get("regreso"))? null: "../Caja/accion".concat(Constantes.REDIRECIONAR);
   }
   
 }

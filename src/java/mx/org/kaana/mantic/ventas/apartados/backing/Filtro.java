@@ -55,7 +55,6 @@ public class Filtro extends IBaseTicket implements Serializable {
   @Override
   protected void init() {
     try {
-			this.attrs.put("sortOrder", "order by	registro desc");
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
@@ -78,6 +77,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 	  Map<String, Object> params= null;	
     try {
   	  params = this.toPrepare();	
+			params.put("sortOrder", "order by	registro desc");
       columns= new ArrayList<>();
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));      
       columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));   
@@ -129,7 +129,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		return regresar;		
 	}
 	
-	private void loadSucursales(){
+	private void loadSucursales() {
 		List<UISelectEntity> sucursales= null;
 		Map<String, Object>params      = null;
 		List<Columna> columns          = null;
@@ -148,12 +148,13 @@ public class Filtro extends IBaseTicket implements Serializable {
 		} // catch		
 	} // loadSucursales
 	
-	public String doPago(){
+	public String doPago() {
 		String regresar    = null;
 		Entity seleccionado= null;
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");
 			JsfBase.setFlashAttribute("idApartado", seleccionado.getKey());
+			JsfBase.setFlashAttribute("regreso", "filtro");
 			regresar= "abono".concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
@@ -163,7 +164,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		return regresar;
 	} // doPago
   
-  public void doLoadEstatus(String estatus){
+  public void doLoadEstatus(String estatus) {
 		Map<String, Object>params      = null;
     List<UISelectEntity> allEstatus= null;
 		List<Columna> columns          = null;
@@ -178,7 +179,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 			this.attrs.put("allEstatus", allEstatus);
       this.attrs.put("estatus", allEstatus.get(0));
       this.attrs.put("mostrarCantidades", (((UISelectEntity)this.attrs.get("estatus")).getKey().equals(4L)));
-      if((boolean)this.attrs.get("mostrarCantidades")){
+      if((boolean)this.attrs.get("mostrarCantidades")) {
         this.apartado= (TcManticApartadosDto) DaoFactory.getInstance().findById(TcManticApartadosDto.class, seleccionado.getKey());
         this.attrs.put("porcentajeRetenido", 10D);
         this.attrs.put("cantidadRetenida",((this.apartado.getAbonado()*10D)/100D));
@@ -224,7 +225,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		} // finally
 	}	// doActualizaEstatus
   
-  public void doActiveTexts(){
+  public void doActiveTexts() {
 		boolean activar= true;
 		try {
 			activar= (boolean) this.attrs.get("devolucion");		
@@ -236,7 +237,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		} // catch		
 	} // doActiveTexts
   
-  public void doUpdatePorcentaje(){
+  public void doUpdatePorcentaje() {
 		try {
       this.attrs.put("cantidadRetenida",((this.apartado.getAbonado()*Double.valueOf(this.attrs.get("porcentajeRetenido").toString()))/100D));
       this.attrs.put("importeDevuelto",(this.apartado.getAbonado()-Double.valueOf(this.attrs.get("cantidadRetenida").toString())));
@@ -247,7 +248,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		} // catch		
 	} // doUpdatePorcentaje
   
-  public void doUpdateCantidad(){
+  public void doUpdateCantidad() {
 		try {
       this.attrs.put("porcentajeRetenido", (((Double.valueOf(this.attrs.get("cantidadRetenida").toString())*100D)/this.apartado.getAbonado())));
       this.attrs.put("importeDevuelto",(this.apartado.getAbonado()-Double.valueOf(this.attrs.get("cantidadRetenida").toString())));
@@ -258,7 +259,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		} // catch		
 	} // doUpdateCanticad
   
-  private void loadTiposPagos(){
+  private void loadTiposPagos() {
 		List<UISelectEntity> tiposPagos= null;
 		Map<String, Object>params      = null;
 		try {
@@ -273,7 +274,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		} // catch		
 	} // loadTiposPagos
   
-  public void doValidaTipoPago(){
+  public void doValidaTipoPago() {
 		Long tipoPago= -1L;
 		try {
 			tipoPago= Long.valueOf(this.attrs.get("tipoPago").toString());
@@ -285,7 +286,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		} // catch		
 	} // doValidaTipoPago
   
-  private void loadBancos(){
+  private void loadBancos() {
 		List<UISelectEntity> bancos= null;
 		Map<String, Object> params = null;
 		List<Columna> campos       = null;
@@ -307,7 +308,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		} // finally
 	} // loadBancos
   
-  	public void doLoadCajas(){
+  	public void doLoadCajas() {
 		List<UISelectEntity> cajas= null;
 		Map<String, Object>params = null;
 		List<Columna> columns     = null;
@@ -337,7 +338,7 @@ public class Filtro extends IBaseTicket implements Serializable {
       seleccionado = (Entity)this.attrs.get("seleccionado");
       params.put("sortOrder", "order by	registro desc");
       reporteSeleccion= EReportes.valueOf(nombre);
-      if(reporteSeleccion.equals(EReportes.APARTADO_DETALLE)){
+      if(reporteSeleccion.equals(EReportes.APARTADO_DETALLE)) {
         params.put("idApartado", seleccionado.toLong("idKey"));
         comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), -1L, -1L , seleccionado.toLong("idCliente"));
       }

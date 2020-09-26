@@ -188,7 +188,7 @@
 				<p:inputTextarea id="observaciones" value="#{manticVentasApartadosAbono.attrs.observaciones}" styleClass="janal-wid-100-txt"/>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPago pago observaciones banco referencia idEmpresa caja" update="tabla panelDetalle" actionListener="#{manticVentasApartadosAbono.doRegistrarPago}" onstart="return checkRegistrarPago();" oncomplete="PF('dlgPago').hide(); janal.desbloquear(); jsTicket.clicTicket();"/>
+          <p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPago pago observaciones banco referencia idEmpresa caja" update="tabla panelDetalle" actionListener="#{manticVentasApartadosAbono.doRegistrarPago}" action="#{manticVentasApartadosAbono.doBackCommonPage}" onstart="return checkRegistrarPago();" oncomplete="PF('dlgPago').hide(); janal.desbloquear(); jsTicket.clicTicket();"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgPago').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
