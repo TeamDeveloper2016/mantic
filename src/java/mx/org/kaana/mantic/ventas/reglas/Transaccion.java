@@ -140,7 +140,11 @@ public class Transaccion extends TransaccionFactura {
 	public void setAplicar(boolean aplicar) {
 		this.aplicar = aplicar;
 	}	
-	
+
+  public List<Articulo> getArticulos() {
+    return articulos;
+  }
+  
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar          = false;

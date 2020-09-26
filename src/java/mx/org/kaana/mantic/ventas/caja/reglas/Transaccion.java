@@ -102,11 +102,11 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	} // Transaccion
 	
 	public Transaccion(VentaFinalizada ventaFinalizada) {
-		this(ventaFinalizada, null);
+		this(ventaFinalizada, ventaFinalizada.getTicketVenta());
 	} // Transaccion
 
 	public Transaccion(VentaFinalizada ventaFinalizada, IBaseDto dto) {
-		super(ventaFinalizada.getTicketVenta());
+		super(ventaFinalizada.getTicketVenta(), ventaFinalizada.getArticulos());
 		this.ventaFinalizada = ventaFinalizada;		
 	}	// Transaccion	
 
@@ -117,6 +117,13 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	public Transaccion(Long idVenta, Long idCliente, String observaciones) {
 		super(new TicketVenta());
 		this.idVenta      = idVenta;
+		this.idCliente    = idCliente;		
+		this.observaciones= observaciones;
+	} // Transaccion	
+
+	public Transaccion(VentaFinalizada ventaFinalizada, Long idCliente, String observaciones) {
+		super(ventaFinalizada.getTicketVenta(), ventaFinalizada.getArticulos());
+		this.idVenta      = ventaFinalizada.getTicketVenta().getIdVenta();
 		this.idCliente    = idCliente;		
 		this.observaciones= observaciones;
 	} // Transaccion	
@@ -161,7 +168,21 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 					regresar= this.procesaCotizacion(sesion);					
 					break;
 				case ASIGNAR:
+          if(this.getOrden().getIdBanco()<= 0L)
+            this.getOrden().setIdBanco(null);
+          if(this.getOrden().getIdTipoMedioPago()<= 0L)
+            this.getOrden().setIdTipoMedioPago(null);
+          if(this.getOrden().getIdTipoPago()<= 0L)
+            this.getOrden().setIdTipoPago(null);
 					regresar= this.actualizarClienteVenta(sesion);
+					this.toFillArticulos(sesion, this.getArticulos());
+					this.validarCabecera(sesion);
+          if(this.getOrden().getIdBanco()== null)
+            this.getOrden().setIdBanco(-1L);
+          if(this.getOrden().getIdTipoMedioPago()== null)
+            this.getOrden().setIdTipoMedioPago(-1L);
+          if(this.getOrden().getIdTipoPago()== null)
+            this.getOrden().setIdTipoPago(-1L);
 					break;
 				case AGREGAR:
 					idEstatusVenta= EEstatusVentas.ABIERTA.getIdEstatusVenta();
@@ -205,18 +226,16 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		return regresar;
 	} // ejecutar
 	
-	private boolean actualizarClienteVenta(Session sesion) throws Exception{
-		boolean regresar         = false;
-		Map<String, Object>params= null;
+	private boolean actualizarClienteVenta(Session sesion) throws Exception {
+		boolean regresar= false;
 		try {
-			params= new HashMap<>();
-			params.put("idCliente", this.idCliente);
-			params.put("observaciones", this.observaciones);
-			regresar= DaoFactory.getInstance().update(sesion, TcManticVentasDto.class, this.idVenta, params)>= 1L;
+      this.getOrden().setIdCliente(this.idCliente);
+      this.getOrden().setObservaciones(observaciones);
+			regresar= DaoFactory.getInstance().update(sesion, this.getOrden())>= 1L;
 		} // try		
-		finally {
-			Methods.clean(params);
-		} // finally
+		catch(Exception e) {
+			throw e;
+		} // try
 		return regresar;
 	} // actualizarClienteVenta
 	
@@ -261,16 +280,16 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		return regresar;
 	} // toSiguienteCotizacion
 	
-	private boolean procesarVenta(Session sesion) throws Exception{
+	private boolean procesarVenta(Session sesion) throws Exception {
 		boolean regresar= false;		
-		regresar= pagarVenta(sesion, this.ventaFinalizada.getApartado() ? EEstatusVentas.APARTADOS.getIdEstatusVenta() : (this.ventaFinalizada.isCredito() ? EEstatusVentas.CREDITO.getIdEstatusVenta() : EEstatusVentas.PAGADA.getIdEstatusVenta()));
+		regresar= this.pagarVenta(sesion, this.ventaFinalizada.getApartado() ? EEstatusVentas.APARTADOS.getIdEstatusVenta() : (this.ventaFinalizada.isCredito() ? EEstatusVentas.CREDITO.getIdEstatusVenta() : EEstatusVentas.PAGADA.getIdEstatusVenta()));
 		if(regresar) {
 			if(this.ventaFinalizada.isFacturar() && !this.ventaFinalizada.getApartado())
-				regresar= registrarFactura(sesion);
-			if(verificarCierreCaja(sesion)) {
-				if(registrarPagos(sesion)) {					
+				regresar= this.registrarFactura(sesion);
+			if(this.verificarCierreCaja(sesion)) {
+				if(this.registrarPagos(sesion)) {					
 					if(!this.ventaFinalizada.getTipoCuenta().equals(EEstatusVentas.APARTADOS.name()))
-						regresar= alterarStockArticulos(sesion);
+						regresar= this.alterarStockArticulos(sesion);
 				} // if
 			} // if
 			if(this.ventaFinalizada.getApartado())
@@ -553,7 +572,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		return regresar;
 	}	// toSiguienteApartado
 	
-	private boolean pagarVenta(Session sesion, Long idEstatusVenta) throws Exception{
+	private boolean pagarVenta(Session sesion, Long idEstatusVenta) throws Exception {
 		boolean regresar         = false;
 		Map<String, Object>params= null;
 		Siguiente consecutivo    = null;
@@ -587,8 +606,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 					params= new HashMap<>();
 					params.put("idVenta", getOrden().getIdVenta());
 					regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticVentasDetallesDto.class, params)>= 1;
-					toFillArticulos(sesion, this.ventaFinalizada.getArticulos());
-					validarCabecera(sesion);
+					this.toFillArticulos(sesion, this.ventaFinalizada.getArticulos());
+					this.validarCabecera(sesion);
 				} // if
 			} // if			
 		} // try		
@@ -599,7 +618,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		return regresar;
 	} // pagarVenta
 	
-	private void validarCabecera(Session sesion) throws Exception{
+	private void validarCabecera(Session sesion) throws Exception {
 		Double diferencia= 0D;
 		try {
 			if(getOrden().getTotal()> this.totalDetalle)
@@ -607,7 +626,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			else if(this.totalDetalle > getOrden().getTotal())
 				diferencia= this.totalDetalle - getOrden().getTotal();			
 			if(diferencia >= 1D)
-				actualizarCabecera(sesion, diferencia);
+				this.actualizarCabecera(sesion, diferencia);
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -650,12 +669,14 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	} // actualizarCabecera
 	
 	@Override
-	protected void toFillArticulos(Session sesion, List<Articulo> detalleArt) throws Exception {
+	protected void toFillArticulos(Session sesion, List<Articulo> detalles) throws Exception {
 		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticVentasDetallesDto", "detalle", getOrden().toMap());
 		for (Articulo item: todos) 
-			if(detalleArt.indexOf(item)< 0)
-				DaoFactory.getInstance().delete(sesion, item);
-		for (Articulo articulo: detalleArt) {
+			if(detalles.indexOf(item)< 0) {
+        TcManticVentasDetallesDto erase= item.toVentaDetalle();
+				DaoFactory.getInstance().delete(sesion, erase);
+      } // if  
+		for (Articulo articulo: detalles) {
 			if(articulo.isValid()) {
 				TcManticVentasDetallesDto item= articulo.toVentaDetalle();
 				item.setIdVenta(getOrden().getIdVenta());
@@ -796,7 +817,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		pago= this.toPagoEfectivo();
 		if(pago!= null)
 			regresar.add(pago);			
-		pago= this.toPagoTarjeta();
+		pago= this.toPagoTarjetaCredito();
 		if(pago!= null)
 			regresar.add(pago);
 		pago= this.toPagoTarjetaDebito();
@@ -845,7 +866,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		return regresar;
 	} // toPagoTCredito
 	
-	private TrManticVentaMedioPagoDto toPagoTarjeta() {
+	private TrManticVentaMedioPagoDto toPagoTarjetaCredito() {
 		TrManticVentaMedioPagoDto regresar= null;		
 		if(this.ventaFinalizada.getTotales().getCredito()> 0D) {
 			regresar= new TrManticVentaMedioPagoDto();
@@ -971,12 +992,12 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	
 	private TcManticApartadosPagosDto toPagoTarjetaDebitoApartado(Long idApartado) {
 		TcManticApartadosPagosDto regresar= null;		
-		if(this.ventaFinalizada.getTotales().getCredito()> 0D) {
+		if(this.ventaFinalizada.getTotales().getDebito()> 0D) {
 			regresar= new TcManticApartadosPagosDto();
 			regresar.setIdTipoMedioPago(ETipoMediosPago.TARJETA_DEBITO.getIdTipoMedioPago());
 			regresar.setIdUsuario(JsfBase.getIdUsuario());
 			regresar.setIdApartado(idApartado);
-			regresar.setPago(this.ventaFinalizada.getTotales().getCredito());				
+			regresar.setPago(this.ventaFinalizada.getTotales().getDebito());				
 			regresar.setIdCierre(this.idCierreVigente);
 		} // if		
 		return regresar;

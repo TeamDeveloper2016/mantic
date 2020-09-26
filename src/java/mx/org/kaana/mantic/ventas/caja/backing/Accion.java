@@ -261,7 +261,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.doActivarCliente();
 			this.loadArt();
 			this.doLoadSaldos(-1L);
-      if(Long.valueOf(this.attrs.get("idVenta").toString()) != -1L){
+      if(Long.valueOf(this.attrs.get("idVenta").toString()) != -1L) {
         this.attrs.put("ticketAbierto",new UISelectEntity(new Entity(Long.valueOf(this.attrs.get("idVenta").toString()))));
         this.doAsignaTicketAbierto();
 				this.attrs.put("clienteAsignado", true);
@@ -279,12 +279,12 @@ public class Accion extends IBaseVenta implements Serializable {
 		RequestContext rc= null;
 		try {
 			rc= RequestContext.getCurrentInstance();
-			if(!this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid()){
+			if(!this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid()) {
 				((TicketVenta)this.getAdminOrden().getOrden()).setObservaciones(!Cadena.isVacio(this.attrs.get("observaciones")) ? ((String)this.attrs.get("observaciones")).toUpperCase() : "");
 				rc.execute("jsCaja.validaAccionCaptura();");
 			} // if				
 			else {
-				if(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta()> 0L){
+				if(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta()> 0L) {
 					transaccion= new mx.org.kaana.mantic.ventas.reglas.Transaccion((TicketVenta)this.getAdminOrden().getOrden());
 					transaccion.ejecutar(EAccion.ELIMINAR);
 				} // if
@@ -307,12 +307,12 @@ public class Accion extends IBaseVenta implements Serializable {
 			params.put(Constantes.SQL_CONDICION, toCondicionEstatus(true));
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));			
 			fechas= DaoFactory.getInstance().toEntitySet("VistaVentasDto", "fechasTicketsAbiertos", params);			
-			if(init){
+			if(init) {
 				this.attrs.put("fechaInicial", fechas.isEmpty() ? new Date(Calendar.getInstance().getTimeInMillis()) : new Date(fechas.get(0).toTimestamp("registro").getTime()));			
 				this.attrs.put("fecha", new Date(Calendar.getInstance().getTimeInMillis()));			
 			} // if
-			if(!fechas.isEmpty()){
-				for(Entity day: fechas){
+			if(!fechas.isEmpty()) {
+				for(Entity day: fechas) {
 					days= days.concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, day.toTimestamp("registro"))).concat(",");
 				} // for				
 			} // if
@@ -323,7 +323,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 	} // toRangoFechasTickets
 	
-	private void loadArt(){
+	private void loadArt() {
 		Entity art= null;
 		try {
 			art= new Entity(-1L);
@@ -403,12 +403,12 @@ public class Accion extends IBaseVenta implements Serializable {
 			clientesSeleccion= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
 			seleccionado= clientesSeleccion.get(clientesSeleccion.indexOf(cliente));
 			if(creditoVenta)
-				validarCredito= doValidaCreditoVenta();
-			if(validarCredito){
-				ventaFinalizada= loadVentaFinalizada();
+				validarCredito= this.doValidaCreditoVenta();
+			if(validarCredito) {
+				ventaFinalizada= this.loadVentaFinalizada();
 				transaccion = new Transaccion(ventaFinalizada);
 				if (transaccion.ejecutar(EAccion.REPROCESAR)) {
-					if(ventaFinalizada.isFacturar() && !ventaFinalizada.getApartado()){
+					if(ventaFinalizada.isFacturar() && !ventaFinalizada.getApartado()) {
 						UIBackingUtilities.addCallbackParam("facturacionOk", true);
 						UIBackingUtilities.addCallbackParam("facturacion", new Facturacion(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta(), seleccionado.getKey(), transaccion.getCorreosFactura(), seleccionado.toString("razonSocial"), ventaFinalizada.getIdTipoPago(), transaccion.getFacturaPrincipal().getIdFactura(), transaccion.getFacturaPrincipal().getIdFacturama(), transaccion.getFacturaPrincipal().getSelloSat(), ventaFinalizada.getTicketVenta().getIdClienteDomicilio()));						
 					} // if
@@ -498,7 +498,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			params= new HashMap<>();
 			params.put("idFactura", idFactura);
 			facturas= DaoFactory.getInstance().toEntitySet("VistaFicticiasDto", "importados", params);
-			for(Entity factura: facturas){
+			for(Entity factura: facturas) {
 				if(factura.toLong("idTipoArchivo").equals(1L))
 					regresar= new File(factura.toString("ruta").concat(factura.toString("nombre")));
 				else
@@ -550,7 +550,7 @@ public class Accion extends IBaseVenta implements Serializable {
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			      			
-			if(email){ 
+			if(email) { 
 				this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros), this.attrs.get("nameFacturaPdf").toString().replaceFirst(".pdf", ""));		
         this.reporte.doAceptarSimple();			
 			} // if
@@ -570,7 +570,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	public boolean doVerificarReporte() {
     boolean regresar = false;
 		RequestContext rc= UIBackingUtilities.getCurrentInstance();
-		if(this.reporte.getTotal()> 0L){
+		if(this.reporte.getTotal()> 0L) {
 			rc.execute("start(" + this.reporte.getTotal() + ")");	
       regresar = true;
     }
@@ -589,7 +589,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		try {
 			mensaje= "No es posible generar una cotización sin articulos";
 			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
-			if(this.attrs.get("tipo")!= null){				
+			if(this.attrs.get("tipo")!= null) {				
 				if(!(this.attrs.get("tipo").toString().equals(EEstatusVentas.APARTADOS.name()) || this.attrs.get("tipo").toString().equals(EEstatusVentas.COTIZACION.name())))
 					confirmacion= !getAdminOrden().getArticulos().isEmpty() && (getAdminOrden().getArticulos().size()> 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))));									
 				else
@@ -597,7 +597,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			} // if
 			else
 				confirmacion= (ticketAbierto== null || (ticketAbierto!= null && ticketAbierto.getKey().equals(-1L))) && (!this.getAdminOrden().getArticulos().isEmpty() && (getAdminOrden().getArticulos().size()> 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L)))));			
-			if(confirmacion){
+			if(confirmacion) {
 				UIBackingUtilities.execute("janal.bloquear();");
 				UIBackingUtilities.execute("PF('dlgCotizacion').show();");
 			} //if
@@ -618,7 +618,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		boolean confirmacion        = false;
     try {				
 			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");			
-			if(ticketAbierto== null && !this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L)))) && this.getAdminOrden().getTotales().getImporte()> 0D){
+			if(ticketAbierto== null && !this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L)))) && this.getAdminOrden().getTotales().getImporte()> 0D) {
 				this.getAdminOrden().getTotales().setTotal(this.getAdminOrden().getTotales().getImporte());
 				loadOrdenVenta();				
 				transaccion= new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
@@ -690,7 +690,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		MotorBusqueda motor                   = null;
 		try {
 			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
-			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
+			clientes = (List<UISelectEntity>) this.attrs.get("clientes");
 			seleccion= clientes.get(clientes.indexOf((UISelectEntity)event.getObject()));
 			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);			
@@ -699,14 +699,19 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
 			facturarVenta= (Boolean) this.attrs.get("facturarVenta");
-			if(seleccion!= null && ((TicketVenta)this.getAdminOrden().getOrden()).isValid()){				
-				transaccion= new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta(), seleccion.getKey(), (String)this.attrs.get("observaciones"));
-				if(transaccion.ejecutar(EAccion.ASIGNAR)){
-					unlockVentaExtends(-1L, (Long)this.attrs.get("ticketLock"));			
+			if(seleccion!= null && ((TicketVenta)this.getAdminOrden().getOrden()).isValid()) {				
+				this.setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
+				this.doReCalculatePreciosArticulos(seleccion.getKey());	
+        this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
+        VentaFinalizada ventaFinalizada= this.loadVentaFinalizada();
+				transaccion= new Transaccion(ventaFinalizada, seleccion.getKey(), (String)this.attrs.get("observaciones"));
+				if(transaccion.ejecutar(EAccion.ASIGNAR)) {
+					this.unlockVentaExtends(-1L, (Long)this.attrs.get("ticketLock"));			
 					this.attrs.put("ticketLock", -1L);
-					doLoadTicketAbiertos();
+					this.doLoadTicketAbiertos();
 					this.attrs.put("ticketAbierto", ticketAbierto);					
-					doAsignaTicketAbiertoCambioCliente();					
+          this.attrs.put("ajustePreciosCliente", !seleccion.isEmpty() && seleccion.toDouble("especial")!= 0D);
+					this.doAsignaTicketAbierto();					
 					this.attrs.put("tabIndex", 1);
 					this.attrs.put("facturarVenta", facturarVenta);					
 					this.attrs.put("disabledFacturar", !facturarVenta);					
@@ -721,7 +726,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 	} // doAsignaCliente
 		
-	public void doLoadTicketAbiertosPrincipal(){		
+	public void doLoadTicketAbiertosPrincipal() {		
 		Map<String, Object>params= null;
 		List<Columna> campos     = null;
 		try {			
@@ -745,7 +750,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // finally		
 	} // doLoadTicketAbiertosPrincipal
 	
-	public void refreshTicketsAbiertos(){
+	public void refreshTicketsAbiertos() {
 		Map<String, Object>params= null;
 		List<Columna>campos      = null;
 		try {
@@ -815,7 +820,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // finally
 	} // doLoadTicketAbiertos
 	
-	private String toCondicion(boolean all){
+	private String toCondicion(boolean all) {
 		StringBuilder regresar= null;
 		Date fecha            = null;
 		try {
@@ -830,14 +835,14 @@ public class Accion extends IBaseVenta implements Serializable {
 		return regresar.toString();
 	} // toCondicion	
 	
-	private String toCondicionEstatus(boolean all){
+	private String toCondicionEstatus(boolean all) {
 		StringBuilder regresar= new StringBuilder("");
 		regresar.append(" and tc_mantic_ventas.candado = 2");
 		regresar.append(" and tc_mantic_ventas.id_venta_estatus in (");
 		regresar.append(EEstatusVentas.ELABORADA.getIdEstatusVenta());									
 		regresar.append(" , ");
 		regresar.append(EEstatusVentas.ABIERTA.getIdEstatusVenta());									
-		if(all){
+		if(all) {
 			regresar.append(" , ");
 			regresar.append(EEstatusVentas.APARTADOS.getIdEstatusVenta());									
 			regresar.append(" , ");
@@ -847,13 +852,13 @@ public class Accion extends IBaseVenta implements Serializable {
 		return regresar.toString();
 	} // toCOndicionEstatus
 	
-	public void doActualizaTicketsAbiertos(){
+	public void doActualizaTicketsAbiertos() {
 		List<UISelectEntity> ticketsAbiertos= null;
 		List<UISelectEntity> ticketsVigentes= null;
 		Map<String, Object>params           = null;
 		List<Columna> campos                = null;
 		try {
-			if(this.attrs.get("titleTab").toString().equals("Articulos")){
+			if(this.attrs.get("titleTab").toString().equals("Articulos")) {
 				ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
 				params= new HashMap<>();
 				params.put("sortOrder", "");
@@ -863,9 +868,9 @@ public class Accion extends IBaseVenta implements Serializable {
 				campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 				params.put(Constantes.SQL_CONDICION, toCondicion(true));
 				ticketsVigentes= UIEntity.build("VistaVentasDto", "lazy", params, campos, Constantes.SQL_TODOS_REGISTROS);
-				if(!ticketsVigentes.isEmpty()){
-					for(UISelectEntity vigente: ticketsVigentes){
-						if(!ticketsAbiertos.isEmpty()){
+				if(!ticketsVigentes.isEmpty()) {
+					for(UISelectEntity vigente: ticketsVigentes) {
+						if(!ticketsAbiertos.isEmpty()) {
 							if(ticketsAbiertos.indexOf(vigente) < 0)
 								ticketsAbiertos.add(vigente);
 						} // if
@@ -881,7 +886,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 	} // doActualizaTicketsAbiertos
 	
-	public void doAsignaTicketAbiertoDirecto(){
+	public void doAsignaTicketAbiertoDirecto() {
 		try {
 			this.attrs.put("facturarVenta", false);			
 			this.refreshTicketsAbiertos();
@@ -895,7 +900,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 	} // doAsignaTicketAbiertoDirecto
 	
-	public void doAsignaTicketAbiertoCambioCliente(){
+	public void doAsignaTicketAbiertoCambioCliente() {
 		try {
 			this.attrs.put("ajustePreciosCliente", false);
 			this.doAsignaTicketAbierto();
@@ -930,14 +935,14 @@ public class Accion extends IBaseVenta implements Serializable {
 				unlockVentaExtends(ticketAbierto.getKey(), (Long)this.attrs.get("ticketLock"));									
 				this.attrs.put("ticketLock", ticketAbierto.getKey());
 				ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
-				if(!ticketsAbiertos.isEmpty()){
+				if(!ticketsAbiertos.isEmpty()) {
 					ticketAbiertoPivote= ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto));												
 					this.attrs.put("ticketAbierto", ticketAbiertoPivote); 
 					this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), true));
 					tipo= ticketAbiertoPivote.toString("tipo");
 					this.attrs.put("tipo", tipo);
 					this.attrs.put("mostrarApartado", tipo.equals(EEstatusVentas.APARTADOS.name()));								
-					if(tipo.equals(EEstatusVentas.COTIZACION.name()) || tipo.equals(EEstatusVentas.APARTADOS.name())){					
+					if(tipo.equals(EEstatusVentas.COTIZACION.name()) || tipo.equals(EEstatusVentas.APARTADOS.name())) {					
 						if(tipo.equals(EEstatusVentas.APARTADOS.name()))
 							this.asignaFechaApartado();
 						actual= new Date(Calendar.getInstance().getTimeInMillis());
@@ -1006,18 +1011,18 @@ public class Accion extends IBaseVenta implements Serializable {
 			clientesSeleccion.add(seleccion);
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
-			if((Boolean)this.attrs.get("ajustePreciosCliente")){
-				setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
-				doReCalculatePreciosArticulos(seleccion.getKey());			
+			if((Boolean)this.attrs.get("ajustePreciosCliente")) {
+				this.setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
+				this.doReCalculatePreciosArticulos(seleccion.getKey());			
 			} // if
-			doActiveApartado();
+			this.doActiveApartado();
 		} // try
 		catch (Exception e) {	
 			throw e;
 		} // catch		
 	} // doAsignaClienteTicketAbierto
 	
-	private void loadCajas(){
+	private void loadCajas() {
 		List<UISelectEntity> cajas= null;
 		Map<String, Object>params = null;
 		List<Columna> columns     = null;
@@ -1050,7 +1055,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			if(cliente!= null) {
 				clientesSeleccion= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
 				seleccionado= clientesSeleccion.get(clientesSeleccion.indexOf(cliente));
-				if(!seleccionado.toString("clave").equals(CLAVE_VENTA_GRAL)){
+				if(!seleccionado.toString("clave").equals(CLAVE_VENTA_GRAL)) {
 					this.doAsignaDomicilioClienteInicial(seleccionado.getKey());
 					motor= new MotorBusqueda(-1L, seleccionado.getKey());
 					this.clientesTiposContacto= motor.toCorreosCliente();
@@ -1108,7 +1113,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			motor= new MotorBusqueda(-1L);
 			cliente= motor.toClienteDefault();
 			apartado= (boolean) this.attrs.get("apartado");	
-			if(apartado){
+			if(apartado) {
 				this.attrs.put("facturarVenta", !apartado);
 				this.attrs.put("disabledFacturar", apartado);			
 				this.attrs.put("clienteRegistrado", ((Boolean)this.attrs.get("facturarVenta")));				
@@ -1134,7 +1139,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		UISelectEntity ticketAbierto= null;
 		try {
 			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
-			if(ticketAbierto!= null && !ticketAbierto.getKey().equals(-1L) && !this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
+			if(ticketAbierto!= null && !ticketAbierto.getKey().equals(-1L) && !this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))) {
 				this.loadOrdenVenta();				
 				transaccion = new mx.org.kaana.mantic.ventas.reglas.Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
 				this.getAdminOrden().validatePrecioArticulo();
@@ -1146,7 +1151,7 @@ public class Accion extends IBaseVenta implements Serializable {
 					this.getAdminOrden().getArticulos().add(new ArticuloVenta(-1L));
 				} // if				
 			} // if
-			else if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
+			else if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))) {
 				loadOrdenVenta();				
 				transaccion = new mx.org.kaana.mantic.ventas.reglas.Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
 				this.getAdminOrden().validatePrecioArticulo();
@@ -1186,7 +1191,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		((TicketVenta)this.getAdminOrden().getOrden()).setObservaciones(!Cadena.isVacio(this.attrs.get("observaciones")) ? ((String)this.attrs.get("observaciones")).toUpperCase() : "");
 	} // loadOrdenVenta
 	
-	private void loadBancos(){
+	private void loadBancos() {
 		List<UISelectEntity> bancos= null;
 		Map<String, Object> params = null;
 		List<Columna> campos       = null;
@@ -1208,7 +1213,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // finally
 	} // loadBancos
 	
-	private void loadTiposPagos(){
+	private void loadTiposPagos() {
 		List<UISelectEntity> tiposPagos= null;
 		Map<String, Object>params      = null;
 		try {
@@ -1226,7 +1231,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // finally
 	} // loadTiposPagos
 	
-	public void doValidaCreditoCliente(){
+	public void doValidaCreditoCliente() {
 		Boolean credito   = false;
 		Boolean apartado  = false;
 		RequestContext rc = null;
@@ -1247,7 +1252,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 	} // doValidaCreditoCliente
 	
-	public void doAgregarClienteTipoContacto(){
+	public void doAgregarClienteTipoContacto() {
 		ClienteTipoContacto clienteTipoContacto= null;
 		ContadoresListas contadores            = null;
 		Long contador                          = 0L;
@@ -1269,9 +1274,9 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // finally
 	} // doAgregarClienteTipoContacto
 	
-	public void doEliminarClienteTipoContacto(){
+	public void doEliminarClienteTipoContacto() {
 		try {			
-			if(this.clientesTiposContacto.remove(this.clienteTipoContactoSeleccion)){
+			if(this.clientesTiposContacto.remove(this.clienteTipoContactoSeleccion)) {
 				if(!this.clienteTipoContactoSeleccion.getNuevo())
 					addDeleteList(this.clienteTipoContactoSeleccion);
 				JsfBase.addMessage("Se eliminó correctamente el tipo de contacto", ETipoMensaje.INFORMACION);
@@ -1316,23 +1321,23 @@ public class Accion extends IBaseVenta implements Serializable {
 			facturarVenta= (Boolean) this.attrs.get("facturarVenta");
 			regresar= new VentaFinalizada();
 			regresar.setTotales((Pago) this.attrs.get("pago"));
-			if(facturarVenta){
+			if(facturarVenta) {
 				cfdis= (List<UISelectEntity>) this.attrs.get("cfdis");
 				cfdi= (UISelectEntity) this.attrs.get("cfdi");
 				ticketVenta.setIdUsoCfdi(cfdis.get(cfdis.indexOf(cfdi)).getKey());
 				ticketVenta.setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));				
 				ticketVenta.setIdTipoMedioPago(regresar.getTotales().getIdTipoMedioPago());
-				if(!ETipoMediosPago.EFECTIVO.getIdTipoMedioPago().equals(regresar.getTotales().getIdTipoMedioPago())){
+				if(!ETipoMediosPago.EFECTIVO.getIdTipoMedioPago().equals(regresar.getTotales().getIdTipoMedioPago())) {
 					ticketVenta.setIdBanco(regresar.getTotales().getIdBanco());
 					ticketVenta.setReferencia(regresar.getTotales().getReferencia());
 				} // if
 				regresar.setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));		
 				ticketVenta.setIdClienteDomicilio(((Entity)this.attrs.get("domicilioFactura")).getKey());		
 			} // if	
-			else if(!((Boolean) this.attrs.get("creditoVenta"))){
+			else if(!((Boolean) this.attrs.get("creditoVenta"))) {
 				ticketVenta.setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));				
 				ticketVenta.setIdTipoMedioPago(regresar.getTotales().getIdTipoMedioPago());
-				if(!ETipoMediosPago.EFECTIVO.getIdTipoMedioPago().equals(regresar.getTotales().getIdTipoMedioPago())){
+				if(!ETipoMediosPago.EFECTIVO.getIdTipoMedioPago().equals(regresar.getTotales().getIdTipoMedioPago())) {
 					ticketVenta.setIdBanco(regresar.getTotales().getIdBanco());
 					ticketVenta.setReferencia(regresar.getTotales().getReferencia());
 				} // if
@@ -1352,7 +1357,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			regresar.setArticulos(getAdminOrden().getArticulos());
 			regresar.setIdCaja(Long.valueOf(this.attrs.get("caja").toString()));
 			regresar.setApartado((Boolean) this.attrs.get("apartado"));
-			if(regresar.getApartado()){
+			if(regresar.getApartado()) {
 				calendar= Calendar.getInstance();
 				calendar.add(Calendar.DAY_OF_YEAR, 30);
 				regresar.getTicketVenta().setVigencia(new Date(calendar.getTimeInMillis()));
@@ -1376,7 +1381,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		campos.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 		List<UISelectEntity> cfdis= UIEntity.build("TcManticUsosCfdiDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
 		this.attrs.put("cfdis", cfdis);
-		for(UISelectEntity record: cfdis){
+		for(UISelectEntity record: cfdis) {
 			if(record.toString("clave").equals(GASTOS_GENERAL_CLAVE))
 				cfdiSeleccion= record;
 		} // for
@@ -1396,11 +1401,11 @@ public class Accion extends IBaseVenta implements Serializable {
 			motor= new MotorBusqueda(null);
 			venta= motor.toVenta(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
 			pago= (Pago) this.attrs.get("pago");				
-			if(pago.getCambio() > 0 || pago.getPago() >= getAdminOrden().getTotales().getTotal()){
+			if(pago.getCambio() > 0 || pago.getPago() >= getAdminOrden().getTotales().getTotal()) {
 				this.attrs.put("mensajeErrorCredito", "La venta no puede efectuarse a credito, el pago capturado cubre el total de la venta.");
 				regresar= false;
 			} // if
-			else if(!EBooleanos.SI.getIdBooleano().equals(venta.getIdAutorizar())){								
+			else if(!EBooleanos.SI.getIdBooleano().equals(venta.getIdAutorizar())) {								
 				totalCredito= getAdminOrden().getTotales().getTotal() - (pago.getPago() - pago.getCambio());
 				clientes= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
 				cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");
@@ -1437,14 +1442,14 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doTabChange(TabChangeEvent event) {
 		String title= event.getTab().getTitle();
 		this.pagar= title.equals("Pagar") || title.equals("Apartado");
-		if(title.equals("Cliente") || title.equals("Tickets") || title.equals("Pagar") || title.equals("Apartado")){
+		if(title.equals("Cliente") || title.equals("Tickets") || title.equals("Pagar") || title.equals("Apartado")) {
 			((TicketVenta)this.getAdminOrden().getOrden()).setObservaciones(!Cadena.isVacio(this.attrs.get("observaciones")) ? ((String)this.attrs.get("observaciones")).toUpperCase() : "");
 		} // if
-		if(title.equals("Tickets")){
+		if(title.equals("Tickets")) {
 			doLoadTickets();			
 			UIBackingUtilities.update("contenedorGrupos:tablaTicket");
 		} // if
-		if(title.equals("Pagar")){
+		if(title.equals("Pagar")) {
 			UIBackingUtilities.execute("jsArticulos.focusCobro();");			
 		} // if
 		if(title.equals("Articulos"))
@@ -1465,7 +1470,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				cuenta= this.attrs.get("cambioPrecioUsr").toString();
 				contrasenia= this.attrs.get("passwordCambioPrecio").toString();
 				cambioUsuario= new CambioUsuario(cuenta, contrasenia);
-				if(cambioUsuario.validaPrivilegiosDescuentos()){					
+				if(cambioUsuario.validaPrivilegiosDescuentos()) {					
 						getAdminOrden().getArticulos().get(index).setCosto(Double.valueOf(this.attrs.get("cambioPrecio").toString()));												
 				} // if
 				else
@@ -1482,7 +1487,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // finally
 	} // doAplicarCambioPrecio
 	
-	public void doLoadTickets(){
+	public void doLoadTickets() {
 		List<Columna> columns     = null;
 		Map<String, Object> params= null;
 		try {
@@ -1504,23 +1509,23 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch				
 	} // doLoadTickets
 	
-	private Map<String, Object> toPrepare(){
+	private Map<String, Object> toPrepare() {
 		Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();	
 		Date inicio= (Date) this.attrs.get("fechaApartirTicket");			
 		Date fin= (Date) this.attrs.get("fechaHastaTicket");			
 		sb.append("date_format(tc_mantic_ventas.registro, '%Y%m%d') >= ").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, inicio)).append(" and ");
 		sb.append("date_format(tc_mantic_ventas.registro, '%Y%m%d') <= ").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, fin)).append(" and ");
-		if(this.attrs.get("noTicket")!= null && !Cadena.isVacio(this.attrs.get("noTicket"))){
+		if(this.attrs.get("noTicket")!= null && !Cadena.isVacio(this.attrs.get("noTicket"))) {
 			sb.append("tc_mantic_ventas.ticket like '%").append(this.attrs.get("noTicket")).append("%'").append(" and ");
 		} // if
-		if(this.attrs.get("productoTicket")!= null && !((Entity)this.attrs.get("productoTicket")).getKey().equals(-1L)){
+		if(this.attrs.get("productoTicket")!= null && !((Entity)this.attrs.get("productoTicket")).getKey().equals(-1L)) {
 			sb.append("tc_mantic_ventas_detalles.id_articulo=").append(((Entity)this.attrs.get("productoTicket")).getKey()).append(" and ");					
 		} // if
-		else if (JsfBase.getParametro("contenedorGrupos:productoTicket_input")!= null){
+		else if (JsfBase.getParametro("contenedorGrupos:productoTicket_input")!= null) {
 			sb.append("tc_mantic_ventas_detalles.nombre like '%").append(JsfBase.getParametro("contenedorGrupos:productoTicket_input")).append("%' and ");					
 		} // else if
-		if(this.attrs.get("importeTicket")!= null && !Cadena.isVacio(this.attrs.get("importeTicket")) && !this.attrs.get("importeTicket").toString().equals("0.00")){												
+		if(this.attrs.get("importeTicket")!= null && !Cadena.isVacio(this.attrs.get("importeTicket")) && !this.attrs.get("importeTicket").toString().equals("0.00")) {												
 			sb.append("tc_mantic_ventas.total like '%").append(Cadena.eliminaCaracter(this.attrs.get("importeTicket").toString(), ',')).append("%' and ");			
 		} // if
 		sb.append("tc_mantic_ventas.id_venta_estatus in (").append(EEstatusVentas.CREDITO.getIdEstatusVenta()).append(",").append(EEstatusVentas.TIMBRADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(")");
@@ -1554,7 +1559,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		this.doPrint((Entity) this.attrs.get("ultimoTicketEntity"));		
 	} // doPrintUltimoTicket
 	
-	public void doPrintTicket(){
+	public void doPrintTicket() {
 		this.doPrint((Entity) this.attrs.get("seleccionTicket"));
 	} // doPrintTicket
 	
@@ -1568,7 +1573,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			params= new HashMap<>();
 			params.put("idVenta", seleccionado.toLong("idVenta"));
 			adminTicket= new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params));
-			if(EEstatusVentas.fromIdTipoPago(seleccionado.toLong("idVentaEstatus")).equals(EEstatusVentas.TIMBRADA)){
+			if(EEstatusVentas.fromIdTipoPago(seleccionado.toLong("idVentaEstatus")).equals(EEstatusVentas.TIMBRADA)) {
 				motor= new MotorBusqueda(-1L, adminTicket.getIdCliente());
 				cliente= motor.toCliente();
 				ticket= new CreateTicket(adminTicket, toPago(adminTicket, seleccionado.getKey()), toTipoTransaccion(seleccionado.toLong("idVentaEstatus")), cliente.toString("razonSocial"));
@@ -1585,12 +1590,12 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 	} // doPrintTicket
 	
-	private String toTipoTransaccion(Long idEstatus){
+	private String toTipoTransaccion(Long idEstatus) {
 		String regresar       = null;
 		EEstatusVentas estatus= null;
 		try {
 			estatus= EEstatusVentas.fromIdTipoPago(idEstatus);
-			switch(estatus){
+			switch(estatus) {
 				case TIMBRADA:
 					regresar= "FACTURA";
 					break;
@@ -1615,7 +1620,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		return regresar;
 	} // toTipoTransaccion
 	
-	private String toConsecutivoTicket(Long idEstatus, AdminTickets ticket){
+	private String toConsecutivoTicket(Long idEstatus, AdminTickets ticket) {
 		String regresar       = null;
 		EEstatusVentas estatus= null;
 		try {
@@ -1631,7 +1636,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		return regresar;
 	} // toTipoTransaccion
 	
-	private Pago toPago(AdminTickets adminTicket, Long idVenta) throws Exception{
+	private Pago toPago(AdminTickets adminTicket, Long idVenta) throws Exception {
 		Pago regresar            = null;
 		List<Entity> detallePago = null;
 		Map<String, Object>params= null;
@@ -1641,10 +1646,10 @@ public class Accion extends IBaseVenta implements Serializable {
 			params= new HashMap<>();
 			params.put("idVenta", idVenta);
 			detallePago= DaoFactory.getInstance().toEntitySet("TrManticVentaMedioPagoDto", "ticket", params, Constantes.SQL_TODOS_REGISTROS);
-			if(!detallePago.isEmpty()){
-				for(Entity pago: detallePago){
+			if(!detallePago.isEmpty()) {
+				for(Entity pago: detallePago) {
 					medioPago= ETipoMediosPago.fromIdTipoPago(pago.toLong("idTipoMedioPago"));
-					switch(medioPago){
+					switch(medioPago) {
 						case EFECTIVO:
 							regresar.setEfectivo(pago.toDouble("importe"));							
 							break;
@@ -1684,7 +1689,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			cliente= motor.toClienteDefault();
 			ticketsAbiertos= (List<Entity>) this.attrs.get("ticketsAbiertos");			
 			this.attrs.put("disabledFacturar", false);
-			if(!ticketsAbiertos.isEmpty()){
+			if(!ticketsAbiertos.isEmpty()) {
 				ticketAbierto= (Entity) this.attrs.get("ticketAbierto");
 				if(ticketAbierto!= null)
 					this.attrs.put("disabledFacturar", cliente.getKey().equals(ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto)).toLong("idCliente")));
@@ -1696,7 +1701,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // validaFacturacion	
 	
 	@Override
-	public void doAsignaCotizacion(){		
+	public void doAsignaCotizacion() {		
 		try {			
 			super.doAsignaCotizacion();						
 			this.attrs.put("ajustePreciosCliente", true);			
@@ -1710,7 +1715,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // doAsignaCotizacion		 
 	
 	@Override
-	public void doAsignaApartado(){
+	public void doAsignaApartado() {
 		try {			
 			super.doAsignaApartado();			
 			this.attrs.put("mostrarApartado", true);			
@@ -1818,7 +1823,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // finally
 	} // loadDomicilios
 	
-	public void doFacturarPendiente(Facturacion facturacion){
+	public void doFacturarPendiente(Facturacion facturacion) {
 		Transaccion transaccion= null;
 		try {
 			transaccion= new Transaccion(facturacion);
@@ -1850,8 +1855,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			motor= new MotorBusqueda(-1L, ((UISelectEntity) this.attrs.get("clienteSeleccion")).getKey());
 			contactos= motor.toClientesTipoContacto();
 			setCorreos(new ArrayList<>());
-			for(ClienteTipoContacto contacto: contactos){
-				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())){
+			for(ClienteTipoContacto contacto: contactos) {
+				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())) {
 					correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor().toUpperCase());
 					getCorreos().add(correoAdd);		
 				} // if
@@ -1868,7 +1873,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doAgregarCorreo() {		
 		mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion transaccion= null;
 		try {
-			if(!Cadena.isVacio(getCorreo().getDescripcion())){				
+			if(!Cadena.isVacio(getCorreo().getDescripcion())) {				
 				transaccion= new mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion(getCorreo(), ((UISelectEntity) this.attrs.get("clienteSeleccion")).getKey());
 				if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
 					JsfBase.addMessage("Se agrego el correo electronico correctamente !");
@@ -1892,7 +1897,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	  return "/Paginas/Mantic/Ventas/Facturas/accion".concat(Constantes.REDIRECIONAR);	
 	}
 
-	public void doValidateConfirmacionFactura(){
+	public void doValidateConfirmacionFactura() {
 		boolean mostrarConfirmacionFactura= true;
 		Entity clienteGeneral             = null;
 		UISelectEntity cliente            = null;
