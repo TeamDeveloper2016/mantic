@@ -378,7 +378,7 @@ public class CreateTicket {
 		regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 10px;\">");
 		regresar.append("SOLUCIONES WEB ... <span style=\"font-size: 12px;font-weight:bold;\">IMOX</span> ...");
 		regresar.append("<br/>");
-		regresar.append("<span style=\"font-weight:bold;\">Contacto:</span> 449-209-05-86, imox@gmail.com");
+		regresar.append("<span style=\"font-weight:bold;\">Contacto:</span> 449-209-05-86, imox.soluciones.web@gmail.com");
 		regresar.append("</p>");
 		regresar.append("</div>");		
 		return regresar.toString();

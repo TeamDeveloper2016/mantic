@@ -168,7 +168,7 @@ public class Abono extends IBaseTicket implements Serializable {
   } // doLoad
 
 	public String doRegresar() {	  
-		return "filtro".concat(Constantes.REDIRECIONAR);
+		return "CAJERO".equals(JsfBase.getAutentifica().getPersona().getDescripcionPerfil()) ? "../Caja/accion".concat(Constantes.REDIRECIONAR): "filtro".concat(Constantes.REDIRECIONAR);
 	} // doRegresar
 	
 	public void doRegistrarPago() {
@@ -272,7 +272,7 @@ public class Abono extends IBaseTicket implements Serializable {
   }
  
   public String doBackCommonPage() {
-    return !Cadena.isVacio(this.attrs.get("regreso"))? null: "../Caja/accion".concat(Constantes.REDIRECIONAR);
+    return "CAJERO".equals(JsfBase.getAutentifica().getPersona().getDescripcionPerfil()) ? null: "../Caja/accion".concat(Constantes.REDIRECIONAR);
   }
   
 }

@@ -31,6 +31,11 @@
           janal.bloquear(); 
         return ok;
       }
+      
+      function printTicketNow() {
+        setTimeout("$('#regresar').click();", 2000);
+        jsTicket.loadTicket();
+      }
     </script>		
   </ui:define>
   <ui:define name="contenido">    			
@@ -113,7 +118,7 @@
 			</div>	
     </div>		   
  		<svg id="barcode" style="display: none"></svg>	
-		<button id="printTicket" style="display: none" onclick="jsTicket.loadTicket()">Imprimir</button>				
+		<button id="printTicket" style="display: none" onclick="printTicketNow()">Imprimir</button>				
   </ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
