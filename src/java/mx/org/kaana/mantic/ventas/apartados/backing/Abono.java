@@ -39,12 +39,11 @@ public class Abono extends IBaseTicket implements Serializable {
   @Override
   protected void init() {
     try {			
-      this.attrs.put("sortOrder", " order by	registro desc");
-      //this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente"));     
+      this.attrs.put("redireccionar", "false");
       this.attrs.put("idApartado", JsfBase.getFlashAttribute("idApartado"));     
       this.attrs.put("regreso", JsfBase.getFlashAttribute("regreso"));     
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());			
+			this.attrs.put("isMatriz", JsfBase.isAdminEncuestaOrAdmin());
 			this.attrs.put("mostrarBanco", false);
       this.attrs.put("resta", "$ 0.00");
 			if(JsfBase.isAdminEncuestaOrAdmin())
@@ -128,7 +127,7 @@ public class Abono extends IBaseTicket implements Serializable {
 		try {
 			params= new HashMap<>();
 			params.put("idApartado", this.attrs.get("idApartado"));			
-			params.put("sortOrder", this.attrs.get("sortOrder"));
+			params.put("sortOrder", " order by	registro desc");
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			apartado= (Entity) DaoFactory.getInstance().toEntity("VistaTcManticApartadosDto", "apartado", params);
 			this.attrs.put("apartado", apartado);
@@ -168,7 +167,7 @@ public class Abono extends IBaseTicket implements Serializable {
   } // doLoad
 
 	public String doRegresar() {	  
-		return "CAJERO".equals(JsfBase.getAutentifica().getPersona().getDescripcionPerfil()) ? "../Caja/accion".concat(Constantes.REDIRECIONAR): "filtro".concat(Constantes.REDIRECIONAR);
+		return "CAJERO".equals(JsfBase.getAutentifica().getPersona().getDescripcionPerfil()) ? "/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR): "filtro".concat(Constantes.REDIRECIONAR);
 	} // doRegresar
 	
 	public void doRegistrarPago() {
@@ -192,6 +191,7 @@ public class Abono extends IBaseTicket implements Serializable {
           this.doTicket();
 					this.doLoad();
           this.loadApartado();
+          this.attrs.put("redireccionar", "true");
 				} // if
 				else
 					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
