@@ -113,7 +113,7 @@ public class ArticuloVenta extends Articulo {
 		try {
 			if(!this.isDescuentoActivo()) {
 				if(!this.isCostoLibre()) {
-					if(getIdComodin()!= null && getIdComodin() > -1L) {
+					if(this.getIdComodin()!= null && this.getIdComodin() > -1L) {
 						params= new HashMap<>();
 						params.put("idArticulo", this.getIdArticulo());
 						params.put("idComodin", this.getIdComodin());

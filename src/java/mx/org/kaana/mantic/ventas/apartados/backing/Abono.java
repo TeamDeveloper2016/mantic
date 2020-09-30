@@ -170,6 +170,10 @@ public class Abono extends IBaseTicket implements Serializable {
 		return "CAJERO".equals(JsfBase.getAutentifica().getPersona().getDescripcionPerfil()) ? "/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR): "filtro".concat(Constantes.REDIRECIONAR);
 	} // doRegresar
 	
+	public String doCancelar() {	  
+		return "/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR);
+	} // doCancelar
+	
 	public void doRegistrarPago() {
 		Transaccion transaccion       = null;
 		TcManticApartadosPagosDto pago= null;

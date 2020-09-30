@@ -231,6 +231,7 @@ public class CreateTicket {
 	} // toArticulos
 	
 	private String toPagos() {
+    double suma= 0D;
 		StringBuilder regresar= new StringBuilder();
 		regresar.append("<table style=\"width: 290px;\">");
 		regresar.append("<tbody>");
@@ -247,7 +248,7 @@ public class CreateTicket {
 		regresar.append("<td style=\"font-family: sans-serif;font-size: 14px;width: 70px;max-width: 70px;word-break: break-all;border-collapse: collapse;text-align: right;font-weight: bold;\">$").append(this.ticket.getTotales().getTotalDosDecimales$()).append("</td>");			
 		regresar.append("</tr>");			
 		regresar.append("<tr style=\"height: 15px;\"><td></td><td></td><td></td><td></td></tr>");	
-		if(this.tipo.equals("APARTADO")) {			
+		if(this.tipo.equals("APARTADO")) {
       if(this.pago.getAbonos().isEmpty()) {
   			regresar.append("<tr style=\"border-collapse: collapse;\">");				
 	  		regresar.append("<td style=\"font-family: sans-serif;font-size: 14px;width: 220px;max-width: 220px;word-break: break-all;border-collapse: collapse;text-align: right;font-weight: bold;\">ABONO:</td>");			
@@ -264,6 +265,7 @@ public class CreateTicket {
           regresar.append("<td style=\"font-family: sans-serif;font-size: 14px;width: 220px;max-width: 220px;word-break: break-all;border-collapse: collapse;text-align: right;\">").append(Fecha.formatear(Fecha.FECHA_HORA_CORTA, abono.getRegistro())).append(" ").append(abono.getMedio()).append(":</td>");
           regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 70px;max-width: 70px;word-break: break-all;border-collapse: collapse;text-align: right;\">").append(abono.getMonto()).append("</td>");
           regresar.append("</tr>");
+          suma+= abono.getMonto();
         } // for
         regresar.append("<tr style=\"border-collapse: collapse;\">");				
         regresar.append("<td style=\"font-family: sans-serif;font-size: 14px;width: 220px;max-width: 220px;word-break: break-all;border-collapse: collapse;text-align: right;\"></td>");
@@ -308,8 +310,14 @@ public class CreateTicket {
 			regresar.append("</tr>");
 		} // if
 		regresar.append("<tr style=\"border-collapse: collapse;\">");
-		regresar.append("<td style=\"font-family: sans-serif;font-size: 14px;width: 220px;max-width: 220px;word-break: break-all;border-collapse: collapse;text-align: right;font-weight: bold;\">CAMBIO:</td>");
-		regresar.append("<td style=\"font-family: sans-serif;font-size: 14px;width: 70px;max-width: 70px;word-break: break-all;border-collapse: collapse;text-align: right;font-weight: bold;\">").append(this.pago.getCambio$()).append("</td>");
+    if(this.tipo.equals("APARTADO")) {
+		  regresar.append("<td style=\"font-family: sans-serif;font-size: 14px;width: 220px;max-width: 220px;word-break: break-all;border-collapse: collapse;text-align: right;font-weight: bold;\">TOTAL ABONO(S):</td>");
+		  regresar.append("<td style=\"font-family: sans-serif;font-size: 14px;width: 70px;max-width: 70px;word-break: break-all;border-collapse: collapse;text-align: right;font-weight: bold;\">").append(suma).append("</td>");
+    } // if
+    else {
+		  regresar.append("<td style=\"font-family: sans-serif;font-size: 14px;width: 220px;max-width: 220px;word-break: break-all;border-collapse: collapse;text-align: right;font-weight: bold;\">CAMBIO:</td>");
+		  regresar.append("<td style=\"font-family: sans-serif;font-size: 14px;width: 70px;max-width: 70px;word-break: break-all;border-collapse: collapse;text-align: right;font-weight: bold;\">").append(this.pago.getCambio$()).append("</td>");
+    } // else
 		regresar.append("</tr>");
 		if(this.tipo.equals("APARTADO")) {			
 			regresar.append("<tr style=\"height: 15px;\"><td></td><td></td><td></td><td></td></tr>");	

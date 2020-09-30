@@ -191,6 +191,7 @@ div.ui-panelgrid-content {
 .janal-wid-81 {width: 81% !important;}
 .janal-wid-86 {width: 86% !important;}
 .janal-wid-90 {width: 90% !important;}
+.janal-wid-92 {width: 92% !important;}
 .janal-wid-93 {width: 93% !important;}
 .janal-wid-94 {width: 94% !important;}
 .janal-wid-95 {width: 95% !important;}
@@ -522,14 +523,15 @@ div.ui-panelgrid-content {
 .janal-back-color {
   background-color: azure;
 }
-.janal-back-normal {background-color: initial;}
-.janal-field-error {color: red;}
-.janal-color-red {color: red;}
-.janal-color-orange {color: orange;}
-.janal-color-purple {color: purple;}
-.janal-color-green {color: green;}
-.janal-color-blue {color: blue;}
+.janal-back-normal{background-color: initial;}
+.janal-field-error{color: red;}
+.janal-color-red{color: red;}
+.janal-color-orange{color: orange;}
+.janal-color-purple{color: purple;}
+.janal-color-green{color: green;}
+.janal-color-blue{color: blue;}
 .janal-color-white{color: white;}
+.janal-color-gray{color: gray;}
 .janal-color-black{color: black;}
 .janal-color-yellow{color: yellow;}
 .janal-color-cyan{color: cyan;}

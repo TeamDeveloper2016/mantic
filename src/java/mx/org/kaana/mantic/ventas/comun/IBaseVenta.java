@@ -515,11 +515,16 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
             if(original.getIdArticulo()!= null && !original.getIdArticulo().equals(-1L)) {
               motor   = new MotorBusqueda(original.getIdArticulo());
               articulo= motor.toArticulo();
-              original.setCosto((Double) articulo.toValue(getPrecio()));
+              // ESTO ES PARA CORREGIR CUANDO SE CAMBIE UN CLIENTE DE ESPECIAL A O NO ESPECIAL Y VUELVA A CALCULAR LOS IMPORTES
+              if("ESPECIAL".equals(((ArticuloVenta)original).getDescripcionPrecio())) {
+                ((ArticuloVenta)original).setIdComodin(-1L);
+                ((ArticuloVenta)original).setDescripcionPrecio(this.getPrecio());
+              } // if
+              original.setCosto((Double) articulo.toValue(this.getPrecio()));
               if(!original.getCosto().equals(articulo.getMayoreo()) && !original.getCosto().equals(articulo.getMedioMayoreo())) {
-                original.setValor((Double) articulo.toValue(getPrecio()));
-                original.setCosto((Double) articulo.toValue(getPrecio()));
-                ((ArticuloVenta)original).setDescripcionPrecio(getPrecio());
+                original.setValor((Double) articulo.toValue(this.getPrecio()));
+                original.setCosto((Double) articulo.toValue(this.getPrecio()));
+                ((ArticuloVenta)original).setDescripcionPrecio(this.getPrecio());
               } // if		
               else
                 ((ArticuloVenta)original).setDescuentoAsignado(true);						

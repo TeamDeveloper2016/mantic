@@ -21,7 +21,7 @@
       
 			$(document).ready(function() {
         if(#{manticVentasApartadosAbono.attrs.redireccionar})
-          setTimeout("$('#regresar').click();", 1000);
+          setTimeout("$('#retorno').click();", 1000);
       });  
 
 
@@ -128,16 +128,18 @@
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
 			<p:commandButton id="regresar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticVentasApartadosAbono.doRegresar}" immediate="true"/>
+      <p:commandButton id="retorno" value="Cancelar" icon="fa fa-reply" process="@this" action="#{manticVentasApartadosAbono.doCancelar}" immediate="true" style="display:none;"/>
 		</div>	
 		<div class="xs-pantalla">
 			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticVentasApartadosAbono.doRegresar}" immediate="true"/>
+			<p:commandButton id="retornoIcon" value="Cancelar" icon="fa fa-reply" process="@this" action="#{manticVentasApartadosAbono.doCancelar}" immediate="true" style="display:none;"/>
 		</div>	
 	</ui:define>	
   <ui:param name="componenteBloqueo" value="tabla" />
 	<ui:define name="dialogos">
     <p:dialog id="dialogoPago" widgetVar="dlgPago" header="Registrar abono" resizable="false" closable="false" responsive="true" width="50%" onHide="janal.restore();janal.refresh();" onShow="checkOpenRegistrarPago();" dynamic="true">
 			<h:form id="formDialogoPago" prependId="false">
-				<h:panelGrid id="panelDialog" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-7, janal-wid-93">
+				<h:panelGrid id="panelDialog" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-8, janal-wid-92">
 					<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticVentasApartadosAbono.attrs.isMatriz}"/>
 					<p:selectOneMenu id="idEmpresa" value="#{manticVentasApartadosAbono.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticVentasApartadosAbono.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 						<p:ajax event="change" process="@this" listener="#{manticVentasApartadosAbono.doLoadCajas}" update="caja"/>
@@ -164,8 +166,8 @@
 					</p:selectOneMenu>
           <p:outputLabel value="Saldo:" styleClass="janal-color-blue"/>
           <p:inputText value="#{manticVentasApartadosAbono.doMonedaSat(manticVentasApartadosAbono.attrs.pago)}" styleClass="janal-wid-100-txt janal-column-right janal-color-blue" readonly="true"/>
-					<p:outputLabel for="pago" value="Monto: $"/>
-          <p:inputNumber id="pago" value="#{manticVentasApartadosAbono.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right" converter="javax.faces.Double">
+          <p:outputLabel for="pago" value="Ingrese abono:" styleClass="janal-color-black"/>
+          <p:inputNumber id="pago" value="#{manticVentasApartadosAbono.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-black" converter="javax.faces.Double">
             <p:ajax event="blur" process="@this" update="resta" listener="#{manticVentasApartadosAbono.doCalculatePago()}"/>
           </p:inputNumber>
           <p:outputLabel value="Resta:" styleClass="janal-color-red"/>
