@@ -275,7 +275,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 		} // finally
 	}
 	
-	public void doSendMail() {
+	public void doLoadEstatus() {
 		Entity seleccionado               = null;
 		Map<String, Object>params         = null;
 		List<UISelectItem> allEstatus     = null;
