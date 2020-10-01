@@ -1207,7 +1207,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			this.actualizarClienteFacturama(sesion, this.facturacion.getIdCliente(), this.facturacion.getIdClienteDomicilio());
 			gestor= new CFDIGestor(this.facturacion.getIdVenta());			
 			factura= new TransaccionFactura();			
-			factura.actualizarFacturaAutomatico(this.facturacion.getIdFactura(), this.facturacion.getIdUsuario(), EEstatusFacturas.PROCESANDO.getIdEstatusFactura());
+			factura.actualizarFacturaAutomatico(sesion, this.facturacion.getIdFactura(), this.facturacion.getIdUsuario(), EEstatusFacturas.PROCESANDO.getIdEstatusFactura());
 			factura.setArticulos(gestor.toDetalleCfdiVentas(sesion));
 			clienteFactura= this.facturacion.getIdTipoDocumento().equals(ETipoDocumento.VENTAS_NORMALES.getIdTipoDocumento()) ? gestor.toClienteCfdiVenta(sesion) : gestor.toClienteCfdiFicticia(sesion);			
 			clienteFactura.setMetodoPago(ETipoPago.fromIdTipoPago(this.facturacion.getIdTipoPago()).getClave());
@@ -1222,7 +1222,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			Error.mensaje(e);
 			try {
 				if(factura!= null)
-					factura.actualizarFacturaAutomatico(this.facturacion.getIdFactura(), this.facturacion.getIdUsuario(), EEstatusFacturas.AUTOMATICO.getIdEstatusFactura());
+					factura.actualizarFacturaAutomatico(sesion, this.facturacion.getIdFactura(), this.facturacion.getIdUsuario(), EEstatusFacturas.AUTOMATICO.getIdEstatusFactura());
 				regresar= false;
 			} // try
 			catch (Exception ex) {				
