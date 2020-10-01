@@ -251,7 +251,7 @@ public class Transaccion extends TransaccionFactura {
 		return registrarVentaCotizacion(sesion, idEstatusVenta, false);
 	}
 	
-	private boolean registrarVentaCotizacion(Session sesion, Long idEstatusVenta, boolean cotizacion) throws Exception{
+	private boolean registrarVentaCotizacion(Session sesion, Long idEstatusVenta, boolean cotizacion) throws Exception {
 		boolean regresar     = false;
 		Siguiente consecutivo= null;
 		Siguiente siguiente  = null;		

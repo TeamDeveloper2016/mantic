@@ -254,6 +254,7 @@ public class CreateTicket {
 	  		regresar.append("<td style=\"font-family: sans-serif;font-size: 14px;width: 220px;max-width: 220px;word-break: break-all;border-collapse: collapse;text-align: right;font-weight: bold;\">ABONO:</td>");			
 			  regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 70px;max-width: 70px;word-break: break-all;border-collapse: collapse;text-align: right;\"></td>");
   			regresar.append("</tr>");
+        suma+= this.pago.getEfectivo()+ this.pago.getDebito()+ this.pago.getCredito()+ this.pago.getTransferencia()+ this.pago.getCheque();
       } // if
       else {
         regresar.append("<tr style=\"border-collapse: collapse;\">");				
@@ -273,13 +274,13 @@ public class CreateTicket {
         regresar.append("</tr>");
       } // else
 		} // if
-		if(!this.tipo.equals("APARTADO") && this.pago.getAbono() > 0) {			
+		if(!this.tipo.equals("APARTADO") && this.pago.getAbono()> 0) {			
 			regresar.append("<tr style=\"border-collapse: collapse;\">");				
 			regresar.append("<td style=\"font-family: sans-serif;font-size: 14px;width: 220px;max-width: 220px;word-break: break-all;border-collapse: collapse;text-align: right;\">ABONO(S):</td>");			
 			regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 70px;max-width: 70px;word-break: break-all;border-collapse: collapse;text-align: right;\">").append(this.pago.getAbono()).append("</td>");
 			regresar.append("</tr>");
 		} // if
-		if(this.pago.getEfectivo() > 0) {			
+		if(this.pago.getEfectivo()> 0) {			
 			regresar.append("<tr style=\"border-collapse: collapse;\">");				
 			regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 220px;max-width: 220px;word-break: break-all;border-collapse: collapse;text-align: right;\">EFECTIVO:</td>");
 			regresar.append("<td style=\"font-family: sans-serif;font-size: 12px;width: 70px;max-width: 70px;word-break: break-all;border-collapse: collapse;text-align: right;\">").append(this.pago.getEfectivo()).append("</td>");
