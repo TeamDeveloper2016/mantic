@@ -138,7 +138,7 @@ public class Express extends IBaseAttribute implements Serializable {
 			this.registroArticulo.getArticulo().setNombre((String) JsfBase.getParametro("nombreDialog_input"));
 			this.registroArticulo.getArticulo().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.registroArticulo.getArticulo().setIdEmpaqueUnidadMedida(1L);
-			this.registroArticulo.getArticulo().setIdRedondear(2L);
+			this.registroArticulo.getArticulo().setIdRedondear(this.attrs.get("redondearExpress")!= null && (boolean)this.attrs.get("redondearExpress")? 1L: 2L);
 			this.registroArticulo.getArticulo().setLimiteMayoreo(20D);
 			this.registroArticulo.getArticulo().setLimiteMedioMayoreo(10D);			
 			this.registroArticulo.getArticulo().setIdVigente(1L);					
