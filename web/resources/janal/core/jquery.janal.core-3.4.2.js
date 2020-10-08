@@ -63,7 +63,7 @@
       $control.console('Janal.Control.Function.init');
       if(typeof(root)!== 'undefined')
         this.root   = root;
-      $control.load(0, ['/resources/janal/core/jquery.shortcut.core.0.4.0.js','/resources/janal/core/jquery.janal.sticky.min-1.0.0.js','/resources/janal/js/jquery.janal.menu-2.0.1.js','/resources/janal/core/jquery.longclick-1.0.0.js', '/resources/janal/core/jquery.validate.min-1.15.0.js', '/resources/janal/core/jquery.meio.mask.min-1.1.15.js', '/resources/janal/core/jquery.janal.fns-1.4.7.js']);
+      $control.load(0, ['/resources/janal/core/jquery.shortcut.core.0.4.0.js','/resources/janal/core/jquery.janal.sticky.min-1.0.0.js','/resources/janal/js/jquery.janal.menu-2.0.1.js','/resources/janal/core/jquery.longclick-1.0.0.js', '/resources/janal/core/jquery.validate.min-1.15.0.js', '/resources/janal/core/jquery.meio.mask.min-1.1.15.js', '/resources/janal/core/jquery.janal.fns-1.4.8.js']);
       $control.console('Janal.Control.Function.init resource loaded');
     },
     dateFormat: function(format) {
@@ -502,7 +502,7 @@
       show        : 0
     },
     names         : {
-      validations : ['libre', 'max-caracteres', 'min-caracteres', 'igual-caracteres', 'mayor', 'mayor-igual', 'max-valor', 'menor', 'menor-igual', 'min-valor', 'requerido', 'entero', 'entero-signo', 'valor-simple', 'telefono', 'contiene-a', 'igual-a', 'menor-a', 'mayor-a', 'asterisco', 'moneda', 'moneda-decimal', 'sat', 'flotante', 'flotante-signo', 'mayusculas', 'minusculas', 'vocales', 'rango', 'secuencia-palabra', 'longitud', 'letras', 'texto', 'curp', 'rfc', 'moral', 'texto-especial', 'boleano', 'fecha', 'fecha-menor', 'fecha-mayor', 'registro', 'hora', 'hora-completa', 'hora-mayor', 'hora-menor', 'comodin', 'no-permitir', 'ipv4', 'ipv6', 'no-aplica', 'esta-en', 'correo', 'acceso', 'porcentaje'],
+      validations : ['libre', 'max-caracteres', 'min-caracteres', 'igual-caracteres', 'mayor', 'mayor-igual', 'max-valor', 'menor', 'menor-igual', 'min-valor', 'requerido', 'entero', 'entero-signo', 'valor-simple', 'telefono', 'contiene-a', 'igual-a', 'menor-a', 'mayor-a', 'asterisco', 'moneda', 'moneda-decimal', 'sat', 'flotante', 'flotante-signo', 'mayusculas', 'minusculas', 'vocales', 'rango', 'secuencia-palabra', 'longitud', 'letras', 'texto', 'curp', 'rfc', 'moral', 'texto-especial', 'boleano', 'fecha', 'fecha-menor', 'fecha-mayor', 'registro', 'hora', 'hora-completa', 'hora-mayor', 'hora-menor', 'comodin', 'no-permitir', 'ipv4', 'ipv6', 'no-aplica', 'esta-en', 'correo', 'acceso', 'porcentaje', 'depende'],
       masks       : ['libre', 'fecha', 'fecha-hora', 'registro', 'hora', 'hora-completa', 'tarjeta-credito', 'decimal', 'decimal-signo', 'letras', 'vocales', 'texto', 'numero', 'un-digito', 'dos-digitos', 'tres-digitos', 'tres-digitos-default', 'cuatro-digitos', 'cinco-digitos', 'siete-digitos', 'ocho-digitos', 'nueve-digitos', 'diez-digitos', 'entero', 'entero-blanco', 'entero-signo', 'entero-sin-signo', 'sat', 'flotante', 'flotante-signo', 'rfc', 'fiscal', 'moral', 'curp', 'moneda', 'moneda-decimal', 'mayusculas', 'minusculas', 'cuenta', 'numeros-letras', 'nombre-dto', 'telefono', 'ip', 'version', 'no-aplica','correo', 'valor-simple', 'acceso', 'alfanumerico', 'codigo', 'codigo-diagonal'],
       watermarks  : ['entero', 'entero-signo', 'valor-simple', 'decimal', 'decimal-signo', 'sat', 'flotante', 'flotante-signo', 'moneda', 'moneda-decimal', 'mayor', 'mayor-igual', 'mayor-a', 'max-valor', 'menor', 'menor-a', 'menor-igual', 'min-valor'],
       formats     : ['libre', 'cambiar-mayusculas', 'especial-mayusculas', 'cambiar-minusculas', 'rellenar-caracter', 'precio', 'cantidad', 'consecutivo', 'descuentos', 'sat'],
@@ -1017,6 +1017,68 @@
       }); // each
       return $janal.check(customs, blockui);
     }, // partial
+    revert: function(field) {
+      $janal.console('janal.revert');
+      $.each($janal.fields, function(id, value) {
+        if(id=== field) {
+          var $components= $janal.components(value.multiple, id);
+					if(typeof($components)!== 'undefinded') {
+						$.each($components, function() {
+              var component= $(this);
+							try {
+								$(this).rules('remove');
+                var methods= $janal.vector(value.validaciones, ['\\\|']);
+                $.each(methods, function() {
+                  var method= $janal.cut(this);
+                  if(method!== 'no-aplica')
+                    component.rules('add', $janal.normalize(id, component, $janal.complete(String(this)), ''));
+                }); // each                
+							} // try
+							catch(error) {
+								$janal.console('janal.revert: Error: '+ error);
+							} // catch	
+						});
+					} // if	
+        } // if  
+      }); // each
+    },
+    valid: function(field, complete) {
+      $janal.console('janal.valid');
+      $.each($janal.fields, function(id, value) {
+        if(id=== field) {
+          // search all components with same selector
+          var $components= $janal.components(value.multiple, id);
+					if(typeof($components)!== 'undefinded') {
+            // by each component add de custom validation
+						$.each($components, function() {
+              var component= $(this);
+							try {
+                var msg= '\nDesarrollador:\n  Favor de corregir los errores ortogr\u00E1ficos.\n';
+                // clean of validation over component
+								$(this).rules('remove');
+                var methods= $janal.vector(complete, ['\\\|']);
+                $.each(methods, function() {
+                  var method= $janal.cut(this);
+                  if($janal.validate(method, $janal.names.validations.concat($janal.names.formats).concat($janal.names.customs))) {
+                    if(method!== 'no-aplica')
+                      component.rules('add', $janal.normalize(id, component, $janal.complete(String(this)), ''));
+                  } // if  
+                  else
+                    alert(msg+ 'No existe la validaci\u00F3n solicitada ['+ method+ ']\n');
+                }); // each                
+							} // try
+							catch(error) {
+								$janal.console('janal.valid: Error: '+ error);
+							} // catch	
+						});
+					} // if	
+        } // if  
+      }); // each
+      var validator= $('#'+ $janal.form).validate();
+      var inputOk  = validator.element('#'+ field);
+      $janal.revert(field);
+      return inputOk;
+    },    
     element: function(all, field, blockui) {
       $janal.console('janal.element');
       $janal.errors.validations= [];
@@ -1213,7 +1275,7 @@
 			alert(msg);
     }, // alert
     version: function() {
-      return '0.3.4.0';
+      return '0.3.4.1';
     }, // version
     align: function(pixels) {
       try {

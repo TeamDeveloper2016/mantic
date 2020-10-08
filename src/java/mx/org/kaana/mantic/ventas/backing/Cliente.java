@@ -74,7 +74,7 @@ public class Cliente extends IBaseAttribute implements Serializable {
 			this.attrs.put("admin", JsfBase.isAdminEncuestaOrAdmin());
 			this.attrs.put("contactos", new ArrayList<>());
 			this.attrs.put("cpNuevo", false);
-      doLoad();      					
+      this.doLoad();      					
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -106,16 +106,16 @@ public class Cliente extends IBaseAttribute implements Serializable {
 				case MODIFICAR:
 					idCliente= Long.valueOf(this.attrs.get("idCliente").toString());
 					registroCliente= (TcManticClientesDto) DaoFactory.getInstance().findById(TcManticClientesDto.class, idCliente);					
-					loadTiposDomicilios();	
-					loadTiposVentas();
-					loadDomicilioActual(idCliente);
-					loadContactosActual(idCliente);
+					this.loadTiposDomicilios();	
+					this.loadTiposVentas();
+					this.loadDomicilioActual(idCliente);
+					this.loadContactosActual(idCliente);
 					this.attrs.put("cpNuevo", true);
 					break;
 				case AGREGAR:
 					registroCliente= new TcManticClientesDto();
 					this.domicilio= new Domicilio();					
-					loadCollections();
+					this.loadCollections();
 					break;
 			} // switch			
 			this.attrs.put("registroCliente", registroCliente);
@@ -126,32 +126,34 @@ public class Cliente extends IBaseAttribute implements Serializable {
     } // catch		
   } // doLoad
 
-	private void loadDomicilioActual(Long idCliente) throws Exception{
+	private void loadDomicilioActual(Long idCliente) throws Exception {
 		MotorBusqueda motor            = null;		
 		List<UISelectEntity> domicilios= null;
 		try {
 			motor= new MotorBusqueda(idCliente);			
 			this.domicilio= motor.toClienteDomicilioPrinicipal(true);
-			domicilios= doBusquedaDomiciliosActual(this.domicilio.getIdDomicilio());
+			domicilios    = this.doBusquedaDomiciliosActual(this.domicilio.getIdDomicilio());
 			this.attrs.put("domicilios", domicilios);		
-			this.domicilio.setDomicilio(domicilios.get(0));
-			loadEntidades();
-			toAsignaEntidad();
-			loadMunicipios();
-			toAsignaMunicipio();
-			loadLocalidades();
-			toAsignaLocalidad();
+      if(domicilios!= null && !domicilios.isEmpty()) {
+			  this.domicilio.setDomicilio(domicilios.get(0));
+  			this.doCompleteCodigoPostal(this.domicilio.getDomicilio().toString("codigoPostal"));
+      } // if  
+			this.loadEntidades();
+			this.toAsignaEntidad();
+			this.loadMunicipios();
+			this.toAsignaMunicipio();
+			this.loadLocalidades();
+			this.toAsignaLocalidad();
 			//loadCodigosPostales();      
 			//toAsignaCodigoPostal();
-			doCompleteCodigoPostal(this.domicilio.getDomicilio().toString("codigoPostal"));
-			asignaCodigoPostal();
+			this.asignaCodigoPostal();
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
 	} // loadDomicilioActual
 	
-	private void loadContactosActual(Long idCliente) throws Exception{
+	private void loadContactosActual(Long idCliente) throws Exception {
 		MotorBusqueda motor                = null;		
 		List<ClienteTipoContacto> contactos= null;
 		try {
@@ -683,7 +685,7 @@ public class Cliente extends IBaseAttribute implements Serializable {
     } // catch
   } // doLoadAtributos
 
-	private void loadAtributosComplemento() throws Exception{
+	private void loadAtributosComplemento() throws Exception {
 		MotorBusqueda motor            = null;
 		TcManticDomiciliosDto domicilio= null;
 		TcManticClientesDto cliente    = null;

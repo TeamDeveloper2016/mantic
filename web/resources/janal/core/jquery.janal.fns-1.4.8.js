@@ -995,4 +995,33 @@ $.mask.masks = $.extend($.mask.masks, {
 		  else
 			  return /^([^%'])*$/.test(value);
 		}, 'La contrase\u00F1a tiene caracteres inv\u00E1lidos');
+    
+  $.validator.addMethod('depende', function(value, element, params) {
+		  if ($(element).hasClass('ignore'))
+				return true;
+			else
+        if(typeof(params.cual)=== 'undefined') {
+					janal.programmer([{summary: 'Funci\u00F3n: depende', detail: 'falta el parametro {cual}'}]);
+          return false;
+				}	// if
+        else {
+          if(typeof(params.criterio)=== 'undefined') 
+            params.criterio= 'requerido';
+          if(typeof(params.aplicar)=== 'undefined') 
+            params.aplicar= 'requerido';
+          var ok= this.element('#'+ params.cual);
+          if(ok) {
+            ok= janal.valid(params.cual, params.criterio.replaceAll('[', '(').replaceAll(']', ')').replaceAll('\u00B4', '"'));
+            if(ok)
+              ok= janal.valid($(element).attr('id'), params.aplicar.replaceAll('[', '(').replaceAll(']', ')').replaceAll('\u00B4', '"'));
+            else
+              ok= true;
+          } // if  
+          else
+            ok= true;
+          return ok;
+        } // else
+		}, function(params, element) {
+      return 'El dato es obligatorio. ';
+    });        
 }());

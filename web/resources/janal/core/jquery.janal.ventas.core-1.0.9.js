@@ -718,11 +718,11 @@
 					case $articulos.VK_TAB:
 					case $articulos.VK_DOWN:						
 						valor= parseFloat($("#contenedorGrupos\\:debito_input").val()); 
-						if(isNaN(valor) || valor=== 0){
+						if(isNaN(valor) || valor=== 0) {
 							$("#contenedorGrupos\\:debito_input").val('0.00');
 							$("#contenedorGrupos\\:credito_input").focus();
 							valor= parseFloat($("#contenedorGrupos\\:credito_input").val()); 
-							if(isNaN(valor) || valor=== 0){								
+							if(isNaN(valor) || valor=== 0) {								
 								$("#contenedorGrupos\\:credito_input").val('');
 							} // if
 						} // if						
@@ -754,7 +754,7 @@
 					case $articulos.VK_TAB:
 					case $articulos.VK_DOWN:						
 						valor= parseFloat($("#contenedorGrupos\\:credito_input").val()); 
-						if(isNaN(valor) || valor=== 0){
+						if(isNaN(valor) || valor=== 0) {
 							$("#contenedorGrupos\\:credito_input").val('0.00');
 							$("#contenedorGrupos\\:transferencia_input").focus();
 							valor= parseFloat($("#contenedorGrupos\\:transferencia_input").val()); 
@@ -789,7 +789,7 @@
 					case $articulos.VK_TAB:
 					case $articulos.VK_DOWN:						
 						valor= parseFloat($("#contenedorGrupos\\:transferencia_input").val()); 
-						if(isNaN(valor) || valor=== 0){
+						if(isNaN(valor) || valor=== 0) {
 							$("#contenedorGrupos\\:transferencia_input").val('0.00');
 							$("#contenedorGrupos\\:cheque_input").focus();
 							valor= parseFloat($("#contenedorGrupos\\:cheque_input").val()); 
@@ -824,7 +824,7 @@
 					case $articulos.VK_TAB:
 					case $articulos.VK_DOWN:						
 						valor= parseFloat($("#contenedorGrupos\\:cheque_input").val()); 
-						if(isNaN(valor) || valor=== 0){
+						if(isNaN(valor) || valor=== 0) {
 							$("#contenedorGrupos\\:cheque_input").val('0.00');
 							$("#contenedorGrupos\\:efectivo_input").focus();
 							valor= parseFloat($("#contenedorGrupos\\:efectivo_input").val()); 
@@ -881,7 +881,7 @@
 			var name= $(e.currentTarget).attr('id');
 			var reference= name.substring(name.indexOf('referencia') + 10, name.length).toLowerCase();
 			var jump= '';
-			switch(reference){
+			switch(reference) {
 				case 'debito':
 					jump= 'credito';
 					break;
@@ -904,7 +904,7 @@
 			var name= $(e.currentTarget).attr('id');
 			var reference= name.substring(name.indexOf('referencia') + 10, name.length).toLowerCase();
 			var jump= '';
-			switch(reference){
+			switch(reference) {
 				case 'debito':
 					jump= 'efectivo';
 					break;
@@ -1471,7 +1471,7 @@
 			this.refreshFreeValidationsPagos();
 			janal.refresh();
 		}, // validateCredito
-		refreshValidationsPagos: function(limiteCredito, limiteDebito, limiteCheque, totalVenta, limiteTransferencia){
+		refreshValidationsPagos: function(limiteCredito, limiteDebito, limiteCheque, totalVenta, limiteTransferencia) {
 			janal.fields.debito.validaciones= 'libre|max-valor({"cuanto":'+limiteDebito+'})';
 			janal.fields.credito.validaciones= 'libre|max-valor({"cuanto":'+limiteCredito+'})';
 			janal.fields.cheque.validaciones= 'libre|max-valor({"cuanto":'+limiteCheque+'})';
@@ -1486,7 +1486,7 @@
 			janal.fields.transferencia.validaciones= 'libre';
 		}, // refreshFreeValidationsPagos		
 		refreshCredito: function(total) {
-			if(total > 0 && $('#contenedorGrupos\\:switchFacturar_input').is(':checked')) {
+			if(total> 0) {
 				janal.fields.referenciaCredito.validaciones= "requerido";
 				janal.fields.bancoCredito.validaciones= "requerido";										
 			} // if
@@ -1496,7 +1496,7 @@
 			} // else
 		}, // refreshCredito
 		refreshDebito: function(total) {
-			if(total > 0 && $('#contenedorGrupos\\:switchFacturar_input').is(':checked')) {
+			if(total> 0) {
 				janal.fields.referenciaDebito.validaciones= "requerido";
 				janal.fields.bancoDebito.validaciones= "requerido";										
 			} // if
@@ -1505,8 +1505,8 @@
 				janal.fields.bancoDebito.validaciones= "libre";										
 			} // else
 		}, // refreshCredito
-		refreshCheque: function(total){
-			if(total > 0 && $('#contenedorGrupos\\:switchFacturar_input').is(':checked')){
+		refreshCheque: function(total) {
+			if(total> 0) {
 				janal.fields.referenciaCheque.validaciones= "requerido";
 				janal.fields.bancoCheque.validaciones= "requerido";					
 			} // if
@@ -1515,8 +1515,8 @@
 				janal.fields.bancoCheque.validaciones= "libre";					
 			} // else
 		}, // refreshCheque
-		refreshTransferencia: function(total){
-			if(total > 0 && $('#contenedorGrupos\\:switchFacturar_input').is(':checked')){
+		refreshTransferencia: function(total) {
+			if(total> 0) {
 				janal.fields.referenciaTransferencia.validaciones= "requerido";
 				janal.fields.bancoTransferencia.validaciones= "requerido";					
 			} // if
@@ -1525,7 +1525,7 @@
 				janal.fields.bancoTransferencia.validaciones= "libre";					
 			} // else
 		}, // refreshCheque
-		restoreAutenticate: function(){
+		restoreAutenticate: function() {
 			$('#cuenta').val('');
 			$('#password').val('');
 			setTimeout("$('#cuenta').focus();", 500);			
@@ -1619,7 +1619,7 @@
 			else
 				this.refreshCobroValidate();
 		}, // applyValidacionesGeneral
-		applyValidacionesGeneral: function(){				
+		applyValidacionesGeneral: function() {				
 			this.applyValidacionesSwitch();
 			this.ventaFinished();
 		}, // applyValidacionesGeneral
@@ -1629,7 +1629,7 @@
 		}, // applyValidacionesCredito
 		validateCapturaDescuentos: function() {
 			var ok= janal.partial('descuento');
-			if(ok){
+			if(ok) {
 				PF('dlgDescuentos').hide();					
 				this.autorizedDiscount();
 				janal.restore();
