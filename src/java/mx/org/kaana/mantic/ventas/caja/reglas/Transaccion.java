@@ -231,6 +231,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		try {
       this.getOrden().setIdCliente(this.idCliente);
       this.getOrden().setObservaciones(observaciones);
+      if(this.getOrden().getIdBanco()!= null && this.getOrden().getIdBanco()<= -1L)
+        this.getOrden().setIdBanco(null);
 			regresar= DaoFactory.getInstance().update(sesion, this.getOrden())>= 1L;
 		} // try		
 		catch(Exception e) {
@@ -580,12 +582,14 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		try {									
 			validacionEstatus= !idEstatusVenta.equals(EEstatusVentas.APARTADOS.getIdEstatusVenta());
 			consecutivo= this.toSiguiente(sesion);			
-			getOrden().setCticket(consecutivo.getOrden());			
-			getOrden().setTicket(consecutivo.getConsecutivo());
-			getOrden().setIdVentaEstatus(idEstatusVenta);			
-			getOrden().setIdFacturar(this.ventaFinalizada.isFacturar() && validacionEstatus ? SI : NO);
-			getOrden().setIdCredito(this.ventaFinalizada.isCredito() && validacionEstatus ? SI : NO);
-			getOrden().setCobro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			this.getOrden().setCticket(consecutivo.getOrden());			
+			this.getOrden().setTicket(consecutivo.getConsecutivo());
+			this.getOrden().setIdVentaEstatus(idEstatusVenta);			
+			this.getOrden().setIdFacturar(this.ventaFinalizada.isFacturar() && validacionEstatus ? SI : NO);
+			this.getOrden().setIdCredito(this.ventaFinalizada.isCredito() && validacionEstatus ? SI : NO);
+			this.getOrden().setCobro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+      if(this.getOrden().getIdBanco()!= null && this.getOrden().getIdBanco()<= -1L)
+        this.getOrden().setIdBanco(null);
 			if(this.ventaFinalizada.isFacturar() && validacionEstatus) {				
 				this.clienteDeault= getOrden().getIdCliente().equals(toClienteDefault(sesion));
 				if(this.clienteDeault) {
@@ -599,12 +603,12 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 					getOrden().setIdCliente(getIdClienteNuevo());
 				} // if
 				else
-					registraClientesTipoContacto(sesion, getOrden().getIdCliente());				
+					registraClientesTipoContacto(sesion, this.getOrden().getIdCliente());				
 			} // if						
-			if(DaoFactory.getInstance().update(sesion, getOrden())>= 1L) {				
-				if(registraBitacora(sesion, getOrden().getIdVenta(), idEstatusVenta, "LA VENTA HA SIDO FINALIZADA")) {
+			if(DaoFactory.getInstance().update(sesion, this.getOrden())>= 1L) {				
+				if(registraBitacora(sesion, this.getOrden().getIdVenta(), idEstatusVenta, "LA VENTA HA SIDO FINALIZADA")) {
 					params= new HashMap<>();
-					params.put("idVenta", getOrden().getIdVenta());
+					params.put("idVenta", this.getOrden().getIdVenta());
 					regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticVentasDetallesDto.class, params)>= 1;
 					this.toFillArticulos(sesion, this.ventaFinalizada.getArticulos());
 					this.validarCabecera(sesion);

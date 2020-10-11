@@ -209,6 +209,8 @@ public class Transaccion extends TransaccionFactura {
 					this.orden.setConsecutivo(consecutivo.getOrden());			
 					this.orden.setOrden(consecutivo.getOrden());
 					this.orden.setIdUsuario(JsfBase.getIdUsuario());
+          if(this.orden.getIdBanco()!=null && this.orden.getIdBanco()<= -1L)
+            this.orden.setIdBanco(null);
 					if(this.orden.isValid())
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 					else
@@ -280,7 +282,9 @@ public class Transaccion extends TransaccionFactura {
 		try {						
 			this.orden.setIdVentaEstatus(idEstatusVenta);			
 			if(this.orden.getIdCliente()< 0)
-				this.orden.setIdCliente(toClienteDefault(sesion));
+				this.orden.setIdCliente(this.toClienteDefault(sesion));
+			if(this.orden.getIdBanco()!= null && this.orden.getIdBanco()<= -1L)
+				this.orden.setIdBanco(null);
 			regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 			if(registraBitacora(sesion, this.orden.getIdVenta(), idEstatusVenta, "")) {
 				params= new HashMap<>();
