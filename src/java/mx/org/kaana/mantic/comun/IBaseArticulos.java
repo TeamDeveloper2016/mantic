@@ -170,7 +170,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 					UIBackingUtilities.execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
 				} // if	
 				if(articulo.containsKey("facturado")) 
-					temporal.setFacturado(true);
+					temporal.setFacturado(articulo.toBoolean("facturado"));
 				UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.getKey()+ "');");
 				this.adminOrden.toCalculate(index);
 				if(this.attrs.get("paginator")== null || !(boolean)this.attrs.get("paginator"))
