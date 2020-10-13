@@ -974,7 +974,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
-					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, ECorreos.FACTURACION.getEmail(), item, "davalos.dg1@gmail.com, controlbonanza@gmail.com", "Ferreteria Bonanza - Factura", params, files);
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, ECorreos.FACTURACION.getEmail(), item, "controlbonanza@gmail.com", "Ferreteria Bonanza - Factura", params, files);
 					  LOG.info("Enviando correo a la cuenta: "+ item);
 					  notificar.send();
 					} // if	

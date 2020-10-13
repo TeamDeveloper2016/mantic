@@ -425,7 +425,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
-					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.ORDENES_COMPRA, ECorreos.ORDENES_COMPRA.getEmail(), item, "davalos.dg1@gmail.com, controlbonanza@gmail.com", "Ferreteria Bonanza - Orden de compra", params, files);
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.ORDENES_COMPRA, ECorreos.ORDENES_COMPRA.getEmail(), item, "controlbonanza@gmail.com", "Ferreteria Bonanza - Orden de compra", params, files);
 					  LOG.info("Enviando correo a la cuenta: "+ item);
 					  notificar.send();
 					} // if	
