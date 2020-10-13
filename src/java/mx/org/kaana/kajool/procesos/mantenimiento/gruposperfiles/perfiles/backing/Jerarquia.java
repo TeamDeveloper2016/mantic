@@ -2,10 +2,10 @@ package mx.org.kaana.kajool.procesos.mantenimiento.gruposperfiles.perfiles.backi
 
 /**
  *@company KAANA
- *@project SECO (Sistema de seguimiento y control de proyetos estadisticos)
+ *@project KAJOOL (Control system polls)
  *@date Jan 15, 2013
  *@time 2:19:30 PM 
- *@author Juan Pablo Medina Adame <juan.adame@inegi.org.mx>
+ *@author Team Developer 2016 <team.developer2016@gmail.com>
  */
 
 import java.io.Serializable;

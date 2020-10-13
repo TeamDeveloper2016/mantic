@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- *@company INEGI
- *@project IKTAN (Sistema de seguimiento y control de proyectos)
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
  *@date 8/08/2020
  *@time 11:59:30 AM 
- *@author Alejandro Jimenez Garcia <alejandro.jimenez@inegi.org.mx>
+ *@author Team Developer 2016 <team.developer2016@gmail.com>
  */
 
 public class Folio implements Serializable {

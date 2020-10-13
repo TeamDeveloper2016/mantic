@@ -309,7 +309,8 @@ public class Ftp {
 	} // copy
 
 	public static void main(String... args) throws IOException, Exception {
-		Ftp ftp= new Ftp(new FtpProperties("10.1.8.14", "inegi/cilci.enigh", "Tezozomoc2008", 21));
-		ftp.download("captura_mcs2013/Datos/ENT_01/DEC_0/ZAZJAAZ/MayZAZJAAZ.csp","C:/Desarrollo/Plataforma/Netbeans/IKTAN14062013/mixto/build/web/WEB-INF/comunicacion/exportar/mcs2013/ZAZJAAZ/MayZAZJAAZ.csp",null);
+		Ftp ftp= new Ftp(new FtpProperties("10.1.8.14", "kaana/cilci.enigh", "Tezozomoc2008", 21));
+		ftp.download("path/Datos/ENT_01/DEC_0/ZAZJAAZ/MayZAZJAAZ.csp", "C:/Desarrollo/ZAZJAAZ/MayZAZJAAZ.csp", null);
 	} // main
+  
 }

@@ -152,7 +152,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 	
   public void doNotificar() {
 		Map<String, Object> params= new HashMap<>();
-		//String[] correos= {"jimenez76@yahoo.com", "claudio.alvarez@inegi.org.mx", "suani.vazquez@inegi.org.mx", "miguelangel.martinez@inegi.org.mx"};
+		//String[] correos= {"jimenez76@yahoo.com", "alejandro7jimenez6garcia@gmail.com"};
 		// files.add(new Attachment(ECorreos.NOTIFICACION.getImages().concat("invitacion.jpg"), Boolean.TRUE));
 		// for (Attachment item: files) {
 		//	 params.put(item.getId(), item.getId());
@@ -162,10 +162,10 @@ public class Filtro extends IBaseAttribute implements Serializable {
 		try {
 			params.put("header", "...");
 			params.put("footer", "...");
-			params.put("empresa", "Instituto Nacional de Estadistica y Geografía");
-			params.put("invitado", "M.C. Alejandro Jiménez García");
+			params.put("empresa", "Instituto ...");
+			params.put("invitado", "M.C. Team Developer 2016");
 			params.put("puesto", "Subsecretario de Obras Públicas");
-			params.put("correo", "fegem@inegi.org.mx");
+			params.put("correo", "team.developer@gmail.com");
 			for (String item: correos) {
 				String image   = this.toWriteInvitacion((String)params.get("invitado"), (String)params.get("puesto"));
 				Attachment user= new Attachment(image, Boolean.TRUE);
@@ -173,7 +173,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 					LOG.info("Generando invitacion personalizada: "+ image);
 					params.put("invitacion", user.getId());
 					files.add(user);
-					IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, "fegem@inegi.org.mx", item, "Invitación al evento de FEGEMS", params, files);
+					IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, "team.developer@gmail.com", item, "Invitación al evento de KAANA", params, files);
 					LOG.info("Enviando correo a la cuenta: "+ item);
 					notificar.send();
 					files.remove(user);

@@ -133,7 +133,7 @@ public abstract class FiltroFactura extends IBaseTicket {
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
-					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, ECorreos.FACTURACION.getEmail(), item, "controlbonanza@gmail.com", "Ferreteria Bonanza - Factura", params, files, ECorreos.FACTURACION.getAlias());
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, ECorreos.FACTURACION.getEmail(), item, "davalos.dg1@gmail.com, controlbonanza@gmail.com", "Ferreteria Bonanza - Factura", params, files, ECorreos.FACTURACION.getAlias());
 					  LOG.info("Enviando correo a la cuenta: "+ item);
 					  notificar.send();
 					} // if	

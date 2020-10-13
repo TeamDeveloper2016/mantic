@@ -5,7 +5,7 @@ package mx.org.kaana.kajool.beans;
  *@project IKTAN (Sistema de Seguimiento y Control de proyectos estadísticos)
  *@date 14/06/2016
  *@time 12:00:00 PM 
- *@author Edward Aarón Vázquez Nájera <edward.vazquez@inegi.gob.mx>
+ *@author Team Developer 2016 <team.developer2016@gmail.com>
  */
 
 import java.io.Serializable;
