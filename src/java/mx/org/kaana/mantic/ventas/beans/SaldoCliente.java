@@ -3,7 +3,7 @@ package mx.org.kaana.mantic.ventas.beans;
 import java.io.Serializable;
 import mx.org.kaana.libs.Constantes;
 
-public class SaldoCliente implements Serializable{
+public class SaldoCliente implements Serializable {
 
 	private static final long serialVersionUID = 5429344596542874600L;
 	private Long idCliente;
@@ -58,16 +58,16 @@ public class SaldoCliente implements Serializable{
 		this.totalVenta = totalVenta;
 	}	
 	
-	public boolean isDeudor(){
+	public boolean isDeudor() {
 		boolean regresar= false;
-		if(this.totalCredito > 0){
+		if(this.totalCredito > 0) {
 			Double totalSaldo= this.totalCredito - (this.totalDeuda + this.totalVenta);
 			regresar= totalSaldo < 0;
 		} // if
 		return regresar; 
 	} // isDeudor
 	
-	public String getMensaje(){
+	public String getMensaje() {
 		return isDeudor() ? "CRÉDITO SUPERADO Y/O PLAZO VENCIDO. CONSULTAR CON CRÉDITO Y COBRANZA" : "";
 	}
 }

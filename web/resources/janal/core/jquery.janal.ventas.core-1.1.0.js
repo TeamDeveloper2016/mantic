@@ -470,6 +470,43 @@
 						break;
 				} // swtich
 			});	
+			$(document).on('keydown', '.janal-row-cuentas-bloqueadas', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('jsVentas.keydown: '+ $(this).attr('id')+ ' key: '+ key);
+				switch(key) {
+					case $articulos.VK_TAB:
+					  // $('#busquedaTicketAbierto').focus();
+						return false;
+					  break;
+					case $articulos.VK_ESC:
+            PF('dlgCuentasBloqueadas').hide();
+						break;
+					case $articulos.VK_F7:
+					case $articulos.VK_ENTER:
+			      $('#aceptarCuentaBloqueada').click();		
+				    return false;
+						break;
+					case $articulos.VK_UP:
+					case $articulos.VK_DOWN:
+						break;
+					case $articulos.VK_PAGE_NEXT:
+						if($('#tablaCuentasBloqueadas_paginator_top > a.ui-paginator-next')) {
+						  $('#tablaCuentasBloqueadas_paginator_top > a.ui-paginator-next').click();
+						  return setTimeout($articulos.goon(false), 1000);
+					  } // if
+						else
+							return false;
+						break;
+					case $articulos.VK_PAGE_PREV:
+						if($('#tablaCuentasBloqueadas_paginator_top > a.ui-paginator-prev')) {
+  						$('#tablaCuentasBloqueadas_paginator_top > a.ui-paginator-prev').click();
+	  					return setTimeout($articulos.goon(false), 1000);
+					  } // if
+						else
+							return false;
+						break;
+				} // swtich
+			});	
 			$(document).on('keydown', '.janal-key-cotizaciones', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
 				janal.console('jsVentas.keydown: '+ key);

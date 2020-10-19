@@ -52,6 +52,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	protected static final String MAYOREO      = "3";	
 	protected static final String MENUDEO      = "4";	
 	protected FormatLazyModel lazyCuentasAbiertas;
+	protected FormatLazyModel lazyCuentasBloqueadas;
 	protected FormatLazyModel lazyCotizaciones;
 	protected FormatLazyModel lazyApartados;
 	protected SaldoCliente saldoCliente;
@@ -70,6 +71,10 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	public FormatLazyModel getLazyCuentasAbiertas() {
 		return lazyCuentasAbiertas;
 	}		
+
+  public FormatLazyModel getLazyCuentasBloqueadas() {
+    return lazyCuentasBloqueadas;
+  }
 
 	public FormatLazyModel getLazyCotizaciones() {
 		return lazyCotizaciones;
@@ -170,18 +175,18 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		} // finally
 	} // doDetailArticulo
 	
-	public void doLoadTicketAbiertos(){	
+	public void doLoadTicketAbiertos() {	
 		Map<String, Object>params= null;
-		List<Columna> campos     = null;
+		List<Columna> columns    = null;
 		try {
-			campos= new ArrayList<>();
-			params= new HashMap<>();
+			columns= new ArrayList<>();
+			params = new HashMap<>();
 			params.put("sortOrder", "");
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));			
-			campos.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
 			params.put(Constantes.SQL_CONDICION, toCondicion());
-			this.lazyCuentasAbiertas= new FormatLazyModel("VistaVentasDto", "lazy", params, campos);			
+			this.lazyCuentasAbiertas= new FormatLazyModel("VistaVentasDto", "lazy", params, columns);			
 			UIBackingUtilities.execute("PF('dlgOpenTickets').show();");			
 			UIBackingUtilities.resetDataTable("tablaTicketsAbiertos");
 		} // try
@@ -255,7 +260,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		Date fecha            = null;
 		try {
 			regresar= new StringBuilder();
-			if(cotizacion){
+			if(cotizacion) {
 				regresar.append("tc_mantic_ventas.id_venta_estatus in (");
 				regresar.append(EEstatusVentas.COTIZACION.getIdEstatusVenta());
 				regresar.append(") and vigencia is not null");
@@ -558,7 +563,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		this.saldoCliente  = null;
 		try {			
 			this.saldoCliente= new SaldoCliente();
-			if(!idCliente.equals(-1L)){
+			if(!idCliente.equals(-1L)) {
 				motor= new MotorBusqueda(null, idCliente);
 				cliente= motor.toCliente();			
 				this.saldoCliente.setIdCliente(idCliente);
@@ -620,9 +625,9 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 					isGlobal= Boolean.valueOf(this.attrs.get("isGlobal").toString());
 					isMedioMayoreo= Boolean.valueOf(this.attrs.get("isMedioMayoreo").toString());
 					isMayoreo= Boolean.valueOf(this.attrs.get("isMayoreo").toString());
-					if(isIndividual){
+					if(isIndividual) {
 						this.attrs.put("tipoDecuentoAutorizadoActivo", INDIVIDUAL);
-						getAdminOrden().getArticulos().get(index).setDescuento(this.attrs.get("descuentoIndividual").toString());
+						this.getAdminOrden().getArticulos().get(index).setDescuento(this.attrs.get("descuentoIndividual").toString());
 						if(getAdminOrden().getArticulos().get(index).autorizedDiscount())
 							UIBackingUtilities.execute("jsArticulos.divDiscount('".concat(this.attrs.get("descuentoIndividual").toString()).concat("');"));
 						else
@@ -631,22 +636,22 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 					else if (isGlobal){		
 						this.attrs.put("tipoDecuentoAutorizadoActivo", GLOBAL);
 						global= Double.valueOf(this.attrs.get("descuentoGlobal").toString());
-						globalCalculado= (getAdminOrden().getTotales().getTotal() * global) / 100;
-						getAdminOrden().toCalculate();
-						if(globalCalculado < getAdminOrden().getTotales().getUtilidad()){
+						globalCalculado= (this.getAdminOrden().getTotales().getTotal() * global) / 100;
+						this.getAdminOrden().toCalculate();
+						if(globalCalculado < this.getAdminOrden().getTotales().getUtilidad()){
 							((TicketVenta)this.getAdminOrden().getOrden()).setGlobal(globalCalculado);
-							getAdminOrden().getTotales().setGlobal(globalCalculado);	
-							getAdminOrden().setDescuento(global.toString());
-							doUpdateDescuento();
-							getAdminOrden().toCalculate();
+							this.getAdminOrden().getTotales().setGlobal(globalCalculado);	
+							this.getAdminOrden().setDescuento(global.toString());
+							this.doUpdateDescuento();
+							this.getAdminOrden().toCalculate();
 						} // if
 						else
 							JsfBase.addMessage("No es posble aplicar el descuento, el descuento es superior a la utilidad", ETipoMensaje.ERROR);
 					} // else if
 					else if (isMedioMayoreo){
 						this.attrs.put("tipoDecuentoAutorizadoActivo", MEDIO_MAYOREO);
-						setPrecio("medioMayoreo");
-						getAdminOrden().getArticulos().get(index).setCosto(getAdminOrden().getArticulos().get(index).toEntity().toDouble("medioMayoreo"));
+						this.setPrecio("medioMayoreo");
+						this.getAdminOrden().getArticulos().get(index).setCosto(this.getAdminOrden().getArticulos().get(index).toEntity().toDouble("medioMayoreo"));
 						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescripcionPrecio("medioMayoreo");
 						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescuentoAsignado(true);
 						((ArticuloVenta)getAdminOrden().getArticulos().get(index)).setDescuentos(0D);						
@@ -1192,4 +1197,40 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			Error.mensaje(e);
 		} // catch		
 	} // validatePrecioAsignado
+  
+  public void doLoadUnLockCuenta() {
+ 		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		try {
+			columns= new ArrayList<>();
+			params.put("sortOrder", "order by tc_mantic_ventas.registro desc");
+			params.put("idEmpresa", this.attrs.get("idEmpresa"));
+			params.put("estatus", EEstatusVentas.ELABORADA.getIdEstatusVenta()+ ", "+ EEstatusVentas.ABIERTA.getIdEstatusVenta());
+			params.put("idVenta", this.attrs.get("ticketLock")== null? -1L: (Long)this.attrs.get("ticketLock"));
+			columns.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
+      this.lazyCuentasBloqueadas= new FormatCustomLazy("VistaVentasDto", "bloqueadas", params, columns);
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+  }
+  
+  public void doUnLockCuenta() {
+ 		Entity seleccion= null;		
+		try {
+			seleccion= (Entity) this.attrs.get("selectedCuentaBloqueada");
+      this.unlockVentaExtends(-1L, seleccion.toLong("idVenta"));
+      JsfBase.addMessage("Cuenta", "Se desbloqueo con éxito la cuenta ["+ seleccion.toString("consecutivo")+ "]", ETipoMensaje.INFORMACION);
+ 		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+		} // catch		
+  }
+    
 }

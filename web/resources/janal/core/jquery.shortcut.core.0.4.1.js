@@ -426,3 +426,11 @@ shortcut.add("Ctrl+Z", function() {
 		cleanInitPage();
 	} // if	
 });
+
+shortcut.add("Ctrl+Q", function() {
+  janal.console('Shortcut dialogo de cuentas bloqueadas:');
+  if(janal.session() && PF('dlgCuentasBloqueadas') && !PF('dlgCuentasBloqueadas').isVisible()) {
+    PF('dlgCuentasBloqueadas').show();
+  } // if        
+});
+

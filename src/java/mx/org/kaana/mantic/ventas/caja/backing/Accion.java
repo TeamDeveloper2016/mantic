@@ -871,7 +871,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				if(!ticketsVigentes.isEmpty()) {
 					for(UISelectEntity vigente: ticketsVigentes) {
 						if(!ticketsAbiertos.isEmpty()) {
-							if(ticketsAbiertos.indexOf(vigente) < 0)
+							if(ticketsAbiertos.indexOf(vigente)< 0)
 								ticketsAbiertos.add(vigente);
 						} // if
 						else
@@ -1913,4 +1913,11 @@ public class Accion extends IBaseVenta implements Serializable {
 			Error.mensaje(e);			
 		} // catch
 	} // doValidateConfirmacionFactura
+  
+  @Override
+  public void doUnLockCuenta() {
+    super.doUnLockCuenta();
+    this.doActualizaTicketsAbiertos();
+  }
+  
 }

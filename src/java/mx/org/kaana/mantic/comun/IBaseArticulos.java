@@ -1007,7 +1007,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 		} // catch		
 	} // unlockVenta	
 	
-	protected void unlockVentaExtends(Long block, Long active){
+	protected void unlockVentaExtends(Long block, Long active) {
 		Transaccion transaccion= null;
 		try {			
 			transaccion= new Transaccion(block, active);

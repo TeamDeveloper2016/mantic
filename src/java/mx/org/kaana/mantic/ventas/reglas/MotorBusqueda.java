@@ -100,7 +100,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		return regresar;
 	} // toCliente
 	
-	public Entity toDetalleArticulo() throws Exception{
+	public Entity toDetalleArticulo() throws Exception {
 		Entity regresar          = null;
 		Map<String, Object>params= null;
 		try {

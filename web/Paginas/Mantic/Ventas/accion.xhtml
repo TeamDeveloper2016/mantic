@@ -29,7 +29,7 @@
     	$(document).ready(function() {
         jsArticulos= new Janal.Control.Articulos.Core(#{manticVentasAccion.adminOrden.articulos.size()}, 'tabla\\:');
 				janal.readingMode('#{manticVentasAccion.attrs.nombreAccion}');
-      });							
+      });			
 		</script>   
 		<style type="text/css">
 			.janal-total-compra {
@@ -142,9 +142,11 @@
 								</f:facet>
 							</p:autoComplete>	
 						</p:panelGrid>	
-						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" columnClasses="janal-column-center">
-							<p:spacer/>
+						<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-column-center">
+              <p:spacer/>
+              <p:spacer/>
 							<p:commandButton id="catalogoCliente" title="Catalogo de clientes" icon="fa fa-users" process="@this" action="#{manticVentasAccion.doClientes}" ajax="false" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
+							<p:commandButton id="cuentaBloqueadas" title="Desbloquear cuentas" icon="fa fa-lock" process="@this" update="dialogoCuentasBloqueadas" action="#{manticVentasAccion.doLoadUnLockCuenta}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="PF('dlgCuentasBloqueadas').show();"/>						
 						</p:panelGrid>
 						<p:panelGrid id="panelPrincipalCorreos" layout="grid" columns="1" styleClass="janal-wid-100" columnClasses="janal-column-center" rendered="#{!manticVentasAccion.attrs.mostrarCorreos}">
 							<p:spacer/>
@@ -310,15 +312,52 @@
           <p:inputText id="total" value="#{manticVentasAccion.adminOrden.totales.totalDosDecimales}" styleClass="recalculo" style="display:none"/>
 				</div>
 			</div>
-		</div>		
-		<p:dialog id="dialogoOpenTickets" widgetVar="dlgOpenTickets" header="Cuentas abiertas" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="janal.pivot(); $('#busquedaTicketAbierto').val(''); $('#busquedaTicketAbierto').focus();" onHide="janal.desbloquear(); janal.recover();" width="70%">						
+		</div>
+		<p:dialog id="dialogoCuentasBloqueadas" widgetVar="dlgCuentasBloqueadas" header="Cuentas bloquedas en este momento ..." showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="true" onShow="janal.pivot();" onHide="janal.desbloquear(); janal.recover();" width="70%">
+			<p:dataTable lazy="true" id="tablaCuentasBloqueadas" widgetVar="widgetTablaCuentasAbiertas" var="row" styleClass="janal-row-cuentas-bloqueadas janal-wid-100" value="#{manticVentasAccion.lazyCuentasBloqueadas}" selection="#{manticVentasAccion.attrs.selectedCuentaBloqueada}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="220" style="margin-bottom:0">
+				<p:ajax event="rowDblselect" listener="#{manticVentasAccion.doUnLockCuenta}" process="@this tablaCuentasBloqueadas" update="contenido clientes cliente noTicket @(.filas) @(.recalculo) @(.informacion) deudor" onstart="PF('dlgCuentasBloqueadas').hide();" oncomplete="janal.desbloquear();" />	
+				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+					<f:facet name="header">
+						<h:outputText value="Cuenta"/>
+					</f:facet>
+					<h:outputText value="#{row['consecutivo']}"/>
+				</p:column>		
+				<p:column class="MarAuto Responsive">
+					<f:facet name="header">
+						<h:outputText value="Vendedor"/>
+					</f:facet>
+					<h:outputText value="#{row['cuenta']}"/>
+				</p:column>		
+				<p:column class="janal-column-right MarAuto Responsive janal-wid-20">
+					<f:facet name="header">
+						<h:outputText value="Precio total"/>
+					</f:facet> 
+					<h:outputText value="$ #{row['precioTotal']}"/>
+				</p:column>		
+				<p:column class="MarAuto Responsive">
+					<f:facet name="header">
+						<h:outputText value="Cliente"/>
+					</f:facet>
+					<h:outputText value="#{row['cliente']}"/>
+				</p:column>		
+				<f:facet name="footer">
+					<p:outputLabel value="Total [#{manticVentasAccion.lazyCuentasBloqueadas== null? 0: manticVentasAccion.lazyCuentasBloqueadas.rowCount}] registros"/>
+				</f:facet>
+			</p:dataTable>			
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton id="aceptarCuentaBloqueada" icon="fa fa-check" process="@this tablaCuentasBloqueadas" value="Aceptar" onstart="PF('dlgCuentasBloqueadas').hide();" actionListener="#{manticVentasAccion.doUnLockCuenta}" update="contenido clientes cliente noTicket @(.filas) @(.recalculo) @(.informacion) deudor panelCliente" oncomplete="janal.desbloquear();"/>
+				<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('dlgCuentasBloqueadas').hide();" oncomplete="janal.desbloquear();"/>
+			</div>
+    </p:dialog>  
+		<p:dialog id="dialogoOpenTickets" widgetVar="dlgOpenTickets" header="Cuentas abiertas" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="true" onShow="janal.pivot(); $('#busquedaTicketAbierto').val(''); $('#busquedaTicketAbierto').focus();" onHide="janal.desbloquear(); janal.recover();" width="70%">						
 			<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 				<p:outputLabel for="busquedaTicketAbierto" value="Cuenta de acceso ó nombre del vendedor:"/>
 				<p:inputText id="busquedaTicketAbierto" styleClass="janal-key-tickets-abiertos janal-wid-100-txt" value="#{manticVentasAccion.attrs.busquedaTicketAbierto}">   
 					<p:ajax event="keyup" listener="#{manticVentasAccion.doLoadTicketAbiertos}" process="@this busquedaTicketAbierto" update="verificadorPrecio tablaTicketsAbiertos" onstart="return $('#busquedaTicketAbierto').val().trim().length> 1"/>
 				</p:inputText>
 			</p:panelGrid>							
-			<p:dataTable lazy="true" id="tablaTicketsAbiertos" widgetVar="widgetTablaTicketsAbiertos" var="row" styleClass="janal-row-tickets-abiertos janal-wid-100" value="#{manticVentasAccion.lazyCuentasAbiertas}" selection="#{manticVentasAccion.attrs.selectedCuentaAbierta}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="270" style="margin-bottom:0">
+			<p:dataTable lazy="true" id="tablaTicketsAbiertos" widgetVar="widgetTablaTicketsAbiertos" var="row" styleClass="janal-row-tickets-abiertos janal-wid-100" value="#{manticVentasAccion.lazyCuentasAbiertas}" selection="#{manticVentasAccion.attrs.selectedCuentaAbierta}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="230" style="margin-bottom:0">
 				<p:ajax event="rowDblselect" listener="#{manticVentasAccion.doAsignaTicketAbierto}" process="@this tablaTicketsAbiertos" update="contenido clientes cliente noTicket @(.filas) @(.recalculo) @(.informacion) deudor" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();" />	
 				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 					<f:facet name="header">
@@ -351,7 +390,7 @@
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
 				<p:commandButton id="aceptarTicketAbierto" icon="fa fa-check" process="@this tablaTicketsAbiertos" value="Aceptar" onstart="PF('dlgOpenTickets').hide();" actionListener="#{manticVentasAccion.doAsignaTicketAbierto}" update="contenido clientes cliente noTicket @(.filas) @(.recalculo) @(.informacion) deudor panelCliente" oncomplete="janal.desbloquear();" style="display: none"/>
-				<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();" rendered="false"/>
+				<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>							
 		<p:dialog id="dialogoCotizaciones" widgetVar="dlgCotizaciones" header="Cotizaciones" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="janal.pivot();" onHide="janal.recover(); janal.desbloquear();" width="70%">									
