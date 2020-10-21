@@ -268,25 +268,25 @@
 			} // if
 			switch (type) {
 				case 'integer':
-					text= data.toLocaleString('en-US', {style: 'decimal', minimumFractionDigits: 0, maximumFractionDigits: 0}); // 1,234,567
+					text= data.toLocaleString('es-MX', {style: 'decimal', minimumFractionDigits: 0, maximumFractionDigits: 0}); // 1,234,567
 					break;
 				case 'double':
-					text= data.toLocaleString('en-US', {style: 'decimal', minimumFractionDigits: 1, maximumFractionDigits: 2}); // 1,234,567.12
+					text= data.toLocaleString('es-MX', {style: 'decimal', minimumFractionDigits: 1, maximumFractionDigits: 2}); // 1,234,567.12
 					break;
 				case 'money':
-					text= data.toLocaleString('en-US', {style: 'currency', currency: 'USD', minimumFractionDigits: 1, maximumFractionDigits: 2}); // $1,242.50
+					text= data.toLocaleString('es-MX', {style: 'currency', currency: 'USD', minimumFractionDigits: 1, maximumFractionDigits: 2}); // $1,242.50
 					break;
 				case 'percent':
-					text= this.capital(params.name)+ "\n("+ data.toLocaleString('en-US', {style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 2})+ ")"; // (37.53%)
+					text= this.capital(params.name)+ "\n("+ (data/100).toLocaleString('es-MX', {style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 2})+ ")"; // (37.53%)
 					break;
 				case 'cgor-double':
-					text= this.capital(params.name)+ "\n"+ data.toLocaleString('en-US', {style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1}); // 1,234,567.1
+					text= this.capital(params.name)+ "\n"+ data.toLocaleString('es-MX', {style: 'decimal', minimumFractionDigits: 1, maximumFractionDigits: 1}); // 1,234,567.1
 					break;
 				case 'cgor-percent':
-					text= this.capital(params.name)+ "\n("+ data.toLocaleString('en-US', {style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1})+ ")"; // 37.5%
+					text= this.capital(params.name)+ "\n("+ (data/100).toLocaleString('es-MX', {style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1})+ ")"; // 37.5%
 					break;
 				default:
-					text= data.toLocaleString('en-US'); // 1,234,567.123
+					text= data.toLocaleString('es-MX'); // 1,234,567.123
 			} // switch
 			return all? text: '';
 		},

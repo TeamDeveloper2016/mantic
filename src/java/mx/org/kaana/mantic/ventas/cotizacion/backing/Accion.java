@@ -512,12 +512,12 @@ public class Accion extends IBaseVenta implements Serializable {
 			params= new HashMap<>();
 			params.put("idVenta", this.attrs.get("ticketAbierto"));
 			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
-    	unlockVentaExtends(Long.valueOf(params.get("idVenta").toString()), (Long)this.attrs.get("ticketLock"));
+    	this.unlockVentaExtends(Long.valueOf(params.get("idVenta").toString()), (Long)this.attrs.get("ticketLock"));
 			this.attrs.put("ticketLock", Long.valueOf(params.get("idVenta").toString()));
 			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 			this.attrs.put("consecutivo", ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo());
-			toLoadCatalog();
-			doAsignaClienteTicketAbierto();
+			this.toLoadCatalog();
+			this.doAsignaClienteTicketAbierto();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -538,13 +538,13 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
 			actual= new Date(Calendar.getInstance().getTimeInMillis());
 			if(actual.after(((TicketVenta)getAdminOrden().getOrden()).getVigencia()))
-				generateNewVenta();
-			unlockVentaExtends(Long.valueOf(params.get("idVenta").toString()), (Long)this.attrs.get("ticketLock"));
+				this.generateNewVenta();
+			this.unlockVentaExtends(Long.valueOf(params.get("idVenta").toString()), (Long)this.attrs.get("ticketLock"));
 			this.attrs.put("ticketLock", Long.valueOf(params.get("idVenta").toString()));
     	this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 			this.attrs.put("consecutivo", ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo());
-			toLoadCatalog();
-			doAsignaClienteTicketAbierto();
+			this.toLoadCatalog();
+			this.doAsignaClienteTicketAbierto();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

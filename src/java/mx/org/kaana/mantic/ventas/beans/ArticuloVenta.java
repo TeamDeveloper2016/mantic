@@ -13,7 +13,7 @@ import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 
-public class ArticuloVenta extends Articulo {
+public class ArticuloVenta extends Articulo implements Cloneable {
 	
 	private static final long serialVersionUID = -7272868284456340705L;
 	private String descripcionPrecio;
@@ -246,4 +246,9 @@ public class ArticuloVenta extends Articulo {
 	public void setDescuentoAsignado(boolean descuentoAsignado) {
 		this.descuentoAsignado = descuentoAsignado;
 	}		
+ 
+  public Object clone() throws CloneNotSupportedException {
+    return super.clone(); 
+  }
+  
 }

@@ -282,7 +282,7 @@ public class Filtro extends Comun implements Serializable {
         JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
         JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Taller/filtro");		
         JsfBase.setFlashAttribute("idVenta", transaccion.getOrden().getIdVenta());
-        JsfBase.setFlashAttribute("fechaRegistro", new Date(Fecha.getFechaCalendar( seleccionado.toString("registro")).getTimeInMillis()));        
+        JsfBase.setFlashAttribute("fechaRegistro", new Date(Fecha.getFechaCalendar(seleccionado.toString("registro")).getTimeInMillis()));        
         regresar= "/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR);
 			} // if
 			else 

@@ -252,7 +252,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				this.loadSucursales();							
 			this.loadCajas();
       if(Long.valueOf(this.attrs.get("idVenta").toString()) != -1L)
-        this.attrs.put("fecha",this.attrs.get("fechaRegistro"));      
+        this.attrs.put("fecha", this.attrs.get("fechaRegistro"));      
 			this.doLoadTicketAbiertos();						
 			this.loadBancos();
 			this.loadCfdis();			
@@ -262,7 +262,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.loadArt();
 			this.doLoadSaldos(-1L);
       if(Long.valueOf(this.attrs.get("idVenta").toString()) != -1L) {
-        this.attrs.put("ticketAbierto",new UISelectEntity(new Entity(Long.valueOf(this.attrs.get("idVenta").toString()))));
+        this.attrs.put("ticketAbierto", new UISelectEntity(new Entity(Long.valueOf(this.attrs.get("idVenta").toString()))));
         this.doAsignaTicketAbierto();
 				this.attrs.put("clienteAsignado", true);
       } // if

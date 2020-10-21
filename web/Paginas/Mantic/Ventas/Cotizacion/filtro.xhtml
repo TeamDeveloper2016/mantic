@@ -197,14 +197,14 @@
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
 						<p:menuitem id="consultar" action="#{manticVentasCotizacionFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator/>
-            <p:menuitem id="modificar" action="#{manticVentasCotizacionFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{!(manticVentasCotizacionFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{!(manticVentasCotizacionFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					
-            <p:separator rendered="#{!(manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '6')}"/>					
-            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCotizacionFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticVentasCotizacionFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					                        
+            <p:menuitem id="modificar" action="#{manticVentasCotizacionFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{!(manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '8')}"/>					
+            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{!(manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '8')}"/>					
+            <p:separator rendered="#{!(manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '7')}"/>					
+            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCotizacionFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '7')}"/>					                        
             <p:separator/>					
             <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCotizacionFiltro.doReporte('COTIZACION_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
-						<p:separator rendered="#{(manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '7') or (manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '9')}"/>					
-						<p:menuitem id="ticket" icon="fa fa-file-text-o" value="Ticket" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCotizacionFiltro.doTicket}" oncomplete="janal.desbloquear(); jsTicket.clicTicket();" update="tabla" rendered="#{(manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '7') or (manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '9')}"/>
+						<p:separator rendered="#{(manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '7') or (manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '8')}"/>					
+						<p:menuitem id="ticket" icon="fa fa-file-text-o" value="Ticket" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCotizacionFiltro.doTicket}" oncomplete="janal.desbloquear(); jsTicket.clicTicket();" update="tabla" rendered="#{(manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '7') or (manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '8')}"/>
             <p:separator rendered="#{manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '7'}"/>					
             <p:menuitem value="Pagar" action="#{manticVentasCotizacionFiltro.doCobrar('AGREGAR')}" icon="fa fa-money" title="Pagar" onstart="return janal.bloquear()" rendered="#{manticVentasCotizacionFiltro.attrs.seleccionado.idVentaEstatus eq '7'}"/>
             <p:separator/>					
@@ -258,10 +258,10 @@
 		</p:dialog>		
 	</ui:define>
   <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
-  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la cuenta de venta ?" />
+  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la cotización ?" />
   <ui:param name="accionConfirmacion" value="#{manticVentasCotizacionFiltro}"/>
   <ui:param name="updateComponent" value="tabla"/>
-  <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
+  <ui:param name="eventoConfirmacion" value="doEliminar"/>	
   <ui:param name="renderedConfirmacion" value="true"/>	
   <ui:define name="detalleConfirmacion">
     <p:panelGrid layout="grid" columns="2">

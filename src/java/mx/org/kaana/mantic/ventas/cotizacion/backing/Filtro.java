@@ -91,9 +91,9 @@ public class Filtro extends IBaseTicket implements Serializable {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta"));
       this.attrs.put("sortOrder", "order by consecutivo desc");
-			toLoadCatalog();
-			loadEstatusVentas();
-      if(this.attrs.get("idVenta")!= null){ 
+			this.toLoadCatalog();
+			this.loadEstatusVentas();
+      if(this.attrs.get("idVenta")!= null) { 
 			  this.doLoad();
 				this.attrs.put("idVenta", null);
 			} // if
@@ -137,7 +137,8 @@ public class Filtro extends IBaseTicket implements Serializable {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Ventas/Cotizacion/filtro");		
-			JsfBase.setFlashAttribute("idVenta", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
+      JsfBase.setFlashAttribute("fechaRegistro", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? new Date(Fecha.getFechaCalendar(((Entity)this.attrs.get("seleccionado")).toString("registro")).getTimeInMillis()): -1L);
+			JsfBase.setFlashAttribute("idVenta", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

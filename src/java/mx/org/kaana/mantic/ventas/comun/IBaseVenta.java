@@ -33,6 +33,7 @@ import mx.org.kaana.mantic.comun.IBaseCliente;
 import mx.org.kaana.mantic.db.dto.TcManticApartadosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
+import mx.org.kaana.mantic.enums.EPrecioArticulo;
 import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 import mx.org.kaana.mantic.ventas.beans.SaldoCliente;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
@@ -361,13 +362,13 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			params= new HashMap<>();
 			params.put("idVenta", this.attrs.get("cotizacion"));
 			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
-			unlockVentaExtends(Long.valueOf(params.get("idVenta").toString()), (Long)this.attrs.get("ticketLock"));
+			this.unlockVentaExtends(Long.valueOf(params.get("idVenta").toString()), (Long)this.attrs.get("ticketLock"));
 			this.attrs.put("ticketLock", Long.valueOf(params.get("idVenta").toString()));
 			actual= new Date(Calendar.getInstance().getTimeInMillis());
 			if(actual.after(((TicketVenta)getAdminOrden().getOrden()).getVigencia()))
-				generateNewVenta();    	
-			toLoadCatalog();
-			doAsignaClienteTicketAbierto();
+				this.generateNewVenta();    	
+			this.toLoadCatalog();
+			this.doAsignaClienteTicketAbierto();
 			UIBackingUtilities.execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
 		} // try
 		catch (Exception e) {
@@ -405,13 +406,13 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		} // finally
 	} // doAsignaApartado
 	
-	protected void generateNewVenta() throws Exception{
+	protected void generateNewVenta() throws Exception {
 		List<ArticuloVenta> articulosPivote= null;
 		try {
 			articulosPivote= new ArrayList<>();
 			for(Articulo vigente: getAdminOrden().getArticulos())				
 				articulosPivote.add((ArticuloVenta)vigente);			
-			getAdminOrden().getArticulos().clear();
+			this.getAdminOrden().getArticulos().clear();
 			for(ArticuloVenta addArticulo : articulosPivote)
 				this.toMoveArticulo(addArticulo, -1);			
 		} // try
@@ -823,6 +824,66 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		} // finally
 	}
 	
+  protected void toMoveArticulo(ArticuloVenta articulo, Integer index) throws Exception {
+		ArticuloVenta temporal          = (ArticuloVenta)articulo.clone();
+		TcManticArticulosDto artTemporal= null;
+		Map<String, Object> params      = new HashMap<>();
+		EPrecioArticulo eprecioArticulo = null;
+		try {			
+			this.doSearchArticulo(articulo.getIdArticulo(), index);
+			params.put("idArticulo", articulo.getIdArticulo());
+			params.put("idProveedor", this.getAdminOrden().getIdProveedor());
+			params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
+			temporal.setKey(articulo.getIdArticulo());
+			temporal.setIdArticulo(articulo.getIdArticulo());
+			temporal.setIdProveedor(this.getAdminOrden().getIdProveedor());
+			temporal.setIdRedondear(articulo.getIdRedondear());
+			Value codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "codigo", params, "codigo");
+			temporal.setCodigo(codigo== null? "": codigo.toString());
+			temporal.setPropio(articulo.getPropio());
+			temporal.setNombre(articulo.getNombre());
+			eprecioArticulo= EPrecioArticulo.fromNombre(this.getPrecio().toUpperCase());
+			artTemporal= (TcManticArticulosDto) DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
+			if(artTemporal!= null) {
+				switch(eprecioArticulo) {
+					case MAYOREO:
+						temporal.setValor(artTemporal.getMayoreo());
+						temporal.setCosto(artTemporal.getMayoreo());
+						break;
+					case MEDIO_MAYOREO:
+						temporal.setValor(artTemporal.getMedioMayoreo());
+						temporal.setCosto(artTemporal.getMedioMayoreo());
+						break;
+					case MENUDEO:
+						temporal.setValor(artTemporal.getMenudeo());
+						temporal.setCosto(artTemporal.getMenudeo());
+						break;
+				}	// switch	 	
+			} // if
+			temporal.setIva(articulo.getIva());
+			temporal.setSat(articulo.getSat());
+			temporal.setDescuento(this.getAdminOrden().getDescuento());
+			temporal.setExtras(this.getAdminOrden().getExtras());										
+			temporal.setCantidad(articulo.getCantidad());
+			temporal.setCuantos(0D);
+			temporal.setUltimo(this.attrs.get("ultimo")!= null);
+			temporal.setSolicitado(this.attrs.get("solicitado")!= null);
+			temporal.setUnidadMedida(articulo.getUnidadMedida());
+			temporal.setPrecio(articulo.getPrecio());				
+			Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
+			temporal.setStock(stock== null? 0D: stock.toDouble());				
+			this.getAdminOrden().getArticulos().add(temporal);
+			this.getAdminOrden().toAddUltimo(this.getAdminOrden().getArticulos().size()- 1);
+			UIBackingUtilities.execute("jsArticulos.update("+ (this.getAdminOrden().getArticulos().size()- 1)+ ");");				
+			UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.getKey()+ "');");
+			this.getAdminOrden().toAddArticulo(this.getAdminOrden().getArticulos().size()- 1);		
+			if(this.attrs.get("paginator")== null || !(boolean)this.attrs.get("paginator"))
+  			this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // toMoveDataArt  
 	@Override
 	public void doUpdateSolicitado(Long idArticulo) {
 		List<Columna> columns= null;

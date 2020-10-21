@@ -347,11 +347,11 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		String descuentoVigente= null;		
 		try {	
 			descuentoPivote= getAdminOrden().getDescuento();
-			descuentoVigente= toDescuentoVigente(articulo.getIdArticulo());				
+			descuentoVigente= this.toDescuentoVigente(articulo.getIdArticulo());				
 			if(descuentoVigente!= null)					
-				getAdminOrden().setDescuento(descuentoVigente);																	
+				this.getAdminOrden().setDescuento(descuentoVigente);																	
 			super.toMoveArticulo(articulo, index);	
-			getAdminOrden().setDescuento(descuentoPivote);
+			this.getAdminOrden().setDescuento(descuentoPivote);
 			this.attrs.put("descripcion", articulo.getNombre());
 			this.image= LoadImages.getImage(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), articulo.getIdArticulo().toString());
 			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
