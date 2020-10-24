@@ -347,7 +347,7 @@ public class TransaccionFactura extends IBaseTnx {
 		boolean regresar= false;
 		Cfdi cfdi       = null;
 		try {
-      //** DETENER AQUI PARA EL CALCULO DE LOS CONCEPTOS PARA FACTURAMA
+      //*ERROR* DETENER AQUI PARA EL CALCULO DE LOS CONCEPTOS PARA FACTURAMA
 			cfdi= CFDIFactory.getInstance().createCfdi(this.cliente, this.articulos);
 			if(isCorrectId(cfdi.getId())) {
 				this.idFacturamaRegistro= cfdi.getId();

@@ -3200,7 +3200,17 @@
 			<select id="conteo">
 				select
 					tc_mantic_movimientos.id_movimiento as id_key,
-					tc_mantic_tipos_movimientos.id_tipo_movimiento,
+					tc_mantic_almacenes.nombre as razon_social,
+					tc_mantic_movimientos.registro as fecha,
+					1 as articulos,
+					tc_mantic_articulos.precio as total,
+					0 as impuestos,
+					tc_mantic_articulos.precio as importe,
+					tc_mantic_articulos.precio as precio,
+          tc_mantic_inventarios.inicial,
+          tc_mantic_inventarios.entradas as cantidad,
+          tc_mantic_inventarios.salidas,
+          tc_mantic_tipos_movimientos.id_tipo_movimiento,
 					tc_mantic_tipos_movimientos.nombre as concepto,
 					tc_mantic_empresas.clave,
 					tc_mantic_empresas.nombre as nombre_empresa,
@@ -3210,7 +3220,6 @@
 					tc_mantic_movimientos.id_articulo,
 				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
 					tc_mantic_articulos.nombre,
-					tc_mantic_movimientos.cantidad,
 					tc_mantic_movimientos.stock,
 					tc_mantic_movimientos.calculo,
 					tc_mantic_movimientos.observaciones,
@@ -3224,6 +3233,8 @@
 					tc_mantic_tipos_movimientos on tc_mantic_movimientos.id_tipo_movimiento= tc_mantic_tipos_movimientos.id_tipo_movimiento
 				inner join 
 					tc_mantic_almacenes on tc_mantic_movimientos.id_almacen= tc_mantic_almacenes.id_almacen
+        inner join
+            tc_mantic_inventarios on tc_mantic_movimientos.id_articulo= tc_mantic_inventarios.id_articulo and tc_mantic_movimientos.id_almacen= tc_mantic_inventarios.id_almacen
 				inner join 
 					tc_mantic_empresas on tc_mantic_almacenes.id_empresa= tc_mantic_empresas.id_empresa
 				inner join
@@ -3234,7 +3245,7 @@
 					tc_mantic_movimientos.id_almacen= {idAlmacen}
 					and tc_mantic_movimientos.id_articulo= {idArticulo}
 				  and date_format(tc_mantic_movimientos.registro, '%Y%m%d')&gt;= '{registro}'
-					and tc_mantic_movimientos.id_tipo_movimiento!= 6
+					and tc_mantic_movimientos.id_tipo_movimiento= 6
 				order by
 					tc_mantic_movimientos.registro desc
 			</select>
