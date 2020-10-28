@@ -8194,15 +8194,23 @@
 					tc_mantic_articulos.precio as costo,
 					tc_mantic_articulos.precio,
 					tc_mantic_almacenes_articulos.maximo- tc_mantic_almacenes_articulos.stock as cantidad,
-					tc_mantic_almacenes_articulos.stock,
+					tc_mantic_inventarios.stock,
 					tc_mantic_almacenes_articulos.minimo,
 					tc_mantic_almacenes_articulos.maximo
 				from
 					tc_mantic_articulos
-				inner join
-					tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo
-				inner join
-					tc_mantic_inventarios on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_inventarios.id_almacen and tc_mantic_almacenes_articulos.id_articulo= tc_mantic_inventarios.id_articulo and tc_mantic_inventarios.id_automatico= 2
+        inner join
+          tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo and tc_mantic_almacenes_articulos.id_almacen= {idAlmacen}
+        inner join
+          tc_mantic_inventarios on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_inventarios.id_almacen and tc_mantic_almacenes_articulos.id_articulo= tc_mantic_inventarios.id_articulo and tc_mantic_inventarios.id_automatico= 2     
+        inner join
+          (select
+              max(tc_mantic_inventarios.id_inventario) as id_inventario
+            from
+              tc_mantic_inventarios         
+            group by
+              id_almacen, id_articulo  
+          ) as tc_mantic_maximos on tc_mantic_inventarios.id_inventario= tc_mantic_maximos.id_inventario        
 				inner join
 					tc_mantic_almacenes on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_almacenes.id_almacen
 				inner join
@@ -8210,7 +8218,7 @@
 				where 
 					tc_mantic_almacenes.id_empresa in ({sucursales})
 					and tc_mantic_almacenes.id_almacen= {idAlmacen}
-					and tc_mantic_almacenes_articulos.stock &lt;= tc_mantic_almacenes_articulos.minimo
+					and tc_mantic_inventarios.stock &lt;= tc_mantic_almacenes_articulos.minimo
 					and tc_mantic_articulos_codigos.id_principal= 1
 					and tc_mantic_articulos.id_vigente= 1
 					and tc_mantic_articulos.id_descontinuado= 2
@@ -9821,13 +9829,23 @@
 					tc_mantic_articulos.descripcion descripcion_articulo,
 					tc_mantic_articulos.id_articulo,
 					tc_mantic_almacenes_articulos.id_almacen_articulo,
-					tc_mantic_almacenes_articulos.stock
+					ifnull(tc_mantic_inventarios.stock, 0) as stock
 				from 					
 					tc_mantic_articulos 
 				inner join  
 					tc_mantic_articulos_codigos on tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
 				left join 
 					tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo = tc_mantic_almacenes_articulos.id_articulo
+        left join
+            tc_mantic_inventarios on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_inventarios.id_almacen and tc_mantic_almacenes_articulos.id_articulo= tc_mantic_inventarios.id_articulo and tc_mantic_inventarios.id_automatico= 2     
+        left join
+            (select
+                max(tc_mantic_inventarios.id_inventario) as id_inventario
+              from
+                tc_mantic_inventarios         
+              group by
+                id_almacen, id_articulo  
+            ) as tc_mantic_maximos on tc_mantic_inventarios.id_inventario= tc_mantic_maximos.id_inventario        
 				left join 
 					tc_mantic_almacenes on tc_mantic_almacenes_articulos.id_almacen = tc_mantic_almacenes.id_almacen
 				left join 

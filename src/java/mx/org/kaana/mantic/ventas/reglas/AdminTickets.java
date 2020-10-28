@@ -12,6 +12,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.comun.IAdminArticulos;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
@@ -48,10 +49,21 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
   	  this.setArticulos((List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticVentasDetallesDto", oldPrecios? "facturacion": "detalle", orden.toMap()));
       this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
       this.orden.setIkProveedor(new UISelectEntity(new Entity(this.orden.getIdCliente())));
-			this.orden.setIdServicio(toServicio());
+			this.orden.setIdServicio(this.toServicio());
       /* RECUPERAR SI ES UN CLIENTE CON PRECIO ESPECIAL Y CALCULAR SU COSTO Y SU FACTOR POR CADA ARTICULO */
-			if(!oldPrecios)
+			if(!oldPrecios) {
 			  this.validatePrecioArticulo();
+//        Map params= this.orden.toMap();
+//        for (Articulo articulo : this.getArticulos()) {
+//          // RECUPERA EL STOCK DEL ALMACEN MAS SABER SI YA FUE HUBO UN CONTEO O NO
+//          params.put("idArticulo", articulo.getIdArticulo());
+//          Entity inventario= (Entity)DaoFactory.getInstance().toEntity("TcManticInventariosDto", "stock", params);
+//          if(inventario!= null && inventario.size()> 0) {
+//            articulo.setStock(inventario.toDouble("stock"));
+//            articulo.setIdAutomatico(inventario.toLong("idAutomatico"));
+//          } // if
+//        } // for
+      } // if  
 		}	// if
 		else	{
 		  this.setArticulos(new ArrayList<>());
