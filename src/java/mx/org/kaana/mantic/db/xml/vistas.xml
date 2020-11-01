@@ -5669,7 +5669,6 @@
           tc_mantic_notas_entradas on tc_mantic_notas_detalles.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
         where   
           tc_mantic_articulos_codigos.id_proveedor= {idProveedor}
-          and tc_mantic_notas_entradas.id_proveedor= tc_mantic_articulos_codigos.id_proveedor
           and {condicion}
 				order by
 				  tc_mantic_notas_entradas.registro desc
