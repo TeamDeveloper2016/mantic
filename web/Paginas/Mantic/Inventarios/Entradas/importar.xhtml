@@ -61,6 +61,8 @@
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
 								<p:outputLabel for="consecutivo" value="No. nota:"/>
 								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasImportar.orden.consecutivo}" readonly="true"/>
+								<p:outputLabel for="proveedor" value="Proveedor:"/>
+								<p:inputText id="proveedor" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasImportar.proveedor.razonSocial}" readonly="true"/>
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="idOrdenCompra" value="No. orden:"/>
 								<p:selectOneMenu id="idOrdenCompra" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
@@ -100,7 +102,7 @@
 								<p:column styleClass="janal-wid-col-40 janal-column-center" headerText="Tipo">
 									<h:outputText value="#{row.tipo}"/>
 								</p:column>   
-								<p:column styleClass="janal-wid-15" headerText="Nombre">
+								<p:column styleClass="janal-wid-25" headerText="Nombre">
 									<h:outputText value="#{row.nombre}"/>
 								</p:column>   
 								<p:column styleClass="janal-wid-25" headerText="Usuario">

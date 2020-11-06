@@ -128,6 +128,7 @@ public class Accion extends IBaseAttribute implements Serializable {
           break;
       } // switch 		
       this.attrs.put("idEspecial", this.registroCliente.getCliente()==null || this.registroCliente.getCliente().getEspecial()== 0D? "2": "1");
+      this.doLoadEspecial();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -142,6 +143,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       transaccion = new Transaccion(this.registroCliente);
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
 				JsfBase.setFlashAttribute("puntoVenta", this.attrs.get("puntoVenta"));
+    		JsfBase.setFlashAttribute("idClienteProcess", this.registroCliente.getCliente().getIdCliente());
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
         JsfBase.addMessage("Se registro el cliente de forma correcta.", ETipoMensaje.INFORMACION);
       } // if
@@ -158,6 +160,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   public String doCancelar() {
 		JsfBase.setFlashAttribute("puntoVenta", this.attrs.get("puntoVenta"));
+		JsfBase.setFlashAttribute("idClienteProcess", this.registroCliente.getCliente().getIdCliente());
     return "filtro".concat(Constantes.REDIRECIONAR);
   } // doAccion
 
@@ -632,18 +635,18 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.registroCliente.getDomicilio().setDomicilio(domicilio.getDomicilio());      			
       this.registroCliente.getDomicilio().setIdEntidad(domicilio.getIdEntidad());	
 			this.registroCliente.getDomicilio().getDomicilio().put("idEntidad", new Value("idEntidad", domicilio.getIdEntidad().getKey()));
-      toAsignaEntidad();
-			loadMunicipios();
+      this.toAsignaEntidad();
+			this.loadMunicipios();
       this.registroCliente.getDomicilio().setIdMunicipio(domicilio.getIdMunicipio());			
 			this.registroCliente.getDomicilio().getDomicilio().put("idMunicipio", new Value("idMunicipio", domicilio.getIdMunicipio().getKey()));
-      toAsignaMunicipio();
-			loadLocalidades();
+      this.toAsignaMunicipio();
+			this.loadLocalidades();
       this.registroCliente.getDomicilio().setLocalidad(domicilio.getLocalidad());			
       this.registroCliente.getDomicilio().setIdLocalidad(domicilio.getIdLocalidad());			
 			this.registroCliente.getDomicilio().getDomicilio().put("idLocalidad", new Value("idLocalidad", domicilio.getLocalidad().getKey()));
-      toAsignaLocalidad();
-			doCompleteCodigoPostal(domicilio.getCodigoPostal());
-			asignaCodigoPostal();			
+      this.toAsignaLocalidad();
+			this.doCompleteCodigoPostal(domicilio.getCodigoPostal());
+			this.asignaCodigoPostal();			
       this.registroCliente.getDomicilio().setCalle(domicilio.getCalle());
       this.registroCliente.getDomicilio().setNumeroExterior(domicilio.getNumeroExterior());
       this.registroCliente.getDomicilio().setNumeroInterior(domicilio.getNumeroInterior());

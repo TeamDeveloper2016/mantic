@@ -95,7 +95,8 @@ public class Importar extends IBaseImportar implements Serializable {
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
-			this.attrs.put("ordenes", UIEntity.build("VistaNotasEntradasDto", "ordenes", params, columns));
+      if(!Cadena.isVacio(this.orden.getIdOrdenCompra()))
+			  this.attrs.put("ordenes", UIEntity.build("VistaNotasEntradasDto", "ordenes", params, columns));
     } // try
     catch (Exception e) {
       Error.mensaje(e);

@@ -48,6 +48,11 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("idPrincipal", 1L);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());     
 			this.loadCreditos();
+      if(JsfBase.getFlashAttribute("idClienteProcess")!= null) {
+        this.attrs.put("idClienteProcess", JsfBase.getFlashAttribute("idClienteProcess"));
+        this.doLoad();
+        this.attrs.put("idClienteProcess", null);
+      } // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -105,6 +110,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			condicion= new StringBuilder("");
 			cliente= (UISelectEntity)this.attrs.get("cliente");
 			clientes= (List<UISelectEntity>)this.attrs.get("clientes");
+      if(!Cadena.isVacio(this.attrs.get("idClienteProcess")) && !this.attrs.get("idClienteProcess").toString().equals("-1")) 
+        condicion.append("tc_mantic_clientes.id_cliente=").append(this.attrs.get("idClienteProcess")).append(" and ");
 			if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
 				condicion.append("tc_mantic_clientes.razon_social regexp '.*").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
 			else 

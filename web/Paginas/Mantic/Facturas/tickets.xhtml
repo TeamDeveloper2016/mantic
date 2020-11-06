@@ -324,22 +324,22 @@
 								<p:separator rendered="#{manticFacturasTickets.attrs.seleccionado.devolucion.toBoolean}"/>
 								<p:menuitem icon="fa fa-bars" value="Ver devoluciones" actionListener="#{manticFacturasTickets.loadDevolucion()}" process="@this tabla" onstart="janal.bloquear();" oncomplete="PF('dlgDetalle').show();" update="dialogoDetalle" rendered="#{manticFacturasTickets.attrs.seleccionado.devolucion.toBoolean}"/>
 							</p:contextMenu>
+              <hr class="ui-widget-content"/>
+              <div class="janal-line-button">				
+                <div class="lg-pantalla">
+                  <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticFacturasTickets.doAceptar}" onstart="return applyValidate();" oncomplete="janal.desbloquear()"/>
+                  <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" update="@(.relacionado)" action="#{manticFacturasTickets.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                </div>		
+                <div class="xs-pantalla">
+                  <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticFacturasTickets.doAceptar}" onstart="return applyValidate();" oncomplete="janal.desbloquear()"/>
+                  <p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" update="@(.relacionado)" action="#{manticFacturasTickets.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                </div>		
+              </div>              
 						</div>
 					</div>						
         </div>
       </div>
     </div>		 
-		<hr class="ui-widget-content"/>
-		<div class="janal-line-button">				
-			<div class="lg-pantalla">
-				<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticFacturasTickets.doAceptar}" onstart="return applyValidate();" oncomplete="janal.desbloquear()"/>
-				<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" update="@(.relacionado)" action="#{manticFacturasTickets.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
-			</div>		
-			<div class="xs-pantalla">
-				<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticFacturasTickets.doAceptar}" onstart="return applyValidate();" oncomplete="janal.desbloquear()"/>
-				<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" update="@(.relacionado)" action="#{manticFacturasTickets.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
-			</div>		
-		</div>
   </ui:define>   
   <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
   <ui:param name="tituloConfirmacion" value="Articulos del ticket seleccionado"/>	
