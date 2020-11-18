@@ -21,6 +21,7 @@ import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Periodo;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -98,7 +99,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   @Override
   public void doLoad() {
     List<Columna> columns     = null;
-		Map<String, Object> params= toPrepare();
+		Map<String, Object> params= this.toPrepare();
     try {
       params.put("sortOrder", "order by tc_mantic_ordenes_compras.registro desc");
       columns = new ArrayList<>();
@@ -190,8 +191,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
 		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
-		if(sb.length()== 0)
-		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+		if(sb.length()== 0) {
+      Periodo periodo= new Periodo();
+      periodo.addMeses(-2);
+		  regresar.put(Constantes.SQL_CONDICION, "date_format(tc_mantic_ordenes_compras.registro, '%Y%m%d')>= '".concat(periodo.toString()).concat("'"));
+    } // if  
 		else	
 		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
 		return regresar;		

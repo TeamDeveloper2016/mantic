@@ -478,6 +478,11 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.real      = Numero.toRedondearSat(descuentos.getFactor()== 0? this.getCosto(): value);
 		value          = Numero.toRedondearSat(this.real- this.getValor()); 
   	this.diferencia= this.getValor()== 0? 0: Numero.toRedondearSat(value* 100/ this.getValor());
+    if(this.sinIva) {
+      double porcentaje= 1+ (this.getIva()/ 100);
+      this.calculado= Numero.toRedondearSat(this.calculado/ porcentaje);
+      this.real     = Numero.toRedondearSat(this.real/ porcentaje);
+    } // if
 	}	
 
 	public TcManticNotasDetallesDto toNotaDetalle() {

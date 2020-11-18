@@ -97,12 +97,12 @@ public class Accion extends IBaseAttribute implements Serializable {
 			1L, // Long orden, 
 			-1L // Long idTransferencia					
 		);
-		if(backup!= null) {
-		  this.transferencia.setIdAlmacen(backup.getIdAlmacen());
-		  this.transferencia.setIkAlmacen(backup.getIkAlmacen());
-		  this.transferencia.setIdDestino(backup.getIdDestino());
-		  this.transferencia.setIkDestino(backup.getIkDestino());
-		} // if
+//		if(backup!= null) {
+//		  this.transferencia.setIdAlmacen(backup.getIdAlmacen());
+//		  this.transferencia.setIkAlmacen(backup.getIkAlmacen());
+//		  this.transferencia.setIdDestino(backup.getIdDestino());
+//		  this.transferencia.setIkDestino(backup.getIkDestino());
+//		} // if
 		this.detalle= new Articulo(-1L);
 		this.detalle.setCalculado(1D);
   	this.attrs.put("sugerido", 0D);

@@ -183,7 +183,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 						DaoFactory.getInstance().update(sesion, item);
 					else
 						DaoFactory.getInstance().insert(sesion, item);
-					this.toAffectAlmacenes(sesion, this.orden.getConsecutivo(), this.orden.getIdNotaEntrada(), articulo, nota.getIdAlmacen());
+					this.toAffectAlmacenes(sesion, this.orden.getConsecutivo(), nota.getIdNotaEntrada(), articulo, nota.getIdAlmacen());
 				} // if
 		  } // if
 		} // for

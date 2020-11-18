@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -130,6 +131,10 @@ public class Abono extends IBaseTicket implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			apartado= (Entity) DaoFactory.getInstance().toEntity("VistaTcManticApartadosDto", "apartado", params);
 			this.attrs.put("apartado", apartado);
+      if(Objects.equals(1L, apartado.toLong("idApartadoEstatus")) || Objects.equals(2L, apartado.toLong("idApartadoEstatus"))) {
+        UIBackingUtilities.execute("janal.bloquear();PF('dlgPago').show();");
+        this.doLoadTopePago();
+      } // if
 		} // try
 		catch (Exception e) {
 			throw e;

@@ -21,6 +21,7 @@ import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Periodo;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -168,8 +169,11 @@ public class Filtro extends IBaseTicket implements Serializable {
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
 		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
-		if(sb.length()== 0)
-		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+		if(sb.length()== 0) {
+      Periodo periodo= new Periodo();
+      periodo.addMeses(-2);
+		  regresar.put(Constantes.SQL_CONDICION, "date_format(tc_mantic_ventas.registro, '%Y%m%d')>= '".concat(periodo.toString()).concat("'"));
+    } // if  
 		else	
 		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
 		return regresar;		

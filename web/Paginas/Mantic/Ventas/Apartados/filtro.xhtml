@@ -13,12 +13,16 @@
 		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryTicketJs}"/>
     <script type="text/javascript">
       Janal.Control.fields = {        
-        'idEmpresa'         : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'cliente'           : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'dias'              : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'fechaInicio'       : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'fechaTermino'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'idApartadoEstatus' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}
+        idEmpresa        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        consecutivo      : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true, grupo: 'general'},
+        apartado         : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true, grupo: 'general'},
+        cliente          : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        dias             : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				montoInicio      : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
+        montoTermino     : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
+        fechaInicio      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        fechaTermino     : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        idApartadoEstatus: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}
       };
       
       fieldsDialog= {
@@ -62,6 +66,10 @@
 									<h:outputText value="#{item.nombre}"/>
 								</p:column>   
 							</p:selectOneMenu>
+              <p:outputLabel for="consecutivo" value="No. ticket:"/>
+              <p:inputText id="consecutivo" value="#{manticVentasApartados.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
+              <p:outputLabel for="apartado" value="No. apartado:"/>
+              <p:inputText id="apartado" value="#{manticVentasApartados.attrs.apartado}" styleClass="janal-wid-100-txt"/> 
 							<p:outputLabel for="cliente" value="Cliente:"/>
 							<p:inputText id="cliente" value="#{manticVentasApartados.attrs.cliente}" styleClass="janal-wid-100-txt"/> 
 							<p:outputLabel for="dias" value="Días de apartado:"/>
@@ -70,6 +78,14 @@
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticVentasApartados.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticVentasApartados.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+              <p:outputLabel for="montoInicio" value="Monto inicio:"/>
+							<p:inputText id="montoInicio" styleClass="janal-wid-100-txt" value="#{manticVentasApartados.attrs.montoInicio}" converter="javax.faces.Double">
+								<p:ajax event="blur" listener="#{manticVentasApartados.doMontoUpdate}" process="@this" update="montoTermino"/>
+							</p:inputText>	
+							<p:outputLabel for="montoTermino" value="Monto termino:"/>
+							<p:inputText id="montoTermino" styleClass="janal-wid-100-txt" value="#{manticVentasApartados.attrs.montoTermino}" converter="javax.faces.Double">							
+								<p:ajax event="blur" listener="#{manticVentasApartados.doMontoUpdate}" process="@this" update="montoInicio"/>
+							</p:inputText>
               <p:outputLabel for="vencidos" value="Vencidos:"/>
 							<p:selectOneMenu id="vencidos" value="#{manticVentasApartados.attrs.vencidos}" converter="javax.faces.Long" styleClass="janal-wid-96">
 								<f:selectItem itemLabel="NO" itemValue="2"/>
@@ -85,7 +101,7 @@
 				</div>
 				<p:spacer/>
 				<div id="collapse-content" class="ui-grid-col-9">
-					<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticVentasApartados.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticVentasApartados.attrs.seleccionado}" selectionMode="single" paginator="#{manticVentasApartados.lazyModel.rowCount gt manticVentasApartados.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+					<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticVentasApartados.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticVentasApartados.attrs.seleccionado}" selectionMode="single" paginator="#{manticVentasApartados.lazyModel.rowCount gt manticVentasApartados.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 						<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >
@@ -103,65 +119,65 @@
                 <p:commandButton id="reporteXs" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasApartados.doReporte('APARTADOS')}" oncomplete="janal.desbloquear();" update="descargar"/>
 							</div>  
 						</f:facet>												
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-12" sortBy="#{filtro.empresa}">
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-12" sortBy="#{row.empresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
-              <h:outputText value="#{filtro['nombreEmpresa']}"/>
+              <h:outputText value="#{row['nombreEmpresa']}"/>
             </p:column>		
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.ticket}">
 							<f:facet name="header">
 								<h:outputText value="Ticket"/>
 							</f:facet>
-							<h:outputText value="#{filtro['consecutivo']}"/>
+              <h:outputText value="#{row['ticket']}" title="No apartado: #{row['consecutivo']}"/>
 						</p:column>														
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.cliente}">
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.cliente}">
 							<f:facet name="header">
 								<h:outputText value="Cliente"/>
 							</f:facet>
-							<h:outputText value="#{filtro['cliente']}"/>
+							<h:outputText value="#{row['cliente']}"/>
 						</p:column>					
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.persona}">
 							<f:facet name="header">
 								<h:outputText value="Vendedor"/>
 							</f:facet>
-							<h:outputText value="#{filtro['persona']}"/>
+							<h:outputText value="#{row['persona']}"/>
 						</p:column>								
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{filtro.estatus}">
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.estatus}">
 							<f:facet name="header">
 								<h:outputText value="Estatus"/>
 							</f:facet>
-							<h:outputText value="#{filtro['estatus']}"/>
+							<h:outputText value="#{row['estatus']}"/>
 						</p:column>								
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.importe}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.importe}">
 							<f:facet name="header">
 								<h:outputText value="Importe"/>
 							</f:facet>
-							<h:outputText value="#{filtro['importe']}"/>
+							<h:outputText value="#{row['importe']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.abonado}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.abonado}">
 							<f:facet name="header">
 								<h:outputText value="Abonado"/>
 							</f:facet>
-							<h:outputText value="#{filtro['abonado']}"/>
+							<h:outputText value="#{row['abonado']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.saldo}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.saldo}">
 							<f:facet name="header">
 								<h:outputText value="Saldo"/>
 							</f:facet>
-							<h:outputText value="#{filtro['saldo']}"/>
+							<h:outputText value="#{row['saldo']}"/>
 						</p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{filtro.regitro}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.regitro}">
 							<f:facet name="header">
 								<h:outputText value="Fecha"/>
 							</f:facet>
-							<h:outputText value="#{filtro['registro']}"/>
+							<h:outputText value="#{row['registro']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-5" sortBy="#{filtro.dias}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-5" sortBy="#{row.dias}">
 							<f:facet name="header">
 								<h:outputText value="Días" title="Días trascurridos desde la compra"/>
 							</f:facet>
-							<h:outputText value="#{filtro['dias']}"/>
+							<h:outputText value="#{row['dias']}"/>
 						</p:column>
 						<f:facet name="footer">
 							<p:outputLabel value="Total [#{manticVentasApartados.lazyModel==null?0:manticVentasApartados.lazyModel.rowCount}] registros"/>

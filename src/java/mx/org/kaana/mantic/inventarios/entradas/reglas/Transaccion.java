@@ -231,8 +231,6 @@ public class Transaccion extends Inventarios implements Serializable {
 					} // if	
 					else
 						DaoFactory.getInstance().insert(sesion, item);
-					// if(this.aplicar)
-					//  this.toAffectAlmacenes(sesion, this.orden.getIdNotaEntrada(), item, articulo);
 					articulo.setObservacion("ARTICULO SURTIDO EN LA NOTA DE ENTRADA ".concat(this.orden.getConsecutivo()).concat(" EL DIA ").concat(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, this.orden.getRegistro())));
 					// QUITAR DE LAS VENTAS PERDIDAS LOS ARTICULOS QUE FUERON YA SURTIDOS EN EL ALMACEN
 					params.put("idArticulo", articulo.getIdArticulo());
@@ -350,7 +348,7 @@ public class Transaccion extends Inventarios implements Serializable {
 				item.setIdNotaEntrada(this.orden.getIdNotaEntrada());
 				// Si la cantidad es mayor a cero realizar todo el proceso para el articulos, si no ignorarlo porque el articulo no se surtio
 				if(articulo.getCantidad()> 0L)
-					this.toAffectAlmacenes(sesion, this.orden.getConsecutivo(), this.orden.getIdNotaEntrada(), item, articulo);
+					this.toAffectAlmacenes(sesion, this.orden.getConsecutivo(), this.orden, item, articulo);
 			} // for
 			this.orden.setIdNotaEstatus(3L);
 			DaoFactory.getInstance().update(sesion, this.orden);

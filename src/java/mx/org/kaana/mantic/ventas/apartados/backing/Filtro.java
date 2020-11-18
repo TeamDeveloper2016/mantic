@@ -106,6 +106,10 @@ public class Filtro extends IBaseTicket implements Serializable {
 		  search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
   		sb.append("(upper(cliente) regexp '.*").append(search).append(".*') and ");
     } // if
+		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
+  		sb.append("(ticket like '%").append(this.attrs.get("consecutivo")).append("%') and ");
+		if(!Cadena.isVacio(this.attrs.get("apartado")))
+  		sb.append("(consecutivo like '%").append(this.attrs.get("apartado")).append("%') and ");
     if(!Cadena.isVacio(this.attrs.get("idVenta")))
   		sb.append("(id_venta= ").append(this.attrs.get("idVenta")).append(") and ");
     if(!Cadena.isVacio(this.attrs.get("dias")))
@@ -114,6 +118,10 @@ public class Filtro extends IBaseTicket implements Serializable {
 		  sb.append("(date_format(registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
 		  sb.append("(date_format(registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
+		if(!Cadena.isVacio(this.attrs.get("montoInicio")))
+		  sb.append("(importe>= ").append((Double)this.attrs.get("montoInicio")).append(") and ");			
+		if(!Cadena.isVacio(this.attrs.get("montoTermino")))
+		  sb.append("(importe<= ").append((Double)this.attrs.get("montoTermino")).append(") and ");			
 		if(!Cadena.isVacio(this.attrs.get("vencidos")) && this.attrs.get("vencidos").toString().equals("1"))
   		sb.append("(now()> vencimiento) and ");
     if(!Cadena.isVacio(this.attrs.get("vencidos")) && this.attrs.get("vencidos").toString().equals("2"))
@@ -431,5 +439,12 @@ public class Filtro extends IBaseTicket implements Serializable {
 		} // finally		
 		return regresar;
 	}
-	
+  
+	public void doMontoUpdate() {
+	  if(this.attrs.get("montoInicio")!= null && this.attrs.get("montoTermino")== null)
+			this.attrs.put("montoTermino", this.attrs.get("montoInicio"));
+	  if(this.attrs.get("montoTermino")!= null && this.attrs.get("montoInicio")== null)
+			this.attrs.put("montoInicio", this.attrs.get("montoTermino"));
+	} // doMontoUpdate
+  
 }

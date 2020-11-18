@@ -49,7 +49,7 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 		this.idProveedor= idProveedor;
 	}
 	
-	protected void toAffectAlmacenes(Session sesion, String consecutivo, Long idNotaEntrada, TcManticNotasDetallesDto item, Articulo codigos) throws Exception {
+	protected void toAffectAlmacenes(Session sesion, String consecutivo, TcManticNotasEntradasDto notaEntrada, TcManticNotasDetallesDto item, Articulo codigos) throws Exception {
 		Map<String, Object> params= null;
 		double stock= 0D;
 		try {
@@ -92,7 +92,7 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 			// registar el cambio de precios en la bitacora de articulo 
 			TcManticArticulosDto global= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, item.getIdArticulo());
 			
-			TcManticArticulosBitacoraDto movimiento= new TcManticArticulosBitacoraDto(global.getIva(), JsfBase.getIdUsuario(), global.getMayoreo(), -1L, global.getMenudeo(), global.getCantidad(), global.getIdArticulo(), idNotaEntrada, global.getMedioMayoreo(), global.getPrecio(), global.getLimiteMedioMayoreo(), global.getLimiteMayoreo(), global.getDescuento(), global.getExtra());			
+			TcManticArticulosBitacoraDto movimiento= new TcManticArticulosBitacoraDto(global.getIva(), JsfBase.getIdUsuario(), global.getMayoreo(), -1L, global.getMenudeo(), global.getCantidad(), global.getIdArticulo(), notaEntrada.getIdNotaEntrada(), global.getMedioMayoreo(), global.getPrecio(), global.getLimiteMedioMayoreo(), global.getLimiteMayoreo(), global.getDescuento(), global.getExtra());			
 			DaoFactory.getInstance().insert(sesion, movimiento);
 			
 			// afectar el inventario general de articulos dentro del almacen
@@ -111,6 +111,11 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 			// esto aplica para cuando el precio que llega es mayor al registrado dejar el nuevo
 			Descuentos descuentos= new Descuentos(item.getCosto(), item.getDescuento());
 			double costo= descuentos.getFactor()== 0D? item.getCosto(): descuentos.toImporte();
+      
+      // SI SE ELIGIO CALCULAR A PRECIOS NETOS ENTONCES SE DEBE DE CALCULAR EL COSTO MENOS EL IVA
+      if(Objects.equals(1L, notaEntrada.getIdSinIva())) 
+        costo= Numero.toRedondearSat(costo/ (1+ (global.getIva()/ 100)));
+        
 			// si esta marcado como afectar los costos se aplicara el cambio en el catalogo de articulos
 			if(codigos.getIdAplicar().equals(1L) || costo> global.getPrecio()) {
 				// aplicar el descuento sobre el valor del costo del articulo para afectar el catalogo
@@ -206,7 +211,7 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 					TcManticNotasDetallesDto item= articulo.toNotaDetalle();
 					// Si la cantidad es mayor a cero realizar todo el proceso para el articulos, si no ignorarlo porque el articulo no se surtio
 					if(articulo.getCantidad()> 0L)
-    		    this.toAffectAlmacenes(sesion, nota.getConsecutivo(), nota.getIdNotaEntrada(), item, articulo);
+    		    this.toAffectAlmacenes(sesion, nota.getConsecutivo(), nota, item, articulo);
 				} // for
 			} // if	
 		} // for
