@@ -172,7 +172,7 @@
           </p:inputNumber>
           <p:outputLabel value="Resta:" styleClass="janal-color-red"/>
           <p:inputText id="resta" value="#{manticVentasApartadosAbono.attrs.resta}" styleClass="janal-wid-100-txt janal-column-right janal-color-red" readonly="true"/>
-					<p:outputLabel for="tipoPago" value="Tipo de pago:"/>
+					<p:outputLabel for="tipoPago" value="Pago:"/>
 					<p:selectOneMenu id="tipoPago" value="#{manticVentasApartadosAbono.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
 						<p:ajax event="change" process="@this pago" listener="#{manticVentasApartadosAbono.doValidaTipoPago}" update="panelDialog lblBanco banco lblReferencia referencia" oncomplete="janal.refresh();"/>
 						<f:selectItems value="#{manticVentasApartadosAbono.attrs.tiposPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>

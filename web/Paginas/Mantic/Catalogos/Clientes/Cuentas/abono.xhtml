@@ -86,7 +86,7 @@
 							<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosClientesCuentasAbono.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosClientesCuentasAbono.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosClientesCuentasAbono.lazyModel.rowCount gt manticCatalogosClientesCuentasAbono.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 								<f:facet name="header" >
 									<div class="lg-pantalla">
-										<p:menuButton   value="Opciones">
+										<p:menuButton value="Opciones">
 											<p:menuitem id="pagoIcon" icon="fa fa-money" value="Registrar pago" onstart="return janal.bloquear();" oncomplete="PF('dlgPago').show();" disabled="#{manticCatalogosClientesCuentasAbono.attrs.permitirPago}"/>
 											<p:separator/>
 											<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -239,12 +239,12 @@
 					</p:selectOneMenu>
 					<p:outputLabel for="pago" value="Pago: $"/>
 					<p:inputNumber id="pago" value="#{manticCatalogosClientesCuentasAbono.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" decimalPlaces="4"/>
-					<p:outputLabel for="saldar" value="Saldar deuda: "/>
+					<p:outputLabel for="saldar" value="Saldar: "/>
 					<p:selectOneRadio id="saldar" value="#{manticCatalogosClientesCuentasAbono.attrs.saldar}">
 						<f:selectItem itemLabel="SI" itemValue="1"/>
 						<f:selectItem itemLabel="NO" itemValue="2"/>
 					</p:selectOneRadio>
-					<p:outputLabel for="tipoPago" value="Tipo de pago:"/>
+					<p:outputLabel for="tipoPago" value="Tipo:"/>
 					<p:selectOneMenu id="tipoPago" value="#{manticCatalogosClientesCuentasAbono.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
 						<p:ajax event="change" process="@this pago" listener="#{manticCatalogosClientesCuentasAbono.doValidaTipoPago}" update="panelDialog lblBanco banco lblReferencia referencia" oncomplete="janal.refresh();"/>
 						<f:selectItems value="#{manticCatalogosClientesCuentasAbono.attrs.tiposPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>

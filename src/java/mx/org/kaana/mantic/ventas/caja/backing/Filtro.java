@@ -144,7 +144,7 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 			columns.remove(1);
 			params.clear();
 			params.put(Constantes.SQL_CONDICION, toEstatusCaja());
-      this.attrs.put("estatusFiltro", (List<UISelectEntity>) UIEntity.build("TcManticVentasEstatusDto", "row", params, columns));
+      this.attrs.put("allEstatus", (List<UISelectEntity>) UIEntity.build("TcManticVentasEstatusDto", "row", params, columns));
 			this.attrs.put("idVentaEstatus", new UISelectEntity("-1"));
     } // try
     catch (Exception e) {

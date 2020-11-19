@@ -5233,7 +5233,8 @@
     <unit id="TcManticClientesEstatusDto">
       <select id="row">
         select      
-          *
+          tc_mantic_clientes_estatus.id_cliente_estatus as id_key,
+          tc_mantic_clientes_estatus.*
         from      
           tc_mantic_clientes_estatus
         where 

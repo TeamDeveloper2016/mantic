@@ -51,9 +51,9 @@ public class Abono extends IBasePagos implements Serializable {
       this.attrs.put("idClienteDeuda", JsfBase.getFlashAttribute("idClienteDeuda"));    
 			this.attrs.put("cliente", DaoFactory.getInstance().findById(TcManticClientesDto.class, Long.valueOf(this.attrs.get("idCliente").toString())));			
 			this.attrs.put("saldar", "2");						
-			initValues();
-			loadClienteDeuda();
-			doLoad();
+			this.initValues();
+			this.loadClienteDeuda();
+			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -61,7 +61,7 @@ public class Abono extends IBasePagos implements Serializable {
     } // catch		
   } // init	
 	
-	private void loadClienteDeuda() throws Exception{
+	private void loadClienteDeuda() throws Exception {
 		Entity deuda             = null;
 		Map<String, Object>params= null;
 		try {
@@ -73,6 +73,8 @@ public class Abono extends IBasePagos implements Serializable {
 			this.attrs.put("permitirPago", deuda.toLong("idClienteEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus()));
 			this.attrs.put("deuda", deuda);
 			this.attrs.put("pago", deuda.toDouble("saldo"));			
+      if(!deuda.toLong("idClienteEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus())) 
+        UIBackingUtilities.execute("janal.bloquear();PF('dlgPago').show();");
 		} // try
 		catch (Exception e) {
 			throw e;
