@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.Constantes;
@@ -26,12 +27,15 @@ public abstract class IBaseTicket extends IBaseFilter implements Serializable {
 		Map<String, Object>params= null;
 		CreateTicket ticket      = null;
 		AdminTickets adminTicket = null;
+    String       cliente     = "";
 		try {			
 			seleccionado= (Entity) this.attrs.get("seleccionado");
 			params= new HashMap<>();
 			params.put("idVenta", seleccionado.toLong("idVenta"));
+      if(seleccionado.containsKey("cliente") && !Objects.equals(Constantes.VENTA_AL_PUBLICO_GENERAL, seleccionado.toString("cliente"))) 
+        cliente= seleccionado.toString("cliente");
 			adminTicket= new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params));			
-			ticket= new CreateTicket(adminTicket, this.toPago(adminTicket, seleccionado.toLong("idVenta")), this.toTipoTransaccion(seleccionado.toLong("idVentaEstatus")));
+			ticket= new CreateTicket(adminTicket, this.toPago(adminTicket, seleccionado.toLong("idVenta")), this.toTipoTransaccion(seleccionado.toLong("idVentaEstatus")), cliente);
 			UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + toConsecutivoTicket(seleccionado.toLong("idVentaEstatus"), adminTicket) + "','" + ticket.toHtml() + "');");
 		} // try
 		catch (Exception e) {

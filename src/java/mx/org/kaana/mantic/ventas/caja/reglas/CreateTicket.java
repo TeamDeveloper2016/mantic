@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.ventas.caja.reglas;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -18,7 +19,9 @@ import mx.org.kaana.mantic.ventas.caja.beans.Abono;
 import mx.org.kaana.mantic.ventas.caja.beans.Pago;
 import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 
-public class CreateTicket {
+public class CreateTicket implements Serializable {
+
+  private static final long serialVersionUID = 2708311485895423674L;
 
 	private AdminTickets ticket;
 	protected Pago pago;
@@ -39,7 +42,7 @@ public class CreateTicket {
 		this.pago   = pago;
 		this.tipo   = tipo;
 		this.cliente= cliente;
-		init();
+		this.init();
 	} // CreateTicket
 	
 	protected void init() {		

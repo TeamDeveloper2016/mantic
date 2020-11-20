@@ -101,9 +101,9 @@ public class Abono extends IBasePagos implements Serializable {
 			tiposDocumentos= UISelect.build("TcManticTiposComprobantesDto", "row", params, "nombre", " ", EFormatoDinamicos.MAYUSCULAS);
 			this.attrs.put("tiposDocumentos", tiposDocumentos);
 			this.attrs.put("tipoDocumento", UIBackingUtilities.toFirstKeySelectItem(tiposDocumentos));
-			initValues();
-			loadProveedorDeuda();
-			doLoad();
+			this.initValues();
+			this.loadProveedorDeuda();
+			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -130,6 +130,8 @@ public class Abono extends IBasePagos implements Serializable {
 			this.attrs.put("saldoPositivo", deuda.toDouble("saldo")* -1);
 			this.attrs.put("pago", deuda.toDouble("saldo")* -1);
 			this.attrs.put("permitirPago", deuda.toLong("idEmpresaEstatus").equals(EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa()));
+      if(!deuda.toLong("idEmpresaEstatus").equals(EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa())) 
+        UIBackingUtilities.execute("janal.bloquear();PF('dlgPago').show();");
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -167,10 +169,9 @@ public class Abono extends IBasePagos implements Serializable {
 
 	public String doRegresar() {
 		String regresar= null;
-		if(this.attrs.get("retorno")!= null){
-			JsfBase.setFlashAttribute("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));
+		JsfBase.setFlashAttribute("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));
+		if(this.attrs.get("retorno")!= null)
 			regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-		} // if
 		else
 			regresar=	"saldos".concat(Constantes.REDIRECIONAR);
 		return regresar;
@@ -181,24 +182,20 @@ public class Abono extends IBasePagos implements Serializable {
 		TcManticEmpresasPagosDto pago= null;
 		boolean tipoPago             = false;
 		try {
-			//if(validaPago()){
-				pago= new TcManticEmpresasPagosDto();
-				pago.setIdEmpresaDeuda(Long.valueOf(this.attrs.get("idEmpresaDeuda").toString()));
-				pago.setIdUsuario(JsfBase.getIdUsuario());
-				pago.setObservaciones(this.attrs.get("observaciones").toString());
-				pago.setPago(Double.valueOf(this.attrs.get("pago").toString()));
-				pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
-				tipoPago= pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
-				transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("caja").toString()), -1L, Long.valueOf(this.attrs.get("idEmpresa").toString()), tipoPago ? -1 : Long.valueOf(this.attrs.get("banco").toString()), tipoPago ? "" : this.attrs.get("referencia").toString(), null, false, this.seleccionadosNotas, this.seleccionadosCredito);
-				if(transaccion.ejecutar(EAccion.AGREGAR)){
-					JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta", ETipoMensaje.INFORMACION);
-					loadProveedorDeuda();
-				} // if
-				else
-					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
-			/*} // if
-			else
-				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante y mayor a 0.", ETipoMensaje.ERROR);*/
+      pago= new TcManticEmpresasPagosDto();
+      pago.setIdEmpresaDeuda(Long.valueOf(this.attrs.get("idEmpresaDeuda").toString()));
+      pago.setIdUsuario(JsfBase.getIdUsuario());
+      pago.setObservaciones(this.attrs.get("observaciones").toString());
+      pago.setPago(Double.valueOf(this.attrs.get("pago").toString()));
+      pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
+      tipoPago= pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
+      transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("caja").toString()), -1L, Long.valueOf(this.attrs.get("idEmpresa").toString()), tipoPago ? -1 : Long.valueOf(this.attrs.get("banco").toString()), tipoPago ? "" : this.attrs.get("referencia").toString(), null, false, this.seleccionadosNotas, this.seleccionadosCredito);
+      if(transaccion.ejecutar(EAccion.AGREGAR)) {
+        JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta", ETipoMensaje.INFORMACION);
+        loadProveedorDeuda();
+      } // if
+      else
+        JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -208,25 +205,6 @@ public class Abono extends IBasePagos implements Serializable {
 			this.attrs.put("observaciones", "");
 		} // finally
 	} // doRegistrarPago
-	
-	private boolean validaPago() {		
-		boolean regresar= false;
-		Double pago     = 0D;
-		Double saldo    = 0D;
-		Entity deuda    = null;
-		try {
-			pago= Double.valueOf(this.attrs.get("pago").toString());
-			if(pago > 0D){
-				deuda= (Entity) this.attrs.get("deuda");
-				saldo= Double.valueOf(deuda.toString("saldo"));
-				regresar= pago<= (saldo * -1);
-			} // if
-		} // try
-		catch (Exception e) {		
-			throw e;
-		} // catch
-		return regresar;
-	} // validaPago	
 	
 	@Override
 	public void doLoadImportados() {
@@ -280,7 +258,7 @@ public class Abono extends IBasePagos implements Serializable {
 	} // doLoadFiles	
 	
 	@Override
-	public void doLoadPagosArchivos(){
+	public void doLoadPagosArchivos() {
 		List<Columna> columns     = null;
     Map<String, Object> params= null;
     try {
@@ -305,7 +283,7 @@ public class Abono extends IBasePagos implements Serializable {
 		Transaccion transaccion               = null;
 		TcManticEmpresasDeudasDto empresaDeuda= null;
 		try {
-			if(getFile()!= null){
+			if(getFile()!= null) {
 				empresaDeuda= (TcManticEmpresasDeudasDto)DaoFactory.getInstance().findById(TcManticEmpresasDeudasDto.class, (Long) this.attrs.get("idEmpresaDeuda"));
 				transaccion= new Transaccion(empresaDeuda, getFile(), ((Entity)this.attrs.get("pagoCombo")).getKey(), Long.valueOf(this.attrs.get("tipoDocumento").toString()), (Date)this.attrs.get("fecha"));
 				if(transaccion.ejecutar(EAccion.SUBIR)) {
@@ -368,7 +346,7 @@ public class Abono extends IBasePagos implements Serializable {
 		} // catch
 	} // doFileUpload		
 	
-	public void doLoadCuentas(){
+	public void doLoadCuentas() {
 		try {
 			doLoadNotasEntradas();
 			doLoadNotasCredito();
@@ -379,7 +357,7 @@ public class Abono extends IBasePagos implements Serializable {
 		} // catch		
 	} // doLoadCuentas
 	
-	private void doLoadNotasEntradas(){
+	private void doLoadNotasEntradas() {
 		List<Columna> columns     = null;
 	  Map<String, Object> params= null;	
 		try {
@@ -402,7 +380,7 @@ public class Abono extends IBasePagos implements Serializable {
 		} // catch		
 	} // doLoadNotasEntradas
 	
-	private void doLoadNotasCredito(){
+	private void doLoadNotasCredito() {
 		List<Columna> columns     = null;
 	  Map<String, Object> params= null;	
 		try {
@@ -424,7 +402,7 @@ public class Abono extends IBasePagos implements Serializable {
 		} // catch		
 	} // doLoadNotasCredito
 	
-	public void doReabrirCuenta(){
+	public void doReabrirCuenta() {
 		Transaccion transaccion               = null;
 		TcManticEmpresasDeudasDto deudaReabrir= null;
 		try {
@@ -432,7 +410,7 @@ public class Abono extends IBasePagos implements Serializable {
 			deudaReabrir.setIdEmpresaDeuda((Long)this.attrs.get("idEmpresaDeuda"));
 			deudaReabrir.setObservaciones(toObservacionesReabrir());
 			transaccion= new Transaccion(deudaReabrir, null, -1L, null, null);
-			if(transaccion.ejecutar(EAccion.ACTIVAR)){
+			if(transaccion.ejecutar(EAccion.ACTIVAR)) {
 				JsfBase.addMessage("Se abrió la cuenta de forma correcta", ETipoMensaje.INFORMACION);
 				loadProveedorDeuda();
 			} // if
@@ -445,7 +423,7 @@ public class Abono extends IBasePagos implements Serializable {
 		} // catch		
 	} // doReabrirCuenta
 	
-	private String toObservacionesReabrir(){
+	private String toObservacionesReabrir() {
 		StringBuilder regresar= null;
 		try {
 			regresar= new StringBuilder("");
@@ -487,11 +465,11 @@ public class Abono extends IBasePagos implements Serializable {
 			doLoadPagosArchivos();					
 	}	// doTabChange
 	
-	public void doEliminar(UISelectEntity item){
+	public void doEliminar(UISelectEntity item) {
 		Transaccion transaccion= null;
 		try {
 			transaccion= new Transaccion(item.getKey());
-			if(transaccion.ejecutar(EAccion.ELIMINAR)){
+			if(transaccion.ejecutar(EAccion.ELIMINAR)) {
 				JsfBase.addMessage("Eliminar documento", "El documento se eliminó de forma correcta", ETipoMensaje.INFORMACION);
 				doLoadImportados();
 			} // if

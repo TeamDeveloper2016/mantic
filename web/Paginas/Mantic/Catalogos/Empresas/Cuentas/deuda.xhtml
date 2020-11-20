@@ -15,21 +15,21 @@
 				'pago'         : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
 				'referencia'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
         'tipoPago'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
-        'observaciones': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
+        'observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
 			};
 			
 			fieldsDialogGeneral ={
 				'pagoGeneral'         : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoGeneral'},
 				'referenciaGeneral'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoGeneral'},
         'tipoPagoGeneral'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoGeneral'},
-        'observacionesGeneral': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoGeneral', formatos: 'cambiar-mayusculas', individual: true}
+        'observacionesGeneral': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogoGeneral', formatos: 'cambiar-mayusculas', individual: true}
 			};
 			
 			fieldsDialogSegmento ={
 				'pagoSegmento'         : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoSegmento'},
 				'referenciaSegmento'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoSegmento'},
         'tipoPagoSegmento'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoSegmento'},
-        'observacionesSegmento': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoSegmento', formatos: 'cambiar-mayusculas', individual: true}
+        'observacionesSegmento': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogoSegmento', formatos: 'cambiar-mayusculas', individual: true}
 			};
     </script>		
   </ui:define>
@@ -50,7 +50,7 @@
 			</div>
 			<div class="ui-grid-row janal-grid-row">
 				<div id="collapse-content" class="ui-grid-col-12">
-					<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosEmpresasCuentasDeuda.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosEmpresasCuentasDeuda.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosEmpresasCuentasDeuda.lazyModel.rowCount gt manticCatalogosEmpresasCuentasDeuda.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" styleClass="janal-wid-100" value="#{manticCatalogosEmpresasCuentasDeuda.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosEmpresasCuentasDeuda.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosEmpresasCuentasDeuda.lazyModel.rowCount gt manticCatalogosEmpresasCuentasDeuda.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 						<p:ajax event="rowToggle" listener="#{manticCatalogosEmpresasCuentasDeuda.onRowToggle}" update="tablaDetalle" />  
 						<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
@@ -67,7 +67,6 @@
 							<div class="xs-pantalla">              
 								<p:menuitem id="pagos" icon="fa fa-money" title="Registrar pago" onstart="return janal.bloquear();" oncomplete="PF('dlgPagoGeneral').show();" disabled="#{!manticCatalogosEmpresasCuentasDeuda.attrs.activePagoGeneral}"/>
 								<p:menuitem id="pagosSegmento" icon="fa fa-money" title="Registrar pago x deuda" onstart="return janal.bloquear();" actionListener="#{manticCatalogosEmpresasCuentasDeuda.doLoadCuentas}" update="dialogoPagoSegmento" oncomplete="PF('dlgPagoSegmento').show();" disabled="#{!manticCatalogosEmpresasCuentasDeuda.attrs.activePagoGeneral}"/>
-								<p:separator rendered="true"/>
 								<p:menuitem id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							</div>  
@@ -75,85 +74,91 @@
 						<p:column style="width: 16px" exportable="false">  
 							<p:rowToggler />  
 						</p:column>  
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.consecutivo}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.consecutivo}">
 							<f:facet name="header">
 								<h:outputText value="Nota de entrada"/>
 							</f:facet>
-							<h:outputText value="#{filtro['consecutivo']}"/>
+							<h:outputText value="#{row['consecutivo']}"/>
 						</p:column>														
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.factura}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.factura}">
 							<f:facet name="header">
 								<h:outputText value="Factura"/>
 							</f:facet>
-							<h:outputText value="#{filtro['factura']}"/>
+							<h:outputText value="#{row['factura']}"/>
 						</p:column>														
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.persona}">
 							<f:facet name="header">
 								<h:outputText value="Usuario"/>
 							</f:facet>
-							<h:outputText value="#{filtro['persona']}"/>
+							<h:outputText value="#{row['persona']}"/>
 						</p:column>											
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.estatus}">
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
 							<f:facet name="header">
 								<h:outputText value="Estatus"/>
 							</f:facet>
-							<h:outputText value="#{filtro['estatus']}"/>
+							<h:outputText value="#{row['estatus']}"/>
 						</p:column>						
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.importe}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
 							<f:facet name="header">
 								<h:outputText value="Importe"/>
 							</f:facet>
-							<h:outputText value="#{filtro['importe']}"/>
+							<h:outputText value="#{row['importe']}"/>
 						</p:column>						
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.saldo}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.saldo}">
 							<f:facet name="header">
 								<h:outputText value="Saldo"/>
 							</f:facet>
-							<h:outputText value="#{filtro['saldo']}"/>
+							<h:outputText value="#{row['saldo']}"/>
 						</p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.limite}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-4" sortBy="#{row.dias}">
+							<f:facet name="header">
+								<h:outputText value="Días" title="Días trascurridos desde la compra"/>
+							</f:facet>
+							<h:outputText value="#{row['dias']}"/>
+						</p:column>
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.limite}">
 							<f:facet name="header">
 								<h:outputText value="Vence" title="Fecha en la que vence el crédito otorgado"/>
 							</f:facet>
-							<h:outputText value="#{filtro['limite']}"/>
+							<h:outputText value="#{row['limite']}"/>
 						</p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.regitro}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.regitro}">
 							<f:facet name="header">
 								<h:outputText value="Fecha"/>
 							</f:facet>
-							<h:outputText value="#{filtro['registro']}"/>
+							<h:outputText value="#{row['registro']}"/>
 						</p:column>		
 						<p:rowExpansion> 
 							<p:dataTable  lazy="true" id="tablaDetalle" widgetVar="kajoolTableDetalle" var="filtro" value="#{manticCatalogosEmpresasCuentasDeuda.detallePagos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticCatalogosEmpresasCuentasDeuda.detallePagos.rowCount gt manticCatalogosEmpresasCuentasDeuda.detallePagos.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">								
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.pago}">
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.pago}">
 									<f:facet name="header">
 										<h:outputText value="Pago"/>
 									</f:facet>
-									<h:outputText value="#{filtro['pago']}"/>
+									<h:outputText value="#{row['pago']}"/>
 								</p:column>														
-								<p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.tipoPago}">
+								<p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{row.tipoPago}">
 									<f:facet name="header">
 										<h:outputText value="Tipo pago"/>
 									</f:facet>
-									<h:outputText value="#{filtro['nombre']}"/>
+									<h:outputText value="#{row['nombre']}"/>
 								</p:column>														
-								<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
+								<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.persona}">
 									<f:facet name="header">
 										<h:outputText value="Usuario"/>
 									</f:facet>
-									<h:outputText value="#{filtro['persona']}"/>
+									<h:outputText value="#{row['persona']}"/>
 								</p:column>																							
-								<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.observaciones}">
+								<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.observaciones}">
 									<f:facet name="header">
 										<h:outputText value="Observaciones"/>
 									</f:facet>
-									<h:outputText value="#{filtro['observaciones']}"/>
+									<h:outputText value="#{row['observaciones']}"/>
 								</p:column>																							
-								<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.regitro}">
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.regitro}">
 									<f:facet name="header">
 										<h:outputText value="Fecha"/>
 									</f:facet>
-									<h:outputText value="#{filtro['registro']}"/>
+									<h:outputText value="#{row['registro']}"/>
 								</p:column>						
 								<f:facet name="footer">
 									<p:outputLabel value="Total [#{manticCatalogosEmpresasCuentasDeuda.detallePagos==null?0:manticCatalogosEmpresasCuentasDeuda.detallePagos.rowCount}] registros"/>
@@ -240,59 +245,59 @@
 						<p:outputLabel for="tablaCreditos" value="Notas de credito"/>
 						<p:dataTable  lazy="true" id="tablaNotas" var="filtro" value="#{manticCatalogosEmpresasCuentasDeuda.notasEntradaFavor}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosEmpresasCuentasDeuda.seleccionadosNotas}" paginator="#{manticCatalogosEmpresasCuentasDeuda.notasEntradaFavor.rowCount gt manticCatalogosEmpresasCuentasDeuda.notasEntradaFavor.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">												
 							<p:column selectionMode="multiple" style="width:30px;text-align:center"/>							
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
 								<f:facet name="header">
 									<h:outputText value="No."/>
 								</f:facet>
-								<h:outputText value="#{filtro['consecutivo']}"/>
+								<h:outputText value="#{row['consecutivo']}"/>
 							</p:column>														
-							<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
+							<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.persona}">
 								<f:facet name="header">
 									<h:outputText value="Proveedor"/>
 								</f:facet>
-								<h:outputText value="#{filtro['persona']}"/>
+								<h:outputText value="#{row['persona']}"/>
 							</p:column>											
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.importe}">
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.importe}">
 								<f:facet name="header">
 									<h:outputText value="Importe"/>
 								</f:facet>
-								<h:outputText value="#{filtro['importe']}"/>
+								<h:outputText value="#{row['importe']}"/>
 							</p:column>						
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.saldo}">
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.saldo}">
 								<f:facet name="header">
 									<h:outputText value="Saldo a favor"/>
 								</f:facet>
-								<h:outputText value="#{filtro['saldo']}"/>
+								<h:outputText value="#{row['saldo']}"/>
 							</p:column>																				
 							<f:facet name="footer">
 								<p:outputLabel value="Total [#{manticCatalogosEmpresasCuentasDeuda.notasEntradaFavor==null?0:manticCatalogosEmpresasCuentasDeuda.notasEntradaFavor.rowCount}] registros"/>
 							</f:facet>
 						</p:dataTable>																			
-						<p:dataTable  lazy="true" id="tablaCreditos" var="filtro" value="#{manticCatalogosEmpresasCuentasDeuda.notasCreditoFavor}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosEmpresasCuentasDeuda.seleccionadosCredito}" paginator="#{manticCatalogosEmpresasCuentasDeuda.notasCreditoFavor.rowCount gt manticCatalogosEmpresasCuentasDeuda.notasCreditoFavor.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">												
+						<p:dataTable  lazy="true" id="tablaCreditos" var="filtro" value="#{manticCatalogosEmpresasCuentasDeuda.notasCreditoFavor}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosEmpresasCuentasDeuda.seleccionadosCredito}" paginator="#{manticCatalogosEmpresasCuentasDeuda.notasCreditoFavor.rowCount gt manticCatalogosEmpresasCuentasDeuda.notasCreditoFavor.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">												
 							<p:column selectionMode="multiple" style="width:30px;text-align:center"/>							
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
 								<f:facet name="header">
 									<h:outputText value="No."/>
 								</f:facet>
-								<h:outputText value="#{filtro['consecutivo']}"/>
+								<h:outputText value="#{row['consecutivo']}"/>
 							</p:column>														
-							<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
+							<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.persona}">
 								<f:facet name="header">
 									<h:outputText value="Proveedor"/>
 								</f:facet>
-								<h:outputText value="#{filtro['persona']}"/>
+								<h:outputText value="#{row['persona']}"/>
 							</p:column>											
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.importe}">
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.importe}">
 								<f:facet name="header">
 									<h:outputText value="Importe"/>
 								</f:facet>
-								<h:outputText value="#{filtro['importe']}"/>
+								<h:outputText value="#{row['importe']}"/>
 							</p:column>						
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.saldo}">
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.saldo}">
 								<f:facet name="header">
 									<h:outputText value="Saldo"/>
 								</f:facet>
-								<h:outputText value="#{filtro['saldo']}"/>
+								<h:outputText value="#{row['saldo']}"/>
 							</p:column>																				
 							<f:facet name="footer">
 								<p:outputLabel value="Total [#{manticCatalogosEmpresasCuentasDeuda.notasCreditoFavor==null?0:manticCatalogosEmpresasCuentasDeuda.notasCreditoFavor.rowCount}] registros"/>
@@ -374,31 +379,31 @@
 			<h:form id="formDialogoPagoSegmento" prependId="false">
 				<p:tabView id="tabPagosSegmentos">
 					<p:tab title="Cuentas">												
-						<p:dataTable  lazy="true" id="tablaSegmentos" var="filtro" value="#{manticCatalogosEmpresasCuentasDeuda.pagosSegmento}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosEmpresasCuentasDeuda.seleccionadosSegmento}" paginator="#{manticCatalogosEmpresasCuentasDeuda.pagosSegmento.rowCount gt manticCatalogosEmpresasCuentasDeuda.pagosSegmento.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">												
+						<p:dataTable lazy="true" id="tablaSegmentos" var="filtro" value="#{manticCatalogosEmpresasCuentasDeuda.pagosSegmento}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="4" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="4, 5" selection="#{manticCatalogosEmpresasCuentasDeuda.seleccionadosSegmento}" paginator="#{manticCatalogosEmpresasCuentasDeuda.pagosSegmento.rowCount gt manticCatalogosEmpresasCuentasDeuda.pagosSegmento.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">												
 							<p:column selectionMode="multiple" style="width:30px;text-align:center"/>							
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
 								<f:facet name="header">
 									<h:outputText value="Ticket"/>
 								</f:facet>
-								<h:outputText value="#{filtro['consecutivo']}"/>
+								<h:outputText value="#{row['consecutivo']}"/>
 							</p:column>														
-							<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
+							<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.persona}">
 								<f:facet name="header">
 									<h:outputText value="Vendedor"/>
 								</f:facet>
-								<h:outputText value="#{filtro['persona']}"/>
+								<h:outputText value="#{row['persona']}"/>
 							</p:column>											
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.importe}">
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.importe}">
 								<f:facet name="header">
 									<h:outputText value="Importe"/>
 								</f:facet>
-								<h:outputText value="#{filtro['importe']}"/>
+								<h:outputText value="#{row['importe']}"/>
 							</p:column>						
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.saldo}">
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.saldo}">
 								<f:facet name="header">
 									<h:outputText value="Saldo"/>
 								</f:facet>
-								<h:outputText value="#{filtro['saldo']}"/>
+								<h:outputText value="#{row['saldo']}"/>
 							</p:column>																				
 							<f:facet name="footer">
 								<p:outputLabel value="Total [#{manticCatalogosEmpresasCuentasDeuda.pagosSegmento==null?0:manticCatalogosEmpresasCuentasDeuda.pagosSegmento.rowCount}] registros"/>
@@ -406,7 +411,7 @@
 						</p:dataTable>													
 					</p:tab>		
 					<p:tab title="Registro pago">
-						<h:panelGrid id="panelDialogoSegmento" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-80">							
+						<h:panelGrid id="panelDialogoSegmento" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-90">
 							<p:outputLabel for="idEmpresaSegmento" value="Sucursal:" rendered="true"/>
 							<p:selectOneMenu id="idEmpresaSegmento" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.idEmpresaSegmento}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="true" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<p:ajax event="change" process="@this" listener="#{manticCatalogosEmpresasCuentasDeuda.doLoadCajasSegmento}" update="cajaSegmento"/>

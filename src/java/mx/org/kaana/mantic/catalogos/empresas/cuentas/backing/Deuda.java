@@ -92,7 +92,6 @@ public class Deuda extends IBaseFilter implements Serializable {
 			if(JsfBase.getFlashAttribute("idProveedor")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
 			this.seleccionadosSegmento= new ArrayList<>();
-      this.attrs.put("sortOrder", "order by	tc_mantic_empresas_deudas.registro desc");
       this.attrs.put("idProveedor", JsfBase.getFlashAttribute("idProveedor"));         
 			idEmpresaInicial= JsfBase.getAutentifica().getEmpresa().getIdEmpresa();
 			this.attrs.put("idEmpresa", idEmpresaInicial);
@@ -107,13 +106,13 @@ public class Deuda extends IBaseFilter implements Serializable {
 			this.attrs.put("pagoGeneral", 1D);
 			this.attrs.put("pagoSegmento", 1D);
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
-				loadSucursales();							
-			doLoadCajas();
-			doLoadCajasGeneral();
-			doLoadCajasSegmento();
-			loadBancos();
-			loadTiposPagos();
-			loadProvedorDeuda();			
+				this.loadSucursales();							
+			this.doLoadCajas();
+			this.doLoadCajasGeneral();
+			this.doLoadCajasSegmento();
+			this.loadBancos();
+			this.loadTiposPagos();
+			this.loadProvedorDeuda();			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -220,7 +219,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		} // catch	
 	} // loadCajas
 	
-	private void loadProvedorDeuda() throws Exception{
+	private void loadProvedorDeuda() throws Exception {
 		Entity deuda             = null;
 		Map<String, Object>params= null;
     List<Columna> columns    = null;
@@ -255,7 +254,7 @@ public class Deuda extends IBaseFilter implements Serializable {
     try {  	  
 			params= new HashMap<>();
 			params.put("idProveedor", this.attrs.get("idProveedor"));						
-			params.put("sortOrder", this.attrs.get("sortOrder"));			
+			params.put("sortOrder", "order by	dias desc");			
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
@@ -279,7 +278,7 @@ public class Deuda extends IBaseFilter implements Serializable {
     } // finally		
   } // doLoad
 	
-	private void validaPagoGeneral(List<Entity> cuentas){
+	private void validaPagoGeneral(List<Entity> cuentas) {
 		int count= 0;
 		try {
 			for(Entity cuenta: cuentas){
@@ -302,7 +301,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 			this.seleccionadosSegmento= new ArrayList<>();
 			params= new HashMap<>();
 			params.put("idProveedor", this.attrs.get("idProveedor"));						
-			params.put("sortOrder", this.attrs.get("sortOrder"));			
+			params.put("sortOrder", "order by	tc_mantic_empresas_deudas.registro desc");			
 			params.put(Constantes.SQL_CONDICION, " tc_mantic_empresas_deudas.saldo < 0 and tc_mantic_empresas_deudas.id_empresa_estatus not in(".concat(EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa().toString()).concat(")"));			
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
@@ -501,7 +500,6 @@ public class Deuda extends IBaseFilter implements Serializable {
 			if(pago > 0D){
 				for(Entity cuenta: this.seleccionadosSegmento)					
 					saldo= saldo + Double.valueOf(cuenta.toString("saldo"));
-				regresar= pago<= (saldo * -1);
 			} // if
 		} // try
 		catch (Exception e) {		

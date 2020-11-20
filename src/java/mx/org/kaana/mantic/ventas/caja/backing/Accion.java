@@ -935,7 +935,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				unlockVentaExtends(ticketAbierto.getKey(), (Long)this.attrs.get("ticketLock"));									
 				this.attrs.put("ticketLock", ticketAbierto.getKey());
 				ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
-				if(!ticketsAbiertos.isEmpty()) {
+				if(!ticketsAbiertos.isEmpty() && ticketsAbiertos.indexOf(ticketAbierto)>= 0) {
 					ticketAbiertoPivote= ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto));												
 					this.attrs.put("ticketAbierto", ticketAbiertoPivote); 
 					this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), true));

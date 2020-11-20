@@ -299,7 +299,7 @@
 				<h:panelGrid id="panelPagosSegmentos" columns="2" styleClass="janal-wid-100">
 					<p:outputLabel for="tablaNotas" value="Notas de entrada"/>						
 					<p:outputLabel for="tablaCreditos" value="Notas de credito"/>
-					<p:dataTable lazy="true" id="tablaNotas" var="filtro" value="#{manticCatalogosEmpresasCuentasAbono.notasEntradaFavor}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosEmpresasCuentasAbono.seleccionadosNotas}" paginator="#{manticCatalogosEmpresasCuentasAbono.notasEntradaFavor.rowCount gt manticCatalogosEmpresasCuentasAbono.notasEntradaFavor.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">												
+					<p:dataTable lazy="true" id="tablaNotas" var="filtro" value="#{manticCatalogosEmpresasCuentasAbono.notasEntradaFavor}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="4" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="4" selection="#{manticCatalogosEmpresasCuentasAbono.seleccionadosNotas}" paginator="#{manticCatalogosEmpresasCuentasAbono.notasEntradaFavor.rowCount gt manticCatalogosEmpresasCuentasAbono.notasEntradaFavor.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">												
 						<p:column selectionMode="multiple" style="width:30px;text-align:center"/>							
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
 							<f:facet name="header">
@@ -329,7 +329,7 @@
 							<p:outputLabel value="Total [#{manticCatalogosEmpresasCuentasAbono.notasEntradaFavor==null?0:manticCatalogosEmpresasCuentasAbono.notasEntradaFavor.rowCount}] registros"/>
 						</f:facet>
 					</p:dataTable>																			
-					<p:dataTable lazy="true" id="tablaCreditos" var="filtro" value="#{manticCatalogosEmpresasCuentasAbono.notasCreditoFavor}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosEmpresasCuentasAbono.seleccionadosCredito}" paginator="#{manticCatalogosEmpresasCuentasAbono.notasCreditoFavor.rowCount gt manticCatalogosEmpresasCuentasAbono.notasCreditoFavor.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">												
+					<p:dataTable lazy="true" id="tablaCreditos" var="filtro" value="#{manticCatalogosEmpresasCuentasAbono.notasCreditoFavor}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="4" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="4" selection="#{manticCatalogosEmpresasCuentasAbono.seleccionadosCredito}" paginator="#{manticCatalogosEmpresasCuentasAbono.notasCreditoFavor.rowCount gt manticCatalogosEmpresasCuentasAbono.notasCreditoFavor.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">												
 						<p:column selectionMode="multiple" style="width:30px;text-align:center"/>							
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
 							<f:facet name="header">

@@ -135,10 +135,10 @@ public class Saldos extends IBaseFilter implements Serializable {
 			params.put("idCliente", this.idCliente);
       columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));      
-      columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));      
-      columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));    
-      columns.add(new Columna("abonado", EFormatoDinamicos.MONEDA_CON_DECIMALES));    
-      columns.add(new Columna("limiteCredito", EFormatoDinamicos.MONEDA_CON_DECIMALES));    
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));      
+      columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));    
+      columns.add(new Columna("abonado", EFormatoDinamicos.MILES_CON_DECIMALES));    
+      columns.add(new Columna("limiteCredito", EFormatoDinamicos.MILES_CON_DECIMALES));    
 			this.lazyModel = new FormatCustomLazy("VistaClientesDto", "clientes", params, columns);
       UIBackingUtilities.resetDataTable();	
       this.lazyModelDetalle= null;
@@ -165,7 +165,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 		else if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input")))
   		sb.append("tc_mantic_clientes.razon_social like '%").append(JsfBase.getParametro("razonSocial_input")).append("%' and ");						
   	if(!Cadena.isVacio(this.attrs.get("ticket")))
-  		sb.append("(tc_mantic_ventas.ticket= ").append(this.attrs.get("ticket")).append(") and ");
+  		sb.append("(tc_mantic_ventas.ticket like '%").append(this.attrs.get("ticket")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
 		  sb.append("(date_format(tc_mantic_clientes_deudas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
@@ -632,9 +632,9 @@ public class Saldos extends IBaseFilter implements Serializable {
 			params.put("idCliente", entity.toLong("idCliente"));
       columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));      
-      columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));      
-      columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));    
-      columns.add(new Columna("abonado", EFormatoDinamicos.MONEDA_CON_DECIMALES));    
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));      
+      columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));    
+      columns.add(new Columna("abonado", EFormatoDinamicos.MILES_CON_DECIMALES));    
       columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));    
       columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));    
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));    
