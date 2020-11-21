@@ -288,7 +288,7 @@ public class Accion extends IBaseVenta implements Serializable {
 					transaccion= new mx.org.kaana.mantic.ventas.reglas.Transaccion((TicketVenta)this.getAdminOrden().getOrden());
 					transaccion.ejecutar(EAccion.ELIMINAR);
 				} // if
-				doInitPage();
+				this.doInitPage();
 				rc.execute("janal.desbloquear();jsArticulos.refreshCobroValidate();");
 			} // else
 		} // try
@@ -620,30 +620,34 @@ public class Accion extends IBaseVenta implements Serializable {
 			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");			
 			if(ticketAbierto== null && !this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L)))) && this.getAdminOrden().getTotales().getImporte()> 0D) {
 				this.getAdminOrden().getTotales().setTotal(this.getAdminOrden().getTotales().getImporte());
-				loadOrdenVenta();				
-				transaccion= new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
-				this.getAdminOrden().validatePrecioArticulo();
-				this.getAdminOrden().toAdjustArticulos();
-				this.getAdminOrden().cleanPrecioDescuentoArticulo();				
-				confirmacion= transaccion.ejecutar(EAccion.MOVIMIENTOS);				
+				this.loadOrdenVenta();				
 			} // if
-			else{
-				transaccion = new Transaccion((TicketVenta)this.getAdminOrden().getOrden());
-				confirmacion= transaccion.ejecutar(EAccion.MODIFICAR);				
-			} // else
+      this.getAdminOrden().validatePrecioArticulo();
+      this.getAdminOrden().toAdjustArticulos();
+      this.getAdminOrden().cleanPrecioDescuentoArticulo();				
+      TicketVenta ticketVenta= (TicketVenta)this.getAdminOrden().getOrden();
+ 			ticketVenta.setTotal(this.getAdminOrden().getTotales().getTotal());
+			ticketVenta.setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
+			ticketVenta.setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
+			ticketVenta.setImpuestos(this.getAdminOrden().getTotales().getIva());
+			ticketVenta.setUtilidad(this.getAdminOrden().getTotales().getUtilidad());
+      transaccion= new Transaccion(ticketVenta, this.getAdminOrden().getArticulos());
+			confirmacion= transaccion.ejecutar(EAccion.MOVIMIENTOS);				
 			if(confirmacion) {
 				((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).setCotizacion(transaccion.getCotizacion());
 				ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago) this.attrs.get("pago"), "COTIZACIÓN");				
 				UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + transaccion.getCotizacion() + "','" + ticket.toHtml() + "');");
 				UIBackingUtilities.execute("jsTicket.clicTicket();");
-				JsfBase.addMessage("Se finalizo la cotización del ticket.", ETipoMensaje.INFORMACION);								
+				JsfBase.addMessage("Se finalizó la cotización del ticket.", ETipoMensaje.INFORMACION);								
 				this.setAdminOrden(new AdminTickets(new TicketVenta()));
 				this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
 				this.attrs.put("clienteSeleccion", null);
 				init();
 			} // if
 			else
-				JsfBase.addMessage("Ocurrió un error al generar la cotización.", ETipoMensaje.ERROR);			     			
+				JsfBase.addMessage("Ocurrió un error al generar la cotización.", ETipoMensaje.ERROR);			  
+      this.refreshTicketsAbiertos(); 
+      UIBackingUtilities.update("ticketsAbiertos");
     } // try
     catch (Exception e) {
       Error.mensaje(e);

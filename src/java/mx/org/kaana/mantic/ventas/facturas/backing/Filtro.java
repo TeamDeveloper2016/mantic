@@ -22,6 +22,7 @@ import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Periodo;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -106,7 +107,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 			JsfBase.setFlashAttribute("accion", eaccion);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Ventas/Facturas/filtro");		
 			JsfBase.setFlashAttribute("idVenta", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
-			if(eaccion.equals(EAccion.AGREGAR)){
+			if(eaccion.equals(EAccion.AGREGAR)) {
 				JsfBase.setFlashAttribute("observaciones", null);		
 				JsfBase.setFlashAttribute("idCliente", null);		
 			} // if
@@ -142,13 +143,16 @@ public class Filtro extends FiltroFactura implements Serializable {
 		  sb.append("(tc_mantic_ventas.total>= ").append((Double)this.attrs.get("montoInicio")).append(") and ");			
 		if(!Cadena.isVacio(this.attrs.get("montoTermino")))
 		  sb.append("(tc_mantic_ventas.total<= ").append((Double)this.attrs.get("montoTermino")).append(") and ");			
-  	sb.append("(tc_mantic_ventas.id_venta_estatus= ").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
 		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
-		if(sb.length()== 0)
-		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+		if(sb.length()== 0) {
+      Periodo periodo= new Periodo();
+      periodo.addMeses(-2);
+    	sb.append("(tc_mantic_ventas.id_venta_estatus= ").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(")");
+		  regresar.put(Constantes.SQL_CONDICION, "date_format(tc_mantic_ventas.registro, '%Y%m%d')>= '".concat(periodo.toString()).concat("' and ").concat(sb.toString()));
+    } // if  
 		else	
 		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
 		return regresar;		

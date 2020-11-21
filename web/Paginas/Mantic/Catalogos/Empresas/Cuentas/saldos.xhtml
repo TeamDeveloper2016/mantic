@@ -521,7 +521,7 @@
 						<p:dataTable lazy="true" id="tablaSegmentos" var="row" value="#{manticCatalogosEmpresasCuentasSaldos.pagosSegmento}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="4" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="4, 5" selection="#{manticCatalogosEmpresasCuentasSaldos.seleccionadosSegmento}" paginator="#{manticCatalogosEmpresasCuentasSaldos.pagosSegmento.rowCount gt manticCatalogosEmpresasCuentasSaldos.pagosSegmento.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">												
               <p:ajax event="rowSelect" process="@this tablaSegmentos" update="tabPagosSegmentos:pagoSegmento" listener="#{manticCatalogosEmpresasCuentasSaldos.doCountCuentas}"/>
               <p:ajax event="rowUnselect" process="@this tablaSegmentos" update="tabPagosSegmentos:pagoSegmento" listener="#{manticCatalogosEmpresasCuentasSaldos.doCountCuentas}"/>
-							<p:column selectionMode="multiple" style="width:30px;text-align:center"/>							
+              <p:column id="checkSegmentos" selectionMode="multiple" style="width:30px;text-align:center"/>							
 							<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
 								<f:facet name="header">
 									<h:outputText value="Ticket"/>

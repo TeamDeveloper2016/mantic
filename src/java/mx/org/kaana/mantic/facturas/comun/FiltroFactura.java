@@ -264,14 +264,9 @@ public abstract class FiltroFactura extends IBaseTicket {
   		sb.append("(upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(JsfBase.getParametro("articulo_input")).append("%')) and ");
 		if(!Cadena.isVacio(this.attrs.get("razonSocial")) && !this.attrs.get("razonSocial").toString().equals("-1"))
 			sb.append("tc_mantic_clientes.id_cliente = ").append(((Entity)this.attrs.get("razonSocial")).getKey()).append(" and ");					
-		else if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
-			 	 sb.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");
-		if(!Cadena.isVacio(this.attrs.get("facturama")) && !this.attrs.get("facturama").toString().equals("-1")) {
-			if(((Long)this.attrs.get("facturama"))== 1L)
-  		  sb.append("(tc_mantic_facturas.folio is not null) and ");
-			else
-  		  sb.append("(tc_mantic_ventas.id_venta is null) and ");
-		} // if
+		else 
+      if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
+			  sb.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");
 		if(!Cadena.isVacio(this.attrs.get("idFicticia")) && !this.attrs.get("idFicticia").toString().equals("-1"))
   		sb.append("(tc_mantic_ventas.id_venta=").append(this.attrs.get("idFicticia")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
@@ -297,7 +292,14 @@ public abstract class FiltroFactura extends IBaseTicket {
 		if(sb.length()== 0) {
       Periodo periodo= new Periodo();
       periodo.addMeses(-1);
-		  regresar.put(Constantes.SQL_CONDICION, "date_format(tc_mantic_ventas.registro, '%Y%m%d')>= '".concat(periodo.toString()).concat("'"));
+      if(!Cadena.isVacio(this.attrs.get("facturama")) && !this.attrs.get("facturama").toString().equals("-1")) {
+        sb.append(" and ");
+        if(((Long)this.attrs.get("facturama"))== 1L)
+          sb.append("(tc_mantic_facturas.folio is not null) ");
+        else
+          sb.append("(tc_mantic_ventas.id_venta is null) ");
+      } // if
+		  regresar.put(Constantes.SQL_CONDICION, "date_format(tc_mantic_ventas.registro, '%Y%m%d')>= '".concat(periodo.toString()).concat("' ").concat(sb.toString()));
     } // if  
 		else	
 		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));

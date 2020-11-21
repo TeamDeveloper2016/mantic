@@ -244,9 +244,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	private boolean procesaCotizacion(Session sesion) throws Exception {
 		boolean regresar            = false;
 		Calendar calendar           = null;
-		TcManticVentasDto cotizacion= null;
+		TcManticVentasDto cotizacion= (TcManticVentasDto) DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.dto.getKey());
 		Siguiente consecutivo       = null;		
-		cotizacion= (TcManticVentasDto) DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.dto.getKey());
 		if(Cadena.isVacio(cotizacion.getCotizacion())) {
 			consecutivo= this.toSiguienteCotizacion(sesion, cotizacion.getIdEmpresa());
 			cotizacion.setCcotizacion(consecutivo.getOrden());

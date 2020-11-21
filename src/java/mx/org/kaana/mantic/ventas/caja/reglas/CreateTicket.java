@@ -58,7 +58,7 @@ public class CreateTicket implements Serializable {
 		return principal;
 	}
 	
-	public String toHtml() throws Exception{
+	public String toHtml() throws Exception {
 		StringBuilder sb= new StringBuilder();
 		sb.append(toHeader());
 		sb.append(toBlackBar());

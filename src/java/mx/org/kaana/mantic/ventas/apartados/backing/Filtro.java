@@ -104,7 +104,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		String search= (String)this.attrs.get("cliente");
     if(!Cadena.isVacio(search)) {
 		  search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
-  		sb.append("(upper(cliente) regexp '.*").append(search).append(".*') and ");
+  		sb.append("(upper(concat(nombre, ' ', paterno, ' ', materno)) regexp '.*").append(search).append(".*') and ");
     } // if
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(ticket like '%").append(this.attrs.get("consecutivo")).append("%') and ");

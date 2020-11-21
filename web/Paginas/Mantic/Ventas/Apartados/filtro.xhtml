@@ -58,7 +58,7 @@
 							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticVentasApartados.attrs.isMatriz}"/>
 							<p:selectOneMenu id="idEmpresa" value="#{manticVentasApartados.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-								<f:selectItems value="#{manticVentasApartados.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
+								<f:selectItems value="#{manticVentasApartados.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo and element.titulo eq ''? '': '-'} #{element.titulo}"/>
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
 								</p:column>   
@@ -129,7 +129,13 @@
 							<f:facet name="header">
 								<h:outputText value="Ticket"/>
 							</f:facet>
-              <h:outputText value="#{row['ticket']}" title="No apartado: #{row['consecutivo']}"/>
+              <h:outputText value="#{row['ticket']}"/>
+						</p:column>														
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+							<f:facet name="header">
+								<h:outputText value="Apartado"/>
+							</f:facet>
+              <h:outputText value="#{row['consecutivo']}"/>
 						</p:column>														
 						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.cliente}">
 							<f:facet name="header">
