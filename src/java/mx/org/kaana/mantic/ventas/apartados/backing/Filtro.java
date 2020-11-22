@@ -85,7 +85,7 @@ public class Filtro extends IBaseTicket implements Serializable {
       columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));    
       columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));    
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));    
-			this.lazyModel = new FormatCustomLazy("VistaTcManticApartadosDto", "apartados", params, columns);
+			this.lazyModel = new FormatCustomLazy("VistaApartadosDto", "apartados", params, columns);
 			UIBackingUtilities.resetDataTable();		
     } // try
     catch (Exception e) {
@@ -100,12 +100,17 @@ public class Filtro extends IBaseTicket implements Serializable {
 
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
-		StringBuilder sb= new StringBuilder();
-		String search= (String)this.attrs.get("cliente");
-    if(!Cadena.isVacio(search)) {
-		  search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
-  		sb.append("(upper(concat(nombre, ' ', paterno, ' ', materno)) regexp '.*").append(search).append(".*') and ");
-    } // if
+		StringBuilder sb            = new StringBuilder();
+	  UISelectEntity cliente      = (UISelectEntity)this.attrs.get("cliente");
+		List<UISelectEntity>clientes= (List<UISelectEntity>)this.attrs.get("clientes");
+		if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
+			sb.append("upper(razon_social) like '%").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial")).append("%' and ");			
+		else 
+      if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) {
+     		String search= JsfBase.getParametro("razonSocial_input");
+  		  search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+    		sb.append("(upper(razon_social) regexp '.*").append(search).append(".*' or upper(rfc) like '%").append(search).append("%') and ");
+      } // if  
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(ticket like '%").append(this.attrs.get("consecutivo")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("apartado")))
@@ -446,5 +451,41 @@ public class Filtro extends IBaseTicket implements Serializable {
 	  if(this.attrs.get("montoTermino")!= null && this.attrs.get("montoInicio")== null)
 			this.attrs.put("montoInicio", this.attrs.get("montoTermino"));
 	} // doMontoUpdate
+  
+	public List<UISelectEntity> doCompleteCliente(String codigo) {
+ 		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		boolean buscaPorCodigo    = false;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			if(!Cadena.isVacio(codigo)) {
+  			codigo= new String(codigo).replaceAll(Constantes.CLEAN_SQL, "").trim();
+				buscaPorCodigo= codigo.startsWith(".");
+				if(buscaPorCodigo)
+					codigo= codigo.trim().substring(1);
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			} // if	
+			else
+				codigo= "WXYZ";
+  		params.put("codigo", codigo);
+			if(buscaPorCodigo)
+        this.attrs.put("clientes", UIEntity.build("VistaApartadosDto", "porCodigo", params, columns, 40L));
+			else
+        this.attrs.put("clientes", UIEntity.build("VistaApartadosDto", "porNombre", params, columns, 40L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+		return (List<UISelectEntity>)this.attrs.get("clientes");
+	} // doCompleteCliente	
   
 }

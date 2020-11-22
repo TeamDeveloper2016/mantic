@@ -9116,7 +9116,44 @@
           tc_mantic_ventas.id_venta = {idFicticia} 
 			</select>
 		</unit>		
-    <unit id="VistaTcManticApartadosDto">
+    <unit id="VistaApartadosDto">
+      <select id="porCodigo">
+        select      
+					distinct(tc_mantic_clientes.id_cliente) as id_key,
+          tc_mantic_clientes.*
+          tc_mantic_apartados
+        from      
+          tc_mantic_apartados
+        inner join
+          tc_mantic_ventas on tc_mantic_apartados.id_venta= tc_mantic_ventas.id_venta
+        inner join
+          tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
+        where 
+          tc_mantic_clientes.id_empresa in ({sucursales})
+          and upper(tc_mantic_clientes.clave) regexp '.*{codigo}.*'
+				order by
+				  tc_mantic_clientes.clave
+      </select>
+      <select id="porNombre">
+        select      
+					distinct(tc_mantic_clientes.id_cliente) as id_key,
+          tc_mantic_clientes.*
+        from      
+          tc_mantic_apartados
+        inner join
+          tc_mantic_ventas on tc_mantic_apartados.id_venta= tc_mantic_ventas.id_venta
+        inner join
+          tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
+        where 
+          tc_mantic_clientes.id_empresa in ({sucursales})
+          and (
+				    upper(tc_mantic_clientes.razon_social) regexp '.*{codigo}.*'
+				    or
+				    upper(tc_mantic_clientes.rfc) regexp '.*{codigo}.*'
+				  )
+				order by
+				  tc_mantic_clientes.clave
+      </select>      
       <select id="apartados">
         select 
 					apartados.*,
@@ -9135,6 +9172,8 @@
 						if(tc_mantic_apartados.nombre is null, ' ' , tc_mantic_apartados.nombre) nombre,
 						if(tc_mantic_apartados.paterno is null, ' ' , tc_mantic_apartados.paterno) paterno,
 						if(tc_mantic_apartados.materno is null, ' ' , tc_mantic_apartados.materno) materno,						
+            tc_mantic_clientes.rfc,
+            tc_mantic_clientes.razon_social,
             concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
             tc_mantic_apartados.abonado,
             tc_mantic_apartados.registro,
@@ -9153,6 +9192,8 @@
             tc_mantic_apartados_estatus on tc_mantic_apartados.id_apartado_estatus = tc_mantic_apartados_estatus.id_apartado_estatus
           inner join
             tc_mantic_ventas on tc_mantic_apartados.id_venta= tc_mantic_ventas.id_venta
+          inner join
+            tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
           inner join
             tc_janal_usuarios on tc_mantic_apartados.id_usuario= tc_janal_usuarios.id_usuario
           inner join

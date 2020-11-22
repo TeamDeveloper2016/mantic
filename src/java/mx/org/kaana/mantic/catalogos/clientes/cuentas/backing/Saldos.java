@@ -46,6 +46,8 @@ import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.ToggleEvent;
+import org.primefaces.model.Visibility;
 
 @Named(value = "manticCatalogosClientesCuentasSaldos")
 @ViewScoped
@@ -97,7 +99,7 @@ public class Saldos extends IBaseFilter implements Serializable {
   public FormatLazyModel getLazyModelDetalle() {
     return lazyModelDetalle;
   }
-	
+
   @PostConstruct
   @Override
   protected void init() {
@@ -430,7 +432,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 		return (List<UISelectEntity>)this.attrs.get("clientes");
 	} // doCompleteCliente			
 	
-	public String doAccion(String accion) {
+	public String doAccion() {
 		String regresar= "/Paginas/Mantic/Ventas/accion".concat(Constantes.REDIRECIONAR); 
 		try {
 			JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);		
@@ -488,7 +490,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 		EReportes reporteSeleccion   = null;
     Entity seleccionado = ((Entity)this.attrs.get("seleccionadoDetalle"));
 		try{		
-      params= toPrepare();
+      params= this.toPrepare();
       params.put("idCliente", seleccionado.toString("idCliente"));
       params.put("idClienteDeuda", seleccionado.getKey());
       params.put("fechaInicio", this.attrs.get("vigenciaIni"));
@@ -650,5 +652,17 @@ public class Saldos extends IBaseFilter implements Serializable {
       Methods.clean(columns);
     } // finally		   
   }
+ 
+	public void onRowToggle(ToggleEvent event) {
+		try {
+			this.attrs.put("seleccionado", (Entity) event.getData());
+			if (!event.getVisibility().equals(Visibility.HIDDEN)) 
+				this.doLoadDetalle();
+		} // try
+		catch (Exception e) {			
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // onRowToggle
   
 }

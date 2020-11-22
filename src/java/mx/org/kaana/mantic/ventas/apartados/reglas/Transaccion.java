@@ -172,7 +172,7 @@ public class Transaccion extends IBaseTnx {
 			params.put("idEmpresa", this.idEmpresa);
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			params.put("sortOrder", "order by registro desc");
-			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaTcManticApartadosDto", "apartados", params);			
+			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaApartadosDto", "apartados", params);			
 		} // try
 		finally {			
 			Methods.clean(params);

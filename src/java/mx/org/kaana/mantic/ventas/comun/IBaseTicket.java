@@ -100,7 +100,7 @@ public abstract class IBaseTicket extends IBaseFilter implements Serializable {
 			params  = new HashMap<>();
 			params.put("idVenta", idVenta);
       // SON LOS ABONOS QUE SE HAN REALIZADO POR EL CLIENTE SI ES UN APARTADO
-      detallePago= DaoFactory.getInstance().toEntitySet("VistaTcManticApartadosDto", "abonos", params, Constantes.SQL_TODOS_REGISTROS);
+      detallePago= DaoFactory.getInstance().toEntitySet("VistaApartadosDto", "abonos", params, Constantes.SQL_TODOS_REGISTROS);
       if(detallePago!= null && !detallePago.isEmpty()) {
         for (Entity pago : detallePago) {
           medioPago= ETipoMediosPago.fromIdTipoPago(pago.toLong("idTipoMedioPago"));

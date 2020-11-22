@@ -42,6 +42,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.TabChangeEvent;
+import org.primefaces.event.ToggleEvent;
+import org.primefaces.model.Visibility;
 
 @Named(value = "manticCatalogosEmpresasCuentasSaldos")
 @ViewScoped
@@ -454,11 +456,10 @@ public class Saldos extends IBaseFilter implements Serializable {
 		return regresar;
 	} // doModificar
 	
-  public String doAccion(String accion) {
+  public String doAccion() {
 		String regresar= "accion";
-    EAccion eaccion= EAccion.valueOf(accion.toUpperCase());
 		try {
-		  JsfBase.setFlashAttribute("accion", eaccion);		
+		  JsfBase.setFlashAttribute("accion", EAccion.COMPLETO);		
 			JsfBase.setFlashAttribute("idEmpresaDeuda",((Entity)this.attrs.get("seleccionadoDetalle")).getKey());
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");		
 			JsfBase.setFlashAttribute("idNotaEntrada", -1L);
@@ -803,5 +804,17 @@ public class Saldos extends IBaseFilter implements Serializable {
   public void doCountCuentas() {
     LOG.info(this.seleccionadosSegmento);
   }
+ 
+	public void onRowToggle(ToggleEvent event) {
+		try {
+			this.attrs.put("seleccionado", (Entity) event.getData());
+			if (!event.getVisibility().equals(Visibility.HIDDEN)) 
+				this.doLoadDetalle();
+		} // try
+		catch (Exception e) {			
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // onRowToggle
   
 }

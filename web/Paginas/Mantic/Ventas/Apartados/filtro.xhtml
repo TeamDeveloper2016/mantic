@@ -15,8 +15,7 @@
       Janal.Control.fields = {        
         idEmpresa        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         consecutivo      : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true, grupo: 'general'},
-        apartado         : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true, grupo: 'general'},
-        cliente          : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        razonSocial      : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
         dias             : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				montoInicio      : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
         montoTermino     : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
@@ -68,10 +67,17 @@
 							</p:selectOneMenu>
               <p:outputLabel for="consecutivo" value="No. ticket:"/>
               <p:inputText id="consecutivo" value="#{manticVentasApartados.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
-              <p:outputLabel for="apartado" value="No. apartado:"/>
-              <p:inputText id="apartado" value="#{manticVentasApartados.attrs.apartado}" styleClass="janal-wid-100-txt"/> 
-							<p:outputLabel for="cliente" value="Cliente:"/>
-							<p:inputText id="cliente" value="#{manticVentasApartados.attrs.cliente}" styleClass="janal-wid-100-txt"/> 
+              <p:outputLabel for="razonSocial" value="Razón social:"/>
+							<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: ENVASES UNIVERSALES S.A." itemLabel="#{custom.clave}#{empty custom.clave? '': ' | '}#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticVentasApartados.attrs.cliente}" completeMethod="#{manticVentasApartados.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+										<h:outputText value="Clave:" />
+										<h:outputText value="#{custom.clave}" />
+										<h:outputText value="Razón social:" />
+										<h:outputText value="#{custom.razonSocial}" />
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>			
 							<p:outputLabel for="dias" value="Días de apartado:"/>
 							<p:inputText id="dias" value="#{manticVentasApartados.attrs.dias}" styleClass="janal-wid-100-txt janal-column-right"/> 
 							<p:outputLabel for="fechaInicio" value="Fecha inicio:"/>

@@ -129,7 +129,7 @@ public class Abono extends IBaseTicket implements Serializable {
 			params.put("idApartado", this.attrs.get("idApartado"));			
 			params.put("sortOrder", " order by	registro desc");
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			apartado= (Entity) DaoFactory.getInstance().toEntity("VistaTcManticApartadosDto", "apartado", params);
+			apartado= (Entity) DaoFactory.getInstance().toEntity("VistaApartadosDto", "apartado", params);
 			this.attrs.put("apartado", apartado);
       if(Objects.equals(1L, apartado.toLong("idApartadoEstatus")) || Objects.equals(2L, apartado.toLong("idApartadoEstatus"))) {
         UIBackingUtilities.execute("janal.bloquear();PF('dlgPago').show();");
@@ -157,7 +157,7 @@ public class Abono extends IBaseTicket implements Serializable {
 			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
 			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
 			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
-			this.lazyModel = new FormatCustomLazy("VistaTcManticApartadosDto", "pagosApartado", params, columns);
+			this.lazyModel = new FormatCustomLazy("VistaApartadosDto", "pagosApartado", params, columns);
       UIBackingUtilities.resetDataTable();		
     } // try
     catch (Exception e) {
