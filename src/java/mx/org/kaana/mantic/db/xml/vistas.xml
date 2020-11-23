@@ -9130,7 +9130,10 @@
           tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
         where 
           tc_mantic_clientes.id_empresa in ({sucursales})
-          and upper(tc_mantic_clientes.clave) regexp '.*{codigo}.*'
+          and 
+            (upper(tc_mantic_clientes.clave) regexp '.*{codigo}.*'
+             or
+             upper(concat(tc_mantic_apartados.nombre, ' ', tc_mantic_apartados.paterno, ' ', tc_mantic_apartados.materno)) regexp '.*{codigo}.*')
 				order by
 				  tc_mantic_clientes.clave
       </select>
@@ -9150,6 +9153,8 @@
 				    upper(tc_mantic_clientes.razon_social) regexp '.*{codigo}.*'
 				    or
 				    upper(tc_mantic_clientes.rfc) regexp '.*{codigo}.*'
+            or 
+            upper(concat(tc_mantic_apartados.nombre, ' ', tc_mantic_apartados.paterno, ' ', tc_mantic_apartados.materno)) regexp '.*{codigo}.*'
 				  )
 				order by
 				  tc_mantic_clientes.clave
