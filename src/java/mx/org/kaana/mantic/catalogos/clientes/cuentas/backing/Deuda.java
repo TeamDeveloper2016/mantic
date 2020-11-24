@@ -432,7 +432,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 				transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("cajaSegmento").toString()), Long.valueOf(this.attrs.get("idCliente").toString()), Long.valueOf(this.attrs.get("idEmpresaSegmento").toString()), tipoPago ? -1L : Long.valueOf(this.attrs.get("bancoSegmento").toString()), tipoPago ? "" : this.attrs.get("referenciaSegmento").toString(), this.seleccionadosSegmento, saldar);
 				if(transaccion.ejecutar(EAccion.COMPLEMENTAR)){
 					JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta");
-					loadClienteDeuda();					
+					this.loadClienteDeuda();					
 				} // if
 				else
 					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
@@ -473,10 +473,10 @@ public class Deuda extends IBaseFilter implements Serializable {
 		Double pago     = 0D;
 		Double saldo    = 0D;
 		try {
-			pago= Double.valueOf(this.attrs.get("pagoSegmento").toString());
-			if(pago > 0D){
+			pago= Double.valueOf((String)this.attrs.get("pagoSegmento"));
+			if(pago > 0D) {
 				for(Entity cuenta: this.seleccionadosSegmento)					
-					saldo= saldo + Double.valueOf(cuenta.toString("saldo"));
+					saldo+= cuenta.toDouble("saldo");
 				regresar= pago<= saldo;
 			} // if
 		} // try

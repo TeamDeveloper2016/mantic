@@ -312,7 +312,7 @@
 		<p:dialog id="dialogoPagoSegmento" widgetVar="dlgPagoSegmento" header="Registrar pago sobre cuentas" resizable="false" closable="false" responsive="true" width="50%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoPagoSegmento', fieldsDialogSegmento);janal.refresh();">
 			<h:form id="formDialogoPagoSegmento" prependId="false">
 				<p:tabView id="tabPagosSegmentos">
-          <p:ajax event="tabChange" listener="#{manticCatalogosClientesCuentasDeuda.doTabChange}" process="@this tabPagosSegmentos" update="pagoSegmento" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+          <p:ajax event="tabChange" listener="#{manticCatalogosClientesCuentasDeuda.doTabChange}" process="@this tabPagosSegmentos" update="pagoSegmento"/>
 					<p:tab title="Cuentas">												
             <p:dataTable lazy="true" id="tablaSegmentos" widgetVar="segmentosTable" var="filtro" value="#{manticCatalogosClientesCuentasDeuda.pagosSegmento}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="10" selection="#{manticCatalogosClientesCuentasDeuda.seleccionadosSegmento}" paginator="#{manticCatalogosClientesCuentasDeuda.pagosSegmento.rowCount gt manticCatalogosClientesCuentasDeuda.pagosSegmento.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">												
               <p:ajax event="rowUnselectCheckbox" listener="#{manticCatalogosClientesCuentasDeuda.doRowSeleccionado}" process="@this tablaSegmentos" update="tabPagosSegmentos:pagoSegmento" oncomplete="PF('segmentosTable').writeSelections()" skipChildren="false"/>

@@ -19,7 +19,7 @@
 				'pago': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
 				'tipoPago': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
 				'referencia': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
-				'observaciones': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
+				'observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
 			};
 			
 			fieldsDialogReabrir = {				
@@ -245,7 +245,7 @@
 	<ui:define name="dialogos">
 		<p:dialog id="dialogoPago" widgetVar="dlgPago" header="Registrar pago" resizable="false" closable="false" responsive="true" width="80%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoPago', fieldsDialog);janal.refresh();">
 			<h:form id="formDialogoPago" prependId="false">
-				<h:panelGrid id="panelDialog" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-90">
+				<h:panelGrid id="panelDialog" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-8, janal-wid-92">
 					<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="false"/>
 					<p:selectOneMenu id="idEmpresa" value="true" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="false" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 						<p:ajax event="change" process="@this" listener="#{manticCatalogosEmpresasCuentasAbono.doLoadCajas}" update="caja"/>
@@ -272,7 +272,7 @@
 					</p:selectOneMenu>					
 					<p:outputLabel for="pago" value="Pago: $"/>
 					<p:inputNumber id="pago" value="#{manticCatalogosEmpresasCuentasAbono.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" decimalPlaces="4"/>
-					<p:outputLabel for="tipoPago" value="Tipo de pago:"/>
+					<p:outputLabel for="tipoPago" value="Tipo pago:"/>
 					<p:selectOneMenu id="tipoPago" value="#{manticCatalogosEmpresasCuentasAbono.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
 						<p:ajax event="change" process="@this pago" listener="#{manticCatalogosEmpresasCuentasAbono.doValidaTipoPago}" update="panelDialog lblBanco banco lblReferencia referencia" oncomplete="janal.refresh();"/>
 						<f:selectItems value="#{manticCatalogosEmpresasCuentasAbono.attrs.tiposPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
