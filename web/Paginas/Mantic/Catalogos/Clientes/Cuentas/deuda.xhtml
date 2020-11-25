@@ -159,7 +159,7 @@
 						</f:facet>
 					</p:dataTable>	
 					<p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">            
-            <p:menuitem id="pagoVenta" process="@this tabla" icon="fa fa-money" value="Pago sobre venta" onstart="return janal.bloquear();" actionListener="#{manticCatalogosClientesCuentasDeuda.doActualizaPago}" update="dialogoPago" oncomplete="PF('dlgPago').show();" disabled="#{manticCatalogosClientesCuentasDeuda.attrs.seleccionado.idClienteEstatus eq '3'}"/>					            
+            <p:menuitem id="pagoVenta" process="@this tabla" icon="fa fa-money" value="Registrar pago" onstart="return janal.bloquear();" actionListener="#{manticCatalogosClientesCuentasDeuda.doActualizaPago}" update="dialogoPago" oncomplete="PF('dlgPago').show();" disabled="#{manticCatalogosClientesCuentasDeuda.attrs.seleccionado.idClienteEstatus eq '3'}"/>					            
           </p:contextMenu>
 				</div>
 			</div>	
@@ -314,7 +314,7 @@
 				<p:tabView id="tabPagosSegmentos">
           <p:ajax event="tabChange" listener="#{manticCatalogosClientesCuentasDeuda.doTabChange}" process="@this tabPagosSegmentos" update="pagoSegmento"/>
 					<p:tab title="Cuentas">												
-            <p:dataTable lazy="true" id="tablaSegmentos" widgetVar="segmentosTable" var="filtro" value="#{manticCatalogosClientesCuentasDeuda.pagosSegmento}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="10" selection="#{manticCatalogosClientesCuentasDeuda.seleccionadosSegmento}" paginator="#{manticCatalogosClientesCuentasDeuda.pagosSegmento.rowCount gt manticCatalogosClientesCuentasDeuda.pagosSegmento.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">												
+            <p:dataTable lazy="true" id="tablaSegmentos" widgetVar="segmentosTable" var="filtro" value="#{manticCatalogosClientesCuentasDeuda.pagosSegmento}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="4" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="4, 5" selection="#{manticCatalogosClientesCuentasDeuda.seleccionadosSegmento}" paginator="#{manticCatalogosClientesCuentasDeuda.pagosSegmento.rowCount gt manticCatalogosClientesCuentasDeuda.pagosSegmento.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">												
               <p:ajax event="rowUnselectCheckbox" listener="#{manticCatalogosClientesCuentasDeuda.doRowSeleccionado}" process="@this tablaSegmentos" update="tabPagosSegmentos:pagoSegmento" oncomplete="PF('segmentosTable').writeSelections()" skipChildren="false"/>
               <p:ajax event="rowSelectCheckbox" listener="#{manticCatalogosClientesCuentasDeuda.doRowSeleccionado}" process="@this tablaSegmentos" update="tabPagosSegmentos:pagoSegmento" oncomplete="PF('segmentosTable').writeSelections()" skipChildren="false"/>
 							<p:column selectionMode="multiple" style="width:30px;text-align:center" />							

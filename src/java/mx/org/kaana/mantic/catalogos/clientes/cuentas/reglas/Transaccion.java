@@ -103,7 +103,7 @@ public class Transaccion extends TransaccionFactura{
     return regresar;
 	} // ejecutar
 	
-	private boolean procesarPago(Session sesion) throws Exception{
+	private boolean procesarPago(Session sesion) throws Exception {
 		boolean regresar               = false;
 		TcManticClientesDeudasDto deuda= null;
 		Double saldo                   = 0D;
@@ -138,7 +138,7 @@ public class Transaccion extends TransaccionFactura{
 		return regresar;
 	} // procesarPago
 	
-	private boolean procesarPagoGeneral(Session sesion) throws Exception{		
+	private boolean procesarPagoGeneral(Session sesion) throws Exception {		
 		boolean regresar         = true;
 		List<Entity> deudas      = null;		
 		Map<String, Object>params= null;
@@ -185,7 +185,7 @@ public class Transaccion extends TransaccionFactura{
 		return regresar;
 	} // procesarPagoGeneral
 	
-	private boolean registrarPago(Session sesion, Long idClienteDeuda, Double pagoParcial) throws Exception{
+	private boolean registrarPago(Session sesion, Long idClienteDeuda, Double pagoParcial) throws Exception {
 		TcManticClientesPagosDto registroPago= null;
 		boolean regresar                     = false;
 		Siguiente orden	                     = null;
@@ -215,14 +215,14 @@ public class Transaccion extends TransaccionFactura{
 		return regresar;
 	} // registrarPago
 	
-	private List<Entity> toDeudas(Session sesion) throws Exception{
+	private List<Entity> toDeudas(Session sesion) throws Exception {
 		List<Entity> regresar    = null;
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
 			params.put("idCliente", this.idCliente);
 			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo > 0 and tc_mantic_clientes_deudas.id_cliente_estatus not in(".concat(EEstatusClientes.FINALIZADA.getIdEstatus().toString()).concat(")"));			
-			params.put("sortOrder", "order by tc_mantic_clientes_deudas.registro desc");
+			params.put("sortOrder", "order by dias desc");
 			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaClientesDto", "cuentas", params);			
 		} // try
 		catch (Exception e) {			
@@ -231,7 +231,7 @@ public class Transaccion extends TransaccionFactura{
 		return regresar;
 	} // toDeudas	
 	
-	private boolean toCierreCaja(Session sesion, Double pago) throws Exception{
+	private boolean toCierreCaja(Session sesion, Double pago) throws Exception {
 		mx.org.kaana.mantic.ventas.caja.reglas.Transaccion cierre= null;
 		VentaFinalizada datosCierre= null;
 		boolean regresar= false;
@@ -252,7 +252,7 @@ public class Transaccion extends TransaccionFactura{
 		return regresar;
 	} // toCierreCaja
 	
-	private boolean procesarPagoSegmento(Session sesion) throws Exception{		
+	private boolean procesarPagoSegmento(Session sesion) throws Exception {		
 		boolean regresar         = true;
 		List<Entity> deudas      = null;		
 		Map<String, Object>params= null;

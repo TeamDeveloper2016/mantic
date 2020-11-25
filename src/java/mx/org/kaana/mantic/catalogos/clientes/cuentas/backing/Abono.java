@@ -93,9 +93,9 @@ public class Abono extends IBasePagos implements Serializable {
 			params.put("idClienteDeuda", this.attrs.get("idClienteDeuda"));			
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-			columns.add(new Columna("pago", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			columns.add(new Columna("pago", EFormatoDinamicos.MILES_CON_DECIMALES));
+			columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
 			this.lazyModel = new FormatCustomLazy("VistaClientesDto", "pagosDeuda", params, columns);
       UIBackingUtilities.resetDataTable();		

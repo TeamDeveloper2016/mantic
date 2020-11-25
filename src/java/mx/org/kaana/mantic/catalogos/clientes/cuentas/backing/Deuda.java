@@ -81,12 +81,16 @@ public class Deuda extends IBaseFilter implements Serializable {
 			this.attrs.put("saldarSegmento", "2");
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 				loadSucursales();							
-			doLoadCajas();
-			doLoadCajasGeneral();
-			doLoadCajasSegmento();
-			loadBancos();
-			loadTiposPagos();
-			loadClienteDeuda();			
+			this.doLoadCajas();
+			this.doLoadCajasGeneral();
+			this.doLoadCajasSegmento();
+			this.loadBancos();
+			this.loadTiposPagos();
+			this.loadClienteDeuda();			
+      if((Boolean)this.attrs.get("activePagoGeneral")) {
+        UIBackingUtilities.execute("janal.bloquear();PF('dlgPagoSegmento').show();");
+        this.doLoadCuentas();
+      } // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -247,7 +251,7 @@ public class Deuda extends IBaseFilter implements Serializable {
     } // finally		
   } // doLoad
 	
-	private void validaPagoGeneral(List<Entity> cuentas){
+	private void validaPagoGeneral(List<Entity> cuentas) {
 		int count= 0;
 		try {
 			for(Entity cuenta: cuentas){
@@ -266,7 +270,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		} // finally
 	} // validaPagogeneral
 	
-	public void doLoadCuentas(){
+	public void doLoadCuentas() {
 		List<Columna> columns     = null;
 	  Map<String, Object> params= null;	
 		try {
@@ -292,6 +296,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 	} 
   
 	public String doRegresar() {	  
+    JsfBase.setFlashAttribute("idCliente", this.attrs.get("idCliente"));
 		return "saldos".concat(Constantes.REDIRECIONAR);
 	} // doRegresar
 	
@@ -366,9 +371,9 @@ public class Deuda extends IBaseFilter implements Serializable {
 			params.put("idClienteDeuda", ((Entity)this.attrs.get("registroSeleccionado")).getKey());			
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-			columns.add(new Columna("pago", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			columns.add(new Columna("pago", EFormatoDinamicos.MILES_CON_DECIMALES));
+			columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
 			this.detallePagos = new FormatCustomLazy("VistaClientesDto", "pagosDeuda", params, columns);
@@ -384,13 +389,13 @@ public class Deuda extends IBaseFilter implements Serializable {
     } // finally			
 	} // loadHistorialPagos
 	
-	public void doRegistrarPagoGeneral(){
+	public void doRegistrarPagoGeneral() {
 		Transaccion transaccion      = null;
 		TcManticClientesPagosDto pago= null;
 		boolean tipoPago             = false;
 		boolean saldar               = false;
 		try {
-			if(validaPagoGeneral()){
+			if(validaPagoGeneral()) {
 				saldar= Long.valueOf(this.attrs.get("saldarGeneral").toString()).equals(1L);
 				pago= new TcManticClientesPagosDto();
 				pago.setIdUsuario(JsfBase.getIdUsuario());
