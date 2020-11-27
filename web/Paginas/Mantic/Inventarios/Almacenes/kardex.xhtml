@@ -262,13 +262,25 @@
 						</p:tab>
 						<p:tab title="Códigos">
  						  <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-110, janal-wid-100">		
-								<p:outputLabel for="auxiliar" value="Código auxiliar:"/>
-								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-wid-col-38">	
-									<p:inputText id="auxiliar" value="#{manticInventariosAlmacenesKardex.attrs.auxiliar}" styleClass="janal-wid-98 filas" disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}" onblur="lookForCodigo($(this).attr('id'), $(this).val(), 0);"/>
-									<p:commandButton title="Agregar código auxiliar" icon="fa fa-plus" process="@this auxiliar" update="@(.filas)" action="#{manticInventariosAlmacenesKardex.doAddCodigoAuxiliar}" styleClass="janal-text-white janal-column-center filas" onstart="return janal.partial('auxiliar', true);" oncomplete="janal.desbloquear()"  disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}"/> 
+								<p:outputLabel for="auxiliar" value="Agregar código:"/>
+								<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-70, janal-wid-col-38">	
+                  <p:inputText id="auxiliar" placeholder="ejemplo: CT12" value="#{manticInventariosAlmacenesKardex.attrs.auxiliar}" styleClass="janal-wid-98 filas" disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}" onblur="lookForCodigo($(this).attr('id'), $(this).val(), 0);"/>
+                  <p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: HERRAJES HF. S.A. DE C.V." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticInventariosAlmacenesKardex.attrs.proveedor}" completeMethod="#{manticInventariosAlmacenesKardex.doCompleteProveedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+                    <f:facet name="itemtip">
+                      <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+                        <h:outputText value="Clave:" />
+                        <h:outputText value="#{custom.clave}" />
+                        <h:outputText value="RFC:" />
+                        <h:outputText value="#{custom.rfc}" />
+                        <h:outputText value="Razón social:" />
+                        <h:outputText value="#{custom.razonSocial}" />
+                      </h:panelGrid>
+                    </f:facet>
+                  </p:autoComplete>			
+									<p:commandButton title="Agregar código auxiliar" icon="fa fa-plus" process="@this auxiliar razonSocial" update="@(.filas)" action="#{manticInventariosAlmacenesKardex.doAddCodigoAuxiliar}" styleClass="janal-text-white janal-column-center filas" onstart="return janal.partial('auxiliar', true);" oncomplete="janal.desbloquear()"  disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}"/> 
 								</p:panelGrid>
 							</p:panelGrid>
-							<p:dataTable id="codigosAlternos" var="item" value="#{manticInventariosAlmacenesKardex.attrs.codigos}" paginator="false" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="paginated filas" rowIndexVar="index">
+							<p:dataTable id="codigosAlternos" var="item" value="#{manticInventariosAlmacenesKardex.attrs.codigos}" paginator="false" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="paginated filas" rowIndexVar="index" rowStyleClass="#{manticInventariosAlmacenesKardex.toColor(item)}">
 								<p:column headerText="No" styleClass="janal-wid-3">
 									<p:outputLabel value="#{index+ 1}.-"/>
 								</p:column>   

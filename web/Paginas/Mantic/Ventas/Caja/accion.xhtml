@@ -318,7 +318,7 @@
 											<f:facet name="header">
 												<h:outputText value="Articulo"/>
 											</f:facet>
-											<h:outputText id="nombres" value="[#{row['stock']}] [#{row['propio']}] #{row['nombre']}" title="Código propio: #{row['propio']}    Existencias almacen: #{row['stock']}" escape="false" styleClass="#{row['idAutomatico'] eq 1? 'janal-color-red': 'janal-color-green'}"/>
+											<h:outputText id="nombres" value="[#{row['stock']}] [#{row['propio']}] #{row['nombre']}" title="Código propio: #{row['propio']}, Fabricante: #{row['fabricante']}, Existencias almacen: #{row['stock']}" escape="false" styleClass="#{row['idAutomatico'] eq 1? 'janal-color-red': 'janal-color-green'}"/>
 										</p:column>		
 										<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
 											<f:facet name="header">

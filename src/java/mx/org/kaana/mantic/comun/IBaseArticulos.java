@@ -106,6 +106,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				params.put("idAlmacen", this.adminOrden.getIdAlmacen());
 				temporal.setKey(articulo.toLong("idArticulo"));
 				temporal.setIdArticulo(articulo.toLong("idArticulo"));
+				temporal.setFabricante(articulo.toString("fabricante"));
 				temporal.setIdProveedor(this.adminOrden.getIdProveedor());
 				temporal.setIdRedondear(articulo.toLong("idRedondear"));
 				// verificar el codigo principal del articulo y recuperar el valor del multiplo paras las ordenes de compra
@@ -198,6 +199,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			params.put("idAlmacen", this.adminOrden.getIdAlmacen());
 			temporal.setKey(articulo.getIdArticulo());
 			temporal.setIdArticulo(articulo.getIdArticulo());
+			temporal.setFabricante(articulo.getFabricante());
 			temporal.setIdProveedor(this.adminOrden.getIdProveedor());
 			temporal.setIdRedondear(articulo.getIdRedondear());
 			Value codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "codigo", params, "codigo");

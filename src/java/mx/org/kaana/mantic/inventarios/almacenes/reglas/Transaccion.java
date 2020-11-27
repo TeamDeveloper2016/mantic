@@ -5,8 +5,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -43,6 +43,7 @@ public class Transaccion extends IBaseTnx {
 	private Long idArticulo;
 	private Long idPedido;
 	private Long idRedondear;
+	private Long idProveedor;
 	private Double cantidad;
 	private Double precio;
 	private String descuento;
@@ -71,9 +72,10 @@ public class Transaccion extends IBaseTnx {
 		this.idDescontinuado= idDescontinuado;
 	}
 
-	public Transaccion(Long idArticulo, String sat) {
+	public Transaccion(Long idArticulo, String sat, Long idProveedor) {
 		this.idArticulo=idArticulo;
 		this.sat=sat;
+    this.idProveedor= idProveedor;
 	}
 	
 	public Transaccion(Long idArticulo, Double precio, String descuento, String extra, List<TiposVentas> articulos, String sat) {
@@ -156,24 +158,25 @@ public class Transaccion extends IBaseTnx {
 					break;
 				case ASIGNAR:
 					this.sat= this.sat.toUpperCase().replaceAll(Constantes.CLEAN_ART, "").trim();
-					//Entity auxiliar= this.toFindCodigoAuxiliar(sesion, this.sat);
-					//if(auxiliar== null || auxiliar.isEmpty()) {
+					TcManticArticulosCodigosDto existe= this.toFindCodigoFabricante(sesion, this.sat, this.idProveedor);
+					if(existe== null) {
 						TcManticArticulosCodigosDto codigos= new TcManticArticulosCodigosDto(
 							this.sat, // String codigo, 
-							null, // Long idProveedor, 
+							this.idProveedor, // Long idProveedor, 
 							JsfBase.getIdUsuario(), // Long idUsuario, 
 							2L, // Long idPrincipal, 
 							null, // String observaciones, 
 							-1L, // Long idArticuloCodigo, 
-							this.toSiguiente(sesion), // Long orden, 
+							!Objects.equals(this.idProveedor, null) && Objects.equals(this.idProveedor, Constantes.ID_PROVEEDOR_FABRICANTE)? 0L: this.toSiguiente(sesion), // Long orden, 
 							this.idArticulo // Long idArticulo
 						);
 						regresar= DaoFactory.getInstance().insert(sesion, codigos)>= 1L;
-					//} // if
-					//else {
-						//this.messageError= "El código ya lo tiene asignado el articulo !\n ["+ auxiliar.toString("codigo")+ " "+ auxiliar.toString("nombre")+ " como "+ auxiliar.toString("principal");
-						//regresar= false;
-					//} // else	
+					} // if
+					else 
+            if(!Objects.equals(existe.getCodigo(), this.sat)) {
+              existe.setCodigo(this.sat);
+						  regresar= DaoFactory.getInstance().update(sesion, existe)>= 1L;
+            } // if  
 					break;
 				case DEPURAR:
 					regresar= DaoFactory.getInstance().delete(sesion, TcManticArticulosCodigosDto.class, this.idArticulo)>= 1L;
@@ -243,14 +246,15 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toArticuloDetalle
 
-	private Entity toFindCodigoAuxiliar(Session sesion, String codigo) {
-		Entity regresar= null;
+	private TcManticArticulosCodigosDto toFindCodigoFabricante(Session sesion, String codigo, Long idProveedor) {
+		TcManticArticulosCodigosDto regresar= null;
 		Map<String, Object> params=null;
 		try {
 			params=new HashMap<>();
 			params.put("codigo", codigo);
-  		params.put(Constantes.SQL_CONDICION, " tc_mantic_articulos_codigos.id_articulo!= "+ this.idArticulo);
-			regresar= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaArticulosDto", "existeCodigo", params);
+			params.put("idProveedor", idProveedor);
+      if(!Objects.equals(idProveedor, null))
+   			regresar= (TcManticArticulosCodigosDto)DaoFactory.getInstance().toEntity(sesion, TcManticArticulosCodigosDto.class, "TcManticArticulosCodigosDto", "buscar", params);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -259,7 +263,7 @@ public class Transaccion extends IBaseTnx {
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toFindCodigoAuxiliar
+	} // toFindCodigoFabricante
 
 	private Long toSiguiente(Session sesion) throws Exception {
 		Long regresar             = 1L;

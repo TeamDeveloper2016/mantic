@@ -405,7 +405,7 @@
 														<h:outputText value="Articulo"/>
 														<p:inputText id="filterName" value="#{manticInventariosEntradasAccion.attrs.filterName}" styleClass="janal-wid-100-txt key-filter-event"/>
 													</f:facet>
-													<h:outputText id="nombres" value="#{row['nombre']}" title="Código propio: #{row['propio']}    Existencias almacen: #{row['stock']}" escape="false"/>
+													<h:outputText id="nombres" value="#{row['nombre']}" title="Código propio: #{row['propio']} Fabricante: #{row['fabricante']} Existencias almacen: #{row['stock']}" escape="false"/>
 												</p:column>		
 												<p:column class="cantidades janal-column-right MarAuto Responsive janal-wid-8">
 													<f:facet name="header">

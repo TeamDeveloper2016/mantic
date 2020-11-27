@@ -29,6 +29,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 
   private Long idArticulo;
   private String codigo;
+  private String fabricante;
   private Double costo;
   private String descuento;
   private String descuentoDescripcion;
@@ -115,6 +116,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 	  this.origen= origen;
 		this.ikAplicar= new UISelectEntity(new Entity(0L));
     this.factor= 1D;
+    this.fabricante= null;
 	}
 	
   public void setCodigo(String codigo) {
@@ -123,6 +125,14 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 
   public String getCodigo() {
     return codigo;
+  }
+
+  public String getFabricante() {
+    return fabricante;
+  }
+
+  public void setFabricante(String fabricante) {
+    this.fabricante = fabricante;
   }
 
   public void setCosto(Double costo) {

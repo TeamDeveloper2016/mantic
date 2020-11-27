@@ -118,8 +118,10 @@ public class Deuda extends IBaseFilter implements Serializable {
 			this.loadBancos();
 			this.loadTiposPagos();
 			this.loadProvedorDeuda();		
-      if(((Double)this.attrs.get("pago"))< 0)
-        UIBackingUtilities.execute("janal.bloquear();PF('dlgPagoGeneral').show();");
+      if((Boolean)this.attrs.get("activePagoGeneral")) {
+        UIBackingUtilities.execute("janal.bloquear();PF('dlgPagoSegmento').show();");
+        this.doLoadCuentas();
+      } // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);

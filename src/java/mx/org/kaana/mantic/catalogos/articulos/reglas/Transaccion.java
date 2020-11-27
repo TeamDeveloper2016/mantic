@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
@@ -12,6 +13,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.mantic.db.dto.TcManticImagenesDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
 import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
@@ -258,6 +260,11 @@ public class Transaccion extends TransaccionFactura {
 					this.articulo.getArticulo().setMedioMayoreo(this.articulo.getArticulo().getPrecio());					
 					this.articulo.getArticulo().setMayoreo(this.articulo.getArticulo().getPrecio());
 				} // else
+        // REPLICAR EL CODIGO DEL FABRICANTE EN LA TABLA DE ARTICULOS
+        for(ArticuloCodigo codigo: this.articulo.getArticulosCodigos()) {
+          if(Objects.equals(codigo.getIdProveedor(), Constantes.ID_PROVEEDOR_FABRICANTE))
+            this.articulo.getArticulo().setFabricante(codigo.getCodigo());
+        } // for
 				idArticulo= DaoFactory.getInstance().insert(sesion, this.articulo.getArticulo());
 				if(registraCodigos(sesion, idArticulo)) {
 					if(registraEspecificaciones(sesion, idArticulo)) {
@@ -351,6 +358,11 @@ public class Transaccion extends TransaccionFactura {
 											dimencion= this.articulo.getArticuloDimencion();
 											regresar= dimencion.isValid() ? DaoFactory.getInstance().update(sesion, this.articulo.getArticuloDimencion()) >= 0L : true;
 											if(regresar) {
+                        // REPLICAR EL CODIGO DEL FABRICANTE EN LA TABLA DE ARTICULOS
+                        for(ArticuloCodigo codigo: this.articulo.getArticulosCodigos()) {
+                          if(Objects.equals(codigo.getIdProveedor(), Constantes.ID_PROVEEDOR_FABRICANTE))
+                            this.articulo.getArticulo().setFabricante(codigo.getCodigo());
+                        } // for
 												this.articulo.getArticulo().setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 											  this.articulo.getArticulo().setIdArticuloTipo(this.articulo.getIdTipoArticulo());
 												regresar= this.articulo.getArticulo().getIdImagen()!= null && !this.articulo.getArticulo().getIdImagen().equals(-1L) && this.articulo.isImagen();
@@ -479,6 +491,11 @@ public class Transaccion extends TransaccionFactura {
 				switch(sqlAccion){
 					case INSERT:
 						dto.setIdArticuloCodigo(-1L);
+            if(Objects.equals(dto.getIdProveedor(), Constantes.ID_PROVEEDOR_FABRICANTE)) {
+              dto.setIdPrincipal(2L);
+              dto.setOrden(0L);
+              dto.setMultiplo(1L);
+            } // if
 						if(alterSqlAction){
 							if(dto.getIdPrincipal().equals(1L))
 								validate= registrar(sesion, dto);

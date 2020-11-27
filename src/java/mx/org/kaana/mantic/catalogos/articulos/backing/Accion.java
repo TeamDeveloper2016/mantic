@@ -364,5 +364,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 			Methods.clean(params);
 		} // finally	
 	}	
-	
+
+ 	public String toColor(ArticuloCodigo row) {
+		return row.getIdProveedor()!= null && row.getIdProveedor().equals(0L)? "janal-tr-orange": "";
+	}
+  
 }

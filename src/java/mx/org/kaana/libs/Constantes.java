@@ -21,6 +21,7 @@ public final class Constantes {
   public static final String JAVAX_FACES_RESOURCE = "javax.faces.resource";
   public static final String VERSIONES = "Versiones";
   public static final String VENTA_AL_PUBLICO_GENERAL = "VENTA PUBLICO EN GENERAL";
+  public static final Long ID_PROVEEDOR_FABRICANTE = 0L;
   public static final Long VENTA_AL_PUBLICO_GENERAL_ID_KEY= 3515L;
   public static final String VENTA_AL_PUBLICO_GENERAL_CLAVE = "VENTA";
 

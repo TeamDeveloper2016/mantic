@@ -70,7 +70,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     List<Columna> columns    = null;
 		Map<String, Object>params= null;
     try {
-      params= toPrepare();	
+      params= this.toPrepare();	
       columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("tipoProveedor", EFormatoDinamicos.MAYUSCULAS));

@@ -153,6 +153,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			if(articulo.size()> 1) {
 				this.image= LoadImages.getImage(articulo.toLong("idArticulo"));
   			this.attrs.put("idArticulo", articulo.toLong("idArticulo"));
+  			this.attrs.put("proveedor", null);
 				Entity solicitado= (Entity)DaoFactory.getInstance().toEntity("VistaKardexDto", "row", this.attrs);
 				if(solicitado!= null) {
 					UIBackingUtilities.toFormatEntity(solicitado, columns);
@@ -938,10 +939,10 @@ public class Kardex extends IBaseAttribute implements Serializable {
 
 	public void doChangeCodigoSat() {
     Transaccion transaccion= null;
-		EAccion eaccion        = EAccion.COMPLEMENTAR;
     try {			
-			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (String)this.attrs.get("sat"));
-			if (transaccion.ejecutar(eaccion)) 
+      UISelectEntity proveedor= (UISelectEntity)this.attrs.get("proveedor");
+			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (String)this.attrs.get("auxiliar"), proveedor== null || proveedor.isEmpty()? null: proveedor.getKey());
+			if (transaccion.ejecutar(EAccion.COMPLEMENTAR)) 
 				JsfBase.addMessage("Se modificó el código del SAT ["+ (String)this.attrs.get("sat")+ "] del articulo.", ETipoMensaje.INFORMACION);
 			else 
 				JsfBase.addMessage("Ocurrió un error al hacer el cambio del código del SAT.", ETipoMensaje.ERROR);      			
@@ -954,16 +955,16 @@ public class Kardex extends IBaseAttribute implements Serializable {
 
 	public void doAddCodigoAuxiliar() {
     Transaccion transaccion= null;
-		EAccion eaccion        = EAccion.ASIGNAR;
     try {			
-			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (String)this.attrs.get("auxiliar"));
-			if (transaccion.ejecutar(eaccion)) {
-				JsfBase.addMessage("Se agregó el código auxiliar ["+ (String)this.attrs.get("auxiliar")+ "] al articulo.", ETipoMensaje.INFORMACION);
+      UISelectEntity proveedor= (UISelectEntity)this.attrs.get("proveedor");
+			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"), (String)this.attrs.get("auxiliar"), proveedor== null || proveedor.isEmpty()? null: proveedor.getKey());
+			if (transaccion.ejecutar(EAccion.ASIGNAR)) {
+				JsfBase.addMessage("Se agregó/modificó el código ["+ (String)this.attrs.get("auxiliar")+ "] al articulo.", ETipoMensaje.INFORMACION);
 				this.toLoadCodigos();
 				this.attrs.put("auxiliar", "");
 			} // if	
 			else 
-				JsfBase.addMessage("Ocurrió un error al agregar el código auxiliar al articulo.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al agregar/modificar el código al articulo.", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -973,10 +974,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
  
 	public void doDeleteCodigoAlterno(UISelectEntity depurar) {
     Transaccion transaccion= null;
-		EAccion eaccion        = EAccion.DEPURAR;
     try {			
-			transaccion = new Transaccion(depurar.getKey(), "");
-			if (transaccion.ejecutar(eaccion)) {
+			transaccion = new Transaccion(depurar.getKey(), "", null);
+			if (transaccion.ejecutar(EAccion.DEPURAR)) {
 				JsfBase.addMessage("Se eliminó el código auxiliar ["+ depurar.toString("codigo")+ "] del articulo.", ETipoMensaje.INFORMACION);
 				this.toLoadCodigos();
 			} // if	
@@ -1090,6 +1090,47 @@ public class Kardex extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
+	}
+
+	public List<UISelectEntity> doCompleteProveedor(String codigo) {
+ 		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		boolean buscaPorCodigo    = false;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			if(!Cadena.isVacio(codigo)) {
+  			codigo= new String(codigo).replaceAll(Constantes.CLEAN_SQL, "").trim();
+				buscaPorCodigo= codigo.startsWith(".");
+				if(buscaPorCodigo)
+					codigo= codigo.trim().substring(1);
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			} // if	
+			else
+				codigo= "WXYZ";
+  		params.put("codigo", codigo);
+			if(buscaPorCodigo)
+        this.attrs.put("proveedores", UIEntity.build("TcManticProveedoresDto", "porCodigo", params, columns, 40L));
+			else
+        this.attrs.put("proveedores", UIEntity.build("TcManticProveedoresDto", "porNombre", params, columns, 40L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+		return (List<UISelectEntity>)this.attrs.get("proveedores");
+	}	
+
+ 	public String toColor(Entity row) {
+		return row.toLong("idProveedor")!= null && row.toLong("idProveedor").equals(0L)? "janal-tr-orange": "";
 	}
 
 }
