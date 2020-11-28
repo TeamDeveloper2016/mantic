@@ -401,6 +401,25 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toFindArticulo
 
+	private TcManticArticulosCodigosDto toFindCodigoFabricante(Session sesion, Long idArticulo, Long idProveedor) {
+		TcManticArticulosCodigosDto regresar= null;
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("idArticulo", idArticulo);
+			params.put("idProveedor", idProveedor);
+      if(!Objects.equals(idProveedor, null))
+   			regresar= (TcManticArticulosCodigosDto)DaoFactory.getInstance().toEntity(sesion, TcManticArticulosCodigosDto.class, "TcManticArticulosCodigosDto", "codigo", params);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toFindCodigoFabricante
+  
 	private Long toFindAlmacen(Session sesion, String almacen) {
 		Long regresar             = -1L;
 		Map<String, Object> params= null;
@@ -541,8 +560,8 @@ public class Transaccion extends IBaseTnx {
 					try {
 						if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
 							String contenido= new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
-							// 0           1          2        3          4          5          6           7        8        9            10            11          12      13
-							//CODIGO|CODIGOAUXILIAR|NOMBRE|COSTOS/IVA|MENUDEONETO|MEDIONETO|MAYOREONETO|UNIDADMEDIDA|IVA|LIMITEMENUDEO|LIMITEMAYOREO|STOCKMINIMO|STOCKMAXIMO|SAT
+							// 0           1          2        3          4          5          6           7        8        9            10            11          12      13         14
+							//CODIGO|CODIGOAUXILIAR|NOMBRE|COSTOS/IVA|MENUDEONETO|MEDIONETO|MAYOREONETO|UNIDADMEDIDA|IVA|LIMITEMENUDEO|LIMITEMAYOREO|STOCKMINIMO|STOCKMAXIMO|SAT|CODIGOFABRICANTE
 							double costo   = Numero.getDouble(sheet.getCell(3, fila).getContents()!= null? sheet.getCell(3, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
 							double menudeo = Numero.getDouble(sheet.getCell(4, fila).getContents()!= null? sheet.getCell(4, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
 							double medio   = Numero.getDouble(sheet.getCell(5, fila).getContents()!= null? sheet.getCell(5, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
@@ -553,6 +572,7 @@ public class Transaccion extends IBaseTnx {
 							double minimo  = Numero.getDouble(sheet.getCell(11, fila).getContents()!= null? sheet.getCell(11, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
 							double maximo  = Numero.getDouble(sheet.getCell(12, fila).getContents()!= null? sheet.getCell(12, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
 							String sat     = new String(sheet.getCell(13, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+							String fabricante= new String(sheet.getCell(14, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 							String nombre  = new String(contenido.getBytes(ISO_8859_1), UTF_8);
 							if(costo> 0 && menudeo> 0 && medio> 0 && mayoreo> 0) {
 								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
@@ -578,8 +598,8 @@ public class Transaccion extends IBaseTnx {
 											articulo.setMaximo(maximo);
 										if(iva!= 0D)
 											articulo.setIva(iva< 1? iva* 100: iva);
-	//									if(!Cadena.isVacio(sheet.getCell(7, fila).getContents()))
-	//										articulo.setIdEmpaqueUnidadMedida(this.toFindUnidadMedida(sesion, sheet.getCell(7, fila).getContents()));
+                    if(!Cadena.isVacio(fabricante))
+                      articulo.setFabricante(fabricante.replaceAll(Constantes.CLEAN_ART, "").trim());
 										if(!Cadena.isVacio(sat))
 											articulo.setSat(sat);
 										DaoFactory.getInstance().update(sesion, articulo);
@@ -622,7 +642,7 @@ public class Transaccion extends IBaseTnx {
 											"0", // String extra, 
 											null, // String idFacturama
 											2L, // String idDescontinuado
-                      null // String fabricante
+                      !Cadena.isVacio(fabricante)? fabricante.replaceAll(Constantes.CLEAN_ART, "").trim(): null // String fabricante
 										);
 										TcManticArticulosDto identico= this.toFindArticuloIdentico(sesion, articulo.toMap(), 1L);
 										if(identico== null)
@@ -637,6 +657,8 @@ public class Transaccion extends IBaseTnx {
 											identico.setMayoreo(Numero.toAjustarDecimales(mayoreo, identico.getIdRedondear().equals(1L)));
 											identico.setIva(iva);
 											identico.setPrecio(costo);
+                      if(!Cadena.isVacio(fabricante))
+                        identico.setFabricante(fabricante.replaceAll(Constantes.CLEAN_ART, "").trim());
 											DaoFactory.getInstance().update(sesion, identico);
 											articulo.setIdArticulo(identico.getIdArticulo());
 										} // if
@@ -683,6 +705,29 @@ public class Transaccion extends IBaseTnx {
 										);
 										DaoFactory.getInstance().insert(sesion, codigos);
 									} // if
+									// buscar si el codigo del fabricante existe para este articulo, en caso de que no insertarlo
+                  if(!Cadena.isVacio(fabricante)) {
+                    codigo= fabricante.replaceAll(Constantes.CLEAN_ART, "").trim();
+                    TcManticArticulosCodigosDto clon= this.toFindCodigoFabricante(sesion, articulo.getIdArticulo(), Constantes.ID_PROVEEDOR_FABRICANTE);
+                    if(clon== null) {
+                      codigos= new TcManticArticulosCodigosDto(
+                        codigo, // String codigo, 
+                        null, // Long idProveedor, 
+                        JsfBase.getIdUsuario(), // Long idUsuario, 
+                        2L, // Long idPrincipal, 
+                        null, // String observaciones, 
+                        -1L, // Long idArticuloCodigo, 
+                        0L, // Long orden, 
+                        articulo.getIdArticulo() // Long idArticulo
+                      );
+                      DaoFactory.getInstance().insert(sesion, codigos);
+                    } // if
+                    else 
+                      if(!Objects.equals(clon.getCodigo(), codigo)) {
+                        clon.setCodigo(codigo);
+                        DaoFactory.getInstance().update(sesion, clon);
+                      } // if  
+                  } // if
 								} // if codigo
 								monitoreo.incrementar();
 								if(fila% this.categoria.getTuplas()== 0) {
@@ -1962,14 +2007,14 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toFindArticulo
 
-	private TcManticArticulosDto toExistsArticuloCodigo(Session sesion, Long idArticulo, String codigo) {
-		TcManticArticulosDto regresar= null;
+	private TcManticArticulosCodigosDto toExistsArticuloCodigo(Session sesion, Long idArticulo, String codigo) {
+		TcManticArticulosCodigosDto regresar= null;
 		Map<String, Object> params   = null;
 		try {
 			params=new HashMap<>();
 			params.put("codigo", codigo);
 			params.put("idArticulo", idArticulo);
-			regresar= (TcManticArticulosDto)DaoFactory.getInstance().toEntity(sesion, TcManticArticulosDto.class, "VistaCargasMasivasDto", "encontrado", params);
+			regresar= (TcManticArticulosCodigosDto)DaoFactory.getInstance().toEntity(sesion, TcManticArticulosCodigosDto.class, "VistaCargasMasivasDto", "encontrado", params);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -1978,7 +2023,7 @@ public class Transaccion extends IBaseTnx {
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toFindArticulo
+	} // toExistsArticuloCodigo
 		
 	
   private Boolean toCodigos(Session sesion, File archivo) throws Exception {
@@ -2019,9 +2064,13 @@ public class Transaccion extends IBaseTnx {
 								TcManticArticulosDto articulo= this.toFindArticuloCodigo(sesion, codigo);
 								if(articulo!=null && (proveedor==null || !Objects.equals(rfc, proveedor.getRfc())))
 								  proveedor= this.toFindProveedor(sesion, rfc);
-								if(articulo!= null && proveedor!= null && Objects.equals(this.idProveedor, proveedor.getIdProveedor())) {
-									TcManticArticulosDto existe= this.toExistsArticuloCodigo(sesion, articulo.getIdArticulo(), auxiliar);
-									if(existe== null) {
+								if(articulo!= null && proveedor!= null && (Objects.equals(this.idProveedor, proveedor.getIdProveedor()) || Objects.equals(proveedor.getIdProveedor(), Constantes.ID_PROVEEDOR_FABRICANTE))) {
+                  TcManticArticulosCodigosDto update= null;
+                  if(Objects.equals(proveedor.getIdProveedor(), Constantes.ID_PROVEEDOR_FABRICANTE))
+                    update= this.toFindCodigoFabricante(sesion, articulo.getIdArticulo(), Constantes.ID_PROVEEDOR_FABRICANTE);
+                  else  
+									  update= this.toExistsArticuloCodigo(sesion, articulo.getIdArticulo(), auxiliar);
+									if(update== null) {
 										TcManticArticulosCodigosDto adicional= new TcManticArticulosCodigosDto(
 											auxiliar, // String codigo
 											proveedor.getIdProveedor(),  // Long idProveedor
@@ -2029,12 +2078,17 @@ public class Transaccion extends IBaseTnx {
 											2L, // Long idPrincipal
 											null, // String observaciones
 											-1L, // Long idArticuloCodigo
-											this.toNextOrden(sesion, articulo.getIdArticulo()), // Long orden 
+											Objects.equals(proveedor.getIdProveedor(), Constantes.ID_PROVEEDOR_FABRICANTE)? 0L: this.toNextOrden(sesion, articulo.getIdArticulo()), // Long orden 
 											articulo.getIdArticulo(), // Long idArticulo
-											multiplo, // multiplo
+											Objects.equals(proveedor.getIdProveedor(), Constantes.ID_PROVEEDOR_FABRICANTE)? 0L: multiplo, // multiplo
 											null // nombre
 										); 
 									  DaoFactory.getInstance().insert(sesion, adicional);
+                    // SI ES EL CODIGO DEL FABRICANTE ACTUALIZAR EL CATALOGO DE ARTICULOS
+                    if(Objects.equals(proveedor.getIdProveedor(), Constantes.ID_PROVEEDOR_FABRICANTE)) {
+                      articulo.setFabricante(auxiliar);
+                      DaoFactory.getInstance().update(sesion, articulo);
+                    } // if
 									  TcManticMasivasDetallesDto detalle= new TcManticMasivasDetallesDto(
 											sheet.getCell(0, fila).getContents(), // String codigo, 
 											-1L, // Long idMasivaDetalle, 
@@ -2044,16 +2098,21 @@ public class Transaccion extends IBaseTnx {
 										DaoFactory.getInstance().insert(sesion, detalle);
 									} // if	
 									else {
-										// articulo.getIdArticulo(), auxiliar
-										params.put("idArticulo", articulo.getIdArticulo());
-										params.put("codigo", auxiliar);
-										params.put("idProveedor", this.idProveedor);
-										TcManticArticulosCodigosDto update= (TcManticArticulosCodigosDto)DaoFactory.getInstance().findFirst(TcManticArticulosCodigosDto.class, "proveedor", params);
-										if(update!= null && update.getMultiplo()!= multiplo && multiplo>= 1L) {
-											update.setMultiplo(multiplo);
-										  DaoFactory.getInstance().update(sesion, update);
-										} // if
-									} // else
+                    if(Objects.equals(update.getIdProveedor(), Constantes.ID_PROVEEDOR_FABRICANTE)) {
+                      // SI ES EL CODIFO DE FABRICANTE Y EL REGISTRO YA EXISTE ENTONCES ACTUALIZARLO
+                      if(!Objects.equals(update.getCodigo(), auxiliar)) {
+                        update.setCodigo(auxiliar);
+                        DaoFactory.getInstance().update(sesion, update);
+                        articulo.setFabricante(auxiliar);
+                        DaoFactory.getInstance().update(sesion, articulo);
+                      } // if
+                    } // if  
+                    else                        
+                      if(update.getMultiplo()!= multiplo && multiplo>= 1L) {
+                        update.setMultiplo(multiplo);
+                        DaoFactory.getInstance().update(sesion, update);
+                      } // if
+                  } // else  
 								} // if
 								monitoreo.incrementar();
 								if(fila% this.categoria.getTuplas()== 0) {

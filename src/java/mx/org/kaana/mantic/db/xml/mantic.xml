@@ -3181,14 +3181,6 @@
 				where
           id_articulo = {idArticulo}
       </select>
-      <select id="buscar">
-        select      
-          *
-        from      
-          tc_mantic_articulos_codigos
-        where      
-          id_proveedor= {idProveedor}
-      </select>
 			<delete id="rows">
         delete from tc_mantic_articulos_codigos where id_articulo= {idArticulo} 
       </delete>

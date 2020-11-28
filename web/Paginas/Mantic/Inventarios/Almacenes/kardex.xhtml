@@ -81,17 +81,13 @@
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
-					<p:outputLabel for="codigos" value="Código ó articulo:"/>
-					<p:selectBooleanCheckbox value="#{manticInventariosAlmacenesKardex.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
-						<p:ajax event="change" process="@this" update="@this"/>
-					</p:selectBooleanCheckbox>
-				</div>
-			</div>	
-			<div class="ui-grid-row janal-grid-row">
-				<div class="ui-grid-col-12">
-					<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt, janal-wid-col-40">
+					<p:panelGrid columns="4" layout="grid" styleClass="janal-wid-100" columnClasses=" janal-wid-col-120,  janal-wid-col-40, janal-wid-100-txt, janal-wid-col-40">
+            <p:outputLabel for="codigos" value="Código ó articulo:"/>
+            <p:selectBooleanCheckbox value="#{manticInventariosAlmacenesKardex.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
+              <p:ajax event="change" process="@this" update="@this"/>
+            </p:selectBooleanCheckbox>
 						<p:autoComplete id="codigos" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticInventariosAlmacenesKardex.attrs.custom}" completeMethod="#{manticInventariosAlmacenesKardex.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
-							<p:ajax event="itemSelect" process="@this @(.almacen)" update="@(.paginated)" oncomplete="jsKardex.close();"/>
+							<p:ajax event="itemSelect" process="@this @(.almacen)" update="@(.paginated)" oncomplete="jsKardex.close();$('#contenedorGrupos\\:razonSocial_input').val('');"/>
 							<f:facet name="itemtip">
 								<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
 									<f:facet name="header" class="TexAlCenter">
@@ -122,12 +118,10 @@
 			<p:spacer height="2px"/>
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
-  				<p:panel header="Código: [#{manticInventariosAlmacenesKardex.attrs.articulo.propio}]" styleClass="filas hola">
+  				<p:panel header="Código: [#{manticInventariosAlmacenesKardex.attrs.articulo.propio}] Seleccione el almacen:" styleClass="filas hola">
 						<div class="janal-column-center">
   						<p:outputLabel value="#{manticInventariosAlmacenesKardex.attrs.articulo.nombre}" styleClass="janal-color-blue"/>
 						</div>
-						<p:outputLabel for="idAlmacen" value="Seleccione el almacen:"/>
-						<br/>
 						<p:selectOneMenu id="idAlmacen" tabindex="0" value="#{manticInventariosAlmacenesKardex.attrs.idAlmacen}" var="almacen" converter="janal.convertidor.Entity" styleClass="janal-wid-99 almacen" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 							<p:ajax event="change" listener="#{manticInventariosAlmacenesKardex.doChangeBusquedas}" process="@this" update="@(.paginated)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 							<f:selectItems value="#{manticInventariosAlmacenesKardex.attrs.depositos}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave} - #{element.nombre}"/>
@@ -179,11 +173,11 @@
 											<p:ajax listener="#{manticInventariosAlmacenesKardex.doChangeRedondear}" process="@this" update="@none" />
 										</p:inputSwitch>	
 										<p:outputLabel for="idVigente" value="Vigente:" styleClass="janal-color-blue strong"/>
-										<p:inputSwitch id="idVigente" styleClass="janal-wid-100-txt janal-color-blue strong filas" value="#{manticInventariosAlmacenesKardex.attrs.idVigente}" offLabel="NO" onLabel="SI">
+										<p:inputSwitch id="idVigente" styleClass="janal-wid-100-txt janal-color-blue strong filas" value="#{manticInventariosAlmacenesKardex.attrs.idVigente}" offLabel="NO" onLabel="SI" disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}">
 											<p:ajax listener="#{manticInventariosAlmacenesKardex.doChangeVigente}" process="@this" update="@none" />
 										</p:inputSwitch>	
 										<p:outputLabel for="idDescontinuado" value="Descontinuado:" styleClass="janal-color-blue strong filas"/>
-										<p:inputSwitch id="idDescontinuado" styleClass="janal-wid-100-txt janal-color-blue strong filas" value="#{manticInventariosAlmacenesKardex.attrs.idDescontinuado}" offLabel="NO" onLabel="SI">
+										<p:inputSwitch id="idDescontinuado" styleClass="janal-wid-100-txt janal-color-blue strong filas" value="#{manticInventariosAlmacenesKardex.attrs.idDescontinuado}" offLabel="NO" onLabel="SI" disabled="#{empty manticInventariosAlmacenesKardex.attrs.articulo.propio}">
 											<p:ajax listener="#{manticInventariosAlmacenesKardex.doChangeDescontinuado}" process="@this" update="@none" />
 										</p:inputSwitch>	
 									</p:panelGrid>

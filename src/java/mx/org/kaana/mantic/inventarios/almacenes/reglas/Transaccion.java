@@ -158,7 +158,7 @@ public class Transaccion extends IBaseTnx {
 					break;
 				case ASIGNAR:
 					this.sat= this.sat.toUpperCase().replaceAll(Constantes.CLEAN_ART, "").trim();
-					TcManticArticulosCodigosDto existe= this.toFindCodigoFabricante(sesion, this.sat, this.idProveedor);
+					TcManticArticulosCodigosDto existe= this.toFindCodigoFabricante(sesion, this.idArticulo, this.idProveedor);
 					if(existe== null) {
 						TcManticArticulosCodigosDto codigos= new TcManticArticulosCodigosDto(
 							this.sat, // String codigo, 
@@ -246,15 +246,15 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toArticuloDetalle
 
-	private TcManticArticulosCodigosDto toFindCodigoFabricante(Session sesion, String codigo, Long idProveedor) {
+	private TcManticArticulosCodigosDto toFindCodigoFabricante(Session sesion, Long idArticulo, Long idProveedor) {
 		TcManticArticulosCodigosDto regresar= null;
 		Map<String, Object> params=null;
 		try {
 			params=new HashMap<>();
-			params.put("codigo", codigo);
+			params.put("idArticulo", idArticulo);
 			params.put("idProveedor", idProveedor);
       if(!Objects.equals(idProveedor, null))
-   			regresar= (TcManticArticulosCodigosDto)DaoFactory.getInstance().toEntity(sesion, TcManticArticulosCodigosDto.class, "TcManticArticulosCodigosDto", "buscar", params);
+   			regresar= (TcManticArticulosCodigosDto)DaoFactory.getInstance().toEntity(sesion, TcManticArticulosCodigosDto.class, "TcManticArticulosCodigosDto", "codigo", params);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

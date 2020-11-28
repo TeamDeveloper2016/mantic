@@ -106,7 +106,7 @@
 							<br/>
 							<p:outputLabel for="idProveedor" value="Proveedor:" style="display:#{manticCatalogosMasivosImportar.masivo.idTipoMasivo eq 8? '': 'none'}" styleClass="involucrados"/>
 							<p:selectOneMenu id="idProveedor" value="#{manticCatalogosMasivosImportar.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display:#{manticCatalogosMasivosImportar.masivo.idTipoMasivo eq 8? '': 'none'}">
-								<f:selectItems value="#{manticCatalogosMasivosImportar.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
+								<f:selectItems value="#{manticCatalogosMasivosImportar.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.razonSocial or element.razonSocial eq ''? '': '-'} #{element.razonSocial}"/>
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
 								</p:column>   

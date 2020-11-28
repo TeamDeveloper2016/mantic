@@ -764,4 +764,5 @@ public class Transaccion extends TransaccionFactura {
 	private boolean actualizar(Session sesion, IBaseDto dto) throws Exception{
 		return DaoFactory.getInstance().update(sesion, dto) >= 1L;
 	} // actualizar
+  
 }
