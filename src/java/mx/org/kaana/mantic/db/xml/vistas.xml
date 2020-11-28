@@ -7696,23 +7696,25 @@
 				select  
 					tc_mantic_servicios.id_servicio as id_key,
 					tc_mantic_servicios.*,
-          tc_mantic_clientes.razon_social, 
+          tc_mantic_almacenes.id_almacen,
+          ifnull(tc_mantic_servicios.cliente, tc_mantic_clientes.razon_social) as razon_social, 
 					tc_mantic_servicios_estatus.nombre estatus,
 					tc_mantic_servicios_estatus.estatus_asociados
 				from 
 					tc_mantic_servicios
-				left join 
-					tc_mantic_clientes on tc_mantic_servicios.id_cliente = tc_mantic_clientes.id_cliente
 				inner join 
 					tc_mantic_servicios_estatus on tc_mantic_servicios.id_servicio_estatus = tc_mantic_servicios_estatus.id_servicio_estatus
+				inner join 
+					tc_mantic_almacenes on tc_mantic_servicios.id_empresa = tc_mantic_almacenes.id_empresa and tc_mantic_almacenes.id_principal= 1
+				left join 
+					tc_mantic_clientes on tc_mantic_servicios.id_cliente = tc_mantic_clientes.id_cliente
 				left join 
 					tc_mantic_servicios_detalles on tc_mantic_servicios.id_servicio = tc_mantic_servicios_detalles.id_servicio
 				left join 
 					tc_mantic_articulos on tc_mantic_servicios_detalles.id_articulo = tc_mantic_articulos.id_articulo
 				where 
 					tc_mantic_servicios.id_empresa={idEmpresa}
-				and
-					{condicion}					
+				  and {condicion}					
 				{sortOrder}) principal
 				group by 
 					id_key,

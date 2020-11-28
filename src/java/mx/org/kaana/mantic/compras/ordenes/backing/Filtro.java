@@ -244,9 +244,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 		EReportes reporteSeleccion   = null;
     Entity seleccionado          = null;
 		try{		
-      params= toPrepare();	
+      params= this.toPrepare();	
       seleccionado = ((Entity)this.attrs.get("seleccionado"));
-      params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
+      params.put("idEmpresa", seleccionado.toLong("idEmpresa"));	
       params.put("sortOrder", "order by tc_mantic_ordenes_compras.id_empresa, tc_mantic_ordenes_compras.ejercicio, tc_mantic_ordenes_compras.orden");
       reporteSeleccion= EReportes.valueOf(nombre);
       if(!reporteSeleccion.equals(EReportes.ORDENES_COMPRA)) {

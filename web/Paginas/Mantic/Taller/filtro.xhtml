@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-                template="/WEB-INF/plantillas/filtro.xhtml">
+                template="/WEB-INF/plantillas/reporte.xhtml">
   <ui:param name="titulo" value="Taller de servicios" />
   <ui:define name="librerias">
     <script type="text/javascript">
@@ -148,6 +148,9 @@
             <p:menuitem icon="fa fa-twitch" value="Refacciones" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();" process="@this tabla" action="#{manticTallerFiltro.doRefacciones}" rendered="#{fn:contains('|1|2|3|4|', manticTallerFiltro.attrs.seleccionado.idServicioEstatus)}"/> 
             <p:separator rendered="#{(manticTallerFiltro.attrs.seleccionado.idServicioEstatus eq '6')}"/>					
             <p:menuitem value="Pagar" action="#{manticTallerFiltro.doPagarServicio()}" icon="fa fa-money" title="Pagar" onstart="return janal.bloquear()" rendered="#{(manticTallerFiltro.attrs.seleccionado.idServicioEstatus eq '6' or manticTallerFiltro.attrs.seleccionado.idServicioEstatus eq '8' or manticTallerFiltro.attrs.seleccionado.idServicioEstatus eq '9')}"/>
+            <p:separator rendered="#{fn:contains('|1|2|3|4|5|7|8|9|', manticTallerFiltro.attrs.seleccionado.idServicioEstatus)}"/>
+            <p:menuitem icon="fa fa-mail-forward" value="Enviar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticTallerFiltro.doLoadCorreos}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="#{fn:contains('|1|2|3|4|5|7|8|9|', manticTallerFiltro.attrs.seleccionado.idServicioEstatus)}"/>
+            <p:menuitem icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticTallerFiltro.doReporte('ORDEN_TALLER')}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{fn:contains('|1|2|3|4|5|7|8|9|', manticTallerFiltro.attrs.seleccionado.idServicioEstatus)}"/>
           </p:contextMenu>
         </div>
       </div>
@@ -171,6 +174,28 @@
 				</div>
 			</h:form>			
 		</p:dialog>		
+		<p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Reenviar factura" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
+			<h:form id="formDialogoCorreos" prependId="false">				
+				<p:panelGrid id="panelCorreos" columns="1" layout="grid" styleClass="janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">									
+					<p:dataTable id="tablaCorreosReenviar" var="row" value="#{manticTallerFiltro.correos}" selection="#{manticTallerFiltro.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
+						<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
+						<p:column headerText="Correos disponibles del cliente" styleClass="descripcion tablaCorreosReenviar_selection">
+							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
+						</p:column>
+						<p:column style="width:45px;text-align: center">
+							<p:commandButton update="tablaCorreosReenviar" icon="fa fa-check" title="Agregar" action="#{manticTallerFiltro.doAgregarCorreo}">
+								<f:setPropertyActionListener value="#{row}" target="#{manticTallerFiltro.correo}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>		
+				</p:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this dialogoCorreos" value="Aceptar" actionListener="#{manticTallerFiltro.doSendMail}" onstart="return PF('dlgCorreos').hide();"  oncomplete="janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCorreos').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog>
 	</ui:define>
 	<ui:param name="componenteBloqueo" value="buscar tabla"/>
   <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el almacen ?" />

@@ -19,6 +19,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -27,20 +28,64 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
+import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.correos.beans.Attachment;
+import mx.org.kaana.mantic.correos.enums.ECorreos;
+import mx.org.kaana.mantic.correos.reglas.IBaseAttachment;
 import mx.org.kaana.mantic.db.dto.TcManticServiciosBitacoraDto;
+import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoArticulo;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
+import mx.org.kaana.mantic.enums.ETiposContactos;
+import mx.org.kaana.mantic.facturas.beans.Correo;
 import mx.org.kaana.mantic.taller.beans.RegistroServicio;
 import mx.org.kaana.mantic.taller.reglas.Transaccion;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
+import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.primefaces.context.RequestContext;
 
 @Named(value = "manticTallerFiltro")
 @ViewScoped
 public class Filtro extends Comun implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
+  private static final Log LOG = LogFactory.getLog(Filtro.class);
 
+	private List<Correo> correos;
+	private List<Correo> selectedCorreos;	
+	private Correo correo;
+	private Reporte reporte;
+  
+	public List<Correo> getCorreos() {
+		return correos;
+	}
+
+	public void setCorreos(List<Correo> correos) {
+		this.correos = correos;
+	}	
+	
+	public List<Correo> getSelectedCorreos() {
+		return selectedCorreos;
+	}
+
+	public void setSelectedCorreos(List<Correo> selectedCorreos) {
+		this.selectedCorreos = selectedCorreos;
+	}	
+
+	public Correo getCorreo() {
+		return correo;
+	}
+
+	public void setCorreo(Correo correo) {
+		this.correo = correo;
+	}
+  
   @PostConstruct
   @Override
   protected void init() {
@@ -89,8 +134,7 @@ public class Filtro extends Comun implements Serializable {
       campos.add(new Columna("fechaEstimada", EFormatoDinamicos.FECHA_CORTA));      
       campos.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
       campos.add(new Columna("total", EFormatoDinamicos.NUMERO_CON_DECIMALES));     		
-			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, toPrepare());
+			params= this.toPrepare();
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			params.put("sortOrder", this.attrs.get("sortOrder"));
       this.lazyModel = new FormatCustomLazy("VistaTallerServiciosDto", "principal", params, campos);
@@ -107,24 +151,25 @@ public class Filtro extends Comun implements Serializable {
     } // finally		
   } // doLoad
 
-	private String toPrepare() {
-		StringBuilder regresar= null;
+	private Map<String, Object> toPrepare() {
+	  Map<String, Object> regresar= new HashMap<>();	
+		StringBuilder sb            = new StringBuilder("tc_mantic_servicios_estatus.id_servicio_estatus in (");
 		try {
-			regresar= new StringBuilder("tc_mantic_servicios_estatus.id_servicio_estatus in (");
-			regresar.append(this.attrs.get("estatus")).append(") and ");
-			regresar.append("(tc_mantic_articulos.id_articulo_tipo in (").append(this.attrs.get("tipoArticulo")).append(") or tc_mantic_articulos.id_articulo_tipo is null) and ");
+			sb.append(this.attrs.get("estatus")).append(") and ");
+			sb.append("(tc_mantic_articulos.id_articulo_tipo in (").append(this.attrs.get("tipoArticulo")).append(") or tc_mantic_articulos.id_articulo_tipo is null) and ");
 			if(this.attrs.get("consecutivo")!= null && !Cadena.isVacio(this.attrs.get("consecutivo")))
-				regresar.append("tc_mantic_servicios.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%' and ");			
+				sb.append("tc_mantic_servicios.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%' and ");			
 			if(this.attrs.get("herramienta")!= null && !Cadena.isVacio(this.attrs.get("herramienta")) && this.attrs.get("tipoArticulo").toString().equals(ETipoArticulo.REFACCION.getIdTipoArticulo().toString()))
-				regresar.append("upper(tc_mantic_articulos.descripcion) like upper('%").append(this.attrs.get("herramienta")).append("%') and ");
+				sb.append("upper(tc_mantic_articulos.descripcion) like upper('%").append(this.attrs.get("herramienta")).append("%') and ");
 			if(this.attrs.get("cliente")!= null && !Cadena.isVacio(this.attrs.get("cliente")))
-				regresar.append("upper(tc_mantic_clientes.razon_social) like upper('%").append(this.attrs.get("cliente")).append("%') and ");			
+				sb.append("upper(tc_mantic_clientes.razon_social) like upper('%").append(this.attrs.get("cliente")).append("%') and ");			
+      regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-		return regresar.substring(0, regresar.length()-4);
-	} // tiPrepare
+		return regresar;
+	} // toPrepare
 	
   public String doAccion(String accion) {
     EAccion eaccion= null;
@@ -361,4 +406,142 @@ public class Filtro extends Comun implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	}	// doEstatusCaja	
+  
+	public void doReporte(String nombre) throws Exception {
+		doReporte(nombre, false);
+	} // doReporte
+	
+	private void doReporte(String nombre, boolean email) throws Exception {
+		Parametros comunes           = null;
+		Map<String, Object>params    = null;
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = null;
+    Entity seleccionado          = null;
+		try {
+      params= this.toPrepare();	
+      seleccionado = ((Entity)this.attrs.get("seleccionado"));
+      params.put("idServicio", seleccionado.toLong("idServicio"));	
+      reporteSeleccion= EReportes.valueOf(nombre);
+      comunes= new Parametros(seleccionado.toLong("idEmpresa"), seleccionado.toLong("idAlmacen"), -1L, seleccionado.toLong("idCliente")== null? -1L: seleccionado.toLong("idCliente"));
+      if(seleccionado.toLong("idCliente")== null) {
+        comunes.getComunes().put("REPORTE_CLIENTE", seleccionado.toString("cliente")!= null? seleccionado.toString("cliente"): " ");
+        comunes.getComunes().put("REPORTE_CLIENTE_TELEFONOS", seleccionado.toString("telefonos")!= null? seleccionado.toString("telefonos"): " ");
+        comunes.getComunes().put("REPORTE_CLIENTE_EMAILS", seleccionado.toString("correos")!= null? seleccionado.toString("correos"): " ");
+      } // if
+      this.reporte= JsfBase.toReporte();	
+      parametros= comunes.getComunes();
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));					
+			if(email) 
+        this.reporte.doAceptarSimple();			
+			else {				
+				this.doVerificarReporte();
+				this.attrs.put("reporteName", this.reporte.getArchivo());
+				this.reporte.doAceptar();			
+			} // else		      
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+  } // doReporte  
+  
+	public void doVerificarReporte() {
+		RequestContext rc= UIBackingUtilities.getCurrentInstance();
+		if(this.reporte.getTotal()> 0L)
+			rc.execute("start(" + this.reporte.getTotal() + ")");		
+		else{
+			rc.execute("generalHide()");		
+			JsfBase.addMessage("Generar reporte","No se encontraron registros para el reporte", ETipoMensaje.ALERTA);
+		} // else
+	} // doVerificarReporte		
+ 
+	public void doLoadCorreos() {
+		Entity seleccionado               = null;
+		MotorBusquedaCatalogos motor      = null; 
+		List<ClienteTipoContacto>contactos= null;
+		Correo correoAdd                  = null;
+		try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");
+			motor= new MotorBusqueda(-1L, seleccionado.toLong("idCliente")== null? -1L: seleccionado.toLong("idCliente"));
+			contactos= motor.toClientesTipoContacto();
+			setCorreos(new ArrayList<>());
+			setSelectedCorreos(new ArrayList<>());			
+			for(ClienteTipoContacto contacto: contactos){
+				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())) {
+					correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor());
+					getCorreos().add(correoAdd);		
+					getSelectedCorreos().add(correoAdd);
+				} // if
+			} // for
+      if(!Cadena.isVacio(seleccionado.toString("correos"))) {
+				correoAdd= new Correo(0L, seleccionado.toString("correos"));
+				getCorreos().add(correoAdd);		
+				getSelectedCorreos().add(correoAdd);
+      } // if
+			getCorreos().add(new Correo(-1L, ""));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+	} // doLoadCorreos
+ 
+  public void doSendMail() {
+		StringBuilder sb= new StringBuilder("");
+		if(this.selectedCorreos!= null && !this.selectedCorreos.isEmpty()) {
+			for(Correo mail: this.selectedCorreos) {
+				if(!Cadena.isVacio(mail.getDescripcion()))
+					sb.append(mail.getDescripcion()).append(", ");
+			} // for
+		} // if
+		Map<String, Object> params= new HashMap<>();
+		//String[] emails= {"jimenez76@yahoo.com", (sb.length()> 0? sb.substring(0, sb.length()- 2): "")};
+		String[] emails= {(sb.length()> 0? sb.substring(0, sb.length()- 2): "")};
+		List<Attachment> files= new ArrayList<>(); 
+		try {
+			Entity seleccionado= (Entity)this.attrs.get("seleccionado");
+			params.put("header", "...");
+			params.put("footer", "...");
+			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());
+			params.put("tipo", "Orden de reparación");			
+			params.put("razonSocial", seleccionado.toString("razonSocial"));
+			params.put("correo", ECorreos.ORDENES_TALLER.getEmail());			
+			this.doReporte("ORDEN_TALLER", true);
+			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
+			files.add(attachments);
+			files.add(new Attachment("logo", ECorreos.ORDENES_TALLER.getImages().concat("logo.png"), Boolean.TRUE));
+			params.put("attach", attachments.getId());
+			for (String item: emails) {
+				try {
+					if(!Cadena.isVacio(item)) {
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.ORDENES_TALLER, ECorreos.ORDENES_TALLER.getEmail(), item, "controlbonanza@gmail.com", "Ferreteria Bonanza - Orden de reparación", params, files);
+					  LOG.info("Enviando correo a la cuenta: "+ item);
+					  notificar.send();
+					} // if	
+				} // try
+				finally {
+				  if(attachments.getFile().exists()) {
+   	  	    LOG.info("Eliminando archivo temporal: "+ attachments.getAbsolute());
+				    // user.getFile().delete();
+				  } // if	
+				} // finally	
+			} // for
+	  	LOG.info("Se envio el correo de forma exitosa");
+			if(sb.length()> 0)
+		    JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
+			else
+		    JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
+		} // try // try
+		catch(Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(files);
+		} // finally
+	}	// doSendmail  
+
 }

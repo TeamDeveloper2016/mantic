@@ -6,6 +6,36 @@
   <model>
   </model>
   <dml>
+		<unit id="VistaReportesOrdenesTallerDto">
+			<select id="ordenTaller">
+				select  
+					tc_mantic_servicios.id_servicio as id_key,
+				  tc_mantic_empresas.clave as clave_empresa,  
+				  tc_mantic_empresas.nombre as nombre_empresa,
+				  tc_mantic_empresas.titulo as titulo_empresa,				        
+					tc_mantic_servicios.*,
+          ifnull(tc_mantic_servicios.cliente, tc_mantic_clientes.razon_social) as razon_social, 
+					tc_mantic_servicios_estatus.nombre estatus,
+					tc_mantic_servicios_estatus.estatus_asociados,
+          if(tc_mantic_servicios.id_garantia= 1, 'GARANTIA', 'REPARACION') as ingreso,
+ 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
+          '0' as total_orden
+ 				from 
+					tc_mantic_servicios
+				inner join 
+					tc_mantic_servicios_estatus on tc_mantic_servicios.id_servicio_estatus = tc_mantic_servicios_estatus.id_servicio_estatus
+				inner join 
+					tc_mantic_empresas on tc_mantic_servicios.id_empresa= tc_mantic_empresas.id_empresa
+				inner join
+					tc_janal_usuarios on tc_mantic_servicios.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				left join 
+					tc_mantic_clientes on tc_mantic_servicios.id_cliente = tc_mantic_clientes.id_cliente
+				where 
+				  tc_mantic_servicios.id_servicio= {idServicio}
+      </select>
+    </unit>    
 		<unit id="VistaReportesOrdenesComprasDto">
 			<select id="reporteOrden">
 				select
