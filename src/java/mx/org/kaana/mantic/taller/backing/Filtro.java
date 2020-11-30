@@ -93,11 +93,10 @@ public class Filtro extends Comun implements Serializable {
 			this.attrs.put("herramienta", "");
 			this.attrs.put("cliente", "");
 			this.attrs.put("consecutivo", "");
-      this.attrs.put("sortOrder", "order by tc_mantic_servicios.registro desc");
       this.attrs.put("idServicio", JsfBase.getFlashAttribute("idServicio"));
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.loadEstatusServicios();
-			loadTiposArticulos();
+			this.loadTiposArticulos();
       if(this.attrs.get("idServicio")!= null) 
 			  this.doLoad();
     } // try
@@ -136,7 +135,7 @@ public class Filtro extends Comun implements Serializable {
       campos.add(new Columna("total", EFormatoDinamicos.NUMERO_CON_DECIMALES));     		
 			params= this.toPrepare();
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
-			params.put("sortOrder", this.attrs.get("sortOrder"));
+			params.put("sortOrder", "order by registro desc");
       this.lazyModel = new FormatCustomLazy("VistaTallerServiciosDto", "principal", params, campos);
       UIBackingUtilities.resetDataTable();
 			this.attrs.put("idServicio", null);
@@ -153,16 +152,20 @@ public class Filtro extends Comun implements Serializable {
 
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
-		StringBuilder sb            = new StringBuilder("tc_mantic_servicios_estatus.id_servicio_estatus in (");
+		StringBuilder sb            = new StringBuilder();
 		try {
-			sb.append(this.attrs.get("estatus")).append(") and ");
-			sb.append("(tc_mantic_articulos.id_articulo_tipo in (").append(this.attrs.get("tipoArticulo")).append(") or tc_mantic_articulos.id_articulo_tipo is null) and ");
-			if(this.attrs.get("consecutivo")!= null && !Cadena.isVacio(this.attrs.get("consecutivo")))
+			if(!Cadena.isVacio(this.attrs.get("estatus")))
+  			sb.append("tc_mantic_servicios_estatus.id_servicio_estatus in (").append(this.attrs.get("estatus")).append(") and ");
+			if(!Cadena.isVacio(this.attrs.get("tipoArticulo")))
+  			sb.append("(tc_mantic_articulos.id_articulo_tipo in (").append(this.attrs.get("tipoArticulo")).append(") or tc_mantic_articulos.id_articulo_tipo is null) and ");
+			if(!Cadena.isVacio(this.attrs.get("consecutivo")))
 				sb.append("tc_mantic_servicios.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%' and ");			
 			if(this.attrs.get("herramienta")!= null && !Cadena.isVacio(this.attrs.get("herramienta")) && this.attrs.get("tipoArticulo").toString().equals(ETipoArticulo.REFACCION.getIdTipoArticulo().toString()))
 				sb.append("upper(tc_mantic_articulos.descripcion) like upper('%").append(this.attrs.get("herramienta")).append("%') and ");
 			if(this.attrs.get("cliente")!= null && !Cadena.isVacio(this.attrs.get("cliente")))
 				sb.append("upper(tc_mantic_clientes.razon_social) like upper('%").append(this.attrs.get("cliente")).append("%') and ");			
+      if(this.attrs.get("idServicio")!= null) 
+				sb.append("tc_mantic_servicios.id_servicio= ").append(this.attrs.get("idServicio")).append(" and ");
       regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
 		} // try
 		catch (Exception e) {			

@@ -55,7 +55,7 @@ public class Detalle extends IBaseArticulos implements Serializable {
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
 			this.attrs.put("buscaPorCodigo", false);
-			this.attrs.put("catalogos", false);
+			this.attrs.put("catalogos", 1);
 			doLoad();
     } // try
     catch (Exception e) {
@@ -141,19 +141,21 @@ public class Detalle extends IBaseArticulos implements Serializable {
 			} // if	
 			else
 				search= "WXYZ";
-  		params.put("codigo", search);						
-			if((boolean)this.attrs.get("catalogos")){        
-				if(buscaPorCodigo)
-					this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaTallerServiciosDto", "porCodigo", params, columns, 20L));
-				else
-					this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaTallerServiciosDto", "porNombre", params, columns, 20L));
-			} // if
-			else{
-				if(buscaPorCodigo)
-					this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaTallerServiciosDto", "refaccionesPorCodigo", params, columns, 20L));
-				else
-					this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaTallerServiciosDto", "refaccionesPorNombre", params, columns, 20L));
-			} // else
+  		params.put("codigo", search);
+      Integer opcion= (Integer)this.attrs.get("catalogos");
+  		params.put("idArticuloTipo", opcion);
+      if(buscaPorCodigo)
+        this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaTallerServiciosDto", "porCodigo", params, columns, 20L));
+      else
+        this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaTallerServiciosDto", "porNombre", params, columns, 20L));
+      switch(opcion) {
+        case 1: // articulos
+          break;
+        case 2: // refacciones
+          break;
+        case 3: // servicios
+          break;
+      } // switch
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -186,6 +188,8 @@ public class Detalle extends IBaseArticulos implements Serializable {
 			else
 				codigo= "WXYZ";
 			params.put("codigo", codigo.toUpperCase());
+      Integer opcion= (Integer)this.attrs.get("catalogos");
+  		params.put("idArticuloTipo", opcion);
 			if(buscaPorCodigo)
         this.attrs.put("lazyModel", new FormatCustomLazy("VistaTallerServiciosDto", "porCodigo", params, columns));
 			else

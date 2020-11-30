@@ -76,17 +76,29 @@
 							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-12">
-										<p:panelGrid id="datosArticulos" columns="6" layout="grid" styleClass="janal-wid-100" columnClasses=" , , , , ,janal-column-center">
+                    <p:selectOneRadio id="customBusquedaCatalogo" value="#{manticTallerDetalle.attrs.catalogos}" layout="custom" converter="javax.faces.Integer">
+												<p:ajax event="change" process="@this" update="@this"/>
+                        <f:selectItem itemLabel="Articulos" itemValue="1"/>
+                        <f:selectItem itemLabel="Refacciones" itemValue="2" />
+                        <f:selectItem itemLabel="Servicios" itemValue="3" />
+                    </p:selectOneRadio>                    
+										<p:panelGrid id="datosArticulos" columns="6" layout="grid" styleClass="janal-wid-100" columnClasses="janal-column-right, janal-column-center, janal-column-center, janal-column-center, ,janal-column-center">
+											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+                        <h:outputLabel value="Buscar por:" />
+                      </p:panelGrid>
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" columnClasses="janal-column-center">
-												<p:outputLabel for="catalogos" value="Busqueda articulos/refacciones"/>
-												<p:selectBooleanCheckbox id="catalogos" value="#{manticTallerDetalle.attrs.catalogos}" title="Buscar articulos y refacciones a la vez" styleClass="filas">
-													<p:ajax event="change" process="@this" update="@this"/>
-												</p:selectBooleanCheckbox>
+                        <p:radioButton id="articuloRadio" for="customBusquedaCatalogo" itemIndex="0"/>
+                        <h:outputLabel for="articuloRadio" value="Articulos" styleClass="janal-color-orange"/>
+                      </p:panelGrid>
+											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+                        <p:radioButton id="refaccionRadio" for="customBusquedaCatalogo" itemIndex="1"/>
+                        <h:outputLabel for="refaccionRadio" value="Refacciones" styleClass="janal-color-orange"/>
 											</p:panelGrid>
-											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100"/>																							
+											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+                        <p:radioButton id="servicioRadio" for="customBusquedaCatalogo" itemIndex="2"/>
+                        <h:outputLabel for="servicioRadio" value="Servicios" styleClass="janal-color-orange"/>
+											</p:panelGrid>
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100"/>
-											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100"/>
-											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100"/>																							
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
   											<p:outputLabel for="descuento" value="% Descuentos:"/>
 												<p:inputText id="descuento" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticTallerDetalle.adminOrden.orden.descuento}">
@@ -251,8 +263,8 @@
 						<p:column headerText="Precio" styleClass="janal-column-right janal-wid-13">
 							<h:outputText value="#{manticTallerDetalle.doMonedaSat(item.menudeo)}"/>
 						</p:column>   
-						<p:column headerText="Stock" styleClass="janal-column-right janal-wid-10">
-							<h:outputText value="#{manticTallerDetalle.doMiles(item.stock)}"/>
+						<p:column headerText="Tipo" styleClass="janal-column-right janal-wid-10">
+							<h:outputText value="#{item.isTipo}"/>
 						</p:column>   
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticTallerDetalle.attrs.lazyModel==null? 0: manticTallerDetalle.attrs.lazyModel.rowCount}] registros"/>
