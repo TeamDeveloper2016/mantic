@@ -144,7 +144,7 @@ public abstract class ComunInventarios extends IBaseTnx {
 				TcManticAlmacenesArticulosDto origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(sesion, TcManticAlmacenesArticulosDto.class, params);
 				if(origen== null) 
 					origen= this.toCreateAlmacenArticulo(sesion, articulo, idDestino, umbrales);
-
+        
 				// generar un registro en la bitacora de movimientos de los articulos 
 				TcManticMovimientosDto movimiento= new TcManticMovimientosDto(
 					consecutivo, // String consecutivo, 
@@ -159,7 +159,8 @@ public abstract class ComunInventarios extends IBaseTnx {
 					null // String observaciones
 				);
 				DaoFactory.getInstance().insert(sesion, movimiento);
-
+        
+        // afectar el almacen con la cantidad que se tiene en el stock
 				origen.setStock(Numero.toRedondearSat(origen.getStock()+ diferencia));
 				DaoFactory.getInstance().update(sesion, origen);
 
@@ -209,7 +210,7 @@ public abstract class ComunInventarios extends IBaseTnx {
 			articulo.getIdArticulo(), // Long idArticulo, 
 			0D, // Double inicial, 
 			// inicial? 0D: articulo.getCantidad()* -1D, // Double inicial, 
-			inicial? articulo.getCantidad(): 0D, // articulo.getCantidad()* -1D, // Double stock, 
+			inicial? articulo.getCantidad(): articulo.getCantidad()* -1D, // articulo.getCantidad()* -1D, // Double stock, 
 			inicial? 0D: articulo.getCantidad(), // Double salidas, 
 			new Long(Fecha.getAnioActual()), // Long ejercicio, 
 			1L // Long idAutomatico
