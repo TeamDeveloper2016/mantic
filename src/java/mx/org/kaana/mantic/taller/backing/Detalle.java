@@ -1,10 +1,12 @@
 package mx.org.kaana.mantic.taller.backing;
 
+import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -55,8 +57,9 @@ public class Detalle extends IBaseArticulos implements Serializable {
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
 			this.attrs.put("buscaPorCodigo", false);
-			this.attrs.put("catalogos", 1);
-			doLoad();
+			this.attrs.put("idArticuloTipo", 1);
+			this.attrs.put("catalogo", "Articulos");
+			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -68,25 +71,41 @@ public class Detalle extends IBaseArticulos implements Serializable {
   protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
 		Articulo temporal= this.getAdminOrden().getArticulos().get(index);
 		Map<String, Object> params= new HashMap<>();		
-		boolean isArticulo        = false;
+    String proceso   = "VistaTallerServiciosDto";
 		try {
 			if(articulo.size()> 1) {
-				isArticulo= articulo.toLong("isArticulo").equals(ARTICULO);
-				if(isArticulo){
-					params.put("idArticulo", articulo.toLong("idArticulo"));
-					params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
-				} // if
+ 				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
+        Value almacenes= null;
+        switch(articulo.toInteger("isArticulo")) {
+          case 1: // articulos
+            proceso= "TcManticInventariosDto";
+            params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
+            params.put("idArticuloTipo", 1L);
+            break;
+          case 2: // refacciones
+            // AQUI FALTA BUSCAR EL ID_ARTICULO BASADO EN EL CODIGO DE LA REFACCION SI YA FUE DADA DE ALTA Y POR LO TANTO YA NO ES RANDOM
+            almacenes= (Value)DaoFactory.getInstance().toField("TcManticAlmacenesDto", "unicos", params, "almacenes");
+    				params.put("idAlmacen", almacenes!= null? almacenes.toString(): JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
+            params.put("idArticuloTipo", 2L);
+            if(articulo.toLong("idArticulo")== 0L)
+              articulo.put("idArticulo", new Value("idArticulo", (new Random().nextLong())* -1L));
+            break;
+          case 3:  // servicios
+            // AQUI FALTA BUSCAR EL ID_ARTICULO BASADO EN EL CODIGO DE LA REFACCION SI YA FUE DADA DE ALTA Y POR LO TANTO YA NO ES RANDOM
+            almacenes= (Value)DaoFactory.getInstance().toField("TcManticAlmacenesDto", "unicos", params, "almacenes");
+    				params.put("idAlmacen", almacenes!= null? almacenes.toString(): JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
+            params.put("idArticuloTipo", 3L);
+            if(articulo.toLong("idArticulo")== 0L)
+              articulo.put("idArticulo", new Value("idArticulo", (new Random().nextLong())* -1L));
+            break;
+        } // switch
+  			params.put("idArticulo", articulo.toLong("idArticulo"));
+  			temporal.setCodigo(articulo.toString("propio"));
 				temporal.setIdComodin(articulo.toLong("isArticulo"));
 				temporal.setKey(articulo.toLong("idArticulo"));
 				temporal.setIdArticulo(articulo.toLong("idArticulo"));
 				temporal.setIdProveedor(-1L);
 				temporal.setIdRedondear(articulo.toLong("idRedondear"));
-				if(isArticulo){
-					Value codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "propio", params, "codigo");
-					temporal.setCodigo(codigo== null? "": codigo.toString());
-				} // if
-				else
-					temporal.setCodigo(articulo.toString("propio"));
 				temporal.setPropio(articulo.toString("propio"));
 				temporal.setNombre(articulo.toString("nombre"));
 				temporal.setValor(articulo.toDouble(this.getPrecio()));
@@ -97,12 +116,9 @@ public class Detalle extends IBaseArticulos implements Serializable {
 				temporal.setCantidad(1D);
 				temporal.setUltimo(this.attrs.get("ultimo")!= null);
 				temporal.setSolicitado(this.attrs.get("solicitado")!= null);
-				if(isArticulo){
-					Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
-					temporal.setStock(stock== null? 0D: stock.toDouble());
-				} // if
-				else
-					temporal.setStock(0D);
+        // AQUI FALTA BUSCAR EL STOCK DE LA REFACCION EN EL ALMACEN DEL TALLER AUN FALTA DEFINIR COMO QUEDARA EL TALLER
+				Value stock= (Value)DaoFactory.getInstance().toField(proceso, "stock", params, "stock");
+				temporal.setStock(stock== null? 0D: stock.toDouble());
 				if(index== this.getAdminOrden().getArticulos().size()- 1) {
 					this.getAdminOrden().getArticulos().add(new Articulo(-1L));
 					this.getAdminOrden().toAddUltimo(this.getAdminOrden().getArticulos().size()- 1);
@@ -142,7 +158,7 @@ public class Detalle extends IBaseArticulos implements Serializable {
 			else
 				search= "WXYZ";
   		params.put("codigo", search);
-      Integer opcion= (Integer)this.attrs.get("catalogos");
+      Integer opcion= (Integer)this.attrs.get("idArticuloTipo");
   		params.put("idArticuloTipo", opcion);
       if(buscaPorCodigo)
         this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaTallerServiciosDto", "porCodigo", params, columns, 20L));
@@ -188,12 +204,12 @@ public class Detalle extends IBaseArticulos implements Serializable {
 			else
 				codigo= "WXYZ";
 			params.put("codigo", codigo.toUpperCase());
-      Integer opcion= (Integer)this.attrs.get("catalogos");
+      Integer opcion= (Integer)this.attrs.get("idArticuloTipo");
   		params.put("idArticuloTipo", opcion);
 			if(buscaPorCodigo)
-        this.attrs.put("lazyModel", new FormatCustomLazy("VistaTallerServiciosDto", "porCodigo", params, columns));
+        this.attrs.put("lazyModel", new FormatCustomLazy("VistaTallerServiciosDto", "por".concat((String)this.attrs.get("catalogo")).concat("Codigo"), params, columns));
 			else
-        this.attrs.put("lazyModel", new FormatCustomLazy("VistaTallerServiciosDto", "porLikeNombre", params, columns));
+        this.attrs.put("lazyModel", new FormatCustomLazy("VistaTallerServiciosDto", "por".concat((String)this.attrs.get("catalogo")).concat("LikeNombre"), params, columns));
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -228,6 +244,7 @@ public class Detalle extends IBaseArticulos implements Serializable {
     try {		
 			transaccion= new Transaccion(getAdminOrden().getArticulos(), Long.valueOf(this.attrs.get("idServicio").toString()), getAdminOrden().getTotales());
 			if(transaccion.ejecutar(EAccion.COMPLEMENTAR)) {
+      	JsfBase.setFlashAttribute("idServicio", this.attrs.get("idServicio"));
 				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
 				JsfBase.addMessage("Se agregaron las refaccion de forma correcta.", ETipoMensaje.INFORMACION);
 			} // if
@@ -245,4 +262,9 @@ public class Detalle extends IBaseArticulos implements Serializable {
   	JsfBase.setFlashAttribute("idServicio", this.attrs.get("idServicio"));
     return (String) this.attrs.get("retorno");
   } // doCancelar	
+  
+  public void doBuscarCatalogo(String catalogo) {
+    this.attrs.put("catalogo", catalogo);
+  }
+  
 }

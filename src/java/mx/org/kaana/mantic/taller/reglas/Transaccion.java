@@ -389,8 +389,13 @@ public class Transaccion extends TransaccionFactura{
 					TcManticServiciosDetallesDto item= articulo.toServicioDetalle();
 					item.setIdServicio(this.idServicio);					
 					item.setIdUsuario(JsfBase.getIdUsuario());
-					if(DaoFactory.getInstance().findIdentically(sesion, TcManticServiciosDetallesDto.class, item.toMap())== null) 
+          TcManticServiciosDetallesDto existe= (TcManticServiciosDetallesDto)DaoFactory.getInstance().findIdentically(sesion, TcManticServiciosDetallesDto.class, item.toMap());
+					if(existe== null) 
 						DaoFactory.getInstance().insert(sesion, item);
+          else {
+            item.setIdServicioDetalle(existe.getIdServicioDetalle());
+            DaoFactory.getInstance().update(sesion, item);
+          } // else
 				} // if
 			} // for
 		} // try

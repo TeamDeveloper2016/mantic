@@ -643,7 +643,7 @@
 				from
 					tc_mantic_egresos				
 				where  
-					tc_mantic_egresos.descripcion= '{descripcion}'					
+					tc_mantic_egresos.descripcion= upper('{descripcion}')
 			</select>		
 			<select id="cliente">
 				select
@@ -661,7 +661,8 @@
 				from
 					tc_mantic_proveedores
 				where  
-					 upper(tc_mantic_proveedores.rfc)= '{rfc}'				
+					upper(tc_mantic_proveedores.rfc)= upper('{rfc}')
+          or upper(tc_mantic_proveedores.clave)= upper('{clave}')
 			</select>		
 			<select id="trabajo">
 				select
@@ -767,7 +768,7 @@
 		<unit id="VistaServiciosDetallesDto">
 			<select id="detalle">
         select      				  
-          tc_mantic_servicios_detalles.id_servicio_detalle AS id_comodin,
+          tc_mantic_servicios_detalles.id_servicio_detalle as id_key,
           tc_mantic_servicios_detalles.id_servicio_detalle,
           tc_mantic_servicios_detalles.id_servicio,
           tc_mantic_servicios_detalles.id_articulo,          
@@ -783,6 +784,7 @@
           tc_mantic_servicios_detalles.impuestos,
           tc_mantic_servicios_detalles.sub_total,
           tc_mantic_servicios_detalles.importe,
+          tc_mantic_servicios_detalles.id_articulo_tipo as id_comodin,
           tc_mantic_servicios_detalles.id_usuario,
           tc_mantic_servicios_detalles.registro
         from      
@@ -7514,6 +7516,20 @@
 			</select>	
 		</unit>
 		<unit id="VistaTallerServiciosDto">
+      <select id="stock">
+        select      
+          tc_mantic_inventarios.*
+        from      
+          tc_mantic_inventarios
+        inner join
+          tc_mantic_articulos on tc_mantic_inventarios.id_articulo= tc_mantic_articulos.id_articulo
+        where      
+          tc_mantic_inventarios.id_almacen in ({idAlmacen})
+				  and tc_mantic_inventarios.id_articulo= {idArticulo}
+          and tc_mantic_articulos.id_articulo_tipo= {idArticuloTipo}
+				order by
+				 registro desc
+      </select>
 			<select id="porNombre">
 				select 
 				  tc_mantic_articulos.id_articulo as id_key,
@@ -7539,14 +7555,14 @@
 				  and tc_mantic_articulos.id_articulo_tipo= {idArticuloTipo}
 				  and 
 				  (
-            upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*'
+            upper(tc_mantic_articulos.nombre) regexp upper('.*{codigo}.*')
 				    or
 				    tc_mantic_articulos.id_articulo= {idArticulo}
           )
 				order by
 				  tc_mantic_articulos.nombre			
 			</select>
-			<select id="porLikeNombre">
+			<select id="porArticulosLikeNombre">
 				select 
 				  tc_mantic_articulos.id_articulo as id_key,
 				  tc_mantic_articulos.id_articulo,
@@ -7572,13 +7588,139 @@
 				  and tc_mantic_articulos.id_articulo_tipo= {idArticuloTipo}
 				  and 
 				  (
-            upper(tc_mantic_articulos.nombre) like '{codigo}%'
+            upper(tc_mantic_articulos.nombre) like upper('{codigo}%')
 				    or
 				    tc_mantic_articulos.id_articulo= {idArticulo}
           )
 				order by
 				  tc_mantic_articulos.nombre			
 			</select>
+			<select id="porRefaccionesLikeNombre">
+				select 
+				  tc_mantic_refacciones.id_refaccion as id_key,
+				  0 as id_articulo,
+				  tc_mantic_refacciones.codigo as propio,
+				  tc_mantic_refacciones.fabricante,  
+				  tc_mantic_refacciones.nombre,
+				  tc_mantic_refacciones.nombre as descripcion,
+				  tc_mantic_refacciones.costo as precio,
+				  tc_mantic_refacciones.costo as menudeo,
+				  tc_mantic_refacciones.costo as original,
+				  tc_mantic_refacciones.iva,
+          2 as id_redondear,
+          2 as is_articulo,
+				  'REFACCION' as is_tipo
+				from 
+					tc_mantic_refacciones
+				where 
+					tc_mantic_refacciones.id_empresa in ({sucursales})
+				  and upper(tc_mantic_refacciones.nombre) like upper('{codigo}%')
+				order by
+				  tc_mantic_refacciones.nombre			
+			</select>
+			<select id="porServiciosLikeNombre">
+				select 
+				  tc_mantic_encargos.id_encargo as id_key,
+				  0 as id_articulo,
+				  tc_mantic_encargos.codigo as propio,
+				  ' ' as fabricante,  
+				  tc_mantic_encargos.nombre,
+				  tc_mantic_encargos.nombre as descripcion,
+				  tc_mantic_encargos.costo as precio,
+				  tc_mantic_encargos.costo as menudeo,
+				  tc_mantic_encargos.costo as original,
+				  tc_mantic_encargos.iva,
+          2 as id_redondear,
+          3 as is_articulo,
+				  'SERVICIO' as is_tipo
+				from 
+					tc_mantic_encargos
+				where 
+					tc_mantic_encargos.id_empresa in ({sucursales})
+				  and upper(tc_mantic_encargos.nombre) like upper('{codigo}%')
+				order by
+				  tc_mantic_encargos.nombre		
+			</select>
+			<select id="porArticulosCodigo">
+				select 
+				  tc_mantic_articulos.id_articulo as id_key,
+				  tc_mantic_articulos.id_articulo,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
+				  tc_mantic_articulos.fabricante,  
+				  tc_mantic_articulos.nombre,
+				  tc_mantic_articulos.descripcion,
+				  tc_mantic_articulos.precio,
+				  tc_mantic_articulos.menudeo,
+				  tc_mantic_articulos.precio as original,
+				  tc_mantic_articulos.iva,
+				  tc_mantic_articulos.id_redondear,
+				  tc_mantic_articulos_tipos.id_articulo_tipo is_articulo,
+				  tc_mantic_articulos_tipos.nombre as is_tipo
+				from 
+					tc_mantic_articulos
+				inner join
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
+				inner join 
+					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
+				where 
+					tc_mantic_empresas.id_empresa in ({sucursales})
+				  and tc_mantic_articulos.id_articulo_tipo= {idArticuloTipo}
+				  and tc_mantic_articulos.id_vigente= 1
+				  and 
+				  ((upper(tc_mantic_articulos_codigos.codigo) regexp '.*{codigo}.*' and tc_mantic_articulos_codigos.id_proveedor is null)
+			     or
+			      (upper(tc_mantic_articulos_codigos.codigo) regexp '.*{codigo}.*' and tc_mantic_articulos_codigos.id_proveedor = {idProveedor})
+				   or
+				    tc_mantic_articulos.id_articulo= {idArticulo}) 			
+				order by
+				  propio
+			</select>			
+			<select id="porRefaccionCodigo">
+				select 
+				  tc_mantic_refacciones.id_refaccion as id_key,
+				  0 as id_articulo,
+				  tc_mantic_refacciones.codigo as propio,
+				  tc_mantic_refacciones.fabricante,  
+				  tc_mantic_refacciones.nombre,
+				  tc_mantic_refacciones.nombre as descripcion,
+				  tc_mantic_refacciones.costo as precio,
+				  tc_mantic_refacciones.costo as menudeo,
+				  tc_mantic_refacciones.costo as original,
+				  tc_mantic_refacciones.iva,
+          2 as id_redondear,
+          2 as is_articulo,
+				  'REFACCION' as is_tipo
+				from 
+					tc_mantic_refacciones
+				where 
+					tc_mantic_refacciones.id_empresa in ({sucursales})
+				  and upper(tc_mantic_encargos.codigo) regexp upper('.*{codigo}.*')
+				order by
+				  tc_mantic_refacciones.nombre		        
+      </select>  
+			<select id="porServicioCodigo">
+				select 
+				  tc_mantic_encargos.id_encargo as id_key,
+				  0 as id_articulo,
+				  tc_mantic_encargos.codigo as propio,
+				  ' ' as fabricante,  
+				  tc_mantic_encargos.nombre,
+				  tc_mantic_encargos.nombre as descripcion,
+				  tc_mantic_encargos.costo as precio,
+				  tc_mantic_encargos.costo as menudeo,
+				  tc_mantic_encargos.costo as original,
+				  tc_mantic_encargos.iva,
+          2 as id_redondear,
+          3 as is_articulo,
+				  'SERVICIO' as is_tipo
+				from 
+					tc_mantic_encargos
+				where 
+					tc_mantic_encargos.id_empresa in ({sucursales})
+				  and upper(tc_mantic_encargos.codigo) regexp upper('.*{codigo}.*')
+				order by
+				  tc_mantic_encargos.nombre		        
+      </select>  
 			<select id="porCodigo">
 				select 
 				  tc_mantic_articulos.id_articulo as id_key,

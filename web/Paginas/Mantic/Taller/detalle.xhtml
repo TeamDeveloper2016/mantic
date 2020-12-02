@@ -76,13 +76,13 @@
 							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-12">
-                    <p:selectOneRadio id="customBusquedaCatalogo" value="#{manticTallerDetalle.attrs.catalogos}" layout="custom" converter="javax.faces.Integer">
+                    <p:selectOneRadio id="customBusquedaCatalogo" value="#{manticTallerDetalle.attrs.idArticuloTipo}" layout="custom" converter="javax.faces.Integer">
 												<p:ajax event="change" process="@this" update="@this"/>
                         <f:selectItem itemLabel="Articulos" itemValue="1"/>
                         <f:selectItem itemLabel="Refacciones" itemValue="2" />
                         <f:selectItem itemLabel="Servicios" itemValue="3" />
                     </p:selectOneRadio>                    
-										<p:panelGrid id="datosArticulos" columns="6" layout="grid" styleClass="janal-wid-100" columnClasses="janal-column-right, janal-column-center, janal-column-center, janal-column-center, ,janal-column-center">
+										<p:panelGrid id="datosArticulos" columns="6" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10 janal-column-right,janal-wid-10 janal-column-center,janal-wid-10 janal-column-center,janal-wid-10 janal-column-center, janal-wid-100,janal-column-center">
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
                         <h:outputLabel value="Buscar por:" />
                       </p:panelGrid>
@@ -98,7 +98,12 @@
                         <p:radioButton id="servicioRadio" for="customBusquedaCatalogo" itemIndex="2"/>
                         <h:outputLabel for="servicioRadio" value="Servicios" styleClass="janal-color-orange"/>
 											</p:panelGrid>
-											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100"/>
+											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+                        <p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-column-right, janal-column-left">
+                          <p:commandButton icon="fa fa-bitbucket" title="Catalogo de refacciones" process="@this" update="buscarCatalogo buscados localizado" actionListener="#{manticTallerDetalle.doBuscarCatalogo('Refacciones')}" onstart="return janal.bloquear();" oncomplete="PF('dialogo').show();"/>
+                      		<p:commandButton icon="fa fa-bug" title="Catalogo de servicios" process="@this" update="buscarCatalogo buscados localizado" actionListener="#{manticTallerDetalle.doBuscarCatalogo('Servicios')}" onstart="return janal.bloquear();" oncomplete="PF('dialogo').show();"/>
+                        </p:panelGrid>  
+                      </p:panelGrid>  
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
   											<p:outputLabel for="descuento" value="% Descuentos:"/>
 												<p:inputText id="descuento" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticTallerDetalle.adminOrden.orden.descuento}">
@@ -194,6 +199,9 @@
 												</f:facet>
 												<p:outputLabel value="#{row['importe$']}"/>
 											</p:column>		
+											<p:column class="janal-column-right MarAuto Responsive janal-wid-col-38">
+                        <h:graphicImage library="janal" name="icon/semaforos/circulo-#{row.idComodin eq '1'? 'magenta':  row.idComodin eq '2'? 'naranja': empty row.propio? 'beige': 'cafe'}.png" title="#{row.idComodin eq '1'? 'Articulo':  row.idComodin eq '2'? 'Refacción': empty row.propio? 'No definido': 'Servicio'}"/>
+											</p:column>		
 										</p:dataTable>
 										<p:spacer width="5"/>
 										<div class="ui-grid-row janal-grid-row">
@@ -231,10 +239,10 @@
 				</div>
 			</div>
 		</div>		
-		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear(); janal.recover();" onShow="$('#codigo').val('');clean();" width="900px" height="470px" resizable="false" appendTo="@(body)">
+		<p:dialog id="buscarCatalogo" widgetVar="dialogo" header="[#{manticTallerDetalle.attrs.catalogo}] buscar:" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear(); janal.recover();" onShow="$('#codigo').val('');clean();" width="900px" height="470px" resizable="false" appendTo="@(body)">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
-					<p:outputLabel for="codigo" value="Código o nombre:"/>
+					<p:outputLabel for="codigo" value="[#{manticTallerDetalle.attrs.catalogo}] código o nombre:"/>
 					<span class="janal-help-icon janal-help-8 fa fa-fw fa-question-circle Fright" onclick="countHelp(8);"/>	
 					<pe:tooltip for="@(.janal-help-8)" showEvent="click">
 						<h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(8)}" styleClass="Fs15" escape="false"/>

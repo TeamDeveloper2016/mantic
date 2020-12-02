@@ -7,6 +7,59 @@
   </model>
 
   <dml>
+    <unit id="TcManticRefaccionesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_refacciones
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_refacciones
+        where      
+          id_proveedor = {idProveedor} and codigo = '{codigo}'
+      </select>
+      <select id="existe">
+        select      
+          tc_mantic_refacciones.id_refaccion as id_key,
+          tc_mantic_refacciones.*
+        from      
+          tc_mantic_refacciones
+        where      
+          id_proveedor = {idProveedor} and codigo = '{codigo}'
+      </select>
+    </unit>    
+    <unit id="TcManticEncargosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_encargos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_encargos
+        where      
+          codigo = '{codigo}'
+      </select>
+      <select id="existe">
+        select      
+          tc_mantic_encargos.id_encargo as id_key,
+          tc_mantic_encargos.*
+        from      
+          tc_mantic_encargos
+        where      
+          codigo = '{codigo}'
+      </select>    </unit>    
     <unit id="TcManticPortalesDto">
       <select id="row">
         select      
@@ -2306,8 +2359,9 @@
           *
         from      
           tc_mantic_servicios_detalles
-        where      
-          concepto = '{concepto}'
+        where     
+          id_servicio= {idServicio}  
+          and codigo = '{codigo}'
       </select>
       <select id="detalle">
         select      
@@ -3721,6 +3775,17 @@
           tc_mantic_almacenes
         where 
           id_almacen= {idAlmacen} 
+      </select>
+      <select id="unicos">
+        select      
+				  tc_mantic_almacenes.id_empresa as id_key,
+          group_concat(distinct tc_mantic_almacenes.id_almacen) as almacenes
+        from      
+          tc_mantic_almacenes
+        where      
+          tc_mantic_almacenes.id_empresa= {idEmpresa}
+			  group by
+				  tc_mantic_almacenes.id_empresa
       </select>
     </unit>
 	  <unit id="TcManticAlmacenesArticulosDto">
