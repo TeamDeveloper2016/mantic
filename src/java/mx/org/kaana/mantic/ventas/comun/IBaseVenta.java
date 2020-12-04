@@ -634,14 +634,13 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 						else
 							JsfBase.addMessage("No es posble aplicar el descuento, el descuento es superior a la utilidad", ETipoMensaje.ERROR);
 					} // if
-					else if (isGlobal){		
+					else if (isGlobal) {		
 						this.attrs.put("tipoDecuentoAutorizadoActivo", GLOBAL);
 						global= Double.valueOf(this.attrs.get("descuentoGlobal").toString());
-						globalCalculado= (this.getAdminOrden().getTotales().getTotal() * global) / 100;
 						this.getAdminOrden().toCalculate();
+						globalCalculado= (this.getAdminOrden().getTotales().getTotal() * global) / 100;
 						if(globalCalculado < this.getAdminOrden().getTotales().getUtilidad()){
 							((TicketVenta)this.getAdminOrden().getOrden()).setGlobal(globalCalculado);
-							this.getAdminOrden().getTotales().setGlobal(globalCalculado);	
 							this.getAdminOrden().setDescuento(global.toString());
 							this.doUpdateDescuento();
 							this.getAdminOrden().toCalculate();
