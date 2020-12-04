@@ -72,12 +72,36 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
+						<p:tab title="Generales">
+							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
+								<div class="ui-grid-row janal-grid-row">
+									<div class="ui-grid-col-12">
+                    <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-8, janal-wid-100">
+                      <p:outputLabel for="consecutivo" value="Consecutivo:"/>
+                      <p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticTallerDetalle.servicio.consecutivo}" readonly="true"/> 
+                      <p:outputLabel for="herramienta" value="Herramienta:"/>
+                      <p:inputText id="herramienta" styleClass="janal-wid-100-txt" value="#{manticTallerDetalle.servicio.herramienta}" readonly="true"/>                    
+                      <p:outputLabel for="marca" value="Marca:"/>
+                      <p:inputText id="marca" styleClass="janal-wid-100-txt" value="#{manticTallerDetalle.servicio.marca}" readonly="true"/>
+                      <p:outputLabel for="modelo" value="Modelo:"/>
+                      <p:inputText id="modelo" styleClass="janal-wid-100-txt" value="#{manticTallerDetalle.servicio.modelo}" readonly="true"/>        
+                      <p:outputLabel for="ingreso" value="Tipo ingreso:"/>
+                      <p:inputText id="ingreso" styleClass="janal-wid-100-txt" value="#{manticTallerDetalle.servicio.idGarantia eq '1'? 'GARANTIA': 'REPARACIÓN'}" readonly="true"/>
+                    </p:panelGrid>
+                    <p:outputLabel for="caracteristicas" value="Caracteristicas:"/>
+                    <p:inputTextarea id="caracteristicas" styleClass="janal-wid-100-txt" value="#{manticTallerDetalle.servicio.caracteristicas}" readonly="true"/>
+                    <p:outputLabel for="reparacion" value="Reparación:"/>
+                    <p:inputTextarea id="reparacion" styleClass="janal-wid-100-txt" value="#{manticTallerDetalle.servicio.reparacion}" readonly="true"/>            
+                  </div>
+                </div>
+              </div> 
+            </p:tab>  
 						<p:tab title="Articulos">
 							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-12">
                     <p:selectOneRadio id="customBusquedaCatalogo" value="#{manticTallerDetalle.attrs.idArticuloTipo}" layout="custom" converter="javax.faces.Integer">
-												<p:ajax event="change" process="@this" update="@this"/>
+												<p:ajax event="change" process="@this" update="@this buscarCatalogo"/>
                         <f:selectItem itemLabel="Articulos" itemValue="1"/>
                         <f:selectItem itemLabel="Refacciones" itemValue="2" />
                         <f:selectItem itemLabel="Servicios" itemValue="3" />
@@ -88,15 +112,15 @@
                       </p:panelGrid>
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" columnClasses="janal-column-center">
                         <p:radioButton id="articuloRadio" for="customBusquedaCatalogo" itemIndex="0"/>
-                        <h:outputLabel for="articuloRadio" value="Articulos" styleClass="janal-color-orange"/>
+                        <h:outputLabel for="articuloRadio" value="Articulos"/>
                       </p:panelGrid>
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
                         <p:radioButton id="refaccionRadio" for="customBusquedaCatalogo" itemIndex="1"/>
-                        <h:outputLabel for="refaccionRadio" value="Refacciones" styleClass="janal-color-orange"/>
+                        <h:outputLabel for="refaccionRadio" value="Refacciones"/>
 											</p:panelGrid>
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
                         <p:radioButton id="servicioRadio" for="customBusquedaCatalogo" itemIndex="2"/>
-                        <h:outputLabel for="servicioRadio" value="Servicios" styleClass="janal-color-orange"/>
+                        <h:outputLabel for="servicioRadio" value="Servicios"/>
 											</p:panelGrid>
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
                         <p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-column-right, janal-column-left">
@@ -106,7 +130,7 @@
                       </p:panelGrid>  
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
   											<p:outputLabel for="descuento" value="% Descuentos:"/>
-												<p:inputText id="descuento" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticTallerDetalle.adminOrden.orden.descuento}">
+												<p:inputText id="descuento" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticTallerDetalle.servicio.descuento}">
 													<p:ajax event="blur" listener="#{manticTallerDetalle.doUpdateDescuento}" process="@this descuento" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#contenedorGrupos\\:descuento'), '0'); return true;"/>
 												</p:inputText>	
 											</p:panelGrid>
@@ -158,7 +182,8 @@
 												<f:facet name="header">
 													<h:outputText value="Articulo"/>
 												</f:facet>
-												<h:outputText id="nombres" value="[#{row['codigo']}] #{row['nombre']}" title="Código propio: #{row['propio']}  Existencias almacen: #{row['stock']}" escape="false"/>
+                        <i class="janal-color-black janal-font-bold fa #{row.idComodin eq '1'? 'fa-cart-arrow-down':  row.idComodin eq '2'? 'fa-bitbucket': empty row.propio? 'fa-skyatlas': 'fa-bug'}" title="#{row.idComodin eq '1'? 'Articulo':  row.idComodin eq '2'? 'Refacción': empty row.propio? 'No definido': 'Servicio'}"></i><p:spacer width="3px"/>
+                        <h:outputText id="nombres" value="[#{row['codigo']}] #{row['nombre']}" title="Código propio: #{row['propio']}  Existencias almacen: #{row['stock']}" escape="false" styleClass="#{row.idAutomatico eq 1? row.stock le 1? 'janal-color-orange': 'janal-color-blue': 'janal-color-red'}"/>
 											</p:column>		
 											<p:column class="cantidades janal-column-right MarAuto Responsive janal-wid-8">
 												<f:facet name="header">
@@ -199,7 +224,7 @@
 												</f:facet>
 												<p:outputLabel value="#{row['importe$']}"/>
 											</p:column>		
-											<p:column class="janal-column-right MarAuto Responsive janal-wid-col-38">
+                      <p:column class="janal-column-right MarAuto Responsive janal-wid-col-38" rendered="false">
                         <h:graphicImage library="janal" name="icon/semaforos/circulo-#{row.idComodin eq '1'? 'magenta':  row.idComodin eq '2'? 'naranja': empty row.propio? 'beige': 'cafe'}.png" title="#{row.idComodin eq '1'? 'Articulo':  row.idComodin eq '2'? 'Refacción': empty row.propio? 'No definido': 'Servicio'}"/>
 											</p:column>		
 										</p:dataTable>
@@ -228,21 +253,23 @@
 												<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="$ #{manticTallerDetalle.adminOrden.totales.total$}"/>
 									    </div>	
 										</div>	
+                    <p:outputLabel value="Las partidas en &lt;span class='janal-color-red'&gt;rojo&lt;/span&gt; no existen en el catalogo maestro, las partidas en &lt;span class='janal-color-orange'&gt;naranja&lt;/span&gt; su stock esta en cero y las &lt;span class='janal-color-blue'&gt;azul&lt;/span&gt; si hay stock disponible" escape="false"/><br/>
+                    <p:outputLabel value="El stock de las refacciones será considerado del almacen predefinidio en la orden de servicio"/>
 									</div>									
 								</div>
 							</div>
 						</p:tab>
 						<p:tab title="Observaciones">
-							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticTallerDetalle.adminOrden.orden.observaciones}"/>
+							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticTallerDetalle.servicio.observaciones}"/>
 						</p:tab>
 					</p:tabView>
 				</div>
 			</div>
 		</div>		
-		<p:dialog id="buscarCatalogo" widgetVar="dialogo" header="[#{manticTallerDetalle.attrs.catalogo}] buscar:" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear(); janal.recover();" onShow="$('#codigo').val('');clean();" width="900px" height="470px" resizable="false" appendTo="@(body)">
+		<p:dialog id="buscarCatalogo" widgetVar="dialogo" header="[#{manticTallerDetalle.catalogo}] buscar:" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear(); janal.recover();" onShow="$('#codigo').val('');clean();" width="900px" height="470px" resizable="false" appendTo="@(body)">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
-					<p:outputLabel for="codigo" value="[#{manticTallerDetalle.attrs.catalogo}] código o nombre:"/>
+					<p:outputLabel for="codigo" value="[#{manticTallerDetalle.catalogo}] código o nombre:"/>
 					<span class="janal-help-icon janal-help-8 fa fa-fw fa-question-circle Fright" onclick="countHelp(8);"/>	
 					<pe:tooltip for="@(.janal-help-8)" showEvent="click">
 						<h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(8)}" styleClass="Fs15" escape="false"/>

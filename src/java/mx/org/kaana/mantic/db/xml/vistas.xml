@@ -786,6 +786,7 @@
           tc_mantic_servicios_detalles.importe,
           tc_mantic_servicios_detalles.id_articulo_tipo as id_comodin,
           tc_mantic_servicios_detalles.id_usuario,
+          tc_mantic_servicios_detalles.id_valido as id_automatico,
           tc_mantic_servicios_detalles.registro
         from      
           tc_mantic_servicios_detalles				
@@ -7544,6 +7545,19 @@
 			</select>	
 		</unit>
 		<unit id="VistaTallerServiciosDto">
+      <select id="existe">
+		    select 
+          tc_mantic_articulos.id_articulo as id_key,
+          tc_mantic_articulos.id_articulo
+        from 
+          tc_mantic_articulos_codigos 
+        inner join
+          tc_mantic_articulos on tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo 
+        where 
+          tc_mantic_articulos_codigos.id_principal= 1 
+          and tc_mantic_articulos.id_articulo_tipo= {idArticuloTipo}
+          and upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*'
+      </select>
       <select id="stock">
         select      
           tc_mantic_inventarios.*
@@ -7810,7 +7824,7 @@
 				select  
 					tc_mantic_servicios.id_servicio as id_key,
 					tc_mantic_servicios.*,
-          tc_mantic_almacenes.id_almacen,
+          tc_mantic_almacenes.id_almacen as id_principal,
           ifnull(tc_mantic_servicios.cliente, tc_mantic_clientes.razon_social) as razon_social, 
 					tc_mantic_servicios_estatus.nombre estatus,
 					tc_mantic_servicios_estatus.estatus_asociados

@@ -37,6 +37,9 @@ public class Accion extends IBaseAttribute implements Serializable {
   private static final long serialVersionUID = -7668104942302148046L;
   private RegistroServicio registroServicio;
 	private UISelectEntity clienteBusqueda;
+	private EAccion accion;
+	private UISelectEntity ikEmpresa;
+	private UISelectEntity ikAlmacen;
 
 	public RegistroServicio getRegistroServicio() {
 		return registroServicio;
@@ -55,8 +58,28 @@ public class Accion extends IBaseAttribute implements Serializable {
 	}	
 	
 	public String getAgregar() {
-		return ((EAccion)this.attrs.get("accion")).equals(EAccion.AGREGAR)? "none": "";
+		return this.accion.equals(EAccion.AGREGAR)? "none": "";
 	}
+
+  public UISelectEntity getIkEmpresa() {
+    return ikEmpresa;
+  }
+
+  public void setIkEmpresa(UISelectEntity ikEmpresa) {
+    this.ikEmpresa = ikEmpresa;
+    if(this.ikEmpresa!= null)
+      registroServicio.getServicio().setIdEmpresa(this.ikEmpresa.getKey());
+  }
+
+  public UISelectEntity getIkAlmacen() {
+    return ikAlmacen;
+  }
+
+  public void setIkAlmacen(UISelectEntity ikAlmacen) {
+    this.ikAlmacen = ikAlmacen;
+    if(this.ikAlmacen!= null)
+      registroServicio.getServicio().setIdAlmacen(this.ikAlmacen.getKey());
+  }
 	
   @PostConstruct
   @Override
@@ -64,10 +87,11 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
 			if(JsfBase.getFlashAttribute("accion")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-      this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idServicio", JsfBase.getFlashAttribute("idServicio"));
 			this.attrs.put("admin", JsfBase.isAdminEncuestaOrAdmin());			
-      doLoad();      					
+      this.accion = (EAccion)JsfBase.getFlashAttribute("accion");
+      this.doLoad();      					
+      this.toLoadCatalog();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -80,26 +104,29 @@ public class Accion extends IBaseAttribute implements Serializable {
 	} // loadCollections
 	
   public void doLoad() {
-    EAccion eaccion    = null;
     Long idServicio    = -1L;
 		MotorBusqueda motor= null;
     try {
-      eaccion = (EAccion) this.attrs.get("accion");
-      this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
+      this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
 			motor= new MotorBusqueda(-1L);
-      switch (eaccion) {
+      switch (this.accion) {
         case AGREGAR:
 					this.attrs.put("clienteRegistrado", false);
           this.registroServicio = new RegistroServicio();					
 					this.registroServicio.setCliente(motor.toCliente(((Entity)motor.toClienteDefault()).getKey()));
-					loadCollections();
+					this.loadCollections();
+          this.registroServicio.getServicio().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+          this.setIkEmpresa(new UISelectEntity(new Entity(this.registroServicio.getServicio().getIdEmpresa())));
+          this.setIkAlmacen(new UISelectEntity(new Entity(-1L)));
           break;
         case MODIFICAR:
         case CONSULTAR:
           idServicio = Long.valueOf(this.attrs.get("idServicio").toString());
           this.registroServicio = new RegistroServicio(idServicio);
-					loadCollections();					
+					this.loadCollections();					
 					this.attrs.put("clienteRegistrado", this.registroServicio.getServicio().getIdCliente()!= null && this.registroServicio.getServicio().getIdCliente()>-1L && !this.registroServicio.getCliente().getIdCliente().equals(motor.toClienteDefault().getKey()));
+          this.setIkEmpresa(new UISelectEntity(new Entity(this.registroServicio.getServicio().getIdEmpresa())));
+          this.setIkAlmacen(new UISelectEntity(new Entity(this.registroServicio.getServicio().getIdAlmacen())));
           break;
       } // switch 			
     } // try
@@ -108,6 +135,46 @@ public class Accion extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
   } // doLoad
+  
+	private void toLoadCatalog() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+        params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
+			else
+				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
+ 			List<UISelectEntity> empresas= (List<UISelectEntity>)this.attrs.get("empresas");
+			if(!empresas.isEmpty()) {
+				if(this.accion.equals(EAccion.AGREGAR))
+  				this.setIkEmpresa(empresas.get(0));
+			  else 
+				  this.setIkEmpresa(empresas.get(empresas.indexOf(this.getIkEmpresa())));
+			} // if	
+  		params.put("sucursales", this.getIkEmpresa());
+      this.attrs.put("almacenes", UIEntity.seleccione("TcManticAlmacenesDto", "almacenes", params, columns, "clave"));
+ 			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
+			if(!almacenes.isEmpty()) {
+				if(this.accion.equals(EAccion.AGREGAR))
+				  this.setIkAlmacen(almacenes.get(0));
+			  else
+				  this.setIkAlmacen(almacenes.get(almacenes.indexOf(this.getIkAlmacen())));
+			} // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}  
 
   public String doAceptar() {
     Transaccion transaccion = null;
@@ -115,7 +182,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
 			this.registroServicio.setRegistrarCliente((Boolean)this.attrs.get("clienteRegistrado"));
       transaccion = new Transaccion(this.registroServicio);
-      if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
+      if (transaccion.ejecutar(this.accion)) {
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
         JsfBase.addMessage("Se registro el servicio de taller de forma correcta.", ETipoMensaje.INFORMACION);
       } // if
@@ -224,4 +291,28 @@ public class Accion extends IBaseAttribute implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doAsignaCliente
+  
+  public void doLoadAlmacenes() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			params.put("sucursales", this.registroServicio.getServicio().getIdEmpresa());
+      this.attrs.put("almacenes", UIEntity.seleccione("TcManticAlmacenesDto", "almacenes", params, columns, "clave"));
+ 			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
+			if(!almacenes.isEmpty()) 
+			  this.setIkAlmacen(almacenes.get(0));
+   } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}
+
 }

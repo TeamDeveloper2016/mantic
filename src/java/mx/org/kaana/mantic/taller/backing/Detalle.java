@@ -37,13 +37,33 @@ import mx.org.kaana.mantic.taller.reglas.Transaccion;
 public class Detalle extends IBaseArticulos implements Serializable {
 
   private static final long serialVersionUID= 327393488565639367L;
-	private static final Long ARTICULO= 1L;
 	private EAccion accion;
 
 	public String getAgregar() {
 		return this.accion.equals(EAccion.AGREGAR)? "none": "";
 	} // getAgregar
 	
+  public Servicio getServicio() {
+    return (Servicio)this.getAdminOrden().getOrden();  
+  }
+  
+  public String getCatalogo() {
+    String regresar= null;
+    Integer opcion= (Integer)this.attrs.get("idArticuloTipo");    
+    switch (opcion) {
+      case 1:
+        regresar= "Articulos";
+        break;
+      case 2:
+        regresar= "Refacciones";
+        break;
+      case 3:
+        regresar= "Servicios";
+        break;
+    } // switch
+    return regresar;
+  }
+  
 	@PostConstruct
   @Override
   protected void init() {		
@@ -74,7 +94,8 @@ public class Detalle extends IBaseArticulos implements Serializable {
 		try {
 			if(articulo.size()> 1) {
  				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
-        Value almacenes= null;
+        // ESTE CAMPO CONTROLA SI LA REFACCION O EL SERVICIO YA ESTA EN EL CATALOGO MAESTRO
+        temporal.setIdAutomatico(1L);
         switch(articulo.toInteger("isArticulo")) {
           case 1: // articulos
             proceso= "TcManticInventariosDto";
@@ -83,19 +104,33 @@ public class Detalle extends IBaseArticulos implements Serializable {
             break;
           case 2: // refacciones
             // AQUI FALTA BUSCAR EL ID_ARTICULO BASADO EN EL CODIGO DE LA REFACCION SI YA FUE DADA DE ALTA Y POR LO TANTO YA NO ES RANDOM
-            almacenes= (Value)DaoFactory.getInstance().toField("TcManticAlmacenesDto", "unicos", params, "almacenes");
-    				params.put("idAlmacen", almacenes!= null? almacenes.toString(): JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
+    				params.put("idAlmacen", ((Servicio)this.getAdminOrden().getOrden()).getIdAlmacen());
             params.put("idArticuloTipo", 2L);
-            if(articulo.toLong("idArticulo")== 0L)
-              articulo.put("idArticulo", new Value("idArticulo", (new Random().nextLong())* -1L));
+            params.put("codigo", articulo.toString("propio"));
+            if(articulo.toLong("idArticulo")== 0L) {
+              Value existe= (Value)DaoFactory.getInstance().toField("VistaTallerServiciosDto", "existe", params, "idArticulo");
+              if(existe== null) {
+                articulo.put("idArticulo", new Value("idArticulo", new Random().nextLong()));
+                temporal.setIdAutomatico(2L);
+              } // if
+              else 
+                articulo.put("idArticulo", new Value("idArticulo", existe.toLong()));
+            } // if  
             break;
           case 3:  // servicios
             // AQUI FALTA BUSCAR EL ID_ARTICULO BASADO EN EL CODIGO DE LA REFACCION SI YA FUE DADA DE ALTA Y POR LO TANTO YA NO ES RANDOM
-            almacenes= (Value)DaoFactory.getInstance().toField("TcManticAlmacenesDto", "unicos", params, "almacenes");
-    				params.put("idAlmacen", almacenes!= null? almacenes.toString(): JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
+    				params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
             params.put("idArticuloTipo", 3L);
-            if(articulo.toLong("idArticulo")== 0L)
-              articulo.put("idArticulo", new Value("idArticulo", (new Random().nextLong())* -1L));
+            params.put("codigo", articulo.toString("propio"));
+            if(articulo.toLong("idArticulo")== 0L) {
+              Value existe= (Value)DaoFactory.getInstance().toField("VistaTallerServiciosDto", "existe", params, "idArticulo");
+              if(existe== null) {
+                articulo.put("idArticulo", new Value("idArticulo", new Random().nextLong()));
+                temporal.setIdAutomatico(2L);
+              } // if
+              else 
+                articulo.put("idArticulo", new Value("idArticulo", existe.toLong()));
+            } // if  
             break;
         } // switch
   			params.put("idArticulo", articulo.toLong("idArticulo"));

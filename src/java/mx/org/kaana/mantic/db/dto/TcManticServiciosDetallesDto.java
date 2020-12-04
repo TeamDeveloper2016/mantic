@@ -62,17 +62,19 @@ public class TcManticServiciosDetallesDto implements IBaseDto, Serializable {
   private Long idArticulo;
   @Column (name="id_articulo_tipo")
   private Long idArticuloTipo;
+  @Column (name="id_valido")
+  private Long idValido;
 
   public TcManticServiciosDetallesDto() {
     this(new Long(-1L));
   }
 
   public TcManticServiciosDetallesDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, 1L);
+    this(null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, 1L, 2L);
     setKey(key);
   }
 
-  public TcManticServiciosDetallesDto(String codigo, Double costo, String descuento, Long idServicio, Double importe, String propio, Double iva, Long idUsuario, Double impuestos, Long idServicioDetalle, String concepto, Double subTotal, Long cantidad, Long idArticulo, Long idArticuloTipo) {
+  public TcManticServiciosDetallesDto(String codigo, Double costo, String descuento, Long idServicio, Double importe, String propio, Double iva, Long idUsuario, Double impuestos, Long idServicioDetalle, String concepto, Double subTotal, Long cantidad, Long idArticulo, Long idArticuloTipo, Long idValido) {
     setCodigo(codigo);
     setCosto(costo);
     setDescuento(descuento);
@@ -89,6 +91,7 @@ public class TcManticServiciosDetallesDto implements IBaseDto, Serializable {
     setCantidad(cantidad);
     setIdArticulo(idArticulo);
     this.idArticuloTipo= idArticuloTipo;
+    this.idValido= idValido;
   }
 	
   public void setCodigo(String codigo) {
@@ -219,6 +222,14 @@ public class TcManticServiciosDetallesDto implements IBaseDto, Serializable {
     this.idArticuloTipo = idArticuloTipo;
   }
 
+  public Long getIdValido() {
+    return idValido;
+  }
+
+  public void setIdValido(Long idValido) {
+    this.idValido = idValido;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -265,6 +276,8 @@ public class TcManticServiciosDetallesDto implements IBaseDto, Serializable {
 		regresar.append(getIdArticulo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdArticuloTipo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdValido());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -288,13 +301,14 @@ public class TcManticServiciosDetallesDto implements IBaseDto, Serializable {
 		regresar.put("cantidad", getCantidad());
 		regresar.put("idArticulo", getIdArticulo());
 		regresar.put("idArticuloTipo", getIdArticuloTipo());
+		regresar.put("idValido", getIdValido());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-      getCodigo(), getCosto(), getDescuento(), getIdServicio(), getImporte(), getRegistro(), getPropio(), getIva(), getIdUsuario(), getImpuestos(), getIdServicioDetalle(), getConcepto(), getSubTotal(), getCantidad(), getIdArticulo(), getIdArticuloTipo()
+      getCodigo(), getCosto(), getDescuento(), getIdServicio(), getImporte(), getRegistro(), getPropio(), getIva(), getIdUsuario(), getImpuestos(), getIdServicioDetalle(), getConcepto(), getSubTotal(), getCantidad(), getIdArticulo(), getIdArticuloTipo(), getIdValido()
     };
     return regresar;
   }
