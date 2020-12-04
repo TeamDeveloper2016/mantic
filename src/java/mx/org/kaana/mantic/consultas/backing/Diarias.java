@@ -47,6 +47,8 @@ public class Diarias extends IBaseTicket implements Serializable {
 	private FormatLazyModel detalle;
 	private FormatLazyModel lazyCredito;
 	private FormatLazyModel lazyApartado;
+	private FormatLazyModel lazyDisponible;
+
 	private Reporte reporte;
 	
 	public Reporte getReporte() {
@@ -65,6 +67,10 @@ public class Diarias extends IBaseTicket implements Serializable {
 		return lazyApartado;
 	}
 	
+  public FormatLazyModel getLazyDisponible() {
+    return lazyDisponible;
+  }
+  
 	public String getCredito() {
 		Double sum= 0D;
 		if(this.lazyCredito!= null)
@@ -84,7 +90,17 @@ public class Diarias extends IBaseTicket implements Serializable {
 			} // for
 	  return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, sum);
 	}
-	
+
+	public String getDisponible() {
+		Double sum= 0D;
+		if(this.lazyDisponible!= null)
+			for (IBaseDto item: (List<IBaseDto>)this.lazyDisponible.getWrappedData()) {
+				Entity row= (Entity)item;
+				sum+= row.toDouble("total");
+			} // for
+	  return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, sum);
+	}
+  
   @PostConstruct
   @Override
   protected void init() {
@@ -279,4 +295,31 @@ public class Diarias extends IBaseTicket implements Serializable {
 			JsfBase.addMessage("Generar reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
 		} // else
 	} // doVerificarReporte		
+  
+  public void doLoadDisponibleCaja() {
+    Entity caja               = (Entity)this.attrs.get("caja");      
+    List<Columna> columns     = null;
+		Map<String, Object> params= new HashMap<>();
+    try {
+			params.put("idCaja", caja.toLong("idCaja"));
+			params.put("dia", Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio")));
+      columns= new ArrayList<>();      
+      columns.add(new Columna("medioPago", EFormatoDinamicos.MAYUSCULAS));      
+      columns.add(new Columna("disponible", EFormatoDinamicos.MILES_SAT_DECIMALES));      
+      columns.add(new Columna("acumulado", EFormatoDinamicos.MILES_SAT_DECIMALES));      
+      columns.add(new Columna("saldo", EFormatoDinamicos.MILES_SAT_DECIMALES));      
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_SAT_DECIMALES));      
+      this.lazyDisponible = new FormatCustomLazy("VistaConsultasDto", "disponible", params, columns);
+      UIBackingUtilities.resetDataTable();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally		
+  }
+  
 }

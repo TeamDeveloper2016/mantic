@@ -154,7 +154,7 @@
 										<p:inputText id="multiplo#{codigo.key}" styleClass="janal-wid-100-txt multiplo" value="#{codigo.multiplo}" onblur="$(this).val().trim().length=== 0? '1': $(this).val().trim()" style="display: #{empty codigo.idProveedor or codigo.idProveedor eq -1 or not codigo.noEsCodigoFabricante? 'none': ''}"/>	
 									</p:column>
 									<p:column headerText="Principal" styleClass="janal-wid-5" style="text-align: center">
-										<p:selectBooleanCheckbox value="#{codigo.principal}" rendered="#{codigo.candidatoPrincipal and codigo.noEsCodigoFabricante}" onblur="simpleProcess();">
+										<p:selectBooleanCheckbox value="#{codigo.principal}" rendered="#{codigo.candidatoPrincipal}" onblur="simpleProcess();">
 											<p:ajax listener="#{manticCatalogosArticulosAccion.registroArticulo.doSeleccionarPrincipal(codigo)}" update="tablaCodigos" process="@this tablaCodigos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 										</p:selectBooleanCheckbox>
 									</p:column>

@@ -25,12 +25,8 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticCierresRetirosDto;
-import mx.org.kaana.mantic.ventas.beans.TicketVenta;
-import mx.org.kaana.mantic.ventas.caja.beans.Pago;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.CreateCierre;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Transaccion;
-import mx.org.kaana.mantic.ventas.caja.reglas.CreateTicket;
-import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 
 /**
  *@company KAANA

@@ -1,6 +1,5 @@
 package mx.org.kaana.mantic.taller.backing;
 
-import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;

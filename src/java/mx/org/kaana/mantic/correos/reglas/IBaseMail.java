@@ -168,6 +168,8 @@ public class IBaseMail implements Serializable {
 			if(this.copies!= null)
         message.addRecipients(javax.mail.Message.RecipientType.BCC, this.toPrepare(this.copies));
       message.setSubject(this.subject);
+      // ESTO ES PARA SOLICITA LA CONFIRMACIÓN DE LECTURA DEL CORREO
+      // message.addHeader("Disposition-Notification-To", "info@deckerix.com");
 			if(this.files!= null && !this.files.isEmpty()) {
 				multipart = new MimeMultipart(); // Multipart
 				for(Attachment item: this.files) {                   

@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.catalogos.articulos.beans;
 
 import java.io.Serializable;
 import mx.org.kaana.kajool.enums.ESql;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosCodigosDto;
 
 public class ArticuloCodigo extends TcManticArticulosCodigosDto implements Serializable{
@@ -53,11 +54,11 @@ public class ArticuloCodigo extends TcManticArticulosCodigosDto implements Seria
 	}	
 	
 	public Boolean getCandidatoPrincipal() {
-		return !(getIdProveedor()!= null && !getIdProveedor().equals(0L));
+		return getIdProveedor()== null || !getIdProveedor().equals(Constantes.ID_PROVEEDOR_FABRICANTE);
 	}
 
 	public Boolean getNoEsCodigoFabricante() {
-		return getIdProveedor()!= null && !getIdProveedor().equals(0L);
+		return getIdProveedor()!= null && !getIdProveedor().equals(Constantes.ID_PROVEEDOR_FABRICANTE);
 	}
   
 	@Override

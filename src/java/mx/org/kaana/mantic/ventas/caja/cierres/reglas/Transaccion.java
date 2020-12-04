@@ -66,11 +66,11 @@ public class Transaccion extends IBaseTnx implements Serializable  {
   					bitacora= new TcManticCierresBitacoraDto("RETIRO DE EFECTIVO", -1L, this.idCierre, JsfBase.getIdUsuario(), 2L);
 					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 					caja= (TcManticCierresCajasDto)DaoFactory.getInstance().findFirst(sesion, TcManticCierresCajasDto.class, "caja", bitacora.toMap());
-					if(this.retiro.getIdAbono().equals(1L)) {
+					if(this.retiro.getIdAbono().equals(1L)) { // ABONO
   					caja.setSaldo(Numero.toRedondearSat((caja.getDisponible()+ caja.getAcumulado())+ Math.abs(this.retiro.getImporte())));
 						caja.setAcumulado(Numero.toRedondearSat(caja.getAcumulado()+ Math.abs(this.retiro.getImporte())));
 					} // if	
-					else {
+					else { // RETIRO
   					caja.setSaldo(Numero.toRedondearSat((caja.getDisponible()+ caja.getAcumulado())- Math.abs(this.retiro.getImporte())));
 						caja.setAcumulado(Numero.toRedondearSat(caja.getAcumulado()- Math.abs(this.retiro.getImporte())));
   					this.retiro.setImporte(this.retiro.getImporte()* -1L);

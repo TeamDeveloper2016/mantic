@@ -750,7 +750,7 @@ public class Transaccion extends IBaseTnx {
                     if(clon== null) {
                       codigos= new TcManticArticulosCodigosDto(
                         codigo, // String codigo, 
-                        null, // Long idProveedor, 
+                        Constantes.ID_PROVEEDOR_FABRICANTE, // Long idProveedor, 
                         JsfBase.getIdUsuario(), // Long idUsuario, 
                         2L, // Long idPrincipal, 
                         null, // String observaciones, 

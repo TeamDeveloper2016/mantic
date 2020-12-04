@@ -117,14 +117,21 @@
               </f:facet>
               <h:outputText value="#{row['importe']}"/>
             </p:column>		
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
+              <f:facet name="header">
+              </f:facet>
+              <p:commandButton icon="fa fa-paypal" title="Disponible en caja" action="#{manticConsultasDiarias.doLoadDisponibleCaja}" process="@this panelBusqueda" update="disponible" onstart="return janal.bloquear();" oncomplete="PF('dlgDisponible').show();">
+								<f:setPropertyActionListener value="#{row}" target="#{manticConsultasDiarias.attrs.caja}" />
+							</p:commandButton>
+            </p:column>		
 						<p:columnGroup type="footer">
 							<p:row>
-								<p:column colspan="4" style="text-align:right" footerText="Total:" />
+								<p:column colspan="5" style="text-align:right" footerText="Total:" />
 								<p:column footerText="#{manticConsultasDiarias.doMonedaSat(manticConsultasDiarias.attrs.total.total)}" style="text-align:right"/>									
 							</p:row>
 						</p:columnGroup>
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{manticConsultasDiarias.lazyModel==null?0:manticConsultasDiarias.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{manticConsultasDiarias.lazyModel== null? 0:manticConsultasDiarias.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable> 
 					<p:spacer height="2px"/>
@@ -279,6 +286,43 @@
         </div>
       </div>
     </div>		    				
+		<p:dialog id="disponible" widgetVar="dlgDisponible" header="Disponible en este momento en caja" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();" width="950px" resizable="false" appendTo="@(body)">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:dataTable id="buscados" widgetVar="widgetBuscados" lazy="true" styleClass="janal-buscados-articulos janal-wid-100" value="#{manticConsultasDiarias.lazyDisponible}" var="item" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticConsultasDiarias.lazyDisponible.rowCount gt manticConsultasDiarias.lazyDisponible.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+						<p:column headerText="No" styleClass="janal-wid-col-30">
+							<h:outputText value="#{index+ 1}.-"/>
+						</p:column>   
+						<p:column headerText="Medio de pago">
+							<h:outputText value="#{item.medioPago}"/>
+						</p:column>   
+						<p:column headerText="Inicial" styleClass="janal-column-right janal-wid-13">
+							<h:outputText value="#{item.disponible}"/>
+						</p:column>   
+						<p:column headerText="Ventas" styleClass="janal-column-right janal-wid-13">
+							<h:outputText value="#{item.acumulado}"/>
+						</p:column>   
+						<p:column headerText="Saldo" styleClass="janal-column-right janal-wid-13">
+							<h:outputText value="#{item.saldo}"/>
+						</p:column>   
+						<p:columnGroup type="footer">
+							<p:row>
+								<p:column colspan="4" style="text-align:right" footerText="Total:" />
+								<p:column footerText="#{manticConsultasDiarias.disponible}" style="text-align:right"/>									
+							</p:row>
+						</p:columnGroup>
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticConsultasDiarias.lazyDisponible== null? 0: manticConsultasDiarias.lazyDisponible.rowCount}] registros"/>
+            </f:facet>
+					</p:dataTable>
+          <p:outputLabel value="La columna de 'ventas' son las [ventas+abonos-retiros]."/>
+				</div>
+			</div>      
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dlgDisponible').hide();"/>
+			</div>
+    </p:dialog>  
   </ui:define>   	
   <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
   <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la cuenta de venta ?" />

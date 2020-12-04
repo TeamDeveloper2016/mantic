@@ -836,6 +836,32 @@
       </select>
 		</unit>
 		<unit id="VistaConsultasDto">
+			<select id="disponible">
+        select
+          tc_mantic_cierres_cajas.id_cierre_caja as id_key,
+          tc_mantic_tipos_medios_pagos.nombre as medio_pago,
+          tc_mantic_cierres_cajas.disponible,
+          tc_mantic_cierres_cajas.acumulado,
+          tc_mantic_cierres_cajas.saldo,
+          tc_mantic_cierres_cajas.saldo as total,
+          tc_mantic_cierres_cajas.importe,
+          tc_mantic_cierres_cajas.dia,
+          tc_mantic_cierres_cajas.registro
+        from 
+          tc_mantic_cierres_cajas
+        inner join
+          tc_mantic_tipos_medios_pagos on tc_mantic_cierres_cajas.id_tipo_medio_pago= tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+        inner join
+          (select
+             max(id_cierre) as id_cierre
+           from
+             tc_mantic_cierres_cajas
+           where
+             tc_mantic_cierres_cajas.id_caja= 1
+            ) tc_mantic_maximo on tc_mantic_cierres_cajas.id_cierre= tc_mantic_maximo.id_cierre
+        where
+         tc_mantic_cierres_cajas.id_caja= {idCaja}
+      </select>  
 			<select id="conteos">
 				select
 					tc_mantic_inventarios.id_inventario as id_key,
@@ -1067,6 +1093,7 @@
 					convert(concat(id_empresa, id_caja, id_tipo_medio_pago), signed) as id_key,
 					empresa, 
 					nombre_empresa, 
+          id_caja,
 					caja, 
 					tipo_medio_pago,
 					sum(total_deducciones) importe,	
@@ -1138,6 +1165,7 @@
 				group by
 					empresa, 
 					nombre_empresa, 
+          id_caja,
 					caja, 	
 					tipo_medio_pago
 				order by 
