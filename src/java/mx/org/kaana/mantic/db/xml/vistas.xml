@@ -787,6 +787,7 @@
           tc_mantic_servicios_detalles.id_articulo_tipo as id_comodin,
           tc_mantic_servicios_detalles.id_usuario,
           tc_mantic_servicios_detalles.id_valido as id_automatico,
+          tc_mantic_servicios_detalles.sat,
           tc_mantic_servicios_detalles.registro
         from      
           tc_mantic_servicios_detalles				
@@ -7545,6 +7546,21 @@
 			</select>	
 		</unit>
 		<unit id="VistaTallerServiciosDto">
+      <select id="proveedor">
+        select      
+				  tr_mantic_proveedor_pago.id_proveedor_pago as id_key,
+          tr_mantic_proveedor_pago.id_proveedor,
+				  tc_mantic_proveedores.id_tipo_dia,
+				  tc_mantic_proveedores.dias_entrega as dias
+        from      
+          tr_mantic_proveedor_pago
+        inner join  
+          tc_mantic_proveedores on tr_mantic_proveedor_pago.id_proveedor= tc_mantic_proveedores.id_proveedor
+        where      
+          tc_mantic_proveedores.id_proveedor= {idProveedor}
+				order by
+				  tr_mantic_proveedor_pago.clave	
+      </select>
       <select id="existe">
 		    select 
           tc_mantic_articulos.id_articulo as id_key,
@@ -7554,9 +7570,12 @@
         inner join
           tc_mantic_articulos on tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo 
         where 
-          tc_mantic_articulos_codigos.id_principal= 1 
-          and tc_mantic_articulos.id_articulo_tipo= {idArticuloTipo}
-          and upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*'
+          tc_mantic_articulos.id_articulo_tipo= {idArticuloTipo}
+          and (
+           (tc_mantic_articulos_codigos.id_principal= 1 and upper(tc_mantic_articulos_codigos.codigo) regexp '.*{codigo}.*')
+           or 
+           upper(tc_mantic_articulos.nombre) like '%{nombre}%'
+          )
       </select>
       <select id="stock">
         select      
@@ -7583,6 +7602,7 @@
 				  tc_mantic_articulos.precio,
 				  tc_mantic_articulos.precio as original,
 				  tc_mantic_articulos.iva,
+				  tc_mantic_articulos.sat,
 				  tc_mantic_articulos.id_redondear,
 				  tc_mantic_articulos_tipos.id_articulo_tipo is_articulo,
 				  tc_mantic_articulos_tipos.nombre as is_tipo
@@ -7616,6 +7636,7 @@
 				  tc_mantic_articulos.menudeo,
 				  tc_mantic_articulos.precio as original,
 				  tc_mantic_articulos.iva,
+				  tc_mantic_articulos.sat,
 				  tc_mantic_articulos.id_redondear,
 				  tc_mantic_articulos_tipos.id_articulo_tipo is_articulo,
 				  tc_mantic_articulos_tipos.nombre as is_tipo
@@ -7649,6 +7670,7 @@
 				  tc_mantic_refacciones.costo as menudeo,
 				  tc_mantic_refacciones.costo as original,
 				  tc_mantic_refacciones.iva,
+				  tc_mantic_refacciones.sat,
           2 as id_redondear,
           2 as is_articulo,
 				  'REFACCION' as is_tipo
@@ -7672,6 +7694,7 @@
 				  tc_mantic_encargos.costo as menudeo,
 				  tc_mantic_encargos.costo as original,
 				  tc_mantic_encargos.iva,
+				  tc_mantic_encargos.sat,
           2 as id_redondear,
           3 as is_articulo,
 				  'SERVICIO' as is_tipo
@@ -7695,7 +7718,8 @@
 				  tc_mantic_articulos.menudeo,
 				  tc_mantic_articulos.precio as original,
 				  tc_mantic_articulos.iva,
-				  tc_mantic_articulos.id_redondear,
+          tc_mantic_articulos.sat,
+          tc_mantic_articulos.id_redondear,
 				  tc_mantic_articulos_tipos.id_articulo_tipo is_articulo,
 				  tc_mantic_articulos_tipos.nombre as is_tipo
 				from 
@@ -7729,6 +7753,7 @@
 				  tc_mantic_refacciones.costo as menudeo,
 				  tc_mantic_refacciones.costo as original,
 				  tc_mantic_refacciones.iva,
+				  tc_mantic_refacciones.sat,
           2 as id_redondear,
           2 as is_articulo,
 				  'REFACCION' as is_tipo
@@ -7752,6 +7777,7 @@
 				  tc_mantic_encargos.costo as menudeo,
 				  tc_mantic_encargos.costo as original,
 				  tc_mantic_encargos.iva,
+				  tc_mantic_encargos.sat,
           2 as id_redondear,
           3 as is_articulo,
 				  'SERVICIO' as is_tipo
@@ -7775,6 +7801,7 @@
 				  tc_mantic_articulos.menudeo,
 				  tc_mantic_articulos.precio as original,
 				  tc_mantic_articulos.iva,
+				  tc_mantic_articulos.sat,
 				  tc_mantic_articulos.id_redondear,
 				  tc_mantic_articulos_tipos.id_articulo_tipo is_articulo,
 				  tc_mantic_articulos_tipos.nombre as is_tipo

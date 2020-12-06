@@ -57,24 +57,28 @@ public class TcManticServiciosDetallesDto implements IBaseDto, Serializable {
   @Column (name="sub_total")
   private Double subTotal;
   @Column (name="cantidad")
-  private Long cantidad;
+  private Double cantidad;
   @Column (name="id_articulo")
   private Long idArticulo;
   @Column (name="id_articulo_tipo")
   private Long idArticuloTipo;
   @Column (name="id_valido")
   private Long idValido;
+  @Column (name="sat")
+  private String sat;
+  @Column (name="descuentos")
+  private Double descuentos;
 
   public TcManticServiciosDetallesDto() {
     this(new Long(-1L));
   }
 
   public TcManticServiciosDetallesDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, 1L, 2L);
+    this(null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, 1L, 2L, null, 0D);
     setKey(key);
   }
 
-  public TcManticServiciosDetallesDto(String codigo, Double costo, String descuento, Long idServicio, Double importe, String propio, Double iva, Long idUsuario, Double impuestos, Long idServicioDetalle, String concepto, Double subTotal, Long cantidad, Long idArticulo, Long idArticuloTipo, Long idValido) {
+  public TcManticServiciosDetallesDto(String codigo, Double costo, String descuento, Long idServicio, Double importe, String propio, Double iva, Long idUsuario, Double impuestos, Long idServicioDetalle, String concepto, Double subTotal, Double cantidad, Long idArticulo, Long idArticuloTipo, Long idValido, String sat, Double descuentos) {
     setCodigo(codigo);
     setCosto(costo);
     setDescuento(descuento);
@@ -92,6 +96,8 @@ public class TcManticServiciosDetallesDto implements IBaseDto, Serializable {
     setIdArticulo(idArticulo);
     this.idArticuloTipo= idArticuloTipo;
     this.idValido= idValido;
+    this.sat= sat;
+    this.descuentos= descuentos;
   }
 	
   public void setCodigo(String codigo) {
@@ -198,11 +204,11 @@ public class TcManticServiciosDetallesDto implements IBaseDto, Serializable {
     return subTotal;
   }
 
-  public void setCantidad(Long cantidad) {
+  public void setCantidad(Double cantidad) {
     this.cantidad = cantidad;
   }
 
-  public Long getCantidad() {
+  public Double getCantidad() {
     return cantidad;
   }
 
@@ -228,6 +234,22 @@ public class TcManticServiciosDetallesDto implements IBaseDto, Serializable {
 
   public void setIdValido(Long idValido) {
     this.idValido = idValido;
+  }
+
+  public String getSat() {
+    return sat;
+  }
+
+  public void setSat(String sat) {
+    this.sat = sat;
+  }
+
+  public Double getDescuentos() {
+    return descuentos;
+  }
+
+  public void setDescuentos(Double descuentos) {
+    this.descuentos = descuentos;
   }
 
   @Transient
@@ -278,6 +300,10 @@ public class TcManticServiciosDetallesDto implements IBaseDto, Serializable {
 		regresar.append(getIdArticuloTipo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdValido());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getSat());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getDescuentos());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -302,13 +328,15 @@ public class TcManticServiciosDetallesDto implements IBaseDto, Serializable {
 		regresar.put("idArticulo", getIdArticulo());
 		regresar.put("idArticuloTipo", getIdArticuloTipo());
 		regresar.put("idValido", getIdValido());
+		regresar.put("sat", getSat());
+		regresar.put("descuentos", getDescuentos());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-      getCodigo(), getCosto(), getDescuento(), getIdServicio(), getImporte(), getRegistro(), getPropio(), getIva(), getIdUsuario(), getImpuestos(), getIdServicioDetalle(), getConcepto(), getSubTotal(), getCantidad(), getIdArticulo(), getIdArticuloTipo(), getIdValido()
+      getCodigo(), getCosto(), getDescuento(), getIdServicio(), getImporte(), getRegistro(), getPropio(), getIva(), getIdUsuario(), getImpuestos(), getIdServicioDetalle(), getConcepto(), getSubTotal(), getCantidad(), getIdArticulo(), getIdArticuloTipo(), getIdValido(), getSat(), getDescuentos()
     };
     return regresar;
   }

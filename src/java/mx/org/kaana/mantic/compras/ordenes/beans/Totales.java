@@ -4,6 +4,7 @@ import java.io.Serializable;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.mantic.db.dto.TcManticServiciosDetallesDto;
 
 /**
  *@company KAANA
@@ -148,6 +149,16 @@ public final class Totales implements Serializable {
 		this.subTotal+= articulo.getImportes().getSubTotal();		
 		this.total+= articulo.getImportes().getTotal();
 		this.utilidad+= articulo.getUtilidad();
+    this.cantidad+= articulo.getCantidad();
+  	this.articulos+= 1;
+	}
+  
+	public void addServicio(TcManticServiciosDetallesDto articulo) {
+		this.importe+= articulo.getImpuestos();
+		this.descuento+= articulo.getDescuentos();
+		this.iva+= articulo.getIva();
+		this.subTotal+= articulo.getSubTotal();		
+		this.total+= articulo.getImporte();
     this.cantidad+= articulo.getCantidad();
   	this.articulos+= 1;
 	}

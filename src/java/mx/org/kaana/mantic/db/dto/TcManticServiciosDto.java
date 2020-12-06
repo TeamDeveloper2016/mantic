@@ -93,17 +93,19 @@ public class TcManticServiciosDto implements IBaseDto, Serializable {
   private Long idVenta;
 	@Column (name="id_almacen")
   private Long idAlmacen;
+  @Column (name="id_proveedor")
+  private Long idProveedor;
 
   public TcManticServiciosDto() {
     this(new Long(-1L));
   }
 
   public TcManticServiciosDto(Long key) {
-    this(0D, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, "0", new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1L, null, null, null, null, null);
+    this(0D, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, "0", new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1L, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticServiciosDto(Double descuentos, Long idFactura, String caracteristicas, Date fechaEstimada, Long idTipoMedioPago, Long idCliente, String herramienta, Long idServicioEstatus, String descuento, Long idServicio, String modelo, Long ejercicio, String consecutivo, String marca, Double total, Long idUsuario, Double impuestos, String observaciones, Double subTotal, Double efectivo, Long idEmpresa, String reparacion, Long orden, Long idGarantia, Long idParticular, String cliente, String telefonos, Long idVenta, String correos, Long idAlmacen) {
+  public TcManticServiciosDto(Double descuentos, Long idFactura, String caracteristicas, Date fechaEstimada, Long idTipoMedioPago, Long idCliente, String herramienta, Long idServicioEstatus, String descuento, Long idServicio, String modelo, Long ejercicio, String consecutivo, String marca, Double total, Long idUsuario, Double impuestos, String observaciones, Double subTotal, Double efectivo, Long idEmpresa, String reparacion, Long orden, Long idGarantia, Long idParticular, String cliente, String telefonos, Long idVenta, String correos, Long idAlmacen, Long idProveedor) {
     setDescuentos(descuentos);
     setIdFactura(idFactura);
     setCaracteristicas(caracteristicas);
@@ -135,6 +137,7 @@ public class TcManticServiciosDto implements IBaseDto, Serializable {
 		this.telefonos= telefonos;
     this.correos= correos;
     this.idAlmacen= idAlmacen;
+    this.idProveedor= idProveedor;
   }
 
 	public Long getIdGarantia() {
@@ -384,6 +387,14 @@ public class TcManticServiciosDto implements IBaseDto, Serializable {
   public void setIdAlmacen(Long idAlmacen) {
     this.idAlmacen = idAlmacen;
   }
+
+  public Long getIdProveedor() {
+    return idProveedor;
+  }
+
+  public void setIdProveedor(Long idProveedor) {
+    this.idProveedor = idProveedor;
+  }
 	
   @Transient
   @Override
@@ -461,6 +472,8 @@ public class TcManticServiciosDto implements IBaseDto, Serializable {
 		regresar.append(getCorreos());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdAlmacen());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdProveedor());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -499,13 +512,14 @@ public class TcManticServiciosDto implements IBaseDto, Serializable {
 		regresar.put("idVenta", getIdVenta());
 		regresar.put("correos", getCorreos());
 		regresar.put("idAlmacen", getIdAlmacen());
+		regresar.put("idProveedor", getIdProveedor());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getDescuentos(), getIdFactura(), getCaracteristicas(), getFechaEstimada(), getIdTipoMedioPago(), getIdCliente(), getHerramienta(), getIdServicioEstatus(), getDescuento(), getIdServicio(), getModelo(), getEjercicio(), getRegistro(), getConsecutivo(), getMarca(), getTotal(), getIdUsuario(), getImpuestos(), getObservaciones(), getSubTotal(), getEfectivo(), getIdEmpresa(), getReparacion(), getIdGarantia(), getOrden(), getIdParticular(), getCliente(), getTelefonos(), getIdVenta(), getCorreos(), getIdAlmacen()
+      getDescuentos(), getIdFactura(), getCaracteristicas(), getFechaEstimada(), getIdTipoMedioPago(), getIdCliente(), getHerramienta(), getIdServicioEstatus(), getDescuento(), getIdServicio(), getModelo(), getEjercicio(), getRegistro(), getConsecutivo(), getMarca(), getTotal(), getIdUsuario(), getImpuestos(), getObservaciones(), getSubTotal(), getEfectivo(), getIdEmpresa(), getReparacion(), getIdGarantia(), getOrden(), getIdParticular(), getCliente(), getTelefonos(), getIdVenta(), getCorreos(), getIdAlmacen(), getIdProveedor()
     };
     return regresar;
   }

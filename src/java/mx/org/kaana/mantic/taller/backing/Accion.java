@@ -40,6 +40,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	private EAccion accion;
 	private UISelectEntity ikEmpresa;
 	private UISelectEntity ikAlmacen;
+	private UISelectEntity ikProveedor;
 
 	public RegistroServicio getRegistroServicio() {
 		return registroServicio;
@@ -80,6 +81,16 @@ public class Accion extends IBaseAttribute implements Serializable {
     if(this.ikAlmacen!= null)
       registroServicio.getServicio().setIdAlmacen(this.ikAlmacen.getKey());
   }
+
+  public UISelectEntity getIkProveedor() {
+    return ikProveedor;
+  }
+
+  public void setIkProveedor(UISelectEntity ikProveedor) {
+    this.ikProveedor = ikProveedor;
+    if(this.ikProveedor!= null)
+      registroServicio.getServicio().setIdProveedor(this.ikProveedor.getKey());
+  }
 	
   @PostConstruct
   @Override
@@ -117,6 +128,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 					this.loadCollections();
           this.registroServicio.getServicio().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
           this.setIkEmpresa(new UISelectEntity(new Entity(this.registroServicio.getServicio().getIdEmpresa())));
+          this.setIkEmpresa(new UISelectEntity(new Entity(-1L)));
           this.setIkAlmacen(new UISelectEntity(new Entity(-1L)));
           break;
         case MODIFICAR:
@@ -127,6 +139,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 					this.attrs.put("clienteRegistrado", this.registroServicio.getServicio().getIdCliente()!= null && this.registroServicio.getServicio().getIdCliente()>-1L && !this.registroServicio.getCliente().getIdCliente().equals(motor.toClienteDefault().getKey()));
           this.setIkEmpresa(new UISelectEntity(new Entity(this.registroServicio.getServicio().getIdEmpresa())));
           this.setIkAlmacen(new UISelectEntity(new Entity(this.registroServicio.getServicio().getIdAlmacen())));
+          this.setIkProveedor(new UISelectEntity(new Entity(this.registroServicio.getServicio().getIdProveedor())));
           break;
       } // switch 			
     } // try
@@ -165,6 +178,16 @@ public class Accion extends IBaseAttribute implements Serializable {
 			  else
 				  this.setIkAlmacen(almacenes.get(almacenes.indexOf(this.getIkAlmacen())));
 			} // if
+      columns.remove(0);
+			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("proveedores", UIEntity.build("VistaOrdenesComprasDto", "moneda", params, columns));
+			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
+			if(!proveedores.isEmpty()) { 
+				if(this.accion.equals(EAccion.AGREGAR))
+				  this.setIkProveedor(proveedores.get(0));
+				else
+				  this.setIkProveedor(proveedores.get(proveedores.indexOf(this.getIkProveedor())));
+			} // if	
     } // try
     catch (Exception e) {
       Error.mensaje(e);

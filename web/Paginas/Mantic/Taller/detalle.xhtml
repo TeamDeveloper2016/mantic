@@ -183,7 +183,7 @@
 													<h:outputText value="Articulo"/>
 												</f:facet>
                         <i class="janal-color-black janal-font-bold fa #{row.idComodin eq '1'? 'fa-cart-arrow-down':  row.idComodin eq '2'? 'fa-bitbucket': empty row.propio? 'fa-skyatlas': 'fa-bug'}" title="#{row.idComodin eq '1'? 'Articulo':  row.idComodin eq '2'? 'Refacción': empty row.propio? 'No definido': 'Servicio'}"></i><p:spacer width="3px"/>
-                        <h:outputText id="nombres" value="[#{row['codigo']}] #{row['nombre']}" title="Código propio: #{row['propio']}  Existencias almacen: #{row['stock']}" escape="false" styleClass="#{row.idAutomatico eq 1? row.stock le 1? 'janal-color-orange': 'janal-color-blue': 'janal-color-red'}"/>
+                        <h:outputText id="nombres" value="[#{row['codigo']}] #{row['nombre']}" title="Código propio: #{row['propio']}  Existencias almacen: #{row['stock']}" escape="false" styleClass="#{row.idAutomatico eq 1? row.stock le 1? 'janal-color-orange': 'janal-color-green': 'janal-color-red'}"/>
 											</p:column>		
 											<p:column class="cantidades janal-column-right MarAuto Responsive janal-wid-8">
 												<f:facet name="header">
@@ -253,7 +253,7 @@
 												<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="$ #{manticTallerDetalle.adminOrden.totales.total$}"/>
 									    </div>	
 										</div>	
-                    <p:outputLabel value="Las partidas en &lt;span class='janal-color-red'&gt;rojo&lt;/span&gt; no existen en el catalogo maestro, las partidas en &lt;span class='janal-color-orange'&gt;naranja&lt;/span&gt; su stock esta en cero y las &lt;span class='janal-color-blue'&gt;azul&lt;/span&gt; si hay stock disponible" escape="false"/><br/>
+                    <p:outputLabel value="Las partidas en &lt;span class='janal-color-red'&gt;rojo&lt;/span&gt; no existen en el catalogo maestro, las partidas en &lt;span class='janal-color-orange'&gt;naranja&lt;/span&gt; su stock esta en cero y las &lt;span class='janal-color-green'&gt;azul&lt;/span&gt; si hay stock disponible" escape="false"/><br/>
                     <p:outputLabel value="El stock de las refacciones será considerado del almacen predefinidio en la orden de servicio"/>
 									</div>									
 								</div>

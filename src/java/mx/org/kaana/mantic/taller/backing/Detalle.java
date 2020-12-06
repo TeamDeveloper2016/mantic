@@ -107,6 +107,7 @@ public class Detalle extends IBaseArticulos implements Serializable {
     				params.put("idAlmacen", ((Servicio)this.getAdminOrden().getOrden()).getIdAlmacen());
             params.put("idArticuloTipo", 2L);
             params.put("codigo", articulo.toString("propio"));
+            params.put("nombre", articulo.toString("nombre"));
             if(articulo.toLong("idArticulo")== 0L) {
               Value existe= (Value)DaoFactory.getInstance().toField("VistaTallerServiciosDto", "existe", params, "idArticulo");
               if(existe== null) {
@@ -122,6 +123,7 @@ public class Detalle extends IBaseArticulos implements Serializable {
     				params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
             params.put("idArticuloTipo", 3L);
             params.put("codigo", articulo.toString("propio"));
+            params.put("nombre", articulo.toString("nombre"));
             if(articulo.toLong("idArticulo")== 0L) {
               Value existe= (Value)DaoFactory.getInstance().toField("VistaTallerServiciosDto", "existe", params, "idArticulo");
               if(existe== null) {
@@ -145,6 +147,7 @@ public class Detalle extends IBaseArticulos implements Serializable {
 				temporal.setValor(articulo.toDouble(this.getPrecio()));
 				temporal.setCosto(articulo.toDouble(this.getPrecio()));
 				temporal.setIva(articulo.toDouble("iva"));
+				temporal.setSat(articulo.toString("sat"));
 				temporal.setDescuento(this.getAdminOrden().getDescuento());
 				temporal.setExtras(this.getAdminOrden().getExtras());
 				temporal.setCantidad(1D);

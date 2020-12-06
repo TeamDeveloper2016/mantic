@@ -2372,7 +2372,19 @@
         where      
           id_servicio = {idServicio}
 				order by
-				  tc_mantic_servicios_detalles.registro
+				  registro
+      </select>
+      <select id="catalogo">
+        select      
+				  tc_mantic_servicios_detalles.id_servicio_detalle as id_key,
+          tc_mantic_servicios_detalles.*
+        from      
+          tc_mantic_servicios_detalles
+        where      
+          id_servicio= {idServicio}
+          and id_valido= 2
+				order by
+				  registro
       </select>
 			<delete id="rows">
         delete from tc_mantic_servicios_detalles where id_servicio= {idServicio} 

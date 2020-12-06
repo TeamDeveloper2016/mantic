@@ -29,4 +29,5 @@ public enum EEstatusCotizaciones {
 	public static EEstatusCotizaciones fromIdFicticia(Long idEstatusFicticia) {
     return lookup.get(idEstatusFicticia);
   } 
+  
 }
