@@ -87,6 +87,23 @@ public class Detalle extends IBaseArticulos implements Serializable {
   } // init
 	
 	@Override
+  public void doLoad() {
+    try {
+      this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
+      switch (this.accion) {
+        case MODIFICAR:			
+        case CONSULTAR:											
+          this.setAdminOrden(new AdminServicios((Servicio)DaoFactory.getInstance().toEntity(Servicio.class, "TcManticServiciosDto", "detalle", this.attrs)));
+          break;
+      } // switch
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+  } // doLoad
+  
+	@Override
   protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
 		Articulo temporal= this.getAdminOrden().getArticulos().get(index);
 		Map<String, Object> params= new HashMap<>();		
@@ -114,8 +131,10 @@ public class Detalle extends IBaseArticulos implements Serializable {
                 articulo.put("idArticulo", new Value("idArticulo", new Random().nextLong()));
                 temporal.setIdAutomatico(2L);
               } // if
-              else 
+              else {
+                proceso= "TcManticInventariosDto";
                 articulo.put("idArticulo", new Value("idArticulo", existe.toLong()));
+              } // else  
             } // if  
             break;
           case 3:  // servicios
@@ -130,8 +149,10 @@ public class Detalle extends IBaseArticulos implements Serializable {
                 articulo.put("idArticulo", new Value("idArticulo", new Random().nextLong()));
                 temporal.setIdAutomatico(2L);
               } // if
-              else 
+              else {
+                proceso= "TcManticInventariosDto";
                 articulo.put("idArticulo", new Value("idArticulo", existe.toLong()));
+              } // else  
             } // if  
             break;
         } // switch
@@ -258,23 +279,6 @@ public class Detalle extends IBaseArticulos implements Serializable {
     }// finally
 	} // doUpdateDialogArticulos
 	
-	@Override
-  public void doLoad() {
-    try {
-      this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
-      switch (this.accion) {
-        case MODIFICAR:			
-        case CONSULTAR:											
-          this.setAdminOrden(new AdminServicios((Servicio)DaoFactory.getInstance().toEntity(Servicio.class, "TcManticServiciosDto", "detalle", this.attrs)));
-          break;
-      } // switch
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch		
-  } // doLoad
-
   public String doAceptar() {  
 		String regresar        = null;
 		Transaccion transaccion= null;

@@ -16,10 +16,13 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EBooleanos;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
 import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
@@ -37,11 +40,12 @@ import mx.org.kaana.mantic.db.dto.TcManticServiciosDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.enums.EEstatusServicios;
 import mx.org.kaana.mantic.enums.ETiposContactos;
+import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 import mx.org.kaana.mantic.taller.beans.RegistroServicio;
 import org.hibernate.Session;
 
-public class Transaccion extends TransaccionFactura{
+public class Transaccion extends TransaccionFactura {
 
 	private static final Long ELABORADA= 1L;
 	private Totales totales;
@@ -99,10 +103,11 @@ public class Transaccion extends TransaccionFactura{
 						servicio.setIdServicioEstatus(bitacora.getIdServicioEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, servicio)>= 1L;
             // DAR DE ALTA LOS SERVICIOS Y REFACCIONES QUE NO ESTEN DADOS DE ALTA EN EL CATALOGO MAESTRO Y CREAR UNA ORDEN DE COMPRA
-            if(Objects.equals(EEstatusServicios.EN_REPARACION.getIdEstatusServicio(), servicio.getIdServicioEstatus())) {
+            if(Objects.equals(EEstatusServicios.EN_REPARACION.getIdEstatusServicio(), servicio.getIdServicioEstatus())) 
               this.toSaveArticulos(sesion, servicio);
-              this.toSaveOrdenCompra(sesion, servicio);
-            } // if
+            else
+              if(Objects.equals(EEstatusServicios.EN_CAJA.getIdEstatusServicio(), servicio.getIdServicioEstatus())) 
+                this.toSaveVenta(sesion, servicio);
 					} // if
 					break;
 				case COMPLEMENTAR:
@@ -470,74 +475,80 @@ public class Transaccion extends TransaccionFactura{
 		try {
 			params=new HashMap<>();
 			params.put("idServicio", servicio.getIdServicio());
-      List<TcManticServiciosDetallesDto> items= (List<TcManticServiciosDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticServiciosDetallesDto.class, "TcManticServiciosDetallesDto", "catalogo", params);
+      // List<TcManticServiciosDetallesDto> items= (List<TcManticServiciosDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticServiciosDetallesDto.class, "TcManticServiciosDetallesDto", "catalogo", params);
+      List<TcManticServiciosDetallesDto> items= (List<TcManticServiciosDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticServiciosDetallesDto.class, "TcManticServiciosDetallesDto", "detalle", params);
       for(TcManticServiciosDetallesDto item: items) {
-        params.put("idArticuloTipo",item.getIdArticuloTipo());
-        params.put("codigo", item.getCodigo());
-        params.put("nombre", item.getConcepto());
-        TcManticArticulosDto articulo= null;
-        Value existe= (Value)DaoFactory.getInstance().toField("VistaTallerServiciosDto", "existe", params, "idArticulo");
-        if(existe!= null && existe.getData()!= null)
-          articulo= new TcManticArticulosDto(existe.toLong());
-        else {
-          articulo= new TcManticArticulosDto(
-            item.getConcepto(), // String descripcion, 
-            "0", // String descuentos, 
-            null, // Long idImagen, 
-            null, // Long idCategoria, 
-            "0", // String extras, 
-            null, // String metaTag, 
-            item.getConcepto(), // String nombre, 
-            item.getCosto(), // Double precio, 
-            item.getIva(), // Double iva, 
-            item.getCosto(), // Double mayoreo, 
-            2D, // Double desperdicio, 
-            null, // String metaTagDescipcion, 
-            1L, // Long idVigente, 
-            -1L, // Long idArticulo, 
-            0D, // Double stock, 
-            item.getCosto(), // Double medioMayoreo, 
-            0D, // Double pesoEstimado, 
-            this.toFindUnidadMedida(sesion, "PIEZA"), // Long idEmpaqueUnidadMedida, 
-            2L, // Long idRedondear, 
-            item.getCosto(), // Double menudeo, 
-            null, // String metaTagTeclado, 
-            new Timestamp(Calendar.getInstance().getTimeInMillis()), // Timestamp fecha, 
-            JsfBase.getIdUsuario(), //  Long idUsuario, 
-            servicio.getIdEmpresa(), // Long idEmpresa, 
-            0D, // Double cantidad, 
-            10D, // Double minimo, 
-            20D, // Double maximo, 
-            20D, // Double limiteMedioMayoreo, 
-            50D, // Double limiteMayoreo, 
-            item.getSat(), // String sat, 
-            item.getIdArticuloTipo(), // Long idArticuloTipo, 
-            2L, // Long idBarras, 
-            "0", // String descuento, 
-            "0", // String extra, 
-            null, // String idFacturama
-            2L, // String idDescontinuado
-            null // String fabricante
-          );
-          DaoFactory.getInstance().insert(sesion, articulo);
-          // INSERTAR EL CODIGO DE LA REFACCION 
-          TcManticArticulosCodigosDto codigos= new TcManticArticulosCodigosDto(
-            item.getCodigo(), // String codigo, 
-            null, // Long idProveedor, 
-            JsfBase.getIdUsuario(), // Long idUsuario, 
-            1L, // Long idPrincipal, 
-            null, // String observaciones, 
-            -1L, // Long idArticuloCodigo, 
-            1L, // Long orden, 
-            articulo.getIdArticulo() // Long idArticulo
-          );
-          DaoFactory.getInstance().insert(sesion, codigos);
-        } // if  
-        // ACTUALIZAR EL DETALLE DE LA ORDEN CON EL ID_ARTICULO
-        item.setIdArticulo(articulo.getIdArticulo());
-        item.setIdValido(3L);
-        DaoFactory.getInstance().update(sesion, item);
-      } // for
+        if(Objects.equals(item.getIdValido(), 2L)) {
+          params.put("idArticuloTipo",item.getIdArticuloTipo());
+          params.put("codigo", item.getCodigo());
+          params.put("nombre", item.getConcepto());
+          TcManticArticulosDto articulo= null;
+          Value existe= (Value)DaoFactory.getInstance().toField("VistaTallerServiciosDto", "existe", params, "idArticulo");
+          if(existe!= null && existe.getData()!= null)
+            articulo= new TcManticArticulosDto(existe.toLong());
+          else {
+            articulo= new TcManticArticulosDto(
+              item.getConcepto(), // String descripcion, 
+              "0", // String descuentos, 
+              null, // Long idImagen, 
+              null, // Long idCategoria, 
+              "0", // String extras, 
+              null, // String metaTag, 
+              item.getConcepto(), // String nombre, 
+              item.getCosto(), // Double precio, 
+              item.getIva(), // Double iva, 
+              item.getCosto(), // Double mayoreo, 
+              2D, // Double desperdicio, 
+              null, // String metaTagDescipcion, 
+              1L, // Long idVigente, 
+              -1L, // Long idArticulo, 
+              0D, // Double stock, 
+              item.getCosto(), // Double medioMayoreo, 
+              0D, // Double pesoEstimado, 
+              this.toFindUnidadMedida(sesion, "PIEZA"), // Long idEmpaqueUnidadMedida, 
+              2L, // Long idRedondear, 
+              item.getCosto(), // Double menudeo, 
+              null, // String metaTagTeclado, 
+              new Timestamp(Calendar.getInstance().getTimeInMillis()), // Timestamp fecha, 
+              JsfBase.getIdUsuario(), //  Long idUsuario, 
+              servicio.getIdEmpresa(), // Long idEmpresa, 
+              0D, // Double cantidad, 
+              10D, // Double minimo, 
+              20D, // Double maximo, 
+              20D, // Double limiteMedioMayoreo, 
+              50D, // Double limiteMayoreo, 
+              item.getSat(), // String sat, 
+              item.getIdArticuloTipo(), // Long idArticuloTipo, 
+              2L, // Long idBarras, 
+              "0", // String descuento, 
+              "0", // String extra, 
+              null, // String idFacturama
+              2L, // String idDescontinuado
+              null // String fabricante
+            );
+            DaoFactory.getInstance().insert(sesion, articulo);
+            // FALTA NOTIFICAR EN FACTURA QUE SE INSERTO ESTE ARTICULO
+            this.toArticuloFacturama(sesion, articulo, item.getCodigo());
+            // INSERTAR EL CODIGO DE LA REFACCION 
+            TcManticArticulosCodigosDto codigos= new TcManticArticulosCodigosDto(
+              item.getCodigo(), // String codigo, 
+              null, // Long idProveedor, 
+              JsfBase.getIdUsuario(), // Long idUsuario, 
+              1L, // Long idPrincipal, 
+              null, // String observaciones, 
+              -1L, // Long idArticuloCodigo, 
+              1L, // Long orden, 
+              articulo.getIdArticulo() // Long idArticulo
+            );
+            DaoFactory.getInstance().insert(sesion, codigos);
+          } // if  
+          // ACTUALIZAR EL DETALLE DE LA ORDEN CON EL ID_ARTICULO
+          item.setIdArticulo(articulo.getIdArticulo());
+          item.setIdValido(3L);
+          DaoFactory.getInstance().update(sesion, item);
+        } // for
+      } // if  
+      this.toSaveOrdenCompra(sesion, servicio, items);
 		} // try
 		catch (Exception e) {
 			throw new RuntimeException("El articulo ya existe en el catalogo maestro !");
@@ -547,7 +558,8 @@ public class Transaccion extends TransaccionFactura{
 		} // finally
   }
 
-  private void toSaveOrdenCompra(Session sesion, TcManticServiciosDto servicio) throws Exception {
+  // LA ORDE DE COMPRA SOLO SE GENERA PARA LAS PARTIDAS QUE SON DEL TIPO REFACCIONES
+  private void toSaveOrdenCompra(Session sesion, TcManticServiciosDto servicio, List<TcManticServiciosDetallesDto> items) throws Exception {
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
@@ -557,11 +569,10 @@ public class Transaccion extends TransaccionFactura{
       // params.put("razonSocial", "BLACK Y DECKER S.A. DE C.V.");
       Entity proveedor= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaTallerServiciosDto", "proveedor", params);
       if(proveedor!= null && !proveedor.isEmpty()) {
-        List<TcManticServiciosDetallesDto> items= (List<TcManticServiciosDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticServiciosDetallesDto.class, "TcManticServiciosDetallesDto", "detalle", params);
         Totales importes= new Totales();
-        for(TcManticServiciosDetallesDto item: items) {
-          importes.addServicio(item);
-        } // for
+        for(TcManticServiciosDetallesDto item: items) 
+          if(Objects.equals(item.getIdArticuloTipo(), 2L)) 
+            importes.addServicio(item);
         Siguiente consecutivo= this.toSiguiente(sesion, servicio);
         this.ordenCompra= new TcManticOrdenesComprasDto(
           proveedor.toLong("idProveedorPago"), // Long idProveedorPago, 
@@ -590,30 +601,32 @@ public class Transaccion extends TransaccionFactura{
         );        
         DaoFactory.getInstance().insert(sesion, this.ordenCompra);
         for(TcManticServiciosDetallesDto item: items) {
-          TcManticOrdenesDetallesDto detalle= new TcManticOrdenesDetallesDto(
-            item.getImporte(), // Double importes, 
-            0D, // Double descuentos, 
-            item.getCodigo(), //  String codigo, 
-            item.getCosto(), // Double costo, 
-            item.getDescuento(), // String descuento, 
-            this.ordenCompra.getIdOrdenCompra(), // Long idOrdenCompra, 
-            "0", // String extras, 
-            item.getConcepto(), // String nombre, 
-            item.getImporte(), // Double importe, 
-            item.getCosto(), // Double precios, 
-            item.getCodigo(), // String propio, 
-            item.getCantidad(), // Double cantidades, 
-            item.getIva(), // Double iva, 
-            item.getImpuestos(), // Double impuestos, 
-            item.getSubTotal(), // Double subTotal, 
-            item.getCantidad(), // Double cantidad, 
-            -1L, // Long idOrdenDetalle, 
-            item.getIdArticulo(), // Long idArticulo, 
-            0D, // Double excedentes, 
-            item.getCosto(), // Double costoReal, 
-            item.getCosto() // Double costoCalculado
-          );    
-          DaoFactory.getInstance().insert(sesion, detalle);
+          if(Objects.equals(item.getIdArticuloTipo(), 2L)) {
+            TcManticOrdenesDetallesDto detalle= new TcManticOrdenesDetallesDto(
+              Numero.toRedondearSat(item.getImporte()), // Double importes, 
+              0D, // Double descuentos, 
+              item.getCodigo(), //  String codigo, 
+              Numero.toRedondearSat(item.getCosto()), // Double costo, 
+              item.getDescuento(), // String descuento, 
+              this.ordenCompra.getIdOrdenCompra(), // Long idOrdenCompra, 
+              "0", // String extras, 
+              item.getConcepto(), // String nombre, 
+              Numero.toRedondearSat(item.getImporte()), // Double importe, 
+              Numero.toRedondearSat(item.getCosto()), // Double precios, 
+              item.getCodigo(), // String propio, 
+              item.getCantidad(), // Double cantidades, 
+              item.getIva(), // Double iva, 
+              Numero.toRedondearSat(item.getImpuestos()), // Double impuestos, 
+              Numero.toRedondearSat(item.getSubTotal()), // Double subTotal, 
+              item.getCantidad(), // Double cantidad, 
+              -1L, // Long idOrdenDetalle, 
+              item.getIdArticulo(), // Long idArticulo, 
+              0D, // Double excedentes, 
+              Numero.toRedondearSat(item.getCosto()), // Double costoReal, 
+              Numero.toRedondearSat(item.getCosto()) // Double costoCalculado
+            );    
+            DaoFactory.getInstance().insert(sesion, detalle);
+          } // if  
         } // for
       } // if  
 		} // try
@@ -658,5 +671,48 @@ public class Transaccion extends TransaccionFactura{
 		} // finally
 		return regresar;
 	}
+
+  // UNA VEZ EN ESTADO DE EN_CAJA SE TIENE QUE GENERAR EL TICKET DE VENTA, MANUALMENTE SE CAMBIA EL ESTATUS A PAGAGO SI EN CAJA SE HIZO EL PAGO
+  // Y DE PAGO CAMBIA A ENTREGADO, REVISAR LO DE IVENTARIOS CUANDO SE COBRE EN CAJA POR LO DEL ALMACEN DE REFACCIONES
+  private void toSaveVenta(Session sesion, TcManticServiciosDto servicio) {
+ 		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("idServicio", servicio.getIdServicio());
+      
+ 		} // try
+		catch (Exception e) {
+			throw new RuntimeException("No se pudo crear la venta a partir de la orden de repación !");
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+  }
+ 
+	private void toArticuloFacturama(Session sesion, TcManticArticulosDto articulo, String codigo) {
+		ArticuloFactura item= null;
+		try {			
+			item = new ArticuloFactura(
+        articulo.getIdArticulo(), // Long id
+        null, // String idFacturama, 
+        codigo, // String codigo, 
+        "PIEZA", // String unidad, 
+        "H87", // String identificador, 
+        articulo.getNombre(), // String nombre, 
+        articulo.getDescripcion(), // String descripcion, 
+        articulo.getMenudeo(), // double precio, 
+        articulo.getSat(), // String codigoHacienda, 
+        articulo.getIva() // double iva              
+      );
+			String id= CFDIFactory.getInstance().createProductId(item);
+      if(!Cadena.isVacio(id)) {
+     		articulo.setIdFacturama(id);
+		    DaoFactory.getInstance().update(sesion, articulo);		
+      } // if
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+		} // catch		
+	} // registraArticuloFacturama
   
 }

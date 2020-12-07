@@ -7549,6 +7549,7 @@
       <select id="proveedor">
         select      
 				  tr_mantic_proveedor_pago.id_proveedor_pago as id_key,
+          tr_mantic_proveedor_pago.id_proveedor_pago,
           tr_mantic_proveedor_pago.id_proveedor,
 				  tc_mantic_proveedores.id_tipo_dia,
 				  tc_mantic_proveedores.dias_entrega as dias
