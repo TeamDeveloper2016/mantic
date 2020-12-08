@@ -56,17 +56,19 @@ public class TcManticEncargosDto implements IBaseDto, Serializable {
   private Timestamp actualizado;
   @Column (name="registro")
   private Timestamp registro;
+  @Column (name="precio")
+  private Double precio;
 
   public TcManticEncargosDto() {
     this(new Long(-1L));
   }
 
   public TcManticEncargosDto(Long key) {
-    this(null, null, null, null, null, null, new Long(-1L), null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    this(null, null, null, null, null, null, new Long(-1L), null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), 0D);
     setKey(key);
   }
 
-  public TcManticEncargosDto(Long idEmpresa, String codigo, Double costo, Double iva, String sat, Long idUsuario, Long idEncargo, Long idVigente, String nombre, Long idDescontinuado, String linea, Timestamp actualizado) {
+  public TcManticEncargosDto(Long idEmpresa, String codigo, Double costo, Double iva, String sat, Long idUsuario, Long idEncargo, Long idVigente, String nombre, Long idDescontinuado, String linea, Timestamp actualizado, Double precio) {
     this.idEmpresa= idEmpresa;
     setCodigo(codigo);
     setCosto(costo);
@@ -80,6 +82,7 @@ public class TcManticEncargosDto implements IBaseDto, Serializable {
     setLinea(linea);
     setActualizado(actualizado);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    this.precio= precio;
   }
 
   public Long getIdEmpresa() {
@@ -186,6 +189,14 @@ public class TcManticEncargosDto implements IBaseDto, Serializable {
     return registro;
   }
 
+  public Double getPrecio() {
+    return precio;
+  }
+
+  public void setPrecio(Double precio) {
+    this.precio = precio;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -226,6 +237,8 @@ public class TcManticEncargosDto implements IBaseDto, Serializable {
 		regresar.append(getActualizado());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPrecio());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -246,13 +259,14 @@ public class TcManticEncargosDto implements IBaseDto, Serializable {
 		regresar.put("linea", getLinea());
 		regresar.put("actualizado", getActualizado());
 		regresar.put("registro", getRegistro());
+		regresar.put("precio", getPrecio());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdEmpresa(), getCodigo(), getCosto(), getIva(), getSat(), getIdUsuario(), getIdEncargo(), getIdVigente(), getNombre(), getIdDescontinuado(), getLinea(), getActualizado(), getRegistro()
+      getIdEmpresa(), getCodigo(), getCosto(), getIva(), getSat(), getIdUsuario(), getIdEncargo(), getIdVigente(), getNombre(), getIdDescontinuado(), getLinea(), getActualizado(), getRegistro(), getPrecio()
     };
     return regresar;
   }

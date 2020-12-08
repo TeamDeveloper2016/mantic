@@ -14,6 +14,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
 import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Cadena;
@@ -52,7 +53,6 @@ import org.apache.log4j.Logger;
 public class Transaccion extends TransaccionFactura {
 
   private static final Logger LOG  = Logger.getLogger(Transaccion.class);
-	private static final String VENTA= "VENTA";
 	private ClienteVenta clienteVenta;
 	private TcManticVentasBitacoraDto bitacora;
 	private TcManticVentasDto orden;	
@@ -374,7 +374,7 @@ public class Transaccion extends TransaccionFactura {
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
-			params.put("clave", VENTA);
+			params.put("clave", Constantes.VENTA_AL_PUBLICO_GENERAL_CLAVE);
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
 			cliente= (Entity) DaoFactory.getInstance().toEntity(sesion, "TcManticClientesDto", "clienteDefault", params);
 			if(cliente!= null)

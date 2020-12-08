@@ -506,17 +506,17 @@ public class Transaccion extends TransaccionFactura {
               item.getConcepto(), // String nombre, 
               item.getCosto(), // Double precio, 
               item.getIva(), // Double iva, 
-              item.getCosto(), // Double mayoreo, 
+              item.getPrecio(), // Double mayoreo, 
               2D, // Double desperdicio, 
               null, // String metaTagDescipcion, 
               1L, // Long idVigente, 
               -1L, // Long idArticulo, 
               0D, // Double stock, 
-              item.getCosto(), // Double medioMayoreo, 
+              item.getPrecio(), // Double medioMayoreo, 
               0D, // Double pesoEstimado, 
               this.toFindUnidadMedida(sesion, "PIEZA"), // Long idEmpaqueUnidadMedida, 
               2L, // Long idRedondear, 
-              item.getCosto(), // Double menudeo, 
+              item.getPrecio(), // Double menudeo, 
               null, // String metaTagTeclado, 
               new Timestamp(Calendar.getInstance().getTimeInMillis()), // Timestamp fecha, 
               JsfBase.getIdUsuario(), //  Long idUsuario, 
@@ -629,7 +629,7 @@ public class Transaccion extends TransaccionFactura {
                 Numero.toRedondearSat(item.getImporte()), // Double importes, 
                 0D, // Double descuentos, 
                 item.getCodigo(), //  String codigo, 
-                Numero.toRedondearSat(item.getCosto()), // Double costo, 
+                Numero.toRedondearSat(item.getPrecio()), // Double costo, 
                 item.getDescuento(), // String descuento, 
                 this.ordenCompra.getIdOrdenCompra(), // Long idOrdenCompra, 
                 "0", // String extras, 
@@ -645,8 +645,8 @@ public class Transaccion extends TransaccionFactura {
                 -1L, // Long idOrdenDetalle, 
                 item.getIdArticulo(), // Long idArticulo, 
                 0D, // Double excedentes, 
-                Numero.toRedondearSat(item.getCosto()), // Double costoReal, 
-                Numero.toRedondearSat(item.getCosto()) // Double costoCalculado
+                Numero.toRedondearSat(item.getPrecio()), // Double costoReal, 
+                Numero.toRedondearSat(item.getPrecio()) // Double costoCalculado
               );    
               DaoFactory.getInstance().insert(sesion, detalle);
             } // if  
@@ -716,18 +716,18 @@ public class Transaccion extends TransaccionFactura {
         0D, // Double global, 
         Numero.toRedondearSat(importes.getUtilidad()), // Double utilidad, 
         Numero.toRedondearSat(importes.getTotal()), // Double total, 
-        servicio.getIdAlmacen(), // Long idAlmacen, 
+        JsfBase.getAutentifica().getEmpresa().getIdAlmacen(), // Long idAlmacen, 
         1D, // Double tipoDeCambio, 
         consecutivo.getOrden(), // Long orden, 
         2L, // Long idAutorizar, 
-        servicio.getIdCliente()!= null? servicio.getIdCliente(): null, // Long idCliente, 
+        servicio.getIdCliente()!= null? servicio.getIdCliente(): this.toClienteDefault(sesion), // Long idCliente, 
         servicio.getDescuento(), // String descuento, 
         new Long(Fecha.getAnioActual()), // Long ejercicio, 
         consecutivo.getOrden(), // Long consecutivo, 
         JsfBase.getIdUsuario(), // Long idUsuario, 
         Numero.toRedondearSat(importes.getImporte()), // Double impuestos, 
         3L, // Long idUsoCfdi, 
-        2L, // Long idSinIva, 
+        1L, // Long idSinIva, 
         Numero.toRedondearSat(importes.getSubTotal()), // Double subTotal,
         "ORDEN DE SERVICIO [".concat(servicio.getConsecutivo()).concat("]"), // String observaciones, 
         servicio.getIdEmpresa(), // Long idEmpresa, 
@@ -748,7 +748,7 @@ public class Transaccion extends TransaccionFactura {
           item.getDescuentos(), // Double descuentos, 
           item.getCodigo(), // String codigo, 
           "PIEZA", // String unidadMedida, 
-          item.getCosto(), // Double costo, 
+          item.getPrecio(), // Double costo, 
           item.getDescuento(), // String descuento, 
           item.getSat(), // String sat, 
           "0", // String extras, 
@@ -761,9 +761,9 @@ public class Transaccion extends TransaccionFactura {
           item.getCantidad(), // Double cantidad, 
           item.getIdArticulo(), // Long idArticulo, 
           this.venta.getIdVenta(), // Long idVenta, 
-          item.getPrecio(), // Double precio, 
+          item.getCosto(), // Double precio, 
           Numero.toRedondearSat(item.getSubTotal()- (item.getCosto()* item.getCantidad())), // Double utilidad, 
-          item.getCosto(), // Double unitarioSinIva, 
+          Numero.toRedondearSat(item.getPrecio()* (1- (item.getIva()/100))), // Double unitarioSinIva, 
           1D // Double factor
         );
         DaoFactory.getInstance().insert(sesion, detalle);
@@ -825,5 +825,23 @@ public class Transaccion extends TransaccionFactura {
 			Error.mensaje(e);
 		} // catch		
 	} // registraArticuloFacturama
+  
+	protected Long toClienteDefault(Session sesion) throws Exception {
+		Long regresar            = -1L;
+		Entity cliente           = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("clave", Constantes.VENTA_AL_PUBLICO_GENERAL_CLAVE);
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
+			cliente= (Entity) DaoFactory.getInstance().toEntity(sesion, "TcManticClientesDto", "clienteDefault", params);
+			if(cliente!= null)
+				regresar= cliente.getKey();
+		} // try
+		finally {			
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toClienteDefault
   
 }

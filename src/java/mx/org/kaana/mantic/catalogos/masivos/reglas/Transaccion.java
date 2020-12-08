@@ -30,7 +30,6 @@ import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosCodigosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
-import mx.org.kaana.mantic.db.dto.TcManticArticulosEspecificacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEgresosDto;
@@ -932,7 +931,8 @@ public class Transaccion extends IBaseTnx {
                     iva, // Double iva, 
                     JsfBase.getIdUsuario(), // Long idUsuario, 
                     null, // String fabricante, 
-                    1L // Long idVigente
+                    1L, // Long idVigente
+                    Numero.toRedondearSat(costo* 1.5) // precio      
                   );
                   DaoFactory.getInstance().insert(sesion, refaccion);
                 } // else
@@ -1067,7 +1067,8 @@ public class Transaccion extends IBaseTnx {
                     nombre, // String nombre, 
                     2L, // Long idDescontinuado, 
                     linea, // String linea, 
-                    new Timestamp(Calendar.getInstance().getTimeInMillis()) // Timestamp actualizado
+                    new Timestamp(Calendar.getInstance().getTimeInMillis()), // Timestamp actualizado}
+                    Numero.toRedondearSat(costo* 1.5) // precio      
 									);
 									DaoFactory.getInstance().insert(sesion, servicio);
 									TcManticMasivasDetallesDto detalle= new TcManticMasivasDetallesDto(

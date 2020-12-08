@@ -101,7 +101,7 @@ public final class AdminServicios extends IAdminArticulos  implements Serializab
 	
 	@Override
 	public Long getIdSinIva() {
-		return 2L;
+		return 1L;
 	}
 	
 	@Override

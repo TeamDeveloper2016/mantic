@@ -273,7 +273,7 @@ public class Filtro extends Comun implements Serializable {
     				JsfBase.addMessage("Orde de compra", "Se generó la orden de compra [".concat(transaccion.getOrdenCompra().getConsecutivo()).concat("] por un importe de $ ")+ transaccion.getOrdenCompra().getTotal(), ETipoMensaje.INFORMACION);
             break;
           case 8: // EEstatusServicios.EN_CAJA
-    				JsfBase.addMessage("Ticket venta", "Se generó el ticket de venta [".concat(transaccion.getVenta().getTicket()).concat("] por un importe de $ ")+ transaccion.getOrdenCompra().getTotal(), ETipoMensaje.INFORMACION);
+    				JsfBase.addMessage("Ticket venta", "Se generó la cuenta de venta ["+ transaccion.getVenta().getConsecutivo()+ "] por un importe de $ "+ transaccion.getVenta().getTotal(), ETipoMensaje.INFORMACION);
             break;
           default:
     				JsfBase.addMessage("Cambio estatus", "Se realizó el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);

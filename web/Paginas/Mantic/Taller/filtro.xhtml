@@ -133,11 +133,11 @@
               </f:facet>
               <h:outputText value="#{row['fechaEstimada']}"/>
             </p:column>	            
-						<p:column styleClass="janal-column-icon">
-              <p:commandButton icon="fa fa-gg" title="Orde de compra" action="#{manticTallerFiltro.doViewOrdenCompra}" disabled="#{empty row.idOrdenCompra}">
+						<p:column styleClass="janal-wid-col-80">
+              <p:commandButton icon="fa fa-gg" title="Orde de compra" action="#{manticTallerFiltro.doViewOrdenCompra}" disabled="#{empty row.idOrdenCompra.toString()}">
 								<f:setPropertyActionListener value="#{row['idOrdenCompra']}" target="#{manticTallerFiltro.attrs.idOrdenCompra}" />
 							</p:commandButton>
-							<p:commandButton icon="fa fa-usd" title="Ticket venta" action="#{manticTallerFiltro.doViewVenta}" disabled="#{empty row.idVenta}">
+							<p:commandButton icon="fa fa-usd" title="Ticket venta" action="#{manticTallerFiltro.doViewVenta}" disabled="#{empty row.idVenta.toString()}">
 								<f:setPropertyActionListener value="#{row['idVenta']}" target="#{manticTallerFiltro.attrs.idVenta}" />
 							</p:commandButton>
 						</p:column>
