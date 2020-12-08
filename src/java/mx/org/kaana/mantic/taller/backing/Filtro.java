@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -241,7 +242,10 @@ public class Filtro extends Comun implements Serializable {
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_servicio_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
+      if(Objects.equals(seleccionado.toLong("idGarantia"), 1L) && Objects.equals(seleccionado.toLong("idServicioEstatus"), EEstatusServicios.REPARADO.getIdEstatusServicio()))
+        params.put(Constantes.SQL_CONDICION, "id_servicio_estatus in ("+ EEstatusServicios.ENTREGADO.getIdEstatusServicio()+ ")");
+      else
+        params.put(Constantes.SQL_CONDICION, "id_servicio_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
 			allEstatus= UISelect.build("TcManticServiciosEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatusAsigna", allEstatus);
 			this.attrs.put("estatusAsigna", allEstatus.get(0));
@@ -270,7 +274,10 @@ public class Filtro extends Comun implements Serializable {
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR)) {
         switch(bitacora.getIdServicioEstatus().intValue()) {
           case 4: // EEstatusServicios.EN_REPARACION
-    				JsfBase.addMessage("Orde de compra", "Se generó la orden de compra [".concat(transaccion.getOrdenCompra().getConsecutivo()).concat("] por un importe de $ ")+ transaccion.getOrdenCompra().getTotal(), ETipoMensaje.INFORMACION);
+            if(!Cadena.isVacio(transaccion.getOrdenCompra()))
+    				  JsfBase.addMessage("Orde de compra", "Se generó la orden de compra [".concat(transaccion.getOrdenCompra().getConsecutivo()).concat("] por un importe de $ ")+ transaccion.getOrdenCompra().getTotal(), ETipoMensaje.INFORMACION);
+            else 
+    				  JsfBase.addMessage("Cambio estatus", "Se realizó el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
             break;
           case 8: // EEstatusServicios.EN_CAJA
     				JsfBase.addMessage("Ticket venta", "Se generó la cuenta de venta ["+ transaccion.getVenta().getConsecutivo()+ "] por un importe de $ "+ transaccion.getVenta().getTotal(), ETipoMensaje.INFORMACION);

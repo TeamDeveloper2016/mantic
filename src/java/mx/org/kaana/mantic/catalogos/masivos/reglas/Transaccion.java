@@ -922,7 +922,7 @@ public class Transaccion extends IBaseTnx {
                     proveedor.getIdProveedor(), // Long idProveedor, 
                     codigo, // String codigo, 
                     herramienta, // String herramienta, 
-                    costo, // Double costo, 
+                    Numero.toRedondearSat(costo* 0.45), // Double costo, 
                     sat, // String sat, 
                     nombre, // String nombre, 
                     2L, // Long idDescontinuado, 
@@ -932,7 +932,7 @@ public class Transaccion extends IBaseTnx {
                     JsfBase.getIdUsuario(), // Long idUsuario, 
                     null, // String fabricante, 
                     1L, // Long idVigente
-                    Numero.toRedondearSat(costo* 1.5) // precio      
+                    Numero.toRedondearSat(costo) // precio      
                   );
                   DaoFactory.getInstance().insert(sesion, refaccion);
                 } // else
@@ -1058,7 +1058,7 @@ public class Transaccion extends IBaseTnx {
 									servicio= new TcManticEncargosDto(
                     JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), // Long idEmpresa, 
                     codigo, // String codigo, 
-                    costo, // Double costo, 
+                    0D, // Double costo, 
                     iva, // Double iva, 
                     sat, // String sat, 
                     JsfBase.getIdUsuario(), // Long idUsuario, 
@@ -1068,7 +1068,7 @@ public class Transaccion extends IBaseTnx {
                     2L, // Long idDescontinuado, 
                     linea, // String linea, 
                     new Timestamp(Calendar.getInstance().getTimeInMillis()), // Timestamp actualizado}
-                    Numero.toRedondearSat(costo* 1.5) // precio      
+                    Numero.toRedondearSat(costo) // precio      
 									);
 									DaoFactory.getInstance().insert(sesion, servicio);
 									TcManticMasivasDetallesDto detalle= new TcManticMasivasDetallesDto(
