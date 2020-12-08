@@ -100,6 +100,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
   	this.attrs.put("idDecontinuar", false);
   	this.attrs.put("sat", Constantes.CODIGO_SAT);
   	this.attrs.put("ultimoCosto", 0.0D);
+  	this.attrs.put("idArticuloTipo", 1L);
 		this.adminKardex= new AdminKardex(-1L, false);
 		this.toLoadCatalog();
 		if(JsfBase.getFlashAttribute("xcodigo")!= null) {
@@ -121,16 +122,21 @@ public class Kardex extends IBaseAttribute implements Serializable {
     try {
 			columns= new ArrayList<>();
 			params = new HashMap<>();
-      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      almacenes= (List<UISelectEntity>)UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns);
+			if(JsfBase.isCajero())
+				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			else
+				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));							
+			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));							
+			columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));							
+      almacenes= (List<UISelectEntity>)UIEntity.build("VistaAlmacenesDto", "almacenesEmpresa", params, columns);
       this.attrs.put("depositos", almacenes);
 			if(almacenes!= null) 
 			  this.attrs.put("idAlmacen", almacenes.get(0));
     } // try
     catch (Exception e) {
-      throw e;
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
     } // catch   
     finally {
       Methods.clean(columns);
@@ -255,6 +261,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("idArticuloTipo", this.attrs.get("idArticuloTipo"));
   		params.put("idProveedor", -1L);
 			String search= (String)this.attrs.get("codigo"); 
 			if(!Cadena.isVacio(search)) {
@@ -268,9 +275,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
 				search= "WXYZ";
   		params.put("codigo", search);
 			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
-        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 40L);
+        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigoCompleto", params, columns, 40L);
 			else
-        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 40L);
+        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombreCompleto", params, columns, 40L);
       this.attrs.put("articulos", articulos);
 		} // try
 	  catch (Exception e) {

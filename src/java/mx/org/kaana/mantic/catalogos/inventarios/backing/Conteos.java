@@ -32,6 +32,7 @@ import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.inventarios.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
 import org.primefaces.event.SelectEvent;
@@ -73,6 +74,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());	
     	this.attrs.put("buscaPorCodigo", false);
     	this.attrs.put("ultimo", "");
+    	this.attrs.put("idArticuloTipo", 1L);
 			this.articulo= new TcManticAlmacenesArticulosDto();
 			this.toLoadAlmacenes();
 			if(this.attrs.get("xcodigo")!= null) {
@@ -209,6 +211,12 @@ public class Conteos extends IBaseFilter implements Serializable {
 			if(this.attrs.get("almacen")!= null)
 			  this.attrs.put("idAlmacen", ((Entity)this.attrs.get("almacen")).getKey());			
 			List<UISelectEntity> ubicaciones= UIEntity.seleccione("VistaKardexDto", "ubicaciones", this.attrs, columns, "piso");
+      // SI NO HAY UBICACIONES INSERTAR UNA UBICACION POR DEFECTO
+      if(ubicaciones== null || ubicaciones.isEmpty()) {
+        TcManticAlmacenesUbicacionesDto general= new TcManticAlmacenesUbicacionesDto("GENERAL", "", "GENERAL", "", "", JsfBase.getAutentifica().getPersona().getIdUsuario(), ((Entity)this.attrs.get("almacen")).getKey(), -1L);
+				DaoFactory.getInstance().insert(general);
+        ubicaciones= UIEntity.seleccione("VistaKardexDto", "ubicaciones", this.attrs, columns, "piso");
+      } // if
 			if(ubicaciones!= null && !ubicaciones.isEmpty() && this.articulo!= null && this.articulo.getIdAlmacenUbicacion()!= null) {
 				int index= ubicaciones.indexOf(new UISelectEntity(this.articulo.getIdAlmacenUbicacion()));
 				if(index>= 0)
@@ -313,8 +321,9 @@ public class Conteos extends IBaseFilter implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("idArticuloTipo", this.attrs.get("idArticuloTipo"));
   		params.put("idProveedor", -1L);
-			String search= new String((String)this.attrs.get("codigo")); 
+			String search= (String)this.attrs.get("codigo"); 
 			if(!Cadena.isVacio(search)) {
 				buscaPorCodigo= search.startsWith(".");
   			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();
@@ -326,9 +335,9 @@ public class Conteos extends IBaseFilter implements Serializable {
 				search= "WXYZ";
   		params.put("codigo", search);
 			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
-        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 40L);
+        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigoCompleto", params, columns, 40L);
 			else
-        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 40L);
+        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombreCompleto", params, columns, 40L);
       this.attrs.put("articulos", articulos);
 		} // try
 	  catch (Exception e) {
