@@ -14,6 +14,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EBooleanos;
+import mx.org.kaana.kajool.enums.EEtapaServidor;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
@@ -37,8 +38,11 @@ import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticServiciosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticServiciosDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticServiciosDto;
+import mx.org.kaana.mantic.db.dto.TcManticVentasDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.enums.EEstatusServicios;
+import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
@@ -55,6 +59,7 @@ public class Transaccion extends TransaccionFactura {
 	private List<Articulo> articulos;
 	private Long idServicio;	
   private TcManticOrdenesComprasDto ordenCompra;
+  private TcManticVentasDto venta;
           
 	public Transaccion(IBaseDto dto) {
 		this.dto = dto;
@@ -72,6 +77,10 @@ public class Transaccion extends TransaccionFactura {
 
   public TcManticOrdenesComprasDto getOrdenCompra() {
     return ordenCompra;
+  }
+
+  public TcManticVentasDto getVenta() {
+    return venta;
   }
 	
 	@Override
@@ -408,7 +417,7 @@ public class Transaccion extends TransaccionFactura {
 			todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticServiciosDetallesDto", "detalle", new TcManticServiciosDto(this.idServicio).toMap());
 			for (Articulo item: todos) 
 				if(this.articulos.indexOf(item)< 0)
-					DaoFactory.getInstance().delete(sesion, item);
+					DaoFactory.getInstance().delete(sesion, TcManticServiciosDetallesDto.class, item.getIdComodin());
 			for (Articulo articulo: this.articulos) {
 				if(articulo.isValid()) {
 					TcManticServiciosDetallesDto item= articulo.toServicioDetalle();
@@ -528,7 +537,8 @@ public class Transaccion extends TransaccionFactura {
             );
             DaoFactory.getInstance().insert(sesion, articulo);
             // FALTA NOTIFICAR EN FACTURA QUE SE INSERTO ESTE ARTICULO
-            this.toArticuloFacturama(sesion, articulo, item.getCodigo());
+            if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.DESARROLLO))
+              this.toArticuloFacturama(sesion, articulo, item.getCodigo());
             // INSERTAR EL CODIGO DE LA REFACCION 
             TcManticArticulosCodigosDto codigos= new TcManticArticulosCodigosDto(
               item.getCodigo(), // String codigo, 
@@ -551,7 +561,7 @@ public class Transaccion extends TransaccionFactura {
       this.toSaveOrdenCompra(sesion, servicio, items);
 		} // try
 		catch (Exception e) {
-			throw new RuntimeException("El articulo ya existe en el catalogo maestro !");
+			throw new RuntimeException("El articulo ya existe en el catalogo maestro !/n"+ e);
 		} // catch
 		finally {
 			Methods.clean(params);
@@ -569,65 +579,79 @@ public class Transaccion extends TransaccionFactura {
       // params.put("razonSocial", "BLACK Y DECKER S.A. DE C.V.");
       Entity proveedor= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaTallerServiciosDto", "proveedor", params);
       if(proveedor!= null && !proveedor.isEmpty()) {
-        Totales importes= new Totales();
-        for(TcManticServiciosDetallesDto item: items) 
-          if(Objects.equals(item.getIdArticuloTipo(), 2L)) 
-            importes.addServicio(item);
-        Siguiente consecutivo= this.toSiguiente(sesion, servicio);
-        this.ordenCompra= new TcManticOrdenesComprasDto(
-          proveedor.toLong("idProveedorPago"), // Long idProveedorPago, 
-          Numero.toRedondearSat(servicio.getDescuentos()), // Double descuentos, 
-          proveedor.toLong("idProveedor"), // Long idProveedor, 
-          null, // Long idCliente, 
-          servicio.getDescuento(), // String descuento, 
-          -1L, // Long idOrdenCompra, 
-          "0", // String extras, 
-          servicio.getEjercicio(), // Long ejercicio, 
-          consecutivo.getConsecutivo(), // String consecutivo, 
-          2L, // Long idGasto, 
-          Numero.toRedondearSat(importes.getTotal()), // Double total, 
-          1L, // Long idOrdenEstatus, 
-          this.toCalculateFechaEstimada(Calendar.getInstance(), proveedor.toInteger("idTipoDia"), proveedor.toInteger("dias")), // Date entregaEstimada, 
-          JsfBase.getIdUsuario(), // Long idUsuario, 
-          servicio.getIdAlmacen(), // Long idAlmacen, 
-          Numero.toRedondearSat(importes.getImporte()), // Double impuestos, 
-          Numero.toRedondearSat(importes.getSubTotal()), // Double subTotal, 
-          1D, // Double tipoDeCambio, 
-          2L, // Long idSinIva, 
-          "ORDEN DE SERVICIO [".concat(servicio.getConsecutivo()).concat("]"), // String observaciones, 
-          servicio.getIdEmpresa(), // Long idEmpresa, 
-          consecutivo.getOrden(), // Long orden, 
-          0D // Double excedentes
-        );        
-        DaoFactory.getInstance().insert(sesion, this.ordenCompra);
+        // BUSCAR SI HAY STOCK DISPONIBLE EN EL ALMACEN DE REFACCIONES 
         for(TcManticServiciosDetallesDto item: items) {
-          if(Objects.equals(item.getIdArticuloTipo(), 2L)) {
-            TcManticOrdenesDetallesDto detalle= new TcManticOrdenesDetallesDto(
-              Numero.toRedondearSat(item.getImporte()), // Double importes, 
-              0D, // Double descuentos, 
-              item.getCodigo(), //  String codigo, 
-              Numero.toRedondearSat(item.getCosto()), // Double costo, 
-              item.getDescuento(), // String descuento, 
-              this.ordenCompra.getIdOrdenCompra(), // Long idOrdenCompra, 
-              "0", // String extras, 
-              item.getConcepto(), // String nombre, 
-              Numero.toRedondearSat(item.getImporte()), // Double importe, 
-              Numero.toRedondearSat(item.getCosto()), // Double precios, 
-              item.getCodigo(), // String propio, 
-              item.getCantidad(), // Double cantidades, 
-              item.getIva(), // Double iva, 
-              Numero.toRedondearSat(item.getImpuestos()), // Double impuestos, 
-              Numero.toRedondearSat(item.getSubTotal()), // Double subTotal, 
-              item.getCantidad(), // Double cantidad, 
-              -1L, // Long idOrdenDetalle, 
-              item.getIdArticulo(), // Long idArticulo, 
-              0D, // Double excedentes, 
-              Numero.toRedondearSat(item.getCosto()), // Double costoReal, 
-              Numero.toRedondearSat(item.getCosto()) // Double costoCalculado
-            );    
-            DaoFactory.getInstance().insert(sesion, detalle);
+          if(Objects.equals(item.getIdArticuloTipo(), 2L) && Objects.equals(item.getIdValido(), 1L) || Objects.equals(item.getIdValido(), 3L)) {
+            params.put("idAlmacen", Objects.equals(item.getIdArticuloTipo(), 1L)? JsfBase.getAutentifica().getEmpresa().getIdAlmacen(): servicio.getIdAlmacen());
+            params.put("idArticulo", item.getIdArticulo());
+            Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
+            item.setStock(stock== null? 0D: stock.toDouble());
           } // if  
         } // for
+        Totales importes= new Totales();
+        for(TcManticServiciosDetallesDto item: items) 
+          if(Objects.equals(item.getIdArticuloTipo(), 2L) && item.getStock()<= 0D) 
+            importes.addServicio(item);
+        // SI SE TIENE AL MENOS UNA REFACCION QUE AGREGAR A LA ORDEN DE COMPRA SE GENERA
+        if(importes.getTotal()> 0D) {
+          Siguiente consecutivo= this.toSiguienteOrden(sesion, servicio);
+          this.ordenCompra= new TcManticOrdenesComprasDto(
+            proveedor.toLong("idProveedorPago"), // Long idProveedorPago, 
+            Numero.toRedondearSat(servicio.getDescuentos()), // Double descuentos, 
+            proveedor.toLong("idProveedor"), // Long idProveedor, 
+            servicio.getIdCliente()!= null? servicio.getIdCliente(): null, // Long idCliente, 
+            servicio.getDescuento(), // String descuento, 
+            -1L, // Long idOrdenCompra, 
+            "0", // String extras, 
+            new Long(Fecha.getAnioActual()), // Long ejercicio, 
+            consecutivo.getConsecutivo(), // String consecutivo, 
+            2L, // Long idGasto, 
+            Numero.toRedondearSat(importes.getTotal()), // Double total, 
+            1L, // Long idOrdenEstatus, 
+            this.toCalculateFechaEstimada(Calendar.getInstance(), proveedor.toInteger("idTipoDia"), proveedor.toInteger("dias")), // Date entregaEstimada, 
+            JsfBase.getIdUsuario(), // Long idUsuario, 
+            servicio.getIdAlmacen(), // Long idAlmacen, 
+            Numero.toRedondearSat(importes.getImporte()), // Double impuestos, 
+            Numero.toRedondearSat(importes.getSubTotal()), // Double subTotal, 
+            1D, // Double tipoDeCambio, 
+            2L, // Long idSinIva, 
+            "ORDEN DE SERVICIO [".concat(servicio.getConsecutivo()).concat("]"), // String observaciones, 
+            servicio.getIdEmpresa(), // Long idEmpresa, 
+            consecutivo.getOrden(), // Long orden, 
+            0D // Double excedentes
+          );        
+          DaoFactory.getInstance().insert(sesion, this.ordenCompra);
+          servicio.setIdOrdenCompra(this.ordenCompra.getIdOrdenCompra());
+          DaoFactory.getInstance().update(sesion, servicio);
+          for(TcManticServiciosDetallesDto item: items) {
+            if(Objects.equals(item.getIdArticuloTipo(), 2L) && item.getStock()<= 0D) {
+              TcManticOrdenesDetallesDto detalle= new TcManticOrdenesDetallesDto(
+                Numero.toRedondearSat(item.getImporte()), // Double importes, 
+                0D, // Double descuentos, 
+                item.getCodigo(), //  String codigo, 
+                Numero.toRedondearSat(item.getCosto()), // Double costo, 
+                item.getDescuento(), // String descuento, 
+                this.ordenCompra.getIdOrdenCompra(), // Long idOrdenCompra, 
+                "0", // String extras, 
+                item.getConcepto(), // String nombre, 
+                Numero.toRedondearSat(item.getImporte()), // Double importe, 
+                Numero.toRedondearSat(item.getPrecio()), // Double precios, 
+                item.getCodigo(), // String propio, 
+                item.getCantidad(), // Double cantidades, 
+                item.getIva(), // Double iva, 
+                Numero.toRedondearSat(item.getImpuestos()), // Double impuestos, 
+                Numero.toRedondearSat(item.getSubTotal()), // Double subTotal, 
+                item.getCantidad(), // Double cantidad, 
+                -1L, // Long idOrdenDetalle, 
+                item.getIdArticulo(), // Long idArticulo, 
+                0D, // Double excedentes, 
+                Numero.toRedondearSat(item.getCosto()), // Double costoReal, 
+                Numero.toRedondearSat(item.getCosto()) // Double costoCalculado
+              );    
+              DaoFactory.getInstance().insert(sesion, detalle);
+            } // if  
+          } // for
+        } // if  
       } // if  
 		} // try
 		catch (Exception e) {
@@ -649,7 +673,7 @@ public class Transaccion extends TransaccionFactura {
 		return new Date(fechaEstimada.getTimeInMillis());
 	}
   
-	private Siguiente toSiguiente(Session sesion, TcManticServiciosDto servicio) throws Exception {
+	private Siguiente toSiguienteOrden(Session sesion, TcManticServiciosDto servicio) throws Exception {
 		Siguiente regresar        = null;
 		Map<String, Object> params= null;
 		try {
@@ -670,7 +694,7 @@ public class Transaccion extends TransaccionFactura {
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	}
+	} // toSiguienteOrden
 
   // UNA VEZ EN ESTADO DE EN_CAJA SE TIENE QUE GENERAR EL TICKET DE VENTA, MANUALMENTE SE CAMBIA EL ESTATUS A PAGAGO SI EN CAJA SE HIZO EL PAGO
   // Y DE PAGO CAMBIA A ENTREGADO, REVISAR LO DE IVENTARIOS CUANDO SE COBRE EN CAJA POR LO DEL ALMACEN DE REFACCIONES
@@ -679,16 +703,103 @@ public class Transaccion extends TransaccionFactura {
 		try {
 			params=new HashMap<>();
 			params.put("idServicio", servicio.getIdServicio());
-      
+      List<TcManticServiciosDetallesDto> items= (List<TcManticServiciosDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticServiciosDetallesDto.class, "TcManticServiciosDetallesDto", "detalle", params);
+      Totales importes= new Totales();
+      for(TcManticServiciosDetallesDto item: items) 
+        importes.addServicio(item);
+      Siguiente consecutivo= this.toSiguienteVenta(sesion, servicio);
+      this.venta= new TcManticVentasDto(
+        Numero.toRedondearSat(importes.getDescuentos()), // Double descuentos, 
+        null, // Long idFactura, 
+        2L, // Long idCredito, 
+        "0", // String extras, 
+        0D, // Double global, 
+        Numero.toRedondearSat(importes.getUtilidad()), // Double utilidad, 
+        Numero.toRedondearSat(importes.getTotal()), // Double total, 
+        servicio.getIdAlmacen(), // Long idAlmacen, 
+        1D, // Double tipoDeCambio, 
+        consecutivo.getOrden(), // Long orden, 
+        2L, // Long idAutorizar, 
+        servicio.getIdCliente()!= null? servicio.getIdCliente(): null, // Long idCliente, 
+        servicio.getDescuento(), // String descuento, 
+        new Long(Fecha.getAnioActual()), // Long ejercicio, 
+        consecutivo.getOrden(), // Long consecutivo, 
+        JsfBase.getIdUsuario(), // Long idUsuario, 
+        Numero.toRedondearSat(importes.getImporte()), // Double impuestos, 
+        3L, // Long idUsoCfdi, 
+        2L, // Long idSinIva, 
+        Numero.toRedondearSat(importes.getSubTotal()), // Double subTotal,
+        "ORDEN DE SERVICIO [".concat(servicio.getConsecutivo()).concat("]"), // String observaciones, 
+        servicio.getIdEmpresa(), // Long idEmpresa, 
+        -1L, // Long idVenta, 
+        new Date(Calendar.getInstance().getTimeInMillis()), // Date dia, 
+        EEstatusVentas.ELABORADA.getIdEstatusVenta(), // Long idVentaEstatus, 
+        null, // String cotizacion, 
+        null, // String ticket, 
+        null, // Long ccotizacion, 
+        null, // Long cticket, 
+        new Date(Calendar.getInstance().getTimeInMillis()), // Date vigencia, 
+        2L, // Long idManual, 
+        2L // Long idFacturar
+      );
+      DaoFactory.getInstance().insert(sesion, this.venta);
+      for(TcManticServiciosDetallesDto item: items) {
+        TcManticVentasDetallesDto detalle= new TcManticVentasDetallesDto(
+          item.getDescuentos(), // Double descuentos, 
+          item.getCodigo(), // String codigo, 
+          "PIEZA", // String unidadMedida, 
+          item.getCosto(), // Double costo, 
+          item.getDescuento(), // String descuento, 
+          item.getSat(), // String sat, 
+          "0", // String extras, 
+          item.getConcepto(), // String nombre, 
+          item.getImporte(), // Double importe, 
+          -1L, // Long idVentaDetalle, 
+          item.getIva(), // Double iva, 
+          item.getImpuestos(), // Double impuestos, 
+          item.getSubTotal(), // Double subTotal, 
+          item.getCantidad(), // Double cantidad, 
+          item.getIdArticulo(), // Long idArticulo, 
+          this.venta.getIdVenta(), // Long idVenta, 
+          item.getPrecio(), // Double precio, 
+          Numero.toRedondearSat(item.getSubTotal()- (item.getCosto()* item.getCantidad())), // Double utilidad, 
+          item.getCosto(), // Double unitarioSinIva, 
+          1D // Double factor
+        );
+        DaoFactory.getInstance().insert(sesion, detalle);
+      } // for
+      servicio.setIdVenta(this.venta.getIdVenta());
+      DaoFactory.getInstance().update(sesion, servicio);
  		} // try
 		catch (Exception e) {
-			throw new RuntimeException("No se pudo crear la venta a partir de la orden de repación !");
+			throw new RuntimeException("No se pudo crear la venta a partir de la orden de reparación !/n"+ e);
 		} // catch
 		finally {
 			Methods.clean(params);
 		} // finally
   }
  
+  private Siguiente toSiguienteVenta(Session sesion, TcManticServiciosDto servicio) throws Exception {
+		Siguiente regresar        = null;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("ejercicio", this.getCurrentYear());
+			params.put("dia", Fecha.getHoyEstandar());
+			params.put("idEmpresa", servicio.getIdEmpresa());
+			params.put("operador", this.getCurrentSign());
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticVentasDto", "siguiente", params, "siguiente");
+			if(next.getData()!= null)
+				regresar= new Siguiente(next.toLong());
+			else
+				regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 900001L: 1L); 
+		} // try		
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toSiguienteVenta
+
 	private void toArticuloFacturama(Session sesion, TcManticArticulosDto articulo, String codigo) {
 		ArticuloFactura item= null;
 		try {			

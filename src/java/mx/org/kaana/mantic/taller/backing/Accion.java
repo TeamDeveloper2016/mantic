@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -183,8 +184,19 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("proveedores", UIEntity.build("VistaOrdenesComprasDto", "moneda", params, columns));
 			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
 			if(!proveedores.isEmpty()) { 
-				if(this.accion.equals(EAccion.AGREGAR))
-				  this.setIkProveedor(proveedores.get(0));
+				if(this.accion.equals(EAccion.AGREGAR)) {
+          UISelectEntity proveedor= null;
+          for (UISelectEntity item: proveedores) {
+            if(Objects.equals("B&D", item.toString("clave")) || Objects.equals("BLACK Y DECKER S.A. DE C.V.", item.toString("razonSocial"))) {
+    				  proveedor= item;
+              break;
+            } // if
+          } // for
+          if(proveedor!= null)
+  				  this.setIkProveedor(proveedor);
+          else
+  				  this.setIkProveedor(proveedores.get(0));
+        } // if  
 				else
 				  this.setIkProveedor(proveedores.get(proveedores.indexOf(this.getIkProveedor())));
 			} // if	

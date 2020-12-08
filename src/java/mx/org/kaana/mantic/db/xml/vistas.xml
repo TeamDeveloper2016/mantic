@@ -7575,7 +7575,7 @@
           and (
            (tc_mantic_articulos_codigos.id_principal= 1 and upper(tc_mantic_articulos_codigos.codigo) regexp '.*{codigo}.*')
            or 
-           upper(tc_mantic_articulos.nombre) like '%{nombre}%'
+           upper(tc_mantic_articulos.nombre)=  upper('{nombre}')
           )
       </select>
       <select id="stock">
@@ -7600,7 +7600,9 @@
 				  tc_mantic_articulos.fabricante,  
 				  tc_mantic_articulos.nombre,
 				  tc_mantic_articulos.descripcion,
-				  tc_mantic_articulos.precio,
+				  tc_mantic_articulos.precio as costo,
+				  tc_mantic_articulos.menudeo as precio,
+				  tc_mantic_articulos.menudeo,
 				  tc_mantic_articulos.precio as original,
 				  tc_mantic_articulos.iva,
 				  tc_mantic_articulos.sat,
@@ -7633,7 +7635,8 @@
 				  tc_mantic_articulos.fabricante,  
 				  tc_mantic_articulos.nombre,
 				  tc_mantic_articulos.descripcion,
-				  tc_mantic_articulos.precio,
+				  tc_mantic_articulos.precio as costo,
+				  tc_mantic_articulos.menudeo as precio,
 				  tc_mantic_articulos.menudeo,
 				  tc_mantic_articulos.precio as original,
 				  tc_mantic_articulos.iva,
@@ -7667,6 +7670,7 @@
 				  tc_mantic_refacciones.fabricante,  
 				  tc_mantic_refacciones.nombre,
 				  tc_mantic_refacciones.nombre as descripcion,
+				  tc_mantic_refacciones.costo as costo,
 				  tc_mantic_refacciones.costo as precio,
 				  tc_mantic_refacciones.costo as menudeo,
 				  tc_mantic_refacciones.costo as original,
@@ -7691,6 +7695,7 @@
 				  ' ' as fabricante,  
 				  tc_mantic_encargos.nombre,
 				  tc_mantic_encargos.nombre as descripcion,
+				  tc_mantic_encargos.costo as costo,
 				  tc_mantic_encargos.costo as precio,
 				  tc_mantic_encargos.costo as menudeo,
 				  tc_mantic_encargos.costo as original,
@@ -7715,7 +7720,8 @@
 				  tc_mantic_articulos.fabricante,  
 				  tc_mantic_articulos.nombre,
 				  tc_mantic_articulos.descripcion,
-				  tc_mantic_articulos.precio,
+				  tc_mantic_articulos.precio as costo,
+				  tc_mantic_articulos.menudeo as precio,
 				  tc_mantic_articulos.menudeo,
 				  tc_mantic_articulos.precio as original,
 				  tc_mantic_articulos.iva,
@@ -7750,6 +7756,7 @@
 				  tc_mantic_refacciones.fabricante,  
 				  tc_mantic_refacciones.nombre,
 				  tc_mantic_refacciones.nombre as descripcion,
+				  tc_mantic_refacciones.costo as costo,
 				  tc_mantic_refacciones.costo as precio,
 				  tc_mantic_refacciones.costo as menudeo,
 				  tc_mantic_refacciones.costo as original,
@@ -7774,6 +7781,7 @@
 				  ' ' as fabricante,  
 				  tc_mantic_encargos.nombre,
 				  tc_mantic_encargos.nombre as descripcion,
+				  tc_mantic_encargos.costo as costo,
 				  tc_mantic_encargos.costo as precio,
 				  tc_mantic_encargos.costo as menudeo,
 				  tc_mantic_encargos.costo as original,
@@ -7798,7 +7806,8 @@
 				  tc_mantic_articulos.fabricante,  
 				  tc_mantic_articulos.nombre,
 				  tc_mantic_articulos.descripcion,
-				  tc_mantic_articulos.precio,
+				  tc_mantic_articulos.precio as costo,
+				  tc_mantic_articulos.menudeo as precio,
 				  tc_mantic_articulos.menudeo,
 				  tc_mantic_articulos.precio as original,
 				  tc_mantic_articulos.iva,

@@ -663,7 +663,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		  LOG.warn("El codigo propio esta vacio ["+ this.getNombre()+ "] corresponde a la orden de servicio");
 		return new TcManticServiciosDetallesDto(
 			this.getCodigo(), 
-			this.getCosto(), 
+			this.getPrecio(), 
 			this.getDescuento(), 
 			-1L, 
 			this.getImporte(), 
@@ -679,7 +679,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
       this.getIdComodin(),
       this.getIdAutomatico(),
       this.getSat(),
-      this.getDescuentos()
+      this.getDescuentos(),
+      this.getCosto()
 		);			
 	}
 

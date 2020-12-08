@@ -37,6 +37,7 @@ import mx.org.kaana.mantic.correos.beans.Attachment;
 import mx.org.kaana.mantic.correos.enums.ECorreos;
 import mx.org.kaana.mantic.correos.reglas.IBaseAttachment;
 import mx.org.kaana.mantic.db.dto.TcManticServiciosBitacoraDto;
+import mx.org.kaana.mantic.enums.EEstatusServicios;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoArticulo;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
@@ -266,9 +267,20 @@ public class Filtro extends Comun implements Serializable {
 			bitacora.setSeguimiento((String) this.attrs.get("justificacion"));
 			bitacora.setIdUsuario(JsfBase.getIdUsuario());
 			transaccion= new Transaccion(bitacora);
-			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
-				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
-			else
+			if(transaccion.ejecutar(EAccion.JUSTIFICAR)) {
+        switch(bitacora.getIdServicioEstatus().intValue()) {
+          case 4: // EEstatusServicios.EN_REPARACION
+    				JsfBase.addMessage("Orde de compra", "Se generó la orden de compra [".concat(transaccion.getOrdenCompra().getConsecutivo()).concat("] por un importe de $ ")+ transaccion.getOrdenCompra().getTotal(), ETipoMensaje.INFORMACION);
+            break;
+          case 8: // EEstatusServicios.EN_CAJA
+    				JsfBase.addMessage("Ticket venta", "Se generó el ticket de venta [".concat(transaccion.getVenta().getTicket()).concat("] por un importe de $ ")+ transaccion.getOrdenCompra().getTotal(), ETipoMensaje.INFORMACION);
+            break;
+          default:
+    				JsfBase.addMessage("Cambio estatus", "Se realizó el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
+            break;
+        } // switch 
+      }
+      else
 				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
@@ -547,4 +559,16 @@ public class Filtro extends Comun implements Serializable {
 		} // finally
 	}	// doSendmail  
 
+  public String doViewOrdenCompra() {
+		JsfBase.setFlashAttribute("idOrdenCompra", this.attrs.get("idOrdenCompra"));
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Taller/filtro");
+		return "/Paginas/Mantic/Compras/Ordenes/filtro".concat(Constantes.REDIRECIONAR);
+  } 
+  
+  public String doViewVenta() {
+		JsfBase.setFlashAttribute("idVenta", this.attrs.get("idVenta"));
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Taller/filtro");
+		return "/Paginas/Mantic/Ventas/accion".concat(Constantes.REDIRECIONAR);
+  } 
+  
 }

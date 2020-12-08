@@ -160,6 +160,7 @@ public final class Totales implements Serializable {
 		this.subTotal+= articulo.getSubTotal();		
 		this.total+= articulo.getImporte();
     this.cantidad+= articulo.getCantidad();
+		this.utilidad+= articulo.getSubTotal()- (articulo.getCosto()* articulo.getCantidad());
   	this.articulos+= 1;
 	}
 	

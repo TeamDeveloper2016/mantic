@@ -91,11 +91,11 @@
               </f:facet>
               <h:outputText value="#{row['consecutivo']}"/>
             </p:column>											
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.cliente}">
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.razonSocial}">
               <f:facet name="header">
                 <h:outputText value="Cliente"/>
               </f:facet>
-              <h:outputText value="#{row['cliente']}"/>
+              <h:outputText value="#{row['razonSocial']}"/>
             </p:column>					                                    
             <p:column class="janal-column-left MarAuto Responsive janal-wid-12" sortBy="#{row.herramienta}">
               <f:facet name="header">
@@ -132,7 +132,15 @@
                 <h:outputText value="Estimada"/>
               </f:facet>
               <h:outputText value="#{row['fechaEstimada']}"/>
-            </p:column>	                          			
+            </p:column>	            
+						<p:column styleClass="janal-column-icon">
+              <p:commandButton icon="fa fa-gg" title="Orde de compra" action="#{manticTallerFiltro.doViewOrdenCompra}" disabled="#{empty row.idOrdenCompra}">
+								<f:setPropertyActionListener value="#{row['idOrdenCompra']}" target="#{manticTallerFiltro.attrs.idOrdenCompra}" />
+							</p:commandButton>
+							<p:commandButton icon="fa fa-usd" title="Ticket venta" action="#{manticTallerFiltro.doViewVenta}" disabled="#{empty row.idVenta}">
+								<f:setPropertyActionListener value="#{row['idVenta']}" target="#{manticTallerFiltro.attrs.idVenta}" />
+							</p:commandButton>
+						</p:column>
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticTallerFiltro.lazyModel== null? 0: manticTallerFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>

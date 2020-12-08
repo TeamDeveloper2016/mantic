@@ -68,17 +68,20 @@ public class TcManticServiciosDetallesDto implements IBaseDto, Serializable {
   private String sat;
   @Column (name="descuentos")
   private Double descuentos;
+  private transient Double stock;
+  @Column (name="precio")
+  private Double precio;
 
   public TcManticServiciosDetallesDto() {
     this(new Long(-1L));
   }
 
   public TcManticServiciosDetallesDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, 1L, 2L, null, 0D);
+    this(null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, 1L, 2L, null, 0D, null);
     setKey(key);
   }
 
-  public TcManticServiciosDetallesDto(String codigo, Double costo, String descuento, Long idServicio, Double importe, String propio, Double iva, Long idUsuario, Double impuestos, Long idServicioDetalle, String concepto, Double subTotal, Double cantidad, Long idArticulo, Long idArticuloTipo, Long idValido, String sat, Double descuentos) {
+  public TcManticServiciosDetallesDto(String codigo, Double costo, String descuento, Long idServicio, Double importe, String propio, Double iva, Long idUsuario, Double impuestos, Long idServicioDetalle, String concepto, Double subTotal, Double cantidad, Long idArticulo, Long idArticuloTipo, Long idValido, String sat, Double descuentos, Double precio) {
     setCodigo(codigo);
     setCosto(costo);
     setDescuento(descuento);
@@ -98,6 +101,8 @@ public class TcManticServiciosDetallesDto implements IBaseDto, Serializable {
     this.idValido= idValido;
     this.sat= sat;
     this.descuentos= descuentos;
+    this.stock= 0D;
+    this.precio= precio;
   }
 	
   public void setCodigo(String codigo) {
@@ -253,6 +258,24 @@ public class TcManticServiciosDetallesDto implements IBaseDto, Serializable {
   }
 
   @Transient
+  public Double getStock() {
+    return stock;
+  }
+
+  @Transient
+  public void setStock(Double stock) {
+    this.stock = stock;
+  }
+
+  public Double getPrecio() {
+    return precio;
+  }
+
+  public void setPrecio(Double precio) {
+    this.precio = precio;
+  }
+
+  @Transient
   @Override
   public Long getKey() {
   	return getIdServicioDetalle();
@@ -304,6 +327,8 @@ public class TcManticServiciosDetallesDto implements IBaseDto, Serializable {
 		regresar.append(getSat());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDescuentos());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPrecio());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -330,13 +355,14 @@ public class TcManticServiciosDetallesDto implements IBaseDto, Serializable {
 		regresar.put("idValido", getIdValido());
 		regresar.put("sat", getSat());
 		regresar.put("descuentos", getDescuentos());
+		regresar.put("precio", getPrecio());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-      getCodigo(), getCosto(), getDescuento(), getIdServicio(), getImporte(), getRegistro(), getPropio(), getIva(), getIdUsuario(), getImpuestos(), getIdServicioDetalle(), getConcepto(), getSubTotal(), getCantidad(), getIdArticulo(), getIdArticuloTipo(), getIdValido(), getSat(), getDescuentos()
+      getCodigo(), getCosto(), getDescuento(), getIdServicio(), getImporte(), getRegistro(), getPropio(), getIva(), getIdUsuario(), getImpuestos(), getIdServicioDetalle(), getConcepto(), getSubTotal(), getCantidad(), getIdArticulo(), getIdArticuloTipo(), getIdValido(), getSat(), getDescuentos(), getPrecio()
     };
     return regresar;
   }

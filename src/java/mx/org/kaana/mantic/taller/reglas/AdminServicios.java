@@ -42,7 +42,7 @@ public final class AdminServicios extends IAdminArticulos  implements Serializab
         // ID_AUTOMATICO ALMACENA EL VALOR DE ID_VALIDO DONDE 1 EXISTE, 3 EXISTE PERO NO EXISTIA, 2 NO EXISTE, ID_COMODIN ALMACEN EL VALOR DE ID_ARTICULO_TIPO 
         if(this.getArticulos()!= null && !this.getArticulos().isEmpty())
           for (Articulo articulo: this.getArticulos()) {
-            if(articulo.getIdAutomatico()!= 0 && (Objects.equals(articulo.getIdAutomatico(), 1L) || Objects.equals(articulo.getIdAutomatico(), 3L))) {
+            if(Objects.equals(articulo.getIdAutomatico(), 1L) || Objects.equals(articulo.getIdAutomatico(), 3L)) {
               params.put("idAlmacen", Objects.equals(articulo.getIdComodin(), 1L)? JsfBase.getAutentifica().getEmpresa().getIdAlmacen(): orden.getIdAlmacen());
               params.put("idArticulo", articulo.getIdArticulo());
               Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
@@ -101,7 +101,7 @@ public final class AdminServicios extends IAdminArticulos  implements Serializab
 	
 	@Override
 	public Long getIdSinIva() {
-		return 1L;
+		return 2L;
 	}
 	
 	@Override

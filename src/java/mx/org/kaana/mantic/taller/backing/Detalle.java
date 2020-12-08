@@ -167,6 +167,8 @@ public class Detalle extends IBaseArticulos implements Serializable {
 				temporal.setNombre(articulo.toString("nombre"));
 				temporal.setValor(articulo.toDouble(this.getPrecio()));
 				temporal.setCosto(articulo.toDouble(this.getPrecio()));
+        if(articulo.containsKey("costo"))
+				  temporal.setPrecio(articulo.toDouble("costo"));
 				temporal.setIva(articulo.toDouble("iva"));
 				temporal.setSat(articulo.toString("sat"));
 				temporal.setDescuento(this.getAdminOrden().getDescuento());
