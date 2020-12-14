@@ -1039,7 +1039,7 @@ public class Transaccion extends IBaseTnx {
 							double iva  = Numero.getDouble(sheet.getCell(3, fila).getContents()!= null? sheet.getCell(3, fila).getContents().replaceAll("[$, ]", ""): "0", 16D);						
 							String nombre= new String(contenido.getBytes(ISO_8859_1), UTF_8);
 							if(costo > 0) {
-                // costo= Numero.toRedondear(costo- (costo* ((iva< 1? iva* 100: iva)/ 100)));
+                costo= Numero.toRedondear(costo- (costo* ((iva< 1? iva* 100: iva)/ 100)));
 								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim().toUpperCase();
 								TcManticEncargosDto servicio= this.toFindServicio(sesion, codigo);
 								if(servicio!= null) {
