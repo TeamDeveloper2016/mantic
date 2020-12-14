@@ -1367,14 +1367,14 @@
 		}, // readingMode
 		valueLastFocus: function(value) {
 			this.console('janal.valueLastFocus: '+ $(this.lastNameFocus).attr('id')+ ' => '+ value);
-			if($(this.lastNameFocus) && !$(this.lastNameFocus).is('[readonly="readonly"]'))	
+			if(janal.lastNameFocus!== null && $(this.lastNameFocus) && !$(this.lastNameFocus).is('[readonly="readonly"]'))	
 				$(this.lastNameFocus).val(value);
 			else
 				janal.console('janal.focus: '+ this.lastNameFocus+ ' esta de solo lectura ');
 		},
 		sendLastFocus: function() {
 			this.console('janal.sendLastFocus: '+ this.lastNameFocus);
-			if($(this.lastNameFocus)) {
+			if(this.lastNameFocus!== null && $(this.lastNameFocus)) {
 				this.idNameFocus= $(this.lastNameFocus).attr('id').replace(/:/gi, '\\:');
   			this.console('janal.sendLastFocus: '+ this.idNameFocus);
 				setTimeout("$('#'+ $janal.idNameFocus).focus();", 2000);

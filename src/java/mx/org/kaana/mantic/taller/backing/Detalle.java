@@ -48,19 +48,21 @@ public class Detalle extends IBaseArticulos implements Serializable {
   }
   
   public String getCatalogo() {
-    String regresar= null;
-    Integer opcion= (Integer)this.attrs.get("idArticuloTipo");    
-    switch (opcion) {
-      case 1:
-        regresar= "Articulos";
-        break;
-      case 2:
-        regresar= "Refacciones";
-        break;
-      case 3:
-        regresar= "Servicios";
-        break;
-    } // switch
+    String regresar= (String)this.attrs.get("catalogo");
+    if((Boolean)this.attrs.get("isCatalogo")) {
+      Integer opcion= (Integer)this.attrs.get("idArticuloTipo");    
+      switch (opcion) {
+        case 1:
+          regresar= "Articulos";
+          break;
+        case 2:
+          regresar= "Refacciones";
+          break;
+        case 3:
+          regresar= "Servicios";
+          break;
+      } // switch
+    } // if  
     return regresar;
   }
   
@@ -78,6 +80,7 @@ public class Detalle extends IBaseArticulos implements Serializable {
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("idArticuloTipo", 1);
 			this.attrs.put("catalogo", "Articulos");
+      this.attrs.put("isCatalogo", Boolean.TRUE);
 			this.doLoad();
     } // try
     catch (Exception e) {
@@ -308,6 +311,12 @@ public class Detalle extends IBaseArticulos implements Serializable {
   
   public void doBuscarCatalogo(String catalogo) {
     this.attrs.put("catalogo", catalogo);
+    this.attrs.put("isCatalogo", Boolean.FALSE);
   }
+
+  public void doCloseArticulos() {
+    this.attrs.put("catalogo", "Articulos");
+    this.attrs.put("isCatalogo", Boolean.TRUE);
+  }  
   
 }

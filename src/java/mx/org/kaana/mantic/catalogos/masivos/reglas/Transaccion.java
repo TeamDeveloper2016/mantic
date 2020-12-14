@@ -901,10 +901,11 @@ public class Transaccion extends IBaseTnx {
 							if(proveedor!= null && costo > 0) {
                 costo = Numero.toRedondear(costo- (costo* ((iva< 1? iva* 100: iva)/ 100)));
 								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim().toUpperCase();
-								TcManticRefaccionesDto refaccion= this.toFindRefaccion(sesion, codigo, 2L);
+								TcManticRefaccionesDto refaccion= this.toFindRefaccion(sesion, codigo, proveedor.getIdProveedor());
                 if(refaccion!= null) {
                   // si trae nulo, blanco o cero se respeta el valor que tiene el campo								
-                  refaccion.setCosto(costo);
+                  refaccion.setCosto(Numero.toRedondearSat(costo* 0.45));
+                  refaccion.setPrecio(Numero.toRedondearSat(costo));
                   if(!Cadena.isVacio(nombre))
                     refaccion.setNombre(nombre);
                   if(!Cadena.isVacio(herramienta))
@@ -1038,17 +1039,17 @@ public class Transaccion extends IBaseTnx {
 							double iva  = Numero.getDouble(sheet.getCell(3, fila).getContents()!= null? sheet.getCell(3, fila).getContents().replaceAll("[$, ]", ""): "0", 16D);						
 							String nombre= new String(contenido.getBytes(ISO_8859_1), UTF_8);
 							if(costo > 0) {
-                costo= Numero.toRedondear(costo- (costo* ((iva< 1? iva* 100: iva)/ 100)));
+                // costo= Numero.toRedondear(costo- (costo* ((iva< 1? iva* 100: iva)/ 100)));
 								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim().toUpperCase();
 								TcManticEncargosDto servicio= this.toFindServicio(sesion, codigo);
 								if(servicio!= null) {
-                  servicio.setCosto(costo);
+                  servicio.setCosto(0D);
+                  servicio.setPrecio(Numero.toRedondearSat(costo));
+                  servicio.setIva(iva<1? iva*100: iva);					
                   if(!Cadena.isVacio(nombre))
                     servicio.setNombre(nombre);
                   if(!Cadena.isVacio(linea))
                     servicio.setLinea(linea);
-                  if(iva!= 0D)
-                    servicio.setIva(iva<1? iva*100: iva);					
                   if(!Cadena.isVacio(sat))
                     servicio.setSat(sat);
                   servicio.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));

@@ -940,6 +940,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 					this.attrs.put("encontrado", new UISelectEntity(items.get(0)));
 			} // if
 		} // if
+    this.attrs.put("isCatalogo", Boolean.FALSE);
 	}
 
 	public void doDetailArticulo(Long idArticulo, Integer index) {

@@ -68,6 +68,7 @@
 			<pe:methodParam name="codigo"/>  
 		</pe:remoteCommand>		
 		<p:remoteCommand name="clean" actionListener="#{manticTallerDetalle.doCleanArticulos}" process="@this codigo" update="buscados localizado"/>
+		<p:remoteCommand name="close" actionListener="#{manticTallerDetalle.doCloseArticulos}" process="@this codigo" update="buscarCatalogo buscados localizado"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
@@ -101,7 +102,7 @@
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-12">
                     <p:selectOneRadio id="customBusquedaCatalogo" value="#{manticTallerDetalle.attrs.idArticuloTipo}" layout="custom" converter="javax.faces.Integer">
-												<p:ajax event="change" process="@this" update="@this buscarCatalogo"/>
+												<p:ajax event="change" process="@this" update="@this buscarCatalogo buscados localizado"/>
                         <f:selectItem itemLabel="Articulos" itemValue="1"/>
                         <f:selectItem itemLabel="Refacciones" itemValue="2" />
                         <f:selectItem itemLabel="Servicios" itemValue="3" />
@@ -145,7 +146,7 @@
 											<p:column  class="MarAuto Responsive janal-wid-13">
 												<f:facet name="header">
                           <p:selectBooleanCheckbox value="#{manticTallerDetalle.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
-														<p:ajax event="change" process="@this" update="@this"/>
+														<p:ajax event="change" process="@this" update="@this buscados localizado"/>
 													</p:selectBooleanCheckbox>
 													<h:outputText value="Código"/>
 													<span class="janal-help-icon janal-help-9 fa fa-fw fa-question-circle Fright" onclick="countHelp(9);"/>	
@@ -157,8 +158,8 @@
 													<div class="ui-grid-col-12">
   	 										  	<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
 														<p:inputText id="locks" value="0" style="display:none"/>
-														<p:autoComplete id="codigos" widgetVar="submenu" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticTallerDetalle.attrs.articulo}" completeMethod="#{manticTallerDetalle.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2"  maxResults="10">
-															<p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
+														<p:autoComplete id="codigos" widgetVar="submenu" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticTallerDetalle.attrs.articulo}" completeMethod="#{manticTallerDetalle.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10">
+                              <p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
 															<f:facet name="itemtip">
 																<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
 																	<f:facet name="header" class="TexAlCenter">
@@ -266,7 +267,7 @@
 				</div>
 			</div>
 		</div>		
-		<p:dialog id="buscarCatalogo" widgetVar="dialogo" header="[#{manticTallerDetalle.catalogo}] buscar:" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear(); janal.recover();" onShow="$('#codigo').val('');clean();" width="900px" height="470px" resizable="false" appendTo="@(body)">
+		<p:dialog id="buscarCatalogo" widgetVar="dialogo" header="[#{manticTallerDetalle.catalogo}] buscar:" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear(); janal.recover(); close();" onShow="$('#codigo').val('');clean();" width="900px" height="470px" resizable="false" appendTo="@(body)">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
 					<p:outputLabel for="codigo" value="[#{manticTallerDetalle.catalogo}] código o nombre:"/>
