@@ -7837,7 +7837,7 @@
 				  tc_mantic_articulos.iva,
           tc_mantic_articulos.sat,
           tc_mantic_articulos.id_redondear,
-				  tc_mantic_articulos_tipos.id_articulo_tipo is_articulo,
+				  tc_mantic_articulos.id_articulo_tipo is_articulo,
 				  tc_mantic_articulos_tipos.nombre as is_tipo
 				from 
 					tc_mantic_articulos
@@ -7845,6 +7845,8 @@
 					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
 				inner join 
 					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_articulos_tipos on tc_mantic_articulos.id_articulo_tipo = tc_mantic_articulos_tipos.id_articulo_tipo
 				where 
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and tc_mantic_articulos.id_articulo_tipo= {idArticuloTipo}
@@ -7923,7 +7925,7 @@
 				  tc_mantic_articulos.iva,
 				  tc_mantic_articulos.sat,
 				  tc_mantic_articulos.id_redondear,
-				  tc_mantic_articulos_tipos.id_articulo_tipo is_articulo,
+				  tc_mantic_articulos.id_articulo_tipo is_articulo,
 				  tc_mantic_articulos_tipos.nombre as is_tipo
 				from 
 					tc_mantic_articulos
@@ -7931,6 +7933,8 @@
 					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
 				inner join 
 					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_articulos_tipos on tc_mantic_articulos.id_articulo_tipo = tc_mantic_articulos_tipos.id_articulo_tipo
 				where 
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and tc_mantic_articulos.id_articulo_tipo= {idArticuloTipo}

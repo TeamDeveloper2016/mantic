@@ -886,26 +886,26 @@ public class Transaccion extends IBaseTnx {
 						if(sheet.getCell(0, fila)!= null && sheet.getCell(1, fila)!= null && sheet.getCell(3, fila)!= null && sheet.getCell(4, fila)!= null && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(1, fila).getContents()) && !Cadena.isVacio(sheet.getCell(3, fila).getContents()) && !Cadena.isVacio(sheet.getCell(4, fila).getContents())) {
 							String contenido= new String(sheet.getCell(1, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 							String texto    = new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
-              String sat      = sheet.getCell(5, fila).getContents()!= null? new String(sheet.getCell(5, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): "";
-							//  0      1         2         3        4   5   6       7
-							//CODIGO|NOMBRE|HERRAMIENTA|COSTO NETO|IVA|SAT|RFC|CLAVE PROVEEDOR
+              String sat      = sheet.getCell(6, fila).getContents()!= null? new String(sheet.getCell(6, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): "";
+							//  0      1         2         3        4         5   6   7      8
+							//CODIGO|NOMBRE|HERRAMIENTA|COSTO|PRECIO MENUDEO|IVA|SAT|RFC|CLAVE PROVEEDOR
 						  String codigo= new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 							codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim().toUpperCase();
-							double costo= Numero.getDouble(sheet.getCell(3, fila).getContents()!= null? sheet.getCell(3, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);						
-							double iva  = Numero.getDouble(sheet.getCell(4, fila).getContents()!= null? sheet.getCell(4, fila).getContents().replaceAll("[$, ]", ""): "0", 16D);						
+							double costo  = Numero.getDouble(sheet.getCell(3, fila).getContents()!= null? sheet.getCell(3, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);						
+							double menudeo= Numero.getDouble(sheet.getCell(4, fila).getContents()!= null? sheet.getCell(4, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);						
+							double iva  = Numero.getDouble(sheet.getCell(5, fila).getContents()!= null? sheet.getCell(5, fila).getContents().replaceAll("[$, ]", ""): "0", 16D);						
 							String nombre= new String(contenido.getBytes(ISO_8859_1), UTF_8);
 							String herramienta= new String(texto.getBytes(ISO_8859_1), UTF_8);
-              String rfc  = new String(sheet.getCell(6, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
-              String clave= new String(sheet.getCell(7, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+              String rfc  = new String(sheet.getCell(7, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+              String clave= new String(sheet.getCell(8, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
               TcManticProveedoresDto proveedor= this.toFindProveedor(sesion, rfc, clave);
-							if(proveedor!= null && costo > 0) {
-                costo = Numero.toRedondear(costo- (costo* ((iva< 1? iva* 100: iva)/ 100)));
+							if(proveedor!= null && costo> 0 && menudeo> 0) {
 								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim().toUpperCase();
 								TcManticRefaccionesDto refaccion= this.toFindRefaccion(sesion, codigo, proveedor.getIdProveedor());
                 if(refaccion!= null) {
                   // si trae nulo, blanco o cero se respeta el valor que tiene el campo								
-                  refaccion.setCosto(Numero.toRedondearSat(costo* 0.45));
-                  refaccion.setPrecio(Numero.toRedondearSat(costo));
+                  refaccion.setCosto(Numero.toRedondearSat(costo));
+                  refaccion.setPrecio(Numero.toRedondearSat(menudeo));
                   if(!Cadena.isVacio(nombre))
                     refaccion.setNombre(nombre);
                   if(!Cadena.isVacio(herramienta))
@@ -923,7 +923,7 @@ public class Transaccion extends IBaseTnx {
                     proveedor.getIdProveedor(), // Long idProveedor, 
                     codigo, // String codigo, 
                     herramienta, // String herramienta, 
-                    Numero.toRedondearSat(costo* 0.45), // Double costo, 
+                    Numero.toRedondearSat(costo), // Double costo, 
                     sat, // String sat, 
                     nombre, // String nombre, 
                     2L, // Long idDescontinuado, 
@@ -933,7 +933,7 @@ public class Transaccion extends IBaseTnx {
                     JsfBase.getIdUsuario(), // Long idUsuario, 
                     null, // String fabricante, 
                     1L, // Long idVigente
-                    Numero.toRedondearSat(costo) // precio      
+                    Numero.toRedondearSat(menudeo) // precio      
                   );
                   DaoFactory.getInstance().insert(sesion, refaccion);
                 } // else
@@ -1033,8 +1033,8 @@ public class Transaccion extends IBaseTnx {
 							String contenido= new String(sheet.getCell(1, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
               String sat      = sheet.getCell(4, fila).getContents()!= null? new String(sheet.getCell(4, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): "";
               String linea    = sheet.getCell(5, fila).getContents()!= null? new String(sheet.getCell(5, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1): "";
-							//  0      1         2      3   4    5
-							//CODIGO|NOMBRE|COSTO NETO|IVA|SAT|LINEA
+							//  0      1          2         3   4    5
+							//CODIGO|NOMBRE|PRECIO MENUDEO|IVA|SAT|LINEA
 							double costo= Numero.getDouble(sheet.getCell(2, fila).getContents()!= null? sheet.getCell(2, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);						
 							double iva  = Numero.getDouble(sheet.getCell(3, fila).getContents()!= null? sheet.getCell(3, fila).getContents().replaceAll("[$, ]", ""): "0", 16D);						
 							String nombre= new String(contenido.getBytes(ISO_8859_1), UTF_8);
