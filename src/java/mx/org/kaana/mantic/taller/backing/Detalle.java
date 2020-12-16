@@ -263,6 +263,7 @@ public class Detalle extends IBaseArticulos implements Serializable {
 				buscaPorCodigo= codigo.startsWith(".");
 				if(buscaPorCodigo)
 					codigo= codigo.trim().substring(1);
+				codigo= codigo.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
 			} // if	
 			else
 				codigo= "WXYZ";

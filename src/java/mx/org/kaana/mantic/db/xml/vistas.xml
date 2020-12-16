@@ -7765,7 +7765,7 @@
 				  and tc_mantic_articulos.id_articulo_tipo= {idArticuloTipo}
 				  and 
 				  (
-            upper(tc_mantic_articulos.nombre) like upper('{codigo}%')
+            upper(tc_mantic_articulos.nombre) regexp upper('.*{codigo}.*')
 				    or
 				    tc_mantic_articulos.id_articulo= {idArticulo}
           )
@@ -7793,7 +7793,7 @@
 					tc_mantic_refacciones
 				where 
 					tc_mantic_refacciones.id_empresa in ({sucursales})
-				  and upper(tc_mantic_refacciones.nombre) like upper('{codigo}%')
+				  and upper(tc_mantic_refacciones.nombre) regexp upper('.*{codigo}.*')
 				order by
 				  tc_mantic_refacciones.nombre			
 			</select>
@@ -7818,7 +7818,7 @@
 					tc_mantic_encargos
 				where 
 					tc_mantic_encargos.id_empresa in ({sucursales})
-				  and upper(tc_mantic_encargos.nombre) like upper('{codigo}%')
+				  and upper(tc_mantic_encargos.nombre) regexp upper('.*{codigo}.*')
 				order by
 				  tc_mantic_encargos.nombre		
 			</select>
