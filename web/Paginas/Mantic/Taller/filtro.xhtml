@@ -147,13 +147,13 @@
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
 						<p:menuitem id="modificar" action="#{manticTallerFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|3|4|', manticTallerFiltro.attrs.seleccionado.idServicioEstatus)}"/>					
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{fn:contains('|1|2|3|4|', manticTallerFiltro.attrs.seleccionado.idServicioEstatus)}"/>					
+            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="false"/>
             <p:menuitem id="consultar" action="#{manticTallerFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{manticTallerFiltro.doMovimientos}"/>
 						<p:separator rendered="#{!(manticTallerFiltro.attrs.seleccionado.estatus eq '6')}"/>
             <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticTallerFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticTallerFiltro.attrs.seleccionado.estatus eq '6' or manticTallerFiltro.attrs.seleccionado.estatus eq '10')}"/>
-						<p:separator rendered="#{fn:contains('|1|2|3|4|', manticTallerFiltro.attrs.seleccionado.idServicioEstatus)}"/>
-            <p:menuitem icon="fa fa-twitch" value="Refacciones" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();" process="@this tabla" action="#{manticTallerFiltro.doRefacciones}" rendered="#{fn:contains('|1|2|3|4|', manticTallerFiltro.attrs.seleccionado.idServicioEstatus)}"/> 
+						<p:separator rendered="#{fn:contains('|2|3|4|', manticTallerFiltro.attrs.seleccionado.idServicioEstatus)}"/>
+            <p:menuitem icon="fa fa-twitch" value="Refacciones" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();" process="@this tabla" action="#{manticTallerFiltro.doRefacciones}" rendered="#{fn:contains('|2|3|4|', manticTallerFiltro.attrs.seleccionado.idServicioEstatus)}"/> 
             <p:separator rendered="#{(manticTallerFiltro.attrs.seleccionado.idServicioEstatus eq '6')}"/>					
             <p:menuitem value="Pagar" action="#{manticTallerFiltro.doPagarServicio()}" icon="fa fa-money" title="Pagar" onstart="return janal.bloquear()" rendered="#{(manticTallerFiltro.attrs.seleccionado.idServicioEstatus eq '6' or manticTallerFiltro.attrs.seleccionado.idServicioEstatus eq '8' or manticTallerFiltro.attrs.seleccionado.idServicioEstatus eq '9')}"/>
             <p:separator rendered="#{fn:contains('|1|2|3|4|5|7|8|9|', manticTallerFiltro.attrs.seleccionado.idServicioEstatus)}"/>

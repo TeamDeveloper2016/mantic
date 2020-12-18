@@ -778,7 +778,7 @@
           tc_mantic_servicios_detalles.cantidad,
           tc_mantic_servicios_detalles.cantidad as cuantos,
           tc_mantic_servicios_detalles.cantidad as inicial,
-          tc_mantic_servicios_detalles.costo,
+          tc_mantic_servicios_detalles.precio as costo,
           tc_mantic_servicios_detalles.descuento,
           tc_mantic_servicios_detalles.iva,
           tc_mantic_servicios_detalles.impuestos,

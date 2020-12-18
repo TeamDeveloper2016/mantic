@@ -245,10 +245,7 @@ public class Filtro extends Comun implements Serializable {
       if(Objects.equals(seleccionado.toLong("idGarantia"), 1L) && Objects.equals(seleccionado.toLong("idServicioEstatus"), EEstatusServicios.REPARADO.getIdEstatusServicio()))
         params.put(Constantes.SQL_CONDICION, "id_servicio_estatus in ("+ EEstatusServicios.ENTREGADO.getIdEstatusServicio()+ ")");
       else
-        if(Objects.equals(seleccionado.toLong("idServicioEstatus"), EEstatusServicios.ELABORADA.getIdEstatusServicio()) && seleccionado.toLong("refacciones")<= 0)
-          params.put(Constantes.SQL_CONDICION, "id_servicio_estatus in (7)");
-        else
-          params.put(Constantes.SQL_CONDICION, "id_servicio_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
+        params.put(Constantes.SQL_CONDICION, "id_servicio_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
 			allEstatus= UISelect.build("TcManticServiciosEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatusAsigna", allEstatus);
 			this.attrs.put("estatusAsigna", allEstatus.get(0));

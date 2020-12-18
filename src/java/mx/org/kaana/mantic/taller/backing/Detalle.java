@@ -24,21 +24,35 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.taller.beans.Servicio;
-import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.taller.reglas.AdminServicios;
 import mx.org.kaana.mantic.taller.reglas.Transaccion;
+import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
+import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
+import org.primefaces.model.StreamedContent;
 
 
 @Named(value= "manticTallerDetalle")
 @ViewScoped
-public class Detalle extends IBaseArticulos implements Serializable {
+public class Detalle extends IBaseVenta implements Serializable {
 
   private static final long serialVersionUID= 327393488565639367L;
+	private static final String INDIVIDUAL    = "1";
+  
+	private StreamedContent image;
 	private EAccion accion;
 
+	public Detalle() {
+		super("menudeo", true);
+	}
+  
+	public StreamedContent getImage() {
+		return image;
+	}
+  
 	public String getAgregar() {
 		return this.accion.equals(EAccion.AGREGAR)? "none": "";
 	} // getAgregar
@@ -77,10 +91,17 @@ public class Detalle extends IBaseArticulos implements Serializable {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
-			this.attrs.put("buscaPorCodigo", false);
+      this.attrs.put("buscaPorCodigo", true);
 			this.attrs.put("idArticuloTipo", 1);
 			this.attrs.put("catalogo", "Articulos");
       this.attrs.put("isCatalogo", Boolean.TRUE);
+  		this.attrs.put("descuentoIndividual", 0);
+			this.attrs.put("descuentoGlobal", 0);
+  		this.attrs.put("isIndividual", true);
+			this.attrs.put("tipoDescuento", INDIVIDUAL);
+			this.attrs.put("descripcion", "Imagen no disponible");
+			this.image= LoadImages.getImage(-1L);
+      this.doActivarDescuento();
 			this.doLoad();
     } // try
     catch (Exception e) {
@@ -189,6 +210,8 @@ public class Detalle extends IBaseArticulos implements Serializable {
 				} // if	
 				UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.getKey()+ "');");
 				this.getAdminOrden().toCalculate();
+				this.attrs.put("decripcion", articulo.toString("nombre"));
+				this.image= LoadImages.getImage(articulo.toLong("idArticulo"));
 			} // if	
 			else
 				temporal.setNombre("<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
@@ -305,6 +328,7 @@ public class Detalle extends IBaseArticulos implements Serializable {
     return regresar;
   } // doAceptar
 
+  @Override
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idServicio", this.attrs.get("idServicio"));
     return (String) this.attrs.get("retorno");
@@ -319,5 +343,94 @@ public class Detalle extends IBaseArticulos implements Serializable {
     this.attrs.put("catalogo", "Articulos");
     this.attrs.put("isCatalogo", Boolean.TRUE);
   }  
+ 
+	@Override
+	public void doActivarDescuento() {
+		String tipoDescuento= null;		
+		try {
+			tipoDescuento= this.attrs.get("tipoDescuento").toString();
+			this.attrs.put("isIndividual", tipoDescuento.equals(INDIVIDUAL));
+			this.attrs.put(tipoDescuento.equals(INDIVIDUAL) ? "descuentoGlobal" : "descuentoIndividual", 0);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doActivarDescuento
+  
+	@Override
+	public void doAplicarDescuento(){
+		doAplicarDescuento(-1);
+	} // doAplicarDescuento
+
+  @Override
+	public void doAplicarDescuento(Integer index) {
+		Boolean isIndividual       = false;
+		CambioUsuario cambioUsuario= null;
+		String cuenta              = null;
+		String contrasenia         = null;
+		Double global              = 0D;
+		try {
+			if(!getAdminOrden().getArticulos().isEmpty()){
+				cuenta       = this.attrs.get("usuarioDescuento").toString();
+				contrasenia  = this.attrs.get("passwordDescuento").toString();
+				cambioUsuario= new CambioUsuario(cuenta, contrasenia);
+				if(cambioUsuario.validaPrivilegiosDescuentos()){
+					isIndividual= Boolean.valueOf(this.attrs.get("isIndividual").toString());
+					if(isIndividual) {
+						getAdminOrden().getArticulos().get(index).setDescuento(this.attrs.get("descuentoIndividual").toString());
+						if(getAdminOrden().getArticulos().get(index).autorizedDiscount())
+							UIBackingUtilities.execute("jsArticulos.divDiscount('".concat(this.attrs.get("descuentoIndividual").toString()).concat("');"));
+						else
+							JsfBase.addMessage("No es posble aplicar el descuento, el descuento es superior a la utilidad", ETipoMensaje.ERROR);
+					} // if
+          else {	
+						global= Double.valueOf(this.attrs.get("descuentoGlobal").toString());
+						getAdminOrden().toCalculate();
+						if(global < getAdminOrden().getTotales().getUtilidad()) {
+							getAdminOrden().getTotales().setGlobal(global);							
+							getAdminOrden().toCalculate();
+						} // if
+						else
+							JsfBase.addMessage("No es posble aplicar el descuento, el descuento es superior a la utilidad", ETipoMensaje.ERROR);
+					} // else
+				} // if
+				else
+					JsfBase.addMessage("El usuario no tiene privilegios o el usuario y la contraseña son incorrectos", ETipoMensaje.ERROR);
+			} // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		finally {
+			this.attrs.put("isIndividual", true);
+			this.attrs.put("descuentoIndividual", 0);
+			this.attrs.put("descuentoGlobal", 0);
+			this.attrs.put("tipoDescuento", INDIVIDUAL);
+			this.attrs.put("usuarioDescuento", "");
+			this.attrs.put("passwordDescuento", "");
+		} // finally
+	} // doAplicarDescuento	
+ 
+	public void doActualizaImage(String idImage, String descripcion) {		
+		try {
+			if(!Cadena.isVacio(descripcion))
+  			this.attrs.put("descripcion", descripcion);
+			if(!idImage.equals("-1")){
+				this.image= LoadImages.getImage(Long.valueOf(idImage));
+				this.attrs.put("imagePivote", idImage);
+			} // if
+			else if (getAdminOrden().getArticulos().isEmpty() || (getAdminOrden().getArticulos().size()== 1 && getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L)))
+				this.image= LoadImages.getImage(Long.valueOf(idImage));
+			else
+				this.image= LoadImages.getImage(Long.valueOf(this.attrs.get("imagePivote").toString()));
+			this.attrs.put("idArticulo", idImage);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doActualizaImage
   
 }
