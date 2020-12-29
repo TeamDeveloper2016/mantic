@@ -266,6 +266,7 @@ public class Filtro extends Comun implements Serializable {
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			bitacora= new TcManticServiciosBitacoraDto();
+      bitacora.setConsecutivo(seleccionado.toString("consecutivo"));
 			bitacora.setIdServicio(seleccionado.getKey());
 			bitacora.setIdServicioEstatus(Long.valueOf(this.attrs.get("estatusAsigna").toString()));
 			bitacora.setSeguimiento((String) this.attrs.get("justificacion"));
@@ -307,8 +308,9 @@ public class Filtro extends Comun implements Serializable {
 	}
 	
 	public String doRefacciones() {
-  	JsfBase.setFlashAttribute("accion", EAccion.MODIFICAR);		
-		JsfBase.setFlashAttribute(ETipoMovimiento.SERVICIOS.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
+    Entity seleccionado= (Entity)this.attrs.get("seleccionado");
+  	JsfBase.setFlashAttribute("accion", seleccionado.toLong("idServicioEstatus")> 4? EAccion.CONSULTAR: EAccion.MODIFICAR);		
+		JsfBase.setFlashAttribute(ETipoMovimiento.SERVICIOS.getIdKey(), seleccionado.getKey());
 		JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Taller/filtro");
 		return "/Paginas/Mantic/Taller/detalle".concat(Constantes.REDIRECIONAR);
 	}
@@ -574,6 +576,8 @@ public class Filtro extends Comun implements Serializable {
   
   public String doViewVenta() {
 		JsfBase.setFlashAttribute("idVenta", this.attrs.get("idVenta"));
+		JsfBase.setFlashAttribute("idCliente", this.attrs.get("idCliente"));
+		JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);
 		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Taller/filtro");
 		return "/Paginas/Mantic/Ventas/accion".concat(Constantes.REDIRECIONAR);
   } 

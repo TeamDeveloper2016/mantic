@@ -218,6 +218,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.registroServicio.setRegistrarCliente((Boolean)this.attrs.get("clienteRegistrado"));
       transaccion = new Transaccion(this.registroServicio);
       if (transaccion.ejecutar(this.accion)) {
+      	JsfBase.setFlashAttribute("idServicio", this.registroServicio.getServicio().getIdServicio());
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
         JsfBase.addMessage("Se registro el servicio de taller de forma correcta.", ETipoMensaje.INFORMACION);
       } // if
@@ -233,10 +234,11 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAccion
 
   public String doCancelar() {
+   	JsfBase.setFlashAttribute("idServicio", this.registroServicio!= null && this.registroServicio.getServicio()!= null? this.registroServicio.getServicio().getIdServicio(): null);
     return "filtro".concat(Constantes.REDIRECIONAR);
   } // doAccion  
 	
-	private void loadTiposMediosPagos(){
+	private void loadTiposMediosPagos() {
 		List<UISelectItem> medioPagos= null;
 		Map<String, Object>params    = null;
 		List<String> campos          = null;

@@ -484,17 +484,20 @@ public class Transaccion extends TransaccionFactura {
 		try {
 			params=new HashMap<>();
 			params.put("idServicio", servicio.getIdServicio());
-      // List<TcManticServiciosDetallesDto> items= (List<TcManticServiciosDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticServiciosDetallesDto.class, "TcManticServiciosDetallesDto", "catalogo", params);
       List<TcManticServiciosDetallesDto> items= (List<TcManticServiciosDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticServiciosDetallesDto.class, "TcManticServiciosDetallesDto", "detalle", params);
       for(TcManticServiciosDetallesDto item: items) {
-        if(Objects.equals(item.getIdValido(), 2L)) {
-          params.put("idArticuloTipo",item.getIdArticuloTipo());
+        if(!Objects.equals(item.getIdArticuloTipo(), 1L)) {
+          params.put("idArticuloTipo", item.getIdArticuloTipo());
           params.put("codigo", item.getCodigo());
           params.put("nombre", item.getConcepto());
-          TcManticArticulosDto articulo= null;
-          Value existe= (Value)DaoFactory.getInstance().toField("VistaTallerServiciosDto", "existe", params, "idArticulo");
-          if(existe!= null && existe.getData()!= null)
-            articulo= new TcManticArticulosDto(existe.toLong());
+          TcManticArticulosDto articulo= (TcManticArticulosDto)DaoFactory.getInstance().toEntity(sesion, TcManticArticulosDto.class, "VistaTallerServiciosDto", "existe", params);
+          if(articulo!= null) {
+            articulo.setPrecio(item.getCosto());
+            articulo.setMenudeo(item.getPrecio());
+            articulo.setMedioMayoreo(item.getPrecio());
+            articulo.setMayoreo(item.getPrecio());
+            DaoFactory.getInstance().update(sesion, articulo);
+          } // if  
           else {
             articulo= new TcManticArticulosDto(
               item.getConcepto(), // String descripcion, 
@@ -554,7 +557,8 @@ public class Transaccion extends TransaccionFactura {
           } // if  
           // ACTUALIZAR EL DETALLE DE LA ORDEN CON EL ID_ARTICULO
           item.setIdArticulo(articulo.getIdArticulo());
-          item.setIdValido(3L);
+          if(Objects.equals(item.getIdValido(), 2L))
+            item.setIdValido(3L);
           DaoFactory.getInstance().update(sesion, item);
         } // for
       } // if  

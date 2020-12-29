@@ -150,14 +150,15 @@ public class Detalle extends IBaseVenta implements Serializable {
             params.put("codigo", articulo.toString("propio"));
             params.put("nombre", articulo.toString("nombre"));
             if(articulo.toLong("idArticulo")== 0L) {
-              Value existe= (Value)DaoFactory.getInstance().toField("VistaTallerServiciosDto", "existe", params, "idArticulo");
+              Entity existe= (Entity)DaoFactory.getInstance().toEntity("VistaTallerServiciosDto", "existe", params);
               if(existe== null) {
                 articulo.put("idArticulo", new Value("idArticulo", new Random().nextLong()));
                 temporal.setIdAutomatico(2L);
               } // if
               else {
                 proceso= "TcManticInventariosDto";
-                articulo.put("idArticulo", new Value("idArticulo", existe.toLong()));
+                articulo.put("idArticulo", new Value("idArticulo", existe.toLong("idArticulo")));
+                // articulo.put("menudeo", new Value("menudeo", existe.toDouble("menudeo")));
               } // else  
             } // if  
             break;
@@ -168,14 +169,15 @@ public class Detalle extends IBaseVenta implements Serializable {
             params.put("codigo", articulo.toString("propio"));
             params.put("nombre", articulo.toString("nombre"));
             if(articulo.toLong("idArticulo")== 0L) {
-              Value existe= (Value)DaoFactory.getInstance().toField("VistaTallerServiciosDto", "existe", params, "idArticulo");
+              Entity existe= (Entity)DaoFactory.getInstance().toEntity("VistaTallerServiciosDto", "existe", params);
               if(existe== null) {
                 articulo.put("idArticulo", new Value("idArticulo", new Random().nextLong()));
                 temporal.setIdAutomatico(2L);
               } // if
               else {
                 proceso= "TcManticInventariosDto";
-                articulo.put("idArticulo", new Value("idArticulo", existe.toLong()));
+                articulo.put("idArticulo", new Value("idArticulo", existe.toLong("idArticulo")));
+                // articulo.put("menudeo", new Value("menudeo", existe.toDouble("menudeo")));
               } // else  
             } // if  
             break;

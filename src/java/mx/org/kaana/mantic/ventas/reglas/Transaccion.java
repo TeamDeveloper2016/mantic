@@ -215,7 +215,7 @@ public class Transaccion extends TransaccionFactura {
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 					else
 						regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
-					if(regresar){
+					if(regresar) {
 						regresar= registraBitacora(sesion, this.orden.getIdVenta(), this.orden.getIdVentaEstatus(), "Registro de venta express");
 						if(regresar && !this.aplicar)
 							registrarDeuda(sesion, this.orden.getTotal());
@@ -230,7 +230,7 @@ public class Transaccion extends TransaccionFactura {
 					boolean actualizar= this.orden.getIdVenta()!= null && !this.orden.getIdVenta().equals(-1L);
 					idEstatusVenta= accion.equals(EAccion.AGREGAR) ? EEstatusVentas.ABIERTA.getIdEstatusVenta() : (accion.equals(EAccion.DESACTIVAR) ? this.orden.getIdVentaEstatus() : idEstatusVenta);
 					regresar= actualizar ? actualizarVenta(sesion, idEstatusVenta) : registrarVenta(sesion, idEstatusVenta);					
-					if(!actualizar){
+					if(!actualizar) {
 						TcManticServiciosDto servicio= (TcManticServiciosDto) DaoFactory.getInstance().findById(sesion, TcManticServiciosDto.class, this.idServicio);
 						servicio.setIdVenta(this.orden.getIdVenta());
 						regresar= DaoFactory.getInstance().update(sesion, servicio)>= 1L;

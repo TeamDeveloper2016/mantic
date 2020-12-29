@@ -88,7 +88,7 @@ public abstract class IBaseCliente extends IBaseArticulos implements Serializabl
 			registroCliente= new TcManticClientesDto();
 			this.domicilio= new Domicilio();
 			this.attrs.put("registroCliente", registroCliente);
-      loadCollections();
+      this.loadCollections();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
