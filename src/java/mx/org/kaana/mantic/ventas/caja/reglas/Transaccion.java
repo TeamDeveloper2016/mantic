@@ -291,8 +291,10 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 				regresar= this.registrarFactura(sesion);
 			if(this.verificarCierreCaja(sesion)) {
 				if(this.registrarPagos(sesion)) {					
-					if(!this.ventaFinalizada.getTipoCuenta().equals(EEstatusVentas.APARTADOS.name()))
-						regresar= this.alterarStockArticulos(sesion, this.ventaFinalizada.getArticulos(), this.ventaFinalizada.getTicketVenta().getIdAlmacen(), true);
+					if(!this.ventaFinalizada.getTipoCuenta().equals(EEstatusVentas.APARTADOS.name())) {
+           // VERIFICAR SI ES UNA VENTA GENERADA POR UNA ORDEN DE SERVICIO, CABIAR EL ESTATUS Y AFECTAR EL ALMACEN DE LAS REFACCIONES
+           this.checkOrdenServicio(sesion);
+          } // if  
 				} // if
 			} // if
 			if(this.ventaFinalizada.getApartado())
@@ -1075,7 +1077,6 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		try {			
 			params= new HashMap<>();
 			for(Articulo articulo: articulos) {
-				stock= 0D;
 				if(articulo.isValid()) {
 					params.put(Constantes.SQL_CONDICION, "id_articulo="+ articulo.getIdArticulo()+ " and id_almacen="+ idAlmacen);
 					almacenArticulo= (TcManticAlmacenesArticulosDto) DaoFactory.getInstance().toEntity(sesion, TcManticAlmacenesArticulosDto.class, "TcManticAlmacenesArticulosDto", "row", params);
@@ -1086,7 +1087,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 					} // if
 					else{
 						stock= 0D;
-						regresar= this.generarAlmacenArticulo(sesion, articulo.getIdArticulo(), articulo.getCantidad());
+						regresar= this.generarAlmacenArticulo(sesion, idAlmacen, articulo.getIdArticulo(), articulo.getCantidad());
 					} // else					      
           if(movimiento)
 					  this.registrarMovimiento(sesion, idAlmacen, articulo.getCantidad(), articulo.getIdArticulo(), stock, this.ventaFinalizada.getTicketVenta().getIdUsuario());
@@ -1094,7 +1095,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 						articuloVenta= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, articulo.getIdArticulo());
 						articuloVenta.setStock(articuloVenta.getStock() - articulo.getCantidad());
 						if(DaoFactory.getInstance().update(sesion, articuloVenta)>= 1L)
-							regresar= this.actualizaInventario(sesion, articulo.getIdArticulo(), articulo.getCantidad());
+							regresar= this.actualizaInventario(sesion, idAlmacen, articulo.getIdArticulo(), articulo.getCantidad());
 					} // if
 					if(regresar)
 						count++;
@@ -1103,8 +1104,6 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 					count++;
 			} // for		
 			regresar= count== articulos.size();		
-      // VERIFICAR SI ES UNA VENTA GENERADA POR UNA ORDEN DE SERVICIO, CABIAR EL ESTATUS Y AFECTAR EL ALMACEN DE LAS REFACCIONES
-      this.checkOrdenServicio(sesion);
 		} // try		
 		finally{
 			Methods.clean(params);
@@ -1112,8 +1111,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		return regresar;
 	} // alterarStockArticulos
 
-	private void checkOrdenServicio(Session sesion) throws Exception {
-    Map<String, Object> params = null;
+	private boolean checkOrdenServicio(Session sesion) throws Exception {
+    boolean regresar          = false;
+    Map<String, Object> params= null;
     try {      
       params = new HashMap<>();      
 			params.put("idVenta", this.ventaFinalizada.getTicketVenta().getIdVenta());
@@ -1124,15 +1124,18 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			  params.put("idServicio", servicio.getIdServicio());
         // SON LOS ARTICULOS NORMALES DE LAS VENTAS
 			  params.put("idArticuloTipo", 1L);
-        List<Articulo> detalles= (List<Articulo>) DaoFactory.getInstance().toEntitySet(sesion, TcManticServiciosDetallesDto.class, "TcManticServiciosDetallesDto", "inventario", params);
-        if(detalles!= null && !detalles.isEmpty())
-          this.alterarStockArticulos(sesion, detalles, this.ventaFinalizada.getTicketVenta().getIdAlmacen(), false);
+        List<Articulo> articulos= (List<Articulo>) DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticServiciosDetallesDto", "inventario", params);
+        if(articulos!= null && !articulos.isEmpty())
+          this.alterarStockArticulos(sesion, articulos, this.ventaFinalizada.getTicketVenta().getIdAlmacen(), true);
         // SON LAS REFACCIONES QUE SE USARON EN LA ORDEN DE REPARACIÓN 
 			  params.put("idArticuloTipo", 2L);
-        detalles= (List<Articulo>) DaoFactory.getInstance().toEntitySet(sesion, TcManticServiciosDetallesDto.class, "TcManticServiciosDetallesDto", "inventario", params);
-        if(detalles!= null && !detalles.isEmpty())
-          this.alterarStockArticulos(sesion, detalles, servicio.getIdAlmacen(), false);
-      } // if  
+        List<Articulo> refacciones= (List<Articulo>) DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticServiciosDetallesDto", "inventario", params);
+        if(refacciones!= null && !refacciones.isEmpty())
+          this.alterarStockArticulos(sesion, refacciones, servicio.getIdAlmacen(), articulos== null || articulos.isEmpty());
+        regresar= true;
+      } // if
+      else
+        regresar= this.alterarStockArticulos(sesion, this.ventaFinalizada.getArticulos(), this.ventaFinalizada.getTicketVenta().getIdAlmacen(), true);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -1141,6 +1144,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
     finally {
       Methods.clean(params);
     } // finally
+    return regresar;
   }
   
 	private void registrarMovimiento(Session sesion, Long idAlmacen, Double cantidad, Long idArticulo, Double stock, Long idUsuario) throws Exception{
@@ -1160,11 +1164,11 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			DaoFactory.getInstance().insert(sesion, movimiento); 
 	} // registrarMovimiento
 	
-	private boolean generarAlmacenArticulo(Session sesion, Long idArticulo, Double cantidad) throws Exception{
+	private boolean generarAlmacenArticulo(Session sesion, Long idAlmacen, Long idArticulo, Double cantidad) throws Exception{
 		boolean regresar                             = false;
 		TcManticAlmacenesArticulosDto almacenArticulo= null;		
 		almacenArticulo= new TcManticAlmacenesArticulosDto();
-		almacenArticulo.setIdAlmacen(getOrden().getIdAlmacen());
+		almacenArticulo.setIdAlmacen(idAlmacen);
 		almacenArticulo.setIdArticulo(idArticulo);
 		almacenArticulo.setIdUsuario(JsfBase.getIdUsuario());
 		almacenArticulo.setMaximo(0D);
@@ -1201,13 +1205,13 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		return regresar;
 	} // toIdAlmacenUbicacion
 	
-	private boolean actualizaInventario(Session sesion, Long idArticulo, Double cantidad) throws Exception {
+	private boolean actualizaInventario(Session sesion, Long idAlmacen, Long idArticulo, Double cantidad) throws Exception {
 		boolean regresar                 = false;
 		TcManticInventariosDto inventario= null;
 		Map<String, Object>params        = null;
 		try {
 			params= new HashMap<>();
-			params.put("idAlmacen", getOrden().getIdAlmacen());
+			params.put("idAlmacen", idAlmacen);
 			params.put("idArticulo", idArticulo);
 			inventario= (TcManticInventariosDto) DaoFactory.getInstance().toEntity(sesion, TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
 			if(inventario!= null) {
@@ -1219,7 +1223,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 				inventario= new TcManticInventariosDto();
 				inventario.setEjercicio(Long.valueOf(Fecha.getAnioActual()));
 				inventario.setEntradas(0D);
-				inventario.setIdAlmacen(getOrden().getIdAlmacen());
+				inventario.setIdAlmacen(idAlmacen);
 				inventario.setIdArticulo(idArticulo);
 				inventario.setIdUsuario(JsfBase.getIdUsuario());
 				inventario.setInicial(0D);
