@@ -10,13 +10,13 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {        
-        'cliente'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'idEmpresa'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'consecutivo' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'dias'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'vencidos'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'fechaInicio' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'fechaTermino': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
+        cliente     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        idEmpresa   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        consecutivo : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        dias        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        vencidos    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        fechaInicio : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        fechaTermino: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}
       };		
 			
 			fieldsDialog ={
@@ -49,8 +49,8 @@
 							</p:selectOneMenu>
 							<p:outputLabel for="cliente" value="Cliente:"/>
 							<p:inputText id="cliente" value="#{manticCatalogosClientesCuentasPagos.attrs.cliente}" styleClass="janal-wid-100-txt" title="Código, RFC ó Razón social"/> 
-							<p:outputLabel for="consecutivo" value="No. ticket:"/>
-							<p:inputText id="consecutivo" value="#{manticCatalogosClientesCuentasPagos.attrs.ticket}" styleClass="janal-wid-100-txt janal-column-right"/> 
+							<p:outputLabel for="consecutivo" value="No ticket:"/>
+							<p:inputText id="consecutivo" value="#{manticCatalogosClientesCuentasPagos.attrs.consecutivo}" styleClass="janal-wid-100-txt janal-column-right"/> 
 							<p:outputLabel for="dias" value="Días vencidos:"/>
 							<p:inputText id="dias" value="#{manticCatalogosClientesCuentasPagos.attrs.dias}" styleClass="janal-wid-100-txt janal-column-right"/> 
 							<p:outputLabel for="vencidos" value="Vencidos:"/>

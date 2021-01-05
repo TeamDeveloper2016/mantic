@@ -886,7 +886,7 @@
            from
              tc_mantic_cierres_cajas
            where
-             tc_mantic_cierres_cajas.id_caja= 1
+             tc_mantic_cierres_cajas.id_caja= {idCaja}
             ) tc_mantic_maximo on tc_mantic_cierres_cajas.id_cierre= tc_mantic_maximo.id_cierre
         where
          tc_mantic_cierres_cajas.id_caja= {idCaja}
@@ -1135,7 +1135,7 @@
 				from(
 				select 
 					deducciones.*,	
-					(select if(importe is null, 0, importe) importe from tr_mantic_venta_medio_pago where id_venta=deducciones.id_venta and id_tipo_medio_pago != 1) deduccion
+					(select if(importe is null, 0, importe) importe from tr_mantic_venta_medio_pago where id_venta=deducciones.id_venta and id_tipo_medio_pago != 1 limit 0, 1) deduccion
 				from (
 				select							
 					tc_mantic_ventas.id_venta,
@@ -1356,7 +1356,7 @@
 				from(
 				select 
 					deducciones.*,	
-					(select if(importe is null, 0, importe) importe from tr_mantic_venta_medio_pago where id_venta=deducciones.id_venta and id_tipo_medio_pago != 1) deduccion
+					(select if(importe is null, 0, importe) importe from tr_mantic_venta_medio_pago where id_venta=deducciones.id_venta and id_tipo_medio_pago != 1 limit 0, 1) deduccion
 				from (
 				select							
 					tc_mantic_ventas.id_venta,

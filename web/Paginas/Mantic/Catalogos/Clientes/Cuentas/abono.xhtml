@@ -184,7 +184,7 @@
 							<p:outputLabel for="observacionesFile" value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
 							<p:inputTextarea id="observacionesFile" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesCuentasAbono.file.observaciones}"/>
 							<p:spacer height="5px"/>
-							<p:fileUpload fileUploadListener="#{manticCatalogosClientesCuentasAbono.doFileUpload}" 
+              <p:fileUpload fileUploadListener="#{manticCatalogosClientesCuentasAbono.doFileUpload}" 
 														mode="advanced" process="@this observacionesFile pagos" update="@(.importado)" label="Selecciona PDF/PNG/JPG" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
 														multiple="false" allowTypes="#{manticCatalogosClientesCuentasAbono.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 														invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosClientesCuentasAbono.attrs.formatos}"/>														

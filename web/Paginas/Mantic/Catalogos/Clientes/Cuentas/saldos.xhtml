@@ -62,7 +62,7 @@
 								</p:column>   
 							</p:selectOneMenu>
 							<p:outputLabel for="consecutivo" value="No. ticket:"/>
-							<p:inputText id="consecutivo" value="#{manticCatalogosClientesCuentasSaldos.attrs.ticket}" styleClass="janal-wid-100-txt janal-column-right"/> 
+							<p:inputText id="consecutivo" value="#{manticCatalogosClientesCuentasSaldos.attrs.consecutivo}" styleClass="janal-wid-100-txt janal-column-right"/> 
               <p:outputLabel for="razonSocial" value="Razón social:"/>
 							<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: ENVASES UNIVERSALES S.A." itemLabel="#{custom.clave}#{empty custom.clave? '': ' | '}#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosClientesCuentasSaldos.attrs.cliente}" completeMethod="#{manticCatalogosClientesCuentasSaldos.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 								<f:facet name="itemtip">
@@ -156,7 +156,7 @@
 							</f:facet>
 							<h:outputText value="#{row['abonado']}"/>
 						</p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.limiteCredito}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.limiteCredito}">
 							<f:facet name="header">
 								<h:outputText value="Crédito" title="Limite de crédito"/>
 							</f:facet>
