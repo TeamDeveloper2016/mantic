@@ -72,7 +72,7 @@ public class Autorizar extends IBaseArticulos implements Serializable {
   protected void init() {
     try {
 			this.casoCero= new ArrayList<>();
-			this.casoCero.add(new UISelectEntity(new Entity(4L, "AFECTAR AMBOS"))); // 5
+			this.casoCero.add(new UISelectEntity(new Entity(5L, "AFECTAR AMBOS"))); // 5
 			this.casoUno= new ArrayList<>();
 			this.casoUno.add(new UISelectEntity(new Entity(0L, "SELECCIONE")));
 			this.casoUno.add(new UISelectEntity(new Entity(1L, "IGNORAR CAMBIOS")));
@@ -145,7 +145,7 @@ public class Autorizar extends IBaseArticulos implements Serializable {
 	}
 
 	public String doOrdenColor(Articulo row) {
-		this.doPrepareItems(row);
+		// this.doPrepareItems(row);
 		return row.getInicial()!= 0D && !row.getObservacion().equals("*")? "janal-tr-diferencias": row.getObservacion().equals("*")? "janal-tr-nuevo": "";
 	} 
 	
@@ -154,28 +154,27 @@ public class Autorizar extends IBaseArticulos implements Serializable {
 		String regresar        = null;		
 		try {
 			transaccion = new Transaccion((TcManticConfrontasDto)this.getAdminOrden().getOrden(), this.getAdminOrden().getArticulos());
-			for (Articulo articulo : this.getAdminOrden().getArticulos()) {
-				this.doPrepareItems(articulo);
+			for (Articulo articulo: this.getAdminOrden().getArticulos()) {
+//				this.doPrepareItems(articulo);
   		  articulo.setIdRedondear(articulo.getIdAplicar());
-				switch(this.typeOfCase) {
-					 case 0:
-             break;
-					 case 1:
-						 break;
-					 case 2:
-						 if(articulo.getIdAplicar()> 1L)
-						   articulo.setIdRedondear(articulo.getIdAplicar()+ 1L);
-						 break;
-					 case 3:
-						 if(articulo.getIdAplicar()> 1L)
-						   articulo.setIdRedondear(articulo.getIdAplicar()+ 4L);
-						 break;
-				 } // switch				
-//				LOG.info("idAplicar: "+ articulo.getIdAplicar()+ " =>  "+ articulo.getIdRedondear());
+//				switch(this.typeOfCase) {
+//					 case 0:
+//             break;
+//					 case 1:
+//						 break;
+//					 case 2:
+//						 if(articulo.getIdAplicar()> 1L)
+//						   articulo.setIdRedondear(articulo.getIdAplicar()+ 1L);
+//						 break;
+//					 case 3:
+//						 if(articulo.getIdAplicar()> 1L)
+//						   articulo.setIdRedondear(articulo.getIdAplicar()+ 4L);
+//						 break;
+//				 } // switch				
 			} // for 
 			if(transaccion.ejecutar(this.accion)) {
  			  UIBackingUtilities.execute("janal.back(' autoriz\\u00F3 la confronta ', '"+ ((Confronta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-  			JsfBase.setFlashAttribute("IdConfronta", ((Confronta)this.getAdminOrden().getOrden()).getIdConfronta());
+  			JsfBase.setFlashAttribute("idConfronta", ((Confronta)this.getAdminOrden().getOrden()).getIdConfronta());
   		  regresar = ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
 			} // if
 			else 

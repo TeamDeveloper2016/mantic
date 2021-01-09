@@ -63,6 +63,63 @@ public abstract class ComunInventarios extends IBaseTnx {
 		this.toMovimientosAlmacenDestino(sesion, consecutivo, idDestino, articulo, umbrales, articulo.getCantidad());
 	}
 	
+	protected void toAutorizarAlmacenOrigen(Session sesion, String consecutivo, Long idAlmacen, Articulo articulo, TcManticArticulosDto umbrales, Long idTransferenciaEstatus) throws Exception {
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			//Afectar el almacen original restando los articulos que fueron extraidos
+			params.put("idAlmacen", idAlmacen);
+			params.put("idArticulo", articulo.getIdArticulo());
+			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
+			if(inventario== null)
+			  inventario= this.toCreateInvetario(sesion, articulo, idAlmacen, false);
+			else {
+   			// si el estatus es el de cancelar entonces hacer los movimientos inversos al traspaso
+  			if(idTransferenciaEstatus.intValue()== 4) 
+	  			inventario.setSalidas(Numero.toRedondearSat(inventario.getSalidas()- articulo.getSolicitados()));
+				else 
+          if(articulo.getCuantos()> 0) 
+	  			  inventario.setSalidas(Numero.toRedondearSat(inventario.getSalidas()+ articulo.getCantidad()));
+          else
+	  			  inventario.setSalidas(Numero.toRedondearSat(inventario.getSalidas()- articulo.getCantidad()));
+				// ajustar el stock del inventrio del almacen origen con el nuevo valor
+	  		inventario.setStock(Numero.toRedondearSat(Math.abs(inventario.getInicial()+ inventario.getEntradas())- inventario.getSalidas()));
+  			DaoFactory.getInstance().update(sesion, inventario);
+			} // if
+      
+			TcManticAlmacenesArticulosDto origen= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findIdentically(TcManticAlmacenesArticulosDto.class, params);
+			if(origen== null) 
+				origen= this.toCreateAlmacenArticulo(sesion, articulo, idAlmacen, umbrales);
+      origen.setStock(inventario.getStock());
+			DaoFactory.getInstance().update(sesion, origen);
+
+			// generar un registro en la bitacora de movimientos de los articulos 
+			TcManticMovimientosDto movimiento= new TcManticMovimientosDto(
+			  consecutivo, // String consecutivo, 
+				4L, // Long idTipoMovimiento, 
+				JsfBase.getIdUsuario(), // Long idUsuario, 
+				idAlmacen, // Long idAlmacen, 
+				-1L, // Long idMovimiento, 
+				articulo.getCantidad()* -1, // Double cantidad, 
+				articulo.getIdArticulo(), // Long idArticulo, 
+				origen.getStock(), // Double stock, 
+				Numero.toRedondearSat(origen.getStock()- articulo.getCantidad()), // Double calculo
+				null // String observaciones
+		  );
+			if(idTransferenciaEstatus.intValue()== 4) {
+        movimiento.setCantidad(articulo.getCantidad());
+				movimiento.setObservaciones("SE CANCELO LA TRANSFERENCIA");
+			} // if
+			DaoFactory.getInstance().insert(sesion, movimiento);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
+  
 	protected void toMovimientosAlmacenOrigen(Session sesion, String consecutivo, Long idAlmacen, Articulo articulo, TcManticArticulosDto umbrales, Long idTransferenciaEstatus) throws Exception {
 		Map<String, Object> params= null;
 		try {

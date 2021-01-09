@@ -256,8 +256,11 @@ public class Transaccion extends ComunInventarios {
 						// this.toMarkFaltantes(sesion, articulo);
 						break;
 					case 5: // AFECTAR AMBOS
-						this.toMovimientosAlmacenOrigen( sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdAlmacen(), articulo, umbrales, this.transferencia.getIdTransferenciaEstatus());
-						this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
+						this.toAutorizarAlmacenOrigen(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdAlmacen(), articulo, umbrales, this.transferencia.getIdTransferenciaEstatus());
+            if(articulo.getCuantos()> 0)
+              articulo.setCantidad(diferencia);
+            if(diferencia!= 0) 
+						  this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
 						this.toMarkFaltantes(sesion, articulo);
 						break;
 					case 6: // REGRESAR ORIGEN
@@ -270,6 +273,7 @@ public class Transaccion extends ComunInventarios {
 				} // switch
 				articulo.setCantidad(diferencia);
 			} // for
+//      throw new RuntimeException("Estoy probando que este bien este proceso.");
 		} // try
    	catch (Exception e) {
 			throw e;
