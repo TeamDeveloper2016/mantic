@@ -150,6 +150,7 @@ public class Transaccion extends ComunInventarios {
 			else
   			if(EAccion.REGISTRAR.equals(accion)) {
 					TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
+          articulo.setSolicitados(articulo.getCantidad());
 					switch(this.idTransferenciaEstatus.intValue()) {
 						case 3: // TRANSITO
     					this.toMovimientosAlmacenOrigen(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), articulo, umbrales, this.idTransferenciaEstatus);

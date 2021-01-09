@@ -25,7 +25,7 @@
 				background-color: #ABEBC6 !important;
 			}
 			.janal-tr-nuevo {
-				background-color: #FDF5EF !important;
+				background-color: #FFC5AE !important;
 			}
 			.janal-tr-error {
 				background-color: #FF7F50 !important;
@@ -81,12 +81,12 @@
 										</f:facet>
 										<h:outputText value="#{row['nombre']}"/>
 									</p:column>		
-									<p:column class="janal-column-right MarAuto Responsive janal-wid-10 janal-font-bold">
-										<f:facet name="header">
-											<h:outputText value="Recibierón"/>
-										</f:facet>
-										<h:outputText value="#{row['cantidad']}"/>
-									</p:column>		
+                  <p:column class="costos janal-column-right MarAuto Responsive janal-wid-12">
+                    <f:facet name="header">
+                      <h:outputText value="Stock origen"/>
+                    </f:facet>
+                    <p:outputLabel value="(#{row['stock']}) afectar[#{row['cuantos'] gt 0? '-': '+'}#{row['cuantos'] lt 0? row['cuantos']*-1: row['cuantos']}]" styleClass="filas"/>
+                  </p:column>	
 									<p:column class="janal-column-right MarAuto Responsive janal-wid-10 janal-font-bold">
 										<f:facet name="header">
 											<h:outputText value="Solicitarón"/>
@@ -95,25 +95,27 @@
 									</p:column>		
 									<p:column class="janal-column-right MarAuto Responsive janal-wid-10 janal-font-bold">
 										<f:facet name="header">
+											<h:outputText value="Recibierón"/>
+										</f:facet>
+										<h:outputText value="#{row['cantidad']}"/>
+									</p:column>		
+									<p:column class="janal-column-right MarAuto Responsive janal-wid-10 janal-font-bold">
+										<f:facet name="header">
 											<h:outputText value="Diferencia"/>
 										</f:facet>
 										<h:outputText value="#{row['cuantos']}"/>
 									</p:column>		
-									<p:column class="MarAuto Responsive janal-wid-15 janal-column-center aplicar">
+									<p:column class="MarAuto Responsive janal-wid-12 janal-column-center aplicar">
 										<f:facet name="header">
 											<h:outputText value="Aplicar"/>
 										</f:facet>
-										<p:selectOneMenu id="aplicar" value="#{row.ikAplicar}" converter="janal.convertidor.Entity" styleClass="janal-wid-88 filas janal-name-La_fila_#{index+ 1}">
+										<p:selectOneMenu id="aplicar" value="#{row.ikAplicar}" converter="janal.convertidor.Entity" styleClass="janal-wid-86 filas janal-name-La_fila_#{index+ 1}">
 											<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasAutorizar.items}" var="element" itemValue="#{element}" itemLabel="#{element.label}"/>
 										</p:selectOneMenu>	
 									</p:column>		
  								</p:dataTable>
 							</p:panelGrid>	
-							<p:outputLabel value="Las filas que estan en color naranja son articulos no solicitados en la transferencia, los de color verde son articulos que difieren en su cantidad" style="float: left;"/><br/>
-							<p:outputLabel value="&lt;span class='janal-color-red janal-font-bold'&gt;Ignorar cambios:&lt;/&gt; Las diferencias no afecta a ningun almacen" style="float: left;" escape="true"/><br/>
-							<p:outputLabel value="&lt;span class='janal-color-red janal-font-bold'&gt;Afectar origen:&lt;/&gt;Las diferencias solo afectan el almacen fuente u origen y se ignora el almacen destino" style="float: left;" escape="true"/><br/>
-							<p:outputLabel value="&lt;span class='janal-color-red janal-font-bold'&gt;Afectar destino:&lt;/&gt;Las diferencias solo afectan al almacen destino y se ignora el almacen origen" style="float: left;" escape="true"/><br/>
-							<p:outputLabel value="&lt;span class='janal-color-red janal-font-bold'&gt;Afectar ambos:&lt;/&gt;Las diferencias afectan al almacen destino y origen" style="float: left;" escape="true"/>
+							<p:outputLabel value="Las filas que estan en color naranja son articulos no solicitados en la transferencia, los de color verde son articulos que difieren en su cantidad" style="float: left;" escape="false"/>
 						</p:tab>
 					</p:tabView>	
 				</div>

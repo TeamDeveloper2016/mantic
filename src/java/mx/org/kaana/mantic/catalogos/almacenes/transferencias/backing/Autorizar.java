@@ -43,6 +43,7 @@ public class Autorizar extends IBaseArticulos implements Serializable {
 	
 	private int typeOfCase;
 	private EAccion accion;
+	private List<UISelectEntity> casoCero;
 	private List<UISelectEntity> casoUno;
 	private List<UISelectEntity> casoDos;
 	private List<UISelectEntity> casoTres;
@@ -50,6 +51,9 @@ public class Autorizar extends IBaseArticulos implements Serializable {
 	public List<UISelectEntity> getItems() {
 		List<UISelectEntity> regresar= casoUno;
 		switch(this.typeOfCase) {
+			case 0:
+				regresar= casoCero;
+				break;
 			case 1:
 				regresar= casoUno;
 				break;
@@ -67,6 +71,8 @@ public class Autorizar extends IBaseArticulos implements Serializable {
   @Override
   protected void init() {
     try {
+			this.casoCero= new ArrayList<>();
+			this.casoCero.add(new UISelectEntity(new Entity(4L, "AFECTAR AMBOS"))); // 5
 			this.casoUno= new ArrayList<>();
 			this.casoUno.add(new UISelectEntity(new Entity(0L, "SELECCIONE")));
 			this.casoUno.add(new UISelectEntity(new Entity(1L, "IGNORAR CAMBIOS")));
@@ -82,7 +88,8 @@ public class Autorizar extends IBaseArticulos implements Serializable {
 			this.casoTres.add(new UISelectEntity(new Entity(1L, "IGNORAR CAMBIOS"))); // 1 
 			this.casoTres.add(new UISelectEntity(new Entity(2L, "REGRESAR ORIGEN"))); // 6
 			this.casoTres.add(new UISelectEntity(new Entity(3L, "SUMAR DESTINO"))); // 7
-			this.typeOfCase= 1;
+			//this.typeOfCase= 1;
+			this.typeOfCase= 0;
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.CALCULAR: (EAccion)JsfBase.getFlashAttribute("accion");
 			this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
       this.attrs.put("idConfronta", JsfBase.getFlashAttribute("idConfronta")== null? -1L: JsfBase.getFlashAttribute("idConfronta"));
@@ -151,6 +158,8 @@ public class Autorizar extends IBaseArticulos implements Serializable {
 				this.doPrepareItems(articulo);
   		  articulo.setIdRedondear(articulo.getIdAplicar());
 				switch(this.typeOfCase) {
+					 case 0:
+             break;
 					 case 1:
 						 break;
 					 case 2:
@@ -180,13 +189,13 @@ public class Autorizar extends IBaseArticulos implements Serializable {
 	}	
 	
 	public void doPrepareItems(Articulo row) {
-		if(row.getObservacion().equals("*"))
-			this.typeOfCase= 1;
-		else
-			if(row.getCuantos()!= 0D && row.getCantidad()!= 0D)
-  			this.typeOfCase= 2;
-		  else
-  			this.typeOfCase= 3;
+//		if(row.getObservacion().equals("*"))
+//			this.typeOfCase= 1;
+//		else
+//			if(row.getCuantos()!= 0D && row.getCantidad()!= 0D)
+//  			this.typeOfCase= 2;
+//		  else
+//  			this.typeOfCase= 3;
 	}	
 	
 }

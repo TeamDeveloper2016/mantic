@@ -46,7 +46,6 @@ import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
-
 @Named(value= "manticCatalogosAlmacenesConfrontasAccion")
 @ViewScoped
 public class Accion extends IBaseArticulos implements IBaseStorage, Serializable {
@@ -354,6 +353,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		int position= articulos.indexOf((UISelectEntity)this.attrs.get("articulo"));
 		if(position>= 0)
       this.attrs.put("seleccionado", articulos.get(position));
+ 		this.doFilterRows();
 	}
 
 	@Override

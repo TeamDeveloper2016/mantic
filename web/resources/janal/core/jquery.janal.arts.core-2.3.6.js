@@ -1010,7 +1010,7 @@
 		},
 		process: function(paginator) {
 			this.paginator= paginator;
-			janal.console('jsArticulos.process: ');
+			janal.console('jsArticulos.process: '+ paginator);
 			janal.refresh();
 			janal.desbloquear(); 
 			PF('listado').hide();

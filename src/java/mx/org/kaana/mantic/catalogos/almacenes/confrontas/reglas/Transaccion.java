@@ -246,26 +246,26 @@ public class Transaccion extends ComunInventarios {
 					case 1: // IGNORAR CAMBIOS
 						break;
 					case 2: // RESTAR ORIGEN
-						this.toMovimientosAlmacenOrigen(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdAlmacen(), articulo, umbrales, this.transferencia.getIdTransferenciaEstatus());
+						// this.toMovimientosAlmacenOrigen(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdAlmacen(), articulo, umbrales, this.transferencia.getIdTransferenciaEstatus());
 						break;
 					case 3: // AFECTAR ORIGEN
-						this.toMovimientosAlmacenOrigen(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdAlmacen(), articulo, umbrales, this.transferencia.getIdTransferenciaEstatus());
+						// this.toMovimientosAlmacenOrigen(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdAlmacen(), articulo, umbrales, this.transferencia.getIdTransferenciaEstatus());
 						break;
 					case 4: // AFECTAR DESTINO
-						this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
-						this.toMarkFaltantes(sesion, articulo);
+						// this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
+						// this.toMarkFaltantes(sesion, articulo);
 						break;
 					case 5: // AFECTAR AMBOS
-						this.toMovimientosAlmacenOrigen(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdAlmacen(), articulo, umbrales, this.transferencia.getIdTransferenciaEstatus());
+						this.toMovimientosAlmacenOrigen( sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdAlmacen(), articulo, umbrales, this.transferencia.getIdTransferenciaEstatus());
 						this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
 						this.toMarkFaltantes(sesion, articulo);
 						break;
 					case 6: // REGRESAR ORIGEN
-						this.toMovimientosAlmacenOrigen(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdAlmacen(), articulo, umbrales, 4L);
+						// this.toMovimientosAlmacenOrigen(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdAlmacen(), articulo, umbrales, 4L);
 						break;
 					case 7: // SUMAR DESTINO
-						this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
-						this.toMarkFaltantes(sesion, articulo);
+						// this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
+						// this.toMarkFaltantes(sesion, articulo);
 						break;
 				} // switch
 				articulo.setCantidad(diferencia);

@@ -63,7 +63,7 @@
       $control.console('Janal.Control.Function.init');
       if(typeof(root)!== 'undefined')
         this.root   = root;
-      $control.load(0, ['/resources/janal/core/jquery.shortcut.core.0.4.1.js','/resources/janal/core/jquery.janal.sticky.min-1.0.0.js','/resources/janal/js/jquery.janal.menu-2.0.1.js','/resources/janal/core/jquery.longclick-1.0.0.js', '/resources/janal/core/jquery.validate.min-1.15.0.js', '/resources/janal/core/jquery.meio.mask.min-1.1.15.js', '/resources/janal/core/jquery.janal.fns-1.4.8.js']);
+      $control.load(0, ['/resources/janal/core/jquery.shortcut.core.0.4.2.js','/resources/janal/core/jquery.janal.sticky.min-1.0.0.js','/resources/janal/js/jquery.janal.menu-2.0.1.js','/resources/janal/core/jquery.longclick-1.0.0.js', '/resources/janal/core/jquery.validate.min-1.15.0.js', '/resources/janal/core/jquery.meio.mask.min-1.1.15.js', '/resources/janal/core/jquery.janal.fns-1.4.8.js']);
       $control.console('Janal.Control.Function.init resource loaded');
     },
     dateFormat: function(format) {
@@ -1275,7 +1275,7 @@
 			alert(msg);
     }, // alert
     version: function() {
-      return '0.3.4.1';
+      return '0.3.4.6';
     }, // version
     align: function(pixels) {
       try {

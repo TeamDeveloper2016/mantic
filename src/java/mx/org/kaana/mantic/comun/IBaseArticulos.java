@@ -320,6 +320,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			UIBackingUtilities.execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
 			//if(this instanceof IBaseStorage)
 			//	((IBaseStorage)this).toSaveRecord();
+      this.doFilterRows();
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);

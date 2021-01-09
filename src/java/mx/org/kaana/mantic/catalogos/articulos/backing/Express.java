@@ -141,7 +141,9 @@ public class Express extends IBaseAttribute implements Serializable {
 			this.registroArticulo.getArticulo().setIdRedondear(this.attrs.get("redondearExpress")!= null && (boolean)this.attrs.get("redondearExpress")? 1L: 2L);
 			this.registroArticulo.getArticulo().setLimiteMayoreo(20D);
 			this.registroArticulo.getArticulo().setLimiteMedioMayoreo(10D);			
-			this.registroArticulo.getArticulo().setIdVigente(1L);					
+			this.registroArticulo.getArticulo().setIdVigente(1L);		
+      if(Cadena.isVacio(this.registroArticulo.getArticulo().getSat()))
+        this.registroArticulo.getArticulo().setSat(Constantes.CODIGO_SAT);
 		} // try
 		catch (Exception e) {			
 			throw e;

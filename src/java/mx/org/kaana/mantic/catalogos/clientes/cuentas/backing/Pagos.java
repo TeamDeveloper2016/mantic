@@ -68,7 +68,7 @@ public class Pagos extends IBaseFilter implements Serializable {
 	  Map<String, Object> params= null;	
     List<Columna> columns     = null;
     try {			
-  	  params = toPrepare();	
+  	  params = this.toPrepare();	
 			params.put("cliente", this.attrs.get("cliente"));			
       columns = new ArrayList<>();
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      

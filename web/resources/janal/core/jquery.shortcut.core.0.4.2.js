@@ -412,12 +412,14 @@ shortcut.add("Shift+P", function() {
 
 shortcut.add("minus", function() {
 	janal.console('Shortcut finalizar cobro venta:');	
-	if(PF('contenedorCaja').getActiveIndex()=== 1 && ((janal.session() && PF('wAceptarCompra') && $('#' + PF('wAceptarCompra').id).css('display')!== 'none') || (PF('wAceptarCompraIcon') && $('#' + PF('wAceptarCompraIcon').id).css('display')!== 'none'))) {
-	  $('#' + ((PF('wAceptarCompra') && $('#' + PF('wAceptarCompra').id).css('display')!== 'none') ? 'aceptar' : 'aceptarIcon')).click();
-	} // if
-	else if((PF('wAceptarCotizacion') && $('#' + PF('wAceptarCotizacion').id).css('display')!== 'none') || (PF('wAceptarCotizacionIcon') && $('#' + PF('wAceptarCotizacionIcon').id).css('display')!== 'none')) {
-		cleanSelection();		
-	} // else if
+  if(janal.session() && PF('contenedorCaja')) {
+    if(PF('contenedorCaja').getActiveIndex()=== 1 && ((janal.session() && PF('wAceptarCompra') && $('#' + PF('wAceptarCompra').id).css('display')!== 'none') || (PF('wAceptarCompraIcon') && $('#' + PF('wAceptarCompraIcon').id).css('display')!== 'none'))) {
+      $('#' + ((PF('wAceptarCompra') && $('#' + PF('wAceptarCompra').id).css('display')!== 'none') ? 'aceptar' : 'aceptarIcon')).click();
+    } // if
+    else if((PF('wAceptarCotizacion') && $('#' + PF('wAceptarCotizacion').id).css('display')!== 'none') || (PF('wAceptarCotizacionIcon') && $('#' + PF('wAceptarCotizacionIcon').id).css('display')!== 'none')) {
+      cleanSelection();		
+    } // else if
+  } // if  
 });
 
 shortcut.add("Ctrl+Z", function() {
