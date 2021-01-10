@@ -4,6 +4,41 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaRefaccionesDto">
+      <select id="lazy">
+        select 
+          tc_mantic_refacciones.id_refaccion as id_key,
+				  tc_mantic_empresas.nombre as nombre_empresa,  
+					tc_mantic_proveedores.razon_social,
+          tc_mantic_refacciones.*
+        from
+          tc_mantic_refacciones
+				inner join 
+					tc_mantic_empresas on tc_mantic_refacciones.id_empresa= tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_proveedores on tc_mantic_refacciones.id_empresa= tc_mantic_proveedores.id_empresa
+        where
+          tc_mantic_refacciones.id_empresa in ({idEmpresa})
+					and {condicion}
+        {sortOrder}        
+      </select>
+    </unit>   
+		<unit id="VistaServiciosDto">
+      <select id="lazy">
+        select 
+          tc_mantic_encargos.id_encargo as id_key,
+				  tc_mantic_empresas.nombre as nombre_empresa,  
+          tc_mantic_encargos.*
+        from
+          tc_mantic_encargos
+				inner join 
+					tc_mantic_empresas on tc_mantic_encargos.id_empresa= tc_mantic_empresas.id_empresa
+        where
+          tc_mantic_encargos.id_empresa in ({idEmpresa})
+					and {condicion}
+        {sortOrder}        
+      </select>
+    </unit>   
 		<unit id="VistaCuentasPorCobrarDto">
       <select id="lazy">
 				select
