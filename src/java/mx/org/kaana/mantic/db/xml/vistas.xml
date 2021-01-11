@@ -16,7 +16,7 @@
 				inner join 
 					tc_mantic_empresas on tc_mantic_refacciones.id_empresa= tc_mantic_empresas.id_empresa
 				inner join 
-					tc_mantic_proveedores on tc_mantic_refacciones.id_empresa= tc_mantic_proveedores.id_empresa
+					tc_mantic_proveedores on tc_mantic_refacciones.id_proveedor= tc_mantic_proveedores.id_proveedor
         where
           tc_mantic_refacciones.id_empresa in ({idEmpresa})
 					and {condicion}

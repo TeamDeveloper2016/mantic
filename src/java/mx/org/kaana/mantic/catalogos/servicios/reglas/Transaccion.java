@@ -1,17 +1,17 @@
-package mx.org.kaana.mantic.catalogos.refacciones.reglas;
+package mx.org.kaana.mantic.catalogos.servicios.reglas;
 
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
-import mx.org.kaana.mantic.db.dto.TcManticRefaccionesDto;
+import mx.org.kaana.mantic.db.dto.TcManticEncargosDto;
 import org.hibernate.Session;
 
 public class Transaccion extends IBaseTnx {
 
-	private TcManticRefaccionesDto pojo;	
+	private TcManticEncargosDto pojo;	
 	private String messageError;
 
-	public Transaccion(TcManticRefaccionesDto pojo) {
+	public Transaccion(TcManticEncargosDto pojo) {
 		this.pojo= pojo;
 	}
 
@@ -23,7 +23,7 @@ public class Transaccion extends IBaseTnx {
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar= false;
 		try {
-			this.messageError= "Ocurrio un error al ".concat(accion.name().toLowerCase()).concat(" el registro de la refacción.");
+			this.messageError= "Ocurrio un error al ".concat(accion.name().toLowerCase()).concat(" el registro el servicio.");
 			switch(accion){
 				case AGREGAR:
 					regresar= DaoFactory.getInstance().insert(sesion, this.pojo)>= 1L;

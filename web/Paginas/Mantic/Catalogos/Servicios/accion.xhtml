@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="#{manticCatalogosServiciosAccion.attrs.nombreAccion} al catálogo de servicios del taller" />
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {				 				
+        'contenedorGrupos\\:idEmpresa'  : {validaciones: 'requerido', mascara: 'libre'},
+        'contenedorGrupos\\:codigo'     : {validaciones: 'requerido', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:nombre'     : {validaciones: 'requerido', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:sat'        : {validaciones: 'requerido', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:linea'      : {validaciones: 'requerido', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:costo'      : {validaciones: 'requerido|flotante', mascara: 'libre'},
+        'contenedorGrupos\\:iva'        : {validaciones: 'requerido|flotante|menor-igual({"cuanto": 99})|mayor-igual({"cuanto": 5})', mascara: 'libre'}, 
+        'contenedorGrupos\\:precio'     : {validaciones: 'requerido|flotante', mascara: 'libre'},
+        'contenedorGrupos\\:idVigente'  : {validaciones: 'requerido', mascara: 'libre'},
+        'contenedorGrupos\\:idDescontinuado': {validaciones: 'requerido', mascara: 'libre'}
+			};						
+			
+			$(document).ready(function(){janal.readingMode('#{manticCatalogosServiciosAccion.attrs.nombreAccion}');});
+		</script>   
+	</ui:define>
+	<ui:define name="contenido">
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+            <p:tab title="General">							
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-8, janal-wid-92">
+                <p:outputLabel for="idEmpresa" value="Sucursal:"/>
+                <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosServiciosAccion.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                  <f:selectItems value="#{manticCatalogosServiciosAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+                  <p:column headerText="Clave">
+                    <h:outputText value="#{item.clave}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+                <p:outputLabel for="codigo" value="Código:"/>
+                <p:inputText id="codigo" value="#{manticCatalogosServiciosAccion.pojo.codigo}" styleClass="janal-wid-100-txt"/> 
+                <p:outputLabel for="nombre" value="Nombre:"/>
+                <p:inputText id="nombre" value="#{manticCatalogosServiciosAccion.pojo.nombre}" styleClass="janal-wid-100-txt"/> 
+                <p:outputLabel for="sat" value="SAT:"/>
+                <p:inputText id="sat" value="#{manticCatalogosServiciosAccion.pojo.sat}" styleClass="janal-wid-100-txt"/> 
+                <p:outputLabel for="linea" value="Linea:"/>
+                <p:inputText id="linea" value="#{manticCatalogosServiciosAccion.pojo.linea}" styleClass="janal-wid-100-txt"/> 
+                <p:outputLabel for="costo" value="Costo:"/>
+                <p:inputText id="costo" value="#{manticCatalogosServiciosAccion.pojo.costo}" styleClass="janal-wid-100-txt"/> 
+								<p:outputLabel for="iva" value="IVA:"/>
+								<p:inputText id="iva" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosServiciosAccion.pojo.iva}"/>                    
+                <p:outputLabel for="precio" value="Precio:"/>
+                <p:inputText id="precio" value="#{manticCatalogosServiciosAccion.pojo.precio}" styleClass="janal-wid-100-txt"/> 
+                <p:outputLabel for="idVigente" value="Vigentes:"/>
+                <p:selectOneMenu id="idVigente" value="#{manticCatalogosServiciosAccion.pojo.idVigente}" converter="javax.faces.Long" styleClass="janal-wid-100-txt">									
+                  <f:selectItem itemLabel="SI" itemValue="1"/>
+                  <f:selectItem itemLabel="NO" itemValue="2"/>
+                </p:selectOneMenu>								
+                <p:outputLabel for="idDescontinuado" value="Descontinuado:"/>
+                <p:selectOneMenu id="idDescontinuado" value="#{manticCatalogosServiciosAccion.pojo.idDescontinuado}" converter="javax.faces.Long" styleClass="janal-wid-100-txt">									
+                  <f:selectItem itemLabel="SI" itemValue="1"/>
+                  <f:selectItem itemLabel="NO" itemValue="2"/>
+                </p:selectOneMenu>								
+              </p:panelGrid>
+						</p:tab>						            						            																																																
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticCatalogosServiciosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosServiciosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosServiciosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosServiciosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>

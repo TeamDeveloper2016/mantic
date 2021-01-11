@@ -160,6 +160,8 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+  					<p:menuitem id="consultar" action="#{manticCatalogosRefaccionesFiltro.doAccion('CONSULTAR')}" process="@this tabla" icon="fa fa-search" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+						<p:separator/>
 						<p:menuitem id="modificar" action="#{manticCatalogosRefaccionesFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
           </p:contextMenu>

@@ -37,6 +37,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   protected void init() {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
+      this.attrs.put("idEncargo", JsfBase.getFlashAttribute("idEncargo"));
       this.attrs.put("idDescontinuado", 2L);
       if(this.attrs.get("idEncargo")!= null) {
 			  this.doLoad();
@@ -80,14 +81,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Servicios/filtro");		
+			JsfBase.setFlashAttribute("retorno", "filtro");		
 			JsfBase.setFlashAttribute("idEncargo", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return "/Paginas/Mantic/Catalogos/Servicios/accion".concat(Constantes.REDIRECIONAR);
+		return "accion".concat(Constantes.REDIRECIONAR);
   } // doAccion  
 	
   public void doEliminar() {

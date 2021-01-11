@@ -7,12 +7,22 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="#{manticCatalogosRefaccionesAccion.attrs.nombreAccion} al catálogo del historial del IVA" />
+	<ui:param name="titulo" value="#{manticCatalogosRefaccionesAccion.attrs.nombreAccion} al catálogo de refacciones del taller" />
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-				'contenedorGrupos\\:importe'      : {validaciones: 'requerido|flotante', mascara: 'libre'},
-				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}				
+        'contenedorGrupos\\:idEmpresa'  : {validaciones: 'requerido', mascara: 'libre'},
+        'contenedorGrupos\\:idProveedor': {validaciones: 'requerido', mascara: 'libre'},
+        'contenedorGrupos\\:codigo'     : {validaciones: 'requerido', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:nombre'     : {validaciones: 'requerido', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:sat'        : {validaciones: 'requerido', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:fabricante' : {validaciones: 'requerido', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:herramienta': {validaciones: 'requerido', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:costo'      : {validaciones: 'requerido|flotante', mascara: 'libre'},
+        'contenedorGrupos\\:iva'        : {validaciones: 'requerido|flotante|menor-igual({"cuanto": 99})|mayor-igual({"cuanto": 5})', mascara: 'libre'}, 
+        'contenedorGrupos\\:precio'     : {validaciones: 'requerido|flotante', mascara: 'libre'},
+        'contenedorGrupos\\:idVigente'  : {validaciones: 'requerido', mascara: 'libre'},
+        'contenedorGrupos\\:idDescontinuado': {validaciones: 'requerido', mascara: 'libre'}
 			};						
 			
 			$(document).ready(function(){janal.readingMode('#{manticCatalogosRefaccionesAccion.attrs.nombreAccion}');});
@@ -24,18 +34,60 @@
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
             <p:tab title="General">							
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
-								<p:outputLabel for="importe" value="Importe:"/>
-								<p:inputText id="importe" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosRefaccionesAccion.iva.importe}"/>                    
-								<p:outputLabel for="aplicar" value="Aplicar:"/>
-								<p:selectBooleanCheckbox id="aplicar" value="#{manticCatalogosRefaccionesAccion.attrs.aplicar}" styleClass="janal-wid-100-txt" />                    
-								<p:spacer width="1"/>
-								<p:outputLabel value="Selecciona para aplicar el impuesto del IVA a todos los articulos del catálogo, excepto a aquellos articulos que no les aplica el impuesto."/>
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-8, janal-wid-92">
+                <p:outputLabel for="idEmpresa" value="Sucursal:"/>
+                <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosRefaccionesAccion.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                  <f:selectItems value="#{manticCatalogosRefaccionesAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+                  <p:column headerText="Clave">
+                    <h:outputText value="#{item.clave}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+                <p:outputLabel for="idProveedor" value="Proveedor:"/>
+                <p:selectOneMenu id="idProveedor" value="#{manticCatalogosRefaccionesAccion.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                  <f:selectItems value="#{manticCatalogosRefaccionesAccion.attrs.proveedores}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                  <p:column headerText="Clave">
+                    <h:outputText value="#{item.clave}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                  <p:column styleClass="janal-column-right" headerText="Entrega(dias)">
+                    <h:outputText value="#{item.diasEntrega}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+                <p:outputLabel for="codigo" value="Código:"/>
+                <p:inputText id="codigo" value="#{manticCatalogosRefaccionesAccion.pojo.codigo}" styleClass="janal-wid-100-txt"/> 
+                <p:outputLabel for="nombre" value="Nombre:"/>
+                <p:inputText id="nombre" value="#{manticCatalogosRefaccionesAccion.pojo.nombre}" styleClass="janal-wid-100-txt"/> 
+                <p:outputLabel for="sat" value="SAT:"/>
+                <p:inputText id="sat" value="#{manticCatalogosRefaccionesAccion.pojo.sat}" styleClass="janal-wid-100-txt"/> 
+                <p:outputLabel for="fabricante" value="Fabricante:"/>
+                <p:inputText id="fabricante" value="#{manticCatalogosRefaccionesAccion.pojo.fabricante}" styleClass="janal-wid-100-txt"/> 
+                <p:outputLabel for="herramienta" value="Herramienta:"/>
+                <p:inputText id="herramienta" value="#{manticCatalogosRefaccionesAccion.pojo.herramienta}" styleClass="janal-wid-100-txt"/> 
+                <p:outputLabel for="costo" value="Costo:"/>
+                <p:inputText id="costo" value="#{manticCatalogosRefaccionesAccion.pojo.costo}" styleClass="janal-wid-100-txt"/> 
+								<p:outputLabel for="iva" value="IVA:"/>
+								<p:inputText id="iva" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosRefaccionesAccion.pojo.iva}"/>                    
+                <p:outputLabel for="precio" value="Precio:"/>
+                <p:inputText id="precio" value="#{manticCatalogosRefaccionesAccion.pojo.precio}" styleClass="janal-wid-100-txt"/> 
+                <p:outputLabel for="idVigente" value="Vigentes:"/>
+                <p:selectOneMenu id="idVigente" value="#{manticCatalogosRefaccionesAccion.pojo.idVigente}" converter="javax.faces.Long" styleClass="janal-wid-100-txt">									
+                  <f:selectItem itemLabel="SI" itemValue="1"/>
+                  <f:selectItem itemLabel="NO" itemValue="2"/>
+                </p:selectOneMenu>								
+                <p:outputLabel for="idDescontinuado" value="Descontinuado:"/>
+                <p:selectOneMenu id="idDescontinuado" value="#{manticCatalogosRefaccionesAccion.pojo.idDescontinuado}" converter="javax.faces.Long" styleClass="janal-wid-100-txt">									
+                  <f:selectItem itemLabel="SI" itemValue="1"/>
+                  <f:selectItem itemLabel="NO" itemValue="2"/>
+                </p:selectOneMenu>								
               </p:panelGrid>
 						</p:tab>						            						            																																																
-						<p:tab title="Observaciones">
-							<p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{manticCatalogosRefaccionesAccion.iva.observaciones}"/>  
-						</p:tab>
 					</p:tabView>
 				</div>
 			</div>

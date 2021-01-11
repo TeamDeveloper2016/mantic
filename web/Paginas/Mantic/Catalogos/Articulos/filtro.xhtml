@@ -155,7 +155,7 @@
 						<div class="ui-grid-col-12">
 							<p:autoComplete id="codigos" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosArticulosFiltro.attrs.custom}" completeMethod="#{manticCatalogosArticulosFiltro.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 								<p:ajax event="itemSelect" oncomplete="$('#replace').click();"/>
-								<f:facet name="itemtip">c
+								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
 										<f:facet name="header" class="TexAlCenter">
 											<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="50" height="30"/>
@@ -272,10 +272,10 @@
 								<f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{manticCatalogosArticulosFiltro.attrs.seleccionado}" />
 							</p:menuitem>	
 							<p:separator/>
+							<p:menuitem id="consultar" action="#{manticCatalogosArticulosFiltro.doAccion('CONSULTAR')}" process="@this tabla" icon="fa fa-search" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+							<p:separator/>
 							<p:menuitem id="modificar" action="#{manticCatalogosArticulosFiltro.doAccion('MODIFICAR')}" process="@this tabla" icon="fa fa-edit" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 							<p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
-							<p:separator/>
-							<p:menuitem id="consultar" action="#{manticCatalogosArticulosFiltro.doAccion('CONSULTAR')}" process="@this tabla" icon="fa fa-search" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 							<p:separator/>
 							<p:menuitem id="clonar" action="#{manticCatalogosArticulosFiltro.doAccion('COPIAR')}" process="@this tabla" icon="fa fa-copy" value="Clonar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 							<p:separator rendered="#{manticCatalogosArticulosFiltro.attrs.seleccionado.idFacturama eq '-1'}"/>
