@@ -4541,6 +4541,7 @@
           tc_mantic_clientes_deudas.importe,
           concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
           tc_mantic_clientes_pagos.pago,
+          tc_mantic_clientes_pagos.observaciones,
           tc_mantic_clientes_pagos.comentarios,
           tc_mantic_clientes_pagos.registro
         from  
@@ -4556,8 +4557,7 @@
         where
           tc_mantic_clientes_deudas.id_cliente= {idCliente}
           and {condicion}
-        order by
-          tc_mantic_ventas.ticket desc, tc_mantic_clientes_pagos.registro desc          
+        {sortOrder}
       </select>  
 			<select id="pagosDeuda">
 				select

@@ -92,7 +92,7 @@ public class Abono extends IBasePagos implements Serializable {
 			params= new HashMap<>();
 			params.put("idClienteDeuda", this.attrs.get("idClienteDeuda"));			
       columns= new ArrayList<>();  
-			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
 			columns.add(new Columna("pago", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
@@ -111,6 +111,7 @@ public class Abono extends IBasePagos implements Serializable {
   } // doLoad
 
 	public String doRegresar() {	  
+		JsfBase.setFlashAttribute("idCliente", this.attrs.get("idCliente"));
 		JsfBase.setFlashAttribute("idClienteDeuda", this.attrs.get("idClienteDeuda"));
 		return "saldos".concat(Constantes.REDIRECIONAR);
 	} // doRegresar
@@ -234,7 +235,7 @@ public class Abono extends IBasePagos implements Serializable {
 			this.attrs.put("file", ""); 
 		} // finally
     return regresar;
-	} // doAceptar
+	} // doImportar
 	
 	public void doFileUpload(FileUploadEvent event) {
 		StringBuilder path= new StringBuilder();  

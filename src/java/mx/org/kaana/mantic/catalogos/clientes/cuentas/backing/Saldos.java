@@ -668,6 +668,7 @@ public class Saldos extends IBaseFilter implements Serializable {
       periodo.addMeses(-12);
       params.put(Constantes.SQL_CONDICION, "date_format(tc_mantic_clientes_pagos.registro, '%Y%m%d')>= '".concat(periodo.toString()).concat("'"));
 			params.put("idCliente", row.toLong("idCliente"));
+      params.put("sortOrder", "order by tc_mantic_ventas.ticket desc, tc_mantic_clientes_pagos.registro desc");
       columns= new ArrayList<>();
       columns.add(new Columna("ticket", EFormatoDinamicos.MAYUSCULAS));      
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));    

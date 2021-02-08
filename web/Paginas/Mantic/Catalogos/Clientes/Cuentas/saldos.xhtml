@@ -194,32 +194,33 @@
                     <p:commandButton id="reporteIconXs" icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('CUENTAS_POR_COBRAR')}" oncomplete="janal.desbloquear();" update="descargar"/>
                   </div>  
                 </f:facet>												
-                <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.consecutivo}">
+                <p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.consecutivo}">
                   <f:facet name="header">
                     <h:outputText value="Ticket"/>
                   </f:facet>
+                  <i class="fa fa-fw fa-users janal-color-blue janal-icons-header" title="Vendedor: #{row['persona']}"></i>
                   <h:outputText value="#{row['ticket']}"/>
                 </p:column>					
-                <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.persona}">
+                <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.persona}" rendered="false">
                   <f:facet name="header">
                     <h:outputText value="Vendedor"/>
                   </f:facet>
                   <i class="fa fa-fw fa-cart-plus janal-color-orange"></i>
                   <h:outputText value="#{row['persona']}"/>
                 </p:column>											
-                <p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{row.importe}">
+                <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
                   <f:facet name="header">
                     <h:outputText value="Importe"/>
                   </f:facet>
                   <h:outputText value="#{row['importe']}"/>
                 </p:column>
-                <p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{row.saldo}">
+                <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.saldo}">
                   <f:facet name="header">
                     <h:outputText value="Saldo"/>
                   </f:facet>
                   <h:outputText value="#{row['saldo']}"/>
                 </p:column>						
-                <p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{row.abonado}">
+                <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.abonado}">
                   <f:facet name="header">
                     <h:outputText value="Abonado"/>
                   </f:facet>
@@ -237,7 +238,7 @@
                   </f:facet>
                   <h:outputText value="#{row['limite']}"/>
                 </p:column>
-                <p:column class="janal-column-right MarAuto Responsive janal-wid-4" sortBy="#{row.dias}">
+                <p:column class="janal-column-right MarAuto Responsive janal-wid-5" sortBy="#{row.dias}">
                   <f:facet name="header">
                     <h:outputText value="Días" title="Días trascurridos desde la compra"/>
                   </f:facet>
@@ -249,7 +250,7 @@
                   </f:facet>
                   <h:outputText value="#{row['estatus']}"/>
                 </p:column>
-                <p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
+                <p:column class="janal-column-center MarAuto Responsive janal-wid-col-20">
                   <h:graphicImage library="janal" name="icon/semaforos/#{row.abonado eq '0.00' ? 'circulo-gris.png' : (row.abonado eq row.importe ? 'circulo-verde.png' : 'circulo-amarillo.png')}" title="#{row.abonado eq '0.00' ? 'Cuenta sin abonos' : (row.abonado eq row.importe? 'Cuenta con abonos asignados a egresos': 'Cuenta con abonos pendientes de asignar a egresos')}"/>
                 </p:column>
                 <f:facet name="footer">
@@ -302,7 +303,7 @@
 	<ui:define name="dialogos">
     <p:dialog id="dialogoHistorial" widgetVar="dlgHistorial" header="Historial de pagos del último año" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="88%" onHide="janal.desbloquear();">
       <h:form id="formDialogoHistorial" prependId="false">
-        <p:dataTable lazy="true" id="tablaHistorial" widgetVar="historialTable" var="filtro" value="#{manticCatalogosClientesCuentasSaldos.historialPagos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="4, 5" paginator="#{manticCatalogosClientesCuentasSaldos.historialPagos.rowCount gt manticCatalogosClientesCuentasSaldos.historialPagos.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+        <p:dataTable lazy="true" id="tablaHistorial" widgetVar="historialTable" var="filtro" value="#{manticCatalogosClientesCuentasSaldos.historialPagos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="6" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="4, 5, 6" paginator="#{manticCatalogosClientesCuentasSaldos.historialPagos.rowCount gt manticCatalogosClientesCuentasSaldos.historialPagos.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
           <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.ticket}">
             <f:facet name="header">
               <h:outputText value="Ticket"/>
@@ -313,6 +314,7 @@
             <f:facet name="header">
               <h:outputText value="Deuda"/>
             </f:facet>
+            <i class="fa fa-fw fa-comments janal-color-blue janal-icons-header" title="Observaciones: #{filtro['observaciones']}"></i>
             <h:outputText value="#{filtro['importe']}"/>
           </p:column>						
           <p:column class="janal-column-left MarAuto Responsive janal-wid-25" sortBy="#{filtro.persona}" rendered="false">

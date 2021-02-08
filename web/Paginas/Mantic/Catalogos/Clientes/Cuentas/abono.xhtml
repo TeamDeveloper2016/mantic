@@ -25,7 +25,7 @@
 			fieldsDialog = {
 				'pago': {validaciones: 'requerido|menor-igual({"cuanto": #{manticCatalogosClientesCuentasAbono.attrs.deuda.saldo}})', mascara: 'libre', grupo: 'dialogo'},
 				'referencia': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
-				'observaciones': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
+				'observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
 			};
 			
 			function start() {
@@ -106,19 +106,20 @@
 									</f:facet>
 									<h:outputText value="#{filtro['tipoPago']}"/>
 								</p:column>			
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{filtro.pago}">
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.pago}">
 									<f:facet name="header">
 										<h:outputText value="Pago"/>
 									</f:facet>
+                  <i class="fa fa-fw fa-calendar janal-color-blue janal-icons-header" title="Fecha pago: #{filtro['registro']}"></i>
 									<h:outputText value="#{filtro['pago']}"/>
 								</p:column>				
-								<p:column class="janal-column-left MarAuto Responsive janal-wid-25" sortBy="#{filtro.persona}">
+								<p:column class="janal-column-left MarAuto Responsive janal-wid-20" sortBy="#{filtro.persona}">
 									<f:facet name="header">
 										<h:outputText value="Usuario"/>
 									</f:facet>
 									<h:outputText value="#{filtro['persona']}"/>
 								</p:column>																							
-								<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.observaciones}">
+                <p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.observaciones}" rendered="false">
 									<f:facet name="header">
 										<h:outputText value="Observaciones"/>
 									</f:facet>
@@ -128,9 +129,10 @@
 									<f:facet name="header">
 										<h:outputText value="Historial"/>
 									</f:facet>
+                  <i class="fa fa-fw fa-comments janal-color-blue janal-icons-header" title="Observaciones: #{filtro['observaciones']}"></i>
 									<h:outputText value="#{filtro['comentarios']}"/>
 								</p:column>																							
-								<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.regitro}">
+                <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.regitro}" rendered="false">
 									<f:facet name="header">
 										<h:outputText value="Fecha"/>
 									</f:facet>
@@ -216,7 +218,7 @@
 	</ui:define>	
   <ui:param name="componenteBloqueo" value="contenedorGrupos" />
 	<ui:define name="dialogos">
-		<p:dialog id="dialogoPago" widgetVar="dlgPago" header="Registrar pago" resizable="false" closable="false" responsive="true" width="50%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoPago', fieldsDialog);janal.refresh();">
+		<p:dialog id="dialogoPago" widgetVar="dlgPago" header="Registrar pago" resizable="false" closable="false" responsive="true" width="75%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoPago', fieldsDialog);janal.refresh();">
 			<h:form id="formDialogoPago" prependId="false">
 				<h:panelGrid id="panelDialog" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-12, janal-wid-86">
 					<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosClientesCuentasAbono.attrs.isMatriz}"/>
