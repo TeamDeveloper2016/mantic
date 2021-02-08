@@ -781,7 +781,7 @@
 				<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 					<div class="ui-grid-row janal-grid-row">
 						<div class="ui-grid-col-12">          							
-							<p:panelGrid id="panelTickets" columns="6" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15,janal-wid-30,janal-wid-20,janal-wid-20,janal-wid-15,janal-wid">
+							<p:panelGrid id="panelTickets" columns="6" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15,janal-wid-26,janal-wid-20,janal-wid-20,janal-wid-15,janal-wid-4">
 								<p:outputLabel for="noTicket" value="No. ticket:" title="No. ticket de venta"/>
 								<p:outputLabel for="productoTicket" value="Producto:" title="Producto en la venta "/>
 								<p:outputLabel for="fechaApartirTicket" value="Fecha apartir:" title="Fecha de inicio"/>
@@ -806,12 +806,12 @@
 										</h:panelGrid>
 									</f:facet>
 								</p:autoComplete>													
-								<p:calendar id="fechaApartirTicket" inputStyleClass="janal-wid-70" styleClass="janal-wid-100" value="#{manticVentasCajaAccion.attrs.fechaApartirTicket}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
-								<p:calendar id="fechaHastaTicket" inputStyleClass="janal-wid-70" styleClass="janal-wid-100" value="#{manticVentasCajaAccion.attrs.fechaHastaTicket}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+								<p:calendar id="fechaApartirTicket" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticVentasCajaAccion.attrs.fechaApartirTicket}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+								<p:calendar id="fechaHastaTicket" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticVentasCajaAccion.attrs.fechaHastaTicket}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 								<p:inputText id="importeTicket" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.importeTicket}"/>																	
 								<p:commandButton id="buscarTicket" icon="fa fa-search" process="@this noTicket fechaApartirTicket fechaHastaTicket importeTicket productoTicket" update="tablaTicket" actionListener="#{manticVentasCajaAccion.doLoadTickets}" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 							</p:panelGrid>						       							
-							<p:dataTable  lazy="true" id="tablaTicket" widgetVar="kajoolTable" var="filtro" value="#{manticVentasCajaAccion.lazyModelTicket}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticVentasCajaAccion.lazyModelTicket.rowCount gt manticVentasCajaAccion.lazyModelTicket.pageSize}" rowIndexVar="index" reflow="true" selectionMode="single" selection="#{manticVentasCajaAccion.attrs.seleccionDetalle}">									
+              <p:dataTable lazy="true" id="tablaTicket" widgetVar="kajoolTable" var="filtro" value="#{manticVentasCajaAccion.lazyModelTicket}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticVentasCajaAccion.lazyModelTicket.rowCount gt manticVentasCajaAccion.lazyModelTicket.pageSize}" rowIndexVar="index" reflow="true" selectionMode="single" selection="#{manticVentasCajaAccion.attrs.seleccionDetalle}" paginatorPosition="bottom">									
     						<p:ajax event="rowSelect" process="@this"/>
 								<f:facet name="header" >
 									<div class="lg-pantalla">
@@ -825,13 +825,13 @@
 										<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 									</div>  
 								</f:facet>	  
-								<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.ticket}">
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{filtro.ticket}">
 									<f:facet name="header">
 										<h:outputText value="No. ticket"/>
 									</f:facet>
 									<h:outputText value="#{filtro['ticket']}"/>
 								</p:column>		                        
-								<p:column class="MarAuto Responsive janal-wid-15" sortBy="#{filtro.nombre}">
+								<p:column class="MarAuto Responsive" sortBy="#{filtro.nombre}">
 									<f:facet name="header">
 										<h:outputText value="Vendedor"/>
 									</f:facet>
@@ -849,7 +849,7 @@
 									</f:facet>
 									<h:outputText value="#{filtro['total']}"/>
 								</p:column>		
-								<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.registro}">
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{filtro.registro}">
 									<f:facet name="header">
 										<h:outputText value="Fecha"/>
 									</f:facet>
@@ -861,7 +861,7 @@
 									</f:facet>
 									<h:outputText value="#{filtro['hora']}"/>
 								</p:column>		
-								<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.estatus}">
+								<p:column class="MarAuto Responsive janal-wid-8" sortBy="#{filtro.estatus}">
 									<f:facet name="header">
 										<h:outputText value="Estatus"/>
 									</f:facet>

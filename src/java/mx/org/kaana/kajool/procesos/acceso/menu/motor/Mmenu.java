@@ -29,7 +29,7 @@ public class Mmenu extends IBaseMenu implements Serializable{
 	@Override
 	public Object toBuild() {
 		try {
-			if(JsfBase.getAutentifica().getCredenciales().isMenuEncabezado()){
+			if(JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getCredenciales()!= null && JsfBase.getAutentifica().getCredenciales().isMenuEncabezado()){
 				getMenu().append("<ul>");
 				generar(getRoot()!= null? getRoot().loadChildren(): new ArrayList<>());
 				getMenu().append("</ul>");

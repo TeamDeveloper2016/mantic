@@ -44,7 +44,7 @@ public class Sentinel extends IBaseMenu implements Serializable {
 
   private void generar(List<TreeObject> list) throws Exception {
     try {
-      if (JsfBase.getAutentifica().getCredenciales().isMenuEncabezado()) {
+      if (JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getCredenciales()!= null && JsfBase.getAutentifica().getCredenciales().isMenuEncabezado()) {
         for (TreeObject treeObject : list) {
           if (treeObject.getType() == Tree.LEAF) {
             getMenu().append("<li class=\"Fleft BordRadHalf TexAlCenter\"><a href=\"");

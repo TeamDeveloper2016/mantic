@@ -56,6 +56,8 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
   private Long orden;
 	@Column (name="ejercicio")
   private Long ejercicio;
+	@Column (name="comentarios")
+  private String comentarios;
 
   public TcManticClientesPagosDto() {
     this(new Long(-1L));
@@ -67,10 +69,10 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
   }
 
   public TcManticClientesPagosDto(Long idUsuario, Long idClienteDeuda, String observaciones, Long idClientePago, Double pago, Long idTipoMedioPago, Long idCierre, Long idBanco, String referencia) {
-		this(idUsuario, idClienteDeuda, observaciones, idClientePago, pago, idTipoMedioPago, idCierre, idBanco, referencia, null, null, null);
+		this(idUsuario, idClienteDeuda, observaciones, idClientePago, pago, idTipoMedioPago, idCierre, idBanco, referencia, null, null, null, null);
 	}
 	
-  public TcManticClientesPagosDto(Long idUsuario, Long idClienteDeuda, String observaciones, Long idClientePago, Double pago, Long idTipoMedioPago, Long idCierre, Long idBanco, String referencia, String consecutivo, Long orden, Long ejercicio) {
+  public TcManticClientesPagosDto(Long idUsuario, Long idClienteDeuda, String observaciones, Long idClientePago, Double pago, Long idTipoMedioPago, Long idCierre, Long idBanco, String referencia, String consecutivo, Long orden, Long ejercicio, String comentarios) {
     setIdUsuario(idUsuario);
     setIdClienteDeuda(idClienteDeuda);
     setObservaciones(observaciones);
@@ -84,6 +86,7 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
 		setConsecutivo(consecutivo);
 		setOrden(orden);
 		setEjercicio(ejercicio);
+    this.comentarios= comentarios;
   }
 
 	public Long getIdBanco() {
@@ -189,6 +192,14 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
 	public void setEjercicio(Long ejercicio) {
 		this.ejercicio = ejercicio;
 	}
+
+  public String getComentarios() {
+    return comentarios;
+  }
+
+  public void setComentarios(String comentarios) {
+    this.comentarios = comentarios;
+  }
 	
   @Transient
   @Override
@@ -230,6 +241,8 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
 		regresar.append(getEjercicio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrden());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getComentarios());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -250,13 +263,14 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
 		regresar.put("consecutivo", getConsecutivo());
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("orden", getOrden());
+		regresar.put("comentarios", getComentarios());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-			getIdUsuario(), getIdClienteDeuda(), getObservaciones(), getIdClientePago(), getPago(), getRegistro(), getIdTipoMedioPago(), getIdCierre(), getIdBanco(), getReferencia(), getConsecutivo(), getOrden(), getEjercicio()
+    Object[] regresar = new Object[] { 
+			getIdUsuario(), getIdClienteDeuda(), getObservaciones(), getIdClientePago(), getPago(), getRegistro(), getIdTipoMedioPago(), getIdCierre(), getIdBanco(), getReferencia(), getConsecutivo(), getOrden(), getEjercicio(), getComentarios()
     };
     return regresar;
   }

@@ -100,19 +100,19 @@
 										<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 									</div>  
 								</f:facet>												
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.pago}">
-									<f:facet name="header">
-										<h:outputText value="Pago"/>
-									</f:facet>
-									<h:outputText value="#{filtro['pago']}"/>
-								</p:column>				
-								<p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.tipoPago}">
+								<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.tipoPago}">
 									<f:facet name="header">
 										<h:outputText value="Tipo pago"/>
 									</f:facet>
 									<h:outputText value="#{filtro['tipoPago']}"/>
 								</p:column>			
-								<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{filtro.pago}">
+									<f:facet name="header">
+										<h:outputText value="Pago"/>
+									</f:facet>
+									<h:outputText value="#{filtro['pago']}"/>
+								</p:column>				
+								<p:column class="janal-column-left MarAuto Responsive janal-wid-25" sortBy="#{filtro.persona}">
 									<f:facet name="header">
 										<h:outputText value="Usuario"/>
 									</f:facet>
@@ -124,7 +124,13 @@
 									</f:facet>
 									<h:outputText value="#{filtro['observaciones']}"/>
 								</p:column>																							
-								<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.regitro}">
+								<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.comentarios}">
+									<f:facet name="header">
+										<h:outputText value="Historial"/>
+									</f:facet>
+									<h:outputText value="#{filtro['comentarios']}"/>
+								</p:column>																							
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.regitro}">
 									<f:facet name="header">
 										<h:outputText value="Fecha"/>
 									</f:facet>
@@ -238,7 +244,7 @@
 						</p:column>   
 					</p:selectOneMenu>
 					<p:outputLabel for="pago" value="Pago: $"/>
-					<p:inputNumber id="pago" value="#{manticCatalogosClientesCuentasAbono.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" decimalPlaces="4"/>
+					<p:inputNumber id="pago" value="#{manticCatalogosClientesCuentasAbono.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" decimalPlaces="2"/>
 					<p:outputLabel for="saldar" value="Saldar: "/>
 					<p:selectOneRadio id="saldar" value="#{manticCatalogosClientesCuentasAbono.attrs.saldar}">
 						<f:selectItem itemLabel="SI" itemValue="1"/>

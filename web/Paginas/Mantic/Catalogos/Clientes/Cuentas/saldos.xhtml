@@ -167,6 +167,9 @@
 								<f:setPropertyActionListener value="#{row}" target="#{manticCatalogosClientesCuentasSaldos.attrs.seleccionado}" />
 							</p:commandButton>
 						</p:column>
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-38" exportable="false">
+              <p:commandButton icon="fa fa-dollar" process="@this" update="dialogoHistorial" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoadHistorial(row)}" title="Historial de pagos" onstart="return janal.bloquear();" oncomplete="PF('dlgHistorial').show();"/>
+						</p:column>
 						<p:rowExpansion> 
               <p:dataTable lazy="true" id="detalle" widgetVar="kajoolTableDetalle" var="row" value="#{manticCatalogosClientesCuentasSaldos.lazyModelDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosClientesCuentasSaldos.attrs.seleccionadoDetalle}" selectionMode="single" paginator="#{manticCatalogosClientesCuentasSaldos.lazyModelDetalle.rowCount gt manticCatalogosClientesCuentasSaldos.lazyModelDetalle.pageSize}" rowIndexVar="index" reflow="true" rowStyleClass="#{manticCatalogosClientesCuentasSaldos.toColor(row)}" paginatorPosition="bottom" style="display: #{empty manticCatalogosClientesCuentasSaldos.lazyModelDetalle? 'none': ''}">
                 <p:ajax event="rowSelect" oncomplete="PF('kajoolTableDetalle').writeSelections()" process="detalle" skipChildren="false"/>
@@ -297,6 +300,57 @@
 	</ui:define>	
   <ui:param name="componenteBloqueo" value="tabla" />
 	<ui:define name="dialogos">
+    <p:dialog id="dialogoHistorial" widgetVar="dlgHistorial" header="Historial de pagos del último año" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="88%" onHide="janal.desbloquear();">
+      <h:form id="formDialogoHistorial" prependId="false">
+        <p:dataTable lazy="true" id="tablaHistorial" widgetVar="historialTable" var="filtro" value="#{manticCatalogosClientesCuentasSaldos.historialPagos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="4, 5" paginator="#{manticCatalogosClientesCuentasSaldos.historialPagos.rowCount gt manticCatalogosClientesCuentasSaldos.historialPagos.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+          <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.ticket}">
+            <f:facet name="header">
+              <h:outputText value="Ticket"/>
+            </f:facet>
+            <h:outputText value="#{filtro['ticket']}"/>
+          </p:column>														
+          <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.importe}">
+            <f:facet name="header">
+              <h:outputText value="Deuda"/>
+            </f:facet>
+            <h:outputText value="#{filtro['importe']}"/>
+          </p:column>						
+          <p:column class="janal-column-left MarAuto Responsive janal-wid-25" sortBy="#{filtro.persona}" rendered="false">
+            <f:facet name="header">
+              <h:outputText value="Vendedor"/>
+            </f:facet>
+            <h:outputText value="#{filtro['persona']}"/>
+          </p:column>											
+          <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.pago}">
+            <f:facet name="header">
+              <h:outputText value="Pago"/>
+            </f:facet>
+            <i class="fa fa-fw fa-calendar janal-color-blue janal-icons-header" title="Fecha pago: #{filtro['registro']}"></i>
+            <h:outputText value="#{filtro['pago']}"/>
+          </p:column>						
+          <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.registro}" rendered="false">
+            <f:facet name="header">
+              <h:outputText value="Fecha"/>
+            </f:facet>
+            <h:outputText value="#{filtro['registro']}"/>
+          </p:column>						
+          <p:column class="MarAuto Responsive" sortBy="#{filtro.comentarios}">
+            <f:facet name="header">
+              <h:outputText value="Historial"/>
+            </f:facet>
+            <i class="fa fa-fw fa-user janal-color-blue" title="Recibió pago: #{filtro['persona']}"></i>
+            <h:outputText value="#{filtro['comentarios']}"/>
+          </p:column>																				
+          <f:facet name="footer">
+            <p:outputLabel value="Total [#{manticCatalogosClientesCuentasSaldos.historialPagos== null? 0: manticCatalogosClientesCuentasSaldos.historialPagos.rowCount}] registros"/>
+          </f:facet>
+        </p:dataTable>	        
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton value="Cerrar" icon="fa fa-remove" onstart="PF('dlgHistorial').hide();"/>
+				</div>
+      </h:form>
+    </p:dialog> 
 		<p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Enviar estado de cuenta" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
 			<h:form id="formDialogoCorreos" prependId="false">
 				<p:panelGrid id="panelCorreos" columns="1" layout="grid" styleClass="janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">																	

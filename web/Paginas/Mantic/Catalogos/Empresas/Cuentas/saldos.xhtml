@@ -362,7 +362,7 @@
 						</p:column>   
 					</p:selectOneMenu>
 					<p:outputLabel for="pago" value="Pago: $"/>
-					<p:inputNumber id="pago" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" decimalPlaces="4"/>
+					<p:inputNumber id="pago" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" decimalPlaces="2"/>
 					<p:outputLabel for="tipoPago" value="Tipo pago:"/>
 					<p:selectOneMenu id="tipoPago" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
 						<p:ajax event="change" process="@this pago" listener="#{manticCatalogosEmpresasCuentasSaldos.doValidaTipoPago}" update="panelDialog lblBanco banco lblReferencia referencia" oncomplete="janal.refresh();"/>
@@ -489,7 +489,7 @@
 						</p:column>   
 					</p:selectOneMenu>
 					<p:outputLabel for="pagoGeneral" value="Pago: $"/>
-					<p:inputNumber id="pagoGeneral" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.pagoGeneral}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" decimalPlaces="4"/>					
+					<p:inputNumber id="pagoGeneral" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.pagoGeneral}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" decimalPlaces="2"/>					
 					<p:outputLabel for="tipoPagoGeneral" value="Tipo de pago:"/>
 					<p:selectOneMenu id="tipoPagoGeneral" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.tipoPagoGeneral}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
 						<p:ajax event="change" process="@this pagoGeneral" listener="#{manticCatalogosEmpresasCuentasSaldos.doValidaTipoPagoGeneral}" update="panelDialogoGeneral bancoGeneral referenciaGeneral lblBancoGeneral lblReferenciaGeneral" oncomplete="janal.refresh();"/>
@@ -588,7 +588,7 @@
 								</p:column>   
 							</p:selectOneMenu>
 							<p:outputLabel for="pagoSegmento" value="Pago: $"/>							
-							<p:inputNumber id="pagoSegmento" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.pagoSegmento}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" decimalPlaces="4"/>														
+							<p:inputNumber id="pagoSegmento" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.pagoSegmento}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" decimalPlaces="2"/>														
 							<p:outputLabel for="tipoPagoSegmento" value="Tipo pago:"/>
 							<p:selectOneMenu id="tipoPagoSegmento" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.tipoPagoSegmento}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
 								<p:ajax event="change" process="@this pagoSegmento" listener="#{manticCatalogosEmpresasCuentasSaldos.doValidaTipoPagoSegmento}" update="panelDialogoSegmento bancoSegmento referenciaSegmento lblBancoSegmento lblReferenciaSegmento" oncomplete="janal.refresh();"/>

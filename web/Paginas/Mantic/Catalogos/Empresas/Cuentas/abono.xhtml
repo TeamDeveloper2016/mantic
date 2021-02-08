@@ -271,7 +271,7 @@
 						</p:column>   
 					</p:selectOneMenu>					
 					<p:outputLabel for="pago" value="Pago: $"/>
-					<p:inputNumber id="pago" value="#{manticCatalogosEmpresasCuentasAbono.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" decimalPlaces="4"/>
+					<p:inputNumber id="pago" value="#{manticCatalogosEmpresasCuentasAbono.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" decimalPlaces="2"/>
 					<p:outputLabel for="tipoPago" value="Tipo pago:"/>
 					<p:selectOneMenu id="tipoPago" value="#{manticCatalogosEmpresasCuentasAbono.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
 						<p:ajax event="change" process="@this pago" listener="#{manticCatalogosEmpresasCuentasAbono.doValidaTipoPago}" update="panelDialog lblBanco banco lblReferencia referencia" oncomplete="janal.refresh();"/>

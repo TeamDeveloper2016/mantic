@@ -25,6 +25,7 @@ import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Periodo;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -63,6 +64,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 	private List<Correo> selectedCorreos;	
 	private Correo correo;
   protected FormatLazyModel lazyModelDetalle;
+	private FormatLazyModel historialPagos;
 
 	public UISelectEntity getEncontrado() {
 		return encontrado;
@@ -98,6 +100,10 @@ public class Saldos extends IBaseFilter implements Serializable {
 
   public FormatLazyModel getLazyModelDetalle() {
     return lazyModelDetalle;
+  }
+
+  public FormatLazyModel getHistorialPagos() {
+    return historialPagos;
   }
 
   @PostConstruct
@@ -642,6 +648,34 @@ public class Saldos extends IBaseFilter implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));    
 			this.lazyModelDetalle = new FormatCustomLazy("VistaClientesDto", "detalle", params, columns);
       UIBackingUtilities.resetDataTable();		
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally		   
+  }
+ 
+  public void doLoadHistorial(Entity row) {
+    List<Columna> columns     = null;
+	  Map<String, Object> params= null;	
+    try {
+  	  params= new HashMap<>();
+      Periodo periodo= new Periodo();
+      periodo.addMeses(-12);
+      params.put(Constantes.SQL_CONDICION, "date_format(tc_mantic_clientes_pagos.registro, '%Y%m%d')>= '".concat(periodo.toString()).concat("'"));
+			params.put("idCliente", row.toLong("idCliente"));
+      columns= new ArrayList<>();
+      columns.add(new Columna("ticket", EFormatoDinamicos.MAYUSCULAS));      
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));    
+      columns.add(new Columna("pago", EFormatoDinamicos.MILES_CON_DECIMALES));      
+      columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));    
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));    
+			this.historialPagos = new FormatCustomLazy("VistaClientesDto", "historial", params, columns);
+      UIBackingUtilities.resetDataTable("tablaHistorial");		
     } // try
     catch (Exception e) {
       Error.mensaje(e);

@@ -4516,7 +4516,8 @@
 					tc_mantic_clientes_pagos.pago,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
 					tc_mantic_clientes_pagos.registro,
-					tc_mantic_clientes_pagos.observaciones
+					tc_mantic_clientes_pagos.observaciones,
+          tc_mantic_clientes_pagos.comentarios
 				from
 					tc_mantic_clientes_pagos
 				inner join
@@ -4533,6 +4534,31 @@
 					tc_mantic_ventas.consecutivo, 
 					tc_mantic_clientes_deudas.registro desc						
 			</select>
+      <select id="historial">
+        select
+          tc_mantic_clientes_pagos.id_cliente_pago as id_key,
+          tc_mantic_ventas.ticket,
+          tc_mantic_clientes_deudas.importe,
+          concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
+          tc_mantic_clientes_pagos.pago,
+          tc_mantic_clientes_pagos.comentarios,
+          tc_mantic_clientes_pagos.registro
+        from  
+          tc_mantic_clientes_pagos
+        inner join
+          tc_mantic_clientes_deudas on tc_mantic_clientes_pagos.id_cliente_deuda= tc_mantic_clientes_deudas.id_cliente_deuda
+        inner join
+          tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
+        inner join
+          tc_janal_usuarios on tc_mantic_clientes_pagos.id_usuario= tc_janal_usuarios.id_usuario
+        inner join
+          tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+        where
+          tc_mantic_clientes_deudas.id_cliente= {idCliente}
+          and {condicion}
+        order by
+          tc_mantic_ventas.ticket desc, tc_mantic_clientes_pagos.registro desc          
+      </select>  
 			<select id="pagosDeuda">
 				select
 					tc_mantic_clientes_pagos.id_cliente_pago as id_key,
@@ -4543,6 +4569,7 @@
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
 					tc_mantic_clientes_pagos.registro,
 					tc_mantic_clientes_pagos.observaciones,
+					tc_mantic_clientes_pagos.comentarios,
 					tc_mantic_tipos_medios_pagos.nombre as tipo_pago
 				from
 					tc_mantic_clientes_pagos
