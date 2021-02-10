@@ -23,8 +23,9 @@
 			};
 
 			fieldsDialog = {
-				'pago': {validaciones: 'requerido|menor-igual({"cuanto": #{manticCatalogosClientesCuentasAbono.attrs.deuda.saldo}})', mascara: 'libre', grupo: 'dialogo'},
-				'referencia': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
+				'pago'         : {validaciones: 'requerido|menor-igual({"cuanto": #{manticCatalogosClientesCuentasAbono.attrs.deuda.saldo}})', mascara: 'libre', grupo: 'dialogo'},
+				'fechaPago'    : {validaciones: 'requerido|fecha', mascara: 'libre', grupo: 'dialogo'},
+				'referencia'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
 				'observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
 			};
 			
@@ -218,7 +219,7 @@
 	</ui:define>	
   <ui:param name="componenteBloqueo" value="contenedorGrupos" />
 	<ui:define name="dialogos">
-		<p:dialog id="dialogoPago" widgetVar="dlgPago" header="Registrar pago" resizable="false" closable="false" responsive="true" width="75%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoPago', fieldsDialog);janal.refresh();">
+		<p:dialog id="dialogoPago" widgetVar="dlgPago" header="Registrar pago" resizable="false" closable="false" responsive="true" width="75%" onHide="janal.restore(); janal.refresh();" onShow="janal.change('formDialogoPago', fieldsDialog);janal.refresh();">
 			<h:form id="formDialogoPago" prependId="false">
 				<h:panelGrid id="panelDialog" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-12, janal-wid-86">
 					<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosClientesCuentasAbono.attrs.isMatriz}"/>
@@ -246,7 +247,9 @@
 						</p:column>   
 					</p:selectOneMenu>
 					<p:outputLabel for="pago" value="Pago: $"/>
-					<p:inputNumber id="pago" value="#{manticCatalogosClientesCuentasAbono.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" decimalPlaces="2"/>
+          <p:inputNumber id="pago" value="#{manticCatalogosClientesCuentasAbono.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" converter="javax.faces.Double" decimalPlaces="2"/>
+          <p:outputLabel for="fechaPago" value="Fecha pago:"/>
+          <p:calendar id="fechaPago" inputStyleClass="janal-wid-99" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesCuentasAbono.attrs.fechaPago}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 					<p:outputLabel for="saldar" value="Saldar: "/>
 					<p:selectOneRadio id="saldar" value="#{manticCatalogosClientesCuentasAbono.attrs.saldar}">
 						<f:selectItem itemLabel="SI" itemValue="1"/>
@@ -286,7 +289,7 @@
 			</h:form>
 		</p:dialog>		
 		<h:form prependId="true">
-			<p:dialog id="dialogoPDF" widgetVar="dlgPDF" styleClass="viewPDF" header="Factura en formato digital" onHide="janal.sendLastFocus();janal.desbloquear();" height="550px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+			<p:dialog id="dialogoPDF" widgetVar="dlgPDF" styleClass="viewPDF" header="Factura en formato digital" onHide="janal.sendLastFocus(); janal.desbloquear();" height="550px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
 				<object type="application/pdf" data="#{manticCatalogosClientesCuentasAbono.attrs.temporal}" height="490px" width="100%" internalinstanceid="5">
 					 Tu navegador no soporta el desplegado de archivos PDF's, por favor da click en el boton de descargar
 				</object>

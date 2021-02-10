@@ -1,7 +1,9 @@
 package mx.org.kaana.mantic.catalogos.clientes.cuentas.backing;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -79,8 +82,11 @@ public class Deuda extends IBaseFilter implements Serializable {
 			this.attrs.put("saldar", "2");
 			this.attrs.put("saldarGeneral", "2");
 			this.attrs.put("saldarSegmento", "2");
+			this.attrs.put("fechaPago", new Date(Calendar.getInstance().getTimeInMillis()));
+			this.attrs.put("fechaPagoGeneral", new Date(Calendar.getInstance().getTimeInMillis()));
+			this.attrs.put("fechaPagoSegmento", new Date(Calendar.getInstance().getTimeInMillis()));
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
-				loadSucursales();							
+				this.loadSucursales();							
 			this.doLoadCajas();
 			this.doLoadCajasGeneral();
 			this.doLoadCajasSegmento();
@@ -98,7 +104,7 @@ public class Deuda extends IBaseFilter implements Serializable {
     } // catch		
   } // init
 
-	private void loadBancos(){
+	private void loadBancos() {
 		List<UISelectEntity> bancos= null;
 		Map<String, Object> params = null;
 		List<Columna> campos       = null;
@@ -120,7 +126,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		} // finally
 	} // loadBancos
 	
-	private void loadSucursales(){
+	private void loadSucursales() {
 		List<UISelectEntity> sucursales= null;
 		Map<String, Object>params      = null;
 		List<Columna> columns          = null;
@@ -140,7 +146,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		} // catch		
 	} // loadSucursales
 	
-	public void doLoadCajas(){
+	public void doLoadCajas() {
 		List<UISelectEntity> cajas= null;
 		Map<String, Object>params = null;
 		List<Columna> columns     = null;
@@ -159,7 +165,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		} // catch	
 	} // loadCajas
 	
-	public void doLoadCajasGeneral(){
+	public void doLoadCajasGeneral() {
 		List<UISelectEntity> cajas= null;
 		Map<String, Object>params = null;
 		List<Columna> columns     = null;
@@ -178,7 +184,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		} // catch	
 	} // loadCajas
 	
-	public void doLoadCajasSegmento(){
+	public void doLoadCajasSegmento() {
 		List<UISelectEntity> cajas= null;
 		Map<String, Object>params = null;
 		List<Columna> columns     = null;
@@ -227,7 +233,7 @@ public class Deuda extends IBaseFilter implements Serializable {
     try {  	  
 			params= new HashMap<>();
 			params.put("idCliente", this.attrs.get("idCliente"));						
-			params.put("sortOrder", this.attrs.get("sortOrder"));			
+			params.put("sortOrder", "order by tc_mantic_ventas.ticket");			
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
@@ -238,7 +244,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
 			this.lazyModel = new FormatCustomLazy("VistaClientesDto", "cuentas", params, columns);			
 			cuentas= DaoFactory.getInstance().toEntitySet("VistaClientesDto", "cuentas", params);
-			validaPagoGeneral(cuentas);
+			this.validaPagoGeneral(cuentas);
       UIBackingUtilities.resetDataTable();		      
     } // try
     catch (Exception e) {
@@ -254,7 +260,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 	private void validaPagoGeneral(List<Entity> cuentas) {
 		int count= 0;
 		try {
-			for(Entity cuenta: cuentas){
+			for(Entity cuenta: cuentas) {
 				if(!(cuenta.toLong("idClienteEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus())))
 					count++;
 			} // for
@@ -300,7 +306,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		return "saldos".concat(Constantes.REDIRECIONAR);
 	} // doRegresar
 	
-	public void doRegistrarPago(){
+	public void doRegistrarPago() {
 		Transaccion transaccion      = null;
 		TcManticClientesPagosDto pago= null;
 		boolean tipoPago             = false;
@@ -312,19 +318,20 @@ public class Deuda extends IBaseFilter implements Serializable {
 				pago.setIdClienteDeuda(((Entity)this.attrs.get("seleccionado")).getKey());
 				pago.setIdUsuario(JsfBase.getIdUsuario());
 				pago.setObservaciones(this.attrs.get("observaciones").toString());
-				pago.setPago(Double.valueOf(this.attrs.get("pago").toString()));
+				pago.setPago((Double)this.attrs.get("pago"));
+				pago.setFechaPago((Date)this.attrs.get("fechaPago"));
 				pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
 				tipoPago= pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
 				transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("caja").toString()), Long.valueOf((String)this.attrs.get("idCliente")), Long.valueOf(this.attrs.get("idEmpresa").toString()), tipoPago ? -1L : Long.valueOf(this.attrs.get("banco").toString()), tipoPago ? "" : this.attrs.get("referencia").toString(), saldar);
-				if(transaccion.ejecutar(EAccion.AGREGAR)){
-					JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta", ETipoMensaje.INFORMACION);
+				if(transaccion.ejecutar(EAccion.AGREGAR)) {
+					JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta.", ETipoMensaje.INFORMACION);
 					loadClienteDeuda();					
 				} // if
 				else
-					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
+					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago.", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante y distinto a cero ó la cuenta ya se encuentra finalizada.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante.", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -332,16 +339,16 @@ public class Deuda extends IBaseFilter implements Serializable {
 		} // catch				
 	} // doRegistrarPago
 	
-	private boolean validaPago(){
+	private boolean validaPago() {
 		boolean regresar= false;
 		Double pago     = 0D;
 		Double saldo    = 0D;
 		Entity deuda    = null;
 		try {
-			pago= Double.valueOf(this.attrs.get("pago").toString());
-			deuda= (Entity) this.attrs.get("seleccionado");
-			if(pago > 0D && !deuda.toLong("idClienteEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus())){				
-				saldo= Double.valueOf(deuda.toString("saldo"));
+			pago = (Double)this.attrs.get("pago");
+			deuda= (Entity)this.attrs.get("seleccionado");
+			if(pago> 0D && !deuda.toLong("idClienteEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus())) {
+				saldo   = Numero.toRedondearSat(Double.valueOf(deuda.toString("saldo")));
 				regresar= pago<= saldo;
 			} // if
 		} // try
@@ -363,7 +370,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		} // catch		
 	} // onRowToggle
 	
-	private void loadHistorialPagos() throws Exception{
+	private void loadHistorialPagos() throws Exception {
 		List<Columna> columns     = null;
 	  Map<String, Object> params= null;	
     try {  	  
@@ -400,19 +407,20 @@ public class Deuda extends IBaseFilter implements Serializable {
 				pago= new TcManticClientesPagosDto();
 				pago.setIdUsuario(JsfBase.getIdUsuario());
 				pago.setObservaciones((String)this.attrs.get("observacionesGeneral"));
-				pago.setPago(Double.valueOf((String)this.attrs.get("pagoGeneral")));
+				pago.setPago((Double)this.attrs.get("pagoGeneral"));
+				pago.setFechaPago((Date)this.attrs.get("fechaPagoGeneral"));
 				pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
 				tipoPago= pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
 				transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("cajaGeneral").toString()), Long.valueOf((String)this.attrs.get("idCliente")), Long.valueOf(this.attrs.get("idEmpresaGeneral").toString()), tipoPago ? -1L : Long.valueOf(this.attrs.get("bancoGeneral").toString()), tipoPago ? "" : this.attrs.get("referenciaGeneral").toString(), saldar);
-				if(transaccion.ejecutar(EAccion.PROCESAR)){
-					JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta");
+				if(transaccion.ejecutar(EAccion.PROCESAR)) {
+					JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta.");
 					this.loadClienteDeuda();					
 				} // if
 				else
-					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
+					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago.", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante y distinto a 0.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante.", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -431,19 +439,20 @@ public class Deuda extends IBaseFilter implements Serializable {
 				pago= new TcManticClientesPagosDto();
 				pago.setIdUsuario(JsfBase.getIdUsuario());
 				pago.setObservaciones((String)this.attrs.get("observacionesSegmento"));
-				pago.setPago(Double.valueOf((String)this.attrs.get("pagoSegmento")));
+				pago.setPago((Double)this.attrs.get("pagoSegmento"));
+				pago.setFechaPago((Date)this.attrs.get("fechaPagoSegmento"));
 				pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
 				tipoPago= pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
 				transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("cajaSegmento").toString()), Long.valueOf((String)this.attrs.get("idCliente")), Long.valueOf(this.attrs.get("idEmpresaSegmento").toString()), tipoPago ? -1L : Long.valueOf(this.attrs.get("bancoSegmento").toString()), tipoPago ? "" : this.attrs.get("referenciaSegmento").toString(), this.seleccionadosSegmento, saldar);
-				if(transaccion.ejecutar(EAccion.COMPLEMENTAR)){
-					JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta");
+				if(transaccion.ejecutar(EAccion.COMPLEMENTAR)) {
+					JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta.");
 					this.loadClienteDeuda();					
 				} // if
 				else
-					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
+					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago.", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante y distinto a cero ó no se selecciono ninguna cuenta.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante, ademas se debe de seleecionar una cuenta.", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -454,16 +463,16 @@ public class Deuda extends IBaseFilter implements Serializable {
 		} // finally
 	} // doRegistrarPago
 	
-	private boolean validaPagoGeneral(){
+	private boolean validaPagoGeneral() {
 		boolean regresar= false;
 		Double pago     = 0D;
 		Double saldo    = 0D;
 		Entity deuda    = null;
 		try {
-			pago= Double.valueOf((String)this.attrs.get("pagoGeneral"));
-			if(pago > 0D){
-				deuda= (Entity) this.attrs.get("deuda");
-				saldo= Double.valueOf(deuda.toString("saldo"));
+			pago= (Double)this.attrs.get("pagoGeneral");
+			if(pago> 0D) {
+				deuda= (Entity)this.attrs.get("deuda");
+				saldo= Numero.toRedondearSat(deuda.toDouble("saldo"));
 				regresar= pago<= saldo;
 			} // if
 		} // try
@@ -478,10 +487,10 @@ public class Deuda extends IBaseFilter implements Serializable {
 		Double pago     = 0D;
 		Double saldo    = 0D;
 		try {
-			pago= Double.valueOf((String)this.attrs.get("pagoSegmento"));
+			pago= (Double)this.attrs.get("pagoSegmento");
 			if(pago > 0D) {
 				for(Entity cuenta: this.seleccionadosSegmento)					
-					saldo+= cuenta.toDouble("saldo");
+					saldo+= Numero.toRedondearSat(cuenta.toDouble("saldo"));
 				regresar= pago<= saldo;
 			} // if
 		} // try
@@ -489,9 +498,9 @@ public class Deuda extends IBaseFilter implements Serializable {
 			throw e;
 		} // catch
 		return regresar;
-	} // validaPagoGeneral
+	} // validaPagoSegmento
 	
-	private void loadTiposPagos(){
+	private void loadTiposPagos() {
 		List<UISelectEntity> tiposPagos= null;
 		Map<String, Object>params      = null;
 		try {
@@ -506,7 +515,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		} // catch		
 	} // loadTiposPagos
 	
-	public void doValidaTipoPago(){
+	public void doValidaTipoPago() {
 		Long tipoPago= -1L;
 		try {
 			tipoPago= Long.valueOf(this.attrs.get("tipoPago").toString());
@@ -518,7 +527,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		} // catch		
 	} // doValidaTipoPago
 	
-	public void doValidaTipoPagoGeneral(){
+	public void doValidaTipoPagoGeneral() {
 		Long tipoPago= -1L;
 		try {
 			tipoPago= Long.valueOf(this.attrs.get("tipoPagoGeneral").toString());
@@ -530,7 +539,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		} // catch		
 	} // doValidaTipoPagoGeneral
 	
-	public void doValidaTipoPagoSegmento(){
+	public void doValidaTipoPagoSegmento() {
 		Long tipoPago= -1L;
 		try {
 			tipoPago= Long.valueOf(this.attrs.get("tipoPagoSegmento").toString());
@@ -542,7 +551,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		} // catch		
 	} // doValidaTipoPagoSegmento
 	
-	public void doActualizaPago(){
+	public void doActualizaPago() {
 		Entity seleccionado= null;
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");

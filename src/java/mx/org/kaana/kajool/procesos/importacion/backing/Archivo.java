@@ -26,6 +26,7 @@ import mx.org.kaana.kajool.procesos.importacion.beans.Importado;
 import mx.org.kaana.kajool.procesos.importacion.reglas.IImportar;
 import mx.org.kaana.kajool.procesos.importacion.reglas.IValidar;
 import mx.org.kaana.kajool.procesos.importacion.reglas.Imagenes;
+import mx.org.kaana.libs.pagina.JsfBase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.event.FileUploadEvent;
@@ -98,10 +99,9 @@ public class Archivo implements Serializable {
       } // while
       fileOutputStream.close();
       inputStream.close();
-      FacesMessage msg= new FacesMessage("Descripción del archivo", "Nombre: "+event.getFile().getFileName()+ "\nTamaño: "+
-                            (event.getFile().getSize()/1024)+ " Kb\nContenido: " +
-                             event.getFile().getContentType()+ "\nEl archivo fue importado con éxito.");
-      FacesContext.getCurrentInstance().addMessage(null, msg);
+      JsfBase.addMessage("Descripción del archivo", "Nombre: "+event.getFile().getFileName()+ "\nTamaño: "+
+                        (event.getFile().getSize()/1024)+ " Kb\nContenido: " +
+                        event.getFile().getContentType()+ "\nEl archivo fue importado con éxito.");
       Importado importado=  new Importado(nameFile, event.getFile().getContentType(), EFormatos.FREE, event.getFile().getSize());
       this.importar.getFiles().add(importado);
       IValidar validate= this.importar.validate();
@@ -109,8 +109,7 @@ public class Archivo implements Serializable {
     } // try
     catch (IOException e) {
       Error.mensaje(e);
-      FacesMessage error=new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error:", "El archivo no fue importado, verifiquelo por favor !\n"+ e.getMessage());
-      FacesContext.getCurrentInstance().addMessage(null, error);
+      JsfBase.addMessage("Error:", "El archivo no fue importado, verifiquelo por favor !\n"+ e.getMessage());
     } // catch
   }
 

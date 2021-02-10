@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
@@ -154,12 +153,10 @@ public class Asociar extends Comun implements Serializable {
 	} // liberarImage
 	
 	private void toMessageImage() {
-		FacesMessage msg= null;
 		String detail   = null;
 		try {
-			detail= toDetailMessage();
-			msg=new FacesMessage("Actualización de versiones", detail);
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+			detail= this.toDetailMessage();
+      JsfBase.addMessage("Actualización de versiones", detail);
 		} // try
 		catch (Exception e) {			
 			throw e;

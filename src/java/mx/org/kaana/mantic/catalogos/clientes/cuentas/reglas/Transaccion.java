@@ -162,8 +162,8 @@ public class Transaccion extends TransaccionFactura{
 			deudas= this.toDeudas(sesion);
 			for(Entity deuda: deudas){
 				if(saldo > 0){					
-					saldoDeuda= Double.valueOf(deuda.toString("saldo"));
-					if(saldoDeuda < this.pago.getPago()){
+					saldoDeuda= Numero.toRedondear(deuda.toDouble("saldo"));
+					if(saldoDeuda< this.pago.getPago()){
 						pagoParcial= saldoDeuda;
 						saldo= this.pago.getPago() - saldoDeuda;						
 						this.pago.setPago(saldo);
@@ -285,7 +285,7 @@ public class Transaccion extends TransaccionFactura{
 				for(Entity cuenta: this.cuentas) {
 					if(deuda.getKey().equals(cuenta.getKey())) {
 						if(saldo > 0) {					
-							saldoDeuda= Double.valueOf(deuda.toString("saldo"));
+							saldoDeuda= Numero.toRedondearSat(deuda.toDouble("saldo"));
 							if(saldoDeuda < this.pago.getPago()){
 								pagoParcial= saldoDeuda;
 								saldo= this.pago.getPago() - saldoDeuda;						

@@ -175,11 +175,11 @@ public class JsfUtilities {
   }
 
   public static void addMessage(String titulo, String descripcion, ETipoMensaje tipoMensaje) {
-  	FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(tipoMensaje.getTipoMensaje(), titulo, descripcion));				
+  	FacesContext.getCurrentInstance().addMessage("growl-key", new FacesMessage(tipoMensaje.getTipoMensaje(), titulo, descripcion));				
   }
 
   public static void addMessageError(Exception e) {
-  	FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(ETipoMensaje.ERROR.getTipoMensaje(), ETipoMensaje.ERROR.getTituloMensaje(), String.valueOf(e)));				
+  	FacesContext.getCurrentInstance().addMessage("growl-key", new FacesMessage(ETipoMensaje.ERROR.getTipoMensaje(), ETipoMensaje.ERROR.getTituloMensaje(), String.valueOf(e)));				
   }
 	
 	/*Metodos para lanzar los mensajes que se encuentran registrados en el archivo properties de cada uno de los proyectos*/
@@ -233,19 +233,19 @@ public class JsfUtilities {
   }
 
   public static void addMsgsProperties(String key, String titulo, ETipoMensaje tipoMensaje) {
-  	FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(tipoMensaje.getTipoMensaje(), titulo, toMessage(key)));				
+  	FacesContext.getCurrentInstance().addMessage("growl-key", new FacesMessage(tipoMensaje.getTipoMensaje(), titulo, toMessage(key)));				
   }
 	
   public static void addMsgProperties(String proyecto, String key, String titulo, ETipoMensaje tipoMensaje) {
-  	FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(tipoMensaje.getTipoMensaje(), titulo, toMessage(proyecto, key)));				
+  	FacesContext.getCurrentInstance().addMessage("growl-key", new FacesMessage(tipoMensaje.getTipoMensaje(), titulo, toMessage(proyecto, key)));				
   }
 	
   public static void addMsgProperties(String key, Map<String, Object> params, String titulo, ETipoMensaje tipoMensaje) {
-  	FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(tipoMensaje.getTipoMensaje(), titulo, toMessage(key, params)));				
+  	FacesContext.getCurrentInstance().addMessage("growl-key", new FacesMessage(tipoMensaje.getTipoMensaje(), titulo, toMessage(key, params)));				
   }
 	
   public static void addMsgProperties(String proyecto, String key, Map<String, Object> params, String titulo, ETipoMensaje tipoMensaje) {
-  	FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(tipoMensaje.getTipoMensaje(), titulo, toMessage(proyecto, key, params)));				
+  	FacesContext.getCurrentInstance().addMessage("growl-key", new FacesMessage(tipoMensaje.getTipoMensaje(), titulo, toMessage(proyecto, key, params)));				
   }
 
   public static Object seekParameter(String key) {

@@ -675,6 +675,7 @@ public class Saldos extends IBaseFilter implements Serializable {
       columns.add(new Columna("pago", EFormatoDinamicos.MILES_CON_DECIMALES));      
       columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));    
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));    
+      columns.add(new Columna("fechaPago", EFormatoDinamicos.FECHA_CORTA));    
 			this.historialPagos = new FormatCustomLazy("VistaClientesDto", "historial", params, columns);
       UIBackingUtilities.resetDataTable("tablaHistorial");		
     } // try

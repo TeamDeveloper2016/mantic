@@ -105,8 +105,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
         builder.append(node.getData().toString());
         builder.append("<br />");
       } // for
-      FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Selected", builder.toString());
-      FacesContext.getCurrentInstance().addMessage(null, message);
+      JsfBase.addMessage("Selected", builder.toString());
     } // if
   }
 

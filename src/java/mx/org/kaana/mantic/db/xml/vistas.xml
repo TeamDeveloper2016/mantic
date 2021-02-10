@@ -4517,6 +4517,7 @@
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
 					tc_mantic_clientes_pagos.registro,
 					tc_mantic_clientes_pagos.observaciones,
+          tc_mantic_clientes_pagos.fecha_pago,
           tc_mantic_clientes_pagos.comentarios
 				from
 					tc_mantic_clientes_pagos
@@ -4543,6 +4544,7 @@
           tc_mantic_clientes_pagos.pago,
           tc_mantic_clientes_pagos.observaciones,
           tc_mantic_clientes_pagos.comentarios,
+          tc_mantic_clientes_pagos.fecha_pago,
           tc_mantic_clientes_pagos.registro
         from  
           tc_mantic_clientes_pagos
@@ -4569,6 +4571,7 @@
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
 					tc_mantic_clientes_pagos.registro,
 					tc_mantic_clientes_pagos.observaciones,
+          tc_mantic_clientes_pagos.fecha_pago,
 					tc_mantic_clientes_pagos.comentarios,
 					tc_mantic_tipos_medios_pagos.nombre as tipo_pago
 				from

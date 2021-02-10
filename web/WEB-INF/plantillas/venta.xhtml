@@ -66,7 +66,7 @@
         <p:layoutUnit id="principal" position="center" size="100%" style="border:0;" resizable="false" styleClass="sticky-wrapper" gutter="0">
           <div id="layout-portlets-cover" class="janal-content-center janal-padding-cero">
             <h:form id="datos" prependId="false" class="janal-padding-cero">
-              <p:growl id="mensaje" showSummary="false" showDetail="true" sticky="false" widgetVar="mensajes"  escape="false" autoUpdate="true" life="15000"/>	
+              <p:growl id="mensaje" for="growl-key" globalOnly="true" showSummary="false" showDetail="true" sticky="false" widgetVar="mensajes"  escape="false" autoUpdate="true" life="15000"/>	
               <p:panel id="panelStickyBody" toggleable="true" styleClass="sticky-body janal-padding-cero" style="border:0px;">
                 <p:focus context="principal" class="janal-padding-cero"/>
                 <ui:insert name="contenido"/>

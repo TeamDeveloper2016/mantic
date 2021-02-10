@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -58,6 +59,8 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
   private Long ejercicio;
 	@Column (name="comentarios")
   private String comentarios;
+	@Column (name="fecha_pago")
+  private Date fechaPago;
 
   public TcManticClientesPagosDto() {
     this(new Long(-1L));
@@ -69,10 +72,10 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
   }
 
   public TcManticClientesPagosDto(Long idUsuario, Long idClienteDeuda, String observaciones, Long idClientePago, Double pago, Long idTipoMedioPago, Long idCierre, Long idBanco, String referencia) {
-		this(idUsuario, idClienteDeuda, observaciones, idClientePago, pago, idTipoMedioPago, idCierre, idBanco, referencia, null, null, null, null);
+		this(idUsuario, idClienteDeuda, observaciones, idClientePago, pago, idTipoMedioPago, idCierre, idBanco, referencia, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()));
 	}
 	
-  public TcManticClientesPagosDto(Long idUsuario, Long idClienteDeuda, String observaciones, Long idClientePago, Double pago, Long idTipoMedioPago, Long idCierre, Long idBanco, String referencia, String consecutivo, Long orden, Long ejercicio, String comentarios) {
+  public TcManticClientesPagosDto(Long idUsuario, Long idClienteDeuda, String observaciones, Long idClientePago, Double pago, Long idTipoMedioPago, Long idCierre, Long idBanco, String referencia, String consecutivo, Long orden, Long ejercicio, String comentarios, Date fechaPago) {
     setIdUsuario(idUsuario);
     setIdClienteDeuda(idClienteDeuda);
     setObservaciones(observaciones);
@@ -87,6 +90,7 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
 		setOrden(orden);
 		setEjercicio(ejercicio);
     this.comentarios= comentarios;
+    this.fechaPago= fechaPago;
   }
 
 	public Long getIdBanco() {
@@ -197,6 +201,14 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
     return comentarios;
   }
 
+  public Date getFechaPago() {
+    return fechaPago;
+  }
+
+  public void setFechaPago(Date fechaPago) {
+    this.fechaPago = fechaPago;
+  }
+
   public void setComentarios(String comentarios) {
     this.comentarios = comentarios;
   }
@@ -243,6 +255,8 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getComentarios());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getFechaPago());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -264,13 +278,14 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("orden", getOrden());
 		regresar.put("comentarios", getComentarios());
+		regresar.put("fechaPago", getFechaPago());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] { 
-			getIdUsuario(), getIdClienteDeuda(), getObservaciones(), getIdClientePago(), getPago(), getRegistro(), getIdTipoMedioPago(), getIdCierre(), getIdBanco(), getReferencia(), getConsecutivo(), getOrden(), getEjercicio(), getComentarios()
+			getIdUsuario(), getIdClienteDeuda(), getObservaciones(), getIdClientePago(), getPago(), getRegistro(), getIdTipoMedioPago(), getIdCierre(), getIdBanco(), getReferencia(), getConsecutivo(), getOrden(), getEjercicio(), getComentarios(), getFechaPago()
     };
     return regresar;
   }

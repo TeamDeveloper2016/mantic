@@ -2,7 +2,9 @@ package mx.org.kaana.mantic.catalogos.clientes.cuentas.backing;
 
 import java.io.File;
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +53,7 @@ public class Abono extends IBasePagos implements Serializable {
       this.attrs.put("idClienteDeuda", JsfBase.getFlashAttribute("idClienteDeuda"));    
 			this.attrs.put("cliente", DaoFactory.getInstance().findById(TcManticClientesDto.class, Long.valueOf(this.attrs.get("idCliente").toString())));			
 			this.attrs.put("saldar", "2");						
+			this.attrs.put("fechaPago", new Date(Calendar.getInstance().getTimeInMillis()));
 			this.initValues();
 			this.loadClienteDeuda();
 			this.doLoad();
@@ -126,8 +129,9 @@ public class Abono extends IBasePagos implements Serializable {
       pago= new TcManticClientesPagosDto();
       pago.setIdClienteDeuda(Long.valueOf(this.attrs.get("idClienteDeuda").toString()));
       pago.setIdUsuario(JsfBase.getIdUsuario());
-      pago.setObservaciones(this.attrs.get("observaciones").toString());
-      pago.setPago(Double.valueOf(this.attrs.get("pago").toString()));
+      pago.setObservaciones((String)this.attrs.get("observaciones"));
+      pago.setPago((Double)this.attrs.get("pago"));
+			pago.setFechaPago((Date)this.attrs.get("fechaPago"));
       pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
       tipoPago= pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
       transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("caja").toString()), Long.valueOf(this.attrs.get("idCliente").toString()), Long.valueOf(this.attrs.get("idEmpresa").toString()), tipoPago ? -1 : Long.valueOf(this.attrs.get("banco").toString()), tipoPago ? "" : this.attrs.get("referencia").toString(), saldar);

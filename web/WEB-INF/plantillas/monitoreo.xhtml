@@ -58,7 +58,7 @@
           <ui:include src="/WEB-INF/plantillas/secciones/leftmenu.xhtml"/>
           <div id="layout-portlets-cover" class="janal-content-center">
             <h:form id="datos" prependId="false">
-              <p:growl id="mensaje" showSummary="false" showDetail="true" sticky="false" widgetVar="mensajes" autoUpdate="true" escape="false" life="15000"/>	
+              <p:growl id="mensaje" for="growl-key" globalOnly="true" showSummary="false" showDetail="true" sticky="false" widgetVar="mensajes" autoUpdate="true" escape="false" life="15000"/>	
               <p:panel toggleable="true" styleClass="sticky-body" style="border:0px;">
                 <p:focus context="principal"/>														
                 <ui:insert name="contenido"/>

@@ -155,10 +155,9 @@ public class UIArchivo implements Serializable{
       } // while
       fileOutputStream.close();
       inputStream.close();
-      FacesMessage msg= new FacesMessage("Descripción del archivo", "Nombre: "+nombreArchivo+ "\nTamaño: "+
-                            (event.getFile().getSize()/1024)+ " Kb\nContenido: " +
-                             event.getFile().getContentType()+ "\nEl archivo fue importado con éxito.");
-      FacesContext.getCurrentInstance().addMessage(null, msg);
+      JsfBase.addMessage("Descripción del archivo", "Nombre: "+nombreArchivo+ "\nTamaño: "+
+                        (event.getFile().getSize()/1024)+ " Kb\nContenido: " +
+                        event.getFile().getContentType()+ "\nEl archivo fue importado con éxito.");
       Importado importado=  new Importado(nombreArchivo, event.getFile().getContentType(), EFormatos.valueOf(event.getFile().getFileName().substring(event.getFile().getFileName().lastIndexOf(".")+1).toUpperCase()), event.getFile().getSize());
       if(this.validar.single(importado))
         this.archivos.add(importado);
@@ -167,8 +166,7 @@ public class UIArchivo implements Serializable{
     } // try
     catch (IOException e) {
       Error.mensaje(e);
-      FacesMessage error=new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error:", "El archivo no fue importado, verifiquelo por favor !\n"+ e.getMessage());
-      FacesContext.getCurrentInstance().addMessage(null, error);
+      JsfBase.addMessage("Error:", "El archivo no fue importado, verifiquelo por favor !\n"+ e.getMessage());
     } // catch
   }
 
@@ -176,7 +174,6 @@ public class UIArchivo implements Serializable{
     if(!importado.getName().isEmpty()) {
       File file= new File(JsfBase.getExternalContext().getRealPath(Constantes.RUTA_IMPORTADOS+ importado.getName()));
       file.delete();
-      importado= new Importado("", "", EFormatos.FREE, 0L);
     } // if
   }
 

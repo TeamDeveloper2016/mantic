@@ -623,12 +623,10 @@ public class RegistroArticulo implements Serializable {
 	} // doDeleteFile
 	
 	private void toMessageImage() {
-		FacesMessage msg= null;
 		String detail   = null;
 		try {
-			detail= toDetailMessage();
-			msg=new FacesMessage("Actualización de versiones", detail);
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+			detail= this.toDetailMessage();
+      JsfBase.addMessage("Actualización de versiones", detail);
 		} // try
 		catch (Exception e) {			
 			throw e;

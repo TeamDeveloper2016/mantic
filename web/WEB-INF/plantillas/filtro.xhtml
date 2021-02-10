@@ -33,7 +33,7 @@
         <p:layoutUnit id="principal" position="center" size="100%" style="border:0;" styleClass="sticky-wrapper" gutter="0">
           <div id="layout-portlets-cover" class="janal-content-center janal-padding-cero" style="margin-left: 0 !important;margin-right: 0 !important;">
             <h:form id="datos" prependId="false" styleClass="janal-padding-cero">
-              <p:growl id="mensaje" autoUpdate="true" showSummary="false" showDetail="true" sticky="false" widgetVar="mensajes" escape="false" life="15000"/>
+              <p:growl id="mensaje" for="growl-key" globalOnly="true" autoUpdate="true" showSummary="false" showDetail="true" sticky="false" widgetVar="mensajes" escape="false" life="15000"/>
               <p:panel styleClass="sticky-body janal-padding-cero" toggleable="true" style="border:0px;">
                 <p:focus class="janal-padding-cero" context="principal"/>														
                 <ui:insert name="contenido"/>
