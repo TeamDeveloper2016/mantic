@@ -234,7 +234,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 			params= new HashMap<>();
 			params.put("idCliente", this.attrs.get("idCliente"));						
 			params.put("sortOrder", "order by tc_mantic_ventas.ticket");			
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes_deudas.id_cliente_estatus in (1, 2)");			
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
