@@ -21,7 +21,7 @@
 			
 			fieldsDialogGeneral ={
 				'pagoGeneral'         : {validaciones: 'requerido|menor-igual({"cuanto": #{manticCatalogosClientesCuentasDeuda.attrs.deuda.saldo}})', mascara: 'libre', grupo: 'dialogoGeneral'},
-				'fechaPagoGeneral'    : {validaciones: 'requerido|fecha', mascara: 'libre', grupo: 'dialogo'},
+				'fechaPagoGeneral'    : {validaciones: 'requerido|fecha', mascara: 'libre', grupo: 'dialogoGeneral'},
 				'referenciaGeneral'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoGeneral'},
         'tipoPagoGeneral'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoGeneral'},
         'observacionesGeneral': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogoGeneral', formatos: 'cambiar-mayusculas'}
@@ -29,7 +29,7 @@
 			
 			fieldsDialogSegmento ={
 				'pagoSegmento'         : {validaciones: 'requerido|menor-igual({"cuanto": #{manticCatalogosClientesCuentasDeuda.attrs.deuda.saldo}})', mascara: 'libre', grupo: 'dialogoSegmento'},
-				'fechaPagoSegmento'    : {validaciones: 'requerido|fecha', mascara: 'libre', grupo: 'dialogo'},
+				'fechaPagoSegmento'    : {validaciones: 'requerido|fecha', mascara: 'libre', grupo: 'dialogoSegmento'},
 				'referenciaSegmento'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoSegmento'},
         'tipoPagoSegmento'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoSegmento'},
         'observacionesSegmento': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogoSegmento', formatos: 'cambiar-mayusculas'}
