@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/filtro.xhtml">
-	<ui:param name="titulo" value="Artículos" />
+	<ui:param name="titulo" value="Consulta de ventas por artículos" />
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
@@ -42,8 +42,8 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
-              <p:outputLabel for="idAlmacen" value="Almacen:"/>
-              <p:selectOneMenu id="idAlmacen" value="#{manticConsultasArticulos.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:outputLabel for="idAlmacen" value="Almacen:" rendered="false"/>
+              <p:selectOneMenu id="idAlmacen" value="#{manticConsultasArticulos.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="false" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticConsultasArticulos.attrs.almacenes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
                 <p:column headerText="Clave">
@@ -84,9 +84,9 @@
 								<f:selectItem itemLabel="SI" itemValue="1"/>
 								<f:selectItem itemLabel="NO" itemValue="2"/>
 							</p:selectOneMenu>								
-							<p:outputLabel for="fechaInicio" value="Fecha de actualización inicio:"/>
+							<p:outputLabel for="fechaInicio" value="Fecha de venta inicio:"/>
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticConsultasArticulos.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>              
-							<p:outputLabel for="fechaTermino" value="Fecha de actualización termino:"/>
+							<p:outputLabel for="fechaTermino" value="Fecha de venta termino:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticConsultasArticulos.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>							
 							<p:outputLabel for="montoInicio" value="Costo inicio:"/>
 							<p:inputText id="montoInicio" styleClass="janal-wid-100-txt" value="#{manticConsultasArticulos.attrs.montoInicio}" converter="javax.faces.Double">
@@ -119,65 +119,59 @@
 									<p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 								</div>	
 							</f:facet>												
-							<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.propio}">
+							<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.ticket}">
+								<f:facet name="header">
+									<h:outputText value="Ticket"/>
+								</f:facet>
+								<h:outputText value="#{row['ticket']}"/>
+							</p:column>														
+							<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.vendedor}">
+								<f:facet name="header">
+									<h:outputText value="Vendedor"/>
+								</f:facet>
+								<h:outputText value="#{row['vendedor']}"/>
+							</p:column>														
+							<p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.propio}">
 								<f:facet name="header">
 									<h:outputText value="Código"/>
 								</f:facet>
 								<h:outputText value="#{row['propio']}"/>
 							</p:column>														
-							<p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.nombre}">
+							<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
 								<f:facet name="header">
 									<h:outputText value="Nombre"/>
 								</f:facet>
 								<h:outputText value="#{row['nombre']}"/>
 							</p:column>														
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.precio}">
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.precios}">
 								<f:facet name="header">
 									<h:outputText value="Costo"/>
 								</f:facet>
-								<h:outputText value="#{row['precio']}"/>
+								<h:outputText value="#{row['precios']}"/>
 							</p:column>					
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.menudeo}">
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.costo}">
 								<f:facet name="header">
-									<h:outputText value="Menudeo"/>
+									<h:outputText value="Precio"/>
 								</f:facet>
-								<h:outputText value="#{row['menudeo']}"/>
+								<h:outputText value="#{row['costo']}"/>
 							</p:column>					
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cantidad}">
 								<f:facet name="header">
-									<h:outputText value="Utilidad"/>
+									<h:outputText value="Cantidad"/>
 								</f:facet>
-								<h:outputText value="#{row['utilidadMenudeo']} %"/>
+								<h:outputText value="#{row['cantidad']}"/>
 							</p:column>					
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.medioMayoreo}">
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.importe}">
 								<f:facet name="header">
-									<h:outputText value="Medio mayoreo"/>
+									<h:outputText value="Importe"/>
 								</f:facet>
-								<h:outputText value="#{row['medioMayoreo']}"/>
+								<h:outputText value="#{row['importe']}"/>
 							</p:column>					
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
 								<f:facet name="header">
-									<h:outputText value="Utilidad"/>
+									<h:outputText value="Fecha"/>
 								</f:facet>
-								<h:outputText value="#{row['utilidadMedioMayoreo']} %"/>
-							</p:column>					
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.mayoreo}">
-								<f:facet name="header">
-									<h:outputText value="Mayoreo"/>
-								</f:facet>
-								<h:outputText value="#{row['mayoreo']}"/>
-							</p:column>											
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
-								<f:facet name="header">
-									<h:outputText value="Utilidad"/>
-								</f:facet>
-								<h:outputText value="#{row['utilidadMayoreo']} %"/>
-							</p:column>					
-							<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.actualizado}">
-								<f:facet name="header">
-									<h:outputText value="Actualizado"/>
-								</f:facet>
-								<h:outputText value="#{row['actualizado']}"/>
+								<h:outputText value="#{row['registro']}"/>
 							</p:column>					
 							<f:facet name="footer">
 								Total [#{manticConsultasArticulos.lazyModel== null ? 0: manticConsultasArticulos.lazyModel.rowCount}] registros

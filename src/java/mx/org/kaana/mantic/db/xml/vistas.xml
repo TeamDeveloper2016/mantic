@@ -903,6 +903,60 @@
       </select>
 		</unit>
 		<unit id="VistaConsultasDto">
+			<select id="articulo">
+				select 
+				  tc_mantic_articulos.id_articulo as id_key,
+				  tc_mantic_ventas.ticket,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as vendedor,
+				  tc_mantic_articulos.id_vigente,
+				  tc_mantic_articulos.nombre,
+				  tc_mantic_articulos.precio,
+				  tc_mantic_ventas_detalles.precio as precios,
+				  tc_mantic_ventas_detalles.costo,
+				  tc_mantic_ventas_detalles.iva,
+				  tc_mantic_ventas_detalles.cantidad,
+				  tc_mantic_ventas_detalles.importe,
+				  tc_mantic_articulos.menudeo,
+				  tc_mantic_articulos.medio_mayoreo,
+				  tc_mantic_articulos.mayoreo,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
+				  if(tc_mantic_articulos.id_facturama is null, -1, tc_mantic_articulos.id_facturama) id_facturama,
+				  tc_mantic_ventas.registro
+				from 
+					tc_mantic_articulos
+				inner join
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+				inner join 
+					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
+				inner join
+					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+				inner join 
+					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+				inner join 
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+				inner join
+					tc_mantic_ventas_detalles on tc_mantic_articulos.id_articulo = tc_mantic_ventas_detalles.id_articulo
+				inner join
+					tc_mantic_ventas on tc_mantic_ventas_detalles.id_venta = tc_mantic_ventas.id_venta
+				inner join 
+					tc_janal_usuarios on tc_mantic_ventas.id_usuario= tc_janal_usuarios.id_usuario
+				inner join				
+					tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
+				where 
+					tc_mantic_empresas.id_empresa in ({idEmpresa})
+					and tc_mantic_ventas.ticket is not null
+					and tc_mantic_ventas.id_venta_estatus in (3, 4, 6, 15)
+				  and {condicion}					
+				group by 
+					tc_mantic_articulos.id_vigente,
+				  tc_mantic_articulos.nombre,          
+				  tc_mantic_articulos.menudeo,          
+				  tc_mantic_articulos.medio_mayoreo,          
+				  tc_mantic_articulos.mayoreo,          
+				  tc_mantic_articulos.iva,          
+				  tc_mantic_articulos.desperdicio          
+				{sortOrder}
+			</select>
 			<select id="disponible">
         select
           tc_mantic_cierres_cajas.id_cierre_caja as id_key,
@@ -1508,16 +1562,11 @@
 						tc_mantic_cajas on cierre.id_caja = tc_mantic_cajas.id_caja                                                     
 					where
 						tc_mantic_ventas.id_empresa in ({idEmpresa})             
-					and
-						tc_mantic_tipos_documentos.id_tipo_documento= {idTipoDocumento}       
-					and
-						tc_mantic_ventas_estatus.id_venta_estatus in ({idVentaEstatus})       
-					and
-						(date_format(tc_mantic_ventas.registro, '%Y%m%d')&gt;= '{fechaInicio}')       
-					and
-						(date_format(tc_mantic_ventas.registro, '%Y%m%d')&lt;= '{fechaFin}')            
-					and
-						{condicionPrincipal}
+					  and tc_mantic_tipos_documentos.id_tipo_documento= {idTipoDocumento}       
+					  and tc_mantic_ventas_estatus.id_venta_estatus in ({idVentaEstatus})       
+					  and (date_format(tc_mantic_ventas.registro, '%Y%m%d')&gt;= '{fechaInicio}')       
+					  and (date_format(tc_mantic_ventas.registro, '%Y%m%d')&lt;= '{fechaFin}')            
+					  and	{condicionPrincipal}
 					group by
 						tc_mantic_ventas.id_empresa,
 						tc_mantic_empresas.clave,
@@ -1529,6 +1578,8 @@
 					) as principal
 				right join 
 					tc_janal_horas on principal.hora = tc_janal_horas.descripcion
+				where
+					tc_janal_horas.id_hora&gt; 6 and tc_janal_horas.id_hora&lt; 22
 				order by
 					tc_janal_horas.descripcion
 			</select>

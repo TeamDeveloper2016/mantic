@@ -1363,7 +1363,7 @@
 						<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.seleccionDetalleTicket.estatus}" readonly="true"/>
 						<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.medioPagoDetalleTicket}" readonly="true"/>
 					</p:panelGrid>	
-	  			<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100" >						
+	  			<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" style="height:300px !important;overflow-y: auto" columnClasses="janal-wid-100" >						
             <p:dataTable  lazy="true" id="tablaDetalleTicket" widgetVar="kajoolTableDetalleTicket" var="row" value="#{manticVentasCajaAccion.lazyDetalleTicket}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticVentasCajaAccion.lazyDetalleTicket.rowCount gt manticVentasCajaAccion.lazyDetalleTicket.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">										
               <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
                 <f:facet name="header">

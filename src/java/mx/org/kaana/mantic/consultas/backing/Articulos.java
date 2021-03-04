@@ -86,9 +86,13 @@ public class Articulos extends Comun implements Serializable {
     try {
       columns = new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("actualizado", EFormatoDinamicos.FECHA_HORA));
+      columns.add(new Columna("precios", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
       params.put("sortOrder", "order by tc_mantic_articulos.nombre, tc_mantic_articulos.actualizado");
-      this.lazyModel = new UtilidadArticulosLazy("VistaArticulosDto", "row", params, columns);
+      this.lazyModel = new UtilidadArticulosLazy("VistaConsultasDto", "articulo", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try // try
     catch (Exception e) {
@@ -135,13 +139,13 @@ public class Articulos extends Comun implements Serializable {
 			if(!Cadena.isVacio(this.attrs.get("codigo")))
 				sb.append("upper(tc_mantic_articulos_codigos.codigo) like upper('%").append(this.attrs.get("codigo")).append("%') and ");						
 			if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-				sb.append("((date_format(tc_mantic_articulos.actualizado, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') or (date_format(tc_mantic_articulos.actualizado, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("')) and ");			
+				sb.append("((date_format(tc_mantic_ventas_detalles.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') or (date_format(tc_mantic_articulos.actualizado, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("')) and ");			
 			if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-				sb.append("((date_format(tc_mantic_articulos.actualizado, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') or (date_format(tc_mantic_articulos.actualizado, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("')) and ");			
+				sb.append("((date_format(tc_mantic_ventas_detalles.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') or (date_format(tc_mantic_articulos.actualizado, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("')) and ");			
 			if(!Cadena.isVacio(this.attrs.get("montoInicio")))
-				sb.append("(tc_mantic_articulos.precio>= ").append((Double)this.attrs.get("montoInicio")).append(") and ");			
+				sb.append("(tc_mantic_ventas_detalles.precio>= ").append((Double)this.attrs.get("montoInicio")).append(") and ");			
 			if(!Cadena.isVacio(this.attrs.get("montoTermino")))
-				sb.append("(tc_mantic_articulos.precio<= ").append((Double)this.attrs.get("montoTermino")).append(") and ");			
+				sb.append("(tc_mantic_ventas_detalles.precio<= ").append((Double)this.attrs.get("montoTermino")).append(") and ");			
 			if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L) 
 				sb.append("tc_mantic_articulos.id_articulo=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");						
   		else 
