@@ -71,16 +71,13 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 	protected Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb = new StringBuilder();
-    Boolean condicion= Boolean.FALSE;
 		UISelectEntity estatus= (UISelectEntity) this.attrs.get("idVentaEstatus");
 		if(!Cadena.isVacio(this.attrs.get("idVenta")) && !this.attrs.get("idVenta").toString().equals("-1"))
   		sb.append("(tc_mantic_ventas.id_venta=").append(this.attrs.get("idVenta")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(tc_mantic_ventas.ticket like '%").append(this.attrs.get("consecutivo")).append("%') and tc_mantic_ventas.cticket is not null and ");
-    else {
+    else
 			sb.append(" tc_mantic_ventas.cticket is not null and ");			
-      condicion= Boolean.TRUE;
-    } // if  
 		if(!Cadena.isVacio(JsfBase.getParametro("codigo_input")))
 			sb.append("upper(tc_mantic_ventas_detalles.codigo) like upper('%").append(JsfBase.getParametro("codigo_input")).append("%') and ");						
 		if(this.attrs.get("nombre")!= null && ((UISelectEntity)this.attrs.get("nombre")).getKey()> 0L) 
@@ -105,13 +102,12 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 				sb.append("(tc_mantic_ventas.id_venta_estatus= ").append(estatus.getKey()).append(") and ");
 			else
 			  sb.append("(tc_mantic_ventas.id_venta_estatus in ( ").append(this.attrs.get("allEstatusCaja")).append(")) and ");
-      condicion= Boolean.TRUE; 
 		} // if
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
 		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
-		if(condicion) {
+		if(Cadena.isVacio(this.attrs.get("fechaInicio")) && Cadena.isVacio(this.attrs.get("fechaTermino"))) {
       Periodo periodo= new Periodo();
       periodo.addMeses(-1);
 		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4)+ " and date_format(tc_mantic_ventas.registro, '%Y%m%d')>= '".concat(periodo.toString()).concat("'"));

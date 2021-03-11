@@ -943,7 +943,7 @@
 				inner join				
 					tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
 				where 
-					tc_mantic_empresas.id_empresa in ({idEmpresa})
+					tc_mantic_ventas.id_empresa in ({idEmpresa})
 					and tc_mantic_ventas.ticket is not null
 					and tc_mantic_ventas.id_venta_estatus in (3, 4, 6, 15)
 				  and {condicion}					
@@ -9146,8 +9146,7 @@
 					tc_mantic_ventas_detalles on tc_mantic_ventas_detalles.id_articulo = tc_mantic_articulos.id_articulo
 				where  
 					tc_mantic_articulos.id_articulo= {idArticulo}
-				and 
-					tc_mantic_ventas_detalles.id_venta_detalle= {idComodin}
+				  and tc_mantic_ventas_detalles.id_venta_detalle= {idComodin}
 			</select>
 		</unit>
 		<unit id="VistaTcManticGarantiasArticulosDto">
