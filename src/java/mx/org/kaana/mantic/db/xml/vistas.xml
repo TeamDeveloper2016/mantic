@@ -4517,6 +4517,7 @@
 					tc_mantic_ventas.consecutivo,
 					tc_mantic_ventas.id_manual,
 					tc_mantic_clientes_deudas.importe,
+          round(tc_mantic_clientes_deudas.importe- tc_mantic_clientes_deudas.saldo, 2) as pagado,
 					tc_mantic_clientes_deudas.saldo,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
 					tc_mantic_clientes_deudas.limite,
