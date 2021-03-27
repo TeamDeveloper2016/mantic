@@ -26,6 +26,7 @@ import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresCajasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesPagosDto;
@@ -610,8 +611,16 @@ public class Transaccion extends IBaseTnx{
 		deuda.setImporte(importe);
 		deuda.setSaldo(importe);
 		deuda.setLimite(toLimiteCredito(sesion));
-		deuda.setIdClienteEstatus(1L);
+		deuda.setIdClienteEstatus(EEstatusClientes.INICIADA.getIdEstatus());
 		DaoFactory.getInstance().insert(sesion, deuda);		
+    TcManticClientesBitacoraDto movimiento= new TcManticClientesBitacoraDto(
+      -1L, // Long idClienteBitacora, 
+      deuda.getIdClienteEstatus(), // Long idClienteEstatus, 
+      null, // String justificacion, 
+      JsfBase.getIdUsuario(), // Long idUsuario, 
+      deuda.getIdClienteDeuda() // Long idClienteDeuda
+    );
+    DaoFactory.getInstance().insert(sesion, movimiento);
 	} // registrarDeuda
 	
 	public Date toLimiteCredito(Session sesion) throws Exception{

@@ -475,6 +475,10 @@
    */
   Janal.Control.Validations= Janal.Control.Functions.extend({
     // privates atributtes for class
+		VK_TAB        : 9, 
+		VK_ENTER      : 13, 
+		VK_UP         : 38,
+		VK_DOWN       : 40,
     form          : 'datos',
     fields        : {},
 		backup        : {},
@@ -528,6 +532,36 @@
   				$janal.console('janal.focus: '+ $(this).attr('id'));
 				  $janal.lastNameFocus= this;
 				} // if	
+			});
+			$(document).on('keydown', '.event-keydown-enter', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				$janal.console('janal.keydown [event-keydown-enter]: '+ key);
+				switch(key) {
+					case $janal.VK_TAB: 
+					case $janal.VK_ENTER: 
+					case $janal.VK_DOWN: 
+						var name= $janal.parser(this);
+						if(name) {
+							var id= $(this).attr('id');
+							if(id.startsWith('tipoDescuento')) {
+								var index= parseInt(PF(id).getJQ().find(':checked').val());
+								if(index===0) 
+									name= 'descuentoGlobal_input';
+								else
+									if(index===2 || index=== 3 || index=== 4) 
+										name= 'descuentoAceptar';
+							}	// if
+							$('#'+ name).focus();
+						} // if	
+						$janal.console('focus: '+ $(this).attr('id')+ ' target: '+ name);
+						if(key=== $janal.VK_ENTER && $(this).attr('id')=== 'descuentoAceptar')
+							$('#descuentoAceptar').click();
+						return false;
+						break;						
+					case $janal.VK_UP:  
+						return false;
+						break;
+				} // switch
 			});
     }, // init
     prepare: function(form, fields, showMaxError) {
@@ -641,7 +675,7 @@
       }); // each
     }, // cleanForm
     data: function(id, value) {
-      $janal.hide();
+      // $janal.hide();
       var $components= $janal.components(value.multiple, id);
       $janal.console('janal.data: '+ id+ ' encontrados: '+ $components.length);
       $.each($components, function() {
@@ -783,6 +817,7 @@
       return names.indexOf(value)>= 0;
     }, // validate
     hide: function() {
+      $janal.console('janal.hide');
       $('input, select, textarea').removeClass('janal-input-error');
       $('label, th>span').removeClass('janal-field-error');
       $('#growl_container').remove();
@@ -802,7 +837,7 @@
           $janal.required(id, value.validaciones, false);
         });
       }); // each
-      $janal.hide();
+      // $janal.hide();
     }, // clean
     isWaterMark: function(methods) {
 			var count= 0;
@@ -1275,7 +1310,7 @@
 			alert(msg);
     }, // alert
     version: function() {
-      return '0.3.4.6';
+      return '0.3.4.7';
     }, // version
     align: function(pixels) {
       try {

@@ -12,6 +12,7 @@ import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -43,6 +44,7 @@ import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
 import mx.org.kaana.mantic.facturas.reglas.Transaccion;
+import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -64,7 +66,9 @@ public class Saldos extends IBaseFilter implements Serializable {
 	private List<Correo> selectedCorreos;	
 	private Correo correo;
   protected FormatLazyModel lazyModelDetalle;
-	private FormatLazyModel historialPagos;
+	private List<Entity> pagosRealizados;
+  protected FormatLazyModel lazyPagosRealizados;
+  private EAccion pivote;
 
 	public UISelectEntity getEncontrado() {
 		return encontrado;
@@ -102,8 +106,12 @@ public class Saldos extends IBaseFilter implements Serializable {
     return lazyModelDetalle;
   }
 
-  public FormatLazyModel getHistorialPagos() {
-    return historialPagos;
+  public List<Entity> getPagosRealizados() {
+    return pagosRealizados;
+  }
+
+  public FormatLazyModel getLazyPagosRealizados() {
+    return lazyPagosRealizados;
   }
 
   @PostConstruct
@@ -112,6 +120,8 @@ public class Saldos extends IBaseFilter implements Serializable {
     try {
 			this.idCliente= JsfBase.getFlashAttribute("idCliente")== null? -1L: Long.valueOf(JsfBase.getFlashAttribute("idCliente").toString());			
 			this.filtro = this.idCliente.equals(-1L);
+      this.pivote = EAccion.ELIMINAR;
+  		this.attrs.put("ok", Boolean.FALSE);
       this.attrs.put("idCliente", this.idCliente);     
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
@@ -126,6 +136,7 @@ public class Saldos extends IBaseFilter implements Serializable {
       this.doCalcularPlazo();
 			this.correos        = new ArrayList<>();
 			this.selectedCorreos= new ArrayList<>();
+      this.pagosRealizados= null;
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -149,7 +160,9 @@ public class Saldos extends IBaseFilter implements Serializable {
       columns.add(new Columna("limiteCredito", EFormatoDinamicos.MILES_CON_DECIMALES));    
 			this.lazyModel = new FormatCustomLazy("VistaClientesDto", "clientes", params, columns);
       UIBackingUtilities.resetDataTable();	
-      this.lazyModelDetalle= null;
+      this.lazyModelDetalle   = null;
+      this.pagosRealizados    = null;
+      this.lazyPagosRealizados= null;
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -486,7 +499,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 	} // doCalcularPlazo
   
   public void doReporteEspecial() throws Exception{
-		doReporteEspecial(false);
+		this.doReporteEspecial(false);
 	}
 	
   private void doReporteEspecial(boolean email) throws Exception {
@@ -636,7 +649,7 @@ public class Saldos extends IBaseFilter implements Serializable {
     try {
   	  params = this.toPrepare();
 			Entity entity= (Entity)this.attrs.get("seleccionado");
-			params.put("sortOrder", "order by dias desc");
+			params.put("sortOrder", "order by dias desc, tc_mantic_ventas.ticket desc");
 			params.put("idCliente", entity.toLong("idCliente"));
       columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));      
@@ -648,36 +661,6 @@ public class Saldos extends IBaseFilter implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));    
 			this.lazyModelDetalle = new FormatCustomLazy("VistaClientesDto", "detalle", params, columns);
       UIBackingUtilities.resetDataTable();		
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch
-    finally {
-      Methods.clean(params);
-      Methods.clean(columns);
-    } // finally		   
-  }
- 
-  public void doLoadHistorial(Entity row) {
-    List<Columna> columns     = null;
-	  Map<String, Object> params= null;	
-    try {
-  	  params= new HashMap<>();
-      Periodo periodo= new Periodo();
-      periodo.addMeses(-12);
-      params.put(Constantes.SQL_CONDICION, "date_format(tc_mantic_clientes_pagos.registro, '%Y%m%d')>= '".concat(periodo.toString()).concat("'"));
-			params.put("idCliente", row.toLong("idCliente"));
-      params.put("sortOrder", "order by tc_mantic_ventas.ticket desc, tc_mantic_clientes_pagos.registro desc");
-      columns= new ArrayList<>();
-      columns.add(new Columna("ticket", EFormatoDinamicos.MAYUSCULAS));      
-      columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));    
-      columns.add(new Columna("pago", EFormatoDinamicos.MILES_CON_DECIMALES));      
-      columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));    
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));    
-      columns.add(new Columna("fechaPago", EFormatoDinamicos.FECHA_CORTA));    
-			this.historialPagos = new FormatCustomLazy("VistaClientesDto", "historial", params, columns);
-      UIBackingUtilities.resetDataTable("tablaHistorial");		
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -701,4 +684,121 @@ public class Saldos extends IBaseFilter implements Serializable {
 		} // catch		
 	} // onRowToggle
  
+  public void toLoadPagosRealizados(Entity row) {
+    List<Columna> columns     = null;    
+    Map<String, Object> params= null;
+    try {      
+      this.attrs.put("seleccionado", row);
+      params = new HashMap<>();      
+      params.put("idCliente", row.toLong("idCliente"));      
+      Periodo periodo= new Periodo();
+      periodo.addMeses(-12);
+      params.put("inicio", periodo.toString());      
+      columns = new ArrayList<>();
+      columns.add(new Columna("pago", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+      this.pagosRealizados = (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaClientesDto", "pagosRealizados", params);
+      if(this.pagosRealizados!= null && !this.pagosRealizados.isEmpty()) {
+        UIBackingUtilities.toFormatEntitySet(this.pagosRealizados, columns);
+        this.pagosRealizados.get(0).getValue("eliminar").setData(1L);
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+  }
+ 
+  public void doDeletePago(Entity row) {
+    this.attrs.put("eliminarPagoRealizado", row);
+    this.pivote = EAccion.ELIMINAR;
+    this.attrs.put("msgAutorizacion", " la cancelación del pago con importe ".concat(row.toString("pago")));
+  }
+  
+  public void doDeleteCuenta(Entity row) {
+    this.attrs.put("seleccionadoDetalle", row);
+    this.pivote = EAccion.DEPURAR;
+    this.attrs.put("msgAutorizacion", " la cancelación de la CxC con ticket ".concat(row.toString("ticket")));
+  }
+  
+	public void onRowTogglePagosRealizados(ToggleEvent event) {
+		try {
+			this.attrs.put("pagoRealizado", (Entity) event.getData());
+			if (!event.getVisibility().equals(Visibility.HIDDEN)) 
+				this.doLoadDetallePagosRealizados();
+		} // try
+		catch (Exception e) {			
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // onRowTogglePagosRealizados
+ 
+  public void doLoadDetallePagosRealizados() {
+    List<Columna> columns     = null;
+	  Map<String, Object> params= null;	
+    try {
+      params = new HashMap<>();      
+			Entity entity= (Entity)this.attrs.get("pagoRealizado");
+			params.put("sortOrder", "order by tc_mantic_clientes_pagos.registro desc");
+			params.put("idClientePagoControl", entity.toLong("idClientePagoControl"));
+      columns= new ArrayList<>();
+      columns.add(new Columna("venta", EFormatoDinamicos.MILES_CON_DECIMALES));    
+      columns.add(new Columna("abonado", EFormatoDinamicos.MILES_CON_DECIMALES));      
+			this.lazyPagosRealizados= new FormatCustomLazy("VistaClientesDto", "detallePagosRealizados", params, columns);
+      UIBackingUtilities.resetDataTable();		
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally		   
+  }  
+  
+	public String doCheckUser() {
+		String regresar   = null;
+    String texto      = null;
+		String cuenta     = (String)this.attrs.get("cuenta");
+		String contrasenia= (String)this.attrs.get("contrasenia");
+		try {
+			CambioUsuario	usuario= new CambioUsuario(cuenta, contrasenia);			
+			if(usuario.validaPrivilegiosDescuentos()) {
+        String justificacion= (String)this.attrs.get("justificacion");
+				this.attrs.put("cuenta", "");
+				this.attrs.put("contrasenia", "");
+				this.attrs.put("justificacion", "");
+        // aqui se elimina el pago al que se hace referencia
+        String proceso= EAccion.ELIMINAR.equals(pivote)? "eliminarPagoRealizado": "seleccionadoDetalle";
+        Entity entity = (Entity)this.attrs.get(proceso);
+        mx.org.kaana.mantic.catalogos.clientes.cuentas.reglas.Transaccion transaccion= new 
+          mx.org.kaana.mantic.catalogos.clientes.cuentas.reglas.Transaccion(EAccion.ELIMINAR.equals(pivote)? entity.toLong("idClientePagoControl"): entity.toLong("idClienteDeuda"), justificacion);
+        if(transaccion.ejecutar(pivote)) {
+          texto= "Se eliminó "+ (EAccion.ELIMINAR.equals(pivote)? "el pago": " la cuenta por cobrar")+ " con éxito";
+          this.doLoad();
+          UIBackingUtilities.update("tabla");
+          UIBackingUtilities.update("tablaPagosRealizados");
+        } // if
+        else 
+          texto= "No se puedo eliminar "+ (EAccion.ELIMINAR.equals(pivote)? "el pago": "la cuenta por cobrar")+ ", intente nuevamente !";
+				this.attrs.put("ok", Boolean.FALSE);
+				UIBackingUtilities.execute("PF('widgetDialogoAutorizacion').hide();");
+        UIBackingUtilities.execute("janal.show([{summary: 'Cuenta: ', detail: '"+ texto+ "'}], '"+ (texto.startsWith("Se")? "info": "warn")+ "');");
+			} // if
+			else
+				this.attrs.put("ok", Boolean.TRUE);
+	  } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+			UIBackingUtilities.execute("PF('widgetDialogoAutorizacion').hide();");
+      JsfBase.addMessageError(e);
+    } // catch
+		return regresar;
+	}
+  
 }

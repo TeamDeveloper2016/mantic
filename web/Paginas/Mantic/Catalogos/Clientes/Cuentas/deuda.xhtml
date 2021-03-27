@@ -295,7 +295,7 @@
 						<f:selectItem itemLabel="NO" itemValue="2"/>
 					</p:selectOneRadio>
 					<p:outputLabel for="tipoPagoGeneral" value="Tipo de pago:"/>
-					<p:selectOneMenu id="tipoPagoGeneral" value="#{manticCatalogosClientesCuentasDeuda.attrs.tipoPagoGeneral}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
+					<p:selectOneMenu id="tipoPagoGeneral" value="#{manticCatalogosClientesCuentasDeuda.attrs.tipoPagoGeneral}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
 						<p:ajax event="change" process="@this pagoGeneral" listener="#{manticCatalogosClientesCuentasDeuda.doValidaTipoPagoGeneral}" update="panelDialogoGeneral bancoGeneral referenciaGeneral lblBancoGeneral lblReferenciaGeneral" oncomplete="janal.refresh();"/>
 						<f:selectItems value="#{manticCatalogosClientesCuentasDeuda.attrs.tiposPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
 						<p:column headerText="Clave">

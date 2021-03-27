@@ -80,36 +80,6 @@
 			this.lastCursorAt();
 		}, // init
 		events: function() {
-			$(document).on('keydown', '.event-keydown-enter', function(e) {
-				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('jsArticulos.keydown [event-keydown-enter]: '+  key);
-				switch(key) {
-					case $articulos.VK_TAB: 
-					case $articulos.VK_ENTER: 
-					case $articulos.VK_DOWN: 
-						var name= janal.parser(this);
-						if(name) {
-							var id= $(this).attr('id');
-							if(id.startsWith('tipoDescuento')) {
-								var index= parseInt(PF(id).getJQ().find(':checked').val());
-								if(index===0) 
-									name= 'descuentoGlobal_input';
-								else
-									if(index===2 || index=== 3 || index=== 4) 
-										name= 'descuentoAceptar';
-							}	// if
-							$('#'+ name).focus();
-						} // if	
-						janal.console('focus: '+ $(this).attr('id')+ ' target: '+ name);
-						if(key=== $articulos.VK_ENTER && $(this).attr('id')=== 'descuentoAceptar')
-							$('#descuentoAceptar').click();
-						return false;
-						break;						
-					case $articulos.VK_UP:  
-						return false;
-						break;
-				} // switch
-			});
       $(document).on('focus', this.filter, function() {
 				janal.console('jsVentas.focus: '+ $(this).attr('id')+ ' value:['+ $(this).val().trim()+ ']');
 				$articulos.current= $(this).val().trim();

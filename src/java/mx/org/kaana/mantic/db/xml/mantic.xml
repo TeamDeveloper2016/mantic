@@ -7,6 +7,42 @@
   </model>
 
   <dml>
+    <unit id="TcManticClientesBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_clientes_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_clientes_bitacora
+        where      
+          id_cliente_bitacora = {idClienteBitacora}
+      </select>
+    </unit>    
+    <unit id="TcManticClientesPagosControlesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_clientes_pagos_controles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_clientes_pagos_controles
+        where      
+          id_cliente_pago_control = {idClientePagoControl}
+      </select>
+    </unit>    
     <unit id="TcManticRefaccionesDto">
       <select id="row">
         select      
@@ -5602,6 +5638,20 @@
         where      
           ruta = '{ruta}' and id_tipo_archivo = {idTipoArchivo} and id_cliente_pago = {idClientePago} and nombre = '{nombre}'
       </select>
+      <select id="pago">
+        select      
+          *
+        from      
+          tc_mantic_clientes_pagos_archivos
+        where      
+          id_cliente_pago = {idClientePago}
+      </select>
+      <delete id="rows">
+        delete from
+          tc_mantic_clientes_pagos_archivos
+        where
+          id_cliente_pago= {idClientePago}
+      </delete>  
     </unit>
 		<unit id="TcManticRequisicionesEstatusDto">
       <select id="row">

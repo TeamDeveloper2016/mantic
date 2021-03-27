@@ -26,6 +26,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteDomicilio;
 import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.db.dto.TcManticClientesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
@@ -35,6 +36,7 @@ import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteDomicilioDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
+import mx.org.kaana.mantic.enums.EEstatusClientes;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETipoVenta;
 import mx.org.kaana.mantic.enums.ETiposContactos;
@@ -654,8 +656,16 @@ public class Transaccion extends TransaccionFactura {
 		deuda.setImporte(importe);
 		deuda.setSaldo(importe);
 		deuda.setLimite(toLimiteCredito(sesion));
-		deuda.setIdClienteEstatus(1L);
-		DaoFactory.getInstance().insert(sesion, deuda);		
+		deuda.setIdClienteEstatus(EEstatusClientes.INICIADA.getIdEstatus());
+		DaoFactory.getInstance().insert(sesion, deuda);	
+    TcManticClientesBitacoraDto movimiento= new TcManticClientesBitacoraDto(
+      -1L, // Long idClienteBitacora, 
+      deuda.getIdClienteEstatus(), // Long idClienteEstatus, 
+      null, // String justificacion, 
+      JsfBase.getIdUsuario(), // Long idUsuario, 
+      deuda.getIdClienteDeuda() // Long idClienteDeuda
+    );
+    DaoFactory.getInstance().insert(sesion, movimiento);
 	} // registrarDeuda
 	
 	public Date toLimiteCredito(Session sesion) throws Exception{

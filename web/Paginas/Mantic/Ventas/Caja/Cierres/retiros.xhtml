@@ -135,7 +135,7 @@
 		<p:dialog id="dialogoAutorizacion" widgetVar="widgetDialogoAutorizacion" header="Persona que autoriza el movimiento" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="janal.change('formAutorizacion', Janal.Control.credenciales); focus();" width="50%" onHide="janal.restore(); janal.desbloquear();">						
 			<h:form id="formAutorizacion" prependId="false">
 				<div class="janal-wid-100-txt janal-column-center">
-				  <p:outputLabel id="invalido" value="La cuenta o contraseña no son validas o no tienes autorización" styleClass="janal-color-orange" style="display: #{manticVentasCajaCierresRetiros.attrs.ok? '': 'none'};"/>
+				  <p:outputLabel id="invalido" value="La cuenta o contraseña no son validas o no tiene autorización" styleClass="janal-color-orange" style="display: #{manticVentasCajaCierresRetiros.attrs.ok? '': 'none'};"/>
 			  </div>
 				<p:panelGrid columns="1" styleClass="janal-wid-100">
 					<p:outputLabel for="cuenta" value="Usuario:"/>

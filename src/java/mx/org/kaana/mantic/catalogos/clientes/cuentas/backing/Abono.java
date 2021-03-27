@@ -96,6 +96,7 @@ public class Abono extends IBasePagos implements Serializable {
 			params.put("idClienteDeuda", this.attrs.get("idClienteDeuda"));			
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+			columns.add(new Columna("fechaPago", EFormatoDinamicos.FECHA_CORTA));
 			columns.add(new Columna("pago", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
@@ -137,7 +138,7 @@ public class Abono extends IBasePagos implements Serializable {
       transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("caja").toString()), Long.valueOf(this.attrs.get("idCliente").toString()), Long.valueOf(this.attrs.get("idEmpresa").toString()), tipoPago ? -1 : Long.valueOf(this.attrs.get("banco").toString()), tipoPago ? "" : this.attrs.get("referencia").toString(), saldar);
       if(transaccion.ejecutar(EAccion.AGREGAR)){
         JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta", ETipoMensaje.INFORMACION);
-        loadClienteDeuda();
+        this.loadClienteDeuda();
       } // if
       else
         JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
