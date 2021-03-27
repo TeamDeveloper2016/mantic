@@ -606,11 +606,11 @@ public class Transaccion extends TransaccionFactura{
   public void toAffectAlmacenes(Session sesion, TcManticVentasDto venta) throws Exception {
     Map<String, Object> params= null;
     try {      
+      Double stock= null;
       params = new HashMap<>();      
       params.put("idVenta", venta.getIdVenta());      
-      List<TcManticVentasDetallesDto> items= (List<TcManticVentasDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticVentasDetallesDto.class, "TcManticVentasDetallesDto", "detal", params);
+      List<TcManticVentasDetallesDto> items= (List<TcManticVentasDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticVentasDetallesDto.class, "TcManticVentasDetallesDto", "detalle", params);
       if(items!= null && !items.isEmpty()) {
-        Double stock= null;
         for (TcManticVentasDetallesDto item : items) {
           params.put("idAlmacen", venta.getIdAlmacen());
 			    params.put("idArticulo", item.getIdArticulo());
