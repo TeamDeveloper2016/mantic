@@ -92,7 +92,7 @@ public class Accion extends IBaseVenta implements Serializable {
   protected void init() {		
 		boolean isMatriz= false;
     try {
-			setPrecio(ETipoVenta.MENUDEO.getNombreCampo());
+			this.setPrecio(ETipoVenta.MENUDEO.getNombreCampo());
 			this.attrs.put("xcodigo", JsfBase.getFlashAttribute("xcodigo"));	
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
 			this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null? -1L: JsfBase.getFlashAttribute("idVenta"));
@@ -159,10 +159,10 @@ public class Accion extends IBaseVenta implements Serializable {
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 					idCliente= ((TicketVenta)getAdminOrden().getOrden()).getIdCliente();
 					if(idCliente!= null && !idCliente.equals(-1L)){
-						doAsignaClienteInicial(idCliente);
-						doLoadSaldos(idCliente);
+						this.doAsignaClienteInicial(idCliente);
+						this.doLoadSaldos(idCliente);
 					} // if
-					loadCatalogs();
+					this.loadCatalogs();
           break;
       } // switch
 			this.attrs.put("consecutivo", "");

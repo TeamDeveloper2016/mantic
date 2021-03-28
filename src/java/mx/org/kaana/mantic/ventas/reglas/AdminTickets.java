@@ -42,9 +42,9 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
 		boolean oldPrecios= true;
 		this.orden        = orden;
 		if(this.orden.isValid()) {
-			oldPrecios= orden.getIdVentaEstatus()== 3L || orden.getIdVentaEstatus()== 6L || orden.getIdVentaEstatus()== 8L || orden.getIdVentaEstatus()== 12L || 
-									orden.getIdVentaEstatus()== 14L || orden.getIdVentaEstatus()== 13L || orden.getIdVentaEstatus()== 15L || orden.getIdVentaEstatus()== 16L ||
-									orden.getIdVentaEstatus()== 18L || orden.getIdVentaEstatus()== 19L;
+			oldPrecios= (orden.getIdVentaEstatus()>= 3L && orden.getIdVentaEstatus()<= 6L) || orden.getIdVentaEstatus()== 8L ||
+                  (orden.getIdVentaEstatus()>= 12L && orden.getIdVentaEstatus()<= 16L) ||
+									(orden.getIdVentaEstatus()>= 18L && orden.getIdVentaEstatus()<= 19L);
   	  this.setArticulos((List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticVentasDetallesDto", oldPrecios? "facturacion": "detalle", orden.toMap()));
       this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
       this.orden.setIkProveedor(new UISelectEntity(new Entity(this.orden.getIdCliente())));
