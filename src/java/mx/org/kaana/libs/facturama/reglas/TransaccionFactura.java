@@ -483,21 +483,33 @@ public class TransaccionFactura extends IBaseTnx {
 	
 	public boolean actualizarFacturaAutomatico(Session sesion, Long id, Long idUsuario) throws Exception {		
 		boolean regresar           = false;
-		TcManticFacturasDto factura= null;		
-		factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, id);
-		registrarBitacoraFactura(sesion, id, EEstatusFacturas.AUTOMATICO.getIdEstatusFactura(), "ASIGNACION A FACTURACION AUTOMATICA", idUsuario);		
-		factura.setIdFacturaEstatus(EEstatusFacturas.AUTOMATICO.getIdEstatusFactura());		
-		factura.setIntentos(factura.getIntentos()+1L);
-		regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;		
+		TcManticFacturasDto factura= null;	
+    try {
+      factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, id);
+      this.registrarBitacoraFactura(sesion, id, EEstatusFacturas.AUTOMATICO.getIdEstatusFactura(), "ASIGNACION A FACTURACION AUTOMATICA", idUsuario);		
+      factura.setIdFacturaEstatus(EEstatusFacturas.AUTOMATICO.getIdEstatusFactura());		
+      factura.setIntentos(factura.getIntentos()+1L);
+      regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;		
+    } // try
+    catch(Exception e) {
+      throw e;
+    } // catch
 		return regresar;
 	} // actualizarFacturaAutomatico
 	
 	public boolean actualizarFacturaAutomatico(Session sesion, Long id, Long idUsuario, Long idEstatus) throws Exception {
-		TcManticFacturasDto factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, id);
-		registrarBitacoraFactura(sesion, id, idEstatus, "ASIGNACION A FACTURACION AUTOMATICA", idUsuario);				
-		factura.setIdFacturaEstatus(idEstatus);		
-		factura.setIntentos(factura.getIntentos()+1L);
-		return DaoFactory.getInstance().update(sesion, factura)>= 1L;
+    boolean regresar= false;
+    try {
+      TcManticFacturasDto factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, id);
+      registrarBitacoraFactura(sesion, id, idEstatus, "ASIGNACION A FACTURACION AUTOMATICA", idUsuario);				
+      factura.setIdFacturaEstatus(idEstatus);		
+      factura.setIntentos(factura.getIntentos()+1L);
+      regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;
+    } // try
+    catch(Exception e) {
+      throw e;
+    } // catch
+		return regresar;
 	} // actualizarFacturaAutomatico
 	
 	protected boolean registrarBitacoraFactura(Session sesion, Long idFactura, Long idFacturaEstatus, String justificacion) throws Exception{

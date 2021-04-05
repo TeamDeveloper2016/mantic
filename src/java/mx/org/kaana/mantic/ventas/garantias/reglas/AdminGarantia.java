@@ -62,19 +62,19 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 					params.put("idGarantia", idGarantia);
 					arts= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticGarantiasArticulosDto", "detalleGarantia", params); 
 					this.setArticulos(arts);
-					validatePrecioArticulo();
+					this.validatePrecioArticulo();
 					break;				
 				case ASIGNAR:
 					arts= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticGarantiasArticulosDto", "detalleCantidad", orden.toMap());
 					this.setArticulos(arts);
-					validatePrecioArticulo();
-					validaArticulos();
+					this.validatePrecioArticulo();
+					this.validaArticulos();
 					break;
 				default:
 					arts= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticGarantiasArticulosDto", "detalle", orden.toMap());
 					this.setArticulos(arts);
-					validatePrecioArticulo();
-					validaArticulos();
+					this.validatePrecioArticulo();
+					this.validaArticulos();
 					break;
 			} // switch
       this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
@@ -90,7 +90,7 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 		if(loadDefault && !accion.equals(EAccion.CONSULTAR))
 			this.getArticulos().add(new ArticuloVenta(-1L));
 		this.toCalculate();
-		cleanPrecioDescuentoArticulo();
+		this.cleanPrecioDescuentoArticulo();
 	}
 
 	@Override
@@ -170,7 +170,7 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 		this.setAjusteDeuda(getTotales().getTotal());
 	} // toCalculate
 	
-	public void validaArticulos(){
+	public void validaArticulos() {
 		List<Articulo>arts= null;		
 		try {
 			arts= new ArrayList<>();
@@ -179,7 +179,7 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 				if(art.getCantidadGarantia().equals(0D))					
 					arts.remove(arts.indexOf(art));								
 			} // for
-			setArticulos(arts);
+			this.setArticulos(arts);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);			

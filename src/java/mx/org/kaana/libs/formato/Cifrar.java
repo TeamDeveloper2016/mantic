@@ -77,6 +77,7 @@ public final class Cifrar {
 	}
 
   public static void main(String ... args) throws Exception {
+		System.out.println(Cifrar.cifrar("2366")); // zOyOxDwIvGuCt
 		System.out.println(Cifrar.cifrar("CODIGO")); // zOyOxDwIvGuCt
 		System.out.println(Cifrar.cifrar("NORMAL")); // zLyOxRwMvAuNt
 		System.out.println(Cifrar.cifrar("ALMACEN")); // zNyLxMwAvCuEtAs

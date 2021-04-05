@@ -1253,11 +1253,12 @@
       </select>
       <select id="venta">
         select      
-				  tc_mantic_garantias.id_venta as id_key
+				  tc_mantic_garantias.id_venta as id_key,
+          tc_mantic_garantias.*
         from      
           tc_mantic_garantias
         where      
-          id_garantia = '{consecutivo}'
+          id_venta= '{idVenta}'
       </select>
     </unit>
     <unit id="TcManticGarantiasBitacoraDto">

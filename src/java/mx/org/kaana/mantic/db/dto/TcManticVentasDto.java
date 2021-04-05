@@ -26,7 +26,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 
 @Entity
 @Table(name="tc_mantic_ventas")
-public class TcManticVentasDto implements IBaseDto, Serializable {
+public class TcManticVentasDto implements IBaseDto, Cloneable, Serializable {
 
 	private static final long serialVersionUID=3391576865327806322L;
 	
@@ -122,7 +122,7 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
   }
 
   public TcManticVentasDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), 2L, null);
+    this(null, null, null, null, 0D, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), 2L, null);
     setKey(key);
   }
 
@@ -730,4 +730,9 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdVenta() != null ? getIdVenta().hashCode() : 0);
     return hash;
 	}
+  
+  public Object clone() throws CloneNotSupportedException {
+    return super.clone();
+  }  
+  
 }

@@ -218,7 +218,7 @@ public class Transaccion extends TransaccionFactura {
 					else
 						regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
 					if(regresar) {
-						regresar= registraBitacora(sesion, this.orden.getIdVenta(), this.orden.getIdVentaEstatus(), "Registro de venta express");
+						regresar= registraBitacora(sesion, this.orden.getIdVenta(), this.orden.getIdVentaEstatus(), "REGISTRO DE VENTA EXPRESS");
 						if(regresar && !this.aplicar)
 							registrarDeuda(sesion, this.orden.getTotal());
 					} // if					
@@ -329,7 +329,7 @@ public class Transaccion extends TransaccionFactura {
 		} // for
 	} // toFillArticulos
 	
-	private Siguiente toSiguiente(Session sesion) throws Exception {
+	protected Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
 		Map<String, Object> params= null;
 		try {

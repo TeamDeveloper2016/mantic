@@ -25,7 +25,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 
 @Entity
 @Table(name="tr_mantic_venta_medio_pago")
-public class TrManticVentaMedioPagoDto implements IBaseDto, Serializable {
+public class TrManticVentaMedioPagoDto implements IBaseDto, Cloneable, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="id_tipo_medio_pago")
@@ -282,4 +282,9 @@ public class TrManticVentaMedioPagoDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdVentaMedioPago() != null ? getIdVentaMedioPago().hashCode() : 0);
     return hash;
   }
+  
+  public Object clone() throws CloneNotSupportedException {
+    return super.clone();
+  }  
+  
 }

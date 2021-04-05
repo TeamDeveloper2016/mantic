@@ -22,6 +22,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Cifrar;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -33,6 +34,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.beans.Totales;
+import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.garantias.reglas.Transaccion;
@@ -114,21 +116,22 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("tipoVenta", 1L);			
 			this.attrs.put("tipoDevolucion", 1L);	
 			this.attrs.put("ticketLock", -1L);
-			this.image= LoadImages.getImage(-1L);
+      this.attrs.put("refacturar", false);
+  		this.image= LoadImages.getImage(-1L);
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
-				loadSucursales();	
+				this.loadSucursales();	
 			else
-				loadSucursalesPerfil();			
-			if(JsfBase.getFlashAttribute("accionVenta")!= null){								
+				this.loadSucursalesPerfil();			
+			if(JsfBase.getFlashAttribute("accionVenta")!= null) {								
 				this.attrs.put("mostrarGarantia", true);
 				this.attrs.put("accion", EAccion.AGREGAR);				
 				this.attrs.put("retorno", JsfBase.getFlashAttribute("retornoVenta"));
 				this.attrs.put("fecha", new Date(((Timestamp)JsfBase.getFlashAttribute("registroVenta")).getTime()));
-				doLoad();								
+				this.doLoad();								
 				this.attrs.put("accion", EAccion.ASIGNAR);				
-				doLoadTicketAbiertos();				
-				doAsignaTicketAbierto();				
-				loadBancos();								
+				this.doLoadTicketAbiertos();				
+				this.doAsignaTicketAbierto();				
+				this.loadBancos();								
 				this.attrs.put("nombreAccion", Cadena.letraCapital(EAccion.ASIGNAR.name()));							
 			} // if
 			else {
@@ -136,21 +139,22 @@ public class Accion extends IBaseVenta implements Serializable {
 				if(accion.equals(EAccion.CONSULTAR))
 					this.attrs.put("mostrarGarantia", true);
 				if(accion.equals(EAccion.CONSULTAR)||accion.equals(EAccion.MODIFICAR))
-					doLoad();
-				loadCajas();
-				doLoadTicketAbiertos();						
+					this.doLoad();
+				this.loadCajas();
+				this.doLoadTicketAbiertos();						
 				if(accion.equals(EAccion.CONSULTAR)||accion.equals(EAccion.MODIFICAR))
-					doAsignaTicketAbierto();
-				loadBancos();
+					this.doAsignaTicketAbierto();
+				this.loadBancos();
 			} // else
-			if(this.attrs.get("devolucionTicket")!= null){				
-				doUpdateOpenTickets(true);
+			if(this.attrs.get("devolucionTicket")!= null) {
+				this.doUpdateOpenTickets(true);
 				tickets= (List<UISelectEntity>) this.attrs.get("openTickets");
-				toFindOpenTicket(tickets.get(0));
+				this.toFindOpenTicket(tickets.get(0));
 				entity= new Entity(-1L);
 				entity.put("ticket", new Value("ticket", ((TicketVenta)this.getAdminOrden().getOrden()).getTicket()));
 				this.attrs.put("cliente", entity);
 			} // if
+      this.lookForGarantia();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -173,11 +177,12 @@ public class Accion extends IBaseVenta implements Serializable {
           this.setAdminOrden(new AdminGarantia((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "VistaTcManticGarantiasArticulosDto", "garantia", this.attrs), eaccion, Long.valueOf(this.attrs.get("idGarantia").toString())));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
     			this.attrs.put("idEmpresa", ((TicketVenta)this.getAdminOrden().getOrden()).getIdEmpresa());
-					loadDatosCliente(((TicketVenta)getAdminOrden().getOrden()).getIdVenta());
+					this.loadDatosCliente(((TicketVenta)getAdminOrden().getOrden()).getIdVenta());
           break;
       } // switch
 			this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
-			loadCatalog();
+			this.attrs.put("idVenta", ((TicketVenta)getAdminOrden().getOrden()).getIdVenta());
+			this.loadCatalog();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -205,19 +210,19 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 	} // loadDatosCliente
 	
-	public void doValidarDevolucion(){
+	public void doValidarDevolucion() {
 		RequestContext rc     = null;
 		String tipoVenta      = null;
 		boolean lanzadoDialogo= true;
 		try {
 			tipoVenta= this.attrs.get("tipoVenta").toString();
 			if(tipoVenta.equals("1"))
-				lanzadoDialogo= verificarDevolucionCredito();
-			if(lanzadoDialogo){
+				lanzadoDialogo= this.verificarDevolucionCredito();
+			if(lanzadoDialogo) {
 				rc= RequestContext.getCurrentInstance();
 				rc.execute("ventaFinished(".concat(tipoVenta).concat(");"));
 				rc.update("dialogoCerrarVenta");
-			} // else
+			} // if
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -225,38 +230,38 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 	} // doValidarDevolucion
 	
-	private boolean verificarDevolucionCredito() throws Exception{
-		boolean regresar          = true;
-		GestorSQL gestor          = null;
-		Entity deuda              = null;
-		boolean devolucionCompleta= false;
-		boolean importeEquals     = false;
-		Double saldoCliente       = 0D;
-		Double saldoVenta         = 0D;
-		Double diferencia         = 0D;
-		Double diferenciaVenta    = 0D;
+	private boolean verificarDevolucionCredito() throws Exception {
+		boolean regresar  = true;
+		GestorSQL gestor  = null;
+		Entity deuda      = null;
+		boolean completa  = false;
+		boolean iguales   = false;
+		Double saldoGlobal= 0D;
+		Double saldoVenta = 0D;
+		Double diferencia = 0D;
+		Double diferenciaVenta= 0D;
 		try {
 			this.attrs.put("mostrarDevolucion", false);
 			gestor= new GestorSQL(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta(), ((UISelectEntity) this.attrs.get("clienteSeleccion")).getKey());
 			deuda= gestor.toDeudaVenta();
 			saldoVenta= deuda.toDouble("saldo");
-			devolucionCompleta= toDevolucionCompleta();
-			importeEquals= deuda.toDouble("importe").equals(saldoVenta);
+			completa= toDevolucionCompleta();
+			iguales= deuda.toDouble("importe").equals(saldoVenta);
 			this.attrs.put("pagoCredito", 0D);
 			this.attrs.put("devolucionCredito", 0D);
-			if(importeEquals && devolucionCompleta){
+			if(iguales && completa){
 				this.attrs.put("messageDialog", "No hay saldo a favor. La deuda sera saldada.");
 				this.attrs.put("accionCredito", EAccion.COMPLETO);
 			} // if
-			else if(!importeEquals && devolucionCompleta){				
-				saldoCliente= gestor.toSaldoCliente();
+			else if(!iguales && completa){				
+				saldoGlobal= gestor.toSaldoCliente();
 				diferenciaVenta= deuda.toDouble("importe") - saldoVenta;
-				if(saldoCliente < diferenciaVenta){
+				if(saldoGlobal < diferenciaVenta){
 					this.attrs.put("mostrarDevolucion", true);
-					this.attrs.put("messageDialog", "La devolución es por la cantidad de: $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, (diferenciaVenta-saldoCliente)) + ", el resto se abonara a las cuentas pendientes. Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
+					this.attrs.put("messageDialog", "La devolución es por la cantidad de: $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, (diferenciaVenta-saldoGlobal)) + ", el resto se abonara a las cuentas pendientes. Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
 					this.attrs.put("accionCredito", EAccion.AGREGAR);
 					this.attrs.put("pagoCredito", diferenciaVenta);
-					this.attrs.put("devolucionCredito", (diferenciaVenta-saldoCliente));					
+					this.attrs.put("devolucionCredito", (diferenciaVenta-saldoGlobal));					
 				} // if
 				else{
 					this.attrs.put("messageDialog", "No hay saldo a favor. La deuda sera saldada y los pagos realizados seran abonados a las cuentas pendientes. Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
@@ -264,29 +269,29 @@ public class Accion extends IBaseVenta implements Serializable {
 					this.attrs.put("pagoCredito", diferenciaVenta);
 				} // else
 			} // else if
-			else if(importeEquals && !devolucionCompleta){
+			else if(iguales && !completa){
 				this.attrs.put("messageDialog", "Se actualizara el monto del saldo de la deuda.");
 				this.attrs.put("accionCredito", EAccion.MODIFICAR);
 				this.attrs.put("pagoCredito", deuda.toDouble("importe") - getAdminOrden().getTotales().getTotal());				
 			} // else if
-			else if(!importeEquals && !devolucionCompleta){
+			else if(!iguales && !completa){
 				diferencia= saldoVenta - getAdminOrden().getTotales().getTotal();				
-				saldoCliente= gestor.toSaldoCliente();
+				saldoGlobal= gestor.toSaldoCliente();
 				diferenciaVenta= deuda.toDouble("importe") - saldoVenta;
-				if(diferencia < 0 && saldoCliente <= 0){
+				if(diferencia < 0 && saldoGlobal <= 0){
 					this.attrs.put("mostrarDevolucion", true);
 					this.attrs.put("messageDialog", "La devolución es por la cantidad de: $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, (diferencia*-1)) + ". Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
 					this.attrs.put("accionCredito", EAccion.PROCESAR);											
 					this.attrs.put("devolucionCredito", diferencia);
 				} // if					
-				else if(diferencia < 0  && saldoCliente > 0 && saldoCliente < (diferencia*-1)){
+				else if(diferencia < 0  && saldoGlobal > 0 && saldoGlobal < (diferencia*-1)){
 					this.attrs.put("mostrarDevolucion", true);
-					this.attrs.put("messageDialog", "La devolución es por la cantidad de: $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, ((diferencia*-1) - saldoCliente)) + ", el resto se abonara a las cuentas pendientes." + " Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
+					this.attrs.put("messageDialog", "La devolución es por la cantidad de: $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, ((diferencia*-1) - saldoGlobal)) + ", el resto se abonara a las cuentas pendientes." + " Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
 					this.attrs.put("accionCredito", EAccion.ACTIVAR);
-					this.attrs.put("pagoCredito", saldoCliente);
-					this.attrs.put("devolucionCredito", ((diferencia*-1) - saldoCliente));
+					this.attrs.put("pagoCredito", saldoGlobal);
+					this.attrs.put("devolucionCredito", ((diferencia*-1) - saldoGlobal));
 				} // else					
-				else if(diferencia < 0  && saldoCliente > 0 && saldoCliente > (diferencia*-1)){
+				else if(diferencia < 0  && saldoGlobal > 0 && saldoGlobal > (diferencia*-1)){
 					this.attrs.put("messageDialog", "No hay saldo a favor. La deuda sera saldada y los pagos realizados seran abonados a las cuentas pendientes. Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
 					this.attrs.put("accionCredito", EAccion.JUSTIFICAR);
 					this.attrs.put("pagoCredito", (diferencia*-1));
@@ -297,7 +302,7 @@ public class Accion extends IBaseVenta implements Serializable {
 					this.attrs.put("pagoCredito", diferenciaVenta);
 				} // else				
 			} // else if
-			toDetalleDeudaCliente();
+			this.toDetalleDeudaCliente();
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -358,37 +363,44 @@ public class Accion extends IBaseVenta implements Serializable {
 		String numeroTicket        = "";
 		int count                  = 0;
     try {
-			detalle= loadDetalleGarantia();			
-			transaccion= new Transaccion(detalle);			
-			if (transaccion.ejecutar(EAccion.REPROCESAR)) {						
-				for(Garantia newGarantia: detalle.getGarantias()){
-					if(!newGarantia.getArticulosGarantia().isEmpty()){
-						numeroTicket= transaccion.getTickets().get(count);
-						count++;
-						pagoPivote= loadPagoPivote(newGarantia);
-						ticket= new CreateTicketGarantia(pagoPivote, "DEVOLUCIÓN", newGarantia.getIdEfectivo().equals(ETiposGarantias.RECIBIDA.getIdTipoGarantia().intValue()));
-						newGarantia.getGarantia().setTicket(numeroTicket);
-						newGarantia.setTotales(pagoPivote);
-						ticket.setGarantia(newGarantia);
-						claves= claves.concat(ticket.getPrincipal().getClave().concat("-").concat(numeroTicket).concat("~"));
-						tickets= tickets.concat(ticket.toHtml().concat("~")); 						
-					} // if
-				} // for
-				claves= claves.substring(0, claves.length()-1);
-				tickets= tickets.substring(0, tickets.length()-1);
-				if(count== 1) {
-					UIBackingUtilities.execute("jsTicket.imprimirTicket('" + claves + "','" + tickets + "');");
-					UIBackingUtilities.execute("jsTicket.process('"+ JsfBase.getContext()+ "/Paginas/Mantic/Ventas/Caja/accion.jsf');");
-				} // if
-				else
-					UIBackingUtilities.execute("jsTicket.imprimirMoreTicket('" + claves + "','" + tickets + "');");				
-				JsfBase.addMessage("Se finalizo la garantia.", ETipoMensaje.INFORMACION);
-				this.setAdminOrden(new AdminGarantia(new TicketVenta()));
-				this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
-				init();
+      if(Cadena.isVacio(this.attrs.get("refacturar")) || !(Boolean)this.attrs.get("refacturar")) {
+        detalle= this.loadDetalleGarantia();			
+        transaccion= new Transaccion(detalle);			
+        if (transaccion.ejecutar(EAccion.REPROCESAR)) {						
+          for(Garantia newGarantia: detalle.getGarantias()){
+            if(!newGarantia.getArticulosGarantia().isEmpty()){
+              numeroTicket= transaccion.getTickets().get(count);
+              count++;
+              pagoPivote= this.loadPagoPivote(newGarantia);
+              ticket= new CreateTicketGarantia(pagoPivote, "DEVOLUCIÓN", newGarantia.getIdEfectivo().equals(ETiposGarantias.RECIBIDA.getIdTipoGarantia().intValue()));
+              newGarantia.getGarantia().setTicket(numeroTicket);
+              newGarantia.setTotales(pagoPivote);
+              ticket.setGarantia(newGarantia);
+              claves = claves.concat(ticket.getPrincipal().getClave().concat("-").concat(numeroTicket).concat("~"));
+              tickets= tickets.concat(ticket.toHtml().concat("~")); 						
+            } // if
+          } // for
+          claves = claves.substring(0, claves.length()-1);
+          tickets= tickets.substring(0, tickets.length()-1);
+          if(count== 1) {
+            UIBackingUtilities.execute("jsTicket.imprimirTicket('" + claves + "','" + tickets + "');");
+            if(ticket!= null && ticket.getTicket()!= null && !Cadena.isVacio(ticket.getTicket().getIdFactura()))
+              UIBackingUtilities.execute("jsTicket.process('"+ JsfBase.getContext()+ "/Paginas/Mantic/Ventas/Garantias/cancela.jsf?faces-redirect=true&xyz="+ Cifrar.cifrar(String.valueOf((Long)this.attrs.get("idVenta")))+ "&zyx="+ Cifrar.cifrar(String.valueOf(this.toCierreCaja()))+ "');");
+            else
+              UIBackingUtilities.execute("jsTicket.process('"+ JsfBase.getContext()+ "/Paginas/Mantic/Ventas/Caja/accion.jsf');");
+          } // if
+          else
+            UIBackingUtilities.execute("jsTicket.imprimirMoreTicket('" + claves + "','" + tickets + "');");				
+          JsfBase.addMessage("Se finalizo la garantia.", ETipoMensaje.INFORMACION);
+          this.setAdminOrden(new AdminGarantia(new TicketVenta()));
+          this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
+          this.init();
+        } // if
+        else 
+  				JsfBase.addMessage("Ocurrió un error al registrar la garantia.", ETipoMensaje.ERROR);			
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la garantia.", ETipoMensaje.ERROR);			
+        UIBackingUtilities.execute("refacturar('"+ JsfBase.getContext()+ "/Paginas/Mantic/Ventas/Garantias/cancela.jsf?faces-redirect=true&xyz="+ Cifrar.cifrar(String.valueOf((Long)this.attrs.get("idVenta")))+ "&zyx="+ Cifrar.cifrar(String.valueOf(this.toCierreCaja()))+ "');");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -488,7 +500,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				else{
 					pagoGarantia.setIdTipoPago(ETipoMediosPago.fromIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString())).getIdTipoMedioPago());
 					pagoGarantia.setTransferencia(this.attrs.get("referencia").toString());
-					pagoGarantia.setIdBanco(Long.valueOf(this.attrs.get("banco").toString()));
+					pagoGarantia.setIdBanco(((UISelectEntity)this.attrs.get("banco")).getKey());
 				} // else
 			} // if
 			else
@@ -496,7 +508,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			regresar.setGarantias(garantias);
 			regresar.setPagoGarantia(pagoGarantia);
 			regresar.setTotales((Pago) this.attrs.get("pago"));			
-			regresar.setIdCaja(Long.valueOf(this.attrs.get("caja").toString()));			
+			regresar.setIdCaja(((UISelectEntity)this.attrs.get("caja")).getKey());			
 			regresar.getTicketVenta().setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));			
 			regresar.setAccionCredito((EAccion) this.attrs.get("accionCredito"));
 			regresar.setPagoCredito((Double) this.attrs.get("pagoCredito"));
@@ -694,35 +706,35 @@ public class Accion extends IBaseVenta implements Serializable {
 				ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
 				params= new HashMap<>();
 				params.put("idVenta", ticketAbierto.getKey());
-				setDomicilio(new Domicilio());
+				this.setDomicilio(new Domicilio());
 				this.attrs.put("registroCliente", new TcManticClientesDto());
 				if(!ticketAbierto.getKey().equals(-1L)){
-					unlockVentaExtends(ticketAbierto.getKey(), (Long)this.attrs.get("ticketLock"));
+					this.unlockVentaExtends(ticketAbierto.getKey(), (Long)this.attrs.get("ticketLock"));
 					this.attrs.put("ticketLock", ticketAbierto.getKey());
-					ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
+					ticketsAbiertos    = (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
 					ticketAbiertoPivote= ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto));
 					this.attrs.put("ticket", (Entity)ticketAbiertoPivote);
 					this.setAdminOrden(new AdminGarantia((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), false, EAccion.ASIGNAR, -1L));
-					loadMediosPago(ticketAbierto.getKey());
+					this.loadMediosPago(ticketAbierto.getKey());
 					entity= new Entity(-1L);
 					entity.put("ticket", new Value("ticket", ((TicketVenta)this.getAdminOrden().getOrden()).getTicket()));
 					this.attrs.put("cliente", entity);
 					this.attrs.put("idEmpresa", ((TicketVenta)this.getAdminOrden().getOrden()).getIdEmpresa());
-					loadCajas();
+					this.loadCajas();
 					this.ticketOriginal= (TicketVenta) getAdminOrden().getOrden();
 					this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
-					loadCatalog();
-					doAsignaClienteTicketAbierto();
+					this.loadCatalog();
+					this.doAsignaClienteTicketAbierto();
 					this.attrs.put("pagarVenta", true);
 					this.attrs.put("cobroVenta", true);				
 					this.attrs.put("tabIndex", 0);
 					this.attrs.put("creditoCliente", ticketAbiertoPivote.toLong("idCredito").equals(1L));
 					if(getAdminOrden().getArticulos().isEmpty())
 						JsfBase.addMessage("Garantia de ticket.", "No hay articulos disponibles para el ticket seleccionado.", ETipoMensaje.INFORMACION);
-					if(ticketAbiertoPivote.get("idFactura").getData()!= null){
+					if(ticketAbiertoPivote.get("idFactura").getData()!= null) {
 						motor= new MotorBusqueda(ticketAbiertoPivote.toLong("idFactura"));
 						factura= motor.toFactura();
-						if(factura!= null){
+						if(factura!= null) {
 							this.attrs.put("factura", factura);
 							this.attrs.put("isFactura", false);						
 						} // if										
@@ -731,7 +743,7 @@ public class Accion extends IBaseVenta implements Serializable {
 						this.attrs.put("isFactura", true);						
 				} // if
 				else{			
-					unlockVentaExtends(-1L, (Long)this.attrs.get("ticketLock"));
+					this.unlockVentaExtends(-1L, (Long)this.attrs.get("ticketLock"));
 					this.attrs.put("ticketLock", -1L);
 					this.setAdminOrden(new AdminGarantia(new TicketVenta()));
 					this.attrs.put("pagarVenta", false);
@@ -780,20 +792,20 @@ public class Accion extends IBaseVenta implements Serializable {
 			if(!(accion.equals(EAccion.CONSULTAR)||accion.equals(EAccion.MODIFICAR))){
 				params= new HashMap<>();
 				params.put("idVenta", seleccion.getKey());
-				setDomicilio(new Domicilio());
+				this.setDomicilio(new Domicilio());
 				this.attrs.put("registroCliente", new TcManticClientesDto());
 				if(!seleccion.getKey().equals(-1L)){	
-					unlockVentaExtends(seleccion.getKey(), (Long)this.attrs.get("ticketLock"));
+					this.unlockVentaExtends(seleccion.getKey(), (Long)this.attrs.get("ticketLock"));
 					this.attrs.put("ticketLock", seleccion.getKey());
 					this.attrs.put("ticket", (Entity)seleccion);
 					this.setAdminOrden(new AdminGarantia((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), false, EAccion.LISTAR, -1L));
-					loadMediosPago(seleccion.getKey());
+					this.loadMediosPago(seleccion.getKey());
 					this.ticketOriginal= (TicketVenta) getAdminOrden().getOrden();
 					this.attrs.put("tipoVenta", this.ticketOriginal.getIdVentaEstatus().equals(EEstatusVentas.CREDITO.getIdEstatusVenta()) ? 1L : 2L);
 					this.attrs.put("mostrarGarantia", this.ticketOriginal.getIdVentaEstatus().equals(EEstatusVentas.CREDITO.getIdEstatusVenta()));
 					this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
-					loadCatalog();
-					doAsignaClienteTicketAbierto();
+					this.loadCatalog();
+					this.doAsignaClienteTicketAbierto();
 					this.attrs.put("pagarVenta", true);
 					this.attrs.put("cobroVenta", true);				
 					this.attrs.put("tabIndex", 0);
@@ -812,7 +824,7 @@ public class Accion extends IBaseVenta implements Serializable {
 						this.attrs.put("isFactura", true);						
 				} // if
 				else{				
-					unlockVentaExtends(-1L, (Long)this.attrs.get("ticketLock"));
+					this.unlockVentaExtends(-1L, (Long)this.attrs.get("ticketLock"));
 					this.attrs.put("ticketLock", -1L);
 					this.setAdminOrden(new AdminGarantia(new TicketVenta()));
 					this.attrs.put("pagarVenta", false);
@@ -824,7 +836,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				} // else			
 			} // if
 			else
-				doAsignaClienteTicketAbierto();
+				this.doAsignaClienteTicketAbierto();
 			UIBackingUtilities.execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
 			this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
 		} // try
@@ -983,11 +995,14 @@ public class Accion extends IBaseVenta implements Serializable {
 			params= new HashMap<>();
 			params.put("sortOrder", "");
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
-			params.put(Constantes.SQL_CONDICION, toCondicionOpenTicket(cobroCaja));
+			params.put(Constantes.SQL_CONDICION, this.toCondicionOpenTicket(cobroCaja));
 			columns= new ArrayList<>();
 			columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));			
-      this.attrs.put("openTickets", (List<UISelectEntity>) UIEntity.build("VistaVentasDto", "lazy", params, columns, 20L));
+      List<UISelectEntity> opens= (List<UISelectEntity>) UIEntity.build("VistaVentasDto", "lazy", params, columns, 20L);
+      this.attrs.put("openTickets", opens);
+      if(opens!= null && !opens.isEmpty())
+        this.attrs.put("idVenta", opens.get(0).toLong("idVenta"));
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -1017,4 +1032,53 @@ public class Accion extends IBaseVenta implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	}	
+ 
+  public void doRefacturar() {
+    this.attrs.put("refacturar", true);
+    this.doValidarDevolucion();
+  }
+ 
+  private Long toCierreCaja() {
+    Long regresar             = -1L;
+    Map<String, Object> params= null;
+    try {      
+			List<UISelectEntity> cajas= (List<UISelectEntity>)this.attrs.get("cajas");
+      int index= cajas.indexOf((UISelectEntity)this.attrs.get("caja"));
+      if(index>= 0)
+			  this.attrs.put("caja", cajas.get(index));
+      params = new HashMap<>();      
+      params.put("estatusAbierto", "1, 2");
+      params.put("idEmpresa", ((UISelectEntity)this.attrs.get("caja")).toLong("idEmpresa"));
+      params.put("idCaja", ((UISelectEntity)this.attrs.get("caja")).getKey());			
+      TcManticCierresDto cierre= (TcManticCierresDto) DaoFactory.getInstance().toEntity(TcManticCierresDto.class, "VistaCierresCajasDto", "cierreVigente", params);
+      if(cierre!= null)
+        regresar= cierre.getIdCierre();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+
+  private void lookForGarantia() {
+    Map<String, Object> params = null;
+    try {      
+      params = new HashMap<>();      
+      params.put("idVenta", (Long)this.attrs.get("idVenta"));
+      Entity entity = (Entity)DaoFactory.getInstance().toEntity("TcManticGarantiasDto", "venta", params);
+      this.attrs.put("error", entity!= null && !entity.isEmpty());
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
 }

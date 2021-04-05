@@ -200,7 +200,7 @@ public class Transaccion extends TransaccionFactura {
 						factura.setCancelada(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 						factura.setIdFacturaEstatus(EEstatusFacturas.CANCELADA.getIdEstatusFactura());
 						regresar= DaoFactory.getInstance().update(sesion, factura)>= 0;
-						registrarBitacoraFactura(sesion, factura.getIdFactura(), EEstatusFacturas.CANCELADA.getIdEstatusFactura(), "Cancelación de factura.".concat(this.justificacion));
+						registrarBitacoraFactura(sesion, factura.getIdFactura(), EEstatusFacturas.CANCELADA.getIdEstatusFactura(), "CANCELACIÓN DE FACTURA, ".concat(this.justificacion));
 					} // if
 					else
 						throw new Exception("No fue posible cancelar la factura, por favor vuelva a intentarlo !");															
