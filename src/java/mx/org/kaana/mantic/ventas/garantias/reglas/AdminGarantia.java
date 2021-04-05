@@ -56,7 +56,7 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 		List<ArticuloVenta> arts= null;
 		this.orden= orden;
 		if(this.orden.isValid()) {
-			switch(accion){
+			switch(accion) {
 				case CONSULTAR:
 					Map<String, Object>params= new HashMap<>();
 					params.put("idGarantia", idGarantia);
