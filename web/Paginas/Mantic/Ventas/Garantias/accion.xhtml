@@ -42,7 +42,7 @@
 				return ok;
 			} // validateGarantia
 			
-			function validacionesApply(){
+			function validacionesApply() {
 				var custom= [];
 				var sum   = 0;
 				$('input[id$="cantidades"]').each(function() {
@@ -69,9 +69,9 @@
 			function ventaFinished(tipoVenta) {															
 				janal.bloquear();
 				if(tipoVenta=== 1)
-					PF('dlgCerrarVentaCredito').show();						
+					PF('dlgCerrarVentaCredito').show();
 				else
-					PF('dlgCerrarVenta').show();																	
+					PF('dlgCerrarVenta').show();
 			} // ventaFinished
 
 			function restoreCursoArt() {

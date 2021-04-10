@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
@@ -14,6 +15,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EBooleanos;
+import mx.org.kaana.kajool.enums.EEtapaServidor;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
@@ -169,6 +171,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		try {						
 			this.totalDetalle= 0D;
 			switch(accion) {					
+				case RESTAURAR:				
+					regresar= this.procesarCancela(sesion);
+					break;
 				case COPIAR:				
 					regresar= this.procesarRefactura(sesion);
 					break;
@@ -1383,6 +1388,55 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		return regresar;
   } // insertarBitacora
   
+  public boolean procesarCancela(Session sesion) throws Exception {
+    boolean regresar          = false;
+    Map<String, Object> params= null;
+		List<TrManticVentaMedioPagoDto> pagos= null;
+		try {									
+      params = new HashMap<>();      
+      TcManticVentasDto venta= (TcManticVentasDto)DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.idVenta);
+        // CANCELAR LA FACTURA ACTUAL PARA GENERAR LA NUEVA FACTURA
+      if(this.factura.isValid()) {
+        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.DESARROLLO)) 
+          CFDIFactory.getInstance().cfdiRemove(this.factura.getIdFacturama());
+        this.factura.setCancelada(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+        this.factura.setIdFacturaEstatus(EEstatusFacturas.CANCELADA.getIdEstatusFactura());
+        DaoFactory.getInstance().update(sesion, factura);
+        this.registrarBitacoraFactura(sesion, factura.getIdFactura(), EEstatusFacturas.CANCELADA.getIdEstatusFactura(), "TICKET CANCELADO");
+      } // if  
+      // CON ESTO SE ALTERA EL CIERRE DE CAJA DE ESE DIA Y SE AJUSTA A QUE EL TICKET AHORA ES EN EFECTIVO
+      params.put("idVenta", this.idVenta);
+      pagos= (List<TrManticVentaMedioPagoDto>)DaoFactory.getInstance().toEntitySet(sesion, TrManticVentaMedioPagoDto.class, "TrManticVentaMedioPagoDto", "detalle", params);
+      if(pagos!= null && !pagos.isEmpty()) {
+        TrManticVentaMedioPagoDto item= pagos.get(0);
+        // REGISTRAR EN CAJA EL PAGO EN NEGATIVO DEL IMPORTE DEL TICKET ORIGINAL
+        TrManticVentaMedioPagoDto clon= (TrManticVentaMedioPagoDto)item.clone();
+        item.setKey(-1L);
+        clon.setIdCierre(this.idCierreVigente);
+        clon.setIdVentaMedioPago(-1L);
+        clon.setIdVenta(venta.getIdVenta());
+        clon.setImporte(clon.getTotal()* -1D);
+        clon.setTotal(clon.getTotal()* -1D);
+        clon.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+        clon.setObservaciones("SE CANCELO EL TICKET ["+ this.getOrden().getTicket()+ "]");
+        DaoFactory.getInstance().insert(sesion, clon);
+      } // if
+      // CANCELAR EL TICKET ANTERIOR PARA QUE NO SE PUEDA HACER OTRA DEVOLUCION 
+      venta.setIdVentaEstatus(EEstatusVentas.CANCELADA.getIdEstatusVenta());
+      venta.setObservaciones((this.getOrden().getObservaciones()!= null? "": this.getOrden().getObservaciones().concat(", ")).concat("TICKET CANCELADO"));
+      DaoFactory.getInstance().update(sesion, venta);
+      this.registraBitacora(sesion, venta.getIdVenta(), venta.getIdVentaEstatus(), "TICKET CANCELADO");
+      regresar= true;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;    
+  }
+  
   public boolean procesarRefactura(Session sesion) throws Exception {
     boolean regresar     = false;
     Siguiente consecutivo= null;
@@ -1401,7 +1455,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			this.getOrden().setTicket(consecutivo.getConsecutivo());
       if(DaoFactory.getInstance().insert(sesion, this.getOrden())> 0L) {
         // CANCELAR LA FACTURA ACTUAL PARA GENERAR LA NUEVA FACTURA
-        // CFDIFactory.getInstance().cfdiRemove(this.factura.getIdFacturama());
+        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.DESARROLLO))
+          CFDIFactory.getInstance().cfdiRemove(this.factura.getIdFacturama());
         this.factura.setCancelada(new Timestamp(Calendar.getInstance().getTimeInMillis()));
         this.factura.setIdFacturaEstatus(EEstatusFacturas.CANCELADA.getIdEstatusFactura());
         DaoFactory.getInstance().update(sesion, factura);
@@ -1444,13 +1499,13 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
           clon.setObservaciones("SE REFACTURO, TICKET NUEVO ["+ this.getOrden().getTicket()+ "]");
 	  			DaoFactory.getInstance().insert(sesion, clon);
         } // if
+        // CANCELAR EL TICKET ANTERIOR PARA QUE NO SE PUEDA HACER OTRA DEVOLUCION 
+        venta.setIdVentaEstatus(EEstatusVentas.CANCELADA.getIdEstatusVenta());
+        venta.setObservaciones((venta.getObservaciones()!= null? "": venta.getObservaciones().concat(", ")).concat("SE REFACTURO, TICKET NUEVO ["+ this.getOrden().getTicket()+ "]"));
+        DaoFactory.getInstance().update(sesion, venta);
+        this.registraBitacora(sesion, venta.getIdVenta(), venta.getIdVentaEstatus(), "CANCELADA POR REFACTURACION, TICKET NUEVO["+ consecutivo.getConsecutivo()+ "]");
         // GENERAR LA NUEVA FACTURA PARTIENDO DEL NUEVO TICKET
         if(this.registrarFactura(sesion)) {
-          // CANCELAR EL TICKET ANTERIOR PARA QUE NO SE PUEDA HACER OTRA DEVOLUCION 
-          venta.setIdVentaEstatus(EEstatusVentas.CANCELADA.getIdEstatusVenta());
-          venta.setObservaciones((venta.getObservaciones()!= null? "": venta.getObservaciones().concat(", ")).concat("SE REFACTURO, TICKET NUEVO ["+ this.getOrden().getTicket()+ "]"));
-          DaoFactory.getInstance().update(sesion, venta);
-          this.registraBitacora(sesion, venta.getIdVenta(), venta.getIdVentaEstatus(), "CANCELADA POR REFACTURACION, TICKET NUEVO["+ consecutivo.getConsecutivo()+ "]");
 		      TransaccionFactura facturama= new TransaccionFactura();
    			  facturama.actualizarFacturaAutomatico(sesion, this.idFactura, JsfBase.getIdUsuario());
         } // if  

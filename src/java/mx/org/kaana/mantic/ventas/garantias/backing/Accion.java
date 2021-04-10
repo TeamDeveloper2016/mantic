@@ -846,7 +846,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 	} // toFindOpenTicket
 	
-	private void loadMediosPago(Long idVenta){
+	private void loadMediosPago(Long idVenta) {
 		MotorBusqueda motor     = null;
 		List<Entity> pagosVentas= null;
 		try {
@@ -968,6 +968,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
 			bancos= UIEntity.build("TcManticBancosDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("bancos", bancos);
+			this.attrs.put("banco", bancos.get(0));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

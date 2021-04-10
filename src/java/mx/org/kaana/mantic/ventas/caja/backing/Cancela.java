@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.ventas.garantias.backing;
+package mx.org.kaana.mantic.ventas.caja.backing;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -13,10 +13,10 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
@@ -29,12 +29,8 @@ import mx.org.kaana.mantic.compras.ordenes.beans.Totales;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
-import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
-import mx.org.kaana.mantic.ventas.beans.TicketVenta;
-import mx.org.kaana.mantic.ventas.caja.beans.Pago;
-import mx.org.kaana.mantic.ventas.caja.reglas.CreateTicket;
-import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
+import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 
 /**
  *@company KAANA
@@ -44,11 +40,11 @@ import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-@Named(value= "manticVentasGarantiasCancela")
+@Named(value= "manticVentasCajaCancela")
 @ViewScoped
 public class Cancela extends IBaseAttribute implements Serializable {
 
-  private static final long serialVersionUID = -317757402208690362L;
+  private static final long serialVersionUID = -317757402208690361L;
 
   private TcManticVentasDto venta;
   private TcManticFacturasDto documento;
@@ -73,6 +69,10 @@ public class Cancela extends IBaseAttribute implements Serializable {
     return totales;
   }
   
+  public List<ArticuloVenta> getArticulos() {
+    return articulos;
+  }
+  
 	@PostConstruct
   @Override
   protected void init() {
@@ -83,10 +83,14 @@ public class Cancela extends IBaseAttribute implements Serializable {
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.totales  = new Totales();
       this.venta    = (TcManticVentasDto)DaoFactory.getInstance().findById(TcManticVentasDto.class, idVenta);
-      this.documento= (TcManticFacturasDto)DaoFactory.getInstance().findById(TcManticFacturasDto.class, venta.getIdFactura());
+      if(!Cadena.isVacio(venta.getIdFactura()))
+        this.documento= (TcManticFacturasDto)DaoFactory.getInstance().findById(TcManticFacturasDto.class, venta.getIdFactura());
+      else
+        this.documento= new TcManticFacturasDto();
       this.cliente  = (TcManticClientesDto)DaoFactory.getInstance().findById(TcManticClientesDto.class, venta.getIdCliente());
       this.attrs.put("articulos", 0D);
       this.attrs.put("idCierre", idCierre);
+  		this.attrs.put("ok", Boolean.FALSE);
       this.toClonVenta(idVenta);
     } // try
     catch (Exception e) {
@@ -94,46 +98,11 @@ public class Cancela extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);      
     } // catch	
   }
-  
-	public String doCancelar() {     	
-    return "/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR);
+
+	public String doCancelar() {
+    return "/Paginas/Mantic/Ventas/Caja/filtro".concat(Constantes.REDIRECIONAR);
   } // doCancelar
   
-  public String doAceptar() {    
-    Transaccion transaccion= null;
-    CreateTicket voucher   = null;
-    List<Articulo>items    = new ArrayList<>();
-    Map<String, Object> params= null;
-    try {      
-      params = new HashMap<>();      
-      for (ArticuloVenta item: this.articulos) {
-        ArticuloVenta clon= (ArticuloVenta)item.clone();
-        items.add((Articulo)clon);
-      } // for
-      transaccion= new Transaccion(this.venta.getIdVenta(), this.documento, this.venta.getIdCliente(), (IBaseDto)this.ticket, items, (Long)this.attrs.get("idCierre"));
-      if (transaccion.ejecutar(EAccion.COPIAR)) {
-        params.put("idVenta", this.ticket.getIdVenta());     
-        AdminTickets comprobante= new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params));
-        voucher= new CreateTicket(comprobante, this.toPago(comprobante, this.ticket.getIdVenta()), "FACTURA", this.cliente.getRazonSocial());
-        UIBackingUtilities.execute("janal.back('cancelo ticket y factura', '"+ this.venta.getTicket()+ "');");
-        UIBackingUtilities.execute("jsTicket.imprimirTicket('" + voucher.getPrincipal().getClave()  + "-" + this.ticket.getTicket() + "','" + voucher.toHtml() + "');");
-        UIBackingUtilities.execute("jsTicket.process('"+ JsfBase.getContext()+ "/Paginas/Mantic/Ventas/Caja/accion.jsf');");
-        JsfBase.addMessage("Se finalizó la refacturación del ticket de venta", ETipoMensaje.INFORMACION);
-      } // if
-      else 
-        JsfBase.addMessage("Ocurrió un error al intentar refacturar el ticket de venta", ETipoMensaje.ERROR);
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);      
-    } // catch	
-    finally {
-      Methods.clean(items);
-      Methods.clean(params);
-    } // finally 
-    return "/Paginas/Mantic/Ventas/Caja/accion".concat(Constantes.REDIRECIONAR);
-  }
-
   private void toClonVenta(Long idVenta) {
     Map<String, Object> params = null;
     try {      
@@ -182,47 +151,41 @@ public class Cancela extends IBaseAttribute implements Serializable {
     } // finally
   }
 
-	private Pago toPago(AdminTickets adminTicket, Long idVenta) throws Exception {
-		Pago regresar            = null;
-		List<Entity> detallePago = null;
-		Map<String, Object>params= null;
-		ETipoMediosPago medioPago= null;
+	public String doAceptar() {
+		String regresar   = null;
+		String cuenta     = (String)this.attrs.get("cuenta");
+		String contrasenia= (String)this.attrs.get("contrasenia");
+    Transaccion transaccion= null;
 		try {
-			regresar= new Pago(adminTicket.getTotales());
-			params= new HashMap<>();
-			params.put("idVenta", idVenta);
-			detallePago= DaoFactory.getInstance().toEntitySet("TrManticVentaMedioPagoDto", "ticket", params, Constantes.SQL_TODOS_REGISTROS);
-			if(!detallePago.isEmpty()) {
-				for(Entity pago: detallePago) {
-					medioPago= ETipoMediosPago.fromIdTipoPago(pago.toLong("idTipoMedioPago"));
-					switch(medioPago) {
-						case EFECTIVO:
-							regresar.setEfectivo(pago.toDouble("importe"));							
-							break;
-						case TARJETA_CREDITO:
-							regresar.setCredito(pago.toDouble("importe"));							
-							regresar.setReferenciaCredito(pago.toString("referencia"));							
-							break;
-						case TARJETA_DEBITO:
-							regresar.setDebito(pago.toDouble("importe"));							
-							regresar.setReferenciaDebito(pago.toString("referencia"));							
-							break;
-						case CHEQUE:
-							regresar.setCheque(pago.toDouble("importe"));							
-							regresar.setReferenciaCheque(pago.toString("referencia"));							
-							break;
-						case TRANSFERENCIA:
-							regresar.setTransferencia(pago.toDouble("importe"));							
-							regresar.setReferenciaTransferencia(pago.toString("referencia"));							
-							break;
-					} // switch
-				} // for
+			CambioUsuario	usuario= new CambioUsuario(cuenta, contrasenia);			
+			if(usuario.validaPrivilegiosDescuentos()) {
+        this.ticket.setObservaciones((String)this.attrs.get("justificacion"));
+				this.attrs.put("cuenta", "");
+				this.attrs.put("contrasenia", "");
+				this.attrs.put("justificacion", "");
+				this.attrs.put("ok", Boolean.FALSE);
+        transaccion= new Transaccion(this.venta.getIdVenta(), this.documento, this.venta.getIdCliente(), (IBaseDto)this.ticket, new ArrayList<>(), (Long)this.attrs.get("idCierre"));
+        if (transaccion.ejecutar(EAccion.RESTAURAR)) {
+          String msg= "canceló ticket";
+          if(this.documento.isValid())
+            msg= "canceló ticket y factura";
+          JsfBase.addMessage("Se ".concat(msg).concat(" con éxito"), ETipoMensaje.INFORMACION);
+          UIBackingUtilities.execute("janal.back('"+ msg+ "', '"+ this.venta.getTicket()+ "');");
+          regresar= "/Paginas/Mantic/Ventas/Caja/filtro".concat(Constantes.REDIRECIONAR);
+        } // if
+        else 
+          JsfBase.addMessage("Ocurrió un error al intentar cancelar el ticket !", ETipoMensaje.ERROR);
+				UIBackingUtilities.execute("PF('widgetDialogoAutorizacion').hide();");
 			} // if
-		} // try
-		catch (Exception e) {			
-			throw e; 
-		} // catch		
+			else
+				this.attrs.put("ok", Boolean.TRUE);
+	  } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+			UIBackingUtilities.execute("PF('widgetDialogoAutorizacion').hide();");
+      JsfBase.addMessageError(e);
+    } // catch
 		return regresar;
-	} // toPago
-
+	}
+    
 }
