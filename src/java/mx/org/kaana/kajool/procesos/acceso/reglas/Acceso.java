@@ -78,7 +78,7 @@ public class Acceso implements Serializable {
     if (autentifica.tieneAccesoBD(getCliente().getCuenta(), getCliente().getContrasenia(), JsfBase.getRequest().getRemoteAddr())) {
       if (JsfBase.isLockUsers()) {
         throw new BloqueoSitioException();
-      }
+      } // if
       registro= new RegistroPerfil(autentifica);
       session = JsfBase.getSession();
       registro.addAutentifica(session);

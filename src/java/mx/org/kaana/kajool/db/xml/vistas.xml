@@ -12,13 +12,16 @@
 				  tc_janal_perfiles.descripcion as descripcion_perfil, 
 				  tc_janal_usuarios.id_perfil,
 					tc_janal_grupos.descripcion as descripcion_grupo, 
-				  tc_mantic_personas.estilo, tc_janal_perfiles.id_menu, 
-				  tc_mantic_personas.id_persona, nombres, 
+				  tc_mantic_personas.estilo, 
+          tc_janal_perfiles.id_menu, 
+				  tc_mantic_personas.id_persona, 
+          tc_mantic_personas.nombres, 
 				  paterno primer_apellido,
 					materno segundo_apellido, 
 				  id_tipo_sexo, tc_janal_grupos.id_grupo,
 				  tc_janal_grupos.clave as clave_grupo,
-				  tc_janal_usuarios.ultimo_acceso
+				  tc_janal_usuarios.ultimo_acceso,
+          tc_mantic_personas.id_autoriza
 				from
 					tc_janal_usuarios
 				inner join

@@ -99,17 +99,39 @@ public class CambioUsuario extends Acceso implements Serializable{
     } // else
   } 
 	
+  public boolean autorizaCancelacion() throws Exception {
+    boolean regresar          = false;
+    Map<String, Object> params= null;
+		Persona persona           = null;
+    try {      
+      params = new HashMap<>();
+      params.put("cuenta", this.getCliente().getCuenta());
+      persona = (Persona) DaoFactory.getInstance().toEntity(Persona.class, "VistaTcJanalUsuariosDto", "acceso", params);
+      if (persona != null) {
+				this.setIdPersona(persona.getIdPersona());
+        regresar= this.verificaPerfil(persona) && this.verificaCredencial(getCliente().getContrasenia(), persona.getContrasenia()) && persona.getIdAutoriza()== 1L; 
+			} // if
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
 	public boolean validaPrivilegiosDescuentos() throws Exception {
     boolean regresar          = false;
     Map<String, Object> params= null;
 		Persona persona           = null;
     try {      
       params = new HashMap<>();
-      params.put("cuenta", getCliente().getCuenta());
+      params.put("cuenta", this.getCliente().getCuenta());
       persona = (Persona) DaoFactory.getInstance().toEntity(Persona.class, "VistaTcJanalUsuariosDto", "acceso", params);
       if (persona != null) {
 				this.setIdPersona(persona.getIdPersona());
-        regresar = verificaPerfil(persona) && verificaCredencial(getCliente().getContrasenia(), persona.getContrasenia()); 
+        regresar= this.verificaPerfil(persona) && this.verificaCredencial(getCliente().getContrasenia(), persona.getContrasenia()); 
 			} // if
     } // try
     catch (Exception e) {

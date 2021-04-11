@@ -169,7 +169,7 @@ public class Cancela extends IBaseAttribute implements Serializable {
     Transaccion transaccion= null;
 		try {
 			CambioUsuario	usuario= new CambioUsuario(cuenta, contrasenia);			
-			if(usuario.validaPrivilegiosDescuentos()) {
+			if(usuario.autorizaCancelacion()) {
         this.ticket.setObservaciones((String)this.attrs.get("justificacion"));
 				this.attrs.put("cuenta", "");
 				this.attrs.put("contrasenia", "");

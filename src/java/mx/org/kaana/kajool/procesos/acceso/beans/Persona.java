@@ -33,12 +33,13 @@ public class Persona implements Serializable, IBaseDto {
   private Long idGrupo;
   private String claveGrupo;
   private Timestamp ultimoAcceso;
+  private Long idAutoriza;
 
   public Persona() {
-    this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+    this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 2L);
   }
 
-  public Persona(Long idUsuario, String cuenta, String contrasenia, Long idPerfil, String descripcionPerfil, String descripcionGrupo, String estilo, Long idMenu, Long idPersona, String nombres, String primerApellido, String segundoApellido, Long idTipoSexo, Long idGrupo,Timestamp ultimoAcceso) {
+  public Persona(Long idUsuario, String cuenta, String contrasenia, Long idPerfil, String descripcionPerfil, String descripcionGrupo, String estilo, Long idMenu, Long idPersona, String nombres, String primerApellido, String segundoApellido, Long idTipoSexo, Long idGrupo, Timestamp ultimoAcceso, Long idAutoriza) {
     this.idUsuario = idUsuario;
     this.cuenta = cuenta;
     this.contrasenia = contrasenia;
@@ -54,6 +55,7 @@ public class Persona implements Serializable, IBaseDto {
     this.idTipoSexo = idTipoSexo;  
     this.idGrupo = idGrupo;  
     this.ultimoAcceso = ultimoAcceso;
+    this.idAutoriza = idAutoriza;
   }
 
   public String getClaveGrupo() {
@@ -192,7 +194,13 @@ public class Persona implements Serializable, IBaseDto {
     this.idGrupo = idGrupo;
   }
 
- 
+  public Long getIdAutoriza() {
+    return idAutoriza;
+  }
+
+  public void setIdAutoriza(Long idAutoriza) {
+    this.idAutoriza = idAutoriza;
+  }
 
   @Override
   public Long getKey() {
@@ -238,4 +246,5 @@ public class Persona implements Serializable, IBaseDto {
   public Class toHbmClass() {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
+  
 }

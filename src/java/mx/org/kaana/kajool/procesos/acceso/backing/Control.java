@@ -66,10 +66,10 @@ public class Control extends IBaseAttribute implements Serializable {
     String regresar= null;
     Acceso acceso  = null;  
     try {     
-      acceso = new Acceso(getCliente());
+      acceso = new Acceso(this.getCliente());
       acceso.valida();
       regresar = acceso.toForward();
-      this.temaActivo.setName(getCliente().getTemaActivo());     
+      this.temaActivo.setName(this.getCliente().getTemaActivo());     
     } // try
     catch (Exception e) {
       Error.mensaje(e);

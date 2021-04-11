@@ -769,7 +769,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 		String contrasenia= (String)this.attrs.get("contrasenia");
 		try {
 			CambioUsuario	usuario= new CambioUsuario(cuenta, contrasenia);			
-			if(usuario.validaPrivilegiosDescuentos()) {
+			if(usuario.autorizaCancelacion()) {
         String justificacion= (String)this.attrs.get("justificacion");
 				this.attrs.put("cuenta", "");
 				this.attrs.put("contrasenia", "");
