@@ -281,7 +281,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 			params= new HashMap<>();
 			params.put("idCliente", this.attrs.get("idCliente"));						
 			params.put("sortOrder", "order by dias desc");
-			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo > 0 and tc_mantic_clientes_deudas.id_cliente_estatus not in(".concat(EEstatusClientes.FINALIZADA.getIdEstatus().toString()).concat(")"));			
+			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo > 0 and tc_mantic_clientes_deudas.id_cliente_estatus not in(".concat(EEstatusClientes.FINALIZADA.getIdEstatus().toString()).concat(",").concat(EEstatusClientes.CANCELADA.getIdEstatus().toString()).concat(")"));			
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));

@@ -764,6 +764,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 	public String doCheckUser() {
 		String regresar   = null;
     String texto      = null;
+    String ticket     = null;
 		String cuenta     = (String)this.attrs.get("cuenta");
 		String contrasenia= (String)this.attrs.get("contrasenia");
 		try {
@@ -774,12 +775,13 @@ public class Saldos extends IBaseFilter implements Serializable {
 				this.attrs.put("contrasenia", "");
 				this.attrs.put("justificacion", "");
         // aqui se elimina el pago al que se hace referencia
+        ticket= EAccion.ELIMINAR.equals(pivote)? " [Folio: ".concat(((Entity)this.attrs.get("eliminarPagoRealizado")).toString("consecutivo")).concat("]"): " [Ticket: ".concat(((Entity)this.attrs.get("seleccionadoDetalle")).toString("ticket")).concat("]");
         String proceso= EAccion.ELIMINAR.equals(pivote)? "eliminarPagoRealizado": "seleccionadoDetalle";
         Entity entity = (Entity)this.attrs.get(proceso);
         mx.org.kaana.mantic.catalogos.clientes.cuentas.reglas.Transaccion transaccion= new 
           mx.org.kaana.mantic.catalogos.clientes.cuentas.reglas.Transaccion(EAccion.ELIMINAR.equals(pivote)? entity.toLong("idClientePagoControl"): entity.toLong("idClienteDeuda"), justificacion);
         if(transaccion.ejecutar(pivote)) {
-          texto= "Se eliminó "+ (EAccion.ELIMINAR.equals(pivote)? "el pago": " la cuenta por cobrar")+ " con éxito";
+          texto= "Se eliminó "+ (EAccion.ELIMINAR.equals(pivote)? "el pago": " la cuenta por cobrar")+ " con éxito ".concat(ticket);
           this.doLoad();
           UIBackingUtilities.update("tabla");
           UIBackingUtilities.update("tablaPagosRealizados");

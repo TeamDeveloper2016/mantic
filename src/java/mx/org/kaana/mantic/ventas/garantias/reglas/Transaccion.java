@@ -334,7 +334,7 @@ public class Transaccion extends IBaseTnx{
 		return regresar; 
 	} // registrarPagos	
 	
-	private void toPagoGarantia(Session sesion, Double total, String observaciones, boolean credito) throws Exception{
+	private void toPagoGarantia(Session sesion, Double total, String observaciones, boolean credito) throws Exception {
 		TrManticGarantiaMedioPagoDto pago= null;
 		try {						
 			pago= new TrManticGarantiaMedioPagoDto();
@@ -358,9 +358,11 @@ public class Transaccion extends IBaseTnx{
 		} // catch					
 	} // toPagoGarantia
 	
-	private boolean executeAccionCredito(Session sesion) throws Exception{
-		boolean regresar= false;		
+	private boolean executeAccionCredito(Session sesion) throws Exception {
+		boolean regresar         = false;	
+		Map<String, Object>params= null;
 		try {
+			params= new HashMap<>();
 			switch(this.detalleGarantia.getAccionCredito()){
 				case COMPLETO:
 					regresar= this.caseOneCredito(sesion);
@@ -387,11 +389,12 @@ public class Transaccion extends IBaseTnx{
 					regresar= this.caseEightCredito(sesion);
 					break;								
 			} // switch
-			this.toPagoGarantia(sesion, this.garantia.getTicketVenta().getTotal(), "REGISTRO DE PAGO POR GARANTIA DE VENTA A CREDITO.", true);
+			this.toPagoGarantia(sesion, this.garantia.getTicketVenta().getTotal(), "REGISTRO DE PAGO POR GARANTIA DE VENTA A CREDITO", true);
       //* AQUI SE ACTUALIZA EL SALDO GLOBAL DEL CLIENTE
-      TcManticClientesDto cliente= (TcManticClientesDto)DaoFactory.getInstance().findById(sesion, TcManticClientesDeudasDto.class, this.detalleGarantia.getIdCliente());			
+      TcManticClientesDto cliente= (TcManticClientesDto)DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, this.detalleGarantia.getIdCliente());			
       if(cliente!= null) {
-        Value saldo= DaoFactory.getInstance().toField(sesion, "TcManticClientesDeudasDto", "saldoCliente", Variables.toMap("idCliente~"+ this.detalleGarantia.getIdCliente()), "saldo");
+        params.put("idCliente", this.detalleGarantia.getIdCliente());
+        Value saldo= DaoFactory.getInstance().toField(sesion, "TcManticClientesDeudasDto", "saldoCliente", params, "saldo");
         if(saldo.getData()!= null) {
           cliente.setSaldo(saldo.toDouble());
           DaoFactory.getInstance().update(sesion, cliente);
@@ -401,10 +404,13 @@ public class Transaccion extends IBaseTnx{
 		catch (Exception e) {			
 			throw e;
 		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
 		return regresar;
 	} // executeAccionCredito
 	
-	private boolean caseOneCredito(Session sesion) throws Exception{
+	private boolean caseOneCredito(Session sesion) throws Exception {
 		boolean regresar                      = false;
 		TcManticClientesDeudasDto deudaCliente= null;
 		Map<String, Object>params             = null;
@@ -427,7 +433,7 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // caseOneCredito
 	
-	private boolean caseTwoCredito(Session sesion) throws Exception{
+	private boolean caseTwoCredito(Session sesion) throws Exception {
 		boolean regresar          = false;
 		boolean devolucionEfectivo= false;
 		try {
@@ -443,7 +449,7 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // caseTwoCredito
 	
-	private boolean caseThreeCredito(Session sesion) throws Exception{
+	private boolean caseThreeCredito(Session sesion) throws Exception {
 		boolean regresar= false;
 		try {
 			this.caseOneCredito(sesion);
@@ -455,7 +461,7 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // caseThreeCredito
 	
-	private boolean caseFourCredito(Session sesion) throws Exception{
+	private boolean caseFourCredito(Session sesion) throws Exception {
 		boolean regresar                      = false;
 		TcManticClientesDeudasDto deudaCliente= null;
 		Map<String, Object>params             = null;
@@ -479,7 +485,7 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // caseFourCredito
 	
-	private boolean caseFiveCredito(Session sesion) throws Exception{
+	private boolean caseFiveCredito(Session sesion) throws Exception {
 		boolean regresar                      = false;
 		TcManticClientesDeudasDto deudaCliente= null;
 		Map<String, Object>params             = null;
@@ -511,7 +517,7 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // caseFiveCredito
 	
-	private boolean caseSixCredito(Session sesion) throws Exception{
+	private boolean caseSixCredito(Session sesion) throws Exception {
 		boolean regresar          = false;
 		boolean devolucionEfectivo= false;
 		try {
@@ -527,7 +533,7 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // caseSixCredito
 	
-	private boolean caseSevenCredito(Session sesion) throws Exception{
+	private boolean caseSevenCredito(Session sesion) throws Exception {
 		boolean regresar= false;
 		try {
 			this.caseOneCredito(sesion);
@@ -539,7 +545,7 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // caseSevenCredito
 	
-	private boolean caseEightCredito(Session sesion) throws Exception{
+	private boolean caseEightCredito(Session sesion) throws Exception {
 		boolean regresar                      = false;
 		TcManticClientesDeudasDto deudaCliente= null;
 		Map<String, Object>params             = null;
@@ -563,7 +569,7 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // caseEightCredito	
 	
-	private boolean procesarPagoGeneral(Session sesion, Double pago, boolean efectivo) throws Exception{		
+	private boolean procesarPagoGeneral(Session sesion, Double pago, boolean efectivo) throws Exception {		
 		boolean regresar         = true;
 		List<Entity> deudas      = null;		
 		Map<String, Object>params= null;
@@ -613,7 +619,7 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // procesarPagoGeneral
 	
-	protected void registrarDeuda(Session sesion, Double importe) throws Exception{
+	protected void registrarDeuda(Session sesion, Double importe) throws Exception {
 		TcManticClientesDeudasDto deuda= null;		
 		deuda= new TcManticClientesDeudasDto();
 		deuda.setIdVenta(this.detalleGarantia.getIdVenta());
@@ -634,7 +640,7 @@ public class Transaccion extends IBaseTnx{
     DaoFactory.getInstance().insert(sesion, movimiento);
 	} // registrarDeuda
 	
-	public Date toLimiteCredito(Session sesion) throws Exception{
+	public Date toLimiteCredito(Session sesion) throws Exception {
 		TcManticClientesDto cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, this.detalleGarantia.getIdCliente());
 		Long addDias= cliente.getPlazoDias();			
 		Calendar calendar= Calendar.getInstance();
@@ -645,7 +651,7 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // toLimiteCredito
 	
-		private List<Entity> toDeudas(Session sesion) throws Exception{
+		private List<Entity> toDeudas(Session sesion) throws Exception {
 		List<Entity> regresar    = null;
 		Map<String, Object>params= null;
 		try {
@@ -666,7 +672,7 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // toDeudas	
 	
-	private boolean registrarPago(Session sesion, Long idClienteDeuda, Double pagoParcial) throws Exception{
+	private boolean registrarPago(Session sesion, Long idClienteDeuda, Double pagoParcial) throws Exception {
 		TcManticClientesPagosDto registroPago= null;
 		boolean regresar                     = false;
 		Siguiente orden                      = null;
@@ -753,7 +759,7 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // alterarStockArticulos
 	
-	private void registrarMovimiento(Session sesion, Long idAlmacen, Double cantidad, Long idArticulo, Double stock, Long idUsuario) throws Exception{
+	private void registrarMovimiento(Session sesion, Long idAlmacen, Double cantidad, Long idArticulo, Double stock, Long idUsuario) throws Exception {
 		Double calculo= Numero.toRedondearSat(stock + cantidad) ;
 		TcManticMovimientosDto movimiento= new TcManticMovimientosDto(
 			  this.garantiaDto.getConsecutivo(), // String consecutivo, 

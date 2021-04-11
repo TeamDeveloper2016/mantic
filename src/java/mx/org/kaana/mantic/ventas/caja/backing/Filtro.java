@@ -9,7 +9,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
@@ -26,16 +25,10 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
-import mx.org.kaana.mantic.comun.IAdminArticulos;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
-import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.facturas.reglas.Transferir;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
-import mx.org.kaana.mantic.ventas.beans.TicketVenta;
-import mx.org.kaana.mantic.ventas.caja.beans.Pago;
-import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
-import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -45,9 +38,6 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 
 	private static final Log LOG              = LogFactory.getLog(Filtro.class);
 	private static final long serialVersionUID= -7581515424168997834L;
-	protected static final String INDIVIDUAL  = "1";
-	
-  private IAdminArticulos totales;
   
   @PostConstruct
   @Override
@@ -150,7 +140,7 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 			columns.remove(0);
 			columns.remove(1);
 			params.clear();
-			params.put(Constantes.SQL_CONDICION, toEstatusCaja());
+			params.put(Constantes.SQL_CONDICION, this.toEstatusCaja());
       this.attrs.put("allEstatus", (List<UISelectEntity>) UIEntity.build("TcManticVentasEstatusDto", "row", params, columns));
 			this.attrs.put("idVentaEstatus", new UISelectEntity("-1"));
     } // try
@@ -170,7 +160,7 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 			regresar= new StringBuilder("id_venta_estatus in (");
 			allEstatusCaja= "";
 			for(EEstatusVentas estatus: EEstatusVentas.values()){
-				if(estatus.equals(EEstatusVentas.PAGADA) || estatus.equals(EEstatusVentas.CREDITO) || estatus.equals(EEstatusVentas.APARTADOS) || estatus.equals(EEstatusVentas.TIMBRADA) || estatus.equals(EEstatusVentas.TIMBRADA))
+				if(estatus.equals(EEstatusVentas.CANCELADA) || estatus.equals(EEstatusVentas.PAGADA) || estatus.equals(EEstatusVentas.CREDITO) || estatus.equals(EEstatusVentas.APARTADOS) || estatus.equals(EEstatusVentas.TIMBRADA) || estatus.equals(EEstatusVentas.TIMBRADA))
 					allEstatusCaja= allEstatusCaja.concat(estatus.getIdEstatusVenta().toString()).concat(",");
 			} // for
 			allEstatusCaja= allEstatusCaja.substring(0, allEstatusCaja.length()-1);
@@ -331,52 +321,10 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 			this.attrs.put("montoInicio", this.attrs.get("montoTermino"));
 	} // doMontoUpdate
 
-  public void doUpdateCatalogos() {
-		List<UISelectEntity> cajas = null;
-    List<UISelectEntity> bancos= null;
-    List<Columna> columns      = null;    
-    Map<String, Object> params = null;
-    try {      
-      columns= new ArrayList<>();
-      params = new HashMap<>();      
-      Entity seleccionado = ((Entity)this.attrs.get("seleccionado"));
-			params.put("idEmpresa", seleccionado.toLong("idEmpresa"));
-			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			cajas=(List<UISelectEntity>) UIEntity.build("TcManticCajasDto", "cajas", params, columns);
-			this.attrs.put("cajas", cajas);
-			this.attrs.put("caja", cajas.get(0));
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			columns.clear();
-			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-			bancos= UIEntity.build("TcManticBancosDto", "row", params, columns, Constantes.SQL_TODOS_REGISTROS);
-			this.attrs.put("bancos", bancos);
-			this.attrs.put("banco", bancos.get(0));
-			this.attrs.put("nombreCliente", seleccionado.toString("cliente"));
-			this.attrs.put("referencia", "");
-      params.clear();
-      params.put("idVenta", seleccionado.getKey());
-      this.totales= new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params));
-      this.attrs.put("pago", new Pago(this.totales.getTotales()));
-			this.attrs.put("isEfectivo", true);			
-			this.attrs.put("idVenta", seleccionado.getKey());
-      this.loadMediosPago(seleccionado.getKey());
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);      
-    } // catch	
-    finally {
-      Methods.clean(params);
-      Methods.clean(columns);
-    } // finally
-  }
-  
   public String doRemover() {
-    String regresar= "";
+    String regresar= null;
     try {      
-      regresar= "/Paginas/Mantic/Ventas/Caja/cancela.jsf?faces-redirect=true&xyz="+ Cifrar.cifrar(String.valueOf((Long)this.attrs.get("idVenta")))+ "&zyx="+ Cifrar.cifrar(String.valueOf(this.toCierreCaja()));
+      regresar= "/Paginas/Mantic/Ventas/Caja/cancela.jsf?faces-redirect=true&xyz="+ Cifrar.cifrar(String.valueOf(((Entity)this.attrs.get("seleccionado")).getKey()));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -384,58 +332,5 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
     } // catch	
     return regresar;
   }
-  
-  private Long toCierreCaja() {
-    Long regresar             = -1L;
-    Map<String, Object> params= null;
-    try {      
-			List<UISelectEntity> cajas= (List<UISelectEntity>)this.attrs.get("cajas");
-      int index= cajas.indexOf((UISelectEntity)this.attrs.get("caja"));
-      if(index>= 0)
-			  this.attrs.put("caja", cajas.get(index));
-      params = new HashMap<>();      
-      params.put("estatusAbierto", "1, 2");
-      params.put("idEmpresa", ((UISelectEntity)this.attrs.get("caja")).toLong("idEmpresa"));
-      params.put("idCaja", ((UISelectEntity)this.attrs.get("caja")).getKey());			
-      TcManticCierresDto cierre= (TcManticCierresDto) DaoFactory.getInstance().toEntity(TcManticCierresDto.class, "VistaCierresCajasDto", "cierreVigente", params);
-      if(cierre!= null)
-        regresar= cierre.getIdCierre();
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);      
-    } // catch	
-    finally {
-      Methods.clean(params);
-    } // finally
-    return regresar;
-  }
-
-  public void doActivarPago() {
-		String tipoPago= null;				
-		try {					
-			tipoPago= this.attrs.get("tipoPago").toString();
-			this.attrs.put("isEfectivo", tipoPago.equals(INDIVIDUAL));			
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch		
-	} // doActivarPago
-	
-	private void loadMediosPago(Long idVenta){
-		MotorBusqueda motor     = null;
-		List<Entity> pagosVentas= null;
-		try {
-			motor= new MotorBusqueda(idVenta);
-			pagosVentas= motor.pagosVenta();
-			this.attrs.put("pagosVenta", pagosVentas);
-			this.attrs.put("tipoPago", pagosVentas.get(0).toLong("idTipoMedioPago"));
-		} // try
-		catch (Exception e) {
-			JsfBase.addMessageError(e);
-			Error.mensaje(e);			
-		} // catch		
-	} // loadMediosPago
 
 }

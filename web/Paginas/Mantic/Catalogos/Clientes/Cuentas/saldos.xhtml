@@ -422,11 +422,15 @@
 				<div class="janal-wid-100-txt janal-column-center">
 				  <p:outputLabel id="invalido" value="La cuenta o contraseña no son validas o no tiene autorización" styleClass="janal-color-orange" style="display: #{manticCatalogosClientesCuentasSaldos.attrs.ok? '': 'none'};"/>
 			  </div>
-				<p:panelGrid columns="1" styleClass="janal-wid-100">
-					<p:outputLabel for="cuenta" value="Usuario:"/>
-					<p:inputText id="cuenta" value="#{manticCatalogosClientesCuentasSaldos.attrs.cuenta}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-contrasenia"/>
-					<p:outputLabel for="contrasenia" value="Contraseña:"/>
-					<p:password id="contrasenia" value="#{manticCatalogosClientesCuentasSaldos.attrs.contrasenia}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-justificacion" autocomplete="new-password"/>									
+        <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-50, janal-wid-50">
+          <p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+  					<p:outputLabel for="cuenta" value="Usuario:"/>
+	  				<p:inputText id="cuenta" value="#{manticCatalogosClientesCuentasSaldos.attrs.cuenta}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-contrasenia"/>
+          </p:panelGrid>
+  				<p:panelGrid columns="1" styleClass="janal-wid-100">
+	  				<p:outputLabel for="contrasenia" value="Contraseña:"/>
+		  			<p:password id="contrasenia" value="#{manticCatalogosClientesCuentasSaldos.attrs.contrasenia}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-justificacion" autocomplete="new-password"/>									
+          </p:panelGrid>
         </p:panelGrid>
         <p:outputLabel for="justificacion" value="Justificación:" styleClass="janal-wid-100-txt"/>
         <p:inputTextarea id="justificacion" rows="2" value="#{manticCatalogosClientesCuentasSaldos.attrs.justificacion}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-verificar"/>	

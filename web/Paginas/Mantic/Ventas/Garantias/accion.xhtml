@@ -597,11 +597,11 @@
 				</div>
 			</h:form>
 		</p:dialog>
-		<p:dialog id="dialogoCerrarVentaCredito" widgetVar="dlgCerrarVentaCredito" header="Generar devolución" resizable="false" closable="false" responsive="true" width="60%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoCerrarCredito', fieldsDialogPagoCredito);janal.refresh();">			
+		<p:dialog id="dialogoCerrarVentaCredito" widgetVar="dlgCerrarVentaCredito" header="Generar devolución, para #{manticVentasGarantiasAccion.attrs.nombreCliente}" resizable="false" closable="true" responsive="true" width="60%" onHide="janal.desbloquear(); janal.restore(); janal.refresh();" onShow="janal.change('formDialogoCerrarCredito', fieldsDialogPagoCredito);janal.refresh();">			
 			<h:form id="formDialogoCerrarCredito" prependId="false">
 				<p:outputLabel for="cajaCredito" value="Caja:" styleClass="font-resume-venta-detail"/>
 				<p:selectOneMenu id="cajaCredito" value="#{manticVentasGarantiasAccion.attrs.caja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">								
-					<f:selectItems value="#{manticVentasGarantiasAccion.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+					<f:selectItems value="#{manticVentasGarantiasAccion.attrs.cajas}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 					<p:column headerText="Clave">
 						<h:outputText value="#{item.clave}"/>
 					</p:column>   
@@ -612,79 +612,74 @@
 						<h:outputText value="$#{item.limite}"/>
 					</p:column>   
 				</p:selectOneMenu>
-				<p:spacer/>
-				<p:outputLabel value="#{manticVentasGarantiasAccion.attrs.messageDialog}" styleClass="font-resume-venta-detail janal-color-blue"/>
-				<h:panelGrid columns="1">
-					<p:spacer/>
-				</h:panelGrid>
-				<p:outputLabel value="Deudas pendientes." styleClass="font-resume-venta-detail"/>
-				<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticVentasGarantiasAccion.detalleDeudaCliente}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticVentasGarantiasAccion.attrs.seleccionadoDetalle}" selectionMode="single" paginator="#{manticVentasGarantiasAccion.detalleDeudaCliente.rowCount gt manticVentasGarantiasAccion.detalleDeudaCliente.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">										
-					<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.consecutivo}">
-						<f:facet name="header">
-							<h:outputText value="Ticket"/>
-						</f:facet>
-						<h:outputText value="#{filtro['consecutivo']}"/>
-					</p:column>														
-					<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
-						<f:facet name="header">
-							<h:outputText value="Vendedor"/>
-						</f:facet>
-						<h:outputText value="#{filtro['persona']}"/>
-					</p:column>											
-					<p:column class="janal-column-left MarAuto Responsive janal-wid-13" sortBy="#{filtro.estatus}">
-						<f:facet name="header">
-							<h:outputText value="Estatus"/>
-						</f:facet>
-						<h:outputText value="#{filtro['estatus']}"/>
-					</p:column>						
-					<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{filtro.importe}">
-						<f:facet name="header">
-							<h:outputText value="Importe"/>
-						</f:facet>
-						<h:outputText value="#{filtro['importe']}"/>
-					</p:column>						
-					<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{filtro.saldo}">
-						<f:facet name="header">
-							<h:outputText value="Saldo"/>
-						</f:facet>
-						<h:outputText value="#{filtro['saldo']}"/>
-					</p:column>
-					<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.limite}">
-						<f:facet name="header">
-							<h:outputText value="Vence" title="Fecha en la que vence el crédito otorgado"/>
-						</f:facet>
-						<h:outputText value="#{filtro['limite']}"/>
-					</p:column>
-					<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.regitro}">
-						<f:facet name="header">
-							<h:outputText value="Fecha"/>
-						</f:facet>
-						<h:outputText value="#{filtro['registro']}"/>
-					</p:column>						
-					<f:facet name="footer">
-						<p:outputLabel value="Total [#{manticVentasGarantiasAccion.detalleDeudaCliente==null?0:manticVentasGarantiasAccion.detalleDeudaCliente.rowCount}] registros"/>
-					</f:facet>
-				</p:dataTable>				
-				<h:panelGrid columns="3" columnClasses="janal-wid-30, janal-wid-5 janal-column-center, janal-wid-10 janal-column-right">
-					<p:spacer/><p:spacer/><p:spacer/>
-					<p:outputLabel value="Cliente" styleClass="font-resume-venta-detail"/>
-					<p:spacer/><p:spacer/>					
-					<p:outputLabel value="#{manticVentasGarantiasAccion.attrs.nombreCliente}"/>				
-					<p:spacer/><p:spacer/>
+        <div class="janal-column-center">
+				  <p:outputLabel value="#{manticVentasGarantiasAccion.attrs.messageDialog}" styleClass="font-resume-venta-detail janal-color-blue"/>
+        </div>
+        <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" style="height:248px !important;overflow-y: auto" columnClasses="janal-wid-100">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticVentasGarantiasAccion.detalleDeudaCliente}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticVentasGarantiasAccion.attrs.seleccionadoDetalle}" selectionMode="single" paginator="#{manticVentasGarantiasAccion.detalleDeudaCliente.rowCount gt manticVentasGarantiasAccion.detalleDeudaCliente.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+            <f:facet name="header"> 
+              <div class="janal-column-left">
+                <p:outputLabel value="Deudas pendientes del cliente" styleClass="janal-color-white"/>
+              </div>  
+            </f:facet>  
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.ticket}">
+              <f:facet name="header">
+                <h:outputText value="Ticket"/>
+              </f:facet>
+              <h:outputText value="#{row['ticket']}"/>
+            </p:column>														
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.persona}">
+              <f:facet name="header">
+                <h:outputText value="Vendedor"/>
+              </f:facet>
+              <h:outputText value="#{row['persona']}"/>
+            </p:column>											
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-13" sortBy="#{row.estatus}">
+              <f:facet name="header">
+                <h:outputText value="Estatus"/>
+              </f:facet>
+              <h:outputText value="#{row['estatus']}"/>
+            </p:column>						
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.importe}">
+              <f:facet name="header">
+                <h:outputText value="Importe"/>
+              </f:facet>
+              <h:outputText value="#{row['importe']}"/>
+            </p:column>						
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.saldo}">
+              <f:facet name="header">
+                <h:outputText value="Saldo"/>
+              </f:facet>
+              <h:outputText value="#{row['saldo']}"/>
+            </p:column>
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.limite}">
+              <f:facet name="header">
+                <h:outputText value="Vence" title="Fecha en la que vence el crédito otorgado"/>
+              </f:facet>
+              <h:outputText value="#{row['limite']}"/>
+            </p:column>
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.regitro}">
+              <f:facet name="header">
+                <h:outputText value="Fecha"/>
+              </f:facet>
+              <h:outputText value="#{row['registro']}"/>
+            </p:column>						
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticVentasGarantiasAccion.detalleDeudaCliente== null? 0: manticVentasGarantiasAccion.detalleDeudaCliente.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>				
+        </p:panelGrid>  
+        <h:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-10 janal-column-right, janal-wid-40 janal-column-right, janal-wid-10 janal-column-right, janal-wid-40 janal-column-right">
 					<p:outputLabel value="Descuento" styleClass="font-resume-venta-detail"/>
-					<p:outputLabel value="$"/>
-					<p:outputLabel value="#{manticVentasGarantiasAccion.attrs.pago.totales.descuentoDosDecimales$}"/>				
+					<p:outputLabel value="$ #{manticVentasGarantiasAccion.attrs.pago.totales.descuentoDosDecimales$}"/>				
 					<p:outputLabel value="Total:" styleClass="font-resume-venta-detail janal-color-orange"/>
-					<p:outputLabel value="$" styleClass="janal-color-orange"/>
-					<p:outputLabel value="#{manticVentasGarantiasAccion.attrs.pago.totales.totalDosDecimales$}" styleClass="janal-color-orange"/>													
-					<p:spacer/><p:spacer/><p:spacer/>
+					<p:outputLabel value="$ #{manticVentasGarantiasAccion.attrs.pago.totales.totalDosDecimales$}" styleClass="janal-color-orange"/>													
 				</h:panelGrid>									
 				<p:outputLabel for="tipoDevolucion" value="Tipo de pago:" styleClass="font-resume-venta-detail" rendered="#{manticVentasGarantiasAccion.attrs.mostrarDevolucion}"/>
 				<p:selectOneRadio id="tipoDevolucion" value="#{manticVentasGarantiasAccion.attrs.tipoDevolucion}" rendered="#{manticVentasGarantiasAccion.attrs.mostrarDevolucion}">						
 					<f:selectItem itemLabel="Efectivo" itemValue="1"/>																			
 					<f:selectItem itemLabel="Saldo a favor" itemValue="2"/>																			
 				</p:selectOneRadio>
-				<p:spacer/>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
 					<p:commandButton id="aceptarFinalizarCredito" value="Aceptar" icon="fa fa-check" process="@form" actionListener="#{manticVentasGarantiasAccion.doAceptar}" onstart="return validateGarantia();" oncomplete="janal.desbloquear()" update="contenedorGrupos @(.filas) @(.recalculo)" disabled="#{!manticVentasGarantiasAccion.attrs.cobroVenta}"/>

@@ -4357,6 +4357,7 @@
         select 
           tc_mantic_clientes_pagos_controles.id_cliente_pago_control as id_key,
           tc_mantic_clientes_pagos_controles.id_cliente_pago_control,
+          tc_mantic_clientes_pagos.consecutivo,
           tc_mantic_clientes_pagos_controles.tipo,
           if(tc_mantic_clientes_pagos_controles.id_activo= 1, 'ACTIVO', 'CANCELADO') as estatus,
           tc_mantic_clientes_pagos_controles.pago,

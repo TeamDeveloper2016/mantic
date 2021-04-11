@@ -250,7 +250,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("pagoCredito", 0D);
 			this.attrs.put("devolucionCredito", 0D);
 			if(iguales && completa){
-				this.attrs.put("messageDialog", "No hay saldo a favor. La deuda sera saldada.");
+				this.attrs.put("messageDialog", "No hay saldo a favor. La deuda será saldada");
 				this.attrs.put("accionCredito", EAccion.COMPLETO);
 			} // if
 			else if(!iguales && completa){				
@@ -258,19 +258,19 @@ public class Accion extends IBaseVenta implements Serializable {
 				diferenciaVenta= deuda.toDouble("importe") - saldoVenta;
 				if(saldoGlobal < diferenciaVenta){
 					this.attrs.put("mostrarDevolucion", true);
-					this.attrs.put("messageDialog", "La devolución es por la cantidad de: $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, (diferenciaVenta-saldoGlobal)) + ", el resto se abonara a las cuentas pendientes. Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
+					this.attrs.put("messageDialog", "La devolución es por la cantidad de: $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, (diferenciaVenta-saldoGlobal)) + ", el resto se abonara a las cuentas pendientes. Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta));
 					this.attrs.put("accionCredito", EAccion.AGREGAR);
 					this.attrs.put("pagoCredito", diferenciaVenta);
 					this.attrs.put("devolucionCredito", (diferenciaVenta-saldoGlobal));					
 				} // if
 				else{
-					this.attrs.put("messageDialog", "No hay saldo a favor. La deuda sera saldada y los pagos realizados seran abonados a las cuentas pendientes. Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
+					this.attrs.put("messageDialog", "No hay saldo a favor. La deuda será saldada y los pagos realizados seran abonados a las cuentas pendientes. Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta));
 					this.attrs.put("accionCredito", EAccion.ASIGNAR);
 					this.attrs.put("pagoCredito", diferenciaVenta);
 				} // else
 			} // else if
 			else if(iguales && !completa){
-				this.attrs.put("messageDialog", "Se actualizara el monto del saldo de la deuda.");
+				this.attrs.put("messageDialog", "Se actualizará el monto del saldo de la deuda");
 				this.attrs.put("accionCredito", EAccion.MODIFICAR);
 				this.attrs.put("pagoCredito", deuda.toDouble("importe") - getAdminOrden().getTotales().getTotal());				
 			} // else if
@@ -280,24 +280,24 @@ public class Accion extends IBaseVenta implements Serializable {
 				diferenciaVenta= deuda.toDouble("importe") - saldoVenta;
 				if(diferencia < 0 && saldoGlobal <= 0){
 					this.attrs.put("mostrarDevolucion", true);
-					this.attrs.put("messageDialog", "La devolución es por la cantidad de: $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, (diferencia*-1)) + ". Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
+					this.attrs.put("messageDialog", "La devolución es por la cantidad de: $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, (diferencia*-1)) + ". Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta));
 					this.attrs.put("accionCredito", EAccion.PROCESAR);											
 					this.attrs.put("devolucionCredito", diferencia);
 				} // if					
 				else if(diferencia < 0  && saldoGlobal > 0 && saldoGlobal < (diferencia*-1)){
 					this.attrs.put("mostrarDevolucion", true);
-					this.attrs.put("messageDialog", "La devolución es por la cantidad de: $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, ((diferencia*-1) - saldoGlobal)) + ", el resto se abonara a las cuentas pendientes." + " Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
+					this.attrs.put("messageDialog", "La devolución es por la cantidad de: $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, ((diferencia*-1) - saldoGlobal)) + ", el resto se abonara a las cuentas pendientes." + " Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta));
 					this.attrs.put("accionCredito", EAccion.ACTIVAR);
 					this.attrs.put("pagoCredito", saldoGlobal);
 					this.attrs.put("devolucionCredito", ((diferencia*-1) - saldoGlobal));
 				} // else					
 				else if(diferencia < 0  && saldoGlobal > 0 && saldoGlobal > (diferencia*-1)){
-					this.attrs.put("messageDialog", "No hay saldo a favor. La deuda sera saldada y los pagos realizados seran abonados a las cuentas pendientes. Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
+					this.attrs.put("messageDialog", "No hay saldo a favor. La deuda sera saldada y los pagos realizados seran abonados a las cuentas pendientes. Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta));
 					this.attrs.put("accionCredito", EAccion.JUSTIFICAR);
 					this.attrs.put("pagoCredito", (diferencia*-1));
 				} // else					
 				else if (diferencia > 0 ){
-					this.attrs.put("messageDialog", "No hay saldo a favor. Los abonos se utilizaran para cubrir la deuda de los articulos vigentes. Saldo pendiente $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferencia) + ". Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta) + ".");
+					this.attrs.put("messageDialog", "No hay saldo a favor. Los abonos se utilizaran para cubrir la deuda de los articulos vigentes. Saldo pendiente $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferencia) + ". Pagos por $" + Numero.formatear(Numero.NUMERO_SAT_DECIMALES, diferenciaVenta));
 					this.attrs.put("accionCredito", EAccion.CALCULAR);
 					this.attrs.put("pagoCredito", diferenciaVenta);
 				} // else				
@@ -321,8 +321,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			columns= new ArrayList<>();
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
-			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			columns.add(new Columna("saldo", EFormatoDinamicos.MILES_SAT_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MILES_SAT_DECIMALES));
 			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
 			this.detalleDeudaCliente= new FormatLazyModel("VistaClientesDto", "cuentas", params, columns);
@@ -391,13 +391,13 @@ public class Accion extends IBaseVenta implements Serializable {
           } // if
           else
             UIBackingUtilities.execute("jsTicket.imprimirMoreTicket('" + claves + "','" + tickets + "');");				
-          JsfBase.addMessage("Se finalizo la garantia.", ETipoMensaje.INFORMACION);
+          JsfBase.addMessage("Se finalizó con éxito la garantia", ETipoMensaje.INFORMACION);
           this.setAdminOrden(new AdminGarantia(new TicketVenta()));
           this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
           this.init();
         } // if
         else 
-  				JsfBase.addMessage("Ocurrió un error al registrar la garantia.", ETipoMensaje.ERROR);			
+  				JsfBase.addMessage("Ocurrió un error al registrar la garantia", ETipoMensaje.ERROR);			
 			} // if
 			else 
         UIBackingUtilities.execute("refacturar('"+ JsfBase.getContext()+ "/Paginas/Mantic/Ventas/Garantias/cancela.jsf?faces-redirect=true&xyz="+ Cifrar.cifrar(String.valueOf((Long)this.attrs.get("idVenta")))+ "&zyx="+ Cifrar.cifrar(String.valueOf(this.toCierreCaja()))+ "');");
