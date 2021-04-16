@@ -1,7 +1,14 @@
 package mx.org.kaana.mantic.ventas.beans;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.reflection.Methods;
 
 public class SaldoCliente implements Serializable {
 
@@ -60,14 +67,37 @@ public class SaldoCliente implements Serializable {
 	
 	public boolean isDeudor() {
 		boolean regresar= false;
-		if(this.totalCredito > 0) {
+		if(this.totalCredito> 0) {
 			Double totalSaldo= this.totalCredito - (this.totalDeuda + this.totalVenta);
 			regresar= totalSaldo < 0;
 		} // if
 		return regresar; 
 	} // isDeudor
 	
+  private Boolean toCheckCredito() {
+    Boolean regresar= Boolean.FALSE;
+    Map<String, Object> params= null;
+    try {      
+      params= new HashMap<>();      
+      params.put("idCliente", this.idCliente);
+			params.put("sortOrder", "order by dias desc, tc_mantic_ventas.ticket desc");
+      params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes_deudas.id_cliente_estatus in (1, 2)");
+      Value value= DaoFactory.getInstance().toField("VistaClientesDto", "detalle", params, "dias");
+      if(value!= null && value.getData()!= null)
+        regresar= value.toLong()> 0L;
+    } // try
+    catch (Exception e) {
+      mx.org.kaana.libs.formato.Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
 	public String getMensaje() {
-		return isDeudor() ? "CRÉDITO SUPERADO Y/O PLAZO VENCIDO. CONSULTAR CON CRÉDITO Y COBRANZA" : "";
+		return this.isDeudor() || this.toCheckCredito()? "CRÉDITO SUPERADO Y/O PLAZO VENCIDO. CONSULTAR CON CRÉDITO Y COBRANZA" : "";
 	}
+  
 }
