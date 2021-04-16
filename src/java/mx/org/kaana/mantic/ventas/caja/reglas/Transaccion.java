@@ -187,11 +187,11 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 					regresar= this.procesaCotizacion(sesion);					
 					break;
 				case ASIGNAR:
-          if(this.getOrden().getIdBanco()<= 0L)
+          if(this.getOrden().getIdBanco()!= null && this.getOrden().getIdBanco()<= 0L)
             this.getOrden().setIdBanco(null);
-          if(this.getOrden().getIdTipoMedioPago()<= 0L)
+          if(this.getOrden().getIdTipoMedioPago()!= null && this.getOrden().getIdTipoMedioPago()<= 0L)
             this.getOrden().setIdTipoMedioPago(null);
-          if(this.getOrden().getIdTipoPago()<= 0L)
+          if(this.getOrden().getIdTipoPago()!= null && this.getOrden().getIdTipoPago()<= 0L)
             this.getOrden().setIdTipoPago(null);
 					regresar= this.actualizarClienteVenta(sesion);
 					this.toFillArticulos(sesion, this.getArticulos());

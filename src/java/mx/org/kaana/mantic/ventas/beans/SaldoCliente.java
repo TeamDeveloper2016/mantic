@@ -7,7 +7,6 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 
 public class SaldoCliente implements Serializable {
@@ -17,6 +16,7 @@ public class SaldoCliente implements Serializable {
 	private Double totalDeuda;
 	private Double totalCredito;
 	private Double totalVenta;
+  private Boolean vencidas;
 
 	public SaldoCliente() {
 		this(Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY, 0D, 0D, 0D);
@@ -27,6 +27,7 @@ public class SaldoCliente implements Serializable {
 		this.totalDeuda  = totalDeuda;
 		this.totalCredito= totalCredito;
 		this.totalVenta  = totalVenta;
+    this.vencidas    = this.toCheckCredito();
 	}
 
 	public Long getIdCliente() {
@@ -35,6 +36,8 @@ public class SaldoCliente implements Serializable {
 
 	public void setIdCliente(Long idCliente) {
 		this.idCliente = idCliente;
+    if(idCliente!= null)
+      this.vencidas= this.toCheckCredito();
 	}
 
 	public Double getTotalDeuda() {
@@ -68,10 +71,10 @@ public class SaldoCliente implements Serializable {
 	public boolean isDeudor() {
 		boolean regresar= false;
 		if(this.totalCredito> 0) {
-			Double totalSaldo= this.totalCredito - (this.totalDeuda + this.totalVenta);
+			Double totalSaldo= this.totalCredito- (this.totalDeuda + this.totalVenta);
 			regresar= totalSaldo < 0;
 		} // if
-		return regresar; 
+		return regresar || this.vencidas; 
 	} // isDeudor
 	
   private Boolean toCheckCredito() {
@@ -97,7 +100,7 @@ public class SaldoCliente implements Serializable {
   }
   
 	public String getMensaje() {
-		return this.isDeudor() || this.toCheckCredito()? "CRÉDITO SUPERADO Y/O PLAZO VENCIDO. CONSULTAR CON CRÉDITO Y COBRANZA" : "";
+		return this.isDeudor()? "CRÉDITO SUPERADO Y/O PLAZO VENCIDO. CONSULTAR CON CRÉDITO Y COBRANZA" : "";
 	}
   
 }

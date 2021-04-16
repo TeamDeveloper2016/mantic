@@ -398,10 +398,10 @@ public class Accion extends IBaseVenta implements Serializable {
 		List<UISelectEntity> clientesSeleccion= null;
 		String tipoTicket                     = null;
     try {	
-			creditoVenta= (Boolean) this.attrs.get("creditoVenta");
-			cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");	
+			creditoVenta     = (Boolean) this.attrs.get("creditoVenta");
+			cliente          = (UISelectEntity) this.attrs.get("clienteSeleccion");	
 			clientesSeleccion= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
-			seleccionado= clientesSeleccion.get(clientesSeleccion.indexOf(cliente));
+			seleccionado     = clientesSeleccion.get(clientesSeleccion.indexOf(cliente));
 			if(creditoVenta)
 				validarCredito= this.doValidaCreditoVenta();
 			if(validarCredito) {
@@ -1405,19 +1405,25 @@ public class Accion extends IBaseVenta implements Serializable {
 			motor= new MotorBusqueda(null);
 			venta= motor.toVenta(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
 			pago= (Pago) this.attrs.get("pago");				
-			if(pago.getCambio() > 0 || pago.getPago() >= getAdminOrden().getTotales().getTotal()) {
-				this.attrs.put("mensajeErrorCredito", "La venta no puede efectuarse a credito, el pago capturado cubre el total de la venta.");
+			if(pago.getCambio()> 0 || pago.getPago()>= getAdminOrden().getTotales().getTotal()) {
+				this.attrs.put("mensajeErrorCredito", "La venta no puede efectuarse a crédito, el pago capturado cubre el total de la venta");
 				regresar= false;
 			} // if
-			else if(!EBooleanos.SI.getIdBooleano().equals(venta.getIdAutorizar())) {								
-				totalCredito= getAdminOrden().getTotales().getTotal() - (pago.getPago() - pago.getCambio());
-				clientes= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
-				cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");
-				clienteSeleccion= clientes.get(clientes.indexOf(cliente));
-				regresar= totalCredito <= (clienteSeleccion.toDouble("limiteCredito") - clienteSeleccion.toDouble("saldo"));
-				if(!regresar)
-					this.attrs.put("mensajeErrorCredito", "El saldo de tu credito es insuficiente para cubrir la venta.");
-			} // if
+			else 
+        if(!EBooleanos.SI.getIdBooleano().equals(venta.getIdAutorizar())) {								
+          totalCredito= getAdminOrden().getTotales().getTotal()- (pago.getPago()- pago.getCambio());
+          clientes= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
+          cliente = (UISelectEntity) this.attrs.get("clienteSeleccion");
+          clienteSeleccion= clientes.get(clientes.indexOf(cliente));
+          regresar= totalCredito <= (clienteSeleccion.toDouble("limiteCredito") - clienteSeleccion.toDouble("saldo"));
+          if(!regresar)
+            this.attrs.put("mensajeErrorCredito", "El saldo de tu crédito es insuficiente para cubrir la venta");
+          else
+            if(this.saldoCliente.isDeudor()) {
+              this.attrs.put("mensajeErrorCredito", "Crédito superado y/o plazó vencido. Consultar con crédito y cobranza !");
+              regresar= false;
+            } // if  
+        } // if
 		} // try
 		catch (Exception e) {			
 			throw e;
