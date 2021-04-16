@@ -936,7 +936,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			setDomicilio(new Domicilio());
 			this.attrs.put("registroCliente", new TcManticClientesDto());
 			if(ticketAbierto!= null && !ticketAbierto.getKey().equals(-1L)) {				
-				unlockVentaExtends(ticketAbierto.getKey(), (Long)this.attrs.get("ticketLock"));									
+				this.unlockVentaExtends(ticketAbierto.getKey(), (Long)this.attrs.get("ticketLock"));									
 				this.attrs.put("ticketLock", ticketAbierto.getKey());
 				ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
 				if(!ticketsAbiertos.isEmpty() && ticketsAbiertos.indexOf(ticketAbierto)>= 0) {
@@ -961,7 +961,7 @@ public class Accion extends IBaseVenta implements Serializable {
 					this.attrs.put("pagarVenta", true);
 					this.attrs.put("cobroVenta", true);				
 					this.attrs.put("tabIndex", 0);
-					this.attrs.put("creditoCliente", ticketAbiertoPivote.toLong("idCredito").equals(1L));
+					this.attrs.put("creditoCliente", this.toCheckCredito(ticketAbiertoPivote));
 				} // if
 			} // if
 			else {				
@@ -1922,6 +1922,31 @@ public class Accion extends IBaseVenta implements Serializable {
   public void doUnLockCuenta() {
     super.doUnLockCuenta();
     this.doActualizaTicketsAbiertos();
+  }
+
+  private Boolean toCheckCredito(UISelectEntity ticketAbiertoPivote) {
+    Boolean regresar= ticketAbiertoPivote.toLong("idCredito").equals(1L);
+    Map<String, Object> params= null;
+    try {      
+      params= new HashMap<>();      
+      params.put("idCliente", ticketAbiertoPivote.toLong("idCliente"));
+			params.put("sortOrder", "order by dias desc, tc_mantic_ventas.ticket desc");
+      params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes_deudas.id_cliente_estatus in (1, 2)");
+      Value value= DaoFactory.getInstance().toField("VistaClientesDto", "detalle", params, "dias");
+      if(value!= null && value.getData()!= null) {
+        regresar= value.toLong()<= 0L;
+        if(!regresar)
+          JsfBase.addMessage("Crédito:", "El cliente tiene cuentas de pago atrasadas !");
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
   }
   
 }

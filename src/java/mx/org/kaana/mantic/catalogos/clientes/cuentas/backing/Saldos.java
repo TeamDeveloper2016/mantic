@@ -125,6 +125,7 @@ public class Saldos extends IBaseFilter implements Serializable {
       this.attrs.put("idCliente", this.idCliente);     
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.attrs.put("limitePago", "credenciales");
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 				this.loadSucursales();
       this.toLoadCatalog();
@@ -713,14 +714,29 @@ public class Saldos extends IBaseFilter implements Serializable {
     } // finally
   }
  
+  public void doUpdateFechaPago() {
+    Entity row= (Entity)this.attrs.get("seleccionadoDetalle");
+    this.attrs.put("eliminarPagoRealizado", row);
+    this.attrs.put("limitePago", "limitePago");
+    this.attrs.put("limite", row.toDate("limite"));
+    this.pivote = EAccion.MODIFICAR;
+    this.attrs.put("msgAutorizacion", " el cambio de fecha de vencimiento ".concat(row.toString("limite")));
+    if(row.toLong("idClienteEstatus")== 1L || row.toLong("idClienteEstatus")== 2L)
+      UIBackingUtilities.execute("PF('widgetDialogoAutorizacion').show();");
+    else
+      JsfBase.addMessage("Cuenta:", "La cuenta NO se encuentra abierta para ajustar la fecha de vencimiento !");
+  }
+  
   public void doDeletePago(Entity row) {
     this.attrs.put("eliminarPagoRealizado", row);
+    this.attrs.put("limitePago", "credenciales");
     this.pivote = EAccion.ELIMINAR;
     this.attrs.put("msgAutorizacion", " la cancelación del pago con importe ".concat(row.toString("pago")));
   }
   
   public void doDeleteCuenta(Entity row) {
     this.attrs.put("seleccionadoDetalle", row);
+    this.attrs.put("limitePago", "credenciales");
     this.pivote = EAccion.DEPURAR;
     this.attrs.put("msgAutorizacion", " la cancelación de la CxC con ticket ".concat(row.toString("ticket")));
   }
@@ -775,19 +791,49 @@ public class Saldos extends IBaseFilter implements Serializable {
 				this.attrs.put("contrasenia", "");
 				this.attrs.put("justificacion", "");
         // aqui se elimina el pago al que se hace referencia
-        ticket= EAccion.ELIMINAR.equals(pivote)? " [Folio: ".concat(((Entity)this.attrs.get("eliminarPagoRealizado")).toString("consecutivo")).concat("]"): " [Ticket: ".concat(((Entity)this.attrs.get("seleccionadoDetalle")).toString("ticket")).concat("]");
+        switch(pivote) {
+          case ELIMINAR:
+            ticket= " [Folio: ".concat(((Entity)this.attrs.get("eliminarPagoRealizado")).toString("consecutivo")).concat("]");
+            break;
+          case DEPURAR:
+            ticket= " [Ticket: ".concat(((Entity)this.attrs.get("seleccionadoDetalle")).toString("ticket")).concat("]");
+            break;
+          case MODIFICAR:
+            ticket= " [Ticket: ".concat(((Entity)this.attrs.get("seleccionadoDetalle")).toString("ticket")).concat("]");
+            break;
+        } // switch
         String proceso= EAccion.ELIMINAR.equals(pivote)? "eliminarPagoRealizado": "seleccionadoDetalle";
         Entity entity = (Entity)this.attrs.get(proceso);
         mx.org.kaana.mantic.catalogos.clientes.cuentas.reglas.Transaccion transaccion= new 
-          mx.org.kaana.mantic.catalogos.clientes.cuentas.reglas.Transaccion(EAccion.ELIMINAR.equals(pivote)? entity.toLong("idClientePagoControl"): entity.toLong("idClienteDeuda"), justificacion);
+          mx.org.kaana.mantic.catalogos.clientes.cuentas.reglas.Transaccion(EAccion.ELIMINAR.equals(pivote)? entity.toLong("idClientePagoControl"): entity.toLong("idClienteDeuda"), justificacion, (Date)this.attrs.get("limite"));
         if(transaccion.ejecutar(pivote)) {
-          texto= "Se eliminó "+ (EAccion.ELIMINAR.equals(pivote)? "el pago": " la cuenta por cobrar")+ " con éxito ".concat(ticket);
+          switch(pivote) {
+            case ELIMINAR:
+              texto= "Se eliminó el pago con éxito ".concat(ticket);
+              break;
+            case DEPURAR:
+              texto= "Se eliminó la cuenta por cobrar con éxito ".concat(ticket);
+              break;
+            case MODIFICAR:
+              texto= "Se ajusto la fecha de vencimiento con éxito ".concat(ticket);
+              break;
+          } // switch
           this.doLoad();
           UIBackingUtilities.update("tabla");
           UIBackingUtilities.update("tablaPagosRealizados");
         } // if
         else 
-          texto= "No se puedo eliminar "+ (EAccion.ELIMINAR.equals(pivote)? "el pago": "la cuenta por cobrar")+ ", intente nuevamente !";
+          switch(pivote) {
+            case ELIMINAR:
+              texto= "No se puedo eliminar el pago, intente nuevamente !";
+              break;
+            case DEPURAR:
+              texto= "No se puedo eliminar la cuenta por cobrar intente nuevamente !";
+              break;
+            case MODIFICAR:
+              texto= "No se puedo modificar la fecha de vencimiento !";
+              break;
+          } // switch
 				this.attrs.put("ok", Boolean.FALSE);
 				UIBackingUtilities.execute("PF('widgetDialogoAutorizacion').hide();");
         UIBackingUtilities.execute("janal.show([{summary: 'Cuenta: ', detail: '"+ texto+ "'}], '"+ (texto.startsWith("Se")? "info": "warn")+ "');");

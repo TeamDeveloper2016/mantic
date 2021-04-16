@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.catalogos.clientes.cuentas.reglas;
 
 import java.io.File;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -64,6 +65,7 @@ public class Transaccion extends TransaccionFactura{
 	private Long idClientePago;
 	private Importado file;
 	private TcManticClientesPagosControlesDto control;
+	private Date limite;
 
 	public Transaccion(TcManticClientesPagosDto pago, Long idCaja, Long idEmpresa, Long idBanco, String referencia, boolean saldar) {
 		this(pago, idCaja, -1L, idEmpresa, idBanco, referencia, saldar);
@@ -90,9 +92,10 @@ public class Transaccion extends TransaccionFactura{
 		this.idClientePago= idClientePago;
 	} // Transaccion
 
-	public Transaccion(Long idClientePago, String referencia) {
+	public Transaccion(Long idClientePago, String referencia, Date limite) {
     this.idClientePago= idClientePago;
     this.referencia   = referencia;
+    this.limite       = limite;
   }
   
 	@Override
@@ -120,6 +123,9 @@ public class Transaccion extends TransaccionFactura{
 					break;
 				case DEPURAR:
 					regresar= this.toDeleteCuenta(sesion);
+					break;
+				case MODIFICAR:
+					regresar= this.toUpdateVencimiento(sesion);
 					break;
       } // switch
       if (!regresar) 
@@ -653,5 +659,24 @@ public class Transaccion extends TransaccionFactura{
       Methods.clean(params);
     } // finally
   }
-  
+
+  private boolean toUpdateVencimiento(Session sesion) throws Exception {
+    Boolean regresar= Boolean.FALSE;
+    Map<String, Object> params = null;
+    try {      
+      params = new HashMap<>();      
+      params.put("idClienteDeuda", this.idClientePago);      
+      TcManticClientesDeudasDto deuda= (TcManticClientesDeudasDto)DaoFactory.getInstance().findById(sesion, TcManticClientesDeudasDto.class, this.idClientePago);
+      deuda.setLimite(this.limite);
+      regresar= DaoFactory.getInstance().update(sesion, deuda)> 0L;  
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+
 }

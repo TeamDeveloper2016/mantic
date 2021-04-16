@@ -13,7 +13,7 @@
       Janal.Control.fields = {        
         idEmpresa   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         razonSocial : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
-        consecutivo : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true, grupo: 'general'},
+        consecutivo : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', grupo: 'general'},
         dias        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         vencidos    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         fechaInicio : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -24,6 +24,13 @@
 			Janal.Control.credenciales ={
 				cuenta       : {validaciones: 'requerido', mascara: 'libre', grupo: 'credenciales'},			
 				contrasenia  : {validaciones: 'requerido', mascara: 'libre', grupo: 'credenciales'},		
+				justificacion: {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'credenciales'}
+			};
+      
+			Janal.Control.limitePago ={
+				cuenta       : {validaciones: 'requerido', mascara: 'libre', grupo: 'credenciales'},			
+				contrasenia  : {validaciones: 'requerido', mascara: 'libre', grupo: 'credenciales'},		
+				limite       : {validaciones: 'requerido', mascara: 'fecha', grupo: 'credenciales'},
 				justificacion: {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'credenciales'}
 			};
       
@@ -271,6 +278,8 @@
                 <p:menuitem id="estadoDeCuenta" icon="fa fa-file-pdf-o" value="Estado de cuenta" onstart="return janal.bloquear()" process="@this detalle" oncomplete="PF('dlgPlazo').show();" update="dialogoPlazo"/>										
                 <p:separator/>					
                 <p:menuitem id="reenviar" icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
+                <p:separator/>
+                <p:menuitem icon="fa fa-calendar" value="Ajustar vencimiento" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doUpdateFechaPago()}" update="dialogoAutorizacion"/>
               </p:contextMenu>
               <h:commandLink id="detallePdf">
                 <pe:exporter type="pdf" skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10" cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
@@ -417,7 +426,7 @@
 	</ui:define>	
   <ui:param name="componenteBloqueo" value="tabla" />
 	<ui:define name="dialogos">
-		<p:dialog id="dialogoAutorizacion" widgetVar="widgetDialogoAutorizacion" header="Persona que autoriza #{manticCatalogosClientesCuentasSaldos.attrs.msgAutorizacion}" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="janal.change('formAutorizacion', Janal.Control.credenciales);" width="50%" onHide="janal.restore(); janal.desbloquear();">						
+		<p:dialog id="dialogoAutorizacion" widgetVar="widgetDialogoAutorizacion" header="Persona que autoriza #{manticCatalogosClientesCuentasSaldos.attrs.msgAutorizacion}" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="janal.change('formAutorizacion', Janal.Control.#{manticCatalogosClientesCuentasSaldos.attrs.limitePago});" width="50%" onHide="janal.restore(); janal.desbloquear();">
 			<h:form id="formAutorizacion" prependId="false">
 				<div class="janal-wid-100-txt janal-column-center">
 				  <p:outputLabel id="invalido" value="La cuenta o contraseña no son validas o no tiene autorización" styleClass="janal-color-orange" style="display: #{manticCatalogosClientesCuentasSaldos.attrs.ok? '': 'none'};"/>
@@ -432,11 +441,15 @@
 		  			<p:password id="contrasenia" value="#{manticCatalogosClientesCuentasSaldos.attrs.contrasenia}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-justificacion" autocomplete="new-password"/>									
           </p:panelGrid>
         </p:panelGrid>
+        <p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+          <p:outputLabel for="limite" value="Vencimiento:" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosClientesCuentasSaldos.attrs.limitePago eq 'limitePago'}"/>
+          <p:calendar id="limite" styleClass="Wid100" inputStyleClass="janal-wid-94 janal-color-blue" value="#{manticCatalogosClientesCuentasSaldos.attrs.limite}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="es" converter="janal.convertidor.Calendario" rendered="#{manticCatalogosClientesCuentasSaldos.attrs.limitePago eq 'limitePago'}"/>
+        </p:panelGrid>   
         <p:outputLabel for="justificacion" value="Justificación:" styleClass="janal-wid-100-txt"/>
         <p:inputTextarea id="justificacion" rows="2" value="#{manticCatalogosClientesCuentasSaldos.attrs.justificacion}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-verificar"/>	
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton id="verificar" widgetVar="lock" icon="fa fa-check" process="@this cuenta contrasenia justificacion" update="invalido" value="Aceptar" action="#{manticCatalogosClientesCuentasSaldos.doCheckUser}" onstart="PF('lock').disable(); if(janal.execute()){ return true; } else {PF('lock').enable(); return false;}" oncomplete="PF('lock').enable();"/>
+					<p:commandButton id="verificar" widgetVar="lock" icon="fa fa-check" process="@this cuenta contrasenia justificacion limite" update="invalido" value="Aceptar" action="#{manticCatalogosClientesCuentasSaldos.doCheckUser}" onstart="PF('lock').disable(); if(janal.execute()){ return true; } else {PF('lock').enable(); return false;}" oncomplete="PF('lock').enable();"/>
 					<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('widgetDialogoAutorizacion').hide();"/>
 				</div>	
 			</h:form>
