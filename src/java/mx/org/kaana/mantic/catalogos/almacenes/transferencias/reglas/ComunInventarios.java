@@ -64,16 +64,24 @@ public abstract class ComunInventarios extends IBaseTnx {
 	}
 	
 	protected void toAutorizarAlmacenOrigen(Session sesion, String consecutivo, Long idAlmacen, Articulo articulo, TcManticArticulosDto umbrales, Long idTransferenciaEstatus) throws Exception {
+    this.toAutorizarAlmacenOrigen(sesion, consecutivo, idAlmacen, articulo, umbrales, idTransferenciaEstatus, false);
+  }
+  
+	protected void toAutorizarAlmacenOrigen(Session sesion, String consecutivo, Long idAlmacen, Articulo articulo, TcManticArticulosDto umbrales, Long idTransferenciaEstatus, boolean ajuste) throws Exception {
 		Map<String, Object> params= null;
+    Double stock              = 0D;
 		try {
 			params=new HashMap<>();
 			//Afectar el almacen original restando los articulos que fueron extraidos
 			params.put("idAlmacen", idAlmacen);
 			params.put("idArticulo", articulo.getIdArticulo());
 			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
-			if(inventario== null)
+			if(inventario== null) {
+        stock     = 0D;
 			  inventario= this.toCreateInvetario(sesion, articulo, idAlmacen, false);
+      } // if
 			else {
+        stock     = inventario.getStock();
    			// si el estatus es el de cancelar entonces hacer los movimientos inversos al traspaso
   			if(idTransferenciaEstatus.intValue()== 4) 
 	  			inventario.setSalidas(Numero.toRedondearSat(inventario.getSalidas()- articulo.getSolicitados()));
@@ -100,10 +108,10 @@ public abstract class ComunInventarios extends IBaseTnx {
 				JsfBase.getIdUsuario(), // Long idUsuario, 
 				idAlmacen, // Long idAlmacen, 
 				-1L, // Long idMovimiento, 
-				articulo.getCuantos()> 0? articulo.getCantidad(): articulo.getCantidad()* -1D, // Double cantidad, 
+				ajuste? articulo.getCuantos()> 0? articulo.getCantidad()* -1D: articulo.getCantidad(): articulo.getCuantos()> 0? articulo.getCantidad(): articulo.getCantidad()* -1D, // Double cantidad, 
 				articulo.getIdArticulo(), // Long idArticulo, 
-				origen.getStock(), // Double stock, 
-				Numero.toRedondearSat(origen.getStock()+ (articulo.getCuantos()> 0? articulo.getCantidad(): articulo.getCantidad()* -1D)), // Double calculo
+				stock, // Double stock, 
+				inventario.getStock(), // Double calculo
 				null // String observaciones
 		  );
 			if(idTransferenciaEstatus.intValue()== 4) {
@@ -122,15 +130,19 @@ public abstract class ComunInventarios extends IBaseTnx {
   
 	protected void toMovimientosAlmacenOrigen(Session sesion, String consecutivo, Long idAlmacen, Articulo articulo, TcManticArticulosDto umbrales, Long idTransferenciaEstatus) throws Exception {
 		Map<String, Object> params= null;
+    Double stock              = 0D; 
 		try {
 			params=new HashMap<>();
 			//Afectar el almacen original restando los articulos que fueron extraidos
 			params.put("idAlmacen", idAlmacen);
 			params.put("idArticulo", articulo.getIdArticulo());
 			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
-			if(inventario== null)
+			if(inventario== null) {
+        stock= 0D;
 			  inventario= this.toCreateInvetario(sesion, articulo, idAlmacen, false);
+      } // if
 			else {
+        stock= inventario.getStock();
    			// si el estatus es el de cancelar entonces hacer los movimientos inversos al traspaso
   			if(idTransferenciaEstatus.intValue()== 4) 
 	  			inventario.setSalidas(Numero.toRedondearSat(inventario.getSalidas()- articulo.getSolicitados()));
@@ -156,8 +168,8 @@ public abstract class ComunInventarios extends IBaseTnx {
 				-1L, // Long idMovimiento, 
 				articulo.getCantidad()* -1, // Double cantidad, 
 				articulo.getIdArticulo(), // Long idArticulo, 
-				origen.getStock(), // Double stock, 
-				Numero.toRedondearSat(origen.getStock()- articulo.getCantidad()), // Double calculo
+				stock, // Double stock, 
+				inventario.getStock(), // Double calculo
 				null // String observaciones
 		  );
 			if(idTransferenciaEstatus.intValue()== 4) {
@@ -176,6 +188,7 @@ public abstract class ComunInventarios extends IBaseTnx {
 	
 	protected void toMovimientosAlmacenDestino(Session sesion, String consecutivo, Long idDestino, Articulo articulo, TcManticArticulosDto umbrales, Double diferencia) throws Exception {
 		Map<String, Object> params= null;
+    Double stock              = 0D;
 		try {
 			//Afectar el almacen destino sumando los articulos que fueron agregados
 			params=new HashMap<>();
@@ -186,9 +199,12 @@ public abstract class ComunInventarios extends IBaseTnx {
 			Value existe= (Value)DaoFactory.getInstance().toField(sesion, "TcManticMovimientosDto", "existe", params, "consecutivo");
 			if(existe== null) {
 				TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(sesion, TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
-				if(inventario== null)
+				if(inventario== null) {
+          stock     = 0D;
 					inventario= this.toCreateInvetario(sesion, articulo, idDestino, true);
+        } // if
 				else {
+          stock= inventario.getStock();
 					inventario.setEntradas(Numero.toRedondearSat(inventario.getEntradas()+ diferencia));
 					inventario.setStock(Numero.toRedondearSat(Math.abs(inventario.getInicial()+ inventario.getEntradas())- inventario.getSalidas()));
 					DaoFactory.getInstance().update(sesion, inventario);
@@ -210,8 +226,8 @@ public abstract class ComunInventarios extends IBaseTnx {
 					-1L, // Long idMovimiento, 
 					diferencia, // Double cantidad, 
 					articulo.getIdArticulo(), // Long idArticulo, 
-					origen.getStock(), // Double stock, 
-					Numero.toRedondearSat(origen.getStock()+ diferencia), // Double calculo
+					stock, // Double stock, 
+					inventario.getStock(), // Double calculo
 					null // String observaciones
 				);
 				DaoFactory.getInstance().insert(sesion, movimiento);

@@ -257,9 +257,9 @@ public class Transaccion extends ComunInventarios {
 						// this.toMarkFaltantes(sesion, articulo);
 						break;
 					case 5: // AFECTAR AMBOS
-						this.toAutorizarAlmacenOrigen(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdAlmacen(), articulo, umbrales, this.transferencia.getIdTransferenciaEstatus());
-            if(diferencia!= articulo.getDescuentos()) {
-              articulo.setCantidad(diferencia- articulo.getDescuentos());
+						this.toAutorizarAlmacenOrigen(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdAlmacen(), articulo, umbrales, this.transferencia.getIdTransferenciaEstatus(), true);
+            if(articulo.getDescuentos()!= 0D) {
+              articulo.setCantidad(articulo.getDescuentos());
 						  this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
             } // if
 						this.toMarkFaltantes(sesion, articulo);
