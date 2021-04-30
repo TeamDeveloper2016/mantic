@@ -100,10 +100,10 @@ public abstract class ComunInventarios extends IBaseTnx {
 				JsfBase.getIdUsuario(), // Long idUsuario, 
 				idAlmacen, // Long idAlmacen, 
 				-1L, // Long idMovimiento, 
-				articulo.getCantidad()* -1, // Double cantidad, 
+				articulo.getCuantos()> 0? articulo.getCantidad(): articulo.getCantidad()* -1D, // Double cantidad, 
 				articulo.getIdArticulo(), // Long idArticulo, 
 				origen.getStock(), // Double stock, 
-				Numero.toRedondearSat(origen.getStock()- articulo.getCantidad()), // Double calculo
+				Numero.toRedondearSat(origen.getStock()+ (articulo.getCuantos()> 0? articulo.getCantidad(): articulo.getCantidad()* -1D)), // Double calculo
 				null // String observaciones
 		  );
 			if(idTransferenciaEstatus.intValue()== 4) {

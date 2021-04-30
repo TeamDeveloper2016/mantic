@@ -312,7 +312,10 @@
 				  tc_mantic_confrontas.id_transferencia as id_orden_detalle,
 					tc_mantic_confrontas_detalles.id_articulo,
 				  0 as id_aplicar,
-				  ifnull(tc_mantic_inventarios.stock, 0) as stock
+					tc_mantic_confrontas_detalles.cantidad as descuentos,
+				  ifnull(tc_mantic_inventarios.stock, 0) as stock,
+          tc_mantic_confrontas_detalles.perdidos as excedentes,
+          tc_mantic_confrontas_detalles.observaciones as sat
 				from
 					tc_mantic_confrontas
 				inner join 
@@ -325,7 +328,9 @@
 				  tc_mantic_transferencias_detalles on tc_mantic_confrontas_detalles.id_transferencia_detalle= tc_mantic_transferencias_detalles.id_transferencia_detalle
 				left join
 				  tc_mantic_inventarios on tc_mantic_transferencias.id_almacen= tc_mantic_inventarios.id_almacen and tc_mantic_inventarios.id_articulo= tc_mantic_transferencias_detalles.id_articulo
-				where  
+	      left join
+          tc_mantic_inventarios as tt_mantic_inventarios on tc_mantic_transferencias.id_destino= tt_mantic_inventarios.id_almacen and tt_mantic_inventarios.id_articulo= tc_mantic_transferencias_detalles.id_articulo     
+			  where  
 					tc_mantic_confrontas.id_transferencia= {idTransferencia}	
 				  and tc_mantic_confrontas_detalles.diferencia!= 0
 				order by 

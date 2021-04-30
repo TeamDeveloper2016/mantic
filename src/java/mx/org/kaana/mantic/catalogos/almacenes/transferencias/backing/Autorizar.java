@@ -156,7 +156,8 @@ public class Autorizar extends IBaseArticulos implements Serializable {
 			transaccion = new Transaccion((TcManticConfrontasDto)this.getAdminOrden().getOrden(), this.getAdminOrden().getArticulos());
 			for (Articulo articulo: this.getAdminOrden().getArticulos()) {
 //				this.doPrepareItems(articulo);
-  		  articulo.setIdRedondear(articulo.getIdAplicar());
+//  		  articulo.setIdRedondear(articulo.getIdAplicar());
+  		  articulo.setIdRedondear(5L);
 //				switch(this.typeOfCase) {
 //					 case 0:
 //             break;

@@ -11,7 +11,8 @@
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryArticulosJs}"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-				'aplicar': {multiple: '$', validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre'}
+				aplicar      : {multiple: '$', validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre'},
+				observaciones: {multiple: '$', validaciones: 'libre', formatos: 'cambiar-mayusculas', mascara: 'libre'}
 			};	
 			
     	$(document).ready(function() {
@@ -19,6 +20,28 @@
         jsArticulos= new Janal.Control.Articulos.Core(#{manticCatalogosAlmacenesTransferenciasAutorizar.adminOrden.articulos.size()});
 				janal.decimals= 4;
       });
+      
+      //<![CDATA[
+      function execute() {
+        var custom= [
+        ];
+        var size= #{manticCatalogosAlmacenesTransferenciasAutorizar.adminOrden.articulos.size()};
+        for(var x= 0; x< size; x++) {
+          var total   = parseFloat($('#contenedorGrupos\\:tabla\\:'+ x+ '\\:total').val(), 10).toFixed(2);
+          var cuantos = parseFloat($('#contenedorGrupos\\:tabla\\:'+ x+ '\\:cuantos_input').val(), 10).toFixed(2);
+          var cantidad= parseFloat($('#contenedorGrupos\\:tabla\\:'+ x+ '\\:cantidad_input').val(), 10).toFixed(2);
+          var factor  = parseFloat($('#contenedorGrupos\\:tabla\\:'+ x+ '\\:factor_input').val(), 10).toFixed(2);
+          var observaciones= $('#contenedorGrupos\\:tabla\\:'+ x+ '\\:observaciones').val();
+          var partida = $('#contenedorGrupos\\:tabla\\:'+ x+ '\\:partida').val();
+          if(factor> 0 && observaciones.trim().length<= 0)
+            custom.push({summary: 'Desaparecidos:', detail: 'Se requiere una justificación, partida ('+ partida+ ')'});
+          if(parseFloat(cuantos, 10)+ parseFloat(cantidad, 10)!== parseFloat(total, 10))
+            custom.push({summary: 'Cantidad:', detail: 'La suma de almacen origen('+ cuantos+ ')+ destino('+ cantidad+ ') no puede ser diferente a '+ total+ ', partida ('+ partida+ ')'});
+          // janal.console('total: '+ total);
+        } // for  
+        return janal.execute(custom);  
+      }
+      //]]>
 		</script>   
 		<style>
 			.janal-tr-diferencias {
@@ -54,64 +77,64 @@
 							</div>	
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100" >							
 								<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosAlmacenesTransferenciasAutorizar.adminOrden.articulos}" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas" paginator="#{manticCatalogosAlmacenesTransferenciasAutorizar.attrs.paginator}" rows="#{manticCatalogosAlmacenesTransferenciasAutorizar.rows}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_LOTE}" rowStyleClass="#{manticCatalogosAlmacenesTransferenciasAutorizar.doOrdenColor(row)}">
-									<p:column class="MarAuto Responsive janal-wid-3">
-										<f:facet name="header">
-											<h:outputText value="No."/>
-										</f:facet>
+									<p:columnGroup type="header">
+                    <p:row>
+                      <p:column rowspan="2" headerText="No." styleClass="MarAuto Responsive janal-wid-3"/>
+                      <p:column rowspan="2" headerText="No. confronta" styleClass="MarAuto Responsive janal-wid-10"/>
+                      <p:column rowspan="2" headerText="Código" styleClass="MarAuto Responsive janal-wid-10"/>
+                      <p:column rowspan="2" headerText="Nombre" styleClass="MarAuto Responsive"/>
+                      <p:column colspan="2" headerText="Cantidad" styleClass="MarAuto Responsive janal-wid-15"/>
+                      <p:column colspan="2" headerText="Almacén" styleClass="MarAuto Responsive janal-wid-30"/>
+                      <p:column rowspan="2" headerText="Desaparecidos" styleClass="MarAuto Responsive janal-wid-10"/>
+                      <p:column rowspan="2" headerText="Observaciones"/>
+                      <!--p:column rowspan="2" headerText="Aplicar" style="display:none"/-->
+                    </p:row>
+                    <p:row>
+                      <p:column headerText="Surtida" />
+                      <p:column headerText="Recibida" />
+                      <p:column headerText="Origen" />
+                      <p:column headerText="Destino" />
+                    </p:row>
+                  </p:columnGroup>
+                  <p:column>
 										<h:outputText value="#{index+ 1}.-"/>
 									</p:column>													
-									<p:column class="MarAuto Responsive janal-wid-10 janal-column-center">
-										<f:facet name="header">
-											<h:outputText value="No. confronta"/>
-										</f:facet>
+									<p:column class="janal-column-center">
 										<p:commandLink action="#{manticCatalogosAlmacenesTransferenciasAutorizar.doConfronta}">
 											<f:setPropertyActionListener target="#{manticCatalogosAlmacenesTransferenciasAutorizar.attrs.idConfronta}" value="#{row.idProveedor}"/>
   										<h:outputText value="#{row['origen']}"/>
 										</p:commandLink>											
 									</p:column>		
-									<p:column class="MarAuto Responsive janal-wid-10">
-										<f:facet name="header">
-											<h:outputText value="Código"/>
-										</f:facet>
+									<p:column>
 										<h:outputText value="#{row['codigo']}"/>
+                    <p:inputText id="partida" value="#{row['codigo']}" style="display: none"/>
 									</p:column>		
-									<p:column class="MarAuto Responsive" sortBy="#{row.nombre}">
-										<f:facet name="header">
-											<h:outputText value="Nombre"/>
-										</f:facet>
+									<p:column sortBy="#{row.nombre}">
 										<h:outputText value="#{row['nombre']}"/>
 									</p:column>		
                   <p:column class="costos janal-column-right MarAuto Responsive janal-wid-12">
-                    <f:facet name="header">
-                      <h:outputText value="Stock origen"/>
-                    </f:facet>
-                    <p:outputLabel value="(#{row['stock']}) afectar[#{row['cuantos'] gt 0? '-': '+'}#{row['cuantos'] lt 0? row['cuantos']*-1: row['cuantos']}]" styleClass="filas"/>
+										<h:outputText value="#{row['solicitados']}"/>
+                    <p:inputText id="total" value="#{row['solicitados']}" style="display: none"/>
+                    <!-- Solicitaron -->
                   </p:column>	
 									<p:column class="janal-column-right MarAuto Responsive janal-wid-10 janal-font-bold">
-										<f:facet name="header">
-											<h:outputText value="Solicitarón"/>
-										</f:facet>
-										<h:outputText value="#{row['solicitados']}"/>
-									</p:column>		
-									<p:column class="janal-column-right MarAuto Responsive janal-wid-10 janal-font-bold">
-										<f:facet name="header">
-											<h:outputText value="Recibierón"/>
-										</f:facet>
 										<h:outputText value="#{row['cantidad']}"/>
+                    <!-- Recibieron -->
 									</p:column>		
 									<p:column class="janal-column-right MarAuto Responsive janal-wid-10 janal-font-bold">
-										<f:facet name="header">
-											<h:outputText value="Diferencia"/>
-										</f:facet>
-										<h:outputText value="#{row['cuantos']}"/>
+                    <span class="janal-icons-header janal-color-blue">(#{row['stock']})</span>
+                    <p:spinner id="cuantos" value="#{row['cuantos']}" styleClass="janal-wid-60 filas" size="12" stepFactor="1.0" min="#{row['solicitados']* -1.0}" max="#{row['solicitados']}"/>
 									</p:column>		
-									<p:column class="MarAuto Responsive janal-wid-12 janal-column-center aplicar">
-										<f:facet name="header">
-											<h:outputText value="Aplicar"/>
-										</f:facet>
-										<p:selectOneMenu id="aplicar" value="#{row.ikAplicar}" converter="janal.convertidor.Entity" styleClass="janal-wid-86 filas janal-name-La_fila_#{index+ 1}">
-											<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasAutorizar.items}" var="element" itemValue="#{element}" itemLabel="#{element.label}"/>
-										</p:selectOneMenu>	
+									<p:column class="janal-column-right MarAuto Responsive janal-wid-10 janal-font-bold">
+										<span class="janal-icons-header janal-color-orange">(#{row['valor']})</span>
+                    <p:spinner id="cantidad" value="#{row['descuentos']}" styleClass="janal-wid-60 filas" size="12" stepFactor="1.0" min="#{row['solicitados']* -1.0}" max="#{row['solicitados']}"/>
+									</p:column>		
+									<p:column class="janal-column-center MarAuto Responsive janal-wid-10 janal-font-bold">
+										<p:spinner id="factor" value="#{row['excedentes']}" styleClass="janal-wid-80 filas" size="12" stepFactor="1.0" min="0" max="#{row['solicitados']}"/>
+									</p:column>		
+									<p:column class="janal-column-center MarAuto Responsive janal-wid-12 janal-font-bold">
+                    <p:inputText id="observaciones" value="#{row['sat']}" styleClass="janal-wid-100-txt"/>
+                    <p:inputText id="idAplicar" value="#{row.ikAplicar}" converter="janal.convertidor.Entity" style="display:none"/>
 									</p:column>		
  								</p:dataTable>
 							</p:panelGrid>	
@@ -124,11 +147,11 @@
   </ui:define> 
 	<ui:define name="acciones">
     <div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticCatalogosAlmacenesTransferenciasAutorizar.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticCatalogosAlmacenesTransferenciasAutorizar.doAceptar}" onstart="return execute();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="regresar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosAlmacenesTransferenciasAutorizar.doRegresar}" immediate="true"/>
 		</div>	
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosAlmacenesTransferenciasAutorizar.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosAlmacenesTransferenciasAutorizar.doAceptar}" onstart="return execute();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosAlmacenesTransferenciasAutorizar.doRegresar}" immediate="true"/>
 		</div>	
   </ui:define>

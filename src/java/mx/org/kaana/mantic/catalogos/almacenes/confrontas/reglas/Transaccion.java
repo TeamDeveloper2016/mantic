@@ -240,8 +240,9 @@ public class Transaccion extends ComunInventarios {
 				TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, articulo.getIdArticulo());
 				TcManticConfrontasDetallesDto item= articulo.toConfrontasDetalle();
 				item.setIdConfronta(this.dto.getIdConfronta());
-				double diferencia= articulo.getCantidad();
-				articulo.setCantidad(Math.abs(articulo.getCuantos()));
+        double diferencia= articulo.getCantidad();
+				articulo.setCantidad(articulo.getCuantos());
+				articulo.setCuantos(articulo.getCuantos()* -1D);
 				switch(articulo.getIdRedondear().intValue()) {
 					case 1: // IGNORAR CAMBIOS
 						break;
@@ -257,10 +258,10 @@ public class Transaccion extends ComunInventarios {
 						break;
 					case 5: // AFECTAR AMBOS
 						this.toAutorizarAlmacenOrigen(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdAlmacen(), articulo, umbrales, this.transferencia.getIdTransferenciaEstatus());
-            if(articulo.getCuantos()> 0)
-              articulo.setCantidad(diferencia);
-            if(diferencia!= 0) 
+            if(diferencia!= articulo.getDescuentos()) {
+              articulo.setCantidad(diferencia- articulo.getDescuentos());
 						  this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
+            } // if
 						this.toMarkFaltantes(sesion, articulo);
 						break;
 					case 6: // REGRESAR ORIGEN

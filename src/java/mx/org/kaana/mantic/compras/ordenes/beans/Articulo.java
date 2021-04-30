@@ -714,7 +714,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		return new TcManticConfrontasDetallesDto(
       this.getPropio(), // String codigo, 
 			this.getIdComodin(), // Long idConfrontaDetalle, 
-			this.getIdOrdenDetalle()== null? 0D: this.getCantidad()- this.getSolicitados(), // Double cantidades, 
+			this.getIdOrdenDetalle()== null? 0D: this.getSolicitados()- this.getCantidad(), // Double cantidades, 
 			-1L, // Long idConfronta, 
 			this.getIdOrdenDetalle(), // Long idTransferenciaDetalle, 
 			this.getCantidad(), // Double cantidad, 
@@ -722,8 +722,10 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getIdAplicar(), // Long idAplicar, 
 			this.getNombre(), // String nombre, 
 			this.getSolicitados(), // Double declarados, 
-			this.getCantidad()- this.getSolicitados(), // Double diferencia
-			this.getCaja() // caja
+			this.getSolicitados()- this.getCantidad(), // Double diferencia
+			this.getCaja(), // caja
+      this.getExcedentes(), // perdidos
+      this.getSat() // observaciones
    	);
 	}
 	
