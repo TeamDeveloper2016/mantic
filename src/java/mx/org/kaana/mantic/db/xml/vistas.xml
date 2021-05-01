@@ -371,6 +371,37 @@
 				  and tc_mantic_transferencias.id_empresa= {idEmpresa}		
 				  and tc_mantic_confrontas.orden {operador} 900000		
 			</select>		
+      <select id="perdidos">
+				select
+         tc_mantic_confrontas_detalles.id_confronta_detalle as id_key,
+         tc_mantic_confrontas.consecutivo,
+         tc_mantic_confrontas.registro,
+         concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as autorizo,
+         tc_mantic_confrontas_detalles.codigo,
+         tc_mantic_confrontas_detalles.nombre,
+         tc_mantic_confrontas_detalles.cantidad,
+         tc_mantic_confrontas_detalles.cantidades,
+         tc_mantic_confrontas_detalles.declarados,
+         tc_mantic_confrontas_detalles.diferencia,
+         tc_mantic_confrontas_detalles.perdidos,
+         tc_mantic_confrontas_detalles.observaciones,
+         sum(tc_mantic_confrontas_detalles.perdidos) as articulos
+        from
+          tc_mantic_confrontas
+        inner join
+          tc_mantic_confrontas_detalles on tc_mantic_confrontas.id_confronta= tc_mantic_confrontas_detalles.id_confronta
+				inner join
+					tc_janal_usuarios on tc_mantic_confrontas.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+        where
+          tc_mantic_confrontas.id_confronta= {idConfronta}
+          and tc_mantic_confrontas_detalles.perdidos&gt; 0
+        group by  
+          tc_mantic_confrontas_detalles.id_confronta_detalle
+        order by
+          tc_mantic_confrontas_detalles.perdidos desc
+      </select>  
       <select id="lazy">
 				select
 					tc_mantic_transferencias.id_transferencia as id_key,
@@ -392,11 +423,14 @@
 					tc_mantic_transferencias.id_transferencia_estatus estatus,
 					tc_mantic_transferencias_estatus.nombre nombre_estatus,
 					tc_mantic_transferencias_tipos.id_transferencia_tipo,
-					tc_mantic_transferencias_tipos.nombre as tipo         
+					tc_mantic_transferencias_tipos.nombre as tipo,
+					sum(ifnull(tc_mantic_confrontas_detalles.perdidos, 0)) as perdidos       
 				from
 					tc_mantic_transferencias         
 				left join
 					tc_mantic_confrontas on tc_mantic_confrontas.id_transferencia= tc_mantic_transferencias.id_transferencia         
+				left join
+					tc_mantic_confrontas_detalles on tc_mantic_confrontas.id_confronta= tc_mantic_confrontas_detalles.id_confronta         
 				inner join
 					tc_mantic_transferencias_estatus on tc_mantic_transferencias.id_transferencia_estatus = tc_mantic_transferencias_estatus.id_transferencia_estatus         
 				inner join
@@ -411,6 +445,8 @@
 					tc_mantic_transferencias_tipos on tc_mantic_transferencias.id_transferencia_tipo = tc_mantic_transferencias_tipos.id_transferencia_tipo     
 				where
 					({condicion})
+			  group by
+			    tc_mantic_transferencias.id_transferencia 		
 				{sortOrder}				
       </select>   
       <select id="detalle">

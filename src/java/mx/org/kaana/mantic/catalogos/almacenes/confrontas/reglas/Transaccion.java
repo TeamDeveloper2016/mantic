@@ -240,9 +240,7 @@ public class Transaccion extends ComunInventarios {
 				TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, articulo.getIdArticulo());
 				TcManticConfrontasDetallesDto item= articulo.toConfrontasDetalle();
 				item.setIdConfronta(this.dto.getIdConfronta());
-        double diferencia= articulo.getCantidad();
 				articulo.setCantidad(articulo.getCuantos());
-				articulo.setCuantos(articulo.getCuantos()* -1D);
 				switch(articulo.getIdRedondear().intValue()) {
 					case 1: // IGNORAR CAMBIOS
 						break;
@@ -257,7 +255,7 @@ public class Transaccion extends ComunInventarios {
 						// this.toMarkFaltantes(sesion, articulo);
 						break;
 					case 5: // AFECTAR AMBOS
-						this.toAutorizarAlmacenOrigen(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdAlmacen(), articulo, umbrales, this.transferencia.getIdTransferenciaEstatus(), true);
+						this.toAutorizarAlmacenOrigen(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdAlmacen(), articulo, umbrales, this.transferencia.getIdTransferenciaEstatus());
             if(articulo.getDescuentos()!= 0D) {
               articulo.setCantidad(articulo.getDescuentos());
 						  this.toMovimientosAlmacenDestino(sesion, this.transferencia.getConsecutivo(), this.transferencia.getIdDestino(), articulo, umbrales, articulo.getCantidad());
@@ -272,7 +270,7 @@ public class Transaccion extends ComunInventarios {
 						// this.toMarkFaltantes(sesion, articulo);
 						break;
 				} // switch
-				articulo.setCantidad(diferencia);
+				DaoFactory.getInstance().update(sesion, item);
 			} // for
 //      throw new RuntimeException("Estoy probando que este bien este proceso.");
 		} // try

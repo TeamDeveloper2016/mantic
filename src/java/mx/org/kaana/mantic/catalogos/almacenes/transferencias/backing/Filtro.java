@@ -497,4 +497,8 @@ public class Filtro extends Comun implements Serializable {
 		return "autorizar".concat(Constantes.REDIRECIONAR);
 	}	
 	
+	public String toColor(Entity row) {
+		return ""; // row.toDouble("perdidos")> 0D? "janal-tr-orange": "";
+	} 
+   
 }

@@ -12,6 +12,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.ServletContext;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -446,4 +447,41 @@ public class Filtro extends Comun implements Serializable {
 		return "/Paginas/Mantic/Catalogos/Almacenes/Confrontas/accion".concat(Constantes.REDIRECIONAR);
   } // doRecibir	
 
+	public String toColor(Entity row) {
+		return row.toDouble("perdidos")> 0D? "janal-tr-orange": "";
+	} 
+  
+  public void doUpdatePerdidos() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		List<Entity> documentos   = null;
+    try {
+      Entity seleccionado= (Entity)this.attrs.get("seleccionado");
+			columns= new ArrayList<>();
+      columns.add(new Columna("autorizo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("cantidades", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("declarados", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("diferencia", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("perdidos", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("articulos", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+   		params.put("idConfronta", seleccionado.toLong("idConfronta"));
+      documentos= (List<Entity>) DaoFactory.getInstance().toEntitySet("VistaConfrontasDto", "perdidos", params, Constantes.SQL_TODOS_REGISTROS);
+      if(documentos!= null && !documentos.isEmpty())
+        UIBackingUtilities.toFormatEntitySet(documentos, columns);
+      this.attrs.put("documentos", documentos);
+      this.attrs.put("tipoDocumento", "de la transferencia con partida(s) desparecidas !");
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+		finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+  }
+  
 }

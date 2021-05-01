@@ -465,7 +465,7 @@
 				<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.documento.total}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
 			</p:panelGrid>
 			<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100">		
-				<p:dataTable id="informacion" var="item" value="#{manticInventariosAlmacenesKardex.attrs.documentos}" paginator="false" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="documento" rowIndexVar="index">
+				<p:dataTable id="informacion" var="item" value="#{manticInventariosAlmacenesKardex.attrs.documentos}" paginator="false" reflow="true" rowKey="#{item.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="documento" rowIndexVar="index">
 					<p:column headerText="No" styleClass="janal-wid-3">
 						<p:outputLabel value="#{index+ 1}.-"/>
 					</p:column>   

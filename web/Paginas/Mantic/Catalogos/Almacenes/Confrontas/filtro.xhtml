@@ -120,7 +120,7 @@
           </p:panel>
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosAlmacenesConfrontasFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosAlmacenesConfrontasFiltro.lazyModel.rowCount gt manticCatalogosAlmacenesConfrontasFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosAlmacenesConfrontasFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosAlmacenesConfrontasFiltro.lazyModel.rowCount gt manticCatalogosAlmacenesConfrontasFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowStyleClass="#{manticCatalogosAlmacenesConfrontasFiltro.toColor(row)}">
             <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >
@@ -204,10 +204,79 @@
             <p:menuitem icon="fa fa-indent" value="Sin conteo" process="@this tabla" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" rendered="#{fn:contains('|8|9|', manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.estatus)}">
 							<p:fileDownload value="#{manticCatalogosAlmacenesConfrontasFiltro.archivo}" />
 						</p:menuitem>	
+            <p:separator rendered="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.perdidos.toDouble() gt 0}"/>			
+            <p:menuitem id="desaparecidos" icon="fa fa-user-secret" value="Desaparecidos" actionListener="#{manticCatalogosAlmacenesConfrontasFiltro.doUpdatePerdidos}" process="@this tabla" update="documento @(.documento)" onstart="return janal.bloquear();" oncomplete="PF('widgetDetalle').show();" rendered="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.perdidos.toDouble() gt 0}"/>
 					</p:contextMenu>
         </div>
       </div>
     </div>	    		
+    <p:dialog id="documento" widgetVar="widgetDetalle" header="Detalle #{manticCatalogosAlmacenesConfrontasFiltro.attrs.tipoDocumento}" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();" width="1200px" height="480px" resizable="false" appendTo="@(body)" dynamic="true">
+			<p:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-10 janal-column-center, janal-wid-70 janal-column-center, janal-wid-12 janal-column-center, janal-wid-10 janal-column-center">
+				<p:outputLabel value="Consecutivo"/>
+				<p:outputLabel value="Autorizó"/>
+				<p:outputLabel value="Fecha"/>
+				<p:outputLabel value="Desaparecidos"/>
+				<p:inputText value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.documentos[0].consecutivo}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+				<p:inputText value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.documentos[0].autorizo}" styleClass="janal-wid-100-txt" readonly="true"/>
+				<p:inputText value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.documentos[0].registro}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+				<p:inputText value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.documentos[0].articulos}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
+			</p:panelGrid>
+			<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100">		
+        <p:dataTable id="informacion" var="item" lazy="false" value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.documentos}" paginator="false" reflow="true" rowKey="#{item.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="documento" rowIndexVar="index">
+          <p:columnGroup type="header">
+            <p:row>
+              <p:column rowspan="2" headerText="No." styleClass="MarAuto Responsive janal-wid-3"/>
+              <p:column rowspan="2" headerText="Código" styleClass="MarAuto Responsive janal-wid-10"/>
+              <p:column rowspan="2" headerText="Nombre" styleClass="MarAuto Responsive"/>
+              <p:column colspan="2" headerText="Cantidad" styleClass="MarAuto Responsive janal-wid-20"/>
+              <p:column rowspan="2" headerText="Diferencia" styleClass="MarAuto Responsive janal-wid-8"/>
+              <p:column rowspan="2" headerText="Desaparecidos" styleClass="MarAuto Responsive janal-wid-10"/>
+              <p:column rowspan="2" headerText="Observaciones" styleClass="MarAuto Responsive"/>
+            </p:row>
+            <p:row>
+              <p:column headerText="Surtida" />
+              <p:column headerText="Recibida" />
+            </p:row>
+          </p:columnGroup>
+          <p:column>
+            <p:outputLabel value="#{index+ 1}.-"/>
+          </p:column>													
+          <p:column>
+            <p:outputLabel value="#{item['codigo']}"/>
+          </p:column>		
+          <p:column>
+            <p:outputLabel value="#{item['nombre']}"/>
+          </p:column>		
+          <p:column styleClass="janal-column-right">
+            <p:outputLabel value="#{item['declarados']}"/>
+            <!-- Solicitaron -->
+          </p:column>	
+          <p:column styleClass="janal-column-right">
+            <p:outputLabel value="#{item['cantidad']}"/>
+            <!-- Recibieron -->
+          </p:column>		
+          <p:column styleClass="janal-column-right">
+            <p:outputLabel value="#{item['diferencia']}" styleClass="janal-color-black"/>
+            <!-- diferencia -->
+          </p:column>		
+          <p:column styleClass="janal-column-right">
+            <p:outputLabel value="#{item['perdidos']}" styleClass="janal-font-bold janal-color-blue"/>
+            <!-- perdidos -->
+          </p:column>		
+          <p:column>
+            <p:outputLabel value="#{item['observaciones']}"/>
+            <!-- observaciones -->
+          </p:column>		
+          <f:facet name="footer">
+            Total [#{manticCatalogosAlmacenesConfrontasFiltro.attrs.documentos.size()}] registros
+          </f:facet>
+				</p:dataTable>
+			</p:panelGrid>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton process="@none" icon="fa fa-remove" value="Cerrar" oncomplete="PF('widgetDetalle').hide();"/>
+			</div>
+		</p:dialog>		
   </ui:define>
   <ui:param name="componenteBloqueo" value="tabla"/>
 </ui:composition>

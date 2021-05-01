@@ -63,11 +63,11 @@ public abstract class ComunInventarios extends IBaseTnx {
 		this.toMovimientosAlmacenDestino(sesion, consecutivo, idDestino, articulo, umbrales, articulo.getCantidad());
 	}
 	
-	protected void toAutorizarAlmacenOrigen(Session sesion, String consecutivo, Long idAlmacen, Articulo articulo, TcManticArticulosDto umbrales, Long idTransferenciaEstatus) throws Exception {
-    this.toAutorizarAlmacenOrigen(sesion, consecutivo, idAlmacen, articulo, umbrales, idTransferenciaEstatus, false);
-  }
+//	protected void toAutorizarAlmacenOrigen(Session sesion, String consecutivo, Long idAlmacen, Articulo articulo, TcManticArticulosDto umbrales, Long idTransferenciaEstatus) throws Exception {
+//    this.toAutorizarAlmacenOrigen(sesion, consecutivo, idAlmacen, articulo, umbrales, idTransferenciaEstatus, false);
+//  }
   
-	protected void toAutorizarAlmacenOrigen(Session sesion, String consecutivo, Long idAlmacen, Articulo articulo, TcManticArticulosDto umbrales, Long idTransferenciaEstatus, boolean ajuste) throws Exception {
+	protected void toAutorizarAlmacenOrigen(Session sesion, String consecutivo, Long idAlmacen, Articulo articulo, TcManticArticulosDto umbrales, Long idTransferenciaEstatus) throws Exception {
 		Map<String, Object> params= null;
     Double stock              = 0D;
 		try {
@@ -86,10 +86,7 @@ public abstract class ComunInventarios extends IBaseTnx {
   			if(idTransferenciaEstatus.intValue()== 4) 
 	  			inventario.setSalidas(Numero.toRedondearSat(inventario.getSalidas()- articulo.getSolicitados()));
 				else 
-          if(articulo.getCuantos()> 0) 
-	  			  inventario.setSalidas(Numero.toRedondearSat(inventario.getSalidas()+ articulo.getCantidad()));
-          else
-	  			  inventario.setSalidas(Numero.toRedondearSat(inventario.getSalidas()- articulo.getCantidad()));
+   			  inventario.setSalidas(Numero.toRedondearSat(inventario.getSalidas()+ (articulo.getDescuentos()- articulo.getSolicitados())));
 				// ajustar el stock del inventrio del almacen origen con el nuevo valor
 	  		inventario.setStock(Numero.toRedondearSat(Math.abs(inventario.getInicial()+ inventario.getEntradas())- inventario.getSalidas()));
   			DaoFactory.getInstance().update(sesion, inventario);
@@ -108,7 +105,7 @@ public abstract class ComunInventarios extends IBaseTnx {
 				JsfBase.getIdUsuario(), // Long idUsuario, 
 				idAlmacen, // Long idAlmacen, 
 				-1L, // Long idMovimiento, 
-				ajuste? articulo.getCuantos()> 0? articulo.getCantidad()* -1D: articulo.getCantidad(): articulo.getCuantos()> 0? articulo.getCantidad(): articulo.getCantidad()* -1D, // Double cantidad, 
+				articulo.getCantidad(), // Double cantidad, 
 				articulo.getIdArticulo(), // Long idArticulo, 
 				stock, // Double stock, 
 				inventario.getStock(), // Double calculo

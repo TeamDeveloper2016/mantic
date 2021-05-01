@@ -116,7 +116,7 @@
 									<p:outputLabel for="idAlmacenUbicacion" value="Ubicaciones:"/>
 									<p:selectOneMenu id="idAlmacenUbicacion" tabindex="0" value="#{manticCatalogosInventariosConteos.attrs.idAlmacenUbicacion}" var="ubicacion" converter="janal.convertidor.Entity" styleClass="janal-wid-96 filas almacen" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 										<p:ajax event="change" listener="#{manticCatalogosInventariosConteos.doChangeUbicacion}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-										<f:selectItems value="#{manticCatalogosInventariosConteos.attrs.ubicaciones}" var="element" itemValue="#{element.key}" itemLabel="#{element.piso} - #{element.cuarto} - #{element.anaquel} - #{element.charola}"/>
+										<f:selectItems value="#{manticCatalogosInventariosConteos.attrs.ubicaciones}" var="element" itemValue="#{element.key}" itemLabel="#{element.piso} #{empty element.cuarto or element.cuarto eq ''? '': '|'} #{element.cuarto} #{empty element.anaquel or element.anaquel eq ''? '': '|'} #{element.anaquel} #{empty element.charola or element.charola eq ''? '': '|'} #{element.charola}"/>
 										<p:column headerText="Piso">
 											<h:outputText value="#{ubicacion.piso}"/>
 										</p:column>   
