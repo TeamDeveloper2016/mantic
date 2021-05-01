@@ -184,6 +184,7 @@
 							<h:outputText value="#{row['registro']}"/>
 						</p:column>					
 						<f:facet name="footer">
+							<p:outputLabel value="Las filas en color son transferncias con partidas desaparecidas !" style="float: left;"/>
 							Total [#{manticCatalogosAlmacenesConfrontasFiltro.lazyModel== null? 0: manticCatalogosAlmacenesConfrontasFiltro.lazyModel.rowCount}] registros
 						</f:facet>
 					</p:dataTable>
