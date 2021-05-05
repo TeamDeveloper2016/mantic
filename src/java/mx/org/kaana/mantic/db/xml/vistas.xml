@@ -7786,8 +7786,7 @@
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona				
 				where
 					{condicion}
-				and
-					tc_mantic_proveedores.id_proveedor = {idProveedor}								
+				  and tc_mantic_proveedores.id_proveedor = {idProveedor}								
 				{sortOrder}						
 			</select>		
 			<select id="pagosDeuda">
@@ -7916,9 +7915,9 @@
 				select
 					tc_mantic_proveedores.id_proveedor as id_key,
 					tc_mantic_proveedores.razon_social,															
-					sum(tc_mantic_empresas_deudas.importe) importe,
-					sum(tc_mantic_empresas_deudas.saldo) debe,
-					sum(tc_mantic_empresas_deudas.saldo) saldo
+					sum(tc_mantic_empresas_deudas.importe) as importe,
+					sum(tc_mantic_empresas_deudas.saldo) as debe,
+					sum(tc_mantic_empresas_deudas.saldo) as saldo
 				from
 					tc_mantic_proveedores
 				inner join

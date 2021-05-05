@@ -410,14 +410,14 @@ public class Deuda extends IBaseFilter implements Serializable {
 				tipoPago= pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
 				transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("cajaGeneral").toString()), Long.valueOf((String)this.attrs.get("idCliente")), Long.valueOf(this.attrs.get("idEmpresaGeneral").toString()), tipoPago ? -1L : Long.valueOf(this.attrs.get("bancoGeneral").toString()), tipoPago ? "" : this.attrs.get("referenciaGeneral").toString(), saldar);
 				if(transaccion.ejecutar(EAccion.PROCESAR)) {
-					JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta.");
+					JsfBase.addMessage("Registrar pago", "Se registró el pago de forma correcta");
 					this.loadClienteDeuda();					
 				} // if
 				else
-					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago.", ETipoMensaje.ERROR);
+					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -442,14 +442,14 @@ public class Deuda extends IBaseFilter implements Serializable {
 				tipoPago= pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
 				transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("cajaSegmento").toString()), Long.valueOf((String)this.attrs.get("idCliente")), Long.valueOf(this.attrs.get("idEmpresaSegmento").toString()), tipoPago ? -1L : Long.valueOf(this.attrs.get("bancoSegmento").toString()), tipoPago ? "" : this.attrs.get("referenciaSegmento").toString(), this.seleccionadosSegmento, saldar);
 				if(transaccion.ejecutar(EAccion.COMPLEMENTAR)) {
-					JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta.");
+					JsfBase.addMessage("Registrar pago", "Se registró el pago de forma correcta");
 					this.loadClienteDeuda();					
 				} // if
 				else
-					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago.", ETipoMensaje.ERROR);
+					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante, ademas se debe de seleecionar una cuenta.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante, ademas se debe de seleecionar una cuenta", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

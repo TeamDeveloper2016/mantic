@@ -160,7 +160,7 @@
               <i class="fa fa-fw fa-truck janal-color-orange"></i>
 							<h:outputText value="#{row['razonSocial']}" title="Empresa: #{row['nombre']}"/>
 						</p:column>									
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.cuentas}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cuentas}">
 							<f:facet name="header">
 								<h:outputText value="Cuentas"/>
 							</f:facet>
@@ -218,7 +218,7 @@
                     <p:commandButton icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosEmpresasCuentasSaldos.doReporte('CUENTAS_POR_PAGAR')}" oncomplete="janal.desbloquear();" update="descargar"/>
                   </div>  
                 </f:facet>												
-                <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+                <p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.consecutivo}">
                   <f:facet name="header">
                     <h:outputText value="Nota Entrada"/>
                   </f:facet>
@@ -233,7 +233,7 @@
                   </f:facet>
                   <h:outputText value="#{row['factura']}"/>
                 </p:column>	
-                <p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.pagar}" exportable="false">
+                <p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{row.pagar}" exportable="false">
                   <f:facet name="header">
                     <h:outputText value="Deuda"/>
                   </f:facet>
@@ -246,7 +246,7 @@
                     </div>
                   </div>	
                 </p:column>											
-                <p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.saldo}">
+                <p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{row.saldo}">
                   <f:facet name="header">
                     <h:outputText value="Saldo"/>
                   </f:facet>
@@ -258,19 +258,19 @@
                   </f:facet>
                   <h:outputText value="#{row['abonado']}"/>
                 </p:column>
-                <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.fecha}">
+                <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.fecha}">
                   <f:facet name="header">
                     <h:outputText value="Fecha" title="Fecha en la que que se hizo la compra"/>
                   </f:facet>
                   <h:outputText value="#{row['fecha']}"/>
                 </p:column>
-                <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.limite}">
+                <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.limite}">
                   <f:facet name="header">
                     <h:outputText value="Vence" title="Fecha en la que vence el crédito otorgado"/>
                   </f:facet>
                   <h:outputText value="#{row['limite']}"/>
                 </p:column>
-                <p:column class="janal-column-right MarAuto Responsive janal-wid-4" sortBy="#{row.dias}">
+                <p:column class="janal-column-right MarAuto Responsive janal-wid-6" sortBy="#{row.dias}">
                   <f:facet name="header">
                     <h:outputText value="Días" title="Días trascurridos desde la compra"/>
                   </f:facet>

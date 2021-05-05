@@ -213,7 +213,7 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 				DaoFactory.getInstance().insert(sesion, registro);
         
 				// Afectar todas las notas de entrada que ya fueron aceptadas para agregarlas como cuentas por pagar
-				TcManticEmpresasDeudasDto deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), nota.getDeuda()* -1L, nota.getIdNotaEntrada(), nota.getFechaPago(), nota.getDeuda()- nota.getExcedentes(), nota.getDeuda()- nota.getExcedentes());
+				TcManticEmpresasDeudasDto deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), nota.getDeuda(), nota.getIdNotaEntrada(), nota.getFechaPago(), nota.getDeuda()- nota.getExcedentes(), nota.getDeuda()- nota.getExcedentes());
 				DaoFactory.getInstance().insert(sesion, deuda);
 				
     		// Recuperar el detalle de las notas de entrada para afectas inventarios 

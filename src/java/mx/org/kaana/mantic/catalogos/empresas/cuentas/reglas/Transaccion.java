@@ -117,24 +117,24 @@ public class Transaccion extends IBaseTnx {
 				this.pagoGeneral= this.pago.getPago();
       switch (accion) {
         case AGREGAR:
-          regresar = procesarPago(sesion);
+          regresar = this.procesarPago(sesion);
           break;       
 				case REGISTRAR:
 					regresar= true;
-					toUpdateDeleteXml(sesion);
+					this.toUpdateDeleteXml(sesion);
 					break;
 				case MODIFICAR:
-					regresar= actualizarDeuda(sesion);
+					regresar= this.actualizarDeuda(sesion);
 					break;
 				case PROCESAR:
-					regresar = procesarPagoGeneral(sesion);
+					regresar = this.procesarPagoGeneral(sesion);
 					break;
 				case COMPLEMENTAR:
-					regresar = procesarPagoSegmento(sesion);
+					regresar = this.procesarPagoSegmento(sesion);
 					break;
 				case SUBIR:
 					regresar= true;
-					toUpdateDeleteFilePago(sesion);
+					this.toUpdateDeleteFilePago(sesion);
 					break;
 				case ACTIVAR:
 					TcManticEmpresasDeudasDto deudaReabrir= (TcManticEmpresasDeudasDto) DaoFactory.getInstance().findById(sesion, TcManticEmpresasDeudasDto.class, this.deuda.getIdEmpresaDeuda());
@@ -144,7 +144,7 @@ public class Transaccion extends IBaseTnx {
 					regresar= DaoFactory.getInstance().update(sesion, deudaReabrir)>= 1L;
 					break;
 				case ELIMINAR:
-					regresar= eliminarPago(sesion);
+					regresar= this.eliminarPago(sesion);
 					break;
       } // switch
       if (!regresar) 
@@ -175,7 +175,7 @@ public class Transaccion extends IBaseTnx {
 				this.pago.setEjercicio(new Long(Fecha.getAnioActual()));
 				if(DaoFactory.getInstance().insert(sesion, this.pago)>= 1L) {
 					deuda= (TcManticEmpresasDeudasDto) DaoFactory.getInstance().findById(sesion, TcManticEmpresasDeudasDto.class, this.pago.getIdEmpresaDeuda());
-					saldo= deuda.getSaldo()+ this.pago.getPago();
+					saldo= deuda.getSaldo()- this.pago.getPago();
 					deuda.setSaldo(saldo);
 					deuda.setIdEmpresaEstatus(saldo>= 0D ? EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa() : EEstatusEmpresas.PARCIALIZADA.getIdEstatusEmpresa());
 					regresar= DaoFactory.getInstance().update(sesion, deuda)>= 1L;
@@ -204,22 +204,22 @@ public class Transaccion extends IBaseTnx {
 		try {
 			if(!this.notasEntrada.isEmpty()) {
 				for(Entity notaEntrada: this.notasEntrada) {
-					if((deuda.getSaldo()*-1)> 0D) {
+					if(deuda.getSaldo()> 0D) {
 						empresaDeuda= (TcManticEmpresasDeudasDto) DaoFactory.getInstance().findById(sesion, TcManticEmpresasDeudasDto.class, notaEntrada.getKey());
-						if((empresaDeuda.getSaldo()*-1) > 0D) {
-							if((deuda.getSaldo()*-1) <= empresaDeuda.getSaldo()) {																																
-								totalPago= (deuda.getSaldo()*-1);
+						if(empresaDeuda.getSaldo()> 0D) {
+							if(deuda.getSaldo()<= empresaDeuda.getSaldo()) {																																
+								totalPago= deuda.getSaldo();
 								deuda.setSaldo(0D);
 								deuda.setIdEmpresaEstatus(EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa());								
 								if(DaoFactory.getInstance().update(sesion, deuda)>= 1L) {								
-									saldoPivote= empresaDeuda.getSaldo() - ((deuda.getSaldo()*-1));									
+									saldoPivote= empresaDeuda.getSaldo()- deuda.getSaldo();
 									empresaDeuda.setSaldo(saldoPivote);
 									DaoFactory.getInstance().update(sesion, empresaDeuda);									
 								} // if
 							} // if
               else {
 								totalPago= empresaDeuda.getSaldo();
-								saldoPivote= deuda.getSaldo() + empresaDeuda.getSaldo();
+								saldoPivote= empresaDeuda.getSaldo()- deuda.getSaldo();
 								deuda.setSaldo(saldoPivote);
 								deuda.setIdEmpresaEstatus(saldoPivote >= 0D ? EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa() : EEstatusEmpresas.PARCIALIZADA.getIdEstatusEmpresa());
 								if(DaoFactory.getInstance().update(sesion, deuda)>= 1L) {								
@@ -245,25 +245,25 @@ public class Transaccion extends IBaseTnx {
 		TcManticCreditosNotasDto creditoNota= null;
 		TcManticEmpresasPagosDto pagoPivote = null;  
 		Double totalPago                    = 0D;
-		try {
+		try { 
 			if(!this.notasCredito.isEmpty()) {
 				for(Entity notaCredito: this.notasCredito) {
-					if((deuda.getSaldo()*-1)> 0D) {
+					if(deuda.getSaldo()> 0D) {
 						creditoNota= (TcManticCreditosNotasDto) DaoFactory.getInstance().findById(sesion, TcManticCreditosNotasDto.class, notaCredito.getKey());
 						if(creditoNota.getImporte()> 0D) {
-							if((deuda.getSaldo()*-1) <= creditoNota.getImporte()) {		
-								totalPago= (deuda.getSaldo()*-1);
+							if(deuda.getSaldo()<= creditoNota.getImporte()) {		
+								totalPago= deuda.getSaldo();
 								deuda.setSaldo(0D);								
 								deuda.setIdEmpresaEstatus(EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa());
 								if(DaoFactory.getInstance().update(sesion, deuda)>= 1L) {
-									saldoPivote= creditoNota.getImporte()- ((deuda.getSaldo()*-1));																		
+									saldoPivote= creditoNota.getImporte()- deuda.getSaldo();
 									creditoNota.setSaldo(saldoPivote);
 									DaoFactory.getInstance().update(sesion, creditoNota);
 								} // if
 							} // if
 							else{
 								totalPago= creditoNota.getImporte();
-								saldoPivote= deuda.getSaldo() + creditoNota.getImporte();
+								saldoPivote= creditoNota.getImporte()- deuda.getSaldo();
 								deuda.setSaldo(saldoPivote);
 								deuda.setIdEmpresaEstatus(saldoPivote >= 0D ? EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa() : EEstatusEmpresas.PARCIALIZADA.getIdEstatusEmpresa());
 								if(DaoFactory.getInstance().update(sesion, deuda)>= 1L) {								
@@ -403,7 +403,7 @@ public class Transaccion extends IBaseTnx {
 				deuda.setLimite(new java.sql.Date(this.fecha.getTime()));
 				deuda.setImporte(importe);
 				deuda.setPagar(importe);
-				deuda.setSaldo(-1 * calculateSaldo(sesion, importe, this.detalle.getKey()));
+				deuda.setSaldo(this.calculateSaldo(sesion, importe, this.detalle.getKey()));
 				regresar= DaoFactory.getInstance().update(sesion, deuda)>= 1L;
 			} // if
 		} // try
@@ -465,7 +465,7 @@ public class Transaccion extends IBaseTnx {
 					} /// else
 					if(registrarPago(sesion, recordDeuda.getKey(), pagoParcial)) {
 						params= new HashMap<>();
-						params.put("saldo", (abono * -1D));
+						params.put("saldo", abono);
 						params.put("idEmpresaEstatus", idEstatus);
 						DaoFactory.getInstance().update(sesion, TcManticEmpresasDeudasDto.class, recordDeuda.getKey(), params);
 					}	// if				
@@ -513,7 +513,7 @@ public class Transaccion extends IBaseTnx {
 							} /// else
 							if(registrarPago(sesion, item.getKey(), pagoParcial)) {
 								params= new HashMap<>();
-								params.put("saldo", (abono * -1D));
+								params.put("saldo", abono);
 								params.put("idEmpresaEstatus", idEstatus);
 								DaoFactory.getInstance().update(sesion, TcManticEmpresasDeudasDto.class, item.getKey(), params);
 							}	// if				
@@ -576,7 +576,7 @@ public class Transaccion extends IBaseTnx {
 		try {
 			params= new HashMap<>();
 			params.put("idProveedor", this.idProveedor);
-			params.put(Constantes.SQL_CONDICION, " tc_mantic_empresas_deudas.saldo < 0 and tc_mantic_empresas_deudas.id_empresa_estatus not in(".concat(EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa().toString()).concat(")"));			
+			params.put(Constantes.SQL_CONDICION, " tc_mantic_empresas_deudas.saldo> 0 and tc_mantic_empresas_deudas.id_empresa_estatus not in(".concat(EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa().toString()).concat(")"));			
 			params.put("sortOrder", "order by dias desc");
 			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaEmpresasDto", "cuentasProveedor", params);			
 		} // try

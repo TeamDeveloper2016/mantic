@@ -110,13 +110,13 @@
 							</f:facet>
 							<h:outputText value="#{row['saldo']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-4" sortBy="#{row.dias}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.dias}">
 							<f:facet name="header">
 								<h:outputText value="Días" title="Días trascurridos desde la compra"/>
 							</f:facet>
 							<h:outputText value="#{row['dias']}"/>
 						</p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.limite}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.limite}">
 							<f:facet name="header">
 								<h:outputText value="Vence" title="Fecha en la que vence el crédito otorgado"/>
 							</f:facet>
@@ -186,7 +186,7 @@
 	</ui:define>	
   <ui:param name="componenteBloqueo" value="tabla" />
 	<ui:define name="dialogos">
-		<p:dialog id="dialogoPago" widgetVar="dlgPago" header="Registrar pago" resizable="false" closable="false" responsive="true" width="80%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoPago', fieldsDialog);janal.refresh();">
+    <p:dialog id="dialogoPago" widgetVar="dlgPago" header="Registrar pago" resizable="false" closable="false" responsive="true" width="80%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoPago', fieldsDialog);janal.refresh();" appendTo="@(body)">
 			<h:form id="formDialogoPago" prependId="false">
 				<h:panelGrid id="panelDialog" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-8, janal-wid-92">
 					<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="false"/>
@@ -313,7 +313,7 @@
 				</div>
 			</h:form>
 		</p:dialog>
-		<p:dialog id="dialogoPagoGeneral" widgetVar="dlgPagoGeneral" header="Registrar pago sobre la deuda" resizable="false" closable="false" responsive="true" width="70%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoPagoGeneral', fieldsDialogGeneral);janal.refresh();">
+    <p:dialog id="dialogoPagoGeneral" widgetVar="dlgPagoGeneral" header="Registrar pago sobre la deuda" resizable="false" closable="false" responsive="true" width="75%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoPagoGeneral', fieldsDialogGeneral);janal.refresh();" appendTo="@(body)">
 			<h:form id="formDialogoPagoGeneral" prependId="false">
 				<h:panelGrid id="panelDialogoGeneral" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-80">					
 					<p:outputLabel for="idEmpresaGeneral" value="Sucursal:" rendered="false"/>
@@ -375,7 +375,7 @@
 				</div>
 			</h:form>
 		</p:dialog> 
-		<p:dialog id="dialogoPagoSegmento" widgetVar="dlgPagoSegmento" header="Registrar pago sobre cuentas" resizable="false" closable="false" responsive="true" width="70%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoPagoSegmento', fieldsDialogSegmento);janal.refresh();">
+		<p:dialog id="dialogoPagoSegmento" widgetVar="dlgPagoSegmento" header="Registrar pago sobre cuentas" resizable="false" closable="false" responsive="true" width="75%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoPagoSegmento', fieldsDialogSegmento);janal.refresh();" appendTo="@(body)">
 			<h:form id="formDialogoPagoSegmento" prependId="false">
 				<p:tabView id="tabPagosSegmentos">
           <p:ajax event="tabChange" listener="#{manticCatalogosEmpresasCuentasDeuda.doTabChange}" process="@this tabPagosSegmentos" update="pagoSegmento"/>
@@ -384,7 +384,7 @@
               <p:ajax event="rowUnselectCheckbox" listener="#{manticCatalogosEmpresasCuentasDeuda.doRowSeleccionado}" process="@this tablaSegmentos" update="tabPagosSegmentos:pagoSegmento" oncomplete="PF('segmentosTable').writeSelections()" skipChildren="false"/>
               <p:ajax event="rowSelectCheckbox" listener="#{manticCatalogosEmpresasCuentasDeuda.doRowSeleccionado}" process="@this tablaSegmentos" update="tabPagosSegmentos:pagoSegmento" oncomplete="PF('segmentosTable').writeSelections()" skipChildren="false"/>
               <p:column id="checkDeuda" selectionMode="multiple" style="width:30px;text-align:center"/>							
-							<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+							<p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.consecutivo}">
 								<f:facet name="header">
 									<h:outputText value="Ticket"/>
 								</f:facet>
