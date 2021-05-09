@@ -333,8 +333,11 @@
 			  where  
 					tc_mantic_confrontas.id_transferencia= {idTransferencia}	
 				  and tc_mantic_confrontas_detalles.diferencia!= 0
+        group by
+          tc_mantic_confrontas_detalles.id_confronta_detalle
 				order by 
-				  tc_mantic_confrontas.consecutivo, tc_mantic_transferencias_detalles.nombre
+				  tc_mantic_confrontas.consecutivo, 
+          tc_mantic_transferencias_detalles.nombre
 			</select>						
 			<select id="errores">
         select
