@@ -13,23 +13,26 @@
 			
 			fieldsDialog ={
 				'pago'         : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
+				'fechaPago'    : {validaciones: 'requerido|fecha', mascara: 'libre', grupo: 'dialogo'},
 				'referencia'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
         'tipoPago'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
-        'observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
+        'observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
 			};
 			
 			fieldsDialogGeneral ={
 				'pagoGeneral'         : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoGeneral'},
+				'fechaPagoGeneral'    : {validaciones: 'requerido|fecha', mascara: 'libre', grupo: 'dialogoGeneral'},
 				'referenciaGeneral'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoGeneral'},
         'tipoPagoGeneral'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoGeneral'},
-        'observacionesGeneral': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogoGeneral', formatos: 'cambiar-mayusculas', individual: true}
+        'observacionesGeneral': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogoGeneral', formatos: 'cambiar-mayusculas'}
 			};
 			
 			fieldsDialogSegmento ={
 				'pagoSegmento'         : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoSegmento'},
+				'fechaPagoSegmento'    : {validaciones: 'requerido|fecha', mascara: 'libre', grupo: 'dialogoSegmento'},
 				'referenciaSegmento'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoSegmento'},
         'tipoPagoSegmento'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoSegmento'},
-        'observacionesSegmento': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogoSegmento', formatos: 'cambiar-mayusculas', individual: true}
+        'observacionesSegmento': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogoSegmento', formatos: 'cambiar-mayusculas'}
 			};
     </script>		
   </ui:define>
@@ -130,17 +133,17 @@
 						</p:column>		
 						<p:rowExpansion> 
 							<p:dataTable lazy="true" id="tablaDetalle" widgetVar="kajoolTableDetalle" var="row" value="#{manticCatalogosEmpresasCuentasDeuda.detallePagos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticCatalogosEmpresasCuentasDeuda.detallePagos.rowCount gt manticCatalogosEmpresasCuentasDeuda.detallePagos.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.pago}">
-									<f:facet name="header">
-										<h:outputText value="Pago"/>
-									</f:facet>
-									<h:outputText value="#{row['pago']}"/>
-								</p:column>														
-								<p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{row.tipoPago}">
+								<p:column class="janal-column-left MarAuto Responsive janal-wid-12" sortBy="#{row.tipoPago}">
 									<f:facet name="header">
 										<h:outputText value="Tipo pago"/>
 									</f:facet>
 									<h:outputText value="#{row['nombre']}"/>
+								</p:column>														
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.pago}">
+									<f:facet name="header">
+										<h:outputText value="Pago"/>
+									</f:facet>
+									<h:outputText value="#{row['pago']}"/>
 								</p:column>														
 								<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.persona}">
 									<f:facet name="header">
@@ -153,8 +156,14 @@
 										<h:outputText value="Observaciones"/>
 									</f:facet>
 									<h:outputText value="#{row['observaciones']}"/>
+								</p:column>							
+								<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.comentarios}">
+									<f:facet name="header">
+										<h:outputText value="Historial"/>
+									</f:facet>
+									<h:outputText value="#{row['comentarios']}"/>
 								</p:column>																							
-								<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.regitro}">
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.regitro}">
 									<f:facet name="header">
 										<h:outputText value="Fecha"/>
 									</f:facet>
@@ -188,7 +197,7 @@
 	<ui:define name="dialogos">
     <p:dialog id="dialogoPago" widgetVar="dlgPago" header="Registrar pago" resizable="false" closable="false" responsive="true" width="80%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoPago', fieldsDialog);janal.refresh();" appendTo="@(body)">
 			<h:form id="formDialogoPago" prependId="false">
-				<h:panelGrid id="panelDialog" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-8, janal-wid-92">
+				<h:panelGrid id="panelDialog" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-90">
 					<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="false"/>
 					<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="false" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 						<p:ajax event="change" process="@this" listener="#{manticCatalogosEmpresasCuentasDeuda.doLoadCajas}" update="caja"/>
@@ -214,7 +223,9 @@
 						</p:column>   
 					</p:selectOneMenu>
 					<p:outputLabel for="pago" value="Pago: $"/>
-					<p:inputNumber id="pago" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" decimalPlaces="2"/>
+          <p:inputNumber id="pago" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" decimalPlaces="2" converter="javax.faces.Double"/>
+					<p:outputLabel for="fechaPago" value="Fecha pago:"/>
+          <p:calendar id="fechaPago" inputStyleClass="janal-wid-99" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.fechaPago}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 					<p:outputLabel for="tipoPago" value="Tipo pago:"/>
 					<p:selectOneMenu id="tipoPago" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
 						<p:ajax event="change" process="@this pago" listener="#{manticCatalogosEmpresasCuentasDeuda.doValidaTipoPago}" update="panelDialog lblBanco banco lblReferencia referencia" oncomplete="janal.refresh();"/>
@@ -315,7 +326,7 @@
 		</p:dialog>
     <p:dialog id="dialogoPagoGeneral" widgetVar="dlgPagoGeneral" header="Registrar pago sobre la deuda" resizable="false" closable="false" responsive="true" width="75%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoPagoGeneral', fieldsDialogGeneral);janal.refresh();" appendTo="@(body)">
 			<h:form id="formDialogoPagoGeneral" prependId="false">
-				<h:panelGrid id="panelDialogoGeneral" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-80">					
+				<h:panelGrid id="panelDialogoGeneral" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-90">
 					<p:outputLabel for="idEmpresaGeneral" value="Sucursal:" rendered="false"/>
 					<p:selectOneMenu id="idEmpresaGeneral" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.idEmpresaGeneral}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="false" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 						<p:ajax event="change" process="@this" listener="#{manticCatalogosEmpresasCuentasDeuda.doLoadCajasGeneral}" update="cajaGeneral"/>
@@ -341,7 +352,9 @@
 						</p:column>   
 					</p:selectOneMenu>
 					<p:outputLabel for="pagoGeneral" value="Pago: $"/>
-					<p:inputNumber id="pagoGeneral" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.pagoGeneral}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" decimalPlaces="2"/>					
+          <p:inputNumber id="pagoGeneral" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.pagoGeneral}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" decimalPlaces="2" converter="javax.faces.Double"/>
+					<p:outputLabel for="fechaPagoGeneral" value="Fecha pago:"/>
+          <p:calendar id="fechaPagoGeneral" inputStyleClass="janal-wid-99" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.fechaPagoGeneral}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 					<p:outputLabel for="tipoPagoGeneral" value="Tipo de pago:"/>
 					<p:selectOneMenu id="tipoPagoGeneral" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.tipoPagoGeneral}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
 						<p:ajax event="change" process="@this pagoGeneral" listener="#{manticCatalogosEmpresasCuentasDeuda.doValidaTipoPagoGeneral}" update="panelDialogoGeneral bancoGeneral referenciaGeneral lblBancoGeneral lblReferenciaGeneral" oncomplete="janal.refresh();"/>
@@ -414,7 +427,7 @@
 						</p:dataTable>													
 					</p:tab>		
 					<p:tab title="Registro pago">
-						<h:panelGrid id="panelDialogoSegmento" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-8, janal-wid-92">
+						<h:panelGrid id="panelDialogoSegmento" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-90">
 							<p:outputLabel for="idEmpresaSegmento" value="Sucursal:" rendered="true"/>
 							<p:selectOneMenu id="idEmpresaSegmento" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.idEmpresaSegmento}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="true" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<p:ajax event="change" process="@this" listener="#{manticCatalogosEmpresasCuentasDeuda.doLoadCajasSegmento}" update="cajaSegmento"/>
@@ -441,6 +454,8 @@
 							</p:selectOneMenu>
 							<p:outputLabel for="pagoSegmento" value="Pago: $"/>							
               <p:inputNumber id="pagoSegmento" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.pagoSegmento}" inputStyleClass="janal-wid-100-txt janal-column-right janal-color-blue" decimalPlaces="2" converter="javax.faces.Double"/>														
+    					<p:outputLabel for="fechaPagoSegmento" value="Fecha pago:"/>
+              <p:calendar id="fechaPagoSegmento" inputStyleClass="janal-wid-99" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.fechaPagoSegmento}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 							<p:outputLabel for="tipoPagoSegmento" value="Tipo pago:"/>
 							<p:selectOneMenu id="tipoPagoSegmento" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.tipoPagoSegmento}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">					
 								<p:ajax event="change" process="@this pagoSegmento" listener="#{manticCatalogosEmpresasCuentasDeuda.doValidaTipoPagoSegmento}" update="panelDialogoSegmento bancoSegmento referenciaSegmento lblBancoSegmento lblReferenciaSegmento" oncomplete="janal.refresh();"/>

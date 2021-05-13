@@ -7808,7 +7808,8 @@
 					if(tc_mantic_empresas_pagos.id_egreso is null, '0', tc_mantic_empresas_pagos.id_egreso) id_egreso,					
 					tc_mantic_empresas_pagos.id_credito_nota,
 					tc_mantic_empresas_pagos.id_nota_entrada, 
-					if(archivos.total is null, 0, archivos.total) total_archivos
+					if(archivos.total is null, 0, archivos.total) total_archivos,
+          tc_mantic_empresas_pagos.comentarios
 				from
 					tc_mantic_empresas_pagos
 				inner join

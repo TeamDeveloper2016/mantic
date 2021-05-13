@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Date;
+import java.sql.Date;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -105,7 +105,7 @@ public class Prorroga extends IBaseImportar implements Serializable {
 		Transaccion transaccion= null;
 		Entity deuda           = null;
 		try {
-			if(validaImporte()){
+			if(this.validaImporte()) {
 				deuda= (Entity) this.attrs.get("deuda");
 				transaccion= new Transaccion(deuda, this.prorroga);
 				if(transaccion.ejecutar(EAccion.MODIFICAR)) {

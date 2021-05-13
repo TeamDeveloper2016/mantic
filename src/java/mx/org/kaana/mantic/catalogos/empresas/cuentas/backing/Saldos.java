@@ -25,6 +25,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -546,8 +547,8 @@ public class Saldos extends IBaseFilter implements Serializable {
 	}
 
   public String toColor(Entity row) {
-		Double original= row.toDouble("original");
-		Double total   = row.toDouble("importe");
+		Double original= Numero.toRedondear(row.toDouble("original"));
+		Double total   = Numero.toRedondear(row.toDouble("importe"));
 		return row.toLong("idNotaTipo").equals(3L)? "janal-tr-purple": (original!= 0D && original> total)? "janal-tr-yellow": (original!= 0D && original< total)? "janal-tr-green": "";
 	} 
 	

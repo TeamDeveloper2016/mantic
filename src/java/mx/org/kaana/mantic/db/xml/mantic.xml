@@ -7,6 +7,60 @@
   </model>
 
   <dml>
+    <unit id="TcManticEmpresasPagosControlesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_empresas_pagos_controles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_empresas_pagos_controles
+        where      
+          id_empresa_pago_control = {idEmpresaPagoControl}
+      </select>
+    </unit>
+    <unit id="TcManticEmpresasPagosArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_empresas_pagos_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_empresas_pagos_archivos
+        where      
+          ruta = '{ruta}' and id_tipo_archivo = {idTipoArchivo} and id_empresa_pago = {idEmpresaPago} and nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcManticEmpresasBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_empresas_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_empresas_bitacora
+        where      
+          id_empresa_bitacora = {idEmpresaBitacora}
+      </select>
+    </unit>        
     <unit id="TcManticClientesBitacoraDto">
       <select id="row">
         select      

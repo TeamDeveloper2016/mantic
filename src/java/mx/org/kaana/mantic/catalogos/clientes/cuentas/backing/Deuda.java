@@ -314,7 +314,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 				pago= new TcManticClientesPagosDto();
 				pago.setIdClienteDeuda(((Entity)this.attrs.get("seleccionado")).getKey());
 				pago.setIdUsuario(JsfBase.getIdUsuario());
-				pago.setObservaciones(this.attrs.get("observaciones").toString());
+				pago.setObservaciones((String)this.attrs.get("observaciones"));
 				pago.setPago((Double)this.attrs.get("pago"));
 				pago.setFechaPago((Date)this.attrs.get("fechaPago"));
 				pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPago").toString()));

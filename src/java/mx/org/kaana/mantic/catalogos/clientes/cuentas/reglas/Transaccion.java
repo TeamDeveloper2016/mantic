@@ -221,7 +221,7 @@ public class Transaccion extends TransaccionFactura{
       );
       DaoFactory.getInstance().insert(sesion, this.control);
 			for(Entity deuda: deudas) {
-				if(saldo > 0) {	
+				if(saldo> 0) {	
 					saldoDeuda= Numero.toRedondear(deuda.toDouble("saldo"));
 					if(saldoDeuda< this.pago.getPago()){
 						pagoParcial= saldoDeuda;
@@ -233,8 +233,8 @@ public class Transaccion extends TransaccionFactura{
           else {		
 						pagoParcial= this.pago.getPago();
 						saldo= 0D;
-						abono= saldoDeuda - this.pago.getPago();
-						idEstatus= this.saldar ? EEstatusClientes.SALDADA.getIdEstatus(): (saldoDeuda.equals(this.pago.getPago())? EEstatusClientes.FINALIZADA.getIdEstatus() : EEstatusClientes.PARCIALIZADA.getIdEstatus());
+						abono= saldoDeuda- this.pago.getPago();
+						idEstatus= this.saldar? EEstatusClientes.SALDADA.getIdEstatus(): (saldoDeuda.equals(this.pago.getPago())? EEstatusClientes.FINALIZADA.getIdEstatus() : EEstatusClientes.PARCIALIZADA.getIdEstatus());
 					} /// else
 					if(this.registrarPago(sesion, deuda, pagoParcial, this.control.getIdClientePagoControl())) {
 						params= new HashMap<>();
@@ -285,7 +285,7 @@ public class Transaccion extends TransaccionFactura{
 				registroPago.setPago(pagoParcial);
 				registroPago.setIdTipoMedioPago(this.pago.getIdTipoMedioPago());
 				registroPago.setIdCierre(this.idCierreActivo);
-				if(!this.pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){
+				if(!this.pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())) {
 					registroPago.setIdBanco(this.idBanco);
 					registroPago.setReferencia(this.referencia);
 				} // if
@@ -363,9 +363,9 @@ public class Transaccion extends TransaccionFactura{
 			for(Entity deuda: deudas) {
 				for(Entity cuenta: this.cuentas) {
 					if(deuda.getKey().equals(cuenta.getKey())) {
-						if(saldo > 0) {					
+						if(saldo> 0) {					
 							saldoDeuda= Numero.toRedondearSat(deuda.toDouble("saldo"));
-							if(saldoDeuda < this.pago.getPago()){
+							if(saldoDeuda< this.pago.getPago()){
 								pagoParcial= saldoDeuda;
 								saldo= this.pago.getPago() - saldoDeuda;						
 								this.pago.setPago(saldo);
@@ -375,7 +375,7 @@ public class Transaccion extends TransaccionFactura{
               else {						
 								pagoParcial= this.pago.getPago();
 								saldo= 0D;
-								abono= saldoDeuda - this.pago.getPago();
+								abono= saldoDeuda- this.pago.getPago();
 								idEstatus= this.saldar? EEstatusClientes.SALDADA.getIdEstatus(): (saldoDeuda.equals(this.pago.getPago())? EEstatusClientes.FINALIZADA.getIdEstatus(): EEstatusClientes.PARCIALIZADA.getIdEstatus());
 							} /// else
 							if(this.registrarPago(sesion, deuda, pagoParcial, this.control.getIdClientePagoControl())){
@@ -394,22 +394,23 @@ public class Transaccion extends TransaccionFactura{
 								this.actualizarSaldoCatalogoCliente(sesion, this.idCliente, pagoParcial, false);
 							}	// if				
 						} // if
-						else if (this.saldar) {
-							if(this.registrarPago(sesion, deuda, 0D, this.control.getIdClientePagoControl())) {
-								params= new HashMap<>();
-								params.put("saldo", 0);
-								params.put("idClienteEstatus", EEstatusClientes.SALDADA.getIdEstatus());
-								DaoFactory.getInstance().update(sesion, TcManticClientesDeudasDto.class, deuda.getKey(), params);
-                TcManticClientesBitacoraDto bitacora= new TcManticClientesBitacoraDto(
-                  -1L, // Long idClienteBitacora, 
-                  EEstatusClientes.FINALIZADA.getIdEstatus(), // Long idClienteEstatus, 
-                  null, // String justificacion, 
-                  JsfBase.getIdUsuario(), // Long idUsuario, 
-                  deuda.getKey() // Long idClienteDeuda
-                );
-                DaoFactory.getInstance().insert(sesion, bitacora);
-							}	// if				
-						} // else if
+						else 
+              if (this.saldar) {
+                if(this.registrarPago(sesion, deuda, 0D, this.control.getIdClientePagoControl())) {
+                  params= new HashMap<>();
+                  params.put("saldo", 0);
+                  params.put("idClienteEstatus", EEstatusClientes.SALDADA.getIdEstatus());
+                  DaoFactory.getInstance().update(sesion, TcManticClientesDeudasDto.class, deuda.getKey(), params);
+                  TcManticClientesBitacoraDto bitacora= new TcManticClientesBitacoraDto(
+                    -1L, // Long idClienteBitacora, 
+                    EEstatusClientes.FINALIZADA.getIdEstatus(), // Long idClienteEstatus, 
+                    null, // String justificacion, 
+                    JsfBase.getIdUsuario(), // Long idUsuario, 
+                    deuda.getKey() // Long idClienteDeuda
+                  );
+                  DaoFactory.getInstance().insert(sesion, bitacora);
+                }	// if				
+              } // if
 					} // if
 				} // for
 			} // for
