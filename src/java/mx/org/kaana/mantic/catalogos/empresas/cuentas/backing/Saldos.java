@@ -119,7 +119,7 @@ public class Saldos extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {
-      this.pivote = EAccion.ELIMINAR;
+      this.pivote = EAccion.RESTAURAR;
 			this.attrs.put("empresa", "");
 			this.attrs.put("almacen", "");
 			this.attrs.put("vencidos", new Long(3));
@@ -576,7 +576,7 @@ public class Saldos extends IBaseFilter implements Serializable {
   public void doDeletePago(Entity row) {
     this.attrs.put("eliminarPagoRealizado", row);
     this.attrs.put("limitePago", "credenciales");
-    this.pivote = EAccion.ELIMINAR;
+    this.pivote = EAccion.RESTAURAR;
     this.attrs.put("msgAutorizacion", " la cancelación del pago con importe ".concat(row.toString("pago")));
   }
   
@@ -602,7 +602,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 				this.attrs.put("justificacion", "");
         // aqui se elimina el pago al que se hace referencia
         switch(pivote) {
-          case ELIMINAR:
+          case RESTAURAR:
             ticket= " [Folio: ".concat(((Entity)this.attrs.get("eliminarPagoRealizado")).toString("consecutivo")).concat("]");
             break;
           case DEPURAR:
@@ -612,12 +612,12 @@ public class Saldos extends IBaseFilter implements Serializable {
             ticket= " [Ticket: ".concat(((Entity)this.attrs.get("seleccionadoDetalle")).toString("ticket")).concat("]");
             break;
         } // switch
-        String proceso= EAccion.ELIMINAR.equals(pivote)? "eliminarPagoRealizado": "seleccionadoDetalle";
+        String proceso= EAccion.RESTAURAR.equals(pivote)? "eliminarPagoRealizado": "seleccionadoDetalle";
         Entity entity = (Entity)this.attrs.get(proceso);
-        Transaccion transaccion= new Transaccion(EAccion.ELIMINAR.equals(pivote)? entity.toLong("idEmpresaPagoControl"): entity.toLong("idEmpresaDeuda"), justificacion);
+        Transaccion transaccion= new Transaccion(EAccion.RESTAURAR.equals(pivote)? entity.toLong("idEmpresaPagoControl"): entity.toLong("idEmpresaDeuda"), justificacion);
         if(transaccion.ejecutar(pivote)) {
           switch(pivote) {
-            case ELIMINAR:
+            case RESTAURAR:
               texto= "Se eliminó el pago con éxito ".concat(ticket);
               break;
             case DEPURAR:
@@ -633,7 +633,7 @@ public class Saldos extends IBaseFilter implements Serializable {
         } // if
         else 
           switch(pivote) {
-            case ELIMINAR:
+            case RESTAURAR:
               texto= "No se puedo eliminar el pago, intente nuevamente !";
               break;
             case DEPURAR:

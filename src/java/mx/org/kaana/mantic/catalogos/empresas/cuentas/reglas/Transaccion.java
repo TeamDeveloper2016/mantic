@@ -3,6 +3,7 @@ package mx.org.kaana.mantic.catalogos.empresas.cuentas.reglas;
 import java.io.File;
 import java.util.Calendar;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,8 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.reportes.FileSearch;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
+import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticCreditosNotasDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasBitacoraDto;
@@ -31,7 +34,11 @@ import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosControlesDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosDto;
-import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
+import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
+import mx.org.kaana.mantic.db.dto.TcManticMovimientosDto;
+import mx.org.kaana.mantic.db.dto.TcManticNotasBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.enums.EEstatusEmpresas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
@@ -160,6 +167,9 @@ public class Transaccion extends IBaseTnx {
 					break;
 				case ELIMINAR:
 					regresar= this.eliminarPago(sesion);
+				case RESTAURAR:
+          regresar= this.toDeletePagos(sesion);
+          break;
 				case DEPURAR:
 					regresar= this.toDeleteCuenta(sesion);
 					break;
@@ -798,9 +808,7 @@ public class Transaccion extends IBaseTnx {
       params.put("idEmpresaPagoControl", this.idEmpresaPago);      
       List<Entity> items = (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaEmpresasDto", "eliminarPagos", params);
       if(items!= null && !items.isEmpty()) {
-        TcManticProveedoresDto proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(sesion, TcManticProveedoresDto.class, items.get(0).toLong("idProveedor"));
         for (Entity item: items) {
-          // proveedor.setSaldo(Numero.toRedondearSat(proveedor.getSaldo()+ item.toDouble("abonado")));
           // borrar todos los archivos asociados a los pagos 
           List<TcManticEmpresasPagosArchivosDto> archivos= (List<TcManticEmpresasPagosArchivosDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticEmpresasPagosArchivosDto.class, "TcManticEmpresasPagosArchivosDto", "pago", item.toMap());
           if(archivos!= null && !archivos.isEmpty()) {
@@ -830,7 +838,6 @@ public class Transaccion extends IBaseTnx {
           DaoFactory.getInstance().insert(sesion, bitacora);
         } // for
         DaoFactory.getInstance().delete(sesion, TcManticEmpresasPagosControlesDto.class, this.idEmpresaPago);
-        // DaoFactory.getInstance().update(sesion, proveedor);
       } // if
       regresar= Boolean.TRUE;
     } // try
@@ -860,22 +867,22 @@ public class Transaccion extends IBaseTnx {
         -1L // Long idEmpresaBitacora, 
       );
       DaoFactory.getInstance().insert(sesion, bitacora);
-//      TcManticClientesDto cliente= (TcManticClientesDto)DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, item.getIdCliente());
-//      cliente.setSaldo(Numero.toRedondearSat(cliente.getSaldo()- item.getImporte()));
-//      DaoFactory.getInstance().update(sesion, cliente);
-//      TcManticVentasDto venta= (TcManticVentasDto)DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, item.getIdVenta());
-//      venta.setIdVentaEstatus(EEstatusVentas.CANCELADA.getIdEstatusVenta());
-//      DaoFactory.getInstance().update(sesion, venta);
-//      TcManticVentasBitacoraDto movimiento= new TcManticVentasBitacoraDto(
-//        -1L, // Long idVentaBitacora, 
-//        this.referencia.concat(", SE CANCELO LA CUENTA POR COBRAR"), // String justificacion, 
-//        JsfBase.getIdUsuario(), // Long idUsuario, 
-//        venta.getIdVenta(), // Long idVenta, 
-//        venta.getIdVentaEstatus(), // Long idVentaEstatus, 
-//        venta.getCticket(), // Long consecutivo, 
-//        venta.getTotal() // Double importe
-//      );
-//      DaoFactory.getInstance().insert(sesion, movimiento);
+      TcManticNotasEntradasDto nota= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(sesion, TcManticNotasEntradasDto.class, item.getIdNotaEntrada());
+      nota.setIdNotaEstatus(4L);// CANCELADA
+      DaoFactory.getInstance().update(sesion, nota);
+      //Long idNotaBitacora, String justificacion, Long idUsuario, Long idNotaEntrada, Long idNotaEstatus, String consecutivo, Double importe
+      TcManticNotasBitacoraDto movimiento= new TcManticNotasBitacoraDto(
+        -1L, // Long idNotaBitacora, 
+        this.referencia.concat(", SE CANCELO LA CUENTA POR COBRAR"), // String justificacion, 
+        JsfBase.getIdUsuario(), // Long idUsuario, 
+        nota.getIdNotaEntrada(), // Long idNotaEntrada, 
+        nota.getIdNotaEstatus(), // Long idNotaEstatus, 
+        nota.getConsecutivo(), // Long consecutivo, 
+        nota.getTotal() // Double importe
+      );
+      DaoFactory.getInstance().insert(sesion, movimiento);
+      // FALTA AFECTAR LAS EXITENCIAS EN EL ALMACEN RESPECTIVO PORQUE LA VENTA SE CANCELO
+      this.toAffectAlmacenes(sesion, nota);
       regresar= Boolean.TRUE;
     } // try
     catch (Exception e) {
@@ -886,5 +893,57 @@ public class Transaccion extends IBaseTnx {
     } // finally
     return regresar;
   } 
+  
+  
+  public void toAffectAlmacenes(Session sesion, TcManticNotasEntradasDto nota) throws Exception {
+    Map<String, Object> params= null;
+    try {      
+      Double stock= null;
+      params = new HashMap<>();      
+      params.put("idNotaEntrada", nota.getIdNotaEntrada());      
+      List<TcManticNotasDetallesDto> items= (List<TcManticNotasDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticNotasDetallesDto.class, "TcManticNotasDetallesDto", "detalle", params);
+      if(items!= null && !items.isEmpty()) {
+        for (TcManticNotasDetallesDto item : items) {
+          params.put("idAlmacen", nota.getIdAlmacen());
+			    params.put("idArticulo", item.getIdArticulo());
+          // ACTUALIZAR EL STOCK DEL ALMACEN 
+			    TcManticAlmacenesArticulosDto ubicacion= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesArticulosDto.class,  params, "ubicacion");
+          stock= ubicacion.getStock();
+          ubicacion.setStock(Numero.toRedondearSat(ubicacion.getStock()+ item.getCantidad()));
+				  DaoFactory.getInstance().update(sesion, ubicacion);
+          // generar un registro en la bitacora de movimientos de los articulos 
+          TcManticMovimientosDto entrada= new TcManticMovimientosDto(
+            nota.getConsecutivo(), // String consecutivo, 
+            3L, // Long idTipoMovimiento, 
+            JsfBase.getIdUsuario(), // Long idUsuario, 
+            nota.getIdAlmacen(), // Long idAlmacen, 
+            -1L, // Long idMovimiento, 
+            item.getCantidad(), // Double cantidad, 
+            item.getIdArticulo(), // Long idArticulo, 
+            stock, // Double stock, 
+            ubicacion.getStock(), // Double calculo
+            "FUE UN ERROR DE CAPTURA"+ (this.referencia!= null? ", ".concat(this.referencia): "") // String observaciones
+          );
+          DaoFactory.getInstance().insert(sesion, entrada);
+          // ACTUALIZAR EL STOCK DEL INVENTARIO DEL ARTICULO POR ALMACEN
+    			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().findFirst(sesion, TcManticInventariosDto.class, "inventario", params);
+          inventario.setEntradas(inventario.getEntradas()+ item.getCantidad());
+          inventario.setStock(inventario.getStock()+ item.getCantidad());
+          DaoFactory.getInstance().update(sesion, inventario);
+          // ACTUALIZAR EL STOCK GLOBAL DEL ARTICULO
+     			TcManticArticulosDto global= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, item.getIdArticulo());
+          global.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+          global.setStock(global.getStock()+ item.getCantidad());
+          DaoFactory.getInstance().update(sesion, global);
+        } // for
+      } // if
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }  
   
 }

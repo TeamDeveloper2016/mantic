@@ -115,18 +115,6 @@
 					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosEmpresasCuentasSaldos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="25" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosEmpresasCuentasSaldos.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosEmpresasCuentasSaldos.lazyModel.rowCount gt manticCatalogosEmpresasCuentasSaldos.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 						<p:ajax event="rowToggle" listener="#{manticCatalogosEmpresasCuentasSaldos.doRowToggle}" update="detalle" />  
 						<p:ajax event="rowSelect" update="detalle" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
-						<f:facet name="header">
-							<div class="lg-pantalla">
-								<p:menuButton value="Opciones">
-									<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-									<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-								</p:menuButton>
-							</div>  
-							<div class="xs-pantalla">              
-								<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-								<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-							</div>  
-						</f:facet>												
             <p:column style="width:32px">
 							<f:facet name="header">
                 <i class="fa fa-search janal-color-blue janal-font-bold" title="Clic para consulta el detalle"></i>
