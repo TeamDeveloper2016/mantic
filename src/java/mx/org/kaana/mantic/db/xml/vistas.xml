@@ -7627,10 +7627,8 @@
 					tc_mantic_notas_tipos on tc_mantic_notas_entradas.id_nota_tipo= tc_mantic_notas_tipos.id_nota_tipo
         where 
           tc_mantic_empresas_deudas.saldo &lt; 0
-				and 
-					tc_mantic_proveedores.id_proveedor= {idProveedor}
-				and 
-					tc_mantic_empresas_deudas.id_empresa_estatus in ({idEmpresaEstatus})
+				  and tc_mantic_proveedores.id_proveedor= {idProveedor}
+				  and tc_mantic_empresas_deudas.id_empresa_estatus in ({idEmpresaEstatus})
 				order by 
 					tc_mantic_notas_entradas.registro desc
 			</select>
@@ -7648,12 +7646,9 @@
 					tc_mantic_tipos_empresas on tc_mantic_tipos_empresas.id_tipo_empresa = tc_mantic_empresas.id_tipo_empresa
 				where 
 					upper(tc_mantic_empresas.clave) like upper('%{clave}%')
-				and 
-					upper(tc_mantic_empresas.nombre) like upper('%{nombre}%')
-				and
-					upper(tc_mantic_empresas.titulo) like upper('%{titulo}%')
-				and 
-					tc_mantic_tipos_empresas.id_tipo_empresa in ({tipoEmpresa}) 					
+				  and upper(tc_mantic_empresas.nombre) like upper('%{nombre}%')
+				  and upper(tc_mantic_empresas.titulo) like upper('%{titulo}%')
+				  and tc_mantic_tipos_empresas.id_tipo_empresa in ({tipoEmpresa}) 					
 				{sortOrder}
 			</select>
 			<select id="proveedores">
@@ -7662,7 +7657,7 @@
 					tc_mantic_empresas.clave,
 					tc_mantic_empresas.nombre,
 					tc_mantic_proveedores.id_proveedor,
-					tc_mantic_proveedores.clave clave_proveedor,
+					tc_mantic_proveedores.clave as clave_proveedor,
 					tc_mantic_proveedores.razon_social,
 					count(*) as cuentas,
 					sum(tc_mantic_empresas_deudas.importe) as importe,
@@ -7699,6 +7694,7 @@
 						tc_mantic_empresas_deudas.id_empresa,
 						tc_mantic_notas_entradas.id_nota_entrada,
 						tc_mantic_notas_entradas.consecutivo,
+						tc_mantic_notas_entradas.consecutivo as ticket,
 						tc_mantic_notas_entradas.factura,
 						tc_mantic_notas_entradas.fecha_factura as fecha,
 						tc_mantic_empresas_deudas.importe,
@@ -7712,13 +7708,14 @@
 						tc_mantic_empresas.nombre,
 						tc_mantic_empresas.clave,
 						tc_mantic_proveedores.clave clave_proveedor,
-						tc_mantic_proveedores.razon_social proveedor,
-						tc_mantic_almacenes.nombre almacen,
+						tc_mantic_proveedores.razon_social as proveedor,
+						tc_mantic_almacenes.nombre as almacen,
 						tc_mantic_almacenes.id_almacen,
 						tc_mantic_proveedores.id_proveedor,
 						tc_mantic_notas_entradas.id_nota_tipo,
 						tc_mantic_notas_tipos.nombre as directa,
-						tc_mantic_empresas_estatus.nombre estatus,
+            tc_mantic_empresas_estatus.id_empresa_estatus,
+						tc_mantic_empresas_estatus.nombre as estatus,
 						tc_mantic_notas_entradas.original
 					from
 						tc_mantic_empresas_deudas
@@ -7739,10 +7736,10 @@
 					inner join
 						tc_mantic_notas_tipos on tc_mantic_notas_entradas.id_nota_tipo= tc_mantic_notas_tipos.id_nota_tipo
 					where
-					tc_mantic_empresas_deudas.id_empresa in ({idEmpresa})
-          and tc_mantic_notas_entradas.id_proveedor= {idProveedor}
-          and {condicion}
-				) principal 
+					  tc_mantic_empresas_deudas.id_empresa in ({idEmpresa})
+            and tc_mantic_notas_entradas.id_proveedor= {idProveedor}
+            and {condicion}
+				  ) principal 
 				{sortOrder}					
 			</select>		
 			<select id="cuentasBusqueda">
@@ -7796,8 +7793,8 @@
 						tc_mantic_notas_tipos on tc_mantic_notas_entradas.id_nota_tipo= tc_mantic_notas_tipos.id_nota_tipo
 					where
 						{condicion}								  
-					and tc_mantic_almacenes.id_empresa in ({idEmpresa})				  
-					and tc_mantic_notas_entradas.id_empresa in ({idEmpresa})
+					  and tc_mantic_almacenes.id_empresa in ({idEmpresa})				  
+					  and tc_mantic_notas_entradas.id_empresa in ({idEmpresa})
 				) principal 
 				{sortOrder}					
 			</select>		

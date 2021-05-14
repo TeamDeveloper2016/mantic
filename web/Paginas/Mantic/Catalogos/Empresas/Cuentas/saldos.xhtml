@@ -113,7 +113,7 @@
 				<p:spacer/>
 				<div id="collapse-content" class="ui-grid-col-9">
 					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosEmpresasCuentasSaldos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="25" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosEmpresasCuentasSaldos.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosEmpresasCuentasSaldos.lazyModel.rowCount gt manticCatalogosEmpresasCuentasSaldos.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
-						<p:ajax event="rowToggle" listener="#{manticCatalogosEmpresasCuentasSaldos.onRowToggle}" update="detalle" />  
+						<p:ajax event="rowToggle" listener="#{manticCatalogosEmpresasCuentasSaldos.doRowToggle}" update="detalle" />  
 						<p:ajax event="rowSelect" update="detalle" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<f:facet name="header">
 							<div class="lg-pantalla">
@@ -294,8 +294,6 @@
                 <p:menuitem icon="fa fa-sitemap" value="Reporte" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosEmpresasCuentasSaldos.doReporte('CUENTA_PAGAR_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
                 <p:separator/>
                 <p:menuitem id="estructura" action="#{manticCatalogosEmpresasCuentasSaldos.doEstructura}" icon="fa fa-edit" ajax="false" value="Estructura" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
-                <p:separator rendered="false"/>
-                <p:menuitem id="pagoVenta" process="@this detalle" icon="fa fa-money" value="Registrar pago" onstart="return janal.bloquear();" actionListener="#{manticCatalogosEmpresasCuentasSaldos.doLoadCuentasAFavor}" oncomplete="PF('dlgPago').show();" update="dialogoPago" disabled="#{manticCatalogosEmpresasCuentasSaldos.attrs.seleccionado.idEmpresaEstatus eq '4'}" rendered="false"/>
               </p:contextMenu>
               <h:commandLink id="detallePdf">
                 <pe:exporter type="pdf" skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
@@ -310,7 +308,7 @@
 					</p:dataTable>    
           <p:spacer height="5px"/>
           <p:dataTable id="tablaPagosRealizados" widgetVar="kajoolTablePagosRealizados" var="row" value="#{manticCatalogosEmpresasCuentasSaldos.pagosRealizados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="25" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosEmpresasCuentasSaldos.attrs.pagoRealizado}" selectionMode="single" paginator="true" rowIndexVar="index" reflow="true" paginatorPosition="bottom" style="display: #{manticCatalogosEmpresasCuentasSaldos.pagosRealizados!= null? '': 'none'}" rowKey="#{row.idKey}">
-            <p:ajax event="rowToggle" listener="#{manticCatalogosEmpresasCuentasSaldos.onRowTogglePagosRealizados}" update="detallePagosRealizados" process="tablaPagosRealizados" />  
+            <p:ajax event="rowToggle" listener="#{manticCatalogosEmpresasCuentasSaldos.doRowTogglePagosRealizados}" update="detallePagosRealizados" process="tablaPagosRealizados" />  
 						<p:ajax event="rowSelect" update="detallePagosRealizados" oncomplete="PF('kajoolTablePagosRealizados').writeSelections()" process="tablaPagosRealizados" skipChildren="false"/>
             <f:facet name="header">
               <div style="float: left">
