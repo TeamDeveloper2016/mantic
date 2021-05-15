@@ -240,8 +240,6 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 					} // if
 					else	
 						articulo.setCosto(origen.toDouble());
-//					if(calcular)
-//            articulo.setCantidad(articulo.getCosto()- articulo.getValor());            
 					// el stock del almacen destino es superior al maximo permitido en el almacen
 					articulo.setUltimo(articulo.getValor()> articulo.getCosto());
 					articulo.setModificado(true);
@@ -263,16 +261,14 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 				this.toLoadArticulos("almacen");
 		} // if	
 		else 
-			if(event.getTab().getTitle().equals("Faltantes almacen")) 
+			if(event.getTab().getTitle().equals("Faltantes almacen") && this.attrs.get("faltantes")== null) 
         this.doLoadFaltantes();
 			else 
-			  if(event.getTab().getTitle().equals("Ventas perdidas")) {
+			  if(event.getTab().getTitle().equals("Ventas perdidas") && this.attrs.get("perdidos")== null) {
           List<UISelectEntity> destinos= (List<UISelectEntity>)((ArrayList<UISelectEntity>)this.attrs.get("almacenes"));
           int index= destinos.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino());
           if(index>= 0)
             ((Transferencia)this.getAdminOrden().getOrden()).setIkDestino(destinos.get(index));
-//					if(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino()!= null && ((Transferencia)this.getAdminOrden().getOrden()).getIkDestino().size()== 1)
-//						this.doUpdateAlmacenDestino(false, true);
           this.doLoadPerdidas(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino()== null? -1L: ((Transferencia)this.getAdminOrden().getOrden()).getIkDestino().toLong("idEmpresa"));
 				} // if	
 	}
@@ -419,7 +415,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 					this.getAdminOrden().toAddUltimo(this.getAdminOrden().getArticulos().size()- 1);
 					UIBackingUtilities.execute("jsArticulos.update("+ (this.getAdminOrden().getArticulos().size()- 1)+ ");");
 				} // if	
-				UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.getKey()+ "');");
+				UIBackingUtilities.execute("jsArticulos.erase();jsArticulos.callback('"+ articulo.getKey()+ "');");
 				this.getAdminOrden().toCalculate(index);
 			} // if	
 			else
@@ -493,9 +489,13 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 	public void doFaltanteArticulo() {
 		try {
 			UISelectEntity faltante= (UISelectEntity)this.attrs.get("faltante");
-   		this.toMoveData(faltante, this.getAdminOrden().getArticulos().size()- 1);
-		  List<UISelectEntity> faltantes= (List<UISelectEntity>)this.attrs.get("faltantes");
-			faltantes.remove(faltantes.indexOf(faltante));
+      this.attrs.put("articulo", faltante);
+      super.doFindArticulo(this.getAdminOrden().getArticulos().size()- 1);        
+      // int position= this.getAdminOrden().getArticulos().indexOf(new Articulo(faltante.toLong("idArticulo")));
+      // if(position< 0) 
+      //  this.toMoveData(faltante, this.getAdminOrden().getArticulos().size()- 1);        
+      List<UISelectEntity> faltantes= (List<UISelectEntity>)this.attrs.get("faltantes");
+      faltantes.remove(faltantes.indexOf(faltante));
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
@@ -507,9 +507,11 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 	public void doAgregarPerdido() {
 		try {
 			UISelectEntity perdido= (UISelectEntity)this.attrs.get("perdido");
-   		this.toMoveData(perdido, this.getAdminOrden().getArticulos().size()- 1);
-		  List<UISelectEntity> perdidos= (List<UISelectEntity>)this.attrs.get("perdidos");
-			perdidos.remove(perdidos.indexOf(perdido));
+      this.attrs.put("articulo", perdido);
+      super.doFindArticulo(this.getAdminOrden().getArticulos().size()- 1);        
+      // int position= this.getAdminOrden().getArticulos().indexOf(new Articulo(perdido.toLong("idArticulo")));
+      // if(position< 0) 
+      //  this.toMoveData(perdido, this.getAdminOrden().getArticulos().size()- 1);        
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
@@ -527,8 +529,6 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 	} 
 	
 	public void doLookForPerdidos() {
-//		if(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino()!= null && ((Transferencia)this.getAdminOrden().getOrden()).getIkDestino().size()== 1)
-//			this.doUpdateAlmacenDestino(false, true);
 		this.doLoadPerdidas(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino()== null? -1L: ((Transferencia)this.getAdminOrden().getOrden()).getIkDestino().toLong("idEmpresa"));
 	} 
 	

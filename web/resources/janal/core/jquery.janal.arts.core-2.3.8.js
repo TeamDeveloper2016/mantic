@@ -801,9 +801,13 @@
 			if(paginator)
         PF(this.datacontrol).paginator.setPage(Math.trunc(index/ top));
 			alert('El articulo ['+ codigo+ ' - '+ nombre+' ]\nya existe en la orden y se encuentra en la fila '+ (index+ 1)+ ',\n la cantidad de articulos solicitados se aumento\n con la cantidad del articulo seleccionado\n por favor verifique y corriga el valor !');
-			setTimeout('$articulos.cursor.index= $articulos.cursor.tmp; $articulos.goto();', 1000);
+			setTimeout('$articulos.cursor.index= $articulos.cursor.tmp; $articulos.goto(); $articulos.erase();', 1000);
 			janal.desbloquear();
- 		}, 
+ 		},
+    erase: function() {
+			janal.console('jsArticulo.erase: id$='+ this.codes);
+      $("input[id$='"+ this.codes+ "']").val('');
+    },
 		skip: function(paginator) {
 			this.paginator= paginator;
 			if(paginator) {
