@@ -138,7 +138,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       this.attrs.put("cantidad", 0D);
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("seleccionado", null);
-			doLoad();
+			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -264,6 +264,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		} // if	
 	}
 
+  @Override
 	public void doRecoverArticulo(Integer index) {
 		try {
 			if(index>= 0 && index< this.getAdminOrden().getArticulos().size()) {
@@ -322,12 +323,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			  else	
 				  temporal.setCosto(origen.toDouble());
 				// calcular el valor sugerido para la cantidad
-				if(temporal.getCantidad()<= 1D && temporal.getStock()> 0D && temporal.getCosto()> 0D) 
-					if((temporal.getCosto()- temporal.getValor())> temporal.getStock())
-						temporal.setCantidad(temporal.getStock()<= 0? 1D: temporal.getStock());
-					else
-						if(temporal.getValor()< temporal.getCosto())
-						  temporal.setCantidad(temporal.getCosto()- temporal.getValor());
+        // stock: es el stock del almacen origen
+        // valor: es el stock del almacen destino
+        // costo: es el valor maximo para el articulo
+        temporal.setCantidad(temporal.getCosto()- temporal.getValor());
 				// el stock del almacen destino es superior al maximo permitido en el almacen
 				temporal.setUltimo(temporal.getValor()> temporal.getCosto());
 				if(index== this.getAdminOrden().getArticulos().size()- 1) {

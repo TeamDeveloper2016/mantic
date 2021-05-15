@@ -9004,7 +9004,7 @@
 					tc_mantic_articulos.iva,
 					tc_mantic_articulos.precio as costo,
 					tc_mantic_articulos.precio,
-					tc_mantic_almacenes_articulos.maximo- tc_mantic_almacenes_articulos.stock as cantidad,
+					tc_mantic_almacenes_articulos.maximo- if(tc_mantic_almacenes_articulos.stock&lt; 0, 0, tc_mantic_almacenes_articulos.stock) as cantidad,
 					tc_mantic_inventarios.stock,
 					tc_mantic_almacenes_articulos.minimo,
 					tc_mantic_almacenes_articulos.maximo

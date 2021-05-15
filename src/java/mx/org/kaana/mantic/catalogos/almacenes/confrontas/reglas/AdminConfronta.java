@@ -60,13 +60,13 @@ public final class AdminConfronta extends IAdminArticulos implements Serializabl
   			params.put("idAlmacen", this.orden.getTransferencia().getIdAlmacen());
   			params.put("idArticulo", item.getIdArticulo());
 				Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
-				item.setStock(stock== null? 0D: stock.toDouble());
+				item.setStock(stock== null || stock.toDouble()< 0D? 0D: stock.toDouble());
 			  // el almacen origen no tiene conteo 
 			  item.setSolicitado(stock== null);
   			params.put("idAlmacen", this.orden.getTransferencia().getIdDestino());
 				stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
 				// recuperar el stock de articulos en el almacen destino
-				item.setValor(stock== null? 0D: stock.toDouble());
+				item.setValor(stock== null || stock.toDouble()< 0D? 0D: stock.toDouble());
 				// el almacen destino no tiene conteo
 				item.setCostoLibre(stock== null);
 				stock= (Value)DaoFactory.getInstance().toField("TcManticAlmacenesArticulosDto", "umbral", params, "maximo");

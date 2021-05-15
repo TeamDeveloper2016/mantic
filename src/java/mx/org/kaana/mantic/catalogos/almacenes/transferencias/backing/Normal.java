@@ -177,7 +177,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
       this.attrs.put("personas", personas);
 			if(personas!= null && !this.accion.equals(EAccion.AGREGAR) && ((Transferencia)this.getAdminOrden().getOrden()).getIdSolicito()!= null && ((Transferencia)this.getAdminOrden().getOrden()).getIdSolicito()> 0L) 
 				((Transferencia)this.getAdminOrden().getOrden()).setIkSolicito(personas.get(personas.indexOf(new UISelectEntity(((Transferencia)this.getAdminOrden().getOrden()).getIdSolicito()))));
-			this.doUpdateAlmacenDestino(true, this.accion== EAccion.AGREGAR);
+			this.doUpdateAlmacenDestino(true);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -203,17 +203,17 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 	
 	public void doUpdateAlmacenDestino() {
-		this.doUpdateAlmacenDestino(false, true);
+		this.doUpdateAlmacenDestino(false);
 	}
 	
-	public void doUpdateAlmacenDestino(boolean recuperar, boolean calcular) {
+	public void doUpdateAlmacenDestino(boolean recuperar) {
 		Map<String, Object> params= null;
 		Value origen              = null;
 		try {
 			params=new HashMap<>();
   		List<UISelectEntity> destinos= (List<UISelectEntity>)((ArrayList<UISelectEntity>)this.attrs.get("almacenes"));
 			int index= destinos.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino());
-			if(index> 0)
+			if(index>= 0)
 				((Transferencia)this.getAdminOrden().getOrden()).setIkDestino(destinos.get(index));
 			for (Articulo articulo: this.getAdminOrden().getArticulos()) {
 				params.put("idArticulo", articulo.getIdArticulo());
@@ -222,14 +222,14 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 					  params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
 					  // recuperar el stock de articulos en el almacen origen
 					  origen= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
-					  articulo.setStock(origen== null? 0D: origen.toDouble());
+					  articulo.setStock(origen== null || origen.toDouble()< 0D? 0D: origen.toDouble());
 					  // el almacen origen no tiene conteo 
 					  articulo.setSolicitado(origen== null);
 					} // if	
 					params.put("idAlmacen", ((TcManticTransferenciasDto)this.getAdminOrden().getOrden()).getIdDestino());
 					// recuperar el stock de articulos en el almacen destino
 					origen= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
-					articulo.setValor(origen== null? 0D: origen.toDouble());
+					articulo.setValor(origen== null || origen.toDouble()< 0D? 0D: origen.toDouble());
 					// el almacen destino no tiene conteo
 					articulo.setCostoLibre(origen== null);
 					origen= (Value)DaoFactory.getInstance().toField("TcManticAlmacenesArticulosDto", "umbral", params, "maximo");
@@ -240,15 +240,8 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 					} // if
 					else	
 						articulo.setCosto(origen.toDouble());
-					if(calcular) {
-						// calcular el valor sugerido para la cantidad
-						if(articulo.getCantidad()<= 1D && articulo.getStock()> 0D && articulo.getCosto()> 0D) 
-							if((articulo.getCosto()- articulo.getValor())> articulo.getStock())
-								articulo.setCantidad(articulo.getStock()<= 0? 1D: articulo.getStock());
-							else
-								if(articulo.getValor()< articulo.getCosto())
-									articulo.setCantidad(articulo.getCosto()- articulo.getValor());
-					} // if	
+//					if(calcular)
+//            articulo.setCantidad(articulo.getCosto()- articulo.getValor());            
 					// el stock del almacen destino es superior al maximo permitido en el almacen
 					articulo.setUltimo(articulo.getValor()> articulo.getCosto());
 					articulo.setModificado(true);
@@ -274,8 +267,12 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
         this.doLoadFaltantes();
 			else 
 			  if(event.getTab().getTitle().equals("Ventas perdidas")) {
-					if(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino()!= null && ((Transferencia)this.getAdminOrden().getOrden()).getIkDestino().size()== 1)
-						this.doUpdateAlmacenDestino(false, true);
+          List<UISelectEntity> destinos= (List<UISelectEntity>)((ArrayList<UISelectEntity>)this.attrs.get("almacenes"));
+          int index= destinos.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino());
+          if(index>= 0)
+            ((Transferencia)this.getAdminOrden().getOrden()).setIkDestino(destinos.get(index));
+//					if(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino()!= null && ((Transferencia)this.getAdminOrden().getOrden()).getIkDestino().size()== 1)
+//						this.doUpdateAlmacenDestino(false, true);
           this.doLoadPerdidas(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino()== null? -1L: ((Transferencia)this.getAdminOrden().getOrden()).getIkDestino().toLong("idEmpresa"));
 				} // if	
 	}
@@ -354,6 +351,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
     } // catch   
 	}	
 	
+  @Override
 	public void doRecoverArticulo(Integer index) {
 		try {
 			if(index>= 0 && index< this.getAdminOrden().getArticulos().size()) {
@@ -380,26 +378,23 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 				temporal.setKey(articulo.toLong("idArticulo"));
 				temporal.setIdArticulo(articulo.toLong("idArticulo"));
 				temporal.setIdProveedor(-1L);
-//				temporal.setIdRedondear(articulo.toLong("idRedondear"));
 				temporal.setCodigo(articulo.toString("propio"));
 				temporal.setPropio(articulo.toString("propio"));
 				temporal.setNombre(articulo.toString("nombre"));
-//				temporal.setOrigen(articulo.toString("origen"));
 				temporal.setPrecio(articulo.toDouble("precio"));				
 				temporal.setIva(articulo.toDouble("iva"));				
 				temporal.setSat("");				
 				temporal.setDescuento("");
 				temporal.setExtras("");				
-//				temporal.setUnidadMedida(articulo.toString("unidadMedida"));
 				// recuperar el stock de articulos en el almacen origen
 				Value origen= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
-				temporal.setStock(origen== null? 0D: origen.toDouble());
+				temporal.setStock(origen== null || origen.toDouble()< 0D? 0D: origen.toDouble());
 				// el almacen origen no tiene conteo 
 				temporal.setSolicitado(origen== null);
 				// recuperar el stock de articulos en el almacen destino
 				params.put("idAlmacen", ((TcManticTransferenciasDto)this.getAdminOrden().getOrden()).getIdDestino());
 				origen= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
-				temporal.setValor(origen== null? 0D: origen.toDouble());
+				temporal.setValor(origen== null || origen.toDouble()< 0D? 0D: origen.toDouble());
 				// el almacen destino no tiene conteo
 				temporal.setCostoLibre(origen== null);
 				origen= (Value)DaoFactory.getInstance().toField("TcManticAlmacenesArticulosDto", "umbral", params, "maximo");
@@ -411,12 +406,10 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 			  else	
 				  temporal.setCosto(origen.toDouble());
 				// calcular el valor sugerido para la cantidad
-				if(temporal.getCantidad()<= 1D && temporal.getStock()> 0D && temporal.getCosto()> 0D) 
-					if((temporal.getCosto()- temporal.getValor())> temporal.getStock())
-						temporal.setCantidad(temporal.getStock()<= 0? 1D: temporal.getStock());
-					else
-						if(temporal.getValor()< temporal.getCosto())
-						  temporal.setCantidad(temporal.getCosto()- temporal.getValor());
+        // stock: es el stock del almacen origen
+        // valor: es el stock del almacen destino
+        // costo: es el valor maximo para el articulo
+        temporal.setCantidad(temporal.getCosto()- temporal.getValor());
 				// el stock del almacen destino es superior al maximo permitido en el almacen
 				temporal.setUltimo(temporal.getValor()> temporal.getCosto());
 				// agregar el paquete o caja donde se encuentra referenciado el articulo
@@ -534,8 +527,8 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 	} 
 	
 	public void doLookForPerdidos() {
-		if(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino()!= null && ((Transferencia)this.getAdminOrden().getOrden()).getIkDestino().size()== 1)
-			this.doUpdateAlmacenDestino(false, true);
+//		if(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino()!= null && ((Transferencia)this.getAdminOrden().getOrden()).getIkDestino().size()== 1)
+//			this.doUpdateAlmacenDestino(false, true);
 		this.doLoadPerdidas(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino()== null? -1L: ((Transferencia)this.getAdminOrden().getOrden()).getIkDestino().toLong("idEmpresa"));
 	} 
 	
