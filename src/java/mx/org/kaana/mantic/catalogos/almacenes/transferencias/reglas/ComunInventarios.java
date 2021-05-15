@@ -202,7 +202,7 @@ public abstract class ComunInventarios extends IBaseTnx {
         } // if
 				else {
           stock= inventario.getStock();
-					inventario.setEntradas(Numero.toRedondearSat(inventario.getEntradas()+ diferencia));
+					inventario.setEntradas(Numero.toRedondearSat(inventario.getEntradas()+ diferencia+ (stock< 0D? Math.abs(stock): 0D)));
 					inventario.setStock(Numero.toRedondearSat(Math.abs(inventario.getInicial()+ inventario.getEntradas())- inventario.getSalidas()));
 					DaoFactory.getInstance().update(sesion, inventario);
 				} // if

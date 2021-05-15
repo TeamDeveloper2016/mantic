@@ -234,8 +234,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			if(inventario== null)
 				DaoFactory.getInstance().insert(sesion, new TcManticInventariosDto(JsfBase.getIdUsuario(), idAlmacen, item.getCantidad(), -1L, item.getIdArticulo(), 0D, 0D, item.getCantidad(), new Long(Calendar.getInstance().get(Calendar.YEAR)), 1L));
 			else {
-				inventario.setEntradas(inventario.getEntradas()+ item.getCantidad());
-				inventario.setStock(inventario.getStock()+ item.getCantidad());
+				inventario.setEntradas(inventario.getEntradas()+ item.getCantidad()+ (inventario.getStock()< 0D? 0D: Math.abs(inventario.getStock())));
+				inventario.setStock((inventario.getStock()< 0D? 0D: inventario.getStock())+ item.getCantidad());
 				DaoFactory.getInstance().update(sesion, inventario);
 			} // else
 			// afectar el almacen de articulos proque se cancelo la devolucion

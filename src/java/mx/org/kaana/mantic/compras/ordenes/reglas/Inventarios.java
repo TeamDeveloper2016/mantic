@@ -111,8 +111,8 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
             new Long(Calendar.getInstance().get(Calendar.YEAR)), // ejercicio
             1L)); // idAutomatico
 			else {
-				inventario.setEntradas(inventario.getEntradas()+ item.getCantidad());
-				inventario.setStock(inventario.getStock()+ item.getCantidad());
+				inventario.setEntradas(inventario.getEntradas()+ item.getCantidad()+ (inventario.getStock()< 0D? 0D: Math.abs(inventario.getStock())));
+				inventario.setStock((inventario.getStock()< 0D? 0D: inventario.getStock())+ item.getCantidad());
 				DaoFactory.getInstance().update(sesion, inventario);
 			} // else
 			

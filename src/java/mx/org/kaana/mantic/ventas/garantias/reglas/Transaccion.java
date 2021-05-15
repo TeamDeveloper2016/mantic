@@ -830,9 +830,9 @@ public class Transaccion extends IBaseTnx{
 			params.put("idAlmacen", this.garantia.getTicketVenta().getIdAlmacen());
 			params.put("idArticulo", idArticulo);
 			inventario= (TcManticInventariosDto) DaoFactory.getInstance().toEntity(sesion, TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
-			if(inventario!= null){
-				inventario.setEntradas(inventario.getEntradas()+ cantidad);
-				inventario.setStock(inventario.getStock()+ cantidad);
+			if(inventario!= null) {
+				inventario.setEntradas(inventario.getEntradas()+ cantidad+ (inventario.getStock()< 0D? 0D: Math.abs(inventario.getStock())));
+				inventario.setStock((inventario.getStock()< 0D? 0D: inventario.getStock())+ cantidad);
 				regresar= DaoFactory.getInstance().update(sesion, inventario)>= 1L;
 			} // if
 			else{
