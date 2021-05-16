@@ -166,7 +166,7 @@ public class Accion extends IBaseVenta implements Serializable {
           break;
       } // switch
 			this.attrs.put("consecutivo", "");
-			toLoadCatalog();
+			this.toLoadCatalog();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -174,7 +174,7 @@ public class Accion extends IBaseVenta implements Serializable {
     } // catch		
   } // doLoad
 
-	private void loadCatalogs(){
+	private void loadCatalogs() {
 		List<UISelectEntity> sucursales= null;		
 		try {
 			if(this.attrs.get("sucursales")!= null){
@@ -672,5 +672,5 @@ public class Accion extends IBaseVenta implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doAgregarCorreo
- 
+  
 }

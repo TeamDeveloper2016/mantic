@@ -9248,6 +9248,54 @@
 			</select>			
 		</unit>
 		<unit id="VistaTcManticVentasDetallesDto">
+			<select id="garantia">
+        select
+					tc_mantic_garantias.id_garantia as id_key,
+					tc_mantic_garantias.id_garantia,
+					tc_mantic_garantias.id_venta,
+					tc_mantic_ventas.ticket,  
+					tc_mantic_garantias.consecutivo,
+					tc_mantic_garantias.impuestos,
+					tc_mantic_garantias.sub_total,
+					tc_mantic_garantias.total,
+					tc_mantic_garantias.observaciones,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+					tc_mantic_garantias_estatus.nombre as estatus,
+					tc_mantic_garantias.registro
+				from 
+				  tc_mantic_garantias
+				inner join 
+					tc_mantic_ventas on tc_mantic_ventas.id_venta= tc_mantic_garantias.id_venta
+				inner join 
+				  tc_janal_usuarios on tc_mantic_garantias.id_usuario= tc_janal_usuarios.id_usuario
+				inner join				
+					tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona				
+				inner join				
+					tc_mantic_garantias_estatus on tc_mantic_garantias.id_garantia_estatus = tc_mantic_garantias_estatus.id_garantia_estatus				
+				where
+					tc_mantic_garantias.id_venta= {idVenta}
+        {sortOrder}
+      </select>  
+			<select id="garantiaDetalle">
+        select
+					tc_mantic_garantias_detalles.id_garantia_detalle as id_key,
+					tc_mantic_ventas_detalles.codigo,
+					tc_mantic_ventas_detalles.nombre,
+					tc_mantic_garantias_detalles.cantidad,
+					tc_mantic_garantias_detalles.impuestos,
+					tc_mantic_garantias_detalles.sub_total,
+					tc_mantic_garantias_detalles.importe,
+					tc_mantic_garantias_detalles.registro
+				from 
+				  tc_mantic_garantias
+				inner join 
+					tc_mantic_garantias_detalles on tc_mantic_garantias.id_garantia = tc_mantic_garantias_detalles.id_garantia
+				inner join 
+					tc_mantic_ventas_detalles on tc_mantic_garantias_detalles.id_venta_detalle = tc_mantic_ventas_detalles.id_venta_detalle
+				where
+					tc_mantic_garantias.id_garantia= {idGarantia}
+        {sortOrder}
+      </select>  
 			<select id="detalle">
 				select
 					tc_mantic_ventas_detalles.id_venta_detalle as id_key,

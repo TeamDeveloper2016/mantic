@@ -380,6 +380,139 @@
 				<p:inputText id="articulos" value="#{manticVentasGarantiasAccion.adminOrden.totales.articulos}" style="display:none"/>
 				<p:inputText id="total" styleClass="recalculo" value="#{manticVentasGarantiasAccion.adminOrden.totales.totalDosDecimales}" style="display:none"/>					
 			</p:tab>						
+      <p:tab title="Garantias" rendered="#{not(empty manticVentasGarantiasAccion.lazyModel)}">
+				<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+					<div class="ui-grid-row janal-grid-row">
+						<div class="ui-grid-col-12">					
+              <p:dataTable lazy="true" id="garantia" widgetVar="kajoolTableGarantia" var="row" value="#{manticVentasGarantiasAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="25" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticVentasGarantiasAccion.attrs.garantia}" selectionMode="single" paginator="#{manticVentasGarantiasAccion.lazyModel.rowCount gt manticVentasGarantiasAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+                <p:ajax event="rowToggle" listener="#{manticVentasGarantiasAccion.doRowToggle}" update="detalle" />  
+                <p:ajax event="rowSelect" update="detalle" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+                <f:facet name="header">
+                  <div style="float: left">
+                    <p:outputLabel value="Folio(s) de garantía(s) generada(s) a partir de este ticket de venta" styleClass="janal-text-white janal-font-bold"/>
+                  </div>  
+                  <p:spacer width="1px"/>
+                </f:facet>
+                <p:column style="width:32px">
+                  <f:facet name="header">
+                    <i class="fa fa-search janal-color-blue janal-font-bold" title="Clic para consulta el detalle"></i>
+                  </f:facet>
+                  <p:rowToggler/>
+                </p:column>            
+                <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+                  <f:facet name="header">
+                    <h:outputText value="Folio"/>
+                  </f:facet>
+                  <h:outputText value="#{row['consecutivo']}"/>
+                </p:column>	
+                <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.impuestos}">
+                  <f:facet name="header">
+                    <h:outputText value="Impuestos"/>
+                  </f:facet>
+                  <h:outputText value="#{row['impuestos']}"/>
+                </p:column>	
+                <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.subTotal}">
+                  <f:facet name="header">
+                    <h:outputText value="Sub total"/>
+                  </f:facet>
+                  <h:outputText value="#{row['subTotal']}"/>
+                </p:column>	
+                <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.total}">
+                  <f:facet name="header">
+                    <h:outputText value="Total"/>
+                  </f:facet>
+                  <h:outputText value="#{row['total']}"/>
+                </p:column>	
+                <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
+                  <f:facet name="header">
+                    <h:outputText value="Persona"/>
+                  </f:facet>
+                  <h:outputText value="#{row['nombre']}"/>
+                </p:column>	
+                <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+                  <f:facet name="header">
+                    <h:outputText value="Estatus"/>
+                  </f:facet>
+                  <h:outputText value="#{row['estatus']}"/>
+                </p:column>	
+                <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.registro}">
+                  <f:facet name="header">
+                    <h:outputText value="Fecha"/>
+                  </f:facet>
+                  <h:outputText value="#{row['registro']}"/>
+                </p:column>	
+                <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.observaciones}">
+                  <f:facet name="header">
+                    <h:outputText value="Observaciones"/>
+                  </f:facet>
+                  <h:outputText value="#{row['observaciones']}"/>
+                </p:column>	
+                <p:rowExpansion> 
+                  <p:dataTable lazy="true" id="detalle" widgetVar="kajoolTableDetalle" var="row" value="#{manticVentasGarantiasAccion.lazyModelDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticVentasGarantiasAccion.attrs.seleccionadoDetalle}" selectionMode="single" paginator="#{manticVentasGarantiasAccion.lazyModelDetalle.rowCount gt manticVentasGarantiasAccion.lazyModelDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" style="display: #{empty manticVentasGarantiasAccion.lazyModelDetalle? 'none': ''}">
+                    <p:ajax event="rowSelect" oncomplete="PF('kajoolTableDetalle').writeSelections()" process="detalle" skipChildren="false"/>
+                    <p:column class="MarAuto Responsive janal-wid-3">
+                      <f:facet name="header">
+                        <h:outputText value="No."/>
+                      </f:facet>
+                      <h:outputText value="#{index+ 1}.-"/>
+                    </p:column>				
+                    <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.codigo}">
+                      <f:facet name="header">
+                        <h:outputText value="Código"/>
+                      </f:facet>
+                      <h:outputText value="#{row['codigo']}"/>
+                    </p:column>	
+                    <p:column class="MarAuto Responsive" sortBy="#{row.nombre}">
+                      <f:facet name="header">
+                        <h:outputText value="Nombre"/>
+                      </f:facet>
+                      <h:outputText value="#{row['nombre']}"/>
+                    </p:column>	
+                    <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cantidad}">
+                      <f:facet name="header">
+                        <h:outputText value="Cantidad"/>
+                      </f:facet>
+                      <h:outputText value="#{row['cantidad']}"/>
+                    </p:column>	
+                    <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.impuestos}">
+                      <f:facet name="header">
+                        <h:outputText value="Impuestos"/>
+                      </f:facet>
+                      <h:outputText value="#{row['impuestos']}"/>
+                    </p:column>	
+                    <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.subTotal}">
+                      <f:facet name="header">
+                        <h:outputText value="Sub total"/>
+                      </f:facet>
+                      <h:outputText value="#{row['subTotal']}"/>
+                    </p:column>	
+                    <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.total}">
+                      <f:facet name="header">
+                        <h:outputText value="Total"/>
+                      </f:facet>
+                      <h:outputText value="#{row['total']}"/>
+                    </p:column>	
+                    <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.registro}">
+                      <f:facet name="header">
+                        <h:outputText value="Fecha"/>
+                      </f:facet>
+                      <h:outputText value="#{row['registro']}"/>
+                    </p:column>	
+                    <f:facet name="footer">
+                      <div style="display:flow-root;">
+                        <p:outputLabel value="Total [#{manticVentasGarantiasAccion.lazyModelDetalle== null? 0: manticVentasGarantiasAccion.lazyModelDetalle.rowCount}] registros" styleClass="importado janal-color-orange"/>
+                      </div>	
+                    </f:facet>
+                  </p:dataTable>
+                </p:rowExpansion> 
+              <f:facet name="footer">
+                <p:outputLabel value="Total [#{manticVentasGarantiasAccion.lazyModel==null? 0: manticVentasGarantiasAccion.lazyModel.rowCount}] registros" styleClass="janal-color-orange"/>
+              </f:facet>
+            </p:dataTable>    
+            </div>  
+          </div>  
+        </div>  
+			</p:tab>						
 		</p:tabView>				
 		<p:dialog id="dialogoLimiteCaja" widgetVar="dlgLimiteCaja" header="Limite de efectivo en caja" resizable="false" closable="false" responsive="true" width="40%">
 			<p:outputLabel value="Es necesario realizar un retiro de caja, se a sobrepasado el limite permitido."/>

@@ -19,6 +19,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -54,7 +55,9 @@ import mx.org.kaana.mantic.ventas.garantias.reglas.CreateTicketGarantia;
 import mx.org.kaana.mantic.ventas.garantias.reglas.GestorSQL;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.Visibility;
 
 @Named(value= "manticVentasGarantiasAccion")
 @ViewScoped
@@ -65,6 +68,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	private FormatLazyModel detalleDeudaCliente;
 	private TicketVenta ticketOriginal;
 	private StreamedContent image;
+  protected FormatLazyModel lazyModelDetalle;
 	
 	public Accion() {
 		super("menudeo");
@@ -78,6 +82,10 @@ public class Accion extends IBaseVenta implements Serializable {
 		return detalleDeudaCliente;
 	}	
 	
+  public FormatLazyModel getLazyModelDetalle() {
+    return this.lazyModelDetalle;
+  }
+  
 	@PostConstruct
   @Override
   protected void init() {	
@@ -155,6 +163,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				this.attrs.put("cliente", entity);
 			} // if
       this.lookForGarantia();
+      this.doLoadGarantia();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -1081,5 +1090,71 @@ public class Accion extends IBaseVenta implements Serializable {
       Methods.clean(params);
     } // finally
   }
+ 
+  public void doLoadGarantia() {
+    List<Columna> columns     = null;
+	  Map<String, Object> params= null;	
+    try {
+  	  params = new HashMap();
+			params.put("sortOrder", "order by tc_mantic_garantias.registro desc");
+			params.put("idVenta", this.attrs.get("idVenta"));
+      columns= new ArrayList<>();
+      columns.add(new Columna("impuestos", EFormatoDinamicos.MILES_CON_DECIMALES));    
+      columns.add(new Columna("subTotal", EFormatoDinamicos.MILES_CON_DECIMALES));    
+      columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));    
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));    
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));    
+			this.lazyModel = new FormatCustomLazy("VistaTcManticVentasDetallesDto", "garantia", params, columns);
+      UIBackingUtilities.resetDataTable();		
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally		   
+  }
   
+	public void doRowToggle(ToggleEvent event) {
+		try {
+			this.attrs.put("garantia", (Entity) event.getData());
+			if (!event.getVisibility().equals(Visibility.HIDDEN)) 
+				this.doLoadDetalle();
+		} // try
+		catch (Exception e) {			
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doRowToggle
+  
+  public void doLoadDetalle() {
+    List<Columna> columns     = null;
+	  Map<String, Object> params= null;	
+    try {
+  	  params = new HashMap();
+			Entity entity= (Entity)this.attrs.get("garantia");
+			params.put("sortOrder", "order by tc_mantic_garantias_detalles.registro");
+			params.put("idGarantia", entity.toLong("idGarantia"));
+      columns= new ArrayList<>();
+      columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));    
+      columns.add(new Columna("impuestos", EFormatoDinamicos.MILES_CON_DECIMALES));    
+      columns.add(new Columna("subTotal", EFormatoDinamicos.MILES_CON_DECIMALES));    
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));    
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));    
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));    
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));    
+			this.lazyModelDetalle = new FormatCustomLazy("VistaTcManticVentasDetallesDto", "garantiaDetalle", params, columns);
+      UIBackingUtilities.resetDataTable("detalle");		
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally		   
+  }  
 }

@@ -36,15 +36,11 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.empresas.cuentas.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
-import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosDto;
-import mx.org.kaana.mantic.enums.EEstatusEmpresas;
 import mx.org.kaana.mantic.enums.EReportes;
-import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.context.RequestContext;
-import org.primefaces.event.TabChangeEvent;
 import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.Visibility;
 
@@ -484,7 +480,7 @@ public class Saldos extends IBaseFilter implements Serializable {
       columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));    
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));    
 			this.lazyModelDetalle = new FormatCustomLazy("VistaEmpresasDto", "detalle", params, columns);
-      UIBackingUtilities.resetDataTable();		
+      UIBackingUtilities.resetDataTable("detalle");		
     } // try
     catch (Exception e) {
       Error.mensaje(e);
