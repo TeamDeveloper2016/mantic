@@ -810,7 +810,7 @@
 								<p:inputText id="importeTicket" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.importeTicket}"/>																	
 								<p:commandButton id="buscarTicket" icon="fa fa-search" process="@this noTicket fechaApartirTicket fechaHastaTicket importeTicket productoTicket" update="tablaTicket" actionListener="#{manticVentasCajaAccion.doLoadTickets}" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 							</p:panelGrid>						       							
-              <p:dataTable lazy="true" id="tablaTicket" widgetVar="kajoolTable" var="filtro" value="#{manticVentasCajaAccion.lazyModelTicket}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticVentasCajaAccion.lazyModelTicket.rowCount gt manticVentasCajaAccion.lazyModelTicket.pageSize}" rowIndexVar="index" reflow="true" selectionMode="single" selection="#{manticVentasCajaAccion.attrs.seleccionDetalle}" paginatorPosition="bottom">									
+              <p:dataTable lazy="true" id="tablaTicket" widgetVar="kajoolTable" var="filtro" value="#{manticVentasCajaAccion.lazyModelTicket}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticVentasCajaAccion.lazyModelTicket.rowCount gt manticVentasCajaAccion.lazyModelTicket.pageSize}" rowIndexVar="index" reflow="true" selectionMode="single" selection="#{manticVentasCajaAccion.attrs.seleccionDetalle}" paginatorPosition="bottom" rowStyleClass="#{manticVentasCajaAccion.toColorGarantia(filtro)}">
     						<p:ajax event="rowSelect" process="@this"/>
 								<f:facet name="header" >
 									<div class="lg-pantalla">
@@ -834,6 +834,7 @@
 									<f:facet name="header">
 										<h:outputText value="Vendedor"/>
 									</f:facet>
+                  <i class="fa fa-fw fa-cart-plus janal-color-blue janal-font-bold janal-icons-header" style="display: #{empty filtro.garantia or filtro.garantia eq ''? 'none': ''}" title="Folio devolución: #{filtro.garantia} por un total de #{filtro.devuelto} del día #{filtro.fecha}"></i>
 									<h:outputText value="#{filtro['nombre']}"/>
 								</p:column>		
 								<p:column class="MarAuto Responsive janal-wid-15" sortBy="#{filtro.nombreEmpresa}">
@@ -884,7 +885,8 @@
 									</p:commandButton>
 								</p:column>
 								<f:facet name="footer">
-									<p:outputLabel value="Total [#{manticVentasCajaAccion.lazyModelTicket==null?0:manticVentasCajaAccion.lazyModelTicket.rowCount}] registros"/>
+                  <p:outputLabel value="Las filas en color verde claro tienen asociada una devolución, colocar el raton sobre el icono del carrito" styleClass="janal-color-blue janal-icons-header"/>
+									<p:outputLabel value="Total [#{manticVentasCajaAccion.lazyModelTicket== null? 0: manticVentasCajaAccion.lazyModelTicket.rowCount}] registros"/>
 								</f:facet>
 							</p:dataTable>	
 							<p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tablaTicket">								

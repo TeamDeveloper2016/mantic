@@ -89,7 +89,7 @@
 						<p:outputLabel value="LA TRANSFERENCIA DE ARTICULOS [#{manticCatalogosAlmacenesTransferenciasNormal.adminOrden.orden.consecutivo}] SE AUTOGUARDO A LAS #{manticCatalogosAlmacenesTransferenciasNormal.attrs.autoSave} HRS." style="display: #{empty(manticCatalogosAlmacenesTransferenciasNormal.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-blue"/>
 					</div>
 					<p:tabView id="contenedorGrupos" dynamic="">
-            <p:ajax event="tabChange" listener="#{manticCatalogosAlmacenesTransferenciasNormal.doTabChange}" process="@this idAlmacen idDestino" update="faltantes perdidos" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();"/>
+            <p:ajax event="tabChange" listener="#{manticCatalogosAlmacenesTransferenciasNormal.doTabChange}" process="@this idAlmacen idDestino" update="faltantes perdidos paginator" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();"/>
             <p:tab title="General">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-100">		
 								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="false"/>
@@ -151,7 +151,7 @@
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-12">
 										<p:panelGrid columns="4" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-40, janal-wid-100, janal-wid-col-70">
-											<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();" style="float:left;">
+                      <p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" onstart="return janal.bloquear();" oncomplete="setTimeout('jsArticulos.erase();', 2000); PF('dlgArtExpress').show();" style="float:left;">
 												<f:setPropertyActionListener target="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.seleccionado}" value="#{null}"/>
 											</p:commandButton>
 										  <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-100, janal-wid-100, janal-wid-col-200" style="margin-top: -8px !important;">

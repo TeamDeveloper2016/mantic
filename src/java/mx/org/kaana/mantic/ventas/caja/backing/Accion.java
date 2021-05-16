@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -1507,7 +1508,9 @@ public class Accion extends IBaseVenta implements Serializable {
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+      columns.add(new Columna("devuelto", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
+      columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_HORA_CORTA));      
       columns.add(new Columna("hora", EFormatoDinamicos.HORA_CORTA));     
 			params.put("sortOrder", "order by tc_mantic_ventas.registro desc");
       this.lazyModelTicket = new FormatCustomLazy("VistaConsultasDto", params, columns);
@@ -1929,5 +1932,9 @@ public class Accion extends IBaseVenta implements Serializable {
     super.doUnLockCuenta();
     this.doActualizaTicketsAbiertos();
   }
-  
+
+ 	public String toColorGarantia(Entity row) {
+		return Cadena.isVacio(row.toString("garantia"))? "": "janal-tr-lime";
+	} 
+
 }

@@ -491,11 +491,9 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 			UISelectEntity faltante= (UISelectEntity)this.attrs.get("faltante");
       this.attrs.put("articulo", faltante);
       super.doFindArticulo(this.getAdminOrden().getArticulos().size()- 1);        
-      // int position= this.getAdminOrden().getArticulos().indexOf(new Articulo(faltante.toLong("idArticulo")));
-      // if(position< 0) 
-      //  this.toMoveData(faltante, this.getAdminOrden().getArticulos().size()- 1);        
       List<UISelectEntity> faltantes= (List<UISelectEntity>)this.attrs.get("faltantes");
-      faltantes.remove(faltantes.indexOf(faltante));
+      if(faltante!= null && faltantes!= null)
+        faltantes.remove(faltantes.indexOf(faltante));
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
@@ -509,10 +507,10 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 			UISelectEntity perdido= (UISelectEntity)this.attrs.get("perdido");
       this.attrs.put("articulo", perdido);
       super.doFindArticulo(this.getAdminOrden().getArticulos().size()- 1);        
-      // int position= this.getAdminOrden().getArticulos().indexOf(new Articulo(perdido.toLong("idArticulo")));
-      // if(position< 0) 
-      //  this.toMoveData(perdido, this.getAdminOrden().getArticulos().size()- 1);        
-		} // try
+ 		  List<UISelectEntity> perdidos= (List<UISelectEntity>)this.attrs.get("perdidos");
+      if(perdido!= null && perdidos!= null)
+  		  perdidos.remove(perdidos.indexOf(perdido));		
+    } // try
 	  catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);

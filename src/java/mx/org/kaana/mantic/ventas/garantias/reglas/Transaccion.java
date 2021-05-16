@@ -246,7 +246,7 @@ public class Transaccion extends IBaseTnx{
 		try {							
 			this.loadGarantia(sesion, idEstatusGarantia);			
 			if(DaoFactory.getInstance().insert(sesion, this.garantiaDto)>= 1L){				
-				regresar= this.registraBitacora(sesion, this.garantiaDto.getIdGarantia(), idEstatusGarantia, "Se generó la garantía de forma correcta.");
+				regresar= this.registraBitacora(sesion, this.garantiaDto.getIdGarantia(), idEstatusGarantia, "Se generó la garantía de forma correcta");
 				this.toFillArticulos(sesion, this.garantia.getArticulosGarantia());
 			} // if
 		} // try
@@ -255,7 +255,7 @@ public class Transaccion extends IBaseTnx{
 		} // catch		
 		finally{
 			Methods.clean(params);
-			this.messageError= "Error al registrar el pago de la venta.";
+			this.messageError= "Error al registrar el pago de la garantía";
 		} // finally			
 		return regresar;
 	} // pagarVenta
