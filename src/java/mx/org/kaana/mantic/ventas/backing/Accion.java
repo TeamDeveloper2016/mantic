@@ -148,7 +148,7 @@ public class Accion extends IBaseVenta implements Serializable {
 					this.attrs.put("consecutivo", "");		
 					idCliente= Long.valueOf(this.attrs.get("idCliente").toString());
 					if(idCliente!= null && !idCliente.equals(-1L))
-						doAsignaClienteInicial(idCliente);
+						this.doAsignaClienteInicial(idCliente);
 					else
 						this.attrs.put("mostrarCorreos", true);
           break;
@@ -354,11 +354,11 @@ public class Accion extends IBaseVenta implements Serializable {
 			clienteSeleccion= (UISelectEntity) this.attrs.get("clienteSeleccion");
 			if(clienteSeleccion!= null && !clienteSeleccion.getKey().equals(-1L)){
 				descuentoVigente= toDescuentoVigente(articulo.getIdArticulo(), clienteSeleccion.getKey());				
-				if(descuentoVigente!= null){
+				if(descuentoVigente!= null) {
 					descuentoPivote= getAdminOrden().getDescuento();
 					getAdminOrden().setDescuento(descuentoVigente);
 					super.toMoveArticulo(articulo, index);			
-					getAdminOrden().setDescuento(descuentoPivote);
+					this.getAdminOrden().setDescuento(descuentoPivote);
 				} // if
 				else
 					super.toMoveArticulo(articulo, index);				
@@ -419,7 +419,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
 					UIBackingUtilities.execute("jsArticulos.back('cerr\\u00F3 la cuenta', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 					JsfBase.addMessage("Se guardo la cuenta de venta.", ETipoMensaje.INFORMACION);	
-					init();
+					this.init();
 				} // if
 				else 
 					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);      			
@@ -470,7 +470,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			if(this.attrs.get("clienteSeleccion")!= null && !((Entity)this.attrs.get("clienteSeleccion")).getKey().equals(-1L)){
 				if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
 					((TicketVenta)this.getAdminOrden().getOrden()).setIdVentaEstatus(EEstatusVentas.EN_CAPTURA.getIdEstatusVenta());
-					loadOrdenVenta();
+					this.loadOrdenVenta();
 					transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
 					this.getAdminOrden().toAdjustArticulos();
 					transaccion.ejecutar(EAccion.DESACTIVAR);
@@ -605,7 +605,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		try {
 			if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
 				((TicketVenta)this.getAdminOrden().getOrden()).setIdVentaEstatus(EEstatusVentas.EN_CAPTURA.getIdEstatusVenta());
-				loadOrdenVenta();
+				this.loadOrdenVenta();
 				transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
 				this.getAdminOrden().toAdjustArticulos();
 				transaccion.ejecutar(EAccion.REGISTRAR);

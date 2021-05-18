@@ -380,7 +380,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		} // finally
 	} // doAsignaTicketAbierto	
 	
-	public void doAsignaApartado(){
+	public void doAsignaApartado() {
 		Map<String, Object>params = null;
 		Date actual               = null;
 		try {
@@ -389,12 +389,12 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
 			unlockVentaExtends(Long.valueOf(params.get("idVenta").toString()), (Long)this.attrs.get("ticketLock"));
 			this.attrs.put("ticketLock", Long.valueOf(params.get("idVenta").toString()));
-			asignaAbonoApartado();
+			this.asignaAbonoApartado();
 			actual= new Date(Calendar.getInstance().getTimeInMillis());
 			if(actual.after(((TicketVenta)getAdminOrden().getOrden()).getVigencia()))
-				generateNewVenta();    				
-			toLoadCatalog();
-			doAsignaClienteTicketAbierto();
+				this.generateNewVenta();    				
+			this.toLoadCatalog();
+			this.doAsignaClienteTicketAbierto();
 			UIBackingUtilities.execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
 		} // try
 		catch (Exception e) {
@@ -428,11 +428,20 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
- 			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
-			if(!almacenes.isEmpty()) 
-				((TicketVenta)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
+ 			List<UISelectEntity> items= (List<UISelectEntity>)this.attrs.get("almacenes");
+			if(!items.isEmpty()) {
+        if(Cadena.isVacio(((TicketVenta)this.getAdminOrden().getOrden()).getIkAlmacen()))
+  				((TicketVenta)this.getAdminOrden().getOrden()).setIkAlmacen(items.get(0));
+        else {
+          int index= items.indexOf(((TicketVenta)this.getAdminOrden().getOrden()).getIkAlmacen());
+          if(index>= 0)
+			  	  ((TicketVenta)this.getAdminOrden().getOrden()).setIkAlmacen(items.get(index));
+          else
+    				((TicketVenta)this.getAdminOrden().getOrden()).setIkAlmacen(items.get(0));
+        } // if  
+      } // if  
       columns.remove(0);
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("clientes", UIEntity.build("TcManticClientesDto", "sucursales", params, columns));
@@ -770,12 +779,12 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
         } // if
 				this.doSearchArticulo(articulo.toLong("idArticulo"), index);
 				params.put("idArticulo", articulo.toLong("idArticulo"));
-				params.put("idProveedor", getAdminOrden().getIdProveedor());
-				params.put("idAlmacen", getAdminOrden().getIdAlmacen());
+				params.put("idProveedor", this.getAdminOrden().getIdProveedor());
+				params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
 				temporal.setKey(articulo.toLong("idArticulo"));
 				temporal.setIdArticulo(articulo.toLong("idArticulo"));
 				temporal.setFabricante(articulo.toString("fabricante"));
-				temporal.setIdProveedor(getAdminOrden().getIdProveedor());
+				temporal.setIdProveedor(this.getAdminOrden().getIdProveedor());
 				temporal.setIdRedondear(articulo.toLong("idRedondear"));
 				Value codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "codigo", params, "codigo");
 				temporal.setCodigo(codigo== null? "": codigo.toString());
@@ -785,8 +794,8 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				temporal.setCosto(precioVenta);
 				temporal.setIva(articulo.toDouble("iva"));				
 				temporal.setSat(articulo.get("sat").getData()!= null ? articulo.toString("sat") : "");				
-				temporal.setDescuento(getAdminOrden().getDescuento());
-				temporal.setExtras(getAdminOrden().getExtras());				
+				temporal.setDescuento(this.getAdminOrden().getDescuento());
+				temporal.setExtras(this.getAdminOrden().getExtras());				
 				// SON ARTICULOS QUE ESTAN EN LA FACTURA MAS NO EN LA ORDEN DE COMPRA
 				if(articulo.containsKey("descuento")) 
 				  temporal.setDescuento(articulo.toString("descuento"));
@@ -811,10 +820,10 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				if(index== getAdminOrden().getArticulos().size()- 1) {
 					this.getAdminOrden().getArticulos().add(new ArticuloVenta(-1L, this.costoLibre));
 					this.getAdminOrden().toAddUltimo(this.getAdminOrden().getArticulos().size()- 1);
-					UIBackingUtilities.execute("jsArticulos.update("+ (getAdminOrden().getArticulos().size()- 1)+ ");");
+					UIBackingUtilities.execute("jsArticulos.update("+ (this.getAdminOrden().getArticulos().size()- 1)+ ");");
 				} // if	
 				UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.getKey()+ "');");
-				getAdminOrden().toCalculate();
+				this.getAdminOrden().toCalculate();
 			} // if	
 			else
 				temporal.setNombre("<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
