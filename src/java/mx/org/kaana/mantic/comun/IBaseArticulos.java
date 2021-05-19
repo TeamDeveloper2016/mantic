@@ -321,6 +321,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			//if(this instanceof IBaseStorage)
 			//	((IBaseStorage)this).toSaveRecord();
       this.doFilterRows();
+      this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -657,11 +658,8 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				if(articulo== null)
 					articulo= new UISelectEntity(new Entity(-1L));
 				else
-					if(articulos!= null && articulos.indexOf(articulo)>= 0) 
+					if(articulos!= null && articulos.indexOf(articulo)>= 0)
 						articulo= articulos.get(articulos.indexOf(articulo));
-					else
-						if(articulos!= null && articulos.size()> 0)
-						  articulo= articulos.get(0);
 			if(articulo.size()> 1) {
 				int position= this.getAdminOrden().getArticulos().indexOf(new Articulo(articulo.toLong("idArticulo")));
 				if(articulo.size()> 1 && position>= 0) {
@@ -677,6 +675,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			} // else
 			else 
 					this.toMoveData(articulo, index);
+      this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
 			DataTable dataTable= (DataTable)JsfUtilities.findComponent("contenedorGrupos:tabla");
 			if (dataTable!= null) 
 				dataTable.setRows((boolean)this.attrs.get("paginator") || this.getAdminOrden().getTotales().getArticulos()>  Constantes.REGISTROS_LOTE_TOPE? Constantes.REGISTROS_POR_LOTE: 10000);		

@@ -200,6 +200,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 		this.getAdminOrden().getArticulos().clear();
 		this.getAdminOrden().getArticulos().add(new Articulo(-1L));
 		this.getAdminOrden().toCalculate();
+		this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
 	}
 	
 	public void doUpdateAlmacenDestino() {
@@ -405,7 +406,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
         // stock: es el stock del almacen origen
         // valor: es el stock del almacen destino
         // costo: es el valor maximo para el articulo
-        temporal.setCantidad(temporal.getCosto()- temporal.getValor());
+        temporal.setCantidad(temporal.getCosto()- temporal.getValor()< 0D? 0D: temporal.getCosto()- temporal.getValor());
 				// el stock del almacen destino es superior al maximo permitido en el almacen
 				temporal.setUltimo(temporal.getValor()> temporal.getCosto());
 				// agregar el paquete o caja donde se encuentra referenciado el articulo
@@ -527,6 +528,12 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 	} 
 	
 	public void doLookForPerdidos() {
+    if(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino()!= null && ((Transferencia)this.getAdminOrden().getOrden()).getIkDestino().size()< 2) {
+  	  List<UISelectEntity> destinos= (List<UISelectEntity>)((ArrayList<UISelectEntity>)this.attrs.get("almacenes"));
+      int index= destinos.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino());
+      if(index>= 0)
+        ((Transferencia)this.getAdminOrden().getOrden()).setIkDestino(destinos.get(index));
+    } // if  
 		this.doLoadPerdidas(((Transferencia)this.getAdminOrden().getOrden()).getIkDestino()== null? -1L: ((Transferencia)this.getAdminOrden().getOrden()).getIkDestino().toLong("idEmpresa"));
 	} 
 	
