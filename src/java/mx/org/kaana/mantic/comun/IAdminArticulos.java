@@ -241,7 +241,7 @@ public abstract class IAdminArticulos implements Serializable {
 	public void toAdjustArticulos() {
 		int count= 0;
 		while(count< this.articulos.size()) {
-			if(!this.articulos.get(count).isValid())
+			if(!this.articulos.get(count).isValid() || this.articulos.get(count).getCantidad()<= 0)
 				this.articulos.remove(count);
 			else
 				if(count> 0 && this.articulos.get(count- 1).getKey().equals(this.articulos.get(count).getKey())) {
