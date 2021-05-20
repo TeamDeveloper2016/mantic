@@ -326,7 +326,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
         // stock: es el stock del almacen origen
         // valor: es el stock del almacen destino
         // costo: es el valor maximo para el articulo
-        temporal.setCantidad(temporal.getCosto()- temporal.getValor());
+        temporal.setCantidad(temporal.getCosto()- temporal.getValor()< 0D? 0D: temporal.getCosto()- temporal.getValor());
 				// el stock del almacen destino es superior al maximo permitido en el almacen
 				temporal.setUltimo(temporal.getValor()> temporal.getCosto());
 				if(index== this.getAdminOrden().getArticulos().size()- 1) {

@@ -927,7 +927,7 @@ public class Transaccion extends IBaseTnx {
           DaoFactory.getInstance().insert(sesion, entrada);
           // ACTUALIZAR EL STOCK DEL INVENTARIO DEL ARTICULO POR ALMACEN
     			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().findFirst(sesion, TcManticInventariosDto.class, "inventario", params);
-          inventario.setEntradas(inventario.getEntradas()+ item.getCantidad()+ (inventario.getStock()< 0D? 0D: Math.abs(inventario.getStock())));
+          inventario.setEntradas(inventario.getEntradas()+ item.getCantidad());
           inventario.setStock((inventario.getStock()< 0D? 0D: inventario.getStock())+ item.getCantidad());
           DaoFactory.getInstance().update(sesion, inventario);
           // ACTUALIZAR EL STOCK GLOBAL DEL ARTICULO

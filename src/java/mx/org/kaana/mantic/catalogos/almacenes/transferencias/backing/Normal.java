@@ -26,8 +26,8 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.almacenes.transferencias.beans.Transferencia;
-import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.AdminTransferencias;
 import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.Transaccion;
+import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.AdminTransferencias;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.comun.IBaseStorage;
@@ -385,13 +385,13 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 				temporal.setExtras("");				
 				// recuperar el stock de articulos en el almacen origen
 				Value origen= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
-				temporal.setStock(origen== null || origen.toDouble()< 0D? 0D: origen.toDouble());
+				temporal.setStock(origen== null? 0D: origen.toDouble());
 				// el almacen origen no tiene conteo 
 				temporal.setSolicitado(origen== null);
 				// recuperar el stock de articulos en el almacen destino
 				params.put("idAlmacen", ((TcManticTransferenciasDto)this.getAdminOrden().getOrden()).getIdDestino());
 				origen= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
-				temporal.setValor(origen== null || origen.toDouble()< 0D? 0D: origen.toDouble());
+				temporal.setValor(origen== null? 0D: origen.toDouble());
 				// el almacen destino no tiene conteo
 				temporal.setCostoLibre(origen== null);
 				origen= (Value)DaoFactory.getInstance().toField("TcManticAlmacenesArticulosDto", "umbral", params, "maximo");
