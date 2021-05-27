@@ -127,7 +127,7 @@
         </div>
 				<p:spacer/>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticVentasCotizacionFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticVentasCotizacionFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticVentasCotizacionFiltro.lazyModel.rowCount gt manticVentasCotizacionFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticVentasCotizacionFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticVentasCotizacionFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticVentasCotizacionFiltro.lazyModel.rowCount gt manticVentasCotizacionFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowStyleClass="#{manticVentasCotizacionFiltro.toColorGarantia(filtro)}">
             <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >
@@ -158,6 +158,7 @@
               <f:facet name="header">
                 <h:outputText value="No. cotización"/>
               </f:facet>
+              <i class="fa fa-fw fa-desktop janal-color-blue janal-font-bold janal-icons-header" style="display: #{empty filtro.ticket or filtro.ticket eq ''? 'none': ''}" title="Folio ticket: #{filtro.ticket} del día #{filtro.registro}"></i>
               <h:outputText value="#{filtro['consecutivo']}"/>
             </p:column>		
             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.orden}">

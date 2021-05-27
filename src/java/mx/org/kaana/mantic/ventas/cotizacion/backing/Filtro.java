@@ -109,7 +109,7 @@ public class Filtro extends IBaseTicket implements Serializable {
   @Override
   public void doLoad() {
     List<Columna> columns     = null;
-		Map<String, Object> params= toPrepare();
+		Map<String, Object> params= this.toPrepare();
     try {
 			params.put("sortOrder", "order by consecutivo desc");
       columns = new ArrayList<>();
@@ -188,7 +188,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("idCliente")) && !this.attrs.get("idCliente").toString().equals("-1"))
   		sb.append("(tc_mantic_clientes.id_cliente= ").append(this.attrs.get("idCliente")).append(") and ");
 		if(estatus!= null && !estatus.getKey().equals(-1L))
-  		sb.append("(tc_mantic_ventas.id_venta_estatus= ").append(estatus.getKey()).append(") and ");
+  		sb.append("((tc_mantic_ventas.id_venta_estatus= ").append(estatus.getKey()).append(") or (tc_mantic_ventas.cotizacion is not null)) and ");
 		else
 			sb.append(this.attrs.get("condicionEstatus").toString().concat(" and "));
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
@@ -235,7 +235,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		Map<String, Object> params= null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, toCondicionEstatus());
+			params.put(Constantes.SQL_CONDICION, this.toCondicionEstatus());
 			columns= new ArrayList<>();
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			this.attrs.put("estatusFiltro", (List<UISelectEntity>) UIEntity.build("TcManticVentasEstatusDto", "row", params, columns));
@@ -246,20 +246,20 @@ public class Filtro extends IBaseTicket implements Serializable {
 		} // catch		
 	} // loadEstatusVentas
 	
-	private String toCondicionEstatus(){
+	private String toCondicionEstatus() {
 		StringBuilder regresar = null;
 		String estatusAppend   = "";
 		String condicionEstatus= "";
 		try {
 			regresar= new StringBuilder();
 			regresar.append("tc_mantic_ventas_estatus.id_venta_estatus in (");
-			for(EEstatusVentas estatus : EEstatusVentas.values()){
+			for(EEstatusVentas estatus : EEstatusVentas.values()) {
 				if(EEstatusVentas.COTIZACION.equals(estatus) || EEstatusVentas.EXPIRADA.equals(estatus))
 					estatusAppend= estatusAppend.concat(estatus.getIdEstatusVenta().toString()).concat(",");
 			} // for
 			regresar.append(estatusAppend.substring(0, estatusAppend.length()-1));
 			regresar.append(")");
-			condicionEstatus= regresar.toString().concat(" and tc_mantic_ventas.vigencia is not null");
+			condicionEstatus= "((".concat(regresar.toString()).concat(" and tc_mantic_ventas.vigencia is not null) or (tc_mantic_ventas.cotizacion is not null))");
 			this.attrs.put("condicionEstatus", condicionEstatus);
 		} // try
 		catch (Exception e) {			
@@ -591,5 +591,9 @@ public class Filtro extends IBaseTicket implements Serializable {
 		Methods.clean(this.correos);
 		Methods.clean(this.selectedCorreos);
 	}
-	
+
+ 	public String toColorGarantia(Entity row) {
+		return Cadena.isVacio(row.toString("ticket"))? "": "janal-tr-purple";
+	} 
+  
 }

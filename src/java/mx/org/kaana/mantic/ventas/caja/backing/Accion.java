@@ -1934,7 +1934,7 @@ public class Accion extends IBaseVenta implements Serializable {
   }
 
  	public String toColorGarantia(Entity row) {
-		return Cadena.isVacio(row.toString("garantia"))? "": "janal-tr-lime";
+		return Cadena.isVacio(row.toString("garantia"))? Cadena.isVacio(row.toString("cotizacion"))? "": "janal-tr-purple": "janal-tr-lime";
 	} 
 
 }

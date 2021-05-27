@@ -835,6 +835,7 @@
 										<h:outputText value="Vendedor"/>
 									</f:facet>
                   <i class="fa fa-fw fa-cart-plus janal-color-blue janal-font-bold janal-icons-header" style="display: #{empty filtro.garantia or filtro.garantia eq ''? 'none': ''}" title="Folio devolución: #{filtro.garantia} por un total de #{filtro.devuelto} del día #{filtro.fecha}"></i>
+                  <i class="fa fa-fw fa-desktop janal-color-blue janal-font-bold janal-icons-header" style="display: #{empty filtro.cotizacion or filtro.cotizacion eq ''? 'none': ''}" title="Folio cotización: #{filtro.cotizacion} del día #{filtro.registro}"></i>
 									<h:outputText value="#{filtro['nombre']}"/>
 								</p:column>		
 								<p:column class="MarAuto Responsive janal-wid-15" sortBy="#{filtro.nombreEmpresa}">

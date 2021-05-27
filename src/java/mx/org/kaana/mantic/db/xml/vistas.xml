@@ -1181,7 +1181,8 @@
 				  tc_mantic_empresas.clave as empresa,  
 				  tc_mantic_empresas.nombre as nombre_empresa,  
 					tc_mantic_ventas.consecutivo,  
-					tc_mantic_ventas.ticket,  
+					tc_mantic_ventas.ticket,
+          ifnull(tc_mantic_ventas.cotizacion, '') as cotizacion,  
 					tc_mantic_clientes.id_cliente,  
 					tc_mantic_ventas.id_manual,
 					tc_mantic_clientes.razon_social as cliente,
@@ -3115,6 +3116,7 @@
 						tc_mantic_empresas.clave as empresa,  
 						tc_mantic_empresas.nombre as nombre_empresa,  
 						tc_mantic_ventas.orden,
+            ifnull(tc_mantic_ventas.ticket, '') as ticket,
 						tc_mantic_ventas.cotizacion consecutivo,
 						tc_mantic_clientes.id_cliente,  
 						tc_mantic_clientes.razon_social as cliente,
@@ -3152,8 +3154,7 @@
 						tc_mantic_ventas.id_empresa in ({idEmpresa})
 						and {condicion}) principal
 				group by 
-					id_key, id_venta, id_empresa, empresa, nombre_empresa, orden, consecutivo, id_cliente, cliente, limite_credito, clave, almacen, 
-				  total, precio_total, estatus, id_venta_estatus, registro, estatus_asociados, cuenta, nombre, id_credito, saldo, limite				
+					id_key, id_venta, id_empresa				
 				{sortOrder}
 			</select>
 			<select id="clientes">
