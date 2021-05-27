@@ -158,7 +158,7 @@
               <f:facet name="header">
                 <h:outputText value="No. cotización"/>
               </f:facet>
-              <i class="fa fa-fw fa-desktop janal-color-blue janal-font-bold janal-icons-header" style="display: #{empty filtro.ticket or filtro.ticket eq ''? 'none': ''}" title="Folio ticket: #{filtro.ticket} del día #{filtro.registro}"></i>
+              <i class="fa fa-fw fa-desktop janal-color-blue janal-font-bold janal-icons-header" style="display: #{empty filtro.ticket or filtro.ticket eq ''? 'none': ''}" title="Ticket: #{filtro.ticket} del día #{filtro.registro}"></i>
               <h:outputText value="#{filtro['consecutivo']}"/>
             </p:column>		
             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.orden}">
