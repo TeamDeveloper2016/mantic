@@ -3564,7 +3564,15 @@
         from      
           tc_mantic_clientes
         where      
-          rfc = '{rfc}' and id_empresa = {idEmpresa}
+          rfc= '{rfc}' and id_empresa= {idEmpresa}
+      </select>    
+      <select id="key">
+        select      
+          *
+        from      
+          tc_mantic_clientes
+        where      
+          id_cliente= {idCliente}
       </select>    
 			<select id="porCodigo">			
         select      
@@ -3738,6 +3746,18 @@
           tr_mantic_cliente_tipo_contacto
         where      
           id_cliente = {idCliente} and id_tipo_contacto = {idTipoContacto} and valor = '{valor}'
+      </select>      
+      <select id="correos">
+        select      
+          *
+        from      
+          tr_mantic_cliente_tipo_contacto
+        where      
+          id_cliente= {idCliente} 
+          and id_tipo_contacto in (9, 10, 11, 15, 16, 17, 18)
+          and id_preferido= 1
+        order by
+          id_tipo_contacto
       </select>      
 			<select id="maximo">
         select      

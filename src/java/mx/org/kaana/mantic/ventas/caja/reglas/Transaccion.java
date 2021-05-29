@@ -813,7 +813,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			this.factura  = documento;
 		} // try		 // try		
 		finally{
-			setMessageError("Error al registrar la factura.");
+			setMessageError("ERROR AL REGISTRAR LA FACTURA");
 		} // finally
 		return regresar;
 	} // registrarFactura
@@ -832,7 +832,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			regresar= count== pagos.size();
 		} // try		
 		finally {
-			this.setMessageError("ERROR AL REGISTRAR LOS PAGOS.");
+			this.setMessageError("ERROR AL REGISTRAR LOS PAGOS");
 		} // finally
 		return regresar;
 	} // registrarPagos
@@ -934,7 +934,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			totalCredito= this.ventaFinalizada.getTotales().getTotales().getTotal() - (this.ventaFinalizada.getTotales().getPago() - this.ventaFinalizada.getTotales().getCambio());
 			if(totalCredito > 0D) {					
 				registrarDeuda(sesion, totalCredito);	
-				actualizarSaldoCatalogoCliente(sesion, getOrden().getIdCliente(), totalCredito, true);
+				this.actualizarSaldoCatalogoCliente(sesion, getOrden().getIdCliente(), totalCredito, true);
 				regresar= new TrManticVentaMedioPagoDto();
 				regresar.setIdTipoMedioPago(ETipoMediosPago.INTERMEDIARIO_PAGOS.getIdTipoMedioPago());
 				regresar.setIdUsuario(JsfBase.getIdUsuario());

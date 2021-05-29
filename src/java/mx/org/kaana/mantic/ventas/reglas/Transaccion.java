@@ -25,7 +25,9 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteDomicilio;
 import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
+import mx.org.kaana.mantic.catalogos.clientes.reglas.NotificaCliente;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.correos.enums.ECorreos;
 import mx.org.kaana.mantic.db.dto.TcManticClientesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
@@ -38,6 +40,7 @@ import mx.org.kaana.mantic.db.dto.TrManticClienteDomicilioDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.enums.EEstatusClientes;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
+import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoVenta;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
@@ -650,12 +653,12 @@ public class Transaccion extends TransaccionFactura {
 	protected void registrarDeuda(Session sesion, Double importe) throws Exception{
 		TcManticClientesDeudasDto deuda= null;		
 		deuda= new TcManticClientesDeudasDto();
-		deuda.setIdVenta(getOrden().getIdVenta());
-		deuda.setIdCliente(getOrden().getIdCliente());
+		deuda.setIdVenta(this.getOrden().getIdVenta());
+		deuda.setIdCliente(this.getOrden().getIdCliente());
 		deuda.setIdUsuario(JsfBase.getIdUsuario());
 		deuda.setImporte(importe);
 		deuda.setSaldo(importe);
-		deuda.setLimite(toLimiteCredito(sesion));
+		deuda.setLimite(this.toLimiteCredito(sesion));
 		deuda.setIdClienteEstatus(EEstatusClientes.INICIADA.getIdEstatus());
 		DaoFactory.getInstance().insert(sesion, deuda);	
     TcManticClientesBitacoraDto movimiento= new TcManticClientesBitacoraDto(
@@ -666,6 +669,13 @@ public class Transaccion extends TransaccionFactura {
       deuda.getIdClienteDeuda() // Long idClienteDeuda
     );
     DaoFactory.getInstance().insert(sesion, movimiento);
+    
+    NotificaCliente notifica= new NotificaCliente(
+      this.getOrden().getIdCliente(), // Long idCliente, 
+      EReportes.CUENTAS_POR_COBRAR, // EReportes reportes, 
+      ECorreos.CREDITO // ECorreos correo
+    );
+    notifica.doSendMail();
 	} // registrarDeuda
 	
 	public Date toLimiteCredito(Session sesion) throws Exception{

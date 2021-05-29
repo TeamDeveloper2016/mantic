@@ -34,6 +34,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
+import mx.org.kaana.mantic.catalogos.clientes.reglas.NotificaCliente;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
@@ -658,16 +659,16 @@ public class Saldos extends IBaseFilter implements Serializable {
 			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());
 			params.put("tipo", "Estado de Cuenta");
 			params.put("razonSocial", seleccionado.toString("razonSocial"));
-			params.put("correo", ECorreos.CUENTAS_POR_COBRAR.getEmail());
+			params.put("correo", ECorreos.CREDITO.getEmail());
 			this.toReporteIndividal();
 			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
 			files.add(attachments);
-			files.add(new Attachment("logo", ECorreos.CUENTAS_POR_COBRAR.getImages().concat("logo.png"), Boolean.TRUE));
+			files.add(new Attachment("logo", ECorreos.CREDITO.getImages().concat("logo.png"), Boolean.TRUE));
 			params.put("attach", attachments.getId());
 			for (String item: emails) {
 				try {
 					if(!Cadena.isVacio(item)) {
-					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.CUENTAS_POR_COBRAR, ECorreos.CUENTAS_POR_COBRAR.getEmail(), item, "controlbonanza@gmail.com", "Ferreteria Bonanza - Estado de cuenta", params, files);
+					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.CREDITO, ECorreos.CREDITO.getEmail(), item, "controlbonanza@gmail.com", "Ferreteria Bonanza - Estado de cuenta", params, files);
 					  LOG.info("Enviando correo a la cuenta: "+ item);
 					  notificar.send();
 					} // if	
@@ -702,8 +703,18 @@ public class Saldos extends IBaseFilter implements Serializable {
 					sb.append(mail.getDescripcion()).append(", ");
 			} // for
 		} // if
-    if(Objects.equals((String)this.attrs.get("tipoReporteEspecial"), "CUENTAS_POR_COBRAR"))
-      this.toSendMailIndividual(sb, (Entity)this.attrs.get("seleccionado"));
+    if(Objects.equals((String)this.attrs.get("tipoReporteEspecial"), "CUENTAS_POR_COBRAR")) {
+      NotificaCliente notifica= new NotificaCliente(
+        ((Entity)this.attrs.get("seleccionado")).toLong("idCliente"), // Long idCliente, 
+        ((Entity)this.attrs.get("seleccionado")).toString("razonSocial"), // String razonSocial, 
+        sb.toString(), // String correos, 
+        EReportes.CUENTAS_POR_COBRAR, // EReportes reportes, 
+        ECorreos.CREDITO, // ECorreos correo, 
+        true // boolean notifica      
+      );
+      notifica.doSendMail();
+      // this.toSendMailIndividual(sb, (Entity)this.attrs.get("seleccionado"));
+    } // if  
     else
       this.toSendMailEspecial(sb, (Entity)this.attrs.get("seleccionadoDetalle"));
 	} // doSendMail

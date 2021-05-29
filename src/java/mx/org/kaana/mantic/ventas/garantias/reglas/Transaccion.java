@@ -18,10 +18,11 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
-import mx.org.kaana.libs.formato.Variables;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.clientes.reglas.NotificaCliente;
+import mx.org.kaana.mantic.correos.enums.ECorreos;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
@@ -39,6 +40,7 @@ import mx.org.kaana.mantic.db.dto.TcManticMovimientosDto;
 import mx.org.kaana.mantic.db.dto.TrManticGarantiaMedioPagoDto;
 import mx.org.kaana.mantic.enums.EEstatusClientes;
 import mx.org.kaana.mantic.enums.EEstatusGarantias;
+import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Cierre;
@@ -638,6 +640,13 @@ public class Transaccion extends IBaseTnx{
       deuda.getIdClienteDeuda() // Long idClienteDeuda
     );
     DaoFactory.getInstance().insert(sesion, movimiento);
+
+    NotificaCliente notifica= new NotificaCliente(
+      this.detalleGarantia.getIdCliente(), // Long idCliente, 
+      EReportes.CUENTAS_POR_COBRAR, // EReportes reportes, 
+      ECorreos.DEVOLUCION // ECorreos correo
+    );
+    notifica.doSendMail();
 	} // registrarDeuda
 	
 	public Date toLimiteCredito(Session sesion) throws Exception {
