@@ -74,7 +74,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("cpNuevo", false);						
       this.doLoad();      					
 			this.attrs.put("renderedFacturacion", false);
-			doCreateMessage();
+			this.doCreateMessage();
     } // try
     catch (Exception e) {
       Error.mensaje(e);

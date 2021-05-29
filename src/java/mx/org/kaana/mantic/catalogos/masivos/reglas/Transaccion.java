@@ -1286,7 +1286,8 @@ public class Transaccion extends IBaseTnx {
 				"", // String observaciones, 
 				-1L, // Long idClienteTipoContacto, 
 				1L, // Long orden, 
-				idTipoContacto // Long idTipoContacto
+				idTipoContacto, // Long idTipoContacto,
+        2L // Long idPreferido
 			);
 			DaoFactory.getInstance().insert(sesion, contacto);
 		} // if

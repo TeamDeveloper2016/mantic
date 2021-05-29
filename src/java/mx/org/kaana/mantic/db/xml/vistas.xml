@@ -4656,7 +4656,6 @@
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				where
 					tc_mantic_ventas.id_empresa in ({idEmpresa})
-          and tc_mantic_clientes_deudas.id_cliente_estatus in (1, 2, 3, 4)
           and {condicion}								  
 				{sortOrder}						
 			</select>		

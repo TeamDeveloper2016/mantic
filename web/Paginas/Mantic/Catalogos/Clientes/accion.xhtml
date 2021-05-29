@@ -34,7 +34,7 @@
         'contenedorGrupos\\:nombreRepresentante': {validaciones: 'requerido', mascara: 'libre', mensaje:'La captura del campo nombres es obligatorio', grupo: 'representantes', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:paternoRepresentante': {validaciones: 'requerido', mascara: 'libre', mensaje:'La captura del campo apellido paterno es obligatorio', grupo: 'representantes', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:maternoRepresentante': {validaciones: 'requerido', mascara: 'libre', mensaje:'La captura del campo apellido materno es obligatorio', grupo: 'representantes', formatos: 'cambiar-mayusculas'},
-				'valor': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura del valor del contacto'},
+				'valor'   : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'general', mensaje:'Es necesario la captura del valor del contacto'},
 				'repvalor': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'representantes', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura del valor del representante'}
       };		
 			
@@ -57,7 +57,7 @@
         <div class="ui-grid-col-12">					          
 					<p:spacer/>
 					<p:tabView id="contenedorGrupos" onTabChange="simpleProcess();">            
-            <p:ajax event="tabChange" process="@this" update="tablaContactos" oncomplete="janal.refresh();"/>
+            <p:ajax event="tabChange" process="@this" update="tablaContactos tablaPreferidos" oncomplete="janal.refresh();"/>
             <p:tab title="General">
               <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-8, janal-wid-100">								
                 <p:outputLabel for="clave" value="Clave:"/>
@@ -200,21 +200,31 @@
             <p:tab title="Contacto">
               <p:panelGrid id="panelTablaContactos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
                 <p:dataTable id="tablaContactos" rowIndexVar="index" var="contacto" value="#{manticCatalogosClientesAccion.registroCliente.clientesTiposContacto}" rows="6" paginator="false" reflow="true" rowKey="#{contacto.key}" emptyMessage=" " styleClass="paginated">																					
+                  <p:column headerText="No" styleClass="janal-wid-5">		
+                    <p:outputLabel value="#{index+ 1}.-"/>
+                  </p:column>  
                   <p:column headerText="Tipo contacto">										
-                    <p:selectOneMenu id="contacto#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.idTipoContacto}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{!contacto.nuevo}" onblur="simpleProcess();">
+                    <p:selectOneMenu id="contacto#{contacto.key}" styleClass="janal-wid-100-txt contacto" value="#{contacto.idTipoContacto}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{!contacto.nuevo}" onblur="simpleProcess();">
                       <f:selectItems value="#{manticCatalogosClientesAccion.attrs.tiposContactos}"/>
                     </p:selectOneMenu> 				
                   </p:column>	
-                  <p:column headerText="Valor" styleClass="janal-wid-50 valor">		
-                    <p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.valor}" disabled="#{!contacto.nuevo}"  onblur="simpleProcess();"/>
+                  <p:column headerText="Valor" styleClass="janal-wid-35 valor">		
+                    <p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt contacto" value="#{contacto.valor}" disabled="#{!contacto.nuevo}" onblur="simpleProcess();"/>
+                  </p:column>
+                  <p:column headerText="Preferido" styleClass="janal-wid-10">		
+                    <p:selectOneMenu id="idPreferido" styleClass="janal-wid-100-txt contacto" value="#{contacto.idPreferido}" disabled="#{!contacto.nuevo}" converter="javax.faces.Long">
+                      <p:ajax event="change" process="@this" update="contenedorGrupos:tablaPreferidos"/>
+       								<f:selectItem itemLabel="SI" itemValue="1"/>
+                      <f:selectItem itemLabel="NO" itemValue="2"/>								
+                    </p:selectOneMenu>
                   </p:column>
                   <p:column style="width:32px;text-align: center">
-                    <p:commandButton update="tablaContactos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosClientesAccion.registroCliente.doEliminarClienteTipoContacto}">
+                    <p:commandButton update="tablaContactos contenedorGrupos:tablaPreferidos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosClientesAccion.registroCliente.doEliminarClienteTipoContacto}">
                       <f:setPropertyActionListener value="#{contacto}" target="#{manticCatalogosClientesAccion.registroCliente.clienteTipoContactoSeleccion}" />
                     </p:commandButton>
                   </p:column>
                   <f:facet name="footer">
-                    <p:commandButton actionListener="#{manticCatalogosClientesAccion.registroCliente.doAgregarClienteTipoContacto}" process="@this tablaContactos" update="tablaContactos" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
+                    <p:commandButton actionListener="#{manticCatalogosClientesAccion.registroCliente.doAgregarClienteTipoContacto}" process="@this tablaContactos" update="tablaContactos contenedorGrupos:tablaPreferidos" icon="fa fa-plus" oncomplete="janal.refresh();"/>
                   </f:facet>
                 </p:dataTable>	
               </p:panelGrid>	
@@ -272,14 +282,31 @@
             <p:tab title="Credito" rendered="#{manticCatalogosClientesAccion.attrs.admin}">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 								<p:outputLabel for="habilitarCredito" value="Habilitar credito:"/>
-                <p:selectBooleanCheckbox id="habilitarCredito" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.habilitarCredito}"/>
+                <p:selectBooleanCheckbox id="habilitarCredito" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.habilitarCredito}">
+                  <p:ajax event="change" process="@this" update="limiteCredito plazo tablaPreferidos"/>
+                </p:selectBooleanCheckbox>  
 								<p:outputLabel for="limiteCredito" value="Limite de credito:"/>
-                <p:inputNumber id="limiteCredito" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosClientesAccion.registroCliente.cliente.limiteCredito}"/>
+                <p:inputNumber id="limiteCredito" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosClientesAccion.registroCliente.cliente.limiteCredito}" disabled="#{not manticCatalogosClientesAccion.registroCliente.habilitarCredito}"/>
                 <p:outputLabel for="plazo" value="Plazo de días:"/>
-                <p:inputNumber id="plazo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosClientesAccion.registroCliente.cliente.plazoDias}" decimalPlaces="0"/>
+                <p:inputNumber id="plazo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosClientesAccion.registroCliente.cliente.plazoDias}" decimalPlaces="0" disabled="#{not manticCatalogosClientesAccion.registroCliente.habilitarCredito}"/>
                 <p:outputLabel for="saldo" value="Saldo:"/>
                 <p:inputNumber id="saldo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosClientesAccion.registroCliente.cliente.saldo}" decimalPlaces="0" disabled="true"/>
 							</p:panelGrid>
+              <p:dataTable id="tablaPreferidos" rowIndexVar="index" var="contacto" value="#{manticCatalogosClientesAccion.registroCliente.clientesTiposContacto}" rows="10" paginator="false" reflow="true" rowKey="#{contacto.key}" emptyMessage=" " styleClass="paginated #{manticCatalogosClientesAccion.registroCliente.habilitarCredito? '': 'janal-display-none'}" rowStyleClass="#{contacto.idTipoContacto eq '9' or contacto.idTipoContacto eq '10' or contacto.idTipoContacto eq '11' or contacto.idTipoContacto eq '15' or contacto.idTipoContacto eq '16' or contacto.idTipoContacto eq '17' or contacto.idTipoContacto eq '18'? '': 'janal-display-none'}">
+                <p:column headerText="No" styleClass="janal-wid-5">		
+                  <p:outputLabel value="#{index+ 1}.-"/>
+                </p:column>  
+                <p:column headerText="Correo" styleClass="janal-wid-80">		
+                  <p:outputLabel id="valor#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.valor}"/>
+                </p:column>
+                <p:column headerText="Preferido" styleClass="janal-wid-15">		
+                  <p:selectOneMenu id="idPreferido" styleClass="janal-wid-100-txt contacto" value="#{contacto.idPreferido}" converter="javax.faces.Long">
+                    <p:ajax event="change" process="@this" update="contenedorGrupos:tablaContactos"/>
+                    <f:selectItem itemLabel="SI" itemValue="1"/>
+                    <f:selectItem itemLabel="NO" itemValue="2"/>								
+                  </p:selectOneMenu>
+                </p:column>
+              </p:dataTable>	
 						</p:tab>
             <p:tab title="Observaciones">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
@@ -287,7 +314,7 @@
               </p:panelGrid>
             </p:tab>
           </p:tabView>
-					<p:remoteCommand name="simpleProcess" actionListener="#{manticCatalogosClientesAccion.doCreateMessage}" process="@this contenedorGrupos" update="facturacion"/>
+					<p:remoteCommand name="simpleProcess" actionListener="#{manticCatalogosClientesAccion.doCreateMessage}" process="@this contenedorGrupos @(.contacto)" update="facturacion"/>
         </div>
       </div>
     </div>	

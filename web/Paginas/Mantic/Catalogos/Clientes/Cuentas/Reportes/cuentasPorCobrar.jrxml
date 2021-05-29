@@ -62,13 +62,13 @@
 	<field name="REGISTRO" class="java.util.Date"/>
 	<field name="PERSONA" class="java.lang.String"/>
 	<field name="DIAS" class="java.lang.String"/>
-	<field name="ID_CLIENTE" class="java.lang.Integer"/>
+	<field name="ID_CLIENTE" class="java.lang.String"/>
 	<field name="RAZON_SOCIAL" class="java.lang.String"/>
 	<field name="LIMITE" class="java.util.Date"/>
-	<field name="ID_KEY" class="java.lang.Integer"/>
+	<field name="ID_KEY" class="java.lang.String"/>
 	<field name="ESTATUS" class="java.lang.String"/>
 	<field name="PAGADO" class="java.math.BigDecimal"/>
-	<variable name="CONTADOR" class="java.lang.Integer" calculation="Count">
+	<variable name="CONTADOR" class="java.math.BigDecimal" calculation="Count">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
 	<variable name="GPO_IMPORTE" class="java.math.BigDecimal" resetType="Group" resetGroup="Orden" calculation="Sum">

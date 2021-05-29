@@ -15,6 +15,7 @@ public enum ECorreos {
 	COTIZACIONES  ("/mx/org/kaana/mantic/correos/templates/cotizacion.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@ferreteriabonanza.com", "Ventas F. Bonanza"),
 	ORDENES_COMPRA("/mx/org/kaana/mantic/correos/templates/ordenes.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "compras@ferreteriabonanza.com", "Compras F. Bonanza"),
 	CUENTAS       ("/mx/org/kaana/mantic/correos/templates/cuentas.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@ferreteriabonanza.com", "Ventas F. Bonanza"),
+	CUENTAS_POR_COBRAR("/mx/org/kaana/mantic/correos/templates/cobrar.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@ferreteriabonanza.com", "Ventas F. Bonanza"),
 	ORDENES_TALLER("/mx/org/kaana/mantic/correos/templates/taller.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "ventas@ferreteriabonanza.com", "Taller F. Bonanza");
 	 
 	private String template;

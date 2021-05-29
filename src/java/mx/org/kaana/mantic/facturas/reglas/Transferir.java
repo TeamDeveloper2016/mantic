@@ -344,7 +344,8 @@ public class Transferir extends IBaseTnx {
 						"", // String observaciones, 
 						-1L, // Long idClienteTipoContacto, 
 						1L, // Long orden, 
-						9L // Long idTipoContacto
+						9L, // Long idTipoContacto
+            2L // Long idPreferido
 					);
 					DaoFactory.getInstance().insert(sesion, contacto);
 				} // if
@@ -356,7 +357,8 @@ public class Transferir extends IBaseTnx {
 						"", // String observaciones, 
 						-1L, // Long idClienteTipoContacto, 
 						2L, // Long orden, 
-						10L // Long idTipoContacto
+						10L, // Long idTipoContacto
+            2L // Long idPreferido
 					);
 					DaoFactory.getInstance().insert(sesion, contacto);
 				} // if
@@ -368,7 +370,8 @@ public class Transferir extends IBaseTnx {
 						"", // String observaciones, 
 						-1L, // Long idClienteTipoContacto, 
 						3L, // Long orden, 
-						11L // Long idTipoContacto
+						11L, // Long idTipoContacto
+            2L // Long idPreferido      
 					);
 					DaoFactory.getInstance().insert(sesion, contacto);
 				} // if

@@ -185,6 +185,8 @@
                       <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('tabla\\:#{index}\\:detalleXls', 'detalle');" oncomplete="janal.desbloquear();"/>
                       <p:separator/>
                       <p:menuitem id="reporteIcon" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('CUENTAS_POR_COBRAR')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                      <p:separator/>					
+                      <p:menuitem id="reenviar" icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoadEstatus('seleccionado', 'CUENTAS_POR_COBRAR')}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
                     </p:menuButton>
                   </div>  
                   <div class="xs-pantalla">   
@@ -192,6 +194,7 @@
                     <p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('tabla\\:#{index}\\:detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
                     <p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('tabla\\:#{index}\\:detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
                     <p:commandButton id="reporteIconXs" icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('CUENTAS_POR_COBRAR')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                    <p:commandButton id="enviar" icon="fa fa-mail-forward" title="Enviar correo" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoadEstatus('seleccionado', 'CUENTAS_POR_COBRAR')}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
                   </div>  
                 </f:facet>												
                 <p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.consecutivo}">
@@ -268,8 +271,8 @@
               <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="detalle">            
                 <p:menuitem id="consultar" icon="fa fa-search" value="Consultar" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doAccion}" process="@this detalle"/>
                 <p:separator/>
-                <p:menuitem id="pago" icon="fa fa-money" value="Pago" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doPago}" process="@this detalle" />					
-                <p:menuitem id="deuda" icon="fa fa-minus-circle" value="Deuda" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doDeuda}" process="@this detalle"/>					
+                <p:menuitem id="pago" icon="fa fa-money" value="Registrar un pago" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doPago}" process="@this detalle" />					
+                <p:menuitem id="deuda" icon="fa fa-minus-circle" value="Pago a la deuda" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doDeuda}" process="@this detalle"/>					
                 <p:separator/>					
                 <p:menuitem id="importar" icon="fa fa-external-link" value="Importar" title="Importar identificacion de representante" onstart="return janal.bloquear()" process="@this detalle" action="#{manticCatalogosClientesCuentasSaldos.doImportar}"/>
                 <p:separator/>					
@@ -277,7 +280,7 @@
                 <p:menuitem id="reporteDetalle" icon="fa fa-file-pdf-o" value="Cuenta por cobrar" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('DEUDAS_CLIENTES_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
                 <p:menuitem id="estadoDeCuenta" icon="fa fa-file-pdf-o" value="Estado de cuenta" onstart="return janal.bloquear()" process="@this detalle" oncomplete="PF('dlgPlazo').show();" update="dialogoPlazo"/>										
                 <p:separator/>					
-                <p:menuitem id="reenviar" icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
+                <p:menuitem id="reenviar" icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoadEstatus('seleccionadoDetalle', 'DEUDAS_CLIENTES_PENDIENTES')}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
                 <p:separator/>
                 <p:menuitem icon="fa fa-calendar" value="Ajustar vencimiento" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doUpdateFechaPago()}" update="dialogoAutorizacion"/>
               </p:contextMenu>
