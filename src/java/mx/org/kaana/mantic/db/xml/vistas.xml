@@ -4386,6 +4386,7 @@
         select 
           tc_mantic_clientes_pagos_controles.id_cliente_pago_control as id_key,
           tc_mantic_clientes_pagos_controles.id_cliente_pago_control,
+          tc_mantic_clientes_deudas.id_cliente,
           tc_mantic_clientes_pagos.consecutivo,
           tc_mantic_clientes_pagos_controles.tipo,
           if(tc_mantic_clientes_pagos_controles.id_activo= 1, 'ACTIVO', 'CANCELADO') as estatus,
@@ -4423,17 +4424,19 @@
 					tc_mantic_clientes.razon_social,
 					tc_mantic_clientes.limite_credito,
 					tc_mantic_clientes.plazo_dias,
-					if(tc_mantic_clientes_deudas.saldo is null, 0, tc_mantic_clientes_deudas.saldo) saldo,
+					if(tc_mantic_clientes.saldo is null, 0, tc_mantic_clientes.saldo) saldo,
 					if(tc_mantic_clientes_deudas.limite is null, '0', datediff(tc_mantic_clientes_deudas.limite, now())) as dias,
 				  if(tc_mantic_clientes.id_facturama is null, -1, tc_mantic_clientes.id_facturama) id_facturama
 				from
 					tc_mantic_clientes 
 				left join
-					tc_mantic_clientes_deudas on tc_mantic_clientes_deudas.id_cliente= tc_mantic_clientes.id_cliente and tc_mantic_clientes_deudas.id_cliente_estatus in (1,2)
+					tc_mantic_clientes_deudas on tc_mantic_clientes_deudas.id_cliente= tc_mantic_clientes.id_cliente and tc_mantic_clientes_deudas.id_cliente_estatus in (1, 2)
 				where
 					{condicion}					
 				  and tc_mantic_clientes.id_empresa in ({idEmpresa}) 
 				  and tc_mantic_clientes.id_credito in ({credito})
+        group by
+          tc_mantic_clientes.id_cliente
 				{sortOrder}            
 			</select>         
 			<select id="findRazonSocial">
@@ -4625,6 +4628,45 @@
 				  and {condicion}
 				{sortOrder}								
 			</select>	
+			<select id="pagosCuentasCobrar">
+				select
+          tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
+          tc_mantic_clientes_deudas.id_cliente,
+          tc_mantic_ventas.ticket,
+          tc_mantic_ventas.consecutivo,
+          tc_mantic_ventas.id_manual,
+          tc_mantic_clientes_deudas.importe,
+          round(tc_mantic_clientes_pagos.pago, 2) as pagado, 
+          tc_mantic_clientes_deudas.saldo, concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
+          tc_mantic_clientes_deudas.limite,
+          tc_mantic_clientes_deudas.registro,
+          (datediff(tc_mantic_clientes_deudas.limite, now())* -1) as dias,
+          tc_mantic_clientes.razon_social,
+          tc_mantic_ventas.id_venta,
+          tc_mantic_clientes_estatus.nombre estatus,
+          tc_mantic_clientes_pagos_controles.registro as fecha
+        from
+          tc_mantic_clientes_deudas
+        inner join
+          tc_mantic_clientes_pagos on tc_mantic_clientes_deudas.id_cliente_deuda= tc_mantic_clientes_pagos.id_cliente_deuda
+        inner join
+          tc_mantic_clientes_pagos_controles on tc_mantic_clientes_pagos.id_cliente_pago_control= tc_mantic_clientes_pagos_controles.id_cliente_pago_control
+        inner join
+          tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta     
+        inner join
+          tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus     
+        inner join
+          tc_mantic_clientes on tc_mantic_clientes_deudas.id_cliente = tc_mantic_clientes.id_cliente     
+        inner join
+          tc_janal_usuarios on tc_mantic_clientes_deudas.id_usuario= tc_janal_usuarios.id_usuario     
+        inner join
+          tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona     
+        where
+          tc_mantic_ventas.id_empresa in ({idEmpresa})           
+          and tc_mantic_clientes_deudas.id_cliente= {idCliente} 
+          and tc_mantic_clientes_pagos_controles.id_cliente_pago_control= {idClientePagoControl}
+        {sortOrder}						
+      </select>  
 			<select id="cuentasBusqueda">
 				select
 					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
@@ -4641,7 +4683,8 @@
 					(datediff(tc_mantic_clientes_deudas.limite, now())* -1) as dias,
 					tc_mantic_clientes.razon_social,
 					tc_mantic_ventas.id_venta,
-					tc_mantic_clientes_estatus.nombre estatus
+					tc_mantic_clientes_estatus.nombre estatus,
+          null as fecha
 				from
 					tc_mantic_clientes_deudas
 				inner join

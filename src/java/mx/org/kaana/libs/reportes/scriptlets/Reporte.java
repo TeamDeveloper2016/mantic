@@ -16,6 +16,7 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Session;
 
 /**
  * @company KAANA
@@ -133,6 +134,21 @@ public class Reporte {
     return regresar;
   } // procesar
   
+  public boolean procesar(Session sesion, IFormatos taskName) throws Exception {
+    boolean regresar = true;
+    Exportar exportar= null;
+    try {
+      exportar= new Exportar(this.target+ this.fileName, this.source, (EFormatos)taskName, this.parameters, this.jRDataSource, this.pagination, this.pdfConSeguridad);
+      exportar.setSesion(sesion);
+      exportar.procesar((EFormatos)taskName);
+    } // try
+    catch (Exception e) {
+			regresar= false;
+      throw e;
+    } // catch
+    return regresar;
+  } // procesar
+  
   public boolean procesar(IFormatos taskName, InputStream input) throws Exception {
     boolean regresar = true;
     Exportar exportar= null;
@@ -146,4 +162,20 @@ public class Reporte {
     } // catch
     return regresar;
   } 
+  
+  public boolean procesar(Session sesion, IFormatos taskName, InputStream input) throws Exception {
+    boolean regresar = true;
+    Exportar exportar= null;
+    try {
+      exportar= new Exportar(this.target+ this.fileName, this.source, (EFormatos)taskName, this.parameters, this.jRDataSource, this.pagination, this.pdfConSeguridad);
+      exportar.setSesion(sesion);
+      exportar.procesar(input);
+    } // try
+    catch (Exception e) {
+			regresar= false;
+      throw e;
+    } // catch
+    return regresar;
+  } 
+  
 }

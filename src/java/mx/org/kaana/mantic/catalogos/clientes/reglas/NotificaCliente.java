@@ -24,6 +24,7 @@ import mx.org.kaana.mantic.correos.reglas.IBaseAttachment;
 import mx.org.kaana.mantic.enums.EReportes;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Session;
 
 /**
  *@company KAANA
@@ -38,7 +39,9 @@ public class NotificaCliente implements Serializable {
   private static final Log LOG = LogFactory.getLog(NotificaCliente.class);
   private static final long serialVersionUID = -7421927886876449153L;
   
+  private Session sesion;
   private Long idCliente;
+  private Long idClientePagoControl;
   private String razonSocial;
   private String correos;
   private ECorreos correo;
@@ -46,21 +49,43 @@ public class NotificaCliente implements Serializable {
   private Reporte reporte;
   private boolean notifica;
 
-  public NotificaCliente(Long idCliente, EReportes reportes, ECorreos correo) {
-    this(idCliente, null, null, reportes, correo, false);
+  public NotificaCliente(Session sesion, Long idCliente, EReportes reportes, ECorreos correo) {
+    this(sesion, idCliente, null, null, reportes, correo, false);
   }
   
-  public NotificaCliente(Long idCliente, String razonSocial, String correos, EReportes reportes, ECorreos correo) {
-    this(idCliente, razonSocial, correos, reportes, correo, false);
+  public NotificaCliente(Session sesion, Long idCliente, String razonSocial, String correos, EReportes reportes, ECorreos correo) {
+    this(sesion, idCliente, razonSocial, correos, reportes, correo, false);
   }
   
   public NotificaCliente(Long idCliente, String razonSocial, String correos, EReportes reportes, ECorreos correo, boolean notifica) {
+    this(null, idCliente, razonSocial, correos, reportes, correo, notifica);
+  }
+  
+  public NotificaCliente(Long idCliente, String razonSocial, EReportes reportes, ECorreos correo, boolean notifica) {
+    this(null, idCliente, razonSocial, null, reportes, correo, notifica);
+  }
+  
+  public NotificaCliente(Session sesion, Long idCliente, String razonSocial, EReportes reportes, ECorreos correo) {
+    this(sesion, idCliente, razonSocial, null, reportes, correo, false);
+  }
+  
+  public NotificaCliente(Session sesion, Long idCliente, String razonSocial, EReportes reportes, ECorreos correo, boolean notifica) {
+    this(sesion, idCliente, razonSocial, null, reportes, correo, notifica);
+  }
+  
+  public NotificaCliente(Session sesion, Long idCliente, String razonSocial, String correos, EReportes reportes, ECorreos correo, boolean notifica) {
+    this.sesion     = sesion;
     this.idCliente  = idCliente;
     this.razonSocial= razonSocial== null? this.toRazonSocial(): razonSocial;
     this.correos    = correos== null? this.toCorreos(): correos;
     this.reportes   = reportes;
     this.correo     = correo;
     this.notifica   = notifica;
+    this.idClientePagoControl= -1L;
+  }
+
+  public void setIdClientePagoControl(Long idClientePagoControl) {
+    this.idClientePagoControl = idClientePagoControl;
   }
 
   private void toReporteIndividal() throws Exception {
@@ -69,17 +94,30 @@ public class NotificaCliente implements Serializable {
 		Map<String, Object>parametros= null;
 		try{		
       params= new HashMap<>();
+      params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
       params.put("idCliente", this.idCliente);
-      params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes_deudas.id_cliente= "+ this.idCliente+ " and tc_mantic_clientes_deudas.id_cliente_estatus in (1, 2)");
-      params.put("sortOrder", "order by	tc_mantic_clientes.razon_social,tc_mantic_clientes_deudas.registro desc");
+      switch(this.reportes) {
+        case CUENTAS_POR_COBRAR:
+          params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes_deudas.id_cliente= "+ this.idCliente+ " and tc_mantic_clientes_deudas.id_cliente_estatus in (1, 2)");
+          params.put("sortOrder", "order by	tc_mantic_clientes.razon_social,tc_mantic_clientes_deudas.registro desc");
+          break;
+        case PAGOS_CUENTAS_POR_COBRAR:
+          params.put("idClientePagoControl", this.idClientePagoControl);
+          params.put("sortOrder", "order by	tc_mantic_clientes_pagos.registro");
+          break;
+      } // switch
       comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), -1L, -1L, this.idCliente);
       parametros= comunes.getComunes();
-      this.reporte= JsfBase.toReporte();	
+      this.reporte= new Reporte();	
+      this.reporte.init();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("NOMBRE_REPORTE", this.reportes.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
       this.reporte.toAsignarReporte(new ParametrosReporte(this.reportes, params, parametros));		
-      this.reporte.doAceptarSimple();			
+      if(this.sesion!= null)
+        this.reporte.toProcess(this.sesion);			
+      else 
+        this.reporte.doAceptarSimple();			
     } // try
     catch(Exception e) {
       Error.mensaje(e);
@@ -147,11 +185,15 @@ public class NotificaCliente implements Serializable {
     int count           = 0;
     StringBuilder emails= new StringBuilder();
     StringBuilder email = new StringBuilder();
+    List<Entity> items  = null;
     Map<String, Object> params= null;
     try {      
       params = new HashMap<>();      
       params.put("idCliente", this.idCliente);      
-      List<Entity> items= DaoFactory.getInstance().toEntitySet("TrManticClienteTipoContactoDto", "correos", params);
+      if(this.sesion!= null)
+        items= DaoFactory.getInstance().toEntitySet(this.sesion, "TrManticClienteTipoContactoDto", "correos", params);
+      else
+        items= DaoFactory.getInstance().toEntitySet("TrManticClienteTipoContactoDto", "correos", params);
       if(items!= null && !items.isEmpty())
         for (Entity item: items) {
           if(Objects.equals(item.toLong("idPreferido"), 1L))
@@ -173,11 +215,15 @@ public class NotificaCliente implements Serializable {
   
   private String toRazonSocial() {
     String regresar= "";
+    Value value    = null; 
     Map<String, Object> params= null;
     try {      
       params = new HashMap<>();      
       params.put("idCliente", this.idCliente);      
-      Value value= DaoFactory.getInstance().toField("TcManticClientesDto", "key", params, "razonSocial");
+      if(this.sesion!= null)
+        value= DaoFactory.getInstance().toField(this.sesion, "TcManticClientesDto", "key", params, "razonSocial");
+      else
+        value= DaoFactory.getInstance().toField("TcManticClientesDto", "key", params, "razonSocial");
       if(value!= null && value.getData()!= null)
         regresar= value.toString();
     } // try

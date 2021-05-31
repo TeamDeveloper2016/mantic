@@ -637,7 +637,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		} // try		
 		finally{
 			Methods.clean(params);
-			setMessageError("Error al registrar el pago de la venta.");
+			setMessageError("ERROR AL REGISTRAR EL PAGO DE LA VENTA");
 		} // finally			
 		return regresar;
 	} // pagarVenta
@@ -933,7 +933,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		if(this.ventaFinalizada.isCredito()) {
 			totalCredito= this.ventaFinalizada.getTotales().getTotales().getTotal() - (this.ventaFinalizada.getTotales().getPago() - this.ventaFinalizada.getTotales().getCambio());
 			if(totalCredito > 0D) {					
-				registrarDeuda(sesion, totalCredito);	
+				this.registrarDeuda(sesion, totalCredito);	
 				this.actualizarSaldoCatalogoCliente(sesion, getOrden().getIdCliente(), totalCredito, true);
 				regresar= new TrManticVentaMedioPagoDto();
 				regresar.setIdTipoMedioPago(ETipoMediosPago.INTERMEDIARIO_PAGOS.getIdTipoMedioPago());

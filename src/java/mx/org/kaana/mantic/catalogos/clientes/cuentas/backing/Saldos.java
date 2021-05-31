@@ -127,6 +127,7 @@ public class Saldos extends IBaseFilter implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("limitePago", "credenciales");
+      this.attrs.put("tipoCorreoEspecial", "CREDITO");
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 				this.loadSucursales();
       this.toLoadCatalog();
@@ -344,16 +345,43 @@ public class Saldos extends IBaseFilter implements Serializable {
 		return regresar;
 	} // doPago
   
-  public void doReporte(String nombre) throws Exception {
-    Parametros comunes = null;
+  public void doNotificar(String nombre, Entity pagoRealizado) throws Exception {
+    Parametros comunes           = null;
 		Map<String, Object>params    = null;
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
-    Entity seleccionado          = null;
+		try {		
+      reporteSeleccion= EReportes.valueOf(nombre);
+      this.idCliente= pagoRealizado.toLong("idCliente");
+      params= new HashMap<>();
+      params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      params.put("idCliente", pagoRealizado.toLong("idCliente"));
+      params.put("idClientePagoControl", pagoRealizado.toLong("idClientePagoControl"));
+      params.put("sortOrder", "order by	tc_mantic_clientes_pagos.registro");
+      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.reporte= JsfBase.toReporte();	
+      parametros= comunes.getComunes();
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
+      this.doVerificarReporte();
+      this.reporte.doAceptar();			
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+  }
+  
+  public void doReporte(String nombre, Entity seleccionado) throws Exception {
+    Parametros comunes           = null;
+		Map<String, Object>params    = null;
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = null;
 		try {		
       reporteSeleccion= EReportes.valueOf(nombre);
       if(reporteSeleccion.equals(EReportes.CUENTAS_POR_COBRAR) && this.attrs.get("seleccionado")!= null) {
-        seleccionado  = (Entity)this.attrs.get("seleccionado");
         this.idCliente= seleccionado.toLong("idCliente");
         params= this.toPrepare();
         this.idCliente= -1L;
@@ -362,16 +390,15 @@ public class Saldos extends IBaseFilter implements Serializable {
         params= this.toPrepare();
       params.put("idCliente", this.idCliente);
 			params.put("cliente", this.attrs.get("cliente"));
-      seleccionado = ((Entity)this.attrs.get("seleccionadoDetalle"));
       params.put("sortOrder", "order by	tc_mantic_clientes_deudas.registro desc");
       if(reporteSeleccion.equals(EReportes.CUENTA_COBRAR_DETALLE) || reporteSeleccion.equals(EReportes.DEUDAS_CLIENTES_DETALLE)) {
-        params.put("idClienteDeuda", seleccionado.toLong("idKey"));
+        params.put("idClienteDeuda", ((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idKey"));
         comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), -1L, -1L , seleccionado.toLong("idCliente"));
-      }
+      } // if
       else {
         params.put("sortOrder", "order by	tc_mantic_clientes.razon_social,tc_mantic_clientes_deudas.registro desc");
         comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      }
+      } // else
       this.reporte= JsfBase.toReporte();	
       parametros= comunes.getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
@@ -570,15 +597,14 @@ public class Saldos extends IBaseFilter implements Serializable {
     } // catch	
   } // toReporteIndividal
 	
-	public void doLoadEstatus(String cliente, String reporte) {
-		Entity seleccionado               = null;
+	public void doLoadEstatus(String reporte, String correo, Entity seleccionado) {
 		Map<String, Object>params         = null;
 		MotorBusquedaCatalogos motor      = null; 
 		Correo item                       = null;
 		List<ClienteTipoContacto>contactos= null;
 		try {
       this.attrs.put("tipoReporteEspecial", reporte);
-			seleccionado= (Entity)this.attrs.get(cliente);			
+      this.attrs.put("tipoCorreoEspecial", correo);
 			this.correos.clear();
 			this.selectedCorreos.clear();
 			motor= new MotorBusqueda(-1L, seleccionado.toLong("idCliente"));
@@ -703,17 +729,17 @@ public class Saldos extends IBaseFilter implements Serializable {
 					sb.append(mail.getDescripcion()).append(", ");
 			} // for
 		} // if
-    if(Objects.equals((String)this.attrs.get("tipoReporteEspecial"), "CUENTAS_POR_COBRAR")) {
+    if(Objects.equals((String)this.attrs.get("tipoReporteEspecial"), "CUENTAS_POR_COBRAR") || 
+       Objects.equals((String)this.attrs.get("tipoReporteEspecial"), "PAGOS_CUENTAS_POR_COBRAR")) {
       NotificaCliente notifica= new NotificaCliente(
         ((Entity)this.attrs.get("seleccionado")).toLong("idCliente"), // Long idCliente, 
         ((Entity)this.attrs.get("seleccionado")).toString("razonSocial"), // String razonSocial, 
         sb.toString(), // String correos, 
-        EReportes.CUENTAS_POR_COBRAR, // EReportes reportes, 
-        ECorreos.CREDITO, // ECorreos correo, 
+        EReportes.valueOf((String)this.attrs.get("tipoReporteEspecial")), // EReportes reportes, 
+        ECorreos.valueOf((String)this.attrs.get("tipoCorreoEspecial")), // ECorreos correo, 
         true // boolean notifica      
       );
       notifica.doSendMail();
-      // this.toSendMailIndividual(sb, (Entity)this.attrs.get("seleccionado"));
     } // if  
     else
       this.toSendMailEspecial(sb, (Entity)this.attrs.get("seleccionadoDetalle"));
@@ -745,7 +771,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 	  Map<String, Object> params= null;	
     try {
   	  params = this.toPrepare();
-			Entity entity= (Entity)this.attrs.get("seleccionado");
+			Entity entity= this.attrs.get("seleccionado")== null? (Entity)this.attrs.get("rowSeleccionado"): (Entity)this.attrs.get("seleccionado");
 			params.put("sortOrder", "order by dias desc, tc_mantic_ventas.ticket desc");
 			params.put("idCliente", entity.toLong("idCliente"));
       columns= new ArrayList<>();
@@ -771,7 +797,7 @@ public class Saldos extends IBaseFilter implements Serializable {
  
 	public void onRowToggle(ToggleEvent event) {
 		try {
-			this.attrs.put("seleccionado", (Entity) event.getData());
+			this.attrs.put("rowSeleccionado", (Entity) event.getData());
 			if (!event.getVisibility().equals(Visibility.HIDDEN)) 
 				this.doLoadDetalle();
 		} // try
@@ -839,7 +865,7 @@ public class Saldos extends IBaseFilter implements Serializable {
   
 	public void onRowTogglePagosRealizados(ToggleEvent event) {
 		try {
-			this.attrs.put("pagoRealizado", (Entity) event.getData());
+			this.attrs.put("rowPagoRealizado", (Entity) event.getData());
 			if (!event.getVisibility().equals(Visibility.HIDDEN)) 
 				this.doLoadDetallePagosRealizados();
 		} // try
@@ -854,7 +880,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 	  Map<String, Object> params= null;	
     try {
       params = new HashMap<>();      
-			Entity entity= (Entity)this.attrs.get("pagoRealizado");
+			Entity entity= this.attrs.get("pagoRealizado")== null? (Entity)this.attrs.get("rowPagoRealizado"): (Entity)this.attrs.get("pagoRealizado");
 			params.put("sortOrder", "order by tc_mantic_clientes_pagos.registro desc");
 			params.put("idClientePagoControl", entity.toLong("idClientePagoControl"));
       columns= new ArrayList<>();

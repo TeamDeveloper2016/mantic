@@ -1,8 +1,6 @@
 package mx.org.kaana.mantic.ventas.garantias.reglas;
 
-import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +26,6 @@ import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresCajasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
-import mx.org.kaana.mantic.db.dto.TcManticClientesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesPagosDto;
@@ -148,13 +145,13 @@ public class Transaccion extends IBaseTnx{
 		boolean regresar= false;
 		Long idEstatus  = -1L;				
 		try {
-			for(Garantia newGarantia: this.detalleGarantia.getGarantias()){
+			for(Garantia newGarantia: this.detalleGarantia.getGarantias()) {
 				if(newGarantia.getArticulosGarantia().size()> 0){
 					this.garantia= newGarantia;
 					idEstatus= this.detalleGarantia.getPagoGarantia().getIdTipoVenta().equals(1L) ? EEstatusGarantias.TERMINADA.getIdEstatusGarantia() : this.garantia.getIdEfectivo().equals(Constantes.SI) ? EEstatusGarantias.TERMINADA.getIdEstatusGarantia() : EEstatusGarantias.RECIBIDA.getIdEstatusGarantia();
 					this.generarGarantia(sesion, idEstatus);					
-					if(this.verificarCierreCaja(sesion)){
-						if(this.detalleGarantia.getPagoGarantia().getIdTipoVenta().equals(1L)){
+					if(this.verificarCierreCaja(sesion)) {
+						if(this.detalleGarantia.getPagoGarantia().getIdTipoVenta().equals(1L)) {
 							this.executeAccionCredito(sesion);
 							regresar= this.alterarStockArticulos(sesion, newGarantia.getArticulosGarantia());
 						} // if
@@ -365,7 +362,7 @@ public class Transaccion extends IBaseTnx{
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
-			switch(this.detalleGarantia.getAccionCredito()){
+			switch(this.detalleGarantia.getAccionCredito()) {
 				case COMPLETO:
 					regresar= this.caseOneCredito(sesion);
 					break;
@@ -401,6 +398,15 @@ public class Transaccion extends IBaseTnx{
           cliente.setSaldo(saldo.toDouble());
           DaoFactory.getInstance().update(sesion, cliente);
         } // if
+        
+        sesion.flush();
+        NotificaCliente notifica= new NotificaCliente(
+          sesion, // sesion
+          this.detalleGarantia.getIdCliente(), // Long idCliente, 
+          EReportes.CUENTAS_POR_COBRAR, // EReportes reportes, 
+          ECorreos.DEVOLUCION // ECorreos correo
+        );
+        notifica.doSendMail();
       } // if
 		} // try
 		catch (Exception e) {			
@@ -525,7 +531,7 @@ public class Transaccion extends IBaseTnx{
 		try {
 			this.caseFiveCredito(sesion);
 			devolucionEfectivo= this.detalleGarantia.getPagoGarantia().getTipoDevolucion().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
-			procesarPagoGeneral(sesion, this.detalleGarantia.getPagoCredito(), devolucionEfectivo);			
+			this.procesarPagoGeneral(sesion, this.detalleGarantia.getPagoCredito(), devolucionEfectivo);			
 			if(devolucionEfectivo)
 				this.toCierreActivo(sesion, ETipoMediosPago.EFECTIVO.getIdTipoMedioPago(), this.detalleGarantia.getDevolucionCredito());
 		} // try
@@ -581,7 +587,7 @@ public class Transaccion extends IBaseTnx{
 		Double abono             = 0D;		
 		Long idEstatus           = -1L;
 		try {
-			deudas= toDeudas(sesion);
+			deudas= this.toDeudas(sesion);
 			this.pagoPivote= pago;
 			for(Entity deuda: deudas) {
 				if(saldo > 0) {					
@@ -621,46 +627,7 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // procesarPagoGeneral
 	
-	protected void registrarDeuda(Session sesion, Double importe) throws Exception {
-		TcManticClientesDeudasDto deuda= null;		
-		deuda= new TcManticClientesDeudasDto();
-		deuda.setIdVenta(this.detalleGarantia.getIdVenta());
-		deuda.setIdCliente(this.detalleGarantia.getIdCliente());
-		deuda.setIdUsuario(JsfBase.getIdUsuario());
-		deuda.setImporte(importe);
-		deuda.setSaldo(importe);
-		deuda.setLimite(toLimiteCredito(sesion));
-		deuda.setIdClienteEstatus(EEstatusClientes.INICIADA.getIdEstatus());
-		DaoFactory.getInstance().insert(sesion, deuda);		
-    TcManticClientesBitacoraDto movimiento= new TcManticClientesBitacoraDto(
-      -1L, // Long idClienteBitacora, 
-      deuda.getIdClienteEstatus(), // Long idClienteEstatus, 
-      null, // String justificacion, 
-      JsfBase.getIdUsuario(), // Long idUsuario, 
-      deuda.getIdClienteDeuda() // Long idClienteDeuda
-    );
-    DaoFactory.getInstance().insert(sesion, movimiento);
-
-    NotificaCliente notifica= new NotificaCliente(
-      this.detalleGarantia.getIdCliente(), // Long idCliente, 
-      EReportes.CUENTAS_POR_COBRAR, // EReportes reportes, 
-      ECorreos.DEVOLUCION // ECorreos correo
-    );
-    notifica.doSendMail();
-	} // registrarDeuda
-	
-	public Date toLimiteCredito(Session sesion) throws Exception {
-		TcManticClientesDto cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, this.detalleGarantia.getIdCliente());
-		Long addDias= cliente.getPlazoDias();			
-		Calendar calendar= Calendar.getInstance();
-		Date regresar= new Date(calendar.getTimeInMillis());			
-		calendar.setTime(regresar);
-		calendar.add(Calendar.DAY_OF_YEAR, addDias.intValue());
-		regresar= new Date(calendar.getTimeInMillis());		
-		return regresar;
-	} // toLimiteCredito
-	
-		private List<Entity> toDeudas(Session sesion) throws Exception {
+	private List<Entity> toDeudas(Session sesion) throws Exception {
 		List<Entity> regresar    = null;
 		Map<String, Object>params= null;
 		try {
@@ -668,8 +635,8 @@ public class Transaccion extends IBaseTnx{
 			params.put("idCliente", this.detalleGarantia.getIdCliente());
 			params.put("idVenta", this.detalleGarantia.getIdVenta());			
 			params.put("estatus", EEstatusClientes.FINALIZADA.getIdEstatus());			
-			params.put("sortOrder", "order by tc_mantic_clientes_deudas.registro desc");
-			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo > 0 ");			
+			params.put("sortOrder", "order by tc_mantic_clientes_deudas.registro asc");
+			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo> 0 ");			
 			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaClientesDto", "cuentasExcluye", params);			
 		} // try
 		catch (Exception e) {			

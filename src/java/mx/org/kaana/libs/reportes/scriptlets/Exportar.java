@@ -39,6 +39,7 @@ import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Session;
 
 /**
  * @company KAANA
@@ -51,6 +52,8 @@ public class Exportar implements Serializable {
 
 	private static final Log LOG=LogFactory.getLog(Exportar.class);
 	private static final long serialVersionUID=1968365709629412162L;
+  
+  private Session sesion;
 	private String fileName;
   private String source;
   private EFormatos formato;
@@ -81,6 +84,10 @@ public class Exportar implements Serializable {
     this.pdfConSeguridad= pdfConSeguridad;
   }
 
+  public void setSesion(Session sesion) {
+    this.sesion = sesion;
+  }
+
 	public void procesar(EFormatos formato) throws Exception {
     this.formato= formato;
     try {
@@ -95,7 +102,7 @@ public class Exportar implements Serializable {
   public void procesar(InputStream input) throws Exception {
     try {
       fill(input);
-        procesar();
+      procesar();
     } // try
     catch (Exception e) {
       throw e;
@@ -156,7 +163,10 @@ public class Exportar implements Serializable {
     Connection connection= null;
     try {
       start= System.currentTimeMillis();
-      connection= DaoFactory.getInstance().getConnection();
+      if(this.sesion== null)
+        connection= DaoFactory.getInstance().getConnection();
+      else
+        connection= DaoFactory.getInstance().getConnection(this.sesion);
 			if(this.jRDataSource== null) 
         JasperFillManager.fillReportToFile(this.source.concat(".jasper"), this.fileName.concat(".jrprint"), this.params, connection);
 			else 
@@ -167,7 +177,7 @@ public class Exportar implements Serializable {
       throw e;
     } // catch
     finally {
-			if(connection!= null)
+			if(this.sesion== null && connection!= null)
 				connection.close();
 			connection= null;
 		} // finally
@@ -180,7 +190,10 @@ public class Exportar implements Serializable {
     try {
       output    = new FileOutputStream(this.fileName.concat(".jrprint"));
       start     = System.currentTimeMillis();
-      connection= DaoFactory.getInstance().getConnection();
+      if(this.sesion== null)
+        connection= DaoFactory.getInstance().getConnection();
+      else
+        connection= DaoFactory.getInstance().getConnection(this.sesion);
 			if(this.jRDataSource== null) 
         JasperFillManager.fillReportToStream(input, output, this.params, connection);
 			else 
@@ -194,7 +207,7 @@ public class Exportar implements Serializable {
       if(output!= null)
         output.close();
       output= null;
-			if(connection!= null)
+			if(this.sesion== null && connection!= null)
 				connection.close();
 			connection= null;
 		} // finally

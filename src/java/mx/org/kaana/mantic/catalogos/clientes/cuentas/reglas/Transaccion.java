@@ -24,6 +24,8 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.reportes.FileSearch;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
+import mx.org.kaana.mantic.catalogos.clientes.reglas.NotificaCliente;
+import mx.org.kaana.mantic.correos.enums.ECorreos;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesBitacoraDto;
@@ -39,6 +41,7 @@ import mx.org.kaana.mantic.db.dto.TcManticVentasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.enums.EEstatusClientes;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
+import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
 import mx.org.kaana.mantic.ventas.caja.beans.VentaFinalizada;
@@ -188,6 +191,16 @@ public class Transaccion extends TransaccionFactura{
 					this.actualizarSaldoCatalogoCliente(sesion, deuda.getIdCliente(), this.pago.getPago(), false);
           DaoFactory.getInstance().update(sesion, this.pago);
 				} // if
+        
+        sesion.flush();
+        NotificaCliente notifica= new NotificaCliente(
+          sesion, // sesion
+          this.idCliente, // Long idCliente, 
+          EReportes.PAGOS_CUENTAS_POR_COBRAR, // EReportes reportes, 
+          ECorreos.PAGOS // ECorreos correo
+        );
+        notifica.setIdClientePagoControl(this.control.getIdClientePagoControl());
+        notifica.doSendMail();
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -198,146 +211,6 @@ public class Transaccion extends TransaccionFactura{
 		} // finally
 		return regresar;
 	} // procesarPago
-	
-	private boolean procesarPagoGeneral(Session sesion) throws Exception {		
-		boolean regresar         = true;
-		List<Entity> deudas      = null;		
-		Map<String, Object>params= null;
-		Double saldo             = 1D;
-		Double saldoDeuda        = 0D;				
-		Double pagoParcial       = 0D;				
-		Double abono             = 0D;		
-		Long idEstatus           = -1L;
-		try {
-			deudas= this.toDeudas(sesion);
-      // INSERTAR EN LA TABLA DE CONTROL DE PAGOS CON EL ESTATUS DE ACTIVO PARA PODER CANCELAR UN PAGO
-      this.control= new TcManticClientesPagosControlesDto(
-        -1L, // Long idClientePagoControl, 
-        1L, // Long idActivo, 
-        "GENERAL", // String tipo, 
-        JsfBase.getIdUsuario(), // Long idUsuario, 
-        this.pago.getPago(), // Double pago
-        this.pago.getObservaciones() // String Observaciones
-      );
-      DaoFactory.getInstance().insert(sesion, this.control);
-			for(Entity deuda: deudas) {
-				if(saldo> 0) {	
-					saldoDeuda= Numero.toRedondear(deuda.toDouble("saldo"));
-					if(saldoDeuda< this.pago.getPago()){
-						pagoParcial= saldoDeuda;
-						saldo= this.pago.getPago() - saldoDeuda;						
-						this.pago.setPago(saldo);
-						abono= 0D;
-						idEstatus= EEstatusClientes.FINALIZADA.getIdEstatus();
-					} // if
-          else {		
-						pagoParcial= this.pago.getPago();
-						saldo= 0D;
-						abono= saldoDeuda- this.pago.getPago();
-						idEstatus= this.saldar? EEstatusClientes.SALDADA.getIdEstatus(): (saldoDeuda.equals(this.pago.getPago())? EEstatusClientes.FINALIZADA.getIdEstatus() : EEstatusClientes.PARCIALIZADA.getIdEstatus());
-					} /// else
-					if(this.registrarPago(sesion, deuda, pagoParcial, this.control.getIdClientePagoControl())) {
-						params= new HashMap<>();
-						params.put("saldo", abono);
-						params.put("idClienteEstatus", idEstatus);
-						DaoFactory.getInstance().update(sesion, TcManticClientesDeudasDto.class, deuda.getKey(), params);
-            TcManticClientesBitacoraDto bitacora= new TcManticClientesBitacoraDto(
-              -1L, // Long idClienteBitacora, 
-              idEstatus, // Long idClienteEstatus, 
-              "SE REGISTRO UN PAGO [".concat(String.valueOf(pagoParcial)).concat("]"), // String justificacion, 
-              JsfBase.getIdUsuario(), // Long idUsuario, 
-              deuda.getKey() // Long idClienteDeuda
-            );
-            DaoFactory.getInstance().insert(sesion, bitacora);
-						this.actualizarSaldoCatalogoCliente(sesion, this.idCliente, pagoParcial, false);
-					}	// if				
-				} // if
-			} // for
-		} // try
-		catch (Exception e) {			
-			throw e; 
-		} // catch		
-		finally{
-			this.messageError= "Error al registrar el pago";
-			Methods.clean(params);			
-		} // finally
-		return regresar;
-	} // procesarPagoGeneral
-	
-	private boolean registrarPago(Session sesion, Entity deuda, Double pagoParcial, Long idClientePagoControl) throws Exception {
-		TcManticClientesPagosDto registroPago= null;
-		boolean regresar                     = false;
-		Siguiente orden	                     = null;
-		try {
-      Long idClienteDeuda= deuda.getKey();
-			if(this.toCierreCaja(sesion, pagoParcial)) {
-				registroPago= new TcManticClientesPagosDto();
-        registroPago.setIdClientePagoControl(idClientePagoControl);
-				registroPago.setIdClienteDeuda(idClienteDeuda);
-				registroPago.setIdUsuario(JsfBase.getIdUsuario()); 
-				registroPago.setComentarios(
-          "PAGO GENERAL $".concat(Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, this.pagoGeneral)).concat(
-          " [").concat(Global.format(EFormatoDinamicos.FECHA_HORA, registroPago.getRegistro())).concat(
-          "] DEUDA $").concat(Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, deuda.toDouble("importe"))).concat(
-          " SALDO $").concat(Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, deuda.toDouble("saldo"))).concat(
-          " APLICADO $").concat(Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, pagoParcial)).concat(
-          " NUEVO SALDO $").concat(Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.redondearSat(deuda.toDouble("saldo")- pagoParcial))));
-				registroPago.setPago(pagoParcial);
-				registroPago.setIdTipoMedioPago(this.pago.getIdTipoMedioPago());
-				registroPago.setIdCierre(this.idCierreActivo);
-				if(!this.pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())) {
-					registroPago.setIdBanco(this.idBanco);
-					registroPago.setReferencia(this.referencia);
-				} // if
-				orden= this.toSiguiente(sesion, this.idCliente);
-				registroPago.setOrden(orden.getOrden());
-				registroPago.setConsecutivo(orden.getConsecutivo());
-				registroPago.setEjercicio(new Long(Fecha.getAnioActual()));
-				regresar= DaoFactory.getInstance().insert(sesion, registroPago)>= 1L;
-			} // if
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		return regresar;
-	} // registrarPago
-	
-	private List<Entity> toDeudas(Session sesion) throws Exception {
-		List<Entity> regresar    = null;
-		Map<String, Object>params= null;
-		try {
-			params= new HashMap<>();
-			params.put("idCliente", this.idCliente);
-			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo> 0 and tc_mantic_clientes_deudas.id_cliente_estatus in(1, 2)");			
-			params.put("sortOrder", "order by dias desc");
-			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaClientesDto", "cuentas", params);			
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		return regresar;
-	} // toDeudas	
-	
-	private boolean toCierreCaja(Session sesion, Double pago) throws Exception {
-		mx.org.kaana.mantic.ventas.caja.reglas.Transaccion cierre= null;
-		VentaFinalizada datosCierre= null;
-		boolean regresar= false;
-		try {
-			datosCierre= new VentaFinalizada();
-			datosCierre.getTicketVenta().setIdEmpresa(this.idEmpresa);
-			datosCierre.setIdCaja(this.idCaja);
-			datosCierre.getTotales().setEfectivo(pago);
-			cierre= new mx.org.kaana.mantic.ventas.caja.reglas.Transaccion(datosCierre);
-			if(cierre.verificarCierreCaja(sesion)){
-				this.idCierreActivo= cierre.getIdCierreVigente();
-				regresar= cierre.alterarCierreCaja(sesion, this.pago.getIdTipoMedioPago());
-			} // if
-		} // try
-		catch (Exception e) {			
-			throw e; 
-		} // catch		
-		return regresar;
-	} // toCierreCaja
 	
 	private boolean procesarPagoSegmento(Session sesion) throws Exception {		
 		boolean regresar         = true;
@@ -414,6 +287,16 @@ public class Transaccion extends TransaccionFactura{
 					} // if
 				} // for
 			} // for
+      
+      sesion.flush();
+      NotificaCliente notifica= new NotificaCliente(
+        sesion, // sesion
+        this.idCliente, // Long idCliente, 
+        EReportes.PAGOS_CUENTAS_POR_COBRAR, // EReportes reportes, 
+        ECorreos.PAGOS // ECorreos correo
+      );
+      notifica.setIdClientePagoControl(this.control.getIdClientePagoControl());
+      notifica.doSendMail();
 		} // try
 		catch (Exception e) {			
 			throw e; 
@@ -424,6 +307,156 @@ public class Transaccion extends TransaccionFactura{
 		} // finally
 		return regresar;
 	} // procesarPagoGeneral
+  
+	private boolean procesarPagoGeneral(Session sesion) throws Exception {		
+		boolean regresar         = true;
+		List<Entity> deudas      = null;		
+		Map<String, Object>params= null;
+		Double saldo             = 1D;
+		Double saldoDeuda        = 0D;				
+		Double pagoParcial       = 0D;				
+		Double abono             = 0D;		
+		Long idEstatus           = -1L;
+		try {
+			deudas= this.toDeudas(sesion);
+      // INSERTAR EN LA TABLA DE CONTROL DE PAGOS CON EL ESTATUS DE ACTIVO PARA PODER CANCELAR UN PAGO
+      this.control= new TcManticClientesPagosControlesDto(
+        -1L, // Long idClientePagoControl, 
+        1L, // Long idActivo, 
+        "GENERAL", // String tipo, 
+        JsfBase.getIdUsuario(), // Long idUsuario, 
+        this.pago.getPago(), // Double pago
+        this.pago.getObservaciones() // String Observaciones
+      );
+      DaoFactory.getInstance().insert(sesion, this.control);
+			for(Entity deuda: deudas) {
+				if(saldo> 0) {	
+					saldoDeuda= Numero.toRedondear(deuda.toDouble("saldo"));
+					if(saldoDeuda< this.pago.getPago()){
+						pagoParcial= saldoDeuda;
+						saldo= this.pago.getPago() - saldoDeuda;						
+						this.pago.setPago(saldo);
+						abono= 0D;
+						idEstatus= EEstatusClientes.FINALIZADA.getIdEstatus();
+					} // if
+          else {		
+						pagoParcial= this.pago.getPago();
+						saldo= 0D;
+						abono= saldoDeuda- this.pago.getPago();
+						idEstatus= this.saldar? EEstatusClientes.SALDADA.getIdEstatus(): (saldoDeuda.equals(this.pago.getPago())? EEstatusClientes.FINALIZADA.getIdEstatus() : EEstatusClientes.PARCIALIZADA.getIdEstatus());
+					} /// else
+					if(this.registrarPago(sesion, deuda, pagoParcial, this.control.getIdClientePagoControl())) {
+						params= new HashMap<>();
+						params.put("saldo", abono);
+						params.put("idClienteEstatus", idEstatus);
+						DaoFactory.getInstance().update(sesion, TcManticClientesDeudasDto.class, deuda.getKey(), params);
+            TcManticClientesBitacoraDto bitacora= new TcManticClientesBitacoraDto(
+              -1L, // Long idClienteBitacora, 
+              idEstatus, // Long idClienteEstatus, 
+              "SE REGISTRO UN PAGO [".concat(String.valueOf(pagoParcial)).concat("]"), // String justificacion, 
+              JsfBase.getIdUsuario(), // Long idUsuario, 
+              deuda.getKey() // Long idClienteDeuda
+            );
+            DaoFactory.getInstance().insert(sesion, bitacora);
+						this.actualizarSaldoCatalogoCliente(sesion, this.idCliente, pagoParcial, false);
+					}	// if				
+				} // if
+			} // for
+      
+      sesion.flush();
+      NotificaCliente notifica= new NotificaCliente(
+        sesion, // sesion
+        this.idCliente, // Long idCliente, 
+        EReportes.PAGOS_CUENTAS_POR_COBRAR, // EReportes reportes, 
+        ECorreos.PAGOS // ECorreos correo
+      );
+      notifica.setIdClientePagoControl(this.control.getIdClientePagoControl());
+      notifica.doSendMail();
+		} // try
+		catch (Exception e) {			
+			throw e; 
+		} // catch		
+		finally{
+			this.messageError= "Error al registrar el pago";
+			Methods.clean(params);			
+		} // finally
+		return regresar;
+	} // procesarPagoGeneral
+	
+	private boolean registrarPago(Session sesion, Entity deuda, Double pagoParcial, Long idClientePagoControl) throws Exception {
+		TcManticClientesPagosDto registroPago= null;
+		boolean regresar                     = false;
+		Siguiente orden	                     = null;
+		try {
+      Long idClienteDeuda= deuda.getKey();
+			if(this.toCierreCaja(sesion, pagoParcial)) {
+				registroPago= new TcManticClientesPagosDto();
+        registroPago.setIdClientePagoControl(idClientePagoControl);
+				registroPago.setIdClienteDeuda(idClienteDeuda);
+				registroPago.setIdUsuario(JsfBase.getIdUsuario()); 
+				registroPago.setComentarios(
+          "PAGO GENERAL $".concat(Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, this.pagoGeneral)).concat(
+          " [").concat(Global.format(EFormatoDinamicos.FECHA_HORA, registroPago.getRegistro())).concat(
+          "] DEUDA $").concat(Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, deuda.toDouble("importe"))).concat(
+          " SALDO $").concat(Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, deuda.toDouble("saldo"))).concat(
+          " APLICADO $").concat(Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, pagoParcial)).concat(
+          " NUEVO SALDO $").concat(Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.redondearSat(deuda.toDouble("saldo")- pagoParcial))));
+				registroPago.setPago(pagoParcial);
+				registroPago.setIdTipoMedioPago(this.pago.getIdTipoMedioPago());
+				registroPago.setIdCierre(this.idCierreActivo);
+				if(!this.pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())) {
+					registroPago.setIdBanco(this.idBanco);
+					registroPago.setReferencia(this.referencia);
+				} // if
+				orden= this.toSiguiente(sesion, this.idCliente);
+				registroPago.setOrden(orden.getOrden());
+				registroPago.setConsecutivo(orden.getConsecutivo());
+				registroPago.setEjercicio(new Long(Fecha.getAnioActual()));
+				regresar= DaoFactory.getInstance().insert(sesion, registroPago)>= 1L;
+			} // if
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // registrarPago
+	
+	private List<Entity> toDeudas(Session sesion) throws Exception {
+		List<Entity> regresar    = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idCliente", this.idCliente);
+			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo> 0 and tc_mantic_clientes_deudas.id_cliente_estatus in(1, 2)");			
+			params.put("sortOrder", "order by registro asc");
+			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaClientesDto", "cuentas", params);			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toDeudas	
+	
+	private boolean toCierreCaja(Session sesion, Double pago) throws Exception {
+		mx.org.kaana.mantic.ventas.caja.reglas.Transaccion cierre= null;
+		VentaFinalizada datosCierre= null;
+		boolean regresar= false;
+		try {
+			datosCierre= new VentaFinalizada();
+			datosCierre.getTicketVenta().setIdEmpresa(this.idEmpresa);
+			datosCierre.setIdCaja(this.idCaja);
+			datosCierre.getTotales().setEfectivo(pago);
+			cierre= new mx.org.kaana.mantic.ventas.caja.reglas.Transaccion(datosCierre);
+			if(cierre.verificarCierreCaja(sesion)){
+				this.idCierreActivo= cierre.getIdCierreVigente();
+				regresar= cierre.alterarCierreCaja(sesion, this.pago.getIdTipoMedioPago());
+			} // if
+		} // try
+		catch (Exception e) {			
+			throw e; 
+		} // catch		
+		return regresar;
+	} // toCierreCaja
 	
 	protected void toUpdateDeleteFilePago(Session sesion) throws Exception {
 		TcManticClientesPagosArchivosDto tmp= null;

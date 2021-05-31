@@ -395,7 +395,7 @@ public class Transaccion extends TransaccionFactura {
 	protected boolean procesarCliente(Session sesion) throws Exception {
     boolean regresar= false;
     Long idCliente  = -1L;    
-		this.messageError = "Error al registrar el cliente";
+		this.messageError = "ERROR AL REGISTRAR EL CLIENTE";
 		this.clienteVenta.getCliente().setIdCredito(2L);
 		this.clienteVenta.getCliente().setLimiteCredito(0D);
 		this.clienteVenta.getCliente().setPlazoDias(15L);
@@ -404,13 +404,13 @@ public class Transaccion extends TransaccionFactura {
 		this.clienteVenta.getCliente().setIdTipoVenta(ETipoVenta.MENUDEO.getIdTipoVenta());
 		idCliente = DaoFactory.getInstance().insert(sesion, this.clienteVenta.getCliente());
 		this.idClienteNuevo= idCliente;
-		if(updateDomicilioPrincipal(sesion, this.clienteVenta.getCliente().getIdCliente())){
-			if (registraClientesDomicilios(sesion, idCliente)) 
-				regresar = registraClientesTipoContacto(sesion, idCliente);			
+		if(this.updateDomicilioPrincipal(sesion, this.clienteVenta.getCliente().getIdCliente())){
+			if(this.registraClientesDomicilios(sesion, idCliente)) 
+				regresar= this.registraClientesTipoContacto(sesion, idCliente);			
 		} // if
 		sesion.flush();
 		if(idCliente > -1)
-			registraClienteFacturama(sesion, idCliente);        
+			this.registraClienteFacturama(sesion, idCliente);        
     return regresar;
   } // procesarCliente
 	
@@ -650,32 +650,39 @@ public class Transaccion extends TransaccionFactura {
     return DaoFactory.getInstance().update(sesion, dto) >= 1L;
   } // registrar
 	
-	protected void registrarDeuda(Session sesion, Double importe) throws Exception{
+	protected void registrarDeuda(Session sesion, Double importe) throws Exception {
 		TcManticClientesDeudasDto deuda= null;		
-		deuda= new TcManticClientesDeudasDto();
-		deuda.setIdVenta(this.getOrden().getIdVenta());
-		deuda.setIdCliente(this.getOrden().getIdCliente());
-		deuda.setIdUsuario(JsfBase.getIdUsuario());
-		deuda.setImporte(importe);
-		deuda.setSaldo(importe);
-		deuda.setLimite(this.toLimiteCredito(sesion));
-		deuda.setIdClienteEstatus(EEstatusClientes.INICIADA.getIdEstatus());
-		DaoFactory.getInstance().insert(sesion, deuda);	
-    TcManticClientesBitacoraDto movimiento= new TcManticClientesBitacoraDto(
-      -1L, // Long idClienteBitacora, 
-      deuda.getIdClienteEstatus(), // Long idClienteEstatus, 
-      null, // String justificacion, 
-      JsfBase.getIdUsuario(), // Long idUsuario, 
-      deuda.getIdClienteDeuda() // Long idClienteDeuda
-    );
-    DaoFactory.getInstance().insert(sesion, movimiento);
-    
-    NotificaCliente notifica= new NotificaCliente(
-      this.getOrden().getIdCliente(), // Long idCliente, 
-      EReportes.CUENTAS_POR_COBRAR, // EReportes reportes, 
-      ECorreos.CREDITO // ECorreos correo
-    );
-    notifica.doSendMail();
+    try {
+      deuda= new TcManticClientesDeudasDto();
+      deuda.setIdVenta(this.getOrden().getIdVenta());
+      deuda.setIdCliente(this.getOrden().getIdCliente());
+      deuda.setIdUsuario(JsfBase.getIdUsuario());
+      deuda.setImporte(importe);
+      deuda.setSaldo(importe);
+      deuda.setLimite(this.toLimiteCredito(sesion));
+      deuda.setIdClienteEstatus(EEstatusClientes.INICIADA.getIdEstatus());
+      DaoFactory.getInstance().insert(sesion, deuda);	
+      TcManticClientesBitacoraDto movimiento= new TcManticClientesBitacoraDto(
+        -1L, // Long idClienteBitacora, 
+        deuda.getIdClienteEstatus(), // Long idClienteEstatus, 
+        null, // String justificacion, 
+        JsfBase.getIdUsuario(), // Long idUsuario, 
+        deuda.getIdClienteDeuda() // Long idClienteDeuda
+      );
+      DaoFactory.getInstance().insert(sesion, movimiento);
+
+      sesion.flush();
+      NotificaCliente notifica= new NotificaCliente(
+        sesion, // sesion
+        this.getOrden().getIdCliente(), // Long idCliente, 
+        EReportes.CUENTAS_POR_COBRAR, // EReportes reportes, 
+        ECorreos.CREDITO // ECorreos correo
+      );
+      notifica.doSendMail();
+    } // try 
+    catch(Exception e) {
+      throw e;
+    } // catch
 	} // registrarDeuda
 	
 	public Date toLimiteCredito(Session sesion) throws Exception{
