@@ -8,7 +8,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -227,7 +226,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("fechaHastaTicket", new Date(Calendar.getInstance().getTimeInMillis()));
 			this.attrs.put("folioTicket", "");
 			this.attrs.put("importeTicket", "");
-			this.attrs.put("productoTicket", "");
+			this.attrs.put("productoTicket", new UISelectEntity(-1L));
 			this.attrs.put("contador", 0L);
 			this.attrs.put("creditoVenta", false);
 			this.attrs.put("busquedaTicketAbierto", "");
@@ -325,11 +324,11 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // toRangoFechasTickets
 	
 	private void loadArt() {
-		Entity art= null;
+		Entity articulo= null;
 		try {
-			art= new Entity(-1L);
-			art.put("nombre", new Value("nombre", ""));
-			this.attrs.put("productoTicket", art);
+			articulo= new UISelectEntity(-1L);
+			articulo.put("nombre", new Value("nombre", ""));
+			this.attrs.put("productoTicket", articulo);
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -1457,7 +1456,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			((TicketVenta)this.getAdminOrden().getOrden()).setObservaciones(!Cadena.isVacio(this.attrs.get("observaciones")) ? ((String)this.attrs.get("observaciones")).toUpperCase() : "");
 		} // if
 		if(title.equals("Tickets")) {
-			doLoadTickets();			
+			this.doLoadTickets();			
 			UIBackingUtilities.update("contenedorGrupos:tablaTicket");
 		} // if
 		if(title.equals("Pagar")) {
@@ -1502,7 +1501,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		List<Columna> columns     = null;
 		Map<String, Object> params= null;
 		try {
-			params= toPrepare();
+			params= this.toPrepare();
       columns = new ArrayList<>();
       columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
@@ -1532,12 +1531,19 @@ public class Accion extends IBaseVenta implements Serializable {
 		if(this.attrs.get("noTicket")!= null && !Cadena.isVacio(this.attrs.get("noTicket"))) {
 			sb.append("tc_mantic_ventas.ticket like '%").append(this.attrs.get("noTicket")).append("%'").append(" and ");
 		} // if
-		if(this.attrs.get("productoTicket")!= null && !((Entity)this.attrs.get("productoTicket")).getKey().equals(-1L)) {
-			sb.append("tc_mantic_ventas_detalles.id_articulo=").append(((Entity)this.attrs.get("productoTicket")).getKey()).append(" and ");					
+		if(this.attrs.get("productoTicket")!= null && !((UISelectEntity)this.attrs.get("productoTicket")).getKey().equals(-1L)) {
+      Long idArticulo= ((UISelectEntity)this.attrs.get("productoTicket")).getKey();
+      List<UISelectEntity> articulos= (List<UISelectEntity>)this.attrs.get("articulosProductoTicket");
+      if(articulos!= null && articulos.indexOf((Entity)this.attrs.get("productoTicket"))>= 0) {
+				UISelectEntity item= articulos.get(articulos.indexOf((Entity)this.attrs.get("productoTicket")));
+        idArticulo= item.toLong("idArticulo");
+      } // if   
+			sb.append("tc_mantic_ventas_detalles.id_articulo=").append(idArticulo).append(" and ");					
 		} // if
-		else if (JsfBase.getParametro("contenedorGrupos:productoTicket_input")!= null) {
-			sb.append("tc_mantic_ventas_detalles.nombre like '%").append(JsfBase.getParametro("contenedorGrupos:productoTicket_input")).append("%' and ");					
-		} // else if
+		else 
+      if (JsfBase.getParametro("contenedorGrupos:productoTicket_input")!= null) {
+			  sb.append("tc_mantic_ventas_detalles.nombre like '%").append(JsfBase.getParametro("contenedorGrupos:productoTicket_input")).append("%' and ");					
+		  } // else if
 		if(this.attrs.get("importeTicket")!= null && !Cadena.isVacio(this.attrs.get("importeTicket")) && !this.attrs.get("importeTicket").toString().equals("0.00")) {												
 			sb.append("tc_mantic_ventas.total like '%").append(Cadena.eliminaCaracter(this.attrs.get("importeTicket").toString(), ',')).append("%' and ");			
 		} // if
