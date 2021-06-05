@@ -16,6 +16,7 @@ import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.Messages;
 import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.libs.recurso.TcConfiguraciones;
 import mx.org.kaana.xml.Dml;
 import org.apache.commons.logging.Log; 
 import org.apache.commons.logging.LogFactory;
@@ -35,6 +36,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
       this.attrs.put("sql", false);
       this.attrs.put("msg", false);
       this.attrs.put("hlp", false);
+      this.attrs.put("bd", false);
     } // try
     catch(Exception e) {
 			JsfBase.addMessageError(e);
@@ -68,6 +70,13 @@ public class Filtro extends IBaseAttribute implements Serializable {
     JsfBase.addMessage("Se recargaron los mensajes de ayuda del sistema");
     LOG.info("Se recargaron de forma manual los mensajes de ayuda del sistema");
     this.attrs.put("hlp", false);
+  }
+
+  public void doReloadBD() {
+    TcConfiguraciones.getInstance().reload();
+    JsfBase.addMessage("Se recargaron de la base de datos la tabla de configuracion");
+    LOG.info("Se recargaron de la base de datos la tabla de configuracion");
+    this.attrs.put("bd", false);
   }
   
 }

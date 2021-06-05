@@ -356,7 +356,7 @@
                     <p:menuButton value="Opciones">
                       <p:menuitem id="reporteIcon" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla tablaPagosRealizados" actionListener="#{manticCatalogosClientesCuentasSaldos.doNotificar('PAGOS_CUENTAS_POR_COBRAR', pago)}" oncomplete="janal.desbloquear();" update="descargar"/>
                       <p:separator/>					
-                      <p:menuitem id="reenviar" icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this tabla tablaPagosRealizados" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoadEstatus('PAGOS_CUENTAS_POR_COBRARdoLoadEstatus', 'PAGOS', pago)}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
+                      <p:menuitem id="reenviar" icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this tabla tablaPagosRealizados" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoadEstatus('PAGOS_CUENTAS_POR_COBRAR', 'PAGOS', pago)}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
                     </p:menuButton>
                   </div>  
                   <div class="xs-pantalla">   

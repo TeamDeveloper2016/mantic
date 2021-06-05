@@ -570,46 +570,20 @@ public class Saldos extends IBaseFilter implements Serializable {
     } // catch	
   } // toReporteEspecial
 	
-  private void toReporteIndividal() throws Exception {
-    Parametros comunes = null;
-		Map<String, Object>params    = null;
-		Map<String, Object>parametros= null;
-		EReportes reporteSeleccion   = null;
-    Entity seleccionado = ((Entity)this.attrs.get("seleccionado"));
-		try{		
-      params= new HashMap<>();
-      params.put("idCliente", seleccionado.toString("idCliente"));
-      params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes_deudas.id_cliente= "+ seleccionado.toLong("idCliente")+ " and tc_mantic_clientes_deudas.id_cliente_estatus in (1, 2)");
-      params.put("sortOrder", "order by	tc_mantic_clientes.razon_social,tc_mantic_clientes_deudas.registro desc");
-      reporteSeleccion= EReportes.valueOf(this.attrs.get("tipoReporteEspecial").toString());
-      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), -1L, -1L , seleccionado.toLong("idCliente"));
-      parametros= comunes.getComunes();
-      this.reporte= JsfBase.toReporte();	
-      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
-      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
-      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
-      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
-      this.reporte.doAceptarSimple();			
-    } // try
-    catch(Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);			
-    } // catch	
-  } // toReporteIndividal
-	
 	public void doLoadEstatus(String reporte, String correo, Entity seleccionado) {
 		Map<String, Object>params         = null;
 		MotorBusquedaCatalogos motor      = null; 
 		Correo item                       = null;
 		List<ClienteTipoContacto>contactos= null;
 		try {
+      this.attrs.put("seleccionado", seleccionado);
       this.attrs.put("tipoReporteEspecial", reporte);
       this.attrs.put("tipoCorreoEspecial", correo);
 			this.correos.clear();
 			this.selectedCorreos.clear();
 			motor= new MotorBusqueda(-1L, seleccionado.toLong("idCliente"));
 			contactos= motor.toClientesTipoContacto();
-			LOG.warn("Total de contactos asociados al cliente" + contactos.size());
+			LOG.warn("Total de contactos asociados al cliente [" + contactos.size()+ "]");
 			for(ClienteTipoContacto contacto: contactos) {
 				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())) {
 					item= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor());
@@ -649,52 +623,6 @@ public class Saldos extends IBaseFilter implements Serializable {
 				try {
 					if(!Cadena.isVacio(item)) {
 					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.CUENTAS, ECorreos.CUENTAS.getEmail(), item, "controlbonanza@gmail.com", "Ferreteria Bonanza - Estado de cuenta", params, files);
-					  LOG.info("Enviando correo a la cuenta: "+ item);
-					  notificar.send();
-					} // if	
-				} // try
-				finally {
-				  if(attachments.getFile().exists()) {
-   	  	    LOG.info("Eliminando archivo temporal: "+ attachments.getAbsolute());
-				    // user.getFile().delete();
-				  } // if	
-				} // finally	
-			} // for
-	  	LOG.info("Se envio el correo de forma exitosa");
-			if(sb.length()> 0)
-		    JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
-			else
-		    JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
-		} // try // try
-		catch(Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch
-		finally {
-			Methods.clean(files);
-		} // finally    
-  }
-  
-  private void toSendMailIndividual(StringBuilder sb, Entity seleccionado) {
-		Map<String, Object> params= new HashMap<>();
-		String[] emails= {(sb.length()> 0? sb.substring(0, sb.length()- 2): "")};
-		List<Attachment> files= new ArrayList<>(); 
-		try {
-			params.put("header", "...");
-			params.put("footer", "...");
-			params.put("empresa", JsfBase.getAutentifica().getEmpresa().getNombre());
-			params.put("tipo", "Estado de Cuenta");
-			params.put("razonSocial", seleccionado.toString("razonSocial"));
-			params.put("correo", ECorreos.CREDITO.getEmail());
-			this.toReporteIndividal();
-			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
-			files.add(attachments);
-			files.add(new Attachment("logo", ECorreos.CREDITO.getImages().concat("logo.png"), Boolean.TRUE));
-			params.put("attach", attachments.getId());
-			for (String item: emails) {
-				try {
-					if(!Cadena.isVacio(item)) {
-					  IBaseAttachment notificar= new IBaseAttachment(ECorreos.CREDITO, ECorreos.CREDITO.getEmail(), item, "controlbonanza@gmail.com", "Ferreteria Bonanza - Estado de cuenta", params, files);
 					  LOG.info("Enviando correo a la cuenta: "+ item);
 					  notificar.send();
 					} // if	

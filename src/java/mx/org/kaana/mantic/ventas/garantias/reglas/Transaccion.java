@@ -635,7 +635,7 @@ public class Transaccion extends IBaseTnx{
 			params.put("idCliente", this.detalleGarantia.getIdCliente());
 			params.put("idVenta", this.detalleGarantia.getIdVenta());			
 			params.put("estatus", EEstatusClientes.FINALIZADA.getIdEstatus());			
-			params.put("sortOrder", "order by tc_mantic_clientes_deudas.registro asc");
+			params.put("sortOrder", "order by tc_mantic_clientes_deudas.registro");
 			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo> 0 ");			
 			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaClientesDto", "cuentasExcluye", params);			
 		} // try

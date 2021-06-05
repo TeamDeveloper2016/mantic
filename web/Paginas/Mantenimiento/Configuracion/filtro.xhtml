@@ -12,7 +12,8 @@
 				cfg: {validaciones: 'requerido', mascara: 'libre'},
 				sql: {validaciones: 'requerido', mascara: 'libre'},
 				msg: {validaciones: 'requerido', mascara: 'libre'},
-				hlp: {validaciones: 'requerido', mascara: 'libre'}
+				hlp: {validaciones: 'requerido', mascara: 'libre'},
+				bd : {validaciones: 'requerido', mascara: 'libre'}
 			};		
     </script>    
   </ui:define>
@@ -34,6 +35,9 @@
         <p:outputLabel for="hlp" value="Mensajes de ayudas: "/>
         <p:selectBooleanCheckbox id="hlp" value="#{kajoolMantenimientoConfiguracionFiltro.attrs.hlp}">
           <p:ajax listener="#{kajoolMantenimientoConfiguracionFiltro.doReloadHLP}" onstart="return $('#hlp_input').is(':checked');" update="hlp" process="@this" />
+        </p:selectBooleanCheckbox>  
+        <p:selectBooleanCheckbox id="bd" value="#{kajoolMantenimientoConfiguracionFiltro.attrs.bd}">
+          <p:ajax listener="#{kajoolMantenimientoConfiguracionFiltro.doReloadBD}" onstart="return $('#bd_input').is(':checked');" update="db" process="@this" />
         </p:selectBooleanCheckbox>  
       </p:panelGrid>
     </p:fieldset>  
