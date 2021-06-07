@@ -101,8 +101,8 @@ public class Exportar implements Serializable {
   
   public void procesar(InputStream input) throws Exception {
     try {
-      fill(input);
-      procesar();
+      this.fill(input);
+      this.procesar();
     } // try
     catch (Exception e) {
       throw e;

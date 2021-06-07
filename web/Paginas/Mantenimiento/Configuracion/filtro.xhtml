@@ -36,11 +36,12 @@
         <p:selectBooleanCheckbox id="hlp" value="#{kajoolMantenimientoConfiguracionFiltro.attrs.hlp}">
           <p:ajax listener="#{kajoolMantenimientoConfiguracionFiltro.doReloadHLP}" onstart="return $('#hlp_input').is(':checked');" update="hlp" process="@this" />
         </p:selectBooleanCheckbox>  
+        <p:outputLabel for="bd" value="Configuración de la aplicación: "/>
         <p:selectBooleanCheckbox id="bd" value="#{kajoolMantenimientoConfiguracionFiltro.attrs.bd}">
-          <p:ajax listener="#{kajoolMantenimientoConfiguracionFiltro.doReloadBD}" onstart="return $('#bd_input').is(':checked');" update="db" process="@this" />
+          <p:ajax listener="#{kajoolMantenimientoConfiguracionFiltro.doReloadBD}" onstart="return $('#bd_input').is(':checked');" update="bd" process="@this" />
         </p:selectBooleanCheckbox>  
       </p:panelGrid>
     </p:fieldset>  
   </ui:define>
-	<ui:param name="componenteBloqueo" value="cfg sql msg hlp"/>
+	<ui:param name="componenteBloqueo" value="cfg sql msg hlp bd"/>
 </ui:composition>

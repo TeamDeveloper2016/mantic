@@ -59,6 +59,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 
 	private static final Log LOG              = LogFactory.getLog(Saldos.class);
   private static final long serialVersionUID= 8793667741599428879L;
+  
   private Reporte reporte;
 	private UISelectEntity encontrado;
   private Long idCliente;
