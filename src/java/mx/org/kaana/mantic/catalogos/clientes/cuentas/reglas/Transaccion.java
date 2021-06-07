@@ -240,7 +240,7 @@ public class Transaccion extends TransaccionFactura{
 							saldoDeuda= Numero.toRedondearSat(deuda.toDouble("saldo"));
 							if(saldoDeuda< this.pago.getPago()){
 								pagoParcial= saldoDeuda;
-								saldo= this.pago.getPago() - saldoDeuda;						
+								saldo= Numero.toRedondearSat(this.pago.getPago() - saldoDeuda);						
 								this.pago.setPago(saldo);
 								abono= 0D;
 								idEstatus= EEstatusClientes.FINALIZADA.getIdEstatus();
@@ -248,10 +248,10 @@ public class Transaccion extends TransaccionFactura{
               else {						
 								pagoParcial= this.pago.getPago();
 								saldo= 0D;
-								abono= saldoDeuda- this.pago.getPago();
+								abono= Numero.toRedondearSat(saldoDeuda- this.pago.getPago());
 								idEstatus= this.saldar? EEstatusClientes.SALDADA.getIdEstatus(): (saldoDeuda.equals(this.pago.getPago())? EEstatusClientes.FINALIZADA.getIdEstatus(): EEstatusClientes.PARCIALIZADA.getIdEstatus());
 							} /// else
-							if(this.registrarPago(sesion, deuda, pagoParcial, this.control.getIdClientePagoControl())){
+							if(this.registrarPago(sesion, deuda, pagoParcial, this.control.getIdClientePagoControl())) {
 								params= new HashMap<>();
 								params.put("saldo", abono);
 								params.put("idClienteEstatus", idEstatus);
@@ -334,7 +334,7 @@ public class Transaccion extends TransaccionFactura{
 					saldoDeuda= Numero.toRedondear(deuda.toDouble("saldo"));
 					if(saldoDeuda< this.pago.getPago()){
 						pagoParcial= saldoDeuda;
-						saldo= this.pago.getPago() - saldoDeuda;						
+						saldo= Numero.toRedondearSat(this.pago.getPago() - saldoDeuda);						
 						this.pago.setPago(saldo);
 						abono= 0D;
 						idEstatus= EEstatusClientes.FINALIZADA.getIdEstatus();
@@ -342,7 +342,7 @@ public class Transaccion extends TransaccionFactura{
           else {		
 						pagoParcial= this.pago.getPago();
 						saldo= 0D;
-						abono= saldoDeuda- this.pago.getPago();
+						abono= Numero.toRedondearSat(saldoDeuda- this.pago.getPago());
 						idEstatus= this.saldar? EEstatusClientes.SALDADA.getIdEstatus(): (saldoDeuda.equals(this.pago.getPago())? EEstatusClientes.FINALIZADA.getIdEstatus() : EEstatusClientes.PARCIALIZADA.getIdEstatus());
 					} /// else
 					if(this.registrarPago(sesion, deuda, pagoParcial, this.control.getIdClientePagoControl())) {
