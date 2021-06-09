@@ -14,6 +14,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -50,8 +51,8 @@ public class Prorroga extends IBaseImportar implements Serializable {
       this.attrs.put("idEmpresaDeuda", JsfBase.getFlashAttribute("idEmpresaDeuda"));     
 			this.attrs.put("xml", ""); 
 			this.attrs.put("pdf", ""); 
-			loadTiposPagos();
-			doLoad();
+			this.loadTiposPagos();
+			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -130,11 +131,11 @@ public class Prorroga extends IBaseImportar implements Serializable {
 		boolean regresar= false;
 		Entity deuda    = null;
 		Double importe  = null;
-		Double saldo  = null;
+		Double saldo    = null;
 		try {
-			deuda= (Entity) this.attrs.get("deuda");
-			importe= Double.valueOf(String.valueOf(deuda.get("importe")));
-			saldo= Double.valueOf(deuda.toString("saldo"));
+			deuda  = (Entity) this.attrs.get("deuda");
+			importe= Numero.toRedondearSat(Double.valueOf(String.valueOf(deuda.get("importe"))));
+			saldo  = Numero.toRedondearSat(deuda.toDouble("saldo"));
 			regresar= importe >= saldo;
 		} // try
 		catch (Exception e) {
