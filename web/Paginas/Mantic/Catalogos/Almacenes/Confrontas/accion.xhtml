@@ -117,7 +117,7 @@
 									</p:column>   
 								</p:selectOneMenu>
 								<p:outputLabel for="consecutivo" value="No. transferencia:" styleClass="recalculo"/>
-								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt recalculo" value="#{manticCatalogosAlmacenesConfrontasAccion.adminOrden.orden.consecutivo}" readonly="true"/>
+								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt recalculo" value="#{manticCatalogosAlmacenesConfrontasAccion.adminOrden.orden.transferencia.consecutivo}" readonly="true"/>
 								<p:spacer width="1px" style="display: #{manticCatalogosAlmacenesConfrontasAccion.agregar}"/><p:separator style="display: #{manticCatalogosAlmacenesConfrontasAccion.agregar}"/>
                 <p:outputLabel for="idAlmacen" value="Almacen origen:"/>
 								<p:selectOneMenu id="idAlmacen" value="#{manticCatalogosAlmacenesConfrontasAccion.adminOrden.orden.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="true">

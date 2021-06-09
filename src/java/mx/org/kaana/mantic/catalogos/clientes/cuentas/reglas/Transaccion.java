@@ -428,7 +428,7 @@ public class Transaccion extends TransaccionFactura{
 			params= new HashMap<>();
 			params.put("idCliente", this.idCliente);
 			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo> 0 and tc_mantic_clientes_deudas.id_cliente_estatus in(1, 2)");			
-			params.put("sortOrder", "order by registro asc");
+			params.put("sortOrder", "order by tc_mantic_clientes_deudas.registro asc");
 			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaClientesDto", "cuentas", params);			
 		} // try
 		catch (Exception e) {			

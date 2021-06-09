@@ -52,7 +52,7 @@ public class Confronta extends TcManticConfrontasDto implements Serializable {
 				this.ikAlmacen = new UISelectEntity(this.transferencia.getIdAlmacen());
 				this.ikDestino = new UISelectEntity(this.transferencia.getIdDestino());
 				this.ikSolicito= new UISelectEntity(this.transferencia.getIdSolicito()== null? -1L: this.transferencia.getIdSolicito());
-				this.setConsecutivo(this.transferencia.getConsecutivo());
+				// this.setConsecutivo(this.transferencia.getConsecutivo());
 			} // if	
 		} // try
 		catch (Exception e) {

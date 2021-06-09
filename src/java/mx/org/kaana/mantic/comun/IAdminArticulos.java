@@ -251,7 +251,25 @@ public abstract class IAdminArticulos implements Serializable {
 				else
 				  count++;
 		} // while
-		this.toRefreshCalculate();
+    if(!this.articulos.isEmpty())
+		  this.toRefreshCalculate();
+	}
+
+	public void toAjustarArticulos() {
+		int count= 0;
+		while(count< this.articulos.size()) {
+			if(!this.articulos.get(count).isValid())
+				this.articulos.remove(count);
+			else
+				if(count> 0 && this.articulos.get(count- 1).getKey().equals(this.articulos.get(count).getKey())) {
+					this.articulos.get(count- 1).setCantidad(this.articulos.get(count- 1).getCantidad()+ this.articulos.get(count).getCantidad());
+					this.articulos.remove(count);
+				} // if
+				else
+				  count++;
+		} // while
+    if(!this.articulos.isEmpty())
+		  this.toRefreshCalculate();
 	}
 
 	public void toCantidad() {

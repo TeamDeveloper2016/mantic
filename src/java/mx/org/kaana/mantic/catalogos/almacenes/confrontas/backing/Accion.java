@@ -181,7 +181,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     String regresar        = null;
     try {			
 			transaccion = new Transaccion((TcManticConfrontasDto)this.getAdminOrden().getOrden(), this.getAdminOrden().getArticulos());
-			this.getAdminOrden().toAdjustArticulos();
+		  this.getAdminOrden().toAjustarArticulos();
 			if(((Confronta)this.getAdminOrden().getOrden()).getTransferencia().getIdTransferenciaEstatus()== 6L)
 				this.accion= EAccion.PROCESAR;
 			if (transaccion.ejecutar(this.accion)) {

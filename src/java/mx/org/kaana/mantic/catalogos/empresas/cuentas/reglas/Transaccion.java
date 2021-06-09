@@ -514,7 +514,7 @@ public class Transaccion extends IBaseTnx {
 					saldoDeuda= Numero.toRedondear(item.toDouble("saldo"));
 					if(saldoDeuda< this.pago.getPago()) {
 						pagoParcial= saldoDeuda;
-						saldo= this.pago.getPago()- saldoDeuda;						
+						saldo= Numero.toRedondearSat(this.pago.getPago()- saldoDeuda);						
 						this.pago.setPago(saldo);
 						abono= 0D;
 						idEstatus= EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa();
@@ -522,7 +522,7 @@ public class Transaccion extends IBaseTnx {
           else {						
 						pagoParcial= this.pago.getPago();
 						saldo= 0D;
-						abono= saldoDeuda- this.pago.getPago();
+						abono= Numero.toRedondearSat(saldoDeuda- this.pago.getPago());
 						idEstatus= this.saldar? EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa(): (saldoDeuda.equals(this.pago.getPago())? EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa() : EEstatusEmpresas.PARCIALIZADA.getIdEstatusEmpresa());
 					} /// else
 					if(this.registrarPago(sesion, item, pagoParcial, this.control.getIdEmpresaPagoControl())) {
@@ -580,7 +580,7 @@ public class Transaccion extends IBaseTnx {
 							saldoDeuda= Numero.toRedondearSat(item.toDouble("saldo"));
 							if(saldoDeuda< this.pago.getPago()) {
 								pagoParcial= saldoDeuda;
-								saldo= this.pago.getPago() - saldoDeuda;						
+								saldo= Numero.toRedondearSat(this.pago.getPago()- saldoDeuda);						
 								this.pago.setPago(saldo);
 								abono= 0D;
 								idEstatus= EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa();
@@ -588,7 +588,7 @@ public class Transaccion extends IBaseTnx {
               else {
 								pagoParcial= this.pago.getPago();
 								saldo= 0D;
-								abono= saldoDeuda- this.pago.getPago();
+								abono= Numero.toRedondearSat(saldoDeuda- this.pago.getPago());
 								idEstatus= this.saldar? EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa(): (saldoDeuda.equals(this.pago.getPago())? EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa(): EEstatusEmpresas.PARCIALIZADA.getIdEstatusEmpresa());
 							} /// else
 							if(this.registrarPago(sesion, item, pagoParcial, this.control.getIdEmpresaPagoControl())) {
@@ -674,7 +674,7 @@ public class Transaccion extends IBaseTnx {
 			params= new HashMap<>();
 			params.put("idProveedor", this.idProveedor);
 			params.put(Constantes.SQL_CONDICION, " tc_mantic_empresas_deudas.saldo> 0 and tc_mantic_empresas_deudas.id_empresa_estatus in (1, 2, 3)");			
-			params.put("sortOrder", "order by dias desc");
+			params.put("sortOrder", "order by tc_mantic_empresas_deudas.registro asc");
 			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaEmpresasDto", "cuentasProveedor", params);			
 		} // try
 		catch (Exception e) {			

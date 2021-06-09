@@ -8039,13 +8039,12 @@
 					tc_mantic_proveedores
 				inner join
 					tc_mantic_notas_entradas on tc_mantic_proveedores.id_proveedor = tc_mantic_notas_entradas.id_proveedor
-				inner join
-					tc_mantic_empresas_deudas on tc_mantic_empresas_deudas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+				left join
+					tc_mantic_empresas_deudas on tc_mantic_empresas_deudas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada and tc_mantic_empresas_deudas.id_empresa_estatus in (1, 2, 3)
 				where
 					tc_mantic_proveedores.id_proveedor= {idProveedor}
 				group by 
-					tc_mantic_proveedores.id_proveedor,
-					tc_mantic_proveedores.razon_social
+					tc_mantic_proveedores.id_proveedor
 			</select>	
 		</unit>
 		<unit id="VistaTallerServiciosDto">
