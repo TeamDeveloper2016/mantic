@@ -871,7 +871,9 @@ public class Saldos extends IBaseFilter implements Serializable {
               texto= "Se ajusto la fecha de vencimiento con éxito ".concat(ticket);
               break;
           } // switch
+          this.idCliente= entity.toLong("idCliente");
           this.doLoad();
+          this.idCliente= -1L;
           UIBackingUtilities.update("tabla");
           UIBackingUtilities.update("tablaPagosRealizados");
         } // if
