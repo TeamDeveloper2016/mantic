@@ -233,6 +233,7 @@
                   <f:facet name="header">
                     <h:outputText value="Estatus"/>
                   </f:facet>
+                  <i class="fa fa-fw fa-comments janal-color-blue janal-icons-message" title="Observaciones: #{row['observaciones']}" style="display: #{row.idManual eq '1'? '': 'none'}"></i>
                   <h:outputText value="#{row['estatus']}"/>
                 </p:column>
                 <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
@@ -253,7 +254,7 @@
                   </f:facet>
                   <h:outputText value="#{row['saldo']}"/>
                 </p:column>						
-                <p:column class="janal-column-center MarAuto Responsive janal-wid-col-20">
+                <p:column class="janal-column-center MarAuto Responsive janal-wid-3">
                   <h:graphicImage library="janal" name="icon/semaforos/#{row.idClienteEstatus eq '1'? 'circulo-gris.png': (row.idClienteEstatus eq '3' or row.idClienteEstatus eq '4'? 'circulo-verde.png': row.idClienteEstatus eq '5'? 'circulo-rojo.png': 'circulo-amarillo.png')}" title="#{row.idClienteEstatus eq '1'? 'Cuenta sin abonos' : (row.idClienteEstatus eq '3' or row.idClienteEstatus eq '4'? 'Cuenta con abonos': row.idClienteEstatus eq '5'? 'Cuenta cancelada': 'Cuenta con abonos pendientes')}"/>
                 </p:column>
                 <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-4" exportable="false">

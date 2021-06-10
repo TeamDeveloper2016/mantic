@@ -575,6 +575,7 @@ strong { font-weight: bolder; }
 .ui-messages-fatal-icon-close { background-image:url("#{resource['janal:icon/acciones/close-fatal.svg']}") !important; background-size: 110%; background-position: center; }
 .janal-zero-size { visibility: hidden; padding: 0px; margin: 0px; border: 0px; width: 0px; height: 0px; }
 .janal-icons-header { float: left !important; }
+.janal-icons-message { float: right !important; }
 
 .janal-tr-diferencias {	background-color: #ABEBC6 !important; }
 .janal-tr-nuevo { background-color: #FDF5E6 !important; }

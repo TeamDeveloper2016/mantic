@@ -2774,19 +2774,7 @@
 			    and tc_mantic_ventas.id_venta_estatus in ({estatusTickets})
 					and {condicion}
 				group by
-					tc_mantic_ventas.id_venta,
-					tc_mantic_ventas.id_venta,
-			  	tc_mantic_ventas.ticket,
-					tc_mantic_empresas.clave,  
-					tc_mantic_empresas.nombre,  
-					tc_mantic_ventas.id_factura,
-					tc_mantic_ventas.id_facturar,
-					tc_mantic_facturas.folio,
-					tc_mantic_clientes.id_cliente,  
-					tc_mantic_clientes.razon_social,
-				  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno),
-					tc_mantic_ventas.total,
-					tc_mantic_ventas.registro
+					tc_mantic_ventas.id_venta
 				{sortOrder}
 			</select>	
 			<select id="movimientos">
@@ -2874,38 +2862,7 @@
 					tc_mantic_ventas.id_empresa in ({idEmpresa})
 					and {condicion}
 				group by 
-					tc_mantic_ventas.id_venta,
-					tc_mantic_ventas.id_venta,
-					tc_mantic_ventas.id_empresa,  
-				  tc_mantic_empresas.clave,  
-				  tc_mantic_empresas.nombre,  
-					tc_mantic_ventas.consecutivo,  													
-					tc_mantic_ventas.ticket,  
-					tc_mantic_ventas.id_manual,
-					tc_mantic_almacenes.clave,
-					tc_mantic_almacenes.nombre,
-					tc_mantic_ventas.total,
-					tc_mantic_ventas.sub_total,
-					tc_mantic_ventas.impuestos,
-					tc_mantic_ventas.total,
-					tc_mantic_ventas.id_venta_estatus,
-					tc_mantic_ventas_estatus.nombre,
-					tc_mantic_ventas_estatus.estatus_asociados, 
-					tc_mantic_ventas.registro,
-					tc_mantic_ventas.vigencia,
-					tc_mantic_personas.cuenta,
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno),
-					tc_mantic_clientes.id_cliente,  
-					tc_mantic_clientes.id_credito,
-					tc_mantic_clientes.razon_social,
-					tc_mantic_clientes.limite_credito,					
-					tc_mantic_facturas.id_factura,
-					tc_mantic_facturas.id_facturama,
-					tc_mantic_facturas.sello_sat,
-					tc_mantic_facturas.timbrado,
-					tc_mantic_facturas.intentos,
-					tc_mantic_facturas.cancelada,
-					tc_mantic_facturas.folio
+					tc_mantic_ventas.id_venta
 				{sortOrder}
 			</select>
 			<select id="bloqueadas">
@@ -2974,38 +2931,7 @@
           and tc_mantic_ventas.id_venta_estatus in ({estatus})
           and tc_mantic_ventas.id_venta!= {idVenta}
 				group by 
-					tc_mantic_ventas.id_venta,
-					tc_mantic_ventas.id_venta,
-					tc_mantic_ventas.id_empresa,  
-				  tc_mantic_empresas.clave,  
-				  tc_mantic_empresas.nombre,  
-					tc_mantic_ventas.consecutivo,  													
-					tc_mantic_ventas.ticket,  
-					tc_mantic_ventas.id_manual,
-					tc_mantic_almacenes.clave,
-					tc_mantic_almacenes.nombre,
-					tc_mantic_ventas.total,
-					tc_mantic_ventas.sub_total,
-					tc_mantic_ventas.impuestos,
-					tc_mantic_ventas.total,
-					tc_mantic_ventas.id_venta_estatus,
-					tc_mantic_ventas_estatus.nombre,
-					tc_mantic_ventas_estatus.estatus_asociados, 
-					tc_mantic_ventas.registro,
-					tc_mantic_ventas.vigencia,
-					tc_mantic_personas.cuenta,
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno),
-					tc_mantic_clientes.id_cliente,  
-					tc_mantic_clientes.id_credito,
-					tc_mantic_clientes.razon_social,
-					tc_mantic_clientes.limite_credito,					
-					tc_mantic_facturas.id_factura,
-					tc_mantic_facturas.id_facturama,
-					tc_mantic_facturas.sello_sat,
-					tc_mantic_facturas.timbrado,
-					tc_mantic_facturas.intentos,
-					tc_mantic_facturas.cancelada,
-					tc_mantic_facturas.folio
+					tc_mantic_ventas.id_venta
 				{sortOrder}
 			</select>
 			<select id="fechasTicketsAbiertos">
@@ -4611,6 +4537,7 @@
 					tc_mantic_clientes.razon_social,
 					tc_mantic_ventas.id_venta,
           tc_mantic_clientes_estatus.id_cliente_estatus,
+          tc_mantic_ventas.observaciones,
 					tc_mantic_clientes_estatus.nombre estatus
 				from
 					tc_mantic_clientes_deudas
