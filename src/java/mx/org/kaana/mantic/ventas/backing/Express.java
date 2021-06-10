@@ -16,7 +16,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.formato.Cifrar;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -25,7 +25,6 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.reglas.Transaccion;
-import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
 import org.primefaces.event.SelectEvent;
@@ -36,21 +35,12 @@ public class Express extends IBaseVenta implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;  
 	private TicketVenta venta;
-	private EOrdenes tipoOrden;	
 	private boolean aplicar;
 
 	public Express() {
 		super("menudeo");
 	}
 	
-	public String getTitulo() {
-		return "(".concat(tipoOrden.name()).concat(")");
-	}
-
-	public EOrdenes getTipoOrden() {
-		return tipoOrden;
-	}	
-
 	public TicketVenta getVenta() {
 		return venta;
 	}
@@ -66,18 +56,17 @@ public class Express extends IBaseVenta implements Serializable {
 		this.aplicar    = false;
     try {
 			this.attrs.put("isAplicar", JsfBase.isAdminEncuestaOrAdmin());
-			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
+      this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente"));
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR : JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null? -1L: JsfBase.getFlashAttribute("idVenta"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? null: JsfBase.getFlashAttribute("retorno"));      
 			this.attrs.put("ticketLock", -1L);
-			loadClienteDefault();
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			isMatriz= JsfBase.getAutentifica().getEmpresa().isMatriz();
 			this.attrs.put("isMatriz", isMatriz);
 			if(isMatriz)
-				loadSucursales();
-			doLoad();
+				this.loadSucursales();
+			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -85,6 +74,7 @@ public class Express extends IBaseVenta implements Serializable {
     } // catch		
   } // init
 
+  @Override
   public void doLoad() {
     EAccion eaccion          = null;
 		Map<String, Object>params= null;
@@ -95,8 +85,13 @@ public class Express extends IBaseVenta implements Serializable {
       switch (eaccion) {
         case AGREGAR:					
 					this.venta= new TicketVenta();
-					this.venta.setIdManual(1L);
 					this.venta.setIdAlmacen(JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
+					this.venta.setIdManual(1L);
+					this.venta.setEjercicio(2020L);
+          this.venta.setGlobal(0D);
+          this.venta.setUtilidad(0D);
+          this.venta.setIdTipoMedioPago(1L);
+          this.venta.setIdTipoPago(2L);
           break;
         case MODIFICAR:			
         case CONSULTAR:			          
@@ -104,12 +99,13 @@ public class Express extends IBaseVenta implements Serializable {
 					params.put("idVenta", Long.valueOf(this.attrs.get("idVenta").toString()));
 					this.venta= (TicketVenta) DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params);
 					this.attrs.put("idEmpresa", this.venta.getIdEmpresa());
-					if(this.venta.getIdCliente()!= null && !this.venta.getIdCliente().equals(-1L)){
-						doAsignaClienteInicial(this.venta.getIdCliente());
+					if(this.venta.getIdCliente()!= null && !this.venta.getIdCliente().equals(-1L)) {
+						this.doAsignaClienteInicial(this.venta.getIdCliente());
 					} // if
           break;
-      } // switch			
-			toLoadCatalog();
+      } // switch		
+			this.toLoadClienteDefualt();
+			this.toLoadCatalog();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -120,11 +116,11 @@ public class Express extends IBaseVenta implements Serializable {
 		} // finally
   } // doLoad
 
-	public String doAplicar(){
+	public String doAplicar() {
 		String regresar= null;
 		try {
 			this.aplicar= true;
-			regresar= doAceptar();
+			regresar= this.doAceptar();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -146,11 +142,12 @@ public class Express extends IBaseVenta implements Serializable {
 			transaccion = new Transaccion(this.venta);
 			transaccion.setAplicar(this.aplicar);
 			if (transaccion.ejecutar(EAccion.PROCESAR)) {
- 				if(!this.aplicar)
-					regresar= "/Paginas/Mantic/Catalogos/Clientes/Cuentas/saldos".concat(Constantes.REDIRECIONAR);
+        JsfBase.setFlashAttribute("idCliente", this.venta.getIdCliente());		
+ 				if(this.aplicar)
+          regresar= "filtro".concat(Constantes.REDIRECIONAR);
 				else	
-					regresar= "filtro".concat(Constantes.REDIRECIONAR);
-    		UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la cuenta ', '"+ this.venta.getConsecutivo()+ "');");													
+					regresar= "/Paginas/Mantic/Catalogos/Clientes/Cuentas/saldos".concat(Constantes.REDIRECIONAR);
+    		UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3', '"+ this.venta.getTicket()+ "');");													
 				// JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la cuenta."), ETipoMensaje.INFORMACION);  			
 			} // if
 			else 
@@ -174,7 +171,7 @@ public class Express extends IBaseVenta implements Serializable {
       this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 			if(!almacenes.isEmpty()) 
-				((TicketVenta)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
+				this.venta.setIkAlmacen(almacenes.get(0));
       columns.remove(0);
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("clientes", UIEntity.build("TcManticClientesDto", "sucursales", params, columns));
@@ -223,7 +220,7 @@ public class Express extends IBaseVenta implements Serializable {
 	}	// doUpdateClientes
 	
 	@Override
-	public void doAsignaCliente(SelectEvent event){
+	public void doAsignaCliente(SelectEvent event) {
 		UISelectEntity seleccion              = null;
 		List<UISelectEntity> clientes         = null;
 		List<UISelectEntity> clientesSeleccion= null;
@@ -244,7 +241,7 @@ public class Express extends IBaseVenta implements Serializable {
 		} // catch		
 	} // doAsignaCliente
 	
-	public void doAsignaClienteInicial(Long idCliente){
+	public void doAsignaClienteInicial(Long idCliente) {
 		UISelectEntity seleccion              = null;
 		List<UISelectEntity> clientesSeleccion= null;
 		MotorBusqueda motorBusqueda           = null; 
@@ -263,17 +260,23 @@ public class Express extends IBaseVenta implements Serializable {
 		} // catch		
 	} // doAsignaCliente	
 	
-	private void loadClienteDefault(){
+	private void toLoadClienteDefualt() {
 		UISelectEntity seleccion              = null;
 		List<UISelectEntity> clientesSeleccion= null;
 		MotorBusqueda motorBusqueda           = null;
 		try {
-			motorBusqueda= new MotorBusqueda(-1L);
-			seleccion= new UISelectEntity(motorBusqueda.toClienteDefault());
+      motorBusqueda= new MotorBusqueda(-1L, (Long)this.attrs.get("idCliente"));
+      if(Cadena.isVacio(this.attrs.get("idCliente"))) 
+			  seleccion= new UISelectEntity(motorBusqueda.toClienteDefault());
+      else
+			  seleccion= new UISelectEntity(motorBusqueda.toClienteFuente());
 			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);			
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);			
+      this.venta.setIdCliente(seleccion.toLong("idCliente"));
+      this.venta.setIdClienteDomicilio(seleccion.toLong("idClienteDomicilio"));
+      this.venta.setIkCliente(new UISelectEntity(seleccion));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -281,9 +284,9 @@ public class Express extends IBaseVenta implements Serializable {
 		} // catch		
 	} // loadClienteDefault	
 	
-	public void doUpdateForEmpresa(){
+	public void doUpdateForEmpresa() {
 		try {
-			loadClienteDefault();
+			this.toLoadClienteDefualt();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -292,10 +295,17 @@ public class Express extends IBaseVenta implements Serializable {
 	} // doUpdateForEmpresa	
 	
 	@Override
-	public String doCancelar() {     	
+	public String doCancelar() {    
+    JsfBase.setFlashAttribute("idCliente", this.attrs.get("idCliente"));		
 		if(!this.aplicar)
 			return "/Paginas/Mantic/Catalogos/Clientes/Cuentas/saldos".concat(Constantes.REDIRECIONAR);
 		else	
-			return "filtro".concat(Constantes.REDIRECIONAR);
+			return this.attrs.get("regreso")== null? "filtro".concat(Constantes.REDIRECIONAR): (String)this.attrs.get("regreso");
   } // doCancelar
+
+  public void doCalculate() {
+    this.venta.setImpuestos(Numero.toRedondearSat(this.venta.getTotal()* 0.16));
+    this.venta.setSubTotal(Numero.toRedondearSat(this.venta.getTotal()- this.venta.getImpuestos()));
+  }
+  
 }

@@ -436,9 +436,11 @@ public class Saldos extends IBaseFilter implements Serializable {
 		return "importar".concat(Constantes.REDIRECIONAR);
 	}
 	
-	public String doTicketExpress() {
+	public String doTicketExpress(Entity cliente) {
 		String regresar= null;
 		try {			
+      JsfBase.setFlashAttribute("idCliente", cliente.toLong("idCliente"));		
+      JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Clientes/Cuentas/saldos");		
 			regresar= "/Paginas/Mantic/Ventas/express".concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {

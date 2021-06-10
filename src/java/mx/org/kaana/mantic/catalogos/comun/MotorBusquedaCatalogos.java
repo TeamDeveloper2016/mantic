@@ -220,4 +220,20 @@ public abstract class MotorBusquedaCatalogos {
 		} // catch		
 		return regresar;
 	} // toClienteDefault	
+
+	public Entity toClienteFuente() throws Exception {
+		Entity regresar          = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idCliente", this.idCliente);
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
+			regresar= (Entity) DaoFactory.getInstance().toEntity("VistaClientesDto", "cliente", params);			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toCliente
+  
 }

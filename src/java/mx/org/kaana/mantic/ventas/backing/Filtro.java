@@ -107,7 +107,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 			JsfBase.setFlashAttribute("accion", eaccion);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Ventas/filtro");					
 			JsfBase.setFlashAttribute("idVenta", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
-			if(eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)){
+			if(eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) {
 				if(((Entity)this.attrs.get("seleccionado")).toString("idManual").equals("1"))
 					regresar= "/Paginas/Mantic/Ventas/express".concat(Constantes.REDIRECIONAR); 
 			} // if

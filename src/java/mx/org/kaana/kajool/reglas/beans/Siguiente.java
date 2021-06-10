@@ -4,7 +4,6 @@ import java.io.Serializable;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
-import mx.org.kaana.libs.recurso.Configuracion;
 
 /**
  *@company KAANA
@@ -29,6 +28,12 @@ public final class Siguiente implements Serializable {
 	public Siguiente(String consecutivo, Long orden) {
 		this.consecutivo= Fecha.getAnioActual()+ consecutivo;
 		this.temporal   = consecutivo;
+		this.orden      = orden;
+	}
+
+	public Siguiente(String ejercicio, Long consecutivo, Long orden) {
+		this.temporal   = Cadena.rellenar(String.valueOf(consecutivo), Constantes.LENGTH_CONSECUTIVO, '0', true);
+		this.consecutivo= ejercicio+ this.temporal;
 		this.orden      = orden;
 	}
 

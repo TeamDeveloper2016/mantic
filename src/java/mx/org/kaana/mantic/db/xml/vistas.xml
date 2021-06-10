@@ -4445,6 +4445,7 @@
 			<select id="findRazonSocial">
 				select 
 					tc_mantic_clientes.id_cliente as id_key,
+					tc_mantic_clientes.id_cliente,
 					tc_mantic_clientes.clave,
 					tc_mantic_clientes.rfc,
 					tc_mantic_clientes.razon_social,
@@ -4476,6 +4477,8 @@
 			<select id="clienteDefault">
 				select 
 					tc_mantic_clientes.id_cliente as id_key,
+					tc_mantic_clientes.id_cliente,
+          tr_mantic_cliente_domicilio.id_cliente_domicilio,
 					tc_mantic_clientes.clave,
 					tc_mantic_clientes.rfc,
 					tc_mantic_clientes.razon_social,
@@ -4497,8 +4500,35 @@
 					tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio = tr_mantic_cliente_domicilio.id_domicilio
 				where   
 					tc_mantic_clientes.id_empresa in ({sucursales})
-				and 
-					tc_mantic_clientes.clave='{clave}'				                       
+				  and tc_mantic_clientes.clave='{clave}'				                       
+			</select>    
+			<select id="cliente">
+				select 
+					tc_mantic_clientes.id_cliente as id_key,
+					tc_mantic_clientes.id_cliente,
+          tr_mantic_cliente_domicilio.id_cliente_domicilio,
+					tc_mantic_clientes.clave,
+					tc_mantic_clientes.rfc,
+					tc_mantic_clientes.razon_social,
+					tc_mantic_clientes.limite_credito,
+					tc_mantic_clientes.plazo_dias,
+					tc_mantic_domicilios.calle,
+					tc_mantic_domicilios.numero_exterior,
+					tc_mantic_domicilios.asentamiento,
+					tc_mantic_domicilios.codigo_postal, 
+					tc_mantic_tipos_ventas.nombre tipo_venta,
+          tc_mantic_clientes.especial
+				from
+					tc_mantic_clientes 
+				inner join 
+					tc_mantic_tipos_ventas on tc_mantic_clientes.id_tipo_venta = tc_mantic_tipos_ventas.id_tipo_venta
+				left join
+					tr_mantic_cliente_domicilio on tr_mantic_cliente_domicilio.id_cliente=tc_mantic_clientes.id_cliente
+				left join
+					tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio = tr_mantic_cliente_domicilio.id_domicilio
+				where   
+					tc_mantic_clientes.id_empresa in ({sucursales})
+				  and tc_mantic_clientes.id_cliente= {idCliente}				                       
 			</select>    
 			<select id="cuentas">
 				select

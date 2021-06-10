@@ -175,14 +175,14 @@ public class Transaccion extends TransaccionFactura {
 					regresar= this.orden.getIdVenta()!= null && !this.orden.getIdVenta().equals(-1L) ? actualizarVenta(sesion, idEstatusVenta) : registrarVenta(sesion, idEstatusVenta);					
 					break;
 				case MODIFICAR:
-					regresar= actualizarVenta(sesion, EEstatusVentas.ABIERTA.getIdEstatusVenta());					
+					regresar= this.actualizarVenta(sesion, EEstatusVentas.ABIERTA.getIdEstatusVenta());					
 					break;				
 				case ELIMINAR:
 					idEstatusVenta= EEstatusVentas.CANCELADA.getIdEstatusVenta();
 					this.orden= (TcManticVentasDto) DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.orden.getIdVenta());
 					this.orden.setIdVentaEstatus(idEstatusVenta);					
 					if(DaoFactory.getInstance().update(sesion, this.orden)>= 1L)
-						regresar= registraBitacora(sesion, this.orden.getIdVenta(), idEstatusVenta, this.justificacion);					
+						regresar= this.registraBitacora(sesion, this.orden.getIdVenta(), idEstatusVenta, this.justificacion);					
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L){
@@ -192,14 +192,14 @@ public class Transaccion extends TransaccionFactura {
 					} // if
 					break;				
 				case ASIGNAR:
-					regresar= procesarCliente(sesion);
+					regresar= this.procesarCliente(sesion);
 					break;					
 				case TRANSFORMACION:
-					regresar= actualizarCliente(sesion);
+					regresar= this.actualizarCliente(sesion);
 					break;
 				case REPROCESAR:
 				case COPIAR:
-					regresar= actualizarVenta(sesion, accion.equals(EAccion.REPROCESAR) ? EEstatusVentas.PAGADA.getIdEstatusVenta() : EEstatusVentas.CREDITO.getIdEstatusVenta());				
+					regresar= this.actualizarVenta(sesion, accion.equals(EAccion.REPROCESAR)? EEstatusVentas.PAGADA.getIdEstatusVenta(): EEstatusVentas.CREDITO.getIdEstatusVenta());				
 					break;		
 				case NO_APLICA:
 					params= new HashMap<>();
@@ -210,9 +210,12 @@ public class Transaccion extends TransaccionFactura {
 					} // if					
 	        break;
 				case PROCESAR:
-					consecutivo= this.toSiguiente(sesion);			
+					consecutivo= this.toSiguienteEspecial(sesion);			
+          this.orden.setEjercicio(2020L);
 					this.orden.setConsecutivo(consecutivo.getOrden());			
 					this.orden.setOrden(consecutivo.getOrden());
+          this.orden.setCticket(consecutivo.getOrden());			
+          this.orden.setTicket(consecutivo.getConsecutivo());
 					this.orden.setIdUsuario(JsfBase.getIdUsuario());
           if(this.orden.getIdBanco()!=null && this.orden.getIdBanco()<= -1L)
             this.orden.setIdBanco(null);
@@ -220,21 +223,19 @@ public class Transaccion extends TransaccionFactura {
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 					else
 						regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
-					if(regresar) {
-						regresar= registraBitacora(sesion, this.orden.getIdVenta(), this.orden.getIdVentaEstatus(), "REGISTRO DE VENTA EXPRESS");
-						if(regresar && !this.aplicar)
-							registrarDeuda(sesion, this.orden.getTotal());
-					} // if					
+				  this.registraBitacora(sesion, this.orden.getIdVenta(), this.orden.getIdVentaEstatus(), "REGISTRO DE VENTA EXPRESS");
+					if(!this.aplicar)
+						this.registrarDeuda(sesion, this.orden.getTotal());
 					break;
 				case MOVIMIENTOS:
 					idEstatusVenta= EEstatusVentas.ABIERTA.getIdEstatusVenta();
-					regresar= this.orden.getIdVenta()!= null && !this.orden.getIdVenta().equals(-1L) ? actualizarVenta(sesion, idEstatusVenta) : registrarVenta(sesion, idEstatusVenta);					
+					regresar= this.orden.getIdVenta()!= null && !this.orden.getIdVenta().equals(-1L) ? this.actualizarVenta(sesion, idEstatusVenta) : registrarVenta(sesion, idEstatusVenta);					
 					break;
 				case LISTAR:
 					//Procesar servicio de taller
 					boolean actualizar= this.orden.getIdVenta()!= null && !this.orden.getIdVenta().equals(-1L);
 					idEstatusVenta= accion.equals(EAccion.AGREGAR) ? EEstatusVentas.ABIERTA.getIdEstatusVenta() : (accion.equals(EAccion.DESACTIVAR) ? this.orden.getIdVentaEstatus() : idEstatusVenta);
-					regresar= actualizar ? actualizarVenta(sesion, idEstatusVenta) : registrarVenta(sesion, idEstatusVenta);					
+					regresar= actualizar ? this.actualizarVenta(sesion, idEstatusVenta): this.registrarVenta(sesion, idEstatusVenta);					
 					if(!actualizar) {
 						TcManticServiciosDto servicio= (TcManticServiciosDto) DaoFactory.getInstance().findById(sesion, TcManticServiciosDto.class, this.idServicio);
 						servicio.setIdVenta(this.orden.getIdVenta());
@@ -255,7 +256,7 @@ public class Transaccion extends TransaccionFactura {
 	}	// ejecutar
 
 	private boolean registrarVenta(Session sesion, Long idEstatusVenta) throws Exception{
-		return registrarVentaCotizacion(sesion, idEstatusVenta, false);
+		return this.registrarVentaCotizacion(sesion, idEstatusVenta, false);
 	}
 	
 	private boolean registrarVentaCotizacion(Session sesion, Long idEstatusVenta, boolean cotizacion) throws Exception {
@@ -346,6 +347,26 @@ public class Transaccion extends TransaccionFactura {
 				regresar= new Siguiente(next.toLong());
 			else
 				regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 900001L: 1L); 
+		} // try		
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toSiguiente
+	
+	protected Siguiente toSiguienteEspecial(Session sesion) throws Exception {
+		Siguiente regresar        = null;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("ejercicio", 2020);
+			params.put("idEmpresa", this.orden.getIdEmpresa());
+			params.put("operador", this.getCurrentSign());
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticVentasDto", "especial", params, "siguiente");
+			if(next.getData()!= null)
+				regresar= new Siguiente("2020", next.toLong(), next.toLong());
+			else
+				regresar= new Siguiente("2020", Configuracion.getInstance().isEtapaDesarrollo()? 900001L: 1L, Configuracion.getInstance().isEtapaDesarrollo()? 900001L: 1L); 
 		} // try		
 		finally {
 			Methods.clean(params);

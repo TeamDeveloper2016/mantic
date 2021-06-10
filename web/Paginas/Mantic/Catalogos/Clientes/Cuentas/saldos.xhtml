@@ -162,7 +162,7 @@
 							</f:facet>
 							<h:outputText value="#{cliente['limiteCredito']}"/>
 						</p:column>
-            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-38" exportable="false" rendered="false">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-3" exportable="false" rendered="false">
 							<p:commandButton icon="fa fa-search" process="@this" update="detalle" action="#{manticCatalogosClientesCuentasSaldos.doLoadDetalle}" title="Consultar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
 								<f:setPropertyActionListener value="#{cliente}" target="#{manticCatalogosClientesCuentasSaldos.attrs.seleccionado}" />
 							</p:commandButton>
@@ -179,7 +179,7 @@
                   </div>  
                   <div class="lg-pantalla">
                     <p:menuButton value="Opciones">
-                      <p:menuitem value="Ticket express" action="#{manticCatalogosClientesCuentasSaldos.doTicketExpress}" icon="fa fa-file-text-o" title="Generar ticket express" onstart="return janal.bloquear()"/>						
+                      <p:menuitem value="Ticket express" action="#{manticCatalogosClientesCuentasSaldos.doTicketExpress(cliente)}" icon="fa fa-file-text-o" title="Generar ticket express" onstart="return janal.bloquear()"/>						
                       <p:separator/>
                       <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('tabla\\:#{index}\\:detallePdf', 'detalle');" oncomplete="janal.desbloquear();"/>
                       <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('tabla\\:#{index}\\:detalleXls', 'detalle');" oncomplete="janal.desbloquear();"/>
@@ -256,7 +256,7 @@
                 <p:column class="janal-column-center MarAuto Responsive janal-wid-col-20">
                   <h:graphicImage library="janal" name="icon/semaforos/#{row.idClienteEstatus eq '1'? 'circulo-gris.png': (row.idClienteEstatus eq '3' or row.idClienteEstatus eq '4'? 'circulo-verde.png': row.idClienteEstatus eq '5'? 'circulo-rojo.png': 'circulo-amarillo.png')}" title="#{row.idClienteEstatus eq '1'? 'Cuenta sin abonos' : (row.idClienteEstatus eq '3' or row.idClienteEstatus eq '4'? 'Cuenta con abonos': row.idClienteEstatus eq '5'? 'Cuenta cancelada': 'Cuenta con abonos pendientes')}"/>
                 </p:column>
-                <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-38" exportable="false">
+                <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-4" exportable="false">
                   <p:commandButton icon="fa fa-trash" process="@this" update="@this dialogoAutorizacion" actionListener="#{manticCatalogosClientesCuentasSaldos.doDeleteCuenta(row)}" title="Eliminar cuenta" onstart="return janal.bloquear();" oncomplete="PF('widgetDialogoAutorizacion').show();" rendered="#{row.idClienteEstatus eq '1'}"/>
                 </p:column>
                 <f:facet name="footer">
@@ -342,7 +342,7 @@
 							</f:facet>
 							<h:outputText value="#{pago['registro']}"/>
 						</p:column>		
-            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-38" exportable="false">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-4" exportable="false">
               <p:commandButton icon="fa fa-trash" process="@this" update="@this dialogoAutorizacion" actionListener="#{manticCatalogosClientesCuentasSaldos.doDeletePago(pago)}" title="Eliminar pago" onstart="return janal.bloquear();" oncomplete="PF('widgetDialogoAutorizacion').show();" rendered="#{row.eliminar eq '1'}"/>
 						</p:column>
 						<p:rowExpansion> 

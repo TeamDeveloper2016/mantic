@@ -4803,6 +4803,16 @@
 				  and id_empresa= {idEmpresa}				
 				  and orden {operador} 900000
 			</select>			
+      <select id="especial">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_ventas
+				where
+				  ejercicio= {ejercicio} 
+				  and id_empresa= {idEmpresa}				
+				  and orden {operador} 900000
+			</select>			
       <select id="siguienteCotizacion">
         select
 					max(ccotizacion)+ 1 as siguiente
