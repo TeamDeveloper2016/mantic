@@ -161,12 +161,18 @@ public class Accion extends IBaseVenta implements Serializable {
 					if(idCliente!= null && !idCliente.equals(-1L)){
 						this.doAsignaClienteInicial(idCliente);
 						this.doLoadSaldos(idCliente);
+            if(((TicketVenta)this.getAdminOrden().getOrden()).getIdManual()== 1L) {
+              this.attrs.put("observaciones", ((TicketVenta)this.getAdminOrden().getOrden()).getObservaciones());
+              this.getAdminOrden().getTotales().setIva(((TicketVenta)this.getAdminOrden().getOrden()).getImpuestos());
+              this.getAdminOrden().getTotales().setSubTotal(((TicketVenta)this.getAdminOrden().getOrden()).getSubTotal());
+              this.getAdminOrden().getTotales().setTotal(((TicketVenta)this.getAdminOrden().getOrden()).getTotal());
+            } // if
 					} // if
-					this.loadCatalogs();
+					this.toLoadSucursales();
           break;
       } // switch
 			this.attrs.put("consecutivo", "");
-			this.toLoadCatalog();
+			this.toLoadCatalogos();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -174,7 +180,7 @@ public class Accion extends IBaseVenta implements Serializable {
     } // catch		
   } // doLoad
 
-	private void loadCatalogs() {
+	private void toLoadSucursales() {
 		List<UISelectEntity> sucursales= null;		
 		try {
 			if(this.attrs.get("sucursales")!= null){
@@ -229,7 +235,7 @@ public class Accion extends IBaseVenta implements Serializable {
     return regresar;
   } // doAccion  
 
-	private void toLoadCatalog() {
+	private void toLoadCatalogos() {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
     try {
