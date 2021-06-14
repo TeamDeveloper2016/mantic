@@ -42,7 +42,7 @@ public class CreateTicket implements Serializable {
 		this.pago   = pago;
 		this.tipo   = tipo;
 		this.cliente= cliente;
-    if((this.ticket.getOrden() instanceof TicketVenta) && ((TicketVenta)this.ticket.getOrden()).getIdManual()== 1L) {
+    if(this.ticket!= null && this.ticket.getOrden()!= null && (this.ticket.getOrden() instanceof TicketVenta) && ((TicketVenta)this.ticket.getOrden()).getIdManual()== 1L) {
       this.pago.getTotales().setIva(((TicketVenta)this.ticket.getOrden()).getImpuestos());
       this.pago.getTotales().setSubTotal(((TicketVenta)this.ticket.getOrden()).getSubTotal());
       this.pago.getTotales().setTotal(((TicketVenta)this.ticket.getOrden()).getTotal());

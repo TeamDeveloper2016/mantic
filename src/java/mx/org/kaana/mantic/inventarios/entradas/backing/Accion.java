@@ -542,7 +542,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 						disponibles.get(0).put("costo", new Value("costo", faltante.getCosto()));
 						disponibles.get(0).put("cantidad", new Value("cantidad", faltante.getCantidad()));
 						disponibles.get(0).put("descuento", new Value("descuento", faltante.getDescuento()));
-						disponibles.get(0).put("iva", new Value("iva", faltante.getIva()));
+						//disponibles.get(0).put("iva", new Value("iva", faltante.getIva()));
+						disponibles.get(0).put("iva", new Value("iva", Numero.toRedondearSat(Constantes.PORCENTAJE_IVA* 100)));
 						disponibles.get(0).put("unidadMedida", new Value("unidadMedida", faltante.getUnidadMedida()!= null? faltante.getUnidadMedida().toUpperCase(): ""));
 						disponibles.get(0).put("origen", new Value("origen", faltante.getNombre()));
 						disponibles.get(0).put("facturado", new Value("facturado", true));
@@ -711,7 +712,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				buscado.put("costo", new Value("costo", faltante.getCosto()));
 				buscado.put("cantidad", new Value("cantidad", faltante.getCantidad()));
 				buscado.put("descuento", new Value("descuento", faltante.getDescuento()));
-				buscado.put("iva", new Value("iva", faltante.getIva()));
+				//buscado.put("iva", new Value("iva", faltante.getIva()));
+				buscado.put("iva", new Value("iva", Numero.toRedondearSat(Constantes.PORCENTAJE_IVA* 100)));
 				buscado.put("unidadMedida", new Value("unidadMedida", faltante.getUnidadMedida()!= null? faltante.getUnidadMedida().toUpperCase(): ""));
 				buscado.put("origen", new Value("origen", faltante.getNombre()));
 				buscado.put("disponible", new Value("disponible", false));
