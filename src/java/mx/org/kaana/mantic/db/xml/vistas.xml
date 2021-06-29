@@ -9298,6 +9298,7 @@
 					tc_mantic_ventas_detalles on tc_mantic_garantias_detalles.id_venta_detalle = tc_mantic_ventas_detalles.id_venta_detalle
 				where
 					tc_mantic_garantias.id_garantia= {idGarantia}
+          and tc_mantic_garantias_detalles.cantidad> 0
         {sortOrder}
       </select>  
 			<select id="detalle">

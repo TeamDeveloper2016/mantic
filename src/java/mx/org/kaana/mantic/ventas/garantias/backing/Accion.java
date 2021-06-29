@@ -685,8 +685,10 @@ public class Accion extends IBaseVenta implements Serializable {
 			regresar.append(EEstatusVentas.TERMINADA.getIdEstatusVenta());									
 			regresar.append(" or tc_mantic_ventas.id_venta_estatus=");
 			regresar.append(EEstatusVentas.CREDITO.getIdEstatusVenta());									
+			regresar.append(" or tc_mantic_ventas.id_venta_estatus=");
+			regresar.append(EEstatusVentas.TIMBRADA.getIdEstatusVenta());									
 			regresar.append(") ");
-			if(cobroCaja){
+			if(cobroCaja) {
 				ticket= (Entity) this.attrs.get("devolucionTicket");
 				regresar.append(" and tc_mantic_ventas.ticket= '");
 				regresar.append(ticket.toString("ticket"));	
