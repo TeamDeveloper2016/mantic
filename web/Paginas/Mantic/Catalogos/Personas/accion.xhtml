@@ -12,11 +12,11 @@
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:titulo'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:nombre'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-				'contenedorGrupos\\:paterno'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-				'contenedorGrupos\\:materno'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-				'contenedorGrupos\\:rfc'         : {validaciones: 'requerido|rfc', mascara: 'fiscal', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-				'contenedorGrupos\\:curp'        : {validaciones: 'curp', mascara: 'curp', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+				'contenedorGrupos\\:nombre'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:paterno'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:materno'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:rfc'         : {validaciones: 'requerido|rfc', mascara: 'fiscal', grupo: 'general', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:curp'        : {validaciones: 'curp', mascara: 'curp', grupo: 'general', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:nacimiento'  : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
 				'contenedorGrupos\\:fechaIngreso': {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
 				'contenedorGrupos\\:idEstadoCivil': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},				
@@ -24,17 +24,18 @@
 				'contenedorGrupos\\:tipoPersona' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},				
 				'contenedorGrupos\\:sexo'        : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:puesto'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idActivo'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:entidad'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:municipio'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:localidad'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:cp'          : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:calle'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:exterior'    : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:interior'    : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:asentamiento': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:entreCalle'  : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:ycalle'      : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
-				'valor'                          : {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor'}
+        'contenedorGrupos\\:cp'          : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:calle'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:exterior'    : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:interior'    : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:asentamiento': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:entreCalle'  : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:ycalle'      : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+				'valor'                          : {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura del valor'}
 			};					
 			
 			fieldsDialog= {
@@ -101,7 +102,7 @@
 								<p:outputLabel for="proveedores" value="Proveedor:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarProveedores}"/>
 								<p:selectOneMenu id="proveedores" value="#{manticCatalogosPersonasAccion.attrs.proveedor}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarProveedores}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.proveedores}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
-									<p:column  styleClass="janal-column-center">
+									<p:column styleClass="janal-column-center">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
 									<p:column styleClass="janal-column-left">
@@ -124,6 +125,11 @@
 										<h:outputText value="#{item.razonSocial}"/>
 									</p:column>   
 								</p:selectOneMenu>	
+								<p:outputLabel for="idActivo" value="Activo:"/>
+								<p:selectOneRadio id="idActivo" value="#{manticCatalogosPersonasAccion.registroPersona.idActivo}">
+									<f:selectItem itemValue="1" itemLabel="SI"/>
+									<f:selectItem itemValue="2" itemLabel="NO"/>
+								</p:selectOneRadio>	
               </p:panelGrid>
 						</p:tab>	
 						<p:tab title="Domicilios">

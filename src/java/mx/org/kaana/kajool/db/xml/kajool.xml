@@ -139,6 +139,14 @@
         where
           id_perfil = {idPerfil}
       </select>
+      <update id="rows">
+        update
+          tc_janal_usuarios
+        set 
+          activo= 0
+        where
+          id_persona= {idPersona}
+      </update>
     </unit>
     <unit id="TcJanalTiposDatosDto">
       <select id="row">

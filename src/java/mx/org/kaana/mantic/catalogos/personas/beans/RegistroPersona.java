@@ -15,8 +15,9 @@ import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.personas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
+import mx.org.kaana.mantic.db.dto.TrManticEmpresaPersonalDto;
 
-public class RegistroPersona implements Serializable{
+public class RegistroPersona implements Serializable {
 
 	private static final long serialVersionUID= -8922183204418674058L;
 	private Long idPersona;
@@ -31,6 +32,7 @@ public class RegistroPersona implements Serializable{
 	private Domicilio domicilio;
 	private Domicilio domicilioPivote;
 	private Long idPuesto;
+	private Long idActivo;
 	private Long idEmpresa;
 	
 	public RegistroPersona() {
@@ -44,7 +46,7 @@ public class RegistroPersona implements Serializable{
 		this.deleteList = new ArrayList<>();
 		this.domicilio  = new Domicilio();
 		this.domicilioPivote= new Domicilio();
-		init();		
+		this.init();		
 	}
 	
 	public RegistroPersona(Long idPersona, TcManticPersonasDto persona, List<PersonaDomicilio> personasDomicilio, List<PersonaTipoContacto> personasTiposContacto, Domicilio domicilio) {
@@ -59,6 +61,7 @@ public class RegistroPersona implements Serializable{
 		this.domicilioPivote       = domicilio;
 		this.idPuesto              = -1L;
 		this.idEmpresa             = -1L;
+    this.idActivo              = 1L;
 	}
 
 	public Long getIdPersona() {
@@ -148,13 +151,21 @@ public class RegistroPersona implements Serializable{
 	public void setIdEmpresa(Long idEmpresa) {
 		this.idEmpresa = idEmpresa;
 	}	
+
+  public Long getIdActivo() {
+    return idActivo;
+  }
+
+  public void setIdActivo(Long idActivo) {
+    this.idActivo = idActivo;
+  }
 	
-	private void init(){
+	private void init() {
 		MotorBusqueda motorBusqueda= null;
 		try {
 			motorBusqueda= new MotorBusqueda(this.idPersona);
 			this.persona= motorBusqueda.toPersona();									
-			initCollections(motorBusqueda);
+			this.initCollections(motorBusqueda);
 		} // try
 		catch (Exception e) {			
 			JsfBase.addMessageError(e);
@@ -162,7 +173,7 @@ public class RegistroPersona implements Serializable{
 		} // catch		
 	} // init
 	
-	private void initCollections(MotorBusqueda motor) throws Exception{
+	private void initCollections(MotorBusqueda motor) throws Exception {
 		int count= 0;
 		try {
 			this.personasDomicilio= motor.toPersonasDomicilio(true);
@@ -170,9 +181,13 @@ public class RegistroPersona implements Serializable{
 				count++;
 				personaDomicilio.setConsecutivo(Long.valueOf(count));
 			} // for				
-			this.personasTiposContacto= motor.toPersonasTipoContacto();		
-			this.idPuesto= motor.toPuestoPersona();
-			this.idEmpresa= motor.toEmpresaPersona();
+			this.personasTiposContacto= motor.toPersonasTipoContacto();	
+      TrManticEmpresaPersonalDto empleado= motor.toDetallePersona();
+      if(empleado!= null && empleado.isValid()) {
+			  this.idPuesto = empleado.getIdPuesto();
+			  this.idEmpresa= empleado.getIdEmpresa();
+        this.idActivo = empleado.getIdActivo();
+      } // if
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);			
@@ -180,7 +195,7 @@ public class RegistroPersona implements Serializable{
 		} // catch		
 	} // initCollections
 	
-	public void doAgregarClienteDomicilio(){
+	public void doAgregarClienteDomicilio() {
 		PersonaDomicilio personaDomicilio= null;
 		try {								
 			personaDomicilio= new PersonaDomicilio(this.contadores.getTotalPersonasDomicilios() + this.countIndice, ESql.INSERT, true);	
@@ -196,7 +211,7 @@ public class RegistroPersona implements Serializable{
 		} // finally
 	} // doAgregarClienteDomicilio
 	
-	public void doEliminarClienteDomicilio(){
+	public void doEliminarClienteDomicilio() {
 		try {			
 			if(this.personasDomicilio.remove(this.personaDomicilioSelecion)){
 				if(!this.personaDomicilioSelecion.getNuevo())
@@ -212,7 +227,7 @@ public class RegistroPersona implements Serializable{
 		} // catch			
 	} // doEliminarClienteDomicilio	
 	
-	public void doConsultarClienteDomicilio(){
+	public void doConsultarClienteDomicilio() {
 		PersonaDomicilio pivote= null;
 		try {			
 			pivote= this.personasDomicilio.get(this.personasDomicilio.indexOf(this.personaDomicilioSelecion));
@@ -241,7 +256,7 @@ public class RegistroPersona implements Serializable{
 		} // catch		
 	} // doConsultarClienteDomicilio
 	
-	public void doActualizarClienteDomicilio(){
+	public void doActualizarClienteDomicilio() {
 		PersonaDomicilio pivote= null;
 		try {			
 			pivote= this.personasDomicilio.get(this.personasDomicilio.indexOf(this.personaDomicilioSelecion));			
@@ -254,7 +269,7 @@ public class RegistroPersona implements Serializable{
 		} // catch				
 	} // doActualizarClienteDomicilio
 	
-	private void setValuesPersonaDomicilio(PersonaDomicilio personaDomicilio, boolean actualizar) throws Exception{
+	private void setValuesPersonaDomicilio(PersonaDomicilio personaDomicilio, boolean actualizar) throws Exception {
 		try {
 			if(this.domicilio.getPrincipal()){
 				for(PersonaDomicilio record: this.personasDomicilio)
@@ -284,7 +299,7 @@ public class RegistroPersona implements Serializable{
 		} // catch		
 	} // setValuesClienteDomicilio
 	
-	public void doAgregarClienteTipoContacto(){
+	public void doAgregarClienteTipoContacto() {
 		PersonaTipoContacto personaTipoContacto= null;
 		try {					
 			personaTipoContacto= new PersonaTipoContacto(this.contadores.getTotalPersonasTipoContacto()+ this.countIndice, ESql.INSERT, true, null);				
@@ -300,7 +315,7 @@ public class RegistroPersona implements Serializable{
 		} // finally
 	} // doAgregarClienteTipoContacto
 	
-	public void doEliminarClienteTipoContacto(){
+	public void doEliminarClienteTipoContacto() {
 		try {			
 			if(this.personasTiposContacto.remove(this.personaTipoContactoSeleccion)){
 				if(!this.personaTipoContactoSeleccion.getNuevo())
@@ -316,7 +331,7 @@ public class RegistroPersona implements Serializable{
 		} // catch			
 	} // doEliminarClienteTipoContacto
 	
-	private void addDeleteList(IBaseDto dto) throws Exception{
+	private void addDeleteList(IBaseDto dto) throws Exception {
 		Transaccion transaccion= null;
 		try {
 			transaccion= new Transaccion(dto);
@@ -328,7 +343,7 @@ public class RegistroPersona implements Serializable{
 		} // catch		
 	} // addDeleteList
 	
-	private Long registrarDomicilio() throws Exception{
+	private Long registrarDomicilio() throws Exception {
 		Long regresar= -1L;
 		try {
 			this.domicilio.setIdUsuario(JsfBase.getIdUsuario());

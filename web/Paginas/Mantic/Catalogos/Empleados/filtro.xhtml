@@ -31,27 +31,33 @@
               <p:inputText id="nombres" value="#{manticCatalogosEmpleadosFiltro.attrs.nombres}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="rfc" value="RFC:"/>
               <p:inputText id="rfc" value="#{manticCatalogosEmpleadosFiltro.attrs.rfc}" styleClass="janal-wid-100-txt"/>              			                            
-              <p:outputLabel for="idTipoSexo"  value="Sexo:"/>
-              <p:selectOneMenu  id="idTipoSexo"  value="#{manticCatalogosEmpleadosFiltro.attrs.idTipoSexo}"  styleClass="janal-wid-90">
+              <p:outputLabel for="idTipoSexo" value="Sexo:"/>
+              <p:selectOneMenu  id="idTipoSexo" value="#{manticCatalogosEmpleadosFiltro.attrs.idTipoSexo}" styleClass="janal-wid-90">
                 <f:selectItem itemLabel="TODOS" itemValue="1,2,3"/>
                 <f:selectItem itemLabel="HOMBRE" itemValue="1"/>
                 <f:selectItem itemLabel="MUJER" itemValue="2"/>
                 <f:selectItem itemLabel="NO ESPECIFICADO" itemValue="3"/>
               </p:selectOneMenu>              
+              <p:outputLabel for="idActivo" value="Activo:"/>
+              <p:selectOneMenu id="idActivo" value="#{manticCatalogosEmpleadosFiltro.attrs.idActivo}" styleClass="janal-wid-90">
+                <f:selectItem itemLabel="TODOS" itemValue="1,2"/>
+                <f:selectItem itemLabel="SI" itemValue="1"/>
+                <f:selectItem itemLabel="NO" itemValue="2"/>
+              </p:selectOneMenu>              
 							<p:separator/>
             </p:panelGrid>
 						<div class="janal-align-right">
-							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this nombres rfc idTipoSexo" actionListener="#{manticCatalogosEmpleadosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this nombres rfc idTipoSexo idActivo" actionListener="#{manticCatalogosEmpleadosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
 							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this nombres rfc idTipoSexo" actionListener="#{manticCatalogosEmpleadosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
 						</div>
           </p:panel>
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosEmpleadosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosEmpleadosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosEmpleadosFiltro.lazyModel.rowCount gt manticCatalogosEmpleadosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosEmpleadosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosEmpleadosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosEmpleadosFiltro.lazyModel.rowCount gt manticCatalogosEmpleadosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
             <f:facet name="header" >
               <div class="lg-pantalla">
-                <p:menuButton   value="Opciones">
-                  <p:menuitem  value="Agregar" action="#{manticCatalogosEmpleadosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                <p:menuButton value="Opciones">
+                  <p:menuitem value="Agregar" action="#{manticCatalogosEmpleadosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
                   <p:separator/>
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>

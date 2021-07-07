@@ -614,7 +614,8 @@
 				inner join
 				  tc_janal_grupos on tc_janal_perfiles.id_grupo= tc_janal_grupos.id_grupo		
 				where
-				  {condicion}		
+				  {condicion}	
+          and tr_mantic_empresa_personal.id_activo= 1	
 				{sortOrder}
 			</select>
 			<select id="perfilUsuario">

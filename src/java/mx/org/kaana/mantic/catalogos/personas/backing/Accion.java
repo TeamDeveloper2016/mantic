@@ -79,7 +79,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				if(tipoPersona.getIdTipoPersona().equals(Long.valueOf(this.attrs.get("tipoPersona").toString())))
 					this.attrs.put("catalogo", Cadena.reemplazarCaracter(tipoPersona.name().toLowerCase(), '_' , ' '));
 			} // for			
-			doLoad();						
+			this.doLoad();						
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -89,20 +89,20 @@ public class Accion extends IBaseAttribute implements Serializable {
 
 	private void loadCollections() throws Exception{
 		if(Boolean.valueOf(this.attrs.get("mostrarEmpresas").toString()))
-			loadEmpresas();
-		loadPuestos();
-		loadTitulos();
-		loadTiposPersonas();   
-		loadTiposContactos();
-		loadTiposDomicilios();
-		loadEntidades();
-		loadMunicipios();
-		loadLocalidades();
-		loadCodigosPostales();
-		loadDomicilios();
-		loadClientes();
-		loadProveedores();
-		loadEstadosCiviles();
+			this.loadEmpresas();
+		this.loadPuestos();
+		this.loadTitulos();
+		this.loadTiposPersonas();   
+		this.loadTiposContactos();
+		this.loadTiposDomicilios();
+		this.loadEntidades();
+		this.loadMunicipios();
+		this.loadLocalidades();
+		this.loadCodigosPostales();
+		this.loadDomicilios();
+		this.loadClientes();
+		this.loadProveedores();
+		this.loadEstadosCiviles();
 	} // loadCollections
 	
 	private void loadEmpresas() {				
@@ -121,7 +121,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch	
 	} // loadEncuestas
 	
-	private void loadPuestos() {
+	private void loadPuestos() throws Exception {
 		List<UISelectItem> puestos= null;
     Map<String, Object> params= null;
     try {
@@ -179,9 +179,9 @@ public class Accion extends IBaseAttribute implements Serializable {
           idPersona= Long.valueOf(this.attrs.get("idPersona").toString());					
           this.registroPersona= new RegistroPersona(idPersona);
 					this.loadCollections();
-					if(!this.registroPersona.getPersonasDomicilio().isEmpty()){
+					if(!this.registroPersona.getPersonasDomicilio().isEmpty()) {
 						this.registroPersona.setPersonaDomicilioSelecion(this.registroPersona.getPersonasDomicilio().get(0));
-						doConsultarClienteDomicilio();
+						this.doConsultarClienteDomicilio();
 					} // if
 					this.attrs.put("idEmpresa", this.registroPersona.getIdEmpresa());
           break;

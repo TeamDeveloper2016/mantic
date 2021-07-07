@@ -1,11 +1,13 @@
 package mx.org.kaana.mantic.catalogos.personas.reglas;
 
+import com.google.common.base.Objects;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.dto.TcJanalUsuariosDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.RandomCuenta;
@@ -59,13 +61,13 @@ public class Transaccion  extends IBaseTnx{
 			this.messageError= "Ocurrio un error al ".concat(accion.name().toLowerCase()).concat(" el registro de la persona");
 			switch(accion){
 				case AGREGAR:
-					regresar = procesarCliente(sesion);					
+					regresar = this.procesarCliente(sesion);					
 					break;
 				case MODIFICAR:
-					regresar = actualizarCliente(sesion);					
+					regresar = this.actualizarCliente(sesion);					
 					break;				
 				case ELIMINAR:
-					regresar = eliminarCliente(sesion);					
+					regresar = this.eliminarCliente(sesion);					
 					break;
 				case DEPURAR:
 					regresar= DaoFactory.getInstance().delete(sesion, this.dto)>= 1L;
@@ -102,11 +104,11 @@ public class Transaccion  extends IBaseTnx{
 				this.persona.getPersona().setCuenta(this.cuenta);
         this.persona.getPersona().setIdUsuario(JsfBase.getIdUsuario());
         idPersona = DaoFactory.getInstance().insert(sesion, this.persona.getPersona());
-				if(registraPersonaEmpresa(sesion, idPersona)){
-					if (registraPersonasDomicilios(sesion, idPersona)) {
-						regresar = registraPersonasTipoContacto(sesion, idPersona);
+				if(this.registraPersonaEmpresa(sesion, idPersona)) {
+					if (this.registraPersonasDomicilios(sesion, idPersona)) {
+						regresar = this.registraPersonasTipoContacto(sesion, idPersona);
 						if(this.persona.getPersona().getIdTipoPersona().equals(ETipoPersona.AGENTE_VENTAS.getIdTipoPersona()))
-							regresar= registrarProveedor(sesion, idPersona);
+							regresar= this.registrarProveedor(sesion, idPersona);
 						if(this.persona.getPersona().getIdTipoPersona().equals(ETipoPersona.REPRESENTANTE_LEGAL.getIdTipoPersona()))
 							regresar= registrarCliente(sesion, idPersona);
 					} // if
@@ -125,14 +127,14 @@ public class Transaccion  extends IBaseTnx{
     try {
       idPersona= this.persona.getIdPersona();
 			this.cuenta= this.persona.getPersona().getCuenta();
-      if (registraPersonasDomicilios(sesion, idPersona)) {
-				if (registraPersonasTipoContacto(sesion, idPersona)) {
-					if (actualizaPuestoPersona(sesion, idPersona)) {
+      if (this.registraPersonasDomicilios(sesion, idPersona)) {
+				if (this.registraPersonasTipoContacto(sesion, idPersona)) {
+					if (this.actualizaPuestoPersona(sesion, idPersona)) {
 						regresar = DaoFactory.getInstance().update(sesion, this.persona.getPersona()) >= 1L;
 						if(this.persona.getPersona().getIdTipoPersona().equals(ETipoPersona.AGENTE_VENTAS.getIdTipoPersona()))
-							regresar= actualizaProveedor(sesion);
+							regresar= this.actualizaProveedor(sesion);
 						if(this.persona.getPersona().getIdTipoPersona().equals(ETipoPersona.REPRESENTANTE_LEGAL.getIdTipoPersona()))
-							regresar= actualizaCliente(sesion);
+							regresar= this.actualizaCliente(sesion);
 					} // if
 				} // if
       } // if
@@ -191,10 +193,16 @@ public class Transaccion  extends IBaseTnx{
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_persona=" + idPersona);
 			empresaPersonal= (TrManticEmpresaPersonalDto) DaoFactory.getInstance().findFirst(TrManticEmpresaPersonalDto.class, "row", params);
-			if(empresaPersonal!= null && empresaPersonal.isValid()){
+			if(empresaPersonal!= null && empresaPersonal.isValid()) {
 				empresaPersonal.setIdPuesto(this.persona.getIdPuesto());
 				empresaPersonal.setIdEmpresa(this.persona.getIdEmpresa());
+				empresaPersonal.setIdActivo(this.persona.getIdActivo());
 				regresar= DaoFactory.getInstance().update(sesion, empresaPersonal)>= 1L;
+        // SI EL EMPLEADO NO ES ACTIVO DESACTIVAR LA CUENTA DE USUARIO EN CASO DE QUE CUENTE CON ALGUNA
+        if(Objects.equal(empresaPersonal.getIdActivo(), 2L)) {
+          params.put("idPersona", idPersona);
+          DaoFactory.getInstance().updateAll(sesion, TcJanalUsuariosDto.class, params);
+        } // if
 			} // if			
 		} // try
 		catch (Exception e) {			

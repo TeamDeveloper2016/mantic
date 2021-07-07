@@ -5174,27 +5174,22 @@
 				inner join
 					tc_mantic_personas_titulos on tc_mantic_personas_titulos.id_persona_titulo =tc_mantic_personas.id_persona_titulo
 				inner join
-					tc_mantic_tipos_personas  on tc_mantic_personas.id_tipo_persona=tc_mantic_tipos_personas.id_tipo_persona
+					tc_mantic_tipos_personas on tc_mantic_personas.id_tipo_persona=tc_mantic_tipos_personas.id_tipo_persona
 				inner join
-					tc_janal_tipos_sexos  on tc_janal_tipos_sexos.id_tipo_sexo = tc_mantic_personas.id_tipo_sexo
+					tc_janal_tipos_sexos on tc_janal_tipos_sexos.id_tipo_sexo = tc_mantic_personas.id_tipo_sexo
 				left join
 					tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona AND tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
 				left join 
 					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
 				where 
 					(tc_mantic_personas.nombres like '%{nombres}%' 
-				or
-					tc_mantic_personas.paterno like '%{paterno}%'
-				or
-					tc_mantic_personas.materno  like '%{materno}%')
-				and 
-					tc_mantic_personas.rfc  like '%{rfc}%'
-				and 
-					tc_mantic_personas.id_tipo_sexo in ({idTipoSexo})
-				and
-					tc_mantic_personas.id_tipo_persona  in ({idTipoPersona})
-				and 
-					tr_mantic_empresa_personal.id_empresa in ({sucursales})
+				  or tc_mantic_personas.paterno like '%{paterno}%'
+				  or tc_mantic_personas.materno like '%{materno}%')
+				  and tc_mantic_personas.rfc like '%{rfc}%'
+				  and tc_mantic_personas.id_tipo_sexo in ({idTipoSexo})
+				  and tc_mantic_personas.id_tipo_persona in ({idTipoPersona})
+				  and tr_mantic_empresa_personal.id_activo in ({idActivo})
+				  and tr_mantic_empresa_personal.id_empresa in ({sucursales})
 				{sortOrder}  
 			</select>              
 			<select id="rowAutocomplete">
@@ -5233,12 +5228,10 @@
 					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
 				where 
 					(tc_mantic_personas.nombres like '%{nombreEmpleado}%' 
-				or
-					tc_mantic_personas.paterno like '%{nombreEmpleado}%'
-				or
-					tc_mantic_personas.materno  like '%{nombreEmpleado}%')
-				and
-					tr_mantic_empresa_personal.id_empresa in ({idEmpresa})				
+				  or tc_mantic_personas.paterno like '%{nombreEmpleado}%'
+				  or tc_mantic_personas.materno  like '%{nombreEmpleado}%')
+				  and tr_mantic_empresa_personal.id_empresa in ({idEmpresa})				
+          and tr_mantic_empresa_personal.id_activo= 1
 			</select>              
 			<select id="rowAutocompleteAccion">
 				select 
@@ -5267,37 +5260,35 @@
 				inner join
 					tc_mantic_personas_titulos on tc_mantic_personas_titulos.id_persona_titulo =tc_mantic_personas.id_persona_titulo
 				inner join
-					tc_mantic_tipos_personas  on tc_mantic_personas.id_tipo_persona=tc_mantic_tipos_personas.id_tipo_persona
+					tc_mantic_tipos_personas on tc_mantic_personas.id_tipo_persona=tc_mantic_tipos_personas.id_tipo_persona
 				inner join
-					tc_janal_tipos_sexos  on tc_janal_tipos_sexos.id_tipo_sexo = tc_mantic_personas.id_tipo_sexo
+					tc_janal_tipos_sexos on tc_janal_tipos_sexos.id_tipo_sexo = tc_mantic_personas.id_tipo_sexo
 				left join
-					tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona AND tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
+					tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona and tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
 				left join 
 					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
 				where 
 					(tc_mantic_personas.nombres like '%{nombreEmpleado}%' 
-				or
-					tc_mantic_personas.paterno like '%{nombreEmpleado}%'
-				or
-					tc_mantic_personas.materno  like '%{nombreEmpleado}%'
-				or 
-					tc_mantic_personas.id_persona = {idPersona})
-				and
-					tr_mantic_empresa_personal.id_empresa in ({idEmpresa})				
+				  or tc_mantic_personas.paterno like '%{nombreEmpleado}%'
+				  or tc_mantic_personas.materno  like '%{nombreEmpleado}%'
+				  or tc_mantic_personas.id_persona = {idPersona})
+				  and tr_mantic_empresa_personal.id_empresa in ({idEmpresa})				
+          and tr_mantic_empresa_personal.id_activo= 1
 			</select>              
 			<select id="tipoPersona">
 				select 
-					tc_mantic_personas.*,tc_mantic_personas.id_persona as id_key
+          tc_mantic_personas.id_persona as id_key,
+					tc_mantic_personas.*
 				from
 					tc_mantic_personas
 				inner join
 					tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona
 				where 
 					tc_mantic_personas.id_tipo_persona= {idTipoPersona}
-				and 
-					tr_mantic_empresa_personal.id_empresa= {idEmpresa}
+				  and tr_mantic_empresa_personal.id_empresa= {idEmpresa}
+          and tr_mantic_empresa_personal.id_activo= 1
 				order by
-					paterno,materno,nombres
+					paterno, materno, nombres
 			</select>
     </unit>   
 		<unit id="VistaGruposClientesDto">
@@ -8959,6 +8950,7 @@
 				where
 					tr_mantic_empresa_personal.id_empresa in ({sucursales})
 					and tc_mantic_personas.id_tipo_persona in (2, 6)
+          and tr_mantic_empresa_personal.id_activo= 1
 				order by
 					tc_mantic_personas.rfc			
 			</select>
@@ -11435,8 +11427,8 @@
 					tc_mantic_personas persona_usuario on tc_janal_usuarios.id_persona = persona_usuario.id_persona
 				where 
 					{condicion}
-				and 
-					tr_mantic_empresa_personal.id_empresa in ({idEmpresa})
+				  and tr_mantic_empresa_personal.id_empresa in ({idEmpresa})
+          and tr_mantic_empresa_personal.id_activo= 1
 				{sortOrder}
 			</select>
 			<select id="ordenes">
@@ -11461,8 +11453,7 @@
 					tc_mantic_personas persona_usuario on tc_janal_usuarios.id_persona = persona_usuario.id_persona
 				where 
 					tc_mantic_incidentes.orden like '{orden}%'
-				and 
-					tr_mantic_empresa_personal.id_empresa in ({idEmpresa})
+				  and tr_mantic_empresa_personal.id_empresa in ({idEmpresa})
 			</select>
 		</unit>
 		<unit id="VistaBusquedaArticulosVentasDto">				

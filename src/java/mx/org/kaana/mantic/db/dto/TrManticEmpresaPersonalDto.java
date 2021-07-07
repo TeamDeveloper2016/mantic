@@ -1,9 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
 import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -50,6 +45,8 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
   private String observaciones;
   @Column (name="id_empresa")
   private Long idEmpresa;
+  @Column (name="id_activo")
+  private Long idActivo;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -58,11 +55,11 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
   }
 
   public TrManticEmpresaPersonalDto(Long key) {
-    this(null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, new Long(-1L), null, null);
+    this(null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, new Long(-1L), null, null, 1L);
     setKey(key);
   }
 
-  public TrManticEmpresaPersonalDto(Long idPersona, Long idPuesto, Date fechaContratacion, Long idUsuario, Long idEmpresaPersona, String observaciones, Long idEmpresa) {
+  public TrManticEmpresaPersonalDto(Long idPersona, Long idPuesto, Date fechaContratacion, Long idUsuario, Long idEmpresaPersona, String observaciones, Long idEmpresa, Long idActivo) {
     setIdPersona(idPersona);
     setIdPuesto(idPuesto);
     setFechaContratacion(fechaContratacion);
@@ -71,6 +68,7 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
     setObservaciones(observaciones);
     setIdEmpresa(idEmpresa);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    this.idActivo= idActivo;
   }
 	
   public void setIdPersona(Long idPersona) {
@@ -137,6 +135,14 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
     return registro;
   }
 
+  public Long getIdActivo() {
+    return idActivo;
+  }
+
+  public void setIdActivo(Long idActivo) {
+    this.idActivo = idActivo;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -166,6 +172,8 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdEmpresa());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdActivo());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -181,6 +189,7 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
 		regresar.put("idEmpresaPersona", getIdEmpresaPersona());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idEmpresa", getIdEmpresa());
+		regresar.put("idActivo", getIdActivo());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -188,7 +197,7 @@ public class TrManticEmpresaPersonalDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdPersona(), getIdPuesto(), getFechaContratacion(), getIdUsuario(), getIdEmpresaPersona(), getObservaciones(), getIdEmpresa(), getRegistro()
+      getIdPersona(), getIdPuesto(), getFechaContratacion(), getIdUsuario(), getIdEmpresaPersona(), getObservaciones(), getIdEmpresa(), getIdActivo(), getRegistro()
     };
     return regresar;
   }

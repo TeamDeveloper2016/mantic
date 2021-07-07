@@ -97,7 +97,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		return regresar;
 	} // toClientesTipoContacto	
 	
-	public Long toClienteRepresentante() throws Exception{
+	public Long toClienteRepresentante() throws Exception {
 		Long regresar= -1L;
 		Entity registro= null;
 		Map<String, Object>params= null;
@@ -114,7 +114,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		return regresar;
 	}
 	
-	public Long toProveedorAgente() throws Exception{
+	public Long toProveedorAgente() throws Exception {
 		Long regresar= -1L;
 		Entity registro= null;
 		Map<String, Object>params= null;
@@ -131,7 +131,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		return regresar;
 	}
 	
-	public Long toEmpresaPersona() throws Exception{
+	public Long toEmpresaPersona() throws Exception {
 		Long regresar= -1L;
 		TrManticEmpresaPersonalDto empresaPersona= toDetallePersona();
 		if(empresaPersona!= null && empresaPersona.isValid())
@@ -139,15 +139,15 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		return regresar;
 	}
 	
-	public Long toPuestoPersona() throws Exception{
+	public Long toPuestoPersona() throws Exception {
 		Long regresar= -1L;
-		TrManticEmpresaPersonalDto puestoPersona= toDetallePersona();
+		TrManticEmpresaPersonalDto puestoPersona= this.toDetallePersona();
 		if(puestoPersona!= null && puestoPersona.isValid())
-				regresar= puestoPersona.getIdPuesto();
+			regresar= puestoPersona.getIdPuesto();
 		return regresar;
 	} // toPuestoPersona
 	
-	public TrManticEmpresaPersonalDto toDetallePersona() throws Exception{
+	public TrManticEmpresaPersonalDto toDetallePersona() throws Exception {
 		TrManticEmpresaPersonalDto regresar= null;
 		Map<String, Object>params          = null;
 		try {
@@ -162,5 +162,6 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toPuestoPersona
+	} // toDetallePersona
+  
 }
