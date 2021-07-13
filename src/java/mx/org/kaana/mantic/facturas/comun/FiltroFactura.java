@@ -316,13 +316,6 @@ public abstract class FiltroFactura extends IBaseTicket {
 		return regresar;		
 	} // toPrepare
 	
-	@Override
-	protected void finalize() throws Throwable {
-    super.finalize();
-		Methods.clean(this.correos);
-		Methods.clean(this.selectedCorreos);
-	}	// finalize
-
   private void toWhatsup(Entity seleccionado, Entity factura) {
     Map<String, Object> params = null;
     try {      
@@ -359,5 +352,12 @@ public abstract class FiltroFactura extends IBaseTicket {
       Methods.clean(params);
     } // finally
   }
+  
+	@Override
+	protected void finalize() throws Throwable {
+    super.finalize();
+		Methods.clean(this.correos);
+		Methods.clean(this.selectedCorreos);
+	}	// finalize
   
 }

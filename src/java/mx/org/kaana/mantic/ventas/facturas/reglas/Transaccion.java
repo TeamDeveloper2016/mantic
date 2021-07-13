@@ -92,7 +92,7 @@ public class Transaccion extends TransaccionFactura {
 			switch(accion) {																						
 				case MODIFICAR:
 					this.messageError= "Ocurrio un error al generar la factura.";
-					if(this.idEstatusFactura.equals(EEstatusFicticias.TIMBRADA.getIdEstatusFicticia()) && this.checkTotal(sesion)){
+					if(this.idEstatusFactura.equals(EEstatusFicticias.TIMBRADA.getIdEstatusFicticia()) && this.checkTotal(sesion)) {
 						idEstatus= EEstatusFacturas.TIMBRADA.getIdEstatusFactura();
 						if(this.orden.getIdFactura()!= null && !this.orden.getIdFactura().equals(-1L)){
 							idFactura= this.orden.getIdFactura();
@@ -113,9 +113,9 @@ public class Transaccion extends TransaccionFactura {
 							this.orden.setIdFactura(idFactura);
 							regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 						} // else								
-						registrarBitacoraFactura(sesion, idFactura, idEstatus, this.justificacion);
+						this.registrarBitacoraFactura(sesion, idFactura, idEstatus, this.justificacion);
 						if(this.generarTimbradoFactura(sesion, this.orden.getIdVenta(), idFactura, this.orden.getCorreos())){
-							if(registraBitacora(sesion, this.orden.getIdVenta(), EEstatusVentas.TIMBRADA.getIdEstatusVenta(), "Se realizó el timbrado de la factura asociada a la venta.")){
+							if(this.registraBitacora(sesion, this.orden.getIdVenta(), EEstatusVentas.TIMBRADA.getIdEstatusVenta(), "Se realizó el timbrado de la factura asociada a la venta.")){
 								this.orden.setIdVentaEstatus(EEstatusVentas.TIMBRADA.getIdEstatusVenta());
 								regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 							} // if
@@ -132,7 +132,7 @@ public class Transaccion extends TransaccionFactura {
 							factura.setCancelada(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 							factura.setIdFacturaEstatus(idEstatus);
 							regresar= DaoFactory.getInstance().update(sesion, factura)>= 0;
-							registrarBitacoraFactura(sesion, factura.getIdFactura(), idEstatus, "Cancelación de factura.");
+							this.registrarBitacoraFactura(sesion, factura.getIdFactura(), idEstatus, "Cancelación de factura");
 						} // if
 						else
 							throw new Exception("No fue posible cancelar la factura, por favor vuelva a intentarlo !");															
