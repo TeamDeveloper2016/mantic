@@ -115,13 +115,15 @@ public final class Archivo {
 	public static void copy(String source, String target, boolean delete) {
     InputStream inStream  = null;
     OutputStream outStream= null;
+    File bfile            = null;
+    File afile            = null;
     try {
-      File afile= new File(source);
-      File bfile= new File(target);
+      afile= new File(source);
+      bfile= new File(target);
       inStream  = new FileInputStream(afile);
       outStream = new FileOutputStream(bfile);
-      byte[] buffer=new byte[1024];
-      int length= 0;
+      byte[] buffer= new byte[1024];
+      int length   = 0;
       while ((length= inStream.read(buffer))> 0) {
         outStream.write(buffer, 0, length);
       } // while
@@ -131,6 +133,10 @@ public final class Archivo {
     catch (IOException e) {
       Error.mensaje(e);
     } // catch
+		finally {
+			if(afile!= null)
+				afile.delete();			
+		} // finally
   }
 	
 	public static void copyDeleteSource(String source, String target, boolean delete) {
@@ -156,7 +162,7 @@ public final class Archivo {
     catch (IOException e) {
       Error.mensaje(e);
     } // catch
-		finally{
+		finally {
 			if(afile!= null)
 				afile.delete();			
 		} // finally

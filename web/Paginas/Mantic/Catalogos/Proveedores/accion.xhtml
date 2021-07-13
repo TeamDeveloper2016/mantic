@@ -242,14 +242,24 @@
             <p:tab id="tabTablaContactos" title="Contacto">
               <p:panelGrid id="panelTablaContactos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
                 <p:dataTable id="tablaContactos" rowIndexVar="index" var="tipoContacto" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedoresTipoContacto}" rows="6" paginator="false" reflow="true" rowKey="#{tipoContacto.key}" emptyMessage=" " styleClass="paginated">																					
+                  <p:column headerText="No" styleClass="janal-wid-5">		
+                    <p:outputLabel value="#{index+ 1}.-"/>
+                  </p:column>  
                   <p:column headerText="Tipo contacto">										
                     <p:selectOneMenu id="tipo#{tipoContacto.key}" styleClass="janal-wid-100-txt" value="#{tipoContacto.idTipoContacto}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{!tipoContacto.nuevo}" onblur="simpleProcess();">
                       <f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.tiposContactos}"/>
                     </p:selectOneMenu> 				
                   </p:column>	
-                  <p:column headerText="Valor" styleClass="janal-wid-50 otro">		
+                  <p:column headerText="Valor" styleClass="janal-wid-35 otro">		
                     <p:inputText id="otro#{tipoContacto.key}" styleClass="janal-wid-100-txt" value="#{tipoContacto.valor}" disabled="#{!tipoContacto.nuevo}" onblur="simpleProcess();"/>                    																																			
                   </p:column>                  
+                  <p:column headerText="Preferido" styleClass="janal-wid-10">		
+                    <p:selectOneMenu id="idPreferido#{tipoContacto.key}" styleClass="janal-wid-100-txt otro" value="#{tipoContacto.idPreferido}" disabled="#{!tipoContacto.nuevo}" converter="javax.faces.Long">
+                      <p:ajax event="change" process="@this"/>
+       								<f:selectItem itemLabel="SI" itemValue="1"/>
+                      <f:selectItem itemLabel="NO" itemValue="2"/>								
+                    </p:selectOneMenu>
+                  </p:column>
                   <p:column style="width:32px;text-align: center">
                     <p:commandButton update="tablaContactos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosProveedoresAccion.registroProveedor.doEliminarProveedorTipoContacto}">
                       <f:setPropertyActionListener value="#{tipoContacto}" target="#{manticCatalogosProveedoresAccion.registroProveedor.proveedorTipoContactoSeleccion}" />

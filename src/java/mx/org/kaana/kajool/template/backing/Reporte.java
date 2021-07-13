@@ -87,7 +87,7 @@ public class Reporte extends BaseReportes implements Serializable{
     this.total    = ireporte instanceof IReporteDataSource ? 1L : toSize();		
     this.prefijo  = prefijo;
     this.idFormato= ireporte.getFormato();
-    this.fileName = Cadena.isVacio(nombre) ? Archivo.toFormatNameFile(ireporte.getNombre(), this.prefijo) : nombre;
+    this.fileName = Cadena.isVacio(nombre)? Archivo.toFormatNameFile(ireporte.getNombre(), this.prefijo) : nombre;
 		this.nombre   = this.idFormato.toPath().concat(this.fileName).concat(".").concat(this.idFormato.name().toLowerCase());
 	} // toAsiganarReporte
 
@@ -180,9 +180,9 @@ public class Reporte extends BaseReportes implements Serializable{
 				reporteGenerar.procesar(this.idFormato, input);
 			else 
 				reporteGenerar.procesar(this.idFormato);			
-			if (UIBackingUtilities.getCurrentInstance()!= null)
+			if(UIBackingUtilities.getCurrentInstance()!= null)
 				UIBackingUtilities.addCallbackParam("janalOK", true);
-			if (previsualizar) {
+			if(previsualizar) {
 				this.ireporte.setParams((Map<String, Object>) ((HashMap)ireporte.getParams()).clone());
 				this.attrs.put("reportePrevisualizar", JsfBase.getContext().concat("/").concat(this.getNombre()).concat("?pfdrid_c=true"));
 				this.attrs.put("reporteFileName", this.fileName);

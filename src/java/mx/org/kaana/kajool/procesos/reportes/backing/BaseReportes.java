@@ -116,6 +116,10 @@ public class BaseReportes extends IBaseAttribute implements Serializable {
     return previsualizar;
   }
 
+  public String getFileName() {
+    return fileName;
+  }
+
   public void setPrevisualizar(Boolean previsualizar) {
     this.previsualizar = previsualizar;
   }
@@ -228,4 +232,5 @@ public class BaseReportes extends IBaseAttribute implements Serializable {
 			this.paginacionXls= false;
 		} // else
 	} // doSeleccionarReporte 	
+  
 }

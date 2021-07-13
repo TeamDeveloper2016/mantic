@@ -17,6 +17,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.reportes.FileSearch;
+import mx.org.kaana.libs.wassenger.Bonanza;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteContactoRepresentante;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteDomicilio;
@@ -83,13 +84,13 @@ public class Transaccion extends TransaccionFactura {
 				this.registroCliente.getCliente().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       switch (accion) {
         case AGREGAR:
-          regresar = procesarCliente(sesion);
+          regresar = this.procesarCliente(sesion);
           break;
         case MODIFICAR:
-          regresar = actualizarCliente(sesion);
+          regresar = this.actualizarCliente(sesion);
           break;
         case ELIMINAR:
-          regresar = eliminarCliente(sesion);
+          regresar = this.eliminarCliente(sesion);
           break;
 				case DEPURAR:
 					regresar= DaoFactory.getInstance().delete(sesion, this.dto)>= 1L;
@@ -100,7 +101,7 @@ public class Transaccion extends TransaccionFactura {
 					break;
 				case SUBIR:
 					regresar= true;
-					toUpdateDeleteFilePago(sesion);
+					this.toUpdateDeleteFilePago(sesion);
 					break;
       } // switch
       if (!regresar) {
@@ -118,19 +119,19 @@ public class Transaccion extends TransaccionFactura {
     boolean regresar = false;
     Long idCliente   = -1L;    
 		this.messageError= "Error al registrar el cliente";
-		if (eliminarRegistros(sesion)) {
+		if (this.eliminarRegistros(sesion)) {
 			this.registroCliente.getCliente().setIdUsuario(JsfBase.getIdUsuario());
 			this.registroCliente.getCliente().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			idCliente = DaoFactory.getInstance().insert(sesion, this.registroCliente.getCliente());
-			if (registraClientesDomicilios(sesion, idCliente)) {
-				if (registraClientesRepresentantes(sesion, idCliente)) {
-					regresar = registraClientesTipoContacto(sesion, idCliente);
+			if (this.registraClientesDomicilios(sesion, idCliente)) {
+				if (this.registraClientesRepresentantes(sesion, idCliente)) {
+					regresar = this.registraClientesTipoContacto(sesion, idCliente);
 				}
 			} // if
 		} // if
 		sesion.flush();
 		if(idCliente > -1)
-			registraClienteFacturama(sesion, idCliente);    
+			this.registraClienteFacturama(sesion, idCliente);    
     return regresar;
   } // procesarCliente
 
@@ -377,10 +378,15 @@ public class Transaccion extends TransaccionFactura {
 					switch (sqlAccion) {
 						case INSERT:
 							dto.setIdClienteTipoContacto(-1L);
-							validate = registrar(sesion, dto);
+							validate = this.registrar(sesion, dto);
+              // VERIFICAR SI YA FUE NOTIFICADO PARA RECIBIR MENSAJES POR WHATSUP
+              if(dto.getIdPreferido().equals(1L) && (dto.getIdTipoContacto().equals(6L) || dto.getIdTipoContacto().equals(7L) || dto.getIdTipoContacto().equals(8L))) {
+                Bonanza bonanza= new Bonanza(this.registroCliente.getCliente().getRazonSocial(), dto.getValor());
+                // bonanza.doSendMessage(sesion);
+              } // if
 							break;
 						case UPDATE:
-							validate = actualizar(sesion, dto);
+							validate = this.actualizar(sesion, dto);
 							break;
 					} // switch
 					orden++;

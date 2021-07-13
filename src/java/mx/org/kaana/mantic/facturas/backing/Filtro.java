@@ -313,7 +313,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 		finally {
 			Methods.clean(params);
 		} // finally
-	} // doSendMail
+	} // doLoadEstatus
 	
 	public void doActualizarEstatus() {
 		Transaccion transaccion              = null;

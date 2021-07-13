@@ -17,6 +17,7 @@ import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.libs.wassenger.Bonanza;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorBanca;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorCondicionPago;
@@ -63,13 +64,13 @@ public class Transaccion extends IBaseTnx {
 				this.registroProveedor.getProveedor().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       switch (accion) {
         case AGREGAR:
-          regresar = procesarProveedor(sesion);
+          regresar = this.procesarProveedor(sesion);
           break;
         case MODIFICAR:
-          regresar = actualizarProveedor(sesion);
+          regresar = this.actualizarProveedor(sesion);
           break;
         case ELIMINAR:
-          regresar = eliminarProveedor(sesion);
+          regresar = this.eliminarProveedor(sesion);
           break;
 				case DEPURAR:
 					regresar= DaoFactory.getInstance().delete(sesion, this.dto)>= 1L;
@@ -348,6 +349,11 @@ public class Transaccion extends IBaseTnx {
 						case INSERT:
 							dto.setIdProveedorTipoContacto(-1L);
 							validate = registrar(sesion, dto);
+              // VERIFICAR SI YA FUE NOTIFICADO PARA RECIBIR MENSAJES POR WHATSUP
+              if(dto.getIdPreferido().equals(1L) && (dto.getIdTipoContacto().equals(6L) || dto.getIdTipoContacto().equals(7L) || dto.getIdTipoContacto().equals(8L))) {
+                Bonanza bonanza= new Bonanza(this.registroProveedor.getProveedor().getRazonSocial(), dto.getValor());
+                // bonanza.doSendMessage(sesion);
+              } // if
 							break;
 						case UPDATE:
 							validate = actualizar(sesion, dto);

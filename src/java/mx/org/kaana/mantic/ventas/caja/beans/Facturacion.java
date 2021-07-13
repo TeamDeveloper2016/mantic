@@ -1,6 +1,8 @@
 package mx.org.kaana.mantic.ventas.caja.beans;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.Calendar;
 
 public class Facturacion implements Serializable{
 	
@@ -19,6 +21,8 @@ public class Facturacion implements Serializable{
 	private Long idEmpresa;
 	private Long idTipoDocumento;
 	private Long intentos;
+	private String ticket;
+	private Timestamp timbrado;
 
 	public Facturacion() {
 		this(-1L, -1L, "", "", -1L, -1L, "", "", -1L);
@@ -47,6 +51,8 @@ public class Facturacion implements Serializable{
 		this.idEmpresa         = idEmpresa;
 		this.idTipoDocumento   = idTipoDocumento;
 		this.intentos          = intentos;
+    this.ticket            = "";
+    this.timbrado          = new Timestamp(Calendar.getInstance().getTimeInMillis());
 	}
 
 	public Long getIdVenta() {
@@ -160,4 +166,21 @@ public class Facturacion implements Serializable{
 	public void setIntentos(Long intentos) {
 		this.intentos = intentos;
 	}	
+
+  public String getTicket() {
+    return ticket;
+  }
+
+  public void setTicket(String ticket) {
+    this.ticket = ticket;
+  }
+
+  public Timestamp getTimbrado() {
+    return timbrado;
+  }
+
+  public void setTimbrado(Timestamp timbrado) {
+    this.timbrado = timbrado;
+  }
+  
 }

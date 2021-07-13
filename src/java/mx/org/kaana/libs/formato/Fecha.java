@@ -110,8 +110,7 @@ public  class Fecha {
         fecha = fecha.substring(6, 8).concat("/").concat(fecha.substring(4, 6)).concat("/").concat(fecha.substring(2, 4));
         break;
       case FECHA_LARGA: // Fecha en:  dia mes anio  26 de Noviembre del 2003
-        fecha =
-            calendario.get(calendario.DATE) + " de " + getNombreMes(calendario.get(calendario.MONTH)) + " de " + calendario.get(calendario.YEAR);
+        fecha = calendario.get(calendario.DATE) + " de " + getNombreMes(calendario.get(calendario.MONTH)) + " de " + calendario.get(calendario.YEAR);
         break;
       case FECHA_HORA: // Fecha en dd/mmm/yyyy hh:mm:ss  03/12/2007 12:26:00
         fecha =
@@ -129,8 +128,7 @@ public  class Fecha {
         fecha = fecha.substring(8, 10).concat(":").concat(fecha.substring(10, 12));
         break;
       case HORA_LARGA: // Fecha en hh:mm:ss  12:26:00
-        fecha =
-            fecha.substring(8, 10).concat(":").concat(fecha.substring(10, 12)).concat(":").concat(fecha.substring(12, 14));
+        fecha = fecha.substring(8, 10).concat(":").concat(fecha.substring(10, 12)).concat(":").concat(fecha.substring(12, 14));
         break;
       case FECHA_HORA_LARGA: // Fecha en yyyyMMddhhmmss 20071203241600
         fecha = fecha.substring(0, 14);
@@ -155,8 +153,7 @@ public  class Fecha {
         fecha = fecha.substring(0, 4).concat("-").concat(fecha.substring(4, 6)).concat("-").concat(fecha.substring(6, 8));
         break;
       case HORA_ORACLE: // Fecha en hh:mm:ss 02:06:30
-        fecha =
-            fecha.substring(8, 10).concat(":").concat(fecha.substring(10, 12)).concat(":").concat(fecha.substring(12, 14));
+        fecha = fecha.substring(8, 10).concat(":").concat(fecha.substring(10, 12)).concat(":").concat(fecha.substring(12, 14));
         break;
       case FECHA_HORA_ORACLE: // Fecha en yyyy-MM-ddd hh:mm:ss 2008-08-18 02:06:30
         fecha =
@@ -587,4 +584,25 @@ public  class Fecha {
 		return regresar;
 	}
 
+	public static Timestamp toTimestamp(String date) {
+    // date equals 2019-12-10T18:24:31.961Z
+    //             012345678901234567890123
+    Calendar regresar= Calendar.getInstance();
+    try {
+      regresar.set(Calendar.YEAR, Integer.parseInt(date.substring(0, 4)));
+      regresar.set(Calendar.MONTH, Integer.parseInt(date.substring(5, 7)));
+      regresar.set(Calendar.DATE, Integer.parseInt(date.substring(8, 10)));
+      regresar.set(Calendar.HOUR, Integer.parseInt(date.substring(11, 13)));
+      regresar.set(Calendar.MINUTE, Integer.parseInt(date.substring(14, 16)));
+      regresar.set(Calendar.SECOND, Integer.parseInt(date.substring(17, 19)));
+      regresar.set(Calendar.MILLISECOND, 0);
+      if(date.length()> 20) 
+        regresar.set(Calendar.MILLISECOND, Integer.parseInt(date.substring(20, 23)));
+    } // try
+    catch(Exception e) {
+      regresar= Calendar.getInstance();
+    } // catch
+		return new Timestamp(regresar.getTimeInMillis());
+  }
+  
 } // Fecha

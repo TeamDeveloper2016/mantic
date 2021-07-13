@@ -147,8 +147,8 @@ public class Configuracion {
   public String getPropiedadServidor(String id) {
     try {
       String servidor= getEtapaServidor().toLowerCase();
-      id=id.concat(".").concat(servidor);
-      return getProperties().getProperty(id);
+      id= id.concat(".").concat(servidor);
+      return this.getProperties().getProperty(id);
     } // try
     catch (Exception e) {
       LOG.warn("No se pudo leer la propiedad ".concat(id).concat(". !"));

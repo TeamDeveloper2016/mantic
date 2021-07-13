@@ -7,6 +7,51 @@
   </model>
 
   <dml>
+    <unit id="TcManticTiposMensajesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_mensajes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_mensajes
+        where      
+          nombre = '{nombre}'
+      </select>
+      </unit>    
+    <unit id="TcManticMensajesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_mensajes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_mensajes
+        where      
+          wa_id = '{waId}' and id = '{id}'
+      </select>
+      <select id="existe">
+        select      
+          tc_mantic_mensajes.id_mensaje as id_key,
+          tc_mantic_mensajes.*
+        from      
+          tc_mantic_mensajes
+        where      
+          telefono = '{celular}' and id_tipo_mensaje = {idTipoMensaje}
+      </select>
+    </unit>       
     <unit id="TcManticEmpresasPagosControlesDto">
       <select id="row">
         select      
