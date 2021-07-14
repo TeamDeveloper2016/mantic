@@ -130,11 +130,11 @@ public final class Archivo {
       inStream.close();
       outStream.close();
     } // try
-    catch (IOException e) {
+    catch (Exception e) {
       Error.mensaje(e);
     } // catch
 		finally {
-			if(afile!= null)
+			if(delete && afile!= null)
 				afile.delete();			
 		} // finally
   }
@@ -163,7 +163,7 @@ public final class Archivo {
       Error.mensaje(e);
     } // catch
 		finally {
-			if(afile!= null)
+			if(delete && afile!= null)
 				afile.delete();			
 		} // finally
   }

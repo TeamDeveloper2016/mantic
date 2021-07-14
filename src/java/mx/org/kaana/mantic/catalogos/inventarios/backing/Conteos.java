@@ -70,7 +70,7 @@ public class Conteos extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {			
-      if(true || JsfBase.getBrowser().isMobile()) 
+      if(JsfBase.getBrowser().isMobile()) 
         UIBackingUtilities.execute("janal.isPostBack('movil');");
 			this.attrs.put("xcodigo", JsfBase.getFlashAttribute("xcodigo"));	
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));

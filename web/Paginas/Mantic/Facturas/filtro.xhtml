@@ -16,8 +16,8 @@
         facturama      : {validaciones: 'libre',  mascara: 'libre', grupo: 'general'},
         folio          : {validaciones: 'entero', mascara: 'numero', grupo: 'general'},
         consecutivo    : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'consecutivo'},
-        fechaInicio    : {validaciones: 'fecha',  mascara: 'fecha', grupo: 'general'},
-        fechaTermino   : {validaciones: 'fecha',  mascara: 'fecha', grupo: 'general'},
+        fechaInicio    : {validaciones: 'fecha',  mascara: 'libre', grupo: 'general'},
+        fechaTermino   : {validaciones: 'fecha',  mascara: 'libre', grupo: 'general'},
         montoInicio    : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
         montoTermino   : {validaciones: 'flotante',  mascara: 'libre', grupo: 'general'},
 				articulo       : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
@@ -142,9 +142,9 @@
 								</f:facet>
 							</p:autoComplete>	
 							<p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticFacturasFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>              
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticFacturasFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" locale="es" converter="janal.convertidor.Calendario"/>              
 							<p:outputLabel for="fechaTermino" value="Fecha termino:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticFacturasFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>							
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticFacturasFiltro.attrs.fechaTermino}" showOn="button" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>							
 							<p:outputLabel for="montoInicio" value="Monto inicio:"/>
 							<p:inputText id="montoInicio" styleClass="janal-wid-100-txt" value="#{manticFacturasFiltro.attrs.montoInicio}" converter="javax.faces.Double">
 								<p:ajax event="blur" listener="#{manticFacturasFiltro.doMontoUpdate}" process="@this" update="montoTermino"/>
