@@ -1416,7 +1416,7 @@
 			} // if	
 		},				
   	isPostBack: function(name) {
-	  	setTimeout("$('#'+ "+ name+ ").click();", 50);
+	  	setTimeout("$('#"+ name+ "').click();", 50);
 		},
 		notificacion: function() {
 			if(typeof(PF('retiroEfectivo'))!== 'undefined') {
