@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.servlet.RequestDispatcher;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -69,6 +70,8 @@ public class Conteos extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {			
+      if(true || JsfBase.getBrowser().isMobile()) 
+        UIBackingUtilities.execute("janal.isPostBack('movil');");
 			this.attrs.put("xcodigo", JsfBase.getFlashAttribute("xcodigo"));	
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());	
@@ -691,5 +694,5 @@ public class Conteos extends IBaseFilter implements Serializable {
     } // finally
 		return null;
 	}
-		
+  
 }

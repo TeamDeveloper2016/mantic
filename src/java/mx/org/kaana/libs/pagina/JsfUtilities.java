@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 import javax.faces.application.FacesMessage;
 import javax.enterprise.context.ApplicationScoped;
+import javax.faces.application.NavigationHandler;
 import javax.faces.component.UIComponent;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -37,6 +38,10 @@ public class JsfUtilities {
 	
   public static FacesContext getFacesContext() {
     return FacesContext.getCurrentInstance();
+  }
+
+  public static NavigationHandler getNavigationHandler() {
+    return getFacesContext().getApplication().getNavigationHandler();
   }
 
   public static ExternalContext getExternalContext() {

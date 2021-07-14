@@ -351,8 +351,8 @@ public class Transaccion extends IBaseTnx {
 							validate = registrar(sesion, dto);
               // VERIFICAR SI YA FUE NOTIFICADO PARA RECIBIR MENSAJES POR WHATSUP
               if(dto.getIdPreferido().equals(1L) && (dto.getIdTipoContacto().equals(6L) || dto.getIdTipoContacto().equals(7L) || dto.getIdTipoContacto().equals(8L))) {
-                Bonanza bonanza= new Bonanza(this.registroProveedor.getProveedor().getRazonSocial(), dto.getValor());
-                // bonanza.doSendMessage(sesion);
+                Bonanza notificar= new Bonanza(this.registroProveedor.getProveedor().getRazonSocial(), dto.getValor());
+                // notificar.doSendMessage(sesion);
               } // if
 							break;
 						case UPDATE:

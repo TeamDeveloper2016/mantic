@@ -1310,7 +1310,7 @@
 			alert(msg);
     }, // alert
     version: function() {
-      return '0.3.4.7';
+      return '0.3.5.3';
     }, // version
     align: function(pixels) {
       try {
@@ -1416,7 +1416,7 @@
 			} // if	
 		},				
   	isPostBack: function(name) {
-	  	setTimeout("$('#'+ name).click();", 50);
+	  	setTimeout("$('#'+ "+ name+ ").click();", 50);
 		},
 		notificacion: function() {
 			if(typeof(PF('retiroEfectivo'))!== 'undefined') {

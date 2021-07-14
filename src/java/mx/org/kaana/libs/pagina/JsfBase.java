@@ -1,5 +1,6 @@
 package mx.org.kaana.libs.pagina;
 
+import javax.servlet.RequestDispatcher;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.kajool.procesos.acceso.beans.Autentifica;
@@ -126,5 +127,18 @@ public class JsfBase extends JsfUtilities {
 		} // catch
 		return regresar;
 	}
-	
+
+  public static void toForwardMovil(String page) {
+    try {
+      if(true || JsfBase.getBrowser().isMobile()) {
+        JsfBase.getResponse().sendRedirect(page.concat(Constantes.REDIRECIONAR));
+        // RequestDispatcher navigation = JsfBase.getRequest().getRequestDispatcher(page.concat(Constantes.REDIRECIONAR));
+        // navigation.forward(JsfBase.getRequest(), JsfBase.getResponse());
+      } // if  
+		} // try
+	  catch (Exception e) {
+			addMessageError(e);
+    } // catch   
+  } 
+  
 }
