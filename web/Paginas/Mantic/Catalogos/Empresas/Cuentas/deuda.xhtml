@@ -319,7 +319,7 @@
 					<p:inputTextarea id="observaciones" rows="2" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.observaciones}" styleClass="janal-wid-100-txt" autoResize="true"/>				
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPago pago observaciones" update="tabla panelDetalle" actionListener="#{manticCatalogosEmpresasCuentasDeuda.doRegistrarPago}" onstart="return janal.partial('dialogo');" oncomplete="PF('dlgPago').hide(); janal.desbloquear();"/>
+					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPago pago observaciones" update="tabla panelDetalle" actionListener="#{manticCatalogosEmpresasCuentasDeuda.doRegistrarPago}" onstart="if(janal.partial('dialogo')) {PF('dlgPago').hide(); return true;} else {return false}" oncomplete="janal.desbloquear();"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgPago').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
@@ -383,7 +383,7 @@
 				<p:inputTextarea id="observacionesGeneral" rows="2" value="#{manticCatalogosEmpresasCuentasDeuda.attrs.observacionesGeneral}" styleClass="janal-wid-100-txt" autoResize="true"/>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPagoGeneral pagoGeneral observacionesGeneral tipoPagoGeneral bancoGeneral referenciaGeneral" update="tabla panelDetalle" actionListener="#{manticCatalogosEmpresasCuentasDeuda.doRegistrarPagoGeneral}" onstart="return janal.partial('dialogoGeneral');" oncomplete="PF('dlgPagoGeneral').hide(); janal.desbloquear();"/>
+					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPagoGeneral pagoGeneral observacionesGeneral tipoPagoGeneral bancoGeneral referenciaGeneral" update="tabla panelDetalle" actionListener="#{manticCatalogosEmpresasCuentasDeuda.doRegistrarPagoGeneral}" onstart="if(janal.partial('dialogoGeneral')) {PF('dlgPagoGeneral').hide(); return true;} else {return false;}" oncomplete="janal.desbloquear();"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgPagoGeneral').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
@@ -488,7 +488,7 @@
 				</p:tabView>				
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPagoSegmento tabPagosSegmentos" update="tabla panelDetalle" actionListener="#{manticCatalogosEmpresasCuentasDeuda.doRegistrarPagoSegmento}" onstart="return janal.partial('dialogoSegmento');" oncomplete="PF('dlgPagoSegmento').hide(); janal.desbloquear();"/>
+					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPagoSegmento tabPagosSegmentos" update="tabla panelDetalle" actionListener="#{manticCatalogosEmpresasCuentasDeuda.doRegistrarPagoSegmento}" onstart="if(janal.partial('dialogoSegmento')) {PF('dlgPagoSegmento').hide(); return true;} else {return false;}" oncomplete="janal.desbloquear();"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgPagoSegmento').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>

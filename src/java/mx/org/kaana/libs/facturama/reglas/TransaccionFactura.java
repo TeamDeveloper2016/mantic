@@ -544,4 +544,5 @@ public class TransaccionFactura extends IBaseTnx {
 			throw e;
 		} // catch		
 	} // actualizarSaldoCatalogoCliente
+  
 }

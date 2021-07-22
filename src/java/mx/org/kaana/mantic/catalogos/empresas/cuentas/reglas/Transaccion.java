@@ -27,6 +27,7 @@ import mx.org.kaana.libs.reportes.FileSearch;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticCreditosNotasDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasBitacoraDto;
@@ -39,6 +40,7 @@ import mx.org.kaana.mantic.db.dto.TcManticMovimientosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
+import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.enums.EEstatusEmpresas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
@@ -590,12 +592,21 @@ public class Transaccion extends IBaseTnx {
 								saldo= 0D;
 								abono= Numero.toRedondearSat(saldoDeuda- this.pago.getPago());
 								idEstatus= this.saldar? EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa(): (saldoDeuda.equals(this.pago.getPago())? EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa(): EEstatusEmpresas.PARCIALIZADA.getIdEstatusEmpresa());
-							} /// else
+							} // else
 							if(this.registrarPago(sesion, item, pagoParcial, this.control.getIdEmpresaPagoControl())) {
 								params= new HashMap<>();
 								params.put("saldo", abono);
 								params.put("idEmpresaEstatus", idEstatus);
 								DaoFactory.getInstance().update(sesion, TcManticEmpresasDeudasDto.class, item.getKey(), params);
+                TcManticEmpresasBitacoraDto bitacora= new TcManticEmpresasBitacoraDto(
+                  "SE REGISTRO UN PAGO [".concat(String.valueOf(pagoParcial)).concat("]"), // String justificacion, 
+                  idEstatus, // Long idEmpresaEstatus, 
+                  JsfBase.getIdUsuario(), // Long idUsuario, 
+                  item.getKey(), // Long idEmpresaDeuda
+                  -1L // Long idClienteBitacora, 
+                );
+                DaoFactory.getInstance().insert(sesion, bitacora);
+								this.actualizarSaldoCatalogoProveedor(sesion, this.idProveedor, pagoParcial, false);
 							}	// if				
 						} // if
 						else 
@@ -640,6 +651,7 @@ public class Transaccion extends IBaseTnx {
         registroPago.setIdEmpresaPagoControl(idEmpresaPagoControl);
         registroPago.setIdEmpresaDeuda(idEmpresaDeuda);
         registroPago.setIdUsuario(JsfBase.getIdUsuario());
+        registroPago.setFechaPago(this.pago.getFechaPago());
         registroPago.setComentarios(
           "PAGO GENERAL $".concat(Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, this.pagoGeneral)).concat(
           " [").concat(Global.format(EFormatoDinamicos.FECHA_HORA, registroPago.getRegistro())).concat(
@@ -675,7 +687,7 @@ public class Transaccion extends IBaseTnx {
 			params.put("idProveedor", this.idProveedor);
 			params.put(Constantes.SQL_CONDICION, " tc_mantic_empresas_deudas.saldo> 0 and tc_mantic_empresas_deudas.id_empresa_estatus in (1, 2, 3)");			
 			params.put("sortOrder", "order by tc_mantic_empresas_deudas.registro asc");
-			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaEmpresasDto", "cuentasProveedor", params);			
+			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaEmpresasDto", "cuentasProveedor", params, Constantes.SQL_TODOS_REGISTROS);			
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -772,6 +784,7 @@ public class Transaccion extends IBaseTnx {
 			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", this.idEmpresa);
+			params.put("operador", this.getCurrentSign());
 			Value next= DaoFactory.getInstance().toField(sesion, "VistaTcManticEmpresasPagosDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
 				regresar= new Siguiente(next.toLong());
@@ -894,7 +907,6 @@ public class Transaccion extends IBaseTnx {
     return regresar;
   } 
   
-  
   public void toAffectAlmacenes(Session sesion, TcManticNotasEntradasDto nota) throws Exception {
     Map<String, Object> params= null;
     try {      
@@ -945,5 +957,17 @@ public class Transaccion extends IBaseTnx {
       Methods.clean(params);
     } // finally
   }  
+
+	protected void actualizarSaldoCatalogoProveedor(Session sesion, Long idProveedor, Double cantidad, boolean sumar) throws Exception{
+		TcManticProveedoresDto proveedor= null;
+		try {
+//			proveedor= (TcManticProveedoresDto) DaoFactory.getInstance().findById(sesion, TcManticProveedoresDto.class, idProveedor);
+//			proveedor.setSaldo(sumar ? (proveedor.getSaldo() + cantidad) : (proveedor.getSaldo() - cantidad));
+//			DaoFactory.getInstance().update(sesion, proveedor);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // actualizarSaldoCatalogoProveedor
   
 }

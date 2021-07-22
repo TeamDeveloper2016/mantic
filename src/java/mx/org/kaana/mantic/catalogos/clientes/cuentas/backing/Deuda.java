@@ -281,7 +281,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 			params= new HashMap<>();
 			params.put("idCliente", this.attrs.get("idCliente"));						
 			params.put("sortOrder", "order by dias desc");
-			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo > 0 and tc_mantic_clientes_deudas.id_cliente_estatus not in(".concat(EEstatusClientes.FINALIZADA.getIdEstatus().toString()).concat(",").concat(EEstatusClientes.CANCELADA.getIdEstatus().toString()).concat(")"));			
+			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo > 0 and tc_mantic_clientes_deudas.id_cliente_estatus in(1, 2)");			
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
@@ -406,7 +406,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 				pago.setObservaciones((String)this.attrs.get("observacionesGeneral"));
 				pago.setPago((Double)this.attrs.get("pagoGeneral"));
 				pago.setFechaPago((Date)this.attrs.get("fechaPagoGeneral"));
-				pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
+				pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPagoGeneral").toString()));
 				tipoPago= pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
 				transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("cajaGeneral").toString()), Long.valueOf((String)this.attrs.get("idCliente")), Long.valueOf(this.attrs.get("idEmpresaGeneral").toString()), tipoPago ? -1L : Long.valueOf(this.attrs.get("bancoGeneral").toString()), tipoPago ? "" : this.attrs.get("referenciaGeneral").toString(), saldar);
 				if(transaccion.ejecutar(EAccion.PROCESAR)) {
@@ -438,7 +438,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 				pago.setObservaciones((String)this.attrs.get("observacionesSegmento"));
 				pago.setPago((Double)this.attrs.get("pagoSegmento"));
 				pago.setFechaPago((Date)this.attrs.get("fechaPagoSegmento"));
-				pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
+				pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPagoSegmento").toString()));
 				tipoPago= pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
 				transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("cajaSegmento").toString()), Long.valueOf((String)this.attrs.get("idCliente")), Long.valueOf(this.attrs.get("idEmpresaSegmento").toString()), tipoPago ? -1L : Long.valueOf(this.attrs.get("bancoSegmento").toString()), tipoPago ? "" : this.attrs.get("referenciaSegmento").toString(), this.seleccionadosSegmento, saldar);
 				if(transaccion.ejecutar(EAccion.COMPLEMENTAR)) {
@@ -487,7 +487,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 			pago= (Double)this.attrs.get("pagoSegmento");
 			if(pago > 0D) {
 				for(Entity cuenta: this.seleccionadosSegmento)					
-					saldo+= Numero.toRedondearSat(cuenta.toDouble("saldo"));
+					saldo+= cuenta.toDouble("saldo");
 				regresar= pago<= Numero.toRedondearSat(saldo);
 			} // if
 		} // try

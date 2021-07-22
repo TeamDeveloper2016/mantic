@@ -259,7 +259,7 @@
 				<p:inputTextarea id="observaciones" value="#{manticCatalogosClientesCuentasDeuda.attrs.observaciones}" styleClass="janal-wid-100-txt"/>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this referencia saldar banco idEmpresa caja dialogoPago pago observaciones tipoPago" update="tabla panelDetalle" actionListener="#{manticCatalogosClientesCuentasDeuda.doRegistrarPago}" onstart="return janal.partial('dialogo');" oncomplete="PF('dlgPago').hide(); janal.desbloquear();"/>
+					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this referencia saldar banco idEmpresa caja dialogoPago pago observaciones tipoPago" update="tabla panelDetalle" actionListener="#{manticCatalogosClientesCuentasDeuda.doRegistrarPago}" onstart="if(janal.partial('dialogo')) {PF('dlgPago').hide(); return true;} else {return false;}" oncomplete="janal.desbloquear();"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgPago').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
@@ -328,7 +328,7 @@
         <p:inputTextarea id="observacionesGeneral" value="#{manticCatalogosClientesCuentasDeuda.attrs.observacionesGeneral}" rows="2" styleClass="janal-wid-100-txt"/>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPagoGeneral saldarGeneral pagoGeneral observacionesGeneral tipoPagoGeneral bancoGeneral referenciaGeneral idEmpresaGeneral cajaGeneral" update="tabla panelDetalle" actionListener="#{manticCatalogosClientesCuentasDeuda.doRegistrarPagoGeneral}" onstart="return janal.partial('dialogoGeneral');" oncomplete="PF('dlgPagoGeneral').hide(); janal.desbloquear();"/>
+					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPagoGeneral saldarGeneral pagoGeneral observacionesGeneral tipoPagoGeneral bancoGeneral referenciaGeneral idEmpresaGeneral cajaGeneral" update="tabla panelDetalle" actionListener="#{manticCatalogosClientesCuentasDeuda.doRegistrarPagoGeneral}" onstart="if(janal.partial('dialogoGeneral')) {PF('dlgPagoGeneral').hide(); return true;} else {return false;}" oncomplete="janal.desbloquear();"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgPagoGeneral').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
@@ -342,38 +342,38 @@
               <p:dataTable lazy="true" id="tablaSegmentos" widgetVar="segmentosTable" var="row" value="#{manticCatalogosClientesCuentasDeuda.pagosSegmento}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="1000" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="1000, 1005" selection="#{manticCatalogosClientesCuentasDeuda.seleccionadosSegmento}" paginator="false" rowIndexVar="index" reflow="true" paginatorPosition="bottom">												
                 <p:ajax event="rowUnselectCheckbox" listener="#{manticCatalogosClientesCuentasDeuda.doRowSeleccionado}" process="@this tablaSegmentos" update="tabPagosSegmentos:pagoSegmento" oncomplete="PF('segmentosTable').writeSelections()" skipChildren="false"/>
                 <p:ajax event="rowSelectCheckbox" listener="#{manticCatalogosClientesCuentasDeuda.doRowSeleccionado}" process="@this tablaSegmentos" update="tabPagosSegmentos:pagoSegmento" oncomplete="PF('segmentosTable').writeSelections()" skipChildren="false"/>
-                <p:column selectionMode="multiple" class="janal-column-center MarAuto Responsive janal-wid-3"/>							
+                <p:column selectionMode="multiple" styleClass="janal-column-center MarAuto Responsive janal-wid-3"/>							
                 <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.ticket}">
                   <f:facet name="header">
                     <h:outputText value="Ticket"/>
                   </f:facet>
                   <h:outputText value="#{row['ticket']}"/>
                 </p:column>														
-                <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.persona}" rendered="false">
+                <p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{row.persona}" rendered="false">
                   <f:facet name="header">
                     <h:outputText value="Vendedor"/>
                   </f:facet>
                   <h:outputText value="#{row['persona']}"/>
                 </p:column>											
-                <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
+                <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
                   <f:facet name="header">
                     <h:outputText value="Fecha"/>
                   </f:facet>
                   <h:outputText value="#{row['registro']}"/>
                 </p:column>						
-                <p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.dias}">
+                <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.dias}">
                   <f:facet name="header">
                     <h:outputText value="Días por vencer"/>
                   </f:facet>
                   <h:outputText value="#{row['dias']}"/>
                 </p:column>						
-                <p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.importe}">
+                <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.importe}">
                   <f:facet name="header">
                     <h:outputText value="Importe"/>
                   </f:facet>
                   <h:outputText value="#{row['importe']}"/>
                 </p:column>						
-                <p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.saldo}">
+                <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.saldo}">
                   <f:facet name="header">
                     <h:outputText value="Saldo"/>
                   </f:facet>
@@ -450,7 +450,7 @@
 				</p:tabView>				
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPagoSegmento tabPagosSegmentos" update="tabla panelDetalle" actionListener="#{manticCatalogosClientesCuentasDeuda.doRegistrarPagoSegmento}" onstart="return janal.partial('dialogoSegmento');" oncomplete="PF('dlgPagoSegmento').hide(); janal.desbloquear();"/>
+					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPagoSegmento tabPagosSegmentos" update="tabla panelDetalle" actionListener="#{manticCatalogosClientesCuentasDeuda.doRegistrarPagoSegmento}" onstart="if(janal.partial('dialogoSegmento')) {PF('dlgPagoSegmento').hide(); return true;} else {return false;}" oncomplete="janal.desbloquear();"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgPagoSegmento').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>

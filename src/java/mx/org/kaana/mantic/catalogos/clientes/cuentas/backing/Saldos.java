@@ -307,7 +307,7 @@ public class Saldos extends IBaseFilter implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			sucursales=(List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave");
 			this.attrs.put("sucursales", sucursales);			
-			this.attrs.put("idEmpresa", -1L);			
+			this.attrs.put("idEmpresa", new UISelectEntity(-1L));			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -431,6 +431,8 @@ public class Saldos extends IBaseFilter implements Serializable {
 	} // doVerificarReporte	
 	
 	public String doImportar() {
+		JsfBase.setFlashAttribute("idVenta", ((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idVenta"));
+		JsfBase.setFlashAttribute("idCliente", ((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idCliente"));
 		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Clientes/Cuentas/saldos");		
 		JsfBase.setFlashAttribute("idClienteDeuda",((Entity)this.attrs.get("seleccionadoDetalle")).getKey());
 		return "importar".concat(Constantes.REDIRECIONAR);

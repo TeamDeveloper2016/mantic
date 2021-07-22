@@ -11319,8 +11319,8 @@
 					tc_mantic_empresas_deudas on tc_mantic_empresas_pagos.id_empresa_deuda = tc_mantic_empresas_deudas.id_empresa_deuda				
 				where
 				  tc_mantic_empresas_deudas.id_empresa= {idEmpresa}
-				and 
-					tc_mantic_empresas_pagos.ejercicio= {ejercicio} 
+				  and tc_mantic_empresas_pagos.ejercicio= {ejercicio} 
+          and tc_mantic_empresas_pagos.orden{operador} 900000
 			</select>		
 		</unit>
 		<unit id="VistaEmpaquesUnidadesDto">

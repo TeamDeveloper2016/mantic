@@ -3215,6 +3215,18 @@
         where      
           id_proveedor = {idProveedor} and id_proveedor_tipo_contacto = {idProveedorTipoContacto} and id_tipo_contacto = {idTipoContacto}
       </select>
+      <select id="correos">
+        select      
+          *
+        from      
+          tr_mantic_proveedor_tipo_contacto
+        where      
+          id_proveedor= {idProveedor} 
+          and id_tipo_contacto in (9, 10, 11, 15, 16, 17, 18)
+          and id_preferido= 1
+        order by
+          id_tipo_contacto
+      </select>      
 			<select id="maximo">
         select      
           max(id_proveedor_tipo_contacto) maximo
@@ -5768,6 +5780,17 @@
         where      
           ruta = '{ruta}' and id_tipo_archivo = {idTipoArchivo} and id_cliente_pago = {idClientePago} and nombre = '{nombre}'
       </select>
+			<select id="listado">
+        select      
+          *
+        from      
+          tc_mantic_clientes_pagos_archivos
+        where      
+          ruta = '{ruta}'
+				  and id_principal= 1
+				order by
+				  ruta
+      </select>
       <select id="pago">
         select      
           *
@@ -5776,6 +5799,14 @@
         where      
           id_cliente_pago = {idClientePago}
       </select>
+      <update id="rows">
+        update 
+          tc_mantic_clientes_pagos_archivos
+        set
+          id_principal= 2
+        where
+          ruta = '{ruta}' and id_tipo_archivo = {idTipoArchivo} and id_cliente_pago = {idClientePago} and nombre = '{nombre}'
+      </update>
       <delete id="rows">
         delete from
           tc_mantic_clientes_pagos_archivos
