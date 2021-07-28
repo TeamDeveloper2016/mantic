@@ -394,7 +394,7 @@
 				<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 					<div class="ui-grid-row janal-grid-row">
 						<div class="ui-grid-col-12">																			
-							<p:panelGrid id="panelCliente" layout="grid" columns="8" styleClass="janal-wid-100-txt" columnClasses="janal-wid-20, janal-wid-20, janal-wid-5 janal-column-center, janal-wid-10, janal-wid-10 janal-column-center, janal-wid-10 janal-column-center, janal-wid-10 janal-column-center">								
+							<p:panelGrid id="panelCliente" layout="grid" columns="7" styleClass="janal-wid-100-txt" columnClasses="janal-wid-20, janal-wid-40, janal-wid-5 janal-column-center, janal-wid-10, janal-wid-10 janal-column-center, janal-wid-10 janal-column-center, janal-wid-10 janal-column-center">
 							  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">								
   								<p:outputLabel for="clientes" value="Buscar cliente:"/>																							
                   <p:autoComplete id="clientes" placeholder="RFC o nombre del cliente" widgetVar="listadoClientes" var="customCliente" itemLabel="[#{empty customCliente.especial or customCliente.especial eq '0'? '': '*'}] #{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticVentasCajaAccion.attrs.cliente}" completeMethod="#{manticVentasCajaAccion.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
@@ -457,25 +457,23 @@
 		  							<p:ajax process="@this contenedorGrupos:observacionesFactura" update="contenedorGrupos:panelSumatoria" onstart="janal.bloquear();" oncomplete="jsArticulos.applyValidacionesCredito();" />
 			  					</p:inputSwitch>
                 </p:panelGrid>  
+              </p:panelGrid>  
+							<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-30, janal-wid-70" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}">
                 <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                   <p:outputLabel for="cfdi" value="Uso del CFDI:" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
-                  <p:outputLabel for="domicilioFactura" value="Domicilio:" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
-                  <p:outputLabel for="tipoPago" value="Método de pago:" rendered="false"/>												
-                  <p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>								
-                  <p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>								
-                  <p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
-                  <p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
-                  <p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
                   <p:selectOneMenu id="cfdi" value="#{manticVentasCajaAccion.attrs.cfdi}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}">
                     <f:selectItem itemValue="" itemLabel="SELECCIONE"/>
                     <f:selectItems value="#{manticVentasCajaAccion.attrs.cfdis}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
-                    <p:column  styleClass="janal-column-left janal-wid-col-50">
+                    <p:column styleClass="janal-column-left janal-wid-col-50">
                       <h:outputText value="#{item.clave}"/>
                     </p:column>   										
-                    <p:column  styleClass="janal-column-left">
+                    <p:column styleClass="janal-column-left">
                       <h:outputText value="#{item.nombre}"/>
                     </p:column>   										
                   </p:selectOneMenu>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                  <p:outputLabel for="domicilioFactura" value="Domicilio:" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
                   <p:selectOneMenu id="domicilioFactura" value="#{manticVentasCajaAccion.attrs.domicilioFactura}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}">															
                     <f:selectItems value="#{manticVentasCajaAccion.attrs.domiciliosFactura}" var="element" itemValue="#{element}" itemLabel="#{element.calle}, #{element.numeroExterior} - #{element.numeroInterior}, #{element.asentamiento}, #{element.codigoPostal}, #{element.localidad}, #{element.municipio}"/>
                     <p:column headerText="Calle">
@@ -500,17 +498,7 @@
                       <h:outputText value="#{item.municipio}"/>
                     </p:column>   
                   </p:selectOneMenu>
-                  <p:selectOneMenu id="tipoPago" value="#{manticVentasCajaAccion.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="false">
-                    <f:selectItem itemValue="" itemLabel="SELECCIONE"/>
-                    <f:selectItems value="#{manticVentasCajaAccion.attrs.tiposPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
-                    <p:column headerText="Clave">
-                      <h:outputText value="#{item.clave}"/>
-                    </p:column>   
-                    <p:column headerText="Nombre">
-                      <h:outputText value="#{item.nombre}"/>
-                    </p:column>   
-                  </p:selectOneMenu>								
-  							</p:panelGrid>			
+                </p:panelGrid>  
 	  					</p:panelGrid>			
               <p:panelGrid id="deudorPago" columns="1" layout="grid" styleClass="janal-wid-100 janal-column-center" columnClasses="janal-wid-100" style="display: #{manticVentasCajaAccion.saldoCliente.deudor} ? 'none' : ''">
                 <p:outputLabel value="#{manticVentasCajaAccion.saldoCliente.mensaje}" styleClass="janal-column-center janal-color-orange" style="font-weight: bold !important"/>

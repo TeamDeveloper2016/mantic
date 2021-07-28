@@ -3,6 +3,7 @@ package mx.org.kaana.mantic.ventas.caja.backing;
 import java.io.File;
 import java.io.Serializable;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -434,7 +435,7 @@ public class Accion extends IBaseVenta implements Serializable {
 					this.setAdminOrden(new AdminTickets(new TicketVenta()));
 					this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
 					this.attrs.put("clienteSeleccion", null);
-					init();
+					this.init();
 				} // if
 				else 
 					JsfBase.addMessage("Ocurrió un error al registrar el ticket de venta.", ETipoMensaje.ERROR);
@@ -1854,6 +1855,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doFacturarPendiente(Facturacion facturacion) {
 		Transaccion transaccion= null;
 		try {
+      facturacion.setTimbrado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 			transaccion= new Transaccion(facturacion);
 			transaccion.ejecutar(EAccion.TRANSFORMACION);
 				//doSendMail(facturacion);							

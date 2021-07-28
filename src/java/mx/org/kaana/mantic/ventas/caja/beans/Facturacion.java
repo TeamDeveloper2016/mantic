@@ -52,7 +52,7 @@ public class Facturacion implements Serializable{
 		this.idTipoDocumento   = idTipoDocumento;
 		this.intentos          = intentos;
     this.ticket            = "";
-    this.timbrado          = new Timestamp(Calendar.getInstance().getTimeInMillis());
+    this.timbrado          = null;
 	}
 
 	public Long getIdVenta() {
@@ -181,6 +181,11 @@ public class Facturacion implements Serializable{
 
   public void setTimbrado(Timestamp timbrado) {
     this.timbrado = timbrado;
+  }
+
+  @Override
+  public String toString() {
+    return "Facturacion{" + "idVenta=" + idVenta + ", idCliente=" + idCliente + ", correos=" + correos + ", razonSocial=" + razonSocial + ", idTipoPago=" + idTipoPago + ", idFactura=" + idFactura + ", idFacturama=" + idFacturama + ", selloSat=" + selloSat + ", idClienteDomicilio=" + idClienteDomicilio + ", idUsuario=" + idUsuario + ", nombreEmpresa=" + nombreEmpresa + ", idEmpresa=" + idEmpresa + ", idTipoDocumento=" + idTipoDocumento + ", intentos=" + intentos + ", ticket=" + ticket + ", timbrado=" + timbrado + '}';
   }
   
 }

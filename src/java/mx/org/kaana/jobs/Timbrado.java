@@ -66,7 +66,7 @@ public class Timbrado extends IBaseJob {
 				pendientes= this.toFacturasPendientes();
 				for (Facturacion factura: pendientes) {
 					try {
-						if(factura.getIntentos()<= 2){
+						if(factura.getIntentos()<= 2) {
 							correos= this.toCorreosCliente(factura.getIdCliente());
 							if (!Cadena.isVacio(correos)) {
 								factura.setCorreos(correos);
