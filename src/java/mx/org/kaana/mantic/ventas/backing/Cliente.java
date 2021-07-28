@@ -208,10 +208,10 @@ public class Cliente extends IBaseAttribute implements Serializable {
 		EAccion accion           = null;
     try {
 			accion= this.attrs.get("idCliente")!= null && !Long.valueOf(this.attrs.get("idCliente").toString()).equals(-1L) ? EAccion.TRANSFORMACION : EAccion.ASIGNAR;
-			clienteVenta= toClienteVenta();			
+			clienteVenta= this.toClienteVenta();			
       transaccion = new Transaccion(clienteVenta);
       if (transaccion.ejecutar(accion)) {
-				if(this.attrs.get("regreso")!= null){
+				if(this.attrs.get("regreso")!= null) {
 					JsfBase.setFlashAttribute("observaciones", this.attrs.get("observaciones"));																							
 					JsfBase.setFlashAttribute("idFicticia", this.attrs.get("idFicticia"));																							
 					JsfBase.setFlashAttribute("idVenta", this.attrs.get("idVenta"));
@@ -237,7 +237,7 @@ public class Cliente extends IBaseAttribute implements Serializable {
     return regresar;
   } // doAccion
 
-	private ClienteVenta toClienteVenta(){
+	private ClienteVenta toClienteVenta() {
 		ClienteVenta regresar                         = null;
 		List<TrManticClienteTipoContactoDto> contactos= null;
 		TrManticClienteTipoContactoDto contacto       = null;
@@ -253,11 +253,11 @@ public class Cliente extends IBaseAttribute implements Serializable {
 			contacto.setIdTipoContacto(ETiposContactos.CORREO.getKey());
 			contacto.setValor(this.attrs.get("correo").toString());
 			contacto.setOrden(1L);
-			if(!contactosList.isEmpty()){
+			if(!contactosList.isEmpty()) {
 				for(ClienteTipoContacto record: contactosList){
 					if(record.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey()))
 						contacto.setIdClienteTipoContacto(record.getIdClienteTipoContacto());
-				}
+				} // for
 			} // if
 			contactos.add(contacto);
 			contacto= new TrManticClienteTipoContactoDto();
@@ -268,7 +268,7 @@ public class Cliente extends IBaseAttribute implements Serializable {
 				for(ClienteTipoContacto record: contactosList){
 					if(record.getIdTipoContacto().equals(ETiposContactos.TELEFONO.getKey()))
 						contacto.setIdClienteTipoContacto(record.getIdClienteTipoContacto());
-				}
+				} // for
 			} // if
 			contactos.add(contacto);
 			contacto= new TrManticClienteTipoContactoDto();
@@ -279,7 +279,7 @@ public class Cliente extends IBaseAttribute implements Serializable {
 				for(ClienteTipoContacto record: contactosList){
 					if(record.getIdTipoContacto().equals(ETiposContactos.CELULAR.getKey()))
 						contacto.setIdClienteTipoContacto(record.getIdClienteTipoContacto());
-				}
+				} // for
 			} // if
 			contactos.add(contacto);
 			regresar.setContacto(contactos);
@@ -669,15 +669,15 @@ public class Cliente extends IBaseAttribute implements Serializable {
 					this.domicilio.setCodigoPostal("");
 					this.attrs.put("codigoSeleccionado", new UISelectEntity(-1L));
 				} // else					
-				toAsignaEntidad();
-				loadMunicipios();
-				toAsignaMunicipio();
-				loadLocalidades();
-				toAsignaLocalidad();
+				this.toAsignaEntidad();
+				this.loadMunicipios();
+				this.toAsignaMunicipio();
+				this.loadLocalidades();
+				this.toAsignaLocalidad();
 				//loadCodigosPostales();      
 				//toAsignaCodigoPostal();
 			} // if
-      loadAtributosComplemento();
+      this.loadAtributosComplemento();
     } // try
     catch (Exception e) {
       Error.mensaje(e);

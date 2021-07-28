@@ -18,10 +18,11 @@
 	  <h:outputScript library="janal" name="js/shBrushCss.js"/>
     <script type="text/javascript">
       Janal.Control.fields = {        
-        'pago'         : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
-        'tipoPago'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
-        'observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
-      };		
+        'importe'      : {validaciones: 'requerido|mayor-igual({"cuanto": 1})', mascara: 'libre'},
+        'fecha'        : {validaciones: 'requerido|fecha', mascara: 'libre'},
+        'observaciones': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'}
+      };	
+      
 			function start() {
         PF('statusDialog').show();
       };
@@ -67,13 +68,15 @@
 								<p:outputLabel value="Almacen:"/>						
 								<p:inputText value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.almacen}" styleClass="janal-wid-100-txt" readonly="true"/>						
 								<p:spacer/><p:separator/>
-								<p:outputLabel value="Importe:"/>						
-								<p:inputNumber value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.importe}" inputStyleClass="janal-wid-100-txt janal-column-right" decimalPlaces="2"/>
+								<p:outputLabel for="importe" value="Importe:"/>						
+                <p:inputNumber id="importe" value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.importe}" inputStyleClass="janal-wid-100-txt janal-column-right" decimalPlaces="2"/>
 								<p:outputLabel value="Saldo:"/>																								
 								<p:inputNumber value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.saldo}" inputStyleClass="janal-wid-100-txt janal-column-right" disabled="true" decimalPlaces="2"/>
-								<p:outputLabel value="Fecha limite:"/>																		
-								<p:calendar value="#{manticCatalogosEmpresasCuentasProrroga.prorroga}" locale="es" pattern="dd/MM/yyyy" styleClass="janal-wid-100-txt janal-column-right" converter="janal.convertidor.Calendario"/>																	
+								<p:outputLabel for="fecha" value="Fecha limite:"/>																		
+								<p:calendar id="fecha" value="#{manticCatalogosEmpresasCuentasProrroga.prorroga}" locale="es" pattern="dd/MM/yyyy" styleClass="janal-wid-100-txt janal-column-right" converter="janal.convertidor.Calendario"/>																	
 							</p:panelGrid>					
+							<p:outputLabel for="observaciones" value="Observaciones:" styleClass="janal-wid-100-txt" />
+              <p:inputTextarea id="observaciones" value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.observaciones}" styleClass="janal-wid-100-txt" rows="2"/>
 						</p:tab>
             <p:tab title="Archivos">
 							<p:dataTable id="importados" var="row" value="#{manticCatalogosEmpresasCuentasProrroga.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
@@ -120,11 +123,11 @@
   </ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@this contenedorGrupos:tabla" action="#{manticCatalogosEmpresasCuentasProrroga.doAceptar}"/>
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@this contenedorGrupos:tabla contenedorGrupos:observaciones" action="#{manticCatalogosEmpresasCuentasProrroga.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear();"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosEmpresasCuentasProrroga.doRegresar}" immediate="true"/>
 		</div>	
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@this contenedorGrupos:tabla" action="#{manticCatalogosEmpresasCuentasProrroga.doAceptar}"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@this contenedorGrupos:tabla contenedorGrupos:observaciones" action="#{manticCatalogosEmpresasCuentasProrroga.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear();"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosEmpresasCuentasProrroga.doRegresar}" immediate="true"/>
 		</div>	
 	</ui:define>	

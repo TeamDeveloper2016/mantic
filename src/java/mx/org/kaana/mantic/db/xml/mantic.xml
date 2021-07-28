@@ -3816,6 +3816,18 @@
         order by
           id_tipo_contacto
       </select>      
+      <select id="celulares">
+        select      
+          *
+        from      
+          tr_mantic_cliente_tipo_contacto
+        where      
+          id_cliente= {idCliente} 
+          and id_tipo_contacto in (6, 7, 8)
+          and id_preferido= 1
+        order by
+          id_tipo_contacto
+      </select>      
 			<select id="maximo">
         select      
           max(id_cliente_tipo_contacto) maximo

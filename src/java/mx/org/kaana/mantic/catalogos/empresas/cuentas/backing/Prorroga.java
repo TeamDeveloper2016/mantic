@@ -14,6 +14,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -118,7 +119,7 @@ public class Prorroga extends IBaseImportar implements Serializable {
 					JsfBase.addMessage("Modificar cuenta por pagar", "Ocurrió un error al realizar la modificación", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Modificar cuenta por pagar", "Error al modificar la cuenta", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Modificar cuenta por pagar", "El importe tiene que ser mayor a cero", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -136,7 +137,7 @@ public class Prorroga extends IBaseImportar implements Serializable {
 			deuda  = (Entity) this.attrs.get("deuda");
 			importe= Numero.toRedondearSat(Double.valueOf(String.valueOf(deuda.get("importe"))));
 			saldo  = Numero.toRedondearSat(deuda.toDouble("saldo"));
-			regresar= importe >= saldo;
+			regresar= importe>= 1D;
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

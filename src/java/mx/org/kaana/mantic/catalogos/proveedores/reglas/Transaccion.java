@@ -352,7 +352,7 @@ public class Transaccion extends IBaseTnx {
               // VERIFICAR SI YA FUE NOTIFICADO PARA RECIBIR MENSAJES POR WHATSUP
               if(dto.getIdPreferido().equals(1L) && (dto.getIdTipoContacto().equals(6L) || dto.getIdTipoContacto().equals(7L) || dto.getIdTipoContacto().equals(8L))) {
                 Bonanza notificar= new Bonanza(this.registroProveedor.getProveedor().getRazonSocial(), dto.getValor());
-                // notificar.doSendMessage(sesion);
+                notificar.doSendMessage(sesion);
               } // if
 							break;
 						case UPDATE:

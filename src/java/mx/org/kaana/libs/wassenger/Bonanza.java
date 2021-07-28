@@ -36,8 +36,11 @@ public final class Bonanza implements Serializable {
   
   private static final String IMOX_TOKEN      = "IMOX_TOKEN";
   public static final String IMOX_GROUP       = "5214491813810-1598307650@g.us";
-  private static final String BODY_MESSAGE    = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n{saludo}, somos *Ferreteria Bonanza*, si deseas mantener una comunicación con nosotros por este medio, favor de aceptar el mensaje respondiendo con un *hola* en esta conversación (_soy un chatbot asociado al sistema_).\\n\\n_Ferreteria *Bonanza*_ !\"";
-  private static final String BODY_FACTURA    = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n{saludo}, te hacemos llegar la factura con folio *{ticket}* del día *{fecha}*, para descarcarla favor de hacer clic en el siguiente enlace:{reporte}Para cualquier duda o aclaración por favor no dude en contactarnos a la siguiente cuenta de correo *ventas@ferreteriabonanza.com*.\\n\\n_Ferreteria *Bonanza*_ !\"";
+  private static final String BODY_MESSAGE    = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te estaremos enviando únicamente las notificaciones más importantes respecto a compras con nosotros. Emisión y descarga de facturas principalmente.\\n\\nNo podremos contestar a tus mensajes en este número.\\n\\nSi desea contactarnos puedes ser a *ventas@ferreteriabonanza.com* y/o al telefono/whatsapp *4495087505*\\n\\nPara aceptar estas notificaciones, puedes escribir *hola* en cualquier momento sobre este chat.\\n\\nGracias por comprar en *_Ferreteria Bonanza_*.\"";
+  private static final String BODY_FACTURA    = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te hacemos llegar la factura con folio *{ticket}* del día *{fecha}*, en el siguiente link se adjuntan sus archivos PDF y XML de su factura emitida\\n\\n {reporte}\\n\\nPara cualquier duda o aclaración *ventas@ferreteriabonanza.com* y/o al telefono/whatsapp *4495087505*.\\n\\nAgradecemos su preferencia *_Ferreteria Bonanza_*.\"";
+  private static final String BODY_DEVOLUCION = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, su cuenta presenta un movimiento, en el siguiente link se adjuntan el archivo PDF referente a ello\\n\\nhttps://ferreteriabonanza.com/Temporal/Pdf/{reporte}\\n\\nPara cualquier duda o aclaración *ventas@ferreteriabonanza.com* y/o al telefono/whatsapp *4495087505*.\\n\\nAgradecemos su preferencia *_Ferreteria Bonanza_*.\"";
+  private static final String BODY_PAGO_CUENTA= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, gracias por su pago, en el siguiente link se adjunta un PDF con un resumen y estatus de los tickets/facturas a los cuales fue abonado el pago\\n\\nhttps://ferreteriabonanza.com/Temporal/Pdf/{reporte}\\n\\nPara cualquier duda o aclaración *ventas@ferreteriabonanza.com* y/o al telefono/whatsapp *4495087505*.\\n\\nAgradecemos su preferencia *_Ferreteria Bonanza_*.\"";
+  private static final String BODY_ORDEN_COMPRA= "\"phone\":\"+521{celular}\",\"message\":\"Estimado proveedor _{nombre}_:\\n\\n{saludo}, en el siguiente link se adjunta un PDF con una orden de compra\\n\\n{reporte}\\n\\nFavor de verificar en la misma orden la sucursal de entrega.\\n\\nPara cualquier duda o aclaración *ventas@ferreteriabonanza.com* y/o al telefono/whatsapp *4495087505*.\\n\\n*_Ferreteria Bonanza_*.\"";
   
   private static final String BODY_RESIDENTE  = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar los reportes de los destajos de los *contratistas* o *subcontratistas* de la nómina *{nomina}* del {periodo}, hacer clic en los siguientes enlaces:\\n{reporte}\\nSe tienen *24 hrs* para descargar todos los reportes.\\n\\nCAFU Construcciones\"";
   private static final String BODY_GASTO_CHICA= "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te notificamos que los gastos a pagar por concepto de caja chica ascienden a {reporte} pesos de la semana *{nomina}* del {periodo} \\nSi tienes alguna duda, favor de reportarlo de inmediato a tu administrativo.\\n\\nCAFU Construcciones\"";
@@ -302,7 +305,6 @@ public final class Bonanza implements Serializable {
     regresar.append(pdf);
     regresar.append("\\n(XML) https://ferreteriabonanza.com/Temporal/Pdf/");
     regresar.append(xml);
-    regresar.append("\\n");
     return regresar.toString();
   }
   
@@ -362,6 +364,177 @@ public final class Bonanza implements Serializable {
     else 
       LOG.error("[doSendFactura]No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
   } // doSendFactura
+  
+  public void doSendDevolucion(Session sesion) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+      Message message= null;
+      Map<String, Object> params = new HashMap<>();        
+      try {
+        params.put("nombre", this.nombre);
+        params.put("celular", this.celular);
+        params.put("reporte", this.reporte);
+        params.put("ticket", this.ticket);
+        params.put("fecha", this.fecha);
+        params.put("saludo", this.toSaludo());
+        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_DEVOLUCION, params, true)+ "}");
+        else {  
+          HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+          .header("Content-Type", "application/json")
+          .header("Token", this.token)
+          .body("{"+ Cadena.replaceParams(BODY_DEVOLUCION, params, true)+ "}")
+          .asString();
+          if(Objects.equals(response.getStatus(), 201)) {
+            LOG.warn("Enviado: "+ response.getBody());
+            Gson gson= new Gson();
+            message= gson.fromJson(response.getBody(), Message.class);
+            if(message!= null) 
+              message.init();
+            else {
+              message= new Message();
+              message.setMessage(" {"+ Cadena.replaceParams(BODY_DEVOLUCION, params, true)+ "}");
+            } // else  
+          } // if  
+          else {
+            LOG.error("[doSendDevolucion] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            message= new Message();
+            message.setMessage(" {"+ Cadena.replaceParams(BODY_DEVOLUCION, params, true)+ "}");
+          } // if  
+          message.setTelefono(this.celular);
+          message.setIdSendStatus(new Long(response.getStatus()));
+          message.setSendStatus(response.getStatusText());
+          message.setIdTipoMensaje(ETypeMessage.CLIENTE.getId());
+          message.setIdUsuario(JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getPersona()!= null? JsfBase.getIdUsuario(): 2L);
+          if(sesion!= null)
+            DaoFactory.getInstance().insert(sesion, message);
+          else
+            DaoFactory.getInstance().insert(message);
+        } // else
+      } // try
+      catch(Exception e) {
+        Error.mensaje(e);
+      } // catch
+      finally {
+        Methods.clean(params);
+      } // finally
+    } // if
+    else 
+      LOG.error("[doSendDevolucion]No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+  } // doSendDevolucion
+  
+  public void doSendPagoCuenta(Session sesion) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+      Message message= null;
+      Map<String, Object> params = new HashMap<>();        
+      try {
+        params.put("nombre", this.nombre);
+        params.put("celular", this.celular);
+        params.put("reporte", this.reporte);
+        params.put("ticket", this.ticket);
+        params.put("fecha", this.fecha);
+        params.put("saludo", this.toSaludo());
+        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_PAGO_CUENTA, params, true)+ "}");
+        else {  
+          HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+          .header("Content-Type", "application/json")
+          .header("Token", this.token)
+          .body("{"+ Cadena.replaceParams(BODY_PAGO_CUENTA, params, true)+ "}")
+          .asString();
+          if(Objects.equals(response.getStatus(), 201)) {
+            LOG.warn("Enviado: "+ response.getBody());
+            Gson gson= new Gson();
+            message= gson.fromJson(response.getBody(), Message.class);
+            if(message!= null) 
+              message.init();
+            else {
+              message= new Message();
+              message.setMessage(" {"+ Cadena.replaceParams(BODY_PAGO_CUENTA, params, true)+ "}");
+            } // else  
+          } // if  
+          else {
+            LOG.error("[doSendPagoCuenta] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            message= new Message();
+            message.setMessage(" {"+ Cadena.replaceParams(BODY_PAGO_CUENTA, params, true)+ "}");
+          } // if  
+          message.setTelefono(this.celular);
+          message.setIdSendStatus(new Long(response.getStatus()));
+          message.setSendStatus(response.getStatusText());
+          message.setIdTipoMensaje(ETypeMessage.CLIENTE.getId());
+          message.setIdUsuario(JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getPersona()!= null? JsfBase.getIdUsuario(): 2L);
+          if(sesion!= null)
+            DaoFactory.getInstance().insert(sesion, message);
+          else
+            DaoFactory.getInstance().insert(message);
+        } // else
+      } // try
+      catch(Exception e) {
+        Error.mensaje(e);
+      } // catch
+      finally {
+        Methods.clean(params);
+      } // finally
+    } // if
+    else 
+      LOG.error("[doSendPagoCuenta]No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+  } // doSendPagoCuenta
+  
+  public void doSendOrdenCompra(Session sesion) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+      Message message= null;
+      Map<String, Object> params = new HashMap<>();        
+      try {
+        params.put("nombre", this.nombre);
+        params.put("celular", this.celular);
+        params.put("reporte", this.reporte);
+        params.put("ticket", this.ticket);
+        params.put("fecha", this.fecha);
+        params.put("saludo", this.toSaludo());
+        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_ORDEN_COMPRA, params, true)+ "}");
+        else {  
+          HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+          .header("Content-Type", "application/json")
+          .header("Token", this.token)
+          .body("{"+ Cadena.replaceParams(BODY_ORDEN_COMPRA, params, true)+ "}")
+          .asString();
+          if(Objects.equals(response.getStatus(), 201)) {
+            LOG.warn("Enviado: "+ response.getBody());
+            Gson gson= new Gson();
+            message= gson.fromJson(response.getBody(), Message.class);
+            if(message!= null) 
+              message.init();
+            else {
+              message= new Message();
+              message.setMessage(" {"+ Cadena.replaceParams(BODY_ORDEN_COMPRA, params, true)+ "}");
+            } // else  
+          } // if  
+          else {
+            LOG.error("[doSendOrdenCompra] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            message= new Message();
+            message.setMessage(" {"+ Cadena.replaceParams(BODY_ORDEN_COMPRA, params, true)+ "}");
+          } // if  
+          message.setTelefono(this.celular);
+          message.setIdSendStatus(new Long(response.getStatus()));
+          message.setSendStatus(response.getStatusText());
+          message.setIdTipoMensaje(ETypeMessage.CLIENTE.getId());
+          message.setIdUsuario(JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getPersona()!= null? JsfBase.getIdUsuario(): 2L);
+          if(sesion!= null)
+            DaoFactory.getInstance().insert(sesion, message);
+          else
+            DaoFactory.getInstance().insert(message);
+        } // else
+      } // try
+      catch(Exception e) {
+        Error.mensaje(e);
+      } // catch
+      finally {
+        Methods.clean(params);
+      } // finally
+    } // if
+    else 
+      LOG.error("[doSendOrdenCompra]No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+  } // doSendOrdenCompra
 
   public void doSendResidentes(Session sesion) {
     if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
@@ -642,31 +815,8 @@ public final class Bonanza implements Serializable {
   }
   
   public static void main(String ... args) {
-//    String nombres[]  = {"Carlos Calderon Solano", "Juan José Fuentes Ramirez España", "Christopher Castro Jiménez"};
-//    String celulares[]= {"4491813810", "4491152255", "4491087126"};
     Bonanza message= new Bonanza("Alejandro Jiménez García", "449-209-05-86", "holix.pdf", "2021-20", "15/06/2021 al 30/06/2021");
     message.doSendSaludo();
-//    for (int x= 0; x < nombres.length; x++) {
-//      message.setNombre(nombres[x]);
-//      message.setCelular(celulares[x]);
-//      // message.doSendDemo();
-//      message.doSendMessage();
-//      // message.doSendDestajo();
-//    } // for
-//    String body= "{\"id\":\"60d607099faa17d7ac70f63d\",\"waId\":\"3EB06320796368264337\",\"phone\":\"+5214492090586\",\"wid\":\"5214492090586@c.us\",\"status\":\"queued\",\"deliveryStatus\":\"queued\",\"createdAt\":\"2021-06-25T16:40:41.225Z\",\"deliverAt\":\"2021-06-25T16:40:41.206Z\",\"message\":\"Hola _Alejandro jiménez garcía_,\nBuenos días, te hacemos llegar el reporte de los destajos de la nómina *2021-20* del *15/06/2021 al 30/06/2021*, hacer clic en el siguiente enlace: https://cafu.jvmhost.net/Temporal/Pdf/CAFU_2021062410492325_orden_de_compra_detalle.pdf\nSi tienes alguna duda, favor de reportarlo de inmediato a tu residente; tienes *24 hrs* para descargar el reporte.\nCAFU Construcciones S.A.\",\"priority\":\"normal\",\"retentionPolicy\":\"plan_defaults\",\"retry\":{\"count\":0},\"webhookStatus\":\"pending\",\"media\":{\"format\":\"native\"},\"device\":\"60d4987e48b592aa82f09e92\"}";
-//    Gson gson= new Gson();
-//    Message message= gson.fromJson(body, Message.class);
-//    if(message!= null)
-//      message.init();
-//    LOG.info(message);
-//    Map<String, Object> params= new HashMap<>();
-//    params.put("Alex Jímenez", "uno.pdf");
-//    params.put("Axel Jímenez", "dos.pdf");
-//    params.put("Yanely Jímenez", "tres.pdf");
-//    params.put("Yaretzy Jímenez", "cuatro.pdf");
-//    Cafu cafu= new Cafu("Alejandro Jimenez", "4492090586", "2021-23", "*21/06/2021* al *30/06/2021*", params);
-//    LOG.info(cafu.getReporte());
-//    cafu.doSendDemo();
   }  
   
 }

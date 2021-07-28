@@ -280,8 +280,8 @@ public class Timbrado extends IBaseJob {
           File file= new File(nombre);
           if(!file.exists())
             Archivo.copy(factura.toString("alias"), nombre, Boolean.FALSE);
-          Bonanza notificar= new Bonanza(facturacion.getRazonSocial(), celular, Bonanza.toPathFiles(this.nameFacturaPdf, factura.toString("nombre")), facturacion.getTicket(), Fecha.formatear(Fecha.FECHA_HORA_CORTA, facturacion.getTimbrado()));
-          LOG.info("Enviando mensaje por whatsup al celular: "+ celular);
+          // Bonanza notificar= new Bonanza(facturacion.getRazonSocial(), celular, Bonanza.toPathFiles(this.nameFacturaPdf, factura.toString("nombre")), facturacion.getTicket(), Fecha.formatear(Fecha.FECHA_HORA_CORTA, facturacion.getTimbrado()));
+          // LOG.info("Enviando mensaje por whatsup al celular: "+ celular);
           // notificar.doSendFactura();
         } // try
         finally {

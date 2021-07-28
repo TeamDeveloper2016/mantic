@@ -126,9 +126,9 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.correos= new ArrayList<>();
 			for(ClienteTipoContacto contacto: contactos) {
 				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey()))
-					this.correos.add(new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor()));				
+					this.correos.add(new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor(), contacto.getIdPreferido()));				
 			} // for
-			this.correos.add(new Correo(-1L, ""));
+			this.correos.add(new Correo(-1L, "", 2L));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

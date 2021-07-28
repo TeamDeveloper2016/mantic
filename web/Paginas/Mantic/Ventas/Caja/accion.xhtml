@@ -35,9 +35,9 @@
         'asentamiento' : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
         'entreCalle'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
         'ycalle'       : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},        
-        'telefono'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},        
-        'correo'       : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},        
-        'celular'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},                
+        'telefono'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},        
+        'correo'       : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},        
+        'celular'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},                
 				
 				'efectivo'         : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'credito'          : {validaciones: 'libre|max-valor({"cuanto": #{manticVentasCajaAccion.attrs.pago.limiteCredito}})', mascara: 'libre', grupo: 'general', mensaje:'La suma de los pagos que no son en efectivo sobrepasa al total.'},
@@ -394,113 +394,130 @@
 				<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 					<div class="ui-grid-row janal-grid-row">
 						<div class="ui-grid-col-12">																			
-							<p:panelGrid id="panelCliente" layout="grid" columns="7" styleClass="janal-wid-99" columnClasses="janal-wid-20, janal-wid-40, janal-wid-5 janal-column-center, janal-wid-10, janal-wid-10 janal-column-center, janal-wid-10 janal-column-center, janal-wid-10 janal-column-center">								
-								<p:outputLabel for="clientes" value="Buscar cliente:"/>																							
-								<p:outputLabel for="cliente" value="Cliente:"/>		
-								<p:spacer/>
-								<p:outputLabel for="descuento" value="Descuento:"/>								
-								<p:outputLabel value="Apartado:"/>
-								<p:outputLabel value="Facturar:"/>
-								<p:outputLabel value="Credito:"/>
-								<p:autoComplete id="clientes" placeholder="RFC o nombre del cliente" widgetVar="listadoClientes" var="customCliente" itemLabel="[#{empty customCliente.especial or customCliente.especial eq '0'? '': '*'}] #{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticVentasCajaAccion.attrs.cliente}" completeMethod="#{manticVentasCajaAccion.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
-									<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa contenedorGrupos contenedorGrupos:observacionesFactura" listener="#{manticVentasCajaAccion.doAsignaCliente}" update="cliente contenido @(.cambio-cliente) contenedorGrupos contenedorGrupos:panelSumatoria contenedorGrupos:deudorPago contenedorGrupos:deudor contenedorGrupos:facturacionSinCorreo contenedorGrupos:correosCliente" oncomplete="janal.desbloquear();"/>
-									<f:facet name="itemtip">
-										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
-											<h:outputText value="Clave" />
-											<h:outputText value="#{customCliente.clave}"/>
-											<h:outputText value="RFC:" />
-											<h:outputText value="#{customCliente.rfc}"/>
-											<h:outputText value="Razón social:"/>
-											<h:outputText value="#{customCliente.razonSocial}"/>												
-  										<h:outputText value="Especial:"/>
-	  									<h:outputText value="#{customCliente.especial eq '0'? '': '*'}"/>
-										</h:panelGrid>
-									</f:facet>
-								</p:autoComplete>	
-								<p:selectOneMenu id="cliente" value="#{manticVentasCajaAccion.attrs.clienteSeleccion}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">																	
-									<f:selectItems value="#{manticVentasCajaAccion.attrs.clientesSeleccion}" var="element" itemValue="#{element}" itemLabel="[#{element.especial eq '0'? '': '*'}] #{element.razonSocial}"/>
-									<p:column headerText="Clave">
-										<h:outputText value="#{item.clave}"/>
-									</p:column>   
-									<p:column headerText="RFC">
-										<h:outputText value="#{item.rfc}"/>
-									</p:column>   
-									<p:column headerText="Razón social">
-										<h:outputText value="#{item.razonSocial}"/>
-									</p:column>   
-								</p:selectOneMenu>
-								<p:commandButton id="correosCliente" title="Correos del cliente" icon="fa fa-at" update="dialogoCorreos" process="@this" actionListener="#{manticVentasCajaAccion.doLoadCorreos}" styleClass="janal-text-white janal-column-center" onstart="return janal.bloquear()" oncomplete="PF('dlgCorreos').show();"  disabled="#{manticVentasCajaAccion.attrs.mostrarCorreos}"/>														
-								<p:inputText id="descuento" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticVentasCajaAccion.adminOrden.descuento}" disabled="true">
-									<p:ajax event="blur" listener="#{manticVentasCajaAccion.doUpdateDescuento}" process="@this" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#descuento'), '0'); return true;"/>
-								</p:inputText>	
-								<p:inputSwitch id="switchApartado" value="#{manticVentasCajaAccion.attrs.apartado}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt cambio-cliente janal-abono" disabled="#{manticVentasCajaAccion.attrs.mostrarApartado and !manticVentasCajaAccion.attrs.facturarVenta}">
-									<p:ajax listener="#{manticVentasCajaAccion.doActiveApartado}" process="@this contenedorGrupos:panelTotales contenedorGrupos:observacionesFactura" update="contenedorGrupos contenedorGrupos:switchFacturar tabPagar" onstart="janal.bloquear();" oncomplete="jsArticulos.applyValidacionesCredito();"/>
-								</p:inputSwitch>
-								<p:inputSwitch id="switchFacturar" widgetVar="widgetSwitchFacturar" value="#{manticVentasCajaAccion.attrs.facturarVenta}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt cambio-cliente janal-abono" disabled="#{manticVentasCajaAccion.attrs.disabledFacturarSwitch}">
-									<p:ajax listener="#{manticVentasCajaAccion.doActivarCliente}" process="@this contenedorGrupos:panelTotales contenedorGrupos:observacionesFactura contenedorGrupos:facturacionSinCorreo" update="contenedorGrupos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();janal.refresh();"/>
-								</p:inputSwitch>
-								<p:inputSwitch id="creditoCliente" value="#{manticVentasCajaAccion.attrs.creditoVenta}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt cambio-cliente janal-abono" disabled="#{!manticVentasCajaAccion.attrs.creditoCliente}">
-									<p:ajax process="@this contenedorGrupos:observacionesFactura" update="contenedorGrupos:panelSumatoria" onstart="janal.bloquear();" oncomplete="jsArticulos.applyValidacionesCredito();" />
-								</p:inputSwitch>
-								<p:outputLabel for="cfdi" value="Uso del CFDI:" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
-								<p:outputLabel for="domicilioFactura" value="Domicilio:" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
-								<p:outputLabel for="tipoPago" value="Método de pago:" rendered="false"/>												
-								<p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>								
-								<p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>								
-								<p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
-								<p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
-								<p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
-								<p:selectOneMenu id="cfdi" value="#{manticVentasCajaAccion.attrs.cfdi}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}">
-									<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
-									<f:selectItems value="#{manticVentasCajaAccion.attrs.cfdis}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
-									<p:column  styleClass="janal-column-left janal-wid-col-50">
-										<h:outputText value="#{item.clave}"/>
-									</p:column>   										
-									<p:column  styleClass="janal-column-left">
-										<h:outputText value="#{item.nombre}"/>
-									</p:column>   										
-								</p:selectOneMenu>
-								<p:selectOneMenu id="domicilioFactura" value="#{manticVentasCajaAccion.attrs.domicilioFactura}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}">															
-									<f:selectItems value="#{manticVentasCajaAccion.attrs.domiciliosFactura}" var="element" itemValue="#{element}" itemLabel="#{element.calle}, #{element.numeroExterior} - #{element.numeroInterior}, #{element.asentamiento}, #{element.codigoPostal}, #{element.localidad}, #{element.municipio}"/>
-									<p:column headerText="Calle">
-										<h:outputText value="#{item.calle}"/>
-									</p:column>   
-									<p:column headerText="Ext.">
-										<h:outputText value="#{item.numeroExterior}"/>
-									</p:column>   
-									<p:column headerText="Int.">
-										<h:outputText value="#{item.numeroInterior}"/>
-									</p:column>   
-									<p:column headerText="Colonia/Fraccionamiento">
-										<h:outputText value="#{item.asentamiento}"/>
-									</p:column>   
-									<p:column headerText="C.P.">
-										<h:outputText value="#{item.codigoPostal}"/>
-									</p:column>   
-									<p:column headerText="Localidad">
-										<h:outputText value="#{item.localidad}"/>
-									</p:column>   
-									<p:column headerText="Municipio">
-										<h:outputText value="#{item.municipio}"/>
-									</p:column>   
-								</p:selectOneMenu>
-								<p:selectOneMenu id="tipoPago" value="#{manticVentasCajaAccion.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="false">
-									<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
-									<f:selectItems value="#{manticVentasCajaAccion.attrs.tiposPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
-									<p:column headerText="Clave">
-										<h:outputText value="#{item.clave}"/>
-									</p:column>   
-									<p:column headerText="Nombre">
-										<h:outputText value="#{item.nombre}"/>
-									</p:column>   
-								</p:selectOneMenu>								
-							</p:panelGrid>			
-							<p:panelGrid id="deudorPago" columns="1" layout="grid" styleClass="janal-wid-100 janal-column-center" columnClasses="janal-wid-100" style="display: #{manticVentasCajaAccion.saldoCliente.deudor} ? 'none' : ''">
-								<p:outputLabel value="#{manticVentasCajaAccion.saldoCliente.mensaje}" styleClass="janal-column-center janal-color-orange" style="font-weight: bold !important"/>
-							</p:panelGrid>
-							<p:panelGrid id="facturacionSinCorreo" columns="1" layout="grid" styleClass="janal-wid-100 janal-column-center" columnClasses="janal-wid-100" rendered="#{!manticVentasCajaAccion.attrs.facturacionSinCorreo}">
-								<p:outputLabel value="El cliente no cuenta con un correo electronico registrado" styleClass="janal-column-center janal-color-orange" style="font-weight: bold !important"/>
-							</p:panelGrid>
+							<p:panelGrid id="panelCliente" layout="grid" columns="8" styleClass="janal-wid-100-txt" columnClasses="janal-wid-20, janal-wid-20, janal-wid-5 janal-column-center, janal-wid-10, janal-wid-10 janal-column-center, janal-wid-10 janal-column-center, janal-wid-10 janal-column-center">								
+							  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">								
+  								<p:outputLabel for="clientes" value="Buscar cliente:"/>																							
+                  <p:autoComplete id="clientes" placeholder="RFC o nombre del cliente" widgetVar="listadoClientes" var="customCliente" itemLabel="[#{empty customCliente.especial or customCliente.especial eq '0'? '': '*'}] #{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticVentasCajaAccion.attrs.cliente}" completeMethod="#{manticVentasCajaAccion.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
+                    <p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa contenedorGrupos contenedorGrupos:observacionesFactura" listener="#{manticVentasCajaAccion.doAsignaCliente}" update="cliente contenido @(.cambio-cliente) contenedorGrupos contenedorGrupos:panelSumatoria contenedorGrupos:deudorPago contenedorGrupos:deudor contenedorGrupos:facturacionSinCorreo contenedorGrupos:celularCliente contenedorGrupos:correosCliente" oncomplete="janal.desbloquear();"/>
+                    <f:facet name="itemtip">
+                      <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
+                        <h:outputText value="Clave" />
+                        <h:outputText value="#{customCliente.clave}"/>
+                        <h:outputText value="RFC:" />
+                        <h:outputText value="#{customCliente.rfc}"/>
+                        <h:outputText value="Razón social:"/>
+                        <h:outputText value="#{customCliente.razonSocial}"/>												
+                        <h:outputText value="Especial:"/>
+                        <h:outputText value="#{customCliente.especial eq '0'? '': '*'}"/>
+                      </h:panelGrid>
+                    </f:facet>
+                  </p:autoComplete>	
+                </p:panelGrid>  
+							  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">								
+  								<p:outputLabel for="cliente" value="Cliente:"/>		
+                  <p:selectOneMenu id="cliente" value="#{manticVentasCajaAccion.attrs.clienteSeleccion}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">																	
+                    <f:selectItems value="#{manticVentasCajaAccion.attrs.clientesSeleccion}" var="element" itemValue="#{element}" itemLabel="[#{element.especial eq '0'? '': '*'}] #{element.razonSocial}"/>
+                    <p:column headerText="Clave">
+                      <h:outputText value="#{item.clave}"/>
+                    </p:column>   
+                    <p:column headerText="RFC">
+                      <h:outputText value="#{item.rfc}"/>
+                    </p:column>   
+                    <p:column headerText="Razón social">
+                      <h:outputText value="#{item.razonSocial}"/>
+                    </p:column>   
+                  </p:selectOneMenu>
+                </p:panelGrid>  
+							  <p:panelGrid columns="2" styleClass="janal-wid-100-txt">								
+  								<p:spacer/><p:spacer/>
+  								<p:commandButton id="celularCliente" title="Celular del cliente" icon="fa fa-whatsapp" update="dialogoCelular" process="@this" actionListener="#{manticVentasCajaAccion.doLoadCelular}" styleClass="janal-text-white janal-column-center" onstart="return janal.bloquear()" oncomplete="PF('dlgCelular').show();"  disabled="#{manticVentasCajaAccion.attrs.mostrarCorreos}"/>														
+  								<p:commandButton id="correosCliente" title="Correos del cliente" icon="fa fa-at" update="dialogoCorreos" process="@this" actionListener="#{manticVentasCajaAccion.doLoadCorreos}" styleClass="janal-text-white janal-column-center" onstart="return janal.bloquear()" oncomplete="PF('dlgCorreos').show();"  disabled="#{manticVentasCajaAccion.attrs.mostrarCorreos}"/>														
+                </p:panelGrid>  
+                <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+								  <p:outputLabel for="descuento" value="Descuento:"/>								
+                  <p:inputText id="descuento" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticVentasCajaAccion.adminOrden.descuento}" disabled="true">
+                    <p:ajax event="blur" listener="#{manticVentasCajaAccion.doUpdateDescuento}" process="@this" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#descuento'), '0'); return true;"/>
+                  </p:inputText>	
+                </p:panelGrid>  
+                <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+  								<p:outputLabel value="Apartado:"/>
+                  <p:inputSwitch id="switchApartado" value="#{manticVentasCajaAccion.attrs.apartado}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt cambio-cliente janal-abono" disabled="#{manticVentasCajaAccion.attrs.mostrarApartado and !manticVentasCajaAccion.attrs.facturarVenta}">
+                    <p:ajax listener="#{manticVentasCajaAccion.doActiveApartado}" process="@this contenedorGrupos:panelTotales contenedorGrupos:observacionesFactura" update="contenedorGrupos contenedorGrupos:switchFacturar tabPagar" onstart="janal.bloquear();" oncomplete="jsArticulos.applyValidacionesCredito();"/>
+                  </p:inputSwitch>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+	  							<p:outputLabel value="Facturar:"/>
+                  <p:inputSwitch id="switchFacturar" widgetVar="widgetSwitchFacturar" value="#{manticVentasCajaAccion.attrs.facturarVenta}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt cambio-cliente janal-abono" disabled="#{manticVentasCajaAccion.attrs.disabledFacturarSwitch}">
+                    <p:ajax listener="#{manticVentasCajaAccion.doActivarCliente}" process="@this contenedorGrupos:panelTotales contenedorGrupos:observacionesFactura contenedorGrupos:facturacionSinCorreo" update="contenedorGrupos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();janal.refresh();"/>
+                  </p:inputSwitch>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+  								<p:outputLabel value="Credito:"/>
+	  							<p:inputSwitch id="creditoCliente" value="#{manticVentasCajaAccion.attrs.creditoVenta}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt cambio-cliente janal-abono" disabled="#{!manticVentasCajaAccion.attrs.creditoCliente}">
+		  							<p:ajax process="@this contenedorGrupos:observacionesFactura" update="contenedorGrupos:panelSumatoria" onstart="janal.bloquear();" oncomplete="jsArticulos.applyValidacionesCredito();" />
+			  					</p:inputSwitch>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                  <p:outputLabel for="cfdi" value="Uso del CFDI:" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
+                  <p:outputLabel for="domicilioFactura" value="Domicilio:" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
+                  <p:outputLabel for="tipoPago" value="Método de pago:" rendered="false"/>												
+                  <p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>								
+                  <p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>								
+                  <p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
+                  <p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
+                  <p:spacer rendered="#{manticVentasCajaAccion.attrs.facturarVenta}"/>
+                  <p:selectOneMenu id="cfdi" value="#{manticVentasCajaAccion.attrs.cfdi}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}">
+                    <f:selectItem itemValue="" itemLabel="SELECCIONE"/>
+                    <f:selectItems value="#{manticVentasCajaAccion.attrs.cfdis}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+                    <p:column  styleClass="janal-column-left janal-wid-col-50">
+                      <h:outputText value="#{item.clave}"/>
+                    </p:column>   										
+                    <p:column  styleClass="janal-column-left">
+                      <h:outputText value="#{item.nombre}"/>
+                    </p:column>   										
+                  </p:selectOneMenu>
+                  <p:selectOneMenu id="domicilioFactura" value="#{manticVentasCajaAccion.attrs.domicilioFactura}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity" rendered="#{manticVentasCajaAccion.attrs.facturarVenta}">															
+                    <f:selectItems value="#{manticVentasCajaAccion.attrs.domiciliosFactura}" var="element" itemValue="#{element}" itemLabel="#{element.calle}, #{element.numeroExterior} - #{element.numeroInterior}, #{element.asentamiento}, #{element.codigoPostal}, #{element.localidad}, #{element.municipio}"/>
+                    <p:column headerText="Calle">
+                      <h:outputText value="#{item.calle}"/>
+                    </p:column>   
+                    <p:column headerText="Ext.">
+                      <h:outputText value="#{item.numeroExterior}"/>
+                    </p:column>   
+                    <p:column headerText="Int.">
+                      <h:outputText value="#{item.numeroInterior}"/>
+                    </p:column>   
+                    <p:column headerText="Colonia/Fraccionamiento">
+                      <h:outputText value="#{item.asentamiento}"/>
+                    </p:column>   
+                    <p:column headerText="C.P.">
+                      <h:outputText value="#{item.codigoPostal}"/>
+                    </p:column>   
+                    <p:column headerText="Localidad">
+                      <h:outputText value="#{item.localidad}"/>
+                    </p:column>   
+                    <p:column headerText="Municipio">
+                      <h:outputText value="#{item.municipio}"/>
+                    </p:column>   
+                  </p:selectOneMenu>
+                  <p:selectOneMenu id="tipoPago" value="#{manticVentasCajaAccion.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="false">
+                    <f:selectItem itemValue="" itemLabel="SELECCIONE"/>
+                    <f:selectItems value="#{manticVentasCajaAccion.attrs.tiposPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                    <p:column headerText="Clave">
+                      <h:outputText value="#{item.clave}"/>
+                    </p:column>   
+                    <p:column headerText="Nombre">
+                      <h:outputText value="#{item.nombre}"/>
+                    </p:column>   
+                  </p:selectOneMenu>								
+  							</p:panelGrid>			
+	  					</p:panelGrid>			
+              <p:panelGrid id="deudorPago" columns="1" layout="grid" styleClass="janal-wid-100 janal-column-center" columnClasses="janal-wid-100" style="display: #{manticVentasCajaAccion.saldoCliente.deudor} ? 'none' : ''">
+                <p:outputLabel value="#{manticVentasCajaAccion.saldoCliente.mensaje}" styleClass="janal-column-center janal-color-orange" style="font-weight: bold !important"/>
+              </p:panelGrid>
+              <p:panelGrid id="facturacionSinCorreo" columns="1" layout="grid" styleClass="janal-wid-100 janal-column-center" columnClasses="janal-wid-100" rendered="#{!manticVentasCajaAccion.attrs.facturacionSinCorreo}">
+                <p:outputLabel value="El cliente no cuenta con un correo electronico registrado" styleClass="janal-column-center janal-color-orange" style="font-weight: bold !important"/>
+              </p:panelGrid>
 							<p:panelGrid id="panelTotales" layout="grid" columns="3" styleClass="janal-wid-99" columnClasses="janal-wid-80, janal-wid-20">
 								<p:panelGrid id="panelPago" columns="6" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-13, janal-wid-1, janal-wid-20, janal-wid-5, janal-wid-30, janal-wid-30">																											
 									<p:outputLabel for="abono" value="Abono:" rendered="#{manticVentasCajaAccion.attrs.mostrarApartado}" styleClass="janal-abono"/>
@@ -509,7 +526,6 @@
 									<p:spacer styleClass="janal-abono" rendered="#{manticVentasCajaAccion.attrs.mostrarApartado}"/>
 									<p:spacer styleClass="janal-abono" rendered="#{manticVentasCajaAccion.attrs.mostrarApartado}"/> 
 									<p:spacer styleClass="janal-abono" rendered="#{manticVentasCajaAccion.attrs.mostrarApartado}"/>		
-									
 									<p:outputLabel for="efectivo" value="Efectivo:"/>
 									<p:outputLabel value="$"/>									
 									<p:inputNumber id="efectivo" widgetVar="wEfectivo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.pago.efectivo}" styleClass="key-caja-efectivo">
@@ -517,7 +533,6 @@
 									</p:inputNumber>
 									<p:outputLabel id="difEfectivo" value="$#{manticVentasCajaAccion.attrs.pago.difEfectivo}" styleClass="janal-color-diferencia janal-column-right"/>
 									<p:spacer/><p:spacer/>																										
-									
 									<p:outputLabel for="debito" value="T. de debito:"/>
 									<p:outputLabel value="$"/>									
 									<p:inputNumber id="debito" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.pago.debito}" styleClass="key-caja-debito">
@@ -535,7 +550,6 @@
 										</p:column>   
 									</p:selectOneMenu>
 									<p:inputText id="referenciaDebito" value="#{manticVentasCajaAccion.attrs.pago.referenciaDebito}" styleClass="janal-wid-100-txt janal-select-type" placeholder="Ej. Referencia 4564"/>																		
-									
 									<p:outputLabel for="credito" value="T. de credito:"/>
 									<p:outputLabel value="$"/>									
 									<p:inputNumber id="credito" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.pago.credito}" styleClass="key-caja-credito">
@@ -553,7 +567,6 @@
 										</p:column>   
 									</p:selectOneMenu>
 									<p:inputText id="referenciaCredito" value="#{manticVentasCajaAccion.attrs.pago.referenciaCredito}" styleClass="janal-wid-100-txt janal-select-type" placeholder="Ej. Referencia 4564"/>																		
-									
 									<p:outputLabel for="transferencia" value="Transferencia:"/>
 									<p:outputLabel value="$"/>									
 									<p:inputNumber id="transferencia" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.pago.transferencia}" styleClass="key-caja-transferencia">
@@ -571,7 +584,6 @@
 										</p:column>   
 									</p:selectOneMenu>
 									<p:inputText id="referenciaTransferencia" value="#{manticVentasCajaAccion.attrs.pago.referenciaTransferencia}" styleClass="janal-wid-100-txt janal-select-type" placeholder="Ej. Referencia 4564"/>																																				
-									
 									<p:outputLabel for="cheque" value="Cheque nominativo:"/>
 									<p:outputLabel value="$"/>									
 									<p:inputNumber id="cheque" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.pago.cheque}" styleClass="key-caja-cheque">
@@ -736,7 +748,7 @@
 											<p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" placeholder="Ej. nombre.apellido@empresa.com.mx" value="#{contacto.valor}" disabled="#{!contacto.nuevo}"  />                    																																			
 										</p:column>
                     <p:column styleClass="janal-wid-col-38 janal-column-center">
-											<p:commandButton update="tablaCorreos" icon="fa fa-close" title="Eliminar" action="#{manticVentasCajaAccion.doEliminarClienteTipoContacto}">
+											<p:commandButton update="tablaCorreos" icon="fa fa-trash" title="Eliminar" action="#{manticVentasCajaAccion.doEliminarClienteTipoContacto}">
 												<f:setPropertyActionListener value="#{contacto}" target="#{manticVentasCajaAccion.clienteTipoContactoSeleccion}" />
 											</p:commandButton>
 										</p:column>
@@ -1114,7 +1126,7 @@
 				</p:inputText>
 			</p:panelGrid>							
 			<p:dataTable lazy="true" id="tablaCotizaciones" widgetVar="widgetTablaCotizaciones" var="row" styleClass="janal-row-cotizaciones janal-wid-100" value="#{manticVentasCajaAccion.lazyCotizaciones}" selection="#{manticVentasCajaAccion.attrs.cotizacion}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="270" style="margin-bottom:0" rowStyleClass="#{!manticVentasCajaAccion.toColor(row)}">
-				<p:ajax event="rowDblselect" listener="#{manticVentasCajaAccion.doAsignaCotizacion}" process="@this tablaCotizaciones" update="contenedorGrupos:correosCliente contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion) @(.janal-abono) contenedorGrupos:deudorPago contenedorGrupos:deudor" onstart="PF('dlgCotizaciones').hide();" oncomplete="janal.desbloquear();" />	
+				<p:ajax event="rowDblselect" listener="#{manticVentasCajaAccion.doAsignaCotizacion}" process="@this tablaCotizaciones" update="contenedorGrupos:celularCliente contenedorGrupos:correosCliente contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion) @(.janal-abono) contenedorGrupos:deudorPago contenedorGrupos:deudor" onstart="PF('dlgCotizaciones').hide();" oncomplete="janal.desbloquear();" />	
 				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 					<f:facet name="header">
 						<h:outputText value="Cuenta"/>
@@ -1170,7 +1182,7 @@
 				</p:inputText>
 			</p:panelGrid>							
 			<p:dataTable lazy="true" id="tablaApartados" widgetVar="widgetTablaApartados" var="row" styleClass="janal-row-apartados janal-wid-100" value="#{manticVentasCajaAccion.lazyApartados}" selection="#{manticVentasCajaAccion.attrs.apartados}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="270" style="margin-bottom:0" rowStyleClass="#{!manticVentasCajaAccion.toColor(row)}">
-				<p:ajax event="rowDblselect" listener="#{manticVentasCajaAccion.doAsignaApartado}" process="@this tablaApartados" update="contenedorGrupos:correosCliente contenedorGrupos @(.janal-abono) aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion)" onstart="PF('dlgApartados').hide();" oncomplete="janal.desbloquear();" />	
+				<p:ajax event="rowDblselect" listener="#{manticVentasCajaAccion.doAsignaApartado}" process="@this tablaApartados" update="contenedorGrupos:celularCliente contenedorGrupos:correosCliente contenedorGrupos @(.janal-abono) aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion)" onstart="PF('dlgApartados').hide();" oncomplete="janal.desbloquear();" />	
 				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 					<f:facet name="header">
 						<h:outputText value="Cuenta"/>
@@ -1219,7 +1231,7 @@
 		</p:dialog>			
 		<p:dialog id="dialogoCuentasBloqueadas" widgetVar="dlgCuentasBloqueadas" header="Cuentas bloquedas en este momento ..." showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="true" onShow="janal.pivot();" onHide="janal.desbloquear(); janal.recover();" width="70%">
 			<p:dataTable lazy="true" id="tablaCuentasBloqueadas" widgetVar="widgetTablaCuentasAbiertas" var="row" styleClass="janal-row-cuentas-bloqueadas janal-wid-100" value="#{manticVentasCajaAccion.lazyCuentasBloqueadas}" selection="#{manticVentasCajaAccion.attrs.selectedCuentaBloqueada}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="220" style="margin-bottom:0">
-				<p:ajax event="rowDblselect" listener="#{manticVentasCajaAccion.doUnLockCuenta}" process="@this tablaCuentasBloqueadas" update="contenedorGrupos @(.janal-abono) aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion) contenedorGrupos:deudor contenedorGrupos:deudorPago @(.tickets-principal) contenedorGrupos:ticketsAbiertos contenedorGrupos:correosCliente" onstart="PF('dlgCuentasBloqueadas').hide();" oncomplete="janal.desbloquear();" />	
+				<p:ajax event="rowDblselect" listener="#{manticVentasCajaAccion.doUnLockCuenta}" process="@this tablaCuentasBloqueadas" update="contenedorGrupos @(.janal-abono) aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion) contenedorGrupos:deudor contenedorGrupos:deudorPago @(.tickets-principal) contenedorGrupos:ticketsAbiertos contenedorGrupos:celularCliente contenedorGrupos:correosCliente" onstart="PF('dlgCuentasBloqueadas').hide();" oncomplete="janal.desbloquear();" />	
 				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 					<f:facet name="header">
 						<h:outputText value="Cuenta"/>
@@ -1250,7 +1262,7 @@
 			</p:dataTable>			
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton id="aceptarCuentaBloqueada" icon="fa fa-check" process="@this tablaCuentasBloqueadas" value="Aceptar" onstart="PF('dlgCuentasBloqueadas').hide();" actionListener="#{manticVentasCajaAccion.doUnLockCuenta}" update="contenedorGrupos @(.janal-abono) aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion) contenedorGrupos:deudor contenedorGrupos:deudorPago @(.tickets-principal) contenedorGrupos:ticketsAbiertos contenedorGrupos:correosCliente" oncomplete="janal.desbloquear();"/>
+				<p:commandButton id="aceptarCuentaBloqueada" icon="fa fa-check" process="@this tablaCuentasBloqueadas" value="Aceptar" onstart="PF('dlgCuentasBloqueadas').hide();" actionListener="#{manticVentasCajaAccion.doUnLockCuenta}" update="contenedorGrupos @(.janal-abono) aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion) contenedorGrupos:deudor contenedorGrupos:deudorPago @(.tickets-principal) contenedorGrupos:ticketsAbiertos contenedorGrupos:celularCliente contenedorGrupos:correosCliente" oncomplete="janal.desbloquear();"/>
 				<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('dlgCuentasBloqueadas').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
     </p:dialog>		
@@ -1262,7 +1274,7 @@
 				</p:inputText>
 			</p:panelGrid>							
 			<p:dataTable lazy="true" id="tablaTicketsAbiertos" widgetVar="widgetTablaTicketsAbiertos" var="row" styleClass="janal-row-tickets-abiertos janal-wid-100" value="#{manticVentasCajaAccion.lazyCuentasAbiertas}" selection="#{manticVentasCajaAccion.attrs.selectedCuentaAbierta}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="230" style="margin-bottom:0">
-				<p:ajax event="rowDblselect" listener="#{manticVentasCajaAccion.doAsignaTicketAbiertoDirecto}" process="@this tablaTicketsAbiertos" update="contenedorGrupos @(.janal-abono) aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion) contenedorGrupos:deudor contenedorGrupos:deudorPago @(.tickets-principal) contenedorGrupos:ticketsAbiertos contenedorGrupos:correosCliente" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();jsArticulos.lastCursorAt();" />	
+				<p:ajax event="rowDblselect" listener="#{manticVentasCajaAccion.doAsignaTicketAbiertoDirecto}" process="@this tablaTicketsAbiertos" update="contenedorGrupos @(.janal-abono) aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion) contenedorGrupos:deudor contenedorGrupos:deudorPago @(.tickets-principal) contenedorGrupos:ticketsAbiertos contenedorGrupos:celularCliente contenedorGrupos:correosCliente" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();jsArticulos.lastCursorAt();" />	
 				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 					<f:facet name="header">
 						<h:outputText value="Cuenta"/>
@@ -1433,13 +1445,19 @@
 	<ui:define name="dialogos">
     <p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" dynamic="true" header="Correos para factura" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
 			<h:form id="formDialogoCorreos" prependId="false">								
-				<p:panelGrid id="panelCorreos" columns="1" layout="grid" styleClass="janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">									
+				<p:panelGrid id="panelCorreos" columns="1" layout="grid" styleClass="janal-wid-99" style="height: 150px !important; overflow-y: auto" columnClasses="janal-wid-100">									
 					<p:dataTable id="tablaCorreosReenviar" var="row" value="#{manticVentasCajaAccion.correos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">						
-						<p:column headerText="Correos disponibles del cliente" styleClass="descripcion tablaCorreosReenviar_selection">
+						<p:column headerText="Correos disponibles del cliente" styleClass="descripcion tablaCorreosReenviar_selection janal-wid-80">
 							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
 						</p:column>
-						<p:column style="width:45px;text-align: center">
-							<p:commandButton update="tablaCorreosReenviar" icon="fa fa-check" title="Agregar" action="#{manticVentasCajaAccion.doAgregarCorreo}">
+						<p:column headerText="Preferido" styleClass="descripcion tablaCorreosReenviar_selection janal-wid-20">
+              <p:selectOneMenu id="idPreferido" styleClass="janal-wid-100-txt contacto" value="#{row['idPreferido']}" converter="javax.faces.Long">
+                <f:selectItem itemLabel="SI" itemValue="1"/>
+                <f:selectItem itemLabel="NO" itemValue="2"/>								
+              </p:selectOneMenu>
+						</p:column>
+						<p:column style="width: 45px; text-align: center">
+              <p:commandButton update="tablaCorreosReenviar" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" title="#{row['activo']? 'Agregar': 'Actualizar'}" action="#{manticVentasCajaAccion.doAgregarCorreo}" disabled="#{row['activo']}">
 								<f:setPropertyActionListener value="#{row}" target="#{manticVentasCajaAccion.correo}" />
 							</p:commandButton>
 						</p:column>
@@ -1448,6 +1466,32 @@
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">					
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCorreos').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog>	
+    <p:dialog id="dialogoCelular" widgetVar="dlgCelular" dynamic="true" header="Celular para envío de mensajes por whatsup" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
+			<h:form id="formDialogoCelular" prependId="false">								
+				<p:panelGrid id="panelCelular" columns="1" layout="grid" styleClass="janal-wid-99" style="height: 150px !important; overflow-y: auto" columnClasses="janal-wid-100">									
+					<p:dataTable id="tablaCelularReenviar" var="row" value="#{manticVentasCajaAccion.celulares}" rowKey="#{row.idCelular}" style="margin-bottom:0">						
+						<p:column headerText="Celular(es) disponibles del cliente" styleClass="descripcion tablaCelularReenviar_selection janal-wid-80">
+							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
+						</p:column>
+						<p:column headerText="Preferido" styleClass="descripcion tablaCelularReenviar_selection janal-wid-20">
+              <p:selectOneMenu id="idPreferido" styleClass="janal-wid-100-txt contacto" value="#{row['idPreferido']}" converter="javax.faces.Long">
+                <f:selectItem itemLabel="SI" itemValue="1"/>
+                <f:selectItem itemLabel="NO" itemValue="2"/>								
+              </p:selectOneMenu>
+						</p:column>
+						<p:column style="width: 45px; text-align: center">
+							<p:commandButton update="tablaCelularReenviar" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" title="#{row['activo']? 'Agregar': 'Actualizar'}" action="#{manticVentasCajaAccion.doAgregarCelular}">
+								<f:setPropertyActionListener value="#{row}" target="#{manticVentasCajaAccion.celular}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>		
+				</p:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">					
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCelulares').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
 		</p:dialog>	

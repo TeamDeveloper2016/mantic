@@ -89,7 +89,8 @@ public class Accion extends IBaseVenta implements Serializable {
 	protected Reporte reporte;
 	private List<Correo> correos;	
 	private Correo correo;
-	//private Entity seleccionDetalleTicket;
+	private List<Correo> celulares;	
+	private Correo celular;
 	
 	public Accion() {
 		super("menudeo");
@@ -150,15 +151,23 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void setCorreo(Correo correo) {
 		this.correo = correo;
 	}
-	
-	/*public Entity getSeleccionDetalleTicket() {
-		return seleccionDetalleTicket;
-	}
 
-	public void setSeleccionDetalleTicket(Entity seleccionDetalleTicket) {
-		this.seleccionDetalleTicket = seleccionDetalleTicket;
-	}	*/
-		
+  public List<Correo> getCelulares() {
+    return celulares;
+  }
+
+  public void setCelulares(List<Correo> celulares) {
+    this.celulares = celulares;
+  }
+
+  public Correo getCelular() {
+    return celular;
+  }
+
+  public void setCelular(Correo celular) {
+    this.celular = celular;
+  }
+	
   public String doTipoMedioPago(Entity row) {
 		String regresar= null;
     Map<String, Object> params=null;
@@ -1282,7 +1291,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		try {			
 			if(this.clientesTiposContacto.remove(this.clienteTipoContactoSeleccion)) {
 				if(!this.clienteTipoContactoSeleccion.getNuevo())
-					addDeleteList(this.clienteTipoContactoSeleccion);
+					this.addDeleteList(this.clienteTipoContactoSeleccion);
 				JsfBase.addMessage("Se eliminó correctamente el tipo de contacto", ETipoMensaje.INFORMACION);
 			} // if
 			else
@@ -1866,22 +1875,45 @@ public class Accion extends IBaseVenta implements Serializable {
 	  return "/Paginas/Mantic/Ventas/Garantias/accion".concat(Constantes.REDIRECIONAR);	
 	}
 
+	public void doLoadCelular() {
+		MotorBusqueda motor               = null; 
+		List<ClienteTipoContacto>contactos= null;
+		Correo item                       = null;
+		try {					
+			motor= new MotorBusqueda(-1L, ((UISelectEntity) this.attrs.get("clienteSeleccion")).getKey());
+			contactos= motor.toClientesTipoContacto();
+			setCelulares(new ArrayList<>());
+			for(ClienteTipoContacto contacto: contactos) {
+				if(contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR_NEGOCIO.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR_PERSONAL.getKey())) {
+					item= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor().toUpperCase(), contacto.getIdPreferido());
+					this.getCelulares().add(item);		
+				} // if
+			} // for
+			LOG.warn("Agregando celular por defecto");
+			this.getCelulares().add(new Correo(-1L, "", 2L, Boolean.TRUE));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doLoadCelular
+  
 	public void doLoadCorreos() {
 		MotorBusqueda motor               = null; 
 		List<ClienteTipoContacto>contactos= null;
-		Correo correoAdd                  = null;
+		Correo item                       = null;
 		try {					
 			motor= new MotorBusqueda(-1L, ((UISelectEntity) this.attrs.get("clienteSeleccion")).getKey());
 			contactos= motor.toClientesTipoContacto();
 			setCorreos(new ArrayList<>());
 			for(ClienteTipoContacto contacto: contactos) {
 				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())) {
-					correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor().toUpperCase());
-					getCorreos().add(correoAdd);		
+					item= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor().toUpperCase(), contacto.getIdPreferido());
+					this.getCorreos().add(item);		
 				} // if
 			} // for
-			LOG.warn("Agregando correo default");
-			getCorreos().add(new Correo(-1L, ""));
+			LOG.warn("Agregando correo defecto");
+			this.getCorreos().add(new Correo(-1L, "", 2L, Boolean.TRUE));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -1889,13 +1921,34 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 	} // doLoadCorreos
 	
+	public void doAgregarCelular() {		
+		mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion transaccion= null;
+		try {
+			if(!Cadena.isVacio(this.getCelular().getDescripcion())) {				
+        UISelectEntity cliente= (UISelectEntity)this.attrs.get("clienteSeleccion");
+				transaccion= new mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion(cliente.getKey(), cliente.toString("razonSocial"), this.getCelular());
+				if(transaccion.ejecutar(EAccion.COMPLETO))
+					JsfBase.addMessage("Se agregó/modificó el celular correctamente !");
+				else
+					JsfBase.addMessage("Ocurrió un error al agregar el celular");
+			} // if
+			else
+				JsfBase.addMessage("Es necesario capturar un celular !");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doAgregarCelular
+	
 	public void doAgregarCorreo() {		
 		mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion transaccion= null;
 		try {
-			if(!Cadena.isVacio(getCorreo().getDescripcion())) {				
-				transaccion= new mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion(getCorreo(), ((UISelectEntity) this.attrs.get("clienteSeleccion")).getKey());
+			if(!Cadena.isVacio(this.getCorreo().getDescripcion())) {				
+        UISelectEntity cliente= (UISelectEntity)this.attrs.get("clienteSeleccion");
+				transaccion= new mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion(cliente.getKey(), cliente.toString("razonSocial"), this.getCelular());
 				if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
-					JsfBase.addMessage("Se agrego el correo electronico correctamente !");
+					JsfBase.addMessage("Se agregó/modificó el correo electronico correctamente !");
 				else
 					JsfBase.addMessage("Ocurrió un error al agregar el correo electronico");
 			} // if

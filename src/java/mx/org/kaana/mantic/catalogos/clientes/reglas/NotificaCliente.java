@@ -14,8 +14,10 @@ import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.libs.wassenger.Bonanza;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.correos.beans.Attachment;
@@ -44,10 +46,12 @@ public class NotificaCliente implements Serializable {
   private Long idClientePagoControl;
   private String razonSocial;
   private String correos;
+  private String celulares;
   private ECorreos correo;
   private EReportes reportes;
   private Reporte reporte;
   private boolean notifica;
+  private boolean existe;
 
   public NotificaCliente(Session sesion, Long idCliente, EReportes reportes, ECorreos correo) {
     this(sesion, idCliente, null, null, reportes, correo, false);
@@ -77,11 +81,13 @@ public class NotificaCliente implements Serializable {
     this.sesion     = sesion;
     this.idCliente  = idCliente;
     this.razonSocial= razonSocial== null? this.toRazonSocial(): razonSocial;
-    this.correos    = correos== null? this.toCorreos(): correos;
+    this.correos    = correos== null? this.toTipoContacto("correos"): correos;
     this.reportes   = reportes;
     this.correo     = correo;
     this.notifica   = notifica;
     this.idClientePagoControl= -1L;
+    this.celulares  = this.toTipoContacto("celulares");
+    this.existe     = Boolean.FALSE;
   }
 
   public void setIdClientePagoControl(Long idClientePagoControl) {
@@ -89,9 +95,10 @@ public class NotificaCliente implements Serializable {
   }
 
   private void toReporteIndividal() throws Exception {
-    Parametros comunes = null;
+    Parametros comunes           = null;
 		Map<String, Object>params    = null;
 		Map<String, Object>parametros= null;
+    this.existe                  = Boolean.FALSE;
 		try{		
       params= new HashMap<>();
       params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -106,8 +113,8 @@ public class NotificaCliente implements Serializable {
           params.put("sortOrder", "order by	tc_mantic_clientes_pagos.registro");
           break;
       } // switch
-      comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), -1L, -1L, this.idCliente);
-      parametros= comunes.getComunes();
+      comunes     = new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), -1L, -1L, this.idCliente);
+      parametros  = comunes.getComunes();
       this.reporte= new Reporte();	
       this.reporte.init();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
@@ -118,6 +125,7 @@ public class NotificaCliente implements Serializable {
         this.reporte.toProcess(this.sesion);			
       else 
         this.reporte.doAceptarSimple();			
+      this.existe= !Cadena.isVacio(this.reporte.getNombre());
     } // try
     catch(Exception e) {
       Error.mensaje(e);
@@ -176,24 +184,47 @@ public class NotificaCliente implements Serializable {
       this.toSendMailIndividual();
   }
   
+  public void doSendWhatsup() {
+    try {
+      if(!Cadena.isVacio(this.celulares)) {
+        if(!this.existe)
+          this.toReporteIndividal();
+        Bonanza notificar= new Bonanza(this.razonSocial, "celular", this.reporte.getFileName(), "ticket", "fecha");
+        String[] phones= this.celulares.substring(0, this.celulares.length()- 2).split("[,]");
+        for (String phone: phones) {
+          notificar.setCelular(phone);
+          LOG.info("Enviando mensaje por whatsup al celular: "+ phone);
+          if(this.correo.equals(ECorreos.DEVOLUCION))
+            notificar.doSendDevolucion(sesion);
+          else
+            notificar.doSendPagoCuenta(sesion);
+        } // for
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
   private void addMessage(String descripcion, ETipoMensaje tipoMensaje) {
     if(this.notifica)     
 	    JsfBase.addMessage(descripcion, tipoMensaje);
   }
 
-  private String toCorreos() {
-    int count           = 0;
-    StringBuilder emails= new StringBuilder();
-    StringBuilder email = new StringBuilder();
-    List<Entity> items  = null;
+  private String toTipoContacto(String tipo) {
+    int count                 = 0;
+    StringBuilder emails      = new StringBuilder();
+    StringBuilder email       = new StringBuilder();
+    List<Entity> items        = null;
     Map<String, Object> params= null;
     try {      
       params = new HashMap<>();      
       params.put("idCliente", this.idCliente);      
       if(this.sesion!= null)
-        items= DaoFactory.getInstance().toEntitySet(this.sesion, "TrManticClienteTipoContactoDto", "correos", params);
+        items= DaoFactory.getInstance().toEntitySet(this.sesion, "TrManticClienteTipoContactoDto", tipo, params);
       else
-        items= DaoFactory.getInstance().toEntitySet("TrManticClienteTipoContactoDto", "correos", params);
+        items= DaoFactory.getInstance().toEntitySet("TrManticClienteTipoContactoDto", tipo, params);
       if(items!= null && !items.isEmpty())
         for (Entity item: items) {
           if(Objects.equals(item.toLong("idPreferido"), 1L))
@@ -236,5 +267,12 @@ public class NotificaCliente implements Serializable {
     } // finally
     return regresar;
   } 
+  
+  public static void main(String ... args) {
+    String[] phones= "1,2,3".split("[,]");
+    for (String phone : phones) {
+      LOG.info("Cadena: "+ phone);
+    } // for
+  }
   
 }

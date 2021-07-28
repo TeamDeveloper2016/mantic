@@ -486,7 +486,7 @@ public class Filtro extends Comun implements Serializable {
 		Entity seleccionado               = null;
 		MotorBusquedaCatalogos motor      = null; 
 		List<ClienteTipoContacto>contactos= null;
-		Correo correoAdd                  = null;
+		Correo item                       = null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			motor= new MotorBusqueda(-1L, seleccionado.toLong("idCliente")== null? -1L: seleccionado.toLong("idCliente"));
@@ -495,17 +495,17 @@ public class Filtro extends Comun implements Serializable {
 			setSelectedCorreos(new ArrayList<>());			
 			for(ClienteTipoContacto contacto: contactos){
 				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())) {
-					correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor());
-					getCorreos().add(correoAdd);		
-					getSelectedCorreos().add(correoAdd);
+					item= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor(), contacto.getIdPreferido());
+					getCorreos().add(item);		
+					getSelectedCorreos().add(item);
 				} // if
 			} // for
       if(!Cadena.isVacio(seleccionado.toString("correos"))) {
-				correoAdd= new Correo(0L, seleccionado.toString("correos"));
-				getCorreos().add(correoAdd);		
-				getSelectedCorreos().add(correoAdd);
+				item= new Correo(0L, seleccionado.toString("correos"), 2L);
+				getCorreos().add(item);		
+				getSelectedCorreos().add(item);
       } // if
-			getCorreos().add(new Correo(-1L, ""));
+			getCorreos().add(new Correo(-1L, "", 2L));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

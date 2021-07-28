@@ -335,8 +335,8 @@ public abstract class FiltroFactura extends IBaseTicket {
           File file= new File(nombre);
           if(!file.exists())
             Archivo.copy(factura.toString("alias"), nombre, Boolean.FALSE);
-          Bonanza notificar= new Bonanza(seleccionado.toString("cliente"), celular, Bonanza.toPathFiles((String)this.attrs.get("nameFacturaPdf"), factura.toString("nombre")), seleccionado.toString("ticket"), Fecha.formatear(Fecha.FECHA_HORA_CORTA, seleccionado.toTimestamp("timbrado")));
-          LOG.info("Enviando mensaje por whatsup al celular: "+ celular);
+          // Bonanza notificar= new Bonanza(seleccionado.toString("cliente"), celular, Bonanza.toPathFiles((String)this.attrs.get("nameFacturaPdf"), factura.toString("nombre")), seleccionado.toString("ticket"), Fecha.formatear(Fecha.FECHA_HORA_CORTA, seleccionado.toTimestamp("timbrado")));
+          // LOG.info("Enviando mensaje por whatsup al celular: "+ celular);
           // notificar.doSendFactura();
         } // try
         finally {

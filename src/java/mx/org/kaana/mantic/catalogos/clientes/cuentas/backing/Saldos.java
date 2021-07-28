@@ -591,13 +591,13 @@ public class Saldos extends IBaseFilter implements Serializable {
 			LOG.warn("Total de contactos asociados al cliente [" + contactos.size()+ "]");
 			for(ClienteTipoContacto contacto: contactos) {
 				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())) {
-					item= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor());
+					item= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor(), contacto.getIdPreferido());
 					this.correos.add(item);		
 					this.selectedCorreos.add(item);
 				} // if
 			} // for
 			LOG.warn("Agregando un correo por defecto para el estado de cuenta");
-			this.correos.add(new Correo(-1L, ""));
+			this.correos.add(new Correo(-1L, "", 2L));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

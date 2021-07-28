@@ -121,7 +121,7 @@ public class CreateTicket implements Serializable {
 			params= new HashMap<>();
 			params.put("idEmpresa", ((TicketVenta)this.ticket.getOrden()).getIdEmpresa());
 			domicilio= (Entity) DaoFactory.getInstance().toEntity("VistaInformacionEmpresas", "datosEmpresa", params);
-			regresar= domicilio.toString("empresaDireccion").concat(" C.P. ").concat(domicilio.toString("codigoPostal")).concat("<br> COLONIA. ").concat(domicilio.toString("colonia")).concat("<br> TEL.").concat(toTelefono());
+			regresar= domicilio.toString("empresaDireccion").concat(" C.P. ").concat(domicilio.toString("codigoPostal")).concat("<br> COLONIA. ").concat(domicilio.toString("colonia")).concat("<br> TEL.").concat(this.toTelefono()).concat("<br> WHATSUP ").concat(this.toCelular());
 		} // try
 		finally{
 			Methods.clean(params);
@@ -129,7 +129,7 @@ public class CreateTicket implements Serializable {
 		return regresar;
 	} // toFindDomicilio
 	
-	private String toTelefono() throws Exception{
+	private String toTelefono() throws Exception {
 		String regresar          = "";
 		Map<String, Object>params= null;
 		Entity telefono          = null;
@@ -148,6 +148,26 @@ public class CreateTicket implements Serializable {
 		} // finally
 		return regresar;
 	} // toTelefono
+	
+	private String toCelular() throws Exception {
+		String regresar          = "";
+		Map<String, Object>params= null;
+		Entity telefono          = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_empresa=" + ((TicketVenta)this.ticket.getOrden()).getIdEmpresa() + " and id_tipo_contacto=" + ETiposContactos.CELULAR.getKey());
+			telefono= (Entity) DaoFactory.getInstance().toEntity("TrManticEmpresaTipoContactoDto", "row", params);
+			if(telefono!= null)
+				regresar= telefono.toString("valor");
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toCelular
 	
 	private String toCredito() {		
 		StringBuilder	regresar= new StringBuilder("");

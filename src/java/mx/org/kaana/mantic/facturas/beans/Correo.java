@@ -18,14 +18,22 @@ public class Correo implements Serializable {
 
 	private Long idCorreo;
 	private String descripcion;
+	private Long idPreferido;
+	private Boolean activo;
 
 	public Correo() {
-		this((new Random()).nextLong(), "team.developer@gmail.com");
+		this((new Random()).nextLong(), "team.developer@gmail.com", 2L);
 	}
 
-	public Correo(Long idCorreo, String descripcion) {
-		this.idCorreo= idCorreo;
-		this.descripcion=descripcion;
+	public Correo(Long idCorreo, String descripcion, Long idPreferido) {
+    this(idCorreo, descripcion, idPreferido, Boolean.FALSE);
+  }
+  
+	public Correo(Long idCorreo, String descripcion, Long idPreferido, Boolean activo) {
+		this.idCorreo   = idCorreo;
+		this.descripcion= descripcion;
+    this.idPreferido= idPreferido;
+    this.activo     = activo;
 	}
 
 	public Long getIdCorreo() {
@@ -39,6 +47,22 @@ public class Correo implements Serializable {
 	public void setDescripcion(String descripcion) {
 		this.descripcion=descripcion;
 	}
+
+  public Long getIdPreferido() {
+    return idPreferido;
+  }
+
+  public void setIdPreferido(Long idPreferido) {
+    this.idPreferido = idPreferido;
+  }
+
+  public Boolean getActivo() {
+    return activo;
+  }
+
+  public void setActivo(Boolean activo) {
+    this.activo = activo;
+  }
 
 	@Override
 	public int hashCode() {
@@ -65,9 +89,9 @@ public class Correo implements Serializable {
 		return true;
 	}
 
-	@Override
-	public String toString() {
-		return "Correo{"+"idCorreo="+idCorreo+", descripcion="+descripcion+'}';
-	}
+  @Override
+  public String toString() {
+    return "Correo{" + "idCorreo=" + idCorreo + ", descripcion=" + descripcion + ", idPreferido=" + idPreferido + ", activo=" + activo + '}';
+  }
 		
 }

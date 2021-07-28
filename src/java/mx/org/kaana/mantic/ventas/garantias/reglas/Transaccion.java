@@ -46,7 +46,7 @@ import mx.org.kaana.mantic.ventas.garantias.beans.Garantia;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
-public class Transaccion extends IBaseTnx{
+public class Transaccion extends IBaseTnx {
 
 	private static final Logger LOG          = Logger.getLogger(Transaccion.class);
 	private static final String GENERAL      = "GENERAL";
@@ -407,6 +407,7 @@ public class Transaccion extends IBaseTnx{
           ECorreos.DEVOLUCION // ECorreos correo
         );
         notifica.doSendMail();
+        // notifica.doSendWhatsup();
       } // if
 		} // try
 		catch (Exception e) {			

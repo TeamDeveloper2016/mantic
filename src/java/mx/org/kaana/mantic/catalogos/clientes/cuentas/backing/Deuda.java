@@ -132,7 +132,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		List<Columna> columns          = null;
 		try {
 			columns= new ArrayList<>();
-			params= new HashMap<>();
+			params = new HashMap<>();
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -152,7 +152,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		List<Columna> columns     = null;
 		try {
 			columns= new ArrayList<>();
-			params= new HashMap<>();
+			params = new HashMap<>();
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -171,7 +171,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 		List<Columna> columns     = null;
 		try {
 			columns= new ArrayList<>();
-			params= new HashMap<>();
+			params = new HashMap<>();
 			params.put("idEmpresa", this.attrs.get("idEmpresaGeneral"));
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));

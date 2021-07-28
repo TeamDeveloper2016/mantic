@@ -647,12 +647,12 @@ public class Accion extends IBaseVenta implements Serializable {
 			setCorreos(new ArrayList<>());
 			for(ClienteTipoContacto contacto: contactos){
 				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())){
-					correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor().toUpperCase());
+					correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor().toUpperCase(), contacto.getIdPreferido());
 					getCorreos().add(correoAdd);		
 				} // if
 			} // for
 			LOG.warn("Agregando correo default");
-			getCorreos().add(new Correo(-1L, ""));
+			getCorreos().add(new Correo(-1L, "", 2L));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -663,10 +663,11 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doAgregarCorreo() {		
 		mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion transaccion= null;
 		try {
-			if(!Cadena.isVacio(getCorreo().getDescripcion())){				
-				transaccion= new mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion(getCorreo(), ((UISelectEntity) this.attrs.get("clienteSeleccion")).getKey());
+			if(!Cadena.isVacio(getCorreo().getDescripcion())) {				
+        UISelectEntity cliente= (UISelectEntity)this.attrs.get("clienteSeleccion");
+				transaccion= new mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion(cliente.getKey(), cliente.toString("razonSocial"), this.getCorreo());
 				if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
-					JsfBase.addMessage("Se agrego el correo electronico correctamente !");
+					JsfBase.addMessage("Se agregó el correo electronico correctamente !");
 				else
 					JsfBase.addMessage("Ocurrió un error al agregar el correo electronico");
 			} // if

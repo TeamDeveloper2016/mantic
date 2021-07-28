@@ -1080,13 +1080,13 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 				LOG.warn("Total de contactos" + contactos.size());
 				for(ClienteTipoContacto contacto: contactos) {
 					if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())) {
-						correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor());
+						correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor(), contacto.getIdPreferido());
 						this.correos.add(correoAdd);		
 						this.selectedCorreos.add(correoAdd);
 					} // if
 				} // for
 				LOG.warn("Agregando correo default");
-				this.correos.add(new Correo(-1L, ""));
+				this.correos.add(new Correo(-1L, "", 2L));
 				UIBackingUtilities.execute("PF('dlgCorreos').show();");
 			} // if
 			else{
@@ -1109,9 +1109,9 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		try {
 			if(!Cadena.isVacio(this.correo.getDescripcion())) {
 				cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");
-				transaccion= new Transaccion(this.correo, cliente.getKey());
+				transaccion= new Transaccion(cliente.getKey(), cliente.toString("razonSocial"), this.correo);
 				if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
-					JsfBase.addMessage("Se agrego el correo electronico correctamente !");
+					JsfBase.addMessage("Se agregó el correo electronico correctamente !");
 				else
 					JsfBase.addMessage("Ocurrió un error al agregar el correo electronico");
 			} // if
@@ -1127,7 +1127,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	public void doLoadCorreos() {
 		MotorBusquedaCatalogos motor      = null; 
 		List<ClienteTipoContacto>contactos= null;
-		Correo correoAdd                  = null;
+		Correo item                       = null;
 		try {					
 			this.attrs.put("consultarCorreos", true);
 			motor= new MotorBusqueda(-1L, ((TicketVenta)this.getAdminOrden().getOrden()).getIdCliente());
@@ -1137,13 +1137,13 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 				LOG.warn("Total de contactos: " + contactos.size());
 				for(ClienteTipoContacto contacto: contactos) {
 					if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())) {
-						correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor());
-						this.correos.add(correoAdd);		
-						this.selectedCorreos.add(correoAdd);
+						item= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor(), contacto.getIdPreferido());
+						this.correos.add(item);		
+						this.selectedCorreos.add(item);
 					} // if
 				} // for
-			LOG.warn("Agregando correo default");
-			this.correos.add(new Correo(-1L, ""));
+			LOG.warn("Agregando correo por defecto");
+			this.correos.add(new Correo(-1L, "", 2L));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -1170,8 +1170,8 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
           File file= new File(nombre);
           if(!file.exists())
             Archivo.copy(factura.toString("alias"), nombre, Boolean.FALSE);
-          Bonanza notificar= new Bonanza(seleccionado.toString("razonSocial"), celular, Bonanza.toPathFiles((String)this.attrs.get("nameFacturaPdf"), factura.toString("nombre")), seleccionado.toString("ticket"), Fecha.formatear(Fecha.FECHA_HORA_CORTA, seleccionado.toTimestamp("timbrado")));
-          LOG.info("Enviando mensaje por whatsup al celular: "+ celular);
+          // Bonanza notificar= new Bonanza(seleccionado.toString("razonSocial"), celular, Bonanza.toPathFiles((String)this.attrs.get("nameFacturaPdf"), factura.toString("nombre")), seleccionado.toString("ticket"), Fecha.formatear(Fecha.FECHA_HORA_CORTA, seleccionado.toTimestamp("timbrado")));
+          // LOG.info("Enviando mensaje por whatsup al celular: "+ celular);
           // notificar.doSendFactura();
         } // try
         finally {

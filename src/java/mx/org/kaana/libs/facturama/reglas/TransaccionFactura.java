@@ -93,31 +93,31 @@ public class TransaccionFactura extends IBaseTnx {
 		try {
 			switch(accion){
 				case PROCESAR:
-					regresar= procesarClientes(sesion);
+					regresar= this.procesarClientes(sesion);
 					break;		
 				case REPROCESAR:
-					regresar= procesarArticulos(sesion);
+					regresar= this.procesarArticulos(sesion);
 					break;				
 				case ACTIVAR:
 					if(Cadena.isVacio(this.cliente.getIdFacturama()))
-						regresar= procesarCliente(sesion);
+						regresar= this.procesarCliente(sesion);
 					else
-						regresar= updateCliente(sesion);
+						regresar= this.updateCliente(sesion);
 					break;
 				case AGREGAR:
 					if(Cadena.isVacio(this.articulo.getIdFacturama()))
-						regresar= procesarArticulo(sesion);
+						regresar= this.procesarArticulo(sesion);
 					else
-						regresar= updateArticulo(sesion);
+						regresar= this.updateArticulo(sesion);
 					break;
 				case MODIFICAR:
-					regresar= updateCliente(sesion);
+					regresar= this.updateCliente(sesion);
 					break;
 				case COMPLEMENTAR:
-					regresar= updateArticulo(sesion);
+					regresar= this.updateArticulo(sesion);
 					break;
 				case TRANSFORMACION:
-					regresar= generarCfdi(sesion);
+					regresar= this.generarCfdi(sesion);
 					break;
 			} // switch			
 		} // try

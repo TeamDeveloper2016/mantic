@@ -458,7 +458,15 @@ public class Transaccion extends IBaseTnx {
 				item.setImporte(importe);
 				item.setPagar(importe);
 				item.setSaldo(this.calculateSaldo(sesion, importe, this.detalle.getKey()));
-				regresar= DaoFactory.getInstance().update(sesion, item)>= 1L;
+				DaoFactory.getInstance().update(sesion, item);
+        TcManticEmpresasBitacoraDto bitacora= new TcManticEmpresasBitacoraDto(
+          String.valueOf(this.detalle.get("observaciones")), // String justificacion, 
+          item.getIdEmpresaEstatus(), // Long idEmpresaEstatus, 
+          JsfBase.getIdUsuario(), // Long idUsuario, 
+          item.getIdEmpresaDeuda(), // Long idEmpresaDeuda
+          -1L // Long idEmpresaBitacora, 
+        );
+				regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 			} // if
 		} // try
 		catch (Exception e) {
@@ -478,8 +486,8 @@ public class Transaccion extends IBaseTnx {
 			pagos= DaoFactory.getInstance().toEntitySet(sesion, "VistaEmpresasDto", "pagosDeuda", params);
 			if(!pagos.isEmpty()) {
 				for(Entity record: pagos)
-					totalPagos= totalPagos + record.toDouble("pago");
-				regresar= importe - totalPagos;
+					totalPagos= totalPagos+ record.toDouble("pago");
+				regresar= importe- Numero.toRedondearSat(totalPagos);
 			} // if
 			else
 				regresar= importe;

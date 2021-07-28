@@ -355,13 +355,13 @@ public class Filtro extends FiltroFactura implements Serializable {
 			LOG.warn("Total de contactos asociados al proveedor" + contactos.size());
 			for(ClienteTipoContacto contacto: contactos) {
 				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())) {
-					item= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor());
+					item= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor(), contacto.getIdPreferido());
 					getCorreos().add(item);		
 					getSelectedCorreos().add(item);
 				} // if
 			} // for
-			LOG.warn("Agregando un correo por defecto para la cotizacion");
-			getCorreos().add(new Correo(-1L, ""));
+			LOG.warn("Agregando un correo por defecto para la cotización");
+			getCorreos().add(new Correo(-1L, "", 2L));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

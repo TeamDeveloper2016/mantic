@@ -302,13 +302,13 @@ public class Filtro extends FiltroFactura implements Serializable {
 			LOG.warn("Total de contactos" + contactos.size());
 			for(ClienteTipoContacto contacto: contactos){
 				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())){
-					correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor());
+					correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor(), contacto.getIdPreferido());
 					getCorreos().add(correoAdd);		
 					getSelectedCorreos().add(correoAdd);
 				} // if
 			} // for
-			LOG.warn("Agregando correo default");
-			getCorreos().add(new Correo(-1L, ""));
+			LOG.warn("Agregando correo por defecto");
+			getCorreos().add(new Correo(-1L, "", 2L));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -358,7 +358,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 		try {
 			if(!Cadena.isVacio(getCorreo().getDescripcion())){
 				seleccionado= (Entity)this.attrs.get("seleccionado");
-				transaccion= new Transaccion(getCorreo(), seleccionado.toLong("idCliente"));
+				transaccion= new Transaccion(seleccionado.toLong("idCliente"), seleccionado.toString("cliente"), this.getCorreo());
 				if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
 					JsfBase.addMessage("Se agrego el correo electronico correctamente !");
 				else
