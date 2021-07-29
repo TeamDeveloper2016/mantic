@@ -117,7 +117,7 @@
               </f:facet>
               <h:outputText value="#{row['importe']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-5">
               <f:facet name="header">
               </f:facet>
               <p:commandButton icon="fa fa-paypal" title="Disponible en caja" action="#{manticConsultasDiarias.doLoadDisponibleCaja}" process="@this panelBusqueda" update="disponible" onstart="return janal.bloquear();" oncomplete="PF('dlgDisponible').show();">

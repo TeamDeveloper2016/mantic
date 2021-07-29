@@ -488,7 +488,7 @@ public class TransaccionFactura extends IBaseTnx {
       factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, id);
       this.registrarBitacoraFactura(sesion, id, EEstatusFacturas.AUTOMATICO.getIdEstatusFactura(), "ASIGNACION A FACTURACION AUTOMATICA", idUsuario);		
       factura.setIdFacturaEstatus(EEstatusFacturas.AUTOMATICO.getIdEstatusFactura());		
-      factura.setIntentos(factura.getIntentos()+1L);
+      factura.setIntentos(factura.getIntentos()+ 1L);
       regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;		
     } // try
     catch(Exception e) {

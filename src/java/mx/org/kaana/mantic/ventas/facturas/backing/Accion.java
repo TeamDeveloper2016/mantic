@@ -1167,12 +1167,15 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
       if(celular!= null) {
         try {
           String nombre= JsfBase.getRealPath().concat(EFormatos.PDF.toPath()).concat(factura.toString("nombre"));
-          File file= new File(nombre);
-          if(!file.exists())
-            Archivo.copy(factura.toString("alias"), nombre, Boolean.FALSE);
-          // Bonanza notificar= new Bonanza(seleccionado.toString("razonSocial"), celular, Bonanza.toPathFiles((String)this.attrs.get("nameFacturaPdf"), factura.toString("nombre")), seleccionado.toString("ticket"), Fecha.formatear(Fecha.FECHA_HORA_CORTA, seleccionado.toTimestamp("timbrado")));
-          // LOG.info("Enviando mensaje por whatsup al celular: "+ celular);
-          // notificar.doSendFactura();
+          File target= new File(nombre);
+          File source= new File(factura.toString("alias"));
+          if(source.exists()) {
+            if(!target.exists())
+              Archivo.copy(factura.toString("alias"), nombre, Boolean.FALSE);
+            Bonanza notificar= new Bonanza(seleccionado.toString("razonSocial"), celular, Bonanza.toPathFiles((String)this.attrs.get("nameFacturaPdf"), factura.toString("nombre")), seleccionado.toString("ticket"), Fecha.formatear(Fecha.FECHA_HORA_CORTA, seleccionado.toTimestamp("timbrado")));
+            LOG.info("Enviando mensaje por whatsup al celular: "+ celular);
+            notificar.doSendFactura();
+          } // if  
         } // try
         finally {
           LOG.info("Eliminando archivo temporal: "+ this.reporte.getNombre());				  

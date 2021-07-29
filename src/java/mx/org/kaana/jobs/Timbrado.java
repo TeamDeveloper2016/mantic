@@ -94,11 +94,10 @@ public class Timbrado extends IBaseJob {
 	} // execute
 
 	private boolean validateHora() {
-		boolean regresar=true;
-		Calendar calendario=null;
+		boolean regresar   = true;
+		Calendar calendario= Calendar.getInstance();
 		try {
-			calendario=Calendar.getInstance();
-			regresar=calendario.get(Calendar.HOUR_OF_DAY)>=5&&calendario.get(Calendar.HOUR_OF_DAY)<=23;
+			regresar= calendario.get(Calendar.HOUR_OF_DAY)>= 5 && calendario.get(Calendar.HOUR_OF_DAY)<= 23;
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -107,10 +106,10 @@ public class Timbrado extends IBaseJob {
 	} // validateHora
 
 	private List<Facturacion> toFacturasPendientes() throws Exception {
-		List<Facturacion> regresar=null;
-		Map<String, Object> params=null;
+		List<Facturacion> regresar= null;
+		Map<String, Object> params= null;
 		try {
-			params=new HashMap<>();
+			params= new HashMap<>();
 			params.put("idEstatus", EEstatusFacturas.AUTOMATICO.getIdEstatusFactura());
 			regresar= DaoFactory.getInstance().toEntitySet(Facturacion.class, "VistaVentasDto", "facturacion", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
@@ -128,10 +127,10 @@ public class Timbrado extends IBaseJob {
 		MotorBusqueda motor=null;
 		List<ClienteTipoContacto> contactos=null;
 		try {
-			regresar=new StringBuilder("");
-			motor=new MotorBusqueda(-1L, idCliente);
-			contactos=motor.toClientesTipoContacto();
-			for (ClienteTipoContacto contacto : contactos) {
+			regresar = new StringBuilder("");
+			motor    = new MotorBusqueda(-1L, idCliente);
+			contactos= motor.toClientesTipoContacto();
+			for (ClienteTipoContacto contacto: contactos) {
 				if (contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())) {
 					regresar.append(contacto.getValor()).append(",");
 				} // if
@@ -140,7 +139,7 @@ public class Timbrado extends IBaseJob {
 		catch (Exception e) {
 			throw e;
 		} // catch		
-		return Cadena.isVacio(regresar) ? regresar.toString() : regresar.substring(0, regresar.length()-1);
+		return Cadena.isVacio(regresar)? regresar.toString(): regresar.substring(0, regresar.length()-1);
 	} // toCorreosCliente
 
 	public void doSendMail(Facturacion facturacion) {
@@ -172,8 +171,8 @@ public class Timbrado extends IBaseJob {
 			for (String item : emails) {
 				try {
 					if (!Cadena.isVacio(item)) {
-						IBaseAttachment notificar=new IBaseAttachment(ECorreos.FACTURACION, ECorreos.FACTURACION.getEmail(), item, "controlbonanza@gmail.com", "Ferreteria Bonanza - Factura", params, files);
-						LOG.info("Enviando correo a la cuenta: "+item);
+						IBaseAttachment notificar= new IBaseAttachment(ECorreos.FACTURACION, ECorreos.FACTURACION.getEmail(), item, "controlbonanza@gmail.com", "Ferreteria Bonanza - Factura", params, files);
+						LOG.info("Enviando correo a la cuenta: "+ item);
 						notificar.send();
 					} // if	
 				} // try
@@ -185,7 +184,7 @@ public class Timbrado extends IBaseJob {
 				} // finally	
 			} // for
 			if (facturacion.getCorreos().length()> 0) 
-				LOG.info("Se envió el correo de forma exitosa.");
+				LOG.info("Se envió el correo de forma exitosa");
       this.toWhatsup(facturacion, factura);      
 		} // try
 		catch (Exception e) {
@@ -277,12 +276,15 @@ public class Timbrado extends IBaseJob {
       if(celular!= null) {
         try {
           String nombre= JsfBase.getRealPath().concat(EFormatos.PDF.toPath()).concat(factura.toString("nombre"));
-          File file= new File(nombre);
-          if(!file.exists())
-            Archivo.copy(factura.toString("alias"), nombre, Boolean.FALSE);
-          // Bonanza notificar= new Bonanza(facturacion.getRazonSocial(), celular, Bonanza.toPathFiles(this.nameFacturaPdf, factura.toString("nombre")), facturacion.getTicket(), Fecha.formatear(Fecha.FECHA_HORA_CORTA, facturacion.getTimbrado()));
-          // LOG.info("Enviando mensaje por whatsup al celular: "+ celular);
-          // notificar.doSendFactura();
+          File target= new File(nombre);
+          File source= new File(factura.toString("alias"));
+          if(source.exists()) {
+            if(!target.exists())
+              Archivo.copy(factura.toString("alias"), nombre, Boolean.FALSE);
+            Bonanza notificar= new Bonanza(facturacion.getRazonSocial(), celular, Bonanza.toPathFiles(this.nameFacturaPdf, factura.toString("nombre")), facturacion.getTicket(), Fecha.formatear(Fecha.FECHA_HORA_CORTA, facturacion.getTimbrado()));
+            LOG.info("Enviando mensaje por whatsup al celular: "+ celular);
+            notificar.doSendFactura();
+          } // if  
         } // try
         finally {
           LOG.info("Eliminando archivo temporal: "+ this.reporte.getNombre());				  
