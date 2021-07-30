@@ -237,7 +237,7 @@ public class Timbrado extends IBaseJob {
 					Error.mensaje(e);
 				} // catch
 				finally {
-					transferir=null;
+					transferir= null;
 				} // finally
 			} // if      
 			params=new HashMap<>();

@@ -13,11 +13,13 @@ import java.util.List;
 import java.util.Map;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.page.PageRecords;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EFiltersWith;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.xml.Dml;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,7 +36,8 @@ public class EntityLazyModel<T extends IBaseDto> extends LazyDataModel<T> {
 	private Map<String, Object> params;
 	private String keyName;
 	private Long idFuenteDato;
-
+  private EFiltersWith like;
+  
 	public EntityLazyModel(Class<? extends IBaseDto> proceso) {
 		this(proceso.getSimpleName());
 	}
@@ -103,8 +106,17 @@ public class EntityLazyModel<T extends IBaseDto> extends LazyDataModel<T> {
 		PageRecords page=null;
     if(pageSize> 0) {
       try {
-        if(this.params!=null&&!this.params.isEmpty()) {
-          page=DaoFactory.getInstance().toEntityPage(this.idFuenteDato,this.proceso, this.idXml, this.params, first, pageSize);
+        if(this.params!= null && !this.params.isEmpty()) {
+          this.params.put("filters", "");
+          if(!this.params.containsKey("sortOrder"))
+            this.params.put("sortOrder", "");
+          if(sortField!= null)
+            this.params.put("sortOrder", "order by ".concat(this.format(sortField)).concat(SortOrder.DESCENDING.equals(sortOrder)? " desc": ""));
+          if(filters.size()> 0)
+            this.params.put("filters", " and (".concat(toFilters(filters)).concat(")"));
+          LOG.info("Lazy params: "+ this.getParams());
+          UIBackingUtilities.execute("janal.onLoadCallBack();");
+          page=DaoFactory.getInstance().toEntityPage(this.idFuenteDato, this.proceso, this.idXml, this.params, first, pageSize);
           this.setWrappedData((List<T>) page.getList());
           this.setRowCount(page.getCount());
           if(this.getRowCount()>0) {
@@ -135,4 +147,55 @@ public class EntityLazyModel<T extends IBaseDto> extends LazyDataModel<T> {
     return params;
   }
 
+  protected String toFilters(Map<String, Object> filters, EFiltersWith like) {
+    StringBuilder regresar= new StringBuilder("");
+    Map<String, Object> params = null;
+    try {
+      params = new HashMap<>();
+      for (String key : filters.keySet()) {
+        params.put("value", filters.get(key));
+        String start= this.format(key);
+        if(start.startsWith("$"))
+          regresar.append(Cadena.replaceParams(start.substring(1), params));
+        else
+          regresar.append(start).append(Cadena.replaceParams(this.like.getFormat(), params));
+        regresar.append(" and ");
+      } // for
+      if(regresar.length()> 3)
+        regresar.delete(regresar.length()- 5, regresar.length());
+    } // try
+    catch (Exception e) {
+      mx.org.kaana.libs.formato.Error.mensaje(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar.toString();
+  }
+  
+  protected String toFilters(Map<String, Object> filters) {
+    return toFilters(filters, this.like);
+  }
+  
+  private String format(String msg) {
+    String regresar= Cadena.eliminar(msg, (char)39);
+    Map<String, Object> params = null;
+    try {
+      params = new HashMap<>();
+      params.put("punto", ".");
+      params.put("apostrofe", "'");
+      params.put("fecha", "'dd/mm/yyyy'");
+      params.put("hora", "'HH:MM:SS'");
+      params.put("registro", "'dd/mm/yyyy HH:MM:SS'");
+      regresar= Cadena.toSqlName(Cadena.replaceParams(regresar, params, true));
+    } // try
+    catch (Exception e) {
+      mx.org.kaana.libs.formato.Error.mensaje(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
 }

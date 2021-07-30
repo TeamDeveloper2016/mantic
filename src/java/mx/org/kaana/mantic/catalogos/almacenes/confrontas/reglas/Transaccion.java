@@ -96,7 +96,7 @@ public class Transaccion extends ComunInventarios {
 			if(next.getData()!= null)
 			  regresar= new Siguiente(next.toLong());
 			else
-			  regresar= new Siguiente(1L);
+			  regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 900001L: 1L);
 		} // try
 		catch (Exception e) {
 			throw e;
