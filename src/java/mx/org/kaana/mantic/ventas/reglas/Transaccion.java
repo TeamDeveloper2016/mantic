@@ -211,6 +211,7 @@ public class Transaccion extends TransaccionFactura {
 	        break;
 				case PROCESAR:
 					consecutivo= this.toSiguienteEspecial(sesion);			
+          // NO RECUERDO PORQUE SE DEJO FIJO EL 2020 PARA UNA VENTA EXPRESS
           this.orden.setEjercicio(2020L);
 					this.orden.setConsecutivo(consecutivo.getOrden());			
 					this.orden.setOrden(consecutivo.getOrden());
@@ -700,6 +701,7 @@ public class Transaccion extends TransaccionFactura {
         ECorreos.CREDITO // ECorreos correo
       );
       notifica.doSendMail();
+      notifica.doSendWhatsup();
     } // try 
     catch(Exception e) {
       throw e;

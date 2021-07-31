@@ -189,15 +189,22 @@ public class NotificaCliente implements Serializable {
       if(!Cadena.isVacio(this.celulares)) {
         if(!this.existe)
           this.toReporteIndividal();
-        Bonanza notificar= new Bonanza(this.razonSocial, "celular", this.reporte.getFileName(), "ticket", "fecha");
+        Bonanza notificar= new Bonanza(this.razonSocial, "celular", this.reporte.getAlias(), "ticket", "fecha");
         String[] phones= this.celulares.substring(0, this.celulares.length()- 2).split("[,]");
         for (String phone: phones) {
-          notificar.setCelular(phone);
+          notificar.setCelular(phone, Boolean.TRUE);
           LOG.info("Enviando mensaje por whatsup al celular: "+ phone);
-          if(this.correo.equals(ECorreos.DEVOLUCION))
-            notificar.doSendDevolucion(sesion);
-          else
-            notificar.doSendPagoCuenta(sesion);
+          switch(this.correo) {
+            case DEVOLUCION:
+              notificar.doSendDevolucion(sesion);
+              break;
+            case PAGOS:
+              notificar.doSendPagoCuenta(sesion);
+              break;
+            case CREDITO:
+              notificar.doSendDevolucion(sesion);
+              break;
+          } // switch
         } // for
       } // if  
     } // try

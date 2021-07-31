@@ -1926,13 +1926,13 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doAgregarCelular() {		
 		mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion transaccion= null;
 		try {
-			if(!Cadena.isVacio(this.getCelular().getDescripcion())) {				
+			if(!Cadena.isVacio(this.celular.getDescripcion())) {				
         UISelectEntity cliente= (UISelectEntity)this.attrs.get("clienteSeleccion");
-				transaccion= new mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion(cliente.getKey(), cliente.toString("razonSocial"), this.getCelular());
+				transaccion= new mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion(cliente.getKey(), cliente.toString("razonSocial"), this.celular);
 				if(transaccion.ejecutar(EAccion.COMPLETO))
 					JsfBase.addMessage("Se agregó/modificó el celular correctamente !");
 				else
-					JsfBase.addMessage("Ocurrió un error al agregar el celular");
+					JsfBase.addMessage("Ocurrió un error al agregar/modificar el celular");
 			} // if
 			else
 				JsfBase.addMessage("Es necesario capturar un celular !");
@@ -1946,9 +1946,9 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doAgregarCorreo() {		
 		mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion transaccion= null;
 		try {
-			if(!Cadena.isVacio(this.getCorreo().getDescripcion())) {				
+			if(!Cadena.isVacio(this.correo.getDescripcion())) {				
         UISelectEntity cliente= (UISelectEntity)this.attrs.get("clienteSeleccion");
-				transaccion= new mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion(cliente.getKey(), cliente.toString("razonSocial"), this.getCelular());
+				transaccion= new mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion(cliente.getKey(), cliente.toString("razonSocial"), this.correo);
 				if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
 					JsfBase.addMessage("Se agregó/modificó el correo electronico correctamente !");
 				else

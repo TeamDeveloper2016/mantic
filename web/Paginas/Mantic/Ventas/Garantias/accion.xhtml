@@ -244,13 +244,13 @@
 								<p:spacer styleClass="cotizar" rendered="#{!manticVentasGarantiasAccion.attrs.isFactura}"/>
 								<p:outputLabel styleClass="cotizar janal-color-red" value="El ticket seleccionado ya se encuentra facturado con el folio: #{manticVentasGarantiasAccion.attrs.factura.folio}" rendered="#{!manticVentasGarantiasAccion.attrs.isFactura}"/>
 							</p:panelGrid>	
-							<p:panelGrid id="encabezadoTicket" columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-25, janal-wid-10, janal-wid-25, janal-wid-20">						
+							<p:panelGrid id="encabezadoTicket" columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-40, janal-wid-10, janal-wid-25, janal-wid-20">						
 								<p:outputLabel value="Ticket:"/>
 								<p:outputLabel value="Cliente:"/>
 								<p:outputLabel value="Total:"/>
 								<p:outputLabel value="Usuario:"/>
 								<p:outputLabel value="Estatus:"/>																								
-								<p:autoComplete id="ticket" placeholder="Ej. 201800001" widgetVar="listadoTickets" var="customTicket" itemLabel="#{customTicket.ticket}" inputStyleClass="janal-wid-100-txt janal-column-right" itemValue="#{customTicket}" value="#{manticVentasGarantiasAccion.attrs.cliente}" completeMethod="#{manticVentasGarantiasAccion.doCompleteTicket}" converter="janal.convertidor.Entity" minQueryLength="1" maxResults="10" styleClass="janal-wid-100-txt" panelStyleClass="janal-wid-col-200">
+								<p:autoComplete id="ticket" placeholder="Ej. 201800001" widgetVar="listadoTickets" var="customTicket" itemLabel="#{customTicket.ticket}" inputStyleClass="janal-wid-100-txt janal-column-center" itemValue="#{customTicket}" value="#{manticVentasGarantiasAccion.attrs.cliente}" completeMethod="#{manticVentasGarantiasAccion.doCompleteTicket}" converter="janal.convertidor.Entity" minQueryLength="1" maxResults="10" styleClass="janal-wid-100-txt" panelStyleClass="janal-wid-col-200">
 									<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticVentasGarantiasAccion.doAsignaOpenTicket}" update="@(.cotizar) contenido" oncomplete="janal.desbloquear();"/>
 									<f:facet name="itemtip">
 										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
@@ -673,7 +673,7 @@
 		</div>		
 	</ui:define>		
 	<ui:define name="dialogos">		
-		<p:dialog id="dialogoCerrarVenta" widgetVar="dlgCerrarVenta" header="Generar garantia" resizable="false" closable="false" responsive="true" width="30%" onHide="janal.restore(); janal.refresh();" onShow="janal.change('formDialogoCerrar', fieldsDialogPago); janal.refresh();">			
+		<p:dialog id="dialogoCerrarVenta" widgetVar="dlgCerrarVenta" header="Generar garantia" resizable="false" closable="false" responsive="true" width="30%" onHide="janal.restore(); janal.refresh();" onShow="janal.change('formDialogoCerrar', fieldsDialogPago); janal.refresh();" appendTo="@(body)">
 			<h:form id="formDialogoCerrar" prependId="false">
 				<p:outputLabel for="caja" value="Caja:" styleClass="font-resume-venta-detail"/>
 				<p:selectOneMenu id="caja" value="#{manticVentasGarantiasAccion.attrs.caja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">								
@@ -730,7 +730,7 @@
 				</div>
 			</h:form>
 		</p:dialog>
-		<p:dialog id="dialogoCerrarVentaCredito" widgetVar="dlgCerrarVentaCredito" header="Generar devolución, para #{manticVentasGarantiasAccion.attrs.nombreCliente}" resizable="false" closable="true" responsive="true" width="60%" onHide="janal.desbloquear(); janal.restore(); janal.refresh();" onShow="janal.change('formDialogoCerrarCredito', fieldsDialogPagoCredito);janal.refresh();">			
+		<p:dialog id="dialogoCerrarVentaCredito" widgetVar="dlgCerrarVentaCredito" header="Generar devolución, para #{manticVentasGarantiasAccion.attrs.nombreCliente}" resizable="false" closable="true" responsive="true" width="80%" onHide="janal.desbloquear(); janal.restore(); janal.refresh();" onShow="janal.change('formDialogoCerrarCredito', fieldsDialogPagoCredito);janal.refresh();" appendTo="@(body)">
 			<h:form id="formDialogoCerrarCredito" prependId="false">
 				<p:outputLabel for="cajaCredito" value="Caja:" styleClass="font-resume-venta-detail"/>
 				<p:selectOneMenu id="cajaCredito" value="#{manticVentasGarantiasAccion.attrs.caja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">								
@@ -767,25 +767,25 @@
               </f:facet>
               <h:outputText value="#{row['persona']}"/>
             </p:column>											
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-13" sortBy="#{row.estatus}">
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
             </p:column>						
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.importe}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
               <h:outputText value="#{row['importe']}"/>
             </p:column>						
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.saldo}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.saldo}">
               <f:facet name="header">
                 <h:outputText value="Saldo"/>
               </f:facet>
               <h:outputText value="#{row['saldo']}"/>
             </p:column>
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.limite}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.limite}">
               <f:facet name="header">
                 <h:outputText value="Vence" title="Fecha en la que vence el crédito otorgado"/>
               </f:facet>

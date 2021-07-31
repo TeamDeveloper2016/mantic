@@ -200,7 +200,8 @@
             <p:menuitem id="reporteDiferencias" icon="fa fa-file-pdf-o" value="Reporte diferencias" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesFiltro.doReporte('ORDEN_DETALLE_DIF')}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{fn:contains('|1|3|4|5|6|7|', manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus)}"/>
             <p:menuitem id="reporteCompleto" icon="fa fa-file-pdf-o" value="Reporte completo" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesFiltro.doReporte('ORDEN_DETALLES_COMP2')}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{fn:contains('|1|3|4|5|6|7|', manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus)}"/>						
 						<p:separator rendered="#{manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus eq '3'}"/>
-						<p:menuitem id="reenviar" icon="fa fa-mail-forward" value="Enviar por correo" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesFiltro.doLoadMails}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="#{manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus eq '3'}"/>
+						<p:menuitem icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesFiltro.doLoadMails}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="#{manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus eq '3'}"/>
+						<p:menuitem icon="fa fa-whatsapp" value="Enviar whatsup" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesFiltro.doLoadPhones}" oncomplete="PF('dlgCelular').show();" update="dialogoCelular" rendered="#{manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus eq '3'}"/>
           </p:contextMenu>
         </div>
       </div>
@@ -219,7 +220,7 @@
     </p:panelGrid>			
   </ui:define>
 	<ui:define name="dialogos">		
-		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onShow="janal.change('formDialogoEstatus', fieldsDialog); janal.refresh();">
+		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" dynamic="true" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" onShow="janal.change('formDialogoEstatus', fieldsDialog); janal.refresh();" appendTo="@(body)">
 			<h:form id="formDialogoEstatus" prependId="false">
 				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
@@ -236,16 +237,22 @@
 				</div>
 			</h:form>
 		</p:dialog>
-		<p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Enviar orden de compra" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
+    <p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Enviar por correo" dynamic="true" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" appendTo="@(body)">
 			<h:form id="formDialogoCorreos" prependId="false">								
 				<p:panelGrid id="panelCorreos" columns="1" layout="grid" styleClass="janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">										
 					<p:dataTable id="tablaCorreos" var="row" value="#{manticComprasOrdenesFiltro.correos}" selection="#{manticComprasOrdenesFiltro.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
 						<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
-						<p:column headerText="Correos disponibles del proveedor" styleClass="descripcion tablaCorreos_selection">
+						<p:column headerText="Correos disponibles del proveedor" styleClass="descripcion tablaCorreos_selection janal-wid-80">
 							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
 						</p:column>
+						<p:column headerText="Preferido" styleClass="descripcion tablaCorreos_selection janal-wid-20">
+              <p:selectOneMenu id="idPreferido" styleClass="janal-wid-100-txt contacto" value="#{row['idPreferido']}" converter="javax.faces.Long">
+                <f:selectItem itemLabel="SI" itemValue="1"/>
+                <f:selectItem itemLabel="NO" itemValue="2"/>								
+              </p:selectOneMenu>
+						</p:column>
 						<p:column style="width:45px;text-align: center">
-							<p:commandButton update="tablaCorreos" icon="fa fa-check" title="Agregar" action="#{manticComprasOrdenesFiltro.doAgregarCorreo}">
+							<p:commandButton update="tablaCorreos" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" title="#{row['activo']? 'Agregar': 'Actualizar'}" action="#{manticComprasOrdenesFiltro.doAgregarCorreo}" disabled="#{row['activo']}">
 								<f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdenesFiltro.correo}" />
 							</p:commandButton>
 						</p:column>
@@ -253,8 +260,36 @@
 				</p:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton icon="fa fa-check" process="@this dialogoCorreos" value="Aceptar" actionListener="#{manticComprasOrdenesFiltro.doEnviarCorreoOrden}" onstart="return PF('dlgCorreos').hide();"  oncomplete="janal.desbloquear();"/>
+					<p:commandButton icon="fa fa-check" process="@this dialogoCorreos" value="Aceptar" actionListener="#{manticComprasOrdenesFiltro.doSendMail}" onstart="return PF('dlgCorreos').hide();"  oncomplete="janal.desbloquear();"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCorreos').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog>
+		<p:dialog id="dialogoCelular" widgetVar="dlgCelular" header="Enviar por whatsup" dynamic="true" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" appendTo="@(body)">
+			<h:form id="formDialogoCelular" prependId="false">								
+				<p:panelGrid id="panelCelulares" columns="1" layout="grid" styleClass="janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">										
+					<p:dataTable id="tablaCelulares" var="row" value="#{manticComprasOrdenesFiltro.celulares}" selection="#{manticComprasOrdenesFiltro.selectedCelulares}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
+						<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
+						<p:column headerText="Celulares disponibles del proveedor" styleClass="descripcion  janal-wid-80">
+							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
+						</p:column>
+						<p:column headerText="Preferido" styleClass="descripcion janal-wid-20">
+              <p:selectOneMenu id="idPreferido" styleClass="janal-wid-100-txt contacto" value="#{row['idPreferido']}" converter="javax.faces.Long">
+                <f:selectItem itemLabel="SI" itemValue="1"/>
+                <f:selectItem itemLabel="NO" itemValue="2"/>								
+              </p:selectOneMenu>
+						</p:column>
+						<p:column style="width:45px;text-align: center">
+							<p:commandButton update="tablaCelulares" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" title="#{row['activo']? 'Agregar': 'Actualizar'}" action="#{manticComprasOrdenesFiltro.doAgregarCelular}" disabled="#{row['activo']}">
+								<f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdenesFiltro.celular}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>		
+				</p:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this dialogoCelular" value="Aceptar" actionListener="#{manticComprasOrdenesFiltro.doSendWhatsup}" onstart="return PF('dlgCelular').hide();"  oncomplete="janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCelular').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
 		</p:dialog>

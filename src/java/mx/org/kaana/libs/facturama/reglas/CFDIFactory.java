@@ -157,7 +157,7 @@ public class CFDIFactory implements Serializable {
 	public mx.org.kaana.libs.facturama.models.response.Cfdi cfdiRemove(String id) throws Exception {
 		mx.org.kaana.libs.facturama.models.response.Cfdi regresar= null;
 		try {
-			if(Configuracion.getInstance().isEtapaProduccion()|| Configuracion.getInstance().isEtapaPruebas())
+			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas())
 			  regresar= this.facturama.Cfdis().Remove(id);
 		} // try
 		catch (Exception e) {			
@@ -170,7 +170,7 @@ public class CFDIFactory implements Serializable {
 		String regresar= null;
 		Cfdi cfdi      = null;
 		try {
-			if(Configuracion.getInstance().isEtapaProduccion()|| Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo()) {
+			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo()) {
 			  cfdi= loadCfdi(encabezado, detalle);
 			  regresar= createCfdi(cfdi).getId();
 			} // if	
@@ -186,7 +186,7 @@ public class CFDIFactory implements Serializable {
 		Cfdi cfdi    = null;
 		try {
 		  cfdi= loadCfdi(encabezado, detalle);
-			if(Configuracion.getInstance().isEtapaProduccion()|| Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo()) 
+			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo()) 
 			  regresar= createCfdi(cfdi);
 		} // try
 		catch (Exception e) {			
@@ -198,7 +198,7 @@ public class CFDIFactory implements Serializable {
 	public mx.org.kaana.libs.facturama.models.response.Cfdi createCfdi(Cfdi cfdi) throws Exception {
 		mx.org.kaana.libs.facturama.models.response.Cfdi regresar= null;
 		try {
-			if(Configuracion.getInstance().isEtapaProduccion()|| Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
+			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
 			  regresar= this.facturama.Cfdis().Create(cfdi);
 		} // try
 		catch (Exception e) {			
@@ -299,7 +299,7 @@ public class CFDIFactory implements Serializable {
 		Client cliente = null;
 		try {
 		  cliente= loadCliente(detalleCliente);
-			if(Configuracion.getInstance().isEtapaProduccion()|| Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
+			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
 			  regresar= createClient(cliente).getId();
 		} // try
 		catch (Exception e) {			
@@ -313,7 +313,7 @@ public class CFDIFactory implements Serializable {
 		Client cliente = null;
 		try {
 			cliente= loadCliente(detalleCliente);
-			if(Configuracion.getInstance().isEtapaProduccion()|| Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
+			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
 			  regresar= createClient(cliente);
 		} // try
 		catch (Exception e) {			
@@ -335,7 +335,7 @@ public class CFDIFactory implements Serializable {
 	} // createClient
 	
 	public Client updateClient(ClienteFactura detalleCliente) throws Exception {
-		return updateClient(detalleCliente, detalleCliente.getIdFacturama());
+		return this.updateClient(detalleCliente, detalleCliente.getIdFacturama());
 	} // updateCliente
 	
 	public Client updateClient(ClienteFactura detalleCliente, String id) throws Exception {
@@ -343,14 +343,14 @@ public class CFDIFactory implements Serializable {
 		Client cliente = null;
 		Client pivote  = null;
 		try {
-			cliente= loadCliente(detalleCliente);
-			pivote = clientFindById(id);
+			cliente= this.loadCliente(detalleCliente);
+			pivote = this.clientFindById(id);
 			pivote.setAddress(cliente.getAddress());
 			pivote.setCfdiUse(cliente.getCfdiUse());
 			pivote.setEmail(cliente.getEmail());
 			pivote.setName(cliente.getName());
 			pivote.setRfc(cliente.getRfc());
-			if(Configuracion.getInstance().isEtapaProduccion()|| Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
+			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
 			  regresar= this.facturama.Clients().Update(pivote, pivote.getId());
 		} // try
 		catch (Exception e) {			
@@ -363,7 +363,7 @@ public class CFDIFactory implements Serializable {
 	public Client clientFindById(String id) throws Exception, Exception {
 		Client regresar= null;
 		try {
-			if(Configuracion.getInstance().isEtapaProduccion()|| Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
+			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
 			  regresar= this.facturama.Clients().Retrieve(id);
 		} // try
 		catch (Exception e) {			
@@ -375,7 +375,7 @@ public class CFDIFactory implements Serializable {
 	public Client clientRemove(String id) throws Exception {
 		Client regresar= null;
 		try {
-			if(Configuracion.getInstance().isEtapaProduccion()|| Configuracion.getInstance().isEtapaPruebas())
+			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas())
 			  regresar= this.facturama.Clients().Remove(id);
 		} // try
 		catch (Exception e) {			
@@ -426,8 +426,8 @@ public class CFDIFactory implements Serializable {
 		String regresar= null;
 		Product product = null;
 		try {
-			product= loadProduct(detalleArticulo);
-			if(Configuracion.getInstance().isEtapaProduccion()|| Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
+			product= this.loadProduct(detalleArticulo);
+			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
 			  regresar= createProduct(product).getId();
 		} // try
 		catch (Exception e) {			
@@ -440,8 +440,8 @@ public class CFDIFactory implements Serializable {
 		Product regresar= null;
 		Product product = null;
 		try {
-			product= loadProduct(detalleArticulo);
-			if(Configuracion.getInstance().isEtapaProduccion()|| Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
+			product= this.loadProduct(detalleArticulo);
+			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
   			regresar= createProduct(product);
 		} // try
 		catch (Exception e) {			
@@ -453,7 +453,7 @@ public class CFDIFactory implements Serializable {
 	public Product createProduct(Product product) throws Exception {
 		Product regresar= null;
 		try {			
-			if(Configuracion.getInstance().isEtapaProduccion()|| Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
+			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
 			  regresar= this.facturama.Products().Create(product);
 		} // try
 		catch (Exception e) {			
@@ -468,9 +468,9 @@ public class CFDIFactory implements Serializable {
 	
 	public Product updateProduct(ArticuloFactura detalleArticulo, String id) throws Exception {
 		Product regresar= null;
-		Product pivote= productFindById(id);
+		Product pivote  = this.productFindById(id);
 		if(pivote!= null) {
-			Product product= loadProduct(detalleArticulo);			
+			Product product= this.loadProduct(detalleArticulo);			
 			pivote.getTaxes().clear();
 			pivote.setTaxes(product.getTaxes());
 			pivote.setUnit(Cadena.letraCapital(product.getUnit()));
@@ -481,7 +481,7 @@ public class CFDIFactory implements Serializable {
 			pivote.setPrice(product.getPrice());			
 			pivote.setCodeProdServ(product.getCodeProdServ());
 			pivote.setCuentaPredial(null);
-			if(Configuracion.getInstance().isEtapaProduccion()|| Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
+			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
 				regresar= this.facturama.Products().Update(pivote, pivote.getId());
 		}	// if
 		else
@@ -492,7 +492,7 @@ public class CFDIFactory implements Serializable {
 	public Product productFindById(String id) throws Exception {
 		Product regresar= null;
 		try {
-			if(Configuracion.getInstance().isEtapaProduccion()|| Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
+			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
 			  regresar= this.facturama.Products().Retrieve(id);
 		} // try
 		catch (Exception e) {			
@@ -504,7 +504,7 @@ public class CFDIFactory implements Serializable {
 	public Product productRemove(String id) throws Exception {
 		Product regresar= null;
 		try {
-			if(Configuracion.getInstance().isEtapaProduccion()|| Configuracion.getInstance().isEtapaPruebas())
+			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas())
 			  regresar= this.facturama.Products().Remove(id);
 		} // try
 		catch (Exception e) {			
@@ -518,7 +518,7 @@ public class CFDIFactory implements Serializable {
 		List<ProductTax> taxes= null;
 		try {
 			regresar= new Product();					
-			taxes   = loadTaxes(articulo.getIva());				
+			taxes   = this.loadTaxes(articulo.getIva());				
 			regresar.setTaxes(taxes);			
 			regresar.setUnit(Cadena.letraCapital(articulo.getUnidad()));
 			regresar.setUnitCode(articulo.getCodigo());

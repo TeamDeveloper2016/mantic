@@ -407,7 +407,7 @@ public class Transaccion extends IBaseTnx {
           ECorreos.DEVOLUCION // ECorreos correo
         );
         notifica.doSendMail();
-        // notifica.doSendWhatsup();
+        notifica.doSendWhatsup();
       } // if
 		} // try
 		catch (Exception e) {			

@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/plantillas/galeria.xhtml">
+	<ui:define name="librerias">
+		<h:outputScript library="janal" name="js/jquery.plugin.min.js"/>
+		<script type="text/javascript">
+			Janal.Control.errors = 2;
+			Janal.Control.fields = {
+			};
+			//<![CDATA[
+			$(document).ready(function() {
+			});
+			//]]>
+		</script>
+		<style>
+      .ui-ring {
+        margin-left: 0.7em; 
+      }
+      
+      .image-ring .ui-ring-item {
+        border: 0 none;
+      }
+
+      .image-ring .ui-ring-item img {
+        width: 80%;
+      }      
+      
+      .janal-cgor-icon {
+        width: 220px;
+      }
+      .card {
+        box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+        border-radius: 4px;
+        height:520px;
+        width:95% !important;
+      }
+      .janal-cgor-image {
+        cursor: pointer;
+      }
+      .janal-cgor-ring {
+        width: 90%;
+      }
+		</style>
+	</ui:define>
+	<ui:define name="contenido">  		
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+          <p:carousel id="custom" value="#{kajoolAccesoPortafolio.productos}" var="row" numVisible="1" effect="easeInStrong" headerText="Plaforma informática de sistemas" style="margin-bottom:0" styleClass="janal-cgor-ring image-ring">
+            <p:tab title="#{row.acronimo}">
+              <p:panel header="#{row.nombre}">
+                <p:panelGrid columns="1" columnClasses="janal-wid-100">
+                  <p:graphicImage id="image" library="janal" name="icon/cgor/#{row.imagen}" styleClass="janal-cgor-image" width="100px" height="108px" style="float:right;" rendered="false"/>
+                  <p:graphicImage library="janal" name="icon/cgor/#{row.datos}" width="1200px" height="700px"/>
+                  <p:commandLink process="@this" action="#{kajoolAccesoPortafolio.doTableroMove(row)}" title="Ir al tablero ...">
+                    <i class="janal-icons-message janal-font-bold janal-color-blue Fs30">...</i>
+                  </p:commandLink>  
+                </p:panelGrid>  
+              </p:panel>  
+            </p:tab>  
+          </p:carousel>
+          <br/>
+        </div>
+      </div>
+    </div>  
+	</ui:define>
+	<ui:param name="componenteBloqueo" value="custom"/>
+</ui:composition>

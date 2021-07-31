@@ -120,6 +120,10 @@ public class BaseReportes extends IBaseAttribute implements Serializable {
     return fileName;
   }
 
+  public String getAlias() {
+    return fileName.concat(".").concat(this.idFormato.name().toLowerCase());
+  }
+
   public void setPrevisualizar(Boolean previsualizar) {
     this.previsualizar = previsualizar;
   }

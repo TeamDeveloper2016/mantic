@@ -201,7 +201,7 @@ public class Transaccion extends TransaccionFactura{
         );
         notifica.setIdClientePagoControl(this.control.getIdClientePagoControl());
         notifica.doSendMail();
-        // notifica.doSendWhatsup();
+        notifica.doSendWhatsup();
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -298,7 +298,7 @@ public class Transaccion extends TransaccionFactura{
       );
       notifica.setIdClientePagoControl(this.control.getIdClientePagoControl());
       notifica.doSendMail();
-      // notifica.doSendWhatsup();
+      notifica.doSendWhatsup();
 		} // try
 		catch (Exception e) {			
 			throw e; 
@@ -374,7 +374,7 @@ public class Transaccion extends TransaccionFactura{
       );
       notifica.setIdClientePagoControl(this.control.getIdClientePagoControl());
       notifica.doSendMail();
-      // notifica.doSendWhatsup();
+      notifica.doSendWhatsup();
 		} // try
 		catch (Exception e) {			
 			throw e; 

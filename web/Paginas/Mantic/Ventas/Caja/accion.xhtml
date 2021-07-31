@@ -430,8 +430,8 @@
                 </p:panelGrid>  
 							  <p:panelGrid columns="2" styleClass="janal-wid-100-txt">								
   								<p:spacer/><p:spacer/>
-  								<p:commandButton id="celularCliente" title="Celular del cliente" icon="fa fa-whatsapp" update="dialogoCelular" process="@this" actionListener="#{manticVentasCajaAccion.doLoadCelular}" styleClass="janal-text-white janal-column-center" onstart="return janal.bloquear()" oncomplete="PF('dlgCelular').show();"  disabled="#{manticVentasCajaAccion.attrs.mostrarCorreos}"/>														
-  								<p:commandButton id="correosCliente" title="Correos del cliente" icon="fa fa-at" update="dialogoCorreos" process="@this" actionListener="#{manticVentasCajaAccion.doLoadCorreos}" styleClass="janal-text-white janal-column-center" onstart="return janal.bloquear()" oncomplete="PF('dlgCorreos').show();"  disabled="#{manticVentasCajaAccion.attrs.mostrarCorreos}"/>														
+  								<p:commandButton id="celularCliente" title="Celular del cliente" icon="fa fa-whatsapp" update="dialogoCelular" process="@this" actionListener="#{manticVentasCajaAccion.doLoadCelular}" styleClass="janal-text-white janal-column-center" onstart="return janal.bloquear()" oncomplete="PF('dlgCelular').show();" disabled="#{manticVentasCajaAccion.attrs.mostrarCorreos}"/>														
+  								<p:commandButton id="correosCliente" title="Correos del cliente" icon="fa fa-at" update="dialogoCorreos" process="@this" actionListener="#{manticVentasCajaAccion.doLoadCorreos}" styleClass="janal-text-white janal-column-center" onstart="return janal.bloquear()" oncomplete="PF('dlgCorreos').show();" disabled="#{manticVentasCajaAccion.attrs.mostrarCorreos}"/>														
                 </p:panelGrid>  
                 <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
 								  <p:outputLabel for="descuento" value="Descuento:"/>								
@@ -1431,14 +1431,14 @@
 		</div>
 	</ui:define>    		
 	<ui:define name="dialogos">
-    <p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" dynamic="true" header="Correos para factura" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
+    <p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" dynamic="true" header="Correos para factura" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" appendTo="@(body)">
 			<h:form id="formDialogoCorreos" prependId="false">								
 				<p:panelGrid id="panelCorreos" columns="1" layout="grid" styleClass="janal-wid-99" style="height: 150px !important; overflow-y: auto" columnClasses="janal-wid-100">									
 					<p:dataTable id="tablaCorreosReenviar" var="row" value="#{manticVentasCajaAccion.correos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">						
-						<p:column headerText="Correos disponibles del cliente" styleClass="descripcion tablaCorreosReenviar_selection janal-wid-80">
+						<p:column headerText="Correos disponibles del cliente" styleClass="descripcion janal-wid-80">
 							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
 						</p:column>
-						<p:column headerText="Preferido" styleClass="descripcion tablaCorreosReenviar_selection janal-wid-20">
+						<p:column headerText="Preferido" styleClass="descripcion janal-wid-20">
               <p:selectOneMenu id="idPreferido" styleClass="janal-wid-100-txt contacto" value="#{row['idPreferido']}" converter="javax.faces.Long">
                 <f:selectItem itemLabel="SI" itemValue="1"/>
                 <f:selectItem itemLabel="NO" itemValue="2"/>								
@@ -1457,7 +1457,7 @@
 				</div>
 			</h:form>
 		</p:dialog>	
-    <p:dialog id="dialogoCelular" widgetVar="dlgCelular" dynamic="true" header="Celular para envío de mensajes por whatsup" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
+    <p:dialog id="dialogoCelular" widgetVar="dlgCelular" dynamic="true" header="Celular para envío de mensajes por whatsup" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" appendTo="@(body)">
 			<h:form id="formDialogoCelular" prependId="false">								
 				<p:panelGrid id="panelCelular" columns="1" layout="grid" styleClass="janal-wid-99" style="height: 150px !important; overflow-y: auto" columnClasses="janal-wid-100">									
 					<p:dataTable id="tablaCelularReenviar" var="row" value="#{manticVentasCajaAccion.celulares}" rowKey="#{row.idCelular}" style="margin-bottom:0">						
@@ -1471,7 +1471,7 @@
               </p:selectOneMenu>
 						</p:column>
 						<p:column style="width: 45px; text-align: center">
-							<p:commandButton update="tablaCelularReenviar" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" title="#{row['activo']? 'Agregar': 'Actualizar'}" action="#{manticVentasCajaAccion.doAgregarCelular}">
+							<p:commandButton update="tablaCelularReenviar" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" title="#{row['activo']? 'Agregar': 'Actualizar'}" action="#{manticVentasCajaAccion.doAgregarCelular}" disabled="#{row['activo']}">
 								<f:setPropertyActionListener value="#{row}" target="#{manticVentasCajaAccion.celular}" />
 							</p:commandButton>
 						</p:column>
@@ -1479,11 +1479,11 @@
 				</p:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">					
-					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCelulares').hide();" oncomplete="janal.desbloquear();"/>
+          <p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCelular').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
 		</p:dialog>	
-    <p:dialog id="dialogoDescuentos" widgetVar="dlgDescuentos" dynamic="true" header="Aplicar descuento" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="updateDescuentos();janal.change('dialogosVenta', fieldsDialogDescuento); jsCaja.doFocusCuenta();" width="50%" onHide="janal.desbloquear();janal.restore();janal.refresh();jsArticulos.restoreCursorAt();">						
+    <p:dialog id="dialogoDescuentos" widgetVar="dlgDescuentos" dynamic="true" header="Aplicar descuento" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="true" onShow="updateDescuentos();janal.change('dialogosVenta', fieldsDialogDescuento); jsCaja.doFocusCuenta();" width="50%" onHide="janal.desbloquear();janal.restore();janal.refresh();jsArticulos.restoreCursorAt();" appendTo="@(body)">
 			<h:form id="dialogosVenta" prependId="false">
         <h:panelGrid columns="1" styleClass="janal-wid-100 janal-column-center">
           <p:outputLabel value="El cliente tiene un precio especial en todos los articulos, por lo tanto no se puede aplicar un descuento !" styleClass="janal-font-bold janal-color-red" style="display:#{empty manticVentasCajaAccion.attrs.registroCliente.especial or manticVentasCajaAccion.attrs.registroCliente.especial eq 0.0? 'none': ''}"/>
@@ -1521,7 +1521,7 @@
 				</div>	
 			</h:form>
 		</p:dialog>		
-    <p:dialog id="dialogoCambioPrecio" widgetVar="dlgCambioPrecio" dynamic="true" header="Aplicar cambio de precio" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="updateCambioPrecio(); janal.change('formCambioPrecio', fieldsDialogPrecio); jsCaja.doFocusPrecio();" width="50%" onHide="janal.restore(); janal.desbloquear(); jsArticulos.restoreCursorAt();">						
+    <p:dialog id="dialogoCambioPrecio" widgetVar="dlgCambioPrecio" dynamic="true" header="Aplicar cambio de precio" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="true" onShow="updateCambioPrecio(); janal.change('formCambioPrecio', fieldsDialogPrecio); jsCaja.doFocusPrecio();" width="50%" onHide="janal.restore(); janal.desbloquear(); jsArticulos.restoreCursorAt();" appendTo="@(body)">
 			<h:form id="formCambioPrecio" prependId="false">
 				<h:panelGrid columns="1" styleClass="janal-wid-100">
 					<p:outputLabel for="cambiopreciousr" value="Usuario:"/>
@@ -1541,7 +1541,7 @@
 				</div>	
 			</h:form>
 		</p:dialog>		
-    <p:dialog id="dialogoDomicilios" widgetVar="dlgDomicilios" dynamic="true" header="Busqueda de domicilio:" resizable="false" closable="false" responsive="true" width="60%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoDomicilios', fieldsDialog);janal.refresh();">
+    <p:dialog id="dialogoDomicilios" widgetVar="dlgDomicilios" dynamic="true" header="Busqueda de domicilio:" resizable="false" closable="true" responsive="true" width="60%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoDomicilios', fieldsDialog);janal.refresh();" appendTo="@(body)">
 			<h:form id="formDialogoDomicilios" prependId="false">
 				<h:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-80, janal-wid-20">
 					<p:outputLabel for="calleBusqueda" value="Calle:"/>

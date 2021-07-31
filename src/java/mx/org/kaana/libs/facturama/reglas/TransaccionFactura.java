@@ -5,12 +5,14 @@ import java.io.StringWriter;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EEtapaServidor;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.facturama.models.Client;
@@ -142,7 +144,10 @@ public class TransaccionFactura extends IBaseTnx {
 	protected boolean updateCliente(Session sesion) throws Exception{
 		boolean regresar= true;
 		try {
-			CFDIFactory.getInstance().updateClient(this.cliente);			
+      if(!Configuracion.getInstance().isEtapaProduccion())
+        LOG.warn("Actualizar los datos del cliente en FACTURAMA ["+ this.cliente+ "]");			
+      else
+        CFDIFactory.getInstance().updateClient(this.cliente);			
 		} // try
 		catch (Exception e) {		
 			registrarBitacora(sesion, this.cliente.getId(), e.getMessage());

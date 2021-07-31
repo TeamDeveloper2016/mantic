@@ -30,6 +30,7 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.libs.wassenger.Bonanza;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
 import mx.org.kaana.mantic.catalogos.proveedores.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
@@ -58,6 +59,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 	private List<Correo> correos;
 	private List<Correo> selectedCorreos;	
 	private Correo correo;
+	private List<Correo> celulares;
+	private List<Correo> selectedCelulares;	
+	private Correo celular;
 
 	public List<Correo> getCorreos() {
 		return correos;
@@ -78,6 +82,30 @@ public class Filtro extends IBaseFilter implements Serializable {
 	public void setCorreo(Correo correo) {
 		this.correo = correo;
 	}	
+
+  public List<Correo> getCelulares() {
+    return celulares;
+  }
+
+  public void setCelulares(List<Correo> celulares) {
+    this.celulares = celulares;
+  }
+
+  public List<Correo> getSelectedCelulares() {
+    return selectedCelulares;
+  }
+
+  public void setSelectedCelulares(List<Correo> selectedCelulares) {
+    this.selectedCelulares = selectedCelulares;
+  }
+
+  public Correo getCelular() {
+    return celular;
+  }
+
+  public void setCelular(Correo celular) {
+    this.celular = celular;
+  }
 	
   @PostConstruct
   @Override
@@ -368,16 +396,43 @@ public class Filtro extends IBaseFilter implements Serializable {
 			motor= new MotorBusqueda(seleccionado.toLong("idProveedor"));
 			contactos= motor.toProveedoresTipoContacto();
 			this.correos= new ArrayList<>();
-			for(ProveedorTipoContacto contacto: contactos){
+			for(ProveedorTipoContacto contacto: contactos) {
 				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey()))
 					this.correos.add(new Correo(contacto.getIdProveedorTipoContacto(), contacto.getValor(), contacto.getIdPreferido()));				
 			} // for
-			this.correos.add(new Correo(-1L, "", 2L));
+			this.correos.add(new Correo(-1L, "", 2L, Boolean.TRUE));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
+    finally {
+      Methods.clean(contactos);
+    } // finally
+	} // doLoadMail
+	
+	public void doLoadPhones() {
+		Entity seleccionado= null;
+		MotorBusqueda motor= null; 
+		List<ProveedorTipoContacto>contactos= null;
+		try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");			
+			motor= new MotorBusqueda(seleccionado.toLong("idProveedor"));
+			contactos= motor.toProveedoresTipoContacto();
+			this.celulares= new ArrayList<>();
+			for(ProveedorTipoContacto contacto: contactos) {
+				if(contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR_NEGOCIO.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR_PERSONAL.getKey()))
+					this.celulares.add(new Correo(contacto.getIdProveedorTipoContacto(), contacto.getValor(), contacto.getIdPreferido()));				
+			} // for
+			this.celulares.add(new Correo(-1L, "", 2L, Boolean.TRUE));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+    finally {
+      Methods.clean(contactos);
+    } // finally
 	} // doLoadEstatus
 	
 	public void doAgregarCorreo() {
@@ -386,11 +441,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			if(!Cadena.isVacio(this.correo.getDescripcion())){
 				seleccionado= (Entity)this.attrs.get("seleccionado");
-				transaccion= new Transaccion(this.correo, seleccionado.toLong("idProveedor"));
+				transaccion= new Transaccion(seleccionado.toLong("idProveedor"), seleccionado.toString("proveedor"), this.correo);
 				if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
-					JsfBase.addMessage("Se agrego el correo electronico correctamente !");
+					JsfBase.addMessage("Se agregó/modificó el correo electronico correctamente !");
 				else
-					JsfBase.addMessage("Ocurrió un error al agregar el correo electronico");
+					JsfBase.addMessage("Ocurrió un error al agregar/modificar el correo electronico");
 			} // if
 			else
 				JsfBase.addMessage("Es necesario capturar un correo electronico !");
@@ -401,7 +456,28 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
 	} // doAgregarCorreo
 	
-	public void doEnviarCorreoOrden() {
+	public void doAgregarCelular() {
+		Entity seleccionado    = null;
+		Transaccion transaccion= null;
+		try {
+			if(!Cadena.isVacio(this.celular.getDescripcion())){
+				seleccionado= (Entity)this.attrs.get("seleccionado");
+				transaccion= new Transaccion(seleccionado.toLong("idProveedor"), seleccionado.toString("proveedor"), this.celular);
+				if(transaccion.ejecutar(EAccion.COMPLETO))
+					JsfBase.addMessage("Se agregó/modificó el celular correctamente !");
+				else
+					JsfBase.addMessage("Ocurrió un error al agregar/modificar el celular");
+			} // if
+			else
+				JsfBase.addMessage("Es necesario capturar un celular !");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doAgregarCelular
+	
+	public void doSendMail() {
 		StringBuilder sb= new StringBuilder("");
 		if(this.selectedCorreos!= null && !this.selectedCorreos.isEmpty()) {
 			for(Correo mail: this.selectedCorreos) {
@@ -455,4 +531,32 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Methods.clean(files);
 		} // finally
 	} // doEnviarCorreoOrden
+  
+  public void doSendWhatsup() {
+    StringBuilder sb= new StringBuilder();
+    try {      
+      Entity seleccionado= (Entity)this.attrs.get("seleccionado");			
+      if(this.selectedCelulares!= null && !this.selectedCelulares.isEmpty()) {
+        for(Correo phone: this.selectedCelulares) {
+          if(!Cadena.isVacio(phone.getDescripcion()))
+            sb.append(phone.getDescripcion()).append(", ");
+        } // for
+      } // if
+      if(sb.length()> 0) {
+        this.doReporte("ORDEN_DETALLE", true);        
+        Bonanza notificar= new Bonanza(seleccionado.toString("proveedor"), "celular", this.reporte.getAlias(), "ticket", "fecha");
+        String[] phones= sb.substring(0, sb.length()- 2).split("[,]");
+        for (String phone: phones) {
+          notificar.setCelular(phone, Boolean.TRUE);
+          LOG.info("Enviando mensaje por whatsup al celular: "+ phone);
+          notificar.doSendOrdenCompra();
+        } // for
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
 }

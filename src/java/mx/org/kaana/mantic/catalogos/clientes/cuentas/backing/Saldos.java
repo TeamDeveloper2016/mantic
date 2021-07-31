@@ -673,6 +673,7 @@ public class Saldos extends IBaseFilter implements Serializable {
         true // boolean notifica      
       );
       notifica.doSendMail();
+      notifica.doSendWhatsup();
     } // if  
     else
       this.toSendMailEspecial(sb, (Entity)this.attrs.get("seleccionadoDetalle"));

@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/plantillas/galeria.xhtml">
+	<ui:define name="librerias">
+		<h:outputScript library="janal" name="js/jquery.plugin.min.js"/>
+		<script type="text/javascript">
+			Janal.Control.errors = 2;
+			Janal.Control.fields = {
+			};
+			//<![CDATA[
+			$(document).ready(function() {
+			});
+			//]]>
+		</script>
+		<style>
+      .ui-ring {
+        margin-left: 0.7em; 
+      }
+      
+      .image-ring .ui-ring-item {
+        border: 0 none;
+      }
+
+      .image-ring .ui-ring-item img {
+        width: 80%;
+      }      
+      
+      .janal-cgor-icon {
+        width: 220px;
+        background-color: white;
+      }
+      .card {
+        background-color: #eeeeee;
+        opacity: 0.9;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        border-radius: 4px;
+        height:380px;
+        width:95% !important;
+      }
+      .janal-cgor-image {
+        cursor: pointer;
+      }
+      .janal-cgor-ring {
+        width: 90%;
+      }
+		</style>
+	</ui:define>
+	<ui:define name="contenido">  		
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+          <div class="card janal-column-center">
+            <p:ring id="custom" value="#{kajoolAccesoPortafolio.productos}" var="row" styleClass="janal-cgor-ring image-ring" easing="easeInOutCubic">
+              <p:panel header="#{row.acronimo}" styleClass="janal-cgor-icon janal-column-center">
+                <p:commandLink process="@this" update="producto" actionListener="#{kajoolAccesoPortafolio.doProductoItem(row)}">
+                  <p:graphicImage id="image" library="janal" name="icon/cgor/#{row.imagen}" styleClass="janal-cgor-image" width="128px" height="138px"/>
+                  <br/>
+                  <p:outputLabel value="#{row.nombre}" styleClass="janal-wid-100 janal-color-orange Fs16"/>
+                </p:commandLink>  
+                <br/>
+                <p:commandLink process="@this" action="#{kajoolAccesoPortafolio.doTableroMove(row)}" title="Ir al tablero ...">
+                  <i class="janal-icons-message janal-font-bold janal-color-blue Fs30">...</i>
+                </p:commandLink>  
+              </p:panel>  
+            </p:ring>          
+          </div>  
+          <br/>
+          <p:panel id="producto" header="#{kajoolAccesoPortafolio.item.nombre}" styleClass="janal-wid-95" style="display: #{empty kajoolAccesoPortafolio.item? 'none': ''}">
+            <p:graphicImage library="janal" name="icon/cgor/#{kajoolAccesoPortafolio.item.datos}" width="1200px" height="700px"/>
+            <p:commandLink process="@this" action="#{kajoolAccesoPortafolio.doTableroMove(row)}" title="Ir al tablero ...">
+              <i class="janal-icons-message janal-font-bold janal-color-blue Fs30">...</i>
+            </p:commandLink>  
+          </p:panel>  
+        </div>
+      </div>
+    </div>  
+	</ui:define>
+	<ui:param name="componenteBloqueo" value="custom"/>
+</ui:composition>
