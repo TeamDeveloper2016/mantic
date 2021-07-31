@@ -24,6 +24,9 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.wassenger.Bonanza;
+import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
+import mx.org.kaana.mantic.catalogos.clientes.reglas.MotorBusqueda;
+import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.correos.beans.Attachment;
@@ -47,6 +50,9 @@ public abstract class FiltroFactura extends IBaseTicket {
 	private List<Correo> selectedCorreos;	
 	private Correo correo;
 	protected Reporte reporte;
+	private List<Correo> celulares;
+	private List<Correo> selectedCelulares;	
+	private Correo celular;
 	
 	public Reporte getReporte() {
 		return reporte;
@@ -76,9 +82,35 @@ public abstract class FiltroFactura extends IBaseTicket {
 		this.correo = correo;
 	}
 	
+  public List<Correo> getCelulares() {
+    return celulares;
+  }
+
+  public void setCelulares(List<Correo> celulares) {
+    this.celulares = celulares;
+  }
+
+  public List<Correo> getSelectedCelulares() {
+    return selectedCelulares;
+  }
+
+  public void setSelectedCelulares(List<Correo> selectedCelulares) {
+    this.selectedCelulares = selectedCelulares;
+  }
+
+  public Correo getCelular() {
+    return celular;
+  }
+
+  public void setCelular(Correo celular) {
+    this.celular = celular;
+  }
+  
 	public void initBase(){
 		this.correos= new ArrayList<>();
 		this.selectedCorreos= new ArrayList<>();
+		this.celulares= new ArrayList<>();
+		this.selectedCelulares= new ArrayList<>();
 	}
 	
 	public void doSendmail() {
@@ -158,8 +190,7 @@ public abstract class FiltroFactura extends IBaseTicket {
 		    JsfBase.addMessage("Se envió el correo de forma exitosa.", ETipoMensaje.INFORMACION);
 			else
 		    JsfBase.addMessage("No se selecciono ningún correo, por favor verifiquelo e intente de nueva cuenta.", ETipoMensaje.ALERTA);
-      this.toWhatsup(seleccionado, factura);
-		} // try // try
+		} // try
 		catch(Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
@@ -316,30 +347,36 @@ public abstract class FiltroFactura extends IBaseTicket {
 		return regresar;		
 	} // toPrepare
 	
-  private void toWhatsup(Entity seleccionado, Entity factura) {
+  public void doSendWhatsup() {
+    StringBuilder sb= new StringBuilder();
+		Entity factura  = null;
     Map<String, Object> params = null;
     try {      
       params = new HashMap<>();      
-      List<Entity> celulares= null;
-      params.put(Constantes.SQL_CONDICION, "id_cliente="+ seleccionado.toLong("idCliente"));
-      celulares= (List<Entity>)DaoFactory.getInstance().toEntitySet("TrManticClienteTipoContactoDto", "row", params);
-      String celular= null;
-      if(celulares!= null && !celulares.isEmpty())
-        for (Entity telefono: celulares) {
-          if(telefono.toLong("idPreferido").equals(1L) && (telefono.toLong("idTipoContacto").equals(ETiposContactos.CELULAR.getKey()) || telefono.toLong("idTipoContacto").equals(ETiposContactos.CELULAR_NEGOCIO.getKey()) || telefono.toLong("idTipoContacto").equals(ETiposContactos.CELULAR_PERSONAL.getKey()))) 
-            celular= telefono.toString("valor");
+      Entity seleccionado= (Entity)this.attrs.get("seleccionado");			
+      if(this.selectedCelulares!= null && !this.selectedCelulares.isEmpty()) {
+        for(Correo phone: this.selectedCelulares) {
+          if(!Cadena.isVacio(phone.getDescripcion()))
+            sb.append(phone.getDescripcion()).append(", ");
         } // for
-      if(celular!= null) {
+      } // if
+      if(sb.length()> 0) {
         try {
+			    factura= this.toXml(seleccionado.toLong("idFactura"));
+			    this.doReporte("FACTURAS_FICTICIAS_DETALLE", true);          
           String nombre= JsfBase.getRealPath().concat(EFormatos.PDF.toPath()).concat(factura.toString("nombre"));
           File target= new File(nombre);
           File source= new File(factura.toString("alias"));
           if(source.exists()) {
             if(!target.exists())
               Archivo.copy(factura.toString("alias"), nombre, Boolean.FALSE);
-            Bonanza notificar= new Bonanza(seleccionado.toString("cliente"), celular, Bonanza.toPathFiles((String)this.attrs.get("nameFacturaPdf"), factura.toString("nombre")), seleccionado.toString("ticket"), Fecha.formatear(Fecha.FECHA_HORA_CORTA, seleccionado.toTimestamp("timbrado")));
-            LOG.info("Enviando mensaje por whatsup al celular: "+ celular);
-            notificar.doSendFactura();
+            Bonanza notificar= new Bonanza(seleccionado.toString("cliente"), "", Bonanza.toPathFiles((String)this.attrs.get("nameFacturaPdf"), factura.toString("nombre")), seleccionado.toString("ticket"), Fecha.formatear(Fecha.FECHA_HORA_CORTA, seleccionado.toTimestamp("timbrado")));
+            String[] phones= sb.substring(0, sb.length()- 2).split("[,]");
+            for (String phone: phones) {
+              notificar.setCelular(phone, Boolean.TRUE);
+              LOG.info("Enviando mensaje por whatsup al celular: "+ celular);
+              notificar.doSendFactura();
+            } // if  
           } // if  
         } // try
         finally {
@@ -356,11 +393,112 @@ public abstract class FiltroFactura extends IBaseTicket {
     } // finally
   }
   
+	public void doLoadMails() {
+		Entity seleccionado               = null;
+		MotorBusquedaCatalogos motor      = null; 
+		List<ClienteTipoContacto>contactos= null;
+		Correo item                       = null;
+		try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");
+			motor= new MotorBusqueda(seleccionado.toLong("idCliente"));
+			contactos= motor.toClientesTipoContacto();
+			this.correos.clear();
+			this.selectedCorreos.clear();
+			for(ClienteTipoContacto contacto: contactos) {
+				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())){
+					item= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor().toUpperCase(), contacto.getIdPreferido());
+					this.correos.add(item);		
+					this.selectedCorreos.add(item);
+				} // if
+			} // for
+			this.correos.add(new Correo(-1L, "", 2L, Boolean.TRUE));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(contactos);
+		} // finally
+	} // doLoadMails
+  
+	public void doLoadPhones() {
+		Entity seleccionado= null;
+		MotorBusqueda motor= null; 
+		List<ClienteTipoContacto>contactos= null;
+    Correo item                       = null;
+		try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");			
+			motor= new MotorBusqueda(seleccionado.toLong("idCliente"));
+			contactos= motor.toClientesTipoContacto();
+			this.celulares= new ArrayList<>();
+			for(ClienteTipoContacto contacto: contactos) {
+				if(contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR_NEGOCIO.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR_PERSONAL.getKey())) {
+          item= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor(), contacto.getIdPreferido());
+					this.celulares.add(item);				
+          this.selectedCelulares.add(item);
+        } // if
+			} // for
+			this.celulares.add(new Correo(-1L, "", 2L, Boolean.TRUE));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+    finally {
+      Methods.clean(contactos);
+    } // finally
+	} // doLoadPhones
+  
+	public void doAgregarCorreo() {
+		Entity seleccionado    = null;
+		mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion transaccion= null;
+		try {
+			if(!Cadena.isVacio(this.correo.getDescripcion())) {
+				seleccionado= (Entity)this.attrs.get("seleccionado");
+				transaccion= new mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion(seleccionado.toLong("idCliente"), seleccionado.toString("cliente"), this.correo);
+				if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
+					JsfBase.addMessage("Se agregó/modificó el correo electronico correctamente !");
+				else
+					JsfBase.addMessage("Ocurrió un error al agregar/modificar el correo electronico");
+			} // if
+			else
+				JsfBase.addMessage("Es necesario capturar un correo electronico !");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doAgregarCorreo
+  
+	public void doAgregarCelular() {
+		Entity seleccionado    = null;
+		mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion transaccion= null;
+		try {
+			if(!Cadena.isVacio(this.celular.getDescripcion())){
+				seleccionado= (Entity)this.attrs.get("seleccionado");
+				transaccion= new mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion(seleccionado.toLong("idCliente"), seleccionado.toString("cliente"), this.celular);
+				if(transaccion.ejecutar(EAccion.COMPLETO))
+					JsfBase.addMessage("Se agregó/modificó el celular correctamente !");
+				else
+					JsfBase.addMessage("Ocurrió un error al agregar/modificar el celular");
+			} // if
+			else
+				JsfBase.addMessage("Es necesario capturar un celular !");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doAgregarCelular  
+  
 	@Override
 	protected void finalize() throws Throwable {
     super.finalize();
 		Methods.clean(this.correos);
 		Methods.clean(this.selectedCorreos);
+		Methods.clean(this.celulares);
+		Methods.clean(this.selectedCelulares);
 	}	// finalize
   
 }

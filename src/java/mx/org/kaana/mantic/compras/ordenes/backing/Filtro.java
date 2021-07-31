@@ -558,5 +558,14 @@ public class Filtro extends IBaseFilter implements Serializable {
       JsfBase.addMessageError(e);      
     } // catch	
   }
+
+	@Override
+	protected void finalize() throws Throwable {
+    super.finalize();
+		Methods.clean(this.correos);
+		Methods.clean(this.selectedCorreos);
+		Methods.clean(this.celulares);
+		Methods.clean(this.selectedCelulares);
+	}	// finalize
   
 }

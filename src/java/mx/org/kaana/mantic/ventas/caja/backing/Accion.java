@@ -1888,7 +1888,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			for(ClienteTipoContacto contacto: contactos) {
 				if(contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR_NEGOCIO.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR_PERSONAL.getKey())) {
 					item= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor().toUpperCase(), contacto.getIdPreferido());
-					this.getCelulares().add(item);		
+					this.getCelulares().add(item);	
 				} // if
 			} // for
 			LOG.warn("Agregando celular por defecto");

@@ -276,12 +276,9 @@ public class Filtro extends FiltroFactura implements Serializable {
 	}
 	
 	public void doLoadEstatus() {
-		Entity seleccionado               = null;
-		Map<String, Object>params         = null;
-		List<UISelectItem> allEstatus     = null;
-		MotorBusquedaCatalogos motor      = null; 
-		List<ClienteTipoContacto>contactos= null;
-		Correo correoAdd                  = null;
+		Entity seleccionado          = null;
+		Map<String, Object>params    = null;
+		List<UISelectItem> allEstatus= null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			params= new HashMap<>();
@@ -290,21 +287,6 @@ public class Filtro extends FiltroFactura implements Serializable {
 			allEstatus= UISelect.build("TcManticVentasEstatusDto", "estatus", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
 			this.attrs.put("estatus", allEstatus.get(0).getValue().toString());
-			motor= new MotorBusqueda(-1L, seleccionado.toLong("idCliente"));
-			contactos= motor.toClientesTipoContacto();
-			LOG.warn("Inicializando listas de correos y seleccionados");
-			getCorreos().clear();
-			getSelectedCorreos().clear();
-			LOG.warn("Total de contactos" + contactos.size());
-			for(ClienteTipoContacto contacto: contactos){
-				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())){
-					correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor().toUpperCase(), contacto.getIdPreferido());
-					getCorreos().add(correoAdd);		
-					getSelectedCorreos().add(correoAdd);
-				} // if
-			} // for
-			LOG.warn("Agregando correo por defecto");
-			getCorreos().add(new Correo(-1L, "", 2L));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -349,27 +331,6 @@ public class Filtro extends FiltroFactura implements Serializable {
 			setSelectedCorreos(new ArrayList<>());
 		} // finally
 	}	// doActualizaEstatus
-	
-	public void doAgregarCorreo() {
-		Entity seleccionado    = null;
-		Transaccion transaccion= null;
-		try {
-			if(!Cadena.isVacio(getCorreo().getDescripcion())){
-				seleccionado= (Entity)this.attrs.get("seleccionado");
-				transaccion= new Transaccion(getCorreo(), seleccionado.toLong("idCliente"));
-				if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
-					JsfBase.addMessage("Se agrego el correo electronico correctamente !");
-				else
-					JsfBase.addMessage("Ocurrió un error al agregar el correo electronico");
-			} // if
-			else
-				JsfBase.addMessage("Es necesario capturar un correo electronico !");
-		} // try
-		catch (Exception e) {
-			JsfBase.addMessageError(e);
-			Error.mensaje(e);			
-		} // catch		
-	} // doAgregarCorreo
 	
   public String doSincronizar() {
 		JsfBase.setFlashAttribute("accion", EAccion.GENERAR);		
@@ -582,11 +543,6 @@ public class Filtro extends FiltroFactura implements Serializable {
     } // finally
 	}
 		
-	@Override
-	protected void finalize() throws Throwable {
-    super.finalize();		
-	}	// finalize
-	
 	public void doCancelarFacturacion() {
 		Transaccion transaccion         = null;
 		Entity seleccionado             = null;		
@@ -628,4 +584,10 @@ public class Filtro extends FiltroFactura implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doAutomatico
+  
+	@Override
+	protected void finalize() throws Throwable {
+    super.finalize();		
+	}	// finalize
+  
 }

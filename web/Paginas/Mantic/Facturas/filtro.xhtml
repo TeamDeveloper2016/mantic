@@ -271,7 +271,8 @@
             <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{(manticFacturasFiltro.attrs.seleccionado.idTipoDocumento eq '1') and !(manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '14')}"/>
             <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{(manticFacturasFiltro.attrs.seleccionado.idTipoDocumento eq '2') and (!(manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '15')) and (manticFacturasFiltro.attrs.seleccionado.idCliente.toLong() ne Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY)}"/>
             <p:separator rendered="#{(manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '7') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '9') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '12') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '15')}"/>					
-            <p:menuitem value="Reenviar" icon="fa fa-mail-forward" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="#{manticFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>
+            <p:menuitem icon="fa fa-mail-forward" value="Reenviar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doLoadMails}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="#{manticFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>
+						<p:menuitem icon="fa fa-whatsapp" value="Enviar whatsup" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doLoadPhones}" oncomplete="PF('dlgCelular').show();" update="dialogoCelular" rendered="#{manticFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>
 						<p:menuitem value="Ticket" icon="fa fa-file-text-o" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doTicket}" oncomplete="janal.desbloquear();jsTicket.clicTicket();" update="tabla" rendered="#{(manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '7') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '9') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '12') or (manticFacturasFiltro.attrs.seleccionado.idVentaEstatus eq '15')}"/>
             <p:separator rendered="#{manticFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>
 						<p:menuitem value="Reporte" icon="fa fa-file-text-o" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doReporte('FACTURAS_FICTICIAS_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{manticFacturasFiltro.attrs.seleccionado.facturado eq '1'}"/>			
@@ -334,16 +335,22 @@
 				</div>
 			</h:form>
 		</p:dialog>
-		<p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Reenviar factura" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
+    <p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Reenviar factura" dynamic="true" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" appendTo="@(body)">
 			<h:form id="formDialogoCorreos" prependId="false">
 				<p:panelGrid id="panelCorreos" columns="1" layout="grid" styleClass="janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">													
 					<p:dataTable id="tablaCorreosReenviar" var="row" value="#{manticFacturasFiltro.correos}" selection="#{manticFacturasFiltro.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
 						<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
-						<p:column headerText="Correos disponibles del cliente" styleClass="descripcion tablaCorreosReenviar_selection">
+						<p:column headerText="Correos disponibles del cliente" styleClass="descripcion janal-wid-80">
 							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
 						</p:column>
+						<p:column headerText="Preferido" styleClass="descripcion tablaCorreos_selection janal-wid-20">
+              <p:selectOneMenu id="idPreferido" styleClass="janal-wid-100-txt contacto" value="#{row['idPreferido']}" converter="javax.faces.Long">
+                <f:selectItem itemLabel="SI" itemValue="1"/>
+                <f:selectItem itemLabel="NO" itemValue="2"/>								
+              </p:selectOneMenu>
+						</p:column>
 						<p:column style="width:45px;text-align: center">
-							<p:commandButton update="tablaCorreosReenviar" icon="fa fa-check" title="Agregar" action="#{manticFacturasFiltro.doAgregarCorreo}">
+							<p:commandButton update="tablaCorreosReenviar" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" title="#{row['activo']? 'Agregar': 'Actualizar'}" action="#{manticFacturasFiltro.doAgregarCorreo}">
 								<f:setPropertyActionListener value="#{row}" target="#{manticFacturasFiltro.correo}" />
 							</p:commandButton>
 						</p:column>
@@ -356,6 +363,34 @@
 				</div>
 			</h:form>
 		</p:dialog>
+		<p:dialog id="dialogoCelular" widgetVar="dlgCelular" header="Enviar por whatsup" dynamic="true" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" appendTo="@(body)">
+			<h:form id="formDialogoCelular" prependId="false">								
+				<p:panelGrid id="panelCelulares" columns="1" layout="grid" styleClass="janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">										
+					<p:dataTable id="tablaCelulares" var="row" value="#{manticFacturasFiltro.celulares}" selection="#{manticFacturasFiltro.selectedCelulares}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
+						<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
+						<p:column headerText="Celulares disponibles del cliente" styleClass="descripcion  janal-wid-80">
+							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
+						</p:column>
+						<p:column headerText="Preferido" styleClass="descripcion janal-wid-20">
+              <p:selectOneMenu id="idPreferido" styleClass="janal-wid-100-txt contacto" value="#{row['idPreferido']}" converter="javax.faces.Long">
+                <f:selectItem itemLabel="SI" itemValue="1"/>
+                <f:selectItem itemLabel="NO" itemValue="2"/>								
+              </p:selectOneMenu>
+						</p:column>
+						<p:column style="width:45px;text-align: center">
+							<p:commandButton update="tablaCelulares" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" title="#{row['activo']? 'Agregar': 'Actualizar'}" action="#{manticFacturasFiltro.doAgregarCelular}">
+								<f:setPropertyActionListener value="#{row}" target="#{manticFacturasFiltro.celular}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>		
+				</p:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this dialogoCelular" value="Aceptar" actionListener="#{manticFacturasFiltro.doSendWhatsup}" onstart="return PF('dlgCelular').hide();"  oncomplete="janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCelular').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog>    
 		<p:dialog id="documento" widgetVar="widgetDetalle" header="Detalle del ticket" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();" width="1000px" height="480px" resizable="false" appendTo="@(body)">
 			<p:panelGrid columns="5" styleClass="janal-wid-100" columnClasses="janal-wid-col-80 janal-column-center, janal-wid-60 janal-column-center, janal-wid-10 janal-column-center, janal-wid-col-60 janal-column-center, janal-wid-10 janal-column-center">
 				<p:outputLabel value="Consecutivo"/>

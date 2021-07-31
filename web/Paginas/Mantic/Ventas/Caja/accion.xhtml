@@ -1445,7 +1445,7 @@
               </p:selectOneMenu>
 						</p:column>
 						<p:column style="width: 45px; text-align: center">
-              <p:commandButton update="tablaCorreosReenviar" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" title="#{row['activo']? 'Agregar': 'Actualizar'}" action="#{manticVentasCajaAccion.doAgregarCorreo}" disabled="#{row['activo']}">
+              <p:commandButton update="tablaCorreosReenviar" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" title="#{row['activo']? 'Agregar': 'Actualizar'}" action="#{manticVentasCajaAccion.doAgregarCorreo}">
 								<f:setPropertyActionListener value="#{row}" target="#{manticVentasCajaAccion.correo}" />
 							</p:commandButton>
 						</p:column>
@@ -1471,7 +1471,7 @@
               </p:selectOneMenu>
 						</p:column>
 						<p:column style="width: 45px; text-align: center">
-							<p:commandButton update="tablaCelularReenviar" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" title="#{row['activo']? 'Agregar': 'Actualizar'}" action="#{manticVentasCajaAccion.doAgregarCelular}" disabled="#{row['activo']}">
+							<p:commandButton update="tablaCelularReenviar" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" title="#{row['activo']? 'Agregar': 'Actualizar'}" action="#{manticVentasCajaAccion.doAgregarCelular}">
 								<f:setPropertyActionListener value="#{row}" target="#{manticVentasCajaAccion.celular}" />
 							</p:commandButton>
 						</p:column>
