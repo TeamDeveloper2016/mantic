@@ -237,7 +237,7 @@ public class Transaccion extends Inventarios implements Serializable {
             // NOTIFICAR AL PROVEEDOR SI ES QUE CAMBIO SU TIPO DE CONTACTO PREFERIDO
             if(ETiposContactos.CELULAR.equals(tipo) && tipoContacto.getIdPreferido().equals(1L)) {
               Bonanza notificar= new Bonanza(this.razonSocial, tipoContacto.getValor());
-              notificar.doSendMessage(sesion);
+              notificar.doSendProveedor(sesion);
             } // if  
             regresar= DaoFactory.getInstance().update(sesion, tipoContacto)>= 1L;
           } // if  
@@ -250,12 +250,13 @@ public class Transaccion extends Inventarios implements Serializable {
         contacto.setIdTipoContacto(tipo.getKey());
 				contacto.setIdUsuario(JsfBase.getIdUsuario());
 				contacto.setValor(this.correo.getDescripcion());
+				contacto.setIdPreferido(this.correo.getIdPreferido());
 				contacto.setOrden(records);
 				regresar= DaoFactory.getInstance().insert(sesion, contacto)>= 1L;
         // NOTIFICAR AL PROVEEDOR SI ES QUE CAMBIO SU TIPO DE CONTACTO PREFERIDO
         if(ETiposContactos.CELULAR.equals(tipo) && contacto.getIdPreferido().equals(1L)) {
           Bonanza notificar= new Bonanza(this.razonSocial, contacto.getValor());
-          notificar.doSendMessage(sesion);
+          notificar.doSendProveedor(sesion);
         } // if  
 			} // else
 		} // try
