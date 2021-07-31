@@ -228,7 +228,7 @@ public class Transaccion extends Inventarios implements Serializable {
 		int count                                = 0;
 		Long records                             = 1L;
 		try {
-			correos= toProveedoresTipoContacto();
+			correos= this.toProveedoresTipoContacto();
 			if(!correos.isEmpty()){
 				for(ProveedorTipoContacto tipoContacto: correos){
 					if(tipoContacto.getValor().equals(this.correo.getDescripcion())) {
@@ -247,7 +247,7 @@ public class Transaccion extends Inventarios implements Serializable {
 			if(count== 0){
 				contacto= new TrManticProveedorTipoContactoDto();
 				contacto.setIdProveedor(this.idProveedor);
-				contacto.setIdTipoContacto(ETiposContactos.CORREO.getKey());
+        contacto.setIdTipoContacto(tipo.getKey());
 				contacto.setIdUsuario(JsfBase.getIdUsuario());
 				contacto.setValor(this.correo.getDescripcion());
 				contacto.setOrden(records);
