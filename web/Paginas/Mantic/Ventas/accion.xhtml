@@ -143,13 +143,13 @@
 							</p:autoComplete>	
 						</p:panelGrid>	
 						<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-column-center">
-              <p:spacer/>
-              <p:spacer/>
+              <p:spacer/><p:spacer/>
 							<p:commandButton id="catalogoCliente" title="Catalogo de clientes" icon="fa fa-users" process="@this" action="#{manticVentasAccion.doClientes}" ajax="false" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 							<p:commandButton id="cuentaBloqueadas" title="Desbloquear cuentas" icon="fa fa-lock" process="@this" update="dialogoCuentasBloqueadas" action="#{manticVentasAccion.doLoadUnLockCuenta}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="PF('dlgCuentasBloqueadas').show();"/>						
 						</p:panelGrid>
-						<p:panelGrid id="panelPrincipalCorreos" layout="grid" columns="1" styleClass="janal-wid-100" columnClasses="janal-column-center" rendered="#{!manticVentasAccion.attrs.mostrarCorreos}">
-							<p:spacer/>
+						<p:panelGrid id="panelPrincipalCorreos" layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-column-center" rendered="#{!manticVentasAccion.attrs.mostrarCorreos}">
+              <p:spacer/><p:spacer/>
+							<p:commandButton id="celularCliente" title="Celular del cliente" icon="fa fa-whatsapp" update="dialogoCelular" process="@this" actionListener="#{manticVentasAccion.doLoadCelular}" styleClass="janal-text-white janal-column-center" onstart="return janal.bloquear()" oncomplete="PF('dlgCelular').show();" disabled="#{manticVentasAccion.attrs.mostrarCorreos}"/>														
 							<p:commandButton id="correosCliente" title="Correos del cliente" icon="fa fa-at" update="dialogoCorreos" process="@this" actionListener="#{manticVentasAccion.doLoadCorreos}" styleClass="janal-text-white janal-column-center" onstart="return janal.bloquear()" oncomplete="PF('dlgCorreos').show();"  disabled="#{manticVentasAccion.attrs.mostrarCorreos}"/>						
 						</p:panelGrid>
 						<p:spacer id="spacerCorreos" rendered="#{manticVentasAccion.attrs.mostrarCorreos}"/>
@@ -646,15 +646,21 @@
 		</div>	
 	</ui:define>	
 	<ui:define name="dialogos">
-		<p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Correos para factura" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
+    <p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Correos para factura" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.desbloquear();" appendTo="@(body)">
 			<h:form id="formDialogoCorreos" prependId="false">				
 				<p:panelGrid id="panelCorreos" columns="1" layout="grid" styleClass="janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">
 					<p:dataTable id="tablaCorreosReenviar" var="row" value="#{manticVentasAccion.correos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">						
-						<p:column headerText="Correos disponibles del cliente" styleClass="descripcion tablaCorreosReenviar_selection">
+						<p:column headerText="Correos disponibles del cliente" styleClass="descripcion janal-wid-80">
 							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
 						</p:column>
+						<p:column headerText="Preferido" styleClass="descripcion janal-wid-20">
+              <p:selectOneMenu id="idPreferido" styleClass="janal-wid-100-txt contacto" value="#{row['idPreferido']}" converter="javax.faces.Long">
+                <f:selectItem itemLabel="SI" itemValue="1"/>
+                <f:selectItem itemLabel="NO" itemValue="2"/>								
+              </p:selectOneMenu>
+						</p:column>
 						<p:column style="width:45px;text-align: center">
-							<p:commandButton update="tablaCorreosReenviar" icon="fa fa-check" title="Agregar" action="#{manticVentasAccion.doAgregarCorreo}">
+							<p:commandButton update="tablaCorreosReenviar" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" title="#{row['activo']? 'Agregar': 'Actualizar'}" action="#{manticVentasAccion.doAgregarCorreo}">
 								<f:setPropertyActionListener value="#{row}" target="#{manticVentasAccion.correo}" />
 							</p:commandButton>
 						</p:column>
@@ -663,6 +669,32 @@
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">					
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCorreos').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog>	
+    <p:dialog id="dialogoCelular" widgetVar="dlgCelular" dynamic="true" header="Celular para whatsup" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.desbloquear();" appendTo="@(body)">
+			<h:form id="formDialogoCelular" prependId="false">								
+				<p:panelGrid id="panelCelular" columns="1" layout="grid" styleClass="janal-wid-99" style="height: 150px !important; overflow-y: auto" columnClasses="janal-wid-100">									
+					<p:dataTable id="tablaCelularReenviar" var="row" value="#{manticVentasAccion.celulares}" rowKey="#{row.idCelular}" style="margin-bottom:0">						
+						<p:column headerText="Celular(es) disponibles del cliente" styleClass="descripcion janal-wid-80">
+							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
+						</p:column>
+						<p:column headerText="Preferido" styleClass="descripcion janal-wid-20">
+              <p:selectOneMenu id="idPreferido" styleClass="janal-wid-100-txt contacto" value="#{row['idPreferido']}" converter="javax.faces.Long">
+                <f:selectItem itemLabel="SI" itemValue="1"/>
+                <f:selectItem itemLabel="NO" itemValue="2"/>								
+              </p:selectOneMenu>
+						</p:column>
+						<p:column style="width: 45px; text-align: center">
+							<p:commandButton update="tablaCelularReenviar" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" title="#{row['activo']? 'Agregar': 'Actualizar'}" action="#{manticVentasAccion.doAgregarCelular}">
+								<f:setPropertyActionListener value="#{row}" target="#{manticVentasAccion.celular}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>		
+				</p:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">					
+          <p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCelular').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
 		</p:dialog>	
@@ -706,7 +738,7 @@
 				<p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogoClientes').hide();"/>
 			</div>
 		</p:dialog>
-    <p:dialog id="dialogoDescuentos" widgetVar="dlgDescuentos" header="Aplicar descuento" dynamic="true" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="updateDescuentos();" width="50%" onHide="janal.desbloquear(); janal.restore(); janal.refresh(); janal.recover();">
+    <p:dialog id="dialogoDescuentos" widgetVar="dlgDescuentos" header="Aplicar descuento" dynamic="true" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="true" onShow="updateDescuentos();" width="50%" onHide="janal.desbloquear(); janal.restore(); janal.refresh(); janal.recover();" appendTo="@(body)">
 			<h:form id="dialogosVenta" prependId="false">
 				<p:defaultCommand target="tipoDescuento"/>
         <h:panelGrid columns="1" styleClass="janal-wid-100 janal-column-center" style="display:#{empty manticVentasAccion.attrs.clienteSeleccion.especial or manticVentasAccion.attrs.clienteSeleccion.especial.toDouble() eq 0.0? 'none': ''}">

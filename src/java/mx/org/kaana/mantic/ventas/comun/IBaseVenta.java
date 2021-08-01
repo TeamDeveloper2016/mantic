@@ -11,6 +11,7 @@ import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
@@ -27,6 +28,7 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
 import mx.org.kaana.mantic.comun.IBaseCliente;
@@ -34,6 +36,8 @@ import mx.org.kaana.mantic.db.dto.TcManticApartadosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.EPrecioArticulo;
+import mx.org.kaana.mantic.enums.ETiposContactos;
+import mx.org.kaana.mantic.facturas.beans.Correo;
 import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 import mx.org.kaana.mantic.ventas.beans.SaldoCliente;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
@@ -59,7 +63,11 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	protected SaldoCliente saldoCliente;
 	private FormatLazyModel almacenes;
   private boolean costoLibre;
-	
+	protected List<Correo> correos;	
+	protected Correo correo;
+	protected List<Correo> celulares;	
+	protected Correo celular;
+  
 	public IBaseVenta(String precio) {
 		this(precio, false);
 	}
@@ -100,6 +108,38 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	public boolean isCostoLibre() {
 		return costoLibre;
 	}	
+	
+	public List<Correo> getCorreos() {
+		return correos;
+	}
+
+	public void setCorreos(List<Correo> correos) {
+		this.correos = correos;
+	}
+	
+	public Correo getCorreo() {
+		return correo;
+	}
+
+	public void setCorreo(Correo correo) {
+		this.correo = correo;
+	}
+
+  public List<Correo> getCelulares() {
+    return celulares;
+  }
+
+  public void setCelulares(List<Correo> celulares) {
+    this.celulares = celulares;
+  }
+
+  public Correo getCelular() {
+    return celular;
+  }
+
+  public void setCelular(Correo celular) {
+    this.celular = celular;
+  }
 	
 	public String doCancelar() {   
   	JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
@@ -1302,5 +1342,89 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			Error.mensaje(e);
 		} // catch		
   }
-    
+ 
+	public void doLoadCelular() {
+		MotorBusqueda motor               = null; 
+		List<ClienteTipoContacto>contactos= null;
+		Correo item                       = null;
+		try {					
+			motor= new MotorBusqueda(-1L, ((UISelectEntity) this.attrs.get("clienteSeleccion")).getKey());
+			contactos= motor.toClientesTipoContacto();
+			setCelulares(new ArrayList<>());
+			for(ClienteTipoContacto contacto: contactos) {
+				if(contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR_NEGOCIO.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR_PERSONAL.getKey())) {
+					item= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor().toUpperCase(), contacto.getIdPreferido());
+					this.getCelulares().add(item);	
+				} // if
+			} // for
+			this.getCelulares().add(new Correo(-1L, "", 2L, Boolean.TRUE));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doLoadCelular
+  
+	public void doLoadCorreos() {
+		MotorBusqueda motor               = null; 
+		List<ClienteTipoContacto>contactos= null;
+		Correo item                       = null;
+		try {					
+			motor= new MotorBusqueda(-1L, ((UISelectEntity) this.attrs.get("clienteSeleccion")).getKey());
+			contactos= motor.toClientesTipoContacto();
+			setCorreos(new ArrayList<>());
+			for(ClienteTipoContacto contacto: contactos) {
+				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())) {
+					item= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor().toUpperCase(), contacto.getIdPreferido());
+					this.getCorreos().add(item);		
+				} // if
+			} // for
+			this.getCorreos().add(new Correo(-1L, "", 2L, Boolean.TRUE));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doLoadCorreos
+	
+	public void doAgregarCelular() {		
+		mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion transaccion= null;
+		try {
+			if(!Cadena.isVacio(this.celular.getDescripcion())) {				
+        UISelectEntity cliente= (UISelectEntity)this.attrs.get("clienteSeleccion");
+				transaccion= new mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion(cliente.getKey(), cliente.toString("razonSocial"), this.celular);
+				if(transaccion.ejecutar(EAccion.COMPLETO))
+					JsfBase.addMessage("Se agregó/modificó el celular correctamente !");
+				else
+					JsfBase.addMessage("Ocurrió un error al agregar/modificar el celular");
+			} // if
+			else
+				JsfBase.addMessage("Es necesario capturar un celular !");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doAgregarCelular
+	
+	public void doAgregarCorreo() {		
+		mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion transaccion= null;
+		try {
+			if(!Cadena.isVacio(this.correo.getDescripcion())) {				
+        UISelectEntity cliente= (UISelectEntity)this.attrs.get("clienteSeleccion");
+				transaccion= new mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion(cliente.getKey(), cliente.toString("razonSocial"), this.correo);
+				if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
+					JsfBase.addMessage("Se agregó/modificó el correo electronico correctamente !");
+				else
+					JsfBase.addMessage("Ocurrió un error al agregar el correo electronico");
+			} // if
+			else
+				JsfBase.addMessage("Es necesario capturar un correo electronico !");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doAgregarCorreo	
+  
 }

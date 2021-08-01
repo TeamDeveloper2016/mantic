@@ -1431,7 +1431,7 @@
 		</div>
 	</ui:define>    		
 	<ui:define name="dialogos">
-    <p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" dynamic="true" header="Correos para factura" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" appendTo="@(body)">
+    <p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" dynamic="true" header="Correos para factura" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.desbloquear();" appendTo="@(body)">
 			<h:form id="formDialogoCorreos" prependId="false">								
 				<p:panelGrid id="panelCorreos" columns="1" layout="grid" styleClass="janal-wid-99" style="height: 150px !important; overflow-y: auto" columnClasses="janal-wid-100">									
 					<p:dataTable id="tablaCorreosReenviar" var="row" value="#{manticVentasCajaAccion.correos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">						
@@ -1457,14 +1457,14 @@
 				</div>
 			</h:form>
 		</p:dialog>	
-    <p:dialog id="dialogoCelular" widgetVar="dlgCelular" dynamic="true" header="Celular para envío de mensajes por whatsup" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" appendTo="@(body)">
+    <p:dialog id="dialogoCelular" widgetVar="dlgCelular" dynamic="true" header="Celular para whatsup" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.desbloquear();" appendTo="@(body)">
 			<h:form id="formDialogoCelular" prependId="false">								
 				<p:panelGrid id="panelCelular" columns="1" layout="grid" styleClass="janal-wid-99" style="height: 150px !important; overflow-y: auto" columnClasses="janal-wid-100">									
 					<p:dataTable id="tablaCelularReenviar" var="row" value="#{manticVentasCajaAccion.celulares}" rowKey="#{row.idCelular}" style="margin-bottom:0">						
-						<p:column headerText="Celular(es) disponibles del cliente" styleClass="descripcion tablaCelularReenviar_selection janal-wid-80">
+						<p:column headerText="Celular(es) disponibles del cliente" styleClass="descripcion janal-wid-80">
 							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
 						</p:column>
-						<p:column headerText="Preferido" styleClass="descripcion tablaCelularReenviar_selection janal-wid-20">
+						<p:column headerText="Preferido" styleClass="descripcion janal-wid-20">
               <p:selectOneMenu id="idPreferido" styleClass="janal-wid-100-txt contacto" value="#{row['idPreferido']}" converter="javax.faces.Long">
                 <f:selectItem itemLabel="SI" itemValue="1"/>
                 <f:selectItem itemLabel="NO" itemValue="2"/>								

@@ -24,8 +24,6 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
-import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
@@ -33,8 +31,6 @@ import mx.org.kaana.mantic.ventas.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETipoVenta;
-import mx.org.kaana.mantic.enums.ETiposContactos;
-import mx.org.kaana.mantic.facturas.beans.Correo;
 import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 import mx.org.kaana.mantic.ventas.beans.SaldoCliente;
 import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
@@ -49,11 +45,9 @@ public class Accion extends IBaseVenta implements Serializable {
 
 	private static final Logger LOG            = Logger.getLogger(Accion.class);
   private static final long serialVersionUID = 327393488565639367L;
-	private static final String VENDEDOR_PERFIL= "VENDEDOR DE PISO";	
-	private EOrdenes tipoOrden;
-	private StreamedContent image;
-	private List<Correo> correos;	
-	private Correo correo;
+	protected static final String VENDEDOR_PERFIL= "VENDEDOR DE PISO";	
+	protected EOrdenes tipoOrden;
+	protected StreamedContent image;
 
 	public Accion() {
 		super("menudeo");
@@ -71,22 +65,6 @@ public class Accion extends IBaseVenta implements Serializable {
 		return image;
 	}
 	
-	public List<Correo> getCorreos() {
-		return correos;
-	}
-
-	public void setCorreos(List<Correo> correos) {
-		this.correos = correos;
-	}
-	
-	public Correo getCorreo() {
-		return correo;
-	}
-
-	public void setCorreo(Correo correo) {
-		this.correo = correo;
-	}
-
 	@PostConstruct
   @Override
   protected void init() {		
@@ -636,48 +614,5 @@ public class Accion extends IBaseVenta implements Serializable {
 		this.attrs.put("idAlmacen", ((TicketVenta)this.getAdminOrden().getOrden()).getIkAlmacen().getKey());
 		super.doSearchArticulo(idArticulo, index);
 	}
-	
-	public void doLoadCorreos() {
-		MotorBusquedaCatalogos motor      = null; 
-		List<ClienteTipoContacto>contactos= null;
-		Correo correoAdd                  = null;
-		try {					
-			motor= new MotorBusqueda(-1L, ((UISelectEntity) this.attrs.get("clienteSeleccion")).getKey());
-			contactos= motor.toClientesTipoContacto();
-			setCorreos(new ArrayList<>());
-			for(ClienteTipoContacto contacto: contactos){
-				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())){
-					correoAdd= new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor().toUpperCase(), contacto.getIdPreferido());
-					getCorreos().add(correoAdd);		
-				} // if
-			} // for
-			LOG.warn("Agregando correo default");
-			getCorreos().add(new Correo(-1L, "", 2L));
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch		
-	} // doLoadCorreos
-	
-	public void doAgregarCorreo() {		
-		mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion transaccion= null;
-		try {
-			if(!Cadena.isVacio(getCorreo().getDescripcion())) {				
-        UISelectEntity cliente= (UISelectEntity)this.attrs.get("clienteSeleccion");
-				transaccion= new mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion(cliente.getKey(), cliente.toString("razonSocial"), this.getCorreo());
-				if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
-					JsfBase.addMessage("Se agregó el correo electronico correctamente !");
-				else
-					JsfBase.addMessage("Ocurrió un error al agregar el correo electronico");
-			} // if
-			else
-				JsfBase.addMessage("Es necesario capturar un correo electronico !");
-		} // try
-		catch (Exception e) {
-			JsfBase.addMessageError(e);
-			Error.mensaje(e);			
-		} // catch		
-	} // doAgregarCorreo
-  
+
 }

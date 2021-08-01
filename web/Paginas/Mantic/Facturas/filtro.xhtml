@@ -142,9 +142,9 @@
 								</f:facet>
 							</p:autoComplete>	
 							<p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticFacturasFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" locale="es" converter="janal.convertidor.Calendario"/>              
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticFacturasFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="es" converter="janal.convertidor.Calendario"/>              
 							<p:outputLabel for="fechaTermino" value="Fecha termino:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticFacturasFiltro.attrs.fechaTermino}" showOn="button" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>							
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticFacturasFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="es" converter="janal.convertidor.Calendario"/>							
 							<p:outputLabel for="montoInicio" value="Monto inicio:"/>
 							<p:inputText id="montoInicio" styleClass="janal-wid-100-txt" value="#{manticFacturasFiltro.attrs.montoInicio}" converter="javax.faces.Double">
 								<p:ajax event="blur" listener="#{manticFacturasFiltro.doMontoUpdate}" process="@this" update="montoTermino"/>
@@ -335,7 +335,7 @@
 				</div>
 			</h:form>
 		</p:dialog>
-    <p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Reenviar factura" dynamic="true" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" appendTo="@(body)">
+    <p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Reenviar factura" dynamic="true" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.desbloquear();" appendTo="@(body)">
 			<h:form id="formDialogoCorreos" prependId="false">
 				<p:panelGrid id="panelCorreos" columns="1" layout="grid" styleClass="janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">													
 					<p:dataTable id="tablaCorreosReenviar" var="row" value="#{manticFacturasFiltro.correos}" selection="#{manticFacturasFiltro.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
@@ -363,7 +363,7 @@
 				</div>
 			</h:form>
 		</p:dialog>
-		<p:dialog id="dialogoCelular" widgetVar="dlgCelular" header="Enviar por whatsup" dynamic="true" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" appendTo="@(body)">
+		<p:dialog id="dialogoCelular" widgetVar="dlgCelular" header="Enviar por whatsup" dynamic="true" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.desbloquear();" appendTo="@(body)">
 			<h:form id="formDialogoCelular" prependId="false">								
 				<p:panelGrid id="panelCelulares" columns="1" layout="grid" styleClass="janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">										
 					<p:dataTable id="tablaCelulares" var="row" value="#{manticFacturasFiltro.celulares}" selection="#{manticFacturasFiltro.selectedCelulares}" rowKey="#{row.idCorreo}" style="margin-bottom:0">

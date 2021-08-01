@@ -98,7 +98,9 @@ public class Conteos extends IBaseFilter implements Serializable {
 	@Override
   public void doLoad() {
 		List<Columna> columns= null;
+    Map<String, Object> params = null;
     try {
+      params = new HashMap<>();      
 			columns= new ArrayList<>();
       columns.add(new Columna("inicial", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
       columns.add(new Columna("entradas", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
@@ -108,8 +110,10 @@ public class Conteos extends IBaseFilter implements Serializable {
 			this.attrs.put("sortOrder", " order by registro desc");
 			if(this.attrs.get("almacen")!= null)
 			  this.attrs.put("idAlmacen", ((Entity)this.attrs.get("almacen")).getKey());			
-			TcManticInventariosDto vigente= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", this.attrs);
-			if(vigente== null || !vigente.getEntradas().equals(0D) || !vigente.getSalidas().equals(0D)) {
+      params.put("idAlmacen", this.attrs.get("idAlmacen"));      
+      params.put("idArticulo", this.attrs.get("idArticulo"));      
+			TcManticInventariosDto vigente= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
+			if((vigente== null || !vigente.getEntradas().equals(0D) || !vigente.getSalidas().equals(0D)) && !Cadena.isVacio(this.attrs.get("idArticulo"))) {
 				vigente= new TcManticInventariosDto(-1L);
 				vigente.setIdAlmacen((Long)this.attrs.get("idAlmacen"));
 				vigente.setIdArticulo((Long)this.attrs.get("idArticulo"));
@@ -122,7 +126,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 				vigente.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 			} // if
       this.attrs.put("vigente", vigente);
-      this.lazyModel = new FormatCustomLazy("VistaInventariosDto", this.attrs, columns);
+      this.lazyModel = new FormatCustomLazy("VistaInventariosDto", params, columns);
       UIBackingUtilities.resetDataTable();
 			this.toLoadAlmacenArticulo();
 			this.toSearchUltimo();
@@ -134,6 +138,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);
     } // catch   
 		finally {
+      Methods.clean(params);
       Methods.clean(columns);
     } // finally
   } // doLoad	

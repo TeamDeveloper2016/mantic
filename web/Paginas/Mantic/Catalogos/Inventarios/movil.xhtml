@@ -27,17 +27,12 @@
 			<pe:methodParam name="codigo"/>  
 		</pe:remoteCommand>		
 		<p:remoteCommand name="replace" actionListener="#{manticCatalogosInventariosConteos.doFindArticulo}" process="@this" update="@(.filas) contenedorGrupos:tabla contenedorGrupos:panelImage" onstart="return janal.bloquear();" oncomplete="jsKardex.process(); $('#contenedorGrupos\\:inicial').focus();"/>
-		<pe:remoteCommand name="lookup" actionListener="#{manticCatalogosInventariosConteos.doUpdateDialogArticulos}" onstart="return PF('dialogo').isVisible();" process="@this clave" update="buscados localizado">
-			<pe:methodSignature parameters="java.lang.String"/>  
-			<pe:methodParam name="codigo"/>  
-		</pe:remoteCommand>		
-		<p:remoteCommand name="clean" actionListener="#{manticCatalogosInventariosConteos.doCleanArticulos}" process="@this clave" update="buscados localizado"/>
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
-          <p:accordionPanel id="contenedorGrupos" activeIndex="0" multiple="true" dynamic="true">
+          <p:accordionPanel id="contenedorGrupos" activeIndex="1" multiple="true" dynamic="true">
             <p:ajax event="tabChange" listener="#{manticCatalogosInventariosConteos.doTabChange}" process="@this" update="@(.filas)"/>
-            <p:tab title="Articulo">
+            <p:tab title="Almacen">
               <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
                 <p:outputLabel for="idArticuloTipo" value="Tipos de partida(s):"/>
                 <p:selectOneMenu id="idArticuloTipo" value="#{manticCatalogosInventariosConteos.attrs.idArticuloTipo}" converter="javax.faces.Long" styleClass="janal-wid-100-txt almacen">
@@ -45,6 +40,25 @@
                   <f:selectItem itemLabel="ARTICULOS" itemValue="1"/>
                   <f:selectItem itemLabel="REFACCIONES" itemValue="2"/>
                 </p:selectOneMenu>								
+                <p:outputLabel for="almacen" value="Almacen:"/>
+                <p:selectOneMenu id="almacen" value="#{manticCatalogosInventariosConteos.attrs.almacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade">
+                  <p:ajax event="change" onstart="janal.bloquear();" process="@this almacen" listener="#{manticCatalogosInventariosConteos.doLoad}" update="@(.filas)" oncomplete="janal.desbloquear();"/>
+                  <f:selectItems value="#{manticCatalogosInventariosConteos.attrs.almacenes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+                  <p:column headerText="Sucursal">
+                    <h:outputText value="#{item.sucursal}"/>
+                  </p:column>   
+                  <p:column headerText="Clave">
+                    <h:outputText value="#{item.clave}"/>
+                  </p:column>   
+                  <p:column headerText="Almacen">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   														
+                </p:selectOneMenu>						
+              </p:panelGrid>
+            </p:tab>  
+            <p:tab title="Articulo">
+              <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+      					<p:outputLabel value="#{manticCatalogosInventariosConteos.attrs.existe}" styleClass="filas" escape="false"/>
                 <p:outputLabel for="codigos" value="Código ó articulo:"/>
                 <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-fix-3 janal-column-center, janal-wid-97">
                   <p:selectBooleanCheckbox value="#{manticCatalogosInventariosConteos.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
@@ -67,29 +81,24 @@
                         <p:outputLabel value="$ #{custom.precio}"/>
                       </h:panelGrid>
                     </f:facet>
-                  </p:autoComplete>			
+                  </p:autoComplete>	
                 </p:panelGrid>	
                 <p:panelGrid columns="1" styleClass="janal-column-center janal-wid-100-txt">
+                  <p:panel id="panelImage" header="#{manticCatalogosInventariosConteos.attrs.articulo.propio}" styleClass="TexAlCenter janal-wid-100-txt">
+                    <a id="source-image" data-magnify="gallery" data-caption="#{manticCatalogosInventariosConteos.attrs.articulo.nombre}" data-group="icon-gallery" href="" title="Click para ver más grande la imagen">
+                      <p:graphicImage id="icon-image" value="#{manticCatalogosInventariosConteos.image}" width="170" height="135" stream="false" style="cursor:zoom-in;"/>
+                    </a>	
+                  </p:panel>
                   <p:outputLabel value="[#{manticCatalogosInventariosConteos.attrs.articulo.propio}] [#{manticCatalogosInventariosConteos.attrs.articulo.nombre}]" styleClass="filas janal-font-bold janal-color-black"/>
+                  <p:outputLabel for="inicial" value="Inicial:" styleClass="janal-align-left"/>
+                  <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-95, janal-wid-5 janal-column-center">
+                    <p:inputNumber id="inicial" inputStyleClass="janal-wid-98 janal-column-right janal-key-kardex janal-color-orange" value="#{manticCatalogosInventariosConteos.attrs.vigente.inicial}" styleClass="filas" readonly="#{manticCatalogosInventariosConteos.habilitar}"/>	
+                    <p:commandButton id="agregarInventario" process="@this @(.filas)" update="tabla" icon="fa fa-cart-plus" title="Agregar/Actualizar inventario" style="float:right;" styleClass="janal-key-kardex filas" action="#{manticCatalogosInventariosConteos.doConteo}" disabled="#{manticCatalogosInventariosConteos.habilitar}" onstart="return janal.execute();" oncomplete="$('#codigos_input').focus(); janal.desbloquear();"/>
+                  </p:panelGrid>
                 </p:panelGrid>
-                <p:outputLabel for="almacen" value="Almacen:"/>
-                <p:selectOneMenu id="almacen" value="#{manticCatalogosInventariosConteos.attrs.almacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade">
-                  <p:ajax event="change" onstart="janal.bloquear();" process="@this almacen" listener="#{manticCatalogosInventariosConteos.doLoad}" update="@(.filas)" oncomplete="janal.desbloquear();"/>
-                  <f:selectItems value="#{manticCatalogosInventariosConteos.attrs.almacenes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
-                  <p:column headerText="Sucursal" styleClass="janal-wid-30">
-                    <h:outputText value="#{item.sucursal}"/>
-                  </p:column>   
-                  <p:column headerText="Clave" styleClass="janal-wid-20">
-                    <h:outputText value="#{item.clave}"/>
-                  </p:column>   
-                  <p:column headerText="Almacen" styleClass="janal-wid-50">
-                    <h:outputText value="#{item.nombre}"/>
-                  </p:column>   														
-                </p:selectOneMenu>						
-      					<p:outputLabel value="#{manticCatalogosInventariosConteos.attrs.existe}" styleClass="filas" escape="false"/>
               </p:panelGrid>
             </p:tab>
-            <p:tab title="Generales">
+            <p:tab title="Generales" rendered="false">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">		
                 <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-fix-50 janal-column-center, janal-fix-50 janal-column-center">		
                   <p:panelGrid columns="1" styleClass="janal-wid-100">		
@@ -101,11 +110,6 @@
                     <p:inputText value="#{manticCatalogosInventariosConteos.attrs.ultimo}" styleClass="janal-wid-100-txt filas" readonly="true"/>
                   </p:panelGrid>  
                 </p:panelGrid>  
-                <p:outputLabel for="inicial" value="Inicial:"/>
-                <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-95, janal-wid-5 janal-column-center">
-                  <p:inputNumber id="inicial" inputStyleClass="janal-wid-98 janal-column-right janal-key-kardex janal-color-orange" value="#{manticCatalogosInventariosConteos.attrs.vigente.inicial}" styleClass="filas" readonly="#{manticCatalogosInventariosConteos.habilitar}"/>	
-                  <p:commandButton id="agregarInventario" process="@this @(.filas)" update="tabla" icon="fa fa-cart-plus" title="Agregar/Actualizar inventario" style="float:right;" styleClass="janal-key-kardex filas" action="#{manticCatalogosInventariosConteos.doConteo}" disabled="#{manticCatalogosInventariosConteos.habilitar}" onstart="return janal.execute();" oncomplete="$('#codigos_input').focus(); janal.desbloquear();"/>
-                </p:panelGrid>
                 <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-fix-50 janal-column-center, janal-wid-50 janal-column-center">		
                   <p:panelGrid columns="1" styleClass="janal-wid-100">		
                     <p:outputLabel for="minimo" value="Stock mínimo:"/>
@@ -133,14 +137,9 @@
                     <h:outputText value="#{ubicacion.charola}"/>
                   </p:column>   
                 </p:selectOneMenu>
-                <p:panel id="panelImage" header="#{manticCatalogosInventariosConteos.attrs.articulo.propio}" styleClass="TexAlCenter janal-wid-100-txt" style="height:98%" rendered="false">
-                  <a id="source-image" data-magnify="gallery" data-caption="#{manticCatalogosInventariosConteos.attrs.articulo.nombre}" data-group="icon-gallery" href="" title="Click para ver más grande la imagen">
-                    <p:graphicImage id="icon-image" value="#{manticCatalogosInventariosConteos.image}" width="170" height="135" stream="false" style="cursor:zoom-in;"/>
-                  </a>	
-                </p:panel>              
               </p:panelGrid>	
             </p:tab> 
-            <p:tab title="Historico">
+            <p:tab title="Historico" rendered="false">
 							<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosInventariosConteos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosInventariosConteos.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosInventariosConteos.lazyModel.rowCount gt manticCatalogosInventariosConteos.lazyModel.pageSize}" rowIndexVar="index" reflow="true" styleClass="filas">
 								<f:facet name="header">
 									<p:outputLabel value="Historial del articulo" style="float:left" styleClass="janal-text-white"/>
@@ -211,10 +210,7 @@
 									<p:outputLabel value="#{item.concepto}"/>
 								</p:column>   
 								<p:column headerText="Consecutivo" styleClass="janal-wid-8 janal-column-center">
-                  <p:commandLink action="#{manticCatalogosInventariosConteos.doMoveSection}" process="@this almacen" update="documento informacion @(.documento)" oncomplete="janal.bloquear();PF('widgetDetalle').show();" style="cursor:pointer;">
-										<f:setPropertyActionListener target="#{manticCatalogosInventariosConteos.attrs.consecutivo}" value="#{item}"/>
-										<p:outputLabel value="#{item.consecutivo}"/>
-									</p:commandLink>
+  								<p:outputLabel value="#{item.consecutivo}"/>
 								</p:column>   
 								<p:column headerText="Almacen">
 									<p:outputLabel value="#{item.almacen}"/>
@@ -252,114 +248,6 @@
 	  		<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosInventariosConteos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true" style="display: #{empty manticCatalogosInventariosConteos.attrs.xcodigo? 'none': ''}"/>
 			</div>		
 		</div>	
-		<p:dialog id="documento" widgetVar="widgetDetalle" header="Detalle #{manticCatalogosInventariosConteos.attrs.tipoDocumento}" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();" width="1000px" height="480px" resizable="false" appendTo="@(body)">
-			<p:panelGrid columns="5" styleClass="janal-wid-100" columnClasses="janal-wid-col-80 janal-column-center, janal-wid-60 janal-column-center, janal-wid-10 janal-column-center, janal-wid-col-60 janal-column-center, janal-wid-10 janal-column-center">
-				<p:outputLabel value="Consecutivo"/>
-				<p:outputLabel value="Razón social"/>
-				<p:outputLabel value="Fecha"/>
-				<p:outputLabel value="Articulos"/>
-				<p:outputLabel value="Total"/>
-				<p:inputText value="#{manticCatalogosInventariosConteos.attrs.documento.consecutivo}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
-				<p:inputText value="#{manticCatalogosInventariosConteos.attrs.documento.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>
-				<p:inputText value="#{manticCatalogosInventariosConteos.attrs.documento.fecha}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
-				<p:inputText value="#{manticCatalogosInventariosConteos.attrs.documento.articulos}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
-				<p:inputText value="#{manticCatalogosInventariosConteos.attrs.documento.total}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
-			</p:panelGrid>
-			<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100">		
-				<p:dataTable id="informacion" var="item" value="#{manticCatalogosInventariosConteos.attrs.documentos}" paginator="false" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="documento" rowIndexVar="index">
-					<p:column headerText="No" styleClass="janal-wid-3">
-						<p:outputLabel value="#{index+ 1}.-"/>
-					</p:column>   
-					<p:column headerText="Código" styleClass="janal-wid-col-100">
-						<p:outputLabel value="#{item.propio}"/>
-					</p:column>   
-					<p:column headerText="Nombre">
-						<p:outputLabel value="#{item.nombre}"/>
-					</p:column>   
-					<p:column headerText="Inicial" styleClass="janal-wid-10 janal-column-right documento" rendered="#{manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6}">
-						<p:outputLabel value="#{item.inicial}"/>
-					</p:column>   
-					<p:column headerText="#{manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6? 'Entradas': 'Cantidad'}" styleClass="janal-wid-10 janal-column-right documento">
-						<p:outputLabel value="#{item.cantidad}"/>
-					</p:column>   
-					<p:column headerText="Origen" styleClass="janal-wid-15 documento" rendered="#{manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 4}">
-						<p:outputLabel value="#{item.origen}"/>
-					</p:column>   
-					<p:column headerText="Destino" styleClass="janal-wid-15 documento" rendered="#{manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 4}">
-						<p:outputLabel value="#{item.destino}"/>
-					</p:column>   
-					<p:column headerText="Precio" styleClass="janal-wid-13 janal-column-right" rendered="#{not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6) and not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 4)}">
-						<p:outputLabel value="#{item.precio}"/>
-					</p:column>   
-					<p:column headerText="Impuestos" styleClass="janal-wid-10 janal-column-right documento" rendered="#{not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6) and not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 4)}">
-						<p:outputLabel value="#{item.impuestos}"/>
-					</p:column>   
-					<p:column headerText="Importe" styleClass="janal-wid-13 janal-column-right documento" rendered="#{not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6) and not(manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 4)}">
-						<p:outputLabel value="#{item.importe}"/>
-					</p:column>   
-					<p:column headerText="Salidas" styleClass="janal-wid-10 janal-column-right documento" rendered="#{manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6}">
-						<p:outputLabel value="#{item.salidas}"/>
-					</p:column>   
-					<p:column headerText="Stock" styleClass="janal-wid-10 janal-column-right documento" rendered="#{manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6}">
-						<p:outputLabel value="#{item.stock}"/>
-					</p:column>   
-					<p:column headerText="Registro" styleClass="janal-wid-15 janal-column-right documento" rendered="#{manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 4 or manticCatalogosInventariosConteos.attrs.idTipoDocumento eq 6}">
-						<p:outputLabel value="#{item.registro}"/>
-					</p:column>   
-				</p:dataTable>
-			</p:panelGrid>
-			<hr class="ui-widget-content"/>
-			<div class="janal-line-button">
-				<p:commandButton process="@none" icon="fa fa-remove" value="Cerrar" oncomplete="PF('widgetDetalle').hide();"/>
-			</div>
-		</p:dialog>			
-		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();$('#codigos').focus();" onShow="$('#clave').val('');clean();" width="900px" height="470px" resizable="false" appendTo="@(body)">
-			<div class="ui-grid-row janal-grid-row">
-				<div class="ui-grid-col-12 janal-column-left">
-					<p:outputLabel for="clave" value="Código o nombre:"/>
-					<span class="janal-help-icon janal-help-8 fa fa-fw fa-question-circle Fright" onclick="countHelp(8);"/>	
-					<pe:tooltip for="@(.janal-help-8)" showEvent="click">
-						<h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(8)}" styleClass="Fs15" escape="false"/>
-					</pe:tooltip>
-				</div>			
-			</div>	
-			<div class="ui-grid-row janal-grid-row">
-				<div class="ui-grid-col-12 janal-column-left">
-					<p:inputText id="clave" value="#{manticCatalogosInventariosConteos.attrs.codigo}" styleClass="janal-wid-100-txt key-buscados-event janal-key-articulo" style="text-transform: uppercase"/>
-				</div>			
-			</div>
-			<div class="ui-grid-row janal-grid-row">
-				<div class="ui-grid-col-12 janal-column-left">
-					<p:outputLabel value="Click sobre la tabla para seleccionar el articulo, por defecto es el primero de la lista"/><br/>
-					<p:dataTable id="buscados" widgetVar="widgetBuscados" lazy="true" styleClass="janal-buscados-articulos janal-wid-100" value="#{manticCatalogosInventariosConteos.attrs.lazyModel}" selection="#{manticCatalogosInventariosConteos.attrs.buscado}" var="item" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="50" liveScroll="true" liveScrollBuffer="50" scrollable="true" scrollHeight="280" style="margin-bottom:0">
-						<p:ajax event="rowDblselect" listener="#{manticCatalogosInventariosConteos.doRowDblselect}" process="@this" update="@(.filas) @(.recalculo)" oncomplete="PF('dialogo').hide();"/>	
-						<p:column headerText="No" styleClass="janal-wid-col-30">
-							<h:outputText value="#{index+ 1}.-"/>
-						</p:column>   
-						<p:column headerText="Propio" styleClass="janal-wid-15">
-							<h:outputText value="#{item.propio}"/>
-						</p:column>   
-						<p:column headerText="Nombre">
-							<h:outputText value="#{item.nombre}"/>
-						</p:column>   
-						<p:column headerText="Costo" styleClass="janal-column-right janal-wid-13">
-							<h:outputText value="#{item.original}"/>
-						</p:column>   
-						<p:column headerText="Stock" styleClass="janal-column-right janal-wid-10">
-							<h:outputText value="#{manticCatalogosInventariosConteos.doMiles(item.stock)}"/>
-						</p:column>   
-            <f:facet name="footer">
-              <p:outputLabel value="Total [#{manticCatalogosInventariosConteos.attrs.lazyModel==null? 0: manticCatalogosInventariosConteos.attrs.lazyModel.rowCount}] registros"/>
-            </f:facet>
-					</p:dataTable>
-				</div>
-			</div>
-			<hr class="ui-widget-content"/>
-			<div class="janal-line-button">
-				<p:commandButton id="localizado" icon="fa fa-check" process="@this buscados" update="@(.filas) @(.recalculo) contenedorGrupos:panelImage" value="Aceptar" actionListener="#{manticCatalogosInventariosConteos.doChangeBuscado}" onstart="return jsKardex.parche();" oncomplete="PF('dialogo').hide();" disabled="#{manticCatalogosInventariosConteos.attrs.lazyModel.rowCount lt 1}"/>
-				<p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide();"/>
-			</div>
-		</p:dialog>
 		<p:commandButton id="limpio" value="" styleClass="janal-zero-size"/>		
   </ui:define>    	
   <ui:param name="componenteBloqueo" value="contenedorGrupos" />

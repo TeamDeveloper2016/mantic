@@ -37,6 +37,23 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		return regresar;
 	} // toCliente
 	
+	public TcManticClientesDto toCliente(Long idRepresentante) throws Exception {
+		TcManticClientesDto regresar= null;
+		Map<String, Object>params   = null;
+		try {
+			params= new HashMap<>();
+			params.put("idRepresentante", idRepresentante);
+			regresar= (TcManticClientesDto)DaoFactory.getInstance().toEntity(TcManticClientesDto.class, "TcManticClientesDto", "representante", params);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toCliente
+	
 	public List<ClienteDomicilio> toClientesDomicilio() throws Exception {
 		return toClientesDomicilio(false);
 	} // toClientesDomicilio
@@ -74,7 +91,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		catch (Exception e) {		
 			throw e;
 		} // catch		
-		finally{
+		finally {
 			Methods.clean(params);
 		} // finally
 		return regresar;
@@ -242,4 +259,5 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		} // finally
 		return regresar;
 	} // toDomicilioCLiente
+  
 }
