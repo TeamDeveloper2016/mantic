@@ -119,17 +119,19 @@
 					<p:panelGrid id="deudor" columns="1" layout="grid" styleClass="janal-wid-100 janal-column-center janal-display-none" columnClasses="janal-wid-100" style="display: #{manticVentasMovil.saldoCliente.deudor} ? 'none' : ''">
 						<p:outputLabel value="#{manticVentasMovil.saldoCliente.mensaje}" styleClass="janal-column-center janal-color-orange" style="font-weight: bold !important"/>
 					</p:panelGrid>	
-          <p:panelGrid columns="2" styleClass="janal-wid-99" columnClasses="janal-fix-50, janal-fix-60 janal-column-right">
-            <p:panelGrid columns="4" styleClass="janal-wid-100-txt" columnClasses="janal-fix-30, janal-fix-20 janal-column-right, janal-fix-30, janal-fix-20 janal-column-right">
-              <p:outputLabel value="Articulos:" styleClass="janal-total-compra janal-color-orange"/>
-              <p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange" value="$ #{manticVentasMovil.adminOrden.totales.reales}"/>
+          <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+            <p:panelGrid columns="4" styleClass="janal-wid-100-txt" columnClasses="janal-fix-30, janal-fix-20 janal-column-center, janal-fix-30, janal-fix-20 janal-column-center">
+              <p:outputLabel value="Articulos:" styleClass="janal-total-compra janal-color-blue"/>
+              <p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-blue" value="#{manticVentasMovil.adminOrden.totales.reales}"/>
               <p:outputLabel value="Total:" styleClass="janal-total-compra janal-color-orange"/>
               <p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange" value="$ #{manticVentasMovil.adminOrden.totales.totalDosDecimales$}"/>
             </p:panelGrid>	  
-            <p:outputLabel value="Buscar por código:"/>
-            <p:selectBooleanCheckbox value="#{manticVentasMovil.attrs.buscaPorCodigo}" title="Buscar por código:" styleClass="filas">
-              <p:ajax event="change" process="@this"/>
-            </p:selectBooleanCheckbox>
+            <p:panelGrid columns="2" styleClass="janal-wid-99" columnClasses="janal-fix-50, janal-fix-60 janal-column-right">
+              <p:outputLabel value="Buscar por código:"/>
+              <p:selectBooleanCheckbox value="#{manticVentasMovil.attrs.buscaPorCodigo}" title="Buscar por código:" styleClass="filas">
+                <p:ajax event="change" process="@this"/>
+              </p:selectBooleanCheckbox>
+            </p:panelGrid>  
 					</p:panelGrid>	
           <p:panelGrid id="contenido" columns="1" layout="grid" styleClass="janal-wid-100-txt" style="height:480px !important;overflow-y: auto" columnClasses="janal-wid-100">					
             <p:dataGrid id="tabla" widgetVar="kajoolTable" var="row" value="#{manticVentasMovil.adminOrden.articulos}" paginator="false" columns="1" rows="1000" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" styleClass="filas">
