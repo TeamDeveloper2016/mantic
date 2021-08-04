@@ -209,13 +209,13 @@
 	</ui:define>    
 	<ui:define name="acciones">
     <div class="lg-pantalla">
-      <p:commandButton value="Exportar" icon="fa fa-cloud-download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" >
+      <p:commandButton value="Exportar" icon="fa fa-cloud-download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" styleClass="filas" style="display: #{manticVentasMovil.adminOrden.articulos.size() lt 2? 'none': ''}">
   			<p:fileDownload value="#{manticVentasMovil.archivo}"/>
       </p:commandButton>  
       <p:commandButton value="Limpiar" icon="fa fa-recycle" accesskey="r" process="@this" action="#{manticVentasMovil.doCancelar}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>						
     </div>	
     <div class="xs-pantalla">
-      <p:commandButton title="Exportar" icon="fa fa-cloud-download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+      <p:commandButton title="Exportar" icon="fa fa-cloud-download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" styleClass="filas" style="display: #{manticVentasMovil.adminOrden.articulos.size() lt 2? 'none': ''}">
   			<p:fileDownload value="#{manticVentasMovil.archivo}"/>
       </p:commandButton>  
       <p:commandButton title="Limpiar" icon="fa fa-recycle" accesskey="r"  process="@this" action="#{manticVentasMovil.doCancelar}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
