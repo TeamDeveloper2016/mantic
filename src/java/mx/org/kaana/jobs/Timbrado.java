@@ -265,8 +265,8 @@ public class Timbrado extends IBaseJob {
     try {      
       params = new HashMap<>();      
       List<Entity> celulares= null;
-      params.put(Constantes.SQL_CONDICION, "id_cliente="+ facturacion.getIdCliente());
-      celulares= (List<Entity>)DaoFactory.getInstance().toEntitySet("TrManticClienteTipoContactoDto", "row", params);
+      params.put("idCliente", facturacion.getIdCliente());
+      celulares= (List<Entity>)DaoFactory.getInstance().toEntitySet("TrManticClienteTipoContactoDto", "contacto", params);
       String celular= null;
       if(celulares!= null && !celulares.isEmpty())
         for (Entity telefono: celulares) {

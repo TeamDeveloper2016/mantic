@@ -109,6 +109,23 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		return regresar;
 	} // toProveedoresTipoContacto
 	
+	public List<ProveedorTipoContacto> toAllProveedoresTipoContacto() throws Exception {
+		List<ProveedorTipoContacto> regresar= null;
+		Map<String, Object>params    = null;
+		try {
+			params= new HashMap<>();
+			params.put("idProveedor", this.idProveedor);
+			regresar= DaoFactory.getInstance().toEntitySet(ProveedorTipoContacto.class, "TrManticProveedorTipoContactoDto", "contacto", params, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toAllProveedoresTipoContacto
+	
 	public List<ProveedorContactoAgente> toAgentes() throws Exception{
 		List<ProveedorContactoAgente> regresar= null;
 		Map<String, Object>params             = null;

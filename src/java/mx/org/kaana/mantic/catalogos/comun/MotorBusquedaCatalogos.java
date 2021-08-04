@@ -189,6 +189,23 @@ public abstract class MotorBusquedaCatalogos {
 		return regresar;
 	} // toClientesTipoContacto
 	
+	public List<ClienteTipoContacto> toAllClientesTipoContacto() throws Exception {
+		List<ClienteTipoContacto> regresar= null;
+		Map<String, Object>params    = null;
+		try {
+			params= new HashMap<>();
+			params.put("idCliente", this.idCliente);
+			regresar= DaoFactory.getInstance().toEntitySet(ClienteTipoContacto.class, "TrManticClienteTipoContactoDto", "contacto", params, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toAllClientesTipoContacto
+	
 	public List<ClienteTipoContacto> toClientesTipoContacto(Session sesion) throws Exception {
 		List<ClienteTipoContacto> regresar= null;
 		Map<String, Object>params    = null;

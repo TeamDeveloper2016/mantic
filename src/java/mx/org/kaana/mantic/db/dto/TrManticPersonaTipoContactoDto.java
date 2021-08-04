@@ -50,6 +50,8 @@ public class TrManticPersonaTipoContactoDto implements IBaseDto, Serializable {
   private Long orden;
   @Column (name="id_tipo_contacto")
   private Long idTipoContacto;
+  @Column (name="id_preferido")
+  private Long idPreferido;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -58,11 +60,11 @@ public class TrManticPersonaTipoContactoDto implements IBaseDto, Serializable {
   }
 
   public TrManticPersonaTipoContactoDto(Long key) {
-    this(null, null, new Long(-1L), null, null, null, null);
+    this(null, null, new Long(-1L), null, null, null, null, 2L);
     setKey(key);
   }
 
-  public TrManticPersonaTipoContactoDto(Long idPersona, Long idUsuario, Long idPersonaTipoContacto, String valor, String observaciones, Long orden, Long idTipoContacto) {
+  public TrManticPersonaTipoContactoDto(Long idPersona, Long idUsuario, Long idPersonaTipoContacto, String valor, String observaciones, Long orden, Long idTipoContacto, Long idPreferido) {
     setIdPersona(idPersona);
     setIdUsuario(idUsuario);
     setIdPersonaTipoContacto(idPersonaTipoContacto);
@@ -71,6 +73,7 @@ public class TrManticPersonaTipoContactoDto implements IBaseDto, Serializable {
     setOrden(orden);
     setIdTipoContacto(idTipoContacto);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    this.idPreferido= idPreferido;
   }
 	
   public void setIdPersona(Long idPersona) {
@@ -137,6 +140,14 @@ public class TrManticPersonaTipoContactoDto implements IBaseDto, Serializable {
     return registro;
   }
 
+  public Long getIdPreferido() {
+    return idPreferido;
+  }
+
+  public void setIdPreferido(Long idPreferido) {
+    this.idPreferido = idPreferido;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -166,6 +177,8 @@ public class TrManticPersonaTipoContactoDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTipoContacto());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdPreferido());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -181,14 +194,15 @@ public class TrManticPersonaTipoContactoDto implements IBaseDto, Serializable {
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("orden", getOrden());
 		regresar.put("idTipoContacto", getIdTipoContacto());
+		regresar.put("idPreferido", getIdPreferido());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getIdPersona(), getIdUsuario(), getIdPersonaTipoContacto(), getValor(), getObservaciones(), getOrden(), getIdTipoContacto(), getRegistro()
+    Object[] regresar = new Object[] {
+      getIdPersona(), getIdUsuario(), getIdPersonaTipoContacto(), getValor(), getObservaciones(), getOrden(), getIdTipoContacto(), getIdPreferido(), getRegistro()
     };
     return regresar;
   }

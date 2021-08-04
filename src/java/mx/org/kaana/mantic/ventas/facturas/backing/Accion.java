@@ -1155,16 +1155,16 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
     Map<String, Object> params = null;
     try {      
       params = new HashMap<>();      
-      List<Entity> celulares= null;
-      params.put(Constantes.SQL_CONDICION, "id_cliente="+ seleccionado.toLong("idCliente"));
-      celulares= (List<Entity>)DaoFactory.getInstance().toEntitySet("TrManticClienteTipoContactoDto", "row", params);
-      String celular= null;
-      if(celulares!= null && !celulares.isEmpty())
-        for (Entity telefono: celulares) {
+      List<Entity> phones= null;
+      params.put("idCliente", seleccionado.toLong("idCliente"));
+      phones= (List<Entity>)DaoFactory.getInstance().toEntitySet("TrManticClienteTipoContactoDto", "contacto", params);
+      String phone= null;
+      if(phones!= null && !phones.isEmpty())
+        for (Entity telefono: phones) {
           if(telefono.toLong("idPreferido").equals(1L) && (telefono.toLong("idTipoContacto").equals(ETiposContactos.CELULAR.getKey()) || telefono.toLong("idTipoContacto").equals(ETiposContactos.CELULAR_NEGOCIO.getKey()) || telefono.toLong("idTipoContacto").equals(ETiposContactos.CELULAR_PERSONAL.getKey()))) 
-            celular= telefono.toString("valor");
+            phone= telefono.toString("valor");
         } // for
-      if(celular!= null) {
+      if(phone!= null) {
         try {
           String nombre= JsfBase.getRealPath().concat(EFormatos.PDF.toPath()).concat(factura.toString("nombre"));
           File target= new File(nombre);
@@ -1172,8 +1172,8 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
           if(source.exists()) {
             if(!target.exists())
               Archivo.copy(factura.toString("alias"), nombre, Boolean.FALSE);
-            Bonanza notificar= new Bonanza(seleccionado.toString("razonSocial"), celular, Bonanza.toPathFiles((String)this.attrs.get("nameFacturaPdf"), factura.toString("nombre")), seleccionado.toString("ticket"), Fecha.formatear(Fecha.FECHA_HORA_CORTA, seleccionado.toTimestamp("timbrado")));
-            LOG.info("Enviando mensaje por whatsup al celular: "+ celular);
+            Bonanza notificar= new Bonanza(seleccionado.toString("razonSocial"), phone, Bonanza.toPathFiles((String)this.attrs.get("nameFacturaPdf"), factura.toString("nombre")), seleccionado.toString("ticket"), Fecha.formatear(Fecha.FECHA_HORA_CORTA, seleccionado.toTimestamp("timbrado")));
+            LOG.info("Enviando mensaje por whatsup al celular: "+ phone);
             notificar.doSendFactura();
           } // if  
         } // try

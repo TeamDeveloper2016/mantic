@@ -1350,7 +1350,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		Correo item                       = null;
 		try {					
 			motor= new MotorBusqueda(-1L, ((UISelectEntity) this.attrs.get("clienteSeleccion")).getKey());
-			contactos= motor.toClientesTipoContacto();
+			contactos= motor.toAllClientesTipoContacto();
 			setCelulares(new ArrayList<>());
 			for(ClienteTipoContacto contacto: contactos) {
 				if(contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR_NEGOCIO.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR_PERSONAL.getKey())) {

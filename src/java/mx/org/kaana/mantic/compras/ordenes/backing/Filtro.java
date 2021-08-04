@@ -417,8 +417,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		List<ProveedorTipoContacto>contactos= null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");			
-			motor= new MotorBusqueda(seleccionado.toLong("idProveedor"));
-			contactos= motor.toProveedoresTipoContacto();
+			motor       = new MotorBusqueda(seleccionado.toLong("idProveedor"));
+			contactos   = motor.toAllProveedoresTipoContacto();
 			this.celulares= new ArrayList<>();
 			for(ProveedorTipoContacto contacto: contactos) {
 				if(contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR_NEGOCIO.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR_PERSONAL.getKey()))

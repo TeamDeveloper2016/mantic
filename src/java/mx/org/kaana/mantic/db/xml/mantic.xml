@@ -3195,28 +3195,6 @@
         delete from tr_mantic_proveedor_pago where id_proveedor= {idProveedor}
       </delete>  
     </unit>
-    <unit id="TrManticProveedorPersonaDto">
-      <select id="row">
-        select      
-          *
-        from      
-          tr_mantic_proveedor_persona
-        where 
-          {condicion}       
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tr_mantic_proveedor_persona
-        where      
-          id_proveedor = {idProveedor} and id_persona = {idPersona} and id_proveedor_persona = {idProveedorPersona} and id_responsable = {idResponsable}
-      </select>
-      <delete id="rows">
-        delete from tr_mantic_proveedor_persona  where id_proveedor = {idProveedor}
-      </delete>  
-    </unit>
-    
     <unit id="TrManticProveedorTipoContactoDto">
       <select id="row">
         select      
@@ -3252,11 +3230,33 @@
         from      
           tr_mantic_proveedor_tipo_contacto
       </select>
+      <select id="contacto">
+        select      
+          tr_mantic_proveedor_tipo_contacto.*
+        from      
+          tr_mantic_proveedor_tipo_contacto
+        where 
+          tr_mantic_proveedor_tipo_contacto.id_proveedor= {idProveedor}
+        union all
+        select      
+          tr_mantic_persona_tipo_contacto.id_persona_tipo_contacto as id_proveedor_tipo_contacto,
+          tr_mantic_persona_tipo_contacto.id_persona as id_proveedor,
+          tr_mantic_persona_tipo_contacto.id_tipo_contacto,
+          tr_mantic_persona_tipo_contacto.valor,
+          tr_mantic_persona_tipo_contacto.orden,
+          tr_mantic_persona_tipo_contacto.observaciones,
+          tr_mantic_persona_tipo_contacto.id_preferido,
+          tr_mantic_persona_tipo_contacto.id_usuario,
+          tr_mantic_persona_tipo_contacto.registro
+        from
+          tr_mantic_persona_tipo_contacto
+        inner join
+          tr_mantic_proveedor_agente on tr_mantic_persona_tipo_contacto.id_persona= tr_mantic_proveedor_agente.id_agente and tr_mantic_proveedor_agente.id_agente= {idProveedor}        
+      </select>
       <delete id="rows">
         delete from tr_mantic_proveedor_tipo_contacto  where  id_proveedor = {idProveedor}
       </delete>  
     </unit>
-    
     <unit id="TrManticProveedorAgenteDto">
       <select id="row">
         select      
@@ -3834,6 +3834,29 @@
         from      
           tr_mantic_cliente_tipo_contacto
       </select>
+			<select id="contacto">
+        select      
+          tr_mantic_cliente_tipo_contacto.*
+        from      
+          tr_mantic_cliente_tipo_contacto
+        where 
+          tr_mantic_cliente_tipo_contacto.id_cliente= {idCliente}
+        union all
+        select      
+          tr_mantic_persona_tipo_contacto.id_persona_tipo_contacto as id_cliente_tipo_contacto,
+          tr_mantic_persona_tipo_contacto.id_persona as id_cliente,
+          tr_mantic_persona_tipo_contacto.id_tipo_contacto,
+          tr_mantic_persona_tipo_contacto.valor,
+          tr_mantic_persona_tipo_contacto.orden,
+          tr_mantic_persona_tipo_contacto.id_preferido,
+          tr_mantic_persona_tipo_contacto.observaciones,
+          tr_mantic_persona_tipo_contacto.id_usuario,
+          tr_mantic_persona_tipo_contacto.registro
+        from
+          tr_mantic_persona_tipo_contacto
+        inner join
+          tr_mantic_cliente_representante on tr_mantic_persona_tipo_contacto.id_persona= tr_mantic_cliente_representante.id_representante and tr_mantic_cliente_representante.id_cliente= {idCliente}
+			</select>
 			<delete id="rows">
         delete from tr_mantic_cliente_tipo_contacto where id_cliente= {idCliente}
       </delete>
