@@ -21,6 +21,8 @@
     	$(document).ready(function() {
         jsArticulos= new Janal.Control.Articulos.Core(#{manticVentasMovil.adminOrden.articulos.size()}, 'tabla\\:');
 				janal.readingMode('#{manticVentasMovil.attrs.nombreAccion}');
+        $(".janal-global-help").hide();
+        $("a.janal-global-dashboard").click(function(event) {event.preventDefault(); return true;});
       });			
       
       function triggerLocalEvent(index, keyCode) {
@@ -28,17 +30,55 @@
         $("#tabla\\:"+ index+ "\\:codigos_input").trigger(jQuery.Event('focus'));
         $("#tabla\\:"+ index+ "\\:codigos_input").trigger(jQuery.Event('keydown', {which: keyCode}));
       }
+      
+      //<![CDATA[
+				function start() {
+					janal.bloquear();
+				}
+
+				function stop() {
+					janal.desbloquear();
+				}
+      //]]>
 		</script>   
 		<style type="text/css">
-			.janal-total-compra {
-				font-size: 25px !important;
-				font-weight: bold !important;
-				font-style: italic;	
-			}			
-			
-			.janal-tr-yellow {
-				background-color: yellow !important;
-			}
+			.janal-total-compra {font-size: 20px !important;font-weight: bold !important;font-style: italic;}			
+      .producto .producto-search {display: flex;width: 290px;}
+      .producto .producto-input {flex: 1 1 70%;}
+      .producto .producto-button {flex: 1 1 30%;}
+      .producto .producto-name {font-size: 1rem;font-weight: 700;}
+      .producto .producto-description {margin: 0 0 0.5rem 0;}
+      .producto .producto-category-icon {vertical-align: middle;margin-right: 0.5rem;}
+      .producto .producto-category {font-weight: 600;vertical-align: middle;}
+      .producto .producto-list-item {display: -ms-flexbox;display: flex;-ms-flex-align: center;align-items: center;padding: 1rem;}
+      .producto .producto-list-item .producto-item-search {width: 220px; text-align: center;}
+      .producto .producto-list-item img {width: 200px;height:170px;box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); margin-right: 2rem;}
+      .producto .producto-list-item .producto-list-detail {flex: 1 1 0;-ms-flex: 1 1 0;}  
+      .producto .producto-list-item.border {border-bottom: 1px solid;} 
+      .producto .producto-list-item .producto-price {font-size: 1.5rem;font-weight: 600;margin-bottom: 0.5rem;align-self: flex-end;}
+      .producto .producto-list-item .producto-quantity {font-size: 1.0rem;font-weight: 200;margin-bottom: 0.1rem;align-self: flex-end; text-align: right;}
+      .producto .producto-list-item .producto-cost {font-size: 1.0rem;font-weight: 200;margin-bottom: 0.1rem;align-self: flex-end; text-align: right;}
+      .producto .producto-list-item .producto-action {display: -ms-flexbox;display: flex;-ms-flex-direction: column;flex-direction: column;}
+      .producto .producto-list-item .producto-action .ui-button {margin-bottom: 0.5rem;}
+      @media screen and (max-width: 576px) {
+        .producto .producto-search {display: flex;width: 100%;}
+        .producto .producto-input {flex: 1 1 80%;}
+        .producto .producto-button {flex: 1 1 20%;}
+        .producto .producto-name {font-size: 0.8rem;font-weight: 300;}
+        .producto .producto-category {font-size: 0.8rem;font-weight: 300;vertical-align: middle;}
+        .producto .producto-list-item .producto-item-search {width: 150px; text-align: center;}
+        .producto .producto-list-item img {width: 140px;height:120px;box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); margin-right: 2rem;}
+        .producto .producto-list-item .producto-price {font-size: 1.0rem;font-weight: 300;margin-bottom: 0.5rem;align-self: flex-end;}
+        .producto .producto-list-item .producto-quantity {font-size: 0.9rem;font-weight: 100;margin-bottom: 0.1rem;align-self: flex-end; text-align: right;}
+        .producto .producto-list-item .producto-cost {font-size: 0.7rem;font-weight: 100;margin-bottom: 0.1rem;align-self: flex-end; text-align: right;}
+      }
+      .p-p-0 {padding: 0 !important;}
+      .p-p-1 {padding: 0.25rem !important;}
+      .p-p-2 {padding: 0.5rem !important;}
+      .p-p-3 {padding: 1rem !important;}
+      .p-p-4 {padding: 1.5rem !important;}
+      .p-p-5 {padding: 2rem !important;}
+      .p-p-6 {padding: 3rem !important;}
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
@@ -70,173 +110,81 @@
 		</pe:remoteCommand>
 		<p:remoteCommand name="erase" process="@this"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
-			<div class="ui-grid-row janal-grid-row">
-				<div class="ui-grid-col-12">					
-					<p:panelGrid id="panelEmpresa" columns="5" layout="grid" styleClass="janal-wid-100 janal-display-none" columnClasses="janal-wid-col-70, janal-wid-100">						
-						<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticVentasMovil.attrs.isMatriz}"/>
-						<p:selectOneMenu id="idEmpresa" value="#{manticVentasMovil.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticVentasMovil.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-							<p:ajax event="change" process="@this" listener="#{manticVentasMovil.doUpdateForEmpresa}" update="clientes cliente contenido tabla" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
-							<f:selectItems value="#{manticVentasMovil.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
-							<p:column headerText="Clave">
-								<h:outputText value="#{item.clave}"/>
-							</p:column>   
-							<p:column headerText="Nombre">
-								<h:outputText value="#{item.nombre}"/>
-							</p:column>   
-						</p:selectOneMenu>
-					</p:panelGrid>
-				</div>
-			</div>
       <div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">					
-					<p:panelGrid id="panelCliente" columns="3" layout="grid" styleClass="janal-wid-100 janal-display-none" columnClasses="janal-wid-20, janal-wid-40, janal-wid-40">
-						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-							<p:outputLabel for="noTicket" value="No. cuenta:"/>
-							<p:inputText id="noTicket" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticVentasMovil.attrs.consecutivo}" disabled="true"/>								
-						</p:panelGrid>																
-						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-							<p:outputLabel for="clientes" value="Buscar cliente:"/>							
-							<p:autoComplete id="clientes" placeholder="RFC o nombre" widgetVar="listadoClientes" var="customCliente" itemLabel="[#{empty customCliente.especial or customCliente.especial eq '0'? '': '*'}] #{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticVentasMovil.attrs.cliente}" completeMethod="#{manticVentasMovil.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
-								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticVentasMovil.doAsignaCliente}" update="cliente contenido panelCliente" oncomplete="janal.desbloquear();"/>
-								<f:facet name="itemtip">
-									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
-										<h:outputText value="Clave" />
-										<h:outputText value="#{customCliente.clave}"/>
-										<h:outputText value="RFC:" />
-										<h:outputText value="#{customCliente.rfc}"/>
-										<h:outputText value="Razón social:"/>
-										<h:outputText value="#{customCliente.razonSocial}"/>												
-										<h:outputText value="Especial:"/>
-										<h:outputText value="#{customCliente.especial eq '0'? '': '*'}"/>
-									</h:panelGrid>
-								</f:facet>
-							</p:autoComplete>	
-						</p:panelGrid>	
-						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-wid-100-txt" columnClasses="janal-wid-100-txt">
-						  <p:outputLabel for="cliente" value="Cliente:"/>							
-							<p:selectOneMenu id="cliente" value="#{manticVentasMovil.attrs.clienteSeleccion}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
-								<p:ajax event="change" process="@this idEmpresa" onstart="return janal.bloquear();" listener="#{manticVentasMovil.doActualizaPrecioCliente}" oncomplete="janal.desbloquear();" update="tabla clientes panelCliente"/>
-								<f:selectItems value="#{manticVentasMovil.attrs.clientesSeleccion}" var="element" itemValue="#{element}" itemLabel="[#{element.especial eq '0'? '': '*'}] #{element.clave} - #{element.razonSocial}"/>
-								<p:column headerText="Clave">
-									<h:outputText value="#{item.clave}"/>
-								</p:column>   
-								<p:column headerText="RFC">
-									<h:outputText value="#{item.rfc}"/>
-								</p:column>   
-								<p:column headerText="Razón social">
-									<h:outputText value="#{item.razonSocial}"/>
-								</p:column>   
-								<p:column headerText="Especial">
-									<h:outputText value="#{item.especial eq '0'? '': '*'}"/>
-								</p:column>   
-							</p:selectOneMenu>
-						</p:panelGrid>
-					</p:panelGrid>	
 					<p:panelGrid id="deudor" columns="1" layout="grid" styleClass="janal-wid-100 janal-column-center janal-display-none" columnClasses="janal-wid-100" style="display: #{manticVentasMovil.saldoCliente.deudor} ? 'none' : ''">
 						<p:outputLabel value="#{manticVentasMovil.saldoCliente.mensaje}" styleClass="janal-column-center janal-color-orange" style="font-weight: bold !important"/>
 					</p:panelGrid>	
           <p:panelGrid columns="2" styleClass="janal-wid-99" columnClasses="janal-fix-50, janal-fix-60 janal-column-right">
             <p:outputLabel value="Total:" styleClass="janal-total-compra janal-color-orange"/>
             <p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange" value="$ #{manticVentasMovil.adminOrden.totales.totalDosDecimales$}"/>
-            <p:outputLabel value="Buscar por codigo:"/>
+            <p:outputLabel value="Buscar por código:"/>
             <p:selectBooleanCheckbox value="#{manticVentasMovil.attrs.buscaPorCodigo}" title="Buscar por código:" styleClass="filas">
               <p:ajax event="change" process="@this"/>
             </p:selectBooleanCheckbox>
 					</p:panelGrid>	
           <p:panelGrid id="contenido" columns="1" layout="grid" styleClass="janal-wid-100-txt" style="height:480px !important;overflow-y: auto" columnClasses="janal-wid-100">					
-            <p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticVentasMovil.adminOrden.articulos}" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas">
-              <p:column styleClass="MarAuto Responsive janal-wid-3" style="display: #{true or kajoolUtilAplicacion.isMobile? 'none': ''}">
-                <f:facet name="header">
-                  <h:outputText value="No." styleClass="janal-color-blue"/>
-                </f:facet>
-                <h:outputText value="#{index+ 1}.-" styleClass="janal-color-blue"/>
-              </p:column>		
-              <p:column styleClass="MarAuto Responsive janal-wid-13">
-                <f:facet name="header">
-                  <h:outputText value="Código"/>
-                </f:facet>
-                <div class="ui-grid-row janal-grid-row">
-                  <div style="display: flex;" class="janal-wid-100-txt">
-                    <div class="ui-grid-col-12" style="flex: 1 1 70% !important">
-                      <p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
-                      <p:inputText id="locks" value="0" style="display:none"/>
-                      <p:autoComplete id="codigos" styleClass="janal-wid-100-txt" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticVentasMovil.attrs.articulo}" completeMethod="#{manticVentasMovil.doCompleteArticuloPrecioCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" forceSelection="true" placeholder="ej. CT123">
-                        <p:ajax event="itemSelect" process="@this" oncomplete="jsArticulos.close();"/>
-                        <p:ajax event="focus" process="@this" listener="#{manticVentasMovil.doActualizaImage(row['idArticulo'], row['nombre'])}" update="panelTotales" onstart="return jsArticulos.valid();" oncomplete="$('#source-image').attr('href', $('#icon-image').attr('src'));" />
-                        <f:facet name="itemtip">
-                          <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
-                            <f:facet name="header" class="TexAlCenter">
-                              <a data-magnify="gallery" href="#{manticVentasMovil.pathImage}#{custom.archivo}" data-caption="#{custom.archivo}" data-group="icon-image" title="Click para ver más grande la imagen">
-                                <p:graphicImage url="#{manticVentasMovil.pathImage}#{custom.archivo}" width="105" height="80" style="cursor:zoom-in;"/>
-                              </a>
-                            </f:facet>
-                            <h:outputText value="Código:" />
-                            <h:outputText value="#{custom.propio}" />
-                            <h:outputText value="Precio venta:" />
-                            <p:outputLabel value="$ #{custom.precioCliente}" styleClass="janal-color-blue janal-font-bold"/>
-                            <h:outputText value="Código auxiliar:" />
-                            <h:outputText value="#{custom.codigo}" />
-                          </h:panelGrid>
-                        </f:facet>
-                      </p:autoComplete>												
-                    </div>	
-                    <div style="flex: 1 1 30%;" class="janal-column-right">  
-                      <p:commandButton type="button" title="Cantidad" icon="fa fa-sort-numeric-asc" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_ASTERISK);" styleClass="rounded-button ui-button-secondary" rendered="#{true or kajoolUtilAplicacion.isMobile}"/>
-                      <p:commandButton type="button" title="Eliminar" icon="fa fa-trash" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_REST);" styleClass="rounded-button ui-button-secondary" rendered="#{true or kajoolUtilAplicacion.isMobile}"/>
-                    </div>  
-                  </div>	
-                </div>	
-              </p:column>
-              <p:column styleClass="MarAuto Responsive">
-                <f:facet name="header">
-                  <h:outputText value="Articulo"/>
-                </f:facet>
-                <h:outputText id="nombres" value="[#{row['stock']}] [#{row['propio']}] #{row['nombre']}" title="Código: #{row['propio']}, Fabricante: #{row['fabricante']}, Existencias almacen: #{row['stock']}" escape="false" styleClass="#{row['idAutomatico'] eq 1? 'janal-color-red': 'janal-color-green'}"/>
-              </p:column>		
-              <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8">
-                <f:facet name="header">
-                  <h:outputText value="Cantidad"/>
-                </f:facet>
-                <p:outputLabel value="#{row['cantidad']}"/>
+            <p:dataGrid id="tabla" widgetVar="kajoolTable" var="row" value="#{manticVentasMovil.adminOrden.articulos}" paginator="false" columns="1" rows="1000" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" styleClass="filas">
+              <f:facet name="header" class="janal-align-left">
+                Por favor ingrese su lista de productos
+              </f:facet>
+              <div class="producto">
                 <p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
-              </p:column>		
-              <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10">
-                <f:facet name="header">
-                  <h:outputText value="Precio"/>
-                </f:facet>
-                <p:outputLabel value="#{row['costo']}"/>
                 <p:inputText id="values" value="#{row['valor']}" style="display:none"/>
                 <p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" style="display:none"/>																						
-                <h:outputText value="#{row['detallePrecio']}" escape="false" rendered="false"/>
-              </p:column>		
-              <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8">
-                <f:facet name="header">
-                  <h:outputText value="Descuento %"/>
-                </f:facet>
-                <p:outputLabel value="#{row['descuentoDescripcion']}" title="#{row['descuentoDescripcion']}"/>
                 <p:inputText id="descuentos" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'));" style="display: none"/>
-              </p:column>		
-              <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10">
-                <f:facet name="header">
-                  <h:outputText value="Unidad medida"/>
-                </f:facet>
-                <p:outputLabel value="#{row['unidadMedida']}"/>
-              </p:column>		
-              <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8">
-                <f:facet name="header">
-                  <h:outputText value="Importe"/>
-                </f:facet>
-                <p:outputLabel value="#{row['importe$']}"/>
-              </p:column>		
-            </p:dataTable>
+                <h:outputText value="#{row['detallePrecio']}" escape="false" rendered="false"/>
+                <div class="producto-list-item p-p-1">
+                  <div class="producto-item-search">
+                    <a data-magnify="gallery" href="#{manticVentasMovil.path}#{row['imagen']}" data-caption="#{row['imagen']}" data-group="icon-image" title="Click para ver más grande la imagen">
+                      <p:graphicImage url="#{manticVentasMovil.path}#{row['imagen']}" style="cursor:zoom-in;"/>
+                    </a>  
+                  </div>	
+                  <div class="producto-list-detail">
+                    <div id="nombres" class="producto-name" title="Código: #{row['propio']}, Fabricante: #{row['fabricante']}"><i class="fa fa-qrcode producto-category-icon"/>[#{row['propio']}] stock, #{row['stock']}</div>
+                    <div class="producto-description #{row['idAutomatico'] eq 1? 'janal-color-red': 'janal-color-green'}">#{row['nombre']}</div>
+                    <p:rating readonly="true" value="#{10}"/>
+                    <span class="producto-category" title="Unidad de medida"><i class="fa fa-language producto-category-icon"/>#{row['unidadMedida']}</span>
+                    <div class="producto-description" title="Descuento: #{row['descuentoDescripcion']}"><i class="fa fa-tags producto-category-icon"/>#{row['descuentoDescripcion']}</div>
+                  </div>  
+                  <div class="producto-list-action">
+                    <div class="producto-price janal-color-black" title="Importe">#{row['importe$']}</div>
+                    <div class="producto-quantity janal-color-orange" title="Cantidad"><i class="fa fa-sort-numeric-asc producto-category-icon"/>#{row['cantidad']}</div>
+                    <div class="producto-cost" title="Precio">#{row['costo']}</div>
+                  </div> 
+                </div>	
+                <div class="janal-wid-100-txt producto-search">
+                  <div class="producto-input">
+                    <p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
+                    <p:inputText id="locks" value="0" style="display:none"/>
+                    <p:autoComplete id="codigos" styleClass="janal-wid-100-txt" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-93 key-down-event filas" itemValue="#{custom}" value="#{manticVentasMovil.attrs.articulo}" completeMethod="#{manticVentasMovil.doCompleteArticuloPrecioCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" forceSelection="true" placeholder="Buscar ej. CT123">
+                      <p:ajax event="itemSelect" process="@this" oncomplete="jsArticulos.close();"/>
+                      <p:ajax event="focus" process="@this" listener="#{manticVentasMovil.doActualizaImage(row['idArticulo'], row['nombre'])}" update="panelTotales" onstart="return jsArticulos.valid();" oncomplete="$('#source-image').attr('href', $('#icon-image').attr('src'));" />
+                      <f:facet name="itemtip">
+                        <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
+                          <f:facet name="header" class="TexAlCenter">
+                            <a data-magnify="gallery" href="#{manticVentasMovil.pathImage}#{custom.archivo}" data-caption="#{custom.archivo}" data-group="icon-image" title="Click para ver más grande la imagen">
+                              <p:graphicImage url="#{manticVentasMovil.pathImage}#{custom.archivo}" width="105" height="80" style="cursor:zoom-in;"/>
+                            </a>
+                          </f:facet>
+                          <h:outputText value="Código:" />
+                          <h:outputText value="#{custom.propio}" />
+                          <h:outputText value="Precio venta:" />
+                          <p:outputLabel value="$ #{custom.precioCliente}" styleClass="janal-color-blue janal-font-bold"/>
+                          <h:outputText value="Código auxiliar:" />
+                          <h:outputText value="#{custom.codigo}" />
+                        </h:panelGrid>
+                      </f:facet>
+                    </p:autoComplete>												
+                  </div>	
+                  <div class="producto-button janal-column-right">  
+                    <p:commandButton type="button" title="Cantidad" icon="fa fa-sort-numeric-asc" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_ASTERISK);" styleClass="rounded-button ui-button-secondary" rendered="#{true or kajoolUtilAplicacion.isMobile}"/>
+                    <p:commandButton type="button" title="Eliminar" icon="fa fa-trash" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_REST);" styleClass="rounded-button ui-button-secondary" rendered="#{true or kajoolUtilAplicacion.isMobile}"/>
+                  </div>  
+                </div>  
+              </div>  
+            </p:dataGrid>
             <p:panelGrid id="panelTotales" columns="1" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100">
-              <p:panel header="Imagen" styleClass="TexAlCenter janal-wid-100-txt" style="height:100%">
-                <a id="source-image" data-magnify="gallery" data-caption="#{manticVentasMovil.attrs.descripcion}" data-group="icon-image" href="" title="Click para ver más grande la imagen">
-                  <p:graphicImage id="icon-image" cache="false" value="#{manticVentasMovil.image}" styleClass="filas" width="105" height="85" stream="false"/>
-                </a>	
-                <br/>
-                <p:outputLabel value="#{manticVentasMovil.attrs.idArticulo}.jpg" styleClass="filas"/>
-              </p:panel>
               <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-30, janal-fix-70 janal-column-right">
                 <p:outputLabel for="articulos" value="Articulos:"/>
                 <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasMovil.adminOrden.totales.reales}"/>
@@ -261,10 +209,16 @@
 	</ui:define>    
 	<ui:define name="acciones">
     <div class="lg-pantalla">
-      <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticVentasMovil.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
+      <p:commandButton value="Exportar" icon="fa fa-cloud-download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" >
+  			<p:fileDownload value="#{manticVentasMovil.archivo}"/>
+      </p:commandButton>  
+      <p:commandButton value="Limpiar" icon="fa fa-recycle" accesskey="r" process="@this" action="#{manticVentasMovil.doCancelar}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>						
     </div>	
     <div class="xs-pantalla">
-      <p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasMovil.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
+      <p:commandButton title="Exportar" icon="fa fa-cloud-download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+  			<p:fileDownload value="#{manticVentasMovil.archivo}"/>
+      </p:commandButton>  
+      <p:commandButton title="Limpiar" icon="fa fa-recycle" accesskey="r"  process="@this" action="#{manticVentasMovil.doCancelar}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
     </div>		
 	</ui:define>	
 	<ui:define name="dialogos">

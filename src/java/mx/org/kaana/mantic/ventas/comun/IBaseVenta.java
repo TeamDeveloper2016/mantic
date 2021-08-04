@@ -826,6 +826,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				temporal.setFabricante(articulo.toString("fabricante"));
 				temporal.setIdProveedor(this.getAdminOrden().getIdProveedor());
 				temporal.setIdRedondear(articulo.toLong("idRedondear"));
+				temporal.setImagen(articulo.toString("archivo"));
 				Value codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "codigo", params, "codigo");
 				temporal.setCodigo(codigo== null? "": codigo.toString());
 				temporal.setPropio(articulo.toString("propio"));

@@ -63,6 +63,19 @@ public abstract class IAdminArticulos implements Serializable {
 		return totales;
 	}
 
+	public List<IBaseDto> getPartidas() {
+    List<IBaseDto> regresar= new ArrayList<>();
+    if(this.articulos!= null && !this.articulos.isEmpty()) {
+      int count= 0;
+      for (Articulo articulo: this.articulos) {
+        if(count< this.articulos.size()- 1)
+          regresar.add((IBaseDto)articulo);
+        count++;
+      } // for
+    } // if  
+		return regresar;
+	}
+
 	public abstract Long getIdAlmacen();
 
 	public abstract Long getIdProveedor();

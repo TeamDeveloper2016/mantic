@@ -126,7 +126,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     Map<String, Object> params= null;
     try {
       params = new HashMap<>();
-      params.put(Constantes.SQL_CONDICION, "id_empresa=" + Long.valueOf(this.attrs.get("idEmpresa").toString()));
+      params.put(Constantes.SQL_CONDICION, "id_empresa=" + Long.valueOf(this.attrs.get("idEmpresa").toString())+ " and id_puesto!= 10");
       puestos = UISelect.build("TcManticPuestosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
 			if(!puestos.isEmpty()) {
 				this.attrs.put("puestos", puestos);

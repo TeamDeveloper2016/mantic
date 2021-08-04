@@ -42,7 +42,7 @@ public class FactoryMenu implements Serializable {
         case ENCABEZADO:
           if (JsfBase.getSession().getAttribute("treeEncabezado") != null) {
             treebean = ((TreeBean) JsfBase.getSession().getAttribute("treeEncabezado")).getRoot();
-          }
+          } // if
           regresar = new Sentinel(treebean);
           break;
         case MMENU:

@@ -6,11 +6,13 @@ import com.coolservlets.beans.tree.TreeObject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.faces.context.FacesContext;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UtilAplicacion;
 import mx.org.kaana.kajool.procesos.acceso.menu.reglas.IBaseMenu;
+import mx.org.kaana.libs.Constantes;
 
 /**
  * @company KAANA
@@ -112,34 +114,38 @@ public class Sentinel extends IBaseMenu implements Serializable {
       regresar.append(">");
       regresar.append(cantidadMensajes);
       regresar.append("</span>");
-      regresar.append("<ul class=\"layout-header-widgets-submenu BordRad5 shadows janal-text-white Animated05\">");
-      regresar.append("<li class=\"Animated05\">");
-      regresar.append("<a href=\"#\" class=\"white Unselectable\" onclick=\"janal.bloquear();PF('dialogoPerfil').show();\"><i class=\"icon-info-circled-alt\"></i>Usuario</a></li>");
-      if (JsfBase.getAutentifica().getCredenciales().isGrupoPerfiles()) {
+      if (!Objects.equals(JsfBase.getAutentifica().getPersona().getIdPerfil(), Constantes.PERIL_CONSULTA_CLIENTE)) {
+        regresar.append("<ul class=\"layout-header-widgets-submenu BordRad5 shadows janal-text-white Animated05\">");
+        regresar.append("<li class=\"Animated05\">");
+        regresar.append("<a href=\"#\" class=\"white Unselectable\" onclick=\"janal.bloquear();PF('dialogoPerfil').show();\"><i class=\"icon-info-circled-alt\"></i>Usuario</a></li>");
+        if (JsfBase.getAutentifica().getCredenciales().isGrupoPerfiles()) {
+          regresar.append("<li class=\"Animated05\">");
+          regresar.append("<a href=\"").append(context);
+          regresar.append("/Paginas/Acceso/Perfil/filtro.jsf\" class=\"janal-text-white Unselectable\"><i class=\"fa fa-group\"></i>Perfiles</a></li>");
+        } // if
         regresar.append("<li class=\"Animated05\">");
         regresar.append("<a href=\"").append(context);
-        regresar.append("/Paginas/Acceso/Perfil/filtro.jsf\" class=\"janal-text-white Unselectable\"><i class=\"fa fa-group\"></i>Perfiles</a></li>");
+        regresar.append("/Paginas/Mantenimiento/Mensajes/Notificacion/filtro.jsf\" class=\"janal-text-white Unselectable\"><i class=\"icon-mail\"></i>Mensajes</a></li>");      
+        regresar.append("<li onclick=\"PF('dlgFaltantes').show();\" class=\"Animated05\">");
+        regresar.append("<a class=\"janal-text-white Unselectable\"><i class=\"icon-list-numbered\"></i>Faltantes</a></li>");			
+        regresar.append("<li onclick=\"PF('dlgVerificador').show();\" class=\"Animated05\">");
+        regresar.append("<a class=\"janal-text-white Unselectable\"><i class=\"icon-list-numbered\"></i>Precios</a></li>");			
+        regresar.append("<li onclick=\"PF('dlgCalculadora').show();\" class=\"Animated05\">");
+        regresar.append("<a class=\"janal-text-white Unselectable\"><i class=\"icon-calculator\"></i>Calculadora</a></li>");			
+        regresar.append("<li class=\"Animated05\">");
+        regresar.append("<a href=\"").append(context);
+        regresar.append("/Exclusiones/salir.jsf\" class=\"janal-text-white Unselectable\"><i class=\"icon-logout\"></i>Salir</a></li>");
+        regresar.append("</ul></li>");
+        regresar.append("<li onclick=\"janal.bloquear();PF('wDialogoBuzonSugerencias').show();\" class=\"Fleft BordRadHalf TexAlCenter\"><i class=\"fa fa-inbox fa-1x");
+        regresar.append("\"></i></li>");
       } // if
-      /*if (!JsfBase.getAutentifica().getCredenciales().isAccesoDelega()) {
+      else {
+        regresar.append("<ul class=\"layout-header-widgets-submenu BordRad5 shadows janal-text-white Animated05\">");
         regresar.append("<li class=\"Animated05\">");
         regresar.append("<a href=\"").append(context);
-        regresar.append("/Paginas/Usuarios/Delegar/filtro.jsf\" class=\"janal-text-white Unselectable\"><i class=\"icon-users-2\"></i>Delegar</a></li>");
-      } // if*/
-      regresar.append("<li class=\"Animated05\">");
-      regresar.append("<a href=\"").append(context);
-      regresar.append("/Paginas/Mantenimiento/Mensajes/Notificacion/filtro.jsf\" class=\"janal-text-white Unselectable\"><i class=\"icon-mail\"></i>Mensajes</a></li>");      
-			regresar.append("<li onclick=\"PF('dlgFaltantes').show();\" class=\"Animated05\">");
-      regresar.append("<a class=\"janal-text-white Unselectable\"><i class=\"icon-list-numbered\"></i>Faltantes</a></li>");			
-			regresar.append("<li onclick=\"PF('dlgVerificador').show();\" class=\"Animated05\">");
-      regresar.append("<a class=\"janal-text-white Unselectable\"><i class=\"icon-list-numbered\"></i>Precios</a></li>");			
-			regresar.append("<li onclick=\"PF('dlgCalculadora').show();\" class=\"Animated05\">");
-      regresar.append("<a class=\"janal-text-white Unselectable\"><i class=\"icon-calculator\"></i>Calculadora</a></li>");			
-			regresar.append("<li class=\"Animated05\">");
-      regresar.append("<a href=\"").append(context);
-      regresar.append("/Exclusiones/salir.jsf\" class=\"janal-text-white Unselectable\"><i class=\"icon-logout\"></i>Salir</a></li>");
-      regresar.append("</ul></li>");
-      regresar.append("<li onclick=\"janal.bloquear();PF('wDialogoBuzonSugerencias').show();\" class=\"Fleft BordRadHalf TexAlCenter\"><i class=\"fa fa-inbox fa-1x");
-      regresar.append("\"></i></li>");
+        regresar.append("/Exclusiones/salir.jsf\" class=\"janal-text-white Unselectable\"><i class=\"icon-logout\"></i>Salir</a></li>");
+        regresar.append("</ul>");
+      } // else
     } // try
     catch (Exception e) {
       throw e;

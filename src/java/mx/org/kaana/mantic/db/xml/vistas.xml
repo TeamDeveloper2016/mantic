@@ -5170,7 +5170,7 @@
 				from 
 					tc_mantic_personas
 				inner join
-					tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona
+					tr_mantic_empresa_personal on tc_mantic_personas.id_persona = tr_mantic_empresa_personal.id_persona and tr_mantic_empresa_personal.id_puesto!= 10
 				inner join 
 					tc_mantic_empresas on tr_mantic_empresa_personal.id_empresa = tc_mantic_empresas.id_empresa
 				inner join

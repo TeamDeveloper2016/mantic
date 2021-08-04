@@ -56,7 +56,7 @@ public class TrManticClienteRepresentanteDto implements IBaseDto, Serializable {
   }
 
   public TrManticClienteRepresentanteDto(Long key) {
-    this(null, new Long(-1L), null, null, null, null);
+    this(null, new Long(-1L), -1L, -1L, 2L, null);
     setKey(key);
   }
 

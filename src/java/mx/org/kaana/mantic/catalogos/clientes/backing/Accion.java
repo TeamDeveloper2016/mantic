@@ -107,21 +107,21 @@ public class Accion extends IBaseAttribute implements Serializable {
       switch (eaccion) {
         case AGREGAR:
           this.registroCliente = new RegistroCliente();
-					loadCollections();
+					this.loadCollections();
           break;
         case MODIFICAR:
         case CONSULTAR:
 					this.attrs.put("cpNuevo", true);
           idCliente = Long.valueOf(this.attrs.get("idCliente").toString());
           this.registroCliente = new RegistroCliente(idCliente);
-					loadCollections();
-					doCompleteCodigoPostal(this.registroCliente.getDomicilio().getCodigoPostal());
-					asignaCodigoPostal();
+					this.loadCollections();
+					this.doCompleteCodigoPostal(this.registroCliente.getDomicilio().getCodigoPostal());
+					this.asignaCodigoPostal();
 					if(!this.registroCliente.getClientesDomicilio().isEmpty()){
 						this.registroCliente.setClienteDomicilioSelecion(this.registroCliente.getClientesDomicilio().get(0));
 						this.doConsultarClienteDomicilio();
 					} // if
-					if(!this.registroCliente.getPersonasTiposContacto().isEmpty()){
+					if(!this.registroCliente.getPersonasTiposContacto().isEmpty()) {
 						this.registroCliente.setPersonaTipoContacto(this.registroCliente.getPersonasTiposContacto().get(0));
 						this.registroCliente.doConsultarRepresentante();
 					} // if
@@ -718,7 +718,16 @@ public class Accion extends IBaseAttribute implements Serializable {
 	public void doActualizaRepresentante(){
 		try {
 			this.registroCliente.doActualizaRepresentante();
-      this.registroCliente.setPersonaTipoContactoPivote(new ClienteContactoRepresentante());      
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+	} // doActualizaRepresentante
+	
+	public void doUpdateRepresentante() {
+		try {
+			this.registroCliente.doUpdateRepresentante();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -877,6 +886,10 @@ public class Accion extends IBaseAttribute implements Serializable {
       UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:especial', {validaciones: 'requerido|flotante|mayor-igual({\"cuanto\":5}|menor-igual({\"cuanto\":30})', mascara: 'libre'});");
 		else
       UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:especial', {validaciones: 'libre', mascara: 'libre'});");
+  }
+
+  public void doCreateUser(ClienteContactoRepresentante row) {
+    
   }
   
 }

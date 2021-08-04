@@ -37,7 +37,13 @@ public class Xls extends XlsBase {
 		this.nombreArchivo= nombreArchivo;
 		this.definicion= definicion;
 		this.campos= campos;  
-		init();
+		this.init();
+  }
+
+  public Xls(String nombreArchivo, String campos) {    
+		this.nombreArchivo= nombreArchivo;
+		this.campos= campos;  
+		this.init();
   }
   
   public Xls(String archivo, Modelo definicion) {
@@ -46,9 +52,9 @@ public class Xls extends XlsBase {
   
 	private void init(){
 		try {      
-      setPosicionColumna(0);
-      setPosicionFila(0);
-      setIndiceColumna(0);			                 
+      this.setPosicionColumna(0);
+      this.setPosicionFila(0);
+      this.setIndiceColumna(0);			                 
       algunos= campos!= null;
       this.monitoreo= JsfBase.getAutentifica().getMonitoreo();
     } // try
@@ -107,7 +113,7 @@ public class Xls extends XlsBase {
       nombreColumnas= this.campos.split(",");
       columna= new HashMap();
       for (int i=0; i< getColumnasInformacion(); i++) {        
-        columna.put("col"+String.valueOf(i), registroMap.get(Cadena.toBeanName(nombreColumnas[i])));
+        columna.put("col"+ String.valueOf(i), registroMap.get(Cadena.toBeanName(nombreColumnas[i])));
       } // for  
     } // try 
     catch (Exception e)  {
@@ -146,10 +152,10 @@ public class Xls extends XlsBase {
 		int fila       = 1;
 		try {						
 			for (IBaseDto registro: registros) {
-        columna= convertirHashMap(registro);
+        columna= this.convertirHashMap(registro);
         for (int x= 0; x < columna.size(); x++) {
-          LOG.info("[generarRegistros]  registro: " + fila + " celda: " + columna.get("col"+String.valueOf(x)));
-          Label label= new Label(getPosicionColumna() + x , getPosicionFila()+ fila, columna.get("col"+String.valueOf(x))==null?"":columna.get("col"+String.valueOf(x)).toString());         
+          LOG.info("[generarRegistros]  registro: "+ fila+ " celda: "+ columna.get("col"+ String.valueOf(x)));
+          Label label= new Label(getPosicionColumna()+ x, getPosicionFila()+ fila, columna.get("col"+String.valueOf(x))== null? "": columna.get("col"+ String.valueOf(x)).toString());         
           hoja.addCell(label);
         } // for x
         columna.clear();
@@ -200,7 +206,35 @@ public class Xls extends XlsBase {
     } // finally
     return termino;
   }
- 
+
+  public boolean procesar(boolean titulo, List<IBaseDto> registros) throws Exception {        
+    boolean regresar= false;
+    this.registros  = registros;
+    try {			
+			if (this.registros!= null && !this.registros.isEmpty()) {				
+        this.monitoreo.comenzar(new Long(this.registros.size()));
+				libro= Workbook.createWorkbook(new File(this.nombreArchivo));
+				hoja = libro.createSheet("MANTIC", 0);
+				if (!isAlgunos())
+					this.campos= this.getNombresColumnas();		
+				if (titulo)
+					this.procesarEncabezado(this.campos);   
+				this.setTotalColumnas();
+				this.detail(this.registros);
+        regresar= true;
+			} // if
+    } // try
+    catch (Exception e) {
+			regresar= false;
+      Error.mensaje(e);
+    } // catch
+		finally {
+  	  getLibro().write();
+      getLibro().close();
+    } // finally
+    return regresar;
+  } 
+  
   public boolean procesar() throws Exception {        
     return generarRegistros(true);
   } 

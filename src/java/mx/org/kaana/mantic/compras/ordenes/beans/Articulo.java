@@ -65,6 +65,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	private long multiplo;
 	private long idAutomatico;
 	private long caja;
+	private String imagen;
 
 	public Articulo() {
 		this(-1L);
@@ -111,6 +112,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.multiplo    = 1;
 		this.idAutomatico= 1;
 		this.caja        = 1L;
+    this.imagen      = "1/sin-foto.png";     
 	}
 
 	public UISelectEntity getIdEntity() {
@@ -304,6 +306,14 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	public void setCaja(long caja) {
 		this.caja=caja;
 	}
+
+  public String getImagen() {
+    return imagen;
+  }
+
+  public void setImagen(String imagen) {
+    this.imagen = imagen;
+  }
 	
 	public String getImporte$() {
 		return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getImporte());

@@ -37,6 +37,7 @@ public class RegistroCliente implements Serializable{
 	private ClienteContactoRepresentante personaTipoContactoPivote;	
 	private ClienteContactoRepresentante personaTipoContacto;	
 	private boolean habilitarCredito;
+  private int index;
 
 	public RegistroCliente() {
 		this(-1L, new TcManticClientesDto(), new ArrayList<ClienteDomicilio>(), new ArrayList<ClienteTipoContacto>(), new ArrayList<ClienteRepresentante>(), new Domicilio(), new ArrayList<ClienteContactoRepresentante>(), new ClienteContactoRepresentante(), new ClienteContactoRepresentante());
@@ -48,10 +49,11 @@ public class RegistroCliente implements Serializable{
 		this.countIndice= 0L;
 		this.deleteList = new ArrayList<>();
 		this.domicilio  = new Domicilio();
-		this.domicilioPivote= new Domicilio();
+		this.domicilioPivote    = new Domicilio();
 		this.personaTipoContactoPivote= new ClienteContactoRepresentante();
 		this.personaTipoContacto= new ClienteContactoRepresentante();		
-		init();		
+    this.index              = -1;
+		this.init();		
 	}
 	
 	public RegistroCliente(Long idCliente, TcManticClientesDto cliente, List<ClienteDomicilio> clientesDomicilio, List<ClienteTipoContacto> clientesTiposContacto, List<ClienteRepresentante> clientesRepresentantes, Domicilio domicilio, List<ClienteContactoRepresentante> personasTiposContacto, ClienteContactoRepresentante personaTipoContactoPivote, ClienteContactoRepresentante personaTipoContacto) {
@@ -69,6 +71,7 @@ public class RegistroCliente implements Serializable{
 		this.personaTipoContactoPivote= personaTipoContactoPivote;
 		this.personaTipoContacto   = personaTipoContactoPivote;
 		this.habilitarCredito      = cliente.getIdCredito()!= null && cliente.getIdCredito().equals(1L);
+    this.index                 = -1;
 	}
 	
 	public Long getIdCliente() {
@@ -199,14 +202,22 @@ public class RegistroCliente implements Serializable{
 		this.habilitarCredito = habilitarCredito;
 		this.cliente.setIdCredito(this.habilitarCredito ? 1L : 2L);
 	}	
+
+  public int getIndex() {
+    return index;
+  }
+
+  public void setIndex(int index) {
+    this.index = index;
+  }
 	
-	private void init(){
+	private void init() {
 		MotorBusqueda motorBusqueda= null;
 		try {
 			motorBusqueda= new MotorBusqueda(this.idCliente);
 			this.cliente= motorBusqueda.toCliente();		
 			this.habilitarCredito= this.cliente.getIdCredito().equals(1L);
-			initCollections(motorBusqueda);
+			this.initCollections(motorBusqueda);
 		} // try
 		catch (Exception e) {			
 			JsfBase.addMessageError(e);
@@ -462,12 +473,13 @@ public class RegistroCliente implements Serializable{
 		ClienteContactoRepresentante clienteContactoRepresentante= null;
 		try {								
 			clienteContactoRepresentante= new ClienteContactoRepresentante(this.contadores.getTotalClientesRepresentantes()+ this.countIndice, ESql.INSERT, true);				
-			clienteContactoRepresentante.setConsecutivo(this.personasTiposContacto.size()+1L);
+			clienteContactoRepresentante.setConsecutivo(this.personasTiposContacto.size()+ 1L);
 			clienteContactoRepresentante.setNombres(this.personaTipoContactoPivote.getNombres());
 			clienteContactoRepresentante.setPaterno(this.personaTipoContactoPivote.getPaterno());
 			clienteContactoRepresentante.setMaterno(this.personaTipoContactoPivote.getMaterno());
 			clienteContactoRepresentante.setContactos(this.personaTipoContactoPivote.getContactos());
-			this.personasTiposContacto.add(clienteContactoRepresentante);			
+			this.personasTiposContacto.add(clienteContactoRepresentante);
+      this.index= this.personasTiposContacto.size()- 1;
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -478,10 +490,14 @@ public class RegistroCliente implements Serializable{
 		} // finally
 	} // doAgregarClienteDomicilio
 	
-	public void doConsultarRepresentante(){
+	public void doConsultarRepresentante() {
 		ClienteContactoRepresentante pivote= null;
 		try {			
-			pivote= this.personasTiposContacto.get(this.personasTiposContacto.indexOf(this.personaTipoContacto));
+      for (ClienteContactoRepresentante item: this.personasTiposContacto) {
+        item.setModificar(false);
+      } // for
+      this.index= this.personasTiposContacto.indexOf(this.personaTipoContacto);
+			pivote= this.personasTiposContacto.get(this.index);
 			pivote.setModificar(true);
 			this.personaTipoContactoPivote= new ClienteContactoRepresentante();
 			this.personaTipoContactoPivote.setNombres(pivote.getNombres());
@@ -511,19 +527,30 @@ public class RegistroCliente implements Serializable{
 		} // catch		
 	} // doEliminarRepresentante
 	
-	public void doActualizaRepresentante(){
+	public void doActualizaRepresentante() {
+    this.doActualizaRepresentante(this.personasTiposContacto.indexOf(this.personaTipoContacto));
+  }
+  
+	public void doUpdateRepresentante() {
+    if(this.index> 0)
+      this.doActualizaRepresentante(this.index);
+  }
+  
+	public void doActualizaRepresentante(Integer index) {
 		ClienteContactoRepresentante pivote= null;
 		try {			
-			pivote= this.personasTiposContacto.get(this.personasTiposContacto.indexOf(this.personaTipoContacto));
+			pivote= this.personasTiposContacto.get(index);
 			pivote.setModificar(false);
 			pivote.setNombres(this.personaTipoContactoPivote.getNombres());
 			pivote.setPaterno(this.personaTipoContactoPivote.getPaterno());
 			pivote.setMaterno(this.personaTipoContactoPivote.getMaterno());
 			pivote.setContactos(this.personaTipoContactoPivote.getContactos());			
+			pivote.setCrear(this.personaTipoContactoPivote.getCrear());			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch	
 	} // doActualizaRepresentante
+  
 }

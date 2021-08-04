@@ -154,6 +154,8 @@ public final class Constantes {
 	public static double PORCENTAJE_MAYOREO= 1.3;
 	public static double PORCENTAJE_IVA= 0.16;
 	public static final Long ANTICIPO= 10L;
+	public static final Long PERIL_CONSULTA_CLIENTE= 5L;
+	public static final Long PUESTO_CONSULTA_CLIENTE= 10L;
 
   public String getNO_EXISTEN_REGISTROS() {
     return Constantes.NO_EXISTEN_REGISTROS;

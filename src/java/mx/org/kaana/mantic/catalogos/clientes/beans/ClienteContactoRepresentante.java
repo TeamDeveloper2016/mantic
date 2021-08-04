@@ -4,12 +4,25 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import mx.org.kaana.kajool.enums.ESql;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteRepresentanteDto;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class ClienteContactoRepresentante extends TrManticClienteRepresentanteDto implements Serializable{
 	
 	private static final long serialVersionUID = -5420245452200987754L;
+  private static final Log LOG = LogFactory.getLog(ClienteContactoRepresentante.class);
+  
+  private static final String[] CONTRASENIAS = {
+    "m4nzana", "m4rtillo", "elctr0n", "silic0n", "cerr0j0", "escuel4", 
+    "aven1da", "c4ndado", "esc4lera", "b1cicleta", "armidill0", "br1colin", 
+    "c4lendario", "m1ercole$", "c0mplicad0", "d1ficil", "r0mper", "salud4r",
+    "ec0nomico", "soldadur4", "pod$dora", "t4lache", "c0ncreto", "solt4r",
+    "esc0ba$", "c3mento", "sold4dura", "p3gamento", "cl4vo$", "p1nza$"
+  };
+  
 	private ESql sqlAccion;
 	private Boolean nuevo;
 	private Boolean principal;
@@ -19,6 +32,12 @@ public class ClienteContactoRepresentante extends TrManticClienteRepresentanteDt
 	private List<PersonaTipoContacto> contactos;
 	private Long consecutivo;
 	private Boolean modificar;
+  private Long idPersona;
+  private Long idCuenta;
+  private Long crear;
+  private String cuenta;
+  private String contrasenia;
+  private Long activo;
 
 	public ClienteContactoRepresentante() {
 		this(-1L);
@@ -47,6 +66,12 @@ public class ClienteContactoRepresentante extends TrManticClienteRepresentanteDt
 		this.paterno    = paterno;
 		this.materno    = materno;
 		this.modificar  = modificar;
+    this.crear      = 2L;
+    this.cuenta     = "";
+    this.contrasenia= "";
+    this.idPersona  = -1L;
+    this.idCuenta   = -1L;
+    this.activo     = 2L;
 	}
 
 	public ESql getSqlAccion() {
@@ -120,4 +145,72 @@ public class ClienteContactoRepresentante extends TrManticClienteRepresentanteDt
 	public void setModificar(Boolean modificar) {
 		this.modificar = modificar;
 	}
+
+  public Long getCrear() {
+    return crear;
+  }
+
+  public void setCrear(Long crear) {
+    this.crear = crear;
+  }
+
+  public String getCuenta() {
+    return cuenta;
+  }
+
+  public void setCuenta(String cuenta) {
+    this.cuenta = cuenta;
+  }
+
+  public String getContrasenia() {
+    return contrasenia;
+  }
+
+  public void setContrasenia(String contrasenia) {
+    this.contrasenia = contrasenia;
+  }
+
+  public Long getIdPersona() {
+    return idPersona;
+  }
+
+  public void setIdPersona(Long idPersona) {
+    this.idPersona = idPersona;
+  }
+
+  public Long getIdCuenta() {
+    return idCuenta;
+  }
+
+  public void setIdCuenta(Long idCuenta) {
+    this.idCuenta = idCuenta;
+  }
+
+  public Long getActivo() {
+    return activo;
+  }
+
+  public void setActivo(Long activo) {
+    this.activo = activo;
+  }
+
+  public String toContrasenia() {
+    int minimum= 0;
+    int maximum= CONTRASENIAS.length;
+    int index= minimum + (int)(Math.random() * (maximum - minimum));
+    return CONTRASENIAS[index];
+  }
+  
+  public String toCuenta() {
+    return "cliente.".concat(Cadena.rellenar(String.valueOf(this.idPersona), 4, '0', true));  
+  }
+  
+  public static void main(String ... args) {
+    ClienteContactoRepresentante cliente= new ClienteContactoRepresentante();
+    LOG.info(cliente.toCuenta());    
+    for (int x = 0; x < 10; x++) {
+      LOG.info(cliente.toContrasenia());    
+    } // for
+  }
+  
 }

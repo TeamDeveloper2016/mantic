@@ -252,7 +252,7 @@
               </p:selectOneMenu>
 						</p:column>
 						<p:column style="width:45px;text-align: center">
-							<p:commandButton update="tablaCorreos" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" title="#{row['activo']? 'Agregar': 'Actualizar'}" action="#{manticComprasOrdenesFiltro.doAgregarCorreo}" disabled="#{row['activo']}">
+							<p:commandButton update="tablaCorreos" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" title="#{row['activo']? 'Agregar': 'Actualizar'}" action="#{manticComprasOrdenesFiltro.doAgregarCorreo}">
 								<f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdenesFiltro.correo}" />
 							</p:commandButton>
 						</p:column>
@@ -280,7 +280,7 @@
               </p:selectOneMenu>
 						</p:column>
 						<p:column style="width:45px;text-align: center">
-							<p:commandButton update="tablaCelulares" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" title="#{row['activo']? 'Agregar': 'Actualizar'}" action="#{manticComprasOrdenesFiltro.doAgregarCelular}" disabled="#{row['activo']}">
+							<p:commandButton update="tablaCelulares" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" title="#{row['activo']? 'Agregar': 'Actualizar'}" action="#{manticComprasOrdenesFiltro.doAgregarCelular}">
 								<f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdenesFiltro.celular}" />
 							</p:commandButton>
 						</p:column>

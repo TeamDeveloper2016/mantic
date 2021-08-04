@@ -130,9 +130,9 @@ public class GaleryMenu implements Serializable {
   @PostConstruct
   private void init() {
     try {
-      this.mmenu     = (String) toMenu(EMenus.MMENU);
-      this.encabezado= (String) toMenu(EMenus.ENCABEZADO);
-      this.sentinel  = (MenuModel) toMenu(EMenus.SENTINEL);
+      this.mmenu     = (String) this.toMenu(EMenus.MMENU);
+      this.encabezado= (String) this.toMenu(EMenus.ENCABEZADO);
+      this.sentinel  = (MenuModel) this.toMenu(EMenus.SENTINEL);
       if(JsfBase.getFacesContext().getCurrentPhaseId().equals(PhaseId.RENDER_RESPONSE) || JsfBase.getFacesContext().getCurrentPhaseId().equals(PhaseId.RESTORE_VIEW))		
         doLoadInformacionSistema(false);
       this.systemInfo.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);

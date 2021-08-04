@@ -1,16 +1,22 @@
 package mx.org.kaana.mantic.catalogos.clientes.reglas;
 
 import java.io.File;
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.dto.TcJanalUsuariosDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
 import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
+import mx.org.kaana.libs.formato.BouncyEncryption;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -33,6 +39,7 @@ import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteDomicilioDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteRepresentanteDto;
+import mx.org.kaana.mantic.db.dto.TrManticEmpresaPersonalDto;
 import mx.org.kaana.mantic.db.dto.TrManticPersonaTipoContactoDto;
 import mx.org.kaana.mantic.enums.ETipoPersona;
 import mx.org.kaana.mantic.enums.ETiposContactos;
@@ -264,28 +271,37 @@ public class Transaccion extends TransaccionFactura {
     try {
 			if(this.registroCliente.getPersonasTiposContacto().size()== 1)
 					this.registroCliente.getPersonasTiposContacto().get(0).setIdPrincipal(1L);
-      for (ClienteContactoRepresentante clienteRepresentante : this.registroCliente.getPersonasTiposContacto()) {
+      for (ClienteContactoRepresentante clienteRepresentante: this.registroCliente.getPersonasTiposContacto()) {
 				if(clienteRepresentante.getIdPrincipal().equals(1L))
 					countPrincipal++;
 				if(countPrincipal== 0 && this.registroCliente.getPersonasTiposContacto().size()-1 == count)
 					clienteRepresentante.setIdPrincipal(1L);
         clienteRepresentante.setIdCliente(idCliente);
         clienteRepresentante.setIdUsuario(JsfBase.getIdUsuario());
-        clienteRepresentante.setIdRepresentante(addRepresentante(sesion, clienteRepresentante));
         dto = (TrManticClienteRepresentanteDto) clienteRepresentante;
         sqlAccion = clienteRepresentante.getSqlAccion();
         switch (sqlAccion) {
           case INSERT:
             dto.setIdClienteRepresentante(-1L);
-            validate = registrar(sesion, dto);
+            dto.setIdRepresentante(this.addRepresentante(sesion, clienteRepresentante));
+            validate = this.registrar(sesion, dto);
             break;
           case UPDATE:
-            validate = actualizar(sesion, dto);
+            validate = this.actualizar(sesion, dto);
+            if(Objects.equals(clienteRepresentante.getCrear(), 1L)) { 
+              if(Objects.equals(clienteRepresentante.getIdCuenta(), -1L))
+                this.addUserAccount(sesion, clienteRepresentante);
+              else
+                this.updateUserAccount(sesion, clienteRepresentante);
+            } // if
+            else
+              if(!Objects.equals(clienteRepresentante.getIdCuenta(), -1L)) 
+                this.updateUserAccount(sesion, clienteRepresentante);
             break;
         } // switch
         if (validate) {
           count++;
-        }
+        } // if
       } // for		
       regresar = count == this.registroCliente.getPersonasTiposContacto().size();
     } // try // try    
@@ -296,20 +312,20 @@ public class Transaccion extends TransaccionFactura {
   } // registraClientesRepresentantes
 	
 	private Long addRepresentante(Session sesion, ClienteContactoRepresentante clienteRepresentante) throws Exception{
-		Long regresar= -1L;
-		TcManticPersonasDto representante= null;
+		Long regresar              = -1L;
+		TcManticPersonasDto persona= null;
 		try {
-			representante= new TcManticPersonasDto();
-			representante.setNombres(clienteRepresentante.getNombres());
-			representante.setPaterno(clienteRepresentante.getPaterno());
-			representante.setMaterno(clienteRepresentante.getMaterno());
-			representante.setIdTipoPersona(ETipoPersona.REPRESENTANTE_LEGAL.getIdTipoPersona());	
-			representante.setIdTipoSexo(1L);
-			representante.setEstilo(ESTILO);
-			representante.setIdPersonaTitulo(1L);		
-			regresar= DaoFactory.getInstance().insert(sesion, representante);
+			persona= new TcManticPersonasDto();
+			persona.setNombres(clienteRepresentante.getNombres());
+			persona.setPaterno(clienteRepresentante.getPaterno());
+			persona.setMaterno(clienteRepresentante.getMaterno());
+			persona.setIdTipoPersona(ETipoPersona.REPRESENTANTE_LEGAL.getIdTipoPersona());	
+			persona.setIdTipoSexo(1L);
+			persona.setEstilo(ESTILO);
+			persona.setIdPersonaTitulo(1L);		
+			regresar= DaoFactory.getInstance().insert(sesion, persona);
 			if(regresar > -1L)
-				registraPersonasTipoContacto(sesion, regresar, clienteRepresentante.getContactos());
+				this.registraPersonasTipoContacto(sesion, regresar, clienteRepresentante.getContactos());
 		} // try		
 		finally{
 			this.messageError = "Error al registrar los representantes, verifique que no haya duplicados";
@@ -574,4 +590,56 @@ public class Transaccion extends TransaccionFactura {
       } // for
 		} // if
 	} // toDeleteAll
+  
+  private void addUserAccount(Session sesion, ClienteContactoRepresentante representante) throws Exception {
+ 		try {
+      TcJanalUsuariosDto usuario= new TcJanalUsuariosDto(
+        Constantes.PERIL_CONSULTA_CLIENTE, // Long idPerfil, 
+        2L, // Long idUsuarioModifica, 
+        -1L, // Long idUsuario, 
+        1L, // Long activo, 
+        representante.getIdRepresentante() // Long idPersona
+      );
+      TcManticPersonasDto persona= (TcManticPersonasDto)DaoFactory.getInstance().findById(sesion, TcManticPersonasDto.class, representante.getIdPersona());
+      if(persona!= null) {
+        persona.setCuenta(representante.getCuenta());
+        persona.setContrasenia(BouncyEncryption.encrypt(representante.getContrasenia()));
+        this.actualizar(sesion, persona);
+        this.registrar(sesion, usuario);
+        TrManticEmpresaPersonalDto empleado= new TrManticEmpresaPersonalDto(
+          representante.getIdRepresentante(), // Long idPersona, 
+          Constantes.PUESTO_CONSULTA_CLIENTE, // Long idPuesto, 
+          new Date(Calendar.getInstance().getTimeInMillis()), // Date fechaContratacion, 
+          JsfBase.getIdUsuario(), // Long idUsuario, 
+          -1L, // Long idEmpresaPersona, 
+          "CLIENTE AGREGADO PARA CONSULTAS", // String observaciones, 
+          1L, // Long idEmpresa, 
+          1L // Long idActivo
+        );
+        this.registrar(sesion, empleado);
+      } // if  
+    } // try
+    catch(Exception e) {
+      throw e;
+    } // catch
+  }
+  
+  private void updateUserAccount(Session sesion, ClienteContactoRepresentante representante) throws Exception {
+ 		try {
+      TcJanalUsuariosDto usuario= (TcJanalUsuariosDto)DaoFactory.getInstance().findById(sesion, TcJanalUsuariosDto.class, representante.getIdCuenta());
+      if(usuario!= null) {
+        Long activo= usuario.getActivo();
+        if(Objects.equals(representante.getCrear(), 2L))
+          usuario.setActivo(2L);
+        else
+          usuario.setActivo(1L);
+        if(!Objects.equals(activo, usuario.getActivo()))
+          this.actualizar(sesion, usuario);
+      } // if  
+    } // try
+    catch(Exception e) {
+      throw e;
+    } // catch
+  }
+  
 }

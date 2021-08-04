@@ -127,7 +127,7 @@ public class Autentifica implements Serializable {
   }
 
   private boolean verificaCredencial() throws Exception {
-    return verificaCredencial(this.persona.getContrasenia());
+    return this.verificaCredencial(this.persona.getContrasenia());
   }
 
   private boolean verificaCredencial(String contrasenia) throws Exception {
@@ -203,9 +203,9 @@ public class Autentifica implements Serializable {
       params.put("cuenta", cuenta);
       this.persona = (Persona) DaoFactory.getInstance().toEntity(Persona.class, "VistaTcJanalUsuariosDto", "acceso", params);
       if (this.persona != null) {
-        regresar = isAdministrador() || verificaCredencial();
+        regresar = this.isAdministrador() || this.verificaCredencial();
         if (regresar) {
-          procesarPermisos();
+          this.procesarPermisos();
         } // if
 				else {
           this.persona = null;

@@ -8,6 +8,8 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.BouncyEncryption;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteContactoRepresentante;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteDomicilio;
@@ -168,11 +170,11 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 	
 	public List<ClienteRepresentante> toClientesRepresentantes() throws Exception {
 		List<ClienteRepresentante> regresar= null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params          = null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_cliente=" + this.idCliente);
-			regresar= DaoFactory.getInstance().toEntitySet(ClienteRepresentante.class, "TrManticClienteRepresentanteDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+			params.put("idCliente,", this.idCliente);
+			regresar= DaoFactory.getInstance().toEntitySet(ClienteRepresentante.class, "TrManticClienteRepresentanteDto", "cuentas", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {		
 			throw e;
@@ -206,15 +208,23 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		TcManticPersonasDto persona                = null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_cliente=" + this.idCliente);
-			regresar= DaoFactory.getInstance().toEntitySet(ClienteContactoRepresentante.class, "TrManticClienteRepresentanteDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
-			if(!regresar.isEmpty()){
-				for(ClienteContactoRepresentante contacto: regresar){
-					contacto.setContactos(toPersonaContacto(contacto.getIdRepresentante()));
-					persona= toPersona(contacto.getIdRepresentante());
+			params.put("idCliente", this.idCliente);
+			regresar= DaoFactory.getInstance().toEntitySet(ClienteContactoRepresentante.class, "TrManticClienteRepresentanteDto", "cuentas", params, Constantes.SQL_TODOS_REGISTROS);
+			if(!regresar.isEmpty()) {
+        int count= 1;
+				for(ClienteContactoRepresentante contacto: regresar) {
+          contacto.setConsecutivo(new Long(count++));
+					contacto.setContactos(this.toPersonaContacto(contacto.getIdRepresentante()));
+					persona= this.toPersona(contacto.getIdRepresentante());
 					contacto.setNombres(persona.getNombres());
 					contacto.setPaterno(persona.getPaterno());
 					contacto.setMaterno(persona.getMaterno());
+          if(Cadena.isVacio(contacto.getCuenta())) {
+            contacto.setCuenta(contacto.toCuenta());
+            contacto.setContrasenia(contacto.toContrasenia());
+          } // if  
+          else
+            contacto.setContrasenia(BouncyEncryption.decrypt(contacto.getContrasenia()));
 				} // for
 			} // if
 		} // try
