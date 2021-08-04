@@ -25,8 +25,12 @@
         $("a.janal-global-dashboard").click(function(event) {event.preventDefault(); return true;});
       });			
       
-      function triggerLocalEvent(index, keyCode) {
-        janal.console("triggerLocalEvent: index="+ index+ ", keyCode= "+ keyCode);
+      function triggerLocalEvent(index, keyCode, value) {
+        janal.console("triggerLocalEvent: index="+ index+ ", keyCode= "+ keyCode+ ", value: "+ value);
+        if(typeof(value)!== 'undefined') {
+          value= $("#tabla\\:"+ index+ "\\:cuantos_input").val();
+          $("#tabla\\:"+ index+ "\\:codigos_input").val(value);
+        } // if  
         $("#tabla\\:"+ index+ "\\:codigos_input").trigger(jQuery.Event('focus'));
         $("#tabla\\:"+ index+ "\\:codigos_input").trigger(jQuery.Event('keydown', {which: keyCode}));
       }
@@ -55,7 +59,7 @@
       .producto .producto-list-item img {width: 200px;height:170px;box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); margin-right: 2rem;}
       .producto .producto-list-item .producto-list-detail {flex: 1 1 0;-ms-flex: 1 1 0;}  
       .producto .producto-list-item.border {border-bottom: 1px solid;} 
-      .producto .producto-list-item .producto-price {font-size: 1.5rem;font-weight: 600;margin-bottom: 0.5rem;align-self: flex-end;}
+      .producto .producto-list-item .producto-price {font-size: 1.5rem;font-weight: 600;margin-bottom: 0.5rem;align-self: flex-end; text-align: right;}
       .producto .producto-list-item .producto-quantity {font-size: 1.0rem;font-weight: 200;margin-bottom: 0.1rem;align-self: flex-end; text-align: right;}
       .producto .producto-list-item .producto-cost {font-size: 1.0rem;font-weight: 200;margin-bottom: 0.1rem;align-self: flex-end; text-align: right;}
       .producto .producto-list-item .producto-action {display: -ms-flexbox;display: flex;-ms-flex-direction: column;flex-direction: column;}
@@ -149,7 +153,34 @@
                   </div>  
                   <div class="producto-list-action">
                     <div class="producto-price janal-color-black" title="Importe">#{row['importe$']}</div>
-                    <div class="producto-quantity janal-color-orange" title="Cantidad"><i class="fa fa-sort-numeric-asc producto-category-icon"/>#{row['cantidad']}</div>
+                    <div class="producto-quantity janal-color-orange" title="Clic para cambiar la cantidad" style="cursor: poiter;">
+                      <i class="fa fa-sort-numeric-asc producto-category-icon"/>
+                      <p:inplace label="Cantidad: #{row['cantidad']}" effectSpeed="fast" event="click">
+                        <p:selectOneMenu id="cuantos" style="width: 45px;">
+                          <p:ajax event="change" process="@this" onstart="return true;" oncomplete="triggerLocalEvent(#{index}, jsArticulos.VK_ASTERISK, 1);"/>
+                          <f:selectItem itemLabel="1" itemValue="1" />
+                          <f:selectItem itemLabel="2" itemValue="2" />
+                          <f:selectItem itemLabel="3" itemValue="2" />
+                          <f:selectItem itemLabel="4" itemValue="4" />
+                          <f:selectItem itemLabel="5" itemValue="5" />
+                          <f:selectItem itemLabel="6" itemValue="6" />
+                          <f:selectItem itemLabel="7" itemValue="7" />
+                          <f:selectItem itemLabel="8" itemValue="8" />
+                          <f:selectItem itemLabel="9" itemValue="9" />
+                          <f:selectItem itemLabel="10" itemValue="10" />
+                          <f:selectItem itemLabel="11" itemValue="11" />
+                          <f:selectItem itemLabel="12" itemValue="12" />
+                          <f:selectItem itemLabel="13" itemValue="13" />
+                          <f:selectItem itemLabel="14" itemValue="14" />
+                          <f:selectItem itemLabel="15" itemValue="15" />
+                          <f:selectItem itemLabel="16" itemValue="16" />
+                          <f:selectItem itemLabel="17" itemValue="17" />
+                          <f:selectItem itemLabel="18" itemValue="18" />
+                          <f:selectItem itemLabel="19" itemValue="19" />
+                          <f:selectItem itemLabel="20" itemValue="20" />
+                        </p:selectOneMenu>
+                      </p:inplace>                      
+                    </div>
                     <div class="producto-cost" title="Precio">#{row['costo']}</div>
                   </div> 
                 </div>	
@@ -157,7 +188,7 @@
                   <div class="producto-input">
                     <p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
                     <p:inputText id="locks" value="0" style="display:none"/>
-                    <p:autoComplete id="codigos" styleClass="janal-wid-100-txt" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-93 key-down-event filas" itemValue="#{custom}" value="#{manticVentasMovil.attrs.articulo}" completeMethod="#{manticVentasMovil.doCompleteArticuloPrecioCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" forceSelection="true" placeholder="Buscar ej. CT123">
+                    <p:autoComplete id="codigos" styleClass="janal-wid-100-txt" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-93 key-down-event filas" itemValue="#{custom}" value="#{manticVentasMovil.attrs.articulo}" completeMethod="#{manticVentasMovil.doCompleteArticuloPrecioCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" forceSelection="true" placeholder="#{row['idArticulo'] eq -1? 'Buscar ej. martillo': 'Teclear cantidad [Click boton]'}">
                       <p:ajax event="itemSelect" process="@this" oncomplete="jsArticulos.close();"/>
                       <p:ajax event="focus" process="@this" listener="#{manticVentasMovil.doActualizaImage(row['idArticulo'], row['nombre'])}" update="panelTotales" onstart="return jsArticulos.valid();" oncomplete="$('#source-image').attr('href', $('#icon-image').attr('src'));" />
                       <f:facet name="itemtip">
