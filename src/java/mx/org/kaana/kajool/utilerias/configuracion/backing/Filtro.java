@@ -152,7 +152,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 	
   public void doNotificar() {
 		Map<String, Object> params= new HashMap<>();
-		//String[] correos= {"jimenez76@yahoo.com", "alejandro7jimenez6garcia@gmail.com"};
+		//String[] correos= {"jimenez76@yahoo.com", "alejandro0jimenez3ramos@gmail.com"};
 		// files.add(new Attachment(ECorreos.NOTIFICACION.getImages().concat("invitacion.jpg"), Boolean.TRUE));
 		// for (Attachment item: files) {
 		//	 params.put(item.getId(), item.getId());

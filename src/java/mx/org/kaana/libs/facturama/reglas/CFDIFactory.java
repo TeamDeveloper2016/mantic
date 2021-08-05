@@ -183,11 +183,11 @@ public class CFDIFactory implements Serializable {
 	
 	public mx.org.kaana.libs.facturama.models.response.Cfdi createCfdi(ClienteFactura encabezado, List<ArticuloFactura> detalle) throws Exception {
 		mx.org.kaana.libs.facturama.models.response.Cfdi regresar= null;
-		Cfdi cfdi    = null;
+		Cfdi cfdi= null;
 		try {
-		  cfdi= loadCfdi(encabezado, detalle);
+		  cfdi= this.loadCfdi(encabezado, detalle);
 			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo()) 
-			  regresar= createCfdi(cfdi);
+			  regresar= this.createCfdi(cfdi);
 		} // try
 		catch (Exception e) {			
 			throw e;

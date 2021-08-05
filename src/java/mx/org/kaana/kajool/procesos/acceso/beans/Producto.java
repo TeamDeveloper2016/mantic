@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- *@company INEGI
- *@project IKTAN (Sistema de seguimiento y control de proyectos)
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
  *@date 30/07/2021
  *@time 08:23:40 AM 
- *@author Alejandro Jimenez Garcia <alejandro.jimenez@inegi.org.mx>
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public class Producto implements Serializable {
 

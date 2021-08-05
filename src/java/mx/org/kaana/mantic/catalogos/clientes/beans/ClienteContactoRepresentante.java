@@ -16,11 +16,11 @@ public class ClienteContactoRepresentante extends TrManticClienteRepresentanteDt
   private static final Log LOG = LogFactory.getLog(ClienteContactoRepresentante.class);
   
   private static final String[] CONTRASENIAS = {
-    "m4nzana", "m4rtillo", "elctr0n", "silic0n", "cerr0j0", "escuel4", 
-    "aven1da", "c4ndado", "esc4lera", "b1cicleta", "armidill0", "br1colin", 
-    "c4lendario", "m1ercole$", "c0mplicad0", "d1ficil", "r0mper", "salud4r",
-    "ec0nomico", "soldadur4", "pod$dora", "t4lache", "c0ncreto", "solt4r",
-    "esc0ba$", "c3mento", "sold4dura", "p3gamento", "cl4vo$", "p1nza$"
+    "m4nzan4", "m4rtill0", "el3ctr0n", "silic0n", "cerr0j0", "3scuel4", 
+    "av3n1da", "c4ndado", "esc4l3ra", "b1cicl3ta", "armidill0", "br1nc0lin", 
+    "c4l3ndario", "m1ercole$", "c0mplicad0", "d1ficil", "r0mp3r", "s4lud4r",
+    "ec0nom1co", "s0ldadur4", "pod$dor4", "t4lach3", "c0ncr3to", "solt4r",
+    "esc0ba$", "c3ment0", "s0ld4dura", "p3gam3nto", "cl4vo$", "p1nza$"
   };
   
 	private ESql sqlAccion;

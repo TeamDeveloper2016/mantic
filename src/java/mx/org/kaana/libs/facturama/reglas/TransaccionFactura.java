@@ -354,7 +354,7 @@ public class TransaccionFactura extends IBaseTnx {
 		try {
       //*ERROR* DETENER AQUI PARA EL CALCULO DE LOS CONCEPTOS PARA FACTURAMA
 			cfdi= CFDIFactory.getInstance().createCfdi(this.cliente, this.articulos);
-			if(isCorrectId(cfdi.getId())) {
+			if(this.isCorrectId(cfdi.getId())) {
 				this.idFacturamaRegistro= cfdi.getId();
 				regresar= this.actualizarFactura(sesion, this.cliente.getIdFactura(), cfdi, idUsuario);
 				Calendar calendar= Fecha.toCalendar(cfdi.getDate().substring(0, 10), cfdi.getDate().substring(11, 19));				
