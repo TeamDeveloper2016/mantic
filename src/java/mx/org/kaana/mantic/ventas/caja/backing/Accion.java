@@ -35,6 +35,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ContadoresListas;
@@ -169,6 +170,8 @@ public class Accion extends IBaseVenta implements Serializable {
       this.doInitPage();
 			motorBusqueda= new MotorBusqueda(Long.valueOf(this.attrs.get("idEmpresa").toString()));
 			this.attrs.put("clienteGeneral", motorBusqueda.toClienteDefault());
+      String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
+      this.pathImage= dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");
     } // try
     catch (Exception e) {
       Error.mensaje(e);

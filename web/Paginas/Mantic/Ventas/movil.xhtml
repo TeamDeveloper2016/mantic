@@ -65,6 +65,8 @@
       .producto .producto-list-item .producto-action {display: -ms-flexbox;display: flex;-ms-flex-direction: column;flex-direction: column;}
       .producto .producto-list-item .producto-action .ui-button {margin-bottom: 0.5rem;}
       @media screen and (max-width: 576px) {
+        .ui-autocomplete-panel {width: 220px !important;}
+        .janal-wid-col-300 {width: 230px !important;}
         .producto .producto-search {display: flex;width: 100%;}
         .producto .producto-input {flex: 1 1 80%;}
         .producto .producto-button {flex: 1 1 20%;}
@@ -198,10 +200,10 @@
                       <p:ajax event="itemSelect" process="@this" oncomplete="jsArticulos.close();"/>
                       <p:ajax event="focus" process="@this" listener="#{manticVentasMovil.doActualizaImage(row['idArticulo'], row['nombre'])}" update="panelTotales" onstart="return jsArticulos.valid();" oncomplete="$('#source-image').attr('href', $('#icon-image').attr('src'));" />
                       <f:facet name="itemtip">
-                        <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
+                        <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300" columnClasses="janal-fix-40, janal-fix-60">
                           <f:facet name="header" class="TexAlCenter">
-                            <a data-magnify="gallery" href="#{manticVentasMovil.pathImage}#{custom.archivo}" data-caption="#{custom.archivo}" data-group="icon-image" title="Click para ver más grande la imagen">
-                              <p:graphicImage url="#{manticVentasMovil.pathImage}#{custom.archivo}" width="105" height="80" style="cursor:zoom-in;"/>
+                            <a data-magnify="gallery" href="#{manticVentasMovil.path}#{custom.archivo}" data-caption="#{custom.archivo}" data-group="icon-image" title="Click para ver más grande la imagen">
+                              <p:graphicImage url="#{manticVentasMovil.path}#{custom.archivo}" width="105" height="80" style="cursor:zoom-in;"/>
                             </a>
                           </f:facet>
                           <h:outputText value="Código:" />

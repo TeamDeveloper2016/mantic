@@ -810,7 +810,7 @@
 								<p:inputText id="importeTicket" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.importeTicket}"/>																	
 								<p:commandButton id="buscarTicket" icon="fa fa-search" process="@this noTicket fechaApartirTicket fechaHastaTicket importeTicket productoTicket" update="tablaTicket" actionListener="#{manticVentasCajaAccion.doLoadTickets}" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 							</p:panelGrid>						       							
-              <p:dataTable lazy="true" id="tablaTicket" widgetVar="kajoolTable" var="filtro" value="#{manticVentasCajaAccion.lazyModelTicket}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticVentasCajaAccion.lazyModelTicket.rowCount gt manticVentasCajaAccion.lazyModelTicket.pageSize}" rowIndexVar="index" reflow="true" selectionMode="single" selection="#{manticVentasCajaAccion.attrs.seleccionDetalle}" paginatorPosition="bottom" rowStyleClass="#{manticVentasCajaAccion.toColorGarantia(filtro)}">
+              <p:dataTable lazy="true" id="tablaTicket" widgetVar="kajoolTable" var="filtro" value="#{manticVentasCajaAccion.lazyModelTicket}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticVentasCajaAccion.lazyModelTicket.rowCount gt manticVentasCajaAccion.lazyModelTicket.pageSize}" rowIndexVar="index" reflow="true" selectionMode="single" selection="#{manticVentasCajaAccion.attrs.seleccionDetalle}" paginatorPosition="bottom" rowStyleClass="#{manticVentasCajaAccion.toColorGarantia(filtro)}">
     						<p:ajax event="rowSelect" process="@this"/>
 								<f:facet name="header" >
 									<div class="lg-pantalla">
@@ -838,11 +838,11 @@
                   <i class="fa fa-fw fa-desktop janal-color-blue janal-font-bold janal-icons-header" style="display: #{empty filtro.cotizacion or filtro.cotizacion eq ''? 'none': ''}" title="Folio cotización: #{filtro.cotizacion} del día #{filtro.registro}"></i>
 									<h:outputText value="#{filtro['nombre']}"/>
 								</p:column>		
-								<p:column class="MarAuto Responsive janal-wid-15" sortBy="#{filtro.nombreEmpresa}">
+								<p:column class="MarAuto Responsive janal-wid-15" sortBy="#{filtro.cliente}">
 									<f:facet name="header">
-										<h:outputText value="Sucursal"/>
+										<h:outputText value="Cliente"/>
 									</f:facet>
-									<h:outputText value="#{filtro['nombreEmpresa']}"/>
+									<h:outputText value="#{filtro['cliente']}"/>
 								</p:column>																
 								<p:column class="janal-column-right MarAuto Responsive janal-wid-7" sortBy="#{filtro.importe}">
 									<f:facet name="header">
@@ -1297,7 +1297,6 @@
 				<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();" rendered="false"/>
 			</div>
 		</p:dialog>	
-		
 		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onShow="$('input[name=codigo]').val('');clean();" width="930px" height="470px" resizable="false" onHide="janal.desbloquear(); jsArticulos.restoreCursorAt();" appendTo="@(body)">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
@@ -1346,16 +1345,20 @@
 				<p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide(); jsArticulos.move();"/>
 			</div>
 		</p:dialog>		
-		<p:dialog id="dialogoDetalleTicket" widgetVar="dlgDetalleTicket" header="Detalle de ticket" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" width="930px" resizable="false" onHide="janal.desbloquear();" dynamic="true">			
+		<p:dialog id="dialogoDetalleTicket" widgetVar="dlgDetalleTicket" header="Detalle de ticket" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" width="930px" resizable="false" onHide="janal.desbloquear();" dynamic="true" appendTo="@(body)">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
+					<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-8,janal-wid-92">
+						<p:outputLabel value="Cliente:"/>
+						<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.seleccionDetalleTicket.cliente}" readonly="true"/>
+          </p:panelGrid>  
 					<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20,janal-wid-40,janal-wid-40">
 						<p:outputLabel value="No. ticket:"/>
-						<p:outputLabel value="Vendedor"/>
-						<p:outputLabel value="Sucursar"/>
+						<p:outputLabel value="Sucursal:"/>
+						<p:outputLabel value="Vendedor:"/>
 						<p:inputText styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.seleccionDetalleTicket.ticket}" readonly="true"/>
-						<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.seleccionDetalleTicket.nombre}" readonly="true"/>
 						<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.seleccionDetalleTicket.nombreEmpresa}" readonly="true"/>
+						<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.seleccionDetalleTicket.nombre}" readonly="true"/>
 					</p:panelGrid>
 					<p:panelGrid columns="4" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-25,janal-wid-25,janal-wid-25,janal-wid-25">	
 						<p:outputLabel value="Importe:"/>

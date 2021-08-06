@@ -64,7 +64,8 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 		this.attrs.put("paginator", false); 
 		this.attrs.put("filterName", "");
 		this.attrs.put("filterCode", "");
-		this.pathImage= Configuracion.getInstance().getPropiedadServidor("sistema.dns").concat("/").concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/images/");
+    String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
+    this.pathImage= dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");
 	}
 
 	public IBaseArticulos(String precio) {

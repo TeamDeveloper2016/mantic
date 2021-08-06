@@ -22,6 +22,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
@@ -103,6 +104,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			if(isMatriz)
 				this.loadSucursales();
 			this.doLoad();
+      String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
+      this.pathImage= dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
