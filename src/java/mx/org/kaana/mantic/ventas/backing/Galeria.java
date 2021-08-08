@@ -21,6 +21,8 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.ventas.beans.Imagen;
+import mx.org.kaana.mantic.ventas.enums.ECategorias;
+import mx.org.kaana.mantic.ventas.enums.EOrdenarItems;
 
 @Named(value= "manticVentasGaleria")
 @ViewScoped
@@ -28,6 +30,8 @@ public class Galeria extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428311L;
 	
+  private ECategorias category;
+  private EOrdenarItems sort;
   private List<Imagen> images;  
   private String path;
 
@@ -37,6 +41,10 @@ public class Galeria extends IBaseFilter implements Serializable {
   
   public String getPath() {
     return path;
+  }
+
+  public ECategorias getCategory() {
+    return category;
   }
   
   @PostConstruct
@@ -49,6 +57,8 @@ public class Galeria extends IBaseFilter implements Serializable {
       this.attrs.put("buscaPorCodigo", false);
       this.attrs.put("viewDetail", false);
       this.attrs.put("item", new Entity());
+      this.sort= EOrdenarItems.TEXT_ASC;
+      this.category= ECategorias.NINGUNA;
       
       this.images = new ArrayList<>();
       for (int i = 1; i <= 12; i++) {
@@ -72,7 +82,7 @@ public class Galeria extends IBaseFilter implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("menudeo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
+  		params.put(Constantes.SQL_CONDICION, this.category.getText());
 			String search= (String) this.attrs.get("codigo"); 
 			if(!Cadena.isVacio(search)) {
 				if((boolean)this.attrs.get("buscaPorCodigo"))
@@ -87,19 +97,19 @@ public class Galeria extends IBaseFilter implements Serializable {
 				search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
 			} // if	
 			else
-				search= "WXYZ";
+				search= "";
   		params.put("codigo", search);	
 			switch(buscarCodigoPor) {      
 				case 0: 
-          params.put("sortOrder", "order by tc_mantic_articulos_codigos.codigo");
+          params.put("sortOrder", this.sort.getSort());
           this.lazyModel = new FormatCustomLazy("VistaGaleriaDto", "porCodigoIgual", params, columns);
 					break;
 				case 1: 
-          params.put("sortOrder", "order by tc_mantic_articulos_codigos.codigo");          
+          params.put("sortOrder", this.sort.getSort());          
           this.lazyModel = new FormatCustomLazy("VistaGaleriaDto",  "porCodigo", params, columns);
 					break;
 				case 2:
-    			params.put("sortOrder", "order by tc_mantic_articulos.nombre");
+    			params.put("sortOrder", this.sort.getSort());
           this.lazyModel = new FormatCustomLazy("VistaGaleriaDto", "porNombre", params, columns);
           break;
 			} // switch
@@ -120,6 +130,16 @@ public class Galeria extends IBaseFilter implements Serializable {
   public void doViewDetail(Entity row) {
     this.attrs.put("viewDetail", true);
     this.attrs.put("item", row);
+  }
+
+  public void doViewSort(String sort) {
+    this.sort= EOrdenarItems.valueOf(sort);
+    this.doLoad();
+  } 
+  
+  public void doViewSearch(String search) {
+    this.category= ECategorias.valueOf(search);
+    this.doLoad();
   }
   
 	@Override

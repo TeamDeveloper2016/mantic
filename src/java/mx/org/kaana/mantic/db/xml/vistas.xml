@@ -31,6 +31,8 @@
 				  concat(tc_mantic_articulos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo
 				from 
 					tc_mantic_articulos
+				inner join
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
 				inner join 
 					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
 				inner join
@@ -42,10 +44,11 @@
 				left join
 				  tc_mantic_imagenes on tc_mantic_articulos.id_imagen= tc_mantic_imagenes.id_imagen
 				where 
-					tc_mantic_empresas.id_empresa in ({sucursales})
+					tc_mantic_empresas.id_empresa in (1, 2)
 				  and tc_mantic_articulos.id_articulo_tipo= 1
 				  and tc_mantic_articulos.id_vigente= 1
 				  and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*')
+          and {condicion}
 				{sortOrder}				
 			</select>			
 			<select id="porCodigo">
@@ -87,10 +90,11 @@
 				left join
 				  tc_mantic_imagenes on tc_mantic_articulos.id_imagen= tc_mantic_imagenes.id_imagen
 				where 
-					tc_mantic_empresas.id_empresa in ({sucursales})
+					tc_mantic_empresas.id_empresa in (1, 2)
 				  and tc_mantic_articulos.id_articulo_tipo= 1
 				  and tc_mantic_articulos.id_vigente= 1
 				  and upper(tc_mantic_articulos_codigos.codigo) like '{codigo}%'
+          and {condicion}
         {sortOrder}				
 			</select>
 			<select id="porCodigoIgual">
@@ -132,10 +136,11 @@
 				left join
 				  tc_mantic_imagenes on tc_mantic_articulos.id_imagen= tc_mantic_imagenes.id_imagen
 				where 
-					tc_mantic_empresas.id_empresa in ({sucursales})
+					tc_mantic_empresas.id_empresa in (1,2)
 				  and tc_mantic_articulos.id_articulo_tipo= 1
 				  and tc_mantic_articulos.id_vigente= 1
 				  and upper(tc_mantic_articulos_codigos.codigo)= '{codigo}'
+          and {condicion}
         {sortOrder}
 			</select>		
     </unit>  

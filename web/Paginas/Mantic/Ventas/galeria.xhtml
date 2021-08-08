@@ -28,6 +28,7 @@
       }      
 		</script>   
 		<style type="text/css">
+      .ui-breadcrumb ul li span{display: inline-block !important;}
       .ui-contentflow .globalCaption {position: relative;z-index: 1;}
       .ui-contentflow .globalCaption {text-align: center;font-weight: bold;color: white;font-size: 14px;height: 20px;margin: 2em auto;font-size: 1.1rem;}      
       .producto .producto-search {display: flex;width: 290px;}
@@ -71,6 +72,9 @@
       .p-p-4 {padding: 1.5rem !important;}
       .p-p-5 {padding: 2rem !important;}
       .p-p-6 {padding: 3rem !important;}
+      .janal-color-orange {
+        color: orange !important;
+      }
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
@@ -85,12 +89,36 @@
               <p:outputLabel for="codigo" value="Buscar por código ó SKU"/>
             </p:panelGrid>
             <p:inputText id="codigo" value="#{manticVentasGaleria.attrs.codigo}" styleClass="janal-wid-100-txt" placeholder="Teclar nombre del producto ejemplo: martillo">
-              <p:ajax event="keyup" process="@this" update="tabla" listener="#{manticVentasGaleria.doLoad}" onstart="return $('#codigo').val().trim().length> 2"/>
+              <p:ajax event="keyup" process="@this" update="tabla @(.detalle)" listener="#{manticVentasGaleria.doLoad}" onstart="return $('#codigo').val().trim().length> 2"/>
             </p:inputText>  
 					</p:panelGrid>	
+          <p:breadCrumb id="categorias" styleClass="janal-wid-100-txt detalle">
+            <p:menuitem value="Categorias" actionListener="#{manticVentasGaleria.doViewSearch('NINGUNA')}" process="@this" update="codigo tabla @(.detalle)" icon="fa fa-list-ul" />
+            <p:menuitem value="Fontaneria" actionListener="#{manticVentasGaleria.doViewSearch('FONTANERIA')}" process="@this" update="codigo tabla @(.detalle)" icon="fa fa-steam" styleClass="#{manticVentasGaleria.category eq 'FONTANERIA'? 'janal-color-orange': ''}"/>
+            <p:menuitem value="Herreria" actionListener="#{manticVentasGaleria.doViewSearch('HERRERIA')}" process="@this" update="codigo tabla @(.detalle)" icon="fa fa-table" styleClass="#{manticVentasGaleria.category eq 'HERRERIA'? 'janal-color-orange': ''}"/>
+            <p:menuitem value="Pisos y azulejos" actionListener="#{manticVentasGaleria.doViewSearch('PISOS')}" process="@this" update="codigo tabla @(.detalle)" icon="fa fa-windows" styleClass="#{manticVentasGaleria.category eq 'PISOS'? 'janal-color-orange': ''}"/>
+            <p:menuitem value="Jardinería" actionListener="#{manticVentasGaleria.doViewSearch('JARDINERIA')}" process="@this" update="codigo tabla @(.detalle)" icon="fa fa-scissors" styleClass="#{manticVentasGaleria.category eq 'JARDINERIA'? 'janal-color-orange': ''}"/>
+            <p:menuitem value="Herramientas" actionListener="#{manticVentasGaleria.doViewSearch('HERRAMIENTAS')}" process="@this" update="codigo tabla @(.detalle)" icon="fa fa-wrench" styleClass="#{manticVentasGaleria.category eq 'HERRAMIENTAS'? 'janal-color-orange': ''}"/>
+            <p:menuitem value="Electricidad" actionListener="#{manticVentasGaleria.doViewSearch('ELECTRICIDAD')}" process="@this" update="codigo tabla @(.detalle)" icon="fa fa-plug" styleClass="#{manticVentasGaleria.category eq 'ELECTRICIDAD'? 'janal-color-orange': ''}"/>
+            <p:menuitem value="Lubricantes" actionListener="#{manticVentasGaleria.doViewSearch('LUBRICANTES')}" process="@this" update="codigo tabla @(.detalle)" icon="fa fa-stumbleupon" styleClass="#{manticVentasGaleria.category eq 'LUBRICANTES'? 'janal-color-orange': ''}"/>
+            <p:menuitem value="Tlapalería" actionListener="#{manticVentasGaleria.doViewSearch('TLAPALERIA')}" process="@this" update="codigo tabla @(.detalle)" icon="fa fa-stack-overflow" styleClass="#{manticVentasGaleria.category eq 'TLAPALERIA'? 'janal-color-orange': ''}"/>
+          </p:breadCrumb>          
           <p:dataGrid id="tabla" widgetVar="kajoolTable" lazy="true" var="row" value="#{manticVentasGaleria.lazyModel}" paginator="#{manticVentasGaleria.lazyModel.rowCount gt manticVentasGaleria.lazyModel.pageSize}" columns="#{kajoolUtilAplicacion.isMobile? 1: 3}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" styleClass="jana-wid-100-txt detalle" style="display: #{manticVentasGaleria.attrs.viewDetail? 'none': ''}">
             <f:facet name="header">
-              <div class="jana-wid-100-txt janal-column-left"><span class="Fs16" style="font-weight: normal;">Desglose de producto(s)</span></div>
+              <div class="jana-wid-100-txt janal-column-left">
+                <span class="Fs16" style="font-weight: normal;">#{manticVentasGaleria.category eq 'NINGUNA'? '': 'Filtrado por ['}#{manticVentasGaleria.category eq 'NINGUNA'? '': manticVentasGaleria.category}#{manticVentasGaleria.category eq 'NINGUNA'? '': ']  '}</span>
+                <span class="Fs16" style="font-weight: normal;">Desglose de producto(s)</span>
+                <p:menuButton value="Ordenar por" style="float: right;">
+                  <p:menuitem value="Menor precio" actionListener="#{manticVentasGaleria.doViewSort('MIN_PRICE')}" update="codigo tabla @(.detalle)" icon="fa fa-sort-numeric-asc"/>
+                  <p:menuitem value="Mayor precio" actionListener="#{manticVentasGaleria.doViewSort('MAX_PRICE')}" update="codigo tabla @(.detalle)" icon="fa fa-sort-numeric-desc"/>
+                  <p:separator />
+                  <p:menuitem value="Nombre ascendente" actionListener="#{manticVentasGaleria.doViewSort('TEXT_ASC')}" update="codigo tabla @(.detalle)" icon="fa fa-sort-alpha-asc"/>
+                  <p:menuitem value="Nombre descendente" actionListener="#{manticVentasGaleria.doViewSort('TEXT_DESC')}" update="codigo tabla @(.detalle)" icon="fa fa-sort-alpha-desc"/>
+                  <p:separator />
+                  <p:menuitem value="Código ascendente" actionListener="#{manticVentasGaleria.doViewSort('CODE_ASC')}" update="codigo tabla @(.detalle)" icon="fa fa-long-arrow-down"/>
+                  <p:menuitem value="Código descendente" actionListener="#{manticVentasGaleria.doViewSort('CODE_DESC')}" update="codigo tabla @(.detalle)" icon="fa fa-long-arrow-up"/>
+                </p:menuButton>              
+              </div>                
             </f:facet>
             <div class="producto">
               <div class="producto-list-item p-p-1">
