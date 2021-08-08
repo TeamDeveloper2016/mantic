@@ -18,6 +18,7 @@
     	$(document).ready(function() {
         jsArticulos= new Janal.Control.Articulos.Core(1000, 'tabla\\:');
         $(".janal-global-help").hide();
+        $(".janal-global-icon-cart").hide();
         $("a.janal-global-dashboard").click(function(event) {event.preventDefault(); return true;});
       });			
       function clickFlow(item, e, index) {  
