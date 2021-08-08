@@ -4,6 +4,141 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaGaleriaDto">
+			<select id="porNombre">
+				select 
+				  tc_mantic_articulos.id_articulo as id_key,
+				  tc_mantic_articulos.id_articulo,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*') limit 0, 1) as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*') limit 0, 1) as codigo,
+				  tc_mantic_articulos.fabricante,
+				  tc_mantic_articulos.nombre,
+				  '   ' as origen,
+				  tc_mantic_articulos.descripcion,
+				  tc_mantic_articulos.precio,
+				  tc_mantic_articulos.precio as original,
+				  tc_mantic_articulos.menudeo,
+				  tc_mantic_articulos.medio_mayoreo,
+				  tc_mantic_articulos.mayoreo,
+				  tc_mantic_articulos.sat,
+				  tc_mantic_articulos.limite_medio_mayoreo,
+				  tc_mantic_articulos.limite_mayoreo,
+				  tc_mantic_articulos.iva,
+				  tc_mantic_articulos.id_redondear,
+				  tc_mantic_unidades_medidas.nombre unidad_medida,
+				  ifnull(tc_mantic_articulos.extra, '0') as morado,
+				  concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes,
+				  concat(tc_mantic_articulos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo
+				from 
+					tc_mantic_articulos
+				inner join 
+					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
+				inner join
+					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+				inner join 
+					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+				inner join 
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+				left join
+				  tc_mantic_imagenes on tc_mantic_articulos.id_imagen= tc_mantic_imagenes.id_imagen
+				where 
+					tc_mantic_empresas.id_empresa in ({sucursales})
+				  and tc_mantic_articulos.id_articulo_tipo= 1
+				  and tc_mantic_articulos.id_vigente= 1
+				  and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*')
+				{sortOrder}				
+			</select>			
+			<select id="porCodigo">
+				select 
+				  tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
+				  tc_mantic_articulos.id_articulo,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal> 1 limit 0, 1) as codigo,
+				  tc_mantic_articulos.fabricante,
+				  tc_mantic_articulos.nombre,
+				  ' ' as origen,
+				  tc_mantic_articulos.descripcion,
+				  tc_mantic_articulos.precio,
+				  tc_mantic_articulos.precio as original,
+				  tc_mantic_articulos.menudeo,
+				  tc_mantic_articulos.medio_mayoreo,
+				  tc_mantic_articulos.mayoreo,
+					tc_mantic_articulos.sat,
+				  tc_mantic_articulos.limite_medio_mayoreo,
+				  tc_mantic_articulos.limite_mayoreo,
+				  tc_mantic_articulos.iva,
+				  tc_mantic_articulos.id_redondear,
+				  tc_mantic_unidades_medidas.nombre unidad_medida,
+				  ifnull(tc_mantic_articulos.extra, '0') as morado,
+				  concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes,
+				  concat(tc_mantic_articulos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo
+				from 
+					tc_mantic_articulos
+				inner join
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
+				inner join 
+					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa								
+				inner join
+					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+				inner join 
+					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+				inner join 
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+				left join
+				  tc_mantic_imagenes on tc_mantic_articulos.id_imagen= tc_mantic_imagenes.id_imagen
+				where 
+					tc_mantic_empresas.id_empresa in ({sucursales})
+				  and tc_mantic_articulos.id_articulo_tipo= 1
+				  and tc_mantic_articulos.id_vigente= 1
+				  and upper(tc_mantic_articulos_codigos.codigo) like '{codigo}%'
+        {sortOrder}				
+			</select>
+			<select id="porCodigoIgual">
+				select 
+				  tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
+				  tc_mantic_articulos.id_articulo,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal> 1 limit 0, 1) as codigo,
+				  tc_mantic_articulos.fabricante,
+				  tc_mantic_articulos.nombre,
+				  ' ' as origen,
+				  tc_mantic_articulos.descripcion,
+				  tc_mantic_articulos.precio,
+				  tc_mantic_articulos.precio as original,
+				  tc_mantic_articulos.menudeo,
+				  tc_mantic_articulos.medio_mayoreo,					
+				  tc_mantic_articulos.mayoreo,
+					tc_mantic_articulos.sat,
+				  tc_mantic_articulos.limite_medio_mayoreo,
+				  tc_mantic_articulos.limite_mayoreo,
+				  tc_mantic_articulos.iva,
+				  tc_mantic_articulos.id_redondear,
+				  tc_mantic_unidades_medidas.nombre unidad_medida,
+				  ifnull(tc_mantic_articulos.extra, '0') as morado,
+				  concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes,
+				  concat(tc_mantic_articulos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo
+				from 
+					tc_mantic_articulos
+				inner join
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
+				inner join 
+					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa								
+				inner join
+					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+				inner join 
+					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+				inner join 
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+				left join
+				  tc_mantic_imagenes on tc_mantic_articulos.id_imagen= tc_mantic_imagenes.id_imagen
+				where 
+					tc_mantic_empresas.id_empresa in ({sucursales})
+				  and tc_mantic_articulos.id_articulo_tipo= 1
+				  and tc_mantic_articulos.id_vigente= 1
+				  and upper(tc_mantic_articulos_codigos.codigo)= '{codigo}'
+        {sortOrder}
+			</select>		
+    </unit>  
 		<unit id="VistaRefaccionesDto">
       <select id="lazy">
         select 

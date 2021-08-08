@@ -112,7 +112,7 @@ public class EntityLazyModel<T extends IBaseDto> extends LazyDataModel<T> {
             this.params.put("sortOrder", "");
           if(sortField!= null)
             this.params.put("sortOrder", "order by ".concat(this.format(sortField)).concat(SortOrder.DESCENDING.equals(sortOrder)? " desc": ""));
-          if(filters.size()> 0)
+          if(filters!=null && filters.size()> 0)
             this.params.put("filters", " and (".concat(this.toFilters(filters)).concat(")"));
           LOG.info("Lazy params: "+ this.getParams());
           UIBackingUtilities.execute("janal.onLoadCallBack();");

@@ -36,7 +36,6 @@ public class Movil extends Accion implements Serializable {
     return path;
   }
   
-  
 	@PostConstruct
   @Override
   protected void init() {		

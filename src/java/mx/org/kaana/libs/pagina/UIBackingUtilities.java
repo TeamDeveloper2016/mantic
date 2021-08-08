@@ -18,6 +18,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.formato.Global;
+import org.primefaces.component.datagrid.DataGrid;
 
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.context.RequestContext;
@@ -69,6 +70,16 @@ public class UIBackingUtilities {
 	
 	public static void resetDataTable() {
 		resetDataTable("tabla");
+	}
+
+	public static void resetDataGrid(String name) {
+    DataGrid dataGrid= (DataGrid)JsfUtilities.findComponent(name);
+    if (dataGrid!= null)
+      dataGrid.setFirst(0);		
+	}
+	
+	public static void resetDataGrid() {
+		resetDataGrid("tabla");
 	}
 
   public static List<Entity> toFormatEntitySet(List<Entity> items, List<Columna> columns) {

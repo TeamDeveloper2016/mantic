@@ -62,13 +62,14 @@ public class FormatCustomLazy extends FormatLazyModel<IBaseDto> {
       this.getParams().put("sortOrder", "");
     if(sortField!= null)
       this.getParams().put("sortOrder", "order by ".concat(this.format(sortField)).concat(SortOrder.DESCENDING.equals(sortOrder)? " desc": ""));
-    if(filters.size()> 0)
+    if(filters!= null && filters.size()> 0)
       this.getParams().put("filters", " and (".concat(toFilters(filters)).concat(")"));
     LOG.info("Lazy params: "+ this.getParams());
 		UIBackingUtilities.execute("janal.onLoadCallBack();");
     return super.load(first, pageSize, sortField, sortOrder, filters);
   }
 
+  @Override
   protected String toFilters(Map<String, Object> filters, EFiltersWith like) {
     StringBuilder regresar= new StringBuilder("");
     Map<String, Object> params = null;
