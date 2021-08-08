@@ -3305,7 +3305,8 @@
       </select>
       <select id="detalle">
         select      
-          *
+          tc_mantic_articulos.id_articulo as id_key,
+          tc_mantic_articulos.*
         from      
           tc_mantic_articulos
         where      
@@ -3509,11 +3510,28 @@
         where      
           id_articulo = {idArticulo} and nombre = '{nombre}'
       </select>
+      <select id="detalle">
+        select      
+          tc_mantic_articulos_especificaciones.id_articulo_especificacion as id_key,
+					tc_mantic_articulos_especificaciones.*
+        from      
+          tc_mantic_articulos_especificaciones
+        where 
+          id_articulo= {idArticulo}
+      </select>
 			<select id="maximo">
         select      
           max(id_articulo_especificacion) maximo
         from      
           tc_mantic_articulos_especificaciones
+      </select>
+			<select id="siguiente">
+        select      
+          max(orden) siguiente
+        from      
+          tc_mantic_articulos_especificaciones
+        where 
+          id_articulo= {idArticulo}
       </select>
 			<delete id="rows">
         delete from 

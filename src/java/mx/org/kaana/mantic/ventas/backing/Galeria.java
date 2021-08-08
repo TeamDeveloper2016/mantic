@@ -8,6 +8,8 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFacade;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -34,6 +36,8 @@ public class Galeria extends IBaseFilter implements Serializable {
   private EOrdenarItems sort;
   private List<Imagen> images;  
   private String path;
+  private Entity product;
+  private List<Entity> attributes;
 
   public List<Imagen> getImages() {
     return images;
@@ -45,6 +49,14 @@ public class Galeria extends IBaseFilter implements Serializable {
 
   public ECategorias getCategory() {
     return category;
+  }
+
+  public Entity getProduct() {
+    return product;
+  }
+
+  public List<Entity> getAttributes() {
+    return attributes;
   }
   
   @PostConstruct
@@ -130,6 +142,33 @@ public class Galeria extends IBaseFilter implements Serializable {
   public void doViewDetail(Entity row) {
     this.attrs.put("viewDetail", true);
     this.attrs.put("item", row);
+    List<Columna> columns = null;    
+    Map<String, Object> params = null;
+    try {      
+      params = new HashMap<>();      
+      params.put("idArticulo", row.toLong("idArticulo"));      
+      columns = new ArrayList<>();
+      columns.add(new Columna("mayoreo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+      this.product = (Entity)DaoFactory.getInstance().toEntity("TcManticArticulosDto", "detalle", params);
+      if(this.product!= null)
+        UIBackingUtilities.toFormatEntity(this.product, columns);
+      this.attributes= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticArticulosEspecificacionesDto", "detalle", params);
+      columns.clear();
+      columns.add(new Columna("nombre", EFormatoDinamicos.LETRA_CAPITAL));
+      columns.add(new Columna("valor", EFormatoDinamicos.MINUSCULAS));
+      if(this.attributes== null)
+        this.attributes= new ArrayList<>();
+      else
+        UIBackingUtilities.toFormatEntitySet(this.attributes, columns); 
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
   }
 
   public void doViewSort(String sort) {

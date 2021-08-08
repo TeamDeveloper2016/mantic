@@ -37,6 +37,7 @@
       .producto .producto-button {flex: 1 1 30%;}
       .producto .producto-name {font-size: 1rem;font-weight: 700;}
       .producto .producto-description {margin: 0 0 0.5rem 0;}
+      .producto .producto-atributos {margin: 0 0 0.1rem 0;}
       .producto .producto-precio {font-size: 1.0rem;font-weight: 200;margin: 0 0 0.5rem 0;}
       .producto .producto-category-icon {vertical-align: middle;margin-right: 0.5rem;}
       .producto .producto-category {font-weight: 600;vertical-align: middle;}
@@ -48,8 +49,8 @@
       .producto .producto-list-item .producto-price {font-size: 1.5rem;font-weight: 600;margin-bottom: 0.5rem;align-self: flex-end; text-align: right;}
       .producto .producto-list-item .producto-quantity {font-size: 1.0rem;font-weight: 200;margin-bottom: 0.1rem;align-self: flex-end; text-align: right;}
       .producto .producto-list-item .producto-cost {font-size: 1.0rem;font-weight: 200;margin-bottom: 0.1rem;align-self: flex-end; text-align: right;}
-      .producto .producto-list-item .producto-action {display: -ms-flexbox;display: flex;-ms-flex-direction: column;flex-direction: column;}
-      .producto .producto-list-item .producto-action .ui-button {margin-bottom: 0.5rem;}
+      .producto .producto-list-item .producto-list-action {display: -ms-flexbox;display: flex;-ms-flex-direction: column;flex-direction: column;align-self: baseline;}
+      .producto .producto-list-item .producto-list-action .ui-button {margin-bottom: 0.5rem;}
       @media screen and (max-width: 576px) {
         .ui-autocomplete-panel {width: 220px !important;}
         .janal-wid-col-300 {width: 230px !important;}
@@ -132,7 +133,7 @@
                   <div class="producto-description #{row['idAutomatico'] eq 1? 'janal-color-red': 'janal-color-green'}">#{row['nombre']}</div>
                   <p:rating readonly="true" value="#{10}"/>
                   <span class="producto-category" title="Unidad de medida"><i class="fa fa-language producto-category-icon"/>#{row['unidadMedida']}</span>
-                  <div class="producto-precio janal-color-orange" title="Precio"><i class="fa fa-tags producto-category-icon"/>#{row['menudeo']}</div>
+                  <div class="producto-precio janal-color-blue" title="Precio"><i class="fa fa-tags producto-category-icon"/>#{row['menudeo']}</div>
                 </div>  
               </div>	
             </div>  
@@ -151,14 +152,18 @@
               </div>	
               <div class="producto-list-item p-p-1">
                 <div class="producto-list-detail">
-                  <div id="nombres" class="producto-name" title="Código: #{manticVentasGaleria.attrs.item['propio']}"><i class="fa fa-qrcode producto-category-icon"/>[#{manticVentasGaleria.attrs.item['propio']}]</div>
-                  <div class="producto-description #{manticVentasGaleria.attrs.item['idAutomatico'] eq 1? 'janal-color-red': 'janal-color-green'}">#{manticVentasGaleria.attrs.item['nombre']}</div>
-                  <p:rating readonly="true" value="#{10}"/>
-                  <span class="producto-category" title="Unidad de medida"><i class="fa fa-language producto-category-icon"/>#{manticVentasGaleria.attrs.item['unidadMedida']}</span>
-                  <div class="producto-precio janal-color-orange" title="Precio"><i class="fa fa-tags producto-category-icon"/>#{manticVentasGaleria.attrs.item['menudeo']}</div>
+                  <div id="nombres" class="producto-name" title="Código: #{manticVentasGaleria.attrs.item['propio']}"><i class="fa fa-qrcode producto-category-icon"/>Código: [#{manticVentasGaleria.attrs.item['propio']}]</div>
+                  <div class="producto-description #{manticVentasGaleria.attrs.item['idAutomatico'] eq 1? 'janal-color-red': 'janal-color-green'}">Nombre: #{manticVentasGaleria.attrs.item['nombre']}</div>
+                  <div class="producto-description">Descripción: #{manticVentasGaleria.attrs.item['descripcion']}</div>
+                  <br/>
+                  <div class="producto-description"><span class="Fs16 janal-color-orange" style="font-weight: normal;">Especificaciones:</span></div>
+                  <p:repeat value="#{manticVentasGaleria.attributes}" var="item">
+                    <div class="producto-atributos">#{item.nombre}: <span class="producto-description">#{item.valor}</span></div>
+                  </p:repeat>
                 </div>  
-                <div class="producto-list-action">
-                  <div class="producto-cost"></div>
+                <div class="producto-list-action" style="align-self: baseline;">
+                  <div class="producto-price janal-color-blue"><i class="fa fa-tags producto-category-icon"/>#{manticVentasGaleria.attrs.item['menudeo']}</div>
+                  <div class="producto-quantity"><i class="fa fa-language producto-category-icon"/>#{manticVentasGaleria.attrs.item['unidadMedida']}</div>
                 </div> 
               </div>	
             </div>  
