@@ -28,7 +28,7 @@
 				  tc_mantic_unidades_medidas.nombre unidad_medida,
 				  ifnull(tc_mantic_articulos.extra, '0') as morado,
 				  concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes,
-				  concat(tc_mantic_articulos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo
+				  ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png') as archivo
 				from 
 					tc_mantic_articulos
 				inner join
@@ -74,7 +74,7 @@
 				  tc_mantic_unidades_medidas.nombre unidad_medida,
 				  ifnull(tc_mantic_articulos.extra, '0') as morado,
 				  concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes,
-				  concat(tc_mantic_articulos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo
+				  ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png') as archivo
 				from 
 					tc_mantic_articulos
 				inner join
@@ -120,7 +120,7 @@
 				  tc_mantic_unidades_medidas.nombre unidad_medida,
 				  ifnull(tc_mantic_articulos.extra, '0') as morado,
 				  concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes,
-				  concat(tc_mantic_articulos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo
+				  ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png') as archivo
 				from 
 					tc_mantic_articulos
 				inner join

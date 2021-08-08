@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFacade;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
@@ -73,8 +72,8 @@ public class Galeria extends IBaseFilter implements Serializable {
       this.category= ECategorias.NINGUNA;
       
       this.images = new ArrayList<>();
-      for (int i = 1; i <= 12; i++) {
-        this.images.add(new Imagen(new Long(i), "sin-foto.png", "SIN-FOTO_"+ i));
+      for (int i= 1; i <= 10; i++) {
+        this.images.add(new Imagen(new Long(i), "cabo_"+ i+ ".jpg", "CABO PARA MARTILLO "+ i));
       } // for
     } // try
     catch (Exception e) {
@@ -160,6 +159,8 @@ public class Galeria extends IBaseFilter implements Serializable {
         this.attributes= new ArrayList<>();
       else
         UIBackingUtilities.toFormatEntitySet(this.attributes, columns); 
+      this.images.remove(this.images.size()- 1);
+      this.images.add(new Imagen(new Long(this.images.size()), row.toString("archivo"), row.toString("nombre")));      
     } // try
     catch (Exception e) {
       Error.mensaje(e);
