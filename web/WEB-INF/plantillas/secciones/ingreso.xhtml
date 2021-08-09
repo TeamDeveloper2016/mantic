@@ -27,8 +27,8 @@
 						<p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-column-left, janal-control-acceso janal-column-center janal-wid-col-90">
   		  		  <h1 class="titulo-proyecto janal-header-title">#{kajoolUtilAplicacion.tituloSistema}</h1>
 	  		  	  <h1 class="titulo-siglas janal-header-acronym">#{kajoolUtilAplicacion.tituloCorto}</h1>
-              <p:panelGrid columns="2" styleClass="janal-wid-100">
-                <p:commandLink action="/galeria?faces-redirect=true" title="Galería de productos" styleClass="janal-control-acceso">
+              <p:panelGrid columns="1" styleClass="janal-wid-100">
+                <p:commandLink action="/galeria?faces-redirect=true" title="Galería de productos" styleClass="janal-control-acceso" rendered="false">
                   <span class="fa fa-stack janal-global-icon-cart">
                     <i class="fa fa-circle fa-stack-2x janal-color-orange"></i>
                     <i class="fa fa-cart-plus fa-stack-1x fa-inverse"></i>

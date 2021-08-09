@@ -27,7 +27,12 @@
           $('#view'+ index).click();
         } // if
         janal.console('#view'+ index);
-      }      
+      } // clickFlow
+      function clickZoom(item, e, index) {  
+        e.stopImmediatePropagation(); 
+        $('#zoom'+ index).click();
+        janal.console('#zoom'+ index);
+      } // clickZoom
 		</script>   
 		<style type="text/css">
       .magnify-modal {background-color: rgb(5 125 216 / 85%);}
@@ -46,28 +51,41 @@
       .producto .producto-category {font-weight: 600;vertical-align: middle;}
       .producto .producto-list-item {display: -ms-flexbox;display: flex;-ms-flex-align: center;align-items: center;padding: 1rem;}
       .producto .producto-list-item .producto-item-search {width: 220px; text-align: center;}
-      .producto .producto-list-item img {width: 200px;height:170px;box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); margin-right: 2rem;}
-      .producto .producto-list-item .producto-list-detail {flex: 1 1 0;-ms-flex: 1 1 0;}  
+      .producto .producto-list-item .producto-item-galeria {width: 480px; text-align: center;}
+      .producto .producto-list-item .producto-item-galeria img {width: 450px;height:300px;box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); margin-right: 2rem;}
+      .producto .producto-list-item .producto-item-search img {width: 200px;height:170px;box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); margin-right: 2rem;}
+      .producto .producto-list-item .producto-list-detail {flex: 1 1 0;-ms-flex: 1 1 0;align-self: baseline;}  
       .producto .producto-list-item.border {border-bottom: 1px solid;} 
       .producto .producto-list-item .producto-price {font-size: 1.5rem;font-weight: 600;margin-bottom: 0.5rem;align-self: flex-end; text-align: right;}
       .producto .producto-list-item .producto-quantity {font-size: 1.0rem;font-weight: 200;margin-bottom: 0.1rem;align-self: flex-end; text-align: right;}
       .producto .producto-list-item .producto-cost {font-size: 1.0rem;font-weight: 200;margin-bottom: 0.1rem;align-self: flex-end; text-align: right;}
       .producto .producto-list-item .producto-list-action {display: -ms-flexbox;display: flex;-ms-flex-direction: column;flex-direction: column;align-self: baseline;}
       .producto .producto-list-item .producto-list-action .ui-button {margin-bottom: 0.5rem;}
+      .producto .producto-list-galeria {display: -ms-flexbox;display: flex;-ms-flex-align: center;align-items: center;padding: 1rem;}
+      .producto .producto-list-galeria .producto-price {font-size: 1.5rem;font-weight: 600;margin-bottom: 0.5rem;align-self: flex-end; text-align: right;}
+      .producto .producto-list-galeria .producto-quantity {font-size: 1.0rem;font-weight: 200;margin-bottom: 0.1rem;align-self: flex-end; text-align: right;}
+      .producto .producto-list-galeria .producto-list-detail {flex: 1 1 0;-ms-flex: 1 1 0;align-self: baseline;}  
+      .producto .producto-list-galeria .producto-list-action {display: -ms-flexbox;display: flex;-ms-flex-direction: column;flex-direction: column;align-self: baseline;}
       @media screen and (max-width: 576px) {
         .ui-autocomplete-panel {width: 220px !important;}
         .janal-wid-col-300 {width: 230px !important;}
         .producto .producto-search {display: flex;width: 100%;}
         .producto .producto-input {flex: 1 1 80%;}
         .producto .producto-button {flex: 1 1 20%;}
-        .producto .producto-name {font-size: 0.8rem;font-weight: 300;}
-        .producto .producto-precio {font-size: 0.7rem;font-weight: 100;}
+        .producto .producto-name {font-size: 0.8rem;font-weight: 200;}
+        .producto .producto-precio {font-size: 1.0rem;font-weight: 200;}
         .producto .producto-category {font-size: 0.8rem;font-weight: 300;vertical-align: middle;}
-        .producto .producto-list-item .producto-item-search {width: 150px; text-align: center;}
-        .producto .producto-list-item img {width: 140px;height:120px;box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); margin-right: 2rem;}
-        .producto .producto-list-item .producto-price {font-size: 1.0rem;font-weight: 300;margin-bottom: 0.5rem;align-self: flex-end;}
-        .producto .producto-list-item .producto-quantity {font-size: 0.9rem;font-weight: 100;margin-bottom: 0.1rem;align-self: flex-end; text-align: right;}
+        .producto .producto-list-galeria {display: flex; flex-direction: column;align-items: center;}  
+        .producto .producto-list-galeria .producto-list-detail {text-align: center;}  
+        .producto .producto-list-galeria .producto-list-action {align-items: center;}
+        .producto .producto-list-item .producto-item-search {width: 165px; text-align: center;}
+        .producto .producto-list-item .producto-item-search img {width: 150px;height:120px;box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); margin-right: 2rem;}
+        .producto .producto-list-item .producto-price {font-size: 1.0rem;font-weight: 100;margin-bottom: 0.5rem;align-self: flex-end;}
+        .producto .producto-list-galeria .producto-price {font-size: 1.0rem;font-weight: 100;margin-bottom: 0.5rem;align-self: flex-end;}
+        .producto .producto-list-item .producto-quantity {font-size: 0.7rem;font-weight: 100;margin-bottom: 0.1rem;align-self: flex-end; text-align: right;}
+        .producto .producto-list-galeria .producto-quantity {font-size: 0.7rem;font-weight: 100;margin-bottom: 0.1rem;align-self: flex-end; text-align: right;}
         .producto .producto-list-item .producto-cost {font-size: 0.7rem;font-weight: 100;margin-bottom: 0.1rem;align-self: flex-end; text-align: right;}
+        .ui-datagrid .ui-paginator {display: inline-block !important;width: 98%;}
       }
       .p-p-0 {padding: 0 !important;}
       .p-p-1 {padding: 0.25rem !important;}
@@ -99,12 +117,12 @@
             <p:menuitem value="Categorias" actionListener="#{manticVentasGaleria.doViewSearch('NINGUNA')}" process="@this" update="codigo tabla @(.detalle)" icon="fa fa-list-ul" />
             <p:menuitem value="Fontaneria" actionListener="#{manticVentasGaleria.doViewSearch('FONTANERIA')}" process="@this" update="codigo tabla @(.detalle)" icon="fa fa-steam" styleClass="#{manticVentasGaleria.category eq 'FONTANERIA'? 'janal-color-orange': ''}"/>
             <p:menuitem value="Herreria" actionListener="#{manticVentasGaleria.doViewSearch('HERRERIA')}" process="@this" update="codigo tabla @(.detalle)" icon="fa fa-table" styleClass="#{manticVentasGaleria.category eq 'HERRERIA'? 'janal-color-orange': ''}"/>
-            <p:menuitem value="Pisos y azulejos" actionListener="#{manticVentasGaleria.doViewSearch('PISOS')}" process="@this" update="codigo tabla @(.detalle)" icon="fa fa-windows" styleClass="#{manticVentasGaleria.category eq 'PISOS'? 'janal-color-orange': ''}"/>
+            <p:menuitem value="Pisos, azulejos" actionListener="#{manticVentasGaleria.doViewSearch('PISOS')}" process="@this" update="codigo tabla @(.detalle)" icon="fa fa-windows" styleClass="#{manticVentasGaleria.category eq 'PISOS'? 'janal-color-orange': ''}"/>
             <p:menuitem value="Jardinería" actionListener="#{manticVentasGaleria.doViewSearch('JARDINERIA')}" process="@this" update="codigo tabla @(.detalle)" icon="fa fa-scissors" styleClass="#{manticVentasGaleria.category eq 'JARDINERIA'? 'janal-color-orange': ''}"/>
-            <p:menuitem value="Herramientas" actionListener="#{manticVentasGaleria.doViewSearch('HERRAMIENTAS')}" process="@this" update="codigo tabla @(.detalle)" icon="fa fa-wrench" styleClass="#{manticVentasGaleria.category eq 'HERRAMIENTAS'? 'janal-color-orange': ''}"/>
+            <p:menuitem value="Herramientas" actionListener="#{manticVentasGaleria.doViewSearch('HERRAMIENTAS')}" process="@this" update="codigo tabla @(.detalle)" icon="fa fa-wrench" styleClass="#{manticVentasGaleria.category eq 'HERRAMIENTAS'? 'janal-color-orange': ''}" rendered="false"/>
             <p:menuitem value="Electricidad" actionListener="#{manticVentasGaleria.doViewSearch('ELECTRICIDAD')}" process="@this" update="codigo tabla @(.detalle)" icon="fa fa-plug" styleClass="#{manticVentasGaleria.category eq 'ELECTRICIDAD'? 'janal-color-orange': ''}"/>
-            <p:menuitem value="Lubricantes" actionListener="#{manticVentasGaleria.doViewSearch('LUBRICANTES')}" process="@this" update="codigo tabla @(.detalle)" icon="fa fa-stumbleupon" styleClass="#{manticVentasGaleria.category eq 'LUBRICANTES'? 'janal-color-orange': ''}"/>
-            <p:menuitem value="Tlapalería" actionListener="#{manticVentasGaleria.doViewSearch('TLAPALERIA')}" process="@this" update="codigo tabla @(.detalle)" icon="fa fa-stack-overflow" styleClass="#{manticVentasGaleria.category eq 'TLAPALERIA'? 'janal-color-orange': ''}"/>
+            <p:menuitem value="Tlapalería" actionListener="#{manticVentasGaleria.doViewSearch('LUBRICANTES')}" process="@this" update="codigo tabla @(.detalle)" icon="fa fa-stumbleupon" styleClass="#{manticVentasGaleria.category eq 'LUBRICANTES'? 'janal-color-orange': ''}"/>
+            <p:menuitem value="Lubricantes" actionListener="#{manticVentasGaleria.doViewSearch('TLAPALERIA')}" process="@this" update="codigo tabla @(.detalle)" icon="fa fa-stack-overflow" styleClass="#{manticVentasGaleria.category eq 'TLAPALERIA'? 'janal-color-orange': ''}" rendered="false"/>
           </p:breadCrumb>          
           <p:dataGrid id="tabla" widgetVar="kajoolTable" lazy="true" var="row" value="#{manticVentasGaleria.lazyModel}" paginator="#{manticVentasGaleria.lazyModel.rowCount gt manticVentasGaleria.lazyModel.pageSize}" columns="#{kajoolUtilAplicacion.isMobile? 1: 3}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" styleClass="jana-wid-100-txt detalle" style="display: #{manticVentasGaleria.attrs.viewDetail? 'none': ''}">
             <f:facet name="header">
@@ -127,7 +145,7 @@
               <div class="producto-list-item p-p-1">
                 <div class="producto-item-search">
                   <p:commandLink process="@this" update="@(.detalle)" actionListener="#{manticVentasGaleria.doViewDetail(row)}" title="Ver detalle del producto">
-                    <p:graphicImage url="#{manticVentasGaleria.path}#{row['imagen']}" style="cursor:zoom-in;"/>
+                    <p:graphicImage url="#{manticVentasGaleria.path}#{row['archivo']}" style="cursor:zoom-in;"/>
                   </p:commandLink>
                 </div>	
                 <div class="producto-list-detail">
@@ -145,20 +163,28 @@
           </p:dataGrid>
           <p:panel header="#{manticVentasGaleria.attrs.item['nombre']}" styleClass="jana-wid-100-txt detalle" style="display: #{manticVentasGaleria.attrs.viewDetail? '': 'none'}">
             <div class="jana-wid-100-txt producto">
-              <div class="producto-gallery">
+              <div class="producto-gallery lg-pantalla">
                 <p:contentFlow value="#{manticVentasGaleria.images}" var="image" style="height: 300px; background: #f4f4f4;">
                   <p:graphicImage url="#{manticVentasGaleria.path}#{image.name}" styleClass="content" onclick="clickFlow(this, event, #{image.id})"/>
                   <div class="caption janal-color-black">#{image.alias}</div>
                   <a id="view#{image.id}" data-magnify="gallery" href="#{manticVentasGaleria.path}#{image.name}" data-caption="#{image.alias}" data-group="icon-image" class="icon"/>
                 </p:contentFlow>                
               </div>	
-              <div class="producto-list-item p-p-1">
+              <div class="producto-list-galeria p-p-1">
+                <div class="producto-item-galeria xs-pantalla">
+                  <center>
+                    <p:galleria value="#{manticVentasGaleria.images}" var="image" panelWidth="450" panelHeight="313" showCaption="true" effectSpeed="1000" autoPlay="false">
+                      <p:graphicImage url="#{manticVentasGaleria.path}#{image.name}" title="#{image.alias}" onclick="clickZoom(this, event, #{image.id})"/>
+                      <a id="zoom#{image.id}" data-magnify="gallery" href="#{manticVentasGaleria.path}#{image.name}" data-caption="#{image.alias}" data-group="icon-image" class="icon"/>
+                    </p:galleria>                
+                  </center>  
+                </div>  
                 <div class="producto-list-detail" style="text-align: left;">
                   <div id="nombres" class="producto-name" title="Código: #{manticVentasGaleria.attrs.item['propio']}"><i class="fa fa-qrcode producto-category-icon"/>Código: #{manticVentasGaleria.attrs.item['propio']}</div>
                   <div class="producto-description #{manticVentasGaleria.attrs.item['idAutomatico'] eq 1? 'janal-color-red': 'janal-color-green'}">Nombre: #{manticVentasGaleria.attrs.item['nombre']}</div>
-                  <div class="producto-description">Descripción: #{manticVentasGaleria.attrs.item['descripcion']}</div>
+                  <div class="producto-description" style="display: #{manticVentasGaleria.attrs.item['descripcion'] eq '' or empty manticVentasGaleria.attrs.item['descripcion']? 'none': ''}">Descripción: #{manticVentasGaleria.attrs.item['descripcion']}</div>
                   <br/>
-                  <div class="producto-description"><span class="Fs16 janal-color-orange" style="font-weight: normal;">Especificaciones:</span></div>
+                  <div class="producto-description" style="display: #{manticVentasGaleria.attributes eq null or manticVentasGaleria.attributes.size() lt 1? 'none': ''}"><span class="Fs16 janal-color-orange" style="font-weight: normal;">Especificaciones:</span></div>
                   <p:repeat value="#{manticVentasGaleria.attributes}" var="item">
                     <div class="producto-atributos">#{item.nombre}: <span class="producto-description">#{item.valor}</span></div>
                   </p:repeat>
