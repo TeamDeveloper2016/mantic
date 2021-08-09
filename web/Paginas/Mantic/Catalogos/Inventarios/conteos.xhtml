@@ -100,20 +100,25 @@
             <p:ajax event="tabChange" listener="#{manticCatalogosInventariosConteos.doTabChange}" process="@this" update="@(.filas)"/>												
 						<p:tab title="Generales">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-70, janal-wid-30">	
-								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-100, janal-wid-100">		
+								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-150, janal-wid-100">		
 									<p:outputLabel for="ejercicio" value="Ejercicio:"/>							
 									<p:inputText id="ejercicio" value="#{manticCatalogosInventariosConteos.attrs.vigente.ejercicio}" styleClass="janal-wid-96 filas" readonly="true"/>
-									<p:outputLabel for="inicial" value="Inicial:"/>
-  								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-98" columnClasses="janal-wid-100, janal-wid-col-38">
+									<p:outputLabel for="inicial" value="Valor inicial:"/>
+  								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-98" columnClasses="janal-wid-95, janal-wid-5">
 										<p:inputNumber id="inicial" inputStyleClass="janal-wid-98 janal-column-right janal-key-kardex janal-color-orange" value="#{manticCatalogosInventariosConteos.attrs.vigente.inicial}" styleClass="filas" readonly="#{manticCatalogosInventariosConteos.habilitar}"/>	
 										<p:commandButton id="agregarInventario" process="@this @(.filas)" update="tabla" icon="fa fa-cart-plus" title="Agregar/Actualizar inventario" style="float:right;" styleClass="janal-key-kardex filas" action="#{manticCatalogosInventariosConteos.doConteo}" disabled="#{manticCatalogosInventariosConteos.habilitar}" onstart="return janal.execute();" oncomplete="$('#codigos_input').focus(); janal.desbloquear();"/>
 									</p:panelGrid>
-  							  <p:outputLabel value="Ultimo mov.:"/>
+  							  <p:outputLabel value="Ultimo movimiento:"/>
   								<p:inputText value="#{manticCatalogosInventariosConteos.attrs.ultimo}" styleClass="janal-wid-96 filas" readonly="true"/>
 									<p:outputLabel for="minimo" value="Stock mínimo:"/>
 									<p:inputNumber id="minimo" inputStyleClass="janal-wid-96 janal-column-right" value="#{manticCatalogosInventariosConteos.articulo.minimo}" styleClass="filas"/>                    
 									<p:outputLabel for="maximo" value="Stock máximo:"/>
 									<p:inputNumber id="maximo" inputStyleClass="janal-wid-96 janal-column-right" value="#{manticCatalogosInventariosConteos.articulo.maximo}" styleClass="filas"/>                    
+									<p:outputLabel for="idVerificado" value="Stock verificado:"/>
+                  <p:selectOneMenu id="idVerificado" value="#{manticCatalogosInventariosConteos.articulo.idVerificado}" styleClass="janal-wid-96 filas">									
+                    <f:selectItem itemLabel="SI" itemValue="1"/>
+                    <f:selectItem itemLabel="NO" itemValue="2"/>
+                  </p:selectOneMenu>								
 									<p:outputLabel for="idAlmacenUbicacion" value="Ubicaciones:"/>
 									<p:selectOneMenu id="idAlmacenUbicacion" tabindex="0" value="#{manticCatalogosInventariosConteos.attrs.idAlmacenUbicacion}" var="ubicacion" converter="janal.convertidor.Entity" styleClass="janal-wid-96 filas almacen" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 										<p:ajax event="change" listener="#{manticCatalogosInventariosConteos.doChangeUbicacion}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>

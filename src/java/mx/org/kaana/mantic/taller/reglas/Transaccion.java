@@ -536,7 +536,8 @@ public class Transaccion extends TransaccionFactura {
               "0", // String extra, 
               null, // String idFacturama
               2L, // String idDescontinuado
-              null // String fabricante
+              null, // String fabricante
+              2L // Long idVerificado      
             );
             DaoFactory.getInstance().insert(sesion, articulo);
             // FALTA NOTIFICAR EN FACTURA QUE SE INSERTO ESTE ARTICULO

@@ -375,6 +375,11 @@
 								<p:inputNumber id="minimo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.minimo}"/>                    
 								<p:outputLabel for="maximo" value="Stock máximo:"/>
 								<p:inputNumber id="maximo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.maximo}"/>                    
+								<p:outputLabel for="idVerificado" value="Stock verificado:"/>
+								<p:selectOneMenu id="idVerificado" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.idVerificado}" styleClass="janal-wid-100-txt">									
+									<f:selectItem itemLabel="SI" itemValue="1"/>
+									<f:selectItem itemLabel="NO" itemValue="2"/>
+								</p:selectOneMenu>								
 							</p:panelGrid>							
 						</p:tab>
 						<p:tab title="Observaciones">

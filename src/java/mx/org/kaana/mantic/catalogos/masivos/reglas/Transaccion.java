@@ -679,7 +679,8 @@ public class Transaccion extends IBaseTnx {
 											"0", // String extra, 
 											null, // String idFacturama
 											2L, // String idDescontinuado
-                      !Cadena.isVacio(fabricante)? fabricante.replaceAll(Constantes.CLEAN_ART, "").trim(): null // String fabricante
+                      !Cadena.isVacio(fabricante)? fabricante.replaceAll(Constantes.CLEAN_ART, "").trim(): null, // String fabricante
+                      2L // Long idVerificado      
 										);
 										TcManticArticulosDto identico= this.toFindArticuloIdentico(sesion, articulo.toMap(), 1L);
 										if(identico== null)

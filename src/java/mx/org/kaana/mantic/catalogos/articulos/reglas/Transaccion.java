@@ -122,10 +122,10 @@ public class Transaccion extends TransaccionFactura {
 		int count                    = 0;
 		Long idImage                 = -1L;
 		try {
-			image= loadImageImportado(this.seleccionados[0].toLong("idArticulo"));
+			image  = this.loadImageImportado(this.seleccionados[0].toLong("idArticulo"));
 			idImage= DaoFactory.getInstance().insert(sesion, image);
-			if(idImage >= 1L){
-				for(Entity seleccionado: this.seleccionados){
+			if(idImage >= 1L) {
+				for(Entity seleccionado: this.seleccionados) {
 					articulo= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, seleccionado.toLong("idArticulo"));
 					articulo.setIdImagen(idImage);
 					DaoFactory.getInstance().update(sesion, articulo);
@@ -191,19 +191,19 @@ public class Transaccion extends TransaccionFactura {
 		try {						
 			params= new HashMap<>();
 			params.put("idArticulo", this.articulo.getIdArticulo());
-			if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosCodigosDto.class, params)> -1L){
-				if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosEspecificacionesDto.class, params)> -1L){
-					if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosDescuentosDto.class, params)> -1L){
-						if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloGrupoDescuentoDto.class, params)> -1L){
-							if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloPrecioSugeridoDto.class, params)> -1L){
-								if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloProveedorDto.class, params)> -1L){
-									if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloTipoVentaDto.class, params)> -1L){
-										if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosDimencionesDto.class, params)> -1L){
-											//if(DaoFactory.getInstance().deleteAll(sesion, TcManticImagenesDto.class, params)> -1L){
-											if(DaoFactory.getInstance().execute(ESql.DELETE, sesion, "TrManticArticuloPresentacionDto", "rows", params)> -1L){
+			if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosCodigosDto.class, params)> -1L) {
+				if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosEspecificacionesDto.class, params)> -1L) {
+					if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosDescuentosDto.class, params)> -1L) {
+						if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloGrupoDescuentoDto.class, params)> -1L) {
+							if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloPrecioSugeridoDto.class, params)> -1L) {
+								if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloProveedorDto.class, params)> -1L) {
+									if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloTipoVentaDto.class, params)> -1L) {
+										if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosDimencionesDto.class, params)> -1L) {
+											//if(DaoFactory.getInstance().deleteAll(sesion, TcManticImagenesDto.class, params)> -1L) {
+											if(DaoFactory.getInstance().execute(ESql.DELETE, sesion, "TrManticArticuloPresentacionDto", "rows", params)> -1L) {
 												regresar= DaoFactory.getInstance().delete(sesion, TcManticArticulosDto.class, this.articulo.getIdArticulo())>= 1L;
 												if(this.articulo.getArticulo().getIdArticuloTipo().equals(1L))
-													eliminarArticuloFacturama(sesion, this.articulo.getArticulo().getIdFacturama());
+													this.eliminarArticuloFacturama(sesion, this.articulo.getArticulo().getIdFacturama());
 				}	}	}	}	}	}	}	} } // if		
 		} // try
 		catch (Exception e) {			

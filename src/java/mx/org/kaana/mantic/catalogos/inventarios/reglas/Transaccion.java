@@ -11,6 +11,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.inventarios.beans.ArticuloAlmacen;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
@@ -26,10 +27,10 @@ public class Transaccion extends IBaseTnx {
 	private static final Log LOG=LogFactory.getLog(Transaccion.class);
 	
 	private TcManticInventariosDto articulo;
-	private TcManticAlmacenesArticulosDto almacen;
+	private ArticuloAlmacen almacen;
 	private String messageError;
 
-	public Transaccion(TcManticInventariosDto articulo, TcManticAlmacenesArticulosDto almacen) {
+	public Transaccion(TcManticInventariosDto articulo, ArticuloAlmacen almacen) {
 		this.articulo= articulo;
 		this.almacen = almacen;
 	}
@@ -100,6 +101,7 @@ public class Transaccion extends IBaseTnx {
 			TcManticArticulosDto global= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, this.articulo.getIdArticulo());
 			if(global!= null) {
 				global.setStock(this.toSumAlmacenArticulo(sesion, this.almacen.getIdArticulo()));
+        global.setIdVerificado(this.almacen.getIdVerificado());
   			DaoFactory.getInstance().update(sesion, global);
 			} // if
 			else

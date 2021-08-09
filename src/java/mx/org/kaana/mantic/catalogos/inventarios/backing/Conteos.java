@@ -30,8 +30,8 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.inventarios.beans.ArticuloAlmacen;
 import mx.org.kaana.mantic.catalogos.inventarios.reglas.Transaccion;
-import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
@@ -47,17 +47,17 @@ public class Conteos extends IBaseFilter implements Serializable {
 	private static final long serialVersionUID = 5570593377763068163L;	
 	
 	private StreamedContent image;
-	private TcManticAlmacenesArticulosDto articulo;
+	private ArticuloAlmacen articulo;
 		
 	public StreamedContent getImage() {
 		return image;
 	}
 
-	public TcManticAlmacenesArticulosDto getArticulo() {
+	public ArticuloAlmacen getArticulo() {
 		return articulo;
 	}
 
-	public void setArticulo(TcManticAlmacenesArticulosDto articulo) {
+	public void setArticulo(ArticuloAlmacen articulo) {
 		this.articulo=articulo;
 	}
 	
@@ -77,7 +77,7 @@ public class Conteos extends IBaseFilter implements Serializable {
     	this.attrs.put("buscaPorCodigo", false);
     	this.attrs.put("ultimo", "");
     	this.attrs.put("idArticuloTipo", 1L);
-			this.articulo= new TcManticAlmacenesArticulosDto();
+			this.articulo= new ArticuloAlmacen();
 			this.toLoadAlmacenes();
 			if(this.attrs.get("xcodigo")!= null) {
 				this.doCompleteArticulo((String)this.attrs.get("xcodigo"));
@@ -146,36 +146,51 @@ public class Conteos extends IBaseFilter implements Serializable {
 	private void toLoadAlmacenArticulo() throws Exception {
 		List<UISelectEntity> ubicaciones= (List<UISelectEntity>)this.attrs.get("ubicaciones");
     TcManticInventariosDto vigente  = (TcManticInventariosDto)this.attrs.get("vigente");
-		this.articulo= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().toEntity(TcManticAlmacenesArticulosDto.class, "TcManticAlmacenesArticulosDto", "almacenArticulo", this.attrs);
-		if(this.articulo== null) {
-			TcManticArticulosDto item= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.attrs.get("idArticulo")== null? -1L: (Long)this.attrs.get("idArticulo"));
-			if(item!= null)
-				this.articulo= new TcManticAlmacenesArticulosDto(
-					item.getMinimo(), // Long minimo, 
-					-1L, // Long idAlmacenArticulo, 
-					JsfBase.getIdUsuario(), // Long idUsuario, 
-					(Long)this.attrs.get("idAlmacen"), // Long idAlmacen,
-					item.getMaximo(), // Long maximo, 
-					-1L, // Long idAlmacenUbicacion, 
-					(Long)this.attrs.get("idArticulo"), // Long idArticulo, 
-					0D // Double stock
-					);
-			else
-				this.articulo= new TcManticAlmacenesArticulosDto();
-			if(ubicaciones!= null && !ubicaciones.isEmpty()) 
-  			this.attrs.put("idAlmacenUbicacion", ubicaciones.get(0));
-		} // if	
-		else {
-			if(ubicaciones!= null && !ubicaciones.isEmpty()) {
-				int index= ubicaciones.indexOf(new UISelectEntity(this.articulo.getIdAlmacenUbicacion()));
-				if(index>= 0)
-					this.attrs.put("idAlmacenUbicacion", ubicaciones.get(index));
-				else
-					this.attrs.put("idAlmacenUbicacion", ubicaciones.get(0));
-			} // if
-			if(!vigente.isValid())
-				vigente.setInicial(this.articulo.getStock());
-		} // if
+    Map<String, Object> params      = null;
+    Long idArticulo                 = this.attrs.get("idArticulo")== null? -1L: (Long)this.attrs.get("idArticulo");
+    try {      
+      params = new HashMap<>();      
+      params.put("idArticulo", idArticulo);      
+      params.put("idAlmacen", this.attrs.get("idAlmacen"));      
+      this.articulo= (ArticuloAlmacen)DaoFactory.getInstance().toEntity(ArticuloAlmacen.class, "TcManticAlmacenesArticulosDto", "almacenArticulo", params);
+      if(this.articulo== null) {
+        TcManticArticulosDto item= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, idArticulo);
+        if(item!= null)
+          this.articulo= new ArticuloAlmacen(
+            item.getMinimo(), // Long minimo, 
+            -1L, // Long idAlmacenArticulo, 
+            JsfBase.getIdUsuario(), // Long idUsuario, 
+            (Long)this.attrs.get("idAlmacen"), // Long idAlmacen,
+            item.getMaximo(), // Long maximo, 
+            -1L, // Long idAlmacenUbicacion, 
+            (Long)this.attrs.get("idArticulo"), // Long idArticulo, 
+            0D, // Double stock
+            item.getIdVerificado() // Long idVerificado
+          );
+        else
+          this.articulo= new ArticuloAlmacen();
+        if(ubicaciones!= null && !ubicaciones.isEmpty()) 
+          this.attrs.put("idAlmacenUbicacion", ubicaciones.get(0));
+      } // if	
+      else {
+        if(ubicaciones!= null && !ubicaciones.isEmpty()) {
+          int index= ubicaciones.indexOf(new UISelectEntity(this.articulo.getIdAlmacenUbicacion()));
+          if(index>= 0)
+            this.attrs.put("idAlmacenUbicacion", ubicaciones.get(index));
+          else
+            this.attrs.put("idAlmacenUbicacion", ubicaciones.get(0));
+        } // if
+        if(!vigente.isValid())
+          vigente.setInicial(this.articulo.getStock());
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
 	}
 	
 	private void toLoadAlmacenes() throws Exception {

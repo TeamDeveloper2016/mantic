@@ -1,9 +1,12 @@
 package mx.org.kaana.mantic.catalogos.inventarios.beans;
 
+import java.io.Serializable;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
 
-public class ArticuloInventario extends TcManticInventariosDto {
+public class ArticuloInventario extends TcManticInventariosDto implements Serializable {
+
+  private static final long serialVersionUID = -3827117973220179158L;
 	
 	private ESql sqlAccion;
 	private Boolean nuevo;
