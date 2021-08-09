@@ -18,6 +18,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.JsfUtilities;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
@@ -68,6 +69,7 @@ public class Galeria extends IBaseFilter implements Serializable {
       this.attrs.put("buscaPorCodigo", false);
       this.attrs.put("viewDetail", false);
       this.attrs.put("item", new Entity());
+      this.attrs.put("cuantos", JsfUtilities.getBrowser().isMobile()? 1: 3);
       this.sort= EOrdenarItems.TEXT_ASC;
       this.category= ECategorias.NINGUNA;
       
@@ -172,6 +174,11 @@ public class Galeria extends IBaseFilter implements Serializable {
     } // finally
   }
 
+  public void doViewKeyup() {
+    this.category= ECategorias.NINGUNA;
+    this.doLoad();
+  } 
+  
   public void doViewSort(String sort) {
     this.sort= EOrdenarItems.valueOf(sort);
     this.doLoad();
@@ -179,8 +186,13 @@ public class Galeria extends IBaseFilter implements Serializable {
   
   public void doViewSearch(String search) {
     this.category= ECategorias.valueOf(search);
+    this.attrs.put("codigo", "");
     this.doLoad();
   }
+
+  public void doViewMovil(Long cuantos) {
+    this.attrs.put("cuantos", cuantos);
+  } 
   
 	@Override
 	protected void finalize() throws Throwable {

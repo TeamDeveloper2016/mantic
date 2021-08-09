@@ -90,7 +90,7 @@
               <p:outputLabel for="codigo" value="Buscar por código ó SKU"/>
             </p:panelGrid>
             <p:inputText id="codigo" value="#{manticVentasGaleria.attrs.codigo}" styleClass="janal-wid-100-txt" placeholder="Teclar nombre del producto ejemplo: martillo">
-              <p:ajax event="keyup" process="@this" update="tabla @(.detalle)" listener="#{manticVentasGaleria.doLoad}" onstart="return $('#codigo').val().trim().length> 2"/>
+              <p:ajax event="keyup" process="@this" update="tabla @(.detalle)" listener="#{manticVentasGaleria.doViewKeyup}" onstart="return $('#codigo').val().trim().length> 2"/>
             </p:inputText>  
 					</p:panelGrid>	
           <p:breadCrumb id="categorias" styleClass="janal-wid-100-txt detalle">

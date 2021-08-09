@@ -14,7 +14,7 @@
 			Janal.Control.fields = {				 
         codigo: {validaciones: 'requerido', mascara: 'texto'} 
 			};	
-			
+      //<![CDATA[			
     	$(document).ready(function() {
         jsArticulos= new Janal.Control.Articulos.Core(1000, 'tabla\\:');
         $(".janal-global-help").hide();
@@ -33,9 +33,38 @@
         $('#zoom'+ index).click();
         janal.console('#zoom'+ index);
       } // clickZoom
+      // Example: if (isMedia("screen and (max-width:800px)"){}
+      var isMedia = (function () {
+        var div;
+        return function (query) {
+          if (!div) {
+            div = document.createElement("div");
+            div.id = "ncz1";
+            div.style.cssText = "position:absolute;top:-1000px";
+            document.body.insertBefore(div, document.body.firstChild);
+          } // if
+          div.innerHTML = "_<style media=\"" + query + "\"> #ncz1 { width: 1px; }</style>";
+          div.removeChild(div.firstChild);
+          return div.offsetWidth=== 1;
+        };
+      })();      
+      $(window).on('resize load', function() {
+        if (isMedia("screen and (max-width: 576px)")) { 
+          janal.console('isMedia: '+ parseInt($('#cuantos').val(), 10));
+          if(parseInt($('#cuantos').val(), 10)!== 1)
+            viewMobile(1);
+        } // if  
+        else {
+          janal.console('notIsMedia: '+ parseInt($('#cuantos').val(), 10));
+          if(parseInt($('#cuantos').val(), 10)!== 3)
+            viewMobile(3);
+        } // if  
+      });      
+      //]]>
 		</script>   
 		<style type="text/css">
-      .magnify-modal {background-color: rgb(5 125 216 / 85%);}
+      .magnify-modal {background-color: rgb(150 156 160);font-family: 'titillium_webregular' !important;}
+      .ui-rating .ui-rating-star-on a {color: #2196F3;}
       .ui-breadcrumb ul li span{display: inline-block !important;}
       .ui-contentflow .globalCaption {position: relative;z-index: 1;}
       .ui-contentflow .globalCaption {text-align: center;font-weight: bold;color: white;font-size: 14px;height: 20px;margin: 2em auto;font-size: 1.1rem;}      
@@ -80,11 +109,11 @@
         .producto .producto-list-galeria .producto-list-action {align-items: center;}
         .producto .producto-list-item .producto-item-search {width: 165px; text-align: center;}
         .producto .producto-list-item .producto-item-search img {width: 150px;height:120px;box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); margin-right: 2rem;}
-        .producto .producto-list-item .producto-price {font-size: 1.0rem;font-weight: 100;margin-bottom: 0.5rem;align-self: flex-end;}
-        .producto .producto-list-galeria .producto-price {font-size: 1.0rem;font-weight: 100;margin-bottom: 0.5rem;align-self: flex-end;}
-        .producto .producto-list-item .producto-quantity {font-size: 0.7rem;font-weight: 100;margin-bottom: 0.1rem;align-self: flex-end; text-align: right;}
-        .producto .producto-list-galeria .producto-quantity {font-size: 0.7rem;font-weight: 100;margin-bottom: 0.1rem;align-self: flex-end; text-align: right;}
-        .producto .producto-list-item .producto-cost {font-size: 0.7rem;font-weight: 100;margin-bottom: 0.1rem;align-self: flex-end; text-align: right;}
+        .producto .producto-list-item .producto-price {font-size: 1.0rem;font-weight: 100;margin-bottom: 0.5rem;align-self: flex-start;}
+        .producto .producto-list-galeria .producto-price {font-size: 1.0rem;font-weight: 100;margin-bottom: 0.1rem;align-self: flex-start;}
+        .producto .producto-list-item .producto-quantity {font-size: 0.9rem;font-weight: 100;margin-bottom: 0.1rem;align-self: flex-start; }
+        .producto .producto-list-galeria .producto-quantity {font-size: 0.9rem;font-weight: 100;margin-bottom: 0.1rem;align-self: flex-start;}
+        .producto .producto-list-item .producto-cost {font-size: 0.7rem;font-weight: 100;margin-bottom: 0.1rem;align-self: flex-start;}
         .ui-datagrid .ui-paginator {display: inline-block !important;width: 98%;}
       }
       .p-p-0 {padding: 0 !important;}
@@ -94,22 +123,27 @@
       .p-p-4 {padding: 1.5rem !important;}
       .p-p-5 {padding: 2rem !important;}
       .p-p-6 {padding: 3rem !important;}
-      .janal-color-orange {
-        color: orange !important;
-      }
+      .janal-color-orange {color: orange !important;}
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
+    <p:defaultCommand target="codigo"/>
+    <p:focus context="codigo"/>
+    <pe:remoteCommand name="viewMobile" process="@this" update="tabla @(.detalle)" actionListener="#{manticVentasGaleria.doViewMovil}">
+      <pe:methodSignature parameters="java.lang.Long"/>  
+			<pe:methodParam name="cuantos"/>  
+    </pe:remoteCommand>
+    <p:inputText id="cuantos" value="#{manticVentasGaleria.attrs.cuantos}" styleClass="janal-display-none detalle"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">					
           <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
             <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-fix-2 janal-column-center, janal-fix-98">
-              <p:selectBooleanCheckbox value="#{manticCatalogosInventariosConteos.attrs.buscaPorCodigo}" title="Buscar por código o SKU">
+              <p:selectBooleanCheckbox value="#{manticVentasGaleria.attrs.buscaPorCodigo}" title="Buscar por código o SKU">
                 <p:ajax event="change" process="@this" update="@this"/>
               </p:selectBooleanCheckbox>            
               <p:inputText id="codigo" value="#{manticVentasGaleria.attrs.codigo}" styleClass="janal-wid-100-txt" placeholder="Teclar nombre del producto ejemplo: martillo">
-                <p:ajax event="keyup" process="@this" update="tabla @(.detalle)" listener="#{manticVentasGaleria.doLoad}" onstart="return $('#codigo').val().trim().length> 2"/>
+                <p:ajax event="keyup" process="@this" update="tabla @(.detalle)" listener="#{manticVentasGaleria.doViewKeyup}" onstart="return $('#codigo').val().trim().length> 2"/>
               </p:inputText>  
             </p:panelGrid>
 					</p:panelGrid>	
@@ -124,12 +158,12 @@
             <p:menuitem value="Tlapalería" actionListener="#{manticVentasGaleria.doViewSearch('LUBRICANTES')}" process="@this" update="codigo tabla @(.detalle)" icon="fa fa-stumbleupon" styleClass="#{manticVentasGaleria.category eq 'LUBRICANTES'? 'janal-color-orange': ''}"/>
             <p:menuitem value="Lubricantes" actionListener="#{manticVentasGaleria.doViewSearch('TLAPALERIA')}" process="@this" update="codigo tabla @(.detalle)" icon="fa fa-stack-overflow" styleClass="#{manticVentasGaleria.category eq 'TLAPALERIA'? 'janal-color-orange': ''}" rendered="false"/>
           </p:breadCrumb>          
-          <p:dataGrid id="tabla" widgetVar="kajoolTable" lazy="true" var="row" value="#{manticVentasGaleria.lazyModel}" paginator="#{manticVentasGaleria.lazyModel.rowCount gt manticVentasGaleria.lazyModel.pageSize}" columns="#{kajoolUtilAplicacion.isMobile? 1: 3}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" styleClass="jana-wid-100-txt detalle" style="display: #{manticVentasGaleria.attrs.viewDetail? 'none': ''}">
+          <p:dataGrid id="tabla" widgetVar="kajoolTable" lazy="true" var="row" value="#{manticVentasGaleria.lazyModel}" paginator="#{manticVentasGaleria.lazyModel.rowCount gt manticVentasGaleria.lazyModel.pageSize}" columns="#{manticVentasGaleria.attrs.cuantos}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" styleClass="jana-wid-100-txt detalle" style="display: #{manticVentasGaleria.attrs.viewDetail? 'none': ''}">
             <f:facet name="header">
-              <div class="jana-wid-100-txt janal-column-left">
-                <span class="Fs16" style="font-weight: normal;">#{manticVentasGaleria.category eq 'NINGUNA'? '': 'Filtrado por ['}#{manticVentasGaleria.category eq 'NINGUNA'? '': manticVentasGaleria.category}#{manticVentasGaleria.category eq 'NINGUNA'? '': ']  '}</span>
+              <div class="jana-wid-100-txt">
+                <span class="Fs16" style="font-weight: normal;float: left;">#{manticVentasGaleria.category eq 'NINGUNA'? '': '['}#{manticVentasGaleria.category eq 'NINGUNA'? '': manticVentasGaleria.category}#{manticVentasGaleria.category eq 'NINGUNA'? '': ']  '}</span>
                 <span class="Fs16" style="font-weight: normal;">Desglose de producto(s)</span>
-                <p:menuButton value="Ordenar por" style="float: right;">
+                <p:menuButton value="Ordenar por" style="float: right; margin-top: -6px;margin-right: -12px;">
                   <p:menuitem value="Menor precio" actionListener="#{manticVentasGaleria.doViewSort('MIN_PRICE')}" update="codigo tabla @(.detalle)" icon="fa fa-sort-numeric-asc"/>
                   <p:menuitem value="Mayor precio" actionListener="#{manticVentasGaleria.doViewSort('MAX_PRICE')}" update="codigo tabla @(.detalle)" icon="fa fa-sort-numeric-desc"/>
                   <p:separator />
@@ -151,9 +185,9 @@
                 <div class="producto-list-detail">
                   <div id="nombres" class="producto-name" title="Código: #{row['propio']}"><i class="fa fa-qrcode producto-category-icon"/>[#{row['propio']}]</div>
                   <div class="producto-description #{row['idAutomatico'] eq 1? 'janal-color-red': 'janal-color-green'}">#{row['nombre']}</div>
-                  <p:rating readonly="true" value="#{10}"/>
+                  <p:rating readonly="true" value="#{row['rating'].toInteger()}" stars="8"/>
                   <span class="producto-category" title="Unidad de medida"><i class="fa fa-language producto-category-icon"/>#{row['unidadMedida']}</span>
-                  <div class="producto-precio janal-color-blue" title="Precio"><i class="fa fa-tags producto-category-icon"/>#{row['menudeo']}</div>
+                  <div class="producto-precio janal-color-blue" title="Precio"><i class="fa fa-tags producto-category-icon"/>MX #{row['menudeo']}</div>
                 </div>  
               </div>	
             </div>  
@@ -183,14 +217,13 @@
                   <div id="nombres" class="producto-name" title="Código: #{manticVentasGaleria.attrs.item['propio']}"><i class="fa fa-qrcode producto-category-icon"/>Código: #{manticVentasGaleria.attrs.item['propio']}</div>
                   <div class="producto-description #{manticVentasGaleria.attrs.item['idAutomatico'] eq 1? 'janal-color-red': 'janal-color-green'}">Nombre: #{manticVentasGaleria.attrs.item['nombre']}</div>
                   <div class="producto-description" style="display: #{manticVentasGaleria.attrs.item['descripcion'] eq '' or empty manticVentasGaleria.attrs.item['descripcion']? 'none': ''}">Descripción: #{manticVentasGaleria.attrs.item['descripcion']}</div>
-                  <br/>
                   <div class="producto-description" style="display: #{manticVentasGaleria.attributes eq null or manticVentasGaleria.attributes.size() lt 1? 'none': ''}"><span class="Fs16 janal-color-orange" style="font-weight: normal;">Especificaciones:</span></div>
                   <p:repeat value="#{manticVentasGaleria.attributes}" var="item">
                     <div class="producto-atributos">#{item.nombre}: <span class="producto-description">#{item.valor}</span></div>
                   </p:repeat>
                 </div>  
                 <div class="producto-list-action" style="align-self: baseline;">
-                  <div class="producto-price janal-color-blue"><i class="fa fa-tags producto-category-icon"/>#{manticVentasGaleria.attrs.item['menudeo']}</div>
+                  <div class="producto-price janal-color-blue"><i class="fa fa-tags producto-category-icon"/>MX #{manticVentasGaleria.attrs.item['menudeo']}</div>
                   <div class="producto-quantity"><i class="fa fa-language producto-category-icon"/>#{manticVentasGaleria.attrs.item['unidadMedida']}</div>
                 </div> 
               </div>	

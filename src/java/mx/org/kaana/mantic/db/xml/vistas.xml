@@ -21,11 +21,12 @@
 				  tc_mantic_articulos.sat,
 				  tc_mantic_articulos.iva,
 				  tc_mantic_unidades_medidas.nombre unidad_medida,
+          floor(rand()*(10-5+1))+4 as rating,
 				  ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png') as archivo
 				from 
 					tc_mantic_articulos
 				inner join
-					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
 				inner join 
 					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
 				inner join
@@ -60,6 +61,7 @@
 					tc_mantic_articulos.sat,
 				  tc_mantic_articulos.iva,
 				  tc_mantic_unidades_medidas.nombre unidad_medida,
+          floor(rand()*(10-5+1))+4 as rating,
 				  ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png') as archivo
 				from 
 					tc_mantic_articulos
@@ -99,6 +101,7 @@
 					tc_mantic_articulos.sat,
 				  tc_mantic_articulos.iva,
 				  tc_mantic_unidades_medidas.nombre unidad_medida,
+          floor(rand()*(10-5+1))+4 as rating,
 				  ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png') as archivo
 				from 
 					tc_mantic_articulos
