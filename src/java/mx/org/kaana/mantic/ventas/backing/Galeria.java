@@ -186,7 +186,8 @@ public class Galeria extends IBaseFilter implements Serializable {
   
   public void doViewSearch(String search) {
     this.category= ECategorias.valueOf(search);
-    this.attrs.put("codigo", "");
+    if(this.category.equals(ECategorias.NINGUNA))
+      this.attrs.put("codigo", "");
     this.doLoad();
   }
 

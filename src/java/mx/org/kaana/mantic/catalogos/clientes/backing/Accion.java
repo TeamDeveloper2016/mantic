@@ -727,7 +727,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
 	public void doUpdateRepresentante() {
 		try {
-			this.registroCliente.doUpdateRepresentante();
+      if(this.registroCliente!= null && this.registroCliente.getIndex()>= 0)
+			  this.registroCliente.doUpdateRepresentante();
+      else
+        this.doAgregarRepresentante();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

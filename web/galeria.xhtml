@@ -63,6 +63,14 @@
       //]]>
 		</script>   
 		<style type="text/css">
+      .ui-button-text {
+          border: solid 0px #175787;
+          text-shadow: 0 -1px 0 #1578c9;
+          -webkit-box-shadow: inset 0 0 0 1px #1578c9;
+          box-shadow: inset 0 0 0 0px #1578c9; 
+          border-radius: 0px !important;
+          -webkit-border-radius: 0px !important;
+      }      
       .magnify-modal {background-color: rgb(150 156 160);font-family: 'titillium_webregular' !important;}
       .ui-rating .ui-rating-star-on a {color: #2196F3;}
       .ui-breadcrumb ul li span{display: inline-block !important;}
@@ -163,7 +171,7 @@
               <div class="jana-wid-100-txt">
                 <span class="Fs16" style="font-weight: normal;float: left;">#{manticVentasGaleria.category eq 'NINGUNA'? '': '['}#{manticVentasGaleria.category eq 'NINGUNA'? '': manticVentasGaleria.category}#{manticVentasGaleria.category eq 'NINGUNA'? '': ']  '}</span>
                 <span class="Fs16" style="font-weight: normal;">Desglose de producto(s)</span>
-                <p:menuButton value="Ordenar por" style="float: right; margin-top: -6px;margin-right: -12px;">
+                <p:menuButton value="Ordenar por" style="float: right; margin-top: -5px;margin-right: -12px;">
                   <p:menuitem value="Menor precio" actionListener="#{manticVentasGaleria.doViewSort('MIN_PRICE')}" update="codigo tabla @(.detalle)" icon="fa fa-sort-numeric-asc"/>
                   <p:menuitem value="Mayor precio" actionListener="#{manticVentasGaleria.doViewSort('MAX_PRICE')}" update="codigo tabla @(.detalle)" icon="fa fa-sort-numeric-desc"/>
                   <p:separator />

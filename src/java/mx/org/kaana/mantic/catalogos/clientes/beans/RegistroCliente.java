@@ -469,7 +469,7 @@ public class RegistroCliente implements Serializable{
 		return regresar;
 	} // registrarDomicilio	
 	
-	public void doAgregarRepresentante(){
+	public void doAgregarRepresentante() {
 		ClienteContactoRepresentante clienteContactoRepresentante= null;
 		try {								
 			clienteContactoRepresentante= new ClienteContactoRepresentante(this.contadores.getTotalClientesRepresentantes()+ this.countIndice, ESql.INSERT, true);				

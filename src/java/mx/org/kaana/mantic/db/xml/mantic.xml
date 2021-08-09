@@ -2949,7 +2949,7 @@
           tr_mantic_cliente_representante.*,
           ifnull(tc_mantic_personas.id_persona, -1) as id_persona,
           ifnull(tc_janal_usuarios.id_usuario, -1) as id_cuenta,
-          if(tc_janal_usuarios.id_persona is null, 2, 1) as crear,
+          if(tc_janal_usuarios.id_persona is null or tc_janal_usuarios.activo= 2, 2, 1) as crear,
           tc_mantic_personas.cuenta,
           tc_mantic_personas.contrasenia,
           ifnull(tc_janal_usuarios.activo, 2) as activo
