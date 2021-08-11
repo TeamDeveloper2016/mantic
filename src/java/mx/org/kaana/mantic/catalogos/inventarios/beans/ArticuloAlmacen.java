@@ -8,7 +8,7 @@ import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
  *@project KAJOOL (Control system polls)
  *@date 9/08/2021
  *@time 06:18:06 PM 
- * @author Team Developer 2016 <team.developer@kaana.org.mx>
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
 public class ArticuloAlmacen extends TcManticAlmacenesArticulosDto implements Serializable {

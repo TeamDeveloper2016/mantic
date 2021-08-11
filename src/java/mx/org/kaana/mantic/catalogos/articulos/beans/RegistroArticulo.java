@@ -4,8 +4,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ESql;
@@ -56,6 +55,7 @@ public class RegistroArticulo implements Serializable {
 	private Boolean idVigente;
 	private Boolean idDescontinuado;
 	private boolean imagen;
+  private List<ArticuloImagen> imagenes;
 
 	public RegistroArticulo() {
 		this(-1L, 
@@ -78,7 +78,8 @@ public class RegistroArticulo implements Serializable {
 		this.countIndice = 0L;
 		this.deleteList  = new ArrayList<>();
 		this.importado   = new Importado();
-		init();		
+    this.imagenes    = new ArrayList<>();
+		this.init();		
 	}
 	
 	public RegistroArticulo(Long idArticulo, TcManticArticulosDto articulo, List<ArticuloCodigo> articulosCodigos, List<Especificacion> especificaciones, List<Descuento> articulosDescuentos, List<DescuentoEspecial> clientesDescuentos, List<PrecioSugerido> preciosSugeridos, List<ArticuloProveedor> articulosProveedores, List<TipoVenta> articulosTiposVenta, Long idEmpaque, String obervaciones, boolean redondear, String codigo, Long idProveedor, ArticuloDimencion articuloDimencion, Long idTipoArticulo, Boolean idBarras, boolean imagen, Boolean idVigente, Boolean idDescontinuado) {
@@ -104,6 +105,12 @@ public class RegistroArticulo implements Serializable {
 		this.imagen              = imagen;
 		this.idVigente           = idVigente;
 		this.idDescontinuado     = idDescontinuado;
+    this.imagenes            = new ArrayList<>();
+    for (int x= 0; x< 10; x++) {
+      this.imagenes.add(new ArticuloImagen(new Long(x)));
+    } // for
+    this.imagenes.get(0).setIdPrincipal(1L);
+    this.imagenes.get(0).setPrincipal(true);
 	}
 
 	public Long getIdArticulo() {
@@ -295,8 +302,16 @@ public class RegistroArticulo implements Serializable {
 	public void setImagen(boolean imagen) {
 		this.imagen = imagen;
 	}
+
+  public List<ArticuloImagen> getImagenes() {
+    return imagenes;
+  }
+
+  public void setImagenes(List<ArticuloImagen> imagenes) {
+    this.imagenes = imagenes;
+  }
 	
-	private void init(){
+	private void init() {
 		MotorBusqueda motorBusqueda                = null;
 		TrManticEmpaqueUnidadMedidaDto unidadMedida= null;
 		try {
@@ -309,7 +324,7 @@ public class RegistroArticulo implements Serializable {
 			} // if	
 			unidadMedida= motorBusqueda.toEmpaqueUnidadMedida(this.articulo.getIdEmpaqueUnidadMedida());
 			this.idEmpaque= unidadMedida.getIdEmpaque();
-			initCollections(motorBusqueda);
+			this.initCollections(motorBusqueda);
 		} // try
 		catch (Exception e) {			
 			JsfBase.addMessageError(e);
@@ -330,6 +345,9 @@ public class RegistroArticulo implements Serializable {
 			this.preciosSugeridos= motor.toArticulosPreciosSugeridos();
 			if(!this.articulosCodigos.isEmpty())
 				this.observaciones= this.articulosCodigos.get(0).getObservaciones();
+      for (int x= 0; x< 10; x++) {
+        this.imagenes.add(new ArticuloImagen(new Long(x)));
+      } // for
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -681,4 +699,74 @@ public class RegistroArticulo implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch		
 	}
+  
+  public void addImagen(Importado importado) {
+    this.imagenes.add(new ArticuloImagen(importado));
+  }
+  
+  public void removeImagen(ArticuloImagen imagen) {
+    int index= this.imagenes.indexOf(imagen);
+    if(index>= 0)
+      this.imagenes.remove(imagen);
+  }
+
+  public void toUpdatePrincipal(ArticuloImagen row) {
+    for (ArticuloImagen item : this.imagenes) {
+      if(!Objects.equals(row.getId(), item.getId()) && Objects.equals(item.getIdPrincipal(), 1L)) {
+        item.setPrincipal(false);
+        item.setIdPrincipal(2L);
+        item.setSqlAccion(ESql.UPDATE);
+        item.setAnterior(ESql.UPDATE);
+      } // if
+    } // for
+    row.setSqlAccion(ESql.UPDATE);
+    row.setAnterior(ESql.UPDATE);
+    row.setIdPrincipal(row.getPrincipal()? 1L: 2L);
+    if(!row.getPrincipal()) 
+      this.toSetImagePrincipal();
+  }
+  
+  public void toSetImagePrincipal() {
+    if(this.imagenes!= null && this.imagenes.size()> 0) {
+      for (ArticuloImagen item : this.imagenes) {
+        if(!item.getSqlAccion().equals(ESql.DELETE)) {
+          item.setPrincipal(true);
+          item.setIdPrincipal(1L);
+          item.setSqlAccion(ESql.UPDATE);
+          item.setAnterior(ESql.UPDATE);
+          break;
+        } // if  
+      } // for
+    } // if
+  }
+  
+  public void doDeleteImage(ArticuloImagen row) {
+    if(row.getSqlAccion().equals(ESql.INSERT)) {
+      // eliminar fisicamente el archivo porque no ya no es necesario que este en el servidor
+      this.imagenes.remove(row);
+      if(Objects.equals(row.getIdPrincipal(), 1L))
+        this.toSetImagePrincipal();
+    } // if  
+    else {
+      row.setAnterior(row.getSqlAccion());
+      row.setSqlAccion(ESql.DELETE);
+      if(Objects.equals(row.getIdPrincipal(), 1L)) {
+        this.toSetImagePrincipal();
+        row.setPrincipal(false);
+        row.setIdPrincipal(2L);
+      } // if  
+    } // else
+  } 
+
+  public void doRecoverImage(ArticuloImagen row) {
+    row.setSqlAccion(row.getAnterior());
+    int count= 0;
+    for (ArticuloImagen item : this.imagenes) {
+      if(!item.getSqlAccion().equals(ESql.DELETE) && Objects.equals(item.getIdPrincipal(), 1L)) 
+        count++;
+    } // for
+    if(count== 0)
+      this.toSetImagePrincipal();
+  } 
+  
 }

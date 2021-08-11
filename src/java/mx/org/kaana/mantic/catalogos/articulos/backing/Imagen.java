@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -12,6 +13,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -25,14 +27,15 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloCodigo;
+import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloImagen;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.catalogos.articulos.beans.RegistroArticulo;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
 import org.primefaces.model.StreamedContent;
 
-@Named(value = "manticCatalogosArticulosAccion")
+@Named(value = "manticCatalogosArticulosImagen")
 @ViewScoped
-public class Accion extends IBaseAttribute implements Serializable {
+public class Imagen extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
   private RegistroArticulo registroArticulo;
@@ -59,9 +62,9 @@ public class Accion extends IBaseAttribute implements Serializable {
   @Override
   protected void init() {
     try {
-      this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
-      this.attrs.put("idArticulo", JsfBase.getFlashAttribute("idArticulo"));
-      this.attrs.put("goKardex", ((Long)JsfBase.getFlashAttribute("idArticulo"))> 0L);
+      this.attrs.put("accion", EAccion.AGREGAR);
+      this.attrs.put("idArticulo", -1L);
+      this.attrs.put("goKardex", -1L> 0L);
       this.doLoad();
       this.loadProveedores();
       this.loadCategorias();
@@ -376,5 +379,17 @@ public class Accion extends IBaseAttribute implements Serializable {
  	public String toColor(ArticuloCodigo row) {
 		return row.getIdProveedor()!= null && row.getIdProveedor().equals(0L)? "janal-tr-orange": "";
 	}
+
+  public void doDeleteImage(ArticuloImagen row) {
+    this.registroArticulo.doDeleteImage(row);
+  } 
+  
+  public void doRecoverImage(ArticuloImagen row) {
+    this.registroArticulo.doRecoverImage(row);
+  } 
+  
+  public void doUpdatePrinicipal(ArticuloImagen row) {
+    this.registroArticulo.toUpdatePrincipal(row);
+  }
   
 }

@@ -28,8 +28,6 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
-import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.comun.JuntarReporte;
 import mx.org.kaana.mantic.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
@@ -39,7 +37,6 @@ import mx.org.kaana.mantic.enums.EEstatusFicticias;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
-import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
 import mx.org.kaana.mantic.facturas.comun.FiltroFactura;
 import org.apache.commons.lang3.SerializationUtils;
@@ -287,6 +284,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 			allEstatus= UISelect.build("TcManticVentasEstatusDto", "estatus", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
 			this.attrs.put("estatus", allEstatus.get(0).getValue().toString());
+      this.doLoadMails();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
