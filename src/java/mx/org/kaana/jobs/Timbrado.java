@@ -73,7 +73,7 @@ public class Timbrado extends IBaseJob {
 								transaccion=new Transaccion(factura);
 								if (transaccion.ejecutar(EAccion.GENERAR)) {
 									this.doSendMail(factura);
-									LOG.info("Se realizo la facturación de forma correcta");
+									LOG.info("Se realizó la facturación de forma correcta");
 								} // if
 								else {
 									LOG.error("Ocurrio un error al realizar la facturación");
@@ -123,15 +123,21 @@ public class Timbrado extends IBaseJob {
 	} // toFacturasPendientes
 
 	private String toCorreosCliente(Long idCliente) throws Exception {
-		StringBuilder regresar=null;
-		MotorBusqueda motor=null;
+		StringBuilder regresar= null;
+		MotorBusqueda motor   = null;
 		List<ClienteTipoContacto> contactos=null;
 		try {
 			regresar = new StringBuilder("");
 			motor    = new MotorBusqueda(-1L, idCliente);
 			contactos= motor.toClientesTipoContacto();
 			for (ClienteTipoContacto contacto: contactos) {
-				if (contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey())) {
+				if (contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey()) || 
+            contacto.getIdTipoContacto().equals(ETiposContactos.CORREO_PERSONAL.getKey()) || 
+            contacto.getIdTipoContacto().equals(ETiposContactos.CORREO_NEGOCIO.getKey()) || 
+            contacto.getIdTipoContacto().equals(ETiposContactos.CORREO_1.getKey()) || 
+            contacto.getIdTipoContacto().equals(ETiposContactos.CORREO_2.getKey()) || 
+            contacto.getIdTipoContacto().equals(ETiposContactos.CORREO_3.getKey()) || 
+            contacto.getIdTipoContacto().equals(ETiposContactos.CORREO_4.getKey())) {
 					regresar.append(contacto.getValor()).append(",");
 				} // if
 			} // for

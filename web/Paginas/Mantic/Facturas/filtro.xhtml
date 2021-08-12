@@ -27,7 +27,8 @@
       };
 			
 			fieldsDialog= {
-				'justificacion': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}				
+				'justificacion': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'},				
+        'tablaCorreos_checkbox': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'}
 			};
 			
 			fieldsDialogCancelar= {
@@ -291,7 +292,7 @@
 		<button id="printTicket" style="display: none" onclick="jsTicket.loadTicket()">Imprimir</button>		
   </ui:define>   
 	<ui:define name="dialogos">
-		<p:dialog id="dialogoCancelar" widgetVar="dlgCancelar" header="Cancelar factura." resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.change('formDialogoCancelar', fieldsDialogCancelar);janal.refresh();">
+    <p:dialog id="dialogoCancelar" widgetVar="dlgCancelar" header="Cancelar factura." resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.change('formDialogoCancelar', fieldsDialogCancelar);janal.refresh();" appendTo="@(body)">
 			<h:form id="formDialogoCancelar" prependId="false">				
 				<h:panelGrid id="salidaCancelar" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
 					<p:outputLabel for="justificacionCancelar" value="#{manticFacturasFiltro.attrs.estatus eq '3'? 'Comentarios': 'Justificación'}:"/>
@@ -304,7 +305,7 @@
 				</div>
 			</h:form>
 		</p:dialog>
-		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus de la factura" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.change('formDialogoEstatus', fieldsDialog); janal.refresh();">
+		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus de la factura" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.change('formDialogoEstatus', fieldsDialog); janal.refresh();" appendTo="@(body)">
 			<h:form id="formDialogoEstatus" prependId="false">
 				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
@@ -317,7 +318,7 @@
 				<p:outputLabel for="justificacion" value="#{manticFacturasFiltro.attrs.estatus eq '12' or manticFacturasFiltro.attrs.estatus eq '15'? 'Comentarios': 'Justificación'}:"/>
 				<p:inputTextarea id="justificacion" value="#{manticFacturasFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt" rows="1"/>				
 				<p:dataTable id="tablaCorreos" var="row" value="#{manticFacturasFiltro.correos}" selection="#{manticFacturasFiltro.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0" rendered="#{manticFacturasFiltro.attrs.estatus eq '12' or manticFacturasFiltro.attrs.estatus eq '15'}">
-					<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
+					<p:column id="correo" selectionMode="multiple" style="width:38px;text-align:center"/>
 					<p:column headerText="Correos disponibles del cliente" styleClass="descripcion tablaCorreos_selection">
 						<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
 					</p:column>

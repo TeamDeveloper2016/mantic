@@ -306,7 +306,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 			orden= (TcManticFicticiasDto)DaoFactory.getInstance().findById(TcManticFicticiasDto.class, seleccionado.getKey());
 			bitacora= new TcManticFicticiasBitacoraDto(orden.getConsecutivo(), (String)this.attrs.get("justificacion"), Long.valueOf(this.attrs.get("estatus").toString()), JsfBase.getIdUsuario(), seleccionado.getKey(), -1L, orden.getTotal());
 			emails= new StringBuilder("");
-			if(this.getSelectedCorreos()!= null && !this.getSelectedCorreos().isEmpty()){
+			if(this.getSelectedCorreos()!= null && !this.getSelectedCorreos().isEmpty()) {
 				for(Correo mail: this.getSelectedCorreos())
 					if(!Cadena.isVacio(mail.getDescripcion()))
 						emails.append(mail.getDescripcion()).append(", ");

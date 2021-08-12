@@ -5889,7 +5889,8 @@
 					tc_mantic_notas_estatus.estatus_asociados,
 					tc_mantic_notas_entradas.registro,
 					count(*) as articulos,
-					sum(if(tc_mantic_articulos.id_imagen is null, 1, 0)) as imagenes
+					sum(if(tc_mantic_articulos.id_imagen is null, 1, 0)) as imagenes,
+          tc_mantic_notas_entradas.factura
         from
           tc_mantic_notas_entradas         
         inner join

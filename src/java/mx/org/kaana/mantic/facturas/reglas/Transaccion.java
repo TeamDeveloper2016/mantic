@@ -17,6 +17,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
 import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -517,12 +518,13 @@ public class Transaccion extends TransaccionFactura {
 			factura.setCliente(gestor.toClienteCfdiFicticia(sesion));
 			factura.getCliente().setIdFactura(idFactura);
 			factura.generarCfdi(sesion);	
-			/*try {
-				CFDIFactory.getInstance().toSendMail(correos, factura.getIdFacturamaRegistro());
+			try {
+        if(!Cadena.isVacio(correos))
+				  CFDIFactory.getInstance().toSendMail(correos, factura.getIdFacturamaRegistro());
 			} // try
 			catch (Exception e) {				
 				Error.mensaje(e);				
-			} // catch*/
+			} // catch
 		} // try
 		catch (Exception e) {			
 			this.messageError= "";
