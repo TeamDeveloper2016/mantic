@@ -118,7 +118,7 @@ public class Transaccion extends TransaccionFactura {
 						} // else								
 						this.registrarBitacoraFactura(sesion, idFactura, idEstatus, this.justificacion);
 						if(this.generarTimbradoFactura(sesion, this.orden.getIdVenta(), idFactura, this.orden.getCorreos())){
-							if(this.registraBitacora(sesion, this.orden.getIdVenta(), EEstatusVentas.TIMBRADA.getIdEstatusVenta(), "Se realizó el timbrado de la factura asociada a la venta.")){
+							if(this.registraBitacora(sesion, this.orden.getIdVenta(), EEstatusVentas.TIMBRADA.getIdEstatusVenta(), "SE REALIZÓ EL TIMBRADO DE LA FACTURA ASOCIADA A LA VENTA")) {
 								this.orden.setIdVentaEstatus(EEstatusVentas.TIMBRADA.getIdEstatusVenta());
 								regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 							} // if

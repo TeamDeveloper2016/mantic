@@ -132,4 +132,9 @@ public class Item {
 		this.Complement = Complement;
 	}
 
+  @Override
+  public String toString() {
+    return "Item{" + "IdProduct=" + IdProduct + ", ProductCode=" + ProductCode + ", IdentificationNumber=" + IdentificationNumber + ", Description=" + Description + ", Unit=" + Unit + ", UnitCode=" + UnitCode + ", UnitPrice=" + UnitPrice + ", Quantity=" + Quantity + ", Subtotal=" + Subtotal + ", Discount=" + Discount + ", Taxes=" + Taxes + ", CuentaPredial=" + CuentaPredial + ", Total=" + Total + ", Complement=" + Complement + '}';
+  }
+  
 }

@@ -420,14 +420,13 @@ public class Autentifica implements Serializable {
 		finally {
 			Methods.clean(params);
 		} // finally
-		return regresar.substring(0, regresar.length()- 2);
+    return regresar.length()> 2? regresar.substring(0, regresar.length()- 2): "";    
 	}
 	
 	private String toLoadDependencias() throws Exception {
-		StringBuilder regresar    = null;
+		StringBuilder regresar    = new StringBuilder("");
 		Map<String, Object> params= null;
 		try {
-			regresar= new StringBuilder("");
 			params=new HashMap<>();
 			params.put("idEmpresa", this.getEmpresa().getIdEmpresaDepende());
 			List<TcManticEmpresasDto> items= DaoFactory.getInstance().findViewCriteria(TcManticEmpresasDto.class, params, "sucursales");
@@ -445,6 +444,7 @@ public class Autentifica implements Serializable {
 		finally {
 			Methods.clean(params);
 		} // finally
-		return regresar.substring(0, regresar.length()- 2);
+    return regresar.length()> 2? regresar.substring(0, regresar.length()- 2): "";    
 	} // toLoadDependencias
+  
 }

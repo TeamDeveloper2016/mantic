@@ -1413,7 +1413,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		try {
 			if(!Cadena.isVacio(this.correo.getDescripcion())) {				
         UISelectEntity cliente= (UISelectEntity)this.attrs.get("clienteSeleccion");
-				transaccion= new mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion(cliente.getKey(), cliente.toString("razonSocial"), this.correo);
+				transaccion= new mx.org.kaana.mantic.ventas.facturas.reglas.Transaccion(cliente.getKey(), cliente.containsKey("razonSocial")? cliente.toString("razonSocial"): "cliente", this.correo);
 				if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
 					JsfBase.addMessage("Se agregó/modificó el correo electronico correctamente !");
 				else

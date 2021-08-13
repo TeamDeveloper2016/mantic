@@ -604,7 +604,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-		return regresar.substring(0, regresar.length()- 2);
+		return regresar.length()> 2? regresar.substring(0, regresar.length()- 2): "";
 	} // loadCorreos	
 	
 	@Override

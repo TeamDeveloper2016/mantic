@@ -5,14 +5,12 @@ import java.io.StringWriter;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Objects;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.kajool.enums.EEtapaServidor;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.facturama.models.Client;
@@ -135,7 +133,7 @@ public class TransaccionFactura extends IBaseTnx {
 			CFDIFactory.getInstance().clientRemove(id);
 		} // try
 		catch (Exception e) {			
-			registrarBitacora(sesion, -1L, e.getMessage().concat(" Eliminación cliente facturama : ").concat(id));
+			this.registrarBitacora(sesion, -1L, e.getMessage().concat(" Eliminación cliente facturama : ").concat(id));
 			throw e;
 		} // catch		
 		return regresar;
@@ -150,7 +148,7 @@ public class TransaccionFactura extends IBaseTnx {
         CFDIFactory.getInstance().updateClient(this.cliente);			
 		} // try
 		catch (Exception e) {		
-			registrarBitacora(sesion, this.cliente.getId(), e.getMessage());
+			this.registrarBitacora(sesion, this.cliente.getId(), e.getMessage());
 			throw e;
 		} // catch		
 		return regresar;
@@ -164,10 +162,10 @@ public class TransaccionFactura extends IBaseTnx {
 			if(isCorrectId(id))
 				regresar= actualizarCliente(sesion, this.cliente.getId(), id);
 			else				
-				registrarBitacora(sesion, this.cliente.getId(), id, false);								
+				this.registrarBitacora(sesion, this.cliente.getId(), id, false);								
 		} // try
 		catch (Exception e) {		
-			registrarBitacora(sesion, this.cliente.getId(), e.getMessage());
+			this.registrarBitacora(sesion, this.cliente.getId(), e.getMessage());
 			throw e;
 		} // catch		
 		return regresar;
@@ -198,7 +196,7 @@ public class TransaccionFactura extends IBaseTnx {
 								if(isCorrectId(id))
 									actualizarCliente(sesion, recordCliente.getId(), id);
 								else
-									registrarBitacora(sesion, recordCliente.getId(), id);								
+									this.registrarBitacora(sesion, recordCliente.getId(), id);								
 							} // if
 							//else
 								//CFDIFactory.getInstance().updateClient(recordCliente);
@@ -210,7 +208,7 @@ public class TransaccionFactura extends IBaseTnx {
 			} // if
 		} // try
 		catch (Exception e) {			
-			registrarBitacora(sesion, idBitacora, e.getMessage());								
+			this.registrarBitacora(sesion, idBitacora, e.getMessage());								
 			throw e;
 		} // catch		
 		return regresar;
@@ -256,7 +254,7 @@ public class TransaccionFactura extends IBaseTnx {
 			CFDIFactory.getInstance().updateProduct(this.articulo);
 		} // try
 		catch (Exception e) {			
-			registrarBitacora(sesion, this.articulo.getId(), e.getMessage(), false);
+			this.registrarBitacora(sesion, this.articulo.getId(), e.getMessage(), false);
 			throw e;
 		} // catch		
 		return regresar;
@@ -268,7 +266,7 @@ public class TransaccionFactura extends IBaseTnx {
 			CFDIFactory.getInstance().productRemove(id);
 		} // try
 		catch (Exception e) {			
-			registrarBitacora(sesion, -1L, e.getMessage().concat(" Eliminacion articulo : ").concat(id), false);
+			this.registrarBitacora(sesion, -1L, e.getMessage().concat(" Eliminacion articulo : ").concat(id), false);
 			throw e;
 		} // catch		
 		return regresar;
@@ -282,10 +280,10 @@ public class TransaccionFactura extends IBaseTnx {
 			if(isCorrectId(id))
 				regresar= actualizarProducto(sesion, this.articulo.getId(), id);
 			else
-				registrarBitacora(sesion, this.articulo.getId(), id, false);								
+				this.registrarBitacora(sesion, this.articulo.getId(), id, false);								
 		} // try
 		catch (Exception e) {			
-			registrarBitacora(sesion, this.articulo.getId(), e.getMessage(), false);
+			this.registrarBitacora(sesion, this.articulo.getId(), e.getMessage(), false);
 			throw e;
 		} // catch		
 		return regresar;
@@ -316,20 +314,20 @@ public class TransaccionFactura extends IBaseTnx {
 						if(index == -1){
 							id= CFDIFactory.getInstance().createProductId(recordArticulo);
 							if(isCorrectId(id))
-								actualizarProducto(sesion, recordArticulo.getId(), id);
+								this.actualizarProducto(sesion, recordArticulo.getId(), id);
 							else
-								registrarBitacora(sesion, recordArticulo.getId(), id, false);								
+								this.registrarBitacora(sesion, recordArticulo.getId(), id, false);								
 						} // if
 						else{
 							CFDIFactory.getInstance().updateProduct(recordArticulo);						
-							actualizarProducto(sesion, recordArticulo.getId(), id);
+							this.actualizarProducto(sesion, recordArticulo.getId(), id);
 						} // else
 					} // for
 				} // if
 			} // if
 		} // try
 		catch (Exception e) {			
-			registrarBitacora(sesion, idBitacora, e.getMessage(), false);
+			this.registrarBitacora(sesion, idBitacora, e.getMessage(), false);
 			throw e;
 		} // catch		
 		return regresar;
@@ -369,9 +367,9 @@ public class TransaccionFactura extends IBaseTnx {
 			} // else
 		} // try
 		catch (Exception e) {						
-			if(existFactura(sesion)) {
-				registrarBitacoraFactura(sesion, this.cliente.getIdFactura(), EEstatusFacturas.AUTOMATICO.getIdEstatusFactura(), "Ocurrió un error al realizar la facturación automatica.", idUsuario);		
-				actualizarFacturaAutomatico(sesion, this.cliente.getIdFactura(), idUsuario, EEstatusFacturas.AUTOMATICO.getIdEstatusFactura());
+			if(this.existFactura(sesion)) {
+				this.registrarBitacoraFactura(sesion, this.cliente.getIdFactura(), EEstatusFacturas.AUTOMATICO.getIdEstatusFactura(), "Ocurrió un error al realizar la facturación automatica.", idUsuario);		
+				this.actualizarFacturaAutomatico(sesion, this.cliente.getIdFactura(), idUsuario, EEstatusFacturas.AUTOMATICO.getIdEstatusFactura());
 			} // if
 			throw e;
 		} // catch
@@ -397,7 +395,7 @@ public class TransaccionFactura extends IBaseTnx {
 		try {
 			if(factura!= null && factura.getSelloSat()== null && factura.getCadenaOriginal()== null) {
 				LOG.warn("Actualizando datos de la factura ["+ detail.getFolio()+ "] del cliente ["+ this.cliente.getRfc()+ "] porque estaba incompleto el registro !");			
-				registrarBitacoraFactura(sesion, idFactura, EEstatusFacturas.TIMBRADA.getIdEstatusFactura(), "ESTA FACTURA FUE RECUPERADA DE FACTURAMA.", idUsuario);
+				this.registrarBitacoraFactura(sesion, idFactura, EEstatusFacturas.TIMBRADA.getIdEstatusFactura(), "ESTA FACTURA FUE RECUPERADA DE FACTURAMA.", idUsuario);
 				Complement complement = detail.getComplement();
 				factura.setComentarios("ESTA FACTURA FUE RECUPERADA DE FACTURAMA !");
 				factura.setSelloCfdi(complement.getTaxStamp().getCfdiSign());
@@ -476,7 +474,7 @@ public class TransaccionFactura extends IBaseTnx {
 		boolean regresar           = false;
 		TcManticFacturasDto factura= null;		
 		factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, id);
-		registrarBitacoraFactura(sesion, id, EEstatusFacturas.TIMBRADA.getIdEstatusFactura(), "TIMBRADO DE LA FACTURA", idUsuario);		
+		this.registrarBitacoraFactura(sesion, id, EEstatusFacturas.TIMBRADA.getIdEstatusFactura(), "TIMBRADO DE LA FACTURA", idUsuario);		
 		factura.setIdFacturama(cfdi.getId());
 		factura.setFolio(cfdi.getFolio());					
 		factura.setTimbrado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
@@ -506,7 +504,7 @@ public class TransaccionFactura extends IBaseTnx {
     boolean regresar= false;
     try {
       TcManticFacturasDto factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, id);
-      registrarBitacoraFactura(sesion, id, idEstatus, "ASIGNACION A FACTURACION AUTOMATICA", idUsuario);				
+      this.registrarBitacoraFactura(sesion, id, idEstatus, "ASIGNACION A FACTURACION AUTOMATICA", idUsuario);				
       factura.setIdFacturaEstatus(idEstatus);		
       factura.setIntentos(factura.getIntentos()+1L);
       regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;

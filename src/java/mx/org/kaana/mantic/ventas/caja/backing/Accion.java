@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -1687,8 +1688,13 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("disabledFacturar", false);
 			if(!ticketsAbiertos.isEmpty()) {
 				ticketAbierto= (Entity) this.attrs.get("ticketAbierto");
-				if(ticketAbierto!= null)
-					this.attrs.put("disabledFacturar", cliente.getKey().equals(ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto)).toLong("idCliente")));
+				if(ticketAbierto!= null) {
+          int index= ticketsAbiertos.indexOf(ticketAbierto);
+          if(index>= 0)
+					  this.attrs.put("disabledFacturar", Objects.equals(cliente.getKey(), ticketsAbiertos.get(index).toLong("idCliente")));
+          else
+            this.attrs.put("disabledFacturar", Boolean.TRUE);
+        } // if  
 			} // if						
 		} // try
 		catch (Exception e) {			

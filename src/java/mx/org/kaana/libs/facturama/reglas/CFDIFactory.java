@@ -202,6 +202,8 @@ public class CFDIFactory implements Serializable {
 			  regresar= this.facturama.Cfdis().Create(cfdi);
 		} // try
 		catch (Exception e) {			
+      LOG.error("Factura para: "+ cfdi.getReceiver().getName()+ " ["+ cfdi.getReceiver().getRfc()+ "]");
+      LOG.error("Items: "+ cfdi.getItems());
 			throw e;
 		} // catch	
 		return regresar;
