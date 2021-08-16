@@ -553,19 +553,21 @@
 						<p:tab title="Faltantes almacen">
 							<p:dataTable id="faltantes" var="row" value="#{manticComprasOrdendesAccion.attrs.faltantes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_MAX_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
 								<f:facet name="header">
-									<p:inputText id="lookFaltantes" placeholder="Filtrar un articulo: ej. ABRAZADERA ó AA451" value="#{manticComprasOrdendesAccion.attrs.lookForFaltantes}" styleClass="janal-wid-80" style="float: left;">
+									<p:inputText id="lookFaltantes" placeholder="Filtrar un articulo: ej. ABRAZADERA ó AA451" value="#{manticComprasOrdendesAccion.attrs.lookForFaltantes}" styleClass="janal-fix-85" style="float: left;">
 										<p:ajax event="keyup" listener="#{manticComprasOrdendesAccion.doLookForFaltantes}" process="@this" update="faltantes" onstart="return $('#contenedorGrupos\\:faltantes\\:lookFaltantes').val().trim().length> 1;"/>
 									</p:inputText>
-									<p:commandButton title="Refrescar articulos faltantes" icon="fa fa-refresh" process="@this" update="lookFaltantes faltantes" action="#{manticComprasOrdendesAccion.doCleanLookForFaltantes}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
                   <div class="lg-pantalla">
                     <p:menuButton value="Opciones">
                       <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('faltantesPdfData', 'contenedorGrupos\\:faltantes')" oncomplete="janal.desbloquear()"/>
                       <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('faltantesXlsData', 'contenedorGrupos\\:faltantes')" oncomplete="janal.desbloquear()"/>
+                      <p:separator/>
+                      <p:menuitem icon="fa fa-refresh" value="Refrescar articulos"  process="@this" update="lookFaltantes faltantes" action="#{manticComprasOrdendesAccion.doCleanLookForFaltantes}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
                     </p:menuButton>
                   </div>  
                   <div class="xs-pantalla">              
                     <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('faltantesPdfData', 'contenedorGrupos\\:faltantes')" oncomplete="janal.desbloquear()"/>
                     <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('faltantesXlsData', 'contenedorGrupos\\:faltantes')" oncomplete="janal.desbloquear()"/>
+   									<p:commandButton icon="fa fa-refresh" title="Refrescar articulos faltantes" process="@this" update="lookFaltantes faltantes" action="#{manticComprasOrdendesAccion.doCleanLookForFaltantes}" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
                   </div>                   
                 </f:facet>
 								<p:column class="MarAuto Responsive janal-wid-col-20">
@@ -650,19 +652,21 @@
 							</p:panelGrid>
 							<p:dataTable id="perdidos" var="row" value="#{manticComprasOrdendesAccion.attrs.perdidos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{manticComprasOrdendesAccion.recordCount}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
 								<f:facet name="header">
-									<p:inputText id="lookPerdidos" placeholder="Filtrar un articulo: ej. ABRAZADERA ó AA451" value="#{manticComprasOrdendesAccion.attrs.lookForPerdidos}" styleClass="janal-wid-80" style="float: left;">
+									<p:inputText id="lookPerdidos" placeholder="Filtrar un articulo: ej. ABRAZADERA ó AA451" value="#{manticComprasOrdendesAccion.attrs.lookForPerdidos}" styleClass="janal-fix-85" style="float: left;">
 										<p:ajax event="keyup" listener="#{manticComprasOrdendesAccion.doLookForPerdidos}" process="@this" update="perdidos" onstart="return $('#contenedorGrupos\\:perdidos\\:lookPerdidos').val().trim().length> 1;"/>
 									</p:inputText>
- 									<p:commandButton title="Refrescar articulos de las ventas perdidas" icon="fa fa-refresh" process="@this" update="lookPerdidos perdidos" action="#{manticComprasOrdendesAccion.doCleanLookForPerdidos()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
                   <div class="lg-pantalla">
                     <p:menuButton value="Opciones">
                       <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfPerdidos', 'contenedorGrupos\\:perdidos')" oncomplete="janal.desbloquear()"/>
                       <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsPerdidos', 'contenedorGrupos\\:perdidos')" oncomplete="janal.desbloquear()"/>
+                      <p:separator/>
+                      <p:menuitem icon="fa fa-refresh" value="Refrescar articulos" process="@this" update="lookPerdidos perdidos" action="#{manticComprasOrdendesAccion.doCleanLookForPerdidos()}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
                     </p:menuButton>
                   </div>  
                   <div class="xs-pantalla">              
                     <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdfPerdidos', 'contenedorGrupos\\:perdidos')" oncomplete="janal.desbloquear()"/>
                     <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlsPerdidos', 'contenedorGrupos\\:perdidos')" oncomplete="janal.desbloquear()"/>
+   									<p:commandButton icon="fa fa-refresh" title="Refrescar articulos de las ventas perdidas" process="@this" update="lookPerdidos perdidos" action="#{manticComprasOrdendesAccion.doCleanLookForPerdidos()}" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
                   </div>                           
                 </f:facet>
 								<p:column class="MarAuto Responsive janal-wid-col-20">
