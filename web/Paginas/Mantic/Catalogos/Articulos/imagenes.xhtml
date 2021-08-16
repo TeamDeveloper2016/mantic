@@ -44,7 +44,7 @@
 					<p:spacer height="10px"/>
 					<div class="ui-grid-row janal-grid-row">
 						<div class="ui-grid-col-1 janal-wid-col-150">
-							<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-80, janal-wid-3">
+							<p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-80, janal-wid-3">
 								<p:outputLabel for="codigos" value="Código ó articulo:"/>
 								<p:selectBooleanCheckbox value="#{manticCatalogosArticulosImagenes.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
 									<p:ajax event="change" process="@this" update="@this"/>
@@ -75,10 +75,14 @@
 					<div class="ui-grid-row janal-grid-row">
 						<div class="ui-grid-col-12">
 							<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-15, janal-wid-100-txt">
-								<p:outputLabel value="Código:"/>
-								<p:outputLabel value="Nombre:"/>
-								<p:inputText value="#{manticCatalogosArticulosImagenes.articulo.propio}" styleClass="janal-wid-100-txt janal-color-blue" readonly="true"/>
-								<p:inputText value="#{manticCatalogosArticulosImagenes.articulo.nombre}" styleClass="janal-wid-100-txt" readonly="true"/>
+  							<p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+	  							<p:outputLabel value="Código:"/>
+  								<p:inputText value="#{manticCatalogosArticulosImagenes.articulo.propio}" styleClass="janal-wid-100-txt janal-color-blue" readonly="true"/>
+                </p:panelGrid>  
+  							<p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+  								<p:outputLabel value="Nombre:"/>
+	  							<p:inputText value="#{manticCatalogosArticulosImagenes.articulo.nombre}" styleClass="janal-wid-100-txt" readonly="true"/>
+                </p:panelGrid>  
 							</p:panelGrid>	
 						</div>
 					</div>

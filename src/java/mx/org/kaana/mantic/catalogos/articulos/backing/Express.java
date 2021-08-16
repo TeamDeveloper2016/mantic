@@ -112,9 +112,9 @@ public class Express extends IBaseAttribute implements Serializable {
 			this.prepareRegistro();
       transaccion = new Transaccion(this.registroArticulo, 0D);
       if (transaccion.ejecutar(EAccion.COPIAR)) 
-				JsfBase.addMessage("Se registro el artículo de forma correcta.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se registró el articulo de forma correcta.", ETipoMensaje.INFORMACION);
       else
-				JsfBase.addMessage("Ocurrió un error al registrar el artículo", ETipoMensaje.ERROR);						
+				JsfBase.addMessage("Ocurrió un error al registrar el articulo", ETipoMensaje.ERROR);						
 			this.registroArticulo= new RegistroArticulo();
 			this.attrs.put("codigoExpress", null);
 			this.attrs.put("nombreExpress", null);
