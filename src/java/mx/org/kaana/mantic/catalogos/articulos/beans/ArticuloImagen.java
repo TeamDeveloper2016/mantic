@@ -24,13 +24,23 @@ public class ArticuloImagen extends TcManticArticulosImagenesDto implements Seri
   private ESql anterior;
 	private Boolean nuevo;  
 	private Boolean principal;  
+	private String alias;  
+	private Long tamanio;  
+	private String ruta;  
+	private String original;  
+	private String archivo;  
 
   public ArticuloImagen() {
-    this((new Random().nextLong())* -1);  
+    this(new Importado());  
   }
   
   public ArticuloImagen(Importado importado) {
     this(new Random().nextLong(), importado);
+    if(this.id== 0)
+      this.id= new Random().nextLong();
+    if(this.id> 0)
+      this.id= this.id* -1L;
+    this.sqlAccion= ESql.INSERT;
   }
   
   public ArticuloImagen(Long id) {
@@ -40,17 +50,11 @@ public class ArticuloImagen extends TcManticArticulosImagenesDto implements Seri
   public ArticuloImagen(Long id, Importado importado) {
     super();
     this.id       = id;
-    this.importado= new Importado();
-    this.importado.setName("sin-foto.png");
-    this.importado.setFileSize(100L);
-    this.importado.setMedicion("KB");
-    if(this.id % 2== 0)
-      this.sqlAccion= ESql.SELECT;
-    else
-      this.sqlAccion= ESql.INSERT;
+    this.importado= importado;
+    this.sqlAccion= ESql.SELECT;
     this.nuevo    = Boolean.FALSE;
     this.anterior = this.sqlAccion;
-    this.principal= Objects.equals(this.getIdPrincipal(), 1L);
+    this.principal= Boolean.FALSE;
   }
 
   public Long getId() {
@@ -60,7 +64,7 @@ public class ArticuloImagen extends TcManticArticulosImagenesDto implements Seri
   public void setId(Long id) {
     this.id = id;
   }
-  
+
   public Importado getImportado() {
     return importado;
   }
@@ -108,6 +112,46 @@ public class ArticuloImagen extends TcManticArticulosImagenesDto implements Seri
     this.principal = principal;
   }
 
+  public String getAlias() {
+    return alias;
+  }
+
+  public void setAlias(String alias) {
+    this.alias = alias;
+  }
+
+  public Long getTamanio() {
+    return tamanio;
+  }
+
+  public void setTamanio(Long tamanio) {
+    this.tamanio = tamanio;
+  }
+
+  public String getRuta() {
+    return ruta;
+  }
+
+  public void setRuta(String ruta) {
+    this.ruta = ruta;
+  }
+
+  public String getOriginal() {
+    return original;
+  }
+
+  public void setOriginal(String original) {
+    this.original = original;
+  }
+
+  public String getArchivo() {
+    return archivo;
+  }
+
+  public void setArchivo(String archivo) {
+    this.archivo = archivo;
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -129,6 +173,11 @@ public class ArticuloImagen extends TcManticArticulosImagenesDto implements Seri
   @Override
   public Class toHbmClass() {
     return TcManticArticulosImagenesDto.class;
+  }
+
+  @Override
+  public String toString() {
+    return "ArticuloImagen{" + "id=" + id + ", importado=" + importado + ", sqlAccion=" + sqlAccion + ", anterior=" + anterior + ", nuevo=" + nuevo + ", principal=" + principal + ", alias=" + alias+ ", tamanio=" + tamanio + ", ruta=" + ruta + ", original=" + original + ", archivo=" + archivo + '}';
   }
   
 }

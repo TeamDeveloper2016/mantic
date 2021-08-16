@@ -45,7 +45,7 @@ public final class Error {
   public static void mensaje(Object objeto, Throwable exception, Object ... valores)  {
     if (Configuracion.getInstance().getPropiedad("sistema.log.error.".concat(Configuracion.getInstance().getPropiedad("sistema.servidor"))).equals("si")) {
       LOG.error(MessageFormat.format(getMensaje(objeto), valores));
-      LOG.warn(exception);
+      LOG.error(exception);
     } // if
   }
 
@@ -54,12 +54,21 @@ public final class Error {
   }
 
   public static void mensaje(Throwable exception, String propio)  {
-    if (Configuracion.getInstance().getPropiedad("sistema.log.error.".concat(Configuracion.getInstance().getPropiedad("sistema.servidor"))).equals("si")){
-      StackTraceElement[] stackTraceElements= exception.getStackTrace();
-      Object[] valores= new Object[] {stackTraceElements[0].getClassName(), stackTraceElements[0].getMethodName(), propio};
-      LOG.error(MessageFormat.format(getMensaje(), valores));
-      LOG.warn(exception);
-      exception.printStackTrace();
+    if (Configuracion.getInstance().getPropiedad("sistema.log.error.".concat(Configuracion.getInstance().getPropiedad("sistema.servidor"))).equals("si")) {
+      // StackTraceElement[] stackTraceElements= exception.getStackTrace();
+      // Object[] valores= new Object[] {stackTraceElements[0].getClassName(), stackTraceElements[0].getMethodName(), propio};
+      // LOG.error(MessageFormat.format(getMensaje(), valores));
+      LOG.error(exception);
+      StringBuilder message= new StringBuilder();
+      StackTraceElement[] stackTrace = exception.getStackTrace();
+      if(stackTrace!=null && stackTrace.length> 0) {
+        for (StackTraceElement e : stackTrace) {
+          message.append(e.toString()).append(";\n");
+        } // for
+      } // if
+      LOG.error(message.length()> 0? message.substring(0, message.length()- 2): message.toString());
+      LOG.error("->->->->->->->->->->->->->->->->->->->->->->->->->->->->");
+      //exception.printStackTrace();
     } // if
   }
 

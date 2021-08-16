@@ -27,7 +27,7 @@ public enum EFormatos implements IFormatos {
 	DOC("icono-rtf",    "icon/acciones/doc.png",    "application/msword",                                                        ETipoFormato.IREPORT,   "(Microsoft) Procesador de textos"),
 	DOCX("icono-rtf",   "icon/acciones/doc.png",    "application/vnd.ms-word.document.12",                                       ETipoFormato.IREPORT,   "(Microsoft) Procesador de textos extensible"),
 	PPT("icono-rtf",    "icon/acciones/doc.png",    "application/mspowerpoint",                                                  ETipoFormato.IREPORT,   "(Microsoft, Ecma, ISO/IEC) Extension de archivos para presentaciones multimedia de Microsoft"),
-	PPTX("icono-rtf",   "icon/acciones/doc.png",   "application/vnd.openxmlformats-officedocument.presentationml.presentation", ETipoFormato.IREPORT,   "(Microsoft, Ecma, ISO/IEC) Extension de archivos para presentaciones multimedia de Microsoft"),
+	PPTX("icono-rtf",   "icon/acciones/doc.png",    "application/vnd.openxmlformats-officedocument.presentationml.presentation", ETipoFormato.IREPORT,   "(Microsoft, Ecma, ISO/IEC) Extension de archivos para presentaciones multimedia de Microsoft"),
 	ODS("icono-xls",    "icon/acciones/doc.png",    "application/vnd.oasis.opendocument.spreadsheet",                            ETipoFormato.IREPORT,   "(Sun Microsystems, OASIS)Almacen de datos operacional"),
 	ODT("icono-rtf",    "icon/acciones/doc.png",    "application/vnd.oasis.opendocument.text",                                   ETipoFormato.IREPORT,   "(Sun Microsystems, OASIS) OpenDocument"),
 	HTML("icono-html",  "icon/acciones/html.png",   "text/html",                                                                 ETipoFormato.IREPORT,   "(World Wide Web Consortium & WHATWG) Lenguaje de marcado de hipertexto"),
@@ -38,7 +38,9 @@ public enum EFormatos implements IFormatos {
 	SQL("icono-txt",    "icon/acciones/foxpro.png", "text/sql",                                                                  ETipoFormato.LIBRE,     "(MYSQL) Script de la base de datos"),
 	TXT("icono-txt",    "icon/acciones/txt.png",    "text/csv",                                                                  ETipoFormato.LIBRE,     "Formato de texto plano"),
 	ZIP("icono-zip",    "icon/acciones/zip.png",    "application/zip",                                                           ETipoFormato.COMPRIMIDO,"(Phil Katz, PKWARE) Archivo comprimido"),
-	FREE("icono-zip",   "icon/acciones/zip.png",    "application/zip",                                                           ETipoFormato.LIBRE,     "(Phil Katz, PKWARE) Archivo comprimido");
+	FREE("icono-zip",   "icon/acciones/zip.png",    "application/zip",                                                           ETipoFormato.LIBRE,     "(Phil Katz, PKWARE) Archivo comprimido"),
+	JPG("icono-jpg",    "icon/acciones/jpg.png",    "image/jpeg",                                                                ETipoFormato.IMAGEN,    ""),
+	PNG("icono-png",    "icon/acciones/png.png",    "image/png",                                                                 ETipoFormato.IMAGEN,    "");
 	
 	private String icono;
 	private String image;

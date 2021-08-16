@@ -28,7 +28,6 @@
 				$('#source-image').attr('href', $('#icon-image').attr('src'));
 				setTimeout("$('#codigos_input').focus();", 1000);
       });
-
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
@@ -75,10 +74,10 @@
 					</div>
 					<div class="ui-grid-row janal-grid-row">
 						<div class="ui-grid-col-12">
-							<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-10, janal-wid-100-txt">
+							<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-15, janal-wid-100-txt">
 								<p:outputLabel value="Código:"/>
 								<p:outputLabel value="Nombre:"/>
-								<p:inputText value="#{manticCatalogosArticulosImagenes.articulo.propio}" styleClass="janal-wid-100-txt janal-color-blue janal-column-right" readonly="true"/>
+								<p:inputText value="#{manticCatalogosArticulosImagenes.articulo.propio}" styleClass="janal-wid-100-txt janal-color-blue" readonly="true"/>
 								<p:inputText value="#{manticCatalogosArticulosImagenes.articulo.nombre}" styleClass="janal-wid-100-txt" readonly="true"/>
 							</p:panelGrid>	
 						</div>

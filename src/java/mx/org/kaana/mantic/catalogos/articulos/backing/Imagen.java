@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -13,7 +12,6 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
-import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -62,8 +60,8 @@ public class Imagen extends IBaseAttribute implements Serializable {
   @Override
   protected void init() {
     try {
-      this.attrs.put("accion", EAccion.AGREGAR);
-      this.attrs.put("idArticulo", -1L);
+      this.attrs.put("accion", EAccion.MODIFICAR);
+      this.attrs.put("idArticulo", 22L);
       this.attrs.put("goKardex", -1L> 0L);
       this.doLoad();
       this.loadProveedores();
@@ -119,16 +117,14 @@ public class Imagen extends IBaseAttribute implements Serializable {
     try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
       transaccion = new Transaccion(this.registroArticulo, (Double)this.attrs.get("precio"));
-			if(this.image!= null) {
-				this.image.getStream().close();
-				this.image= null;
-			} // if
       if (transaccion.ejecutar(eaccion)) {
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
         JsfBase.addMessage("Se registro el artículo de forma correcta.", ETipoMensaje.INFORMACION);
       } // if
-      else 
+      else {
+        UIBackingUtilities.execute("leavePage= false;");
         JsfBase.addMessage("Ocurrió un error al registrar el artículo", ETipoMensaje.ERROR);      
+      } // else  
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -138,9 +134,7 @@ public class Imagen extends IBaseAttribute implements Serializable {
   } // doAccion
 
   public String doCancelar() {
-    if (((EAccion) this.attrs.get("accion")).equals(EAccion.AGREGAR)) 
-      this.registroArticulo.doCancelar();    
-    return "filtro";
+    return "filtro".concat(Constantes.REDIRECIONAR);
   } // doCancelar
 
   private void loadEmpaques() {
@@ -310,32 +304,6 @@ public class Imagen extends IBaseAttribute implements Serializable {
 		this.attrs.put("precio", precio);
 	}
 
-	public void doDeleteFile() {
-		Transaccion transaccion= null;
-		EAccion accion         = null;
-		try {
-			accion= (EAccion)this.attrs.get("accion");			
-			if(accion.equals(EAccion.AGREGAR) || (this.registroArticulo.getArticulo().getIdImagen()== null || this.registroArticulo.getArticulo().getIdImagen() < 1L)) 
-				this.registroArticulo.doDeleteFile();										
-			if (this.registroArticulo.validaImagenComun()){
-				transaccion= new Transaccion(this.registroArticulo, 0D);
-				if(transaccion.ejecutar(EAccion.DEPURAR)){
-					if(this.image!= null){
-						this.image.getStream().close();
-						this.image= null;
-					}	// if				
-					this.registroArticulo.doDeleteFile();		
-				} // if
-			} // else			
-			this.registroArticulo.getArticulo().setIdImagen(null);
-			this.registroArticulo.setImportado(new Importado());
-		} // try
-		catch (Exception e) {
-			JsfBase.addMessageError(e);
-			Error.mensaje(e);			
-		} // catch		
-	} // doDeleteFile
-	
 	public void doLookForCodigo(String id, String codigo, Long index) {
 	  Map<String, Object> params=null;
 		try {
@@ -381,15 +349,43 @@ public class Imagen extends IBaseAttribute implements Serializable {
 	}
 
   public void doDeleteImage(ArticuloImagen row) {
-    this.registroArticulo.doDeleteImage(row);
+		try {
+      this.registroArticulo.doDeleteImage(row);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
   } 
   
   public void doRecoverImage(ArticuloImagen row) {
-    this.registroArticulo.doRecoverImage(row);
+ 		try {
+      this.registroArticulo.doRecoverImage(row);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
   } 
   
   public void doUpdatePrinicipal(ArticuloImagen row) {
-    this.registroArticulo.toUpdatePrincipal(row);
+ 		try {
+      this.registroArticulo.toUpdatePrincipal(row);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+  }
+  
+  public void doCleanImages() {
+ 		try {
+      this.registroArticulo.toCleanImages();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
   }
   
 }

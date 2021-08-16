@@ -64,7 +64,7 @@ public class TcManticArticulosImagenesDto implements IBaseDto, Serializable {
   }
 
   public TcManticArticulosImagenesDto(Long key) {
-    this(new Long(-1L), 0D, null, null, 2L, 0D, 1L, null, null, null);
+    this(new Long(-1L), 0D, -1L, -1L, 2L, 0D, 1L, -1L, "MODELO_1", "MODELO_1");
     setKey(key);
   }
 

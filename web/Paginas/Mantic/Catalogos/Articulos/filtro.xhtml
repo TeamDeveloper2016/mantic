@@ -216,7 +216,7 @@
 									<p:commandButton icon="fa fa-file-excel-o" title="Exportar catalogo" onstart="return janal.bloquear();" action="#{manticCatalogosArticulosFiltro.doExportarXls}" process="@this panelBusqueda" oncomplete="janal.desbloquear()"/>
 								</div>	
 							</f:facet>												
-							<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.propio}">
+							<p:column class="janal-column-left MarAuto Responsive janal-wid-12" sortBy="#{row.propio}">
 								<f:facet name="header">
 									<h:outputText value="Código"/>
 								</f:facet>
@@ -234,19 +234,19 @@
 								</f:facet>
 								<h:outputText value="#{row['menudeo']}"/>
 							</p:column>					
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.medioMayoreo}">
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{row.medioMayoreo}">
 								<f:facet name="header">
 									<h:outputText value="Medio mayoreo"/>
 								</f:facet>
 								<h:outputText value="#{row['medioMayoreo']}"/>
 							</p:column>					
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.mayoreo}">
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.mayoreo}">
 								<f:facet name="header">
 									<h:outputText value="Mayoreo"/>
 								</f:facet>
 								<h:outputText value="#{row['mayoreo']}"/>
 							</p:column>											
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.stock}">
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.stock}">
 								<f:facet name="header">
 									<h:outputText value="Stock"/>
 								</f:facet>

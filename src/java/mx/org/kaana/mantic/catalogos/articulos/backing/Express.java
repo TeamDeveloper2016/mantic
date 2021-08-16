@@ -151,9 +151,7 @@ public class Express extends IBaseAttribute implements Serializable {
 	} // prepareRegistro
 	
   public String doCancelar() {
-    if (((EAccion) this.attrs.get("accion")).equals(EAccion.AGREGAR)) 
-      this.registroArticulo.doCancelar();    
-    return "filtro";
+    return "filtro".concat(Constantes.REDIRECIONAR);
   } // doAccion
 
   private void loadEmpaques() {

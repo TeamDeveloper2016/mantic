@@ -48,6 +48,23 @@
 			$(document).ready(function(){
 				janal.readingMode('#{manticCatalogosArticulosAccion.attrs.nombreAccion}');
 			});			
+      
+      var leavePage= false;
+      $(window).bind('beforeunload', function() { 
+        cleanImages();
+        if(typeof(leavePage)=== 'undefined' || leavePage) 
+					return ;
+				else {
+				  return 'Es probable que los cambios no se hayan guardado\n\u00BF Aun asi deseas salir de esta opción ?';        
+        } //   
+			});      
+      function checkItemString(item, index) {
+        if($(item).val().trim().length=== 0)
+          $(item).val('MODELO_'+ (index+ 1));
+        else
+          $(item).val($(item).val().trim());
+        return true;
+      }
 		</script>   
 		<style type="text/css">
       .p-p-1 {padding: 0.25rem !important;}
@@ -61,6 +78,7 @@
 	</ui:define>
 	<ui:define name="contenido">
 		<p:hotkey bind="esc" handler="if($('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon')){$('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon').click();}"/>
+    <p:remoteCommand name="cleanImages" action="#{manticCatalogosArticulosAccion.doCleanImages()}"/>
 		<pe:remoteCommand name="lookForCodigo" process="@this @(.proveedores-codigo)" actionListener="#{manticCatalogosArticulosAccion.doLookForCodigo}">  
 			<pe:methodSignature parameters="java.lang.String, java.lang.String, java.lang.Long"/>  
 			<pe:methodParam name="id"/>  
@@ -199,52 +217,42 @@
 							</p:panelGrid>	
 						</p:tab>
             <p:tab id="tabImagen" title="Imagen" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">								
-							<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-5, janal-wid-2, janal-wid TexAlLeft">								
-								<p:outputLabel id="labelImagen" value="Importar:"/>
-								<p:spacer/>								
-								<p:fileUpload id="imagen" update="importacion nombreImagen tamanioImagen" fileUploadListener="#{manticCatalogosArticulosAccion.registroArticulo.doFileUpload}" uploadLabel="Importar" cancelLabel="Cancelar" label="Seleccionar" mode="advanced" dragDropSupport="false" allowTypes="/(\.|\/)(jpe?g|png)$/" sizeLimit="5242880" invalidSizeMessage="El tamaño maximo permitido es de 5 Megabytes !" invalidFileMessage="Solo se permiten importar archivos con extensión .PNG y .JPG !"/>																
-								<p:outputLabel value="Imagen:"/>
-								<p:commandButton id="eliminarImage" title="Eliminar" icon="fa fa-trash-o" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" actionListener="#{manticCatalogosArticulosAccion.doDeleteFile}" process="@this" update="contenedorGrupos:importacion contenedorGrupos:nombreImagen contenedorGrupos:tamanioImagen"/>
-								<p:graphicImage id="importacion" value="#{manticCatalogosArticulosAccion.image}" styleClass="filas" width="165" stream="false" cache="false"/>								
-								<p:outputLabel value="Nombre:"/>
-								<p:spacer/>
-								<p:outputLabel id="nombreImagen" value="#{manticCatalogosArticulosAccion.registroArticulo.importado.name}"/>								
-								<p:outputLabel value="Tamaño:"/>
-								<p:spacer/>
-								<p:outputLabel id="tamanioImagen" value="#{manticCatalogosArticulosAccion.registroArticulo.importado.fileSize}#{manticCatalogosArticulosAccion.registroArticulo.importado.medicion}"/>																
-								<p:selectBooleanCheckbox value="#{manticCatalogosArticulosAccion.registroArticulo.imagen}"/>
-								<p:spacer/>
-								<p:outputLabel value="Respetar todos los articulos que cuentan con esta imagen" styleClass="janal-color-blue"/>								
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">								
+                <p:fileUpload id="imagen" update="@(.detalle)" fileUploadListener="#{manticCatalogosArticulosAccion.registroArticulo.doFileUpload}" uploadLabel="Importar" cancelLabel="Cancelar" label="Seleccionar" mode="advanced" dragDropSupport="true" allowTypes="/(\.|\/)(jpe?g|png)$/" sizeLimit="5242880" invalidSizeMessage="El tamaño maximo permitido es de 5 Megabytes !" invalidFileMessage="Solo se permiten importar archivos con extensión .PNG y .JPG !" auto="true"/>																
+                <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-fix-2, janal-fix-98">
+								  <p:selectBooleanCheckbox value="#{manticCatalogosArticulosAccion.registroArticulo.imagen}"/>
+								  <p:outputLabel value="Respetar todos los articulos que cuentan con esta imagen" styleClass="janal-color-blue"/>								
+                </p:panelGrid>  
 							</p:panelGrid>
-              <p:dataGrid id="imagenes" lazy="false" value="#{manticCatalogosArticulosAccion.registroArticulo.imagenes}" var="row" columns="3" paginator="#{manticCatalogosArticulosAccion.registroArticulo.imagenes.size() gt 9}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" styleClass="jana-wid-100-txt detalle" rendered="false">
+              <p:dataGrid id="imagenes" lazy="false" value="#{manticCatalogosArticulosAccion.registroArticulo.imagenes}" var="row" columns="3" paginator="#{manticCatalogosArticulosAccion.registroArticulo.imagenes.size() gt 9}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" styleClass="jana-wid-100-txt detalle">
                 <div class="producto">
                   <div class="producto-list-item p-p-1">
                     <div class="producto-item-search">
-                      <a id="view#{row.id}" data-magnify="gallery" href="#{manticCatalogosArticulosImagen.path}#{row.importado.name}" data-caption="#{row.importado.name}" data-group="icon-image" class="icon">
-                        <p:graphicImage url="#{manticCatalogosArticulosImagen.path}#{row.importado.name}" style="cursor:zoom-in;"/>
+                      <a id="view#{row.id}" data-magnify="gallery" href="#{manticCatalogosArticulosAccion.path}#{row.importado.name}" data-caption="#{row.importado.name}" data-group="icon-image" class="icon">
+                        <p:graphicImage url="#{manticCatalogosArticulosAccion.path}#{row.importado.name}" style="cursor:zoom-in;"/>
                       </a>  
                       <span>#{row.importado.name}</span>
                     </div> 
                     <div class="producto-list-detail">
                       <div class="producto-description">Modelo: 
-                        <p:inputText value="#{row['modelo']}" styleClass="janal-wid-100-txt">
-                          <p:ajax event="change" process="@this"/>
+                        <p:inputText id="modelo" value="#{row['modelo']}" styleClass="janal-wid-100-txt">
+                          <p:ajax event="change" process="@this" onstart="return checkItemString('#contenedorGrupos\\:imagenes\\:#{index}\\:modelo', #{index});"/>
                         </p:inputText>  
                       </div>
-                      <div class="producto-description">Precio: 
-                        <p:inputText value="#{row['menudeo']}" styleClass="janal-wid-100-txt">
+                      <div class="producto-description" style="display: none">Precio: 
+                        <p:inputNumber value="#{row['menudeo']}" styleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0.0" inputStyleClass="janal-wid-100-txt" minValue="0" thousandSeparator=",">
                           <p:ajax event="change" process="@this"/>
-                        </p:inputText>  
+                        </p:inputNumber>  
                       </div>
                       <div class="producto-actions">
-                        <span class="janal-align-left janal-color-orange">
-                          <p:selectBooleanButton value="#{row.principal}" onLabel="SI" offLabel="NO" style="width:60px">
-                            <p:ajax event="change" process="@this" update="@(.detalle)" listener="#{manticCatalogosArticulosImagen.doUpdatePrinicipal(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                        <span class="janal-align-left janal-color-orange detalle" style="display:#{row['sqlAccion'] eq 'DELETE'? 'none': ''}">
+                          <p:selectBooleanButton value="#{row.principal}" onLabel="SI" offLabel="NO" style="width:60px;">
+                            <p:ajax event="change" process="@this" update="@(.detalle)" listener="#{manticCatalogosArticulosAccion.doUpdatePrinicipal(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                           </p:selectBooleanButton>   
-                          Es la imagen principal
+                          es la imagen principal
                         </span>
-                        <p:commandButton title="Eliminar" icon="fa fa-trash-o" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" actionListener="#{manticCatalogosArticulosImagen.doDeleteImage(row)}" process="@this" update="@(.detalle)" style="display:#{row['sqlAccion'] eq 'DELETE'? 'none': ''}"/>
-                        <p:commandButton title="Recuperar" icon="fa fa-recycle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" actionListener="#{manticCatalogosArticulosImagen.doRecoverImage(row)}" process="@this" update="@(.detalle)" style="display:#{row['sqlAccion'] eq 'DELETE'? '': 'none'}"/>
+                        <p:commandButton title="Eliminar" icon="fa fa-trash-o" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" actionListener="#{manticCatalogosArticulosAccion.doDeleteImage(row)}" process="@this" update="@(.detalle)" style="display:#{row['sqlAccion'] eq 'DELETE'? 'none': ''}"/>
+                        <p:commandButton title="Recuperar" icon="fa fa-recycle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" actionListener="#{manticCatalogosArticulosAccion.doRecoverImage(row)}" process="@this" update="@(.detalle)" style="display:#{row['sqlAccion'] eq 'DELETE'? '': 'none'}"/>
                       </div>
                     </div>
                   </div>
@@ -448,15 +456,15 @@
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
 			<p:commandButton id="kardex" value="Kardex" icon="fa fa-cart-plus" process="@form" action="#{manticCatalogosArticulosAccion.doKardex()}" rendered="#{manticCatalogosArticulosAccion.attrs.goKardex}"/>
-			<p:commandButton id="clonar" value="Clonar" icon="fa fa-copy" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar('COPIAR')}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosArticulosAccion.attrs.activeClon}"/>
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticCatalogosArticulosAccion.doAceptar(manticCatalogosArticulosAccion.attrs.nombreAccion)}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosArticulosAccion.doCancelar}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
+			<p:commandButton id="clonar" value="Clonar" icon="fa fa-copy" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar('COPIAR')}" onstart="leavePage= true; return janal.execute(true);" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosArticulosAccion.attrs.activeClon}"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticCatalogosArticulosAccion.doAceptar(manticCatalogosArticulosAccion.attrs.nombreAccion)}" onstart="leavePage= true; return janal.execute(true);" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosArticulosAccion.doCancelar}" ajax="false" onclick="leavePage= true;" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
 			<p:commandButton id="kardexIcon" title="Kardex" icon="fa fa-cart-plus" process="@form" action="#{manticCatalogosArticulosAccion.doKardex()}" rendered="#{manticCatalogosArticulosAccion.attrs.goKardex}"/>
-			<p:commandButton id="clonarIcon" title="Clonar" icon="fa fa-copy" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar('COPIAR')}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosArticulosAccion.attrs.activeClon}"/>
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar(manticCatalogosArticulosAccion.attrs.nombreAccion)}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosArticulosAccion.doCancelar}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
+			<p:commandButton id="clonarIcon" title="Clonar" icon="fa fa-copy" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar('COPIAR')}" onstart="return janal.execute(true);" oncomplete="leavePage= true; janal.desbloquear()" rendered="#{manticCatalogosArticulosAccion.attrs.activeClon}"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar(manticCatalogosArticulosAccion.attrs.nombreAccion)}" onstart="leavePage= true; return janal.execute(true);" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosArticulosAccion.doCancelar}" ajax="false" onclick="leavePage= true;" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 	</ui:define>
 </ui:composition>

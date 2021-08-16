@@ -6,13 +6,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatos;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloCodigo;
 import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloDimencion;
+import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloImagen;
 import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloProveedor;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Descuento;
 import mx.org.kaana.mantic.catalogos.articulos.beans.DescuentoEspecial;
@@ -240,6 +243,32 @@ public class MotorBusqueda implements Serializable{
 		} // catch		
 		return regresar;
 	} // toArticuloImagen
+
+	public void toArticuloImagenes(List<ArticuloImagen> imagenes) throws Exception {
+    Map<String, Object> params= null;
+    List<ArticuloImagen> items= null;
+    try {      
+      params = new HashMap<>();      
+      params.put("idArticulo", this.idArticulo);      
+  		items= (List<ArticuloImagen>)DaoFactory.getInstance().toEntitySet(ArticuloImagen.class, "TcManticArticulosImagenesDto", "imagenes", params);
+  		if(items!= null && !items.isEmpty()) {
+        for (ArticuloImagen item: items) {
+          item.setImportado(new Importado(item.getArchivo(), EFormatos.JPG.getContent(), EFormatos.JPG, item.getTamanio(), item.getTamanio(), BYTES, item.getRuta(), item.getOriginal(), item.getArchivo()));
+          item.setAnterior(ESql.SELECT);
+          item.setSqlAccion(ESql.SELECT);
+          item.setId(item.getKey());
+          item.setPrincipal(Objects.equals(item.getIdPrincipal(), 1L));
+          imagenes.add(item);
+        } // for
+			} // if
+    } // try
+    catch (Exception e) {
+      throw e;   
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+	} // toArticuloImagenes
 
 	public boolean deleteImage() throws Exception{
 		boolean regresar         = false;
