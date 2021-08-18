@@ -28,6 +28,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
@@ -547,6 +548,7 @@ public class Filtro extends FiltroFactura implements Serializable {
 			//2.- RECUPERAR LA RAZON SOCIAL DEL PROVEEDOR
 			params.put("razonSocial", seleccionado.toString("cliente"));
 			params.put("correo", ECorreos.COTIZACIONES.getEmail());
+			params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
 			//3.- AGREGAR EL REPORTE EN FORMATO PDF YA GENERADO DE LA COTIZACION PARA ANEXARLO COMO ATTACHMENT AL CORREO ELECTRONICO
 			this.doReporte("COTIZACION_DETALLE", Boolean.TRUE);
 			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);

@@ -166,6 +166,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 			params.put("invitado", "M.C. Team Developer 2016");
 			params.put("puesto", "Subsecretario de Obras Públicas");
 			params.put("correo", "team.developer@gmail.com");
+			params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
 			for (String item: correos) {
 				String image   = this.toWriteInvitacion((String)params.get("invitado"), (String)params.get("puesto"));
 				Attachment user= new Attachment(image, Boolean.TRUE);

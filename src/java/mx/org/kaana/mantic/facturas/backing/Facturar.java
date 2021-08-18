@@ -24,6 +24,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
@@ -964,6 +965,7 @@ public class Facturar extends IBaseVenta implements IBaseStorage, Serializable {
 			params.put("tipo", "Factura");			
 			params.put("razonSocial", cliente);
 			params.put("correo", ECorreos.FACTURACION.getEmail());			
+			params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));			
 			factura= toXml(idFactura);
 			this.doReporte(idFactura, idFicticia, idCliente);
 			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);

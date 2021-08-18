@@ -162,6 +162,7 @@ public class Timbrado extends IBaseJob {
 			params.put("tipo", "Factura");
 			params.put("razonSocial", facturacion.getRazonSocial());
 			params.put("correo", ECorreos.FACTURACION.getEmail());
+			params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
 			factura= this.toXml(facturacion.getIdFactura());
 			this.doReporte("FACTURAS_FICTICIAS_DETALLE", facturacion);
 			Attachment attachments=new Attachment(Especial.getInstance().getPath().substring(0, Especial.getInstance().getPath().length()-1), this.reporte.getNombre(), Boolean.FALSE, true);

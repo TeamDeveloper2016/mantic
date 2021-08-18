@@ -449,9 +449,8 @@ public class Saldos extends IBaseFilter implements Serializable {
 	}
 
   public String toColor(Entity row) {
-		Double original= Numero.toRedondear(row.toDouble("original"));
-		Double total   = Numero.toRedondear(row.toDouble("importe"));
-		return row.toLong("idNotaTipo").equals(3L)? "janal-tr-purple": (original!= 0D && original> total)? "janal-tr-yellow": (original!= 0D && original< total)? "janal-tr-green": "";
+    Long idRevisado= row.toLong("idRevisado");
+		return row.toLong("idNotaTipo").equals(3L)? "janal-tr-purple": Objects.equals(idRevisado, 1L)? "": "janal-tr-yellow";
 	} 
 	
 	public String doCostos(Entity row) {

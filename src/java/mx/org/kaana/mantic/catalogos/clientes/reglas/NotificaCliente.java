@@ -16,6 +16,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.wassenger.Bonanza;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
@@ -144,6 +145,7 @@ public class NotificaCliente implements Serializable {
 			params.put("tipo", "Estado de Cuenta");
 			params.put("razonSocial", this.razonSocial);
 			params.put("correo", this.correo.getEmail());
+			params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
 			this.toReporteIndividal();
 			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
 			files.add(attachments);

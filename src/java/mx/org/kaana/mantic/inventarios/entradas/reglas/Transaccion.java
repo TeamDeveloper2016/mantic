@@ -356,9 +356,9 @@ public class Transaccion extends Inventarios implements Serializable {
 			// Una vez que la nota de entrada es cambiada a terminar se registra la cuenta por cobrar
 			TcManticEmpresasDeudasDto deuda= null;
 			if(this.orden.getDiasPlazo()> 1) 
-				deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), this.orden.getDeuda()- this.orden.getExcedentes(), this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes());
+				deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), this.orden.getDeuda()- this.orden.getExcedentes(), this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L);
 			else
-				deuda= new TcManticEmpresasDeudasDto(3L, JsfBase.getIdUsuario(), -1L, "ESTE DEUDA FUE LIQUIDADA EN EFECTIVO", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 0D, this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes());
+				deuda= new TcManticEmpresasDeudasDto(3L, JsfBase.getIdUsuario(), -1L, "ESTE DEUDA FUE LIQUIDADA EN EFECTIVO", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 0D, this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L);
 			DaoFactory.getInstance().insert(sesion, deuda);
 			params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
 			params.put("idNotaEstatus", this.orden.getIdNotaEstatus());

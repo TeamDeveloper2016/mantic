@@ -243,6 +243,9 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			this.factura = reader.execute();
 			this.emisor  = this.factura.getEmisor();
 			this.receptor= this.factura.getReceptor();
+      for (Concepto concepto: this.factura.getConceptos()) {
+        LOG.info("|"+ concepto.getDescripcion()+ "|"+ concepto.getCantidad()+ "|"+ concepto.getImporte()+ "|"+ concepto.getValorUnitario()+ "|"+ Numero.toRedondearSat((Double.parseDouble(concepto.getTraslado().getBase()))/ Double.parseDouble(concepto.getCantidad()))+ "|"+ concepto.getTraslado().getBase()+ "|"+ concepto.getDescuento()+ "|"+ concepto.getTraslado().getImporte()+ "|"+ concepto.getTraslado().getImpuesto());
+      } // for
 			for (Concepto concepto: this.factura.getConceptos()) {
 				int index= this.existsItem(faltantes, concepto);
 				// double descuento= Numero.toRedondearSat(Double.parseDouble(concepto.getDescuento()!= null? concepto.getDescuento(): "0"));

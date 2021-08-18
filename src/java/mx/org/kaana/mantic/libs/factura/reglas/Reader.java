@@ -25,7 +25,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class Reader implements Serializable{
+public class Reader implements Serializable {
 	private static final Log LOG=LogFactory.getLog(Reader.class);
 	private static final long serialVersionUID = -7129012131006642751L;
 	private String fileName;

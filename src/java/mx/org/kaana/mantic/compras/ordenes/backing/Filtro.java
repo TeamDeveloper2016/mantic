@@ -29,6 +29,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.wassenger.Bonanza;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
@@ -497,6 +498,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			params.put("tipo", "Orden de compra");			
 			params.put("razonSocial", seleccionado.toString("proveedor"));
 			params.put("correo", ECorreos.ORDENES_COMPRA.getEmail());			
+			params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));			
 			this.doReporte("ORDEN_DETALLE", true);
 			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
 			files.add(attachments);

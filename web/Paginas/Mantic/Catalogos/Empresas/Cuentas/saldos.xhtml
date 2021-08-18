@@ -203,6 +203,7 @@
                   <f:facet name="header">
                     <h:outputText value="Factura"/>
                   </f:facet>
+                  <i class="fa fa-fw fa-check-square-o janal-color-black janal-icons-header" style="display: #{row.idRevisado eq '1'? '': 'none'}"></i>
                   <h:outputText value="#{row['factura']}"/>
                 </p:column>	
                 <p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{row.pagar}" exportable="false">
@@ -263,7 +264,7 @@
                 <f:facet name="footer">
                   <div style="display:flow-root;">
                     <div style="float:left;">
-                      <p:outputLabel value="Las filas que estan color morado son cuentas por pagar directas&lt;br/&gt;Las filas en amarillo representan aquellas factura donde el importe es mayor que la nota de entrada&lt;br/&gt;Las filas en verde representan aquellas factura donde el importe es menor que la nota de entrada" style="float: left; text-align: left" escape="false"/>
+                      <p:outputLabel value="Las filas que estan color morado son cuentas por pagar directas&lt;br/&gt;Las filas en amarillo son facturas revisadas" style="float: left; text-align: left" escape="false"/>
                     </div>	
                     <div style="float:right;">
                       <p:outputLabel value="Total [#{manticCatalogosEmpresasCuentasSaldos.lazyModelDetalle== null? 0: manticCatalogosEmpresasCuentasSaldos.lazyModelDetalle.rowCount}] registros"  styleClass="importado janal-color-orange"/>
@@ -275,7 +276,7 @@
                 <p:menuitem icon="fa fa-money" value="Registrar pago" onstart="return janal.bloquear()" action="#{manticCatalogosEmpresasCuentasSaldos.doPago}" process="@this detalle" />
                 <p:menuitem icon="fa fa-minus-circle" value="Pagar deuda" onstart="return janal.bloquear()" action="#{manticCatalogosEmpresasCuentasSaldos.doDeuda}" process="@this detalle"/>					
                 <p:separator/>
-                <p:menuitem icon="fa fa-check" value="Actualizar" onstart="return janal.bloquear()" action="#{manticCatalogosEmpresasCuentasSaldos.doModificar}" process="@this detalle" />
+                <p:menuitem icon="fa fa-check-square-o" value="Revisar doc" onstart="return janal.bloquear()" action="#{manticCatalogosEmpresasCuentasSaldos.doModificar}" process="@this detalle" />
                 <p:separator/>
                 <p:menuitem icon="fa fa-external-link" value="Importar XML/PDF" title="Importar identificacion de representante" onstart="return janal.bloquear()" process="@this detalle" action="#{manticCatalogosEmpresasCuentasSaldos.doImportar}"/>
                 <p:separator/>					

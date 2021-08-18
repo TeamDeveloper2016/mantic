@@ -32,6 +32,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.NotificaCliente;
@@ -619,6 +620,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 			params.put("tipo", "Estado de Cuenta");
 			params.put("razonSocial", seleccionado.toString("razonSocial"));
 			params.put("correo", ECorreos.CUENTAS.getEmail());
+			params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
 			this.toReporteEspecial(true);
 			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
 			files.add(attachments);
