@@ -49,15 +49,6 @@
 				janal.readingMode('#{manticCatalogosArticulosAccion.attrs.nombreAccion}');
 			});			
       
-      var leavePage= false;
-      $(window).bind('beforeunload', function() { 
-        cleanImages();
-        if(typeof(leavePage)=== 'undefined' || leavePage) 
-					return ;
-				else {
-				  return 'Es probable que los cambios no se hayan guardado\n\u00BF Aun asi deseas salir de esta opción ?';        
-        } //   
-			});      
       function checkItemString(item, index) {
         if($(item).val().trim().length=== 0)
           $(item).val('MODELO_'+ (index+ 1));
@@ -78,7 +69,6 @@
 	</ui:define>
 	<ui:define name="contenido">
 		<p:hotkey bind="esc" handler="if($('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon')){$('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon').click();}"/>
-    <p:remoteCommand name="cleanImages" action="#{manticCatalogosArticulosAccion.doCleanImages()}"/>
 		<pe:remoteCommand name="lookForCodigo" process="@this @(.proveedores-codigo)" actionListener="#{manticCatalogosArticulosAccion.doLookForCodigo}">  
 			<pe:methodSignature parameters="java.lang.String, java.lang.String, java.lang.Long"/>  
 			<pe:methodParam name="id"/>  
@@ -456,15 +446,15 @@
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
 			<p:commandButton id="kardex" value="Kardex" icon="fa fa-cart-plus" process="@form" action="#{manticCatalogosArticulosAccion.doKardex()}" rendered="#{manticCatalogosArticulosAccion.attrs.goKardex}"/>
-			<p:commandButton id="clonar" value="Clonar" icon="fa fa-copy" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar('COPIAR')}" onstart="leavePage= true; return janal.execute(true);" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosArticulosAccion.attrs.activeClon}"/>
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticCatalogosArticulosAccion.doAceptar(manticCatalogosArticulosAccion.attrs.nombreAccion)}" onstart="leavePage= true; return janal.execute(true);" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosArticulosAccion.doCancelar}" ajax="false" onclick="leavePage= true;" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
+			<p:commandButton id="clonar" value="Clonar" icon="fa fa-copy" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar('COPIAR')}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosArticulosAccion.attrs.activeClon}"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar(manticCatalogosArticulosAccion.attrs.nombreAccion)}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosArticulosAccion.doCancelar}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
 			<p:commandButton id="kardexIcon" title="Kardex" icon="fa fa-cart-plus" process="@form" action="#{manticCatalogosArticulosAccion.doKardex()}" rendered="#{manticCatalogosArticulosAccion.attrs.goKardex}"/>
-			<p:commandButton id="clonarIcon" title="Clonar" icon="fa fa-copy" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar('COPIAR')}" onstart="return janal.execute(true);" oncomplete="leavePage= true; janal.desbloquear()" rendered="#{manticCatalogosArticulosAccion.attrs.activeClon}"/>
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar(manticCatalogosArticulosAccion.attrs.nombreAccion)}" onstart="leavePage= true; return janal.execute(true);" oncomplete="janal.desbloquear()"/>
-      <p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosArticulosAccion.doCancelar}" ajax="false" onclick="leavePage= true;" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" immediate="true"/>
+			<p:commandButton id="clonarIcon" title="Clonar" icon="fa fa-copy" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar('COPIAR')}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosArticulosAccion.attrs.activeClon}"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar(manticCatalogosArticulosAccion.attrs.nombreAccion)}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosArticulosAccion.doCancelar}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 	</ui:define>
 </ui:composition>

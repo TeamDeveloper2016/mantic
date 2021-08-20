@@ -378,19 +378,14 @@
               <div class="Container40 Responsive Fs20">
                 <i class="icon-down-big"></i> Articulos por terminarse
               </div>
-              <div class="Container60 Responsive Fs12">                  
-                <!--p:selectOneMenu id="entidad" label="Sucursal" styleClass="Wid70 Fright" rendered="#{kajoolTablero.attrs.isAdmin}">                  
-                  <f:selectItems value="#{kajoolTablero.sucursales}"/>
-                </p:selectOneMenu-->                
-              </div>
               <div class="EmptyBox10"></div>
               <div class="Container100">
-                <h:form id="sucursales">                  			                  
-                  <p:dataTable lazy="true" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolTablero.articulos}" paginator="true" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" selectionMode="single" selection="#{kajoolTablero.attrs.selected}" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
+                <h:form>
+                  <p:dataTable lazy="true" id="tabla" var="row" rowIndexVar="index" value="#{kajoolTablero.articulos}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" selectionMode="single" selection="#{kajoolTablero.attrs.selected}" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
                     <f:facet name="header">
                       <p:menuButton value="Opciones">
-                        <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfCapturista', 'tablaCapturista')" oncomplete="janal.desbloquear()"/>
-                        <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsCapturista', 'tablaCapturista')" oncomplete="janal.desbloquear()"/>
+                        <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfCapturista', 'tabla')" oncomplete="janal.desbloquear()"/>
+                        <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsCapturista', 'tabla')" oncomplete="janal.desbloquear()"/>
                       </p:menuButton>
                     </f:facet>
                     <p:column styleClass="janal-column-left ColWid10 Responsive">
@@ -409,10 +404,10 @@
                       <p:outputLabel value="Total [#{kajoolTablero.articulos.size()}] registros"/>
                     </f:facet>
                   </p:dataTable>
-                  <h:commandLink id="dataPdfCapturista">                    
+                  <h:commandLink id="dataPdfArticulos">                    
                     <pe:exporter type="pdf"  skipComponents="com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton"  target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
                   </h:commandLink>
-                  <h:commandLink id="dataXlsCapturista">
+                  <h:commandLink id="dataXlsArticulos">
                     <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                
                   </h:commandLink>	                  
                 </h:form>
@@ -519,98 +514,56 @@
 					</c:forEach>
 					<!--div class="Container50 Responsive"-->
 						<div class="ContainerIndent">            
-							<p:panel style="height:360px;" class="graphic-update-cobrar">
-								<div class="Container100 Responsive Fs20">
+							<p:panel style="height:500px;" class="graphic-update-cobrar">
+								<div class="Container100 Responsive Fs20 janal-color-blue">
 									<i class="icon-money"></i> Cuentas por cobrar
 								</div>
-								<div class="Container100">
-									<div id="kajool-chart-avance-cobro"></div>
-									<script type="text/javascript">
-										$(document).ready(function () {
-											loadChart('kajool-chart-avance-cobro', '#{kajoolTablero.attrs.jsonCobro}');
-										});
-									</script>
-								</div>
-								<div class="Container100 Responsive TexAlCenter">					
-									<h:panelGrid  columns="3" class="Wid100 graphic-update-cobrar" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-10, wid-calendarizacion-47 janal-column-left">
-										<p:commandLink disabled="#{kajoolTablero.attrs.primerPeriodoCuentasCobrar}">
-											<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(false, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
-										</p:commandLink>
-										<h:outputLabel value="#{kajoolTablero.attrs.nombrePeriodoCuentasCobrar}" styleClass="graphic-update-cobrar"/>
-										<p:commandLink disabled="#{kajoolTablero.attrs.ultimoPeriodoCuentasCobrar}">
-											<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(true, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-											<i class="fa fa-angle-right"/>
-										</p:commandLink>
-									</h:panelGrid>
-									<h:panelGrid  columns="3" class="Wid100 periodo-update-cobrar" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-10, wid-calendarizacion-47 janal-column-left">
-										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaCuentasCobrar}">
-											<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(false, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
-										</p:commandLink>
-										<h:outputLabel value="#{kajoolTablero.attrs.fechaSeleccionadaCuentasCobrar}" styleClass="graphic-update-cobrar" rendered="#{!kajoolTablero.attrs.renderedDiaCuentasCobrar}"/>
-										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaCuentasCobrar}">
-											<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(true, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-											<i class="fa fa-angle-right"/>
-										</p:commandLink>
-										
-										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemanaCuentasCobrar}" styleClass="graphic-update-cobrar">
-											<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemana(false, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
-										</p:commandLink>
-										<h:outputLabel value="#{kajoolTablero.attrs.semanaTitleCuentasCobrar}" title="#{kajoolTablero.attrs.semanaCuentasCobrar}" styleClass="graphic-update-cobrar" rendered="#{!kajoolTablero.attrs.renderedSemanaCuentasCobrar}"/>
-										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemanaCuentasCobrar}" styleClass="graphic-update-cobrar">
-											<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemana(true, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-											<i class="fa fa-angle-right"/>
-										</p:commandLink>																																					
-										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedQuincenaCuentasCobrar}" styleClass="graphic-update-cobrar">
-											<p:ajax event="click" listener="#{kajoolTablero.doCambiarQuincena(false, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
-										</p:commandLink>
-										<h:outputLabel value="#{kajoolTablero.attrs.quincenaTitleCuentasCobrar}" title="#{kajoolTablero.attrs.quincenaCuentasCobrar}" styleClass="graphic-update-cobrar" rendered="#{!kajoolTablero.attrs.renderedQuincenaCuentasCobrar}"/>
-										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedQuincenaCuentasCobrar}" styleClass="graphic-update-cobrar">
-											<p:ajax event="click" listener="#{kajoolTablero.doCambiarQuincena(true, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-											<i class="fa fa-angle-right"/>
-										</p:commandLink>									
-										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedMesCuentasCobrar}" styleClass="graphic-update-cobrar">
-											<p:ajax event="click" listener="#{kajoolTablero.doCambiarMes(false, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
-										</p:commandLink>
-										<h:outputLabel value="#{kajoolTablero.attrs.mesCuentasCobrar} #{kajoolTablero.attrs.mesTitleCuentasCobrar}" title="#{kajoolTablero.attrs.mesCuentasCobrar}" styleClass="graphic-update-cobrar" rendered="#{!kajoolTablero.attrs.renderedMesCuentasCobrar}"/>
-										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedMesCuentasCobrar}" styleClass="graphic-update-cobrar">
-											<p:ajax event="click" listener="#{kajoolTablero.doCambiarMes(true, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-											<i class="fa fa-angle-right"/>
-										</p:commandLink>									
-										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedTrimestreCuentasCobrar}" styleClass="graphic-update-cobrar">
-											<p:ajax event="click" listener="#{kajoolTablero.doCambiarTrimestre(false, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
-										</p:commandLink>
-										<h:outputLabel value="#{kajoolTablero.attrs.trimestreTitleCuentasCobrar}" title="#{kajoolTablero.attrs.trimestreCuentasCobrar}" styleClass="graphic-update-cobrar" rendered="#{!kajoolTablero.attrs.renderedTrimestreCuentasCobrar}"/>
-										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedTrimestreCuentasCobrar}" styleClass="graphic-update-cobrar">
-											<p:ajax event="click" listener="#{kajoolTablero.doCambiarTrimestre(true, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-											<i class="fa fa-angle-right"/>
-										</p:commandLink>									
-										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemestreCuentasCobrar}" styleClass="graphic-update-cobrar">
-											<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemestre(false, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
-										</p:commandLink>
-										<h:outputLabel value="#{kajoolTablero.attrs.semestreTitleCuentasCobrar}" title="#{kajoolTablero.attrs.semestreCuentasCobrar}" styleClass="graphic-update-cobrar" rendered="#{!kajoolTablero.attrs.renderedSemestreCuentasCobrar}"/>
-										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemestreCuentasCobrar}" styleClass="graphic-update-cobrar">
-											<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemestre(true, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-											<i class="fa fa-angle-right"/>
-										</p:commandLink>								
-										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedAnioCuentasCobrar}" styleClass="graphic-update-cobrar">
-											<p:ajax event="click" listener="#{kajoolTablero.doCambiarAnio(false, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
-										</p:commandLink>
-										<h:outputLabel value="#{kajoolTablero.attrs.anioTitleCuentasCobrar}" title="#{kajoolTablero.attrs.anioCuentasCobrar}" styleClass="graphic-update-cobrar" rendered="#{!kajoolTablero.attrs.renderedAnioCuentasCobrar}"/>
-										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedAnioCuentasCobrar}" styleClass="graphic-update-cobrar">
-											<p:ajax event="click" listener="#{kajoolTablero.doCambiarAnio(true, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-											<i class="fa fa-angle-right"/>
-										</p:commandLink>	
-										
-									</h:panelGrid>
-								</div>
+                <div class="EmptyBox10"></div>
+                <div class="Container100">
+                  <h:form>                  			                  
+                    <p:dataTable lazy="true" id="cobrar" var="row" rowIndexVar="index" value="#{kajoolTablero.lazyModel}" paginator="true" rowsPerPageTemplate="10" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10" styleClass="janal-content-table" selectionMode="single" reflow="true" paginatorPosition="top">
+                      <f:facet name="header">
+                        <p:menuButton value="Opciones">
+                          <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfCobrar', 'cobrar')" oncomplete="janal.desbloquear()"/>
+                          <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsCobrar', 'cobrar')" oncomplete="janal.desbloquear()"/>
+                        </p:menuButton>
+                      </f:facet>
+                      <p:column styleClass="janal-column-left Responsive" >
+                        <f:facet name="header">
+                          <h:outputText value="Cliente"/>
+                        </f:facet>
+                        <h:outputText value="#{row.razonSocial}"/>
+                      </p:column>                    
+                      <p:column styleClass="janal-column-center ColWid15 Responsive" >
+                        <f:facet name="header">
+                          <h:outputText value="Dias por vencer"/>
+                        </f:facet>
+                        <h:outputText value="#{row.dias}"/>
+                      </p:column>        
+                      <p:column styleClass="janal-column-center ColWid15 Responsive">
+                        <f:facet name="header">
+                          <h:outputText value="Tickets"/>
+                        </f:facet>
+                        <h:outputText value="#{row.cuentas}"/>
+                      </p:column>                    
+                      <p:column styleClass="janal-column-right ColWid15 Responsive" >
+                        <f:facet name="header">
+                          <h:outputText value="Total"/>
+                        </f:facet>
+                        <h:outputText value="#{row.saldo}"/>
+                      </p:column>                    
+                      <f:facet name="footer">
+                        <p:outputLabel value="Total [#{kajoolTablero.lazyModel.rowCount}] registros"/>
+                      </f:facet>
+                    </p:dataTable>
+                    <h:commandLink id="dataPdfCobrar">                    
+                      <pe:exporter type="pdf" skipComponents="com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="cobrar" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10" cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+                    </h:commandLink>
+                    <h:commandLink id="dataXlsCobrar">
+                      <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="cobrar" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                
+                    </h:commandLink>	                  
+                  </h:form>
+                </div>
 							</p:panel>
 						</div>
 					<!--/div-->
@@ -819,7 +772,7 @@
             </div>	
           </div>
           <div class="Container100 Responsive">
-            <div class="ContainerIndent">
+            <div class="ContainerIndent janal-display-none">
               <div class="EmptyBox10"></div>
               <p:panel style="min-height:402px;" class="graphic-update-art-utilidad">
                 <div class="Container100 Responsive Fs20">
@@ -916,7 +869,6 @@
 											<p:ajax event="click" listener="#{kajoolTablero.doCambiarAnio(true, 'ART_MAS_UTILIDAD')}" update="@(.graphic-update-art-utilidad) @(.periodo-update-art-utilidad)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 											<i class="fa fa-angle-right"/>
 										</p:commandLink>
-										
 									</h:panelGrid>
 								</div>
               </p:panel>
@@ -925,101 +877,118 @@
         </div>            				
 				<div class="Container50 Responsive">
           <div class="ContainerIndent">            
-            <p:panel style="height:360px;" class="graphic-update-pagar">
-              <div class="Container100 Responsive Fs20">
+            <p:panel style="height:500px;" class="graphic-update-pagar">
+              <div class="Container100 Responsive Fs20 janal-color-black">
                 <i class="icon-bank"></i> Cuentas por pagar
               </div>
+              <div class="EmptyBox10"></div>
               <div class="Container100">
-                <div id="kajool-chart-avance-pago"></div>
-                <script type="text/javascript">
-									$(document).ready(function () {
-										loadChart('kajool-chart-avance-pago', '#{kajoolTablero.attrs.jsonPago}');
-									});
-                </script>
+                <h:form>                  			                  
+                  <p:dataTable lazy="true" id="pagar" var="row" rowIndexVar="index" value="#{kajoolTablero.lazyModelPagar}" paginator="true" rowsPerPageTemplate="10" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10" styleClass="janal-content-table" selectionMode="single" reflow="true" paginatorPosition="top">
+                    <f:facet name="header">
+                      <p:menuButton value="Opciones">
+                        <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfPagar', 'pagar')" oncomplete="janal.desbloquear()"/>
+                        <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsPagar', 'pagar')" oncomplete="janal.desbloquear()"/>
+                      </p:menuButton>
+                    </f:facet>
+                    <p:column styleClass="janal-column-center ColWid15 Responsive">
+                      <f:facet name="header">
+                        <h:outputText value="Nota entrada"/>
+                      </f:facet>
+                      <h:outputText value="#{row.consecutivo}"/>
+                    </p:column>                    
+                    <p:column styleClass="janal-column-left Responsive" >
+                      <f:facet name="header">
+                        <h:outputText value="Proveedor"/>
+                      </f:facet>
+                      <h:outputText value="#{row.razonSocial}"/>
+                      <i class="fa fa-fw fa-calendar janal-color-black janal-icons-message" title="#{row.registro}"></i>                      
+                    </p:column>                    
+                    <p:column styleClass="janal-column-center ColWid15 Responsive" >
+                      <f:facet name="header">
+                        <h:outputText value="Dias por vencer"/>
+                      </f:facet>
+                      <h:outputText value="#{row.dias}"/>
+                    </p:column>                    
+                    <p:column styleClass="janal-column-right ColWid15 Responsive" >
+                      <f:facet name="header">
+                        <h:outputText value="Total"/>
+                      </f:facet>
+                      <h:outputText value="#{row.total}"/>
+                    </p:column>                    
+                    <f:facet name="footer">
+                      <p:outputLabel value="Total [#{kajoolTablero.lazyModelPagar.rowCount}] registros"/>
+                    </f:facet>
+                  </p:dataTable>
+                  <h:commandLink id="dataPdfPagar">                    
+                    <pe:exporter type="pdf" skipComponents="com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="pagar" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+                  </h:commandLink>
+                  <h:commandLink id="dataXlsPagar">
+                    <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="pagar" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                
+                  </h:commandLink>	                  
+                </h:form>
               </div>
-							<div class="Container100 Responsive TexAlCenter">					
-								<h:panelGrid  columns="3" class="Wid100 graphic-update-pagar" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-10, wid-calendarizacion-47 janal-column-left">
-									<p:commandLink disabled="#{kajoolTablero.attrs.primerPeriodoCuentasPagar}">
-										<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(false, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
-									</p:commandLink>
-									<h:outputLabel value="#{kajoolTablero.attrs.nombrePeriodoCuentasPagar}" styleClass="graphic-update-pagar"/>
-									<p:commandLink disabled="#{kajoolTablero.attrs.ultimoPeriodoCuentasPagar}">
-										<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(true, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-										<i class="fa fa-angle-right"/>
-									</p:commandLink>
-								</h:panelGrid>
-								<h:panelGrid  columns="3" class="Wid100 periodo-update-pagar" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-10, wid-calendarizacion-47 janal-column-left">
-									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaCuentasPagar}">
-										<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(false, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
-									</p:commandLink>
-									<h:outputLabel value="#{kajoolTablero.attrs.fechaSeleccionadaCuentasPagar}" styleClass="graphic-update-pagar" rendered="#{!kajoolTablero.attrs.renderedDiaCuentasPagar}"/>
-									<p:commandLink disabled="#{kajoolTablero.attrs.ultimoDiaCuentasPagar}" rendered="#{!kajoolTablero.attrs.renderedDiaCuentasPagar}">
-										<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(true, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-										<i class="fa fa-angle-right"/>
-									</p:commandLink>
-									
-									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemanaCuentasPagar}" styleClass="graphic-update-pagar">
-										<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemana(false, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
-									</p:commandLink>
-									<h:outputLabel value="#{kajoolTablero.attrs.semanaTitleCuentasPagar}" title="#{kajoolTablero.attrs.semanaCuentasPagar}" styleClass="graphic-update-pagar" rendered="#{!kajoolTablero.attrs.renderedSemanaCuentasPagar}"/>
-									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemanaCuentasPagar}" styleClass="graphic-update-pagar">
-										<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemana(true, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-										<i class="fa fa-angle-right"/>
-									</p:commandLink>																																					
-									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedQuincenaCuentasPagar}" styleClass="graphic-update-pagar">
-										<p:ajax event="click" listener="#{kajoolTablero.doCambiarQuincena(false, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
-									</p:commandLink>
-									<h:outputLabel value="#{kajoolTablero.attrs.quincenaTitleCuentasPagar}" title="#{kajoolTablero.attrs.quincenaCuentasPagar}" styleClass="graphic-update-pagar" rendered="#{!kajoolTablero.attrs.renderedQuincenaCuentasPagar}"/>
-									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedQuincenaCuentasPagar}" styleClass="graphic-update-pagar">
-										<p:ajax event="click" listener="#{kajoolTablero.doCambiarQuincena(true, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-										<i class="fa fa-angle-right"/>
-									</p:commandLink>									
-									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedMesCuentasPagar}" styleClass="graphic-update-pagar">
-										<p:ajax event="click" listener="#{kajoolTablero.doCambiarMes(false, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
-									</p:commandLink>
-									<h:outputLabel value="#{kajoolTablero.attrs.mesCuentasPagar} #{kajoolTablero.attrs.mesTitleCuentasPagar}" title="#{kajoolTablero.attrs.mesCuentasPagar}" styleClass="graphic-update-pagar" rendered="#{!kajoolTablero.attrs.renderedMesCuentasPagar}"/>
-									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedMesCuentasPagar}" styleClass="graphic-update-pagar">
-										<p:ajax event="click" listener="#{kajoolTablero.doCambiarMes(true, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-										<i class="fa fa-angle-right"/>
-									</p:commandLink>									
-									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedTrimestreCuentasPagar}" styleClass="graphic-update-pagar">
-										<p:ajax event="click" listener="#{kajoolTablero.doCambiarTrimestre(false, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
-									</p:commandLink>
-									<h:outputLabel value="#{kajoolTablero.attrs.trimestreTitleCuentasPagar}" title="#{kajoolTablero.attrs.trimestreCuentasPagar}" styleClass="graphic-update-pagar" rendered="#{!kajoolTablero.attrs.renderedTrimestreCuentasPagar}"/>
-									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedTrimestreCuentasPagar}" styleClass="graphic-update-pagar">
-										<p:ajax event="click" listener="#{kajoolTablero.doCambiarTrimestre(true, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-										<i class="fa fa-angle-right"/>
-									</p:commandLink>									
-									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemestreCuentasPagar}" styleClass="graphic-update-pagar">
-										<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemestre(false, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
-									</p:commandLink>
-									<h:outputLabel value="#{kajoolTablero.attrs.semestreTitleCuentasPagar}" title="#{kajoolTablero.attrs.semestreCuentasPagar}" styleClass="graphic-update-pagar" rendered="#{!kajoolTablero.attrs.renderedSemestreCuentasPagar}"/>
-									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedSemestreCuentasPagar}" styleClass="graphic-update-pagar">
-										<p:ajax event="click" listener="#{kajoolTablero.doCambiarSemestre(true, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-										<i class="fa fa-angle-right"/>
-									</p:commandLink>								
-									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedAnioCuentasPagar}" styleClass="graphic-update-pagar">
-										<p:ajax event="click" listener="#{kajoolTablero.doCambiarAnio(false, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
-									</p:commandLink>
-									<h:outputLabel value="#{kajoolTablero.attrs.anioTitleCuentasPagar}" title="#{kajoolTablero.attrs.anioCuentasPagar}" styleClass="graphic-update-pagar" rendered="#{!kajoolTablero.attrs.renderedAnioCuentasPagar}"/>
-									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedAnioCuentasPagar}" styleClass="graphic-update-pagar">
-										<p:ajax event="click" listener="#{kajoolTablero.doCambiarAnio(true, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-										<i class="fa fa-angle-right"/>
-									</p:commandLink>
-									
-								</h:panelGrid>
-							</div>
             </p:panel>
           </div>
         </div>
+
+				<div class="Container50 Responsive">
+          <div class="ContainerIndent">            
+            <p:panel style="height:505px;" class="graphic-update-pagar">
+              <div class="Container100 Responsive Fs20 janal-color-orange">
+                <i class="icon-calendar"></i> Cuentas por agendar
+              </div>
+              <div class="EmptyBox10"></div>
+              <div class="Container100">
+                <h:form>                  			                  
+                  <p:dataTable lazy="true" id="agendar" var="row" rowIndexVar="index" value="#{kajoolTablero.lazyModelAgendar}" paginator="true" rowsPerPageTemplate="10" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10" styleClass="janal-content-table" selectionMode="single" reflow="true" paginatorPosition="top">
+                    <f:facet name="header">
+                      <p:menuButton value="Opciones">
+                        <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfAgendar', 'agendar')" oncomplete="janal.desbloquear()"/>
+                        <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsAgendar', 'agendar')" oncomplete="janal.desbloquear()"/>
+                      </p:menuButton>
+                    </f:facet>
+                    <p:column styleClass="janal-column-center ColWid15 Responsive">
+                      <f:facet name="header">
+                        <h:outputText value="Nota entrada"/>
+                      </f:facet>
+                      <h:outputText value="#{row.consecutivo}"/>
+                    </p:column>                    
+                    <p:column styleClass="janal-column-left Responsive" >
+                      <f:facet name="header">
+                        <h:outputText value="Proveedor"/>
+                      </f:facet>
+                      <h:outputText value="#{row.razonSocial}"/>
+                      <i class="fa fa-fw fa-calendar janal-color-black janal-icons-message" title="#{row.registro}"></i>                      
+                    </p:column>                    
+                    <p:column styleClass="janal-column-center ColWid10 Responsive" >
+                      <f:facet name="header">
+                        <h:outputText value="Factura"/>
+                      </f:facet>
+                      <h:outputText value="#{row.factura}"/>
+                    </p:column>                    
+                    <p:column styleClass="janal-column-right ColWid15 Responsive" >
+                      <f:facet name="header">
+                        <h:outputText value="Total"/>
+                      </f:facet>
+                      <h:outputText value="#{row.total}"/>
+                    </p:column>                    
+                    <f:facet name="footer">
+                      <p:outputLabel value="Total [#{kajoolTablero.lazyModelAgendar.rowCount}] registros"/>
+                    </f:facet>
+                  </p:dataTable>
+                  <h:commandLink id="dataPdfAgendar">                    
+                    <pe:exporter type="pdf" skipComponents="com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="agendar" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+                  </h:commandLink>
+                  <h:commandLink id="dataXlsAgendar">
+                    <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="agendar" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                
+                  </h:commandLink>	                  
+                </h:form>
+              </div>
+            </p:panel>
+          </div>
+        </div>
+        
       </div>
     </div>		
 		<p:notificationBar id="lockDownloadBackup" position="top" effect="slide" styleClass="jana-bar-top" widgetVar="downloadBackup" effectSpeed="slow">

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -115,11 +116,11 @@ public class Accion extends IBaseAttribute implements Serializable {
       transaccion = new Transaccion(this.registroArticulo, (Double)this.attrs.get("precio"));
       if (transaccion.ejecutar(eaccion)) {
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
-        JsfBase.addMessage("Se registro el artículo de forma correcta.", ETipoMensaje.INFORMACION);
+        JsfBase.addMessage("Se registro el articulo de forma correcta.", ETipoMensaje.INFORMACION);
       } // if
       else {
         UIBackingUtilities.execute("leavePage= false;");        
-        JsfBase.addMessage("Ocurrió un error al registrar el artículo", ETipoMensaje.ERROR);      
+        JsfBase.addMessage("Ocurrió un error al registrar el articulo", ETipoMensaje.ERROR);      
       } // else  
     } // try
     catch (Exception e) {
@@ -374,9 +375,11 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch		
   }
   
+  @PreDestroy
   public void doCleanImages() {
  		try {
-      this.registroArticulo.toCleanImages();
+      if(this.registroArticulo!= null)
+        this.registroArticulo.toCleanImages();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

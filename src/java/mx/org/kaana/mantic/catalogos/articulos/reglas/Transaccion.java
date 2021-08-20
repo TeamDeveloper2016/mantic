@@ -39,7 +39,6 @@ import mx.org.kaana.mantic.db.dto.TcManticArticulosDescuentosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDimencionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosEspecificacionesDto;
-import mx.org.kaana.mantic.db.dto.TcManticArticulosImagenesDto;
 import mx.org.kaana.mantic.db.dto.TrManticArticuloGrupoDescuentoDto;
 import mx.org.kaana.mantic.db.dto.TrManticArticuloPrecioSugeridoDto;
 import mx.org.kaana.mantic.db.dto.TrManticArticuloProveedorDto;
@@ -315,7 +314,7 @@ public class Transaccion extends TransaccionFactura {
 		try {
 			gestor= new CFDIGestor(idArticulo);
 			item= gestor.toArticuloFactura(sesion);			
-			setArticulo(item);
+			this.setArticulo(item);
 			if(item.getIdFacturama()!= null)
 				this.updateArticulo(sesion);
 			else
@@ -731,6 +730,7 @@ public class Transaccion extends TransaccionFactura {
                 Archivo.copy(imagen.getRuta().concat(imagen.getNombre()), imagen.getRuta().concat(imagen.getArchivo()), true);												
                 archivo.delete();
               } // if
+              item.setSqlAccion(ESql.UPDATE);
             } // if
             break;
           case UPDATE:

@@ -29,6 +29,9 @@ import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.HighchartsP
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.JsonChart;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.Title;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.reglas.BuildChart;
+import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
@@ -60,6 +63,8 @@ public class Tablero extends Comun implements Serializable {
 	private String mes[] = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
   private List<UISelectItem> sucursales;
 	private List<Entity> articulos;
+  protected FormatLazyModel lazyModelPagar;
+  protected FormatLazyModel lazyModelAgendar;
 
   public List<UISelectItem> getSucursales() {
     return sucursales;
@@ -68,6 +73,14 @@ public class Tablero extends Comun implements Serializable {
 	public List<Entity> getArticulos() {
 		return articulos;
 	}	
+
+  public FormatLazyModel getLazyModelPagar() {
+    return lazyModelPagar;
+  }
+
+  public FormatLazyModel getLazyModelAgendar() {
+    return lazyModelAgendar;
+  }
 	
   @PostConstruct
   @Override
@@ -97,6 +110,9 @@ public class Tablero extends Comun implements Serializable {
       this.toMensajesNoLeidos(); 
 			if(JsfBase.isAdminEncuestaOrAdmin())
 			  this.checkDonwloadBackup();
+      this.toLoadCuentasCobrar();
+      this.toLoadCuentasPagar();
+      this.toLoadCuentasAgendar();
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
@@ -978,4 +994,75 @@ public class Tablero extends Comun implements Serializable {
 			Methods.clean(params);
 		} // finally	
 	} // checkDonwloadBackup
+  
+  public void toLoadCuentasCobrar() {
+    List<Columna> columns     = null;    
+    Map<String, Object> params= null;
+    try {      
+      params = new HashMap<>();      
+      params.put("id", 1L);      
+      columns = new ArrayList<>();
+      columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+      columns.add(new Columna("cuentas", EFormatoDinamicos.MILES_SIN_DECIMALES));
+      columns.add(new Columna("dias", EFormatoDinamicos.MILES_SIN_DECIMALES));
+      params.put("sortOrder", "order by dias desc");
+      this.lazyModel = new FormatCustomLazy("VistaIndicadoresTableroDto", "cobrar", params, columns);
+      UIBackingUtilities.resetDataTable("cobrar");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+  }
+  
+  public void toLoadCuentasPagar() {
+    List<Columna> columns     = null;    
+    Map<String, Object> params= null;
+    try {      
+      params = new HashMap<>();      
+      params.put("id", 1L);      
+      columns = new ArrayList<>();
+      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
+      params.put("sortOrder", "order by dias desc");
+      this.lazyModelPagar = new FormatCustomLazy("VistaIndicadoresTableroDto", "pagar", params, columns);
+      UIBackingUtilities.resetDataTable("pagar");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+  }
+  
+  public void toLoadCuentasAgendar() {
+    List<Columna> columns     = null;    
+    Map<String, Object> params= null;
+    try {      
+      params = new HashMap<>();      
+      params.put("id", 1L);      
+      columns = new ArrayList<>();
+      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+      params.put("sortOrder", "order by tc_mantic_empresas_deudas.registro");
+      this.lazyModelAgendar = new FormatCustomLazy("VistaIndicadoresTableroDto", "agendar", params, columns);
+      UIBackingUtilities.resetDataTable("pagar");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+  }
+  
 }
