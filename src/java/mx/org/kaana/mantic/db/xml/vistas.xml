@@ -10313,11 +10313,14 @@
           tc_mantic_clientes.razon_social,
           count(*) as cuentas,
           sum(tc_mantic_clientes_deudas.saldo) as saldo,
-          max(datediff(tc_mantic_clientes_deudas.limite, now())* -1) as dias
+          max(datediff(tc_mantic_clientes_deudas.limite, now())* -1) as dias,
+          group_concat(tc_mantic_ventas.ticket separator '| ') as tickets
         from  
           tc_mantic_clientes_deudas  
         inner join
           tc_mantic_clientes on tc_mantic_clientes_deudas.id_cliente= tc_mantic_clientes.id_cliente
+        inner join
+          tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
         where 
           tc_mantic_clientes_deudas.id_cliente_estatus in (1, 2)
         group by
