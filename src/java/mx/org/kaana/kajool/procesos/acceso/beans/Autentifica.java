@@ -28,9 +28,6 @@ public class Autentifica implements Serializable {
 
   private static final long serialVersionUID = 8226041225011231930L;
   private static final Log LOG = LogFactory.getLog(Autentifica.class);
-	private static final String ADMIN= "ADMINISTRADOR";
-  private static final String GERENTE= "GERENTE";
-  private static final String VENDEDOR_DE_PISO= "VENDEDORDEPISO";
   private Persona persona;
   private Monitoreo monitoreo;
   private String paginaActual;   
@@ -270,21 +267,21 @@ public class Autentifica implements Serializable {
   } // tieneAccesoBD
 
 	private Persona toEvaluaJerarquiaPersona(List<Persona> personas){
-		Persona regresar= null;
-		regresar= toSeleccionPersona(personas, ADMIN);		
-		if(regresar== null)
-			regresar= toSeleccionPersona(personas, ADMIN);		
-		else{ 
-			regresar= toSeleccionPersona(personas, GERENTE);		
-			if(regresar== null)
-				regresar= toSeleccionPersona(personas, VENDEDOR_DE_PISO);		
-			else
-				regresar= personas.get(0);
-		} // else
+    Persona regresar= this.toSeleccionPersona(personas, Constantes.ADMIN);		
+		if(regresar== null) 
+			regresar= this.toSeleccionPersona(personas, Constantes.ADMINS);		
+		if(regresar== null) 
+			regresar= this.toSeleccionPersona(personas, Constantes.GERENTE);		
+  	if(regresar== null)
+			regresar= this.toSeleccionPersona(personas, Constantes.ADMINISTRATIVO);		
+  	if(regresar== null)
+			regresar= this.toSeleccionPersona(personas, Constantes.VENDEDOR_DE_PISO);		
+  	if(regresar== null && personas!=null && personas.size()> 0)
+  		regresar= personas.get(0);
 		return regresar;		
 	} // toEvaluaJerarquiaPersona
 	
-	private Persona toSeleccionPersona(List<Persona> personas, String perfil){
+	private Persona toSeleccionPersona(List<Persona> personas, String perfil) {
 		Persona regresar= null;
 		for(Persona recordPersona: personas){
 			if(Cadena.eliminaCaracter(recordPersona.getDescripcionPerfil(), ' ').equals(perfil))

@@ -14,21 +14,22 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.libs.pagina.IBaseAttribute;
+import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.CodigoArticulo;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.Replicar;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.primefaces.context.RequestContext;
 import org.primefaces.model.StreamedContent;
 
 /**
@@ -41,7 +42,7 @@ import org.primefaces.model.StreamedContent;
 
 @Named(value= "manticCatalogosArticulosImagenes")
 @ViewScoped
-public class Imagenes extends IBaseAttribute implements Serializable {
+public class Imagenes extends IBaseFilter implements Serializable {
 
 	private static final Log LOG=LogFactory.getLog(Imagenes.class);
 	private static final long serialVersionUID=-6770709196941718368L;
@@ -50,6 +51,7 @@ public class Imagenes extends IBaseAttribute implements Serializable {
 	private StreamedContent image;
 	private StreamedContent pivote;
 	private List<CodigoArticulo> articulos;
+  private String path;
 
 	public Entity getArticulo() {
 		return articulo;
@@ -67,20 +69,66 @@ public class Imagenes extends IBaseAttribute implements Serializable {
 		return articulos;
 	}
 
+  public String getPath() {
+    return path;
+  }
+  
 	@Override
 	@PostConstruct
 	protected void init() {
+  	this.attrs.put("codigo", "");
   	this.attrs.put("buscaPorCodigo", false);
     this.attrs.put("idPivote", JsfBase.getFlashAttribute("idPivote")== null? -1L: JsfBase.getFlashAttribute("idPivote"));
     this.attrs.put("alias", JsfBase.getFlashAttribute("idPivote")== null? 10198L: JsfBase.getFlashAttribute("alias"));
 		this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Mantic/Catalogos/Articulos/filtro": JsfBase.getFlashAttribute("retorno"));
     if(this.attrs.get("idPivote")!= null) 
-			this.doLoad();
+			this.toLoadPivote();
 	  this.articulos= new ArrayList<>();
 		this.attrs.put("total", 0);
+    String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
+    this.path = dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");
 	}
 	
-	private void doLoad() {
+  @Override
+	public void doLoad() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		boolean buscaPorCodigo    = false;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("idProveedor", -1L);
+			String search= new String((String)this.attrs.get("codigo")); 
+			if(!Cadena.isVacio(search)) {
+  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();
+				buscaPorCodigo= search.startsWith(".");
+				if(buscaPorCodigo)
+					search= search.trim().substring(1);
+				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			} // if	
+			else
+				search= "WXYZ";
+  		params.put("codigo", search);
+			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
+        this.lazyModel = new FormatCustomLazy("VistaOrdenesComprasDto", "porCodigo", params, columns);
+			else
+        this.lazyModel = new FormatCustomLazy("VistaOrdenesComprasDto", "porNombre", params, columns);
+      UIBackingUtilities.resetDataTable("encontrados");
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally    
+	}
+	
+	private void toLoadPivote() {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
     try {
@@ -101,7 +149,7 @@ public class Imagenes extends IBaseAttribute implements Serializable {
 		} // finally	
 	}
 	
-	private void updateArticulo(UISelectEntity articulo) throws Exception {
+	private void updateArticulo(Entity articulo) throws Exception {
 		this.attrs.put("idArticulo", null);
     Map<String, Object> params= new HashMap<>();
 		try {
@@ -112,7 +160,7 @@ public class Imagenes extends IBaseAttribute implements Serializable {
 					Entity imagen= (Entity)DaoFactory.getInstance().toEntity("VistaArticulosDto", "imagen", params);
 					if(imagen!= null && !imagen.isEmpty()) {
 						item.setCantidad(imagen.toLong("idImagen"));
-						item.setAlias(imagen.toString("alias"));
+						item.setAlias(imagen.toString("archivo"));
 					} // if	
 					else
 						item.setCantidad(0L);
@@ -207,15 +255,15 @@ public class Imagenes extends IBaseAttribute implements Serializable {
   public void doFindArticulo() {
 		try {
     	List<UISelectEntity> list= (List<UISelectEntity>)this.attrs.get("articulos");
-	    UISelectEntity articulo  = (UISelectEntity)this.attrs.get("custom");
-			if(articulo== null)
-			  articulo= new UISelectEntity(new Entity(-1L));
+	    UISelectEntity item  = (UISelectEntity)this.attrs.get("custom");
+			if(item== null)
+			  item= new UISelectEntity(new Entity(-1L));
 			else
-				if(list.indexOf(articulo)>= 0) 
-					articulo= list.get(list.indexOf(articulo));
+				if(list.indexOf(item)>= 0) 
+					item= list.get(list.indexOf(item));
 			  else
-			    articulo= list.get(0);
-			this.updateArticulo(articulo);
+			    item= list.get(0);
+			this.updateArticulo(item);
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
@@ -226,8 +274,8 @@ public class Imagenes extends IBaseAttribute implements Serializable {
 	public void doUpdateArticulo(String codigo) {
     try {
   		List<UISelectEntity> list= this.doCompleteArticulo(codigo);
-			UISelectEntity articulo= UIBackingUtilities.toFirstKeySelectEntity(list);
-			this.updateArticulo(articulo);
+			UISelectEntity item= UIBackingUtilities.toFirstKeySelectEntity(list);
+			this.updateArticulo(item);
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -235,9 +283,19 @@ public class Imagenes extends IBaseAttribute implements Serializable {
     } // catch   
 	}	
 	
-	public void doEliminar(CodigoArticulo seleccionado) {
-		if(seleccionado!= null) 
-	    this.articulos.remove(seleccionado);
+	public void doAgregar(Entity row) {
+    try {
+      this.updateArticulo(row);
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+	}
+
+	public void doEliminar(CodigoArticulo row) {
+		if(row!= null) 
+	    this.articulos.remove(row);
 		this.attrs.put("total", this.articulos.size());
 	}
 

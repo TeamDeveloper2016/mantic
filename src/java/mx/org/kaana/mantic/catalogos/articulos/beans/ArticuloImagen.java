@@ -29,6 +29,7 @@ public class ArticuloImagen extends TcManticArticulosImagenesDto implements Seri
 	private String ruta;  
 	private String original;  
 	private String archivo;  
+	private Long idArchivo;  
 
   public ArticuloImagen() {
     this(new Importado());  
@@ -95,6 +96,14 @@ public class ArticuloImagen extends TcManticArticulosImagenesDto implements Seri
 
   public void setAnterior(ESql anterior) {
     this.anterior = anterior;
+  }
+
+  public Long getIdArchivo() {
+    return idArchivo;
+  }
+
+  public void setIdArchivo(Long idArchivo) {
+    this.idArchivo = idArchivo;
   }
 
   @Override
@@ -177,7 +186,7 @@ public class ArticuloImagen extends TcManticArticulosImagenesDto implements Seri
 
   @Override
   public String toString() {
-    return "ArticuloImagen{" + "id=" + id + ", importado=" + importado + ", sqlAccion=" + sqlAccion + ", anterior=" + anterior + ", nuevo=" + nuevo + ", principal=" + principal + ", alias=" + alias+ ", tamanio=" + tamanio + ", ruta=" + ruta + ", original=" + original + ", archivo=" + archivo + '}';
+    return "ArticuloImagen{" + "id=" + id + ", importado=" + importado + ", sqlAccion=" + sqlAccion + ", anterior=" + anterior + ", nuevo=" + nuevo + ", principal=" + principal + ", alias=" + alias + ", tamanio=" + tamanio + ", ruta=" + ruta + ", original=" + original + ", archivo=" + archivo + ", idArchivo=" + idArchivo + '}';
   }
   
 }

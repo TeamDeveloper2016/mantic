@@ -46,6 +46,15 @@ public final class Constantes {
   public static final String PATRON_IMPORTAR_IDENTIFICACION= "/(\\.|\\/)(pdf|png|jpe?g)$/";
   public static final String PATRON_IMPORTAR= "/(\\.|\\/)(pdf|xml|png|jpe?g)$/";
 
+  // Perfiles de acceso globales
+  public static final String ADMIN  = "ADMINISTRADOR";
+  public static final String ADMINS = "ADMINISTRADORDEENCUESTA";
+	public static final String ADMINISTRATIVO= "GERENTEDESERVICIOSADMIN";
+  public static final String GERENTE= "GERENTE";
+  public static final String CAJERO = "CAJERO";
+  public static final String VENDEDOR_DE_PISO= "VENDEDORDEPISO";
+
+  
   // Constantes de separadores y caracteres
   public static final String SEPARADOR = "|";
   public static final String SEPARADOR_SPLIT = "\\|";

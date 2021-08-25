@@ -42,7 +42,6 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
 	private static final String TEMA   = "sentinel";
-	private static final String GERENTE= "GERENTE";
 	private RegistroPersona registroPersona;
 	private UISelectEntity domicilioBusqueda;
 
@@ -71,7 +70,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("idPersona", JsfBase.getFlashAttribute("idPersona"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("general", this.attrs.get("tipoPersona")== null);
-			this.attrs.put("mostrarEmpresas", JsfBase.isAdminEncuestaOrAdmin() || JsfBase.getAutentifica().getPersona().getDescripcionPerfil().equals(GERENTE));					
+			this.attrs.put("mostrarEmpresas", JsfBase.isAdminEncuestaOrAdmin());					
 			this.attrs.put("mostrarPuestos", Long.valueOf(this.attrs.get("tipoPersona").toString()).equals(ETipoPersona.EMPLEADO.getIdTipoPersona()));			
 			this.attrs.put("mostrarProveedores", (Long.valueOf(this.attrs.get("tipoPersona").toString()).equals(ETipoPersona.AGENTE_VENTAS.getIdTipoPersona())));			
 			this.attrs.put("mostrarClientes", (Long.valueOf(this.attrs.get("tipoPersona").toString()).equals(ETipoPersona.REPRESENTANTE_LEGAL.getIdTipoPersona())));			

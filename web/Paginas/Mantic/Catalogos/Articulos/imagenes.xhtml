@@ -52,7 +52,7 @@
 							</p:panelGrid>	
 						</div>
 						<div class="ui-grid-col-11">
-							<p:autoComplete id="codigos" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosArticulosImagenes.attrs.custom}" completeMethod="#{manticCatalogosArticulosImagenes.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+              <p:autoComplete id="codigos" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosArticulosImagenes.attrs.custom}" completeMethod="#{manticCatalogosArticulosImagenes.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500" rendered="false">
 								<p:ajax event="itemSelect" oncomplete="jsKardex.close();setTimeout('reload()', 1000);"/>
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
@@ -69,7 +69,11 @@
 										<h:outputText value="$ #{custom.precio}" />
 									</h:panelGrid>
 								</f:facet>
-							</p:autoComplete>			
+							</p:autoComplete>		
+              <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-97, janal-fix-3 janal-column-center">
+                <p:inputText id="codigo" value="#{manticCatalogosArticulosImagenes.attrs.codigo}" styleClass="janal-wid-100-txt"/>
+                <p:commandButton icon="fa fa-search" process="@this codigo" update="encontrados" actionListener="#{manticCatalogosArticulosImagenes.doLoad}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+              </p:panelGrid>
 						</div>
 					</div>
 					<div class="ui-grid-row janal-grid-row">
@@ -102,8 +106,41 @@
 			</div>	
 			<p:spacer width="3px"/>
 			<div class="ui-grid-row janal-grid-row">
-				<div class="ui-grid-col-12">
+				<div class="ui-grid-col-12"> 
+          <p:dataTable id="encontrados" var="row" lazy="true" value="#{manticCatalogosArticulosImagenes.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosArticulosImagenes.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosArticulosImagenes.lazyModel.rowCount gt manticCatalogosArticulosImagenes.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+					  <f:facet name="header">
+							<div style="display: flex;">
+							  <p:outputLabel value="Articulos encontrados ..." styleClass="janal-color-white"/>
+							</div>
+            </f:facet>  
+						<p:column headerText="No" styleClass="janal-wid-3">
+							<h:outputText value="#{index+ 1}.-"/>
+						</p:column>   
+						<p:column headerText="Código" styleClass="janal-wid-10" sortBy="#{row.propio}">
+							<h:outputText value="#{row.propio}"/>
+						</p:column>   
+						<p:column headerText="Nombre" sortBy="#{row.nombre}">
+							<h:outputText value="#{row.nombre}"/>
+						</p:column>   
+						<p:column headerText="Imagen" styleClass="janal-column-center janal-wid-5">
+							<a id="tabla:#{index}:source" class="janal-control-imagen" data-magnify="gallery" href="#{manticCatalogosArticulosImagenes.path}#{row.archivo}" data-caption="#{row.nombre}" data-group="icon-image" title="Click para ver más grande la imagen" style="display: #{row.cantidad eq 0? 'none': ''}">
+								<p:graphicImage id="icon-image" cache="false" url="#{manticCatalogosArticulosImagenes.path}#{row.archivo}" width="26" height="22" stream="false" rendered="#{row.cantidad ne 0}" style="cursor:zoom-in;"/>
+							</a>
+						</p:column>   
+						<p:column headerText="Agregar" styleClass="janal-wid-col-38 janal-column-center">
+							<p:commandButton icon="fa fa-plus" title="Eliminar articulo" actionListener="#{manticCatalogosArticulosImagenes.doAgregar(row)}" process="@this" update="@(.filas)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+						</p:column>
+						<f:facet name="footer">
+							Total [#{manticCatalogosArticulosImagenes.lazyModel== null? 0: manticCatalogosArticulosImagenes.lazyModel.rowCount}] registros
+						</f:facet>
+					</p:dataTable>					
+          <br/>
 					<p:dataTable id="tabla" var="row" value="#{manticCatalogosArticulosImagenes.articulos}" paginator="false" reflow="true" rowKey="#{row.idArticulo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index">
+					  <f:facet name="header">
+							<div style="display: flex;">
+							  <p:outputLabel value="Articulos seleccionados" styleClass="janal-color-white"/>
+							</div>
+            </f:facet>  
 						<p:column headerText="No" styleClass="janal-wid-3">
 							<h:outputText value="#{index+ 1}.-"/>
 						</p:column>   
@@ -114,8 +151,8 @@
 							<h:outputText value="#{row.nombre}"/>
 						</p:column>   
 						<p:column headerText="Imagen" styleClass="janal-column-center janal-wid-5">
-							<a id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row.nombre}" data-group="icon-image" href="" title="Click para ver más grande la imagen" style="display: #{row.cantidad eq 0? 'none': ''}">
-								<p:graphicImage id="icon-image" cache="false" value="#{manticCatalogosArticulosImagenes.doPrepareImage(row)}" width="26" height="22" stream="false" rendered="#{row.cantidad ne 0}" style="cursor:zoom-in;"/>
+							<a id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row.nombre}" data-group="icon-image" href="#{manticCatalogosArticulosImagenes.path}#{row.alias}" title="Click para ver más grande la imagen" style="display: #{row.cantidad eq 0? 'none': ''}">
+								<p:graphicImage id="icon-image" cache="false" value="#{manticCatalogosArticulosImagenes.path}#{row.alias}" width="26" height="22" stream="false" rendered="#{row.cantidad ne 0}" style="cursor:zoom-in;"/>
 							</a>	
 						</p:column>   
 						<p:column headerText="Quitar" styleClass="janal-wid-col-38 janal-column-center">

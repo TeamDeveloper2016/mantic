@@ -28,7 +28,6 @@ import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloCodigo;
 import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloImagen;
 import mx.org.kaana.mantic.catalogos.articulos.beans.RegistroArticulo;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
-import org.primefaces.model.StreamedContent;
 
 @Named(value = "manticCatalogosArticulosAccion")
 @ViewScoped
@@ -36,7 +35,6 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
   private RegistroArticulo registroArticulo;
-	private StreamedContent image;
   private String path;
 
   public RegistroArticulo getRegistroArticulo() {
@@ -47,10 +45,6 @@ public class Accion extends IBaseAttribute implements Serializable {
     this.registroArticulo = registroArticulo;
   }
 
-	public StreamedContent getImage() {
-		return image;
-	}
-	
   public String getPath() {
     return path;
   }
@@ -119,7 +113,6 @@ public class Accion extends IBaseAttribute implements Serializable {
         JsfBase.addMessage("Se registro el articulo de forma correcta.", ETipoMensaje.INFORMACION);
       } // if
       else {
-        UIBackingUtilities.execute("leavePage= false;");        
         JsfBase.addMessage("Ocurrió un error al registrar el articulo", ETipoMensaje.ERROR);      
       } // else  
     } // try

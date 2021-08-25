@@ -1,6 +1,5 @@
 package mx.org.kaana.libs.pagina;
 
-import javax.servlet.RequestDispatcher;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.kajool.procesos.acceso.beans.Autentifica;
@@ -22,10 +21,6 @@ import org.apache.commons.logging.LogFactory;
 public class JsfBase extends JsfUtilities {
 
   private static final Log LOG       = LogFactory.getLog(JsfBase.class);
-  private static final String ADMIN  = "ADMINISTRADOR";
-  private static final String ADMINS = "ADMINISTRADORDEENCUESTA";
-  private static final String GERENTE= "GERENTE";
-  private static final String CAJERO= "CAJERO";
 
   public static Autentifica getAutentifica() {
     return (Autentifica) getSession().getAttribute(Constantes.ATRIBUTO_AUTENTIFICA);
@@ -38,8 +33,8 @@ public class JsfBase extends JsfUtilities {
   public static boolean isAdmin() throws Exception {
     boolean regresar = false;
     try {
-			String cadena= Cadena.eliminaCaracter(getAutentifica().getPersona().getDescripcionPerfil(), ' ').toUpperCase();
-      regresar = cadena.equals(ADMIN) || cadena.equals(ADMINS) || cadena.equals(GERENTE);
+			String perfil= Cadena.eliminaCaracter(getAutentifica().getPersona().getDescripcionPerfil(), ' ').toUpperCase();
+      regresar = perfil.equals(Constantes.ADMIN) || perfil.equals(Constantes.ADMINS) || perfil.equals(Constantes.ADMINISTRATIVO) || perfil.equals(Constantes.GERENTE);
     } // try
     catch (Exception e) {
       throw e;
@@ -50,7 +45,8 @@ public class JsfBase extends JsfUtilities {
   public static boolean isGerente() throws Exception {
     boolean regresar = false;
     try {
-      regresar = Cadena.eliminaCaracter(getAutentifica().getPersona().getDescripcionPerfil(), ' ').toUpperCase().equals(GERENTE);
+      String perfil= Cadena.eliminaCaracter(getAutentifica().getPersona().getDescripcionPerfil(), ' ').toUpperCase();
+      regresar = perfil.equals(Constantes.GERENTE) || perfil.equals(Constantes.ADMINISTRATIVO);
     } // try
     catch (Exception e) {
       throw e;
@@ -61,7 +57,7 @@ public class JsfBase extends JsfUtilities {
   public static boolean isCajero() throws Exception {
     boolean regresar = false;
     try {
-      regresar = Cadena.eliminaCaracter(getAutentifica().getPersona().getDescripcionPerfil(), ' ').toUpperCase().equals(CAJERO);
+      regresar = Cadena.eliminaCaracter(getAutentifica().getPersona().getDescripcionPerfil(), ' ').toUpperCase().equals(Constantes.CAJERO);
     } // try
     catch (Exception e) {
       throw e;
@@ -93,7 +89,8 @@ public class JsfBase extends JsfUtilities {
   }
 
   public static boolean isLockUsers(LockUser lockUser, Autentifica autentifica) {
-    return lockUser.isLock() && !Cadena.eliminaCaracter(autentifica.getPersona().getDescripcionPerfil(), ' ').toUpperCase().equals(JsfBase.GERENTE);
+    String perfil= Cadena.eliminaCaracter(autentifica.getPersona().getDescripcionPerfil(), ' ').toUpperCase();
+    return lockUser.isLock() && !perfil.equals(Constantes.GERENTE) && !perfil.equals(Constantes.ADMINISTRATIVO);
   }
 
   public static boolean isLockUsers() {

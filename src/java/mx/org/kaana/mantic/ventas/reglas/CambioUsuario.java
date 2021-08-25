@@ -158,8 +158,9 @@ public class CambioUsuario extends Acceso implements Serializable{
 			params.put("idPersona", persona.getIdPersona());
 			perfiles= DaoFactory.getInstance().toEntitySet("VistaGruposAccesoDto", "perfilesPersona", params);
 			if(!perfiles.isEmpty()){
-				for(Entity perfil: perfiles){
-					if(perfil.toString("descripcion").toUpperCase().equals("ADMINISTRADOR DE ENCUESTA") || perfil.toString("descripcion").toUpperCase().equals("GERENTE") || perfil.toString("descripcion").toUpperCase().equals("CAJERO"))
+				for(Entity perfil: perfiles) {
+          String item= perfil.toString("descripcion").toUpperCase();        
+					if(item.equals("ADMINISTRADOR DE ENCUESTA") || item.equals("GERENTE") || item.equals("GERENTE DE SERVICIOS ADMIN") || item.equals("CAJERO"))
 						count++;
 				} // for
 				regresar= count > 0;
