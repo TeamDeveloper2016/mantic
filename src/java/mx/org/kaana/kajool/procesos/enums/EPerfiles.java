@@ -18,7 +18,9 @@ public enum EPerfiles {
   ADMINISTRADOR          ("Administrador", "VistaIndicadoresPerfilesDto", "avanceCapturistas", "Porcentaje de avance", "nacional", "nacional"),
   RESPONSABLE_ESTATAL    ("Responsable estatal", "VistaIndicadoresPerfilesDto", "avanceCapturistas", "Porcentaje de avance", "estatal", "entidad"),
   CAPTURISTA             ("Capturista", "VistaIndicadoresPerfilesDto", "foliosSinCaptura", "Folios sin captura", "estatal", "usuario"), 
-  CONSULTOR              ("Consultor", "VistaIndicadoresPerfilesDto", "avanceCapturistas", "Porcentaje de avance", "nacional", "nacional");
+  CONSULTOR              ("Consultor", "VistaIndicadoresPerfilesDto", "avanceCapturistas", "Porcentaje de avance", "nacional", "nacional"),
+  CLIENTE                ("Administrador", "VistaIndicadoresPerfilesDto", "avanceCapturistas", "Porcentaje de avance", "nacional", "nacional"),
+  GERENTE_SERVICIOS_ADMIN("Administrador", "VistaIndicadoresPerfilesDto", "avanceCapturistas", "Porcentaje de avance", "nacional", "nacional");
 
   private static final Map<Integer, EPerfiles> lookup = new HashMap<>();
   private String descripcion;

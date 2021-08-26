@@ -33,7 +33,7 @@ public class JsfBase extends JsfUtilities {
   public static boolean isAdmin() throws Exception {
     boolean regresar = false;
     try {
-			String perfil= Cadena.eliminaCaracter(getAutentifica().getPersona().getDescripcionPerfil(), ' ').toUpperCase();
+			String perfil= getAutentifica()== null? "": Cadena.eliminaCaracter(getAutentifica().getPersona().getDescripcionPerfil(), ' ').toUpperCase();
       regresar = perfil.equals(Constantes.ADMIN) || perfil.equals(Constantes.ADMINS) || perfil.equals(Constantes.ADMINISTRATIVO) || perfil.equals(Constantes.GERENTE);
     } // try
     catch (Exception e) {
@@ -45,7 +45,7 @@ public class JsfBase extends JsfUtilities {
   public static boolean isGerente() throws Exception {
     boolean regresar = false;
     try {
-      String perfil= Cadena.eliminaCaracter(getAutentifica().getPersona().getDescripcionPerfil(), ' ').toUpperCase();
+      String perfil= getAutentifica()== null? "": Cadena.eliminaCaracter(getAutentifica().getPersona().getDescripcionPerfil(), ' ').toUpperCase();
       regresar = perfil.equals(Constantes.GERENTE) || perfil.equals(Constantes.ADMINISTRATIVO);
     } // try
     catch (Exception e) {
@@ -89,7 +89,7 @@ public class JsfBase extends JsfUtilities {
   }
 
   public static boolean isLockUsers(LockUser lockUser, Autentifica autentifica) {
-    String perfil= Cadena.eliminaCaracter(autentifica.getPersona().getDescripcionPerfil(), ' ').toUpperCase();
+    String perfil= autentifica== null? "": Cadena.eliminaCaracter(autentifica.getPersona().getDescripcionPerfil(), ' ').toUpperCase();
     return lockUser.isLock() && !perfil.equals(Constantes.GERENTE) && !perfil.equals(Constantes.ADMINISTRATIVO);
   }
 
