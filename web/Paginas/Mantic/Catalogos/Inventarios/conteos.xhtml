@@ -72,7 +72,7 @@
   				<p:panel header="Código: [#{manticCatalogosInventariosConteos.attrs.articulo.propio}] [#{manticCatalogosInventariosConteos.attrs.articulo.nombre}]" styleClass="filas">
 						<p:panelGrid id="panelAlmacen" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-60, janal-wid-100">
 							<p:outputLabel for="almacen" value="Almacen:"/>
-							<p:selectOneMenu id="almacen" value="#{manticCatalogosInventariosConteos.attrs.almacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade">
+							<p:selectOneMenu id="almacen" value="#{manticCatalogosInventariosConteos.attrs.almacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt filas" effect="fade">
 								<p:ajax event="change" onstart="janal.bloquear();" process="@this almacen" listener="#{manticCatalogosInventariosConteos.doLoad}" update="@(.filas)" oncomplete="janal.desbloquear();"/>
 								<f:selectItems value="#{manticCatalogosInventariosConteos.attrs.almacenes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
 								<p:column headerText="Sucursal">
@@ -96,7 +96,7 @@
 			</div>	
 			<div class="ui-grid-row janal-grid-row">								
 				<div id="collapse-content" class="ui-grid-col-12">
-					<p:tabView id="contenedorGrupos">
+          <p:tabView id="contenedorGrupos" styleClass="filas">
             <p:ajax event="tabChange" listener="#{manticCatalogosInventariosConteos.doTabChange}" process="@this" update="@(.filas)"/>												
 						<p:tab title="Generales">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-70, janal-wid-30">	
@@ -178,7 +178,7 @@
 								</p:column>		
 								<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 									<f:facet name="header">
-										<h:outputText value="salidas"/>
+										<h:outputText value="Salidas"/>
 									</f:facet>
 									<h:outputText value="#{row['salidas']}"/>
 								</p:column>		
@@ -205,8 +205,91 @@
 								</f:facet>
 							</p:dataTable>							
 						</p:tab>
+            <p:tab title="Conteos">
+              <p:dataTable lazy="true" id="conteos" widgetVar="kajoolTableConteos" var="row" value="#{manticCatalogosInventariosConteos.lazyConteos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosInventariosConteos.attrs.conteo}" selectionMode="single" paginator="#{manticCatalogosInventariosConteos.lazyConteos.rowCount gt manticCatalogosInventariosConteos.lazyConteos.pageSize}" rowIndexVar="index" reflow="true" rowStyleClass="#{manticCatalogosInventariosConteos.toColor(row)}" paginatorPosition="bottom">
+								<f:facet name="header">
+									<p:outputLabel value="Últimos conteos realizados" style="float:left" styleClass="janal-text-white"/>
+									<div class="lg-pantalla">
+										<p:menuButton value="Opciones">
+											<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfConteos', 'conteos')" oncomplete="janal.desbloquear()"/>
+											<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsConteos', 'conteos')" oncomplete="janal.desbloquear()"/>
+										</p:menuButton>
+									</div>  
+									<div class="xs-pantalla">              
+										<p:commandButton id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdfConteos', 'conteos')" oncomplete="janal.desbloquear()"/>
+                    <p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlsConteos', 'conteos')" oncomplete="janal.desbloquear()"/>
+									</div>  
+								</f:facet>	            
+								<p:column class="MarAuto Responsive janal-wid-12" sortBy="#{row.almacen}">
+									<f:facet name="header">
+										<h:outputText value="Almacen"/>
+									</f:facet>
+									<h:outputText value="#{row['almacen']}"/>
+								</p:column>		
+								<p:column class="MarAuto Responsive" sortBy="#{row.articulo}">
+									<f:facet name="header">
+										<h:outputText value="Articulo"/>
+									</f:facet>
+									<h:outputText value="#{row['articulo']}"/>
+								</p:column>		
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-6" sortBy="#{row.ejercicio}">
+									<f:facet name="header">
+										<h:outputText value="Ejercicio"/>
+									</f:facet>
+									<h:outputText value="#{row['ejercicio']}"/>
+								</p:column>		
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
+									<f:facet name="header">
+										<h:outputText value="Inicial"/>
+									</f:facet>
+									<h:outputText value="#{row['inicial']}"/>
+								</p:column>		
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
+									<f:facet name="header">
+										<h:outputText value="Entradas"/>
+									</f:facet>
+									<h:outputText value="#{row['entradas']}"/>
+								</p:column>		
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
+									<f:facet name="header">
+										<h:outputText value="Salidas"/>
+									</f:facet>
+									<h:outputText value="#{row['salidas']}"/>
+								</p:column>		
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
+									<f:facet name="header">
+										<h:outputText value="Stock"/>
+									</f:facet>
+									<h:outputText value="#{row['stock']}"/>
+								</p:column>		
+								<p:column class="MarAuto Responsive" sortBy="#{row.persona}">
+									<f:facet name="header">
+										<h:outputText value="Usuario"/>
+									</f:facet>
+									<h:outputText value="#{row['persona']}"/>
+								</p:column>		
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.registro}">
+									<f:facet name="header">
+										<h:outputText value="Fecha"/>
+									</f:facet>
+									<h:outputText value="#{row['registro']}"/>
+								</p:column>		
+                <p:column styleClass="janal-column-icon">
+                  <p:commandButton icon="fa fa-bullseye" title="Seleccionar" actionListener="#{manticCatalogosInventariosConteos.doRowConteoActivo(row)}" process="@this" update="@(.filas) contenedorGrupos:tabla contenedorGrupos:panelImage" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                </p:column>
+								<f:facet name="footer">
+									<p:outputLabel value="Total [#{manticCatalogosInventariosConteos.lazyConteos== null? 0: manticCatalogosInventariosConteos.lazyConteos.rowCount}] registros"/>
+								</f:facet>
+							</p:dataTable>		
+              <h:commandLink id="dataPdfConteos">
+                <pe:exporter type="pdf" skipComponents="#{manticEgresosDetalle.attrs.skipComponentsPdf}" target="conteos" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+              </h:commandLink>
+              <h:commandLink id="dataXlsConteos">
+                <pe:exporter type="xlsx" skipComponents="#{manticEgresosDetalle.attrs.skipComponentsXls}" encoding="ISO-8859-1" target="conteos" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+              </h:commandLink>
+            </p:tab>
 						<p:tab title="Movimientos (60 días)">
-							<p:dataTable var="item" value="#{manticCatalogosInventariosConteos.attrs.movimientos}" paginator="#{manticCatalogosInventariosConteos.attrs.movimientos.size() gt 0}" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" styleClass="paginated filas" rowIndexVar="index" paginatorPosition="bottom">
+							<p:dataTable id="movimientos" var="item" value="#{manticCatalogosInventariosConteos.attrs.movimientos}" paginator="#{manticCatalogosInventariosConteos.attrs.movimientos.size() gt 0}" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" styleClass="paginated filas" rowIndexVar="index" paginatorPosition="bottom">
 								<p:column headerText="No" styleClass="janal-wid-3">
 									<p:outputLabel value="#{index+ 1}.-"/>
 								</p:column>   
@@ -247,11 +330,11 @@
     <hr class="ui-widget-content"/>
     <div class="janal-line-button">
 			<div class="lg-pantalla">
-  			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticCatalogosInventariosConteos.doAceptar}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" disabled="#{manticCatalogosInventariosConteos.habilitar}" styleClass="filas"/>
+        <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" update="contenedorGrupos:tabla" action="#{manticCatalogosInventariosConteos.doAceptar}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" disabled="#{manticCatalogosInventariosConteos.habilitar}" styleClass="filas"/>
 				<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosInventariosConteos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true" style="display: #{empty manticCatalogosInventariosConteos.attrs.xcodigo? 'none': ''}"/>
 			</div>		
 			<div class="xs-pantalla">
-				<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosInventariosConteos.doAceptar}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" disabled="#{manticCatalogosInventariosConteos.habilitar}" styleClass="filas"/>
+				<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" update="contenedorGrupos:tabla" action="#{manticCatalogosInventariosConteos.doAceptar}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" disabled="#{manticCatalogosInventariosConteos.habilitar}" styleClass="filas"/>
 	  		<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosInventariosConteos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true" style="display: #{empty manticCatalogosInventariosConteos.attrs.xcodigo? 'none': ''}"/>
 			</div>		
 		</div>	

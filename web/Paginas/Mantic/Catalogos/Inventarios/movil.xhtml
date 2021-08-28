@@ -84,7 +84,7 @@
                   </p:autoComplete>	
                 </p:panelGrid>	
                 <p:panelGrid columns="1" styleClass="janal-column-center janal-wid-100-txt">
-                  <p:panel id="panelImage" header="#{manticCatalogosInventariosConteos.attrs.articulo.propio}" styleClass="TexAlCenter janal-wid-100-txt">
+                  <p:panel id="panelImage" header="Almacen: #{manticCatalogosInventariosConteos.attrs.almacen.nombre}" styleClass="TexAlCenter janal-wid-100-txt filas">
                     <a id="source-image" data-magnify="gallery" data-caption="#{manticCatalogosInventariosConteos.attrs.articulo.nombre}" data-group="icon-gallery" href="" title="Click para ver más grande la imagen">
                       <p:graphicImage id="icon-image" value="#{manticCatalogosInventariosConteos.image}" width="170" height="135" stream="false" style="cursor:zoom-in;"/>
                     </a>	
@@ -240,11 +240,11 @@
     <hr class="ui-widget-content"/>
     <div class="janal-line-button">
 			<div class="lg-pantalla">
-  			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticCatalogosInventariosConteos.doAceptar}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" disabled="#{manticCatalogosInventariosConteos.habilitar}" styleClass="filas"/>
+  			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="contenedorGrupos:tabla" action="#{manticCatalogosInventariosConteos.doAceptar}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" disabled="#{manticCatalogosInventariosConteos.habilitar}" styleClass="filas"/>
 				<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosInventariosConteos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true" style="display: #{empty manticCatalogosInventariosConteos.attrs.xcodigo? 'none': ''}"/>
 			</div>		
 			<div class="xs-pantalla">
-				<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosInventariosConteos.doAceptar}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" disabled="#{manticCatalogosInventariosConteos.habilitar}" styleClass="filas"/>
+				<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" update="contenedorGrupos:tabla" action="#{manticCatalogosInventariosConteos.doAceptar}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" disabled="#{manticCatalogosInventariosConteos.habilitar}" styleClass="filas"/>
 	  		<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosInventariosConteos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true" style="display: #{empty manticCatalogosInventariosConteos.attrs.xcodigo? 'none': ''}"/>
 			</div>		
 		</div>	

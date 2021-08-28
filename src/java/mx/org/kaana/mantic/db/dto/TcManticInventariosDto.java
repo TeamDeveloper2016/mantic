@@ -52,6 +52,8 @@ public class TcManticInventariosDto implements IBaseDto, Serializable {
   private Timestamp registro;
   @Column (name="id_automatico")
   private Long idAutomatico;
+  @Column (name="id_verificado")
+  private Long idVerificado;
 
   public TcManticInventariosDto() {
     this(new Long(-1L));
@@ -67,6 +69,10 @@ public class TcManticInventariosDto implements IBaseDto, Serializable {
 	}
 
 	public TcManticInventariosDto(Long idUsuario, Long idAlmacen, Double entradas, Long idInventario, Long idArticulo, Double inicial, Double stock, Double salidas, Long ejercicio, Long idAutomatico) {
+    this(idUsuario, idAlmacen, entradas, idInventario, idArticulo, inicial, stock, salidas, ejercicio, idAutomatico, 2L);
+  }
+  
+	public TcManticInventariosDto(Long idUsuario, Long idAlmacen, Double entradas, Long idInventario, Long idArticulo, Double inicial, Double stock, Double salidas, Long ejercicio, Long idAutomatico, Long idVerificado) {
     setIdUsuario(idUsuario);
     setIdAlmacen(idAlmacen);
     setEntradas(entradas);
@@ -78,6 +84,7 @@ public class TcManticInventariosDto implements IBaseDto, Serializable {
     setEjercicio(ejercicio);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 		this.idAutomatico= idAutomatico;
+    this.idVerificado= idVerificado;
   }
 	
   public void setIdUsuario(Long idUsuario) {
@@ -168,6 +175,14 @@ public class TcManticInventariosDto implements IBaseDto, Serializable {
 		this.idAutomatico=idAutomatico;
 	}
 
+  public Long getIdVerificado() {
+    return idVerificado;
+  }
+
+  public void setIdVerificado(Long idVerificado) {
+    this.idVerificado = idVerificado;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -204,6 +219,8 @@ public class TcManticInventariosDto implements IBaseDto, Serializable {
 		regresar.append(getRegistro());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdAutomatico());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdVerificado());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -222,13 +239,14 @@ public class TcManticInventariosDto implements IBaseDto, Serializable {
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
 		regresar.put("idAutomatico", getIdAutomatico());
+		regresar.put("idVerificado", getIdVerificado());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getIdUsuario(), getIdAlmacen(), getEntradas(), getIdInventario(), getIdArticulo(), getInicial(), getStock(), getSalidas(), getEjercicio(), getRegistro(), getIdAutomatico()
+      getIdUsuario(), getIdAlmacen(), getEntradas(), getIdInventario(), getIdArticulo(), getInicial(), getStock(), getSalidas(), getEjercicio(), getRegistro(), getIdAutomatico(), getIdVerificado()
     };
     return regresar;
   }

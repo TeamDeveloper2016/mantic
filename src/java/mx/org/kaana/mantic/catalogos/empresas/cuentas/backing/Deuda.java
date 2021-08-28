@@ -243,6 +243,7 @@ public class Deuda extends IBaseFilter implements Serializable {
       columns= new ArrayList<>();  
 			params.put("idProveedor", this.attrs.get("idProveedor"));						
 			deuda= (Entity) DaoFactory.getInstance().toEntity("VistaEmpresasDto", "deuda", params);
+      deuda.get("saldo").setData(Numero.toRedondearSat(deuda.toDouble("saldo")));
 			columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
 			columns.add(new Columna("debe", EFormatoDinamicos.MILES_CON_DECIMALES));
 			UIBackingUtilities.toFormatEntity(deuda, columns);

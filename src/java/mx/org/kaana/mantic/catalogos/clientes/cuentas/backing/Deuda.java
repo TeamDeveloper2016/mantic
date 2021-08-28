@@ -211,6 +211,8 @@ public class Deuda extends IBaseFilter implements Serializable {
 			params.put("idCliente", this.attrs.get("idCliente"));						
 			deuda= (Entity) DaoFactory.getInstance().toEntity("VistaClientesDto", "deuda", params);
 			this.attrs.put("deuda", deuda);
+      deuda.get("saldo").setData(Numero.toRedondearSat(deuda.toDouble("saldo")));
+      deuda.get("importe").setData(Numero.toRedondearSat(deuda.toDouble("importe")));
 			this.attrs.put("pago", deuda.toDouble("saldo"));
 			this.attrs.put("pagoGeneral", deuda.toDouble("saldo"));
 			this.attrs.put("pagoSegmento", deuda.toDouble("saldo"));

@@ -42,18 +42,13 @@ public class Transaccion extends IBaseTnx {
 		try {
 			switch(accion) {
 				case AGREGAR:
-					this.toAffectAlmacenes(sesion, accion);
-					this.articulo.setStock(this.articulo.getInicial());
-          regresar = DaoFactory.getInstance().insert(sesion, this.articulo)> 0L;
+					regresar= this.toAffectAlmacenes(sesion, accion);
           break;        
 				case MODIFICAR:
-					this.toAffectAlmacenes(sesion, accion);
-					this.articulo.setStock(this.articulo.getInicial());
-          regresar = DaoFactory.getInstance().update(sesion, this.articulo)> 0L;
+					regresar= this.toAffectAlmacenes(sesion, accion);
           break;        
 				case PROCESAR:
-					this.toAffectAlmacenes(sesion, accion);
-					regresar= true;
+					regresar= this.toAffectAlmacenes(sesion, accion);
           break;        
 			} // switch
 			if (!regresar) 
@@ -65,9 +60,10 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} 
 
-	private void toAffectAlmacenes(Session sesion, EAccion accion) throws Exception {
+	private boolean toAffectAlmacenes(Session sesion, EAccion accion) throws Exception {
 		Map<String, Object> params= null;
 		double stock              = this.articulo.getInicial();
+    boolean regresar          = false; 
 		try {
 			params=new HashMap<>();
 			this.almacen.setStock(this.articulo.getInicial());
@@ -122,10 +118,17 @@ public class Transaccion extends IBaseTnx {
 				);
 				DaoFactory.getInstance().insert(sesion, movimiento);
 			} // if
+      
+      this.articulo.setStock(this.articulo.getInicial());
+      if(this.articulo.isValid())
+        regresar= DaoFactory.getInstance().update(sesion, this.articulo)> 0L;
+      else
+        regresar= DaoFactory.getInstance().insert(sesion, this.articulo)> 0L;
 		} // try
 		finally {
 			Methods.clean(params);
 		} // finally
+    return regresar;
 	}
 
   private Double toSumAlmacenArticulo(Session sesion, Long idArticulo) {

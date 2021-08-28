@@ -723,6 +723,35 @@
 					and id_articulo= {idArticulo}
 				{sortOrder}
 			</select>	
+      <select id="conteos">
+				select
+					tc_mantic_inventarios.id_inventario as id_key,
+					tc_mantic_articulos.nombre as articulo,
+					tc_mantic_almacenes.nombre as almacen,
+					tc_mantic_inventarios.*,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona
+			  from
+					tc_mantic_inventarios
+				inner join
+					tc_janal_usuarios on tc_mantic_inventarios.id_usuario= tc_janal_usuarios.id_usuario          
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				inner join
+					tc_mantic_articulos on tc_mantic_inventarios.id_articulo= tc_mantic_articulos.id_articulo
+				inner join
+					tc_mantic_almacenes on tc_mantic_inventarios.id_almacen= tc_mantic_almacenes.id_almacen
+				inner join (
+						select
+							max(tc_mantic_inventarios.id_inventario) as id_inventario
+						from
+							tc_mantic_inventarios         
+						where
+							id_automatico= 2
+						group by
+							id_almacen, id_articulo
+				) as tc_mantic_maximos on tc_mantic_inventarios.id_inventario= tc_mantic_maximos.id_inventario
+				{sortOrder}
+      </select>
 		</unit>	
 		<unit id="VistaCargasMasivasDto">
 			<select id="lazy">

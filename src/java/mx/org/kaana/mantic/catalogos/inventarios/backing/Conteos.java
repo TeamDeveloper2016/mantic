@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -19,12 +20,14 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Periodo;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.JsfUtilities;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -35,6 +38,7 @@ import mx.org.kaana.mantic.catalogos.inventarios.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
+import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.StreamedContent;
@@ -48,7 +52,8 @@ public class Conteos extends IBaseFilter implements Serializable {
 	
 	private StreamedContent image;
 	private ArticuloAlmacen articulo;
-		
+  protected FormatLazyModel lazyConteos; 		
+  
 	public StreamedContent getImage() {
 		return image;
 	}
@@ -64,6 +69,10 @@ public class Conteos extends IBaseFilter implements Serializable {
 	public boolean getHabilitar() {
 		return this.attrs.get("existe")!= null || this.attrs.get("vigente")== null;
 	}
+
+  public FormatLazyModel getLazyConteos() {
+    return lazyConteos;
+  }
 	
 	@PostConstruct
   @Override
@@ -88,6 +97,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 				} // if	
 			} // if	
 			this.toLoadUbicaciones();
+      this.toLoadConteos();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -97,9 +107,17 @@ public class Conteos extends IBaseFilter implements Serializable {
 
 	@Override
   public void doLoad() {
-		List<Columna> columns= null;
-    Map<String, Object> params = null;
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
     try {
+			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
+			if(almacenes!= null && !almacenes.isEmpty()) {
+        int index= almacenes.indexOf((UISelectEntity)this.attrs.get("almacen"));
+        if(index>= 0)
+          this.attrs.put("almacen", almacenes.get(index));
+      } // if  
+			if(this.attrs.get("almacen")!= null)
+			  this.attrs.put("idAlmacen", ((UISelectEntity)this.attrs.get("almacen")).getKey());			
       params = new HashMap<>();      
 			columns= new ArrayList<>();
       columns.add(new Columna("inicial", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
@@ -107,9 +125,7 @@ public class Conteos extends IBaseFilter implements Serializable {
       columns.add(new Columna("salidas", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
       columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
-			this.attrs.put("sortOrder", " order by registro desc");
-			if(this.attrs.get("almacen")!= null)
-			  this.attrs.put("idAlmacen", ((Entity)this.attrs.get("almacen")).getKey());			
+			params.put("sortOrder", " order by registro desc");
       params.put("idAlmacen", this.attrs.get("idAlmacen"));      
       params.put("idArticulo", this.attrs.get("idArticulo"));      
 			TcManticInventariosDto vigente= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
@@ -210,7 +226,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 			almacenes= UIEntity.build("VistaAlmacenesDto", "almacenesEmpresa", params, columns, Constantes.SQL_TODOS_REGISTROS);      
 			this.attrs.put("almacenes", almacenes);
 			if(almacenes!= null && !almacenes.isEmpty())
-			  this.attrs.put("almacen", new Entity(UIBackingUtilities.toFirstKeySelectEntity(almacenes).getKey()));			
+			  this.attrs.put("almacen", UIBackingUtilities.toFirstKeySelectEntity(almacenes));			
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -255,7 +271,7 @@ public class Conteos extends IBaseFilter implements Serializable {
     }// finally		 
 	}	
 
-	private void updateArticulo(UISelectEntity articulo) throws Exception {
+	private void updateArticulo(Entity articulo) throws Exception {
 		List<Columna> columns= null;
 		try {
 			columns= new ArrayList<>();
@@ -412,6 +428,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 		try {
 			TcManticInventariosDto vigente= (TcManticInventariosDto)this.attrs.get("vigente");
 			vigente.setIdUsuario(JsfBase.getIdUsuario());
+			vigente.setIdVerificado(this.articulo.getIdVerificado());
 			vigente.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 			transaccion= new Transaccion(vigente, this.articulo);
 			if(transaccion.ejecutar(vigente.isValid()? EAccion.MODIFICAR: EAccion.AGREGAR)) {
@@ -432,6 +449,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 		try {
 			TcManticInventariosDto vigente= (TcManticInventariosDto)this.attrs.get("vigente");
 			vigente.setIdUsuario(JsfBase.getIdUsuario());
+      vigente.setIdVerificado(this.articulo.getIdVerificado());
 			vigente.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 			transaccion= new Transaccion(vigente, this.articulo);
 			if(transaccion.ejecutar(EAccion.PROCESAR)) {
@@ -563,8 +581,8 @@ public class Conteos extends IBaseFilter implements Serializable {
 	} 
 
 	public void doTabChange(TabChangeEvent event) {
-		if(event.getTab().getTitle().equals("Movimientos (60 días)") && this.attrs.get("idArticulo")!= null) 
-			this.toLoadMovimientos();
+		// if(event.getTab().getTitle().equals("Movimientos (60 días)") && this.attrs.get("idArticulo")!= null) 
+		//	this.toLoadMovimientos();
 	}
 	
 	private void toLoadMovimientos() {
@@ -713,5 +731,58 @@ public class Conteos extends IBaseFilter implements Serializable {
     } // finally
 		return null;
 	}
+ 
+  public void toLoadConteos() {
+		List<Columna> columns= null;
+    Map<String, Object> params = null;
+    try {
+      params = new HashMap<>();      
+			columns= new ArrayList<>();
+      columns.add(new Columna("inicial", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
+      columns.add(new Columna("entradas", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
+      columns.add(new Columna("salidas", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
+      columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
+      columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+			params.put("sortOrder", " order by tc_mantic_inventarios.registro desc");
+      params.put("idAlmacen", this.attrs.get("idAlmacen"));      
+      params.put("idArticulo", this.attrs.get("idArticulo"));      
+      this.lazyConteos = new FormatCustomLazy("VistaInventariosDto", "conteos", params, columns);
+      UIBackingUtilities.resetDataTable("conteos");
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+		finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+  } // toLoadConteos	
+ 
+	public String toColor(Entity row) {
+		return Objects.equals(row.toLong("idVerificado"), 1L)? "janal-tr-orange": "";
+	} 
+ 
+  public void doRowConteoActivo(Entity row) {
+    try {
+ 			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
+			if(almacenes!= null && !almacenes.isEmpty()) {
+        int index= almacenes.indexOf(new UISelectEntity(row.toLong("idAlmacen")));
+        if(index>= 0)
+          this.attrs.put("almacen", almacenes.get(index));
+      } // if  
+      this.updateArticulo(row);
+      TabView view= (TabView)JsfUtilities.findComponent("contenedorGrupos");
+      if(view!= null) 
+        view.setActiveIndex(0);
+      this.attrs.put("idArticulo", row.toLong("idArticulo"));
+      this.toLoadMovimientos();
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+  }
   
 }
