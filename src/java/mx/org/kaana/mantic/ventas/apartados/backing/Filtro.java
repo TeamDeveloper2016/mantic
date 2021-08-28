@@ -344,7 +344,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		} // catch	
 	} // loadCajas
     
-    public void doReporte(String nombre) throws Exception{
+  public void doReporte(String nombre) throws Exception{
     Parametros comunes = null;
 		Map<String, Object>params    = null;
 		Map<String, Object>parametros= null;
@@ -405,15 +405,19 @@ public class Filtro extends IBaseTicket implements Serializable {
 	public void doMostrarDetalleTicket() {
 		Entity seleccionado      = null;
 		Map<String, Object>params= null;
-		List<Columna>campos      = null;
+		List<Columna>columns     = null;
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");									
 			params= new HashMap<>();
 			if(seleccionado!= null && !seleccionado.isEmpty()) {
 				params.put("idVenta", seleccionado.toLong("idVenta"));
-				campos= new ArrayList<>();
-				campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-				this.lazyDetalleTicket= new FormatLazyModel("VistaTcManticVentasDetallesDto", "detalle", params, campos);
+				columns= new ArrayList<>();
+				columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+				columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+				columns.add(new Columna("costo", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+				columns.add(new Columna("iva", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+				columns.add(new Columna("importe", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+				this.lazyDetalleTicket= new FormatLazyModel("VistaTcManticVentasDetallesDto", "detalle", params, columns);
 				UIBackingUtilities.resetDataTable("tablaDetalleTicket");
 				this.attrs.put("medioPagoDetalleTicket", this.doTipoMedioPago(seleccionado));						
 				this.attrs.put("seleccionDetalleTicket", seleccionado);			
@@ -425,7 +429,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		} // catch		
 		finally{
 			Methods.clean(params);
-			Methods.clean(campos);
+			Methods.clean(columns);
 		} // finally
 	} // doMostrarDetalleTicket
 

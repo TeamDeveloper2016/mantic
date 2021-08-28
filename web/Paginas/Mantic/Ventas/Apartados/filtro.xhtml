@@ -147,9 +147,9 @@
 							<f:facet name="header">
 								<h:outputText value="Cliente"/>
 							</f:facet>
-							<h:outputText value="#{row['cliente']}"/>
+              <h:outputText value="#{row['cliente']}" title="Vendedor: #{row['persona']}"/>
 						</p:column>					
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.persona}">
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.persona}" rendered="false">
 							<f:facet name="header">
 								<h:outputText value="Vendedor"/>
 							</f:facet>
@@ -165,15 +165,15 @@
 							<f:facet name="header">
 								<h:outputText value="Importe"/>
 							</f:facet>
-							<h:outputText value="#{row['importe']}"/>
+							<h:outputText value="#{row['importe']}" title="Saldo: #{row['saldo']}"/>
 						</p:column>
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.abonado}">
 							<f:facet name="header">
 								<h:outputText value="Abonado"/>
 							</f:facet>
-							<h:outputText value="#{row['abonado']}"/>
+              <h:outputText value="#{row['abonado']}" title="Saldo: #{row['saldo']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.saldo}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.saldo}" rendered="false">
 							<f:facet name="header">
 								<h:outputText value="Saldo"/>
 							</f:facet>
@@ -211,24 +211,32 @@
 				</div>
 			</div>	
     </div>	
-		<p:dialog id="dialogoDetalleTicket" widgetVar="dlgDetalleTicket" header="Detalle de ticket" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" width="930px" resizable="false" onHide="janal.desbloquear();" dynamic="true">			
+    <p:dialog id="dialogoDetalleTicket" widgetVar="dlgDetalleTicket" header="Detalle de ticket" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" width="930px" resizable="false" onHide="janal.desbloquear();" dynamic="true" appendTo="@(body)">			
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
-					<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20,janal-wid-40,janal-wid-40">
+					<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20,janal-wid-30,janal-wid-50">
 						<p:outputLabel value="No. ticket:"/>
-						<p:outputLabel value="Vendedor"/>
-						<p:outputLabel value="Sucursal"/>
-						<p:inputText styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasApartados.attrs.seleccionDetalleTicket.consecutivo}" readonly="true"/>
-						<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasApartados.attrs.seleccionDetalleTicket.nombre}" readonly="true"/>
+						<p:outputLabel value="Sucursal:"/>
+						<p:outputLabel value="Cliente:"/>
+						<p:inputText styleClass="janal-wid-100-txt janal-column-center" value="#{manticVentasApartados.attrs.seleccionDetalleTicket.consecutivo}" readonly="true"/>
 						<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasApartados.attrs.seleccionDetalleTicket.nombreEmpresa}" readonly="true"/>
+						<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasApartados.attrs.seleccionDetalleTicket.cliente}" readonly="true"/>
+					</p:panelGrid>
+					<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15,janal-wid-15,janal-wid-70">
+						<p:outputLabel value="Telefono:"/>
+						<p:outputLabel value="Celular:"/>
+						<p:outputLabel value="Domicilio:"/>
+						<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasApartados.attrs.seleccionDetalleTicket.telefono}" readonly="true"/>
+						<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasApartados.attrs.seleccionDetalleTicket.celular}" readonly="true"/>
+						<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasApartados.attrs.seleccionDetalleTicket.domicilio}" readonly="true"/>
 					</p:panelGrid>
 					<p:panelGrid columns="4" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-25,janal-wid-25,janal-wid-25,janal-wid-25">	
 						<p:outputLabel value="Importe:"/>
 						<p:outputLabel value="Fecha:"/>								
 						<p:outputLabel value="Estatus:"/>								
 						<p:outputLabel value="Medio de pago:"/>								
-						<p:inputText styleClass="janal-wid-100-txt janal-column-right" value="$#{manticVentasApartados.attrs.seleccionDetalleTicket.importe}" readonly="true"/>
-						<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasApartados.attrs.seleccionDetalleTicket.registro}" readonly="true"/>
+						<p:inputText styleClass="janal-wid-100-txt janal-column-right" value="$ #{manticVentasApartados.attrs.seleccionDetalleTicket.importe}" readonly="true"/>
+						<p:inputText styleClass="janal-wid-100-txt janal-column-center" value="#{manticVentasApartados.attrs.seleccionDetalleTicket.registro}" readonly="true"/>
 						<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasApartados.attrs.seleccionDetalleTicket.estatus}" readonly="true"/>
 						<p:inputText styleClass="janal-wid-100-txt" value="#{manticVentasApartados.attrs.medioPagoDetalleTicket}" readonly="true"/>
 					</p:panelGrid>	
@@ -287,7 +295,7 @@
 		<button id="printTicket" style="display: none" onclick="jsTicket.loadTicket()">Imprimir</button>				
   </ui:define>  	
   <ui:define name="dialogos">
-		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.change('formDialogoEstatus', fieldsDialog);janal.refresh();">
+    <p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.change('formDialogoEstatus', fieldsDialog);janal.refresh();" appendTo="@(body)">
 			<h:form id="formDialogoEstatus" prependId="false">
 				<h:panelGrid  id="panelDialog" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
