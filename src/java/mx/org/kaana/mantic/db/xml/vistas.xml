@@ -750,6 +750,9 @@
 						group by
 							id_almacen, id_articulo
 				) as tc_mantic_maximos on tc_mantic_inventarios.id_inventario= tc_mantic_maximos.id_inventario
+        where
+          (tc_mantic_almacenes.id_almacen= {idAlmacen} or {idAlmacen}= -1)
+          and tc_mantic_inventarios.id_verificado!= 1
 				{sortOrder}
       </select>
 		</unit>	

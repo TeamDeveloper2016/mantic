@@ -197,7 +197,7 @@
                     <p:commandButton id="enviar" icon="fa fa-mail-forward" title="Enviar correo" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoadEstatus('CUENTAS_POR_COBRAR', 'CREDITO', cliente)}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
                   </div>  
                 </f:facet>												
-                <p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.consecutivo}">
+                <p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.ticket}">
                   <f:facet name="header">
                     <h:outputText value="Ticket"/>
                   </f:facet>
@@ -211,7 +211,7 @@
                   <i class="fa fa-fw fa-cart-plus janal-color-orange"></i>
                   <h:outputText value="#{row['persona']}"/>
                 </p:column>											
-                <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.regitro}">
+                <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.registro}">
                   <f:facet name="header">
                     <h:outputText value="Fecha" title="Fecha en la que se hizo la venta"/>
                   </f:facet>

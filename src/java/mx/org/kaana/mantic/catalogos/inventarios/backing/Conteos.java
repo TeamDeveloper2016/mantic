@@ -148,6 +148,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 			this.toSearchUltimo();
 			this.toLoadUbicaciones();
 			this.toLoadMovimientos();
+      this.toLoadConteos();
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
@@ -315,7 +316,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 			this.attrs.put("ultimo", "");
 	  	if(this.attrs.get("idArticulo")!= null) {
 				Periodo periodo= new Periodo();
-				periodo.addMeses(-12);
+				periodo.addMeses(-240);
 				params.put("idArticulo", this.attrs.get("idArticulo"));
 				params.put("idAlmacen", this.attrs.get("idAlmacen"));
 				params.put("registro", periodo.toString());
@@ -745,7 +746,7 @@ public class Conteos extends IBaseFilter implements Serializable {
       columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
 			params.put("sortOrder", " order by tc_mantic_inventarios.registro desc");
-      params.put("idAlmacen", this.attrs.get("idAlmacen"));      
+      params.put("idAlmacen", this.attrs.get("idAlmacen")== null? "-1": this.attrs.get("idAlmacen"));      
       params.put("idArticulo", this.attrs.get("idArticulo"));      
       this.lazyConteos = new FormatCustomLazy("VistaInventariosDto", "conteos", params, columns);
       UIBackingUtilities.resetDataTable("conteos");

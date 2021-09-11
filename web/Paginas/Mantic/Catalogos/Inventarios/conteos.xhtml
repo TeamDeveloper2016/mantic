@@ -205,6 +205,41 @@
 								</f:facet>
 							</p:dataTable>							
 						</p:tab>
+						<p:tab title="Movimientos (60 días)">
+							<p:dataTable id="movimientos" var="item" value="#{manticCatalogosInventariosConteos.attrs.movimientos}" paginator="#{manticCatalogosInventariosConteos.attrs.movimientos.size() gt 0}" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" styleClass="paginated filas" rowIndexVar="index" paginatorPosition="bottom">
+								<p:column headerText="No" styleClass="janal-wid-3">
+									<p:outputLabel value="#{index+ 1}.-"/>
+								</p:column>   
+								<p:column headerText="Tipo" styleClass="janal-wid-10">
+									<p:outputLabel value="#{item.concepto}"/>
+								</p:column>   
+								<p:column headerText="Consecutivo" styleClass="janal-wid-8 janal-column-center">
+                  <p:commandLink action="#{manticCatalogosInventariosConteos.doMoveSection}" process="@this almacen" update="documento informacion @(.documento)" oncomplete="janal.bloquear();PF('widgetDetalle').show();" style="cursor:pointer;">
+										<f:setPropertyActionListener target="#{manticCatalogosInventariosConteos.attrs.consecutivo}" value="#{item}"/>
+										<p:outputLabel value="#{item.consecutivo}"/>
+									</p:commandLink>
+								</p:column>   
+								<p:column headerText="Almacen">
+									<p:outputLabel value="#{item.almacen}"/>
+								</p:column>   
+								<p:column headerText="Cantidad" styleClass="janal-wid-8 janal-column-right">
+									<p:outputLabel value="#{item.cantidad}"/>
+								</p:column>   
+								<p:column headerText="Stock anterior" styleClass="janal-wid-8 janal-column-right">
+									<p:outputLabel value="#{item.stock}"/>
+								</p:column>   
+								<p:column headerText="Stock nuevo" styleClass="janal-wid-8 janal-column-right">
+									<p:outputLabel value="#{item.calculo}"/>
+								</p:column>   
+								<p:column headerText="Fecha" styleClass="janal-wid-13 janal-column-center">
+									<p:outputLabel value="#{item.registro}"/>
+								</p:column>   
+								<p:column headerText="Usuario" styleClass="janal-wid-20	">
+									<p:outputLabel value="#{item.usuario}"/>
+								</p:column>   
+              </p:dataTable>
+							<p:outputLabel value="Los movimientos son del #{manticCatalogosInventariosConteos.attrs.periodo} al dia de hoy." styleClass="paginated filas"/>
+						</p:tab>					            
             <p:tab title="Conteos">
               <p:dataTable lazy="true" id="conteos" widgetVar="kajoolTableConteos" var="row" value="#{manticCatalogosInventariosConteos.lazyConteos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosInventariosConteos.attrs.conteo}" selectionMode="single" paginator="#{manticCatalogosInventariosConteos.lazyConteos.rowCount gt manticCatalogosInventariosConteos.lazyConteos.pageSize}" rowIndexVar="index" reflow="true" rowStyleClass="#{manticCatalogosInventariosConteos.toColor(row)}" paginatorPosition="bottom">
 								<f:facet name="header">
@@ -288,41 +323,6 @@
                 <pe:exporter type="xlsx" skipComponents="#{manticEgresosDetalle.attrs.skipComponentsXls}" encoding="ISO-8859-1" target="conteos" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
               </h:commandLink>
             </p:tab>
-						<p:tab title="Movimientos (60 días)">
-							<p:dataTable id="movimientos" var="item" value="#{manticCatalogosInventariosConteos.attrs.movimientos}" paginator="#{manticCatalogosInventariosConteos.attrs.movimientos.size() gt 0}" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" styleClass="paginated filas" rowIndexVar="index" paginatorPosition="bottom">
-								<p:column headerText="No" styleClass="janal-wid-3">
-									<p:outputLabel value="#{index+ 1}.-"/>
-								</p:column>   
-								<p:column headerText="Tipo" styleClass="janal-wid-10">
-									<p:outputLabel value="#{item.concepto}"/>
-								</p:column>   
-								<p:column headerText="Consecutivo" styleClass="janal-wid-8 janal-column-center">
-                  <p:commandLink action="#{manticCatalogosInventariosConteos.doMoveSection}" process="@this almacen" update="documento informacion @(.documento)" oncomplete="janal.bloquear();PF('widgetDetalle').show();" style="cursor:pointer;">
-										<f:setPropertyActionListener target="#{manticCatalogosInventariosConteos.attrs.consecutivo}" value="#{item}"/>
-										<p:outputLabel value="#{item.consecutivo}"/>
-									</p:commandLink>
-								</p:column>   
-								<p:column headerText="Almacen">
-									<p:outputLabel value="#{item.almacen}"/>
-								</p:column>   
-								<p:column headerText="Cantidad" styleClass="janal-wid-8 janal-column-right">
-									<p:outputLabel value="#{item.cantidad}"/>
-								</p:column>   
-								<p:column headerText="Stock anterior" styleClass="janal-wid-8 janal-column-right">
-									<p:outputLabel value="#{item.stock}"/>
-								</p:column>   
-								<p:column headerText="Stock nuevo" styleClass="janal-wid-8 janal-column-right">
-									<p:outputLabel value="#{item.calculo}"/>
-								</p:column>   
-								<p:column headerText="Fecha" styleClass="janal-wid-13 janal-column-center">
-									<p:outputLabel value="#{item.registro}"/>
-								</p:column>   
-								<p:column headerText="Usuario" styleClass="janal-wid-20	">
-									<p:outputLabel value="#{item.usuario}"/>
-								</p:column>   
-              </p:dataTable>
-							<p:outputLabel value="Los movimientos son del #{manticCatalogosInventariosConteos.attrs.periodo} al dia de hoy." styleClass="paginated filas"/>
-						</p:tab>						
 					</p:tabView>										
 				</div>
 			</div>	
