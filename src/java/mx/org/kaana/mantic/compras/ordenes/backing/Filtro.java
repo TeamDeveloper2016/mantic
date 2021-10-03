@@ -434,7 +434,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     finally {
       Methods.clean(contactos);
     } // finally
-	} // doLoadEstatus
+	} // doLoadPhones
 	
 	public void doAgregarCorreo() {
 		Entity seleccionado    = null;

@@ -7,6 +7,71 @@
   </model>
 
   <dml>
+    <unit id="TcManticProductosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_productos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_productos
+        where      
+          marca = '{marca}' and nombre = '{nombre}'
+      </select>
+      <select id="unicos">
+        select      
+          id_producto as id_key,
+          categoria
+        from      
+          tc_mantic_productos
+        group by
+          categoria
+        order by
+          categoria
+      </select>
+    </unit>    
+    <unit id="TcManticProductosDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_productos_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_productos_detalles
+        where      
+          id_producto = {idProducto} and id_articulo = {idArticulo}
+      </select>
+    </unit>      
+    <unit id="TcManticProductosCaracteristicasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_productos_caracteristicas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_productos_caracteristicas
+        where      
+          descripcion = '{descripcion}' and id_producto = {idProducto}
+      </select>
+    </unit>    
     <unit id="TcManticArticulosImagenesDto">
       <select id="row">
         select      

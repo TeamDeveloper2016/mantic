@@ -59,6 +59,8 @@
 			Janal.Control.validacionesFechas = {
 				'fecha': {validaciones: 'fecha', mascara: 'libre'},
 				'registro': {validaciones: 'registro', mascara: 'libre'},
+				'registro-menor': {validaciones: 'registro-menor({"cual":"registro-mayor"})', mascara: 'libre'},
+				'registro-mayor': {validaciones: 'registro-mayor({"cual":"registro-menor"})', mascara: 'libre'},
 				'horas': {validaciones: 'hora', mascara: 'libre'},
 				'horaCompleta': {validaciones: 'hora-completa', mascara: 'libre'}
 			};
@@ -368,8 +370,8 @@
 						<p:spacer/>
 						<p>
 							Descripci&#243;n: Funci&#243;n que valida que el valor del elemento sea una formato de fecha válido.<br/>
-							Validaci&#243;n:<strong> fecha</strong><br/>
-							El formato de fecha aceptado es dd/mm/yyyy<br/>
+							Validaci&#243;n:<strong> fecha y hora</strong><br/>
+							El formato de fecha aceptado es dd/MM/yyyy<br/>
 							<strong>ej</strong>: 16/05/2000
 						</p>
 						<p:spacer/>
@@ -380,18 +382,41 @@
 						<p:spacer/>
 						<p:spacer/>
 						<p:column>
+							<p:outputLabel for="registro-menor" styleClass="janal-text-one-line" value="Registro menor:"/>
+							<p:calendar id="registro-menor" showOn="button" pattern="dd/MM/yyyy HH:mm:ss" locale="es" readonlyInput="false"/>
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida que el valor del elemento sea una formato de fecha y hora válido.<br/>
+							Validaci&#243;n:<strong> fecha y hora</strong><br/>
+							El formato de fecha y hora aceptado es dd/mm/yyyy hh:mm:ss<br/>
+							<strong>ej</strong>: 16/05/2000 18:04:12
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida que el valor del elemento sea una formato de fecha y hora válido.<br/>
+							Validaci&#243;n:<strong> fecha y hora menor a</strong><br/>
+							El formato de fecha y hora aceptado es dd/mm/yyyy hh:mm:ss<br/>
+							<strong>ej</strong>: 16/05/2000 18:04:12
+						</p>
+						<p:spacer/>
+						<p:column>
+							<p:outputLabel for="registro-mayor" styleClass="janal-text-one-line" value="Registro mayor:"/>
+							<p:calendar id="registro-mayor" showOn="button" pattern="dd/MM/yyyy HH:mm:ss" locale="es" readonlyInput="false"/>
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
 							<label for="horaCompleta" class="janal-text-one-line" >Hora completa: </label>
 							<p:inputText id="horaCompleta" />
 						</p:column>
 						<p:spacer/>
 						<p>
-							Descripci&#243;n: Funci&#243;n que valida  que el valor en el elemento sea formato de fecha
-							y hora válido<br/>
-							el formato debe ser el siguiente:<br/>
-							dd/mm/aaaa hh:mm:ss (debe haber un espacio
-							entre la fecha y la hora).<br/>
-							Validaci&#243;n:<strong> registro</strong><br/>
-							<strong>ej</strong>: 18/06/2000 14:30:40
+							Descripci&#243;n: Funci&#243;n que valida que el valor del elemento sea una formato de fecha y hora válido.<br/>
+							Validaci&#243;n:<strong> fecha y hora mayor a</strong><br/>
+							El formato de fecha y hora aceptado es dd/mm/yyyy hh:mm:ss<br/>
+							<strong>ej</strong>: 16/05/2000 18:04:12
 						</p>
 						<p:spacer/>
 						<p:spacer/>

@@ -4,6 +4,27 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaProductosDto">
+			<select id="lazy">
+        select 
+          tc_mantic_productos.id_producto as id_key,
+          count(tc_mantic_productos_detalles.id_producto) as articulos,
+				  tc_mantic_productos.*
+        from
+          tc_mantic_productos
+				inner join 
+					tc_mantic_empresas on tc_mantic_productos.id_empresa= tc_mantic_empresas.id_empresa
+				left join 
+					tc_mantic_productos_detalles on tc_mantic_productos.id_producto= tc_mantic_productos_detalles.id_producto
+        where
+          tc_mantic_productos.id_empresa in ({idEmpresa})
+					and {condicion}
+        group by
+          tc_mantic_productos.marca,
+          tc_mantic_productos.nombre
+        {sortOrder}           
+      </select>
+    </unit>    
 		<unit id="VistaGaleriaDto">
 			<select id="porNombre">
 				select 

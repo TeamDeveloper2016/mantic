@@ -1,11 +1,13 @@
 package mx.org.kaana.mantic.ventas.reglas;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -166,13 +168,13 @@ public class Transaccion extends TransaccionFactura {
 				case GENERAR:
 					idEstatusVenta= EEstatusVentas.COTIZACION.getIdEstatusVenta();
 					this.orden.setVigencia(this.vigencia);
-					regresar= this.orden.getIdVenta()!= null && !this.orden.getIdVenta().equals(-1L) ? actualizarVenta(sesion, idEstatusVenta) : registrarVentaCotizacion(sesion, idEstatusVenta, true);					
+					regresar= this.orden.getIdVenta()!= null && !this.orden.getIdVenta().equals(-1L)? this.actualizarVenta(sesion, idEstatusVenta): this.registrarVentaCotizacion(sesion, idEstatusVenta, true);					
 					break;
 				case AGREGAR:
 				case REGISTRAR:			
 				case DESACTIVAR:
-					idEstatusVenta= accion.equals(EAccion.AGREGAR) ? EEstatusVentas.ABIERTA.getIdEstatusVenta() : (accion.equals(EAccion.DESACTIVAR) ? this.orden.getIdVentaEstatus() : idEstatusVenta);
-					regresar= this.orden.getIdVenta()!= null && !this.orden.getIdVenta().equals(-1L) ? actualizarVenta(sesion, idEstatusVenta) : registrarVenta(sesion, idEstatusVenta);					
+					idEstatusVenta= accion.equals(EAccion.AGREGAR) ? EEstatusVentas.ABIERTA.getIdEstatusVenta(): (accion.equals(EAccion.DESACTIVAR) ? this.orden.getIdVentaEstatus() : idEstatusVenta);
+					regresar= this.orden.getIdVenta()!= null && !this.orden.getIdVenta().equals(-1L)? this.actualizarVenta(sesion, idEstatusVenta): this.registrarVenta(sesion, idEstatusVenta);					
 					break;
 				case MODIFICAR:
 					regresar= this.actualizarVenta(sesion, EEstatusVentas.ABIERTA.getIdEstatusVenta());					
@@ -230,12 +232,12 @@ public class Transaccion extends TransaccionFactura {
 					break;
 				case MOVIMIENTOS:
 					idEstatusVenta= EEstatusVentas.ABIERTA.getIdEstatusVenta();
-					regresar= this.orden.getIdVenta()!= null && !this.orden.getIdVenta().equals(-1L) ? this.actualizarVenta(sesion, idEstatusVenta) : registrarVenta(sesion, idEstatusVenta);					
+					regresar= this.orden.getIdVenta()!= null && !this.orden.getIdVenta().equals(-1L) ? this.actualizarVenta(sesion, idEstatusVenta): registrarVenta(sesion, idEstatusVenta);					
 					break;
 				case LISTAR:
 					//Procesar servicio de taller
 					boolean actualizar= this.orden.getIdVenta()!= null && !this.orden.getIdVenta().equals(-1L);
-					idEstatusVenta= accion.equals(EAccion.AGREGAR) ? EEstatusVentas.ABIERTA.getIdEstatusVenta() : (accion.equals(EAccion.DESACTIVAR) ? this.orden.getIdVentaEstatus() : idEstatusVenta);
+					idEstatusVenta= accion.equals(EAccion.AGREGAR) ? EEstatusVentas.ABIERTA.getIdEstatusVenta() : (accion.equals(EAccion.DESACTIVAR)? this.orden.getIdVentaEstatus() : idEstatusVenta);
 					regresar= actualizar ? this.actualizarVenta(sesion, idEstatusVenta): this.registrarVenta(sesion, idEstatusVenta);					
 					if(!actualizar) {
 						TcManticServiciosDto servicio= (TcManticServiciosDto) DaoFactory.getInstance().findById(sesion, TcManticServiciosDto.class, this.idServicio);
@@ -275,7 +277,7 @@ public class Transaccion extends TransaccionFactura {
 		this.orden.setIdVentaEstatus(idEstatusVenta);
 		this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
 		if(this.orden.getIdCliente()< 0)
-			this.orden.setIdCliente(toClienteDefault(sesion));
+			this.orden.setIdCliente(this.toClienteDefault(sesion));
 		regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
 		if(regresar)
 		  regresar= registraBitacora(sesion, this.orden.getIdVenta(), idEstatusVenta, "");
@@ -285,8 +287,20 @@ public class Transaccion extends TransaccionFactura {
 	
 	private boolean actualizarVenta(Session sesion, Long idEstatusVenta) throws Exception {
 		boolean regresar         = false;
+    Siguiente consecutivo    = null;
 		Map<String, Object>params= null;
-		try {						
+		try {	
+      String hoy  = Fecha.getHoyEstandar();
+      String venta= Fecha.formatear(Fecha.FECHA_ESTANDAR, this.orden.getRegistro());
+      // SI ES UNA COTIZACIÓN ENTONCES ACTUALIZAR LA FECHA Y EL NUMERO DE CUENTA DEL DÍA 
+      if(Objects.equals(this.orden.getIdVentaEstatus(), EEstatusVentas.COTIZACION.getIdEstatusVenta()) && !Objects.equals(hoy, venta)) {
+        consecutivo= this.toSiguiente(sesion);			
+        this.orden.setConsecutivo(consecutivo.getOrden());			
+        this.orden.setOrden(consecutivo.getOrden());
+        this.orden.setDia(new Date(Calendar.getInstance().getTimeInMillis()));
+        this.orden.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+        this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
+      } // if
 			this.orden.setIdVentaEstatus(idEstatusVenta);			
 			if(this.orden.getIdCliente()< 0)
 				this.orden.setIdCliente(this.toClienteDefault(sesion));

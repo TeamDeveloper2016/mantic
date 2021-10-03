@@ -838,6 +838,92 @@ $.mask.masks = $.extend($.mask.masks, {
 				else
 					return false;
 		}, 'Formato de la fecha y hora es inv\u00E1lida, el formato es [dd/mm/yyyy HH:MM:SS].');
+    
+	$.validator.addMethod('registro-menor', function(value, element, params) {
+      var okOne= false;
+      var okTwo= false;
+			if (janal.empty(value) || $(element).hasClass('ignore'))
+				return true;
+			else {
+        if(/^([\d]{2})\/([\d]{2})\/([\d]{4})[\s]([\d]{2}):([\d]{2}):([\d]{2})$/.test(value)) {
+					var values= value.split(' ');
+					var okOne= janal.isCustomDate(values[0]) && janal.isCustomHour(values[1]);
+				} // if
+				else
+					return false;        
+        if(typeof(params.cual)=== 'undefined') {
+          janal.programmer([{summary: 'Funci\u00F3n: registro-menor', detail: 'falta el parametro {cual}'}]);
+          return false;
+        }	// if
+        else {
+          var before= janal.value(janal.cross($(element).attr('id'), params.cual));
+          if(janal.empty(before))
+            return true;
+          else
+            if(/^([\d]{2})\/([\d]{2})\/([\d]{4})[\s]([\d]{2}):([\d]{2}):([\d]{2})$/.test(before)) {
+              var values= before.split(' ');
+              okTwo= janal.isCustomDate(values[0]) && janal.isCustomHour(values[1]);
+            } // if
+            else
+              return false;        
+        } // else
+        // 0123456789012345678
+        // 15/09/2021 14:36:10
+        if(okOne && okTwo) {
+          var one= value.substring(6, 10)+ value.substring(3, 5)+ value.substring(0, 2)+ value.substring(11, 13)+ value.substring(14, 16)+ value.substring(17);
+          var two= before.substring(6, 10)+ before.substring(3, 5)+ before.substring(0, 2)+ before.substring(11, 13)+ before.substring(14, 16)+ before.substring(17);
+          return parseInt(one, 10)<= parseInt(two, 10);
+        } // if
+        else 
+          return false;
+      } // else
+		}, function(params, element) {
+      var before= $(element).val();
+      return 'La fecha y hora '+ before+ ' con la que se compara es mayor a '+ janal.value(janal.cross($(element).attr('id'), params.cual))+ '.';
+    });
+
+	$.validator.addMethod('registro-mayor', function(value, element, params) {
+      var okOne= false;
+      var okTwo= false;
+			if (janal.empty(value) || $(element).hasClass('ignore'))
+				return true;
+			else {
+        if(/^([\d]{2})\/([\d]{2})\/([\d]{4})[\s]([\d]{2}):([\d]{2}):([\d]{2})$/.test(value)) {
+					var values= value.split(' ');
+					var okOne= janal.isCustomDate(values[0]) && janal.isCustomHour(values[1]);
+				} // if
+				else
+					return false;        
+        if(typeof(params.cual)=== 'undefined') {
+          janal.programmer([{summary: 'Funci\u00F3n: registro-menor', detail: 'falta el parametro {cual}'}]);
+          return false;
+        }	// if
+        else {
+          var before= janal.value(janal.cross($(element).attr('id'), params.cual));
+          if(janal.empty(before))
+            return true;
+          else
+            if(/^([\d]{2})\/([\d]{2})\/([\d]{4})[\s]([\d]{2}):([\d]{2}):([\d]{2})$/.test(before)) {
+              var values= before.split(' ');
+              okTwo= janal.isCustomDate(values[0]) && janal.isCustomHour(values[1]);
+            } // if
+            else
+              return false;        
+        } // else
+        // 0123456789012345678
+        // 15/09/2021 14:36:10
+        if(okOne && okTwo) {
+          var one= value.substring(6, 10)+ value.substring(3, 5)+ value.substring(0, 2)+ value.substring(11, 13)+ value.substring(14, 16)+ value.substring(17);
+          var two= before.substring(6, 10)+ before.substring(3, 5)+ before.substring(0, 2)+ before.substring(11, 13)+ before.substring(14, 16)+ before.substring(17);
+          return parseInt(one, 10)>= parseInt(two, 10);
+        } // if
+        else 
+          return false;
+      } // else
+		}, function(params, element) {
+      var before= $(element).val();
+      return 'La fecha y hora '+ before+ ' con la que se compara es mayor a '+ janal.value(janal.cross($(element).attr('id'), params.cual))+ '.';
+    });
 
 	$.validator.addMethod('hora', function(value, element, params) {
 			if(janal.empty(value) || $(element).hasClass('ignore'))

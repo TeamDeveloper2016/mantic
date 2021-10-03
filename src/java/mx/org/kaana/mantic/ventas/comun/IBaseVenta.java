@@ -400,10 +400,10 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		Date actual               = null;
 		try {
 			params= new HashMap<>();
-			params.put("idVenta", this.attrs.get("cotizacion"));
+			params.put("idVenta", ((Entity)this.attrs.get("cotizacion")).toLong("idVenta"));
 			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
-			this.unlockVentaExtends(Long.valueOf(params.get("idVenta").toString()), (Long)this.attrs.get("ticketLock"));
-			this.attrs.put("ticketLock", Long.valueOf(params.get("idVenta").toString()));
+			this.unlockVentaExtends((Long)params.get("idVenta"), (Long)this.attrs.get("ticketLock"));
+			this.attrs.put("ticketLock", (Long)params.get("idVenta"));
 			actual= new Date(Calendar.getInstance().getTimeInMillis());
 			if(actual.after(((TicketVenta)getAdminOrden().getOrden()).getVigencia()))
 				this.generateNewVenta();    	

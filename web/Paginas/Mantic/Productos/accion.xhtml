@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="#{manticProductosAccion.attrs.nombreAccion} al catálogo de productos" />
+	<ui:define name="librerias">
+    <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryKardexJs}"/>
+		<script type="text/javascript">
+			Janal.Control.fields = {				 				
+				'contenedorGrupos\\:idEmpresa'    : {validaciones: 'requerido|libre', mascara: 'libre'},
+				'contenedorGrupos\\:categoria'    : {validaciones: 'requerido|texto', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:marca'        : {validaciones: 'requerido|texto', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:nombre'       : {validaciones: 'requerido|texto', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:idActivo'     : {validaciones: 'requerido|libre', mascara: 'libre'},
+				'contenedorGrupos\\:observaciones': {validaciones: 'texto', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas'}				
+			};						
+			
+			function reload() {
+				$('.janal-control-imagen').each(function(index, item) {
+					var name= $(this).attr('id').replace('source-image', 'icon-image', 'gi').replace(/[:]/g, '\\:');
+					janal.console('Reload image: '+ name);
+					$(this).attr('href', $('#'+ name).attr('src'));
+ 			  });
+			};					
+
+	    $(document).ready(function() {
+        janal.readingMode('#{manticProductosAccion.attrs.nombreAccion}');
+        $('#source-image').attr('href', $('#icon-image').attr('src'));
+				setTimeout("$('#contenedorGrupos\\:categoria').focus();", 1000);
+      });
+      
+		</script>   
+	</ui:define>
+	<ui:define name="contenido">
+		<p:focus context="contenedorGrupos:categoria"/>
+		<pe:remoteCommand name="executeDoAceptar" process="@form" action="#{manticProductosAccion.doAceptar}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>  
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+            <p:tab title="General">							
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">		
+                <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticProductosAccion.attrs.isMatriz}"/>
+                <p:selectOneMenu id="idEmpresa" value="#{manticProductosAccion.producto.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticProductosAccion.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                  <f:selectItems value="#{manticProductosAccion.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                  <p:column headerText="Clave">
+                    <h:outputText value="#{item.clave}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+                <p:outputLabel for="categoria" value="Categoria:"/>
+                <p:inputText id="categoria" value="#{manticProductosAccion.producto.producto.categoria}" styleClass="janal-wid-100-txt"/> 
+                <p:outputLabel for="marca" value="Marca:"/>
+                <p:inputText id="marca" value="#{manticProductosAccion.producto.producto.marca}" styleClass="janal-wid-100-txt"/> 
+                <p:outputLabel for="nombre" value="Nombre:"/>
+                <p:inputText id="nombre" value="#{manticProductosAccion.producto.producto.nombre}" styleClass="janal-wid-100-txt"/> 
+                <p:outputLabel for="idActivo" value="Activo:"/>
+                <p:selectOneMenu id="idActivo" value="#{manticProductosAccion.producto.producto.idActivo}" converter="javax.faces.Long" styleClass="janal-wid-100-txt">
+                  <f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                  <f:selectItem itemLabel="SI" itemValue="1" />
+                  <f:selectItem itemLabel="NO" itemValue="2" />								
+                </p:selectOneMenu>
+                <p:outputLabel for="observaciones" value="Observaciones:"/>
+                <p:inputTextarea id="observaciones" value="#{manticProductosAccion.producto.producto.observaciones}" styleClass="janal-wid-100-txt"/>
+              </p:panelGrid>
+						</p:tab>						            						            																																																
+						<p:tab title="Articulos">
+              <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+                <div class="ui-grid-row janal-grid-row">
+                  <div class="ui-grid-col-12">
+                    <div class="ui-grid-row janal-grid-row">
+                      <div class="ui-grid-col-1 janal-wid-col-150">
+                        <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-80, janal-wid-3">
+                          <p:outputLabel for="codigos" value="Código ó articulo:"/>
+                          <p:selectBooleanCheckbox value="#{manticProductosAccion.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
+                            <p:ajax event="change" process="@this" update="@this"/>
+                          </p:selectBooleanCheckbox>
+                        </p:panelGrid>	
+                      </div>
+                      <div class="ui-grid-col-11">
+                        <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-97, janal-fix-3 janal-column-center">
+                          <p:inputText id="codigos" value="#{manticProductosAccion.attrs.codigo}" styleClass="janal-wid-100-txt"/>
+                          <p:commandButton icon="fa fa-search" process="@this codigos" update="encontrados" actionListener="#{manticProductosAccion.doLoadPartidas}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                        </p:panelGrid>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="ui-grid-row janal-grid-row">
+                  <div class="ui-grid-col-12 janal-column-center">
+                    <p:outputLabel value="#{manticProductosAccion.attrs.existe}" styleClass="filas" escape="false"/>
+                  </div>	
+                </div>	
+                <p:spacer width="3px"/>
+                <div class="ui-grid-row janal-grid-row">
+                  <div class="ui-grid-col-12"> 
+                    <p:dataTable id="encontrados" var="row" lazy="true" value="#{manticProductosAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticProductosAccion.attrs.seleccionado}" selectionMode="single" paginator="#{manticProductosAccion.lazyModel.rowCount gt manticProductosAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+                      <f:facet name="header">
+                        <div style="display: flex;">
+                          <p:outputLabel value="Articulos encontrados ..." styleClass="janal-color-white"/>
+                        </div>
+                      </f:facet>  
+                      <p:column headerText="No" styleClass="janal-wid-3">
+                        <h:outputText value="#{index+ 1}.-"/>
+                      </p:column>   
+                      <p:column headerText="Código" styleClass="janal-wid-10" sortBy="#{row.propio}">
+                        <h:outputText value="#{row.propio}"/>
+                      </p:column>   
+                      <p:column headerText="Nombre" sortBy="#{row.nombre}">
+                        <h:outputText value="#{row.nombre} * #{row.alias}"/>
+                      </p:column>   
+                      <p:column headerText="Imagen" styleClass="janal-column-center janal-wid-5">
+                        <a id="tabla:#{index}:source" class="janal-control-imagen" data-magnify="gallery" href="#{manticProductosAccion.path}#{row.archivo}" data-caption="#{row.nombre}" data-group="icon-image" title="Click para ver más grande la imagen" style="display: #{empty row.archivo? 'none': ''}">
+                          <p:graphicImage id="icon-image" cache="false" url="#{manticProductosAccion.path}#{row.archivo}" width="26" height="22" stream="false" rendered="#{not empty row.archivo}" style="cursor:zoom-in;"/>
+                        </a>
+                      </p:column>   
+                      <p:column headerText="Agregar" styleClass="janal-wid-col-38 janal-column-center">
+                        <p:commandButton icon="fa fa-plus" title="Eliminar articulo" actionListener="#{manticProductosAccion.doAgregar(row)}" process="@this" update="@(.filas)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                      </p:column>
+                      <f:facet name="footer">
+                        Total [#{manticProductosAccion.lazyModel== null? 0: manticProductosAccion.lazyModel.rowCount}] registros
+                      </f:facet>
+                    </p:dataTable>					
+                    <br/>
+                    <p:dataTable id="tabla" var="row" value="#{manticProductosAccion.producto.articulos}" paginator="false" reflow="true" rowKey="#{row.idArticulo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{manticProductosAccion.toColor(row)}">
+                      <f:facet name="header">
+                        <div style="display: flex;">
+                          <p:outputLabel value="Articulos seleccionados" styleClass="janal-color-white"/>
+                        </div>
+                      </f:facet>  
+                      <p:column headerText="No" styleClass="janal-wid-3">
+                        <h:outputText value="#{row.orden}.-"/>
+                      </p:column>   
+                      <p:column headerText="Código" styleClass="janal-wid-10">
+                        <h:outputText value="#{row.propio}"/>
+                      </p:column>   
+                      <p:column headerText="Nombre">
+                        <h:outputText value="#{row.nombre}"/>
+                      </p:column>   
+                      <p:column headerText="Descripción" styleClass="janal-wid-30">
+                        <p:inputText value="#{row.descripcion}" styleClass="janal-wid-100-txt partida">
+                          <p:ajax event="change" process="@this"/>
+                        </p:inputText>  
+                      </p:column>   
+                      <p:column headerText="Medida" styleClass="janal-wid-8">
+                        <p:inputText value="#{row.medida}" styleClass="janal-wid-100-txt partida">
+                          <p:ajax event="change" process="@this"/>
+                        </p:inputText>  
+                      </p:column>   
+                      <p:column headerText="Especificación" styleClass="janal-wid-15" rendered="false">
+                        <p:inputText value="#{row.especificacion}" styleClass="janal-wid-100-txt partida">
+                          <p:ajax event="change" process="@this"/>
+                        </p:inputText>  
+                      </p:column>   
+                      <p:column headerText="Imagen" styleClass="janal-column-center janal-wid-5">
+                        <a id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row.nombre}" data-group="icon-image" href="#{manticProductosAccion.path}#{row.archivo}" title="Click para ver más grande la imagen" style="display: #{empty row.archivo? 'none': ''}">
+                          <p:graphicImage id="icon-image" cache="false" value="#{manticProductosAccion.path}#{row.archivo}" width="26" height="22" stream="false" rendered="#{not empty row.archivo}" style="cursor:zoom-in;"/>
+                        </a>	
+                      </p:column>   
+                      <p:column headerText="Quitar" styleClass="janal-wid-col-38 janal-column-center">
+                        <p:commandButton icon="fa fa-minus" title="Eliminar articulo" actionListener="#{manticProductosAccion.doEliminar(row)}" process="@this" update="@(.filas)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                      </p:column>
+                      <f:facet name="footer">
+                        <p:outputLabel for="articulos" value="Total [#{manticProductosAccion.producto.articulos.size()}] registros"/>							
+                        <p:inputText id="articulos" value="#{manticProductosAccion.attrs.total}" style="display: none"/>
+                      </f:facet>
+                    </p:dataTable>					
+                  </div>
+                </div>
+              </div>									
+						</p:tab>
+						<p:tab title="Ordenamiento">
+              <p:dataTable id="orden" var="row" value="#{manticProductosAccion.producto.articulos}" paginator="false" reflow="true" rowKey="#{row.idArticulo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{manticProductosAccion.toColor(row)}">
+                <f:facet name="header">
+                  <div style="display: flex;">
+                    <p:outputLabel value="Articulos seleccionados" styleClass="janal-color-white"/>
+                  </div>
+                </f:facet>  
+                <p:column headerText="No" styleClass="janal-wid-3">
+                  <h:outputText value="#{row.orden}.-"/>
+                </p:column>   
+                <p:column headerText="Código" styleClass="janal-wid-10">
+                  <h:outputText value="#{row.propio}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{row.nombre}"/>
+                </p:column>   
+                <p:column headerText="Descripción" styleClass="janal-wid-30">
+                  <p:inputText value="#{row.descripcion}" styleClass="janal-wid-100-txt partida">
+                    <p:ajax event="change" process="@this"/>
+                  </p:inputText>  
+                </p:column>   
+                <p:column headerText="Medida" styleClass="janal-wid-8">
+                  <p:inputText value="#{row.medida}" styleClass="janal-wid-100-txt partida">
+                    <p:ajax event="change" process="@this"/>
+                  </p:inputText>  
+                </p:column>   
+                <p:column headerText="Especificación" styleClass="janal-wid-15" rendered="false">
+                  <p:inputText value="#{row.especificacion}" styleClass="janal-wid-100-txt partida">
+                    <p:ajax event="change" process="@this"/>
+                  </p:inputText>  
+                </p:column>   
+                <p:column headerText="Imagen" styleClass="janal-column-center janal-wid-5">
+                  <a id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row.nombre}" data-group="icon-image" href="#{manticProductosAccion.path}#{row.archivo}" title="Click para ver más grande la imagen" style="display: #{empty row.archivo? 'none': ''}">
+                    <p:graphicImage id="icon-image" cache="false" value="#{manticProductosAccion.path}#{row.archivo}" width="26" height="22" stream="false" rendered="#{not empty row.archivo}" style="cursor:zoom-in;"/>
+                  </a>	
+                </p:column>   
+                <p:column headerText="Quitar" styleClass="janal-wid-5 janal-column-center">
+                  <p:commandButton icon="fa fa-angle-double-up" title="Subir" actionListener="#{manticProductosAccion.doSubirPartida(row)}" process="@this" update="@(.filas)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();" disabled="#{index eq 0}"/>
+                  <p:commandButton icon="fa fa-angle-double-down" title="Bajar" actionListener="#{manticProductosAccion.doBajarPartida(row)}" process="@this" update="@(.filas)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();" disabled="#{index eq (manticProductosAccion.producto.articulos.size()- 1)}"/>
+                </p:column>
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{manticProductosAccion.producto.articulos.size()}] registros"/>							
+                </f:facet>
+              </p:dataTable>					
+						</p:tab>
+						<p:tab title="Especificaciones">
+							
+						</p:tab>
+						<p:tab title="Imagen">
+							
+						</p:tab>
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticProductosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticProductosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticProductosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticProductosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>

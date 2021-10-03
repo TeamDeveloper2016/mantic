@@ -209,8 +209,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 					break;
 				case MOVIMIENTOS:					
 					super.ejecutar(sesion, accion);
-					this.dto= getOrden();
-					regresar= procesaCotizacion(sesion);					
+					this.dto= this.getOrden();
+					regresar= this.procesaCotizacion(sesion);					
 					break;
 				case DESACTIVAR:
 					regresar= true;
@@ -261,22 +261,28 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	} // actualizarClienteVenta
 	
 	private boolean procesaCotizacion(Session sesion) throws Exception {
-		boolean regresar            = false;
-		Calendar calendar           = null;
-		TcManticVentasDto cotizacion= (TcManticVentasDto) DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.dto.getKey());
-		Siguiente consecutivo       = null;		
-		if(Cadena.isVacio(cotizacion.getCotizacion())) {
-			consecutivo= this.toSiguienteCotizacion(sesion, cotizacion.getIdEmpresa());
-			cotizacion.setCcotizacion(consecutivo.getOrden());
-			cotizacion.setCotizacion(consecutivo.getConsecutivo());				
+		boolean regresar      = false;
+		Calendar calendar     = null;
+		TcManticVentasDto item= (TcManticVentasDto) DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.dto.getKey());
+		Siguiente consecutivo = null;		
+		if(Cadena.isVacio(item.getCotizacion())) {
+			consecutivo= this.toSiguienteCotizacion(sesion, item.getIdEmpresa());
+			item.setCcotizacion(consecutivo.getOrden());
+			item.setCotizacion(consecutivo.getConsecutivo());				
 		} // if
-		this.cotizacion= cotizacion.getCotizacion();
+		this.cotizacion= item.getCotizacion();
 		calendar= Calendar.getInstance();
 		calendar.add(Calendar.DAY_OF_YEAR, 15);
-		cotizacion.setVigencia(new Date(calendar.getTimeInMillis()));
-		cotizacion.setIdVentaEstatus(EEstatusVentas.COTIZACION.getIdEstatusVenta());					
-		cotizacion.setCandado(EBooleanos.NO.getIdBooleano());
-		regresar= DaoFactory.getInstance().update(sesion, cotizacion)>= 1L;		
+    String hoy  = Fecha.getHoyEstandar();
+    String venta= Fecha.formatear(Fecha.FECHA_ESTANDAR, item.getRegistro());
+    // AQUI SE DEBE DE AJUSTAR LA FECHA DE LA COTIZACIÓN SI ES QUE ES UN TICKET Y REGRESO A SER UNA COTIZACION 
+    if(Objects.equals(item.getIdVentaEstatus(), EEstatusVentas.ABIERTA.getIdEstatusVenta()) && !Objects.equals(hoy, venta)) {
+      item.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    } // if
+		item.setVigencia(new Date(calendar.getTimeInMillis()));
+		item.setIdVentaEstatus(EEstatusVentas.COTIZACION.getIdEstatusVenta());					
+		item.setCandado(EBooleanos.NO.getIdBooleano());
+		regresar= DaoFactory.getInstance().update(sesion, item)>= 1L;		
 		return regresar;
 	} // procesaCotizacion
 	
