@@ -23,10 +23,14 @@ public class Caracteristica extends TcManticProductosCaracteristicasDto implemen
   private ESql anterior;
 
   public Caracteristica() {
-    this(new Random().nextLong());
+    this(new Random().nextLong(), "caracteristica_1");
   }
 
-  public Caracteristica(Long key) {
+  public Caracteristica(String descripcion) {
+    this(new Random().nextLong(), descripcion);
+  }
+
+  public Caracteristica(Long key, String descripcion) {
     super(key);
     if(Objects.equals(this.getKey(), 0))
       this.setKey(new Random().nextLong());
@@ -34,6 +38,7 @@ public class Caracteristica extends TcManticProductosCaracteristicasDto implemen
       this.setKey(this.getKey()* -1L);
     this.action  = ESql.INSERT;    
     this.anterior= ESql.INSERT;    
+    this.setDescripcion(descripcion);
   }
     
   public ESql getAction() {

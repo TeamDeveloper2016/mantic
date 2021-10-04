@@ -17,7 +17,11 @@
 				'contenedorGrupos\\:marca'        : {validaciones: 'requerido|texto', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:nombre'       : {validaciones: 'requerido|texto', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:idActivo'     : {validaciones: 'requerido|libre', mascara: 'libre'},
-				'contenedorGrupos\\:observaciones': {validaciones: 'texto', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas'}				
+				'contenedorGrupos\\:observaciones': {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'nombre'        : {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'medida'        : {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'especificacion': {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'descripcion'   : {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'}
 			};						
 			
 			function reload() {
@@ -28,13 +32,29 @@
  			  });
 			};					
 
+      function checkItemString(item, index) {
+        if($(item).val().trim().length=== 0)
+          $(item).val('Caracteristica '+ (index+ 1));
+        else
+          $(item).val($(item).val().trim());
+        return true;
+      }
+
 	    $(document).ready(function() {
         janal.readingMode('#{manticProductosAccion.attrs.nombreAccion}');
         $('#source-image').attr('href', $('#icon-image').attr('src'));
 				setTimeout("$('#contenedorGrupos\\:categoria').focus();", 1000);
       });
-      
 		</script>   
+		<style type="text/css">
+      .p-p-1 {padding: 0.25rem !important;}
+      .producto .producto-description {margin: 0 0 0.5rem 0;}
+      .producto .producto-list-item .producto-actions {font-size: 0.9rem;font-weight: 100;margin-bottom: 0.5rem;align-self: flex-end; text-align: right;}
+      .producto .producto-list-item .producto-item-search {width: 220px; text-align: center;}
+      .producto .producto-list-item .producto-item-search img {width: 200px;height:170px;box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); margin-right: 2rem;}      
+      .producto .producto-list-item {display: -ms-flexbox;display: flex;-ms-flex-align: center;align-items: center;padding: 1rem;}
+      .producto .producto-list-item .producto-list-detail {flex: 1 1 0;-ms-flex: 1 1 0;align-self: baseline;}  
+    </style>  
 	</ui:define>
 	<ui:define name="contenido">
 		<p:focus context="contenedorGrupos:categoria"/>
@@ -123,14 +143,14 @@
                         </a>
                       </p:column>   
                       <p:column headerText="Agregar" styleClass="janal-wid-col-38 janal-column-center">
-                        <p:commandButton icon="fa fa-plus" title="Eliminar articulo" actionListener="#{manticProductosAccion.doAgregar(row)}" process="@this" update="@(.filas)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                        <p:commandButton icon="fa fa-plus" title="Agregar articulo" actionListener="#{manticProductosAccion.doAgregarPartida(row)}" process="@this" update="@(.filas) @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear(); janal.refresh();"/>
                       </p:column>
                       <f:facet name="footer">
                         Total [#{manticProductosAccion.lazyModel== null? 0: manticProductosAccion.lazyModel.rowCount}] registros
                       </f:facet>
                     </p:dataTable>					
                     <br/>
-                    <p:dataTable id="tabla" var="row" value="#{manticProductosAccion.producto.articulos}" paginator="false" reflow="true" rowKey="#{row.idArticulo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{manticProductosAccion.toColor(row)}">
+                    <p:dataTable id="tabla" var="row" value="#{manticProductosAccion.producto.articulos}" paginator="false" reflow="true" rowKey="#{row.idArticulo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{manticProductosAccion.toColorPartida(row)}">
                       <f:facet name="header">
                         <div style="display: flex;">
                           <p:outputLabel value="Articulos seleccionados" styleClass="janal-color-white"/>
@@ -145,18 +165,18 @@
                       <p:column headerText="Nombre">
                         <h:outputText value="#{row.nombre}"/>
                       </p:column>   
-                      <p:column headerText="Descripción" styleClass="janal-wid-30">
-                        <p:inputText value="#{row.descripcion}" styleClass="janal-wid-100-txt partida">
+                      <p:column headerText="Descripción" styleClass="janal-wid-30 nombre">
+                        <p:inputText id="nombre" value="#{row.descripcion}" styleClass="janal-wid-100-txt partida">
                           <p:ajax event="change" process="@this"/>
                         </p:inputText>  
                       </p:column>   
-                      <p:column headerText="Medida" styleClass="janal-wid-8">
-                        <p:inputText value="#{row.medida}" styleClass="janal-wid-100-txt partida">
+                      <p:column headerText="Medida" styleClass="janal-wid-8 medida">
+                        <p:inputText id="medida" value="#{row.medida}" styleClass="janal-wid-100-txt partida">
                           <p:ajax event="change" process="@this"/>
                         </p:inputText>  
                       </p:column>   
-                      <p:column headerText="Especificación" styleClass="janal-wid-15" rendered="false">
-                        <p:inputText value="#{row.especificacion}" styleClass="janal-wid-100-txt partida">
+                      <p:column headerText="Especificación" styleClass="janal-wid-15 especificacion" rendered="false">
+                        <p:inputText id="especificacion" value="#{row.especificacion}" styleClass="janal-wid-100-txt partida">
                           <p:ajax event="change" process="@this"/>
                         </p:inputText>  
                       </p:column>   
@@ -165,8 +185,11 @@
                           <p:graphicImage id="icon-image" cache="false" value="#{manticProductosAccion.path}#{row.archivo}" width="26" height="22" stream="false" rendered="#{not empty row.archivo}" style="cursor:zoom-in;"/>
                         </a>	
                       </p:column>   
-                      <p:column headerText="Quitar" styleClass="janal-wid-col-38 janal-column-center">
-                        <p:commandButton icon="fa fa-minus" title="Eliminar articulo" actionListener="#{manticProductosAccion.doEliminar(row)}" process="@this" update="@(.filas)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                      <p:column headerText="Quitar" styleClass="janal-wid-8 janal-column-center">
+                        <p:commandButton icon="fa fa-minus" title="Eliminar articulo" actionListener="#{manticProductosAccion.doEliminarPartida(row)}" process="@this" update="@(.filas) @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();" style="display:#{row['action'] eq 'DELETE'? 'none': ''}"/>
+                        <p:commandButton icon="fa fa-recycle" title="Recuperar especificación" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" actionListener="#{manticProductosAccion.doRecuperarPartida(row)}" process="@this" update="@(.filas) @(.detalle)" style="display:#{row['action'] eq 'DELETE'? '': 'none'}"/>
+                        <p:commandButton icon="fa fa-angle-double-up" title="Subir" actionListener="#{manticProductosAccion.doSubirPartida(row)}" process="@this" update="@(.filas) @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();" disabled="#{index eq 0}" style="display:#{row['action'] eq 'DELETE'? 'none': ''}"/>
+                        <p:commandButton icon="fa fa-angle-double-down" title="Bajar" actionListener="#{manticProductosAccion.doBajarPartida(row)}" process="@this" update="@(.filas) @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();" disabled="#{index eq (manticProductosAccion.producto.articulos.size()- 1)}" style="display:#{row['action'] eq 'DELETE'? 'none': ''}"/>
                       </p:column>
                       <f:facet name="footer">
                         <p:outputLabel for="articulos" value="Total [#{manticProductosAccion.producto.articulos.size()}] registros"/>							
@@ -177,56 +200,71 @@
                 </div>
               </div>									
 						</p:tab>
-						<p:tab title="Ordenamiento">
-              <p:dataTable id="orden" var="row" value="#{manticProductosAccion.producto.articulos}" paginator="false" reflow="true" rowKey="#{row.idArticulo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{manticProductosAccion.toColor(row)}">
+						<p:tab title="Especificaciones">
+              <p:dataTable id="caracteristica" var="row" value="#{manticProductosAccion.producto.caracteristicas}" paginator="false" reflow="true" rowKey="#{row.idProductoCaracteristica}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{manticProductosAccion.toColorCaracteristica(row)}">
                 <f:facet name="header">
                   <div style="display: flex;">
-                    <p:outputLabel value="Articulos seleccionados" styleClass="janal-color-white"/>
+                    <p:outputLabel value="Especificaciones del producto" styleClass="janal-color-white"/>
                   </div>
                 </f:facet>  
                 <p:column headerText="No" styleClass="janal-wid-3">
                   <h:outputText value="#{row.orden}.-"/>
                 </p:column>   
-                <p:column headerText="Código" styleClass="janal-wid-10">
-                  <h:outputText value="#{row.propio}"/>
-                </p:column>   
-                <p:column headerText="Nombre">
-                  <h:outputText value="#{row.nombre}"/>
-                </p:column>   
-                <p:column headerText="Descripción" styleClass="janal-wid-30">
-                  <p:inputText value="#{row.descripcion}" styleClass="janal-wid-100-txt partida">
+                <p:column headerText="Descripción" styleClass="descripcion">
+                  <p:inputText id="descripcion" value="#{row.descripcion}" styleClass="janal-wid-100-txt partida">
                     <p:ajax event="change" process="@this"/>
                   </p:inputText>  
                 </p:column>   
-                <p:column headerText="Medida" styleClass="janal-wid-8">
-                  <p:inputText value="#{row.medida}" styleClass="janal-wid-100-txt partida">
-                    <p:ajax event="change" process="@this"/>
-                  </p:inputText>  
-                </p:column>   
-                <p:column headerText="Especificación" styleClass="janal-wid-15" rendered="false">
-                  <p:inputText value="#{row.especificacion}" styleClass="janal-wid-100-txt partida">
-                    <p:ajax event="change" process="@this"/>
-                  </p:inputText>  
-                </p:column>   
-                <p:column headerText="Imagen" styleClass="janal-column-center janal-wid-5">
-                  <a id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row.nombre}" data-group="icon-image" href="#{manticProductosAccion.path}#{row.archivo}" title="Click para ver más grande la imagen" style="display: #{empty row.archivo? 'none': ''}">
-                    <p:graphicImage id="icon-image" cache="false" value="#{manticProductosAccion.path}#{row.archivo}" width="26" height="22" stream="false" rendered="#{not empty row.archivo}" style="cursor:zoom-in;"/>
-                  </a>	
-                </p:column>   
-                <p:column headerText="Quitar" styleClass="janal-wid-5 janal-column-center">
-                  <p:commandButton icon="fa fa-angle-double-up" title="Subir" actionListener="#{manticProductosAccion.doSubirPartida(row)}" process="@this" update="@(.filas)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();" disabled="#{index eq 0}"/>
-                  <p:commandButton icon="fa fa-angle-double-down" title="Bajar" actionListener="#{manticProductosAccion.doBajarPartida(row)}" process="@this" update="@(.filas)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();" disabled="#{index eq (manticProductosAccion.producto.articulos.size()- 1)}"/>
+                <p:column headerText="Orden" styleClass="janal-wid-8 janal-column-center">
+                  <p:commandButton icon="fa fa-minus" title="Eliminar especificación" actionListener="#{manticProductosAccion.doEliminarCaracteristica(row)}" process="@this" update="@(.filas) @(.detalle)" onstart="janal.bloquear(); janal.refresh();" oncomplete="janal.desbloquear();" style="display:#{row['action'] eq 'DELETE'? 'none': ''}"/>
+                  <p:commandButton icon="fa fa-recycle" title="Recuperar especificación" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.refresh();" actionListener="#{manticProductosAccion.doRecuperarCaracteristica(row)}" process="@this" update="@(.filas) @(.detalle)" style="display:#{row['action'] eq 'DELETE'? '': 'none'}"/>                  
+                  <p:commandButton icon="fa fa-angle-double-up" title="Subir" actionListener="#{manticProductosAccion.doSubirCaracteristica(row)}" process="@this" update="@(.filas) @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();" disabled="#{index eq 0}" style="display:#{row['action'] eq 'DELETE'? 'none': ''}"/>
+                  <p:commandButton icon="fa fa-angle-double-down" title="Bajar" actionListener="#{manticProductosAccion.doBajarCaracteristica(row)}" process="@this" update="@(.filas) @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();" disabled="#{index eq (manticProductosAccion.producto.caracteristicas.size()- 1)}" style="display:#{row['action'] eq 'DELETE'? 'none': ''}"/>
                 </p:column>
                 <f:facet name="footer">
-                  <p:outputLabel value="Total [#{manticProductosAccion.producto.articulos.size()}] registros"/>							
+                  <p:outputLabel value="Total [#{manticProductosAccion.producto.caracteristicas.size()}] registros" styleClass="janal-icons-header"/>							
+                  <p:commandButton icon="fa fa-plus" title="Agregar especificación" actionListener="#{manticProductosAccion.doAgregarCaracteristica()}" process="@this" update="@(.filas) @(.detalle)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.refresh(); checkItemString('#contenedorGrupos\\:caracteristica\\:#{manticProductosAccion.producto.caracteristicas.size()}\\:descripcion', #{manticProductosAccion.producto.caracteristicas.size()});"/>
                 </f:facet>
-              </p:dataTable>					
-						</p:tab>
-						<p:tab title="Especificaciones">
-							
+              </p:dataTable>									
 						</p:tab>
 						<p:tab title="Imagen">
-							
+              <p:dataGrid id="imagenes" lazy="false" value="#{manticProductosAccion.producto.articulos}" var="row" columns="3" paginator="#{manticProductosAccion.producto.articulos.size() gt 10}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" styleClass="jana-wid-100-txt detalle">
+                <div class="producto">
+                  <div class="producto-list-item p-p-1">
+                    <div class="producto-item-search">
+                      <a id="view#{row.idArticulo}" data-magnify="gallery" href="#{manticProductosAccion.path}#{row.archivo}" data-caption="#{row.descripcion}" data-group="icon-image" class="icon">
+                        <p:graphicImage url="#{manticProductosAccion.path}#{row.archivo}" style="cursor:zoom-in;"/>
+                      </a>  
+                      <span>#{row.descripcion}</span>
+                    </div> 
+                    <div class="producto-list-detail">
+                      <div class="producto-description">Descripción: 
+                        <p:inputText id="modelo" value="#{row['descripcion']}" styleClass="janal-wid-100-txt #{row.principal? 'janal-color-orange': ''}">
+                          <p:ajax event="change" process="@this" onstart="return checkItemString('#contenedorGrupos\\:imagenes\\:#{index}\\:modelo', #{index});"/>
+                        </p:inputText>  
+                      </div>
+                      <div class="producto-description">Medida: 
+                        <p:inputText value="#{row['medida']}" styleClass="janal-wid-100-txt #{row.principal? 'janal-color-orange': ''}">
+                          <p:ajax event="change" process="@this"/>
+                        </p:inputText>  
+                      </div>
+                      <div class="producto-actions">
+                        <span class="janal-align-left janal-color-orange detalle" style="display:#{row['action'] eq 'DELETE'? 'none': ''}">
+                          <p:selectBooleanButton value="#{row.principal}" onLabel="SI" offLabel="NO" style="width:60px;" disabled="#{row['idImagen'] eq '-1'}">
+                            <p:ajax event="change" process="@this" update="@(.detalle)" listener="#{manticProductosAccion.doUpdatePrinicipal(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                          </p:selectBooleanButton>   
+                          es la imagen principal
+                        </span>
+                        <p:commandButton title="Eliminar articulo" icon="fa fa-trash-o" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.refresh();" actionListener="#{manticProductosAccion.doEliminarPartida(row)}" process="@this" update="@(.filas) @(.detalle)" style="display:#{row['action'] eq 'DELETE'? 'none': ''}"/>
+                        <p:commandButton title="Recuperar articulo" icon="fa fa-recycle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.refresh();" actionListener="#{manticProductosAccion.doRecuperarPartida(row)}" process="@this" update="@(.filas) @(.detalle)" style="display:#{row['action'] eq 'DELETE'? '': 'none'}"/>
+                      </div>
+                    </div>
+                  </div>
+                </div>  
+              </p:dataGrid>							
+						</p:tab>
+            <p:tab title="Diseño">
+              
 						</p:tab>
 					</p:tabView>
 				</div>

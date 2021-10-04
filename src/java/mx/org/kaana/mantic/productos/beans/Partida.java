@@ -3,7 +3,6 @@ package mx.org.kaana.mantic.productos.beans;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Random;
-import mx.org.kaana.kajool.db.comun.operation.IActions;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.mantic.db.dto.TcManticProductosDetallesDto;
@@ -26,16 +25,19 @@ public class Partida extends TcManticProductosDetallesDto implements Serializabl
 	private String archivo;
   private ESql action;
   private ESql anterior;
+  private Boolean principal;
+  private Long idImagen;
 
   public Partida() {
-    this(new Random().nextLong(), null, null, null, null);
+    this(new Random().nextLong(), null, null, null, -1L, null);
   }
 
-  public Partida(Long idArticulo, String codigo, String propio, String nombre, String archivo) {
+  public Partida(Long idArticulo, String codigo, String propio, String nombre, Long idImagen, String archivo) {
     super(new Random().nextLong());
     this.codigo= codigo;
     this.propio= propio;
     this.nombre= nombre;
+    this.idImagen= idImagen;
     this.archivo = archivo;
     this.setIdArticulo(idArticulo);
     if(Objects.equals(this.getKey(), 0))
@@ -55,6 +57,8 @@ public class Partida extends TcManticProductosDetallesDto implements Serializabl
         this.setMedida(this.nombre.substring(index+ 1, this.nombre.length()));
       } // else
     } // if
+    this.principal= Boolean.FALSE;
+    this.idImagen = -1L;
   }
 
   public String getPropio() {
@@ -103,6 +107,22 @@ public class Partida extends TcManticProductosDetallesDto implements Serializabl
 
   public void setAnterior(ESql anterior) {
     this.anterior = anterior;
+  }
+
+  public Boolean getPrincipal() {
+    return principal;
+  }
+
+  public void setPrincipal(Boolean principal) {
+    this.principal = principal;
+  }
+
+  public Long getIdImagen() {
+    return idImagen;
+  }
+
+  public void setIdImagen(Long idImagen) {
+    this.idImagen = idImagen;
   }
 
   @Override

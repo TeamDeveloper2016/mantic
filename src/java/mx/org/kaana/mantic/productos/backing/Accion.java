@@ -13,7 +13,6 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
-import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
@@ -27,6 +26,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.iva.reglas.Transaccion;
+import mx.org.kaana.mantic.productos.beans.Caracteristica;
 import mx.org.kaana.mantic.productos.beans.Partida;
 import mx.org.kaana.mantic.productos.beans.Producto;
 
@@ -55,11 +55,11 @@ public class Accion extends IBaseFilter implements Serializable {
   @Override
   protected void init() {		
     try {
-      if(JsfBase.getFlashAttribute("accion")== null)
+     if(JsfBase.getFlashAttribute("accion")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-      this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
-      this.attrs.put("idProducto", JsfBase.getFlashAttribute("idProducto"));
+      this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
+      this.attrs.put("idProducto", JsfBase.getFlashAttribute("idProducto")== null? -1L: JsfBase.getFlashAttribute("idProducto"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("codigo", "");
       this.attrs.put("buscaPorCodigo", false);
@@ -189,15 +189,13 @@ public class Accion extends IBaseFilter implements Serializable {
     }// finally    
 	}
  
-	public void doAgregar(Entity articulo) {
+	public void doAgregarPartida(Entity articulo) {
 		try {
-			if(articulo.size()> 1) {
-        Partida partida= new Partida(articulo.toLong("idArticulo"), articulo.toString("codigo"), articulo.toString("propio"), articulo.toString("nombre"), articulo.toString("archivo"));
-        this.producto.addPartida(partida);
-  			UIBackingUtilities.execute("jsKardex.cursor.top= "+ (this.producto.getArticulos().size()- 1)+"; jsKardex.callback("+ articulo+");");
-			} // if
-      else 
+      Partida partida= new Partida(articulo.toLong("idArticulo"), articulo.toString("codigo"), articulo.toString("propio"), articulo.toString("nombre"), articulo.toLong("idImagen"), articulo.toString("archivo"));
+			if(this.producto.getArticulos().indexOf(partida)>= 0) 
         this.attrs.put("existe", "<span class='janal-color-orange'>EL ARTICULO YA ESTA EN LA LISTA</span>");
+      this.producto.addPartida(partida);
+			UIBackingUtilities.execute("jsKardex.cursor.top= "+ (this.producto.getArticulos().size()- 1)+"; jsKardex.callback("+ articulo+");");
 			this.attrs.put("total", this.producto.getArticulos().size());
 	  } // try
 		catch (Exception e) {
@@ -206,7 +204,7 @@ public class Accion extends IBaseFilter implements Serializable {
 		} // catch
 	}
 
-	public void doEliminar(Partida partida) {
+	public void doEliminarPartida(Partida partida) {
 		try {
       this.producto.removePartida(partida);
 	  } // try
@@ -216,6 +214,16 @@ public class Accion extends IBaseFilter implements Serializable {
 		} // catch
 		this.attrs.put("total", this.producto.getArticulos().size());
 	}
+  
+  public void doRecuperarPartida(Partida partida) {
+ 		try {
+      this.producto.doRecoverPartida(partida);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+  } 
   
 	public void doSubirPartida(Partida partida) {
 		try {
@@ -237,8 +245,73 @@ public class Accion extends IBaseFilter implements Serializable {
 		} // catch
 	}
   
-  public String toColor(Partida partida) {
-    return Objects.equals(partida.getAction(), ESql.DELETE)? "janal-display-none": "";
+  public String toColorPartida(Partida partida) {
+    return ""; // Objects.equals(partida.getAction(), ESql.DELETE)? "janal-display-none": "";
+  }
+  
+  public String toColorCaracteristica(Caracteristica caracteristica) {
+    return ""; // Objects.equals(caracteristica.getAction(), ESql.DELETE)? "janal-display-none": "";
+  }
+
+	public void doAgregarCaracteristica() {
+		try {
+      this.producto.addCaracteristica(new Caracteristica("caracteristica_"+ (this.producto.getCaracteristicas().size()+ 1)));
+	  } // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+	}
+  
+	public void doEliminarCaracteristica(Caracteristica caracteristica) {
+		try {
+      this.producto.removeCaracteristica(caracteristica);
+	  } // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+	}
+ 
+  public void doRecuperarCaracteristica(Caracteristica caracteristica) {
+ 		try {
+      this.producto.doRecoverCaracteristica(caracteristica);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+  } 
+  
+  
+  public void doSubirCaracteristica(Caracteristica caracteristica) {
+		try {
+      this.producto.upCaracteristica(caracteristica); 
+	  } // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+	}
+
+  public void doBajarCaracteristica(Caracteristica caracteristica) {
+		try {
+      this.producto.downCaracteristica(caracteristica);  
+	  } // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+	}
+
+  public void doUpdatePrinicipal(Partida partida) {
+ 		try {
+      this.producto.toUpdatePrincipal(partida);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
   }
   
 }

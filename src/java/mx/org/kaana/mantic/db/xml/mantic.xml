@@ -71,6 +71,17 @@
         where      
           descripcion = '{descripcion}' and id_producto = {idProducto}
       </select>
+      <select id="caracteristicas">
+        select
+          tc_mantic_productos_caracteristicas.id_producto_caracteristica as id_key,
+          tc_mantic_productos_caracteristicas.*
+        from
+          tc_mantic_productos_caracteristicas
+        where
+          tc_mantic_productos_caracteristicas.id_producto= {idProducto}
+        order by
+          tc_mantic_productos_caracteristicas.orden             
+      </select>
     </unit>    
     <unit id="TcManticArticulosImagenesDto">
       <select id="row">

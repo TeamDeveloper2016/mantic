@@ -2,7 +2,9 @@ package mx.org.kaana.mantic.productos.beans;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.ESql;
@@ -56,42 +58,58 @@ public final class Producto implements Serializable {
 
   public void setIkEmpresa(UISelectEntity ikEmpresa) {
     this.ikEmpresa = ikEmpresa;
+    if(this.ikEmpresa!= null)
+      this.producto.setIdEmpresa(this.ikEmpresa.getKey());
   }
 
   private void init(Long idProducto) throws Exception {
+    Map<String, Object> params = null;
     try {      
+      params = new HashMap<>();      
+      params.put("idProducto", idProducto);      
       if(Objects.equals(-1L, idProducto)) {
         this.producto = new TcManticProductosDto();
-        this.articulos= new ArrayList<>();
-        this.caracteristicas= new ArrayList<>();
         this.setIkEmpresa(new UISelectEntity(-1L));
       } // if
       else {
         this.producto = (TcManticProductosDto)DaoFactory.getInstance().findById(TcManticProductosDto.class, idProducto);
-        this.articulos= new ArrayList<>();
-        this.caracteristicas= new ArrayList<>();
+        this.articulos= (List<Partida>)DaoFactory.getInstance().toEntitySet(Partida.class, "VistaProductosDto", "articulos", params, -1L);
+        if(this.articulos!= null)
+          for (Partida item: this.articulos) {
+            item.setPrincipal(Objects.equals(this.producto.getIdImagen(), item.getIdImagen()));
+            item.setAnterior(ESql.SELECT);
+            item.setAction(ESql.SELECT);
+          } // for
+        this.caracteristicas= (List<Caracteristica>)DaoFactory.getInstance().toEntitySet(Caracteristica.class, "TcManticProductosCaracteristicasDto", "caracteristicas", params, -1L);
+        if(this.caracteristicas!= null)
+          for (Caracteristica item: this.caracteristicas) {
+            item.setAnterior(ESql.SELECT);
+            item.setAction(ESql.SELECT);
+          } // for
         this.setIkEmpresa(new UISelectEntity(this.producto.getIdEmpresa()));
       } // else
+      if(this.articulos== null)
+        this.articulos= new ArrayList<>();
+      if(this.caracteristicas== null)
+        this.caracteristicas= new ArrayList<>();
     } // try
     catch (Exception e) {
       throw e;
     } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
   }
   
-  public void addPartida(Partida partida) throws Exception {  
+  public void addPartida(Partida partida) {  
     int index= this.articulos.indexOf(partida);
-		try {
-      if(index< 0) {
-        partida.setOrden(this.articulos.size()+ 1L);
-        this.articulos.add(partida);
-      } // if  
-      else
-        if(Objects.equals(partida.getAction(), ESql.INSERT))
-          partida.setAction(ESql.UPDATE);
-	  } // try
-		catch (Exception e) {
-      throw e;
-		} // catch
+    if(index< 0) {
+      partida.setOrden(this.articulos.size()+ 1L);
+      this.articulos.add(partida);
+    } // if  
+    else
+      if(Objects.equals(partida.getAction(), ESql.DELETE))
+        partida.setAction(ESql.UPDATE);
   }
   
   public void removePartida(Partida partida) {  
@@ -99,6 +117,10 @@ public final class Producto implements Serializable {
       this.articulos.remove(partida);
     else  
       partida.setAction(ESql.DELETE);
+  }
+  
+  public void doRecoverPartida(Partida partida) {  
+    partida.setAction(partida.getAnterior());
   }
   
   public void updatePartida(Partida partida) {  
@@ -155,28 +177,71 @@ public final class Producto implements Serializable {
   }
   
   public void addCaracteristica(Caracteristica caracteristica) {  
-    boolean exists= Boolean.FALSE;
-    for (Partida item: this.articulos) {
-      if(Objects.equals(item.getDescripcion(), caracteristica.getDescripcion())) {
-        exists= Boolean.TRUE;
-        item.setAction(ESql.UPDATE);
-        break;
-      } // if  
-    } // for
-    if(!exists)
+    int index= this.caracteristicas.indexOf(caracteristica);
+    if(index< 0) {
+      caracteristica.setOrden(this.caracteristicas.size()+ 1L);
       this.caracteristicas.add(caracteristica);
+    } // if  
+    else
+      if(Objects.equals(caracteristica.getAction(), ESql.DELETE))
+        caracteristica.setAction(ESql.UPDATE);
   }
   
   public void removeCaracteristica(Caracteristica caracteristica) {  
-    for (Partida item: this.articulos) {
-      if(Objects.equals(item.getDescripcion(), caracteristica.getDescripcion())) {
-        if(Objects.equals(caracteristica.getAction(), ESql.INSERT))
-          this.articulos.remove(item);
-        else  
-          item.setAction(ESql.DELETE);
-        break;
-      } // if  
-    } // for
+    if(Objects.equals(caracteristica.getAction(), ESql.INSERT))
+      this.caracteristicas.remove(caracteristica);
+    else  
+      caracteristica.setAction(ESql.DELETE);
+  }
+  
+  public void doRecoverCaracteristica(Caracteristica caracteristica) {  
+    caracteristica.setAction(caracteristica.getAnterior());
+  }
+  
+  public void upCaracteristica(Caracteristica caracteristica) {  
+    if(caracteristica.getOrden()> 1) {
+      List<Caracteristica> items= new ArrayList<>();
+      Long index= caracteristica.getOrden()- 1L;
+      for (Caracteristica item: this.caracteristicas) {
+        if(Objects.equals(item.getOrden(), index)) {
+          item.setOrden(item.getOrden()+ 1L);
+          this.updateCaracteristica(item);
+          items.add(caracteristica);
+          items.add(item);
+        } // if  
+        else
+          if(!Objects.equals(item.getIdProductoCaracteristica(), caracteristica.getIdProductoCaracteristica())) 
+            items.add(item);
+      } // for
+      caracteristica.setOrden(caracteristica.getOrden()- 1L);
+      this.updateCaracteristica(caracteristica);
+      this.caracteristicas.clear();
+      this.caracteristicas.addAll(items);
+      items= null;
+    } // if  
+  }
+  
+  public void downCaracteristica(Caracteristica caracteristica) {  
+    if(caracteristica.getOrden()< this.caracteristicas.size()) {
+      List<Caracteristica> items= new ArrayList<>();
+      Long index= caracteristica.getOrden()+ 1L;
+      for (Caracteristica item: this.caracteristicas) {
+        if(Objects.equals(item.getOrden(), index)) {
+          item.setOrden(item.getOrden()- 1L);
+          this.updateCaracteristica(item);
+          items.add(item);
+          items.add(caracteristica);
+        } // if  
+        else
+          if(!Objects.equals(item.getIdProductoCaracteristica(), caracteristica.getIdProductoCaracteristica())) 
+            items.add(item);
+      } // for
+      caracteristica.setOrden(caracteristica.getOrden()+ 1L);
+      this.updateCaracteristica(caracteristica);
+      this.caracteristicas.clear();
+      this.caracteristicas.addAll(items);
+      items= null;
+    } // if  
   }
   
   public void updateCaracteristica(Caracteristica caracteristica) {  
@@ -185,6 +250,15 @@ public final class Producto implements Serializable {
       caracteristica.setAction(ESql.UPDATE);
     } // if
   }
+
+  public void toUpdatePrincipal(Partida partida) {
+    if(!partida.getPrincipal()) {
+      for (Partida item : articulos) {
+        item.setPrincipal(Boolean.FALSE);
+      } // for
+      partida.setPrincipal(Boolean.TRUE);
+    } // if  
+  } 
   
   @Override
   protected void finalize() throws Throwable {
