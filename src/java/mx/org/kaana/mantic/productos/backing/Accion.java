@@ -25,7 +25,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.iva.reglas.Transaccion;
+import mx.org.kaana.mantic.productos.reglas.Transaccion;
 import mx.org.kaana.mantic.productos.beans.Caracteristica;
 import mx.org.kaana.mantic.productos.beans.Partida;
 import mx.org.kaana.mantic.productos.beans.Producto;
@@ -111,8 +111,6 @@ public class Accion extends IBaseFilter implements Serializable {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));			
-      if(Objects.equals((EAccion)this.attrs.get("accion"), EAccion.AGREGAR))
-			  this.producto.setIkEmpresa(this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
     } // try
     catch (Exception e) {
       throw e;
@@ -129,11 +127,9 @@ public class Accion extends IBaseFilter implements Serializable {
 		EAccion eaccion        = null;
     try {			
 			eaccion= (EAccion) this.attrs.get("accion");
-      this.producto.getProducto().setIdEmpresa(this.producto.getIkEmpresa().getKey());
-			transaccion = new Transaccion(null, (Boolean)this.attrs.get("aplicar"));
+			transaccion = new Transaccion(this.producto);
 			if (transaccion.ejecutar(eaccion)) {
 				regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-				// UIBackingUtilities.execute("janal.alert('Se aplicó el IVA al catalogo de articulos');");
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el registro del producto."), ETipoMensaje.INFORMACION);
 			} // if
 			else 
@@ -174,9 +170,9 @@ public class Accion extends IBaseFilter implements Serializable {
 				search= "WXYZ";
   		params.put("codigo", search);
 			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
-        this.lazyModel = new FormatCustomLazy("VistaOrdenesComprasDto", "porCodigo", params, columns);
+        this.lazyModel= new FormatCustomLazy("VistaOrdenesComprasDto", "porCodigo", params, columns);
 			else
-        this.lazyModel = new FormatCustomLazy("VistaOrdenesComprasDto", "porNombre", params, columns);
+        this.lazyModel= new FormatCustomLazy("VistaOrdenesComprasDto", "porNombre", params, columns);
       UIBackingUtilities.resetDataTable("encontrados");
 		} // try
 	  catch (Exception e) {
@@ -255,7 +251,7 @@ public class Accion extends IBaseFilter implements Serializable {
 
 	public void doAgregarCaracteristica() {
 		try {
-      this.producto.addCaracteristica(new Caracteristica("caracteristica_"+ (this.producto.getCaracteristicas().size()+ 1)));
+      this.producto.addCaracteristica(new Caracteristica("CARACTERISTICA_"+ (this.producto.getCaracteristicas().size()+ 1)));
 	  } // try
 		catch (Exception e) {
 			Error.mensaje(e);

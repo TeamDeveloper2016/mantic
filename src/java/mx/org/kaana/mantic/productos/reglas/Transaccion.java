@@ -7,6 +7,7 @@ import static mx.org.kaana.kajool.enums.ESql.DELETE;
 import static mx.org.kaana.kajool.enums.ESql.INSERT;
 import static mx.org.kaana.kajool.enums.ESql.UPDATE;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.mantic.productos.beans.Caracteristica;
 import mx.org.kaana.mantic.productos.beans.Partida;
 import mx.org.kaana.mantic.productos.beans.Producto;
@@ -27,7 +28,7 @@ public class Transaccion extends IBaseTnx {
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar          = false;
+		boolean regresar= false;
 		try {
 			this.messageError= "Ocurrio un error al ".concat(accion.name().toLowerCase()).concat(" el registro del producto");
 			switch(accion){
@@ -53,6 +54,7 @@ public class Transaccion extends IBaseTnx {
   private Boolean toAgregarProducto(Session sesion) throws Exception {
     Boolean regresar = Boolean.FALSE;
     try {      
+      this.producto.getProducto().setIdUsuario(JsfBase.getIdUsuario());
       regresar= DaoFactory.getInstance().insert(sesion, this.producto.getProducto())> 0L;
       if(regresar) {
         this.toArticulos(sesion);
@@ -104,6 +106,7 @@ public class Transaccion extends IBaseTnx {
         switch(item.getAction()) {
           case INSERT:
             item.setIdProducto(this.producto.getProducto().getIdProducto());
+            item.setIdUsuario(JsfBase.getIdUsuario());
             regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
             break;
           case UPDATE:
@@ -113,8 +116,6 @@ public class Transaccion extends IBaseTnx {
             regresar= DaoFactory.getInstance().delete(sesion, item)> 0L;
             break;
         } // switch
-        if(item.getPrincipal() && !Objects.equals(item.getIdImagen(), this.producto.getProducto().getIdImagen())) 
-          DaoFactory.getInstance().update(sesion, this.producto.getProducto());
       } // for
     } // try
     catch (Exception e) {
@@ -130,6 +131,7 @@ public class Transaccion extends IBaseTnx {
         switch(item.getAction()) {
           case INSERT:
             item.setIdProducto(this.producto.getProducto().getIdProducto());
+            item.setIdUsuario(JsfBase.getIdUsuario());
             regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
             break;
           case UPDATE:

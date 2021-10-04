@@ -69,6 +69,7 @@ public final class Producto implements Serializable {
       params.put("idProducto", idProducto);      
       if(Objects.equals(-1L, idProducto)) {
         this.producto = new TcManticProductosDto();
+        this.producto.setIdImagen(-1L);
         this.setIkEmpresa(new UISelectEntity(-1L));
       } // if
       else {
@@ -110,6 +111,7 @@ public final class Producto implements Serializable {
     else
       if(Objects.equals(partida.getAction(), ESql.DELETE))
         partida.setAction(ESql.UPDATE);
+    this.checkDefaultImage();
   }
   
   public void removePartida(Partida partida) {  
@@ -252,13 +254,27 @@ public final class Producto implements Serializable {
   }
 
   public void toUpdatePrincipal(Partida partida) {
-    if(!partida.getPrincipal()) {
-      for (Partida item : articulos) {
+    for (Partida item: articulos) {
+      if(!Objects.equals(item.getIdArticulo(), partida.getIdArticulo()))
         item.setPrincipal(Boolean.FALSE);
-      } // for
-      partida.setPrincipal(Boolean.TRUE);
-    } // if  
+    } // for
+    if(partida.getPrincipal())
+      this.producto.setIdImagen(partida.getIdImagen());
+    else
+      this.producto.setIdImagen(-1L);
+    this.checkDefaultImage();
   } 
+  
+  private void checkDefaultImage() {
+    if(this.producto.getIdImagen()== null || this.producto.getIdImagen()<= 0L)  
+      for (Partida item: this.articulos) {
+        if(item.getIdImagen()> 0L) {
+          item.setPrincipal(Boolean.TRUE);
+          this.producto.setIdImagen(item.getIdImagen());
+          break;
+        } // if  
+      } // for
+  }
   
   @Override
   protected void finalize() throws Throwable {

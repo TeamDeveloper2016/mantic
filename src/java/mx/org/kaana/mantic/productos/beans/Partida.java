@@ -58,7 +58,6 @@ public class Partida extends TcManticProductosDetallesDto implements Serializabl
       } // else
     } // if
     this.principal= Boolean.FALSE;
-    this.idImagen = -1L;
   }
 
   public String getPropio() {
