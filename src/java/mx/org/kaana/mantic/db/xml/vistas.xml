@@ -20,6 +20,30 @@
           tc_mantic_productos.id_empresa in ({idEmpresa})
 					and {condicion}
         group by
+          tc_mantic_productos.categoria,
+          tc_mantic_productos.marca,
+          tc_mantic_productos.nombre
+        {sortOrder}           
+      </select>
+			<select id="ordenar">
+        select 
+          tc_mantic_productos.id_producto as id_key,
+          count(tc_mantic_productos_detalles.id_producto) as articulos,
+				  tc_mantic_productos.*,
+          concat(tc_mantic_productos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo
+        from
+          tc_mantic_productos
+				inner join 
+					tc_mantic_empresas on tc_mantic_productos.id_empresa= tc_mantic_empresas.id_empresa
+				left join 
+					tc_mantic_productos_detalles on tc_mantic_productos.id_producto= tc_mantic_productos_detalles.id_producto
+        left join
+          tc_mantic_imagenes on tc_mantic_productos.id_imagen= tc_mantic_imagenes.id_imagen     
+        where
+          tc_mantic_productos.id_empresa in ({idEmpresa})
+					and tc_mantic_productos.categoria= '{categoria}'
+        group by
+          tc_mantic_productos.categoria,
           tc_mantic_productos.marca,
           tc_mantic_productos.nombre
         {sortOrder}           

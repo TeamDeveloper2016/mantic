@@ -80,37 +80,37 @@
                 <p:commandButton icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-12" sortBy="#{row.categoria}">
+            <p:column styleClass="MarAuto Responsive janal-wid-12" sortBy="#{row.categoria}">
               <f:facet name="header">
                 <h:outputText value="Categoria"/>
               </f:facet>
               <h:outputText value="#{row['categoria']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-12" sortBy="#{row.marca}">
+            <p:column styleClass="MarAuto Responsive janal-wid-12" sortBy="#{row.marca}">
               <f:facet name="header">
                 <h:outputText value="Marca"/>
               </f:facet>
               <h:outputText value="#{row['marca']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{row.nombre}">
+            <p:column styleClass="MarAuto Responsive" sortBy="#{row.nombre}">
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
               </f:facet>
               <h:outputText value="#{row['nombre']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-column-right janal-wid-10" sortBy="#{row.articulos}">
+            <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-10" sortBy="#{row.articulos}">
               <f:facet name="header">
                 <h:outputText value="Articulos"/>
               </f:facet>
               <h:outputText value="#{row['articulos']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-column-center janal-wid-13" sortBy="#{row.registro}">
+            <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-13" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Registro"/>
               </f:facet>
               <h:outputText value="#{row['registro']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-column-center janal-wid-col-38" sortBy="#{row.idActivo}">
+            <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-col-38" sortBy="#{row.idActivo}">
               <f:facet name="header">
                 <h:outputText value="Activo"/>
               </f:facet>
@@ -121,8 +121,10 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-						<p:menuitem id="modificar" action="#{manticProductosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+						<p:menuitem id="modificar" icon="fa fa-edit" action="#{manticProductosFiltro.doAccion('MODIFICAR')}" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
+            <p:separator/>
+            <p:menuitem id="ordenar" icon="fa fa-sort-alpha-asc" action="#{manticProductosFiltro.doOrdenar()}" ajax="false" value="Ordenar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
           </p:contextMenu>
         </div>
       </div>

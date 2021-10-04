@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Ordenar los productos por categoria" />
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {				 				
+			};						
+      
+			function reload() {
+				$('.janal-control-imagen').each(function(index, item) {
+					var name= $(this).attr('id').replace('source-image', 'icon-image', 'gi').replace(/[:]/g, '\\:');
+					janal.console('Reload image: '+ name);
+					$(this).attr('href', $('#'+ name).attr('src'));
+ 			  });
+			};					
+      
+	    $(document).ready(function() {
+        $('#source-image').attr('href', $('#icon-image').attr('src'));
+				setTimeout("$('#contenedorGrupos\\:categoria').focus();", 1000);
+      });
+		</script>   
+	</ui:define>
+	<ui:define name="contenido">
+		<p:focus context="contenedorGrupos:categoria"/>
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+            <p:tab title="General">							
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">		
+                <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticProductosOrdena.attrs.isMatriz}"/>
+                <p:selectOneMenu id="idEmpresa" value="#{manticProductosOrdena.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticProductosOrdena.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" process="@this" update="tabla categoria" listener="#{manticProductosOrdena.doLoadCategorias}"/>
+                  <f:selectItems value="#{manticProductosOrdena.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                  <p:column headerText="Clave">
+                    <h:outputText value="#{item.clave}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+                <p:outputLabel for="categoria" value="Categoria(s):"/>
+                <p:selectOneMenu id="categoria" value="#{manticProductosOrdena.categoria}" var="item" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" process="@this" update="tabla" listener="#{manticProductosOrdena.doLoad}"/>
+                  <f:selectItems value="#{manticProductosOrdena.attrs.categorias}"/>
+                </p:selectOneMenu>
+              </p:panelGrid>
+              <p:dataTable id="tabla" var="row" lazy="true" value="#{manticProductosOrdena.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticProductosOrdena.attrs.seleccionado}" selectionMode="single" paginator="#{manticProductosOrdena.lazyModel.rowCount gt manticProductosOrdena.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+                <f:facet name="header">
+                  <div style="display: flex;">
+                    <p:outputLabel value="Productos en la categoría" styleClass="janal-color-white"/>
+                  </div>
+                </f:facet>  
+                <p:column headerText="No" styleClass="MarAuto Responsive janal-wid-3">
+                  <h:outputText value="#{index+ 1}.-"/>
+                </p:column>   
+                <p:column headerText="Marca" styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.marca}">
+                  <h:outputText value="#{row.marca}"/>
+                </p:column>   
+                <p:column headerText="Nombre" styleClass="MarAuto Responsive" sortBy="#{row.nombre}">
+                  <h:outputText value="#{row.nombre} * #{row.alias}"/>
+                </p:column>   
+                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-10" sortBy="#{row.articulos}">
+                  <f:facet name="header">
+                    <h:outputText value="Articulos"/>
+                  </f:facet>
+                  <h:outputText value="#{row['articulos']}"/>
+                </p:column>		
+                <p:column headerText="Imagen" styleClass="janal-column-center janal-wid-5">
+                  <a id="tabla:#{index}:source" class="janal-control-imagen" data-magnify="gallery" href="#{manticProductosOrdena.path}#{row.archivo}" data-caption="#{row.nombre}" data-group="icon-image" title="Click para ver más grande la imagen" style="display: #{empty row.archivo? 'none': ''}">
+                    <p:graphicImage id="icon-image" cache="false" url="#{manticProductosOrdena.path}#{row.archivo}" width="26" height="22" stream="false" rendered="#{not empty row.archivo}" style="cursor:zoom-in;"/>
+                  </a>
+                </p:column>   
+                <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-col-38" sortBy="#{row.idActivo}">
+                  <f:facet name="header">
+                    <h:outputText value="Activo"/>
+                  </f:facet>
+                  <h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo eq '1' ? 'circulo-verde.png': 'circulo-rojo.png'}" title="Articulo #{row.idActivo eq '1' ? 'Vigente': 'No vigente'}"/>
+                </p:column>		
+                <p:column styleClass="janal-wid-6 janal-column-center">
+                  <p:commandButton icon="fa fa-angle-double-up" title="Subir" actionListener="#{manticProductosOrdena.doSubirPartida(row)}" process="@this" update="@(.filas) @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <p:commandButton icon="fa fa-angle-double-down" title="Bajar" actionListener="#{manticProductosOrdena.doBajarPartida(row)}" process="@this" update="@(.filas) @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                </p:column>
+                <f:facet name="footer">
+                  Total [#{manticProductosOrdena.lazyModel== null? 0: manticProductosOrdena.lazyModel.rowCount}] registros
+                </f:facet>
+              </p:dataTable>					
+						</p:tab>
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticProductosOrdena.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticProductosOrdena.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>

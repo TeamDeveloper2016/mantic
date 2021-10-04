@@ -57,7 +57,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     List<Columna> columns     = null;
     Map<String, Object> params= this.toPrepare();
     try {
-      params.put("sortOrder", "order by tc_mantic_productos.categoria");
+      params.put("sortOrder", "order by tc_mantic_productos.categoria, tc_mantic_productos.orden");
       columns = new ArrayList<>();
       columns.add(new Columna("categoria", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("marca", EFormatoDinamicos.MAYUSCULAS));
@@ -144,6 +144,18 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch
 		return "/Paginas/Mantic/Productos/accion".concat(Constantes.REDIRECIONAR);
   } // doAccion  
+	
+  public String doOrdenar() {
+		try {
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Productos/filtro");		
+			JsfBase.setFlashAttribute("producto", this.attrs.get("seleccionado"));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return "/Paginas/Mantic/Productos/ordena".concat(Constantes.REDIRECIONAR);
+  } // doOrdenar
 	
   public void doEliminar() {
 		Transaccion transaccion = null;

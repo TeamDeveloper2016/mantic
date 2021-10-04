@@ -30,6 +30,8 @@
           categoria
         from      
           tc_mantic_productos
+        where
+          tc_mantic_productos.id_empresa in ({idEmpresa})
         group by
           categoria
         order by
@@ -44,6 +46,22 @@
 				  id_empresa = {idEmpresa}
           and tc_mantic_productos.orden {operador} 900000
       </select>
+      <update id="orden">
+        update
+          tc_mantic_productos
+        set 
+          orden= {orden}
+        where 
+          id_producto= {idProducto}
+      </update>
+      <update id="producto">
+        update
+          tc_mantic_productos
+        set 
+          orden= {valor}
+        where 
+          orden= {orden}
+      </update>
     </unit>    
     <unit id="TcManticProductosDetallesDto">
       <select id="row">
