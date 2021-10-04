@@ -1,13 +1,21 @@
 package mx.org.kaana.mantic.productos.reglas;
 
-import java.util.Objects;
+import com.google.common.base.Objects;
+import java.util.HashMap;
+import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import static mx.org.kaana.kajool.enums.ESql.DELETE;
 import static mx.org.kaana.kajool.enums.ESql.INSERT;
 import static mx.org.kaana.kajool.enums.ESql.UPDATE;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.productos.beans.Caracteristica;
 import mx.org.kaana.mantic.productos.beans.Partida;
 import mx.org.kaana.mantic.productos.beans.Producto;
@@ -54,7 +62,15 @@ public class Transaccion extends IBaseTnx {
   private Boolean toAgregarProducto(Session sesion) throws Exception {
     Boolean regresar = Boolean.FALSE;
     try {      
+      Siguiente sigue= this.toSiguiente(sesion);
       this.producto.getProducto().setIdUsuario(JsfBase.getIdUsuario());
+      this.producto.getProducto().setOrden(sigue.getOrden());
+      if(!Objects.equal(this.producto.getIkCategoria(), "-1")) {
+        if(!Cadena.isVacio(this.producto.getProducto().getCategoria()))
+          this.producto.getProducto().setCategoria(this.producto.getIkCategoria().concat(Constantes.SEPARADOR).concat(this.producto.getProducto().getCategoria()));
+        else
+          this.producto.getProducto().setCategoria(this.producto.getIkCategoria());
+      } // if  
       regresar= DaoFactory.getInstance().insert(sesion, this.producto.getProducto())> 0L;
       if(regresar) {
         this.toArticulos(sesion);
@@ -107,6 +123,7 @@ public class Transaccion extends IBaseTnx {
           case INSERT:
             item.setIdProducto(this.producto.getProducto().getIdProducto());
             item.setIdUsuario(JsfBase.getIdUsuario());
+            item.setIdDatos(1L);
             regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
             break;
           case UPDATE:
@@ -148,5 +165,27 @@ public class Transaccion extends IBaseTnx {
     } // catch	
     return regresar;
   }
+ 
+	private Siguiente toSiguiente(Session sesion) throws Exception {
+		Siguiente regresar        = null;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("idEmpresa", this.producto.getProducto().getIdEmpresa());
+			params.put("operador", this.getCurrentSign());
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticProductosDto", "siguiente", params, "siguiente");
+			if(next.getData()!= null)
+			  regresar= new Siguiente(next.toLong());
+			else
+			  regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 900001L: 1L);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}
   
 }

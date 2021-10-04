@@ -35,6 +35,15 @@
         order by
           categoria
       </select>
+      <select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_productos
+				where				  
+				  id_empresa = {idEmpresa}
+          and tc_mantic_productos.orden {operador} 900000
+      </select>
     </unit>    
     <unit id="TcManticProductosDetallesDto">
       <select id="row">

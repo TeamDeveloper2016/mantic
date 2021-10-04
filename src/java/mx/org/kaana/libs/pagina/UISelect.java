@@ -833,7 +833,7 @@ public final class UISelect {
     List<IBaseDto> dtos        = null;
     try {
       dtos    = DaoFactory.getInstance().toEntitySet(proceso, id, params, records);   
-      regresar.add(new UISelectItem(-1L, "SELECCIONE"));
+      regresar.add(new UISelectItem("-1", "SELECCIONE"));
       regresar.addAll(build(dtos, fields, token, formato, value));
     } // try
     catch (Exception e) {

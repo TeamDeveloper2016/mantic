@@ -22,6 +22,7 @@ import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
@@ -110,7 +111,8 @@ public class Accion extends IBaseFilter implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));			
+      this.attrs.put("sucursales", UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));			
+      this.attrs.put("categorias", UISelect.seleccioneFree("TcManticProductosDto", "unicos", params, "categoria", "|", EFormatoDinamicos.MAYUSCULAS, "categoria"));			
     } // try
     catch (Exception e) {
       throw e;
@@ -129,7 +131,7 @@ public class Accion extends IBaseFilter implements Serializable {
 			eaccion= (EAccion) this.attrs.get("accion");
 			transaccion = new Transaccion(this.producto);
 			if (transaccion.ejecutar(eaccion)) {
-				regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+				regresar = ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el registro del producto."), ETipoMensaje.INFORMACION);
 			} // if
 			else 

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.ESql;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticProductosDto;
@@ -31,6 +32,7 @@ public final class Producto implements Serializable {
   private List<Partida> articulos;
   private List<Caracteristica> caracteristicas;
   private UISelectEntity ikEmpresa;
+  private String ikCategoria;
   
   public Producto() throws Exception {
     this.init(-1L);
@@ -62,6 +64,14 @@ public final class Producto implements Serializable {
       this.producto.setIdEmpresa(this.ikEmpresa.getKey());
   }
 
+  public String getIkCategoria() {
+    return ikCategoria;
+  }
+
+  public void setIkCategoria(String ikCategoria) {
+    this.ikCategoria = ikCategoria;
+  }
+
   private void init(Long idProducto) throws Exception {
     Map<String, Object> params = null;
     try {      
@@ -71,6 +81,7 @@ public final class Producto implements Serializable {
         this.producto = new TcManticProductosDto();
         this.producto.setIdImagen(-1L);
         this.setIkEmpresa(new UISelectEntity(-1L));
+        this.setIkCategoria("-1");
       } // if
       else {
         this.producto = (TcManticProductosDto)DaoFactory.getInstance().findById(TcManticProductosDto.class, idProducto);
@@ -88,6 +99,13 @@ public final class Producto implements Serializable {
             item.setAction(ESql.SELECT);
           } // for
         this.setIkEmpresa(new UISelectEntity(this.producto.getIdEmpresa()));
+        String[] categorias= this.producto.getCategoria().split(Constantes.SEPARADOR_SPLIT);
+        if(categorias.length> 1) {
+          this.setIkCategoria(this.producto.getCategoria().substring(0, this.producto.getCategoria().lastIndexOf(Constantes.SEPARADOR)));
+          this.producto.setCategoria(categorias[categorias.length-1]);
+        } // if  
+        else
+          this.setIkCategoria("-1");
       } // else
       if(this.articulos== null)
         this.articulos= new ArrayList<>();

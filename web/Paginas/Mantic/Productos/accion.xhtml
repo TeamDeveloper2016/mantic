@@ -76,8 +76,15 @@
                     <h:outputText value="#{item.nombre}"/>
                   </p:column>   
                 </p:selectOneMenu>
-                <p:outputLabel for="categoria" value="Categoria:"/>
-                <p:inputText id="categoria" value="#{manticProductosAccion.producto.producto.categoria}" styleClass="janal-wid-100-txt"/> 
+                <p:outputLabel value="Categoria(s):"/>
+                <p:selectOneMenu value="#{manticProductosAccion.producto.ikCategoria}" var="item" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" process="@this" update="@(.categoria)"/>
+                  <f:selectItems value="#{manticProductosAccion.attrs.categorias}"/>
+                </p:selectOneMenu>
+                <p:outputLabel for="categoria" value="Categoria: &lt;span style='janal-color-blue'&gt;#{manticProductosAccion.producto.ikCategoria eq '-1'? '': manticProductosAccion.producto.ikCategoria}#{manticProductosAccion.producto.producto.categoria eq '' or empty manticProductosAccion.producto.producto.categoria? '': '|'}#{manticProductosAccion.producto.producto.categoria eq '' or empty manticProductosAccion.producto.producto.categoria? '': manticProductosAccion.producto.producto.categoria.toUpperCase()}&lt;/span&gt;" styleClass="categoria" escape="false"/>
+                <p:inputText id="categoria" value="#{manticProductosAccion.producto.producto.categoria}" styleClass="janal-wid-100-txt"> 
+                  <p:ajax event="change" process="@this" update="@(.categoria)"/>
+                </p:inputText>  
                 <p:outputLabel for="marca" value="Marca:"/>
                 <p:inputText id="marca" value="#{manticProductosAccion.producto.producto.marca}" styleClass="janal-wid-100-txt"/> 
                 <p:outputLabel for="nombre" value="Nombre:"/>
@@ -185,7 +192,7 @@
                           <p:graphicImage id="icon-image" cache="false" value="#{manticProductosAccion.path}#{row.archivo}" width="26" height="22" stream="false" rendered="#{not empty row.archivo}" style="cursor:zoom-in;"/>
                         </a>	
                       </p:column>   
-                      <p:column headerText="Quitar" styleClass="janal-wid-8 janal-column-center">
+                      <p:column styleClass="janal-wid-8 janal-column-center">
                         <p:commandButton icon="fa fa-minus" title="Eliminar articulo" actionListener="#{manticProductosAccion.doEliminarPartida(row)}" process="@this" update="@(.filas) @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();" style="display:#{row['action'] eq 'DELETE'? 'none': ''}"/>
                         <p:commandButton icon="fa fa-recycle" title="Recuperar especificación" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" actionListener="#{manticProductosAccion.doRecuperarPartida(row)}" process="@this" update="@(.filas) @(.detalle)" style="display:#{row['action'] eq 'DELETE'? '': 'none'}"/>
                         <p:commandButton icon="fa fa-angle-double-up" title="Subir" actionListener="#{manticProductosAccion.doSubirPartida(row)}" process="@this" update="@(.filas) @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();" disabled="#{index eq 0}" style="display:#{row['action'] eq 'DELETE'? 'none': ''}"/>
@@ -215,7 +222,7 @@
                     <p:ajax event="change" process="@this"/>
                   </p:inputText>  
                 </p:column>   
-                <p:column headerText="Orden" styleClass="janal-wid-8 janal-column-center">
+                <p:column styleClass="janal-wid-8 janal-column-center">
                   <p:commandButton icon="fa fa-minus" title="Eliminar especificación" actionListener="#{manticProductosAccion.doEliminarCaracteristica(row)}" process="@this" update="@(.filas) @(.detalle)" onstart="janal.bloquear(); janal.refresh();" oncomplete="janal.desbloquear();" style="display:#{row['action'] eq 'DELETE'? 'none': ''}"/>
                   <p:commandButton icon="fa fa-recycle" title="Recuperar especificación" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.refresh();" actionListener="#{manticProductosAccion.doRecuperarCaracteristica(row)}" process="@this" update="@(.filas) @(.detalle)" style="display:#{row['action'] eq 'DELETE'? '': 'none'}"/>                  
                   <p:commandButton icon="fa fa-angle-double-up" title="Subir" actionListener="#{manticProductosAccion.doSubirCaracteristica(row)}" process="@this" update="@(.filas) @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();" disabled="#{index eq 0}" style="display:#{row['action'] eq 'DELETE'? 'none': ''}"/>
