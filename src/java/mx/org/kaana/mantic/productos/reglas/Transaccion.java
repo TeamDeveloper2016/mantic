@@ -4,6 +4,7 @@ import com.google.common.base.Objects;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import static mx.org.kaana.kajool.enums.ESql.DELETE;
@@ -14,8 +15,8 @@ import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticProductosDto;
 import mx.org.kaana.mantic.productos.beans.Caracteristica;
 import mx.org.kaana.mantic.productos.beans.Partida;
 import mx.org.kaana.mantic.productos.beans.Producto;
@@ -25,10 +26,17 @@ public class Transaccion extends IBaseTnx {
 
 	private Producto producto;	
 	private String messageError;
+  private Entity articulo;
+  private Partida partida;
 
 	public Transaccion(Producto producto) {
 		this.producto= producto;		
 	}
+
+  public Transaccion(Entity articulo, Partida partida) {
+    this.articulo= articulo;
+    this.partida = partida;
+  }
 
 	public String getMessageError() {
 		return messageError;
@@ -49,6 +57,12 @@ public class Transaccion extends IBaseTnx {
 				case ELIMINAR:
           regresar= this.toEliminarProducto(sesion);
 					break;
+				case SUBIR:
+          regresar= this.toSubirProducto(sesion);
+					break;
+				case BAJAR:
+          regresar= this.toBajarProducto(sesion);
+					break;
 			} // switch
 			if(!regresar)
         throw new Exception("");
@@ -62,15 +76,15 @@ public class Transaccion extends IBaseTnx {
   private Boolean toAgregarProducto(Session sesion) throws Exception {
     Boolean regresar = Boolean.FALSE;
     try {      
-      Siguiente sigue= this.toSiguiente(sesion);
       this.producto.getProducto().setIdUsuario(JsfBase.getIdUsuario());
-      this.producto.getProducto().setOrden(sigue.getOrden());
       if(!Objects.equal(this.producto.getIkCategoria(), "-1")) {
         if(!Cadena.isVacio(this.producto.getProducto().getCategoria()))
-          this.producto.getProducto().setCategoria(this.producto.getIkCategoria().concat(Constantes.SEPARADOR).concat(this.producto.getProducto().getCategoria()));
+          this.producto.getProducto().setCategoria(this.producto.getIkCategoria().trim().concat(Constantes.SEPARADOR).concat(this.producto.getProducto().getCategoria().trim()));
         else
-          this.producto.getProducto().setCategoria(this.producto.getIkCategoria());
+          this.producto.getProducto().setCategoria(this.producto.getIkCategoria().trim());
       } // if  
+      Siguiente sigue= this.toSiguiente(sesion);
+      this.producto.getProducto().setOrden(sigue.getOrden());
       regresar= DaoFactory.getInstance().insert(sesion, this.producto.getProducto())> 0L;
       if(regresar) {
         this.toArticulos(sesion);
@@ -86,6 +100,10 @@ public class Transaccion extends IBaseTnx {
   private Boolean toModificarProducto(Session sesion) throws Exception {
     Boolean regresar = Boolean.FALSE;
     try {      
+      if(!this.producto.getProducto().getCategoria().equals(this.producto.getTemporal())) {
+        Siguiente sigue= this.toSiguiente(sesion);
+        this.producto.getProducto().setOrden(sigue.getOrden());
+      } // if
       regresar= DaoFactory.getInstance().update(sesion, this.producto.getProducto())> 0L;
       if(regresar) {
         this.toArticulos(sesion);
@@ -167,17 +185,92 @@ public class Transaccion extends IBaseTnx {
   }
  
 	private Siguiente toSiguiente(Session sesion) throws Exception {
-		Siguiente regresar        = null;
+		Siguiente regresar= null;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
 			params.put("idEmpresa", this.producto.getProducto().getIdEmpresa());
-			params.put("operador", this.getCurrentSign());
+			params.put("categoria", this.producto.getProducto().getCategoria());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticProductosDto", "siguiente", params, "siguiente");
-			if(next.getData()!= null)
+			if(next!= null && next.getData()!= null)
 			  regresar= new Siguiente(next.toLong());
 			else
-			  regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 900001L: 1L);
+			  regresar= new Siguiente(1L);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}
+ 
+  public Boolean toSubirProducto(Session sesion) throws Exception {
+    Boolean regresar = Boolean.FALSE;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+      params.put("idProducto", this.partida.getIdProducto());
+      params.put("idEmpresa", this.articulo.toLong("idEmpresa"));
+      if(this.partida.getOrden()> 1L) {
+        params.put("valor", this.partida.getOrden()+ 1L);
+        params.put("orden", this.partida.getOrden()- 1L);
+        regresar= DaoFactory.getInstance().updateAll(sesion, TcManticProductosDto.class, params, "orden")> 0L;
+        params.put("orden", this.partida.getOrden()- 1L);
+        regresar= DaoFactory.getInstance().updateAll(sesion, TcManticProductosDto.class, params)> 0L;
+      } // if
+      else
+        regresar= Boolean.TRUE;
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+  }
+          
+  public Boolean toBajarProducto(Session sesion) throws Exception {
+    Boolean regresar = Boolean.FALSE;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+      params.put("idProducto", this.partida.getIdProducto());
+      params.put("idEmpresa", this.articulo.toLong("idEmpresa"));
+      Long maximo= this.toMaximo(sesion);
+      if(this.partida.getOrden()< maximo) {
+        params.put("valor", this.partida.getOrden()- 1L);
+        params.put("orden", this.partida.getOrden()+ 1L);
+        regresar= DaoFactory.getInstance().updateAll(sesion, TcManticProductosDto.class, params, "orden")> 0L;
+        params.put("orden", this.partida.getOrden()+ 1L);
+        regresar= DaoFactory.getInstance().updateAll(sesion, TcManticProductosDto.class, params)> 0L;
+      } // if
+      else
+        regresar= Boolean.TRUE;
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+  }
+ 
+	private Long toMaximo(Session sesion) throws Exception {
+		Long regresar= null;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("idEmpresa", this.articulo.toLong("idEmpresa"));
+			params.put("categoria", this.producto.getProducto().getCategoria());
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticProductosDto", "maximo", params, "siguiente");
+			if(next!= null && next.getData()!= null)
+			  regresar= next.toLong();
+			else
+			  regresar= 0L;
 		} // try
 		catch (Exception e) {
 			throw e;

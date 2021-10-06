@@ -15,7 +15,7 @@ import mx.org.kaana.mantic.db.dto.TcManticProductosCaracteristicasDto;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Caracteristica extends TcManticProductosCaracteristicasDto implements Serializable {
+public final class Caracteristica extends TcManticProductosCaracteristicasDto implements Serializable {
 
   private static final long serialVersionUID = 245348724560955248L;
   

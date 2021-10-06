@@ -24,19 +24,28 @@
         where      
           marca = '{marca}' and nombre = '{nombre}'
       </select>
-      <select id="unicos">
+      <select id="categorias">
         select      
           id_producto as id_key,
           categoria
         from      
           tc_mantic_productos
-        where
-          tc_mantic_productos.id_empresa in ({idEmpresa})
         group by
           categoria
         order by
           categoria
       </select>
+      <select id="marcas">
+        select      
+          id_producto as id_key,
+          marca
+        from      
+          tc_mantic_productos
+        group by
+          marca
+        order by
+          marca
+      </select>      
       <select id="siguiente">
         select
 					max(orden)+ 1 as siguiente
@@ -44,23 +53,34 @@
 					tc_mantic_productos
 				where				  
 				  id_empresa = {idEmpresa}
-          and tc_mantic_productos.orden {operador} 900000
+				  and categoria= '{categoria}'
+				group by
+				  categoria          
       </select>
-      <update id="orden">
+      <select id="maximo">
+        select
+					max(orden) as siguiente
+				from 
+					tc_mantic_productos
+				where				  
+				  id_empresa = {idEmpresa}
+          and categoria= '{categoria}'
+      </select>
+      <update id="rows">
         update
           tc_mantic_productos
         set 
           orden= {orden}
         where 
-          id_producto= {idProducto}
+          id_empresa= {idEmpresa} and id_producto= {idProducto}
       </update>
-      <update id="producto">
+      <update id="orden">
         update
           tc_mantic_productos
         set 
           orden= {valor}
         where 
-          orden= {orden}
+          id_empresa= {idEmpresa} and orden= {orden}
       </update>
     </unit>    
     <unit id="TcManticProductosDetallesDto">
@@ -3549,6 +3569,21 @@
           codigo = '{codigo}' 
           and id_proveedor is null
 				  and {condicion}
+      </select>
+      <select id="codigos">
+        select      
+          id_articulo_codigo as id_key,
+          id_articulo,
+          codigo,
+          if(id_principal= 1, 'SI', 'NO') as principal
+        from      
+          tc_mantic_articulos_codigos
+        where      
+          id_articulo = {idArticulo}
+          and id_proveedor is null
+        order by
+          id_principal,
+          codigo
       </select>
       <select id="duplicado">
         select      

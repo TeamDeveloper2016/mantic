@@ -50,17 +50,19 @@ public class TcManticProductosDetallesDto implements IBaseDto, Serializable {
   private String especificacion;
   @Column (name="registro")
   private Timestamp registro;
+  @Column (name="id_articulo_codigo")
+  private Long idArticuloCodigo;
 
   public TcManticProductosDetallesDto() {
     this(new Long(-1L));
   }
 
   public TcManticProductosDetallesDto(Long key) {
-    this(null, null, null, null, new Long(-1L), null, null, null, null);
+    this(null, null, null, null, new Long(-1L), null, null, null, null, -1L);
     setKey(key);
   }
 
-  public TcManticProductosDetallesDto(String descripcion, Long idDatos, String medida, Long idUsuario, Long idProductoDetalle, Long idProducto, Long orden, Long idArticulo, String especificacion) {
+  public TcManticProductosDetallesDto(String descripcion, Long idDatos, String medida, Long idUsuario, Long idProductoDetalle, Long idProducto, Long orden, Long idArticulo, String especificacion, Long idArticuloCodigo) {
     setDescripcion(descripcion);
     setIdDatos(idDatos);
     setMedida(medida);
@@ -71,6 +73,7 @@ public class TcManticProductosDetallesDto implements IBaseDto, Serializable {
     setIdArticulo(idArticulo);
     setEspecificacion(especificacion);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    this.idArticuloCodigo= idArticuloCodigo;
   }
 	
   public void setDescripcion(String descripcion) {
@@ -151,6 +154,14 @@ public class TcManticProductosDetallesDto implements IBaseDto, Serializable {
 
   public Timestamp getRegistro() {
     return registro;
+  }
+
+  public Long getIdArticuloCodigo() {
+    return idArticuloCodigo;
+  }
+
+  public void setIdArticuloCodigo(Long idArticuloCodigo) {
+    this.idArticuloCodigo = idArticuloCodigo;
   }
 
   @Transient

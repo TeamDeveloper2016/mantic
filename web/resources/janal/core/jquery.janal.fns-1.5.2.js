@@ -128,7 +128,8 @@ $.mask.rules = $.extend($.mask.rules, {
 	'r': /[0-9,.-]/,
 	's': /[^\u0025\u0027]/,
 	't': /[0-9a-zA-Z_]/,
-	'v': /[0-9a-zA-Z.;:@+\-_#|&/]/
+	'v': /[0-9a-zA-Z.;:@+\-_#&/\u007C]/,
+	'w': /[0-9a-zA-Z.-_\u007C]/
 });
 
 $.mask.masks = $.extend($.mask.masks, {
@@ -181,6 +182,7 @@ $.mask.masks = $.extend($.mask.masks, {
   'clave-operativa': {mask: '99b9999o9', type: 'fixed', maxLength: 9},
 	'correo':{mask:'q', type:'repeat'},
 	'alfanumerico':{mask:'t', type:'repeat'},
+	'marca':{mask:'w', type:'repeat'},
 	'valor-simple':{mask:'r', type:'repeat'},
 	'acceso':{mask:'s', type:'repeat'},
 	'codigo':{mask:'v', type:'repeat', fixedChars: '[]'}
@@ -701,12 +703,26 @@ $.mask.masks = $.extend($.mask.masks, {
 				 return /^([a-z]|[A-Z])+$/.test(value);
 		}, 'Solo se permiten caracteres alfab\u00E9ticos.');
 
+	$.validator.addMethod('marca', function(value, element, params) {
+		   if (janal.empty(value) || $(element).hasClass('ignore'))
+				 return true;
+		   else
+				 return /^([a-z]|[A-Z]|[0-9]|[-_.|])+$/.test(value);
+		}, 'Solo se permiten caracteres alfab\u00E9ticos.');
+
+	$.validator.addMethod('alfanumerico', function(value, element, params) {
+		   if (janal.empty(value) || $(element).hasClass('ignore'))
+				 return true;
+		   else
+				 return /^([a-z]|[A-Z]|[0-9]|á|é|í|ó|ú|Á|É|Í|Ó|Ú|ñ|Ñ|-|_|\.)+$/.test(value);
+		}, 'Solo se permiten caracteres alfab\u00E9ticos.');
+
 	$.validator.addMethod(
 		'texto', function(value, element, params) {
   		 if (janal.empty(value) || $(element).hasClass('ignore'))
 	  			return true;
 		   else
-			   return /^([0-9]|[A-Z]|[a-z]|á|é|í|ó|ú|Á|É|Í|Ó|Ú|ñ|Ñ|\ |,|.|;|:)+$/.test(value);
+			   return /^([0-9]|[A-Z]|[a-z]|á|é|í|ó|ú|Á|É|Í|Ó|Ú|ñ|Ñ|\ |,|\.|;|:)+$/.test(value);
 		}, 'No se permite caracteres alfanum\u00E9ricos y algunos caracteres, ejemplo: ,;:.');
 
   $.validator.addMethod(
@@ -714,7 +730,7 @@ $.mask.masks = $.extend($.mask.masks, {
   		 if (janal.empty(value) || $(element).hasClass('ignore'))
 	  			return true;
 		   else
-			   return /^([0-9]|[A-Z]|[a-z]|á|é|í|ó|ú|Á|É|Í|Ó|Ú|ñ|Ñ|\ |,|.|;|:|(|)|@|-|=|%|#|~|^|&|{|}|[|]|")+$/.test(value);
+			   return /^([0-9]|[A-Z]|[a-z]|á|é|í|ó|ú|Á|É|Í|Ó|Ú|ñ|Ñ|\ |,|\.|;|:|(|)|@|-|=|%|#|~|^|&|{|}|[|]|")+$/.test(value);
 		}, 'No se permite caracteres alfanum\u00E9ricos y algunos caracteres, ejemplo: ,;:.');
 		
 	$.validator.addMethod('curp', function(value, element, params) {

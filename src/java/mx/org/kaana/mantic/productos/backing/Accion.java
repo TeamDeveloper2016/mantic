@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -22,6 +23,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.productos.reglas.Transaccion;
@@ -110,7 +112,12 @@ public class Accion extends IBaseFilter implements Serializable {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("sucursales", UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));			
-      this.attrs.put("categorias", UISelect.seleccioneFree("TcManticProductosDto", "unicos", params, "categoria", "|", EFormatoDinamicos.MAYUSCULAS, "categoria"));			
+      List<UISelectItem> categorias= UISelect.seleccioneFree("TcManticProductosDto", "categorias", params, "categoria", "|", EFormatoDinamicos.MAYUSCULAS, "categoria");
+      this.attrs.put("categorias", categorias);			
+      List<UISelectItem> marcas= UISelect.seleccioneFree("TcManticProductosDto", "marcas", params, "marca", "|", EFormatoDinamicos.MAYUSCULAS, "marca");
+      if(marcas!= null)
+        marcas.add(new UISelectItem("OTRA", "OTRA"));
+      this.attrs.put("marcas", marcas);			
     } // try
     catch (Exception e) {
       throw e;
@@ -308,6 +315,35 @@ public class Accion extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
+  }
+ 
+  public void doConcatCategoria() {
+    StringBuilder sb= new StringBuilder();
+    if(this.getProducto().getIkCategoria()!= null && !Objects.equals(this.getProducto().getIkCategoria(), "-1"))
+      sb.append(this.getProducto().getIkCategoria().trim());
+    if(this.getProducto().getProducto().getCategoria()!= null && !Cadena.isVacio(this.getProducto().getProducto().getCategoria().trim())) {
+      String categoria= this.getProducto().getProducto().getCategoria().trim().toUpperCase();
+      String completo = Constantes.SEPARADOR.concat(sb.toString()).concat(Constantes.SEPARADOR);
+      if(categoria.startsWith(Constantes.SEPARADOR))
+        this.getProducto().getProducto().setCategoria(categoria.substring(1));
+      if(categoria.endsWith(Constantes.SEPARADOR))
+        this.getProducto().getProducto().setCategoria(this.getProducto().getProducto().getCategoria().substring(0, this.getProducto().getProducto().getCategoria().length()- 1));
+      String contiene= this.getProducto().getProducto().getCategoria().trim().toUpperCase();
+      if(sb.length()> 0 && !completo.contains(Constantes.SEPARADOR.concat(contiene).concat(Constantes.SEPARADOR)))
+        sb.append(Constantes.SEPARADOR).append(contiene);
+      else
+        this.getProducto().getProducto().setCategoria("");        
+    } // if  
+    this.getProducto().setCategoria(sb.toString());
+  }
+  
+  public void doConcatMarca() {
+    if(this.getProducto().getIkMarca()!= null && !Objects.equals(this.getProducto().getIkMarca(), "-1"))
+      this.getProducto().getProducto().setMarca(this.getProducto().getIkMarca().trim());
+    else
+      if(this.getProducto().getProducto().getMarca()!= null && !Cadena.isVacio(this.getProducto().getProducto().getMarca()))
+        this.getProducto().getProducto().setMarca(this.getProducto().getProducto().getMarca().trim().toUpperCase());
+    this.getProducto().setMarca(this.getProducto().getProducto().getMarca());
   }
   
 }

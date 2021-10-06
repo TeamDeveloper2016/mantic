@@ -33,6 +33,10 @@ public final class Producto implements Serializable {
   private List<Caracteristica> caracteristicas;
   private UISelectEntity ikEmpresa;
   private String ikCategoria;
+  private String ikMarca;
+  private String categoria;
+  private String temporal;
+  private String marca;
   
   public Producto() throws Exception {
     this.init(-1L);
@@ -72,16 +76,32 @@ public final class Producto implements Serializable {
     this.ikCategoria = ikCategoria;
   }
 
+  public String getIkMarca() {
+    return ikMarca;
+  }
+
+  public void setIkMarca(String ikMarca) {
+    this.ikMarca = ikMarca;
+  }
+
+  public String getTemporal() {
+    return temporal;
+  }
+  
   private void init(Long idProducto) throws Exception {
     Map<String, Object> params = null;
     try {      
       params = new HashMap<>();      
       params.put("idProducto", idProducto);      
       if(Objects.equals(-1L, idProducto)) {
-        this.producto = new TcManticProductosDto();
+        this.producto= new TcManticProductosDto();
         this.producto.setIdImagen(-1L);
+        this.temporal= "";
+        this.categoria= "";
+        this.marca= "";
         this.setIkEmpresa(new UISelectEntity(-1L));
         this.setIkCategoria("-1");
+        this.setIkMarca("-1");
       } // if
       else {
         this.producto = (TcManticProductosDto)DaoFactory.getInstance().findById(TcManticProductosDto.class, idProducto);
@@ -91,6 +111,7 @@ public final class Producto implements Serializable {
             item.setPrincipal(Objects.equals(this.producto.getIdImagen(), item.getIdImagen()));
             item.setAnterior(ESql.SELECT);
             item.setAction(ESql.SELECT);
+            item.toLoadCodigos(Boolean.FALSE);
           } // for
         this.caracteristicas= (List<Caracteristica>)DaoFactory.getInstance().toEntitySet(Caracteristica.class, "TcManticProductosCaracteristicasDto", "caracteristicas", params, -1L);
         if(this.caracteristicas!= null)
@@ -99,6 +120,9 @@ public final class Producto implements Serializable {
             item.setAction(ESql.SELECT);
           } // for
         this.setIkEmpresa(new UISelectEntity(this.producto.getIdEmpresa()));
+        this.temporal= this.producto.getCategoria();
+        this.categoria= this.producto.getCategoria();
+        this.marca= this.producto.getMarca();
         String[] categorias= this.producto.getCategoria().split(Constantes.SEPARADOR_SPLIT);
         if(categorias.length> 1) {
           this.setIkCategoria(this.producto.getCategoria().substring(0, this.producto.getCategoria().lastIndexOf(Constantes.SEPARADOR)));
@@ -118,6 +142,22 @@ public final class Producto implements Serializable {
     finally {
       Methods.clean(params);
     } // finally
+  }
+
+  public String getCategoria() {
+    return categoria;
+  }
+
+  public void setCategoria(String categoria) {
+    this.categoria = categoria;
+  }
+
+  public String getMarca() {
+    return marca;
+  }
+
+  public void setMarca(String marca) {
+    this.marca = marca;
   }
   
   public void addPartida(Partida partida) {  

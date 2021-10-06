@@ -9,8 +9,10 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
@@ -24,6 +26,7 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.productos.beans.Partida;
+import mx.org.kaana.mantic.productos.reglas.Transaccion;
 
 
 @Named(value = "manticProductosOrdena")
@@ -135,7 +138,7 @@ public class Ordena extends IBaseFilter implements Serializable {
     try {
 			columns= new ArrayList<>();
       params.put("idEmpresa", this.ikEmpresa.getKey());
-      List<UISelectItem> categorias= (List<UISelectItem>)UISelect.free("TcManticProductosDto", "unicos", params, "categoria", "|", EFormatoDinamicos.MAYUSCULAS, "categoria");
+      List<UISelectItem> categorias= (List<UISelectItem>)UISelect.free("TcManticProductosDto", "categorias", params, "categoria", "|", EFormatoDinamicos.MAYUSCULAS, "categoria");
       this.attrs.put("categorias", categorias);			
       if((Boolean)this.attrs.get("continuar"))
         if(categorias!= null && !categorias.isEmpty())
@@ -163,23 +166,33 @@ public class Ordena extends IBaseFilter implements Serializable {
   } // doAccion
 
 	public void doSubirPartida(Partida partida) {
-		try {
-      
-	  } // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch
+    Transaccion transaccion= null;
+    try {			
+			transaccion = new Transaccion(this.producto, partida);
+			if (transaccion.ejecutar(EAccion.SUBIR)) 
+				JsfBase.addMessage("Se actualizó el registro del producto", ETipoMensaje.INFORMACION);
+			else 
+				JsfBase.addMessage("Ocurrió un error al registrar el producto", ETipoMensaje.ERROR);      			
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
 	}
   
 	public void doBajarPartida(Partida partida) {
-		try {
-      
-	  } // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch
+    Transaccion transaccion= null;
+    try {			
+			transaccion = new Transaccion(this.producto, partida);
+			if (transaccion.ejecutar(EAccion.BAJAR)) 
+				JsfBase.addMessage("Se actualizó el registro del producto", ETipoMensaje.INFORMACION);
+			else 
+				JsfBase.addMessage("Ocurrió un error al registrar el producto", ETipoMensaje.ERROR);      			
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
 	}
   
   public String toColorPartida(Partida partida) {

@@ -1,10 +1,19 @@
 package mx.org.kaana.mantic.productos.beans;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticProductosDetallesDto;
 
 /**
@@ -15,7 +24,7 @@ import mx.org.kaana.mantic.db.dto.TcManticProductosDetallesDto;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Partida extends TcManticProductosDetallesDto implements Serializable {
+public final class Partida extends TcManticProductosDetallesDto implements Serializable {
 
   private static final long serialVersionUID = 245348724560955248L;
   
@@ -27,6 +36,8 @@ public class Partida extends TcManticProductosDetallesDto implements Serializabl
   private ESql anterior;
   private Boolean principal;
   private Long idImagen;
+  private UISelectEntity ikArticuloCodigo;
+  private List<UISelectEntity> codigos;
 
   public Partida() {
     this(new Random().nextLong(), null, null, null, -1L, null);
@@ -58,6 +69,7 @@ public class Partida extends TcManticProductosDetallesDto implements Serializabl
       } // else
     } // if
     this.principal= Boolean.FALSE;
+    this.toLoadCodigos(Boolean.TRUE);
   }
 
   public String getPropio() {
@@ -124,9 +136,49 @@ public class Partida extends TcManticProductosDetallesDto implements Serializabl
     this.idImagen = idImagen;
   }
 
+  public UISelectEntity getIkArticuloCodigo() {
+    return ikArticuloCodigo;
+  }
+
+  public void setIkArticuloCodigo(UISelectEntity ikArticuloCodigo) {
+    this.ikArticuloCodigo = ikArticuloCodigo;
+    if(ikArticuloCodigo!= null)
+      this.setIdArticulo(ikArticuloCodigo.getKey());
+  }
+
+  public List<UISelectEntity> getCodigos() {
+    return codigos;
+  }
+
   @Override
   public Class toHbmClass() {
     return TcManticProductosDetallesDto.class;
   }
 
+  protected void toLoadCodigos(Boolean first) {
+    Map<String, Object> params = null;
+    try {      
+      params = new HashMap<>();      
+      params.put("idArticulo", this.getIdArticulo());      
+      this.codigos= UIEntity.build("TcManticArticulosCodigosDto", "codigos", params, Collections.EMPTY_LIST);
+      if(codigos!= null && !codigos.isEmpty())
+        if(first)
+          this.setIkArticuloCodigo(this.codigos.get(0));
+        else {
+          int index= this.codigos.indexOf(new UISelectEntity(this.getIdArticulo()));
+          if(index>= 0)
+            this.setIkArticuloCodigo(this.codigos.get(index));
+          else
+            this.setIkArticuloCodigo(this.codigos.get(0));
+        } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
 }
