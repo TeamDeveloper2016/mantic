@@ -4506,7 +4506,7 @@
           tc_mantic_tipos_medios_pagos.nombre as tipo_medio_pago,
           tc_mantic_bancos.nombre as banco,
           tc_mantic_clientes_pagos.referencia,
-          tc_mantic_clientes_pagos.observaciones,
+          ifnull(tc_mantic_clientes_pagos.observaciones, ' ') as observaciones,
           tc_mantic_clientes_pagos.comentarios,
           tc_mantic_clientes_estatus.nombre as estatus
         from
@@ -7740,7 +7740,7 @@
           tc_mantic_tipos_medios_pagos.nombre as tipo_medio_pago,
           tc_mantic_bancos.nombre as banco,
           tc_mantic_empresas_pagos.referencia,
-          tc_mantic_empresas_pagos.observaciones,
+          ifnull(tc_mantic_empresas_pagos.observaciones, ' ') as observaciones,
           tc_mantic_empresas_pagos.comentarios,
           tc_mantic_empresas_estatus.nombre as estatus
         from

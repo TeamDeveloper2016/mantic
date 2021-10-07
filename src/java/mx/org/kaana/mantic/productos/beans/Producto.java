@@ -37,6 +37,7 @@ public final class Producto implements Serializable {
   private String categoria;
   private String temporal;
   private String marca;
+  private String archivo;
   
   public Producto() throws Exception {
     this.init(-1L);
@@ -87,6 +88,10 @@ public final class Producto implements Serializable {
   public String getTemporal() {
     return temporal;
   }
+
+  public String getArchivo() {
+    return archivo;
+  }
   
   private void init(Long idProducto) throws Exception {
     Map<String, Object> params = null;
@@ -112,6 +117,8 @@ public final class Producto implements Serializable {
             item.setAnterior(ESql.SELECT);
             item.setAction(ESql.SELECT);
             item.toLoadCodigos(Boolean.FALSE);
+            if(item.getPrincipal())
+              this.archivo= item.getArchivo();
           } // for
         this.caracteristicas= (List<Caracteristica>)DaoFactory.getInstance().toEntitySet(Caracteristica.class, "TcManticProductosCaracteristicasDto", "caracteristicas", params, -1L);
         if(this.caracteristicas!= null)
@@ -130,6 +137,7 @@ public final class Producto implements Serializable {
         } // if  
         else
           this.setIkCategoria("-1");
+        this.setIkMarca("OTRA");
       } // else
       if(this.articulos== null)
         this.articulos= new ArrayList<>();
@@ -320,7 +328,6 @@ public final class Producto implements Serializable {
       this.producto.setIdImagen(partida.getIdImagen());
     else
       this.producto.setIdImagen(-1L);
-    this.checkDefaultImage();
   } 
   
   private void checkDefaultImage() {
@@ -329,6 +336,7 @@ public final class Producto implements Serializable {
         if(item.getIdImagen()> 0L) {
           item.setPrincipal(Boolean.TRUE);
           this.producto.setIdImagen(item.getIdImagen());
+          this.archivo= item.getArchivo();
           break;
         } // if  
       } // for

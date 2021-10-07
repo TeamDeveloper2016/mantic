@@ -143,7 +143,7 @@ public final class Partida extends TcManticProductosDetallesDto implements Seria
   public void setIkArticuloCodigo(UISelectEntity ikArticuloCodigo) {
     this.ikArticuloCodigo = ikArticuloCodigo;
     if(ikArticuloCodigo!= null)
-      this.setIdArticulo(ikArticuloCodigo.getKey());
+      this.setIdArticuloCodigo(ikArticuloCodigo.getKey());
   }
 
   public List<UISelectEntity> getCodigos() {
@@ -165,7 +165,7 @@ public final class Partida extends TcManticProductosDetallesDto implements Seria
         if(first)
           this.setIkArticuloCodigo(this.codigos.get(0));
         else {
-          int index= this.codigos.indexOf(new UISelectEntity(this.getIdArticulo()));
+          int index= this.codigos.indexOf(new UISelectEntity(this.getIdArticuloCodigo()));
           if(index>= 0)
             this.setIkArticuloCodigo(this.codigos.get(index));
           else

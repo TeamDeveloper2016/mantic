@@ -56,15 +56,15 @@ public class Accion extends IBaseFilter implements Serializable {
   @Override
   protected void init() {		
     try {
-     if(JsfBase.getFlashAttribute("accion")== null)
-				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      //if(JsfBase.getFlashAttribute("accion")== null)
+		  //		UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-      this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
-      this.attrs.put("idProducto", JsfBase.getFlashAttribute("idProducto")== null? -1L: JsfBase.getFlashAttribute("idProducto"));
-			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
+      this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.MODIFICAR: JsfBase.getFlashAttribute("accion"));
+      this.attrs.put("idProducto", JsfBase.getFlashAttribute("idProducto")== null? 1L: JsfBase.getFlashAttribute("idProducto"));
+		  this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("codigo", "");
       this.attrs.put("buscaPorCodigo", false);
-  		this.attrs.put("total", 0);
+  	  this.attrs.put("total", 0);
       String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
       this.path = dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");      
       this.toLoadCatalog();
@@ -136,6 +136,7 @@ public class Accion extends IBaseFilter implements Serializable {
 			eaccion= (EAccion) this.attrs.get("accion");
 			transaccion = new Transaccion(this.producto);
 			if (transaccion.ejecutar(eaccion)) {
+    		JsfBase.setFlashAttribute("idProducto", this.producto.getProducto().getIdProducto());
 				regresar = ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el registro del producto."), ETipoMensaje.INFORMACION);
 			} // if
@@ -337,12 +338,17 @@ public class Accion extends IBaseFilter implements Serializable {
     this.getProducto().setCategoria(sb.toString());
   }
   
-  public void doConcatMarca() {
-    if(this.getProducto().getIkMarca()!= null && !Objects.equals(this.getProducto().getIkMarca(), "-1"))
+  public void doMarcaOpcion() {
+    if(this.getProducto().getIkMarca()!= null && !Objects.equals(this.getProducto().getIkMarca(), "-1") && !Objects.equals(this.getProducto().getIkMarca(), "OTRA"))
       this.getProducto().getProducto().setMarca(this.getProducto().getIkMarca().trim());
     else
-      if(this.getProducto().getProducto().getMarca()!= null && !Cadena.isVacio(this.getProducto().getProducto().getMarca()))
-        this.getProducto().getProducto().setMarca(this.getProducto().getProducto().getMarca().trim().toUpperCase());
+      this.getProducto().getProducto().setMarca("");
+    this.getProducto().setMarca(this.getProducto().getProducto().getMarca());
+  }
+  
+  public void doConcatMarca() {
+    if(this.getProducto().getProducto().getMarca()!= null && !Cadena.isVacio(this.getProducto().getProducto().getMarca()))
+      this.getProducto().getProducto().setMarca(this.getProducto().getProducto().getMarca().trim().toUpperCase());
     this.getProducto().setMarca(this.getProducto().getProducto().getMarca());
   }
   

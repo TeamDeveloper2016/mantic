@@ -50,12 +50,25 @@
 		</script>   
 		<style type="text/css">
       .p-p-1 {padding: 0.25rem !important;}
+      .p-p-2 {padding: 0.3rem !important;}
       .producto .producto-description {margin: 0 0 0.5rem 0;}
       .producto .producto-list-item .producto-actions {font-size: 0.9rem;font-weight: 100;margin-bottom: 0.5rem;align-self: flex-end; text-align: right;}
       .producto .producto-list-item .producto-item-search {width: 220px; text-align: center;}
       .producto .producto-list-item .producto-item-search img {width: 200px;height:170px;box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); margin-right: 2rem;}      
-      .producto .producto-list-item {display: -ms-flexbox;display: flex;-ms-flex-align: center;align-items: center;padding: 1rem;}
+      .producto .producto-list-item {display: -ms-flexbox; display: flex;-ms-flex-align: center; align-items: center; padding: 0.5rem;}
       .producto .producto-list-item .producto-list-detail {flex: 1 1 0;-ms-flex: 1 1 0;align-self: baseline;}  
+      
+      .container {width: 100%; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center;}
+      .galeria  {width: 850px;}
+      .galeria .galeria-header {margin: 0 0 0.2rem 0; text-align: left;}
+      .galeria .galeria-description {margin: 0 0 0.1rem 1.4rem; font-size: 1rem; padding-left: 0px !important; font-weight: normal !important;}
+      .galeria .galeria-marca {font-size: 1.5rem; margin: 0 0 0.5rem 0; color: blue; font-weight: bold;}
+      .galeria .galeria-nombre {font-size: 1.2rem; margin: 0 0 0.5rem 0; color: black; font-weight: bold;}
+      .galeria .galeria-list-item .galeria-actions {font-size: 0.9rem; font-weight: 100; margin-bottom: 0.5rem; align-self: flex-end; text-align: right;}
+      .galeria .galeria-list-item .galeria-item-search {width: 420px; text-align: center;}
+      .galeria .galeria-list-item .galeria-item-search img {width: 400px; height:370px; box-shadow: 0 0px 1px rgba(0, 0, 0, 0.1), 0 0px 1px rgba(0, 0, 0, 0.1); margin-right: 2rem;}      
+      .galeria .galeria-list-item {display: -ms-flexbox;display: flex;-ms-flex-align: center;align-items: center;padding: 1rem; text-align: left;}
+      .galeria .galeria-list-item .galeria-list-detail {flex: 1 1 0;-ms-flex: 1 1 0;align-self: baseline;}  
     </style>  
 	</ui:define>
 	<ui:define name="contenido">
@@ -64,7 +77,7 @@
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
-					<p:tabView id="contenedorGrupos">
+          <p:tabView id="contenedorGrupos" activeIndex="4">
             <p:tab title="General">							
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">		
                 <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticProductosAccion.attrs.isMatriz}"/>
@@ -88,12 +101,12 @@
                 <p:inputText id="kategoria" value="#{manticProductosAccion.producto.producto.categoria}" styleClass="janal-wid-100-txt categoria"> 
                   <p:ajax event="change" process="@this categorias" update="@(.categoria)" listener="#{manticProductosAccion.doConcatCategoria()}" oncomplete="janal.refresh();"/>
                 </p:inputText>  
-                <p:outputLabel for="marcas" value="Marca(s):"/>
+                <p:outputLabel for="marca" value="Marca(s):"/>
                 <p:selectOneMenu id="marcas" value="#{manticProductosAccion.producto.ikMarca}" var="item" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <p:ajax event="change" process="@this karca" update="@(.marca)" listener="#{manticProductosAccion.doConcatMarca()}" oncomplete="janal.refresh();"/>
+                  <p:ajax event="change" process="@this karca" update="@(.marca)" listener="#{manticProductosAccion.doMarcaOpcion()}" oncomplete="janal.refresh();"/>
                   <f:selectItems value="#{manticProductosAccion.attrs.marcas}"/>
                 </p:selectOneMenu>
-                <p:outputLabel for="marca" value="Marca:" styleClass="marca" style="display:#{manticProductosAccion.producto.ikMarca eq 'OTRA'? '': 'none'}"/>
+                <p:outputLabel for="marcas" value="Marca:" styleClass="marca" style="display:#{manticProductosAccion.producto.ikMarca eq 'OTRA'? '': 'none'}"/>
                 <p:inputText id="marca" value="#{manticProductosAccion.producto.marca}" styleClass="janal-wid-100-txt categoria" style="display:none"/> 
                 <p:inputText id="karca" value="#{manticProductosAccion.producto.producto.marca}" styleClass="janal-wid-100-txt marca" style="display:#{manticProductosAccion.producto.ikMarca eq 'OTRA'? '': 'none'}"> 
                   <p:ajax event="change" process="@this marcas" update="@(.marca)" listener="#{manticProductosAccion.doConcatMarca()}" oncomplete="janal.refresh();"/>
@@ -178,7 +191,7 @@
                         <h:outputText value="#{row.orden}.-"/>
                       </p:column>   
                       <p:column headerText="Código" styleClass="janal-wid-10">
-                        <p:selectOneMenu id="codigo" value="#{row.ikArticuloCodigo}" var="item" styleClass="janal-wid-100-txt">
+                        <p:selectOneMenu id="codigo" value="#{row.ikArticuloCodigo}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">
                           <p:ajax event="change" process="@this"/>
                           <f:selectItems value="#{row.codigos}" var="element" itemValue="#{element}" itemLabel="#{element.codigo} #{empty element.principal or element.principal eq ''? '': '|'} #{element.principal}"/>
                           <p:column headerText="Código">
@@ -291,7 +304,48 @@
               </p:dataGrid>							
 						</p:tab>
             <p:tab title="Diseño">
-              
+              <p:panel header="Presentación del producto" styleClass="janal-wid-100-txt detalle">
+                <div class="container">
+                  <div class="galeria">
+                    <div class="galeria-header p-p-2">
+                      <span class="galeria-marca">#{manticProductosAccion.producto.producto.marca}</span><br/>
+                      <span class="galeria-nombre">#{manticProductosAccion.producto.producto.nombre}</span>
+                    </div>  
+                    <div class="galeria-list-item p-p-1">
+                      <div class="galeria-item-search">
+                        <a id="view#{manticProductosAccion.producto.producto.idProducto}" data-magnify="gallery" href="#{manticProductosAccion.path}#{manticProductosAccion.producto.archivo}" data-caption="#{manticProductosAccion.producto.producto.nombre}" data-group="icon-image" class="icon">
+                          <p:graphicImage url="#{manticProductosAccion.path}#{manticProductosAccion.producto.archivo}" style="cursor:zoom-in;"/>
+                        </a>  
+                      </div> 
+                      <div class="galeria-list-detail">
+                        <span class="janal-color-orange" style="font-size: 1.1rem; font-weight: bold;">ESPECIFICACIONES:</span><br/>
+                        <p:dataList var="item" value="#{manticProductosAccion.producto.caracteristicas}" itemStyleClass="galeria-description">
+                          #{item.descripcion}
+                        </p:dataList>
+                      </div>  
+                    </div>
+                    <div class="galeria-actions">
+                      <p:dataTable var="row" value="#{manticProductosAccion.producto.articulos}" paginator="false" rowKey="#{row.idArticulo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{manticProductosAccion.toColorPartida(row)}">
+                        <p:column headerText="Código" styleClass="janal-wid-10">
+                          <p:outputLabel value="#{row.idArticuloCodigo}"/>
+                        </p:column>   
+                        <p:column headerText="Descripción" styleClass="janal-column-left">
+                          <p:outputLabel value="#{row.descripcion}"/>
+                        </p:column>   
+                        <p:column headerText="Medida" styleClass="janal-wid-12 janal-column-center">
+                          <p:outputLabel value="#{row.medida}"/>
+                        </p:column>   
+                        <p:column headerText="Precio" styleClass="janal-wid-12 janal-column-right">
+                          <h:outputText value="$0.00"/>
+                        </p:column>   
+                        <p:column headerText="Cliente" styleClass="janal-wid-12 janal-column-right">
+                          <h:outputText value="$0.00"/>
+                        </p:column>
+                      </p:dataTable>	
+                    </div>  
+                  </div>  
+                </div>
+              </p:panel>  
 						</p:tab>
 					</p:tabView>
 				</div>
