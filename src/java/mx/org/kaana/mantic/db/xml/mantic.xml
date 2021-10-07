@@ -3570,21 +3570,6 @@
           and id_proveedor is null
 				  and {condicion}
       </select>
-      <select id="codigos">
-        select      
-          id_articulo_codigo as id_key,
-          id_articulo,
-          codigo,
-          if(id_principal= 1, 'SI', 'NO') as principal
-        from      
-          tc_mantic_articulos_codigos
-        where      
-          id_articulo = {idArticulo}
-          and id_proveedor is null
-        order by
-          id_principal,
-          codigo
-      </select>
       <select id="duplicado">
         select      
           count(*) as total

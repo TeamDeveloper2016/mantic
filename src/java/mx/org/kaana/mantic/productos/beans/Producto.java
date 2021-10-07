@@ -341,7 +341,7 @@ public final class Producto implements Serializable {
         } // if  
       } // for
   }
-  
+
   @Override
   protected void finalize() throws Throwable {
     super.finalize(); 

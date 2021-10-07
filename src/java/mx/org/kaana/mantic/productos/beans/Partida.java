@@ -1,16 +1,21 @@
 package mx.org.kaana.mantic.productos.beans;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ESql;
+import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
@@ -38,6 +43,7 @@ public final class Partida extends TcManticProductosDetallesDto implements Seria
   private Long idImagen;
   private UISelectEntity ikArticuloCodigo;
   private List<UISelectEntity> codigos;
+  private String precio;
 
   public Partida() {
     this(new Random().nextLong(), null, null, null, -1L, null);
@@ -82,10 +88,6 @@ public final class Partida extends TcManticProductosDetallesDto implements Seria
 
   public String getCodigo() {
     return codigo;
-  }
-
-  public void setCodigo(String codigo) {
-    this.codigo = codigo;
   }
 
   public String getNombre() {
@@ -150,18 +152,27 @@ public final class Partida extends TcManticProductosDetallesDto implements Seria
     return codigos;
   }
 
+  public String getPrecio() {
+    return precio;
+  }
+
   @Override
   public Class toHbmClass() {
     return TcManticProductosDetallesDto.class;
   }
 
   protected void toLoadCodigos(Boolean first) {
-    Map<String, Object> params = null;
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
     try {      
+			columns= new ArrayList<>();
+      columns.add(new Columna("menudeo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+      columns.add(new Columna("medioMayoreo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+      columns.add(new Columna("mayoreo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       params = new HashMap<>();      
       params.put("idArticulo", this.getIdArticulo());      
-      this.codigos= UIEntity.build("TcManticArticulosCodigosDto", "codigos", params, Collections.EMPTY_LIST);
-      if(codigos!= null && !codigos.isEmpty())
+      this.codigos= UIEntity.build("VistaProductosDto", "codigos", params, columns, Constantes.SQL_TODOS_REGISTROS);
+      if(codigos!= null && !codigos.isEmpty()) {
         if(first)
           this.setIkArticuloCodigo(this.codigos.get(0));
         else {
@@ -171,6 +182,9 @@ public final class Partida extends TcManticProductosDetallesDto implements Seria
           else
             this.setIkArticuloCodigo(this.codigos.get(0));
         } // if  
+        this.codigo= this.getIkArticuloCodigo().toString("codigo");
+        this.precio= this.getIkArticuloCodigo().toString("menudeo");
+      } // if  
     } // try
     catch (Exception e) {
       Error.mensaje(e);

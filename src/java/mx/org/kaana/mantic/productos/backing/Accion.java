@@ -13,6 +13,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
@@ -56,11 +57,11 @@ public class Accion extends IBaseFilter implements Serializable {
   @Override
   protected void init() {		
     try {
-      //if(JsfBase.getFlashAttribute("accion")== null)
-		  //		UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      if(JsfBase.getFlashAttribute("accion")== null)
+		  	UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-      this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.MODIFICAR: JsfBase.getFlashAttribute("accion"));
-      this.attrs.put("idProducto", JsfBase.getFlashAttribute("idProducto")== null? 1L: JsfBase.getFlashAttribute("idProducto"));
+      this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
+      this.attrs.put("idProducto", JsfBase.getFlashAttribute("idProducto")== null? -1L: JsfBase.getFlashAttribute("idProducto"));
 		  this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("codigo", "");
       this.attrs.put("buscaPorCodigo", false);
@@ -151,9 +152,9 @@ public class Accion extends IBaseFilter implements Serializable {
   } // doAccion
 
   public String doCancelar() {   
-		JsfBase.setFlashAttribute("idProducto", this.producto.getProducto().getIdProducto());
-    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
-  } // doAccion
+		JsfBase.setFlashAttribute("idProducto", this.producto!=null? this.producto.getProducto().getIdProducto(): -1L);
+    return this.attrs.get("retorno")== null? "filtro".concat(Constantes.REDIRECIONAR): ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+  } // doCancelar
 
 	public void doLoadPartidas() {
 		List<Columna> columns     = null;
@@ -351,5 +352,15 @@ public class Accion extends IBaseFilter implements Serializable {
       this.getProducto().getProducto().setMarca(this.getProducto().getProducto().getMarca().trim().toUpperCase());
     this.getProducto().setMarca(this.getProducto().getProducto().getMarca());
   }
+
+  public void doCheckEspecificacion(Caracteristica caracteristica) {
+    caracteristica.setDescripcion(caracteristica.getDescripcion().trim().toUpperCase());
+    if(!Objects.equals(caracteristica.getAction(), ESql.INSERT))
+      caracteristica.setAction(ESql.UPDATE);
+  }
+  
+  public String doLetraCapital(Caracteristica caracteristica) {
+    return Cadena.letraCapital(caracteristica.getDescripcion());
+  }  
   
 }
