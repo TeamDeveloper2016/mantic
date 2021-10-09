@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -68,21 +69,20 @@ public class Galeria extends IBaseAttribute implements Serializable {
   @Override
   protected void init() {		
     try {
-      //if(JsfBase.getFlashAttribute("producto")== null)
-			//	UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      if(JsfBase.getFlashAttribute("producto")== null)
+        this.producto = new Entity(-1L);
+      else
+        this.producto = (Entity)JsfBase.getFlashAttribute("producto");
       this.attrs.put("isMatriz", Boolean.FALSE);
-      //this.producto = (Entity)JsfBase.getFlashAttribute("producto");
-      this.producto = new Entity(-1L);
-      this.producto.add("idEmpresa", 1L);
-      this.producto.add("idProducto", 1L);
-      this.producto.add("categoria", "TORNILLOS");
-      this.categoria= this.producto.toString("categoria");
-      this.ikEmpresa= new UISelectEntity(this.producto.toLong("idEmpresa"));
+      this.categoria= "";
+      this.ikEmpresa= new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
       String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
       this.path = dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");      
       this.attrs.put("continuar", Boolean.FALSE);
-      this.attrs.put("particular", Boolean.FALSE);
+      this.attrs.put("disenio", Boolean.TRUE);  
+      this.attrs.put("cliente", new UISelectEntity(-1L));
+      this.attrs.put("categoria", "");
       this.toLoadCatalog();
       this.attrs.put("continuar", Boolean.TRUE);
     } // try
@@ -95,14 +95,29 @@ public class Galeria extends IBaseAttribute implements Serializable {
   public void doLoad() {
     Map<String, Object> params= new HashMap<>();
     try {
-      params.put("sortOrder", "order by tc_mantic_productos.orden");
+      params.put("sortOrder", "order by tc_mantic_productos.categoria, tc_mantic_productos.orden");
       params.put("idEmpresa", this.ikEmpresa.getKey());
       params.put("categoria", this.categoria);
+      UISelectEntity cliente= (UISelectEntity)this.attrs.get("cliente");
+      if(cliente== null)
+        cliente= new UISelectEntity(-1L);
+      else {
+        List<UISelectEntity> clientes= (List<UISelectEntity>)this.attrs.get("clientes");
+        if(clientes!= null && !clientes.isEmpty()) {
+          int index= clientes.indexOf(cliente);
+          if(index>= 0)
+            cliente= clientes.get(index);
+          else
+            cliente= new UISelectEntity(-1L);
+        } // if
+      } // else
+      this.attrs.put("particular", !Objects.equals(cliente.getKey(), -1L));
       List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaProductosDto", "galeria", params, Constantes.SQL_TODOS_REGISTROS);
       this.productos= new ArrayList<>();
       if(items!= null && !items.isEmpty())
         for (Entity item: items) {
-          this.productos.add(new FluidGridItem(new Producto(item.getKey())));    
+          String menudeo= Objects.equals(cliente.getKey(), -1L)? "menudeo": Cadena.toBeanName(cliente.toString("nombre"));
+          this.productos.add(new FluidGridItem(new Producto(item.getKey(), menudeo)));    
         } // for
 		} // try
 	  catch (Exception e) {
@@ -181,9 +196,54 @@ public class Galeria extends IBaseAttribute implements Serializable {
   }  
   
   public String doCheckCategoria(Producto producto) {
-    if(producto!= null)
-      this.attrs.put("categoria", producto.getCategoria());
-    return "";
+    String regresar= "none";
+    if(producto!= null) {
+      String temporal= producto.getCategoria().replaceAll("[|]", "  »  ");
+      if(!Objects.equals((String)this.attrs.get("categoria"), temporal))
+        regresar= "";
+      this.attrs.put("categoria", temporal);
+    } // if  
+    return regresar;
   }  
+  
+	public List<UISelectEntity> doCompleteCliente(String codigo) {
+ 		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		boolean buscaPorCodigo    = false;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			if(!Cadena.isVacio(codigo)) {
+  			codigo= new String(codigo).replaceAll(Constantes.CLEAN_SQL, "").trim();
+				buscaPorCodigo= codigo.startsWith(".");
+				if(buscaPorCodigo)
+					codigo= codigo.trim().substring(1);
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			} // if	
+			else
+				codigo= "WXYZ";
+  		params.put("codigo", codigo);
+			if(buscaPorCodigo)
+        this.attrs.put("clientes", UIEntity.build("VistaProductosDto", "porCodigo", params, columns, 40L));
+			else
+        this.attrs.put("clientes", UIEntity.build("VistaProductosDto", "porNombre", params, columns, 40L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+		return (List<UISelectEntity>)this.attrs.get("clientes");
+	} // doCompleteCliente		
+ 
+  public void doUpdateDisenio() {
+    this.attrs.put("disenio", !(Boolean)this.attrs.get("disenio"));  
+  }
   
 }

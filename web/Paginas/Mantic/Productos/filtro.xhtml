@@ -125,6 +125,8 @@
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
             <p:separator/>
             <p:menuitem id="ordenar" icon="fa fa-sort-alpha-asc" action="#{manticProductosFiltro.doOrdenar()}" ajax="false" value="Ordenar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
+            <p:separator/>
+            <p:menuitem id="galeria" icon="fa fa-picture-o" action="#{manticProductosFiltro.doGaleria()}" ajax="false" value="Galeria" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
           </p:contextMenu>
         </div>
       </div>

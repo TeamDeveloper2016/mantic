@@ -5,6 +5,40 @@
 <process>
 	<dml> 
 		<unit id="VistaProductosDto">
+      <select id="porCodigo">
+        select      
+					distinct(tc_mantic_clientes.id_cliente) as id_key,
+					tc_mantic_tipos_ventas.nombre,
+          tc_mantic_clientes.*
+        from      
+          tc_mantic_clientes
+        inner join
+          tc_mantic_tipos_ventas on tc_mantic_clientes.id_tipo_venta= tc_mantic_tipos_ventas.id_tipo_venta
+        where 
+          tc_mantic_clientes.id_empresa in ({sucursales})
+          and upper(tc_mantic_clientes.clave) regexp '.*{codigo}.*'
+				order by
+				  tc_mantic_clientes.clave
+      </select>
+      <select id="porNombre">
+        select      
+					distinct(tc_mantic_clientes.id_cliente) as id_key,
+					tc_mantic_tipos_ventas.nombre,
+          tc_mantic_clientes.*
+        from      
+          tc_mantic_clientes
+        inner join
+          tc_mantic_tipos_ventas on tc_mantic_clientes.id_tipo_venta= tc_mantic_tipos_ventas.id_tipo_venta
+        where 
+          tc_mantic_clientes.id_empresa in ({sucursales})
+          and (
+				    upper(tc_mantic_clientes.razon_social) regexp '.*{codigo}.*'
+				    or
+				    upper(tc_mantic_clientes.rfc) regexp '.*{codigo}.*'
+				  )
+				order by
+				  tc_mantic_clientes.clave
+      </select>
       <select id="codigos">
         select      
           tc_mantic_articulos_codigos.id_articulo_codigo as id_key,

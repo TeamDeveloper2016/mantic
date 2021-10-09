@@ -2,7 +2,6 @@ package mx.org.kaana.mantic.productos.beans;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +14,6 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
@@ -44,16 +42,17 @@ public final class Partida extends TcManticProductosDetallesDto implements Seria
   private UISelectEntity ikArticuloCodigo;
   private List<UISelectEntity> codigos;
   private String precio;
+  private String cliente;
 
   public Partida() {
-    this(new Random().nextLong(), null, null, null, -1L, null);
+    this(new Random().nextLong(), null, null, null, -1L, null, "menudeo");
   }
 
-  public Partida(Long idArticulo, String codigo, String propio, String nombre, Long idImagen, String archivo) {
+  public Partida(Long idArticulo, String codigo, String propio, String nombre, Long idImagen, String archivo, String tipoVenta){
     super(new Random().nextLong());
-    this.codigo= codigo;
-    this.propio= propio;
-    this.nombre= nombre;
+    this.codigo  = codigo;
+    this.propio  = propio;
+    this.nombre  = nombre;
     this.idImagen= idImagen;
     this.archivo = archivo;
     this.setIdArticulo(idArticulo);
@@ -75,7 +74,7 @@ public final class Partida extends TcManticProductosDetallesDto implements Seria
       } // else
     } // if
     this.principal= Boolean.FALSE;
-    this.toLoadCodigos(Boolean.TRUE);
+    this.toLoadCodigos(Boolean.TRUE, tipoVenta);
   }
 
   public String getPropio() {
@@ -156,12 +155,16 @@ public final class Partida extends TcManticProductosDetallesDto implements Seria
     return precio;
   }
 
+  public String getCliente() {
+    return cliente;
+  }
+
   @Override
   public Class toHbmClass() {
     return TcManticProductosDetallesDto.class;
   }
 
-  protected void toLoadCodigos(Boolean first) {
+  protected void toLoadCodigos(Boolean first, String tipoVenta) {
 		List<Columna> columns     = null;
     Map<String, Object> params= null;
     try {      
@@ -182,8 +185,9 @@ public final class Partida extends TcManticProductosDetallesDto implements Seria
           else
             this.setIkArticuloCodigo(this.codigos.get(0));
         } // if  
-        this.codigo= this.getIkArticuloCodigo().toString("codigo");
-        this.precio= this.getIkArticuloCodigo().toString("menudeo");
+        this.codigo = this.getIkArticuloCodigo().toString("codigo");
+        this.precio = this.getIkArticuloCodigo().toString("menudeo");
+        this.cliente= this.getIkArticuloCodigo().toString(tipoVenta);
       } // if  
     } // try
     catch (Exception e) {

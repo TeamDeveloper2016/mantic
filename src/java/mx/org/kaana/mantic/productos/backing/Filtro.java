@@ -173,5 +173,17 @@ public class Filtro extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch			
   } // doEliminar	
+ 
+  public String doGaleria() {
+		try {
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Productos/filtro");		
+			JsfBase.setFlashAttribute("producto", this.attrs.get("seleccionado"));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return "/Paginas/Mantic/Productos/galeria".concat(Constantes.REDIRECIONAR);
+  } // doGaleria
   
 }

@@ -40,11 +40,15 @@ public final class Producto implements Serializable {
   private String archivo;
   
   public Producto() throws Exception {
-    this.init(-1L);
+    this(-1L);
   }
   
   public Producto(Long idProducto) throws Exception {
-    this.init(idProducto);
+    this(idProducto, "menudeo");
+  }
+  
+  public Producto(Long idProducto, String cliente) throws Exception {
+    this.init(idProducto, cliente);
   }
 
   public TcManticProductosDto getProducto() {
@@ -93,7 +97,7 @@ public final class Producto implements Serializable {
     return archivo;
   }
   
-  private void init(Long idProducto) throws Exception {
+  private void init(Long idProducto, String cliente) throws Exception {
     Map<String, Object> params = null;
     try {      
       params = new HashMap<>();      
@@ -116,7 +120,7 @@ public final class Producto implements Serializable {
             item.setPrincipal(Objects.equals(this.producto.getIdImagen(), item.getIdImagen()));
             item.setAnterior(ESql.SELECT);
             item.setAction(ESql.SELECT);
-            item.toLoadCodigos(Boolean.FALSE);
+            item.toLoadCodigos(Boolean.FALSE, cliente);
             if(item.getPrincipal())
               this.archivo= item.getArchivo();
           } // for

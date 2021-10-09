@@ -196,7 +196,7 @@ public class Accion extends IBaseFilter implements Serializable {
  
 	public void doAgregarPartida(Entity articulo) {
 		try {
-      Partida partida= new Partida(articulo.toLong("idArticulo"), articulo.toString("codigo"), articulo.toString("propio"), articulo.toString("nombre"), articulo.toLong("idImagen"), articulo.toString("archivo"));
+      Partida partida= new Partida(articulo.toLong("idArticulo"), articulo.toString("codigo"), articulo.toString("propio"), articulo.toString("nombre"), articulo.toLong("idImagen"), articulo.toString("archivo"), "menudeo");
 			if(this.producto.getArticulos().indexOf(partida)>= 0) 
         this.attrs.put("existe", "<span class='janal-color-orange'>EL ARTICULO YA ESTA EN LA LISTA</span>");
       this.producto.addPartida(partida);

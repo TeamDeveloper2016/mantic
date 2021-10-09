@@ -62,13 +62,35 @@
                   </p:column>   
                 </p:selectOneMenu>
                 <p:outputLabel for="categoria" value="Categoria(s):" style="display: none"/>
-                <p:selectOneMenu id="categoria" value="#{manticProductosGaleria.categoria}" var="item" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <p:ajax event="change" process="@this" update="tabla productos" listener="#{manticProductosGaleria.doLoad}"/>
-                  <f:selectItems value="#{manticProductosGaleria.attrs.categorias}"/>
-                </p:selectOneMenu>
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt disenio" columnClasses="janal-wid-100, janal-wid-col-38">
+                  <p:selectOneMenu id="categoria" value="#{manticProductosGaleria.categoria}" var="item" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                    <p:ajax event="change" process="@this" update="tabla productos" listener="#{manticProductosGaleria.doLoad}"/>
+                    <f:selectItems value="#{manticProductosGaleria.attrs.categorias}"/>
+                  </p:selectOneMenu>
+                  <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100-txt">
+                    <p:commandButton icon="fa fa-table" actionListener="#{manticProductosGaleria.doUpdateDisenio()}" process="@this" update="tabla productos @(.disenio)" style="display: #{manticProductosGaleria.attrs.disenio? '': 'none'}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                    <p:commandButton icon="fa fa-columns" actionListener="#{manticProductosGaleria.doUpdateDisenio()}" process="@this" update="tabla productos @(.disenio)" style="display: #{manticProductosGaleria.attrs.disenio? 'none': ''}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  </p:panelGrid>  
+                </p:panelGrid>  
               </p:panelGrid>
-              <p:dataGrid id="productos" value="#{manticProductosGaleria.productos}" var="row" columns="2" rowIndexVar="index" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" lazy="false">
+              <p:outputLabel for="razonSocial" value="Razón social:"/>
+							<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: ENVASES UNIVERSALES S.A." itemLabel="#{custom.clave}#{empty custom.clave? '': ' | '}#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticProductosGaleria.attrs.cliente}" completeMethod="#{manticProductosGaleria.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+                <p:ajax event="itemSelect" process="@this" update="tabla productos" listener="#{manticProductosGaleria.doLoad}"/>
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+										<h:outputText value="Clave:" />
+										<h:outputText value="#{custom.clave}" />
+										<h:outputText value="Razón social:" />
+										<h:outputText value="#{custom.razonSocial}" />
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
+              <p:spacer height="3px"/>
+              <p:dataGrid id="productos" value="#{manticProductosGaleria.productos}" var="row" columns="#{kajoolUtilAplicacion.isMobile? 1: 2}" rowIndexVar="index" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" lazy="false" styleClass="disenio" rendered="#{manticProductosGaleria.attrs.disenio}">
                 <div class="container">
+                  <div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header janal-wid-100-txt janal-column-center" style="display: #{manticProductosGaleria.doCheckCategoria(row.data)}">
+                    <span class="ui-panel-title Fs18">#{manticProductosGaleria.attrs.categoria}</span> 
+                  </div>
                   <div class="galeria">
                     <div class="galeria-header p-p-2">
                       <span class="galeria-marca">#{row.data.producto.marca}</span><br/>
@@ -88,7 +110,7 @@
                       </div>  
                     </div>
                     <div class="galeria-actions">
-                      <p:dataTable var="row" value="#{row.data.articulos}" paginator="false" rowKey="#{row.data.idArticulo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{manticProductosGaleria.toColorPartida(row)}">
+                      <p:dataTable var="row" value="#{row.data.articulos}" paginator="false" rowKey="#{row.data.idProductoDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{manticProductosGaleria.toColorPartida(row)}">
                         <p:column headerText="Código" styleClass="janal-wid-15">
                           <p:outputLabel value="#{row.codigo}"/>
                         </p:column>   
@@ -102,7 +124,7 @@
                           <h:outputText value="#{row.precio}"/>
                         </p:column>   
                         <p:column headerText="Cliente" styleClass="janal-wid-12 janal-column-right" rendered="#{manticProductosGaleria.attrs.particular}">
-                          <h:outputText value="$0.00"/>
+                          <h:outputText value="#{row.cliente}"/>
                         </p:column>
                       </p:dataTable>	
                       <br/>
@@ -110,10 +132,10 @@
                   </div>  
                 </div>                
               </p:dataGrid>
-              <pe:fluidGrid id="tabla" value="#{manticProductosGaleria.productos}" var="row" fitWidth="true" hasImages="true" rendered="false">
+              <pe:fluidGrid id="tabla" value="#{manticProductosGaleria.productos}" var="row" fitWidth="true" hasImages="true" styleClass="disenio" rendered="#{not manticProductosGaleria.attrs.disenio}">
                 <pe:fluidGridItem>
-                  <div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header janal-wid-100-txt janal-column-center" style="display: none">
-                    <span class="ui-panel-title Fs18" style="display: #{manticProductosGaleria.doCheckCategoria(row)}">#{manticProductosGaleria.attrs.categoria}</span> 
+                  <div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header janal-wid-100-txt janal-column-center" style="display: #{manticProductosGaleria.doCheckCategoria(row)}">
+                    <span class="ui-panel-title Fs18">#{manticProductosGaleria.attrs.categoria}</span> 
                   </div>
                   <div class="container">
                     <div class="galeria">
@@ -135,7 +157,7 @@
                         </div>  
                       </div>
                       <div class="galeria-actions">
-                        <p:dataTable var="row" value="#{row.articulos}" paginator="false" rowKey="#{row.idArticulo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{manticProductosGaleria.toColorPartida(row)}">
+                        <p:dataTable var="row" value="#{row.articulos}" paginator="false" rowKey="#{row.idProductoDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{manticProductosGaleria.toColorPartida(row)}">
                           <p:column headerText="Código" styleClass="janal-wid-15">
                             <p:outputLabel value="#{row.codigo}"/>
                           </p:column>   
@@ -149,7 +171,7 @@
                             <h:outputText value="#{row.precio}"/>
                           </p:column>   
                           <p:column headerText="Cliente" styleClass="janal-wid-12 janal-column-right" rendered="#{manticProductosGaleria.attrs.particular}">
-                            <h:outputText value="$0.00"/>
+                            <h:outputText value="#{row.cliente}"/>
                           </p:column>
                         </p:dataTable>	
                         <br/>

@@ -129,7 +129,7 @@ $.mask.rules = $.extend($.mask.rules, {
 	's': /[^\u0025\u0027]/,
 	't': /[0-9a-zA-Z_]/,
 	'v': /[0-9a-zA-Z.;:@+\-_#&/\u007C]/,
-	'w': /[0-9a-zA-Z.-_\u007C]/
+	'w': /[0-9a-zA-Z.-_"*\u007C]/
 });
 
 $.mask.masks = $.extend($.mask.masks, {
@@ -707,7 +707,7 @@ $.mask.masks = $.extend($.mask.masks, {
 		   if (janal.empty(value) || $(element).hasClass('ignore'))
 				 return true;
 		   else
-				 return /^([a-z]|[A-Z]|[0-9]|[-_.|])+$/.test(value);
+				 return /^([a-z]|[A-Z]|[0-9]|[-_.|"*])+$/.test(value);
 		}, 'Solo se permiten caracteres alfab\u00E9ticos.');
 
 	$.validator.addMethod('alfanumerico', function(value, element, params) {
