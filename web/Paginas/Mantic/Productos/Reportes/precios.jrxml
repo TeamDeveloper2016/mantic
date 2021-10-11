@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="precios" pageWidth="380" pageHeight="150" columnWidth="378" leftMargin="1" rightMargin="1" topMargin="1" bottomMargin="1" uuid="cb2dfe2e-e8ef-48a1-91bb-b41c4ada4cb5">
+	<property name="ireport.zoom" value="4.0"/>
+	<property name="ireport.x" value="41"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="CLIENTE" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new String("mayoreo")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ID_PRODUCTO" class="java.lang.Long" isForPrompting="false">
+		<defaultValueExpression><![CDATA[new Long(1L)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORTE_SQL" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[" select"+
+"  tc_mantic_articulos_codigos.id_articulo_codigo as id_key,"+
+"  tc_mantic_articulos_codigos.codigo,"+
+"  tc_mantic_productos_detalles.descripcion,"+
+"  tc_mantic_productos_detalles.medida,"+
+"  tc_mantic_articulos.menudeo as precio,"+
+"  tc_mantic_articulos.medio_mayoreo,"+
+"  tc_mantic_articulos.mayoreo,"+
+"  tc_mantic_articulos."+ $P{CLIENTE}+ " as cliente"+
+" from"+
+"  tc_mantic_productos"+
+" inner join"+
+"  tc_mantic_productos_detalles on tc_mantic_productos_detalles.id_producto=tc_mantic_productos.id_producto"+
+" inner join"+
+"  tc_mantic_articulos_codigos on tc_mantic_productos_detalles.id_articulo_codigo= tc_mantic_articulos_codigos.id_articulo_codigo"+
+" inner join"+
+"  tc_mantic_articulos on tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo"+
+" where"+
+"  tc_mantic_productos.id_producto= "+ $P{ID_PRODUCTO}+
+" order by "+
+" tc_mantic_productos_detalles.orden"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[$P!{REPORTE_SQL}]]>
+	</queryString>
+	<field name="CODIGO" class="java.lang.String"/>
+	<field name="DESCRIPCION" class="java.lang.String"/>
+	<field name="MEDIDA" class="java.lang.String"/>
+	<field name="PRECIO" class="java.lang.Double"/>
+	<field name="CLIENTE" class="java.lang.Double"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="12" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="378" height="12" forecolor="#CCCCCC" backcolor="#CCCCCC" uuid="71a9f6ae-7f09-4ab5-acd4-9f47baa89ec0"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="1" y="0" width="77" height="12" uuid="b5cb383b-4e82-4229-9bd7-a0361dfdd3ac"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial Narrow" size="9"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="78" y="0" width="142" height="12" uuid="98190bec-f6f8-4230-99b4-9e3dad0f9165"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial Narrow" size="9"/>
+				</textElement>
+				<text><![CDATA[Descripción]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="219" y="0" width="50" height="12" uuid="1cc9d675-1aea-47d4-8933-3e7aca075fcc"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial Narrow" size="9"/>
+				</textElement>
+				<text><![CDATA[Medida]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="268" y="0" width="57" height="12" uuid="746481f2-ea35-468e-9ac2-51f65cbe8f14"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial Narrow" size="9"/>
+				</textElement>
+				<text><![CDATA[Precio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="324" y="0" width="54" height="12" uuid="e365c2f0-971b-40fb-b8e0-9ae66328728f"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial Narrow" size="9"/>
+				</textElement>
+				<text><![CDATA[Cliente]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="13" splitType="Stretch">
+			<frame>
+				<reportElement x="1" y="0" width="377" height="12" forecolor="#FFFFFF" uuid="534474ac-059e-4507-bfc3-898adca66084"/>
+				<textField>
+					<reportElement x="0" y="0" width="77" height="12" uuid="6d832b1a-e282-499b-b27a-eb1f7c9d5635"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial Narrow" size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{CODIGO}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="77" y="0" width="141" height="12" uuid="c8b49dd5-69ae-4b07-8b3e-5633bffa4b91"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial Narrow" size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{DESCRIPCION}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="219" y="0" width="50" height="12" uuid="80338846-162f-47a8-8e11-2b284860f392"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial Narrow" size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{MEDIDA}]]></textFieldExpression>
+				</textField>
+				<textField pattern="$ #,##0.00">
+					<reportElement x="268" y="0" width="56" height="12" uuid="f81c733b-3903-49b4-b7ef-af3b51ea6a47"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{PRECIO}]]></textFieldExpression>
+				</textField>
+				<textField pattern="$ #,##0.00">
+					<reportElement x="324" y="0" width="52" height="12" uuid="9adf20ec-e80a-4b7c-8f5d-60091eba0f81"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial Narrow" size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{CLIENTE}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -25,6 +25,7 @@ import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticPedidosDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticPedidosDto;
 import mx.org.kaana.mantic.inventarios.almacenes.beans.TiposVentas;
+import mx.org.kaana.mantic.inventarios.almacenes.enums.ETiposVentas;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -109,14 +110,15 @@ public class Transaccion extends IBaseTnx {
 					articulo.setPrecio(this.precio);
 					articulo.setDescuento(this.descuento);
 					articulo.setExtra(this.extra);
-					articulo.setMenudeo(this.articulos.get(0).getPrecio());
-					articulo.setLimiteMedioMayoreo(this.articulos.get(0).getLimite());
-					articulo.setMedioMayoreo(this.articulos.get(1).getPrecio());
-					articulo.setLimiteMayoreo(this.articulos.get(1).getLimite());
-					articulo.setMayoreo(this.articulos.get(2).getPrecio());
+					articulo.setMenudeo(this.articulos.get(ETiposVentas.MENUDEO.ordinal()).getPrecio());
+					articulo.setLimiteMedioMayoreo(this.articulos.get(ETiposVentas.MENUDEO.ordinal()).getLimite());
+					articulo.setMedioMayoreo(this.articulos.get(ETiposVentas.MEDIO_MAYOREO.ordinal()).getPrecio());
+					articulo.setLimiteMayoreo(this.articulos.get(ETiposVentas.MEDIO_MAYOREO.ordinal()).getLimite());
+					articulo.setMayoreo(this.articulos.get(ETiposVentas.MAYOREO.ordinal()).getPrecio());
+					articulo.setEspecial(this.articulos.get(ETiposVentas.ESPECIAL.ordinal()).getPrecio());
 					articulo.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 				  regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
-					TcManticArticulosBitacoraDto movimiento= new TcManticArticulosBitacoraDto(articulo.getIva(), JsfBase.getIdUsuario(), articulo.getMayoreo(), -1L, articulo.getMenudeo(), articulo.getCantidad(), articulo.getIdArticulo(), null, articulo.getMedioMayoreo(), this.precio, articulo.getLimiteMedioMayoreo(), articulo.getLimiteMayoreo(), articulo.getDescuento(), articulo.getExtra());
+					TcManticArticulosBitacoraDto movimiento= new TcManticArticulosBitacoraDto(articulo.getIva(), JsfBase.getIdUsuario(), articulo.getMayoreo(), -1L, articulo.getMenudeo(), articulo.getCantidad(), articulo.getIdArticulo(), null, articulo.getMedioMayoreo(), this.precio, articulo.getLimiteMedioMayoreo(), articulo.getLimiteMayoreo(), articulo.getDescuento(), articulo.getExtra(), articulo.getEspecial());
 					regresar= DaoFactory.getInstance().insert(sesion, movimiento)>= 1L;
 					break;
 				case REGISTRAR:

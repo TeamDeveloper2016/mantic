@@ -50,7 +50,8 @@ public enum EReportes implements IReportAttribute{
   FACTURAS_FICTICIAS        ("VistaFicticiasDto", "lazy", "Listado de facturación", "/Paginas/Mantic/Facturas/Reportes/facturas", EFormatos.PDF, "FAC", "/Paginas/Mantic/Facturas/filtro"),
 	FACTURAS_FICTICIAS_DETALLE("reporteFacturaDetalle", "ficticiaDetalle", "Facturación", "/Paginas/Mantic/Facturas/Reportes/facturaDetalle", EFormatos.PDF, "FAC", "/Paginas/Mantic/Facturas/filtro"),
 	FACTURAS_RESUMEN          ("VistaReporteJuntaFacturas", "facturas", "Facturama", "", EFormatos.PDF, "FACS", "/Paginas/Mantic/Facturas/filtro"),
-	ORDEN_TALLER              ("VistaReportesOrdenesTallerDto", "ordenTaller", "Orden de reparación", "/Paginas/Mantic/Taller/Reportes/ordenTaller", EFormatos.PDF, "ODT", "/Paginas/Mantic/Taller/filtro");
+	ORDEN_TALLER              ("VistaReportesOrdenesTallerDto", "ordenTaller", "Orden de reparación", "/Paginas/Mantic/Taller/Reportes/ordenTaller", EFormatos.PDF, "ODT", "/Paginas/Mantic/Taller/filtro"),
+	PRODUCTOS                 ("VistaProductosDto", "productos", "Catalogo de productos", "/Paginas/Mantic/Productos/Reportes/productos", EFormatos.PDF, "PTO", "/Paginas/Mantic/Productos/filtro");
 	
 	
 	private final String proceso;

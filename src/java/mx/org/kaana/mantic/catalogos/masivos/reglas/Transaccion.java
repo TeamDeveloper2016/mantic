@@ -680,7 +680,8 @@ public class Transaccion extends IBaseTnx {
 											null, // String idFacturama
 											2L, // String idDescontinuado
                       !Cadena.isVacio(fabricante)? fabricante.replaceAll(Constantes.CLEAN_ART, "").trim(): null, // String fabricante
-                      2L // Long idVerificado      
+                      2L, // Long idVerificado 
+                      Numero.toAjustarDecimales(menudeo, costo<= 10) // especial
 										);
 										TcManticArticulosDto identico= this.toFindArticuloIdentico(sesion, articulo.toMap(), 1L);
 										if(identico== null)
@@ -693,6 +694,7 @@ public class Transaccion extends IBaseTnx {
 											identico.setMenudeo(Numero.toAjustarDecimales(menudeo, identico.getIdRedondear().equals(1L)));
 											identico.setMedioMayoreo(Numero.toAjustarDecimales(medio, identico.getIdRedondear().equals(1L)));
 											identico.setMayoreo(Numero.toAjustarDecimales(mayoreo, identico.getIdRedondear().equals(1L)));
+											identico.setEspecial(Numero.toAjustarDecimales(menudeo, identico.getIdRedondear().equals(1L)));
 											identico.setIva(iva);
 											identico.setPrecio(costo);
                       if(!Cadena.isVacio(fabricante))

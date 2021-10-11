@@ -6,7 +6,7 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
-                template="/WEB-INF/plantillas/accion.xhtml">
+                template="/WEB-INF/plantillas/reporte.xhtml">
 	<ui:param name="titulo" value="Galeria de productos por categoria" />
 	<ui:define name="librerias">
 		<script type="text/javascript">
@@ -30,15 +30,16 @@
       .p-p-1 {padding: 0.25rem !important;}
       .p-p-2 {padding: 0.3rem !important;}
       .container {width: 100%; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center;}
-      .galeria  {width: 850px; margin-right: 3%;}
+      .galeria  {width: 650px; margin-right: 3%;}
       .galeria .galeria-header {margin: 0 0 0.2rem 0; text-align: left;}
-      .galeria .galeria-description {margin: 0 0 0.1rem 1.4rem; font-size: 1rem; padding-left: 0px !important; font-weight: normal !important;}
+      .galeria .galeria-list {border: 0px; padding-right: 0px;}
+      .galeria .galeria-description {margin: 0 0 0.1rem -1.2rem; font-size: 1rem; padding-left: 0px !important; font-weight: normal !important;}
       .galeria .galeria-marca {font-size: 1.5rem; margin: 0 0 0.5rem 0; color: blue; font-weight: bold;}
       .galeria .galeria-nombre {font-size: 1.2rem; margin: 0 0 0.5rem 0; color: black; font-weight: bold;}
-      .galeria .galeria-list-item .galeria-actions {font-size: 0.9rem; font-weight: 100; margin-bottom: 0.5rem; align-self: flex-end; text-align: right;}
+      .galeria .galeria-list-item .galeria-actions {font-size: 0.9rem; font-weight: 100; margin-bottom: 0.1rem; align-self: flex-end; text-align: right;}
       .galeria .galeria-list-item .galeria-item-search {width: 420px; text-align: center;}
       .galeria .galeria-list-item .galeria-item-search img {width: 400px; height:370px; margin-right: 2rem;}      
-      .galeria .galeria-list-item {display: -ms-flexbox;display: flex;-ms-flex-align: center;align-items: center;padding: 1rem; text-align: left;}
+      .galeria .galeria-list-item {display: -ms-flexbox;display: flex;-ms-flex-align: center;align-items: center;padding: 0.5rem; text-align: left;}
       .galeria .galeria-list-item .galeria-list-detail {flex: 1 1 0;-ms-flex: 1 1 0;align-self: baseline;}  
     </style>      
 	</ui:define>
@@ -64,101 +65,58 @@
                 <p:outputLabel for="categoria" value="Categoria(s):" style="display: none"/>
                 <p:panelGrid columns="2" styleClass="janal-wid-100-txt disenio" columnClasses="janal-wid-100, janal-wid-col-38">
                   <p:selectOneMenu id="categoria" value="#{manticProductosGaleria.categoria}" var="item" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                    <p:ajax event="change" process="@this" update="tabla productos" listener="#{manticProductosGaleria.doLoad}"/>
+                    <p:ajax event="change" process="@this" update="@(.disenio)" listener="#{manticProductosGaleria.doLoad}"/>
                     <f:selectItems value="#{manticProductosGaleria.attrs.categorias}"/>
                   </p:selectOneMenu>
                   <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100-txt">
-                    <p:commandButton icon="fa fa-table" actionListener="#{manticProductosGaleria.doUpdateDisenio()}" process="@this" update="tabla productos @(.disenio)" style="display: #{manticProductosGaleria.attrs.disenio? '': 'none'}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-                    <p:commandButton icon="fa fa-columns" actionListener="#{manticProductosGaleria.doUpdateDisenio()}" process="@this" update="tabla productos @(.disenio)" style="display: #{manticProductosGaleria.attrs.disenio? 'none': ''}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                    <p:commandButton icon="fa fa-table" title="Diseño" actionListener="#{manticProductosGaleria.doUpdateDisenio()}" process="@this" update="@(.disenio)" style="display: #{manticProductosGaleria.attrs.disenio? '': 'none'}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                    <p:commandButton icon="fa fa-columns" title="Diseño" actionListener="#{manticProductosGaleria.doUpdateDisenio()}" process="@this" update="@(.disenio)" style="display: #{manticProductosGaleria.attrs.disenio? 'none': ''}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                   </p:panelGrid>  
                 </p:panelGrid>  
               </p:panelGrid>
               <p:outputLabel for="razonSocial" value="Razón social:"/>
-							<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: ENVASES UNIVERSALES S.A." itemLabel="#{custom.clave}#{empty custom.clave? '': ' | '}#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticProductosGaleria.attrs.cliente}" completeMethod="#{manticProductosGaleria.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
-                <p:ajax event="itemSelect" process="@this" update="tabla productos" listener="#{manticProductosGaleria.doLoad}"/>
-								<f:facet name="itemtip">
-									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
-										<h:outputText value="Clave:" />
-										<h:outputText value="#{custom.clave}" />
-										<h:outputText value="Razón social:" />
-										<h:outputText value="#{custom.razonSocial}" />
-									</h:panelGrid>
-								</f:facet>
-							</p:autoComplete>	
+              <p:panelGrid columns="2" styleClass="janal-wid-100-txt disenio" columnClasses="janal-wid-100, janal-wid-col-38">
+                <p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: ENVASES UNIVERSALES S.A." itemLabel="#{custom.clave}#{empty custom.clave? '': ' | '}#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticProductosGaleria.attrs.cliente}" completeMethod="#{manticProductosGaleria.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+                  <p:ajax event="itemSelect" process="@this" update="@(.disenio)" listener="#{manticProductosGaleria.doLoad}"/>
+                  <f:facet name="itemtip">
+                    <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+                      <h:outputText value="Clave:" />
+                      <h:outputText value="#{custom.clave}" />
+                      <h:outputText value="Razón social:" />
+                      <h:outputText value="#{custom.razonSocial}" />
+                    </h:panelGrid>
+                  </f:facet>
+                </p:autoComplete>	
+                <p:commandButton icon="fa fa-print" title="Reporte" actionListener="#{manticProductosGaleria.doReporte()}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+              </p:panelGrid>  
               <p:spacer height="3px"/>
-              <p:dataGrid id="productos" value="#{manticProductosGaleria.productos}" var="row" columns="#{kajoolUtilAplicacion.isMobile? 1: 2}" rowIndexVar="index" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" lazy="false" styleClass="disenio" rendered="#{manticProductosGaleria.attrs.disenio}">
-                <div class="container">
-                  <div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header janal-wid-100-txt janal-column-center" style="display: #{manticProductosGaleria.doCheckCategoria(row.data)}">
-                    <span class="ui-panel-title Fs18">#{manticProductosGaleria.attrs.categoria}</span> 
-                  </div>
-                  <div class="galeria">
-                    <div class="galeria-header p-p-2">
-                      <span class="galeria-marca">#{row.data.producto.marca}</span><br/>
-                      <span class="galeria-nombre">#{row.data.producto.nombre}</span>
-                    </div>  
-                    <div class="galeria-list-item p-p-1">
-                      <div class="galeria-item-search">
-                        <a id="view#{row.data.producto.idProducto}" data-magnify="gallery" href="#{manticProductosGaleria.path}#{row.data.archivo}" data-caption="#{row.data.producto.nombre}" data-group="icon-image" class="icon">
-                          <p:graphicImage url="#{manticProductosGaleria.path}#{row.data.archivo}" style="cursor:zoom-in;"/>
-                        </a>  
-                      </div> 
-                      <div class="galeria-list-detail">
-                        <span class="janal-color-orange" style="font-size: 1.1rem; font-weight: bold;">ESPECIFICACIONES:</span><br/>
-                        <p:dataList var="item" value="#{row.data.caracteristicas}" itemStyleClass="galeria-description" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
-                          #{manticProductosGaleria.doLetraCapital(item)}
-                        </p:dataList>
-                      </div>  
-                    </div>
-                    <div class="galeria-actions">
-                      <p:dataTable var="row" value="#{row.data.articulos}" paginator="false" rowKey="#{row.data.idProductoDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{manticProductosGaleria.toColorPartida(row)}">
-                        <p:column headerText="Código" styleClass="janal-wid-15">
-                          <p:outputLabel value="#{row.codigo}"/>
-                        </p:column>   
-                        <p:column headerText="Descripción" styleClass="janal-column-left">
-                          <p:outputLabel value="#{row.descripcion}"/>
-                        </p:column>   
-                        <p:column headerText="Medida" styleClass="janal-wid-12 janal-column-center">
-                          <p:outputLabel value="#{row.medida}"/>
-                        </p:column>   
-                        <p:column headerText="Precio" styleClass="janal-wid-12 janal-column-right">
-                          <h:outputText value="#{row.precio}"/>
-                        </p:column>   
-                        <p:column headerText="Cliente" styleClass="janal-wid-12 janal-column-right" rendered="#{manticProductosGaleria.attrs.particular}">
-                          <h:outputText value="#{row.cliente}"/>
-                        </p:column>
-                      </p:dataTable>	
-                      <br/>
-                    </div>  
-                  </div>  
-                </div>                
-              </p:dataGrid>
-              <pe:fluidGrid id="tabla" value="#{manticProductosGaleria.productos}" var="row" fitWidth="true" hasImages="true" styleClass="disenio" rendered="#{not manticProductosGaleria.attrs.disenio}">
-                <pe:fluidGridItem>
-                  <div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header janal-wid-100-txt janal-column-center" style="display: #{manticProductosGaleria.doCheckCategoria(row)}">
-                    <span class="ui-panel-title Fs18">#{manticProductosGaleria.attrs.categoria}</span> 
-                  </div>
+              <p:panelGrid columns="1" styleClass="janal-wid-100-txt disenio">
+                <p:dataGrid id="productos" value="#{manticProductosGaleria.productos}" var="row" columns="#{kajoolUtilAplicacion.isMobile? 1: 2}" rowIndexVar="index" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" lazy="false" rendered="#{manticProductosGaleria.attrs.disenio}">
                   <div class="container">
+                    <div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header janal-wid-100-txt janal-column-center" style="margin-right: 10px; display: #{manticProductosGaleria.doCheckCategoria(row.data)}">
+                      <span class="ui-panel-title Fs18">#{manticProductosGaleria.attrs.categoria}</span> 
+                    </div>
                     <div class="galeria">
                       <div class="galeria-header p-p-2">
-                        <span class="galeria-marca">#{row.producto.marca}</span><br/>
-                        <span class="galeria-nombre">#{row.producto.nombre}</span>
+                        <span class="galeria-marca">#{row.data.producto.marca}</span><br/>
+                        <span class="galeria-nombre">#{row.data.producto.nombre}</span>
                       </div>  
                       <div class="galeria-list-item p-p-1">
                         <div class="galeria-item-search">
-                          <a id="view#{row.producto.idProducto}" data-magnify="gallery" href="#{manticProductosGaleria.path}#{row.archivo}" data-caption="#{row.producto.nombre}" data-group="icon-image" class="icon">
-                            <p:graphicImage url="#{manticProductosGaleria.path}#{row.archivo}" style="cursor:zoom-in;"/>
+                          <a id="view#{row.data.producto.idProducto}" data-magnify="gallery" href="#{manticProductosGaleria.path}#{row.data.archivo}" data-caption="#{row.data.producto.nombre}" data-group="icon-image" class="icon">
+                            <p:graphicImage url="#{manticProductosGaleria.path}#{row.data.archivo}" style="cursor:zoom-in;"/>
                           </a>  
                         </div> 
                         <div class="galeria-list-detail">
                           <span class="janal-color-orange" style="font-size: 1.1rem; font-weight: bold;">ESPECIFICACIONES:</span><br/>
-                          <p:dataList var="item" value="#{row.caracteristicas}" itemStyleClass="galeria-description" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
+                          <p:dataList var="item" value="#{row.data.caracteristicas}" styleClass="galeria-list" itemStyleClass="galeria-description" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
                             #{manticProductosGaleria.doLetraCapital(item)}
                           </p:dataList>
                         </div>  
                       </div>
                       <div class="galeria-actions">
-                        <p:dataTable var="row" value="#{row.articulos}" paginator="false" rowKey="#{row.idProductoDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{manticProductosGaleria.toColorPartida(row)}">
-                          <p:column headerText="Código" styleClass="janal-wid-15">
+                        <p:dataTable var="row" value="#{row.data.articulos}" paginator="false" rowKey="#{row.data.idProductoDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{manticProductosGaleria.toColorPartida(row)}">
+                          <p:column headerText="Código" styleClass="janal-wid-20">
                             <p:outputLabel value="#{row.codigo}"/>
                           </p:column>   
                           <p:column headerText="Descripción" styleClass="janal-column-left">
@@ -177,9 +135,57 @@
                         <br/>
                       </div>  
                     </div>  
-                  </div>
-                </pe:fluidGridItem>  
-              </pe:fluidGrid>  
+                  </div>                
+                </p:dataGrid>
+                <pe:fluidGrid id="tabla" value="#{manticProductosGaleria.productos}" var="row" fitWidth="true" hasImages="true" rendered="#{not manticProductosGaleria.attrs.disenio}">
+                  <pe:fluidGridItem>
+                    <div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header janal-wid-100-txt janal-column-center" style="margin-right: 10px; display: #{manticProductosGaleria.doCheckCategoria(row)}">
+                      <span class="ui-panel-title Fs18">#{manticProductosGaleria.attrs.categoria}</span> 
+                    </div>
+                    <div class="container">
+                      <div class="galeria">
+                        <div class="galeria-header p-p-2">
+                          <span class="galeria-marca">#{row.producto.marca}</span><br/>
+                          <span class="galeria-nombre">#{row.producto.nombre}</span>
+                        </div>  
+                        <div class="galeria-list-item p-p-1">
+                          <div class="galeria-item-search">
+                            <a id="view#{row.producto.idProducto}" data-magnify="gallery" href="#{manticProductosGaleria.path}#{row.archivo}" data-caption="#{row.producto.nombre}" data-group="icon-image" class="icon">
+                              <p:graphicImage url="#{manticProductosGaleria.path}#{row.archivo}" style="cursor:zoom-in;"/>
+                            </a>  
+                          </div> 
+                          <div class="galeria-list-detail">
+                            <span class="janal-color-orange" style="font-size: 1.1rem; font-weight: bold;">ESPECIFICACIONES:</span><br/>
+                            <p:dataList var="item" value="#{row.caracteristicas}" styleClass="galeria-list" itemStyleClass="galeria-description" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
+                              #{manticProductosGaleria.doLetraCapital(item)}
+                            </p:dataList>
+                          </div>  
+                        </div>
+                        <div class="galeria-actions">
+                          <p:dataTable var="row" value="#{row.articulos}" paginator="false" rowKey="#{row.idProductoDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{manticProductosGaleria.toColorPartida(row)}">
+                            <p:column headerText="Código" styleClass="janal-wid-20">
+                              <p:outputLabel value="#{row.codigo}"/>
+                            </p:column>   
+                            <p:column headerText="Descripción" styleClass="janal-column-left">
+                              <p:outputLabel value="#{row.descripcion}"/>
+                            </p:column>   
+                            <p:column headerText="Medida" styleClass="janal-wid-12 janal-column-center">
+                              <p:outputLabel value="#{row.medida}"/>
+                            </p:column>   
+                            <p:column headerText="Precio" styleClass="janal-wid-12 janal-column-right">
+                              <h:outputText value="#{row.precio}"/>
+                            </p:column>   
+                            <p:column headerText="Cliente" styleClass="janal-wid-12 janal-column-right" rendered="#{manticProductosGaleria.attrs.particular}">
+                              <h:outputText value="#{row.cliente}"/>
+                            </p:column>
+                          </p:dataTable>	
+                          <br/>
+                        </div>  
+                      </div>  
+                    </div>
+                  </pe:fluidGridItem>  
+                </pe:fluidGrid>  
+              </p:panelGrid>                
 						</p:tab>
 					</p:tabView>
 				</div>

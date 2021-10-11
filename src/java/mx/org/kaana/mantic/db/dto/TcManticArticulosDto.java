@@ -110,17 +110,19 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
   private String fabricante;
   @Column (name="id_verificado")
   private Long idVerificado;
+  @Column (name="especial")
+  private Double especial;
 
   public TcManticArticulosDto() {
     this(new Long(-1L));
   }
 
   public TcManticArticulosDto(Long key) {
-    this(null, null, null, null, null, null, null, 10D, 16D, 13D, 0D, null, null, new Long(-1L), 0D, 15D, 0D, null, null, 17D, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null, 3D, 5D, 3D, 8D, Constantes.CODIGO_SAT, 1L, 2L, "0", "0", null, 2L, null, 2L);
+    this(null, null, null, null, null, null, null, 10D, 16D, 13D, 0D, null, null, new Long(-1L), 0D, 15D, 0D, null, null, 17D, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null, 3D, 5D, 3D, 8D, Constantes.CODIGO_SAT, 1L, 2L, "0", "0", null, 2L, null, 2L, 17D);
     setKey(key);
   }
 
-  public TcManticArticulosDto(String descripcion, String descuentos, Long idImagen, Long idCategoria, String extras, String metaTag, String nombre, Double precio, Double iva, Double mayoreo, Double desperdicio, String metaTagDescipcion, Long idVigente, Long idArticulo, Double stock, Double medioMayoreo, Double pesoEstimado, Long idEmpaqueUnidadMedida, Long idRedondear, Double menudeo, String metaTagTeclado, Timestamp fecha, Long idUsuario, Long idEmpresa, Double cantidad, Double minimo, Double maximo, Double limiteMedioMayoreo, Double limiteMayoreo, String sat, Long idArticuloTipo, Long idBarras, String descuento, String extra, String idFacturama, Long idDescontinuado, String fabricante, Long idVerificado) {
+  public TcManticArticulosDto(String descripcion, String descuentos, Long idImagen, Long idCategoria, String extras, String metaTag, String nombre, Double precio, Double iva, Double mayoreo, Double desperdicio, String metaTagDescipcion, Long idVigente, Long idArticulo, Double stock, Double medioMayoreo, Double pesoEstimado, Long idEmpaqueUnidadMedida, Long idRedondear, Double menudeo, String metaTagTeclado, Timestamp fecha, Long idUsuario, Long idEmpresa, Double cantidad, Double minimo, Double maximo, Double limiteMedioMayoreo, Double limiteMayoreo, String sat, Long idArticuloTipo, Long idBarras, String descuento, String extra, String idFacturama, Long idDescontinuado, String fabricante, Long idVerificado, Double especial) {
     setDescripcion(descripcion);
     setDescuentos(descuentos);
     setIdImagen(idImagen);
@@ -161,6 +163,7 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
 		this.idDescontinuado= idDescontinuado;
     this.fabricante  = fabricante;
     this.idVerificado= idVerificado;
+    this.especial    = especial;
   }
 	
   public void setDescripcion(String descripcion) {
@@ -482,6 +485,14 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
   public void setIdVerificado(Long idVerificado) {
     this.idVerificado = idVerificado;
   }
+
+  public Double getEspecial() {
+    return especial;
+  }
+
+  public void setEspecial(Double especial) {
+    this.especial = especial;
+  }
 	
   @Transient
   @Override
@@ -577,6 +588,8 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
 		regresar.append(getFabricante());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdVerificado());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getEspecial());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -624,13 +637,14 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
 		regresar.put("idDescontinuado", getIdDescontinuado());
 		regresar.put("fabricante", getFabricante());
 		regresar.put("idVerificado", getIdVerificado());
+		regresar.put("especial", getEspecial());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getDescripcion(), getDescuentos(), getIdImagen(), getIdCategoria(), getExtras(), getMetaTag(), getNombre(), getPrecio(), getIva(), getMayoreo(), getDesperdicio(), getMetaTagDescipcion(), getIdVigente(), getIdArticulo(), getStock(), getMedioMayoreo(), getPesoEstimado(), getIdEmpaqueUnidadMedida(), getIdRedondear(), getMenudeo(), getMetaTagTeclado(), getRegistro(), getFecha(), getIdUsuario(), getIdEmpresa(), getCantidad(), getMinimo(), getMaximo(), getLimiteMedioMayoreo(), getLimiteMayoreo(), getSat(), getIdArticuloTipo(), getIdBarras(), getDescuento(), getExtras(), getIdFacturama(), getActualizado(), getIdDescontinuado(), getFabricante(), getIdVerificado()
+      getDescripcion(), getDescuentos(), getIdImagen(), getIdCategoria(), getExtras(), getMetaTag(), getNombre(), getPrecio(), getIva(), getMayoreo(), getDesperdicio(), getMetaTagDescipcion(), getIdVigente(), getIdArticulo(), getStock(), getMedioMayoreo(), getPesoEstimado(), getIdEmpaqueUnidadMedida(), getIdRedondear(), getMenudeo(), getMetaTagTeclado(), getRegistro(), getFecha(), getIdUsuario(), getIdEmpresa(), getCantidad(), getMinimo(), getMaximo(), getLimiteMedioMayoreo(), getLimiteMayoreo(), getSat(), getIdArticuloTipo(), getIdBarras(), getDescuento(), getExtras(), getIdFacturama(), getActualizado(), getIdDescontinuado(), getFabricante(), getIdVerificado(), getEspecial()
     };
     return regresar;
   }

@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cuentasPorCobrar" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.libs.reportes.scriptlets.BarraProgreso" uuid="d2356c21-6da1-4308-b17c-0af11cc8260c">
 	<property name="ireport.zoom" value="6.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="621"/>
+	<property name="ireport.y" value="787"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -69,32 +69,32 @@
 	<field name="ESTATUS" class="java.lang.String"/>
 	<field name="PAGADO" class="java.math.BigDecimal"/>
 	<field name="FECHA" class="java.sql.Timestamp"/>
-	<variable name="CONTADOR" class="java.math.BigDecimal" calculation="Count">
+	<variable name="CONTADOR" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
 	<variable name="GPO_IMPORTE" class="java.math.BigDecimal" resetType="Group" resetGroup="Orden" calculation="Sum">
 		<variableExpression><![CDATA[$F{IMPORTE}]]></variableExpression>
-		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0.0)]]></initialValueExpression>
 	</variable>
 	<variable name="CTE_IMPORTE" class="java.math.BigDecimal" resetType="Group" resetGroup="CLIENTE" calculation="Sum">
 		<variableExpression><![CDATA[$F{IMPORTE}]]></variableExpression>
-		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0.0)]]></initialValueExpression>
 	</variable>
 	<variable name="GPO_PAGADO" class="java.math.BigDecimal" resetType="Group" resetGroup="Orden" calculation="Sum">
 		<variableExpression><![CDATA[$F{PAGADO}]]></variableExpression>
-		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0.0)]]></initialValueExpression>
 	</variable>
 	<variable name="GPO_SALDO" class="java.math.BigDecimal" resetType="Group" resetGroup="Orden" calculation="Sum">
 		<variableExpression><![CDATA[$F{SALDO}]]></variableExpression>
-		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0.0)]]></initialValueExpression>
 	</variable>
 	<variable name="CTE_PAGADO" class="java.math.BigDecimal" resetType="Group" resetGroup="CLIENTE" calculation="Sum">
 		<variableExpression><![CDATA[$F{PAGADO}]]></variableExpression>
-		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0.0)]]></initialValueExpression>
 	</variable>
 	<variable name="CTE_SALDO" class="java.math.BigDecimal" resetType="Group" resetGroup="CLIENTE" calculation="Sum">
 		<variableExpression><![CDATA[$F{SALDO}]]></variableExpression>
-		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0.0)]]></initialValueExpression>
 	</variable>
 	<group name="Orden">
 		<groupExpression><![CDATA[]]></groupExpression>
@@ -143,7 +143,7 @@
 	<group name="CLIENTE">
 		<groupExpression><![CDATA[$F{RAZON_SOCIAL}]]></groupExpression>
 		<groupHeader>
-			<band height="32">
+			<band height="31">
 				<staticText>
 					<reportElement x="0" y="1" width="44" height="15" forecolor="#000000" uuid="4ee6077d-e98f-43c1-9083-ecfeaa1c69fe"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">

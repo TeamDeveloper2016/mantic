@@ -117,7 +117,7 @@ public class Transaccion extends TransaccionFactura {
 		return regresar;
 	} // ejecutar
 	
-	private boolean asignarImagen(Session sesion) throws Exception{
+	private boolean asignarImagen(Session sesion) throws Exception {
 		boolean regresar             = false;
 		TcManticImagenesDto image    = null;
 		TcManticArticulosDto articulo= null;
@@ -259,6 +259,7 @@ public class Transaccion extends TransaccionFactura {
 					this.articulo.getArticulo().setMenudeo(this.articulo.getArticulo().getPrecio());					
 					this.articulo.getArticulo().setMedioMayoreo(this.articulo.getArticulo().getPrecio());					
 					this.articulo.getArticulo().setMayoreo(this.articulo.getArticulo().getPrecio());
+					this.articulo.getArticulo().setEspecial(this.articulo.getArticulo().getPrecio());
 				} // else
         // REPLICAR EL CODIGO DEL FABRICANTE EN LA TABLA DE ARTICULOS
         for(ArticuloCodigo codigo: this.articulo.getArticulosCodigos()) {
@@ -350,7 +351,7 @@ public class Transaccion extends TransaccionFactura {
 									if(this.registraArticulosProveedor(sesion, idArticulo)) {
 										if(this.registraArticulosTipoVenta(sesion, idArticulo)) {
 											dimencion= this.articulo.getArticuloDimencion();
-											regresar= dimencion.isValid() ? DaoFactory.getInstance().update(sesion, this.articulo.getArticuloDimencion()) >= 0L : true;
+											regresar= dimencion.isValid()? DaoFactory.getInstance().update(sesion, this.articulo.getArticuloDimencion()) >= 0L : true;
 											if(regresar) {
                         // REPLICAR EL CODIGO DEL FABRICANTE EN LA TABLA DE ARTICULOS
                         for(ArticuloCodigo codigo: this.articulo.getArticulosCodigos()) {

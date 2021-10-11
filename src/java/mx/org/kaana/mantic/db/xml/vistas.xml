@@ -5,6 +5,30 @@
 <process>
 	<dml> 
 		<unit id="VistaProductosDto">
+      <select id="productos">
+        select 
+          tc_mantic_productos.id_producto as id_key,
+          tc_mantic_productos.id_producto,
+          replace(tc_mantic_productos.categoria, '|', ' » ') as categoria,
+          tc_mantic_productos.marca,
+          tc_mantic_productos.nombre,
+          tc_mantic_productos.id_activo,
+          concat('{url}', tc_mantic_productos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo,
+          '{razonSocial}' as razon_social,
+          {idCliente} as id_cliente,
+          '{tipoVenta}' as cliente,
+          tc_mantic_productos.registro
+        from
+          tc_mantic_productos
+        left join
+          tc_mantic_imagenes on tc_mantic_productos.id_imagen= tc_mantic_imagenes.id_imagen     
+        where
+          tc_mantic_productos.id_empresa in ({idEmpresa})
+					and tc_mantic_productos.categoria like '{categoria}%'
+        order by
+          tc_mantic_productos.categoria,
+          tc_mantic_productos.orden         
+      </select>
       <select id="porCodigo">
         select      
 					distinct(tc_mantic_clientes.id_cliente) as id_key,
@@ -3502,6 +3526,7 @@
 					tc_mantic_articulos.limite_medio_mayoreo,
 					tc_mantic_articulos.medio_mayoreo,
 					tc_mantic_articulos.mayoreo,
+					tc_mantic_articulos.especial,
 					tc_mantic_articulos.limite_mayoreo,
 					tc_mantic_articulos.id_imagen,
 					tc_mantic_articulos.stock,
@@ -4065,6 +4090,7 @@
 				  tc_mantic_articulos.menudeo,
 				  tc_mantic_articulos.medio_mayoreo,
 				  tc_mantic_articulos.mayoreo,
+				  tc_mantic_articulos.especial,
 				  tc_mantic_articulos.iva,
 				  tc_mantic_articulos.desperdicio,
 				  tc_mantic_articulos.actualizado,
@@ -4112,6 +4138,7 @@
 				  tc_mantic_articulos.menudeo as "menudeo neto",
 				  tc_mantic_articulos.medio_mayoreo as "medio neto",
 				  tc_mantic_articulos.mayoreo as "mayoreo neto",
+				  tc_mantic_articulos.especial as "especial neto",
 					tc_mantic_unidades_medidas.nombre as "unidad medida",
 					tc_mantic_articulos.iva,				  
 				  tc_mantic_articulos.limite_medio_mayoreo as "limite menudeo",
@@ -4167,6 +4194,7 @@
 				  tc_mantic_articulos.limite_medio_mayoreo,          
 				  tc_mantic_articulos.mayoreo,          
 				  tc_mantic_articulos.limite_mayoreo,          
+				  tc_mantic_articulos.especial,          
 				  tc_mantic_articulos.stock,       
 				  tc_mantic_articulos.peso_estimado,       
 				  tc_mantic_articulos.precio,       
@@ -4200,6 +4228,7 @@
 				  tc_mantic_articulos.limite_medio_mayoreo,          
 				  tc_mantic_articulos.mayoreo,          
 				  tc_mantic_articulos.limite_mayoreo,          
+				  tc_mantic_articulos.especial,          
 				  tc_mantic_almacenes_articulos.stock,       
 				  tc_mantic_articulos.peso_estimado,       
 				  tc_mantic_articulos.precio,       
@@ -4238,6 +4267,7 @@
 				  tc_mantic_articulos.menudeo,          
 				  tc_mantic_articulos.medio_mayoreo,          
 				  tc_mantic_articulos.mayoreo,          
+				  tc_mantic_articulos.especial,          
 				  tc_mantic_articulos.stock,       
 				  tc_mantic_articulos.iva,          
 				  tc_mantic_articulos.desperdicio,

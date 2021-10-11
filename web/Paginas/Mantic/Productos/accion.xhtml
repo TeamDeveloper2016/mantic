@@ -61,7 +61,8 @@
       .container {width: 100%; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center;}
       .galeria  {width: 850px;}
       .galeria .galeria-header {margin: 0 0 0.2rem 0; text-align: left;}
-      .galeria .galeria-description {margin: 0 0 0.1rem 1.4rem; font-size: 1rem; padding-left: 0px !important; font-weight: normal !important;}
+      .galeria .galeria-list {border: 0px; padding-right: 0px;}
+      .galeria .galeria-description {margin: 0 0 0.1rem 1rem; font-size: 1rem; padding-left: 0px !important; font-weight: normal !important;}
       .galeria .galeria-marca {font-size: 1.5rem; margin: 0 0 0.5rem 0; color: blue; font-weight: bold;}
       .galeria .galeria-nombre {font-size: 1.2rem; margin: 0 0 0.5rem 0; color: black; font-weight: bold;}
       .galeria .galeria-list-item .galeria-actions {font-size: 0.9rem; font-weight: 100; margin-bottom: 0.5rem; align-self: flex-end; text-align: right;}
@@ -319,7 +320,7 @@
                       </div> 
                       <div class="galeria-list-detail">
                         <span class="janal-color-orange" style="font-size: 1.1rem; font-weight: bold;">ESPECIFICACIONES:</span><br/>
-                        <p:dataList var="item" value="#{manticProductosAccion.producto.caracteristicas}" itemStyleClass="galeria-description">
+                        <p:dataList var="item" value="#{manticProductosAccion.producto.caracteristicas}" styleClass="galeria-list" itemStyleClass="galeria-description">
                           #{manticProductosAccion.doLetraCapital(item)}
                         </p:dataList>
                       </div>  

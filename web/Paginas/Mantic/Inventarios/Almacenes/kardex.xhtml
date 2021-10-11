@@ -232,14 +232,14 @@
 								</div>
 							</div>	
 							<p:spacer width="3px"/>
-							<p:dataTable id="tabla" var="item" value="#{manticInventariosAlmacenesKardex.adminKardex.tiposVentas}" paginator="false" reflow="true" rowKey="#{row.index}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="paginated filas" rowIndexVar="index">
+              <p:dataTable id="tabla" var="item" value="#{manticInventariosAlmacenesKardex.adminKardex.tiposVentas}" paginator="false" reflow="true" rowKey="#{row.index}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="paginated filas" rowIndexVar="index" rowStyleClass="#{manticInventariosAlmacenesKardex.toColorPrecio(item)}">
 								<p:column headerText="No." styleClass="janal-wid-3">
 									<p:outputLabel value="#{index+ 1}.-"/>
 								</p:column>   
 								<p:column headerText="Nombre" styleClass="janal-wid-10">
 									<p:outputLabel value="#{item.nombre}"/>
 								</p:column>   
-								<p:column headerText="Unidades máximas" styleClass="janal-wid-10 limites">#{index eq 0? 0.0: manticInventariosAlmacenesKardex.adminKardex.tiposVentas[index- 1].limite}  -  <p:inputText id="limites" value="#{item.limite}" styleClass="janal-wid-60 janal-column-right key-focus-event key-change-event recalculo" rendered="#{item.limite gt 0}" onblur="janal.individual('contenedorGrupos\\:tabla\\:#{index}\\:limites');"/>#{index eq 2? 'MAS': ''}</p:column>   
+								<p:column headerText="Unidades máximas" styleClass="janal-wid-10 limites">#{index eq 0? 0.0: manticInventariosAlmacenesKardex.adminKardex.tiposVentas[index- 1].limite}  -  <p:inputText id="limites" value="#{item.limite}" styleClass="janal-wid-60 janal-column-right key-focus-event key-change-event recalculo" rendered="#{item.limite gt 0}" onblur="janal.individual('contenedorGrupos\\:tabla\\:#{index}\\:limites');"/>#{index eq 2? 'MAS': index eq 3? '0.0': ''}</p:column>   
 								<p:column headerText="% Utilidad" styleClass="janal-wid-10">
 									<p:inputText id="utilidades" value="#{item.utilidad}" styleClass="recalculo janal-wid-100-txt janal-column-right key-focus-event key-change-event" readonly="#{empty(manticInventariosAlmacenesKardex.attrs.articulo.propio)}" onblur="jsKardex.calculate(this);"/>
 								</p:column>   

@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -192,7 +193,8 @@ public class Kardex extends IBaseAttribute implements Serializable {
 						solicitado.toDouble("mayoreo"), 
 						solicitado.toLong("limiteMedioMayoreo"),
 						solicitado.toLong("limiteMayoreo"),
-						solicitado.toLong("idRedondear").equals(1L)
+						solicitado.toLong("idRedondear").equals(1L),
+						solicitado.toLong("especial")
 					);
 					this.toUpdatePrecioVenta(false);
 				} // if	
@@ -1141,4 +1143,8 @@ public class Kardex extends IBaseAttribute implements Serializable {
 		return row.toLong("idProveedor")!= null && row.toLong("idProveedor").equals(0L)? "janal-tr-orange": "";
 	}
 
+	public String toColorPrecio(TiposVentas row) {
+		return Objects.equals(row.getNombre(), "ESPECIAL")? "janal-tr-orange": "";
+	} 
+  
 }

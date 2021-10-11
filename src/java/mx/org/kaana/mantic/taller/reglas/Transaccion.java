@@ -496,6 +496,7 @@ public class Transaccion extends TransaccionFactura {
             articulo.setMenudeo(item.getPrecio());
             articulo.setMedioMayoreo(item.getPrecio());
             articulo.setMayoreo(item.getPrecio());
+            articulo.setEspecial(item.getPrecio());
             DaoFactory.getInstance().update(sesion, articulo);
           } // if  
           else {
@@ -537,7 +538,8 @@ public class Transaccion extends TransaccionFactura {
               null, // String idFacturama
               2L, // String idDescontinuado
               null, // String fabricante
-              2L // Long idVerificado      
+              2L, // Long idVerificado      
+              item.getPrecio() // especial
             );
             DaoFactory.getInstance().insert(sesion, articulo);
             // FALTA NOTIFICAR EN FACTURA QUE SE INSERTO ESTE ARTICULO

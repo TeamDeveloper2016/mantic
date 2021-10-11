@@ -66,17 +66,19 @@ public class TcManticArticulosBitacoraDto implements IBaseDto, Serializable {
   private String extras;
   @Column (name="registro")
   private Timestamp registro;
+  @Column (name="especial")
+  private Double especial;
 
   public TcManticArticulosBitacoraDto() {
     this(new Long(-1L));
   }
 
   public TcManticArticulosBitacoraDto(Long key) {
-    this(16D, null, 0D, new Long(-1L), 0D, 0D, null, null, 0D, 0D, 3D, 5D, "0", "0");
+    this(16D, null, 0D, new Long(-1L), 0D, 0D, null, null, 0D, 0D, 3D, 5D, "0", "0", 0D);
     setKey(key);
   }
 
-  public TcManticArticulosBitacoraDto(Double iva, Long idUsuario, Double mayoreo, Long idArticuloBitacora, Double menudeo, Double cantidad, Long idArticulo, Long idNotaEntrada, Double medioMayoreo, Double costo, Double limiteMedioMayoreo, Double limiteMayoreo, String descuento, String extras) {
+  public TcManticArticulosBitacoraDto(Double iva, Long idUsuario, Double mayoreo, Long idArticuloBitacora, Double menudeo, Double cantidad, Long idArticulo, Long idNotaEntrada, Double medioMayoreo, Double costo, Double limiteMedioMayoreo, Double limiteMayoreo, String descuento, String extras, Double especial) {
     setIva(iva);
     setIdUsuario(idUsuario);
     setMayoreo(mayoreo);
@@ -92,6 +94,7 @@ public class TcManticArticulosBitacoraDto implements IBaseDto, Serializable {
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 		this.descuento= descuento;
 		this.extras   = extras;
+    this.especial = especial;
   }
 	
   public void setIva(Double iva) {
@@ -213,6 +216,14 @@ public class TcManticArticulosBitacoraDto implements IBaseDto, Serializable {
 	public void setExtras(String extras) {
 		this.extras=extras;
 	}
+
+  public Double getEspecial() {
+    return especial;
+  }
+
+  public void setEspecial(Double especial) {
+    this.especial = especial;
+  }
 
   @Transient
   @Override

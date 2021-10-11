@@ -92,7 +92,7 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 			// registar el cambio de precios en la bitacora de articulo 
 			TcManticArticulosDto global= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, item.getIdArticulo());
 			
-			TcManticArticulosBitacoraDto movimiento= new TcManticArticulosBitacoraDto(global.getIva(), JsfBase.getIdUsuario(), global.getMayoreo(), -1L, global.getMenudeo(), global.getCantidad(), global.getIdArticulo(), notaEntrada.getIdNotaEntrada(), global.getMedioMayoreo(), global.getPrecio(), global.getLimiteMedioMayoreo(), global.getLimiteMayoreo(), global.getDescuento(), global.getExtra());			
+			TcManticArticulosBitacoraDto movimiento= new TcManticArticulosBitacoraDto(global.getIva(), JsfBase.getIdUsuario(), global.getMayoreo(), -1L, global.getMenudeo(), global.getCantidad(), global.getIdArticulo(), notaEntrada.getIdNotaEntrada(), global.getMedioMayoreo(), global.getPrecio(), global.getLimiteMedioMayoreo(), global.getLimiteMayoreo(), global.getDescuento(), global.getExtra(), global.getEspecial());			
 			DaoFactory.getInstance().insert(sesion, movimiento);
 			
 			// afectar el inventario general de articulos dentro del almacen
@@ -133,11 +133,13 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 				double menudeo= Numero.toRedondearSat((global.getMenudeo()* 100/ global.getPrecio())/ 100);
 				double medio  = Numero.toRedondearSat((global.getMedioMayoreo()* 100/ global.getPrecio())/ 100);
 				double mayoreo= Numero.toRedondearSat((global.getMayoreo()* 100/ global.getPrecio())/ 100);
+				double especial= Numero.toRedondearSat((global.getEspecial()* 100/ global.getPrecio())/ 100);
 				
 			  global.setPrecio(Numero.toRedondearSat(costo));
 			  global.setMenudeo(Numero.toAjustarDecimales(global.getPrecio()* menudeo, global.getIdRedondear().equals(1L)));
 			  global.setMedioMayoreo(Numero.toAjustarDecimales(global.getPrecio()* medio, global.getIdRedondear().equals(1L)));
 			  global.setMayoreo(Numero.toAjustarDecimales(global.getPrecio()* mayoreo, global.getIdRedondear().equals(1L)));
+			  global.setEspecial(Numero.toAjustarDecimales(global.getPrecio()* especial, global.getIdRedondear().equals(1L)));
 				global.setDescuento(item.getDescuento());
 				global.setExtra(item.getExtras());
 			} // if	
@@ -148,6 +150,7 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 					global.setMenudeo(Numero.toAjustarDecimales(global.getMenudeo(), true));
 					global.setMedioMayoreo(Numero.toAjustarDecimales(global.getMedioMayoreo(), true));
 					global.setMayoreo(Numero.toAjustarDecimales(global.getMayoreo(), true));
+					global.setEspecial(Numero.toAjustarDecimales(global.getEspecial(), true));
 				} // if
 			} // else
 			// siempre se modifica el costo del catalogo de articulo 

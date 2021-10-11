@@ -118,7 +118,8 @@ public class Accion extends Pedido implements Serializable {
 						solicitado.toDouble("mayoreo"), 
 						solicitado.toLong("limiteMedioMayoreo"),
 						solicitado.toLong("limiteMayoreo"),
-						solicitado.toLong("idRedondear").equals(1L)
+						solicitado.toLong("idRedondear").equals(1L),
+            solicitado.toDouble("especial")
 					);
 					this.toUpdatePrecioVenta(false);
 				} // if	

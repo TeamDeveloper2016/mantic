@@ -309,7 +309,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			} // else
 			// afectar los precios del catalogo de articulos
 			if(this.aplicar) {
-  			TcManticArticulosBitacoraDto movimiento= new TcManticArticulosBitacoraDto(global.getIva(), JsfBase.getIdUsuario(), global.getMayoreo(), -1L, global.getMenudeo(), global.getCantidad()* -1L, global.getIdArticulo(), idNotaEntrada, global.getMedioMayoreo(), global.getPrecio(), global.getLimiteMedioMayoreo(), global.getLimiteMayoreo(), global.getDescuento(), global.getExtra());
+  			TcManticArticulosBitacoraDto movimiento= new TcManticArticulosBitacoraDto(global.getIva(), JsfBase.getIdUsuario(), global.getMayoreo(), -1L, global.getMenudeo(), global.getCantidad()* -1L, global.getIdArticulo(), idNotaEntrada, global.getMedioMayoreo(), global.getPrecio(), global.getLimiteMedioMayoreo(), global.getLimiteMayoreo(), global.getDescuento(), global.getExtra(), global.getEspecial());
 	  		DaoFactory.getInstance().insert(sesion, movimiento);
 				TcManticArticulosBitacoraDto ultimo= (TcManticArticulosBitacoraDto)DaoFactory.getInstance().findFirst(sesion, TcManticArticulosBitacoraDto.class, "ultimo", params);
 				if(ultimo!= null) {
@@ -321,6 +321,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					global.setMenudeo(Numero.toAjustarDecimales(ultimo.getMenudeo()));
 					global.setMedioMayoreo(Numero.toAjustarDecimales(ultimo.getMedioMayoreo()));
 					global.setMayoreo(Numero.toAjustarDecimales(ultimo.getMayoreo()));
+					global.setEspecial(Numero.toAjustarDecimales(ultimo.getEspecial()));
 					global.setDescuento(ultimo.getDescuento());
 					global.setExtra(ultimo.getExtras());
 					global.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));

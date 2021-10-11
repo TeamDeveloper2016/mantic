@@ -55,9 +55,10 @@ public class Express extends IBaseAttribute implements Serializable {
 			this.attrs.put("seleccionado", new Entity(-1L));				
 			this.attrs.put("idArticulo", JsfBase.getFlashAttribute("idArticulo")== null? -1L: JsfBase.getFlashAttribute("idArticulo"));
 			this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null || JsfBase.getFlashAttribute("idArticulo")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));				
-			this.attrs.put("menudeo", 50D);				
-			this.attrs.put("medioMayoreo", 40D);				
-			this.attrs.put("mayoreo", 40D);				
+			this.attrs.put("menudeo", (Constantes.PORCENTAJE_MENUDEO- 1D)* 100D);				
+			this.attrs.put("medioMayoreo", (Constantes.PORCENTAJE_MEDIO_MAYOREO- 1D)* 100D);				
+			this.attrs.put("mayoreo", (Constantes.PORCENTAJE_MAYOREO- 1D)* 100D);				
+			this.attrs.put("especial", (Constantes.PORCENTAJE_ESPECIAL- 1D)* 100D);				
       this.doLoad();
       this.loadProveedores();
       this.loadCategorias();
@@ -277,6 +278,7 @@ public class Express extends IBaseAttribute implements Serializable {
 				this.registroArticulo.getArticulo().setMenudeo(Numero.toAjustarDecimales(total* (1+ ((Double)this.attrs.get("menudeo")/ 100)), redondear));
 				this.registroArticulo.getArticulo().setMedioMayoreo(Numero.toAjustarDecimales(total* (1+ ((Double)this.attrs.get("medioMayoreo")/ 100)), redondear));
 				this.registroArticulo.getArticulo().setMayoreo(Numero.toAjustarDecimales(total* (1+ ((Double)this.attrs.get("mayoreo")/ 100)), redondear));
+				this.registroArticulo.getArticulo().setEspecial(Numero.toAjustarDecimales(total* (1+ ((Double)this.attrs.get("especial")/ 100)), redondear));
 			} // if
 		} // try
 		catch (Exception e) {
@@ -298,12 +300,14 @@ public class Express extends IBaseAttribute implements Serializable {
 				this.registroArticulo.getArticulo().setIdRedondear(2L);
 				calculo = Numero.toRedondearSat((this.registroArticulo.getArticulo().getPrecio()* ((this.registroArticulo.getArticulo().getIva()/100)+ 1)));
 			  // al precio de neto se le quita el costo+ iva y lo que queda se calcula la utilidad bruta 
-				this.registroArticulo.getArticulo().setMenudeo(calculo+ (calculo* 0.5));
-				this.registroArticulo.getArticulo().setMedioMayoreo(calculo+ (calculo* 0.4));
-				this.registroArticulo.getArticulo().setMayoreo(calculo+ (calculo* 0.3));
-				this.attrs.put("menudeo", 50D);				
-				this.attrs.put("medioMayoreo", 40D);				
-				this.attrs.put("mayoreo", 30D);			
+				this.registroArticulo.getArticulo().setMenudeo(calculo+ (calculo* (Constantes.PORCENTAJE_MENUDEO- 1D)));
+				this.registroArticulo.getArticulo().setMedioMayoreo(calculo+ (calculo* (Constantes.PORCENTAJE_MEDIO_MAYOREO- 1D)));
+				this.registroArticulo.getArticulo().setMayoreo(calculo+ (calculo* (Constantes.PORCENTAJE_MAYOREO- 1D)));
+				this.registroArticulo.getArticulo().setEspecial(calculo+ (calculo* (Constantes.PORCENTAJE_ESPECIAL- 1D)));
+				this.attrs.put("menudeo", (Constantes.PORCENTAJE_MENUDEO- 1D)* 100D);				
+				this.attrs.put("medioMayoreo", (Constantes.PORCENTAJE_MEDIO_MAYOREO- 1D)* 100D);				
+				this.attrs.put("mayoreo", (Constantes.PORCENTAJE_MAYOREO- 1D)* 100D);			
+				this.attrs.put("especial", (Constantes.PORCENTAJE_ESPECIAL- 1D)* 100D);			
 				this.doActualizaPrecios();
 			} // if
 			else {
@@ -315,6 +319,7 @@ public class Express extends IBaseAttribute implements Serializable {
 				this.registroArticulo.getArticulo().setMenudeo(entity.toDouble("menudeo").equals(0D)? 17.4D: entity.toDouble("menudeo"));
 				this.registroArticulo.getArticulo().setMedioMayoreo(entity.toDouble("medioMayoreo").equals(0D)? 16.24D: entity.toDouble("medioMayoreo"));
 				this.registroArticulo.getArticulo().setMayoreo(entity.toDouble("mayoreo").equals(0D)? 15.08D: entity.toDouble("mayoreo"));
+				this.registroArticulo.getArticulo().setEspecial(entity.toDouble("espcial").equals(0D)? 17.4D: entity.toDouble("especial"));
 				this.registroArticulo.getArticulo().setIva(16D);
 				if(entity.containsKey("iva"))
 				  this.registroArticulo.getArticulo().setIva(entity.toDouble("iva"));
@@ -325,6 +330,7 @@ public class Express extends IBaseAttribute implements Serializable {
 				this.attrs.put("menudeo", Numero.toRedondearSat((this.registroArticulo.getArticulo().getMenudeo()- calculo)* 100/ calculo));				
 				this.attrs.put("medioMayoreo", Numero.toRedondearSat((this.registroArticulo.getArticulo().getMedioMayoreo()- calculo)* 100/ calculo));				
 				this.attrs.put("mayoreo", Numero.toRedondearSat((this.registroArticulo.getArticulo().getMayoreo()- calculo)* 100/ calculo));			
+				this.attrs.put("especial", Numero.toRedondearSat((this.registroArticulo.getArticulo().getEspecial()- calculo)* 100/ calculo));			
 				this.doActualizaPrecios();
 			} // else	
 		} // if
@@ -422,6 +428,7 @@ public class Express extends IBaseAttribute implements Serializable {
 		  this.getRegistroArticulo().getArticulo().setMenudeo(seleccion.toDouble("menudeo"));
 		  this.getRegistroArticulo().getArticulo().setMedioMayoreo(seleccion.toDouble("medioMayoreo"));
 		  this.getRegistroArticulo().getArticulo().setMayoreo(seleccion.toDouble("mayoreo"));
+		  this.getRegistroArticulo().getArticulo().setEspecial(seleccion.toDouble("especial"));
 		  this.getRegistroArticulo().getArticulo().setIva(seleccion.toDouble("iva"));
 		  this.getRegistroArticulo().getArticulo().setIdRedondear(seleccion.toLong("idRedondear"));
 			this.attrs.put("redondearExpress", this.getRegistroArticulo().getArticulo()!= null && this.getRegistroArticulo().getArticulo().getIdRedondear()!= null && this.getRegistroArticulo().getArticulo().getIdRedondear().equals(1L));

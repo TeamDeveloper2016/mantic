@@ -158,6 +158,7 @@ public final class Constantes {
   public static final int MINDMAP_MIN_MENUS = 3;
   public static final int MINDMAP_MIN_USUARIOS = 1;
   public static final int MINDMAP_MIN_USUARIOS_AGREGADOS = 0;
+	public static double PORCENTAJE_ESPECIAL= 1.5;
 	public static double PORCENTAJE_MENUDEO= 1.5;
 	public static double PORCENTAJE_MEDIO_MAYOREO= 1.4;
 	public static double PORCENTAJE_MAYOREO= 1.3;

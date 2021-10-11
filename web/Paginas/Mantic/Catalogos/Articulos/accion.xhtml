@@ -20,6 +20,7 @@
 				'contenedorGrupos\\:menudeo'        : {validaciones: 'requerido', mascara: 'flotante'},
 				'contenedorGrupos\\:medio'          : {validaciones: 'requerido', mascara: 'flotante'},
 				'contenedorGrupos\\:mayoreo'        : {validaciones: 'requerido', mascara: 'flotante'},
+				'contenedorGrupos\\:especial'       : {validaciones: 'requerido', mascara: 'flotante'},
 				'contenedorGrupos\\:sat'            : {validaciones: 'libre', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:iva'            : {validaciones: 'requerido', mascara: 'flotante'},
 				'contenedorGrupos\\:pesoEstimado'   : {validaciones: 'requerido', mascara: 'flotante'},
@@ -89,7 +90,7 @@
 								<p:inputTextarea id="descripcion" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.descripcion}"/>                    
 								<p:outputLabel for="precio" value="Costo:"/>
 								<p:inputNumber id="precio" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.precio}">                    
-									<p:ajax event="blur" process="@this" update="menudeo medio mayoreo @(.calculos)" listener="#{manticCatalogosArticulosAccion.doUpdatePrecio()}"/>
+									<p:ajax event="blur" process="@this" update="menudeo medio mayoreo especial @(.calculos)" listener="#{manticCatalogosArticulosAccion.doUpdatePrecio()}"/>
 								</p:inputNumber>
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="menudeo" value="Menudeo:"/>
@@ -112,6 +113,13 @@
   									<p:ajax event="blur" process="@this" update="@(.porcentajes)" listener="#{manticCatalogosArticulosAccion.doUpdatePreciosVenta()}"/>
 									</p:inputNumber>
 									<p:outputLabel value="#{manticCatalogosArticulosAccion.attrs.mayoreo} %" styleClass="janal-font-bold calculos porcentajes" title="Utilidad"/>
+								</p:panelGrid>
+								<p:outputLabel for="especial" value="Especial:"/>
+								<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100 calculos" columnClasses="janal-wid-100, janal-wid-col-80 janal-column-right">
+  								<p:inputNumber id="especial" styleClass="calculos" inputStyleClass="janal-wid-100-txt janal-color-blue janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.especial}">
+  									<p:ajax event="blur" process="@this" update="@(.porcentajes)" listener="#{manticCatalogosArticulosAccion.doUpdatePreciosVenta()}"/>
+									</p:inputNumber>
+									<p:outputLabel value="#{manticCatalogosArticulosAccion.attrs.especial} %" styleClass="janal-font-bold calculos porcentajes" title="Utilidad"/>
 								</p:panelGrid>
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="sat" value="Código SAT:"/>

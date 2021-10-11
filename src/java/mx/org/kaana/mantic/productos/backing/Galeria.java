@@ -13,6 +13,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -24,17 +25,24 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
+import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.productos.beans.Caracteristica;
 import mx.org.kaana.mantic.productos.beans.Partida;
 import mx.org.kaana.mantic.productos.beans.Producto;
 import org.primefaces.extensions.model.fluidgrid.FluidGridItem;
-
+import mx.org.kaana.kajool.template.backing.Reporte;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import org.primefaces.context.RequestContext;
 
 @Named(value = "manticProductosGaleria")
 @ViewScoped
 public class Galeria extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393488565639363L;
+  
+  private Reporte reporte;
 	private Entity producto;
 	private String categoria;
   private String path;
@@ -80,7 +88,7 @@ public class Galeria extends IBaseAttribute implements Serializable {
       String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
       this.path = dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");      
       this.attrs.put("continuar", Boolean.FALSE);
-      this.attrs.put("disenio", Boolean.TRUE);  
+      this.attrs.put("disenio", Boolean.FALSE);  
       this.attrs.put("cliente", new UISelectEntity(-1L));
       this.attrs.put("categoria", "");
       this.toLoadCatalog();
@@ -245,5 +253,64 @@ public class Galeria extends IBaseAttribute implements Serializable {
   public void doUpdateDisenio() {
     this.attrs.put("disenio", !(Boolean)this.attrs.get("disenio"));  
   }
+ 
+  public void doReporte() {
+		Map<String, Object>params    = null;
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = EReportes.PRODUCTOS;
+		try {		
+      params= new HashMap<>();
+      params.put("idEmpresa", this.ikEmpresa.getKey());
+      params.put("categoria", this.categoria);
+      params.put("tipoVenta", "menudeo");
+      params.put("razonSocial", " ");
+      UISelectEntity cliente= (UISelectEntity)this.attrs.get("cliente");
+      if(cliente== null)
+        cliente= new UISelectEntity(-1L);
+      else {
+        List<UISelectEntity> clientes= (List<UISelectEntity>)this.attrs.get("clientes");
+        if(clientes!= null && !clientes.isEmpty()) {
+          int index= clientes.indexOf(cliente);
+          if(index>= 0) {
+            cliente= clientes.get(index);
+            params.put("tipoVenta", cliente.toString("nombre"));
+            params.put("razonSocial", cliente.toString("razonSocial"));
+          } // if  
+          else
+            cliente= new UISelectEntity(-1L);
+        } // if
+      } // else
+      params.put("url", this.path);
+      params.put("idCliente", cliente.getKey());
+      this.reporte= JsfBase.toReporte();	
+      Parametros comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      parametros= comunes.getComunes();
+      parametros.put("ENCUESTA", "LISTADO DE PRODUCTOS");
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
+      this.doVerificarReporte();
+      this.reporte.doAceptar();			
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+  }
   
+  public boolean doVerificarReporte() {
+    boolean regresar = false;
+		RequestContext rc= UIBackingUtilities.getCurrentInstance();
+		if(this.reporte.getTotal()> 0L) {
+			rc.execute("start(" + this.reporte.getTotal() + ")");		
+      regresar = true;
+    } // if
+		else{
+			rc.execute("generalHide();");		
+			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
+      regresar = false;
+		} // else
+    return regresar;
+	} // doVerificarReporte	
+
 }

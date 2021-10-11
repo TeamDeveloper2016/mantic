@@ -263,12 +263,14 @@ public class Imagen extends IBaseAttribute implements Serializable {
 		if(((EAccion)this.attrs.get("accion")).equals(EAccion.AGREGAR)) {
   	  this.attrs.put("precio", precio);
 			double calculo= precio* (1+ (this.registroArticulo.getArticulo().getIva()/ 100));
-			this.registroArticulo.getArticulo().setMenudeo(Numero.toAjustarDecimales(calculo* 1.5, redondear));
-			this.registroArticulo.getArticulo().setMedioMayoreo(Numero.toAjustarDecimales(calculo* 1.4, redondear));
-			this.registroArticulo.getArticulo().setMayoreo(Numero.toAjustarDecimales(calculo* 1.3, redondear));
-			this.attrs.put("menudeo", 50D);
-			this.attrs.put("medioMayoreo", 40D);
-			this.attrs.put("mayoreo", 30D);
+			this.registroArticulo.getArticulo().setMenudeo(Numero.toAjustarDecimales(calculo* Constantes.PORCENTAJE_MENUDEO, redondear));
+			this.registroArticulo.getArticulo().setMedioMayoreo(Numero.toAjustarDecimales(calculo* Constantes.PORCENTAJE_MEDIO_MAYOREO, redondear));
+			this.registroArticulo.getArticulo().setMayoreo(Numero.toAjustarDecimales(calculo* Constantes.PORCENTAJE_MAYOREO, redondear));
+			this.registroArticulo.getArticulo().setEspecial(Numero.toAjustarDecimales(calculo* Constantes.PORCENTAJE_ESPECIAL, redondear));
+			this.attrs.put("menudeo", (Constantes.PORCENTAJE_MENUDEO- 1D)* 100D);
+			this.attrs.put("medioMayoreo", (Constantes.PORCENTAJE_MEDIO_MAYOREO- 1D)* 100D);
+			this.attrs.put("mayoreo", (Constantes.PORCENTAJE_MAYOREO- 1D)* 100D);
+			this.attrs.put("especial", (Constantes.PORCENTAJE_ESPECIAL- 1D)* 100D);
 		} // if	
 		else {
 			double calculo= (Double)this.attrs.get("precio")* (1+ (this.registroArticulo.getArticulo().getIva()/ 100));
@@ -282,6 +284,9 @@ public class Imagen extends IBaseAttribute implements Serializable {
       factor = Numero.toRedondearSat(this.registroArticulo.getArticulo().getMayoreo()/ calculo);
 			this.attrs.put("mayoreo", Numero.toRedondearSat((factor- 1)* 100));
 			this.registroArticulo.getArticulo().setMayoreo(Numero.toAjustarDecimales(total* factor, redondear));
+      factor = Numero.toRedondearSat(this.registroArticulo.getArticulo().getEspecial()/ calculo);
+			this.attrs.put("especial", Numero.toRedondearSat((factor- 1)* 100));
+			this.registroArticulo.getArticulo().setEspecial(Numero.toAjustarDecimales(total* factor, redondear));
   	  this.attrs.put("precio", precio);
 		} // if	
 	}	 // doUpdatePrecio
@@ -300,6 +305,9 @@ public class Imagen extends IBaseAttribute implements Serializable {
 		factor = Numero.toRedondearSat(this.registroArticulo.getArticulo().getMayoreo()/ calculo);
 		this.attrs.put("mayoreo", Numero.toRedondearSat((factor- 1)* 100));
 		this.registroArticulo.getArticulo().setMayoreo(Numero.toAjustarDecimales(total* factor, redondear));
+		factor = Numero.toRedondearSat(this.registroArticulo.getArticulo().getEspecial()/ calculo);
+		this.attrs.put("especial", Numero.toRedondearSat((factor- 1)* 100));
+		this.registroArticulo.getArticulo().setEspecial(Numero.toAjustarDecimales(total* factor, redondear));
 		this.attrs.put("precio", precio);
 	}
 

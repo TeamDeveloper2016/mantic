@@ -9,6 +9,6 @@ package mx.org.kaana.mantic.inventarios.almacenes.enums;
  */
 public enum ETiposVentas {
   
-	 MENUDEO, MEDIO_MAYOREO, MAYOREO;
+	 MENUDEO, MEDIO_MAYOREO, MAYOREO, ESPECIAL;
 	
 }
