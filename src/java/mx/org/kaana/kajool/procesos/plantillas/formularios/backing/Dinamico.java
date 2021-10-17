@@ -61,7 +61,7 @@ public class Dinamico implements Serializable {
   }
 
   public List<String> getMasks() {
-    return Arrays.asList("libre", "fecha", "fecha-hora", "registro", "hora", "hora-completa", "tarjeta-credito", "decimal", "decimal-signo", "letras", "vocales", "texto", "numero", "un-digito", "dos-digitos", "tres-digitos", "tres-digitos-default", "cuatro-digitos", "cinco-digitos", "siete-digitos", "diez-digitos", "entero", "entero-blanco", "entero-signo", "entero-sin-signo", "flotante", "flotante-signo", "rfc", "curp", "moneda", "moneda-decimal", "mayusculas", "minusculas", "cuenta", "numeros-letras", "nombre-dto", "telefono", "ip", "version", "clave-ct-call-center", "clave-ct", "clave-operativa", "resultado-entrevista-basico", "resultado-entrevista-modulo", "no-aplica");
+    return Arrays.asList("libre", "fecha", "fecha-hora", "registro", "hora", "hora-completa", "tarjeta-credito", "decimal", "decimal-signo", "letras", "vocales", "texto", "numero", "un-digito", "dos-digitos", "tres-digitos", "tres-digitos-default", "cuatro-digitos", "cinco-digitos", "siete-digitos", "diez-digitos", "entero", "entero-blanco", "entero-signo", "entero-sin-signo", "flotante", "flotante-signo", "rfc", "curp", "moneda", "moneda-decimal", "mayusculas", "minusculas", "cuenta", "numeros-letras", "nombre-dto", "telefono", "ip", "version", "no-aplica");
   }
 
   @PostConstruct

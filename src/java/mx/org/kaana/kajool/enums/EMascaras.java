@@ -45,12 +45,7 @@ public enum EMascaras {
 		TRES_DIGITOS_DEFAULT			 ("tres-digitos-default","numero"),
 		TELEFONO									 ("telefono","numero"),
 		IP												 ("ip","cadena"),
-		VERSION										 ("version","cadena"),
-		RESULTADO_ENTREVISTA_MODULO("RESULTADO-ENTREVISTA-MODULO","cadena"),
-		RESULTADO_ENTREVISTA_BASICO("RESULTADO-ENTREVISTA-BASICO","cadena"),
-		CLAVE_CT_CALL_CENTER			 ("clave-ct-call-center","cadena"),
-		CLAVE_CT									 ("clave-ct","cadena"),
-		CLAVE_OPERATIVA						 ("clave-operativa","cadena");
+		VERSION										 ("version","cadena");
 	
 	private String descripcion;
 	private String tipo;

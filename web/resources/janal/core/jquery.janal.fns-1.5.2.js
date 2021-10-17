@@ -178,8 +178,6 @@ $.mask.masks = $.extend($.mask.masks, {
   'telefono': {mask: '(999)999-99-99', fixedChars: '[()-]'},
   'ip': {mask: '999.999.999.999', type: 'reverse', fixedChars: '[.]'},
   'version': {mask: '9.9.9.9', type: 'reverse', fixedChars: '[.]'},
-  'clave-ct': {mask: '99bbb9999b9', type: 'fixed', maxLength: 11},		
-  'clave-operativa': {mask: '99b9999o9', type: 'fixed', maxLength: 9},
 	'correo':{mask:'q', type:'repeat'},
 	'alfanumerico':{mask:'t', type:'repeat'},
 	'marca':{mask:'w', type:'repeat'},
@@ -722,7 +720,7 @@ $.mask.masks = $.extend($.mask.masks, {
   		 if (janal.empty(value) || $(element).hasClass('ignore'))
 	  			return true;
 		   else
-			   return /^([0-9]|[A-Z]|[a-z]|á|é|í|ó|ú|Á|É|Í|Ó|Ú|ñ|Ñ|\ |,|\.|;|:)+$/.test(value);
+			   return /^([0-9]|[A-Z]|[a-z]|á|é|í|ó|ú|Á|É|Í|Ó|Ú|ñ|Ñ|\ |,|\.|;|:|\/|)+$/.test(value);
 		}, 'No se permite caracteres alfanum\u00E9ricos y algunos caracteres, ejemplo: ,;:.');
 
   $.validator.addMethod(
@@ -730,7 +728,7 @@ $.mask.masks = $.extend($.mask.masks, {
   		 if (janal.empty(value) || $(element).hasClass('ignore'))
 	  			return true;
 		   else
-			   return /^([0-9]|[A-Z]|[a-z]|á|é|í|ó|ú|Á|É|Í|Ó|Ú|ñ|Ñ|\ |,|\.|;|:|(|)|@|-|=|%|#|~|^|&|{|}|[|]|")+$/.test(value);
+			   return /^([0-9]|[A-Z]|[a-z]|á|é|í|ó|ú|Á|É|Í|Ó|Ú|ñ|Ñ|\ |,|\.|;|:|(|)|@|-|=|%|#|~|^|&|{|}|[|]|\/|")+$/.test(value);
 		}, 'No se permite caracteres alfanum\u00E9ricos y algunos caracteres, ejemplo: ,;:.');
 		
 	$.validator.addMethod('curp', function(value, element, params) {
@@ -767,20 +765,6 @@ $.mask.masks = $.extend($.mask.masks, {
 		  else
 			  return /^([Ss|Nn])$/.test(value);
 		}, 'Solo se permiten los caracteres S,s o N,n.');
-
-	$.validator.addMethod('resultado-entrevista-modulo', function(value, element, params) {
-			if (janal.empty(value) || $(element).hasClass('ignore'))
-				return true;
-			else
-				return '01|02|A1|A2|A3|A4|A5|A6|A7'.indexOf(value)>= 0;
-		}, 'No es un resultado de entrevista valido del cuestionario modulo.');
-			
-	$.validator.addMethod('resultado-entrevista-basico', function(value, element, params) {
-			if (janal.empty(value) || $(element).hasClass('ignore'))
-				return true;
-			else
-				return '01|02|A1|A2|A3|A4|A5|A6|A7|B1|B2|B3|C1|C2|C3|C4'.indexOf(value)>= 0;
-		}, 'No es un resultado de entrevista v\u00E1lido del cuestionario b\u00E1sico.');
 
 	$.validator.addMethod('fecha', function(value, element, params) {
 			if (janal.empty(value) || $(element).hasClass('ignore'))

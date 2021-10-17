@@ -48,8 +48,6 @@ public enum EValidaciones {
 	FECHA_MAYOR								 ("FECHA-MAYOR", "fecha-mayor({\"cual\":\"fecha-menor\"})","fecha"),
 	IPV4											 ("IPV4", "ipv4", "cadena"),
 	IPV6											 ("IPV6", "ipv6", "cadena"),
-	RESULTADO_ENTREVISTA_MODULO("RESULTADO-ENTREVISTA-MODULO", "resultado-entrevista-modulo", "cadena"),
-	RESULTADO_ENTREVISTA_BASICO("RESULTADO-ENTREVISTA-BASICO", "resultado-entrevista-basico", "cadena"),
 	ESTA_EN										 ("ESTA_EN", "esta-en({\"cuantos\":\"1,2,3,4-7,8\"})","numero");
 	
 	private String descripcion;
