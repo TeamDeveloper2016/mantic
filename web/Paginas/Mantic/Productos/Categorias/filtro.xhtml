@@ -69,6 +69,8 @@
             <p:menuitem icon="fa fa-angle-double-down" value="Bajar" process="@this tabla" update="tabla" actionListener="#{manticProductosCategoriasFiltro.doOperacion('BAJAR')}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
             <p:separator/>
             <p:menuitem icon="fa fa-picture-o" process="@this tabla" action="#{manticProductosCategoriasFiltro.doGaleria()}" ajax="false" value="Galeria" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
+            <p:separator/>
+            <p:menuitem icon="fa fa-columns" process="@this tabla" action="#{manticProductosCategoriasFiltro.doProductos()}" ajax="false" value="Productos" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
           </p:contextMenu>
         </div>
       </div>

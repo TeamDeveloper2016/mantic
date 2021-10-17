@@ -63,6 +63,7 @@ public class Accion extends Contenedor implements Serializable {
 		  	UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
+      this.attrs.put("categoria", JsfBase.getFlashAttribute("categoria")== null? "": JsfBase.getFlashAttribute("categoria"));
       this.attrs.put("idProducto", JsfBase.getFlashAttribute("idProducto")== null? -1L: JsfBase.getFlashAttribute("idProducto"));
 		  this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("codigo", "");
@@ -91,6 +92,7 @@ public class Accion extends Contenedor implements Serializable {
           this.producto= new Producto();
           this.producto.setIkEmpresa(new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
           this.producto.getProducto().setIdActivo(1L);
+          this.producto.setCategoria((String)this.attrs.get("categoria"));
           break;
         case MODIFICAR:					
         case CONSULTAR:					

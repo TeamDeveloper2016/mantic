@@ -181,6 +181,17 @@
 				  tc_mantic_productos.id_empresa = {idEmpresa}
           and (tc_mantic_productos.id_producto_categoria= '{categoria}' or concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) = '{categoria}')
       </select>
+      <select id="hijos">
+        select      
+          tc_mantic_productos.id_producto as id_key,
+          tc_mantic_productos.*
+        from      
+          tc_mantic_productos
+        where      
+          tc_mantic_productos.id_producto_categoria= {idProductoCategoria}
+        order by
+          tc_mantic_productos.orden
+      </select>
       <update id="rows">
         update
           tc_mantic_productos

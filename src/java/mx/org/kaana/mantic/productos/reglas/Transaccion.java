@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.productos.reglas;
 
 import com.google.common.base.Objects;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
@@ -12,10 +13,9 @@ import static mx.org.kaana.kajool.enums.ESql.INSERT;
 import static mx.org.kaana.kajool.enums.ESql.UPDATE;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
-import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticProductosCategoriasDto;
 import mx.org.kaana.mantic.db.dto.TcManticProductosDto;
 import mx.org.kaana.mantic.productos.beans.Caracteristica;
 import mx.org.kaana.mantic.productos.beans.Partida;
@@ -106,7 +106,22 @@ public class Transaccion extends IBaseTnx {
 		Map<String, Object> params= new HashMap<>();
 		try {
 			params.put("categoria", this.producto.getCategoria());
-      this.producto.getProducto().setIdProductoCategoria(DaoFactory.getInstance().toField("TcManticProductosCategoriasDto", "identico", params, "idKey").toLong());
+      Long idProductoCategoria= DaoFactory.getInstance().toField("TcManticProductosCategoriasDto", "identico", params, "idKey").toLong();
+      if(!Objects.equal(this.producto.getProducto().getIdProductoCategoria(), idProductoCategoria)) {
+        // RENUMERAR LOS HIJOS DEL LA CATEGORIA Y CALCULAR EL MAXIMO DE LA NUEVA CATEGORIA
+        params.put("idProductoCategoria", this.producto.getProducto().getIdProductoCategoria());
+        List<TcManticProductosDto> items= (List<TcManticProductosDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticProductosDto.class, "TcManticProductosDto", "hijos", params);
+        int count= 1;
+        for (TcManticProductosDto item : items) {
+          if(!Objects.equal(item.getIdProducto(), this.producto.getProducto().getIdProducto())) {
+            item.setOrden(new Long(count++));
+            DaoFactory.getInstance().update(sesion, item);
+          } // if  
+        } // for
+        this.producto.getProducto().setIdProductoCategoria(idProductoCategoria);
+        Siguiente sigue= this.toSiguiente(sesion);
+        this.producto.getProducto().setOrden(sigue.getOrden());
+      } // if
       regresar= DaoFactory.getInstance().update(sesion, this.producto.getProducto())> 0L;
       if(regresar) {
         this.toArticulos(sesion);

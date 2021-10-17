@@ -8,6 +8,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -195,5 +196,20 @@ public class Filtro extends Contenedor implements Serializable {
   public void doLoad() {
     throw new UnsupportedOperationException("Not supported yet."); 
   }
+ 
+  public String doProductos() {
+		try {
+      UISelectEntity data= (UISelectEntity)((TreeNode)this.attrs.get("seleccionado")).getData();
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Productos/Categorias/filtro");		
+			JsfBase.setFlashAttribute("categoria", data.toString("padre").concat(data.toString("nombre")));
+			JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
+			JsfBase.setFlashAttribute("idProducto", -1L);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return "/Paginas/Mantic/Productos/accion".concat(Constantes.REDIRECIONAR);
+  } // doProductos
   
 }

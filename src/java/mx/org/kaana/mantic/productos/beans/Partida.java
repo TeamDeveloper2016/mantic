@@ -43,6 +43,7 @@ public final class Partida extends TcManticProductosDetallesDto implements Seria
   private List<UISelectEntity> codigos;
   private String precio;
   private String cliente;
+  private Long idUnico;
 
   public Partida() {
     this(new Random().nextLong(), null, null, null, -1L, null, "menudeo");
@@ -75,6 +76,7 @@ public final class Partida extends TcManticProductosDetallesDto implements Seria
     } // if
     this.principal= Boolean.FALSE;
     this.toLoadCodigos(Boolean.TRUE, tipoVenta);
+    this.idUnico= idArticulo;
   }
 
   public String getPropio() {
@@ -197,6 +199,31 @@ public final class Partida extends TcManticProductosDetallesDto implements Seria
     finally {
       Methods.clean(params);
     } // finally
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 11 * hash + Objects.hashCode(this.idUnico);
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final Partida other = (Partida) obj;
+    if (!Objects.equals(this.idUnico, other.idUnico)) {
+      return false;
+    }
+    return true;
   }
   
 }
