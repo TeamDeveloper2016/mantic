@@ -17,7 +17,6 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
@@ -35,10 +34,12 @@ import org.primefaces.extensions.model.fluidgrid.FluidGridItem;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.NodeSelectEvent;
+import org.primefaces.model.TreeNode;
 
 @Named(value = "manticProductosGaleria")
 @ViewScoped
-public class Galeria extends IBaseAttribute implements Serializable {
+public class Galeria extends Contenedor implements Serializable {
 
   private static final long serialVersionUID = 327393488565639363L;
   
@@ -90,9 +91,9 @@ public class Galeria extends IBaseAttribute implements Serializable {
       this.attrs.put("continuar", Boolean.FALSE);
       this.attrs.put("disenio", Boolean.FALSE);  
       this.attrs.put("cliente", new UISelectEntity(-1L));
-      this.attrs.put("categoria", "");
       this.toLoadCatalog();
       this.attrs.put("continuar", Boolean.TRUE);
+      this.doLoad("", 1L, null);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -100,10 +101,12 @@ public class Galeria extends IBaseAttribute implements Serializable {
     } // catch		
   } // init
 
+  @Override
   public void doLoad() {
     Map<String, Object> params= new HashMap<>();
     try {
-      params.put("sortOrder", "order by tc_mantic_productos.categoria, tc_mantic_productos.orden");
+      this.attrs.put("categoria", "");
+      params.put("sortOrder", "order by concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre), tc_mantic_productos.orden");
       params.put("idEmpresa", this.ikEmpresa.getKey());
       params.put("categoria", this.categoria);
       UISelectEntity cliente= (UISelectEntity)this.attrs.get("cliente");
@@ -168,7 +171,7 @@ public class Galeria extends IBaseAttribute implements Serializable {
     try {
 			columns= new ArrayList<>();
       params.put("idEmpresa", this.ikEmpresa.getKey());
-      List<UISelectItem> categorias= (List<UISelectItem>)UISelect.free("TcManticProductosDto", "categorias", params, "categoria", Constantes.SEPARADOR, EFormatoDinamicos.MAYUSCULAS, "categoria");
+      List<UISelectItem> categorias= (List<UISelectItem>)UISelect.free("TcManticProductosCategoriasDto", "categorias", params, "categoria", Constantes.SEPARADOR, EFormatoDinamicos.MAYUSCULAS, "categoria");
       this.attrs.put("categorias", categorias);			
       if((Boolean)this.attrs.get("continuar"))
         if(categorias!= null && !categorias.isEmpty())
@@ -312,5 +315,16 @@ public class Galeria extends IBaseAttribute implements Serializable {
 		} // else
     return regresar;
 	} // doVerificarReporte	
+  
+  public void onSelectCategoria(NodeSelectEvent event) {
+    this.attrs.put("seleccionado", event.getTreeNode());
+    this.doGaleria();
+  }  
+
+  public void doGaleria() {
+    UISelectEntity data= (UISelectEntity)((TreeNode)this.attrs.get("seleccionado")).getData();
+    this.categoria= data.toString("padre").concat(data.toString("nombre"));
+    this.doLoad();
+  }  
 
 }

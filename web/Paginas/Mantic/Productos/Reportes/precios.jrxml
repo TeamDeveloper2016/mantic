@@ -1,13 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="precios" pageWidth="380" pageHeight="150" columnWidth="378" leftMargin="1" rightMargin="1" topMargin="1" bottomMargin="1" uuid="cb2dfe2e-e8ef-48a1-91bb-b41c4ada4cb5">
 	<property name="ireport.zoom" value="4.0"/>
-	<property name="ireport.x" value="41"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<style name="Row" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#F0EFEF"/>
+		</conditionalStyle>
+	</style>
+	<style name="EvenOddRowStyle" mode="Opaque">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue() %2 == 0)]]></conditionExpression>
+			<style backcolor="#CCCCCC"/>
+		</conditionalStyle>
+	</style>
 	<parameter name="CLIENTE" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA[new String("mayoreo")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="ID_PRODUCTO" class="java.lang.Long" isForPrompting="false">
-		<defaultValueExpression><![CDATA[new Long(1L)]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[new Long(12L)]]></defaultValueExpression>
 	</parameter>
 	<parameter name="REPORTE_SQL" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA[" select"+
@@ -52,37 +64,37 @@
 				<reportElement x="0" y="0" width="378" height="12" forecolor="#CCCCCC" backcolor="#CCCCCC" uuid="71a9f6ae-7f09-4ab5-acd4-9f47baa89ec0"/>
 			</rectangle>
 			<staticText>
-				<reportElement x="1" y="0" width="77" height="12" uuid="b5cb383b-4e82-4229-9bd7-a0361dfdd3ac"/>
-				<textElement textAlignment="Center">
-					<font fontName="Arial Narrow" size="9"/>
+				<reportElement mode="Opaque" x="1" y="0" width="77" height="12" forecolor="#FFFFFF" backcolor="#666666" uuid="b5cb383b-4e82-4229-9bd7-a0361dfdd3ac"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Código]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="78" y="0" width="142" height="12" uuid="98190bec-f6f8-4230-99b4-9e3dad0f9165"/>
-				<textElement textAlignment="Center">
-					<font fontName="Arial Narrow" size="9"/>
+				<reportElement mode="Opaque" x="78" y="0" width="142" height="12" forecolor="#FFFFFF" backcolor="#666666" uuid="98190bec-f6f8-4230-99b4-9e3dad0f9165"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Descripción]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="219" y="0" width="50" height="12" uuid="1cc9d675-1aea-47d4-8933-3e7aca075fcc"/>
-				<textElement textAlignment="Center">
-					<font fontName="Arial Narrow" size="9"/>
+				<reportElement mode="Opaque" x="219" y="0" width="50" height="12" forecolor="#FFFFFF" backcolor="#666666" uuid="1cc9d675-1aea-47d4-8933-3e7aca075fcc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Medida]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="268" y="0" width="57" height="12" uuid="746481f2-ea35-468e-9ac2-51f65cbe8f14"/>
-				<textElement textAlignment="Center">
-					<font fontName="Arial Narrow" size="9"/>
+				<reportElement mode="Opaque" x="268" y="0" width="57" height="12" forecolor="#FFFFFF" backcolor="#666666" uuid="746481f2-ea35-468e-9ac2-51f65cbe8f14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Precio]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="324" y="0" width="54" height="12" uuid="e365c2f0-971b-40fb-b8e0-9ae66328728f"/>
-				<textElement textAlignment="Center">
-					<font fontName="Arial Narrow" size="9"/>
+				<reportElement mode="Opaque" x="324" y="0" width="54" height="12" forecolor="#FFFFFF" backcolor="#666666" uuid="e365c2f0-971b-40fb-b8e0-9ae66328728f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Cliente]]></text>
 			</staticText>
@@ -92,9 +104,9 @@
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="13" splitType="Stretch">
+		<band height="12" splitType="Stretch">
 			<frame>
-				<reportElement x="1" y="0" width="377" height="12" forecolor="#FFFFFF" uuid="534474ac-059e-4507-bfc3-898adca66084"/>
+				<reportElement style="EvenOddRowStyle" mode="Opaque" x="1" y="0" width="377" height="12" uuid="534474ac-059e-4507-bfc3-898adca66084"/>
 				<textField>
 					<reportElement x="0" y="0" width="77" height="12" uuid="6d832b1a-e282-499b-b27a-eb1f7c9d5635"/>
 					<textElement verticalAlignment="Middle">
@@ -103,28 +115,28 @@
 					<textFieldExpression><![CDATA[$F{CODIGO}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="77" y="0" width="141" height="12" uuid="c8b49dd5-69ae-4b07-8b3e-5633bffa4b91"/>
+					<reportElement x="77" y="0" width="140" height="12" uuid="c8b49dd5-69ae-4b07-8b3e-5633bffa4b91"/>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="7"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{DESCRIPCION}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="219" y="0" width="50" height="12" uuid="80338846-162f-47a8-8e11-2b284860f392"/>
+					<reportElement x="218" y="0" width="49" height="12" uuid="80338846-162f-47a8-8e11-2b284860f392"/>
 					<textElement verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="7"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{MEDIDA}]]></textFieldExpression>
 				</textField>
 				<textField pattern="$ #,##0.00">
-					<reportElement x="268" y="0" width="56" height="12" uuid="f81c733b-3903-49b4-b7ef-af3b51ea6a47"/>
+					<reportElement x="267" y="0" width="56" height="12" uuid="f81c733b-3903-49b4-b7ef-af3b51ea6a47"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="7"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{PRECIO}]]></textFieldExpression>
 				</textField>
 				<textField pattern="$ #,##0.00">
-					<reportElement x="324" y="0" width="52" height="12" uuid="9adf20ec-e80a-4b7c-8f5d-60091eba0f81"/>
+					<reportElement x="322" y="0" width="55" height="12" uuid="9adf20ec-e80a-4b7c-8f5d-60091eba0f81"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="7"/>
 					</textElement>

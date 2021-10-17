@@ -9,7 +9,7 @@
         select 
           tc_mantic_productos.id_producto as id_key,
           tc_mantic_productos.id_producto,
-          replace(tc_mantic_productos.categoria, '|', ' » ') as categoria,
+          replace(concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre), '|', ' » ') as categoria,
           tc_mantic_productos.marca,
           tc_mantic_productos.nombre,
           tc_mantic_productos.id_activo,
@@ -20,13 +20,15 @@
           tc_mantic_productos.registro
         from
           tc_mantic_productos
+				inner join 
+          tc_mantic_productos_categorias on tc_mantic_productos.id_producto_categoria= tc_mantic_productos_categorias.id_producto_categoria
         left join
           tc_mantic_imagenes on tc_mantic_productos.id_imagen= tc_mantic_imagenes.id_imagen     
         where
           tc_mantic_productos.id_empresa in ({idEmpresa})
-					and tc_mantic_productos.categoria like '{categoria}%'
+					and concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) like '{categoria}%'
         order by
-          tc_mantic_productos.categoria,
+          concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre),
           tc_mantic_productos.orden         
       </select>
       <select id="porCodigo">
@@ -87,9 +89,12 @@
         select 
           tc_mantic_productos.id_producto as id_key,
           count(tc_mantic_productos_detalles.id_producto) as articulos,
-				  tc_mantic_productos.*
+				  tc_mantic_productos.*,
+          concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) as categoria
         from
           tc_mantic_productos
+				inner join 
+          tc_mantic_productos_categorias on tc_mantic_productos.id_producto_categoria= tc_mantic_productos_categorias.id_producto_categoria
 				inner join 
 					tc_mantic_empresas on tc_mantic_productos.id_empresa= tc_mantic_empresas.id_empresa
 				left join 
@@ -98,7 +103,7 @@
           tc_mantic_productos.id_empresa in ({idEmpresa})
 					and {condicion}
         group by
-          tc_mantic_productos.categoria,
+          concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre),
           tc_mantic_productos.marca,
           tc_mantic_productos.nombre
         {sortOrder}           
@@ -108,20 +113,23 @@
           tc_mantic_productos.id_producto as id_key,
           count(tc_mantic_productos_detalles.id_producto) as articulos,
 				  tc_mantic_productos.*,
+          concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) as categoria,
           concat(tc_mantic_productos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo
         from
           tc_mantic_productos
 				inner join 
 					tc_mantic_empresas on tc_mantic_productos.id_empresa= tc_mantic_empresas.id_empresa
+				inner join 
+          tc_mantic_productos_categorias on tc_mantic_productos.id_producto_categoria= tc_mantic_productos_categorias.id_producto_categoria
 				left join 
 					tc_mantic_productos_detalles on tc_mantic_productos.id_producto= tc_mantic_productos_detalles.id_producto
         left join
           tc_mantic_imagenes on tc_mantic_productos.id_imagen= tc_mantic_imagenes.id_imagen     
         where
           tc_mantic_productos.id_empresa in ({idEmpresa})
-					and tc_mantic_productos.categoria= '{categoria}'
+					and concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre)= '{categoria}'
         group by
-          tc_mantic_productos.categoria,
+          concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre),
           tc_mantic_productos.marca,
           tc_mantic_productos.nombre
         {sortOrder}           
@@ -129,17 +137,19 @@
 			<select id="galeria">
         select 
           tc_mantic_productos.id_producto as id_key,
-          tc_mantic_productos.categoria
+          concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) as categoria
         from
           tc_mantic_productos
+				inner join 
+          tc_mantic_productos_categorias on tc_mantic_productos.id_producto_categoria= tc_mantic_productos_categorias.id_producto_categoria
 				inner join 
 					tc_mantic_empresas on tc_mantic_productos.id_empresa= tc_mantic_empresas.id_empresa
         where
           tc_mantic_productos.id_empresa in ({idEmpresa})
-					and tc_mantic_productos.categoria like '{categoria}%'
+					and concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) like '{categoria}%'
           and tc_mantic_productos.id_activo= 1
         group by
-          tc_mantic_productos.categoria,
+          concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre),
           tc_mantic_productos.marca,
           tc_mantic_productos.nombre
         {sortOrder}           

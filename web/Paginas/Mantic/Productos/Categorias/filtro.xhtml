@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Catálogo de categorias de los productos" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+      };
+      
+      var categoria= {
+        nombre:     {validaciones: 'requerido|libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'dialogo'},
+        porcentaje: {validaciones: 'requerido|entero|rango({"min":0,"max":100})', mascara: 'libre', grupo: 'dialogo'}
+      };
+    </script>		
+    <style type="text/css">    
+    .ui-tree.ui-tree-horizontal .ui-treenode-connector-table {width: 2px !important;}
+    .ui-tree .ui-icon {position: absolute; top: 44px;}
+    .ui-treenode-content {position: relative; width: 90px !important; height: 90px !important;}
+    .janal-tree-content {width: 250px !important;height: 36px !important;color: white;text-align: center;padding-top: 10px;}
+    .janal-nodo-acciones {position: absolute; right: 0;}
+    .janal-nodo-descripcion {white-space: normal !important;position: absolute;top: 40%;left: 20px;}
+    .janal-nivel-nodo {font-size: smaller;font-weight: bold;position: absolute;top: 3px;right: 6px !important;}  
+    .janal-nodo-nivel {font-size: smaller;font-weight: bold;position: absolute;bottom: 0;right: 0;width: 100%;text-align: right;height: 15px;}
+    .janal-tree-content{width: 300px !important;}
+	  .janal-nodo-title {font-size: smaller;position: absolute;top: 5px;left: 5px !important;border: 0px;} 
+    .janal-nivel-1 { background: #6f4CBA !important; color: white;}
+    .janal-nivel-2 { background: #35AC19 !important; color: white;}
+    .janal-nivel-3 { background: #CC0000 !important; color: white;}
+    .janal-nivel-4 { background: #00BFFF !important; color: white;}
+    .janal-nivel-5 { background: #2417B2 !important; color: white;}
+    .janal-nivel-6 { background: #1767B2 !important; color: white;}
+    .janal-nivel-7 { background: #17B279 !important; color: white;}
+    .janal-nivel-8 { background: #B28617 !important; color: white;}
+    .janal-nivel-9 { background: #B25517 !important; color: white;}
+    .janal-nivel-10 { background: #BA4C84 !important; color: white;}
+    .janal-nivel-11 { background: #AACC84 !important; color: white;}
+    .janal-nivel-12 { background: #CC4C08 !important; color: white;}
+    .janal-nivel-13 { background: #604B14 !important; color: white;}
+    .janal-nivel-14 { background: #00BB14 !important; color: white;}
+    .janal-nivel-15 { background: #FF01A4 !important; color: white;}
+  </style>    
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-content" class="ui-grid-col-12">
+          <p:tree id="tabla" widgetVar="kajoolTable" value="#{manticProductosCategoriasFiltro.root}" var="row" dynamic="true" nodeVar="nodo" orientation="horizontal" selectionMode="single" selection="#{manticProductosCategoriasFiltro.attrs.seleccionado}">
+            <p:ajax event="select" process="@this" update="kajoolContextMenu"/>
+            <p:treeNode>
+              <h:outputText value="#{row['porcentaje']}%" class="ui-widget-content janal-nodo-title janal-font-bold"/>
+              <h:outputText value="#{row['nombre']}" class="ui-widget-content janal-nodo-descripcion"/>
+              <h:outputText class="janal-nivel-#{row['nivel']} janal-nodo-nivel" value="N-#{row['nivel']}"/>
+            </p:treeNode>
+          </p:tree>
+          <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+            <p:menuitem icon="fa fa-plus" value="Agregar" process="@this tabla" actionListener="#{manticProductosCategoriasFiltro.doOperacion('AGREGAR')}" onstart="return janal.bloquear();" oncomplete="PF('widgetCategoria').show();" update="dialogoCategoria"/>					
+            <p:separator/>
+            <p:menuitem icon="fa fa-edit" value="Modificar" process="@this tabla" actionListener="#{manticProductosCategoriasFiltro.doOperacion('MODIFICAR')}" onstart="return janal.bloquear();" update="dialogoCategoria"/>
+            <p:menuitem icon="fa fa-close" value="Eliminar" process="@this tabla" actionListener="#{manticProductosCategoriasFiltro.doOperacion('ELIMINAR')}" onstart="return janal.bloquear();" update="dialogoCategoria"/>
+            <p:separator/>
+            <p:menuitem icon="fa fa-picture-o" action="#{manticProductosCategoriasFiltro.doGaleria()}" ajax="false" value="Galeria" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
+          </p:contextMenu>
+        </div>
+      </div>
+    </div>		        
+    <p:dialog id="dialogoCategoria" dynamic="true" widgetVar="widgetCategoria" header="[ #{manticProductosCategoriasFiltro.titulo} ] Datos de la categoría" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" resizable="false" onHide="janal.restore(); janal.refresh(); janal.desbloquear();" onShow="janal.change('producto', categoria); janal.refresh();" appendTo="@(body)">
+      <h:form id="producto" prependId="false">
+        <h:panelGrid class="janal-wid-100">
+          <h:panelGrid>
+            <h:panelGrid columns="3">
+              <p:outputLabel value="Descripción:" for="nombre"/>
+              <p:spacer height="1px" width="570px"/>
+              <h:panelGrid columns="2" styleClass="alinear-derecha" rendered="#{manticProductosCategoriasFiltro.agregar}">
+                <p:outputLabel value="Separador:" for="separador" />
+                <p:selectOneMenu id="separador" value="#{manticProductosCategoriasFiltro.categoria.separador}">
+                  <f:selectItem itemLabel="Punto y coma" itemValue=";" />
+                  <f:selectItem itemLabel="Coma" itemValue="," />
+                  <f:selectItem itemLabel="Guión medio" itemValue="-" />
+                  <f:selectItem itemLabel="Pipe" itemValue="|" />
+                </p:selectOneMenu>
+              </h:panelGrid>
+            </h:panelGrid>
+            <p:inputText id="nombre" value="#{manticProductosCategoriasFiltro.categoria.nombre}" styleClass="janal-wid-100-txt" readonly="#{manticProductosCategoriasFiltro.eliminar}"/>
+            <p:outputLabel value="Porcentaje:" for="porcentaje"/>
+            <p:inputNumber id="porcentaje" value="#{manticProductosCategoriasFiltro.categoria.porcentaje}" converter="javax.faces.Long" decimalPlaces="0" emptyValue="0" maxValue="100" minValue="0" inputStyleClass="janal-wid-100-txt" readonly="#{manticProductosCategoriasFiltro.eliminar}"/>
+          </h:panelGrid>
+        </h:panelGrid> 
+        <hr class="ui-widget-content"/>
+        <div class="janal-line-button">
+          <p:commandButton icon="fa fa-check" value="Aceptar" update="tabla" process="@this dialogoCategoria" onstart="return janal.partial('dialogo')" oncomplete="janal.desbloquear(); PF('widgetCategoria').hide();" actionListener="#{manticProductosCategoriasFiltro.doAccion()}"/> 
+          <p:commandButton icon="fa fa-close" value="Cancelar" onstart="PF('widgetCategoria').hide(); return true;" oncomplete="janal.desbloquear();" /> 
+        </div>
+      </h:form>  
+    </p:dialog>  
+  </ui:define>   
+  <ui:param name="componenteBloqueo" value="tabla"/>
+</ui:composition>

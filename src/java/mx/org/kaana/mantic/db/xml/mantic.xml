@@ -7,6 +7,98 @@
   </model>
 
   <dml>
+    <unit id="TcManticProductosCategoriasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_productos_categorias
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_productos_categorias
+        where      
+          padre = '{padre}' and nombre = '{nombre}' and nivel = {nivel}
+      </select>
+      <select id="identico">
+        select      
+          tc_mantic_productos_categorias.id_producto_categoria as id_key,
+          concat(padre, nombre) as categoria
+        from      
+          tc_mantic_productos_categorias
+        where      
+          id_producto_categoria = {idProductoCategoria}
+      </select>
+      <select id="categorias">
+        select      
+          tc_mantic_productos_categorias.id_producto_categoria as id_key,
+          concat(padre, nombre) as categoria
+        from      
+          tc_mantic_productos_categorias
+        group by
+          concat(padre, nombre)
+        order by
+          concat(padre, nombre)
+      </select>      
+      <select id="existe">
+        select      
+         tc_mantic_productos_categorias.id_producto_categoria as id_key,
+         tc_mantic_productos_categorias.nombre as texto,
+         tc_mantic_productos_categorias.porcentaje as valor,
+         '|' as separador,
+         tc_mantic_productos_categorias.*
+        from      
+          tc_mantic_productos_categorias
+        where      
+          id_producto_categoria = {idProductoCategoria}
+      </select>
+      <select id="hijos">
+        select      
+          tc_mantic_productos_categorias.id_producto_categoria as id_key,
+          tc_mantic_productos_categorias.*
+        from      
+          tc_mantic_productos_categorias
+        where      
+          padre = '{padre}' and nivel = {nivel}
+        order by
+          orden
+      </select>
+      <select id="igual">
+        select      
+          tc_mantic_productos_categorias.id_producto_categoria as id_key,
+          tc_mantic_productos_categorias.*
+        from      
+          tc_mantic_productos_categorias
+        where      
+          padre = '{padre}' 
+          and nivel = {nivel}
+          and nombre= '{nombre}'
+        order by
+          orden
+      </select>
+      <select id="siguiente">
+        select      
+					max(orden)+ 1 as siguiente
+        from      
+          tc_mantic_productos_categorias
+        where
+          padre= '{padre}'
+      </select>
+      <select id="porcentajes">
+        select
+          tc_mantic_productos_categorias.id_producto_categoria as id_key,
+          tc_mantic_productos_categorias.*
+				from 
+					tc_mantic_productos_categorias
+				where				  
+          padre like '{padre}%'
+          and nivel> {nivel}
+      </select>
+    </unit>    
     <unit id="TcManticProductosDto">
       <select id="row">
         select      
@@ -22,18 +114,8 @@
         from      
           tc_mantic_productos
         where      
-          marca = '{marca}' and nombre = '{nombre}'
-      </select>
-      <select id="categorias">
-        select      
-          id_producto as id_key,
-          categoria
-        from      
-          tc_mantic_productos
-        group by
-          categoria
-        order by
-          categoria
+          marca = '{marca}' 
+          and nombre = '{nombre}'
       </select>
       <select id="marcas">
         select      
@@ -53,9 +135,9 @@
 					tc_mantic_productos
 				where				  
 				  id_empresa = {idEmpresa}
-				  and categoria= '{categoria}'
+				  and id_producto_categoria= '{categoria}'
 				group by
-				  categoria          
+				  id_producto_categoria
       </select>
       <select id="maximo">
         select
@@ -64,7 +146,7 @@
 					tc_mantic_productos
 				where				  
 				  id_empresa = {idEmpresa}
-          and categoria= '{categoria}'
+          and id_producto_categoria= '{categoria}'
       </select>
       <update id="rows">
         update
@@ -72,7 +154,8 @@
         set 
           orden= {orden}
         where 
-          id_empresa= {idEmpresa} and id_producto= {idProducto}
+          id_empresa= {idEmpresa} 
+          and id_producto= {idProducto}
       </update>
       <update id="orden">
         update
@@ -80,7 +163,8 @@
         set 
           orden= {valor}
         where 
-          id_empresa= {idEmpresa} and orden= {orden}
+          id_empresa= {idEmpresa} 
+          and orden= {orden}
       </update>
     </unit>    
     <unit id="TcManticProductosDetallesDto">

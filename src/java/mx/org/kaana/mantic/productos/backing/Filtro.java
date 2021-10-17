@@ -57,7 +57,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     List<Columna> columns     = null;
     Map<String, Object> params= this.toPrepare();
     try {
-      params.put("sortOrder", "order by tc_mantic_productos.categoria, tc_mantic_productos.orden");
+      params.put("sortOrder", "order by concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre), tc_mantic_productos.orden");
       columns = new ArrayList<>();
       columns.add(new Columna("categoria", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("marca", EFormatoDinamicos.MAYUSCULAS));

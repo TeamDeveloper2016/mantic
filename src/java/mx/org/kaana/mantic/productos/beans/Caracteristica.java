@@ -3,7 +3,6 @@ package mx.org.kaana.mantic.productos.beans;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Random;
-import mx.org.kaana.kajool.db.comun.operation.IActions;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.mantic.db.dto.TcManticProductosCaracteristicasDto;
 

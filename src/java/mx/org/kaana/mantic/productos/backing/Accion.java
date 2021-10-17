@@ -19,11 +19,11 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
@@ -31,11 +31,13 @@ import mx.org.kaana.mantic.productos.reglas.Transaccion;
 import mx.org.kaana.mantic.productos.beans.Caracteristica;
 import mx.org.kaana.mantic.productos.beans.Partida;
 import mx.org.kaana.mantic.productos.beans.Producto;
+import org.primefaces.event.NodeSelectEvent;
+import org.primefaces.model.TreeNode;
 
 
 @Named(value = "manticProductosAccion")
 @ViewScoped
-public class Accion extends IBaseFilter implements Serializable {
+public class Accion extends Contenedor implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
 	private Producto producto;
@@ -70,6 +72,7 @@ public class Accion extends IBaseFilter implements Serializable {
       this.path = dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");      
       this.toLoadCatalog();
 			this.doLoad();
+      this.doLoad("", 1L, null);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -86,6 +89,8 @@ public class Accion extends IBaseFilter implements Serializable {
       switch (eaccion) {
         case AGREGAR:											
           this.producto= new Producto();
+          this.producto.setIkEmpresa(new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
+          this.producto.getProducto().setIdActivo(1L);
           break;
         case MODIFICAR:					
         case CONSULTAR:					
@@ -113,7 +118,7 @@ public class Accion extends IBaseFilter implements Serializable {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("sucursales", UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));			
-      List<UISelectItem> categorias= UISelect.seleccioneFree("TcManticProductosDto", "categorias", params, "categoria", "|", EFormatoDinamicos.MAYUSCULAS, "categoria");
+      List<UISelectItem> categorias= (List<UISelectItem>)UISelect.free("TcManticProductosCategoriasDto", "categorias", params, "categoria", Constantes.SEPARADOR, EFormatoDinamicos.MAYUSCULAS, "categoria");
       this.attrs.put("categorias", categorias);			
       List<UISelectItem> marcas= UISelect.seleccioneFree("TcManticProductosDto", "marcas", params, "marca", "|", EFormatoDinamicos.MAYUSCULAS, "marca");
       if(marcas!= null)
@@ -135,6 +140,8 @@ public class Accion extends IBaseFilter implements Serializable {
 		EAccion eaccion        = null;
     try {			
 			eaccion= (EAccion) this.attrs.get("accion");
+      if(Objects.equals(this.producto.getProducto().getIdImagen(), -1L))
+        this.producto.getProducto().setIdImagen(null);
 			transaccion = new Transaccion(this.producto);
 			if (transaccion.ejecutar(eaccion)) {
     		JsfBase.setFlashAttribute("idProducto", this.producto.getProducto().getIdProducto());
@@ -159,7 +166,7 @@ public class Accion extends IBaseFilter implements Serializable {
 	public void doLoadPartidas() {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
-		boolean buscaPorCodigo    = false;
+		int buscarCodigoPor       = 2;
     try {
 			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
@@ -167,21 +174,31 @@ public class Accion extends IBaseFilter implements Serializable {
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);
-			String search= (String)this.attrs.get("codigo"); 
+			String search= (String) this.attrs.get("codigo"); 
 			if(!Cadena.isVacio(search)) {
-  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();
-				buscaPorCodigo= search.startsWith(".");
-				if(buscaPorCodigo)
-					search= search.trim().substring(1);
-				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+				if((boolean)this.attrs.get("buscaPorCodigo"))
+			    buscarCodigoPor= 0;
+				if(search.startsWith("."))
+					buscarCodigoPor= 2;
+				else 
+					if(search.startsWith(":"))
+						buscarCodigoPor= 1;
+				if(search.startsWith(".") || search.startsWith(":"))
+					search= search.trim().substring(1);				
+				search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
 			} // if	
 			else
 				search= "WXYZ";
-  		params.put("codigo", search);
-			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
-        this.lazyModel= new FormatCustomLazy("VistaOrdenesComprasDto", "porCodigo", params, columns);
-			else
-        this.lazyModel= new FormatCustomLazy("VistaOrdenesComprasDto", "porNombre", params, columns);
+  		params.put("codigo", search);	
+			switch(buscarCodigoPor) {      
+				case 0: 
+				case 2: 
+          this.lazyModel= new FormatCustomLazy("VistaOrdenesComprasDto", "porCodigo", params, columns);
+          break;
+				case 1: 
+          this.lazyModel= new FormatCustomLazy("VistaOrdenesComprasDto", "porNombre", params, columns);
+          break;
+			} // switch
       UIBackingUtilities.resetDataTable("encontrados");
 		} // try
 	  catch (Exception e) {
@@ -319,26 +336,6 @@ public class Accion extends IBaseFilter implements Serializable {
 		} // catch		
   }
  
-  public void doConcatCategoria() {
-    StringBuilder sb= new StringBuilder();
-    if(this.getProducto().getIkCategoria()!= null && !Objects.equals(this.getProducto().getIkCategoria(), "-1"))
-      sb.append(this.getProducto().getIkCategoria().trim());
-    if(this.getProducto().getProducto().getCategoria()!= null && !Cadena.isVacio(this.getProducto().getProducto().getCategoria().trim())) {
-      String categoria= this.getProducto().getProducto().getCategoria().trim().toUpperCase();
-      String completo = Constantes.SEPARADOR.concat(sb.toString()).concat(Constantes.SEPARADOR);
-      if(categoria.startsWith(Constantes.SEPARADOR))
-        this.getProducto().getProducto().setCategoria(categoria.substring(1));
-      if(categoria.endsWith(Constantes.SEPARADOR))
-        this.getProducto().getProducto().setCategoria(this.getProducto().getProducto().getCategoria().substring(0, this.getProducto().getProducto().getCategoria().length()- 1));
-      String contiene= this.getProducto().getProducto().getCategoria().trim().toUpperCase();
-      if(sb.length()> 0 && !completo.contains(Constantes.SEPARADOR.concat(contiene).concat(Constantes.SEPARADOR)))
-        sb.append(Constantes.SEPARADOR).append(contiene);
-      else
-        this.getProducto().getProducto().setCategoria("");        
-    } // if  
-    this.getProducto().setCategoria(sb.toString());
-  }
-  
   public void doMarcaOpcion() {
     if(this.getProducto().getIkMarca()!= null && !Objects.equals(this.getProducto().getIkMarca(), "-1") && !Objects.equals(this.getProducto().getIkMarca(), "OTRA"))
       this.getProducto().getProducto().setMarca(this.getProducto().getIkMarca().trim());
@@ -361,6 +358,16 @@ public class Accion extends IBaseFilter implements Serializable {
   
   public String doLetraCapital(Caracteristica caracteristica) {
     return Cadena.letraCapital(caracteristica.getDescripcion());
+  }  
+ 
+  public void onSelectCategoria(NodeSelectEvent event) {
+    this.attrs.put("data", event.getTreeNode());
+    this.doGaleria();
+  }  
+
+  public void doGaleria() {
+    UISelectEntity data= (UISelectEntity)((TreeNode)this.attrs.get("data")).getData();
+    this.producto.setCategoria(data.toString("padre").concat(data.toString("nombre")));
   }  
   
 }

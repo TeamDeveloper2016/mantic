@@ -132,7 +132,7 @@
 			<frame>
 				<reportElement mode="Opaque" x="95" y="1" width="677" height="68" forecolor="#D0B48E" backcolor="#006699" uuid="c47e0965-85b2-41c4-9ac8-66043f42157d"/>
 				<line>
-					<reportElement x="3" y="28" width="670" height="1" forecolor="#99FFFF" uuid="896c7db0-2584-4cad-93b6-d54bf4f09b83"/>
+					<reportElement x="0" y="27" width="677" height="1" forecolor="#FFFFFF" uuid="896c7db0-2584-4cad-93b6-d54bf4f09b83"/>
 					<graphicElement>
 						<pen lineWidth="1.0" lineStyle="Solid"/>
 					</graphicElement>
@@ -152,7 +152,7 @@
 					<textFieldExpression><![CDATA["C.P. "+$P{REPORTE_EMPRESA_CP}]]></textFieldExpression>
 				</textField>
 				<line>
-					<reportElement x="3" y="25" width="670" height="1" forecolor="#99FFFF" uuid="1d28d8da-724e-4a7b-a2f8-294752d50628"/>
+					<reportElement x="0" y="23" width="677" height="1" forecolor="#FFFFFF" uuid="1d28d8da-724e-4a7b-a2f8-294752d50628"/>
 					<graphicElement>
 						<pen lineWidth="3.0" lineStyle="Solid"/>
 					</graphicElement>
@@ -179,7 +179,7 @@
 					<textFieldExpression><![CDATA["COL. "+$P{REPORTE_EMPRESA_COLONIA}]]></textFieldExpression>
 				</textField>
 				<textField pattern="">
-					<reportElement x="350" y="58" width="51" height="10" forecolor="#FFFFCC" uuid="ce1a0bc9-917b-4b79-be3f-28ae630af81c">
+					<reportElement x="350" y="58" width="39" height="10" forecolor="#FFFFCC" uuid="ce1a0bc9-917b-4b79-be3f-28ae630af81c">
 						<printWhenExpression><![CDATA[$F{ID_CLIENTE}.intValue()!= -1]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -188,7 +188,7 @@
 					<textFieldExpression><![CDATA["CLIENTE: "]]></textFieldExpression>
 				</textField>
 				<textField pattern="" isBlankWhenNull="true">
-					<reportElement x="401" y="58" width="276" height="10" forecolor="#FFFF33" uuid="9ea0d2f7-5a5f-44c7-a395-4541949fc36d">
+					<reportElement x="389" y="58" width="287" height="10" forecolor="#FFFF33" uuid="9ea0d2f7-5a5f-44c7-a395-4541949fc36d">
 						<printWhenExpression><![CDATA[$F{ID_CLIENTE}.intValue()!= -1]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -329,12 +329,6 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{REPORTE_EMPRESA_CLAVE}]]></textFieldExpression>
 				</textField>
-				<line>
-					<reportElement x="1" y="0" width="770" height="1" uuid="eef0a4ff-57f9-41e6-ba3b-24e057600947"/>
-					<graphicElement>
-						<pen lineWidth="1.75" lineStyle="Solid"/>
-					</graphicElement>
-				</line>
 			</frame>
 		</band>
 	</pageFooter>

@@ -24,64 +24,69 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_mantic_productos")
-public class TcManticProductosDto implements IBaseDto, Serializable {
+@Table(name="tc_mantic_productos_categorias")
+public class TcManticProductosCategoriasDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
-  @Column (name="marca")
-  private String marca;
+  @Column (name="padre")
+  private String padre;
+  @Column (name="ultimo")
+  private Long ultimo;
   @Column (name="id_activo")
   private Long idActivo;
   @Column (name="id_usuario")
   private Long idUsuario;
-  @Column (name="id_imagen")
-  private Long idImagen;
-  @Column (name="id_producto_categoria")
-  private Long idProductoCategoria;
-  @Column (name="observaciones")
-  private String observaciones;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_producto")
-  private Long idProducto;
-  @Column (name="id_empresa")
-  private Long idEmpresa;
-  @Column (name="orden")
-  private Long orden;
+	@Column (name="id_producto_categoria")
+  private Long idProductoCategoria;
+  @Column (name="porcentaje")
+  private Long porcentaje;
   @Column (name="nombre")
   private String nombre;
+  @Column (name="nivel")
+  private Long nivel;
+  @Column (name="orden")
+  private Long orden;
   @Column (name="registro")
   private Timestamp registro;
 
-  public TcManticProductosDto() {
+  public TcManticProductosCategoriasDto() {
     this(new Long(-1L));
   }
 
-  public TcManticProductosDto(Long key) {
-    this(null, null, null, null, null, null, new Long(-1L), null, null, null);
+  public TcManticProductosCategoriasDto(Long key) {
+    this(null, null, null, null, new Long(-1L), null, null, null, 1L);
     setKey(key);
   }
 
-  public TcManticProductosDto(String marca, Long idActivo, Long idUsuario, Long idImagen, Long idProductoCategoria, String observaciones, Long idProducto, Long idEmpresa, Long orden, String nombre) {
-    setMarca(marca);
+  public TcManticProductosCategoriasDto(String padre, Long ultimo, Long idActivo, Long idUsuario, Long idProductoCategoria, Long porcentaje, String nombre, Long nivel, Long orden) {
+    setPadre(padre);
+    setUltimo(ultimo);
     setIdActivo(idActivo);
     setIdUsuario(idUsuario);
-    setIdImagen(idImagen);
     setIdProductoCategoria(idProductoCategoria);
-    setObservaciones(observaciones);
-    setIdProducto(idProducto);
-    setIdEmpresa(idEmpresa);
-    setOrden(orden);
+    setPorcentaje(porcentaje);
     setNombre(nombre);
+    setNivel(nivel);
+    setOrden(orden);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
-  public void setMarca(String marca) {
-    this.marca = marca;
+  public void setPadre(String padre) {
+    this.padre = padre;
   }
 
-  public String getMarca() {
-    return marca;
+  public String getPadre() {
+    return padre;
+  }
+
+  public void setUltimo(Long ultimo) {
+    this.ultimo = ultimo;
+  }
+
+  public Long getUltimo() {
+    return ultimo;
   }
 
   public void setIdActivo(Long idActivo) {
@@ -100,14 +105,6 @@ public class TcManticProductosDto implements IBaseDto, Serializable {
     return idUsuario;
   }
 
-  public void setIdImagen(Long idImagen) {
-    this.idImagen = idImagen;
-  }
-
-  public Long getIdImagen() {
-    return idImagen;
-  }
-
   public void setIdProductoCategoria(Long idProductoCategoria) {
     this.idProductoCategoria = idProductoCategoria;
   }
@@ -116,36 +113,12 @@ public class TcManticProductosDto implements IBaseDto, Serializable {
     return idProductoCategoria;
   }
 
-  public void setObservaciones(String observaciones) {
-    this.observaciones = observaciones;
+  public void setPorcentaje(Long porcentaje) {
+    this.porcentaje = porcentaje;
   }
 
-  public String getObservaciones() {
-    return observaciones;
-  }
-
-  public void setIdProducto(Long idProducto) {
-    this.idProducto = idProducto;
-  }
-
-  public Long getIdProducto() {
-    return idProducto;
-  }
-
-  public void setIdEmpresa(Long idEmpresa) {
-    this.idEmpresa = idEmpresa;
-  }
-
-  public Long getIdEmpresa() {
-    return idEmpresa;
-  }
-
-  public void setOrden(Long orden) {
-    this.orden = orden;
-  }
-
-  public Long getOrden() {
-    return orden;
+  public Long getPorcentaje() {
+    return porcentaje;
   }
 
   public void setNombre(String nombre) {
@@ -154,6 +127,22 @@ public class TcManticProductosDto implements IBaseDto, Serializable {
 
   public String getNombre() {
     return nombre;
+  }
+
+  public void setNivel(Long nivel) {
+    this.nivel = nivel;
+  }
+
+  public Long getNivel() {
+    return nivel;
+  }
+
+  public Long getOrden() {
+    return orden;
+  }
+
+  public void setOrden(Long orden) {
+    this.orden = orden;
   }
 
   public void setRegistro(Timestamp registro) {
@@ -167,37 +156,35 @@ public class TcManticProductosDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdProducto();
+  	return getIdProductoCategoria();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idProducto = key;
+  	this.idProductoCategoria = key;
   }
 
   @Override
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getMarca());
+		regresar.append(getPadre());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getUltimo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdActivo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdImagen());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdProductoCategoria());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getObservaciones());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdProducto());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdEmpresa());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getOrden());
+		regresar.append(getPorcentaje());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getNivel());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -207,16 +194,15 @@ public class TcManticProductosDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("marca", getMarca());
+		regresar.put("padre", getPadre());
+		regresar.put("ultimo", getUltimo());
 		regresar.put("idActivo", getIdActivo());
 		regresar.put("idUsuario", getIdUsuario());
-		regresar.put("idImagen", getIdImagen());
 		regresar.put("idProductoCategoria", getIdProductoCategoria());
-		regresar.put("observaciones", getObservaciones());
-		regresar.put("idProducto", getIdProducto());
-		regresar.put("idEmpresa", getIdEmpresa());
-		regresar.put("orden", getOrden());
+		regresar.put("porcentaje", getPorcentaje());
 		regresar.put("nombre", getNombre());
+		regresar.put("nivel", getNivel());
+		regresar.put("orden", getOrden());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -224,7 +210,7 @@ public class TcManticProductosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getMarca(), getIdActivo(), getIdUsuario(), getIdImagen(), getIdProductoCategoria(), getObservaciones(), getIdProducto(), getIdEmpresa(), getOrden(), getNombre(), getRegistro()
+      getPadre(), getUltimo(), getIdActivo(), getIdUsuario(), getIdProductoCategoria(), getPorcentaje(), getNombre(), getNivel(), getOrden(), getRegistro()
     };
     return regresar;
   }
@@ -238,8 +224,8 @@ public class TcManticProductosDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idProducto~");
-    regresar.append(getIdProducto());
+    regresar.append("idProductoCategoria~");
+    regresar.append(getIdProductoCategoria());
     regresar.append("|");
     return regresar.toString();
   }
@@ -247,18 +233,18 @@ public class TcManticProductosDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdProducto());
+    regresar.append(getIdProductoCategoria());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcManticProductosDto.class;
+    return TcManticProductosCategoriasDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdProducto()!= null && getIdProducto()!=-1L;
+  	return getIdProductoCategoria()!= null && getIdProductoCategoria()!=-1L;
   }
 
   @Override
@@ -269,8 +255,8 @@ public class TcManticProductosDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcManticProductosDto other = (TcManticProductosDto) obj;
-    if (getIdProducto() != other.idProducto && (getIdProducto() == null || !getIdProducto().equals(other.idProducto))) {
+    final TcManticProductosCategoriasDto other = (TcManticProductosCategoriasDto) obj;
+    if (getIdProductoCategoria() != other.idProductoCategoria && (getIdProductoCategoria() == null || !getIdProductoCategoria().equals(other.idProductoCategoria))) {
       return false;
     }
     return true;
@@ -279,7 +265,7 @@ public class TcManticProductosDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdProducto() != null ? getIdProducto().hashCode() : 0);
+    hash = 67 * hash + (getIdProductoCategoria() != null ? getIdProductoCategoria().hashCode() : 0);
     return hash;
   }
 

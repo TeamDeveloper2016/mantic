@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="caracteristicas" pageWidth="275" pageHeight="150" columnWidth="273" leftMargin="1" rightMargin="1" topMargin="1" bottomMargin="1" scriptletClass="mx.org.kaana.libs.reportes.scriptlets.BarraProgreso" uuid="cb2dfe2e-e8ef-48a1-91bb-b41c4ada4cb5">
-	<property name="ireport.zoom" value="3.0"/>
+	<property name="ireport.zoom" value="8.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="ID_PRODUCTO" class="java.lang.Long" isForPrompting="false">
@@ -39,7 +39,7 @@
 			<frame>
 				<reportElement x="1" y="0" width="271" height="12" forecolor="#FFFFFF" uuid="534474ac-059e-4507-bfc3-898adca66084"/>
 				<ellipse>
-					<reportElement x="5" y="4" width="4" height="4" backcolor="#000000" uuid="11f5c021-63b0-4833-85c5-c9767600ff07"/>
+					<reportElement x="9" y="5" width="2" height="2" backcolor="#000000" uuid="11f5c021-63b0-4833-85c5-c9767600ff07"/>
 				</ellipse>
 				<textField isStretchWithOverflow="true">
 					<reportElement x="18" y="0" width="253" height="12" isPrintWhenDetailOverflows="true" uuid="c8b49dd5-69ae-4b07-8b3e-5633bffa4b91"/>

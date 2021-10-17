@@ -9,6 +9,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
@@ -767,9 +768,10 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 				regresar.put("descripcion", new Value("descripcion", this.getNombre()));
 				regresar.put("nombre", new Value("nombre", this.getNombre()));
 				regresar.put("precio", new Value("precio", this.getCosto()));
-				regresar.put("menudeo", new Value("menudeo", this.getCosto()* 1.5));
-				regresar.put("medioMayoreo", new Value("medioMayoreo", this.getCosto()* 1.4));
-				regresar.put("mayoreo", new Value("mayoreo", this.getCosto()* 1.3));				
+				regresar.put("menudeo", new Value("menudeo", this.getCosto()* Constantes.PORCENTAJE_MENUDEO));
+				regresar.put("medioMayoreo", new Value("medioMayoreo", this.getCosto()* Constantes.PORCENTAJE_MEDIO_MAYOREO));
+				regresar.put("mayoreo", new Value("mayoreo", this.getCosto()* Constantes.PORCENTAJE_MAYOREO));				
+				regresar.put("especial", new Value("especial", this.getCosto()* Constantes.PORCENTAJE_ESPECIAL));				
 			} // if	
   		regresar.put("propio", new Value("propio", this.getPropio()));
 		} // try

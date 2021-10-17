@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.ESql;
-import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticProductosDto;
@@ -32,7 +31,6 @@ public final class Producto implements Serializable {
   private List<Partida> articulos;
   private List<Caracteristica> caracteristicas;
   private UISelectEntity ikEmpresa;
-  private String ikCategoria;
   private String ikMarca;
   private String categoria;
   private String temporal;
@@ -73,14 +71,6 @@ public final class Producto implements Serializable {
       this.producto.setIdEmpresa(this.ikEmpresa.getKey());
   }
 
-  public String getIkCategoria() {
-    return ikCategoria;
-  }
-
-  public void setIkCategoria(String ikCategoria) {
-    this.ikCategoria = ikCategoria;
-  }
-
   public String getIkMarca() {
     return ikMarca;
   }
@@ -97,6 +87,22 @@ public final class Producto implements Serializable {
     return archivo;
   }
   
+  public String getCategoria() {
+    return categoria;
+  }
+
+  public void setCategoria(String categoria) {
+    this.categoria = categoria;
+  }
+
+  public String getMarca() {
+    return marca;
+  }
+
+  public void setMarca(String marca) {
+    this.marca = marca;
+  }
+  
   private void init(Long idProducto, String cliente) throws Exception {
     Map<String, Object> params = null;
     try {      
@@ -105,11 +111,10 @@ public final class Producto implements Serializable {
       if(Objects.equals(-1L, idProducto)) {
         this.producto= new TcManticProductosDto();
         this.producto.setIdImagen(-1L);
-        this.temporal= "";
+        this.temporal = "";
         this.categoria= "";
-        this.marca= "";
+        this.marca    = "";
         this.setIkEmpresa(new UISelectEntity(-1L));
-        this.setIkCategoria("-1");
         this.setIkMarca("-1");
       } // if
       else {
@@ -131,16 +136,10 @@ public final class Producto implements Serializable {
             item.setAction(ESql.SELECT);
           } // for
         this.setIkEmpresa(new UISelectEntity(this.producto.getIdEmpresa()));
-        this.temporal= this.producto.getCategoria();
-        this.categoria= this.producto.getCategoria();
         this.marca= this.producto.getMarca();
-        String[] categorias= this.producto.getCategoria().split(Constantes.SEPARADOR_SPLIT);
-        if(categorias.length> 1) {
-          this.setIkCategoria(this.producto.getCategoria().substring(0, this.producto.getCategoria().lastIndexOf(Constantes.SEPARADOR)));
-          this.producto.setCategoria(categorias[categorias.length-1]);
-        } // if  
-        else
-          this.setIkCategoria("-1");
+        params.put("idProductoCategoria", this.producto.getIdProductoCategoria());
+        this.categoria= DaoFactory.getInstance().toField("TcManticProductosCategoriasDto", "identico", params, "categoria").toString();
+        this.temporal = this.categoria;
         this.setIkMarca("OTRA");
       } // else
       if(this.articulos== null)
@@ -154,22 +153,6 @@ public final class Producto implements Serializable {
     finally {
       Methods.clean(params);
     } // finally
-  }
-
-  public String getCategoria() {
-    return categoria;
-  }
-
-  public void setCategoria(String categoria) {
-    this.categoria = categoria;
-  }
-
-  public String getMarca() {
-    return marca;
-  }
-
-  public void setMarca(String marca) {
-    this.marca = marca;
   }
   
   public void addPartida(Partida partida) {  
