@@ -110,11 +110,14 @@
                 <p:treeNode>
                   <h:outputText value="#{row['porcentaje']}%" class="ui-widget-content janal-nodo-title janal-font-bold"/>
                   <h:outputText value="#{row['nombre']}" class="ui-widget-content janal-nodo-descripcion"/>
-                  <h:outputText class="janal-nivel-#{row['nivel']} janal-nodo-nivel" value="N-#{row['nivel']}"/>
+                  <div class="janal-nivel-#{row['nivel']} janal-nodo-nivel">
+                    <span class="janal-icons-header">#[ #{row['total']} ]</span>
+                    <span>N-#{row['nivel']}</span>
+                  </div>  
                 </p:treeNode>
               </p:tree>      
               <p:contextMenu id="kajoolContextMenu" for="arbol">
-                <p:menuitem icon="fa fa-picture-o" process="@this arbol" update="@(.categoria)" actionListener="#{manticProductosAccion.doGaleria()}" value="Galeria" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();PF('widgetGaleria').select(1);"/>					
+                <p:menuitem icon="fa fa-picture-o" process="@this arbol" update="@(.categoria)" actionListener="#{manticProductosAccion.doGaleria}" value="Galeria" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();PF('widgetGaleria').select(1);"/>					
               </p:contextMenu>
             </p:tab>  
             <p:tab title="General">							
@@ -138,13 +141,13 @@
                 <p:inputText id="categoria" value="#{manticProductosAccion.producto.categoria}" styleClass="janal-wid-100-txt categoria" style="display: none"/> 
                 <p:outputLabel for="marca" value="Marca(s): [ #{manticProductosAccion.producto.marca} ]" styleClass="marca"/>
                 <p:selectOneMenu id="marcas" value="#{manticProductosAccion.producto.ikMarca}" var="item" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <p:ajax event="change" process="@this karca" update="@(.marca)" listener="#{manticProductosAccion.doMarcaOpcion()}" oncomplete="janal.refresh();"/>
+                  <p:ajax event="change" process="@this karca" update="@(.marca)" listener="#{manticProductosAccion.doMarcaOpcion}" oncomplete="janal.refresh();"/>
                   <f:selectItems value="#{manticProductosAccion.attrs.marcas}"/>
                 </p:selectOneMenu>
                 <p:outputLabel for="marcas" value="Marca:" styleClass="marca" style="display:#{manticProductosAccion.producto.ikMarca eq 'OTRA'? '': 'none'}"/>
                 <p:inputText id="marca" value="#{manticProductosAccion.producto.marca}" styleClass="janal-wid-100-txt marca" style="display: none"/> 
                 <p:inputText id="karca" value="#{manticProductosAccion.producto.producto.marca}" styleClass="janal-wid-100-txt marca" style="display:#{manticProductosAccion.producto.ikMarca eq 'OTRA'? '': 'none'}"> 
-                  <p:ajax event="change" process="@this marcas" update="@(.marca)" listener="#{manticProductosAccion.doConcatMarca()}" oncomplete="janal.refresh();"/>
+                  <p:ajax event="change" process="@this marcas" update="@(.marca)" listener="#{manticProductosAccion.doConcatMarca}" oncomplete="janal.refresh();"/>
                 </p:inputText>  
                 <p:outputLabel for="nombre" value="Nombre:"/>
                 <p:inputText id="nombre" value="#{manticProductosAccion.producto.producto.nombre}" styleClass="janal-wid-100-txt"/> 
@@ -290,7 +293,7 @@
                     <p:ajax event="change" process="@this" update="descripcion" listener="#{manticProductosAccion.doCheckEspecificacion(row)}" oncomplete="janal.refresh();"/>
                   </p:inputText>  
                 </p:column>   
-                <p:column styleClass="janal-wid-8 janal-column-center">
+                <p:column styleClass="janal-wid-10 janal-column-center">
                   <p:commandButton icon="fa fa-minus" title="Eliminar especificación" actionListener="#{manticProductosAccion.doEliminarCaracteristica(row)}" process="@this" update="@(.filas) @(.detalle)" onstart="janal.bloquear(); janal.refresh();" oncomplete="janal.desbloquear();" style="display:#{row['action'] eq 'DELETE'? 'none': ''}"/>
                   <p:commandButton icon="fa fa-recycle" title="Recuperar especificación" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.refresh();" actionListener="#{manticProductosAccion.doRecuperarCaracteristica(row)}" process="@this" update="@(.filas) @(.detalle)" style="display:#{row['action'] eq 'DELETE'? '': 'none'}"/>                  
                   <p:commandButton icon="fa fa-angle-double-up" title="Subir" actionListener="#{manticProductosAccion.doSubirCaracteristica(row)}" process="@this" update="@(.filas) @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();" disabled="#{index eq 0}" style="display:#{row['action'] eq 'DELETE'? 'none': ''}"/>

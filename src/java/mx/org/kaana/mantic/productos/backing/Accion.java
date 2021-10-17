@@ -166,7 +166,7 @@ public class Accion extends Contenedor implements Serializable {
 	public void doLoadPartidas() {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
-		int buscarCodigoPor       = 2;
+		int buscarCodigoPor       = 1;
     try {
 			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));

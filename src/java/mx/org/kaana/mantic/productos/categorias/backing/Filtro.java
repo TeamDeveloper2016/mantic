@@ -8,6 +8,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -121,8 +122,10 @@ public class Filtro extends Contenedor implements Serializable {
  
   public String doGaleria() {
 		try {
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Productos/Galerias/filtro");		
-			JsfBase.setFlashAttribute("producto", this.attrs.get("seleccionado"));
+      UISelectEntity data= (UISelectEntity)((TreeNode)this.attrs.get("seleccionado")).getData();
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Productos/Categorias/filtro");		
+			JsfBase.setFlashAttribute("producto", data);
+			JsfBase.setFlashAttribute("categoria", data.toString("padre").concat(data.toString("nombre")));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -133,24 +136,59 @@ public class Filtro extends Contenedor implements Serializable {
  
   public void doOperacion(String item) {
     this.accion= EAccion.valueOf(item);
-    switch(this.accion) {
-      case AGREGAR:
-        this.doAgregar((UISelectEntity)((TreeNode)this.attrs.get("seleccionado")).getData());
-        break;
-      case MODIFICAR:
-      case ELIMINAR:
-         if(Objects.equals(((UISelectEntity)((TreeNode)this.attrs.get("seleccionado")).getData()).toLong("nivel"), 1L)) {
-           JsfBase.addMessage(Cadena.letraCapital(this.accion.getName()), "Esta categoría no se puede "+ this.accion.getName().toLowerCase(), ETipoMensaje.ALERTA);
-           UIBackingUtilities.execute("janal.desbloquear();");
-         } // if  
-         else {
-           this.doModificar((UISelectEntity)((TreeNode)this.attrs.get("seleccionado")).getData());
-           TreeNode father= ((TreeNode)this.attrs.get("seleccionado")).getParent();
-           this.categoria.setIdPadre(((UISelectEntity)father.getData()).toLong("idProductoCategoria"));
-           UIBackingUtilities.execute("PF('widgetCategoria').show();");
-        } // else  
-        break;
-    } // switch
+ 		Map<String, Object> params= new HashMap<>();
+    try {
+      switch(this.accion) {
+        case AGREGAR:
+          this.doAgregar((UISelectEntity)((TreeNode)this.attrs.get("seleccionado")).getData());
+          break;
+        case MODIFICAR:
+        case ELIMINAR:
+           if(Objects.equals(((UISelectEntity)((TreeNode)this.attrs.get("seleccionado")).getData()).toLong("nivel"), 1L)) {
+             JsfBase.addMessage(Cadena.letraCapital(this.accion.getName()), "Esta categoría no se puede "+ this.accion.getName().toLowerCase(), ETipoMensaje.ALERTA);
+             UIBackingUtilities.execute("janal.desbloquear();");
+           } // if  
+           else {
+             this.doModificar((UISelectEntity)((TreeNode)this.attrs.get("seleccionado")).getData());
+             TreeNode father= ((TreeNode)this.attrs.get("seleccionado")).getParent();
+             this.categoria.setIdPadre(((UISelectEntity)father.getData()).toLong("idProductoCategoria"));
+             UIBackingUtilities.execute("PF('widgetCategoria').show();");
+          } // else  
+          break;
+        case SUBIR:
+          if(Objects.equals(((UISelectEntity)((TreeNode)this.attrs.get("seleccionado")).getData()).toLong("orden"), 1L)) 
+            JsfBase.addMessage(Cadena.letraCapital(this.accion.getName()), "Esta categoría no se puede "+ this.accion.getName().toLowerCase(), ETipoMensaje.ALERTA);
+          else {
+            this.doModificar((UISelectEntity)((TreeNode)this.attrs.get("seleccionado")).getData());
+            TreeNode father= ((TreeNode)this.attrs.get("seleccionado")).getParent();
+            this.categoria.setIdPadre(((UISelectEntity)father.getData()).toLong("idProductoCategoria"));
+            this.doAccion();
+          } // else  
+          break;
+        case BAJAR:
+          Long maximo= -1L;
+    			params.put("padre", ((UISelectEntity)((TreeNode)this.attrs.get("seleccionado")).getData()).toString("padre"));
+          Value next= DaoFactory.getInstance().toField("TcManticProductosCategoriasDto", "maximo", params, "siguiente");
+          if(next!= null && next.getData()!= null)
+            maximo= next.toLong();
+          if(Objects.equals(((UISelectEntity)((TreeNode)this.attrs.get("seleccionado")).getData()).toLong("orden"), maximo)) 
+            JsfBase.addMessage(Cadena.letraCapital(this.accion.getName()), "Esta categoría no se puede "+ this.accion.getName().toLowerCase(), ETipoMensaje.ALERTA);
+          else {
+            this.doModificar((UISelectEntity)((TreeNode)this.attrs.get("seleccionado")).getData());
+            TreeNode father= ((TreeNode)this.attrs.get("seleccionado")).getParent();
+            this.categoria.setIdPadre(((UISelectEntity)father.getData()).toLong("idProductoCategoria"));
+            this.doAccion();
+          } // else  
+          break;
+      } // switch
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
   }
 
   @Override

@@ -83,7 +83,7 @@ public class Galeria extends Contenedor implements Serializable {
       else
         this.producto = (Entity)JsfBase.getFlashAttribute("producto");
       this.attrs.put("isMatriz", Boolean.FALSE);
-      this.categoria= "";
+      this.categoria= JsfBase.getFlashAttribute("categoria")== null? "": (String)JsfBase.getFlashAttribute("categoria");
       this.ikEmpresa= new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
       String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
@@ -194,7 +194,7 @@ public class Galeria extends Contenedor implements Serializable {
   } // doAccion
 
   public String doCancelar() {   
-		JsfBase.setFlashAttribute("idProducto", this.producto.getKey());
+		JsfBase.setFlashAttribute("idProducto", this.producto!= null? this.producto.getKey(): -1L);
     return this.attrs.get("retorno")== null? "filtro".concat(Constantes.REDIRECIONAR): ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 

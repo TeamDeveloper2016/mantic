@@ -83,11 +83,11 @@
                 <p:commandButton icon="fa fa-picture-o" action="#{manticProductosFiltro.doGaleria()}" ajax="false" title="Galeria" onstart="return janal.bloquear()"/>
               </div>  
             </f:facet>	            
-            <p:column styleClass="MarAuto Responsive janal-wid-12" sortBy="#{row.categoria}">
+            <p:column styleClass="MarAuto Responsive janal-wid-12" sortBy="#{row.referencia}">
               <f:facet name="header">
                 <h:outputText value="Categoria"/>
               </f:facet>
-              <h:outputText value="#{row['categoria']}"/>
+              <h:outputText value="#{row['referencia']}"/>
             </p:column>		
             <p:column styleClass="MarAuto Responsive janal-wid-12" sortBy="#{row.marca}">
               <f:facet name="header">

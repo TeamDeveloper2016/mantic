@@ -8,7 +8,9 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -27,17 +29,20 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.productos.beans.Partida;
 import mx.org.kaana.mantic.productos.reglas.Transaccion;
+import org.primefaces.event.NodeSelectEvent;
+import org.primefaces.model.TreeNode;
 
 
 @Named(value = "manticProductosOrdena")
 @ViewScoped
-public class Ordena extends IBaseFilter implements Serializable {
+public class Ordena extends Contenedor implements Serializable {
 
   private static final long serialVersionUID = 327393488565639363L;
 	private Entity producto;
 	private String categoria;
   private String path;
   private UISelectEntity ikEmpresa;
+  private Long maximo;
 
   public String getCategoria() {
     return categoria;
@@ -58,6 +63,10 @@ public class Ordena extends IBaseFilter implements Serializable {
   public void setIkEmpresa(UISelectEntity ikEmpresa) {
     this.ikEmpresa = ikEmpresa;
   }
+
+  public Long getMaximo() {
+    return maximo;
+  }
   
   @PostConstruct
   @Override
@@ -75,6 +84,7 @@ public class Ordena extends IBaseFilter implements Serializable {
       this.attrs.put("continuar", Boolean.FALSE);
       this.toLoadCatalog();
       this.attrs.put("continuar", Boolean.TRUE);
+      this.doLoad("", 1L, null);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -96,6 +106,12 @@ public class Ordena extends IBaseFilter implements Serializable {
       params.put("categoria", this.categoria);
       this.lazyModel= new FormatCustomLazy("VistaProductosDto", "ordenar", params, columns);
       UIBackingUtilities.resetDataTable("tabla");
+      
+			Value next= DaoFactory.getInstance().toField("TcManticProductosDto", "maximo", params, "siguiente");
+			if(next!= null && next.getData()!= null)
+			  this.maximo= next.toLong();
+			else
+			  this.maximo= -1L;
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -138,7 +154,7 @@ public class Ordena extends IBaseFilter implements Serializable {
     try {
 			columns= new ArrayList<>();
       params.put("idEmpresa", this.ikEmpresa.getKey());
-      List<UISelectItem> categorias= (List<UISelectItem>)UISelect.free("TcManticProductosDto", "categorias", params, "categoria", "|", EFormatoDinamicos.MAYUSCULAS, "categoria");
+      List<UISelectItem> categorias= (List<UISelectItem>)UISelect.free("TcManticProductosCategoriasDto", "categorias", params, "categoria", "|", EFormatoDinamicos.MAYUSCULAS, "categoria");
       this.attrs.put("categorias", categorias);			
       if((Boolean)this.attrs.get("continuar"))
         if(categorias!= null && !categorias.isEmpty())
@@ -165,12 +181,14 @@ public class Ordena extends IBaseFilter implements Serializable {
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doAccion
 
-	public void doSubirPartida(Partida partida) {
+	public void doSubirPartida(Entity partida) {
     Transaccion transaccion= null;
     try {			
-			transaccion = new Transaccion(this.producto, partida);
-			if (transaccion.ejecutar(EAccion.SUBIR)) 
+			transaccion = new Transaccion(partida);
+			if (transaccion.ejecutar(EAccion.SUBIR)) {
 				JsfBase.addMessage("Se actualizó el registro del producto", ETipoMensaje.INFORMACION);
+        this.doLoad();
+      } // if  
 			else 
 				JsfBase.addMessage("Ocurrió un error al registrar el producto", ETipoMensaje.ERROR);      			
     } // try
@@ -180,12 +198,14 @@ public class Ordena extends IBaseFilter implements Serializable {
     } // catch
 	}
   
-	public void doBajarPartida(Partida partida) {
+	public void doBajarPartida(Entity partida) {
     Transaccion transaccion= null;
     try {			
-			transaccion = new Transaccion(this.producto, partida);
-			if (transaccion.ejecutar(EAccion.BAJAR)) 
+			transaccion = new Transaccion(partida);
+			if (transaccion.ejecutar(EAccion.BAJAR)) {
 				JsfBase.addMessage("Se actualizó el registro del producto", ETipoMensaje.INFORMACION);
+        this.doLoad();
+      } // if  
 			else 
 				JsfBase.addMessage("Ocurrió un error al registrar el producto", ETipoMensaje.ERROR);      			
     } // try
@@ -198,5 +218,16 @@ public class Ordena extends IBaseFilter implements Serializable {
   public String toColorPartida(Partida partida) {
     return ""; // Objects.equals(partida.getAction(), ESql.DELETE)? "janal-display-none": "";
   }
+ 
+  public void onSelectCategoria(NodeSelectEvent event) {
+    this.attrs.put("data", event.getTreeNode());
+    this.doGaleria();
+  }
+
+  public void doGaleria() {
+    UISelectEntity data = (UISelectEntity) ((TreeNode) this.attrs.get("data")).getData();
+    this.categoria= data.toString("padre").concat(data.toString("nombre"));
+    this.doLoad();
+  }  
   
 }

@@ -26,12 +26,11 @@
       </select>
       <select id="identico">
         select      
-          tc_mantic_productos_categorias.id_producto_categoria as id_key,
-          concat(padre, nombre) as categoria
+          tc_mantic_productos_categorias.id_producto_categoria as id_key
         from      
           tc_mantic_productos_categorias
         where      
-          id_producto_categoria = {idProductoCategoria}
+          concat(padre, nombre)= '{categoria}'
       </select>
       <select id="categorias">
         select      
@@ -50,7 +49,8 @@
          tc_mantic_productos_categorias.nombre as texto,
          tc_mantic_productos_categorias.porcentaje as valor,
          '|' as separador,
-         tc_mantic_productos_categorias.*
+         tc_mantic_productos_categorias.*,
+         concat(padre, nombre) as categoria
         from      
           tc_mantic_productos_categorias
         where      
@@ -59,13 +59,18 @@
       <select id="hijos">
         select      
           tc_mantic_productos_categorias.id_producto_categoria as id_key,
-          tc_mantic_productos_categorias.*
+          tc_mantic_productos_categorias.*,
+          count(tc_mantic_productos.id_producto) as total
         from      
           tc_mantic_productos_categorias
+        left join
+          tc_mantic_productos on tc_mantic_productos_categorias.id_producto_categoria= tc_mantic_productos.id_producto_categoria
         where      
-          padre = '{padre}' and nivel = {nivel}
+          tc_mantic_productos_categorias.padre = '{padre}' and tc_mantic_productos_categorias.nivel = {nivel}
+        group by
+          tc_mantic_productos_categorias.id_producto_categoria         
         order by
-          orden
+          tc_mantic_productos_categorias.orden
       </select>
       <select id="igual">
         select      
@@ -79,6 +84,14 @@
           and nombre= '{nombre}'
         order by
           orden
+      </select>
+      <select id="maximo">
+        select
+					max(orden) as siguiente
+        from      
+          tc_mantic_productos_categorias
+        where
+          padre= '{padre}'
       </select>
       <select id="siguiente">
         select      
@@ -98,6 +111,24 @@
           padre like '{padre}%'
           and nivel> {nivel}
       </select>
+      <update id="rows">
+        update
+          tc_mantic_productos_categorias
+        set 
+          orden= {orden}
+        where 
+          padre= '{padre}' 
+          and id_producto_categoria= {idProductoCategoria}
+      </update>
+      <update id="orden">
+        update
+          tc_mantic_productos_categorias
+        set 
+          orden= {valor}
+        where 
+          padre= '{padre}'
+          and orden= {orden}
+      </update>
     </unit>    
     <unit id="TcManticProductosDto">
       <select id="row">
@@ -141,12 +172,14 @@
       </select>
       <select id="maximo">
         select
-					max(orden) as siguiente
+					max(tc_mantic_productos.orden) as siguiente
 				from 
 					tc_mantic_productos
+        inner join
+          tc_mantic_productos_categorias on tc_mantic_productos_categorias.id_producto_categoria= tc_mantic_productos.id_producto_categoria
 				where				  
-				  id_empresa = {idEmpresa}
-          and id_producto_categoria= '{categoria}'
+				  tc_mantic_productos.id_empresa = {idEmpresa}
+          and (tc_mantic_productos.id_producto_categoria= '{categoria}' or concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) = '{categoria}')
       </select>
       <update id="rows">
         update
@@ -160,11 +193,14 @@
       <update id="orden">
         update
           tc_mantic_productos
+        inner join
+          tc_mantic_productos_categorias on tc_mantic_productos_categorias.id_producto_categoria= tc_mantic_productos.id_producto_categoria
         set 
-          orden= {valor}
+          tc_mantic_productos.orden= {valor}
         where 
-          id_empresa= {idEmpresa} 
-          and orden= {orden}
+          tc_mantic_productos.id_empresa= {idEmpresa} 
+          and tc_mantic_productos.id_producto_categoria= {idProductoCategoria}
+          and tc_mantic_productos.orden= {orden}
       </update>
     </unit>    
     <unit id="TcManticProductosDetallesDto">

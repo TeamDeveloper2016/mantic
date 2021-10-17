@@ -53,7 +53,10 @@
             <p:treeNode>
               <h:outputText value="#{row['porcentaje']}%" class="ui-widget-content janal-nodo-title janal-font-bold"/>
               <h:outputText value="#{row['nombre']}" class="ui-widget-content janal-nodo-descripcion"/>
-              <h:outputText class="janal-nivel-#{row['nivel']} janal-nodo-nivel" value="N-#{row['nivel']}"/>
+              <div class="janal-nivel-#{row['nivel']} janal-nodo-nivel">
+                <span class="janal-icons-header">#[ #{row['total']} ]</span>
+                <span>N-#{row['nivel']}</span>
+              </div>  
             </p:treeNode>
           </p:tree>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
@@ -62,7 +65,10 @@
             <p:menuitem icon="fa fa-edit" value="Modificar" process="@this tabla" actionListener="#{manticProductosCategoriasFiltro.doOperacion('MODIFICAR')}" onstart="return janal.bloquear();" update="dialogoCategoria"/>
             <p:menuitem icon="fa fa-close" value="Eliminar" process="@this tabla" actionListener="#{manticProductosCategoriasFiltro.doOperacion('ELIMINAR')}" onstart="return janal.bloquear();" update="dialogoCategoria"/>
             <p:separator/>
-            <p:menuitem icon="fa fa-picture-o" action="#{manticProductosCategoriasFiltro.doGaleria()}" ajax="false" value="Galeria" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
+            <p:menuitem icon="fa fa-angle-double-up" value="Subir" process="@this tabla" update="tabla" actionListener="#{manticProductosCategoriasFiltro.doOperacion('SUBIR')}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+            <p:menuitem icon="fa fa-angle-double-down" value="Bajar" process="@this tabla" update="tabla" actionListener="#{manticProductosCategoriasFiltro.doOperacion('BAJAR')}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+            <p:separator/>
+            <p:menuitem icon="fa fa-picture-o" process="@this tabla" action="#{manticProductosCategoriasFiltro.doGaleria()}" ajax="false" value="Galeria" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
           </p:contextMenu>
         </div>
       </div>

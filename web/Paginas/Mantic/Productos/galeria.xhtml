@@ -80,11 +80,14 @@
                 <p:treeNode>
                   <h:outputText value="#{row['porcentaje']}%" class="ui-widget-content janal-nodo-title janal-font-bold"/>
                   <h:outputText value="#{row['nombre']}" class="ui-widget-content janal-nodo-descripcion"/>
-                  <h:outputText class="janal-nivel-#{row['nivel']} janal-nodo-nivel" value="N-#{row['nivel']}"/>
+                  <div class="janal-nivel-#{row['nivel']} janal-nodo-nivel">
+                    <span class="janal-icons-header">#[ #{row['total']} ]</span>
+                    <span>N-#{row['nivel']}</span>
+                  </div>  
                 </p:treeNode>
               </p:tree>      
               <p:contextMenu id="kajoolContextMenu" for="arbol">
-                <p:menuitem icon="fa fa-picture-o" process="@this arbol" update="@(.disenio)" actionListener="#{manticProductosGaleria.doGaleria()}" value="Galeria" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();PF('widgetGaleria').select(1);"/>					
+                <p:menuitem icon="fa fa-picture-o" process="@this arbol" update="@(.disenio)" actionListener="#{manticProductosGaleria.doGaleria}" value="Galeria" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();PF('widgetGaleria').select(1);"/>					
               </p:contextMenu>
             </p:tab>  
             <p:tab title="Catalogo">
@@ -229,13 +232,14 @@
 				</div>
 			</div>
 		</div>		
+    <hr class="ui-widget-content"/>
+    <div class="janal-line-button">
+      <div class="lg-pantalla">
+        <p:commandButton value="Regresar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticProductosGaleria.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+      </div>		
+      <div class="xs-pantalla">
+        <p:commandButton title="Regresar" icon="fa fa-close" process="@this" action="#{manticProductosGaleria.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+      </div>		
+    </div>  
 	</ui:define>    
-	<ui:define name="acciones">
-		<div class="lg-pantalla">
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticProductosGaleria.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
-		</div>		
-		<div class="xs-pantalla">
-			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticProductosGaleria.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
-		</div>		
-	</ui:define>
 </ui:composition>

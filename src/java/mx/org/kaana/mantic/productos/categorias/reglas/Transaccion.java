@@ -195,17 +195,18 @@ public class Transaccion extends IBaseTnx {
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-      params.put("idProducto", this.categoria.getPadre());
-//      params.put("idEmpresa", this.articulo.toLong("idEmpresa"));
-//      if(this.partida.getOrden()> 1L) {
-//        params.put("valor", this.partida.getOrden()+ 1L);
-//        params.put("orden", this.partida.getOrden()- 1L);
-//        regresar= DaoFactory.getInstance().updateAll(sesion, TcManticProductosDto.class, params, "orden")> 0L;
-//        params.put("orden", this.partida.getOrden()- 1L);
-//        regresar= DaoFactory.getInstance().updateAll(sesion, TcManticProductosDto.class, params)> 0L;
-//      } // if
-//      else
-//        regresar= Boolean.TRUE;
+      params.put("padre", this.categoria.getPadre());
+      params.put("nombre", this.categoria.getNombre());
+      params.put("idProductoCategoria", this.categoria.getIdProductoCategoria());
+      if(this.categoria.getOrden()> 1L) {
+        params.put("valor", this.categoria.getOrden());
+        params.put("orden", this.categoria.getOrden()- 1L);
+        regresar= DaoFactory.getInstance().updateAll(sesion, TcManticProductosCategoriasDto.class, params, "orden")> 0L;
+        params.put("orden", this.categoria.getOrden()- 1L);
+        regresar= DaoFactory.getInstance().updateAll(sesion, TcManticProductosCategoriasDto.class, params)> 0L;
+      } // if
+      else
+        regresar= Boolean.TRUE;
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -221,17 +222,19 @@ public class Transaccion extends IBaseTnx {
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-      params.put("idProducto", this.categoria.getPadre());
-//      Long maximo= this.toMaximo(sesion);
-//      if(this.partida.getOrden()< maximo) {
-//        params.put("valor", this.partida.getOrden()- 1L);
-//        params.put("orden", this.partida.getOrden()+ 1L);
-//        regresar= DaoFactory.getInstance().updateAll(sesion, TcManticProductosDto.class, params, "orden")> 0L;
-//        params.put("orden", this.partida.getOrden()+ 1L);
-//        regresar= DaoFactory.getInstance().updateAll(sesion, TcManticProductosDto.class, params)> 0L;
-//      } // if
-//      else
-//        regresar= Boolean.TRUE;
+      params.put("padre", this.categoria.getPadre());
+      params.put("nombre", this.categoria.getNombre());
+      params.put("idProductoCategoria", this.categoria.getIdProductoCategoria());
+      Long maximo= this.toMaximo(sesion);
+      if(this.categoria.getOrden()< maximo) {
+        params.put("valor", this.categoria.getOrden());
+        params.put("orden", this.categoria.getOrden()+ 1L);
+        regresar= DaoFactory.getInstance().updateAll(sesion, TcManticProductosCategoriasDto.class, params, "orden")> 0L;
+        params.put("orden", this.categoria.getOrden()+ 1L);
+        regresar= DaoFactory.getInstance().updateAll(sesion, TcManticProductosCategoriasDto.class, params)> 0L;
+      } // if
+      else
+        regresar= Boolean.TRUE;
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -244,9 +247,8 @@ public class Transaccion extends IBaseTnx {
  
 	private Long toMaximo(Session sesion) throws Exception {
 		Long regresar= null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("padre", this.categoria.getPadre());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticProductosCategoriasDto", "maximo", params, "siguiente");
 			if(next!= null && next.getData()!= null)

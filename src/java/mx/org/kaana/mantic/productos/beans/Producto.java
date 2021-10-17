@@ -33,7 +33,6 @@ public final class Producto implements Serializable {
   private UISelectEntity ikEmpresa;
   private String ikMarca;
   private String categoria;
-  private String temporal;
   private String marca;
   private String archivo;
   
@@ -79,10 +78,6 @@ public final class Producto implements Serializable {
     this.ikMarca = ikMarca;
   }
 
-  public String getTemporal() {
-    return temporal;
-  }
-
   public String getArchivo() {
     return archivo;
   }
@@ -111,7 +106,6 @@ public final class Producto implements Serializable {
       if(Objects.equals(-1L, idProducto)) {
         this.producto= new TcManticProductosDto();
         this.producto.setIdImagen(-1L);
-        this.temporal = "";
         this.categoria= "";
         this.marca    = "";
         this.setIkEmpresa(new UISelectEntity(-1L));
@@ -138,8 +132,7 @@ public final class Producto implements Serializable {
         this.setIkEmpresa(new UISelectEntity(this.producto.getIdEmpresa()));
         this.marca= this.producto.getMarca();
         params.put("idProductoCategoria", this.producto.getIdProductoCategoria());
-        this.categoria= DaoFactory.getInstance().toField("TcManticProductosCategoriasDto", "identico", params, "categoria").toString();
-        this.temporal = this.categoria;
+        this.categoria= DaoFactory.getInstance().toField("TcManticProductosCategoriasDto", "existe", params, "categoria").toString();
         this.setIkMarca("OTRA");
       } // else
       if(this.articulos== null)

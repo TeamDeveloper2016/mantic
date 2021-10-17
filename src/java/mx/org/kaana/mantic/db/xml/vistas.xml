@@ -90,6 +90,7 @@
           tc_mantic_productos.id_producto as id_key,
           count(tc_mantic_productos_detalles.id_producto) as articulos,
 				  tc_mantic_productos.*,
+          tc_mantic_productos_categorias.nombre as referencia,
           concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) as categoria
         from
           tc_mantic_productos
