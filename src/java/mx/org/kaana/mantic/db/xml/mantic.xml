@@ -110,6 +110,8 @@
 				where				  
           padre like '{padre}%'
           and nivel> {nivel}
+        order by
+          nivel desc
       </select>
       <update id="rows">
         update

@@ -143,17 +143,28 @@ public class Transaccion extends IBaseTnx {
   
   private Boolean toEliminarCategoria(Session sesion) throws Exception {
     Boolean regresar = Boolean.FALSE;
+    List<UISelectEntity> items= null;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
+      if(Objects.equal(this.categoria.getUltimo(), 2L)) {
+        params.put("padre", this.categoria.getPadre());
+        params.put("nivel", this.categoria.getNivel());
+        List<TcManticProductosCategoriasDto> list= (List<TcManticProductosCategoriasDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticProductosCategoriasDto.class, "TcManticProductosCategoriasDto", "porcentajes", params);
+        if(list!= null && !list.isEmpty()) {
+          for (TcManticProductosCategoriasDto item: list) {
+            DaoFactory.getInstance().delete(sesion, item);
+          } // for
+        } // if
+      } // if  
       regresar= DaoFactory.getInstance().delete(sesion, this.categoria)> 0L;
       if(regresar) {
         TcManticProductosCategoriasDto padre= (TcManticProductosCategoriasDto)DaoFactory.getInstance().findById(sesion, TcManticProductosCategoriasDto.class, this.categoria.getIdPadre());
         if(padre!= null) {
           params.put("padre", padre.getPadre());
           params.put("nivel", padre.getNivel());
-          List<UISelectEntity> items= (List<UISelectEntity>)UIEntity.build("TcManticProductosCategoriasDto", "hijos", params, Collections.EMPTY_LIST);
-          if(items== null || items.isEmpty()) {
+          items= (List<UISelectEntity>)UIEntity.build("TcManticProductosCategoriasDto", "hijos", params, Collections.EMPTY_LIST);
+          if(items== null || items.isEmpty() || items.size()== 1) {
             padre.setUltimo(1L);
             DaoFactory.getInstance().update(sesion, padre);
           } // if  

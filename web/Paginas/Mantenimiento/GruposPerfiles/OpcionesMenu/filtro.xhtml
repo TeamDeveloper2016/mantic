@@ -25,8 +25,7 @@
 	</ui:define>
   <ui:define name="contenido">
     <p:panelGrid columns="1"  id="arbolPrincipal" layout="grid">
-			<p:tree widgetVar="arbol" value="#{kajoolMantenimientoGruposperfilesOpciones.attrs.root}" selection="#{kajoolMantenimientoGruposperfilesOpciones.selectedNodes}"  var="node" id="checkboxTree"  selectionMode="checkbox"
-       styleClass="celda" cache="false" style="width: 100%"  >
+			<p:tree widgetVar="arbol" value="#{kajoolMantenimientoGruposperfilesOpciones.attrs.root}" selection="#{kajoolMantenimientoGruposperfilesOpciones.selectedNodes}" var="node" id="checkboxTree" selectionMode="checkbox" styleClass="celda" cache="false" style="width: 100%">
 				<p:ajax event="unselect" update=":datos:arbolPrincipal " listener="#{kajoolMantenimientoGruposperfilesOpciones.onNodeUnselect}" />
         <p:ajax event="select" update=":datos:arbolPrincipal :datos:checkboxTree" listener="#{kajoolMantenimientoGruposperfilesOpciones.onNodeSelect}" />
         <p:treeNode>

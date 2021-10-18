@@ -63,7 +63,7 @@ public class Filtro extends IBaseAttribute implements Serializable{
       this.attrs.put("idGrupo", idGrupo);
       this.attrs.put("titulo", this.isPerfiles? "del perfil: ".concat(((TcJanalPerfilesDto)DaoFactory.getInstance().findById(TcJanalPerfilesDto.class, idPerfil)).getDescripcion()): "del grupo: ".concat(((TcJanalGruposDto)DaoFactory.getInstance().findById(TcJanalGruposDto.class, idGrupo)).getDescripcion()));
       this.attrs.put("idPerfil", idPerfil);
-      doLoad();
+      this.doLoad();
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
@@ -183,7 +183,7 @@ public class Filtro extends IBaseAttribute implements Serializable{
   public void doLoad() {
     try {
       Map params = getParams();
-      this.attrs.put("treeMenu", new TreeMenu(((DefaultTreeNode)this.attrs.get("root")), params.get("llaveXml").toString(), params, this.isPerfiles, true));
+      this.attrs.put("treeMenu", new TreeMenu(((DefaultTreeNode)this.attrs.get("root")), params.get("llaveXml").toString(), params, false, true));
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
