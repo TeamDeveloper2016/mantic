@@ -189,6 +189,6 @@ public class Filtro extends IBaseAttribute implements Serializable{
       JsfBase.addMessageError(e);
       Error.mensaje(e);
     } // catch
-  }//doLoad
+  } // doLoad
 	
 }

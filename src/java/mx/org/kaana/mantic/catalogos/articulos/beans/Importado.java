@@ -15,6 +15,7 @@ public class Importado implements Serializable {
 	private String medicion;
 	private String ruta;
 	private String observaciones;
+  private Long idTipoDocumento;
 
   public Importado() {
 		this("", "", EFormatos.FREE, 0L, 0L, "", "", "");
@@ -25,6 +26,10 @@ public class Importado implements Serializable {
 	}
 	
   public Importado(String name, String content, EFormatos format, Long size, Long fileSize, String medicion, String ruta, String observaciones, String original) {
+    this(name, content, format, size, fileSize, medicion, ruta, observaciones, original, 13L);
+  }
+  
+  public Importado(String name, String content, EFormatos format, Long size, Long fileSize, String medicion, String ruta, String observaciones, String original, Long idTipoDocumento) {
     this.name    = name;
     this.content = content;
     this.format  = format;
@@ -34,6 +39,7 @@ public class Importado implements Serializable {
 		this.ruta    = ruta;
 		this.observaciones= observaciones;
 		this.original= original;
+    this.idTipoDocumento= idTipoDocumento;
   }
 
   public String getName() {
@@ -107,6 +113,14 @@ public class Importado implements Serializable {
 	public void setOriginal(String original) {
 		this.original=original;
 	}
+
+  public Long getIdTipoDocumento() {
+    return idTipoDocumento;
+  }
+
+  public void setIdTipoDocumento(Long idTipoDocumento) {
+    this.idTipoDocumento = idTipoDocumento;
+  }
 	
   @Override
   public int hashCode() {
@@ -134,6 +148,5 @@ public class Importado implements Serializable {
 	public String toString() {
 		return "Importado{"+"name="+name+", original="+original+", content="+content+", format="+format+", size="+size+", fileSize="+fileSize+", medicion="+medicion+", ruta="+ruta+", observaciones="+observaciones+'}';
 	}
-	
 	
 }

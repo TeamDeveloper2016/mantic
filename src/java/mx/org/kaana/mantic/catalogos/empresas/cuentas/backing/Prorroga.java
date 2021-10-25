@@ -148,8 +148,22 @@ public class Prorroga extends IBaseImportar implements Serializable {
 	} // validaImporte
 	
 	public void doTabChange(TabChangeEvent event) {
-		if(event.getTab().getTitle().equals("Archivos")) 
- 			this.doLoadImportados("VistaNotasEntradasDto", "importados", ((Entity)this.attrs.get("deuda")).toMap());
+    Map<String, Object> params = null;
+    try {      
+      params = new HashMap<>();      
+      if(event.getTab().getTitle().equals("Archivos")) {
+        params.put("idNotaEntrada", ((Entity)this.attrs.get("deuda")).toLong("idNotaEntrada"));      
+        params.put("idTipoDocumento", 13L);      
+ 			  this.doLoadImportados("VistaNotasEntradasDto", "importados", params);
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
 	}
 
 		public void doViewDocument() {

@@ -38,6 +38,10 @@ public class Transaccion extends IBaseTnx {
 	private TcManticEgresosDto egreso;
 	private TcManticEgresosBitacoraDto bitacora;
 
+	public Transaccion(TcManticEgresosDto egreso) {
+		this.egreso = egreso;
+	}	
+	
 	public Transaccion(TcManticEgresosBitacoraDto bitacora) {
 		this.bitacora = bitacora;
 	}	
@@ -73,25 +77,31 @@ public class Transaccion extends IBaseTnx {
 		try {
 			switch(accion){
 				case JUSTIFICAR:
-					regresar= registrarNota(sesion);
+					regresar= this.registrarNota(sesion);
 					break;				
 				case ELIMINAR:
-					regresar= procesarDocumento(sesion);
+          regresar= DaoFactory.getInstance().delete(sesion, this.egreso)>= 1L;
+          break;
+				case DEPURAR:
+					regresar= this.procesarDocumento(sesion);
 					break;				
 				case ASIGNAR:
-					regresar= asociarDocumento(sesion);
+					regresar= this.asociarDocumento(sesion);
 					break;
 				case REGISTRAR:
 					regresar= true;
-					toUpdateDeleteXml(sesion);
+					this.toUpdateDeleteXml(sesion);
 					break;
-				case MODIFICAR:
+				case COMPLEMENTAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L){
 						this.egreso= (TcManticEgresosDto) DaoFactory.getInstance().findById(sesion, TcManticEgresosDto.class, this.bitacora.getIdEgreso());
 						this.egreso.setIdEgresoEstatus(this.bitacora.getIdEgresoEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, this.egreso)>= 1L;
 					} // if
 					break;
+        case MODIFICAR:  
+          regresar= DaoFactory.getInstance().update(sesion, this.egreso)>= 1L;
+          break;
 			} // switch
 			if(!regresar)
         throw new Exception("");
@@ -119,7 +129,7 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar                    = false;		
 		TcManticEmpresasPagosDto empresaPago= null;		
 		try {
-			switch(this.accionTipoEgreso){				
+			switch(this.accionTipoEgreso) {		
 				case EMPRESA_PAGO: 
 					empresaPago= (TcManticEmpresasPagosDto) DaoFactory.getInstance().findById(sesion, TcManticEmpresasPagosDto.class, this.idTipoEgreso);
 					empresaPago.setIdEgreso(null);
@@ -254,4 +264,5 @@ public class Transaccion extends IBaseTnx {
       } // for
 		} // if
 	} // toDeleteAll
+  
 }

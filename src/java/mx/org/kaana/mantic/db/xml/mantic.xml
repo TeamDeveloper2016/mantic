@@ -2441,6 +2441,17 @@
         where      
           nombre = '{nombre}'
       </select>
+      <select id="grupo">
+        select      
+          tc_mantic_tipos_archivos.id_tipo_archivo as id_key,
+          tc_mantic_tipos_archivos.*
+        from      
+          tc_mantic_tipos_archivos
+        where      
+          agrupador= {agrupador}
+        order by
+          orden
+      </select>
     </unit>
    <unit id="TcManticEmpresasDeudasDto">
       <select id="row">
@@ -2458,6 +2469,16 @@
           tc_mantic_empresas_deudas
         where      
           id_empresa = {idEmpresa} and id_nota_entrada = {idNotaEntrada} and importe = {importe} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+      <select id="unica">
+        select      
+          tc_mantic_empresas_deudas.id_empresa_deuda as id_key,
+          tc_mantic_empresas_deudas.*
+        from      
+          tc_mantic_empresas_deudas
+        where      
+          id_empresa = {idEmpresa} 
+          and id_nota_entrada = {idNotaEntrada}
       </select>
     </unit>
     <unit id="TcManticEmpresasPagosDto">

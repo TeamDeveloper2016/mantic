@@ -1146,7 +1146,7 @@
       if(typeof(blockui)!== 'undefined' && blockui)
         $janal.bloquear();
       var validator= $('#'+ $janal.form).validate();
-      var ok= false;
+      var ok= $janal.errors.inputs.length<= 0;
 			if($janal.reference!== null) 
 				validator.element('#'+ $($janal.reference).attr('id').replace(/:/gi, '\\:'));
 			else
@@ -1363,9 +1363,9 @@
 		readingMode: function(action) {
 			var actionValidate= action!== null && action!== undefined ? action.toUpperCase() : 'CONSULTAR';
 			$('input:text,input:checkbox,input:file,textarea,button,a.ui-commandlink,div.ui-selectonemenu,div.ui-chkbox,span.ui-button,div.ui-inputswitch').each(function(index) {  
-				if(actionValidate=== 'CONSULTAR') {
+				if(actionValidate=== 'CONSULTAR' || actionValidate=== 'ELIMINAR') {
 					if(this.id!== 'verificadorValue' && this.id!== 'verificadorBuscarPor' && !$(this).hasClass('janal-not-lock')) {
-						if(!(this.tagName=== 'BUTTON' && (this.id=== "cancelar" || this.id=== "cancelarIcon"))) {
+						if(!(this.tagName=== 'BUTTON' && (this.id=== "cancelar" || this.id=== "cancelarIcon")) && !(actionValidate=== 'ELIMINAR' && this.tagName=== 'BUTTON' && (this.id=== "aceptar" || this.id=== "aceptarIcon"))) {
 							if(this.tagName=== 'A') {
 								$(this).attr('iktan', $(this).attr('href'));
 								$(this).removeAttr('href').addClass('ui-state-disabled'); 

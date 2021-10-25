@@ -55,17 +55,19 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
   private Timestamp registro;
   @Column (name="id_revisado")
   private Long idRevisado;
+  @Column (name="id_completo")
+  private Long idCompleto;
 
   public TcManticEmpresasDeudasDto() {
     this(new Long(-1L));
   }
 
   public TcManticEmpresasDeudasDto(Long key) {
-    this(null, null, new Long(-1L), null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, 0D, 2L);
+    this(null, null, new Long(-1L), null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, 0D, 2L, 1L);
     setKey(key);
   }
 
-  public TcManticEmpresasDeudasDto(Long idEmpresaEstatus, Long idUsuario, Long idEmpresaDeuda, String observaciones, Long idEmpresa, Double saldo, Long idNotaEntrada, Date limite, Double importe, Double pagar, Long idRevisado) {
+  public TcManticEmpresasDeudasDto(Long idEmpresaEstatus, Long idUsuario, Long idEmpresaDeuda, String observaciones, Long idEmpresa, Double saldo, Long idNotaEntrada, Date limite, Double importe, Double pagar, Long idRevisado, Long idCompleto) {
     setIdEmpresaEstatus(idEmpresaEstatus);
     setIdUsuario(idUsuario);
     setIdEmpresaDeuda(idEmpresaDeuda);
@@ -78,6 +80,7 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 		this.pagar= pagar;
     this.idRevisado= idRevisado;
+    this.idCompleto= idCompleto;
   }
 	
   public void setIdEmpresaEstatus(Long idEmpresaEstatus) {
@@ -176,6 +179,14 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
     this.idRevisado = idRevisado;
   }
 
+  public Long getIdCompleto() {
+    return idCompleto;
+  }
+
+  public void setIdCompleto(Long idCompleto) {
+    this.idCompleto = idCompleto;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -213,6 +224,8 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdRevisado());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdCompleto());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -232,6 +245,7 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
 		regresar.put("importe", getImporte());
 		regresar.put("pagar", getPagar());
 		regresar.put("idRevisado", getIdRevisado());
+		regresar.put("idCompleto", getIdCompleto());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -239,7 +253,7 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getIdEmpresaEstatus(), getIdUsuario(), getIdEmpresaDeuda(), getObservaciones(), getIdEmpresa(), getSaldo(), getIdNotaEntrada(), getLimite(), getImporte(), getPagar(), getIdRevisado(), getRegistro()
+      getIdEmpresaEstatus(), getIdUsuario(), getIdEmpresaDeuda(), getObservaciones(), getIdEmpresa(), getSaldo(), getIdNotaEntrada(), getLimite(), getImporte(), getPagar(), getIdRevisado(), getIdCompleto(), getRegistro()
     };
     return regresar;
   }

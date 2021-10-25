@@ -1,5 +1,6 @@
 package mx.org.kaana.libs.pagina;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,14 +52,14 @@ public final class UISelect {
   
 	public static List<UISelectItem> todos(List<IBaseDto> dtos, List<String> fields, String token, IFormatosKajool formato, String value) {
     List<UISelectItem> regresar= new ArrayList<>();
-    regresar.add(new UISelectItem(-1L, "TODOS"));
+    regresar.add(new UISelectItem(new Long("-1"), "TODOS"));
     regresar.addAll(build(dtos, fields, token, formato, value));
     return regresar;    
   }
   
 	public static List<UISelectItem> seleccione(List<IBaseDto> dtos, List<String> fields, String token, IFormatosKajool formato, String value) {
     List<UISelectItem> regresar= new ArrayList<>();
-    regresar.add(new UISelectItem(-1L, "SELECCIONE"));
+    regresar.add(new UISelectItem(new Long("-1"), "SELECCIONE"));
     regresar.addAll(build(dtos, fields, token, formato, value));
     return regresar;    
   }
@@ -636,7 +637,7 @@ public final class UISelect {
   }
   
   public static List<UISelectItem> seleccione(String proceso, String id, Map params, String fields, IFormatosKajool formato, Long records, String value) {
-    return seleccione(proceso, id, params, Cadena.toList(fields), " ", formato, records);
+    return seleccione(proceso, id, params, Cadena.toList(fields), " ", formato, records, value);
   }
   
   public static List<UISelectItem> build(String proceso, String id, String fields) {
@@ -794,7 +795,7 @@ public final class UISelect {
     List<IBaseDto> dtos        = null;
     try {
       dtos    = DaoFactory.getInstance().toEntitySet(proceso, id, params, records);   
-      regresar.add(new UISelectItem(-1L, "TODOS"));
+      regresar.add(new UISelectItem(new Long("-1"), "TODOS"));
       regresar.addAll(build(dtos, fields, token, formato, value));
     } // try
     catch (Exception e) {
@@ -1072,7 +1073,7 @@ public final class UISelect {
 	}	
   
 	public static UISelectItem buildTodosItem() {
-		return new UISelectItem(-1L, "TODOS");
+		return new UISelectItem(new Long("-1"), "TODOS");
 	}	
 	
 }

@@ -698,21 +698,21 @@ $.mask.masks = $.extend($.mask.masks, {
 		   if (janal.empty(value) || $(element).hasClass('ignore'))
 				 return true;
 		   else
-				 return /^([a-z]|[A-Z])+$/.test(value);
+				 return /^([a-zA-Z])+$/.test(value);
 		}, 'Solo se permiten caracteres alfab\u00E9ticos.');
 
 	$.validator.addMethod('marca', function(value, element, params) {
 		   if (janal.empty(value) || $(element).hasClass('ignore'))
 				 return true;
 		   else
-				 return /^([a-z]|[A-Z]|[0-9]|[-_.|"*])+$/.test(value);
+				 return /^([a-zA-Z0-9]|-|_|\.|"|\*)+$/.test(value);
 		}, 'Solo se permiten caracteres alfab\u00E9ticos.');
 
 	$.validator.addMethod('alfanumerico', function(value, element, params) {
 		   if (janal.empty(value) || $(element).hasClass('ignore'))
 				 return true;
 		   else
-				 return /^([a-z]|[A-Z]|[0-9]|á|é|í|ó|ú|Á|É|Í|Ó|Ú|ñ|Ñ|-|_|\.)+$/.test(value);
+				 return /^([0-9]|[A-Z]|[a-z]|\u00C1|\u00E1|\u00C9|\u00E9|\u00CD|\u00ED|\u00D3|\u00F3|\u00DA|\u00FA|\u00F1|\u00D1|-|_|\.)+$/.test(value);
 		}, 'Solo se permiten caracteres alfab\u00E9ticos.');
 
 	$.validator.addMethod(
@@ -720,15 +720,15 @@ $.mask.masks = $.extend($.mask.masks, {
   		 if (janal.empty(value) || $(element).hasClass('ignore'))
 	  			return true;
 		   else
-			   return /^([0-9]|[A-Z]|[a-z]|á|é|í|ó|ú|Á|É|Í|Ó|Ú|ñ|Ñ|\ |,|\.|;|:|\/|)+$/.test(value);
+			   return /^([0-9]|[A-Z]|[a-z]|\u00C1|\u00E1|\u00C9|\u00E9|\u00CD|\u00ED|\u00D3|\u00F3|\u00DA|\u00FA|\u00F1|\u00D1|\||\ |,|\.|;|:|\/|)+$/.test(value);
 		}, 'No se permite caracteres alfanum\u00E9ricos y algunos caracteres, ejemplo: ,;:.');
 
   $.validator.addMethod(
 		'libre', function(value, element, params) {
   		 if (janal.empty(value) || $(element).hasClass('ignore'))
-	  			return true;
-		   else
-			   return /^([0-9]|[A-Z]|[a-z]|á|é|í|ó|ú|Á|É|Í|Ó|Ú|ñ|Ñ|\ |,|\.|;|:|(|)|@|-|=|%|#|~|^|&|{|}|[|]|\/|")+$/.test(value);
+  			return true;
+		   else 
+ 		    return /^([0-9]|[A-Z]|[a-z]|\u00C1|\u00E1|\u00C9|\u00E9|\u00CD|\u00ED|\u00D3|\u00F3|\u00DA|\u00FA|\u00F1|\u00D1|\||\ |,|\.|;|:|\(|\)|@|-|_|=|%|#|~|^|&|{|}|[|]|\/|")+$/.test(value);
 		}, 'No se permite caracteres alfanum\u00E9ricos y algunos caracteres, ejemplo: ,;:.');
 		
 	$.validator.addMethod('curp', function(value, element, params) {
@@ -756,7 +756,7 @@ $.mask.masks = $.extend($.mask.masks, {
  		  if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 		  else
-				return /^([a-z]|[A-Z]|[0-9]|[?|+|-|\/|?|:|-|{|}|;|,|_|ñ|Ñ|@|\[|\]|\ ])+$/.test(value);
+				return /^([a-zA-Z0-9]|[?|+|-|\/|?|:|-|{|}|;|,|_|\u00F1|\u00D1|@|\[|\]|\ ])+$/.test(value);
 	 }, 'No se permite caracteres alfanum\u00E9ricos y algunos caracteres, ejemplo: +-*/{}[]@|,;:.');
 
 	$.validator.addMethod('boleano',function(value, element, params){

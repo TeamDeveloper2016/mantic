@@ -8,7 +8,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -69,7 +68,7 @@ public class Filtro extends Contenedor implements Serializable {
  
   public void doAgregar(UISelectEntity father) {
     this.categoria= new Categoria(
-      father.toString("padre").length()== 0? father.toString("nombre"): father.toString("padre").concat(father.toString("nombre")).concat(Constantes.SEPARADOR), // String padre, 
+      father.toString("padre").length()== 0? father.toString("nombre").concat(Constantes.SEPARADOR): father.toString("padre").concat(father.toString("nombre")).concat(Constantes.SEPARADOR), // String padre, 
       1L, // Long ultimo, 
       1L, // Long idActivo, 
       JsfBase.getIdUsuario(), // Long idUsuario, 

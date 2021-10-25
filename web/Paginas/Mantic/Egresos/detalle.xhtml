@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="Detalle de del estado de cuenta de egresos"/>
+	<ui:param name="titulo" value="Detalle del estado de cuenta de egresos"/>
 	<ui:define name="librerias">
 		<h:outputStylesheet library="janal" name="css/sh.css"/>
 		<h:outputStylesheet library="janal" name="css/shCore.css"/>
@@ -64,13 +64,13 @@
 							<f:facet name="header">								
 								<div class="lg-pantalla">
 									<p:menuButton value="Opciones">																			
-										<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tablaNotasEntrada')" oncomplete="janal.desbloquear()"/>
-										<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tablaNotasEntrada')" oncomplete="janal.desbloquear()"/>
+										<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfNotas', 'tablaNotasEntrada')" oncomplete="janal.desbloquear()"/>
+										<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsNotas', 'tablaNotasEntrada')" oncomplete="janal.desbloquear()"/>
 									</p:menuButton>
 								</div>	
 								<div class="xs-pantalla">																	
-									<p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tablaNotasEntrada')" oncomplete="janal.desbloquear()"/>
-									<p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tablaNotasEntrada')" oncomplete="janal.desbloquear()"/>
+									<p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdfNotas', 'tablaNotasEntrada')" oncomplete="janal.desbloquear()"/>
+									<p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlsNotas', 'tablaNotasEntrada')" oncomplete="janal.desbloquear()"/>
 								</div>	
 							</f:facet>
 							<p:column class="MarAuto Responsive janal-wid-13" sortBy="#{filtro.empresa}">
@@ -393,10 +393,10 @@
 		<p:dialog modal="true" widgetVar="statusDialog" header="Estatus de la descarga del archivo" draggable="false" closable="false" resizable="false">
 			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
 		</p:dialog>
-		<h:commandLink id="dataPdf">
+		<h:commandLink id="dataPdfNotas">
 			<pe:exporter type="pdf"  skipComponents="#{manticEgresosDetalle.attrs.skipComponentsPdf}"  target="tablaNotasEntrada" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
 		</h:commandLink>
-		<h:commandLink id="dataXls">
+		<h:commandLink id="dataXlsNotas">
 			<pe:exporter type="xlsx" skipComponents="#{manticEgresosDetalle.attrs.skipComponentsXls}" encoding="ISO-8859-1" target="tablaNotasEntrada" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
 		</h:commandLink>
 		<h:commandLink id="dataPdfCredito">

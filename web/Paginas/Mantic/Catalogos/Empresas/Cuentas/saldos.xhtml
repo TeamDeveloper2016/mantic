@@ -164,7 +164,7 @@
 							</p:commandButton>
 						</p:column>
             <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-38" exportable="false">
-              <p:commandButton icon="fa fa-dollar" process="@this" update="tablaPagosRealizados" actionListener="#{manticCatalogosEmpresasCuentasSaldos.toLoadPagosRealizados(row)}" title="Historial de pagos" onstart="return janal.bloquear();" oncomplete="return janal.desbloquear();"/>
+              <p:commandButton icon="fa fa-dollar" process="@this" update="tablaPagosRealizados" actionListener="#{manticCatalogosEmpresasCuentasSaldos.doLoadPagosRealizados(row)}" title="Historial de pagos" onstart="return janal.bloquear();" oncomplete="return janal.desbloquear();"/>
 						</p:column>
             <p:rowExpansion> 
               <p:dataTable lazy="true" id="detalle" widgetVar="kajoolTableDetalle" var="row" value="#{manticCatalogosEmpresasCuentasSaldos.lazyModelDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosEmpresasCuentasSaldos.attrs.seleccionadoDetalle}" selectionMode="single" paginator="#{manticCatalogosEmpresasCuentasSaldos.lazyModelDetalle.rowCount gt manticCatalogosEmpresasCuentasSaldos.lazyModelDetalle.pageSize}" rowIndexVar="index" reflow="true" rowStyleClass="#{manticCatalogosEmpresasCuentasSaldos.toColor(row)}" paginatorPosition="bottom" style="display: #{empty manticCatalogosEmpresasCuentasSaldos.lazyModelDetalle? 'none': ''}">

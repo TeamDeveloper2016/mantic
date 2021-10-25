@@ -202,7 +202,7 @@ public class Detalle extends IBaseImportar implements Serializable {
 		try {			
 			notaEntrada= (Entity)this.attrs.get("notaEntrada");			
 			transaccion= new Transaccion(notaEntrada.toLong("idEmpresaPago"), ECuentasEgresos.EMPRESA_PAGO);
-			if(transaccion.ejecutar(EAccion.ELIMINAR))
+			if(transaccion.ejecutar(EAccion.DEPURAR))
 				JsfBase.addMessage("Se eliminó correctamente el registro", ETipoMensaje.INFORMACION);
 			else
 				JsfBase.addMessage("No fue porsible eliminar el registro", ETipoMensaje.INFORMACION);
@@ -220,7 +220,7 @@ public class Detalle extends IBaseImportar implements Serializable {
 		try {			
 			creditoNota= (Entity)this.attrs.get("creditoNota");			
 			transaccion= new Transaccion(creditoNota.toLong("idEmpresaPago"), ECuentasEgresos.EMPRESA_PAGO);
-			if(transaccion.ejecutar(EAccion.ELIMINAR))
+			if(transaccion.ejecutar(EAccion.DEPURAR))
 				JsfBase.addMessage("Se eliminó correctamente el registro", ETipoMensaje.INFORMACION);
 			else
 				JsfBase.addMessage("No fue porsible eliminar el registro", ETipoMensaje.INFORMACION);

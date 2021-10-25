@@ -571,7 +571,7 @@
         </div>		  
 
         <div class="Container50 Responsive">
-          <div class="ContainerIndent">            
+          <div class="ContainerIndent janal-display-none">            
             <div class="EmptyBox10"></div>
             <p:panel style="height:303px;" class="graphic-update-utilidad-caja">
               <div class="Container100 Responsive Fs20">
@@ -597,7 +597,7 @@
 										<i class="fa fa-angle-right"/>
 									</p:commandLink>
 								</h:panelGrid>
-								<h:panelGrid  columns="3" class="Wid100 periodo-update-utilidad-caja" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-10, wid-calendarizacion-47 janal-column-left">
+								<h:panelGrid columns="3" class="Wid100 periodo-update-utilidad-caja" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-10, wid-calendarizacion-47 janal-column-left">
 									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaUtilidadCaja}">
 										<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(false, 'UTILIDAD_CAJA')}" update="@(.graphic-update-utilidad-caja) @(.periodo-update-utilidad-caja)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
@@ -662,10 +662,71 @@
 										<p:ajax event="click" listener="#{kajoolTablero.doCambiarAnio(true, 'UTILIDAD_CAJA')}" update="@(.graphic-update-utilidad-caja) @(.periodo-update-utilidad-caja)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 										<i class="fa fa-angle-right"/>
 									</p:commandLink>
-									
 								</h:panelGrid>
 							</div>
             </p:panel>
+          </div>
+          <div class="ContainerIndent">
+            <h:form prependId="false">                  			                  
+              <p:panel style="height:505px;" class="graphic-update-ventas">
+                <div class="Container100 Responsive Fs20 janal-color-orange">
+                  <i class="icon-calendar"></i> Ventas diarias
+                  <p:calendar id="fechaInicio" styleClass="janal-steps-boton-siguiente" value="#{kajoolTablero.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" locale="es" converter="janal.convertidor.Calendario"> 
+                    <p:ajax event="dateSelect" process="@this" update="ventas" listener="#{kajoolTablero.doLoadCuentasVentas}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  </p:calendar>  
+                </div>
+                <div class="EmptyBox10"></div>
+                <div class="Container100">
+                  <p:dataTable lazy="true" id="ventas" var="row" rowIndexVar="index" value="#{kajoolTablero.lazyModelVentas}" paginator="true" rowsPerPageTemplate="10" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10" styleClass="janal-content-table" selectionMode="single" reflow="true" paginatorPosition="top">
+                    <f:facet name="header">
+                      <p:menuButton value="Opciones">
+                        <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfVentas', 'ventas')" oncomplete="janal.desbloquear()"/>
+                        <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsVentas', 'ventas')" oncomplete="janal.desbloquear()"/>
+                      </p:menuButton>
+                    </f:facet>
+                    <p:column styleClass="MarAuto Responsive" groupRow="true">
+                      <f:facet name="header">
+                        <h:outputText value="Empresa"/>
+                      </f:facet>
+                      <h:outputText value="#{row['nombreEmpresa']}"/>
+                    </p:column>                    
+                    <p:column styleClass="MarAuto janal-column-left ColWid15 Responsive" rendered="false">
+                      <f:facet name="header">
+                        <h:outputText value="Caja"/>
+                      </f:facet>
+                      <h:outputText value="#{row['caja']}"/>
+                    </p:column>                    
+                    <p:column styleClass="MarAuto Responsive" >
+                      <f:facet name="header">
+                        <h:outputText value="Medio pago"/>
+                      </f:facet>
+                      <h:outputText value="#{row['tipoMedioPago']}"/>
+                    </p:column>                    
+                    <p:column styleClass="MarAuto janal-column-right ColWid15 Responsive" >
+                      <f:facet name="header">
+                        <h:outputText value="Importe"/>
+                      </f:facet>
+                      <h:outputText value="#{row['importe']}"/>
+                    </p:column>                    
+                    <p:column styleClass="MarAuto janal-column-right ColWid15 Responsive" >
+                      <f:facet name="header">
+                        <h:outputText value="Ventas"/>
+                      </f:facet>
+                      <h:outputText value="#{row['total']}"/>
+                    </p:column>                    
+                    <f:facet name="footer">
+                      <p:outputLabel value="Total [#{kajoolTablero.lazyModelVentas.rowCount}] registros"/>
+                    </f:facet>
+                  </p:dataTable>
+                  <h:commandLink id="dataPdfVentas">                    
+                    <pe:exporter type="pdf" skipComponents="com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="agendar" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+                  </h:commandLink>
+                  <h:commandLink id="dataXlsVentas">
+                    <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="agendar" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                
+                  </h:commandLink>	                  
+                </div>
+              </p:panel>
+            </h:form>
           </div>
 
           <div class="Container100 Responsive">

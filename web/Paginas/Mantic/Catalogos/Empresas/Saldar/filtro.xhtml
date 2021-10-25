@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/reporte.xhtml">
+  <ui:param name="titulo" value="Cuentas por pagar por proveedor" />
+  <ui:define name="librerias">
+    <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryVentasJs}"/>
+		<h:outputStylesheet library="janal" name="css/sh.css"/>
+		<h:outputStylesheet library="janal" name="css/shCore.css"/>
+		<h:outputStylesheet library="janal" name="css/shThemeDefault.css"/>
+		<h:outputScript library="janal" name="js/sh.js"/>
+	  <h:outputScript library="janal" name="js/shCore.js"/>
+	  <h:outputScript library="janal" name="js/shAutoloader.js"/>
+	  <h:outputScript library="janal" name="js/shBrushXml.js"/>
+	  <h:outputScript library="janal" name="js/shBrushCss.js"/>
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        idEmpresa   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        razonSocial : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        almacen     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        consecutivo : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'consecutivo'},
+        factura     : {validaciones: 'libre', mascara: 'numeros-letras', formatos: 'cambiar-mayusculas', grupo: 'general'},
+        fechaInicio : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        fechaTermino: {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        idCompleto: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}
+      };	
+      
+			Janal.Control.credenciales ={
+				cuenta       : {validaciones: 'requerido', mascara: 'libre', grupo: 'credenciales'},			
+				contrasenia  : {validaciones: 'requerido', mascara: 'libre', grupo: 'credenciales'},		
+				justificacion: {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'credenciales'}
+			};
+			function start() {
+        PF('statusDialog').show();
+      };
+ 
+      function stop() {
+        PF('statusDialog').hide();
+      };
+			
+			function load() {
+			  SyntaxHighlighter.highlight();	
+			}
+    </script>		
+		<style>
+			.janal-tr-orange {
+				background-color: #ABEBC6 !important;
+			}
+			.janal-tr-purple {
+				background-color: #E6B3FF !important;
+			}
+			.janal-tr-yellow {
+				background-color: #FFFFB3 !important;
+			}
+			.janal-tr-green {
+				background-color: #66FFB3 !important;
+			}
+		</style>
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="janal-align-right xs-pantalla janal-wid-100">
+      <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
+    </div>			
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
+			<div class="ui-grid-row janal-grid-row">
+				<div id="collapse-find" class="ui-grid-col-3">
+					<p:panel id="panelBusqueda" header="Busqueda:" toggleable="true" toggleOrientation="horizontal">
+						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
+						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >							
+							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosEmpresasSaldarFiltro.attrs.isMatriz}"/>
+							<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosEmpresasSaldarFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<p:ajax event="change" onstart="return janal.bloquear();" process="@this" oncomplete="janal.desbloquear();"/>
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+								<f:selectItems value="#{manticCatalogosEmpresasSaldarFiltro.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
+								<p:column headerText="Clave">
+									<h:outputText value="#{item.clave}"/>
+								</p:column>   
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.nombre}"/>
+								</p:column>   
+							</p:selectOneMenu>
+							<p:outputLabel for="almacen" value="Almacen:"/>
+							<p:inputText id="almacen" value="#{manticCatalogosEmpresasSaldarFiltro.attrs.almacen}" styleClass="janal-wid-100-txt"/> 
+              <p:outputLabel for="razonSocial" value="Razón social:"/>
+							<p:autoComplete id="razonSocial" var="custom" placeholder="ej. HERRAJES HF. S.A. DE C.V." itemLabel="#{custom.clave}#{empty custom.clave? '': ' | '}#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosEmpresasSaldarFiltro.attrs.proveedor}" completeMethod="#{manticCatalogosEmpresasSaldarFiltro.doCompleteProveedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+										<h:outputText value="Clave:" />
+										<h:outputText value="#{custom.clave}" />
+										<h:outputText value="Razón social:" />
+										<h:outputText value="#{custom.razonSocial}" />
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>			
+							<p:outputLabel for="consecutivo" value="Nota entrada:"/>
+							<p:inputText id="consecutivo" value="#{manticCatalogosEmpresasSaldarFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt janal-column-right"/> 
+              <p:outputLabel for="factura" value="Factura proveedor:"/>
+              <p:inputText id="factura" value="#{manticCatalogosEmpresasSaldarFiltro.attrs.factura}" styleClass="janal-wid-100-txt"/> 
+							<p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosEmpresasSaldarFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+							<p:outputLabel for="fechaTermino" value="Fecha termino:"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosEmpresasSaldarFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+							<p:outputLabel for="idCompleto" value="Estatus:"/>
+							<p:selectOneMenu id="idCompleto" value="#{manticCatalogosEmpresasSaldarFiltro.attrs.idCompleto}" converter="javax.faces.Long" styleClass="janal-wid-96">
+								<f:selectItem itemLabel="TODOS" itemValue="3"/>
+								<f:selectItem itemLabel="NO" itemValue="2"/>
+								<f:selectItem itemLabel="SI" itemValue="1"/>
+							</p:selectOneMenu>
+							<p:separator/>
+						</p:panelGrid>
+						<div class="janal-align-right">
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticCatalogosEmpresasSaldarFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla tablaDocumentos"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b" icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticCatalogosEmpresasSaldarFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+						</div>
+					</p:panel>
+				</div>
+				<p:spacer/>
+				<div id="collapse-content" class="ui-grid-col-9">
+					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosEmpresasSaldarFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="25" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosEmpresasSaldarFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosEmpresasSaldarFiltro.lazyModel.rowCount gt manticCatalogosEmpresasSaldarFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+						<p:ajax event="rowToggle" listener="#{manticCatalogosEmpresasSaldarFiltro.doRowToggle}" update="detalle" />  
+						<p:ajax event="rowSelect" update="detalle" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+            <p:column style="width:32px">
+							<f:facet name="header">
+                <i class="fa fa-search janal-color-blue janal-font-bold" title="Clic para consulta el detalle"></i>
+							</f:facet>
+              <p:rowToggler/>
+            </p:column>            
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.claveProveedor}">
+							<f:facet name="header">
+								<h:outputText value="Clave"/>
+							</f:facet>
+							<h:outputText value="#{row['claveProveedor']}"/>
+						</p:column>	
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.razonSocial}">
+							<f:facet name="header">
+								<h:outputText value="Proveedor"/>
+							</f:facet>
+              <i class="fa fa-fw fa-truck janal-color-orange"></i>
+							<h:outputText value="#{row['razonSocial']}" title="Empresa: #{row['nombre']}"/>
+						</p:column>									
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cuentas}">
+							<f:facet name="header">
+								<h:outputText value="Cuentas"/>
+							</f:facet>
+							<h:outputText value="#{row['cuentas']}"/>
+						</p:column>
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.pagar}">
+							<f:facet name="header">
+								<h:outputText value="Deuda"/>
+							</f:facet>
+              <h:outputText value="#{row['pagar']}"/>
+						</p:column>											
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.saldo}">
+							<f:facet name="header">
+								<h:outputText value="Saldo"/>
+							</f:facet>
+							<h:outputText value="#{row['saldo']}"/>
+						</p:column>
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.abonado}">
+							<f:facet name="header">
+								<h:outputText value="Abonado"/>
+							</f:facet>
+							<h:outputText value="#{row['abonado']}"/>
+						</p:column>
+            <p:rowExpansion> 
+              <p:dataTable lazy="true" id="detalle" widgetVar="kajoolTableDetalle" var="row" value="#{manticCatalogosEmpresasSaldarFiltro.lazyModelDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosEmpresasSaldarFiltro.attrs.seleccionadoDetalle}" selectionMode="single" paginator="#{manticCatalogosEmpresasSaldarFiltro.lazyModelDetalle.rowCount gt manticCatalogosEmpresasSaldarFiltro.lazyModelDetalle.pageSize}" rowIndexVar="index" reflow="true" rowStyleClass="#{manticCatalogosEmpresasSaldarFiltro.toColor(row)}" paginatorPosition="bottom" style="display: #{empty manticCatalogosEmpresasSaldarFiltro.lazyModelDetalle? 'none': ''}">
+                <p:ajax event="rowSelect" oncomplete="PF('kajoolTableDetalle').writeSelections()" process="detalle" skipChildren="false"/>
+                <f:facet name="header">
+                  <div style="float: left">
+                    <p:outputLabel value="Proveedor: [#{manticCatalogosEmpresasSaldarFiltro.attrs.seleccionado.claveProveedor}] #{manticCatalogosEmpresasSaldarFiltro.attrs.seleccionado.razonSocial}" styleClass="janal-text-white janal-font-bold"/>
+                  </div>  
+                  <div class="lg-pantalla">
+                    <p:menuButton value="Opciones">
+                      <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
+                      <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+                    </p:menuButton>
+                  </div>  
+                  <div class="xs-pantalla">              
+                    <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
+                    <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+                  </div>  
+                </f:facet>					
+                <p:columnGroup type="header">
+                  <p:row>
+                    <p:column rowspan="2" headerText="Nota Entrada" styleClass="janal-column-center MarAuto Responsive janal-wid-12" />
+                    <p:column rowspan="2" headerText="Factura" styleClass="janal-column-right MarAuto Responsive janal-wid-8" />
+                    <p:column rowspan="2" headerText="Pagado" styleClass="janal-column-right MarAuto Responsive janal-wid-12" />
+                    <p:column colspan="4" headerText="Documentos" styleClass="janal-column-right MarAuto Responsive"/>
+                    <p:column rowspan="2" styleClass="janal-column-center MarAuto Responsive janal-wid-col-38"/>
+                    <p:column rowspan="2" styleClass="MarAuto Responsive janal-wid-4"/>
+                  </p:row>
+                  <p:row>
+                    <p:column headerText="Facturas"/>
+                    <p:column headerText="Notas créditos"/>
+                    <p:column headerText="Comprobantes de pago"/>
+                    <p:column headerText="Vouchers"/>
+                  </p:row>                  
+                </p:columnGroup>  
+                <p:column sortBy="#{row.consecutivo}">
+                  <p:commandLink action="#{manticCatalogosEmpresasSaldarFiltro.doNotaEntrada}">
+                    <f:setPropertyActionListener target="#{manticCatalogosEmpresasSaldarFiltro.attrs.idNotaEntrada}" value="#{row.idNotaEntrada}"/>
+                    <h:outputText value="#{row['consecutivo']}"/>
+                  </p:commandLink>	
+                </p:column>														
+                <p:column sortBy="#{row.factura}">
+                  <i class="fa fa-fw fa-check-square-o janal-color-black janal-icons-header" style="display: #{row.idRevisado eq '1'? '': 'none'}"></i>
+                  <h:outputText value="#{row['factura']}"/>
+                </p:column>	
+                <p:column sortBy="#{row.pagar}" exportable="false">
+                  <div class="ui-grid-row janal-grid-row">
+                    <div class="ui-grid-col-12 janal-column-right" style="padding-right:14px;">
+                      <h:outputText value="#{row['pagar']}"/>
+                    </div>	 
+                    <div style="width: 10px; margin-left: -4px; margin-top: 1px;">
+                      <h:outputText value="#{manticCatalogosEmpresasSaldarFiltro.doCostos(row)}" escape="false"/>
+                    </div>
+                  </div>	
+                </p:column>											
+                <p:column sortBy="#{row.facturas}" styleClass="janal-column-right MarAuto Responsive janal-wid-8">
+                  <h:outputText value="#{row['facturas']}"/>
+                </p:column>
+                <p:column sortBy="#{row.creditos}" styleClass="janal-column-right MarAuto Responsive janal-wid-8">
+                  <h:outputText value="#{row['creditos']}"/>
+                </p:column>
+                <p:column sortBy="#{row.comprobates}" styleClass="janal-column-right MarAuto Responsive janal-wid-8">
+                  <h:outputText value="#{row['comprobates']}"/>
+                </p:column>
+                <p:column sortBy="#{row.vouchers}" styleClass="janal-column-right MarAuto Responsive janal-wid-8">
+                  <h:outputText value="#{row['vouchers']}"/>
+                </p:column>
+                <p:column>
+                  <h:graphicImage library="janal" name="icon/semaforos/#{row.idCompleto eq '1' ? 'circulo-rojo.png' : (row.idCompleto eq '2'? 'circulo-amarillo.png' : 'circulo-verde.png')}" title="#{row.idCompleto eq '1' ? 'Completo' : (row.idCompleto eq '2'? 'Parcial' : 'Completo')}"/>
+                </p:column>
+                <p:column exportable="false">
+                  <p:commandButton icon="fa fa-search" process="@this" update="@this tablaDocumentos" actionListener="#{manticCatalogosEmpresasSaldarFiltro.doLoadDocumentos(row)}" title="Consultar documentos" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                </p:column>
+                <f:facet name="footer">
+                  <div style="display:flow-root;">
+                    <div style="float:left;">
+                      <p:outputLabel value="Las filas que estan color morado son cuentas por pagar directas&lt;br/&gt;Las filas en amarillo son facturas revisadas" style="float: left; text-align: left" escape="false"/>
+                    </div>	
+                    <div style="float:right;">
+                      <p:outputLabel value="Total [#{manticCatalogosEmpresasSaldarFiltro.lazyModelDetalle== null? 0: manticCatalogosEmpresasSaldarFiltro.lazyModelDetalle.rowCount}] registros"  styleClass="importado janal-color-orange"/>
+                    </div>
+                  </div>	
+                </f:facet>
+              </p:dataTable>
+              <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="detalle"> 
+                <p:menuitem icon="fa fa-external-link" value="Importar documentos" title="Documentos" onstart="return janal.bloquear()" process="@this detalle" action="#{manticCatalogosEmpresasSaldarFiltro.doImportar}"/>
+              </p:contextMenu>
+              <h:commandLink id="detallePdf">
+                <pe:exporter type="pdf" skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+              </h:commandLink>
+              <h:commandLink id="detalleXls">
+                <pe:exporter type="xlsx" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+              </h:commandLink>		              
+            </p:rowExpansion> 
+						<f:facet name="footer">
+ 							<p:outputLabel value="Total [#{manticCatalogosEmpresasSaldarFiltro.lazyModel==null? 0: manticCatalogosEmpresasSaldarFiltro.lazyModel.rowCount}] registros"  styleClass="importado janal-color-orange"/>
+						</f:facet>
+					</p:dataTable>    
+          <p:spacer height="5px"/>
+          <p:dataTable id="tablaDocumentos" widgetVar="kajoolTableDocumentos" var="row" value="#{manticCatalogosEmpresasSaldarFiltro.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index" paginatorPosition="bottom" style="display: #{manticCatalogosEmpresasSaldarFiltro.attrs.importados!= null? '': 'none'}" >
+            <p:column styleClass="janal-wid-col-30" headerText="No.">
+              <h:outputText value="#{index+ 1}.-"/>
+            </p:column>   
+            <p:column styleClass="janal-wid-col-40 janal-column-center" headerText="Tipo">
+              <h:outputText value="#{row.tipo}"/>
+            </p:column>   
+            <p:column styleClass="janal-wid-15 janal-column-center" headerText="Documento">
+              <h:outputText value="#{row.documento}"/>
+            </p:column>   
+            <p:column headerText="Nombre">
+              <h:outputText value="#{row.nombre}"/>
+              <i class="fa fa-fw fa-fw fa-comments janal-color-orange janal-icons-header" title="Observaciones: #{empty row['observaciones']? '': row['observaciones']}"></i>              
+            </p:column>   
+            <p:column styleClass="janal-wid-13 janal-column-center" headerText="Fecha">
+              <h:outputText value="#{row.registro}"/>
+            </p:column>   
+            <p:column style="text-align: center" styleClass="janal-wid-4">
+              <p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" rendered="#{row.idPrincipal.toLong() eq 1}">
+                <p:fileDownload value="#{manticCatalogosEmpresasSaldarFiltro.doFileDownload(row)}" />
+              </p:commandButton>
+            </p:column>
+            <p:column style="text-align: center" styleClass="janal-wid-4">
+              <p:commandLink actionListener="#{manticCatalogosEmpresasSaldarFiltro.doViewPdfDocument(row)}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 2}">
+                <p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button"/>
+              </p:commandLink>	
+              <p:commandLink actionListener="#{manticCatalogosEmpresasSaldarFiltro.doViewXmlDocument(row)}" process="@this" update="@(.viewXML)" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 1}">
+                <p:commandButton icon="fa fa-eye" title="Ver documento XML" ajax="false" type="button"/>
+              </p:commandLink>	
+            </p:column>
+          </p:dataTable>
+				</div>
+			</div>	
+    </div>		       		
+		<p:dialog modal="true" widgetVar="statusDialog" header="Estatus de la descarga del archivo" draggable="false" closable="false" resizable="false">
+			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
+		</p:dialog>		
+  </ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="regresar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosEmpresasSaldarFiltro.doRegresar}" immediate="true"/>
+		</div>	
+		<div class="xs-pantalla">
+			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosEmpresasSaldarFiltro.doRegresar}" immediate="true"/>
+		</div>	
+	</ui:define>	
+  <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
+	<ui:define name="dialogos">
+		<h:form prependId="false">
+			<p:dialog id="dialogoPDF" widgetVar="dlgPDF" styleClass="viewPDF" header="Factura en formato digital" onHide="janal.sendLastFocus();janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+				<object type="application/pdf" data="#{manticCatalogosEmpresasSaldarFiltro.attrs.temporal}" height="390px" width="100%" internalinstanceid="5">
+					 Tu navegador no soporta el desplegado de archivos PDF's, por favor da click en el boton de descargar
+				</object>
+  			<hr class="ui-widget-content"/>
+	  		<div class="janal-line-button">
+					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" actionListener="#{manticCatalogosEmpresasSaldarFiltro.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
+			  </div>
+			</p:dialog>
+			<p:dialog id="dialogoXML" widgetVar="dlgXML" styleClass="viewXML" header="Factura en formato XML" onShow="load();" onHide="janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+				<pre id="documentXml" class="brush: xml;" style="width: 925px; height: 370px;">
+#{manticCatalogosEmpresasSaldarFiltro.attrs.temporal}
+				</pre>
+  			<hr class="ui-widget-content"/>
+	  		<div class="janal-line-button">
+					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" oncomplete="PF('dlgXML').hide();"/>
+			  </div>
+			</p:dialog>
+		</h:form>
+	</ui:define>  
+</ui:composition>

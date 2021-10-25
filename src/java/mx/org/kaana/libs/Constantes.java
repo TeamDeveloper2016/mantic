@@ -38,6 +38,7 @@ public final class Constantes {
   public static final String NOMBRE_ARCHIVO_DEFAULT = "SinNombre";
   public static final String CAMPO_LLAVE = "id";
   public static final String NOMBRE_FINAL_CLASE_DTO = "Dto";
+  public static final String PATRON_IMPORTAR_DOCUMENTOS= "/(\\.|\\/)(xml|pdf|jpg|png)$/";
   public static final String PATRON_IMPORTAR_FACTURA= "/(\\.|\\/)(xml|pdf)$/";
   public static final String PATRON_IMPORTAR_CATALOGOS= "/(\\.|\\/)(pdf)$/";
   public static final String PATRON_IMPORTAR_MASIVO= "/(\\.|\\/)(xls)$/";

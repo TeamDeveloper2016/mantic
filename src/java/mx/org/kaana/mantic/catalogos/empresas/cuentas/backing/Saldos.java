@@ -25,9 +25,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
-import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.formato.Periodo;
-import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -37,6 +35,7 @@ import mx.org.kaana.mantic.catalogos.empresas.cuentas.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EReportes;
+import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,7 +45,7 @@ import org.primefaces.model.Visibility;
 
 @Named(value = "manticCatalogosEmpresasCuentasSaldos")
 @ViewScoped
-public class Saldos extends IBaseFilter implements Serializable {
+public class Saldos extends IBaseImportar implements Serializable { 
 
   private static final long serialVersionUID = 8793667741599428879L;	
   private static final Log LOG = LogFactory.getLog(Saldos.class);
@@ -163,7 +162,7 @@ public class Saldos extends IBaseFilter implements Serializable {
     } // finally		
   } // doLoad
 
-	private Map<String, Object> toPrepare() {
+	protected Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
 	  UISelectEntity proveedor      = (UISelectEntity)this.attrs.get("proveedor");
@@ -457,8 +456,8 @@ public class Saldos extends IBaseFilter implements Serializable {
 		Double original= row.toDouble("original");
 		Double total   = row.toDouble("importe");
 		String regresar= "<i class='fa fa-fw fa-question-circle janal-color-green' style='float:right;' title='\n\nNota entrada: "+ Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, row.toDouble("importe"))+ 
-			"\n\nImporte factura: " + Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, row.toString("original"))+ 
-			"'\n\n'></i>";
+			"\nImporte factura: " + Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, row.toString("original"))+ 
+			"\nFecha factura: "+ row.toString("fecha")+ "'></i>";
 		return (original!= 0D && original> total) || (original!= 0D && original< total)? regresar: "";
 	}
 
@@ -539,7 +538,7 @@ public class Saldos extends IBaseFilter implements Serializable {
     } // finally		   
   }  
   
-  public void toLoadPagosRealizados(Entity row) {
+  public void doLoadPagosRealizados(Entity row) {
     List<Columna> columns     = null;    
     Map<String, Object> params= null;
     try {      

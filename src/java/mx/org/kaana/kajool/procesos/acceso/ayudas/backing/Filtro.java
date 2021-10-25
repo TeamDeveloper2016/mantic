@@ -42,15 +42,15 @@ public class Filtro extends IBaseFilter {
     try {
       this.attrs.put(Constantes.SQL_CONDICION,Constantes.SQL_VERDADERO);
       this.attrs.put("ayudas", UISelect.build(TcJanalAyudasDto.class, this.attrs, "clave"));
-      doLoad();
+      this.doLoad();
      }// try // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
       Error.mensaje(e);
     }// catch
-
   }
-  public void doMostrar(){
+  
+  public void doMostrar() {
     this.attrs.put(Constantes.SQL_CONDICION, "tc_kajool_ayudas.id_ayuda=".concat(this.attrs.get("idAyuda").toString()));
     doLoad();
   }// doMostrar

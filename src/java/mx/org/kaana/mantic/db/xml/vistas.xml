@@ -6257,17 +6257,21 @@
 					tc_mantic_notas_archivos.id_principal,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
 					tc_mantic_notas_archivos.observaciones,
-					tc_mantic_notas_archivos.registro
+					tc_mantic_notas_archivos.registro,
+          tt_mantic_tipos_archivos.nombre as documento
 				from
 					tc_mantic_notas_archivos
 				inner join
 					tc_mantic_tipos_archivos on tc_mantic_notas_archivos.id_tipo_archivo= tc_mantic_tipos_archivos.id_tipo_archivo
+				inner join
+					tc_mantic_tipos_archivos as tt_mantic_tipos_archivos on tc_mantic_notas_archivos.id_tipo_documento= tt_mantic_tipos_archivos.id_tipo_archivo
 				inner join
 					tc_janal_usuarios on tc_mantic_notas_archivos.id_usuario= tc_janal_usuarios.id_usuario          
 				inner join
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				where
 					tc_mantic_notas_archivos.id_nota_entrada= {idNotaEntrada}
+          and (tc_mantic_notas_archivos.id_tipo_documento= {idTipoDocumento} or {idTipoDocumento}= -1)
 				order by
 					tc_mantic_notas_archivos.id_tipo_archivo, tc_mantic_notas_archivos.registro desc				
 			</select>
@@ -8070,6 +8074,48 @@
 				  ) principal 
 				{sortOrder}					
 			</select>		
+			<select id="documentos">
+        select
+          tc_mantic_empresas_deudas.id_empresa_deuda as id_key,
+          tc_mantic_empresas_deudas.id_empresa,
+          tc_mantic_notas_entradas.id_nota_entrada,
+          tc_mantic_notas_entradas.consecutivo,
+          tc_mantic_notas_entradas.consecutivo as ticket,
+          tc_mantic_notas_entradas.factura,
+          tc_mantic_notas_entradas.fecha_factura as fecha,
+          tc_mantic_empresas_deudas.importe,
+          tc_mantic_empresas_deudas.pagar,
+          tc_mantic_notas_entradas.original,
+          tc_mantic_proveedores.id_proveedor,
+          tc_mantic_notas_entradas.id_nota_tipo,
+          tc_mantic_notas_tipos.nombre as directa,
+          tc_mantic_empresas_estatus.id_empresa_estatus,
+          tc_mantic_empresas_estatus.nombre as estatus,
+          sum(if(tc_mantic_notas_archivos.id_tipo_documento= 13, 1, 0)) as facturas,
+          sum(if(tc_mantic_notas_archivos.id_tipo_documento= 14, 1, 0)) as creditos,
+          sum(if(tc_mantic_notas_archivos.id_tipo_documento= 15, 1, 0)) as comprobantes,
+          sum(if(tc_mantic_notas_archivos.id_tipo_documento= 16, 1, 0)) as vouchers,
+          tc_mantic_empresas_deudas.id_completo
+        from
+          tc_mantic_empresas_deudas
+        inner join
+          tc_mantic_notas_entradas on tc_mantic_empresas_deudas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada				
+        inner join 
+          tc_mantic_empresas_estatus on tc_mantic_empresas_deudas.id_empresa_estatus = tc_mantic_empresas_estatus.id_empresa_estatus
+        inner join 
+          tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor = tc_mantic_proveedores.id_proveedor
+        inner join
+          tc_mantic_notas_tipos on tc_mantic_notas_entradas.id_nota_tipo= tc_mantic_notas_tipos.id_nota_tipo
+        left join
+          tc_mantic_notas_archivos on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_notas_archivos.id_nota_entrada
+        where
+          tc_mantic_empresas_deudas.id_empresa in ({idEmpresa})
+          and tc_mantic_notas_entradas.id_proveedor= {idProveedor}
+          and {condicion}
+        group by
+         tc_mantic_notas_entradas.id_nota_entrada      
+        {sortOrder} 
+      </select>  
 			<select id="cuentasBusqueda">
 				select 
 					principal.*,

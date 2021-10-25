@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Importar documentos a la cuenta por pagar"/>
+	<ui:define name="librerias">
+		<h:outputStylesheet library="janal" name="css/sh.css"/>
+		<h:outputStylesheet library="janal" name="css/shCore.css"/>
+		<h:outputStylesheet library="janal" name="css/shThemeDefault.css"/>
+		<h:outputScript library="janal" name="js/sh.js"/>
+	  <h:outputScript library="janal" name="js/shCore.js"/>
+	  <h:outputScript library="janal" name="js/shAutoloader.js"/>
+	  <h:outputScript library="janal" name="js/shBrushXml.js"/>
+	  <h:outputScript library="janal" name="js/shBrushCss.js"/>
+		<script type="text/javascript">
+			Janal.Control.fields = {				 				
+				'contenedorGrupos\\:idTipoDocumento': {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}
+			};	
+			
+			function start() {
+        PF('statusDialog').show();
+      };
+ 
+      function stop() {
+        PF('statusDialog').hide();
+      };
+			
+			function load() {
+			  SyntaxHighlighter.highlight();	
+			}
+      
+      function reload() {
+				$('.janal-control-imagen').each(function(index, item) {
+					var name= $(this).attr('id').replace('source-image', 'icon-image', 'gi').replace(/[:]/g, '\\:');
+					janal.console('Reload image: '+ name);
+					$(this).attr('href', $('#contenedorGrupos\\:'+ name).attr('src'));
+ 			  });
+			};      
+		</script>
+		<style>
+			.janal-upload-frame {
+        border: solid 1px #D1D3D4;
+        margin-bottom: 6px;
+        border-radius: 5px;				
+			}
+			.syntaxhighlighter {
+					overflow-y: auto !important;
+					overflow-x: auto !important;
+					max-height: 370px;
+			}			
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<p:remoteCommand name="viewDocument" actionListener="#{manticCatalogosEmpresasSaldarImportar.doViewDocument}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();"/>
+		<p:remoteCommand name="viewFile" actionListener="#{manticCatalogosEmpresasSaldarImportar.doViewFile}" process="@this" update="@(.viewXML)" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();"/>
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+            <p:ajax event="tabChange" listener="#{manticCatalogosEmpresasSaldarImportar.doTabChange}" process="@this" update="@(.importado) @(.involucrados)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>						
+            <p:tab title="General">							
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
+								<p:outputLabel for="consecutivo" value="No. nota:"/>
+								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasSaldarImportar.orden.consecutivo}" readonly="true"/>
+								<p:outputLabel for="proveedor" value="Proveedor:"/>
+								<p:inputText id="proveedor" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasSaldarImportar.proveedor.razonSocial}" readonly="true"/>
+								<p:spacer width="1px"/><p:separator/>
+                <p:outputLabel for="idOrdenCompra" value="No. orden:" rendered="#{not empty manticCatalogosEmpresasSaldarImportar.orden.idOrdenCompra}"/>
+								<p:selectOneMenu id="idOrdenCompra" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" rendered="#{not empty manticCatalogosEmpresasSaldarImportar.orden.idOrdenCompra}">
+									<f:selectItems value="#{manticCatalogosEmpresasSaldarImportar.attrs.ordenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.consecutivo} #{element.razonSocial}"/>
+									<p:column headerText="Clave">
+										<h:outputText value="#{item.consecutivo}"/>
+									</p:column>   
+									<p:column headerText="Proveedor">
+										<h:outputText value="#{item.razonSocial}"/>
+									</p:column>   
+									<p:column headerText="Estatus">
+										<h:outputText value="#{item.estatus}"/>
+									</p:column>   
+									<p:column headerText="Total" styleClass="janal-column-right">
+										<h:outputText value="#{item.total}"/>
+									</p:column>   
+								</p:selectOneMenu>
+								<p:outputLabel for="factura" value="No factura:"/>
+								<p:inputText id="factura" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasSaldarImportar.orden.factura}" readonly="true"/>
+								<p:outputLabel for="fechaFactura" value="Fecha factura:"/>
+								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasSaldarImportar.orden.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"  disabled="true"/>
+								<p:outputLabel for="fechaRecepcion" value="Fecha recepción:"/>
+								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasSaldarImportar.orden.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario" disabled="true"/>
+								<p:outputLabel for="diasPlazo" value="Dias plazo:"/>
+								<p:inputText id="diasPlazo" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosEmpresasSaldarImportar.orden.diasPlazo}" readonly="true"/>
+								<p:outputLabel for="deuda" value="Deuda:"/>
+								<p:inputText id="deuda" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosEmpresasSaldarImportar.orden.deuda}" readonly="true"/>
+								<p:outputLabel for="fechaPago" value="Fecha pago:"/>
+								<p:calendar id="fechaPago" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasSaldarImportar.orden.fechaPago}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario" disabled="true"/>
+              </p:panelGrid>
+						</p:tab>						            						            																																																
+						<p:tab title="Archivos">
+							<p:dataTable id="importados" var="row" value="#{manticCatalogosEmpresasSaldarImportar.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
+								<p:column styleClass="janal-wid-col-30" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-col-40 janal-column-center" headerText="Tipo">
+									<h:outputText value="#{row.tipo}"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-15 janal-column-center" headerText="Documento">
+									<h:outputText value="#{row.documento}"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-25" headerText="Nombre">
+									<h:outputText value="#{row.nombre}"/>
+                  <i class="fa fa-fw fa-user janal-color-orange janal-icons-header" title="Usuario: #{row['usuario']}"></i>
+								</p:column>   
+								<p:column styleClass="janal-wid-12 janal-column-center" headerText="Fecha">
+									<h:outputText value="#{row.registro}"/>
+								</p:column>   
+								<p:column headerText="Observaciones">
+									<h:outputText value="#{row.observaciones}"/>
+								</p:column>   
+								<p:column style="text-align: center" styleClass="janal-wid-col-38">
+									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" rendered="#{row.idPrincipal.toLong() eq 1}">
+										<p:fileDownload value="#{manticCatalogosEmpresasSaldarImportar.doFileDownload(row)}" />
+									</p:commandButton>
+								</p:column>
+								<p:column style="text-align: center" styleClass="janal-wid-col-38">
+									<p:commandLink actionListener="#{manticCatalogosEmpresasSaldarImportar.doViewPdfDocument(row)}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 2}">
+									  <p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button"/>
+									</p:commandLink>	
+									<p:commandLink actionListener="#{manticCatalogosEmpresasSaldarImportar.doViewXmlDocument(row)}" process="@this" update="@(.viewXML)" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 1}">
+									  <p:commandButton icon="fa fa-eye" title="Ver documento XML" ajax="false" type="button"/>
+									</p:commandLink>	
+                  <a data-magnify="gallery" href="#{manticCatalogosEmpresasSaldarImportar.path}#{row['ruta']}#{row['nombre']}" data-caption="#{row['nombre']}" data-group="icon-image" title="Ver documento JPG">
+                    <p:graphicImage cache="false" url="#{manticCatalogosEmpresasSaldarImportar.path}#{row['ruta']}#{row['nombre']}" width="26" height="22" stream="false" style="cursor:zoom-in;" rendered="#{row.idTipoArchivo.toLong() eq 17 or row.idTipoArchivo.toLong() eq 18}"/>
+                  </a>
+								</p:column>
+							</p:dataTable>
+						</p:tab>						            						            																																																
+						<p:tab title="Importar">
+							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-column-center involucrados" style="display: #{manticCatalogosEmpresasSaldarImportar.diferente? '': 'none'}">
+  							<p:commandLink actionListener="#{manticCatalogosEmpresasSaldarImportar.doUpdateRfc}" process="@this" update="@(.involucrados)" onstart="janal.bloquear(); if(confirm('\u00BF Esta seguro que desea actualizar el RFC ?')) { return true; } else { janal.desbloquear(); return false; }" oncomplete="janal.desbloquear();">
+									<p:outputLabel value="El RFC del proveedor [#{manticCatalogosEmpresasSaldarImportar.proveedor.rfc}] no coincide con el de la factura [#{manticCatalogosEmpresasSaldarImportar.emisor.rfc}], click aqui para actualizarlo !" styleClass="janal-color-orange" style="cursor: pointer;"/>
+		  					  <p:spacer height="5px"/>
+			  				</p:commandLink>
+							</p:panelGrid>	
+              <p:outputLabel for="idTipoDocumento" value="Tipo de documento:" styleClass="janal-wid-100-txt"/><br/>
+							<p:selectOneMenu id="idTipoDocumento" value="#{manticCatalogosEmpresasSaldarImportar.attrs.idTipoDocumento}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:ajax event="change" process="@this" update="@(.janal-upload-frame)" listener="#{manticCatalogosEmpresasSaldarImportar.doValueUpload}"/>
+	  						<f:selectItems value="#{manticCatalogosEmpresasSaldarImportar.attrs.documentos}"/>
+              </p:selectOneMenu>    
+              <p:outputLabel for="observaciones" value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
+							<p:inputTextarea id="observaciones" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasSaldarImportar.attrs.observaciones}">
+                <p:ajax event="change" process="@this" update="@(.janal-upload-frame)" listener="#{manticCatalogosEmpresasSaldarImportar.doValueUpload}"/>
+              </p:inputTextarea>  
+							<p:spacer height="5px"/>
+              <p:fileUpload id="documento" fileUploadListener="#{manticCatalogosEmpresasSaldarImportar.doFileUpload}" valueChangeListener="#{manticCatalogosEmpresasSaldarImportar.doValueUpload}"
+							  mode="advanced" process="@this idTipoDocumento observaciones" update="@(.importado) @(.involucrados)" label="Selecciona XML/PDF/JPG/PNG" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
+                multiple="false" fileLimit="3" allowTypes="#{manticCatalogosEmpresasSaldarImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame" disabled="#{manticCatalogosEmpresasSaldarImportar.attrs.idTipoDocumento eq -1}"
+                invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosEmpresasSaldarImportar.attrs.formatos}" onstart="return janal.execute();" oncomplete="PF('panelEmisor').toggle(); PF('panelReceptor').toggle();"/>
+							<p:commandLink value="XML importado: #{manticCatalogosEmpresasSaldarImportar.xml.ruta}#{manticCatalogosEmpresasSaldarImportar.xml.ruta}" onclick="viewFile();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento XML" style="#{(empty manticCatalogosEmpresasSaldarImportar.xml)? 'display: none': ''}"/>
+							<br/>
+							<p:commandLink value="PDF importado: #{manticCatalogosEmpresasSaldarImportar.pdf.ruta}#{manticCatalogosEmpresasSaldarImportar.pdf.name}" onclick="viewDocument();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento PDF" style="#{(empty manticCatalogosEmpresasSaldarImportar.pdf)? 'display: none': ''}"/>
+							<br/>
+              <p:panelGrid columns="2" styleClass="janal-wid-100 pdf importado" columnClasses="janal-wid-98 janal-column-right, janal-wid-2 janal-column-center" style="#{(empty manticCatalogosEmpresasSaldarImportar.jpg)? 'display: none': ''}">
+                <p:outputLabel value="JPG importado: #{manticCatalogosEmpresasSaldarImportar.jpg.ruta}#{manticCatalogosEmpresasSaldarImportar.jpg.name}" styleClass="janal-color-blue janal-font-bold"/>
+                <p:panel styleClass="janal-wid-100 janal-with-out-lines">
+                  <a id="source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{manticCatalogosEmpresasSaldarImportar.jpg.name}" data-group="icon-image" title="Ver documento JPG">
+                    <p:graphicImage id="icon-image" cache="false" url="#{manticCatalogosEmpresasSaldarImportar.path}#{manticCatalogosEmpresasSaldarImportar.jpg.ruta}#{manticCatalogosEmpresasSaldarImportar.jpg.name}" width="26" height="22" stream="false" style="cursor:zoom-in" rendered="#{not(empty manticCatalogosEmpresasSaldarImportar.jpg)}"/>
+                  </a>
+                </p:panel>  
+              </p:panelGrid>  
+							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+                <p:outputLabel value="Articulos XML:" styleClass="importado" style="display: #{empty manticCatalogosEmpresasSaldarImportar.attrs.faltantes? 'none': ''}"/>
+								<p:selectOneMenu value="#{manticCatalogosEmpresasSaldarImportar.attrs.faltante}" var="row" styleClass="importado janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" style="display: #{empty manticCatalogosEmpresasSaldarImportar.attrs.faltantes? 'none': ''}">
+									<f:selectItems value="#{manticCatalogosEmpresasSaldarImportar.attrs.faltantes}" var="element" itemValue="#{element}" itemLabel="[#{element.sat}] [#{element.codigo}] #{element.nombre}  [#{element.cantidad}] $#{element.costo}"/>
+									<p:column class="MarAuto Responsive janal-wid-10">
+										<f:facet name="header">
+											<h:outputText value="Código SAT"/>
+										</f:facet>
+										<h:outputText value="#{row['sat']}"/>
+									</p:column>		
+									<p:column  class="MarAuto Responsive janal-wid-10">
+										<f:facet name="header">
+											<h:outputText value="Código"/>
+										</f:facet>
+										<h:outputText value="#{row['codigo']}"/>
+									</p:column>		
+									<p:column  class="MarAuto Responsive">
+										<f:facet name="header">
+											<h:outputText value="Articulo"/>
+										</f:facet>
+										<h:outputText value="#{row['nombre']}"/>
+									</p:column>		
+									<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+										<f:facet name="header">
+											<h:outputText value="Cantidad"/>
+										</f:facet>
+										<h:outputText value="#{row['cantidad']}"/>	
+									</p:column>		
+									<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+										<f:facet name="header">
+											<h:outputText value="Costo"/>
+										</f:facet>
+										<h:outputText value="#{row['costo']}"/>
+									</p:column>		
+									<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+										<f:facet name="header">
+											<h:outputText value="IVA"/>
+										</f:facet>
+										<h:outputText value="#{row['iva']}"/>
+									</p:column>		
+									<p:column  class="MarAuto Responsive janal-wid-10">
+										<f:facet name="header">
+											<h:outputText value="Unidad medida"/>
+										</f:facet>
+										<h:outputText value="#{row['unidadMedida']}"/>
+									</p:column>		
+								</p:selectOneMenu>
+  							<p:outputLabel value="Total: #{manticCatalogosEmpresasSaldarImportar.attrs.faltantes.size()}" styleClass="importado janal-color-orange janal-steps-boton-siguiente janal-font-bold" style="display: #{empty manticCatalogosEmpresasSaldarImportar.attrs.faltantes? 'none': ''}"/>
+							</p:panelGrid>	
+							<p:panel header="Emisor" styleClass="involucrados" style="display: #{empty manticCatalogosEmpresasSaldarImportar.emisor? 'none': ''};margin-bottom:20px" toggleable="true" toggleSpeed="500" widgetVar="panelEmisor">
+								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
+								  <p:outputLabel value="Nombre:"/>
+								  <p:inputText styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasSaldarImportar.emisor.nombre}" readonly="true"/>
+								  <p:outputLabel value="RFC:"/>
+								  <p:inputText styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasSaldarImportar.emisor.rfc}" readonly="true"/>
+								  <p:outputLabel value="Regimen fiscal:"/>
+									<p:inputText styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasSaldarImportar.emisor.regimenFiscal}" readonly="true"/>
+								</p:panelGrid>
+							</p:panel>
+							<p:panel header="Receptor" styleClass="involucrados" style="display: #{empty manticCatalogosEmpresasSaldarImportar.receptor? 'none': ''};margin-bottom:20px" toggleable="true" toggleSpeed="500" widgetVar="panelReceptor">
+								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
+								  <p:outputLabel value="Nombre:"/>
+								  <p:inputText styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasSaldarImportar.receptor.nombre}" readonly="true"/>
+								  <p:outputLabel value="RFC:"/>
+								  <p:inputText styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasSaldarImportar.receptor.rfc}" readonly="true"/>
+								  <p:outputLabel value="Uso CFDI:"/>
+									<p:inputText styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasSaldarImportar.receptor.usoCfdi}" readonly="true"/>
+								</p:panelGrid>
+							</p:panel>
+						</p:tab>
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+		<p:dialog modal="true" widgetVar="statusDialog" header="Estatus de la descarga del archivo" draggable="false" closable="false" resizable="false">
+			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
+		</p:dialog>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticCatalogosEmpresasSaldarImportar.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosEmpresasSaldarImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosEmpresasSaldarImportar.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosEmpresasSaldarImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+	<ui:define name="dialogos">
+		<h:form prependId="false">
+			<p:dialog id="dialogoPDF" widgetVar="dlgPDF" styleClass="viewPDF" header="Factura en formato digital" onHide="janal.sendLastFocus();janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+				<object type="application/pdf" data="#{manticCatalogosEmpresasSaldarImportar.attrs.temporal}" height="390px" width="100%" internalinstanceid="5">
+					 Tu navegador no soporta el desplegado de archivos PDF's, por favor da click en el boton de descargar
+				</object>
+  			<hr class="ui-widget-content"/>
+	  		<div class="janal-line-button">
+					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" actionListener="#{manticCatalogosEmpresasSaldarImportar.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
+			  </div>
+			</p:dialog>
+			<p:dialog id="dialogoXML" widgetVar="dlgXML" styleClass="viewXML" header="Factura en formato XML" onShow="load();" onHide="janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+				<pre id="documentXml" class="brush: xml;" style="width: 925px; height: 370px;">
+#{manticCatalogosEmpresasSaldarImportar.attrs.temporal}
+				</pre>
+  			<hr class="ui-widget-content"/>
+	  		<div class="janal-line-button">
+					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" oncomplete="PF('dlgXML').hide();"/>
+			  </div>
+			</p:dialog>
+		</h:form>
+	</ui:define>
+</ui:composition>

@@ -58,7 +58,7 @@ public class Filtro extends Comun implements Serializable {
 			idEgreso= (Long) JsfBase.getFlashAttribute("idEgreso");
 			if(idEgreso!= null){				
 				this.attrs.put("idEgreso", idEgreso);
-				doLoad();
+				this.doLoad();
 			} // if
     } // try
     catch (Exception e) {
@@ -92,9 +92,10 @@ public class Filtro extends Comun implements Serializable {
 			params= new HashMap<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));			
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));			
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));			
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));			
-			params.put(Constantes.SQL_CONDICION, toCondicion());			
+			params.put(Constantes.SQL_CONDICION, this.toCondicion());			
 			params.put("sortOrder", "order by tc_mantic_egresos.registro desc, consecutivo desc");			
       this.lazyModel = new FormatCustomLazy("VistaEgresosDto", params, columns);
       UIBackingUtilities.resetDataTable();
@@ -147,7 +148,8 @@ public class Filtro extends Comun implements Serializable {
     try {
       eaccion = EAccion.valueOf(accion.toUpperCase());
       JsfBase.setFlashAttribute("accion", eaccion);
-      JsfBase.setFlashAttribute("idEgreso", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) || eaccion.equals(EAccion.COPIAR) || eaccion.equals(EAccion.ACTIVAR)) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
+      JsfBase.setFlashAttribute("retorno", "filtro");
+      JsfBase.setFlashAttribute("idEgreso", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) || eaccion.equals(EAccion.ELIMINAR)) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -327,7 +329,7 @@ public class Filtro extends Comun implements Serializable {
 			seleccionado= (Entity)this.attrs.get("seleccionado");			
 			bitacora= new TcManticEgresosBitacoraDto((String)this.attrs.get("justificacion"), Long.valueOf(this.attrs.get("estatus").toString()), seleccionado.getKey(), JsfBase.getIdUsuario(), -1L);
 			transaccion= new Transaccion(bitacora);
-			if(transaccion.ejecutar(EAccion.MODIFICAR))
+			if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
 			else
 				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);

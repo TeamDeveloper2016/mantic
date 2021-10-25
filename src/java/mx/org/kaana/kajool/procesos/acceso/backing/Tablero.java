@@ -1,6 +1,7 @@
 package mx.org.kaana.kajool.procesos.acceso.backing;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -65,6 +66,7 @@ public class Tablero extends Comun implements Serializable {
 	private List<Entity> articulos;
   protected FormatLazyModel lazyModelPagar;
   protected FormatLazyModel lazyModelAgendar;
+  protected FormatLazyModel lazyModelVentas;
 
   public List<UISelectItem> getSucursales() {
     return sucursales;
@@ -80,6 +82,10 @@ public class Tablero extends Comun implements Serializable {
 
   public FormatLazyModel getLazyModelAgendar() {
     return lazyModelAgendar;
+  }
+
+  public FormatLazyModel getLazyModelVentas() {
+    return lazyModelVentas;
   }
 	
   @PostConstruct
@@ -100,6 +106,7 @@ public class Tablero extends Comun implements Serializable {
       this.attrs.put("vigenciaInicial", new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
       this.attrs.put("vigenciaFin", new java.sql.Date(Calendar.getInstance().getTimeInMillis()));						
 			this.attrs.put("estatusVentas", EEstatusVentas.CREDITO.getIdEstatusVenta()+","+EEstatusVentas.PAGADA.getIdEstatusVenta()+","+EEstatusVentas.TERMINADA.getIdEstatusVenta()+","+EEstatusVentas.TIMBRADA.getIdEstatusVenta());
+      this.attrs.put("fechaInicio", new Date(Calendar.getInstance().getTimeInMillis()));
 			this.initPeriodos(fechaActual);
 			this.loadAllCharts();       
       this.doLoadSucursales();
@@ -113,6 +120,7 @@ public class Tablero extends Comun implements Serializable {
       this.toLoadCuentasCobrar();
       this.toLoadCuentasPagar();
       this.toLoadCuentasAgendar();
+      this.doLoadCuentasVentas();
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
@@ -170,7 +178,7 @@ public class Tablero extends Comun implements Serializable {
 	private void loadAllCharts() throws Exception{
 		try {			
 			doLoadChartUtilidadSucursal();
-			doLoadChartUtilidadCaja();
+			//doLoadChartUtilidadCaja();
 			doLoadChartCuentasCobrar();
 			doLoadChartCuentasPagar();
 			doLoadChartsGeneral();
@@ -189,7 +197,7 @@ public class Tablero extends Comun implements Serializable {
 					doLoadChartUtilidadSucursal();
 					break;
 				case UTILIDAD_CAJA:
-					doLoadChartUtilidadCaja();
+					// doLoadChartUtilidadCaja();
 					break;
 				case VENTAS_SUCURSAL:
 					doLoadChartsGeneral();
@@ -1062,6 +1070,34 @@ public class Tablero extends Comun implements Serializable {
     finally {
       Methods.clean(params);
       Methods.clean(columns);
+    } // finally
+  }
+  
+  public void doLoadCuentasVentas() {
+    List<Columna> columns     = null;    
+    Map<String, Object> params= null;
+    StringBuilder sb          = null;
+    try {      
+      params= new HashMap<>();      
+      sb    = new StringBuilder();		
+      sb.append("tc_mantic_ventas_estatus.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TIMBRADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(") and ");
+      sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') ");			
+      params.put(Constantes.SQL_CONDICION, sb.toString());
+      params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      columns = new ArrayList<>();
+      columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));      
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_SAT_DECIMALES));      
+      this.lazyModelVentas= new FormatCustomLazy("VistaConsultasDto", "diarias", params, columns);
+      UIBackingUtilities.resetDataTable("ventas");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+      sb= null;
     } // finally
   }
   

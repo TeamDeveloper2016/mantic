@@ -37,6 +37,7 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -70,6 +71,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 	private ComprobanteFiscal factura;
 	private Importado xml;
 	private Importado pdf;
+	private Importado jpg;
 	private Importado file;			
 	private Emisor emisor;
 	private Receptor receptor;
@@ -86,7 +88,11 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 		return pdf;
 	}
 
-	public Emisor getEmisor() {
+  public Importado getJpg() {
+    return jpg;
+  }
+  
+  public Emisor getEmisor() {
 		return emisor;
 	}
 
@@ -112,7 +118,6 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 		String nameFile   = Archivo.toFormatNameFile(event.getFile().getFileName().toUpperCase());
     File result       = null;		
 		Long fileSize     = 0L;
-		boolean isXml     = false;
 		try {
 			Calendar calendar= Calendar.getInstance();
 			calendar.setTimeInMillis(fechaFactura);
@@ -133,19 +138,28 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			result = new File(path.toString());
 			if (result.exists())
 				result.delete();			      
-			isXml= event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name());
-			this.toWriteFile(result, event.getFile().getInputstream(), isXml);
+			this.toWriteFile(result, event.getFile().getInputstream(), nameFile.endsWith(EFormatos.XML.name()));
 			fileSize= event.getFile().getSize();			
-			if(isXml) {
-			  this.xml= new Importado(nameFile, event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase());
+      String observaciones= (String)this.attrs.get("observaciones");
+      Long idTipoDocumento= 13L;
+      if(this.attrs.get("idTipoDocumento")!= null)
+        idTipoDocumento= (Long)this.attrs.get("idTipoDocumento");
+			if(nameFile.endsWith(EFormatos.XML.name())) {
+			  this.xml= new Importado(nameFile, event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), observaciones, event.getFile().getFileName().toUpperCase(), idTipoDocumento);
 				this.toReadFactura(result, sinIva, tipoDeCambio);
 				this.attrs.put("xml", this.xml.getName());
 			} //
 			else
 			  if(nameFile.endsWith(EFormatos.PDF.name())) {
-			    this.pdf= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase());
+			    this.pdf= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), observaciones, event.getFile().getFileName().toUpperCase(), idTipoDocumento);
   				this.attrs.put("pdf", this.pdf.getName()); 
 				} // if
+        else
+			    if(nameFile.endsWith(EFormatos.JPG.name()) || nameFile.endsWith(EFormatos.PNG.name())) {
+			      this.jpg= new Importado(nameFile, event.getFile().getContentType(), EFormatos.JPG, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), observaciones, event.getFile().getFileName().toUpperCase(), idTipoDocumento);
+  				  this.attrs.put("jpg", this.jpg.getName()); 
+            UIBackingUtilities.execute("reload();");
+		  		} // if
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -318,8 +332,14 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 				params.put("idTipoArchivo", 2L);
 				tmp= (Entity)DaoFactory.getInstance().toEntity(proceso, "exists", params);
 				if(tmp!= null) {
-					this.pdf= new Importado(tmp.toString("nombre"), EFormatos.PDF.name(), EFormatos.XML, 0L, tmp.toLong("tamanio"), "", tmp.toString("ruta"), tmp.toString("observaciones"));
+					this.pdf= new Importado(tmp.toString("nombre"), EFormatos.PDF.name(), EFormatos.PDF, 0L, tmp.toLong("tamanio"), "", tmp.toString("ruta"), tmp.toString("observaciones"));
   				this.attrs.put("pdf", this.pdf.getName()); 
+				} // if	
+				params.put("idTipoArchivo", 17L);
+				tmp= (Entity)DaoFactory.getInstance().toEntity(proceso, "exists", params);
+				if(tmp!= null) {
+					this.jpg= new Importado(tmp.toString("nombre"), EFormatos.JPG.name(), EFormatos.JPG, 0L, tmp.toLong("tamanio"), "", tmp.toString("ruta"), tmp.toString("observaciones"));
+  				this.attrs.put("jpg", this.pdf.getName()); 
 				} // if	
 			} // try
 			catch (Exception e) {
@@ -351,10 +371,17 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			File reference= new File(file.toString("alias"));
 			if(reference.exists()) {
 				InputStream stream = new FileInputStream(reference);
-				if(file.toLong("idTipoArchivo").equals(1L))
-					regresar= new DefaultStreamedContent(stream, EFormatos.XML.getContent(), file.toString("nombre"));
-				else
-					regresar= new DefaultStreamedContent(stream, EFormatos.PDF.getContent(), file.toString("nombre"));
+        switch (file.toLong("idTipoArchivo").intValue()) {
+          case 1:
+            regresar= new DefaultStreamedContent(stream, EFormatos.XML.getContent(), file.toString("nombre"));
+            break;
+          case 2:
+            regresar= new DefaultStreamedContent(stream, EFormatos.PDF.getContent(), file.toString("nombre"));
+            break;
+          default:
+            regresar= new DefaultStreamedContent(stream, EFormatos.JPG.getContent(), file.toString("nombre"));
+            break;
+        } // switch
 			} // if	
 			else {
 				LOG.warn("No existe el archivo: "+ file.toString("alias"));

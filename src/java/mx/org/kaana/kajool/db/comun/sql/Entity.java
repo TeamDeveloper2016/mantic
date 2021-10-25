@@ -46,7 +46,7 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
       regresar = get(name);
     else
       throw new RuntimeException("El nombre de campo [".concat(name).concat("] no existe."));
-    return regresar.getData();
+    return name.startsWith("idKey")? regresar.toLong(): regresar.getData();
   }
 
   public Value getValue(String name) {
@@ -71,7 +71,7 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
     if (regresar == null)
       for (String key: keySet()) {
         if (key.indexOf("idKey") >= 0) {
-          if ( this.get(key).getData() instanceof String)
+          if (this.get(key).getData() instanceof String)
             regresar = Numero.getLong(this.get(key).toString());
           else
             regresar = this.get(key).toLong();

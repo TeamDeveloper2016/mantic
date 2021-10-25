@@ -63,6 +63,7 @@ div.ui-panelgrid-content {
 .janal-align-right{position:relative; float:right; margin-right:0px;}
 .janal-align-left{position:relative; float:left; margin-right:0px;}
 .janal-font-bold{font-weight: bold !important;}
+.janal-with-out-lines {border-width: 0px;}
 .janal-only-out-lines {
   border-style: solid;
   border-width: 1px;

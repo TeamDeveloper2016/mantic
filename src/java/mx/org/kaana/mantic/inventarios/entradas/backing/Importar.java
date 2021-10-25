@@ -44,7 +44,7 @@ public class Importar extends IBaseImportar implements Serializable {
 	private static final Log LOG              = LogFactory.getLog(Importar.class);
   private static final long serialVersionUID= 327353488565639367L;
 	
-	private TcManticNotasEntradasDto orden;
+	protected TcManticNotasEntradasDto orden;
 	private TcManticProveedoresDto proveedor;
 	private Long idNotaEntrada;
 
@@ -66,6 +66,7 @@ public class Importar extends IBaseImportar implements Serializable {
     try {
 			if(JsfBase.getFlashAttribute("idNotaEntrada")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      // 3969L
       this.idNotaEntrada= JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: (Long)JsfBase.getFlashAttribute("idNotaEntrada");
 			this.orden= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, idNotaEntrada);
 			if(this.orden!= null) {
@@ -109,11 +110,25 @@ public class Importar extends IBaseImportar implements Serializable {
 	} // doLoad
 
 	public void doTabChange(TabChangeEvent event) {
-		if(event.getTab().getTitle().equals("Archivos")) 
-			this.doLoadImportados("VistaNotasEntradasDto", "importados", this.orden.toMap());
-		//else
-		//	if(event.getTab().getTitle().equals("Importar")) 
-		//		this.doLoadFiles("TcManticNotasArchivosDto", this.orden.getIdNotaEntrada(), "idNotaEntrada");
+    Map<String, Object> params = null;
+    try {      
+      params = new HashMap<>();      
+      if(event.getTab().getTitle().equals("Archivos")) {
+        params.put("idNotaEntrada", this.orden.getIdNotaEntrada());      
+        params.put("idTipoDocumento", 13L);      
+        this.doLoadImportados("VistaNotasEntradasDto", "importados", params);
+      } // if  
+      //else
+      //	if(event.getTab().getTitle().equals("Importar")) 
+      //		this.doLoadFiles("TcManticNotasArchivosDto", this.orden.getIdNotaEntrada(), "idNotaEntrada");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
 	} // doTabChange		
 
 	public void doFileUpload(FileUploadEvent event) {
@@ -157,4 +172,5 @@ public class Importar extends IBaseImportar implements Serializable {
 		} // catch
     return regresar;
 	} // doAceptar		
+  
 }

@@ -408,11 +408,11 @@ public class Abono extends IBasePagos implements Serializable {
 		try {
 			deudaReabrir= new TcManticEmpresasDeudasDto();
 			deudaReabrir.setIdEmpresaDeuda((Long)this.attrs.get("idEmpresaDeuda"));
-			deudaReabrir.setObservaciones(toObservacionesReabrir());
+			deudaReabrir.setObservaciones(this.toObservacionesReabrir());
 			transaccion= new Transaccion(deudaReabrir, null, -1L, null, null);
 			if(transaccion.ejecutar(EAccion.ACTIVAR)) {
 				JsfBase.addMessage("Se abrió la cuenta de forma correcta", ETipoMensaje.INFORMACION);
-				loadProveedorDeuda();
+				this.loadProveedorDeuda();
 			} // if
 			else
 				JsfBase.addMessage("Ocurrió un error al abrir la cuenta", ETipoMensaje.ERROR);

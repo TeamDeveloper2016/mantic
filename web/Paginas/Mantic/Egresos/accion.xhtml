@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="#{manticEgresosAccion.attrs.nombreAccion} al catálogo de egresos" />
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {				 				
+				'contenedorGrupos\\:idEmpresa'  : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:fecha'      : {validaciones: 'requerido|fecha', mascara: 'fecha'},
+				'contenedorGrupos\\:descripcion': {validaciones: 'requerido|libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:importe'    : {validaciones: 'requerido|flotante', mascara: 'libre'}
+			};						
+			
+			$(document).ready(function(){janal.readingMode('#{manticEgresosAccion.attrs.nombreAccion}');});
+		</script>   
+	</ui:define>
+	<ui:define name="contenido">
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+            <p:tab title="General">							
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">		
+                <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticEgresosAccion.attrs.isMatriz}"/>
+                <p:selectOneMenu id="idEmpresa" widgetVar="empresa" value="#{manticEgresosAccion.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticEgresosAccion.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{manticEgresosAccion.eliminar}">
+                  <f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                  <f:selectItems value="#{manticEgresosAccion.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                  <p:column headerText="Clave">
+                    <h:outputText value="#{item.clave}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+								<p:outputLabel for="fecha" value="Fecha:"/>
+                <p:calendar id="fecha" inputStyleClass="janal-wid-98" styleClass="janal-wid-100" value="#{manticEgresosAccion.egreso.fecha}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="es" converter="janal.convertidor.Calendario" readonly="#{manticEgresosAccion.eliminar}" disabled="#{manticEgresosAccion.eliminar}"/>
+								<p:outputLabel for="descripcion" value="Descripcion:"/>
+                <p:inputText id="descripcion" styleClass="janal-wid-100-txt" value="#{manticEgresosAccion.egreso.descripcion}" readonly="#{manticEgresosAccion.eliminar}" disabled="#{manticEgresosAccion.eliminar}"/>
+								<p:outputLabel for="importe" value="Importe:"/>
+                <p:inputNumber id="importe" styleClass="janal-wid-100-txt" value="#{manticEgresosAccion.egreso.importe}" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0" decimalSeparator="." thousandSeparator="," readonly="true" disabled="#{manticEgresosAccion.eliminar}"/>
+              </p:panelGrid>
+						</p:tab>						            						            																																																
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticEgresosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticEgresosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticEgresosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticEgresosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>
