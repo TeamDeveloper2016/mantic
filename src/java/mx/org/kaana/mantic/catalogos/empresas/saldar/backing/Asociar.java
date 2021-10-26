@@ -25,7 +25,6 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.empresas.saldar.beans.Egreso;
-import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.inventarios.entradas.reglas.Importados;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -71,11 +70,11 @@ public class Asociar extends IBaseFilter implements Serializable {
       params = new HashMap<>();      
       columns = new ArrayList<>();
       columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
-      //if(JsfBase.getFlashAttribute("idNotaEntrada")== null)
-      //	UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      if(JsfBase.getFlashAttribute("idNotaEntrada")== null)
+      	UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("codigo", "");
       this.attrs.put("buscaPorFecha", false);
-      this.idNotaEntrada= JsfBase.getFlashAttribute("idNotaEntrada")== null? 3969L: (Long)JsfBase.getFlashAttribute("idNotaEntrada");
+      this.idNotaEntrada= JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: (Long)JsfBase.getFlashAttribute("idNotaEntrada");
       params.put("idNotaEntrada", this.idNotaEntrada);      
       this.orden= (Entity)DaoFactory.getInstance().toEntity("TcManticNotasEntradasDto", "detalle", params);
       if(this.orden!= null) {
@@ -139,6 +138,7 @@ public class Asociar extends IBaseFilter implements Serializable {
     Map<String, Object> params = null;
     try {      
       params = new HashMap<>();      
+      params.put("sortOrder", "order by tc_mantic_egresos_notas.registro desc");      
       params.put("idNotaEntrada", this.idNotaEntrada);      
       this.articulos= (List<Egreso>)DaoFactory.getInstance().toEntitySet(Egreso.class, "VistaEgresosDto", "notas", params);
       if(this.articulos== null)

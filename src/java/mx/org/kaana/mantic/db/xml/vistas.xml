@@ -10922,8 +10922,7 @@
           tc_mantic_notas_entradas on tc_mantic_egresos_notas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
         where 
           tc_mantic_egresos_notas.id_nota_entrada= {idNotaEntrada}
-        order by
-          tc_mantic_egresos_notas.registro desc
+        {sortOrder}
       </select>
       <select id="egresos">
         select      
@@ -10947,8 +10946,7 @@
           tc_mantic_notas_entradas on tc_mantic_egresos_notas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
         where 
           tc_mantic_egresos_notas.id_egreso= {idEgreso}
-        order by
-          tc_mantic_egresos_notas.registro desc
+        {sortOrder}
       </select>
 			<select id="notasEntradas">
         select

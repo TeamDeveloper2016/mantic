@@ -242,7 +242,7 @@
                   <h:graphicImage library="janal" name="icon/semaforos/#{row.idCompleto eq '1' ? 'circulo-rojo.png' : (row.idCompleto eq '2'? 'circulo-amarillo.png' : 'circulo-verde.png')}" title="#{row.idCompleto eq '1' ? 'Incompleto' : (row.idCompleto eq '2'? 'Parcial' : 'Completo')}"/>
                 </p:column>
                 <p:column styleClass="janal-column-center" exportable="false">
-                  <p:commandButton icon="fa fa-search" process="@this" update="@this tablaDocumentos" actionListener="#{manticCatalogosEmpresasSaldarFiltro.doLoadDocumentos(row)}" title="Consultar documentos" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); movePage();"/>
+                  <p:commandButton icon="fa fa-search" process="@this" update="@this tablaDocumentos detallePagosRealizados" actionListener="#{manticCatalogosEmpresasSaldarFiltro.doLoadDocumentos(row)}" title="Consultar documentos" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); movePage();"/>
                 </p:column>
                 <f:facet name="footer">
                   <div style="display:flow-root;">
@@ -311,6 +311,36 @@
               </a>
             </p:column>
           </p:dataTable>
+          <p:spacer height="5px"/>
+          <p:dataTable lazy="true" id="detallePagosRealizados" widgetVar="kajoolTableDetallePagosRealizados" var="row" value="#{manticCatalogosEmpresasSaldarFiltro.lazyPagosRealizados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosEmpresasSaldarFiltro.attrs.seleccionadoDetallePagosRealizados}" selectionMode="single" paginator="#{manticCatalogosEmpresasSaldarFiltro.lazyPagosRealizados.rowCount gt manticCatalogosEmpresasSaldarFiltro.lazyPagosRealizados.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" style="display: #{empty manticCatalogosEmpresasSaldarFiltro.lazyPagosRealizados? 'none': ''}">
+					  <f:facet name="header">
+							<div style="display: flex;">
+							  <p:outputLabel value="Partidas asociadas a la cuenta por pagar" styleClass="janal-color-white"/>
+							</div>
+            </f:facet>  
+						<p:column headerText="No" styleClass="janal-wid-3">
+							<h:outputText value="#{index+ 1}.-"/>
+						</p:column>   
+						<p:column headerText="Consecutivo" styleClass="janal-wid-10 janal-column-center" sortBy="#{row.consecutivo}">
+							<h:outputText value="#{row['consecutivo']}"/>
+						</p:column>   
+						<p:column headerText="Fecha" styleClass="janal-wid-8 janal-column-center" sortBy="#{row.fecha}">
+							<h:outputText value="#{row['fecha']}"/>
+						</p:column>   
+						<p:column headerText="Descripcion" sortBy="#{row.descripcion}">
+							<h:outputText value="#{row['descripcion']}"/>
+						</p:column>   
+						<p:column headerText="Importe" styleClass="janal-wid-12 janal-column-right" sortBy="#{row.importe}">
+							<h:outputText value="#{row['importe']}"/>
+						</p:column>   
+            <f:facet name="footer">
+              <div style="display:flow-root;">
+                <div style="float: right;">
+                  <p:outputLabel value="Total [#{manticCatalogosEmpresasSaldarFiltro.lazyPagosRealizados== null? 0: manticCatalogosEmpresasSaldarFiltro.lazyPagosRealizados.rowCount}] registros" styleClass="importado"/>
+                </div>
+              </div>
+            </f:facet>
+					</p:dataTable>	          
 				</div>
 			</div>	
     </div>		       		

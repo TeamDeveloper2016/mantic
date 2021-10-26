@@ -52,6 +52,7 @@ public class Filtro extends Saldos implements Serializable {
   public void doLoad() {
     super.doLoad();
     this.attrs.put("importados", null);
+    this.lazyPagosRealizados= null;
   } // doLoad
 
   @Override
@@ -158,7 +159,8 @@ public class Filtro extends Saldos implements Serializable {
       params = new HashMap<>();      
       params.put("idNotaEntrada", row.toLong("idNotaEntrada"));      
       params.put("idTipoDocumento", -1L);      
-      this.doLoadImportados("VistaNotasEntradasDto", "importados", params);      
+      this.doLoadImportados("VistaNotasEntradasDto", "importados", params);   
+      this.doLoadDetallePagosRealizados(row);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -168,5 +170,28 @@ public class Filtro extends Saldos implements Serializable {
       Methods.clean(params);
     } // finally
   }
+ 
+  public void doLoadDetallePagosRealizados(Entity row) {
+    List<Columna> columns     = null;
+	  Map<String, Object> params= null;	
+    try {
+      params = new HashMap<>();      
+      params.put("sortOrder", "order by tc_mantic_egresos_notas.registro desc");      
+      params.put("idNotaEntrada", row.toLong("idNotaEntrada"));      
+      columns= new ArrayList<>();
+      columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));    
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));      
+			this.lazyPagosRealizados= new FormatCustomLazy("VistaEgresosDto", "notas", params, columns);
+      UIBackingUtilities.resetDataTable("detallePagosRealizados");		
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally		   
+  }  
   
 }
