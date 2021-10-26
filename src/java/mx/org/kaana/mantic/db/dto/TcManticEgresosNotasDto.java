@@ -42,8 +42,10 @@ public class TcManticEgresosNotasDto implements IBaseDto, Serializable {
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_egreso_nota")
   private Long idEgresoNota;
-  @Column (name="comentario")
-  private String comentario;
+  @Column (name="observaciones")
+  private String observaciones;
+  @Column (name="id_nota_entrada")
+  private Long idNotaEntrada;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -52,15 +54,16 @@ public class TcManticEgresosNotasDto implements IBaseDto, Serializable {
   }
 
   public TcManticEgresosNotasDto(Long key) {
-    this(null, null, new Long(-1L), null);
+    this(null, null, new Long(-1L), null, null);
     setKey(key);
   }
 
-  public TcManticEgresosNotasDto(Long idEgreso, Long idUsuario, Long idEgresoNota, String comentario) {
+  public TcManticEgresosNotasDto(Long idEgreso, Long idUsuario, Long idEgresoNota, String observaciones, Long idNotaEntrada) {
     setIdEgreso(idEgreso);
     setIdUsuario(idUsuario);
     setIdEgresoNota(idEgresoNota);
-    setComentario(comentario);
+    setObservaciones(observaciones);
+    setIdNotaEntrada(idNotaEntrada);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -88,12 +91,20 @@ public class TcManticEgresosNotasDto implements IBaseDto, Serializable {
     return idEgresoNota;
   }
 
-  public void setComentario(String comentario) {
-    this.comentario = comentario;
+  public void setObservaciones(String observaciones) {
+    this.observaciones = observaciones;
   }
 
-  public String getComentario() {
-    return comentario;
+  public String getObservaciones() {
+    return observaciones;
+  }
+
+  public void setIdNotaEntrada(Long idNotaEntrada) {
+    this.idNotaEntrada = idNotaEntrada;
+  }
+
+  public Long getIdNotaEntrada() {
+    return idNotaEntrada;
   }
 
   public void setRegistro(Timestamp registro) {
@@ -125,7 +136,9 @@ public class TcManticEgresosNotasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdEgresoNota());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getComentario());
+		regresar.append(getObservaciones());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdNotaEntrada());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -138,7 +151,8 @@ public class TcManticEgresosNotasDto implements IBaseDto, Serializable {
 		regresar.put("idEgreso", getIdEgreso());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idEgresoNota", getIdEgresoNota());
-		regresar.put("comentario", getComentario());
+		regresar.put("observaciones", getObservaciones());
+		regresar.put("idNotaEntrada", getIdNotaEntrada());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -146,7 +160,7 @@ public class TcManticEgresosNotasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdEgreso(), getIdUsuario(), getIdEgresoNota(), getComentario(), getRegistro()
+    getIdEgreso(), getIdUsuario(), getIdEgresoNota(), getObservaciones(), getIdNotaEntrada(), getRegistro()
     };
     return regresar;
   }

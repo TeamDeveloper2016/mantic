@@ -42,6 +42,7 @@ public class Filtro extends Saldos implements Serializable {
   @PostConstruct
   @Override
   protected void init() {
+    this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada"));     
     super.init();
     String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
     this.path = dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/documentos/");
@@ -50,6 +51,7 @@ public class Filtro extends Saldos implements Serializable {
   @Override
   public void doLoad() {
     super.doLoad();
+    this.attrs.put("importados", null);
   } // doLoad
 
   @Override
@@ -58,6 +60,10 @@ public class Filtro extends Saldos implements Serializable {
 		StringBuilder sb= new StringBuilder();
 	  UISelectEntity proveedor      = (UISelectEntity)this.attrs.get("proveedor");
 		List<UISelectEntity>provedores= (List<UISelectEntity>)this.attrs.get("proveedores");
+		if(!Cadena.isVacio(this.attrs.get("idNotaEntrada")) && !this.attrs.get("idNotaEntrada").toString().equals("-1")) {
+  		sb.append("(tc_mantic_empresas_deudas.id_nota_entrada=").append(this.attrs.get("idNotaEntrada")).append(") and ");
+      this.attrs.put("idNotaEntrada", null);
+    } // if  
 		if(!Cadena.isVacio(this.attrs.get("idEmpresaDeuda")) && !this.attrs.get("idEmpresaDeuda").toString().equals("-1"))
   		sb.append("(tc_mantic_empresas_deudas.id_empresa_deuda=").append(this.attrs.get("idEmpresaDeuda")).append(") and ");
 		if(provedores!= null && proveedor!= null && provedores.indexOf(proveedor)>= 0) 
@@ -74,6 +80,8 @@ public class Filtro extends Saldos implements Serializable {
 		  sb.append("(date_format(tc_mantic_empresas_deudas.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("almacen")))
   		sb.append("tc_mantic_almacenes.nombre like '%").append(this.attrs.get("almacen")).append("%' and ");
+		if(!Cadena.isVacio(this.attrs.get("idCompleto")) && !this.attrs.get("idCompleto").toString().equals("-1"))
+  		sb.append("(tc_mantic_empresas_deudas.id_completo=").append(this.attrs.get("idCompleto")).append(") and ");
     sb.append("tc_mantic_empresas_deudas.id_empresa_estatus= 4 and ");
     regresar.put("idEmpresa", this.attrs.get("idEmpresa").toString().equals("-1") ? this.attrs.get("allEmpresa") : this.attrs.get("idEmpresa"));			
 		if(sb.length()== 0)
@@ -124,6 +132,20 @@ public class Filtro extends Saldos implements Serializable {
 		return regresar;
 	}
  
+	public String doAsociar() {
+		String regresar= null;
+		try {
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Empresas/Saldar/filtro");		
+			JsfBase.setFlashAttribute("idNotaEntrada",((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idNotaEntrada"));
+			regresar= "asociar".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		return regresar;
+	}
+ 
   @Override
   public String toColor(Entity row) {
 		return row.toLong("idNotaTipo").equals(3L)? "janal-tr-purple": "";
@@ -132,6 +154,7 @@ public class Filtro extends Saldos implements Serializable {
   public void doLoadDocumentos(Entity row) {
     Map<String, Object> params = null;
     try {      
+      this.attrs.put("seleccionadoDetalle", row);
       params = new HashMap<>();      
       params.put("idNotaEntrada", row.toLong("idNotaEntrada"));      
       params.put("idTipoDocumento", -1L);      

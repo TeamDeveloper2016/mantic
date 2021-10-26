@@ -128,7 +128,7 @@
 							</a>
 						</p:column>   
 						<p:column headerText="Agregar" styleClass="janal-wid-col-38 janal-column-center">
-							<p:commandButton icon="fa fa-plus" title="Eliminar articulo" actionListener="#{manticCatalogosArticulosImagenes.doAgregar(row)}" process="@this" update="@(.filas)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+							<p:commandButton icon="fa fa-plus" title="Agregar articulo" actionListener="#{manticCatalogosArticulosImagenes.doAgregar(row)}" process="@this" update="@(.filas)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 						</p:column>
 						<f:facet name="footer">
 							Total [#{manticCatalogosArticulosImagenes.lazyModel== null? 0: manticCatalogosArticulosImagenes.lazyModel.rowCount}] registros

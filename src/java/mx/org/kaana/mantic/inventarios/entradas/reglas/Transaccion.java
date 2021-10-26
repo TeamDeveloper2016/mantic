@@ -417,7 +417,6 @@ public class Transaccion extends Inventarios implements Serializable {
 	} 
 	
 	protected void toUpdateDeleteXml(Session sesion) throws Exception {
-		//		this(idNotaArchivo, ruta, tamanio, idUsuario, idTipoArchivo, alias, mes, idNotaEntrada, nombre, observacion, ejercicio);
 		TcManticNotasArchivosDto tmp= null;
 		if(this.orden.getIdNotaEntrada()!= -1L) {
 			if(this.xml!= null) {

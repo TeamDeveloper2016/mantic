@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Seleccione las partidas del estado de cuenta a asociar"/>
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {				 				
+				'codigos'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'articulos': {multiple: '$', validaciones: 'requerido|mayor({"cuanto":0})', mascara: 'libre', mensaje: 'Se tiene que seleccionar por lo menos una partida'}
+			};				
+		</script>   
+	</ui:define>
+	<ui:define name="contenido">
+		<p:focus context="codigos"/>
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:spacer height="10px"/>
+					<div class="ui-grid-row janal-grid-row">
+						<div class="ui-grid-col-1 janal-wid-col-150">
+							<p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-80, janal-wid-3">
+								<p:outputLabel for="codigos" value="Buscar partida:"/>
+								<p:selectBooleanCheckbox value="#{manticCatalogosEmpresasSaldarAsociar.attrs.buscaPorFecha}" title="Buscar por fecha" styleClass="filas">
+									<p:ajax event="change" process="@this" update="@this"/>
+								</p:selectBooleanCheckbox>
+							</p:panelGrid>	
+						</div>
+						<div class="ui-grid-col-11">
+              <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-97, janal-fix-3 janal-column-center">
+                <p:inputText id="codigos" value="#{manticCatalogosEmpresasSaldarAsociar.attrs.codigo}" styleClass="janal-wid-100-txt"/>
+                <p:commandButton icon="fa fa-search" process="@this codigos" update="encontrados" actionListener="#{manticCatalogosEmpresasSaldarAsociar.doLoad}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+              </p:panelGrid>
+						</div>
+					</div>
+					<div class="ui-grid-row janal-grid-row">
+						<div class="ui-grid-col-12">
+							<p:panelGrid layout="grid" columns="4" styleClass="janal-wid-100-txt" columnClasses="janal-wid-15, janal-wid-15, janal-wid-60, janal-wid-10">
+  							<p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+	  							<p:outputLabel value="Nota entrada:"/>
+  								<p:inputText value="#{manticCatalogosEmpresasSaldarAsociar.orden['consecutivo']}" styleClass="janal-wid-100-txt janal-color-blue janal-column-center" readonly="true"/>
+                </p:panelGrid>  
+  							<p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+  								<p:outputLabel value="Factura:"/>
+	  							<p:inputText value="#{manticCatalogosEmpresasSaldarAsociar.orden['factura']}" styleClass="janal-wid-100-txt" readonly="true"/>
+                </p:panelGrid>  
+  							<p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+  								<p:outputLabel value="Proveedor:"/>
+	  							<p:inputText value="#{manticCatalogosEmpresasSaldarAsociar.proveedor['razonSocial']}" styleClass="janal-wid-100-txt" readonly="true"/>
+                </p:panelGrid>  
+  							<p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+  								<p:outputLabel value="Importe:"/>
+	  							<p:inputText value="#{manticCatalogosEmpresasSaldarAsociar.orden['total']}" styleClass="janal-wid-85 janal-column-right" readonly="true"/>
+                </p:panelGrid>  
+							</p:panelGrid>	
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-center">
+					<p:outputLabel value="#{manticCatalogosEmpresasSaldarAsociar.attrs.existe}" styleClass="filas" escape="false"/>
+				</div>	
+			</div>	
+			<p:spacer width="3px"/>
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12"> 
+          <p:dataTable id="encontrados" var="row" lazy="true" value="#{manticCatalogosEmpresasSaldarAsociar.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosEmpresasSaldarAsociar.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosEmpresasSaldarAsociar.lazyModel.rowCount gt manticCatalogosEmpresasSaldarAsociar.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+					  <f:facet name="header">
+							<div style="display: flex;">
+							  <p:outputLabel value="Partidas encontrada(s) ..." styleClass="janal-color-white"/>
+							</div>
+            </f:facet>  
+						<p:column headerText="No" styleClass="janal-wid-3">
+							<h:outputText value="#{index+ 1}.-"/>
+						</p:column>   
+						<p:column headerText="Consecutivo" styleClass="janal-wid-10 janal-column-center" sortBy="#{row.consecutivo}">
+							<h:outputText value="#{row.consecutivo}"/>
+						</p:column>   
+						<p:column headerText="Fecha" styleClass="janal-wid-87janal-column-center" sortBy="#{row.fecha}">
+							<h:outputText value="#{row.dia}"/>
+						</p:column>   
+						<p:column headerText="Descripcion" sortBy="#{row.descripcion}">
+							<h:outputText value="#{row.descripcion}"/>
+						</p:column>   
+						<p:column headerText="Importe" styleClass="janal-wid-12 janal-column-right" sortBy="#{row.importe}">
+							<h:outputText value="#{row.cantidad}"/>
+						</p:column>   
+						<p:column headerText="Agregar" styleClass="janal-wid-col-38 janal-column-center">
+							<p:commandButton icon="fa fa-plus" title="Agregar partida" actionListener="#{manticCatalogosEmpresasSaldarAsociar.doAgregar(row)}" process="@this" update="@(.filas)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+						</p:column>
+						<f:facet name="footer">
+							Total [#{manticCatalogosEmpresasSaldarAsociar.lazyModel== null? 0: manticCatalogosEmpresasSaldarAsociar.lazyModel.rowCount}] registros
+						</f:facet>
+					</p:dataTable>					
+          <br/>
+					<p:dataTable id="tabla" var="row" value="#{manticCatalogosEmpresasSaldarAsociar.articulos}" paginator="false" reflow="true" rowKey="#{row.idArticulo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{manticCatalogosEmpresasSaldarAsociar.toColor(row)}">
+					  <f:facet name="header">
+							<div style="display: flex;">
+							  <p:outputLabel value="Partidas seleccionadas" styleClass="janal-color-white"/>
+							</div>
+            </f:facet>  
+						<p:column headerText="No" styleClass="janal-wid-3">
+							<h:outputText value="#{index+ 1}.-"/>
+						</p:column>   
+						<p:column headerText="Consecutivo" styleClass="janal-wid-10 janal-column-center" sortBy="#{row.consecutivo}">
+							<h:outputText value="#{row.consecutivo}"/>
+						</p:column>   
+						<p:column headerText="Fecha" styleClass="janal-wid-8 janal-column-center" sortBy="#{row.fecha}">
+							<h:outputText value="#{row.dia}"/>
+						</p:column>   
+						<p:column headerText="Descripcion" sortBy="#{row.descripcion}">
+							<h:outputText value="#{row.descripcion}"/>
+						</p:column>   
+						<p:column headerText="Importe" styleClass="janal-wid-12 janal-column-right" sortBy="#{row.importe}">
+							<h:outputText value="#{row.cantidad}"/>
+						</p:column>   
+						<p:column headerText="Quitar" styleClass="janal-wid-col-38 janal-column-center">
+							<p:commandButton icon="fa fa-minus" title="Eliminar articulo" actionListener="#{manticCatalogosEmpresasSaldarAsociar.doEliminar(row)}" process="@this" update="@(.filas)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+						</p:column>
+						<f:facet name="footer">
+							<p:outputLabel for="articulos" value="Total [#{manticCatalogosEmpresasSaldarAsociar.articulos.size()}] registros"/>							
+							<p:inputText id="articulos" value="#{manticCatalogosEmpresasSaldarAsociar.attrs.total}" style="display: none"/>
+						</f:facet>
+					</p:dataTable>					
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" action="#{manticCatalogosEmpresasSaldarAsociar.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()" process="@this tabla" update="tabla"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosEmpresasSaldarAsociar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" action="#{manticCatalogosEmpresasSaldarAsociar.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()" process="@this tabla" update="tabla"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosEmpresasSaldarAsociar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
+		</div>		
+	</ui:define>
+  <ui:param name="updateComponent" value="tabla"/>	
+</ui:composition>

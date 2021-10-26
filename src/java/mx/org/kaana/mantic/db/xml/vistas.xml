@@ -10901,6 +10901,55 @@
 					{condicion}
 				{sortOrder}
 			</select>		
+      <select id="notas">
+        select      
+          tc_mantic_egresos_notas.id_egreso_nota as id_key,
+          tc_mantic_egresos_notas.id_egreso as id_pivote,
+					tc_mantic_egresos.consecutivo,
+          tc_mantic_egresos.fecha,
+          tc_mantic_egresos.descripcion,
+          tc_mantic_egresos.importe,
+          tc_mantic_notas_entradas.consecutivo as nota_entrada,
+          tc_mantic_notas_entradas.factura,
+          tc_mantic_notas_entradas.fecha_factura,
+          tc_mantic_notas_entradas.total,
+          tc_mantic_egresos_notas.*
+        from      
+          tc_mantic_egresos_notas
+        inner join
+          tc_mantic_egresos on tc_mantic_egresos_notas.id_egreso= tc_mantic_egresos.id_egreso
+        inner join
+          tc_mantic_notas_entradas on tc_mantic_egresos_notas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+        where 
+          tc_mantic_egresos_notas.id_nota_entrada= {idNotaEntrada}
+        order by
+          tc_mantic_egresos_notas.registro desc
+      </select>
+      <select id="egresos">
+        select      
+          tc_mantic_egresos_notas.id_egreso_nota as id_key,
+          tc_mantic_egresos_notas.id_egreso as id_pivote,
+					tc_mantic_egresos.consecutivo,
+          tc_mantic_egresos.fecha as dia,
+          tc_mantic_egresos.fecha,
+          tc_mantic_egresos.descripcion,
+          tc_mantic_egresos.importe as cantidad,
+          tc_mantic_egresos.importe,
+          tc_mantic_notas_entradas.consecutivo as nota_entrada,
+          tc_mantic_notas_entradas.factura,
+          tc_mantic_notas_entradas.fecha_factura,
+          tc_mantic_notas_entradas.total
+        from      
+          tc_mantic_egresos_notas
+        inner join
+          tc_mantic_egresos on tc_mantic_egresos_notas.id_egreso= tc_mantic_egresos.id_egreso
+        inner join
+          tc_mantic_notas_entradas on tc_mantic_egresos_notas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+        where 
+          tc_mantic_egresos_notas.id_egreso= {idEgreso}
+        order by
+          tc_mantic_egresos_notas.registro desc
+      </select>
 			<select id="notasEntradas">
         select
 					tc_mantic_notas_entradas.id_nota_entrada as id_key,

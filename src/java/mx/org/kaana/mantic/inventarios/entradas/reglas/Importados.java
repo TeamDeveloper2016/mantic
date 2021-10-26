@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -19,6 +20,7 @@ import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
+import mx.org.kaana.mantic.catalogos.empresas.saldar.beans.Egreso;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.libs.factura.beans.ComprobanteFiscal;
@@ -38,6 +40,13 @@ public class Importados extends Transaccion implements Serializable {
   private static final Logger LOG = Logger.getLogger(Importados.class);
 	private static final long serialVersionUID=-6063204157451117549L;
   
+  private List<Egreso> articulos;
+  
+  public Importados(List<Egreso> articulos) {
+    super(new TcManticNotasEntradasDto(), Collections.EMPTY_LIST, true, null, null);
+    this.articulos= articulos;
+  }
+          
 	public Importados(TcManticNotasEntradasDto orden, Importado xml, Importado pdf) {
 		super(orden, Collections.EMPTY_LIST, true, xml, pdf);
 	} // Transaccion
@@ -55,6 +64,9 @@ public class Importados extends Transaccion implements Serializable {
 				case AGREGAR:
      	    this.toUpdateDeleteXml(sesion);	
           this.checkEstatus(sesion);
+					break;
+				case PROCESAR:
+          this.toUpdatePartidas(sesion);
 					break;
 			} // switch
 		} // try
@@ -106,6 +118,26 @@ public class Importados extends Transaccion implements Serializable {
     finally {
       Methods.clean(params);
     } // finally
+  }
+  
+  private void toUpdatePartidas(Session sesion) throws Exception {
+    try {      
+      for (Egreso item: this.articulos) {
+        switch(item.getAccion()) {
+          case SELECT:
+            break;
+          case INSERT:
+            DaoFactory.getInstance().insert(sesion, item);
+            break;
+          case DELETE:
+            DaoFactory.getInstance().delete(sesion, item);
+            break;
+        } // switch
+      } // for
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
   }
   
 } 

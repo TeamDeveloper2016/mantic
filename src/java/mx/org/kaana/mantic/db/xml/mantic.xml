@@ -863,7 +863,7 @@
         from      
           tc_mantic_egresos_notas
         where      
-          id_egreso = {idEgreso} and comentario = '{comentario}'
+         id_egreso = {idEgreso} and id_nota_entrada = {idNotaEntrada}
       </select>
     </unit>		
     <unit id="TcManticEgresosEstatusDto">
@@ -941,7 +941,8 @@
 	  <unit id="TcManticEgresosDto">
       <select id="row">
         select      
-          *
+          tc_mantic_egresos.id_egreso as id_key,
+          tc_mantic_egresos.*
         from      
           tc_mantic_egresos
         where 
@@ -965,6 +966,31 @@
 				  and id_empresa= {idEmpresa}
 				  and orden{operador} 900000				
 			</select>		
+			<select id="porFecha">		
+        select      
+          tc_mantic_egresos.id_egreso as id_key,
+          tc_mantic_egresos.fecha as dia,
+          tc_mantic_egresos.importe as cantidad,
+          tc_mantic_egresos.*
+        from      
+          tc_mantic_egresos
+        where 
+          date_format(tc_mantic_egresos.fecha, '%Y%m%d') regexp '.*{codigo}.*'
+        {sortOrder}
+      </select>  
+			<select id="porNombre">		
+        select      
+          tc_mantic_egresos.id_egreso as id_key,
+          tc_mantic_egresos.fecha as dia,
+          tc_mantic_egresos.importe as cantidad,
+          tc_mantic_egresos.*
+        from      
+          tc_mantic_egresos
+        where 
+          upper(tc_mantic_egresos.descripcion) regexp '.*{codigo}.*'
+          or convert(tc_mantic_egresos.importe, char) regexp '.*{codigo}.*'
+        {sortOrder}
+      </select>  
     </unit>
 		<unit id="TcManticConfrontasDto">
       <select id="row">
@@ -2315,7 +2341,10 @@
         from      
           tc_mantic_notas_archivos
         where      
-          id_tipo_archivo = {idTipoArchivo} and id_nota_entrada = {idNotaEntrada} and nombre = '{nombre}'
+          id_tipo_archivo = {idTipoArchivo} 
+          and id_nota_entrada = {idNotaEntrada} 
+          and id_tipo_documento = {idTipoDocumento} 
+          and nombre = '{nombre}'
 				order by
 				  registro desc
       </select>
@@ -2325,7 +2354,9 @@
         from      
           tc_mantic_notas_archivos
         where      
-          id_tipo_archivo = {idTipoArchivo} and id_nota_entrada = {idNotaEntrada}
+          id_tipo_archivo = {idTipoArchivo} 
+          and id_nota_entrada = {idNotaEntrada}
+          and id_tipo_documento= {idTipoDocumento}
 				order by
 				  registro desc
       </select>
@@ -2357,7 +2388,13 @@
 				  ejercicio
 			</select>
 			<update id="rows">
-				update tc_mantic_notas_archivos set id_principal= 2 where id_tipo_archivo = {idTipoArchivo} and id_nota_entrada = {idNotaEntrada}
+				update 
+          tc_mantic_notas_archivos 
+        set id_principal= 2 
+        where 
+          id_tipo_archivo = {idTipoArchivo} 
+          and id_nota_entrada = {idNotaEntrada}
+          and id_tipo_documento= {idTipoDocumento}
 			</update>
 			<delete id="rows">
 				delete from tc_mantic_notas_archivos where id_nota_entrada = {idNotaEntrada}
@@ -3895,7 +3932,8 @@
 		<unit id="TcManticProveedoresDto">
       <select id="row">
         select      
-          *
+          tc_mantic_proveedores.id_proveedor as id_key,
+          tc_mantic_proveedores.*
         from      
           tc_mantic_proveedores
         where 
@@ -5438,7 +5476,8 @@
       </select>
       <select id="detalle">
         select      
-          *
+          tc_mantic_notas_entradas.id_nota_entrada as id_key,
+          tc_mantic_notas_entradas.*
         from      
           tc_mantic_notas_entradas
         where 

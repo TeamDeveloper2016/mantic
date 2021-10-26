@@ -40,7 +40,7 @@ import org.primefaces.model.StreamedContent;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-@Named(value= "manticCatalogosArticulosImagenes")
+@Named(value= "manticCatalogosArticulosImagenes") 
 @ViewScoped
 public class Imagenes extends IBaseFilter implements Serializable {
 
@@ -79,7 +79,7 @@ public class Imagenes extends IBaseFilter implements Serializable {
   	this.attrs.put("codigo", "");
   	this.attrs.put("buscaPorCodigo", false);
     this.attrs.put("idPivote", JsfBase.getFlashAttribute("idPivote")== null? -1L: JsfBase.getFlashAttribute("idPivote"));
-    this.attrs.put("alias", JsfBase.getFlashAttribute("idPivote")== null? 10198L: JsfBase.getFlashAttribute("alias"));
+    this.attrs.put("alias", JsfBase.getFlashAttribute("idPivote")== null? -1L: JsfBase.getFlashAttribute("alias"));
 		this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Mantic/Catalogos/Articulos/filtro": JsfBase.getFlashAttribute("retorno"));
     if(this.attrs.get("idPivote")!= null) 
 			this.toLoadPivote();
