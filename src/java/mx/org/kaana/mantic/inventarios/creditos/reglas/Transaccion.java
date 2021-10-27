@@ -126,7 +126,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					this.importe-= this.orden.getImporte();
 					if(this.orden.getIdTipoCreditoNota().equals(1L)) 
 						this.toCheckOrdenDevolucion(sesion);
-     	    this.toDeleteXmlPdf();	
+          this.toCheckDeleteFile(sesion);
+     	    // this.toDeleteXmlPdf();	
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
@@ -253,7 +254,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
 				  if(!file.exists())
 						LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
 				sesion.flush();
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.toListFile(sesion, this.xml, 1L));
+        this.toCheckDeleteFile(sesion, this.xml.getName());
+				//this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.toListFile(sesion, this.xml, 1L));
 			} // if	
 			if(this.pdf!= null) {
 				tmp= new TcManticCreditosArchivosDto(
@@ -281,7 +283,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					if(!file.exists())
 						LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
 				sesion.flush();
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
+        this.toCheckDeleteFile(sesion, this.pdf.getName());
+				//this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
 			} // if	
   	} // if	
 	}

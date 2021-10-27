@@ -220,7 +220,7 @@ public  class Fecha {
     return  formatear(patron, fecha.getTime());
   } // formatear
 	
-  public static String formatear(int patron) {
+  private static String formatear(int patron) {
     return formatear(patron, formatear("yyyyMMddHHmmssS", Calendar.getInstance().getTime()));
   } // formatear
 
@@ -238,12 +238,30 @@ public  class Fecha {
 
   public static String getHoyExtendido() {
     return formatear(FECHA_HORA);
-  } // getHoy
+  } // getHoyExtendido
 
-  public static String getHoyCoreo() {
+  public static String getHoyCorreo() {
     return formatear(FECHA_EXTENDIDA);
+  } // getHoyCorreo
+
+  private static String temporal(int patron, int dias) {
+    Calendar dia= Calendar.getInstance();
+    dia.set(Calendar.DATE, dias);
+    return formatear(patron, formatear("yyyyMMddHHmmssS", dia.getTime()));
+  } // formatear
+
+  public static String getHoy(int dias) {
+    return temporal(FECHA_CORTA, dias);
   } // getHoy
 
+  public static String getHoyMesCorto(int dias) {
+    return temporal(FECHA_NOMBRE_MES_CORTO, dias);
+  } // getHoyMesCorto
+  
+  public static String getHoyEstandar(int dias) {
+    return temporal(FECHA_ESTANDAR, dias);
+  } // getHoyEstandar
+  
   public static int getDiasEnElMes(int anio, int mes) {
     int dias[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
     if ((anio % 4 == 0 && !(anio % 100 == 0)) || anio % 400 == 0)

@@ -158,7 +158,7 @@
               </p:inputTextarea>  
 							<p:spacer height="5px"/>
               <p:fileUpload id="documento" fileUploadListener="#{manticCatalogosEmpresasSaldarImportar.doFileUpload}" valueChangeListener="#{manticCatalogosEmpresasSaldarImportar.doValueUpload}"
-							  mode="advanced" process="@this idTipoDocumento observaciones" update="@(.importado) @(.involucrados)" label="Selecciona XML/PDF/JPG/PNG" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
+							  mode="advanced" process="@this idTipoDocumento observaciones" update="@(.importado) @(.involucrados)" label="Selecciona XML/PDF/JPG/PNG" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728" 
                 multiple="false" fileLimit="3" allowTypes="#{manticCatalogosEmpresasSaldarImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame" disabled="#{manticCatalogosEmpresasSaldarImportar.attrs.idTipoDocumento eq -1}"
                 invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosEmpresasSaldarImportar.attrs.formatos}" onstart="return janal.execute();" oncomplete="PF('panelEmisor').toggle(); PF('panelReceptor').toggle();"/>
 							<p:commandLink value="XML importado: #{manticCatalogosEmpresasSaldarImportar.xml.ruta}#{manticCatalogosEmpresasSaldarImportar.xml.ruta}" onclick="viewFile();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento XML" style="#{(empty manticCatalogosEmpresasSaldarImportar.xml)? 'display: none': ''}"/>

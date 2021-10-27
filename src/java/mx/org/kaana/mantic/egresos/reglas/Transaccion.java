@@ -206,7 +206,8 @@ public class Transaccion extends IBaseTnx {
 				  if(!reference.exists())
 						LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
 				sesion.flush();
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("egresos").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.toListFile(sesion, this.xml, 1L));
+        this.toCheckDeleteFile(sesion, this.xml.getName());
+				// this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("egresos").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.toListFile(sesion, this.xml, 1L));
 			} // if	
 			if(this.pdf!= null) {
 				tmp= new TcManticEgresosArchivosDto(
@@ -234,7 +235,8 @@ public class Transaccion extends IBaseTnx {
 				  if(!reference.exists())
 						LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
 				sesion.flush();
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("egresos").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
+        this.toCheckDeleteFile(sesion, this.pdf.getName());
+				// this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("egresos").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
 			} // if	
   	} // if	
 	} // toUpdateDeleteXml

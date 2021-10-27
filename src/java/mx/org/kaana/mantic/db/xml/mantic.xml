@@ -592,6 +592,17 @@
         where      
           nombre = '{nombre}'
       </select>
+      <select id="eliminar">
+        select      
+          tc_mantic_archivos.id_archivo as id_key,
+          tc_mantic_archivosc.*
+        from      
+          tc_mantic_archivos
+        where      
+          date_format(registro,'%Y%m%d')<= {registro}
+        order by
+          registro desc  
+      </select>
     </unit>		
 		<unit id="TrManticArticuloPresentacionDto">
 			<delete id="rows">

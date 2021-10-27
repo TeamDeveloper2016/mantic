@@ -44,6 +44,7 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.db.dto.TcManticArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.libs.factura.beans.ComprobanteFiscal;
 import mx.org.kaana.mantic.libs.factura.beans.Concepto;
@@ -134,6 +135,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			result= new File(path.toString());		
 			if (!result.exists())
 				result.mkdirs();
+      String ruta= path.toString();
       path.append(nameFile);
 			result = new File(path.toString());
 			if (result.exists())
@@ -160,6 +162,9 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
   				  this.attrs.put("jpg", this.jpg.getName()); 
             UIBackingUtilities.execute("reload();");
 		  		} // if
+      
+      //**
+      this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), this.file.getName());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -185,6 +190,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			result= new File(path.toString());		
 			if (!result.exists())
 				result.mkdirs();
+      String ruta= path.toString();
       path.append(nameFile);
 			result = new File(path.toString());
 			if (result.exists())
@@ -192,7 +198,10 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			Archivo.toWriteFile(result, event.getFile().getInputstream());
 			fileSize= event.getFile().getSize();						
 			this.file= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase());
-  		this.attrs.put("file", this.file.getName()); 			
+  		this.attrs.put("file", this.file.getName()); 	
+      
+      //**
+      this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), this.file.getName());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -596,5 +605,25 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
       Methods.clean(columns);
     } // finally
   } 
-		
+ 
+  /*
+   TcManticArchivosDto para el campo de idEliminar
+   1 SIGNIFICA QUE EL ARCHIVO SE DEBE DE QUEDAR
+   2 SIGNIFICA QUE EL ARCHIVO SE TIENE QUE ELIMINAR
+   3 SIGNIFICA QUE EL ARCHIVO YA FUE ELIMINADO
+   4 SIGNIFICA QUE EL ARCHIVO SE INTENTO ELIMINAR PERO NO EXISTE
+  */
+  private void toSaveFileRecord(String archivo, String ruta, String alias, String nombre) throws Exception {
+		TcManticArchivosDto registro= new TcManticArchivosDto(
+			archivo, // String archivo, 
+			2L, // Long idEliminado, 
+			ruta, // String ruta, 
+			JsfBase.getIdUsuario(), // Long idUsuario, 
+			alias, // String alias, 
+			-1L, // Long idArchivo, 
+			nombre // String nombre
+		);
+		DaoFactory.getInstance().insert(registro);
+	}
+  
 }
