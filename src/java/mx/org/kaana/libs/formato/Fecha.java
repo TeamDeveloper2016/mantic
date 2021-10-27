@@ -220,7 +220,7 @@ public  class Fecha {
     return  formatear(patron, fecha.getTime());
   } // formatear
 	
-  private static String formatear(int patron) {
+  public static String formatear(int patron) {
     return formatear(patron, formatear("yyyyMMddHHmmssS", Calendar.getInstance().getTime()));
   } // formatear
 
@@ -246,7 +246,7 @@ public  class Fecha {
 
   private static String temporal(int patron, int dias) {
     Calendar dia= Calendar.getInstance();
-    dia.set(Calendar.DATE, dias);
+    dia.add(Calendar.DATE, dias);
     return formatear(patron, formatear("yyyyMMddHHmmssS", dia.getTime()));
   } // formatear
 
@@ -622,5 +622,9 @@ public  class Fecha {
     } // catch
 		return new Timestamp(regresar.getTimeInMillis());
   }
+
+  public static void main(String ... args) {
+    System.out.println(Fecha.temporal(FECHA_HORA, -1));  
+  } 
   
 } // Fecha

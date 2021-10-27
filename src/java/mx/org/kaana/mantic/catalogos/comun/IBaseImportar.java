@@ -133,15 +133,14 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
           throw new KajoolBaseException("El archivo ["+ event.getFile().getFileName()+ "] no tiene el formato adecuado para la carga" );
         this.xls= new Importado(nameFile, event.getFile().getContentType(), EFormatos.XLS, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase());
         this.attrs.put("xls", this.xls.getName());
+        this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), this.xls.getName());          
 			} //
 			else
 			  if(nameFile.endsWith(EFormatos.PDF.name())) {
 			    this.pdf= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
   				this.attrs.put("pdf", this.pdf.getName()); 
+          this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), this.pdf.getName());          
 				} // if
-			
-			//**
-			this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), this.file.getName());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

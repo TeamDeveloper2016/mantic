@@ -150,21 +150,21 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 			  this.xml= new Importado(nameFile, event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), observaciones, event.getFile().getFileName().toUpperCase(), idTipoDocumento);
 				this.toReadFactura(result, sinIva, tipoDeCambio);
 				this.attrs.put("xml", this.xml.getName());
+        this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), this.xml.getName());            
 			} //
 			else
 			  if(nameFile.endsWith(EFormatos.PDF.name())) {
 			    this.pdf= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), observaciones, event.getFile().getFileName().toUpperCase(), idTipoDocumento);
   				this.attrs.put("pdf", this.pdf.getName()); 
+          this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), this.pdf.getName());            
 				} // if
         else
 			    if(nameFile.endsWith(EFormatos.JPG.name()) || nameFile.endsWith(EFormatos.PNG.name())) {
 			      this.jpg= new Importado(nameFile, event.getFile().getContentType(), EFormatos.JPG, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), observaciones, event.getFile().getFileName().toUpperCase(), idTipoDocumento);
   				  this.attrs.put("jpg", this.jpg.getName()); 
             UIBackingUtilities.execute("reload();");
+            this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), this.jpg.getName());            
 		  		} // if
-      
-      //**
-      this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), this.file.getName());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -625,5 +625,11 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 		);
 		DaoFactory.getInstance().insert(registro);
 	}
+
+  public void reset() {
+    this.xml= null;  
+    this.pdf= null;  
+    this.jpg= null;  
+  } 
   
 }

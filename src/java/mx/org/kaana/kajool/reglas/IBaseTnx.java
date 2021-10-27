@@ -111,9 +111,8 @@ public abstract class IBaseTnx {
         documento.setIdEliminado(1L);
         regresar= DaoFactory.getInstance().update(sesion, documento)> 0L;
       } // if
-      Fecha.getHoyEstandar(-1);
-      params.put("registro", nombre);      
-      List<TcManticArchivosDto> items= (List<TcManticArchivosDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticArchivosDto.class, "TcManticArchivosDto", "identically", params);
+      params.put("registro", Fecha.getHoyEstandar(-1));      
+      List<TcManticArchivosDto> items= (List<TcManticArchivosDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticArchivosDto.class, "TcManticArchivosDto", "eliminar", params);
       if(items!= null && !items.isEmpty()) {
         for (TcManticArchivosDto item: items) {
    				LOG.info("Documento: "+ item.getAlias()+ " a ser eliminado del servidor");
@@ -125,7 +124,7 @@ public abstract class IBaseTnx {
             } // try
             catch (Exception e) {
               idEliminado= 4L;
-              LOG.error("No se pudo eliminar el documento: "+ documento.getAlias()+ "-> "+ e);
+              LOG.error("No se pudo eliminar el documento: "+ item.getAlias()+ "-> "+ e);
             } // catch	
           } // if
           else
@@ -145,7 +144,12 @@ public abstract class IBaseTnx {
     } // finally
     return regresar;
   }
+  
   protected boolean toCheckFile(Session sesion, String nombre) throws Exception {
+    return this.toCheckFile(sesion, nombre, null);
+  }
+  
+  protected boolean toCheckFile(Session sesion, String nombre, String alias) throws Exception {
     boolean regresar= false;
     Long idEliminado= 1L;
     Map<String, Object> params = null;
@@ -171,6 +175,18 @@ public abstract class IBaseTnx {
         documento.setIdEliminado(idEliminado);
         regresar= DaoFactory.getInstance().update(sesion, documento)> 0L;
       } // if
+      else {
+        if(alias!= null) {
+          File file= new File(alias);
+          try {
+            if(file.exists())
+              file.delete();			
+          } // try  
+          catch (Exception e) {
+            LOG.error("No se pudo eliminar el documento: "+ alias+ "-> "+ e);
+          } // catch	
+        } // if  
+      } // else
     } // try
     catch (Exception e) {
       throw e;

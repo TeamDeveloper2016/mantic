@@ -282,7 +282,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			UISelectEntity cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");
 			clientes= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
 			UISelectEntity seleccion= clientes.get(clientes.indexOf(cliente));			
-			if(seleccion.toString("razonSocial")==null || seleccion.toString("razonSocial").equals(Constantes.VENTA_AL_PUBLICO_GENERAL))
+			if(!seleccion.containsKey("razonSocial") || seleccion.toString("razonSocial")==null || seleccion.toString("razonSocial").equals(Constantes.VENTA_AL_PUBLICO_GENERAL))
 				JsfBase.addMessage("No se puede generar una factura para VENTA AL PUBLICO EN GENERAL, por favor cambie el cliente.", ETipoMensaje.ALERTA);   
 			else {
 				transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), EEstatusFicticias.TIMBRADA.getIdEstatusFicticia(), (String)this.attrs.get("observaciones"));
@@ -1124,6 +1124,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		} // catch		
 	} // doAgregarCorreo
 	
+  @Override
 	public void doLoadCorreos() {
 		MotorBusquedaCatalogos motor      = null; 
 		List<ClienteTipoContacto>contactos= null;

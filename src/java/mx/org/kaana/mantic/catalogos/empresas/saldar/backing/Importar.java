@@ -102,7 +102,9 @@ public class Importar extends mx.org.kaana.mantic.inventarios.entradas.backing.I
         importados= new Importados(this.orden, this.getXml(), this.getPdf(), this.getJpg());
         if(importados.ejecutar(EAccion.AGREGAR)) {
           UIBackingUtilities.execute("janal.alert('Se actualizó y se importaron los catalogos de forma correcta !');");
-          regresar= this.doCancelar();
+          this.attrs.put("idTipoDocumento", -1L);
+          this.reset();
+          // regresar= this.doCancelar();
         } // if
       } // if
       else 

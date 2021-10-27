@@ -27,7 +27,6 @@ import mx.org.kaana.libs.reportes.FileSearch;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
-import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticCreditosNotasDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasBitacoraDto;
@@ -44,7 +43,6 @@ import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.enums.EEstatusEmpresas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
-import mx.org.kaana.mantic.ventas.caja.beans.VentaFinalizada;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
@@ -790,7 +788,8 @@ public class Transaccion extends IBaseTnx {
 					DaoFactory.getInstance().insert(sesion, tmp);
 				} // else
 				sesion.flush();
-				//toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("pagos").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
+        this.toCheckDeleteFile(sesion, this.pdf.getName());
+				//this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("pagos").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
 			} // if	
   	} // if	
 	} // toUpdateDeleteXml
@@ -820,10 +819,7 @@ public class Transaccion extends IBaseTnx {
 		TcManticEmpresasArchivosDto archivo= null;		
 		try {
 			archivo= (TcManticEmpresasArchivosDto) DaoFactory.getInstance().findById(sesion, TcManticEmpresasArchivosDto.class, this.idArchivo);			
-      this.toCheckFile(sesion, archivo.getNombre());
-			File file= new File(archivo.getAlias());
-			if(file.exists())
-				file.delete();			
+      this.toCheckFile(sesion, archivo.getNombre(), archivo.getAlias());
 			regresar= DaoFactory.getInstance().delete(sesion, archivo)>= 1L;
 		} // try
 		catch (Exception e) {			

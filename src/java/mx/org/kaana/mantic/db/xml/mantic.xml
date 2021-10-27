@@ -595,11 +595,12 @@
       <select id="eliminar">
         select      
           tc_mantic_archivos.id_archivo as id_key,
-          tc_mantic_archivosc.*
+          tc_mantic_archivos.*
         from      
           tc_mantic_archivos
         where      
-          date_format(registro,'%Y%m%d')<= {registro}
+          date_format(registro,'%Y%m%d')&lt;= '{registro}'
+          and id_eliminado= 2
         order by
           registro desc  
       </select>

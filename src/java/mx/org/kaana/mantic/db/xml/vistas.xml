@@ -6273,7 +6273,7 @@
 					tc_mantic_notas_archivos.id_nota_entrada= {idNotaEntrada}
           and (tc_mantic_notas_archivos.id_tipo_documento= {idTipoDocumento} or {idTipoDocumento}= -1)
 				order by
-					tc_mantic_notas_archivos.id_tipo_archivo, tc_mantic_notas_archivos.registro desc				
+					tc_mantic_notas_archivos.id_tipo_documento, tc_mantic_notas_archivos.id_tipo_archivo, tc_mantic_notas_archivos.registro desc				
 			</select>
       <select id="detalle">
         select      
