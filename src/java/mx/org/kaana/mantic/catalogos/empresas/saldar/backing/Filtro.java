@@ -125,6 +125,7 @@ public class Filtro extends Saldos implements Serializable {
 		try {
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Empresas/Saldar/filtro");		
 			JsfBase.setFlashAttribute("idNotaEntrada",((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idNotaEntrada"));
+			JsfBase.setFlashAttribute("idEmpresaDeuda",((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idEmpresaDeuda"));
 			regresar= "importar".concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {

@@ -68,6 +68,7 @@ public class Importar extends IBaseImportar implements Serializable {
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       // 3969L
       this.idNotaEntrada= JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: (Long)JsfBase.getFlashAttribute("idNotaEntrada");
+      this.attrs.put("idEmpresaDeuda", JsfBase.getFlashAttribute("idEmpresaDeuda")== null? -1L: (Long)JsfBase.getFlashAttribute("idEmpresaDeuda"));
 			this.orden= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, idNotaEntrada);
 			if(this.orden!= null) {
 			  this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.orden.getIdProveedor());
@@ -149,6 +150,7 @@ public class Importar extends IBaseImportar implements Serializable {
 	
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idNotaEntrada", this.idNotaEntrada);
+  	JsfBase.setFlashAttribute("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 	

@@ -8077,6 +8077,7 @@
 			<select id="documentos">
         select
           tc_mantic_empresas_deudas.id_empresa_deuda as id_key,
+          tc_mantic_empresas_deudas.id_empresa_deuda,
           tc_mantic_empresas_deudas.id_empresa,
           tc_mantic_notas_entradas.id_nota_entrada,
           tc_mantic_notas_entradas.consecutivo,
