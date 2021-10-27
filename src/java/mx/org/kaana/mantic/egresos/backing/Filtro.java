@@ -31,6 +31,7 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelect;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
@@ -222,7 +223,7 @@ public class Filtro extends Comun implements Serializable {
 		Entity seleccionado     = null;				
 		try {			
 			seleccionado= (Entity) this.attrs.get("seleccionado");						
-			regresar= this.toZipFile(toAllFiles(seleccionado), seleccionado.toString("descripcion"), seleccionado.getKey());
+			regresar= this.toZipFile(this.toAllFiles(seleccionado), seleccionado.toString("descripcion"), seleccionado.getKey());
 		} // try 
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -336,10 +337,10 @@ public class Filtro extends Comun implements Serializable {
 		Entity seleccionado                = null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");			
-			bitacora= new TcManticEgresosBitacoraDto((String)this.attrs.get("justificacion"), Long.valueOf(this.attrs.get("estatus").toString()), seleccionado.getKey(), JsfBase.getIdUsuario(), -1L);
+			bitacora= new TcManticEgresosBitacoraDto((String)this.attrs.get("justificacion"), new Long((String)this.attrs.get("estatus")), seleccionado.getKey(), JsfBase.getIdUsuario(), -1L);
 			transaccion= new Transaccion(bitacora);
 			if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
-				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Cambio estatus", "Se realizó el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
 			else
 				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
 		} // try

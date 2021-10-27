@@ -23,7 +23,7 @@
 			};
 			
 			fieldsDialogEstatus= {
-				justificacionEstatus: {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoEstatus', formatos: 'cambiar-mayusculas'}
+				justificacionEstatus: {validaciones: 'libre', mascara: 'libre', grupo: 'dialogoEstatus', formatos: 'cambiar-mayusculas'}
 			};
 			
 			function validaNota() {
@@ -100,22 +100,17 @@
 								<div class="lg-pantalla">
 									<p:menuButton value="Opciones">									
 										<p:menuitem icon="fa fa-history" value="Importar" title="Carga masiva" action="#{manticEgresosFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
-										<p:separator/>
-										<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-										<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 									</p:menuButton>
 								</div>	
 								<div class="xs-pantalla">								
 									<p:commandButton icon="fa fa-history" title="Carga masiva" action="#{manticEgresosFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
-									<p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-									<p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 								</div>	
 							</f:facet>	
-              <p:column styleClass="janal-wid-2">
+              <p:column styleClass="janal-wid-2 janal-column-center" exportable="false">
                 <f:facet name="header">
                   <i class="fa fa-search janal-color-blue janal-font-bold" title="Clic para consulta el detalle"></i>
                 </f:facet>
-                <p:rowToggler class="janal-column-center"/>
+                <p:rowToggler/>
               </p:column>            
 							<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
 								<f:facet name="header">
@@ -156,7 +151,7 @@
               <p:column styleClass="janal-column-center janal-wid-col-38">
                 <h:graphicImage library="janal" name="icon/semaforos/#{row.idEgresoEstatus eq '1' ? 'circulo-rojo.png' : (row.idEgresoEstatus eq '2'? 'circulo-amarillo.png' : 'circulo-verde.png')}" title="#{row.idEgresoEstatus eq '1' ? 'Incompleto' : (row.idEgresoEstatus eq '2'? 'Parcial': 'Completo')}"/>
               </p:column>
-              <p:column styleClass="MarAuto Responsive janal-wid-4 janal-column-center">
+              <p:column styleClass="MarAuto Responsive janal-wid-4 janal-column-center" exportable="false">
                 <p:commandButton icon="fa fa-server" title="Asociar cuenta por pagar" onstart="return janal.bloquear()" process="@this tabla" action="#{manticEgresosFiltro.doRelacionar()}">
                   <f:setPropertyActionListener value="#{row}" target="#{manticEgresosFiltro.attrs.seleccionado}"/>
                 </p:commandButton>  
@@ -170,16 +165,19 @@
                     </div>  
                     <div class="lg-pantalla">
                       <p:menuButton value="Opciones">
-                        <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
-                        <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+                        <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('tabla\\:#{index}\\:detallePdf', 'tabla\\:#{index}\\:detalle')" oncomplete="janal.desbloquear()"/>
+                        <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('tabla\\:#{index}\\:detalleXls', 'tabla\\:#{index}\\:detalle')" oncomplete="janal.desbloquear()"/>
                       </p:menuButton>
                     </div>  
                     <div class="xs-pantalla">              
-                      <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
-                      <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+                      <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('tabla\\:#{index}\\:detallePdf', 'tabla\\:#{index}\\:detalle')" oncomplete="janal.desbloquear()"/>
+                      <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('tabla\\:#{index}\\:detalleXls', 'tabla\\:#{index}\\:detalle')" oncomplete="janal.desbloquear()"/>
                     </div>  
                   </f:facet>					
-                  <p:column headerText="No" styleClass="MarAuto Responsive janal-wid-2">
+                  <p:column styleClass="MarAuto Responsive janal-wid-2">
+                    <f:facet name="header">
+                      <h:outputText value="No"/>
+                    </f:facet>
                     <h:outputText value="#{index+ 1}.-"/>
                   </p:column>   
                   <p:column styleClass="MarAuto Responsive janal-wid-12 janal-column-center" sortBy="#{row.consecutivo}">
@@ -214,7 +212,10 @@
                       <h:outputText value="Importe"/>
                     </f:facet>
                     <h:outputText value="#{row['total']}"/>
-                  </p:column>                   
+                  </p:column>   
+                  <p:column styleClass="janal-column-center janal-wid-col-38">
+                    <h:graphicImage library="janal" name="icon/semaforos/#{row.idCompleto eq '1' ? 'circulo-rojo.png' : (row.idCompleto eq '2'? 'circulo-amarillo.png' : 'circulo-verde.png')}" title="#{row.idCompleto eq '1' ? 'Incompleto' : (row.idCompleto eq '2'? 'Parcial' : 'Completo')}"/>
+                  </p:column>
                   <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-center">
                     <p:commandButton icon="fa fa-external-link" title="Importar documentos" onstart="return janal.bloquear()" process="@this detalle" action="#{manticEgresosFiltro.doImportar()}">
                       <f:setPropertyActionListener value="#{row}" target="#{manticEgresosFiltro.attrs.seleccionadoDetalle}"/>
@@ -249,9 +250,9 @@
               <p:menuitem id="detalle" action="#{manticEgresosFiltro.doDetalle}" icon="fa fa-search" ajax="false" value="Detalle" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="false"/>					
 							<p:menuitem id="notas" icon="fa fa-copy" process="@this tabla" update="dialogoNotas" value="Notas" onstart="return janal.bloquear()" oncomplete="PF('dlgNotas').show();" rendered="false"/>											
 							<p:separator rendered="false"/>
-							<p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticEgresosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus"/>					            
+              <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticEgresosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" disabled="#{manticEgresosFiltro.attrs.seleccionado.idEgresoEstatus.toLong lt 2}"/>
 							<p:separator/>
-							<p:menuitem icon="fa fa-external-link" value="Importar" title="Importar" onstart="return janal.bloquear()" process="@this tabla" action="#{manticEgresosFiltro.doImporta}"/>
+              <p:menuitem icon="fa fa-external-link" value="Importar" title="Importar" onstart="return janal.bloquear()" process="@this tabla" action="#{manticEgresosFiltro.doImporta}" rendered="false"/>
 							<p:menuitem value="Descargar" icon="fa fa-download" ajax="false" process="@this tabla" onclick="if(janal.partial('general')) PrimeFaces.monitorDownload(start, stop); else return false;" title="Descargar archivos de egreso" oncomplete="janal.desbloquear();">
 								<p:fileDownload value="#{manticEgresosFiltro.file}" />
 							</p:menuitem>

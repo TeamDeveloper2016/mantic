@@ -10909,6 +10909,17 @@
 				  tc_mantic_egresos.id_egreso
 				{sortOrder}
 			</select>		
+      <select id="revisar">
+        select      
+          tc_mantic_egresos_notas.id_egreso_nota as id_key,
+          tc_mantic_empresas_deudas.id_completo
+        from      
+          tc_mantic_egresos_notas
+        inner join
+          tc_mantic_empresas_deudas on tc_mantic_empresas_deudas.id_nota_entrada= tc_mantic_egresos_notas.id_nota_entrada
+        where 
+          tc_mantic_egresos_notas.id_egreso= {idEgreso}       
+      </select>  
       <select id="documentos">
         select      
           tc_mantic_egresos_notas.id_egreso_nota as id_key,
@@ -10950,6 +10961,7 @@
           tc_mantic_notas_entradas.fecha_factura,
           tc_mantic_notas_entradas.total,
           tc_mantic_proveedores.razon_social as proveedor,
+          tc_mantic_empresas_deudas.id_completo,
           tc_mantic_egresos_notas.*
         from      
           tc_mantic_egresos_notas
@@ -10957,10 +10969,14 @@
           tc_mantic_egresos on tc_mantic_egresos_notas.id_egreso= tc_mantic_egresos.id_egreso
         inner join
           tc_mantic_notas_entradas on tc_mantic_egresos_notas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+        inner join
+          tc_mantic_empresas_deudas on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_empresas_deudas.id_nota_entrada
         left join
           tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
         where 
           tc_mantic_egresos_notas.id_egreso= {idEgreso}
+        group by
+          tc_mantic_egresos_notas.id_nota_entrada
         {sortOrder}
       </select>
 			<select id="notasEntradas">

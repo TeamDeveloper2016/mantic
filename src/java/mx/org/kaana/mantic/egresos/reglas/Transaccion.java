@@ -5,7 +5,9 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -73,7 +75,8 @@ public class Transaccion extends IBaseTnx {
 			
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
-		boolean regresar= false;
+		boolean regresar = false;
+    this.messageError= "";
 		try {
 			switch(accion){
 				case JUSTIFICAR:
@@ -93,11 +96,15 @@ public class Transaccion extends IBaseTnx {
 					this.toUpdateDeleteXml(sesion);
 					break;
 				case COMPLEMENTAR:
-					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L){
-						this.egreso= (TcManticEgresosDto) DaoFactory.getInstance().findById(sesion, TcManticEgresosDto.class, this.bitacora.getIdEgreso());
-						this.egreso.setIdEgresoEstatus(this.bitacora.getIdEgresoEstatus());
-						regresar= DaoFactory.getInstance().update(sesion, this.egreso)>= 1L;
-					} // if
+          if(this.checkDocumentos(sesion)) {
+            if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
+              this.egreso= (TcManticEgresosDto) DaoFactory.getInstance().findById(sesion, TcManticEgresosDto.class, this.bitacora.getIdEgreso());
+              this.egreso.setIdEgresoEstatus(this.bitacora.getIdEgresoEstatus());
+              regresar= DaoFactory.getInstance().update(sesion, this.egreso)>= 1L;
+            } // if
+          } // if
+          else 
+            throw new RuntimeException("Las cuentas por pagar no estan completas en sus documentos !");
 					break;
         case MODIFICAR:  
           regresar= DaoFactory.getInstance().update(sesion, this.egreso)>= 1L;
@@ -112,12 +119,12 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // ejecutar		
 	
-	private boolean registrarNota(Session sesion) throws Exception{
+	private boolean registrarNota(Session sesion) throws Exception {
 		boolean regresar            = false;
-		TcManticEgresosNotasDto nota= null;
+		TcManticEgresosNotasDto item= null;
 		try {
-			nota= new TcManticEgresosNotasDto(this.idEgreso, JsfBase.getIdUsuario(), -1L, this.nota);
-			regresar= DaoFactory.getInstance().insert(sesion, nota)>= 1L;
+			item= new TcManticEgresosNotasDto(this.idEgreso, JsfBase.getIdUsuario(), -1L, this.nota, 1L);
+			regresar= DaoFactory.getInstance().insert(sesion, item)>= 1L;
 		} // try
 		catch (Exception e) {			
 			throw e; 
@@ -264,5 +271,30 @@ public class Transaccion extends IBaseTnx {
       } // for
 		} // if
 	} // toDeleteAll
+ 
+  private Boolean checkDocumentos(Session sesion) throws Exception {
+    Boolean regresar          = false;
+    Map<String, Object> params= null;
+    try {      
+      params= new HashMap<>();      
+      params.put("idEgreso", this.bitacora.getIdEgreso());      
+      List<Entity> documentos= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaEgresosDto", "revisar", params);
+      if(documentos!= null && !documentos.isEmpty()) {
+        int count= 0;
+        for (Entity item: documentos) {
+          if(Objects.equals(item.toLong("idCompleto"), 3L))
+            count++;
+        } // for
+        regresar= Objects.equals(documentos.size(), count);
+      } // if
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
   
 }

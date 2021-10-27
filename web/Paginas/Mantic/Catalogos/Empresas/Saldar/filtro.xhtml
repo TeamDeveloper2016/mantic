@@ -34,6 +34,7 @@
 				contrasenia  : {validaciones: 'requerido', mascara: 'libre', grupo: 'credenciales'},		
 				justificacion: {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'credenciales'}
 			};
+      
 			function start() {
         PF('statusDialog').show();
       };
@@ -129,7 +130,7 @@
 					<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosEmpresasSaldarFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="25" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosEmpresasSaldarFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosEmpresasSaldarFiltro.lazyModel.rowCount gt manticCatalogosEmpresasSaldarFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 						<p:ajax event="rowToggle" listener="#{manticCatalogosEmpresasSaldarFiltro.doRowToggle}" update="detalle" />  
 						<p:ajax event="rowSelect" update="detalle" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
-            <p:column style="width:32px">
+            <p:column style="width:32px" exportable="false">
 							<f:facet name="header">
                 <i class="fa fa-search janal-color-blue janal-font-bold" title="Clic para consulta el detalle"></i>
 							</f:facet>
@@ -181,13 +182,13 @@
                   </div>  
                   <div class="lg-pantalla">
                     <p:menuButton value="Opciones">
-                      <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
-                      <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+                      <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('tabla\\:#{index}\\:detallePdf', 'tabla\\:#{index}\\:detalle')" oncomplete="janal.desbloquear()"/>
+                      <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('tabla\\:#{index}\\:detalleXls', 'tabla\\:#{index}\\:detalle')" oncomplete="janal.desbloquear()"/>
                     </p:menuButton>
                   </div>  
                   <div class="xs-pantalla">              
-                    <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
-                    <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+                    <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('tabla\\:#{index}\\:detallePdf', 'tabla\\:#{index}\\:detalle')" oncomplete="janal.desbloquear()"/>
+                    <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('tabla\\:#{index}\\:detalleXls', 'tabla\\:#{index}\\:detalle')" oncomplete="janal.desbloquear()"/>
                   </div>  
                 </f:facet>					
                 <p:columnGroup type="header">

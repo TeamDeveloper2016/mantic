@@ -21,9 +21,11 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
+import mx.org.kaana.mantic.db.dto.TcManticEgresosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticEgresosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
@@ -153,6 +155,8 @@ public class Importados extends Transaccion implements Serializable {
         Long idCompleto= 2L;
         TcManticEgresosDto item= (TcManticEgresosDto)DaoFactory.getInstance().toEntity(sesion, TcManticEgresosDto.class, "TcManticEgresosDto", "detalle", params);
         if(item!= null && item.getIdEgresoEstatus()< idCompleto) {
+          TcManticEgresosBitacoraDto bitacora= new TcManticEgresosBitacoraDto("CAMBIO AUTOMATICO", idCompleto, item.getIdEgreso(), JsfBase.getIdUsuario(), -1L);
+          DaoFactory.getInstance().insert(sesion, bitacora);
           item.setIdEgresoEstatus(idCompleto);
           DaoFactory.getInstance().update(sesion, item);
         } // if
