@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.egresos.backing;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,9 +21,12 @@ import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.egresos.beans.IEgresos;
 import mx.org.kaana.mantic.egresos.beans.Nota;
@@ -67,13 +71,13 @@ public class Asociar extends IBaseFilter implements Serializable {
     Map<String, Object> params= null;
     try {      
       params = new HashMap<>();      
-      columns = new ArrayList<>();
+      columns= new ArrayList<>();
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
-      //if(JsfBase.getFlashAttribute("idNotaEntrada")== null)
-      //	UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      if(JsfBase.getFlashAttribute("idNotaEntrada")== null)
+      	UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("codigo", "");
-      this.idEgreso= JsfBase.getFlashAttribute("idEgreso")== null? 1L: (Long)JsfBase.getFlashAttribute("idEgreso");
+      this.idEgreso= JsfBase.getFlashAttribute("idEgreso")== null? -1L: (Long)JsfBase.getFlashAttribute("idEgreso");
       params.put("idEgreso", this.idEgreso);      
       this.orden= (Entity)DaoFactory.getInstance().toEntity("TcManticEgresosDto", "detalle", params);
       if(this.orden!= null) 
@@ -120,7 +124,23 @@ public class Asociar extends IBaseFilter implements Serializable {
          sb.append("tc_mantic_notas_entradas.consecutivo regexp '.*").append(search).append(".*'");
          break;
         case 1: // proveedor
-         sb.append("tc_mantic_proveedores.razon_social regexp '.*").append(search).append(".*'");
+          if (!Cadena.isVacio(this.attrs.get("proveedor")))
+            sb.append("tc_mantic_proveedores.id_proveedor= ").append(this.attrs.get("proveedor"));
+         break;
+        case 2: // factura
+         sb.append("tc_mantic_notas_entradas.factura regexp '.*").append(search).append(".*'");
+         break;
+        case 3: // Fecha
+          if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
+            sb.append("date_format(tc_mantic_notas_entradas.fecha_factura, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("'");
+          if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
+            sb.append("and date_format(tc_mantic_notas_entradas.fecha_factura, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("'");
+         break;
+        case 4: // Importe
+          if(!Cadena.isVacio(this.attrs.get("importeInicio")))
+            sb.append("tc_mantic_notas_entradas.total>= ").append((Double)this.attrs.get("importeInicio"));
+          if(!Cadena.isVacio(this.attrs.get("importeTermino")))
+            sb.append("and tc_mantic_notas_entradas.total<= ").append((Double)this.attrs.get("importeTermino"));
          break;
       } // switch
       params.put(Constantes.SQL_CONDICION, sb.toString());
@@ -258,5 +278,42 @@ public class Asociar extends IBaseFilter implements Serializable {
     TabView tab= (TabView)event.getTab().getParent();
     this.control= tab.getActiveIndex();
   } 
-  
+
+  	public List<UISelectEntity> doCompleteProveedor(String codigo) {
+ 		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		boolean buscaPorCodigo    = false;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			if(!Cadena.isVacio(codigo)) {
+  			codigo= new String(codigo).replaceAll(Constantes.CLEAN_SQL, "").trim();
+				buscaPorCodigo= codigo.startsWith(".");
+				if(buscaPorCodigo)
+					codigo= codigo.trim().substring(1);
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			} // if	
+			else
+				codigo= "WXYZ";
+  		params.put("codigo", codigo);
+			if(buscaPorCodigo)
+        this.attrs.put("proveedores", UIEntity.build("TcManticProveedoresDto", "porCodigo", params, columns, 40L));
+			else
+        this.attrs.put("proveedores", UIEntity.build("TcManticProveedoresDto", "porNombre", params, columns, 40L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+		return (List<UISelectEntity>)this.attrs.get("proveedores");
+	}		
+    
 }

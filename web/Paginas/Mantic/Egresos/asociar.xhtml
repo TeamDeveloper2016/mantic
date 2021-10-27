@@ -7,16 +7,18 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="Seleccione las cuentas por pagar a asociar"/>
+	<ui:param name="titulo" value="Seleccione las cuentas por pagar a asociar al estado de cuenta"/>
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-				'control\\:consecutivo': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				'control\\:proveedor'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				'control\\:factura'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				'control\\:importe'    : {validaciones: 'libre', mascara: 'libre'},
-				'control\\:fecha'      : {validaciones: 'libre', mascara: 'libre'},
-				'articulos'            : {multiple: '$', validaciones: 'requerido|mayor({"cuanto":0})', mascara: 'libre', mensaje: 'Se tiene que seleccionar por lo menos una cuenta por pagar'}
+				'control\\:consecutivo' : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'consecutivo'},
+				'control\\:proveedor'   : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'proveedor'},
+				'control\\:factura'     : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'factura'},
+				'control\\:importeInicio' : {validaciones: 'requerido', mascara: 'libre', grupo: 'importe'},
+				'control\\:importeTermino': {validaciones: 'libre', mascara: 'libre', grupo: 'importe'},
+				'control\\:fechaInicio' : {validaciones: 'requerido', mascara: 'libre', grupo: 'fecha'},
+				'control\\:fechaTermino': {validaciones: 'libre', mascara: 'libre', grupo: 'fecha'},
+				'articulos'             : {multiple: '$', validaciones: 'requerido|mayor({"cuanto":0})', mascara: 'libre', mensaje: 'Se tiene que seleccionar por lo menos una cuenta por pagar', grupo: 'general'}
 			};				
 		</script>   
 	</ui:define>
@@ -25,43 +27,6 @@
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
-					<div class="ui-grid-row janal-grid-row">
-						<div class="ui-grid-col-12">
-              <p:tabView id="control" styleClass="janal-wid-100-txt">
-                <p:ajax event="tabChange" listener="#{manticEgresosAsociar.doTabChange}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-                <p:tab title="Consecutivo">
-                  <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-97, janal-fix-3 janal-column-center">
-                    <p:inputNumber id="consecutivo" value="#{manticEgresosAsociar.attrs.codigo}" styleClass="control janal-wid-100-txt" decimalPlaces="0"/>
-                    <p:commandButton icon="fa fa-search" process="@this consecutivo" update="encontrados" actionListener="#{manticEgresosAsociar.doLoad}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>                  
-                  </p:panelGrid>   
-                </p:tab>  
-                <p:tab title="Proveedor">
-                  <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-97, janal-fix-3 janal-column-center">
-                    <p:inputText id="proveedor" value="#{manticEgresosAsociar.attrs.codigo}" styleClass="control janal-wid-100-txt"/>
-                    <p:commandButton icon="fa fa-search" process="@this proveedor" update="encontrados" actionListener="#{manticEgresosAsociar.doLoad}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>                  
-                  </p:panelGrid>   
-                </p:tab>  
-                <p:tab title="Factura">
-                  <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-97, janal-fix-3 janal-column-center">
-                    <p:inputText id="factura" value="#{manticEgresosAsociar.attrs.codigo}" styleClass="control janal-wid-100-txt"/>
-                    <p:commandButton icon="fa fa-search" process="@this factura" update="encontrados" actionListener="#{manticEgresosAsociar.doLoad}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>                  
-                  </p:panelGrid>   
-                </p:tab>  
-                <p:tab title="Fecha">
-                  <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-97, janal-fix-3 janal-column-center">
-                    <p:inputText id="fecha" value="#{manticEgresosAsociar.attrs.codigo}" styleClass="control janal-wid-100-txt"/>
-                    <p:commandButton icon="fa fa-search" process="@this fecha" update="encontrados" actionListener="#{manticEgresosAsociar.doLoad}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>                  
-                  </p:panelGrid>   
-                </p:tab>  
-                <p:tab title="Importe">
-                  <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-97, janal-fix-3 janal-column-center">
-                    <p:inputText id="importe" value="#{manticEgresosAsociar.attrs.codigo}" styleClass="control janal-wid-100-txt"/>
-                    <p:commandButton icon="fa fa-search" process="@this importe" update="encontrados" actionListener="#{manticEgresosAsociar.doLoad}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>                  
-                  </p:panelGrid>   
-                </p:tab>  
-              </p:tabView>  
-						</div>
-					</div>
 					<div class="ui-grid-row janal-grid-row">
 						<div class="ui-grid-col-12">
 							<p:panelGrid layout="grid" columns="4" styleClass="janal-wid-100-txt" columnClasses="janal-wid-15, janal-wid-15, janal-wid-60, janal-wid-10">
@@ -82,6 +47,56 @@
 	  							<p:inputText value="#{manticEgresosAsociar.orden['importe']}" styleClass="janal-wid-85 janal-column-right" readonly="true"/>
                 </p:panelGrid>  
 							</p:panelGrid>	
+						</div>
+					</div>
+					<div class="ui-grid-row janal-grid-row">
+						<div class="ui-grid-col-12">
+              <p:tabView id="control" styleClass="janal-wid-100-txt">
+                <p:ajax event="tabChange" listener="#{manticEgresosAsociar.doTabChange}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.hide();"/>
+                <p:tab title="Consecutivo" titleStyleClass="consecutivo">
+                  <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-97, janal-fix-3 janal-column-center">
+                    <p:inputNumber id="consecutivo" value="#{manticEgresosAsociar.attrs.codigo}" styleClass="control janal-wid-100-txt" decimalPlaces="0"/>
+                    <p:commandButton icon="fa fa-search" process="@this consecutivo" update="encontrados" actionListener="#{manticEgresosAsociar.doLoad}" onstart="return janal.partial('consecutivo', true);" oncomplete="janal.desbloquear()"/>                  
+                  </p:panelGrid>   
+                </p:tab>  
+                <p:tab title="Proveedor">
+                  <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-97, janal-fix-3 janal-column-center">
+                  <p:autoComplete id="proveedor" var="custom" placeholder="ej. HERRAJES HF. S.A. DE C.V." itemLabel="#{custom.clave}#{empty custom.clave? '': ' | '}#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticEgresosAsociar.attrs.proveedor}" completeMethod="#{manticEgresosAsociar.doCompleteProveedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+                    <f:facet name="itemtip">
+                      <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+                        <h:outputText value="Clave:" />
+                        <h:outputText value="#{custom.clave}" />
+                        <h:outputText value="Razón social:" />
+                        <h:outputText value="#{custom.razonSocial}" />
+                      </h:panelGrid>
+                    </f:facet>
+                  </p:autoComplete>			
+                    <p:commandButton icon="fa fa-search" process="@this proveedor" update="encontrados" actionListener="#{manticEgresosAsociar.doLoad}" onstart="return janal.partial('proveedor', true);" oncomplete="janal.desbloquear()"/>                  
+                  </p:panelGrid>   
+                </p:tab>  
+                <p:tab title="Factura">
+                  <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-97, janal-fix-3 janal-column-center">
+                    <p:inputText id="factura" value="#{manticEgresosAsociar.attrs.codigo}" styleClass="control janal-wid-100-txt"/>
+                    <p:commandButton icon="fa fa-search" process="@this factura" update="encontrados" actionListener="#{manticEgresosAsociar.doLoad}" onstart="return janal..partial('factura', true);" oncomplete="janal.desbloquear()"/>                  
+                  </p:panelGrid>   
+                </p:tab>  
+                <p:tab title="Fecha">
+                  <p:panelGrid columns="5" styleClass="janal-wid-100-txt" columnClasses="janal-fix-47, janal-fix-3 janal-column-center, janal-fix-47, janal-fix-3 janal-column-center">
+                    <p:calendar id="fechaInicio" inputStyleClass="janal-wid-90" styleClass="janal-wid-100" value="#{manticEgresosAsociar.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="es" converter="janal.convertidor.Calendario"/>
+                    <p:outputLabel for="fechaInicio" value=" al " styleClass="janal-wid-100"/>
+                    <p:calendar id="fechaTermino" inputStyleClass="janal-wid-90" styleClass="janal-wid-100" value="#{manticEgresosAsociar.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="es" converter="janal.convertidor.Calendario"/>
+                    <p:commandButton icon="fa fa-search" process="@this fechaInicio fechaTermino" update="encontrados" actionListener="#{manticEgresosAsociar.doLoad}" onstart="return janal.partial('fecha', true);" oncomplete="janal.desbloquear()"/>                  
+                  </p:panelGrid>   
+                </p:tab>  
+                <p:tab title="Importe">
+                  <p:panelGrid columns="5" styleClass="janal-wid-100-txt" columnClasses="janal-fix-47, janal-fix-3 janal-column-center, janal-fix-47, janal-fix-3 janal-column-center">
+                    <p:inputNumber id="importeInicio" value="#{manticEgresosAsociar.attrs.importeInicio}" styleClass="control janal-wid-100-txt" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
+                    <p:outputLabel for="importeInicio" value=" al " styleClass="janal-wid-100"/>
+                    <p:inputNumber id="importeTermino" value="#{manticEgresosAsociar.attrs.importeTermino}" styleClass="control janal-wid-100-txt" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
+                    <p:commandButton icon="fa fa-search" process="@this importeInicio importeTermino" update="encontrados" actionListener="#{manticEgresosAsociar.doLoad}" onstart="return janal.partial('importe', true);" oncomplete="janal.desbloquear()"/>                  
+                  </p:panelGrid>   
+                </p:tab>  
+              </p:tabView>  
 						</div>
 					</div>
 				</div>
@@ -164,11 +179,11 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" action="#{manticEgresosAsociar.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()" process="@this tabla" update="tabla"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" action="#{manticEgresosAsociar.doAceptar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear()" process="@this tabla" update="tabla"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticEgresosAsociar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" action="#{manticEgresosAsociar.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()" process="@this tabla" update="tabla"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" action="#{manticEgresosAsociar.doAceptar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear()" process="@this tabla" update="tabla"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticEgresosAsociar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 	</ui:define>
