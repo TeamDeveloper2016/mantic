@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.catalogos.empresas.saldar.beans;
+package mx.org.kaana.mantic.egresos.beans;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -8,44 +8,45 @@ import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.mantic.db.dto.TcManticEgresosNotasDto;
-import mx.org.kaana.mantic.egresos.beans.IEgresos;
 
 /**
  *@company KAANA
  *@project KAJOOL (Control system polls)
- *@date 25/10/2021
- *@time 06:02:16 PM 
+ *@date 26/10/2021
+ *@time 05:40:14 PM 
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Egreso extends TcManticEgresosNotasDto implements IEgresos, Serializable {
+public class Nota extends TcManticEgresosNotasDto implements IEgresos, Serializable {
 
-  private static final long serialVersionUID = -5856612920598759747L;
-  
+  private static final long serialVersionUID = -8800989266355341818L;
+
   private Long idPivote;
   private String consecutivo;
-  private String descripcion;
-  private Date fecha;
-  private Double importe;
+  private String factura;
+  private Date fechaFactura;
+  private Double total;
+  private String proveedor;
   private ESql accion;
 
-  public Egreso() {
+  public Nota() {
     this(new Long((int)(Math.random()* -10000)));
   }
 
-  public Egreso(Long key) {
+  public Nota(Long key) {
     super(key);
     this.idPivote= key;
     this.accion  = ESql.INSERT;
   }
 
-  public Egreso(Long idEgreso, Long idNotaEntrada, String consecutivo, String descripcion, Date fecha, Double importe) {
+  public Nota(Long idNotaEntrada, Long idEgreso, String consecutivo, String factura, Date fechaFactura, Double total, String proveedor) {
     super(idEgreso, JsfBase.getIdUsuario(), -1L, null, idNotaEntrada);
-    this.idPivote   = idEgreso;
+    this.idPivote= idNotaEntrada;
     this.consecutivo= consecutivo;
-    this.descripcion= descripcion;
-    this.fecha      = fecha;
-    this.importe    = importe;
+    this.factura= factura;
+    this.fechaFactura= fechaFactura;
+    this.total= total;
+    this.proveedor= proveedor;
     this.accion= ESql.INSERT;
   }
 
@@ -65,38 +66,46 @@ public class Egreso extends TcManticEgresosNotasDto implements IEgresos, Seriali
     this.consecutivo = consecutivo;
   }
 
-  public String getDescripcion() {
-    return descripcion;
+  public String getFactura() {
+    return factura;
   }
 
-  public void setDescripcion(String descripcion) {
-    this.descripcion = descripcion;
+  public void setFactura(String factura) {
+    this.factura = factura;
   }
 
-  public Date getFecha() {
-    return fecha;
+  public Date getFechaFactura() {
+    return fechaFactura;
   }
 
-  public void setFecha(Date fecha) {
-    this.fecha = fecha;
+  public void setFechaFactura(Date fechaFactura) {
+    this.fechaFactura = fechaFactura;
   }
 
-  public Double getImporte() {
-    return importe;
+  public Double getTotal() {
+    return total;
   }
 
-  public void setImporte(Double importe) {
-    this.importe = importe;
+  public void setTotal(Double total) {
+    this.total = total;
+  }
+
+  public String getProveedor() {
+    return proveedor;
+  }
+
+  public void setProveedor(String proveedor) {
+    this.proveedor = proveedor;
   }
 
   public String getDia() {
-    return Global.format(EFormatoDinamicos.FECHA_CORTA, this.fecha);
+    return Global.format(EFormatoDinamicos.FECHA_CORTA, this.fechaFactura);
   }
 
   public String getCantidad() {
-    return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, this.importe);
+    return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, this.total);
   }
-
+  
   public ESql getAccion() {
     return accion;
   }
@@ -107,8 +116,8 @@ public class Egreso extends TcManticEgresosNotasDto implements IEgresos, Seriali
 
   @Override
   public int hashCode() {
-    int hash = 5;
-    hash = 79 * hash + Objects.hashCode(this.idPivote);
+    int hash = 3;
+    hash = 41 * hash + Objects.hashCode(this.idPivote);
     return hash;
   }
 
@@ -123,7 +132,7 @@ public class Egreso extends TcManticEgresosNotasDto implements IEgresos, Seriali
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final Egreso other = (Egreso) obj;
+    final Nota other = (Nota) obj;
     if (!Objects.equals(this.idPivote, other.idPivote)) {
       return false;
     }
@@ -134,6 +143,5 @@ public class Egreso extends TcManticEgresosNotasDto implements IEgresos, Seriali
   public Class toHbmClass() {
     return TcManticEgresosNotasDto.class;
   }
-  
   
 }

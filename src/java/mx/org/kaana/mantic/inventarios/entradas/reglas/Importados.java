@@ -7,11 +7,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.enums.EAccion;
 import static mx.org.kaana.kajool.enums.EAccion.AGREGAR;
+import static mx.org.kaana.kajool.enums.ESql.DELETE;
+import static mx.org.kaana.kajool.enums.ESql.INSERT;
+import static mx.org.kaana.kajool.enums.ESql.SELECT;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
@@ -20,9 +24,10 @@ import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
-import mx.org.kaana.mantic.catalogos.empresas.saldar.beans.Egreso;
+import mx.org.kaana.mantic.db.dto.TcManticEgresosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
+import mx.org.kaana.mantic.egresos.beans.IEgresos;
 import mx.org.kaana.mantic.libs.factura.beans.ComprobanteFiscal;
 import mx.org.kaana.mantic.libs.factura.reglas.Reader;
 import org.apache.log4j.Logger;
@@ -40,9 +45,9 @@ public class Importados extends Transaccion implements Serializable {
   private static final Logger LOG = Logger.getLogger(Importados.class);
 	private static final long serialVersionUID=-6063204157451117549L;
   
-  private List<Egreso> articulos;
+  private List<IEgresos> articulos;
   
-  public Importados(List<Egreso> articulos) {
+  public Importados(List<IEgresos> articulos) {
     super(new TcManticNotasEntradasDto(), Collections.EMPTY_LIST, true, null, null);
     this.articulos= articulos;
   }
@@ -57,16 +62,16 @@ public class Importados extends Transaccion implements Serializable {
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar= true;
+		boolean regresar= false;
 		try {
 			this.setMessageError("Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" al importar el archivo."));
 			switch(accion) {
 				case AGREGAR:
      	    this.toUpdateDeleteXml(sesion);	
-          this.checkEstatus(sesion);
+          regresar= this.checkEstatus(sesion);
 					break;
 				case PROCESAR:
-          this.toUpdatePartidas(sesion);
+          regresar= this.toUpdatePartidas(sesion);
 					break;
 			} // switch
 		} // try
@@ -79,7 +84,8 @@ public class Importados extends Transaccion implements Serializable {
 		return regresar;
 	}	// ejecutar
 
-  private void checkEstatus(Session sesion) throws Exception {
+  private Boolean checkEstatus(Session sesion) throws Exception {
+    Boolean regresar= false;
     Map<String, Object> params = null;
     try {      
       params= new HashMap<>();  
@@ -111,6 +117,7 @@ public class Importados extends Transaccion implements Serializable {
           DaoFactory.getInstance().update(sesion, item);
         } // if
       } // if
+      regresar= true;
     } // try
     catch (Exception e) {
       throw e;
@@ -118,26 +125,47 @@ public class Importados extends Transaccion implements Serializable {
     finally {
       Methods.clean(params);
     } // finally
+    return regresar;
   }
   
-  private void toUpdatePartidas(Session sesion) throws Exception {
+  private Boolean toUpdatePartidas(Session sesion) throws Exception {
+    Boolean regresar= false;
+    Map<String, Object> params = null;
     try {      
-      for (Egreso item: this.articulos) {
+      params= new HashMap<>();  
+      int count= 0;
+      for (IEgresos item: this.articulos) {
         switch(item.getAccion()) {
           case SELECT:
             break;
           case INSERT:
-            DaoFactory.getInstance().insert(sesion, item);
+            DaoFactory.getInstance().insert(sesion, (IBaseDto)item);
+            count++;
             break;
           case DELETE:
-            DaoFactory.getInstance().delete(sesion, item);
+            DaoFactory.getInstance().delete(sesion, (IBaseDto)item);
             break;
         } // switch
+        params.put("idEgreso", item.getIdEgreso());
       } // for
+      Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaEgresosDto", "documentos", params);
+      if(count> 0 || (entity!= null && !entity.isEmpty() && entity.toLong("total")> 0)) {
+        Long idCompleto= 2L;
+        TcManticEgresosDto item= (TcManticEgresosDto)DaoFactory.getInstance().toEntity(sesion, TcManticEgresosDto.class, "TcManticEgresosDto", "detalle", params);
+        if(item!= null && item.getIdEgresoEstatus()< idCompleto) {
+          item.setIdEgresoEstatus(idCompleto);
+          DaoFactory.getInstance().update(sesion, item);
+        } // if
+      } // if
+    regresar= true;
     } // try
     catch (Exception e) {
       throw e;
     } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
   }
-  
+
 } 

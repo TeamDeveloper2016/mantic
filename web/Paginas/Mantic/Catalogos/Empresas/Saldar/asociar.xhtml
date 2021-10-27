@@ -85,7 +85,7 @@
 						<p:column headerText="Fecha" styleClass="janal-wid-87janal-column-center" sortBy="#{row.fecha}">
 							<h:outputText value="#{row.dia}"/>
 						</p:column>   
-						<p:column headerText="Descripcion" sortBy="#{row.descripcion}" sortBy="#{row.descripcion}">
+						<p:column headerText="Descripcion" sortBy="#{row.descripcion}">
 							<h:outputText value="#{row.descripcion}"/>
 						</p:column>   
 						<p:column headerText="Importe" styleClass="janal-wid-12 janal-column-right" sortBy="#{row.importe}">
@@ -99,7 +99,7 @@
 						</f:facet>
 					</p:dataTable>					
           <br/>
-					<p:dataTable id="tabla" var="row" value="#{manticCatalogosEmpresasSaldarAsociar.articulos}" paginator="false" reflow="true" rowKey="#{row.idEgreso}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{manticCatalogosEmpresasSaldarAsociar.toColor(row)}">
+					<p:dataTable id="tabla" var="row" value="#{manticCatalogosEmpresasSaldarAsociar.articulos}" paginator="false" reflow="true" rowKey="#{row.idArticulo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{manticCatalogosEmpresasSaldarAsociar.toColor(row)}">
 					  <f:facet name="header">
 							<div style="display: flex;">
 							  <p:outputLabel value="Partidas seleccionadas" styleClass="janal-color-white"/>

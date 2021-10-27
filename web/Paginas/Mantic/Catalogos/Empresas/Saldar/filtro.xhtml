@@ -176,8 +176,8 @@
               <p:dataTable lazy="true" id="detalle" widgetVar="kajoolTableDetalle" var="row" value="#{manticCatalogosEmpresasSaldarFiltro.lazyModelDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosEmpresasSaldarFiltro.attrs.seleccionadoDetalle}" selectionMode="single" paginator="#{manticCatalogosEmpresasSaldarFiltro.lazyModelDetalle.rowCount gt manticCatalogosEmpresasSaldarFiltro.lazyModelDetalle.pageSize}" rowIndexVar="index" reflow="true" rowStyleClass="#{manticCatalogosEmpresasSaldarFiltro.toColor(row)}" paginatorPosition="bottom" style="display: #{empty manticCatalogosEmpresasSaldarFiltro.lazyModelDetalle? 'none': ''}">
                 <p:ajax event="rowSelect" oncomplete="PF('kajoolTableDetalle').writeSelections()" process="detalle" skipChildren="false"/>
                 <f:facet name="header">
-                  <div style="float: left">
-                    <p:outputLabel value="Proveedor: [#{manticCatalogosEmpresasSaldarFiltro.attrs.seleccionado.claveProveedor}] #{manticCatalogosEmpresasSaldarFiltro.attrs.seleccionado.razonSocial}" styleClass="janal-text-white janal-font-bold"/>
+                  <div style="float: left;">
+                    <p:outputLabel value="Proveedor: [#{manticCatalogosEmpresasSaldarFiltro.attrs.seleccionado.claveProveedor}] #{manticCatalogosEmpresasSaldarFiltro.attrs.seleccionado.razonSocial}" styleClass="janal-text-white"/>
                   </div>  
                   <div class="lg-pantalla">
                     <p:menuButton value="Opciones">
@@ -195,7 +195,7 @@
                     <p:column rowspan="2" headerText="Nota entrada" styleClass="MarAuto Responsive janal-wid-12" />
                     <p:column rowspan="2" headerText="Factura" styleClass="janal-column-right MarAuto Responsive janal-wid-8" />
                     <p:column rowspan="2" headerText="Pagado" styleClass="janal-column-right MarAuto Responsive janal-wid-12" />
-                    <p:column colspan="4" headerText="Documentos" styleClass="janal-column-right MarAuto Responsive"/>
+                    <p:column colspan="5" headerText="Documentos" styleClass="janal-column-right MarAuto Responsive"/>
                     <p:column rowspan="2" styleClass="janal-column-center MarAuto Responsive janal-wid-col-38"/>
                     <p:column rowspan="2" styleClass="MarAuto Responsive janal-wid-4"/>
                   </p:row>
@@ -204,6 +204,7 @@
                     <p:column headerText="Notas créditos"/>
                     <p:column headerText="Comprobantes de pago"/>
                     <p:column headerText="Vouchers"/>
+                    <p:column headerText="Estado de cuenta"/>
                   </p:row>                  
                 </p:columnGroup>  
                 <p:column sortBy="#{row.consecutivo}" styleClass="janal-column-center">
@@ -226,17 +227,20 @@
                     </div>
                   </div>	
                 </p:column>											
-                <p:column sortBy="#{row.facturas}" styleClass="janal-column-right MarAuto Responsive janal-wid-8">
+                <p:column sortBy="#{row.facturas}" styleClass="janal-column-right MarAuto Responsive">
                   <h:outputText value="#{row['facturas']}"/>
                 </p:column>
-                <p:column sortBy="#{row.creditos}" styleClass="janal-column-right MarAuto Responsive janal-wid-8">
+                <p:column sortBy="#{row.creditos}" styleClass="janal-column-right MarAuto Responsive">
                   <h:outputText value="#{row['creditos']}"/>
                 </p:column>
-                <p:column sortBy="#{row.comprobates}" styleClass="janal-column-right MarAuto Responsive janal-wid-8">
+                <p:column sortBy="#{row.comprobates}" styleClass="janal-column-right MarAuto Responsive">
                   <h:outputText value="#{row['comprobantes']}"/>
                 </p:column>
-                <p:column sortBy="#{row.vouchers}" styleClass="janal-column-right MarAuto Responsive janal-wid-8">
+                <p:column sortBy="#{row.vouchers}" styleClass="janal-column-right MarAuto Responsive">
                   <h:outputText value="#{row['vouchers']}"/>
+                </p:column>
+                <p:column sortBy="#{row.egresos}" styleClass="janal-column-right MarAuto Responsive">
+                  <h:outputText value="#{row['egresos']}"/>
                 </p:column>
                 <p:column styleClass="janal-column-center">
                   <h:graphicImage library="janal" name="icon/semaforos/#{row.idCompleto eq '1' ? 'circulo-rojo.png' : (row.idCompleto eq '2'? 'circulo-amarillo.png' : 'circulo-verde.png')}" title="#{row.idCompleto eq '1' ? 'Incompleto' : (row.idCompleto eq '2'? 'Parcial' : 'Completo')}"/>
@@ -275,7 +279,7 @@
           <p:dataTable id="tablaDocumentos" widgetVar="kajoolTableDocumentos" var="row" value="#{manticCatalogosEmpresasSaldarFiltro.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index" paginatorPosition="bottom" style="display: #{manticCatalogosEmpresasSaldarFiltro.attrs.importados!= null? '': 'none'}" >
             <f:facet name="header">
               <div style="display: flex;">
-                <p:outputLabel value="Nota entrada: [ #{manticCatalogosEmpresasSaldarFiltro.attrs.seleccionadoDetalle.consecutivo} ], Proveedor: [ #{manticCatalogosEmpresasSaldarFiltro.attrs.seleccionado.claveProveedor} ] #{manticCatalogosEmpresasSaldarFiltro.attrs.seleccionado.razonSocial}" styleClass="janal-text-white janal-font-bold"/>
+                <p:outputLabel value="Nota entrada: [ #{manticCatalogosEmpresasSaldarFiltro.attrs.seleccionadoDetalle.consecutivo} ], Proveedor: [ #{manticCatalogosEmpresasSaldarFiltro.attrs.seleccionado.claveProveedor} ] #{manticCatalogosEmpresasSaldarFiltro.attrs.seleccionado.razonSocial}" styleClass="janal-text-white"/>
               </div>  
             </f:facet>
             <p:column styleClass="janal-wid-col-30" headerText="No.">
@@ -315,7 +319,7 @@
           <p:dataTable lazy="true" id="detallePagosRealizados" widgetVar="kajoolTableDetallePagosRealizados" var="row" value="#{manticCatalogosEmpresasSaldarFiltro.lazyPagosRealizados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosEmpresasSaldarFiltro.attrs.seleccionadoDetallePagosRealizados}" selectionMode="single" paginator="#{manticCatalogosEmpresasSaldarFiltro.lazyPagosRealizados.rowCount gt manticCatalogosEmpresasSaldarFiltro.lazyPagosRealizados.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" style="display: #{empty manticCatalogosEmpresasSaldarFiltro.lazyPagosRealizados? 'none': ''}">
 					  <f:facet name="header">
 							<div style="display: flex;">
-							  <p:outputLabel value="Partidas asociadas a la cuenta por pagar" styleClass="janal-color-white"/>
+							  <p:outputLabel value="Partidas asociadas a la cuenta por pagar del estado de cuenta" styleClass="janal-color-white"/>
 							</div>
             </f:facet>  
 						<p:column headerText="No" styleClass="janal-wid-3">

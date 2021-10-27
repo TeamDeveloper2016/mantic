@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.catalogos.empresas.saldar.backing;
+package mx.org.kaana.mantic.egresos.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,11 +24,13 @@ import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.empresas.saldar.beans.Egreso;
 import mx.org.kaana.mantic.egresos.beans.IEgresos;
+import mx.org.kaana.mantic.egresos.beans.Nota;
 import mx.org.kaana.mantic.inventarios.entradas.reglas.Importados;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.primefaces.component.tabview.TabView;
+import org.primefaces.event.TabChangeEvent;
 
 /**
  *@company KAANA
@@ -38,53 +40,47 @@ import org.apache.commons.logging.LogFactory;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-@Named(value= "manticCatalogosEmpresasSaldarAsociar") 
+@Named(value= "manticEgresosAsociar") 
 @ViewScoped
 public class Asociar extends IBaseFilter implements Serializable {
 
 	private static final Log LOG=LogFactory.getLog(Asociar.class);
 	private static final long serialVersionUID=-6770709196941718368L;
 
-	private Long idNotaEntrada;
+	private Long idEgreso;
+	private int control;
 	private Entity orden;
-	private Entity proveedor;
-	private List<Egreso> articulos;
+	private List<Nota> articulos;
   
 	public Entity getOrden() {
 		return orden;
 	}
 
-  public Entity getProveedor() {
-    return proveedor;
-  }
-
-	public List<Egreso> getArticulos() {
+	public List<Nota> getArticulos() {
 		return articulos;
 	}
 
 	@Override
 	@PostConstruct
 	protected void init() {
-    List<Columna> columns = null;    
-    Map<String, Object> params = null;
+    List<Columna> columns     = null;    
+    Map<String, Object> params= null;
     try {      
       params = new HashMap<>();      
       columns = new ArrayList<>();
-      columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
-      if(JsfBase.getFlashAttribute("idNotaEntrada")== null)
-      	UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
+      //if(JsfBase.getFlashAttribute("idNotaEntrada")== null)
+      //	UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("codigo", "");
-      this.attrs.put("buscaPorFecha", false);
-      this.idNotaEntrada= JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: (Long)JsfBase.getFlashAttribute("idNotaEntrada");
-      params.put("idNotaEntrada", this.idNotaEntrada);      
-      this.orden= (Entity)DaoFactory.getInstance().toEntity("TcManticNotasEntradasDto", "detalle", params);
-      if(this.orden!= null) {
+      this.idEgreso= JsfBase.getFlashAttribute("idEgreso")== null? 1L: (Long)JsfBase.getFlashAttribute("idEgreso");
+      params.put("idEgreso", this.idEgreso);      
+      this.orden= (Entity)DaoFactory.getInstance().toEntity("TcManticEgresosDto", "detalle", params);
+      if(this.orden!= null) 
         UIBackingUtilities.toFormatEntity(this.orden, columns);
-        params.put(Constantes.SQL_CONDICION, "id_proveedor= "+ this.orden.toLong("idProveedor"));      
-        this.proveedor= (Entity)DaoFactory.getInstance().toEntity("TcManticProveedoresDto", "row", params);
-      } // if
-      this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Mantic/Catalogos/Empresas/Saldar/filtro": JsfBase.getFlashAttribute("retorno"));
+      this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Mantic/Egresos/filtro": JsfBase.getFlashAttribute("retorno"));
       this.toLoadPartidas();
+      this.control= 0;
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -104,7 +100,7 @@ public class Asociar extends IBaseFilter implements Serializable {
     try {
       this.attrs.put("existe", null);
 			columns= new ArrayList<>();
-      columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("dia", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
 			String search= new String((String)this.attrs.get("codigo")); 
@@ -117,12 +113,18 @@ public class Asociar extends IBaseFilter implements Serializable {
 			} // if	
 			else
 				search= "WXYZ";
-      params.put("sortOrder", "order by registro desc");
-  		params.put("codigo", search);
-			if((boolean)this.attrs.get("buscaPorFecha") || buscaPorFecha)
-        this.lazyModel= new FormatCustomLazy("TcManticEgresosDto", "porFecha", params, columns);
-			else
-        this.lazyModel= new FormatCustomLazy("TcManticEgresosDto", "porNombre", params, columns);
+      params.put("sortOrder", "order by tc_mantic_notas_entradas.registro desc");
+      StringBuilder sb= new StringBuilder();
+      switch(this.control) {
+        case 0: // consecutivo
+         sb.append("tc_mantic_notas_entradas.consecutivo regexp '.*").append(search).append(".*'");
+         break;
+        case 1: // proveedor
+         sb.append("tc_mantic_proveedores.razon_social regexp '.*").append(search).append(".*'");
+         break;
+      } // switch
+      params.put(Constantes.SQL_CONDICION, sb.toString());
+      this.lazyModel= new FormatCustomLazy("VistaEgresosDto", "porComodin", params, columns);
       UIBackingUtilities.resetDataTable("encontrados");
 		} // try
 	  catch (Exception e) {
@@ -140,16 +142,16 @@ public class Asociar extends IBaseFilter implements Serializable {
     try {      
       params = new HashMap<>();      
       params.put("sortOrder", "order by tc_mantic_egresos_notas.registro desc");      
-      params.put("idNotaEntrada", this.idNotaEntrada);      
-      this.articulos= (List<Egreso>)DaoFactory.getInstance().toEntitySet(Egreso.class, "VistaEgresosDto", "notas", params);
+      params.put("idEgreso", this.idEgreso);      
+      this.articulos= (List<Nota>)DaoFactory.getInstance().toEntitySet(Nota.class, "VistaEgresosDto", "egresos", params);
       if(this.articulos== null)
         this.articulos= new ArrayList<>();
       else
-        for (Egreso item: this.articulos) {
+        for (Nota item: this.articulos) {
           item.setAccion(ESql.SELECT);
         } // for
       this.attrs.put("total", this.articulos.size());
-    } // try
+    } // try // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
@@ -162,26 +164,27 @@ public class Asociar extends IBaseFilter implements Serializable {
 	private void updateArticulo(Entity articulo) throws Exception {
     Map<String, Object> params= new HashMap<>();
 		try {
-      int index= this.articulos.indexOf(new Egreso(articulo.toLong("idEgreso")));
+      int index= this.articulos.indexOf(new Nota(articulo.toLong("idNotaEntrada")));
       if(index< 0) {
-        Egreso item= new Egreso(
-          articulo.toLong("idEgreso"), 
-          this.orden.toLong("idNotaEntrada"), 
+        Nota item= new Nota(
+          articulo.toLong("idNotaEntrada"), 
+          this.orden.toLong("idEgreso"), 
           articulo.toString("consecutivo"),
-          articulo.toString("descripcion"),
-          articulo.toDate("fecha"), 
-          articulo.toDouble("importe")
+          articulo.toString("factura"),
+          articulo.toDate("fechaFactura"), 
+          articulo.toDouble("total"),
+          articulo.toString("proveedor")
         );
         this.articulos.add(item);
       } // if
       else {
         if(Objects.equals(this.articulos.get(index).getAccion(), ESql.SELECT) || Objects.equals(this.articulos.get(index).getAccion(), ESql.INSERT))
-          this.attrs.put("existe", "<span class='janal-color-orange'>LA PARTIDA YA ESTA EN LA LISTA DE PARTIDAS</span>");
+          this.attrs.put("existe", "<span class='janal-color-orange'>LA CUENTA x PAGAR YA ESTA EN LA LISTA DE CUENTAS</span>");
         if(Objects.equals(this.articulos.get(index).getAccion(), ESql.DELETE))
           this.articulos.get(index).setAccion(ESql.SELECT);
       }	// else 
 			this.attrs.put("total", this.articulos.size());
-	  } // try
+	  } // try // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
@@ -192,26 +195,26 @@ public class Asociar extends IBaseFilter implements Serializable {
 	}
 	
 	public String doAceptar() {
-		String regresar        = null;
-		Importados transaccion = null;
-    List<IEgresos> partidas= new ArrayList<>();
+		String regresar       = null;
+		Importados transaccion= null;
+    List<IEgresos> notas  = new ArrayList<>();
     try {		
-      for (Egreso item: this.articulos) 
-        partidas.add((IEgresos)item);
-			transaccion= new Importados(partidas);
+      for (Nota item: this.articulos) 
+        notas.add((IEgresos)item);
+			transaccion= new Importados(notas);
 			if(transaccion.ejecutar(EAccion.PROCESAR)) {
 			  JsfBase.addMessage("Se agregaron las partidas de forma correcta !", ETipoMensaje.INFORMACION);
   			this.attrs.put("total", this.articulos.size());
 			} // if	
 			else 
 				JsfBase.addMessage("Ocurrió un error al agregar las partidas", ETipoMensaje.ALERTA);
-    } // try
+    } // try // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
     finally {
-      Methods.clean(partidas);
+      Methods.clean(notas);
     } // finally
 		return regresar;
 	}
@@ -227,7 +230,7 @@ public class Asociar extends IBaseFilter implements Serializable {
     } // catch   
 	}
 
-	public void doEliminar(Egreso row) {
+	public void doEliminar(Nota row) {
     try {
       this.attrs.put("existe", null);
       if(Objects.equals(row.getAccion(), ESql.INSERT)) 
@@ -247,8 +250,13 @@ public class Asociar extends IBaseFilter implements Serializable {
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 
-  public String toColor(Egreso row) {
+  public String toColor(Nota row) {
     return Objects.equals(row.getAccion(), ESql.DELETE)? "janal-display-none": "";
   }
+
+	public void doTabChange(TabChangeEvent event) {
+    TabView tab= (TabView)event.getTab().getParent();
+    this.control= tab.getActiveIndex();
+  } 
   
 }

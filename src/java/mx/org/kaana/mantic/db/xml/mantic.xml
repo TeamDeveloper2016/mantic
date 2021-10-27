@@ -956,6 +956,15 @@
         where      
           descripcion = '{descripcion}' and date_format(fecha, '%Y%m%d')= '{fecha}' and importe = {importe}
       </select>
+      <select id="detalle">
+        select      
+          tc_mantic_egresos.id_egreso as id_key,
+          tc_mantic_egresos.*
+        from      
+          tc_mantic_egresos
+        where 
+          id_egreso= {idEgreso}
+      </select>
       <select id="siguiente">
         select
 					max(orden)+ 1 as siguiente

@@ -22,6 +22,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.archivo.Zip;
@@ -38,8 +39,10 @@ import mx.org.kaana.mantic.egresos.beans.ZipEgreso;
 import mx.org.kaana.mantic.egresos.reglas.Transaccion;
 import mx.org.kaana.mantic.enums.ECuentasEgresos;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
+import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.Visibility;
 
 @Named(value = "manticEgresosFiltro")
 @ViewScoped
@@ -47,6 +50,12 @@ public class Filtro extends Comun implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
 
+  protected FormatLazyModel lazyModelDetalle;
+
+  public FormatLazyModel getLazyModelDetalle() {
+    return lazyModelDetalle;
+  }
+  
   @PostConstruct
   @Override
   protected void init() {
@@ -67,7 +76,7 @@ public class Filtro extends Comun implements Serializable {
     } // catch		
   } // init
 
-	private void loadEstatus(){
+	private void loadEstatus() {
 		List<UISelectItem>estatus= null;
 		Map<String, Object>params= null;
 		try {
@@ -194,7 +203,7 @@ public class Filtro extends Comun implements Serializable {
 		return regresar;
 	} // doDetalle
 	
-	public String doImportar(){
+	public String doImporta(){
 		String regresar= null;
 		try {
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Egresos/filtro");		
@@ -342,4 +351,95 @@ public class Filtro extends Comun implements Serializable {
 			this.attrs.put("justificacion", "");
 		} // finally
 	}	// doActualizaEstatus
+  
+	public String doNotaEntrada() {
+		JsfBase.setFlashAttribute("idNotaEntrada", this.attrs.get("idNotaEntrada"));
+		return "/Paginas/Mantic/Inventarios/Entradas/filtro".concat(Constantes.REDIRECIONAR);
+	}
+  
+	public void doRowToggle(ToggleEvent event) {
+		try {
+			this.attrs.put("seleccionado", (Entity) event.getData());
+			if (!event.getVisibility().equals(Visibility.HIDDEN)) 
+				this.doLoadDetalle();
+		} // try
+		catch (Exception e) {			
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doRowToggle
+  
+  public void doLoadDetalle() {
+    List<Columna> columns     = null;
+	  Map<String, Object> params= new HashMap<>();	
+    try {
+			Entity entity= (Entity)this.attrs.get("seleccionado");
+			params.put("sortOrder", "order by tc_mantic_notas_entradas.registro desc");
+			params.put("idEgreso", entity.toLong("idEgreso"));
+      columns= new ArrayList<>();
+      columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));    
+      columns.add(new Columna("fechaFactura", EFormatoDinamicos.FECHA_CORTA));    
+      columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));    
+			this.lazyModelDetalle = new FormatCustomLazy("VistaEgresosDto", "egresos", params, columns);
+      UIBackingUtilities.resetDataTable();		
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally		   
+  }
+  
+  public String doImportar() {
+		String regresar= null;
+		try {
+      Entity row= (Entity)this.attrs.get("seleccionadoDetalle");
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Egresos/filtro");		
+			JsfBase.setFlashAttribute("idNotaEntrada", row.toLong("idNotaEntrada"));
+			regresar= "/Paginas/Mantic/Catalogos/Empresas/Saldar/importar".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		return regresar;
+  }
+  
+  public String doAsociar() {
+		String regresar= null;
+		try {
+      Entity row= (Entity)this.attrs.get("seleccionadoDetalle");
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Egresos/filtro");		
+			JsfBase.setFlashAttribute("idNotaEntrada", row.toLong("idNotaEntrada"));
+			regresar= "/Paginas/Mantic/Catalogos/Empresas/Saldar/asociar".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		return regresar;
+  }
+  
+  public String doRelacionar() {
+		String regresar= null;
+		try {
+      Entity row= (Entity)this.attrs.get("seleccionado");
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Egresos/filtro");		
+			JsfBase.setFlashAttribute("idEgreso", row.toLong("idEgreso"));
+			regresar= "asociar".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		return regresar;
+  }
+  
+  public String toColor(Entity row) {
+		return "";
+	} 
+  
 }

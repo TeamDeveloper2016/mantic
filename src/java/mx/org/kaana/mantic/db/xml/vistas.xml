@@ -8095,6 +8095,7 @@
           sum(if(tc_mantic_notas_archivos.id_tipo_documento= 14, 1, 0)) as creditos,
           sum(if(tc_mantic_notas_archivos.id_tipo_documento= 15, 1, 0)) as comprobantes,
           sum(if(tc_mantic_notas_archivos.id_tipo_documento= 16, 1, 0)) as vouchers,
+          (count(tc_mantic_egresos_notas.id_egreso_nota)/4) as egresos,
           tc_mantic_empresas_deudas.id_completo
         from
           tc_mantic_empresas_deudas
@@ -8108,12 +8109,14 @@
           tc_mantic_notas_tipos on tc_mantic_notas_entradas.id_nota_tipo= tc_mantic_notas_tipos.id_nota_tipo
         left join
           tc_mantic_notas_archivos on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_notas_archivos.id_nota_entrada
+        left join
+          tc_mantic_egresos_notas on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_egresos_notas.id_nota_entrada
         where
           tc_mantic_empresas_deudas.id_empresa in ({idEmpresa})
           and tc_mantic_notas_entradas.id_proveedor= {idProveedor}
           and {condicion}
         group by
-         tc_mantic_notas_entradas.id_nota_entrada      
+          tc_mantic_notas_entradas.id_nota_entrada      
         {sortOrder} 
       </select>  
 			<select id="cuentasBusqueda">
@@ -10892,15 +10895,29 @@
 					tc_mantic_egresos.id_egreso as id_key,
 					tc_mantic_egresos.*,
 					tc_mantic_egresos_estatus.nombre,
-					tc_mantic_egresos_estatus.estatus_asociados
+					tc_mantic_egresos_estatus.estatus_asociados,
+          sum(if(tc_mantic_egresos_notas.id_egreso is null, 0, 1)) as documentos
 				from 
 					tc_mantic_egresos
 				inner join 
 					tc_mantic_egresos_estatus on tc_mantic_egresos.id_egreso_estatus = tc_mantic_egresos_estatus.id_egreso_estatus
-				where 
+        left join
+          tc_mantic_egresos_notas on tc_mantic_egresos.id_egreso= tc_mantic_egresos_notas.id_egreso
+        where 
 					{condicion}
+				group by
+				  tc_mantic_egresos.id_egreso
 				{sortOrder}
 			</select>		
+      <select id="documentos">
+        select      
+          tc_mantic_egresos_notas.id_egreso_nota as id_key,
+          count(*) as total
+        from      
+          tc_mantic_egresos_notas
+        where 
+          tc_mantic_egresos_notas.id_egreso= {idEgreso}
+      </select>  
       <select id="notas">
         select      
           tc_mantic_egresos_notas.id_egreso_nota as id_key,
@@ -10928,22 +10945,20 @@
         select      
           tc_mantic_egresos_notas.id_egreso_nota as id_key,
           tc_mantic_egresos_notas.id_egreso as id_pivote,
-					tc_mantic_egresos.consecutivo,
-          tc_mantic_egresos.fecha as dia,
-          tc_mantic_egresos.fecha,
-          tc_mantic_egresos.descripcion,
-          tc_mantic_egresos.importe as cantidad,
-          tc_mantic_egresos.importe,
-          tc_mantic_notas_entradas.consecutivo as nota_entrada,
+          tc_mantic_notas_entradas.consecutivo,
           tc_mantic_notas_entradas.factura,
           tc_mantic_notas_entradas.fecha_factura,
-          tc_mantic_notas_entradas.total
+          tc_mantic_notas_entradas.total,
+          tc_mantic_proveedores.razon_social as proveedor,
+          tc_mantic_egresos_notas.*
         from      
           tc_mantic_egresos_notas
         inner join
           tc_mantic_egresos on tc_mantic_egresos_notas.id_egreso= tc_mantic_egresos.id_egreso
         inner join
           tc_mantic_notas_entradas on tc_mantic_egresos_notas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+        left join
+          tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
         where 
           tc_mantic_egresos_notas.id_egreso= {idEgreso}
         {sortOrder}
@@ -11173,6 +11188,29 @@
 					tc_mantic_empresas_archivos on tc_mantic_empresas_pagos.id_empresa_pago = tc_mantic_empresas_archivos.id_empresa_pago				
 				where
 					tc_mantic_empresas_pagos.id_egreso= {idEgreso} and tc_mantic_empresas_pagos.id_credito_nota is null and tc_mantic_empresas_pagos.id_nota_entrada is null and tc_mantic_empresas_archivos.id_principal=1				
+      </select>
+      <select id="porComodin">
+        select      
+          tc_mantic_notas_entradas.id_nota_entrada as id_key,
+          tc_mantic_notas_entradas.id_nota_entrada as id_pivote,
+          tc_mantic_notas_entradas.id_nota_entrada,
+          tc_mantic_notas_entradas.consecutivo,
+          tc_mantic_notas_entradas.factura,
+          tc_mantic_notas_entradas.fecha_factura as dia,
+          tc_mantic_notas_entradas.fecha_factura,
+          tc_mantic_notas_entradas.total as cantidad,
+          tc_mantic_notas_entradas.total,
+          tc_mantic_proveedores.razon_social as proveedor
+        from      
+          tc_mantic_notas_entradas
+        inner join
+          tc_mantic_empresas_deudas on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_empresas_deudas.id_nota_entrada
+        left join
+          tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
+        where 
+          tc_mantic_empresas_deudas.id_empresa_estatus= 4
+          and {condicion}
+        {sortOrder}        
       </select>
 		</unit>
 		<unit id="VistaAlmacenesUbicacionesDto">

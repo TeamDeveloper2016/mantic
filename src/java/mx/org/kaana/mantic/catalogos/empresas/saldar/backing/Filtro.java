@@ -105,6 +105,7 @@ public class Filtro extends Saldos implements Serializable {
       columns= new ArrayList<>();
       columns.add(new Columna("pagar", EFormatoDinamicos.MILES_CON_DECIMALES));    
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));    
+      columns.add(new Columna("egresos", EFormatoDinamicos.MILES_SIN_DECIMALES));    
 			this.lazyModelDetalle = new FormatCustomLazy("VistaEmpresasDto", "documentos", params, columns);
       UIBackingUtilities.resetDataTable("detalle");		
     } // try
