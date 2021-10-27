@@ -975,7 +975,7 @@
 				  and id_empresa= {idEmpresa}
 				  and orden{operador} 900000				
 			</select>		
-			<select id="porFecha">		
+			<select id="porComodin">		
         select      
           tc_mantic_egresos.id_egreso as id_key,
           tc_mantic_egresos.fecha as dia,
@@ -984,20 +984,7 @@
         from      
           tc_mantic_egresos
         where 
-          date_format(tc_mantic_egresos.fecha, '%Y%m%d') regexp '.*{codigo}.*'
-        {sortOrder}
-      </select>  
-			<select id="porNombre">		
-        select      
-          tc_mantic_egresos.id_egreso as id_key,
-          tc_mantic_egresos.fecha as dia,
-          tc_mantic_egresos.importe as cantidad,
-          tc_mantic_egresos.*
-        from      
-          tc_mantic_egresos
-        where 
-          upper(tc_mantic_egresos.descripcion) regexp '.*{codigo}.*'
-          or convert(tc_mantic_egresos.importe, char) regexp '.*{codigo}.*'
+          {condicion}
         {sortOrder}
       </select>  
     </unit>

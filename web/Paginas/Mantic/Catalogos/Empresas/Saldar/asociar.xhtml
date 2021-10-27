@@ -11,13 +11,18 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-				'codigos'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				'articulos': {multiple: '$', validaciones: 'requerido|mayor({"cuanto":0})', mascara: 'libre', mensaje: 'Se tiene que seleccionar por lo menos una partida'}
+				'control\\:consecutivo' : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'consecutivo'},
+				'control\\:factura'     : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'factura'},
+				'control\\:importeInicio' : {validaciones: 'requerido', mascara: 'libre', grupo: 'importe'},
+				'control\\:importeTermino': {validaciones: 'libre', mascara: 'libre', grupo: 'importe'},
+				'control\\:fechaInicio' : {validaciones: 'requerido', mascara: 'libre', grupo: 'fecha'},
+				'control\\:fechaTermino': {validaciones: 'libre', mascara: 'libre', grupo: 'fecha'},
+				'articulos'             : {multiple: '$', validaciones: 'requerido|mayor({"cuanto":0})', mascara: 'libre', mensaje: 'Se tiene que seleccionar por lo menos una cuenta por pagar', grupo: 'general'}
 			};				
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
-		<p:focus context="codigos"/>
+		<p:focus context="control"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
@@ -44,19 +49,38 @@
 						</div>
 					</div>
 					<div class="ui-grid-row janal-grid-row">
-						<div class="ui-grid-col-1 janal-wid-col-150">
-							<p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-80, janal-wid-3">
-								<p:outputLabel for="codigos" value="Buscar partida:"/>
-								<p:selectBooleanCheckbox value="#{manticCatalogosEmpresasSaldarAsociar.attrs.buscaPorFecha}" title="Buscar por fecha" styleClass="filas">
-									<p:ajax event="change" process="@this" update="@this"/>
-								</p:selectBooleanCheckbox>
-							</p:panelGrid>	
-						</div>
-						<div class="ui-grid-col-11">
-              <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-97, janal-fix-3 janal-column-center">
-                <p:inputText id="codigos" value="#{manticCatalogosEmpresasSaldarAsociar.attrs.codigo}" styleClass="janal-wid-100-txt"/>
-                <p:commandButton icon="fa fa-search" process="@this codigos" update="encontrados" actionListener="#{manticCatalogosEmpresasSaldarAsociar.doLoad}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
-              </p:panelGrid>
+						<div class="ui-grid-col-12">
+              <p:tabView id="control" styleClass="janal-wid-100-txt">
+                <p:ajax event="tabChange" listener="#{manticCatalogosEmpresasSaldarAsociar.doTabChange}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.hide();"/>
+                <p:tab title="Consecutivo" titleStyleClass="consecutivo">
+                  <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-97, janal-fix-3 janal-column-center">
+                    <p:inputNumber id="consecutivo" value="#{manticCatalogosEmpresasSaldarAsociar.attrs.codigo}" styleClass="control janal-wid-100-txt" decimalPlaces="0"/>
+                    <p:commandButton icon="fa fa-search" process="@this consecutivo" update="encontrados" actionListener="#{manticCatalogosEmpresasSaldarAsociar.doLoad}" onstart="return janal.partial('consecutivo', true);" oncomplete="janal.desbloquear()"/>                  
+                  </p:panelGrid>   
+                </p:tab>  
+                <p:tab title="Descripción">
+                  <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-97, janal-fix-3 janal-column-center">
+                    <p:inputText id="factura" value="#{manticCatalogosEmpresasSaldarAsociar.attrs.codigo}" styleClass="control janal-wid-100-txt"/>
+                    <p:commandButton icon="fa fa-search" process="@this factura" update="encontrados" actionListener="#{manticCatalogosEmpresasSaldarAsociar.doLoad}" onstart="return janal.partial('factura', true);" oncomplete="janal.desbloquear()"/>                  
+                  </p:panelGrid>   
+                </p:tab>  
+                <p:tab title="Fecha">
+                  <p:panelGrid columns="5" styleClass="janal-wid-100-txt" columnClasses="janal-fix-47, janal-fix-3 janal-column-center, janal-fix-47, janal-fix-3 janal-column-center">
+                    <p:calendar id="fechaInicio" inputStyleClass="janal-wid-90" styleClass="janal-wid-100" value="#{manticCatalogosEmpresasSaldarAsociar.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="es" converter="janal.convertidor.Calendario"/>
+                    <p:outputLabel for="fechaInicio" value=" al " styleClass="janal-wid-100"/>
+                    <p:calendar id="fechaTermino" inputStyleClass="janal-wid-90" styleClass="janal-wid-100" value="#{manticCatalogosEmpresasSaldarAsociar.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="es" converter="janal.convertidor.Calendario"/>
+                    <p:commandButton icon="fa fa-search" process="@this fechaInicio fechaTermino" update="encontrados" actionListener="#{manticCatalogosEmpresasSaldarAsociar.doLoad}" onstart="return janal.partial('fecha', true);" oncomplete="janal.desbloquear()"/>                  
+                  </p:panelGrid>   
+                </p:tab>  
+                <p:tab title="Importe">
+                  <p:panelGrid columns="5" styleClass="janal-wid-100-txt" columnClasses="janal-fix-47, janal-fix-3 janal-column-center, janal-fix-47, janal-fix-3 janal-column-center">
+                    <p:inputNumber id="importeInicio" value="#{manticCatalogosEmpresasSaldarAsociar.attrs.importeInicio}" styleClass="control janal-wid-100-txt" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
+                    <p:outputLabel for="importeInicio" value=" al " styleClass="janal-wid-100"/>
+                    <p:inputNumber id="importeTermino" value="#{manticCatalogosEmpresasSaldarAsociar.attrs.importeTermino}" styleClass="control janal-wid-100-txt" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
+                    <p:commandButton icon="fa fa-search" process="@this importeInicio importeTermino" update="encontrados" actionListener="#{manticCatalogosEmpresasSaldarAsociar.doLoad}" onstart="return janal.partial('importe', true);" oncomplete="janal.desbloquear()"/>                  
+                  </p:panelGrid>   
+                </p:tab>  
+              </p:tabView>  
 						</div>
 					</div>
 				</div>
@@ -133,11 +157,11 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" action="#{manticCatalogosEmpresasSaldarAsociar.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()" process="@this tabla" update="tabla"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" action="#{manticCatalogosEmpresasSaldarAsociar.doAceptar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear()" process="@this tabla" update="tabla"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosEmpresasSaldarAsociar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" action="#{manticCatalogosEmpresasSaldarAsociar.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()" process="@this tabla" update="tabla"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" action="#{manticCatalogosEmpresasSaldarAsociar.doAceptar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear()" process="@this tabla" update="tabla"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosEmpresasSaldarAsociar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 	</ui:define>

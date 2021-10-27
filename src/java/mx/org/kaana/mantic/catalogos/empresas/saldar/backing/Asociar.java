@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.catalogos.empresas.saldar.backing;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -29,6 +31,8 @@ import mx.org.kaana.mantic.egresos.beans.IEgresos;
 import mx.org.kaana.mantic.inventarios.entradas.reglas.Importados;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.primefaces.component.tabview.TabView;
+import org.primefaces.event.TabChangeEvent;
 
 /**
  *@company KAANA
@@ -46,6 +50,7 @@ public class Asociar extends IBaseFilter implements Serializable {
 	private static final long serialVersionUID=-6770709196941718368L;
 
 	private Long idNotaEntrada;
+	private int control;
 	private Entity orden;
 	private Entity proveedor;
 	private List<Egreso> articulos;
@@ -85,6 +90,7 @@ public class Asociar extends IBaseFilter implements Serializable {
       } // if
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Mantic/Catalogos/Empresas/Saldar/filtro": JsfBase.getFlashAttribute("retorno"));
       this.toLoadPartidas();
+      this.control= 0;
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -117,12 +123,31 @@ public class Asociar extends IBaseFilter implements Serializable {
 			} // if	
 			else
 				search= "WXYZ";
+      params.put("sortOrder", "order by tc_mantic_notas_entradas.registro desc");
+      StringBuilder sb= new StringBuilder();
+      switch(this.control) {
+        case 0: // consecutivo
+         sb.append("tc_mantic_egresos.consecutivo regexp '.*").append(search).append(".*'");
+         break;
+        case 1: // factura
+         sb.append("tc_mantic_egresos.descripcion regexp '.*").append(search).append(".*'");
+         break;
+        case 2: // Fecha
+          if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
+            sb.append("date_format(tc_mantic_egresos.fecha, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("'");
+          if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
+            sb.append("and date_format(tc_mantic_egresos.fecha, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("'");
+         break;
+        case 3: // Importe
+          if(!Cadena.isVacio(this.attrs.get("importeInicio")))
+            sb.append("tc_mantic_notas_egresos.importe>= ").append((Double)this.attrs.get("importeInicio"));
+          if(!Cadena.isVacio(this.attrs.get("importeTermino")))
+            sb.append("and tc_mantic_egresos.importe<= ").append((Double)this.attrs.get("importeTermino"));
+         break;
+      } // switch
+      params.put(Constantes.SQL_CONDICION, sb.toString());
       params.put("sortOrder", "order by registro desc");
-  		params.put("codigo", search);
-			if((boolean)this.attrs.get("buscaPorFecha") || buscaPorFecha)
-        this.lazyModel= new FormatCustomLazy("TcManticEgresosDto", "porFecha", params, columns);
-			else
-        this.lazyModel= new FormatCustomLazy("TcManticEgresosDto", "porNombre", params, columns);
+      this.lazyModel= new FormatCustomLazy("TcManticEgresosDto", "porComodin", params, columns);
       UIBackingUtilities.resetDataTable("encontrados");
 		} // try
 	  catch (Exception e) {
@@ -250,5 +275,10 @@ public class Asociar extends IBaseFilter implements Serializable {
   public String toColor(Egreso row) {
     return Objects.equals(row.getAccion(), ESql.DELETE)? "janal-display-none": "";
   }
+
+	public void doTabChange(TabChangeEvent event) {
+    TabView tab= (TabView)event.getTab().getParent();
+    this.control= tab.getActiveIndex();
+  } 
   
 }

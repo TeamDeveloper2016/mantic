@@ -279,7 +279,7 @@ public class Asociar extends IBaseFilter implements Serializable {
     this.control= tab.getActiveIndex();
   } 
 
-  	public List<UISelectEntity> doCompleteProveedor(String codigo) {
+	public List<UISelectEntity> doCompleteProveedor(String codigo) {
  		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
 		boolean buscaPorCodigo    = false;
