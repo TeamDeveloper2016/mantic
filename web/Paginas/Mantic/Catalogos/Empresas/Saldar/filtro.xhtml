@@ -6,7 +6,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Cuentas por pagar por proveedor" />
+  <ui:param name="titulo" value="Saldar cuentas por pagar (documentación)" />
   <ui:define name="librerias">
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryVentasJs}"/>
 		<h:outputStylesheet library="janal" name="css/sh.css"/>
@@ -198,11 +198,11 @@
                     <p:column rowspan="2" headerText="Pagado" styleClass="janal-column-right MarAuto Responsive janal-wid-12" />
                     <p:column colspan="5" headerText="Documentos" styleClass="janal-column-right MarAuto Responsive"/>
                     <p:column rowspan="2" styleClass="janal-column-center MarAuto Responsive janal-wid-col-38"/>
-                    <p:column rowspan="2" styleClass="MarAuto Responsive janal-wid-6"/>
+                    <p:column rowspan="2" styleClass="MarAuto Responsive janal-wid-10"/>
                   </p:row>
                   <p:row>
                     <p:column headerText="Facturas"/>
-                    <p:column headerText="Notas créditos"/>
+                    <p:column headerText="Notas de créditos"/>
                     <p:column headerText="Comprobantes de pago"/>
                     <p:column headerText="Vouchers"/>
                     <p:column headerText="Estado de cuenta"/>

@@ -8137,7 +8137,7 @@
           sum(if(tc_mantic_notas_archivos.id_tipo_documento= 14, 1, 0)) as creditos,
           sum(if(tc_mantic_notas_archivos.id_tipo_documento= 15, 1, 0)) as comprobantes,
           sum(if(tc_mantic_notas_archivos.id_tipo_documento= 16, 1, 0)) as vouchers,
-          (count(tc_mantic_egresos_notas.id_egreso_nota)/4) as egresos,
+          (select count(*) from tc_mantic_egresos_notas where tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_egresos_notas.id_nota_entrada) as egresos,
           tc_mantic_empresas_deudas.id_completo
         from
           tc_mantic_empresas_deudas
@@ -8151,14 +8151,13 @@
           tc_mantic_notas_tipos on tc_mantic_notas_entradas.id_nota_tipo= tc_mantic_notas_tipos.id_nota_tipo
         left join
           tc_mantic_notas_archivos on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_notas_archivos.id_nota_entrada
-        left join
-          tc_mantic_egresos_notas on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_egresos_notas.id_nota_entrada
         where
           tc_mantic_empresas_deudas.id_empresa in ({idEmpresa})
           and tc_mantic_notas_entradas.id_proveedor= {idProveedor}
+          and tc_mantic_notas_archivos.id_principal= 1
           and {condicion}
         group by
-          tc_mantic_notas_entradas.id_nota_entrada      
+          tc_mantic_notas_entradas.id_nota_entrada
         {sortOrder} 
       </select>  
 			<select id="cuentasBusqueda">
