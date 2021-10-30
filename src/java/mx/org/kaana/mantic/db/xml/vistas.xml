@@ -7831,6 +7831,47 @@
 			</select>
 		</unit>
 		<unit id="VistaEmpresasDto">
+      <select id="exportar">
+        select
+          tc_mantic_notas_archivos.id_nota_archivo as id_key,
+          concat('N-', tc_mantic_notas_entradas.consecutivo) as consecutivo,
+          tc_mantic_tipos_archivos.nombre as tipo,
+          tc_mantic_notas_archivos.id_nota_entrada,
+          tc_mantic_notas_archivos.id_tipo_documento,
+          tc_mantic_notas_archivos.id_tipo_archivo,
+          tc_mantic_notas_archivos.nombre,
+          tc_mantic_notas_archivos.ruta,
+          tc_mantic_notas_archivos.alias
+        from
+          tc_mantic_empresas_deudas         
+        inner join
+          tc_mantic_notas_entradas on tc_mantic_empresas_deudas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada         
+        inner join
+          tc_mantic_notas_archivos on tc_mantic_empresas_deudas.id_nota_entrada= tc_mantic_notas_archivos.id_nota_entrada         
+        inner join
+          tc_mantic_tipos_archivos on tc_mantic_notas_archivos.id_tipo_documento= tc_mantic_tipos_archivos.id_tipo_archivo
+        where
+          tc_mantic_empresas_deudas.id_nota_entrada= {idNotaEntrada}     
+          and tc_mantic_notas_archivos.id_principal= 1    
+        order by
+          tc_mantic_notas_archivos.id_tipo_documento,
+          tc_mantic_notas_archivos.id_tipo_archivo,
+          tc_mantic_notas_archivos.registro desc        
+      </select>  
+			<select id="observaciones">
+				select 
+					tc_mantic_egresos_notas.id_egreso_nota as id_key,
+					tc_mantic_egresos_notas.*,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona
+				from 
+					tc_mantic_egresos_notas
+				inner join
+					tc_janal_usuarios on tc_mantic_egresos_notas.id_usuario= tc_janal_usuarios.id_usuario          
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where 
+					tc_mantic_egresos_notas.id_nota_entrada= {idNotaEntrada}
+			</select>	
 			<select id="eliminarPagos">
         select 
           tc_mantic_empresas_pagos.id_empresa_pago as id_key,
@@ -10891,8 +10932,6 @@
 			</select>
 		</unit>
 		<unit id="VistaEgresosDto">
-      <select id="extraer">
-      </select>  
       <select id="exportar">
         select
           tc_mantic_notas_archivos.id_nota_archivo as id_key,

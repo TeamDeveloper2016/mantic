@@ -302,12 +302,12 @@ public class Zip {
           } // if
 				}// for								
 			} // for			
-			if(!notas.isEmpty()){
+			if(!notas.isEmpty()) {
 				String cadena = "";
 				for(String line: notas)
 					cadena= cadena.concat(line);									
-				String namePath= Cadena.reemplazarCaracter(nombre,'/', File.separatorChar);
-				String nameFile= namePath.substring(0, namePath.lastIndexOf(File.separator)+1).concat("notas.txt");
+				String namePath= Cadena.reemplazarCaracter(nombre, '/', File.separatorChar);
+				String nameFile= namePath.substring(0, namePath.lastIndexOf(File.separator)+1).concat("NOTAS.txt");
 				FileOutputStream ops= new FileOutputStream(nameFile);
 				BufferedWriter bw= new BufferedWriter(new OutputStreamWriter(ops));
 				for(String line: notas){
@@ -318,7 +318,7 @@ public class Zip {
 				ops.close();
 				FileInputStream fi = new FileInputStream(nameFile);
 				BufferedInputStream origen = new BufferedInputStream(fi, BUFFER);
-				ZipEntry entry= new ZipEntry("Notas".concat(File.separator).concat("Notas.txt"));				
+				ZipEntry entry= new ZipEntry("NOTAS".concat(File.separator).concat("NOTAS.txt"));				
 				out.putNextEntry(entry);				
 				int count;
 				while ((count = origen.read(data, 0, BUFFER)) != -1) {

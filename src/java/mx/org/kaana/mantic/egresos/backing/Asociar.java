@@ -267,6 +267,7 @@ public class Asociar extends IBaseFilter implements Serializable {
 
 	public String doCancelar() {   
   	JsfBase.setFlashAttribute("idNotaEntrada", this.attrs.get("idNotaEntrada"));
+  	JsfBase.setFlashAttribute("idEgreso", this.idEgreso);
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 

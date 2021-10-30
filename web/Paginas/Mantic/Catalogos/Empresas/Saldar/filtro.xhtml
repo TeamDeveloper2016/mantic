@@ -198,7 +198,7 @@
                     <p:column rowspan="2" headerText="Pagado" styleClass="janal-column-right MarAuto Responsive janal-wid-12" />
                     <p:column colspan="5" headerText="Documentos" styleClass="janal-column-right MarAuto Responsive"/>
                     <p:column rowspan="2" styleClass="janal-column-center MarAuto Responsive janal-wid-col-38"/>
-                    <p:column rowspan="2" styleClass="MarAuto Responsive janal-wid-4"/>
+                    <p:column rowspan="2" styleClass="MarAuto Responsive janal-wid-6"/>
                   </p:row>
                   <p:row>
                     <p:column headerText="Facturas"/>
@@ -248,6 +248,9 @@
                 </p:column>
                 <p:column styleClass="janal-column-center" exportable="false">
                   <p:commandButton icon="fa fa-search" process="@this" update="@this tablaDocumentos detallePagosRealizados" actionListener="#{manticCatalogosEmpresasSaldarFiltro.doLoadDocumentos(row)}" title="Consultar documentos" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); movePage();"/>
+                  <p:commandButton icon="fa fa-download" process="@this" ajax="false" update="@this" actionListener="#{manticCatalogosEmpresasSaldarFiltro.doSeleccionar(row)}" title="Exportar documentos" onclick="PrimeFaces.monitorDownload(start, stop);" oncomplete="janal.desbloquear();">
+                    <p:fileDownload value="#{manticCatalogosEmpresasSaldarFiltro.documento}" />
+                  </p:commandButton>  
                 </p:column>
                 <f:facet name="footer">
                   <div style="display:flow-root;">
@@ -261,9 +264,9 @@
                 </f:facet>
               </p:dataTable>
               <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="detalle"> 
-                <p:menuitem icon="fa fa-external-link" value="Importar documentos" title="Documentos" onstart="return janal.bloquear()" process="@this detalle" action="#{manticCatalogosEmpresasSaldarFiltro.doImportar}"/>
+                <p:menuitem icon="fa fa-external-link" value="Importar" title="Documentos" onstart="return janal.bloquear()" process="@this detalle" action="#{manticCatalogosEmpresasSaldarFiltro.doImportar}"/>
                 <p:separator/>
-                <p:menuitem icon="fa fa-server" value="Asociar partida" title="Estado de cuenta" onstart="return janal.bloquear()" process="@this detalle" action="#{manticCatalogosEmpresasSaldarFiltro.doAsociar}"/>
+                <p:menuitem icon="fa fa-server" value="Asociar egreso" title="Estado de cuenta" onstart="return janal.bloquear()" process="@this detalle" action="#{manticCatalogosEmpresasSaldarFiltro.doAsociar}"/>
               </p:contextMenu>
               <h:commandLink id="detallePdf">
                 <pe:exporter type="pdf" skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 

@@ -157,7 +157,7 @@
                 </p:commandButton>  
               </p:column>  
               <p:rowExpansion> 
-                <p:dataTable lazy="true" id="detalle" widgetVar="kajoolTableDetalle" var="row" value="#{manticEgresosFiltro.lazyModelDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticEgresosFiltro.attrs.seleccionadoDetalle}" selectionMode="single" paginator="#{manticEgresosFiltro.lazyModelDetalle.rowCount gt manticEgresosFiltro.lazyModelDetalle.pageSize}" rowIndexVar="index" reflow="true" rowStyleClass="#{manticEgresosFiltro.toColor(row)}" paginatorPosition="bottom" style="display: #{empty manticEgresosFiltro.lazyModelDetalle? 'none': ''}">
+                <p:dataTable lazy="true" id="detalle" widgetVar="kajoolTableDetalle" var="row" value="#{manticEgresosFiltro.lazyModelDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticEgresosFiltro.attrs.seleccionadoDetalle}" paginator="#{manticEgresosFiltro.lazyModelDetalle.rowCount gt manticEgresosFiltro.lazyModelDetalle.pageSize}" rowIndexVar="index" reflow="true" rowStyleClass="#{manticEgresosFiltro.toColor(row)}" paginatorPosition="bottom" style="display: #{empty manticEgresosFiltro.lazyModelDetalle? 'none': ''}">
                   <p:ajax event="rowSelect" process="detalle" skipChildren="false" oncomplete="PF('kajoolTableDetalle').writeSelections()"/>
                   <f:facet name="header">
                     <div style="float: left;">
@@ -254,7 +254,7 @@
 							<p:separator/>
               <p:menuitem icon="fa fa-external-link" value="Importar" title="Importar" onstart="return janal.bloquear()" process="@this tabla" action="#{manticEgresosFiltro.doImporta}" rendered="false"/>
 							<p:menuitem value="Descargar" icon="fa fa-download" ajax="false" process="@this tabla" onclick="if(janal.partial('general')) PrimeFaces.monitorDownload(start, stop); else return false;" title="Descargar archivos de egreso" oncomplete="janal.desbloquear();">
-								<p:fileDownload value="#{manticEgresosFiltro.file}" />
+								<p:fileDownload value="#{manticEgresosFiltro.documento}" />
 							</p:menuitem>
 						</p:contextMenu>	
 					</p:panelGrid>					
@@ -280,7 +280,7 @@
 				</div>
 			</h:form>
 		</p:dialog>
-		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.change('formDialogoEstatus', fieldsDialogEstatus);janal.refresh();">
+		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.desbloquear(); janal.refresh();" onShow="janal.change('formDialogoEstatus', fieldsDialogEstatus);janal.refresh();">
 			<h:form id="formDialogoEstatus" prependId="false">
 				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 					<p:outputLabel for="estatusDlg" value="Estatus:"/>												

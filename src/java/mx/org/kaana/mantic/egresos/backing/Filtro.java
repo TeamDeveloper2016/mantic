@@ -191,7 +191,7 @@ public class Filtro extends Comun implements Serializable {
 		} // catch		
 	} // doRegistraNota
 	
-	public String doDetalle(){
+	public String doDetalle() {
 		String regresar= null;		
 		try {
 			JsfBase.setFlashAttribute("idEgreso", ((Entity)this.attrs.get("seleccionado")).getKey());
@@ -218,7 +218,7 @@ public class Filtro extends Comun implements Serializable {
 		return regresar;
 	} // doImportar
 	
-	public StreamedContent getFile() {
+	public StreamedContent getDocumento() {
 		StreamedContent regresar= null;		
 		Entity seleccionado     = null;				
 		try {			
@@ -317,7 +317,7 @@ public class Filtro extends Comun implements Serializable {
 			if(notas!= null && !notas.isEmpty()){
 				for(Entity nota: notas)
           if(nota.toString("observaciones")!= null)
-					  regresar.add(nota.toString("observaciones").concat(", ").concat(nota.toString("registro")).concat(", ").concat(nota.toString("persona")).concat("\n"));				
+					  regresar.add(nota.toString("observaciones").concat(", ").concat(Fecha.formatear(Fecha.FECHA_HORA_CORTA, nota.toTimestamp("registro"))).concat(", ").concat(nota.toString("persona")).concat("\n"));				
 			} // if
       if(regresar.size()> 0)
 				regresar.add(0, "Comentario, Registro, Usuario ".concat("\n"));
@@ -328,7 +328,7 @@ public class Filtro extends Comun implements Serializable {
 		return regresar;
 	} // loadNotas
 	
-	public void doLoadEstatus(){
+	public void doLoadEstatus() {
 		Entity seleccionado          = null;
 		Map<String, Object>params    = null;
 		List<UISelectItem> allEstatus= null;

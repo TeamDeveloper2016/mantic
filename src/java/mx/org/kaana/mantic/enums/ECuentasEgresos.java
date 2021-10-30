@@ -3,7 +3,7 @@ package mx.org.kaana.mantic.enums;
 public enum ECuentasEgresos {
 
 	EGRESO       ("exportar", "Egresos", 1),
-	DOCUMENTO    ("extraer", "NotasDeEntradas", 2),
+	DOCUMENTO    ("exportar", "NotasDeEntradas", 2),
 	NOTA_ENTRADA ("filesEgresosNotasEntradas", "NotasDeEntrada", 3),
 	CREDITO_NOTA ("filesEgresosCreditosNotas", "NotasDeCredito", 3),
 	EMPRESA_PAGO ("filesEgresosEmpresasPagos", "EmpresasPagos", 3),
