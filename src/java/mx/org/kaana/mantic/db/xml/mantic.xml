@@ -599,7 +599,7 @@
         from      
           tc_mantic_archivos
         where      
-          date_format(registro,'%Y%m%d')&lt;= '{registro}'
+          date_format(registro,'%Y%m%d%H')&lt;= '{registro}'
           and id_eliminado= 2
         order by
           registro desc  

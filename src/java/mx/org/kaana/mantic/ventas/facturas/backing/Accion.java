@@ -541,7 +541,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			descuentoPivote= getAdminOrden().getDescuento();
 			descuentoVigente= toDescuentoVigente(articulo.getIdArticulo());				
 			if(descuentoVigente!= null)					
-				getAdminOrden().setDescuento(descuentoVigente);																	
+				this.getAdminOrden().setDescuento(descuentoVigente);																	
 			super.toMoveArticulo(articulo, index);	
 			getAdminOrden().setDescuento(descuentoPivote);
 			this.attrs.put("descripcion", articulo.getNombre());

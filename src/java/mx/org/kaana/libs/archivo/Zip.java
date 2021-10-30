@@ -282,21 +282,24 @@ public class Zip {
 				if (this.debug)
 					LOG.debug("Archivos: " + (files!= null? 0: files.size()));
 				for (String name: egreso.getFiles()) {
-					if (this.debug)
-						LOG.debug("Sumando: " + name);
-					FileInputStream fi = new FileInputStream(name);
-					origen = new BufferedInputStream(fi, BUFFER);
-					ZipEntry entry = new ZipEntry(egreso.getCarpeta().substring(egreso.getCarpeta().lastIndexOf("/")+1, egreso.getCarpeta().length()).concat("/").concat(name.substring(name.lastIndexOf("/")+1, name.length())));
-					out.putNextEntry(entry);
-					int count;
-					while ((count = origen.read(data, 0, BUFFER)) != -1) {
-						out.write(data, 0, count);
-					} // while
-					origen.close();
-					if (this.eliminar) {
-						File file= new File(name);
-						file.delete();
-					} // if
+          File document= new File(name);
+          if(document.exists()) {
+            if (this.debug)
+              LOG.debug("Sumando: " + name);
+            FileInputStream fi = new FileInputStream(name);
+            origen = new BufferedInputStream(fi, BUFFER);
+            ZipEntry entry = new ZipEntry(egreso.getCarpeta().substring(egreso.getCarpeta().lastIndexOf("/")+1, egreso.getCarpeta().length()).concat("/").concat(name.substring(name.lastIndexOf("/")+1, name.length())));
+            out.putNextEntry(entry);
+            int count;
+            while ((count = origen.read(data, 0, BUFFER)) != -1) {
+              out.write(data, 0, count);
+            } // while
+            origen.close();
+            if (this.eliminar) {
+              File file= new File(name);
+              file.delete();
+            } // if
+          } // if
 				}// for								
 			} // for			
 			if(!notas.isEmpty()){

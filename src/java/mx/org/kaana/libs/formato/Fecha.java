@@ -15,7 +15,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import mx.org.kaana.libs.recurso.Configuracion;
 
-public  class Fecha {
+public class Fecha {
 	
   public static final int FECHA_NOMBRE_MES = 1;
   public static final int FECHA_CORTA = 2;
@@ -261,7 +261,14 @@ public  class Fecha {
   public static String getHoyEstandar(int dias) {
     return temporal(FECHA_ESTANDAR, dias);
   } // getHoyEstandar
-  
+
+  public static String horas(int patron, int horas) {
+    Calendar dia= Calendar.getInstance();
+    dia.add(Calendar.HOUR, horas);
+    SimpleDateFormat formato = new SimpleDateFormat("yyyyMMddHH");
+    return formato.format(dia.getTime());
+  } // horas
+
   public static int getDiasEnElMes(int anio, int mes) {
     int dias[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
     if ((anio % 4 == 0 && !(anio % 100 == 0)) || anio % 400 == 0)

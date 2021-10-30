@@ -10891,6 +10891,37 @@
 			</select>
 		</unit>
 		<unit id="VistaEgresosDto">
+      <select id="extraer">
+      </select>  
+      <select id="exportar">
+        select
+          tc_mantic_notas_archivos.id_nota_archivo as id_key,
+          concat('N-', tc_mantic_notas_entradas.consecutivo) as consecutivo,
+          tc_mantic_tipos_archivos.nombre as tipo,
+          tc_mantic_notas_archivos.id_nota_entrada,
+          tc_mantic_notas_archivos.id_tipo_documento,
+          tc_mantic_notas_archivos.id_tipo_archivo,
+          tc_mantic_notas_archivos.nombre,
+          tc_mantic_notas_archivos.ruta,
+          tc_mantic_notas_archivos.alias
+        from
+          tc_mantic_egresos_notas         
+        inner join
+          tc_mantic_egresos on tc_mantic_egresos_notas.id_egreso= tc_mantic_egresos.id_egreso         
+        inner join
+          tc_mantic_notas_entradas on tc_mantic_egresos_notas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada         
+        inner join
+          tc_mantic_notas_archivos on tc_mantic_egresos_notas.id_nota_entrada= tc_mantic_notas_archivos.id_nota_entrada         
+        inner join
+          tc_mantic_tipos_archivos on tc_mantic_notas_archivos.id_tipo_documento= tc_mantic_tipos_archivos.id_tipo_archivo
+        where
+          tc_mantic_egresos_notas.id_egreso= {idEgreso}     
+          and tc_mantic_notas_archivos.id_principal= 1    
+        order by
+          tc_mantic_notas_archivos.id_tipo_documento,
+          tc_mantic_notas_archivos.id_tipo_archivo,
+          tc_mantic_notas_archivos.registro desc        
+      </select>
 			<select id="lazy">
 				select 
 					tc_mantic_egresos.id_egreso as id_key,
@@ -11111,7 +11142,7 @@
 					tc_mantic_notas_entradas.consecutivo, 
 					tc_mantic_empresas_deudas.registro desc				
 			</select>
-			<select id="notas">
+			<select id="observaciones">
 				select 
 					tc_mantic_egresos_notas.id_egreso_nota as id_key,
 					tc_mantic_egresos_notas.*,

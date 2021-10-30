@@ -111,7 +111,7 @@ public abstract class IBaseTnx {
         documento.setIdEliminado(1L);
         regresar= DaoFactory.getInstance().update(sesion, documento)> 0L;
       } // if
-      params.put("registro", Fecha.getHoyEstandar(-1));      
+      params.put("registro", Fecha.horas(-2));      
       List<TcManticArchivosDto> items= (List<TcManticArchivosDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticArchivosDto.class, "TcManticArchivosDto", "eliminar", params);
       if(items!= null && !items.isEmpty()) {
         for (TcManticArchivosDto item: items) {

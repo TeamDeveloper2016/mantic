@@ -15,6 +15,8 @@ public class Nombres implements Serializable {
 
 	private static final long serialVersionUID=323884892456452488L;
 	
+	private String consecutivo;
+	private String tipo;
 	private String nombre;
 	private String ruta;
 	private String alias;
@@ -24,14 +26,30 @@ public class Nombres implements Serializable {
 	}
 
 	public Nombres(String nombre) {
-		this(nombre, "", "");
+		this("", "", nombre, "", "");
 	}
 
-	public Nombres(String nombre, String ruta, String alias) {
+	public Nombres(String consecutivo, String tipo, String nombre, String ruta, String alias) {
 		this.nombre= nombre;
 		this.ruta  = ruta;
 		this.alias = alias;
 	}	
+
+  public String getConsecutivo() {
+    return consecutivo;
+  }
+
+  public void setConsecutivo(String consecutivo) {
+    this.consecutivo = consecutivo;
+  }
+
+  public String getTipo() {
+    return tipo;
+  }
+
+  public void setTipo(String tipo) {
+    this.tipo = tipo;
+  }
 	
 	public String getNombre() {
 		return nombre;
