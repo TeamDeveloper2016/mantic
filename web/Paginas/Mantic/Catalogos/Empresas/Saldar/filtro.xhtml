@@ -244,7 +244,7 @@
                   <h:outputText value="#{row['egresos']}"/>
                 </p:column>
                 <p:column styleClass="janal-column-center">
-                  <h:graphicImage library="janal" name="icon/semaforos/#{row.idCompleto eq '1' ? 'circulo-rojo.png' : (row.idCompleto eq '2'? 'circulo-amarillo.png' : 'circulo-verde.png')}" title="#{row.idCompleto eq '1' ? 'Incompleto' : (row.idCompleto eq '2'? 'Parcial' : 'Completo')}"/>
+                  <h:graphicImage library="janal" name="icon/semaforos/#{row.idCompleto eq '1' ? 'circulo-rojo.png' : (row.idCompleto eq '2'? 'circulo-amarillo.png' : 'circulo-verde.png')}" title="#{row.idCompleto eq '1' ? 'Incompleto' : (row.idCompleto eq '2'? 'Parcial' : 'Completo')}, Se registro: #{row['registro']}"/>
                 </p:column>
                 <p:column styleClass="janal-column-center" exportable="false">
                   <p:commandButton icon="fa fa-search" process="@this" update="@this tablaDocumentos detallePagosRealizados" actionListener="#{manticCatalogosEmpresasSaldarFiltro.doLoadDocumentos(row)}" title="Consultar documentos" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); movePage();"/>

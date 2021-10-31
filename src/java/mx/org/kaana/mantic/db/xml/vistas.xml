@@ -8138,7 +8138,8 @@
           sum(if(tc_mantic_notas_archivos.id_tipo_documento= 15, 1, 0)) as comprobantes,
           sum(if(tc_mantic_notas_archivos.id_tipo_documento= 16, 1, 0)) as vouchers,
           (select count(*) from tc_mantic_egresos_notas where tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_egresos_notas.id_nota_entrada) as egresos,
-          tc_mantic_empresas_deudas.id_completo
+          tc_mantic_empresas_deudas.id_completo,
+          tc_mantic_empresas_deudas.registro
         from
           tc_mantic_empresas_deudas
         inner join
