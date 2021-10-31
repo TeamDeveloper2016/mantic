@@ -262,7 +262,7 @@ public class Fecha {
     return temporal(FECHA_ESTANDAR, dias);
   } // getHoyEstandar
 
-  public static String horas(int patron, int horas) {
+  public static String getFormatoHoras(int horas) {
     Calendar dia= Calendar.getInstance();
     dia.add(Calendar.HOUR, horas);
     SimpleDateFormat formato = new SimpleDateFormat("yyyyMMddHH");
@@ -631,7 +631,7 @@ public class Fecha {
   }
 
   public static void main(String ... args) {
-    System.out.println(Fecha.temporal(FECHA_HORA, -1));  
+    System.out.println(Fecha.getFormatoHoras(-2));  
   } 
   
 } // Fecha

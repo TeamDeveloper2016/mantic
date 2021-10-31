@@ -82,7 +82,7 @@ public class Conteos extends IBaseFilter implements Serializable {
         UIBackingUtilities.execute("janal.isPostBack('movil');");
 			this.attrs.put("xcodigo", JsfBase.getFlashAttribute("xcodigo"));	
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
-			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());	
+			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
     	this.attrs.put("buscaPorCodigo", false);
     	this.attrs.put("ultimo", "");
     	this.attrs.put("idArticuloTipo", 1L);
@@ -216,10 +216,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 		List<Columna> columns         = null;
 		try {
 			params= new HashMap<>();
-			if(JsfBase.isCajero())
-				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			else
-				params.put("idEmpresa", this.attrs.get("idEmpresa"));
+			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			columns= new ArrayList<>();
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));							
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));							
