@@ -229,7 +229,7 @@ public class Filtro extends Comun implements Serializable {
 			Error.mensaje(e);
 		} // catch		
     return regresar;		
-	} // doDescargaArchivos
+	} // getDocumento
 	
 	private List<ZipEgreso> toAllFiles(Entity seleccionado) throws Exception{
 		List<ZipEgreso> regresar  = null;

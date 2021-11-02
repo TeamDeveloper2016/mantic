@@ -216,7 +216,10 @@ public class Conteos extends IBaseFilter implements Serializable {
 		List<Columna> columns         = null;
 		try {
 			params= new HashMap<>();
-			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      if(JsfBase.isAdmin())
+        params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      else
+			  params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			columns= new ArrayList<>();
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));							
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));							
