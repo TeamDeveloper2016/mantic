@@ -58,17 +58,21 @@ public class TcManticEgresosArchivosDto implements IBaseDto, Serializable {
   private Long ejercicio;
   @Column (name="registro")
   private Timestamp registro;
+  @Column (name="id_tipo_documento")
+  private Long idTipoDocumento;
+  @Column (name="id_eliminado")
+  private Long idEliminado;
 
   public TcManticEgresosArchivosDto() {
     this(new Long(-1L));
   }
 
   public TcManticEgresosArchivosDto(Long key) {
-    this(new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null);
+    this(new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, 13L, 2L);
     setKey(key);
   }
 
-  public TcManticEgresosArchivosDto(Long idEgresoArchivo, Long idEgreso, Long tamanio, Long idUsuarios, Long idTipoArchivo, Long idPrincipal, String observaciones, String alias, Long mes, String nombre, Long ejercicio, String ruta, String archivo) {
+  public TcManticEgresosArchivosDto(Long idEgresoArchivo, Long idEgreso, Long tamanio, Long idUsuarios, Long idTipoArchivo, Long idPrincipal, String observaciones, String alias, Long mes, String nombre, Long ejercicio, String ruta, String archivo, Long idTipoDocumento, Long idEliminado) {
     setIdEgresoArchivo(idEgresoArchivo);
     setIdEgreso(idEgreso);
     setTamanio(tamanio);
@@ -83,6 +87,8 @@ public class TcManticEgresosArchivosDto implements IBaseDto, Serializable {
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 		setRuta(ruta);
 		this.archivo= archivo;
+    this.idTipoDocumento= idTipoDocumento;
+    this.idEliminado= idEliminado;
   }
 	
   public void setIdEgresoArchivo(Long idEgresoArchivo) {
@@ -197,6 +203,22 @@ public class TcManticEgresosArchivosDto implements IBaseDto, Serializable {
 		this.ruta = ruta;
 	}	
 
+  public Long getIdTipoDocumento() {
+    return idTipoDocumento;
+  }
+
+  public void setIdTipoDocumento(Long idTipoDocumento) {
+    this.idTipoDocumento = idTipoDocumento;
+  }
+
+  public Long getIdEliminado() {
+    return idEliminado;
+  }
+
+  public void setIdEliminado(Long idEliminado) {
+    this.idEliminado = idEliminado;
+  }
+  
   @Transient
   @Override
   public Long getKey() {
@@ -238,6 +260,10 @@ public class TcManticEgresosArchivosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoDocumento());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEliminado());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRuta());
     regresar.append("]");
   	return regresar.toString();
@@ -260,13 +286,15 @@ public class TcManticEgresosArchivosDto implements IBaseDto, Serializable {
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
 		regresar.put("ruta", getRuta());
+		regresar.put("idTipoDocumento", getIdTipoDocumento());
+		regresar.put("idEliminado", getIdEliminado());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getIdEgresoArchivo(), getIdEgreso(), getTamanio(), getIdUsuarios(), getIdTipoArchivo(), getIdPrincipal(), getObservaciones(), getAlias(), getMes(), getNombre(), getArchivo(), getEjercicio(), getRegistro(), getRuta()
+      getIdEgresoArchivo(), getIdEgreso(), getTamanio(), getIdUsuarios(), getIdTipoArchivo(), getIdPrincipal(), getObservaciones(), getAlias(), getMes(), getNombre(), getArchivo(), getEjercicio(), getRuta(), getIdTipoDocumento(), getIdEliminado(), getRegistro()
     };
     return regresar;
   }

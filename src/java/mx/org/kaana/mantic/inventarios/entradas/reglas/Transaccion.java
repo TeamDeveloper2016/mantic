@@ -435,7 +435,8 @@ public class Transaccion extends Inventarios implements Serializable {
 					new Long(Calendar.getInstance().get(Calendar.YEAR)),
 					1L,
 					this.xml.getOriginal(),
-          this.xml.getIdTipoDocumento()
+          this.xml.getIdTipoDocumento(),
+          2L      
 				);
 				TcManticNotasArchivosDto exists= (TcManticNotasArchivosDto)DaoFactory.getInstance().toEntity(TcManticNotasArchivosDto.class, "TcManticNotasArchivosDto", "identically", tmp.toMap());
 				File file= new File(tmp.getAlias());
@@ -465,7 +466,8 @@ public class Transaccion extends Inventarios implements Serializable {
 					new Long(Calendar.getInstance().get(Calendar.YEAR)),
 					1L,
 					this.pdf.getOriginal(),
-          this.pdf.getIdTipoDocumento()
+          this.pdf.getIdTipoDocumento(),
+          2L
 				);
 				TcManticNotasArchivosDto exists= (TcManticNotasArchivosDto)DaoFactory.getInstance().toEntity(TcManticNotasArchivosDto.class, "TcManticNotasArchivosDto", "identically", tmp.toMap());
 				File file= new File(tmp.getAlias());
@@ -495,7 +497,8 @@ public class Transaccion extends Inventarios implements Serializable {
 					new Long(Calendar.getInstance().get(Calendar.YEAR)),
 					1L,
 					this.jpg.getOriginal(),
-          this.jpg.getIdTipoDocumento()
+          this.jpg.getIdTipoDocumento(),
+          2L
 				);
 				TcManticNotasArchivosDto exists= (TcManticNotasArchivosDto)DaoFactory.getInstance().toEntity(TcManticNotasArchivosDto.class, "TcManticNotasArchivosDto", "identically", tmp.toMap());
 				File file= new File(tmp.getAlias());

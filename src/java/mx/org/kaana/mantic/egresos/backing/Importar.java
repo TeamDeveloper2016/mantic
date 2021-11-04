@@ -71,6 +71,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 	private Long idEgreso;	
 	private Importado xml;
 	private Importado pdf;
+	private Importado jpg;
 
 	public Importado getXml() {
 		return xml;
@@ -79,6 +80,10 @@ public class Importar extends IBaseAttribute implements Serializable {
 	public Importado getPdf() {
 		return pdf;
 	} // getPdf
+
+  public Importado getJpg() {
+    return jpg;
+  }
 
 	public TcManticEgresosDto getEgreso() {
 		return egreso;
@@ -159,10 +164,16 @@ public class Importar extends IBaseAttribute implements Serializable {
 			  this.xml= new Importado(nameFile, event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase());				
 				this.attrs.put("xml", this.xml.getName());
 			} //
-			else if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.PDF.name())) {
-				this.pdf= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"),event.getFile().getFileName().toUpperCase());
-				this.attrs.put("pdf", this.pdf.getName()); 
-			} // else if
+			else 
+        if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.PDF.name())) {
+				  this.pdf= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"),event.getFile().getFileName().toUpperCase());
+				  this.attrs.put("pdf", this.pdf.getName()); 
+			  } // else if
+        else
+          if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.JPG.name()) || event.getFile().getFileName().toUpperCase().endsWith(EFormatos.PNG.name())) {
+            this.jpg= new Importado(nameFile, event.getFile().getContentType(), EFormatos.JPG, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"),event.getFile().getFileName().toUpperCase());
+            this.attrs.put("jpg", this.jpg.getName()); 
+          } // else if
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -322,7 +333,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 			  this.getXml().setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
 			if(this.getPdf()!= null && Cadena.isVacio(this.getPdf().getObservaciones()))
 			  this.getPdf().setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
-			transaccion= new Transaccion(this.egreso, this.xml, this.pdf);
+			transaccion= new Transaccion(this.egreso, this.xml, this.pdf, this.jpg);
       if(transaccion.ejecutar(EAccion.REGISTRAR)) {
       	UIBackingUtilities.execute("janal.alert('Se importaron los archivos de forma correcta !');");
 				regresar= this.doCancelar();
@@ -334,4 +345,5 @@ public class Importar extends IBaseAttribute implements Serializable {
 		} // catch
     return regresar;
 	} // doAceptar
+  
 }

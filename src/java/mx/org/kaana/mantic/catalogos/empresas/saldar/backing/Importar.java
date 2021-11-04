@@ -4,9 +4,11 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -35,7 +37,7 @@ import org.primefaces.event.TabChangeEvent;
 @ViewScoped
 public class Importar extends mx.org.kaana.mantic.inventarios.entradas.backing.Importar implements Serializable {
 
-  private static final long serialVersionUID = 7327134019658182127L;
+  private static final long serialVersionUID= 7327134019658182127L;
   private static final Log LOG              = LogFactory.getLog(Importar.class);
   private String path;
 
@@ -121,6 +123,25 @@ public class Importar extends mx.org.kaana.mantic.inventarios.entradas.backing.I
     LOG.info(this.attrs.get("idTipoDocumento")); 
     if(this.attrs.get("observaciones")!= null)
       this.attrs.put("observaciones", ((String)this.attrs.get("observaciones")).toUpperCase());
+  }
+ 
+	public String toColor(Entity row) {
+		return "";
+	} 
+ 
+  public void doDelete(Entity row) {
+ 		Importados importados= null;
+		try {
+      importados= new Importados(row);
+      if(importados.ejecutar(EAccion.MOVIMIENTOS)) 
+        JsfBase.addMessage("Alerta", "Se "+ (Objects.equals(row.toLong("idEliminado"), 1L)? "eliminó": "recuperó")+ " de forma correcta el documento");      
+      else 
+        JsfBase.addMessage("Error", "No se pudo ser "+ (Objects.equals(row.toLong("idEliminado"), 2L)? "eliminado": "recuperado")+ " el documento", ETipoMensaje.ALERTA);	
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
   }
   
 }

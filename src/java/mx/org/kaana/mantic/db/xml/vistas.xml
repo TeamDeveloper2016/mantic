@@ -6258,7 +6258,8 @@
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
 					tc_mantic_notas_archivos.observaciones,
 					tc_mantic_notas_archivos.registro,
-          tt_mantic_tipos_archivos.nombre as documento
+          tt_mantic_tipos_archivos.nombre as documento,
+ 					tc_mantic_notas_archivos.id_eliminado
 				from
 					tc_mantic_notas_archivos
 				inner join

@@ -28,6 +28,7 @@ import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.db.dto.TcManticEgresosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticEgresosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
+import mx.org.kaana.mantic.db.dto.TcManticNotasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.egresos.beans.IEgresos;
 import mx.org.kaana.mantic.libs.factura.beans.ComprobanteFiscal;
@@ -48,6 +49,12 @@ public class Importados extends Transaccion implements Serializable {
 	private static final long serialVersionUID=-6063204157451117549L;
   
   private List<IEgresos> articulos;
+  private Entity documento;
+  
+  public Importados(Entity documento) {
+    super(new TcManticNotasEntradasDto());
+    this.documento= documento;  
+  }
   
   public Importados(List<IEgresos> articulos) {
     super(new TcManticNotasEntradasDto(), Collections.EMPTY_LIST, true, null, null);
@@ -74,6 +81,9 @@ public class Importados extends Transaccion implements Serializable {
 					break;
 				case PROCESAR:
           regresar= this.toUpdatePartidas(sesion);
+					break;
+				case MOVIMIENTOS:
+          regresar= this.toDeleteDocumento(sesion);
 					break;
 			} // switch
 		} // try
@@ -172,4 +182,20 @@ public class Importados extends Transaccion implements Serializable {
     return regresar;
   }
 
+  private boolean toDeleteDocumento(Session sesion) throws Exception {
+    boolean regresar= Boolean.FALSE;
+    try {      
+      TcManticNotasArchivosDto item= (TcManticNotasArchivosDto)DaoFactory.getInstance().findById(sesion, TcManticNotasArchivosDto.class, this.documento.getKey());
+      if(item!= null) {
+        item.setIdEliminado(Objects.equals(item.getIdEliminado(), 1L)? 2L: 1L);
+        regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
+        this.documento.getValue("idEliminado").setData(item.getIdEliminado());
+      } // if
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    return regresar;
+  }
+  
 } 

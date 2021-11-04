@@ -102,7 +102,7 @@
               </p:panelGrid>
 						</p:tab>						            						            																																																
 						<p:tab title="Archivos">
-							<p:dataTable id="importados" var="row" value="#{manticCatalogosEmpresasSaldarImportar.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
+              <p:dataTable id="importados" var="row" value="#{manticCatalogosEmpresasSaldarImportar.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index" rowStyleClass="#{manticCatalogosEmpresasSaldarImportar.toColor(row)}">
 								<p:column styleClass="janal-wid-col-30" headerText="No.">
 									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>   
@@ -123,20 +123,24 @@
 									<h:outputText value="#{row.observaciones}"/>
 								</p:column>   
 								<p:column style="text-align: center" styleClass="janal-wid-col-38">
-									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" rendered="#{row.idPrincipal.toLong() eq 1}">
+									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" rendered="#{row.idEliminado.toLong() eq 2}">
 										<p:fileDownload value="#{manticCatalogosEmpresasSaldarImportar.doFileDownload(row)}" />
 									</p:commandButton>
 								</p:column>
 								<p:column style="text-align: center" styleClass="janal-wid-col-38">
-									<p:commandLink actionListener="#{manticCatalogosEmpresasSaldarImportar.doViewPdfDocument(row)}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 2}">
+									<p:commandLink actionListener="#{manticCatalogosEmpresasSaldarImportar.doViewPdfDocument(row)}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idEliminado.toLong() eq 2 and row.idTipoArchivo.toLong() eq 2}">
 									  <p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button"/>
 									</p:commandLink>	
-									<p:commandLink actionListener="#{manticCatalogosEmpresasSaldarImportar.doViewXmlDocument(row)}" process="@this" update="@(.viewXML)" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 1}">
+									<p:commandLink actionListener="#{manticCatalogosEmpresasSaldarImportar.doViewXmlDocument(row)}" process="@this" update="@(.viewXML)" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();" rendered="#{row.idEliminado.toLong() eq 2 and row.idTipoArchivo.toLong() eq 1}">
 									  <p:commandButton icon="fa fa-eye" title="Ver documento XML" ajax="false" type="button"/>
 									</p:commandLink>	
                   <a data-magnify="gallery" href="#{manticCatalogosEmpresasSaldarImportar.path}#{row['ruta']}#{row['nombre']}" data-caption="#{row['nombre']}" data-group="icon-image" title="Ver documento JPG">
-                    <p:graphicImage cache="false" url="#{manticCatalogosEmpresasSaldarImportar.path}#{row['ruta']}#{row['nombre']}" width="26" height="22" stream="false" style="cursor:zoom-in;" rendered="#{row.idTipoArchivo.toLong() eq 17 or row.idTipoArchivo.toLong() eq 18}"/>
+                    <p:graphicImage cache="false" url="#{manticCatalogosEmpresasSaldarImportar.path}#{row['ruta']}#{row['nombre']}" width="26" height="22" stream="false" style="cursor:zoom-in;" rendered="#{row.idEliminado.toLong() eq 2 and (row.idTipoArchivo.toLong() eq 17 or row.idTipoArchivo.toLong() eq 18)}"/>
                   </a>
+								</p:column>
+								<p:column style="text-align: center" styleClass="janal-wid-col-38">
+                  <p:commandButton icon="fa fa-trash" title="Eliminar" process="@this" update="importados" actionListener="#{manticCatalogosEmpresasSaldarImportar.doDelete(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.idTipoDocumento.toLong() ne 13 and row.idEliminado.toLong() eq 2}"/>
+                  <p:commandButton icon="fa fa-recycle" title="Recuperar" process="@this" update="importados" actionListener="#{manticCatalogosEmpresasSaldarImportar.doDelete(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.idTipoDocumento.toLong() ne 13 and row.idEliminado.toLong() eq 1}"/>
 								</p:column>
 							</p:dataTable>
 						</p:tab>						            						            																																																

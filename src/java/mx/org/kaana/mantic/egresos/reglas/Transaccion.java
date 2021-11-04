@@ -20,6 +20,7 @@ import mx.org.kaana.mantic.db.dto.TcManticEgresosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticEgresosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEgresosNotasDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosDto;
+import mx.org.kaana.mantic.db.dto.TcManticNotasArchivosDto;
 import mx.org.kaana.mantic.enums.ECuentasEgresos;
 import mx.org.kaana.mantic.enums.EEstatusEgresos;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
@@ -37,6 +38,7 @@ public class Transaccion extends IBaseTnx {
 	private String nota;
 	private Importado xml;
 	private Importado pdf;
+	private Importado jpg;
 	private TcManticEgresosDto egreso;
 	private TcManticEgresosBitacoraDto bitacora;
 
@@ -57,10 +59,11 @@ public class Transaccion extends IBaseTnx {
 		this(idTipoEgreso, accionTipoEgreso, null);
 	}	
 	
-	public Transaccion(TcManticEgresosDto egreso, Importado xml, Importado pdf) {
+	public Transaccion(TcManticEgresosDto egreso, Importado xml, Importado pdf, Importado jpg) {
 		this.egreso= egreso;
 		this.pdf   = pdf;
 		this.xml   = xml;
+		this.jpg   = jpg;
 	} // Transaccion
 	
 	public Transaccion(Long idTipoEgreso, ECuentasEgresos accionTipoEgreso, Long idEgreso) {
@@ -194,7 +197,9 @@ public class Transaccion extends IBaseTnx {
 					this.xml.getName(), //nombre
 					new Long(Calendar.getInstance().get(Calendar.YEAR)), //ejercicio
 					this.xml.getRuta(), //ruta
-					this.xml.getOriginal()
+					this.xml.getOriginal(),
+          this.pdf.getIdTipoDocumento(),
+          2L      
 				);
 				TcManticEgresosArchivosDto exists= (TcManticEgresosArchivosDto)DaoFactory.getInstance().toEntity(TcManticEgresosArchivosDto.class, "TcManticEgresosArchivosDto", "identically", tmp.toMap());
 				File reference= new File(tmp.getAlias());
@@ -223,7 +228,9 @@ public class Transaccion extends IBaseTnx {
 					this.pdf.getName(), //nombre
 					new Long(Calendar.getInstance().get(Calendar.YEAR)), //ejercicio
 					this.pdf.getRuta(), //ruta										
-					this.pdf.getOriginal()
+					this.pdf.getOriginal(),
+          this.pdf.getIdTipoDocumento(),
+          2L      
 				);
 				TcManticEgresosArchivosDto exists= (TcManticEgresosArchivosDto)DaoFactory.getInstance().toEntity(TcManticEgresosArchivosDto.class, "TcManticEgresosArchivosDto", "identically", tmp.toMap());
 				File reference= new File(tmp.getAlias());
@@ -238,6 +245,37 @@ public class Transaccion extends IBaseTnx {
         this.toCheckDeleteFile(sesion, this.pdf.getName());
 				// this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("egresos").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
 			} // if	
+			if(this.jpg!= null) {
+				tmp= new TcManticEgresosArchivosDto(
+					-1L, //idEgresoArchivo
+					this.egreso.getIdEgreso(), //idEgreso
+					this.jpg.getFileSize(), //tamanio
+					JsfBase.getIdUsuario(),	//idUsuario
+					2L, //idTipoArchivo
+					1L, //idPrincipal
+					this.jpg.getObservaciones(), //observaciones
+					Configuracion.getInstance().getPropiedadSistemaServidor("egresos").concat(this.jpg.getRuta()).concat(this.jpg.getName()), //alias
+					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1), //mes
+					this.jpg.getName(), //nombre
+					new Long(Calendar.getInstance().get(Calendar.YEAR)), //ejercicio
+					this.jpg.getRuta(), //ruta										
+					this.jpg.getOriginal(),
+          this.jpg.getIdTipoDocumento(),
+          2L      
+				);
+				TcManticEgresosArchivosDto exists= (TcManticEgresosArchivosDto)DaoFactory.getInstance().toEntity(TcManticEgresosArchivosDto.class, "TcManticEgresosArchivosDto", "identically", tmp.toMap());
+				File file= new File(tmp.getAlias());
+				if(exists== null && file.exists()) {
+					DaoFactory.getInstance().updateAll(sesion, TcManticEgresosArchivosDto.class, tmp.toMap());
+					DaoFactory.getInstance().insert(sesion, tmp);
+				} // if
+				else
+				  if(!file.exists())
+						LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
+				sesion.flush();
+        this.toCheckDeleteFile(sesion, this.jpg.getName());
+				// this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.jpg.getRuta()), ".".concat(this.jpg.getFormat().name()), this.toListFile(sesion, this.jpg, 17L));
+			} // if	      
   	} // if	
 	} // toUpdateDeleteXml
 	
