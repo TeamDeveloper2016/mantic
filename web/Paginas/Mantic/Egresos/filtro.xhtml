@@ -9,6 +9,14 @@
                 template="/WEB-INF/plantillas/filtro.xhtml">
 	<ui:param name="titulo" value="Estado de cuenta de egresos" />
 	<ui:define name="librerias">
+		<h:outputStylesheet library="janal" name="css/sh.css"/>
+		<h:outputStylesheet library="janal" name="css/shCore.css"/>
+		<h:outputStylesheet library="janal" name="css/shThemeDefault.css"/>
+		<h:outputScript library="janal" name="js/sh.js"/>
+	  <h:outputScript library="janal" name="js/shCore.js"/>
+	  <h:outputScript library="janal" name="js/shAutoloader.js"/>
+	  <h:outputScript library="janal" name="js/shBrushXml.js"/>
+	  <h:outputScript library="janal" name="js/shBrushCss.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {
 				fecha        : {validaciones: 'libre', mascara: 'libre'},
@@ -53,9 +61,14 @@
       function stop() {
         PF('statusDialog').hide();
       };
+
+      function movePage() {
+        setTimeout("$('a.janal-move-element')[0].click();", 500);
+      }
 		</script>		
 	</ui:define>
 	<ui:define name="contenido">				
+    <a class="janal-move-element janal-color-black" href="#tablaDocumentos" style="display:none"></a>
     <div class="janal-align-right xs-pantalla janal-wid-100">
       <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
     </div>			
@@ -80,184 +93,225 @@
 							<p:separator/>
 						</p:panelGrid>
 						<div class="janal-align-right">
-							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@this panelBusqueda" actionListener="#{manticEgresosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
-							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute(true);" process="@this panelBusqueda" actionListener="#{manticEgresosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@this panelBusqueda" actionListener="#{manticEgresosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla tablaDocumentos"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute(true);" process="@this panelBusqueda" actionListener="#{manticEgresosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla tablaDocumentos"/>
 						</div>
 					</p:panel>
 				</div>
 				<div id="collapse-content" class="ui-grid-col-9">
-					<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" style="height:500px !important;overflow-y: auto" columnClasses="janal-wid-100">
-						<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticEgresosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10000" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticEgresosFiltro.attrs.seleccionado}" selectionMode="single" paginator="false" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
-              <p:ajax event="rowToggle" listener="#{manticEgresosFiltro.doRowToggle}" update="detalle" />  
-							<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
-							<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
-							<f:facet name="header">
-								<div class="janal-icons-header">
-									<h:outputLink value="#{request.contextPath}/Temporal/Masivo/masivo-egresos.xls" title="Plantilla de egresos XLS">
-										<p:commandButton type="button" icon="fa fa-file-excel-o"/>
-									</h:outputLink>
-								</div>	
-								<div class="lg-pantalla">
-									<p:menuButton value="Opciones">									
-										<p:menuitem icon="fa fa-history" value="Importar" title="Carga masiva" action="#{manticEgresosFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
-									</p:menuButton>
-								</div>	
-								<div class="xs-pantalla">								
-									<p:commandButton icon="fa fa-history" title="Carga masiva" action="#{manticEgresosFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
-								</div>	
-							</f:facet>	
-              <p:column styleClass="janal-wid-2 janal-column-center" exportable="false">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticEgresosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10000" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticEgresosFiltro.attrs.seleccionado}" selectionMode="single" paginator="false" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+            <p:ajax event="rowToggle" listener="#{manticEgresosFiltro.doRowToggle}" update="detalle" />  
+            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+            <p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
+            <f:facet name="header">
+              <div class="janal-icons-header">
+                <h:outputLink value="#{request.contextPath}/Temporal/Masivo/masivo-egresos.xls" title="Plantilla de egresos XLS">
+                  <p:commandButton type="button" icon="fa fa-file-excel-o"/>
+                </h:outputLink>
+              </div>	
+              <div class="lg-pantalla">
+                <p:menuButton value="Opciones">									
+                  <p:menuitem icon="fa fa-history" value="Importar" title="Carga masiva" action="#{manticEgresosFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
+                </p:menuButton>
+              </div>	
+              <div class="xs-pantalla">								
+                <p:commandButton icon="fa fa-history" title="Carga masiva" action="#{manticEgresosFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
+              </div>	
+            </f:facet>	
+            <p:column styleClass="janal-wid-2 janal-column-center" exportable="false">
+              <f:facet name="header">
+                <i class="fa fa-search janal-color-blue janal-font-bold" title="Clic para consulta el detalle"></i>
+              </f:facet>
+              <p:rowToggler/>
+            </p:column>            
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+              <f:facet name="header">
+                <h:outputText value="Consecutivo"/>
+              </f:facet>
+              <h:outputText value="#{row['consecutivo']}"/>
+            </p:column>														
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.fecha}">
+              <f:facet name="header">
+                <h:outputText value="Fecha"/>
+              </f:facet>
+              <h:outputText value="#{row['fecha']}"/>
+            </p:column>														
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.descripcion}">
+              <f:facet name="header">
+                <h:outputText value="Descripcion"/>
+              </f:facet>
+              <h:outputText value="#{row['descripcion']}"/>
+            </p:column>														
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
+              <f:facet name="header">
+                <h:outputText value="Importe"/>
+              </f:facet>
+              <h:outputText value="#{row['importe']}"/>
+            </p:column>					
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.documentos}">
+              <f:facet name="header">
+                <h:outputText value="Documentos"/>
+              </f:facet>
+              <h:outputText value="#{row['documentos']}"/>
+            </p:column>					
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.registro}">
+              <f:facet name="header">
+                <h:outputText value="Registro"/>
+              </f:facet>
+              <h:outputText value="#{row['registro']}"/>
+            </p:column>				
+            <p:column styleClass="janal-column-center janal-wid-col-38">
+              <h:graphicImage library="janal" name="icon/semaforos/#{row.idEgresoEstatus eq '1' ? 'circulo-rojo.png' : (row.idEgresoEstatus eq '2'? 'circulo-amarillo.png' : 'circulo-verde.png')}" title="#{row.idEgresoEstatus eq '1' ? 'Incompleto' : (row.idEgresoEstatus eq '2'? 'Parcial': 'Completo')}"/>
+            </p:column>
+            <p:column styleClass="MarAuto Responsive janal-wid-4 janal-column-center" exportable="false">
+              <p:commandButton icon="fa fa-search" title="Documentos" onstart="return janal.bloquear()" process="@this tabla" update="tablaDocumentos" actionListener="#{manticEgresosFiltro.doLoadDocumentos(row)}" oncomplete="janal.desbloquear(); movePage();">
+                <f:setPropertyActionListener value="#{row}" target="#{manticEgresosFiltro.attrs.seleccionado}"/>
+              </p:commandButton>  
+            </p:column>  
+            <p:rowExpansion> 
+              <p:dataTable lazy="true" id="detalle" widgetVar="kajoolTableDetalle" var="row" value="#{manticEgresosFiltro.lazyModelDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticEgresosFiltro.attrs.seleccionadoDetalle}" paginator="#{manticEgresosFiltro.lazyModelDetalle.rowCount gt manticEgresosFiltro.lazyModelDetalle.pageSize}" rowIndexVar="index" reflow="true" rowStyleClass="#{manticEgresosFiltro.toColor(row)}" paginatorPosition="bottom" style="display: #{empty manticEgresosFiltro.lazyModelDetalle? 'none': ''}">
+                <p:ajax event="rowSelect" process="detalle" skipChildren="false" oncomplete="PF('kajoolTableDetalle').writeSelections()"/>
                 <f:facet name="header">
-                  <i class="fa fa-search janal-color-blue janal-font-bold" title="Clic para consulta el detalle"></i>
-                </f:facet>
-                <p:rowToggler/>
-              </p:column>            
-							<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
-								<f:facet name="header">
-									<h:outputText value="Consecutivo"/>
-								</f:facet>
-								<h:outputText value="#{row['consecutivo']}"/>
-							</p:column>														
-							<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.fecha}">
-								<f:facet name="header">
-									<h:outputText value="Fecha"/>
-								</f:facet>
-								<h:outputText value="#{row['fecha']}"/>
-							</p:column>														
-							<p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.descripcion}">
-								<f:facet name="header">
-									<h:outputText value="Descripcion"/>
-								</f:facet>
-								<h:outputText value="#{row['descripcion']}"/>
-							</p:column>														
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
-								<f:facet name="header">
-									<h:outputText value="Importe"/>
-								</f:facet>
-								<h:outputText value="#{row['importe']}"/>
-							</p:column>					
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.documentos}">
-								<f:facet name="header">
-									<h:outputText value="Documentos"/>
-								</f:facet>
-                <h:outputText value="#{row['documentos']}"/>
-							</p:column>					
-							<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.registro}">
-								<f:facet name="header">
-									<h:outputText value="Registro"/>
-								</f:facet>
-								<h:outputText value="#{row['registro']}"/>
-							</p:column>				
-              <p:column styleClass="janal-column-center janal-wid-col-38">
-                <h:graphicImage library="janal" name="icon/semaforos/#{row.idEgresoEstatus eq '1' ? 'circulo-rojo.png' : (row.idEgresoEstatus eq '2'? 'circulo-amarillo.png' : 'circulo-verde.png')}" title="#{row.idEgresoEstatus eq '1' ? 'Incompleto' : (row.idEgresoEstatus eq '2'? 'Parcial': 'Completo')}"/>
-              </p:column>
-              <p:column styleClass="MarAuto Responsive janal-wid-4 janal-column-center" exportable="false">
-                <p:commandButton icon="fa fa-server" title="Asociar cuenta por pagar" onstart="return janal.bloquear()" process="@this tabla" action="#{manticEgresosFiltro.doRelacionar()}">
-                  <f:setPropertyActionListener value="#{row}" target="#{manticEgresosFiltro.attrs.seleccionado}"/>
-                </p:commandButton>  
-              </p:column>  
-              <p:rowExpansion> 
-                <p:dataTable lazy="true" id="detalle" widgetVar="kajoolTableDetalle" var="row" value="#{manticEgresosFiltro.lazyModelDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticEgresosFiltro.attrs.seleccionadoDetalle}" paginator="#{manticEgresosFiltro.lazyModelDetalle.rowCount gt manticEgresosFiltro.lazyModelDetalle.pageSize}" rowIndexVar="index" reflow="true" rowStyleClass="#{manticEgresosFiltro.toColor(row)}" paginatorPosition="bottom" style="display: #{empty manticEgresosFiltro.lazyModelDetalle? 'none': ''}">
-                  <p:ajax event="rowSelect" process="detalle" skipChildren="false" oncomplete="PF('kajoolTableDetalle').writeSelections()"/>
+                  <div style="float: left;">
+                    <p:outputLabel value="[#{manticEgresosFiltro.attrs.seleccionado.consecutivo}] Cuenta por pagar asociadas al estado de cuenta" styleClass="janal-color-white"/>
+                  </div>  
+                  <div class="lg-pantalla">
+                    <p:menuButton value="Opciones">
+                      <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('tabla\\:#{index}\\:detallePdf', 'tabla\\:#{index}\\:detalle')" oncomplete="janal.desbloquear()"/>
+                      <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('tabla\\:#{index}\\:detalleXls', 'tabla\\:#{index}\\:detalle')" oncomplete="janal.desbloquear()"/>
+                    </p:menuButton>
+                  </div>  
+                  <div class="xs-pantalla">              
+                    <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('tabla\\:#{index}\\:detallePdf', 'tabla\\:#{index}\\:detalle')" oncomplete="janal.desbloquear()"/>
+                    <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('tabla\\:#{index}\\:detalleXls', 'tabla\\:#{index}\\:detalle')" oncomplete="janal.desbloquear()"/>
+                  </div>  
+                </f:facet>					
+                <p:column styleClass="MarAuto Responsive janal-wid-2">
                   <f:facet name="header">
-                    <div style="float: left;">
-                      <p:outputLabel value="[#{manticEgresosFiltro.attrs.seleccionado.consecutivo}] Cuenta por pagar asociadas al estado de cuenta" styleClass="janal-color-white"/>
-                    </div>  
-                    <div class="lg-pantalla">
-                      <p:menuButton value="Opciones">
-                        <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('tabla\\:#{index}\\:detallePdf', 'tabla\\:#{index}\\:detalle')" oncomplete="janal.desbloquear()"/>
-                        <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('tabla\\:#{index}\\:detalleXls', 'tabla\\:#{index}\\:detalle')" oncomplete="janal.desbloquear()"/>
-                      </p:menuButton>
-                    </div>  
-                    <div class="xs-pantalla">              
-                      <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('tabla\\:#{index}\\:detallePdf', 'tabla\\:#{index}\\:detalle')" oncomplete="janal.desbloquear()"/>
-                      <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('tabla\\:#{index}\\:detalleXls', 'tabla\\:#{index}\\:detalle')" oncomplete="janal.desbloquear()"/>
-                    </div>  
-                  </f:facet>					
-                  <p:column styleClass="MarAuto Responsive janal-wid-2">
-                    <f:facet name="header">
-                      <h:outputText value="No"/>
-                    </f:facet>
-                    <h:outputText value="#{index+ 1}.-"/>
-                  </p:column>   
-                  <p:column styleClass="MarAuto Responsive janal-wid-12 janal-column-center" sortBy="#{row.consecutivo}">
-                    <f:facet name="header">
-                      <h:outputText value="Nota entrada"/>
-                    </f:facet>
-                    <p:commandLink action="#{manticEgresosFiltro.doNotaEntrada}">
-                      <f:setPropertyActionListener target="#{manticEgresosFiltro.attrs.idNotaEntrada}" value="#{row.idNotaEntrada}"/>
-                      <h:outputText value="#{row['consecutivo']}"/>
-                    </p:commandLink>	
-                  </p:column>														
-                  <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.factura}">
-                    <f:facet name="header">
-                      <h:outputText value="Factura"/>
-                    </f:facet>
-                    <h:outputText value="#{row['factura']}"/>
-                  </p:column>   
-                  <p:column styleClass="MarAuto Responsive" sortBy="#{row.proveedor}">
-                    <f:facet name="header">
-                      <h:outputText value="Proveedor"/>
-                    </f:facet>
-                    <h:outputText value="#{row['proveedor']}"/>
-                  </p:column>   
-                  <p:column styleClass="MarAuto Responsive janal-wid-12 janal-column-center" sortBy="#{row.fechaFactura}">
-                    <f:facet name="header">
-                      <h:outputText value="Fecha factura"/>
-                    </f:facet>
-                    <h:outputText value="#{row['fechaFactura']}"/>
-                  </p:column>   
-                  <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.importe}">
-                    <f:facet name="header">
-                      <h:outputText value="Importe"/>
-                    </f:facet>
-                    <h:outputText value="#{row['total']}"/>
-                  </p:column>   
-                  <p:column styleClass="janal-column-center janal-wid-col-38">
-                    <h:graphicImage library="janal" name="icon/semaforos/#{row.idCompleto eq '1' ? 'circulo-rojo.png' : (row.idCompleto eq '2'? 'circulo-amarillo.png' : 'circulo-verde.png')}" title="#{row.idCompleto eq '1' ? 'Incompleto' : (row.idCompleto eq '2'? 'Parcial' : 'Completo')}"/>
-                  </p:column>
-                  <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-center">
-                    <p:commandButton icon="fa fa-external-link" title="Importar documentos" onstart="return janal.bloquear()" process="@this detalle" action="#{manticEgresosFiltro.doImportar()}">
-                      <f:setPropertyActionListener value="#{row}" target="#{manticEgresosFiltro.attrs.seleccionadoDetalle}"/>
-                    </p:commandButton>  
-                    <p:commandButton icon="fa fa-server" title="Asociar partidas" onstart="return janal.bloquear()" process="@this detalle" action="#{manticEgresosFiltro.doAsociar()}">
-                      <f:setPropertyActionListener value="#{row}" target="#{manticEgresosFiltro.attrs.seleccionadoDetalle}"/>
-                    </p:commandButton>  
-                  </p:column>  
-                  <f:facet name="footer">
-                    <div style="display:flow-root;">
-                      <div style="float:right;">
-                        <p:outputLabel value="Total [#{manticEgresosFiltro.lazyModelDetalle== null? 0: manticEgresosFiltro.lazyModelDetalle.rowCount}] registros" styleClass="importado janal-color-orange"/>
-                      </div>
-                    </div>	
+                    <h:outputText value="No"/>
                   </f:facet>
-                </p:dataTable>
-                <h:commandLink id="detallePdf">
-                  <pe:exporter type="pdf" skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
-                </h:commandLink>
-                <h:commandLink id="detalleXls">
-                  <pe:exporter type="xlsx" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
-                </h:commandLink>	                
-              </p:rowExpansion>  
-							<f:facet name="footer">
-								<p:outputLabel value="Total [#{manticEgresosFiltro.lazyModel== null ? 0: manticEgresosFiltro.lazyModel.rowCount}] registros"/>
-							</f:facet>
-						</p:dataTable>
-						<p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">												
-							<p:menuitem id="modificar" action="#{manticEgresosFiltro.doAccion('MODIFICAR')}" icon="fa fa-search" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
-							<p:menuitem id="eliminar" action="#{manticEgresosFiltro.doAccion('ELIMINAR')}" icon="fa fa-search" ajax="false" value="Eliminar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
-							<p:separator/>
-              <p:menuitem id="detalle" action="#{manticEgresosFiltro.doDetalle}" icon="fa fa-search" ajax="false" value="Detalle" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="false"/>					
-							<p:menuitem id="notas" icon="fa fa-copy" process="@this tabla" update="dialogoNotas" value="Notas" onstart="return janal.bloquear()" oncomplete="PF('dlgNotas').show();" rendered="false"/>											
-							<p:separator rendered="false"/>
-              <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticEgresosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" disabled="#{manticEgresosFiltro.attrs.seleccionado.idEgresoEstatus.toLong lt 2}"/>
-							<p:separator/>
-              <p:menuitem icon="fa fa-external-link" value="Importar" title="Importar" onstart="return janal.bloquear()" process="@this tabla" action="#{manticEgresosFiltro.doImporta}" rendered="false"/>
-							<p:menuitem value="Descargar" icon="fa fa-download" ajax="false" process="@this tabla" onclick="if(janal.partial('general')) PrimeFaces.monitorDownload(start, stop); else return false;" title="Descargar archivos de egreso" oncomplete="janal.desbloquear();">
-								<p:fileDownload value="#{manticEgresosFiltro.documento}" />
-							</p:menuitem>
-						</p:contextMenu>	
-					</p:panelGrid>					
+                  <h:outputText value="#{index+ 1}.-"/>
+                </p:column>   
+                <p:column styleClass="MarAuto Responsive janal-wid-12 janal-column-center" sortBy="#{row.consecutivo}">
+                  <f:facet name="header">
+                    <h:outputText value="Nota entrada"/>
+                  </f:facet>
+                  <p:commandLink action="#{manticEgresosFiltro.doNotaEntrada}">
+                    <f:setPropertyActionListener target="#{manticEgresosFiltro.attrs.idNotaEntrada}" value="#{row.idNotaEntrada}"/>
+                    <h:outputText value="#{row['consecutivo']}"/>
+                  </p:commandLink>	
+                </p:column>														
+                <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.factura}">
+                  <f:facet name="header">
+                    <h:outputText value="Factura"/>
+                  </f:facet>
+                  <h:outputText value="#{row['factura']}"/>
+                </p:column>   
+                <p:column styleClass="MarAuto Responsive" sortBy="#{row.proveedor}">
+                  <f:facet name="header">
+                    <h:outputText value="Proveedor"/>
+                  </f:facet>
+                  <h:outputText value="#{row['proveedor']}"/>
+                </p:column>   
+                <p:column styleClass="MarAuto Responsive janal-wid-12 janal-column-center" sortBy="#{row.fechaFactura}">
+                  <f:facet name="header">
+                    <h:outputText value="Fecha factura"/>
+                  </f:facet>
+                  <h:outputText value="#{row['fechaFactura']}"/>
+                </p:column>   
+                <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.importe}">
+                  <f:facet name="header">
+                    <h:outputText value="Importe"/>
+                  </f:facet>
+                  <h:outputText value="#{row['total']}"/>
+                </p:column>   
+                <p:column styleClass="janal-column-center janal-wid-col-38">
+                  <h:graphicImage library="janal" name="icon/semaforos/#{row.idCompleto eq '1' ? 'circulo-rojo.png' : (row.idCompleto eq '2'? 'circulo-amarillo.png' : 'circulo-verde.png')}" title="#{row.idCompleto eq '1' ? 'Incompleto' : (row.idCompleto eq '2'? 'Parcial' : 'Completo')}"/>
+                </p:column>
+                <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-center">
+                  <p:commandButton icon="fa fa-external-link" title="Importar documentos" onstart="return janal.bloquear()" process="@this detalle" action="#{manticEgresosFiltro.doImportar()}">
+                    <f:setPropertyActionListener value="#{row}" target="#{manticEgresosFiltro.attrs.seleccionadoDetalle}"/>
+                  </p:commandButton>  
+                  <p:commandButton icon="fa fa-server" title="Asociar partidas" onstart="return janal.bloquear()" process="@this detalle" action="#{manticEgresosFiltro.doAsociar()}">
+                    <f:setPropertyActionListener value="#{row}" target="#{manticEgresosFiltro.attrs.seleccionadoDetalle}"/>
+                  </p:commandButton>  
+                </p:column>  
+                <f:facet name="footer">
+                  <div style="display:flow-root;">
+                    <div style="float:right;">
+                      <p:outputLabel value="Total [#{manticEgresosFiltro.lazyModelDetalle== null? 0: manticEgresosFiltro.lazyModelDetalle.rowCount}] registros" styleClass="importado janal-color-orange"/>
+                    </div>
+                  </div>	
+                </f:facet>
+              </p:dataTable>
+              <h:commandLink id="detallePdf">
+                <pe:exporter type="pdf" skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+              </h:commandLink>
+              <h:commandLink id="detalleXls">
+                <pe:exporter type="xlsx" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+              </h:commandLink>	                
+            </p:rowExpansion>  
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticEgresosFiltro.lazyModel== null ? 0: manticEgresosFiltro.lazyModel.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+          <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">												
+            <p:menuitem id="modificar" action="#{manticEgresosFiltro.doAccion('MODIFICAR')}" icon="fa fa-search" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
+            <p:menuitem id="eliminar" action="#{manticEgresosFiltro.doAccion('ELIMINAR')}" icon="fa fa-search" ajax="false" value="Eliminar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
+            <p:separator/>
+            <p:menuitem id="detalle" action="#{manticEgresosFiltro.doDetalle}" icon="fa fa-search" ajax="false" value="Detalle" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="false"/>					
+            <p:menuitem id="notas" icon="fa fa-copy" process="@this tabla" update="dialogoNotas" value="Notas" onstart="return janal.bloquear()" oncomplete="PF('dlgNotas').show();" rendered="false"/>											
+            <p:separator rendered="false"/>
+            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticEgresosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" disabled="#{manticEgresosFiltro.attrs.seleccionado.idEgresoEstatus.toLong lt 2}"/>
+            <p:separator/>
+            <p:menuitem icon="fa fa-cloud-upload" value="Importar documentos" onstart="return janal.bloquear()" process="@this tabla" action="#{manticEgresosFiltro.doDocumentos}"/>
+            <p:menuitem icon="fa fa-server" value="Asociar cuentas" onstart="return janal.bloquear()" process="@this tabla" action="#{manticEgresosFiltro.doRelacionar}"/>
+            <p:separator/>
+            <p:menuitem icon="fa fa-external-link" value="Importar" title="Importar" onstart="return janal.bloquear()" process="@this tabla" action="#{manticEgresosFiltro.doImporta}" rendered="false"/>
+            <p:menuitem value="Descargar" icon="fa fa-download" ajax="false" process="@this tabla" onclick="if(janal.partial('general')) PrimeFaces.monitorDownload(start, stop); else return false;" title="Descargar archivos de egreso" oncomplete="janal.desbloquear();">
+              <p:fileDownload value="#{manticEgresosFiltro.documento}" />
+            </p:menuitem>
+          </p:contextMenu>	
+          <p:spacer height="5px"/>
+          <p:dataTable id="tablaDocumentos" widgetVar="kajoolTableDocumentos" var="row" value="#{manticEgresosFiltro.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index" paginatorPosition="bottom" style="display: #{manticEgresosFiltro.attrs.importados!= null? '': 'none'}" rowStyleClass="#{manticEgresosFiltro.toOcultar(row)}">
+            <f:facet name="header">
+              <div style="display: flex;">
+                <p:outputLabel value="Estado de cuenta: #{manticEgresosFiltro.attrs.seleccionadoDetalle.consecutivo}, Descripcion: [ #{manticEgresosFiltro.attrs.seleccionado.descripcion} ] $#{manticEgresosFiltro.attrs.seleccionado.importe}" styleClass="janal-text-white"/>
+              </div>  
+            </f:facet>
+            <p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
+              <h:outputText value="#{index+ 1}.-"/>
+            </p:column>   
+            <p:column styleClass="MarAuto Responsive janal-wid-col-40" headerText="Tipo">
+              <h:outputText value="#{row.tipo}"/>
+            </p:column>   
+            <p:column styleClass="MarAuto Responsive janal-wid-20" headerText="Documento">
+              <h:outputText value="#{row.documento}"/>
+            </p:column>   
+            <p:column styleClass="MarAuto Responsive" headerText="Nombre">
+              <h:outputText value="#{row.nombre}"/>
+              <i class="fa fa-fw fa-fw fa-comments janal-color-orange janal-icons-header" title="Observaciones: #{empty row['observaciones']? '': row['observaciones']}"></i>              
+            </p:column>   
+            <p:column styleClass="MarAuto Responsive janal-wid-13 janal-column-center" headerText="Fecha">
+              <h:outputText value="#{row.registro}"/>
+            </p:column>   
+            <p:column style="text-align: center" styleClass="MarAuto Responsive janal-wid-4">
+              <p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" rendered="#{row.idEliminado.toLong() eq 2}">
+                <p:fileDownload value="#{manticEgresosFiltro.doFileDownload(row)}" />
+              </p:commandButton>
+            </p:column>
+            <p:column style="text-align: center" styleClass="MarAuto Responsive janal-wid-4">
+              <p:commandLink actionListener="#{manticEgresosFiltro.doViewPdfDocument(row)}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idEliminado.toLong() eq 2 and row.idTipoArchivo.toLong() eq 2}">
+                <p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button"/>
+              </p:commandLink>	
+              <p:commandLink actionListener="#{manticEgresosFiltro.doViewXmlDocument(row)}" process="@this" update="@(.viewXML)" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();" rendered="#{row.idEliminado.toLong() eq 2 and row.idTipoArchivo.toLong() eq 1}">
+                <p:commandButton icon="fa fa-eye" title="Ver documento XML" ajax="false" type="button"/>
+              </p:commandLink>	
+              <a data-magnify="gallery" href="#{manticEgresosFiltro.path}#{row['ruta']}#{row['nombre']}" data-caption="#{row['nombre']}" data-group="icon-image" title="Ver documento JPG">
+                <p:graphicImage cache="false" url="#{manticEgresosFiltro.path}#{row['ruta']}#{row['nombre']}" width="26" height="22" stream="false" style="cursor:zoom-in;" rendered="#{row.idEliminado.toLong() eq 2 and (row.idTipoArchivo.toLong() eq 17 or row.idTipoArchivo.toLong() eq 18)}"/>
+              </a>
+            </p:column>
+          </p:dataTable>          
 				</div>
 			</div>
 		</div>	
@@ -265,8 +319,29 @@
 			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
 		</p:dialog>				
 	</ui:define>    	
+  <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
 	<ui:define name="dialogos">
-		<p:dialog id="dialogoNotas" widgetVar="dlgNotas" header="Registrar nota" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.change('formDialogoNotas', fieldsDialog);janal.refresh();">
+		<h:form prependId="false">
+			<p:dialog id="dialogoPDF" widgetVar="dlgPDF" styleClass="viewPDF" header="Factura en formato digital" onHide="janal.sendLastFocus();janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true" appendTo="@(body)">
+				<object type="application/pdf" data="#{manticEgresosFiltro.attrs.temporal}" height="390px" width="100%" internalinstanceid="5">
+					 Tu navegador no soporta el desplegado de archivos PDF's, por favor da click en el boton de descargar
+				</object>
+  			<hr class="ui-widget-content"/>
+	  		<div class="janal-line-button">
+					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" actionListener="#{manticEgresosFiltro.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
+			  </div>
+			</p:dialog>
+			<p:dialog id="dialogoXML" widgetVar="dlgXML" styleClass="viewXML" header="Factura en formato XML" onShow="load();" onHide="janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true" appendTo="@(body)">
+				<pre id="documentXml" class="brush: xml;" style="width: 925px; height: 370px;">
+#{manticEgresosFiltro.attrs.temporal}
+				</pre>
+  			<hr class="ui-widget-content"/>
+	  		<div class="janal-line-button">
+					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" oncomplete="PF('dlgXML').hide();"/>
+			  </div>
+			</p:dialog>
+		</h:form>
+		<p:dialog id="dialogoNotas" widgetVar="dlgNotas" header="Registrar nota" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh(); janal.desbloquear();" onShow="janal.change('formDialogoNotas', fieldsDialog);janal.refresh();" appendTo="@(body)">
 			<h:form id="formDialogoNotas" prependId="false">				
 				<h:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">					
 					<p:outputLabel value="#{manticEgresosFiltro.attrs.seleccionado.descripcion}"/>
@@ -280,7 +355,7 @@
 				</div>
 			</h:form>
 		</p:dialog>
-		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.desbloquear(); janal.refresh();" onShow="janal.change('formDialogoEstatus', fieldsDialogEstatus);janal.refresh();">
+		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.desbloquear(); janal.refresh();" onShow="janal.change('formDialogoEstatus', fieldsDialogEstatus);janal.refresh();" appendTo="@(body)">
 			<h:form id="formDialogoEstatus" prependId="false">
 				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 					<p:outputLabel for="estatusDlg" value="Estatus:"/>												

@@ -74,7 +74,7 @@ public class Asociar extends IBaseFilter implements Serializable {
       columns= new ArrayList<>();
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
-      if(JsfBase.getFlashAttribute("idNotaEntrada")== null)
+      if(JsfBase.getFlashAttribute("idEgreso")== null)
       	UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("codigo", "");
       this.idEgreso= JsfBase.getFlashAttribute("idEgreso")== null? -1L: (Long)JsfBase.getFlashAttribute("idEgreso");

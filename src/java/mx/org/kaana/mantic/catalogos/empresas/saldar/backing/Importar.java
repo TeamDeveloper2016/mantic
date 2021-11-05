@@ -61,7 +61,7 @@ public class Importar extends mx.org.kaana.mantic.inventarios.entradas.backing.I
     Map<String, Object> params = null;
     try {      
       params = new HashMap<>();      
-      params.put("agrupador", "5");
+      params.put("agrupador", "5, 6");
       List<UISelectItem> documentos= UISelect.seleccione("TcManticTiposArchivosDto", "grupo", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS, "idKey");
       this.attrs.put("documentos", documentos);
       this.attrs.put("idTipoDocumento", UIBackingUtilities.toFirstKeySelectItem(documentos));
@@ -103,7 +103,7 @@ public class Importar extends mx.org.kaana.mantic.inventarios.entradas.backing.I
       if(this.getXml()!= null || this.getPdf()!= null || this.getJpg()!= null) {
         importados= new Importados(this.orden, this.getXml(), this.getPdf(), this.getJpg());
         if(importados.ejecutar(EAccion.AGREGAR)) {
-          UIBackingUtilities.execute("janal.alert('Se actualizó y se importaron los catalogos de forma correcta !');");
+          JsfBase.addMessage("Alerta", "Se actualizó y se importaron los documentos de forma correcta !");
           this.attrs.put("idTipoDocumento", -1L);
           this.reset();
           // regresar= this.doCancelar();

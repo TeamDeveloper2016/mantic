@@ -7,7 +7,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.kajool.procesos.acceso.beans.Autentifica;
-import mx.org.kaana.libs.pagina.IBaseFilter;
+import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 
 /**
  * @company KAANA
@@ -16,7 +16,7 @@ import mx.org.kaana.libs.pagina.IBaseFilter;
  * @time 08:41:12 PM
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
-public abstract class Comun extends IBaseFilter implements Serializable {
+public abstract class Comun extends IBaseImportar implements Serializable {
 
   private static final long serialVersionUID = -8002497139187570127L;
   protected static final Long COORDINACION_VACIA = -1L;

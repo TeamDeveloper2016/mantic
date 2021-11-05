@@ -169,7 +169,7 @@ public class Filtro extends Saldos implements Serializable {
 	} 
  
   public String toOcultar(Entity row) {
-		return row.toLong("idPrincipal").equals(2L)? "janal-display-none": "";
+		return row.toLong("idEliminado").equals(2L)? "janal-display-none": "";
 	} 
  
   public void doLoadDocumentos(Entity row) {

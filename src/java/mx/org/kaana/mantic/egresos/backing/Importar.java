@@ -14,6 +14,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -37,6 +38,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
@@ -44,6 +46,9 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UISelect;
+import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.mantic.db.dto.TcManticArchivosDto;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.DefaultStreamedContent;
@@ -72,6 +77,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 	private Importado xml;
 	private Importado pdf;
 	private Importado jpg;
+  private String path;
 
 	public Importado getXml() {
 		return xml;
@@ -89,6 +95,10 @@ public class Importar extends IBaseAttribute implements Serializable {
 		return egreso;
 	}	// getEgreso
 	
+  public String getPath() {
+    return path;
+  }
+  
 	@PostConstruct
   @Override
   protected void init() {		
@@ -102,11 +112,17 @@ public class Importar extends IBaseAttribute implements Serializable {
 				this.attrs.put("estatus", EEstatusEgresos.fromIdEstatusEgreso(this.egreso.getIdEgresoEstatus()).name());								
 			} // if
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
-			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_FACTURA);
 			this.xml= null;
 			this.pdf= null;
+			this.jpg= null;
+      this.toLoadDocumentos();
+      this.attrs.put("idTipoDocumento", -1L);
+      this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_DOCUMENTOS);
 			this.attrs.put("xml", ""); 
-			this.attrs.put("pdf", ""); 
+    	this.attrs.put("pdf", ""); 
+      this.attrs.put("jpg", ""); 
+      String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
+      this.path = dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/egresos/");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -114,16 +130,38 @@ public class Importar extends IBaseAttribute implements Serializable {
     } // catch		
   } // init	
 
+  private void toLoadDocumentos() {
+    Map<String, Object> params = null;
+    try {      
+      params = new HashMap<>();      
+      params.put("agrupador", "6");
+      List<UISelectItem> documentos= UISelect.seleccione("TcManticTiposArchivosDto", "grupo", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS, "idKey");
+      this.attrs.put("documentos", documentos);
+      this.attrs.put("idTipoDocumento", UIBackingUtilities.toFirstKeySelectItem(documentos));
+     } // try
+    catch (Exception e) {
+      JsfBase.addMessageError(e);
+      Error.mensaje(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
   private void doLoadImportados() {
 		List<Columna> columns= null;
-		try {
+    Map<String, Object> params = null;
+    try {      
+      params = new HashMap<>();      
+      params.put("idEgreso", this.egreso.getIdEgreso());      
+      params.put("idTipoDocumento", -1L);   
 			columns= new ArrayList<>();
       columns.add(new Columna("ruta", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-		  this.attrs.put("importados", UIEntity.build("VistaEgresosDto", "importados", this.egreso.toMap(), columns));
+		  this.attrs.put("importados", UIEntity.build("VistaEgresosDto", "importados", params, columns));
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -135,7 +173,7 @@ public class Importar extends IBaseAttribute implements Serializable {
   } // doLoadImportados
 
 	public void doFileUpload(FileUploadEvent event) {
-		StringBuilder path= new StringBuilder();  
+		StringBuilder folder= new StringBuilder();  
 		StringBuilder temp= new StringBuilder();  
 		String nameFile   = Archivo.toFormatNameFile(event.getFile().getFileName().toUpperCase());
     File result       = null;		
@@ -143,36 +181,45 @@ public class Importar extends IBaseAttribute implements Serializable {
 		try {			
 			Calendar calendar= Calendar.getInstance();
 			calendar.setTimeInMillis(this.egreso.getRegistro().getTime());
-      path.append(Configuracion.getInstance().getPropiedadSistemaServidor("egresos"));
+      folder.append(Configuracion.getInstance().getPropiedadSistemaServidor("egresos"));
       temp.append(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString());
       temp.append("/");
       temp.append(Calendar.getInstance().get(Calendar.YEAR));
       temp.append("/");
       temp.append(Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase());
       temp.append("/");
-			path.append(temp.toString());
-			result= new File(path.toString());		
+			folder.append(temp.toString());
+			result= new File(folder.toString());		
 			if (!result.exists())
 				result.mkdirs();
-      path.append(nameFile);
-			result = new File(path.toString());
+      String ruta= folder.toString();
+      folder.append(nameFile);
+			result = new File(folder.toString());
 			if (result.exists())
 				result.delete();			      
 			Archivo.toWriteFile(result, event.getFile().getInputstream());
-			fileSize= event.getFile().getSize();						
+			fileSize= event.getFile().getSize();			
+      String observaciones= (String)this.attrs.get("observaciones");
+      Long idTipoDocumento= 14L;
+      if(this.attrs.get("idTipoDocumento")!= null)
+        idTipoDocumento= (Long)this.attrs.get("idTipoDocumento");
 			if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name())) {
-			  this.xml= new Importado(nameFile, event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"), event.getFile().getFileName().toUpperCase());				
+			  this.xml= new Importado(nameFile, event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), observaciones, event.getFile().getFileName().toUpperCase(), idTipoDocumento);
 				this.attrs.put("xml", this.xml.getName());
-			} //
+        this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, folder.toString(), this.xml.getName());            
+			} // if
 			else 
         if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.PDF.name())) {
-				  this.pdf= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"),event.getFile().getFileName().toUpperCase());
+				  this.pdf= new Importado(nameFile, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), observaciones, event.getFile().getFileName().toUpperCase(), idTipoDocumento);
 				  this.attrs.put("pdf", this.pdf.getName()); 
+          this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, folder.toString(), this.pdf.getName());            
 			  } // else if
         else
           if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.JPG.name()) || event.getFile().getFileName().toUpperCase().endsWith(EFormatos.PNG.name())) {
-            this.jpg= new Importado(nameFile, event.getFile().getContentType(), EFormatos.JPG, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"),event.getFile().getFileName().toUpperCase());
+            this.jpg= new Importado(nameFile, event.getFile().getContentType(), EFormatos.JPG, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), observaciones, event.getFile().getFileName().toUpperCase(), idTipoDocumento);
             this.attrs.put("jpg", this.jpg.getName()); 
+            UIBackingUtilities.execute("reload();");
+            this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, folder.toString(), this.jpg.getName());            
           } // else if
 		} // try
 		catch (Exception e) {
@@ -186,9 +233,6 @@ public class Importar extends IBaseAttribute implements Serializable {
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Archivos")) 
 			this.doLoadImportados();
-		else
-		  if(event.getTab().getTitle().equals("Importar")) 
-				this.doLoadFiles();
 	}	// doTabChange	
 
 	private void doLoadFiles() {
@@ -201,14 +245,20 @@ public class Importar extends IBaseAttribute implements Serializable {
 				params.put("idTipoArchivo", 1L);
 				tmp= (TcManticEgresosArchivosDto)DaoFactory.getInstance().toEntity(TcManticEgresosArchivosDto.class, "VistaEgresosDto", "exists", params); 
 				if(tmp!= null) {
-					this.xml= new Importado(tmp.getNombre(), "XML", EFormatos.XML, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones());
+					this.xml= new Importado(tmp.getNombre(), EFormatos.XML.name(), EFormatos.XML, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones());
   				this.attrs.put("xml", this.xml.getName()); 
 				} // if	
 				params.put("idTipoArchivo", 2L);
 				tmp= (TcManticEgresosArchivosDto)DaoFactory.getInstance().toEntity(TcManticEgresosArchivosDto.class, "VistaEgresosDto", "exists", params); 
 				if(tmp!= null) {
-					this.pdf= new Importado(tmp.getNombre(), "PDF", EFormatos.PDF, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones());
+					this.pdf= new Importado(tmp.getNombre(), EFormatos.PDF.name(), EFormatos.PDF, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones());
   				this.attrs.put("pdf", this.pdf.getName()); 
+				} // if	
+				params.put("idTipoArchivo", 17L);
+				tmp= (TcManticEgresosArchivosDto)DaoFactory.getInstance().toEntity(TcManticEgresosArchivosDto.class, "VistaEgresosDto", "exists", params); 
+				if(tmp!= null) {
+					this.jpg= new Importado(tmp.getNombre(), EFormatos.JPG.name(), EFormatos.JPG, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones());
+  				this.attrs.put("jpg", this.pdf.getName()); 
 				} // if	
 			} // try
 			catch (Exception e) {
@@ -329,15 +379,17 @@ public class Importar extends IBaseAttribute implements Serializable {
 		String regresar        = null;
 		Transaccion transaccion= null;
 		try {
-			if(this.getXml()!= null && Cadena.isVacio(this.getXml().getObservaciones()))
-			  this.getXml().setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
-			if(this.getPdf()!= null && Cadena.isVacio(this.getPdf().getObservaciones()))
-			  this.getPdf().setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
-			transaccion= new Transaccion(this.egreso, this.xml, this.pdf, this.jpg);
-      if(transaccion.ejecutar(EAccion.REGISTRAR)) {
-      	UIBackingUtilities.execute("janal.alert('Se importaron los archivos de forma correcta !');");
-				regresar= this.doCancelar();
-			} // if
+      if(this.getXml()!= null || this.getPdf()!= null || this.getJpg()!= null) {
+        transaccion= new Transaccion(this.egreso, this.xml, this.pdf, this.jpg);
+        if(transaccion.ejecutar(EAccion.REGISTRAR)) {
+          JsfBase.addMessage("Alerta", "Se actualizó y se importaron los documentos de forma correcta !");
+          this.attrs.put("idTipoDocumento", -1L);
+          this.reset();
+          // regresar= this.doCancelar();
+        } // if
+      } // if
+      else 
+        JsfBase.addMessage("Archivo", "Se tiene que subir un archivo en formato XML, PDF o JPG", ETipoMensaje.ALERTA);	
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -345,5 +397,56 @@ public class Importar extends IBaseAttribute implements Serializable {
 		} // catch
     return regresar;
 	} // doAceptar
+  
+  /*
+   TcManticArchivosDto para el campo de idEliminar
+   1 SIGNIFICA QUE EL ARCHIVO SE DEBE DE QUEDAR
+   2 SIGNIFICA QUE EL ARCHIVO SE TIENE QUE ELIMINAR
+   3 SIGNIFICA QUE EL ARCHIVO YA FUE ELIMINADO
+   4 SIGNIFICA QUE EL ARCHIVO SE INTENTO ELIMINAR PERO NO EXISTE
+  */
+  private void toSaveFileRecord(String archivo, String ruta, String alias, String nombre) throws Exception {
+		TcManticArchivosDto registro= new TcManticArchivosDto(
+			archivo, // String archivo, 
+			2L, // Long idEliminado, 
+			ruta, // String ruta, 
+			JsfBase.getIdUsuario(), // Long idUsuario, 
+			alias, // String alias, 
+			-1L, // Long idArchivo, 
+			nombre // String nombre
+		);
+		DaoFactory.getInstance().insert(registro);
+	}
+
+  public void reset() {
+    this.xml= null;  
+    this.pdf= null;  
+    this.jpg= null;  
+  }   
+  
+  public void doValueUpload() {
+    LOG.info(this.attrs.get("idTipoDocumento")); 
+    if(this.attrs.get("observaciones")!= null)
+      this.attrs.put("observaciones", ((String)this.attrs.get("observaciones")).toUpperCase());
+  }
+  
+	public String toColor(Entity row) {
+		return "";
+	} 
+ 
+  public void doDelete(Entity row) {
+ 		Transaccion transaccion= null;
+		try {
+      transaccion= new Transaccion(row);
+      if(transaccion.ejecutar(EAccion.MOVIMIENTOS)) 
+        JsfBase.addMessage("Alerta", "Se "+ (Objects.equals(row.toLong("idEliminado"), 1L)? "eliminó": "recuperó")+ " de forma correcta el documento");      
+      else 
+        JsfBase.addMessage("Error", "No se pudo ser "+ (Objects.equals(row.toLong("idEliminado"), 2L)? "eliminado": "recuperado")+ " el documento", ETipoMensaje.ALERTA);	
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+  }
   
 }

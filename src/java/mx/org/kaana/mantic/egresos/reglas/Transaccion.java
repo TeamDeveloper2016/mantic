@@ -20,7 +20,6 @@ import mx.org.kaana.mantic.db.dto.TcManticEgresosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticEgresosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEgresosNotasDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosDto;
-import mx.org.kaana.mantic.db.dto.TcManticNotasArchivosDto;
 import mx.org.kaana.mantic.enums.ECuentasEgresos;
 import mx.org.kaana.mantic.enums.EEstatusEgresos;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
@@ -41,7 +40,12 @@ public class Transaccion extends IBaseTnx {
 	private Importado jpg;
 	private TcManticEgresosDto egreso;
 	private TcManticEgresosBitacoraDto bitacora;
+  private Entity documento;
 
+	public Transaccion(Entity documento) {
+		this.documento = documento;
+	}	
+  
 	public Transaccion(TcManticEgresosDto egreso) {
 		this.egreso = egreso;
 	}	
@@ -111,6 +115,9 @@ public class Transaccion extends IBaseTnx {
 					break;
         case MODIFICAR:  
           regresar= DaoFactory.getInstance().update(sesion, this.egreso)>= 1L;
+          break;
+        case MOVIMIENTOS:  
+          regresar= this.toDeleteDocumento(sesion);
           break;
 			} // switch
 			if(!regresar)
@@ -248,19 +255,19 @@ public class Transaccion extends IBaseTnx {
 			if(this.jpg!= null) {
 				tmp= new TcManticEgresosArchivosDto(
 					-1L, //idEgresoArchivo
-					this.egreso.getIdEgreso(), //idEgreso
-					this.jpg.getFileSize(), //tamanio
-					JsfBase.getIdUsuario(),	//idUsuario
-					2L, //idTipoArchivo
-					1L, //idPrincipal
-					this.jpg.getObservaciones(), //observaciones
-					Configuracion.getInstance().getPropiedadSistemaServidor("egresos").concat(this.jpg.getRuta()).concat(this.jpg.getName()), //alias
-					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1), //mes
-					this.jpg.getName(), //nombre
-					new Long(Calendar.getInstance().get(Calendar.YEAR)), //ejercicio
-					this.jpg.getRuta(), //ruta										
-					this.jpg.getOriginal(),
-          this.jpg.getIdTipoDocumento(),
+					this.egreso.getIdEgreso(), // idEgreso
+					this.jpg.getFileSize(), // tamanio
+					JsfBase.getIdUsuario(),	// idUsuario
+					17L, // idTipoArchivo
+					1L, // idPrincipal
+					this.jpg.getObservaciones(), // observaciones
+					Configuracion.getInstance().getPropiedadSistemaServidor("egresos").concat(this.jpg.getRuta()).concat(this.jpg.getName()), // alias
+					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1), // mes
+					this.jpg.getName(), // nombre
+					new Long(Calendar.getInstance().get(Calendar.YEAR)), // ejercicio
+					this.jpg.getRuta(), // ruta										
+					this.jpg.getOriginal(), // original
+          this.jpg.getIdTipoDocumento(), // idTipoDicumento
           2L      
 				);
 				TcManticEgresosArchivosDto exists= (TcManticEgresosArchivosDto)DaoFactory.getInstance().toEntity(TcManticEgresosArchivosDto.class, "TcManticEgresosArchivosDto", "identically", tmp.toMap());
@@ -334,6 +341,22 @@ public class Transaccion extends IBaseTnx {
     finally {
       Methods.clean(params);
     } // finally
+    return regresar;
+  }
+ 
+  private boolean toDeleteDocumento(Session sesion) throws Exception {
+    boolean regresar= Boolean.FALSE;
+    try {      
+      TcManticEgresosArchivosDto item= (TcManticEgresosArchivosDto)DaoFactory.getInstance().findById(sesion, TcManticEgresosArchivosDto.class, this.documento.getKey());
+      if(item!= null) {
+        item.setIdEliminado(Objects.equals(item.getIdEliminado(), 1L)? 2L: 1L);
+        regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
+        this.documento.getValue("idEliminado").setData(item.getIdEliminado());
+      } // if
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
     return regresar;
   }
   

@@ -6274,7 +6274,9 @@
 					tc_mantic_notas_archivos.id_nota_entrada= {idNotaEntrada}
           and (tc_mantic_notas_archivos.id_tipo_documento= {idTipoDocumento} or {idTipoDocumento}= -1)
 				order by
-					tc_mantic_notas_archivos.id_tipo_documento, tc_mantic_notas_archivos.id_tipo_archivo, tc_mantic_notas_archivos.registro desc				
+					tc_mantic_notas_archivos.id_tipo_documento, 
+          tc_mantic_notas_archivos.id_tipo_archivo, 
+          tc_mantic_notas_archivos.registro desc				
 			</select>
       <select id="detalle">
         select      
@@ -11201,27 +11203,33 @@
 					tc_mantic_egresos_archivos.id_egreso_archivo AS id_key,
 					tc_mantic_egresos_archivos.id_egreso,
 					tc_mantic_egresos_archivos.id_tipo_archivo,
-					tc_mantic_tipos_archivos.nombre AS tipo,
+					tc_mantic_tipos_archivos.nombre as tipo,
 					tc_mantic_egresos_archivos.nombre,
 					tc_mantic_egresos_archivos.alias,
 					tc_mantic_egresos_archivos.ruta,
 					tc_mantic_egresos_archivos.id_principal,
 					CONCAT(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) AS usuario,
 					tc_mantic_egresos_archivos.observaciones,
-					tc_mantic_egresos_archivos.registro
+					tc_mantic_egresos_archivos.registro,
+          tt_mantic_tipos_archivos.nombre as documento,
+ 					tc_mantic_egresos_archivos.id_eliminado
 				from
 					tc_mantic_egresos_archivos
 				inner join
 					tc_mantic_tipos_archivos on tc_mantic_egresos_archivos.id_tipo_archivo= tc_mantic_tipos_archivos.id_tipo_archivo				
+				inner join
+					tc_mantic_tipos_archivos as tt_mantic_tipos_archivos on tc_mantic_egresos_archivos.id_tipo_documento= tt_mantic_tipos_archivos.id_tipo_archivo
 				inner join
 					tc_janal_usuarios on tc_mantic_egresos_archivos.id_usuarios = tc_janal_usuarios.id_usuario
 				inner join
 					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
 				where
 					tc_mantic_egresos_archivos.id_egreso= {idEgreso}
+          and (tc_mantic_egresos_archivos.id_tipo_documento= {idTipoDocumento} or {idTipoDocumento}= -1)
 				order by
-					tc_mantic_egresos_archivos.id_tipo_archivo, 
-				  tc_mantic_egresos_archivos.registro desc	
+					tc_mantic_egresos_archivos.id_tipo_documento, 
+          tc_mantic_egresos_archivos.id_tipo_archivo, 
+          tc_mantic_egresos_archivos.registro desc				
 			</select>
 			<select id="exists">
         select      

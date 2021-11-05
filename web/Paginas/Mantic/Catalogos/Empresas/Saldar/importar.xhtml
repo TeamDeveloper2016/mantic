@@ -103,31 +103,29 @@
 						</p:tab>						            						            																																																
 						<p:tab title="Archivos">
               <p:dataTable id="importados" var="row" value="#{manticCatalogosEmpresasSaldarImportar.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index" rowStyleClass="#{manticCatalogosEmpresasSaldarImportar.toColor(row)}">
-								<p:column styleClass="janal-wid-col-30" headerText="No.">
+								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
 									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>   
-								<p:column styleClass="janal-wid-col-40 janal-column-center" headerText="Tipo">
+								<p:column styleClass="MarAuto Responsive janal-wid-col-40 janal-column-center" headerText="Tipo">
 									<h:outputText value="#{row.tipo}"/>
 								</p:column>   
-								<p:column styleClass="janal-wid-15" headerText="Documento">
+								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Documento">
 									<h:outputText value="#{row.documento}"/>
 								</p:column>   
-								<p:column styleClass="janal-wid-25" headerText="Nombre">
+								<p:column styleClass="MarAuto Responsive" headerText="Nombre">
 									<h:outputText value="#{row.nombre}"/>
                   <i class="fa fa-fw fa-user janal-color-orange janal-icons-header" title="Usuario: #{row['usuario']}"></i>
 								</p:column>   
-								<p:column styleClass="janal-wid-12 janal-column-center" headerText="Fecha">
+								<p:column styleClass="MarAuto Responsive janal-wid-12 janal-column-center" headerText="Fecha">
 									<h:outputText value="#{row.registro}"/>
+                  <i class="fa fa-fw fa-comment janal-color-orange janal-icons-header" title="Observaciones: #{row['observaciones']}"></i>
 								</p:column>   
-								<p:column headerText="Observaciones">
-									<h:outputText value="#{row.observaciones}"/>
-								</p:column>   
-								<p:column style="text-align: center" styleClass="janal-wid-col-38">
+								<p:column style="text-align: center" styleClass="MarAuto Responsive janal-wid-col-38">
 									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" rendered="#{row.idEliminado.toLong() eq 2}">
 										<p:fileDownload value="#{manticCatalogosEmpresasSaldarImportar.doFileDownload(row)}" />
 									</p:commandButton>
 								</p:column>
-								<p:column style="text-align: center" styleClass="janal-wid-col-38">
+								<p:column style="text-align: center" styleClass="MarAuto Responsive janal-wid-col-38">
 									<p:commandLink actionListener="#{manticCatalogosEmpresasSaldarImportar.doViewPdfDocument(row)}" process="@this" update="@(.viewPDF)" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idEliminado.toLong() eq 2 and row.idTipoArchivo.toLong() eq 2}">
 									  <p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button"/>
 									</p:commandLink>	

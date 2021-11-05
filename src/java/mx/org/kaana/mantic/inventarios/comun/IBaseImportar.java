@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
@@ -148,7 +149,8 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
         idTipoDocumento= (Long)this.attrs.get("idTipoDocumento");
 			if(nameFile.endsWith(EFormatos.XML.name())) {
 			  this.xml= new Importado(nameFile, event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), observaciones, event.getFile().getFileName().toUpperCase(), idTipoDocumento);
-				this.toReadFactura(result, sinIva, tipoDeCambio);
+        if(Objects.equals(idTipoDocumento, 13L))
+				  this.toReadFactura(result, sinIva, tipoDeCambio);
 				this.attrs.put("xml", this.xml.getName());
         this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), ruta, path.toString(), this.xml.getName());            
 			} //

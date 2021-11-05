@@ -944,7 +944,13 @@
 				  ruta
       </select>
 			<update id="rows">
-				update tc_mantic_egresos_archivos set id_principal= 2 where id_tipo_archivo = {idTipoArchivo} and id_egreso = {idEgreso}
+				update 
+          tc_mantic_egresos_archivos 
+        set id_principal= 2 
+        where 
+          id_egreso = {idEgreso}
+          and id_tipo_archivo = {idTipoArchivo} 
+          and id_tipo_documento = {idTipoDocumento} 
 			</update>
 			<delete id="rows">
 				delete from tc_mantic_egresos_archivos where id_egreso = {idEgreso}
@@ -2405,7 +2411,10 @@
           and id_tipo_documento= {idTipoDocumento}
 			</update>
 			<delete id="rows">
-				delete from tc_mantic_notas_archivos where id_nota_entrada = {idNotaEntrada}
+				delete from 
+          tc_mantic_notas_archivos 
+        where 
+          id_nota_entrada = {idNotaEntrada}
 			</delete>
    </unit>		
    <unit id="TcManticCreditosArchivosDto">
@@ -2493,7 +2502,7 @@
         from      
           tc_mantic_tipos_archivos
         where      
-          agrupador= {agrupador}
+          agrupador in ({agrupador})
         order by
           orden
       </select>

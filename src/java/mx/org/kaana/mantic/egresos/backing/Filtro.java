@@ -31,8 +31,10 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 import mx.org.kaana.mantic.db.dto.TcManticEgresosBitacoraDto;
@@ -52,11 +54,16 @@ public class Filtro extends Comun implements Serializable {
   private static final long serialVersionUID = 8793667741599428879L;
 
   protected FormatLazyModel lazyModelDetalle;
+  private String path;
 
   public FormatLazyModel getLazyModelDetalle() {
     return lazyModelDetalle;
   }
   
+  public String getPath() {
+    return path;
+  }
+
   @PostConstruct
   @Override
   protected void init() {
@@ -64,12 +71,14 @@ public class Filtro extends Comun implements Serializable {
     try {    	      
       this.attrs.put("descripcion", "");
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());  
-			loadEstatus();
+			this.loadEstatus();
 			idEgreso= (Long) JsfBase.getFlashAttribute("idEgreso");
 			if(idEgreso!= null){				
 				this.attrs.put("idEgreso", idEgreso);
 				this.doLoad();
 			} // if
+      String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
+      this.path = dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/egresos/");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -109,6 +118,7 @@ public class Filtro extends Comun implements Serializable {
 			params.put("sortOrder", "order by tc_mantic_egresos.registro desc, consecutivo desc");			
       this.lazyModel = new FormatCustomLazy("VistaEgresosDto", params, columns);
       UIBackingUtilities.resetDataTable();
+      this.attrs.put("importados", null);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -204,11 +214,12 @@ public class Filtro extends Comun implements Serializable {
 		return regresar;
 	} // doDetalle
 	
-	public String doImporta(){
+	public String doDocumentos() {
 		String regresar= null;
 		try {
+      Entity row= (Entity)this.attrs.get("seleccionado");
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Egresos/filtro");		
-			JsfBase.setFlashAttribute("idEgreso",((Entity)this.attrs.get("seleccionado")).getKey());
+			JsfBase.setFlashAttribute("idEgreso", row.getKey());
 			regresar= "importar".concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
@@ -216,7 +227,7 @@ public class Filtro extends Comun implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch		
 		return regresar;
-	} // doImportar
+	} // doImporta
 	
 	public StreamedContent getDocumento() {
 		StreamedContent regresar= null;		
@@ -460,5 +471,27 @@ public class Filtro extends Comun implements Serializable {
   public String toColor(Entity row) {
 		return "";
 	} 
+ 
+  public String toOcultar(Entity row) {
+		return row.toLong("idEliminado").equals(1L)? "janal-display-none": "";
+	} 
   
+  public void doLoadDocumentos(Entity row) {
+    Map<String, Object> params = null;
+    try {      
+      this.attrs.put("seleccionadoDetalle", row);
+      params = new HashMap<>();      
+      params.put("idEgreso", row.toLong("idEgreso"));      
+      params.put("idTipoDocumento", -1L);      
+      this.doLoadImportados("VistaEgresosDto", "importados", params);   
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+
 }
