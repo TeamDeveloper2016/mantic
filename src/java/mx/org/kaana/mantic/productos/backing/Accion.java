@@ -9,6 +9,7 @@ import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -210,22 +211,36 @@ public class Accion extends Contenedor implements Serializable {
     finally {
       Methods.clean(columns);
       Methods.clean(params);
-    }// finally    
+    } // finally    
 	}
  
 	public void doAgregarPartida(Entity articulo) {
+    Map<String, Object> params= new HashMap<>();
 		try {
       Partida partida= new Partida(articulo.toLong("idArticulo"), articulo.toString("codigo"), articulo.toString("propio"), articulo.toString("nombre"), articulo.toLong("idImagen"), articulo.toString("archivo"), "menudeo");
 			if(this.producto.getArticulos().indexOf(partida)>= 0) 
         this.attrs.put("existe", "<span class='janal-color-orange'>EL ARTICULO YA ESTA EN LA LISTA</span>");
-      this.producto.addPartida(partida);
-			UIBackingUtilities.execute("jsKardex.cursor.top= "+ (this.producto.getArticulos().size()- 1)+"; jsKardex.callback("+ articulo+");");
-			this.attrs.put("total", this.producto.getArticulos().size());
+      else {
+        params.put("idArticulo", articulo.toLong("idArticulo"));
+        params.put("idProducto", this.producto.getProducto().getIdProducto());
+        Entity entity= (Entity)DaoFactory.getInstance().toEntity("TcManticProductosDetallesDto", "existe", params);
+        if(entity!= null && !entity.isEmpty()) {
+          this.attrs.put("existe", "<span class='janal-color-orange'>EL ARTICULO YA ESTA EN OTRO PRODUCTO ["+ entity.toString("nombre")+ "]</span>");
+        } // if
+        else {
+          this.producto.addPartida(partida);
+          UIBackingUtilities.execute("jsKardex.cursor.top= "+ (this.producto.getArticulos().size()- 1)+"; jsKardex.callback("+ articulo+");");
+          this.attrs.put("total", this.producto.getArticulos().size());
+        } // else  
+      } // else  
 	  } // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
+    finally {
+      Methods.clean(params);
+    }// finally    
 	}
 
 	public void doEliminarPartida(Partida partida) {
@@ -277,6 +292,11 @@ public class Accion extends Contenedor implements Serializable {
     return ""; // Objects.equals(caracteristica.getAction(), ESql.DELETE)? "janal-display-none": "";
   }
 
+  public String toColorExiste(Entity row) {
+    int index= this.producto.getArticulos().indexOf(new Partida(row.toLong("idArticulo")));
+    return index>= 0? "janal-display-none": "";
+  }
+  
 	public void doAgregarCaracteristica() {
 		try {
       this.producto.addCaracteristica(new Caracteristica("CARACTERISTICA_"+ (this.producto.getCaracteristicas().size()+ 1)));

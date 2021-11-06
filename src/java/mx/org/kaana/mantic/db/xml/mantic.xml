@@ -233,6 +233,18 @@
         where      
           id_producto = {idProducto} and id_articulo = {idArticulo}
       </select>
+      <select id="existe">
+        select      
+          tc_mantic_productos_detalles.id_producto_detalle as id_key,
+          tc_mantic_productos.nombre
+        from      
+          tc_mantic_productos_detalles
+        inner join
+          tc_mantic_productos on tc_mantic_productos_detalles.id_producto= tc_mantic_productos.id_producto
+        where      
+          tc_mantic_productos.id_producto!= {idProducto} 
+          and tc_mantic_productos_detalles.id_articulo= {idArticulo}
+      </select>
     </unit>      
     <unit id="TcManticProductosCaracteristicasDto">
       <select id="row">

@@ -49,6 +49,10 @@ public final class Partida extends TcManticProductosDetallesDto implements Seria
     this(new Random().nextLong(), null, null, null, -1L, null, "menudeo");
   }
 
+  public Partida(Long idArticulo) {
+    this(idArticulo, null, null, null, -1L, null, "menudeo");
+  }
+  
   public Partida(Long idArticulo, String codigo, String propio, String nombre, Long idImagen, String archivo, String tipoVenta){
     super(new Random().nextLong());
     this.codigo  = codigo;

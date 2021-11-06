@@ -16,7 +16,7 @@
 				'contenedorGrupos\\:categoria'    : {validaciones: 'requerido|marca', mascara: 'marca', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:karca'        : {validaciones: 'marca', mascara: 'marca', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:marca'        : {validaciones: 'requerido|marca', mascara: 'marca', formatos: 'cambiar-mayusculas'},
-				'contenedorGrupos\\:nombre'       : {validaciones: 'requerido|texto', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:nombre'       : {validaciones: 'requerido|libre', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:idActivo'     : {validaciones: 'requerido|libre', mascara: 'libre'},
 				'contenedorGrupos\\:observaciones': {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'nombre'        : {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
@@ -191,7 +191,7 @@
                 <p:spacer width="3px"/>
                 <div class="ui-grid-row janal-grid-row">
                   <div class="ui-grid-col-12"> 
-                    <p:dataTable id="encontrados" var="row" lazy="true" value="#{manticProductosAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticProductosAccion.attrs.seleccionado}" selectionMode="single" paginator="#{manticProductosAccion.lazyModel.rowCount gt manticProductosAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+                    <p:dataTable id="encontrados" var="row" lazy="true" value="#{manticProductosAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticProductosAccion.attrs.seleccionado}" selectionMode="single" paginator="#{manticProductosAccion.lazyModel.rowCount gt manticProductosAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom"  rowStyleClass="#{manticProductosAccion.toColorExiste(row)}">
                       <f:facet name="header">
                         <div style="display: flex;">
                           <p:outputLabel value="Articulos encontrados" styleClass="janal-color-white"/>
