@@ -877,6 +877,15 @@
         where      
          id_egreso = {idEgreso} and id_nota_entrada = {idNotaEntrada}
       </select>
+      <select id="all">
+        select      
+          tc_mantic_egresos_notas.id_egreso_nota as id_key,
+          tc_mantic_egresos_notas.*
+        from      
+          tc_mantic_egresos_notas
+        where      
+          id_egreso = {idEgreso}
+      </select>
     </unit>		
     <unit id="TcManticEgresosEstatusDto">
       <select id="row">
@@ -2376,7 +2385,8 @@
       </select>
       <select id="all">
         select      
-          *
+          tc_mantic_notas_archivos.id_nota_archivo as id_key,
+          tc_mantic_notas_archivos.*
         from      
           tc_mantic_notas_archivos
         where      

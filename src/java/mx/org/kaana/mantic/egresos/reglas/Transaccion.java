@@ -10,6 +10,10 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
@@ -19,10 +23,14 @@ import mx.org.kaana.mantic.db.dto.TcManticEgresosArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEgresosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticEgresosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEgresosNotasDto;
+import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosDto;
+import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.enums.ECuentasEgresos;
 import mx.org.kaana.mantic.enums.EEstatusEgresos;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
+import mx.org.kaana.mantic.libs.factura.beans.ComprobanteFiscal;
+import mx.org.kaana.mantic.libs.factura.reglas.Reader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
@@ -99,8 +107,9 @@ public class Transaccion extends IBaseTnx {
 					regresar= this.asociarDocumento(sesion);
 					break;
 				case REGISTRAR:
-					regresar= true;
-					this.toUpdateDeleteXml(sesion);
+					regresar= this.toUpdateDeleteXml(sesion);
+          this.idEgreso= this.egreso.getIdEgreso();
+          this.toCheckDocumentos(sesion);
 					break;
 				case COMPLEMENTAR:
           if(this.checkDocumentos(sesion)) {
@@ -117,7 +126,9 @@ public class Transaccion extends IBaseTnx {
           regresar= DaoFactory.getInstance().update(sesion, this.egreso)>= 1L;
           break;
         case MOVIMIENTOS:  
+          this.idEgreso= this.documento.toLong("idEgreso");
           regresar= this.toDeleteDocumento(sesion);
+          this.toCheckDocumentos(sesion);
           break;
 			} // switch
 			if(!regresar)
@@ -187,7 +198,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // procesarDocumento
 	
-	protected void toUpdateDeleteXml(Session sesion) throws Exception {
+	protected boolean toUpdateDeleteXml(Session sesion) throws Exception {
 		TcManticEgresosArchivosDto tmp= null;
 		if(this.egreso.isValid()) {
 			if(this.xml!= null) {
@@ -284,6 +295,7 @@ public class Transaccion extends IBaseTnx {
 				// this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.jpg.getRuta()), ".".concat(this.jpg.getFormat().name()), this.toListFile(sesion, this.jpg, 17L));
 			} // if	      
   	} // if	
+    return Boolean.TRUE;
 	} // toUpdateDeleteXml
 	
 	private List<Nombres> toListFile(Session sesion, Importado tmp, Long idTipoArchivo) throws Exception {
@@ -357,6 +369,100 @@ public class Transaccion extends IBaseTnx {
     catch (Exception e) {
       throw e;
     } // catch	
+    return regresar;
+  }
+ 
+  private void toCheckDocumentos(Session sesion) throws Exception {
+    Map<String, Object> params = null;
+    try {      
+      params = new HashMap<>();      
+      params.put("idEgreso", this.idEgreso);      
+      List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "TcManticEgresosNotasDto", "all", params);
+      if(items!= null && !items.isEmpty())
+        for (Entity item : items) {
+          this.checkEstatus(sesion, item.toLong("idNotaEntrada"));
+        } // for
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
+  private Boolean checkEstatus(Session sesion, Long idNotaEntrada) throws Exception {
+    Boolean regresar          = false;
+    Map<String, Object> params= null;
+    try {      
+      TcManticNotasEntradasDto nota= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, idNotaEntrada);
+      params= new HashMap<>();  
+      params.put("sortOrder", "");
+      params.put("idEmpresa", nota.getIdEmpresa());
+      params.put("idProveedor", nota.getIdProveedor());
+      params.put(Constantes.SQL_CONDICION, "tc_mantic_notas_entradas.id_nota_entrada= "+ nota.getIdNotaEntrada());
+      if(Cadena.isVacio(nota.getFactura()) && this.xml!= null && Objects.equals(this.xml.getIdTipoDocumento(), 13L)) {
+        File file= new File(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.xml.getRuta()).concat(this.xml.getName()));
+        Reader reader= new Reader(file.getAbsolutePath());
+        ComprobanteFiscal factura = reader.execute();
+        nota.setFactura(factura.getFolio());
+        nota.setFechaFactura(Fecha.toDateDefault(factura.getFecha()));
+        nota.setOriginal(Numero.toRedondearSat(Double.parseDouble(factura.getTotal())));
+        DaoFactory.getInstance().update(sesion, nota);
+      } // if
+      // FALTA VERIFICAR QUE EN LOS DOCUMENTOS DE LA FACTURA REALMENTE SE TENGAN UN XML Y EL PDF DE LA FACTURA
+      boolean factura= this.checkTwoDocumentos(sesion, nota.getIdNotaEntrada());
+      Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaEmpresasDto", "documentos", params);
+      if(entity!= null && !entity.isEmpty()) {
+        Long idCompleto= 1L; // INICIAL
+        if(factura && entity.toLong("facturas")> 0 && entity.toLong("comprobantes")> 0 && entity.toLong("vouchers")> 0)
+          idCompleto= 3L; // COMPLETO
+        else
+          if(entity.toLong("facturas")> 0 || entity.toLong("comprobantes")> 0 || entity.toLong("vouchers")> 0)
+            idCompleto= 2L; // INCOMPLETO
+        params.put("idNotaEntrada", nota.getIdNotaEntrada());
+        TcManticEmpresasDeudasDto item= (TcManticEmpresasDeudasDto)DaoFactory.getInstance().toEntity(sesion, TcManticEmpresasDeudasDto.class, "TcManticEmpresasDeudasDto", "unica", params);
+        if(item!= null) {
+          item.setIdCompleto(idCompleto);
+          DaoFactory.getInstance().update(sesion, item);
+        } // if
+      } // if
+      regresar= true;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
+  private boolean checkTwoDocumentos(Session sesion, Long idNotaEntrada) throws Exception {
+    boolean regresar= Boolean.FALSE;
+    Map<String, Object> params = null;
+    try {      
+      params = new HashMap<>();      
+      params.put("idNotaEntrada", idNotaEntrada);      
+      List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "TcManticNotasArchivosDto", "all", params);
+      int count= 0;
+      if(items!= null && !items.isEmpty())
+        for (Entity item : items) {
+          if(Objects.equals(item.toLong("idTipoDocumento"), 13L)) {
+            if(Objects.equals(item.toLong("idTipoArchivo"), 1L) && Objects.equals(item.toLong("idEliminado"), 2L)) // XML
+              count++;
+            if(Objects.equals(item.toLong("idTipoArchivo"), 2L) && Objects.equals(item.toLong("idEliminado"), 2L)) // PDF
+              count++;
+          } // if  
+        } // for
+      regresar= count> 1;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
     return regresar;
   }
   

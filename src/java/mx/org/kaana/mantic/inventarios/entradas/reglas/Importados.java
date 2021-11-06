@@ -51,8 +51,8 @@ public class Importados extends Transaccion implements Serializable {
   private List<IEgresos> articulos;
   private Entity documento;
   
-  public Importados(Entity documento) {
-    super(new TcManticNotasEntradasDto());
+  public Importados(Entity documento) throws Exception {
+    super((TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, documento.toLong("idNotaEntrada")));
     this.documento= documento;  
   }
   
@@ -84,6 +84,7 @@ public class Importados extends Transaccion implements Serializable {
 					break;
 				case MOVIMIENTOS:
           regresar= this.toDeleteDocumento(sesion);
+          this.checkEstatus(sesion);
 					break;
 			} // switch
 		} // try
@@ -114,14 +115,16 @@ public class Importados extends Transaccion implements Serializable {
         this.orden.setOriginal(Numero.toRedondearSat(Double.parseDouble(factura.getTotal())));
         DaoFactory.getInstance().update(sesion, this.orden);
       } // if
+      // FALTA VERIFICAR QUE EN LOS DOCUMENTOS DE LA FACTURA REALMENTE SE TENGAN UN XML Y EL PDF DE LA FACTURA
+      boolean factura= this.checkTwoDocumentos(sesion, this.orden.getIdNotaEntrada());
       Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaEmpresasDto", "documentos", params);
       if(entity!= null && !entity.isEmpty()) {
-        Long idCompleto= 1L;
-        if(entity.toLong("facturas")> 0 && entity.toLong("comprobantes")> 0 && entity.toLong("vouchers")> 0)
-          idCompleto= 3L;
+        Long idCompleto= 1L; // INICIAL
+        if(factura && entity.toLong("facturas")> 0 && entity.toLong("comprobantes")> 0 && entity.toLong("vouchers")> 0)
+          idCompleto= 3L; // COMPLETO
         else
           if(entity.toLong("facturas")> 0 || entity.toLong("comprobantes")> 0 || entity.toLong("vouchers")> 0)
-            idCompleto= 2L;
+            idCompleto= 2L; // INCOMPLETO
         params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
         TcManticEmpresasDeudasDto item= (TcManticEmpresasDeudasDto)DaoFactory.getInstance().toEntity(sesion, TcManticEmpresasDeudasDto.class, "TcManticEmpresasDeudasDto", "unica", params);
         if(item!= null) {
@@ -130,6 +133,49 @@ public class Importados extends Transaccion implements Serializable {
         } // if
       } // if
       regresar= true;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
+  private boolean toDeleteDocumento(Session sesion) throws Exception {
+    boolean regresar= Boolean.FALSE;
+    try {      
+      TcManticNotasArchivosDto item= (TcManticNotasArchivosDto)DaoFactory.getInstance().findById(sesion, TcManticNotasArchivosDto.class, this.documento.getKey());
+      if(item!= null) {
+        item.setIdEliminado(Objects.equals(item.getIdEliminado(), 1L)? 2L: 1L);
+        regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
+        this.documento.getValue("idEliminado").setData(item.getIdEliminado());
+      } // if
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    return regresar;
+  }
+  
+  private boolean checkTwoDocumentos(Session sesion, Long idNotaEntrada) throws Exception {
+    boolean regresar= Boolean.FALSE;
+    Map<String, Object> params = null;
+    try {      
+      params = new HashMap<>();      
+      params.put("idNotaEntrada", idNotaEntrada);      
+      List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "TcManticNotasArchivosDto", "all", params);
+      int count= 0;
+      for (Entity item : items) {
+        if(Objects.equals(item.toLong("idTipoDocumento"), 13L)) {
+          if(Objects.equals(item.toLong("idTipoArchivo"), 1L) && Objects.equals(item.toLong("idEliminado"), 2L)) // XML
+            count++;
+          if(Objects.equals(item.toLong("idTipoArchivo"), 2L) && Objects.equals(item.toLong("idEliminado"), 2L)) // PDF
+            count++;
+        } // if  
+      } // for
+      regresar= count> 1;
     } // try
     catch (Exception e) {
       throw e;
@@ -160,16 +206,20 @@ public class Importados extends Transaccion implements Serializable {
         } // switch
         params.put("idEgreso", item.getIdEgreso());
       } // for
+      sesion.flush();
       Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaEgresosDto", "documentos", params);
-      if(count> 0 || (entity!= null && !entity.isEmpty() && entity.toLong("total")> 0)) {
-        Long idCompleto= 2L;
-        TcManticEgresosDto item= (TcManticEgresosDto)DaoFactory.getInstance().toEntity(sesion, TcManticEgresosDto.class, "TcManticEgresosDto", "detalle", params);
-        if(item!= null && item.getIdEgresoEstatus()< idCompleto) {
-          TcManticEgresosBitacoraDto bitacora= new TcManticEgresosBitacoraDto("CAMBIO AUTOMATICO", idCompleto, item.getIdEgreso(), JsfBase.getIdUsuario(), -1L);
-          DaoFactory.getInstance().insert(sesion, bitacora);
-          item.setIdEgresoEstatus(idCompleto);
-          DaoFactory.getInstance().update(sesion, item);
-        } // if
+      Long idEgresoEstatus= 1L;
+      if(count> 0 || (entity!= null && !entity.isEmpty() && Objects.equals(entity.toLong("total"), entity.toLong("completos"))))
+        idEgresoEstatus= 3L;
+      else
+        if(count> 0 || (entity!= null && !entity.isEmpty() && entity.toLong("completos")> 0))
+          idEgresoEstatus= 2L;
+      TcManticEgresosDto item= (TcManticEgresosDto)DaoFactory.getInstance().toEntity(sesion, TcManticEgresosDto.class, "TcManticEgresosDto", "detalle", params);
+      if(item!= null && item.getIdEgresoEstatus()< idEgresoEstatus) {
+        TcManticEgresosBitacoraDto bitacora= new TcManticEgresosBitacoraDto("CAMBIO AUTOMATICO", idEgresoEstatus, item.getIdEgreso(), JsfBase.getIdUsuario(), -1L);
+        DaoFactory.getInstance().insert(sesion, bitacora);
+        item.setIdEgresoEstatus(idEgresoEstatus);
+        DaoFactory.getInstance().update(sesion, item);
       } // if
     regresar= true;
     } // try
@@ -179,22 +229,6 @@ public class Importados extends Transaccion implements Serializable {
     finally {
       Methods.clean(params);
     } // finally
-    return regresar;
-  }
-
-  private boolean toDeleteDocumento(Session sesion) throws Exception {
-    boolean regresar= Boolean.FALSE;
-    try {      
-      TcManticNotasArchivosDto item= (TcManticNotasArchivosDto)DaoFactory.getInstance().findById(sesion, TcManticNotasArchivosDto.class, this.documento.getKey());
-      if(item!= null) {
-        item.setIdEliminado(Objects.equals(item.getIdEliminado(), 1L)? 2L: 1L);
-        regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
-        this.documento.getValue("idEliminado").setData(item.getIdEliminado());
-      } // if
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch	
     return regresar;
   }
   
