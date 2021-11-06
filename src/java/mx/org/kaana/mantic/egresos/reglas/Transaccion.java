@@ -394,24 +394,16 @@ public class Transaccion extends IBaseTnx {
   private Boolean checkEstatus(Session sesion, Long idNotaEntrada) throws Exception {
     Boolean regresar          = false;
     Map<String, Object> params= null;
+    TcManticNotasEntradasDto entrada= null;
     try {      
-      TcManticNotasEntradasDto nota= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, idNotaEntrada);
+      entrada= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, idNotaEntrada);
       params= new HashMap<>();  
       params.put("sortOrder", "");
-      params.put("idEmpresa", nota.getIdEmpresa());
-      params.put("idProveedor", nota.getIdProveedor());
-      params.put(Constantes.SQL_CONDICION, "tc_mantic_notas_entradas.id_nota_entrada= "+ nota.getIdNotaEntrada());
-      if(Cadena.isVacio(nota.getFactura()) && this.xml!= null && Objects.equals(this.xml.getIdTipoDocumento(), 13L)) {
-        File file= new File(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.xml.getRuta()).concat(this.xml.getName()));
-        Reader reader= new Reader(file.getAbsolutePath());
-        ComprobanteFiscal factura = reader.execute();
-        nota.setFactura(factura.getFolio());
-        nota.setFechaFactura(Fecha.toDateDefault(factura.getFecha()));
-        nota.setOriginal(Numero.toRedondearSat(Double.parseDouble(factura.getTotal())));
-        DaoFactory.getInstance().update(sesion, nota);
-      } // if
+      params.put("idEmpresa", entrada.getIdEmpresa());
+      params.put("idProveedor", entrada.getIdProveedor());
+      params.put(Constantes.SQL_CONDICION, "tc_mantic_notas_entradas.id_nota_entrada= "+ entrada.getIdNotaEntrada());
       // FALTA VERIFICAR QUE EN LOS DOCUMENTOS DE LA FACTURA REALMENTE SE TENGAN UN XML Y EL PDF DE LA FACTURA
-      boolean factura= this.checkTwoDocumentos(sesion, nota.getIdNotaEntrada());
+      boolean factura= this.checkTwoDocumentos(sesion, entrada.getIdNotaEntrada());
       Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaEmpresasDto", "documentos", params);
       if(entity!= null && !entity.isEmpty()) {
         Long idCompleto= 1L; // INICIAL
@@ -420,7 +412,7 @@ public class Transaccion extends IBaseTnx {
         else
           if(entity.toLong("facturas")> 0 || entity.toLong("comprobantes")> 0 || entity.toLong("vouchers")> 0)
             idCompleto= 2L; // INCOMPLETO
-        params.put("idNotaEntrada", nota.getIdNotaEntrada());
+        params.put("idNotaEntrada", entrada.getIdNotaEntrada());
         TcManticEmpresasDeudasDto item= (TcManticEmpresasDeudasDto)DaoFactory.getInstance().toEntity(sesion, TcManticEmpresasDeudasDto.class, "TcManticEmpresasDeudasDto", "unica", params);
         if(item!= null) {
           item.setIdCompleto(idCompleto);
@@ -445,17 +437,17 @@ public class Transaccion extends IBaseTnx {
       params = new HashMap<>();      
       params.put("idNotaEntrada", idNotaEntrada);      
       List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "TcManticNotasArchivosDto", "all", params);
-      int count= 0;
+      int countPdf= 0, countXml= 0;
       if(items!= null && !items.isEmpty())
         for (Entity item : items) {
           if(Objects.equals(item.toLong("idTipoDocumento"), 13L)) {
             if(Objects.equals(item.toLong("idTipoArchivo"), 1L) && Objects.equals(item.toLong("idEliminado"), 2L)) // XML
-              count++;
+              countPdf++;
             if(Objects.equals(item.toLong("idTipoArchivo"), 2L) && Objects.equals(item.toLong("idEliminado"), 2L)) // PDF
-              count++;
+              countXml++;
           } // if  
         } // for
-      regresar= count> 1;
+      regresar= countPdf> 1 && countXml> 1;
     } // try
     catch (Exception e) {
       throw e;

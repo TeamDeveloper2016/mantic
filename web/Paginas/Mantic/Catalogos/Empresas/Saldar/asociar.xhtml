@@ -11,7 +11,7 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-				'control\\:consecutivo' : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'consecutivo'},
+				'control\\:consecutivo' : {validaciones: 'requerido', mascara: 'libre', grupo: 'consecutivo'},
 				'control\\:factura'     : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'factura'},
 				'control\\:importeInicio' : {validaciones: 'requerido', mascara: 'libre', grupo: 'importe'},
 				'control\\:importeTermino': {validaciones: 'libre', mascara: 'libre', grupo: 'importe'},
@@ -54,7 +54,7 @@
                 <p:ajax event="tabChange" listener="#{manticCatalogosEmpresasSaldarAsociar.doTabChange}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.hide();"/>
                 <p:tab title="Consecutivo" titleStyleClass="consecutivo">
                   <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-97, janal-fix-3 janal-column-center">
-                    <p:inputNumber id="consecutivo" value="#{manticCatalogosEmpresasSaldarAsociar.attrs.codigo}" styleClass="control janal-wid-100-txt" decimalPlaces="0"/>
+                    <p:inputText id="consecutivo" value="#{manticCatalogosEmpresasSaldarAsociar.attrs.codigo}" styleClass="control janal-wid-100-txt"/>
                     <p:commandButton icon="fa fa-search" process="@this consecutivo" update="encontrados" actionListener="#{manticCatalogosEmpresasSaldarAsociar.doLoad}" onstart="return janal.partial('consecutivo', true);" oncomplete="janal.desbloquear()"/>                  
                   </p:panelGrid>   
                 </p:tab>  

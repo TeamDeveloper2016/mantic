@@ -209,13 +209,13 @@ public class Importados extends Transaccion implements Serializable {
       sesion.flush();
       Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaEgresosDto", "documentos", params);
       Long idEgresoEstatus= 1L;
-      if(count> 0 || (entity!= null && !entity.isEmpty() && Objects.equals(entity.toLong("total"), entity.toLong("completos"))))
+      if(count> 0 && entity!= null && !entity.isEmpty() && Objects.equals(entity.toLong("total"), entity.toLong("completos")))
         idEgresoEstatus= 3L;
       else
-        if(count> 0 || (entity!= null && !entity.isEmpty() && entity.toLong("completos")> 0))
+        if(count> 0 && entity!= null && !entity.isEmpty() && entity.toLong("completos")> 0)
           idEgresoEstatus= 2L;
       TcManticEgresosDto item= (TcManticEgresosDto)DaoFactory.getInstance().toEntity(sesion, TcManticEgresosDto.class, "TcManticEgresosDto", "detalle", params);
-      if(item!= null && item.getIdEgresoEstatus()< idEgresoEstatus) {
+      if(item!= null) {
         TcManticEgresosBitacoraDto bitacora= new TcManticEgresosBitacoraDto("CAMBIO AUTOMATICO", idEgresoEstatus, item.getIdEgreso(), JsfBase.getIdUsuario(), -1L);
         DaoFactory.getInstance().insert(sesion, bitacora);
         item.setIdEgresoEstatus(idEgresoEstatus);

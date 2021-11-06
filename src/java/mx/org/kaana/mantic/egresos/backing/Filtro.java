@@ -72,8 +72,8 @@ public class Filtro extends Comun implements Serializable {
       this.attrs.put("descripcion", "");
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());  
 			this.loadEstatus();
-			idEgreso= (Long) JsfBase.getFlashAttribute("idEgreso");
-			if(idEgreso!= null){				
+			idEgreso= (Long)JsfBase.getFlashAttribute("idEgreso");
+			if(idEgreso!= null) {
 				this.attrs.put("idEgreso", idEgreso);
 				this.doLoad();
 			} // if
@@ -381,8 +381,8 @@ public class Filtro extends Comun implements Serializable {
 	}	// doActualizaEstatus
   
 	public String doNotaEntrada() {
-		JsfBase.setFlashAttribute("idNotaEntrada", this.attrs.get("idNotaEntrada"));
-		return "/Paginas/Mantic/Inventarios/Entradas/filtro".concat(Constantes.REDIRECIONAR);
+		JsfBase.setFlashAttribute("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));
+		return "/Paginas/Mantic/Catalogos/Empresas/Saldar/filtro".concat(Constantes.REDIRECIONAR);
 	}
   
 	public void doRowToggle(ToggleEvent event) {

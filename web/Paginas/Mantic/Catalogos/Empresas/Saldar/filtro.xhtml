@@ -332,7 +332,10 @@
 							<h:outputText value="#{index+ 1}.-"/>
 						</p:column>   
 						<p:column headerText="Consecutivo" styleClass="janal-wid-10 janal-column-center" sortBy="#{row.consecutivo}">
-							<h:outputText value="#{row['consecutivo']}"/>
+              <p:commandLink action="#{manticCatalogosEmpresasSaldarFiltro.doEstadoCuenta}">
+                <f:setPropertyActionListener target="#{manticCatalogosEmpresasSaldarFiltro.attrs.idEgreso}" value="#{row.idPivote.toLong}"/>
+                <h:outputText value="#{row['consecutivo']}"/>
+              </p:commandLink>	
 						</p:column>   
 						<p:column headerText="Fecha" styleClass="janal-wid-8 janal-column-center" sortBy="#{row.fecha}">
 							<h:outputText value="#{row['fecha']}"/>

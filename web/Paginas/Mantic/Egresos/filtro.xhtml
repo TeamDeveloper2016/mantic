@@ -203,7 +203,7 @@
                     <h:outputText value="Nota entrada"/>
                   </f:facet>
                   <p:commandLink action="#{manticEgresosFiltro.doNotaEntrada}">
-                    <f:setPropertyActionListener target="#{manticEgresosFiltro.attrs.idNotaEntrada}" value="#{row.idNotaEntrada}"/>
+                    <f:setPropertyActionListener target="#{manticEgresosFiltro.attrs.idEmpresaDeuda}" value="#{row.idEmpresaDeuda.toLong}"/>
                     <h:outputText value="#{row['consecutivo']}"/>
                   </p:commandLink>	
                 </p:column>														

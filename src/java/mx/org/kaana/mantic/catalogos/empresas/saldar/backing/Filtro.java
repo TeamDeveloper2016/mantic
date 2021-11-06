@@ -55,7 +55,7 @@ public class Filtro extends Saldos implements Serializable {
   @PostConstruct
   @Override
   protected void init() {
-    this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada"));     
+    this.attrs.put("idEmpresaDeuda", JsfBase.getFlashAttribute("idEmpresaDeuda"));     
     super.init();
     String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
     this.path = dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/archivos/");
@@ -154,6 +154,7 @@ public class Filtro extends Saldos implements Serializable {
 		try {
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Empresas/Saldar/filtro");		
 			JsfBase.setFlashAttribute("idNotaEntrada", ((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idNotaEntrada"));
+			JsfBase.setFlashAttribute("idEmpresaDeuda", ((Entity)this.attrs.get("seleccionadoDetalle")).toLong("idEmpresaDeuda"));
 			regresar= "asociar".concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
@@ -325,5 +326,10 @@ public class Filtro extends Saldos implements Serializable {
 		} // catch		
 		return regresar;
 	} // loadNotas
+ 
+	public String doEstadoCuenta() {
+		JsfBase.setFlashAttribute("idEgreso", this.attrs.get("idEgreso"));
+		return "/Paginas/Mantic/Egresos/filtro".concat(Constantes.REDIRECIONAR);
+	}
   
 }

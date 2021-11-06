@@ -80,6 +80,7 @@ public class Asociar extends IBaseFilter implements Serializable {
       	UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("codigo", "");
       this.attrs.put("buscaPorFecha", false);
+      this.attrs.put("idEmpresaDeuda", JsfBase.getFlashAttribute("idEmpresaDeuda")== null? -1L: (Long)JsfBase.getFlashAttribute("idEmpresaDeuda"));
       this.idNotaEntrada= JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: (Long)JsfBase.getFlashAttribute("idNotaEntrada");
       params.put("idNotaEntrada", this.idNotaEntrada);      
       this.orden= (Entity)DaoFactory.getInstance().toEntity("TcManticNotasEntradasDto", "detalle", params);
@@ -268,7 +269,8 @@ public class Asociar extends IBaseFilter implements Serializable {
 	}
 
 	public String doCancelar() {   
-  	JsfBase.setFlashAttribute("idNotaEntrada", this.attrs.get("idNotaEntrada"));
+  	JsfBase.setFlashAttribute("idNotaEntrada", this.idNotaEntrada);
+  	JsfBase.setFlashAttribute("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 

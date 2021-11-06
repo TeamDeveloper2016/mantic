@@ -11201,6 +11201,7 @@
         select      
           tc_mantic_egresos_notas.id_egreso_nota as id_key,
           tc_mantic_egresos_notas.id_egreso as id_pivote,
+          tc_mantic_empresas_deudas.id_empresa_deuda,
           tc_mantic_notas_entradas.consecutivo,
           tc_mantic_notas_entradas.factura,
           tc_mantic_notas_entradas.fecha_factura,
