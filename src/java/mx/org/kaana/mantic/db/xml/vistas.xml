@@ -11075,32 +11075,61 @@
 		<unit id="VistaEgresosDto">
       <select id="exportar">
         select
-          tc_mantic_notas_archivos.id_nota_archivo as id_key,
-          concat('N-', tc_mantic_notas_entradas.consecutivo) as consecutivo,
-          tc_mantic_tipos_archivos.nombre as tipo,
-          tc_mantic_notas_archivos.id_nota_entrada,
-          tc_mantic_notas_archivos.id_tipo_documento,
-          tc_mantic_notas_archivos.id_tipo_archivo,
-          tc_mantic_notas_archivos.nombre,
-          tc_mantic_notas_archivos.ruta,
-          tc_mantic_notas_archivos.alias
-        from
-          tc_mantic_egresos_notas         
-        inner join
-          tc_mantic_egresos on tc_mantic_egresos_notas.id_egreso= tc_mantic_egresos.id_egreso         
-        inner join
-          tc_mantic_notas_entradas on tc_mantic_egresos_notas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada         
-        inner join
-          tc_mantic_notas_archivos on tc_mantic_egresos_notas.id_nota_entrada= tc_mantic_notas_archivos.id_nota_entrada         
-        inner join
-          tc_mantic_tipos_archivos on tc_mantic_notas_archivos.id_tipo_documento= tc_mantic_tipos_archivos.id_tipo_archivo
-        where
-          tc_mantic_egresos_notas.id_egreso= {idEgreso}     
-          and tc_mantic_notas_archivos.id_principal= 1    
-        order by
-          tc_mantic_notas_archivos.id_tipo_documento,
-          tc_mantic_notas_archivos.id_tipo_archivo,
-          tc_mantic_notas_archivos.registro desc        
+          tt_keet_documentos.*
+        from (         
+          select
+            tc_mantic_notas_archivos.id_nota_archivo as id_key,
+            concat('N-', tc_mantic_notas_entradas.consecutivo) as consecutivo,
+            tc_mantic_tipos_archivos.nombre as tipo,
+            tc_mantic_notas_archivos.id_nota_entrada,
+            tc_mantic_notas_archivos.id_tipo_documento,
+            tc_mantic_notas_archivos.id_tipo_archivo,
+            tc_mantic_notas_archivos.nombre,
+            tc_mantic_notas_archivos.ruta,
+            tc_mantic_notas_archivos.alias,
+            tc_mantic_notas_archivos.registro
+          from
+            tc_mantic_egresos_notas         
+          inner join
+            tc_mantic_egresos on tc_mantic_egresos_notas.id_egreso= tc_mantic_egresos.id_egreso         
+          inner join
+            tc_mantic_notas_entradas on tc_mantic_egresos_notas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada         
+          inner join
+            tc_mantic_notas_archivos on tc_mantic_egresos_notas.id_nota_entrada= tc_mantic_notas_archivos.id_nota_entrada         
+          inner join
+            tc_mantic_tipos_archivos on tc_mantic_notas_archivos.id_tipo_documento= tc_mantic_tipos_archivos.id_tipo_archivo
+          where
+            tc_mantic_egresos_notas.id_egreso= {idEgreso}
+            and tc_mantic_notas_archivos.id_eliminado= 2
+          union all
+          select
+            (50000+ tc_mantic_egresos_archivos.id_egreso_archivo) as id_key,
+            concat('E-', tc_mantic_egresos.consecutivo) as consecutivo,
+            tc_mantic_tipos_archivos.nombre as tipo,
+            tc_mantic_egresos_notas.id_nota_entrada,
+            tc_mantic_egresos_archivos.id_tipo_documento,
+            tc_mantic_egresos_archivos.id_tipo_archivo,
+            tc_mantic_egresos_archivos.nombre,
+            tc_mantic_egresos_archivos.ruta,
+            tc_mantic_egresos_archivos.alias,
+            tc_mantic_egresos_archivos.registro
+          from
+            tc_mantic_egresos_notas         
+          inner join
+            tc_mantic_egresos on tc_mantic_egresos_notas.id_egreso= tc_mantic_egresos.id_egreso
+          inner join
+            tc_mantic_egresos_archivos on tc_mantic_egresos.id_egreso= tc_mantic_egresos_archivos.id_egreso
+          inner join
+            tc_mantic_tipos_archivos on tc_mantic_egresos_archivos.id_tipo_documento= tc_mantic_tipos_archivos.id_tipo_archivo
+          where
+            tc_mantic_egresos_notas.id_egreso= {idEgreso}
+            and tc_mantic_egresos_archivos.id_eliminado= 2
+       ) as tt_keet_documentos   
+       order by          
+          tt_keet_documentos.consecutivo,
+          tt_keet_documentos.id_tipo_documento,
+          tt_keet_documentos.id_tipo_archivo,
+          tt_keet_documentos.registro desc   
       </select>
 			<select id="lazy">
 				select 
@@ -11108,8 +11137,9 @@
 					tc_mantic_egresos.*,
 					tc_mantic_egresos_estatus.nombre,
 					tc_mantic_egresos_estatus.estatus_asociados,
-          sum(if(tc_mantic_egresos_notas.id_egreso is null, 0, 1)) as documentos
-				from 
+          sum(if(tc_mantic_egresos_notas.id_egreso is null, 0, 1)) as cuentas,
+          (select count(*) from tc_mantic_egresos_archivos where tc_mantic_egresos_archivos.id_egreso= tc_mantic_egresos.id_egreso and tc_mantic_egresos_archivos.id_eliminado= 2) as documentos				
+        from 
 					tc_mantic_egresos
 				inner join 
 					tc_mantic_egresos_estatus on tc_mantic_egresos.id_egreso_estatus = tc_mantic_egresos_estatus.id_egreso_estatus

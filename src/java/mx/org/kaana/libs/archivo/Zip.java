@@ -268,7 +268,7 @@ public class Zip {
 		compactar(nombre, files, new ArrayList<>());
 	} // compactar
 	
-  public void compactar(String nombre, List<ZipEgreso> files, List<String>notas) throws Exception {
+  public void compactar(String nombre, List<ZipEgreso> files, List<String> notas) throws Exception {
     try {
 			setNombre(nombre);						
 			FileOutputStream destino = new FileOutputStream(getNombre());
@@ -288,7 +288,7 @@ public class Zip {
               LOG.debug("Sumando: " + name);
             FileInputStream fi = new FileInputStream(name);
             origen = new BufferedInputStream(fi, BUFFER);
-            ZipEntry entry = new ZipEntry(egreso.getCarpeta().substring(egreso.getCarpeta().lastIndexOf("/")+1, egreso.getCarpeta().length()).concat("/").concat(name.substring(name.lastIndexOf("/")+1, name.length())));
+            ZipEntry entry = new ZipEntry(egreso.getCarpeta().concat("/").concat(name.substring(name.lastIndexOf("/")+ 1, name.length())));
             out.putNextEntry(entry);
             int count;
             while ((count = origen.read(data, 0, BUFFER)) != -1) {
