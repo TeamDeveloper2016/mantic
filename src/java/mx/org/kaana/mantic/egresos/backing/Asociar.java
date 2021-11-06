@@ -275,6 +275,11 @@ public class Asociar extends IBaseFilter implements Serializable {
     return Objects.equals(row.getAccion(), ESql.DELETE)? "janal-display-none": "";
   }
 
+  public String toColorExiste(Entity row) {
+    int index= this.articulos.indexOf(new Nota(row.toLong("idNotaEntrada")));
+    return index>= 0? "janal-display-none": "";
+  }
+
 	public void doTabChange(TabChangeEvent event) {
     TabView tab= (TabView)event.getTab().getParent();
     this.control= tab.getActiveIndex();

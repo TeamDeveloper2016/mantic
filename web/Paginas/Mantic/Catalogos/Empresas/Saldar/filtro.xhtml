@@ -268,7 +268,7 @@
               <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="detalle"> 
                 <p:menuitem icon="fa fa-external-link" value="Importar documentos" title="Documentos" onstart="return janal.bloquear()" process="@this detalle" action="#{manticCatalogosEmpresasSaldarFiltro.doImportar}"/>
                 <p:separator/>
-                <p:menuitem icon="fa fa-server" value="Asociar egreso" title="Estado de cuenta" onstart="return janal.bloquear()" process="@this detalle" action="#{manticCatalogosEmpresasSaldarFiltro.doAsociar}"/>
+                <p:menuitem icon="fa fa-server" value="Asociar estado cuenta" title="Estado de cuenta" onstart="return janal.bloquear()" process="@this detalle" action="#{manticCatalogosEmpresasSaldarFiltro.doAsociar}"/>
               </p:contextMenu>
               <h:commandLink id="detallePdf">
                 <pe:exporter type="pdf" skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 

@@ -200,7 +200,7 @@
                 </p:column>   
                 <p:column styleClass="MarAuto Responsive janal-wid-12 janal-column-center" sortBy="#{row.consecutivo}">
                   <f:facet name="header">
-                    <h:outputText value="Nota entrada"/>
+                    <h:outputText value="Cuenta x saldar"/>
                   </f:facet>
                   <p:commandLink action="#{manticEgresosFiltro.doNotaEntrada}">
                     <f:setPropertyActionListener target="#{manticEgresosFiltro.attrs.idEmpresaDeuda}" value="#{row.idEmpresaDeuda.toLong}"/>

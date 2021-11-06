@@ -109,7 +109,7 @@
 			<p:spacer width="3px"/>
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12"> 
-          <p:dataTable id="encontrados" var="row" lazy="true" value="#{manticEgresosAsociar.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticEgresosAsociar.attrs.seleccionado}" selectionMode="single" paginator="#{manticEgresosAsociar.lazyModel.rowCount gt manticEgresosAsociar.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+          <p:dataTable id="encontrados" var="row" lazy="true" value="#{manticEgresosAsociar.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticEgresosAsociar.attrs.seleccionado}" selectionMode="single" paginator="#{manticEgresosAsociar.lazyModel.rowCount gt manticEgresosAsociar.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowStyleClass="#{manticEgresosAsociar.toColorExiste(row)}">
 					  <f:facet name="header">
 							<div style="display: flex;">
 							  <p:outputLabel value="Cuentas por pagar encontrada(s) ..." styleClass="janal-color-white"/>

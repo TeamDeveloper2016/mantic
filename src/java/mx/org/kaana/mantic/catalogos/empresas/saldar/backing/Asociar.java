@@ -124,7 +124,6 @@ public class Asociar extends IBaseFilter implements Serializable {
 			} // if	
 			else
 				search= "WXYZ";
-      params.put("sortOrder", "order by tc_mantic_notas_entradas.registro desc");
       StringBuilder sb= new StringBuilder();
       switch(this.control) {
         case 0: // consecutivo
@@ -147,7 +146,7 @@ public class Asociar extends IBaseFilter implements Serializable {
          break;
       } // switch
       params.put(Constantes.SQL_CONDICION, sb.toString());
-      params.put("sortOrder", "order by registro desc");
+      params.put("sortOrder", "order by consecutivo desc");
       this.lazyModel= new FormatCustomLazy("TcManticEgresosDto", "porComodin", params, columns);
       UIBackingUtilities.resetDataTable("encontrados");
 		} // try
@@ -278,6 +277,11 @@ public class Asociar extends IBaseFilter implements Serializable {
     return Objects.equals(row.getAccion(), ESql.DELETE)? "janal-display-none": "";
   }
 
+  public String toColorExiste(Entity row) {
+    int index= this.articulos.indexOf(new Egreso(row.toLong("idEgreso")));
+    return index>= 0? "janal-display-none": "";
+  }
+  
 	public void doTabChange(TabChangeEvent event) {
     TabView tab= (TabView)event.getTab().getParent();
     this.control= tab.getActiveIndex();

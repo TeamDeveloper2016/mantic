@@ -1,6 +1,5 @@
 package mx.org.kaana.mantic.inventarios.entradas.reglas;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,12 +16,8 @@ import static mx.org.kaana.kajool.enums.ESql.DELETE;
 import static mx.org.kaana.kajool.enums.ESql.INSERT;
 import static mx.org.kaana.kajool.enums.ESql.SELECT;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.libs.formato.Fecha;
-import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.db.dto.TcManticEgresosBitacoraDto;
@@ -31,8 +26,6 @@ import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.egresos.beans.IEgresos;
-import mx.org.kaana.mantic.libs.factura.beans.ComprobanteFiscal;
-import mx.org.kaana.mantic.libs.factura.reglas.Reader;
 import org.apache.log4j.Logger;
 
 /**
@@ -56,8 +49,8 @@ public class Importados extends Transaccion implements Serializable {
     this.documento= documento;  
   }
   
-  public Importados(List<IEgresos> articulos) {
-    super(new TcManticNotasEntradasDto(), Collections.EMPTY_LIST, true, null, null);
+  public Importados(List<IEgresos> articulos) throws Exception {
+    super(new TcManticNotasEntradasDto());
     this.articulos= articulos;
   }
           
@@ -77,14 +70,16 @@ public class Importados extends Transaccion implements Serializable {
 			switch(accion) {
 				case AGREGAR:
      	    this.toUpdateDeleteXml(sesion);	
-          regresar= this.checkEstatus(sesion);
+          regresar= this.toCheckEstatus(sesion);
+          this.toCheckDocumentoEgreso(sesion, this.orden.getIdNotaEntrada());
 					break;
 				case PROCESAR:
           regresar= this.toUpdatePartidas(sesion);
 					break;
 				case MOVIMIENTOS:
-          regresar= this.toDeleteDocumento(sesion);
-          this.checkEstatus(sesion);
+          this.toDeleteDocumento(sesion);
+          regresar= this.toCheckEstatus(sesion);
+          this.toCheckDocumentoEgreso(sesion, this.documento.toLong("idNotaEntrada"));
 					break;
 			} // switch
 		} // try
@@ -97,7 +92,7 @@ public class Importados extends Transaccion implements Serializable {
 		return regresar;
 	}	// ejecutar
 
-  private Boolean checkEstatus(Session sesion) throws Exception {
+  private Boolean toCheckEstatus(Session sesion) throws Exception {
     Boolean regresar= false;
     Map<String, Object> params = null;
     try {      
@@ -106,15 +101,6 @@ public class Importados extends Transaccion implements Serializable {
       params.put("idEmpresa", this.orden.getIdEmpresa());
       params.put("idProveedor", this.orden.getIdProveedor());
       params.put(Constantes.SQL_CONDICION, "tc_mantic_notas_entradas.id_nota_entrada= "+ this.orden.getIdNotaEntrada());
-      if(Cadena.isVacio(this.orden.getFactura()) && this.xml!= null && Objects.equals(this.xml.getIdTipoDocumento(), 13L)) {
-        File file= new File(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.xml.getRuta()).concat(this.xml.getName()));
-        Reader reader= new Reader(file.getAbsolutePath());
-        ComprobanteFiscal factura = reader.execute();
-        this.orden.setFactura(factura.getFolio());
-        this.orden.setFechaFactura(Fecha.toDateDefault(factura.getFecha()));
-        this.orden.setOriginal(Numero.toRedondearSat(Double.parseDouble(factura.getTotal())));
-        DaoFactory.getInstance().update(sesion, this.orden);
-      } // if
       // FALTA VERIFICAR QUE EN LOS DOCUMENTOS DE LA FACTURA REALMENTE SE TENGAN UN XML Y EL PDF DE LA FACTURA
       boolean factura= this.checkTwoDocumentos(sesion, this.orden.getIdNotaEntrada());
       Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaEmpresasDto", "documentos", params);
@@ -132,6 +118,7 @@ public class Importados extends Transaccion implements Serializable {
           DaoFactory.getInstance().update(sesion, item);
         } // if
       } // if
+      sesion.flush();
       regresar= true;
     } // try
     catch (Exception e) {
@@ -187,32 +174,67 @@ public class Importados extends Transaccion implements Serializable {
   }
   
   private Boolean toUpdatePartidas(Session sesion) throws Exception {
-    Boolean regresar= false;
-    Map<String, Object> params = null;
+    Long idPivoteNota         = -1L;
+    Long idPivoteEgreso       = -1L;
+    Boolean regresar          = false;
+    Map<String, Object> params= null;
     try {      
       params= new HashMap<>();  
-      int count= 0;
       for (IEgresos item: this.articulos) {
         switch(item.getAccion()) {
           case SELECT:
             break;
           case INSERT:
             DaoFactory.getInstance().insert(sesion, (IBaseDto)item);
-            count++;
             break;
           case DELETE:
             DaoFactory.getInstance().delete(sesion, (IBaseDto)item);
             break;
         } // switch
-        params.put("idEgreso", item.getIdEgreso());
       } // for
       sesion.flush();
+      // VERIFICAR EL ESTATUS POR CUENTA X PAGAR
+      for (IEgresos item: this.articulos) {
+        switch(item.getAccion()) {
+          case SELECT:
+            break;
+          case INSERT:
+          case DELETE:
+            if(Objects.equals(idPivoteNota, -1L) || !Objects.equals(idPivoteNota, item.getIdNotaEntrada())) {
+              this.orden= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, item.getIdNotaEntrada());
+              this.toCheckEstatus(sesion);
+              idPivoteNota= item.getIdNotaEntrada();
+            } // if  
+            if(Objects.equals(idPivoteEgreso, -1L) || !Objects.equals(idPivoteEgreso, item.getIdEgreso())) { 
+              this.toCheckEstatusGlobal(sesion, item.getIdEgreso());
+              idPivoteEgreso= item.getIdEgreso();
+            } // if  
+            break;
+        } // switch
+      } // if
+      regresar= true;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
+  private Boolean toCheckEstatusGlobal(Session sesion, Long idEgreso) throws Exception {
+    Boolean regresar          = false;
+    Map<String, Object> params= null;
+    try {      
+      params= new HashMap<>();  
+      params.put("idEgreso", idEgreso);      
       Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaEgresosDto", "documentos", params);
       Long idEgresoEstatus= 1L;
-      if(count> 0 && entity!= null && !entity.isEmpty() && Objects.equals(entity.toLong("total"), entity.toLong("completos")))
+      if(entity!= null && !entity.isEmpty() && Objects.equals(entity.toLong("total"), entity.toLong("completos")))
         idEgresoEstatus= 3L;
       else
-        if(count> 0 && entity!= null && !entity.isEmpty() && entity.toLong("completos")> 0)
+        if(entity!= null && !entity.isEmpty() && entity.toLong("completos")> 0)
           idEgresoEstatus= 2L;
       TcManticEgresosDto item= (TcManticEgresosDto)DaoFactory.getInstance().toEntity(sesion, TcManticEgresosDto.class, "TcManticEgresosDto", "detalle", params);
       if(item!= null) {
@@ -221,7 +243,30 @@ public class Importados extends Transaccion implements Serializable {
         item.setIdEgresoEstatus(idEgresoEstatus);
         DaoFactory.getInstance().update(sesion, item);
       } // if
-    regresar= true;
+      regresar= true;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
+  private Boolean toCheckDocumentoEgreso(Session sesion, Long idNotaEntrada) throws Exception {
+    Boolean regresar= false;
+    Map<String, Object> params = null;
+    try {      
+      params= new HashMap<>();  
+      params.put("idNotaEntrada", idNotaEntrada);
+      List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "TcManticEgresosNotasDto", "notas", params);
+      if(items!= null && !items.isEmpty()) {
+        for (Entity item: items) {
+          this.toCheckEstatusGlobal(sesion, item.toLong("idEgreso"));
+        } // for
+      } // if  
+      regresar= true;
     } // try
     catch (Exception e) {
       throw e;

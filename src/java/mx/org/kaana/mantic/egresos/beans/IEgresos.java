@@ -13,6 +13,7 @@ import mx.org.kaana.kajool.enums.ESql;
 public interface IEgresos {
   
   public Long getIdEgreso();
+  public Long getIdNotaEntrada();
   public ESql getAccion();
   public Class toHbmClass();
   
