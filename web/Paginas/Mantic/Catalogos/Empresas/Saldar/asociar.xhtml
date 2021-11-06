@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="Seleccione las partidas del estado de cuenta a asociar a las cuentas por pagar"/>
+	<ui:param name="titulo" value="Seleccione el estado de cuenta a asociar a las cuentas por pagar"/>
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
@@ -43,7 +43,7 @@
                 </p:panelGrid>  
   							<p:panelGrid columns="1" styleClass="janal-wid-100-txt">
   								<p:outputLabel value="Importe:"/>
-	  							<p:inputText value="#{manticCatalogosEmpresasSaldarAsociar.orden['total']}" styleClass="janal-wid-85 janal-column-right" readonly="true"/>
+	  							<p:inputText value="#{manticCatalogosEmpresasSaldarAsociar.orden['total']}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
                 </p:panelGrid>  
 							</p:panelGrid>	
 						</div>
@@ -96,7 +96,7 @@
           <p:dataTable id="encontrados" var="row" lazy="true" value="#{manticCatalogosEmpresasSaldarAsociar.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosEmpresasSaldarAsociar.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosEmpresasSaldarAsociar.lazyModel.rowCount gt manticCatalogosEmpresasSaldarAsociar.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowStyleClass="#{manticCatalogosEmpresasSaldarAsociar.toColorExiste(row)}">
 					  <f:facet name="header">
 							<div style="display: flex;">
-							  <p:outputLabel value="Partidas encontrada(s) ..." styleClass="janal-color-white"/>
+							  <p:outputLabel value="Estados de cuenta encontrado(s) ..." styleClass="janal-color-white"/>
 							</div>
             </f:facet>  
 						<p:column headerText="No" styleClass="janal-wid-3">
@@ -125,7 +125,7 @@
 					<p:dataTable id="tabla" var="row" value="#{manticCatalogosEmpresasSaldarAsociar.articulos}" paginator="false" reflow="true" rowKey="#{row.idArticulo}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{manticCatalogosEmpresasSaldarAsociar.toColor(row)}">
 					  <f:facet name="header">
 							<div style="display: flex;">
-							  <p:outputLabel value="Partidas seleccionadas" styleClass="janal-color-white"/>
+							  <p:outputLabel value="Estados de cuenta seleccionadas" styleClass="janal-color-white"/>
 							</div>
             </f:facet>  
 						<p:column headerText="No" styleClass="janal-wid-3">

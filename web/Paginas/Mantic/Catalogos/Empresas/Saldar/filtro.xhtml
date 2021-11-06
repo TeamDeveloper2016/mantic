@@ -325,7 +325,7 @@
           <p:dataTable lazy="true" id="detallePagosRealizados" widgetVar="kajoolTableDetallePagosRealizados" var="row" value="#{manticCatalogosEmpresasSaldarFiltro.lazyPagosRealizados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosEmpresasSaldarFiltro.attrs.seleccionadoDetallePagosRealizados}" selectionMode="single" paginator="#{manticCatalogosEmpresasSaldarFiltro.lazyPagosRealizados.rowCount gt manticCatalogosEmpresasSaldarFiltro.lazyPagosRealizados.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" style="display: #{empty manticCatalogosEmpresasSaldarFiltro.lazyPagosRealizados? 'none': ''}">
 					  <f:facet name="header">
 							<div style="display: flex;">
-							  <p:outputLabel value="Partidas asociadas a la cuenta por pagar del estado de cuenta" styleClass="janal-color-white"/>
+							  <p:outputLabel value="Estado de cuenta asociadas a la cuenta por pagar del estado de cuenta" styleClass="janal-color-white"/>
 							</div>
             </f:facet>  
 						<p:column headerText="No" styleClass="janal-wid-3">
