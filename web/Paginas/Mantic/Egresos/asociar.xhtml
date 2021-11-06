@@ -112,7 +112,7 @@
           <p:dataTable id="encontrados" var="row" lazy="true" value="#{manticEgresosAsociar.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticEgresosAsociar.attrs.seleccionado}" selectionMode="single" paginator="#{manticEgresosAsociar.lazyModel.rowCount gt manticEgresosAsociar.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 					  <f:facet name="header">
 							<div style="display: flex;">
-							  <p:outputLabel value="Partidas encontrada(s) ..." styleClass="janal-color-white"/>
+							  <p:outputLabel value="Cuentas por pagar encontrada(s) ..." styleClass="janal-color-white"/>
 							</div>
             </f:facet>  
 						<p:column headerText="No" styleClass="janal-wid-3">
@@ -144,7 +144,7 @@
 					<p:dataTable id="tabla" var="row" value="#{manticEgresosAsociar.articulos}" paginator="false" reflow="true" rowKey="#{row.idEgreso}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{manticEgresosAsociar.toColor(row)}">
 					  <f:facet name="header">
 							<div style="display: flex;">
-							  <p:outputLabel value="Partidas seleccionadas" styleClass="janal-color-white"/>
+							  <p:outputLabel value="Cuentas por pagar seleccionadas" styleClass="janal-color-white"/>
 							</div>
             </f:facet>  
 						<p:column headerText="No" styleClass="janal-wid-3">

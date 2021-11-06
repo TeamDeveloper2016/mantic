@@ -592,7 +592,6 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 		List<Columna> columns= null;
 		try {
 			columns= new ArrayList<>();
-      columns.add(new Columna("ruta", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));

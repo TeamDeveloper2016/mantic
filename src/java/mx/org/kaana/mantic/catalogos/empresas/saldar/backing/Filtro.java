@@ -58,7 +58,7 @@ public class Filtro extends Saldos implements Serializable {
     this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada"));     
     super.init();
     String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
-    this.path = dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/documentos/");
+    this.path = dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/archivos/");
   } // init
 
   @Override
@@ -169,7 +169,7 @@ public class Filtro extends Saldos implements Serializable {
 	} 
  
   public String toOcultar(Entity row) {
-		return row.toLong("idEliminado").equals(2L)? "janal-display-none": "";
+		return row.toLong("idEliminado").equals(1L)? "janal-display-none": "";
 	} 
  
   public void doLoadDocumentos(Entity row) {
@@ -179,7 +179,7 @@ public class Filtro extends Saldos implements Serializable {
       params = new HashMap<>();      
       params.put("idNotaEntrada", row.toLong("idNotaEntrada"));      
       params.put("idTipoDocumento", -1L);      
-      this.doLoadImportados("VistaNotasEntradasDto", "importados", params);   
+      this.doLoadImportados("VistaEmpresasDto", "completos", params);   
       this.doLoadDetallePagosRealizados(row);
     } // try
     catch (Exception e) {

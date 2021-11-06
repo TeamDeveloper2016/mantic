@@ -36,8 +36,8 @@ public class TcManticEgresosArchivosDto implements IBaseDto, Serializable {
   private Long idEgreso;
   @Column (name="tamanio")
   private Long tamanio;
-  @Column (name="id_usuarios")
-  private Long idUsuarios;
+  @Column (name="id_usuario")
+  private Long idUsuario;
   @Column (name="id_tipo_archivo")
   private Long idTipoArchivo;
   @Column (name="id_principal")
@@ -72,11 +72,11 @@ public class TcManticEgresosArchivosDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticEgresosArchivosDto(Long idEgresoArchivo, Long idEgreso, Long tamanio, Long idUsuarios, Long idTipoArchivo, Long idPrincipal, String observaciones, String alias, Long mes, String nombre, Long ejercicio, String ruta, String archivo, Long idTipoDocumento, Long idEliminado) {
+  public TcManticEgresosArchivosDto(Long idEgresoArchivo, Long idEgreso, Long tamanio, Long idUsuario, Long idTipoArchivo, Long idPrincipal, String observaciones, String alias, Long mes, String nombre, Long ejercicio, String ruta, String archivo, Long idTipoDocumento, Long idEliminado) {
     setIdEgresoArchivo(idEgresoArchivo);
     setIdEgreso(idEgreso);
     setTamanio(tamanio);
-    setIdUsuarios(idUsuarios);
+    setIdUsuario(idUsuario);
     setIdTipoArchivo(idTipoArchivo);
     setIdPrincipal(idPrincipal);
     setObservaciones(observaciones);
@@ -115,12 +115,12 @@ public class TcManticEgresosArchivosDto implements IBaseDto, Serializable {
     return tamanio;
   }
 
-  public void setIdUsuarios(Long idUsuarios) {
-    this.idUsuarios = idUsuarios;
+  public void setIdUsuario(Long idUsuario) {
+    this.idUsuario = idUsuario;
   }
 
-  public Long getIdUsuarios() {
-    return idUsuarios;
+  public Long getIdUsuario() {
+    return idUsuario;
   }
 
   public void setIdTipoArchivo(Long idTipoArchivo) {
@@ -240,7 +240,7 @@ public class TcManticEgresosArchivosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getTamanio());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdUsuarios());
+		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTipoArchivo());
 		regresar.append(Constantes.SEPARADOR);
@@ -275,7 +275,7 @@ public class TcManticEgresosArchivosDto implements IBaseDto, Serializable {
 		regresar.put("idEgresoArchivo", getIdEgresoArchivo());
 		regresar.put("idEgreso", getIdEgreso());
 		regresar.put("tamanio", getTamanio());
-		regresar.put("idUsuarios", getIdUsuarios());
+		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idTipoArchivo", getIdTipoArchivo());
 		regresar.put("idPrincipal", getIdPrincipal());
 		regresar.put("observaciones", getObservaciones());
@@ -294,7 +294,7 @@ public class TcManticEgresosArchivosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getIdEgresoArchivo(), getIdEgreso(), getTamanio(), getIdUsuarios(), getIdTipoArchivo(), getIdPrincipal(), getObservaciones(), getAlias(), getMes(), getNombre(), getArchivo(), getEjercicio(), getRuta(), getIdTipoDocumento(), getIdEliminado(), getRegistro()
+      getIdEgresoArchivo(), getIdEgreso(), getTamanio(), getIdUsuario(), getIdTipoArchivo(), getIdPrincipal(), getObservaciones(), getAlias(), getMes(), getNombre(), getArchivo(), getEjercicio(), getRuta(), getIdTipoDocumento(), getIdEliminado(), getRegistro()
     };
     return regresar;
   }

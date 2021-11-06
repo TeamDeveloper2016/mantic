@@ -203,7 +203,7 @@
                   <p:row>
                     <p:column headerText="Facturas"/>
                     <p:column headerText="Notas de créditos"/>
-                    <p:column headerText="Comprobantes de pago"/>
+                    <p:column headerText="Complementos de pago"/>
                     <p:column headerText="Vouchers"/>
                     <p:column headerText="Estado de cuenta"/>
                   </p:row>                  
@@ -315,9 +315,9 @@
               </p:commandLink>	
               <p:commandLink actionListener="#{manticCatalogosEmpresasSaldarFiltro.doViewXmlDocument(row)}" process="@this" update="@(.viewXML)" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();" rendered="#{row.idEliminado.toLong() eq 2 and row.idTipoArchivo.toLong() eq 1}">
                 <p:commandButton icon="fa fa-eye" title="Ver documento XML" ajax="false" type="button"/>
-              </p:commandLink>	
-              <a data-magnify="gallery" href="#{manticCatalogosEmpresasSaldarFiltro.path}#{row['ruta']}#{row['nombre']}" data-caption="#{row['nombre']}" data-group="icon-image" title="Ver documento JPG">
-                <p:graphicImage cache="false" url="#{manticCatalogosEmpresasSaldarFiltro.path}#{row['ruta']}#{row['nombre']}" width="26" height="22" stream="false" style="cursor:zoom-in;" rendered="#{row.idEliminado.toLong() eq 2 and (row.idTipoArchivo.toLong() eq 17 or row.idTipoArchivo.toLong() eq 18)}"/>
+              </p:commandLink>
+              <a data-magnify="gallery" href="#{manticCatalogosEmpresasSaldarFiltro.path}#{row['repositorio']}#{row['ruta']}#{row['nombre']}" data-caption="#{row['nombre']}" data-group="icon-image" title="Ver documento JPG">
+                <p:graphicImage cache="false" url="#{manticCatalogosEmpresasSaldarFiltro.path}#{row['repositorio']}#{row['ruta']}#{row['nombre']}" width="26" height="22" stream="false" style="cursor:zoom-in;" rendered="#{row.idEliminado.toLong() eq 2 and (row.idTipoArchivo.toLong() eq 17 or row.idTipoArchivo.toLong() eq 18)}"/>
               </a>
             </p:column>
           </p:dataTable>
