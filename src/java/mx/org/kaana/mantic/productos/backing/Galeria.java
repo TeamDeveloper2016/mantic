@@ -209,13 +209,33 @@ public class Galeria extends Contenedor implements Serializable {
   public String doCheckCategoria(Producto producto) {
     String regresar= "none";
     if(producto!= null) {
-      String temporal= producto.getCategoria().replaceAll("[|]", "  »  ");
+      String temporal= producto.getCategoria().replaceAll("[|]", "»");
+      temporal= temporal.substring(temporal.indexOf("»")+ 1);
       if(!Objects.equals((String)this.attrs.get("categoria"), temporal))
         regresar= "";
       this.attrs.put("categoria", temporal);
+      this.attrs.put("links", this.toProcessLinks(temporal));
     } // if  
     return regresar;
   }  
+  
+  private String toProcessLinks(String categoria) {
+    StringBuilder regresar= new StringBuilder();
+    StringBuilder link    = new StringBuilder("LINK-");
+    regresar.append("<span id=\"LINK-").append(Cadena.eliminar(categoria, ' ').replace('»', '-')).append("\" class=\"ui-panel-title Fs18\">");
+    String[] items= categoria.split("[»]");
+    for (String item: items) {
+      if(!Cadena.isVacio(item)) {
+        link.append(item);
+        regresar.append("<a onclick=\"movePage('").append(link.toString()).append("');\" style=\"cursor:pointer;\">").append(item).append("</a>").append("  »  ");
+        link.append("-");
+      } // if  
+    } // for
+    if(regresar.toString().endsWith("»  "))
+      regresar.delete(regresar.length()- 5, regresar.length());
+    regresar.append("</span>");
+    return regresar.toString();
+  }
   
 	public List<UISelectEntity> doCompleteCliente(String codigo) {
  		List<Columna> columns     = null;

@@ -24,6 +24,11 @@
 	    $(document).ready(function() {
         $('#source-image').attr('href', $('#icon-image').attr('src'));
       });
+      
+      function movePage(page) {
+        $('#janalPivotePage').attr('href', '#'+ page);
+        setTimeout("$('a.janal-move-element')[0].click();", 300);
+      }
 		</script>   
 		<style type="text/css">
       .p-p-1 {padding: 0.25rem !important;}
@@ -69,6 +74,7 @@
     </style>    
 	</ui:define>
 	<ui:define name="contenido">
+    <a id="janalPivotePage" class="janal-move-element janal-color-black" href="#LINK-BONANZA" style="display:none"></a>
 		<p:focus context="contenedorGrupos:arbol"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
@@ -135,7 +141,7 @@
                 <p:dataGrid id="productos" value="#{manticProductosGaleria.productos}" var="row" columns="#{kajoolUtilAplicacion.isMobile? 1: 2}" rowIndexVar="index" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" lazy="false" rendered="#{manticProductosGaleria.attrs.disenio}">
                   <div class="container">
                     <div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header janal-wid-100-txt janal-column-center" style="margin-right: 10px; display: #{manticProductosGaleria.doCheckCategoria(row.data)}">
-                      <span class="ui-panel-title Fs18">#{manticProductosGaleria.attrs.categoria}</span> 
+                      <p:outputLabel value="#{manticProductosGaleria.attrs.links}" escape="false"/>
                     </div>
                     <div class="galeria">
                       <div class="galeria-header p-p-2">
@@ -181,7 +187,7 @@
                 <pe:fluidGrid id="tabla" value="#{manticProductosGaleria.productos}" var="row" fitWidth="true" hasImages="true" rendered="#{not manticProductosGaleria.attrs.disenio}">
                   <pe:fluidGridItem>
                     <div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header janal-wid-100-txt janal-column-center" style="margin-right: 10px; display: #{manticProductosGaleria.doCheckCategoria(row)}">
-                      <span class="ui-panel-title Fs18">#{manticProductosGaleria.attrs.categoria}</span> 
+                      <p:outputLabel value="#{manticProductosGaleria.attrs.links}" escape="false"/>
                     </div>
                     <div class="container">
                       <div class="galeria">
