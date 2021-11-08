@@ -33,6 +33,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
@@ -78,7 +79,7 @@ public class Filtro extends Comun implements Serializable {
 				this.doLoad();
 			} // if
       String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
-      this.path = dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/egresos/");
+      this.path = dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/archivos/");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -107,8 +108,8 @@ public class Filtro extends Comun implements Serializable {
     List<Columna> columns     = null;
 		Map<String, Object> params= null;
     try {
-      columns = new ArrayList<>();
-			params= new HashMap<>();
+      columns= new ArrayList<>();
+			params = new HashMap<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));			
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));			
@@ -130,32 +131,40 @@ public class Filtro extends Comun implements Serializable {
   } // doLoad
 	
 	private String toCondicion(){
-		String regresar        = null;
-		String search          = null;
-		StringBuilder condicion= null;
+		String regresar = null;
+		String search   = null;
+		StringBuilder sb= null;
 		try {			
-			condicion= new StringBuilder("");			
+			sb= new StringBuilder("");			
 			if(!Cadena.isVacio(this.attrs.get("idEgreso")) && !Long.valueOf(this.attrs.get("idEgreso").toString()).equals(-1L)){
-				condicion.append("tc_mantic_egresos.id_egreso=").append(this.attrs.get("idEgreso")).append(" and ");							
+				sb.append("tc_mantic_egresos.id_egreso=").append(this.attrs.get("idEgreso")).append(" and ");							
 				this.attrs.put("idEgreso", "");
 			} // if
+			if(!Cadena.isVacio(this.attrs.get("consecutivo")))
+				sb.append("(tc_mantic_egresos.consecutivo='").append(this.attrs.get("consecutivo")).append("') and ");
+			if(!Cadena.isVacio(this.attrs.get("notaEntrada")))
+				sb.append("(tc_mantic_notas_entradas.consecutivo='").append(this.attrs.get("notaEntrada")).append("') and ");
+			if(!Cadena.isVacio(this.attrs.get("factura")))
+				sb.append("(tc_mantic_notas_entradas.factura='").append(this.attrs.get("factura")).append("') and ");
+      if(!Cadena.isVacio(this.attrs.get("idProveedor")) && !this.attrs.get("idProveedor").toString().equals("-1"))
+        sb.append("(tc_mantic_notas_entradas.id_proveedor= ").append(this.attrs.get("idProveedor")).append(") and ");
 			if(!Cadena.isVacio(this.attrs.get("idEstatus")) && !Long.valueOf(this.attrs.get("idEstatus").toString()).equals(-1L))
-				condicion.append("tc_mantic_egresos.id_egreso_estatus=").append(this.attrs.get("idEstatus")).append(" and ");						
+				sb.append("(tc_mantic_egresos.id_egreso_estatus=").append(this.attrs.get("idEstatus")).append(") and ");
 			if(!Cadena.isVacio(this.attrs.get("fecha")))
-				condicion.append("(date_format(tc_mantic_egresos.fecha, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fecha"))).append("') and ");	
+				sb.append("(date_format(tc_mantic_egresos.fecha, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fecha"))).append("') and ");	
 			if(!Cadena.isVacio(this.attrs.get("fechaFinal")))
-				condicion.append("(date_format(tc_mantic_egresos.fecha, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaFinal"))).append("') and ");	
+				sb.append("(date_format(tc_mantic_egresos.fecha, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaFinal"))).append("') and ");	
 			if(this.attrs.get("importeTicket")!= null && !Cadena.isVacio(this.attrs.get("importeTicket")) && !this.attrs.get("importeTicket").toString().equals("0.00"))
-				condicion.append("tc_mantic_egresos.importe like '%").append(Cadena.eliminaCaracter(this.attrs.get("importeTicket").toString(), ',')).append("%' and ");					
+				sb.append("tc_mantic_egresos.importe like '%").append(Cadena.eliminaCaracter(this.attrs.get("importeTicket").toString(), ',')).append("%' and ");					
 			search= (String) this.attrs.get("descripcion");
 			if(!Cadena.isVacio(search)) {
 				search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();				
-				condicion.append("upper(tc_mantic_egresos.descripcion) regexp upper('.*").append(search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*")).append(".*') and ");						
+				sb.append("upper(tc_mantic_egresos.descripcion) regexp upper('.*").append(search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*")).append(".*') and ");						
 			} // if									
-			if(Cadena.isVacio(condicion))
+			if(Cadena.isVacio(sb))
 				regresar= Constantes.SQL_VERDADERO;
 			else
-				regresar= condicion.substring(0, condicion.length()-4);
+				regresar= sb.substring(0, sb.length()-4);
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -481,7 +490,7 @@ public class Filtro extends Comun implements Serializable {
       params = new HashMap<>();      
       params.put("idEgreso", row.toLong("idEgreso"));      
       params.put("idTipoDocumento", -1L);      
-      this.doLoadImportados("VistaEgresosDto", "importados", params);   
+      this.doLoadImportados("VistaEgresosDto", "exportar", params);   
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -492,4 +501,41 @@ public class Filtro extends Comun implements Serializable {
     } // finally
   }
 
+	public List<UISelectEntity> doCompleteProveedor(String codigo) {
+ 		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		boolean buscaPorCodigo    = false;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			if(!Cadena.isVacio(codigo)) {
+  			codigo= new String(codigo).replaceAll(Constantes.CLEAN_SQL, "").trim();
+				buscaPorCodigo= codigo.startsWith(".");
+				if(buscaPorCodigo)
+					codigo= codigo.trim().substring(1);
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			} // if	
+			else
+				codigo= "WXYZ";
+  		params.put("codigo", codigo);
+			if(buscaPorCodigo)
+        this.attrs.put("proveedores", UIEntity.build("TcManticProveedoresDto", "porCodigo", params, columns, 40L));
+			else
+        this.attrs.put("proveedores", UIEntity.build("TcManticProveedoresDto", "porNombre", params, columns, 40L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+		return (List<UISelectEntity>)this.attrs.get("proveedores");
+	}	
+  
 }

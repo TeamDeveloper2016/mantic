@@ -19,11 +19,15 @@
 	  <h:outputScript library="janal" name="js/shBrushCss.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {
-				fecha        : {validaciones: 'libre', mascara: 'libre'},
-				fechaFinal   : {validaciones: 'libre', mascara: 'libre'},
-				descripcion  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				idEstatus    : {validaciones: 'libre', mascara: 'libre'},
-				importeTicket: {validaciones: 'libre', mascara: 'flotante'},
+				consecutivo  : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', grupo: 'general'},
+				notaEntrada  : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', grupo: 'general'},
+				factura      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				proveedor    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				fecha        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				fechaFinal   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				descripcion  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				idEstatus    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				importeTicket: {validaciones: 'libre', mascara: 'flotante', grupo: 'general'}
 			};		
 			
 			fieldsDialog= {
@@ -78,6 +82,23 @@
           <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
 						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+							<p:outputLabel for="consecutivo" value="Consecutivo:"/>
+							<p:inputText id="consecutivo" value="#{manticEgresosFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>  
+							<p:outputLabel for="notaEntrada" value="Nota entrada:"/>
+							<p:inputText id="notaEntrada" value="#{manticEgresosFiltro.attrs.notaEntrada}" styleClass="janal-wid-100-txt"/>  
+							<p:outputLabel for="factura" value="Factura:"/>
+							<p:inputText id="factura" value="#{manticEgresosFiltro.attrs.factura}" styleClass="janal-wid-100-txt"/>  
+							<p:outputLabel for="proveedor" value="Proveedor:"/>
+              <p:autoComplete id="proveedor" var="custom" placeholder="ej. HERRAJES HF. S.A. DE C.V." itemLabel="#{custom.clave}#{empty custom.clave? '': ' | '}#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticEgresosFiltro.attrs.idProveedor}" completeMethod="#{manticEgresosFiltro.doCompleteProveedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+                <f:facet name="itemtip">
+                  <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+                    <h:outputText value="Clave:" />
+                    <h:outputText value="#{custom.clave}" />
+                    <h:outputText value="Razón social:" />
+                    <h:outputText value="#{custom.razonSocial}" />
+                  </h:panelGrid>
+                </f:facet>
+              </p:autoComplete>		              
 							<p:outputLabel for="fecha" value="Fecha inicio:"/>
 							<p:calendar id="fecha" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticEgresosFiltro.attrs.fecha}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>							
 							<p:outputLabel for="fechaFinal" value="Fecha final:"/>
@@ -99,7 +120,7 @@
 					</p:panel>
 				</div>
 				<div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticEgresosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10000" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticEgresosFiltro.attrs.seleccionado}" selectionMode="single" paginator="false" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticEgresosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticEgresosFiltro.attrs.seleccionado}" selectionMode="single" paginator="false" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
             <p:ajax event="rowToggle" listener="#{manticEgresosFiltro.doRowToggle}" update="detalle" />  
             <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
             <p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
@@ -234,7 +255,7 @@
                 <p:column styleClass="janal-column-center janal-wid-col-38">
                   <h:graphicImage library="janal" name="icon/semaforos/#{row.idCompleto eq '1' ? 'circulo-rojo.png' : (row.idCompleto eq '2'? 'circulo-amarillo.png' : 'circulo-verde.png')}" title="#{row.idCompleto eq '1' ? 'Incompleto' : (row.idCompleto eq '2'? 'Parcial' : 'Completo')}"/>
                 </p:column>
-                <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-center">
+                <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center">
                   <p:commandButton icon="fa fa-external-link" title="Importar documentos" onstart="return janal.bloquear()" process="@this detalle" action="#{manticEgresosFiltro.doImportar()}">
                     <f:setPropertyActionListener value="#{row}" target="#{manticEgresosFiltro.attrs.seleccionadoDetalle}"/>
                   </p:commandButton>  
@@ -279,7 +300,7 @@
             </p:menuitem>
           </p:contextMenu>	
           <p:spacer height="5px"/>
-          <p:dataTable id="tablaDocumentos" widgetVar="kajoolTableDocumentos" var="row" value="#{manticEgresosFiltro.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index" paginatorPosition="bottom" style="display: #{manticEgresosFiltro.attrs.importados!= null? '': 'none'}" rowStyleClass="#{manticEgresosFiltro.toOcultar(row)}">
+          <p:dataTable id="tablaDocumentos" widgetVar="kajoolTableDocumentos" var="row" value="#{manticEgresosFiltro.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index" paginatorPosition="bottom" style="display: #{manticEgresosFiltro.attrs.importados!= null? '': 'none'}" rowStyleClass="#{manticEgresosFiltro.toOcultar(row)}">
             <f:facet name="header">
               <div style="display: flex;">
                 <p:outputLabel value="Estado de cuenta: #{manticEgresosFiltro.attrs.seleccionadoDetalle.consecutivo}, Descripcion: [ #{manticEgresosFiltro.attrs.seleccionado.descripcion} ] $#{manticEgresosFiltro.attrs.seleccionado.importe}" styleClass="janal-text-white"/>
@@ -287,6 +308,9 @@
             </f:facet>
             <p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
               <h:outputText value="#{index+ 1}.-"/>
+            </p:column>   
+            <p:column styleClass="MarAuto Responsive janal-wid-12" headerText="Consecutivo">
+              <h:outputText value="#{row.consecutivo}"/>
             </p:column>   
             <p:column styleClass="MarAuto Responsive janal-wid-col-40" headerText="Tipo">
               <h:outputText value="#{row.tipo}"/>
@@ -313,8 +337,8 @@
               <p:commandLink actionListener="#{manticEgresosFiltro.doViewXmlDocument(row)}" process="@this" update="@(.viewXML)" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();" rendered="#{row.idEliminado.toLong() eq 2 and row.idTipoArchivo.toLong() eq 1}">
                 <p:commandButton icon="fa fa-eye" title="Ver documento XML" ajax="false" type="button"/>
               </p:commandLink>	
-              <a data-magnify="gallery" href="#{manticEgresosFiltro.path}#{row['ruta']}#{row['nombre']}" data-caption="#{row['nombre']}" data-group="icon-image" title="Ver documento JPG">
-                <p:graphicImage cache="false" url="#{manticEgresosFiltro.path}#{row['ruta']}#{row['nombre']}" width="26" height="22" stream="false" style="cursor:zoom-in;" rendered="#{row.idEliminado.toLong() eq 2 and (row.idTipoArchivo.toLong() eq 17 or row.idTipoArchivo.toLong() eq 18)}"/>
+              <a data-magnify="gallery" href="#{manticEgresosFiltro.path}#{row['repositorio']}#{row['ruta']}#{row['nombre']}" data-caption="#{row['nombre']}" data-group="icon-image" title="Ver documento JPG">
+                <p:graphicImage cache="false" url="#{manticEgresosFiltro.path}#{row['repositorio']}#{row['ruta']}#{row['nombre']}" width="26" height="22" stream="false" style="cursor:zoom-in;" rendered="#{row.idEliminado.toLong() eq 2 and (row.idTipoArchivo.toLong() eq 17 or row.idTipoArchivo.toLong() eq 18)}"/>
               </a>
             </p:column>
           </p:dataTable>          

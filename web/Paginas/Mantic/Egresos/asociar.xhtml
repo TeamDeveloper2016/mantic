@@ -61,16 +61,16 @@
                 </p:tab>  
                 <p:tab title="Proveedor">
                   <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-97, janal-fix-3 janal-column-center">
-                  <p:autoComplete id="proveedor" var="custom" placeholder="ej. HERRAJES HF. S.A. DE C.V." itemLabel="#{custom.clave}#{empty custom.clave? '': ' | '}#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticEgresosAsociar.attrs.proveedor}" completeMethod="#{manticEgresosAsociar.doCompleteProveedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
-                    <f:facet name="itemtip">
-                      <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
-                        <h:outputText value="Clave:" />
-                        <h:outputText value="#{custom.clave}" />
-                        <h:outputText value="Razón social:" />
-                        <h:outputText value="#{custom.razonSocial}" />
-                      </h:panelGrid>
-                    </f:facet>
-                  </p:autoComplete>			
+                    <p:autoComplete id="proveedor" var="custom" placeholder="ej. HERRAJES HF. S.A. DE C.V." itemLabel="#{custom.clave}#{empty custom.clave? '': ' | '}#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticEgresosAsociar.attrs.proveedor}" completeMethod="#{manticEgresosAsociar.doCompleteProveedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+                      <f:facet name="itemtip">
+                        <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+                          <h:outputText value="Clave:" />
+                          <h:outputText value="#{custom.clave}" />
+                          <h:outputText value="Razón social:" />
+                          <h:outputText value="#{custom.razonSocial}" />
+                        </h:panelGrid>
+                      </f:facet>
+                    </p:autoComplete>			
                     <p:commandButton icon="fa fa-search" process="@this proveedor" update="encontrados" actionListener="#{manticEgresosAsociar.doLoad}" onstart="return janal.partial('proveedor', true);" oncomplete="janal.desbloquear()"/>                  
                   </p:panelGrid>   
                 </p:tab>  
