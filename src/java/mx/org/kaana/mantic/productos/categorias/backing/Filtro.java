@@ -73,7 +73,7 @@ public class Filtro extends Contenedor implements Serializable {
       1L, // Long idActivo, 
       JsfBase.getIdUsuario(), // Long idUsuario, 
       -1L, // Long idProductoCategoria, 
-      0L, // Long porcentaje, 
+      father.toLong("porcentaje"), // Long porcentaje, 
       "", // String nombre, 
       father.toLong("nivel")+ 1L, // Long nivel, 
       1L, // Long orden

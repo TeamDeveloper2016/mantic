@@ -61,7 +61,7 @@ public class Importar extends mx.org.kaana.mantic.inventarios.entradas.backing.I
     Map<String, Object> params = null;
     try {      
       params = new HashMap<>();      
-      params.put("agrupador", "5, 6");
+      params.put("agrupador", "5");
       List<UISelectItem> documentos= UISelect.seleccione("TcManticTiposArchivosDto", "grupo", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS, "idKey");
       this.attrs.put("documentos", documentos);
       this.attrs.put("idTipoDocumento", UIBackingUtilities.toFirstKeySelectItem(documentos));

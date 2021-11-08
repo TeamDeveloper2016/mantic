@@ -47,6 +47,7 @@ public abstract class Contenedor extends IBaseFilter implements Serializable {
       if(dad== null) {
         if(items!= null && !items.isEmpty()) {
           this.root= new DefaultTreeNode(items.get(0), null); 
+          this.root.setExpanded(true);
           this.doLoad(items.get(0).toString("nombre").concat(Constantes.SEPARADOR), items.get(0).toLong("nivel")+ 1L, this.root);
         } // if
       } // if
@@ -54,6 +55,7 @@ public abstract class Contenedor extends IBaseFilter implements Serializable {
         if(items!= null && !items.isEmpty()) 
           for (UISelectEntity item : items) {
             TreeNode child= new DefaultTreeNode(item, dad);
+            child.setExpanded(true);
             this.doLoad(item.toString("padre").concat(item.toString("nombre")).concat(Constantes.SEPARADOR), item.toLong("nivel")+ 1L, child);
           } // for
       } // else

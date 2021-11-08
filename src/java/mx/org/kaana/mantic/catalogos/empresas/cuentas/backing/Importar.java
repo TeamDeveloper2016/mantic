@@ -46,7 +46,6 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
@@ -63,7 +62,6 @@ import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import mx.org.kaana.mantic.catalogos.empresas.cuentas.reglas.Transaccion;
-import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosDto;
 
 /**
  *@company KAANA
