@@ -11222,6 +11222,7 @@
           tc_mantic_egresos_notas.id_egreso_nota as id_key,
           tc_mantic_egresos_notas.id_nota_entrada as id_pivote,
           tc_mantic_empresas_deudas.id_empresa_deuda,
+          tc_mantic_empresas.nombre as sucursal,
           tc_mantic_notas_entradas.consecutivo,
           tc_mantic_notas_entradas.factura,
           tc_mantic_notas_entradas.fecha_factura,
@@ -11235,6 +11236,8 @@
           tc_mantic_egresos on tc_mantic_egresos_notas.id_egreso= tc_mantic_egresos.id_egreso
         inner join
           tc_mantic_notas_entradas on tc_mantic_egresos_notas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+        inner join
+          tc_mantic_empresas on tc_mantic_empresas.id_empresa= tc_mantic_notas_entradas.id_empresa
         inner join
           tc_mantic_empresas_deudas on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_empresas_deudas.id_nota_entrada
         left join
@@ -11481,6 +11484,7 @@
         select      
           tc_mantic_notas_entradas.id_nota_entrada as id_key,
           tc_mantic_notas_entradas.id_nota_entrada as id_pivote,
+          tc_mantic_empresas.nombre as sucursal,
           tc_mantic_notas_entradas.id_nota_entrada,
           tc_mantic_notas_entradas.consecutivo,
           tc_mantic_notas_entradas.factura,
@@ -11493,6 +11497,8 @@
           tc_mantic_notas_entradas
         inner join
           tc_mantic_empresas_deudas on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_empresas_deudas.id_nota_entrada
+        inner join
+          tc_mantic_empresas on tc_mantic_empresas.id_empresa= tc_mantic_notas_entradas.id_empresa
         left join
           tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
         where 

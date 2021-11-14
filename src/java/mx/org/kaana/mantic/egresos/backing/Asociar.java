@@ -193,7 +193,8 @@ public class Asociar extends IBaseFilter implements Serializable {
           articulo.toString("factura"),
           articulo.toDate("fechaFactura"), 
           articulo.toDouble("total"),
-          articulo.toString("proveedor")
+          articulo.toString("proveedor"),
+          articulo.toString("sucursal")
         );
         this.articulos.add(item);
       } // if
@@ -277,7 +278,7 @@ public class Asociar extends IBaseFilter implements Serializable {
 
   public String toColorExiste(Entity row) {
     int index= this.articulos.indexOf(new Nota(row.toLong("idNotaEntrada")));
-    return index>= 0? "janal-display-none": "";
+    return index>= 0? "janal-tr-purple": "";
   }
 
 	public void doTabChange(TabChangeEvent event) {

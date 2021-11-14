@@ -44,7 +44,7 @@
                 </p:panelGrid>  
   							<p:panelGrid columns="1" styleClass="janal-wid-100-txt">
   								<p:outputLabel value="Importe:"/>
-	  							<p:inputText value="#{manticEgresosAsociar.orden['importe']}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
+	  							<p:inputText value="#{manticEgresosAsociar.orden['importe']}" styleClass="janal-wid-86 janal-column-right" readonly="true"/>
                 </p:panelGrid>  
 							</p:panelGrid>	
 						</div>
@@ -55,7 +55,7 @@
                 <p:ajax event="tabChange" listener="#{manticEgresosAsociar.doTabChange}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.hide();"/>
                 <p:tab title="Consecutivo" titleStyleClass="consecutivo">
                   <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-97, janal-fix-3 janal-column-center">
-                    <p:inputNumber id="consecutivo" value="#{manticEgresosAsociar.attrs.codigo}" styleClass="control janal-wid-100-txt" decimalPlaces="0"/>
+                    <p:inputNumber id="consecutivo" value="#{manticEgresosAsociar.attrs.codigo}" styleClass="control janal-wid-100-txt" decimalPlaces="0" thousandSeparator=""/>
                     <p:commandButton icon="fa fa-search" process="@this consecutivo" update="encontrados" actionListener="#{manticEgresosAsociar.doLoad}" onstart="return janal.partial('consecutivo', true);" oncomplete="janal.desbloquear()"/>                  
                   </p:panelGrid>   
                 </p:tab>  
@@ -118,6 +118,9 @@
 						<p:column headerText="No" styleClass="janal-wid-3">
 							<h:outputText value="#{index+ 1}.-"/>
 						</p:column>   
+						<p:column headerText="Sucursal" styleClass="janal-wid-15 janal-column-center" sortBy="#{row.sucursal}">
+							<h:outputText value="#{row.sucursal}"/>
+						</p:column>   
 						<p:column headerText="Consecutivo" styleClass="janal-wid-10 janal-column-center" sortBy="#{row.consecutivo}">
 							<h:outputText value="#{row.consecutivo}"/>
 						</p:column>   
@@ -149,6 +152,9 @@
             </f:facet>  
 						<p:column headerText="No" styleClass="janal-wid-3">
 							<h:outputText value="#{index+ 1}.-"/>
+						</p:column>   
+						<p:column headerText="Sucursal" styleClass="janal-wid-15 janal-column-center" sortBy="#{row.sucursal}">
+							<h:outputText value="#{row.sucursal}"/>
 						</p:column>   
 						<p:column headerText="Consecutivo" styleClass="janal-wid-10 janal-column-center">
 							<h:outputText value="#{row.consecutivo}"/>

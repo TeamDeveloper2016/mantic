@@ -22,6 +22,7 @@ public class Nota extends TcManticEgresosNotasDto implements IEgresos, Serializa
   private static final long serialVersionUID = -8800989266355341818L;
 
   private Long idPivote;
+  private String sucursal;
   private String consecutivo;
   private String factura;
   private Date fechaFactura;
@@ -39,7 +40,7 @@ public class Nota extends TcManticEgresosNotasDto implements IEgresos, Serializa
     this.accion  = ESql.INSERT;
   }
 
-  public Nota(Long idNotaEntrada, Long idEgreso, String consecutivo, String factura, Date fechaFactura, Double total, String proveedor) {
+  public Nota(Long idNotaEntrada, Long idEgreso, String consecutivo, String factura, Date fechaFactura, Double total, String proveedor, String sucursal) {
     super(idEgreso, JsfBase.getIdUsuario(), -1L, null, idNotaEntrada);
     this.idPivote= idNotaEntrada;
     this.consecutivo= consecutivo;
@@ -47,6 +48,7 @@ public class Nota extends TcManticEgresosNotasDto implements IEgresos, Serializa
     this.fechaFactura= fechaFactura;
     this.total= total;
     this.proveedor= proveedor;
+    this.sucursal= sucursal;
     this.accion= ESql.INSERT;
   }
 
@@ -112,6 +114,14 @@ public class Nota extends TcManticEgresosNotasDto implements IEgresos, Serializa
 
   public void setAccion(ESql accion) {
     this.accion = accion;
+  }
+
+  public String getSucursal() {
+    return sucursal;
+  }
+
+  public void setSucursal(String sucursal) {
+    this.sucursal = sucursal;
   }
 
   @Override

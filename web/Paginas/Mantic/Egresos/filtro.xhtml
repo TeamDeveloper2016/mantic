@@ -120,7 +120,7 @@
 					</p:panel>
 				</div>
 				<div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticEgresosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticEgresosFiltro.attrs.seleccionado}" selectionMode="single" paginator="false" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticEgresosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticEgresosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticEgresosFiltro.lazyModel.rowCount gt manticEgresosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
             <p:ajax event="rowToggle" listener="#{manticEgresosFiltro.doRowToggle}" update="detalle" />  
             <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
             <p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
@@ -145,17 +145,18 @@
               </f:facet>
               <p:rowToggler/>
             </p:column>            
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="Consecutivo"/>
               </f:facet>
               <h:outputText value="#{row['consecutivo']}"/>
             </p:column>														
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.fecha}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.fecha}">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>
               <h:outputText value="#{row['fecha']}"/>
+              <i class="fa fa-fw fa-calendar janal-icons-header janal-color-orange" title="Se registro: #{row['registro']}"></i>
             </p:column>														
             <p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.descripcion}">
               <f:facet name="header">
@@ -175,13 +176,13 @@
               </f:facet>
               <h:outputText value="#{row['cuentas']}"/>
             </p:column>					
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.documentos}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{row.documentos}">
               <f:facet name="header">
                 <h:outputText value="Documentos"/>
               </f:facet>
               <h:outputText value="#{row['documentos']}"/>
             </p:column>					
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.registro}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.registro}" rendered="false">
               <f:facet name="header">
                 <h:outputText value="Registro"/>
               </f:facet>
