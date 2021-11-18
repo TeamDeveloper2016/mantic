@@ -5,7 +5,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Cuentas de ventas generadas" />
+  <ui:param name="titulo" value="Listado de ventas generadas"/>
   <ui:define name="librerias">
 		<h:outputScript library="janal" name="barcode/js.barcode.all.min.js"/>
 		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryTicketJs}"/>
@@ -206,11 +206,14 @@
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{(manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '1' or manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '2')}"/>					
             <p:separator rendered="#{!(manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '6' or manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '3' or manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '4')}"/>					
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '6' or manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '3' or manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '4')}"/>					            
-            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{(manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '6')}"/>					
 						<p:separator rendered="#{(manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '7') or (manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '9')}"/>					
 						<p:menuitem id="ticket" icon="fa fa-file-text-o" value="Ticket" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasFiltro.doTicket}" oncomplete="janal.desbloquear();jsTicket.clicTicket();" update="tabla" rendered="#{(manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '7') or (manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '9')}"/>
 						<p:separator rendered="#{(manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '6') or (manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '3')}"/>
 						<p:menuitem id="garantia" action="#{manticVentasFiltro.doGarantia}" icon="fa fa-history" ajax="false" value="Garantia" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{(manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '6') or (manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '3')}"/>					
+						<p:separator rendered="#{manticVentasFiltro.attrs.seleccionado.idVentaEstatus ne '1' or manticVentasFiltro.attrs.seleccionado.idVentaEstatus ne '2' or manticVentasFiltro.attrs.seleccionado.idVentaEstatus ne '10' or manticVentasFiltro.attrs.seleccionado.idVentaEstatus ne '11'}"/>
+            <p:menuitem icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{manticVentasFiltro.attrs.seleccionado.idVentaEstatus ne '1' or manticVentasFiltro.attrs.seleccionado.idVentaEstatus ne '2' or manticVentasFiltro.attrs.seleccionado.idVentaEstatus ne '10' or manticVentasFiltro.attrs.seleccionado.idVentaEstatus ne '11'}"/>					
+            <p:menuitem icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasFiltro.doLoadMails}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="#{manticVentasFiltro.attrs.seleccionado.idVentaEstatus ne '1' or manticVentasFiltro.attrs.seleccionado.idVentaEstatus ne '2' or manticVentasFiltro.attrs.seleccionado.idVentaEstatus ne '10' or manticVentasFiltro.attrs.seleccionado.idVentaEstatus ne '11'}"/>					
+            <p:menuitem icon="fa fa-whatsapp" value="Enviar whatsup" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasFiltro.doLoadPhones}" oncomplete="PF('dlgCelular').show();" update="dialogoCelular" rendered="#{manticVentasFiltro.attrs.seleccionado.idVentaEstatus ne '1' or manticVentasFiltro.attrs.seleccionado.idVentaEstatus ne '2' or manticVentasFiltro.attrs.seleccionado.idVentaEstatus ne '10' or manticVentasFiltro.attrs.seleccionado.idVentaEstatus ne '11'}"/>					
           </p:contextMenu>
         </div>
       </div>
@@ -236,6 +239,62 @@
 				</div>
 			</h:form>
 		</p:dialog>
+    <p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Enviar por correo" dynamic="true" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" appendTo="@(body)">
+			<h:form id="formDialogoCorreos" prependId="false">								
+				<p:panelGrid id="panelCorreos" columns="1" layout="grid" styleClass="janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">										
+					<p:dataTable id="tablaCorreos" var="row" value="#{manticVentasFiltro.correos}" selection="#{manticVentasFiltro.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
+						<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
+						<p:column headerText="Correos disponibles del proveedor" styleClass="descripcion tablaCorreos_selection janal-wid-80">
+							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
+						</p:column>
+						<p:column headerText="Preferido" styleClass="descripcion tablaCorreos_selection janal-wid-20">
+              <p:selectOneMenu id="idPreferido" styleClass="janal-wid-100-txt contacto" value="#{row['idPreferido']}" converter="javax.faces.Long">
+                <f:selectItem itemLabel="SI" itemValue="1"/>
+                <f:selectItem itemLabel="NO" itemValue="2"/>								
+              </p:selectOneMenu>
+						</p:column>
+						<p:column style="width:45px;text-align: center">
+							<p:commandButton update="tablaCorreos" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" title="#{row['activo']? 'Agregar': 'Actualizar'}" action="#{manticVentasFiltro.doAgregarCorreo}">
+								<f:setPropertyActionListener value="#{row}" target="#{manticVentasFiltro.correo}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>		
+				</p:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this dialogoCorreos" value="Aceptar" actionListener="#{manticVentasFiltro.doSendMail}" onstart="return PF('dlgCorreos').hide();"  oncomplete="janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCorreos').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog>
+		<p:dialog id="dialogoCelular" widgetVar="dlgCelular" header="Enviar por whatsup" dynamic="true" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="60%" appendTo="@(body)">
+			<h:form id="formDialogoCelular" prependId="false">								
+				<p:panelGrid id="panelCelulares" columns="1" layout="grid" styleClass="janal-wid-99" style="height:150px !important;overflow-y: auto" columnClasses="janal-wid-100">										
+					<p:dataTable id="tablaCelulares" var="row" value="#{manticVentasFiltro.celulares}" selection="#{manticVentasFiltro.selectedCelulares}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
+						<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
+						<p:column headerText="Celulares disponibles del proveedor" styleClass="descripcion  janal-wid-80">
+							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
+						</p:column>
+						<p:column headerText="Preferido" styleClass="descripcion janal-wid-20">
+              <p:selectOneMenu id="idPreferido" styleClass="janal-wid-100-txt contacto" value="#{row['idPreferido']}" converter="javax.faces.Long">
+                <f:selectItem itemLabel="SI" itemValue="1"/>
+                <f:selectItem itemLabel="NO" itemValue="2"/>								
+              </p:selectOneMenu>
+						</p:column>
+						<p:column style="width:45px;text-align: center">
+							<p:commandButton update="tablaCelulares" icon="fa #{row['activo']? 'fa-plus': 'fa-check'}" title="#{row['activo']? 'Agregar': 'Actualizar'}" action="#{manticVentasFiltro.doAgregarCelular}">
+								<f:setPropertyActionListener value="#{row}" target="#{manticVentasFiltro.celular}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>		
+				</p:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this dialogoCelular" value="Aceptar" actionListener="#{manticVentasFiltro.doSendWhatsup}" onstart="return PF('dlgCelular').hide();"  oncomplete="janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCelular').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog>    
 	</ui:define>
   <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
   <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la cuenta de venta ?" />

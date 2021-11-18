@@ -39,6 +39,7 @@ public final class Bonanza implements Serializable {
   private static final String BODY_MESSAGE     = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te estaremos enviando únicamente las notificaciones más importantes respecto a compras con nosotros. Emisión y descarga de facturas principalmente.\\n\\nNo podremos contestar a tus mensajes en este número.\\n\\nSi desea contactarnos puedes ser a *ventas@ferreteriabonanza.com* y/o al telefono/whatsup *4495087505*\\n\\nPara aceptar estas notificaciones, puedes escribir *hola* en cualquier momento sobre este chat.\\n\\nGracias por comprar en *_Ferreteria Bonanza_*.\"";
   private static final String BODY_PROVEEDOR   = "\"phone\":\"+521{celular}\",\"message\":\"Estimado proveedor _{nombre}_:\\n\\n{saludo}, te estaremos enviando únicamente las notificaciones más importantes respecto a las ordenes de compras que te haremos principalmente.\\n\\nNo podremos contestar a tus mensajes en este número.\\n\\nSi desea contactarnos puedes ser a *ventas@ferreteriabonanza.com* y/o al telefono/whatsup *4495087505*\\n\\nPara aceptar estas notificaciones, puedes escribir *hola* en cualquier momento sobre este chat.\\n\\nGracias por comprar en *_Ferreteria Bonanza_*.\"";
   private static final String BODY_FACTURA     = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te hacemos llegar la factura con folio *{ticket}* del día *{fecha}*, en el siguiente link se adjuntan sus archivos PDF y XML de su factura emitida\\n\\n{reporte}\\n\\nPara cualquier duda o aclaración *ventas@ferreteriabonanza.com* y/o al telefono/whatsup *4495087505*, se tienen *24 hrs* para descargar todos los documentos.\\n\\nAgradecemos su preferencia *_Ferreteria Bonanza_*.\"";
+  private static final String BODY_TICKET      = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te hacemos llegar el ticket con folio *{ticket}* del día *{fecha}*, en el siguiente link se adjuntan el archivo PDF del ticket\\n\\n{reporte}\\n\\nPara cualquier duda o aclaración *ventas@ferreteriabonanza.com* y/o al telefono/whatsup *4495087505*, se tienen *24 hrs* para descargar el documento.\\n\\nAgradecemos su preferencia *_Ferreteria Bonanza_*.\"";
   private static final String BODY_DEVOLUCION  = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, su cuenta presenta un movimiento, en el siguiente link se adjuntan el archivo PDF referente a ello\\n\\n https://ferreteriabonanza.com/Temporal/Pdf/{reporte}\\n\\nPara cualquier duda o aclaración *ventas@ferreteriabonanza.com* y/o al telefono/whatsup *4495087505*, se tienen *24 hrs* para descargar todos los documentos.\\n\\nAgradecemos su preferencia *_Ferreteria Bonanza_*.\"";
   private static final String BODY_PAGO_CUENTA = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, gracias por su pago, en el siguiente link se adjunta un PDF con un resumen y estatus de los tickets/facturas a los cuales fue abonado el pago\\n\\n https://ferreteriabonanza.com/Temporal/Pdf/{reporte}\\n\\nPara cualquier duda o aclaración *ventas@ferreteriabonanza.com* y/o al telefono/whatsup *4495087505*, se tienen *24 hrs* para descargar todos los documentos.\\n\\nAgradecemos su preferencia *_Ferreteria Bonanza_*.\"";
   private static final String BODY_ORDEN_COMPRA= "\"phone\":\"+521{celular}\",\"message\":\"Estimado proveedor _{nombre}_:\\n\\n{saludo}, en el siguiente link se adjunta un PDF con una orden de compra\\n\\nhttps://ferreteriabonanza.com/Temporal/Pdf/{reporte}\\n\\nFavor de verificar en la misma orden la sucursal de entrega.\\n\\nPara cualquier duda o aclaración *ventas@ferreteriabonanza.com* y/o al telefono/whatsup *4495087505*.\\n\\n*_Ferreteria Bonanza_*.\"";
@@ -431,6 +432,67 @@ public final class Bonanza implements Serializable {
     else 
       LOG.error("[doSendFactura]No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
   } // doSendFactura
+  
+  public void doSendTicket() {
+    this.doSendTicket(null);
+  }
+  
+  public void doSendTicket(Session sesion) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {
+      Message message= null;
+      Map<String, Object> params = new HashMap<>();        
+      try {
+        params.put("nombre", this.nombre);
+        params.put("celular", this.celular);
+        params.put("reporte", this.reporte);
+        params.put("ticket", this.ticket);
+        params.put("fecha", this.fecha);
+        params.put("saludo", this.toSaludo());
+        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.PRODUCCION))
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_TICKET, params, true)+ "}");
+        else {  
+          HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+          .header("Content-Type", "application/json")
+          .header("Token", this.token)
+          .body("{"+ Cadena.replaceParams(BODY_TICKET, params, true)+ "}")
+          .asString();
+          if(Objects.equals(response.getStatus(), 201)) {
+            LOG.warn("Enviado: "+ response.getBody());
+            Gson gson= new Gson();
+            message= gson.fromJson(response.getBody(), Message.class);
+            if(message!= null) 
+              message.init();
+            else {
+              message= new Message();
+              message.setMessage(" {"+ Cadena.replaceParams(BODY_TICKET, params, true)+ "}");
+            } // else  
+          } // if  
+          else {
+            LOG.error("[doSendFactura] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            message= new Message();
+            message.setMessage(" {"+ Cadena.replaceParams(BODY_TICKET, params, true)+ "}");
+          } // if  
+          message.setTelefono(this.celular);
+          message.setIdSendStatus(new Long(response.getStatus()));
+          message.setSendStatus(response.getStatusText());
+          message.setIdTipoMensaje(ETypeMessage.CLIENTE.getId());
+          message.setIdUsuario(JsfBase.getAutentifica()!= null && JsfBase.getAutentifica().getPersona()!= null? JsfBase.getIdUsuario(): 2L);
+          if(sesion!= null)
+            DaoFactory.getInstance().insert(sesion, message);
+          else
+            DaoFactory.getInstance().insert(message);
+        } // else
+      } // try
+      catch(Exception e) {
+        Error.mensaje(e);
+      } // catch
+      finally {
+        Methods.clean(params);
+      } // finally
+    } // if
+    else 
+      LOG.error("[doSendFactura]No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+  } // doSendTicket
   
   public void doSendDevolucion(Session sesion) {
     if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE)) {

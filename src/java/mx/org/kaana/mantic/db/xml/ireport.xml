@@ -323,34 +323,72 @@
 		</unit> 
     <unit id="VistaTicketVentaDto">
       <select id="ticket">
-        select 
-          tc_mantic_ventas.id_venta id_key,
-          tc_mantic_ventas.consecutivo consecutivo_venta,
-          tc_mantic_ventas.descuento descuento_venta,
-          tc_mantic_ventas.extras extras_venta,
-          tc_mantic_ventas.descuentos descuentos_venta,
-          tc_mantic_ventas.impuestos impuestos_venta,
-          tc_mantic_ventas.sub_total subtotal_venta,
-          tc_mantic_ventas.total total_venta,
-          tc_mantic_ventas.registro,
-          tc_mantic_ventas.observaciones,
+				select 
+          tc_mantic_ventas.id_venta as id_key,
+          tc_mantic_ventas.ticket as consecutivo_venta,
+          concat(tc_mantic_empresas.clave, '-', if(tc_mantic_ventas.id_venta_estatus= 7, tc_mantic_ventas.cotizacion, tc_mantic_ventas.ticket)) as codigo_barra,
+          tc_mantic_ventas.descuento as descuento_venta,
+          tc_mantic_ventas.extras as extras_venta,
+          tc_mantic_ventas.descuentos as descuentos_venta,
+          tc_mantic_ventas.impuestos as impuestos_venta,
+          tc_mantic_ventas.sub_total as subtotal_venta,
+          tc_mantic_ventas.total as total_venta,
+          tc_mantic_ventas.registro as registro_venta,
           tc_mantic_ventas_detalles.*,
         	tc_mantic_personas.cuenta,
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre
-         from 
+        	tc_mantic_ventas.id_venta_estatus,
+        	case 
+        	  when tc_mantic_ventas.id_venta_estatus= 7 then 'COTIZACION'
+        	  when tc_mantic_ventas.id_venta_estatus= 9 then 'APARTADO'
+        	  when tc_mantic_ventas.id_venta_estatus= 4 then 'CREDITO'        	  
+        	  else 'VENTA DE MOSTRADOR'
+        	end as tipo_venta,
+        	case 
+        	  when tc_mantic_ventas.id_venta_estatus= 7 then 'CONSECUTIVO'
+        	  when tc_mantic_ventas.id_venta_estatus= 12 or tc_mantic_ventas.id_venta_estatus= 15 then 'FACTURA No.'
+        	  else 'TICKET No.'
+        	end as leyenda_venta,
+        	tt_mantic_temporal.medio_pago,
+        	tt_mantic_temporal.importe_pago,
+        	tt_mantic_temporal.total,
+        	(tt_mantic_temporal.importe_pago- tt_mantic_temporal.total) as cambio,
+          tt_mantic_temporal.nombre_cobro,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre_vendio
+        from 
           tc_mantic_ventas 
-         inner join 
+        inner join 
           tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta = tc_mantic_ventas_detalles.id_venta
-         inner join 
+        inner join 
           tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus = tc_mantic_ventas_estatus.id_venta_estatus
         inner join 
 				  tc_janal_usuarios on tc_mantic_ventas.id_usuario = tc_janal_usuarios.id_usuario
 				inner join				
 					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
-         where
-          tc_mantic_ventas.id_venta = {idVenta}   
-         order by 
-          tc_mantic_ventas.id_venta,tc_mantic_ventas_detalles.id_venta_detalle asc     
+				inner join				
+					tc_mantic_empresas on tc_mantic_ventas.id_empresa = tc_mantic_empresas.id_empresa
+				inner join (
+					select
+						tr_mantic_venta_medio_pago.id_venta,
+						tc_mantic_tipos_medios_pagos.nombre as medio_pago, 
+						sum(tr_mantic_venta_medio_pago.importe) as importe_pago,
+						sum(tr_mantic_venta_medio_pago.total) as total,
+						concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre_cobro
+					from
+						tr_mantic_venta_medio_pago
+					inner join 
+						tc_janal_usuarios on tr_mantic_venta_medio_pago.id_usuario = tc_janal_usuarios.id_usuario
+					inner join				
+						tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
+				  inner join 
+				    tc_mantic_tipos_medios_pagos on tr_mantic_venta_medio_pago.id_tipo_medio_pago = tc_mantic_tipos_medios_pagos.id_tipo_medio_pago		
+					group by
+						tr_mantic_venta_medio_pago.id_venta
+				) as tt_mantic_temporal	on tt_mantic_temporal.id_venta = tc_mantic_ventas.id_venta
+        where
+          tc_mantic_ventas.id_venta = {idVenta}
+        order by 
+          tc_mantic_ventas.id_venta,
+          tc_mantic_ventas_detalles.id_venta_detalle asc
       </select>
       <select id="ventas">
         select 

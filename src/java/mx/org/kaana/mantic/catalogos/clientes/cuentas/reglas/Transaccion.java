@@ -490,7 +490,7 @@ public class Transaccion extends TransaccionFactura{
 					DaoFactory.getInstance().insert(sesion, tmp);
 				} // else
 				sesion.flush();
-				toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("cobros").concat(this.file.getRuta()), ".".concat(this.file.getFormat().name()), this.toListFile(sesion, this.file, 2L));
+				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("cobros").concat(this.file.getRuta()), ".".concat(this.file.getFormat().name()), this.toListFile(sesion, this.file, 2L));
 			} // if	
   	} // if	
 	} // toUpdateDeleteXml
