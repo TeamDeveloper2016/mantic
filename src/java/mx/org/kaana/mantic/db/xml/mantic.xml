@@ -400,7 +400,7 @@
         from      
           tc_mantic_empresas_pagos_archivos
         where      
-          ruta = '{ruta}' and id_tipo_archivo = {idTipoArchivo} and id_empresa_pago = {idEmpresaPago} and nombre = '{nombre}'
+          id_tipo_archivo = {idTipoArchivo} and nombre = '{nombre}'
       </select>
     </unit>    
     <unit id="TcManticEmpresasBitacoraDto">

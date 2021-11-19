@@ -32,7 +32,10 @@ import mx.org.kaana.mantic.productos.reglas.Transaccion;
 import mx.org.kaana.mantic.productos.beans.Caracteristica;
 import mx.org.kaana.mantic.productos.beans.Partida;
 import mx.org.kaana.mantic.productos.beans.Producto;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.primefaces.event.NodeSelectEvent;
+import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.TreeNode;
 
 
@@ -41,6 +44,8 @@ import org.primefaces.model.TreeNode;
 public class Accion extends Contenedor implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
+  private static final Log LOG = LogFactory.getLog(Accion.class);
+  
 	private Producto producto;
   private String path;
 
@@ -372,6 +377,13 @@ public class Accion extends Contenedor implements Serializable {
     this.getProducto().setMarca(this.getProducto().getProducto().getMarca());
   }
 
+  public void doCheckPartida(Partida partida) {
+    partida.setDescripcion(partida.getDescripcion().trim().toUpperCase());
+    partida.setMedida(partida.getMedida().trim().toUpperCase());
+    if(!Objects.equals(partida.getAction(), ESql.INSERT))
+      partida.setAction(ESql.UPDATE);
+  }
+  
   public void doCheckEspecificacion(Caracteristica caracteristica) {
     caracteristica.setDescripcion(caracteristica.getDescripcion().trim().toUpperCase());
     if(!Objects.equals(caracteristica.getAction(), ESql.INSERT))
@@ -391,5 +403,14 @@ public class Accion extends Contenedor implements Serializable {
     UISelectEntity data= (UISelectEntity)((TreeNode)this.attrs.get("data")).getData();
     this.producto.setCategoria(data.toString("padre").concat(data.toString("nombre")));
   }  
-  
+ 
+	public void onTabChange(TabChangeEvent event) {
+		try {
+      LOG.info("Actualiza todo !");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+  } // omnTabChange  
 }

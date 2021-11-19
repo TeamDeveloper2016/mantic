@@ -104,6 +104,7 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
           <p:tabView id="contenedorGrupos" activeIndex="0" widgetVar="widgetGaleria">
+            <p:ajax event="tabChange" process="@this @(.partida)" update="@(.detalle)" listener="#{manticProductosAccion.onTabChange}"/>
             <p:tab title="Categorias">							
               <p:tree id="arbol" value="#{manticProductosAccion.root}" var="row" dynamic="true" nodeVar="nodo" orientation="horizontal" selectionMode="single" selection="#{manticProductosAccion.attrs.data}">
                 <p:ajax event="select" process="@this" update="@(.categoria)" listener="#{manticProductosAccion.onSelectCategoria}" oncomplete="PF('widgetGaleria').select(1);"/>
@@ -230,7 +231,7 @@
                       </p:column>   
                       <p:column headerText="Código" styleClass="janal-wid-10">
                         <p:selectOneMenu id="codigo" value="#{row.ikArticuloCodigo}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">
-                          <p:ajax event="change" process="@this"/>
+                          <p:ajax event="change" process="@this" listener="#{manticProductosAccion.doCheckPartida(row)}"/>
                           <f:selectItems value="#{row.codigos}" var="element" itemValue="#{element}" itemLabel="#{element.codigo} #{empty element.principal or element.principal eq ''? '': '|'} #{element.principal}"/>
                           <p:column headerText="Código">
                             <h:outputText value="#{item.codigo}"/>
@@ -245,7 +246,7 @@
                       </p:column>   
                       <p:column headerText="Descripción" styleClass="janal-wid-30 nombre">
                         <p:inputText id="nombre" value="#{row.descripcion}" styleClass="janal-wid-100-txt partida">
-                          <p:ajax event="change" process="@this"/>
+                          <p:ajax event="change" process="@this" listener="#{manticProductosAccion.doCheckPartida(row)}" />
                         </p:inputText>  
                       </p:column>   
                       <p:column headerText="Medida" styleClass="janal-wid-8 medida">

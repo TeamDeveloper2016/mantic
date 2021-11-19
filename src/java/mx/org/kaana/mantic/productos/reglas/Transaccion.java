@@ -51,7 +51,7 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar= false;
 		try {
 			this.messageError= "Ocurrio un error al ".concat(accion.name().toLowerCase()).concat(" el registro del producto");
-			switch(accion){
+			switch(accion) {
 				case AGREGAR:
           regresar= this.toAgregarProducto(sesion);
 					break;
@@ -159,14 +159,14 @@ public class Transaccion extends IBaseTnx {
     try {      
       for (Partida item: this.producto.getArticulos()) {
         switch(item.getAction()) {
+          case UPDATE:
+            regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
+            break;
           case INSERT:
             item.setIdProducto(this.producto.getProducto().getIdProducto());
             item.setIdUsuario(JsfBase.getIdUsuario());
             item.setIdDatos(1L);
             regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
-            break;
-          case UPDATE:
-            regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
             break;
           case DELETE:
             regresar= DaoFactory.getInstance().delete(sesion, item)> 0L;
@@ -185,13 +185,13 @@ public class Transaccion extends IBaseTnx {
     try {      
       for (Caracteristica item: this.producto.getCaracteristicas()) {
         switch(item.getAction()) {
+          case UPDATE:
+            regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
+            break;
           case INSERT:
             item.setIdProducto(this.producto.getProducto().getIdProducto());
             item.setIdUsuario(JsfBase.getIdUsuario());
             regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
-            break;
-          case UPDATE:
-            regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
             break;
           case DELETE:
             regresar= DaoFactory.getInstance().delete(sesion, item)> 0L;

@@ -236,8 +236,8 @@ public class Transaccion extends IBaseTnx {
 			} // if toCierreCaja
 			else
 				item = (TcManticEmpresasDeudasDto) DaoFactory.getInstance().findById(sesion, TcManticEmpresasDeudasDto.class, this.pago.getIdEmpresaDeuda());			
-			this.procesaNotasEntrada(sesion, item );
-			this.procesaNotasCredito(sesion, item );			
+			this.procesaNotasEntrada(sesion, item);
+			this.procesaNotasCredito(sesion, item);			
 		} // try
 		catch (Exception e) {			
 			throw e;
