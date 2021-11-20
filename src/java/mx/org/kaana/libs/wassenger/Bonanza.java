@@ -39,7 +39,7 @@ public final class Bonanza implements Serializable {
   private static final String BODY_MESSAGE     = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te estaremos enviando únicamente las notificaciones más importantes respecto a compras con nosotros. Emisión y descarga de facturas principalmente.\\n\\nNo podremos contestar a tus mensajes en este número.\\n\\nSi desea contactarnos puedes ser a *ventas@ferreteriabonanza.com* y/o al telefono/whatsup *4495087505*\\n\\nPara aceptar estas notificaciones, puedes escribir *hola* en cualquier momento sobre este chat.\\n\\nGracias por comprar en *_Ferreteria Bonanza_*.\"";
   private static final String BODY_PROVEEDOR   = "\"phone\":\"+521{celular}\",\"message\":\"Estimado proveedor _{nombre}_:\\n\\n{saludo}, te estaremos enviando únicamente las notificaciones más importantes respecto a las ordenes de compras que te haremos principalmente.\\n\\nNo podremos contestar a tus mensajes en este número.\\n\\nSi desea contactarnos puedes ser a *ventas@ferreteriabonanza.com* y/o al telefono/whatsup *4495087505*\\n\\nPara aceptar estas notificaciones, puedes escribir *hola* en cualquier momento sobre este chat.\\n\\nGracias por comprar en *_Ferreteria Bonanza_*.\"";
   private static final String BODY_FACTURA     = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te hacemos llegar la factura con folio *{ticket}* del día *{fecha}*, en el siguiente link se adjuntan sus archivos PDF y XML de su factura emitida\\n\\n{reporte}\\n\\nPara cualquier duda o aclaración *ventas@ferreteriabonanza.com* y/o al telefono/whatsup *4495087505*, se tienen *24 hrs* para descargar todos los documentos.\\n\\nAgradecemos su preferencia *_Ferreteria Bonanza_*.\"";
-  private static final String BODY_TICKET      = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te hacemos llegar el ticket con folio *{ticket}* del día *{fecha}*, en el siguiente link se adjuntan el archivo PDF del ticket\\n\\n{reporte}\\n\\nPara cualquier duda o aclaración *ventas@ferreteriabonanza.com* y/o al telefono/whatsup *4495087505*, se tienen *24 hrs* para descargar el documento.\\n\\nAgradecemos su preferencia *_Ferreteria Bonanza_*.\"";
+  private static final String BODY_TICKET      = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te hacemos llegar el ticket con folio *{ticket}* del día *{fecha}*, en el siguiente link se adjuntan el archivo PDF del ticket\\n\\nhttps://ferreteriabonanza.com/Temporal/Pdf/{reporte}\\n\\nPara cualquier duda o aclaración *ventas@ferreteriabonanza.com* y/o al telefono/whatsup *4495087505*, se tienen *24 hrs* para descargar el documento.\\n\\nAgradecemos su preferencia *_Ferreteria Bonanza_*.\"";
   private static final String BODY_DEVOLUCION  = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, su cuenta presenta un movimiento, en el siguiente link se adjuntan el archivo PDF referente a ello\\n\\n https://ferreteriabonanza.com/Temporal/Pdf/{reporte}\\n\\nPara cualquier duda o aclaración *ventas@ferreteriabonanza.com* y/o al telefono/whatsup *4495087505*, se tienen *24 hrs* para descargar todos los documentos.\\n\\nAgradecemos su preferencia *_Ferreteria Bonanza_*.\"";
   private static final String BODY_PAGO_CUENTA = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, gracias por su pago, en el siguiente link se adjunta un PDF con un resumen y estatus de los tickets/facturas a los cuales fue abonado el pago\\n\\n https://ferreteriabonanza.com/Temporal/Pdf/{reporte}\\n\\nPara cualquier duda o aclaración *ventas@ferreteriabonanza.com* y/o al telefono/whatsup *4495087505*, se tienen *24 hrs* para descargar todos los documentos.\\n\\nAgradecemos su preferencia *_Ferreteria Bonanza_*.\"";
   private static final String BODY_ORDEN_COMPRA= "\"phone\":\"+521{celular}\",\"message\":\"Estimado proveedor _{nombre}_:\\n\\n{saludo}, en el siguiente link se adjunta un PDF con una orden de compra\\n\\nhttps://ferreteriabonanza.com/Temporal/Pdf/{reporte}\\n\\nFavor de verificar en la misma orden la sucursal de entrega.\\n\\nPara cualquier duda o aclaración *ventas@ferreteriabonanza.com* y/o al telefono/whatsup *4495087505*.\\n\\n*_Ferreteria Bonanza_*.\"";
@@ -77,7 +77,7 @@ public final class Bonanza implements Serializable {
     this.nombre = Cadena.nombrePersona(nombre);
     this.celular= this.clean(celular);
     this.ticket = ticket;
-    this.fecha= fecha;
+    this.fecha  = fecha;
     this.token  = System.getenv(IMOX_TOKEN);
     this.contratistas= contratistas;
     this.prepare();
@@ -171,7 +171,7 @@ public final class Bonanza implements Serializable {
                 message= new Message();
             } // if  
             else {
-              LOG.error("[doSendMessage] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+              LOG.error("[doSendMessage] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
               message= new Message();
               message.setMessage(" {"+ Cadena.replaceParams(BODY_MESSAGE, params, true)+ "}");
             } // else  
@@ -187,7 +187,7 @@ public final class Bonanza implements Serializable {
           } // else  
         } // if  
         else 
-          LOG.warn("[doSendMessage] Ya había sido notificado este celular por whatsup ["+ this.celular+ "]");
+          LOG.warn("[doSendMessage] Ya había sido notificado este celular por whatsapp ["+ this.celular+ "]");
       } // try
       catch(Exception e) {
         Error.mensaje(e);
@@ -197,7 +197,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendMessage] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+      LOG.error("[doSendMessage] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
   }
 
   public void doSendProveedor(Session sesion) {
@@ -233,7 +233,7 @@ public final class Bonanza implements Serializable {
                 message= new Message();
             } // if  
             else {
-              LOG.error("[doSendProveedor] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+              LOG.error("[doSendProveedor] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
               message= new Message();
               message.setMessage(" {"+ Cadena.replaceParams(BODY_PROVEEDOR, params, true)+ "}");
             } // else  
@@ -249,7 +249,7 @@ public final class Bonanza implements Serializable {
           } // else  
         } // if  
         else 
-          LOG.warn("[doSendProveedor] Ya había sido notificado este celular por whatsup ["+ this.celular+ "]");
+          LOG.warn("[doSendProveedor] Ya había sido notificado este celular por whatsapp ["+ this.celular+ "]");
       } // try
       catch(Exception e) {
         Error.mensaje(e);
@@ -259,7 +259,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendProveedor] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+      LOG.error("[doSendProveedor] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
   }
 
   public void doSendCorteNomina(Session sesion) {
@@ -290,7 +290,7 @@ public final class Bonanza implements Serializable {
             message= new Message();
         } // if  
         else {
-          LOG.error("[doSendCorteNomina] No se puedo enviar el mensaje por whatsup al grupo ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+          LOG.error("[doSendCorteNomina] No se puedo enviar el mensaje por whatsapp al grupo ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
           message= new Message();
           message.setMessage(" {"+ Cadena.replaceParams(BODY_OPEN_NOMINA, params, true)+ "}");
         } // else  
@@ -341,7 +341,7 @@ public final class Bonanza implements Serializable {
             message= new Message();
         } // if  
         else {
-          LOG.error("[doSendCirreNomina] No se puedo enviar el mensaje por whatsup al grupo ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+          LOG.error("[doSendCirreNomina] No se puedo enviar el mensaje por whatsapp al grupo ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
           message= new Message();
           message.setMessage(" {"+ Cadena.replaceParams(BODY_CLOSE_NOMINA, params, true)+ "}");
         } // else  
@@ -407,7 +407,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendFactura] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendFactura] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_FACTURA, params, true)+ "}");
           } // if  
@@ -430,7 +430,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendFactura]No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+      LOG.error("[doSendFactura]No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
   } // doSendFactura
   
   public void doSendTicket() {
@@ -468,7 +468,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendFactura] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendFactura] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_TICKET, params, true)+ "}");
           } // if  
@@ -491,7 +491,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendFactura]No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+      LOG.error("[doSendFactura]No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
   } // doSendTicket
   
   public void doSendDevolucion(Session sesion) {
@@ -525,7 +525,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendDevolucion] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendDevolucion] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_DEVOLUCION, params, true)+ "}");
           } // if  
@@ -548,7 +548,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendDevolucion]No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+      LOG.error("[doSendDevolucion]No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
   } // doSendDevolucion
   
   public void doSendPagoCuenta(Session sesion) {
@@ -582,7 +582,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendPagoCuenta] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendPagoCuenta] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_PAGO_CUENTA, params, true)+ "}");
           } // if  
@@ -605,7 +605,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendPagoCuenta]No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+      LOG.error("[doSendPagoCuenta]No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
   } // doSendPagoCuenta
   
   public void doSendOrdenCompra() {
@@ -643,7 +643,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendOrdenCompra] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendOrdenCompra] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_ORDEN_COMPRA, params, true)+ "}");
           } // if  
@@ -666,7 +666,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendOrdenCompra]No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+      LOG.error("[doSendOrdenCompra]No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
   } // doSendOrdenCompra
 
   public void doSendResidentes(Session sesion) {
@@ -700,7 +700,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendResidentes] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendResidentes] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_RESIDENTE, params, true)+ "}");
           } // if  
@@ -723,7 +723,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendResidentes] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+      LOG.error("[doSendResidentes] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
   }
 
   public void doSendGasto(Session sesion) {
@@ -757,7 +757,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendGasto] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendGasto] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_GASTO_CHICA, params, true)+ "}");
           } // if  
@@ -780,7 +780,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendGasto] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+      LOG.error("[doSendGasto] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
   }
   
   public void doSendCajaChica(Session sesion) {
@@ -814,7 +814,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendCajaChica] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendCajaChica] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_CAJA_CHICA, params, true)+ "}");
           } // if  
@@ -837,7 +837,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendCajaChica] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+      LOG.error("[doSendCajaChica] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
   }
   
   private void prepare() {
@@ -926,7 +926,7 @@ public final class Bonanza implements Serializable {
               message= new Message();
           } // if  
           else {
-            LOG.error("[doSendSaludo] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendSaludo] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_MESSAGE, params, true)+ "}");
           } // else  
@@ -944,7 +944,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendSaludo] No se puedo enviar el mensaje por whatsup al celular ["+ this.celular+ "]");
+      LOG.error("[doSendSaludo] No se puedo enviar el mensaje por whatsapp al celular ["+ this.celular+ "]");
   }
   
   public static void main(String ... args) {

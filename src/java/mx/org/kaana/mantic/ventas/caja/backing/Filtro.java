@@ -332,5 +332,5 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
     } // catch	
     return regresar;
   }
-
+  
 }

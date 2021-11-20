@@ -245,7 +245,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="9" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["WHATSUP: (449) 5087505"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["WHATSAPP: (449) 5087505"]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
