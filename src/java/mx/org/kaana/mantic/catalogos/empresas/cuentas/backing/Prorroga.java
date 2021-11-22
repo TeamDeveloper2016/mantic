@@ -166,7 +166,7 @@ public class Prorroga extends IBaseImportar implements Serializable {
     } // finally
 	}
 
-		public void doViewDocument() {
+	public void doViewDocument() {
 		this.doViewDocument(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas"));
 	}
 

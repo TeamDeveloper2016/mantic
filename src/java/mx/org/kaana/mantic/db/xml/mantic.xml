@@ -7,6 +7,35 @@
   </model>
 
   <dml>
+    <unit id="TcManticMarcasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_marcas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_marcas
+        where      
+          nombre= '{nombre}'
+      </select>
+      <select id="todos">
+        select      
+          tc_mantic_marcas.id_marca as id_key,
+          tc_mantic_marcas.*
+        from      
+          tc_mantic_marcas
+        where      
+          id_marca> 1
+        order by
+          nombre
+      </select>
+    </unit>    
     <unit id="TcManticProductosCategoriasDto">
       <select id="row">
         select      
@@ -402,6 +431,40 @@
         where      
           id_tipo_archivo = {idTipoArchivo} and nombre = '{nombre}'
       </select>
+			<select id="listado">
+        select      
+         tc_mantic_empresas_pagos_archivos.id_empresa_pago_archivo as id_key,
+          tc_mantic_empresas_pagos_archivos.*
+        from      
+          tc_mantic_empresas_pagos_archivos
+        where      
+          ruta = '{ruta}'
+				  and id_principal= 1
+				order by
+				  ruta
+      </select>
+      <select id="pago">
+        select      
+          *
+        from      
+          tc_mantic_empresas_pagos_archivos
+        where      
+          id_empresa_pago = {idEmpresaPago}
+      </select>
+      <update id="rows">
+        update 
+          tc_mantic_empresas_pagos_archivos
+        set
+          id_principal= 2
+        where
+          ruta = '{ruta}' and id_tipo_archivo = {idTipoArchivo} and id_empresa_pago = {idEmpresaPago} and nombre = '{nombre}'
+      </update>
+      <delete id="rows">
+        delete from
+          tc_mantic_empresas_pagos_archivos
+        where
+          id_empresa_pago= {idEmpresaPago}
+      </delete> 			
     </unit>    
     <unit id="TcManticEmpresasBitacoraDto">
       <select id="row">

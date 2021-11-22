@@ -31,7 +31,7 @@ public final class Producto implements Serializable {
   private List<Partida> articulos;
   private List<Caracteristica> caracteristicas;
   private UISelectEntity ikEmpresa;
-  private String ikMarca;
+  private UISelectEntity ikMarca;
   private String categoria;
   private String marca;
   private String archivo;
@@ -70,12 +70,14 @@ public final class Producto implements Serializable {
       this.producto.setIdEmpresa(this.ikEmpresa.getKey());
   }
 
-  public String getIkMarca() {
+  public UISelectEntity getIkMarca() {
     return ikMarca;
   }
 
-  public void setIkMarca(String ikMarca) {
+  public void setIkMarca(UISelectEntity ikMarca) {
     this.ikMarca = ikMarca;
+    if(ikMarca!= null)
+      this.producto.setIdMarca(ikMarca.getKey());
   }
 
   public String getArchivo() {
@@ -109,7 +111,7 @@ public final class Producto implements Serializable {
         this.categoria= "";
         this.marca    = "";
         this.setIkEmpresa(new UISelectEntity(-1L));
-        this.setIkMarca("-1");
+        this.setIkMarca(new UISelectEntity(2L));
       } // if
       else {
         this.producto = (TcManticProductosDto)DaoFactory.getInstance().findById(TcManticProductosDto.class, idProducto);
@@ -130,10 +132,10 @@ public final class Producto implements Serializable {
             item.setAction(ESql.SELECT);
           } // for
         this.setIkEmpresa(new UISelectEntity(this.producto.getIdEmpresa()));
+        this.setIkMarca(new UISelectEntity(this.producto.getIdMarca()));
         this.marca= this.producto.getMarca();
         params.put("idProductoCategoria", this.producto.getIdProductoCategoria());
         this.categoria= DaoFactory.getInstance().toField("TcManticProductosCategoriasDto", "existe", params, "categoria").toString();
-        this.setIkMarca("OTRA");
       } // else
       if(this.articulos== null)
         this.articulos= new ArrayList<>();

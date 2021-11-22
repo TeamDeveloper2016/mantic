@@ -113,11 +113,8 @@
               </f:facet>
               <h:outputText value="#{row['registro']}"/>
             </p:column>		
-            <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-col-38" sortBy="#{row.idActivo}">
-              <f:facet name="header">
-                <h:outputText value="Activo"/>
-              </f:facet>
-              <h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo eq '1' ? 'circulo-verde.png': 'circulo-rojo.png'}" title="Articulo #{row.idActivo eq '1' ? 'Vigente': 'No vigente'}"/>
+            <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-col-38">
+              <h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo eq '1' ? 'circulo-verde.png': 'circulo-rojo.png'}" title="Producto #{row.idActivo eq '1' ? 'vigente': 'no vigente'}"/>
             </p:column>		
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticProductosFiltro.lazyModel== null? 0: manticProductosFiltro.lazyModel.rowCount}] registros"/>

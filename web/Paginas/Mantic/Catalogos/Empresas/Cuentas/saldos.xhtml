@@ -419,14 +419,6 @@
 			</div>	
     </div>		       		
   </ui:define>    
-	<ui:define name="acciones">
-		<div class="lg-pantalla">
-			<p:commandButton id="regresar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosEmpresasCuentasSaldos.doRegresar}" immediate="true"/>
-		</div>	
-		<div class="xs-pantalla">
-			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosEmpresasCuentasSaldos.doRegresar}" immediate="true"/>
-		</div>	
-	</ui:define>	
 	<ui:define name="dialogos">
 		<p:dialog id="dialogoAutorizacion" widgetVar="widgetDialogoAutorizacion" header="Persona que autoriza #{manticCatalogosEmpresasCuentasSaldos.attrs.msgAutorizacion}" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="janal.change('formAutorizacion', Janal.Control.#{manticCatalogosEmpresasCuentasSaldos.attrs.limitePago});" width="50%" onHide="janal.restore(); janal.desbloquear();">
 			<h:form id="formAutorizacion" prependId="false">

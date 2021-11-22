@@ -146,7 +146,7 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 				if(index< 0) 
 					regresar.add(item);
 				else {
-					// ((Articulo)regresar.get(index)).setValor(item.getValor());
+					((Articulo)regresar.get(index)).setSolicitados(item.getSolicitados());
 					((Articulo)regresar.get(index)).setStock(stock== null? 0D: stock.toDouble());
 				} // else	
 			} // for

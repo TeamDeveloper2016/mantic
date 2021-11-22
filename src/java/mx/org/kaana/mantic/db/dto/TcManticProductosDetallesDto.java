@@ -197,6 +197,8 @@ public class TcManticProductosDetallesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getEspecificacion());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdArticuloCodigo());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -214,6 +216,7 @@ public class TcManticProductosDetallesDto implements IBaseDto, Serializable {
 		regresar.put("orden", getOrden());
 		regresar.put("idArticulo", getIdArticulo());
 		regresar.put("especificacion", getEspecificacion());
+		regresar.put("idArticuloCodigo", getIdArticuloCodigo());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -221,7 +224,7 @@ public class TcManticProductosDetallesDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getIdDatos(), getMedida(), getIdUsuario(), getIdProductoDetalle(), getIdProducto(), getOrden(), getIdArticulo(), getEspecificacion(), getRegistro()
+      getDescripcion(), getIdDatos(), getMedida(), getIdUsuario(), getIdProductoDetalle(), getIdProducto(), getOrden(), getIdArticulo(), getEspecificacion(), getIdArticuloCodigo(), getRegistro()
     };
     return regresar;
   }

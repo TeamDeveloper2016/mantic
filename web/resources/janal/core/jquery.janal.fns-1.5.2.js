@@ -129,7 +129,8 @@ $.mask.rules = $.extend($.mask.rules, {
 	's': /[^\u0025\u0027]/,
 	't': /[0-9a-zA-Z_ \u00F1\u00D1]/,
 	'v': /[0-9a-zA-Z.;:@+\-_#&/\u007C]/,
-	'w': /[0-9a-zA-Z.-_ |"*\u007C]/
+	'w': /[0-9a-zA-Z.-_ |"*\u007C]/,
+	'x': /[0-9a-zA-Z.\/-_# |*\u007C]/
 });
 
 $.mask.masks = $.extend($.mask.masks, {
@@ -181,6 +182,7 @@ $.mask.masks = $.extend($.mask.masks, {
 	'correo':{mask:'q', type:'repeat'},
 	'alfanumerico':{mask:'t', type:'repeat'},
 	'marca':{mask:'w', type:'repeat'},
+	'producto':{mask:'x', type:'repeat'},
 	'valor-simple':{mask:'r', type:'repeat'},
 	'acceso':{mask:'s', type:'repeat'},
 	'codigo':{mask:'v', type:'repeat', fixedChars: '[]'}

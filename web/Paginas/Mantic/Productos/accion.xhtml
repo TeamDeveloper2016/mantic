@@ -15,8 +15,8 @@
 				'contenedorGrupos\\:idEmpresa'    : {validaciones: 'requerido|libre', mascara: 'libre'},
 				'contenedorGrupos\\:categoria'    : {validaciones: 'requerido|marca', mascara: 'marca', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:karca'        : {validaciones: 'marca', mascara: 'marca', formatos: 'cambiar-mayusculas'},
-				'contenedorGrupos\\:marca'        : {validaciones: 'requerido|marca', mascara: 'marca', formatos: 'cambiar-mayusculas'},
-				'contenedorGrupos\\:nombre'       : {validaciones: 'requerido|libre', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:idMarca'      : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:nombre'       : {validaciones: 'requerido|libre', mascara: 'producto', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:idActivo'     : {validaciones: 'requerido|libre', mascara: 'libre'},
 				'contenedorGrupos\\:observaciones': {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'nombre'        : {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
@@ -140,16 +140,14 @@
                   <f:selectItems value="#{manticProductosAccion.attrs.categorias}"/>
                 </p:selectOneMenu>
                 <p:inputText id="categoria" value="#{manticProductosAccion.producto.categoria}" styleClass="janal-wid-100-txt categoria" style="display: none"/> 
-                <p:outputLabel for="marca" value="Marca(s): [ #{manticProductosAccion.producto.marca} ]" styleClass="marca"/>
-                <p:selectOneMenu id="marcas" value="#{manticProductosAccion.producto.ikMarca}" var="item" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <p:ajax event="change" process="@this karca" update="@(.marca)" listener="#{manticProductosAccion.doMarcaOpcion}" oncomplete="janal.refresh();"/>
-                  <f:selectItems value="#{manticProductosAccion.attrs.marcas}"/>
+                <p:outputLabel for="idMarca" value="Marca(s):"/>
+                <p:selectOneMenu id="idMarca" value="#{manticProductosAccion.producto.ikMarca}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" process="@this" update="@(.marca)"/>
+                  <f:selectItems value="#{manticProductosAccion.attrs.marcas}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
                 </p:selectOneMenu>
-                <p:outputLabel for="marcas" value="Marca:" styleClass="marca" style="display:#{manticProductosAccion.producto.ikMarca eq 'OTRA'? '': 'none'}"/>
-                <p:inputText id="marca" value="#{manticProductosAccion.producto.marca}" styleClass="janal-wid-100-txt marca" style="display: none"/> 
-                <p:inputText id="karca" value="#{manticProductosAccion.producto.producto.marca}" styleClass="janal-wid-100-txt marca" style="display:#{manticProductosAccion.producto.ikMarca eq 'OTRA'? '': 'none'}"> 
-                  <p:ajax event="change" process="@this marcas" update="@(.marca)" listener="#{manticProductosAccion.doConcatMarca}" oncomplete="janal.refresh();"/>
-                </p:inputText>  
                 <p:outputLabel for="nombre" value="Nombre:"/>
                 <p:inputText id="nombre" value="#{manticProductosAccion.producto.producto.nombre}" styleClass="janal-wid-100-txt"/> 
                 <p:outputLabel for="idActivo" value="Activo:"/>
@@ -347,7 +345,7 @@
                 <div class="container">
                   <div class="galeria">
                     <div class="galeria-header p-p-2">
-                      <span class="galeria-marca">#{manticProductosAccion.producto.producto.marca}</span><br/>
+                      <span class="galeria-marca">#{manticProductosAccion.producto.ikMarca.nombre}</span><br/>
                       <span class="galeria-nombre">#{manticProductosAccion.producto.producto.nombre}</span>
                     </div>  
                     <div class="galeria-list-item p-p-1">

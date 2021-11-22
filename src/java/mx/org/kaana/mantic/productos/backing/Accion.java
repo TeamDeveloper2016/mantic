@@ -77,8 +77,8 @@ public class Accion extends Contenedor implements Serializable {
   	  this.attrs.put("total", 0);
       String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
       this.path = dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");      
-      this.toLoadCatalog();
 			this.doLoad();
+      this.toLoadCatalog();
       this.doLoad("", 1L, null);
     } // try
     catch (Exception e) {
@@ -125,12 +125,31 @@ public class Accion extends Contenedor implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("sucursales", UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));			
+      List<UISelectEntity> sucursales= UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
+      this.attrs.put("sucursales", sucursales);			
+      if(sucursales!= null && !sucursales.isEmpty())
+        if(Objects.equals((EAccion)this.attrs.get("accion"), EAccion.AGREGAR))
+          this.producto.setIkEmpresa(sucursales.get(0));
+        else {
+          int index= sucursales.indexOf(new UISelectEntity(this.producto.getProducto().getIdEmpresa()));
+          if(index>= 0)
+            this.producto.setIkEmpresa(sucursales.get(index));
+          else
+            this.producto.setIkEmpresa(sucursales.get(0));
+        } // if  
       List<UISelectItem> categorias= (List<UISelectItem>)UISelect.free("TcManticProductosCategoriasDto", "categorias", params, "categoria", Constantes.SEPARADOR, EFormatoDinamicos.MAYUSCULAS, "categoria");
       this.attrs.put("categorias", categorias);			
-      List<UISelectItem> marcas= UISelect.seleccioneFree("TcManticProductosDto", "marcas", params, "marca", "|", EFormatoDinamicos.MAYUSCULAS, "marca");
-      if(marcas!= null)
-        marcas.add(new UISelectItem("OTRA", "OTRA"));
+      List<UISelectEntity> marcas= UIEntity.build("TcManticMarcasDto", "todos", params, "nombre");
+      if(marcas!= null && !marcas.isEmpty())
+        if(Objects.equals((EAccion)this.attrs.get("accion"), EAccion.AGREGAR))
+          this.producto.setIkMarca(marcas.get(0));
+        else {
+          int index= marcas.indexOf(new UISelectEntity(this.producto.getProducto().getIdMarca()));
+          if(index>= 0)
+            this.producto.setIkMarca(marcas.get(index));
+          else
+            this.producto.setIkMarca(marcas.get(0));
+        } // if  
       this.attrs.put("marcas", marcas);			
     } // try
     catch (Exception e) {
@@ -364,17 +383,11 @@ public class Accion extends Contenedor implements Serializable {
   }
  
   public void doMarcaOpcion() {
-    if(this.getProducto().getIkMarca()!= null && !Objects.equals(this.getProducto().getIkMarca(), "-1") && !Objects.equals(this.getProducto().getIkMarca(), "OTRA"))
-      this.getProducto().getProducto().setMarca(this.getProducto().getIkMarca().trim());
-    else
-      this.getProducto().getProducto().setMarca("");
-    this.getProducto().setMarca(this.getProducto().getProducto().getMarca());
+    
   }
   
   public void doConcatMarca() {
-    if(this.getProducto().getProducto().getMarca()!= null && !Cadena.isVacio(this.getProducto().getProducto().getMarca()))
-      this.getProducto().getProducto().setMarca(this.getProducto().getProducto().getMarca().trim().toUpperCase());
-    this.getProducto().setMarca(this.getProducto().getProducto().getMarca());
+    
   }
 
   public void doCheckPartida(Partida partida) {

@@ -13,6 +13,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.recurso.LoadImages;
 import org.primefaces.model.StreamedContent;
@@ -144,7 +145,7 @@ public final class UIEntity {
   
   public static List<UISelectEntity> build(String proceso, String id, Map<String, Object> params, List<Columna> formato, Long records) {
     List<UISelectEntity> regresar= null;
-    List<IBaseDto> dtos        = null;
+    List<IBaseDto> dtos          = null;
     try {
       dtos    = DaoFactory.getInstance().toEntitySet(proceso, id, params, records);   
       regresar= build(dtos, formato);
@@ -195,9 +196,20 @@ public final class UIEntity {
   public static List<UISelectEntity> build(String proceso, Map<String, Object> params, List<Columna> formato) {
     return build(proceso, Constantes.DML_SELECT, params, formato);
   } 
+
+  public static List<UISelectEntity> build(String proceso, Map<String, Object> params, String fields) {
+    return build(proceso, Constantes.DML_SELECT, params, fields);
+  } 
     
-  public static List<UISelectEntity> build(String proceso, Map<String, Object> params, String fields, List<Columna> formato) {
-    return build(proceso, Constantes.DML_SELECT, params, formato);
+  public static List<UISelectEntity> build(String proceso, String id, Map<String, Object> params, String fields) {
+    List<Columna> formato= new ArrayList<>();
+    String[] tokens= fields.split("[".concat(Constantes.SEPARADOR).concat("]"));
+    if(tokens!= null)
+      for (String token : tokens) {
+        if(token.trim().length()> 0)
+          formato.add(new Columna(token, EFormatoDinamicos.MAYUSCULAS));
+      } // of
+    return build(proceso, id, params, formato);
   } 
 
   public static List<UISelectEntity> todos(List<? extends IBaseDto> dtos, List<Columna> formato, String name) {

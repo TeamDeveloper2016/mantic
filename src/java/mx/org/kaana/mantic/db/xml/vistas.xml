@@ -89,7 +89,15 @@
         select 
           tc_mantic_productos.id_producto as id_key,
           count(tc_mantic_productos_detalles.id_producto) as articulos,
-				  tc_mantic_productos.*,
+				  tc_mantic_productos.id_producto,
+				  tc_mantic_productos.id_producto_categoria,
+				  tc_mantic_productos.nombre,
+				  tc_mantic_productos.id_imagen,
+				  tc_mantic_productos.orden,
+				  tc_mantic_productos.id_activo,
+				  tc_mantic_productos.observaciones,
+				  tc_mantic_productos.registro,
+          tc_mantic_marcas.nombre as marca,
           tc_mantic_productos_categorias.nombre as referencia,
           concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) as categoria
         from
@@ -98,6 +106,8 @@
           tc_mantic_productos_categorias on tc_mantic_productos.id_producto_categoria= tc_mantic_productos_categorias.id_producto_categoria
 				inner join 
 					tc_mantic_empresas on tc_mantic_productos.id_empresa= tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_marcas on tc_mantic_productos.id_marca= tc_mantic_marcas.id_marca
 				left join 
 					tc_mantic_productos_detalles on tc_mantic_productos.id_producto= tc_mantic_productos_detalles.id_producto
         where
@@ -8468,7 +8478,7 @@
 				inner join 
 					tc_mantic_tipos_medios_pagos on tc_mantic_empresas_pagos.id_tipo_medio_pago = tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
 				left join
-					(select id_empresa_pago, COUNT(*) total from tc_mantic_empresas_archivos group by id_empresa_pago ) archivos on tc_mantic_empresas_pagos.id_empresa_pago = archivos.id_empresa_pago
+					(select id_empresa_pago, count(*) total from tc_mantic_empresas_archivos group by id_empresa_pago) archivos on tc_mantic_empresas_pagos.id_empresa_pago = archivos.id_empresa_pago
 				where
 					tc_mantic_empresas_deudas.id_empresa_deuda= {idEmpresaDeuda}									
 				order by

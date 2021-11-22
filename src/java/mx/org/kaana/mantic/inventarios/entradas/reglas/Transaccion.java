@@ -233,12 +233,11 @@ public class Transaccion extends Inventarios implements Serializable {
 					error.append("[").append(item.getNombre()!= null && item.getNombre().length()> 20? item.getNombre().substring(0, 20): item.getNombre()).append(" - ").append(item.getDiferencia()).append("]</br> ");
 				if(DaoFactory.getInstance().findIdentically(sesion, TcManticNotasDetallesDto.class, item.toMap())== null && (articulo.getCantidad()> 0D || articulo.getCosto()> 0D)) {
 					this.toAffectOrdenDetalle(sesion, articulo);
-					if(item.isValid()) {
+					if(!item.isValid()) 
+						DaoFactory.getInstance().insert(sesion, item);
+				  else
 						if(articulo.isModificado())
 							DaoFactory.getInstance().update(sesion, item);
-					} // if	
-					else
-						DaoFactory.getInstance().insert(sesion, item);
 					articulo.setObservacion("ARTICULO SURTIDO EN LA NOTA DE ENTRADA ".concat(this.orden.getConsecutivo()).concat(" EL DIA ").concat(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, this.orden.getRegistro())));
 					// QUITAR DE LAS VENTAS PERDIDAS LOS ARTICULOS QUE FUERON YA SURTIDOS EN EL ALMACEN
 					params.put("idArticulo", articulo.getIdArticulo());
@@ -247,14 +246,6 @@ public class Transaccion extends Inventarios implements Serializable {
 					DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, params);
 				} // if
 			} // for
-			//* APLICAR UNA ALERTA EN CASO DE QUE FALTEN ARTICULOS FISICO CON RESPECTO A LA FACTURA ENTREGADA *//
-			// ESTO YA NO APLICA POR EL PROCESO DE LAS DIFERENCIAS DE ARTICULOS
-//			if(error.length()> 0) 
-//				DaoFactory.getInstance().insert(sesion, new TcManticAlertasDto(JsfBase.getIdUsuario(), -1L, 1L, "EN LA NOTA DE ENTRADA ["+ this.orden.getConsecutivo()+ 
-//					"] EXISTEN ARTICULOS QUE NO FUERON SOLICITADOS, QUE DIFIEREN LA CANTIDAD FISICA DE ARTICULOS CONTRA LA DECLARA EN LA FACTURA ["+ 
-//					this.orden.getFactura()+ "] DE ESTE PROVEEDOR "+ 
-//					((TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.orden.getIdProveedor())).getRazonSocial()+ " ARTICULOS: </br>"+ (error.length()> 500? error.substring(0, 500): error.toString())
-//				));
 		} // try
 		finally {
 			Methods.clean(todos);
@@ -328,11 +319,8 @@ public class Transaccion extends Inventarios implements Serializable {
 				DaoFactory.getInstance().insert(sesion, estatus);
 			} // if
 			else
-			  if(this.orden.getIdNotaTipo().equals(1L) && this.aplicar) {
-					//TcManticNotasBitacoraDto seguimiento= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
-					//DaoFactory.getInstance().insert(sesion, seguimiento);
+			  if(this.orden.getIdNotaTipo().equals(1L) && this.aplicar) 
 					this.toApplyNotaEntrada(sesion);
-				} // if
 		} // try
 		catch (Exception e) {
 			throw e;

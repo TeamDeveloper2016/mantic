@@ -50,6 +50,8 @@ public class TcManticProductosDto implements IBaseDto, Serializable {
   private Long orden;
   @Column (name="nombre")
   private String nombre;
+  @Column (name="id_marca")
+  private Long idMarca;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -58,11 +60,11 @@ public class TcManticProductosDto implements IBaseDto, Serializable {
   }
 
   public TcManticProductosDto(Long key) {
-    this(null, null, null, null, null, null, new Long(-1L), null, null, null);
+    this(null, null, null, null, null, null, new Long(-1L), null, null, null, 2L);
     setKey(key);
   }
 
-  public TcManticProductosDto(String marca, Long idActivo, Long idUsuario, Long idImagen, Long idProductoCategoria, String observaciones, Long idProducto, Long idEmpresa, Long orden, String nombre) {
+  public TcManticProductosDto(String marca, Long idActivo, Long idUsuario, Long idImagen, Long idProductoCategoria, String observaciones, Long idProducto, Long idEmpresa, Long orden, String nombre, Long idMarca) {
     setMarca(marca);
     setIdActivo(idActivo);
     setIdUsuario(idUsuario);
@@ -74,6 +76,7 @@ public class TcManticProductosDto implements IBaseDto, Serializable {
     setOrden(orden);
     setNombre(nombre);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    this.idMarca= idMarca;
   }
 	
   public void setMarca(String marca) {
@@ -164,6 +167,14 @@ public class TcManticProductosDto implements IBaseDto, Serializable {
     return registro;
   }
 
+  public Long getIdMarca() {
+    return idMarca;
+  }
+
+  public void setIdMarca(Long idMarca) {
+    this.idMarca = idMarca;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -199,6 +210,8 @@ public class TcManticProductosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdMarca());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -217,6 +230,7 @@ public class TcManticProductosDto implements IBaseDto, Serializable {
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("orden", getOrden());
 		regresar.put("nombre", getNombre());
+		regresar.put("idMarca", getIdMarca());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -224,7 +238,7 @@ public class TcManticProductosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getMarca(), getIdActivo(), getIdUsuario(), getIdImagen(), getIdProductoCategoria(), getObservaciones(), getIdProducto(), getIdEmpresa(), getOrden(), getNombre(), getRegistro()
+      getMarca(), getIdActivo(), getIdUsuario(), getIdImagen(), getIdProductoCategoria(), getObservaciones(), getIdProducto(), getIdEmpresa(), getOrden(), getNombre(), getRegistro(), getIdMarca()    
     };
     return regresar;
   }
