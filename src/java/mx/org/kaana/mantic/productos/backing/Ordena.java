@@ -106,7 +106,6 @@ public class Ordena extends Contenedor implements Serializable {
       params.put("categoria", this.categoria);
       this.lazyModel= new FormatCustomLazy("VistaProductosDto", "ordenar", params, columns);
       UIBackingUtilities.resetDataTable("tabla");
-      
 			Value next= DaoFactory.getInstance().toField("TcManticProductosDto", "maximo", params, "siguiente");
 			if(next!= null && next.getData()!= null)
 			  this.maximo= next.toLong();

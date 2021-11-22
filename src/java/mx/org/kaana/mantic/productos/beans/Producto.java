@@ -133,7 +133,8 @@ public final class Producto implements Serializable {
           } // for
         this.setIkEmpresa(new UISelectEntity(this.producto.getIdEmpresa()));
         this.setIkMarca(new UISelectEntity(this.producto.getIdMarca()));
-        this.marca= this.producto.getMarca();
+        params.put("idMarca", this.producto.getIdMarca());
+        this.marca= DaoFactory.getInstance().toField("TcManticMarcasDto", "existe", params, "nombre").toString();
         params.put("idProductoCategoria", this.producto.getIdProductoCategoria());
         this.categoria= DaoFactory.getInstance().toField("TcManticProductosCategoriasDto", "existe", params, "categoria").toString();
       } // else

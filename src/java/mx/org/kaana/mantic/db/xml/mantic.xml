@@ -35,6 +35,15 @@
         order by
           nombre
       </select>
+      <select id="existe">
+        select      
+          tc_mantic_marcas.id_marca as id_key,
+          tc_mantic_marcas.*
+        from      
+          tc_mantic_marcas
+        where      
+          id_marca= {idMarca}
+      </select>
     </unit>    
     <unit id="TcManticProductosCategoriasDto">
       <select id="row">
