@@ -732,6 +732,8 @@ public class Transaccion extends TransaccionFactura {
                 archivo.delete();
               } // if
               item.setSqlAccion(ESql.UPDATE);
+              
+              this.toCheckDeleteFile(sesion, item.getImportado().getName());
             } // if
             break;
           case UPDATE:

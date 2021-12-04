@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.productos.backing;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,11 +15,13 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -28,12 +31,16 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloImagen;
+import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
+import mx.org.kaana.mantic.db.dto.TcManticArchivosDto;
 import mx.org.kaana.mantic.productos.reglas.Transaccion;
 import mx.org.kaana.mantic.productos.beans.Caracteristica;
 import mx.org.kaana.mantic.productos.beans.Partida;
 import mx.org.kaana.mantic.productos.beans.Producto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.TreeNode;
@@ -43,9 +50,12 @@ import org.primefaces.model.TreeNode;
 @ViewScoped
 public class Accion extends Contenedor implements Serializable {
 
-  private static final long serialVersionUID = 327393488565639367L;
+  private static final long serialVersionUID= 327393488565639367L;
   private static final Log LOG = LogFactory.getLog(Accion.class);
+	private static final String BYTES         = " Bytes";	
+	private static final String K_BYTES       = " Kb";	
   
+  private ArticuloImagen imagen;
 	private Producto producto;
   private String path;
 
@@ -60,18 +70,26 @@ public class Accion extends Contenedor implements Serializable {
 	public String getPath() {
     return path;
   }
+
+	public String getSource() {
+    return path.concat("1/");
+  }
+
+  public ArticuloImagen getImagen() {
+    return imagen;
+  }
   
   @PostConstruct
   @Override
   protected void init() {		
     try {
-      if(JsfBase.getFlashAttribute("accion")== null)
-		  	UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      // if(JsfBase.getFlashAttribute("accion")== null)
+		  //	UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-      this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
+      this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.MODIFICAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("categoria", JsfBase.getFlashAttribute("categoria")== null? "": JsfBase.getFlashAttribute("categoria"));
-      this.attrs.put("idProducto", JsfBase.getFlashAttribute("idProducto")== null? -1L: JsfBase.getFlashAttribute("idProducto"));
-		  this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
+      this.attrs.put("idProducto", JsfBase.getFlashAttribute("idProducto")== null? 18L: JsfBase.getFlashAttribute("idProducto"));
+		  this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("codigo", "");
       this.attrs.put("buscaPorCodigo", false);
   	  this.attrs.put("total", 0);
@@ -169,11 +187,12 @@ public class Accion extends Contenedor implements Serializable {
 			eaccion= (EAccion) this.attrs.get("accion");
       if(Objects.equals(this.producto.getProducto().getIdImagen(), -1L))
         this.producto.getProducto().setIdImagen(null);
-			transaccion = new Transaccion(this.producto);
+			transaccion = new Transaccion(this.producto, this.imagen);
 			if (transaccion.ejecutar(eaccion)) {
     		JsfBase.setFlashAttribute("idProducto", this.producto.getProducto().getIdProducto());
-				regresar = ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
-				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el registro del producto."), ETipoMensaje.INFORMACION);
+				regresar= ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR)? "agregó": "modificó").concat(" el registro del producto."), ETipoMensaje.INFORMACION);
+        this.imagen= null;
 			} // if
 			else 
 				JsfBase.addMessage("Ocurrió un error al registrar el producto", ETipoMensaje.ERROR);      			
@@ -426,4 +445,45 @@ public class Accion extends Contenedor implements Serializable {
 			Error.mensaje(e);
 		} // catch
   } // omnTabChange  
+  
+	public void doFileUpload(FileUploadEvent event) {
+		String root    = null;  
+		String nameFile= Archivo.toFormatNameFile(event.getFile().getFileName().toUpperCase());
+    File result    = null;		
+		Long fileSize  = 0L;
+		File filePath  = null;
+		try {
+			root= Configuracion.getInstance().getPropiedadSistemaServidor("path.image").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat("/");
+			result  = new File(root.concat(nameFile));		
+			filePath= new File(root);
+			if (!filePath.exists())
+				filePath.mkdirs();
+			if (result.exists())
+				result.delete();			      
+			Archivo.toWriteFile(result, event.getFile().getInputstream());
+			fileSize= event.getFile().getSize();
+			Importado importado= new Importado(nameFile, event.getFile().getContentType(), EFormatos.JPG, event.getFile().getSize(), fileSize.equals(0L) ? fileSize : fileSize/1024, event.getFile().equals(0L)? BYTES: K_BYTES, root, root.concat(nameFile), event.getFile().getFileName().toUpperCase());      
+      this.imagen= new ArticuloImagen(importado);
+      //**
+			this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), importado.getRuta(), importado.getRuta().concat(importado.getName()), importado.getName());
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessage("Importar archivo", "El archivo no pudo ser importado.", ETipoMensaje.ERROR);
+		} // catch
+	} // doFileUpload
+  
+  private void toSaveFileRecord(String archivo, String ruta, String alias, String nombre) throws Exception {
+		TcManticArchivosDto registro= new TcManticArchivosDto(
+			archivo, // String archivo, 
+			2L, // Long idEliminado, 
+			ruta, // String ruta, 
+			JsfBase.getIdUsuario(), // Long idUsuario, 
+			alias, // String alias, 
+			-1L, // Long idArchivo, 
+			nombre // String nombre
+		);
+		DaoFactory.getInstance().insert(registro);
+	}
+  
 }

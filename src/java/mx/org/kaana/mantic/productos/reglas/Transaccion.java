@@ -1,35 +1,50 @@
 package mx.org.kaana.mantic.productos.reglas;
 
-import com.google.common.base.Objects;
+import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.ESql;
 import static mx.org.kaana.kajool.enums.ESql.DELETE;
 import static mx.org.kaana.kajool.enums.ESql.INSERT;
 import static mx.org.kaana.kajool.enums.ESql.UPDATE;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloImagen;
+import mx.org.kaana.mantic.catalogos.articulos.reglas.Replicar;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticImagenesDto;
 import mx.org.kaana.mantic.db.dto.TcManticProductosDto;
+import mx.org.kaana.mantic.enums.ETipoImagen;
 import mx.org.kaana.mantic.productos.beans.Caracteristica;
 import mx.org.kaana.mantic.productos.beans.Partida;
 import mx.org.kaana.mantic.productos.beans.Producto;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
 public class Transaccion extends IBaseTnx {
 
+  private static final Log LOG = LogFactory.getLog(Transaccion.class);
+  
 	private Producto producto;	
 	private String messageError;
   private Entity articulo;
   private Partida partida;
+  private ArticuloImagen imagen;
 
-	public Transaccion(Producto producto) {
+	public Transaccion(Producto producto, ArticuloImagen imagen) {
 		this.producto= producto;		
+    this.imagen  = imagen;
 	}
 
   public Transaccion(Entity articulo) {
@@ -89,6 +104,7 @@ public class Transaccion extends IBaseTnx {
       if(regresar) {
         this.toArticulos(sesion);
         this.toCaracteristicas(sesion);
+        this.checkImage(sesion);
       } // if  
     } // try
     catch (Exception e) {
@@ -106,13 +122,13 @@ public class Transaccion extends IBaseTnx {
 		try {
 			params.put("categoria", this.producto.getCategoria());
       Long idProductoCategoria= DaoFactory.getInstance().toField("TcManticProductosCategoriasDto", "identico", params, "idKey").toLong();
-      if(!Objects.equal(this.producto.getProducto().getIdProductoCategoria(), idProductoCategoria)) {
+      if(!Objects.equals(this.producto.getProducto().getIdProductoCategoria(), idProductoCategoria)) {
         // RENUMERAR LOS HIJOS DEL LA CATEGORIA Y CALCULAR EL MAXIMO DE LA NUEVA CATEGORIA
         params.put("idProductoCategoria", this.producto.getProducto().getIdProductoCategoria());
         List<TcManticProductosDto> items= (List<TcManticProductosDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticProductosDto.class, "TcManticProductosDto", "hijos", params);
         int count= 1;
-        for (TcManticProductosDto item : items) {
-          if(!Objects.equal(item.getIdProducto(), this.producto.getProducto().getIdProducto())) {
+        for (TcManticProductosDto item: items) {
+          if(!Objects.equals(item.getIdProducto(), this.producto.getProducto().getIdProducto())) {
             item.setOrden(new Long(count++));
             DaoFactory.getInstance().update(sesion, item);
           } // if  
@@ -125,6 +141,7 @@ public class Transaccion extends IBaseTnx {
       if(regresar) {
         this.toArticulos(sesion);
         this.toCaracteristicas(sesion);
+        this.checkImage(sesion);
       } // if  
     } // try
     catch (Exception e) {
@@ -300,5 +317,58 @@ public class Transaccion extends IBaseTnx {
 		} // finally
 		return regresar;
 	}
-  
+ 
+  public Boolean checkImage(Session sesion) throws Exception {
+    Boolean regresar= Boolean.FALSE;
+    try {
+      StringBuilder sb= new StringBuilder();
+      if(this.producto.getArticulos()!= null && !this.producto.getArticulos().isEmpty()) {
+        Long idArticulo= -1L;
+        for (Partida item: this.producto.getArticulos()) {
+          if(!Objects.equals(item.getAction(), ESql.DELETE))
+            idArticulo= item.getIdArticulo();
+          sb.append(item.getIdArticulo()).append(", ");
+        } // for  
+        sb.delete(sb.length()- 2, sb.length());
+        if(!Objects.equals(idArticulo, -1L)) {
+          String name= this.imagen.getImportado().getName();
+          String file= Archivo.toFormatNameFile(idArticulo.toString().concat(".").concat(name.substring(name.lastIndexOf(".")+ 1, name.length())), "IMG");
+          Long tipo  = ETipoImagen.valueOf(name.substring(name.lastIndexOf(".")+ 1, name.length()).toUpperCase()).getIdTipoImagen();
+          TcManticImagenesDto foto= new TcManticImagenesDto(
+            file, // String archivo, 
+            this.imagen.getImportado().getRuta(), // String ruta, 
+            this.imagen.getImportado().getFileSize(), // Long tamanio, 
+            JsfBase.getIdUsuario(), // Long idUsuario, 
+            -1L, // Long idImagen, 
+            tipo, // Long idTipoImagen, 
+            name, // String nombre, 
+            this.imagen.getImportado().getRuta().concat(file) // String alias
+          ); 
+          this.imagen.setIdImagen(DaoFactory.getInstance().insert(sesion, foto));      
+          File archivo= new File(foto.getRuta().concat(foto.getNombre()));			
+          if(archivo.exists()) {
+            Archivo.copy(foto.getRuta().concat(foto.getNombre()), foto.getRuta().concat(foto.getArchivo()), true);												
+            archivo.delete();
+          } // if          
+          this.producto.getProducto().setIdImagen(this.imagen.getIdImagen());
+          DaoFactory.getInstance().update(sesion, this.producto.getProducto());
+          Replicar replicar= new Replicar(new Entity(idArticulo), Collections.EMPTY_LIST);
+          for (Partida item: this.producto.getArticulos()) {
+            TcManticArticulosDto reference= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, item.getIdArticulo());
+            if(reference!= null)
+              regresar= replicar.toDeleteImagen(sesion, this.producto.getProducto().getIdProducto(), sb.toString(), reference, this.imagen.getIdImagen());
+            else
+              LOG.error("EL ARTICULO ["+ item.getIdArticulo()+ "] NO EXISTE EN EL CATALOGO, FAVOR DE VERIFICAR !");
+          } // for
+          replicar.deleteSource(sesion);
+          this.toCheckDeleteFile(sesion, this.imagen.getImportado().getName());
+        } // if
+      } // if
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+    return regresar;
+  }
+
 }

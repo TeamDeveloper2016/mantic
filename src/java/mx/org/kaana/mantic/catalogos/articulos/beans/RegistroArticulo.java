@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -16,6 +17,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.MotorBusqueda;
+import mx.org.kaana.mantic.db.dto.TcManticArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TrManticEmpaqueUnidadMedidaDto;
 import org.primefaces.event.FileUploadEvent;
@@ -573,6 +575,9 @@ public class RegistroArticulo implements Serializable {
 			this.toMessageImage(importado);		
 			this.articulo.setIdImagen(-1L);
       this.addImagen(importado);
+
+      //**
+			this.toSaveFileRecord(event.getFile().getFileName().toUpperCase(), importado.getRuta(), importado.getRuta().concat(importado.getName()), importado.getName());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -580,6 +585,19 @@ public class RegistroArticulo implements Serializable {
 		} // catch
 	} // doFileUpload
 	
+  private void toSaveFileRecord(String archivo, String ruta, String alias, String nombre) throws Exception {
+		TcManticArchivosDto registro= new TcManticArchivosDto(
+			archivo, // String archivo, 
+			2L, // Long idEliminado, 
+			ruta, // String ruta, 
+			JsfBase.getIdUsuario(), // Long idUsuario, 
+			alias, // String alias, 
+			-1L, // Long idArchivo, 
+			nombre // String nombre
+		);
+		DaoFactory.getInstance().insert(registro);
+	}
+  
 	public boolean validaImagenComun() {
 		boolean regresar   = false;
 		MotorBusqueda motor= null;		

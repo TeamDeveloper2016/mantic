@@ -31,7 +31,7 @@
         from      
           tc_mantic_marcas
         where      
-          id_marca> 1
+          id_marca> 0
         order by
           nombre
       </select>
@@ -232,6 +232,23 @@
         order by
           tc_mantic_productos.orden
       </select>
+      <select id="findImage">
+				select 
+					tc_mantic_articulos.id_articulo as id_key
+				from 
+					tc_mantic_articulos
+				where 
+					id_imagen= {idImagen}
+          and id_articulo not in ({idArticulo})
+        union all
+        select      
+          tc_mantic_productos.id_producto as id_key
+        from      
+          tc_mantic_productos
+				where 
+					id_imagen= {idImagen}
+          and id_producto!= {idProducto}
+      </select>
       <update id="rows">
         update
           tc_mantic_productos
@@ -253,6 +270,14 @@
           and tc_mantic_productos.id_producto_categoria= {idProductoCategoria}
           and tc_mantic_productos.orden= {orden}
       </update>
+      <update id="imagen">
+        update
+          tc_mantic_productos
+        set
+          id_imagen= null
+        where
+          id_imagen= {idImagen}
+      </update>  
     </unit>    
     <unit id="TcManticProductosDetallesDto">
       <select id="row">

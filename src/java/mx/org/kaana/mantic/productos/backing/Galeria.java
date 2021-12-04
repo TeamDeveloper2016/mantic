@@ -79,9 +79,9 @@ public class Galeria extends Contenedor implements Serializable {
   protected void init() {		
     try {
       if(JsfBase.getFlashAttribute("producto")== null)
-        this.producto = new Entity(-1L);
+        this.producto= new Entity(-1L);
       else
-        this.producto = (Entity)JsfBase.getFlashAttribute("producto");
+        this.producto= (Entity)JsfBase.getFlashAttribute("producto");
       this.attrs.put("isMatriz", Boolean.FALSE);
       this.categoria= JsfBase.getFlashAttribute("categoria")== null? "": (String)JsfBase.getFlashAttribute("categoria");
       this.ikEmpresa= new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
