@@ -27,14 +27,11 @@ public final class Producto implements Serializable {
   private static final long serialVersionUID = 7546017419511660227L;
   private static final Log LOG = LogFactory.getLog(Producto.class);
   
-  private TcManticProductosDto producto;
+  private General producto;
   private List<Partida> articulos;
   private List<Caracteristica> caracteristicas;
   private UISelectEntity ikEmpresa;
   private UISelectEntity ikMarca;
-  private String categoria;
-  private String marca;
-  private String archivo;
   
   public Producto() throws Exception {
     this(-1L);
@@ -48,7 +45,7 @@ public final class Producto implements Serializable {
     this.init(idProducto, cliente);
   }
 
-  public TcManticProductosDto getProducto() {
+  public General getProducto() {
     return producto;
   }
 
@@ -77,44 +74,22 @@ public final class Producto implements Serializable {
   public void setIkMarca(UISelectEntity ikMarca) {
     this.ikMarca = ikMarca;
     if(ikMarca!= null)
-      this.producto.setIdMarca(ikMarca.getKey());
+      this.producto.setIdProductoMarca(ikMarca.getKey());
   }
 
-  public String getArchivo() {
-    return archivo;
-  }
-  
-  public String getCategoria() {
-    return categoria;
-  }
-
-  public void setCategoria(String categoria) {
-    this.categoria = categoria;
-  }
-
-  public String getMarca() {
-    return marca;
-  }
-
-  public void setMarca(String marca) {
-    this.marca = marca;
-  }
-  
   private void init(Long idProducto, String cliente) throws Exception {
     Map<String, Object> params = null;
     try {      
       params = new HashMap<>();      
       params.put("idProducto", idProducto);      
       if(Objects.equals(-1L, idProducto)) {
-        this.producto= new TcManticProductosDto();
+        this.producto= new General();
         this.producto.setIdImagen(-1L);
-        this.categoria= "";
-        this.marca    = "";
         this.setIkEmpresa(new UISelectEntity(-1L));
         this.setIkMarca(new UISelectEntity(2L));
       } // if
       else {
-        this.producto = (TcManticProductosDto)DaoFactory.getInstance().findById(TcManticProductosDto.class, idProducto);
+        this.producto = (General)DaoFactory.getInstance().toEntity(General.class, "VistaProductosDto", "producto", params);
         this.articulos= (List<Partida>)DaoFactory.getInstance().toEntitySet(Partida.class, "VistaProductosDto", "articulos", params, -1L);
         if(this.articulos!= null)
           for (Partida item: this.articulos) {
@@ -123,7 +98,7 @@ public final class Producto implements Serializable {
             item.setAction(ESql.SELECT);
             item.toLoadCodigos(Boolean.FALSE, cliente);
             if(item.getPrincipal())
-              this.archivo= item.getArchivo();
+              this.producto.setArchivo(item.getArchivo());
           } // for
         this.caracteristicas= (List<Caracteristica>)DaoFactory.getInstance().toEntitySet(Caracteristica.class, "TcManticProductosCaracteristicasDto", "caracteristicas", params, -1L);
         if(this.caracteristicas!= null)
@@ -132,11 +107,7 @@ public final class Producto implements Serializable {
             item.setAction(ESql.SELECT);
           } // for
         this.setIkEmpresa(new UISelectEntity(this.producto.getIdEmpresa()));
-        this.setIkMarca(new UISelectEntity(this.producto.getIdMarca()));
-        params.put("idMarca", this.producto.getIdMarca());
-        this.marca= DaoFactory.getInstance().toField("TcManticMarcasDto", "existe", params, "nombre").toString();
-        params.put("idProductoCategoria", this.producto.getIdProductoCategoria());
-        this.categoria= DaoFactory.getInstance().toField("TcManticProductosCategoriasDto", "existe", params, "categoria").toString();
+        this.setIkMarca(new UISelectEntity(this.producto.getIdProductoMarca()));
       } // else
       if(this.articulos== null)
         this.articulos= new ArrayList<>();
@@ -319,7 +290,7 @@ public final class Producto implements Serializable {
         if(item.getIdImagen()> 0L) {
           item.setPrincipal(Boolean.TRUE);
           this.producto.setIdImagen(item.getIdImagen());
-          this.archivo= item.getArchivo();
+          this.producto.setArchivo(item.getArchivo());
           break;
         } // if  
       } // for

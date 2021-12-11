@@ -81,14 +81,14 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
       switch (eaccion) {
         case AGREGAR:
-          this.registroArticulo = new RegistroArticulo();
+          this.registroArticulo= new RegistroArticulo();
           break;
         case MODIFICAR:
         case CONSULTAR:
         case COPIAR:
         case ACTIVAR:
           idArticulo = (Long)(this.attrs.get("idArticulo"));
-          this.registroArticulo = new RegistroArticulo(idArticulo);
+          this.registroArticulo= new RegistroArticulo(idArticulo);
 					this.registroArticulo.setIdTipoArticulo(this.registroArticulo.getArticulo().getIdArticuloTipo());
           break;
       } // switch

@@ -7,12 +7,13 @@
   </model>
 
   <dml>
-    <unit id="TcManticMarcasDto">
+    <unit id="TcManticProductosMarcasArchivosDto">
       <select id="row">
         select      
-          *
+          tc_mantic_productos_marcas_archivos.id_producto_marca_archivo as id_key,
+          tc_mantic_productos_marcas_archivos.*
         from      
-          tc_mantic_marcas
+          tc_mantic_productos_marcas_archivos
         where 
           {condicion} 
       </select>
@@ -20,29 +21,64 @@
         select      
           *
         from      
-          tc_mantic_marcas
+          tc_mantic_productos_marcas_archivos
+        where      
+          nombre = '{nombre}'
+      </select>
+      <select id="igual">
+        select      
+          tc_mantic_productos_marcas_archivos.id_producto_marca_archivo as id_key,
+          tc_mantic_productos_marcas_archivos.id_producto_marca_archivo as id,
+          tc_mantic_productos_marcas_archivos.nombre as original,
+          tc_mantic_productos_marcas_archivos.archivo as name,
+          tc_mantic_productos_marcas_archivos.alias as ruta,
+          tc_mantic_productos_marcas_archivos.tamanio as size,
+          tc_mantic_productos_marcas_archivos.tamanio as file_size,
+          tc_mantic_productos_marcas_archivos.id_tipo_imagen as id_tipo_documento,
+          tc_mantic_productos_marcas_archivos.id_usuario,
+          tc_mantic_productos_marcas_archivos.registro
+        from      
+          tc_mantic_productos_marcas_archivos
+        where 
+          tc_mantic_productos_marcas_archivos.id_producto_marca_archivo= {idProductoMarcaArchivo}
+      </select>
+    </unit>
+    <unit id="TcManticProductosMarcasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_productos_marcas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_productos_marcas
         where      
           nombre= '{nombre}'
       </select>
       <select id="todos">
         select      
-          tc_mantic_marcas.id_marca as id_key,
-          tc_mantic_marcas.*
+          tc_mantic_productos_marcas.id_producto_marca as id_key,
+          tc_mantic_productos_marcas.*
         from      
-          tc_mantic_marcas
+          tc_mantic_productos_marcas
         where      
-          id_marca> 0
+          id_producto_marca> 0
         order by
           nombre
       </select>
       <select id="existe">
         select      
-          tc_mantic_marcas.id_marca as id_key,
-          tc_mantic_marcas.*
+          tc_mantic_productos_marcas.id_producto_marca as id_key,
+          tc_mantic_productos_marcas.*
         from      
-          tc_mantic_marcas
+          tc_mantic_productos_marcas
         where      
-          id_marca= {idMarca}
+          id_producto_marca= {idProductoMarca}
       </select>
     </unit>    
     <unit id="TcManticProductosCategoriasDto">
@@ -4268,6 +4304,24 @@
           tc_mantic_imagenes
         where      
           id_tipo_imagen = {idTipoImagen} and nombre = '{nombre}'
+      </select>
+      <select id="igual">
+        select      
+          tc_mantic_imagenes.id_imagen as id_key,
+          tc_mantic_imagenes.id_imagen as id,
+          tc_mantic_imagenes.id_imagen,
+          tc_mantic_imagenes.nombre as original,
+          tc_mantic_imagenes.archivo as name,
+          tc_mantic_imagenes.alias as ruta,
+          tc_mantic_imagenes.tamanio as size,
+          tc_mantic_imagenes.tamanio as file_size,
+          tc_mantic_imagenes.id_tipo_imagen as id_tipo_documento,
+          tc_mantic_imagenes.id_usuario,
+          tc_mantic_imagenes.registro
+        from      
+          tc_mantic_imagenes
+        where 
+          tc_mantic_imagenes.id_imagen= {idImagen} 
       </select>
 			<delete id="rows">
         delete from tc_mantic_imagenes where id_articulo={idArticulo} 

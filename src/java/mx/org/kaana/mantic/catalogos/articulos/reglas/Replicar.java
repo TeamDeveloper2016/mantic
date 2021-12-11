@@ -137,9 +137,9 @@ public final class Replicar extends IBaseTnx implements Serializable {
 
   public Boolean deleteSource(Session sesion) throws Exception {
     Boolean regresar= Boolean.FALSE;
-    sesion.flush();
 		Map<String, Object>params= null;
 		try {
+      sesion.flush();
 			params= new HashMap<>();
       for (Imagen item: this.delete) {
         if(this.deleteImagen(sesion, item.getIdProducto(), item.getArticulos(), item.getIdImage()))  {

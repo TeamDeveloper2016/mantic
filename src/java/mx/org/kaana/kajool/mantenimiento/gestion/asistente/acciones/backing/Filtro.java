@@ -739,7 +739,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
 
   public void doLoadDtos(EAccion accion){
     try {
-      this.attrs.put(accion.equals(EAccion.PROCESAR)?"dtosEncuesta":"dtosSeco", DtoFinder.getInstance().loadDtos(accion.equals(EAccion.PROCESAR)?this.attrs.get("nombreEncuesta").toString():Constantes.NOMBRE_));
+      this.attrs.put(accion.equals(EAccion.PROCESAR)?"dtosEncuesta":"dtosSeco", DtoFinder.getInstance().loadDtos(accion.equals(EAccion.PROCESAR)?this.attrs.get("nombreEncuesta").toString(): Constantes.NOMBRE_SOURCE));
     } // try
     catch (Exception e) {
       Error.mensaje(e);

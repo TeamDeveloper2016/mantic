@@ -1,11 +1,15 @@
 package mx.org.kaana.mantic.catalogos.articulos.beans;
 
 import java.io.Serializable;
+import java.util.Map;
+import java.util.Random;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.enums.EFormatos;
 
-public class Importado implements Serializable {
+public class Importado implements IBaseDto, Serializable {
 
 	private static final long serialVersionUID= 1922005398393887945L;
+	private Long id;
 	private String name;
 	private String original;
   private String content;
@@ -40,8 +44,19 @@ public class Importado implements Serializable {
 		this.observaciones= observaciones;
 		this.original= original;
     this.idTipoDocumento= idTipoDocumento;
+    this.id= new Random().nextLong();
+    if(this.id> 0)
+      this.id*= -1L;
   }
 
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+  
   public String getName() {
     return name;
   }
@@ -148,5 +163,50 @@ public class Importado implements Serializable {
 	public String toString() {
 		return "Importado{"+"name="+name+", original="+original+", content="+content+", format="+format+", size="+size+", fileSize="+fileSize+", medicion="+medicion+", ruta="+ruta+", observaciones="+observaciones+'}';
 	}
+
+  @Override
+  public Long getKey() {
+    return getId();
+  }
+
+  @Override
+  public void setKey(Long key) {
+    this.id= key;
+  }
+
+  @Override
+  public Map<String, Object> toMap() {
+    throw new UnsupportedOperationException("Not supported yet."); 
+  }
+
+  @Override
+  public Object[] toArray() {
+    throw new UnsupportedOperationException("Not supported yet."); 
+  }
+
+  @Override
+  public boolean isValid() {
+    throw new UnsupportedOperationException("Not supported yet."); 
+  }
+
+  @Override
+  public Object toValue(String name) {
+    throw new UnsupportedOperationException("Not supported yet."); 
+  }
+
+  @Override
+  public String toAllKeys() {
+    throw new UnsupportedOperationException("Not supported yet."); 
+  }
+
+  @Override
+  public String toKeys() {
+    throw new UnsupportedOperationException("Not supported yet."); 
+  }
+
+  @Override
+  public Class toHbmClass() {
+    throw new UnsupportedOperationException("Not supported yet."); 
+  }
 	
 }

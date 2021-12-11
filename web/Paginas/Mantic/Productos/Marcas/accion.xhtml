@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="#{manticProductosMarcasAccion.attrs.nombreAccion} el catálogo de marcas" />
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {				 				
+				'contenedorGrupos\\:nombre'     : {validaciones: 'requerido', mascara: 'alfanumerico'},
+				'contenedorGrupos\\:descripcion': {validaciones: 'libre', mascara: 'libre'},
+				'contenedorGrupos\\:imagen'     : {validaciones: 'requerido', mascara: 'libre'}
+			};						
+			
+			$(document).ready(function(){janal.readingMode('#{manticProductosMarcasAccion.attrs.nombreAccion}');});
+		</script>   
+	</ui:define>
+	<ui:define name="contenido">
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+            <p:tab title="General">							
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">		
+								<p:outputLabel for="nombre" value="Nombre:"/>
+								<p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{manticProductosMarcasAccion.marca.nombre}"/>                    
+								<p:outputLabel for="descripcion" value="Descripción:"/>
+								<p:inputText id="descripcion" styleClass="janal-wid-100-txt" value="#{manticProductosMarcasAccion.marca.descripcion}"/>                    
+								<p:outputLabel value="Seleccione la imagen a ser importada:"/>
+                <p:fileUpload update="@(.detalle)" fileUploadListener="#{manticProductosMarcasAccion.doFileUpload}" uploadLabel="Importar" cancelLabel="Cancelar" label="Seleccionar" mode="advanced" dragDropSupport="true" allowTypes="/(\.|\/)(jpe?g|png)$/" sizeLimit="5242880" invalidSizeMessage="El tamaño maximo permitido es de 5 Megabytes !" invalidFileMessage="Solo se permiten importar archivos con extensión .PNG y .JPG !" auto="true"/>																
+              </p:panelGrid>
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100 detalle" columnClasses="janal-column-center janal-wid-100-txt">								
+                <a data-magnify="gallery" href="#{manticProductosMarcasAccion.path}#{manticProductosMarcasAccion.marca.importado.name}" data-caption="#{manticProductosMarcasAccion.marca.importado.name}" data-group="icon-image" class="icon">
+                  <p:graphicImage url="#{manticProductosMarcasAccion.path}#{manticProductosMarcasAccion.marca.importado.name}" style="cursor:zoom-in; display: #{empty manticProductosMarcasAccion.marca.importado? 'none': ''}" width="350px" height="150px"/>
+                </a>  
+                <p:outputLabel for="imagen" styleClass="janal-font-bold janal-color-black" value="#{manticProductosMarcasAccion.marca.importado.name}"/>
+                <p:inputText id="imagen" styleClass="janal-display-none" value="#{manticProductosMarcasAccion.marca.importado.name}"/>
+              </p:panelGrid>  
+						</p:tab>						            						            																																																
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticProductosMarcasAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticProductosMarcasAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticProductosMarcasAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticProductosMarcasAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>

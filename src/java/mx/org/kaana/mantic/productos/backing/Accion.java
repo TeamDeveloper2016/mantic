@@ -72,7 +72,7 @@ public class Accion extends Contenedor implements Serializable {
   }
 
 	public String getSource() {
-    return path.concat("1/");
+    return path.concat(String.valueOf(JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende())).concat("/");
   }
 
   public ArticuloImagen getImagen() {
@@ -83,12 +83,12 @@ public class Accion extends Contenedor implements Serializable {
   @Override
   protected void init() {		
     try {
-      // if(JsfBase.getFlashAttribute("accion")== null)
-		  //	UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      if(JsfBase.getFlashAttribute("accion")== null)
+		  	UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-      this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.MODIFICAR: JsfBase.getFlashAttribute("accion"));
+      this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("categoria", JsfBase.getFlashAttribute("categoria")== null? "": JsfBase.getFlashAttribute("categoria"));
-      this.attrs.put("idProducto", JsfBase.getFlashAttribute("idProducto")== null? 18L: JsfBase.getFlashAttribute("idProducto"));
+      this.attrs.put("idProducto", JsfBase.getFlashAttribute("idProducto")== null? -1L: JsfBase.getFlashAttribute("idProducto"));
 		  this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("codigo", "");
       this.attrs.put("buscaPorCodigo", false);
@@ -107,7 +107,7 @@ public class Accion extends Contenedor implements Serializable {
 
   @Override
   public void doLoad() {
-    EAccion eaccion= null;
+    EAccion eaccion           = null;
     try {
       eaccion= (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
@@ -116,11 +116,12 @@ public class Accion extends Contenedor implements Serializable {
           this.producto= new Producto();
           this.producto.setIkEmpresa(new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
           this.producto.getProducto().setIdActivo(1L);
-          this.producto.setCategoria((String)this.attrs.get("categoria"));
+          this.producto.getProducto().setCategoria((String)this.attrs.get("categoria"));
           break;
         case MODIFICAR:					
         case CONSULTAR:					
           this.producto= new Producto((Long)this.attrs.get("idProducto"));
+          this.toAsignImage();
           break;
       } // switch
     } // try
@@ -157,12 +158,12 @@ public class Accion extends Contenedor implements Serializable {
         } // if  
       List<UISelectItem> categorias= (List<UISelectItem>)UISelect.free("TcManticProductosCategoriasDto", "categorias", params, "categoria", Constantes.SEPARADOR, EFormatoDinamicos.MAYUSCULAS, "categoria");
       this.attrs.put("categorias", categorias);			
-      List<UISelectEntity> marcas= UIEntity.build("TcManticMarcasDto", "todos", params, "nombre");
+      List<UISelectEntity> marcas= UIEntity.build("TcManticProductosMarcasDto", "todos", params, "nombre");
       if(marcas!= null && !marcas.isEmpty())
         if(Objects.equals((EAccion)this.attrs.get("accion"), EAccion.AGREGAR))
           this.producto.setIkMarca(marcas.get(0));
         else {
-          int index= marcas.indexOf(new UISelectEntity(this.producto.getProducto().getIdMarca()));
+          int index= marcas.indexOf(new UISelectEntity(this.producto.getProducto().getIdProductoMarca()));
           if(index>= 0)
             this.producto.setIkMarca(marcas.get(index));
           else
@@ -370,7 +371,6 @@ public class Accion extends Contenedor implements Serializable {
 		} // catch		
   } 
   
-  
   public void doSubirCaracteristica(Caracteristica caracteristica) {
 		try {
       this.producto.upCaracteristica(caracteristica); 
@@ -394,6 +394,7 @@ public class Accion extends Contenedor implements Serializable {
   public void doUpdatePrinicipal(Partida partida) {
  		try {
       this.producto.toUpdatePrincipal(partida);
+      this.toAsignImage();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -433,7 +434,7 @@ public class Accion extends Contenedor implements Serializable {
 
   public void doGaleria() {
     UISelectEntity data= (UISelectEntity)((TreeNode)this.attrs.get("data")).getData();
-    this.producto.setCategoria(data.toString("padre").concat(data.toString("nombre")));
+    this.producto.getProducto().setCategoria(data.toString("padre").concat(data.toString("nombre")));
   }  
  
 	public void onTabChange(TabChangeEvent event) {
@@ -469,7 +470,7 @@ public class Accion extends Contenedor implements Serializable {
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
-			JsfBase.addMessage("Importar archivo", "El archivo no pudo ser importado.", ETipoMensaje.ERROR);
+			JsfBase.addMessage("Importar archivo", "El archivo no pudo ser importado", ETipoMensaje.ERROR);
 		} // catch
 	} // doFileUpload
   
@@ -485,5 +486,41 @@ public class Accion extends Contenedor implements Serializable {
 		);
 		DaoFactory.getInstance().insert(registro);
 	}
+ 
+  private void toAsignImage() {
+    Map<String, Object> params= null;
+    try {
+      params = new HashMap<>();      
+      if(Objects.equals(this.producto.getProducto().getIdImagen(), -1L))
+        this.imagen= null;
+      else 
+        if(this.imagen== null || (this.imagen.getImportado()!= null && !Objects.equals(this.producto.getProducto().getIdImagen(), this.imagen.getImportado().getId()))) {
+          params= new HashMap<>();      
+          params.put("idImagen", this.producto.getProducto().getIdImagen());
+          this.imagen= new ArticuloImagen((Importado)DaoFactory.getInstance().toEntity(Importado.class, "TcManticImagenesDto", "igual", params));
+          if(this.imagen!= null && this.imagen.getImportado()!= null) {
+            String ruta= this.imagen.getImportado().getRuta();
+            this.imagen.getImportado().setRuta(ruta.substring(0, ruta.indexOf(this.imagen.getImportado().getName())));
+            this.imagen.getImportado().setFormat(EFormatos.JPG);
+            this.imagen.getImportado().setMedicion(BYTES);
+            this.imagen.setId(this.imagen.getImportado().getId());
+            this.imagen.setOriginal(this.imagen.getImportado().getOriginal());
+            this.imagen.setNombre(this.imagen.getImportado().getName());
+            this.imagen.setRuta(this.imagen.getImportado().getRuta());
+            this.imagen.setTamanio(this.imagen.getImportado().getFileSize());
+            this.imagen.setArchivo(this.imagen.getImportado().getOriginal());
+            this.imagen.setAlias(ruta);
+            this.imagen.setSqlAccion(ESql.SELECT);
+          } // if  
+        } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
   
 }

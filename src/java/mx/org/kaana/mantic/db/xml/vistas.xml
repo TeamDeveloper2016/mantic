@@ -5,12 +5,26 @@
 <process>
 	<dml> 
 		<unit id="VistaProductosDto">
+      <select id="producto">
+        select      
+          tc_mantic_productos.*,
+          tc_mantic_productos_marcas.nombre as marca,
+          concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) as categoria
+        from      
+          tc_mantic_productos
+        inner join  
+          tc_mantic_productos_marcas on tc_mantic_productos.id_producto_marca= tc_mantic_productos_marcas.id_producto_marca
+        inner join  
+          tc_mantic_productos_categorias on tc_mantic_productos.id_producto_categoria= tc_mantic_productos_categorias.id_producto_categoria
+        where 
+          tc_mantic_productos.id_producto= {idProducto}
+      </select>  
       <select id="productos">
         select 
           tc_mantic_productos.id_producto as id_key,
           tc_mantic_productos.id_producto,
           replace(concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre), '|', ' » ') as categoria,
-          tc_mantic_marcas.nombre as marca,
+          tc_mantic_productos_marcas.nombre as marca,
           tc_mantic_productos.nombre,
           tc_mantic_productos.id_activo,
           concat('{url}', tc_mantic_productos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo,
@@ -23,7 +37,7 @@
 				inner join 
           tc_mantic_productos_categorias on tc_mantic_productos.id_producto_categoria= tc_mantic_productos_categorias.id_producto_categoria
 				inner join 
-					tc_mantic_marcas on tc_mantic_productos.id_marca= tc_mantic_marcas.id_marca
+					tc_mantic_productos_marcas on tc_mantic_productos.id_producto_marca= tc_mantic_productos_marcas.id_producto_marca
         left join
           tc_mantic_imagenes on tc_mantic_productos.id_imagen= tc_mantic_imagenes.id_imagen     
         where
@@ -100,7 +114,7 @@
 				  tc_mantic_productos.id_activo,
 				  tc_mantic_productos.observaciones,
 				  tc_mantic_productos.registro,
-          tc_mantic_marcas.nombre as marca,
+          tc_mantic_productos_marcas.nombre as marca,
           tc_mantic_productos_categorias.nombre as referencia,
           concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) as categoria
         from
@@ -110,7 +124,7 @@
 				inner join 
 					tc_mantic_empresas on tc_mantic_productos.id_empresa= tc_mantic_empresas.id_empresa
 				inner join 
-					tc_mantic_marcas on tc_mantic_productos.id_marca= tc_mantic_marcas.id_marca
+					tc_mantic_productos_marcas on tc_mantic_productos.id_producto_marca= tc_mantic_productos_marcas.id_producto_marca
 				left join 
 					tc_mantic_productos_detalles on tc_mantic_productos.id_producto= tc_mantic_productos_detalles.id_producto
         where
@@ -118,7 +132,7 @@
 					and {condicion}
         group by
           concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre),
-          tc_mantic_marcas.nombre,
+          tc_mantic_productos_marcas.nombre,
           tc_mantic_productos.nombre
         {sortOrder}           
       </select>
@@ -135,7 +149,7 @@
 				  tc_mantic_productos.id_activo,
 				  tc_mantic_productos.observaciones,
 				  tc_mantic_productos.registro,
-          tc_mantic_marcas.nombre as marca,
+          tc_mantic_productos_marcas.nombre as marca,
           concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) as categoria,
           concat(tc_mantic_productos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo
         from
@@ -145,7 +159,7 @@
 				inner join 
           tc_mantic_productos_categorias on tc_mantic_productos.id_producto_categoria= tc_mantic_productos_categorias.id_producto_categoria
 				inner join 
-					tc_mantic_marcas on tc_mantic_productos.id_marca= tc_mantic_marcas.id_marca
+					tc_mantic_productos_marcas on tc_mantic_productos.id_producto_marca= tc_mantic_productos_marcas.id_producto_marca
 				left join 
 					tc_mantic_productos_detalles on tc_mantic_productos.id_producto= tc_mantic_productos_detalles.id_producto
         left join
@@ -155,7 +169,7 @@
 					and concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre)= '{categoria}'
         group by
           concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre),
-          tc_mantic_marcas.nombre,
+          tc_mantic_productos_marcas.nombre,
           tc_mantic_productos.nombre
         {sortOrder}           
       </select>
@@ -170,14 +184,14 @@
 				inner join 
 					tc_mantic_empresas on tc_mantic_productos.id_empresa= tc_mantic_empresas.id_empresa
 				inner join 
-					tc_mantic_marcas on tc_mantic_productos.id_marca= tc_mantic_marcas.id_marca
+					tc_mantic_productos_marcas on tc_mantic_productos.id_producto_marca= tc_mantic_productos_marcas.id_producto_marca
         where
           tc_mantic_productos.id_empresa in ({idEmpresa})
 					and concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) like '{categoria}%'
           and tc_mantic_productos.id_activo= 1
         group by
           concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre),
-          tc_mantic_marcas.nombre,
+          tc_mantic_productos_marcas.nombre,
           tc_mantic_productos.nombre
         {sortOrder}           
       </select>

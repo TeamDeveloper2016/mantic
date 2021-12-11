@@ -27,7 +27,7 @@ public class UIMessage implements Serializable {
    * @return Regresa el mensaje
    */
   public static String toMessage(String key) {
-    return toMessage(Constantes.NOMBRE_, key);
+    return toMessage(Constantes.NOMBRE_SOURCE, key);
   }
 /**
  * Obtiene el mensaje del archivo .properties de un proyecto enviado
@@ -56,7 +56,7 @@ public class UIMessage implements Serializable {
  * @return  Regresa el mensaje solicitado
  */
   public static String toMessage(String key, Map<String, Object> params) {
-    return toMessage(Constantes.NOMBRE_, key, params);
+    return toMessage(Constantes.NOMBRE_SOURCE, key, params);
   }
   /**
  * Obtiene el mensaje del archivo .properties del archivo predeterminado .properties parseado con los paramentros

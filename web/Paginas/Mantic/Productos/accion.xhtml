@@ -134,12 +134,12 @@
                     <h:outputText value="#{item.nombre}"/>
                   </p:column>   
                 </p:selectOneMenu>
-                <p:outputLabel for="categoria" value="Categoria(s): [ #{manticProductosAccion.producto.categoria} ]" styleClass="categoria"/>
-                <p:selectOneMenu id="categorias" value="#{manticProductosAccion.producto.categoria}" var="item" styleClass="janal-wid-100-txt categoria" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:outputLabel for="categoria" value="Categoria(s): [ #{manticProductosAccion.producto.producto.categoria} ]" styleClass="categoria"/>
+                <p:selectOneMenu id="categorias" value="#{manticProductosAccion.producto.producto.categoria}" var="item" styleClass="janal-wid-100-txt categoria" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <p:ajax event="change" process="@this" update="@(.categoria)"/>
                   <f:selectItems value="#{manticProductosAccion.attrs.categorias}"/>
                 </p:selectOneMenu>
-                <p:inputText id="categoria" value="#{manticProductosAccion.producto.categoria}" styleClass="janal-wid-100-txt categoria" style="display: none"/> 
+                <p:inputText id="categoria" value="#{manticProductosAccion.producto.producto.categoria}" styleClass="janal-wid-100-txt categoria" style="display: none"/> 
                 <p:outputLabel for="idMarca" value="Marca(s):"/>
                 <p:selectOneMenu id="idMarca" value="#{manticProductosAccion.producto.ikMarca}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <p:ajax event="change" process="@this" update="@(.marca)"/>
@@ -350,8 +350,8 @@
                     </div>  
                     <div class="galeria-list-item p-p-1">
                       <div class="galeria-item-search">
-                        <a id="view#{manticProductosAccion.producto.producto.idProducto}" data-magnify="gallery" href="#{manticProductosAccion.path}#{manticProductosAccion.producto.archivo}" data-caption="#{manticProductosAccion.producto.producto.nombre}" data-group="icon-image" class="icon">
-                          <p:graphicImage url="#{manticProductosAccion.path}#{manticProductosAccion.producto.archivo}" style="cursor:zoom-in;"/>
+                        <a id="view#{manticProductosAccion.producto.producto.idProducto}" data-magnify="gallery" href="#{manticProductosAccion.path}#{manticProductosAccion.producto.producto.archivo}" data-caption="#{manticProductosAccion.producto.producto.nombre}" data-group="icon-image" class="icon">
+                          <p:graphicImage url="#{manticProductosAccion.path}#{manticProductosAccion.producto.producto.archivo}" style="cursor:zoom-in;"/>
                         </a>  
                       </div> 
                       <div class="galeria-list-detail">

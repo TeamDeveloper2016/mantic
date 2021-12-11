@@ -209,7 +209,7 @@ public class Galeria extends Contenedor implements Serializable {
   public String doCheckCategoria(Producto producto) {
     String regresar= "none";
     if(producto!= null) {
-      String temporal= producto.getCategoria().replaceAll("[|]", "»");
+      String temporal= producto.getProducto().getCategoria().replaceAll("[|]", "»");
       temporal= temporal.substring(temporal.indexOf("»")+ 1);
       if(!Objects.equals((String)this.attrs.get("categoria"), temporal))
         regresar= "";

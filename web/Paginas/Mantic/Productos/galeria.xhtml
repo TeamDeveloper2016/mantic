@@ -145,13 +145,13 @@
                     </div>
                     <div class="galeria">
                       <div class="galeria-header p-p-2">
-                        <span class="galeria-marca">#{row.data.marca}</span><br/>
+                        <span class="galeria-marca">#{row.data.producto.marca}</span><br/>
                         <span class="galeria-nombre">#{row.data.producto.nombre}</span>
                       </div>  
                       <div class="galeria-list-item p-p-1">
                         <div class="galeria-item-search">
-                          <a id="view#{row.data.producto.idProducto}" data-magnify="gallery" href="#{manticProductosGaleria.path}#{row.data.archivo}" data-caption="#{row.data.producto.nombre}" data-group="icon-image" class="icon">
-                            <p:graphicImage url="#{manticProductosGaleria.path}#{row.data.archivo}" style="cursor:zoom-in;"/>
+                          <a id="view#{row.data.producto.idProducto}" data-magnify="gallery" href="#{manticProductosGaleria.path}#{row.data.producto.archivo}" data-caption="#{row.data.producto.nombre}" data-group="icon-image" class="icon">
+                            <p:graphicImage url="#{manticProductosGaleria.path}#{row.data.producto.archivo}" style="cursor:zoom-in;"/>
                           </a>  
                         </div> 
                         <div class="galeria-list-detail">
@@ -192,13 +192,13 @@
                     <div class="container">
                       <div class="galeria">
                         <div class="galeria-header p-p-2">
-                          <span class="galeria-marca">#{row.marca}</span><br/>
+                          <span class="galeria-marca">#{row.producto.marca}</span><br/>
                           <span class="galeria-nombre">#{row.producto.nombre}</span>
                         </div>  
                         <div class="galeria-list-item p-p-1">
                           <div class="galeria-item-search">
-                            <a id="view#{row.producto.idProducto}" data-magnify="gallery" href="#{manticProductosGaleria.path}#{row.archivo}" data-caption="#{row.producto.nombre}" data-group="icon-image" class="icon">
-                              <p:graphicImage url="#{manticProductosGaleria.path}#{row.archivo}" style="cursor:zoom-in;"/>
+                            <a id="view#{row.producto.idProducto}" data-magnify="gallery" href="#{manticProductosGaleria.path}#{row.producto.archivo}" data-caption="#{row.producto.nombre}" data-group="icon-image" class="icon">
+                              <p:graphicImage url="#{manticProductosGaleria.path}#{row.producto.archivo}" style="cursor:zoom-in;"/>
                             </a>  
                           </div> 
                           <div class="galeria-list-detail">
