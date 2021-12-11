@@ -29,8 +29,8 @@
         select      
           tc_mantic_productos_marcas_archivos.id_producto_marca_archivo as id_key,
           tc_mantic_productos_marcas_archivos.id_producto_marca_archivo as id,
-          tc_mantic_productos_marcas_archivos.nombre as original,
-          tc_mantic_productos_marcas_archivos.archivo as name,
+          tc_mantic_productos_marcas_archivos.nombre as name,
+          tc_mantic_productos_marcas_archivos.archivo as original,
           tc_mantic_productos_marcas_archivos.alias as ruta,
           tc_mantic_productos_marcas_archivos.tamanio as size,
           tc_mantic_productos_marcas_archivos.tamanio as file_size,
@@ -59,6 +59,21 @@
           tc_mantic_productos_marcas
         where      
           nombre= '{nombre}'
+      </select>
+      <select id="lazy">
+        select      
+          tc_mantic_productos_marcas.id_producto_marca as id_key,
+          tc_mantic_productos_marcas.*,
+          tc_mantic_productos_marcas_archivos.nombre as original,
+          tc_mantic_productos_marcas_archivos.archivo,
+          tc_mantic_productos_marcas_archivos.ruta
+        from      
+          tc_mantic_productos_marcas
+        left join
+          tc_mantic_productos_marcas_archivos on tc_mantic_productos_marcas.id_producto_marca_archivo= tc_mantic_productos_marcas_archivos.id_producto_marca_archivo
+        where      
+          {condicion}
+        {sortOrder}
       </select>
       <select id="todos">
         select      
@@ -221,19 +236,29 @@
         from      
           tc_mantic_productos
         where      
-          marca = '{marca}' 
+          id_producto_marca = '{idProductoMarca}' 
           and nombre = '{nombre}'
       </select>
       <select id="marcas">
         select      
           id_producto as id_key,
-          marca
+          tc_mantic_productos_marcas.nombre as marca
         from      
           tc_mantic_productos
+        inner join
+          tc_mantic_productos_marcas on tc_mantic_productos.id_producto_marca= tc_mantic_productos_marcas.id_producto_marca
         group by
-          marca
+          tc_mantic_productos.id_pruducto_marca
         order by
-          marca
+          tc_mantic_productos_marcas.nombre
+      </select>      
+      <select id="existe">
+        select      
+          count(*) as cuantos
+        from      
+          tc_mantic_productos
+        where
+          id_producto_marca= {idProductoMarca}
       </select>      
       <select id="siguiente">
         select

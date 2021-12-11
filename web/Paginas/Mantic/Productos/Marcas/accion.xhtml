@@ -11,9 +11,9 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-				'contenedorGrupos\\:nombre'     : {validaciones: 'requerido', mascara: 'alfanumerico'},
-				'contenedorGrupos\\:descripcion': {validaciones: 'libre', mascara: 'libre'},
-				'contenedorGrupos\\:imagen'     : {validaciones: 'requerido', mascara: 'libre'}
+				'contenedorGrupos\\:nombre'     : {validaciones: 'requerido', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:descripcion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:imagen'     : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'}
 			};						
 			
 			$(document).ready(function(){janal.readingMode('#{manticProductosMarcasAccion.attrs.nombreAccion}');});

@@ -12,16 +12,17 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
-import mx.org.kaana.mantic.catalogos.iva.reglas.Transaccion;
+import mx.org.kaana.mantic.productos.marcas.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticArchivosDto;
-import mx.org.kaana.mantic.db.dto.TcManticProductosMarcasDto;
 import mx.org.kaana.mantic.productos.marcas.beans.Marca;
 import org.primefaces.event.FileUploadEvent;
 
@@ -53,10 +54,10 @@ public class Accion extends IBaseAttribute implements Serializable {
   @Override
   protected void init() {		
     try {
-      // if(JsfBase.getFlashAttribute("accion")== null)
-			//	UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-      this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.MODIFICAR: JsfBase.getFlashAttribute("accion"));
-      this.attrs.put("idProductoMarca", JsfBase.getFlashAttribute("idProductoMarca")== null? 1L: JsfBase.getFlashAttribute("idProductoMarca"));
+      if(JsfBase.getFlashAttribute("accion")== null)
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
+      this.attrs.put("idProductoMarca", JsfBase.getFlashAttribute("idProductoMarca")== null? -1L: JsfBase.getFlashAttribute("idProductoMarca"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			this.doLoad();
       String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
@@ -69,7 +70,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // init
 
   public void doLoad() {
-    EAccion eaccion     = null;
+    EAccion eaccion           = null;
     Map<String, Object> params= null;
     try {
       params = new HashMap<>();      
@@ -83,8 +84,10 @@ public class Accion extends IBaseAttribute implements Serializable {
         case CONSULTAR:					
           params.put("idProductoMarca", this.attrs.get("idProductoMarca"));
           this.marca= (Marca)DaoFactory.getInstance().toEntity(Marca.class, "TcManticProductosMarcasDto", "existe", params);
-          params.put("idProductoMarcaArchivo", this.marca.getIdProductoMarcaArchivo());
-          this.marca.setImportado((Importado)DaoFactory.getInstance().toEntity(Importado.class, "TcManticProductosMarcasArchivosDto", "igual", params));
+          if(this.marca.getIdProductoMarcaArchivo()!= null) {
+            params.put("idProductoMarcaArchivo", this.marca.getIdProductoMarcaArchivo());
+            this.marca.setImportado((Importado)DaoFactory.getInstance().toEntity(Importado.class, "TcManticProductosMarcasArchivosDto", "igual", params));
+          } // if  
           break;
       } // switch
     } // try // try
@@ -103,14 +106,13 @@ public class Accion extends IBaseAttribute implements Serializable {
 		EAccion eaccion        = null;
     try {			
 			eaccion= (EAccion) this.attrs.get("accion");
-//			transaccion = new Transaccion(this.iva, (Boolean)this.attrs.get("aplicar"));
-//			if (transaccion.ejecutar(eaccion)) {
-//				regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-//				UIBackingUtilities.execute("janal.alert('Se aplico el IVA al catalogo de articulos');");
-//				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el registro del IVA de forma correcta."), ETipoMensaje.INFORMACION);
-//			} // if
-//			else 
-//				JsfBase.addMessage("Ocurrió un error al registrar el IVA.", ETipoMensaje.ERROR);      			
+  		transaccion = new Transaccion(this.marca);
+			if (transaccion.ejecutar(eaccion)) {
+				regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el registro de la marca de forma correcta."), ETipoMensaje.INFORMACION);
+			} // if
+			else 
+				JsfBase.addMessage("Ocurrió un error al registrar el IVA.", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -120,6 +122,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAccion
 
   public String doCancelar() {   
+    JsfBase.setFlashAttribute("idProductoMarca", this.attrs.get("idProductoMarca"));
     return (String)this.attrs.get("retorno");
   } // doAccion
 

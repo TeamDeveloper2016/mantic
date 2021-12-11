@@ -9,7 +9,8 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'nombre': {validaciones: 'alfanumerico', mascara: 'libre'} 
+        'nombre': {validaciones: 'alfanumerico', mascara: 'libre', formatos: 'cambiar-mayusculas'}, 
+        'descripcion': {validaciones: 'alfanumerico', mascara: 'libre', formatos: 'cambiar-mayusculas'} 
       };
     </script>		
   </ui:define>
@@ -23,13 +24,15 @@
           <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-              <p:outputLabel for="importe" value="Importe:"/>
-              <p:inputText id="importe" value="#{manticProductosMarcasFiltro.attrs.nombre}" styleClass="janal-wid-100-txt"/> 
+              <p:outputLabel for="nombre" value="Nombre:"/>
+              <p:inputText id="nombre" value="#{manticProductosMarcasFiltro.attrs.nombre}" styleClass="janal-wid-100-txt"/> 
+              <p:outputLabel for="descripcion" value="Descripción:"/>
+              <p:inputText id="descripcion" value="#{manticProductosMarcasFiltro.attrs.descripcion}" styleClass="janal-wid-100-txt"/> 
 							<p:separator/>
             </p:panelGrid>
 						<div class="janal-align-right">
-							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this importe" actionListener="#{manticProductosMarcasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
-							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this importe" actionListener="#{manticProductosMarcasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{manticProductosMarcasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{manticProductosMarcasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
 						</div>
           </p:panel>
         </div>
@@ -37,8 +40,8 @@
           <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticProductosMarcasFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticProductosMarcasFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticProductosMarcasFiltro.lazyModel.rowCount gt manticProductosMarcasFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
             <f:facet name="header" >
               <div class="lg-pantalla">
-                <p:menuButton   value="Opciones">
-                  <p:menuitem  value="Agregar" action="#{manticProductosMarcasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                <p:menuButton value="Opciones">
+                  <p:menuitem value="Agregar" action="#{manticProductosMarcasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
                   <p:separator/>
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -50,29 +53,34 @@
                 <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
-            <p:column class="MarAuto Responsive" sortBy="#{row.usuario}">
+            <p:column class="MarAuto Responsive" sortBy="#{row.nombre}">
               <f:facet name="header">
-                <h:outputText value="Usuario"/>
+                <h:outputText value="Nombre"/>
               </f:facet>
-              <h:outputText value="#{row['usuario']}"/>
+              <h:outputText value="#{row['nombre']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
+            <p:column class="MarAuto Responsive" sortBy="#{row.descripcion}">
               <f:facet name="header">
-                <h:outputText value="Importe"/>
+                <h:outputText value="Descripcion"/>
               </f:facet>
-              <h:outputText value="#{row['importe']}"/>
+              <h:outputText value="#{row['descripcion']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-20" sortBy="#{row.registro}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Registro"/>
               </f:facet>
               <h:outputText value="#{row['registro']}"/>
             </p:column>		
+            <p:column headerText="Imagen" styleClass="janal-column-center janal-wid-5">
+              <a class="janal-control-imagen" data-magnify="gallery" data-caption="#{row.archivo}" data-group="icon-image" href="#{manticProductosMarcasFiltro.path}#{row.original}" title="Click para ver más grande la imagen" style="display: #{empty row.original.data? 'none': ''}">
+                <p:graphicImage id="icon-image" cache="false" url="#{manticProductosMarcasFiltro.path}#{row.original}" width="26" height="22" stream="false" rendered="#{not(empty row.original.data)}" style="cursor:zoom-in;"/>
+              </a>	
+            </p:column>   
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticProductosMarcasFiltro.lazyModel== null? 0: manticProductosMarcasFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
-          <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+          <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
 						<p:menuitem id="modificar" action="#{manticProductosMarcasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
           </p:contextMenu>
@@ -81,15 +89,17 @@
     </div>		           				
   </ui:define>   
   <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
-  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el registro del IVA ?" />
+  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el registro de la marca ?" />
   <ui:param name="accionConfirmacion" value="#{manticProductosMarcasFiltro}"/>
   <ui:param name="updateComponent" value="tabla"/>
   <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
   <ui:param name="renderedConfirmacion" value="true"/>	
   <ui:define name="detalleConfirmacion">
-    <h:panelGrid columns="2">
-      <p:outputLabel value="Importe del IVA:"/>
-      <p:outputLabel value="#{manticProductosMarcasFiltro.attrs.seleccionado.importe}"/>
+    <h:panelGrid columns="1">
+      <p:outputLabel value="Nombre:"/>
+      <p:outputLabel value="#{manticProductosMarcasFiltro.attrs.seleccionado.nombre}"/>
+      <p:outputLabel value="Descripción:"/>
+      <p:outputLabel value="#{manticProductosMarcasFiltro.attrs.seleccionado.descripcion}"/>
     </h:panelGrid>			
   </ui:define>
 </ui:composition>

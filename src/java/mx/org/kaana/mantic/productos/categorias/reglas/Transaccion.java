@@ -1,17 +1,16 @@
 package mx.org.kaana.mantic.productos.categorias.reglas;
 
-import com.google.common.base.Objects;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
@@ -89,7 +88,7 @@ public class Transaccion extends IBaseTnx {
               } // if
             } // if  
           } // if  
-          if(Objects.equal(this.categoria.getSeparador(), Constantes.SEPARADOR)) {
+          if(Objects.equals(this.categoria.getSeparador(), Constantes.SEPARADOR)) {
             clon= this.categoria.clone();
             clon.setPadre(this.categoria.getPadre().length()== 0? this.categoria.getPadre(): this.categoria.getPadre().concat(item).concat(Constantes.SEPARADOR));
             clon.setNivel(this.categoria.getNivel()+ 1L);
@@ -119,13 +118,13 @@ public class Transaccion extends IBaseTnx {
       params.put("padre", this.categoria.getPadre().concat(this.categoria.getTexto()));
       params.put("nivel", this.categoria.getNivel());
       regresar= DaoFactory.getInstance().update(sesion, this.categoria)> 0L;
-      if(!Objects.equal(this.categoria.getValor(), this.categoria.getPorcentaje()) || !Objects.equal(this.categoria.getTexto(), this.categoria.getNombre())) {
+      if(!Objects.equals(this.categoria.getValor(), this.categoria.getPorcentaje()) || !Objects.equals(this.categoria.getTexto(), this.categoria.getNombre())) {
         List<TcManticProductosCategoriasDto> items= (List<TcManticProductosCategoriasDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticProductosCategoriasDto.class, "TcManticProductosCategoriasDto", "porcentajes", params);
         if(items!= null && !items.isEmpty()) {
           for (TcManticProductosCategoriasDto item: items) {
-            if(!Objects.equal(this.categoria.getTexto(), this.categoria.getNombre()))
+            if(!Objects.equals(this.categoria.getTexto(), this.categoria.getNombre()))
               item.setPadre(item.getPadre().replace(Constantes.SEPARADOR.concat(this.categoria.getTexto()).concat(Constantes.SEPARADOR), Constantes.SEPARADOR.concat(this.categoria.getNombre()).concat(Constantes.SEPARADOR)));
-            if(!Objects.equal(this.categoria.getValor(), this.categoria.getPorcentaje()))
+            if(!Objects.equals(this.categoria.getValor(), this.categoria.getPorcentaje()))
               item.setPorcentaje(this.categoria.getPorcentaje());
             DaoFactory.getInstance().update(sesion, item);
           } // for
@@ -147,7 +146,7 @@ public class Transaccion extends IBaseTnx {
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
-      if(Objects.equal(this.categoria.getUltimo(), 2L)) {
+      if(Objects.equals(this.categoria.getUltimo(), 2L)) {
         params.put("padre", this.categoria.getPadre());
         params.put("nivel", this.categoria.getNivel());
         List<TcManticProductosCategoriasDto> list= (List<TcManticProductosCategoriasDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticProductosCategoriasDto.class, "TcManticProductosCategoriasDto", "porcentajes", params);

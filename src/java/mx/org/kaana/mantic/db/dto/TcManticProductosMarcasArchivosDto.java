@@ -24,7 +24,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_productos_marcas_archivos")
+@Table(name="tc_mantic_productos_marcas_archivos")
 public class TcManticProductosMarcasArchivosDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
@@ -38,6 +38,8 @@ public class TcManticProductosMarcasArchivosDto implements IBaseDto, Serializabl
   private Long tamanio;
   @Column (name="id_usuario")
   private Long idUsuario;
+  @Column (name="ruta")
+  private String ruta;
   @Column (name="alias")
   private String alias;
   @Column (name="id_tipo_imagen")
@@ -52,11 +54,11 @@ public class TcManticProductosMarcasArchivosDto implements IBaseDto, Serializabl
   }
 
   public TcManticProductosMarcasArchivosDto(Long key) {
-    this(new Long(-1L), null, null, null, null, null, null);
+    this(new Long(-1L), null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticProductosMarcasArchivosDto(Long idProductoMarcaArchivo, String archivo, Long tamanio, Long idUsuario, String alias, Long idTipoImagen, String nombre) {
+  public TcManticProductosMarcasArchivosDto(Long idProductoMarcaArchivo, String archivo, Long tamanio, Long idUsuario, String alias, Long idTipoImagen, String nombre, String ruta) {
     setIdProductoMarcaArchivo(idProductoMarcaArchivo);
     setArchivo(archivo);
     setTamanio(tamanio);
@@ -64,6 +66,7 @@ public class TcManticProductosMarcasArchivosDto implements IBaseDto, Serializabl
     setAlias(alias);
     setIdTipoImagen(idTipoImagen);
     setNombre(nombre);
+    setRuta(ruta);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -123,6 +126,14 @@ public class TcManticProductosMarcasArchivosDto implements IBaseDto, Serializabl
     return nombre;
   }
 
+  public String getRuta() {
+    return ruta;
+  }
+
+  public void setRuta(String ruta) {
+    this.ruta = ruta;
+  }
+
   public void setRegistro(Timestamp registro) {
     this.registro = registro;
   }
@@ -160,6 +171,8 @@ public class TcManticProductosMarcasArchivosDto implements IBaseDto, Serializabl
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRuta());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -175,6 +188,7 @@ public class TcManticProductosMarcasArchivosDto implements IBaseDto, Serializabl
 		regresar.put("alias", getAlias());
 		regresar.put("idTipoImagen", getIdTipoImagen());
 		regresar.put("nombre", getNombre());
+		regresar.put("ruta", getRuta());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -182,7 +196,7 @@ public class TcManticProductosMarcasArchivosDto implements IBaseDto, Serializabl
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getIdProductoMarcaArchivo(), getArchivo(), getTamanio(), getIdUsuario(), getAlias(), getIdTipoImagen(), getNombre(), getRegistro()
+      getIdProductoMarcaArchivo(), getArchivo(), getTamanio(), getIdUsuario(), getAlias(), getIdTipoImagen(), getNombre(), getRuta(), getRegistro()
     };
     return regresar;
   }
