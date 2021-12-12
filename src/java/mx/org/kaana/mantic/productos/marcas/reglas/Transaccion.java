@@ -7,6 +7,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticProductosMarcasArchivosDto;
@@ -55,7 +56,7 @@ public class Transaccion extends IBaseTnx {
   private Boolean toAgregarMarca(Session sesion) throws Exception {
     Boolean regresar= Boolean.FALSE;
 		try {
-      if(this.marca.getImportado()!= null && this.marca.getImportado().getId()< 0L) {
+      if(this.marca.getImportado()!= null && this.marca.getImportado().getId()< 0L && !Cadena.isVacio(this.marca.getImportado().getName())) {
         String name= this.marca.getImportado().getName();
         Long tipo  = ETipoImagen.valueOf(name.substring(name.lastIndexOf(".")+ 1, name.length()).toUpperCase()).getIdTipoImagen();
         TcManticProductosMarcasArchivosDto imagen= new TcManticProductosMarcasArchivosDto(
@@ -86,7 +87,7 @@ public class Transaccion extends IBaseTnx {
     Boolean regresar = Boolean.FALSE;
     Long idProductoMarcaArchivo= this.marca.getIdProductoMarcaArchivo();
 		try {
-      if(this.marca.getImportado()!= null && this.marca.getImportado().getId()< 0L) {
+      if(this.marca.getImportado()!= null && this.marca.getImportado().getId()< 0L && !Cadena.isVacio(this.marca.getImportado().getName())) {
         String name= this.marca.getImportado().getName();
         Long tipo  = ETipoImagen.valueOf(name.substring(name.lastIndexOf(".")+ 1, name.length()).toUpperCase()).getIdTipoImagen();
         TcManticProductosMarcasArchivosDto imagen= new TcManticProductosMarcasArchivosDto(

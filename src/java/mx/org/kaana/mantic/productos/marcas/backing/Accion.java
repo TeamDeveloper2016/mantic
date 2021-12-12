@@ -79,6 +79,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       switch (eaccion) {
         case AGREGAR:											
           this.marca= new Marca();
+          this.marca.setImportado(new Importado());
           break;
         case MODIFICAR:					
         case CONSULTAR:					
@@ -87,7 +88,9 @@ public class Accion extends IBaseAttribute implements Serializable {
           if(this.marca.getIdProductoMarcaArchivo()!= null) {
             params.put("idProductoMarcaArchivo", this.marca.getIdProductoMarcaArchivo());
             this.marca.setImportado((Importado)DaoFactory.getInstance().toEntity(Importado.class, "TcManticProductosMarcasArchivosDto", "igual", params));
-          } // if  
+          } // if
+          else
+            this.marca.setImportado(new Importado());
           break;
       } // switch
     } // try // try
