@@ -21,10 +21,11 @@ import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Variables;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
-import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
+import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
 import mx.org.kaana.mantic.inventarios.entradas.reglas.Importados;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -44,11 +45,11 @@ public class Importar extends IBaseImportar implements Serializable {
 	private static final Log LOG              = LogFactory.getLog(Importar.class);
   private static final long serialVersionUID= 327353488565639367L;
 	
-	protected TcManticNotasEntradasDto orden;
+	protected NotaEntrada orden;
 	private TcManticProveedoresDto proveedor;
 	private Long idNotaEntrada;
 
-	public TcManticNotasEntradasDto getOrden() {
+	public NotaEntrada getOrden() {
 		return orden;
 	}
 
@@ -69,7 +70,7 @@ public class Importar extends IBaseImportar implements Serializable {
       // 3969L
       this.idNotaEntrada= JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: (Long)JsfBase.getFlashAttribute("idNotaEntrada");
       this.attrs.put("idEmpresaDeuda", JsfBase.getFlashAttribute("idEmpresaDeuda")== null? -1L: (Long)JsfBase.getFlashAttribute("idEmpresaDeuda"));
-			this.orden= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, idNotaEntrada);
+			this.orden= (NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticNotasEntradasDto", "igual", Variables.toMap("idNotaEntrada~"+ idNotaEntrada));
 			if(this.orden!= null) {
 			  this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.orden.getIdProveedor());
 				this.doLoad();

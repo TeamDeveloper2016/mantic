@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -21,9 +22,9 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.wassenger.Bonanza;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompra;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
-import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TrManticProveedorTipoContactoDto;
 import mx.org.kaana.mantic.enums.ETiposContactos;
@@ -43,7 +44,7 @@ public class Transaccion extends Inventarios implements Serializable {
   private static final Logger LOG = Logger.getLogger(Transaccion.class);
 	private static final long serialVersionUID=-3186367186737677670L;
  
-	private TcManticOrdenesComprasDto orden;	
+	private OrdenCompra orden;	
 	private List<Articulo> articulos;
 	private String messageError;
 	private TcManticOrdenesBitacoraDto bitacora;
@@ -57,16 +58,16 @@ public class Transaccion extends Inventarios implements Serializable {
 		this.correo     = correo;
 	}	// Transaccion
 	
-	public Transaccion(TcManticOrdenesComprasDto orden, TcManticOrdenesBitacoraDto bitacora) {
+	public Transaccion(OrdenCompra orden, TcManticOrdenesBitacoraDto bitacora) {
 		this(orden);
 		this.bitacora= bitacora;
 	} // Transaccion
 	
-	public Transaccion(TcManticOrdenesComprasDto orden) {
+	public Transaccion(OrdenCompra orden) {
 		this(orden, new ArrayList<Articulo>());
 	} // Transaccion
 
-	public Transaccion(TcManticOrdenesComprasDto orden, List<Articulo> articulos) {
+	public Transaccion(OrdenCompra orden, List<Articulo> articulos) {
 		super(orden.getIdAlmacen(), orden.getIdProveedor());
 		this.orden    = orden;		
 		this.articulos= articulos;
@@ -122,6 +123,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L;
 					break;
 				case MODIFICAR:
+          this.checkConsecutivo(sesion);
 					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 					this.toFillArticulos(sesion);
 					bitacoraOrden= (TcManticOrdenesBitacoraDto)DaoFactory.getInstance().findFirst(sesion, TcManticOrdenesBitacoraDto.class, this.orden.toMap(), "ultimo");
@@ -283,4 +285,17 @@ public class Transaccion extends Inventarios implements Serializable {
 		return regresar;
 	} // toClientesTipoContacto
 	
+  private void checkConsecutivo(Session sesion) throws Exception {
+    try {      
+      if(!Objects.equals(this.orden.getIdEmpresa(), this.orden.getIdEmpresaBack())) {
+        Siguiente consecutivo= this.toSiguiente(sesion);
+        this.orden.setConsecutivo(consecutivo.getConsecutivo());
+        this.orden.setOrden(consecutivo.getOrden());
+        this.orden.setEjercicio(new Long(Fecha.getAnioActual()));      }
+    } // try
+    catch (Exception e) {
+      throw e;      
+    } // catch	
+  }
+  
 } 

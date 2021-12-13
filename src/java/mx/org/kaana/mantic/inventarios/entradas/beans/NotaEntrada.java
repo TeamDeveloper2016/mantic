@@ -25,9 +25,10 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
 	private UISelectEntity ikProveedor;
   private UISelectEntity ikProveedorPago;
 	private UISelectEntity ikOrdenCompra;
+  private Long idEmpresaBack;
 
 	public NotaEntrada() throws Exception {
-		this(1L, null);
+		this(-1L, null);
 	}
 
 	public NotaEntrada(Long key, Long idOrdenCompra) throws Exception {
@@ -83,11 +84,18 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
 		if(this.ikOrdenCompra!= null)
   	  this.setIdOrdenCompra(this.ikOrdenCompra.getKey());
 	}
-	
+
+  public Long getIdEmpresaBack() {
+    return idEmpresaBack;
+  }
+
+  public void setIdEmpresaBack(Long idEmpresaBack) {
+    this.idEmpresaBack = idEmpresaBack;
+  }
+
 	@Override
 	public Class toHbmClass() {
 		return TcManticNotasEntradasDto.class;
 	}
-	
 	
 }

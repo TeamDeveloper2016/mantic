@@ -23,6 +23,7 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 	private UISelectEntity ikCliente;
 	private UISelectEntity ikProveedor;
 	private UISelectEntity ikProveedorPago;
+  private Long idEmpresaBack;
 
 	public OrdenCompra() {
 		this(-1L);
@@ -85,6 +86,14 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 		if(this.ikProveedorPago!= null)
 		  this.setIdProveedorPago(this.ikProveedorPago.getKey());
 	}
+
+  public Long getIdEmpresaBack() {
+    return idEmpresaBack;
+  }
+
+  public void setIdEmpresaBack(Long idEmpresaBack) {
+    this.idEmpresaBack = idEmpresaBack;
+  }
 	
 	@Override
 	public Class toHbmClass() {

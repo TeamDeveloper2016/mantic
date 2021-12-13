@@ -4991,6 +4991,15 @@
         where      
           ejercicio = {ejercicio} and orden = {orden} and id_empresa = {idEmpresa}
       </select>
+      <select id="igual">
+        select      
+          tc_mantic_ordenes_compras.id_orden_compra as id_key,
+          tc_mantic_ordenes_compras.*
+        from      
+          tc_mantic_ordenes_compras
+        where      
+          id_orden_compra = {idOrdenCompra}
+      </select>
 			<select id="siguiente">
         select
 					max(orden)+ 1 as siguiente
@@ -5697,6 +5706,15 @@
           tc_mantic_notas_entradas
         where      
           consecutivo = '{consecutivo}' and id_proveedor = {idProveedor} and id_orden_compra = {idOrdenCompra} and id_empresa = {idEmpresa} and id_nota_entrada = {idNotaEntrada}
+      </select>
+      <select id="igual">
+        select      
+          tc_mantic_notas_entradas.id_nota_entrada as id_key,
+          tc_mantic_notas_entradas.*
+        from      
+          tc_mantic_notas_entradas
+        where      
+          id_nota_entrada = {idNotaEntrada}
       </select>
       <select id="detalle">
         select      

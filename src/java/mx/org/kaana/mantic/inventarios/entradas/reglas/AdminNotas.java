@@ -56,6 +56,7 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
   	    this.setArticulos(this.toLoadOrdenDetalle());
       this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
       this.orden.setIkProveedor(new UISelectEntity(new Entity(this.orden.getIdProveedor())));
+      this.orden.setIdEmpresaBack(this.orden.getIdEmpresa());
 		}	// if
 		else {
   		this.orden.setIdNotaTipo(tipoOrden.equals(EOrdenes.NORMAL)? 1L: 2L);
@@ -69,7 +70,7 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 			this.orden.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
 			this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 		} // else	
-		for (Articulo articulo : this.getArticulos()) {
+		for (Articulo articulo: this.getArticulos()) {
 			if(articulo.getIdOrdenDetalle()!= null && articulo.getIdOrdenDetalle()<= 0)
 				articulo.setIdOrdenDetalle(null);
 		} // for

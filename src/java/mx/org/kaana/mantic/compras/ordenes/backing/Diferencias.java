@@ -20,17 +20,18 @@ import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Global;
+import mx.org.kaana.libs.formato.Variables;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
+import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompra;
 import mx.org.kaana.mantic.compras.ordenes.reglas.ArticulosLazyLoad;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
-import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import mx.org.kaana.mantic.libs.pagina.IFilterImportar;
@@ -51,14 +52,14 @@ public class Diferencias extends IFilterImportar implements Serializable {
   private static final long serialVersionUID = 8793667741599428311L;
   private Reporte reporte;
 	
-	private TcManticOrdenesComprasDto orden;
+	private OrdenCompra orden;
 	protected FormatLazyModel lazyNotas;
 
 	public FormatLazyModel getLazyNotas() {
 		return lazyNotas;
 	}
 
-	public TcManticOrdenesComprasDto getOrden() {
+	public OrdenCompra getOrden() {
 		return orden;
 	}
 	
@@ -70,7 +71,7 @@ public class Diferencias extends IFilterImportar implements Serializable {
       this.attrs.put("idProveedor", JsfBase.getFlashAttribute("idProveedor"));
       this.attrs.put("idAlmacen", JsfBase.getFlashAttribute("idAlmacen"));
       this.attrs.put("tipoDiferencia", 0);
-      this.orden= (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, (Long)JsfBase.getFlashAttribute("idOrdenCompra"));
+      this.orden= (OrdenCompra)DaoFactory.getInstance().toEntity(OrdenCompra.class, "TcManticOrdenesComprasDto", "igual", Variables.toMap("idOrdenCompra~"+ JsfBase.getFlashAttribute("idOrdenCompra")));
 		  this.doLoad();
     } // try
     catch (Exception e) {

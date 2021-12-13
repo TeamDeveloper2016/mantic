@@ -17,6 +17,7 @@ import static mx.org.kaana.kajool.enums.ESql.INSERT;
 import static mx.org.kaana.kajool.enums.ESql.SELECT;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Variables;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
@@ -24,8 +25,8 @@ import mx.org.kaana.mantic.db.dto.TcManticEgresosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticEgresosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasArchivosDto;
-import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.egresos.beans.IEgresos;
+import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
 import org.apache.log4j.Logger;
 
 /**
@@ -45,20 +46,20 @@ public class Importados extends Transaccion implements Serializable {
   private Entity documento;
   
   public Importados(Entity documento) throws Exception {
-    super((TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, documento.toLong("idNotaEntrada")));
+    super((NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticNotasEntradasDto", "igual", Variables.toMap("idNotaEntrada~"+ documento.toLong("idNotaEntrada"))));
     this.documento= documento;  
   }
   
   public Importados(List<IEgresos> articulos) throws Exception {
-    super(new TcManticNotasEntradasDto());
+    super(new NotaEntrada());
     this.articulos= articulos;
   }
           
-	public Importados(TcManticNotasEntradasDto orden, Importado xml, Importado pdf) {
+	public Importados(NotaEntrada orden, Importado xml, Importado pdf) {
 		super(orden, Collections.EMPTY_LIST, true, xml, pdf);
 	} // Transaccion
   
-	public Importados(TcManticNotasEntradasDto orden, Importado xml, Importado pdf, Importado jpg) {
+	public Importados(NotaEntrada orden, Importado xml, Importado pdf, Importado jpg) {
 		super(orden, Collections.EMPTY_LIST, true, xml, pdf, jpg);
 	} // Transaccion
 
@@ -201,7 +202,7 @@ public class Importados extends Transaccion implements Serializable {
           case INSERT:
           case DELETE:
             if(Objects.equals(idPivoteNota, -1L) || !Objects.equals(idPivoteNota, item.getIdNotaEntrada())) {
-              this.orden= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, item.getIdNotaEntrada());
+              this.orden= (NotaEntrada)DaoFactory.getInstance().findById(NotaEntrada.class, item.getIdNotaEntrada());
               this.toCheckEstatus(sesion);
               idPivoteNota= item.getIdNotaEntrada();
             } // if  

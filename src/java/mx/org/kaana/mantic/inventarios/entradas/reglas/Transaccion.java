@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -29,12 +30,12 @@ import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasBitacoraDto;
-import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
+import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
 import org.apache.log4j.Logger;
 
 /**
@@ -50,7 +51,7 @@ public class Transaccion extends Inventarios implements Serializable {
   private static final Logger LOG = Logger.getLogger(Transaccion.class);
 	private static final long serialVersionUID=-6069204157451117549L;
  
-	protected TcManticNotasEntradasDto orden;	
+	protected NotaEntrada orden;	
 	private List<Articulo> articulos;
 	private boolean aplicar;
 	protected Importado xml;
@@ -59,22 +60,22 @@ public class Transaccion extends Inventarios implements Serializable {
 	private String messageError;
 	private TcManticNotasBitacoraDto bitacora;
 
-	public Transaccion(TcManticNotasEntradasDto orden, TcManticNotasBitacoraDto bitacora) {
+	public Transaccion(NotaEntrada orden, TcManticNotasBitacoraDto bitacora) {
 		this(orden);
 		this.xml= null;
 		this.pdf= null;
 		this.bitacora= bitacora;
 	}
 	
-	public Transaccion(TcManticNotasEntradasDto orden) {
+	public Transaccion(NotaEntrada orden) {
 		this(orden, new ArrayList<Articulo>(), false, null, null);
 	}
 
-	public Transaccion(TcManticNotasEntradasDto orden, List<Articulo> articulos, boolean aplicar, Importado xml, Importado pdf) {
+	public Transaccion(NotaEntrada orden, List<Articulo> articulos, boolean aplicar, Importado xml, Importado pdf) {
     this(orden, articulos, aplicar, xml, pdf, null);
   }
   
-	public Transaccion(TcManticNotasEntradasDto orden, List<Articulo> articulos, boolean aplicar, Importado xml, Importado pdf, Importado jpg) {
+	public Transaccion(NotaEntrada orden, List<Articulo> articulos, boolean aplicar, Importado xml, Importado pdf, Importado jpg) {
 		super(orden.getIdAlmacen(), orden.getIdProveedor());
 		this.orden    = orden;		
 		this.articulos= articulos;
@@ -155,6 +156,7 @@ public class Transaccion extends Inventarios implements Serializable {
      	    this.toUpdateDeleteXml(sesion);	
 					break;
 				case COMPLEMENTAR:
+          this.checkConsecutivo(sesion);
 					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
   				if(this.aplicar) 
 						this.toApplyNotaEntrada(sesion);
@@ -166,6 +168,7 @@ public class Transaccion extends Inventarios implements Serializable {
   					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
 	  				regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
 					} // if	
+          this.checkConsecutivo(sesion);
 					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 					this.toRemoveOrdenDetalle(sesion);
 					this.toFillArticulos(sesion);
@@ -514,4 +517,17 @@ public class Transaccion extends Inventarios implements Serializable {
 			} // for
 	}	
 
+  private void checkConsecutivo(Session sesion) throws Exception {
+    try {      
+      if(!Objects.equals(this.orden.getIdEmpresa(), this.orden.getIdEmpresaBack())) {
+        Siguiente consecutivo= this.toSiguiente(sesion);
+        this.orden.setConsecutivo(consecutivo.getConsecutivo());
+        this.orden.setOrden(consecutivo.getOrden());
+        this.orden.setEjercicio(new Long(Fecha.getAnioActual()));      }
+    } // try
+    catch (Exception e) {
+      throw e;      
+    } // catch	
+  }
+  
 } 
