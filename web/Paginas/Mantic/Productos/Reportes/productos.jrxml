@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="productos" columnCount="2" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="386" leftMargin="10" rightMargin="10" topMargin="15" bottomMargin="10" scriptletClass="mx.org.kaana.libs.reportes.scriptlets.BarraProgreso" uuid="d2356c21-6da1-4308-b17c-0af11cc8260c">
 	<property name="ireport.zoom" value="3.0"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.x" value="97"/>
+	<property name="ireport.y" value="48"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -69,6 +69,7 @@
 	<field name="CLIENTE" class="java.lang.String"/>
 	<field name="RAZON_SOCIAL" class="java.lang.String"/>
 	<field name="ID_ACTIVO" class="java.lang.Integer"/>
+	<field name="LOGO" class="java.lang.String"/>
 	<variable name="CONTADOR" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
@@ -237,7 +238,7 @@
 	<detail>
 		<band height="189" splitType="Stretch">
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement x="364" y="15" width="13" height="15" uuid="b85e25b3-7263-4301-9ae4-4127692dfa03"/>
+				<reportElement x="364" y="30" width="13" height="15" uuid="b85e25b3-7263-4301-9ae4-4127692dfa03"/>
 				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font fontName="Arial Narrow" size="6" isBold="false"/>
 				</textElement>
@@ -254,21 +255,21 @@
 				<imageExpression><![CDATA[new URL($F{ARCHIVO})]]></imageExpression>
 			</image>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement x="0" y="0" width="377" height="15" forecolor="#3333FF" uuid="cf766f86-f632-497e-aa93-390a84d87429"/>
+				<reportElement x="0" y="0" width="281" height="15" forecolor="#3333FF" uuid="cf766f86-f632-497e-aa93-390a84d87429"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="11" isBold="true" isItalic="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{MARCA}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement x="0" y="15" width="364" height="15" forecolor="#000000" uuid="8c3c4fb3-335f-4ef9-969e-3fa168073571"/>
+				<reportElement x="0" y="15" width="281" height="15" forecolor="#000000" uuid="8c3c4fb3-335f-4ef9-969e-3fa168073571"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{NOMBRE}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="114" y="30" width="263" height="15" forecolor="#FF6600" uuid="703964ad-d7ef-40a4-bc91-d4ca88d56be5"/>
+				<reportElement x="114" y="30" width="250" height="15" forecolor="#FF6600" uuid="703964ad-d7ef-40a4-bc91-d4ca88d56be5"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8" isBold="true"/>
 				</textElement>
@@ -295,6 +296,16 @@
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "caracteristicas.jasper"]]></subreportExpression>
 			</subreport>
+			<image scaleImage="RetainShape" hAlign="Center" onErrorType="Blank">
+				<reportElement key="image-2" stretchType="RelativeToTallestObject" x="281" y="0" width="96" height="30" uuid="9bc74939-e2c7-49c6-9335-5b79eea8d71b"/>
+				<box>
+					<topPen lineWidth="0.0" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineColor="#000000"/>
+				</box>
+				<imageExpression><![CDATA[new URL($F{LOGO})]]></imageExpression>
+			</image>
 		</band>
 	</detail>
 	<pageFooter>

@@ -71,6 +71,10 @@ public class Accion extends Contenedor implements Serializable {
     return path;
   }
 
+	public String getBrand() {
+    return path.concat(String.valueOf(JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende())).concat("/marcas/");
+  }
+
 	public String getSource() {
     return path.concat(String.valueOf(JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende())).concat("/");
   }

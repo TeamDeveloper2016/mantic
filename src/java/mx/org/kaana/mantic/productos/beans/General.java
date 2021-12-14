@@ -18,6 +18,7 @@ public class General extends TcManticProductosDto implements Serializable {
   private String categoria;
   private String marca;
   private String archivo;
+  private String logo;
 
   public General() {
     this("", "", "");
@@ -51,6 +52,14 @@ public class General extends TcManticProductosDto implements Serializable {
 
   public void setArchivo(String archivo) {
     this.archivo = archivo;
+  }
+
+  public String getLogo() {
+    return logo;
+  }
+
+  public void setLogo(String logo) {
+    this.logo = logo;
   }
   
   @Override

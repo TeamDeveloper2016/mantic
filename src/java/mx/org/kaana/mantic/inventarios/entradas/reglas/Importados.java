@@ -202,7 +202,7 @@ public class Importados extends Transaccion implements Serializable {
           case INSERT:
           case DELETE:
             if(Objects.equals(idPivoteNota, -1L) || !Objects.equals(idPivoteNota, item.getIdNotaEntrada())) {
-              this.orden= (NotaEntrada)DaoFactory.getInstance().findById(NotaEntrada.class, item.getIdNotaEntrada());
+              this.orden= (NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticNotasEntradasDto", "igual", Variables.toMap("idNotaEntrada~"+ item.getIdNotaEntrada()));
               this.toCheckEstatus(sesion);
               idPivoteNota= item.getIdNotaEntrada();
             } // if  

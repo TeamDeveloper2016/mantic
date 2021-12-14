@@ -35,9 +35,10 @@
               </p:panelGrid>
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100 detalle" columnClasses="janal-column-center janal-wid-100-txt">								
                 <a data-magnify="gallery" href="#{manticProductosMarcasAccion.path}#{manticProductosMarcasAccion.marca.importado.name}" data-caption="#{manticProductosMarcasAccion.marca.importado.name}" data-group="icon-image" class="icon" style="display: #{empty manticProductosMarcasAccion.marca.importado.name? 'none': ''}">
-                  <p:graphicImage url="#{manticProductosMarcasAccion.path}#{manticProductosMarcasAccion.marca.importado.name}" style="cursor:zoom-in; display: #{empty manticProductosMarcasAccion.marca.importado.name? 'none': ''}" width="350px" height="150px"/>
+                  <p:graphicImage url="#{manticProductosMarcasAccion.path}#{manticProductosMarcasAccion.marca.importado.name}" style="cursor:zoom-in; display: #{empty manticProductosMarcasAccion.marca.importado.name? 'none': ''}" width="400px" height="120px"/>
                 </a>  
-                <p:outputLabel for="imagen" styleClass="janal-font-bold janal-color-black" value="#{manticProductosMarcasAccion.marca.importado.name}"/>
+                <p:outputLabel for="imagen" styleClass="janal-font-bold janal-color-black" value="#{manticProductosMarcasAccion.marca.importado.name}" escape="false"/>
+                <p:outputLabel styleClass="janal-font-bold janal-color-black" value="[width:200px, height:60px]" escape="false"/>
                 <p:inputText id="imagen" styleClass="janal-display-none" value="#{manticProductosMarcasAccion.marca.importado.name}"/>
               </p:panelGrid>  
 						</p:tab>						            						            																																																

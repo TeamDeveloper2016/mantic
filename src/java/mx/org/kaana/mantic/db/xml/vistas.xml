@@ -9,11 +9,14 @@
         select      
           tc_mantic_productos.*,
           tc_mantic_productos_marcas.nombre as marca,
+          tc_mantic_productos_marcas_archivos.nombre as logo,
           concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) as categoria
         from      
           tc_mantic_productos
         inner join  
           tc_mantic_productos_marcas on tc_mantic_productos.id_producto_marca= tc_mantic_productos_marcas.id_producto_marca
+        left join  
+          tc_mantic_productos_marcas_archivos on tc_mantic_productos_marcas.id_producto_marca_archivo= tc_mantic_productos_marcas_archivos.id_producto_marca_archivo
         inner join  
           tc_mantic_productos_categorias on tc_mantic_productos.id_producto_categoria= tc_mantic_productos_categorias.id_producto_categoria
         where 
@@ -25,6 +28,7 @@
           tc_mantic_productos.id_producto,
           replace(concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre), '|', ' » ') as categoria,
           tc_mantic_productos_marcas.nombre as marca,
+          concat('{url}', tc_mantic_productos.id_empresa, '/marcas/', ifnull(tc_mantic_productos_marcas_archivos.nombre, '')) as logo,
           tc_mantic_productos.nombre,
           tc_mantic_productos.id_activo,
           concat('{url}', tc_mantic_productos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo,
@@ -38,6 +42,8 @@
           tc_mantic_productos_categorias on tc_mantic_productos.id_producto_categoria= tc_mantic_productos_categorias.id_producto_categoria
 				inner join 
 					tc_mantic_productos_marcas on tc_mantic_productos.id_producto_marca= tc_mantic_productos_marcas.id_producto_marca
+        left join  
+          tc_mantic_productos_marcas_archivos on tc_mantic_productos_marcas.id_producto_marca_archivo= tc_mantic_productos_marcas_archivos.id_producto_marca_archivo
         left join
           tc_mantic_imagenes on tc_mantic_productos.id_imagen= tc_mantic_imagenes.id_imagen     
         where

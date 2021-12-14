@@ -62,6 +62,10 @@ public class Galeria extends Contenedor implements Serializable {
     return path;
   }
 
+	public String getBrand() {
+    return path.concat(String.valueOf(JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende())).concat("/marcas/");
+  }
+  
   public UISelectEntity getIkEmpresa() {
     return ikEmpresa;
   }

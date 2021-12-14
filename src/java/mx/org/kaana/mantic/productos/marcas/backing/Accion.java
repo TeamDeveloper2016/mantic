@@ -111,6 +111,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			eaccion= (EAccion) this.attrs.get("accion");
   		transaccion = new Transaccion(this.marca);
 			if (transaccion.ejecutar(eaccion)) {
+        JsfBase.setFlashAttribute("idProductoMarca", this.marca.getIdProductoMarca());
 				regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el registro de la marca de forma correcta."), ETipoMensaje.INFORMACION);
 			} // if
