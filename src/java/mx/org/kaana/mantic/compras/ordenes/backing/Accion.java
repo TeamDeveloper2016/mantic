@@ -560,7 +560,6 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	} 
 	
 	private void toPreLoadArticulos(List<Articulo> articulos) {
-    List<Entity> comprados    = null;		
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
