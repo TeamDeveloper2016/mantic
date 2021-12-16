@@ -184,8 +184,8 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doNotas  
 	
   public void doEliminar() {
-		Transaccion transaccion = null;
-		Entity seleccionado     = null;
+		Transaccion transaccion= null;
+		Entity seleccionado    = null;
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
       OrdenCompra orden= (OrdenCompra)DaoFactory.getInstance().toEntity(OrdenCompra.class, "TcManticOrdenesComprasDto", "igual", Variables.toMap("idOrdenCompra~"+ seleccionado.getKey()));
@@ -344,7 +344,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Entity seleccionado                = null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			OrdenCompra orden= (OrdenCompra)DaoFactory.getInstance().findById(OrdenCompra.class, seleccionado.getKey());
+      OrdenCompra orden= (OrdenCompra)DaoFactory.getInstance().toEntity(OrdenCompra.class, "TcManticOrdenesComprasDto", "igual", Variables.toMap("idOrdenCompra~"+ seleccionado.getKey()));
 			bitacora    = new TcManticOrdenesBitacoraDto(Long.valueOf((String)this.attrs.get("estatus")), (String) this.attrs.get("justificacion"), JsfBase.getIdUsuario(), seleccionado.getKey(), -1L, orden.getConsecutivo(), orden.getTotal());
 			transaccion = new Transaccion(orden, bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))

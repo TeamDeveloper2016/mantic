@@ -49,14 +49,17 @@ public class Proveedor extends IBaseTicket implements Serializable {
 		Map<String, Object> params= null;
     try {
 			params= this.toPrepare();
-			params.put("sortOrder", "order by tc_mantic_notas_entradas.registro desc");
+			params.put("sortOrder", "order by costo_compra");
       columns = new ArrayList<>();
       columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("costo", EFormatoDinamicos.MILES_SAT_DECIMALES));
       columns.add(new Columna("costoCompra", EFormatoDinamicos.MILES_SAT_DECIMALES));
-      columns.add(new Columna("costoActual", EFormatoDinamicos.MILES_SAT_DECIMALES));
-      columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_SIN_DECIMALES));
+      columns.add(new Columna("menudeo", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("medioMayoreo", EFormatoDinamicos.MILES_SIN_DECIMALES));
+      columns.add(new Columna("mayoreo", EFormatoDinamicos.MILES_SIN_DECIMALES));
+      columns.add(new Columna("pmenudeo", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("pmedioMayoreo", EFormatoDinamicos.MILES_SIN_DECIMALES));
+      columns.add(new Columna("pmayoreo", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
       this.lazyModel = new FormatCustomLazy("VistaConsultasDto", "proveedor", params, columns);
       UIBackingUtilities.resetDataTable();

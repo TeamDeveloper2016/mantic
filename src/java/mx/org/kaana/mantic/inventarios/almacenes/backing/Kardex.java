@@ -407,8 +407,12 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	}
 	
 	private void toLoadAlmacenes() {
-		List<Columna> columns= null;
-    try {
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
+    try {      
+      params = new HashMap<>();      
+      params.put("idArticulo", this.attrs.get("idArticulo"));      
+      params.put("idAlmacen", 0L);      
 			this.tabPage= 1;
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
@@ -417,7 +421,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
       columns.add(new Columna("minimo", EFormatoDinamicos.NUMERO_CON_DECIMALES));
       columns.add(new Columna("maximo", EFormatoDinamicos.NUMERO_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
-      this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "almacenes", this.attrs, columns));
+      this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "almacenes", params, columns));
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
@@ -425,6 +429,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
     } // catch   
 		finally {
       Methods.clean(columns);
+      Methods.clean(params);
     }// finally
 	}
 

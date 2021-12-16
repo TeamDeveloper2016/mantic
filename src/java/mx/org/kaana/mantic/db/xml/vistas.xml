@@ -1655,10 +1655,13 @@
 					tc_mantic_proveedores.razon_social,
 					tc_mantic_articulos_codigos.codigo,
 					tc_mantic_articulos.nombre,
-					tc_mantic_notas_detalles.costo,
-					tc_mantic_notas_detalles.cantidad,
-					(tc_mantic_notas_detalles.sub_total/ tc_mantic_notas_detalles.cantidad) as costo_compra,
-					tc_mantic_articulos.precio as costo_actual,
+          ifnull(tc_mantic_notas_detalles.sub_total/ tc_mantic_notas_detalles.cantidad, 0) as costo_compra,
+          ifnull((tc_mantic_articulos.menudeo* 100)/ (tc_mantic_notas_detalles.sub_total/ tc_mantic_notas_detalles.cantidad), 0) as pmenudeo,
+          tc_mantic_articulos.menudeo,
+          ifnull((tc_mantic_articulos.medio_mayoreo* 100)/ (tc_mantic_notas_detalles.sub_total/ tc_mantic_notas_detalles.cantidad), 0) as pmedio_mayoreo,
+          tc_mantic_articulos.medio_mayoreo,
+          ifnull((tc_mantic_articulos.mayoreo* 100)/ (tc_mantic_notas_detalles.sub_total/ tc_mantic_notas_detalles.cantidad), 0) as pmayoreo,
+          tc_mantic_articulos.mayoreo,
 					tc_mantic_notas_entradas.registro
 				from 
 					tc_mantic_articulos
@@ -3999,7 +4002,7 @@
           tc_mantic_almacenes_ubicaciones on tc_mantic_almacenes_articulos.id_almacen_ubicacion= tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion
         where      
           tc_mantic_almacenes_articulos.id_articulo = {idArticulo}
-					and tc_mantic_almacenes_articulos.id_almacen= {idAlmacen}
+					and (tc_mantic_almacenes_articulos.id_almacen= {idAlmacen} or {idAlmacen}= 0)
 				order by
 				  tc_mantic_almacenes.clave, tc_mantic_almacenes_ubicaciones.piso, tc_mantic_almacenes_ubicaciones.cuarto, tc_mantic_almacenes_ubicaciones.anaquel, tc_mantic_almacenes_ubicaciones.charola
 			</select>

@@ -110,11 +110,14 @@
                   </p:column>   
                 </p:selectOneMenu>
                 <p:outputLabel for="categoria" value="Categoria(s):" style="display: none"/>
-                <p:panelGrid columns="2" styleClass="janal-wid-100-txt disenio" columnClasses="janal-wid-100, janal-wid-col-38">
+                <p:panelGrid columns="3" styleClass="janal-wid-100-txt disenio" columnClasses="janal-wid-95, janal-wid-5, janal-wid-col-38">
                   <p:selectOneMenu id="categoria" value="#{manticProductosGaleria.categoria}" var="item" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                     <p:ajax event="change" process="@this" update="@(.disenio)" listener="#{manticProductosGaleria.doLoad}"/>
                     <f:selectItems value="#{manticProductosGaleria.attrs.categorias}"/>
                   </p:selectOneMenu>
+                  <p:spinner value="#{manticProductosGaleria.attrs.columnas}" min="1" max="10" converter="javax.faces.Integer" stepFactor="1" style="display: #{manticProductosGaleria.attrs.disenio? '': 'none'}">
+                    <p:ajax update="@(.disenio)" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  </p:spinner>  
                   <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100-txt">
                     <p:commandButton icon="fa fa-table" title="Diseño" actionListener="#{manticProductosGaleria.doUpdateDisenio()}" process="@this" update="@(.disenio)" style="display: #{manticProductosGaleria.attrs.disenio? '': 'none'}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                     <p:commandButton icon="fa fa-columns" title="Diseño" actionListener="#{manticProductosGaleria.doUpdateDisenio()}" process="@this" update="@(.disenio)" style="display: #{manticProductosGaleria.attrs.disenio? 'none': ''}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
@@ -138,7 +141,7 @@
               </p:panelGrid>  
               <p:spacer height="3px"/>
               <p:panelGrid columns="1" styleClass="janal-wid-100-txt disenio">
-                <p:dataGrid id="productos" value="#{manticProductosGaleria.productos}" var="row" columns="#{kajoolUtilAplicacion.isMobile? 1: 2}" rowIndexVar="index" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" lazy="false" rendered="#{manticProductosGaleria.attrs.disenio}">
+                <p:dataGrid id="productos" value="#{manticProductosGaleria.productos}" var="row" columns="#{manticProductosGaleria.attrs.columnas}" rowIndexVar="index" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" lazy="false" rendered="#{manticProductosGaleria.attrs.disenio}">
                   <div class="container">
                     <div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header janal-wid-100-txt janal-column-center" style="margin-right: 10px; display: #{manticProductosGaleria.doCheckCategoria(row.data)}">
                       <p:outputLabel value="#{manticProductosGaleria.attrs.links}" escape="false"/>
@@ -148,7 +151,7 @@
                         <span class="galeria-marca">#{row.data.producto.marca}</span><br/>
                         <span class="galeria-nombre">#{row.data.producto.nombre}</span>
                         <div style="float:right;margin-top:-33px;">
-                          <p:graphicImage url="#{manticProductosGaleria.brand}#{row.data.producto.logo}" width="280px" height="140px"/>
+                          <p:graphicImage url="#{manticProductosGaleria.brand}#{row.data.producto.logo}" width="200px" height="60px"/>
                         </div>  
                       </div>  
                       <div class="galeria-list-item p-p-1">

@@ -95,6 +95,7 @@ public class Galeria extends Contenedor implements Serializable {
       this.attrs.put("continuar", Boolean.FALSE);
       this.attrs.put("disenio", Boolean.FALSE);  
       this.attrs.put("cliente", new UISelectEntity(-1L));
+      this.attrs.put("columnas", 2);
       this.toLoadCatalog();
       this.attrs.put("continuar", Boolean.TRUE);
       this.doLoad("", 1L, null);
