@@ -1650,17 +1650,17 @@
 			<select id="proveedor">
 				select
 					tc_mantic_articulos.id_articulo as id_key,
-					tc_mantic_notas_entradas.consecutivo,
+					max(tc_mantic_notas_entradas.consecutivo) as consecutivo,
 					tc_mantic_empresas.nombre as nombre_empresa,  
 					tc_mantic_proveedores.razon_social,
 					tc_mantic_articulos_codigos.codigo,
 					tc_mantic_articulos.nombre,
-          ifnull(tc_mantic_notas_detalles.sub_total/ tc_mantic_notas_detalles.cantidad, 0) as costo_compra,
-          ifnull((tc_mantic_articulos.menudeo* 100)/ (tc_mantic_notas_detalles.sub_total/ tc_mantic_notas_detalles.cantidad), 0) as pmenudeo,
+          tc_mantic_articulos.precio as costo_compra,
+          (tc_mantic_articulos.menudeo- (tc_mantic_articulos.precio* 1.16))* 100/ (tc_mantic_articulos.precio* 1.16) as pmenudeo,
           tc_mantic_articulos.menudeo,
-          ifnull((tc_mantic_articulos.medio_mayoreo* 100)/ (tc_mantic_notas_detalles.sub_total/ tc_mantic_notas_detalles.cantidad), 0) as pmedio_mayoreo,
+          (tc_mantic_articulos.medio_mayoreo- (tc_mantic_articulos.precio* 1.16))* 100/ (tc_mantic_articulos.precio* 1.16) as pmedio_mayoreo,
           tc_mantic_articulos.medio_mayoreo,
-          ifnull((tc_mantic_articulos.mayoreo* 100)/ (tc_mantic_notas_detalles.sub_total/ tc_mantic_notas_detalles.cantidad), 0) as pmayoreo,
+          (tc_mantic_articulos.mayoreo- (tc_mantic_articulos.precio* 1.16))* 100/ (tc_mantic_articulos.precio* 1.16) as pmayoreo,
           tc_mantic_articulos.mayoreo,
 					tc_mantic_notas_entradas.registro
 				from 
@@ -1679,6 +1679,8 @@
 				  tc_mantic_articulos.id_empresa in ({idEmpresa})
 					and tc_mantic_notas_entradas.id_nota_estatus in (3, 5)
 				  and {condicion}
+        group by 
+          tc_mantic_articulos.id_articulo
 				{sortOrder}
 			</select>
 			<select id="totalVendedores">

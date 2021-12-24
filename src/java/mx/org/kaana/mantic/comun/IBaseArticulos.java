@@ -117,9 +117,16 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 					temporal.setMultiplo(1L);
 				} // if
 				else {
-				  temporal.setCodigo(codigo.toString("codigo"));
+          // AQUI SE TIENE QUE VERIFICAR SI EL CODIGO CAMBIO EN EL PROVEEDOR Y CONSIDERAR EL DEL XML
+          if(this.attrs.get("intercambiar")!= null && (Boolean)this.attrs.get("intercambiar")) {
+            if(!articulo.containsKey("codigo"))
+  				    temporal.setCodigo(codigo.toString("codigo"));
+          } // if
+          else
+            temporal.setCodigo(codigo.toString("codigo"));
 				  temporal.setMultiplo(codigo.toLong("multiplo"));
 					temporal.setCantidad(Double.valueOf(temporal.getMultiplo()));
+          this.attrs.put("intercambiar", Boolean.FALSE);
 				}	// else
 				if(Cadena.isVacio(articulo.toString("propio")))
 					LOG.warn("El articulo ["+ articulo.toLong("idArticulo")+" ] no tiene codigo asignado '"+ articulo.toString("nombre")+ "'");
@@ -937,8 +944,10 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			FormatCustomLazy list= (FormatCustomLazy)this.attrs.get("lazyModel");
 			if(list!= null) {
 				List<Entity> items= (List<Entity>)list.getWrappedData();
-				if(items.size()> 0)
+				if(items.size()> 0) {
 					this.attrs.put("encontrado", new UISelectEntity(items.get(0)));
+					this.attrs.put("intercambiar", Boolean.TRUE);
+        } // if  
 			} // if
 		} // if
     this.attrs.put("isCatalogo", Boolean.FALSE);
@@ -978,6 +987,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 
   public void doRowDblselect(SelectEvent event) {
 		this.attrs.put("encontrado", new UISelectEntity((Entity)event.getObject()));
+    this.attrs.put("intercambiar", Boolean.TRUE);
 	}	
 	
 	public void doResetDataTable() {

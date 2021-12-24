@@ -49,7 +49,7 @@ public class Proveedor extends IBaseTicket implements Serializable {
 		Map<String, Object> params= null;
     try {
 			params= this.toPrepare();
-			params.put("sortOrder", "order by costo_compra");
+			params.put("sortOrder", "order by consecutivo desc");
       columns = new ArrayList<>();
       columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));

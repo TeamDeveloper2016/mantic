@@ -74,6 +74,7 @@ public class Indice extends IBaseImportar implements Serializable {
 		this.attrs.put("codigo", "");
 		this.attrs.put("pdfFile", null);
 		this.attrs.put("xmlFile", null);
+		this.attrs.put("opcion", 0);
 		this.salt= (int)(Math.random()* 10000);
   }
 
@@ -128,5 +129,9 @@ public class Indice extends IBaseImportar implements Serializable {
 		} // for
 		return String.valueOf(hash);
 	}		
+ 
+  public void doOpcion(Integer opcion) {
+    this.attrs.put("opcion", opcion);
+  }
   
 }

@@ -48,20 +48,12 @@
 								</f:facet>
 							</p:ajaxStatus>
 						</div>
-						<center style="margin: 30px">
-							<p:spacer id="temporal" width="1"/>
-							<!--p:graphicImage library="janal" name="img/sistema/logo-ingreso.svg" styleClass="janal-logo-kajool"/-->
-							<div id="login-box" class="janal-only-out-lines Container80 MaxWid500 Fnone MarAuto BordRad10">
-								<div class="Container100">
-									<ui:insert name="contenido"/>
-								</div>
-							</div>
-							<p:blockUI block="principal" widgetVar="bloqueo" trigger="#{componenteBloqueo} temporal">
-								<i class="fa fa-spinner fa-spin fa-2x"></i>
-								<p:spacer width="10px"/>
-								<h:outputText value="¡ Espere por favor ... !"/>
-							</p:blockUI>
-						</center>
+  					<ui:insert name="contenido"/>
+            <p:blockUI block="principal" widgetVar="bloqueo" trigger="#{componenteBloqueo} temporal">
+              <i class="fa fa-spinner fa-spin fa-2x"></i>
+              <p:spacer width="10px"/>
+              <h:outputText value="¡ Espere por favor ... !"/>
+            </p:blockUI>
 					</h:form>
 				</p:layoutUnit>
 			</p:layout>

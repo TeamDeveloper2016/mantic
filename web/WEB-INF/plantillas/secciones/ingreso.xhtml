@@ -34,8 +34,8 @@
                     <i class="fa fa-cart-plus fa-stack-1x fa-inverse"></i>
                   </span>
                 </p:commandLink>
-                <p:commandLink action="/acceso?faces-redirect=true" title="Iniciar sesion" styleClass="janal-control-acceso">
-                  <span class="fa fa-stack">
+                <p:commandLink action="/acceso?faces-redirect=true" title="Iniciar sesion" styleClass="janal-control-acceso" rendered="false">
+                  <span class="fa fa-stack janal-display-none">
                     <i class="fa fa-circle fa-stack-2x janal-color-blue"></i>
                     <i class="fa fa-user fa-stack-1x fa-inverse"></i>
                   </span>
@@ -59,7 +59,7 @@
 							  <span id="version" class="version lg-pantalla">#{kajoolUtilAplicacion.versionAplicacion}</span>
 							  <span id="version" class="version xs-pantalla Fs14">#{kajoolUtilAplicacion.version}</span>
 							</div>
-							<p:commandLink action="/acceso?faces-redirect=true" title="Iniciar sesion" styleClass="janal-control-acceso" style="text-decoration: none;">
+              <p:commandLink action="/acceso?faces-redirect=true" title="Iniciar sesion" styleClass="janal-control-acceso" style="text-decoration: none;" rendered="false">
 								<p:outputLabel value="Iniciar sesión"/>
 							</p:commandLink>
 						</p:panelGrid>

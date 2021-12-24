@@ -30,53 +30,82 @@
 			$(document).ready(function() {
 				$('#codigo').realperson({length: 5, regenerate: 'Clic para cambiar', includeNumbers: true, chars: $.realperson.alphanumeric});
 			});
+      
+      function showOpcion(opcion) {
+        $('div.opciones').hide();
+        $('#janal-opcion-'+ opcion).show();
+      }
 			//]]>
-		</script>
+		</script> 
 		<style>
 			input[type="text"], input[type="password"] {
 				text-align: center !important;
 			}
 		</style>
 	</ui:define>
-	<ui:define name="contenido">  		
-		<div class="janal-content-center">
-			<div class="Container100 TexAlCenter Animated05 BoxSizeBorder TabBtn left TabBtnActiveLeft" role="1">
-				<div class="Container80 Fnone MarAuto"><i class="fa fa-cloud-download"></i>  Facturación</div>
-			</div>
-			<div class="Container50 TexAlCenter Animated05 BoxSizeBorder TabBtn right" role="2" style="display:none;">
-				<div id="download" class="Container80 Fnone MarAuto"><i class="fa fa-files-o"></i>  Descargar</div>
-			</div>
-			<div id="tab_1" class="Container90 Fnone MarAuto TexAlCenter TabContent">										
-				<p:panelGrid layout="grid" columns="1" id="gridCuenta">
-					<p:spacer height="1"/>
-					<p:outputLabel for="rfc" value="RFC:" styleClass="Fs16"/>
-					<p:inputText placeholder="ej. ADRC760130L95" id="rfc" tabindex="1" value="#{kajoolAccesoIndice.attrs.rfc}" styleClass="items Container80 Fnone MarAuto Fs18"/>
-					<p:outputLabel for="folio" value="No. ticket:" styleClass="Fs16"/>
-					<p:inputText placeholder="ej. 2019000123" id="folio" tabindex="2" value="#{kajoolAccesoIndice.attrs.folio}" styleClass="items Container80 Fnone MarAuto Fs18"/>
-					<p:outputLabel for="codigo" value="Código:" styleClass="Fs16" style="display: none;"/>
-					<p:inputText placeholder="Dijite código" id="codigo" tabindex="3" value="#{kajoolAccesoIndice.attrs.codigo}" styleClass="items Container80 Fnone MarAuto Fs18"/>
-					<p:commandButton id="aceptar" tabindex="3" value="Recuperar" onstart="$('#encode').val($('#codigo').realperson('getHash')); return janal.execute();" oncomplete="$('#codigo').realperson({length: 5, regenerate: 'Clic para cambiar', includeNumbers: true, chars: $.realperson.alphanumeric});" actionListener="#{kajoolAccesoIndice.doRecoverTicket}" process="@this @(.items)" update="codigo @(.refresh)"/>					
-					<p:spacer height="1"/>
-				</p:panelGrid>
-				<p:inputText id="encode" value="#{kajoolAccesoIndice.attrs.encode}" styleClass="items" style="display: none;"/>
-			</div>
-			<div id="tab_2" class="Container90 Fnone MarAuto TexAlCenter TabContent DispNone">
-				<p:panelGrid layout="grid" columns="1" styleClass="refresh">
-					<p:spacer width="10%"/>
-					<p:commandLink title="Click para descargar el documento" rendered="#{kajoolAccesoIndice.existsPdf}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" process="@this tab_2">
-						<p:fileDownload value="#{kajoolAccesoIndice.pdfFileDownload}"/>
-						<i class="fa fa-file-pdf-o Fs30 janal-color-orange"></i><br/>
-						<p:outputLabel value="#{kajoolAccesoIndice.attrs.pdfFile.nombre}"/>
-					</p:commandLink>
-					<p:spacer width="5%"/>
-					<p:commandLink title="Click para descargar el documento" rendered="#{kajoolAccesoIndice.existsXml}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" process="@this tab_2">
-						<p:fileDownload value="#{kajoolAccesoIndice.xmlFileDownload}"/>
-						<i class="fa fa-file-code-o Fs30 janal-color-orange"></i><br/>
-						<p:outputLabel value="#{kajoolAccesoIndice.attrs.xmlFile.nombre}"/>
-					</p:commandLink>
-				</p:panelGrid>					
-			</div>	
-		</div>
+	<ui:define name="contenido">  	
+    <p:menubar styleClass="janal-wid-100-txt">
+      <p:menuitem value="Categorías" icon="fa fa-picture-o" process="@this" actionListener="#{kajoolAccesoIndice.doOpcion(0)}" oncomplete="showOpcion(0)"/>
+      <p:menuitem value="Marcas" icon="fa fa-dashcube" process="@this" actionListener="#{kajoolAccesoIndice.doOpcion(1)}" oncomplete="showOpcion(1)"/>
+      <p:menuitem value="Facturación" icon="fa fa-qrcode" process="@this" actionListener="#{kajoolAccesoIndice.doOpcion(2)}" oncomplete="showOpcion(2)"/>
+      <f:facet name="options">
+        <p:inputText size="#{util.isMobile? 10: 25}" style="margin-right:10px" placeholder="Buscar"/>
+        <p:commandButton title="Ingresar" action="/acceso?faces-redirect=true" icon="fa fa-user"/>
+      </f:facet> 
+    </p:menubar>
+      <div id="janal-opcion-0" class="opciones janal-display-none">
+        Opcion 0
+      </div>  
+      <div id="janal-opcion-1" class="opciones janal-display-none">
+        Opcion 1
+      </div>
+      <div id="janal-opcion-2" class="opciones">
+        <center style="margin: 30px">
+          <p:spacer id="temporal" width="1"/>
+          <div id="login-box" class="janal-only-out-lines Container80 MaxWid500 Fnone MarAuto BordRad10">
+            <div class="Container100">
+              <div class="janal-content-center">
+                <div class="Container100 TexAlCenter Animated05 BoxSizeBorder TabBtn left TabBtnActiveLeft" role="1">
+                  <div class="Container80 Fnone MarAuto"><i class="fa fa-cloud-download"></i>  Facturación</div>
+                </div>
+                <div class="Container50 TexAlCenter Animated05 BoxSizeBorder TabBtn right" role="2" style="display:none;">
+                  <div id="download" class="Container80 Fnone MarAuto"><i class="fa fa-files-o"></i>  Descargar</div>
+                </div>
+                <div id="tab_1" class="Container90 Fnone MarAuto TexAlCenter TabContent">										
+                  <p:panelGrid layout="grid" columns="1" id="gridCuenta">
+                    <p:spacer height="1"/>
+                    <p:outputLabel for="rfc" value="RFC:" styleClass="Fs16"/>
+                    <p:inputText placeholder="ej. ADRC760130L95" id="rfc" tabindex="1" value="#{kajoolAccesoIndice.attrs.rfc}" styleClass="items Container80 Fnone MarAuto Fs18"/>
+                    <p:outputLabel for="folio" value="No. ticket:" styleClass="Fs16"/>
+                    <p:inputText placeholder="ej. 2019000123" id="folio" tabindex="2" value="#{kajoolAccesoIndice.attrs.folio}" styleClass="items Container80 Fnone MarAuto Fs18"/>
+                    <p:outputLabel for="codigo" value="Código:" styleClass="Fs16" style="display: none;"/>
+                    <p:inputText placeholder="Dijite código" id="codigo" tabindex="3" value="#{kajoolAccesoIndice.attrs.codigo}" styleClass="items Container80 Fnone MarAuto Fs18"/>
+                    <p:commandButton id="aceptar" tabindex="3" value="Recuperar" onstart="$('#encode').val($('#codigo').realperson('getHash')); return janal.execute();" oncomplete="$('#codigo').realperson({length: 5, regenerate: 'Clic para cambiar', includeNumbers: true, chars: $.realperson.alphanumeric});" actionListener="#{kajoolAccesoIndice.doRecoverTicket}" process="@this @(.items)" update="codigo @(.refresh)"/>					
+                    <p:spacer height="1"/>
+                  </p:panelGrid>
+                  <p:inputText id="encode" value="#{kajoolAccesoIndice.attrs.encode}" styleClass="items" style="display: none;"/>
+                </div>
+                <div id="tab_2" class="Container90 Fnone MarAuto TexAlCenter TabContent DispNone">
+                  <p:panelGrid layout="grid" columns="1" styleClass="refresh">
+                    <p:spacer width="10%"/>
+                    <p:commandLink title="Click para descargar el documento" rendered="#{kajoolAccesoIndice.existsPdf}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" process="@this tab_2">
+                      <p:fileDownload value="#{kajoolAccesoIndice.pdfFileDownload}"/>
+                      <i class="fa fa-file-pdf-o Fs30 janal-color-orange"></i><br/>
+                      <p:outputLabel value="#{kajoolAccesoIndice.attrs.pdfFile.nombre}"/>
+                    </p:commandLink>
+                    <p:spacer width="5%"/>
+                    <p:commandLink title="Click para descargar el documento" rendered="#{kajoolAccesoIndice.existsXml}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" process="@this tab_2">
+                      <p:fileDownload value="#{kajoolAccesoIndice.xmlFileDownload}"/>
+                      <i class="fa fa-file-code-o Fs30 janal-color-orange"></i><br/>
+                      <p:outputLabel value="#{kajoolAccesoIndice.attrs.xmlFile.nombre}"/>
+                    </p:commandLink>
+                  </p:panelGrid>					
+                </div>	
+              </div>          
+            </div>
+          </div>
+        </center>        
+      </div>  
 		<p:dialog modal="true" widgetVar="statusDialog" header="Descargando documento ..." draggable="false" closable="false" resizable="false">
 			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
 		</p:dialog>		
