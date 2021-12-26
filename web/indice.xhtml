@@ -38,17 +38,17 @@
       }
       
       function recalcular() {
-        if($('div.janal-contenedor-icons').hasClass('janal-wid-70')) {
-          $('div.janal-contenedor-icons').removeClass('janal-wid-70');
+        if($('div.janal-contenedor-icons').hasClass('janal-wid-80')) {
+          $('div.janal-contenedor-icons').removeClass('janal-wid-80');
           $('div.janal-contenedor-icons').addClass('janal-wid-97');
-          $('div.janal-contenedor-menu').removeClass('janal-wid-30');
+          $('div.janal-contenedor-menu').removeClass('janal-wid-20');
           $('div.janal-contenedor-menu').addClass('janal-wid-3');
         } // if
         else {
           $('div.janal-contenedor-icons').removeClass('janal-wid-97');
-          $('div.janal-contenedor-icons').addClass('janal-wid-70');
+          $('div.janal-contenedor-icons').addClass('janal-wid-80');
           $('div.janal-contenedor-menu').removeClass('janal-wid-3');
-          $('div.janal-contenedor-menu').addClass('janal-wid-30');
+          $('div.janal-contenedor-menu').addClass('janal-wid-20');
         } // else  
       }
 			//]]>
@@ -100,7 +100,7 @@
       .jana-flex-items:nth-child(1) {display: block;  flex-grow: 0; flex-shrink: 1; flex-basis: auto; align-self: auto; order: 0;width: 20%;}
       .jana-flex-items:nth-child(2) {display: block; flex-grow: 0; flex-shrink: 1; flex-basis: auto; align-self: auto; order: 0;width: 100%;}      
       .menu-flex-container {display: flex; flex-direction: column; flex-wrap: nowrap; justify-content: normal; align-items: center; align-content: center; height: 100%;}
-      .menu-flex-items {display: block; flex-grow: 0; flex-shrink: 1; flex-basis: auto; align-self: auto; order: 0; width: 80%; text-align: center; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; margin-bottom: 15px; height: 50px; padding-top: 15px;}
+      .menu-flex-items {display: block; flex-grow: 0; flex-shrink: 1; flex-basis: auto; align-self: auto; order: 0; width: 90%; text-align: center; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; margin-bottom: 15px; height: 50px; padding-top: 15px;}
     </style>
 	</ui:define>
 	<ui:define name="contenido">  	
@@ -119,7 +119,7 @@
    	 		  <pe:methodSignature parameters="java.lang.String"/>  
 			    <pe:methodParam name="descripcion"/>  
         </pe:remoteCommand>
-        <p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-30 janal-contenedor-menu, janal-wid-70 janal-column-center janal-contenedor-icons">
+        <p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-20 janal-contenedor-menu, janal-wid-80 janal-column-center janal-contenedor-icons">
           <p:panel header="Categorias" toggleable="true" toggleSpeed="500" closeSpeed="500" toggleOrientation="horizontal" styleClass="janal-wid-100" style="height:100vh;">
             <p:ajax event="toggle" update="productos" onstart="recalcular(); return true;"/>
             <div class="menu-flex-container">
@@ -149,7 +149,7 @@
                       </a>  
                     </div> 
                     <div class="galeria-list-detail">
-                      <span class="janal-color-orange" style="font-size: 1.1rem; font-weight: bold;">ESPECIFICACIONES:</span><br/>
+                      <span class="janal-color-orange" style="font-size: 0.9rem; font-weight: bold;">ESPECIFICACIONES:</span><br/>
                       <p:dataList var="item" value="#{row.caracteristicas}" styleClass="galeria-list" itemStyleClass="galeria-description" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
                         #{kajoolAccesoIndice.doLetraCapital(item)}
                       </p:dataList>
@@ -214,7 +214,7 @@
                       </a>  
                     </div> 
                     <div class="galeria-list-detail">
-                      <span class="janal-color-orange" style="font-size: 1.1rem; font-weight: bold;">ESPECIFICACIONES:</span><br/>
+                      <span class="janal-color-orange" style="font-size: 0.9rem; font-weight: bold;">ESPECIFICACIONES:</span><br/>
                       <p:dataList var="item" value="#{row.caracteristicas}" styleClass="galeria-list" itemStyleClass="galeria-description" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
                         #{kajoolAccesoIndice.doLetraCapital(item)}
                       </p:dataList>
@@ -313,7 +313,7 @@
                       </a>  
                     </div> 
                     <div class="galeria-list-detail">
-                      <span class="janal-color-orange" style="font-size: 1.1rem; font-weight: bold;">ESPECIFICACIONES:</span><br/>
+                      <span class="janal-color-orange" style="font-size: 0.9rem; font-weight: bold;">ESPECIFICACIONES:</span><br/>
                       <p:dataList var="item" value="#{row.caracteristicas}" styleClass="galeria-list" itemStyleClass="galeria-description" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
                         #{kajoolAccesoIndice.doLetraCapital(item)}
                       </p:dataList>
