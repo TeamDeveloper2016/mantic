@@ -50,6 +50,7 @@ public class Indice extends IBaseImportar implements Serializable {
   private TemaActivo temaActivo;
 	private Integer salt;
   private List<Entity> marcas;
+  private List<Entity> menu;
   private Long indexMarca;    
   private List<FluidGridItem> productos;
   private String categoria;
@@ -85,6 +86,10 @@ public class Indice extends IBaseImportar implements Serializable {
 
   public List<Entity> getMarcas() {
     return marcas;
+  }
+
+  public List<Entity> getMenu() {
+    return menu;
   }
 
   public Long getIndexMarca() {
@@ -136,6 +141,7 @@ public class Indice extends IBaseImportar implements Serializable {
       columns = new ArrayList<>();
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
       this.marcas= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticProductosMarcasDto", "lazy", params);
+      this.menu  = (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticProductosCategoriasDto", "menu", params);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -270,6 +276,7 @@ public class Indice extends IBaseImportar implements Serializable {
   }
 
   public void doSearchItem() {
+    this.doOpcion(3);
     Map<String, Object> params= new HashMap<>();
     try {
       this.attrs.put("categoria", "");
@@ -293,6 +300,32 @@ public class Indice extends IBaseImportar implements Serializable {
     finally {
       Methods.clean(params);
     } // finally          
+  }
+ 
+  public void doUpdateCategorias(String descripcion) {
+    Map<String, Object> params= new HashMap<>();
+    try {
+      this.attrs.put("categoria", "");
+      params.put("sortOrder", "order by concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre), tc_mantic_productos.orden");
+      params.put("idEmpresa", 1L);
+      params.put("categoria", descripcion);
+      this.attrs.put("particular", Boolean.FALSE);
+      List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaProductosDto", "galeria", params, Constantes.SQL_TODOS_REGISTROS);
+      if(this.productos!= null)
+        this.productos.clear();
+      if(items!= null && !items.isEmpty()) 
+        for (Entity item: items) {
+          this.productos.add(new FluidGridItem(new Producto(item.getKey(), "menudeo")));    
+        } // for
+      UIBackingUtilities.update("productos");
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(params);
+    } // finally     
   }
   
 }

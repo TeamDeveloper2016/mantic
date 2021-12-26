@@ -132,6 +132,21 @@
         order by
           concat(padre, nombre)
       </select>      
+      <select id="menu">
+        select      
+          tc_mantic_productos_categorias.id_producto_categoria as id_key,
+          concat(padre, nombre) as nombre,
+          nombre as categoria,
+          ifnull(icon, 'fa-ioxhost') as icon
+        from      
+          tc_mantic_productos_categorias
+        where
+          nivel= 2
+        group by
+          concat(padre, nombre)
+        order by
+          concat(padre, nombre)
+      </select>      
       <select id="existe">
         select      
          tc_mantic_productos_categorias.id_producto_categoria as id_key,
