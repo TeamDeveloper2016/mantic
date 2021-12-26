@@ -201,6 +201,52 @@
           tc_mantic_productos.nombre
         {sortOrder}           
       </select>
+			<select id="marca">
+        select 
+          tc_mantic_productos.id_producto as id_key,
+          concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) as categoria,
+          tc_mantic_productos_marcas.nombre as marca
+        from
+          tc_mantic_productos
+				inner join 
+          tc_mantic_productos_categorias on tc_mantic_productos.id_producto_categoria= tc_mantic_productos_categorias.id_producto_categoria
+				inner join 
+					tc_mantic_empresas on tc_mantic_productos.id_empresa= tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_productos_marcas on tc_mantic_productos.id_producto_marca= tc_mantic_productos_marcas.id_producto_marca
+        where
+          tc_mantic_productos.id_empresa in ({idEmpresa})
+					and tc_mantic_productos_marcas.nombre= '{marca}'
+          and tc_mantic_productos.id_activo= 1
+        group by
+          concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre),
+          tc_mantic_productos_marcas.nombre,
+          tc_mantic_productos.nombre
+        {sortOrder}           
+      </select>
+			<select id="codigo">
+        select 
+          tc_mantic_productos.id_producto as id_key,
+          concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre) as categoria,
+          tc_mantic_productos_marcas.nombre as marca
+        from
+          tc_mantic_productos
+				inner join 
+          tc_mantic_productos_categorias on tc_mantic_productos.id_producto_categoria= tc_mantic_productos_categorias.id_producto_categoria
+				inner join 
+					tc_mantic_empresas on tc_mantic_productos.id_empresa= tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_productos_marcas on tc_mantic_productos.id_producto_marca= tc_mantic_productos_marcas.id_producto_marca
+        where
+          tc_mantic_productos.id_empresa in ({idEmpresa})
+          and (upper(tc_mantic_productos.nombre) regexp '.*{codigo}.*' or upper(tc_mantic_productos_marcas.nombre) regexp '.*{codigo}.*')
+          and tc_mantic_productos.id_activo= 1
+        group by
+          concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre),
+          tc_mantic_productos_marcas.nombre,
+          tc_mantic_productos.nombre
+        {sortOrder}           
+      </select>
       <select id="articulos">
         select
          tc_mantic_productos_detalles.id_producto_detalle as id_key,

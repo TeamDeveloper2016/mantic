@@ -24,20 +24,32 @@
 			<div class="ui-g-11 janal-content-center">
         <div class="ui-g ui-grid-row janal-grid-row">
 					<div class="ui-g-12 janal-content-center">
-						<p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-column-left, janal-control-acceso janal-column-center janal-wid-col-90">
+						<p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-column-left, janal-control-acceso janal-column-center janal-wid-col-150">
   		  		  <h1 class="titulo-proyecto janal-header-title">#{kajoolUtilAplicacion.tituloSistema}</h1>
 	  		  	  <h1 class="titulo-siglas janal-header-acronym">#{kajoolUtilAplicacion.tituloCorto}</h1>
-              <p:panelGrid columns="1" styleClass="janal-wid-100">
-                <p:commandLink action="/galeria?faces-redirect=true" title="Galería de productos" styleClass="janal-control-acceso" rendered="false">
+              <p:panelGrid columns="4" styleClass="janal-wid-100">
+                <p:commandLink title="Facebook">
                   <span class="fa fa-stack janal-global-icon-cart">
                     <i class="fa fa-circle fa-stack-2x janal-color-orange"></i>
-                    <i class="fa fa-cart-plus fa-stack-1x fa-inverse"></i>
+                    <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
                   </span>
                 </p:commandLink>
-                <p:commandLink action="/acceso?faces-redirect=true" title="Iniciar sesion" styleClass="janal-control-acceso" rendered="false">
-                  <span class="fa fa-stack janal-display-none">
-                    <i class="fa fa-circle fa-stack-2x janal-color-blue"></i>
-                    <i class="fa fa-user fa-stack-1x fa-inverse"></i>
+                <p:commandLink title="Twitter">
+                  <span class="fa fa-stack janal-global-icon-cart">
+                    <i class="fa fa-circle fa-stack-2x janal-color-orange"></i>
+                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </p:commandLink>
+                <p:commandLink title="Instagram">
+                  <span class="fa fa-stack janal-global-icon-cart">
+                    <i class="fa fa-circle fa-stack-2x janal-color-orange"></i>
+                    <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </p:commandLink>
+                <p:commandLink title="Youtube">
+                  <span class="fa fa-stack janal-global-icon-cart">
+                    <i class="fa fa-circle fa-stack-2x janal-color-orange"></i>
+                    <i class="fa fa-youtube-play fa-stack-1x fa-inverse"></i>
                   </span>
                 </p:commandLink>
               </p:panelGrid>  
@@ -56,8 +68,8 @@
 					<div class="ui-g-4 janal-content-center margin-version" style="text-align: right;">
 						<p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-column-right, janal-control-acceso janal-column-right lg-pantalla janal-wid-30">
 							<div>
-							  <span id="version" class="version lg-pantalla">#{kajoolUtilAplicacion.versionAplicacion}</span>
-							  <span id="version" class="version xs-pantalla Fs14">#{kajoolUtilAplicacion.version}</span>
+							  <span id="version" class="version lg-pantalla">TEL: (449)913-10-28</span>
+							  <span id="version" class="version xs-pantalla Fs14">TEL: (449)913-10-28</span>
 							</div>
               <p:commandLink action="/acceso?faces-redirect=true" title="Iniciar sesion" styleClass="janal-control-acceso" style="text-decoration: none;" rendered="false">
 								<p:outputLabel value="Iniciar sesión"/>
