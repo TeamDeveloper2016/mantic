@@ -283,14 +283,16 @@ public class Indice extends IBaseImportar implements Serializable {
       params.put("sortOrder", "order by concat(tc_mantic_productos_categorias.padre, tc_mantic_productos_categorias.nombre), tc_mantic_productos.orden");
       params.put("idEmpresa", 1L);
       String codigo= this.attrs.get("codigo")!= null? (String)this.attrs.get("codigo"): "";
-      codigo= codigo.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
-      params.put("codigo", codigo);
-      this.attrs.put("particular", Boolean.FALSE);
-      List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaProductosDto", "codigo", params, Constantes.SQL_TODOS_REGISTROS);
-      if(items!= null && !items.isEmpty()) 
-        for (Entity item: items) {
-          this.productos.add(new FluidGridItem(new Producto(item.getKey(), "menudeo")));    
-        } // for
+      codigo= codigo.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim();
+      if(codigo.length()> 1) {
+        params.put("codigo", codigo.replaceAll("(,| |\\t)+", ".*.*"));
+        this.attrs.put("particular", Boolean.FALSE);
+        List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaProductosDto", "codigo", params, Constantes.SQL_TODOS_REGISTROS);
+        if(items!= null && !items.isEmpty()) 
+          for (Entity item: items) {
+            this.productos.add(new FluidGridItem(new Producto(item.getKey(), "menudeo")));    
+          } // for
+      } // if  
       UIBackingUtilities.update("catalogo");
 		} // try
 	  catch (Exception e) {

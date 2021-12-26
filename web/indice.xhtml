@@ -110,7 +110,7 @@
       <p:menuitem value="Facturación" icon="fa fa-qrcode" process="@this" actionListener="#{kajoolAccesoIndice.doOpcion(2)}" oncomplete="showOpcion(2)"/>
       <f:facet name="options">
         <p:inputText id="buscar" value="#{kajoolAccesoIndice.attrs.codigo}" size="#{util.isMobile? 10: 25}" style="margin-right:10px" placeholder="Buscar"/>
-        <p:commandButton title="Buscar producto" actionListener="#{kajoolAccesoIndice.doSearchItem()}" process="@this buscar" update="tabla" icon="fa fa-search" onstart="showOpcion(3); return true;"/>
+        <p:commandButton title="Buscar producto" actionListener="#{kajoolAccesoIndice.doSearchItem()}" process="@this buscar" update="tabla" icon="fa fa-search" onstart="showOpcion(3); return janal.bloquear();" oncomplete="janal.desbloquear();"/>
         <p:commandButton title="Ingresar" action="/acceso?faces-redirect=true" icon="fa fa-user"/>
       </f:facet> 
     </p:menubar>
