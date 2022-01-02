@@ -33,13 +33,13 @@ public class ContextListener implements ServletContextListener {
     System.setProperty("java.awt.headless", "true");
     LOG.info("[+SISTEMA] ".concat((String) context.getAttribute("nombreAplicacion")));
     try {
-      editors();
+      this.editors();
       usuarios= new UsuariosEnLinea();
       context.setAttribute(Constantes.ATRIBUTO_USUARIOS_SITIO, usuarios);
       context.setAttribute(Constantes.ATRIBUTO_BLOQUEO_USUARIOS, new LockUser());
       LOG.info("[+CONTROL DE USUARIOS] ".concat(Fecha.formatear(Fecha.FECHA_HORA, usuarios.getHora())));
-      pathLoadFile(context);
-      setJasperTempPath(context);
+      this.pathLoadFile(context);
+      this.setJasperTempPath(context);
       Loader.getInstance(event);
       System.setProperty("java.awt.headless", "true");
       LOG.info("[+PASANDO LOGOTIPOS]");
