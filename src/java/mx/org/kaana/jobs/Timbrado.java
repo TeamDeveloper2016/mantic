@@ -64,6 +64,7 @@ public class Timbrado extends IBaseJob {
 		try {
 			if (!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion() && this.validateHora()) {
 				pendientes= this.toFacturasPendientes();
+				LOG.error("Timbrado de facturas JOB : "+ (pendientes!= null? pendientes.size(): 0));
 				for (Facturacion factura: pendientes) {
 					try {
 						if(factura.getIntentos()<= 2) {
@@ -73,7 +74,7 @@ public class Timbrado extends IBaseJob {
 								transaccion=new Transaccion(factura);
 								if (transaccion.ejecutar(EAccion.GENERAR)) {
 									this.doSendMail(factura);
-									LOG.info("Se realizó la facturación de forma correcta");
+									LOG.error("Se realizó la facturación de forma correcta "+ factura.getRazonSocial());
 								} // if
 								else {
 									LOG.error("Ocurrio un error al realizar la facturación");

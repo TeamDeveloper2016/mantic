@@ -30,7 +30,7 @@ public class Facturas extends IBaseJob {
 			if(!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion()) {
 				transferir = new Transferir();
 				if (transferir.ejecutar(EAccion.GENERAR)) 
-					LOG.info("Se realizo la sincronización de las facturas de forma correcta");
+					LOG.error("Se realizo la sincronización de las facturas de forma correcta");
 				else
 					LOG.error("Ocurrio un error al realizar la sincronización de las facturas");				
 			} // if

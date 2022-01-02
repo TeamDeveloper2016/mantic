@@ -100,7 +100,7 @@ div.ui-panelgrid-content {
 }
 .janal-menu-header.ui-widget-header {
   font-weight: normal !important;
-  margin-top: -1px;
+  margin-top: -4px;
 }
 .janal-display-none {
   display: none;
@@ -489,7 +489,7 @@ div.ui-panelgrid-content {
   }
   .ui-tabs .ui-tabs-panel {padding: initial;}
   .ui-sticky {top: 89px !important;}
-  .layout-header-widgets {top: -2px;}
+  .layout-header-widgets {top: -5px;}
   .janal-logo-kajool {
     height: 60px;
     width: 80px;

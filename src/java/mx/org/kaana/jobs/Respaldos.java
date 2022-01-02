@@ -37,7 +37,7 @@ public class Respaldos extends IBaseJob {
 			if(!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion()) {
 				transaccion= new Transaccion();
 				if(transaccion.ejecutar(EAccion.AGREGAR))
-					LOG.info("Se realizo el respaldo de la BD de forma correcta");
+					LOG.error("Se realizo el respaldo de la BD de forma correcta");
 				else
 					LOG.error("Ocurrio un error al realizar el respaldo de la BD");			
 				
@@ -45,9 +45,9 @@ public class Respaldos extends IBaseJob {
 				periodo.addDias(-20);
   			params=new HashMap<>();
 				params.put("registro", periodo.toString());
-  			LOG.info("Iniciando el proceso de limpieza de ventas perdidas con fecha de "+ periodo.toString());
+  			LOG.error("Iniciando el proceso de limpieza de ventas perdidas con fecha de "+ periodo.toString());
 				Long actualizados= DaoFactory.getInstance().updateAll(TcManticFaltantesDto.class, params, "olds");
-  			LOG.info("Se actulizarón "+ actualizados+ " registros del catalogo de ventas perdidas.");
+  			LOG.error("Se actulizarón "+ actualizados+ " registros del catalogo de ventas perdidas.");
 			} // if
 	  } // try
 		catch (Exception e) {

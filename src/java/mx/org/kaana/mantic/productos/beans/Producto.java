@@ -10,7 +10,6 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.db.dto.TcManticProductosDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

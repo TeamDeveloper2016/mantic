@@ -206,6 +206,7 @@ public class Indice extends IBaseImportar implements Serializable {
     this.attrs.put("opcion", opcion);
     UIBackingUtilities.update("tabla");
     UIBackingUtilities.update("catalogo");
+    UIBackingUtilities.update("productos");
     if(this.productos!= null)
       this.productos.clear();
   }
@@ -328,6 +329,11 @@ public class Indice extends IBaseImportar implements Serializable {
     finally {
       Methods.clean(params);
     } // finally     
+  }
+ 
+  public void doCleanProductos(String decripcion) {
+     if(this.productos!= null)
+      this.productos.clear();
   }
   
 }

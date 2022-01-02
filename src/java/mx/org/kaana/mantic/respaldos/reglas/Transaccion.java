@@ -120,7 +120,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		File result= new File(path.toString());		
 		if (!result.exists())
 			result.mkdirs();
-		LOG.info("Ruta generada: "+ path.toString());
+		LOG.error("Ruta generada: "+ path.toString());
 		name.append("mantic");
     name.append(Constantes.ARCHIVO_PATRON_SEPARADOR);
     name.append(Fecha.formatear("yyyyMMddhhmmssS", Calendar.getInstance().getTime()));
@@ -142,11 +142,11 @@ public class Transaccion extends IBaseTnx implements Serializable {
         server= "mysqldump -h localhost -u ferreter_super --password=super2018 --databases ferreter_production ";
 				break;
 		} // swtich
-		LOG.info("Proceso a generar: "+ server.concat(" --compact --add-drop-table --complete-insert --extended-insert -r ").concat(path.toString()));
+		LOG.error("Proceso a generar: "+ server.concat(" --compact --add-drop-table --complete-insert --extended-insert -r ").concat(path.toString()));
 		Process runtimeProcess = Runtime.getRuntime().exec(server.concat(" --compact --add-drop-table --complete-insert --extended-insert -r ").concat(path.toString()));
-		LOG.info("Proceso en ejecucion ...");
+		LOG.error("Proceso en ejecucion ...");
 		int processComplete = runtimeProcess.waitFor();
-		LOG.info("Resultado del proceso: "+ processComplete);
+		LOG.error("Resultado del proceso: "+ processComplete);
 		/*NOTE: processComplete=0 if correctly executed, will contain other values if not*/
 		if (processComplete== 0) {
 			String[] files= new String[1];
@@ -155,14 +155,14 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			zip.setDebug(true);
 			zip.setEliminar(false);
 			int token= Configuracion.getInstance().getPropiedadSistemaServidor("respaldos").length();
-   		LOG.info("Compactar archivo: "+ sb.toString().concat(name.toString()).concat(EFormatos.ZIP.name().toLowerCase()));
+   		LOG.error("Compactar archivo: "+ sb.toString().concat(name.toString()).concat(EFormatos.ZIP.name().toLowerCase()));
 			zip.compactar(sb.toString().concat(name.toString()).concat(EFormatos.ZIP.name().toLowerCase()), token, files);
 			File file= new File(zip.getNombre());
 			regresar= new TcManticRespaldosDto(sb.toString().substring(token), file.getTotalSpace(), FacesContext.getCurrentInstance()== null || FacesContext.getCurrentInstance().getExternalContext()== null || FacesContext.getCurrentInstance().getExternalContext().getRequest()== null || JsfBase.getAutentifica()== null? 
 				1L: JsfBase.getIdUsuario(), this.observacion, -1L, zip.getNombre(), name.toString().concat(EFormatos.ZIP.name().toLowerCase()));
 			file= new File(files[0]);
 			file.delete();
-   		LOG.info("Eliminar archivo: "+ files[0]);
+   		LOG.error("Eliminar archivo: "+ files[0]);
 		} // if
 		else
 		  new RuntimeException("Ocurrio un error al realizar el resplado de la base de datos");

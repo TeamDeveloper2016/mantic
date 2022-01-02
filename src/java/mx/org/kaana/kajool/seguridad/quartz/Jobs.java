@@ -49,27 +49,27 @@ public class Jobs {
     try {
       fabrica= DocumentBuilderFactory.newInstance();
       builder= fabrica.newDocumentBuilder();
-      LOG.debug("Procesando los modulos ".concat(XML_JOBS));
-        Document files = builder.parse(this.getClass().getResourceAsStream(XML_JOBS));
-        NodeList names = toJobs(files, JOB);
-        for (int z = 0; z < names.getLength(); z++) {
-          Element item = (Element) names.item(z);
-					if (item.getAttribute("load")!= null && item.getAttribute("load").equals("true")) {
-						NodeList clase = toJobs(item, CLASS);
-						for (int x = 0; x < clase.getLength(); x++) {
-							Element element = (Element) clase.item(x);
-							expression= element.getAttribute("expresion");
-							if(evaluaElement(element)){
-								if (element.getAttribute("load")== null || (element.getAttribute("load").equals("true")) || (element.getAttribute("load").equals(""))) 
-									load(element.getTextContent(), expression, item.getAttribute("id").concat(element.getAttribute("id")).concat("Cron"), item.getAttribute("id").concat(element.getAttribute("id")), false);
-								else																				
-									load(element.getTextContent(), expression, item.getAttribute("id").concat(element.getAttribute("id")).concat("Cron"), item.getAttribute("id").concat(element.getAttribute("id")), true);
-							} // if
-							else
-								load( element.getTextContent(), expression, item.getAttribute("id").concat(element.getAttribute("id")).concat("Cron"), item.getAttribute("id").concat(element.getAttribute("id")), true);							
-						} // for
-					} // if
-        } // for y
+      LOG.error("Procesando los modulos ".concat(XML_JOBS));
+      Document files = builder.parse(this.getClass().getResourceAsStream(XML_JOBS));
+      NodeList names = this.toJobs(files, JOB);
+      for (int z = 0; z < names.getLength(); z++) {
+        Element item = (Element) names.item(z);
+        if (item.getAttribute("load")!= null && item.getAttribute("load").equals("true")) {
+          NodeList clase = this.toJobs(item, CLASS);
+          for (int x= 0; x< clase.getLength(); x++) {
+            Element element = (Element) clase.item(x);
+            expression= element.getAttribute("expresion");
+            if(evaluaElement(element)) {
+              if (element.getAttribute("load")== null || (element.getAttribute("load").equals("true")) || (element.getAttribute("load").equals(""))) 
+                this.load(element.getTextContent(), expression, item.getAttribute("id").concat(element.getAttribute("id")).concat("Cron"), item.getAttribute("id").concat(element.getAttribute("id")), false);
+              else																				
+                this.load(element.getTextContent(), expression, item.getAttribute("id").concat(element.getAttribute("id")).concat("Cron"), item.getAttribute("id").concat(element.getAttribute("id")), true);
+            } // if
+            else
+              this.load(element.getTextContent(), expression, item.getAttribute("id").concat(element.getAttribute("id")).concat("Cron"), item.getAttribute("id").concat(element.getAttribute("id")), true);							
+          } // for
+        } // if
+      } // for y
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -90,10 +90,11 @@ public class Jobs {
     return regresar;
   }
 	
-	private void load(String jobClass, String expression,String trigger, String job, boolean sleep)  {
+	private void load(String jobClass, String expression, String trigger, String job, boolean sleep)  {
 		JobDetail jobIntegracion      = null;
 		CronTrigger triggerIntegracion= null;	
-		try {			
+		try {		
+      LOG.error("Cargando JOB quartz: "+ jobClass);
 			Class<? extends Job> clase = (Class<? extends Job>) Class.forName(jobClass);
 			jobIntegracion=JobBuilder.newJob(clase).withIdentity(job, Constantes.NOMBRE_DE_APLICACION).build();
 			triggerIntegracion=TriggerBuilder.newTrigger().withIdentity(trigger, Constantes.NOMBRE_DE_APLICACION).withSchedule(CronScheduleBuilder.cronSchedule(expression)).build();
@@ -102,7 +103,7 @@ public class Jobs {
 				this.scheduler.pauseJob(jobIntegracion.getKey());
 		} // try
 		catch(Exception e) {
-			LOG.warn(e);
+			LOG.error(e);
 		} // catch
 	}
 	
