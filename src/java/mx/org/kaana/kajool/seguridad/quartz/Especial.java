@@ -84,31 +84,10 @@ public final class Especial implements Serializable {
 	public Timestamp getRegistro() {
 		return registro;
 	}		
-/*			
-  private boolean asignaServidor() {				
-	  List<TareaServidor> servidores= null;	
-		boolean regresar              = false;
-		try {					
-			servidores= (List<TareaServidor>)DaoFactory.getInstance().toEntitySet(TareaServidor.class,"TcTareasServidoresDto","servidores",new HashMap<String,String>());			
-			for (TareaServidor tarea :servidores){
-	      regresar= this.path.equals(Cadena.reemplazarCaracter(tarea.getPath(), '/',File.separatorChar));
-			  if (regresar) 					
-			 	 this.tareaServidor.add(tarea);			  			  					
-			} // for					
-			regresar= !this.tareaServidor.isEmpty();
-		} // try
-		catch (Exception e) {
-		  Error.mensaje(e);
-		} // catch
-		finally {		
-			 Methods.clean(servidores);			
-		} // finally
-		return regresar;
-  }	
-*/	
+
 	private boolean asignaLocalServidor() {
-		 TareaServidor tarea= null;	
-		 boolean regresar   = true;
+		TareaServidor tarea= null;	
+		boolean regresar   = true;
 		try {
 			tarea = new TareaServidor(this.path,"0 2/5 * * * ?");
 			tareaServidor.add(tarea);
@@ -123,7 +102,7 @@ public final class Especial implements Serializable {
 	public void refreshPath(ServletContextEvent servletContextEvent) {				
 	  this.registro = new Timestamp(Calendar.getInstance().getTimeInMillis());
 		this.path= servletContextEvent.getServletContext().getRealPath("").concat(File.separator);		
-		this.path=Cadena.reemplazarCaracter(this.path,'/',File.separatorChar);		
+		this.path= Cadena.reemplazarCaracter(this.path,'/',File.separatorChar);		
 		this.path= Cadena.reemplazarCaracter(this.path,'\\',File.separatorChar);	
 	}
 	
@@ -139,20 +118,17 @@ public final class Especial implements Serializable {
 			LOG.info("Path recuperado [".concat(realPath).concat("]"));
 			pos = realPath.lastIndexOf(Constantes.NOMBRE_DE_APLICACION.toUpperCase());			
 			this.registro = new Timestamp(Calendar.getInstance().getTimeInMillis());
-			if (pos>-1) {				
+			if (pos> -1) {				
 				this.path= realPath.substring(0, pos+Constantes.NOMBRE_DE_APLICACION.length()).concat(File.separator);
 				this.path= Cadena.reemplazarCaracter(this.path,'/',File.separatorChar);
 				this.path= Cadena.reemplazarCaracter(this.path,'\\',File.separatorChar);	
 				LOG.info("Path server [".concat(this.path).concat("]"));
-				//regresar= Configuracion.getInstance().getPropiedad("sistema.quartz.tareas").equals("true")?asignaServidor():asignaLocalServidor();									
-				regresar= asignaLocalServidor();									
+				regresar= this.asignaLocalServidor();									
 				LOG.info("MultiProcesamiento  server [".concat(String.valueOf(regresar).concat("]")));
-			}// if		
-			else {
-				refreshPath(servletContextEvent);	
-			}	
+			} // if		
+			else 
+				this.refreshPath(servletContextEvent);	
 			this.servletContextEvent = servletContextEvent;
-			
 		} // try
 		catch (Exception e) {			
 			Error.mensaje(e);
@@ -161,22 +137,22 @@ public final class Especial implements Serializable {
 	}
 
 	private String toParameter (ServletContextEvent servletContextEvent , String parameter) {
-   return servletContextEvent.getServletContext().getInitParameter(parameter);
+    return servletContextEvent.getServletContext().getInitParameter(parameter);
   }
 
   private void addParameters (ServletContextEvent cfg) throws SchedulerException {
     this.scheduler.getContext().put("pathContext", cfg.getServletContext().getRealPath("").concat("/"));
     this.scheduler.getContext().put("application", cfg.getServletContext());
-    this.scheduler.getContext().put("servidor", toParameter(cfg,"servidor"));
+    this.scheduler.getContext().put("servidor", this.toParameter(cfg, "servidor"));
   }	
 	
 	public void init() {
 		try {						
-			SchedulerFactory sf=new StdSchedulerFactory(toParameter(servletContextEvent, "quartz-config-file"));
+			SchedulerFactory sf= new StdSchedulerFactory(this.toParameter(servletContextEvent, "quartz-config-file"));
 			this.setScheduler(sf.getScheduler());						
-			this.getScheduler().start();
 			this.addParameters(this.servletContextEvent);			
-			LOG.info("Ejecutando quartz");
+			this.getScheduler().start();
+			LOG.error("Ejecutando quartz");
 			this.load();
 		} // try
 		catch (Exception e) {
@@ -188,9 +164,10 @@ public final class Especial implements Serializable {
 		try {	
 			Jobs jobs= new Jobs(this.scheduler);
 			jobs.toBuild();
-		} // 0try
+		} // try
 		catch (Exception e) {
 		  throw e;
 		} // catch
 	}
+  
 }

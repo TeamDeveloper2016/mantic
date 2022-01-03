@@ -8,6 +8,7 @@ package mx.org.kaana.kajool.procesos.mantenimiento.configuracion.backing;
  *@author One Developer 2016 <one.developer@kaana.org.mx>
  */
 import java.io.Serializable;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
 import mx.org.kaana.kajool.procesos.mantenimiento.contadores.reglas.Ayudas;

@@ -15,17 +15,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.quartz.impl.StdSchedulerFactory;
 
 public final class Loader {
 
   private static final Log LOG = LogFactory.getLog(Loader.class);
-  private static final String QUARTZ_FACTORY_KEY = "org.quartz.janal.SchedulerFactory";
   private static Object mutex;
   private static Loader instance;
   private Scheduler scheduler;
 
-  private Loader() {
+  private Loader(ServletContextEvent servletContext) {
+    this.start(servletContext);
   }
 
   static {
@@ -33,12 +32,11 @@ public final class Loader {
   }
 
   public static Loader getInstance(ServletContextEvent servletContext) {
-    if (instance == null) {
+    if (instance== null || instance.scheduler== null) {
       synchronized (mutex) {
-        if (instance == null) {
-          instance = new Loader();
-          instance.start(servletContext);
-        }
+        if (instance == null || instance.scheduler== null) {
+          instance = new Loader(servletContext);
+        } // if
       } // synchronized
     } // if
     return instance;
@@ -48,57 +46,25 @@ public final class Loader {
     return servletContextEvent.getServletContext().getInitParameter(parameter);
   }
 
-  private void addParameters(ServletContextEvent cfg) throws SchedulerException {
-    this.scheduler.getContext().put("pathContext", cfg.getServletContext().getRealPath("/"));
-    this.scheduler.getContext().put("application", cfg.getServletContext());
-    this.scheduler.getContext().put("servidor", toParameter(cfg, "servidor"));
-  }
-
-  private void start(ServletContextEvent servletContextEvent) {
+  public void start(ServletContextEvent cfg) {
     String startOnLoad = null;
     try {
       startOnLoad = Configuracion.getInstance().getPropiedadServidor("sistema.quartz");
       if (startOnLoad.equals("true")) {
-        this.loadEspecialScheduler(servletContextEvent);
-      } 
+        Especial.getInstance().validate(cfg);
+        Especial.getInstance().init();
+        LOG.error("Quartz ha sido inicializado ...");
+      } // if
 			else {
-        Especial.getInstance().refreshPath(servletContextEvent);
-        LOG.error("Scheduler has not been started. verify configuration.properties");
-        servletContextEvent.getServletContext().log("Scheduler has not been started. verify configuration.properties.");
+        LOG.error("Scheduler has not been started. Verify configuration.properties");
+        cfg.getServletContext().log("Scheduler has not been started. Verify configuration.properties.");
       } // else
     } // try
     catch (Exception e) {
-      servletContextEvent.getServletContext().log("Ocurrio un error al inicializar Quartz ...");
+      cfg.getServletContext().log("Ocurrio un error al inicializar Quartz ...");
       LOG.info("Ocurrio un error al inicializar Quartz");
       Error.mensaje(e);
     } // catch
-  }
-
-  public void loadScheduler(ServletContextEvent servletContextEvent) {
-    StdSchedulerFactory factory = null;
-    try {
-      factory = new StdSchedulerFactory(toParameter(servletContextEvent, "quartz-config-file"));
-      scheduler = factory.getScheduler();
-      scheduler.start();
-      addParameters(servletContextEvent);
-      servletContextEvent.getServletContext().setAttribute(QUARTZ_FACTORY_KEY, factory);
-      servletContextEvent.getServletContext().log("Scheduler has been started...");
-    } // try
-    catch (Exception e) {
-      LOG.info("Ocurrio un error al inicializar Quartz");
-      Error.mensaje(e);
-    } // catch		
-  }
-
-  private void loadEspecialScheduler(ServletContextEvent servletContextEvent) {
-    try {
-      Especial.getInstance().validate(servletContextEvent);
-      Especial.getInstance().init();
-      LOG.error("Quartz ha sido inicializado ...");
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-    } // catch		
   }
 
   public void shutdown() {
@@ -112,4 +78,5 @@ public final class Loader {
       Error.mensaje(e);
     } // catch
   }
+
 }

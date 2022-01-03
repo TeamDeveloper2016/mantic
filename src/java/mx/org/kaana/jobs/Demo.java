@@ -29,16 +29,17 @@ public class Demo extends IBaseJob {
 		DetalleConfiguracion detalleConfiguracion = null;
 		List<TareaServidor> tareaServidor         = null;		
 		try {
-		  tareaServidor=Especial.getInstance().getTareaServidor();
-			LOG.info("Ejecutó la tarea demo en el servidor");
-		  for (TareaServidor recordTarea : tareaServidor) {
-        detalleConfiguracion=recordTarea.toDetalleConfiguracion();
-        LOG.info("Entidades a procesar en el servidor ["+detalleConfiguracion.getEntidades()+"]");
-		  }// for					
+//		  tareaServidor= Especial.getInstance().getTareaServidor();
+			LOG.error("Ejecutó la tarea demo en el servidor");
+//		  for (TareaServidor recordTarea : tareaServidor) {
+//        detalleConfiguracion=recordTarea.toDetalleConfiguracion();
+//        LOG.info("Entidades a procesar en el servidor ["+detalleConfiguracion.getEntidades()+"]");
+//		  }// for					
 	  } // try
 		catch (Exception e) {
 			Error.mensaje(e);
 		} // catch	
 	} // execute
+  
 }
 

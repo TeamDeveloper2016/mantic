@@ -39,7 +39,7 @@ public class Jobs {
 	private Scheduler scheduler;
 	
 	public Jobs(Scheduler scheduler) {
-		this.scheduler=scheduler;
+		this.scheduler= scheduler;
 	}
 	
 	public void toBuild() {
@@ -59,8 +59,8 @@ public class Jobs {
           for (int x= 0; x< clase.getLength(); x++) {
             Element element = (Element) clase.item(x);
             expression= element.getAttribute("expresion");
-            if(evaluaElement(element)) {
-              if (element.getAttribute("load")== null || (element.getAttribute("load").equals("true")) || (element.getAttribute("load").equals(""))) 
+            if(this.evaluaElement(element)) {
+              if (element.getAttribute("load")== null || element.getAttribute("load").equals("true") || element.getAttribute("load").equals("")) 
                 this.load(element.getTextContent(), expression, item.getAttribute("id").concat(element.getAttribute("id")).concat("Cron"), item.getAttribute("id").concat(element.getAttribute("id")), false);
               else																				
                 this.load(element.getTextContent(), expression, item.getAttribute("id").concat(element.getAttribute("id")).concat("Cron"), item.getAttribute("id").concat(element.getAttribute("id")), true);
@@ -94,7 +94,7 @@ public class Jobs {
 		JobDetail jobIntegracion      = null;
 		CronTrigger triggerIntegracion= null;	
 		try {		
-      LOG.error("Cargando JOB quartz: "+ jobClass);
+      LOG.error("Cargando JOB quartz: "+ jobClass+ " expresion ["+ expression+ "]");
 			Class<? extends Job> clase = (Class<? extends Job>) Class.forName(jobClass);
 			jobIntegracion=JobBuilder.newJob(clase).withIdentity(job, Constantes.NOMBRE_DE_APLICACION).build();
 			triggerIntegracion=TriggerBuilder.newTrigger().withIdentity(trigger, Constantes.NOMBRE_DE_APLICACION).withSchedule(CronScheduleBuilder.cronSchedule(expression)).build();
@@ -108,12 +108,11 @@ public class Jobs {
 	}
 	
 	private boolean evaluaElement(Element element) throws Exception{
-		boolean regresar = true;		
+		boolean regresar = Boolean.TRUE;		
 		Configuracion cfg= null;
 		try {			
-			cfg= Configuracion.getInstance();
-			if(!cfg.isEtapaDesarrollo())
-				regresar= Especial.getInstance().getPath().equals(getAtributo(element, cfg.getEtapaServidor().toLowerCase())) || GENERICO.equals(element.getAttribute(cfg.getEtapaServidor().toLowerCase()));							
+			cfg     = Configuracion.getInstance();
+  		regresar= Especial.getInstance().getPath().equals(this.getAtributo(element, cfg.getEtapaServidor().toLowerCase())) || GENERICO.equals(element.getAttribute(cfg.getEtapaServidor().toLowerCase()));							
 		} // try
 		catch (Exception e) {						
 			throw e;
@@ -125,7 +124,7 @@ public class Jobs {
 		String regresar= null;
 		try {
 			regresar= Cadena.reemplazarCaracter(element.getAttribute(esquema), '/', File.separatorChar);			
-			LOG.info("Path xml job [".concat(regresar).concat("]"));
+			LOG.error("Path "+ esquema+ " job [".concat(regresar).concat("]"));
 		} // try
 		catch (Exception e) {						
 			throw e;

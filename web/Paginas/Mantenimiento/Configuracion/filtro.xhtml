@@ -42,6 +42,10 @@
         </p:selectBooleanCheckbox>  
       </p:panelGrid>
     </p:fieldset>  
+    <p:dataList value="#{kajoolMantenimientoConfiguracionFiltro.jobs}" var="row" type="ordered" emptyMessage="No hay tareas registradas">
+      <f:facet name="header">Tareas</f:facet>
+      #{row}
+    </p:dataList>    
   </ui:define>
 	<ui:param name="componenteBloqueo" value="cfg sql msg hlp bd"/>
 </ui:composition>

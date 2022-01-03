@@ -77,10 +77,10 @@ public class Filtro extends IBaseFilter implements Serializable {
   public void doLoad() {
     List<Jobs>search= null;		
     try {			
-			if(Especial.getInstance().getScheduler()!= null){				
-				search= doLoadInit();
+			if(Especial.getInstance().getScheduler()!= null) {				
+				search= this.doLoadInit();
 				this.attrs.put("size", search.size());
-				this.attrs.put("paginator", search.size() > Constantes.REGISTROS_POR_PAGINA);
+				this.attrs.put("paginator", search.size()> Constantes.REGISTROS_POR_PAGINA);
 				this.attrs.put("listJobs", search);
 				UIBackingUtilities.resetDataTable();
 			} // if			
@@ -112,7 +112,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 					scheduler.triggerJob(jobKey);
 					break;
 			} // switch
-			doLoad();
+			this.doLoad();
 		} // try
 		catch (Exception e) {			
 			JsfBase.addMessageError(e);
@@ -192,10 +192,10 @@ public class Filtro extends IBaseFilter implements Serializable {
     Scheduler scheduler      = null;    
     try {      
 			scheduler= Especial.getInstance().getScheduler();
-			if(scheduler== null){
+			if(scheduler== null) {
 				event= new ServletContextEvent(JsfBase.getApplication());
-				Loader.getInstance(event).loadScheduler(event);
-				doLoad();
+				Loader.getInstance(event);
+				this.doLoad();
 			} // if      
     } // try
     catch (Exception e) {
@@ -222,4 +222,5 @@ public class Filtro extends IBaseFilter implements Serializable {
   public boolean doAplicarEstilo(String pathJob){
     return Especial.getInstance().getPath().equals(pathJob) || pathJob.equals("*");
   } // doAplicarEstilo	
+  
 }
