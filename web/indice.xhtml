@@ -110,241 +110,245 @@
       <p:menuitem value="Facturación" icon="fa fa-qrcode" process="@this" actionListener="#{kajoolAccesoIndice.doOpcion(2)}" oncomplete="showOpcion(2)"/>
       <f:facet name="options">
         <p:inputText id="buscar" value="#{kajoolAccesoIndice.attrs.codigo}" size="#{util.isMobile? 10: 25}" style="margin-right:10px" placeholder="Buscar"/>
-        <p:commandButton title="Buscar producto" actionListener="#{kajoolAccesoIndice.doSearchItem()}" process="@this buscar" update="tabla" icon="fa fa-search" onstart="showOpcion(3); return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+        <p:commandButton title="Buscar producto" actionListener="#{kajoolAccesoIndice.doSearchItem()}" process="@this buscar" update="tabla" icon="fa fa-search" onstart="showOpcion(3); return janal.bloquear();" oncomplete="janal.desbloquear(); limpiar('TODOS');"/>
         <p:commandButton title="Ingresar" action="/acceso?faces-redirect=true" icon="fa fa-user"/>
       </f:facet> 
     </p:menubar>
-      <div id="janal-opcion-0" class="opciones janal-display-none">
-    		<pe:remoteCommand name="categoria" process="@this" actionListener="#{kajoolAccesoIndice.doUpdateCategorias}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
-   	 		  <pe:methodSignature parameters="java.lang.String"/>  
-			    <pe:methodParam name="descripcion"/>  
-        </pe:remoteCommand>
-        <p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-20 janal-contenedor-menu, janal-wid-80 janal-column-center janal-contenedor-icons">
-          <p:panel header="Categorias" toggleable="true" toggleSpeed="500" closeSpeed="500" toggleOrientation="horizontal" styleClass="janal-wid-100" style="height:100vh;">
-            <p:ajax event="toggle" update="productos" onstart="recalcular(); return true;"/>
-            <div class="menu-flex-container">
-              <ui:repeat var="row" value="#{kajoolAccesoIndice.menu}" varStatus="index"> 
-                <div class="menu-flex-items" style="cursor: pointer;" onclick="categoria('#{row.nombre}');">
-                  <i class="fa fa-2x #{row.icon} janal-color-orange"></i>&nbps;
-                  <span>#{row.categoria}</span>
-                </div>
-              </ui:repeat>  
-            </div>            
-          </p:panel>
-          <pe:fluidGrid id="productos" value="#{kajoolAccesoIndice.productos}" var="row" fitWidth="true" hasImages="true" styleClass="janal-column-center">
-            <pe:fluidGridItem>
-              <div class="container">
-                <div class="galeria">
-                  <div class="galeria-header p-p-2">
-                    <span class="galeria-marca">#{row.producto.marca}</span><br/>
-                    <span class="galeria-nombre">#{row.producto.nombre}</span>
-                    <div style="float: right; margin-top: -33px;">
-                      <p:graphicImage url="#{kajoolAccesoIndice.brand}#{row.producto.logo}" width="200px" height="60px"/>
-                    </div>  
-                  </div>  
-                  <div class="galeria-list-item p-p-1">
-                    <div class="galeria-item-search">
-                      <a id="view#{row.producto.idProducto}" data-magnify="gallery" href="#{kajoolAccesoIndice.path}#{row.producto.archivo}" data-caption="#{row.producto.nombre}" data-group="icon-image" class="icon">
-                        <p:graphicImage url="#{kajoolAccesoIndice.path}#{row.producto.archivo}" style="cursor:zoom-in;"/>
-                      </a>  
-                    </div> 
-                    <div class="galeria-list-detail">
-                      <span class="janal-color-orange" style="font-size: 0.9rem; font-weight: bold;">ESPECIFICACIONES:</span><br/>
-                      <p:dataList var="item" value="#{row.caracteristicas}" styleClass="galeria-list" itemStyleClass="galeria-description" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
-                        #{kajoolAccesoIndice.doLetraCapital(item)}
-                      </p:dataList>
-                    </div>  
-                  </div>
-                  <div class="galeria-actions">
-                    <p:dataTable var="row" value="#{row.articulos}" paginator="false" rowKey="#{row.idProductoDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{kajoolAccesoIndice.toColorPartida(row)}">
-                      <p:column headerText="Código" styleClass="janal-wid-20">
-                        <p:outputLabel value="#{row.codigo}"/>
-                      </p:column>   
-                      <p:column headerText="Descripción" styleClass="janal-column-left">
-                        <p:outputLabel value="#{row.descripcion}"/>
-                      </p:column>   
-                      <p:column headerText="Medida" styleClass="janal-wid-12 janal-column-center">
-                        <p:outputLabel value="#{row.medida}"/>
-                      </p:column>   
-                      <p:column headerText="$ Precio" styleClass="janal-wid-12 janal-column-right">
-                        <h:outputText value="#{row.precio}"/>
-                      </p:column>   
-                      <p:column headerText="Cliente" styleClass="janal-wid-12 janal-column-right" rendered="#{kajoolAccesoIndice.attrs.particular}">
-                        <h:outputText value="#{row.cliente}"/>
-                      </p:column>
-                    </p:dataTable>	
-                    <br/>
+    <pe:remoteCommand name="limpiar" process="@this" actionListener="#{kajoolAccesoIndice.doCleanProductos}">  
+      <pe:methodSignature parameters="java.lang.String"/>  
+      <pe:methodParam name="descripcion"/>  
+    </pe:remoteCommand>
+    <div id="janal-opcion-0" class="opciones janal-display-none">
+      <pe:remoteCommand name="categoria" process="@this" actionListener="#{kajoolAccesoIndice.doUpdateCategorias}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); limpiar('TODOS');">  
+        <pe:methodSignature parameters="java.lang.String"/>  
+        <pe:methodParam name="descripcion"/>  
+      </pe:remoteCommand>
+      <p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-20 janal-contenedor-menu, janal-wid-80 janal-column-center janal-contenedor-icons">
+        <p:panel header="Categorias" toggleable="true" toggleSpeed="500" closeSpeed="500" toggleOrientation="horizontal" styleClass="janal-wid-100" style="height:100vh;">
+          <p:ajax event="toggle" onstart="recalcular(); return true;"/>
+          <div class="menu-flex-container">
+            <ui:repeat var="row" value="#{kajoolAccesoIndice.menu}" varStatus="index"> 
+              <div class="menu-flex-items" style="cursor: pointer;" onclick="categoria('#{row.nombre}');">
+                <i class="fa fa-2x #{row.icon} janal-color-orange"></i>&nbps;
+                <span>#{row.categoria}</span>
+              </div>
+            </ui:repeat>  
+          </div>            
+        </p:panel>
+        <pe:fluidGrid id="productos" value="#{kajoolAccesoIndice.productos}" var="row" fitWidth="true" hasImages="true" styleClass="janal-column-center">
+          <pe:fluidGridItem>
+            <div class="container">
+              <div class="galeria">
+                <div class="galeria-header p-p-2">
+                  <span class="galeria-marca">#{row.producto.marca}</span><br/>
+                  <span class="galeria-nombre">#{row.producto.nombre}</span>
+                  <div style="float: right; margin-top: -33px;">
+                    <p:graphicImage url="#{kajoolAccesoIndice.brand}#{row.producto.logo}" width="200px" height="60px"/>
                   </div>  
                 </div>  
-              </div>
-            </pe:fluidGridItem>  
-          </pe:fluidGrid>    
-        </p:panelGrid>
-      </div>        
-      <div id="janal-opcion-1" class="opciones janal-display-none">
-    		<pe:remoteCommand name="procesar" process="@this" actionListener="#{kajoolAccesoIndice.doUpdateMarcas}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
-   	 		  <pe:methodSignature parameters="java.lang.String"/>  
-			    <pe:methodParam name="descripcion"/>  
-        </pe:remoteCommand>  
-        <p:dataGrid value="#{kajoolAccesoIndice.marcas}" var="row" columns="4" rows="1" paginator="true" layout="grid" paginatorPosition="top" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" styleClass="janal-wid-100-txt">
-          <p:panelGrid layout="grid" columns="1" style="margin: 10px 0px" styleClass="janal-wid-100 janal-column-center">
-            <p:commandLink process="@this" style="cursor: pointer;" onclick="procesar('#{row.descripcion}')">
-              <p:graphicImage url="#{kajoolAccesoIndice.brand}#{row.original}" style="cursor: pointer; display: #{empty row.original? 'none': ''}" width="200px" height="70px"/> 
-              <br/>
-              <h:outputText value="#{row.descripcion}" styleClass="janal-color-black janal-font-bold"/>            
-            </p:commandLink>
-          </p:panelGrid>
-        </p:dataGrid>  
-        <center style="margin: 30px">
-          <pe:fluidGrid id="tabla" value="#{kajoolAccesoIndice.productos}" var="row" fitWidth="true" hasImages="true">
-            <pe:fluidGridItem>
-              <div class="container">
-                <div class="galeria">
-                  <div class="galeria-header p-p-2">
-                    <span class="galeria-marca">#{row.producto.marca}</span><br/>
-                    <span class="galeria-nombre">#{row.producto.nombre}</span>
-                    <div style="float: right; margin-top: -33px;">
-                      <p:graphicImage url="#{kajoolAccesoIndice.brand}#{row.producto.logo}" width="200px" height="60px"/>
-                    </div>  
+                <div class="galeria-list-item p-p-1">
+                  <div class="galeria-item-search">
+                    <a id="view#{row.producto.idProducto}" data-magnify="gallery" href="#{kajoolAccesoIndice.path}#{row.producto.archivo}" data-caption="#{row.producto.nombre}" data-group="icon-image" class="icon">
+                      <p:graphicImage url="#{kajoolAccesoIndice.path}#{row.producto.archivo}" style="cursor:zoom-in;"/>
+                    </a>  
+                  </div> 
+                  <div class="galeria-list-detail">
+                    <span class="janal-color-orange" style="font-size: 0.9rem; font-weight: bold;">ESPECIFICACIONES:</span><br/>
+                    <p:dataList var="item" value="#{row.caracteristicas}" styleClass="galeria-list" itemStyleClass="galeria-description" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
+                      #{kajoolAccesoIndice.doLetraCapital(item)}
+                    </p:dataList>
                   </div>  
-                  <div class="galeria-list-item p-p-1">
-                    <div class="galeria-item-search">
-                      <a id="view#{row.producto.idProducto}" data-magnify="gallery" href="#{kajoolAccesoIndice.path}#{row.producto.archivo}" data-caption="#{row.producto.nombre}" data-group="icon-image" class="icon">
-                        <p:graphicImage url="#{kajoolAccesoIndice.path}#{row.producto.archivo}" style="cursor:zoom-in;"/>
-                      </a>  
-                    </div> 
-                    <div class="galeria-list-detail">
-                      <span class="janal-color-orange" style="font-size: 0.9rem; font-weight: bold;">ESPECIFICACIONES:</span><br/>
-                      <p:dataList var="item" value="#{row.caracteristicas}" styleClass="galeria-list" itemStyleClass="galeria-description" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
-                        #{kajoolAccesoIndice.doLetraCapital(item)}
-                      </p:dataList>
-                    </div>  
-                  </div>
-                  <div class="galeria-actions">
-                    <p:dataTable var="row" value="#{row.articulos}" paginator="false" rowKey="#{row.idProductoDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{kajoolAccesoIndice.toColorPartida(row)}">
-                      <p:column headerText="Código" styleClass="janal-wid-20">
-                        <p:outputLabel value="#{row.codigo}"/>
-                      </p:column>   
-                      <p:column headerText="Descripción" styleClass="janal-column-left">
-                        <p:outputLabel value="#{row.descripcion}"/>
-                      </p:column>   
-                      <p:column headerText="Medida" styleClass="janal-wid-12 janal-column-center">
-                        <p:outputLabel value="#{row.medida}"/>
-                      </p:column>   
-                      <p:column headerText="$ Precio" styleClass="janal-wid-12 janal-column-right">
-                        <h:outputText value="#{row.precio}"/>
-                      </p:column>   
-                      <p:column headerText="Cliente" styleClass="janal-wid-12 janal-column-right" rendered="#{kajoolAccesoIndice.attrs.particular}">
-                        <h:outputText value="#{row.cliente}"/>
-                      </p:column>
-                    </p:dataTable>	
-                    <br/>
-                  </div>  
+                </div>
+                <div class="galeria-actions">
+                  <p:dataTable var="row" value="#{row.articulos}" paginator="false" rowKey="#{row.idProductoDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{kajoolAccesoIndice.toColorPartida(row)}">
+                    <p:column headerText="Código" styleClass="janal-wid-20">
+                      <p:outputLabel value="#{row.codigo}"/>
+                    </p:column>   
+                    <p:column headerText="Descripción" styleClass="janal-column-left">
+                      <p:outputLabel value="#{row.descripcion}"/>
+                    </p:column>   
+                    <p:column headerText="Medida" styleClass="janal-wid-12 janal-column-center">
+                      <p:outputLabel value="#{row.medida}"/>
+                    </p:column>   
+                    <p:column headerText="$ Precio" styleClass="janal-wid-12 janal-column-right">
+                      <h:outputText value="#{row.precio}"/>
+                    </p:column>   
+                    <p:column headerText="Cliente" styleClass="janal-wid-12 janal-column-right" rendered="#{kajoolAccesoIndice.attrs.particular}">
+                      <h:outputText value="#{row.cliente}"/>
+                    </p:column>
+                  </p:dataTable>	
+                  <br/>
                 </div>  
-              </div>
-            </pe:fluidGridItem>  
-          </pe:fluidGrid>        
-        </center>
-      </div>
-      <div id="janal-opcion-2" class="opciones">
-        <center style="margin: 30px">
-          <p:spacer id="temporal" width="1"/>
-          <div id="login-box" class="janal-only-out-lines Container80 MaxWid500 Fnone MarAuto BordRad10">
-            <div class="Container100">
-              <div class="janal-content-center">
-                <div class="Container100 TexAlCenter Animated05 BoxSizeBorder TabBtn left TabBtnActiveLeft" role="1">
-                  <div class="Container80 Fnone MarAuto"><i class="fa fa-cloud-download"></i>  Facturación</div>
-                </div>
-                <div class="Container50 TexAlCenter Animated05 BoxSizeBorder TabBtn right" role="2" style="display:none;">
-                  <div id="download" class="Container80 Fnone MarAuto"><i class="fa fa-files-o"></i>  Descargar</div>
-                </div>
-                <div id="tab_1" class="Container90 Fnone MarAuto TexAlCenter TabContent">										
-                  <p:panelGrid layout="grid" columns="1" id="gridCuenta">
-                    <p:spacer height="1"/>
-                    <p:outputLabel for="rfc" value="RFC:" styleClass="Fs16"/>
-                    <p:inputText placeholder="ej. ADRC760130L95" id="rfc" tabindex="1" value="#{kajoolAccesoIndice.attrs.rfc}" styleClass="items Container80 Fnone MarAuto Fs18"/>
-                    <p:outputLabel for="folio" value="No. ticket:" styleClass="Fs16"/>
-                    <p:inputText placeholder="ej. 2019000123" id="folio" tabindex="2" value="#{kajoolAccesoIndice.attrs.folio}" styleClass="items Container80 Fnone MarAuto Fs18"/>
-                    <p:outputLabel for="codigo" value="Código:" styleClass="Fs16" style="display: none;"/>
-                    <p:inputText placeholder="Dijite código" id="codigo" tabindex="3" value="#{kajoolAccesoIndice.attrs.codigo}" styleClass="items Container80 Fnone MarAuto Fs18"/>
-                    <p:commandButton id="aceptar" tabindex="3" value="Recuperar" onstart="$('#encode').val($('#codigo').realperson('getHash')); return janal.execute();" oncomplete="$('#codigo').realperson({length: 5, regenerate: 'Clic para cambiar', includeNumbers: true, chars: $.realperson.alphanumeric});" actionListener="#{kajoolAccesoIndice.doRecoverTicket}" process="@this @(.items)" update="codigo @(.refresh)"/>					
-                    <p:spacer height="1"/>
-                  </p:panelGrid>
-                  <p:inputText id="encode" value="#{kajoolAccesoIndice.attrs.encode}" styleClass="items" style="display: none;"/>
-                </div>
-                <div id="tab_2" class="Container90 Fnone MarAuto TexAlCenter TabContent DispNone">
-                  <p:panelGrid layout="grid" columns="1" styleClass="refresh">
-                    <p:spacer width="10%"/>
-                    <p:commandLink title="Click para descargar el documento" rendered="#{kajoolAccesoIndice.existsPdf}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" process="@this tab_2">
-                      <p:fileDownload value="#{kajoolAccesoIndice.pdfFileDownload}"/>
-                      <i class="fa fa-file-pdf-o Fs30 janal-color-orange"></i><br/>
-                      <p:outputLabel value="#{kajoolAccesoIndice.attrs.pdfFile.nombre}"/>
-                    </p:commandLink>
-                    <p:spacer width="5%"/>
-                    <p:commandLink title="Click para descargar el documento" rendered="#{kajoolAccesoIndice.existsXml}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" process="@this tab_2">
-                      <p:fileDownload value="#{kajoolAccesoIndice.xmlFileDownload}"/>
-                      <i class="fa fa-file-code-o Fs30 janal-color-orange"></i><br/>
-                      <p:outputLabel value="#{kajoolAccesoIndice.attrs.xmlFile.nombre}"/>
-                    </p:commandLink>
-                  </p:panelGrid>					
-                </div>	
-              </div>          
+              </div>  
             </div>
-          </div>
-        </center>        
-      </div>  
-      <div id="janal-opcion-3" class="opciones">
-        <center style="margin: 30px">
-          <pe:fluidGrid id="catalogo" value="#{kajoolAccesoIndice.productos}" var="row" fitWidth="true" hasImages="true">
-            <pe:fluidGridItem>
-              <div class="container">
-                <div class="galeria">
-                  <div class="galeria-header p-p-2">
-                    <span class="galeria-marca">#{row.producto.marca}</span><br/>
-                    <span class="galeria-nombre">#{row.producto.nombre}</span>
-                    <div style="float: right; margin-top: -33px;">
-                      <p:graphicImage url="#{kajoolAccesoIndice.brand}#{row.producto.logo}" width="200px" height="60px"/>
-                    </div>  
-                  </div>  
-                  <div class="galeria-list-item p-p-1">
-                    <div class="galeria-item-search">
-                      <a id="view#{row.producto.idProducto}" data-magnify="gallery" href="#{kajoolAccesoIndice.path}#{row.producto.archivo}" data-caption="#{row.producto.nombre}" data-group="icon-image" class="icon">
-                        <p:graphicImage url="#{kajoolAccesoIndice.path}#{row.producto.archivo}" style="cursor:zoom-in;"/>
-                      </a>  
-                    </div> 
-                    <div class="galeria-list-detail">
-                      <span class="janal-color-orange" style="font-size: 0.9rem; font-weight: bold;">ESPECIFICACIONES:</span><br/>
-                      <p:dataList var="item" value="#{row.caracteristicas}" styleClass="galeria-list" itemStyleClass="galeria-description" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
-                        #{kajoolAccesoIndice.doLetraCapital(item)}
-                      </p:dataList>
-                    </div>  
-                  </div>
-                  <div class="galeria-actions">
-                    <p:dataTable var="row" value="#{row.articulos}" paginator="false" rowKey="#{row.idProductoDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{kajoolAccesoIndice.toColorPartida(row)}">
-                      <p:column headerText="Código" styleClass="janal-wid-20">
-                        <p:outputLabel value="#{row.codigo}"/>
-                      </p:column>   
-                      <p:column headerText="Descripción" styleClass="janal-column-left">
-                        <p:outputLabel value="#{row.descripcion}"/>
-                      </p:column>   
-                      <p:column headerText="Medida" styleClass="janal-wid-12 janal-column-center">
-                        <p:outputLabel value="#{row.medida}"/>
-                      </p:column>   
-                      <p:column headerText="$ Precio" styleClass="janal-wid-12 janal-column-right">
-                        <h:outputText value="#{row.precio}"/>
-                      </p:column>   
-                      <p:column headerText="Cliente" styleClass="janal-wid-12 janal-column-right" rendered="#{kajoolAccesoIndice.attrs.particular}">
-                        <h:outputText value="#{row.cliente}"/>
-                      </p:column>
-                    </p:dataTable>	
-                    <br/>
+          </pe:fluidGridItem>  
+        </pe:fluidGrid>    
+      </p:panelGrid>
+    </div>        
+    <div id="janal-opcion-1" class="opciones janal-display-none">
+      <pe:remoteCommand name="procesar" process="@this" actionListener="#{kajoolAccesoIndice.doUpdateMarcas}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); limpiar('TODOS');">  
+        <pe:methodSignature parameters="java.lang.String"/>  
+        <pe:methodParam name="descripcion"/>  
+      </pe:remoteCommand>  
+      <p:dataGrid value="#{kajoolAccesoIndice.marcas}" var="row" columns="4" rows="1" paginator="true" layout="grid" paginatorPosition="top" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" styleClass="janal-wid-100-txt">
+        <p:panelGrid layout="grid" columns="1" style="margin: 10px 0px" styleClass="janal-wid-100 janal-column-center">
+          <p:commandLink process="@this" style="cursor: pointer;" onclick="procesar('#{row.descripcion}')">
+            <p:graphicImage url="#{kajoolAccesoIndice.brand}#{row.original}" style="cursor: pointer; display: #{empty row.original? 'none': ''}" width="200px" height="70px"/> 
+            <br/>
+            <h:outputText value="#{row.descripcion}" styleClass="janal-color-black janal-font-bold"/>            
+          </p:commandLink>
+        </p:panelGrid>
+      </p:dataGrid>  
+      <center style="margin: 30px">
+        <pe:fluidGrid id="tabla" value="#{kajoolAccesoIndice.productos}" var="row" fitWidth="true" hasImages="true">
+          <pe:fluidGridItem>
+            <div class="container">
+              <div class="galeria">
+                <div class="galeria-header p-p-2">
+                  <span class="galeria-marca">#{row.producto.marca}</span><br/>
+                  <span class="galeria-nombre">#{row.producto.nombre}</span>
+                  <div style="float: right; margin-top: -33px;">
+                    <p:graphicImage url="#{kajoolAccesoIndice.brand}#{row.producto.logo}" width="200px" height="60px"/>
                   </div>  
                 </div>  
+                <div class="galeria-list-item p-p-1">
+                  <div class="galeria-item-search">
+                    <a id="view#{row.producto.idProducto}" data-magnify="gallery" href="#{kajoolAccesoIndice.path}#{row.producto.archivo}" data-caption="#{row.producto.nombre}" data-group="icon-image" class="icon">
+                      <p:graphicImage url="#{kajoolAccesoIndice.path}#{row.producto.archivo}" style="cursor:zoom-in;"/>
+                    </a>  
+                  </div> 
+                  <div class="galeria-list-detail">
+                    <span class="janal-color-orange" style="font-size: 0.9rem; font-weight: bold;">ESPECIFICACIONES:</span><br/>
+                    <p:dataList var="item" value="#{row.caracteristicas}" styleClass="galeria-list" itemStyleClass="galeria-description" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
+                      #{kajoolAccesoIndice.doLetraCapital(item)}
+                    </p:dataList>
+                  </div>  
+                </div>
+                <div class="galeria-actions">
+                  <p:dataTable var="row" value="#{row.articulos}" paginator="false" rowKey="#{row.idProductoDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{kajoolAccesoIndice.toColorPartida(row)}">
+                    <p:column headerText="Código" styleClass="janal-wid-20">
+                      <p:outputLabel value="#{row.codigo}"/>
+                    </p:column>   
+                    <p:column headerText="Descripción" styleClass="janal-column-left">
+                      <p:outputLabel value="#{row.descripcion}"/>
+                    </p:column>   
+                    <p:column headerText="Medida" styleClass="janal-wid-12 janal-column-center">
+                      <p:outputLabel value="#{row.medida}"/>
+                    </p:column>   
+                    <p:column headerText="$ Precio" styleClass="janal-wid-12 janal-column-right">
+                      <h:outputText value="#{row.precio}"/>
+                    </p:column>   
+                    <p:column headerText="Cliente" styleClass="janal-wid-12 janal-column-right" rendered="#{kajoolAccesoIndice.attrs.particular}">
+                      <h:outputText value="#{row.cliente}"/>
+                    </p:column>
+                  </p:dataTable>	
+                  <br/>
+                </div>  
+              </div>  
+            </div>
+          </pe:fluidGridItem>  
+        </pe:fluidGrid>        
+      </center>
+    </div>
+    <div id="janal-opcion-2" class="opciones">
+      <center style="margin: 30px">
+        <p:spacer id="temporal" width="1"/>
+        <div id="login-box" class="janal-only-out-lines Container80 MaxWid500 Fnone MarAuto BordRad10">
+          <div class="Container100">
+            <div class="janal-content-center">
+              <div class="Container100 TexAlCenter Animated05 BoxSizeBorder TabBtn left TabBtnActiveLeft" role="1">
+                <div class="Container80 Fnone MarAuto"><i class="fa fa-cloud-download"></i>  Facturación</div>
               </div>
-            </pe:fluidGridItem>  
-          </pe:fluidGrid>              
-        </center>
-      </div>  
+              <div class="Container50 TexAlCenter Animated05 BoxSizeBorder TabBtn right" role="2" style="display:none;">
+                <div id="download" class="Container80 Fnone MarAuto"><i class="fa fa-files-o"></i>  Descargar</div>
+              </div>
+              <div id="tab_1" class="Container90 Fnone MarAuto TexAlCenter TabContent">										
+                <p:panelGrid layout="grid" columns="1" id="gridCuenta">
+                  <p:spacer height="1"/>
+                  <p:outputLabel for="rfc" value="RFC:" styleClass="Fs16"/>
+                  <p:inputText placeholder="ej. ADRC760130L95" id="rfc" tabindex="1" value="#{kajoolAccesoIndice.attrs.rfc}" styleClass="items Container80 Fnone MarAuto Fs18"/>
+                  <p:outputLabel for="folio" value="No. ticket:" styleClass="Fs16"/>
+                  <p:inputText placeholder="ej. 2019000123" id="folio" tabindex="2" value="#{kajoolAccesoIndice.attrs.folio}" styleClass="items Container80 Fnone MarAuto Fs18"/>
+                  <p:outputLabel for="codigo" value="Código:" styleClass="Fs16" style="display: none;"/>
+                  <p:inputText placeholder="Dijite código" id="codigo" tabindex="3" value="#{kajoolAccesoIndice.attrs.codigo}" styleClass="items Container80 Fnone MarAuto Fs18"/>
+                  <p:commandButton id="aceptar" tabindex="3" value="Recuperar" onstart="$('#encode').val($('#codigo').realperson('getHash')); return janal.execute();" oncomplete="$('#codigo').realperson({length: 5, regenerate: 'Clic para cambiar', includeNumbers: true, chars: $.realperson.alphanumeric});" actionListener="#{kajoolAccesoIndice.doRecoverTicket}" process="@this @(.items)" update="codigo @(.refresh)"/>					
+                  <p:spacer height="1"/>
+                </p:panelGrid>
+                <p:inputText id="encode" value="#{kajoolAccesoIndice.attrs.encode}" styleClass="items" style="display: none;"/>
+              </div>
+              <div id="tab_2" class="Container90 Fnone MarAuto TexAlCenter TabContent DispNone">
+                <p:panelGrid layout="grid" columns="1" styleClass="refresh">
+                  <p:spacer width="10%"/>
+                  <p:commandLink title="Click para descargar el documento" rendered="#{kajoolAccesoIndice.existsPdf}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" process="@this tab_2">
+                    <p:fileDownload value="#{kajoolAccesoIndice.pdfFileDownload}"/>
+                    <i class="fa fa-file-pdf-o Fs30 janal-color-orange"></i><br/>
+                    <p:outputLabel value="#{kajoolAccesoIndice.attrs.pdfFile.nombre}"/>
+                  </p:commandLink>
+                  <p:spacer width="5%"/>
+                  <p:commandLink title="Click para descargar el documento" rendered="#{kajoolAccesoIndice.existsXml}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" process="@this tab_2">
+                    <p:fileDownload value="#{kajoolAccesoIndice.xmlFileDownload}"/>
+                    <i class="fa fa-file-code-o Fs30 janal-color-orange"></i><br/>
+                    <p:outputLabel value="#{kajoolAccesoIndice.attrs.xmlFile.nombre}"/>
+                  </p:commandLink>
+                </p:panelGrid>					
+              </div>	
+            </div>          
+          </div>
+        </div>
+      </center>        
+    </div>  
+    <div id="janal-opcion-3" class="opciones">
+      <center style="margin: 30px">
+        <pe:fluidGrid id="catalogo" value="#{kajoolAccesoIndice.productos}" var="row" fitWidth="true" hasImages="true">
+          <pe:fluidGridItem>
+            <div class="container">
+              <div class="galeria">
+                <div class="galeria-header p-p-2">
+                  <span class="galeria-marca">#{row.producto.marca}</span><br/>
+                  <span class="galeria-nombre">#{row.producto.nombre}</span>
+                  <div style="float: right; margin-top: -33px;">
+                    <p:graphicImage url="#{kajoolAccesoIndice.brand}#{row.producto.logo}" width="200px" height="60px"/>
+                  </div>  
+                </div>  
+                <div class="galeria-list-item p-p-1">
+                  <div class="galeria-item-search">
+                    <a id="view#{row.producto.idProducto}" data-magnify="gallery" href="#{kajoolAccesoIndice.path}#{row.producto.archivo}" data-caption="#{row.producto.nombre}" data-group="icon-image" class="icon">
+                      <p:graphicImage url="#{kajoolAccesoIndice.path}#{row.producto.archivo}" style="cursor:zoom-in;"/>
+                    </a>  
+                  </div> 
+                  <div class="galeria-list-detail">
+                    <span class="janal-color-orange" style="font-size: 0.9rem; font-weight: bold;">ESPECIFICACIONES:</span><br/>
+                    <p:dataList var="item" value="#{row.caracteristicas}" styleClass="galeria-list" itemStyleClass="galeria-description" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
+                      #{kajoolAccesoIndice.doLetraCapital(item)}
+                    </p:dataList>
+                  </div>  
+                </div>
+                <div class="galeria-actions">
+                  <p:dataTable var="row" value="#{row.articulos}" paginator="false" rowKey="#{row.idProductoDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowStyleClass="#{kajoolAccesoIndice.toColorPartida(row)}">
+                    <p:column headerText="Código" styleClass="janal-wid-20">
+                      <p:outputLabel value="#{row.codigo}"/>
+                    </p:column>   
+                    <p:column headerText="Descripción" styleClass="janal-column-left">
+                      <p:outputLabel value="#{row.descripcion}"/>
+                    </p:column>   
+                    <p:column headerText="Medida" styleClass="janal-wid-12 janal-column-center">
+                      <p:outputLabel value="#{row.medida}"/>
+                    </p:column>   
+                    <p:column headerText="$ Precio" styleClass="janal-wid-12 janal-column-right">
+                      <h:outputText value="#{row.precio}"/>
+                    </p:column>   
+                    <p:column headerText="Cliente" styleClass="janal-wid-12 janal-column-right" rendered="#{kajoolAccesoIndice.attrs.particular}">
+                      <h:outputText value="#{row.cliente}"/>
+                    </p:column>
+                  </p:dataTable>	
+                  <br/>
+                </div>  
+              </div>  
+            </div>
+          </pe:fluidGridItem>  
+        </pe:fluidGrid>              
+      </center>
+    </div>  
 		<p:dialog modal="true" widgetVar="statusDialog" header="Descargando documento ..." draggable="false" closable="false" resizable="false">
 			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
 		</p:dialog>		

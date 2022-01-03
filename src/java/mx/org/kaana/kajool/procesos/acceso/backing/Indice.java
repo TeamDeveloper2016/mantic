@@ -288,7 +288,7 @@ public class Indice extends IBaseImportar implements Serializable {
       if(codigo.length()> 1) {
         params.put("codigo", codigo.replaceAll("(,| |\\t)+", ".*.*"));
         this.attrs.put("particular", Boolean.FALSE);
-        List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaProductosDto", "codigo", params, Constantes.SQL_TODOS_REGISTROS);
+        List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaProductosDto", "codigo", params, 30L);
         if(items!= null && !items.isEmpty()) 
           for (Entity item: items) {
             this.productos.add(new FluidGridItem(new Producto(item.getKey(), "menudeo")));    
