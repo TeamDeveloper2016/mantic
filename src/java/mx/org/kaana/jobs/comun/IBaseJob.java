@@ -19,7 +19,7 @@ public abstract class IBaseJob implements Job, Serializable {
 	@Override
 	public void execute(JobExecutionContext jec) throws JobExecutionException {
     LOG.error("Time ["+ Fecha.formatear(Fecha.FECHA_HORA)+ "] Class: "+ this.getClass().getName());
-		if(!Configuracion.getInstance().getPropiedad("sistema.corre.local").equals("si")) 
+		if(!Configuracion.getInstance().getPropiedad("sistema.corre.local").equalsIgnoreCase("si")) 
 			procesar(jec);
 	}	// execute
   

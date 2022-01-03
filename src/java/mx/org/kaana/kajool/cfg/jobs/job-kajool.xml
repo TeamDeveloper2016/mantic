@@ -8,10 +8,10 @@
 -->
 <tareas>  	     
    <tarea id="kajool" load="true">
-     <clase expresion="0 0/1 * 1/1 * ? *"  id="pruebas"     description="Job de demostracion"        load="true"   desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Demo</clase>     				
-		 <clase expresion="0 0 2 1/1 * ? *"    id="respaldos"   description="realiza respaldo de la BD"  load="false"  desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Respaldos</clase>
-		 <clase expresion="0 0/60 * 1/1 * ? *" id="facturas"    description="sincronización de facturas" load="false"  desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Facturas</clase>
-		 <clase expresion="0 0 7,14 ? * * *"   id="descargas"   description="descargas de respaldos"     load="false"  desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Descargas</clase>
-		 <clase expresion="0 0 0/1 1/1 * ? *"  id="facturacion" description="facturación automatica"     load="false"  desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Timbrado</clase>		 
+     <clase expresion="0 0/1 * 1/1 * ? *"  id="pruebas"     description="Job de demostracion"        load="false" desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Demo</clase>     				
+		 <clase expresion="0 0 2 1/1 * ? *"    id="respaldos"   description="realiza respaldo de la BD"  load="true"  desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Respaldos</clase>
+		 <clase expresion="0 0/60 * 1/1 * ? *" id="facturas"    description="sincronización de facturas" load="false" desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Facturas</clase>
+		 <clase expresion="0 0 7,14 ? * * *"   id="descargas"   description="descargas de respaldos"     load="false" desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Descargas</clase>
+		 <clase expresion="0 0 0/1 1/1 * ? *"  id="facturacion" description="facturación automatica"     load="true"  desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Timbrado</clase>		 
    </tarea>      	        
 </tareas>
