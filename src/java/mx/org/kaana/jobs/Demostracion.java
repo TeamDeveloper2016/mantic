@@ -19,9 +19,9 @@ import org.apache.commons.logging.LogFactory;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-public class Demo extends IBaseJob {
+public class Demostracion extends IBaseJob {
 
-	private static final Log LOG              =LogFactory.getLog(Demo.class);
+	private static final Log LOG              =LogFactory.getLog(Demostracion.class);
 	private static final long serialVersionUID=7505746848602636876L;
 
 	@Override
