@@ -1103,17 +1103,26 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		} // finally
 	} // doLoadEstatus
 	
+  @Override
 	public void doAgregarCorreo() {
 		UISelectEntity cliente = null;
 		Transaccion transaccion= null;
 		try {
 			if(!Cadena.isVacio(this.correo.getDescripcion())) {
+        List<UISelectEntity> clientesSeleccion= (List<UISelectEntity>)this.attrs.get("clientesSeleccion");        
 				cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");
-				transaccion= new Transaccion(cliente.getKey(), cliente.toString("razonSocial"), this.correo);
-				if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
-					JsfBase.addMessage("Se agregó el correo electronico correctamente !");
-				else
-					JsfBase.addMessage("Ocurrió un error al agregar el correo electronico");
+        if(clientesSeleccion!= null && cliente!= null) {
+          int index= clientesSeleccion.indexOf(cliente);
+          if(index>= 0)
+            cliente= clientesSeleccion.get(index);
+        } // if  
+        if(cliente!= null) {
+          transaccion= new Transaccion(cliente.getKey(), cliente.containsKey("razonSocial")? cliente.toString("razonSocial"): "POR DEFINIR", this.correo);
+          if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
+            JsfBase.addMessage("Se agregó el correo electronico correctamente !");
+          else
+            JsfBase.addMessage("Ocurrió un error al agregar el correo electronico");
+        } // if  
 			} // if
 			else
 				JsfBase.addMessage("Es necesario capturar un correo electronico !");

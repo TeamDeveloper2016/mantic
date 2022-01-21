@@ -31,6 +31,10 @@ import mx.org.kaana.mantic.productos.beans.Partida;
 import mx.org.kaana.mantic.productos.beans.Producto;
 import org.primefaces.extensions.model.fluidgrid.FluidGridItem;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.menu.DefaultMenuItem;
+import org.primefaces.model.menu.DefaultMenuModel;
+import org.primefaces.model.menu.DefaultSubMenu;
+import org.primefaces.model.menu.MenuModel;
 
 /**
  * @company KAANA
@@ -49,12 +53,11 @@ public class Indice extends IBaseImportar implements Serializable {
   @Inject 
   private TemaActivo temaActivo;
 	private Integer salt;
-  private List<Entity> marcas;
-  private List<Entity> menu;
-  private Long indexMarca;    
   private List<FluidGridItem> productos;
   private String categoria;
   private String path;
+  private MenuModel model;
+  private List<String> images;
 
   public TemaActivo getTemaActivo() {
     return temaActivo;
@@ -84,18 +87,6 @@ public class Indice extends IBaseImportar implements Serializable {
 		return salt;
 	}
 
-  public List<Entity> getMarcas() {
-    return marcas;
-  }
-
-  public List<Entity> getMenu() {
-    return menu;
-  }
-
-  public Long getIndexMarca() {
-    return indexMarca;
-  }
-	
 	public String getPath() {
     return path;
   }
@@ -111,6 +102,14 @@ public class Indice extends IBaseImportar implements Serializable {
   public String getCategoria() {
     return categoria;
   }
+
+  public MenuModel getModel() {
+    return model;
+  }
+
+  public List<String> getImages() {
+    return images;
+  }
   
   @Override
   @PostConstruct
@@ -123,7 +122,6 @@ public class Indice extends IBaseImportar implements Serializable {
 		this.attrs.put("opcion", 0);
     this.categoria = "";
 		this.salt      = (int)(Math.random()* 10000);
-    this.indexMarca= -1L;
     this.productos = new ArrayList<>();
     String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
     this.path = dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/");      
@@ -140,8 +138,52 @@ public class Indice extends IBaseImportar implements Serializable {
       params.put("sortOrder", "order by tc_mantic_productos_marcas.nombre");
       columns = new ArrayList<>();
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
-      this.marcas= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticProductosMarcasDto", "lazy", params);
-      this.menu  = (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticProductosCategoriasDto", "menu", params);
+      List<Entity> marcas= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticProductosMarcasDto", "lazy", params);
+      List<Entity> menu  = (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticProductosCategoriasDto", "menu", params);
+      // MENU DINAMICO
+      this.model = new DefaultMenuModel();
+      DefaultMenuItem item = new DefaultMenuItem("Inicio");
+      item.setIcon("fa fa-home");
+      item.setCommand("#{kajoolAccesoIndice.doOpcion(4)}");
+      item.setOncomplete("showOpcion(4);");
+      this.model.addElement(item);      
+      DefaultSubMenu sub= new DefaultSubMenu("Categorías");
+      sub.setIcon("fa fa-picture-o");
+      if(menu!= null && !menu.isEmpty()) {
+        for (Entity entity: menu) {
+          item= new DefaultMenuItem(entity.toString("categoria"));
+          item.setIcon("fa ".concat(entity.toString("icon")));
+          item.setCommand("#{kajoolAccesoIndice.doOpcion(0)}");
+          item.setOncomplete("showOpcion(0); categoria('".concat(entity.toString("nombre")).concat("');"));
+          sub.addElement(item);      
+        } // for
+      } // if  
+      this.model.addElement(sub);
+      sub= new DefaultSubMenu("Marcas");
+      sub.setIcon("fa fa-dashcube");
+      if(marcas!= null && !marcas.isEmpty()) {
+        for (Entity entity: marcas) {
+          item= new DefaultMenuItem(entity.toString("descripcion"));
+          item.setIcon("fa fa-picture-o");
+          item.setCommand("#{kajoolAccesoIndice.doOpcion(1)}");
+          item.setOncomplete("showOpcion(1); procesar('".concat(entity.toString("descripcion")).concat("');"));
+          sub.addElement(item);      
+        } // for
+      } // if  
+      this.model.addElement(sub);
+      item = new DefaultMenuItem("Facturación");
+      item.setIcon("fa fa-qrcode");
+      item.setCommand("#{kajoolAccesoIndice.doOpcion(2)}");
+      item.setOncomplete("showOpcion(2);");
+      this.model.addElement(item);      
+      
+      this.images = new ArrayList<>();
+      this.images.add("IMG_20190723010006103_655.JPG");
+      this.images.add("IMG_20190723010036197_652.JPG");
+      this.images.add("IMG_20190723010656183_692.JPG");
+      this.images.add("IMG_20190723011446183_803.JPG");
+      this.images.add("IMG_20190723011921494_891.JPG");
+      this.images.add("IMG_201907240454041_2168.JPG");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
